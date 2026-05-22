@@ -1,0 +1,398 @@
+#!/usr/bin/env python3
+"""tmdb-cli — The Movie Database API for agent-based media discovery.
+
+Discover movies and TV shows by genre, rating, certification, and date.
+Search by term, get details, check trending, upcoming, and now playing.
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Tuple
+
+warnings.simplefilter("ignore")
+
+import requests
+
+# === Config ===
+DEFAULT_SERVER = "https://api.themoviedb.org/3"
+ENV_TOKEN = os.getenv("TMDB_ACCESS_TOKEN", "")
+ENV_API_KEY = os.getenv("TMDB_API_KEY", "")
+ENV_SERVER = os.getenv("TMDB_SERVER", DEFAULT_SERVER)
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+
+
+def log(msg):
+    if not QUIET and not GLOBAL_FLAGS.get("json", False):
+        print(msg)
+
+
+def warn(msg):
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg, exit_code=1):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def emit(human, data):
+    if GLOBAL_FLAGS.get("json", False):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+def _preparse_global_flags(argv):
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--quiet", "--verbose"}
+    flags, filtered = {}, [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg in ("--help", "-h"):
+            return flags, argv
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+class TMDBClient:
+    """TMDb API v3 client."""
+
+    def __init__(self, dry_run=False):
+        self.token = ENV_TOKEN
+        self.api_key = ENV_API_KEY
+        self.server = ENV_SERVER.rstrip("/")
+        self.dry_run = dry_run
+
+    def _headers(self):
+        h = {"Accept": "application/json"}
+        if self.token:
+            h["Authorization"] = f"Bearer {self.token}"
+        return h
+
+    def _get(self, path, params=None):
+        url = f"{self.server}{path}"
+        p = dict(params or {})
+        if not self.token and self.api_key:
+            p["api_key"] = self.api_key
+
+        if self.dry_run:
+            return {"dry_run": True, "url": url, "params": p}
+
+        if not self.token and not self.api_key:
+            die("Set TMDB_ACCESS_TOKEN or TMDB_API_KEY. Get one at https://www.themoviedb.org/settings/api")
+
+        try:
+            resp = requests.get(url, params=p, headers=self._headers(), timeout=30)
+        except requests.ConnectionError as e:
+            die(f"Cannot connect: {e}")
+
+        if resp.status_code == 401:
+            die("Auth failed (401). Check your TMDB_ACCESS_TOKEN.")
+        if resp.status_code == 404:
+            return None
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+        return resp.json()
+
+    def search_movie(self, query, page=1, lang="en-US"):
+        return self._get("/search/movie", {"query": query, "page": page, "language": lang})
+
+    def search_tv(self, query, page=1, lang="en-US"):
+        return self._get("/search/tv", {"query": query, "page": page, "language": lang})
+
+    def discover_movie(self, **kwargs):
+        return self._get("/discover/movie", {k: v for k, v in kwargs.items() if v is not None})
+
+    def discover_tv(self, **kwargs):
+        return self._get("/discover/tv", {k: v for k, v in kwargs.items() if v is not None})
+
+    def get_trending(self, media_type="movie", window="week"):
+        return self._get(f"/trending/{media_type}/{window}")
+
+    def get_movie(self, movie_id):
+        return self._get(f"/movie/{movie_id}")
+
+    def get_tv(self, tv_id):
+        return self._get(f"/tv/{tv_id}")
+
+    def get_movie_genres(self, lang="en-US"):
+        return self._get("/genre/movie/list", {"language": lang})
+
+    def get_tv_genres(self, lang="en-US"):
+        return self._get("/genre/tv/list", {"language": lang})
+
+    def get_movie_certifications(self):
+        return self._get("/certification/movie/list")
+
+    def get_upcoming(self, page=1, lang="en-US", region="US"):
+        return self._get("/movie/upcoming", {"page": page, "language": lang, "region": region})
+
+    def get_now_playing(self, page=1, lang="en-US", region="US"):
+        return self._get("/movie/now_playing", {"page": page, "language": lang, "region": region})
+
+
+def fmt_movie(m, idx=None):
+    prefix = f"{idx}. " if idx else ""
+    title = m.get("title", m.get("name", "?"))
+    year = (m.get("release_date") or "")[:4]
+    year_str = f" ({year})" if year else ""
+    rating = m.get("vote_average", 0)
+    vote_str = f" ★{rating:.1f}" if rating else ""
+    return f"  {prefix}{title}{year_str}{vote_str}"
+
+
+def fmt_tv(t, idx=None):
+    prefix = f"{idx}. " if idx else ""
+    name = t.get("name", "?")
+    year = (t.get("first_air_date") or "")[:4]
+    year_str = f" ({year})" if year else ""
+    rating = t.get("vote_average", 0)
+    vote_str = f" ★{rating:.1f}" if rating else ""
+    return f"  {prefix}{name}{year_str}{vote_str}"
+
+
+def cmd_movie_search(client, args):
+    p = argparse.ArgumentParser(prog="tmdb-cli movie search")
+    p.add_argument("--term", "-t", required=True)
+    p.add_argument("--limit", type=int, default=10)
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run:
+        return emit(f"[dry-run] Search movies: {parsed.term}", {"dry_run": True})
+    data = client.search_movie(parsed.term) or {}
+    results = data.get("results", [])[:parsed.limit]
+    if not results:
+        return emit("No movies found.", {"results": []})
+    lines = [fmt_movie(r, i+1) for i, r in enumerate(results)]
+    emit(f"{data.get('total_results', len(results))} result(s):\n" + "\n".join(lines),
+         {"total": data.get("total_results"), "results": results})
+
+
+def cmd_movie_discover(client, args):
+    p = argparse.ArgumentParser(prog="tmdb-cli movie discover")
+    p.add_argument("--genre", help="Genre name (e.g. horror, comedy)")
+    p.add_argument("--certification", help="US certification (G, PG, PG-13, R, NC-17)")
+    p.add_argument("--rating", type=float, help="Min vote average (0-10)")
+    p.add_argument("--from", dest="release_date_gte", help="Release date from (YYYY-MM-DD)")
+    p.add_argument("--to", dest="release_date_lte", help="Release date to (YYYY-MM-DD)")
+    p.add_argument("--limit", type=int, default=10)
+    parsed, _ = p.parse_known_args(args)
+
+    if client.dry_run:
+        return emit("[dry-run] Discover movies", {"dry_run": True})
+
+    params = {"sort_by": "popularity.desc", "vote_count.gte": 50}
+    if parsed.genre:
+        genres = _resolve_movie_genre(client, parsed.genre)
+        if genres:
+            params["with_genres"] = genres
+    if parsed.certification:
+        params["certification_country"] = "US"
+        params["certification"] = parsed.certification
+    if parsed.rating:
+        params["vote_average.gte"] = parsed.rating
+    if parsed.release_date_gte:
+        params["release_date.gte"] = parsed.release_date_gte
+    if parsed.release_date_lte:
+        params["release_date.lte"] = parsed.release_date_lte
+
+    data = client.discover_movie(**params) or {}
+    results = data.get("results", [])[:parsed.limit]
+    if not results:
+        return emit("No movies found.", {"results": []})
+    lines = [fmt_movie(r, i+1) for i, r in enumerate(results)]
+    emit(f"{data.get('total_results', len(results))} result(s):\n" + "\n".join(lines),
+         {"total": data.get("total_results"), "results": results})
+
+
+def _resolve_movie_genre(client, name):
+    data = client.get_movie_genres() or {}
+    for g in data.get("genres", []):
+        if name.lower() in g.get("name", "").lower():
+            return str(g["id"])
+    return None
+
+
+def cmd_tv_discover(client, args):
+    p = argparse.ArgumentParser(prog="tmdb-cli tv discover")
+    p.add_argument("--genre", help="Genre name")
+    p.add_argument("--rating", type=float, help="Min vote average")
+    p.add_argument("--from", dest="air_date_gte", help="Air date from")
+    p.add_argument("--limit", type=int, default=10)
+    parsed, _ = p.parse_known_args(args)
+
+    if client.dry_run:
+        return emit("[dry-run] Discover TV", {"dry_run": True})
+
+    params = {"sort_by": "popularity.desc", "vote_count.gte": 20}
+    if parsed.genre:
+        genres = _resolve_tv_genre(client, parsed.genre)
+        if genres:
+            params["with_genres"] = genres
+    if parsed.rating:
+        params["vote_average.gte"] = parsed.rating
+    if parsed.air_date_gte:
+        params["first_air_date.gte"] = parsed.air_date_gte
+
+    data = client.discover_tv(**params) or {}
+    results = data.get("results", [])[:parsed.limit]
+    if not results:
+        return emit("No TV shows found.", {"results": []})
+    lines = [fmt_tv(r, i+1) for i, r in enumerate(results)]
+    emit(f"{data.get('total_results', len(results))} result(s):\n" + "\n".join(lines),
+         {"total": data.get("total_results"), "results": results})
+
+
+def _resolve_tv_genre(client, name):
+    data = client.get_tv_genres() or {}
+    for g in data.get("genres", []):
+        if name.lower() in g.get("name", "").lower():
+            return str(g["id"])
+
+
+def cmd_trending(client, args):
+    p = argparse.ArgumentParser(prog="tmdb-cli trending")
+    p.add_argument("--type", default="movie", choices=["movie", "tv", "all"])
+    p.add_argument("--window", default="week", choices=["day", "week"])
+    p.add_argument("--limit", type=int, default=10)
+    parsed, _ = p.parse_known_args(args)
+
+    if client.dry_run:
+        return emit("[dry-run] Get trending", {"dry_run": True})
+
+    data = client.get_trending(parsed.type, parsed.window) or {}
+    results = data.get("results", [])[:parsed.limit]
+    if not results:
+        return emit("No trending found.", {"results": []})
+
+    lines, out = [], []
+    for i, r in enumerate(results):
+        title = r.get("title", r.get("name", "?"))
+        media = r.get("media_type", parsed.type)
+        year = (r.get("release_date") or r.get("first_air_date") or "")[:4]
+        rating = r.get("vote_average", 0)
+        lines.append(f"  {i+1}. {title} ({year}) ★{rating:.1f} [{media}]")
+        out.append({"title": title, "year": year, "rating": rating, "media_type": media, "id": r.get("id")})
+    emit(f"Trending {parsed.type} ({parsed.window}):\n" + "\n".join(lines), {"results": out})
+
+
+def cmd_genre_list(client, args):
+    p = argparse.ArgumentParser(prog="tmdb-cli genre list")
+    p.add_argument("--type", required=True, choices=["movie", "tv"])
+    parsed, _ = p.parse_known_args(args)
+
+    if client.dry_run:
+        return emit("[dry-run] List genres", {"dry_run": True})
+
+    data = (client.get_movie_genres() if parsed.type == "movie" else client.get_tv_genres()) or {}
+    genres = data.get("genres", [])
+    if not genres:
+        return emit("No genres found.", {"genres": []})
+    lines = [f"  {g['id']:4} {g['name']}" for g in genres]
+    emit(f"{parsed.type.title()} genres:\n" + "\n".join(lines), {"genres": genres})
+
+
+def cmd_cert_list(client, args):
+    if client.dry_run:
+        return emit("[dry-run] List certifications", {"dry_run": True})
+    data = client.get_movie_certifications() or {}
+    certifications = data.get("certifications", {})
+    us_certs = certifications.get("US", [])
+    if not us_certs:
+        return emit("No US certifications found.", {"certifications": []})
+    lines = [f"  {c['certification']:6} {c.get('meaning', '')[:80]}" for c in us_certs]
+    emit("US movie certifications:\n" + "\n".join(lines), {"certifications": us_certs})
+
+
+def cmd_upcoming(client, args):
+    p = argparse.ArgumentParser(prog="tmdb-cli movie upcoming")
+    p.add_argument("--limit", type=int, default=10)
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run:
+        return emit("[dry-run] Get upcoming movies", {"dry_run": True})
+    data = client.get_upcoming() or {}
+    results = data.get("results", [])[:parsed.limit]
+    lines = [fmt_movie(r, i+1) for i, r in enumerate(results)] if results else ["  (none)"]
+    emit(f"Upcoming movies:\n" + "\n".join(lines), {"results": results})
+
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("quiet", False):
+        QUIET = True
+    if GLOBAL_FLAGS.get("json", False):
+        warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(prog="tmdb-cli", description="The Movie Database API CLI.")
+    sub = parser.add_subparsers(dest="resource")
+
+    # movie
+    mp = sub.add_parser("movie", help="Movie operations")
+    msub = mp.add_subparsers(dest="action")
+    s1 = msub.add_parser("search", help="Search movies"); s1.add_argument("--term", "-t", required=True); s1.add_argument("--limit", type=int, default=10)
+    s2 = msub.add_parser("discover", help="Discover movies"); s2.add_argument("--genre"); s2.add_argument("--certification"); s2.add_argument("--rating", type=float); s2.add_argument("--from", dest="release_date_gte"); s2.add_argument("--to", dest="release_date_lte"); s2.add_argument("--limit", type=int, default=10)
+    msub.add_parser("upcoming", help="Upcoming movies").add_argument("--limit", type=int, default=10)
+    msub.add_parser("now-playing", help="Now playing movies").add_argument("--limit", type=int, default=10)
+
+    # tv
+    tp = sub.add_parser("tv", help="TV operations")
+    tsub = tp.add_subparsers(dest="action")
+    s3 = tsub.add_parser("search", help="Search TV"); s3.add_argument("--term", "-t", required=True); s3.add_argument("--limit", type=int, default=10)
+    s4 = tsub.add_parser("discover", help="Discover TV"); s4.add_argument("--genre"); s4.add_argument("--rating", type=float); s4.add_argument("--from", dest="air_date_gte"); s4.add_argument("--limit", type=int, default=10)
+
+    # flat
+    sub.add_parser("genre", help="List genres").add_argument("--type", required=True, choices=["movie", "tv"])
+    sub.add_parser("certification", help="List certifications")
+
+    tr = sub.add_parser("trending", help="Trending content")
+    tr.add_argument("--type", default="movie", choices=["movie", "tv", "all"])
+    tr.add_argument("--window", default="week", choices=["day", "week"])
+    tr.add_argument("--limit", type=int, default=10)
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.resource:
+        parser.print_help()
+        sys.exit(1)
+
+    client = TMDBClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+
+    # Dispatch
+    if args.resource == "movie":
+        if args.action == "search": cmd_movie_search(client, filtered_argv[filtered_argv.index("search")+1:])
+        elif args.action == "discover": cmd_movie_discover(client, filtered_argv[filtered_argv.index("discover")+1:])
+        elif args.action == "upcoming": cmd_upcoming(client, filtered_argv[filtered_argv.index("upcoming")+1:])
+        else: parser.print_help()
+    elif args.resource == "tv":
+        if args.action == "search": cmd_movie_search(client, filtered_argv[filtered_argv.index("search")+1:])
+        elif args.action == "discover": cmd_tv_discover(client, filtered_argv[filtered_argv.index("discover")+1:])
+        else: parser.print_help()
+    elif args.resource == "trending":
+        cmd_trending(client, filtered_argv[filtered_argv.index("trending")+1:])
+    elif args.resource == "genre":
+        cmd_genre_list(client, filtered_argv[filtered_argv.index("list")+1:])
+    elif args.resource == "certification":
+        cmd_cert_list(client, filtered_argv[filtered_argv.index("list")+1:])
+    else:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    main()
