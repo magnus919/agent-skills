@@ -1,0 +1,545 @@
+#!/usr/bin/env python3
+"""jira-cli — Jira issue tracker from the terminal.
+
+Interact with Atlassian Jira Cloud via the REST API v3.
+Requires JIRA_EMAIL and JIRA_API_TOKEN env vars (token from
+https://id.atlassian.com/manage/api-tokens) and JIRA_SERVER
+(defaults to https://your-domain.atlassian.net).
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+from typing import Any, Dict, List, Optional, Tuple
+
+warnings.simplefilter("ignore")
+
+import requests
+
+# === Config ===
+DEFAULT_SERVER = "https://your-domain.atlassian.net"
+ENV_EMAIL = os.getenv("JIRA_EMAIL", "")
+ENV_TOKEN = os.getenv("JIRA_API_TOKEN", "")
+ENV_SERVER = os.getenv("JIRA_SERVER", DEFAULT_SERVER)
+
+# === Logging ===
+QUIET = False
+
+
+def log(msg: str) -> None:
+    if not QUIET and not GLOBAL_FLAGS.get("json", False):
+        print(msg)
+
+
+def warn(msg: str) -> None:
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg: str, exit_code: int = 1) -> None:
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def emit(human: str, data: Any) -> None:
+    if GLOBAL_FLAGS.get("json", False):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+# === Global flags ===
+GLOBAL_FLAGS: Dict[str, Any] = {
+    "json": False, "dry_run": False, "force": False,
+    "quiet": False, "verbose": False
+}
+
+
+def _preparse_global_flags(argv: List[str]) -> Tuple[Dict[str, Any], List[str]]:
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--force", "--quiet", "--verbose"}
+    flags: Dict[str, Any] = {}
+    filtered: List[str] = [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg in ("--help", "-h"):
+            return flags, argv
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+# === Jira API Client ===
+class JiraClient:
+    """REST API client for Jira Cloud v3."""
+
+    def __init__(self, email: str = "", token: str = "",
+                 server: str = "", dry_run: bool = False):
+        self.email = email or ENV_EMAIL
+        self.token = token or ENV_TOKEN
+        self.server = (server or ENV_SERVER).rstrip("/")
+        self.dry_run = dry_run
+
+    def _headers(self) -> Dict[str, str]:
+        return {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+    def _auth(self) -> Optional[Tuple[str, str]]:
+        if self.email and self.token:
+            return (self.email, self.token)
+        return None
+
+    def _request(self, method: str, path: str,
+                 params: Optional[Dict] = None,
+                 json_data: Any = None) -> Any:
+        url = f"{self.server}/rest/api/3{path}"
+
+        if self.dry_run:
+            return {"dry_run": True, "method": method.upper(),
+                    "url": url, "params": params, "json": json_data}
+
+        auth = self._auth()
+        if not auth:
+            die("JIRA_EMAIL and JIRA_API_TOKEN not set. "
+                "Get a token at https://id.atlassian.com/manage/api-tokens")
+
+        try:
+            resp = requests.request(
+                method=method, url=url, auth=auth,
+                params=params, json=json_data,
+                headers=self._headers(), timeout=30
+            )
+        except requests.ConnectionError as e:
+            die(f"Cannot connect to {self.server}: {e}\n"
+                f"  Check JIRA_SERVER or use --server")
+
+        if resp.status_code == 401:
+            die("Auth failed (401). Check your JIRA_EMAIL and JIRA_API_TOKEN.")
+        if resp.status_code == 403:
+            die("Forbidden (403). Your account may not have access to this resource.")
+        if resp.status_code == 404:
+            return None
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+
+        try:
+            return resp.json()
+        except ValueError:
+            return {"raw": resp.text[:500]}
+
+    def _get(self, path: str, params: Optional[Dict] = None) -> Any:
+        return self._request("GET", path, params=params)
+
+    def _post(self, path: str, json_data: Any = None) -> Any:
+        return self._request("POST", path, json_data=json_data)
+
+    def _put(self, path: str, json_data: Any = None) -> Any:
+        return self._request("PUT", path, json_data=json_data)
+
+    # === Endpoints ===
+
+    def get_myself(self) -> Any:
+        return self._get("/myself")
+
+    def search_issues(self, jql: str, fields: str = "summary,status,issuetype,assignee,priority",
+                      max_results: int = 20) -> Any:
+        return self._get("/search", params={
+            "jql": jql,
+            "fields": fields,
+            "maxResults": max_results
+        })
+
+    def get_issue(self, issue_key: str) -> Any:
+        return self._get(f"/issue/{issue_key}")
+
+    def list_projects(self) -> Any:
+        return self._get("/project")
+
+    def create_issue(self, project_key: str, summary: str,
+                     issuetype: str = "Task", description: str = "",
+                     priority: Optional[str] = None) -> Any:
+        fields = {
+            "project": {"key": project_key},
+            "summary": summary,
+            "issuetype": {"name": issuetype},
+        }
+        if description:
+            fields["description"] = {
+                "type": "doc",
+                "version": 1,
+                "content": [{
+                    "type": "paragraph",
+                    "content": [{"type": "text", "text": description}]
+                }]
+            }
+        if priority:
+            fields["priority"] = {"name": priority}
+        return self._post("/issue", json_data={"fields": fields})
+
+    def add_comment(self, issue_key: str, body: str) -> Any:
+        return self._post(f"/issue/{issue_key}/comment", json_data={
+            "body": {
+                "type": "doc",
+                "version": 1,
+                "content": [{
+                    "type": "paragraph",
+                    "content": [{"type": "text", "text": body}]
+                }]
+            }
+        })
+
+    def get_transitions(self, issue_key: str) -> Any:
+        return self._get(f"/issue/{issue_key}/transitions")
+
+    def transition_issue(self, issue_key: str, transition_id: str) -> Any:
+        return self._post(f"/issue/{issue_key}/transitions",
+                          json_data={"transition": {"id": transition_id}})
+
+
+# === Command Handlers ===
+
+def cmd_me(client: JiraClient, args: List[str]) -> None:
+    if client.dry_run:
+        emit("[dry-run] Would fetch current user profile",
+             {"dry_run": True, "command": "me"})
+        return
+    data = client.get_myself()
+    if not data:
+        emit("Could not fetch user info.", {"error": "not found"})
+        return
+    emit(
+        f"👤 {data.get('displayName', '?')} ({data.get('emailAddress', '?')})\n"
+        f"   Account: {data.get('accountId', '?')}\n"
+        f"   Timezone: {data.get('timeZone', '?')}",
+        {"displayName": data.get("displayName"),
+         "emailAddress": data.get("emailAddress"),
+         "accountId": data.get("accountId"),
+         "timeZone": data.get("timeZone"),
+         "locale": data.get("locale")}
+    )
+
+
+def cmd_list(client: JiraClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="jira-cli list")
+    parser.add_argument("--jql", default="", help="JQL query (default: recent issues)")
+    parser.add_argument("--max", type=int, default=20, help="Max results (default: 20)")
+    parser.add_argument("--project", help="Shortcut: filter by project key")
+    parsed, _ = parser.parse_known_args(args)
+
+    jql = parsed.jql
+    if not jql and parsed.project:
+        jql = f"project={parsed.project} ORDER BY created DESC"
+    elif not jql:
+        jql = "ORDER BY created DESC"
+
+    if client.dry_run:
+        emit(f"[dry-run] Would search issues: {jql}",
+             {"dry_run": True, "command": "list", "jql": jql,
+              "max_results": parsed.max})
+        return
+
+    data = client.search_issues(jql, max_results=parsed.max)
+    issues = data.get("issues", []) if data else []
+
+    if not issues:
+        emit("No issues found.", {"issues": []})
+        return
+
+    lines = []
+    out = []
+    for issue in issues:
+        key = issue.get("key", "?")
+        fields = issue.get("fields", {})
+        summary = fields.get("summary", "?")
+        status = fields.get("status", {}).get("name", "?")
+        assignee = fields.get("assignee", {})
+        assignee_name = assignee.get("displayName", "Unassigned") if assignee else "Unassigned"
+        lines.append(f"  {key} [{status}] {summary}  ({assignee_name})")
+        out.append({
+            "key": key, "summary": summary, "status": status,
+            "assignee": assignee_name,
+            "issuetype": fields.get("issuetype", {}).get("name", "?"),
+            "priority": fields.get("priority", {}).get("name") if fields.get("priority") else None,
+        })
+
+    total = data.get("total", len(issues))
+    emit(f"{total} issue(s):\n" + "\n".join(lines),
+         {"total": total, "issues": out})
+
+
+def cmd_view(client: JiraClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="jira-cli view")
+    parser.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would fetch issue {parsed.issue_key}",
+             {"dry_run": True, "command": "view",
+              "issue_key": parsed.issue_key})
+        return
+
+    data = client.get_issue(parsed.issue_key)
+    if not data:
+        emit(f"Issue {parsed.issue_key} not found.",
+             {"error": "not found", "issue_key": parsed.issue_key})
+        return
+
+    fields = data.get("fields", {})
+    key = data.get("key", parsed.issue_key)
+    summary = fields.get("summary", "?")
+    status = fields.get("status", {}).get("name", "?")
+    issuetype = fields.get("issuetype", {}).get("name", "?")
+    priority = fields.get("priority", {})
+    priority_str = priority.get("name", "None") if priority else "None"
+    assignee = fields.get("assignee", {})
+    assignee_str = assignee.get("displayName", "Unassigned") if assignee else "Unassigned"
+    reporter = fields.get("reporter", {})
+    reporter_str = reporter.get("displayName", "?") if reporter else "?"
+    created = fields.get("created", "?")
+    updated = fields.get("updated", "?")
+    description = fields.get("description", "")
+    desc_text = _extract_text(description) if description else "(no description)"
+
+    human = (
+        f"📋 {key}: {summary}\n"
+        f"   Type: {issuetype}  Status: {status}  Priority: {priority_str}\n"
+        f"   Assignee: {assignee_str}  Reporter: {reporter_str}\n"
+        f"   Created: {created}\n"
+        f"   Updated: {updated}\n"
+        f"─── Description ───\n{desc_text}"
+    )
+    emit(human, {
+        "key": key, "summary": summary, "status": status,
+        "issuetype": issuetype, "priority": priority_str,
+        "assignee": assignee_str, "reporter": reporter_str,
+        "created": created, "updated": updated,
+        "description": desc_text
+    })
+
+
+def _extract_text(adf: Any) -> str:
+    """Extract plain text from Atlassian Document Format."""
+    if isinstance(adf, str):
+        return adf
+    if isinstance(adf, dict):
+        content = adf.get("content", [])
+        texts = []
+        for node in content:
+            if isinstance(node, dict):
+                node_content = node.get("content", [])
+                for item in node_content:
+                    if isinstance(item, dict) and item.get("type") == "text":
+                        texts.append(item.get("text", ""))
+        return "\n".join(texts) if texts else json.dumps(adf, indent=2)[:500]
+    return str(adf)[:500]
+
+
+def cmd_projects(client: JiraClient, args: List[str]) -> None:
+    if client.dry_run:
+        emit("[dry-run] Would list projects",
+             {"dry_run": True, "command": "projects"})
+        return
+    data = client.list_projects()
+    if not data:
+        emit("No projects found.", {"projects": []})
+        return
+
+    projects = data if isinstance(data, list) else []
+    lines = []
+    out = []
+    for p in sorted(projects, key=lambda x: x.get("name", "")):
+        key = p.get("key", "?")
+        name = p.get("name", "?")
+        lead = p.get("lead", {})
+        lead_name = lead.get("displayName", "?") if lead else "?"
+        ptype = p.get("projectTypeKey", "?")
+        lines.append(f"  {key:12} {name:40} [{ptype}]  Lead: {lead_name}")
+        out.append({
+            "key": key, "name": name, "type": ptype,
+            "lead": lead_name
+        })
+    emit(f"{len(projects)} project(s):\n" + "\n".join(lines),
+         {"total": len(projects), "projects": out})
+
+
+def cmd_create(client: JiraClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="jira-cli create")
+    parser.add_argument("--project", required=True, help="Project key (e.g. PROJ)")
+    parser.add_argument("--summary", required=True, help="Issue summary/title")
+    parser.add_argument("--type", default="Task", help="Issue type (Task, Bug, Story, etc.)")
+    parser.add_argument("--description", default="", help="Issue description")
+    parser.add_argument("--priority", help="Priority (Highest, High, Medium, Low, Lowest)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit("[dry-run] Would create issue",
+             {"dry_run": True, "command": "create",
+              "project": parsed.project, "summary": parsed.summary,
+              "type": parsed.type})
+        return
+
+    result = client.create_issue(
+        project_key=parsed.project,
+        summary=parsed.summary,
+        issuetype=parsed.type,
+        description=parsed.description,
+        priority=parsed.priority
+    )
+    key = result.get("key", "?") if result else "?"
+    url = result.get("self", "") if result else ""
+    emit(f"✅ Created {key}: {parsed.summary}\n   {url}",
+         {"status": "created", "key": key, "url": url,
+          "summary": parsed.summary})
+
+
+def cmd_comment(client: JiraClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="jira-cli comment")
+    parser.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
+    parser.add_argument("--body", "-m", required=True, help="Comment body text")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would add comment to {parsed.issue_key}",
+             {"dry_run": True, "command": "comment",
+              "issue_key": parsed.issue_key, "body": parsed.body})
+        return
+
+    result = client.add_comment(parsed.issue_key, parsed.body)
+    cid = result.get("id", "?") if result else "?"
+    emit(f"💬 Comment added to {parsed.issue_key} (id={cid})",
+         {"status": "comment_added", "issue_key": parsed.issue_key,
+          "comment_id": cid})
+
+
+def cmd_transition(client: JiraClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="jira-cli transition")
+    parser.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
+    parser.add_argument("--to", required=True, help="Transition by name or ID")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would transition {parsed.issue_key} to '{parsed.to}'",
+             {"dry_run": True, "command": "transition",
+              "issue_key": parsed.issue_key, "to": parsed.to})
+        return
+
+    # First, get available transitions
+    trans_data = client.get_transitions(parsed.issue_key)
+    if not trans_data:
+        die(f"No transitions available for {parsed.issue_key}")
+    transitions = trans_data.get("transitions", [])
+
+    # Find the target transition by name or ID
+    match = None
+    for t in transitions:
+        tid = t.get("id", "")
+        tname = t.get("name", "").lower()
+        if tid == parsed.to or tname == parsed.to.lower():
+            match = tid
+            break
+
+    if not match:
+        available = ", ".join([f"{t.get('id')}={t.get('name')}"
+                               for t in transitions])
+        die(f"Transition '{parsed.to}' not found. Available: {available}")
+
+    result = client.transition_issue(parsed.issue_key, match)
+    emit(f"🔄 {parsed.issue_key} transitioned to '{parsed.to}'",
+         {"status": "transitioned", "issue_key": parsed.issue_key,
+          "transition": parsed.to})
+
+
+# === Main ===
+
+def main() -> None:
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("quiet", False):
+        QUIET = True
+    if GLOBAL_FLAGS.get("json", False):
+        warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(
+        prog="jira-cli",
+        description="Jira issue tracker from the terminal.",
+        epilog="Global flags work anywhere: jira-cli --json list --jql 'project=PROJ'"
+    )
+    sub = parser.add_subparsers(dest="command", help="Available commands")
+
+    sub.add_parser("me", help="Get current user profile")
+    sub.add_parser("projects", help="List projects")
+
+    p_list = sub.add_parser("list", help="Search issues")
+    p_list.add_argument("--jql", default="", help="JQL query")
+    p_list.add_argument("--max", type=int, default=20, help="Max results")
+    p_list.add_argument("--project", help="Filter by project key")
+
+    p_view = sub.add_parser("view", help="View issue details")
+    p_view.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
+
+    p_create = sub.add_parser("create", help="Create an issue")
+    p_create.add_argument("--project", required=True, help="Project key")
+    p_create.add_argument("--summary", required=True, help="Issue summary")
+    p_create.add_argument("--type", default="Task", help="Issue type")
+    p_create.add_argument("--description", default="", help="Description")
+    p_create.add_argument("--priority", help="Priority (Highest, High, Medium, Low, Lowest)")
+
+    p_comment = sub.add_parser("comment", help="Add a comment")
+    p_comment.add_argument("issue_key", help="Issue key")
+    p_comment.add_argument("--body", "-m", required=True, help="Comment text")
+
+    p_trans = sub.add_parser("transition", help="Transition an issue")
+    p_trans.add_argument("issue_key", help="Issue key")
+    p_trans.add_argument("--to", required=True, help="Transition name or ID")
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    # Lazy auth: --help and --dry-run work without credentials
+    needs_auth = args.command not in ("help",) and not GLOBAL_FLAGS.get("dry_run", False)
+
+    if needs_auth and not (ENV_EMAIL and ENV_TOKEN):
+        die("Set JIRA_EMAIL and JIRA_API_TOKEN in your environment.\n"
+            "  Get a token: https://id.atlassian.com/manage/api-tokens\n"
+            "  Or use --dry-run to preview without credentials.")
+
+    client = JiraClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+
+    # Dispatch
+    cmd_map = {
+        "me": cmd_me,
+        "list": cmd_list,
+        "view": cmd_view,
+        "projects": cmd_projects,
+        "create": cmd_create,
+        "comment": cmd_comment,
+        "transition": cmd_transition,
+    }
+    handler = cmd_map.get(args.command)
+    if not handler:
+        parser.print_help()
+        sys.exit(1)
+
+    # Pass remaining args to handler
+    remaining = filtered_argv[filtered_argv.index(args.command) + 1:]
+    handler(client, remaining)
+
+
+if __name__ == "__main__":
+    main()
