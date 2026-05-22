@@ -36,6 +36,10 @@ Ghost CMS from the terminal. Manage posts and pages, list tags, and check site i
 
 Jellyfin media server from the terminal. Check server info, browse recently added, search your library by type, list libraries, and view statistics.
 
+### [kanban-guru](kanban-guru/SKILL.md)
+
+A virtual Kanban expert for engineering teams. Diagnose flow problems, design board configurations, calibrate WIP limits, establish service level expectations, set up multi-portfolio operating models, and navigate Scrum-to-Kanban transitions. Covers all seven cadences, classes of service, Little's Law, flow metrics, and the full practitioner's playbook with rich reference material.
+
 ### [jira-cli](jira-cli/SKILL.md)
 
 Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, list projects, and transition status. API token from id.atlassian.com.
