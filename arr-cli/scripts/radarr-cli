@@ -1,0 +1,163 @@
+#!/usr/bin/env python3
+"""radarr-cli — Radarr movie management from the terminal."""
+
+import argparse, json, os, sys, warnings
+from typing import Any, Dict, List, Optional, Tuple
+warnings.simplefilter("ignore")
+import requests
+
+ENV_SERVER = os.getenv("ARR_SERVER_RADARR", "http://localhost:7878")
+ENV_KEY = os.getenv("ARR_KEY_RADARR", "")
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+def log(m):    global QUIET; G = GLOBAL_FLAGS; (not QUIET and not G.get("json")) and print(m)
+def warn(m):   print(f"Warning: {m}", file=sys.stderr)
+def die(m, c=1): print(f"Error: {m}", file=sys.stderr); sys.exit(c)
+def emit(h, d):
+    if GLOBAL_FLAGS.get("json"): print(json.dumps(d, default=str))
+    else: print(h)
+
+def _preparse(argv):
+    BOOLS = {"--json","--dry-run","--force","--quiet","--verbose"}
+    f, fl = {}, [argv[0]]
+    i = 1
+    while i < len(argv):
+        a = argv[i]
+        if a in BOOLS: f[a.lstrip("-").replace("-","_")] = True; i += 1
+        elif a in ("--help","-h"): return f, argv
+        elif a == "--": fl.extend(argv[i:]); break
+        else: fl.append(a); i += 1
+    return f, fl
+
+class RadarrClient:
+    def __init__(self, server="", key="", dry_run=False):
+        self.server = (server or ENV_SERVER).rstrip("/"); self.key = key or ENV_KEY; self.dry_run = dry_run
+    def _get(self, path, params=None):
+        url = f"{self.server}/api/v3{path}"
+        if self.dry_run: return {"dry_run":True, "url":url, "params":params}
+        if not self.key: die("ARR_KEY_RADARR not set. Get one from Radarr → Settings → General → API Key.")
+        try:
+            r = requests.get(url, params=params, headers={"X-Api-Key": self.key, "Accept":"application/json"}, timeout=30)
+        except ConnectionError as e: die(f"Cannot connect: {e}")
+        if r.status_code == 401: die("Auth failed (401). Check ARR_KEY_RADARR.")
+        if r.status_code >= 400:
+            try: d = r.json()
+            except: d = r.text[:200]
+            die(f"API error ({r.status_code}): {d}")
+        return r.json()
+    def _post(self, path, data):
+        url = f"{self.server}/api/v3{path}"
+        if self.dry_run: return {"dry_run":True, "url":url, "json":data}
+        if not self.key: die("ARR_KEY_RADARR not set.")
+        try:
+            r = requests.post(url, json=data, headers={"X-Api-Key": self.key, "Content-Type":"application/json"}, timeout=30)
+        except ConnectionError as e: die(f"Cannot connect: {e}")
+        if r.status_code >= 400:
+            try: d = r.json()
+            except: d = r.text[:200]
+            die(f"API error ({r.status_code}): {d}")
+        return r.json()
+    def status(self): return self._get("/system/status")
+    def movies(self): return self._get("/movie")
+    def movie(self, mid): return self._get(f"/movie/{mid}")
+    def lookup(self, term): return self._get("/movie/lookup", {"term": term})
+    def collections(self): return self._get("/collection")
+    def calendar(self, start="", end=""):
+        p = {}
+        if start: p["start"] = start
+        if end: p["end"] = end
+        return self._get("/calendar", p)
+    def queue(self, page=1, limit=20): return self._get("/queue", {"page":page, "pageSize":limit})
+    def history(self, page=1, limit=20): return self._get("/history", {"page":page, "pageSize":limit})
+    def add_movie(self, tmdb_id, quality_profile=4, root_folder_path="", monitored=True, search=True):
+        return self._post("/movie", {"tmdbId":tmdb_id, "qualityProfileId":quality_profile,
+                                     "rootFolderPath":root_folder_path, "monitored":monitored,
+                                     "addOptions":{"searchForMovie":search}})
+
+def cmd_status(client, args):
+    if client.dry_run: return emit("[dry-run] Get system status", {"dry_run":True})
+    d = client.status() or {}
+    emit(f"🖥️  Radarr v{d.get('version','?')}  OS: {d.get('osName','?')}  DB: {d.get('databaseVersion','?')}",
+         {"version":d.get("version"),"osName":d.get("osName")})
+
+def cmd_movies(client, args):
+    p = argparse.ArgumentParser(prog="radarr-cli movies")
+    p.add_argument("--limit", type=int, default=50)
+    p.add_argument("--status", help="Filter by status (released, inCinemas, announced)")
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run: return emit("[dry-run] List movies", {"dry_run":True})
+    data = client.movies() or []
+    if parsed.status: data = [m for m in data if m.get("status") == parsed.status]
+    data = data[:parsed.limit]
+    if not data: return emit("No movies found.", {"movies":[]})
+    lines, out = [], []
+    for m in data:
+        title = m.get("title","?"); year = m.get("year",""); had = m.get("hasFile",False)
+        status = m.get("status","?"); mon = m.get("monitored",False)
+        icon = "✅" if had else ("👁️" if mon else "🚫")
+        lines.append(f"  {icon} {title:45} ({year}) [{status}]")
+        out.append({"title":title,"year":year,"hasFile":had,"monitored":mon,"status":status,"id":m.get("id"),"tmdbId":m.get("tmdbId")})
+    emit(f"{len(data)} movie(s):\n"+"\n".join(lines), {"movies":out})
+
+def cmd_lookup(client, args):
+    p = argparse.ArgumentParser(prog="radarr-cli lookup")
+    p.add_argument("--term", "-t", required=True)
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run: return emit(f"[dry-run] Lookup: {parsed.term}", {"dry_run":True})
+    data = client.lookup(parsed.term) or []
+    if not data: return emit("No results.", {"results":[]})
+    lines, out = [], []
+    for m in data[:20]:
+        t = m.get("title","?"); y = m.get("year",""); s = m.get("status","?"); tid = m.get("tmdbId","?")
+        lines.append(f"  {t:45} ({y}) [{s}]  tmdb={tid}")
+        out.append({"title":t,"year":y,"status":s,"tmdbId":tid,"overview":m.get("overview","")[:120]})
+    emit(f"{len(data)} result(s):\n"+"\n".join(lines), {"results":out})
+
+def cmd_calendar(client, args):
+    if client.dry_run: return emit("[dry-run] Get calendar", {"dry_run":True})
+    data = client.calendar() or []
+    if not data: return emit("No upcoming.", {"movies":[]})
+    lines, out = [], []
+    for m in data[:30]:
+        t = m.get("title","?"); rd = (m.get("releaseDate") or "")[:10]
+        id = m.get("tmdbId",""); lines.append(f"  {rd}  {t:45}  tmdb={id}")
+        out.append({"title":t,"releaseDate":rd,"tmdbId":id})
+    emit(f"Upcoming:\n"+"\n".join(lines), {"movies":out})
+
+def cmd_collections(client, args):
+    if client.dry_run: return emit("[dry-run] List collections", {"dry_run":True})
+    data = client.collections() or []
+    if not data: return emit("No collections.", {"collections":[]})
+    lines, out = [], []
+    for c in data:
+        name = c.get("name","?"); movies = c.get("movieCount",0); monitored = c.get("monitored",False)
+        lines.append(f"  {name:45}  {movies} movies {'✅' if monitored else '🚫'}")
+        out.append({"name":name,"movieCount":movies,"monitored":monitored,"id":c.get("id")})
+    emit(f"{len(data)} collection(s):\n"+"\n".join(lines), {"collections":out})
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse(sys.argv)
+    if GLOBAL_FLAGS.get("quiet"): QUIET = True
+    if GLOBAL_FLAGS.get("json"): warnings.simplefilter("ignore")
+    parser = argparse.ArgumentParser(prog="radarr-cli", description="Radarr movie management.",
+        epilog="Set ARR_SERVER_RADARR and ARR_KEY_RADARR.")
+    sub = parser.add_subparsers(dest="command")
+    sub.add_parser("status")
+    p_movies = sub.add_parser("movies", help="List movies")
+    p_movies.add_argument("--limit", type=int, default=50)
+    p_movies.add_argument("--status", help="Filter by status")
+    sub.add_parser("lookup", help="Search for movies").add_argument("--term","-t",required=True)
+    sub.add_parser("calendar")
+    sub.add_parser("collections")
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command: parser.print_help(); sys.exit(1)
+    client = RadarrClient(dry_run=GLOBAL_FLAGS.get("dry_run",False))
+    handlers = {"status":cmd_status,"movies":cmd_movies,"lookup":cmd_lookup,"calendar":cmd_calendar,"collections":cmd_collections}
+    h = handlers.get(args.command)
+    if not h: parser.print_help(); sys.exit(1)
+    r = filtered_argv[filtered_argv.index(args.command)+1:]
+    h(client, r)
+
+if __name__ == "__main__": main()
