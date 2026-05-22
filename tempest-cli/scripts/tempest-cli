@@ -1,0 +1,696 @@
+#!/usr/bin/env python3
+"""tempest-cli — Hyper-local weather from your Tempest station.
+
+Two data sources:
+  REST API  — stations, observations, forecast via WeatherFlow cloud
+  UDP/local — real-time broadcast from your hub on port 50222
+
+Requires TEMPEST_TOKEN env var (personal access token from weatherflow.com).
+"""
+
+import argparse
+import json
+import os
+import socket
+import struct
+import sys
+import time
+import warnings
+from datetime import datetime, timezone, timedelta
+from typing import Any, Dict, List, Optional, Tuple
+
+# === Suppress dependency warnings before imports ===
+warnings.simplefilter("ignore")
+
+import requests
+
+# === Config ===
+DEFAULT_SERVER = "https://swd.weatherflow.com/swd/rest"
+DEFAULT_UDP_PORT = 50222
+UDP_BROADCAST_ADDR = "0.0.0.0"
+
+ENV_TOKEN = os.getenv("TEMPEST_TOKEN", "")
+ENV_SERVER = os.getenv("TEMPEST_SERVER", DEFAULT_SERVER)
+
+# === Logging ===
+QUIET = False
+
+
+def log(msg: str) -> None:
+    """Log to stdout, suppressed in --json or --quiet mode."""
+    if not QUIET and not GLOBAL_FLAGS.get("json", False):
+        print(msg)
+
+
+def warn(msg: str) -> None:
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg: str, exit_code: int = 1) -> None:
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def emit(human: str, data: Any) -> None:
+    """Dual output — machine JSON or human text."""
+    if GLOBAL_FLAGS.get("json", False):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+# === Global flags (pre-parsed from argv) ===
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "force": False, "quiet": False, "verbose": False}
+
+
+def _preparse_global_flags(argv: List[str]) -> Tuple[Dict[str, Any], List[str]]:
+    """Strip global flags from argv regardless of position."""
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--force", "--quiet", "--verbose"}
+    flags: Dict[str, Any] = {}
+    filtered: List[str] = [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg == "--help" or arg == "-h":
+            return flags, argv  # let argparse handle help
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+# === Tempest API Client ===
+class TempestClient:
+    """REST API client for WeatherFlow Tempest."""
+
+    def __init__(self, token: str = "", server: str = "", dry_run: bool = False):
+        self.token = token or ENV_TOKEN
+        self.server = (server or ENV_SERVER).rstrip("/")
+        self.dry_run = dry_run
+
+    def _get(self, path: str, params: Optional[Dict] = None) -> Any:
+        """Generic GET with token auth."""
+        url = f"{self.server}{path}"
+        if params is None:
+            params = {}
+        params["token"] = self.token
+
+        if self.dry_run:
+            return {"dry_run": True, "url": url, "params": params}
+
+        try:
+            resp = requests.get(url, params=params, timeout=30)
+        except requests.ConnectionError as e:
+            die(f"Cannot connect to {self.server}: {e}\n  Is the server reachable?")
+
+        if resp.status_code == 401:
+            die("Auth failed (401). Check your TEMPEST_TOKEN or generate a new one at weatherflow.com.")
+        if resp.status_code == 403:
+            die("Forbidden (403). Your token may not have access to this station/device.")
+        if resp.status_code == 404:
+            die(f"Not found (404) at {path}. Check station/device IDs.")
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+
+        try:
+            return resp.json()
+        except ValueError:
+            return {"raw": resp.text[:500]}
+
+    # === Endpoints ===
+
+    def get_stations(self) -> List[Dict]:
+        """List all stations and their devices."""
+        data = self._get("/stations")
+        return data if isinstance(data, list) else data.get("stations", [])
+
+    def get_observations(self, device_id: int, days_back: int = 0, time_start: Optional[int] = None) -> Dict:
+        """Get observations for a device. Use days_back=1 for last day, or time_start epoch."""
+        params: Dict[str, Any] = {}
+        if days_back > 0:
+            params["day_offset"] = days_back
+        elif time_start:
+            params["time_start"] = time_start
+        else:
+            params["latest"] = "true"
+        return self._get(f"/observations/device/{device_id}", params)
+
+    def get_forecast(self, station_id: int) -> Dict:
+        """Get better_forecast — current conditions + daily + hourly."""
+        return self._get("/better_forecast", {"station_id": station_id})
+
+
+# === Observation decoders ===
+
+OBS_ST_FIELDS = [
+    ("epoch", "seconds_utc"),
+    ("wind_lull", "m/s"),
+    ("wind_avg", "m/s"),
+    ("wind_gust", "m/s"),
+    ("wind_direction", "degrees"),
+    ("wind_sample_interval", "seconds"),
+    ("station_pressure", "MB"),
+    ("air_temperature", "C"),
+    ("relative_humidity", "%"),
+    ("illuminance", "lux"),
+    ("uv", "index"),
+    ("solar_radiation", "W/m^2"),
+    ("rain_accumulation", "mm"),
+    ("precipitation_type", "0=none 1=rain 2=hail"),
+    ("avg_strike_distance", "km"),
+    ("strike_count", "count"),
+    ("battery", "volts"),
+    ("report_interval", "minutes"),
+    ("local_day_rain_accumulation", "mm"),
+    ("nc_rain_accumulation", "mm"),
+    ("local_day_nc_rain_accumulation", "mm"),
+    ("precip_analysis_type", "type"),
+]
+
+OBS_AIR_FIELDS = [
+    ("epoch", "seconds_utc"),
+    ("station_pressure", "MB"),
+    ("air_temperature", "C"),
+    ("relative_humidity", "%"),
+    ("lightning_strike_count", "count"),
+    ("lightning_avg_distance", "km"),
+    ("battery", "volts"),
+    ("report_interval", "minutes"),
+]
+
+OBS_SKY_FIELDS = [
+    ("epoch", "seconds_utc"),
+    ("illuminance", "lux"),
+    ("uv", "index"),
+    ("rain_accumulation", "mm"),
+    ("wind_lull", "m/s"),
+    ("wind_avg", "m/s"),
+    ("wind_gust", "m/s"),
+    ("wind_direction", "degrees"),
+    ("battery", "volts"),
+    ("report_interval", "minutes"),
+    ("solar_radiation", "W/m^2"),
+    ("local_day_rain_accumulation", "mm"),
+    ("precipitation_type", "0=none 1=rain 2=hail"),
+    ("wind_sample_interval", "seconds"),
+]
+
+
+def decode_obs(obs_array: List, type_str: str) -> Dict:
+    """Decode a raw observation array into a dict with field names."""
+    if type_str == "obs_st":
+        fields = OBS_ST_FIELDS
+    elif type_str == "obs_air":
+        fields = OBS_AIR_FIELDS
+    elif type_str == "obs_sky":
+        fields = OBS_SKY_FIELDS
+    else:
+        return {f"field_{i}": v for i, v in enumerate(obs_array)}
+
+    result = {}
+    for i, (name, unit) in enumerate(fields):
+        val = obs_array[i] if i < len(obs_array) else None
+        if name == "epoch" and val is not None:
+            result["timestamp"] = datetime.fromtimestamp(val, tz=timezone.utc).isoformat()
+        result[name] = val
+        result[f"{name}_unit"] = unit if name != "epoch" else None
+    return result
+
+
+def wind_dir_to_cardinal(deg: Optional[float]) -> str:
+    """Convert wind degrees to cardinal direction."""
+    if deg is None:
+        return "N/A"
+    dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+            "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"]
+    idx = round(deg / 22.5)
+    return dirs[idx % 16]
+
+
+def format_current(obs: Dict) -> str:
+    """Format current conditions for human display."""
+    lines = []
+    if obs.get("air_temperature") is not None:
+        temp_c = obs["air_temperature"]
+        temp_f = temp_c * 9 / 5 + 32
+        lines.append(f"🌡️  Temperature: {temp_c:.1f}°C / {temp_f:.1f}°F")
+
+    if obs.get("relative_humidity") is not None:
+        lines.append(f"💧 Humidity: {obs['relative_humidity']:.0f}%")
+
+    if obs.get("station_pressure") is not None:
+        press_mb = obs["station_pressure"]
+        press_inhg = press_mb * 0.02953
+        lines.append(f"🔵 Pressure: {press_mb:.1f} MB / {press_inhg:.2f} inHg")
+
+    if obs.get("wind_avg") is not None:
+        wind_mps = obs["wind_avg"]
+        wind_mph = wind_mps * 2.237
+        gust_mps = obs.get("wind_gust")
+        gust_mph = gust_mps * 2.237 if gust_mps else None
+        dir_deg = obs.get("wind_direction")
+        card = wind_dir_to_cardinal(dir_deg)
+        gust_str = f" (gust {gust_mph:.1f} mph)" if gust_mph else ""
+        lines.append(f"💨 Wind: {wind_mps:.1f} m/s ({wind_mph:.1f} mph){gust_str} from {card} ({dir_deg:.0f}°)")
+
+    if obs.get("illuminance") is not None and obs["illuminance"] > 0:
+        lux = obs["illuminance"]
+        lines.append(f"☀️  Illuminance: {lux:.0f} lux")
+        if obs.get("solar_radiation") is not None and obs["solar_radiation"] > 0:
+            lines.append(f"⚡ Solar Radiation: {obs['solar_radiation']:.0f} W/m²")
+        if obs.get("uv") is not None:
+            lines.append(f"🌞 UV Index: {obs['uv']:.1f}")
+
+    if obs.get("rain_accumulation") is not None and obs["rain_accumulation"] > 0:
+        rain_mm = obs["rain_accumulation"]
+        rain_in = rain_mm / 25.4
+        lines.append(f"🌧️  Rain (last interval): {rain_mm:.2f} mm / {rain_in:.3f} in")
+    if obs.get("local_day_rain_accumulation") is not None and obs["local_day_rain_accumulation"] > 0:
+        day_mm = obs["local_day_rain_accumulation"]
+        day_in = day_mm / 25.4
+        lines.append(f"🌧️  Rain (today): {day_mm:.2f} mm / {day_in:.3f} in")
+
+    if obs.get("strike_count") is not None and obs["strike_count"] > 0:
+        lines.append(f"⚡ Lightning strikes: {obs['strike_count']} (avg dist {obs.get('avg_strike_distance', '?')} km)")
+
+    if obs.get("battery") is not None:
+        lines.append(f"🔋 Battery: {obs['battery']:.2f}V")
+
+    if obs.get("timestamp"):
+        lines.append(f"🕐 Recorded: {obs['timestamp']}")
+
+    return "\n".join(lines) if lines else "(no observations)"
+
+
+# === CLI Commands ===
+
+def cmd_stations(client: TempestClient, args: List[str]) -> None:
+    """List stations and attached devices."""
+    stations = client.get_stations()
+    if not stations:
+        emit("No stations found for this token.", {"stations": []})
+        return
+
+    output_human = []
+    for s in stations:
+        name = s.get("name", s.get("station_name", "Unnamed"))
+        sid = s.get("station_id", "?")
+        output_human.append(f"Station: {name} (id={sid})")
+        for dev in s.get("devices", []):
+            dev_id = dev.get("device_id", "?")
+            dev_type = dev.get("device_type", "?")
+            sn = dev.get("serial_number", "?")
+            output_human.append(f"  ├─ Device: {dev_type} (id={dev_id}, sn={sn})")
+            if dev.get("name"):
+                output_human.append(f"  │  Name: {dev['name']}")
+
+    emit("\n".join(output_human), {"stations": stations})
+
+
+def cmd_current(client: TempestClient, args: List[str]) -> None:
+    """Get latest observations from your station."""
+    parser = argparse.ArgumentParser(prog="tempest-cli current")
+    parser.add_argument("--station-id", type=int, help="Station ID (optional if only one station)")
+    parser.add_argument("--device-id", type=int, help="Device ID (default: first Tempest device)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit("[dry-run] Would query latest observations from your station.",
+             {"dry_run": True, "command": "current",
+              "station_id": parsed.station_id, "device_id": parsed.device_id})
+        return
+
+    stations = client.get_stations()
+    if not stations:
+        die("No stations found. Verify your TEMPEST_TOKEN.")
+
+    # Pick station
+    if parsed.station_id:
+        station = next((s for s in stations if s.get("station_id") == parsed.station_id), None)
+        if not station:
+            die(f"Station {parsed.station_id} not found.")
+    else:
+        station = stations[0]
+
+    devices = station.get("devices", [])
+    if not devices:
+        die(f"Station '{station.get('name', '?')}' has no devices.")
+
+    # Pick device — skip the hub (HB), prefer ST (Tempest) or SKY/AIR
+    if parsed.device_id:
+        device = next((d for d in devices if d.get("device_id") == parsed.device_id), None)
+    else:
+        # Filter out the hub (device_type=HB), use first sensor
+        sensors = [d for d in devices if d.get("device_type") not in ("HB", "hub")]
+        if not sensors:
+            die("No sensor devices found on this station (only a hub).")
+        # Prefer Tempest (ST), then Sky, then Air
+        for preferred in ("ST", "SKY", "AIR"):
+            match = next((d for d in sensors if d.get("device_type") == preferred), None)
+            if match:
+                device = match
+                break
+        else:
+            device = sensors[0]
+
+    dev_id = device.get("device_id")
+    log(f"Station: {station.get('name', '?')}  Device: {device.get('device_type', '?')} (id={dev_id})")
+
+    obs_data = client.get_observations(dev_id)
+    obs_list = obs_data.get("obs", [])
+    obs_type = obs_data.get("type", "obs_st")
+
+    if not obs_list:
+        emit("No observations available yet.", {"observations": [], "type": obs_type})
+        return
+
+    latest = obs_list[-1]  # newest
+    decoded = decode_obs(latest, obs_type)
+
+    if GLOBAL_FLAGS.get("json", False):
+        emit("", {"station": station.get("name", "?"), "device_id": dev_id, "type": obs_type, "observation": decoded})
+    else:
+        print(format_current(decoded))
+
+
+def cmd_obs(client: TempestClient, args: List[str]) -> None:
+    """Get historical observations."""
+    parser = argparse.ArgumentParser(prog="tempest-cli obs")
+    parser.add_argument("--device-id", type=int, required=True, help="Device ID (required)")
+    parser.add_argument("--days", type=int, default=1, help="Days back to fetch (default: 1)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit("[dry-run] Would fetch historical observations.",
+             {"dry_run": True, "command": "obs",
+              "device_id": parsed.device_id, "days": parsed.days})
+        return
+
+    obs_data = client.get_observations(parsed.device_id, days_back=parsed.days)
+    obs_list = obs_data.get("obs", [])
+    obs_type = obs_data.get("type", "obs_st")
+
+    decoded = [decode_obs(o, obs_type) for o in obs_list]
+
+    if GLOBAL_FLAGS.get("json", False):
+        emit("", {"device_id": parsed.device_id, "type": obs_type, "count": len(decoded), "observations": decoded})
+    else:
+        print(f"{len(decoded)} observations from the last {parsed.days} day(s) (type: {obs_type}):")
+        print("")
+        # Show latest 3
+        for o in decoded[-3:]:
+            print("---")
+            print(format_current(o))
+            print("")
+
+
+def cmd_forecast(client: TempestClient, args: List[str]) -> None:
+    """Get forecast — current conditions + daily + hourly."""
+    parser = argparse.ArgumentParser(prog="tempest-cli forecast")
+    parser.add_argument("--station-id", type=int, help="Station ID (optional if only one station)")
+    parser.add_argument("--days", type=int, default=5, help="Days of daily forecast (default: 5)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit("[dry-run] Would fetch hyper-local forecast for your station.",
+             {"dry_run": True, "command": "forecast",
+              "station_id": parsed.station_id, "days": parsed.days})
+        return
+
+    stations = client.get_stations()
+    if not stations:
+        die("No stations found.")
+
+    if parsed.station_id:
+        station = next((s for s in stations if s.get("station_id") == parsed.station_id), None)
+    else:
+        station = stations[0]
+    if not station:
+        die("Station not found.")
+
+    sid = station.get("station_id")
+    name = station.get("name", "?")
+    log(f"Fetching forecast for station '{name}' (id={sid})...\n")
+
+    data = client.get_forecast(sid)
+    fc_data = data.get("forecast", data)  # prefer nested "forecast" key, fall back to top-level
+    if GLOBAL_FLAGS.get("json", False):
+        emit("", {"station_id": sid, "station_name": name, "forecast": data})
+        return
+
+    # Current conditions
+    current = data.get("current_conditions", {})
+    if current:
+        print("── Current Conditions ──")
+        icon = current.get("icon", "")
+        cond = current.get("conditions", "")
+        icon_str = f" ({icon})" if icon else ""
+        print(f"Conditions: {cond}{icon_str}")
+        for key in ("air_temperature", "temperature"):
+            if current.get(key) is not None:
+                val = current[key]
+                feels = current.get("feels_like")
+                if feels is not None:
+                    feels_f = feels * 9 / 5 + 32
+                else:
+                    feels_f = None
+                print(f"Temperature: {val * 9 / 5 + 32:.0f}°F (feels like {feels_f:.0f}°F)" if feels_f is not None else f"Temperature: {val * 9 / 5 + 32:.0f}°F")
+                break
+        if current.get("relative_humidity") is not None:
+            print(f"Humidity: {current['relative_humidity']}%")
+        if current.get("station_pressure") is not None:
+            print(f"Pressure: {current['station_pressure']} MB")
+        if current.get("wind_avg") is not None:
+            wd = current.get("wind_direction_cardinal", "")
+            print(f"Wind: {current['wind_avg']} mph {wd}")
+        if current.get("conditions"):
+            print(f"  [{current.get('conditions', '')}]")
+        print()
+
+    # Daily forecast
+    daily = fc_data.get("daily", [])
+    if daily:
+        print(f"── {parsed.days}-Day Forecast ──")
+        for day in daily[: parsed.days]:
+            day_start = day.get("day_start_local")
+            if isinstance(day_start, (int, float)):
+                day_str = datetime.fromtimestamp(day_start).strftime("%a %b %d")
+            elif day_start:
+                day_str = str(day_start).split("T")[0]
+            else:
+                day_str = "?"
+            hi = day.get("air_temp_high")
+            lo = day.get("air_temp_low")
+            hi_f = hi * 9 / 5 + 32 if hi is not None else None
+            lo_f = lo * 9 / 5 + 32 if lo is not None else None
+            cond = day.get("conditions", "")
+            precip = day.get("precip_probability")
+            precip_str = f" {precip}%" if precip is not None else ""
+            precip_type = day.get("precip_type", "")
+            hi_str = f"{hi_f:.0f}" if hi_f is not None else "?"
+            lo_str = f"{lo_f:.0f}" if lo_f is not None else "?"
+            print(f"  {day_str}: {lo_str}–{hi_str}°F  {cond}{precip_str} {precip_type}".strip())
+        print()
+
+    # Hourly
+    hourly = fc_data.get("hourly", [])
+    if hourly:
+        print("── Next 12 Hours ──")
+        for h in hourly[:12]:
+            local_hour = h.get("local_hour")
+            dt_str = f"{local_hour:02d}:00" if local_hour is not None else "?"
+            temp_c = h.get("air_temperature")
+            temp_str = f"{temp_c * 9 / 5 + 32:.0f}" if temp_c is not None else "?"
+            cond = h.get("conditions", "")
+            precip = h.get("precip_probability")
+            precip_str = f" {precip}%" if precip is not None else ""
+            print(f"  {dt_str}: {temp_str}°F  {cond}{precip_str}")
+        if len(hourly) > 12:
+            print(f"  ... and {len(hourly) - 12} more hours")
+
+
+# === UDP Commands ===
+
+def udp_listen(args: List[str]) -> None:
+    """Listen for local UDP broadcasts from the Tempest hub."""
+    parser = argparse.ArgumentParser(prog="tempest-cli udp listen")
+    parser.add_argument("--port", type=int, default=DEFAULT_UDP_PORT, help=f"UDP port (default: {DEFAULT_UDP_PORT})")
+    parser.add_argument("--timeout", type=int, default=0, help="Listen for N seconds (0 = indefinite)")
+    parser.add_argument("--show-all", action="store_true", help="Show raw message type even if unknown")
+    parsed, _ = parser.parse_known_args(args)
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind((UDP_BROADCAST_ADDR, parsed.port))
+    sock.settimeout(parsed.timeout if parsed.timeout > 0 else None)
+
+    log(f"Listening for Tempest UDP broadcasts on port {parsed.port}...")
+    if parsed.timeout > 0:
+        log(f"Will stop after {parsed.timeout}s\n")
+
+    try:
+        start = time.time()
+        while True:
+            try:
+                data, addr = sock.recvfrom(65535)
+            except socket.timeout:
+                log("Listen timeout reached.")
+                break
+
+            try:
+                msg = json.loads(data.decode("utf-8", errors="replace"))
+            except json.JSONDecodeError:
+                if parsed.show_all:
+                    log(f"[raw] from {addr[0]}: {data[:200]}")
+                continue
+
+            msg_type = msg.get("type", "unknown")
+            sn = msg.get("serial_number", msg.get("hub_sn", "?"))
+
+            if msg_type == "obs_st":
+                for obs_arr in msg.get("obs", []):
+                    decoded = decode_obs(obs_arr, "obs_st")
+                    emit(f"\n── Tempest Observation from {sn} ──\n{format_current(decoded)}",
+                         {"type": "obs_st", "serial_number": sn, "observation": decoded})
+            elif msg_type == "obs_air":
+                for obs_arr in msg.get("obs", []):
+                    decoded = decode_obs(obs_arr, "obs_air")
+                    emit(f"\n── Air Observation from {sn} ──\n{format_current(decoded)}",
+                         {"type": "obs_air", "serial_number": sn, "observation": decoded})
+            elif msg_type == "obs_sky":
+                for obs_arr in msg.get("obs", []):
+                    decoded = decode_obs(obs_arr, "obs_sky")
+                    emit(f"\n── Sky Observation from {sn} ──\n{format_current(decoded)}",
+                         {"type": "obs_sky", "serial_number": sn, "observation": decoded})
+            elif msg_type == "rapid_wind":
+                for ob in msg.get("ob", []):
+                    ts = datetime.fromtimestamp(ob[0], tz=timezone.utc).isoformat() if len(ob) > 0 else "?"
+                    speed = ob[1] if len(ob) > 1 else "?"
+                    direction = ob[2] if len(ob) > 2 else "?"
+                    card = wind_dir_to_cardinal(direction)
+                    m_s_mph = f"{speed * 2.237:.1f} mph" if isinstance(speed, (int, float)) else "?"
+                    emit(f"💨 Rapid Wind: {speed} m/s ({m_s_mph}) from {card} ({direction}°) [{ts}]",
+                         {"type": "rapid_wind", "serial_number": sn,
+                          "wind_speed_mps": speed, "wind_direction": direction,
+                          "timestamp": ts})
+            elif msg_type == "evt_strike":
+                evt = msg.get("evt", [])
+                ts = datetime.fromtimestamp(evt[0], tz=timezone.utc).isoformat() if len(evt) > 0 else "?"
+                dist = evt[1] if len(evt) > 1 else "?"
+                energy = evt[2] if len(evt) > 2 else "?"
+                emit(f"⚡ Lightning Strike — distance: {dist} km, energy: {energy} [{ts}]",
+                     {"type": "evt_strike", "serial_number": sn,
+                      "distance_km": dist, "energy": energy, "timestamp": ts})
+            elif msg_type == "evt_precip":
+                evt = msg.get("evt", [])
+                ts = datetime.fromtimestamp(evt[0], tz=timezone.utc).isoformat() if len(evt) > 0 else "?"
+                emit(f"🌧️  Rain started [{ts}]",
+                     {"type": "evt_precip", "serial_number": sn, "timestamp": ts})
+            elif msg_type == "hub_status":
+                if parsed.show_all:
+                    emit(f"[hub_status] {sn} — freq: {msg.get('freq', '?')}",
+                         {"type": "hub_status", "serial_number": sn, "status": msg})
+            elif parsed.show_all:
+                emit(f"[{msg_type}] from {sn}", {"type": msg_type, "serial_number": sn, "raw": msg})
+
+            if parsed.timeout > 0 and time.time() - start > parsed.timeout:
+                break
+
+    except KeyboardInterrupt:
+        log("\nStopped.")
+    finally:
+        sock.close()
+
+
+# === Main ===
+
+def main() -> None:
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("quiet", False):
+        QUIET = True
+    if GLOBAL_FLAGS.get("json", False):
+        warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(
+        prog="tempest-cli",
+        description="Hyper-local weather from your Tempest station.",
+        epilog="Global flags can appear anywhere: tempest-cli --json current --device-id X"
+    )
+    sub = parser.add_subparsers(dest="command", help="Available commands")
+
+    # stations
+    sub.add_parser("stations", help="List stations and devices linked to your token")
+
+    # current
+    p_current = sub.add_parser("current", help="Latest observations from your station")
+    p_current.add_argument("--station-id", type=int, help="Station ID (optional)")
+    p_current.add_argument("--device-id", type=int, help="Device ID (optional)")
+
+    # obs
+    p_obs = sub.add_parser("obs", help="Historical observations")
+    p_obs.add_argument("--device-id", type=int, required=True, help="Device ID")
+    p_obs.add_argument("--days", type=int, default=1, help="Days back (default: 1)")
+
+    # forecast
+    p_fcst = sub.add_parser("forecast", help="Hyper-local forecast (current + daily + hourly)")
+    p_fcst.add_argument("--station-id", type=int, help="Station ID (optional)")
+    p_fcst.add_argument("--days", type=int, default=5, help="Days of daily forecast (default: 5)")
+
+    # udp
+    p_udp = sub.add_parser("udp", help="Local UDP broadcast commands")
+    udp_sub = p_udp.add_subparsers(dest="udp_command")
+    p_listen = udp_sub.add_parser("listen", help="Listen for local UDP broadcasts from hub")
+    p_listen.add_argument("--port", type=int, default=DEFAULT_UDP_PORT)
+    p_listen.add_argument("--timeout", type=int, default=0, help="Listen N seconds (0=indefinite)")
+    p_listen.add_argument("--show-all", action="store_true", help="Show all message types incl. hub_status")
+
+    args = parser.parse_args(filtered_argv[1:])
+
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    if args.command == "stations":
+        if not ENV_TOKEN and not GLOBAL_FLAGS.get("dry_run", False):
+            die("TEMPEST_TOKEN not set. Get one at https://weatherflow.com")
+        cmd_stations(TempestClient(dry_run=GLOBAL_FLAGS.get("dry_run", False)), [])
+
+    elif args.command == "current":
+        if not ENV_TOKEN and not GLOBAL_FLAGS.get("dry_run", False):
+            die("TEMPEST_TOKEN not set.")
+        cmd_current(TempestClient(dry_run=GLOBAL_FLAGS.get("dry_run", False)),
+                    filtered_argv[filtered_argv.index("current") + 1:])
+
+    elif args.command == "obs":
+        if not ENV_TOKEN and not GLOBAL_FLAGS.get("dry_run", False):
+            die("TEMPEST_TOKEN not set.")
+        cmd_obs(TempestClient(dry_run=GLOBAL_FLAGS.get("dry_run", False)),
+                filtered_argv[filtered_argv.index("obs") + 1:])
+
+    elif args.command == "forecast":
+        if not ENV_TOKEN and not GLOBAL_FLAGS.get("dry_run", False):
+            die("TEMPEST_TOKEN not set.")
+        cmd_forecast(TempestClient(dry_run=GLOBAL_FLAGS.get("dry_run", False)),
+                     filtered_argv[filtered_argv.index("forecast") + 1:])
+
+    elif args.command == "udp":
+        if args.udp_command == "listen":
+            udp_listen(filtered_argv[filtered_argv.index("listen") + 1:])
+        else:
+            p_udp.print_help()
+            sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
