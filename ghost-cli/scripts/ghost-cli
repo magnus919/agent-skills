@@ -1,0 +1,344 @@
+#!/usr/bin/env python3
+"""ghost-cli — Ghost CMS from the terminal.
+
+Manage content on a Ghost CMS site: create and edit posts and pages,
+manage tags, and configure metadata. Requires GHOST_URL and GHOST_ADMIN_KEY.
+"""
+
+import argparse
+import base64
+import hashlib
+import hmac
+import json
+import os
+import sys
+import time
+import warnings
+from typing import Any, Dict, List, Optional, Tuple
+
+warnings.simplefilter("ignore")
+
+import requests
+
+ENV_URL = os.getenv("GHOST_URL", "")
+ENV_ADMIN_KEY = os.getenv("GHOST_ADMIN_KEY", "")
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+
+
+def log(msg):
+    if not QUIET and not GLOBAL_FLAGS.get("json", False):
+        print(msg)
+
+
+def warn(msg):
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg, exit_code=1):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def emit(human, data):
+    if GLOBAL_FLAGS.get("json", False):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+def _preparse_global_flags(argv):
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--quiet", "--verbose"}
+    flags, filtered = {}, [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg in ("--help", "-h"):
+            return flags, argv
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+class GhostClient:
+    """Ghost Admin API client (v5/v6)."""
+
+    def __init__(self, url="", key="", dry_run=False):
+        self.url = (url or ENV_URL).rstrip("/")
+        self.key = key or ENV_ADMIN_KEY
+        self.dry_run = dry_run
+
+    def _jwt_token(self):
+        """Generate a short-lived JWT from the Admin API key (id:secret format)."""
+        if not self.key or ":" not in self.key:
+            die("GHOST_ADMIN_KEY must be in 'id:secret' format. Get it from Ghost Admin → Integrations.")
+        key_id, secret = self.key.split(":", 1)
+        now = int(time.time())
+        header = base64.urlsafe_b64encode(json.dumps({"alg": "HS256", "kid": key_id, "typ": "JWT"}).encode()).rstrip(b"=").decode()
+        payload = base64.urlsafe_b64encode(json.dumps({"iat": now, "exp": now + 300, "aud": "/admin/"}).encode()).rstrip(b"=").decode()
+        sig = hmac.new(secret.encode(), f"{header}.{payload}".encode(), hashlib.sha256).digest()
+        sig_b64 = base64.urlsafe_b64encode(sig).rstrip(b"=").decode()
+        return f"{header}.{payload}.{sig_b64}"
+
+    def _get(self, path, params=None):
+        url = f"{self.url}/ghost/api/admin{path}"
+        if self.dry_run:
+            return {"dry_run": True, "url": url, "params": params}
+        try:
+            resp = requests.get(url, params=params,
+                                headers={"Authorization": f"Ghost {self._jwt_token()}",
+                                         "Accept-Version": "v6.0", "Accept": "application/json"},
+                                timeout=30)
+        except requests.ConnectionError as e:
+            die(f"Cannot connect to {self.url}: {e}")
+        if resp.status_code in (401, 403):
+            die(f"Auth failed ({resp.status_code}). Check GHOST_ADMIN_KEY.")
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+        return resp.json()
+
+    def _post(self, path, json_data):
+        url = f"{self.url}/ghost/api/admin{path}"
+        if self.dry_run:
+            return {"dry_run": True, "url": url, "json": json_data}
+        try:
+            resp = requests.post(url, json=json_data,
+                                 headers={"Authorization": f"Ghost {self._jwt_token()}",
+                                          "Accept-Version": "v6.0",
+                                          "Content-Type": "application/json"},
+                                 timeout=30)
+        except requests.ConnectionError as e:
+            die(f"Cannot connect: {e}")
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+        return resp.json()
+
+    def _put(self, path, json_data):
+        url = f"{self.url}/ghost/api/admin{path}"
+        if self.dry_run:
+            return {"dry_run": True, "url": url, "json": json_data}
+        try:
+            resp = requests.put(url, json=json_data,
+                                headers={"Authorization": f"Ghost {self._jwt_token()}",
+                                         "Accept-Version": "v6.0",
+                                         "Content-Type": "application/json"},
+                                timeout=30)
+        except requests.ConnectionError as e:
+            die(f"Cannot connect: {e}")
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+        return resp.json()
+
+    def get_posts(self, limit=20, status=None):
+        params: Dict[str, Any] = {"limit": limit}
+        if status:
+            params["filter"] = f"status:{status}"
+        return self._get("/posts", params)
+
+    def get_post(self, post_id):
+        return self._get(f"/posts/{post_id}")
+
+    def create_post(self, title, html="", status="draft", slug=""):
+        post = {"title": title, "status": status}
+        if html:
+            post["html"] = html
+        if slug:
+            post["slug"] = slug
+        return self._post("/posts", {"posts": [post]})
+
+    def update_post(self, post_id, **kwargs):
+        return self._put(f"/posts/{post_id}", {"posts": [kwargs]})
+
+    def get_pages(self, limit=20):
+        return self._get("/pages", {"limit": limit})
+
+    def create_page(self, title, html="", status="draft", slug=""):
+        page = {"title": title, "status": status}
+        if html:
+            page["html"] = html
+        if slug:
+            page["slug"] = slug
+        return self._post("/pages", {"pages": [page]})
+
+    def get_tags(self, limit=50):
+        return self._get("/tags", {"limit": limit, "include": "count.posts"})
+
+    def create_tag(self, name, slug="", description=""):
+        tag = {"name": name}
+        if slug:
+            tag["slug"] = slug
+        if description:
+            tag["description"] = description
+        return self._post("/tags", {"tags": [tag]})
+
+    def get_site(self):
+        return self._get("/site")
+
+
+def fmt_post(p):
+    title = p.get("title", "?")
+    status = p.get("status", "?")
+    slug = p.get("slug", "")
+    updated = (p.get("updated_at") or "")[:10]
+    return f"  {title:45} [{status:7}] /{slug}  updated {updated}"
+
+
+def cmd_posts(client, args):
+    p = argparse.ArgumentParser(prog="ghost-cli posts")
+    p.add_argument("--limit", type=int, default=20)
+    p.add_argument("--status", choices=["published", "draft", "scheduled"])
+    parsed, _ = p.parse_known_args(args)
+
+    if client.dry_run:
+        return emit("[dry-run] List posts", {"dry_run": True})
+
+    data = client.get_posts(limit=parsed.limit, status=parsed.status) or {}
+    posts = data.get("posts", [])
+    if not posts:
+        return emit("No posts found.", {"posts": []})
+
+    lines = [fmt_post(p) for p in posts]
+    total = data.get("meta", {}).get("pagination", {}).get("total", len(posts))
+    emit(f"{total} post(s):\n" + "\n".join(lines),
+         {"total": total, "posts": posts})
+
+
+def cmd_create_post(client, args):
+    p = argparse.ArgumentParser(prog="ghost-cli posts create")
+    p.add_argument("--title", required=True)
+    p.add_argument("--html", default="")
+    p.add_argument("--status", default="draft", choices=["draft", "published", "scheduled"])
+    p.add_argument("--slug", default="")
+    parsed, _ = p.parse_known_args(args)
+
+    if client.dry_run:
+        return emit(f"[dry-run] Create post: {parsed.title}", {"dry_run": True, **vars(parsed)})
+
+    data = client.create_post(parsed.title, html=parsed.html, status=parsed.status, slug=parsed.slug) or {}
+    posts = data.get("posts", [])
+    if posts:
+        post = posts[0]
+        emit(f"✅ Created: {post.get('title')} (/{post.get('slug')}) [{post.get('status')}]",
+             {"status": "created", "post": post})
+    else:
+        emit("Post created but no data returned.", {"status": "created"})
+
+
+def cmd_pages(client, args):
+    p = argparse.ArgumentParser(prog="ghost-cli pages")
+    p.add_argument("--limit", type=int, default=20)
+    parsed, _ = p.parse_known_args(args)
+
+    if client.dry_run:
+        return emit("[dry-run] List pages", {"dry_run": True})
+
+    data = client.get_pages(limit=parsed.limit) or {}
+    pages = data.get("pages", [])
+    if not pages:
+        return emit("No pages found.", {"pages": []})
+
+    lines = [fmt_post(p) for p in pages]
+    emit(f"{len(pages)} page(s):\n" + "\n".join(lines), {"pages": pages})
+
+
+def cmd_tags(client, args):
+    p = argparse.ArgumentParser(prog="ghost-cli tags")
+    p.add_argument("--limit", type=int, default=50)
+    parsed, _ = p.parse_known_args(args)
+
+    if client.dry_run:
+        return emit("[dry-run] List tags", {"dry_run": True})
+
+    data = client.get_tags(limit=parsed.limit) or {}
+    tags = data.get("tags", [])
+    if not tags:
+        return emit("No tags found.", {"tags": []})
+
+    lines = []
+    for t in tags:
+        name = t.get("name", "?")
+        slug = t.get("slug", "")
+        count = (t.get("count", {}) or {}).get("posts", 0)
+        lines.append(f"  {name:25} /{slug}  ({count} posts)")
+    emit(f"{len(tags)} tag(s):\n" + "\n".join(lines), {"tags": tags})
+
+
+def cmd_site(client, args):
+    if client.dry_run:
+        return emit("[dry-run] Get site info", {"dry_run": True})
+    data = client.get_site() or {}
+    site = data.get("site", {})
+    title = site.get("title", "?")
+    desc = site.get("description", "")
+    url = site.get("url", "?")
+    emit(f"🌐 {title}\n   {url}\n   {desc}", {"site": site})
+
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("quiet", False):
+        QUIET = True
+    if GLOBAL_FLAGS.get("json", False):
+        warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(prog="ghost-cli", description="Ghost CMS CLI.",
+                                     epilog="Set GHOST_URL and GHOST_ADMIN_KEY. Key format: id:secret from Integrations.")
+    sub = parser.add_subparsers(dest="command")
+    sub.add_parser("site", help="Site info")
+
+    pp = sub.add_parser("posts", help="List posts")
+    pp.add_argument("--limit", type=int, default=20)
+    pp.add_argument("--status", choices=["published", "draft", "scheduled"])
+
+    cp = sub.add_parser("create-post", help="Create a post")
+    cp.add_argument("--title", required=True)
+    cp.add_argument("--html", default="")
+    cp.add_argument("--status", default="draft", choices=["draft", "published", "scheduled"])
+    cp.add_argument("--slug", default="")
+
+    sub.add_parser("pages", help="List pages").add_argument("--limit", type=int, default=20)
+    sub.add_parser("tags", help="List tags").add_argument("--limit", type=int, default=50)
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    client = GhostClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+
+    cmd_map = {
+        "site": cmd_site, "posts": cmd_posts, "create-post": cmd_create_post,
+        "pages": cmd_pages, "tags": cmd_tags,
+    }
+    handler = cmd_map.get(args.command)
+    if not handler:
+        parser.print_help()
+        sys.exit(1)
+
+    remaining = filtered_argv[filtered_argv.index(args.command) + 1:]
+    handler(client, remaining)
+
+
+if __name__ == "__main__":
+    main()
