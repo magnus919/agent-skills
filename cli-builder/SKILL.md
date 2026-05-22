@@ -351,15 +351,22 @@ A CLI tool that an agent doesn't know exists is useless. The final phase creates
 
 ### The Two-Layer Architecture
 
+Your CLI lives in the skill's `scripts/` directory, alongside SKILL.md:
+
 ```
-SKILL.md (this file)        CLI binary (your tool)
-─────────────────────────   ─────────────────────────
-Tells the agent:             Provides the agent:
-• When to use this tool      • --help as schema
-• What data to pass          • --json as data contract
-• What the output means      • --dry-run as preview
-• Known gotchas & limits     • --force as automation bypass
+servicex-cli/
+├── scripts/
+│   └── servicex-cli        # Your CLI binary (Phases 1-3)
+├── SKILL.md                # The skill wrapper (Phase 4)
+└── references/             # Supporting documentation
 ```
+
+The two layers serve distinct roles:
+
+| Layer | File | Purpose |
+|-------|------|---------|
+| **Trigger** | `SKILL.md` | Tells the agent when to use this tool, what data to pass, what the output means, known gotchas |
+| **Execute** | `scripts/servicex-cli` | Provides `--help` as schema, `--json` as data contract, `--dry-run` as preview, `--force` as automation bypass |
 
 The skill **triggers** the tool. The tool **executes** the contract. Neither is complete without the other.
 
@@ -442,28 +449,41 @@ tool-name get --id abc123 --json
 | Don't | Why |
 |-------|-----|
 | Full flag reference | That's what `--help` is for. Reference it, don't duplicate it. |
-| Installation instructions | The CLI is deployed separately — the skill assumes it exists on PATH |
+| Installation instructions | For distribution via this repo, the CLI lives in `scripts/` within the skill directory — the skill documents invocation patterns, not setup. For global installs (PATH), deployment is separate. |
 | API architecture details | The skill teaches *usage*, not *architecture*. Gotchas are the exception. |
 | Every possible subcommand | Cover the 3-5 most common. Agents discover the rest via `--help`. |
 
 ### The Completed Architecture
 
+The two-layer pattern follows the [Agent Skills open format](https://agentskills.io) directory structure:
+
 ```
 servicex-cli/
-├── servicex-cli            # The CLI binary (built with Phases 1-3)
-└── SKILL.md                # The skill wrapper (built in Phase 4)
+├── scripts/
+│   └── servicex-cli        # The CLI binary (built with Phases 1-3)
+├── SKILL.md                # The skill wrapper (built in Phase 4)
+└── references/             # Supporting documentation (optional)
 
 Agent opens session:
   ├── Loads all SKILL.md descriptions at startup
   ├── User says "check my servicex resources"
   ├── skill-triggered: "servicex" in user message matches description
   │     └── Agent loads skill body
-  │           ├── Reads "use servicex-cli list --json"
-  │           ├── Calls servicex-cli list --json
+  │           ├── Reads "use scripts/servicex-cli list --json"
+  │           ├── Runs scripts/servicex-cli list --json
   │           └── Reads output, tells user
   │
   Deeper questions → agent reads CLI --help for specifics
 ```
+
+#### When to use `scripts/` vs global PATH
+
+| Approach | Best for | Cmd invocation |
+|----------|----------|----------------|
+| **`scripts/` inside skill** | Distribution via this repo — self-contained, portable, format-compliant. The agent references the script by relative path from the skill root. | `scripts/servicex-cli list --json` |
+| **Global PATH** | When the CLI is useful beyond this skill (other agents, human users, scripts). Install to `~/.hermes/scripts/` (Hermes) or a system PATH directory. | `servicex-cli list --json` |
+
+The default for this repo is **`scripts/` inside the skill** — it follows the Agent Skills specification for progressive disclosure and keeps the skill self-contained. Add a note in the skill body when the CLI is also available on global PATH for broader use.
 
 ### Skill Wrapper Template
 
