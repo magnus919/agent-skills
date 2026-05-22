@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""transistor-cli — Transistor.fm podcast hosting from the terminal.
+
+Manage shows, episodes, subscribers, and analytics on Transistor.fm.
+API key from transistor.fm → Settings → API Keys.
+"""
+
+import argparse, json, os, sys, warnings
+from typing import Any, Dict, List, Optional, Tuple
+warnings.simplefilter("ignore")
+import requests
+
+ENV_KEY = os.getenv("TRANSISTOR_API_KEY", "")
+API_BASE = "https://api.transistor.fm/v1"
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+def log(m):    global QUIET; (not QUIET and not GLOBAL_FLAGS.get("json")) and print(m)
+def warn(m):   print(f"Warning: {m}", file=sys.stderr)
+def die(m, c=1): print(f"Error: {m}", file=sys.stderr); sys.exit(c)
+def emit(h, d):
+    if GLOBAL_FLAGS.get("json"): print(json.dumps(d, default=str))
+    else: print(h)
+
+def _preparse(argv):
+    BOOLS = {"--json","--dry-run","--force","--quiet","--verbose"}
+    f, fl = {}, [argv[0]]
+    i = 1
+    while i < len(argv):
+        a = argv[i]
+        if a in BOOLS: f[a.lstrip("-").replace("-","_")] = True; i += 1
+        elif a in ("--help","-h"): return f, argv
+        elif a == "--": fl.extend(argv[i:]); break
+        else: fl.append(a); i += 1
+    return f, fl
+
+class TransistorClient:
+    def __init__(self, key="", dry_run=False):
+        self.key = key or ENV_KEY; self.dry_run = dry_run
+    def _headers(self):
+        return {"x-api-key": self.key, "Accept": "application/json"}
+    def _get(self, path, params=None):
+        url = f"{API_BASE}{path}"
+        if self.dry_run: return {"data":[], "dry_run":True, "url":url, "params":params}
+        if not self.key: die("TRANSISTOR_API_KEY not set. Get one from transistor.fm → Settings → API Keys.")
+        try:
+            r = requests.get(url, params=params, headers=self._headers(), timeout=30)
+        except ConnectionError as e: die(f"Cannot connect: {e}")
+        if r.status_code in (401,403): die(f"Auth failed ({r.status_code}). Check TRANSISTOR_API_KEY.")
+        if r.status_code >= 400:
+            try: d = r.json(); die(f"API error: {d.get('errors', d)}")
+            except: die(f"API error ({r.status_code}): {r.text[:200]}")
+        return r.json()
+    def _post(self, path, data=None):
+        url = f"{API_BASE}{path}"
+        if self.dry_run: return {"dry_run":True, "url":url, "data":data}
+        if not self.key: die("TRANSISTOR_API_KEY not set.")
+        r = requests.post(url, json=data, headers={**self._headers(), "Content-Type":"application/json"}, timeout=30)
+        if r.status_code >= 400:
+            try: d = r.json(); die(f"API error: {d.get('errors', d)}")
+            except: die(f"API error ({r.status_code}): {r.text[:200]}")
+        return r.json()
+    def get_user(self): return self._get("/user")
+    def list_shows(self): return self._get("/shows")
+    def get_show(self, sid): return self._get(f"/shows/{sid}")
+    def update_show(self, sid, **kw): return self._get(f"/shows/{sid}", kw)
+    def list_episodes(self, show_id="", limit=50):
+        p = {"pagination[limit]": limit}
+        if show_id: p["filter[show_id]"] = show_id
+        return self._get("/episodes", p)
+    def get_episode(self, eid): return self._get(f"/episodes/{eid}")
+    def create_episode(self, show_id, title, **kw):
+        data = {"episode": {"show_id": show_id, "title": title, **kw}}
+        return self._post("/episodes", data)
+    def show_analytics(self, show_id=""):
+        p = {}
+        if show_id: p["filter[show_id]"] = show_id
+        return self._get("/analytics/show", p)
+    def list_subscribers(self, show_id="", page=1):
+        p = {"page": page}
+        if show_id: p["filter[show_id]"] = show_id
+        return self._get("/subscribers", p)
+
+def cmd_user(client, args):
+    if client.dry_run: return emit("[dry-run] Get user", {"dry_run":True})
+    d = client.get_user() or {}
+    u = d.get("data",{}).get("attributes",{})
+    emit(f"👤 {u.get('email','?')}  ({u.get('time_zone','?')})",
+         {"email":u.get("email"),"timezone":u.get("time_zone")})
+
+def cmd_shows(client, args):
+    if client.dry_run: return emit("[dry-run] List shows", {"dry_run":True})
+    data = client.list_shows() or {}
+    shows = data.get("data",[])
+    if not shows: return emit("No shows.", {"shows":[]})
+    lines, out = [], []
+    for s in shows:
+        a = s.get("attributes",{}); sid = s.get("id","?")
+        t = a.get("title","?"); es = a.get("episodes_count",0); subs = a.get("subscribers_count",0)
+        lines.append(f"  {t:40}  {es} episodes  {subs} subscribers  id={sid}")
+        out.append({"id":sid,"title":t,"episodes":es,"subscribers":subs})
+    emit(f"{len(shows)} show(s):\n"+"\n".join(lines), {"shows":out})
+
+def cmd_episodes(client, args):
+    p = argparse.ArgumentParser(prog="transistor episodes")
+    p.add_argument("--show", help="Show ID filter")
+    p.add_argument("--limit", type=int, default=20)
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run: return emit("[dry-run] List episodes", {"dry_run":True})
+    data = client.list_episodes(show_id=parsed.show or "", limit=parsed.limit) or {}
+    eps = data.get("data",[])
+    if not eps: return emit("No episodes.", {"episodes":[]})
+    lines, out = [], []
+    for e in eps:
+        a = e.get("attributes",{}); eid = e.get("id","?")
+        t = a.get("title","?"); status = a.get("status","?"); dur = a.get("duration","?")
+        pub = (a.get("published_at") or "")[:10]
+        seas = a.get("season",0); epnum = a.get("number",0)
+        lines.append(f"  S{seas:02d}E{epnum:02d} {t:45} [{status}] {dur}min  pub {pub}  id={eid}")
+        out.append({"id":eid,"title":t,"status":status,"duration":dur,"published":pub,"season":seas,"number":epnum})
+    emit(f"{len(eps)} episode(s):\n"+"\n".join(lines), {"episodes":out})
+
+def cmd_analytics(client, args):
+    p = argparse.ArgumentParser(prog="transistor analytics")
+    p.add_argument("--show", help="Show ID filter")
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run: return emit("[dry-run] Get analytics", {"dry_run":True})
+    data = client.show_analytics(show_id=parsed.show or "") or {}
+    d = data.get("data",{})
+    attrs = d.get("attributes",{}) if isinstance(d, dict) else {}
+    totals = attrs.get("totals",{})
+    downloads = totals.get("downloads",{}).get("total","?")
+    plays = totals.get("plays",{}).get("total","?") if "plays" in totals else "N/A"
+    emit(f"📊 Downloads: {downloads}  Plays: {plays}",
+         {"downloads":downloads,"plays":plays,"totals":totals})
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse(sys.argv)
+    if GLOBAL_FLAGS.get("quiet"): QUIET = True
+    if GLOBAL_FLAGS.get("json"): warnings.simplefilter("ignore")
+    parser = argparse.ArgumentParser(prog="transistor", description="Transistor.fm podcast hosting.",
+        epilog="Set TRANSISTOR_API_KEY. Get one from transistor.fm → Settings → API Keys.")
+    sub = parser.add_subparsers(dest="command")
+    sub.add_parser("user")
+    sub.add_parser("shows")
+    p_eps = sub.add_parser("episodes", help="List episodes")
+    p_eps.add_argument("--show")
+    p_eps.add_argument("--limit", type=int, default=20)
+    sub.add_parser("analytics", help="Show analytics").add_argument("--show")
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command: parser.print_help(); sys.exit(1)
+    client = TransistorClient(dry_run=GLOBAL_FLAGS.get("dry_run",False))
+    handlers = {"user":cmd_user,"shows":cmd_shows,"episodes":cmd_episodes,"analytics":cmd_analytics}
+    h = handlers.get(args.command)
+    if not h: parser.print_help(); sys.exit(1)
+    r = filtered_argv[filtered_argv.index(args.command)+1:]
+    h(client, r)
+
+if __name__ == "__main__": main()
