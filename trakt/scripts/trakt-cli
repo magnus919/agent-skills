@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+"""trakt-cli — Trakt.tv media discovery from the terminal.
+
+Discover trending, anticipated, and popular movies and TV shows.
+Calendar of upcoming releases. Uses Trakt.tv API with Client ID.
+"""
+
+import argparse, json, os, sys, warnings
+from typing import Any, Dict, List, Optional, Tuple
+warnings.simplefilter("ignore")
+import requests
+
+ENV_CLIENT_ID = os.getenv("TRAKT_CLIENT_ID", "")
+API_BASE = "https://api.trakt.tv"
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+def log(m):    global QUIET; (not QUIET and not GLOBAL_FLAGS.get("json")) and print(m)
+def warn(m):   print(f"Warning: {m}", file=sys.stderr)
+def die(m, c=1): print(f"Error: {m}", file=sys.stderr); sys.exit(c)
+def emit(h, d):
+    if GLOBAL_FLAGS.get("json"): print(json.dumps(d, default=str))
+    else: print(h)
+
+def _preparse(argv):
+    BOOLS = {"--json","--dry-run","--quiet","--verbose"}
+    f, fl = {}, [argv[0]]
+    i = 1
+    while i < len(argv):
+        a = argv[i]
+        if a in BOOLS: f[a.lstrip("-").replace("-","_")] = True; i += 1
+        elif a in ("--help","-h"): return f, argv
+        elif a == "--": fl.extend(argv[i:]); break
+        else: fl.append(a); i += 1
+    return f, fl
+
+class TraktClient:
+    def __init__(self, client_id="", dry_run=False):
+        self.client_id = client_id or ENV_CLIENT_ID
+        self.dry_run = dry_run
+    def _get(self, path, params=None):
+        url = f"{API_BASE}{path}"
+        if self.dry_run: return [{"dry_run":True, "url":url, "params":params}]
+        if not self.client_id: die("TRAKT_CLIENT_ID not set. Get one from trakt.tv/oauth/applications.")
+        try:
+            r = requests.get(url, params=params, headers={
+                "Content-Type": "application/json", "trakt-api-version": "2",
+                "trakt-api-key": self.client_id}, timeout=30)
+        except ConnectionError as e: die(f"Cannot connect: {e}")
+        if r.status_code == 401: die("Auth failed (401). Check TRAKT_CLIENT_ID.")
+        if r.status_code >= 400:
+            try: d = r.json()
+            except: d = r.text[:200]
+            die(f"API error ({r.status_code}): {d}")
+        return r.json()
+    def movie_trending(self, page=1, limit=10):
+        return self._get("/movies/trending", {"page":page, "limit":limit})
+    def movie_anticipated(self, page=1, limit=10):
+        return self._get("/movies/anticipated", {"page":page, "limit":limit})
+    def movie_popular(self, page=1, limit=10):
+        return self._get("/movies/popular", {"page":page, "limit":limit})
+    def movie_calendar(self, start_date="", days=7):
+        params = {"days":days}
+        if start_date: params["start_date"] = start_date
+        return self._get("/calendars/my/movies", params)
+    def tv_trending(self, page=1, limit=10):
+        return self._get("/shows/trending", {"page":page, "limit":limit})
+    def tv_anticipated(self, page=1, limit=10):
+        return self._get("/shows/anticipated", {"page":page, "limit":limit})
+    def tv_popular(self, page=1, limit=10):
+        return self._get("/shows/popular", {"page":page, "limit":limit})
+    def tv_calendar(self, start_date="", days=7):
+        params = {"days":days}
+        if start_date: params["start_date"] = start_date
+        return self._get("/calendars/my/shows", params)
+
+def fmt_movie(d, idx=None):
+    m = d.get("movie", d)
+    t = m.get("title","?"); y = m.get("year","")
+    ids = m.get("ids",{}); tmdb = ids.get("tmdb","?")
+    tagline = m.get("tagline","")
+    s = f"  {'%d. '%idx if idx else ''}{t:40} ({y})  tmdb={tmdb}"
+    if tagline: s += f"\n  {'':4}{tagline[:80]}"
+    return s
+
+def fmt_show(d, idx=None):
+    s = d.get("show", d)
+    t = s.get("title","?"); y = s.get("year","")
+    ids = s.get("ids",{}); tvdb = ids.get("tvdb","?")
+    net = s.get("network",""); net_str = f" [{net}]" if net else ""
+    s_out = f"  {'%d. '%idx if idx else ''}{t:35}{net_str} ({y})  tvdb={tvdb}"
+    return s_out
+
+def cmd_movie(client, args, endpoint):
+    p = argparse.ArgumentParser(prog=f"trakt movie {endpoint}")
+    p.add_argument("--limit", type=int, default=10)
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run: return emit(f"[dry-run] Movie {endpoint}", {"dry_run":True})
+    fn = getattr(client, f"movie_{endpoint}")
+    data = fn(limit=parsed.limit) or []
+    if not data: return emit(f"No {endpoint} movies.", {"movies":[]})
+    lines = [fmt_movie(d, i+1) for i, d in enumerate(data[:parsed.limit])]
+    emit(f"{endpoint.title()} movies:\n"+"\n".join(lines), {"movies":data[:parsed.limit]})
+
+def cmd_tv(client, args, endpoint):
+    p = argparse.ArgumentParser(prog=f"trakt tv {endpoint}")
+    p.add_argument("--limit", type=int, default=10)
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run: return emit(f"[dry-run] TV {endpoint}", {"dry_run":True})
+    fn = getattr(client, f"tv_{endpoint}")
+    data = fn(limit=parsed.limit) or []
+    if not data: return emit(f"No {endpoint} TV shows.", {"shows":[]})
+    lines = [fmt_show(d, i+1) for i, d in enumerate(data[:parsed.limit])]
+    emit(f"{endpoint.title()} TV:\n"+"\n".join(lines), {"shows":data[:parsed.limit]})
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse(sys.argv)
+    if GLOBAL_FLAGS.get("quiet"): QUIET = True
+    if GLOBAL_FLAGS.get("json"): warnings.simplefilter("ignore")
+    parser = argparse.ArgumentParser(prog="trakt", description="Trakt.tv media discovery.",
+        epilog="Set TRAKT_CLIENT_ID. Get one at trakt.tv/oauth/applications.")
+    sub = parser.add_subparsers(dest="resource")
+    mp = sub.add_parser("movie", help="Movie discovery")
+    ms = mp.add_subparsers(dest="action")
+    for a in ["trending","anticipated","popular"]:
+        ms.add_parser(a, help=f"{a.title()} movies").add_argument("--limit", type=int, default=10)
+    tp = sub.add_parser("tv", help="TV discovery")
+    ts = tp.add_subparsers(dest="action")
+    for a in ["trending","anticipated","popular"]:
+        ts.add_parser(a, help=f"{a.title()} TV").add_argument("--limit", type=int, default=10)
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.resource: parser.print_help(); sys.exit(1)
+    client = TraktClient(dry_run=GLOBAL_FLAGS.get("dry_run",False))
+    remaining = filtered_argv[filtered_argv.index(args.resource)+1:]
+    if args.resource == "movie":
+        if args.action: cmd_movie(client, remaining, args.action)
+        else: mp.print_help()
+    elif args.resource == "tv":
+        if args.action: cmd_tv(client, remaining, args.action)
+        else: tp.print_help()
+    else: parser.print_help()
+
+if __name__ == "__main__": main()
