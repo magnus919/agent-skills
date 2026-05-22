@@ -80,14 +80,7 @@ Hermes loads skill metadata at session start. Use the `/skills` command to list 
 
 ### Codex (OpenAI Codex CLI)
 
-Codex CLI supports Agent Skills through its skill loading mechanism. Skills go in a `.claude/skills/` directory in your project root or in a configurable path:
-
-```bash
-mkdir -p .claude/skills
-cp -r cli-builder .claude/skills/
-```
-
-Codex reads skills from the Agent Skills standard format. Ensure `SKILL.md` files have valid frontmatter and that the `name` field matches the parent directory name.
+Codex CLI supports the Agent Skills format. Consult the [Codex documentation](https://github.com/openai/codex) for the current skill directory path and loading mechanism. The format is the same — valid `SKILL.md` with frontmatter — regardless of the specific directory.
 
 ### GitHub Copilot
 
