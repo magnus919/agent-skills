@@ -345,6 +345,130 @@ These are the failures observed across every agent-built CLI:
 
 8. **Hyphenated positional arguments** — Python argparse converts `--flag-name` to `args.flag_name` for flags, but `parser.add_argument("resource-id")` stays as `getattr(args, "resource-id")`, not `args.resource_id`.
 
+## Phase 4: Skillify — Wrap Your CLI for Agent Discovery
+
+A CLI tool that an agent doesn't know exists is useless. The final phase creates a [compliant Agent Skill](https://agentskills.io) wrapper — a `SKILL.md` that acts as the trigger surface, letting the agent discover and reach for your CLI at the right moment.
+
+### The Two-Layer Architecture
+
+```
+SKILL.md (this file)        CLI binary (your tool)
+─────────────────────────   ─────────────────────────
+Tells the agent:             Provides the agent:
+• When to use this tool      • --help as schema
+• What data to pass          • --json as data contract
+• What the output means      • --dry-run as preview
+• Known gotchas & limits     • --force as automation bypass
+```
+
+The skill **triggers** the tool. The tool **executes** the contract. Neither is complete without the other.
+
+### Frontmatter Conventions
+
+The `description` field is your skill's only trigger mechanism. Craft it to match the agent's vocabulary:
+
+```yaml
+---
+name: tool-name              # matches the CLI binary name
+description: >-
+  Interact with ServiceX: search, create, and manage resources via
+  the ServiceX API. Use when the user mentions ServiceX, their service
+  status, or asks to look up records, create resources, or check
+  service health.
+license: MIT
+compatibility: Requires <tool-name> CLI on PATH, API key in
+  SERVICEX_API_KEY env var (or ~/.servicex.env)
+metadata:
+  tags: [servicex, api-client, automation]
+---
+```
+
+**Rules:**
+- `name` matches the CLI binary name — the agent may need to call it
+- `description` lists concrete trigger keywords the user might say
+- `compatibility` documents what the agent needs to have set up
+- `metadata.tags` adds secondary retrieval surface
+
+### Body Structure
+
+The skill body does NOT duplicate the CLI's `--help`. Instead, it teaches the agent *what to use the tool FOR* and *how to interpret the results*:
+
+```markdown
+# ToolName CLI
+
+## When to Use
+
+- User asks "what's the status of X" or "check on Y"
+- User asks to create, update, or delete resources
+- User asks about unusual behavior from the service
+
+## Setup
+
+Credentials are read from the `SERVICEX_API_KEY` env var or
+`~/.servicex.env`. If the agent gets a 401, guide the user to
+set up credentials before retrying.
+
+## Essential Commands
+
+### list — List resources
+
+```bash
+tool-name list                        # human-readable table
+tool-name list --json | jq '.[].id'   # machine-readable
+```
+
+### create — Create a resource
+
+```bash
+tool-name create --name "My Resource" --type standard
+tool-name create --name "My Resource" --type standard --dry-run
+```
+
+### get — Get details by id
+
+```bash
+tool-name get --id abc123 --json
+```
+
+## Known Gotchas
+
+- Rate limit: 100 req/min. On 429, back off and retry.
+- The `status` field uses the API's raw labels (`provisioning`, `active`, `error`).
+- Names are case-sensitive. `My Resource` ≠ `my resource`.
+```
+
+### What NOT to Put in the Skill Body
+
+| Don't | Why |
+|-------|-----|
+| Full flag reference | That's what `--help` is for. Reference it, don't duplicate it. |
+| Installation instructions | The CLI is deployed separately — the skill assumes it exists on PATH |
+| API architecture details | The skill teaches *usage*, not *architecture*. Gotchas are the exception. |
+| Every possible subcommand | Cover the 3-5 most common. Agents discover the rest via `--help`. |
+
+### The Completed Architecture
+
+```
+servicex-cli/
+├── servicex-cli            # The CLI binary (built with Phases 1-3)
+└── SKILL.md                # The skill wrapper (built in Phase 4)
+
+Agent opens session:
+  ├── Loads all SKILL.md descriptions at startup
+  ├── User says "check my servicex resources"
+  ├── skill-triggered: "servicex" in user message matches description
+  │     └── Agent loads skill body
+  │           ├── Reads "use servicex-cli list --json"
+  │           ├── Calls servicex-cli list --json
+  │           └── Reads output, tells user
+  │
+  Deeper questions → agent reads CLI --help for specifics
+```
+
+### Skill Wrapper Template
+
+See [references/skill-wrapper-example.md](references/skill-wrapper-example.md) for a complete worked example wrapping a hypothetical API CLI, including frontmatter, essential commands, gotchas, and auth wiring documentation.
+
 ## Agent-Readiness Checklist
 
 - [ ] No interactive prompts (`read`, `select`, `dialog`)
@@ -367,5 +491,6 @@ These are the failures observed across every agent-built CLI:
 - [templates/bash-cli-scaffold.sh](templates/bash-cli-scaffold.sh) — Full bash project template with pre-wired global flags, logging helpers, and subcommand dispatch. Use as a starting point for any bash CLI.
 - [references/python-api-client.md](references/python-api-client.md) — Complete Python API client pattern with lazy auth, centralized error handling, form-login support, and argparse dispatch with pre-parsed global flags. Read when building a Python CLI that wraps an HTTP API.
 - [references/advanced-patterns.md](references/advanced-patterns.md) — Edge case patterns: morphological text matching, version-dependent imports, robust JSON consumption from third-party tools, dry-run short-circuit for chained APIs. Read when a specific edge case from the gotchas section bites you.
+- [references/skill-wrapper-example.md](references/skill-wrapper-example.md) — Complete worked example of a skill wrapper around a hypothetical `weather-cli`, including frontmatter, essential commands, gotchas, and auth wiring. Read in Phase 4 as a template for wrapping your own CLI.
 - [references/mcp-vs-cli.md](references/mcp-vs-cli.md) — Summary of the MCP-vs-CLI discourse with a decision framework. Read when debating whether to build a CLI or an MCP server for a new integration.
 - [references/improvement-cycle.md](references/improvement-cycle.md) — Structured feedback schema and HALO-style prioritization for improving CLIs over time. Read after shipping your first version and collecting usage traces.
