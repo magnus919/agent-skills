@@ -1,48 +1,17 @@
 # agent-skills
 
-A curated collection of AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems.
+A collection of AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems.
 
-## What this is
+This repo is being built incrementally. Skills will be added over time as they're curated, refined, and tested.
 
-This repo collects skills designed to be loaded by AI agents (Hermes Agent, Claude Code, OpenCode, or compatible frameworks) to give them structured domain knowledge and proven approaches for recurring tasks. Each skill is self-contained, versioned, and designed to slot into an agent's procedural memory.
+## What is a skill?
 
-## Structure
+Each skill lives in its own directory with a `SKILL.md` as the entry point, optionally backed by `references/`, `templates/`, and `scripts/` for supporting material. Skills are designed to be loaded by AI agents (Hermes Agent, Claude Code, OpenCode, etc.) as procedural memory — giving them structured domain knowledge and proven approaches for specific tasks.
 
-```
-agent-skills/
-├── research/           # Web research, article capture, knowledge extraction
-├── content/            # Blog writing, image generation, creative workflows
-├── devops/             # Infrastructure management, deployment, CI/CD
-├── software-development/  # Coding patterns, debugging, code review
-├── thinking/           # Multi-agent debate (council), structured reasoning
-├── note-taking/        # Vault operations, knowledge graphs, session memory
-├── mlops/              # Model serving, training, evaluation
-├── data-science/       # Analysis, visualization, notebooks
-├── productivity/       # Email, calendar, task management
-├── creative/           # ASCII art, p5.js, diagrams, video
-├── social-media/       # Platform interaction workflows
-├── consulting/         # Domain-specific advisory skills
-├── media/              # Audio/video processing, music generation
-├── github/             # GitHub workflow skills (PRs, issues, code review)
-├── red-teaming/        # Security audit, jailbreak testing
-├── smart-home/         # Home automation skills
-├── gaming/             # Game server management
-├── leisure/            # Hobby-adjacent skills
-└── templates/          # Skill templates for creating new skills
-```
+## Progress
 
-## Skill format
-
-Each skill is a directory containing:
-
-```
-skill-name/
-├── SKILL.md           # The skill itself (YAML frontmatter + markdown body)
-├── references/        # Supporting documentation, research notes
-├── templates/         # Config templates, example files
-└── scripts/          # CLI tools and automation scripts
-```
+Started May 2026. Nothing here yet — check back.
 
 ## License
 
-MIT — use freely, adapt openly, share back if you improve something.
+MIT
