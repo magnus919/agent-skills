@@ -4,57 +4,73 @@ A collection of AI agent skills — reusable workflows, protocols, and knowledge
 
 ## Skills
 
+### [agent-skills](agent-skills/SKILL.md)
+
+Reference for the Agent Skills open format itself — directory structure, frontmatter schema, naming conventions, and progressive disclosure model. Use this meta-skill when creating or reviewing any other skill in this repository.
+
+### [arr-cli](arr-cli/SKILL.md)
+
+Radarr and Sonarr media library management. Two CLIs (`radarr-cli` for movies, `sonarr-cli` for TV series) with one shared skill wrapper. List movies and series, search for additions, check calendars and wanted/missing episodes. Separate API keys per app.
+
 ### [cli-builder](cli-builder/SKILL.md)
 
 Build and refactor CLI tools for AI agent consumption. 10 universal patterns (non-interactive, `--json`, `--dry-run`, idempotent, lazy auth, progressive help), an agent-compatibility test suite, a Python API client pattern, and a bash scaffold template. Principles grounded in real failures from building 15+ agent-facing CLIs.
 
-### [systematic-debugging](systematic-debugging/SKILL.md)
-
-4-phase root cause debugging protocol: understand bugs before fixing.
-
-### [tmdb-cli](tmdb-cli/SKILL.md)
-
-The Movie Database API from the terminal. Search and discover movies and TV by genre, certification, rating, and date range. Check trending, upcoming, and now playing. Free API key from themoviedb.org.
-
-### [jellyfin-cli](jellyfin-cli/SKILL.md)
-
-Jellyfin media server from the terminal. Check server info, browse recently added, search your library by type, list libraries, and view statistics.
-
-### [ghost-cli](ghost-cli/SKILL.md)
-
-Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations.
-
-### [forgejo-cli](forgejo-cli/SKILL.md)
-
-Forgejo or Gitea self-hosted Git forge from the terminal. List repositories, search repos, manage issues, and view pull requests.
-
-### [openlibrary-cli](openlibrary-cli/SKILL.md)
-
-Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required.
-
-### [jira-cli](jira-cli/SKILL.md)
-
-Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, list projects, and transition status.
-
 ### [confluence-cli](confluence-cli/SKILL.md)
 
-Atlassian Confluence from the terminal. List spaces, browse pages, view content with body extraction, search with CQL, and create pages.
-
-### [tempest-cli](tempest-cli/SKILL.md)
-
-Hyper-local weather from a WeatherFlow Tempest station. Query current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. A complete reference implementation of the cli-builder patterns in a working, testable project — including the CLI binary and full API field layout reference.
-
-### [software-architecture-analysis](software-architecture-analysis/SKILL.md)
-
-Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan under new constraints (local-first, privacy-first, self-hosted). Includes an interface extraction pattern for designing swappable storage provider abstractions.
+Atlassian Confluence from the terminal. List spaces, browse pages, view content with body extraction, search with CQL, and create pages. Same API token as Jira.
 
 ### [data-architect](data-architect/SKILL.md)
 
 Act as a virtual data architect. Discover data assets, assess maturity, evaluate platforms, design architectures, establish governance, and create migration plans. Covers modern data patterns (data mesh, data lakehouse, streaming, real-time analytics) with vendor evaluation frameworks and maturity models.
 
-### [agent-skills](agent-skills/SKILL.md)
+### [forgejo-cli](forgejo-cli/SKILL.md)
 
-Reference for the Agent Skills open format itself — directory structure, frontmatter schema, naming conventions, and progressive disclosure model. Use this meta-skill when creating or reviewing any other skill in this repository.
+Forgejo or Gitea self-hosted Git forge from the terminal. List repositories, search repos, manage issues, and view pull requests.
+
+### [ghost-cli](ghost-cli/SKILL.md)
+
+Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.
+
+### [jellyfin-cli](jellyfin-cli/SKILL.md)
+
+Jellyfin media server from the terminal. Check server info, browse recently added, search your library by type, list libraries, and view statistics.
+
+### [jira-cli](jira-cli/SKILL.md)
+
+Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, list projects, and transition status. API token from id.atlassian.com.
+
+### [openlibrary-cli](openlibrary-cli/SKILL.md)
+
+Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required — the public Open Library API is free for everyone.
+
+### [peertube](peertube/SKILL.md)
+
+PeerTube federated video platform from the terminal. Browse videos and channels, search across instances, view server info. OAuth2 login with token persistence. Set PEERTUBE_SERVER to point at any instance.
+
+### [software-architecture-analysis](software-architecture-analysis/SKILL.md)
+
+Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan under new constraints (local-first, privacy-first, self-hosted). Includes an interface extraction pattern for designing swappable storage provider abstractions.
+
+### [systematic-debugging](systematic-debugging/SKILL.md)
+
+4-phase root cause debugging protocol: understand bugs before fixing. Covers schema/environment divergence, exception type specificity in fallback chains, progressive characterization grids for API/retrieval failures, dependency source detection (editable dev forks), macOS sandboxed application debugging, and the Rule of Three for recognizing architectural problems. Adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT) with significant expansion from real-world use.
+
+### [tempest-cli](tempest-cli/SKILL.md)
+
+Hyper-local weather from a WeatherFlow Tempest station. Query current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. A complete reference implementation of the cli-builder patterns in a working, testable project — including the CLI binary and full API field layout reference.
+
+### [tmdb-cli](tmdb-cli/SKILL.md)
+
+The Movie Database API from the terminal. Search and discover movies and TV by genre, certification, rating, and date range. Check trending, upcoming, and now playing. Free API key from themoviedb.org.
+
+### [trakt](trakt/SKILL.md)
+
+Trakt.tv media discovery from the terminal. Browse trending, anticipated, and popular movies and TV shows. Read-only — uses only a Client ID, no OAuth required.
+
+### [transistor](transistor/SKILL.md)
+
+Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view subscriber analytics. API key from transistor.fm settings.
 
 ---
 
