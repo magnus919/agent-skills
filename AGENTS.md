@@ -58,6 +58,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "weather", "forecast", "temperature", "is it raining", "Tempest" | [tempest-cli](tempest-cli/SKILL.md) |
 | "reverse-engineer", "understand this codebase", "PRD from code", "architecture document" | [software-architecture-analysis](software-architecture-analysis/SKILL.md) |
 | "data architecture", "data platform", "data strategy", "data mesh", "governance" | [data-architect](data-architect/SKILL.md) |
+| "kanban", "WIP", "cycle time", "flow metrics", "Scrum to Kanban", "multi-portfolio", "throughput", "classes of service" | [kanban-guru](kanban-guru/SKILL.md) |
 | "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
 
 ## Best Practices
