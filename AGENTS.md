@@ -57,8 +57,9 @@ When the user mentions these keywords, load the corresponding skill:
 | "debug this", "root cause", "why is this broken", "fix this bug" | [systematic-debugging](systematic-debugging/SKILL.md) |
 | "weather", "forecast", "temperature", "is it raining", "Tempest" | [tempest-cli](tempest-cli/SKILL.md) |
 | "reverse-engineer", "understand this codebase", "PRD from code", "architecture document" | [software-architecture-analysis](software-architecture-analysis/SKILL.md) |
-| "data architecture", "data platform", "data strategy", "data mesh", "governance" | [data-architect](data-architect/SKILL.md) |
-| "kanban", "WIP", "cycle time", "flow metrics", "Scrum to Kanban", "multi-portfolio", "throughput", "classes of service" | [kanban-guru](kanban-guru/SKILL.md) |
+|| "data architecture", "data platform", "data strategy", "data mesh", "governance" | [data-architect](data-architect/SKILL.md) |
+|| "statistical analysis", "experimental design", "A/B test", "hypothesis test", "power analysis", "causal inference", "regression", "Bayesian", "p-value", "effect size", "model selection", "machine learning methodology" | [data-scientist](data-scientist/SKILL.md) |
+|| "kanban", "WIP", "cycle time", "flow metrics", "Scrum to Kanban", "multi-portfolio", "throughput", "classes of service" | [kanban-guru](kanban-guru/SKILL.md) |
 | "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
 
 ## Best Practices
