@@ -1,0 +1,509 @@
+#!/usr/bin/env python3
+"""confluence-cli — Confluence wiki from the terminal.
+
+Interact with Atlassian Confluence Cloud via the REST API.
+Requires CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN env vars
+(token from https://id.atlassian.com/manage/api-tokens) and
+CONFLUENCE_SERVER (defaults to https://your-domain.atlassian.net).
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+from typing import Any, Dict, List, Optional, Tuple
+
+warnings.simplefilter("ignore")
+
+import requests
+
+# === Config ===
+DEFAULT_SERVER = "https://your-domain.atlassian.net"
+ENV_EMAIL = os.getenv("CONFLUENCE_EMAIL", "")
+ENV_TOKEN = os.getenv("CONFLUENCE_API_TOKEN", "")
+ENV_SERVER = os.getenv("CONFLUENCE_SERVER", DEFAULT_SERVER)
+
+# === Logging ===
+QUIET = False
+
+
+def log(msg: str) -> None:
+    if not QUIET and not GLOBAL_FLAGS.get("json", False):
+        print(msg)
+
+
+def warn(msg: str) -> None:
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg: str, exit_code: int = 1) -> None:
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def emit(human: str, data: Any) -> None:
+    if GLOBAL_FLAGS.get("json", False):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+# === Global flags ===
+GLOBAL_FLAGS: Dict[str, Any] = {
+    "json": False, "dry_run": False, "force": False,
+    "quiet": False, "verbose": False
+}
+
+
+def _preparse_global_flags(argv: List[str]) -> Tuple[Dict[str, Any], List[str]]:
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--force", "--quiet", "--verbose"}
+    flags: Dict[str, Any] = {}
+    filtered: List[str] = [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg in ("--help", "-h"):
+            return flags, argv
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+# === Confluence API Client ===
+class ConfluenceClient:
+    """REST API client for Atlassian Confluence Cloud."""
+
+    def __init__(self, email: str = "", token: str = "",
+                 server: str = "", dry_run: bool = False):
+        self.email = email or ENV_EMAIL
+        self.token = token or ENV_TOKEN
+        self.server = (server or ENV_SERVER).rstrip("/")
+        self.dry_run = dry_run
+
+    def _auth(self) -> Optional[Tuple[str, str]]:
+        if self.email and self.token:
+            return (self.email, self.token)
+        return None
+
+    def _request(self, method: str, path: str,
+                 params: Optional[Dict] = None,
+                 json_data: Any = None) -> Any:
+        url = f"{self.server}{path}"
+
+        if self.dry_run:
+            return {"dry_run": True, "method": method.upper(),
+                    "url": url, "params": params, "json": json_data}
+
+        auth = self._auth()
+        if not auth:
+            die("CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN not set. "
+                "Get a token at https://id.atlassian.com/manage/api-tokens")
+
+        try:
+            resp = requests.request(
+                method=method, url=url, auth=auth,
+                params=params, json=json_data,
+                headers={"Accept": "application/json",
+                         "Content-Type": "application/json"},
+                timeout=30
+            )
+        except requests.ConnectionError as e:
+            die(f"Cannot connect to {self.server}: {e}\n"
+                f"  Check CONFLUENCE_SERVER or use --server")
+
+        if resp.status_code == 401:
+            die("Auth failed (401). Check CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN.")
+        if resp.status_code == 403:
+            die("Forbidden (403). Your account may not have access.")
+        if resp.status_code == 404:
+            return None
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+
+        try:
+            return resp.json()
+        except ValueError:
+            return {"raw": resp.text[:500]}
+
+    def _get(self, path: str, params: Optional[Dict] = None) -> Any:
+        return self._request("GET", path, params=params)
+
+    def _post(self, path: str, json_data: Any = None) -> Any:
+        return self._request("POST", path, json_data=json_data)
+
+    # === Endpoints (v2 API) ===
+
+    def get_current_user(self) -> Any:
+        """Get current user via the /rest/api endpoint."""
+        return self._get("/wiki/rest/api/user/current")
+
+    def list_spaces(self, limit: int = 25) -> Any:
+        """List spaces (v2 API)."""
+        return self._get("/wiki/api/v2/spaces", params={"limit": limit})
+
+    def get_space(self, space_key: str) -> Any:
+        """Get a space by key (v2 API)."""
+        return self._get(f"/wiki/api/v2/spaces", params={"keys": space_key})
+
+    def list_pages(self, space_id: Optional[str] = None,
+                   limit: int = 25, sort: str = "-modified-date") -> Any:
+        """List pages (v2 API), optionally filtered by space."""
+        params: Dict[str, Any] = {"limit": limit, "sort": sort}
+        if space_id:
+            params["spaceId"] = space_id
+        return self._get("/wiki/api/v2/pages", params=params)
+
+    def get_page(self, page_id: str) -> Any:
+        """Get a page by ID (v2 API) with body."""
+        return self._get(f"/wiki/api/v2/pages/{page_id}",
+                         params={"body-format": "storage"})
+
+    def search(self, cql: str, limit: int = 20) -> Any:
+        """Search content with CQL (rest API)."""
+        return self._get("/wiki/rest/api/search",
+                         params={"cql": cql, "limit": limit, "expand": "space"})
+
+    def create_page(self, space_id: str, title: str,
+                    body_html: str = "", parent_id: Optional[str] = None) -> Any:
+        """Create a page (v2 API)."""
+        payload: Dict[str, Any] = {
+            "spaceId": space_id,
+            "title": title,
+        }
+        if body_html:
+            payload["body"] = {
+                "representation": "storage",
+                "value": body_html
+            }
+        if parent_id:
+            payload["parentId"] = parent_id
+        return self._post("/wiki/api/v2/pages", json_data=payload)
+
+
+# === Command Handlers ===
+
+def cmd_me(client: ConfluenceClient, args: List[str]) -> None:
+    if client.dry_run:
+        emit("[dry-run] Would fetch current user profile",
+             {"dry_run": True, "command": "me"})
+        return
+    data = client.get_current_user()
+    if not data:
+        emit("Could not fetch user info.", {"error": "not found"})
+        return
+    emit(
+        f"👤 {data.get('displayName', '?')}\n"
+        f"   Username: {data.get('username', data.get('userKey', '?'))}\n"
+        f"   Email: {data.get('email', '?')}\n"
+        f"   Account: {data.get('accountId', '?')}",
+        {"displayName": data.get("displayName"),
+         "username": data.get("username"),
+         "email": data.get("email"),
+         "accountId": data.get("accountId"),
+         "timezone": data.get("timeZone")}
+    )
+
+
+def cmd_spaces(client: ConfluenceClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="confluence-cli spaces")
+    parser.add_argument("--limit", type=int, default=25, help="Max results")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit("[dry-run] Would list spaces",
+             {"dry_run": True, "command": "spaces"})
+        return
+
+    data = client.list_spaces(limit=parsed.limit)
+    results = data.get("results", []) if data else []
+
+    if not results:
+        emit("No spaces found.", {"spaces": []})
+        return
+
+    lines = []
+    out = []
+    for s in results:
+        sid = s.get("id", "?")
+        key = s.get("key", "?")
+        name = s.get("name", "?")
+        stype = s.get("type", "?")
+        status = s.get("status", "?")
+        homepage = s.get("homepageId", "")
+        lines.append(f"  {key:12} {name:45} [{stype}]  id={sid}{' (has homepage)' if homepage else ''}")
+        out.append({"id": sid, "key": key, "name": name,
+                     "type": stype, "status": status,
+                     "homepage_id": homepage})
+
+    total = data.get("size", len(results))
+    emit(f"{total} space(s):\n" + "\n".join(lines),
+         {"total": total, "spaces": out})
+
+
+def cmd_pages(client: ConfluenceClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="confluence-cli pages")
+    parser.add_argument("--space", help="Space key (e.g. DEV)")
+    parser.add_argument("--limit", type=int, default=25, help="Max results")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit("[dry-run] Would list pages",
+             {"dry_run": True, "command": "pages",
+              "space": parsed.space, "limit": parsed.limit})
+        return
+
+    # Resolve space key to ID if needed
+    space_id = None
+    if parsed.space:
+        space_data = client.get_space(parsed.space)
+        if space_data:
+            results = space_data.get("results", [])
+            if results:
+                space_id = results[0].get("id")
+
+    data = client.list_pages(space_id=space_id, limit=parsed.limit)
+    results = data.get("results", []) if data else []
+
+    if not results:
+        emit("No pages found.", {"pages": []})
+        return
+
+    lines = []
+    out = []
+    for p in results:
+        pid = p.get("id", "?")
+        title = p.get("title", "?")
+        status = p.get("status", "?")
+        version = p.get("version", {}).get("number", "?")
+        space = p.get("_links", {}).get("space", parsed.space or "?")
+        lines.append(f"  {pid:8} {title:55} v{version} [{status}]  space={space}")
+        out.append({
+            "id": pid, "title": title, "status": status,
+            "version": version, "space": space
+        })
+
+    total = data.get("size", len(results))
+    emit(f"{total} page(s):\n" + "\n".join(lines),
+         {"total": total, "pages": out})
+
+
+def cmd_view(client: ConfluenceClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="confluence-cli view")
+    parser.add_argument("page_id", help="Page ID (numeric)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would fetch page {parsed.page_id}",
+             {"dry_run": True, "command": "view",
+              "page_id": parsed.page_id})
+        return
+
+    data = client.get_page(parsed.page_id)
+    if not data:
+        emit(f"Page {parsed.page_id} not found.",
+             {"error": "not found", "page_id": parsed.page_id})
+        return
+
+    title = data.get("title", "?")
+    status = data.get("status", "?")
+    version = data.get("version", {}).get("number", "?")
+    space_id = data.get("spaceId", "?")
+    created = data.get("createdAt", "?")
+    updated = (data.get("version") or {}).get("createdAt", "?")
+    author = (data.get("version") or {}).get("author", {}).get("displayName", "?")
+    body_data = data.get("body", {})
+    body_html = ""
+
+    # Extract body — try storage format first
+    storage = body_data.get("storage", {})
+    if storage:
+        body_html = storage.get("value", "")
+    else:
+        view_data = body_data.get("view", {})
+        if view_data:
+            body_html = view_data.get("value", "")
+
+    # Strip HTML tags for a plain-text preview
+    import re
+    body_text = re.sub(r"<[^>]+>", "", body_html) if body_html else "(no body)"
+    # Truncate for display
+    if len(body_text) > 1000:
+        body_text = body_text[:1000] + "\n[... truncated]"
+
+    human = (
+        f"📄 {title}\n"
+        f"   Status: {status}  v{version}  Space: {space_id}\n"
+        f"   Author: {author}  Updated: {updated}\n"
+        f"   Created: {created}\n"
+        f"─── Body ({len(body_html)} chars) ───\n{body_text}"
+    )
+    emit(human, {
+        "id": parsed.page_id, "title": title, "status": status,
+        "version": version, "space_id": space_id,
+        "author": author, "created": created, "updated": updated,
+        "body_length": len(body_html),
+        "body_html": body_html[:5000] if body_html else ""
+    })
+
+
+def cmd_search(client: ConfluenceClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="confluence-cli search")
+    parser.add_argument("--cql", required=True, help="CQL query (e.g. 'text~\"deploy\"')")
+    parser.add_argument("--limit", type=int, default=20, help="Max results")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would search: {parsed.cql}",
+             {"dry_run": True, "command": "search",
+              "cql": parsed.cql, "limit": parsed.limit})
+        return
+
+    data = client.search(parsed.cql, limit=parsed.limit)
+    results = data.get("results", []) if data else []
+
+    if not results:
+        emit("No results found.", {"results": []})
+        return
+
+    lines = []
+    out = []
+    for r in results:
+        title = r.get("title", "?")
+        url = r.get("url", r.get("_links", {}).get("webui", ""))
+        excerpt = r.get("excerpt", "")
+        space = r.get("space", {})
+        space_name = space.get("name", "?") if space else "?"
+        lines.append(f"  {title:50}  [{space_name}]")
+        if excerpt:
+            # Strip highlights
+            excerpt_clean = excerpt.replace("@@@hl@@@", "").replace("@@@endhl@@@", "")
+            lines.append(f"  {'':4}{excerpt_clean[:120]}")
+        out.append({
+            "title": title, "url": url,
+            "excerpt": excerpt, "space": space_name
+        })
+
+    total = data.get("totalSize", len(results))
+    emit(f"{total} result(s):\n" + "\n".join(lines),
+         {"total": total, "results": out})
+
+
+def cmd_create(client: ConfluenceClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="confluence-cli create")
+    parser.add_argument("--space", required=True, help="Space key (e.g. DEV)")
+    parser.add_argument("--title", required=True, help="Page title")
+    parser.add_argument("--body", default="", help="HTML body content")
+    parser.add_argument("--parent", help="Parent page ID")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would create page '{parsed.title}' in space {parsed.space}",
+             {"dry_run": True, "command": "create",
+              "space": parsed.space, "title": parsed.title,
+              "parent_id": parsed.parent})
+        return
+
+    # Resolve space key to ID
+    space_data = client.get_space(parsed.space)
+    if not space_data:
+        die(f"Space '{parsed.space}' not found.")
+    results = space_data.get("results", [])
+    if not results:
+        die(f"Space '{parsed.space}' not found.")
+    space_id = results[0].get("id")
+    space_key = results[0].get("key", parsed.space)
+
+    result = client.create_page(
+        space_id=space_id,
+        title=parsed.title,
+        body_html=parsed.body,
+        parent_id=parsed.parent or None
+    )
+    pid = result.get("id", "?") if result else "?"
+    title = result.get("title", parsed.title) if result else parsed.title
+    emit(f"✅ Created page: {title} (id={pid})",
+         {"status": "created", "id": pid, "title": title,
+          "space": space_key})
+
+
+# === Main ===
+
+def main() -> None:
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("quiet", False):
+        QUIET = True
+    if GLOBAL_FLAGS.get("json", False):
+        warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(
+        prog="confluence-cli",
+        description="Confluence wiki from the terminal.",
+        epilog="Global flags work anywhere: confluence-cli --json spaces"
+    )
+    sub = parser.add_subparsers(dest="command", help="Available commands")
+
+    sub.add_parser("me", help="Get current user profile")
+    sub.add_parser("spaces", help="List spaces")
+
+    p_pages = sub.add_parser("pages", help="List pages")
+    p_pages.add_argument("--space", help="Space key filter")
+    p_pages.add_argument("--limit", type=int, default=25, help="Max results")
+
+    p_view = sub.add_parser("view", help="View a page by ID")
+    p_view.add_argument("page_id", help="Page ID (numeric)")
+
+    p_search = sub.add_parser("search", help="Search with CQL")
+    p_search.add_argument("--cql", required=True, help="CQL query")
+    p_search.add_argument("--limit", type=int, default=20, help="Max results")
+
+    p_create = sub.add_parser("create", help="Create a page")
+    p_create.add_argument("--space", required=True, help="Space key")
+    p_create.add_argument("--title", required=True, help="Page title")
+    p_create.add_argument("--body", default="", help="HTML body content")
+    p_create.add_argument("--parent", help="Parent page ID")
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    needs_auth = not GLOBAL_FLAGS.get("dry_run", False)
+    if needs_auth and not (ENV_EMAIL and ENV_TOKEN):
+        die("Set CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN.\n"
+            "  Get a token: https://id.atlassian.com/manage/api-tokens\n"
+            "  Or use --dry-run to preview without credentials.")
+
+    client = ConfluenceClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+
+    cmd_map = {
+        "me": cmd_me,
+        "spaces": cmd_spaces,
+        "pages": cmd_pages,
+        "view": cmd_view,
+        "search": cmd_search,
+        "create": cmd_create,
+    }
+    handler = cmd_map.get(args.command)
+    if not handler:
+        parser.print_help()
+        sys.exit(1)
+
+    remaining = filtered_argv[filtered_argv.index(args.command) + 1:]
+    handler(client, remaining)
+
+
+if __name__ == "__main__":
+    main()
