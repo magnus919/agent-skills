@@ -1,0 +1,524 @@
+#!/usr/bin/env python3
+"""forgejo-cli — Forgejo/Gitea Git forge from the terminal.
+
+Interact with a Forgejo or Gitea self-hosted Git server via the REST API v1.
+Requires FORGEJO_TOKEN env var (generate from Settings → Applications
+→ Create Personal Access Token) and FORGEJO_SERVER.
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+from typing import Any, Dict, List, Optional, Tuple
+
+warnings.simplefilter("ignore")
+
+import requests
+
+# === Config ===
+DEFAULT_SERVER = "https://git.example.com"
+ENV_TOKEN = os.getenv("FORGEJO_TOKEN", "")
+ENV_SERVER = os.getenv("FORGEJO_SERVER", DEFAULT_SERVER)
+
+# === Logging ===
+QUIET = False
+
+
+def log(msg: str) -> None:
+    if not QUIET and not GLOBAL_FLAGS.get("json", False):
+        print(msg)
+
+
+def warn(msg: str) -> None:
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg: str, exit_code: int = 1) -> None:
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def emit(human: str, data: Any) -> None:
+    if GLOBAL_FLAGS.get("json", False):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+# === Global flags ===
+GLOBAL_FLAGS: Dict[str, Any] = {
+    "json": False, "dry_run": False, "force": False,
+    "quiet": False, "verbose": False
+}
+
+
+def _preparse_global_flags(argv: List[str]) -> Tuple[Dict[str, Any], List[str]]:
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--force", "--quiet", "--verbose"}
+    flags: Dict[str, Any] = {}
+    filtered: List[str] = [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg in ("--help", "-h"):
+            return flags, argv
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+# === Forgejo API Client ===
+class ForgejoClient:
+    """REST API client for Forgejo/Gitea v1."""
+
+    def __init__(self, token: str = "", server: str = "",
+                 dry_run: bool = False):
+        self.token = token or ENV_TOKEN
+        self.server = (server or ENV_SERVER).rstrip("/")
+        self.dry_run = dry_run
+
+    def _headers(self) -> Dict[str, str]:
+        return {
+            "Authorization": f"token {self.token}",
+            "Accept": "application/json",
+        }
+
+    def _request(self, method: str, path: str,
+                 params: Optional[Dict] = None,
+                 json_data: Any = None) -> Any:
+        url = f"{self.server}/api/v1{path}"
+
+        if self.dry_run:
+            return {"dry_run": True, "method": method.upper(),
+                    "url": url, "params": params, "json": json_data}
+
+        if not self.token:
+            die("FORGEJO_TOKEN not set. "
+                "Generate one at: Settings → Applications → Create Personal Access Token")
+
+        try:
+            resp = requests.request(
+                method=method, url=url,
+                params=params, json=json_data,
+                headers=self._headers(), timeout=30
+            )
+        except requests.ConnectionError as e:
+            die(f"Cannot connect to {self.server}: {e}\n"
+                f"  Check FORGEJO_SERVER or use --server")
+
+        if resp.status_code == 401:
+            die("Auth failed (401). Check FORGEJO_TOKEN.")
+        if resp.status_code == 403:
+            die("Forbidden (403). Your token may not have access.")
+        if resp.status_code == 404:
+            return None
+        if resp.status_code == 204:
+            return {}
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+
+        # Forgejo paginates with X-Total-Count header and page/limit params
+        try:
+            return resp.json()
+        except ValueError:
+            return {"raw": resp.text[:500]}
+
+    def _get(self, path: str, params: Optional[Dict] = None) -> Any:
+        return self._request("GET", path, params=params)
+
+    def _post(self, path: str, json_data: Any = None) -> Any:
+        return self._request("POST", path, json_data=json_data)
+
+    # === Endpoints ===
+
+    def get_user(self) -> Any:
+        return self._get("/user")
+
+    def list_repos(self, page: int = 1, limit: int = 50) -> Any:
+        return self._get("/user/repos", params={"page": page, "limit": limit})
+
+    def search_repos(self, query: str, page: int = 1, limit: int = 20) -> Any:
+        return self._get("/repos/search", params={"q": query, "page": page, "limit": limit})
+
+    def get_repo(self, owner: str, repo: str) -> Any:
+        return self._get(f"/repos/{owner}/{repo}")
+
+    def list_issues(self, owner: str, repo: str, state: str = "open",
+                    page: int = 1, limit: int = 20) -> Any:
+        return self._get(f"/repos/{owner}/{repo}/issues",
+                         params={"state": state, "page": page, "limit": limit})
+
+    def get_issue(self, owner: str, repo: str, index: int) -> Any:
+        return self._get(f"/repos/{owner}/{repo}/issues/{index}")
+
+    def create_issue(self, owner: str, repo: str, title: str,
+                     body: str = "", labels: Optional[List[int]] = None,
+                     assignees: Optional[List[str]] = None) -> Any:
+        payload: Dict[str, Any] = {"title": title}
+        if body:
+            payload["body"] = body
+        if labels:
+            payload["labels"] = labels
+        if assignees:
+            payload["assignees"] = assignees
+        return self._post(f"/repos/{owner}/{repo}/issues", json_data=payload)
+
+    def list_pulls(self, owner: str, repo: str, state: str = "open",
+                   page: int = 1, limit: int = 20) -> Any:
+        return self._get(f"/repos/{owner}/{repo}/pulls",
+                         params={"state": state, "page": page, "limit": limit})
+
+    def get_pull(self, owner: str, repo: str, index: int) -> Any:
+        return self._get(f"/repos/{owner}/{repo}/pulls/{index}")
+
+
+# === Command Handlers ===
+
+def cmd_me(client: ForgejoClient, args: List[str]) -> None:
+    if client.dry_run:
+        emit("[dry-run] Would fetch current user profile",
+             {"dry_run": True, "command": "me"})
+        return
+    data = client.get_user()
+    if not data:
+        emit("Could not fetch user info.", {"error": "not found"})
+        return
+    full_name = data.get("full_name", "")
+    full_str = f" ({full_name})" if full_name else ""
+    emit(
+        f"👤 {data.get('login', '?')}{full_str}\n"
+        f"   ID: {data.get('id', '?')}\n"
+        f"   Email: {data.get('email', '?')}\n"
+        f"   Repos: {data.get('repo_count', '?')}\n"
+        f"   Created: {data.get('created', '?')}",
+        {"login": data.get("login"), "full_name": data.get("full_name"),
+         "id": data.get("id"), "email": data.get("email"),
+         "repo_count": data.get("repo_count"),
+         "created": data.get("created")}
+    )
+
+
+def cmd_repos(client: ForgejoClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="forgejo-cli repos")
+    parser.add_argument("--limit", type=int, default=50, help="Max results")
+    parser.add_argument("--owner", help="Filter by owner (searches if provided)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit("[dry-run] Would list repositories",
+             {"dry_run": True, "command": "repos"})
+        return
+
+    data = client.list_repos(limit=parsed.limit)
+    if not data:
+        emit("No repositories found.", {"repos": []})
+        return
+
+    repos = data if isinstance(data, list) else []
+    lines = []
+    out = []
+    for r in repos:
+        name = r.get("full_name", r.get("name", "?"))
+        desc = r.get("description", "") or ""
+        desc_short = f" — {desc[:60]}" if desc else ""
+        private = "🔒" if r.get("private") else "📖"
+        stars = r.get("stars_count", 0)
+        forks = r.get("forks_count", 0)
+        lines.append(f"  {private} {name:40}{desc_short}  ★{stars} 🍴{forks}")
+        out.append({
+            "full_name": name, "private": r.get("private"),
+            "description": desc, "stars": stars, "forks": forks,
+            "language": r.get("language"),
+            "default_branch": r.get("default_branch"),
+            "html_url": r.get("html_url")
+        })
+
+    emit(f"{len(repos)} repositories:\n" + "\n".join(lines),
+         {"total": len(repos), "repos": out})
+
+
+def cmd_search(client: ForgejoClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="forgejo-cli search")
+    parser.add_argument("--query", "-q", required=True, help="Search query")
+    parser.add_argument("--limit", type=int, default=20, help="Max results")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would search: {parsed.query}",
+             {"dry_run": True, "command": "search",
+              "query": parsed.query, "limit": parsed.limit})
+        return
+
+    data = client.search_repos(parsed.query, limit=parsed.limit)
+    repos = data.get("data", []) if data else []
+
+    if not repos:
+        emit("No repositories found.", {"repos": []})
+        return
+
+    lines = []
+    out = []
+    for r in repos:
+        name = r.get("full_name", r.get("name", "?"))
+        desc = r.get("description", "") or ""
+        desc_short = f" — {desc[:60]}" if desc else ""
+        private = "🔒" if r.get("private") else "📖"
+        stars = r.get("stars_count", 0)
+        lines.append(f"  {private} {name:40}{desc_short}  ★{stars}")
+        out.append({
+            "full_name": name, "private": r.get("private"),
+            "description": desc, "stars": stars,
+            "language": r.get("language"),
+            "default_branch": r.get("default_branch"),
+            "html_url": r.get("html_url")
+        })
+
+    total = data.get("total_count", len(repos))
+    emit(f"{total} result(s):\n" + "\n".join(lines),
+         {"total": total, "repos": out})
+
+
+def cmd_issues(client: ForgejoClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="forgejo-cli issues")
+    parser.add_argument("--repo", "-r", required=True, help="Repo (owner/repo)")
+    parser.add_argument("--state", default="open", choices=["open", "closed", "all"],
+                        help="Issue state")
+    parser.add_argument("--limit", type=int, default=20, help="Max results")
+    parsed, _ = parser.parse_known_args(args)
+
+    repo = parsed.repo
+    if "/" not in repo:
+        die("Use --repo owner/repo format (e.g. --repo owner/my-repo)")
+
+    owner, reponame = repo.split("/", 1)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would list issues in {repo}",
+             {"dry_run": True, "command": "issues",
+              "repo": repo, "state": parsed.state})
+        return
+
+    data = client.list_issues(owner, reponame, state=parsed.state, limit=parsed.limit)
+    if not data:
+        emit(f"No issues found in {repo}.", {"issues": []})
+        return
+
+    # Forgejo returns pull requests in the issues endpoint too — filter them out
+    issues = [i for i in data if not i.get("pull_request")]
+    lines = []
+    out = []
+    for issue in issues:
+        idx = issue.get("number", "?")
+        title = issue.get("title", "?")
+        state = issue.get("state", "?")
+        user = issue.get("user", {}).get("login", "?")
+        comments = issue.get("comments", 0)
+        labels = ", ".join([l.get("name", "") for l in issue.get("labels", [])])
+        label_str = f" [{labels}]" if labels else ""
+        lines.append(f"  #{idx:<5} [{state:6}] {title:55}  (@{user}){label_str}")
+        out.append({
+            "number": idx, "title": title, "state": state,
+            "user": user, "comments": comments,
+            "labels": [l.get("name") for l in issue.get("labels", [])],
+            "created": issue.get("created_at"),
+            "updated": issue.get("updated_at"),
+            "html_url": issue.get("html_url")
+        })
+
+    emit(f"{len(issues)} issue(s) in {repo} ({parsed.state}):\n" + "\n".join(lines),
+         {"total": len(issues), "repo": repo, "state": parsed.state, "issues": out})
+
+
+def cmd_view(client: ForgejoClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="forgejo-cli view")
+    parser.add_argument("--repo", "-r", required=True, help="Repo (owner/repo)")
+    parser.add_argument("--issue", "-i", type=int, required=True,
+                        help="Issue or PR number")
+    parsed, _ = parser.parse_known_args(args)
+
+    repo = parsed.repo
+    if "/" not in repo:
+        die("Use --repo owner/repo format (e.g. --repo owner/my-repo)")
+
+    owner, reponame = repo.split("/", 1)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would fetch issue #{parsed.issue} from {repo}",
+             {"dry_run": True, "command": "view",
+              "repo": repo, "issue": parsed.issue})
+        return
+
+    data = client.get_issue(owner, reponame, parsed.issue)
+    if not data:
+        emit(f"Issue #{parsed.issue} not found in {repo}.",
+             {"error": "not found", "repo": repo, "issue": parsed.issue})
+        return
+
+    idx = data.get("number", "?")
+    title = data.get("title", "?")
+    state = data.get("state", "?")
+    user = data.get("user", {}).get("login", "?")
+    body = data.get("body", "(no description)")
+    created = data.get("created_at", "?")
+    updated = data.get("updated_at", "?")
+    comments = data.get("comments", 0)
+    is_pr = "yes" if data.get("pull_request") else "no"
+    labels = ", ".join([l.get("name", "") for l in data.get("labels", [])])
+    milestone = data.get("milestone", {})
+    milestone_str = f"  Milestone: {milestone.get('title', '?')}" if milestone else ""
+    assignee = data.get("assignee", {})
+    assignee_str = f"  Assignee: @{assignee.get('login', '?')}" if assignee else ""
+
+    human = (
+        f"📋 #{idx}: {title}\n"
+        f"   State: {state}  PR: {is_pr}  Comments: {comments}\n"
+        f"   Author: @{user}{assignee_str}\n{milestone_str}"
+        f"   Labels: {labels or '(none)'}\n"
+        f"   Created: {created}  Updated: {updated}\n"
+        f"─── Description ───\n{body}"
+    )
+    emit(human, {
+        "number": idx, "title": title, "state": state,
+        "is_pull_request": bool(data.get("pull_request")),
+        "user": user, "body": body, "created": created,
+        "updated": updated, "comments": comments,
+        "labels": [l.get("name") for l in data.get("labels", [])],
+        "milestone": milestone.get("title") if milestone else None,
+        "assignee": data.get("assignee", {}).get("login") if data.get("assignee") else None,
+        "html_url": data.get("html_url")
+    })
+
+
+def cmd_prs(client: ForgejoClient, args: List[str]) -> None:
+    parser = argparse.ArgumentParser(prog="forgejo-cli prs")
+    parser.add_argument("--repo", "-r", required=True, help="Repo (owner/repo)")
+    parser.add_argument("--state", default="open", choices=["open", "closed", "all"],
+                        help="PR state")
+    parser.add_argument("--limit", type=int, default=20, help="Max results")
+    parsed, _ = parser.parse_known_args(args)
+
+    repo = parsed.repo
+    if "/" not in repo:
+        die("Use --repo owner/repo format (e.g. --repo owner/my-repo)")
+
+    owner, reponame = repo.split("/", 1)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would list PRs in {repo}",
+             {"dry_run": True, "command": "prs",
+              "repo": repo, "state": parsed.state})
+        return
+
+    data = client.list_pulls(owner, reponame, state=parsed.state, limit=parsed.limit)
+    if not data:
+        emit(f"No pull requests found in {repo}.", {"pulls": []})
+        return
+
+    lines = []
+    out = []
+    for pr in data:
+        idx = pr.get("number", "?")
+        title = pr.get("title", "?")
+        state = pr.get("state", "?")
+        user = pr.get("user", {}).get("login", "?")
+        head_branch = (pr.get("head", {}) or {}).get("label", "?")
+        base_branch = (pr.get("base", {}) or {}).get("label", "?")
+        merged = pr.get("merged", False)
+        merge_str = " 🔀" if merged else ""
+        lines.append(f"  !{idx:<4} [{state:6}] {title:50}  → {head_branch} → {base_branch}  @{user}{merge_str}")
+        out.append({
+            "number": idx, "title": title, "state": state,
+            "user": user, "head": head_branch, "base": base_branch,
+            "merged": merged, "created": pr.get("created_at"),
+            "html_url": pr.get("html_url")
+        })
+
+    emit(f"{len(data)} PR(s) in {repo} ({parsed.state}):\n" + "\n".join(lines),
+         {"total": len(data), "repo": repo, "state": parsed.state, "pulls": out})
+
+
+# === Main ===
+
+def main() -> None:
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("quiet", False):
+        QUIET = True
+    if GLOBAL_FLAGS.get("json", False):
+        warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(
+        prog="forgejo-cli",
+        description="Forgejo/Gitea Git forge from the terminal.",
+        epilog="Global flags work anywhere: forgejo-cli --json issues --repo owner/repo"
+    )
+    sub = parser.add_subparsers(dest="command", help="Available commands")
+
+    sub.add_parser("me", help="Get current user profile")
+
+    p_repos = sub.add_parser("repos", help="List your repositories")
+    p_repos.add_argument("--limit", type=int, default=50)
+    p_repos.add_argument("--owner")
+
+    p_search = sub.add_parser("search", help="Search repositories")
+    p_search.add_argument("--query", "-q", required=True, help="Search query")
+    p_search.add_argument("--limit", type=int, default=20)
+
+    p_issues = sub.add_parser("issues", help="List issues in a repo")
+    p_issues.add_argument("--repo", "-r", required=True, help="owner/repo")
+    p_issues.add_argument("--state", default="open", choices=["open", "closed", "all"])
+    p_issues.add_argument("--limit", type=int, default=20)
+
+    p_view = sub.add_parser("view", help="View an issue or PR")
+    p_view.add_argument("--repo", "-r", required=True, help="owner/repo")
+    p_view.add_argument("--issue", "-i", type=int, required=True, help="Issue number")
+
+    p_prs = sub.add_parser("prs", help="List pull requests")
+    p_prs.add_argument("--repo", "-r", required=True, help="owner/repo")
+    p_prs.add_argument("--state", default="open", choices=["open", "closed", "all"])
+    p_prs.add_argument("--limit", type=int, default=20)
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    needs_auth = not GLOBAL_FLAGS.get("dry_run", False)
+    if needs_auth and not ENV_TOKEN:
+        die("Set FORGEJO_TOKEN in your environment.\n"
+            "  Generate one: Settings → Applications → Personal Access Tokens\n"
+            "  Or use --dry-run to preview without credentials.")
+
+    client = ForgejoClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+
+    cmd_map = {
+        "me": cmd_me,
+        "repos": cmd_repos,
+        "search": cmd_search,
+        "issues": cmd_issues,
+        "view": cmd_view,
+        "prs": cmd_prs,
+    }
+    handler = cmd_map.get(args.command)
+    if not handler:
+        parser.print_help()
+        sys.exit(1)
+
+    remaining = filtered_argv[filtered_argv.index(args.command) + 1:]
+    handler(client, remaining)
+
+
+if __name__ == "__main__":
+    main()
