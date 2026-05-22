@@ -1,0 +1,97 @@
+# ─── Secrets & Configuration ──────────────────────────────────
+.env
+.env.*
+*.env
+.envrc
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+*.secret
+secrets/
+credentials/
+*.credentials
+*.token
+*.password
+*.auth
+*.oauth
+
+# ─── Hermes Agent ─────────────────────────────────────────────
+.hermes/
+hermes_config.yaml
+hermes_config.yml
+config.yaml
+config.yml
+hermes.env
+cashew.json
+cashew-brain/
+
+# ─── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+*.whl
+venv/
+.venv/
+virtualenv/
+.uv/
+.python-version
+
+# ─── macOS ────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# ─── Editors & IDEs ───────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.vim/
+.vimrc
+.notes
+.tags
+.todo
+
+# ─── Node / JS ────────────────────────────────────────────────
+node_modules/
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Build Artifacts ──────────────────────────────────────────
+*.log
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+*.patch
+*.diff
+
+# ─── Git / Repo ───────────────────────────────────────────────
+*.orig
+.git-rewrite/
+
+# ─── System ───────────────────────────────────────────────────
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
