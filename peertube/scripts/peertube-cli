@@ -1,0 +1,239 @@
+#!/usr/bin/env python3
+"""peertube-cli — PeerTube federated video from the terminal.
+
+Browse videos, channels, and playlists on any PeerTube instance.
+Login with OAuth2 for authenticated operations.
+"""
+
+import argparse, json, os, sys, time, warnings
+from typing import Any, Dict, List, Optional, Tuple
+warnings.simplefilter("ignore")
+import requests
+
+ENV_SERVER = os.getenv("PEERTUBE_SERVER", "")
+CONFIG_DIR = os.path.expanduser(os.getenv("PEERTUBE_CONFIG_DIR", "~/.config/peertube-cli"))
+API_BASE = "/api/v1"
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+def log(m):    global QUIET; (not QUIET and not GLOBAL_FLAGS.get("json")) and print(m)
+def warn(m):   print(f"Warning: {m}", file=sys.stderr)
+def die(m, c=1): print(f"Error: {m}", file=sys.stderr); sys.exit(c)
+def emit(h, d):
+    if GLOBAL_FLAGS.get("json"): print(json.dumps(d, default=str))
+    else: print(h)
+
+def _preparse(argv):
+    BOOLS = {"--json","--dry-run","--quiet","--verbose"}
+    f, fl = {}, [argv[0]]
+    i = 1
+    while i < len(argv):
+        a = argv[i]
+        if a in BOOLS: f[a.lstrip("-").replace("-","_")] = True; i += 1
+        elif a in ("--help","-h"): return f, argv
+        elif a == "--": fl.extend(argv[i:]); break
+        else: fl.append(a); i += 1
+    return f, fl
+
+class PeerTubeClient:
+    def __init__(self, server="", dry_run=False):
+        self.server = (server or ENV_SERVER or "https://your-instance.example.com").rstrip("/")
+        self.dry_run = dry_run
+        self._token = None
+        # Try to load saved token
+        token_path = os.path.join(CONFIG_DIR, "token.json")
+        if os.path.isfile(token_path):
+            try:
+                with open(token_path) as f: data = json.load(f)
+                if data.get("expires_at", 0) > time.time():
+                    self._token = data.get("access_token")
+            except: pass
+
+    def _oauth_login(self):
+        """Fetch OAuth client creds and exchange for token."""
+        try:
+            r = requests.get(f"{self.server}{API_BASE}/oauth-clients/local", timeout=15)
+            clients = r.json()
+        except: die(f"Cannot reach {self.server}. Check PEERTUBE_SERVER.")
+        return clients.get("client_id", ""), clients.get("client_secret", "")
+
+    def login(self, username, password):
+        """Login and persist OAuth token."""
+        cid, csec = self._oauth_login()
+        try:
+            r = requests.post(f"{self.server}{API_BASE}/users/token", data={
+                "client_id": cid, "client_secret": csec,
+                "grant_type": "password", "username": username,
+                "password": password,
+                "response_type": "code"}, timeout=15)
+        except ConnectionError as e: die(f"Cannot connect: {e}")
+        if r.status_code >= 400: die(f"Login failed: {r.text[:200]}")
+        data = r.json()
+        self._token = data.get("access_token")
+        # Persist token
+        os.makedirs(CONFIG_DIR, exist_ok=True)
+        with open(os.path.join(CONFIG_DIR, "token.json"), "w") as f:
+            json.dump({"access_token": self._token, "expires_at": time.time() + data.get("expires_in", 86400)}, f)
+        return data
+
+    def _headers(self):
+        h = {"Accept": "application/json"}
+        if self._token: h["Authorization"] = f"Bearer {self._token}"
+        return h
+
+    def _get(self, path, params=None):
+        url = f"{self.server}{API_BASE}{path}"
+        if self.dry_run: return {"dry_run":True, "url":url, "params":params, "total":0, "data":[]}
+        try:
+            r = requests.get(url, params=params, headers=self._headers(), timeout=30)
+        except ConnectionError as e: die(f"Cannot connect: {e}")
+        if r.status_code == 401:
+            die("Not authenticated. Run 'peertube auth login' first.")
+        if r.status_code >= 400:
+            try: d = r.json()
+            except: d = r.text[:200]
+            die(f"API error ({r.status_code}): {d}")
+        return r.json()
+
+    def get_server_info(self): return self._get("/server/")
+
+    def list_videos(self, page=1, limit=12, sort="-publishedAt"):
+        return self._get("/videos", {"page":page, "count":limit, "sort":sort})
+
+    def search_videos(self, query, page=1, limit=12):
+        return self._get("/search/videos", {"search":query, "page":page, "count":limit})
+
+    def get_video(self, vid): return self._get(f"/videos/{vid}")
+
+    def list_video_comments(self, vid, page=1, limit=10):
+        return self._get(f"/videos/{vid}/comments", {"page":page, "count":limit})
+
+    def list_channels(self, page=1, limit=15):
+        return self._get("/video-channels", {"page":page, "count":limit})
+
+    def get_channel(self, name): return self._get(f"/video-channels/{name}")
+
+    def list_channel_videos(self, name, page=1, limit=12):
+        return self._get(f"/video-channels/{name}/videos", {"page":page, "count":limit})
+
+    def list_playlists(self, page=1, limit=10):
+        return self._get("/video-playlists/user", {"page":page, "count":limit})
+
+    def get_playlist(self, pid): return self._get(f"/video-playlists/{pid}")
+
+    def my_profile(self): return self._get("/users/me")
+    def my_videos(self, page=1, limit=12): return self._get("/users/me/videos", {"page":page, "count":limit})
+
+
+def fmt_video(v, idx=None):
+    prefix = f"{idx}. " if idx else ""
+    name = v.get("name", "?")
+    author = v.get("channel",{}).get("displayName", v.get("account",{}).get("displayName","?"))
+    dur = v.get("duration", 0)
+    dur_str = f"{int(dur//60)}:{int(dur%60):02d}"
+    views = v.get("views", 0)
+    pub = (v.get("publishedAt") or "")[:10]
+    return f"  {prefix}{name:55}  {dur_str}  {views} views  {author}  {pub}"
+
+
+def cmd_server(client, args):
+    if client.dry_run: return emit("[dry-run] Get server info", {"dry_run":True})
+    d = client.get_server_info() or {}
+    name = d.get("instance",{}).get("name","?")
+    desc = (d.get("instance",{}).get("shortDescription","") or "")[:80]
+    users = d.get("users","?"); videos = d.get("videos","?"); views = d.get("views","?")
+    emit(f"🖥️  {name}\n   {desc}\n   Users: {users}  Videos: {videos}  Views: {views}",
+         {"instance":{"name":name,"shortDescription":desc},"users":users,"videos":videos})
+
+def cmd_videos(client, args):
+    p = argparse.ArgumentParser(prog="peertube videos")
+    p.add_argument("--limit", type=int, default=12)
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run: return emit("[dry-run] List videos", {"dry_run":True})
+    data = client.list_videos(limit=parsed.limit) or {}
+    videos = data.get("data",[])
+    if not videos: return emit("No videos.", {"videos":[]})
+    lines = [fmt_video(v, i+1) for i, v in enumerate(videos)]
+    total = data.get("total", len(videos))
+    emit(f"{total} video(s):\n"+"\n".join(lines), {"total":total,"videos":videos})
+
+def cmd_search(client, args):
+    p = argparse.ArgumentParser(prog="peertube search")
+    p.add_argument("--query", "-q", required=True)
+    p.add_argument("--limit", type=int, default=12)
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run: return emit(f"[dry-run] Search: {parsed.query}", {"dry_run":True})
+    data = client.search_videos(parsed.query, limit=parsed.limit) or {}
+    videos = data.get("data",[])
+    if not videos: return emit("No results.", {"videos":[]})
+    lines = [fmt_video(v, i+1) for i, v in enumerate(videos)]
+    total = data.get("total", len(videos))
+    emit(f"{total} result(s):\n"+"\n".join(lines), {"total":total,"videos":videos})
+
+def cmd_channels(client, args):
+    if client.dry_run: return emit("[dry-run] List channels", {"dry_run":True})
+    data = client.list_channels() or {}
+    channels = data.get("data",[])
+    if not channels: return emit("No channels.", {"channels":[]})
+    lines, out = [], []
+    for c in channels:
+        dn = c.get("displayName","?"); name = c.get("name","?"); vid = c.get("videosCount",0); subs = c.get("subscribersCount",0)
+        lines.append(f"  {dn:30} @{name}  {vid} videos  {subs} subscribers")
+        out.append({"displayName":dn,"name":name,"videosCount":vid,"subscribersCount":subs})
+    emit(f"{len(channels)} channel(s):\n"+"\n".join(lines), {"channels":out})
+
+def cmd_me(client, args):
+    if client.dry_run: return emit("[dry-run] Get profile", {"dry_run":True})
+    d = client.my_profile() or {}
+    uname = d.get("username","?"); role = d.get("role","?")
+    vid = d.get("videosCount",0); views = d.get("viewsCount",0)
+    emit(f"👤 @{uname}  Role: {role}  Videos: {vid}  Views: {views}",
+         {"username":uname,"role":role,"videosCount":vid,"viewsCount":views})
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse(sys.argv)
+    if GLOBAL_FLAGS.get("quiet"): QUIET = True
+    if GLOBAL_FLAGS.get("json"): warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(prog="peertube", description="PeerTube federated video.",
+        epilog="Set PEERTUBE_SERVER. Login: peertube auth login --username ... --password ...")
+    sub = parser.add_subparsers(dest="command")
+
+    # auth
+    ap = sub.add_parser("auth", help="Authentication")
+    asub = ap.add_subparsers(dest="auth_action")
+    lp = asub.add_parser("login", help="Login to PeerTube instance")
+    lp.add_argument("--username", required=True); lp.add_argument("--password", required=True)
+
+    # other commands
+    sub.add_parser("server", help="Server info")
+    sub.add_parser("videos", help="List videos").add_argument("--limit",type=int,default=12)
+    sub.add_parser("channels", help="List channels")
+    sp = sub.add_parser("search", help="Search videos")
+    sp.add_argument("--query","-q",required=True); sp.add_argument("--limit",type=int,default=12)
+    sub.add_parser("me", help="My profile")
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command: parser.print_help(); sys.exit(1)
+
+    client = PeerTubeClient(dry_run=GLOBAL_FLAGS.get("dry_run",False))
+    remaining = filtered_argv[filtered_argv.index(args.command)+1:]
+
+    if args.command == "auth":
+        if args.auth_action == "login":
+            result = client.login(args.username, args.password)
+            emit(f"✅ Logged in to {client.server}", {"status":"logged_in","server":client.server})
+        else: ap.print_help()
+        return
+
+    # Commands that need auth
+    if not client._token and not GLOBAL_FLAGS.get("dry_run"):
+        die("Not logged in. Run 'peertube auth login --username ... --password ...' first, or use --dry-run.")
+
+    handlers = {"server":cmd_server,"videos":cmd_videos,"search":cmd_search,"channels":cmd_channels,"me":cmd_me}
+    h = handlers.get(args.command)
+    if not h: parser.print_help(); sys.exit(1)
+    h(client, remaining)
+
+if __name__ == "__main__": main()
