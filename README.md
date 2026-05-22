@@ -24,6 +24,10 @@ Atlassian Confluence from the terminal. List spaces, browse pages, view content 
 
 Act as a virtual data architect. Discover data assets, assess maturity, evaluate platforms, design architectures, establish governance, and create migration plans. Covers modern data patterns (data mesh, data lakehouse, streaming, real-time analytics) with vendor evaluation frameworks and maturity models.
 
+### [data-scientist](data-scientist/SKILL.md)
+
+PhD-level expertise in data science, statistics, and machine learning. Rigorous statistical methodology, experimental design, causal inference, Bayesian analysis, model selection and diagnostics, and research-grade communication. Ships five analysis scripts (power analysis, assumption diagnostics, model comparison, effect size calculator, experimental design generator) with Python + R dual-language support.
+
 ### [forgejo-cli](forgejo-cli/SKILL.md)
 
 Forgejo or Gitea self-hosted Git forge from the terminal. List repositories, search repos, manage issues, and view pull requests.
