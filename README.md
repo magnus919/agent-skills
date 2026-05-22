@@ -10,7 +10,35 @@ Build and refactor CLI tools for AI agent consumption. 10 universal patterns (no
 
 ### [systematic-debugging](systematic-debugging/SKILL.md)
 
-4-phase root cause debugging protocol: understand bugs before fixing. Covers schema/environment divergence, exception type specificity in fallback chains, progressive characterization grids for API/retrieval failures, dependency source detection (editable dev forks), macOS sandboxed application debugging, and the Rule of Three for recognizing architectural problems. Adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT) with significant expansion from real-world use.
+4-phase root cause debugging protocol: understand bugs before fixing.
+
+### [tmdb-cli](tmdb-cli/SKILL.md)
+
+The Movie Database API from the terminal. Search and discover movies and TV by genre, certification, rating, and date range. Check trending, upcoming, and now playing. Free API key from themoviedb.org.
+
+### [jellyfin-cli](jellyfin-cli/SKILL.md)
+
+Jellyfin media server from the terminal. Check server info, browse recently added, search your library by type, list libraries, and view statistics.
+
+### [ghost-cli](ghost-cli/SKILL.md)
+
+Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations.
+
+### [forgejo-cli](forgejo-cli/SKILL.md)
+
+Forgejo or Gitea self-hosted Git forge from the terminal. List repositories, search repos, manage issues, and view pull requests.
+
+### [openlibrary-cli](openlibrary-cli/SKILL.md)
+
+Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required.
+
+### [jira-cli](jira-cli/SKILL.md)
+
+Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, list projects, and transition status.
+
+### [confluence-cli](confluence-cli/SKILL.md)
+
+Atlassian Confluence from the terminal. List spaces, browse pages, view content with body extraction, search with CQL, and create pages.
 
 ### [tempest-cli](tempest-cli/SKILL.md)
 
