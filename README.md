@@ -44,6 +44,10 @@ A virtual Kanban expert for engineering teams. Diagnose flow problems, design bo
 
 Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, list projects, and transition status. API token from id.atlassian.com.
 
+### [jira-jql](jira-jql/SKILL.md)
+
+Expert-level Jira Query Language reference covering all operators, functions (date/time, user, sprint/version, issue, custom field, JSM), history operators (WAS/CHANGED), relative dates, performance best practices, role-based ready queries, REST API usage, and troubleshooting. Three companion references: complete function catalog, role-specific query bank (dev, scrum master, PO, power user, admin), and gotchas/troubleshooting guide.
+
 ### [openlibrary-cli](openlibrary-cli/SKILL.md)
 
 Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required — the public Open Library API is free for everyone.
