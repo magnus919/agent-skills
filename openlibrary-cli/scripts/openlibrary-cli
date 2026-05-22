@@ -1,0 +1,348 @@
+#!/usr/bin/env python3
+"""openlibrary-cli — Open Library book metadata from the terminal.
+
+Search books, authors, works, and lookup by ISBN using the public
+Open Library API. No API key required.
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+from typing import Any, Dict, List, Optional, Tuple
+
+warnings.simplefilter("ignore")
+
+import requests
+
+# === Config ===
+DEFAULT_SERVER = "https://openlibrary.org"
+ENV_SERVER = os.getenv("OL_SERVER", DEFAULT_SERVER)
+ENV_EMAIL = os.getenv("OL_EMAIL", "")
+ENV_USER_AGENT = os.getenv("OL_USER_AGENT", "openlibrary-cli/1.0 (+https://github.com)")
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {
+    "json": False, "dry_run": False, "quiet": False, "verbose": False
+}
+
+
+def log(msg: str) -> None:
+    if not QUIET and not GLOBAL_FLAGS.get("json", False):
+        print(msg)
+
+
+def warn(msg: str) -> None:
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg: str, exit_code: int = 1) -> None:
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def emit(human: str, data: Any) -> None:
+    if GLOBAL_FLAGS.get("json", False):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+def _preparse_global_flags(argv: List[str]) -> Tuple[Dict[str, Any], List[str]]:
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--quiet", "--verbose"}
+    flags: Dict[str, Any] = {}
+    filtered: List[str] = [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg in ("--help", "-h"):
+            return flags, argv
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+class OpenLibraryClient:
+    """Client for the public Open Library API."""
+
+    def __init__(self, server: str = "", dry_run: bool = False):
+        self.server = (server or ENV_SERVER).rstrip("/")
+        self.dry_run = dry_run
+
+    def _headers(self) -> Dict[str, str]:
+        h = {"User-Agent": ENV_USER_AGENT}
+        if ENV_EMAIL:
+            h["User-Agent"] += f" (mailto:{ENV_EMAIL})"
+        return h
+
+    def _get(self, path: str, params: Optional[Dict] = None) -> Any:
+        url = f"{self.server}{path}"
+        if self.dry_run:
+            return {"dry_run": True, "url": url, "params": params}
+        try:
+            resp = requests.get(url, params=params, headers=self._headers(), timeout=30)
+        except requests.ConnectionError as e:
+            die(f"Cannot connect to {self.server}: {e}")
+        if resp.status_code == 404:
+            return None
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+        try:
+            return resp.json()
+        except ValueError:
+            return {"raw": resp.text[:500]}
+
+
+def fmt_author(a: Dict) -> str:
+    name = a.get("name", a.get("title", "?"))
+    key = a.get("key", "").split("/")[-1] if a.get("key") else ""
+    birth = a.get("birth_date", "")
+    death = a.get("death_date", "")
+    years = f" ({birth}–{death})" if birth or death else ""
+    return f"  {name}{years}  [{key}]"
+
+
+def cmd_search(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary-cli search")
+    parser.add_argument("--query", "-q", required=True)
+    parser.add_argument("--limit", type=int, default=20)
+    parser.add_argument("--offset", type=int, default=0)
+    parser.add_argument("--sort", default="", choices=["", "editions", "new", "old", "rating", "title"])
+    parser.add_argument("--lang", default="")
+    parser.add_argument("--availability", default="")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would search: {parsed.query}", {"dry_run": True, "query": parsed.query})
+        return
+
+    params: Dict[str, Any] = {"q": parsed.query, "limit": parsed.limit, "offset": parsed.offset}
+    if parsed.sort:
+        params["sort"] = parsed.sort
+    if parsed.lang:
+        params["lang"] = parsed.lang
+    data = client._get("/search.json", params) or {}
+
+    docs = data.get("docs", [])
+    if not docs:
+        emit("No results.", {"results": []})
+        return
+
+    lines, out = [], []
+    for d in docs:
+        title = d.get("title", "?")
+        authors = ", ".join(d.get("author_name", [])) or "?"
+        year = d.get("first_publish_year", "")
+        year_str = f" ({year})" if year else ""
+        edition_count = d.get("edition_count", 0)
+        lines.append(f"  {title:50}{year_str} — {authors}  ({edition_count} editions)")
+        out.append({
+            "title": title, "authors": d.get("author_name", []),
+            "first_publish_year": year, "edition_count": edition_count,
+            "key": d.get("key", ""), "isbn": d.get("isbn", [])[:3],
+            "cover_edition": d.get("cover_edition_key", "")
+        })
+
+    total = data.get("numFound", len(docs))
+    emit(f"{total} result(s):\n" + "\n".join(lines), {"total": total, "results": out})
+
+
+def cmd_isbn(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary-cli isbn")
+    parser.add_argument("isbn", help="ISBN number")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would lookup ISBN: {parsed.isbn}", {"dry_run": True, "isbn": parsed.isbn})
+        return
+
+    data = client._get(f"/isbn/{parsed.isbn}.json")
+    if not data:
+        emit(f"ISBN {parsed.isbn} not found.", {"error": "not found", "isbn": parsed.isbn})
+        return
+
+    title = data.get("title", "?")
+    authors_list = data.get("authors", [])
+    author_names = ", ".join([a.get("name", a.get("key", "?")) for a in authors_list]) if authors_list else "?"
+    pages = data.get("number_of_pages", data.get("pagination", "?"))
+    publishers = ", ".join(data.get("publishers", [])) or "?"
+    publish_date = data.get("publish_date", "?")
+    subjects = ", ".join(data.get("subjects", [])[:5]) or "(none)"
+
+    emit(
+        f"📖 {title}\n"
+        f"   Author(s): {author_names}\n"
+        f"   Pages: {pages}  Published: {publish_date}\n"
+        f"   Publisher: {publishers}\n"
+        f"   Subjects: {subjects}",
+        {"isbn": parsed.isbn, "title": title, "authors": author_names,
+         "pages": pages, "publish_date": publish_date,
+         "publishers": publishers, "subjects": data.get("subjects", [])}
+    )
+
+
+def cmd_author(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary-cli author")
+    parser.add_argument("key", help="Author key (e.g. OL23919A)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would fetch author {parsed.key}", {"dry_run": True, "key": parsed.key})
+        return
+
+    data = client._get(f"/authors/{parsed.key}.json")
+    if not data:
+        emit(f"Author {parsed.key} not found.", {"error": "not found"})
+        return
+
+    name = data.get("name", "?")
+    birth = data.get("birth_date", "")
+    death = data.get("death_date", "")
+    years = f" ({birth}–{death})" if birth or death else ""
+    bio = data.get("bio", "")
+    if isinstance(bio, dict):
+        bio = bio.get("value", "")
+    bio_short = f"\n{bio[:500]}" if bio else ""
+    emit(
+        f"👤 {name}{years}{bio_short}",
+        {"key": parsed.key, "name": name, "birth_date": birth,
+         "death_date": death, "bio": bio,
+         "wikipedia": data.get("wikipedia", ""),
+         "personal_name": data.get("personal_name", "")}
+    )
+
+
+def cmd_work(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary-cli work")
+    parser.add_argument("key", help="Work key (e.g. OL123W)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would fetch work {parsed.key}", {"dry_run": True, "key": parsed.key})
+        return
+
+    data = client._get(f"/works/{parsed.key}.json")
+    if not data:
+        emit(f"Work {parsed.key} not found.", {"error": "not found"})
+        return
+
+    title = data.get("title", "?")
+    authors = data.get("authors", [])
+    author_str = ", ".join([a.get("author", {}).get("key", "?") for a in authors]) if authors else "?"
+    desc = data.get("description", "")
+    if isinstance(desc, dict):
+        desc = desc.get("value", "")
+    desc_short = f"\n{desc[:500]}" if desc else ""
+    subjects = ", ".join(data.get("subjects", [])[:5]) or "(none)"
+
+    emit(
+        f"📖 {title}\n"
+        f"   Author(s): {author_str}\n"
+        f"   Subjects: {subjects}{desc_short}",
+        {"key": parsed.key, "title": title, "authors": author_str,
+         "description": desc, "subjects": data.get("subjects", [])}
+    )
+
+
+def cmd_search_authors(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary-cli search-authors")
+    parser.add_argument("--query", "-q", required=True)
+    parser.add_argument("--limit", type=int, default=20)
+    parser.add_argument("--offset", type=int, default=0)
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would search authors: {parsed.query}", {"dry_run": True, "query": parsed.query})
+        return
+
+    data = client._get("/search/authors.json", {"q": parsed.query, "limit": parsed.limit, "offset": parsed.offset}) or {}
+    docs = data.get("docs", [])
+    if not docs:
+        emit("No authors found.", {"results": []})
+        return
+
+    lines, out = [], []
+    for d in docs:
+        name = d.get("name", "?")
+        key = d.get("key", "").split("/")[-1] if d.get("key") else "?"
+        birth = d.get("birth_date", "")
+        death = d.get("death_date", "")
+        years = f" ({birth}–{death})" if birth or death else ""
+        top_work = d.get("top_work", "")
+        work_str = f" — {top_work}" if top_work else ""
+        lines.append(f"  {name:30}{years}  [{key}]{work_str}")
+        out.append({"name": name, "key": key, "birth_date": birth, "death_date": death, "top_work": top_work})
+
+    total = data.get("numFound", len(docs))
+    emit(f"{total} author(s):\n" + "\n".join(lines), {"total": total, "results": out})
+
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("quiet", False):
+        QUIET = True
+    if GLOBAL_FLAGS.get("json", False):
+        warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(
+        prog="openlibrary-cli",
+        description="Open Library book metadata from the terminal. No API key required.",
+        epilog="Global flags work anywhere: openlibrary-cli --json search --query 'dune'"
+    )
+    sub = parser.add_subparsers(dest="command")
+
+    p_search = sub.add_parser("search", help="Search books")
+    p_search.add_argument("--query", "-q", required=True)
+    p_search.add_argument("--limit", type=int, default=20)
+    p_search.add_argument("--offset", type=int, default=0)
+    p_search.add_argument("--sort", default="", choices=["", "editions", "new", "old", "rating", "title"])
+    p_search.add_argument("--lang")
+    p_search.add_argument("--availability")
+
+    p_sa = sub.add_parser("search-authors", help="Search authors")
+    p_sa.add_argument("--query", "-q", required=True)
+    p_sa.add_argument("--limit", type=int, default=20)
+    p_sa.add_argument("--offset", type=int, default=0)
+
+    sub.add_parser("author", help="Get author details") .add_argument("key")
+    sub.add_parser("work", help="Get work details") .add_argument("key")
+    sub.add_parser("isbn", help="Lookup by ISBN") .add_argument("isbn")
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    client = OpenLibraryClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+
+    cmd_map = {
+        "search": cmd_search,
+        "search-authors": cmd_search_authors,
+        "author": cmd_author,
+        "work": cmd_work,
+        "isbn": cmd_isbn,
+    }
+    handler = cmd_map.get(args.command)
+    if not handler:
+        parser.print_help()
+        sys.exit(1)
+
+    remaining = filtered_argv[filtered_argv.index(args.command) + 1:]
+    handler(client, remaining)
+
+
+if __name__ == "__main__":
+    main()
