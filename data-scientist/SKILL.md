@@ -8,7 +8,10 @@ description: >-
   model selection, A/B testing, hypothesis testing, power analysis, regression,
   causality, Bayesian analysis, or research methodology.
 license: MIT
-compatibility: Python 3.10+ with scipy, statsmodels, scikit-learn, pandas, numpy. Optional R engine via rpy2.
+compatibility: >-
+  Python 3.10+ with scipy, statsmodels, scikit-learn, pandas, numpy. PyTorch
+  and sklearn are the primary ML frameworks. Hardware-aware via detect-compute.py.
+  Optional R engine via rpy2. Deep learning assumes NVIDIA GPU with CUDA or Apple MPS.
 metadata:
   spec-version: "1.0"
   skills: [research-methodology, statistics, machine-learning, causal-inference,
@@ -75,6 +78,11 @@ User asks a data question.
 │  → TYPE: METHODOLOGY
 │  → Respond with: criteria → comparison table → recommendation with rationale
 │  → Mode: structured, multi-dimensional evaluation
+│
+├─ "Run a research campaign / I need to find the best approach"
+│  → TYPE: CAMPAIGN
+│  → Respond with: load references/experimental-campaign-protocol.md
+│  → Mode: pipeline orchestration, iterative, multi-experiment
 │
 ├─ Unclear / exploratory
 │  → TYPE: CLARIFY
@@ -158,6 +166,26 @@ Then map to a method using the framework above.
 
 8. **The simplest defensible model wins.** Favor interpretability until complexity demonstrably improves predictions or inference. Justify complexity with evidence (cross-validation, model comparison, sensitivity analysis).
 
+9. **Know your compute.** Before running any experiment, detect available hardware. The model architecture, batch size, and techniques you can use depend on available VRAM, CUDA, and RAM. See `scripts/detect-compute.py`. See `references/docker-experiment-isolation.md` for safe execution.
+
+---
+
+## Infrastructure Awareness
+
+Before recommending or running any experiment, detect your compute environment. Run:
+
+```bash
+python3 scripts/detect-compute.py --minimal
+```
+
+This returns a JSON object that self-constrains what approaches are feasible:
+
+- `model_size_tier: "cpu_only"` — no deep learning; use sklearn/xgboost/lightgbm
+- `model_size_tier: "7B-13B"` — full fine-tuning or LoRA feasible on available VRAM
+- `model_size_tier: "up_to_3B"` — QLoRA recommended, full FT for tiny models only
+
+The agent should detect compute *before* selecting methods, not after failing. Integrate this check at the start of any CAMPAIGN task or before Phase 4 (Moonshot Experiments) in the campaign protocol.
+
 ---
 
 ## Communication Standards
@@ -202,6 +230,13 @@ This skill ships with supporting reference files and scripts:
 - `scripts/model-comparison.py` — compare models with AIC, BIC, CV, WAIC
 - `scripts/effect-size-calculator.py` — compute effect sizes with confidence intervals
 - `scripts/experimental-design.py` — generate experimental designs
+- `scripts/detect-compute.py` — probe hardware and constrain recommendations (Phase 1)
+- `references/experimental-campaign-protocol.md` — multi-experiment campaign workflow (Phase 2)
+- `references/pytorch-integration.md` — training loops, device management, transfer learning, distillation
+- `references/sklearn-integration.md` — pipelines, model selection, preprocessing, ensembles
+- `references/data-science-coding-workflow.md` — project structure, experiment logging, reproducibility
+- `references/subagent-experiment-supervision.md` — self-healing experiment pattern with auto-repair
+- `references/docker-experiment-isolation.md` — safe containerized execution with resource limits
 
 ---
 
