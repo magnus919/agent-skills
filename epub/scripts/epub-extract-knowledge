@@ -1,0 +1,431 @@
+#!/usr/bin/env python3
+"""epub-extract-knowledge — Extract key passages, facts, quotes, and arguments from EPUB content.
+
+Usage:
+  epub-extract-knowledge <file.epub> [--format atoms|memory|json]
+    [--prompt "custom extraction prompt"] [--no-llm]
+    [--output PATH] [--json] [--dry-run]
+
+LLM mode (automatic when env vars are set):
+  Set EPUB_LLM_URL and EPUB_LLM_KEY to enable LLM extraction.
+  Optional: EPUB_LLM_MODEL (default: auto-detected from provider).
+
+  export EPUB_LLM_URL="https://opencode.ai/zen/go/v1"
+  export EPUB_LLM_KEY="sk-..."
+  export EPUB_LLM_MODEL="deepseek-v4-flash"   # optional
+
+  epub-extract-knowledge book.epub --format json   # LLM mode, auto-detected
+  epub-extract-knowledge book.epub --format json --no-llm   # force heuristic
+
+Without env vars, falls back to heuristic extraction automatically.
+
+Output formats:
+  atoms   — Obsidian vault atom templates (YAML frontmatter + body)
+  memory  — Memory entries (key-value, suitable for agent memory)
+  json    — Raw structured JSON
+
+Dependencies: EbookLib, beautifulsoup4. Optional: requests (for LLM mode).
+"""
+
+import argparse
+import json
+import os
+import re
+import sys
+import warnings
+
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+LLM_CONFIG = None
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def warn(msg):
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def load_llm_config():
+    """Check environment for LLM configuration. Returns dict or None."""
+    url = os.environ.get('EPUB_LLM_URL', '').strip()
+    key = os.environ.get('EPUB_LLM_KEY', '').strip()
+    if url and key:
+        return {
+            'url': url.rstrip('/'),
+            'key': key,
+            'model': os.environ.get('EPUB_LLM_MODEL', '').strip() or None,
+        }
+    return None
+
+
+def call_llm(messages, config):
+    """Call an OpenAI-compatible API. Returns response text or None on failure."""
+    try:
+        import requests
+    except ImportError:
+        warn("requests library not available for LLM calls. Install with: pip install requests")
+        return None
+
+    url = f"{config['url']}/chat/completions"
+    headers = {
+        'Authorization': f"Bearer {config['key']}",
+        'Content-Type': 'application/json',
+    }
+    body = {
+        'messages': messages,
+        'temperature': 0.3,
+        'max_tokens': 2000,
+    }
+    if config['model']:
+        body['model'] = config['model']
+
+    try:
+        resp = requests.post(url, headers=headers, json=body, timeout=120)
+        if resp.status_code == 200:
+            return resp.json()['choices'][0]['message']['content']
+        else:
+            warn(f"LLM call returned {resp.status_code}: {resp.text[:200]}")
+            return None
+    except Exception as e:
+        warn(f"LLM call failed: {e}")
+        return None
+
+
+def extract_text_from_epub(epub_path):
+    """Extract reading-order text from an EPUB file."""
+    try:
+        from ebooklib import epub
+        import ebooklib
+        from bs4 import BeautifulSoup
+    except ImportError:
+        die("EbookLib and beautifulsoup4 are required. Install with: pip install EbookLib beautifulsoup4")
+
+    book = epub.read_epub(epub_path)
+
+    spine_ids = []
+    try:
+        spine_ids = [item_id for item_id, _ in book.spine]
+    except Exception:
+        pass
+
+    item_map = {}
+    for item in book.get_items():
+        iid = getattr(item, 'id', None)
+        if iid:
+            item_map[iid] = item
+
+    chapters = []
+    for idx, item_id in enumerate(spine_ids):
+        item = item_map.get(item_id)
+        if not item or not hasattr(item, 'get_type') or item.get_type() != ebooklib.ITEM_DOCUMENT:
+            continue
+        try:
+            content = item.get_content().decode('utf-8', errors='replace')
+        except Exception:
+            warn(f"Could not decode {item_id}")
+            continue
+
+        soup = BeautifulSoup(content, 'html.parser')
+        for element in soup(['script', 'style', 'nav']):
+            element.decompose()
+
+        paragraphs = []
+        for p in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'li']):
+            text = p.get_text(strip=True)
+            if text and len(text) > 20:
+                paragraphs.append({
+                    'tag': p.name,
+                    'text': text,
+                    'char_count': len(text)
+                })
+
+        title = getattr(item, 'title', f'Chapter {idx + 1}') or f'Chapter {idx + 1}'
+        chapters.append({
+            'index': idx,
+            'title': title,
+            'paragraphs': paragraphs
+        })
+
+    return chapters
+
+
+def heuristic_extract(chapters):
+    """Extract knowledge using heuristics (no LLM)."""
+    insights = []
+
+    for chapter in chapters:
+        for para in chapter['paragraphs']:
+            text = para['text']
+            tag = para['tag']
+
+            if tag in ('h1', 'h2', 'h3'):
+                insights.append({
+                    'type': 'fact',
+                    'source_chapter': chapter['title'],
+                    'content': text,
+                    'context': 'heading'
+                })
+                continue
+
+            if '**' in text or '__' in text:
+                insights.append({
+                    'type': 'key_point',
+                    'source_chapter': chapter['title'],
+                    'content': text,
+                    'context': 'emphasized'
+                })
+                continue
+
+            if tag == 'li':
+                insights.append({
+                    'type': 'fact',
+                    'source_chapter': chapter['title'],
+                    'content': text,
+                    'context': 'list_item'
+                })
+                continue
+
+            definition_markers = ['is defined as', 'refers to', 'means', 'is a', 'are the',
+                                  'in other words', 'that is,', 'i.e.', 'e.g.']
+            if len(text) > 80 and any(marker in text.lower() for marker in definition_markers):
+                insights.append({
+                    'type': 'definition',
+                    'source_chapter': chapter['title'],
+                    'content': text,
+                    'context': 'body'
+                })
+                continue
+
+            if len(text) > 200:
+                insights.append({
+                    'type': 'argument',
+                    'source_chapter': chapter['title'],
+                    'content': text[:500],
+                    'context': 'body'
+                })
+
+    # Deduplicate by content
+    seen = set()
+    unique = []
+    for insight in insights:
+        key = insight['content'][:100]
+        if key not in seen:
+            seen.add(key)
+            unique.append(insight)
+
+    return unique
+
+
+def llm_extract(chapters, prompt, config):
+    """Extract knowledge using LLM."""
+    all_insights = []
+
+    for i, chapter in enumerate(chapters):
+        # Only process chapters with substantial content (>500 chars of paragraph text)
+        total_text = '\n\n'.join(p['text'] for p in chapter['paragraphs'])
+        if len(total_text) < 500:
+            continue
+
+        # Chunk if necessary (>3000 chars → split into chunks)
+        chunks = _chunk_text(total_text, 3000)
+        warn(f"  [{i+1}/{len(chapters)}] {chapter['title']}: {len(total_text)} chars → {len(chunks)} chunk(s)")
+
+        for chunk_idx, chunk in enumerate(chunks):
+            messages = [
+                {'role': 'system', 'content': prompt},
+                {'role': 'user', 'content': f"Chapter: {chapter['title']}\n\n{chunk}"},
+            ]
+
+            response = call_llm(messages, config)
+            if not response:
+                continue
+
+            # Parse JSON from LLM response
+            try:
+                json_match = re.search(r'\[.*\]', response, re.DOTALL)
+                if json_match:
+                    parsed = json.loads(json_match.group())
+                    for item in parsed:
+                        if isinstance(item, dict) and 'content' in item:
+                            item['source_chapter'] = chapter['title']
+                            all_insights.append(item)
+            except json.JSONDecodeError:
+                pass
+
+    return all_insights
+
+
+def _chunk_text(text, max_chars):
+    """Split text into chunks of max_chars, breaking at paragraph boundaries."""
+    paragraphs = text.split('\n\n')
+    chunks = []
+    current = []
+    current_len = 0
+
+    for para in paragraphs:
+        if current_len + len(para) > max_chars and current:
+            chunks.append('\n\n'.join(current))
+            current = []
+            current_len = 0
+        current.append(para)
+        current_len += len(para)
+
+    if current:
+        chunks.append('\n\n'.join(current))
+
+    return chunks or [text]
+
+
+def format_atom(insight):
+    """Format an insight as an Obsidian vault atom."""
+    title = insight['content'][:60].replace('\n', ' ')
+    slug = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
+
+    frontmatter = f'''---
+created: {_today()}
+type: atom
+topics: []
+publish: false
+---
+'''
+    body = f'''# {title}
+
+**Source chapter:** {insight['source_chapter']}
+**Type:** {insight.get('type', 'unknown')}
+
+{insight['content']}
+'''
+    return {
+        'filename': f"{slug}.md",
+        'content': frontmatter + body
+    }
+
+
+def format_memory(insight):
+    """Format an insight as a memory entry."""
+    return {
+        'type': insight.get('type', 'unknown'),
+        'title': insight['content'][:80],
+        'content': insight['content'],
+        'source': insight['source_chapter']
+    }
+
+
+def _today():
+    from datetime import date
+    return date.today().isoformat()
+
+
+def main():
+    global DRY_RUN, JSON_OUTPUT, LLM_CONFIG
+
+    parser = argparse.ArgumentParser(
+        description='Extract knowledge from EPUB content — facts, quotes, arguments.',
+        epilog='Examples:\n  epub-extract-knowledge book.epub --format json\n  epub-extract-knowledge book.epub --no-llm --format atoms')
+    parser.add_argument('epub', nargs='?', help='Path to EPUB file')
+    parser.add_argument('--format', choices=['atoms', 'memory', 'json'], default='json',
+                        help='Output format (default: json)')
+    parser.add_argument('--no-llm', action='store_true', help='Force heuristic mode (ignore env vars)')
+    parser.add_argument('--prompt', help='Custom extraction prompt (for LLM mode)')
+    parser.add_argument('--output', '-o', help='Output file path (for atoms/memory modes)')
+    parser.add_argument('--json', action='store_true', help='Output summary as JSON')
+    parser.add_argument('--dry-run', '-n', action='store_true', help='Preview without reading file')
+    args = parser.parse_args()
+
+    JSON_OUTPUT = args.json
+    DRY_RUN = args.dry_run
+
+    if not args.epub:
+        parser.print_help()
+        sys.exit(1)
+
+    if not os.path.exists(args.epub):
+        die(f"File not found: {args.epub}")
+
+    # Detect LLM config
+    LLM_CONFIG = load_llm_config()
+    use_llm = LLM_CONFIG is not None and not args.no_llm
+
+    if use_llm:
+        warn(f"LLM mode enabled: {LLM_CONFIG['url']} (model={LLM_CONFIG.get('model') or 'default'})")
+
+    if DRY_RUN:
+        mode = 'llm' if use_llm else 'heuristic'
+        emit({
+            'status': 'dry_run',
+            'file': args.epub,
+            'format': args.format,
+            'mode': mode
+        }, f'[dry-run] Would extract knowledge from: {args.epub} (mode={mode})')
+        return
+
+    chapters = extract_text_from_epub(args.epub)
+
+    default_prompt = """Extract substantive knowledge from the following book chapter. Return a JSON array of objects, each with:
+- "type": one of "fact", "definition", "argument", "key_point"
+- "content": the extracted passage (verbatim, 50-300 words)
+- "context": why this matters or what it relates to
+
+Focus on technical concepts, architectural patterns, key arguments, definitions, and actionable insights. Skip frontmatter, copyright text, table of contents, and author bios. Skip generic marketing language. Extract only content that would be useful for reference or learning."""
+
+    prompt = args.prompt or default_prompt
+
+    if use_llm:
+        insights = llm_extract(chapters, prompt, LLM_CONFIG)
+        if not insights:
+            warn("LLM extraction produced no results — falling back to heuristic mode")
+            insights = heuristic_extract(chapters)
+            mode = 'heuristic (fallback)'
+        else:
+            mode = 'llm'
+    else:
+        insights = heuristic_extract(chapters)
+        mode = 'heuristic'
+
+    summary = {
+        'file': args.epub,
+        'chapters_processed': len(chapters),
+        'insights_found': len(insights),
+        'mode': mode,
+        'by_type': {}
+    }
+    for i in insights:
+        summary['by_type'][i['type']] = summary['by_type'].get(i['type'], 0) + 1
+
+    if args.format == 'atoms':
+        atoms = [format_atom(i) for i in insights]
+        if args.output:
+            os.makedirs(args.output, exist_ok=True)
+            for a in atoms:
+                with open(os.path.join(args.output, a['filename']), 'w') as f:
+                    f.write(a['content'])
+            summary['output_dir'] = args.output
+            summary['atoms_written'] = len(atoms)
+        output = [a['content'] for a in atoms]
+        emit(summary, '\n\n---\n\n'.join(output[:5]) +
+             (f"\n\n... and {len(output) - 5} more" if len(output) > 5 else ""))
+
+    elif args.format == 'memory':
+        memories = [format_memory(i) for i in insights]
+        summary['memories'] = memories
+        print(json.dumps(summary, indent=2, default=str))
+
+    else:  # json
+        summary['insights'] = insights
+        print(json.dumps(summary, indent=2, default=str))
+
+
+if __name__ == '__main__':
+    main()

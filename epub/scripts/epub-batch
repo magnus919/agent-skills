@@ -1,0 +1,161 @@
+#!/usr/bin/env python3
+"""epub-batch — Process multiple EPUB files in batch.
+
+Usage:
+  epub-batch extract-text <glob> --output DIR [--json] [--dry-run]
+  epub-batch validate <glob> [--json] [--dry-run]
+  epub-batch metadata <glob> --set-author "Name" [--set-title "Title"] [--output-dir DIR] [--json] [--dry-run]
+  epub-batch info <glob> [--json] [--dry-run]
+
+Examples:
+  epub-batch extract-text "books/*.epub" --output texts/
+  epub-batch validate "books/*.epub" --json
+  epub-batch metadata "books/*.epub" --set-author "Fixed Author" --output-dir fixed/
+
+Dependencies: EbookLib (pip install EbookLib)
+"""
+
+import argparse
+import glob
+import json
+import os
+import subprocess
+import sys
+import warnings
+
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def find_epubs(pattern):
+    """Expand glob pattern to list of EPUB files."""
+    files = sorted(glob.glob(pattern, recursive=True))
+    if not files:
+        die(f"No EPUB files found matching: {pattern}")
+    return [f for f in files if f.lower().endswith(".epub")]
+
+
+def run_script(script_name, *args_list):
+    """Run a sibling script from the scripts/ directory."""
+    script_path = os.path.join(SCRIPT_DIR, script_name)
+    cmd = [sys.executable, script_path] + list(args_list)
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+    return result
+
+
+def main():
+    global DRY_RUN, JSON_OUTPUT
+
+    parser = argparse.ArgumentParser(
+        description="Process multiple EPUB files in batch.",
+        epilog="Examples:\n  epub-batch extract-text 'books/*.epub' --output texts/\n  epub-batch validate 'books/*.epub' --json")
+    sub = parser.add_subparsers(dest="command", help="Batch operation")
+
+    # extract-text
+    p = sub.add_parser("extract-text", help="Extract text from all EPUBs")
+    p.add_argument("pattern", help="Glob pattern for EPUB files")
+    p.add_argument("--output", "-o", required=True, help="Output directory")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # validate
+    p = sub.add_parser("validate", help="Validate all EPUBs")
+    p.add_argument("pattern", help="Glob pattern for EPUB files")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # metadata
+    p = sub.add_parser("metadata", help="Batch update metadata")
+    p.add_argument("pattern", help="Glob pattern for EPUB files")
+    p.add_argument("--set-author")
+    p.add_argument("--set-title")
+    p.add_argument("--output-dir", "-o", required=True, help="Output directory for updated EPUBs")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # info
+    p = sub.add_parser("info", help="Dump info for all EPUBs")
+    p.add_argument("pattern", help="Glob pattern for EPUB files")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    args = parser.parse_args()
+
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    JSON_OUTPUT = getattr(args, "json", False)
+    DRY_RUN = getattr(args, "dry_run", False)
+
+    if DRY_RUN:
+        emit({"status": "dry_run", "command": args.command, "pattern": args.pattern,
+              "files_found": "unknown (dry-run)"},
+             f"[dry-run] Would process EPUBs matching: {args.pattern}")
+        return
+
+    epub_files = find_epubs(args.pattern)
+
+    results = []
+    for i, epub_path in enumerate(epub_files):
+        print(f"[{i+1}/{len(epub_files)}] {os.path.basename(epub_path)}", file=sys.stderr, flush=True)
+
+        if args.command == "extract-text":
+            base = os.path.splitext(os.path.basename(epub_path))[0]
+            out_file = os.path.join(args.output, f"{base}.txt")
+            os.makedirs(args.output, exist_ok=True)
+            r = run_script("epub-text", epub_path, "--output", out_file)
+            results.append({"file": epub_path, "output": out_file, "success": r.returncode == 0})
+
+        elif args.command == "validate":
+            r = run_script("epub-validate", epub_path, "--json")
+            try:
+                vdata = json.loads(r.stdout)
+                results.append({"file": epub_path, "status": vdata.get("status", "unknown"),
+                               "errors": vdata.get("errors", 0)})
+            except json.JSONDecodeError:
+                results.append({"file": epub_path, "status": "error", "errors": -1})
+
+        elif args.command == "metadata":
+            os.makedirs(args.output_dir, exist_ok=True)
+            out_epub = os.path.join(args.output_dir, os.path.basename(epub_path))
+            extra = []
+            if args.set_author:
+                extra += ["--author", args.set_author]
+            if args.set_title:
+                extra += ["--title", args.set_title]
+            r = run_script("epub-edit", "metadata", epub_path, *extra, "--output", out_epub)
+            results.append({"file": epub_path, "output": out_epub, "success": r.returncode == 0})
+
+        elif args.command == "info":
+            r = run_script("epub-info", epub_path, "--json")
+            try:
+                idata = json.loads(r.stdout)
+                results.append({"file": epub_path, "title": idata.get("metadata", {}).get("title", ""),
+                               "manifest_count": idata.get("manifest_count", 0)})
+            except json.JSONDecodeError:
+                results.append({"file": epub_path, "error": "parse failed"})
+
+    # Summary
+    success = sum(1 for r in results if r.get("success", True))
+    summary = {"command": args.command, "total": len(epub_files), "results": results}
+    emit(summary, f"\n{success}/{len(epub_files)} processed successfully")
+
+
+if __name__ == "__main__":
+    main()

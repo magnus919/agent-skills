@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+"""epub-cover — Generate or wrap a cover image for an EPUB.
+
+Usage:
+  epub-cover wrap <book.epub> --image cover.png [--output out.epub] [--in-place] [--json] [--dry-run]
+
+Creates an XHTML wrapper page for the cover image and adds it to the spine
+as the first item. Apple Books requires the cover to be an XHTML page in
+the spine, not a raw image reference.
+
+Examples:
+  epub-cover wrap book.epub --image cover.png --output with-cover.epub
+  epub-cover wrap book.epub --image cover.png --in-place --json
+
+Dependencies: epublib (pip install epublib)
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+IN_PLACE = False
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def resolve_output(original, output_flag):
+    if IN_PLACE:
+        return original
+    return output_flag or original.replace('.epub', '-with-cover.epub')
+
+
+def main():
+    global DRY_RUN, JSON_OUTPUT, IN_PLACE
+
+    parser = argparse.ArgumentParser(
+        description='Wrap a cover image in an XHTML page for spine rendering.',
+        epilog='Examples:\n  epub-cover wrap book.epub --image cover.png\n  epub-cover wrap book.epub --image cover.png --in-place')
+    sub = parser.add_subparsers(dest='command')
+
+    p = sub.add_parser('wrap', help='Add cover XHTML wrapper to an EPUB')
+    p.add_argument('epub', help='Path to EPUB file')
+    p.add_argument('--image', required=True, help='Path to cover image')
+    p.add_argument('--output', '-o', help='Output path')
+    p.add_argument('--in-place', action='store_true', help='Overwrite original')
+    p.add_argument('--json', action='store_true')
+    p.add_argument('--dry-run', '-n', action='store_true')
+
+    args = parser.parse_args()
+
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    JSON_OUTPUT = getattr(args, 'json', False)
+    DRY_RUN = getattr(args, 'dry_run', False)
+    IN_PLACE = getattr(args, 'in_place', False)
+
+    if not os.path.exists(args.epub):
+        die(f"EPUB not found: {args.epub}")
+    if not os.path.exists(args.image):
+        die(f"Image not found: {args.image}")
+
+    output = resolve_output(args.epub, args.output)
+
+    if DRY_RUN:
+        emit({'status': 'dry_run', 'epub': args.epub, 'image': args.image, 'output': output},
+             f'[dry-run] Would add cover wrapper to {args.epub} → {output}')
+        return
+
+    try:
+        from epublib import EPUB
+    except ImportError:
+        die("epublib required. Install with: python3 -m pip install epublib")
+
+    import shutil
+
+    # Work on a temp copy to avoid EOFError on same-file write
+    tmp = output + '.tmp'
+    shutil.copy(args.epub, tmp)
+
+    cover_ext = os.path.splitext(args.image)[1].lower()
+    mime_map = {'.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
+                 '.gif': 'image/gif', '.svg': 'image/svg+xml'}
+    cover_mime = mime_map.get(cover_ext, 'image/png')
+
+    with EPUB(tmp) as book:
+        # Add cover image as resource
+        from epublib.resources.create import create_resource_from_path
+        cover_img = create_resource_from_path(args.image, f'Images/cover{cover_ext}')
+        img_id = 'cover-img'
+        book.resources.add(resource=cover_img, add_to_spine=False, add_to_toc=False)
+        # Set cover-image property on manifest item
+        for item in book.manifest.items:
+            if item.href == f'Images/cover{cover_ext}':
+                item.add_property('cover-image')
+                img_id = item.id
+                break
+
+        # Create cover XHTML page
+        title = str(book.metadata.title)
+        language = str(book.metadata.language)
+        cover_html = f'''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{language}" lang="{language}">
+<head>
+  <title>Cover</title>
+  <style>body{{margin:0;padding:0;text-align:center;display:flex;align-items:center;justify-content:center;min-height:100vh}}img{{max-width:100%;max-height:100vh;width:auto;height:auto}}</style>
+</head>
+<body>
+  <img src="../Images/cover{cover_ext}" alt="Cover: {title}"/>
+</body>
+</html>'''
+
+        from epublib.resources.create import create_resource
+        cover_page = create_resource(cover_html.encode(), 'Text/cover.xhtml')
+        book.resources.add(resource=cover_page, add_to_spine=True, spine_position=0, add_to_toc=False)
+
+        book.update_manifest_properties()
+        book.write(output)
+
+    if tmp != output:
+        os.remove(tmp)
+
+    emit({'status': 'added', 'output': output, 'cover_image': f'Images/cover{cover_ext}',
+          'cover_page': 'Text/cover.xhtml'},
+         f'Cover wrapper added → {output}')
+
+
+if __name__ == '__main__':
+    main()

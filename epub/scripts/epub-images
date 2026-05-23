@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""epub-images — Extract or list all images from an EPUB file.
+
+Usage:
+  epub-images <file.epub> [--list] [--extract DIR] [--type cover|all] [--json] [--dry-run]
+
+Examples:
+  epub-images book.epub --list --json           # list all images
+  epub-images book.epub --extract images/       # extract all to directory
+  epub-images book.epub --type cover --extract .  # extract only cover image
+
+Dependencies: EbookLib (pip install EbookLib)
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def main():
+    global DRY_RUN, JSON_OUTPUT
+
+    parser = argparse.ArgumentParser(
+        description="Extract or list all images from an EPUB file.",
+        epilog="Examples:\n  epub-images book.epub --list --json\n  epub-images book.epub --extract images/")
+    parser.add_argument("epub", nargs="?", help="Path to EPUB file")
+    parser.add_argument("--list", action="store_true", help="List images only, don't extract")
+    parser.add_argument("--extract", "-e", help="Directory to extract images to")
+    parser.add_argument("--type", choices=["cover", "all"], default="all", help="Image type filter")
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument("--dry-run", "-n", action="store_true")
+    args = parser.parse_args()
+
+    JSON_OUTPUT = args.json
+    DRY_RUN = args.dry_run
+
+    if not args.epub:
+        parser.print_help()
+        sys.exit(1)
+
+    if DRY_RUN:
+        action = "extract to " + args.extract if args.extract else "list"
+        emit({"status": "dry_run", "file": args.epub, "action": action},
+             f"[dry-run] Would {action} images from: {args.epub}")
+        return
+
+    if not os.path.exists(args.epub):
+        die(f"File not found: {args.epub}")
+
+    try:
+        from ebooklib import epub
+        import ebooklib
+    except ImportError:
+        die("EbookLib required. Install with: pip install EbookLib")
+
+    book = epub.read_epub(args.epub)
+
+    # Find all images
+    images = []
+    # Read OPF to check for cover-image property (EbookLib's get_properties is unreliable)
+    import zipfile
+    cover_ids = set()
+    try:
+        with zipfile.ZipFile(args.epub, 'r') as zf:
+            for n in zf.namelist():
+                if n.endswith('.opf'):
+                    opf = zf.read(n).decode('utf-8', errors='replace')
+                    import re
+                    for m in re.finditer(r'<item[^>]+properties="([^"]*cover-image[^"]*)"[^>]*>', opf):
+                        id_match = re.search(r'id="([^"]+)"', m.group())
+                        if id_match:
+                            cover_ids.add(id_match.group(1))
+                    break
+    except Exception:
+        pass
+
+    for item in list(book.get_items_of_type(ebooklib.ITEM_IMAGE)) + list(book.get_items_of_type(ebooklib.ITEM_COVER)):
+        img = {
+            "name": item.get_name(),
+            "id": getattr(item, 'id', None),
+            "media_type": item.media_type if hasattr(item, "media_type") else "unknown",
+            "size_bytes": len(item.get_content()) if hasattr(item, "get_content") else 0,
+            "is_cover": getattr(item, 'id', None) in cover_ids,
+        }
+        images.append(img)
+
+    if args.type == "cover":
+        images = [i for i in images if i.get("is_cover")]
+
+    if args.list:
+        emit({"file": args.epub, "images": images, "count": len(images)})
+    elif args.extract:
+        os.makedirs(args.extract, exist_ok=True)
+        extracted = []
+        for img in images:
+            item = None
+            for it in book.get_items_of_type(ebooklib.ITEM_IMAGE):
+                if it.get_name() == img["name"]:
+                    item = it
+                    break
+            if item and hasattr(item, "get_content"):
+                fname = os.path.basename(img["name"])
+                out_path = os.path.join(args.extract, fname)
+                with open(out_path, "wb") as f:
+                    f.write(item.get_content())
+                extracted.append(out_path)
+        emit({"file": args.epub, "extracted": len(extracted), "directory": args.extract})
+    else:
+        # Default: list
+        emit({"file": args.epub, "images": images, "count": len(images)})
+
+
+if __name__ == "__main__":
+    main()

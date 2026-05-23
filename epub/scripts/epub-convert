@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""epub-convert — Convert EPUB2 to EPUB3.
+
+Usage:
+  epub-convert <file.epub> [--output out.epub] [--validate] [--json] [--dry-run]
+
+Conversion steps:
+  1. Add NAV document (XHTML with <nav epub:type="toc">)
+  2. Add <meta property="dcterms:modified"> to OPF metadata
+  3. Add properties="nav" to NAV manifest item
+  4. Update XHTML namespace to XHTML5
+  5. Keep NCX for backward compatibility
+
+Examples:
+  epub-convert book.epub --output book-v3.epub
+  epub-convert book.epub --validate --json
+
+Dependencies: epublib (pip install epublib), EbookLib (pip install EbookLib)
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+from datetime import datetime, timezone
+
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def warn(msg):
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def convert_epub(input_path, output_path):
+    """Convert EPUB2 to EPUB3 using epublib."""
+    try:
+        from epublib import EPUB
+    except ImportError:
+        die("epublib required. Install with: pip install epublib")
+
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    with EPUB(input_path) as book:
+        changes = []
+
+        # 1. Add dcterms:modified if missing
+        has_modified = any(
+            item.name == "dcterms:modified" for item in book.metadata.items
+        )
+        if not has_modified:
+            book.metadata.add("dcterms:modified", now)
+            changes.append("added dcterms:modified")
+
+        # 2. Check/upgrade NAV
+        has_nav = False
+        for item in book.manifest.items:
+            props = getattr(item, "properties", "") or ""
+            if "nav" in str(props).split():
+                has_nav = True
+                break
+
+        if not has_nav:
+            # Create a basic NAV document from TOC
+            from bs4 import BeautifulSoup
+            nav_html = f"""<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      xml:lang="{book.metadata.language}" lang="{book.metadata.language}">
+<head><title>Navigation</title></head>
+<body>
+  <nav epub:type="toc" id="toc">
+    <h1>Table of Contents</h1>
+    <ol>
+      <li><a href="{list(book.documents)[0].filename if book.documents else 'Text/chapter1.xhtml'}">Start</a></li>
+    </ol>
+  </nav>
+</body>
+</html>"""
+
+            from epublib.resources.create import create_resource
+            nav_resource = create_resource(nav_html.encode(), "nav.xhtml")
+            book.resources.add(
+                resource=nav_resource,
+                add_to_spine=True,
+                spine_position=0,
+                add_to_toc=False,
+            )
+            # Set nav property on manifest item
+            for item in book.manifest.items:
+                if item.href == "nav.xhtml":
+                    item.add_property("nav")
+            changes.append("added NAV document")
+
+        # 3. Update XHTML namespace in documents
+        for doc in book.documents:
+            html_tag = doc.soup.find("html")
+            if html_tag:
+                if "http://www.w3.org/1999/xhtml" not in str(html_tag.get("xmlns", "")):
+                    html_tag["xmlns"] = "http://www.w3.org/1999/xhtml"
+                    changes.append(f"updated namespace in {doc.filename}")
+                if "http://www.idpf.org/2007/ops" not in str(html_tag.get("xmlns:epub", "")):
+                    html_tag["xmlns:epub"] = "http://www.idpf.org/2007/ops"
+
+        # 4. Update OPF version to 3.0
+        pkg = book.package_document.soup.find("package")
+        if pkg:
+            pkg["version"] = "3.0"
+
+        book.write(output_path)
+        return changes
+
+
+def main():
+    global DRY_RUN, JSON_OUTPUT
+
+    parser = argparse.ArgumentParser(
+        description="Convert EPUB2 to EPUB3.",
+        epilog="Examples:\n  epub-convert book.epub --output book-v3.epub\n  epub-convert book.epub --validate --json")
+    parser.add_argument("epub", nargs="?", help="Path to EPUB file")
+    parser.add_argument("--output", "-o", help="Output path (default: <input>-v3.epub)")
+    parser.add_argument("--validate", action="store_true", help="Run EPUBCheck/structural check after conversion")
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument("--dry-run", "-n", action="store_true")
+    args = parser.parse_args()
+
+    JSON_OUTPUT = args.json
+    DRY_RUN = args.dry_run
+
+    if not args.epub:
+        parser.print_help()
+        sys.exit(1)
+    if not os.path.exists(args.epub):
+        die(f"File not found: {args.epub}")
+
+    output = args.output or args.epub.replace(".epub", "-v3.epub")
+
+    if DRY_RUN:
+        emit({"status": "dry_run", "file": args.epub, "output": output},
+             f"[dry-run] Would convert {args.epub} → {output}")
+        return
+
+    changes = convert_epub(args.epub, output)
+
+    result = {"file": args.epub, "output": output, "changes": changes, "count": len(changes)}
+
+    if args.validate:
+        import subprocess
+        script = os.path.join(os.path.dirname(__file__), "epub-validate")
+        r = subprocess.run([sys.executable, script, output, "--json"],
+                          capture_output=True, text=True, timeout=60)
+        try:
+            v = json.loads(r.stdout)
+            result["validation"] = v.get("status", "unknown")
+            result["validation_errors"] = v.get("errors", 0)
+        except json.JSONDecodeError:
+            result["validation"] = "unknown"
+
+    emit(result)
+
+
+if __name__ == "__main__":
+    main()

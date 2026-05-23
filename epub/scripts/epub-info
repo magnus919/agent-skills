@@ -1,0 +1,219 @@
+#!/usr/bin/env python3
+"""epub-info — Dump EPUB structure, metadata, manifest, spine, and TOC as JSON.
+
+Usage:
+  epub-info <file.epub> [--json] [--summary] [--dry-run]
+
+Examples:
+  epub-info book.epub --json
+  epub-info book.epub --summary
+  epub-info book.epub --json | jq '.manifest | length'
+
+Dependencies: EbookLib (pip install EbookLib)
+"""
+
+import argparse
+import json
+import sys
+import os
+import warnings
+
+# Suppress library warnings in --json mode
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def check_epub(path):
+    """Verify the path exists and looks like an EPUB."""
+    if DRY_RUN:
+        return True
+    if not os.path.exists(path):
+        die(f"File not found: {path}")
+    if not path.lower().endswith('.epub'):
+        die(f"File does not appear to be an EPUB (expected .epub extension): {path}")
+    return True
+
+
+def detect_epub_version(book):
+    """Detect EPUB version from package metadata or OPF."""
+    # Method 1: Read OPF version attribute via EbookLib
+    try:
+        for item in book.get_items():
+            name = item.get_name()
+            if name and name.endswith('.opf'):
+                content = item.get_content().decode('utf-8', errors='replace')
+                import re
+                version_match = re.search(r'version="([^"]+)"', content)
+                if version_match:
+                    return version_match.group(1)
+    except Exception:
+        pass
+    # Method 2: Check for EbookLib metadata
+    try:
+        version = book.get_metadata('OPF', 'version')
+        if version:
+            return str(version[0][0])
+    except Exception:
+        pass
+    # Method 3: Check for NAV document (EPUB3 indicator)
+    for item in book.get_items():
+        if hasattr(item, 'get_properties') and 'nav' in (item.get_properties() or []):
+            return "3.0"
+    # Method 4: Check OPF namespace for EPUB2 vs 3
+    try:
+        for item in book.get_items():
+            name = item.get_name()
+            if name and name.endswith('.opf'):
+                content = item.get_content().decode('utf-8', errors='replace')
+                if 'version="2.0"' in content or 'version="2.0.1"' in content:
+                    return "2.0"
+                if 'version="3.0"' in content:
+                    return "3.0"
+    except Exception:
+        pass
+    return "unknown"
+
+
+def get_metadata(book):
+    """Extract Dublin Core metadata."""
+    meta = {}
+    dc_fields = ['title', 'creator', 'language', 'identifier', 'publisher',
+                 'date', 'rights', 'description', 'subject', 'contributor']
+    for field in dc_fields:
+        try:
+            values = book.get_metadata('DC', field)
+            if values:
+                meta[field] = values[0][0] if len(values) == 1 else [v[0] for v in values]
+        except Exception:
+            pass
+    return meta
+
+
+def get_manifest(book):
+    """List all manifest items."""
+    items = []
+    for item in book.get_items():
+        entry = {
+            'id': getattr(item, 'id', None),
+            'file_name': item.get_name(),
+            'media_type': item.media_type if hasattr(item, 'media_type') else 'unknown',
+            'type': str(item.get_type()) if hasattr(item, 'get_type') else 'unknown',
+        }
+        # Include properties if available
+        if hasattr(item, 'get_properties'):
+            props = item.get_properties()
+            if props:
+                entry['properties'] = list(props)
+        # Include href
+        if hasattr(item, 'get_name'):
+            entry['href'] = item.get_name()
+        items.append(entry)
+    return items
+
+
+def get_spine(book):
+    """Get spine reading order."""
+    spine = []
+    try:
+        for item_id, linear in book.spine:
+            spine.append({'idref': item_id, 'linear': linear or 'yes'})
+    except Exception:
+        pass
+    return spine
+
+
+def get_toc(book):
+    """Recursively extract TOC structure."""
+    def _parse_toc(items):
+        result = []
+        if not items:
+            return result
+        for item in items:
+            if isinstance(item, tuple):
+                if len(item) == 2 and isinstance(item[0], str):
+                    # (Section title, children)
+                    result.append({
+                        'type': 'section',
+                        'title': item[0],
+                        'children': _parse_toc(item[1])
+                    })
+            elif hasattr(item, 'title') and hasattr(item, 'href'):
+                result.append({
+                    'type': 'link',
+                    'title': item.title,
+                    'href': item.href
+                })
+        return result
+
+    try:
+        return _parse_toc(book.toc)
+    except Exception:
+        return []
+
+
+def main():
+    global DRY_RUN, JSON_OUTPUT
+
+    parser = argparse.ArgumentParser(
+        description='Dump EPUB structure, metadata, manifest, spine, and TOC as JSON.',
+        epilog='Examples:\n  epub-info book.epub --json\n  epub-info book.epub --summary')
+    parser.add_argument('epub', nargs='?', help='Path to EPUB file')
+    parser.add_argument('--json', action='store_true', help='Output as parseable JSON')
+    parser.add_argument('--summary', action='store_true', help='Compact summary output')
+    parser.add_argument('--dry-run', '-n', action='store_true', help='Preview without reading file')
+    args = parser.parse_args()
+
+    JSON_OUTPUT = args.json or args.summary
+    DRY_RUN = args.dry_run
+
+    if not args.epub:
+        parser.print_help()
+        sys.exit(1)
+
+    check_epub(args.epub)
+
+    if DRY_RUN:
+        emit({'status': 'dry_run', 'file': args.epub},
+             f'[dry-run] Would read EPUB: {args.epub}')
+        return
+
+    try:
+        from ebooklib import epub
+    except ImportError:
+        die("EbookLib is required. Install with: pip install EbookLib")
+
+    book = epub.read_epub(args.epub)
+
+    info = {
+        'file': args.epub,
+        'epub_version': detect_epub_version(book),
+        'metadata': get_metadata(book),
+        'manifest': get_manifest(book),
+        'manifest_count': len(list(book.get_items())),
+        'spine': get_spine(book),
+        'toc': get_toc(book),
+    }
+
+    if args.summary:
+        info['manifest'] = [{'id': m['id'], 'href': m['href'], 'media_type': m['media_type']}
+                            for m in info['manifest']]
+
+    emit(info, json.dumps(info, indent=2, default=str))
+
+
+if __name__ == '__main__':
+    main()
