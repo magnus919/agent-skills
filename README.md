@@ -28,6 +28,10 @@ Act as a virtual data architect. Discover data assets, assess maturity, evaluate
 
 PhD-level expertise in data science, statistics, and machine learning. Rigorous statistical methodology, experimental design, causal inference, Bayesian analysis, model selection and diagnostics, and research-grade communication. Ships five analysis scripts (power analysis, assumption diagnostics, model comparison, effect size calculator, experimental design generator) with Python + R dual-language support.
 
+### [epub](epub/SKILL.md)
+
+EPUB file format expert — read, write, and edit EPUB2/EPUB3 ebooks. Extract text, metadata, structure, and knowledge into formatted output (JSON, vault atoms, memory entries). Create valid EPUBs from scratch. Validate against the EPUB specification. Five CLI scripts with a capability-discovery pipeline for portable knowledge extraction across any agent harness.
+
 ### [forgejo-cli](forgejo-cli/SKILL.md)
 
 Forgejo or Gitea self-hosted Git forge from the terminal. List repositories, search repos, manage issues, and view pull requests.
