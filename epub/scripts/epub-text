@@ -1,0 +1,193 @@
+#!/usr/bin/env python3
+"""epub-text — Extract clean reading-order text from EPUB chapters.
+
+Usage:
+  epub-text <file.epub> [--json] [--chapters] [--output PATH] [--format FORMAT]
+
+Examples:
+  epub-text book.epub                          # plain text to stdout
+  epub-text book.epub --json                   # JSON with per-chapter array
+  epub-text book.epub --chapters               # one file per chapter
+  epub-text book.epub --output book.txt        # single output file
+  epub-text book.epub --format markdown        # markdown output
+
+Dependencies: EbookLib (pip install EbookLib), beautifulsoup4 (pip install beautifulsoup4)
+"""
+
+import argparse
+import json
+import os
+import re
+import sys
+import warnings
+
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+QUIET = False
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def warn(msg):
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def html_to_text(html_content, fmt='text'):
+    """Extract plain text from HTML/XHTML content."""
+    try:
+        from bs4 import BeautifulSoup
+    except ImportError:
+        die("BeautifulSoup4 is required. Install with: pip install beautifulsoup4")
+
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    # Remove script and style elements
+    for element in soup(['script', 'style', 'nav']):
+        element.decompose()
+
+    if fmt == 'markdown':
+        # Basic markdown conversion
+        text = soup.get_text('\n\n', strip=True)
+        return text
+    else:
+        # Plain text with paragraph breaks
+        paragraphs = []
+        for p in soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']):
+            tag = p.name
+            content = p.get_text(strip=True)
+            if tag.startswith('h'):
+                paragraphs.append(f"\n{'#' * int(tag[1])} {content}\n")
+            else:
+                paragraphs.append(content)
+        return '\n\n'.join(paragraphs)
+
+
+def check_epub(path):
+    if DRY_RUN:
+        return True
+    if not os.path.exists(path):
+        die(f"File not found: {path}")
+    if not path.lower().endswith('.epub'):
+        die(f"File does not appear to be an EPUB: {path}")
+    return True
+
+
+def main():
+    global DRY_RUN, JSON_OUTPUT
+
+    parser = argparse.ArgumentParser(
+        description='Extract clean reading-order text from EPUB chapters.',
+        epilog='Examples:\n  epub-text book.epub\n  epub-text book.epub --json\n  epub-text book.epub --chapters')
+    parser.add_argument('epub', nargs='?', help='Path to EPUB file')
+    parser.add_argument('--json', action='store_true', help='Output as JSON')
+    parser.add_argument('--chapters', action='store_true', help='Output one file per chapter')
+    parser.add_argument('--output', '-o', help='Output file path (single file)')
+    parser.add_argument('--format', choices=['text', 'markdown'], default='text',
+                        help='Output format (default: text)')
+    parser.add_argument('--dry-run', '-n', action='store_true', help='Preview without reading file')
+    args = parser.parse_args()
+
+    JSON_OUTPUT = args.json
+    DRY_RUN = args.dry_run
+
+    if not args.epub:
+        parser.print_help()
+        sys.exit(1)
+
+    check_epub(args.epub)
+
+    if DRY_RUN:
+        emit({'status': 'dry_run', 'file': args.epub},
+             f'[dry-run] Would extract text from: {args.epub}')
+        return
+
+    try:
+        from ebooklib import epub
+        import ebooklib
+    except ImportError:
+        die("EbookLib is required. Install with: pip install EbookLib")
+
+    book = epub.read_epub(args.epub)
+
+    # Get spine order
+    spine_ids = []
+    try:
+        spine_ids = [item_id for item_id, _ in book.spine]
+    except Exception:
+        pass
+
+    # Map of items by id
+    item_map = {}
+    for item in book.get_items():
+        iid = getattr(item, 'id', None)
+        if iid:
+            item_map[iid] = item
+
+    # Extract text from spine-ordered documents
+    chapters = []
+    all_text = []
+
+    for idx, item_id in enumerate(spine_ids):
+        item = item_map.get(item_id)
+        if not item:
+            continue
+        if not hasattr(item, 'get_type') or item.get_type() != ebooklib.ITEM_DOCUMENT:
+            continue
+
+        try:
+            content = item.get_content().decode('utf-8', errors='replace')
+        except Exception:
+            warn(f"Could not decode content for {item_id}")
+            continue
+
+        text = html_to_text(content, args.format)
+        title = getattr(item, 'title', f'Chapter {idx + 1}') or f'Chapter {idx + 1}'
+
+        chapters.append({
+            'index': idx,
+            'id': item_id,
+            'title': title,
+            'file_name': item.get_name(),
+            'text': text,
+            'char_count': len(text),
+        })
+        all_text.append(f"# {title}\n\n{text}")
+
+    if args.output:
+        with open(args.output, 'w', encoding='utf-8') as f:
+            f.write('\n\n'.join(all_text))
+        emit({'status': 'written', 'output': args.output, 'chapters': len(chapters)},
+             f"Written {len(chapters)} chapters to {args.output}")
+    elif args.chapters:
+        base = os.path.splitext(os.path.basename(args.epub))[0]
+        created = []
+        for ch in chapters:
+            fname = f"{base}__{ch['index']:02d}__{ch['file_name'].rsplit('/', 1)[-1].replace('.xhtml', '.txt')}"
+            with open(fname, 'w', encoding='utf-8') as f:
+                f.write(f"# {ch['title']}\n\n{ch['text']}")
+            created.append(fname)
+        emit({'status': 'written', 'files': created},
+             f"Written {len(created)} chapter files: {', '.join(created)}")
+    elif JSON_OUTPUT:
+        emit({'file': args.epub, 'chapters': chapters, 'total_chars': sum(c['char_count'] for c in chapters)})
+    else:
+        for ch in chapters:
+            print(f"# {ch['title']}")
+            print(ch['text'])
+            print()
+
+
+if __name__ == '__main__':
+    main()

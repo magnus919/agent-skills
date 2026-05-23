@@ -30,7 +30,12 @@ PhD-level expertise in data science, statistics, and machine learning. Rigorous 
 
 ### [epub](epub/SKILL.md)
 
-EPUB file format expert — read, write, and edit EPUB2/EPUB3 ebooks. Extract text, metadata, structure, and knowledge into formatted output (JSON, vault atoms, memory entries). Create valid EPUBs from scratch. Validate against the EPUB specification. Five CLI scripts with a capability-discovery pipeline for portable knowledge extraction across any agent harness.
+EPUB file format expert — read, write, edit, convert, and repair EPUB2/EPUB3 ebooks.
+Ten CLI scripts: structure inspection, text extraction, knowledge extraction (LLM mode
+via env vars), scaffold creation, surgical editing, image extraction, batch processing,
+EPUB2→3 conversion, repair, and validation. Eight reference files covering format
+internals, Python libraries, spec/validation, tutorials, capability discovery,
+fixed-layout, accessibility, and media overlays. Portable across any AgentSkills harness.
 
 ### [forgejo-cli](forgejo-cli/SKILL.md)
 

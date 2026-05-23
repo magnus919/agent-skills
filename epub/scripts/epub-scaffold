@@ -1,0 +1,298 @@
+#!/usr/bin/env python3
+"""epub-scaffold — Create a minimal valid EPUB3 from scratch.
+
+All content lives inside OEBPS/ — required for Apple Books compatibility.
+Chapters go in OEBPS/Text/, CSS in OEBPS/Styles/, images in OEBPS/Images/.
+
+Usage:
+  epub-scaffold --title "Title" --author "Name" [--language en] [--output FILE]
+                [--chapters N] [--cover IMAGE] [--toc-visible/--toc-hidden]
+                [--json] [--dry-run]
+
+Examples:
+  epub-scaffold --title "My Book" --author "Jane Doe" --output book.epub
+  epub-scaffold --title "Novel" --author "Me" --chapters 12 --json
+  epub-scaffold --title "Guide" --author "Me" --cover cover.jpg --dry-run
+  epub-scaffold --title "Guide" --author "Me" --cover cover.jpg --toc-hidden
+
+Dependencies: Python stdlib only (no external packages required).
+"""
+
+import argparse
+import json
+import sys
+import os
+import zipfile
+import uuid
+import warnings
+
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def make_epub(output_path, title, author, language, num_chapters, cover_path, toc_visible):
+    """Create a minimal valid EPUB3 file with Apple Books compatibility."""
+
+    book_id = f"urn:uuid:{uuid.uuid4()}"
+    nav_linear = "yes" if toc_visible else "no"
+    cover_ext = None
+    cover_mime = None
+
+    if cover_path:
+        cover_ext = os.path.splitext(cover_path)[1].lower()
+        mime_map = {'.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
+                     '.gif': 'image/gif', '.svg': 'image/svg+xml'}
+        cover_mime = mime_map.get(cover_ext, 'image/png')
+
+    # ── OPF ──
+    opf_parts = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="book-id">',
+        '  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">',
+        f'    <dc:identifier id="book-id">{book_id}</dc:identifier>',
+        f'    <dc:title>{_xml_escape(title)}</dc:title>',
+        f'    <dc:creator>{_xml_escape(author)}</dc:creator>',
+        f'    <dc:language>{language}</dc:language>',
+        f'    <meta property="dcterms:modified">{_now_iso()}</meta>',
+        '  </metadata>',
+        '  <manifest>',
+        '    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>',
+        '    <item id="css" href="Styles/default.css" media-type="text/css"/>',
+    ]
+
+    if cover_path:
+        opf_parts.append(f'    <item id="cover-img" href="Images/cover{cover_ext}" media-type="{cover_mime}" properties="cover-image"/>')
+        opf_parts.append(f'    <item id="cover-page" href="Text/cover.xhtml" media-type="application/xhtml+xml"/>')
+
+    chapter_nav_items = []
+    for i in range(1, num_chapters + 1):
+        ch_id = f"chapter{i}"
+        ch_file = f"Text/chapter{i}.xhtml"
+        opf_parts.append(f'    <item id="{ch_id}" href="{ch_file}" media-type="application/xhtml+xml"/>')
+        chapter_nav_items.append(f'      <li><a href="{ch_file}">Chapter {i}</a></li>')
+
+    opf_parts.append('  </manifest>')
+    opf_parts.append('  <spine>')
+
+    if cover_path:
+        opf_parts.append('    <itemref idref="cover-page"/>')
+    opf_parts.append(f'    <itemref idref="nav" linear="{nav_linear}"/>')
+    for i in range(1, num_chapters + 1):
+        opf_parts.append(f'    <itemref idref="chapter{i}"/>')
+
+    opf_parts.append('  </spine>')
+    opf_parts.append('</package>')
+    opf = '\n'.join(opf_parts)
+
+    # ── NAV ──
+    nav = f'''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="{language}" lang="{language}">
+<head>
+  <title>Contents</title>
+  <link rel="stylesheet" href="Styles/default.css" type="text/css"/>
+</head>
+<body>
+  <nav epub:type="toc" id="toc">
+    <h1>Contents</h1>
+    <ol>
+{chr(10).join(chapter_nav_items)}
+    </ol>
+  </nav>
+</body>
+</html>'''
+
+    # ── Container ──
+    container = '''<?xml version="1.0" encoding="UTF-8"?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+  <rootfiles>
+    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
+  </rootfiles>
+</container>'''
+
+    # ── Chapters ──
+    chapters_content = {}
+    for i in range(1, num_chapters + 1):
+        chapters_content[f"OEBPS/Text/chapter{i}.xhtml"] = f'''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{language}" lang="{language}">
+<head>
+  <title>Chapter {i}</title>
+  <link rel="stylesheet" href="../Styles/default.css" type="text/css"/>
+</head>
+<body>
+  <h1>Chapter {i}</h1>
+  <p>Content for chapter {i}.</p>
+</body>
+</html>'''
+
+    # ── Cover XHTML wrapper ──
+    if cover_path:
+        chapters_content[f"OEBPS/Text/cover.xhtml"] = f'''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{language}" lang="{language}">
+<head>
+  <title>Cover</title>
+  <style>body{{margin:0;padding:0;text-align:center;display:flex;align-items:center;justify-content:center;min-height:100vh}}img{{max-width:100%;max-height:100vh;width:auto;height:auto}}</style>
+</head>
+<body>
+  <img src="../Images/cover{cover_ext}" alt="Cover: {_xml_escape(title)}"/>
+</body>
+</html>'''
+
+    # ── ZIP ──
+    with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr(zipfile.ZipInfo('mimetype'), 'application/epub+zip',
+                     compress_type=zipfile.ZIP_STORED)
+        zf.writestr('META-INF/container.xml', container)
+        zf.writestr('OEBPS/content.opf', opf)
+        zf.writestr('OEBPS/nav.xhtml', nav)
+        for path, content in chapters_content.items():
+            zf.writestr(path, content)
+        zf.writestr('OEBPS/Styles/default.css', _default_stylesheet())
+        if cover_path and os.path.exists(cover_path):
+            zf.write(cover_path, f'OEBPS/Images/cover{cover_ext}')
+
+    return output_path
+
+
+def _now_iso():
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+def _xml_escape(s):
+    return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+
+def _default_stylesheet():
+    """Apple Books compatible default CSS — no deprecated properties."""
+    return '''/* Default EPUB stylesheet — Apple Books compatible */
+body {
+    font-family: serif;
+    font-size: 1em;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0 0.5em;
+    color: #1a1a1a;
+}
+
+h1 {
+    font-size: 1.5em;
+    margin: 0.8em 0 0.4em 0;
+    line-height: 1.3;
+}
+
+h2 {
+    font-size: 1.25em;
+    margin: 0.8em 0 0.3em 0;
+    line-height: 1.3;
+}
+
+h3 {
+    font-size: 1.1em;
+    margin: 0.6em 0 0.2em 0;
+}
+
+p {
+    margin: 0 0 0.7em 0;
+    orphans: 2;
+    widows: 2;
+}
+
+ul, ol {
+    margin: 0.4em 0;
+    padding-left: 1.2em;
+}
+
+li {
+    margin-bottom: 0.2em;
+}
+
+strong { font-weight: bold; }
+em { font-style: italic; }
+
+blockquote {
+    margin: 0.8em 0;
+    padding: 0.4em 0.8em;
+    border-left: 3px solid #ccc;
+    font-style: italic;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+'''
+
+
+def main():
+    global DRY_RUN, JSON_OUTPUT
+
+    parser = argparse.ArgumentParser(
+        description='Create a minimal valid EPUB3 from scratch.',
+        epilog='Examples:\n  epub-scaffold --title "My Book" --author "Jane Doe"\n  epub-scaffold --title "Novel" --author "Me" --chapters 12')
+    parser.add_argument('--title', required=True, help='Book title')
+    parser.add_argument('--author', required=True, help='Author name')
+    parser.add_argument('--language', default='en', help='Language code (default: en)')
+    parser.add_argument('--output', '-o', default='book.epub', help='Output file path (default: book.epub)')
+    parser.add_argument('--chapters', type=int, default=1, help='Number of empty chapters (default: 1)')
+    parser.add_argument('--cover', help='Path to cover image (JPG, PNG, GIF, SVG)')
+    parser.add_argument('--toc-visible', action='store_true', default=True, help='ToC visible in reading flow (default)')
+    parser.add_argument('--toc-hidden', action='store_true', help='ToC hidden from reading flow (accessible via app browser)')
+    parser.add_argument('--json', action='store_true', help='Output as JSON')
+    parser.add_argument('--dry-run', '-n', action='store_true', help='Preview without creating file')
+    args = parser.parse_args()
+
+    JSON_OUTPUT = args.json
+    DRY_RUN = args.dry_run
+
+    toc_visible = not args.toc_hidden
+
+    if args.cover and not args.dry_run and not os.path.exists(args.cover):
+        die(f"Cover image not found: {args.cover}")
+
+    if DRY_RUN:
+        emit({
+            'status': 'dry_run',
+            'title': args.title,
+            'author': args.author,
+            'language': args.language,
+            'output': args.output,
+            'chapters': args.chapters,
+            'cover': args.cover or None,
+            'toc_visible': toc_visible,
+        }, f'[dry-run] Would create EPUB: {args.output}')
+        return
+
+    output = make_epub(args.output, args.title, args.author, args.language,
+                       args.chapters, args.cover, toc_visible)
+
+    emit({
+        'status': 'created',
+        'output': output,
+        'title': args.title,
+        'author': args.author,
+        'language': args.language,
+        'chapters': args.chapters,
+        'has_cover': bool(args.cover),
+        'toc_visible': toc_visible,
+    }, f'Created EPUB: {output} ({args.chapters} chapter(s))')
+
+
+if __name__ == '__main__':
+    main()

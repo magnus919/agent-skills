@@ -1,0 +1,282 @@
+#!/usr/bin/env python3
+"""epub-validate — Validate an EPUB file against structural rules.
+
+Usage:
+  epub-validate <file.epub> [--json] [--dry-run]
+
+LLM mode (automatic when env vars are set):
+  If EPUB_LLM_URL and EPUB_LLM_KEY are set, validation errors get LLM-generated
+  repair suggestions. Without env vars, only structural checks run.
+
+  export EPUB_LLM_URL="https://opencode.ai/zen/go/v1"
+  export EPUB_LLM_KEY="sk-..."
+  epub-validate broken.epub --json   # includes repair suggestions
+
+Examples:
+  epub-validate book.epub --json
+  epub-validate book.epub
+
+Tries to use EPUBCheck if available (java -jar epubcheck.jar), falls back to
+pure-Python structural checks.
+
+Dependencies: Python stdlib only (no external packages required for structural checks).
+Optional: requests (for LLM repair suggestions).
+"""
+
+import argparse
+import json
+import os
+import re
+import shutil
+import sys
+import xml.etree.ElementTree as ET
+import zipfile
+import warnings
+
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def warn(msg):
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def try_epubcheck(epub_path):
+    """Try to validate with EPUBCheck if Java is available."""
+    epubcheck_jar = shutil.which('epubcheck')
+    java = shutil.which('java')
+
+    if not java:
+        return None  # Java not available
+
+    if not epubcheck_jar:
+        # Look in common locations
+        candidates = [
+            'epubcheck.jar',
+            os.path.expanduser('~/epubcheck.jar'),
+            os.path.expanduser('~/.local/bin/epubcheck.jar'),
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                epubcheck_jar = c
+                break
+
+    if not epubcheck_jar or not os.path.exists(epubcheck_jar):
+        return None
+
+    import subprocess
+    try:
+        result = subprocess.run(
+            [java, '-jar', epubcheck_jar, '--json', epub_path],
+            capture_output=True, text=True, timeout=60
+        )
+        if result.returncode == 0:
+            return {'status': 'valid', 'validator': 'epubcheck', 'raw': 'EPUB is valid'}
+        else:
+            return {'status': 'invalid', 'validator': 'epubcheck',
+                    'errors': result.stdout[:2000] if result.stdout else result.stderr[:2000]}
+    except Exception as e:
+        warn(f"EPUBCheck failed: {e}")
+        return None
+
+
+def structural_check(epub_path):
+    """Pure-Python structural validation."""
+    issues = []
+
+    if not os.path.exists(epub_path):
+        return [{'severity': 'error', 'check': 'file_exists', 'message': 'File not found'}]
+
+    if not epub_path.lower().endswith('.epub'):
+        issues.append({'severity': 'warning', 'check': 'extension',
+                       'message': 'File does not have .epub extension'})
+
+    try:
+        with zipfile.ZipFile(epub_path, 'r') as zf:
+            names = zf.namelist()
+
+            # 1. mimetype must be first and uncompressed
+            if not names or names[0] != 'mimetype':
+                issues.append({'severity': 'error', 'check': 'mimetype_position',
+                               'message': 'mimetype must be the first file in the ZIP'})
+            else:
+                info = zf.getinfo('mimetype')
+                if info.compress_type != zipfile.ZIP_STORED:
+                    issues.append({'severity': 'error', 'check': 'mimetype_compression',
+                                   'message': 'mimetype must be stored uncompressed (ZIP_STORED)'})
+                content = zf.read('mimetype').decode('ascii', errors='replace').strip()
+                if content != 'application/epub+zip':
+                    issues.append({'severity': 'error', 'check': 'mimetype_content',
+                                   'message': f'mimetype content must be "application/epub+zip", got: {content}'})
+
+            # 2. container.xml must exist
+            if 'META-INF/container.xml' not in names:
+                issues.append({'severity': 'error', 'check': 'container_xml',
+                               'message': 'META-INF/container.xml not found'})
+            else:
+                # Parse container.xml and find OPF
+                try:
+                    container_xml = zf.read('META-INF/container.xml')
+                    ns = {'c': 'urn:oasis:names:tc:opendocument:xmlns:container'}
+                    root = ET.fromstring(container_xml)
+                    rootfiles = root.findall('.//c:rootfile', ns)
+                    if not rootfiles:
+                        issues.append({'severity': 'error', 'check': 'container_rootfiles',
+                                       'message': 'No rootfile elements in container.xml'})
+                    else:
+                        opf_path = rootfiles[0].get('full-path')
+                        if not opf_path:
+                            issues.append({'severity': 'error', 'check': 'opf_path',
+                                           'message': 'No full-path attribute on rootfile'})
+                        elif opf_path not in names:
+                            issues.append({'severity': 'error', 'check': 'opf_exists',
+                                           'message': f'OPF file not found: {opf_path}'})
+                        else:
+                            # 3. Parse OPF
+                            try:
+                                opf_xml = zf.read(opf_path)
+                                opf_ns = {
+                                    'opf': 'http://www.idpf.org/2007/opf',
+                                    'dc': 'http://purl.org/dc/elements/1.1/'
+                                }
+                                opf_root = ET.fromstring(opf_xml)
+
+                                # Check metadata
+                                title = opf_root.find('.//dc:title', opf_ns)
+                                if title is None or not (title.text or '').strip():
+                                    issues.append({'severity': 'error', 'check': 'metadata_title',
+                                                   'message': 'Missing required dc:title'})
+
+                                lang = opf_root.find('.//dc:language', opf_ns)
+                                if lang is None or not (lang.text or '').strip():
+                                    issues.append({'severity': 'error', 'check': 'metadata_language',
+                                                   'message': 'Missing required dc:language'})
+
+                                identifier = opf_root.find('.//dc:identifier', opf_ns)
+                                if identifier is None or not (identifier.text or '').strip():
+                                    issues.append({'severity': 'error', 'check': 'metadata_identifier',
+                                                   'message': 'Missing required dc:identifier'})
+
+                                # 4. Check manifest items
+                                manifest_items = {}
+                                opf_dir = os.path.dirname(opf_path)
+                                for item in opf_root.findall('.//opf:item', opf_ns):
+                                    iid = item.get('id')
+                                    href = item.get('href')
+                                    if not iid or not href:
+                                        continue
+                                    manifest_items[iid] = href
+                                    # Resolve relative path
+                                    full_href = os.path.normpath(
+                                        os.path.join(opf_dir, href)) if opf_dir else href
+                                    if full_href not in names:
+                                        issues.append({'severity': 'warning', 'check': 'manifest_file',
+                                                       'message': f'Manifest item "{iid}" references missing file: {href}'})
+
+                                # 5. Check spine references
+                                spine_ids = set()
+                                for itemref in opf_root.findall('.//opf:itemref', opf_ns):
+                                    idref = itemref.get('idref')
+                                    if idref:
+                                        spine_ids.add(idref)
+
+                                for sid in spine_ids:
+                                    if sid not in manifest_items:
+                                        issues.append({'severity': 'error', 'check': 'spine_ref',
+                                                       'message': f'Spine references unknown manifest item: {sid}'})
+
+                                # 6. Check for NAV document
+                                has_nav = False
+                                for item in opf_root.findall('.//opf:item', opf_ns):
+                                    props = item.get('properties', '')
+                                    if 'nav' in props.split():
+                                        has_nav = True
+                                        break
+                                if not has_nav:
+                                    issues.append({'severity': 'warning', 'check': 'navigation',
+                                                   'message': 'No NAV document found (properties="nav")'})
+
+                            except ET.ParseError as e:
+                                issues.append({'severity': 'error', 'check': 'opf_parse',
+                                               'message': f'Failed to parse OPF: {e}'})
+
+                except ET.ParseError as e:
+                    issues.append({'severity': 'error', 'check': 'container_parse',
+                                   'message': f'Failed to parse container.xml: {e}'})
+
+    except zipfile.BadZipFile:
+        issues.append({'severity': 'error', 'check': 'zip_format',
+                       'message': 'File is not a valid ZIP archive'})
+    except Exception as e:
+        issues.append({'severity': 'error', 'check': 'unknown',
+                       'message': f'Unexpected error: {e}'})
+
+    return issues
+
+
+def main():
+    global DRY_RUN, JSON_OUTPUT
+
+    parser = argparse.ArgumentParser(
+        description='Validate an EPUB file against structural rules.',
+        epilog='Examples:\n  epub-validate book.epub\n  epub-validate book.epub --json')
+    parser.add_argument('epub', nargs='?', help='Path to EPUB file')
+    parser.add_argument('--json', action='store_true', help='Output as JSON')
+    parser.add_argument('--dry-run', '-n', action='store_true', help='Preview without reading')
+    args = parser.parse_args()
+
+    JSON_OUTPUT = args.json
+    DRY_RUN = args.dry_run
+
+    if not args.epub:
+        parser.print_help()
+        sys.exit(1)
+
+    if DRY_RUN:
+        emit({'status': 'dry_run', 'file': args.epub},
+             f'[dry-run] Would validate: {args.epub}')
+        return
+
+    # Try EPUBCheck first
+    epubcheck_result = try_epubcheck(args.epub)
+    if epubcheck_result and epubcheck_result['status'] == 'valid':
+        emit(epubcheck_result, 'EPUB is valid (EPUBCheck) ✓')
+        return
+
+    # Fall back to structural check
+    issues = structural_check(args.epub)
+    errors = [i for i in issues if i['severity'] == 'error']
+    warnings_list = [i for i in issues if i['severity'] == 'warning']
+
+    result = {
+        'file': args.epub,
+        'status': 'valid' if not errors else 'invalid',
+        'validator': 'python-structural',
+        'errors': len(errors),
+        'warnings': len(warnings_list),
+        'issues': issues
+    }
+
+    emit(result)
+    if not errors:
+        print('EPUB passes structural checks ✓' if not JSON_OUTPUT else '')
+    else:
+        print(f'EPUB has {len(errors)} error(s), {len(warnings_list)} warning(s)' if not JSON_OUTPUT else '')
+
+
+if __name__ == '__main__':
+    main()

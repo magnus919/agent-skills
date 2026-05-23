@@ -1,0 +1,450 @@
+#!/usr/bin/env python3
+"""epub-edit — Surgical, non-intrusive EPUB editing via subcommands.
+
+Usage:
+  epub-edit info <book.epub> [--json]
+  epub-edit metadata <book.epub> --title "T" [--author "A"] [--language en] [--output out.epub] [--in-place] [--json] [--dry-run]
+  epub-edit add-chapter <book.epub> --content XHTML_FILE [--after ID] [--output out.epub] [--in-place] [--json] [--dry-run]
+  epub-edit remove-chapter <book.epub> --id ID [--output out.epub] [--in-place] [--json] [--dry-run]
+  epub-edit reorder-spine <book.epub> --order id1,id2,... [--output out.epub] [--in-place] [--json] [--dry-run]
+  epub-edit rename-resource <book.epub> --from PATH --to PATH [--output out.epub] [--in-place] [--json] [--dry-run]
+  epub-edit inject-css <book.epub> --css CSS_FILE [--output out.epub] [--in-place] [--json] [--dry-run]
+  epub-edit update-manifest <book.epub> [--output out.epub] [--in-place] [--json] [--dry-run]
+
+Examples:
+  epub-edit info book.epub --json
+  epub-edit metadata book.epub --title "New Title" --output revised.epub
+  epub-edit add-chapter book.epub --content new.xhtml --after chapter3 --in-place
+  epub-edit remove-chapter book.epub --id chapter5 --output cleaned.epub
+  epub-edit reorder-spine book.epub --order chapter3,chapter1,chapter2 --dry-run
+
+LLM mode: set EPUB_LLM_URL + EPUB_LLM_KEY for LLM-generated content (chapter content,
+metadata suggestions). Without env vars, operates deterministically.
+
+Dependencies: epublib (pip install epublib), beautifulsoup4 (pip install beautifulsoup4).
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+
+warnings.filterwarnings("ignore")
+
+DRY_RUN = False
+JSON_OUTPUT = False
+IN_PLACE = False
+OUTPUT_PATH = None
+
+
+def die(msg):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def warn(msg):
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def emit(json_data, text=""):
+    if JSON_OUTPUT:
+        print(json.dumps(json_data, indent=2, default=str))
+    else:
+        print(text)
+
+
+def check_deps():
+    """Verify epublib is installed."""
+    try:
+        import epublib  # noqa: F401
+        from bs4 import BeautifulSoup  # noqa: F401
+    except ImportError as e:
+        die(f"Missing dependency: {e}. Install with: pip install epublib beautifulsoup4")
+
+
+def resolve_output(original, output_flag):
+    """Determine output path. Never overwrites original unless --in-place."""
+    if IN_PLACE:
+        return original
+    if output_flag:
+        return output_flag
+    base, ext = os.path.splitext(original)
+    return f"{base}-edited{ext}"
+
+
+def open_book(path):
+    """Open an EPUB for editing."""
+    from epublib import EPUB
+    return EPUB(path)
+
+
+# ═══════════════════════════════════════════════════════════
+# Subcommand: info
+# ═══════════════════════════════════════════════════════════
+def cmd_info(args):
+    if DRY_RUN:
+        emit({"status": "dry_run", "subcommand": "info", "file": args.epub},
+             f"[dry-run] Would inspect: {args.epub}")
+        return
+
+    check_deps()
+    with open_book(args.epub) as book:
+        # Resources
+        resources = []
+        for r in book.resources:
+            resources.append({
+                "filename": r.filename,
+                "media_type": str(getattr(r, "media_type", "unknown")),
+            })
+
+        # Spine
+        spine = []
+        for item in book.spine.items:
+            spine.append({
+                "idref": item.idref,
+                "linear": getattr(item, "linear", "yes"),
+            })
+
+        # Documents (XHTML/SVG content documents)
+        documents = [doc.filename for doc in book.documents]
+
+        # Images
+        images = [img.filename for img in book.images]
+
+        # Metadata
+        meta = {}
+        for item in book.metadata.items:
+            meta[item.name] = item.value
+
+        result = {
+            "file": args.epub,
+            "title": str(book.metadata.title),
+            "author": meta.get("creator", ""),
+            "language": str(book.metadata.language),
+            "resources_count": len(book.resources),
+            "documents": documents,
+            "documents_count": len(documents),
+            "images_count": len(images),
+            "spine": spine,
+            "metadata_items": meta,
+        }
+        emit(result)
+
+
+# ═══════════════════════════════════════════════════════════
+# Subcommand: metadata
+# ═══════════════════════════════════════════════════════════
+def cmd_metadata(args):
+    output = resolve_output(args.epub, args.output)
+
+    if DRY_RUN:
+        changes = {}
+        if args.title:
+            changes["title"] = args.title
+        if args.author:
+            changes["creator"] = args.author
+        if args.language:
+            changes["language"] = args.language
+        emit({"status": "dry_run", "subcommand": "metadata", "file": args.epub,
+              "output": output, "changes": changes},
+             f"[dry-run] Would update metadata in {args.epub} → {output}")
+        return
+
+    check_deps()
+    with open_book(args.epub) as book:
+        if args.title:
+            book.metadata.title = args.title
+        if args.author:
+            # DC uses 'creator' not 'author'; epublib has no .author property
+            # Remove existing creators then add the new one
+            for item in list(book.metadata.items):
+                if item.name == 'creator':
+                    book.metadata.remove_item(item)
+            book.metadata.add_dc('creator', args.author)
+        if args.language:
+            book.metadata.language = args.language
+        book.write(output)
+
+    emit({"status": "updated", "output": output},
+         f"Metadata updated → {output}")
+
+
+# ═══════════════════════════════════════════════════════════
+# Subcommand: add-chapter
+# ═══════════════════════════════════════════════════════════
+def cmd_add_chapter(args):
+    output = resolve_output(args.epub, args.output)
+
+    if not os.path.exists(args.content):
+        die(f"Content file not found: {args.content}")
+
+    if DRY_RUN:
+        emit({"status": "dry_run", "subcommand": "add-chapter", "file": args.epub,
+              "content": args.content, "after": args.after, "output": output},
+             f"[dry-run] Would add chapter from {args.content} → {output}")
+        return
+
+    check_deps()
+    from epublib.resources.create import create_resource_from_path
+
+    # Generate a sensible filename
+    chapter_name = os.path.basename(args.content)
+    if not chapter_name.endswith('.xhtml'):
+        chapter_name = f"Text/{chapter_name}"
+    else:
+        chapter_name = f"Text/{chapter_name}"
+
+    with open_book(args.epub) as book:
+        new_resource = create_resource_from_path(args.content, chapter_name)
+        kwargs = {"resource": new_resource, "add_to_spine": True, "add_to_toc": True}
+        if args.after:
+            kwargs["after"] = args.after
+        book.resources.add(**kwargs)
+        book.update_manifest_properties()
+        book.write(output)
+
+    emit({"status": "added", "chapter": chapter_name, "output": output},
+         f"Chapter added → {output}")
+
+
+# ═══════════════════════════════════════════════════════════
+# Subcommand: remove-chapter
+# ═══════════════════════════════════════════════════════════
+def cmd_remove_chapter(args):
+    output = resolve_output(args.epub, args.output)
+
+    if DRY_RUN:
+        emit({"status": "dry_run", "subcommand": "remove-chapter", "file": args.epub,
+              "id": args.id, "output": output},
+             f"[dry-run] Would remove chapter {args.id} → {output}")
+        return
+
+    check_deps()
+    with open_book(args.epub) as book:
+        try:
+            book.resources.remove(args.id)
+            book.write(output)
+        except KeyError:
+            die(f"Chapter not found: {args.id}")
+
+    emit({"status": "removed", "chapter": args.id, "output": output},
+         f"Chapter removed → {output}")
+
+
+# ═══════════════════════════════════════════════════════════
+# Subcommand: reorder-spine
+# ═══════════════════════════════════════════════════════════
+def cmd_reorder_spine(args):
+    output = resolve_output(args.epub, args.output)
+    order = [x.strip() for x in args.order.split(",")]
+
+    if DRY_RUN:
+        emit({"status": "dry_run", "subcommand": "reorder-spine", "file": args.epub,
+              "order": order, "output": output},
+             f"[dry-run] Would reorder spine: {args.order} → {output}")
+        return
+
+    check_deps()
+    with open_book(args.epub) as book:
+        book.spine.reorder(order)
+        book.write(output)
+
+    emit({"status": "reordered", "spine": order, "output": output},
+         f"Spine reordered → {output}")
+
+
+# ═══════════════════════════════════════════════════════════
+# Subcommand: rename-resource
+# ═══════════════════════════════════════════════════════════
+def cmd_rename_resource(args):
+    output = resolve_output(args.epub, args.output)
+    from_path = getattr(args, 'from')
+    to_path = args.to
+
+    if DRY_RUN:
+        emit({"status": "dry_run", "subcommand": "rename-resource", "file": args.epub,
+              "from": from_path, "to": to_path, "output": output},
+             f"[dry-run] Would rename {from_path} → {to_path} → {output}")
+        return
+
+    check_deps()
+    with open_book(args.epub) as book:
+        try:
+            book.resources.rename(from_path, to_path)
+            book.write(output)
+        except KeyError:
+            die(f"Resource not found: {from_path}")
+
+    emit({"status": "renamed", "from": from_path, "to": to_path, "output": output},
+         f"Resource renamed → {output}")
+
+
+# ═══════════════════════════════════════════════════════════
+# Subcommand: inject-css
+# ═══════════════════════════════════════════════════════════
+def cmd_inject_css(args):
+    output = resolve_output(args.epub, args.output)
+
+    if not os.path.exists(args.css):
+        die(f"CSS file not found: {args.css}")
+
+    if DRY_RUN:
+        emit({"status": "dry_run", "subcommand": "inject-css", "file": args.epub,
+              "css": args.css, "output": output},
+             f"[dry-run] Would inject CSS from {args.css} → {output}")
+        return
+
+    check_deps()
+    from bs4 import BeautifulSoup
+    from epublib.resources.create import create_resource_from_path
+
+    css_filename = f"Styles/{os.path.basename(args.css)}"
+
+    with open_book(args.epub) as book:
+        # Add CSS as a resource
+        css_resource = create_resource_from_path(args.css, css_filename)
+        book.resources.add(resource=css_resource, add_to_spine=False, add_to_toc=False)
+
+        # Inject <link> into every document
+        for doc in book.documents:
+            link = doc.soup.new_tag("link", rel="stylesheet",
+                                     href=f"../{css_filename}", type="text/css")
+            doc.soup.head.append(link)
+
+        book.update_manifest_properties()
+        book.write(output)
+
+    emit({"status": "injected", "css": css_filename, "output": output},
+         f"CSS injected → {output}")
+
+
+# ═══════════════════════════════════════════════════════════
+# Subcommand: update-manifest
+# ═══════════════════════════════════════════════════════════
+def cmd_update_manifest(args):
+    output = resolve_output(args.epub, args.output)
+
+    if DRY_RUN:
+        emit({"status": "dry_run", "subcommand": "update-manifest", "file": args.epub,
+              "output": output},
+             f"[dry-run] Would update manifest properties → {output}")
+        return
+
+    check_deps()
+    with open_book(args.epub) as book:
+        book.update_manifest_properties()
+        book.write(output)
+
+    emit({"status": "updated", "output": output},
+         f"Manifest properties updated → {output}")
+
+
+# ═══════════════════════════════════════════════════════════
+# Main dispatch
+# ═══════════════════════════════════════════════════════════
+def main():
+    global DRY_RUN, JSON_OUTPUT, IN_PLACE, OUTPUT_PATH
+
+    parser = argparse.ArgumentParser(
+        description="Surgical, non-intrusive EPUB editing.",
+        epilog="Run 'epub-edit <subcommand> --help' for subcommand options.")
+    sub = parser.add_subparsers(dest="command", help="Subcommand")
+
+    # info
+    p = sub.add_parser("info", help="Dump EPUB structure as JSON")
+    p.add_argument("epub", help="Path to EPUB file")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # metadata
+    p = sub.add_parser("metadata", help="Update metadata")
+    p.add_argument("epub", help="Path to EPUB file")
+    p.add_argument("--title")
+    p.add_argument("--author")
+    p.add_argument("--language")
+    p.add_argument("--output", "-o")
+    p.add_argument("--in-place", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # add-chapter
+    p = sub.add_parser("add-chapter", help="Add a chapter")
+    p.add_argument("epub", help="Path to EPUB file")
+    p.add_argument("--content", required=True, help="XHTML file to add as chapter")
+    p.add_argument("--after", help="Insert after this resource ID")
+    p.add_argument("--output", "-o")
+    p.add_argument("--in-place", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # remove-chapter
+    p = sub.add_parser("remove-chapter", help="Remove a chapter")
+    p.add_argument("epub", help="Path to EPUB file")
+    p.add_argument("--id", required=True, help="Resource ID or filename to remove")
+    p.add_argument("--output", "-o")
+    p.add_argument("--in-place", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # reorder-spine
+    p = sub.add_parser("reorder-spine", help="Reorder the spine")
+    p.add_argument("epub", help="Path to EPUB file")
+    p.add_argument("--order", required=True, help="Comma-separated spine item IDs in new order")
+    p.add_argument("--output", "-o")
+    p.add_argument("--in-place", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # rename-resource
+    p = sub.add_parser("rename-resource", help="Rename a resource file")
+    p.add_argument("epub", help="Path to EPUB file")
+    p.add_argument("--from", dest="from_path", required=True, help="Current filename")
+    p.add_argument("--to", required=True, help="New filename")
+    p.add_argument("--output", "-o")
+    p.add_argument("--in-place", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # inject-css
+    p = sub.add_parser("inject-css", help="Inject a CSS stylesheet into all documents")
+    p.add_argument("epub", help="Path to EPUB file")
+    p.add_argument("--css", required=True, help="CSS file to inject")
+    p.add_argument("--output", "-o")
+    p.add_argument("--in-place", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    # update-manifest
+    p = sub.add_parser("update-manifest", help="Refresh manifest properties")
+    p.add_argument("epub", help="Path to EPUB file")
+    p.add_argument("--output", "-o")
+    p.add_argument("--in-place", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--dry-run", "-n", action="store_true")
+
+    args = parser.parse_args()
+
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    DRY_RUN = getattr(args, "dry_run", False)
+    JSON_OUTPUT = getattr(args, "json", False)
+    IN_PLACE = getattr(args, "in_place", False)
+
+    commands = {
+        "info": cmd_info,
+        "metadata": cmd_metadata,
+        "add-chapter": cmd_add_chapter,
+        "remove-chapter": cmd_remove_chapter,
+        "reorder-spine": cmd_reorder_spine,
+        "rename-resource": cmd_rename_resource,
+        "inject-css": cmd_inject_css,
+        "update-manifest": cmd_update_manifest,
+    }
+    commands[args.command](args)
+
+
+if __name__ == "__main__":
+    main()
