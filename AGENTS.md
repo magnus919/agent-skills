@@ -60,6 +60,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "reverse-engineer", "understand this codebase", "PRD from code", "architecture document" | [software-architecture-analysis](software-architecture-analysis/SKILL.md) |
 || "data architecture", "data platform", "data strategy", "data mesh", "governance" | [data-architect](data-architect/SKILL.md) |
 || "statistical analysis", "experimental design", "A/B test", "hypothesis test", "power analysis", "causal inference", "regression", "Bayesian", "p-value", "effect size", "model selection", "machine learning methodology" | [data-scientist](data-scientist/SKILL.md) |
+|| "brand identity", "brand guidelines", "style guide", "brand card", "brand strategy", "visual identity", "brand documentation", "color palette", "brand book" | [brand-designer](brand-designer/SKILL.md) |
 || "kanban", "WIP", "cycle time", "flow metrics", "Scrum to Kanban", "multi-portfolio", "throughput", "classes of service" | [kanban-guru](kanban-guru/SKILL.md) |
 || "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
 || "nous", "theia", "hermes brand", "brand identity", "style guide", "mascot", "anime style", "cyber-classical", "color palette reference" | [nous-branding](nous-branding/SKILL.md) |
@@ -72,7 +73,7 @@ The `description` field is the trigger mechanism. If the user's request contains
 
 ### Don't Load Everything at Startup
 
-Loading all 5 skills at session start (~2,000 lines, ~25KB) wastes context. Let the conversation trigger loading. Skills load in ~100 tokens (metadata) and only expand when needed.
+Loading all 14 skills at session start (~6,000 lines, ~75KB) wastes context. Let the conversation trigger loading. Skills load in ~100 tokens (metadata) and only expand when needed.
 
 ### Follow Progressive Disclosure
 

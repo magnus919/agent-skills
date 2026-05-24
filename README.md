@@ -12,6 +12,10 @@ Reference for the Agent Skills open format itself — directory structure, front
 
 Radarr and Sonarr media library management. Two CLIs (`radarr-cli` for movies, `sonarr-cli` for TV series) with one shared skill wrapper. List movies and series, search for additions, check calendars and wanted/missing episodes. Separate API keys per app.
 
+### [brand-designer](brand-designer/SKILL.md)
+
+Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Ships 7 templates, a brand-book CLI for validation/compilation, and a generate script for brand card and mockup imagery.
+
 ### [cli-builder](cli-builder/SKILL.md)
 
 Build and refactor CLI tools for AI agent consumption. 10 universal patterns (non-interactive, `--json`, `--dry-run`, idempotent, lazy auth, progressive help), an agent-compatibility test suite, a Python API client pattern, and a bash scaffold template. Principles grounded in real failures from building 15+ agent-facing CLIs.
