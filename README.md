@@ -61,6 +61,15 @@ Atlassian Jira from the terminal. Search issues with JQL, view details, create i
 
 Expert-level Jira Query Language reference covering all operators, functions (date/time, user, sprint/version, issue, custom field, JSM), history operators (WAS/CHANGED), relative dates, performance best practices, role-based ready queries, REST API usage, and troubleshooting. Three companion references: complete function catalog, role-specific query bank (dev, scrum master, PO, power user, admin), and gotchas/troubleshooting guide.
 
+### [nous-branding](nous-branding/SKILL.md)
+
+Generate images and content consistent with the Nous Research brand identity.
+Ships four reference images (color palette card, official high-res mascot,
+brand collage) that can be used as img2img inputs. Covers the Nous Girl
+mascot specs, cyber-classical art style, texture system (risograph grain,
+CRT scan lines, photocopy noise), hex-accurate color palette, and image
+prompt templates for text-only and reference-image-driven workflows.
+
 ### [openlibrary-cli](openlibrary-cli/SKILL.md)
 
 Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required — the public Open Library API is free for everyone.
