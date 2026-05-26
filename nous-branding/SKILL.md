@@ -9,6 +9,7 @@ description: >-
   and image prompt construction. Ships reference images for palette, mascot, and brand
   collage that can be used as img2img inputs.
 license: MIT
+version: 1.1.0
 compatibility: Compatible with any agent capable of image generation or brand
   analysis. Reference-image workflows (img2img, style transfer, variations) require
   an API endpoint supporting image inputs — use the assets/ images as input.
@@ -408,6 +409,26 @@ python3 scripts/postprocess.py output-raw.png output-final.png --mode nous --int
 | **Midjourney** | `--sref <asset-url>` with `--iw 1.5–2.0`. Include palette hex values in prompt. |
 | **ComfyUI** | IPAdapter or Reference-Only ControlNet from assets. Denoise 0.6–0.7. Post-process with grain overlay. |
 | **Replicate / SD img2img** | Upload reference. Prompt strength 0.7–0.8. CFG 7. |
+
+---
+
+## What Is NOT On-Brand
+
+Avoid these common anti-patterns:
+
+| Anti-Pattern | Why It's Wrong |
+|-------------|----------------|
+| **Sad/melancholic expression** | Model defaults to sad for manga characters unless explicitly told "not sad, not crying" |
+| **Dark/black headphones** | Nous Girl wears **white** over-ear headphones in all canonical poses |
+| **Facial markings (teardrop, tattoos, scars)** | The character has clean, clear skin — no markings whatsoever |
+| **Wrong ethnicity (Asian instead of French)** | Model defaults to Asian features for anime style; explicitly state "French Caucasian" |
+| **Busy/cluttered compositions** | The brand is restrained — dark background, 1-2 accent colors, 2-3 text elements max |
+| **Smooth digital illustration** | The brand is **never** clean — every image needs grain, noise, or analog texture |
+| **Cartoon/anime with glossy rendering** | The manga style is stark black ink on white paper — no soft shading, no gradients |
+| **Corporate/sterile tech aesthetic** | The finish should feel like an underground research lab, not a SaaS landing page |
+| **Over-detailed backgrounds** | Let the subject breathe. Negative space is a feature. |
+
+For a complete list of known failure modes and mitigations, see [`references/pitfalls.md`](references/pitfalls.md).
 
 ---
 
