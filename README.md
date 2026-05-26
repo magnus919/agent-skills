@@ -74,6 +74,8 @@ mascot specs, cyber-classical art style, texture system (risograph grain,
 CRT scan lines, photocopy noise), hex-accurate color palette, and image
 prompt templates for text-only and reference-image-driven workflows.
 
+> **Cross-pollination note:** This skill was developed in parallel with [plntrprotocol/nous-branding](https://github.com/plntrprotocol/nous-branding) — a sibling project created independently, in friendship, for the same purpose. We've been learning from each other's approaches throughout development, and each repo has strengths the other doesn't. If you're using ours, go check out theirs too.
+
 ### [openlibrary-cli](openlibrary-cli/SKILL.md)
 
 Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required — the public Open Library API is free for everyone.
