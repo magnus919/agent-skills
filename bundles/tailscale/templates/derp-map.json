@@ -1,0 +1,49 @@
+{
+  "Regions": {
+    "999": {
+      "RegionID": 999,
+      "RegionCode": "headscale",
+      "RegionName": "Headscale Embedded DERP",
+      "Nodes": [
+        {
+          "Name": "headscale-derp",
+          "RegionID": 999,
+          "HostName": "headscale.example.com",
+          "DERPPort": 443,
+          "STUNPort": 3478,
+          "STUNOnly": false
+        }
+      ]
+    },
+    "1": {
+      "RegionID": 1,
+      "RegionCode": "us-east",
+      "RegionName": "US East",
+      "Nodes": [
+        {
+          "Name": "derp-us-east-1",
+          "RegionID": 1,
+          "HostName": "derp-us-east.example.com",
+          "DERPPort": 443,
+          "STUNPort": 3478,
+          "STUNOnly": false
+        }
+      ]
+    },
+    "2": {
+      "RegionID": 2,
+      "RegionCode": "eu-west",
+      "RegionName": "EU West",
+      "Nodes": [
+        {
+          "Name": "derp-eu-west-1",
+          "RegionID": 2,
+          "HostName": "derp-eu-west.example.com",
+          "DERPPort": 443,
+          "STUNPort": 3478,
+          "STUNOnly": false
+        }
+      ]
+    }
+  }
+}

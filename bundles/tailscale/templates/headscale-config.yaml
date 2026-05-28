@@ -1,0 +1,96 @@
+# Headscale Configuration Template
+# Reference: https://headscale.net/stable/ref/configuration/
+
+# Server URL — must be the public URL clients connect to
+server_url: https://headscale.example.com:443
+
+# Address to listen for client connections
+listen_addr: 0.0.0.0:8080
+
+# Address to expose metrics (Prometheus)
+metrics_listen_addr: 0.0.0.0:9090
+
+# gRPC address for remote CLI
+grpc_listen_addr: 0.0.0.0:50443
+
+# Enable gRPC for remote headscale CLI
+grpc_allow_insecure: false
+
+# Private key for inter-node encryption
+private_key_path: /var/lib/headscale/private.key
+
+# Database configuration
+database:
+  type: sqlite3
+  # path: /var/lib/headscale/db.sqlite
+  # For PostgreSQL:
+  # type: postgres
+  # host: localhost
+  # port: 5432
+  # name: headscale
+  # user: headscale
+  # pass: ""
+
+# TLS — set if not using a reverse proxy
+tls_letsencrypt_hostname: ""
+tls_letsencrypt_listen: ":http"
+tls_letsencrypt_challenge_type: HTTP-01
+tls_cert_path: ""
+tls_key_path: ""
+
+# DNS configuration
+dns_config:
+  # Enable MagicDNS — assign .ts.net domain to nodes
+  magic_dns: true
+  # Base domain for MagicDNS
+  base_domain: example.com
+  # Global nameservers (all DNS queries)
+  nameservers:
+    - 1.1.1.1
+    - 8.8.8.8
+  # Split DNS — specific domains to specific resolvers
+  restricted_nameservers:
+    my-internal.local:
+      - 10.0.0.53
+  # Search domains for DNS resolution
+  search_domains: []
+  # Extra DNS records (Headscale-only feature)
+  extra_records:
+    - name: "monitoring.example.com"
+      type: "A"
+      value: "10.0.0.50"
+
+# DERP relay configuration
+derp:
+  server:
+    # Enable embedded DERP server
+    enabled: true
+    region_id: 999
+    region_code: "headscale"
+    region_name: "Headscale Embedded DERP"
+    stun_listen_addr: "0.0.0.0:3478"
+    private_key_path: /var/lib/headscale/derp_server.key
+  # URLs for custom DERP maps
+  urls: []
+  # Local DERP map files
+  paths: []
+  # Auto-update DERP map from URLs
+  auto_update: true
+
+# Policy (ACL) file
+policy:
+  path: /etc/headscale/policy.json
+  # Mode: "file" (default) or "database"
+  mode: file
+
+# OpenID Connect (optional)
+oidc:
+  only_start_if_oidc_is_available: false
+  issuer: ""
+  client_id: ""
+  client_secret: ""
+
+# Logging
+log:
+  level: info
+  format: text
