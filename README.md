@@ -108,6 +108,14 @@ Trakt.tv media discovery from the terminal. Browse trending, anticipated, and po
 
 Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view subscriber analytics. API key from transistor.fm settings.
 
+## Bundles
+
+Bundles organize related skills under a single umbrella with shared reference material and auto-loading by trigger context.
+
+### [tailscale](bundles/tailscale/SKILL.md)
+
+Self-hosted Tailscale/Headscale VPN ecosystem. Seven sub-skills covering Headscale server deployment, ACL/tailnet policy authoring, Tailscale client configuration, node lifecycle (auth keys, registration, tagging, decommissioning), subnet routing and exit nodes, DERP relay infrastructure, and backup/migration. Ships 23 scripts with `--json` and `--dry-run` support, 8 reference documents, and 6 templates.
+
 ---
 
 ## Installation

@@ -1,0 +1,28 @@
+{
+  "tagOwners": {
+    "tag:server": ["alice@"],
+    "tag:ci": ["alice@"],
+    "tag:client": ["alice@", "bob@"],
+    "tag:monitoring": ["alice@"]
+  },
+  "grants": [
+    {
+      "src": ["autogroup:member"],
+      "dst": ["tag:server:*"],
+      "ip": ["*"]
+    },
+    {
+      "src": ["tag:server"],
+      "dst": ["tag:monitoring:80,443"],
+      "ip": ["*"]
+    },
+    {
+      "src": ["tag:monitoring"],
+      "dst": ["*:*"],
+      "ip": ["*"]
+    }
+  ],
+  "autoApprovers": {
+    "exitNode": ["tag:server"]
+  }
+}
