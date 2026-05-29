@@ -65,6 +65,7 @@ When the user mentions these keywords, load the corresponding skill:
 || "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
 ||| "last.fm", "scrobble", "music discovery", "listening history", "similar artists", "lastfm", "weekly top artists", "genre charts" | [lastfm](lastfm/SKILL.md) |
 ||| "nous", "theia", "hermes brand", "brand identity", "style guide", "mascot", "anime style", "cyber-classical", "color palette reference" | [nous-branding](nous-branding/SKILL.md) |
+| "open source", "contributing", "how to contribute", "submit a PR", "file an issue", "CONTRIBUTING.md", "bug report template", "PR template" | [opensource-contributions](opensource-contributions/SKILL.md) |
 
 ## Best Practices
 
@@ -74,7 +75,7 @@ The `description` field is the trigger mechanism. If the user's request contains
 
 ### Don't Load Everything at Startup
 
-Loading all 14 skills at session start (~6,000 lines, ~75KB) wastes context. Let the conversation trigger loading. Skills load in ~100 tokens (metadata) and only expand when needed.
+Loading all 15 skills at session start (~6,000 lines, ~75KB) wastes context. Let the conversation trigger loading. Skills load in ~100 tokens (metadata) and only expand when needed.
 
 ### Follow Progressive Disclosure
 
