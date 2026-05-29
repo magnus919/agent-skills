@@ -80,6 +80,10 @@ prompt templates for text-only and reference-image-driven workflows.
 
 > **Cross-pollination note:** This skill was developed in parallel with [plntrprotocol/nous-branding](https://github.com/plntrprotocol/nous-branding) — a sibling project created independently, in friendship, for the same purpose. We've been learning from each other's approaches throughout development, and each repo has strengths the other doesn't. If you're using ours, go check out theirs too.
 
+### [opensource-contributions](opensource-contributions/SKILL.md)
+
+Comprehensive open source contribution guidance — from reading CONTRIBUTING.md and filing good bug reports through branching, committing, PR creation, and the release cycle. Covers both contributor and maintainer workflows with progressive disclosure: a concise orchestrator SKILL.md loads detailed phase references on demand. Includes a portable PR template compliance checker script. Agent disclosure template for AI-assisted contributions.
+
 ### [openlibrary-cli](openlibrary-cli/SKILL.md)
 
 Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required — the public Open Library API is free for everyone.
