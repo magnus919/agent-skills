@@ -63,6 +63,10 @@ forgejo-cli pr merge --owner magnus --repo myrepo --index 3 --force      # Execu
 # Merge via API (when CLI returns 405 or PR has conflicts to resolve first)
 # See references/pr-merge-via-api.md for full workflow
 
+# Create a PR
+forgejo-cli pr create --owner magnus --repo myrepo --title "feat: add auth" --head feat/add-auth --base main --body "Closes #42"
+forgejo-cli pr create --owner magnus --repo myrepo --title "draft: WIP" --head feat/wip --base main --draft
+
 # List repos
 forgejo-cli repo list --json
 
