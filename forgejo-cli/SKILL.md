@@ -1,113 +1,280 @@
 ---
 name: forgejo-cli
-description: >-
-  Interact with a Forgejo or Gitea self-hosted Git forge from the terminal:
-  list repositories, search repos, manage issues, view pull requests, and
-  get user info. Use when the user mentions Forgejo, Gitea, a self-hosted
-  Git server, or asks about repos, issues, PRs, or code review.
-license: MIT
-compatibility: Requires FORGEJO_TOKEN env var (generate from Settings →
-  Applications → Personal Access Tokens), FORGEJO_SERVER, Python 3.8+,
-  and the `requests` library.
-metadata:
-  tags: [forgejo, gitea, git, self-hosted, code-review, api-client]
-  sources:
-    - https://forgejo.org/docs/next/user/oauth2/
-    - https://codeberg.org/forgejo/forgejo
+description: "CLI for Forgejo API — issues, PRs, repos, labels, webhooks, Actions runners. Dual auth (AGENT/USER)."
+version: 1.1.0
+tags: [forgejo, git, api, code-review]
 ---
 
-# forgejo-cli — Forgejo/Gitea Git Forge from the Terminal
+# forgejo-cli
 
-Interact with a self-hosted Forgejo or Gitea server via the REST API v1. List repositories, search, manage issues, and view pull requests.
+Python CLI at `~/.hermes/scripts/forgejo-cli` wrapping the Forgejo API v1.
 
-## Setup
+## Auth
 
-1. Generate a personal access token: Settings → Applications → Create Personal Access Token
-2. Set environment variables:
+Two tokens stored in `~/.hermes/.env`:
+- `FORGEJO_AGENT_TOKEN` — jasper bot (default)
+- `FORGEJO_USER_TOKEN` — magnus user (use `--user` flag)
 
-```bash
-export FORGEJO_SERVER="https://git.your-domain.com"
-export FORGEJO_TOKEN="your-personal-access-token"
+## Usage
+
+```
+forgejo-cli <command> [<subcommand>] [OPTIONS]
+
+Commands:
+  issue       Manage issues (list, show, create, comment, label, assign)
+  pr          Manage pull requests (list, show, create, diff, review, comment, merge)
+  repo        Manage repositories (list, show, create, search)
+  label       Manage labels (list, create)
+  hook        Manage webhooks (list, create, delete)
+  user        User info and settings
+  comment     Manage comments (list, create, delete)
+
+Global flags:
+  --json      Machine-readable JSON output
+  --dry-run   Preview without making changes
+  --agent     Use AGENT token (default)
+  --user      Use USER token
+  --force     Skip confirmations
+  --quiet     Suppress non-essential output
 ```
 
-`--help` and `--dry-run` work without credentials.
-
-## Essential Commands
-
-### me — Current user profile
+## Common Operations
 
 ```bash
-forgejo-cli me                           # your account info
-forgejo-cli me --json                    # machine-readable
+# List issues
+forgejo-cli issue list --owner magnus --repo test
+
+# Show issue
+forgejo-cli issue show --owner magnus --repo test --index 3
+
+# Add comment
+forgejo-cli issue comment --owner magnus --repo test --index 3 --body "Fixed"
+
+# Get PR diff for review
+forgejo-cli pr diff --owner magnus --repo myrepo --index 1
+
+# Submit PR review (as jasper)
+forgejo-cli pr review --owner magnus --repo myrepo --index 1 --body "LGTM" --event approve
+
+# Merge a PR
+forgejo-cli pr merge --owner magnus --repo myrepo --index 3 --dry-run   # Preview first
+forgejo-cli pr merge --owner magnus --repo myrepo --index 3 --force      # Execute merge
+
+# Merge via API (when CLI returns 405 or PR has conflicts to resolve first)
+# See references/pr-merge-via-api.md for full workflow
+
+# Create a PR
+forgejo-cli pr create --owner magnus --repo myrepo --title "feat: add auth" --head feat/add-auth --base main --body "Closes #42"
+forgejo-cli pr create --owner magnus --repo myrepo --title "draft: WIP" --head feat/wip --base main --draft
+
+# List repos
+forgejo-cli repo list --json
+
+# Create a repo (NOT YET IMPLEMENTED in CLI — use API directly, see references/repo-creation-via-api.md)
+# Documentation says `repo create` but the method isn't coded yet
+
+# List labels
+forgejo-cli label list --owner magnus --repo test
+
+# Get current user info
+forgejo-cli user show
+forgejo-cli --user user show
 ```
 
-### repos — List your repositories
+## Server Setup
+
+The Forgejo instance runs via Docker on `phatalbert`. See `references/server-setup.md` for the docker-compose.yml, SSH port mapping details (rootless gotcha), volume strategy, and admin accounts.
+
+## Test Suite
+
+Test script at `~/.hermes/scripts/forgejo-cli-test.sh`. Run with:
+```bash
+bash ~/.hermes/scripts/forgejo-cli-test.sh
+```
+
+## Forgejo Docker Deployment
+
+See `references/fj-deployment.md` for Forgejo-specific Docker patterns: rootless image quirks, SSH port config, entrypoint config generation, `INSTALL_LOCK` requirements, database setup, and the `***` secrets masking pitfall.
+
+## Forgejo Actions (CI/CD)
+
+Forgejo Actions is a CI/CD system similar to GitHub Actions. Requires both server-side config and a runner. The `forgejo-actions` skill covers runner lifecycle, step container behavior, workflow patterns, and debugging in detail.
+
+### Enabling Actions on Forgejo
+
+Add to `/data/gitea/conf/app.ini` inside the forgejo container:
+```bash
+docker exec forgejo sh -c 'printf "\n[actions]\nENABLED=true\n" >> /data/gitea/conf/app.ini'
+docker restart forgejo
+```
+
+### Registering a runner
 
 ```bash
-forgejo-cli repos                        # all your repos
-forgejo-cli repos --limit 100            # more results
-forgejo-cli repos --json                 # machine-readable
+# Get registration token
+curl -s "https://git.brandyapple.com/api/v1/admin/runners/registration-token" \
+  -H "Authorization: token $FORGEJO_USER_TOKEN"
+
+# Register and start on the target host
+docker run --rm \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v runner-data:/data \
+  data.forgejo.org/forgejo/runner:4.0.0 \
+  forgejo-runner register \
+  --instance https://git.brandyapple.com \
+  --token <token> --name <host>-runner \
+  --labels docker:docker://node:20-bookworm --no-interactive
+
+# Run daemon
+docker run -d --name forgejo-runner --user root \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v runner-data:/data --restart unless-stopped \
+  data.forgejo.org/forgejo/runner:4.0.0 \
+  forgejo-runner daemon
 ```
 
-### search — Search repositories
+### Critical runner config
+
+After registration, edit `/data/config.yaml` in the runner volume. See the `forgejo-actions` skill for full config reference — key settings:
+- `container.docker_host: automount` — required to mount host Docker socket (runner > 5.0.3). Default is `"-"` which skips mounting.
+- `container.valid_volumes: ['**']` — allows volume mounts from host
+
+### Debugging
+
+Step output is only visible in the Forgejo web UI, not in `docker logs forgejo-runner`. See `forgejo-actions` skill for Docker events debugging patterns.
+
+Full runner/deploy workflow details in the `forgejo-gitea` skill's "Forgejo Actions (CI/CD)" section.
+
+## Release Workflow
+
+The forgejo-cli does not implement `release create`. Use the Forgejo API directly for the full release lifecycle:
 
 ```bash
-forgejo-cli search --query "cli"                  # by name/description
-forgejo-cli search --query "infra" --limit 5      # top 5
-forgejo-cli search --query "docs" --json          # machine-readable
+# 1. Tag and push
+git tag -a vX.Y.Z -m "vX.Y.Z — Title"
+git push origin vX.Y.Z
+
+# 2. Write release notes and POST data to a JSON file
+# (Use the JSON-file approach to avoid shell escaping issues)
+cat > /tmp/release-data.json << 'ENDJSON'
+{
+  "tag_name": "vX.Y.Z",
+  "name": "vX.Y.Z — Release Title",
+  "body": "## What's New\n\nRelease notes here.\n",
+  "draft": false,
+  "prerelease": false
+}
+ENDJSON
+
+# 3. Create the release
+curl -s -X POST "https://git.brandyapple.com/api/v1/repos/{owner}/{repo}/releases" \
+  -H "Authorization: token $FORGEJO_AGENT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d @/tmp/release-data.json
+
+# 4. Get the release ID for any subsequent edits
+curl -s "https://git.brandyapple.com/api/v1/repos/{owner}/{repo}/releases" \
+  -H "Authorization: token $FORGEJO_AGENT_TOKEN" | \
+  python3 -c "import sys,json; [print(f'ID: {r[\"id\"]}  Tag: {r[\"tag_name\"]}') for r in json.load(sys.stdin)]"
 ```
 
-### issues — List issues in a repo
+### Gotcha: `name` not `title`
+
+Forgejo's release API uses **`name`** as the release display title, **not** `title`. If you send `"title": "vX.Y.Z — Release"`, the field is silently ignored and the tag name is used as a fallback. The correct field:
+
+```json
+{"tag_name": "vX.Y.Z", "name": "vX.Y.Z — Release Title", "body": "..."}
+```
+
+To fix a release that was created with the wrong name, PATCH by release ID:
 
 ```bash
-forgejo-cli issues --repo owner/repo              # open issues
-forgejo-cli issues --repo owner/repo --state closed
-forgejo-cli issues --repo owner/repo --state all --limit 50
-forgejo-cli issues --repo owner/repo --json
+curl -s -X PATCH "https://git.brandyapple.com/api/v1/repos/{owner}/{repo}/releases/{id}" \
+  -H "Authorization: token $FORGEJO_AGENT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "vX.Y.Z — Corrected Title"}'
 ```
 
-Forgejo's issues endpoint also returns pull requests — the CLI filters them out automatically.
+PATCH by tag (`/releases/tag/{tag}`) returns 404 — you must use the numeric release ID.
 
-### view — View an issue or PR
+📄 **`references/release-workflow.md`** — Full worked example with rollback instructions, the complete API sequence, and recovery steps for release mistakes.
+
+## PR Review Workflow
+
+The `references/pr-review-workflow.md` file covers the end-to-end automated code review workflow triggered by forgejo-prs webhooks: fetching diffs, composing review bodies with complex JSON, submitting reviews via API, and handling inline comments vs summary reviews.
+
+## Pitfalls
+
+### Shell metacharacters in `--body` break `issue create`
+
+The `--body` value is passed through the shell, so text containing `$`, backticks, parentheses, `&`, `|`, `;`, or unbalanced quotes causes parsing errors or silent truncation.
+
+**Symptoms:** `Error: Unknown option: working`, `syntax error near unexpected token`, or the body gets truncated at the first special character.
+
+**Fix:** Use the Forgejo API directly with a JSON file for complex bodies:
 
 ```bash
-forgejo-cli view --repo owner/repo --issue 42       # full details
-forgejo-cli view --repo owner/repo --issue 42 --json
+# Write body to file
+cat > /tmp/body.json << 'ENDOFBODY'
+{"title": "Issue title", "body": "Complex body with (parens) and $dollar signs"}
+ENDOFBODY
+
+# POST via API
+. ~/.hermes/.env 2>/dev/null
+curl -s -X POST "https://git.brandyapple.com/api/v1/repos/{owner}/{repo}/issues" \
+  -H "Authorization: Bearer $FORGEJO_USER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d @/tmp/body.json
 ```
 
-Shows: number, title, state, author, body, labels, milestone, assignee, timestamps, and whether it's a pull request.
-
-### prs — List pull requests
-
+Or pipe from Python to avoid any shell escaping:
 ```bash
-forgejo-cli prs --repo owner/repo                  # open PRs
-forgejo-cli prs --repo owner/repo --state merged   # merged PRs
-forgejo-cli prs --repo owner/repo --state all       # all PRs
-forgejo-cli prs --repo owner/repo --json
+. ~/.hermes/.env 2>/dev/null
+python3 -c "import json; body = open('/tmp/body.md').read(); print(json.dumps({'title': '...', 'body': body}))" \
+  | curl -s -X POST "https://git.brandyapple.com/api/v1/repos/{owner}/{repo}/issues" \
+    -H "Authorization: Bearer $FORGE...EN" \
+    -H "Content-Type: application/json" \
+    -d @-
 ```
 
-Shows: number, title, state, author, head and base branches, and merge status.
+**Best option for complex bodies: Use `execute_code` with `urllib.request`.**
 
-## Global Flags
+This eliminates ALL shell interaction — no quoting, no temp files, no token expansion:
+```python
+import json, urllib.request, os
 
-All flags work in any position:
+env_path = os.path.expanduser("~/.hermes/.env")
+token = None
+with open(env_path) as f:
+    for line in f:
+        line = line.strip()
+        if "FORGEJO_AGENT_TOKEN" in line and "=" in line:
+            token = line.split("=", 1)[1].strip().strip('"').strip("'")
 
-```bash
-forgejo-cli --json issues --repo owner/repo          # flag before subcommand
-forgejo-cli issues --repo owner/repo --json          # flag after subcommand
-forgejo-cli --dry-run issues --repo owner/repo       # preview
-forgejo-cli --quiet repos                            # suppress non-essential output
+body = open("/tmp/body.md").read()
+payload = json.dumps({"title": "Issue title", "body": body})
+
+req = urllib.request.Request(
+    "https://git.brandyapple.com/api/v1/repos/{owner}/{repo}/issues",
+    data=payload.encode(),
+    headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+    method="POST"
+)
+with urllib.request.urlopen(req) as resp:
+    r = json.loads(resp.read())
+    print(f"Created #{r['number']}: {r['title']}")
 ```
 
-## Known Gotchas
+The same pattern works for PR creation — POST to `/pulls` instead of `/issues` with `head` and `base` fields. See `references/pr-creation-via-api.md`.
 
-- **Repo format** must be `owner/repo` (e.g. `--repo myorg/my-project`). Forgejo does not accept bare repo names.
-- **Issues and PRs share an endpoint** — The Forgejo API returns pull requests mixed into the issues list. The CLI filters PRs out when listing issues. To view PRs, use `prs`.
-- **Pagination** — The Forgejo API paginates with `page` and `limit` params. The CLI sets reasonable defaults but doesn't auto-page. Use `--limit` to control results.
-- **Token permissions** — Personal access tokens are scoped per-repo or globally. A 403 on a specific repo usually means the token doesn't have access to it.
-- **Authorization header format** — Forgejo/Gitea uses `Authorization: token YOUR_TOKEN`, not `Bearer`. The CLI handles this automatically.
+## Known Gaps ⚠️
 
-## References
+| Claimed Feature | Actual Status | Workaround |
+|---|---|---|
+| `repo create` | Not implemented (only `list`, `show`, `search` exist) | Use raw API — see `references/repo-creation-via-api.md` |
+| `repo show` | Accepts `--owner --repo` | `repo get` in code; `repo show` alias may not exist — try `--json` on `repo list` filtered by name |
+| `pr merge` | Requires `--force` or `--dry-run` flag (not obvious from help output). Returns 405 when PR isn't mergeable (branch divergence, conflicts) | API-based merge — see `references/pr-merge-via-api.md` |
+| `release create` | Not implemented (no release commands exist at all) | Use raw API — see `references/release-workflow.md` |
+| Standalone PR comment (merged PR) | No subcommand for commenting on already-merged PRs | Use `POST /issues/{id}/comments` — see `references/pr-review-workflow.md` |
 
-- [scripts/forgejo-cli](scripts/forgejo-cli) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
-- [Forgejo REST API docs](https://forgejo.org/docs/next/user/api-usage/) — Official API reference.
+When a CLI subcommand is missing, the Forgejo REST API at `git.brandyapple.com/api/v1` is the backup. The `references/repo-creation-via-api.md` file has the exact curl incantation for repo creation, and `references/pr-creation-via-api.md` covers PR creation.
