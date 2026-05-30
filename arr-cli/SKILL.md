@@ -65,6 +65,25 @@ radarr-cli lookup --term "Dune"                 # search by title
 radarr-cli lookup --term "Dune" --json          # includes TMDb ID and overview
 ```
 
+### add — Add movies to library
+
+```bash
+radarr-cli add --tmdb-id 12345 --quality-profile 4 --search    # add with auto-search
+radarr-cli add --tmdb-id 12345 --quality-profile 5 --dry-run   # preview without adding
+```
+
+Use `--quality-profile 4` for HD-1080p, `5` for Ultra-HD. Omit `--search` to add unmonitored.
+
+### quality-profile — View quality profiles
+
+```bash
+radarr-cli quality-profile                   # list all quality profiles
+radarr-cli quality-profile 4                 # inspect HD-1080p specifics (cutoff, tiers)
+radarr-cli quality-profile --json            # machine-readable
+```
+
+Each profile shows which quality tiers are allowed (✓) or blocked (✗), and the cutoff tier.
+
 ### calendar — Upcoming releases
 
 ```bash
@@ -104,11 +123,23 @@ sonarr-cli lookup --term "Severance"            # search by title
 sonarr-cli lookup --term "Severance" --json     # with TVDB ID
 ```
 
+### add — Add series to library
+
+```bash
+sonarr-cli add --tvdb-id 12345 --quality-profile 4 --series-type Standard --search   # standard weekly show
+sonarr-cli add --tvdb-id 12345 --quality-profile 4 --series-type Daily --search       # daily show (talk show, news)
+sonarr-cli add --tvdb-id 12345 --quality-profile 4 --series-type Anime --no-season-folder --search  # anime with absolute numbering
+```
+
+**Series types:** `Standard` (default, regular weekly episodes), `Daily` (airing daily, e.g. talk shows/news), `Anime` (absolute episode numbering, no season folders). Use `--no-season-folder` for flat episode storage.
+
 ### episodes — List episodes of a series
 
 ```bash
 sonarr-cli episodes --series-id 1               # all episodes
 sonarr-cli episodes --series-id 1 --limit 10    # recent episodes
+sonarr-cli episode get 1                        # details for a specific episode
+sonarr-cli episode-files --series-id 1          # downloaded episode files with quality info
 ```
 
 Get the series ID from `sonarr-cli series --json`.
@@ -126,6 +157,13 @@ sonarr-cli calendar --json                       # machine-readable
 sonarr-cli wanted                                # missing episodes
 sonarr-cli wanted --limit 50                     # more results
 sonarr-cli wanted --json                         # machine-readable
+```
+
+### quality-profile — View quality profiles
+
+```bash
+sonarr-cli quality-profile                       # list all quality profiles
+sonarr-cli quality-profile 4                     # inspect HD-1080p
 ```
 
 ## Global Flags
