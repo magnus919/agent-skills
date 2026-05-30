@@ -1,0 +1,37 @@
+# manifest.yaml
+
+bundle_name: developer-pipeline-kanban
+generated: 2026-05-29
+archetype: build-review-deploy
+
+kanban:
+  board_slug: developer-pipeline-kanban
+  phases: [build, review, deploy]
+
+skills:
+  - name: build
+    file: skills/build.md
+    trigger:
+      type: keyword
+      keywords: [build, implement, code, feature, write code, develop]
+      description: >-
+        Loads when the user shifts into building mode — writing code,
+        implementing a feature, or developing something new.
+
+  - name: review
+    file: skills/review.md
+    trigger:
+      type: keyword
+      keywords: [review, approve, check my code, code review, CR]
+      description: >-
+        Loads when the user is reviewing someone else's code or responding
+        to review feedback.
+
+  - name: deploy
+    file: skills/deploy.md
+    trigger:
+      type: keyword
+      keywords: [deploy, release, ship, push to prod, publish, go live]
+      description: >-
+        Loads when the user is deploying code, releasing a version, or
+        pushing to production.

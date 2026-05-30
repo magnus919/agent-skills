@@ -1,0 +1,47 @@
+# kanban/task-blueprints.yaml
+# Template tasks for the developer-pipeline-kanban workflow
+# Use these as reference when creating tasks for each phase.
+
+board_slug: developer-pipeline-kanban
+generated: 2026-05-29
+archetype: build-review-deploy
+
+# Each blueprint maps a workflow phase to a kanban task template.
+# The dependency chain: Build → Review → Deploy.
+# Each subsequent task uses --parent to link back, so the next phase
+# auto-promotes to "ready" when the previous one is done.
+
+blueprints:
+  - phase: build
+    title_template: "Build: {{feature}}"
+    skill: developer-pipeline-kanban/build
+    default_priority: 3
+    initial_status: todo
+    body: |
+      # Build Phase
+      Load skill: skill_view(name='developer-pipeline-kanban/build')
+      Definition of done: code written, tests passing, local build succeeds.
+      On completion: create a "Review" task with --parent pointing to this task's ID.
+
+  - phase: review
+    title_template: "Review: {{feature}}"
+    skill: developer-pipeline-kanban/review
+    default_priority: 2
+    initial_status: todo
+    body: |
+      # Review Phase
+      Load skill: skill_view(name='developer-pipeline-kanban/review')
+      Definition of done: code reviewed, approved or changes requested.
+      On approval: create a "Deploy" task with --parent pointing to this task's ID.
+      If changes requested: the author creates a new Build task.
+
+  - phase: deploy
+    title_template: "Deploy: {{feature}}"
+    skill: developer-pipeline-kanban/deploy
+    default_priority: 1
+    initial_status: todo
+    body: |
+      # Deploy Phase
+      Load skill: skill_view(name='developer-pipeline-kanban/deploy')
+      Definition of done: change is live and verified. Terminal phase.
+      On completion: close the task. Pipeline complete.
