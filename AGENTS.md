@@ -58,14 +58,15 @@ When the user mentions these keywords, load the corresponding skill:
 | "epub", "ebook", "EPUB file", "ebook format", "read epub", "write epub", "create ebook", "extract from epub", "epub to text", "edit epub", "repair epub", "convert epub2", "epub images", "batch epub", "ebook metadata" | [epub](epub/SKILL.md) |
 | "weather", "forecast", "temperature", "is it raining", "Tempest" | [tempest-cli](tempest-cli/SKILL.md) |
 | "reverse-engineer", "understand this codebase", "PRD from code", "architecture document" | [software-architecture-analysis](software-architecture-analysis/SKILL.md) |
-|| "data architecture", "data platform", "data strategy", "data mesh", "governance" | [data-architect](data-architect/SKILL.md) |
-|| "statistical analysis", "experimental design", "A/B test", "hypothesis test", "power analysis", "causal inference", "regression", "Bayesian", "p-value", "effect size", "model selection", "machine learning methodology" | [data-scientist](data-scientist/SKILL.md) |
-|| "brand identity", "brand guidelines", "style guide", "brand card", "brand strategy", "visual identity", "brand documentation", "color palette", "brand book" | [brand-designer](brand-designer/SKILL.md) |
-|| "kanban", "WIP", "cycle time", "flow metrics", "Scrum to Kanban", "multi-portfolio", "throughput", "classes of service" | [kanban-guru](kanban-guru/SKILL.md) |
-|| "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
-||| "last.fm", "scrobble", "music discovery", "listening history", "similar artists", "lastfm", "weekly top artists", "genre charts" | [lastfm](lastfm/SKILL.md) |
-||| "nous", "theia", "hermes brand", "brand identity", "style guide", "mascot", "anime style", "cyber-classical", "color palette reference" | [nous-branding](nous-branding/SKILL.md) |
+| "data architecture", "data platform", "data strategy", "data mesh", "governance" | [data-architect](data-architect/SKILL.md) |
+| "statistical analysis", "experimental design", "A/B test", "hypothesis test", "power analysis", "causal inference", "regression", "Bayesian", "p-value", "effect size", "model selection", "machine learning methodology" | [data-scientist](data-scientist/SKILL.md) |
+| "brand identity", "brand guidelines", "style guide", "brand card", "brand strategy", "visual identity", "brand documentation", "color palette", "brand book" | [brand-designer](brand-designer/SKILL.md) |
+| "kanban", "WIP", "cycle time", "flow metrics", "Scrum to Kanban", "multi-portfolio", "throughput", "classes of service" | [kanban-guru](kanban-guru/SKILL.md) |
+| "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
+| "last.fm", "scrobble", "music discovery", "listening history", "similar artists", "lastfm", "weekly top artists", "genre charts" | [lastfm](lastfm/SKILL.md) |
+| "nous", "theia", "hermes brand", "brand identity", "style guide", "mascot", "anime style", "cyber-classical", "color palette reference" | [nous-branding](nous-branding/SKILL.md) |
 | "open source", "contributing", "how to contribute", "submit a PR", "file an issue", "CONTRIBUTING.md", "bug report template", "PR template" | [opensource-contributions](opensource-contributions/SKILL.md) |
+| "workflow", "figure out my workflow", "analyze my process", "what do I actually do", "catalog my workflow", "formalize my process", "workflow architect", "onboard me to my own process" | [workflow-architect](bundles/workflow-architect/SKILL.md) |
 
 ## Best Practices
 

@@ -1,0 +1,48 @@
+# manifest.yaml
+
+bundle_name: developer-triage
+generated: 2026-05-29
+archetype: morning-triage-deep-work
+
+skills:
+  - name: morning-triage
+    file: skills/morning-triage.md
+    trigger:
+      type: keyword
+      keywords: [check, review, overnight, what's new, morning, PR, status]
+      description: >-
+        Loads when the user opens with status checks, PR review requests,
+        morning intake language, or "what's new."
+
+  - name: deep-work
+    file: skills/deep-work.md
+    trigger:
+      type: keyword+context
+      keywords: [build, write, create, implement, focus, research, design]
+      context: >-
+        After morning triage is complete or when the user opens a session
+        with a specific task or deliverable goal.
+      description: >-
+        Loads when the user shifts into building or creating mode — writing
+        code, drafting content, researching a topic, or designing.
+
+  - name: pr-review
+    file: skills/pr-review.md
+    trigger:
+      type: keyword
+      keywords: [review, approve, changes requested, check my PR, merge]
+      description: >-
+        Loads when the user is reviewing a pull request, responding to review
+        feedback, or checking on PR status.
+
+  - name: session-wrap
+    file: skills/session-wrap.md
+    trigger:
+      type: keyword+context
+      keywords: [wrap, done, finish, save, close, ship, summarize]
+      context: >-
+        Session duration exceeds 20 minutes, or user language shifts to
+        completion signals.
+      description: >-
+        Loads when the user signals session completion or wraps up work —
+        summarizing decisions, filing follow-up issues, saving state.
