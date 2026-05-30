@@ -1,0 +1,24 @@
+# {{WORKFLOW_NAME}} — Decision Map
+
+```mermaid
+flowchart TD
+    START(["Session Start"]) --> ENTRY["{{ENTRY}}"]
+
+    ENTRY --> PHASE1["{{PHASE_1}}"]
+    PHASE1 --> BRANCH1{{"{{BRANCH_1}}"}}
+    BRANCH1 -->|"{{BRANCH_1_A}}"| PHASE2A["{{PHASE_2A}}"]
+    BRANCH1 -->|"{{BRANCH_1_B}}"| PHASE2B["{{PHASE_2B}}"]
+
+    PHASE2A --> PHASE3["{{PHASE_3}}"]
+    PHASE2B --> PHASE3
+
+    PHASE3 --> BRANCH2{{"{{BRANCH_2}}"}}
+    BRANCH2 -->|"{{BRANCH_2_A}}"| PHASE4["{{PHASE_4}}"]
+    BRANCH2 -->|"{{BRANCH_2_B}}"| LOOP["{{LOOP}}"]
+
+    LOOP --> PHASE3
+
+    PHASE4 --> EXIT{{"{{EXIT_DECISION}}"}}
+    EXIT -->|"{{EXIT_CONDITION}}"| DONE(["Session Complete"])
+    EXIT -->|"{{INCOMPLETE_CONDITION}}"| SAVED(["Saved for Next Session"])
+```

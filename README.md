@@ -124,6 +124,10 @@ Bundles organize related skills under a single umbrella with shared reference ma
 
 Self-hosted Tailscale/Headscale VPN ecosystem. Seven sub-skills covering Headscale server deployment, ACL/tailnet policy authoring, Tailscale client configuration, node lifecycle (auth keys, registration, tagging, decommissioning), subnet routing and exit nodes, DERP relay infrastructure, and backup/migration. Ships 23 scripts with `--json` and `--dry-run` support, 8 reference documents, and 6 templates.
 
+### [workflow-architect](bundles/workflow-architect/SKILL.md)
+
+Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Ships 3 sub-skills, 3 reference documents, 4 templates, and a worked example output bundle.
+
 ---
 
 ## Installation
