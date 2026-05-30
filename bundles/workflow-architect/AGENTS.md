@@ -37,5 +37,6 @@ the prefix `workflow-architect:state:`.
 | `references/example-output/developer-triage/` | Worked example of a generated bundle |
 | `templates/skill-skeleton.md` | Template for generated sub-skills |
 | `templates/manifest.yaml.tmpl` | Template for bundle manifest |
-| `templates/kanban-board.yaml.tmpl` | Template for kanban definition |
+| `templates/kanban-board-setup.sh.tmpl` | Template for board creation script |
+| `templates/kanban-task-blueprints.yaml.tmpl` | Template for phase-to-task mappings |
 | `templates/decision-map.md.tmpl` | Template for Mermaid decision map |
