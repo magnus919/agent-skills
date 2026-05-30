@@ -1,0 +1,15 @@
+# kanban/task-blueprints.yaml
+# Template tasks for the {{BUNDLE_NAME}} workflow
+# Use these as reference when creating tasks for each phase.
+
+board_slug: {{BOARD_SLUG}}
+generated: {{GENERATION_DATE}}
+archetype: {{ARCHETYPE}}
+
+# Each blueprint maps a workflow phase to a kanban task template.
+# Phases are ordered left to right — the dependency chain follows naturally
+# from the sequence. Tasks for later phases get more parent links so they
+# auto-promote to "ready" when earlier phases complete.
+
+blueprints:
+{{BLUEPRINT_ENTRIES}}

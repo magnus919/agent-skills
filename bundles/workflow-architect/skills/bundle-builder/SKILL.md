@@ -132,9 +132,84 @@ starting points. Render them by substituting the state values.
 5. **AGENTS.md** — Standard agent loading instructions for this bundle.
    Short — just says which skills exist and when to load them.
 
-6. **kanban/board-definition.yaml** — Only if the kanban-decision-criteria.md
-   reference indicates kanban is appropriate. Use `templates/kanban-board.yaml.tmpl`.
-   Each phase becomes a lane.
+6. **kanban/ directory** — Only if the kanban-decision-criteria.md reference
+   indicates kanban is appropriate. Generates three files:
+
+   a) **kanban/board-setup.sh** — Use `templates/kanban-board-setup.sh.tmpl`.
+      Substitutes:
+      - `{{BOARD_SLUG}}` — bundle name (kebab-case)
+      - `{{BOARD_NAME}}` — title-case version or user-provided name
+      - `{{FIRST_PHASE_SKILL}}` — skill file for the first phase
+      - `{{FIRST_PHASE_PRIORITY}}` — priority for first-phase tasks
+      - `{{GENERATION_DATE}}` — current date
+
+      The setup script creates the board via `hermes kanban boards create`
+      and prints instructions for adding work.
+
+   b) **kanban/task-blueprints.yaml** — Use `templates/kanban-task-blueprints.yaml.tmpl`.
+      Substitutes:
+      - `{{BLUEPRINT_ENTRIES}}` — one blueprint entry per phase, each with:
+        - `phase:` — phase name (kebab-case)
+        - `title_template:` — e.g. "Build: {{feature}}"
+        - `skill:` — path to the sub-skill file (e.g. `my-workflow/build`)
+        - `default_priority:` — descending from first phase (highest) to last
+        - `initial_status:` — first phase = `todo`, rest = `ready`
+        - `body:` — instructions for the worker: what skill to load,
+          definition of done, and transition to next phase
+
+   c) **kanban/README.md** — Brief usage guide explaining how to set up and
+      use the board. Structure:
+
+      ```markdown
+      # Kanban Board: <Bundle Name>
+
+      This workflow maps to a Hermes Kanban board with <N> phases in sequence.
+
+      ## Setup
+
+      Run `kanban/board-setup.sh` to create the board:
+      ```bash
+      bash kanban/board-setup.sh
+      ```
+
+      The script creates the board and switches to it. If you prefer to set
+      it up manually:
+      ```bash
+      hermes kanban boards create <bundle-name> --name "<Bundle Name>"
+      ```
+
+      ## Task Lifecycle
+
+      <Phase 1> → <Phase 2> → <Phase 3>
+
+      Each phase's task depends on the previous phase's task completing.
+      When a task is done, the next phase's task auto-promotes to "ready"
+      and the dispatcher picks it up.
+
+      ## Adding Work
+
+      Create a task for the first phase:
+      ```bash
+      hermes kanban create "Build: <feature description>" \\
+        --skill <bundle-name>/<phase-1-skill> \\
+        --priority 3
+      ```
+
+      Then create subsequent-phase tasks with `--parent` pointing to the
+      first task's ID:
+      ```bash
+      hermes kanban create "Review: <feature>" \\
+        --parent <task-id> \\
+        --skill <bundle-name>/<phase-2-skill> \\
+        --priority 2
+      ```
+
+      ## Task Blueprints
+
+      See `kanban/task-blueprints.yaml` for template definitions of each
+      phase's task, including default priorities, skill mappings, and
+      worker instructions.
+      ```
 
 7. **references/generated-from.md** — Metadata about the generation process:
 

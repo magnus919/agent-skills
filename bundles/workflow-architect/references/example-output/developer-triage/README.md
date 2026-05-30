@@ -59,3 +59,9 @@ branching:
 
 kanban: false  # Workflow has emergent branching; kanban adds marginal value
 ```
+
+> **No kanban in this example.** This workflow has emergent branching
+> (what you do depends on whether PRs are pending), so workflow-architect
+> correctly decided not to include a kanban board. See the
+> `developer-pipeline-kanban` example for a strictly linear workflow that
+> does include kanban.
