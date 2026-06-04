@@ -28,6 +28,9 @@ where you are in every session.
 After running workflow-architect, you'll have a new bundle in your agent's skill
 directory containing:
 
+- **Umbrella SKILL.md** — the entry point that makes the bundle auto-detectable
+  via trigger conditions in its description. Load it with `skill_view(name='<bundle-name>')`
+  or let the agent discover it automatically when you say something matching its triggers.
 - **Sub-skills** — one per phase of your workflow, each with a `description`
   that tells the agent when to load it (e.g., "load this when the user starts
   their morning triage routine" or "use this when the user shifts into deep work
@@ -39,8 +42,8 @@ directory containing:
 - **A kanban board** (optional) — only included if your workflow follows a
   predictable linear path where WIP limits and lane transitions add value
 
-The generated bundle lives in `~/.hermes/skills/` and is immediately loadable
-in future sessions.
+The umbrella and sub-skills are registered via `skill_manage(action='create')`
+so they appear in `skills_list()` and are immediately loadable in future sessions.
 
 ## Two Modes
 
@@ -92,9 +95,12 @@ message history and reconstructs your workflow from what happened.
 2. If active: load `skills/interviewer/SKILL.md`
 3. If passive: load `skills/observer/SKILL.md`
 4. After convergence: load `skills/bundle-builder/SKILL.md` to synthesize
-   and write the output bundle
-5. The bundle is written to `~/.hermes/skills/<bundle-name>/` — tell the
-   user where it landed and what skills it contains
+   and write the output bundle. The bundle is written to
+   `~/.hermes/skills/<category>/<bundle-name>/` — verify the umbrella loads
+   with `skill_view(name='<bundle-name>')` and at least one sub-skill loads
+   with `skill_view(name='<bundle-name>-<phase-name>')`. Tell the user where
+   it landed, what skills it contains, and a trigger phrase they can use to
+   enter the workflow.
 
 ## What the Interview Builds
 
