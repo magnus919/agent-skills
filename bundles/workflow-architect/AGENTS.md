@@ -18,9 +18,17 @@
 
 ## Output Location
 
-Generated bundles are written to `~/.hermes/skills/<bundle-name>/` via the
-`write_file` tool. The user is told the exact path so they can inspect the
-bundle and use the skills immediately.
+Generated bundles are written to `~/.hermes/skills/<category>/<bundle-name>/` via the
+`write_file` tool. The umbrella SKILL.md is registered via `skill_manage(action='create')`
+and sub-skills are registered individually so they appear in `skills_list()` and can be
+loaded with `skill_view()`.
+
+## Registration
+
+The umbrella SKILL.md is registered with `skill_manage(action='create')` in step 0 of the
+bundle-builder. Each generated sub-skill is also registered (step 8) so it's immediately
+discoverable by the agent's skill system. Verify with `skill_view(name='<bundle-name>')`
+and `skill_view(name='<bundle-name>-<first-phase-name>')`.
 
 ## Environment
 
