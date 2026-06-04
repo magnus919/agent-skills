@@ -1,7 +1,7 @@
 ---
 name: forgejo-cli
 description: "CLI for Forgejo API — issues, PRs, repos, labels, webhooks, Actions runners. Dual auth (AGENT/USER)."
-version: 1.1.0
+version: 1.1.1
 tags: [forgejo, git, api, code-review]
 ---
 
@@ -66,6 +66,9 @@ forgejo-cli pr merge --owner magnus --repo myrepo --index 3 --force      # Execu
 # Create a PR
 forgejo-cli pr create --owner magnus --repo myrepo --title "feat: add auth" --head feat/add-auth --base main --body "Closes #42"
 forgejo-cli pr create --owner magnus --repo myrepo --title "draft: WIP" --head feat/wip --base main --draft
+
+# Create an issue with labels (label IDs are NUMERIC)
+forgejo-cli issue create --owner magnus --repo myrepo --title "Bug: login fails" --body "Details here" --labels 8,9
 
 # List repos
 forgejo-cli repo list --json
@@ -205,11 +208,29 @@ The `references/pr-review-workflow.md` file covers the end-to-end automated code
 
 ## Pitfalls
 
+### `--labels` requires numeric IDs (not strings)
+
+The `--labels` flag accepts comma-separated label IDs. These must be **integers**. Non-numeric values are silently dropped.
+
+```bash
+# ✅ Correct: numeric IDs
+forgejo-cli issue create --owner magnus --repo test --title "Bug" --labels 8,9
+
+# ❌ Wrong: string values cause 422 API error
+forgejo-cli issue create --owner magnus --repo test --title "Bug" --labels "8,9"
+```
+
+To look up label IDs by name:
+
+```bash
+forgejo-cli label list --owner magnus --repo test --json
+```
+
+This returns labels with their numeric `id` field. See issue #48 for the v1.1.1 fix history.
+
 ### Shell metacharacters in `--body` break `issue create`
 
 The `--body` value is passed through the shell, so text containing `$`, backticks, parentheses, `&`, `|`, `;`, or unbalanced quotes causes parsing errors or silent truncation.
-
-**Symptoms:** `Error: Unknown option: working`, `syntax error near unexpected token`, or the body gets truncated at the first special character.
 
 **Fix:** Use the Forgejo API directly with a JSON file for complex bodies:
 
@@ -276,5 +297,4 @@ The same pattern works for PR creation — POST to `/pulls` instead of `/issues`
 | `pr merge` | Requires `--force` or `--dry-run` flag (not obvious from help output). Returns 405 when PR isn't mergeable (branch divergence, conflicts) | API-based merge — see `references/pr-merge-via-api.md` |
 | `release create` | Not implemented (no release commands exist at all) | Use raw API — see `references/release-workflow.md` |
 | Standalone PR comment (merged PR) | No subcommand for commenting on already-merged PRs | Use `POST /issues/{id}/comments` — see `references/pr-review-workflow.md` |
-
 When a CLI subcommand is missing, the Forgejo REST API at `git.brandyapple.com/api/v1` is the backup. The `references/repo-creation-via-api.md` file has the exact curl incantation for repo creation, and `references/pr-creation-via-api.md` covers PR creation.
