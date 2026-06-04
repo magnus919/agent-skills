@@ -1,15 +1,17 @@
 ---
 name: arr-cli
 description: >-
-  Manage your media library with Radarr (movies) and Sonarr (TV series)
-  from the terminal. Search and list movies and series, check calendars,
-  view wanted/missing episodes, and monitor library status. Use when the
-  user mentions Radarr, Sonarr, the *arr stack, movie automation, TV
-  series management, or media server setup.
+  Manage your Radarr (movies) and Sonarr (TV series) media library from the terminal.
+  Search and browse movies/series, add new content, check calendars, view queue and
+  download history, inspect quality profiles, and trigger searches. Use when the user
+  mentions Radarr, Sonarr, the *arr stack, adding a movie or series, checking the
+  library, finding something to watch, what's in the queue, download history,
+  upcoming releases, media server setup, or movie/TV automation.
 license: MIT
-compatibility: Requires ARR_SERVER_RADARR and ARR_KEY_RADARR (for Radarr)
-  or ARR_SERVER_SONARR and ARR_KEY_SONARR (for Sonarr), Python 3.8+, and
-  the `requests` library. API keys from each app's Settings → General.
+compatibility: >-
+  Python 3.8+ with `requests` library. Requires ARR_SERVER_RADARR and ARR_KEY_RADARR
+  (for Radarr) or ARR_SERVER_SONARR and ARR_KEY_SONARR (for Sonarr). API keys from
+  each app's Settings → General.
 metadata:
   tags: [radarr, sonarr, arr-stack, media-server, movie-automation, tv-series, api-client]
   sources:
@@ -19,12 +21,9 @@ metadata:
 
 # arr-cli — Radarr + Sonarr Media Library Management
 
-Two CLIs, one skill wrapper. `radarr-cli` for movies, `sonarr-cli` for TV series. Radarr and Sonarr share the same API pattern but use separate server URLs and API keys.
+Two CLIs, one skill wrapper. `radarr-cli` for movies, `sonarr-cli` for TV series.
 
-## Setup
-
-1. Get API keys from each app: Settings → General → API Key
-2. Set environment variables:
+## Quick Setup
 
 ```bash
 # Radarr
@@ -36,159 +35,94 @@ export ARR_SERVER_SONARR="http://localhost:8989"
 export ARR_KEY_SONARR="your-sonarr-api-key"
 ```
 
-`--help` and `--dry-run` work without credentials on both CLIs.
+`--help` and `--dry-run` work without credentials.
 
-## Radarr Commands
+## When to Use Which
 
-### status — Server info
+| User says... | Load... |
+|---|---|
+| "list my movies", "what's in Radarr", "show me the library" | `radarr-cli movies [--limit N] [--status released\|inCinemas\|announced]` |
+| "add this movie", "is this in Radarr", "search for a movie" | `radarr-cli lookup --term "title"` then `radarr-cli add --tmdb-id N --root /movies` |
+| "what's coming up", "upcoming releases" | `radarr-cli calendar` or `sonarr-cli calendar` |
+| "what's in the queue", "download progress" | `radarr-cli queue` or `sonarr-cli queue` |
+| "show me history", "what was downloaded" | `radarr-cli history` or `sonarr-cli history` |
+| "list my series", "what's on Sonarr" | `sonarr-cli series [--limit N] [--status continuing\|ended\|upcoming]` |
+| "add this series", "find a TV show" | `sonarr-cli lookup --term "title"` then `sonarr-cli add --tvdb-id N --root /tv` |
+| "what's missing", "wanted episodes" | `sonarr-cli wanted` |
+| "check quality profiles", "what profiles exist" | `radarr-cli quality-profile` or `sonarr-cli quality-profile` |
+| "search for a movie/series" (already added) | `radarr-cli search --movie-id N` or `sonarr-cli search --series-id N` |
+| "where are my root folders", "storage paths" | `radarr-cli root-folder` or `sonarr-cli root-folder` |
+| "what episodes are downloaded", "episode files" | `sonarr-cli episode-file --series-id N` |
 
-```bash
-radarr-cli status                       # version, OS, database
-radarr-cli status --json                # machine-readable
-```
+## Quick Reference
 
-### movies — List your movie library
-
-```bash
-radarr-cli movies                       # all movies
-radarr-cli movies --status released     # filter by status (released, inCinemas, announced)
-radarr-cli movies --limit 10            # top 10
-radarr-cli movies --json                # machine-readable
-```
-
-Icons: ✅ = has file, 👁️ = monitored but missing, 🚫 = unmonitored.
-
-### lookup — Search for movies to add
-
-```bash
-radarr-cli lookup --term "Dune"                 # search by title
-radarr-cli lookup --term "Dune" --json          # includes TMDb ID and overview
-```
-
-### add — Add movies to library
+**Global flags** (work anywhere in arg list): `--json`, `--dry-run`, `--force`, `--quiet`, `--verbose`
 
 ```bash
-radarr-cli add --tmdb-id 12345 --quality-profile 4 --search    # add with auto-search
-radarr-cli add --tmdb-id 12345 --quality-profile 5 --dry-run   # preview without adding
+# System info
+radarr-cli status
+sonarr-cli status
+
+# List with filters and JSON output (pipe to jq for scripting)
+radarr-cli movies --limit 5 --status released --json | jq '.movies[].title'
+sonarr-cli series --limit 5 --status continuing --json | jq '.series[].title'
+
+# Discover and add a movie (always use TMDb ID, not title)
+radarr-cli lookup --term "Dune"
+radarr-cli add --tmdb-id 12345 --root /movies --quality-profile 4 --search
+
+# Add with specific availability (for unreleased films)
+radarr-cli add --tmdb-id 99999 --root /movies --quality-profile 5 --availability announced
+
+# Discover and add a series (always use TVDb ID)
+sonarr-cli lookup --term "Severance"
+sonarr-cli add --tvdb-id 77526 --root /tv --quality-profile 4 --series-type Standard --search
+
+# Add an anime series (flat episode storage, absolute numbering)
+sonarr-cli add --tvdb-id 12345 --root /tv --quality-profile 4 --series-type Anime --no-season-folder --search
+
+# Preview before adding (no side effects)
+radarr-cli --dry-run add --tmdb-id 550 --root /movies --quality-profile 4
+
+# Trigger a search for something already in your library
+radarr-cli search --movie-id 5
+sonarr-cli search --series-id 5
+
+# Queue and history
+radarr-cli queue --limit 10
+radarr-cli history --limit 5 --event-type grabbed
+
+# Discover root folder paths before adding
+radarr-cli root-folder
+sonarr-cli root-folder
+
+# Quality profiles
+radarr-cli quality-profile           # list all
+radarr-cli quality-profile 4         # inspect HD-1080p details with tier checkmarks
 ```
 
-Use `--quality-profile 4` for HD-1080p, `5` for Ultra-HD. Omit `--search` to add unmonitored.
+**IMPORTANT — lookup side effect:** `radarr-cli lookup --tmdb-id N` silently adds an unmonitored record. For pure existence checks, use `radarr-cli --json movies | jq '.[] | select(.tmdbId == N)'` instead.
 
-### quality-profile — View quality profiles
+**Default quality profile:** HD-1080p (id: 4). Override with `--quality-profile N`.
 
-```bash
-radarr-cli quality-profile                   # list all quality profiles
-radarr-cli quality-profile 4                 # inspect HD-1080p specifics (cutoff, tiers)
-radarr-cli quality-profile --json            # machine-readable
-```
+## Reference Files
 
-Each profile shows which quality tiers are allowed (✓) or blocked (✗), and the cutoff tier.
+| File | Contents |
+|------|----------|
+| `references/radarr-commands.md` | Full Radarr command reference with all flags and examples |
+| `references/sonarr-commands.md` | Full Sonarr command reference with all flags and examples |
+| `references/media-discovery.md` | Cross-referencing TMDb/Trakt discovery results against your library |
+| `references/troubleshooting.md` | Pitfalls, FAQs, and when NOT to use |
 
-### calendar — Upcoming releases
+## When NOT to Use
 
-```bash
-radarr-cli calendar                             # upcoming releases
-radarr-cli calendar --json                      # machine-readable
-```
+- **Media playback** — use Jellyfin for watching content. This CLI only manages the library.
+- **First-time *arr setup** — this skill assumes Radarr/Sonarr are already installed and configured. See `radarr.video` or `sonarr.tv` for installation guides.
+- **Bulk imports** — for large-scale library migrations, prefer Radarr/Sonarr's built-in import features or manual disk operations.
 
-### collections — Movie collections
+## First-Time Loading
 
-```bash
-radarr-cli collections                          # list all collections
-radarr-cli collections --json                   # with movie counts
-```
-
-## Sonarr Commands
-
-### status — Server info
-
-```bash
-sonarr-cli status                        # version, OS, database
-sonarr-cli status --json                 # machine-readable
-```
-
-### series — List your TV series
-
-```bash
-sonarr-cli series                        # all series
-sonarr-cli series --status continuing    # filter (continuing, ended, upcoming)
-sonarr-cli series --limit 10             # top 10
-sonarr-cli series --json                 # machine-readable
-```
-
-### lookup — Search for series to add
-
-```bash
-sonarr-cli lookup --term "Severance"            # search by title
-sonarr-cli lookup --term "Severance" --json     # with TVDB ID
-```
-
-### add — Add series to library
-
-```bash
-sonarr-cli add --tvdb-id 12345 --quality-profile 4 --series-type Standard --search   # standard weekly show
-sonarr-cli add --tvdb-id 12345 --quality-profile 4 --series-type Daily --search       # daily show (talk show, news)
-sonarr-cli add --tvdb-id 12345 --quality-profile 4 --series-type Anime --no-season-folder --search  # anime with absolute numbering
-```
-
-**Series types:** `Standard` (default, regular weekly episodes), `Daily` (airing daily, e.g. talk shows/news), `Anime` (absolute episode numbering, no season folders). Use `--no-season-folder` for flat episode storage.
-
-### episodes — List episodes of a series
-
-```bash
-sonarr-cli episodes --series-id 1               # all episodes
-sonarr-cli episodes --series-id 1 --limit 10    # recent episodes
-sonarr-cli episode get 1                        # details for a specific episode
-sonarr-cli episode-files --series-id 1          # downloaded episode files with quality info
-```
-
-Get the series ID from `sonarr-cli series --json`.
-
-### calendar — Upcoming episodes
-
-```bash
-sonarr-cli calendar                              # upcoming episodes
-sonarr-cli calendar --json                       # machine-readable
-```
-
-### wanted — Missing episodes
-
-```bash
-sonarr-cli wanted                                # missing episodes
-sonarr-cli wanted --limit 50                     # more results
-sonarr-cli wanted --json                         # machine-readable
-```
-
-### quality-profile — View quality profiles
-
-```bash
-sonarr-cli quality-profile                       # list all quality profiles
-sonarr-cli quality-profile 4                     # inspect HD-1080p
-```
-
-## Global Flags
-
-All flags work in any position on both CLIs:
-
-```bash
-radarr-cli --json movies                        # flag before subcommand
-radarr-cli movies --json                        # flag after subcommand
-radarr-cli --dry-run lookup --term "Dune"        # preview
-sonarr-cli --quiet series                        # suppress non-essential output
-```
-
-## Known Gotchas
-
-- **Separate credentials** — Radarr and Sonarr use different API keys and different ports (7878 vs 8989). Set both ARR_KEY_RADARR and ARR_KEY_SONARR.
-- **API keys from Settings → General** — Not from the user profile page. Look under the General settings tab in each app.
-- **Movie/series IDs are the *arr internal IDs**, not TMDb/TVDB IDs. Use `lookup` first to find the internal ID, or use `--json` to get both.
-- **Quality profile IDs** default to 4 (HD-1080p). Override by setting the profile ID in your scripts if you use a different profile.
-- **Calendar can be slow** on large libraries. Sonarr's calendar may take several seconds to respond.
-- **Sonarr wanted endpoint is paginated** — it returns a `totalRecords` field. Use `--limit` to control page size.
-
-## References
-
-- [scripts/radarr-cli](scripts/radarr-cli) — Radarr CLI binary. cli-builder patterns: `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth.
-- [scripts/sonarr-cli](scripts/sonarr-cli) — Sonarr CLI binary. Same patterns as radarr-cli.
-- [Radarr API docs](https://radarr.video/docs/api/) — Official API reference.
-- [Sonarr API docs](https://sonarr.tv/docs/api/) — Official API reference.
+1. Set the env vars above (API keys from each app's Settings → General)
+2. Test with `radarr-cli status` — you should see version and OS info
+3. Browse your library: `radarr-cli movies --limit 5`
+4. For cross-reference workflows (discovering new content via TMDb/Trakt), see `references/media-discovery.md`
