@@ -124,6 +124,14 @@ Trakt.tv media discovery from the terminal. Browse trending, anticipated, and po
 
 Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view subscriber analytics. API key from transistor.fm settings.
 
+### [yc-default-alive-calculator](yc-default-alive-calculator/SKILL.md)
+
+Paul Graham's "Default Alive / Default Dead" framework as a deterministic CLI tool. Given revenue, burn rate, cash on hand, and growth rate, compute whether a startup will reach profitability before running out of money. Ships a month-by-month projection engine, burn multiple analysis, lever identification, and actionable verdict (ALIVE / DEAD / MARGINAL). Python 3.9+ with zero external dependencies.
+
+### [yc-weekly-growth-compass](yc-weekly-growth-compass/SKILL.md)
+
+Paul Graham's "Startup = Growth" framework as an operational weekly practice. Computes growth rates from single-period or time-series data, benchmarks against YC tiers (1% concerning → 10%+ outstanding), projects compound growth, and frames every decision through the compass question: "Does this serve your target growth rate?" Python 3.9+ with zero external dependencies.
+
 ## Bundles
 
 Bundles organize related skills under a single umbrella with shared reference material and auto-loading by trigger context.
