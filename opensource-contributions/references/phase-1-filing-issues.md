@@ -46,7 +46,7 @@ Frame features around the **problem**, not your proposed solution:
 When filing an issue on behalf of someone else (human delegating to an AI agent), ALWAYS disclose the agentic nature. Add a line to the issue body:
 
 ```
-Filed by Jasper (AI agent on behalf of Magnus Hedemark)
+Filed by AI agent on behalf of [contributor name]
 ```
 
 This goes at the bottom, after the substantive content. It's not a courtesy — it's a transparency requirement. Maintainers deserve to know who they're talking to.
