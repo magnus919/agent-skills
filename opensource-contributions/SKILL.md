@@ -11,7 +11,7 @@ metadata:
   tags: [opensource, contributing, github, etiquette, PRs, issues]
   related_skills: [github-issues, github-pr-workflow, github-code-review]
   version: "1.6.0"
-  author: Jasper
+  author: agent-skills
 source_repo: https://agentskills.io
 ---
 

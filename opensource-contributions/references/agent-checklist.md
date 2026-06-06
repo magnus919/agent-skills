@@ -1,6 +1,6 @@
 ## Agent-Specific Checklist
 
-When I (Jasper) make a contribution on behalf of Magnus:
+When making a contribution on behalf of someone else:
 
 - [ ] **CONTRIBUTING.md checked** at repository root (and fallback locations)
 - [ ] **Existing issues searched** before filing anything new — on the current repo AND on any target repo before redirecting
