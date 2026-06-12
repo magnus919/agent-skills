@@ -26,7 +26,7 @@ DATASETS: list[dict] = [
     {
         "title": "Existing Bicycle Infrastructure (Public)",
         "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
-        "service": "ExistingBicycleInfrastructure_Public/FeatureServer",
+        "service": "Existing_Bicycle_Infrastructure/FeatureServer",
         "svc_type": "FeatureServer",
         "layer": 0,
         "description": "Bike lanes, routes, and bicycle infrastructure",
@@ -86,7 +86,7 @@ DATASETS: list[dict] = [
     {
         "title": "Speed Humps",
         "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
-        "service": "Speed_Humps/FeatureServer",
+        "service": "SpeedHumps/FeatureServer",
         "svc_type": "FeatureServer",
         "layer": 0,
         "description": "Speed hump locations",
@@ -1166,7 +1166,7 @@ DATASETS: list[dict] = [
     {
         "title": "EVSE Stations",
         "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
-        "service": "EVSE_Stations/FeatureServer",
+        "service": "EVSE_Stations_View/FeatureServer",
         "svc_type": "FeatureServer",
         "layer": 0,
         "description": "Electric vehicle charging stations",
