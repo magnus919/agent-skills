@@ -92,6 +92,10 @@ Open Library book metadata from the terminal. Search books and authors, get work
 
 PeerTube federated video platform from the terminal. Browse videos and channels, search across instances, view server info. OAuth2 login with token persistence. Set PEERTUBE_SERVER to point at any instance.
 
+### [raleigh](raleigh/SKILL.md)
+
+Query, search, and download public datasets from the City of Raleigh Open Data portal. Wraps the ArcGIS REST API to access 170+ datasets — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, and more. No API key needed. Ships a Python CLI with catalog, search, info, query, download, and categories commands.
+
 ### [software-architecture-analysis](software-architecture-analysis/SKILL.md)
 
 Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan under new constraints (local-first, privacy-first, self-hosted). Includes an interface extraction pattern for designing swappable storage provider abstractions.

@@ -1,0 +1,2326 @@
+#!/usr/bin/env python3
+"""raleigh — CLI for the City of Raleigh Open Data portal.
+
+Query, search, and download public datasets from data.raleighnc.gov
+via the ArcGIS REST API.  No API key required.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import os
+import sys
+import textwrap
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import datetime, timezone
+
+# ── Embedded dataset catalog ──────────────────────────────────────────────
+# Each entry describes one ArcGIS layer.  Fields:
+#   title, server, service, svc_type, layer, description, category, has_geometry
+
+DATASETS: list[dict] = [
+    {
+        "title": "Existing Bicycle Infrastructure (Public)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "ExistingBicycleInfrastructure_Public/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Bike lanes, routes, and bicycle infrastructure",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "GoRaleigh Bus Routes",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "GoRaleigh/TransitRoutes/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "GoRaleigh transit route lines",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "GoRaleigh Bus Stops",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "GoRaleigh/TransitStops/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Bus stop locations",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "GoRaleigh Access Service Area",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "GoRaleigh/AccessServiceArea/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Transit access coverage area",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Streets in Wake County, NC",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Streets/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Street centerlines",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Street Intersections",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/StreetIntersections/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Intersection points",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Speed Humps",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Speed_Humps/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Speed hump locations",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Traffic Signal Inventory (Public)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "TrafficSignalInventory_Public/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Traffic signal locations and specs",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Crashes Involving Cyclists",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Crashes/CrashesInvolvingCyclists/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Cyclist-involved crash data",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Reported Crash Locations",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Crashes/ReportedCrashLocations/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "All reported crash locations",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Persons Involved in Crashes",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Crashes/PersonsInvolvedInCrashes/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Crash victim data",
+        "category": "Transportation",
+        "has_geometry": False,
+    },
+    {
+        "title": "Raleigh Street Plan",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Planning/StreetPlan/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Planned street network",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "City of Raleigh Maintained Streets",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "CityOfRaleighMaintainedStreets/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Streets maintained by the city",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Major Roads",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/MajorRoads/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Major road network",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Highways in Wake County, NC",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Highways/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Highway routes",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Downtown Raleigh Parking Facilities",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Downtown_Raleigh_Parking_Facilities/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Downtown parking garage/lot locations",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Parking Pay Stations (Public)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Parking_Pay_Stations_Public/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Parking pay station locations",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Parking Areas",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/ParkingAreas/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Designated parking areas",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Parking Lots",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/ParkingLots/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Parking lot boundaries",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Time Restricted Parking",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Time_Restricted_Parking/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Time-limited parking zones",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Downtown Parking Districts",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Downtown_Parking_Districts/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Parking district boundaries",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Frequent Transit Area",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Frequent_Transit_Area/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "High-frequency transit service area",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Long Term Bike Plan",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Planning/LongTermBikePlan/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Future bike infrastructure plans",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Railroad",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Railroad/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Railroad lines",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Railroads",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Railroads/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Railroad routes",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Special Events All Routes",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Special_Events_All_Routes/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Special event route plans",
+        "category": "Transportation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Police Incidents (NIBRS)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Police_Incidents_NIBRS/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "NIBRS-standard crime incident data",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Police Incidents (SRS)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Police_Incidents_SRS/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Summary Reporting System crime data",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Daily Raleigh Police Incidents",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Daily_Raleigh_Police_Incidents/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Daily crime incident feed",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Fire Incidents",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Fire_Incidents/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Fire department incident responses",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Fire Incidents Past Month",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "FireIncidents_PastMonth/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Recent fire incidents",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Code Cases Past 90 Days",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Code_Cases_Past_90_Days/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Code enforcement cases",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Police Zones",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Police_Zones/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Police patrol zone boundaries",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Police Departments",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/PoliceDepartments/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Police station locations",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Sheriff Zones",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/SheriffZones/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Sheriff district boundaries",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Fire Stations",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Fire_Stations/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Fire station locations",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Fire Response Districts",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Fire_Response_Districts/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Fire response area boundaries",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "EMS Stations",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/EMSStations/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "EMS station locations",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "EMS Franchise Districts",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/EMSFranchiseDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "EMS service area boundaries",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "County Fire Response Zones",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/CountyFireResponseZones/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "County fire response areas",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Fire Insurance Districts",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/FireInsuranceDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Fire insurance rating districts",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Communication Features",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/CommunicationFeatures/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Radio and communication infrastructure",
+        "category": "Public Safety",
+        "has_geometry": True,
+    },
+    {
+        "title": "Parcels",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Property/Parcels/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Property parcel boundaries",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Parcel Address Points",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/ParcelAddressPoints/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Address point locations",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Building Footprints",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Building_Footprints/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Building outline polygons",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Subdivisions in Wake County, NC",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Subdivisions/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Subdivision boundaries",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Building Permits",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Building_Permits/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "All building permits",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Building Permits (Wake)",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Inspections/Building_Permits/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Wake County building permits",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Building Permits Issued Past 180 Days",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Building_Permits_Issued_Past_180_Days/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Recent building permits",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Building Permits Past 31 Days",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Building_Permits_Past_31_Days/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Very recent building permits",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Building Permits Under Review",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Building_Permits_Pending/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Pending building permits",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Accessory Dwelling Unit (ADU) Permits",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "ADU_Building_Permits/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "ADU permit records",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Development Plans",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Development_Plans/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Active development plans",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Wake County Development",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/WakeCountyDevelopment/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "County development projects",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Permits Other Than Buildings",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "PermitsOtherThanBuildings/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Non-building permits",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Stormwater Impervious Surface on Properties",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Stormwater_Impervious_Surface_on_Properties/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Impervious surface per parcel",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Building Footprints",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "BaseData/BuildingFootprints/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Building footprint polygons",
+        "category": "Property & Housing",
+        "has_geometry": True,
+    },
+    {
+        "title": "Restaurants in Wake County",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Inspections/Restaurants/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Restaurant locations",
+        "category": "Food & Health",
+        "has_geometry": True,
+    },
+    {
+        "title": "Food Inspections",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Inspections/RestaurantInspectionsOpenData/MapServer",
+        "svc_type": "MapServer",
+        "layer": 1,
+        "description": "Restaurant inspection results",
+        "category": "Food & Health",
+        "has_geometry": False,
+    },
+    {
+        "title": "Food Inspection Violations",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Inspections/RestaurantInspectionsOpenData/MapServer",
+        "svc_type": "MapServer",
+        "layer": 2,
+        "description": "Specific violation records",
+        "category": "Food & Health",
+        "has_geometry": False,
+    },
+    {
+        "title": "Hospitals, Wake County and Surrounding",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Hospitals/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Hospital locations",
+        "category": "Food & Health",
+        "has_geometry": True,
+    },
+    {
+        "title": "Permitted Environmental Health Compliance Facilities",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Inspections/EnvHealthCompliance/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Environmental health compliance",
+        "category": "Food & Health",
+        "has_geometry": True,
+    },
+    {
+        "title": "Farmer's Markets",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/FarmersMarkets/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Farmers market locations",
+        "category": "Food & Health",
+        "has_geometry": True,
+    },
+    {
+        "title": "CDC Social Vulnerability Index - Wake County",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Demographics/SocialVulnerabilityIndex/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Community health vulnerability",
+        "category": "Food & Health",
+        "has_geometry": True,
+    },
+    {
+        "title": "Adopted Expense Budget",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Adopted_Expense_Budget/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "City adopted expense budget",
+        "category": "Government & Finance",
+        "has_geometry": False,
+    },
+    {
+        "title": "Adopted Revenue Budget",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Adopted_Revenue_Budget/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "City adopted revenue budget",
+        "category": "Government & Finance",
+        "has_geometry": False,
+    },
+    {
+        "title": "Adopted Revenue Budget Current Fiscal Year",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Adopted_Revenue_Budget_Current_Fiscal_Year/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Current FY revenue budget",
+        "category": "Government & Finance",
+        "has_geometry": False,
+    },
+    {
+        "title": "Adopted Capital Projects",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Adopted_Capital_Projects/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Capital improvement projects",
+        "category": "Government & Finance",
+        "has_geometry": False,
+    },
+    {
+        "title": "Current Job Postings",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Current_Job_Postings/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "City employment openings",
+        "category": "Government & Finance",
+        "has_geometry": False,
+    },
+    {
+        "title": "Ask Raleigh Requests",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Ask_Raleigh_Requests/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "311 service requests",
+        "category": "Government & Finance",
+        "has_geometry": False,
+    },
+    {
+        "title": "Uncashed Checks",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Uncashed_Checks/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Unclaimed city payments",
+        "category": "Government & Finance",
+        "has_geometry": False,
+    },
+    {
+        "title": "Open Data Catalog",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Open_Data_Catalog/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Self-referencing dataset metadata",
+        "category": "Government & Finance",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh City Council Districts",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_City_Council_Districts/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Council district boundaries",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Board of Commissioners Districts",
+        "server": "https://services1.arcgis.com/a7CWfuGP5ZnLYE7I",
+        "service": "CommissionerDistricts/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "County commissioner districts",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Congressional Districts",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/CongressionalDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "US House districts",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "NC House of Representatives Districts",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/NCHouseDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "NC House districts",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "NC Senate Districts in Wake County, NC",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/NCSenateDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "NC Senate districts",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "School Board Districts",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/SchoolBoardDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "School board election districts",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Polling Places",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/PollingPlaces/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Voting locations",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Precincts",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Precincts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Voting precinct boundaries",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Corporate Limits",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Property/CorporateLimits/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "City limit boundaries",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Planning Jurisdictions",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Planning/PlanningJurisdictions/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Planning jurisdiction boundaries",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Wake County Line",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/WakeCountyLine/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "County boundary",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Morrisville Town Council Districts",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/MorrisvilleTownCouncilDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Morrisville town council districts",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "District Court Judicial Districts in Wake County, NC",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/DistrictCourtJudicialDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Court district boundaries",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Superior Court Districts in Wake County, NC",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/SuperiorCourtDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Superior court districts",
+        "category": "Government Boundaries",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Parks",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Parks/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Park boundaries and info",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Dog Parks",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "DogParkLocations_Existing_PUBLIC/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Dog park locations with amenities",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Street and Park Trees",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Street_and_Park_Trees/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Street and park tree inventory",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Greenway Trails",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Greenway_Trails/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Greenway trail routes",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Greenway Easements",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Greenway_Easements/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Greenway easement boundaries",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Greenways in Wake County, NC",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Greenways/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "County greenway network",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Parks in Wake County",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Parks/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "County park locations",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Wake County Owned Parks",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/WakeCountyOwnedParks/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Parks owned by the county",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Wake County Park Facilities",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/WakeCountyParkFacilities/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Park facility locations",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Park Entrances in Wake County",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/ParkEntrances/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Park access points",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Trail Areas",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/TrailAreas/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Trail area polygons",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Open Space",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Open_Space/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Protected open space",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Recreation Features",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/RecreationFeatures/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Recreation facility locations",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Public Art",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Public_Art/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Public art installations",
+        "category": "Parks & Recreation",
+        "has_geometry": True,
+    },
+    {
+        "title": "Flood Prone Soils",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Environment/FloodProneSoils/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Soil types prone to flooding",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Drainage Basins",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Environment/DrainageBasins/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Stormwater drainage basin boundaries",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Hydrology",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Hydrology/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Water feature lines",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Hydrology Areas",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/HydrologyAreas/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Water feature polygons",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Major Rivers",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/MajorRivers/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Major river routes",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Major Water Bodies",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/MajorWaterBodies/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Lake and pond boundaries",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Water Bodies",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/WaterBodies/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "All water body polygons",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Critical Watersheds",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Environment/CriticalWatersheds/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Environmentally sensitive watersheds",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Water Supply Watersheds",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Environment/WaterSupplyWatersheds/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Drinking water source watersheds",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "River Basins",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/RiverBasins/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "River basin boundaries",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh 2 Foot Contours",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_2_Foot_Contours/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Elevation contour lines",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Soils",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Soils/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Soil survey data",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Vegetation Outlines",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Environment/VegetationOutlines/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Vegetation cover polygons",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Stormwater Impervious Surface on Properties",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Stormwater_Impervious_Surface_on_Properties/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Impervious area per parcel",
+        "category": "Environment",
+        "has_geometry": False,
+    },
+    {
+        "title": "EVSE Stations",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "EVSE_Stations/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Electric vehicle charging stations",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Electric Utilities",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/ElectricUtilities/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Electric utility infrastructure",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Utility Structures",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/UtilityStructures/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Utility structure locations",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Major Utility Easements",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/MajorUtilityEasements/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Utility easement lines",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Access Easements in Wake County, NC",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Easements/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Access easement lines",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Hydrolines",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Hydrolines/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Stream/river lines",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "USGS Blue Line Streams",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/USGSBlueLineStreams/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "USGS blue-line stream network",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Swift Creek Critical Area",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Environment/SwiftCreekCriticalArea/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Swift Creek protected area",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Geology - Bedrock Contacts",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/GeologyBedrockContacts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Bedrock geological formation boundaries",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Geology - Bedrock Polygons",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/GeologyBedrockPolygons/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Bedrock geology polygons",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Geology - Coastal Plain Polygons",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/GeologyCoastalPlainPolygons/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Coastal plain geology",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Geology - Diabase Dikes",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/GeologyDiabaseDikes/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Diabase dike formations",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Evening Temperature",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Evening_Temperature/ImageServer",
+        "svc_type": "ImageServer",
+        "layer": 0,
+        "description": "Evening temperature imagery",
+        "category": "Environment",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Zoning",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Zoning district boundaries",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Future Land Use",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Future_Land_Use/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Future land use designations",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Neighborhood Conservation Overlay District (-NCOD)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_NCOD/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Historic neighborhood protections",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Special Highway Overlay District-1 (-SHOD-1)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_SHOD1/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Highway corridor overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Special Highway Overlay District-2 (-SHOD-2)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_SHOD2/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Highway corridor overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Special Residential Parking Overlay District (-SRPOD)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_SRPOD/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Residential parking zone overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "General Historic Overlay District (-HOD-G)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_HODG/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Historic preservation overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Streetside Historic Overlay District (-HOD-S)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_HODS/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Streetscape historic overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Metro Park Overlay District (-MPOD)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_MPOD/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Metro park protection overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Falls Watershed Protection Overlay District (-FWPOD)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_FWPOD/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Falls Lake watershed overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Swift Creek Watershed Protection Overlay District (-SWPOD)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_SWPOD/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Swift Creek watershed overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Urban Watershed Protection Overlay District (-UWPOD)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_UWPOD/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Urban watershed overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Transit Overlay District (-TOD)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Zoning_TOD/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Transit-oriented development overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Airport Overlay District (-AOD)",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "Planning/AirportOverlayDistrict/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Airport height/zoning overlay",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Airport Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 28,
+        "description": "Airport zoning boundaries",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Economic Development Target Areas",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Economic_Development_Target_Areas/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Economic development zones",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Municipal Service Districts",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Municipal_Service_Districts/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Downtown service district boundaries",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "CAG Corridor Master Plan (Line)",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "CAGCorridorMasterPlan_Line/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Corridor master plan routes",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Wake County Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "County zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Cary Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 16,
+        "description": "Cary zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Apex Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 14,
+        "description": "Apex zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Holly Springs Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 13,
+        "description": "Holly Springs zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Garner Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 17,
+        "description": "Garner zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Knightdale Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 18,
+        "description": "Knightdale zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Morrisville Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 19,
+        "description": "Morrisville zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Wake Forest Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 20,
+        "description": "Wake Forest zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Wendell Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 21,
+        "description": "Wendell zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Zebulon Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 22,
+        "description": "Zebulon zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Rolesville Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 23,
+        "description": "Rolesville zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Angier Zoning",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Planning/Zoning/MapServer",
+        "svc_type": "MapServer",
+        "layer": 15,
+        "description": "Angier zoning",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Voluntary Agricultural Districts",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/VoluntaryAgriculturalDistricts/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Agricultural preservation districts",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Miscellaneous Planimetric Features",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "BaseData/PlanimetricFeatures/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Misc planimetric data features",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Miscellaneous Planimetric Lines",
+        "server": "https://maps.raleighnc.gov/arcgis/rest/services",
+        "service": "BaseData/PlanimetricLines/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Misc planimetric line data",
+        "category": "Planning & Zoning",
+        "has_geometry": True,
+    },
+    {
+        "title": "Census Blocks 2020",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Demographics/CensusBlocks2020/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "2020 census blocks",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Census Block Groups 2000",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Demographics/CensusBlockGroups2000/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "2000 block groups",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Census Block Groups 2010",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Demographics/CensusBlockGroups2010/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "2010 block groups",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Census Block Groups 2020",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Demographics/CensusBlockGroups2020/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "2020 block groups",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Census Tracts 2000",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Demographics/CensusTracts2000/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "2000 census tracts",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Census Tracts 2010",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Demographics/CensusTracts2010/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "2010 census tracts",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Census Tracts 2020",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Demographics/CensusTracts2020/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "2020 census tracts",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Census 2010 Block Points",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Demographics/Census2010BlockPoints/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "2010 census block centroids",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Zip Codes",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Zip_Codes/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "ZIP code boundaries",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Townships",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Townships/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Township boundaries",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Wake Racially Restrictive Covenants",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Wake_Racially_Restrictive_Covenants/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Historical deed restrictions",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Raleigh Neighborhood Registry",
+        "server": "https://services.arcgis.com/v400IkDOw1ad7Yad",
+        "service": "Raleigh_Neighborhood_Registry/FeatureServer",
+        "svc_type": "FeatureServer",
+        "layer": 0,
+        "description": "Registered neighborhood organizations",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Charter Schools",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/CharterSchools/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Charter school locations",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Colleges and Universities",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/CollegesAndUniversities/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "College/university locations",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Libraries",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/Libraries/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Library locations",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "County Facilities",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/CountyFacilities/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "County government buildings",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "Wake County Solid Waste Facilities",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/WakeCountySolidWasteFacilities/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Landfills and recycling centers",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+    {
+        "title": "MAR Address Points - Wake County, NC",
+        "server": "https://maps.wake.gov/arcgis/rest/services",
+        "service": "Property/MARAddressPoints/MapServer",
+        "svc_type": "MapServer",
+        "layer": 0,
+        "description": "Master address repository points",
+        "category": "Demographics",
+        "has_geometry": True,
+    },
+]
+
+
+# ── Helpers ────────────────────────────────────────────────────────────────
+
+
+def _server_short(url: str) -> str:
+    """Return a short label for the server."""
+    if "services.arcgis.com" in url:
+        return "Raleigh"
+    if "maps.raleighnc.gov" in url:
+        return "Raleigh"
+    if "maps.wake.gov" in url:
+        return "Wake"
+    return url
+
+
+def _build_url(ds: dict, path: str = "") -> str:
+    """Build the ArcGIS REST endpoint URL for a dataset."""
+    server = ds["server"]
+    service = ds["service"]
+    layer = ds["layer"]
+    svc_type = ds["svc_type"]
+
+    if svc_type in ("FeatureServer", "ImageServer"):
+        # services.arcgis.com pattern
+        base = f"{server}/arcgis/rest/services/{service}/{layer}"
+    else:
+        # maps.*.gov pattern — server already includes /arcgis/rest/services
+        base = f"{server}/{service}/{layer}"
+
+    if path:
+        return f"{base}/{path}"
+    return base
+
+
+def _fetch_json(url: str, timeout: int = 30) -> dict:
+    """GET a URL and parse the JSON response.  Raise on errors."""
+    try:
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            body = resp.read().decode("utf-8")
+            data = json.loads(body)
+    except urllib.error.HTTPError as exc:
+        raw = exc.read().decode("utf-8", errors="replace")
+        # If it's a 500, print the raw body
+        if exc.code == 500:
+            sys.stderr.write(f"Server error (HTTP 500):\n{raw}\n")
+        else:
+            try:
+                err = json.loads(raw)
+                msg = err.get("error", {}).get("message", raw)
+            except json.JSONDecodeError:
+                msg = raw
+            sys.stderr.write(f"HTTP {exc.code}: {msg}\n")
+        sys.exit(1)
+    except urllib.error.URLError as exc:
+        sys.stderr.write(f"Network error: {exc.reason}\n")
+        sys.exit(1)
+    except json.JSONDecodeError:
+        sys.stderr.write(f"Invalid JSON response from server\n")
+        sys.exit(1)
+    return data
+
+
+def _use_geojson(ds: dict) -> bool:
+    """Return True if the dataset supports f=geojson format.
+
+    MapServer layers do NOT support f=geojson – they return
+    'Invalid or missing input parameters: spatial reference not supported
+    with geoJSON format'.  Use f=json for MapServer instead.
+    """
+    return ds["svc_type"] != "MapServer"
+
+
+def _normalize_features(features: list) -> list:
+    """Normalize ArcGIS MapServer features to GeoJSON-like features.
+
+    MapServer returns features with 'attributes' dict instead of 'properties'.
+    Also, MapServer f=json omits the 'type' field on each feature.
+    """
+    normalized = []
+    for feat in features:
+        if not isinstance(feat, dict):
+            normalized.append(feat)
+            continue
+        # Rename 'attributes' to 'properties' if present
+        if "attributes" in feat:
+            feat["properties"] = feat.pop("attributes")
+        # Ensure 'type' field is present for GeoJSON compatibility
+        if "type" not in feat:
+            feat["type"] = "Feature"
+        normalized.append(feat)
+    return normalized
+
+
+def _convert_dates(obj):
+    """Recursively convert Unix-millisecond timestamps to ISO strings."""
+    if isinstance(obj, dict):
+        return {k: _convert_dates(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_convert_dates(v) for v in obj]
+    if isinstance(obj, (int, float)) and obj > 8_6400_000_000:  # after epoch
+        try:
+            return datetime.fromtimestamp(obj / 1000, tz=timezone.utc).isoformat()
+        except (OSError, ValueError, OverflowError):
+            pass
+    return obj
+
+
+def _find_dataset(title: str) -> dict:
+    """Find a dataset by exact title.  If not found, show suggestions and exit."""
+    for ds in DATASETS:
+        if ds["title"].lower() == title.lower():
+            return ds
+
+    # Fuzzy: case-insensitive substring match
+    matches = [ds for ds in DATASETS if title.lower() in ds["title"].lower()]
+    if matches:
+        sys.stderr.write(
+            f"Dataset \"{title}\" not found.  Did you mean one of these?\n"
+        )
+        for m in matches[:10]:
+            sys.stderr.write(f"  {m['title']}\n")
+    else:
+        sys.stderr.write(f"Dataset \"{title}\" not found.\n")
+    sys.exit(1)
+
+
+def _print_table(headers: list[str], rows: list[list[str]]) -> None:
+    """Print an aligned table with a separator line."""
+    widths = [len(h) for h in headers]
+    for row in rows:
+        for i, cell in enumerate(row):
+            if i < len(widths):
+                widths[i] = max(widths[i], len(cell))
+
+    # Header
+    header_line = "  ".join(h.ljust(widths[i]) for i, h in enumerate(headers))
+    print(header_line)
+    # Separator (Unicode box-drawing)
+    print("\u2500" * len(header_line))
+    # Rows
+    for row in rows:
+        print("  ".join(cell.ljust(widths[i]) for i, cell in enumerate(row)))
+
+
+# ── Command handlers ──────────────────────────────────────────────────────
+
+
+def cmd_catalog(args: argparse.Namespace) -> None:
+    """List all datasets."""
+    datasets = DATASETS
+    if args.category:
+        cat = args.category.lower()
+        datasets = [ds for ds in datasets if ds["category"].lower() == cat]
+    if args.search:
+        q = args.search.lower()
+        datasets = [
+            ds
+            for ds in datasets
+            if q in ds["title"].lower() or q in ds["description"].lower()
+        ]
+
+    if args.json:
+        out = []
+        for ds in datasets:
+            out.append(
+                {
+                    "title": ds["title"],
+                    "category": ds["category"],
+                    "server": _server_short(ds["server"]),
+                    "description": ds["description"],
+                    "type": ds["svc_type"],
+                }
+            )
+        print(json.dumps(out, indent=2))
+        return
+
+    headers = ["Title", "Category", "Server"]
+    rows = []
+    for ds in datasets:
+        rows.append([ds["title"], ds["category"], _server_short(ds["server"])])
+    _print_table(headers, rows)
+
+
+def cmd_search(args: argparse.Namespace) -> None:
+    """Search datasets by keyword."""
+    q = args.query.lower()
+    matches = [ds for ds in DATASETS if q in ds["title"].lower()]
+    matches = matches[: args.limit]
+
+    if args.json:
+        out = []
+        for ds in matches:
+            out.append(
+                {
+                    "title": ds["title"],
+                    "category": ds["category"],
+                    "server": _server_short(ds["server"]),
+                    "description": ds["description"],
+                }
+            )
+        print(json.dumps(out, indent=2))
+        return
+
+    if not matches:
+        print(f"No datasets matching \"{args.query}\".")
+        return
+
+    headers = ["Title", "Category", "Server"]
+    rows = []
+    for ds in matches:
+        rows.append([ds["title"], ds["category"], _server_short(ds["server"])])
+    _print_table(headers, rows)
+
+
+def cmd_info(args: argparse.Namespace) -> None:
+    """Show dataset schema and sample records."""
+    ds = _find_dataset(args.dataset_title)
+    url = _build_url(ds)
+    info_url = f"{url}?f=json"
+
+    data = _fetch_json(info_url)
+
+    # Fields
+    fields = data.get("fields", [])
+    if fields:
+        print("Fields:")
+        fheaders = ["Name", "Type", "Alias"]
+        frows = []
+        for f in fields:
+            frows.append([f.get("name", ""), f.get("type", ""), f.get("alias", "")])
+        _print_table(fheaders, frows)
+    else:
+        print("No field information available.")
+
+    # Sample records
+    fmt = "json" if not _use_geojson(ds) else "geojson"
+    sample_url = f"{url}/query?where=1%3D1&outFields=*&f={fmt}&resultRecordCount=3"
+    sample_data = _fetch_json(sample_url)
+    features = sample_data.get("features", [])
+    features = _normalize_features(features)
+
+    print()
+    if features:
+        print("Sample records (up to 3):")
+        for i, feat in enumerate(features, 1):
+            props = _convert_dates(feat.get("properties", {}))
+            print(f"  Record {i}:")
+            for k, v in props.items():
+                print(f"    {k}: {v}")
+    else:
+        print("No sample records available.")
+
+
+def cmd_query(args: argparse.Namespace) -> None:
+    """Query records from a dataset."""
+    ds = _find_dataset(args.dataset_title)
+    url = _build_url(ds, "query")
+
+    where = urllib.parse.quote(args.where)
+    out_fields = "*"
+    # MapServer table layers have no geometry — default to false for MapServer
+    if args.no_geo:
+        return_geo = "false"
+    else:
+        return_geo = "false" if not _use_geojson(ds) else "true"
+    limit = min(args.limit, 1000)
+    offset = args.offset
+    order = args.order_by or ""
+
+    fmt = "json" if not _use_geojson(ds) else "geojson"
+    params = [
+        ("where", where),
+        ("outFields", out_fields),
+        ("returnGeometry", return_geo),
+        ("f", fmt),
+        ("resultRecordCount", str(limit)),
+        ("resultOffset", str(offset)),
+    ]
+    if order:
+        params.append(("orderByFields", urllib.parse.quote(order)))
+
+    qs = "&".join(f"{k}={v}" for k, v in params)
+    full_url = f"{url}?{qs}"
+
+    data = _fetch_json(full_url)
+    features = data.get("features", [])
+    features = _normalize_features(features)
+
+    # Convert dates
+    features = _convert_dates(features)
+
+    if args.json:
+        print(json.dumps({"type": "FeatureCollection", "features": features}, indent=2))
+        return
+
+    if args.csv:
+        if not features:
+            return
+        # Collect all keys from all features
+        keys: list[str] = []
+        seen = set()
+        for feat in features:
+            props = feat.get("properties", {})
+            for k in props:
+                if k not in seen:
+                    keys.append(k)
+                    seen.add(k)
+        writer = csv.DictWriter(sys.stdout, fieldnames=keys)
+        writer.writeheader()
+        for feat in features:
+            writer.writerow(feat.get("properties", {}))
+        return
+
+    # Table mode
+    if not features:
+        print("No records returned.")
+        return
+
+    props_list = [feat.get("properties", {}) for feat in features]
+    # Collect all keys
+    keys: list[str] = []
+    seen = set()
+    for p in props_list:
+        for k in p:
+            if k not in seen:
+                keys.append(k)
+                seen.add(k)
+
+    # Use first few interesting keys for display
+    display_keys = keys[:8] if len(keys) > 8 else keys
+    headers = display_keys
+    rows = []
+    for p in props_list:
+        rows.append([str(p.get(k, ""))[:60] for k in display_keys])
+
+    _print_table(headers, rows)
+    if len(keys) > 8:
+        print(f"... ({len(keys)} total fields, showing first 8)")
+
+
+def cmd_download(args: argparse.Namespace) -> None:
+    """Download dataset to file."""
+    ds = _find_dataset(args.dataset_title)
+    url = _build_url(ds, "query")
+
+    where = urllib.parse.quote(args.where)
+    return_geo = "false" if args.format == "csv" or not _use_geojson(ds) else "true"
+    limit = min(args.limit, 1000)
+
+    fmt = args.format
+    arc_fmt = "json" if not _use_geojson(ds) else "geojson"
+
+    params = [
+        ("where", where),
+        ("outFields", "*"),
+        ("returnGeometry", return_geo),
+        ("f", arc_fmt),
+        ("resultRecordCount", str(limit)),
+    ]
+
+    qs = "&".join(f"{k}={v}" for k, v in params)
+    full_url = f"{url}?{qs}"
+
+    data = _fetch_json(full_url)
+    data = _convert_dates(data)
+    features = data.get("features", [])
+    features = _normalize_features(features)
+
+    out_path = args.output
+
+    if fmt == "json":
+        out_json = {
+            "type": "FeatureCollection",
+            "features": features,
+        }
+        with open(out_path, "w") as f:
+            json.dump(out_json, f, indent=2)
+        print(f"Downloaded {len(features)} records to {out_path}")
+
+    elif fmt == "geojson":
+        out_geojson = {
+            "type": "FeatureCollection",
+            "features": features,
+        }
+        with open(out_path, "w") as f:
+            json.dump(out_geojson, f, indent=2)
+        print(f"Downloaded {len(features)} records to {out_path}")
+
+    elif fmt == "csv":
+        if not features:
+            with open(out_path, "w") as f:
+                f.write("")
+            print(f"Downloaded 0 records to {out_path}")
+            return
+        props_list = [feat.get("properties", {}) for feat in features]
+        keys: list[str] = []
+        seen = set()
+        for p in props_list:
+            for k in p:
+                if k not in seen:
+                    keys.append(k)
+                    seen.add(k)
+        with open(out_path, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=keys)
+            writer.writeheader()
+            for p in props_list:
+                writer.writerow(p)
+        print(f"Downloaded {len(features)} records to {out_path}")
+
+
+def cmd_categories(args: argparse.Namespace) -> None:
+    """List categories with dataset counts."""
+    counts: dict[str, int] = {}
+    for ds in DATASETS:
+        cat = ds["category"]
+        counts[cat] = counts.get(cat, 0) + 1
+
+    sorted_cats = sorted(counts.items(), key=lambda x: -x[1])
+
+    if args.json:
+        out = [{"category": cat, "count": cnt} for cat, cnt in sorted_cats]
+        print(json.dumps(out, indent=2))
+        return
+
+    headers = ["Category", "Datasets"]
+    rows = [[cat, str(cnt)] for cat, cnt in sorted_cats]
+    _print_table(headers, rows)
+
+
+# ── CLI entry point ───────────────────────────────────────────────────────
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="raleigh",
+        description="Query, search, and download public datasets from the City of Raleigh Open Data portal.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=textwrap.dedent(
+            """\
+            Examples:
+              raleigh catalog
+              raleigh catalog --category Transportation
+              raleigh catalog --search bicycle
+              raleigh search "food inspection" --limit 5
+              raleigh info "Food Inspections"
+              raleigh query "Raleigh Dog Parks" --limit 10
+              raleigh query "Food Inspections" --where "SCORE<70" --limit 20
+              raleigh download "Parcels" -f geojson -o parcels.geojson
+              raleigh categories
+            """
+        ),
+    )
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    # catalog
+    p_cat = sub.add_parser("catalog", help="List all datasets")
+    p_cat.add_argument("--category", help="Filter by category name")
+    p_cat.add_argument("--search", help="Search titles and descriptions")
+    p_cat.add_argument("--json", action="store_true", help="JSON output")
+
+    # search
+    p_search = sub.add_parser("search", help="Search datasets by keyword")
+    p_search.add_argument("query", help="Search keyword")
+    p_search.add_argument("--limit", type=int, default=20, help="Max results (default: 20)")
+    p_search.add_argument("--json", action="store_true", help="JSON output")
+
+    # info
+    p_info = sub.add_parser("info", help="Show dataset schema and samples")
+    p_info.add_argument("dataset_title", help="Dataset title")
+
+    # query
+    p_query = sub.add_parser("query", help="Query records from a dataset")
+    p_query.add_argument("dataset_title", help="Dataset title")
+    p_query.add_argument("--where", default="1=1", help="WHERE clause (default: 1=1)")
+    p_query.add_argument("--limit", type=int, default=10, help="Max records (default: 10, max: 1000)")
+    p_query.add_argument("--offset", type=int, default=0, help="Pagination offset (default: 0)")
+    p_query.add_argument("--order-by", dest="order_by", help="Sort field (optional ASC/DESC)")
+    p_query.add_argument("--no-geo", action="store_true", help="Skip geometry in output")
+    p_query.add_argument("--json", action="store_true", help="JSON output")
+    p_query.add_argument("--csv", action="store_true", help="CSV output to stdout")
+
+    # download
+    p_dl = sub.add_parser("download", help="Download dataset to file")
+    p_dl.add_argument("dataset_title", help="Dataset title")
+    p_dl.add_argument("--where", default="1=1", help="WHERE clause (default: 1=1)")
+    p_dl.add_argument("--limit", type=int, default=1000, help="Max records (default: 1000)")
+    p_dl.add_argument("-f", "--format", choices=["csv", "json", "geojson"], default="csv", help="Output format (default: csv)")
+    p_dl.add_argument("-o", "--output", required=True, help="Output file path")
+
+    # categories
+    p_cats = sub.add_parser("categories", help="List categories with dataset counts")
+    p_cats.add_argument("--json", action="store_true", help="JSON output")
+
+    return parser
+
+
+def main() -> None:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    handlers = {
+        "catalog": cmd_catalog,
+        "search": cmd_search,
+        "info": cmd_info,
+        "query": cmd_query,
+        "download": cmd_download,
+        "categories": cmd_categories,
+    }
+
+    handler = handlers.get(args.command)
+    if handler:
+        handler(args)
+    else:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    main()
