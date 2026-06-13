@@ -332,6 +332,26 @@ Present the decision to the user:
 add much value here because [reason]. [If yes: I'll add one to the bundle.]"
 ```
 
+8. **Register sub-skills** — For each generated sub-skill `.md` file in
+   `skills/`, register it so Hermes can discover it via `skill_view()` and
+   `skills_list()`:
+
+   ```
+   For each sub-skill file `skills/<phase-name>.md`:
+     Read the file content
+     skill_manage(
+       action='create',
+       name='<bundle-name>/<phase-name>',
+       content=file_content
+     )
+   ```
+
+   This makes each sub-skill loadable as `skill_view('<bundle-name>/<phase-name>')`.
+   The bundle name prefix prevents naming collisions with other skills.
+
+   If `skill_manage` is not available in the agent's toolset, note this for
+   the user and suggest they run the registration manually.
+
 ## Cleanup
 
 After writing all files:
