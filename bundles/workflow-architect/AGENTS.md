@@ -30,6 +30,20 @@ bundle-builder. Each generated sub-skill is also registered (step 8) so it's imm
 discoverable by the agent's skill system. Verify with `skill_view(name='<bundle-name>')`
 and `skill_view(name='<bundle-name>-<first-phase-name>')`.
 
+## Registration
+
+Both the umbrella `SKILL.md` and each sub-skill `.md` file in the generated
+bundle are registered via `skill_manage(action="create")` so they appear in
+`skills_list()` and are discoverable by the agent. Registration happens
+during generation — no manual step required.
+
+- **Umbrella** — registered under `<bundle-name>` (the bundle root skill)
+- **Sub-skills** — registered under `<bundle-name>/<phase-name>`
+
+The umbrella's `description` frontmatter contains broad trigger conditions
+that let the agent auto-detect the bundle in future sessions when the user's
+conversation cues match a known workflow phase.
+
 ## Environment
 
 No environment variables required. State is stored via memory tool with
