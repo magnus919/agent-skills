@@ -45,6 +45,10 @@ fixed-layout, accessibility, and media overlays. Portable across any AgentSkills
 
 Forgejo or Gitea self-hosted Git forge from the terminal. List repositories, search repos, manage issues, and view pull requests.
 
+### [gutenberg](gutenberg/SKILL.md)
+
+Search, download, and extract public-domain books from Project Gutenberg. Look up books by ID or keyword via gutendex, download plain-text and EPUB editions, strip licensing boilerplate, and classify fiction vs non-fiction. Ships a portable Python CLI with zero external dependencies.
+
 ### [ghost-cli](ghost-cli/SKILL.md)
 
 Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.

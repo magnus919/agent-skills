@@ -1,0 +1,684 @@
+#!/usr/bin/env python3
+"""gutenberg — Project Gutenberg book toolkit.
+
+Search, download, and extract clean text from 70,000+ public-domain books.
+Zero external dependencies — uses only the Python standard library.
+
+Commands: search, metadata, download, extract, classify, pipeline
+"""
+
+import argparse
+import html.parser
+import json
+import os
+import re
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+import zipfile
+import io
+import textwrap
+
+# === Config ===
+GUTENDEX = "https://gutendex.com"
+GUTENBERG = "https://www.gutenberg.org"
+TIMEOUT = 15
+QUIET = False
+GLOBAL_FLAGS = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+
+
+def log(msg: str) -> None:
+    if QUIET:
+        return
+    print(msg)
+
+
+def warn(msg: str) -> None:
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg: str, code: int = 1) -> None:
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(code)
+
+
+def emit(human: str, data) -> None:
+    if GLOBAL_FLAGS.get("json"):
+        print(json.dumps(data, default=str, indent=2))
+    else:
+        print(human)
+
+
+def _fetch_json(url: str, timeout: int = TIMEOUT) -> dict:
+    """Fetch a URL and parse JSON. Returns dict or raises on failure."""
+    if GLOBAL_FLAGS.get("dry_run"):
+        log(f"[dry-run] GET {url}")
+        return {}
+    req = urllib.request.Request(url, headers={"User-Agent": "gutenberg-cli/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        die(f"HTTP {e.code} for {url}")
+    except urllib.error.URLError as e:
+        die(f"URL error for {url}: {e.reason}")
+    except json.JSONDecodeError:
+        die(f"Invalid JSON response from {url}")
+    return {}
+
+
+def _fetch_bytes(url: str, timeout: int = TIMEOUT) -> bytes:
+    """Fetch a URL and return raw bytes."""
+    if GLOBAL_FLAGS.get("dry_run"):
+        log(f"[dry-run] GET {url}")
+        return b""
+    req = urllib.request.Request(url, headers={"User-Agent": "gutenberg-cli/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.read()
+    except urllib.error.HTTPError as e:
+        die(f"HTTP {e.code} for {url}")
+    except urllib.error.URLError as e:
+        die(f"URL error for {url}: {e.reason}")
+    return b""
+
+
+def _normalize_author(name: str) -> str:
+    """Convert 'Last, First Middle' to 'First Middle Last'."""
+    parts = [p.strip() for p in name.split(",")]
+    if len(parts) >= 2:
+        return f"{parts[1]} {parts[0]}"
+    return name
+
+
+def _format_authors(authors: list) -> str:
+    parts = []
+    for a in authors:
+        name = _normalize_author(a.get("name", "Unknown"))
+        life = ""
+        by = a.get("birth_year")
+        dy = a.get("death_year")
+        if by or dy:
+            life = f" ({by or '?'}–{dy or '?'})"
+        parts.append(f"{name}{life}")
+    return "; ".join(parts)
+
+
+def _fmt_num(n: int) -> str:
+    """Format a number with commas."""
+    return f"{n:,}"
+
+
+# --- Subcommands ---
+
+def cmd_search(args):
+    """Search Project Gutenberg by keyword."""
+    query = " ".join(args.query) if isinstance(args.query, list) else args.query
+    params = {"search": query, "page_size": args.limit}
+    url = f"{GUTENDEX}/books/?{urllib.parse.urlencode(params)}"
+    data = _fetch_json(url, args.timeout)
+
+    results = data.get("results", [])
+    if not results:
+        emit("No results found.", {"results": [], "count": 0})
+        return
+
+    output = []
+    for book in results:
+        gid = book.get("id", "?")
+        title = book.get("title", "Untitled")
+        authors = _format_authors(book.get("authors", []))
+        lang = ", ".join(book.get("languages", []))
+        subjects = "; ".join(book.get("subjects", [])[:3])
+        dl = _fmt_num(book.get("download_count", 0))
+        output.append({
+            "id": gid, "title": title, "authors": authors,
+            "language": lang, "subjects": subjects, "downloads": dl
+        })
+
+    if GLOBAL_FLAGS.get("json"):
+        emit("", {"results": output, "count": len(output)})
+    else:
+        print(f"\n{'ID':>6}  {'Title':<55} {'Author':<30} {'DLs':>8}")
+        print("-" * 105)
+        for r in output:
+            title_short = r["title"][:54] if len(r["title"]) > 54 else r["title"]
+            author_short = r["authors"][:29] if len(r["authors"]) > 29 else r["authors"]
+            print(f"{r['id']:>6}  {title_short:<55} {author_short:<30} {r['downloads']:>8}")
+        print(f"\n{len(output)} result(s)")
+
+
+def cmd_metadata(args):
+    """Fetch full metadata for a book by ID."""
+    url = f"{GUTENDEX}/books/{args.book_id}"
+    data = _fetch_json(url, args.timeout)
+
+    if GLOBAL_FLAGS.get("json"):
+        emit("", data)
+        return
+
+    print(f"\n{'─' * 60}")
+    print(f"  Title:    {data.get('title', 'Unknown')}")
+    print(f"  Author(s): {_format_authors(data.get('authors', []))}")
+    print(f"  Language: {', '.join(data.get('languages', []))}")
+    print(f"  Subjects: {', '.join(data.get('subjects', []))}")
+    print(f"  Bookshelves: {', '.join(data.get('bookshelves', []))}")
+    s = data.get("summaries", [])
+    if s:
+        print(f"  Summary:  {s[0][:300]}")
+    print(f"  Copyright: {data.get('copyright', 'unknown')}")
+    print(f"  Downloads: {_fmt_num(data.get('download_count', 0))}")
+    fmts = data.get("formats", {})
+    txt_utf8 = fmts.get("text/plain; charset=utf-8", "")
+    txt_ascii = fmts.get("text/plain; charset=us-ascii", "")
+    epub = fmts.get("application/epub+zip", "")
+    html = fmts.get("text/html", "")
+    print(f"  TXT UTF-8: {txt_utf8 or 'N/A'}")
+    print(f"  TXT ASCII: {txt_ascii or 'N/A'}")
+    print(f"  EPUB:      {epub or 'N/A'}")
+    print(f"  HTML:      {html or 'N/A'}")
+    print(f"{'─' * 60}\n")
+
+
+def cmd_download(args):
+    """Download a book in the specified format."""
+    # Fetch metadata first to get format URLs
+    url = f"{GUTENDEX}/books/{args.book_id}"
+    data = _fetch_json(url, args.timeout)
+    fmts = data.get("formats", {})
+
+    fmt = args.format
+    url_key = None
+
+    if fmt == "txt":
+        for k in ["text/plain; charset=utf-8", "text/plain; charset=us-ascii",
+                   f"https://www.gutenberg.org/files/{args.book_id}/{args.book_id}-0.txt"]:
+            if k in fmts:
+                url_key = fmts[k]
+                break
+        # Try constructing the download URL directly
+        if not url_key:
+            url_key = f"https://www.gutenberg.org/files/{args.book_id}/{args.book_id}-0.txt"
+    elif fmt == "epub":
+        url_key = fmts.get("application/epub+zip",
+                           f"https://www.gutenberg.org/ebooks/{args.book_id}.epub.images")
+    elif fmt == "html":
+        url_key = fmts.get("text/html",
+                           f"https://www.gutenberg.org/ebooks/{args.book_id}.html.images")
+    else:
+        die(f"Unknown format: {fmt}. Use txt, epub, or html.")
+
+    ext = fmt if fmt == "txt" else {"epub": "epub", "html": "html"}[fmt]
+    output_dir = args.output if args.output else "."
+    os.makedirs(output_dir, exist_ok=True)
+    out_path = os.path.join(output_dir, f"gutenberg-{args.book_id}.{ext}")
+
+    if GLOBAL_FLAGS.get("dry_run"):
+        log(f"[dry-run] Would download {url_key} → {out_path}")
+        return
+
+    log(f"Downloading from {url_key} ...")
+    content = _fetch_bytes(url_key, args.timeout)
+    if not content:
+        die("Download returned empty content.")
+    with open(out_path, "wb") as f:
+        f.write(content)
+
+    size_kb = len(content) / 1024
+    log(f"Saved {out_path} ({size_kb:.0f} KB)")
+
+    # Warn if plain text seems truncated
+    if fmt == "txt" and size_kb < 50:
+        warn(f"File is only {size_kb:.0f} KB — may be truncated. "
+             f"Try --format epub for illustrated works.")
+
+    emit(f"Downloaded to {out_path}", {
+        "path": out_path, "size_kb": round(size_kb, 1),
+        "format": fmt, "book_id": args.book_id
+    })
+
+
+def cmd_extract(args):
+    """Strip PG boilerplate from plain text or extract text from EPUB."""
+    if args.format == "epub":
+        _extract_epub(args)
+        return
+    _extract_txt(args)
+
+
+def _extract_txt(args):
+    """Strip Project Gutenberg license boilerplate from plain text."""
+    source = args.input
+    if not source:
+        source = f"./gutenberg-{args.book_id}.txt"
+    if not os.path.exists(source):
+        die(f"File not found: {source}. Download it first with 'download {args.book_id} --format txt'")
+
+    with open(source, "r", encoding="utf-8", errors="replace") as f:
+        text = f.read()
+
+    # Strip PG boilerplate
+    start = re.search(
+        r"\*\*\*\s*START OF (THE|THIS) PROJECT GUTENBERG EBOOK[^*]*\*\*\*", text
+    )
+    end = re.search(
+        r"\*\*\*\s*END OF (THE|THIS) PROJECT GUTENBERG EBOOK[^*]*\*\*\*", text
+    )
+
+    if start and end:
+        body = text[start.end():end.start()]
+    elif start:
+        body = text[start.end():]
+    elif end:
+        body = text[:end.start()]
+    else:
+        body = text
+
+    body = body.strip()
+    out_path = args.output or f"./gutenberg-{args.book_id}.clean.txt"
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(body)
+
+    words = len(body.split())
+    chars = len(body)
+    log(f"Extracted {words:,} words / {chars:,} chars → {out_path}")
+    emit(f"Saved clean text to {out_path}", {
+        "path": out_path, "words": words, "characters": chars
+    })
+
+
+def _extract_epub(args):
+    """Extract clean text from an EPUB file (for illustrated/scientific books)."""
+    source = args.input
+    if not source:
+        source = f"./gutenberg-{args.book_id}.epub"
+    if not os.path.exists(source):
+        die(f"File not found: {source}. Download it first with 'download {args.book_id} --format epub'")
+
+    class TextExtractor(html.parser.HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.text = []
+            self.skip = False
+
+        def handle_starttag(self, tag, attrs):
+            if tag in ("script", "style", "svg"):
+                self.skip = True
+
+        def handle_endtag(self, tag):
+            if tag in ("script", "style", "svg"):
+                self.skip = False
+            if tag in ("p", "h1", "h2", "h3", "h4", "div", "br", "li"):
+                self.text.append("\n")
+
+        def handle_data(self, data):
+            if not self.skip:
+                self.text.append(data)
+
+    all_text = []
+    with zipfile.ZipFile(source, "r") as z:
+        for name in z.namelist():
+            if not (name.endswith(".html") or name.endswith(".xhtml")):
+                continue
+            content = z.read(name).decode("utf-8", errors="replace")
+            parser = TextExtractor()
+            parser.feed(content)
+            text = "".join(parser.text)
+            text = re.sub(r"\n{3,}", "\n\n", text)
+            text = re.sub(r" {2,}", " ", text)
+            all_text.append(text)
+
+    full_text = "\n".join(all_text)
+    full_text = re.sub(r"\n{3,}", "\n\n", full_text).strip()
+
+    out_path = args.output or f"./gutenberg-{args.book_id}.clean.txt"
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(full_text)
+
+    words = len(full_text.split())
+    chars = len(full_text)
+    log(f"Extracted {words:,} words / {chars:,} chars from EPUB → {out_path}")
+    emit(f"Saved clean text to {out_path}", {
+        "path": out_path, "words": words, "characters": chars, "source_format": "epub"
+    })
+
+
+def cmd_classify(args):
+    """Classify a book as fiction or non-fiction from its metadata."""
+    url = f"{GUTENDEX}/books/{args.book_id}"
+    data = _fetch_json(url, args.timeout)
+
+    subjects = [s.lower() for s in data.get("subjects", [])]
+    bookshelves = [b.lower() for b in data.get("bookshelves", [])]
+    all_tags = subjects + bookshelves
+
+    fiction_signals = ["fiction", "novel", "short stories", "poetry", "drama",
+                       "fantasy", "horror", "fairy tales", "children's stories",
+                       "science fiction", "detective", "mystery", "adventure"]
+    nonfiction_signals = ["essay", "history", "philosophy", "biography",
+                          "autobiography", "science", "religion", "political",
+                          "economics", "sociology", "psychology", "nature",
+                          "travel", "cookbook", "reference", "education"]
+
+    fiction_score = sum(1 for s in fiction_signals if any(s in t for t in all_tags))
+    nonfiction_score = sum(1 for s in nonfiction_signals if any(s in t for t in all_tags))
+
+    threshold = 1  # at least one clear signal
+    if fiction_score >= threshold and nonfiction_score >= threshold:
+        classification = "ambiguous"
+        reason = f"Mixed signals: fiction ({fiction_score}) + non-fiction ({nonfiction_score})"
+    elif fiction_score >= threshold:
+        classification = "fiction"
+        reason = f"Fiction signals detected ({fiction_score} matches)"
+    elif nonfiction_score >= threshold:
+        classification = "non-fiction"
+        reason = f"Non-fiction signals detected ({nonfiction_score} matches)"
+    else:
+        classification = "ambiguous"
+        reason = "No clear classification signals found"
+
+    result = {
+        "book_id": args.book_id,
+        "title": data.get("title", "Unknown"),
+        "classification": classification,
+        "reason": reason,
+        "subject_matches": [s for s in subjects if any(f in s for f in fiction_signals + nonfiction_signals)]
+    }
+
+    if GLOBAL_FLAGS.get("json"):
+        emit("", result)
+    else:
+        print(f"\n{'─' * 50}")
+        print(f"  Book: {result['title']} (ID {args.book_id})")
+        print(f"  Classification: {classification.upper()}")
+        print(f"  Reason: {reason}")
+        print(f"{'─' * 50}\n")
+
+
+def cmd_pipeline(args):
+    """Full pipeline: search → download → extract → classify."""
+    book_id = args.book_id
+
+    # If a title was given (not a numeric ID), search first
+    if not book_id or not book_id.isdigit():
+        query = book_id or args.query
+        if not query:
+            die("Provide a book ID or search query.")
+        log(f"Searching for: {query}")
+        params = {"search": query, "page_size": 5}
+        url = f"{GUTENDEX}/books/?{urllib.parse.urlencode(params)}"
+        data = _fetch_json(url, args.timeout)
+        results = data.get("results", [])
+        if not results:
+            die("No results found.")
+        # Pick the top result
+        book_id = str(results[0]["id"])
+        log(f"Selected: #{book_id} — {results[0]['title']}")
+
+    log(f"\n{'=' * 10} Pipeline for Gutenberg #{book_id} {'=' * 10}\n")
+
+    # 1. Metadata
+    log("[1/4] Fetching metadata...")
+    url = f"{GUTENDEX}/books/{book_id}"
+    meta = _fetch_json(url, args.timeout)
+    title = meta.get("title", "Unknown")
+    authors = _format_authors(meta.get("authors", []))
+    log(f"  {title} by {authors}")
+
+    # 2. Download (plain text)
+    log("[2/4] Downloading plain text...")
+    fmts = meta.get("formats", {})
+    txt_url = None
+    for k in ["text/plain; charset=utf-8", "text/plain; charset=us-ascii"]:
+        if k in fmts:
+            txt_url = fmts[k]
+            break
+    if not txt_url:
+        txt_url = f"https://www.gutenberg.org/files/{book_id}/{book_id}-0.txt"
+
+    out_dir = args.output or "."
+    os.makedirs(out_dir, exist_ok=True)
+    txt_path = os.path.join(out_dir, f"gutenberg-{book_id}.txt")
+
+    content = _fetch_bytes(txt_url, args.timeout)
+    with open(txt_path, "wb") as f:
+        f.write(content)
+    size_kb = len(content) / 1024
+    log(f"  Downloaded ({size_kb:.0f} KB) to {txt_path}")
+
+    # 3. Extract
+    log("[3/4] Extracting clean text...")
+    clean_path = os.path.join(out_dir, f"gutenberg-{book_id}.clean.txt")
+
+    if size_kb < 50:
+        log("  Plain text is small — trying EPUB fallback...")
+        epub_url = fmts.get("application/epub+zip",
+                            f"https://www.gutenberg.org/ebooks/{book_id}.epub.images")
+        try:
+            epub_content = _fetch_bytes(epub_url, args.timeout)
+            epub_path = os.path.join(out_dir, f"gutenberg-{book_id}.epub")
+            with open(epub_path, "wb") as f:
+                f.write(epub_content)
+            # Extract from EPUB
+            class TextExtractor(html.parser.HTMLParser):
+                def __init__(self):
+                    super().__init__()
+                    self.text = []
+                    self.skip = False
+                def handle_starttag(self, tag, attrs):
+                    if tag in ("script", "style", "svg"):
+                        self.skip = True
+                def handle_endtag(self, tag):
+                    if tag in ("script", "style", "svg"):
+                        self.skip = False
+                    if tag in ("p", "h1", "h2", "h3", "h4", "div", "br", "li"):
+                        self.text.append("\n")
+                def handle_data(self, data):
+                    if not self.skip:
+                        self.text.append(data)
+
+            all_text = []
+            with zipfile.ZipFile(epub_path, "r") as z:
+                for name in z.namelist():
+                    if not (name.endswith(".html") or name.endswith(".xhtml")):
+                        continue
+                    raw = z.read(name).decode("utf-8", errors="replace")
+                    p = TextExtractor()
+                    p.feed(raw)
+                    t = "".join(p.text)
+                    t = re.sub(r"\n{3,}", "\n\n", t)
+                    all_text.append(t)
+
+            body = "\n".join(all_text)
+            body = re.sub(r"\n{3,}", "\n\n", body).strip()
+            log("  Used EPUB extraction (illustrated content detected)")
+        except Exception as e:
+            log(f"  EPUB fallback failed: {e}")
+            body = _strip_boilerplate(content.decode("utf-8", errors="replace"))
+    else:
+        body = _strip_boilerplate(content.decode("utf-8", errors="replace"))
+
+    with open(clean_path, "w", encoding="utf-8") as f:
+        f.write(body)
+    words = len(body.split())
+    chars = len(body)
+    log(f"  Clean text: {words:,} words / {chars:,} chars → {clean_path}")
+
+    # 4. Classify
+    log("[4/4] Classifying...")
+    subjects = [s.lower() for s in meta.get("subjects", [])]
+    bookshelves = [b.lower() for b in meta.get("bookshelves", [])]
+    all_tags = subjects + bookshelves
+
+    fiction_signals = ["fiction", "novel", "short stories", "poetry", "drama",
+                       "fantasy", "horror", "fairy tales", "children's stories",
+                       "science fiction", "detective", "mystery", "adventure"]
+    nonfiction_signals = ["essay", "history", "philosophy", "biography",
+                          "autobiography", "science", "religion", "political",
+                          "economics", "sociology", "psychology", "nature",
+                          "travel", "cookbook", "reference", "education"]
+
+    fic = sum(1 for s in fiction_signals if any(s in t for t in all_tags))
+    nf = sum(1 for s in nonfiction_signals if any(s in t for t in all_tags))
+
+    if fic and nf:
+        cls = "ambiguous"
+    elif fic:
+        cls = "fiction"
+    elif nf:
+        cls = "non-fiction"
+    else:
+        cls = "ambiguous"
+
+    log(f"  Classification: {cls.upper()}")
+
+    # Summary
+    print(f"\n{'=' * 50}")
+    print(f"  Pipeline Complete: Gutenberg #{book_id}")
+    print(f"  Title:    {title}")
+    print(f"  Author(s): {authors}")
+    print(f"  Format:   {'EPUB (illustrated)' if size_kb < 50 and 'epub' in str(out_dir) else 'Plain Text'}")
+    print(f"  Clean:    {words:,} words / {chars:,} chars")
+    print(f"  Class:    {cls.upper()}")
+    print(f"  Files:")
+    print(f"    {txt_path}")
+    print(f"    {clean_path}")
+    print(f"{'=' * 50}")
+
+
+def _strip_boilerplate(text: str) -> str:
+    """Strip PG license header/footer from plain text."""
+    start = re.search(
+        r"\*\*\*\s*START OF (THE|THIS) PROJECT GUTENBERG EBOOK[^*]*\*\*\*", text
+    )
+    end = re.search(
+        r"\*\*\*\s*END OF (THE|THIS) PROJECT GUTENBERG EBOOK[^*]*\*\*\*", text
+    )
+    if start and end:
+        body = text[start.end():end.start()]
+    elif start:
+        body = text[start.end():]
+    elif end:
+        body = text[:end.start()]
+    else:
+        body = text
+    return body.strip()
+
+
+# --- Argument Parsing ---
+
+def _preparse_global_flags(argv):
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--quiet", "--verbose", "-h", "--help"}
+    flags = {}
+    filtered = []  # skip argv[0] — argparse already knows it as prog
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            filtered.append(arg)
+        elif arg.startswith("--output") or arg.startswith("--timeout"):
+            if "=" in arg:
+                key, val = arg.split("=", 1)
+                flags[key.lstrip("-").replace("-", "_")] = val
+                filtered.append(arg)
+            else:
+                filtered.append(arg)
+                if i + 1 < len(argv) and not argv[i + 1].startswith("-"):
+                    flags[arg.lstrip("-").replace("-", "_")] = argv[i + 1]
+                    filtered.append(argv[i + 1])
+                    i += 1
+            i += 1
+        else:
+            filtered.append(arg)
+        i += 1
+    return flags, filtered
+
+
+def main():
+    global QUIET, GLOBAL_FLAGS
+
+    flags, remaining = _preparse_global_flags(sys.argv)
+    GLOBAL_FLAGS = flags
+
+    quiet_env = os.getenv("GUTENBERG_QUIET", "").lower() in ("1", "true", "yes")
+    QUIET = flags.get("quiet", False) or quiet_env
+
+    parser = argparse.ArgumentParser(
+        description="Project Gutenberg book toolkit — search, download, extract.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=textwrap.dedent("""\
+            Examples:
+              gutenberg search "Moby Dick"
+              gutenberg metadata 2701
+              gutenberg download 2701 --format txt
+              gutenberg extract 2701
+              gutenberg classify 1342 --json
+              gutenberg pipeline "Pride and Prejudice"
+        """)
+    )
+    parser.add_argument("--json", action="store_true", help="JSON output")
+    parser.add_argument("--dry-run", action="store_true", help="Preview without action")
+    parser.add_argument("--quiet", action="store_true", help="Suppress diagnostic output")
+    parser.add_argument("--verbose", action="store_true", help="Verbose logging")
+
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    # search
+    p_search = sub.add_parser("search", help="Search books by keyword")
+    p_search.add_argument("query", nargs="+", help="Search query")
+    p_search.add_argument("--limit", type=int, default=10, help="Max results (default: 10)")
+    p_search.add_argument("--language", default="", help="Filter by language code (e.g. 'en')")
+    p_search.add_argument("--timeout", type=int, default=TIMEOUT, help=f"Timeout (default: {TIMEOUT}s)")
+
+    # metadata
+    p_meta = sub.add_parser("metadata", help="Get full book metadata by ID")
+    p_meta.add_argument("book_id", help="Project Gutenberg book ID")
+    p_meta.add_argument("--timeout", type=int, default=TIMEOUT)
+
+    # download
+    p_dl = sub.add_parser("download", help="Download a book")
+    p_dl.add_argument("book_id", help="Project Gutenberg book ID")
+    p_dl.add_argument("--format", choices=["txt", "epub", "html"], default="txt",
+                      help="Download format (default: txt)")
+    p_dl.add_argument("--output", "-o", default=".", help="Output directory")
+    p_dl.add_argument("--timeout", type=int, default=TIMEOUT)
+
+    # extract
+    p_ext = sub.add_parser("extract", help="Strip PG boilerplate or extract from EPUB")
+    p_ext.add_argument("book_id", nargs="?", help="Project Gutenberg book ID (for naming output)")
+    p_ext.add_argument("--input", "-i", help="Input file path (default: auto-detected)")
+    p_ext.add_argument("--output", "-o", help="Output file path (default: gutenberg-<id>.clean.txt)")
+    p_ext.add_argument("--format", choices=["txt", "epub"], default="txt",
+                       help="Input format (default: txt)")
+
+    # classify
+    p_cls = sub.add_parser("classify", help="Classify as fiction or non-fiction")
+    p_cls.add_argument("book_id", help="Project Gutenberg book ID")
+    p_cls.add_argument("--timeout", type=int, default=TIMEOUT)
+
+    # pipeline
+    p_pipe = sub.add_parser("pipeline", help="Full fetch pipeline")
+    p_pipe.add_argument("book_id", nargs="?", help="Book ID, or provide a search query")
+    p_pipe.add_argument("query", nargs="*", help="Search query (if no ID)")
+    p_pipe.add_argument("--output", "-o", default=".", help="Output directory")
+    p_pipe.add_argument("--clean", default="", help="Save cleaned text to path")
+    p_pipe.add_argument("--timeout", type=int, default=TIMEOUT)
+
+    args = parser.parse_args(remaining)
+
+    commands = {
+        "search": cmd_search,
+        "metadata": cmd_metadata,
+        "download": cmd_download,
+        "extract": cmd_extract,
+        "classify": cmd_classify,
+        "pipeline": cmd_pipeline,
+    }
+
+    commands[args.command](args)
+
+
+if __name__ == "__main__":
+    main()
