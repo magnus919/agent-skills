@@ -84,6 +84,10 @@ prompt templates for text-only and reference-image-driven workflows.
 
 > **Cross-pollination note:** This skill was developed in parallel with [plntrprotocol/nous-branding](https://github.com/plntrprotocol/nous-branding) — a sibling project created independently, in friendship, for the same purpose. We've been learning from each other's approaches throughout development, and each repo has strengths the other doesn't. If you're using ours, go check out theirs too.
 
+### [open-knowledge-format](open-knowledge-format/SKILL.md)
+
+Google's Open Knowledge Format (OKF) v0.1 — create, validate, and consume vendor-neutral AI agent knowledge bundles. Markdown files with YAML frontmatter, organized in directory hierarchies with cross-links and progressive disclosure. Ships a validation script, concept template, example bundle, and detailed references covering the spec, bundle architecture, and real-world use cases.
+
 ### [opensource-contributions](opensource-contributions/SKILL.md)
 
 Comprehensive open source contribution guidance — from reading CONTRIBUTING.md and filing good bug reports through branching, committing, PR creation, and the release cycle. Covers both contributor and maintainer workflows with progressive disclosure: a concise orchestrator SKILL.md loads detailed phase references on demand. Includes a portable PR template compliance checker script. Agent disclosure template for AI-assisted contributions.
