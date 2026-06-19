@@ -49,6 +49,10 @@ Forgejo or Gitea self-hosted Git forge from the terminal. List repositories, sea
 
 Search, download, and extract public-domain books from Project Gutenberg. Look up books by ID or keyword via gutendex, download plain-text and EPUB editions, strip licensing boilerplate, and classify fiction vs non-fiction. Ships a portable Python CLI with zero external dependencies.
 
+### [hugo-theme](hugo-theme/SKILL.md)
+
+Build, customize, and debug advanced Hugo CMS themes. Covers template architecture, asset pipeline (Hugo Pipes, Tailwind CSS, PostCSS, images), shortcodes and render hooks, page bundles and content adapters, Hugo Modules, performance optimization, SEO/structured data, custom output formats, and CI/CD. Ships 6 reference files covering each topic area.
+
 ### [ghost-cli](ghost-cli/SKILL.md)
 
 Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.
