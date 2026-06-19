@@ -57,7 +57,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "debug this", "root cause", "why is this broken", "fix this bug" | [systematic-debugging](systematic-debugging/SKILL.md) |
 | "epub", "ebook", "EPUB file", "ebook format", "read epub", "write epub", "create ebook", "extract from epub", "epub to text", "edit epub", "repair epub", "convert epub2", "epub images", "batch epub", "ebook metadata" | [epub](epub/SKILL.md) |
 | "gutenberg", "public domain", "download a book", "classic literature", "free ebook", "gutenberg.org", "project gutenberg", "PG", "gutendex" | [gutenberg](gutenberg/SKILL.md) |
-| "hugo theme", "hugo cms", "hugo template", "hugo pipes", "hugo module", "hugo shortcode", "render hook", "tailwindcss hugo", "hugo i18n", "hugo seo", "hugo output format", "hugo site", "hugo static site" | [hugo-theme](hugo-theme/SKILL.md) |
+| "hugo theme", "hugo cms", "accessible theme", "wcag theme", "theme design", "theme accessibility", "theme UX", "design tokens", "css theme", "theme contrast", "responsive theme", "hugo template", "hugo pipes", "hugo module", "hugo shortcode", "render hook", "tailwindcss hugo", "hugo i18n", "hugo seo", "hugo output format", "hugo site", "hugo static site" | [hugo-theme](hugo-theme/SKILL.md) |
 | "weather", "forecast", "temperature", "is it raining", "Tempest" | [tempest-cli](tempest-cli/SKILL.md) |
 | "reverse-engineer", "understand this codebase", "PRD from code", "architecture document" | [software-architecture-analysis](software-architecture-analysis/SKILL.md) |
 | "data architecture", "data platform", "data strategy", "data mesh", "governance" | [data-architect](data-architect/SKILL.md) |

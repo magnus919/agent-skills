@@ -51,7 +51,7 @@ Search, download, and extract public-domain books from Project Gutenberg. Look u
 
 ### [hugo-theme](hugo-theme/SKILL.md)
 
-Build, customize, and debug advanced Hugo CMS themes. Covers template architecture, asset pipeline (Hugo Pipes, Tailwind CSS, PostCSS, images), shortcodes and render hooks, page bundles and content adapters, Hugo Modules, performance optimization, SEO/structured data, custom output formats, and CI/CD. Ships 6 reference files covering each topic area.
+Build, customize, and debug advanced Hugo CMS themes. Covers template architecture, asset pipeline (Hugo Pipes, Tailwind CSS, PostCSS, images), shortcodes and render hooks, page bundles and content adapters, Hugo Modules, performance optimization, SEO/structured data, design/UX/accessibility, custom output formats, and CI/CD. Ships 7 reference files covering each topic area.
 
 ### [ghost-cli](ghost-cli/SKILL.md)
 
