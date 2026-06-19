@@ -175,9 +175,9 @@ caches:
     maxAge: -1h          # Negative = expire after build
   images:
     dir: :resourceDir/_gen
-    maxAge: 30d          # Persist for 30 days
+    maxAge: 720h         # 30 days — Go duration syntax (h/m/s only, no 'd')
   modules:
-    maxAge: 30d
+    maxAge: 720h         # 30 days
   getresource:
     maxAge: 10m
   getjson:
@@ -192,7 +192,7 @@ caches:
 |-------|-------------|---------|
 | `assets` | -1 (expire after build) | Processed CSS, JS |
 | `images` | -1 (expire after build) | Resized/Fit/Filled images |
-| `modules` | 30d | Downloaded module files |
+| `modules` | 720h | Downloaded module files |
 | `getresource` | 10m | `resources.GetRemote` results |
 | `getjson` | 0 (no cache) | `getJSON` results |
 
@@ -220,6 +220,34 @@ This reports execution time per template, including counts of `partialCached` hi
 - **Increase `--maxPageSize`** if you have pages with thousands of shortcodes
 - **Prefer `resources.Match` over `resources.Get` with wildcards** for bulk operations
 - **Set `build.buildStats.enable: true`** in config for Tailwind v4 to track CSS class usage
+
+### Build Performance Troubleshooting
+
+If your build is slow, run this diagnostic first:
+
+```bash
+hugo --templateMetrics --templateMetricsHints --gc
+```
+
+Then check these common bottlenecks:
+
+| Symptom | Most Likely Cause | Fix |
+|---------|-------------------|-----|
+| Build time scales linearly with page count | Missing `partialCached` on expensive partials (related content, syntax highlighting, image galleries) | Add `partialCached` with section-specific variant keys. Each section gets its own cache entry. |
+| One partial dominates execution time | Identified by `--templateMetrics` — look for high cumulative time with low cache hit rate | Either add better variant keys, or move the expensive operation to build time (data file, content adapter) |
+| `resources.GetRemote` calls slow the build | Fetching the same URL on every page iteration | Fetch once in a `_content.gotmpl` or `data/` file, store results, then iterate locally |
+| CSS/SASS rebuild on every page | `includePaths` missing `node_modules`, or SCSS imports not cached | Verify `partialCached` on the CSS partial. Use `--gc` to clear stale cache. |
+| Module resolution slow | `hugo mod graph` shows deep dependency trees, or no `go.sum` | Run `hugo mod tidy && hugo mod vendor` for CI. Use `--ignoreVendorPaths` in dev. |
+| Image processing dominates build | Hundreds of images without cached resizes | Increase `images` cache TTL. Use `hugo --gc` only when stale. `--ignoreCache` re-processes everything. |
+| Build crashes on taxonomy/term pages | `.Site.LastChange` or `.Site.RegularPages` nil | Check for page-kind-specific template access. Wrap in `{{ with .Site.LastChange }}...{{ end }}`. |
+| Tailwind v4 build is slow or missing classes | `build.buildStats.enable` not set, or `@source` path incorrect | Verify `hugo_stats.json` is generated and mounted. Check `@source "hugo_stats.json"` path in entry CSS. |
+
+**Quick wins in order of impact:**
+1. Add `partialCached` with `.Section` variant to your most expensive partial
+2. Move `resources.GetRemote` calls from templates to `data/` files
+3. Increase `getresource` cache TTL from `10m` to `24h` if remote data changes infrequently
+4. Run `hugo mod tidy && hugo mod vendor` to freeze module versions
+5. Set `images` cache `maxAge` to `720h` (30 days) if images rarely change
 
 ## Configuration-Driven Theming
 

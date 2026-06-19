@@ -101,6 +101,9 @@ Dynamically create pages from external data (APIs, JSON files, remote content) w
   {{ end }}
 {{ end }}
 
+{{/* EnableAllLanguages must be called BEFORE iterating to create pages in all languages */}}
+{{ $.EnableAllLanguages }}
+
 {{ range $data }}
   {{ $content := dict "mediaType" "text/markdown" "value" .summary }}
   {{ $params := dict "author" .author "isbn" .isbn }}
@@ -200,3 +203,4 @@ Dates, numbers, and currency can be localized:
 - **Taxonomy `_index.md` supports cascade.** Place `_index.md` in a taxonomy section (e.g., `content/tags/_index.md`) with cascade rules to apply layouts or params to all term pages within that taxonomy.
 - **Translation keys must be unique across all translation files.** Duplicate IDs are silently ignored (first wins). Verify with `hugo server` and check for missing translation warnings.
 - **Leaf bundle `index.md` replaces the URL slug.** A leaf bundle at `content/posts/my-post/index.md` has URL `/posts/my-post/`. The directory name IS the slug — renaming the directory changes the URL.
+- **`.Site.LastChange` is not available on taxonomy, term, or some section pages.** It only returns a value when a regular page exists. Use `now.Format` as a fallback in footer partials that run across all page kinds: `{{ with .Site.LastChange }}{{ .Format \"2006\" }}{{ else }}{{ now.Format \"2006\" }}{{ end }}`.
