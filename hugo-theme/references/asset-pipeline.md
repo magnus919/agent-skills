@@ -105,6 +105,85 @@ module:
 
 Source: [Hugo docs — css.TailwindCSS](https://gohugo.io/functions/css/tailwindcss/)
 
+### Tailwind v4 Deployment Checklist
+
+Follow these in order:
+
+```yaml
+# 1. Config — add to hugo.yaml
+build:
+  buildStats:
+    enable: true
+module:
+  mounts:
+  - source: assets
+    target: assets
+  - disableWatch: true
+    source: hugo_stats.json
+    target: assets/notwatching/hugo_stats.json
+```
+
+```css
+/* 2. Entry CSS — assets/css/main.css */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@source "hugo_stats.json";
+```
+
+```bash
+# 3. Install
+npm install --save-dev tailwindcss @tailwindcss/cli @tailwindcss/typography
+```
+
+```go-html-template
+{{/* 4. CSS partial — layouts/partials/css.html */}}
+{{ with resources.Get "css/main.css" }}
+  {{ $opts := dict "minify" (not hugo.IsDevelopment) }}
+  {{ with . | css.TailwindCSS $opts }}
+    {{ if hugo.IsDevelopment }}
+      <link rel="stylesheet" href="{{ .RelPermalink }}">
+    {{ else }}
+      {{ with . | fingerprint }}
+        <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+```
+
+```html
+{{/* 5. Dark mode toggle HTML + JS — add to header partial */}}
+<button id="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false" type="button">
+  <svg aria-hidden="true" class="sun-icon" width="20" height="20"><use href="#sun"/></svg>
+  <svg aria-hidden="true" class="moon-icon" width="20" height="20" hidden><use href="#moon"/></svg>
+</button>
+
+<script>
+(function() {
+  const theme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (theme === 'dark' || (theme === null && prefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
+```
+
+```javascript
+// 6. Toggle handler — placed before closing </body>
+document.getElementById('theme-toggle')?.addEventListener('click', function() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const newTheme = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  this.setAttribute('aria-label', 'Switch to ' + (isDark ? 'light' : 'dark') + ' mode');
+  this.setAttribute('aria-pressed', !isDark);
+  this.querySelector('.sun-icon').hidden = !isDark;
+  this.querySelector('.moon-icon').hidden = isDark;
+});
+```
+
 ## Tailwind CSS v3 (PostCSS approach)
 
 ```bash

@@ -1037,6 +1037,8 @@ toggle.addEventListener('click', () => {
 });
 ```
 
+> **Important:** The flash-prevention script (section 2.4) MUST be placed inline in `<head>` BEFORE any stylesheets. Without it, users see a flash of the wrong theme on page load. The toggle button JS above handles the interaction; the flash-prevention script prevents the jarring light-to-dark transition.
+
 ### 11.3 Social Sharing (Lightweight)
 
 Use the native Web Share API with clipboard fallback — no third-party scripts:
