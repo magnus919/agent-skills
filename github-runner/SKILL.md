@@ -1,5 +1,6 @@
 ---
 name: github-runner
+version: 1.0.1
 description: >-
   Deploy, manage, and troubleshoot self-hosted GitHub Actions runners. Covers
   systemd service, Docker containers, Kubernetes (Actions Runner Controller),
@@ -20,14 +21,14 @@ Deploy and manage self-hosted GitHub Actions runners — the machines that execu
 
 | Trigger | What to do |
 |---------|------------|
-| "Set up a self-hosted runner for [repo/org]" | Read [deployment](references/deployment.md) — choose systemd, Docker, or ARC |
-| "Runner won't register / keeps failing" | Read [management](references/management.md) — ACCESS_TOKEN vs RUNNER_TOKEN, groups |
-| "How to scale runners automatically" | Read [scaling](references/scaling.md) — ARC, Scale Set Client, ephemeral |
-| "Secure my self-hosted runners" | Read [security](references/security.md) — public repo risks, ephemeral, JIT, groups |
-| "Make a custom runner image" | Read [custom-images](references/custom-images.md) — Dockerfile, ARC container modes |
-| "What domains does a runner need to reach?" | Read [network](references/network.md) — firewall rules, TLS, proxy |
-| "Labels, groups, or both for routing?" | Read [management](references/management.md) — labels and groups sections |
-| "Monitor / troubleshoot runner issues" | Read [management](references/management.md) — monitoring and troubleshooting sections |
+| "Set up CI for my project", "deploy a self-hosted runner for [repo/org]" | Read [deployment](references/deployment.md) — choose systemd, Docker, or ARC |
+| "Runner won't register / keeps failing", "runner gets 404", "registration token expired" | Read [management](references/management.md) — ACCESS_TOKEN vs RUNNER_TOKEN, groups |
+| "How to scale runners automatically", "auto-scale runners", "too many queued jobs" | Read [scaling](references/scaling.md) — ARC, Scale Set Client, ephemeral |
+| "Secure my self-hosted runners", "hardening runners", "runner security", "public repo risk" | Read [security](references/security.md) — public repo risks, ephemeral, JIT, groups |
+| "Make a custom runner image", "build a runner Dockerfile", "custom runner with Python" | Read [custom-images](references/custom-images.md) — Dockerfile, ARC container modes |
+| "What domains does a runner need to reach?", "runner firewall rules", "runner network setup" | Read [network](references/network.md) — firewall rules, TLS, proxy |
+| "Labels, groups, or both for routing?", "how to target specific runners" | Read [management](references/management.md) — labels and groups sections |
+| "Monitor / troubleshoot runner issues", "runner offline", "runner not picking up jobs" | Read [management](references/management.md) — monitoring and troubleshooting sections |
 
 ## Quick Reference
 

@@ -5,9 +5,17 @@
 Groups control which repos can access which runners at the org level.
 
 **Key operations:**
-- Create: Settings → Actions → Runner groups → New runner group
+- Create via UI: Settings → Actions → Runner groups → New runner group
+- Create via gh CLI:
+  ```bash
+  gh api --method POST orgs/<org>/actions/runner-groups \
+    -f name="<group-name>" -f visibility="selected"
+  gh api --method POST orgs/<org>/actions/runner-groups \
+    -f name="<group-name>" -f visibility="all"
+  ```
 - Register into group: `./config.sh --runnergroup <name>`
 - Move runner between groups: GitHub UI → Settings → Actions → Runners → click runner → Runner group dropdown
+- List groups: `gh api orgs/<org>/actions/runner-groups --jq '.runner_groups[].name'`
 - Default group exists in every org; unnamed runners land there
 - Restrict repo access: Selected repositories vs All repositories
 - Delete group: all runners must be moved or removed first

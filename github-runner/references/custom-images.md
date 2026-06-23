@@ -53,6 +53,8 @@ RUN curl -f -L -o runner-container-hooks.zip \
 USER runner
 ```
 
+> **Keep versions current:** The `RUNNER_VERSION` and `RUNNER_CONTAINER_HOOKS_VERSION` build args above are examples. Check [github.com/actions/runner/releases](https://github.com/actions/runner/releases) and [github.com/actions/runner-container-hooks/releases](https://github.com/actions/runner-container-hooks/releases) for the latest versions before building. Runners with `--disableupdate` must be updated within 30 days of a new release or GitHub stops assigning jobs.
+
 ## Installing Software
 
 Options for adding tools to runner environments:
