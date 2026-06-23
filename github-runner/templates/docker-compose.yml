@@ -1,0 +1,30 @@
+services:
+  runner:
+    image: myoung34/github-runner:latest
+    container_name: runner
+    restart: unless-stopped
+    environment:
+      # Required - change these for your environment
+      - RUNNER_NAME=my-runner
+      - RUNNER_SCOPE=org                          # or "repo"
+      - ORG_NAME=myorg                            # required for org scope
+      # - REPO_URL=https://github.com/owner/repo  # required for repo scope
+      - ACCESS_TOKEN=***      
+      # Optional
+      - RUNNER_GROUP=self-hosted                  # must match an existing group
+      - LABELS=self-hosted,linux,x64
+      - RUNNER_WORKDIR=/runner/work
+      - DISABLE_AUTO_UPDATE=1
+      - EPHEMERAL=false                           # use string "false", not "0"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - runner-data:/runner
+
+volumes:
+  runner-data:
+
+# Uncomment if you need a shared network
+# networks:
+#   default:
+#     external:
+#       name: traefik
