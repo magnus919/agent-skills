@@ -128,6 +128,21 @@ Standalone Go module for building custom autoscaling outside Kubernetes. Handles
 
 **Repository:** `actions/scaleset` on GitHub
 
+## Decision Matrix: Which Approach to Choose
+
+| Scenario | Recommended | Why |
+|----------|-------------|-----|
+| Single machine, simple CI, <10 runs/day | systemd | Minimal dependencies, full filesystem access, no Docker needed |
+| Small team (3-10), multiple servers, ~10-100 runs/day | Docker | Container isolation, easy management, restart-on-failure, DinD for builds |
+| 10+ devs, growing CI volume, existing K8s cluster | ARC | Production autoscaling, K8s-native, JIT tokens, clean per-job isolation |
+| Platform team, non-K8s infra, custom provisioning | Scale Set Client | Full control over provisioning, VM/hybrid/multi-platform, customized scaling logic |
+
+**Decision flow:**
+1. Do you have a Kubernetes cluster you already maintain? → **ARC**
+2. No K8s but need isolation and container management? → **Docker**
+3. Only 1 machine, low volume, no containers needed? → **systemd**
+4. Platform team with custom infrastructure and non-K8s scale requirements? → **Scale Set Client**
+
 ## Deployment Comparison
 
 | Approach | Complexity | Autoscaling | Security | Best For |

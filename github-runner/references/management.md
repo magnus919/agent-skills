@@ -80,6 +80,37 @@ gh api orgs/<org>/actions/runner-groups --jq '.runner_groups[].name'
 ```
 Tests each required endpoint (github.com, api.github.com, *.actions.githubusercontent.com, etc.) and outputs PASS/FAIL per endpoint. Logs in `_diag/`.
 
+## Runner Offline Diagnostic Procedure
+
+When a runner shows "offline" in GitHub UI, follow these steps in order:
+
+**1. Check container/service logs**
+```bash
+docker logs <container> --tail 50          # Docker runner
+sudo journalctl -u actions.runner.* -f     # systemd runner
+```
+Look for: connection failures, auth errors, or the runner starting then immediately losing connection.
+
+**2. Test network connectivity from the runner**
+```bash
+./config.sh --check --url <url> --pat <pat>
+```
+This tests all required endpoints (github.com, api.github.com, *.actions.githubusercontent.com, etc.) and reports PASS/FAIL per endpoint. Logs in `_diag/`.
+
+**3. Verify runner registration with gh CLI**
+```bash
+gh api repos/<owner>/<repo>/actions/runners --jq '.runners[] | "\(.name) (\(.status))"'
+```
+If the runner name doesn't appear, it was auto-removed (offline >14 days). With ACCESS_TOKEN set, the container should re-register on restart.
+
+**4. Check IP allow lists**
+If your org uses IP allow lists, the runner's outbound IP must be added. Find it via:
+```bash
+curl -s ifconfig.me
+```
+
+**Most likely cause for "worked yesterday, offline today":** Network/firewall change or expired ACCESS_TOKEN.
+
 ## Troubleshooting
 
 | Issue | Likely Cause | Fix |
@@ -115,6 +146,38 @@ Tests each required endpoint (github.com, api.github.com, *.actions.githubuserco
 - **Recommendation for Docker runners**: Set `DISABLE_AUTO_UPDATE=1` and update the container image tag instead
 
 Check latest release: https://github.com/actions/runner/releases
+
+## Runner Lifecycle Hooks
+
+Runner lifecycle hooks let you run scripts before and after each job using environment variables.
+
+| Hook | When it runs | Use cases |
+|------|-------------|----------|
+| `ACTIONS_RUNNER_HOOK_JOB_STARTED` | After job assignment, before any workflow steps | Workspace cleanup, secret injection, telemetry start |
+| `ACTIONS_RUNNER_HOOK_JOB_COMPLETED` | After all workflow steps, before job completion | Teardown, log shipping, metric collection |
+
+**Setup:**
+1. Create a script (`.sh` or `.ps1`) anywhere on the runner machine
+2. Make it executable: `chmod +x /path/to/script.sh`
+3. Set the env var in the runner's `.env` file, systemd unit, or Docker environment
+
+**Docker example:**
+```yaml
+environment:
+  - ACTIONS_RUNNER_HOOK_JOB_STARTED=/opt/runner/workspace-cleanup.sh
+```
+
+**Cleanup script example:**
+```bash
+#!/bin/bash
+# Cleans workspace before each job
+WORKSPACE="${RUNNER_WORKSPACE:-${GITHUB_WORKSPACE:-/home/runner/_work}}"
+rm -rf "${WORKSPACE:?}"/* || true
+```
+
+**Testing:** Run a job and check workflow logs for a "Set up runner" section containing "Hook output:". Non-zero exit from JOB_STARTED prevents the job from running.
+
+**Note:** JOB_COMPLETED runs synchronously during job cleanup — it cannot be used to destroy the runner itself. Use `--ephemeral` for that.
 
 ## Common Pitfalls
 

@@ -59,6 +59,14 @@ github-cloud.s3.amazonaws.com
 dependabot-actions.githubapp.com
 ```
 
+**Runner group access for Dependabot:** If Dependabot PRs aren't triggering CI on self-hosted runners, check two settings:
+1. **Org/repo setting:** Settings → Actions → General → "Allow Dependabot to use self-hosted runners"
+2. **Runner group API:** If using groups, enable via:
+   ```bash
+   gh api --method PATCH orgs/<org>/actions/runner-groups/<group-id> \
+     -f allows_dependabot=true
+   ```
+
 ### Release Assets
 ```
 release-assets.githubusercontent.com

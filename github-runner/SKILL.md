@@ -1,6 +1,6 @@
 ---
 name: github-runner
-version: 1.0.1
+version: 1.0.2
 description: >-
   Deploy, manage, and troubleshoot self-hosted GitHub Actions runners. Covers
   systemd service, Docker containers, Kubernetes (Actions Runner Controller),
