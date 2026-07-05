@@ -1,14 +1,16 @@
 ---
 name: traefik
 description: >-
-  Deploy, configure, secure, and maintain Traefik v3 reverse proxy — Docker
-  provider, HTTP/TCP/UDP routing, TLS/ACME (Let's Encrypt), middlewares,
-  observability, API, and production deployment. Load when configuring or
-  troubleshooting a Traefik instance.
+  Deploy, configure, and troubleshoot Traefik v3 reverse proxy — covers all
+  providers, routing, TLS/ACME, middlewares, and production patterns with
+  YAML examples. Load when setting up or debugging a Traefik instance.
 license: MIT
+version: 0.1.0
+compatibility: >-
+  Compatible with any agent supporting the Agent Skills format (Hermes Agent,
+  Claude Code, GitHub Copilot, OpenCode, Cursor, etc.)
 metadata:
   source: https://doc.traefik.io/traefik/
-  spec-version: "1.0"
 ---
 
 # Traefik Agent Skill
@@ -17,11 +19,20 @@ Comprehensive reference for deploying, configuring, and maintaining **Traefik v3
 
 ## Quick Start — Minimal Docker Deployment
 
+A production-ready Docker Compose template is available at `templates/docker-compose.yml`. For a quick test:
+
+### One-Line Health Check
+
+```bash
+bash scripts/traefik-healthcheck.sh           # Text output
+bash scripts/traefik-healthcheck.sh --json    # JSON output for agents
+```
+
 ```yaml
 # docker-compose.yml
 services:
   traefik:
-    image: traefik:v3.2
+    image: traefik:v3.7
     command:
       # Static configuration via CLI args
       - "--providers.docker=true"
@@ -66,6 +77,7 @@ The request flow: `EntryPoint → Router → (Middlewares) → Service → Backe
 | **Observability** | Prometheus/OTel metrics, access logs, tracing, health checks | `references/observability.md` |
 | **v2→v3 Migration** | Breaking changes, rule syntax update, deprecated options | `references/migration-v2-to-v3.md` |
 | **Production Patterns** | Docker Compose template, security hardening, HA, monitoring | `references/production-deployment.md` |
+| **Servers Transport** | Backend connection config, mTLS to backends, connection pooling, SPIFFE | `references/servers-transport.md` |
 | **Kubernetes Providers** | Deploying Traefik in K8s — Ingress, CRD (IngressRoute), Gateway API | `references/kubernetes-providers.md` |
 | **Other Providers** | ECS, Nomad, Consul Catalog, KV stores, File, HTTP, REST providers | `references/other-providers.md` |
 | **Community Patterns** | Production wisdom — middleware ordering, performance tuning, CDN real-IP, CrowdSec, Authelia, troubleshooting | `references/community-patterns.md` |
@@ -88,4 +100,4 @@ The request flow: `EntryPoint → Router → (Middlewares) → Service → Backe
 ## When NOT to Use This Skill
 
 - For Traefik Hub, Traefik Enterprise, or Traefik Mesh — these are separate products with different APIs
-- For writing Traefik plugins — see the official plugin development documentation at https://plugins.traefik.io/create
+- For developing Traefik plugins (Yaegi or WASM) — this skill covers *using* configured plugins, not writing them. See https://plugins.traefik.io/create for plugin development.

@@ -33,6 +33,10 @@ spiffe:
   workloadAPIAddr: ""            # SPIRE agent socket path
 
 ## Server Transport (HTTP)
+
+See `references/servers-transport.md` for full detail on serversTransport, tcpServersTransport, connection pooling, backend TLS, and per-service transport overrides.
+
+```yaml
 serversTransport:
   insecureSkipVerify: false      # Skip TLS verification to backend
   rootCAs:                       # List of root CA certificates
@@ -47,6 +51,8 @@ serversTransport:
     trustDomain: ""
 
 ## TCP Server Transport
+
+```yaml
 tcpServersTransport:
   dialKeepAlive: 30s
   dialTimeout: 30s
@@ -57,6 +63,7 @@ tcpServersTransport:
     spiffe:
       ids: []
       trustDomain: ""
+```
 
 ## EntryPoints — Network listeners
 entryPoints:

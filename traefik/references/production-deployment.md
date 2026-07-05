@@ -9,7 +9,7 @@ version: "3.8"
 
 services:
   traefik:
-    image: traefik:v3.2
+    image: traefik:v3.7
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -113,7 +113,7 @@ services:
       - TASKS=1
 
   traefik:
-    image: traefik:v3.2
+    image: traefik:v3.7
     environment:
       - DOCKER_HOST=tcp://docker-proxy:2375
     # Do NOT mount the docker socket directly

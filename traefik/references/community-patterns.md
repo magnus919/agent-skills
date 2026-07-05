@@ -370,7 +370,7 @@ Request → Traefik → CrowdSec Bouncer (ForwardAuth) → Backend Service
 ```yaml
 services:
   traefik:
-    image: traefik:v3.2
+    image: traefik:v3.7
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./logs:/var/log/traefik

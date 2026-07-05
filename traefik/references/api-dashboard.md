@@ -46,7 +46,7 @@ Or with Docker labels:
 ```yaml
 services:
   traefik:
-    image: traefik:v3.2
+    image: traefik:v3.7
     labels:
       - "traefik.http.routers.dashboard.rule=Host(`traefik.example.com`)"
       - "traefik.http.routers.dashboard.service=api@internal"

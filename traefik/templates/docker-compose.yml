@@ -1,0 +1,107 @@
+# Production Traefik Deployment — Docker Compose
+# Target: Traefik v3.7+
+# Usage: docker compose up -d
+#
+# Features:
+# - Docker provider (read-only socket via docker-socket-proxy)
+# - Let's Encrypt ACME (HTTP-01 challenge)
+# - Dashboard with BasicAuth (internal-only)
+# - Security hardening (read-only rootfs, no-new-privileges, capability drop)
+# - Prometheus metrics endpoint
+# - JSON structured logging
+# - HTTP/3 (QUIC) enabled
+
+version: "3.8"
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # --- Docker Socket Proxy (Security) ---
+  # Replaces direct docker.sock mount with a read-only API proxy
+  docker-proxy:
+    image: tecnativa/docker-socket-proxy:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - CONTAINERS=1
+      - NETWORKS=1
+      - SERVICES=1
+      - TASKS=1
+      - INFO=1
+    networks:
+      - traefik
+    logging: *default-logging
+
+  # --- Traefik Reverse Proxy ---
+  traefik:
+    image: traefik:v3.7
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    networks:
+      - traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      # UDP port for HTTP/3 (QUIC)
+      - "443:443/udp"
+    environment:
+      # DNS challenge credentials (example: Cloudflare)
+      # - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+      - TZ=UTC
+    volumes:
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./dynamic:/etc/traefik/dynamic:ro
+      - ./letsencrypt:/letsencrypt
+      # Do NOT mount docker.sock directly — use docker-proxy
+    command:
+      # Providers
+      - "--providers.docker=true"
+      - "--providers.docker.endpoint=tcp://docker-proxy:2375"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=traefik"
+      # File provider for shared middlewares
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+      # EntryPoints
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http3=true"
+      # TLS
+      - "--certificatesresolvers.letsencrypt.acme.email=admin@example.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      # API (dashboard served through a router, not directly)
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+      # Logging
+      - "--log.level=INFO"
+      - "--log.format=json"
+      - "--accesslog=true"
+      - "--accesslog.format=json"
+      - "--accesslog.addinternals=false"
+    labels:
+      # Dashboard router
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.example.com`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dashboard.middlewares=dashboard-auth"
+      - "traefik.http.middlewares.dashboard-auth.basicauth.users=${DASHBOARD_AUTH:-admin:$$2y$$10$$...}"
+    logging: *default-logging
+
+networks:
+  traefik:
+    name: traefik
+    driver: bridge

@@ -20,7 +20,7 @@ providers:
 ```yaml
 services:
   traefik:
-    image: traefik:v3.2
+    image: traefik:v3.7
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock   # Required
       - ./traefik.yml:/etc/traefik/traefik.yml       # Static config

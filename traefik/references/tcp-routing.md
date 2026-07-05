@@ -172,7 +172,7 @@ labels:
 # docker-compose.yml
 services:
   traefik:
-    image: traefik:v3.2
+    image: traefik:v3.7
     command:
       - "--entrypoints.postgres.address=:5432"
       - "--providers.docker=true"
