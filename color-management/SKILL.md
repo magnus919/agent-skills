@@ -26,13 +26,17 @@ Expert-level guidance for ICC profile color management in open-source workflows.
 | Inspect an ICC profile's metadata/primaries/TRC | — | `scripts/icc-profile-inspect.py` |
 | Check if a profile is well-behaved (neutral gray axis) | `references/working-spaces-reference.md` | `scripts/well-behaved-check.py` |
 | Convert images between color spaces | `references/icc-profile-operations.md` | `scripts/color-space-convert.py` |
-| Check which image colors exceed a color space gamut | — | `scripts/gamut-check.py` |
+| Check which image colors exceed a color space gamut | `references/soft-proofing-workflow.md` | `scripts/gamut-check.py` |
 | Compare sRGB profile variants | `references/working-spaces-reference.md` | `scripts/srgb-compare.py` |
 | Calculate color difference (dE) between two images | — | `scripts/color-difference.py` |
-| Extract embedded ICC profile from an image | `references/icc-profile-operations.md` | — |
-| Calibrate or profile a monitor | `references/icc-profile-operations.md` | — |
+| Soft proof an image before conversion | `references/soft-proofing-workflow.md` | `scripts/gamut-check.py` |
+| Calibrate and profile a monitor | `references/monitor-calibration-workflow.md` | — |
+| Process raw files with dcraw | `references/dcraw-pipeline.md` | — |
+| Understand hex quantization and create well-behaved profiles | `references/hex-quantization-and-profile-creation.md` | `scripts/well-behaved-check.py` |
+| Generate a comprehensive color analysis report | — | `scripts/color-report.py` |
+| Set up a GIMP LCH layer stack for separate tonality/color editing | `assets/templates/lch-layer-stack.md` | — |
+| Extract embedded ICC profile from an image | `references/icc-profile-operations.md` | `scripts/icc-profile-inspect.py` |
 | Understand conversion intents (relative/absolute/perceptual) | `references/color-management-overview.md` | — |
-| Decode raw files with dcraw | `references/tool-reference.md` | — |
 | Set up Firefox for color-managed browsing | `references/tool-reference.md` | — |
 
 ## Required Tools
@@ -105,6 +109,16 @@ Every digital camera sensor needs negative XYZ tristimulus values in its input m
 ### LCH vs HSV is not an upgrade — it's a replacement
 HSV is a 1960s "fast math" hack for slow CPUs. It cannot separate color from tonality. LCH (Lightness, Chroma, Hue) is derived from CIELAB and allows true separate editing of color and tonality. GIMP's LCH blend modes are the first correct implementation in open-source software. Never use HSV blend modes for serious editing.
 
+### Concrete failure: Levels gamma slider + unbounded sRGB = disaster
+If you take a ProPhotoRGB image with saturated reds, convert it to unbounded sRGB at 32-bit float, and apply a Levels gamma slider adjustment (e.g., gamma=3.0), the reds turn *magenta* and any chrome in the image turns *cyan*. This is because the gamma slider is chromaticity-dependent — it multiplies channels differently in different working spaces. The fix: do gamma adjustments in the same working space the image was edited in, or use a chromaticity-independent operation like Value channel Levels.
+
+### Concrete failure: Color correction in the wrong working space
+If an image was given a green color cast in the ProPhotoRGB color space, and you correct it in unbounded sRGB using the white balance eyedropper, the correction produces: cyan grass, orange skin tones, saturated sky, and a saturated red truck in the distance. Even though the white point dot itself turns neutral, all other colors are wrong. Color correction must be performed in the same color space in which the cast was created. Converting to a different space and correcting produces unpredictable results.
+
+### Concrete failure: Channel-based mono mixing with out-of-gamut colors
+Converting a yellow truck from its camera input profile to sRGB drives the blue channel negative over most of the yellow truck body. If you then try to use Channel Mixer (Mono Mixer) to create a black-and-white conversion by blending from the blue channel, the negative blue channel values produce completely meaningless results — you can't emulate orthochromatic film or any other channel-based effect on colors that are out of gamut.
+Channel-based editing must be done before converting to a smaller gamut, or in a working space large enough to contain all image colors.
+
 ## References
 
 | File | When to load |
@@ -114,9 +128,14 @@ HSV is a 1960s "fast math" hack for slow CPUs. It cannot separate color from ton
 | `references/tool-reference.md` | You need CLI commands for ImageMagick, ArgyllCMS, Exiftool, LCMS |
 | `references/working-spaces-reference.md` | You need working space data (primaries, white points, gamma values) |
 | `references/glossary.md` | You encounter an unfamiliar term |
+| `references/soft-proofing-workflow.md` | You need to soft proof before conversion |
+| `references/monitor-calibration-workflow.md` | You need to calibrate or profile a monitor |
+| `references/dcraw-pipeline.md` | You're working with raw files and need a color-managed pipeline |
+| `references/hex-quantization-and-profile-creation.md` | You need to create well-behaved ICC profiles |
 
 ## Assets
 
 | File | Description |
 |------|-------------|
 | `assets/templates/icc-profile-report.md` | Template for a human-readable ICC profile analysis report |
+| `assets/templates/lch-layer-stack.md` | GIMP LCH layer group template for separate tonality/color editing |

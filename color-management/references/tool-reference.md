@@ -103,5 +103,6 @@ ArgyllCMS supports these color measuring instruments (see argyllcms.com for curr
 | ICC (International Color Consortium) | www.color.org |
 | Wolf Faust IT8 Targets | www.colorreference.de |
 | ArgyllCMS | www.argyllcms.com |
+| DisplayCAL (ArgyllCMS GUI frontend) | displaycal.net |
 | LittleCMS | www.littlecms.com |
 | Elle Stone's Profiles | github.com/ellelstone/elles_icc_profiles |

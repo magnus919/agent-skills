@@ -68,7 +68,83 @@ A survey of 13 sRGB profiles from major vendors:
 
 **Warning**: The Krita `sRGB.icm` (unadapted primaries) causes a cyan-blue color cast. Never use it for editing.
 
-## Guide to Choosing a Working Space
+## Guide to Choosing a Working Space — Decision Flow
+
+### Start here: what are you doing?
+
+```
+Is your output destined for the web or social media?
+  → YES → Use sRGB (V2 profile for Firefox compatibility)
+           Recommended: ArgyllCMS sRGB.icm or Elle's sRGB-elle-V2-srgbtrc.icc
+           Why: Web standard; all browsers assume sRGB
+
+Are you editing raw files from a camera?
+  → YES → Do you need maximum color fidelity at high bit depth?
+    → YES → Use Rec.2020 or ACEScg (linear gamma variant)
+             Why: Better chromaticity performance than ProPhotoRGB;
+                  holds all camera-captured colors without clipping
+    → NO  → Use ProPhotoRGB (gamma 1.8)
+             Why: Large enough for most raw files; compatible with
+                  most editing software
+
+Are you editing 8-bit images?
+  → YES → Keep gamut small: use sRGB or AdobeRGB
+           Why: Larger gamuts cause posterization at 8-bit
+           Never use linear gamma at 8-bit — shadows will posterize
+
+Do you need radiometrically correct results?
+  → YES → Use the linear gamma (g10) variant of your chosen space
+           Why: Colors blend physically correctly only in linear gamma
+           Requirement: Must edit at 16-bit+ to avoid posterization
+
+Is this for VFX / film / professional video?
+  → YES → Use ACEScg (linear)
+           Why: Industry standard; wide gamut without imaginary colors
+
+Do you need to match a wide-gamut printer?
+  → YES → Use AdobeRGB, ProPhotoRGB, or Rec.2020
+           Why: sRGB is too small for modern inkjet printers;
+                match to your printer profile gamut
+
+Is your image already in ProPhotoRGB and you need to edit tonality?
+  → YES → Consider switching to ACEScg or Rec.2020 for the edit, then
+           convert back. ProPhotoRGB has poor chromaticity performance
+           for multiply/divide operations.
+```
+
+### Working Space Quick Reference Table
+
+| Name | Gamut | Best For | Avoid For |
+|------|-------|----------|-----------|
+| sRGB | Smallest | Web, 8-bit, Firefox-compat output | Raw editing, wide-gamut print |
+| AdobeRGB | Medium | Print, 8-bit with caution | HDR, raw editing |
+| ProPhotoRGB | Very large | Raw editing (legacy) | 8-bit, multiply blend modes |
+| Rec.2020 | Large | Modern raw editing, HDR | 8-bit, legacy software |
+| ACEScg | Large (no imaginary) | VFX, film, radiometric editing | sRGB software |
+| Linear gamma | Varies | Radiometrically correct edits | 8-bit (posterization) |
+
+### Why choose one over another?
+
+**sRGB vs AdobeRGB**: AdobeRGB holds ~24% more colors (more greens and
+cyans). If you print with a modern inkjet, AdobeRGB is the safer choice.
+For web-only, sRGB is the standard.
+
+**ProPhotoRGB vs Rec.2020**: Rec.2020 has better chromaticity performance
+(multiply/divide operations produce results closer to spectral data).
+ProPhotoRGB was designed for film scanning; Rec.2020 was designed for
+modern displays and cameras. Prefer Rec.2020 unless you need ProPhotoRGB-
+specific software compatibility.
+
+**Linear gamma vs perceptual gamma**: Linear gamma is radiometrically
+correct — colors blend like light in the real world. Perceptual gamma
+produces "gamma artifacts" (dark halos around blended colors). Use linear
+whenever your bit depth supports it (16-bit+).
+
+**ACEScg vs ACES**: ACES is enormous (includes many imaginary colors).
+ACEScg is smaller but still large enough for all real colors. Use ACEScg
+for editing; ACES is primarily for archival/interchange.
+
+## Recommended Profiles
 
 | If you... | Use this working space | Notes |
 |-----------|----------------------|-------|
@@ -90,14 +166,3 @@ A survey of 13 sRGB profiles from major vendors:
 | Gamma 2.2 | value = (code/max)^(1/2.2) | AdobeRGB, Windows displays |
 | Rec.709 | ~gamma 2.4 (piecewise) | HDTV broadcast standard |
 | LAB L | Perceptually uniform | CIELAB L* encoding, LCH editing |
-
-## Recommended Profiles
-
-For well-behaved profiles that are free to use, the best sources are:
-
-1. **ArgyllCMS** (`sRGB.icm`, `ClayRGB.icm` = AdobeRGB compatible) — ArgyllCMS/ref/ folder
-2. **Elle Stone's profiles** — github.com/ellelstone/elles_icc_profiles — V2 and V4, all well-behaved
-3. **Krita 2.9+** — ships with well-behaved profiles as of February 2015
-4. **colord Shared Color Profiles** — Linux package manager
-
-Avoid profiles from: LCMS built-in (not well-behaved for sRGB/AdobeRGB), color.org (copyright encumbered), and old camera vendor profiles (may not be well-behaved).
