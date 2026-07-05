@@ -68,6 +68,7 @@ The request flow: `EntryPoint → Router → (Middlewares) → Service → Backe
 | **Production Patterns** | Docker Compose template, security hardening, HA, monitoring | `references/production-deployment.md` |
 | **Kubernetes Providers** | Deploying Traefik in K8s — Ingress, CRD (IngressRoute), Gateway API | `references/kubernetes-providers.md` |
 | **Other Providers** | ECS, Nomad, Consul Catalog, KV stores, File, HTTP, REST providers | `references/other-providers.md` |
+| **Community Patterns** | Production wisdom — middleware ordering, performance tuning, CDN real-IP, CrowdSec, Authelia, troubleshooting | `references/community-patterns.md` |
 | **Plugins & Extending** | Yaegi and WASM plugins, plugin configuration, FastProxy | `references/plugins-extend.md` |
 
 ## Common Pitfalls
