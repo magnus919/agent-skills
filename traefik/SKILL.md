@@ -65,7 +65,10 @@ The request flow: `EntryPoint → Router → (Middlewares) → Service → Backe
 | **API & Dashboard** | Securing the dashboard, API endpoints, debugging routes | `references/api-dashboard.md` |
 | **Observability** | Prometheus/OTel metrics, access logs, tracing, health checks | `references/observability.md` |
 | **v2→v3 Migration** | Breaking changes, rule syntax update, deprecated options | `references/migration-v2-to-v3.md` |
-| **Production Patterns** | High availability, Docker Compose patterns, security hardening | `references/production-deployment.md` |
+| **Production Patterns** | Docker Compose template, security hardening, HA, monitoring | `references/production-deployment.md` |
+| **Kubernetes Providers** | Deploying Traefik in K8s — Ingress, CRD (IngressRoute), Gateway API | `references/kubernetes-providers.md` |
+| **Other Providers** | ECS, Nomad, Consul Catalog, KV stores, File, HTTP, REST providers | `references/other-providers.md` |
+| **Plugins & Extending** | Yaegi and WASM plugins, plugin configuration, FastProxy | `references/plugins-extend.md` |
 
 ## Common Pitfalls
 
@@ -83,6 +86,5 @@ The request flow: `EntryPoint → Router → (Middlewares) → Service → Backe
 
 ## When NOT to Use This Skill
 
-- For Kubernetes-specific Traefik configuration (IngressRoute CRDs, Helm charts) — these use a different config model (CRDs/annotations)
 - For Traefik Hub, Traefik Enterprise, or Traefik Mesh — these are separate products with different APIs
-- For writing Traefik plugins — see the Traefik plugin documentation at https://plugins.traefik.io/
+- For writing Traefik plugins — see the official plugin development documentation at https://plugins.traefik.io/create
