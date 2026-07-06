@@ -73,6 +73,47 @@ Level 5: Validation — "Let me summarize what I'm hearing..."
 
 Move down only when current level stops producing novel information.
 
+## Socratic Questioning (6 Types)
+
+From the Socratic method, six systematic categories for disciplined inquiry:
+
+**Type 1 — Clarification:** "What exactly do you mean by 'better'?" / "When you say 'slow,' what threshold?" / "Help me understand the distinction you're drawing."
+
+**Type 2 — Probing Assumptions:** "What are you assuming about the user's willingness to change?" / "Is this always the case, or only in certain situations?" / "What would need to be different for that assumption to be false?"
+
+**Type 3 — Probing Evidence:** "What evidence do you have that this is the actual cause?" / "How do you know this is a widespread issue vs. isolated complaints?"
+
+**Type 4 — Alternative Perspectives:** "How would customer support describe this problem differently?" / "Who benefits from keeping things as they are?" / "Is there another way to interpret this?"
+
+**Type 5 — Implications:** "If we build this, what else changes downstream?" / "And then what happens?" / "What are the second-order effects of solving it this way?"
+
+**Type 6 — Meta-Questions:** "Why are we asking about this feature instead of that one?" / "Whose question are we really trying to answer?" / "Is this the right question to be asking?"
+
+## Tacit Knowledge Extraction
+
+Stakeholders know more than they can tell. These techniques surface what they do automatically:
+
+**Master-Apprentice:** "Pretend I'm the new person. Walk me through how you handle a typical escalation." "What took you the longest to learn that you now do automatically?"
+
+**Think-Aloud:** "As you go through this process, please narrate what you're thinking." "What cue made you decide to do that step?"
+
+**Critical Incident:** "Tell me about the most difficult case you handled last month." "Describe the last time you had to work around the system because it couldn't do what you needed."
+
+**Artifact Walkthrough:** "Show me your system and walk me through what you do." "What's that spreadsheet you keep open that isn't part of the official system?"
+
+## Interview Protocol Design
+
+Structure interviews as a phased progression:
+
+| Phase | Duration | Question Types | Goal |
+|-------|----------|----------------|------|
+| Warm-up | 5 min | Context: "Tell me about your role" | Build rapport |
+| Walkthrough | 15 min | Process: "Walk me through yesterday" | Observe actual workflow |
+| Pain points | 15 min | Incident: "Last time it broke" | Surface tacit knowledge |
+| Latent needs | 10 min | Laddering: "Why does that matter?" | Surface underlying need |
+| Assumption check | 5 min | Socratic: "What would have to be true?" | Test assumptions |
+| Close | 5 min | Meta: "What did I not ask?" | Capture blind spots |
+
 ## Sources
 
 - The Mom Test (Fitzpatrick) — past behavior over hypotheticals

@@ -30,6 +30,26 @@ RAW NEED → [MAP] → [INTERVIEW] → [SYNTHESIZE] → [DISTILL] → [VALIDATE]
 
 Load the reference for the phase you're entering.
 
+> **Core principles**
+> - **Closed questions confirm what you already think; open questions discover what you didn't know to ask.** If the answer can be "yes" or "no," you're validating, not discovering.
+> - **Knowledge holders come first; authority holders validate — they don't originate.** The person who knows the problem is not the same person who approves the budget.
+> - **Conflicts are almost never about what they appear to be.** Surface disagreements are proxies for unstated differences in assumptions, risk tolerance, or incentives.
+> - **Every weasel word represents a gap.** "Probably," "ideally," "eventually" — each is a known issue the stakeholder hasn't committed to addressing.
+
+## Quick Start — Where to Enter
+
+| You have this | Start here |
+|-------------|-----------|
+| A vague idea or problem space | Load `references/stakeholder-mapping.md` — identify who to interview |
+| An interview scheduled with no protocol | Load `references/question-patterns.md` and `references/gap-detection.md` — design your question stack |
+| Raw interview notes from one or more sessions | Load `references/transcript-to-spec.md` — distill into structured spec components |
+| A draft spec that needs stakeholder verification | Load `references/transcript-to-spec.md` (Interpretation Audit Trail section) — run the validation loop |
+| Stakeholders who disagree on requirements | Load `references/conflict-resolution.md` — classify and resolve before spec |
+| Limited time with a stakeholder | Load `references/time-constrained-discovery.md` — maximize signal in minimal time |
+| An AI agent conducting interviews | Load `references/ai-conducted-discovery.md` — account for sycophancy and trust dynamics |
+
+**Done with discovery?** Jump to the [Is Discovery Complete?](#quick-reference-is-discovery-complete) checklist at the bottom.
+
 ## Trigger Conditions
 
 Load this skill when:
@@ -62,13 +82,13 @@ These dimensions apply across all phases. Load when relevant:
 
 ## Templates
 
-| Template | Load when | File |
-|----------|-----------|------|
-| Discovery Plan | You need to structure the full discovery effort — stakeholder map, interview schedule, timeline | `templates/discovery-plan.md` |
-| Interview Guide | You need a structured question stack for an interview session | `templates/interview-guide.md` |
-| Distillation Worksheet | You're transforming raw notes into structured spec components | `templates/distillation-worksheet.md` |
-| Gap Register | You need to track unresolved gaps, deferred decisions, and open questions across interviews | `templates/gap-register.md` |
-| Interpretation Log | You need to track every translation from stakeholder language to spec language | `templates/interpretation-log.md` |
+| Template | Pipeline Phase | Load when | File |
+|----------|---------------|-----------|------|
+| Discovery Plan | MAP | You need to structure the full discovery effort — stakeholder map, interview schedule, timeline | `templates/discovery-plan.md` |
+| Interview Guide | INTERVIEW | You need a structured question stack for an interview session | `templates/interview-guide.md` |
+| Distillation Worksheet | DISTILL | You're transforming raw notes into structured spec components | `templates/distillation-worksheet.md` |
+| Gap Register | SYNTHESIZE | You need to track unresolved gaps, deferred decisions, and open questions across interviews | `templates/gap-register.md` |
+| Interpretation Log | DISTILL → VALIDATE | You need to track every translation from stakeholder language to spec language | `templates/interpretation-log.md` |
 
 ## Quick Reference: Is Discovery Complete?
 

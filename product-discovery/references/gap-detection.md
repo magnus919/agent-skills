@@ -45,17 +45,46 @@ Stakeholders use abstract nouns as shared shorthand. They are not shared.
 | "I'm sure you'll figure it out" | Delegating responsibility, avoiding commitment |
 | Topic that comes up in 1:1 but not in groups | Political sensitivity — power dynamics are suppressing the concern |
 
+### 5. The Mom Test Framework (Fitzpatrick)
+
+People will lie to you if they think it's what you want to hear. Three golden rules to get past polite feedback:
+
+**Rule 1 — Talk about their life, not your idea.** ❌ "What do you think of this approach?" ✅ "Walk me through the last time you dealt with this problem."
+
+**Rule 2 — Ask about specifics in the past, not hypotheticals.** ❌ "Would you use this feature?" ✅ "What did you do the last time this came up?"
+
+**Rule 3 — Listen more than you talk.** Embrace awkward pauses — silence is where real insights surface.
+
+**Bad data signals to watch for:**
+| Signal | What It Means | Redirect |
+|--------|---------------|----------|
+| Compliments ("That's brilliant!") | Politeness | Acknowledge gracefully, redirect to facts |
+| Hypothetical promises ("I'd definitely use that") | Zero commitment | Ask about past behavior instead |
+| Enthusiasm without action | False positive | Ask for a concrete next step |
+| Flat/"Meh" response | Honest signal | This is useful data — the problem may not be real |
+
 ## Follow-Up Techniques (Non-Defensive)
 
-**The Columbo Technique:** "Just one more thing — you mentioned X. Help me understand that better."
+**The Columbo Technique:** Seem slightly confused, ask one more question at the door. "Just one more thing — you mentioned X. Help me understand that better." Works well when the stakeholder thinks the conversation is ending and lets their guard down.
 
-**The Curiosity Frame:** "I'm trying to understand the full picture. Can you walk me through how you see this working?"
+**The Curiosity Frame:** Frame every probe as genuine curiosity, not challenge. "I'm trying to understand the full picture here. Can you walk me through how you see this working?"
 
-**The Permission Check:** "Can I ask a question about that? I want to understand the reasoning."
+**The Permission Check:** Before diving into a sensitive area. "Can I ask a question about that? I want to understand the reasoning." "Is this a good time to talk about the organizational side of this?"
 
-**The Reframe:** When a stakeholder becomes defensive: "I'm not criticizing the approach — I'm trying to figure out how to make it succeed."
+**The Reframe:** When a stakeholder becomes defensive, reframe the gap as a shared problem. "I'm not criticizing the approach — I'm trying to figure out how to make it succeed." "The fact that this is hard to talk about probably means it's the most important thing to get right."
 
-**The Empty Chair:** When someone is deferred to but absent: "What would [absent person] say if they were here?"
+**The Empty Chair:** When someone is deferred to but absent. "What would [absent person] say if they were here?" "What questions would they ask that we haven't addressed yet?"
+
+## Practitioner Reference
+
+| Source | Key Technique | When to Use |
+|--------|--------------|-------------|
+| The Mom Test (Fitzpatrick) | Talk about past behavior, not future hypotheticals | Any discovery conversation |
+| Skilled Incompetence (Argyris) | Name defensive routines neutrally; surface undiscussables | Organizational/political gaps |
+| Interviewing Users (Portigal) | Probe what's unsaid; use contrasts to uncover frameworks | Deep qualitative interviews |
+| Just Enough Research (Hall) | Focus questions on what you don't know; test assumptions | Early-stage discovery |
+| Continuous Discovery Habits (Torres) | Opportunity solution trees; assumption mapping | Ongoing product discovery |
+| The Secrets of Consulting (Weinberg) | "Randle's Rules" — observe what's NOT said | Consulting engagements |
 
 ## The Gap Detection Checklist
 
