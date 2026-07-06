@@ -1,6 +1,6 @@
 ---
 name: crowdsec
-version: 0.0.1
+version: 0.0.2
 description: >-
   Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF.
   Covers Security Engine setup (Linux, Docker), cscli hub management, remediation
