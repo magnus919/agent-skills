@@ -54,6 +54,7 @@ When the user mentions these keywords, load the corresponding skill:
 | User says... | Load skill |
 |---|---|
 | "build a CLI", "make a CLI tool", "agent-friendly CLI", "add --json flag" | [cli-builder](cli-builder/SKILL.md) |
+| "SDD", "spec-driven development", "specification driven", "software factory", "spec first", "spec as code", "SPEC.md template", "write a spec for AI", "AI code generation pipeline", "acceptance criteria", "quality gates", "phase gate review", "BDD for AI", "OpenAPI first", "executable specification" | [spec-driven-development](spec-driven-development/SKILL.md) |
 | "debug this", "root cause", "why is this broken", "fix this bug" | [systematic-debugging](systematic-debugging/SKILL.md) |
 | "epub", "ebook", "EPUB file", "ebook format", "read epub", "write epub", "create ebook", "extract from epub", "epub to text", "edit epub", "repair epub", "convert epub2", "epub images", "batch epub", "ebook metadata" | [epub](epub/SKILL.md) |
 | "gutenberg", "public domain", "download a book", "classic literature", "free ebook", "gutenberg.org", "project gutenberg", "PG", "gutendex" | [gutenberg](gutenberg/SKILL.md) |
