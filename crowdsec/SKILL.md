@@ -1,11 +1,11 @@
 ---
 name: crowdsec
+version: 0.0.1
 description: >-
   Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF.
-  Covers Security Engine installation (Linux, Docker), cscli hub management, remediation
-  components (firewall, Traefik, Nginx, Caddy), AppSec WAF, profiles, notifications,
-  blocklists, CTI, metrics, and production best practices. Use when setting up or
-  troubleshooting CrowdSec.
+  Covers Security Engine setup (Linux, Docker), cscli hub management, remediation
+  components, AppSec WAF, profiles, notifications, blocklists, CTI, and metrics.
+  Use when setting up or troubleshooting CrowdSec.
 license: MIT
 compatibility: Any agent supporting Agent Skills format — commands use standard shell and CLI tools
 metadata:
@@ -47,7 +47,7 @@ CrowdSec has a modular, API-centric architecture. The main components:
 | List alerts | `sudo cscli alerts list` |
 | List decisions | `sudo cscli decisions list` |
 | Manually ban IP | `sudo cscli decisions add --ip <IP>` |
-| Manually unban IP | `sudo cscli decisions remove --ip <IP>` |
+| Manually unban IP | `sudo cscli decisions delete --ip <IP>` (or `remove --ip`, which is an alias) |
 | View status | `sudo systemctl status crowdsec` |
 | Reload config | `sudo systemctl reload crowdsec` |
 
@@ -132,6 +132,8 @@ labels:
 
 The `labels.type` field is **mandatory** — it determines which parsers handle the logs.
 
+> **Note:** For log files on network shares (NFS, SMB) or Docker bind mounts where inotify doesn't work reliably, add `poll_without_inotify: true` to the acquisition entry. This polls the file at intervals instead of relying on filesystem events.
+
 ### Profiles (`/etc/crowdsec/profiles.yaml`)
 
 Controls what remediation action is taken when a scenario triggers:
@@ -164,65 +166,15 @@ exclusions:
 
 **Global flags:** `-c <config>` (config path), `-o json|human|raw` (output format), `--debug`, `--color`
 
-### Hub Management
+| Category | Key Commands | Load detail |
+|----------|-------------|-------------|
+| Hub Management | `cscli hub update`, `cscli collections install/list/upgrade/inspect`, `cscli parsers install/list/upgrade`, `cscli scenarios install/list/upgrade` | `references/cscli-command-reference.md` |
+| Decisions & Alerts | `cscli decisions add/list/delete`, `cscli alerts list/inspect` | `references/cscli-command-reference.md` |
+| Bouncers & Agents | `cscli bouncers add/list/delete`, `cscli machines add/list/delete` | `references/cscli-command-reference.md` |
+| Metrics | `cscli metrics`, `cscli metrics show appsec\|bouncers` | `references/cscli-command-reference.md` |
+| Console & LAPI | `cscli console status/enroll`, `cscli lapi register` | `references/cscli-command-reference.md` |
 
-| Command | Description |
-|---------|-------------|
-| `cscli hub update` | Update the local hub index |
-| `cscli collections install <name>` | Install a collection |
-| `cscli collections list` | List installed collections |
-| `cscli collections list --all` | List all available collections |
-| `cscli collections upgrade <name>` | Upgrade a collection |
-| `cscli collections inspect <name>` | Show collection details and metrics |
-| `cscli parsers install <name>` | Install a parser |
-| `cscli parsers list` | List installed parsers |
-| `cscli parsers upgrade <name>` | Upgrade a parser |
-| `cscli parsers inspect <name>` | Show parser details/metrics |
-| `cscli scenarios install <name>` | Install a scenario |
-| `cscli scenarios list` | List installed scenarios |
-| `cscli scenarios upgrade <name>` | Upgrade a scenario |
-| `cscli scenarios inspect <name>` | Show scenario details/metrics |
-| `cscli appsec-rules list` | List installed AppSec rules |
-| `cscli appsec-configs list` | List AppSec configurations |
-
-### Decision & Alert Management
-
-| Command | Description |
-|---------|-------------|
-| `cscli decisions add --ip <IP> [--duration 4h] [--type ban]` | Add a manual decision |
-| `cscli decisions list` | List active decisions |
-| `cscli decisions delete --id <id>` | Delete a specific decision |
-| `cscli decisions delete --ip <IP>` | Delete decisions for an IP |
-| `cscli alerts list` | List alerts |
-| `cscli alerts list --contain "scenario:ssh-bf"` | Filter alerts |
-| `cscli alerts inspect <id>` | Show alert details |
-
-### Bouncer & Agent Management
-
-| Command | Description |
-|---------|-------------|
-| `cscli bouncers add <name>` | Add a bouncer and generate API key |
-| `cscli bouncers list` | List all bouncers |
-| `cscli bouncers delete <name>` | Remove a bouncer |
-| `cscli machines add <name> [--password <pwd>]` | Register an agent machine |
-| `cscli machines list` | List registered agents |
-| `cscli machines delete <name>` | Remove an agent |
-
-### Metrics & Observability
-
-| Command | Description |
-|---------|-------------|
-| `cscli metrics` | Full metrics dashboard |
-| `cscli metrics show appsec` | AppSec-specific metrics |
-| `cscli metrics show bouncers` | Bouncer-specific metrics |
-
-### Console & LAPI
-
-| Command | Description |
-|---------|-------------|
-| `cscli console status` | Check console connection status |
-| `cscli console enroll <enroll_key>` | Enroll engine in CrowdSec Console |
-| `cscli lapi register` | Register remote agent to LAPI |
+See the full command reference with every subcommand and flag at `references/cscli-command-reference.md`.
 
 ## Hub Collections
 
@@ -523,6 +475,7 @@ Load the following reference files for deeper coverage of specific topics:
 | Reference | Load when | File |
 |-----------|-----------|------|
 | Full config.yaml reference | You need every configuration directive explained | `references/config-reference.md` |
+| cscli command reference | You need every cscli subcommand and flag | `references/cscli-command-reference.md` |
 | AppSec WAF deep dive | Setting up or troubleshooting AppSec | `references/appsec-deep-dive.md` |
 | Docker deployment guide | Running CrowdSec in Docker Compose | `references/docker-deployment.md` |
 | Traefik bouncer setup | Integrating with Traefik reverse proxy | `references/traefik-bouncer.md` |
