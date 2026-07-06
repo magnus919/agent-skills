@@ -88,6 +88,8 @@ services:
       - /var/log:/var/log:ro
 ```
 
+> **Version note:** Persisting `/var/lib/crowdsec/data` is **mandatory since v1.7.0**. On older versions (v1.6.x and earlier), the container uses this directory for the SQLite database but does not require it. However, persisting it is always recommended to avoid data loss on container restart. Use a named volume or bind mount; tmpfs is only suitable for throwaway/non-production deployments.
+
 **Key environment variables:**
 
 | Variable | Default | Description |
@@ -173,8 +175,9 @@ exclusions:
 | Bouncers & Agents | `cscli bouncers add/list/delete`, `cscli machines add/list/delete` | `references/cscli-command-reference.md` |
 | Metrics | `cscli metrics`, `cscli metrics show appsec\|bouncers` | `references/cscli-command-reference.md` |
 | Console & LAPI | `cscli console status/enroll`, `cscli lapi register` | `references/cscli-command-reference.md` |
+| Additional | `cscli version`, `cscli config`, `cscli explain`, `cscli simulation`, `cscli allowlists` | `references/cscli-command-reference.md` |
 
-See the full command reference with every subcommand and flag at `references/cscli-command-reference.md`.
+See the full command reference at `references/cscli-command-reference.md`.
 
 ## Hub Collections
 
@@ -253,9 +256,41 @@ middlewares:
 
 ### Nginx Bouncer
 
+The Nginx bouncer uses Lua directives to check requests against CrowdSec decisions.
+
 ```bash
 sudo apt install crowdsec-firewall-bouncer-nginx
 ```
+
+**Bouncer config** (`/etc/crowdsec/bouncers/crowdsec-nginx-bouncer.yaml`):
+```yaml
+api_url: http://127.0.0.1:8080
+api_key: "<your-bouncer-api-key>"
+mode: stream            # stream (push) or live (pull on each request)
+update_frequency: 10s   # How often to refresh decisions in stream mode
+```
+
+**Nginx config** (add to `server {}` block or `nginx.conf`):
+```nginx
+lua_package_path "/usr/lib/crowdsec/lua/?.lua;;";
+lua_shared_dict crowdsec_cache 10m;
+
+init_by_lua_block {
+    local bouncer = require "crowdsec"
+    bouncer.init()
+}
+
+access_by_lua_block {
+    local bouncer = require "crowdsec"
+    if bouncer.check() then
+        return ngx.exit(ngx.FORBIDDEN)
+    end
+}
+```
+
+After setup: `sudo systemctl reload nginx && sudo systemctl restart crowdsec`.
+
+Config at `/etc/crowdsec/bouncers/crowdsec-nginx-bouncer.yaml`. See the full configuration guide with `nginx.conf` directives and Cloudflare CDN support in `references/nginx-bouncer.md`.
 
 ### Other Bouncers
 
@@ -386,10 +421,16 @@ db_config:
   use_wal: true      # SQLite WAL mode for better concurrency
   max_open_conns: 100
   flush:
-    max_items: 50000
-    max_age: 7d
+    max_items: 50000    # Max alerts before purge; lower if disk-constrained
+    max_age: 7d         # Alert retention — both max_items and max_age act independently
     metrics_max_age: 90d
 ```
+
+**Flush tuning guidance:**
+- Both `max_items` and `max_age` act as independent thresholds — whichever triggers first causes a flush. Set both for belt-and-suspenders control.
+- On low-power devices (Raspberry Pi, SD cards), set `max_items: 10000` and `decision_bulk_size: 2000` to reduce write frequency.
+- For high-traffic deployments, increase `max_items` to 100000+ but monitor disk usage.
+- SQLite flush does NOT reclaim disk space — run `VACUUM` periodically on the SQLite database file to shrink it after large flushes.
 
 ## Metrics & Observability
 
@@ -451,7 +492,6 @@ Client auth types: `NoClientCert`, `VerifyClientCertIfGiven` (default), `Require
 
 ### Gotchas
 
-- **CrowdSec only detects — you need a bouncer to block.** Without a remediation component, there is no enforcement.
 - **Always install `crowdsecurity/whitelist-good-actors`** to prevent blocking search engines and CDNs.
 - **Set `use_time_machine: true`** for any source that buffers logs before writing (S3, IIS, cloud services).
 - **Persist `/var/lib/crowdsec/data`** in Docker — since v1.7.0 this is mandatory.
@@ -466,7 +506,6 @@ Client auth types: `NoClientCert`, `VerifyClientCertIfGiven` (default), `Require
 - **Local override files (`config.yaml.local`) merge mappings but replace sequences** — you cannot remove a mapping key via .local.
 - **profiles.yaml.local files are NOT merged** — they're read sequentially as multi-document YAML.
 - **Restart CrowdSec after config changes** — `sudo systemctl restart crowdsec` (or reload).
-- **Use `poll_without_inotify: true`** for log files on network shares (NFS, etc.).
 
 ### See the References
 
@@ -479,6 +518,7 @@ Load the following reference files for deeper coverage of specific topics:
 | AppSec WAF deep dive | Setting up or troubleshooting AppSec | `references/appsec-deep-dive.md` |
 | Docker deployment guide | Running CrowdSec in Docker Compose | `references/docker-deployment.md` |
 | Traefik bouncer setup | Integrating with Traefik reverse proxy | `references/traefik-bouncer.md` |
+| Nginx bouncer setup | Configuring the Nginx bouncer with nginx.conf directives | `references/nginx-bouncer.md` |
 | Database configuration | Choosing between SQLite, MySQL, PostgreSQL | `references/database-config.md` |
 | Production hardening | Security, TLS, performance tuning | `references/production-hardening.md` |
 | Hub collections list | You need to know which collection protects what | `references/hub-collections.md` |
