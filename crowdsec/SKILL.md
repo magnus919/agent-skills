@@ -1,0 +1,558 @@
+---
+name: crowdsec
+description: >-
+  Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF.
+  Covers Security Engine installation (Linux, Docker), cscli hub management, remediation
+  components (firewall, Traefik, Nginx, Caddy), AppSec WAF, profiles, notifications,
+  blocklists, CTI, metrics, and production best practices. Use when setting up or
+  troubleshooting CrowdSec.
+license: MIT
+compatibility: Any agent supporting Agent Skills format — commands use standard shell and CLI tools
+metadata:
+  source: https://docs.crowdsec.net
+---
+
+# CrowdSec Skill
+
+CrowdSec is an open-source, collaborative security engine that detects and blocks malicious actors. It analyzes logs and HTTP requests using behavior-based patterns (scenarios) and enforces blocks through remediation components (bouncers).
+
+## Architecture Overview
+
+CrowdSec has a modular, API-centric architecture. The main components:
+
+| Component | Role |
+|-----------|------|
+| **Security Engine** (crowdsec) | Reads logs, parses them, evaluates scenarios, and produces alerts/decisions. Runs the Log Processor and Local API (LAPI). |
+| **Local API (LAPI)** | HTTP API that stores decisions, serves remediation components, and communicates with the Central API. Runs inside the Security Engine. |
+| **Central API (CAPI)** | CrowdSec's cloud service — receives signals from all instances and distributes community blocklists. |
+| **Remediation Components** (formerly "bouncers") | Connect to LAPI to fetch decisions and enforce blocks at various levels (firewall, reverse proxy, web server). |
+| **AppSec Component** | WAF subsystem that inspects HTTP requests in real-time. Lives in the Security Engine. |
+| **cscli** | Command-line tool to manage the entire CrowdSec stack. |
+
+**Data flow:** Logs → Parsers (s00-raw, s01-parse, s02-enrich) → Scenarios → Alerts → LAPI → Decisions → Remediation Components → Block
+
+> **Important:** The Security Engine alone only *detects* — it does NOT block. You must add at least one remediation component to enforce decisions.
+
+## Quick Reference
+
+| Task | Command |
+|------|---------|
+| Install engine | `curl -s https://install.crowdsec.net \| sudo sh` then `sudo apt install crowdsec` |
+| Install firewall bouncer | `sudo apt install crowdsec-firewall-bouncer-iptables` (or `-nftables`) |
+| Add bouncer API key | `sudo cscli bouncers add <name>` |
+| List bouncers | `sudo cscli bouncers list` |
+| Install collection | `sudo cscli collections install crowdsecurity/nginx` |
+| List collections | `sudo cscli collections list` |
+| View metrics | `sudo cscli metrics` |
+| List alerts | `sudo cscli alerts list` |
+| List decisions | `sudo cscli decisions list` |
+| Manually ban IP | `sudo cscli decisions add --ip <IP>` |
+| Manually unban IP | `sudo cscli decisions remove --ip <IP>` |
+| View status | `sudo systemctl status crowdsec` |
+| Reload config | `sudo systemctl reload crowdsec` |
+
+## Installation
+
+### Linux (Debian/Ubuntu)
+
+```bash
+# Add repository
+curl -s https://install.crowdsec.net | sudo sh
+sudo apt update
+sudo apt install crowdsec
+
+# Optionally install firewall bouncer
+sudo apt install crowdsec-firewall-bouncer-iptables
+```
+
+During installation, CrowdSec auto-detects running services (SSH, nginx, etc.) and installs appropriate collections + acquisition config.
+
+### Docker / Docker Compose
+
+```yaml
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    restart: always
+    ports:
+      - 127.0.0.1:8080:8080   # LAPI
+      - 127.0.0.1:6060:6060   # Prometheus metrics
+      - 127.0.0.1:7422:7422   # AppSec WAF
+    environment:
+      COLLECTIONS: "crowdsecurity/linux crowdsecurity/nginx"
+      GID: "${GID-1000}"
+      TZ: "UTC"
+    volumes:
+      - ./crowdsec/config:/etc/crowdsec
+      - ./crowdsec/data:/var/lib/crowdsec/data
+      - /var/log:/var/log:ro
+```
+
+**Key environment variables:**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `COLLECTIONS` | *(none)* | Space-separated list of collections to install |
+| `DISABLE_LOCAL_API` | `false` | Set `true` to run as log processor only |
+| `DISABLE_AGENT` | `false` | Set `true` to run as LAPI only |
+| `BOUNCER_KEY_<name>` | *(none)* | Seed API key for a bouncer |
+| `TZ` | `UTC` | Timezone |
+| `CONFIG_FILE` | `/etc/crowdsec/config.yaml` | Path to main config |
+
+## Configuration
+
+### Main config file (`/etc/crowdsec/config.yaml`)
+
+Key sections: `common`, `config_paths`, `crowdsec_service`, `db_config`, `api`, `prometheus`.
+
+Use `config.yaml.local` for local overrides — values here take precedence over `config.yaml` and survive package upgrades. Supports environment variable substitution (`${VAR}`).
+
+### Acquisition (`/etc/crowdsec/acquis.yaml` or `/etc/crowdsec/acquis.d/*.yaml`)
+
+Tells CrowdSec which log files to read:
+
+```yaml
+filenames:
+  - /var/log/nginx/*.log
+labels:
+  type: nginx
+---
+filenames:
+  - /var/log/auth.log
+  - /var/log/syslog
+labels:
+  type: syslog
+---
+source: docker
+container_name_regexp:
+  - .*caddy*
+labels:
+  type: caddy
+```
+
+The `labels.type` field is **mandatory** — it determines which parsers handle the logs.
+
+### Profiles (`/etc/crowdsec/profiles.yaml`)
+
+Controls what remediation action is taken when a scenario triggers:
+
+```yaml
+name: default_ip_remediation
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Ip"
+decisions:
+  - type: ban
+    duration: 4h
+on_success: break
+```
+
+Override values via `profiles.yaml.local`. Files are read sequentially (not merged).
+
+### Simulation mode (`/etc/crowdsec/simulation.yaml`)
+
+When enabled, CrowdSec still detects but does not enforce:
+
+```yaml
+simulation: true
+exclusions:
+  - crowdsecurity/ssh-bf
+```
+
+## cscli Command Reference
+
+`cscli` [global flags] `<command>` [subcommand] [options]
+
+**Global flags:** `-c <config>` (config path), `-o json|human|raw` (output format), `--debug`, `--color`
+
+### Hub Management
+
+| Command | Description |
+|---------|-------------|
+| `cscli hub update` | Update the local hub index |
+| `cscli collections install <name>` | Install a collection |
+| `cscli collections list` | List installed collections |
+| `cscli collections list --all` | List all available collections |
+| `cscli collections upgrade <name>` | Upgrade a collection |
+| `cscli collections inspect <name>` | Show collection details and metrics |
+| `cscli parsers install <name>` | Install a parser |
+| `cscli parsers list` | List installed parsers |
+| `cscli parsers upgrade <name>` | Upgrade a parser |
+| `cscli parsers inspect <name>` | Show parser details/metrics |
+| `cscli scenarios install <name>` | Install a scenario |
+| `cscli scenarios list` | List installed scenarios |
+| `cscli scenarios upgrade <name>` | Upgrade a scenario |
+| `cscli scenarios inspect <name>` | Show scenario details/metrics |
+| `cscli appsec-rules list` | List installed AppSec rules |
+| `cscli appsec-configs list` | List AppSec configurations |
+
+### Decision & Alert Management
+
+| Command | Description |
+|---------|-------------|
+| `cscli decisions add --ip <IP> [--duration 4h] [--type ban]` | Add a manual decision |
+| `cscli decisions list` | List active decisions |
+| `cscli decisions delete --id <id>` | Delete a specific decision |
+| `cscli decisions delete --ip <IP>` | Delete decisions for an IP |
+| `cscli alerts list` | List alerts |
+| `cscli alerts list --contain "scenario:ssh-bf"` | Filter alerts |
+| `cscli alerts inspect <id>` | Show alert details |
+
+### Bouncer & Agent Management
+
+| Command | Description |
+|---------|-------------|
+| `cscli bouncers add <name>` | Add a bouncer and generate API key |
+| `cscli bouncers list` | List all bouncers |
+| `cscli bouncers delete <name>` | Remove a bouncer |
+| `cscli machines add <name> [--password <pwd>]` | Register an agent machine |
+| `cscli machines list` | List registered agents |
+| `cscli machines delete <name>` | Remove an agent |
+
+### Metrics & Observability
+
+| Command | Description |
+|---------|-------------|
+| `cscli metrics` | Full metrics dashboard |
+| `cscli metrics show appsec` | AppSec-specific metrics |
+| `cscli metrics show bouncers` | Bouncer-specific metrics |
+
+### Console & LAPI
+
+| Command | Description |
+|---------|-------------|
+| `cscli console status` | Check console connection status |
+| `cscli console enroll <enroll_key>` | Enroll engine in CrowdSec Console |
+| `cscli lapi register` | Register remote agent to LAPI |
+
+## Hub Collections
+
+Collections bundle parsers + scenarios for a service. **This is the primary way to add protection:**
+
+| Collection | Protects |
+|------------|----------|
+| `crowdsecurity/linux` | Linux syslog, SSH, sudo |
+| `crowdsecurity/sshd` | SSH brute force detection |
+| `crowdsecurity/nginx` | Nginx web server |
+| `crowdsecurity/traefik` | Traefik reverse proxy |
+| `crowdsecurity/caddy` | Caddy web server |
+| `crowdsecurity/apache2` | Apache httpd |
+| `crowdsecurity/base-http-scenarios` | Generic HTTP attacks |
+| `crowdsecurity/http-cve` | CVE-based HTTP attack detection |
+| `crowdsecurity/whitelist-good-actors` | Whitelist known good actors (search engines, CDNs) |
+| `crowdsecurity/appsec-virtual-patching` | AppSec virtual patching rules |
+| `crowdsecurity/appsec-crs` | OWASP CRS rules for AppSec |
+| `crowdsecurity/appsec-generic-rules` | Generic AppSec WAF rules |
+| `crowdsecurity/mysql` | MySQL database |
+| `crowdsecurity/postgres` | PostgreSQL |
+| `crowdsecurity/cloudflare` | Cloudflare-protected sites |
+
+Browse all collections at: https://app.crowdsec.net/hub/collections
+
+## Remediation Components (Bouncers)
+
+After installing a bouncer, add it to LAPI:
+
+```bash
+sudo cscli bouncers add my-bouncer-name
+# Save the API key returned — it won't be shown again
+```
+
+### Firewall Bouncer (iptables/nftables)
+
+Blocks IPs at the network level. Best for SSH, databases, SMTP.
+
+```bash
+sudo apt install crowdsec-firewall-bouncer-iptables
+# or
+sudo apt install crowdsec-firewall-bouncer-nftables
+```
+
+Config at: `/etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml`
+
+### Traefik Bouncer (Plugin)
+
+Block at the reverse proxy level. Supports AppSec WAF forwarding.
+
+**Static config (`traefik.yaml`):**
+```yaml
+experimental:
+  plugins:
+    bouncer:
+      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      version: v1.6.0
+```
+
+**Dynamic config (middleware):**
+```yaml
+middlewares:
+  crowdsec:
+    plugin:
+      bouncer:
+        enabled: true
+        crowdsecMode: live
+        crowdsecLapiScheme: http
+        crowdsecLapiHost: crowdsec:8080
+        crowdsecLapiKey: "<your-api-key>"
+        forwardedHeadersTrustedIPs:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+```
+
+### Nginx Bouncer
+
+```bash
+sudo apt install crowdsec-firewall-bouncer-nginx
+```
+
+### Other Bouncers
+
+- **Caddy:** Uses the crowdsec module for Caddy
+- **HAProxy:** SPOE-based integration
+- **Blocklist Mirror:** Provides a downloadable blocklist for firewalls/routers
+- **Custom Bouncer:** Build your own via the LAPI HTTP API
+
+Full list: https://hub.crowdsec.net/browse/#remediation-components
+
+## AppSec (WAF)
+
+The AppSec Component turns CrowdSec into a full WAF with virtual patching.
+
+### Enable AppSec
+
+In `acquis.yaml` (or `acquis.yaml.local`):
+```yaml
+source: appsec
+listen_addr: 0.0.0.0:7422
+appsec_config: crowdsecurity/appsec-default
+labels:
+  type: appsec
+```
+
+Install AppSec collections:
+```bash
+sudo cscli collections install crowdsecurity/appsec-virtual-patching
+sudo cscli collections install crowdsecurity/appsec-crs
+sudo cscli collections install crowdsecurity/appsec-generic-rules
+```
+
+### How AppSec Works
+
+1. Web server forwards HTTP request to the CrowdSec engine (port 7422)
+2. In-band rules are evaluated first — if triggered, request is blocked (403) or captcha'd
+3. Out-of-band rules evaluate asynchronously — non-blocking, used for behavioral detection
+4. When rules trigger, events feed into scenarios for longer-term decisions
+
+### AppSec Rule Types
+
+- **In-band rules:** Blocking — return `ban` or `captcha` immediately. Used for SQLi, XSS, path traversal, CVE exploitation.
+- **Out-of-band rules:** Non-blocking — emit events for scenario processing. Used for enumeration, scraping, spam.
+
+## Notifications
+
+### Configure Notifications
+
+1. **Enable in profiles:** Add `notification` to profile in `/etc/crowdsec/profiles.yaml`
+2. **Create notification config:** File in `/etc/crowdsec/notifications/<plugin>.yaml`
+
+Supported plugins: Slack, HTTP/Webhook, Email (SMTP), Splunk, Telegram, Sentry
+
+### Test Notifications
+
+```bash
+sudo cscli notifications test <plugin_name>
+sudo cscli notifications list
+```
+
+### Example: HTTP Webhook
+
+```yaml
+# /etc/crowdsec/notifications/http.yaml
+type: http
+name: http_default
+log_level: info
+format: json
+url: https://hooks.example.com/crowdsec
+method: POST
+headers:
+  Content-Type: application/json
+```
+
+## Blocklists
+
+Blocklists are curated threat feeds you subscribe to via the CrowdSec Console. They augment community blocklists with third-party intelligence.
+
+Two tiers in `config.yaml` under `api.server.online_client.pull`:
+- `community: true/false` — Pull from the CrowdSec community network
+- `blocklists: true/false` — Pull from subscribed third-party blocklists
+
+## CTI (Cyber Threat Intelligence)
+
+CrowdSec provides an IP reputation API. Configure in `config.yaml`:
+```yaml
+api:
+  cti:
+    key: "<your-cti-api-key>"
+    cache_timeout: "60m"
+    cache_size: 50
+    enabled: true
+```
+
+Use `cscli decisions list -o json` to see CTI-enriched output.
+
+## Data Sources / Acquisition
+
+CrowdSec supports many log sources:
+
+| Source | Config Type | Stream | One-shot |
+|--------|-------------|--------|----------|
+| File | `filenames:` | Yes | Yes |
+| Docker | `source: docker` | Yes | Yes |
+| Journald | `source: journald` | Yes | Yes |
+| Syslog | `source: syslog` | Yes | No |
+| HTTP | `source: http` | Yes | No |
+| Kafka | `source: kafka` | Yes | No |
+| AWS CloudWatch | `source: cloudwatch` | Yes | Yes |
+| AWS S3 | `source: s3` | Yes | Yes |
+| Loki | `source: loki` | Yes | Yes |
+| Windows Event | `source: windows_evt_log` | Yes | Yes |
+
+Common acquisition parameters:
+- `log_level`: Per-source log level
+- `transform`: Expression to modify events pre-parsing
+- `use_time_machine: true` — Use log timestamps instead of read time (important for buffered logs like IIS, S3)
+- `labels.type`: **Required** — determines which parser handles the logs
+
+## Database Backends
+
+CrowdSec supports multiple database backends in `/etc/crowdsec/config.yaml`:
+
+```yaml
+db_config:
+  type: sqlite       # or mysql, postgresql, pgx
+  db_path: /var/lib/crowdsec/data/crowdsec.db
+  use_wal: true      # SQLite WAL mode for better concurrency
+  max_open_conns: 100
+  flush:
+    max_items: 50000
+    max_age: 7d
+    metrics_max_age: 90d
+```
+
+## Metrics & Observability
+
+### Built-in metrics
+
+```bash
+sudo cscli metrics       # Full metrics dashboard
+sudo cscli metrics -o json  # JSON for programmatic use
+```
+
+Metrics include: Acquisition stats, parser hits/unparsed, scenario counts, alert counts, decisions (local vs CAPI), bouncer activity.
+
+### Prometheus
+
+Enable in `config.yaml`:
+```yaml
+prometheus:
+  enabled: true
+  level: full             # or "aggregated" for low cardinality
+  listen_addr: 0.0.0.0
+  listen_port: 6060
+```
+
+CrowdSec provides Grafana dashboards: https://github.com/crowdsecurity/grafana-dashboards
+
+### CrowdSec Console (Web UI)
+
+Free web console at https://app.crowdsec.net — provides:
+- Alert dashboard with IP reputation, MITRE ATT&CK TTPs
+- Decision management
+- Blocklist subscriptions
+- Security Engine enrollment
+- Stack health monitoring
+- Remediation metrics
+
+Enroll: `sudo cscli console enroll <enrollment_key>`
+
+## TLS / mTLS
+
+CrowdSec supports TLS for LAPI communication:
+
+```yaml
+api:
+  server:
+    tls:
+      cert_file: "/path/to/cert.pem"
+      key_file: "/path/to/key.pem"
+      client_verification: "RequireAndVerifyClientCert"
+      ca_cert_path: "/path/to/ca.pem"
+      agents_allowed_ou:
+        - agents_ou
+      bouncers_allowed_ou:
+        - bouncers_ou
+```
+
+Client auth types: `NoClientCert`, `VerifyClientCertIfGiven` (default), `RequireAndVerifyClientCert`
+
+## Production Best Practices
+
+### Gotchas
+
+- **CrowdSec only detects — you need a bouncer to block.** Without a remediation component, there is no enforcement.
+- **Always install `crowdsecurity/whitelist-good-actors`** to prevent blocking search engines and CDNs.
+- **Set `use_time_machine: true`** for any source that buffers logs before writing (S3, IIS, cloud services).
+- **Persist `/var/lib/crowdsec/data`** in Docker — since v1.7.0 this is mandatory.
+- **After installing collections, reload crowdsec:** `sudo systemctl reload crowdsec`
+- **The `labels.type` field is mandatory** in acquisition config — without it, no parser handles the logs.
+- **Bouncer API keys are shown once** — save them immediately after creation.
+- **Firewall bouncers protect all services; reverse-proxy bouncers protect only proxied services.** For full protection, use both.
+- **CrowdSec uses `4h` as the default ban duration** — configure profiles for longer/shorter bans.
+- **The `--all` flag on `cscli <type> list` shows available (not just installed) items.**
+- **On Docker, enroll with `docker exec crowdsec cscli console enroll -e context <KEY>`** since the bash command is for bare metal.
+- **CrowdSec renamed "bouncers" to "remediation components"** in newer docs. You'll see both terms — they're the same thing.
+- **Local override files (`config.yaml.local`) merge mappings but replace sequences** — you cannot remove a mapping key via .local.
+- **profiles.yaml.local files are NOT merged** — they're read sequentially as multi-document YAML.
+- **Restart CrowdSec after config changes** — `sudo systemctl restart crowdsec` (or reload).
+- **Use `poll_without_inotify: true`** for log files on network shares (NFS, etc.).
+
+### See the References
+
+Load the following reference files for deeper coverage of specific topics:
+
+| Reference | Load when | File |
+|-----------|-----------|------|
+| Full config.yaml reference | You need every configuration directive explained | `references/config-reference.md` |
+| AppSec WAF deep dive | Setting up or troubleshooting AppSec | `references/appsec-deep-dive.md` |
+| Docker deployment guide | Running CrowdSec in Docker Compose | `references/docker-deployment.md` |
+| Traefik bouncer setup | Integrating with Traefik reverse proxy | `references/traefik-bouncer.md` |
+| Database configuration | Choosing between SQLite, MySQL, PostgreSQL | `references/database-config.md` |
+| Production hardening | Security, TLS, performance tuning | `references/production-hardening.md` |
+| Hub collections list | You need to know which collection protects what | `references/hub-collections.md` |
+| Troubleshooting guide | Something isn't working | `references/troubleshooting.md` |
+
+## Verification
+
+After setup, verify:
+
+```bash
+# 1. Service is running
+sudo systemctl status crowdsec
+
+# 2. Collections are installed
+sudo cscli collections list
+
+# 3. Bouncers are registered
+sudo cscli bouncers list
+
+# 4. Logs are being read (check acquisition metrics)
+sudo cscli metrics | grep -A5 "Acquisition"
+
+# 5. Test manual ban
+sudo cscli decisions add --ip 198.51.100.1 --duration 5m
+sudo cscli decisions list | grep 198.51.100.1
+sudo cscli decisions delete --ip 198.51.100.1
+
+# 6. Confirm AppSec if enabled
+sudo cscli metrics show appsec
+```
