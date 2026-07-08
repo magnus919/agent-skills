@@ -8,6 +8,7 @@ description: >-
   for this when designing agent architectures that need cycles, conditional
   branching, parallel execution, or human-in-the-loop patterns.
 license: MIT
+version: "1.0.2"
 metadata:
   source: LangGraph by LangChain Inc — https://langchain.com/langgraph
   spec-version: "1.0"
@@ -18,6 +19,44 @@ metadata:
 LangGraph is LangChain's low-level orchestration framework for building stateful, long-running, multi-agent AI workflows using directed graph architectures (inspired by Pregel/Beam and NetworkX). It models agents as **nodes** in a graph, with **edges** controlling flow — enabling cycles, conditional branching, parallel execution, human-in-the-loop, and subgraph composition that linear chains cannot express.
 
 This skill covers all major patterns for building and deploying LangGraph systems: core graph architecture, the three canonical multi-agent patterns (supervisor, swarm, hierarchical), persistence and state management, production debugging, and evaluation methodology.
+
+> **Before you begin:** Install dependencies:
+> ```bash
+> pip install langgraph langchain langchain-openai langsmith
+> ```
+
+## Quick Start
+
+Create your first LangGraph agent in under 10 lines:
+
+```python
+from langgraph.graph import StateGraph, MessagesState, START, END
+
+def hello_agent(state: MessagesState):
+    return {"messages": [{"role": "ai", "content": "Hello, world!"}]}
+
+graph = StateGraph(MessagesState)
+graph.add_node("agent", hello_agent)
+graph.add_edge(START, "agent")
+graph.add_edge("agent", END)
+graph = graph.compile()
+
+graph.invoke({"messages": [{"role": "user", "content": "hi!"}]})
+```
+
+**Next steps:**
+1. Use the **Pattern Selection Guide** below to choose supervisor, swarm, or hierarchical architecture — each pattern links to its recommended template
+2. Load the corresponding reference file for the deep pattern walkthrough
+3. Use the **Choosing Your Starting Point** table below to pick scaffold, template, or reference based on your task
+4. For a complete runnable example matching your pattern, use the linked template in assets/templates/
+
+> **Design Principles — These Govern Every Graph Decision**
+> 1. **State is the source of truth** — all inter-node communication happens through state, not through side channels or global variables.
+> 2. **Nodes are pure-ish** — a node receives state, does work, returns updates. It should not depend on state that isn't passed to it.
+> 3. **Reducers prevent conflicts** — any state key written by multiple nodes in parallel MUST have a reducer.
+> 4. **Start simple** — a single agent with good prompts beats a multi-agent system with bad routing. Add agents only when a single prompt or toolset becomes unwieldy.
+> 5. **Use `Send()` for dynamic fan-out** — when you don't know how many workers you'll need at compile time, spawn them dynamically from the orchestrator node.
+> 6. **Subgraph state isolation** — subgraphs with different state schemas need a wrapper function to transform state at the boundary. Shared-schema subgraphs can be added directly as nodes.
 
 ## When to Reach For This
 
@@ -35,14 +74,23 @@ This skill covers all major patterns for building and deploying LangGraph system
 
 | Your constraint | Prefer | Why |
 |----------------|--------|-----|
-| Routing accuracy > latency | **Supervisor** | Centralized routing node, focused prompt: ~94% accuracy |
-| Latency is primary constraint | **Swarm** | Direct agent-to-agent handoffs, ~40% fewer LLM calls |
-| Clear domain boundaries | **Swarm** | Agents rarely misroute, handoffs are crisp |
-| Ambiguous domain boundaries | **Supervisor** | Overlapping concerns resolved by dedicated router |
-| < 3 distinct domains | **Skip multi-agent** | A specialized single agent is simpler |
-| Multi-domain requests common | **Swarm** | Latency savings compound across handoffs |
-| Need centralized audit trail | **Supervisor** | Every routing decision visible in traces |
-| Nested team structures | **Hierarchical** | Subgraphs as nodes, each team self-contained |
+| Routing accuracy > latency | **Supervisor** | Centralized routing node, focused prompt: ~94% accuracy | `assets/templates/supervisor-graph.py` |
+| Latency is primary constraint | **Swarm** | Direct agent-to-agent handoffs, ~40% fewer LLM calls | `assets/templates/swarm-graph.py` |
+| Clear domain boundaries | **Swarm** | Agents rarely misroute, handoffs are crisp | `assets/templates/swarm-graph.py` |
+| Ambiguous domain boundaries | **Supervisor** | Overlapping concerns resolved by dedicated router | `assets/templates/supervisor-graph.py` |
+| < 3 distinct domains | **Skip multi-agent** | A specialized single agent is simpler | `references/architecture.md` |
+| Multi-domain requests common | **Swarm** | Latency savings compound across handoffs | `assets/templates/swarm-graph.py` |
+| Need centralized audit trail | **Supervisor** | Every routing decision visible in traces | `assets/templates/supervisor-graph.py` |
+| Nested team structures | **Hierarchical** | Subgraphs as nodes, each team self-contained | `assets/templates/subgraph-agent.py` |
+
+## Choosing Your Starting Point
+
+| Your goal | Start with | Why |
+|----------|------------|-----|
+| Build a project from scratch, need generated code | `scripts/lg-supervisor-scaffold.py` or `scripts/lg-swarm-scaffold.py` | Scaffolds generate complete project structure (state.py, agents.py, graph.py) with placeholders to fill in |
+| Understand a complete, working example | `assets/templates/` matching your chosen pattern | Templates are self-contained runnable files with all patterns wired — best for learning by reading |
+| Deep dive into a pattern's internals | Corresponding reference in `references/` | References explain tradeoffs, failure modes, and design rationale — best for customization |
+| Debug or optimize an existing system | `references/production.md` or `references/troubleshooting.md` | Production reference covers deployment + observability; troubleshooting reference covers symptom→fix tables |
 
 ## Core Primitives
 
@@ -78,6 +126,9 @@ Both APIs produce the same compiled graph — choose based on how much control y
 | `references/production.md` | You're deploying a LangGraph system to production. Covers Agent Server deployment, LangSmith observability, streaming patterns, and common production failure modes with fixes. |
 | `references/evals.md` | You're setting up evaluation pipelines for multi-agent systems. Covers routing accuracy, resolution coverage, LangSmith eval datasets, and LLM-as-judge evaluators. |
 | `references/troubleshooting.md` | You're debugging a specific LangGraph failure. Covers routing loops, context loss, checkpointer conflicts, token waste, and state inspection techniques. |
+| `assets/templates/supervisor-graph.py` | Runnable supervisor example with billing, tech support, and account specialists — fast-path classifier, structured output routing, audit trail, and recursion guard. |
+| `assets/templates/swarm-graph.py` | Runnable swarm example with triage agent plus 3 specialists — direct agent-to-agent handoffs via Command, recursion guard, and full traceability. |
+| `assets/templates/subgraph-agent.py` | Runnable subgraph composition examples — all 3 wiring patterns (different state schemas, shared state keys, per-thread with namespace isolation). |
 
 ## Scripts
 
