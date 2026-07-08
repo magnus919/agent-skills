@@ -8,6 +8,7 @@ description: >-
   for this when designing agent architectures that need cycles, conditional
   branching, parallel execution, or human-in-the-loop patterns.
 license: MIT
+version: "1.0.1"
 metadata:
   source: LangGraph by LangChain Inc — https://langchain.com/langgraph
   spec-version: "1.0"
@@ -18,6 +19,43 @@ metadata:
 LangGraph is LangChain's low-level orchestration framework for building stateful, long-running, multi-agent AI workflows using directed graph architectures (inspired by Pregel/Beam and NetworkX). It models agents as **nodes** in a graph, with **edges** controlling flow — enabling cycles, conditional branching, parallel execution, human-in-the-loop, and subgraph composition that linear chains cannot express.
 
 This skill covers all major patterns for building and deploying LangGraph systems: core graph architecture, the three canonical multi-agent patterns (supervisor, swarm, hierarchical), persistence and state management, production debugging, and evaluation methodology.
+
+> **Before you begin:** Install dependencies:
+> ```bash
+> pip install langgraph langchain langchain-openai langsmith
+> ```
+
+## Quick Start
+
+Create your first LangGraph agent in under 10 lines:
+
+```python
+from langgraph.graph import StateGraph, MessagesState, START, END
+
+def hello_agent(state: MessagesState):
+    return {"messages": [{"role": "ai", "content": "Hello, world!"}]}
+
+graph = StateGraph(MessagesState)
+graph.add_node("agent", hello_agent)
+graph.add_edge(START, "agent")
+graph.add_edge("agent", END)
+graph = graph.compile()
+
+graph.invoke({"messages": [{"role": "user", "content": "hi!"}]})
+```
+
+**Next steps:**
+1. Use the **Pattern Selection Guide** below to choose supervisor, swarm, or hierarchical architecture
+2. Load the corresponding reference file for the deep pattern walkthrough
+3. For a complete runnable example, use the templates in `assets/templates/`
+
+> **Design Principles — These Govern Every Graph Decision**
+> 1. **State is the source of truth** — all inter-node communication happens through state, not through side channels or global variables.
+> 2. **Nodes are pure-ish** — a node receives state, does work, returns updates. It should not depend on state that isn't passed to it.
+> 3. **Reducers prevent conflicts** — any state key written by multiple nodes in parallel MUST have a reducer.
+> 4. **Start simple** — a single agent with good prompts beats a multi-agent system with bad routing. Add agents only when a single prompt or toolset becomes unwieldy.
+> 5. **Use `Send()` for dynamic fan-out** — when you don't know how many workers you'll need at compile time, spawn them dynamically from the orchestrator node.
+> 6. **Subgraph state isolation** — subgraphs with different state schemas need a wrapper function to transform state at the boundary. Shared-schema subgraphs can be added directly as nodes.
 
 ## When to Reach For This
 
@@ -78,6 +116,9 @@ Both APIs produce the same compiled graph — choose based on how much control y
 | `references/production.md` | You're deploying a LangGraph system to production. Covers Agent Server deployment, LangSmith observability, streaming patterns, and common production failure modes with fixes. |
 | `references/evals.md` | You're setting up evaluation pipelines for multi-agent systems. Covers routing accuracy, resolution coverage, LangSmith eval datasets, and LLM-as-judge evaluators. |
 | `references/troubleshooting.md` | You're debugging a specific LangGraph failure. Covers routing loops, context loss, checkpointer conflicts, token waste, and state inspection techniques. |
+| `assets/templates/supervisor-graph.py` | Runnable supervisor example with billing, tech support, and account specialists — fast-path classifier, structured output routing, audit trail, and recursion guard. |
+| `assets/templates/swarm-graph.py` | Runnable swarm example with triage agent plus 3 specialists — direct agent-to-agent handoffs via Command, recursion guard, and full traceability. |
+| `assets/templates/subgraph-agent.py` | Runnable subgraph composition examples — all 3 wiring patterns (different state schemas, shared state keys, per-thread with namespace isolation). |
 
 ## Scripts
 
