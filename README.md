@@ -81,6 +81,10 @@ Atlassian Jira from the terminal. Search issues with JQL, view details, create i
 
 Expert-level Jira Query Language reference covering all operators, functions (date/time, user, sprint/version, issue, custom field, JSM), history operators (WAS/CHANGED), relative dates, performance best practices, role-based ready queries, REST API usage, and troubleshooting. Three companion references: complete function catalog, role-specific query bank (dev, scrum master, PO, power user, admin), and gotchas/troubleshooting guide.
 
+### [langgraph](langgraph/SKILL.md)
+
+Build multi-agent AI systems with LangGraph — the low-level orchestration framework for stateful, graph-based agent workflows using directed graphs. Covers all major patterns: supervisor (centralized routing node, ~94% accuracy), swarm (direct agent-to-agent handoffs, ~40% fewer LLM calls), and hierarchical teams (subgraph composition with nested state). Includes state management (checkpointers/stores), persistence, production debugging, and evaluation methodology. Ships 3 Python scripts (supervisor scaffold, swarm scaffold, eval generator), 3 runnable templates, and 8 reference files covering architecture, each pattern in depth, evals, production failures, and troubleshooting.
+
 ### [lastfm](lastfm/SKILL.md)
 
 Last.fm music data API from the terminal. Lookup user listening history, get artist/album/track metadata, discover similar music via collaborative filtering, explore global and per-country charts, search, manage tags, and scrobble listening events. API key from last.fm/api/account/create (free). Includes a music discovery pipeline for turning liked tracks into recommendations.

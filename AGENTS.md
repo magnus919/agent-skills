@@ -66,8 +66,9 @@ When the user mentions these keywords, load the corresponding skill:
 | "data architecture", "data platform", "data strategy", "data mesh", "governance" | [data-architect](data-architect/SKILL.md) |
 | "statistical analysis", "experimental design", "A/B test", "hypothesis test", "power analysis", "causal inference", "regression", "Bayesian", "p-value", "effect size", "model selection", "machine learning methodology" | [data-scientist](data-scientist/SKILL.md) |
 | "brand identity", "brand guidelines", "style guide", "brand card", "brand strategy", "visual identity", "brand documentation", "color palette", "brand book" | [brand-designer](brand-designer/SKILL.md) |
-| "kanban", "WIP", "cycle time", "flow metrics", "Scrum to Kanban", "multi-portfolio", "throughput", "classes of service" | [kanban-guru](kanban-guru/SKILL.md) |
-| "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
+|| "kanban", "WIP", "cycle time", "flow metrics", "Scrum to Kanban", "multi-portfolio", "throughput", "classes of service" | [kanban-guru](kanban-guru/SKILL.md) |
+|| "langgraph", "multi-agent", "state machine", "graph-based workflow", "LangGraph", "supervisor pattern", "swarm pattern", "agent orchestration", "graph state", "subgraph", "agent routing", "tool-calling loop", "agent loop", "stateful agent", "durable execution", "human in the loop langgraph", "checkpointer", "langgraph persistence" | [langgraph](langgraph/SKILL.md) |
+|| "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
 | "last.fm", "scrobble", "music discovery", "listening history", "similar artists", "lastfm", "weekly top artists", "genre charts" | [lastfm](lastfm/SKILL.md) |
 | "nous", "theia", "hermes brand", "brand identity", "style guide", "mascot", "anime style", "cyber-classical", "color palette reference" | [nous-branding](nous-branding/SKILL.md) |
 | "okf", "open knowledge format", "knowledge bundle", "LLM wiki", "agent knowledge", "Google knowledge format", "markdown knowledge", "vendor-neutral knowledge", "create an OKF bundle", "validate OKF", "concept document", "knowledge format" | [open-knowledge-format](open-knowledge-format/SKILL.md) |
