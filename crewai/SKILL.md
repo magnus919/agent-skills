@@ -8,7 +8,7 @@ description: >-
 license: MIT
 metadata:
   author: Magnus Hedemark
-  version: 1.0.3
+  version: 1.1.0
   source: https://docs.crewai.com
 ---
 
@@ -113,6 +113,8 @@ result = crew.kickoff()
 | Crew Patterns | Sequential, hierarchical, consensual crews | `references/crew-patterns.md` |
 | Tool Integration | Creating tools with @tool decorator | `references/tool-integration.md` |
 | Callbacks | Monitoring agent and task execution | `references/callbacks.md` |
+| Memory System | Unified Memory class, cross-agent context | `references/memory-system.md` |
+| Flows | Event-driven orchestration connecting crews | `references/flows.md` |
 | FAQ & Troubleshooting | Common errors and fixes | `references/faq-and-troubleshooting.md` |
 
 ## Templates

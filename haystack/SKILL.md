@@ -8,7 +8,7 @@ description: >-
 license: MIT
 metadata:
   author: Magnus Hedemark
-  version: 1.0.3
+  version: 1.1.0
   source: https://docs.haystack.deepset.ai
 ---
 
@@ -90,6 +90,8 @@ result = pipeline.run({"embedder": {"text": "What is Haystack?"}, "prompt_builde
 | Pipeline Design | Building indexing and query pipelines | `references/pipeline-design.md` |
 | Document Stores | Store selection and configuration | `references/document-stores.md` |
 | Retrievers | Embedding, BM25, hybrid retrieval | `references/retrievers.md` |
+| Validation Audit | Research validation of all API claims | `references/validation-audit.md` |
+| File Converters | Multi-format indexing, YAML serialization, component types | `references/file-converters.md` |
 | Evaluation | Metrics, evaluators, pipeline evaluation | `references/evaluation.md` |
 | Deployment | Hayhooks, containerization, production | `references/deployment.md` |
 | FAQ & Troubleshooting | Common errors and fixes | `references/faq-and-troubleshooting.md` |

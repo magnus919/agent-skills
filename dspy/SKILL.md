@@ -8,7 +8,7 @@ description: >-
 license: MIT
 metadata:
   author: Magnus Hedemark
-  version: 1.0.3
+  version: 1.1.0
   source: https://dspy.ai
 ---
 
@@ -108,6 +108,8 @@ answer = compiled_qa(question="What is DSPy?").answer
 | Compilation Guide | Caching, cost management, save/load | `references/compilation-guide.md` |
 | Agent Patterns | ReAct agent, tool-use, AvatarOptimizer | `references/agent-patterns.md` |
 | FAQ & Troubleshooting | Common errors and fixes | `references/faq-and-troubleshooting.md` |
+| Validation Audit | Research validation of all API claims | `references/validation-audit.md` |
+| Worked RAG Example | Full RAG compilation with expected output | `references/example-rag-compilation.md` |
 
 ## Template Files
 

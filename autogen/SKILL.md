@@ -8,7 +8,7 @@ description: >-
 license: MIT
 metadata:
   author: Magnus Hedemark
-  version: 1.0.3
+  version: 1.1.0
   source: https://microsoft.github.io/autogen
 ---
 
@@ -82,6 +82,8 @@ assistant = AssistantAgent(
 | Group Chat | RoundRobin, Selector, MagenticOne | `references/group-chat.md` |
 | Code Execution | Docker, local, cancellation tokens | `references/code-execution.md` |
 | Tool Integration | register_function, @tool, MCP integration | `references/tool-integration.md` |
+| v0.4 Migration | v0.2->v0.4 migration, AgentTool, streaming, termination | `references/v04-migration.md` |
+| Validation Audit | Research validation of all API claims | `references/validation-audit.md` |
 | FAQ & Troubleshooting | Common errors and fixes | `references/faq-and-troubleshooting.md` |
 
 ## Templates
