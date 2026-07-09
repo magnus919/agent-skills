@@ -9,7 +9,7 @@ description: >-
 license: MIT
 metadata:
   source: https://pydantic.dev/docs/ai/overview/
-  version: "1.0.1"
+  version: "1.0.3"
 compatibility: Python 3.10+; requires pydantic-ai or pydantic-ai-slim package
 ---
 
@@ -108,6 +108,55 @@ class ProcessNode(BaseNode[MyState]):
         return NextNode()
 ```
 → See `references/graph.md` for both BaseNode and GraphBuilder APIs, parallel execution, and join/reducer patterns.
+
+### When to use which run method
+
+| When you need… | Use | Key behavior |
+|---|---|---|
+| A single answer, sync code | `run_sync()` | Blocks until complete, returns `RunResult` |
+| A single answer, async code | `run()` | Async, returns `RunResult` |
+| Stream text as it's generated | `run_stream()` | Async context manager, yields `stream_text()` / `stream_output()` |
+| See granular events (tool calls, part starts, deltas) | `run_stream_events()` | Yields `AgentStreamEvent` types — `FunctionToolCallEvent`, `PartStartEvent`, `FinalResultEvent` |
+| Manual control over each graph step | `iter()` | Iterate over agent's internal graph nodes (`UserPromptNode` → `ModelRequestNode` → `CallToolsNode`) |
+| Tool calls to execute during streaming | `run_stream_events()` or `run(event_stream_handler=...)` | `run_stream()` stops at the first output that matches `output_type` and does NOT execute subsequent tool calls |
+
+*Details for each run method in `references/core-agents.md`.*
+
+### Graph API: BaseNode vs GraphBuilder
+
+| Factor | BaseNode (class-based) | GraphBuilder (function-based) |
+|---|---|---|
+| Style | Subclass `BaseNode[StateT]`, implement `async run()` | Decorate async functions with `@g.step` |
+| State mutation | Via `ctx.state` inside `run()` method | Via `ctx.state` inside step function |
+| Parallelism | Manual fork/join logic | Built-in `.map()` per-element fan-out and `.broadcast()` same-input-to-multiple |
+| Joins / aggregation | Manual aggregation in return types | Built-in reducers: `reduce_list_append`, `reduce_sum`, `reduce_dict_update`, etc. |
+| Edge declaration | Inferred from `run()` return type annotation | Explicit via `g.edge_from(source).to(target)` |
+| When to use | Complex node logic, OO patterns, conditional edge logic | Simple linear flows, parallel data processing, concise syntax |
+
+*Both APIs in `references/graph.md`.*
+
+### Error handling quick-pick
+
+```python
+from pydantic_ai import UnexpectedModelBehavior, capture_run_messages
+
+with capture_run_messages() as messages:
+    try:
+        result = agent.run_sync('Query')
+    except UnexpectedModelBehavior as e:
+        cause = e.__cause__  # Often ModelRetry('reason')
+        print(f"Root cause: {cause}")
+        print("Full conversation:", messages)  # Inspect every message
+        # Common recovery: raise ModelRetry from tools with clear instructions
+```
+
+| Exception | Meaning | Recovery |
+|---|---|---|
+| `UnexpectedModelBehavior` | Retry limit exceeded or model gave unexpected response | Inspect `e.__cause__`, check messages, adjust instructions or tool retries |
+| `ModelRetry` (raised from tools) | Tool wants model to retry with different args | Let it propagate — PydanticAI handles it automatically up to `retries` limit |
+| `ModelAPIError` | Provider returned 4xx/5xx | Check API key, rate limits, model availability |
+| `UsageLimitExceeded` | Token/request budget exhausted | Increase `UsageLimits` or optimize prompt |
+| `HookTimeoutError` | A lifecycle hook timed out | Increase hook timeout or optimize hook logic |
 
 ## Key CLI Commands
 
