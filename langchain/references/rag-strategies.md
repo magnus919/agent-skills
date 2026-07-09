@@ -11,54 +11,51 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 
-# Load
+# Load -> Split -> Embed -> Retrieve -> Generate
 loader = WebBaseLoader("https://example.com/docs")
-docs = loader.load()
-
-# Split
 splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-chunks = splitter.split_documents(docs)
-
-# Embed + store
-embeddings = OpenAIEmbeddings()
-vectorstore = Chroma.from_documents(chunks, embeddings)
+vectorstore = Chroma.from_documents(
+    splitter.split_documents(loader.load()),
+    OpenAIEmbeddings()
+)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
-# RAG chain
-def format_docs(docs):
-    return "\n\n".join(d.doc.page_content for d in docs)
+def fmt(docs):
+    return "\n\n".join(d.page_content for d in docs)
 
 rag_chain = (
-    {"context": retriever | format_docs, "question": RunnablePassthrough()}
-    | prompt
-    | model
+    {"context": retriever | fmt, "question": RunnablePassthrough()}
+    | ChatPromptTemplate.from_template("Answer using context:\n{context}\n\nQ: {question}")
+    | ChatOpenAI()
     | StrOutputParser()
 )
 ```
 
-## Document Loaders
+## Document Loaders (150+ Sources)
 
 | Loader | Source | Package |
 |--------|--------|---------|
-| `WebBaseLoader` | Web pages | langchain-community |
-| `PyPDFLoader` | PDF files | langchain-community |
-| `TextLoader` | Plain text | langchain-core |
-| `NotionDBLoader` | Notion | langchain-community |
-| `S3FileLoader` | AWS S3 | langchain-community |
+| `WebBaseLoader` | Web pages | `langchain-community` |
+| `PyPDFLoader` | PDF files | `langchain-community` |
+| `TextLoader` | Plain text | `langchain-core` |
+| `NotionDBLoader` | Notion | `langchain-community` |
+| `S3FileLoader` | AWS S3 | `langchain-community` |
 
 ## Text Splitters
 
 | Splitter | Method | Best For |
 |----------|--------|----------|
-| `RecursiveCharacterTextSplitter` | Recursive character splitting | General purpose, default |
-| `TokenTextSplitter` | Token-count-based | LLM context window optimization |
+| `RecursiveCharacterTextSplitter` | Recursive character | General purpose (default) |
+| `TokenTextSplitter` | Token-count-based | LLM context optimization |
 | `MarkdownHeaderTextSplitter` | Header-aware | Markdown documents |
 | `SemanticChunker` | Embedding similarity | Coherent semantic units |
 
 ## Vector Store Integrations
 
-| Store | Production | Setup |
-|-------|-----------|-------|
+All 40+ vector stores share the same interface: `from_documents`, `as_retriever`, `similarity_search`.
+
+| Store | Production | Install |
+|-------|-----------|---------|
 | Chroma | Local dev | `pip install chromadb` |
 | Pinecone | Yes | `pip install langchain-pinecone` |
 | pgvector | Yes | `pip install langchain-postgres` |
@@ -66,13 +63,22 @@ rag_chain = (
 | Qdrant | Yes | `pip install langchain-qdrant` |
 | FAISS | Local | `pip install faiss-cpu` |
 
-All stores use the same interface: `from_documents`, `as_retriever`, `similarity_search`.
+## Advanced Retrieval Patterns
 
-## Advanced RAG Techniques
+| Technique | When to use | Implementation |
+|-----------|-------------|----------------|
+| Multi-query retrieval | Broad topics need diverse sources | Generate query variants, retrieve for each |
+| ParentDocumentRetriever | Need small chunks + rich context | Retrieve child chunks, return parent documents |
+| SelfQueryRetriever | Queries with filters | Extract semantic filter + query from natural language |
+| EnsembleRetriever | Multiple retrieval methods | Weighted combination of BM25 + vector |
 
-| Technique | Implementation |
-|-----------|---------------|
-| Multi-query retrieval | Generate multiple query variations, retrieve for each |
-| Parent-document retriever | Retrieve small chunks, return parent context |
-| Self-querying retriever | Extract query filters + semantic search |
-| Ensemble retriever | Combine multiple retrieval methods with weighted scoring |
+## Structured Document Chains (Migration Path)
+
+These chain factories exist in `langchain_classic.chains` (the pre-v1.0 classic module):
+
+| Chain | Purpose | Import |
+|-------|---------|--------|
+| `create_history_aware_retriever` | Rephrase question with chat history | `langchain_classic.chains` |
+| `create_stuff_documents_chain` | LCEL-style Stuff documents chain | `langchain.chains` (v1.0 path) |
+
+> **v1.0 recommendation:** Use LCEL directly rather than factory chains. The canonical RAG chain at the top of this page is the recommended pattern.

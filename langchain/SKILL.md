@@ -8,7 +8,7 @@ description: >-
 license: MIT
 metadata:
   author: Magnus Hedemark
-  version: 1.0.3
+  version: 1.1.0
   source: https://github.com/langchain-ai/langchain
 ---
 
@@ -96,6 +96,8 @@ This skill is part of a portfolio of framework skills. When deciding which fits:
 | Production & Deployment | LangServe, LangSmith, deployment | `references/production-deployment.md` |
 | Integration Ecosystem | Model providers, vector stores, tools | `references/integration-ecosystem.md` |
 | FAQ & Troubleshooting | Common errors and fixes | `references/faq-and-troubleshooting.md` |
+| Callbacks System | Custom logging, monitoring, agent auditing | `references/callbacks.md` |
+| Validation Audit | Research validation of all API claims | `references/validation-audit.md` |
 
 ## Template Files
 
