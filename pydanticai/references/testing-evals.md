@@ -4,6 +4,8 @@
 
 `TestModel` calls all tools and returns structured data based on their schemas — no LLM required.
 
+**Dependency:** Requires `pytest-asyncio` (or `pytest-anyio`) for async test patterns with `@pytest.mark.asyncio`.
+
 ### Basic Usage
 
 ```python

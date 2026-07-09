@@ -9,7 +9,7 @@ description: >-
 license: MIT
 metadata:
   source: https://pydantic.dev/docs/ai/overview/
-  version: "1.0.0"
+  version: "1.0.1"
 compatibility: Python 3.10+; requires pydantic-ai or pydantic-ai-slim package
 ---
 
@@ -70,6 +70,7 @@ async def get_weather(ctx: RunContext, city: str) -> str:
 result = agent.run_sync('Weather in London?')
 print(result.output.temperature)
 ```
+→ See `references/core-agents.md` for full agent lifecycle, run methods, and tool patterns.
 
 ### Agent with dependency injection
 ```python
@@ -87,6 +88,7 @@ agent = Agent('openai:gpt-5.2', deps_type=MyDeps)
 async def query_db(ctx: RunContext[MyDeps], sql: str) -> str:
     return f"Query results using {ctx.deps.db_conn}"
 ```
+→ See `references/core-agents.md` for dependency injection patterns and testing overrides.
 
 ### Graph with multiple nodes
 ```python
@@ -105,6 +107,7 @@ class ProcessNode(BaseNode[MyState]):
             return End(ctx.state.value)
         return NextNode()
 ```
+→ See `references/graph.md` for both BaseNode and GraphBuilder APIs, parallel execution, and join/reducer patterns.
 
 ## Key CLI Commands
 
@@ -140,4 +143,16 @@ pydanticai/
 - **`conversation_id` is manual for forking:** Pass `conversation_id='new'` to start a fresh conversation chain from existing history. It's not automatic.
 - **Models named `provider:model_name`** — PydanticAI auto-resolves the model class from the string prefix. For custom endpoints, use `OpenAIChatModel(model_name, provider=OpenAIProvider(base_url=...))`.
 - **`TestModel` can't emulate native tools:** Override with `agent.override(model=TestModel(), native_tools=[])` in tests if your agent uses WebSearch, etc.
+- **`defer_model_check=True` for testable module-level agents:** When declaring an `Agent` at module level (outside a function) and using `TestModel` in tests with `agent.override(model=TestModel())`, set `defer_model_check=True` on the constructor. Without it, the agent tries to resolve the model string at import time — which fails without API credentials, even though the real model is overridden before any test runs.
 - **Message history requires pairing:** When slicing history, tool calls and their returns must stay paired or the LLM will error.
+- **`stream_text()` fails with BaseModel output types:** When `output_type` is a BaseModel (structured output), calling `result.stream_text()` raises `UserError('stream_text() can only be used with text responses')`. Use `result.stream_output()` instead to get partial validated objects as they stream in. If you need text-level streaming with structured output, use `run_stream_events()` and inspect `PartDeltaEvent` with `TextPartDelta` deltas. The two methods serve different output modes — text output → `stream_text()`, structured output → `stream_output()`.
+- **`graph.run()` returns OutputT, NOT the state object:** Despite passing `state=MyState()` to `graph.run()`, the return value is the graph's `output_type` (e.g. `list[int]`), not the state. The `state` object IS mutated in-place during execution (since it's a mutable dataclass), so keep a separate reference:
+
+  ```python
+  state = MyState(items_processed=0)
+  result = await graph.run(state=state, inputs=[1, 2, 3])
+  # result -> [2, 4, 6]       (OutputT = list[int])
+  # state.items_processed -> 3 (state mutated in-place)
+  ```
+
+  This trap is most common with parallel `.map()` patterns where the reader assumes `result.items_processed` will work. It won't. The `items_processed` count lives on the state object you passed in, not on the return value.

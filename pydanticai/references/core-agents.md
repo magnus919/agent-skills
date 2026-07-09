@@ -21,7 +21,7 @@ agent = Agent(
     validation_context=None,           # Callable or value for output validation
     tools=(),                          # Function list or Tool instances
     toolsets=None,                     # Sequence of toolset instances
-    defer_model_check=False,           # Skip model validation on construction
+    defer_model_check=False,             # Skip model validation on construction. Set True for module-level agents tested with TestModel.
     end_strategy='graceful',           # 'early', 'graceful', 'exhaustive'
     metadata=None,                     # Dict or callable returning dict
     tool_timeout=None,                 # Default tool timeout in seconds
@@ -29,6 +29,17 @@ agent = Agent(
     capabilities=None,                 # Sequence of capability instances
 )
 ```
+
+> **`defer_model_check=True`** — use when declaring agents at module level for testing. Without it, the agent tries to resolve the model string at import time. If you're using `TestModel` with `agent.override(model=TestModel())` in tests, the module-level agent declaration will fail at import without API credentials unless this is set. Test-time scenario:
+> ```python
+> # agent_setup.py — module-level declaration
+> agent = Agent('openai:gpt-5.2', deps_type=MyDeps, defer_model_check=True)
+>
+> # test_agent.py
+> from pydantic_ai.models.test import TestModel
+> with agent.override(model=TestModel()):
+>     result = agent.run_sync('Test query', deps=test_deps)
+> ```
 
 ## Run Methods — Five Ways to Execute
 
