@@ -2,41 +2,48 @@
 
 ## Installation
 
-**Q: Installation fails with dependency conflicts?**
-A: Use a virtual environment. Install core: `pip install langchain langchain-core`, then add integrations as needed.
-
 **Q: Python version requirements?**
-A: LangChain v1.x requires Python 3.10+. Python 3.11+ recommended.
+A: 3.10+. Python 3.11+ recommended.
 
-## Common Errors
+**Q: Dependency conflicts?**
+A: Use a virtual environment. Install core: `pip install langchain langchain-core`, then add integration packages as needed.
 
-**Q: "ModuleNotFoundError: No module named 'langchain_openai'"**
-A: Install the integration package: `pip install langchain-openai`
-
-**Q: Agent doesn't call tools**
-A: Ensure tool functions have: (1) type hints on parameters, (2) descriptive docstrings, (3) `@tool` decorator.
-
-**Q: LangSmith traces not appearing**
-A: Set `LANGCHAIN_TRACING_V2=true` and `LANGCHAIN_API_KEY` before any chain execution. Must be done at module import time.
-
-**Q: "Cannot use 'pipe' with non-Runnable"**
-A: All components in an LCEL chain must implement the Runnable interface. Use `RunnableLambda` to wrap plain functions.
-
-**Q: Chain returns no output**
-A: Missing output parser. Add `StrOutputParser()` or another parser at the end of your chain.
+**Q: LangSmith API key setup?**
+A: Set `LANGCHAIN_API_KEY`, `LANGCHAIN_TRACING_V2=true`, `LANGCHAIN_PROJECT=<name>`.
 
 ## Migration
 
 **Q: Should I migrate from AgentExecutor?**
-A: Yes. AgentExecutor is in maintenance mode until Dec 2026. Use `create_agent` for new code. Existing AgentExecutor code continues to work until then.
+A: Yes, before Dec 2026. AgentExecutor is in maintenance mode. Use `create_agent` from `langchain.agents`.
 
-**Q: How do I migrate from LLMChain?**
+**Q: create_agent vs create_react_agent?**
+A: In LangChain v1.0+, use `create_agent` from `langchain.agents`. `create_react_agent` from `langgraph.prebuilt` is deprecated.
+
+**Q: LLMChain migration?**
 A: Replace `LLMChain(prompt=..., llm=...)` with LCEL: `prompt | model | parser`.
+
+## Common Errors
+
+**Q: Agent doesn't call tools**
+A: Check: (1) type hints on parameters, (2) docstring descriptions, (3) `@tool` decorator, (4) `parse_docstring=True` if using Google-style docstrings.
+
+**Q: Module not found for integration?**
+A: Install each integration separately. Never `pip install langchain[all]` — it pulls 100+ unused deps.
+
+**Q: Pydantic v1/v2 errors?**
+A: LangChain v1.0 uses Pydantic v2. If integrations use v1 schemas, they may fail silently. Pin `pydantic>=2`.
+
+**Q: Streaming agent hangs?**
+A: Agents with tool calls cannot stream final output until all tools complete. Use `astream_events` filtering by event type.
+
+**Q: Checkpoint serialization fails?**
+A: Tools returning non-serializable objects (file handles, network connections) cannot be checkpointed. Ensure all tool outputs are JSON-serializable.
 
 ## Performance
 
-**Q: Chain execution is slow**
-A: Use streaming: `chain.stream()` returns tokens incrementally. Enable async: `await chain.ainvoke()`.
-
-**Q: Memory usage grows unbounded**
-A: Use LangGraph's checkpointer with bounded thread history instead of legacy in-memory buffers.
+| Issue | Fix |
+|-------|-----|
+| High latency | Use `chain.stream()` instead of `invoke()` |
+| Rate limiting | Set `max_concurrency` in `RunnableConfig` |
+| Cost spikes | Route simple queries to cheaper model (gpt-4o-mini) |
+| Memory growth | Use LangGraph checkpointer with bounded thread history |
