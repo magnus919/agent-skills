@@ -89,6 +89,10 @@ Build multi-agent AI systems with LangGraph — the low-level orchestration fram
 
 Last.fm music data API from the terminal. Lookup user listening history, get artist/album/track metadata, discover similar music via collaborative filtering, explore global and per-country charts, search, manage tags, and scrobble listening events. API key from last.fm/api/account/create (free). Includes a music discovery pipeline for turning liked tracks into recommendations.
 
+### [pydanticai](pydanticai/SKILL.md)
+
+Build production-grade AI agents and graph-based state machines with PydanticAI and PydanticGraph. Covers agent creation, function tools with RunContext dependencies, structured output validation, streaming (text/events/graph nodes), a 20+ capability plugin system with on-demand loading (Thinking, WebSearch, MCP, Hooks, etc.), 16 model providers with FallbackModel and concurrency limiting, multi-agent delegation and programmatic hand-off, comprehensive testing with TestModel/FunctionModel, and the PydanticEvals evaluation framework. Includes the full PydanticGraph API — both BaseNode (class-based) and GraphBuilder (function-based) with parallel map/broadcast operations, joins with reducers, decisions, Mermaid rendering, and step-by-step execution. Ships 8 reference files covering core agents, capabilities/hooks, graph, models/output, patterns/integrations, testing/evals, worked examples, and an API surface quick reference.
+
 ### [nous-branding](nous-branding/SKILL.md)
 
 Generate images and content consistent with the Nous Research brand identity.
