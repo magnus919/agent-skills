@@ -227,20 +227,104 @@ async def book_flight(origin: str, dest: str, date: str, seat: str) -> Booking:
     return booking_result.output
 ```
 
-## Example 6: RAG with Embeddings
+## Example 7: Testing an Agent with TestModel
+
+Complete pytest test suite showing module-level agent declaration with `defer_model_check`, `TestModel` injection via `Agent.override`, `capture_run_messages`, and `ALLOW_MODEL_REQUESTS` safety guard.
 
 ```python
-from pydantic_ai import Agent, Embedder, RunContext
+"""pytest test file for PydanticAI agent with tools and dependencies."""
+from __future__ import annotations
 
-embedder = Embedder('openai:text-embedding-3-small')
-rag_agent = Agent('openai:gpt-5.2')
+import pytest
+from dataclasses import dataclass
 
-@rag_agent.tool
-async def search_docs(ctx: RunContext, query: str) -> str:
-    """Search documentation for relevant context."""
-    query_vec = await embedder.embed_query(query)
-    results = vector_db.search(query_vec.embeddings[0], top_k=3)
-    return '\n'.join(results)
+from pydantic_ai import Agent, RunContext, capture_run_messages
+from pydantic_ai import models
+from pydantic_ai.models.test import TestModel
 
-result = rag_agent.run_sync('How do I configure authentication?')
+# Safety guard — no real LLM calls during testing
+models.ALLOW_MODEL_REQUESTS = False
+
+
+@dataclass
+class WeatherService:
+    """Dependency injected into the agent's tools."""
+    api_key: str = "test-key-abc"
+    base_url: str = "https://api.weather.example"
+
+
+# Module-level agent — defer_model_check=True prevents import-time
+# model resolution failure when no API credentials are configured.
+weather_agent: Agent[WeatherService, str] = Agent(
+    "openai:gpt-5.2",
+    deps_type=WeatherService,
+    output_type=str,
+    instructions="You are a helpful weather assistant.",
+    defer_model_check=True,
+)
+
+
+@weather_agent.tool
+async def get_forecast(
+    ctx: RunContext[WeatherService],
+    city: str,
+    units: str = "celsius",
+) -> str:
+    """Get the current weather forecast for a city.
+    Args:
+        city: The city name to get a forecast for.
+        units: Temperature units — 'celsius' or 'fahrenheit'.
+    """
+    return f"24°{'C' if units == 'celsius' else 'F'} and sunny in {city}"
+
+
+@pytest.fixture
+def override_agent() -> None:
+    """Replace the real model with TestModel for all tests."""
+    with weather_agent.override(model=TestModel()):
+        yield
+
+
+class TestWeatherAgent:
+    """Tests using TestModel — no LLM calls made."""
+
+    def test_sync_run_with_tool(self, override_agent: None) -> None:
+        result = weather_agent.run_sync(
+            "What is the weather in London?",
+            deps=WeatherService(),
+        )
+        assert isinstance(result.output, str)
+        assert len(result.output) > 0
+
+    @pytest.mark.asyncio
+    async def test_async_run_inspects_messages(self) -> None:
+        with weather_agent.override(model=TestModel()):
+            with capture_run_messages() as messages:
+                result = await weather_agent.run(
+                    "What is the weather in Paris?",
+                    deps=WeatherService(),
+                )
+        from pydantic_ai.messages import ModelRequest, ModelResponse
+        assert len(messages) > 0
+        assert isinstance(messages[0], ModelRequest)
+        assert len([m for m in messages if isinstance(m, ModelResponse)]) >= 1
+        assert isinstance(result.output, str)
+
+    @pytest.mark.asyncio
+    async def test_no_real_llm_requests_allowed(self) -> None:
+        assert models.ALLOW_MODEL_REQUESTS is False
+        with weather_agent.override(model=TestModel()):
+            result = await weather_agent.run(
+                "Test query — should never hit real LLM",
+                deps=WeatherService(),
+            )
+        assert isinstance(result.output, str)
 ```
+
+Key patterns demonstrated:
+- `defer_model_check=True` on the `Agent` constructor — required for module-level agents tested with `TestModel`
+- `Agent.override(model=TestModel())` — injects a fake model that returns schema-conforming data without API calls
+- `capture_run_messages()` context manager — captures all `ModelRequest`/`ModelResponse` pairs for assertion
+- `models.ALLOW_MODEL_REQUESTS = False` — global safety net preventing accidental real LLM calls
+- Fixture-based override pattern — reusable across tests via `@pytest.fixture`
+- Requires `pytest-asyncio` for `@pytest.mark.asyncio` async test support

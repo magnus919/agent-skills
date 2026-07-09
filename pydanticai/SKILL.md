@@ -9,7 +9,7 @@ description: >-
 license: MIT
 metadata:
   source: https://pydantic.dev/docs/ai/overview/
-  version: "1.0.3"
+  version: "1.0.4"
 compatibility: Python 3.10+; requires pydantic-ai or pydantic-ai-slim package
 ---
 
@@ -47,6 +47,7 @@ print(result.output)
 | **Multi-agent patterns & integrations** | You need agent delegation, programmatic hand-off, MCP servers, durable execution, or UI adapters | `references/patterns.md` |
 | **Testing & evaluation** | You need TestModel, FunctionModel, pytest patterns, overrides, or Pydantic Evals for systematic eval | `references/testing-evals.md` |
 | **Full worked examples** | You want complete runnable examples — bank support agent, email feedback graph, multi-agent flight booking | `references/examples.md` |
+| **Framework boundaries** | You need to compare PydanticAI vs LangGraph for a project, or want to combine them | `references/hybrid-pydanticai-langgraph.md` — also load `skill_view(name='langgraph')` |
 | **API surface reference** | You need to find the right import path, class name, or method signature quickly | `references/api-reference.md` |
 
 ## Common Patterns at a Glance
@@ -135,6 +136,43 @@ class ProcessNode(BaseNode[MyState]):
 
 *Both APIs in `references/graph.md`.*
 
+### Framework boundaries: PydanticAI vs LangGraph
+
+Both frameworks build agentic systems with graphs and tools, but they differ sharply in design philosophy. The right choice depends on what you're optimizing for.
+
+| Factor | PydanticAI + PydanticGraph | LangGraph | Using both together |
+|---|---|---|---|
+| Design philosophy | Type-safe, data-schema-driven. Feels like FastAPI. | Low-level graph primitives (Pregel/Beam inspired). Feels like NetworkX. | PydanticAI for the agent layer; LangGraph for complex orchestration |
+| Agent definition | `Agent(model, tools, deps, output_type)` — declarative, one line | Manual `StateGraph` nodes with message-passing | PydanticAI `Agent` as a node function inside LangGraph `StateGraph` |
+| Tool calling | `@agent.tool` decorator, auto-schema from type hints, `RunContext` DI | Manual tool registration, `tool_node = ToolNode(tools)` | PydanticAI's typed tool definitions used within LangGraph nodes |
+| State management | `GraphRunContext.state` — mutable dataclass, in-memory | `State` with typed reducers, checkpointers (SQLite/Postgres) | LangGraph checkpointer for the outer flow; PydanticGraph for sub-graph state |
+| Multi-agent patterns | Agent delegation (tool-call), programmatic hand-off, graph-based | Supervisor (central router), swarm (direct handoff), hierarchical (subgraphs) | PydanticAI delegation within a LangGraph supervisor node |
+| Persistence | Durable execution via Temporal, Inngest, Prefect, DBOS | Built-in checkpointers (MemorySaver, SqliteSaver, PostgresSaver) | LangGraph checkpointer at graph level |
+| Streaming | 5 methods: run, run_sync, run_stream, run_stream_events, iter | `.stream()` / `.astream_events()` on compiled graph | LangGraph `.astream_events()` wrapping PydanticAI event handlers |
+| Learning curve | Lower — type hints guide everything | Higher — more manual wiring | Highest — two mental models |
+| Best for | Single agents, tool-using workflows, type-safe structured output, teams new to agents | Complex state machines, multi-agent with branching/cycles, HITL, existing LangChain users | Large systems needing type-safe agents AND sophisticated orchestration |
+
+**Boundary conditions — consider LangGraph when:**
+- You need built-in checkpointing/persistence for long-running conversations (SQLite, Postgres backends built-in)
+- Your multi-agent system needs subgraph composition with isolated state namespaces
+- You need human-in-the-loop patterns (interrupt/resume, state editing, approval workflows)
+- You're already using LangChain and want consistency
+- Your graph needs cycles or dynamic fan-out via `Send()`
+
+**Consider PydanticAI when:**
+- Type safety and IDE autocomplete are priorities
+- You want declarative agents with minimal boilerplate
+- You need structured output with automatic validation and retries
+- Your multi-agent needs are simple delegation or sequential hand-off
+- You value the composable capabilities system (Thinking, WebSearch, MCP as plugins)
+
+**Consider using both when:**
+- You need LangGraph's orchestration (checkpointing, subgraphs, HITL) for the outer loop, but want PydanticAI's type-safe agent definition and tool schema for the inner agent logic
+- You have a mixed team: some agents benefit from PydanticAI's typing, others need LangGraph's low-level control
+- See `references/hybrid-pydanticai-langgraph.md` for a complete worked example.
+
+*LangGraph skill:* `skill_view(name='langgraph')` — covers supervisor/swarm/hierarchical patterns, persistence, production deployment, and evals.
+
 ### Error handling quick-pick
 
 ```python
@@ -179,6 +217,7 @@ pydanticai/
 │   ├── patterns.md            # Multi-agent patterns & integrations
 │   ├── testing-evals.md       # Testing & evaluation framework
 │   ├── examples.md            # Complete worked examples
+│   ├── hybrid-pydanticai-langgraph.md  # PydanticAI as LangGraph node (hybrid pattern)
 │   └── api-reference.md       # Quick API surface reference
 ```
 
