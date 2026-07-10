@@ -148,6 +148,16 @@ python3 -m pip install -e /path/to/agent-council/
 | `AGENT_COUNCIL_MODEL` | No | `openai/gpt-4o-mini` | Model string (`provider/model`) |
 | `AGENT_COUNCIL_BASE_URL` | No | Provider default | Custom API endpoint (OpenRouter, LiteLLM, etc.) |
 
+You can set these as environment variables or create a `.env` file in the directory you run `agent-council` from:
+
+```bash
+# .env file
+AGENT_COUNCIL_API_KEY=sk-...
+AGENT_COUNCIL_MODEL=openai/gpt-4o-mini
+```
+
+Environment variables take precedence over `.env` file values.
+
 Model strings follow PydanticAI convention: `openai/gpt-4o-mini`, `anthropic/claude-sonnet-4-20250514`, `deepseek/deepseek-v4-flash`, `google/gemini-2.0-flash`.
 
 ## Output
