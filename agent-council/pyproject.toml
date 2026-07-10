@@ -1,0 +1,20 @@
+[project]
+name = "agent-council"
+version = "0.1.0"
+description = "Multi-agent structured debate system — spawn a panel of expert agents to debate any question with convergence-aware iteration"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic-ai>=1.0.0",
+]
+
+[project.scripts]
+agent-council = "agent_council.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["agent_council", "agent_council.*"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"

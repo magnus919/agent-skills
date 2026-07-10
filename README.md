@@ -4,6 +4,10 @@ A collection of AI agent skills — reusable workflows, protocols, and knowledge
 
 ## Skills
 
+### [agent-council](agent-council/SKILL.md)
+
+Multi-agent structured debate system — spawn a panel of expert agents to debate any question with convergence-aware iteration. Produces a decision landscape with confidence diagnostics, shared risks, remaining disagreements, and a principal's path narrative. Ships as a pip-installable Python package built on PydanticAI + PydanticGraph. `pip install pydantic-ai && pip install agent-council` and one API key to run your first debate.
+
 ### [agent-skills](agent-skills/SKILL.md)
 
 Reference for the Agent Skills open format itself — directory structure, frontmatter schema, naming conventions, and progressive disclosure model. Use this meta-skill when creating or reviewing any other skill in this repository.
