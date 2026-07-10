@@ -1,5 +1,7 @@
 """Synthesis phase — produces the final decision landscape."""
 
+from typing import Literal
+
 from pydantic_ai import Agent
 from agent_council.state import (
     CouncilState,
@@ -24,31 +26,50 @@ def _collect_risks(
     """Collect all risks flagged across phases."""
     risks: list[RiskVector] = []
 
+    # Heuristic severity: if 3+ agents flagged it independently, it's high.
+    # Risks seen by 2 agents are medium, single-agent risks are low.
+    def _severity(agent_count: int) -> Literal["low", "medium", "high"]:
+        if agent_count >= 3:
+            return "high"
+        elif agent_count == 2:
+            return "medium"
+        return "low"
+
+    # Track which risks were flagged by how many agents (dedup by description prefix)
+    risk_counts: dict[str, set[str]] = {}
+
+    def _record(description: str, agent: str, phase: str):
+        key = description[:60]  # group similar descriptions
+        if key not in risk_counts:
+            risk_counts[key] = set()
+        risk_counts[key].add(agent)
+
     # From premortems (pre-positional)
     for p in premortems.values():
         if p.root_causes:
-            risks.append(
-                RiskVector(
-                    description="; ".join(p.root_causes[:3]),
-                    agents_who_flagged=[p.agent_name],
-                    severity="medium",
-                    phase_discovered="premortem",
-                )
-            )
+            cause = "; ".join(p.root_causes[:3])
+            _record(cause, p.agent_name, "premortem")
 
     # From cross-examinations (post-positional)
     for rnd in cross_rounds:
         for ce in rnd.values():
             if ce.remaining_disagreements:
                 for d in ce.remaining_disagreements[:2]:
-                    risks.append(
-                        RiskVector(
-                            description=d,
-                            agents_who_flagged=[ce.agent_name],
-                            severity="medium",
-                            phase_discovered="cross_examine",
-                        )
-                    )
+                    _record(d, ce.agent_name, "cross_examine")
+
+    # Build final risk list with computed severity
+    premortem_agents = {p.agent_name for p in premortems.values()}
+    for key, agents in risk_counts.items():
+        # Determine phase: if any premortem agent flagged it, origin is premortem
+        phase = "premortem" if any(a in premortem_agents for a in agents) else "cross_examine"
+        risks.append(
+            RiskVector(
+                description=key,
+                agents_who_flagged=list(agents),
+                severity=_severity(len(agents)),
+                phase_discovered=phase,
+            )
+        )
 
     return risks
 
