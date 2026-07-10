@@ -46,7 +46,7 @@ python3 scripts/bootstrap.py
 
 ```bash
 export AGENT_COUNCIL_API_KEY="sk-..."
-export AGENT_COUNCIL_MODEL="openai/gpt-4o-mini"
+export AGENT_COUNCIL_MODEL="openai:gpt-5.6-luna"
 ```
 
 ### 3. Run
@@ -180,7 +180,7 @@ python3 -m pip install -e /path/to/agent-council/
 | Env var | Required | Default | Description |
 |---------|----------|---------|-------------|
 | `AGENT_COUNCIL_API_KEY` | Yes | — | API key for your LLM provider |
-| `AGENT_COUNCIL_MODEL` | No | `openai/gpt-4o-mini` | Model string (`provider/model`) |
+| `AGENT_COUNCIL_MODEL` | No | `openai:gpt-5.6-luna` | Model string (`provider/model`) |
 | `AGENT_COUNCIL_BASE_URL` | No | Provider default | Custom API endpoint (OpenRouter, LiteLLM, etc.) |
 
 You can set these as environment variables or create a `.env` file in the directory you run `agent-council` from:
@@ -188,12 +188,12 @@ You can set these as environment variables or create a `.env` file in the direct
 ```bash
 # .env file
 AGENT_COUNCIL_API_KEY=sk-...
-AGENT_COUNCIL_MODEL=openai/gpt-4o-mini
+AGENT_COUNCIL_MODEL=openai:gpt-5.6-luna
 ```
 
 Environment variables take precedence over `.env` file values.
 
-Model strings follow PydanticAI convention: `openai/gpt-4o-mini`, `anthropic/claude-sonnet-4-20250514`, `deepseek/deepseek-v4-flash`, `google/gemini-2.0-flash`.
+Model strings follow PydanticAI convention: `openai:gpt-5.6-luna`, `anthropic:claude-sonnet-4-20250514`, `deepseek:deepseek-v4-flash`, `google:gemini-2.0-flash`.
 
 ## Output
 

@@ -11,7 +11,7 @@ agent-council "Should we migrate from SQLite to Postgres?"
 
 ```bash
 export AGENT_COUNCIL_API_KEY="sk-..."
-export AGENT_COUNCIL_MODEL="openai/gpt-4o-mini"
+export AGENT_COUNCIL_MODEL="openai:gpt-5.6-luna"
 
 agent-council "Should we use WebSockets or SSE for real-time notifications?"
 ```
@@ -72,8 +72,8 @@ The synthesis report includes:
 | Env var | Required | Default | Description |
 |---------|----------|---------|-------------|
 | `AGENT_COUNCIL_API_KEY` | Yes | — | API key for your LLM provider |
-| `AGENT_COUNCIL_MODEL` | No | `openai/gpt-4o-mini` | Model string (provider/model) |
-| `AGENT_COUNCIL_BASE_URL` | No | Provider default | Custom API endpoint |
+| `AGENT_COUNCIL_MODEL` | No | `openai:gpt-5.6-luna` | Model string in `provider:model` format (e.g. `deepseek:deepseek-v4-flash`) |
+| `AGENT_COUNCIL_BASE_URL` | No | Provider default | Custom API endpoint (e.g. `https://api.deepseek.com/v1`) |
 
 ## License
 

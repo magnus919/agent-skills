@@ -19,7 +19,7 @@ def main():
             "  agent-council --persona-file personas.json \"Custom agent lineup\"\n\n"
             "Environment:\n"
             "  AGENT_COUNCIL_API_KEY   API key (required)\n"
-            "  AGENT_COUNCIL_MODEL     Model string (default: openai/gpt-4o-mini)\n"
+            "  AGENT_COUNCIL_MODEL     Model string (default: openai:gpt-5.6-luna)\n"
             "  AGENT_COUNCIL_BASE_URL  Custom API endpoint\n"
         ),
     )

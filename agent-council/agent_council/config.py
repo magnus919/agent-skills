@@ -45,7 +45,7 @@ def load_config() -> dict:
     _load_dotenv()
 
     api_key = os.environ.get("AGENT_COUNCIL_API_KEY")
-    model = os.environ.get("AGENT_COUNCIL_MODEL", "openai/gpt-4o-mini")
+    model = os.environ.get("AGENT_COUNCIL_MODEL", "openai:gpt-5.6-luna")
     base_url = os.environ.get("AGENT_COUNCIL_BASE_URL")
 
     if not api_key:
@@ -53,10 +53,10 @@ def load_config() -> dict:
             "AGENT_COUNCIL_API_KEY is not set. "
             "Set it via environment variable or create a .env file:\n"
             "  export AGENT_COUNCIL_API_KEY='sk-...'\n"
-            "  export AGENT_COUNCIL_MODEL='openai/gpt-4o-mini'  # or your model\n\n"
+            "  export AGENT_COUNCIL_MODEL='openai:gpt-5.6-luna'  # or your model\n\n"
             "Or create a .env file in the current directory:\n"
             "  AGENT_COUNCIL_API_KEY=sk-...\n"
-            "  AGENT_COUNCIL_MODEL=openai/gpt-4o-mini"
+            "  AGENT_COUNCIL_MODEL=openai:gpt-5.6-luna"
         )
 
     config = {
