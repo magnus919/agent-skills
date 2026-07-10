@@ -1,0 +1,3 @@
+[submodule "agent-council/profiles"]
+	path = agent-council/profiles
+	url = https://github.com/magnus919/hermes-profiles.git
