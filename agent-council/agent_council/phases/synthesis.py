@@ -119,7 +119,7 @@ async def synthesize(state: CouncilState) -> Synthesis:
     return Synthesis(
         question=state.question,
         mode=state.mode,
-        num_agents=len(state.personas),
+        num_agents=len(state.profiles) or len(state.personas),
         rounds_completed=len(state.cross_examination_rounds),
         stopped_reason=stopped_reason,  # type: ignore
         confidence_history=history,

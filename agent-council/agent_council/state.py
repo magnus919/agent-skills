@@ -6,6 +6,22 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 
+# ── Profile info (from submoduled hermes-profiles) ──
+
+
+@dataclass
+class ProfileInfo:
+    """A real profile drawn from the hermes-profiles library.
+
+    Used in place of fabricated AgentPersona when profiles are available.
+    The name is the profile directory name (e.g. 'debugger').
+    The soul_content is the full identity document.
+    """
+    name: str
+    description: str
+    soul_content: str
+
+
 # ── Phase output schemas (validated Pydantic models) ──
 
 
@@ -158,6 +174,9 @@ class CouncilState:
     convergence_threshold: float = 0.10
 
     personas: list[AgentPersona] = field(default_factory=list)
+    profiles: list[ProfileInfo] = field(default_factory=list)
+    """Real profiles from the hermes-profiles library, if available.
+    Takes priority over fabricated personas when present."""
     premortems: dict[str, Premortem] = field(default_factory=dict)
     positions: dict[str, Position] = field(default_factory=dict)
     cross_examination_rounds: list[dict[str, CrossExamination]] = field(

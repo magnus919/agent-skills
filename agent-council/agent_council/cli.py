@@ -70,6 +70,14 @@ def main():
         default=0.10,
         help="Convergence threshold for confidence dispersion (default: 0.10)",
     )
+    parser.add_argument(
+        "--profiles",
+        type=str,
+        default=None,
+        help="Comma-separated profile names from the hermes-profiles library "
+             "(e.g. 'debugger,researcher,product-manager'). "
+             "Omit for auto-selection based on the question.",
+    )
 
     args = parser.parse_args()
 
@@ -95,6 +103,11 @@ def main():
         )
         sys.exit(1)
 
+    # Parse explicit profile list
+    profile_names = None
+    if args.profiles:
+        profile_names = [n.strip() for n in args.profiles.split(",")]
+
     try:
         state = asyncio.run(
             run_debate(
@@ -105,6 +118,7 @@ def main():
                 convergence_threshold=args.convergence,
                 verbose=args.verbose,
                 persona_file=args.persona_file,
+                profile_names=profile_names,
             )
         )
     except ValueError as e:
