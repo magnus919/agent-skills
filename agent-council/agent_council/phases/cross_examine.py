@@ -60,7 +60,7 @@ async def run_cross_examination(
             f"{FACTUAL_CLAIM_GUARDRAIL}"
         )
 
-        agent = Agent(cfg["model"], output_type=CrossExamination, system_prompt=system)
+        agent = Agent(cfg["model"], output_type=CrossExamination, system_prompt=system, retries=3)
         result = await agent.run(question)
         output = result.output
         output.agent_name = agent_id

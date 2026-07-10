@@ -208,6 +208,7 @@ async def _generate_synthesis_narrative(
 
     agent = Agent(
         cfg["model"],
+        retries=3,
         system_prompt=(
             "You are a senior decision analyst. You have overseen a structured "
             "multi-agent debate on an important question. Your job: synthesize "
