@@ -14,6 +14,34 @@ Every skill in this repository conforms to the [Agent Skills specification](http
 | `description` field | Trigger-oriented, describes what and when |
 | Progressive disclosure | Core instructions in `SKILL.md` (< 500 lines, < 5,000 tokens), supporting material in `references/`, `templates/`, `scripts/` |
 | File references | Relative paths from skill root, one level deep |
+| **Human-readable README** | **`README.md`** in skill root — required for every skill. See [README Format](#readme-format) below |
+
+## README Format
+
+Every skill directory **MUST** contain a `README.md` written for a **human audience** (not an AI agent). The README explains what the skill does and why someone would want to install it. It is the public face of the skill — the first thing a human sees when browsing the repository.
+
+### Required Sections
+
+| Section | Purpose |
+|---------|---------|
+| **Title** | Skill name + one-line summary of what it does |
+| **Why Install This Skill** | 2-3 paragraph pitch answering "what problem does this solve for me?" and "what can my agent do after installing this?" — written in plain language, not format docs |
+| **What You Get** | Table listing directory contents (scripts, references, templates, assets) and what each provides |
+| **Quick Start** | Minimal setup: env vars to export, first command to run (omit for reference-only skills) |
+| **Triggers** | List of trigger conditions that tell someone when to load this skill |
+| **Requirements** | Dependencies, API keys, Python version, system tools |
+
+### Style Guidance
+
+- **Lead with benefit, not implementation.** Answer "what does this do for me?" before "what tech is it built on?"
+- **Be concrete.** Show real command examples with expected output. Avoid abstract descriptions.
+- **Assume the reader is human.** No agent instructions, no JSON schemas, no progressive disclosure notes. Those go in `SKILL.md`.
+- **Keep it scannable.** Use tables, code blocks, and bullet lists. A human should grasp the skill's purpose in 10 seconds.
+- **One page or less.** A README that takes more than a minute to read is too long. Save depth for `SKILL.md`.
+
+### Example
+
+See [data-scientist/README.md](data-scientist/README.md) or any skill in this repository for the canonical format.
 
 ## How to Load Skills
 
@@ -103,6 +131,8 @@ When creating or modifying a skill in this repo, validate against the format:
 - Body under 500 lines and 5,000 tokens
 - All file references use relative paths from skill root
 - Frontmatter YAML is valid
+- **`README.md` exists in the skill root** with all required sections (see [README Format](#readme-format) above)
+- **README is written for humans** — no agent instructions, JSON schemas, or progressive disclosure notes in the README. Those belong in `SKILL.md`.
 
 ### Respect Attribution
 
