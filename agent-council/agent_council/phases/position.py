@@ -4,6 +4,7 @@ import asyncio
 from pydantic_ai import Agent
 from agent_council.state import AgentPersona, Position, Premortem
 from agent_council.config import load_config
+from agent_council.guardrails import FACTUAL_CLAIM_GUARDRAIL
 
 
 async def run_positions(
@@ -45,6 +46,7 @@ async def run_positions(
         system += (
             "\n\nReturn your position with a confidence score (0-1) and "
             "the key assumptions that must hold for your position to be correct."
+            f"{FACTUAL_CLAIM_GUARDRAIL}"
         )
 
         agent = Agent(cfg["model"], output_type=Position, system_prompt=system)

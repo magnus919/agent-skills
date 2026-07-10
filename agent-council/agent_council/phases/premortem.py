@@ -4,6 +4,7 @@ import asyncio
 from pydantic_ai import Agent
 from agent_council.state import AgentPersona, Premortem
 from agent_council.config import load_config
+from agent_council.guardrails import FACTUAL_CLAIM_GUARDRAIL
 
 
 async def run_premortems(
@@ -33,6 +34,7 @@ async def run_premortems(
                 "the history of how it failed. What went wrong? What were the "
                 "early warning signals nobody heeded? Be specific and draw on "
                 "your expertise."
+                f"{FACTUAL_CLAIM_GUARDRAIL}"
             ),
         )
         result = await agent.run(question)

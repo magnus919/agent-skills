@@ -8,6 +8,7 @@ from agent_council.state import (
     CrossExamination,
 )
 from agent_council.config import load_config
+from agent_council.guardrails import FACTUAL_CLAIM_GUARDRAIL
 
 
 def _format_other_positions(
@@ -75,6 +76,7 @@ async def run_cross_examination(
             "other agent's reasoning is stronger, identify where you still "
             "disagree and why, and update your position if warranted. Be "
             "specific — do not hedge. If your confidence has changed, say so."
+            f"{FACTUAL_CLAIM_GUARDRAIL}"
         )
 
         agent = Agent(cfg["model"], output_type=CrossExamination, system_prompt=system)

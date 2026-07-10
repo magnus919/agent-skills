@@ -13,6 +13,7 @@ from agent_council.state import (
 )
 from agent_council.convergence import compute_round_metrics
 from agent_council.config import load_config
+from agent_council.guardrails import verify_synthesis
 
 
 def _collect_risks(
@@ -91,7 +92,29 @@ async def synthesize(state: CouncilState) -> Synthesis:
     # Generate narrative synthesis via LLM
     narrative = await _generate_synthesis_narrative(state, cfg)
 
-    stopped_reason = state.synthesis.stopped_reason if state.synthesis else "max_rounds"
+    # Post-synthesis verification: scan for unsubstantiated factual claims
+    verification = await verify_synthesis(narrative)
+    verification_note = ""
+    if verification.has_issues:
+        items = "\n".join(
+            f"  • \"{c.quote[:120]}\" — {c.claim_type}: {c.explanation[:150]}"
+            for c in verification.claims[:5]
+        )
+        verification_note = (
+            f"\n\n---\n"
+            f"⚠️  Claims Not Verified\n"
+            f"The following assertions in this synthesis could not be verified "
+            f"by the council's own reasoning and should be checked before acting:\n"
+            f"{items}\n"
+        )
+        if len(verification.claims) > 5:
+            verification_note += (
+                f"  ...and {len(verification.claims) - 5} more unsubstantiated "
+                f"claim(s)."
+            )
+    narrative += verification_note
+
+    stopped_reason = "max_rounds"  # will be overwritten by graph.py
 
     return Synthesis(
         question=state.question,

@@ -3,6 +3,7 @@
 from pydantic_ai import Agent
 from agent_council.state import AgentPersona
 from agent_council.config import load_config
+from agent_council.guardrails import FACTUAL_CLAIM_GUARDRAIL
 
 
 async def compose_personas(question: str, num_agents: int = 5) -> list[AgentPersona]:
@@ -31,6 +32,7 @@ async def compose_personas(question: str, num_agents: int = 5) -> list[AgentPers
             "role). At least one agent should approach the problem from a fundamentally "
             "different cognitive frame than the others. Design them to create productive "
             "friction — real disagreement grounded in real experience, not caricatures."
+            f"{FACTUAL_CLAIM_GUARDRAIL}"
         ),
     )
 
