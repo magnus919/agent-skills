@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ and pydantic-ai. CLI tool installs via pip.
 metadata:
   source: https://git.brandyapple.com/magnus/agent-skills/agent-council
-  spec-version: "1.0"
+  spec-version: "1.1"
 ---
 
 # Agent Council
@@ -63,6 +63,8 @@ agent-council [OPTIONS] <question>
 Options:
   --agents, -n INTEGER     Number of agents (3-7, default: 5)
   --mode, -m TEXT          Debate depth: quick | medium | deep (default: medium)
+  --profiles TEXT          Comma-separated profile names from the hermes-profiles
+                           library (e.g. "debugger,researcher,product-manager")
   --persona-file PATH      JSON file with custom agent personas
   --json                   Output structured JSON instead of markdown
   --verbose, -v            Show phase-by-phase progress
@@ -77,6 +79,39 @@ Options:
 | `quick` | 3 | 1 cross-examine round | Low-stakes check, fast answer needed |
 | `medium` (default) | 5 | Eval-driven, up to 4 rounds | Standard decisions |
 | `deep` | 7 | Eval-driven, up to 4 rounds | High-stakes, hidden assumptions |
+
+## Profile Selection
+
+By default, the council auto-selects relevant profiles from a library of **39 real professional profiles** (shipped as a git submodule from the [hermes-profiles](https://github.com/magnus919/hermes-profiles) repository). Each profile has a SOUL.md — an identity document with real methodology, values, and operating principles — rather than fabricated personas.
+
+### Auto-selection
+
+When no `--profiles` flag is given, the council scores each profile's description against your question using keyword overlap. The top N most relevant profiles are selected. This works best for focused, single-domain questions.
+
+### Explicit selection
+
+```bash
+agent-council --profiles debugger,data-scientist,product-manager "What architecture should we choose?"
+```
+
+Comma-separated profile names. Available profiles include: `ceo`, `cfo`, `cmo`, `coo`, `cpo`, `cto`, `curator`, `data-architect`, `data-engineer`, `data-scientist`, `debugger`, `editor`, `frontend-engineer`, `ml-engineer`, `orchestrator`, `product-manager`, `researcher`, `reviewer`, `security-engineer`, `site-reliability-engineer`, `technical-architect`, `technical-writer`, `ux-designer`, `verifier`, `wonderer`, `writer`, and more.
+
+### Choosing a Profile Source
+
+Three ways to populate the council, with different tradeoffs:
+
+| Method | Best for | Diversity | Setup |
+|--------|----------|-----------|-------|
+| `--profiles` (auto-select) | Single-domain questions with clear keywords | High — profiles have real SOUL.md methodology | Zero — just ask the question |
+| `--profiles name1,name2` | Targeted debates where you know the stakeholders | Highest — you pick specific methodological voices | Know the profile names |
+| `--persona-file file.json` | Full control over agent identities, custom domains | Variable — depends on how you design them | Create a JSON file |
+| Auto (no flag) | Default — uses profiles if available, falls back to generated | Good — auto-selects from 39 profiles | Zero |
+
+For most cases, let it auto-select or use `--profiles` with 3-5 names. Only use `--persona-file` when you need specific invented expertise that doesn't map to any existing profile.
+
+### Custom personas (fallback)
+
+If the profile library is unavailable or you want full control, use `--persona-file` to supply your own persona definitions. If neither `--profiles` nor `--persona-file` is provided, the council auto-selects profiles from the library; if the library is missing, it falls back to LLM-generated personas.
 
 ## How It Works
 
@@ -171,7 +206,64 @@ The synthesis report is a structured decision landscape. In markdown mode it inc
 5. **Assumptions per position** — what must hold for each position to be valid
 6. **Principal's path** — narrative synthesis of the decision landscape
 
-Use `--json` for programmatic consumption.
+Use `--json` for programmatic consumption. The JSON output follows this structure:
+
+```json
+{
+  "question": "string",
+  "mode": "quick|medium|deep",
+  "num_agents": 3,
+  "rounds_completed": 2,
+  "stopped_reason": "converged|max_rounds|diminishing_returns|genuine_disagreement",
+  "confidence_history": [
+    {"round": 1, "mean_confidence": 0.74, "dispersion": 0.061, "new_arguments": 20, "concessions_made": 17}
+  ],
+  "shared_risks": [{"description": "...", "severity": "low|medium|high", "phase_discovered": "premortem"}],
+  "shared_concerns": ["..."],
+  "disagreements": [{"topic": "...", "positions": {"agent_a": "position_a", "agent_b": "position_b"}}],
+  "assumptions_per_position": {"agent_name": ["assumption1", "assumption2"]},
+  "principal_path": "narrative text"
+}
+```
+
+### Claims Verification
+
+Every synthesis output includes a post-debate verification scan. A separate LLM call reads the narrative synthesis and identifies any claims about verifiable external facts (domain availability, package namespace status, pricing, statistics) that the debate could not have verified from its own reasoning. Flagged claims are appended as a **⚠️ Claims Not Verified** section:
+
+```
+⚠️  Claims Not Verified
+The following assertions in this synthesis could not be verified
+by the council's own reasoning and should be checked before acting:
+  • "Dialekt passes all five checks..." — domain availability:
+    No evidence the council checked domain registries
+```
+
+This is not a rejection of the synthesis — it is a quality signal. Claims in this section should be treated as hypotheses to verify, not as facts.
+
+### Reading the Convergence Diagnostic
+
+The confidence dispersion table tells you whether the debate was productive:
+
+| Pattern | Meaning | What to do |
+|---------|---------|------------|
+| Mean confidence DROPPED, dispersion WIDENED | Council surfaced genuine doubt — healthy debate | Trust the shared concerns; investigate the newly surfaced risks |
+| Mean confidence ROSE, dispersion NARROWED | Genuine convergence — agents convinced each other | The strongest signal; highest-confidence path forward |
+| Mean confidence STABLE, dispersion NARROWED | Possible false consensus — agents agreed before debating | Probe the assumptions section for shared blind spots |
+| Mean confidence ROSE, dispersion WIDENED | Polarization — agents became more entrenched | The question may be genuinely irresolvable by argument alone; look for an experimental path |
+| `stopped_reason: converged` | Dispersion fell below threshold | Good — run with the recommendation |
+| `stopped_reason: max_rounds` | Hit hard cap before converging | The debate was cut off; consider a second run with `--max-rounds` higher or `--mode quick` for faster convergence |
+| `stopped_reason: diminishing_returns` | No new arguments surfaced | The council exhausted what it could discover — make a call |
+| `stopped_reason: genuine_disagreement` | Positions hardened, dispersion widened | The council could not resolve the tension. The output is valuable precisely because it maps irreconcilable disagreement — read the disagreements section carefully |
+
+## Pitfalls
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Debate fails with "Exceeded maximum output retries" | Model couldn't produce valid structured output for a phase | Retry the debate. If persistent, try a different model or add `--verbose` to see which agent failed. |
+| Debate runs for 5+ minutes with no output | DeepSeek or slow model with many agents | Use `--mode quick --agents 3` for fast turnarounds, or use `--verbose` to see progress in real time. |
+| All agents agree immediately with high confidence | False consensus — same model shares blind spots | Check the dispersion diagnostic. Try `--profiles` with diverse identities to force methodological diversity. |
+| "Profile X not found" warning | Typo in profile name | Run `agent-council --profiles list` (or check the profiles list above) for valid names. |
+| Synthesis contains obvious factual errors | Agents fabricated claims during debate | Check the ⚠️ Claims Not Verified section. The guardrail reduces fabrication but cannot eliminate it. Verify any statistics, pricing, or availability claims before acting. |
 
 ## Architecture Decision
 
@@ -219,6 +311,8 @@ agent-council/
 
 ## Related Skills
 
+- **ai-frameworks** — umbrella bundle for all AI framework skills. Load this when comparing agent-council against other multi-agent approaches (LangGraph, AutoGen, CrewAI).
 - **langgraph** — for complex state-machine multi-agent orchestration beyond the debate protocol
 - **pydanticai** — the underlying framework for type-safe agent definitions
 - **spec-driven-development** — for building specs that agent-council can help you evaluate
+- **hermes-profiles** — the 39-profile library that powers the profile selection system
