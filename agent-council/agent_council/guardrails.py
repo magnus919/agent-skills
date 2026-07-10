@@ -74,6 +74,7 @@ async def verify_synthesis(synthesis_text: str) -> SynthesisVerification:
     verifier = Agent(
         cfg["model"],
         output_type=SynthesisVerification,
+        retries=3,
         system_prompt=(
             "You are a verification quality-assurance agent. Your job is to "
             "read a council debate synthesis and identify any claims that "

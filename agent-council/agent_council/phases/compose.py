@@ -18,6 +18,7 @@ async def compose_personas(question: str, num_agents: int = 5) -> list[AgentPers
     compose_agent = Agent(
         cfg["model"],
         output_type=list[AgentPersona],
+        retries=3,
         system_prompt=(
             "You are a council composition specialist. Your job is to design "
             "expert debating agents for a structured multi-perspective debate.\n\n"

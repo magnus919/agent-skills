@@ -24,6 +24,7 @@ async def run_premortems(
         agent = Agent(
             cfg["model"],
             output_type=Premortem,
+            retries=3,
             system_prompt=(
                 f"{identity_block}\n\n"
                 "You are in a structured debate. Your first task: write a "
