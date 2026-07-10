@@ -61,8 +61,8 @@ agent-council "Should we use Postgres or SQLite for this service?"
 agent-council [OPTIONS] <question>
 
 Options:
-  --agents, -n INTEGER     Number of agents (3-7, default: 5)
-  --mode, -m TEXT          Debate depth: quick | medium | deep (default: medium)
+  --agents, -n {3,4,5,6,7}  Number of agents (default: 5)
+  --mode, -m {quick,medium,deep}  Debate depth (default: medium)
   --profiles TEXT          Comma-separated profile names from the hermes-profiles
                            library (e.g. "debugger,researcher,product-manager")
   --persona-file PATH      JSON file with custom agent personas
