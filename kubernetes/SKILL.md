@@ -44,6 +44,7 @@ If the wrapper is unavailable, use the equivalent native commands from `referenc
 | Workloads, probes, rollouts, jobs, or controllers | `references/workloads-and-rollouts.md` |
 | Scheduling, scaling, storage, node disruption, or reliability | `references/scheduling-scaling-storage.md` and `references/nodes-and-reliability.md` |
 | Services, DNS, NetworkPolicy, Ingress, or Gateway API | `references/networking.md` |
+| Pod is `Running` but not serving traffic or is absent from Service endpoints | `references/workloads-and-rollouts.md`, `references/networking.md`, `references/troubleshooting.md`, and the matching distribution overlay |
 | RBAC, Pod Security, admission, audit, secrets, or policy engines | `references/security-and-policy.md` and `references/policy.md` |
 | Evidence-first diagnosis or advanced debugging | `references/troubleshooting.md` and `references/debugging.md` |
 | Backups, upgrades, HA, or observability | `references/operations.md`, `references/backup-restore.md`, and `references/observability.md` |
@@ -71,6 +72,7 @@ The research baseline was checked 2026-07-11. The Kubernetes project page report
 | Claim | Minimum evidence |
 |---|---|
 | Pod is healthy | Pod conditions, readiness, events, and relevant EndpointSlice or external boundary |
+| Pod is serving traffic | Ready condition, Service selector, EndpointSlice membership, events, and a bounded Service-level check |
 | Rollout succeeded | Controller conditions, resulting Pods, events, and the relevant Service or external check |
 | API/resource is available | Served API discovery, installed CRDs/controller support, and server-side validation |
 | Command succeeded operationally | Bounded command result plus the resource condition and user-visible boundary |
