@@ -2,6 +2,11 @@
 
 A thin workflow for repeating the research → extraction → durable-note sequence. It keeps orchestration separate from the research and note-writing skills it composes.
 
+## What You Get
+
+- `SKILL.md`: thin orchestration entry point
+- `README.md`: human-facing setup and triggers
+
 ## Quick Start
 
 Load the skill when the complete research-to-note sequence is needed.
