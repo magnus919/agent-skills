@@ -122,6 +122,10 @@ When the user mentions these keywords, load the corresponding skill:
 | "workflow", "figure out my workflow", "analyze my process", "what do I actually do", "catalog my workflow", "formalize my process", "workflow architect", "onboard me to my own process" | [workflow-architect](bundles/workflow-architect/SKILL.md) |
 | "default alive", "default dead", "runway", "burn rate", "burn multiple", "financial projection", "startup finances", "cash on hand", "breakeven", "how long until", "profitability" | [yc-default-alive-calculator](yc-default-alive-calculator/SKILL.md) |
 | "growth rate", "weekly growth", "monthly growth", "startup growth", "compound growth", "traction", "are we growing", "growth benchmark", "how fast should we grow", "YC growth", "product-market fit", "acceleration", "growth trajectory" | [yc-weekly-growth-compass](yc-weekly-growth-compass/SKILL.md) |
+## Use-When Sections
+
+Every skill description must identify when to load it. Skills with meaningful overlap should also include a `## When not to use` section naming the nearest alternative or prerequisite. Keep these sections trigger-oriented and concise; implementation details belong in references.
+
 ## Best Practices
 
 ### Do Load by Trigger
