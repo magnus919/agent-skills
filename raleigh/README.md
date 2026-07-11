@@ -24,6 +24,7 @@ When your agent loads this skill, it becomes a **Raleigh civic data specialist**
 
 ```bash
 raleigh search "food inspection"
+raleigh info "Food Inspections" --json
 raleigh query "Food Inspections" --where "SCORE < 70"
 raleigh download "Raleigh Dog Parks" -f csv -o dog_parks.csv
 ```

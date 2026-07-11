@@ -2028,8 +2028,38 @@ def cmd_info(args: argparse.Namespace) -> None:
 
     data = _fetch_json(info_url)
 
-    # Fields
     fields = data.get("fields", [])
+
+    # Sample records
+    fmt = "json" if not _use_geojson(ds) else "geojson"
+    sample_url = f"{url}/query?where=1%3D1&outFields=*&f={fmt}&resultRecordCount=3"
+    sample_data = _fetch_json(sample_url)
+    features = sample_data.get("features", [])
+    features = _normalize_features(features)
+    features = _convert_dates(features)
+
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "dataset": {
+                        "title": ds["title"],
+                        "category": ds["category"],
+                        "description": ds["description"],
+                        "server": _server_short(ds["server"]),
+                        "type": ds["svc_type"],
+                    },
+                    "fields": fields,
+                    "sample": {
+                        "type": "FeatureCollection",
+                        "features": features,
+                    },
+                },
+                indent=2,
+            )
+        )
+        return
+
     if fields:
         print("Fields:")
         fheaders = ["Name", "Type", "Alias"]
@@ -2039,13 +2069,6 @@ def cmd_info(args: argparse.Namespace) -> None:
         _print_table(fheaders, frows)
     else:
         print("No field information available.")
-
-    # Sample records
-    fmt = "json" if not _use_geojson(ds) else "geojson"
-    sample_url = f"{url}/query?where=1%3D1&outFields=*&f={fmt}&resultRecordCount=3"
-    sample_data = _fetch_json(sample_url)
-    features = sample_data.get("features", [])
-    features = _normalize_features(features)
 
     print()
     if features:
@@ -2275,6 +2298,7 @@ def build_parser() -> argparse.ArgumentParser:
     # info
     p_info = sub.add_parser("info", help="Show dataset schema and samples")
     p_info.add_argument("dataset_title", help="Dataset title")
+    p_info.add_argument("--json", action="store_true", help="JSON output")
 
     # query
     p_query = sub.add_parser("query", help="Query records from a dataset")
