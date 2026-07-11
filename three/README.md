@@ -11,6 +11,10 @@ Start a working browser 3D scene without rebuilding the setup from memory. The s
 
 Open `templates/basic-scene.html` in a browser or serve the repository with a local HTTP server.
 
+## Quick Start
+
+Open `templates/basic-scene.html` in a browser.
+
 ## Triggers
 
 Three.js, WebGL, 3D scene, camera, lighting, GLTF, shader, animation loop, or interactive browser visualization.
