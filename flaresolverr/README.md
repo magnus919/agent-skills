@@ -1,5 +1,11 @@
 # FlareSolverr
 
+## Why Install This Skill
+
+Use a browser-backed proxy when ordinary HTTP clients encounter a browser challenge. The JSON CLI gives an agent a bounded, inspectable interface without requiring a Python package.
+
+Use it only with a private FlareSolverr service and only for sites you are authorized to access.
+
 Use a browser-backed proxy from the terminal when a site rejects ordinary HTTP clients with a Cloudflare or DDoS-GUARD challenge.
 
 ## What you get
