@@ -2,6 +2,7 @@ import importlib.machinery
 import io
 import json
 import pathlib
+from types import SimpleNamespace
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 
@@ -38,6 +39,16 @@ class CliTests(unittest.TestCase):
         self.assertNotEqual(code, 0)
         self.assertIn("mutation", err)
 
+    def test_live_request_requires_a_server(self):
+        old = cli.DEFAULT_SERVER
+        cli.DEFAULT_SERVER = ""
+        try:
+            code, _, err = self.run_cli(["user", "show"])
+        finally:
+            cli.DEFAULT_SERVER = old
+        self.assertNotEqual(code, 0)
+        self.assertIn("No Forgejo server selected", err)
+
     def test_api_path_guard_and_plan(self):
         self.assertNotEqual(self.run_cli(["api", "--method", "GET", "--path", "/bad"])[0], 0)
         plan = self.plan(["api", "--method", "PATCH", "--path", "/api/v1/user/settings", "--query", "theme=dark", "--data", '{"language":"en"}'])
@@ -66,6 +77,43 @@ class CliTests(unittest.TestCase):
 
     def test_repo_creation_needs_no_owner(self):
         self.assertEqual(self.plan(["repo", "create", "--name", "demo", "--private"])["path"], "/api/v1/user/repos")
+
+    def test_nested_content_path_and_pagination_plan(self):
+        plan = self.plan(["--page", "2", "--limit", "75", "content", "get", "--owner", "me", "--repo", "x", "--path", "dir/a b.txt"])
+        self.assertEqual(plan["path"], "/api/v1/repos/me/x/contents/dir/a%20b.txt")
+        self.assertEqual(plan["query"], {"page": 2, "limit": 75})
+
+    def test_form_transport_custom_authorization_and_response_metadata(self):
+        class Response:
+            status_code = 200
+            content = b'{"ok":true}'
+            text = '{"ok":true}'
+            headers = {"Link": '<https://forge.example/api/v1/user/repos?page=2>; rel="next"', "X-Total-Count": "51"}
+
+            def json(self):
+                return {"ok": True}
+
+        class Requests:
+            RequestException = Exception
+            call = None
+
+            @classmethod
+            def request(cls, *args, **kwargs):
+                cls.call = (args, kwargs)
+                return Response()
+
+        original = cli.requests
+        cli.requests = Requests
+        try:
+            args = SimpleNamespace(server="https://forge.example", dry_run=False, verbose=False, user=False)
+            result = cli.Client(args).request(
+                "POST", "/api/v1/repos/me/x/releases/1/assets", headers={"Authorization": "Basic test"},
+                form={"external_url": "https://example.invalid/file"}, include_response=True)
+        finally:
+            cli.requests = original
+        self.assertEqual(Requests.call[1]["data"], {"external_url": "https://example.invalid/file"})
+        self.assertEqual(result["data"], {"ok": True})
+        self.assertEqual(result["headers"]["x-total-count"], "51")
 
 
 if __name__ == "__main__":

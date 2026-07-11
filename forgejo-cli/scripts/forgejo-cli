@@ -13,7 +13,7 @@ try:
 except ImportError:  # pragma: no cover - surfaced only on actual requests
     requests = None
 
-DEFAULT_SERVER = "https://forgejo.example.com"
+DEFAULT_SERVER = os.getenv("FORGEJO_SERVER", "")
 MUTATING = {"POST", "PUT", "PATCH", "DELETE"}
 
 
@@ -28,7 +28,9 @@ def env(name):
     path = Path.home() / ".hermes" / ".env"
     try:
         for line in path.read_text().splitlines():
-            line = line.strip().removeprefix("export ")
+            line = line.strip()
+            if line.startswith("export "):
+                line = line[len("export "):]
             if line.startswith(name + "="):
                 return line.split("=", 1)[1].strip().strip("\"'")
     except OSError:
@@ -47,7 +49,8 @@ class Client:
         self.verbose = args.verbose
         self.token = env("FORGEJO_USER_TOKEN" if args.user else "FORGEJO_AGENT_TOKEN")
 
-    def request(self, method, path, query=None, body=None, headers=None, raw=None, files=None, form=None):
+    def request(self, method, path, query=None, body=None, headers=None, raw=None, files=None, form=None,
+                include_response=False):
         method = method.upper()
         if not path.startswith("/api/v1/"):
             raise ForgejoError("API path must begin with /api/v1/")
@@ -56,17 +59,23 @@ class Client:
                     "query": query or {}, "body": body, "headers": headers or {},
                     "raw": "<bytes>" if raw is not None else None,
                     "files": {k: getattr(v, "name", str(v)) for k, v in (files or {}).items()}, "form": form or {}}
+        if not self.server:
+            raise ForgejoError("No Forgejo server selected; pass --server URL or set FORGEJO_SERVER")
         if self.verbose:
             print(f"[verbose] {method} {self.server}{path}", file=sys.stderr)
-        if not self.token:
-            raise ForgejoError("No API token available; set FORGEJO_AGENT_TOKEN or FORGEJO_USER_TOKEN")
+        if not self.token and not any(key.lower() == "authorization" for key in (headers or {})):
+            raise ForgejoError("No API token available; set FORGEJO_AGENT_TOKEN or FORGEJO_USER_TOKEN, or provide Authorization")
         if requests is None:
             raise ForgejoError("requests is required for live API calls")
         try:
-            request_headers = {"Authorization": "token " + self.token, **(headers or {})}
+            request_headers = {**(headers or {})}
+            if self.token:
+                request_headers.setdefault("Authorization", "token " + self.token)
             kwargs = {"params": query, "headers": request_headers, "timeout": 30}
             if files:
                 kwargs.update(files=files, data=form or {})
+            elif form:
+                kwargs["data"] = form
             elif raw is not None:
                 kwargs["data"] = raw
             elif body is not None:
@@ -82,11 +91,16 @@ class Client:
                 message = response.text
             raise ForgejoError(f"{method} {path}: HTTP {response.status_code}: {message}")
         if response.status_code == 204 or not response.content:
-            return {}
-        try:
-            return response.json()
-        except ValueError:
-            return {"raw": response.text}
+            result = {}
+        else:
+            try:
+                result = response.json()
+            except ValueError:
+                result = {"raw": response.text}
+        if include_response:
+            metadata = {key.lower(): response.headers[key] for key in ("Link", "X-Total-Count") if key in response.headers}
+            return {"data": result, "status": response.status_code, "headers": metadata}
+        return result
 
 
 def global_flags(parser):
@@ -98,6 +112,9 @@ def global_flags(parser):
     parser.add_argument("--verbose", "-v", action="store_true")
     parser.add_argument("--dry-run", "-n", action="store_true", help="plan request without credentials or network")
     parser.add_argument("--force", "--yes", "-y", action="store_true", help="allow a mutation")
+    parser.add_argument("--page", type=int, help="page number for list/search endpoints")
+    parser.add_argument("--limit", type=int, help="items per page for list/search endpoints")
+    parser.add_argument("--include-response", action="store_true", help="include status and pagination headers in output")
 
 
 def scoped(parser, required_repo=True, index=False):
@@ -201,6 +218,9 @@ def resolve_path(args):
     if args.group == "hook":
         base = f"/api/v1/repos/{seg(args.owner)}/{seg(args.repo)}/hooks" if args.owner and args.repo else "/api/v1/user/hooks"
         return base + (f"/{args.id}" if args.action in {"show","edit","delete"} else "")
+    if args.group == "content":
+        return "/api/v1/repos/{}/{}/contents/{}".format(
+            seg(args.owner), seg(args.repo), quote(args.path, safe="/"))
     values = {k: seg(v) for k,v in vars(args).items() if v is not None}
     return args.path_template.format(**values)
 
@@ -208,13 +228,13 @@ def resolve_path(args):
 def normalize_global_flags(argv):
     """Permit documented global flags at any command nesting level."""
     booleans = {"--agent", "--user", "--json", "--quiet", "-q", "--verbose", "-v",
-                "--dry-run", "-n", "--force", "--yes", "-y"}
+                "--dry-run", "-n", "--force", "--yes", "-y", "--include-response"}
     front, rest, i = [], [], 0
     while i < len(argv):
         value = argv[i]
         if value in booleans:
             front.append(value)
-        elif value == "--server":
+        elif value in {"--server", "--page", "--limit"}:
             if i + 1 >= len(argv):
                 rest.append(value)
             else:
@@ -229,6 +249,8 @@ def normalize_global_flags(argv):
 def main(argv=None):
     parser = build_parser(); args = parser.parse_args(normalize_global_flags(argv or sys.argv[1:]))
     if args.agent and args.user: parser.error("choose only one of --agent or --user")
+    if args.page is not None and args.page < 1: parser.error("--page must be at least 1")
+    if args.limit is not None and args.limit < 1: parser.error("--limit must be at least 1")
     if args.group == "api":
         supplied = sum(bool(value) for value in (args.data, args.data_file, args.raw_file, args.upload_file))
         if supplied > 1: parser.error("choose one payload source: --data, --data-file, --raw-file, or --upload-file")
@@ -252,6 +274,8 @@ def main(argv=None):
             if args.file and args.external_url: parser.error("choose --file or --external-url, not both")
             if not args.file and not args.external_url: parser.error("upload requires --file or --external-url")
             if args.external_url: body = None
+    if args.page is not None: query.setdefault("page", args.page)
+    if args.limit is not None: query.setdefault("limit", args.limit)
     if method in MUTATING and not (args.force or args.dry_run): parser.error(f"{method} is a mutation; use --force/--yes or --dry-run")
     headers, raw, files, form = {}, None, None, None
     if args.group == "api":
@@ -266,8 +290,13 @@ def main(argv=None):
     if getattr(args, "release_upload", False) and args.external_url:
         form = {"external_url": args.external_url}
         if args.name: query["name"] = args.name
-    try: result = Client(args).request(method, path, query, body, headers, raw, files, form)
+    try:
+        result = Client(args).request(method, path, query, body, headers, raw, files, form,
+                                      include_response=args.include_response)
     except (ForgejoError, json.JSONDecodeError) as exc: parser.error(str(exc))
+    finally:
+        for file in (files or {}).values():
+            file.close()
     if args.json: print(json.dumps(result, sort_keys=True))
     elif not args.quiet: print(json.dumps(result, indent=2) if isinstance(result, (dict,list)) else result)
 
