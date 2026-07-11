@@ -58,7 +58,7 @@ fixed-layout, accessibility, and media overlays. Portable across any AgentSkills
 
 ### [forgejo-cli](forgejo-cli/SKILL.md)
 
-Forgejo or Gitea self-hosted Git forge from the terminal. List repositories, search repos, manage issues, and view pull requests.
+Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, metadata, webhooks, and user settings. Includes a guarded generic `/api/v1/` route for version-specific endpoints such as Actions and admin APIs.
 
 ### [gutenberg](gutenberg/SKILL.md)
 
