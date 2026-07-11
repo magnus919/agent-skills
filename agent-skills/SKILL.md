@@ -6,17 +6,13 @@ description: >-
   practices for creating skills. Use this whenever creating, reviewing, or editing
   skills in this repository to ensure they follow the standard spec.
 license: MIT
-compatibility: Compatible with any agent supporting the Agent Skills format (Hermes Agent, Claude Code, GitHub Copilot, OpenCode, Cursor, etc.)
-metadata:
-  source: https://agentskills.io
-  spec-version: "1.0"
 ---
 
 # Agent Skills Standard Reference
 
-This skill documents the [Agent Skills](https://agentskills.io) open format — a standardized way to give AI agents new capabilities and expertise. **Follow these conventions when creating or editing skills in this repo.**
+This skill documents the [Agent Skills](https://agentskills.io) open format — a standardized way to give AI agents new capabilities and expertise. **Follow this workflow when creating or editing skills in this repository.**
 
-> Source: [agentskills.io/specification.md](https://agentskills.io/specification.md)
+> Authoritative source: [agentskills.io/specification](https://agentskills.io/specification). The bundled specification is a working snapshot; check the authoritative source when currentness matters.
 
 ---
 
@@ -32,6 +28,29 @@ skill-name/
 ├── assets/           # Optional: templates, resources
 └── ...               # Any additional files or directories
 ```
+
+## Required Workflow
+
+### Create or edit a skill
+
+1. Read [the specification](references/specification.md) before changing `SKILL.md` metadata or directory structure.
+2. Ground instructions in real domain knowledge, project artifacts, and observed failure modes. Read [best practices](references/best-practices.md) when designing or materially revising instructions.
+3. Keep the skill a coherent, triggerable unit. Put only essential instructions in `SKILL.md`; put conditional detail in focused reference files and state exactly when to read each one.
+4. Use a precise `description` that says both what the skill does and when it applies. For trigger design or review, read [optimizing descriptions](references/optimizing-descriptions.md).
+5. When bundling executable code, read [using scripts](references/using-scripts.md). Document prerequisites and non-interactive invocation in the skill.
+6. Before handoff, run the validation checks in this skill and correct every finding.
+
+### Review a skill
+
+1. Validate the required frontmatter, field constraints, parent-directory/name match, and YAML syntax against [the specification](references/specification.md).
+2. Check that the description has both positive and negative trigger boundaries, the workflow is actionable, and resource references are conditional and reachable.
+3. Check that any script has documented dependencies, safe non-interactive inputs, clear errors, and structured output where useful.
+4. For this repository, also verify its required human-facing `README.md`: title, **Why Install This Skill**, **What You Get**, **Quick Start** (unless genuinely reference-only), **Triggers**, and **Requirements**. Keep it human-facing, concise, and free of agent-only instructions.
+5. For quality-sensitive or high-impact skills, create representative evals and read [evaluating skills](references/evaluating-skills.md) before declaring the work complete.
+
+### Client implementation work
+
+When implementing skill discovery, activation, or context management in an agent product, read [client implementation guidance](references/client-implementation.md). Do not apply client conventions such as search paths as universal format requirements.
 
 ## SKILL.md Format
 
@@ -59,6 +78,14 @@ The `SKILL.md` file must contain YAML frontmatter followed by Markdown body cont
 - 1–1024 characters
 - Should describe both **what** the skill does and **when** to use it
 - Should include specific keywords that help agents identify relevant tasks
+
+#### `compatibility` field rules
+- If present, it must be 1–500 characters
+- Include it only for concrete environment requirements, such as a required product, system package, network access, or runtime
+
+#### `metadata` field rules
+- Must be a map of string keys to string values
+- Use reasonably unique keys to avoid collisions with other clients or tools
 
 ### Body Content
 
@@ -109,7 +136,7 @@ Keep file references one level deep from `SKILL.md`. Avoid deeply nested referen
 
 ## Writing Effective Descriptions
 
-The `description` field is a skill's only trigger mechanism. Follow these principles:
+The `description` field is the primary mechanism for automatic skill selection. Clients can also support explicit activation. Follow these principles:
 
 - **Use imperative phrasing.** "Use this skill when..." rather than "This skill does..."
 - **Focus on user intent, not implementation.** Describe what the user is trying to achieve.
@@ -148,3 +175,5 @@ skills-ref validate ./my-skill
 ```
 
 This checks that `SKILL.md` frontmatter is valid and follows all naming conventions.
+
+If `skills-ref` is unavailable, do not claim a successful validator run. Perform and report the equivalent structural checks manually, or install and run the reference validator when the task permits it.
