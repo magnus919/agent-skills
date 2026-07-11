@@ -25,9 +25,16 @@ Events are short-lived diagnostic evidence and should be correlated by involved 
 
 Use API-server deprecation metrics to locate deprecated API use. Use controller/node/workload metrics for health and capacity. Prometheus Operator, kube-state-metrics, and provider monitoring are ecosystem overlays; route to their official docs rather than pretending they are Kubernetes core.
 
+## Audit policy boundary
+
+Audit logging requires an API-server policy and a backend. The policy levels are `None`, `Metadata`, `Request`, and `RequestResponse`; the more detailed levels increase sensitivity and cost. Start from the minimum evidence needed, redact or restrict request bodies, and treat audit-policy changes as control-plane changes rather than ordinary workload configuration.
+
+Audit records have `RequestReceived`, `ResponseStarted`, `ResponseComplete`, and `Panic` stages. The policy is ordered: the first matching rule wins, and an empty rules list is invalid. Backends are currently log files or webhooks. Audit increases API-server memory use, so measure and bound high-volume rules.
+
 ## Sources
 
 - https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/
 - https://kubernetes.io/docs/concepts/cluster-administration/logging/
 - https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/
 - https://kubernetes.io/docs/reference/instrumentation/metrics/
+- https://kubernetes.io/docs/concepts/security/secrets-good-practices/
