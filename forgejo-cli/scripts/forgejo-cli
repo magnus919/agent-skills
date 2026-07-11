@@ -56,6 +56,8 @@ class Client:
                     "query": query or {}, "body": body, "headers": headers or {},
                     "raw": "<bytes>" if raw is not None else None,
                     "files": {k: getattr(v, "name", str(v)) for k, v in (files or {}).items()}, "form": form or {}}
+        if self.verbose:
+            print(f"[verbose] {method} {self.server}{path}", file=sys.stderr)
         if not self.token:
             raise ForgejoError("No API token available; set FORGEJO_AGENT_TOKEN or FORGEJO_USER_TOKEN")
         if requests is None:
@@ -226,7 +228,10 @@ def normalize_global_flags(argv):
 
 def main(argv=None):
     parser = build_parser(); args = parser.parse_args(normalize_global_flags(argv or sys.argv[1:]))
+    if args.agent and args.user: parser.error("choose only one of --agent or --user")
     if args.group == "api":
+        supplied = sum(bool(value) for value in (args.data, args.data_file, args.raw_file, args.upload_file))
+        if supplied > 1: parser.error("choose one payload source: --data, --data-file, --raw-file, or --upload-file")
         if not args.path.startswith("/api/v1/"): parser.error("api --path must begin with /api/v1/")
         query = pairs(args.query, "--query")
         method, path, body = args.method, args.path, body_for(args)
