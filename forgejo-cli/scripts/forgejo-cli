@@ -47,21 +47,30 @@ class Client:
         self.verbose = args.verbose
         self.token = env("FORGEJO_USER_TOKEN" if args.user else "FORGEJO_AGENT_TOKEN")
 
-    def request(self, method, path, query=None, body=None):
+    def request(self, method, path, query=None, body=None, headers=None, raw=None, files=None, form=None):
         method = method.upper()
         if not path.startswith("/api/v1/"):
             raise ForgejoError("API path must begin with /api/v1/")
         if self.dry_run:
             return {"dry_run": True, "method": method, "path": path,
-                    "query": query or {}, "body": body}
+                    "query": query or {}, "body": body, "headers": headers or {},
+                    "raw": "<bytes>" if raw is not None else None,
+                    "files": {k: getattr(v, "name", str(v)) for k, v in (files or {}).items()}, "form": form or {}}
         if not self.token:
             raise ForgejoError("No API token available; set FORGEJO_AGENT_TOKEN or FORGEJO_USER_TOKEN")
         if requests is None:
             raise ForgejoError("requests is required for live API calls")
         try:
-            response = requests.request(method, self.server + path, params=query,
-                json=body, headers={"Authorization": "token " + self.token,
-                "Content-Type": "application/json"}, timeout=30)
+            request_headers = {"Authorization": "token " + self.token, **(headers or {})}
+            kwargs = {"params": query, "headers": request_headers, "timeout": 30}
+            if files:
+                kwargs.update(files=files, data=form or {})
+            elif raw is not None:
+                kwargs["data"] = raw
+            elif body is not None:
+                kwargs.update(json=body)
+                request_headers.setdefault("Content-Type", "application/json")
+            response = requests.request(method, self.server + path, **kwargs)
         except requests.RequestException as exc:
             raise ForgejoError(f"{method} {path}: connection error: {exc}") from exc
         if response.status_code >= 400:
@@ -119,8 +128,11 @@ def build_parser():
         x=si.add_parser(action); scoped(x,index=True)
         for f in fields: x.add_argument("--"+f.replace("_","-"))
         x.set_defaults(method=method,path_template="/api/v1/repos/{owner}/{repo}/issues/{index}",body_fields=fields, fixed_body={"state": "closed" if action=="close" else "open" if action=="reopen" else None})
-    x=si.add_parser("labels"); scoped(x,index=True); x.add_argument("--labels",default=""); x.set_defaults(method="PUT",path_template="/api/v1/repos/{owner}/{repo}/issues/{index}/labels",body_fields=["labels"])
-    x=si.add_parser("comment"); scoped(x,index=True); x.add_argument("--body",required=True); x.set_defaults(method="POST",path_template="/api/v1/repos/{owner}/{repo}/issues/{index}/comments",body_fields=["body"])
+    for action,method in [("labels","GET"),("set-labels","PUT"),("add-labels","POST"),("clear-labels","DELETE")]:
+        x=si.add_parser(action); scoped(x,index=True); x.add_argument("--labels",default=""); x.set_defaults(method=method,path_template="/api/v1/repos/{owner}/{repo}/issues/{index}/labels",body_fields=["labels"])
+    for action,method in [("comments","GET"),("comment","POST")]:
+        x=si.add_parser(action); scoped(x,index=True); x.add_argument("--body",required=action=="comment"); x.set_defaults(method=method,path_template="/api/v1/repos/{owner}/{repo}/issues/{index}/comments",body_fields=["body"])
+    x=si.add_parser("delete-comment"); scoped(x); x.add_argument("--id",required=True,type=int); x.set_defaults(method="DELETE",path_template="/api/v1/repos/{owner}/{repo}/issues/comments/{id}",body_fields=[])
 
     # Pull requests
     pr=groups.add_parser("pr",help="manage pull requests"); sp=pr.add_subparsers(dest="action",required=True)
@@ -130,7 +142,7 @@ def build_parser():
     x=sp.add_parser("edit"); scoped(x,index=True); x.add_argument("--title"); x.add_argument("--body"); x.add_argument("--state"); x.set_defaults(method="PATCH",path_template="/api/v1/repos/{owner}/{repo}/pulls/{index}",body_fields=["title","body","state"])
     x=sp.add_parser("comment"); scoped(x,index=True); x.add_argument("--body",required=True); x.add_argument("--commit-id"); x.add_argument("--path"); x.add_argument("--line",type=int); x.set_defaults(method="POST",path_template="/api/v1/repos/{owner}/{repo}/pulls/{index}/comments",body_fields=["body","commit_id","path","line"])
     x=sp.add_parser("review"); scoped(x,index=True); x.add_argument("--body",default=""); x.add_argument("--event",default="COMMENT"); x.set_defaults(method="POST",path_template="/api/v1/repos/{owner}/{repo}/pulls/{index}/reviews",body_fields=["body","event"])
-    x=sp.add_parser("merge"); scoped(x,index=True); x.add_argument("--style",default="merge",choices=["merge","rebase","rebase-merge","squash","manually-merged"]); x.set_defaults(method="POST",path_template="/api/v1/repos/{owner}/{repo}/pulls/{index}/merge",body_fields=["style"])
+    x=sp.add_parser("merge"); scoped(x,index=True); x.add_argument("--style",default="merge",choices=["merge","rebase","rebase-merge","squash","fast-forward-only","manually-merged"]); x.add_argument("--delete-branch-after-merge",action="store_true"); x.add_argument("--force-merge",action="store_true"); x.add_argument("--head-commit-id"); x.set_defaults(method="POST",path_template="/api/v1/repos/{owner}/{repo}/pulls/{index}/merge",body_fields=["delete_branch_after_merge","force_merge","head_commit_id"], fixed_body={})
 
     # Repository and contents
     repo=groups.add_parser("repo",help="manage repositories"); sr=repo.add_subparsers(dest="action",required=True)
@@ -141,20 +153,25 @@ def build_parser():
         x=sr.add_parser(action); scoped(x); x.add_argument("--description"); x.add_argument("--private",action="store_true"); suffix="/branches" if action=="branches" else ""; x.set_defaults(method=method,path_template="/api/v1/repos/{owner}/{repo}"+suffix,body_fields=["description","private"] if action=="edit" else [])
     content=groups.add_parser("content",help="manage file contents"); sc=content.add_subparsers(dest="action",required=True)
     for action,method in [("get","GET"),("create","POST"),("update","PUT"),("delete","DELETE")]:
-        x=sc.add_parser(action); scoped(x); x.add_argument("--path",required=True); x.add_argument("--content"); x.add_argument("--sha"); x.add_argument("--message"); x.add_argument("--branch"); x.set_defaults(method=method,path_template="/api/v1/repos/{owner}/{repo}/contents/{path}",body_fields=["content","sha","message","branch"])
+        x=sc.add_parser(action); scoped(x); x.add_argument("--path",required=True); x.add_argument("--content",required=action in {"create","update"}); x.add_argument("--sha",required=action in {"update","delete"}); x.add_argument("--message"); x.add_argument("--branch"); x.add_argument("--ref"); x.set_defaults(method=method,path_template="/api/v1/repos/{owner}/{repo}/contents/{path}",body_fields=["content","sha","message","branch"],query_fields=["ref"])
 
     # Metadata resources share CRUD endpoint shapes.
-    for group, plural in [("label","labels"),("milestone","milestones"),("release","releases")]:
+    for group, plural in [("label","labels"),("milestone","milestones")]:
         g=groups.add_parser(group,help=f"manage {plural}"); s=g.add_subparsers(dest="action",required=True)
         for action,method in [("list","GET"),("show","GET"),("create","POST"),("edit","PATCH"),("delete","DELETE")]:
-            x=s.add_parser(action); scoped(x); x.add_argument("--id",type=int,required=action in {"show","edit","delete"}); x.add_argument("--name"); x.add_argument("--title"); x.add_argument("--body"); x.add_argument("--tag-name"); suffix="" if action in {"list","create"} else "/{id}"; x.set_defaults(method=method,path_template=f"/api/v1/repos/{{owner}}/{{repo}}/{plural}"+suffix,body_fields=["name","title","body","tag_name"])
+            x=s.add_parser(action); scoped(x); x.add_argument("--id",type=int,required=action in {"show","edit","delete"}); x.add_argument("--name"); x.add_argument("--title"); x.add_argument("--body"); suffix="" if action in {"list","create"} else "/{id}"; x.set_defaults(method=method,path_template=f"/api/v1/repos/{{owner}}/{{repo}}/{plural}"+suffix,body_fields=["name","title","body"])
+    release=groups.add_parser("release",help="manage releases and assets"); s=release.add_subparsers(dest="action",required=True)
+    for action,method in [("list","GET"),("show","GET"),("create","POST"),("edit","PATCH"),("delete","DELETE")]:
+        x=s.add_parser(action); scoped(x); x.add_argument("--id",type=int,required=action in {"show","edit","delete"}); x.add_argument("--tag-name",required=action=="create"); x.add_argument("--name"); x.add_argument("--body"); x.add_argument("--draft",action="store_true"); x.add_argument("--prerelease",action="store_true"); x.add_argument("--target-commitish"); suffix="" if action in {"list","create"} else "/{id}"; x.set_defaults(method=method,path_template="/api/v1/repos/{owner}/{repo}/releases"+suffix,body_fields=["tag_name","name","body","draft","prerelease","target_commitish"])
+    for action,method in [("assets","GET"),("upload","POST")]:
+        x=s.add_parser(action); scoped(x); x.add_argument("--id",type=int,required=True); x.add_argument("--file"); x.add_argument("--name"); x.add_argument("--external-url"); x.set_defaults(method=method,path_template="/api/v1/repos/{owner}/{repo}/releases/{id}/assets", release_upload=action=="upload")
     hook=groups.add_parser("hook",help="manage user or repository webhooks"); sh=hook.add_subparsers(dest="action",required=True)
     for action,method in [("list","GET"),("show","GET"),("create","POST"),("edit","PATCH"),("delete","DELETE")]:
-        x=sh.add_parser(action); x.add_argument("--owner"); x.add_argument("--repo"); x.add_argument("--id",type=int,required=action in {"show","edit","delete"}); x.add_argument("--url"); x.add_argument("--secret"); x.add_argument("--events"); x.set_defaults(method=method,path_template="",body_fields=["url","secret","events"])
+        x=sh.add_parser(action); x.add_argument("--owner"); x.add_argument("--repo"); x.add_argument("--id",type=int,required=action in {"show","edit","delete"}); x.add_argument("--url"); x.add_argument("--secret"); x.add_argument("--events"); x.add_argument("--type",default="forgejo"); x.add_argument("--active",action="store_true"); x.add_argument("--branch-filter"); x.set_defaults(method=method,path_template="",body_fields=[])
     user=groups.add_parser("user",help="show profile or settings"); su=user.add_subparsers(dest="action",required=True)
     for action,method,path in [("show","GET","/api/v1/user"),("settings","GET","/api/v1/user/settings"),("update-settings","PATCH","/api/v1/user/settings")]:
         x=su.add_parser(action); x.add_argument("--data"); x.set_defaults(method=method,path_template=path,body_fields=[])
-    api=groups.add_parser("api",help="call any /api/v1 endpoint safely"); api.add_argument("--method",required=True,choices=["GET","POST","PUT","PATCH","DELETE"]); api.add_argument("--path",required=True); api.add_argument("--query",action="append",default=[]); api.add_argument("--data"); api.add_argument("--data-file"); api.set_defaults(group="api")
+    api=groups.add_parser("api",help="call any /api/v1 endpoint safely"); api.add_argument("--method",required=True,choices=["GET","POST","PUT","PATCH","DELETE"]); api.add_argument("--path",required=True); api.add_argument("--query",action="append",default=[]); api.add_argument("--data"); api.add_argument("--data-file"); api.add_argument("--raw-file"); api.add_argument("--upload-file"); api.add_argument("--form",action="append",default=[]); api.add_argument("--header",action="append",default=[]); api.add_argument("--content-type"); api.set_defaults(group="api")
     return p
 
 
@@ -169,6 +186,13 @@ def body_for(args):
             result[key] = value
     result.update({k:v for k,v in getattr(args,"fixed_body",{}).items() if v is not None})
     return result or None
+
+
+def pairs(items, flag):
+    try:
+        return dict(item.split("=", 1) for item in items)
+    except ValueError as exc:
+        raise ForgejoError(f"{flag} must use KEY=VALUE") from exc
 
 
 def resolve_path(args):
@@ -204,16 +228,40 @@ def main(argv=None):
     parser = build_parser(); args = parser.parse_args(normalize_global_flags(argv or sys.argv[1:]))
     if args.group == "api":
         if not args.path.startswith("/api/v1/"): parser.error("api --path must begin with /api/v1/")
-        query = dict(item.split("=", 1) for item in args.query if "=" in item)
-        if len(query) != len(args.query): parser.error("--query must use KEY=VALUE")
+        query = pairs(args.query, "--query")
         method, path, body = args.method, args.path, body_for(args)
     else:
         method, path, body = args.method, resolve_path(args), body_for(args)
         query = {k: getattr(args,k) for k in getattr(args,"query_fields",[]) if getattr(args,k,None) is not None}
         if args.group == "repo" and args.action == "list" and args.owner: path=f"/api/v1/users/{seg(args.owner)}/repos"
         if args.group == "repo" and args.action == "search": query={"q": query.pop("query")}
+        if args.group == "pr" and args.action == "merge":
+            body = {"Do": args.style, **(body or {})}
+        if args.group == "hook" and args.action in {"create", "edit"}:
+            config = {k:v for k,v in {"url": args.url, "secret": args.secret, "content_type": "json"}.items() if v is not None}
+            if args.action == "create" and not args.url: parser.error("hook create requires --url")
+            body = {"events": [x.strip() for x in (args.events or "").split(",") if x.strip()], "active": args.active, "branch_filter": args.branch_filter, "config": config}
+            if args.action == "create": body["type"] = args.type
+            body = {k:v for k,v in body.items() if v not in (None, [], False, {})}
+        if getattr(args, "release_upload", False):
+            if args.file and args.external_url: parser.error("choose --file or --external-url, not both")
+            if not args.file and not args.external_url: parser.error("upload requires --file or --external-url")
+            if args.external_url: body = None
     if method in MUTATING and not (args.force or args.dry_run): parser.error(f"{method} is a mutation; use --force/--yes or --dry-run")
-    try: result = Client(args).request(method, path, query, body)
+    headers, raw, files, form = {}, None, None, None
+    if args.group == "api":
+        headers = pairs(args.header, "--header")
+        if args.content_type: headers["Content-Type"] = args.content_type
+        if args.raw_file: raw = Path(args.raw_file).read_bytes()
+        if args.upload_file:
+            files = {"attachment": open(args.upload_file, "rb")}; form = pairs(args.form, "--form")
+    if getattr(args, "release_upload", False) and args.file:
+        files = {"attachment": open(args.file, "rb")}; form = {}
+        if args.name: query["name"] = args.name
+    if getattr(args, "release_upload", False) and args.external_url:
+        form = {"external_url": args.external_url}
+        if args.name: query["name"] = args.name
+    try: result = Client(args).request(method, path, query, body, headers, raw, files, form)
     except (ForgejoError, json.JSONDecodeError) as exc: parser.error(str(exc))
     if args.json: print(json.dumps(result, sort_keys=True))
     elif not args.quiet: print(json.dumps(result, indent=2) if isinstance(result, (dict,list)) else result)

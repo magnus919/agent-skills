@@ -28,4 +28,4 @@ python3 scripts/forgejo-cli --dry-run --json api --method POST \
   --path /api/v1/repos/acme/app/actions/variables --data '{"name":"KEY","value":"value"}'
 ```
 
-First-class groups: `issue`, `pr`, `repo`, `content`, `label`, `milestone`, `release`, `hook`, and `user`. Use `api` for any other `/api/v1/` endpoint, including Actions, packages, organizations, teams, admin functions, notifications, and permissions. Consult `/api/swagger` or `/swagger.v1.json` on the selected server. See [command reference](references/command-reference.md).
+First-class groups: `issue`, `pr`, `repo`, `content`, `label`, `milestone`, `release`, `hook`, and `user`. `content` expects base64 and update/delete require the current SHA. Use `api` for any other `/api/v1/` endpoint; it supports JSON, raw files, multipart uploads/forms, and custom headers. Consult `/api/swagger` or `/swagger.v1.json` on the selected server. See [command reference](references/command-reference.md).

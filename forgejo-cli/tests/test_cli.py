@@ -55,6 +55,15 @@ class CliTests(unittest.TestCase):
             plan = self.plan(args)
             self.assertEqual((plan["method"], plan["path"]), (method, path))
 
+    def test_merge_hook_and_release_payloads(self):
+        merge = self.plan(["pr", "merge", "--owner", "me", "--repo", "x", "--index", "1", "--style", "squash"])
+        self.assertEqual(merge["body"], {"Do": "squash"})
+        hook = self.plan(["hook", "create", "--owner", "me", "--repo", "x", "--url", "https://hook", "--events", "push"])
+        self.assertEqual(hook["body"]["config"]["url"], "https://hook")
+        self.assertEqual(hook["body"]["type"], "forgejo")
+        release = self.plan(["release", "create", "--owner", "me", "--repo", "x", "--tag-name", "v2", "--name", "Version 2"])
+        self.assertEqual(release["body"], {"tag_name": "v2", "name": "Version 2"})
+
     def test_repo_creation_needs_no_owner(self):
         self.assertEqual(self.plan(["repo", "create", "--name", "demo", "--private"])["path"], "/api/v1/user/repos")
 
