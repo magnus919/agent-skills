@@ -140,7 +140,11 @@ Loading all 15 skills at session start (~6,000 lines, ~75KB) wastes context. Let
 
 When a skill body tells you to read a reference file only under specific conditions ("Read this if the API returns a 500"), do not read it proactively. Reference files are for specific edge cases, not general instruction.
 
-### Validate Your Output
+### Completion and Exit Conditions
+
+Skills that perform diagnosis, planning, or multi-step work must state when they are complete and when to stop. A valid exit condition is an observable artifact or a bounded escalation, such as: deliver the requested file, confirm the current setup is adequate, or stop after three non-converging diagnostic passes and report the evidence.
+
+## Validate Your Output
 
 When creating or modifying a skill in this repo, validate against the format:
 - `name` matches parent directory name
