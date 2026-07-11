@@ -60,8 +60,8 @@ forgejo-cli pr review --owner magnus --repo myrepo --index 1 --body "LGTM" --eve
 forgejo-cli pr merge --owner magnus --repo myrepo --index 3 --dry-run   # Preview first
 forgejo-cli pr merge --owner magnus --repo myrepo --index 3 --force      # Execute merge
 
-# Merge via API (when CLI returns 405 or PR has conflicts to resolve first)
-# See references/pr-merge-via-api.md for full workflow
+# Merge via API (when CLI returns 405 or PR has conflicts to resolve first).
+# Consult the official Forgejo API usage guide for the current request schema.
 
 # Create a PR
 forgejo-cli pr create --owner magnus --repo myrepo --title "feat: add auth" --head feat/add-auth --base main --body "Closes #42"
@@ -73,7 +73,7 @@ forgejo-cli issue create --owner magnus --repo myrepo --title "Bug: login fails"
 # List repos
 forgejo-cli repo list --json
 
-# Create a repo (NOT YET IMPLEMENTED in CLI — use API directly, see references/repo-creation-via-api.md)
+# Create a repo (NOT YET IMPLEMENTED in CLI — use the REST API directly)
 # Documentation says `repo create` but the method isn't coded yet
 
 # List labels
@@ -86,7 +86,7 @@ forgejo-cli --user user show
 
 ## Server Setup
 
-The Forgejo instance runs via Docker on `phatalbert`. See `references/server-setup.md` for the docker-compose.yml, SSH port mapping details (rootless gotcha), volume strategy, and admin accounts.
+The Forgejo instance runs via Docker on `phatalbert`. Consult the instance runbook for its deployment-specific details; use the official Forgejo Docker guide for supported container configuration.
 
 ## Test Suite
 
@@ -97,7 +97,7 @@ bash ~/.hermes/scripts/forgejo-cli-test.sh
 
 ## Forgejo Docker Deployment
 
-See `references/fj-deployment.md` for Forgejo-specific Docker patterns: rootless image quirks, SSH port config, entrypoint config generation, `INSTALL_LOCK` requirements, database setup, and the `***` secrets masking pitfall.
+Use the official Forgejo Docker installation guide for supported image, volume, UID/GID, port, and upgrade practices.
 
 ## Forgejo Actions (CI/CD)
 
@@ -200,11 +200,11 @@ curl -s -X PATCH "https://git.brandyapple.com/api/v1/repos/{owner}/{repo}/releas
 
 PATCH by tag (`/releases/tag/{tag}`) returns 404 — you must use the numeric release ID.
 
-📄 **`references/release-workflow.md`** — Full worked example with rollback instructions, the complete API sequence, and recovery steps for release mistakes.
+For the current release API schema and recovery process, consult the official Forgejo API usage guide.
 
 ## PR Review Workflow
 
-The `references/pr-review-workflow.md` file covers the end-to-end automated code review workflow triggered by forgejo-prs webhooks: fetching diffs, composing review bodies with complex JSON, submitting reviews via API, and handling inline comments vs summary reviews.
+For review endpoints and payloads, consult the official Forgejo API usage guide before automating a review workflow.
 
 ## Pitfalls
 
@@ -286,15 +286,21 @@ with urllib.request.urlopen(req) as resp:
     print(f"Created #{r['number']}: {r['title']}")
 ```
 
-The same pattern works for PR creation — POST to `/pulls` instead of `/issues` with `head` and `base` fields. See `references/pr-creation-via-api.md`.
+The same pattern works for PR creation — POST to `/pulls` instead of `/issues` with `head` and `base` fields. Verify the current schema in the official Forgejo API usage guide.
 
 ## Known Gaps ⚠️
 
 | Claimed Feature | Actual Status | Workaround |
 |---|---|---|
-| `repo create` | Not implemented (only `list`, `show`, `search` exist) | Use raw API — see `references/repo-creation-via-api.md` |
+| `repo create` | Not implemented (only `list`, `show`, `search` exist) | Use the raw REST API |
 | `repo show` | Accepts `--owner --repo` | `repo get` in code; `repo show` alias may not exist — try `--json` on `repo list` filtered by name |
-| `pr merge` | Requires `--force` or `--dry-run` flag (not obvious from help output). Returns 405 when PR isn't mergeable (branch divergence, conflicts) | API-based merge — see `references/pr-merge-via-api.md` |
-| `release create` | Not implemented (no release commands exist at all) | Use raw API — see `references/release-workflow.md` |
-| Standalone PR comment (merged PR) | No subcommand for commenting on already-merged PRs | Use `POST /issues/{id}/comments` — see `references/pr-review-workflow.md` |
-When a CLI subcommand is missing, the Forgejo REST API at `git.brandyapple.com/api/v1` is the backup. The `references/repo-creation-via-api.md` file has the exact curl incantation for repo creation, and `references/pr-creation-via-api.md` covers PR creation.
+| `pr merge` | Requires `--force` or `--dry-run` flag (not obvious from help output). Returns 405 when PR isn't mergeable (branch divergence, conflicts) | Use the REST API after resolving mergeability |
+| `release create` | Not implemented (no release commands exist at all) | Use the raw REST API |
+| Standalone PR comment (merged PR) | No subcommand for commenting on already-merged PRs | Use `POST /issues/{id}/comments` |
+When a CLI subcommand is missing, the Forgejo REST API at `git.brandyapple.com/api/v1` is the backup. Consult the official API guide before composing a request.
+
+## Authoritative References
+
+- [Forgejo API usage](https://forgejo.org/docs/latest/user/api-usage/)
+- [Forgejo Docker installation](https://forgejo.org/docs/latest/admin/installation/docker/)
+- [Forgejo Actions](https://forgejo.org/docs/latest/user/actions/)

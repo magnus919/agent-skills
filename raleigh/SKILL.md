@@ -46,14 +46,12 @@ raleigh download "Raleigh Dog Parks" -f csv -o dog_parks.csv
 | `download` | Export to a file | `raleigh download "Parcels" -f geojson -o parcels.geojson` |
 | `categories` | List data categories | `raleigh categories` |
 
-## Global Flags
+## Output Flags
 
 | Flag | Effect |
 |------|--------|
-| `--json` | JSON output instead of table |
-| `--csv` | CSV output |
-| `--quiet` | Suppress extra messages |
-| `--server URL` | Override API server |
+| `--json` | JSON output for `catalog`, `search`, `info`, `query`, and `categories` |
+| `--csv` | CSV output for `query` only |
 
 ## References
 

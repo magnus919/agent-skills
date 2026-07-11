@@ -15,11 +15,8 @@ metadata:
     - https://github.com/ComposioHQ/awesome-agent-clis
     - https://ronnierocha.dev/blog/dont-build-mcps-build-cli-tools
 ---
-
 # CLI Builder — Agent-Friendly Tool Design
-
 ## Overview
-
 A CLI tool is a **contract** between your code and the agent that calls it. Every design decision is part of that contract:
 
 | CLI Element | Contract Purpose |
@@ -491,20 +488,7 @@ See [references/skill-wrapper-example.md](references/skill-wrapper-example.md) f
 
 ## Agent-Readiness Checklist
 
-- [ ] No interactive prompts (`read`, `select`, `dialog`)
-- [ ] All inputs via flags or env vars
-- [ ] `--help` on every subcommand with examples
-- [ ] `--json` output is valid parseable JSON
-- [ ] `--dry-run` on every destructive command
-- [ ] `--force` / `--yes` to skip confirmations
-- [ ] Idempotent: second call returns no-op, not error
-- [ ] Consistent `resource verb` structure
-- [ ] Errors go to stderr (`>&2` or `die()`)
-- [ ] `--json` mode suppresses all non-JSON stdout
-- [ ] Lazy auth: `--help` and `--dry-run` work without credentials
-- [ ] Exit codes: 0=success, 1=usage error, 2=runtime failure
-- [ ] Live-server verified for every read endpoint
-- [ ] Dry-run verified for every chained-API path
+Use [the agent-readiness checklist](references/agent-readiness-checklist.md) before shipping a CLI.
 
 ## References
 

@@ -188,7 +188,7 @@ entries from memory and writing the output bundle files.
 
 ## Archetype Matching
 
-After each answer, check the `references/workflow-archetypes.md` file to see
+After each answer, check the shared `../../references/workflow-archetypes.md` file to see
 if the user's answers match a known archetype. If they do, note it in state
 and use it to seed better follow-up questions (e.g., "For a morning triage
 workflow, people often have a 'stale items bucket' — do you have something

@@ -99,10 +99,10 @@ Static resources: templates, images, data files, schemas.
 Use **relative paths from the skill root** when referencing other files:
 
 ```markdown
-See [the reference guide](references/REFERENCE.md) for details.
+See [the specification](references/specification.md) for details.
 
-Run the extraction script:
-scripts/extract.py
+Run a bundled script:
+scripts/<script-name>
 ```
 
 Keep file references one level deep from `SKILL.md`. Avoid deeply nested reference chains.

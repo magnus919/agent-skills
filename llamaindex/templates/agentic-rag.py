@@ -4,6 +4,8 @@ Multi-source RAG with agent orchestration.
 Demonstrates pattern 2: orchestrator agent with sub-agents as tools.
 """
 
+import asyncio
+
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.llms.openai import OpenAI
 from llama_index.core.agent.workflow import AgentWorkflow, FunctionAgent
@@ -44,8 +46,13 @@ agent = FunctionAgent(
     tools=[product_tool, support_tool],
 )
 
-# --- Run ---
-response = await agent.run(
-    user_msg="What are the known issues with the API rate limiting feature?"
-)
-print(f"Answer: {response}")
+async def main() -> None:
+    """Run the agent from a regular Python script."""
+    response = await agent.run(
+        user_msg="What are the known issues with the API rate limiting feature?"
+    )
+    print(f"Answer: {response}")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

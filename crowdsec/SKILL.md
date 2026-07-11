@@ -11,15 +11,10 @@ compatibility: Any agent supporting Agent Skills format — commands use standar
 metadata:
   source: https://docs.crowdsec.net
 ---
-
 # CrowdSec Skill
-
 CrowdSec is an open-source, collaborative security engine that detects and blocks malicious actors. It analyzes logs and HTTP requests using behavior-based patterns (scenarios) and enforces blocks through remediation components (bouncers).
-
 ## Architecture Overview
-
 CrowdSec has a modular, API-centric architecture. The main components:
-
 | Component | Role |
 |-----------|------|
 | **Security Engine** (crowdsec) | Reads logs, parses them, evaluates scenarios, and produces alerts/decisions. Runs the Log Processor and Local API (LAPI). |
@@ -28,9 +23,7 @@ CrowdSec has a modular, API-centric architecture. The main components:
 | **Remediation Components** (formerly "bouncers") | Connect to LAPI to fetch decisions and enforce blocks at various levels (firewall, reverse proxy, web server). |
 | **AppSec Component** | WAF subsystem that inspects HTTP requests in real-time. Lives in the Security Engine. |
 | **cscli** | Command-line tool to manage the entire CrowdSec stack. |
-
 **Data flow:** Logs → Parsers (s00-raw, s01-parse, s02-enrich) → Scenarios → Alerts → LAPI → Decisions → Remediation Components → Block
-
 > **Important:** The Security Engine alone only *detects* — it does NOT block. You must add at least one remediation component to enforce decisions.
 
 ## Quick Reference
@@ -488,26 +481,7 @@ api:
 
 Client auth types: `NoClientCert`, `VerifyClientCertIfGiven` (default), `RequireAndVerifyClientCert`
 
-## Production Best Practices
-
-### Gotchas
-
-- **Always install `crowdsecurity/whitelist-good-actors`** to prevent blocking search engines and CDNs.
-- **Set `use_time_machine: true`** for any source that buffers logs before writing (S3, IIS, cloud services).
-- **Persist `/var/lib/crowdsec/data`** in Docker — since v1.7.0 this is mandatory.
-- **After installing collections, reload crowdsec:** `sudo systemctl reload crowdsec`
-- **The `labels.type` field is mandatory** in acquisition config — without it, no parser handles the logs.
-- **Bouncer API keys are shown once** — save them immediately after creation.
-- **Firewall bouncers protect all services; reverse-proxy bouncers protect only proxied services.** For full protection, use both.
-- **CrowdSec uses `4h` as the default ban duration** — configure profiles for longer/shorter bans.
-- **The `--all` flag on `cscli <type> list` shows available (not just installed) items.**
-- **On Docker, enroll with `docker exec crowdsec cscli console enroll -e context <KEY>`** since the bash command is for bare metal.
-- **CrowdSec renamed "bouncers" to "remediation components"** in newer docs. You'll see both terms — they're the same thing.
-- **Local override files (`config.yaml.local`) merge mappings but replace sequences** — you cannot remove a mapping key via .local.
-- **profiles.yaml.local files are NOT merged** — they're read sequentially as multi-document YAML.
-- **Restart CrowdSec after config changes** — `sudo systemctl restart crowdsec` (or reload).
-
-### See the References
+## References
 
 Load the following reference files for deeper coverage of specific topics:
 
@@ -523,29 +497,4 @@ Load the following reference files for deeper coverage of specific topics:
 | Production hardening | Security, TLS, performance tuning | `references/production-hardening.md` |
 | Hub collections list | You need to know which collection protects what | `references/hub-collections.md` |
 | Troubleshooting guide | Something isn't working | `references/troubleshooting.md` |
-
-## Verification
-
-After setup, verify:
-
-```bash
-# 1. Service is running
-sudo systemctl status crowdsec
-
-# 2. Collections are installed
-sudo cscli collections list
-
-# 3. Bouncers are registered
-sudo cscli bouncers list
-
-# 4. Logs are being read (check acquisition metrics)
-sudo cscli metrics | grep -A5 "Acquisition"
-
-# 5. Test manual ban
-sudo cscli decisions add --ip 198.51.100.1 --duration 5m
-sudo cscli decisions list | grep 198.51.100.1
-sudo cscli decisions delete --ip 198.51.100.1
-
-# 6. Confirm AppSec if enabled
-sudo cscli metrics show appsec
-```
+| Production operations checklist | Verifying or operating a deployment | `references/operations-checklist.md` |
