@@ -186,6 +186,16 @@ Keep gotchas in `SKILL.md` where the agent reads them before encountering the si
   When an agent makes a mistake you have to correct, add the correction to the gotchas section. This is one of the most direct ways to improve a skill iteratively (see [Refine with real execution](#refine-with-real-execution)).
 </Tip>
 
+### Use-when sections
+
+Not every instruction in a skill applies to every task it handles. Mark conditional sections with a `**Applicability:**` line at the start of the section so the agent can skip what does not apply. Keep applicability conditions short and binary.
+
+```markdown
+## Database migration
+
+**Applicability:** Only when the task involves schema changes or data migration.
+```
+
 ### Templates for output format
 
 When you need the agent to produce output in a specific format, provide a template. This is more reliable than describing the format in prose, because agents pattern-match well against concrete structures. Short templates can live inline in `SKILL.md`; for longer templates, or templates only needed in certain cases, store them in `assets/` and reference them from `SKILL.md` so they only load when needed.
