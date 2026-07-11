@@ -5,6 +5,10 @@ description: Chain web research, atomic extraction, and durable knowledge captur
 
 # Research and Vault
 
+## Quick Start
+
+Load this skill when the task requires the full research-to-note sequence.
+
 Use this thin orchestrator when a task needs the same sequence repeatedly:
 
 1. Research the target with the available web-research skill.
