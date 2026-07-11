@@ -2,6 +2,10 @@
 
 A thin workflow for repeating the research → extraction → durable-note sequence. It keeps orchestration separate from the research and note-writing skills it composes.
 
+## Quick Start
+
+Load the skill when the complete research-to-note sequence is needed.
+
 ## Triggers
 
 - Repeated research-to-notes work
