@@ -11,6 +11,7 @@ metadata:
   sources: https://x.com/ericzakariasson/status/2036762680401223946, https://www.scalekit.com/blog/mcp-vs-cli-use,
     https://github.com/ComposioHQ/awesome-agent-clis, https://ronnierocha.dev/blog/dont-build-mcps-build-cli-tools
 ---
+
 # CLI Builder — Agent-Friendly Tool Design
 ## Overview
 A CLI tool is a **contract** between your code and the agent that calls it. Every design decision is part of that contract:

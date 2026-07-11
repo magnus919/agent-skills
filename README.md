@@ -16,6 +16,10 @@ Reference for the Agent Skills open format itself — directory structure, front
 
 Radarr and Sonarr media library management. Two CLIs (`radarr-cli` for movies, `sonarr-cli` for TV series) with one shared skill wrapper. List movies and series, search for additions, check calendars and wanted/missing episodes. Separate API keys per app.
 
+### [autogen](autogen/SKILL.md)
+
+An expert-level skill for building **conversational multi-agent systems** with Microsoft's AutoGen framework. Unlike graph-based or role-based orchestration, AutoGen uses **agent-to-agent conversations** as the orchestration primitive.
+
 ### [brand-designer](brand-designer/SKILL.md)
 
 Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Ships 7 templates, a brand-book CLI for validation/compilation, and a generate script for brand card and mockup imagery.
@@ -32,6 +36,10 @@ Expert-level ICC profile color management for open-source workflows. Covers colo
 
 Atlassian Confluence from the terminal. List spaces, browse pages, view content with body extraction, search with CQL, and create pages. Same API token as Jira.
 
+### [crewai](crewai/SKILL.md)
+
+An expert-level skill for building **role-based multi-agent teams** with CrewAI. Agents are defined as Roles with Goals and Backstories; crews are composed with sequential or hierarchical workflows.
+
 ### [crowdsec](crowdsec/SKILL.md)
 
 Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF. Covers Security Engine installation (Linux, Docker), cscli hub management, remediation components (firewall, Traefik, Nginx), AppSec WAF, profiles, notifications, blocklists, CTI, metrics, and production best practices. Ships 7 reference files for deep dives into config, AppSec, Docker, Traefik integration, database backends, hub collections, and troubleshooting.
@@ -47,8 +55,9 @@ PhD-level expertise in data science, statistics, and machine learning. Rigorous 
 ### [docker-compose](docker-compose/SKILL.md)
 Define, run, debug, and harden multi-container applications with Docker Compose. Covers the Compose Specification, lifecycle and healthchecks, service networking, volumes, secrets, profiles, interpolation, overrides, Compose Watch, CI, production patterns, and troubleshooting. Ships 9 references, 5 templates, and a portable diagnostics script.
 
-### [woodpecker-ci](woodpecker-ci/SKILL.md)
-Operate self-hosted Woodpecker CI from installation through production troubleshooting. Covers Forgejo/Gitea integration, server and agent setup, Docker and Kubernetes backends, workflow syntax, secrets, plugins, matrices, CLI/local execution, upgrades, security, and incident response.
+### [dspy](dspy/SKILL.md)
+
+An expert-level skill for **programmatic prompt optimization** with Stanford's DSPy framework. You write Python programs with typed signatures; DSPy optimizes the prompts automatically. This is the framework for prompt engineering that doesn't feel like engineering.
 
 ### [epub](epub/SKILL.md)
 
@@ -63,25 +72,29 @@ fixed-layout, accessibility, and media overlays. Portable across any AgentSkills
 
 Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, metadata, webhooks, and user settings. Includes a guarded generic `/api/v1/` route for version-specific endpoints such as Actions and admin APIs.
 
+### [ghost-cli](ghost-cli/SKILL.md)
+
+Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.
+
+### [github-runner](github-runner/SKILL.md)
+
+Deploy, manage, and troubleshoot self-hosted GitHub Actions runners. Covers systemd, Docker, Kubernetes (ARC), and Scale Set Client deployments.
+
 ### [gutenberg](gutenberg/SKILL.md)
 
 Search, download, and extract public-domain books from Project Gutenberg. Look up books by ID or keyword via gutendex, download plain-text and EPUB editions, strip licensing boilerplate, and classify fiction vs non-fiction. Ships a portable Python CLI with zero external dependencies.
+
+### [haystack](haystack/SKILL.md)
+
+An expert-level skill for building **production search and NLP pipelines** with Haystack. Pipelines are validated DAGs with typed components and explicit connections.
 
 ### [hugo-theme](hugo-theme/SKILL.md)
 
 Build, customize, and debug advanced Hugo CMS themes. Covers template architecture, asset pipeline (Hugo Pipes, Tailwind CSS, PostCSS, images), shortcodes and render hooks, page bundles and content adapters, Hugo Modules, performance optimization, SEO/structured data, design/UX/accessibility, custom output formats, and CI/CD. Ships 7 reference files covering each topic area.
 
-### [ghost-cli](ghost-cli/SKILL.md)
-
-Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.
-
 ### [jellyfin-cli](jellyfin-cli/SKILL.md)
 
 Jellyfin media server from the terminal. Check server info, browse recently added, search your library by type, list libraries, and view statistics.
-
-### [kanban-guru](kanban-guru/SKILL.md)
-
-A virtual Kanban expert for engineering teams. Diagnose flow problems, design board configurations, calibrate WIP limits, establish service level expectations, set up multi-portfolio operating models, and navigate Scrum-to-Kanban transitions. Covers all seven cadences, classes of service, Little's Law, flow metrics, and the full practitioner's playbook with rich reference material.
 
 ### [jira-cli](jira-cli/SKILL.md)
 
@@ -91,6 +104,14 @@ Atlassian Jira from the terminal. Search issues with JQL, view details, create i
 
 Expert-level Jira Query Language reference covering all operators, functions (date/time, user, sprint/version, issue, custom field, JSM), history operators (WAS/CHANGED), relative dates, performance best practices, role-based ready queries, REST API usage, and troubleshooting. Three companion references: complete function catalog, role-specific query bank (dev, scrum master, PO, power user, admin), and gotchas/troubleshooting guide.
 
+### [kanban-guru](kanban-guru/SKILL.md)
+
+A virtual Kanban expert for engineering teams. Diagnose flow problems, design board configurations, calibrate WIP limits, establish service level expectations, set up multi-portfolio operating models, and navigate Scrum-to-Kanban transitions. Covers all seven cadences, classes of service, Little's Law, flow metrics, and the full practitioner's playbook with rich reference material.
+
+### [langchain](langchain/SKILL.md)
+
+An expert-level skill for building LLM-powered applications with LangChain — the most widely adopted LLM orchestration framework. LCEL chains, RAG pipelines, agents, LangSmith observability, and LangServe deployment.
+
 ### [langgraph](langgraph/SKILL.md)
 
 Build multi-agent AI systems with LangGraph — the low-level orchestration framework for stateful, graph-based agent workflows using directed graphs. Covers all major patterns: supervisor (centralized routing node, ~94% accuracy), swarm (direct agent-to-agent handoffs, ~40% fewer LLM calls), and hierarchical teams (subgraph composition with nested state). Includes state management (checkpointers/stores), persistence, production debugging, and evaluation methodology. Ships 3 Python scripts (supervisor scaffold, swarm scaffold, eval generator), 3 runnable templates, and 8 reference files covering architecture, each pattern in depth, evals, production failures, and troubleshooting.
@@ -99,9 +120,13 @@ Build multi-agent AI systems with LangGraph — the low-level orchestration fram
 
 Last.fm music data API from the terminal. Lookup user listening history, get artist/album/track metadata, discover similar music via collaborative filtering, explore global and per-country charts, search, manage tags, and scrobble listening events. API key from last.fm/api/account/create (free). Includes a music discovery pipeline for turning liked tracks into recommendations.
 
-### [pydanticai](pydanticai/SKILL.md)
+### [lidarr-cli](lidarr-cli/SKILL.md)
 
-Build production-grade AI agents and graph-based state machines with PydanticAI and PydanticGraph. Covers agent creation, function tools with RunContext dependencies, structured output validation, streaming (text/events/graph nodes), a 20+ capability plugin system with on-demand loading (Thinking, WebSearch, MCP, Hooks, etc.), 16 model providers with FallbackModel and concurrency limiting, multi-agent delegation and programmatic hand-off, comprehensive testing with TestModel/FunctionModel, and the PydanticEvals evaluation framework. Includes the full PydanticGraph API — both BaseNode (class-based) and GraphBuilder (function-based) with parallel map/broadcast operations, joins with reducers, decisions, Mermaid rendering, and step-by-step execution. Ships 8 reference files covering core agents, capabilities/hooks, graph, models/output, patterns/integrations, testing/evals, worked examples, and an API surface quick reference.
+Manage your Lidarr music library from the terminal — search and browse artists and albums, add new artists, check calendars, view queue and download history.
+
+### [llamaindex](llamaindex/SKILL.md)
+
+An expert-level skill for building LLM applications over your data with LlamaIndex. RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge graph construction, and production deployment.
 
 ### [nous-branding](nous-branding/SKILL.md)
 
@@ -118,13 +143,13 @@ prompt templates for text-only and reference-image-driven workflows.
 
 Google's Open Knowledge Format (OKF) v0.1 — create, validate, and consume vendor-neutral AI agent knowledge bundles. Markdown files with YAML frontmatter, organized in directory hierarchies with cross-links and progressive disclosure. Ships a validation script, concept template, example bundle, and detailed references covering the spec, bundle architecture, and real-world use cases.
 
-### [opensource-contributions](opensource-contributions/SKILL.md)
-
-Comprehensive open source contribution guidance — from reading CONTRIBUTING.md and filing good bug reports through branching, committing, PR creation, and the release cycle. Covers both contributor and maintainer workflows with progressive disclosure: a concise orchestrator SKILL.md loads detailed phase references on demand. Includes a portable PR template compliance checker script. Agent disclosure template for AI-assisted contributions.
-
 ### [openlibrary-cli](openlibrary-cli/SKILL.md)
 
 Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required — the public Open Library API is free for everyone.
+
+### [opensource-contributions](opensource-contributions/SKILL.md)
+
+Comprehensive open source contribution guidance — from reading CONTRIBUTING.md and filing good bug reports through branching, committing, PR creation, and the release cycle. Covers both contributor and maintainer workflows with progressive disclosure: a concise orchestrator SKILL.md loads detailed phase references on demand. Includes a portable PR template compliance checker script. Agent disclosure template for AI-assisted contributions.
 
 ### [peertube](peertube/SKILL.md)
 
@@ -133,6 +158,14 @@ PeerTube federated video platform from the terminal. Browse videos and channels,
 ### [product-discovery](product-discovery/SKILL.md)
 
 Discover product requirements from human stakeholders — map who to talk to, ask questions that surface hidden assumptions, detect gaps in real time, resolve conflicts, and translate conversations into structured specs. Phase 0 upstream of any spec-driven pipeline. Ships 8 reference files covering stakeholder mapping, question patterns, gap detection, conflict resolution, transcript-to-spec distillation, AI-conducted discovery, power dynamics, and time-constrained discovery; plus 5 templates (discovery plan, interview guide, distillation worksheet, gap register, interpretation log).
+
+### [prowlarr-cli](prowlarr-cli/SKILL.md)
+
+Manage your Prowlarr indexer hub from the terminal — list and inspect indexers, view query/grab statistics, check health, manage connected *arr applications, and test indexer connectivity.
+
+### [pydanticai](pydanticai/SKILL.md)
+
+Build production-grade AI agents and graph-based state machines with PydanticAI and PydanticGraph. Covers agent creation, function tools with RunContext dependencies, structured output validation, streaming (text/events/graph nodes), a 20+ capability plugin system with on-demand loading (Thinking, WebSearch, MCP, Hooks, etc.), 16 model providers with FallbackModel and concurrency limiting, multi-agent delegation and programmatic hand-off, comprehensive testing with TestModel/FunctionModel, and the PydanticEvals evaluation framework. Includes the full PydanticGraph API — both BaseNode (class-based) and GraphBuilder (function-based) with parallel map/broadcast operations, joins with reducers, decisions, Mermaid rendering, and step-by-step execution. Ships 8 reference files covering core agents, capabilities/hooks, graph, models/output, patterns/integrations, testing/evals, worked examples, and an API surface quick reference.
 
 ### [raleigh](raleigh/SKILL.md)
 
@@ -154,13 +187,13 @@ Spec-Driven Development (SDD) methodology for AI software factories — where st
 
 Hyper-local weather from a WeatherFlow Tempest station. Query current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. A complete reference implementation of the cli-builder patterns in a working, testable project — including the CLI binary and full API field layout reference.
 
-### [traefik](traefik/SKILL.md)
-
-Deploy, configure, secure, and maintain Traefik v3 reverse proxy — Docker provider, HTTP/TCP/UDP routing, TLS/ACME (Let's Encrypt), middlewares, observability, API, and production deployment. Covers the full static config schema, all 25+ built-in middlewares with YAML config, ACME certificate resolvers with DNS-01/HTTP-01/TLS-ALPN-01 challenges, Docker label reference for routers/services/middlewares, TCP/UDP routing with SNI matching, Prometheus/OpenTelemetry metrics and access logs, and production-ready Docker Compose deployments with security hardening. Ships 10 reference files covering every major feature area.
-
 ### [tmdb-cli](tmdb-cli/SKILL.md)
 
 The Movie Database API from the terminal. Search and discover movies and TV by genre, certification, rating, and date range. Check trending, upcoming, and now playing. Free API key from themoviedb.org.
+
+### [traefik](traefik/SKILL.md)
+
+Deploy, configure, secure, and maintain Traefik v3 reverse proxy — Docker provider, HTTP/TCP/UDP routing, TLS/ACME (Let's Encrypt), middlewares, observability, API, and production deployment. Covers the full static config schema, all 25+ built-in middlewares with YAML config, ACME certificate resolvers with DNS-01/HTTP-01/TLS-ALPN-01 challenges, Docker label reference for routers/services/middlewares, TCP/UDP routing with SNI matching, Prometheus/OpenTelemetry metrics and access logs, and production-ready Docker Compose deployments with security hardening. Ships 10 reference files covering every major feature area.
 
 ### [trakt](trakt/SKILL.md)
 
@@ -169,6 +202,9 @@ Trakt.tv media discovery from the terminal. Browse trending, anticipated, and po
 ### [transistor](transistor/SKILL.md)
 
 Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view subscriber analytics. API key from transistor.fm settings.
+
+### [woodpecker-ci](woodpecker-ci/SKILL.md)
+Operate self-hosted Woodpecker CI from installation through production troubleshooting. Covers Forgejo/Gitea integration, server and agent setup, Docker and Kubernetes backends, workflow syntax, secrets, plugins, matrices, CLI/local execution, upgrades, security, and incident response.
 
 ### [yc-default-alive-calculator](yc-default-alive-calculator/SKILL.md)
 
@@ -241,7 +277,8 @@ Before submitting a new skill:
 2. The `name` field must match the parent directory name
 3. Keep `SKILL.md` under 500 lines and 5,000 tokens
 4. Move detailed reference material to `references/` for progressive disclosure
-5. Validate with `skills-ref validate ./my-skill` if available
+5. Run the canonical-skill validator: `ruby scripts/validate-skills.rb` (vendored `agent-council/profiles/skills/` content is intentionally excluded)
+6. Validate with `skills-ref validate ./my-skill` if available
 
 ---
 

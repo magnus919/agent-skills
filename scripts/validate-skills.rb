@@ -8,8 +8,11 @@ ALLOWED_FIELDS = %w[name description license compatibility metadata allowed-tool
 README_HEADINGS = ["Why Install This Skill", "What You Get", "Quick Start", "Triggers", "Requirements"].freeze
 
 errors = []
+skills = Dir.glob("#{ROOT}/**/SKILL.md").sort.reject do |skill|
+  skill.include?("/agent-council/profiles/skills/")
+end
 
-Dir.glob("#{ROOT}/**/SKILL.md").sort.each do |skill|
+skills.each do |skill|
   relative = skill.delete_prefix("#{ROOT}/")
   text = File.read(skill)
   match = text.match(/\A---\n(.*?)\n---\n/m)
@@ -63,7 +66,7 @@ Dir.glob("#{ROOT}/**/SKILL.md").sort.each do |skill|
 end
 
 if errors.empty?
-  puts "Validated #{Dir.glob("#{ROOT}/**/SKILL.md").length} skills."
+  puts "Validated #{skills.length} canonical skills."
 else
   warn errors.join("\n")
   exit 1

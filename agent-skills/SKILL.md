@@ -176,4 +176,12 @@ skills-ref validate ./my-skill
 
 This checks that `SKILL.md` frontmatter is valid and follows all naming conventions.
 
+For this repository, also run the bundled whole-repository checker:
+
+```bash
+ruby scripts/validate-skills.rb
+```
+
+It checks canonical top-level and bundle skills for frontmatter, supported fields, line limits, local links, and required README sections. Vendored profile skills under `agent-council/profiles/skills/` are intentionally excluded because they follow the source repository's conventions.
+
 If `skills-ref` is unavailable, do not claim a successful validator run. Perform and report the equivalent structural checks manually, or install and run the reference validator when the task permits it.

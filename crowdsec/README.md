@@ -19,6 +19,10 @@ When your agent loads this skill, it becomes a **CrowdSec security engineer** wh
 | `SKILL.md` | Architecture overview, installation guide, quick reference |
 | `references/` | 7 reference files: config deep dive, AppSec WAF, Docker deployment, Traefik integration, database backends, hub collections, troubleshooting |
 
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.
+
 ## Triggers
 
 Load this when setting up or troubleshooting CrowdSec, or when you need an IPS/IDPS/WAF for your infrastructure.
@@ -26,8 +30,3 @@ Load this when setting up or troubleshooting CrowdSec, or when you need an IPS/I
 ## Requirements
 
 Linux server for installation. Docker for containerized deployment. Standard shell tools.
-
-
-## Quick Start
-
-Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

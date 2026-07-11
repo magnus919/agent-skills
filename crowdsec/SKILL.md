@@ -11,6 +11,7 @@ metadata:
   source: https://docs.crowdsec.net
   version: 0.0.2
 ---
+
 # CrowdSec Skill
 CrowdSec is an open-source, collaborative security engine that detects and blocks malicious actors. It analyzes logs and HTTP requests using behavior-based patterns (scenarios) and enforces blocks through remediation components (bouncers).
 ## Architecture Overview

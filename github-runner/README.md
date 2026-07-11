@@ -20,6 +20,10 @@ When your agent loads this skill, it becomes a **CI/CD infrastructure engineer**
 | `SKILL.md` | Deployment spectrum, quick reference, label strategy |
 | `references/` | 7 reference files: deployment, management, scaling, security, custom images, network, monitoring |
 
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.
+
 ## Triggers
 
 Load this when setting up CI, troubleshooting runner registration failures, designing autoscaling, or hardening runner security.
@@ -27,8 +31,3 @@ Load this when setting up CI, troubleshooting runner registration failures, desi
 ## Requirements
 
 Linux, macOS, or Windows target hosts. Docker for containerized runners. Kubernetes for ARC deployments.
-
-
-## Quick Start
-
-Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.
