@@ -5,6 +5,10 @@ description: Build browser-based Three.js and WebGL scenes, animations, and inte
 
 # Three.js
 
+## Quick Start
+
+Open `templates/basic-scene.html` in a modern browser or serve the repository over HTTP.
+
 Use this skill for browser 3D scenes, WebGL visualization, camera and lighting setup, asset loading, or animation loops. Start with the smallest scene in `templates/basic-scene.html`, then add geometry, materials, lights, and controls only as required.
 
 ## Core choices
