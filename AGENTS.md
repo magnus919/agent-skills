@@ -51,6 +51,10 @@ Skills that change external state must say so explicitly and use this gate befor
 
 Destructive operations still require an explicit user directive; this convention does not authorize deletion, privilege changes, or irreversible cleanup.
 
+## Failure-Mode Routing
+
+For problem-pattern routing, start with [FAILURE-MODE-INDEX.md](FAILURE-MODE-INDEX.md).
+
 ## How to Load Skills
 
 Skills are loaded progressively in three stages:
