@@ -191,6 +191,10 @@ Spec-Driven Development (SDD) methodology for AI software factories — where st
 
 4-phase root cause debugging protocol: understand bugs before fixing. Covers schema/environment divergence, exception type specificity in fallback chains, progressive characterization grids for API/retrieval failures, dependency source detection (editable dev forks), macOS sandboxed application debugging, and the Rule of Three for recognizing architectural problems. Adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT) with significant expansion from real-world use.
 
+### [three](three/SKILL.md)
+
+Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations.
+
 ### [tempest-cli](tempest-cli/SKILL.md)
 
 Hyper-local weather from a WeatherFlow Tempest station. Query current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. A complete reference implementation of the cli-builder patterns in a working, testable project — including the CLI binary and full API field layout reference.
