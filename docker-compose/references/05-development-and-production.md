@@ -27,10 +27,10 @@ Run `docker compose up --watch` or `docker compose watch`. `sync` is for hot-rel
 ```bash
 docker compose build --pull
 docker compose config --quiet
-docker compose up -d --wait
-docker compose ps
-docker compose logs --no-color --tail=200
-docker compose down --volumes --remove-orphans
+docker compose -p ci-${CI_JOB_ID:?CI_JOB_ID required} up -d --wait
+docker compose -p ci-${CI_JOB_ID:?CI_JOB_ID required} ps
+docker compose -p ci-${CI_JOB_ID:?CI_JOB_ID required} logs --no-color --tail=200
+docker compose -p ci-${CI_JOB_ID:?CI_JOB_ID required} down --volumes --remove-orphans
 ```
 
 Use an isolated project name and deterministic image tags in CI. Do not use destructive volume cleanup against shared environments.

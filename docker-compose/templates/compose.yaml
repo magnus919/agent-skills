@@ -29,7 +29,7 @@ services:
     networks: [app]
 
   adminer:
-    image: adminer:latest
+    image: adminer@sha256:983261ecc40a4aaf11e25aeda8ef821f5a43a9f024b3967c81cbcc0e6ce43ba3
     depends_on:
       db:
         condition: service_healthy
