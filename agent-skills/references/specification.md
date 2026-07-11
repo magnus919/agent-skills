@@ -205,6 +205,7 @@ Recommended sections:
 * Step-by-step instructions
 * Examples of inputs and outputs
 * Common edge cases
+* Applicability conditions for instructions that only apply to a subset of tasks
 
 Note that the agent will load this entire file once it's decided to activate a skill. Consider splitting longer `SKILL.md` content into referenced files.
 
