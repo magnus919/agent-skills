@@ -33,6 +33,7 @@ The `SKILL.md` file must contain YAML frontmatter followed by Markdown content.
 | `compatibility` | No       | Max 500 characters. Indicates environment requirements (intended product, system packages, network access, etc.). |
 | `metadata`      | No       | Arbitrary key-value mapping for additional metadata.                                                              |
 | `allowed-tools` | No       | Space-separated string of pre-approved tools the skill may use. (Experimental)                                    |
+| `confirmation` | No | Boolean (default: false). Signals destructive or state-changing operations requiring explicit user confirmation. |
 
 <Card>
   **Minimal example:**
@@ -196,6 +197,10 @@ The optional `allowed-tools` field:
   ```
 </Card>
 
+#### `confirmation` field
+
+The optional `confirmation` field must be a boolean. When `true`, the agent must obtain explicit user confirmation before carrying out destructive or state-changing operations directed by the skill. This is a safety signal, not a permissions system. Most skills should omit it.
+
 ### Body content
 
 The Markdown body after the frontmatter contains the skill instructions. There are no format restrictions. Write whatever helps agents perform the task effectively.
@@ -205,6 +210,7 @@ Recommended sections:
 * Step-by-step instructions
 * Examples of inputs and outputs
 * Common edge cases
+* Applicability conditions for instructions that only apply to a subset of tasks
 
 Note that the agent will load this entire file once it's decided to activate a skill. Consider splitting longer `SKILL.md` content into referenced files.
 
