@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+"""Small JSON CLI for the FlareSolverr v1 API."""
+import argparse, json, os, sys, urllib.request
+
+def call(server, payload, timeout):
+    req=urllib.request.Request(server.rstrip('/') + '/v1', data=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as response:
+            return json.load(response)
+    except Exception as exc:
+        print(json.dumps({'error': type(exc).__name__, 'message': str(exc)}), file=sys.stderr)
+        return 1
+
+def main():
+    p=argparse.ArgumentParser(description='FlareSolverr JSON CLI')
+    p.add_argument('--server', default=os.getenv('FLARESOLVERR_SERVER','http://localhost:8191'))
+    p.add_argument('--timeout', type=float, default=60)
+    s=p.add_subparsers(dest='command', required=True)
+    s.add_parser('health')
+    for method in ('get','post'):
+        x=s.add_parser(method); x.add_argument('url'); x.add_argument('--session'); x.add_argument('--data', default='')
+    x=s.add_parser('session'); x.add_argument('action', choices=('create','list','destroy')); x.add_argument('session_id', nargs='?')
+    a=p.parse_args()
+    if a.command=='health': payload={'cmd':'sessions.list'}
+    elif a.command=='session':
+        payload={'cmd': 'sessions.' + a.action}
+        if a.action=='destroy': payload['session']='' if a.session_id is None else a.session_id
+    else:
+        payload={'cmd':'request.'+a.command, 'url':a.url, 'maxTimeout':int(a.timeout*1000)}
+        if a.session: payload['session']=a.session
+        if a.command=='post' and a.data: payload['postData']=a.data
+    result=call(a.server, payload, a.timeout)
+    if result==1: return 1
+    print(json.dumps(result, sort_keys=True))
+    return 0
+
+if __name__=='__main__': raise SystemExit(main())

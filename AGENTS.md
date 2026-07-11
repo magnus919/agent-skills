@@ -43,6 +43,14 @@ Every skill directory **MUST** contain a `README.md` written for a **human audie
 
 See [data-scientist/README.md](data-scientist/README.md) or any skill in this repository for the canonical format.
 
+## State-Modifying Skills
+
+Skills that change external state must say so explicitly and use this gate before the first mutation:
+
+> Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
+
+Destructive operations still require an explicit user directive; this convention does not authorize deletion, privilege changes, or irreversible cleanup.
+
 ## How to Load Skills
 
 Skills are loaded progressively in three stages:
@@ -101,6 +109,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "langgraph", "multi-agent", "state machine", "graph-based workflow", "LangGraph", "supervisor pattern", "swarm pattern", "agent orchestration", "graph state", "subgraph", "agent routing", "tool-calling loop", "agent loop", "stateful agent", "durable execution", "human in the loop langgraph", "checkpointer", "langgraph persistence" | [langgraph](langgraph/SKILL.md) |
 | "debate", "council", "multi-perspective", "structured debate", "get multiple perspectives", "expert panel", "decision landscape", "what would experts say", "what are we missing", "convergence", "false consensus", "agent-council", "pre-mortem" | [agent-council](agent-council/SKILL.md) |
 | "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
+| "FlareSolverr", "Cloudflare challenge", "DDoS-GUARD", "browser-backed request" | [flaresolverr](flaresolverr/SKILL.md) |
 | "last.fm", "scrobble", "music discovery", "listening history", "similar artists", "lastfm", "weekly top artists", "genre charts" | [lastfm](lastfm/SKILL.md) |
 | "nous", "theia", "hermes brand", "brand identity", "style guide", "mascot", "anime style", "cyber-classical", "color palette reference" | [nous-branding](nous-branding/SKILL.md) |
 | "okf", "open knowledge format", "knowledge bundle", "LLM wiki", "agent knowledge", "Google knowledge format", "markdown knowledge", "vendor-neutral knowledge", "create an OKF bundle", "validate OKF", "concept document", "knowledge format" | [open-knowledge-format](open-knowledge-format/SKILL.md) |
