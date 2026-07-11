@@ -1,0 +1,14 @@
+{
+  "schema": "kubernetes-cluster-inventory/v1",
+  "captured_at": "",
+  "context": {"name": "", "server": "", "namespace": ""},
+  "versions": {"client": "", "server": ""},
+  "distribution": {"name": "", "version": "", "confidence": "unknown"},
+  "api": {"resources": [], "versions": [], "crds": []},
+  "nodes": [],
+  "system_workloads": [],
+  "security": {"webhooks": [], "pod_security_namespaces": [], "network_policies": []},
+  "storage": {"classes": [], "csi_drivers": []},
+  "warnings": [],
+  "redaction": {"secrets_omitted": true, "raw_kubeconfig_omitted": true}
+}
