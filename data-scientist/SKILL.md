@@ -1,22 +1,21 @@
 ---
 name: data-scientist
-description: >-
-  PhD-level expertise in data science, statistics, and machine learning. Use when
-  the task requires rigorous statistical analysis, experimental design, causal
-  inference, advanced modeling, research methodology, or data science project
-  leadership. Load when the user asks about statistical methods, experimental design,
-  model selection, A/B testing, hypothesis testing, power analysis, regression,
-  causality, Bayesian analysis, or research methodology.
+description: PhD-level expertise in data science, statistics, and machine learning.
+  Use when the task requires rigorous statistical analysis, experimental design, causal
+  inference, advanced modeling, research methodology, or data science project leadership.
+  Load when the user asks about statistical methods, experimental design, model selection,
+  A/B testing, hypothesis testing, power analysis, regression, causality, Bayesian
+  analysis, or research methodology.
 license: MIT
-compatibility: >-
-  Python 3.10+ with scipy, statsmodels, scikit-learn, pandas, numpy. PyTorch
-  and sklearn are the primary ML frameworks. Hardware-aware via detect-compute.py.
-  Optional R engine via rpy2. Deep learning assumes NVIDIA GPU with CUDA or Apple MPS.
+compatibility: Python 3.10+ with scipy, statsmodels, scikit-learn, pandas, numpy.
+  PyTorch and sklearn are the primary ML frameworks. Hardware-aware via detect-compute.py.
+  Optional R engine via rpy2. Deep learning assumes NVIDIA GPU with CUDA or Apple
+  MPS.
 metadata:
-  spec-version: "1.0"
-  skills: [research-methodology, statistics, machine-learning, causal-inference,
-           bayesian-analysis, experimental-design]
-  requires-toolsets: [terminal]
+  spec-version: '1.0'
+  skills: research-methodology, statistics, machine-learning, causal-inference, bayesian-analysis,
+    experimental-design
+  requires-toolsets: terminal
 ---
 
 # PhD-Level Data Science

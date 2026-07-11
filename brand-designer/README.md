@@ -28,3 +28,8 @@ Load this when you need a brand card for press/stakeholders, visual identity doc
 ## Requirements
 
 Python 3.8+ for the CLI; image generation requires a compatible backend. Templates are plain markdown.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

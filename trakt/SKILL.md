@@ -1,19 +1,16 @@
 ---
 name: trakt
-description: >-
-  Discover trending, anticipated, and popular movies and TV shows via the
-  Trakt.tv API from the terminal. No authentication required for read-only
-  discovery. Use when the user asks about what to watch, trending movies,
-  popular shows, or media discovery.
+description: Discover trending, anticipated, and popular movies and TV shows via the
+  Trakt.tv API from the terminal. No authentication required for read-only discovery.
+  Use when the user asks about what to watch, trending movies, popular shows, or media
+  discovery.
 license: MIT
-compatibility: Requires TRAKT_CLIENT_ID env var (free from
-  trakt.tv/oauth/applications), Python 3.8+, and the `requests` library.
-  No OAuth or user login needed for discovery endpoints.
+compatibility: Requires TRAKT_CLIENT_ID env var (free from trakt.tv/oauth/applications),
+  Python 3.8+, and the `requests` library. No OAuth or user login needed for discovery
+  endpoints.
 metadata:
-  tags: [trakt, media-discovery, movies, tv-shows, trending, api-client]
-  sources:
-    - https://trakt.tv/
-    - https://trakt.docs.apiary.io/
+  tags: trakt, media-discovery, movies, tv-shows, trending, api-client
+  sources: https://trakt.tv/, https://trakt.docs.apiary.io/
 ---
 
 # trakt-cli — Trakt.tv Media Discovery

@@ -1,15 +1,14 @@
 ---
 name: interviewer
-description: >-
-  The active interrogation sub-skill for workflow-architect. Guides the user
-  through 8-15 adaptive questions to discover their workflow phases, branching
-  signals, tool preferences, and friction points. Loaded by the umbrella
-  workflow-architect skill when running in active mode.
+description: The active interrogation sub-skill for workflow-architect. Guides the
+  user through 8-15 adaptive questions to discover their workflow phases, branching
+  signals, tool preferences, and friction points. Loaded by the umbrella workflow-architect
+  skill when running in active mode.
 license: MIT
 compatibility: Hermes Agent — uses memory tool for state persistence
 metadata:
-  tags: [workflow, interview, discovery, process]
-  spec-version: "1.0"
+  tags: workflow, interview, discovery, process
+  spec-version: '1.0'
 ---
 
 # Interviewer — Active Workflow Discovery

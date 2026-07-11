@@ -1,17 +1,16 @@
 ---
 name: software-architecture-analysis
-description: >-
-  Reverse-engineer a software codebase to understand architecture, data flow,
-  privacy posture, and feature surface — then produce a clean-room design
-  document, PRD, or migration plan that re-imagines the system under new
-  constraints (local-first, privacy-first, self-hosted). Use when you need
-  to understand how a system works from its source code or produce a
-  specification without copying implementation details.
+description: Reverse-engineer a software codebase to understand architecture, data
+  flow, privacy posture, and feature surface — then produce a clean-room design document,
+  PRD, or migration plan that re-imagines the system under new constraints (local-first,
+  privacy-first, self-hosted). Use when you need to understand how a system works
+  from its source code or produce a specification without copying implementation details.
 license: MIT
-compatibility: Requires git, a programming language runtime matching the
-  target codebase, and a markdown editor for output.
+compatibility: Requires git, a programming language runtime matching the target codebase,
+  and a markdown editor for output.
 metadata:
-  tags: [reverse-engineering, architecture, prd, design-document, codebase-analysis, clean-room]
+  tags: reverse-engineering, architecture, prd, design-document, codebase-analysis,
+    clean-room
 ---
 
 # Software Architecture Analysis — Codebase Reverse Engineering to Design Document

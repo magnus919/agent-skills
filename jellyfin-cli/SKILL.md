@@ -1,20 +1,17 @@
 ---
 name: jellyfin-cli
-description: >-
-  Query your Jellyfin media server from the terminal — recently added movies
-  and episodes, search across your library, browse libraries, and check server
-  info and stats. Use when the user asks about Jellyfin, media server, movies,
-  TV shows, recently added content, or their media library.
+description: Query your Jellyfin media server from the terminal — recently added movies
+  and episodes, search across your library, browse libraries, and check server info
+  and stats. Use when the user asks about Jellyfin, media server, movies, TV shows,
+  recently added content, or their media library.
 license: MIT
-compatibility: Requires JELLYFIN_URL (default http://localhost:8096) and
-  JELLYFIN_API_KEY env vars; Python 3.8+ and the `requests` library. Generate
-  an API key at Dashboard → API Keys in the Jellyfin admin panel.
+compatibility: Requires JELLYFIN_URL (default http://localhost:8096) and JELLYFIN_API_KEY
+  env vars; Python 3.8+ and the `requests` library. Generate an API key at Dashboard
+  → API Keys in the Jellyfin admin panel.
 metadata:
-  tags: [jellyfin, media-server, movies, tv, episodes, recently-added, library,
-    home-media, api-client]
-  sources:
-    - https://jellyfin.org/docs/general/clients/api
-    - https://jellyfin.org/downloads
+  tags: jellyfin, media-server, movies, tv, episodes, recently-added, library, home-media,
+    api-client
+  sources: https://jellyfin.org/docs/general/clients/api, https://jellyfin.org/downloads
 ---
 
 # jellyfin-cli — Jellyfin Media Server from the Terminal

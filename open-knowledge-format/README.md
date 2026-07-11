@@ -28,3 +28,8 @@ Load this when working with OKF, creating knowledge bundles for AI agents, or co
 ## Requirements
 
 Python 3.8+ with PyYAML for validation. No API keys needed.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

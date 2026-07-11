@@ -27,3 +27,8 @@ Load this when building a new CLI tool, refactoring an existing tool that causes
 ## Requirements
 
 Bash, Python 3.8+, jq, and a standard Unix CLI environment.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

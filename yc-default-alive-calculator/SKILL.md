@@ -1,25 +1,21 @@
 ---
 name: yc-default-alive-calculator
-description: >-
-  Evaluate whether a startup is on a trajectory to profitability before running
-  out of cash — Paul Graham's "Default Alive / Default Dead" framework. Takes
-  revenue, burn rate, cash on hand, and growth rate; computes runway, burn
-  multiple, and months to breakeven. Ships a deterministic CLI calculator.
-  Load when founders ask about runway, burn rate, default alive, whether they
-  need to raise money, or financial sustainability analysis.
+description: Evaluate whether a startup is on a trajectory to profitability before
+  running out of cash — Paul Graham's "Default Alive / Default Dead" framework. Takes
+  revenue, burn rate, cash on hand, and growth rate; computes runway, burn multiple,
+  and months to breakeven. Ships a deterministic CLI calculator. Load when founders
+  ask about runway, burn rate, default alive, whether they need to raise money, or
+  financial sustainability analysis.
 license: MIT
 compatibility: Python 3.9+ with standard library only (no external dependencies).
   The default-alive.py script uses only math, json, and sys.
 metadata:
-  spec-version: "1.0"
-  tags: [startup-finance, runway-analysis, ycombinator, paul-graham, fundraising,
-         financial-modeling, default-alive, burn-rate, startup-metrics]
-  sources:
-    - https://paulgraham.com/default.html
-    - https://paulgraham.com/die.html
-    - https://www.ycombinator.com/about
-  skills: [yc-weekly-growth-compass]
-  requires-toolsets: [terminal]
+  spec-version: '1.0'
+  tags: startup-finance, runway-analysis, ycombinator, paul-graham, fundraising, financial-modeling,
+    default-alive, burn-rate, startup-metrics
+  sources: https://paulgraham.com/default.html, https://paulgraham.com/die.html, https://www.ycombinator.com/about
+  skills: yc-weekly-growth-compass
+  requires-toolsets: terminal
 ---
 
 # Default Alive / Default Dead Calculator

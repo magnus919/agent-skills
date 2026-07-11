@@ -1,15 +1,14 @@
 ---
 name: bundle-builder
-description: >-
-  The synthesis engine for workflow-architect. Reads accumulated workflow
-  state from memory and renders it into a valid Agent Skills bundle directory
-  with sub-skills, manifest, decision map, and optional kanban board. Loaded
-  after the interviewer or observer achieves convergence.
+description: The synthesis engine for workflow-architect. Reads accumulated workflow
+  state from memory and renders it into a valid Agent Skills bundle directory with
+  sub-skills, manifest, decision map, and optional kanban board. Loaded after the
+  interviewer or observer achieves convergence.
 license: MIT
 compatibility: Hermes Agent — uses write_file for bundle output, shell_quote
 metadata:
-  tags: [workflow, generation, bundle, synthesis]
-  spec-version: "1.0"
+  tags: workflow, generation, bundle, synthesis
+  spec-version: '1.0'
 ---
 
 # Bundle Builder — Workflow Synthesis Engine

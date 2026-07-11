@@ -1,15 +1,15 @@
 ---
 name: crowdsec
-version: 0.0.2
-description: >-
-  Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF.
-  Covers Security Engine setup (Linux, Docker), cscli hub management, remediation
-  components, AppSec WAF, profiles, notifications, blocklists, CTI, and metrics.
-  Use when setting up or troubleshooting CrowdSec.
+description: Deploy, configure, and manage CrowdSec — the open-source, collaborative
+  IPS/IDPS/WAF. Covers Security Engine setup (Linux, Docker), cscli hub management,
+  remediation components, AppSec WAF, profiles, notifications, blocklists, CTI, and
+  metrics. Use when setting up or troubleshooting CrowdSec.
 license: MIT
-compatibility: Any agent supporting Agent Skills format — commands use standard shell and CLI tools
+compatibility: Any agent supporting Agent Skills format — commands use standard shell
+  and CLI tools
 metadata:
   source: https://docs.crowdsec.net
+  version: 0.0.2
 ---
 # CrowdSec Skill
 CrowdSec is an open-source, collaborative security engine that detects and blocks malicious actors. It analyzes logs and HTTP requests using behavior-based patterns (scenarios) and enforces blocks through remediation components (bouncers).
@@ -479,12 +479,9 @@ api:
         - bouncers_ou
 ```
 
-Client auth types: `NoClientCert`, `VerifyClientCertIfGiven` (default), `RequireAndVerifyClientCert`
-
 ## References
 
 Load the following reference files for deeper coverage of specific topics:
-
 | Reference | Load when | File |
 |-----------|-----------|------|
 | Full config.yaml reference | You need every configuration directive explained | `references/config-reference.md` |

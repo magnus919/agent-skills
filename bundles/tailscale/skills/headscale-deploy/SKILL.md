@@ -1,17 +1,13 @@
 ---
 name: headscale-deploy
-description: Deploy, configure, and maintain a self-hosted Headscale control server on Linux or Docker. Use when setting up a new Headscale instance, troubleshooting deployment issues, or configuring server settings.
+description: Deploy, configure, and maintain a self-hosted Headscale control server
+  on Linux or Docker. Use when setting up a new Headscale instance, troubleshooting
+  deployment issues, or configuring server settings.
 license: MIT
 compatibility: linux, docker
 metadata:
-  tags:
-    - headscale
-    - tailscale
-    - wireguard
-    - vpn
-    - deployment
-    - devops
-  spec-version: 1.0
+  tags: headscale, tailscale, wireguard, vpn, deployment, devops
+  spec-version: '1.0'
 ---
 
 # headscale-deploy

@@ -28,3 +28,8 @@ Load this when inspecting ICC profiles, converting between color spaces, checkin
 ## Requirements
 
 ImageMagick, Exiftool, ArgyllCMS, LittleCMS (all platform-independent). Python scripts require Python 3.8+.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

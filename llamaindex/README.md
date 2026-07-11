@@ -27,3 +27,13 @@ LlamaIndex evolved from a RAG indexing library into a full workflow framework. I
 ## Requirements
 
 Python 3.8+ with `llama_index` package.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.
+
+
+## Triggers
+
+Use this skill for the task types and keywords described in its SKILL.md description.

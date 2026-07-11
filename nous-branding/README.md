@@ -26,3 +26,8 @@ Load this when creating visuals in the Nous Research ecosystem — blog headers,
 ## Requirements
 
 Image generation backend for prompt-based workflows. Reference-image (img2img) workflows require an API supporting image inputs.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

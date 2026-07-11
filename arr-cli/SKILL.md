@@ -1,22 +1,18 @@
 ---
 name: arr-cli
-description: >-
-  Manage your Radarr (movies) and Sonarr (TV series) media library from the terminal.
-  Search and browse movies/series, add new content, check calendars, view queue and
-  download history, inspect quality profiles, and trigger searches. Use when the user
-  mentions Radarr, Sonarr, the *arr stack, adding a movie or series, checking the
-  library, finding something to watch, what's in the queue, download history,
-  upcoming releases, media server setup, or movie/TV automation.
+description: Manage your Radarr (movies) and Sonarr (TV series) media library from
+  the terminal. Search and browse movies/series, add new content, check calendars,
+  view queue and download history, inspect quality profiles, and trigger searches.
+  Use when the user mentions Radarr, Sonarr, the *arr stack, adding a movie or series,
+  checking the library, finding something to watch, what's in the queue, download
+  history, upcoming releases, media server setup, or movie/TV automation.
 license: MIT
-compatibility: >-
-  Python 3.8+ with `requests` library. Requires ARR_SERVER_RADARR and ARR_KEY_RADARR
-  (for Radarr) or ARR_SERVER_SONARR and ARR_KEY_SONARR (for Sonarr). API keys from
-  each app's Settings → General.
+compatibility: Python 3.8+ with `requests` library. Requires ARR_SERVER_RADARR and
+  ARR_KEY_RADARR (for Radarr) or ARR_SERVER_SONARR and ARR_KEY_SONARR (for Sonarr).
+  API keys from each app's Settings → General.
 metadata:
-  tags: [radarr, sonarr, arr-stack, media-server, movie-automation, tv-series, api-client]
-  sources:
-    - https://radarr.video/
-    - https://sonarr.tv/
+  tags: radarr, sonarr, arr-stack, media-server, movie-automation, tv-series, api-client
+  sources: https://radarr.video/, https://sonarr.tv/
 ---
 
 # arr-cli — Radarr + Sonarr Media Library Management

@@ -1,26 +1,18 @@
 ---
 name: systematic-debugging
-description: >-
-  4-phase root cause debugging protocol: understand bugs before fixing.
-  Use for ANY technical issue — test failures, production bugs, unexpected
-  behavior, performance problems, build failures, or integration issues.
-  ESPECIALLY when under time pressure, when "one quick fix" seems obvious,
-  or when previous fix attempts have failed.
+description: '4-phase root cause debugging protocol: understand bugs before fixing.
+  Use for ANY technical issue — test failures, production bugs, unexpected behavior,
+  performance problems, build failures, or integration issues. ESPECIALLY when under
+  time pressure, when "one quick fix" seems obvious, or when previous fix attempts
+  have failed.'
 license: MIT
-compatibility: >-
-  Platform-agnostic. Some sections cover macOS-specific sandbox debugging.
-  Requires access to source code, version control (git), and testing tools
-  appropriate to the project.
+compatibility: Platform-agnostic. Some sections cover macOS-specific sandbox debugging.
+  Requires access to source code, version control (git), and testing tools appropriate
+  to the project.
 metadata:
-  tags:
-    - debugging
-    - troubleshooting
-    - problem-solving
-    - root-cause
-    - investigation
-  source: >-
-    Adapted from obra/superpowers (Jesse Vincent, MIT).
-    Expanded with real-world debugging patterns from production use.
+  tags: debugging, troubleshooting, problem-solving, root-cause, investigation
+  source: Adapted from obra/superpowers (Jesse Vincent, MIT). Expanded with real-world
+    debugging patterns from production use.
 ---
 
 # Systematic Debugging

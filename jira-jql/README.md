@@ -27,3 +27,8 @@ Load this when writing, debugging, or optimizing JQL queries; building saved fil
 ## Requirements
 
 None — this is a reference skill. No scripts, no API keys.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

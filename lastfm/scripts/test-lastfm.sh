@@ -31,8 +31,9 @@ check_output() {
     fi
 }
 
-# CLI path — adjust if not on PATH
-CLI=lastfm-cli
+# Use the bundled CLI so the test is location-independent.
+SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+CLI="$SKILL_DIR/scripts/lastfm-cli"
 
 echo "=== lastfm-cli Test Suite ===
 "

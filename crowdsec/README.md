@@ -26,3 +26,8 @@ Load this when setting up or troubleshooting CrowdSec, or when you need an IPS/I
 ## Requirements
 
 Linux server for installation. Docker for containerized deployment. Standard shell tools.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

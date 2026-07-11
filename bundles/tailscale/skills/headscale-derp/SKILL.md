@@ -1,7 +1,11 @@
 ---
 name: headscale-derp
-description: Configure and manage DERP relay servers for Tailscale/Headscale — embedded and standalone DERP deployment, latency testing, and connectivity diagnostics. Use when direct peer connections fail, traffic is routed through DERP relays, or setting up custom relay regions.
-category: devops
+description: Configure and manage DERP relay servers for Tailscale/Headscale — embedded
+  and standalone DERP deployment, latency testing, and connectivity diagnostics. Use
+  when direct peer connections fail, traffic is routed through DERP relays, or setting
+  up custom relay regions.
+metadata:
+  category: devops
 ---
 
 # headscale-derp Skill

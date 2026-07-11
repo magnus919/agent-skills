@@ -27,3 +27,13 @@ CrewAI is higher-abstraction than LangGraph (which is a low-level state machine)
 ## Requirements
 
 Python 3.8+ with `crewai` and `crewai-tools` packages.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.
+
+
+## Triggers
+
+Use this skill for the task types and keywords described in its SKILL.md description.

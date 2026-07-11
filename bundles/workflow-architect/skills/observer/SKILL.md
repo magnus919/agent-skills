@@ -1,15 +1,13 @@
 ---
 name: observer
-description: >-
-  The passive observation sub-skill for workflow-architect. Loaded silently,
-  it stays dormant until a trigger phrase activates it. On activation, it
-  scans the current session context to infer the user's workflow from what
-  actually happened.
+description: The passive observation sub-skill for workflow-architect. Loaded silently,
+  it stays dormant until a trigger phrase activates it. On activation, it scans the
+  current session context to infer the user's workflow from what actually happened.
 license: MIT
 compatibility: Hermes Agent — uses session_search and context scanning
 metadata:
-  tags: [workflow, observation, discovery, passive]
-  spec-version: "1.0"
+  tags: workflow, observation, discovery, passive
+  spec-version: '1.0'
 ---
 
 # Observer — Passive Workflow Discovery

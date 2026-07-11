@@ -1,18 +1,16 @@
 ---
 name: workflow-architect
-description: >-
-  Discover your actual workflow through conversation or observation, then generate
-  a tailored skills bundle that encodes it as loadable agent skills with trigger
-  conditions. Use when you want to understand your own process, formalize it, or
-  share it with collaborators. Also use when a session feels aimless — this skill
-  gives it structure.
+description: Discover your actual workflow through conversation or observation, then
+  generate a tailored skills bundle that encodes it as loadable agent skills with
+  trigger conditions. Use when you want to understand your own process, formalize
+  it, or share it with collaborators. Also use when a session feels aimless — this
+  skill gives it structure.
 license: MIT
-compatibility: >-
-  Hermes Agent — uses skill_view(), memory tool, session context scanning,
+compatibility: Hermes Agent — uses skill_view(), memory tool, session context scanning,
   and write_file for bundle generation. Output bundles are standard Agent Skills.
 metadata:
-  tags: [workflow, meta, productivity, skills-bundle, onboarding, process]
-  spec-version: "1.0"
+  tags: workflow, meta, productivity, skills-bundle, onboarding, process
+  spec-version: '1.0'
 ---
 
 # Workflow Architect

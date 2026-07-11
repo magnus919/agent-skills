@@ -1,27 +1,24 @@
 ---
 name: nous-branding
-description: >-
-  Generate images and content consistent with the Nous Research brand identity.
-  Use when creating visuals in the Nous / Theia / Hermes ecosystem: a "cyber-classical"
+description: 'Generate images and content consistent with the Nous Research brand
+  identity. Use when creating visuals in the Nous / Theia / Hermes ecosystem: a "cyber-classical"
   style blending neo-classical statuary, cyberpunk/industrial grunge, and retro anime
   illustration. Covers official brand color palette, typography (Inter/IBM Plex Sans,
   JetBrains Mono, heavy distressed display faces), the Nous Girl mascot, texture system,
   and image prompt construction. Ships reference images for palette, mascot, and brand
-  collage that can be used as img2img inputs.
+  collage that can be used as img2img inputs.'
 license: MIT
-version: 1.1.0
-compatibility: Compatible with any agent capable of image generation or brand
-  analysis. Reference-image workflows (img2img, style transfer, variations) require
-  an API endpoint supporting image inputs — use the assets/ images as input.
+compatibility: Compatible with any agent capable of image generation or brand analysis.
+  Reference-image workflows (img2img, style transfer, variations) require an API endpoint
+  supporting image inputs — use the assets/ images as input.
 metadata:
-  tags: [nous-research, theia, hermes, brand, illustration, mascot, image-generation, style-guide, cyber-classical]
-  sources:
-    - https://nousresearch.com
-    - Reference image: assets/palette-typography-reference.png
-    - Reference image: assets/nous-girl-official.webp (official mascot, 2669×2709)
-    - Reference image: assets/nous-girl-style-reference.png
-    - Reference image: assets/brand-collage-reference.png
-    - https://nousresearch.com/wp-content/uploads/2024/03/NOUS-BRAND-BOOKLET-firstedition_1.pdf
+  tags: nous-research, theia, hermes, brand, illustration, mascot, image-generation,
+    style-guide, cyber-classical
+  sources: https://nousresearch.com, {"Reference image"=>"assets/palette-typography-reference.png"},
+    {"Reference image"=>"assets/nous-girl-official.webp (official mascot, 2669×2709)"},
+    {"Reference image"=>"assets/nous-girl-style-reference.png"}, {"Reference image"=>"assets/brand-collage-reference.png"},
+    https://nousresearch.com/wp-content/uploads/2024/03/NOUS-BRAND-BOOKLET-firstedition_1.pdf
+  version: 1.1.0
 ---
 
 # Nous Branding

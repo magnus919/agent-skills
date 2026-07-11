@@ -28,3 +28,8 @@ Load this when working on a Hugo theme or site template layer.
 ## Requirements
 
 Hugo v0.154+. Works with any agent framework supporting the Agent Skills format.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

@@ -27,3 +27,8 @@ Load this when setting up CI, troubleshooting runner registration failures, desi
 ## Requirements
 
 Linux, macOS, or Windows target hosts. Docker for containerized runners. Kubernetes for ARC deployments.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

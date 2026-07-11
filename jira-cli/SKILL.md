@@ -1,19 +1,16 @@
 ---
 name: jira-cli
-description: >-
-  Interact with Atlassian Jira from the terminal: search issues, view
-  details, create issues, add comments, list projects, and transition
-  status. Use when the user mentions Jira, a ticket key (e.g. PROJ-123),
-  or asks about issues, bugs, tasks, projects, or sprint work.
+description: 'Interact with Atlassian Jira from the terminal: search issues, view
+  details, create issues, add comments, list projects, and transition status. Use
+  when the user mentions Jira, a ticket key (e.g. PROJ-123), or asks about issues,
+  bugs, tasks, projects, or sprint work.'
 license: MIT
-compatibility: Requires JIRA_EMAIL and JIRA_API_TOKEN env vars (free from
-  id.atlassian.com/manage/api-tokens), Python 3.8+, and the `requests`
-  library. Also requires JIRA_SERVER (defaults to your-domain.atlassian.net).
+compatibility: Requires JIRA_EMAIL and JIRA_API_TOKEN env vars (free from id.atlassian.com/manage/api-tokens),
+  Python 3.8+, and the `requests` library. Also requires JIRA_SERVER (defaults to
+  your-domain.atlassian.net).
 metadata:
-  tags: [jira, atlassian, issue-tracking, project-management, api-client]
-  sources:
-    - https://developer.atlassian.com/cloud/jira/platform/rest/v3/
-    - https://id.atlassian.com/manage/api-tokens
+  tags: jira, atlassian, issue-tracking, project-management, api-client
+  sources: https://developer.atlassian.com/cloud/jira/platform/rest/v3/, https://id.atlassian.com/manage/api-tokens
 ---
 
 # jira-cli — Jira Issue Tracker from the Terminal

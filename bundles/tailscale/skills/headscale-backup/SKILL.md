@@ -1,7 +1,10 @@
 ---
 name: headscale-backup
-description: Backup, restore, and migrate Headscale installations — SQLite database, configuration file, policy file, and TLS certificates. Use when backing up a headscale server before upgrades, migrating to new hardware, or restoring from a disaster.
-category: devops
+description: Backup, restore, and migrate Headscale installations — SQLite database,
+  configuration file, policy file, and TLS certificates. Use when backing up a headscale
+  server before upgrades, migrating to new hardware, or restoring from a disaster.
+metadata:
+  category: devops
 ---
 
 # headscale-backup

@@ -1,7 +1,11 @@
 ---
 name: tailnet-policy
-description: Author, test, and deploy Tailscale-compatible huJSON policy files for Headscale tailnets — ACLs, Grants, Tags, Auto Approvers, Tailscale SSH rules. Use when configuring access control, writing policy files, or troubleshooting connectivity issues caused by ACLs.
-category: devops
+description: Author, test, and deploy Tailscale-compatible huJSON policy files for
+  Headscale tailnets — ACLs, Grants, Tags, Auto Approvers, Tailscale SSH rules. Use
+  when configuring access control, writing policy files, or troubleshooting connectivity
+  issues caused by ACLs.
+metadata:
+  category: devops
 ---
 
 # tailnet-policy

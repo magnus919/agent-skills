@@ -1,7 +1,10 @@
 ---
 name: headscale-routing
-description: Configure subnet routers and exit nodes in a Headscale tailnet to extend mesh access to non-Tailscale devices and route internet traffic. Use when setting up subnet routing for LAN devices or configuring exit nodes for privacy.
-category: devops
+description: Configure subnet routers and exit nodes in a Headscale tailnet to extend
+  mesh access to non-Tailscale devices and route internet traffic. Use when setting
+  up subnet routing for LAN devices or configuring exit nodes for privacy.
+metadata:
+  category: devops
 ---
 
 # headscale-routing

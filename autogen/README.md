@@ -30,3 +30,8 @@ AutoGen differs from other frameworks in the portfolio: it's conversation-driven
 ## Requirements
 
 Python 3.8+ with `autogen-agentchat` and `autogen-ext` packages.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

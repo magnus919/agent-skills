@@ -78,3 +78,23 @@ The synthesis report includes:
 ## License
 
 MIT
+
+
+## Why Install This Skill
+
+This skill packages practical, reusable guidance for this domain so you can move from a real task to a dependable result without rebuilding the workflow each time.
+
+
+## What You Get
+
+A focused workflow in SKILL.md, with the referenced scripts, templates, and supporting material available when the task needs them.
+
+
+## Triggers
+
+Use this skill for the task types and keywords described in its SKILL.md description.
+
+
+## Requirements
+
+Check the compatibility requirements in SKILL.md before using commands or integrations from this skill.

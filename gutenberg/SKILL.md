@@ -1,26 +1,23 @@
 ---
 name: gutenberg
-description: >-
-  Search, download, and extract public-domain books from Project Gutenberg.
-  Look up books by ID or keyword via gutendex, download plain-text and EPUB
-  editions, strip licensing boilerplate, extract clean text from EPUB for
-  illustrated works, and classify fiction vs non-fiction. Ships a portable
-  CLI script with zero external dependencies. Use when the user says
-  "gutenberg", "public domain", "download a book", "classic literature",
-  "free ebook", "gutenberg.org", or names any public-domain title or author.
+description: Search, download, and extract public-domain books from Project Gutenberg.
+  Look up books by ID or keyword via gutendex, download plain-text and EPUB editions,
+  strip licensing boilerplate, extract clean text from EPUB for illustrated works,
+  and classify fiction vs non-fiction. Ships a portable CLI script with zero external
+  dependencies. Use when the user says "gutenberg", "public domain", "download a book",
+  "classic literature", "free ebook", "gutenberg.org", or names any public-domain
+  title or author.
 license: MIT
-compatibility: >-
-  Python 3.8+ with zero external dependencies. The CLI uses only the Python
-  standard library (urllib.request, json, html.parser, zipfile, re, sys).
-  For EPUB extraction, Python 3.8+ with only stdlib is required (zipfile +
-  html.parser). The gutendex API (https://gutendex.com) requires no API key
-  or registration. No env vars needed for basic operation.
+compatibility: Python 3.8+ with zero external dependencies. The CLI uses only the
+  Python standard library (urllib.request, json, html.parser, zipfile, re, sys). For
+  EPUB extraction, Python 3.8+ with only stdlib is required (zipfile + html.parser).
+  The gutendex API (https://gutendex.com) requires no API key or registration. No
+  env vars needed for basic operation.
 metadata:
-  tags: [gutenberg, project-gutenberg, books, public-domain, literature, classics, ebooks, text-extraction, epub]
-  sources:
-    - https://gutendex.com
-    - https://www.gutenberg.org
-  skills: [books, public-domain, literature, text-mining, ebooks]
+  tags: gutenberg, project-gutenberg, books, public-domain, literature, classics,
+    ebooks, text-extraction, epub
+  sources: https://gutendex.com, https://www.gutenberg.org
+  skills: books, public-domain, literature, text-mining, ebooks
 ---
 
 # Gutenberg — Public Domain Book Toolkit

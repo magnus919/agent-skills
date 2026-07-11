@@ -1,18 +1,15 @@
 ---
 name: openlibrary-cli
-description: >-
-  Search books, authors, and works on Open Library from the terminal. Look up
-  books by ISBN, search titles and authors, and fetch detailed work/author
-  records via the public Open Library API. No API key required.
+description: Search books, authors, and works on Open Library from the terminal. Look
+  up books by ISBN, search titles and authors, and fetch detailed work/author records
+  via the public Open Library API. No API key required.
 license: MIT
 compatibility: Python 3.8+ and the `requests` library. No API key or registration
-  required — the Open Library API is fully public. Optional OL_EMAIL env var
-  sets a User-Agent contact for improved rate limiting.
+  required — the Open Library API is fully public. Optional OL_EMAIL env var sets
+  a User-Agent contact for improved rate limiting.
 metadata:
-  tags: [open-library, books, authors, isbn, library, book-search, api-client, catalog]
-  sources:
-    - https://openlibrary.org/developers/api
-    - https://openlibrary.org
+  tags: open-library, books, authors, isbn, library, book-search, api-client, catalog
+  sources: https://openlibrary.org/developers/api, https://openlibrary.org
 ---
 
 # openlibrary-cli — Book Metadata from Open Library
