@@ -5,6 +5,12 @@ description: Use FlareSolverr through a small CLI when a site requires a browser
 
 # FlareSolverr
 
+## Quick Start
+
+```sh
+python3 scripts/flaresolverr --server http://localhost:8191 health
+```
+
 Use this skill when ordinary HTTP retrieval is blocked by a browser challenge. FlareSolverr must already be running; this skill does not bypass authentication or authorize access to restricted content.
 
 ## CLI
