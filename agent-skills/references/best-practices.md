@@ -226,6 +226,19 @@ Progress:
 - [ ] Step 5: Verify output (run `scripts/verify_output.py`)
 ```
 
+### Exit conditions
+
+Define when the skill is complete so the agent stops following instructions once the work is done. Use observable criteria or a bounded escalation.
+
+```markdown
+## Exit criteria
+
+This skill is complete when:
+- The requested artifact exists
+- Validation passes
+- The result has been presented to the user
+```
+
 ### Validation loops
 
 Instruct the agent to validate its own work before moving on. The pattern is: do the work, run a validator (a script, a reference checklist, or a self-check), fix any issues, and repeat until validation passes.
