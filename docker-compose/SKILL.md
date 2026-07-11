@@ -37,7 +37,7 @@ Use this skill for the whole Compose lifecycle: model the application, validate 
 - Use bind mounts for source/configuration during development, named volumes for state, and read-only mounts for immutable inputs. Treat host-path mounts as platform-sensitive.
 - Put credentials in Compose secrets or an external secret manager, not in images, Git, or ordinary environment variables. Grant each secret only to services that need it. Compose secrets are mounted at `/run/secrets/<name>`.
 - Use profiles for optional tools such as debugging, migrations, observability, or GPU workloads. Core services should have no profile.
-- Resolve interpolation explicitly. Shell variables override `--env-file`, which overrides the project `.env`; use `${REQUIRED:?explain}` for mandatory values and `$$` for a literal dollar sign. Check with `docker compose config --environment`.
+- Resolve interpolation explicitly. Shell variables override `--env-file`, which overrides the project `.env`; use `${REQUIRED:?explain}` for mandatory values and `$$` for a literal dollar sign. For example, write `test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]` when the container shell, not Compose, must expand the variable. Check with `docker compose config --environment`.
 - In multi-file merges, later files are applied to the base. Relative paths resolve from the first/base file. Inspect the result with `docker compose config`; use `!reset` or `!override` when ordinary merge behavior is not what you want.
 - Compose Watch is for services built from local source. Use `sync` for hot-reloadable source, `sync+restart` for configuration, and `rebuild` for dependency or image changes. The container user must be able to write to the target path.
 - Treat `deploy` fields as implementation-dependent. Verify what the target Compose implementation enforces; the specification explicitly allows partial support.
@@ -63,6 +63,12 @@ docker compose port SERVICE CONTAINER_PORT
 docker network inspect PROJECT_default
 docker volume inspect PROJECT_VOLUME
 ```
+
+## High-value defaults
+
+- When `compose.override.yaml` exists beside `compose.yaml` and no `-f` files are supplied, Compose loads the override automatically; use explicit `-f` files for production combinations.
+- In CI, namespace every invocation with an isolated project name, for example `docker compose -p ci-${CI_JOB_ID} up -d`, and only remove that project.
+- Treat `deploy` resource and placement fields as target-dependent: a rendered field can be valid while the local implementation ignores it. Verify enforcement at runtime.
 
 ## Reference routing
 

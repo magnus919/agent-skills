@@ -11,7 +11,6 @@ services:
         condition: service_healthy
     secrets: [db_password]
     networks: [app]
-    profiles: [app]
 
   db:
     image: postgres:18
@@ -43,6 +42,7 @@ volumes:
 
 networks:
   app:
+    # Internal network: services have no external gateway. Add a front network and publish a proxy/API explicitly when host access is required.
     internal: true
 
 secrets:
