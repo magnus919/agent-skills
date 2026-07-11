@@ -164,3 +164,16 @@ layout: "wide"
 ---
 ```
 Renders `layouts/<type>/wide.html` instead of `layouts/<type>/single.html`.
+
+### Pitfall: `block` in partials conflicts with `define` in page templates
+
+`block` and `define` share the same Go template namespace. A `{{ block "title" . }}` in a partial (e.g. `head.html`) conflicts with a `{{ define "title" }}` in a page template, producing `"partials/head.html: template: multiple definition of template 'title'"`.
+
+**Fix:** Do not use `block` in partials. Use direct template expressions instead:
+
+```go-html-template
+{{- /* Good: partial without block */ -}}
+<meta property="og:title" content="{{ .Title }} | {{ .Site.Title }}">
+```
+
+Leave `block` only in `baseof.html` for child templates to fill via `define` at the page level.
