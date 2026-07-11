@@ -67,7 +67,7 @@ docker volume inspect PROJECT_VOLUME
 ## High-value defaults
 
 - When `compose.override.yaml` exists beside `compose.yaml` and no `-f` files are supplied, Compose loads the override automatically; use explicit `-f` files for production combinations.
-- In CI, namespace every invocation with an isolated project name, for example `docker compose -p ci-${CI_JOB_ID} up -d`, and only remove that project.
+- **Destructive CI gate:** never run `down --volumes` until `docker compose -p ci-${CI_JOB_ID:?CI_JOB_ID is required} config --services` confirms the isolated project name; on shared environments, omit `--volumes` unless the exact data scope is intentional.
 - Treat `deploy` resource and placement fields as target-dependent: a rendered field can be valid while the local implementation ignores it. Verify enforcement at runtime.
 
 ### Base/dev/prod command matrix
