@@ -6,12 +6,13 @@ description: 'Interact with a FlareSolverr proxy server from the terminal: healt
   FlareSolverr, Cloudflare bypass, anti-bot proxy, headless browser proxy, or needs
   to fetch a page behind Cloudflare protection.'
 license: MIT
-compatibility: Python 3.8+ (stdlib only, no pip deps). Requires a running FlareSolverr
+compatibility: >-
+  Python 3.8+ (stdlib only, no pip deps). Requires a running FlareSolverr
   instance (Docker: ghcr.io/flaresolverr/flaresolverr) and the FLARESOLVERR_URL env
   var set to the server address (defaults to http://localhost:8191).
 metadata:
   tags: flaresolverr, cloudflare, proxy, anti-bot, headless-browser, selenium, web-scraping
-  sources: https://github.com/FlareSolverr/FlareSolverr, https://hub.docker.com/r/flaresolverr/flaresolverr
+  sources: "https://github.com/FlareSolverr/FlareSolverr, https://hub.docker.com/r/flaresolverr/flaresolverr"
 ---
 
 # flaresolverr-cli — Cloudflare Bypass Proxy from the Terminal
@@ -143,6 +144,6 @@ flaresolverr-cli --timeout 30 request get --url https://example.com
 
 ## References
 
-- [scripts/flaresolverr-cli](scripts/flaresolverr-cli) — The CLI binary. Stdlib-only Python 3.8+; no pip dependencies. Built following cli-builder patterns: `--json`, `--dry-run`, `--quiet`, bounded `--timeout`, dual-output via `emit()`.
+- [Related FlareSolverr CLI](../flaresolverr/scripts/flaresolverr) — Stdlib-only reference implementation for the same API.
 - [FlareSolverr GitHub](https://github.com/FlareSolverr/FlareSolverr) — Source, API docs, Docker Compose examples.
 - [FlareSolverr Docker Hub](https://hub.docker.com/r/flaresolverr/flaresolverr) — Prebuilt images.

@@ -282,7 +282,7 @@ You can also instruct your agent to read specific `SKILL.md` files at session st
 
 ## Contributing
 
-Skills follow the [Agent Skills specification](https://agentskills.io/specification.md). See the [agent-skills](agent-skills/SKILL.md) reference skill for format details, and `AGENTS.md` in this repo for agent-specific loading and compliance guidance.
+Skills follow the [Agent Skills specification](https://agentskills.io/specification.md). See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor workflow, [the Code of Conduct](CODE_OF_CONDUCT.md) for community expectations, and `AGENTS.md` for agent-specific loading and compliance guidance.
 
 Before submitting a new skill:
 1. Ensure `SKILL.md` has valid YAML frontmatter (required: `name`, `description`)
