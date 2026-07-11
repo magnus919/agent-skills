@@ -10,6 +10,12 @@ Use a browser-backed proxy from the terminal when a site rejects ordinary HTTP c
 | `scripts/flaresolverr` | Dependency-free JSON CLI |
 | `scripts/test-flaresolverr.sh` | Deterministic dry-run smoke checks |
 
+## Quick Start
+
+```sh
+python3 scripts/flaresolverr health
+```
+
 ## Quick start
 
 ```sh
