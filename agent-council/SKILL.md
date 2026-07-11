@@ -9,7 +9,7 @@ description: >-
 license: MIT
 compatibility: Requires Python 3.10+ and pydantic-ai. CLI tool installs via pip.
 metadata:
-  source: https://git.brandyapple.com/magnus/agent-skills/agent-council
+  source: https://github.com/magnus919/agent-skills/tree/main/agent-council
   spec-version: "1.1"
 ---
 
