@@ -44,6 +44,9 @@ Act as a virtual data architect. Discover data assets, assess maturity, evaluate
 
 PhD-level expertise in data science, statistics, and machine learning. Rigorous statistical methodology, experimental design, causal inference, Bayesian analysis, model selection and diagnostics, and research-grade communication. Ships five analysis scripts (power analysis, assumption diagnostics, model comparison, effect size calculator, experimental design generator) with Python + R dual-language support.
 
+### [docker-compose](docker-compose/SKILL.md)
+Define, run, debug, and harden multi-container applications with Docker Compose. Covers the Compose Specification, lifecycle and healthchecks, service networking, volumes, secrets, profiles, interpolation, overrides, Compose Watch, CI, production patterns, and troubleshooting. Ships 9 references, 5 templates, and a portable diagnostics script.
+
 ### [epub](epub/SKILL.md)
 
 EPUB file format expert — read, write, edit, convert, and repair EPUB2/EPUB3 ebooks.

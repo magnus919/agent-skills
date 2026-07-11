@@ -1,0 +1,26 @@
+services:
+  api:
+    image: example/api:${IMAGE_TAG:?IMAGE_TAG is required}
+    restart: unless-stopped
+    stop_grace_period: 30s
+    read_only: true
+    tmpfs: [/tmp]
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  db:
+    restart: unless-stopped
+    stop_grace_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
