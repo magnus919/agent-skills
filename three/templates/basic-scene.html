@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Three.js basic scene</title>
+<style>html,body{margin:0;height:100%;background:#111}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x111111);
+const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,100); camera.position.z=3;
+const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth,innerHeight); document.body.append(renderer.domElement);
+const mesh=new THREE.Mesh(new THREE.BoxGeometry(),new THREE.MeshNormalMaterial()); scene.add(mesh);
+function frame(time){mesh.rotation.x=time*.0005;mesh.rotation.y=time*.0007;renderer.render(scene,camera);requestAnimationFrame(frame)} requestAnimationFrame(frame);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+</script>
