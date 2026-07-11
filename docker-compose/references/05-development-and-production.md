@@ -14,8 +14,8 @@ services:
         - action: sync
           path: ./src
           target: /app/src
-          initial_sync: true
-          ignore: [node_modules/]
+          ignore:
+            - node_modules/
         - action: rebuild
           path: package.json
 ```
