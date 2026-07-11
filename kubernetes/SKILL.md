@@ -17,6 +17,15 @@ Use this skill as a decision and routing layer. Do not treat it as a static kube
 5. Prefer stable APIs and server-side validation. Treat beta/alpha APIs, feature gates, provider defaults, and version numbers as time-sensitive.
 6. Keep evidence bounded and structured. Never dump kubeconfigs, Secret values, tokens, or unbounded logs into chat.
 
+## Choose the operating path
+
+| Situation | First move | Do not do |
+|---|---|---|
+| Live cluster operation | Run `doctor`, `context`, and `discover`; record context, namespace, distribution, and versions | Do not infer cluster state from configuration or a prior command |
+| No cluster access | Produce a bounded plan and name the missing prerequisite | Do not claim a diagnosis, success, or invented command output |
+| Any mutation | Render, diff/server-dry-run, state scope, obtain the required confirmation, then mutate and verify the relevant boundary | Do not treat command exit 0 as operational success |
+| Provider or distribution present | Load the matching overlay before applying portable guidance | Do not apply upstream instructions unchanged |
+
 ## First-response discovery
 
 ```sh
@@ -29,16 +38,18 @@ If the wrapper is unavailable, use the equivalent native commands from `referenc
 
 ## Routing
 
-- API, discovery, SSA, CRDs, deprecations: `references/api-and-versioning.md`
-- Workloads, probes, rollout, jobs, controllers: `references/workloads-and-rollouts.md`
-- Scheduling, scaling, storage, node disruption, reliability: `references/scheduling-scaling-storage.md`, `references/nodes-and-reliability.md`
-- Services, DNS, NetworkPolicy, Ingress, Gateway API: `references/networking.md`
-- RBAC, Pod Security, admission, audit, secrets, policy engines: `references/security-and-policy.md`, `references/policy.md`
-- Evidence-first diagnosis and advanced debugging: `references/troubleshooting.md`, `references/debugging.md`
-- Backups, upgrades, HA, observability, reliability: `references/operations.md`, `references/backup-restore.md`, `references/observability.md`
-- Distribution/provider overlays and version matrix: `references/distributions.md`, `references/version-skew.md`, `references/source-index.md`
-- Native command details and output contracts: `references/cli-reference.md`
-- Safety gates for mutations: `references/safety-gates.md`
+| Scenario | Load |
+|---|---|
+| API discovery, SSA, CRDs, or deprecations | `references/api-and-versioning.md` |
+| Workloads, probes, rollouts, jobs, or controllers | `references/workloads-and-rollouts.md` |
+| Scheduling, scaling, storage, node disruption, or reliability | `references/scheduling-scaling-storage.md` and `references/nodes-and-reliability.md` |
+| Services, DNS, NetworkPolicy, Ingress, or Gateway API | `references/networking.md` |
+| RBAC, Pod Security, admission, audit, secrets, or policy engines | `references/security-and-policy.md` and `references/policy.md` |
+| Evidence-first diagnosis or advanced debugging | `references/troubleshooting.md` and `references/debugging.md` |
+| Backups, upgrades, HA, or observability | `references/operations.md`, `references/backup-restore.md`, and `references/observability.md` |
+| Distribution/provider overlays or version matrix | `references/distributions.md`, `references/version-skew.md`, and `references/source-index.md` |
+| Native command details or output contracts | `references/cli-reference.md` |
+| Mutation safety gates | `references/safety-gates.md` |
 
 ## Templates and scripts
 
@@ -47,11 +58,24 @@ If the wrapper is unavailable, use the equivalent native commands from `referenc
 - `templates/upgrade-runbook.md`: preflight, change, and verification runbook
 - `scripts/k8s-cli`: agent-first wrapper around kubectl
 - `scripts/test-k8s-cli.sh`: deterministic tests using a fake kubectl
+- `scripts/gather-cluster-state.sh`: bounded diagnostic collection for incident reports
+- `scripts/verify-cluster-health.sh`: bounded post-operation health verification
 - `scripts/refresh-version-matrix.sh`: refreshes dated release observations, never silently edits guidance
 
 ## Version policy
 
 The research baseline was checked 2026-07-11. The Kubernetes project page reported maintained minors 1.36, 1.35, and 1.34. This is not a permanent claim. Refresh `references/distributions.md` and the source index before asserting current versions or support status.
+
+## Verification boundary
+
+| Claim | Minimum evidence |
+|---|---|
+| Pod is healthy | Pod conditions, readiness, events, and relevant EndpointSlice or external boundary |
+| Rollout succeeded | Controller conditions, resulting Pods, events, and the relevant Service or external check |
+| API/resource is available | Served API discovery, installed CRDs/controller support, and server-side validation |
+| Command succeeded operationally | Bounded command result plus the resource condition and user-visible boundary |
+
+A component-level command result is evidence about that component only; do not promote it to a cluster or integration claim.
 
 ## Hard boundaries
 
