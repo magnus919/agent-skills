@@ -1,0 +1,261 @@
+#!/usr/bin/env python3
+"""Agent-first Kubernetes CLI wrapper.
+
+This wrapper deliberately delegates Kubernetes semantics to kubectl. It adds
+bounded output, JSON contracts, explicit scope, mutation confirmation, and
+post-command-friendly exit behavior without embedding a stale API client.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+from typing import Any
+
+SECRET_KEY = re.compile(r"(token|password|secret|certificate-authority-data|client-key-data|client-certificate-data)", re.I)
+MUTATING = {"apply", "delete", "scale", "restart", "patch", "drain", "cordon", "uncordon", "label", "annotate", "taint", "rollout-restart"}
+DESTRUCTIVE = {"delete", "drain", "patch", "scale", "restart", "cordon", "uncordon", "label", "annotate", "taint", "rollout-restart"}
+
+
+def redact(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {k: ("[REDACTED]" if SECRET_KEY.search(str(k)) else redact(v)) for k, v in value.items()}
+    if isinstance(value, list):
+        return [redact(v) for v in value]
+    return value
+
+
+def emit(payload: Any, as_json: bool) -> None:
+    if as_json:
+        print(json.dumps(redact(payload), indent=2, sort_keys=True))
+    elif isinstance(payload, str):
+        print(payload, end="" if payload.endswith("\n") else "\n")
+    else:
+        print(json.dumps(redact(payload), indent=2, sort_keys=True))
+
+
+def base_args(args: argparse.Namespace) -> list[str]:
+    result: list[str] = []
+    if args.context:
+        result += ["--context", args.context]
+    if args.namespace:
+        result += ["--namespace", args.namespace]
+    return result
+
+
+def run_kubectl(parts: list[str], args: argparse.Namespace, *, mutation: bool = False, destructive: bool = False) -> int:
+    binary = shutil.which(os.environ.get("KUBECTL", "kubectl"))
+    if not binary:
+        emit({"ok": False, "error": "kubectl not found", "hint": "Install kubectl or set KUBECTL to a compatible executable."}, args.json)
+        return 127
+    if mutation and not args.dry_run and not args.yes:
+        emit({"ok": False, "error": "mutation requires --yes", "command": parts, "hint": "Run with --dry-run first, then repeat with --yes after reviewing scope."}, args.json)
+        return 2
+    command = [binary] + base_args(args) + parts
+    if args.dry_run and mutation and "--dry-run" not in command:
+        command.append("--dry-run=server")
+    try:
+        proc = subprocess.run(command, capture_output=True, text=True, timeout=args.timeout)
+    except subprocess.TimeoutExpired:
+        emit({"ok": False, "error": "kubectl timed out", "timeout_seconds": args.timeout, "command": command[1:]}, args.json)
+        return 124
+    stdout = proc.stdout
+    stderr = proc.stderr
+    if args.json:
+        payload: Any
+        try:
+            payload = json.loads(stdout) if stdout.strip() else {"stdout": ""}
+        except json.JSONDecodeError:
+            payload = {"stdout": stdout, "stderr": stderr}
+        if isinstance(payload, dict):
+            payload = {"ok": proc.returncode == 0, "exit_code": proc.returncode, "result": payload}
+        else:
+            payload = {"ok": proc.returncode == 0, "exit_code": proc.returncode, "result": payload}
+        if stderr:
+            payload["stderr"] = stderr
+        emit(payload, True)
+    else:
+        if stdout:
+            print(stdout, end="")
+        if stderr:
+            print(stderr, end="", file=sys.stderr)
+    return proc.returncode
+
+
+def add_common(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--context", help="Explicit kubeconfig context")
+    parser.add_argument("--namespace", "-n", help="Explicit namespace")
+    parser.add_argument("--json", action="store_true", help="Emit a structured JSON result")
+    parser.add_argument("--timeout", type=int, default=60, help="kubectl timeout in seconds")
+    parser.add_argument("--yes", action="store_true", help="Confirm a mutating operation")
+    parser.add_argument("--dry-run", action="store_true", help="Use server-side dry-run for mutations")
+
+
+def parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(prog="k8s-cli", description="Bounded, agent-first wrapper around kubectl")
+    add_common(p)
+    sub = p.add_subparsers(dest="command", required=True)
+
+    sub.add_parser("doctor", help="Check binary, context, version, readiness, and discovery")
+    sub.add_parser("context", help="Show current context and server/client version")
+    sub.add_parser("discover", help="Show served resources, versions, and CRDs")
+
+    get = sub.add_parser("get", help="Get a resource using bounded JSON-friendly output")
+    get.add_argument("resource")
+    get.add_argument("name", nargs="?")
+    get.add_argument("--selector", "-l")
+    get.add_argument("--all-namespaces", action="store_true")
+
+    desc = sub.add_parser("describe", help="Describe a resource")
+    desc.add_argument("resource")
+    desc.add_argument("name")
+
+    events = sub.add_parser("events", help="List recent events")
+    events.add_argument("--tail", type=int, default=100)
+
+    logs = sub.add_parser("logs", help="Fetch bounded logs")
+    logs.add_argument("pod")
+    logs.add_argument("--container", "-c")
+    logs.add_argument("--tail", type=int, default=200)
+    logs.add_argument("--since", default="1h")
+    logs.add_argument("--previous", action="store_true")
+
+    rollout = sub.add_parser("rollout", help="Inspect or mutate a rollout")
+    rollout.add_argument("action", choices=["status", "history", "undo", "restart"])
+    rollout.add_argument("resource")
+    rollout.add_argument("--revision", type=int)
+
+    apply = sub.add_parser("apply", help="Server-validate or apply a manifest")
+    apply.add_argument("file")
+    apply.add_argument("--field-manager", default="agent-kubernetes")
+    apply.add_argument("--force-conflicts", action="store_true")
+
+    delete = sub.add_parser("delete", help="Preview or delete a resource")
+    delete.add_argument("resource")
+    delete.add_argument("name", nargs="?")
+    delete.add_argument("--all", action="store_true")
+
+    auth = sub.add_parser("can-i", help="Check effective authorization")
+    auth.add_argument("verb")
+    auth.add_argument("resource")
+
+    raw = sub.add_parser("raw", help="Call a bounded raw API path")
+    raw.add_argument("path")
+    return p
+
+
+def normalize_argv(argv: list[str]) -> list[str]:
+    """Allow global safety/output flags before or after the subcommand."""
+    value_flags = {"--context", "--namespace", "-n", "--timeout"}
+    boolean_flags = {"--json", "--yes", "--dry-run"}
+    prefix: list[str] = []
+    rest: list[str] = []
+    i = 0
+    while i < len(argv):
+        token = argv[i]
+        if token in value_flags and i + 1 < len(argv):
+            prefix.extend([token, argv[i + 1]])
+            i += 2
+            continue
+        if token in boolean_flags:
+            prefix.append(token)
+            i += 1
+            continue
+        if any(token.startswith(flag + "=") for flag in value_flags):
+            prefix.append(token)
+            i += 1
+            continue
+        rest.append(token)
+        i += 1
+    return prefix + rest
+
+
+def main() -> int:
+    args = parser().parse_args(normalize_argv(sys.argv[1:]))
+    c = args.command
+    if c == "doctor":
+        rc = run_kubectl(["version", "-o", "json"], args)
+        if rc:
+            return rc
+        for command in (["config", "current-context"], ["get", "--raw=/readyz?verbose"], ["api-resources", "-o", "wide"]):
+            rc = run_kubectl(command, args)
+            if rc:
+                return rc
+        return 0
+    if c == "context":
+        return run_kubectl(["config", "current-context"], args) or run_kubectl(["version", "-o", "json"], args)
+    if c == "discover":
+        rc = run_kubectl(["api-resources", "-o", "wide"], args)
+        if rc:
+            return rc
+        rc = run_kubectl(["api-versions"], args)
+        if rc:
+            return rc
+        return run_kubectl(["get", "crd"], args)
+    if c == "get":
+        parts = ["get", args.resource] + ([args.name] if args.name else [])
+        if args.selector:
+            parts += ["--selector", args.selector]
+        if args.all_namespaces:
+            parts.append("--all-namespaces")
+        if args.json:
+            parts += ["-o", "json"]
+        return run_kubectl(parts, args)
+    if c == "describe":
+        return run_kubectl(["describe", args.resource, args.name], args)
+    if c == "events":
+        parts = ["get", "events", "--sort-by=.lastTimestamp", f"--chunk-size={args.tail}"]
+        if args.json:
+            parts += ["-o", "json"]
+        return run_kubectl(parts, args)
+    if c == "logs":
+        parts = ["logs", args.pod, "--tail", str(args.tail), "--since", args.since]
+        if args.container:
+            parts += ["--container", args.container]
+        if args.previous:
+            parts.append("--previous")
+        return run_kubectl(parts, args)
+    if c == "rollout":
+        action = args.action
+        if action == "status":
+            return run_kubectl(["rollout", "status", args.resource], args)
+        if action == "history":
+            return run_kubectl(["rollout", "history", args.resource], args)
+        if action == "undo":
+            parts = ["rollout", "undo", args.resource]
+            if args.revision:
+                parts += [f"--to-revision={args.revision}"]
+            return run_kubectl(parts, args, mutation=True, destructive=True)
+        return run_kubectl(["rollout", "restart", args.resource], args, mutation=True, destructive=True)
+    if c == "apply":
+        if args.force_conflicts and not args.yes:
+            emit({"ok": False, "error": "--force-conflicts requires --yes"}, args.json)
+            return 2
+        parts = ["apply", "--server-side", f"--field-manager={args.field_manager}"]
+        if args.force_conflicts:
+            parts.append("--force-conflicts")
+        parts += ["-f", args.file]
+        return run_kubectl(parts, args, mutation=True)
+    if c == "delete":
+        parts = ["delete", args.resource]
+        if args.name:
+            parts.append(args.name)
+        if args.all:
+            parts.append("--all")
+        return run_kubectl(parts, args, mutation=True, destructive=True)
+    if c == "can-i":
+        return run_kubectl(["auth", "can-i", args.verb, args.resource], args)
+    if c == "raw":
+        if not args.path.startswith("/") or any(x in args.path for x in ("..", "\n", "\r")):
+            emit({"ok": False, "error": "raw path must be an absolute, traversal-free API path"}, args.json)
+            return 2
+        return run_kubectl(["get", "--raw", args.path], args)
+    return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -108,6 +108,10 @@ Expert-level Jira Query Language reference covering all operators, functions (da
 
 A virtual Kanban expert for engineering teams. Diagnose flow problems, design board configurations, calibrate WIP limits, establish service level expectations, set up multi-portfolio operating models, and navigate Scrum-to-Kanban transitions. Covers all seven cadences, classes of service, Little's Law, flow metrics, and the full practitioner's playbook with rich reference material.
 
+### [kubernetes](kubernetes/SKILL.md)
+
+Operate and troubleshoot Kubernetes safely across upstream Kubernetes, k3s, RKE2, MicroK8s, k0s, Talos, OpenShift/OKD, kind, Minikube, Rancher, EKS, AKS, and GKE. Covers workloads, APIs, version skew, networking, storage, scheduling, autoscaling, security, policy, backups, upgrades, observability, and evidence-first diagnosis. Ships the agent-first `k8s-cli` wrapper, diagnostic scripts, templates, and dated source references.
+
 ### [langchain](langchain/SKILL.md)
 
 An expert-level skill for building LLM-powered applications with LangChain — the most widely adopted LLM orchestration framework. LCEL chains, RAG pipelines, agents, LangSmith observability, and LangServe deployment.
