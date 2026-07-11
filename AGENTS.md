@@ -43,6 +43,14 @@ Every skill directory **MUST** contain a `README.md` written for a **human audie
 
 See [data-scientist/README.md](data-scientist/README.md) or any skill in this repository for the canonical format.
 
+## State-Modifying Skills
+
+Skills that change external state must say so explicitly and use this gate before the first mutation:
+
+> Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
+
+Destructive operations still require an explicit user directive; this convention does not authorize deletion, privilege changes, or irreversible cleanup.
+
 ## How to Load Skills
 
 Skills are loaded progressively in three stages:
