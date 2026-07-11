@@ -1,0 +1,50 @@
+name: example
+
+services:
+  api:
+    image: example/api:${IMAGE_TAG:-dev}
+    environment:
+      DATABASE_URL: postgres://app@db:5432/app
+      DB_PASSWORD_FILE: /run/secrets/db_password
+    depends_on:
+      db:
+        condition: service_healthy
+    secrets: [db_password]
+    networks: [app]
+    profiles: [app]
+
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    secrets: [db_password]
+    volumes: [db-data:/var/lib/postgresql/data]
+    networks: [app]
+
+  adminer:
+    image: adminer:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    ports: ["${ADMINER_PORT:-8080}:8080"]
+    networks: [app]
+    profiles: [debug]
+
+volumes:
+  db-data:
+
+networks:
+  app:
+    internal: true
+
+secrets:
+  db_password:
+    file: ./secret.example.txt
