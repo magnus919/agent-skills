@@ -1,6 +1,10 @@
 # Research and Vault
 
-A thin workflow for repeating the research → extraction → durable-note sequence. It keeps orchestration separate from the research and note-writing skills it composes.
+## Why Install This Skill
+
+This bundle makes a recurring research-to-note sequence explicit without duplicating the specialist skills. It gives agents a stable order of operations and a clear handoff artifact.
+
+## A thin workflow for repeating the research → extraction → durable-note sequence. It keeps orchestration separate from the research and note-writing skills it composes.
 
 ## What You Get
 
