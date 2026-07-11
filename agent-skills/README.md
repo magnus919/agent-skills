@@ -14,10 +14,25 @@ When your agent loads this skill, it gains the ability to **create, review, and 
 
 | Directory | Purpose |
 |-----------|---------|
-| `SKILL.md` | Complete format reference: frontmatter schema, name constraints, description patterns, directory structure, and progressive disclosure model |
-| `references/` | Referenced in the body for format best practices |
+| `SKILL.md` | A create-and-review workflow, the core format rules, and a completion checklist |
+| `references/specification.md` | A bundled snapshot of the official format specification |
+| `references/best-practices.md` | Guidance for useful, well-scoped instructions |
+| `references/optimizing-descriptions.md` | How to design and test reliable automatic triggers |
+| `references/using-scripts.md` | How to bundle safe, agent-friendly executable helpers |
+| `references/evaluating-skills.md` | A practical evaluation loop for testing skill quality |
+| `references/client-implementation.md` | Guidance for products that discover and load skills |
 
-## When to Load This Skill
+## Quick Start
+
+Ask your agent to create or review a skill, then load this skill first. For a structural check, run:
+
+```bash
+skills-ref validate path/to/skill
+```
+
+If the reference validator is not installed, your agent should report that clearly and complete the equivalent manual checks.
+
+## Triggers
 
 - You're creating a new skill and need to know the correct format
 - You're reviewing an existing skill for format compliance
@@ -26,4 +41,4 @@ When your agent loads this skill, it gains the ability to **create, review, and 
 
 ## Requirements
 
-None — this is a documentation skill. No scripts, no API keys, no dependencies.
+The documentation itself has no runtime dependencies. Optional validation uses the `skills-ref` reference library; install it in an isolated environment when you want to run its CLI.
