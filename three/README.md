@@ -11,6 +11,11 @@ Start a working browser 3D scene without rebuilding the setup from memory. The s
 
 Open `templates/basic-scene.html` in a browser or serve the repository with a local HTTP server.
 
+## What You Get
+
+- `SKILL.md`: core scene and performance guidance
+- `templates/basic-scene.html`: runnable vanilla scene
+
 ## Quick Start
 
 Open `templates/basic-scene.html` in a browser.
