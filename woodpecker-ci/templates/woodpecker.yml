@@ -1,0 +1,24 @@
+# Conservative workflow skeleton. Adapt images and commands to the project.
+when:
+  - event: [push, pull_request]
+
+steps:
+  - name: test
+    image: alpine:3.20
+    commands:
+      - printf '%s\n' "run project tests here"
+
+  - name: deploy
+    image: alpine:3.20
+    commands:
+      - printf '%s\n' "deploy only from a protected branch"
+    when:
+      - event: push
+        branch: main
+
+  - name: notify-failure
+    image: alpine:3.20
+    commands:
+      - printf '%s\n' "notify the team"
+    when:
+      - status: [failure]

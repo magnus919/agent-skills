@@ -47,6 +47,9 @@ PhD-level expertise in data science, statistics, and machine learning. Rigorous 
 ### [docker-compose](docker-compose/SKILL.md)
 Define, run, debug, and harden multi-container applications with Docker Compose. Covers the Compose Specification, lifecycle and healthchecks, service networking, volumes, secrets, profiles, interpolation, overrides, Compose Watch, CI, production patterns, and troubleshooting. Ships 9 references, 5 templates, and a portable diagnostics script.
 
+### [woodpecker-ci](woodpecker-ci/SKILL.md)
+Operate self-hosted Woodpecker CI from installation through production troubleshooting. Covers Forgejo/Gitea integration, server and agent setup, Docker and Kubernetes backends, workflow syntax, secrets, plugins, matrices, CLI/local execution, upgrades, security, and incident response.
+
 ### [epub](epub/SKILL.md)
 
 EPUB file format expert — read, write, edit, convert, and repair EPUB2/EPUB3 ebooks.

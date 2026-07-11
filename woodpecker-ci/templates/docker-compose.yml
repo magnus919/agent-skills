@@ -1,0 +1,35 @@
+# Woodpecker CI v3-style deployment skeleton.
+# Pin a specific SemVer release for production instead of relying on a moving tag.
+services:
+  woodpecker-server:
+    image: woodpeckerci/woodpecker-server:v3
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+    volumes:
+      - woodpecker-server-data:/var/lib/woodpecker
+    environment:
+      WOODPECKER_HOST: ${WOODPECKER_HOST:?set the public Woodpecker URL}
+      WOODPECKER_OPEN: ${WOODPECKER_OPEN:-false}
+      WOODPECKER_ADMIN: ${WOODPECKER_ADMIN:?set the admin username}
+      WOODPECKER_AGENT_SECRET: ${WOODPECKER_AGENT_SECRET:?set the shared agent secret}
+      WOODPECKER_FORGEJO: ${WOODPECKER_FORGEJO:-true}
+      WOODPECKER_FORGEJO_URL: ${WOODPECKER_FORGEJO_URL:?set the Forgejo URL}
+      WOODPECKER_FORGEJO_CLIENT: ${WOODPECKER_FORGEJO_CLIENT:?set the Forgejo OAuth client ID}
+      WOODPECKER_FORGEJO_SECRET: ${WOODPECKER_FORGEJO_SECRET:?set the Forgejo OAuth client secret}
+
+  woodpecker-agent:
+    image: woodpeckerci/woodpecker-agent:v3
+    depends_on:
+      - woodpecker-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - woodpecker-agent-config:/etc/woodpecker
+    environment:
+      WOODPECKER_SERVER: woodpecker-server:9000
+      WOODPECKER_AGENT_SECRET: ${WOODPECKER_AGENT_SECRET:?set the shared agent secret}
+      WOODPECKER_MAX_WORKFLOWS: ${WOODPECKER_MAX_WORKFLOWS:-2}
+
+volumes:
+  woodpecker-server-data:
+  woodpecker-agent-config:
