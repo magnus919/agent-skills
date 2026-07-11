@@ -1,7 +1,10 @@
 ---
 name: headscale-node-lifecycle
-description: Manage the full lifecycle of nodes in a Headscale tailnet — generate pre-authenticated keys, register, approve, tag, list, and decommission nodes. Use when adding new devices, generating auth keys for automation, or managing node inventory.
-category: devops
+description: Manage the full lifecycle of nodes in a Headscale tailnet — generate
+  pre-authenticated keys, register, approve, tag, list, and decommission nodes. Use
+  when adding new devices, generating auth keys for automation, or managing node inventory.
+metadata:
+  category: devops
 ---
 
 # headscale-node-lifecycle

@@ -27,3 +27,8 @@ Load this when filing an issue, opening a PR, or contributing to any open source
 ## Requirements
 
 None. Works with any agent supporting the Agent Skills format.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

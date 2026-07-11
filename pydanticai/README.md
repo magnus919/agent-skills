@@ -29,3 +29,8 @@ Load this whenever building agents, tool-using LLM workflows, or graph-based sta
 ## Requirements
 
 Python 3.10+ with `pydantic-ai` or `pydantic-ai-slim` package.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

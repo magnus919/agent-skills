@@ -1,19 +1,16 @@
 ---
 name: lidarr-cli
-description: >-
-  Manage your Lidarr music library from the terminal. Search and browse artists
-  and albums, add new artists, check calendars, view queue and download history,
-  inspect quality and metadata profiles, and trigger searches. Use when the user
-  mentions Lidarr, music management, adding an artist, searching for music,
-  checking the music library, upcoming album releases, or download queue.
+description: Manage your Lidarr music library from the terminal. Search and browse
+  artists and albums, add new artists, check calendars, view queue and download history,
+  inspect quality and metadata profiles, and trigger searches. Use when the user mentions
+  Lidarr, music management, adding an artist, searching for music, checking the music
+  library, upcoming album releases, or download queue.
 license: MIT
-compatibility: >-
-  Python 3.8+ with `requests` library. Requires ARR_SERVER_LIDARR and
+compatibility: Python 3.8+ with `requests` library. Requires ARR_SERVER_LIDARR and
   ARR_KEY_LIDARR (from Lidarr → Settings → General → API Key).
 metadata:
-  tags: [lidarr, music, arr-stack, media-server, music-automation, api-client]
-  sources:
-    - https://lidarr.audio/
+  tags: lidarr, music, arr-stack, media-server, music-automation, api-client
+  sources: https://lidarr.audio/
 ---
 
 # lidarr-cli — Lidarr Music Library Management

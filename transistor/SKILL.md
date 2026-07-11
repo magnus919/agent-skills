@@ -1,19 +1,15 @@
 ---
 name: transistor
-description: >-
-  Manage Transistor.fm podcast hosting from the terminal: view shows, list
-  episodes, check analytics, and get subscriber counts. Use when the user
-  mentions Transistor, podcast hosting, podcast analytics, show management,
-  or episode tracking.
+description: 'Manage Transistor.fm podcast hosting from the terminal: view shows,
+  list episodes, check analytics, and get subscriber counts. Use when the user mentions
+  Transistor, podcast hosting, podcast analytics, show management, or episode tracking.'
 license: MIT
-compatibility: Requires TRANSISTOR_API_KEY env var (from Settings → API Keys
-  in the Transistor.fm dashboard), Python 3.8+, and the `requests` library.
-  Uses the Transistor.fm v1 REST API with JSON:API format responses.
+compatibility: Requires TRANSISTOR_API_KEY env var (from Settings → API Keys in the
+  Transistor.fm dashboard), Python 3.8+, and the `requests` library. Uses the Transistor.fm
+  v1 REST API with JSON:API format responses.
 metadata:
-  tags: [transistor, podcast, podcast-hosting, analytics, api-client]
-  sources:
-    - https://transistor.fm/
-    - https://developers.transistor.fm/
+  tags: transistor, podcast, podcast-hosting, analytics, api-client
+  sources: https://transistor.fm/, https://developers.transistor.fm/
 ---
 
 # transistor-cli — Transistor.fm Podcast Hosting

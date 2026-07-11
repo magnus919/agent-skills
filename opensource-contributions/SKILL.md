@@ -1,18 +1,17 @@
 ---
 name: opensource-contributions
-description: >-
-  Make good open source contributions — check CONTRIBUTING.md first, follow
-  project norms, be a good citizen. Covers bug reports, feature requests, and
-  pull requests with a defensible default posture when the project hasn't
-  documented expectations.
+description: Make good open source contributions — check CONTRIBUTING.md first, follow
+  project norms, be a good citizen. Covers bug reports, feature requests, and pull
+  requests with a defensible default posture when the project hasn't documented expectations.
 license: MIT
-compatibility: Compatible with any agent supporting the Agent Skills format (Hermes Agent, Claude Code, GitHub Copilot, OpenCode, Cursor, etc.)
+compatibility: Compatible with any agent supporting the Agent Skills format (Hermes
+  Agent, Claude Code, GitHub Copilot, OpenCode, Cursor, etc.)
 metadata:
-  tags: [opensource, contributing, github, etiquette, PRs, issues]
-  related_skills: [github-issues, github-pr-workflow, github-code-review]
-  version: "1.6.0"
+  tags: opensource, contributing, github, etiquette, PRs, issues
+  related_skills: github-issues, github-pr-workflow, github-code-review
+  version: 1.6.0
   author: agent-skills
-source_repo: https://agentskills.io
+  source_repo: https://agentskills.io
 ---
 
 # Open Source Contributions

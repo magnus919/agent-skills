@@ -1,19 +1,15 @@
 ---
 name: tempest-cli
-description: >-
-  Query hyper-local weather from a WeatherFlow Tempest station: current
-  conditions, 7-day forecast, historical observations, and real-time UDP
-  broadcasts. Use when the user asks about the weather, temperature, rain,
-  wind, humidity, forecast, or wants conditions from their own station
-  rather than a generic weather service.
+description: 'Query hyper-local weather from a WeatherFlow Tempest station: current
+  conditions, 7-day forecast, historical observations, and real-time UDP broadcasts.
+  Use when the user asks about the weather, temperature, rain, wind, humidity, forecast,
+  or wants conditions from their own station rather than a generic weather service.'
 license: MIT
-compatibility: Requires TEMPEST_TOKEN env var (free from weatherflow.com),
-  Python 3.8+, and the `requests` library.
+compatibility: Requires TEMPEST_TOKEN env var (free from weatherflow.com), Python
+  3.8+, and the `requests` library.
 metadata:
-  tags: [weather, tempest, forecast, weatherflow, station, hyper-local]
-  sources:
-    - https://weatherflow.com
-    - https://swd.weatherflow.com/swd/rest
+  tags: weather, tempest, forecast, weatherflow, station, hyper-local
+  sources: https://weatherflow.com, https://swd.weatherflow.com/swd/rest
 ---
 
 # tempest-cli — Hyper-Local Weather from Your Tempest Station

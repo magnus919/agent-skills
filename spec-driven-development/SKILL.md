@@ -1,19 +1,19 @@
 ---
 name: spec-driven-development
-description: >-
-  Spec-Driven Development (SDD) methodology for AI software factories — where
-  structured specifications are the input, AI agents generate the code, and
-  quality gates enforce correctness at each pipeline phase. Use when designing
-  a spec → review → decompose → implement → verify pipeline that any AI
-  coding tool (Claude Code, Cursor, Hermes Agent, Devin, OpenHands) can follow.
+description: Spec-Driven Development (SDD) methodology for AI software factories —
+  where structured specifications are the input, AI agents generate the code, and
+  quality gates enforce correctness at each pipeline phase. Use when designing a spec
+  → review → decompose → implement → verify pipeline that any AI coding tool (Claude
+  Code, Cursor, Hermes Agent, Devin, OpenHands) can follow.
 license: MIT
-compatibility: Tool-agnostic — methodology applies to any AI coding agent. Templates use markdown and Gherkin. Scripts require bash.
+compatibility: Tool-agnostic — methodology applies to any AI coding agent. Templates
+  use markdown and Gherkin. Scripts require bash.
 metadata:
   source: https://github.com/magnus919/agent-skills/spec-driven-development
-  spec-version: "1.2.0"
-  hermes:
-    tags: [sdd, specifications, ai-code-generation, software-factory, bdd, gherkin, quality-gates, phase-gates]
-    related_skills: [sdd-authoring, sdd-review, sdd-verification, sdd-work-decomposition]
+  spec-version: 1.2.0
+  hermes: tags=["sdd", "specifications", "ai-code-generation", "software-factory",
+    "bdd", "gherkin", "quality-gates", "phase-gates"], related_skills=["sdd-authoring",
+    "sdd-review", "sdd-verification", "sdd-work-decomposition"]
 ---
 
 # Spec-Driven Development for AI Software Factories

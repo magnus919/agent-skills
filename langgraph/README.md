@@ -29,3 +29,8 @@ Load this when designing agent architectures that need cycles, conditional branc
 ## Requirements
 
 Python 3.8+ with `langgraph`, `langchain`, and `langchain-openai` packages.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

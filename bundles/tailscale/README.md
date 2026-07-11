@@ -38,3 +38,8 @@ Load this when you hear "Tailscale," "Headscale," "tailnet," "mesh VPN," "WireGu
 ## Requirements
 
 Bash, Python 3.8+, jq, curl. Access to a Headscale server or the `headscale` CLI. Tailscale client on target machines.
+
+
+## Why Install This Skill
+
+This skill packages practical, reusable guidance for this domain so you can move from a real task to a dependable result without rebuilding the workflow each time.

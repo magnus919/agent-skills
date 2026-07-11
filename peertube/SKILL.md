@@ -1,20 +1,15 @@
 ---
 name: peertube
-description: >-
-  Browse PeerTube federated video from the terminal: view videos and
-  channels, search across instances, check server stats, and manage your
-  account. Uses OAuth2 authentication with token persistence. Use when the
-  user mentions PeerTube, federated video, decentralized video platforms,
-  or browsing/uploading to a PeerTube instance.
+description: 'Browse PeerTube federated video from the terminal: view videos and channels,
+  search across instances, check server stats, and manage your account. Uses OAuth2
+  authentication with token persistence. Use when the user mentions PeerTube, federated
+  video, decentralized video platforms, or browsing/uploading to a PeerTube instance.'
 license: MIT
-compatibility: Requires PEERTUBE_SERVER env var (set to your instance URL,
-  e.g. https://watch.nousresearch.com), Python 3.8+, and the `requests`
-  library. OAuth2 tokens persisted to ~/.config/peertube-cli/token.json.
+compatibility: Requires PEERTUBE_SERVER env var (set to your instance URL, e.g. https://watch.nousresearch.com),
+  Python 3.8+, and the `requests` library. OAuth2 tokens persisted to ~/.config/peertube-cli/token.json.
 metadata:
-  tags: [peertube, federated-video, video-platform, activitypub, api-client]
-  sources:
-    - https://joinpeertube.org/
-    - https://docs.joinpeertube.org/api/reference
+  tags: peertube, federated-video, video-platform, activitypub, api-client
+  sources: https://joinpeertube.org/, https://docs.joinpeertube.org/api/reference
 ---
 
 # peertube-cli — PeerTube Federated Video

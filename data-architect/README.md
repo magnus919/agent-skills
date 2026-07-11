@@ -27,3 +27,8 @@ Load this when your data pipelines are growing out of control, teams disagree on
 ## Requirements
 
 No special system requirements. Designed for agentic AI assistants.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

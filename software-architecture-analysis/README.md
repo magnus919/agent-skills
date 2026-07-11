@@ -27,3 +27,8 @@ Load this when you need to understand how a codebase works, produce a design doc
 ## Requirements
 
 Git, a programming language runtime matching the target codebase.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

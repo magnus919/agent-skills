@@ -29,3 +29,8 @@ Load this when setting up or debugging a Traefik instance for reverse proxy, loa
 ## Requirements
 
 Docker for containerized deployment. Standard Linux server for native installation.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

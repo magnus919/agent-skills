@@ -30,3 +30,8 @@ Load this when you encounter EPUB files — to read, create, edit, extract, conv
 ## Requirements
 
 Python 3.8+ with `EbookLib`. Optional: `beautifulsoup4`, `epublib`, Java (for EPUBCheck), and an LLM endpoint for knowledge extraction.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

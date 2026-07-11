@@ -1,21 +1,16 @@
 ---
 name: confluence-cli
-description: >-
-  Interact with Atlassian Confluence from the terminal: list spaces,
-  browse pages, view page content, search with CQL, and create pages.
-  Use when the user mentions Confluence, a space key (e.g. DEV), or
-  asks about documentation, wiki pages, space content, or knowledge
-  base articles.
+description: 'Interact with Atlassian Confluence from the terminal: list spaces, browse
+  pages, view page content, search with CQL, and create pages. Use when the user mentions
+  Confluence, a space key (e.g. DEV), or asks about documentation, wiki pages, space
+  content, or knowledge base articles.'
 license: MIT
-compatibility: Requires CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN env vars
-  (free from id.atlassian.com/manage/api-tokens), Python 3.8+, and the
-  `requests` library. Also requires CONFLUENCE_SERVER (defaults to
-  your-domain.atlassian.net).
+compatibility: Requires CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN env vars (free from
+  id.atlassian.com/manage/api-tokens), Python 3.8+, and the `requests` library. Also
+  requires CONFLUENCE_SERVER (defaults to your-domain.atlassian.net).
 metadata:
-  tags: [confluence, atlassian, wiki, documentation, knowledge-base, api-client]
-  sources:
-    - https://developer.atlassian.com/cloud/confluence/rest/v2/
-    - https://id.atlassian.com/manage/api-tokens
+  tags: confluence, atlassian, wiki, documentation, knowledge-base, api-client
+  sources: https://developer.atlassian.com/cloud/confluence/rest/v2/, https://id.atlassian.com/manage/api-tokens
 ---
 
 # confluence-cli — Confluence Wiki from the Terminal

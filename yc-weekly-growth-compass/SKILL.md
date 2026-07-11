@@ -1,26 +1,21 @@
 ---
 name: yc-weekly-growth-compass
-description: >-
-  Paul Graham's "Startup = Growth" framework as an operational tool. Computes
-  weekly growth rates, benchmarks against YC tiers (1% concerning, 5-7% good,
-  10%+ exceptional), projects compound growth over time, and frames every
-  startup decision through the question "does this serve your target growth
-  rate?" Ships a deterministic CLI calculator. Load when founders ask about
-  growth rate, weekly growth, startup traction, metrics, or whether they're
-  moving fast enough.
+description: Paul Graham's "Startup = Growth" framework as an operational tool. Computes
+  weekly growth rates, benchmarks against YC tiers (1% concerning, 5-7% good, 10%+
+  exceptional), projects compound growth over time, and frames every startup decision
+  through the question "does this serve your target growth rate?" Ships a deterministic
+  CLI calculator. Load when founders ask about growth rate, weekly growth, startup
+  traction, metrics, or whether they're moving fast enough.
 license: MIT
 compatibility: Python 3.9+ with standard library only (no external dependencies).
   The growth-compass.py script uses only math, json, and sys.
 metadata:
-  spec-version: "1.0"
-  tags: [startup-growth, growth-rate, ycombinator, paul-graham, startup-metrics,
-         weekly-growth, traction, compound-growth, startup-compass]
-  sources:
-    - https://paulgraham.com/growth.html
-    - https://paulgraham.com/ds.html
-    - https://www.ycombinator.com/about
-  skills: [yc-default-alive-calculator]
-  requires-toolsets: [terminal]
+  spec-version: '1.0'
+  tags: startup-growth, growth-rate, ycombinator, paul-graham, startup-metrics, weekly-growth,
+    traction, compound-growth, startup-compass
+  sources: https://paulgraham.com/growth.html, https://paulgraham.com/ds.html, https://www.ycombinator.com/about
+  skills: yc-default-alive-calculator
+  requires-toolsets: terminal
 ---
 
 # Weekly Growth Compass

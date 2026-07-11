@@ -1,19 +1,17 @@
 ---
 name: lastfm
-description: >-
-  Interact with the Last.fm music data API: lookup user listening history,
-  get artist/album/track metadata, discover similar music via collaborative
-  filtering, explore global and per-country charts, search by artist/album/track,
-  manage tags, and scrobble listening events. Use when the user asks about
-  music data, listening statistics, music recommendations, similar artists,
-  charts, or wants to scrobble or love tracks.
+description: 'Interact with the Last.fm music data API: lookup user listening history,
+  get artist/album/track metadata, discover similar music via collaborative filtering,
+  explore global and per-country charts, search by artist/album/track, manage tags,
+  and scrobble listening events. Use when the user asks about music data, listening
+  statistics, music recommendations, similar artists, charts, or wants to scrobble
+  or love tracks.'
 license: MIT
-compatibility: Requires a Last.fm API key in the LASTFM_API_KEY env var.
-  For write operations (scrobble, love, now-playing), also needs
-  LASTFM_API_SECRET and LASTFM_SESSION_KEY. The `lastfm-cli` CLI tool
-  must be on PATH.
+compatibility: Requires a Last.fm API key in the LASTFM_API_KEY env var. For write
+  operations (scrobble, love, now-playing), also needs LASTFM_API_SECRET and LASTFM_SESSION_KEY.
+  The `lastfm-cli` CLI tool must be on PATH.
 metadata:
-  tags: [music, lastfm, scrobbling, api-client, music-discovery]
+  tags: music, lastfm, scrobbling, api-client, music-discovery
   source: https://www.last.fm/api
 ---
 

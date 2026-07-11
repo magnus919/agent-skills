@@ -1,22 +1,20 @@
 ---
 name: epub
-description: >-
-  EPUB file format expert — read, write, and edit EPUB2/EPUB3 ebooks. Extract text,
-  metadata, structure, and knowledge from EPUB files for enrichment or memory. Create
-  valid EPUBs from scratch. Validate against the EPUB specification. Use when the user
-  mentions epub, ebook, EPUB file, ebook format, read epub, write epub, create ebook,
-  extract from epub, epub to text, or ebook structure.
+description: EPUB file format expert — read, write, and edit EPUB2/EPUB3 ebooks. Extract
+  text, metadata, structure, and knowledge from EPUB files for enrichment or memory.
+  Create valid EPUBs from scratch. Validate against the EPUB specification. Use when
+  the user mentions epub, ebook, EPUB file, ebook format, read epub, write epub, create
+  ebook, extract from epub, epub to text, or ebook structure.
 license: MIT
-compatibility: >-
-  Python 3.8+ required. Core scripts use EbookLib (pip install EbookLib) for reading and
-  creating EPUBs. Optional epublib (pip install epublib) for non-intrusive editing.
-  beautifulsoup4 (pip install beautifulsoup4) for text extraction. Optional LLM mode via
-  EPUB_LLM_URL + EPUB_LLM_KEY env vars (any OpenAI-compatible provider). EPUBCheck
-  (Java, optional) for authoritative validation. Portable across all AgentSkills-compatible
+compatibility: Python 3.8+ required. Core scripts use EbookLib (pip install EbookLib)
+  for reading and creating EPUBs. Optional epublib (pip install epublib) for non-intrusive
+  editing. beautifulsoup4 (pip install beautifulsoup4) for text extraction. Optional
+  LLM mode via EPUB_LLM_URL + EPUB_LLM_KEY env vars (any OpenAI-compatible provider).
+  EPUBCheck (Java, optional) for authoritative validation. Portable across all AgentSkills-compatible
   harnesses — scripts are platform-agnostic.
 metadata:
-  skills: [epub, ebook, publishing, knowledge-extraction, document-processing]
-  tags: [epub, ebook, epub3, epub2, publishing, document-extraction, knowledge]
+  skills: epub, ebook, publishing, knowledge-extraction, document-processing
+  tags: epub, ebook, epub3, epub2, publishing, document-extraction, knowledge
 ---
 
 # EPUB — Ebook Creation, Extraction & Enrichment

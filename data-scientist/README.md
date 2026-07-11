@@ -86,3 +86,18 @@ All scripts default to Python computation. The `--engine r` flag outputs equival
 ## License
 
 MIT
+
+
+## Why Install This Skill
+
+This skill packages practical, reusable guidance for this domain so you can move from a real task to a dependable result without rebuilding the workflow each time.
+
+
+## What You Get
+
+A focused workflow in SKILL.md, with the referenced scripts, templates, and supporting material available when the task needs them.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

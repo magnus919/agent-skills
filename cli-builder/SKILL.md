@@ -1,19 +1,15 @@
 ---
 name: cli-builder
-description: >-
-  Build or refactor CLI tools designed for AI agent consumption: non-interactive,
-  flag-driven, idempotent, with --json output and --dry-run preview. Use when
-  creating a new script the agent will call, adding agent-friendly flags to an
-  existing tool, or debugging why an agent keeps failing to use your CLI.
+description: 'Build or refactor CLI tools designed for AI agent consumption: non-interactive,
+  flag-driven, idempotent, with --json output and --dry-run preview. Use when creating
+  a new script the agent will call, adding agent-friendly flags to an existing tool,
+  or debugging why an agent keeps failing to use your CLI.'
 license: MIT
 compatibility: Requires bash, Python 3.8+, jq, and standard Unix CLI environment.
 metadata:
-  tags: [cli, agent-tooling, design-patterns, automation]
-  sources:
-    - https://x.com/ericzakariasson/status/2036762680401223946
-    - https://www.scalekit.com/blog/mcp-vs-cli-use
-    - https://github.com/ComposioHQ/awesome-agent-clis
-    - https://ronnierocha.dev/blog/dont-build-mcps-build-cli-tools
+  tags: cli, agent-tooling, design-patterns, automation
+  sources: https://x.com/ericzakariasson/status/2036762680401223946, https://www.scalekit.com/blog/mcp-vs-cli-use,
+    https://github.com/ComposioHQ/awesome-agent-clis, https://ronnierocha.dev/blog/dont-build-mcps-build-cli-tools
 ---
 # CLI Builder — Agent-Friendly Tool Design
 ## Overview
@@ -484,12 +480,9 @@ The default for this repo is **`scripts/` inside the skill** — it follows the 
 
 ### Skill Wrapper Template
 
-See [references/skill-wrapper-example.md](references/skill-wrapper-example.md) for a complete worked example wrapping a hypothetical API CLI, including frontmatter, essential commands, gotchas, and auth wiring documentation.
-
 ## Agent-Readiness Checklist
 
 Use [the agent-readiness checklist](references/agent-readiness-checklist.md) before shipping a CLI.
-
 ## References
 
 - [templates/bash-cli-scaffold.sh](templates/bash-cli-scaffold.sh) — Full bash project template with pre-wired global flags, logging helpers, and subcommand dispatch. Use as a starting point for any bash CLI.

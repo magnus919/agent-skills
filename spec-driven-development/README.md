@@ -29,3 +29,8 @@ Load this when designing a spec-driven pipeline, writing an AI-ready specificati
 ## Requirements
 
 Tool-agnostic — works with Claude Code, Cursor, Hermes Agent, Devin, OpenHands, droid, or any AI coding agent.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

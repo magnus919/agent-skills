@@ -1,7 +1,10 @@
 ---
 name: tailscale-client
-description: Install, configure, and troubleshoot the official Tailscale client when connected to a Headscale self-hosted control server. Use when connecting a new device, diagnosing connectivity, checking peer status, or troubleshooting DERP relay issues.
-category: devops
+description: Install, configure, and troubleshoot the official Tailscale client when
+  connected to a Headscale self-hosted control server. Use when connecting a new device,
+  diagnosing connectivity, checking peer status, or troubleshooting DERP relay issues.
+metadata:
+  category: devops
 ---
 
 # tailscale-client

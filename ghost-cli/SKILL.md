@@ -1,19 +1,15 @@
 ---
 name: ghost-cli
-description: >-
-  Manage Ghost CMS content from the terminal — create and list posts, pages,
-  and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the
-  user asks about ghost, cms, blog, blogging, posts, pages, tags, publishing,
-  or site configuration.
+description: Manage Ghost CMS content from the terminal — create and list posts, pages,
+  and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user
+  asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration.
 license: MIT
-compatibility: Requires GHOST_URL and GHOST_ADMIN_KEY env vars. Admin key in
-  "id:secret" format from Ghost Admin → Integrations. Python 3.8+ and the
-  `requests` library.
+compatibility: Requires GHOST_URL and GHOST_ADMIN_KEY env vars. Admin key in "id:secret"
+  format from Ghost Admin → Integrations. Python 3.8+ and the `requests` library.
 metadata:
-  tags: [ghost, cms, blog, blogging, post, page, tag, ghost-cms, content-management, api-client]
-  sources:
-    - https://ghost.org/docs/admin-api/
-    - https://ghost.org/docs/
+  tags: ghost, cms, blog, blogging, post, page, tag, ghost-cms, content-management,
+    api-client
+  sources: https://ghost.org/docs/admin-api/, https://ghost.org/docs/
 ---
 
 # ghost-cli — Ghost CMS from the Terminal

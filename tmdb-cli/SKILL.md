@@ -1,18 +1,14 @@
 ---
 name: tmdb-cli
-description: >-
-  Search and discover movies, TV shows, and trending content via The Movie
-  Database (TMDb) API v3. Use when the user asks about movies, TV, film,
-  cinema, genres, certifications, ratings, cast, upcoming releases, or
-  trending media.
+description: Search and discover movies, TV shows, and trending content via The Movie
+  Database (TMDb) API v3. Use when the user asks about movies, TV, film, cinema, genres,
+  certifications, ratings, cast, upcoming releases, or trending media.
 license: MIT
-compatibility: Requires TMDB_ACCESS_TOKEN or TMDB_API_KEY env var (free at
-  themoviedb.org/settings/api), Python 3.8+, and the `requests` library.
+compatibility: Requires TMDB_ACCESS_TOKEN or TMDB_API_KEY env var (free at themoviedb.org/settings/api),
+  Python 3.8+, and the `requests` library.
 metadata:
-  tags: [tmdb, movies, tv, film, cinema, entertainment, media-discovery, api-client]
-  sources:
-    - https://developer.themoviedb.org/reference
-    - https://www.themoviedb.org/settings/api
+  tags: tmdb, movies, tv, film, cinema, entertainment, media-discovery, api-client
+  sources: https://developer.themoviedb.org/reference, https://www.themoviedb.org/settings/api
 ---
 
 # tmdb-cli — Movie & TV Discovery from the Terminal

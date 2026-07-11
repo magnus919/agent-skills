@@ -1,19 +1,16 @@
 ---
 name: prowlarr-cli
-description: >-
-  Manage your Prowlarr indexer hub from the terminal. List and inspect indexers,
-  view query/grab statistics, check health, manage connected *arr applications
-  and download clients, browse search history, and test indexer connectivity.
-  Use when the user mentions Prowlarr, indexers, indexer management, testing
-  indexers, search history, or the indexer hub.
+description: Manage your Prowlarr indexer hub from the terminal. List and inspect
+  indexers, view query/grab statistics, check health, manage connected *arr applications
+  and download clients, browse search history, and test indexer connectivity. Use
+  when the user mentions Prowlarr, indexers, indexer management, testing indexers,
+  search history, or the indexer hub.
 license: MIT
-compatibility: >-
-  Python 3.8+ with `requests` library. Requires ARR_SERVER_PROWLARR and
+compatibility: Python 3.8+ with `requests` library. Requires ARR_SERVER_PROWLARR and
   ARR_KEY_PROWLARR (from Prowlarr → Settings → General → API Key).
 metadata:
-  tags: [prowlarr, indexer, arr-stack, media-server, api-client]
-  sources:
-    - https://prowlarr.com/
+  tags: prowlarr, indexer, arr-stack, media-server, api-client
+  sources: https://prowlarr.com/
 ---
 
 # prowlarr-cli — Prowlarr Indexer Management

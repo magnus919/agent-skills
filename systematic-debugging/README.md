@@ -26,3 +26,8 @@ Load this for ANY technical issue — test failures, production bugs, unexpected
 ## Requirements
 
 Platform-agnostic. Some sections cover macOS-specific sandbox debugging patterns. Requires access to source code and testing tools.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.

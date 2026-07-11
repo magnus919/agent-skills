@@ -1,16 +1,16 @@
 ---
 name: tailscale
-description: >-
-  Self-hosted Tailscale/Headscale ecosystem: deploy and manage a Headscale control server,
-  configure tailscale clients, manage ACL policies, node lifecycle, subnet routing, DERP relays,
-  and backup/migration. Use when the user mentions Tailscale, Headscale, tailnet, mesh VPN,
-  WireGuard mesh, or self-hosted VPN infrastructure.
+description: 'Self-hosted Tailscale/Headscale ecosystem: deploy and manage a Headscale
+  control server, configure tailscale clients, manage ACL policies, node lifecycle,
+  subnet routing, DERP relays, and backup/migration. Use when the user mentions Tailscale,
+  Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure.'
 license: MIT
-compatibility: Requires bash, Python 3.8+, jq, curl, and access to a Headscale server or
-  the `headscale` CLI. Tailscale client (`tailscale`) must be installed on target machines.
+compatibility: Requires bash, Python 3.8+, jq, curl, and access to a Headscale server
+  or the `headscale` CLI. Tailscale client (`tailscale`) must be installed on target
+  machines.
 metadata:
-  tags: [tailscale, headscale, vpn, wireguard, mesh, networking, homelab]
-  spec-version: "1.0"
+  tags: tailscale, headscale, vpn, wireguard, mesh, networking, homelab
+  spec-version: '1.0'
 ---
 
 # Tailscale + Headscale Skill Bundle

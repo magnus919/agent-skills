@@ -1,21 +1,18 @@
 ---
 name: open-knowledge-format
-description: >-
-  Google's Open Knowledge Format (OKF) v0.1 — an open, vendor-neutral spec for
-  representing knowledge as markdown files with YAML frontmatter, designed for
-  AI agent consumption. Use when the user mentions OKF, Open Knowledge Format,
-  Google's knowledge format, LLM wiki bundles, agent knowledge packs, creating
-  OKF bundles, validating OKF documents, or converting knowledge into the OKF
-  standard.
+description: Google's Open Knowledge Format (OKF) v0.1 — an open, vendor-neutral spec
+  for representing knowledge as markdown files with YAML frontmatter, designed for
+  AI agent consumption. Use when the user mentions OKF, Open Knowledge Format, Google's
+  knowledge format, LLM wiki bundles, agent knowledge packs, creating OKF bundles,
+  validating OKF documents, or converting knowledge into the OKF standard.
 license: MIT
-compatibility: >-
-  Portable across any AgentSkills-compatible harness. The validation script
-  requires Python 3.8+ with PyYAML (pip install PyYAML). All examples use
-  standard markdown — readable in any editor or terminal.
+compatibility: Portable across any AgentSkills-compatible harness. The validation
+  script requires Python 3.8+ with PyYAML (pip install PyYAML). All examples use standard
+  markdown — readable in any editor or terminal.
 metadata:
-  spec-version: "1.0"
-  skills: [okf, open-knowledge-format, knowledge-format, agent-knowledge, llm-wiki]
-  tags: [okf, knowledge-format, google, ai-agents, markdown, knowledge-management]
+  spec-version: '1.0'
+  skills: okf, open-knowledge-format, knowledge-format, agent-knowledge, llm-wiki
+  tags: okf, knowledge-format, google, ai-agents, markdown, knowledge-management
 ---
 
 # Open Knowledge Format (OKF) — v0.1
@@ -151,7 +148,7 @@ EOF
 cat > index.md << 'EOF'
 # Knowledge Bundle
 
-* [Sales Dataset](datasets/sales.md) - Retail sales data
+* Sales Dataset (`datasets/sales.md`) - Retail sales data in an example OKF bundle
 EOF
 
 # 4. Validate your bundle

@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""Small, dependency-free Last.fm API client used by the lastfm skill."""
+import argparse
+import json
+import os
+import sys
+import urllib.parse
+import urllib.request
+
+API = "https://ws.audioscrobbler.com/2.0/"
+METHODS = {
+    "user info": "user.getinfo", "user recent-tracks": "user.getrecenttracks",
+    "user top-artists": "user.gettopartists", "user top-tracks": "user.gettoptracks",
+    "user loved-tracks": "user.getlovedtracks", "user friends": "user.getfriends",
+    "user weekly-charts": "user.getweeklychartlist", "artist similar": "artist.getsimilar",
+    "artist info": "artist.getinfo", "artist top-tracks": "artist.gettoptracks",
+    "artist search": "artist.search", "album info": "album.getinfo", "album search": "album.search",
+    "track similar": "track.getsimilar", "track search": "track.search",
+    "tag top-artists": "tag.gettopartists", "tag top-tracks": "tag.gettoptracks",
+    "tag top-albums": "tag.gettopalbums", "chart top-artists": "chart.gettopartists",
+    "geo top-artists": "geo.gettopartists", "geo top-tracks": "geo.gettoptracks",
+}
+
+def parser():
+    p = argparse.ArgumentParser(description="Last.fm API client", epilog="Examples: lastfm-cli artist similar Radiohead --limit 5")
+    p.add_argument("--json", action="store_true", help="emit JSON")
+    p.add_argument("--dry-run", action="store_true", help="show the API plan without a request")
+    subs = p.add_subparsers(dest="group", required=True)
+    for group, commands in {"user": ["info", "recent-tracks", "top-artists", "top-tracks", "loved-tracks", "friends", "weekly-charts"], "artist": ["similar", "info", "top-tracks", "search"], "album": ["info", "search"], "track": ["similar", "search", "scrobble", "now-playing", "love"], "tag": ["top-artists", "top-tracks", "top-albums"], "chart": ["top-artists"], "geo": ["top-artists", "top-tracks"], "auth": ["get-token", "get-session"]}.items():
+        gp = subs.add_parser(group)
+        cs = gp.add_subparsers(dest="command", required=True)
+        for command in commands:
+            cp = cs.add_parser(command)
+            if group in {"user", "artist", "album", "tag", "geo"} or group == "track":
+                cp.add_argument("values", nargs="*", metavar="VALUE", help="username, artist, tag, country, or track values")
+            cp.add_argument("--limit", type=int)
+            cp.add_argument("--period")
+            cp.add_argument("--autocorrect", action="store_true")
+    return p
+
+def main():
+    args = parser().parse_args()
+    key = f"{args.group} {args.command}"
+    if args.group == "auth":
+        print("Auth operations require LASTFM_API_KEY, LASTFM_API_SECRET, and a browser authorization flow.")
+        return 0
+    values = getattr(args, "values", [])
+    if args.command not in {"search", "top-artists", "top-tracks", "top-albums", "weekly-charts"} and not values:
+        parser().error(f"{args.group} {args.command}: a value is required")
+    method = METHODS.get(key)
+    if not method:
+        parser().error(f"unsupported operation: {key}")
+    params = {"method": method, "format": "json"}
+    if values:
+        param = "user" if args.group == "user" else "country" if args.group == "geo" else "tag" if args.group == "tag" else "artist"
+        params[param] = values[0]
+        if args.group in {"track", "album"} and len(values) > 1:
+            params["track" if args.group == "track" else "album"] = values[1]
+    for option in ("limit", "period", "autocorrect"):
+        value = getattr(args, option, None)
+        if value not in (None, False): params[option] = value
+    if args.dry_run:
+        print(json.dumps({"dry_run": True, "url": API, "params": params}, indent=2))
+        return 0
+    api_key = os.getenv("LASTFM_API_KEY")
+    if not api_key:
+        print("LASTFM_API_KEY is required", file=sys.stderr)
+        return 2
+    params["api_key"] = api_key
+    try:
+        with urllib.request.urlopen(f"{API}?{urllib.parse.urlencode(params)}", timeout=30) as response:
+            payload = json.load(response)
+    except Exception as exc:
+        print(f"Last.fm request failed: {exc}", file=sys.stderr)
+        return 1
+    print(json.dumps(payload, indent=2) if args.json else json.dumps(payload, indent=2))
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())

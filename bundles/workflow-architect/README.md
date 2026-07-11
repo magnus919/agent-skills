@@ -36,3 +36,8 @@ Load this when you want to understand your own process, formalize a workflow, sh
 ## Requirements
 
 Hermes Agent (uses skill_view, memory, session context scanning, write_file for bundle generation). Output bundles are standard Agent Skills format.
+
+
+## Quick Start
+
+Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.
