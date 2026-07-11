@@ -1,5 +1,9 @@
 # Three.js
 
+## Why Install This Skill
+
+Start a working browser 3D scene without rebuilding the setup from memory. The skill gives an agent a small, runnable baseline and the decisions that matter as the scene grows.
+
 Start a working browser 3D scene without rebuilding the setup from memory. The skill covers scene/camera/renderer wiring, geometry and materials, lighting, animation, assets, and the first performance decisions.
 
 ## What you get
