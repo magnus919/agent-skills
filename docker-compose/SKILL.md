@@ -70,6 +70,25 @@ docker volume inspect PROJECT_VOLUME
 - In CI, namespace every invocation with an isolated project name, for example `docker compose -p ci-${CI_JOB_ID} up -d`, and only remove that project.
 - Treat `deploy` resource and placement fields as target-dependent: a rendered field can be valid while the local implementation ignores it. Verify enforcement at runtime.
 
+### Base/dev/prod command matrix
+
+```bash
+# Base or default development override
+docker compose config --quiet
+docker compose up --watch
+
+# Explicit production model
+IMAGE_TAG=release-1 docker compose -f compose.yaml -f compose.prod.yaml config --quiet
+IMAGE_TAG=release-1 docker compose -f compose.yaml -f compose.prod.yaml up -d
+
+# Optional tooling
+docker compose --profile debug up -d
+```
+
+The default `compose.override.yaml` is auto-loaded; production overrides must be selected explicitly.
+
+**Rendered configuration is not runtime proof.** `config` can confirm a secret declaration, resource limit, or healthcheck is present, but only runtime inspection proves the secret file is mounted, the healthcheck passes, or the target implementation enforces `deploy` limits. Verify with `exec`, `ps`, `inspect`, and measured behavior on the target host.
+
 ## Reference routing
 
 | Load when | Reference |
