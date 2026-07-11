@@ -10,6 +10,12 @@ Use a browser-backed proxy from the terminal when a site rejects ordinary HTTP c
 | `scripts/flaresolverr` | Dependency-free JSON CLI |
 | `scripts/test-flaresolverr.sh` | Deterministic dry-run smoke checks |
 
+## What You Get
+
+- `SKILL.md`: agent routing and safe usage
+- `scripts/flaresolverr`: dependency-free JSON CLI
+- `scripts/test-flaresolverr.sh`: deterministic smoke checks
+
 ## Quick Start
 
 ```sh
