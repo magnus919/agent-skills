@@ -7,9 +7,9 @@ description: 'Interact with a FlareSolverr proxy server from the terminal: healt
   to fetch a page behind Cloudflare protection.'
 license: MIT
 compatibility: >-
-  Python 3.8+ (stdlib only, no pip deps). Requires a running FlareSolverr
-  instance (Docker: ghcr.io/flaresolverr/flaresolverr) and the FLARESOLVERR_URL env
-  var set to the server address (defaults to http://localhost:8191).
+  Python 3.8+ (stdlib only, no pip deps). Requires a running FlareSolverr instance
+  (Docker: ghcr.io/flaresolverr/flaresolverr) and the FLARESOLVERR_URL env var set to
+  the server address (defaults to http://localhost:8191).
 metadata:
   tags: flaresolverr, cloudflare, proxy, anti-bot, headless-browser, selenium, web-scraping
   sources: "https://github.com/FlareSolverr/FlareSolverr, https://hub.docker.com/r/flaresolverr/flaresolverr"
