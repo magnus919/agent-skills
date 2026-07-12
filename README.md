@@ -255,6 +255,10 @@ Trakt.tv media discovery from the terminal. Browse trending, anticipated, and po
 
 Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view subscriber analytics. API key from transistor.fm settings.
 
+### [verification-methodology](verification-methodology/SKILL.md)
+
+Replace completion claims with a disciplined evidence trail that shows what was checked, what passed, and what remains uncertain.
+
 ### [woodpecker-ci](woodpecker-ci/SKILL.md)
 Operate self-hosted Woodpecker CI from installation through production troubleshooting. Covers Forgejo/Gitea integration, server and agent setup, Docker and Kubernetes backends, workflow syntax, secrets, plugins, matrices, CLI/local execution, upgrades, security, and incident response.
 
