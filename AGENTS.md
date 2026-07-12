@@ -136,6 +136,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "mermaid-diagrams", "mermaid diagrams" | [mermaid-diagrams](mermaid-diagrams/SKILL.md) |
 | "adr-authoring", "adr authoring" | [adr-authoring](adr-authoring/SKILL.md) |
 | "c4-diagramming", "c4 diagramming" | [c4-diagramming](c4-diagramming/SKILL.md) |
+| "technology-radar", "technology radar" | [technology-radar](technology-radar/SKILL.md) |
 ## Use-When Sections
 
 Every skill description must identify when to load it. Skills with meaningful overlap should also include a `## When not to use` section naming the nearest alternative or prerequisite. Keep these sections trigger-oriented and concise; implementation details belong in references.
