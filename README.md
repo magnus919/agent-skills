@@ -187,6 +187,10 @@ Build production-grade AI agents and graph-based state machines with PydanticAI 
 
 Query, search, and download public datasets from the City of Raleigh Open Data portal. Wraps the ArcGIS REST API to access 170+ datasets — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, and more. No API key needed. Ships a Python CLI with catalog, search, info, query, download, and categories commands.
 
+### [site-reliability-engineering](site-reliability-engineering/SKILL.md)
+
+Build practical reliability practices around the work teams actually perform: measurable service objectives, useful alerts, incident response, and learning-oriented follow-up.
+
 ### [software-architecture-analysis](software-architecture-analysis/SKILL.md)
 
 Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan under new constraints (local-first, privacy-first, self-hosted). Includes an interface extraction pattern for designing swappable storage provider abstractions.
