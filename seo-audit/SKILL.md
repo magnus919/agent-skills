@@ -13,7 +13,7 @@ metadata:
 
 Full-spectrum audit for sites, articles, and content strategies. Covers both traditional SEO and Answer Engine Optimization (AEO/GEO) — the practice of structuring content so LLMs and AI answer engines (ChatGPT, Perplexity, Gemini, Claude, Google AI Overviews) extract and cite it.
 
-All output is artifact-pyramid-compliant. The only response to the caller is the absolute path to `00-index.md`.
+Use `assets/audit-report-template.md` for a portable audit deliverable. If the host workflow uses artifact pyramids, that structure can be an optional presentation format rather than a prerequisite.
 
 
 ## SEO + AEO Audit: [Site/Page URL]
@@ -58,8 +58,8 @@ Load this skill when:
 - Diagnosing why a site or page isn't performing in search or AI citation
 
 Do NOT load when:
-- Only mechanical content fixes are needed (use `copy-edit`)
-- Only writing is needed (use `writer` profile)
+- Only mechanical content fixes are needed; use the host agent's copy-editing workflow.
+- Only writing is needed; use the host agent's writing workflow.
 
 ## Portability
 
