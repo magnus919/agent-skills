@@ -76,4 +76,4 @@ For technical tutorials and walkthroughs (like "Running a 35B MoE Model on a 16G
 - No "should work" — only "worked for me under these conditions"
 - If a configuration didn't work, say so and explain why
 
-This is the standard that distinguishes Magnus's technical writing from generic tutorials. The mistakes and dead ends are the value.
+This standard distinguishes evidence-led technical writing from generic tutorials. The mistakes and dead ends are often the value.

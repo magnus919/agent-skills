@@ -6,7 +6,7 @@ A traceable record of every search, source, and decision made during a research 
 
 | # | Query | Engine | Date | Result count | Notes |
 |---|-------|--------|------|-------------|-------|
-| 1 | | groktocrawl / SearXNG / arXiv | | | |
+| 1 | | Search tool / source name | | | |
 | 2 | | | | | |
 
 ## Sources Considered
