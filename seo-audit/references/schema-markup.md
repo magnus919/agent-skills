@@ -4,7 +4,7 @@ Structured data helps search engines understand the content of a page and enable
 
 ## JSON-LD Format
 
-Google's preferred format. All structured data on Magnus's sites should be JSON-LD injected via Ghost's Code Injection or Hugo's templates.
+Google's preferred format. Structured data is typically JSON-LD injected through the CMS, application templates, or a supported code-injection mechanism.
 
 ### Basic Structure
 
