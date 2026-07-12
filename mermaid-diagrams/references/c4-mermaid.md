@@ -10,7 +10,7 @@ Structurizr is the canonical C4 tool. The DSL compiles to Mermaid, PlantUML, or 
 workspace {
   model {
     user = person "User" "A user of the system"
-    system = softwareSystem "GroktoCrawl" "Self-hosted Firecrawl alternative"
+    system = softwareSystem "Research Service" "A web-retrieval service"
     user -> system "Uses"
   }
   views {
@@ -43,7 +43,7 @@ flowchart TB
   end
 
   subgraph System["System Boundary"]
-    GC["GroktoCrawl"]
+    GC["Research Service"]
   end
 
   User -- "Searches & scrapes" --> GC
@@ -59,13 +59,13 @@ flowchart TB
     W["🌐 Web"]
   end
 
-  subgraph GroktoCrawl["GroktoCrawl"]
+  subgraph ResearchService["Research Service"]
     direction TB
     GW["API Gateway\nsearch-svc"]
     SC["🕸️ scraper-svc"]
     BR["🌍 browser-svc"]
     LLM["🧠 llm-svc"]
-    SR["🔍 SearXNG"]
+    SR["🔍 Search Provider"]
     VK[("🗄️ Valkey")]
   end
 
