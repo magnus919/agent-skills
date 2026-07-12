@@ -33,7 +33,7 @@ Mermaid code blocks (```mermaid```) do NOT render in the Pandoc → HTML → Pup
 **For any diagram destined for PDF output:**
 1. Create the diagram as a standalone .mmd file
 2. Pre-render to SVG: `npx @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.svg --width 800`
-3. Embed the raw SVG content directly in the markdown (not as `<img src="data:...">`)
+3. Choose one embedding method: use raw inline SVG by default, or base64 data URIs when the renderer corrupts raw SVG.
 4. Strip hardcoded `max-width` pixel values from the SVG tags
 5. Use `flowchart TD` (portrait) not `flowchart LR` (landscape) — see `references/portrait-layout.md`
 6. Add page-break divs before/after each full-page diagram
@@ -151,7 +151,7 @@ try {
 
 ## Theming
 
-Mermaid uses a `base` theme with customizable theme variables. Set via `%%{init: {'theme':'base', 'themeVariables': { ... }}}%%` at the top of the diagram.
+Mermaid uses a `base` theme with customizable theme variables. Set them with an `init` directive at the top of the diagram. Consult the Mermaid documentation for the complete version-specific variable set.
 
 Key theme variables:
 - `primaryColor`, `primaryTextColor`, `primaryBorderColor`
@@ -159,7 +159,6 @@ Key theme variables:
 - `lineColor`, `fontFamily`, `fontSize`
 - `background` (outer background), `mainBkg` (element background)
 
-See `references/theming.md` for the full variable reference.
 
 ## Anti-Patterns
 

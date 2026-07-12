@@ -90,7 +90,7 @@ These warnings are **harmless** when SVGs are pre-rendered and embedded as `<svg
 ## Puppeteer Setup
 
 ```javascript
-const puppeteer = require("/Users/magnus/.npm/_npx/d2654f9a588e9579/node_modules/puppeteer");
+const puppeteer = require("puppeteer");
 
 (async () => {
   const browser = await puppeteer.launch({

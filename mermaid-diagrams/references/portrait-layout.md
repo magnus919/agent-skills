@@ -74,8 +74,8 @@ Text-pattern checks for "flowchart LR" are insufficient — Mermaid's dagre engi
 
 ## PDF Embedding Rules
 
-- **Always base64-inline SVGs** — Raw SVG tags passed through Pandoc get CSS corrupted (especially `@keyframes`). Use `<img src="data:image/svg+xml;base64,...">`.
-- **Never use filesystem paths** — `<img src="/tmp/...svg">` breaks in PDF generation. Only base64 data URIs survive Pandoc → HTML → Puppeteer.
+- **Choose raw or base64 SVG deliberately** — raw inline SVG is the default because it remains inspectable and styleable. Use a base64 data URI only when the PDF renderer corrupts raw SVG.
+- **Never use filesystem paths** — `<img src="/tmp/...svg">` breaks in PDF generation. Inline raw SVG or a base64 data URI is required.
 - **`width:100%` on all `<img>` tags** — `style="width:100%;height:auto;max-width:100%;display:block;margin:0 auto;"`
 
 ## Rules for Portrait-Oriented Diagrams
@@ -101,7 +101,7 @@ Text-pattern checks for "flowchart LR" are insufficient — Mermaid's dagre engi
 - [ ] `flowchart TD` not `LR`
 - [ ] Wrapper subgraph with `direction TB` applied
 - [ ] Page break divs before and after each diagram
-- [ ] Base64-inlined SVGs (no raw SVG tags, no filesystem paths)
+- [ ] SVG embedding method selected and verified against the target renderer (raw inline by default; base64 only when needed)
 - [ ] Every rendered SVG viewBox: width < height
 - [ ] Node labels under 30 chars
 - [ ] Light background for print
