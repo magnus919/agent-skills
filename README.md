@@ -227,6 +227,10 @@ Spec-Driven Development (SDD) methodology for AI software factories — where st
 
 Make documentation useful at the moment someone needs to install, operate, extend, or troubleshoot a system.
 
+### [technology-radar](technology-radar/SKILL.md)
+
+Turn scattered technology preferences into explicit, reviewable decisions with owners, evidence, and a clear adoption posture.
+
 ### [three](three/SKILL.md)
 
 Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations.
