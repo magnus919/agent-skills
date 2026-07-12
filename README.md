@@ -16,6 +16,10 @@ Reference for the Agent Skills open format itself — directory structure, front
 
 Radarr and Sonarr media library management. Two CLIs (`radarr-cli` for movies, `sonarr-cli` for TV series) with one shared skill wrapper. List movies and series, search for additions, check calendars and wanted/missing episodes. Separate API keys per app.
 
+### [artifact-pyramids](artifact-pyramids/SKILL.md)
+
+Structure durable research work so people and agents can start with conclusions, then inspect the analysis and underlying evidence only when needed.
+
 ### [autogen](autogen/SKILL.md)
 
 An expert-level skill for building **conversational multi-agent systems** with Microsoft's AutoGen framework. Unlike graph-based or role-based orchestration, AutoGen uses **agent-to-agent conversations** as the orchestration primitive.
