@@ -66,7 +66,6 @@ Full reference in `references/architecture-as-code-ecosystem.md` — tool compar
 
 ## Contents
 
-- `references/c4-levels.md` — per-level detail: purpose, audience, what to model, pitfalls
 - `references/c4-to-pyramid-mapping.md` — context→L1, container/component→L2, code→L3 (Mermaid + Structurizr DSL paths)
 - `references/c4-to-flowchart.md` — (in `mermaid-diagrams` skill) C4 → standard flowchart conversion patterns for GitHub compatibility
 - `references/architecture-as-code-ecosystem.md` — Structurizr DSL, C4-PlantUML, docToolChain, converged repo convention, tool comparison table
@@ -85,7 +84,7 @@ GitHub's built-in Mermaid renderer does **not** bundle the C4 plugin (`@mermaid-
 - `Rel()` → `-- label -->` or `-.->`
 - Drop `UpdateLayoutConfig()` — use `flowchart LR` or `TB` directive instead
 
-For the full conversion table with worked examples of all three C4 levels, load `skill_view(name='mermaid-diagrams', file_path='references/c4-to-flowchart.md')`.
+For the full conversion table with worked examples, load `references/c4-to-flowchart.md` from the companion `mermaid-diagrams` skill when it is available.
 
 **.mmd files in a DIAGRAMS/ directory** must also use standard flowchart syntax if they need to render via `mmdc` or on GitHub. Files using C4-plugin syntax can only render in tools that bundle the plugin (e.g., Mermaid Live Editor, mmdc with C4 extension config). If you commit `.mmd` files with C4 syntax to a repo, GitHub's file preview will show them as raw text — convert them to standard syntax or render them to PNG first.
 
@@ -96,7 +95,6 @@ A GitHub Community feature request to bundle the C4 mermaid plugin was filed at 
 ## Canonical Reference
 
 - Simon Brown, "The C4 Model" — https://c4model.com/
-- Magnus Hedemark, "Clanker Technical Architect: First on the Scene with Progressive Disclosure" — https://magnus919.com/2026/05/clanker-technical-architect-first-on-the-scene-with-progressive-disclosure/
 - GroktoPlan C4 Diagrams (worked examples) — https://github.com/groktopus/groktoplan/blob/main/TECHNICAL_ARCHITECTURE.md
 
 ## Portability
