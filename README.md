@@ -136,6 +136,10 @@ Manage your Lidarr music library from the terminal — search and browse artists
 
 An expert-level skill for building LLM applications over your data with LlamaIndex. RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge graph construction, and production deployment.
 
+### [meshcore-packet-capture](meshcore-packet-capture/SKILL.md)
+
+Operate MeshCore Companion radio packet capture over BLE, serial, or TCP. Covers MQTT publishing, TOML and environment configuration, token authentication, Docker, systemd, launchd, NixOS, and evidence-first troubleshooting.
+
 ### [nous-branding](nous-branding/SKILL.md)
 
 Generate images and content consistent with the Nous Research brand identity.
