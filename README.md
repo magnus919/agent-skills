@@ -191,6 +191,10 @@ Query, search, and download public datasets from the City of Raleigh Open Data p
 
 Turn an open question into a bounded, evidence-led investigation rather than a plausible-sounding synthesis.
 
+### [security-audit-methodology](security-audit-methodology/SKILL.md)
+
+Give authorized teams a disciplined way to identify and prioritize security risks without mistaking a checklist for a security guarantee.
+
 ### [site-reliability-engineering](site-reliability-engineering/SKILL.md)
 
 Build practical reliability practices around the work teams actually perform: measurable service objectives, useful alerts, incident response, and learning-oriented follow-up.
