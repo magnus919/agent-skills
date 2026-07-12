@@ -130,6 +130,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "growth rate", "weekly growth", "monthly growth", "startup growth", "compound growth", "traction", "are we growing", "growth benchmark", "how fast should we grow", "YC growth", "product-market fit", "acceleration", "growth trajectory" | [yc-weekly-growth-compass](yc-weekly-growth-compass/SKILL.md) |
 | "artifact-pyramids", "artifact pyramids" | [artifact-pyramids](artifact-pyramids/SKILL.md) |
 | "site-reliability-engineering", "site reliability engineering" | [site-reliability-engineering](site-reliability-engineering/SKILL.md) |
+| "research-methodology", "research methodology" | [research-methodology](research-methodology/SKILL.md) |
 ## Use-When Sections
 
 Every skill description must identify when to load it. Skills with meaningful overlap should also include a `## When not to use` section naming the nearest alternative or prerequisite. Keep these sections trigger-oriented and concise; implementation details belong in references.
