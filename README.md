@@ -207,6 +207,10 @@ Turn an open question into a bounded, evidence-led investigation rather than a p
 
 Give authorized teams a disciplined way to identify and prioritize security risks without mistaking a checklist for a security guarantee.
 
+### [seo-audit](seo-audit/SKILL.md)
+
+Identify search-discoverability problems through evidence, prioritize the work, and distinguish technical defects from content opportunities.
+
 ### [site-reliability-engineering](site-reliability-engineering/SKILL.md)
 
 Build practical reliability practices around the work teams actually perform: measurable service objectives, useful alerts, incident response, and learning-oriented follow-up.
