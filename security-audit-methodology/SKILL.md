@@ -11,6 +11,10 @@ metadata:
 
 # Security Audit Methodology
 
+## Authorization and safety boundary
+
+Before any assessment, confirm the target, scope, permitted techniques, data-handling rules, and escalation contact. Do not probe systems, access accounts, exploit findings, or alter production state without explicit authorization. Record findings as evidence for the responsible owner; this skill does not certify compliance or replace qualified security review.
+
 Security is not a checklist — it's a posture. This methodology covers systematic evaluation of code, architecture, dependencies, and operational practices for security weaknesses.
 
 ## The Security Engineer's Domain
@@ -30,7 +34,6 @@ Security is not a checklist — it's a posture. This methodology covers systemat
 | `references/threat-modeling.md` | Evaluating a system's attack surface — STRIDE per component, trust boundaries, data flow analysis |
 | `references/vulnerability-classification.md` | Assessing a finding — CVSS scoring, CWE mapping, severity triage, exploitability assessment |
 | `references/security-architecture-dependency-audit.md` | Reviewing authentication (OAuth 2.0, OIDC, SAML, mTLS), authorization (RBAC/ABAC/ReBAC), session management, secrets management, and dependency/supply chain security (SBOM, CVE matching, license analysis, SLSA framework) |
-| `references/testing-and-tooling.md` | Recommending SAST/DAST tools, fuzzing strategies, and security test patterns |
 
 ## Core Principles
 
