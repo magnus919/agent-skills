@@ -116,7 +116,6 @@ See `references/adr-format.md` for the full governance model and teamwork questi
 
 - Architecture Decision Record community repo — https://github.com/architecture-decision-record/architecture-decision-record
 - Michael Nygard, "Documenting Architecture Decisions" — https://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
-- Magnus Hedemark, "Clanker Technical Architect: First on the Scene with Progressive Disclosure" — https://magnus919.com/2026/05/clanker-technical-architect-first-on-the-scene-with-progressive-disclosure/
 
 ## Portability
 
