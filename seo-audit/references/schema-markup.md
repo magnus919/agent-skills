@@ -26,7 +26,7 @@ Google's preferred format. All structured data on Magnus's sites should be JSON-
     "name": "Groktopus",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://www.groktop.us/favicon.png"
+      "url": "https://www.example.com/favicon.png"
     }
   }
 }
@@ -34,7 +34,7 @@ Google's preferred format. All structured data on Magnus's sites should be JSON-
 
 ## Schema Types for Magnus's Sites
 
-### TechArticle (groktop.us)
+### TechArticle (example.com)
 Use for technical/analytical content about AI, enterprise technology, and engineering.
 
 ```json
@@ -57,7 +57,7 @@ Use for technical/analytical content about AI, enterprise technology, and engine
 }
 ```
 
-### Article / BlogPosting (magnus919.com)
+### Article / BlogPosting (example.com)
 Use for personal blog and analytical long-form content.
 
 ```json
@@ -165,19 +165,19 @@ Use on all sites to enable breadcrumb rich results in SERPs.
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://www.groktop.us/"
+      "item": "https://www.example.com/"
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Category",
-      "item": "https://www.groktop.us/category/"
+      "item": "https://www.example.com/category/"
     },
     {
       "@type": "ListItem",
       "position": 3,
       "name": "Article Title",
-      "item": "https://www.groktop.us/article-slug/"
+      "item": "https://www.example.com/article-slug/"
     }
   ]
 }
@@ -202,7 +202,7 @@ Use on all sites for site-level schema (injected globally, not per-page).
 
 ## Platform-Specific Implementation
 
-### Ghost CMS (groktop.us, rdumesh.org, southeastme.sh)
+### Ghost CMS (example.com, example.org, example.net)
 
 **Per-page schema:**
 - Ghost injects basic JSON-LD automatically (Article type with headline, dates, author)
@@ -220,7 +220,7 @@ Use on all sites for site-level schema (injected globally, not per-page).
 - FAQPage, HowTo, TechArticle, BreadcrumbList, Product all require custom injection
 - Author info in Ghost's default schema may need enrichment (add author URL, sameAs)
 
-### Hugo (magnus919.com)
+### Hugo (example.com)
 
 **Per-page schema:**
 - Add JSON-LD via Hugo template in `layouts/partials/head.html` or `layouts/_default/single.html`

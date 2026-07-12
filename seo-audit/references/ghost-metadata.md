@@ -1,6 +1,6 @@
 # Ghost CMS Metadata & Schema Completion
 
-For Ghost CMS sites (groktop.us, rdumesh.org, southeastme.sh), the SEO specialist is responsible for completing all metadata on every published or draft article. This covers three distinct layers: Ghost CMS metadata fields, social media cards, and code-injected structured data.
+For Ghost CMS sites (example.com, example.org, example.net), the SEO specialist is responsible for completing all metadata on every published or draft article. This covers three distinct layers: Ghost CMS metadata fields, social media cards, and code-injected structured data.
 
 ## Layer 1: Ghost CMS Metadata Fields
 
@@ -100,7 +100,7 @@ Ghost automatically generates Open Graph and Twitter Card meta tags from the pos
 
 ```bash
 # Check what tags are being emitted
-curl -s https://groktop.us/<slug>/ | grep -E 'og:|twitter:'
+curl -s https://example.com/<slug>/ | grep -E 'og:|twitter:'
 
 # Test with validators
 # Facebook: https://developers.facebook.com/tools/debug/
@@ -161,9 +161,9 @@ When a post benefits from multiple schema types (e.g., TechArticle + FAQPage), w
 
 | Site | Required Schema | Injection Method |
 |------|----------------|------------------|
-| **groktop.us** | Organization (site-wide), TechArticle (per-post), FAQPage (when applicable) | ghost-cli `schema inject` for per-post; Code Injection → Settings for site-wide |
-| **rdumesh.org** | Organization + areaServed (site-wide), Article (auto), FAQPage (FAQ content), LocalBusiness if applicable | Same pattern |
-| **southeastme.sh** | Organization (site-wide), Article (auto) | Same pattern |
+| **example.com** | Organization (site-wide), TechArticle (per-post), FAQPage (when applicable) | ghost-cli `schema inject` for per-post; Code Injection → Settings for site-wide |
+| **example.org** | Organization + areaServed (site-wide), Article (auto), FAQPage (FAQ content), LocalBusiness if applicable | Same pattern |
+| **example.net** | Organization (site-wide), Article (auto) | Same pattern |
 
 ### Validation
 
@@ -185,7 +185,7 @@ For every article publish:
 - [ ] **OG Description** verified (at minimum, confirm it defaults acceptably)
 - [ ] **Twitter card** type confirmed (summary_large_image)
 - [ ] **Canonical URL** confirmed (self-referencing unless syndicated)
-- [ ] **Schema injected** (TechArticle for groktop.us, FAQPage if applicable)
+- [ ] **Schema injected** (TechArticle for example.com, FAQPage if applicable)
 - [ ] **Schema validated** (Google Rich Results Test passes)
 - [ ] **Feature image** has alt text and caption
 - [ ] **Slug** is optimized (30-45 chars, primary keyword, stable)

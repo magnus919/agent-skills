@@ -18,20 +18,20 @@ The title tag is the single most important on-page SEO element. It appears in SE
 
 ### Magnus's Sites — Patterns
 
-**magnus919.com (Hugo, PaperMod theme):**
+**example.com (Hugo, PaperMod theme):**
 - Title set in frontmatter: `title: "..."` 
 - Hugo auto-generates `<title>` from the title field
 - Verify: `title` in frontmatter is 50-60 chars
 - Site name appended automatically by PaperMod: `"Title | Magnus Hedemark"`
 
-**groktop.us (Ghost Pro):**
+**example.com (Ghost Pro):**
 - Meta title set in Ghost post settings → Meta Data → Custom Meta Title
 - Default: Post title (which may be too long — always set a custom meta title)
 - Ghost appends site name automatically in the `<title>` tag
 - Verify: custom meta title under 60 chars
 
-**rdumesh.org / southeastme.sh (Ghost, self-hosted):**
-- Same as groktop.us — custom meta title in Ghost post settings
+**example.org / example.net (Ghost, self-hosted):**
+- Same as example.com — custom meta title in Ghost post settings
 
 ## Meta Descriptions
 
@@ -47,12 +47,12 @@ Not a direct ranking factor, but the second most important element for click-thr
 
 ### Magnus's Sites — Patterns
 
-**magnus919.com (Hugo, PaperMod):**
+**example.com (Hugo, PaperMod):**
 - Hugo auto-generates meta description from page summary/content if not specified
 - Always set a `description:` field in frontmatter that's 150-160 chars
 - This is the meta description and also used in card previews
 
-**groktop.us (Ghost Pro):**
+**example.com (Ghost Pro):**
 - Custom Meta Description in post settings → Meta Data
 - Ghost also uses this for Open Graph description
 - If not set, Ghost uses the post excerpt (which may be longer or shorter than ideal)
@@ -113,9 +113,9 @@ Internal links distribute page authority throughout the site and help crawlers d
 
 ### Magnus's Sites — Patterns
 
-**magnus919.com:** Magnus uses [[wikilinks]] in draft which Hugo converts to hyperlinks. Check that wikilinks are rendering as live HTML links and pointing to existing pages.
+**example.com:** Magnus uses [[wikilinks]] in draft which Hugo converts to hyperlinks. Check that wikilinks are rendering as live HTML links and pointing to existing pages.
 
-**groktop.us (Ghost):** Manual internal links in the editor. Verify that linked posts exist and are published.
+**example.com (Ghost):** Manual internal links in the editor. Verify that linked posts exist and are published.
 
 ## Image Optimization
 
@@ -149,6 +149,6 @@ Internal links distribute page authority throughout the site and help crawlers d
 - **Stable:** Once published, never change a URL (breaks all inbound links)
 
 ### Magnus's Sites — Patterns
-- **magnus919.com:** Hugo uses the post slug from frontmatter or filename. Verify slug is short and contains primary keyword.
-- **groktop.us:** Ghost auto-generates slug from title. Set a custom slug in post settings if the auto-generated one is too long or doesn't contain the keyword.
+- **example.com:** Hugo uses the post slug from frontmatter or filename. Verify slug is short and contains primary keyword.
+- **example.com:** Ghost auto-generates slug from title. Set a custom slug in post settings if the auto-generated one is too long or doesn't contain the keyword.
 - **Never change published slugs** without explicit instruction from Magnus.

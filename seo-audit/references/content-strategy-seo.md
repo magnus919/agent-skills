@@ -20,11 +20,11 @@ The modern SEO content architecture replaces the old model of writing individual
 
 ### Applying to Magnus's Sites
 
-**magnus919.com — Example clusters:**
+**example.com — Example clusters:**
 - Pillar: "AI Agent Memory Systems"
-- Clusters: "Vector Databases for Agent Memory," "Knowledge Graphs vs Vector Search," "Cashew Thought-Graph Architecture," "What is GraphRAG?"
+- Clusters: "Vector Databases for Agent Memory," "Knowledge Graphs vs Vector Search," "a content inventory Thought-Graph Architecture," "What is GraphRAG?"
 
-**groktop.us — Example clusters:**
+**example.com — Example clusters:**
 - Pillar: "Enterprise AI Agent Deployment"
 - Clusters: "RAG at Scale: Lessons from Production," "AI Agent Orchestration," "Security Considerations for Enterprise AI," "Cost Optimization for LLM Inference"
 
@@ -108,26 +108,26 @@ Topical authority is built over time by publishing a breadth and depth of conten
 
 | Site | Domain Authority | Primary Keyword Focus | Largest Gap |
 |------|-----------------|----------------------|-------------|
-| magnus919.com | Low (newer personal blog) | AI philosophy, neurodiversity, engineering | Few internal links between related posts; no topic cluster structure |
-| groktop.us | Low (newer enterprise AI blog) | Enterprise AI strategy, agentic AI | Very new — needs pillar pages and cluster strategy from the start |
-| rdumesh.org | Very low (community site) | Mesh networking, MeshCore, RDUMesh | Local SEO for Raleigh/Durham; community resource queries |
-| southeastme.sh | Minimal | Southeast mesh networking | Mostly informational — just needs proper on-page SEO |
+| example.com | Low (newer personal blog) | AI philosophy, neurodiversity, engineering | Few internal links between related posts; no topic cluster structure |
+| example.com | Low (newer enterprise AI blog) | Enterprise AI strategy, agentic AI | Very new — needs pillar pages and cluster strategy from the start |
+| example.org | Very low (community site) | Mesh networking, MeshCore, RDUMesh | Local SEO for Raleigh/Durham; community resource queries |
+| example.net | Minimal | Southeast mesh networking | Mostly informational — just needs proper on-page SEO |
 
 ### Recommended Actions by Site
 
-**magnus919.com:**
+**example.com:**
 - Implement topic clusters retroactively (group existing posts into 3-4 clusters with pillar pages)
 - Ensure every post links to 2-3 other posts
 - Add FAQPage schema to posts that answer multiple questions
 - Optimize for "People also ask" by structuring content around questions
 
-**groktop.us:**
+**example.com:**
 - Plan pillar pages first before creating more isolated content
 - Target question-based keywords for featured snippet opportunities
 - Implement TechArticle schema on all technical posts
 - Focus on long-tail, low-competition keywords in the short term
 
-**rdumesh.org:**
+**example.org:**
 - Local SEO: "mesh network Raleigh," "MeshCore North Carolina"
 - Community-Q&A content for FAQ rich results
 - Event pages for meetup/community gathering SEO

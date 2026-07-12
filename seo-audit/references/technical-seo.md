@@ -50,7 +50,7 @@ Technical SEO ensures search engines can find, crawl, interpret, and index your 
 - Disable unused Ghost integrations and background tasks
 - Verify the theme isn't loading unused CSS/JS (many Ghost themes are bloated)
 
-**Hugo (magnus919.com):**
+**Hugo (example.com):**
 - Hugo generates static HTML — inherently fast
 - Image processing: use Hugo's built-in image processing to serve appropriately sized images (`.Resize`, `.Fill`, `.Fit`)
 - Minify HTML output: `minify: true` in config

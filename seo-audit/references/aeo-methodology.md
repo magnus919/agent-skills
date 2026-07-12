@@ -128,7 +128,7 @@ A markdown file at the site root providing LLMs with background, guidance, and l
 ### Content Negotiation (Accept: text/markdown)
 Serve Markdown to LLM agents and HTML to browsers. The agent sends `Accept: text/markdown` in the HTTP header; the server returns clean Markdown. Standards-compliant — no separate URL needed.
 
-**Hugo:** Already implemented on magnus919.com — custom output format renders pages as Markdown. Serve via Hugo's built-in output format routing.
+**Hugo:** Already implemented on example.com — custom output format renders pages as Markdown. Serve via Hugo's built-in output format routing.
 
 **Ghost:** Needs a reverse proxy (Nginx/Cloudflare Worker) or Ghost API-based solution. Ghost doesn't natively support content negotiation.
 
