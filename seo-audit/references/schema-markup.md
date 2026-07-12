@@ -16,7 +16,7 @@ Google's preferred format. All structured data on Magnus's sites should be JSON-
   "description": "150-160 char meta description",
   "author": {
     "@type": "Person",
-    "name": "Magnus Hedemark"
+    "name": "Example Author"
   },
   "datePublished": "2026-05-01",
   "dateModified": "2026-05-15",
@@ -32,7 +32,7 @@ Google's preferred format. All structured data on Magnus's sites should be JSON-
 }
 ```
 
-## Schema Types for Magnus's Sites
+## Schema Types for Platform-specific implementation notes
 
 ### TechArticle (example.com)
 Use for technical/analytical content about AI, enterprise technology, and engineering.
@@ -45,7 +45,7 @@ Use for technical/analytical content about AI, enterprise technology, and engine
   "description": "Description",
   "author": {
     "@type": "Person",
-    "name": "Magnus Hedemark"
+    "name": "Example Author"
   },
   "datePublished": "2026-05-01",
   "dateModified": "2026-05-15",
@@ -68,7 +68,7 @@ Use for personal blog and analytical long-form content.
   "description": "Description",
   "author": {
     "@type": "Person",
-    "name": "Magnus Hedemark"
+    "name": "Example Author"
   },
   "datePublished": "2026-05-01",
   "dateModified": "2026-05-15"

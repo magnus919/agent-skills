@@ -28,12 +28,12 @@ The `ghost-cli` tool has a `meta set` command for individual fields:
 
 ```bash
 # Set meta title and description
-ghost-cli --site groktopus meta set <slug> \
+ghost-cli --site example meta set <slug> \
   --meta-title "Primary Keyword Context | Groktopus" \
   --meta-description "150-160 char summary with keyword and call to action."
 
 # Set OG and Twitter fields
-ghost-cli --site rdumesh meta set <slug> \
+ghost-cli --site example meta set <slug> \
   --og-title "Optional: different from meta title" \
   --og-description "Optional: different from meta description" \
   --twitter-title "Optional: different from OG title"
@@ -84,8 +84,8 @@ Ghost automatically generates Open Graph and Twitter Card meta tags from the pos
 <meta name="twitter:title" content="[Twitter Title or OG Title or Meta Title]">
 <meta name="twitter:description" content="[Twitter Description or OG Description or Meta Description]">
 <meta name="twitter:image" content="[Twitter Image or OG Image or Feature Image]">
-<meta name="twitter:site" content="@groktopus">
-<meta name="twitter:creator" content="@magnus919">
+<meta name="twitter:site" content="@example">
+<meta name="twitter:creator" content="@example">
 ```
 
 ### Fallback Chain
@@ -127,9 +127,9 @@ The ghost-cli `schema inject` command handles the API call and stores the schema
 
 ```bash
 # Validate and inject FAQPage schema
-ghost-cli --site groktopus schema validate --json '{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Q?","acceptedAnswer":{"@type":"Answer","text":"A."}}]}'
+ghost-cli --site example schema validate --json '{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Q?","acceptedAnswer":{"@type":"Answer","text":"A."}}]}'
 
-ghost-cli --site groktopus schema inject my-post --file /tmp/faq-schema.json
+ghost-cli --site example schema inject my-post --file /tmp/faq-schema.json
 ```
 
 ### Injecting Multiple Schema Types with @graph

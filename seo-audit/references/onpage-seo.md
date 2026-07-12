@@ -10,19 +10,19 @@ The title tag is the single most important on-page SEO element. It appears in SE
 - **Length:** 50-60 characters (Google typically displays the first 50-60 chars; titles longer than ~580px get truncated)
 - **Keyword placement:** Primary keyword near the beginning (front-loaded)
 - **Uniqueness:** Every page has a unique title tag — no duplicates
-- **Branding:** Include site/brand name at the end (separated by `—` or `|` in SERPs, but per Magnus's voice rule, NO emdashes in prose — for title tags, use `|` as separator)
+- **Branding:** Include site/brand name at the end (separated by `—` or `|` in SERPs, but per the publication style rule, NO emdashes in prose — for title tags, use `|` as separator)
   - Example: `"SEO Audit for Ghost CMS Sites | Groktopus"`
-  - Example: `"The Artifact Pyramid: Progressive Disclosure for Agent Outputs | Magnus Hedemark"`
+  - Example: `"The Artifact Pyramid: Progressive Disclosure for Agent Outputs | Example Author"`
 - **Compelling:** Includes a value proposition or hook that earns the click
 - **No keyword stuffing:** Sounds natural, not like a list of keywords
 
-### Magnus's Sites — Patterns
+### Platform-specific implementation notes — Patterns
 
 **example.com (Hugo, PaperMod theme):**
 - Title set in frontmatter: `title: "..."` 
 - Hugo auto-generates `<title>` from the title field
 - Verify: `title` in frontmatter is 50-60 chars
-- Site name appended automatically by PaperMod: `"Title | Magnus Hedemark"`
+- Site name appended automatically by PaperMod: `"Title | Example Author"`
 
 **example.com (Ghost Pro):**
 - Meta title set in Ghost post settings → Meta Data → Custom Meta Title
@@ -45,7 +45,7 @@ Not a direct ranking factor, but the second most important element for click-thr
 - **Matches search intent** — if someone searches for "progressive disclosure for agents," the description should signal that the page delivers on that query
 - **Contractions and natural language** — reads like a person wrote it
 
-### Magnus's Sites — Patterns
+### Platform-specific implementation notes — Patterns
 
 **example.com (Hugo, PaperMod):**
 - Hugo auto-generates meta description from page summary/content if not specified
@@ -85,7 +85,7 @@ Headings communicate content hierarchy to search engines and provide scanability
 - **No keyword stuffing:** Don't repeat the same phrase unnaturally
 
 ### Content Length
-- **Blog posts:** 1500-2500 words is typical for long-form content. Magnus's articles often run longer because they're deep analytical pieces. Longer is fine if every word earns its place.
+- **Blog posts:** 1500-2500 words is typical for long-form content. long-form articles often run longer because they're deep analytical pieces. Longer is fine if every word earns its place.
 - **Minimum to rank:** 300 words for very simple queries; 1000+ for competitive terms
 - **Quality over quantity:** A tight 800-word post that answers the query completely beats a padded 2000-word post that repeats itself
 
@@ -111,7 +111,7 @@ Internal links distribute page authority throughout the site and help crawlers d
 - **Natural placement:** Links should serve the reader — if it genuinely helps to read more about X, link it
 - **Avoid:** Links in navigation that aren't needed, links to the same target with different anchor text, links on every instance of a term
 
-### Magnus's Sites — Patterns
+### Platform-specific implementation notes — Patterns
 
 **example.com:** Magnus uses [[wikilinks]] in draft which Hugo converts to hyperlinks. Check that wikilinks are rendering as live HTML links and pointing to existing pages.
 
@@ -148,7 +148,7 @@ Internal links distribute page authority throughout the site and help crawlers d
 - **Stop words:** Remove unnecessary "and", "the", "of", "for" where they don't add meaning
 - **Stable:** Once published, never change a URL (breaks all inbound links)
 
-### Magnus's Sites — Patterns
+### Platform-specific implementation notes — Patterns
 - **example.com:** Hugo uses the post slug from frontmatter or filename. Verify slug is short and contains primary keyword.
 - **example.com:** Ghost auto-generates slug from title. Set a custom slug in post settings if the auto-generated one is too long or doesn't contain the keyword.
-- **Never change published slugs** without explicit instruction from Magnus.
+- **Never change published slugs** without explicit approval from the site owner.

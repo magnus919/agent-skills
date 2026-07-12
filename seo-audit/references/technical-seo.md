@@ -10,7 +10,7 @@ Technical SEO ensures search engines can find, crawl, interpret, and index your 
 - **Check:** Are important pages accidentally disallowed? `Disallow: /` blocks ALL crawlers
 - **Check:** Is the sitemap referenced? `Sitemap: https://example.com/sitemap.xml`
 - **Best practice:** Allow CSS/JS files (modern crawlers need them for rendering)
-- **Magnus's sites:** Ghost CMS auto-generates robots.txt; verify after any config change
+- **Hosted CMS sites:** Ghost CMS auto-generates robots.txt; verify after any config change
 
 ### XML Sitemaps
 - **Purpose:** Tells crawlers about all pages and their relative importance

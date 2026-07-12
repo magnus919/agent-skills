@@ -18,7 +18,7 @@ The modern SEO content architecture replaces the old model of writing individual
 - **SERP dominance:** Instead of competing for one keyword, you compete for an entire topic area
 - **User experience:** Readers naturally flow from intro content (pillar) to deep dives (clusters)
 
-### Applying to Magnus's Sites
+### Applying to Platform-specific implementation notes
 
 **example.com — Example clusters:**
 - Pillar: "AI Agent Memory Systems"
@@ -104,7 +104,7 @@ Topical authority is built over time by publishing a breadth and depth of conten
 - Other sites link to your content as a reference
 - Your content is cited in academic or industry publications
 
-## Magnus's Sites — SEO Opportunity Assessment
+## Platform-specific implementation notes — SEO Opportunity Assessment
 
 | Site | Domain Authority | Primary Keyword Focus | Largest Gap |
 |------|-----------------|----------------------|-------------|
@@ -134,7 +134,7 @@ Topical authority is built over time by publishing a breadth and depth of conten
 
 ## Content Calendar
 
-SEO content strategy produces a **ranked list** of content opportunities, not a dated calendar. Magnus works in bursts, not on fixed schedules. Prioritize by:
+SEO content strategy produces a **ranked list** of content opportunities, not a dated calendar. Editorial schedules vary; prioritize by evidence rather than a fixed calendar. Prioritize by:
 
 1. **Search volume × relevance** — How many searches × how well it fits the site
 2. **Competition gap** — How much better can we be than the current top results?
