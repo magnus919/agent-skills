@@ -23,8 +23,8 @@ Load this skill when:
 - Generating any diagram that needs to render in both agent-facing and human-facing contexts
 
 Do NOT load when:
-- You only need static ASCII architecture (use `architecture-diagram` skill)
-- You're embedding in a Hugo site that uses custom theme rendering (load the appropriate theme skill)
+- A plain text outline communicates the relationship more clearly than a diagram.
+- The target renderer cannot execute Mermaid and no pre-rendering path is available.
 
 ## PDF Output — Pre-render Required
 
@@ -47,17 +47,11 @@ See `references/pdf-rendering-pipeline.md` for the full pipeline with Puppeteer 
 | Type | Use Case | File |
 |------|----------|------|
 | Flowchart | Process flows, C4 workarounds, decision trees | `references/flowchart.md` |
-| Sequence | Interaction protocols, API calls, agent handoffs | `references/sequence.md` |
-| Class | Object models, interfaces, type hierarchies | `references/class.md` |
-| State | State machines, lifecycle, workflow states | `references/state.md` |
-| ER | Entity relationships, data models, schemas | `references/er.md` |
-| Block | Manual-position diagrams, composite structures | `references/block.md` |
-| Packet | Network protocols, binary formats, bit fields | `references/packet.md` |
+| Sequence | Interaction protocols and API calls | `references/sequence.md` |
 | C4 | Architecture context and container views | `references/c4-mermaid.md` |
-| Gantt | Project timelines, milestone tracking | `references/gantt.md` |
 | Portrait Layout | PDF/print-oriented diagramming — TD over LR, page breaks, full-page diagrams | `references/portrait-layout.md` |
 | PDF Rendering Pipeline | Full pipeline from .mmd → SVG → HTML → PDF, with QA checklist | `references/pdf-rendering-pipeline.md` |
-| mmdc Spacing Config | Config file approach for controlling diagram layout density (nodeSpacing, rankSpacing, padding) to prevent label overlap in complex diagrams destined for PDF/print | `references/mmdc-spacing-config.md` |
+| mmdc Spacing Config | Config for controlling diagram density and preventing label overlap | `references/mmdc-spacing-config.md` |
 
 ## C4 Model Guidance
 
@@ -65,7 +59,7 @@ Mermaid has experimental native C4 syntax (`C4Context`, `C4Container`, `C4Compon
 
 1. **Flowchart workarounds (GitHub-compatible)** — Convert C4 diagrams to standard `flowchart` syntax using subgraphs for boundaries, styled node boxes for Person/System/Container/Db, and labelled edges for Rel. See `references/c4-to-flowchart.md` for the full conversion pattern.
 2. **Structurizr DSL** — use for real C4 diagrams. Render via Structurizr CLI or export to Mermaid SVG. Best for formal architecture documentation that doesn't live in GitHub markdown.
-3. **The hybrid approach** — produce C4 in Structurizr DSL for the architect's artifact pyramid, and include a flowchart-based approximation in the markdown report for inline readability.
+3. **Hybrid approach** — maintain a full C4 model in Structurizr DSL and include a flowchart-based approximation in Markdown for inline readability.
 
 ### C4 → Flowchart Conversion Pattern
 
@@ -153,9 +147,7 @@ try {
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/validate-mermaid.sh` | Validate a .mmd file for syntax errors |
-| `scripts/render-mermaid.sh` | Render a .mmd file to SVG/PNG/PDF via mmdc |
-| `scripts/batch-render.sh` | Render all .mmd files in a directory to SVG |
+| `scripts/validate-mermaid.sh` | Validate a `.mmd` file with Mermaid CLI |
 
 ## Theming
 
