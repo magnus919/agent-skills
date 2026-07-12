@@ -74,7 +74,6 @@ These aren't footnotes. They are **navigation affordances** for agent consumers.
 | Pipeline Stages | You're building or auditing a pyramid — detailed definitions per layer, navigation format, production flow | `references/pipeline-stages.md` |
 | Quality Gates | You need to verify an artifact meets the standard for its layer | `references/quality-gates.md` |
 | Worked Example | You want to see a complete synthetic walkthrough of all three layers | `references/synthetic-example.md` |
-| Canonical Article | Read the published groktop.us piece — the Layer 3 artifact that defines the concept | `references/canonical-article.md` |
 | Intellectual Lineage | How software architecture documentation (4+1 Views, C4, arc42, ADRs) independently discovered progressive disclosure under different names — and what the Artifact Pyramid generalizes beyond them | `references/intellectual-lineage.md` |
 | Methodology-to-Pyramid Mapping | How specialist profiles map domain-specific methodologies into the universal pyramid structure, with dimension boundary rules | `references/methodology-to-pyramid-mapping.md` |
 | Output Classification Framework | **Role-agnostic** — three questions any specialist can ask to map their outputs into the correct layer: who consumes it, how often, what question it answers. Includes per-layer content contracts to eliminate duplication between 00-index and L1 files. | `references/output-classification-framework.md` |

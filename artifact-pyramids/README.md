@@ -13,9 +13,9 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
-| `references/` | Reference material: `artifact-pyramid-framework.md`, `canonical-article.md`, `companion-session-summary.md`, `composite-pyramid-synthesis.md`, `delegation-context-template.md`, `flat-to-pyramid-migration.md`, `intellectual-lineage.md`, `methodology-to-pyramid-mapping.md`, `nested-pyramid-pattern.md`, `output-classification-framework.md`, `pipeline-stages.md`, `provenance-artifacts.md`, `quality-gates.md`, `skillopt-baseline-pyramid.md`, `skillopt-pipeline-integration.md`, `synthetic-example.md` |
+| `references/` | Reference material: `artifact-pyramid-framework.md`, `canonical-article.md`, `composite-pyramid-synthesis.md`, `delegation-context-template.md`, `flat-to-pyramid-migration.md`, `intellectual-lineage.md`, `methodology-to-pyramid-mapping.md`, `nested-pyramid-pattern.md`, `output-classification-framework.md`, `pipeline-stages.md`, `provenance-artifacts.md`, `quality-gates.md`, `synthetic-example.md` |
 | `assets/` | Assets: `artifact-inventory.md`, `pyramid-template.md` |
-| `scripts/` | Scripts: `extract-atoms.py`, `pyramid-status.sh`, `pyramid-status.sh.bak` |
+| `scripts/` | Scripts: `extract-atoms.py`, `pyramid-status.sh` |
 
 ## Quick Start
 

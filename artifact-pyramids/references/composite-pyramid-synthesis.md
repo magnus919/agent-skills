@@ -65,7 +65,3 @@ After the composite pyramid is verified complete:
 ### Step 5: Fix SOURCES Navigation
 
 After removal, update every SOURCES section that pointed to a deleted sub-pyramid. Replace researcher-specific `../researcher-1/00-index.md` references with a pointer to `03-dossiers/sub-pyramids-archive.md`.
-
-## Worked Example
-
-See the June 1 2026 jobs-finder session (companion-session-summary.md), where this pattern was developed and applied across 4 researcher pyramids producing 11 consolidated opportunities.

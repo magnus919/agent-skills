@@ -136,7 +136,7 @@ Mission Brief
    scope boundaries, and a register of known unknowns.
   ↓
 2. Systematic Gathering
-   Use groktocrawl for all source gathering — scrape for single URLs, search for discovery, agent for synthesis.
+   Use the available retrieval tools: fetch known URLs directly, search for discovery, and synthesize only from the material you can cite.
    Capture sources, extract evidence, organize into preliminary
    drafts of Layer 3 dossiers.
   ↓
