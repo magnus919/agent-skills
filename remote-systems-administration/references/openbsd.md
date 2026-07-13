@@ -25,7 +25,7 @@ OpenBSD separates packages from system distribution files. `pkg_add` installs an
 
 `pkg_add -u` can update installed packages and their dependencies. Before a package update, inspect package origin, dependencies, service impact, disk space, and application compatibility. Use its non-mutating modes only as previews with the documented limitations understood.
 
-For base-system errata and release lifecycle, use the appropriate OpenBSD mechanisms and release documentation, such as `syspatch` where applicable. Do not conflate package updates, syspatch, and a release upgrade.
+For base-system errata, `syspatch` fetches, verifies, installs, and can revert OpenBSD binary patches for official releases. Treat it as distinct from package updates and release upgrades; consult the release documentation before selecting the lifecycle path.
 
 ## PF
 

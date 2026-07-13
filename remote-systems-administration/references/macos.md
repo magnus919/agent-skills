@@ -18,7 +18,7 @@ A Homebrew service, an application helper, a LaunchDaemon, and a LaunchAgent can
 
 `softwareupdate` addresses Apple-provided update workflows. Use Apple deployment documentation and the target release's supported management path before planning an update. An OS update can affect restarts, FileVault unlock, management enrollment, kernel/system extensions, application compatibility, and recovery behavior.
 
-Homebrew is a separate third-party package manager. If it is present and authorized for the target, use its documented commands and respect formula/cask provenance, update behavior, service ownership, and user context. Do not install Homebrew merely to obtain a Unix package without an explicit directive.
+Homebrew is a separate third-party package manager. If it is present and authorized for the target, use its documented commands and respect formula/cask provenance, update behavior, service ownership, and user context. Its prefix is architecture and installation dependent, so discover it with `brew --prefix` rather than hardcoding a path. Do not install Homebrew merely to obtain a Unix package without an explicit directive.
 
 Before any broad update:
 
@@ -36,7 +36,7 @@ System Integrity Protection, privacy controls, TCC, signed system volumes, and A
 
 ## Networking and firewall
 
-macOS has multiple security/networking layers, including PF and the Application Firewall. They serve different purposes. Discover which layer owns the requested policy before altering it. Never assume a PF rule changes application-level firewall behavior, or vice versa.
+macOS has multiple security/networking layers, including PF and the Application Firewall. They serve different purposes. Discover which layer owns the requested policy before altering it. Never assume a PF rule changes application-level firewall behavior, or vice versa. For macOS network-service configuration, `networksetup` is the native command-line control plane: inspect its target service and current state before changing DNS, routing, addressing, proxies, or interface behavior.
 
 Network, PF, remote-login, VPN, DNS, routing, and firewall changes can strand a remote session. Preserve a current session and an independent authorized recovery path, validate candidate configuration, make the smallest change, and verify both retained administrative access and intended traffic behavior. Apple's Application Firewall is app/service admission control, whereas PF is a packet-filter control plane; identify which question is being asked before changing either.
 
