@@ -215,6 +215,10 @@ Query, search, and download public datasets from the City of Raleigh Open Data p
 
 Turn an open question into a bounded, evidence-led investigation rather than a plausible-sounding synthesis.
 
+### [secure-software-engineering](secure-software-engineering/SKILL.md)
+
+Build security into software requirements, design, implementation, review, and release decisions. Covers threat modeling, authorization, data and secret handling, dependencies, tenant isolation, security evidence, incident learning, and AI boundaries without treating a checklist as proof of security.
+
 ### [security-audit-methodology](security-audit-methodology/SKILL.md)
 
 Give authorized teams a disciplined way to identify and prioritize security risks without mistaking a checklist for a security guarantee.
