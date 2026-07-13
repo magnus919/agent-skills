@@ -21,11 +21,21 @@ Use this as an operating decision layer, not a bag of remote commands. Unix-like
 4. **Preview, constrain, verify.** Limit the target set; use native validation, dry-run, diff, or a canary when available; then verify the affected service and its user-visible boundary. A zero exit code proves only that command ran.
 5. **Report evidence, not a story.** Preserve bounded per-host results: target, command category, before/after evidence, failures, rollback state, and the remaining uncertainty. Never paste secrets, keys, full configuration files, or unbounded logs into the response.
 
+## Read-only discovery handoff
+
+Use this compact format after a preflight. Fill a field only from observed evidence; otherwise write `unknown` or `not supplied`.
+
+- **Target and scope:**
+- **Observed platform and control planes:**
+- **Bounded evidence:**
+- **Unknown or blocked:**
+- **Next safe action:**
+
 ## First response: classify the job
 
 | Situation | Default path | Do not do |
 |---|---|---|
-| Diagnose or make one bounded change on one host | Native `ssh` with a read-only preflight | Do not open an interactive shell and make unrecorded edits |
+| Diagnose or make one bounded change on one host | Native `ssh` with a read-only preflight and bounded command/range; do not use a live-follow stream such as `tail -f` | Do not open an interactive shell and make unrecorded edits |
 | Repeat the same desired state across hosts | Ansible inventory + playbook, canary/serial rollout | Do not loop `ssh` blindly across production hosts |
 | Python must coordinate SSH channels, SFTP, or a custom protocol flow | Paramiko with strict host-key verification and explicit timeouts | Do not disable host-key checks or turn a script into ad hoc fleet control |
 | The platform/control plane is unknown | Run bounded discovery from `references/portable-operations.md` | Do not use `systemctl`, `apt`, `pfctl`, or `launchctl` based on a guess |
@@ -42,7 +52,9 @@ Before the first state-changing command, confirm:
 - intended state, expected blast radius, rollback command or artifact, and stop condition;
 - validation at both the component layer and the relevant external boundary.
 
-Read-only discovery may proceed without confirmation. Destructive actions, privilege changes, firewall/remote-access changes, package removals, storage operations, and reboot/shutdown require an explicit directive after this preflight.
+> **Connectivity/access pre-execution gate:** explicitly name authorization, retained session, independent recovery path, tested rollback, stop condition, and component plus external-boundary verification. If any is unknown, stop before execution.
+
+Read-only discovery may proceed without confirmation. **Read-only means no persistent state:** do not create rollback scripts or captures, stage update metadata, alter files, or call a state-changing operation `preflight`. Stop once the needed platform and control-plane evidence is established. Destructive actions, privilege changes, firewall/remote-access changes, package removals, storage operations, and reboot/shutdown require an explicit directive after this preflight.
 
 ## Routing references
 
