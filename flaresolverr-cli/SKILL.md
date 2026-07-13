@@ -1,10 +1,10 @@
 ---
 name: flaresolverr-cli
-description: 'Interact with a FlareSolverr proxy server from the terminal: health
-  checks, session lifecycle (create/list/destroy), and challenge-solving HTTP requests
-  (GET/POST) through Cloudflare and DDoS-GUARD protection. Use when the user mentions
-  FlareSolverr, Cloudflare bypass, anti-bot proxy, headless browser proxy, or needs
-  to fetch a page behind Cloudflare protection.'
+description: 'Operate the full flaresolverr-cli command surface: named browser-session
+  lifecycle, structured health and service information, dry-run planning, cookie-only
+  returns, and challenge-solving GET or form-POST requests. Use for explicit
+  flaresolverr-cli or session-management requests; use the smaller flaresolverr skill
+  for a one-off health check or basic browser-backed retrieval.'
 license: MIT
 compatibility: >-
   Python 3.8+ (stdlib only, no pip deps). Requires a running FlareSolverr instance
@@ -20,6 +20,18 @@ metadata:
 Drive a FlareSolverr instance from the command line. FlareSolverr is a proxy server that launches a headless Chrome browser to solve Cloudflare and DDoS-GUARD JavaScript challenges, returning the unblocked HTML, cookies, and user-agent to your client.
 
 The CLI wraps all four API endpoints: service info, health check, the three `/v1` session commands (create/list/destroy), and both challenge-solving request commands (`request.get` and `request.post`). Every command supports `--json`, `--dry-run`, and `--timeout`.
+
+## Mutation Gate
+
+`health`, `info`, and `sessions list` are read-only discovery. Creating or destroying a session changes FlareSolverr state, and `request get` or `request post` sends traffic to an external target.
+
+> Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
+
+Use `--dry-run` to review a planned mutation first. Session destruction and any request intended to change target state require an explicit user directive; this skill does not authorize deletion, privilege changes, authentication bypass, or irreversible cleanup.
+
+## When not to use
+
+Use [flaresolverr](../flaresolverr/SKILL.md) for a one-off health check or basic GET/POST when named sessions, cookie-only returns, dry-run planning, and the full command surface are unnecessary. Do not use either skill to bypass authentication, authorization, paywalls, or access controls.
 
 ## Setup
 
