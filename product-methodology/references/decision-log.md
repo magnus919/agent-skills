@@ -8,8 +8,8 @@ Write a decision log entry when:
 - The decision had tradeoffs that could be second-guessed later
 - The decision involved multiple stakeholders with different opinions
 - The decision sets a precedent for future work
-- The decision commits significant resources (3+ weeks of team time)
-- You want to revisit the decision in 3-6 months with data
+- The decision commits significant resources or creates a difficult-to-reverse dependency
+- You want to revisit the decision after enough evidence can accumulate
 
 ## The Template
 
@@ -68,7 +68,7 @@ What do we expect to happen as a result of this decision? Be specific enough tha
 
 ## Examples
 
-### Good
+### Good hypothetical example
 
 ```
 # Decision: Prioritize CSV export over dark mode for Q3
@@ -118,7 +118,7 @@ blocker in calls, we misprioritized the feature request volume vs revenue
 signal
 ```
 
-### Bad
+### Bad hypothetical example
 
 ```
 Decision: Build CSV export

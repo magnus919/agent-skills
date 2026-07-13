@@ -53,7 +53,7 @@ A spec document (see [spec-template.md](spec-template.md)). But the living commu
 
 - **Ticket-taker mode.** "Here's the spec, build it." The best engineering work comes from engaging them in the problem, not just the solution.
 - **Scope surprise.** Adding requirements after the estimate is done. If scope changes, re-estimate.
-- **No response.** An engineer asks a question about the spec. If you don't answer within 24 hours, you've created a blocker. Answer even if it's "I need to check."
+- **No response.** An engineer asks a question about the spec and receives no acknowledgment within the team's agreed response window. Answer even if the answer is "I need to check," and state when you'll follow up.
 
 ## To Designers
 
@@ -75,7 +75,7 @@ Outcome descriptions, not pixel specs.
 
 - **"Make it pop."** If you can't describe what's wrong, you probably can't describe what's right either.
 - **Skipping the problem space.** Bringing designers in only after requirements are locked wastes their best skill — solving problems in ambiguity.
-- **Death by feedback round.** Three rounds of feedback on a design usually means you didn't give clear enough constraints upfront.
+- **Unbounded feedback rounds.** Repeated review cycles can signal unclear constraints, unresolved decision authority, or feedback arriving from the wrong audience.
 
 ## To Customers
 

@@ -27,14 +27,14 @@ The source skill was Hermes-specific. The following transformations were applied
 
 ## Framework Provenance
 
-| Framework | Origin | Authoritative Source | Licensing |
+| Framework | Origin | Primary source | Treatment |
 |---|---|---|---|
-| RICE | Intercom (Sean McBride, 2016) | [intercom.com/blog/rice-simple-prioritization-for-product-managers](https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/) | Freely available blog content; methodology not copyrightable. References are in original language. |
-| MoSCoW | Dai Clegg, Oracle UK (1994) | [Wikipedia: MoSCoW method](https://en.wikipedia.org/wiki/MoSCoW_method) | Public methodology standard; no restrictive licensing. |
-| Opportunity Solution Trees | Teresa Torres (Product Talk) | [producttalk.org/opportunity-solution-tree](https://www.producttalk.org/opportunity-solution-tree/) | Freely available blog content; methodology not copyrightable. Book (*Continuous Discovery Habits*, 2020) is copyrighted but not reproduced here. |
-| Decision log | Synthesized from ADR practice | [ADR pattern (Michael Nygard, 2011)](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) | Common practice — no single copyright holder. |
-| Spec template | Synthesized from PRD conventions | — | Common practice — no single copyright holder. |
-| Stakeholder communication | Synthesized from PM communication practice | — | Common practice — no single copyright holder. |
+| RICE | Intercom (Sean McBride, 2016) | [Intercom: RICE prioritization](https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/) | Paraphrased with attribution; the source article's wording and examples are not reproduced. |
+| MoSCoW | Dai Clegg, Oracle UK (1994); later adopted by DSDM | [Agile Business Consortium: MoSCoW prioritisation](https://www.agilebusiness.org/dsdm-project-framework/moscow-prioritisation.html) | Paraphrased with attribution; capacity guidance is presented as a planning heuristic, not a universal rule. |
+| Opportunity Solution Trees | Teresa Torres (Product Talk) | [Product Talk: Opportunity Solution Trees](https://www.producttalk.org/opportunity-solution-tree/) | Paraphrased with attribution; proprietary diagrams and book text are not reproduced. |
+| Decision log | Synthesized from ADR practice | [ADR pattern (Michael Nygard, 2011)](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) | Original synthesis informed by the cited pattern. |
+| Spec template | Synthesized from PRD conventions | — | Original synthesis from common product-documentation practice. |
+| Stakeholder communication | Synthesized from PM communication practice | — | Original synthesis from common communication practice. |
 
 ## Review Date
 

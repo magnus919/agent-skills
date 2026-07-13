@@ -19,7 +19,7 @@ What problem are we solving, and for whom? One paragraph. If you can't describe 
 
 ## Success Metrics
 
-How will we know this worked? One quantitative metric and one qualitative signal.
+How will we know this worked? Use evidence appropriate to the decision, often combining a quantitative metric, a qualitative signal, and a countermetric.
 
 - **Primary metric:** [e.g., Time spent per project settings update]
 - **Target:** [e.g., Reduce from 4 hours to 30 minutes per week]
@@ -72,7 +72,7 @@ Hard constraints that any solution must work within. These come from the team, n
 - **Engineering:** Edit operation must complete within 5 seconds for 100 items
 - **Design:** Must work on both full-width and half-width viewport configurations
 - **Data/Infra:** Audit trail must maintain existing immutability guarantees
-- **Accessibility:** Must meet WCAG 2.1 AA for keyboard navigation
+- **Accessibility:** Must meet applicable WCAG 2.2 AA success criteria, including keyboard and focus behavior
 
 ## Edge Cases
 
@@ -106,7 +106,7 @@ Engineer-facing implementation guidance. The PM doesn't dictate architecture, bu
 |-----------|--------|---------------|
 | API endpoint ready | Sprint+2 | Bulk PATCH passes integration tests |
 | Frontend prototype | Sprint+3 | Selection + preview flow works in staging |
-| User test | Sprint+4 | 3/5 power users complete task without guidance |
+| User test | Sprint+4 | Defined participants complete the critical task without blocking usability failures |
 | Release | Sprint+5 | GA with metrics tracking enabled |
 
 ## Risks
@@ -115,4 +115,6 @@ Engineer-facing implementation guidance. The PM doesn't dictate architecture, bu
 |------|-----------|--------|------------|
 | Parallel edits conflict | Medium | High | Pessimistic locking on project settings |
 | Performance at 1000+ items | Low | Medium | Cap selection at 200 items for v1 |
-| Users accidentally apply wrong settings | Medium | High | Preview step + undo within 30 seconds |
+| Users accidentally apply wrong settings | Medium | High | Preview step plus an undo window validated against the workflow |
+
+All example names, numbers, dates, milestones, and thresholds in this reference are hypothetical. Replace them with evidence and constraints from the product and delivery team; they are not default acceptance criteria or estimates.

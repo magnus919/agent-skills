@@ -47,7 +47,7 @@ Talk to customers. Analyze usage data. Look for where users get stuck, where the
 
 ### 3. Generate solutions for each opportunity
 
-For each opportunity, brainstorm 3-5 possible solutions. Include non-technical solutions (process changes, content, partnerships). The best solution may not be code.
+For each opportunity, generate multiple materially different solutions. Include non-technical options such as process changes, content, or partnerships. The point is to avoid anchoring on the first idea; no fixed count guarantees sufficient exploration.
 
 ### 4. Test the riskiest assumption first
 
@@ -57,7 +57,7 @@ For each solution, identify the assumption that is both most critical and least 
 |--------------------|---------------|
 | Users want this | Landing page with "Notify me" button |
 | Technically feasible | Quick prototype |
-| Users will understand it | Usability test with 5 people |
+| Users will understand it | A small formative usability test, sized to the decision and participant diversity needed |
 | It's better than current workaround | Side-by-side comparison test |
 
 ### 5. Update the tree as you learn

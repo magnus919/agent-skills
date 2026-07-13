@@ -21,13 +21,13 @@ It picks up where product discovery ends and hands off to design and UX with a c
 |---|---|
 | `SKILL.md` | Pipeline overview, trigger conditions, reference guide, and provenance table |
 | `references/rice-framework.md` | Full RICE scoring methodology: formula, dimension tables, pitfalls, and example |
-| `references/moscow-prioritization.md` | MoSCoW categories with tests, ratio rule (60/20/20), when to use vs RICE |
+| `references/moscow-prioritization.md` | MoSCoW categories, capacity heuristics, and guidance on when to use it instead of RICE |
 | `references/opportunity-solution-trees.md` | OST structure, five-step practice, riskiest-assumption testing, anti-patterns |
 | `references/decision-log.md` | When to write a decision log, full template, good/bad examples |
 | `references/spec-template.md` | Complete spec structure: problem statement, success metrics, scope, edge cases, risks |
 | `references/stakeholder-communication.md` | Audience-specific formats: executives, engineers, designers, customers, everyone |
 | `references/source-index.md` | Provenance, portability boundary, and authoritative source links |
-| `templates/DECISION_LOG.md` | Fillable decision log with YAML frontmatter and all standard sections |
+| `templates/DECISION_LOG.md` | Fillable decision log with YAML frontmatter and the sections provided by this methodology |
 | `templates/SPEC.md` | Fillable spec template with YAML frontmatter and guidance text |
 
 ## Quick Start

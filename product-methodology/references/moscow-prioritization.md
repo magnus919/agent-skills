@@ -13,8 +13,8 @@ Non-negotiable. Without these, the release has no value. If a Must Have slips, t
 
 **Examples:** Authentication for a login-required product. Payment processing for an e-commerce launch.
 
-**Rules:**
-- Must Haves should consume no more than 60% of total capacity
+**Guidance:**
+- DSDM commonly recommends keeping Must Haves near or below 60% of expected effort to preserve contingency; treat this as a planning heuristic, not a universal allocation
 - If everything is Must Have, nothing is Must Have — push back
 - Must Haves are the first thing built and the last thing cut
 
@@ -54,16 +54,16 @@ Explicitly out of scope. The most important category — it makes the other thre
 - They protect the team from scope creep by making the boundary explicit
 - Revisit every quarter — some Won't Haves become Must Haves as context changes
 
-## The Ratio Rule
+## An Illustrative Capacity Heuristic
 
-| Category | Target capacity |
+| Category | Illustrative capacity |
 |----------|----------------|
 | Must Have | 60% |
 | Should Have | 20% |
 | Could Have | 20% |
 | Won't Have | (not allocated) |
 
-If your Must Haves exceed 60% of estimated capacity, you have two options:
+The 60/20/20 split is DSDM guidance for maintaining contingency, not a formula that proves a plan is viable. Adapt it to the delivery context and confidence in estimates. If Must Haves consume nearly all expected capacity, make the tradeoff explicit:
 1. **Cut scope** — move some to Should Have or Won't Have
 2. **Extend timeline** — but be explicit that this is the tradeoff
 
@@ -80,4 +80,4 @@ If your Must Haves exceed 60% of estimated capacity, you have two options:
 
 **Everything is a Must Have.** This is the most common failure mode. It means nobody trusts that Should Haves will actually get built, so everyone pads their requirements. The fix is to demonstrate that Should Haves really do get built — which means actually cutting something on the Must Have list first.
 
-If a stakeholder insists everything is Must Have, write them all down, show the team's capacity, and ask: "Given we can only deliver 60% of this list, which 40% do you want to cut?" The question reframes the constraint from abstract to concrete.
+If a stakeholder insists everything is Must Have, write the items down, compare them with available capacity, and ask which ones should move if the estimates or date cannot change. This reframes the constraint from abstract to concrete without pretending the illustrative ratio is an observed capacity limit.

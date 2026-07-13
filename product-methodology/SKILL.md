@@ -43,7 +43,7 @@ Load only the reference relevant to the task:
 | Template | Load when |
 |---|---|
 | [Decision log template](templates/DECISION_LOG.md) | You need a fillable decision log entry with frontmatter |
-| [Spec template](templates/SPEC.md) | You need a fillable spec document with all standard sections |
+| [Spec template](templates/SPEC.md) | You need a fillable spec document with the sections provided by this methodology |
 
 ## Trigger Conditions
 
@@ -79,7 +79,7 @@ This skill is intentionally host-neutral. It requires no profile system, output 
 | Framework | Origin | Source |
 |---|---|---|
 | RICE | Intercom (Sean McBride, 2016) | [intercom.com/blog/rice-simple-prioritization-for-product-managers](https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/) |
-| MoSCoW | Dai Clegg, Oracle UK (1994) | [Wikipedia: MoSCoW method](https://en.wikipedia.org/wiki/MoSCoW_method) |
+| MoSCoW | Dai Clegg, Oracle UK (1994); later adopted by DSDM | [Agile Business Consortium: MoSCoW prioritisation](https://www.agilebusiness.org/dsdm-project-framework/moscow-prioritisation.html) |
 | Opportunity Solution Trees | Teresa Torres (Product Talk) | [producttalk.org/opportunity-solution-tree](https://www.producttalk.org/opportunity-solution-tree/) |
 | Decision log | Synthesized from ADR practice and product management conventions | — |
 | Spec template | Synthesized from common PRD practice | — |

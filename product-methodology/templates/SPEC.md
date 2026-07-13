@@ -22,7 +22,7 @@ updated: ""
 
 ### What we're building
 
-<!-- 3-6 bullet points describing what this feature actually does. Engineer-readable. No implementation details. -->
+<!-- Bullet points describing what this feature actually does. Engineer-readable. No implementation details. -->
 
 - <!-- e.g., Users can select multiple projects from a list view -->
 - <!-- e.g., Users can apply a setting change to all selected projects at once -->
@@ -51,7 +51,7 @@ updated: ""
 - **Engineering:** <!-- e.g., Edit operation must complete within 5 seconds for 100 items -->
 - **Design:** <!-- e.g., Must work on both full-width and half-width viewport configurations -->
 - **Data/Infra:** <!-- e.g., Audit trail must maintain existing immutability guarantees -->
-- **Accessibility:** <!-- e.g., Must meet WCAG 2.1 AA for keyboard navigation -->
+- **Accessibility:** <!-- e.g., Must meet applicable WCAG 2.2 AA criteria, including keyboard and focus behavior -->
 
 ## Edge Cases
 
