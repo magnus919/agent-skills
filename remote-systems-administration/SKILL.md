@@ -21,6 +21,16 @@ Use this as an operating decision layer, not a bag of remote commands. Unix-like
 4. **Preview, constrain, verify.** Limit the target set; use native validation, dry-run, diff, or a canary when available; then verify the affected service and its user-visible boundary. A zero exit code proves only that command ran.
 5. **Report evidence, not a story.** Preserve bounded per-host results: target, command category, before/after evidence, failures, rollback state, and the remaining uncertainty. Never paste secrets, keys, full configuration files, or unbounded logs into the response.
 
+## Read-only discovery handoff
+
+Use this compact format after a preflight. Fill a field only from observed evidence; otherwise write `unknown` or `not supplied`.
+
+- **Target and scope:**
+- **Observed platform and control planes:**
+- **Bounded evidence:**
+- **Unknown or blocked:**
+- **Next safe action:**
+
 ## First response: classify the job
 
 | Situation | Default path | Do not do |
@@ -41,6 +51,8 @@ Before the first state-changing command, confirm:
 - access identity, elevation method, and whether the connection traverses a bastion;
 - intended state, expected blast radius, rollback command or artifact, and stop condition;
 - validation at both the component layer and the relevant external boundary.
+
+> **Connectivity/access pre-execution gate:** explicitly name authorization, retained session, independent recovery path, tested rollback, stop condition, and component plus external-boundary verification. If any is unknown, stop before execution.
 
 Read-only discovery may proceed without confirmation. **Read-only means no persistent state:** do not create rollback scripts or captures, stage update metadata, alter files, or call a state-changing operation `preflight`. Stop once the needed platform and control-plane evidence is established. Destructive actions, privilege changes, firewall/remote-access changes, package removals, storage operations, and reboot/shutdown require an explicit directive after this preflight.
 
