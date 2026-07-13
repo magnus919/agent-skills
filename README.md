@@ -70,6 +70,10 @@ An expert-level skill for building **role-based multi-agent teams** with CrewAI.
 
 Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF. Covers Security Engine installation (Linux, Docker), cscli hub management, remediation components (firewall, Traefik, Nginx), AppSec WAF, profiles, notifications, blocklists, CTI, metrics, and production best practices. Ships 7 reference files for deep dives into config, AppSec, Docker, Traefik integration, database backends, hub collections, and troubleshooting.
 
+### [daily-life-discovery](daily-life-discovery/SKILL.md)
+
+Guide a consent-based conversation that helps people discover how an AI agent could improve their day-to-day life, then match those needs to verified capabilities, reusable skills, and focused platform CLIs.
+
 ### [data-architect](data-architect/SKILL.md)
 
 Act as a virtual data architect. Discover data assets, assess maturity, evaluate platforms, design architectures, establish governance, and create migration plans. Covers modern data patterns (data mesh, data lakehouse, streaming, real-time analytics) with vendor evaluation frameworks and maturity models.
