@@ -12,6 +12,17 @@ skills = Dir.glob("#{ROOT}/**/SKILL.md").sort.reject do |skill|
   skill.include?("/agent-council/profiles/skills/")
 end
 
+catalog_names = File.read(File.join(ROOT, "README.md")).scan(
+  /^### \[([a-z0-9]+(?:-[a-z0-9]+)*)\]\([^)]+\/SKILL\.md\)\s*$/
+).flatten
+expected_catalog_names = catalog_names.sort_by { |name| [name.downcase, name] }
+unless catalog_names == expected_catalog_names
+  mismatch = catalog_names.zip(expected_catalog_names).index { |actual, expected| actual != expected }
+  errors << "README.md: skill catalog headings must be sorted case-insensitively; " \
+            "position #{mismatch + 1} is #{catalog_names[mismatch].inspect}, " \
+            "expected #{expected_catalog_names[mismatch].inspect}"
+end
+
 skills.each do |skill|
   relative = skill.delete_prefix("#{ROOT}/")
   text = File.read(skill)

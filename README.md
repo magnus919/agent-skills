@@ -2,6 +2,8 @@
 
 A collection of AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems. Skills follow the [Agent Skills open format](https://agentskills.io), making them compatible with any agent framework that supports the standard.
 
+Bundles organize related skills under a single umbrella with shared reference material and auto-loading by trigger context; they appear in the same alphabetical catalog as standalone skills.
+
 ## Skills
 
 ### [adr-authoring](adr-authoring/SKILL.md)
@@ -223,13 +225,13 @@ Build production-grade AI agents and graph-based state machines with PydanticAI 
 
 Query, search, and download public datasets from the City of Raleigh Open Data portal. Wraps the ArcGIS REST API to access 170+ datasets — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, and more. No API key needed. Ships a Python CLI with catalog, search, info, query, download, and categories commands.
 
-### [research-methodology](research-methodology/SKILL.md)
-
-Turn an open question into a bounded, evidence-led investigation rather than a plausible-sounding synthesis.
-
 ### [remote-systems-administration](remote-systems-administration/SKILL.md)
 
 Administer and troubleshoot remote Linux, FreeBSD, NetBSD, OpenBSD, and macOS hosts safely, one system or a controlled fleet at a time. Covers SSH, Ansible, Paramiko, portable diagnostics, platform-specific services, packages, configuration, firewalls, rollback, and evidence-led verification.
+
+### [research-methodology](research-methodology/SKILL.md)
+
+Turn an open question into a bounded, evidence-led investigation rather than a plausible-sounding synthesis.
 
 ### [secure-software-engineering](secure-software-engineering/SKILL.md)
 
@@ -263,6 +265,10 @@ Structure organizational strategy decisions about direction, industry structure,
 
 4-phase root cause debugging protocol: understand bugs before fixing. Covers schema/environment divergence, exception type specificity in fallback chains, progressive characterization grids for API/retrieval failures, dependency source detection (editable dev forks), macOS sandboxed application debugging, and the Rule of Three for recognizing architectural problems. Adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT) with significant expansion from real-world use.
 
+### [tailscale](bundles/tailscale/SKILL.md)
+
+Self-hosted Tailscale/Headscale VPN ecosystem. Seven sub-skills covering Headscale server deployment, ACL/tailnet policy authoring, Tailscale client configuration, node lifecycle (auth keys, registration, tagging, decommissioning), subnet routing and exit nodes, DERP relay infrastructure, and backup/migration. Ships 23 scripts with `--json` and `--dry-run` support, 8 reference documents, and 6 templates.
+
 ### [technical-documentation](technical-documentation/SKILL.md)
 
 Make documentation useful at the moment someone needs to install, operate, extend, or troubleshoot a system.
@@ -271,13 +277,13 @@ Make documentation useful at the moment someone needs to install, operate, exten
 
 Turn scattered technology preferences into explicit, reviewable decisions with owners, evidence, and a clear adoption posture.
 
-### [three](three/SKILL.md)
-
-Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations.
-
 ### [tempest-cli](tempest-cli/SKILL.md)
 
 Hyper-local weather from a WeatherFlow Tempest station. Query current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. A complete reference implementation of the cli-builder patterns in a working, testable project — including the CLI binary and full API field layout reference.
+
+### [three](three/SKILL.md)
+
+Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations.
 
 ### [tmdb-cli](tmdb-cli/SKILL.md)
 
@@ -306,6 +312,10 @@ Design, build, and review accessible web interfaces through native semantics, ke
 ### [woodpecker-ci](woodpecker-ci/SKILL.md)
 Operate self-hosted Woodpecker CI from installation through production troubleshooting. Covers Forgejo/Gitea integration, server and agent setup, Docker and Kubernetes backends, workflow syntax, secrets, plugins, matrices, CLI/local execution, upgrades, security, and incident response.
 
+### [workflow-architect](bundles/workflow-architect/SKILL.md)
+
+Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Ships 3 sub-skills, 3 reference documents, 4 templates, and a worked example output bundle.
+
 ### [yc-default-alive-calculator](yc-default-alive-calculator/SKILL.md)
 
 Paul Graham's "Default Alive / Default Dead" framework as a deterministic CLI tool. Given revenue, burn rate, cash on hand, and growth rate, compute whether a startup will reach profitability before running out of money. Ships a month-by-month projection engine, burn multiple analysis, lever identification, and actionable verdict (ALIVE / DEAD / MARGINAL). Python 3.9+ with zero external dependencies.
@@ -313,18 +323,6 @@ Paul Graham's "Default Alive / Default Dead" framework as a deterministic CLI to
 ### [yc-weekly-growth-compass](yc-weekly-growth-compass/SKILL.md)
 
 Paul Graham's "Startup = Growth" framework as an operational weekly practice. Computes growth rates from single-period or time-series data, benchmarks against YC tiers (1% concerning → 10%+ outstanding), projects compound growth, and frames every decision through the compass question: "Does this serve your target growth rate?" Python 3.9+ with zero external dependencies.
-
-## Bundles
-
-Bundles organize related skills under a single umbrella with shared reference material and auto-loading by trigger context.
-
-### [tailscale](bundles/tailscale/SKILL.md)
-
-Self-hosted Tailscale/Headscale VPN ecosystem. Seven sub-skills covering Headscale server deployment, ACL/tailnet policy authoring, Tailscale client configuration, node lifecycle (auth keys, registration, tagging, decommissioning), subnet routing and exit nodes, DERP relay infrastructure, and backup/migration. Ships 23 scripts with `--json` and `--dry-run` support, 8 reference documents, and 6 templates.
-
-### [workflow-architect](bundles/workflow-architect/SKILL.md)
-
-Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Ships 3 sub-skills, 3 reference documents, 4 templates, and a worked example output bundle.
 
 ---
 
