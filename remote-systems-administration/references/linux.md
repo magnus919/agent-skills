@@ -19,7 +19,7 @@ Other Linux systems may use OpenRC, SysV-style scripts, runit, s6, or a distribu
 | Did configuration parse? | service-specific validation before `reload` or `restart` |
 | Did it serve traffic? | endpoint/socket check plus relevant client/dependent check |
 
-Do not blindly restart a service because configuration changed. Validate the configuration first where the service provides a check, then use reload only when documented as safe; otherwise plan the restart, effect, and rollback.
+Do not blindly restart a service because configuration changed. Validate the configuration first where the service provides a check, then use reload only when documented as safe; otherwise plan the restart, effect, and rollback. If a systemd unit file or drop-in changed, run `systemctl daemon-reload` before the lifecycle action so the manager rereads unit metadata.
 
 ## Packages and updates
 

@@ -17,7 +17,7 @@ service <name> status
 service <name> restart
 ```
 
-A package can install an rc.d script, but that does not automatically make it an active boot service. Identify the script location, enablement/configuration, daemon process/listener, and dependent application boundary before declaring success.
+A package can install an rc.d script, but that does not automatically make it an active boot service. By default, pkgsrc package scripts live under `/usr/pkg/share/examples/rc.d` and must be copied to `/etc/rc.d`; `PKG_RCD_SCRIPTS=yes` automates that only when set before package installation. Identify the script location, enablement/configuration, daemon process/listener, and dependent application boundary before declaring success.
 
 ## pkgsrc and packages
 
@@ -29,4 +29,4 @@ Base-system maintenance is separate from pkgsrc. Use release-specific NetBSD doc
 
 ## Firewalls, networking, and verification
 
-Discover the active firewall and network configuration owner before changing rules, routes, interfaces, or DNS. Preserve remote access with a retained session and an independent authorized recovery channel. Validate candidate configuration where possible, apply the smallest scoped change, test the administration path and intended flow, then validate the application boundary.
+Discover the active firewall and network configuration owner before changing rules, routes, interfaces, or DNS. NPF is NetBSD's native packet filter, but a target can instead use PF or IPF; its active control plane is a discovery fact, not an assumption. Preserve remote access with a retained session and an independent authorized recovery channel. Validate candidate configuration where possible, apply the smallest scoped change, test the administration path and intended flow, then validate the application boundary.
