@@ -16,6 +16,10 @@ Multi-agent structured debate system — spawn a panel of expert agents to debat
 
 Reference for the Agent Skills open format itself — directory structure, frontmatter schema, naming conventions, and progressive disclosure model. Use this meta-skill when creating or reviewing any other skill in this repository.
 
+### [api-design-and-evolution](api-design-and-evolution/SKILL.md)
+
+Design, document, review, and evolve consumer-facing HTTP, GraphQL, RPC, event, webhook, and streaming interfaces. Covers consumer jobs, domain semantics, contracts, failure behavior, compatibility, deprecation, migration, and deployed-boundary verification.
+
 ### [arr-cli](arr-cli/SKILL.md)
 
 Radarr and Sonarr media library management. Two CLIs (`radarr-cli` for movies, `sonarr-cli` for TV series) with one shared skill wrapper. List movies and series, search for additions, check calendars and wanted/missing episodes. Separate API keys per app.
