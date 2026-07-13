@@ -121,6 +121,7 @@ You don't always start at SPECIFY. Enter at the phase matching what you already 
 | You Have This | Enter At | Start With |
 |-------------|----------|------------|
 | A vague idea, conversation, or PRD | **Phase 1 — SPECIFY** | `templates/SPEC.md` + `references/format-translation.md` |
+| Approved product scope with interaction contracts | **Phase 1 — SPECIFY** | [product-design-and-ux](../product-design-and-ux/SKILL.md) handoff + `templates/SPEC.md` |
 | A clear, approved specification | **Phase 2 — DECOMPOSE** | `templates/TASK-PLAN.md` + `references/ai-factory-pipeline.md` |
 | A spec + approved task plan | **Phase 3 — IMPLEMENT** | Task cards with per-task directives |
 | Existing code needing verification | **Phase 4 — VERIFY** | `templates/VERIFICATION.md` |
