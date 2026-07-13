@@ -143,6 +143,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "technology-radar", "technology radar" | [technology-radar](technology-radar/SKILL.md) |
 | "strategy", "strategic planning", "OKRs", "strategic narrative", "Five Forces", "Blue Ocean", "competitive positioning", "moat", "Ansoff", "Three Horizons", "market entry", "capital allocation", "M&A evaluation", "BCG Matrix", "portfolio management" | [strategy-frameworks](strategy-frameworks/SKILL.md) |
 | "verification-methodology", "verification methodology" | [verification-methodology](verification-methodology/SKILL.md) |
+| "accessibility", "a11y", "WCAG", "ARIA", "accessible name", "screen reader", "keyboard navigation", "focus management", "focus trap", "dialog", "modal", "combobox", "listbox", "accessible form", "form validation", "error recovery", "accessible authentication", "color contrast", "reduced motion", "target size", "accessibility testing" | [web-accessibility](web-accessibility/SKILL.md) |
 | "seo-audit", "seo audit" | [seo-audit](seo-audit/SKILL.md) |
 ## Use-When Sections
 
