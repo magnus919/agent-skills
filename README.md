@@ -80,13 +80,17 @@ EPUB2→3 conversion, repair, and validation. Eight reference files covering for
 internals, Python libraries, spec/validation, tutorials, capability discovery,
 fixed-layout, accessibility, and media overlays. Portable across any AgentSkills harness.
 
-### [forgejo-cli](forgejo-cli/SKILL.md)
+### [financial-modeling](financial-modeling/SKILL.md)
 
-Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, metadata, webhooks, and user settings. Includes a guarded generic `/api/v1/` route for version-specific endpoints such as Actions and admin APIs.
+Build and review assumptions-led financial models, unit economics, pricing, fundraising scenarios, and SaaS operating metrics.
 
 ### [flaresolverr](flaresolverr/SKILL.md)
 
 Use a private FlareSolverr service through a dependency-free JSON CLI when ordinary HTTP retrieval is blocked by a browser challenge.
+
+### [forgejo-cli](forgejo-cli/SKILL.md)
+
+Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, metadata, webhooks, and user settings. Includes a guarded generic `/api/v1/` route for version-specific endpoints such as Actions and admin APIs.
 
 ### [ghost-cli](ghost-cli/SKILL.md)
 

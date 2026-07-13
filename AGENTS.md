@@ -106,6 +106,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "traefik", "reverse proxy", "load balancer", "API gateway", "Let's Encrypt", "ACME", "Docker routing", "traefik.yml", "entry point", "middleware", "TLS termination", "forward auth", "rate limit" | [traefik](traefik/SKILL.md) |
 | "reverse-engineer", "understand this codebase", "PRD from code", "architecture document" | [software-architecture-analysis](software-architecture-analysis/SKILL.md) |
 | "data architecture", "data platform", "data strategy", "data mesh", "governance" | [data-architect](data-architect/SKILL.md) |
+| "financial modeling", "unit economics", "CAC", "LTV", "CAC payback", "pricing strategy", "fundraising", "cap table", "term sheet", "ARR", "MRR", "churn", "NDR", "Rule of 40", "Magic Number" | [financial-modeling](financial-modeling/SKILL.md) |
 | "statistical analysis", "experimental design", "A/B test", "hypothesis test", "power analysis", "causal inference", "regression", "Bayesian", "p-value", "effect size", "model selection", "machine learning methodology" | [data-scientist](data-scientist/SKILL.md) |
 | "brand identity", "brand guidelines", "style guide", "brand card", "brand strategy", "visual identity", "brand documentation", "color palette", "brand book" | [brand-designer](brand-designer/SKILL.md) |
 | "kanban", "WIP", "cycle time", "flow metrics", "Scrum to Kanban", "multi-portfolio", "throughput", "classes of service" | [kanban-guru](kanban-guru/SKILL.md) |
@@ -151,7 +152,7 @@ The `description` field is the trigger mechanism. If the user's request contains
 
 ### Don't Load Everything at Startup
 
-Loading all 15 skills at session start (~6,000 lines, ~75KB) wastes context. Let the conversation trigger loading. Skills load in ~100 tokens (metadata) and only expand when needed.
+Loading every skill at session start wastes context. Let the conversation trigger loading. Skills load in ~100 tokens (metadata) and only expand when needed.
 
 ### Follow Progressive Disclosure
 
