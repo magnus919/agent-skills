@@ -54,6 +54,12 @@ Changes to network configuration, DNS, SSH, sudo, PAM, routing, firewall state, 
 
 Linux firewall control planes include nftables and systems layered above it, such as firewalld or distribution tooling. Discover which system owns rules before changing anything. Do not mix direct nftables edits with a higher-level manager unless its documentation permits it, and never mechanically translate PF, iptables, or cloud firewall rules.
 
+| Evidence | Decision |
+|---|---|
+| A firewall binary exists or `firewalld` is active | Ownership is still unknown. Inspect the managed configuration and sanctioned control path; do not select a tool from presence or service state alone, and do not use a trial rule or any other mutation to decide ownership. |
+| firewalld is the confirmed policy owner | Use its documented interface; do not add direct nftables rules beside it. |
+| Native nftables configuration is the confirmed policy owner | Use nftables only through that configuration's documented management path. |
+
 For nftables, inspect the existing ruleset and ownership before edits. Policy changes can sever the live SSH session. Validate rule syntax where available, retain a recovery path, apply a bounded change, and verify both expected traffic and retained administrative access.
 
 ## Reboot and lifecycle

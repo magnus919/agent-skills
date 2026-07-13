@@ -25,7 +25,7 @@ Use this as an operating decision layer, not a bag of remote commands. Unix-like
 
 | Situation | Default path | Do not do |
 |---|---|---|
-| Diagnose or make one bounded change on one host | Native `ssh` with a read-only preflight | Do not open an interactive shell and make unrecorded edits |
+| Diagnose or make one bounded change on one host | Native `ssh` with a read-only preflight and bounded command/range; do not use a live-follow stream such as `tail -f` | Do not open an interactive shell and make unrecorded edits |
 | Repeat the same desired state across hosts | Ansible inventory + playbook, canary/serial rollout | Do not loop `ssh` blindly across production hosts |
 | Python must coordinate SSH channels, SFTP, or a custom protocol flow | Paramiko with strict host-key verification and explicit timeouts | Do not disable host-key checks or turn a script into ad hoc fleet control |
 | The platform/control plane is unknown | Run bounded discovery from `references/portable-operations.md` | Do not use `systemctl`, `apt`, `pfctl`, or `launchctl` based on a guess |
