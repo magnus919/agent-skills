@@ -12,15 +12,36 @@ skills = Dir.glob("#{ROOT}/**/SKILL.md").sort.reject do |skill|
   skill.include?("/agent-council/profiles/skills/")
 end
 
-catalog_names = File.read(File.join(ROOT, "README.md")).scan(
-  /^### \[([a-z0-9]+(?:-[a-z0-9]+)*)\]\([^)]+\/SKILL\.md\)\s*$/
-).flatten
+catalog_entries = File.read(File.join(ROOT, "README.md")).scan(
+  /^### \[([a-z0-9]+(?:-[a-z0-9]+)*)\]\(([^)]+\/SKILL\.md)\)\s*$/
+)
+catalog_names = catalog_entries.map(&:first)
 expected_catalog_names = catalog_names.sort_by { |name| [name.downcase, name] }
 unless catalog_names == expected_catalog_names
   mismatch = catalog_names.zip(expected_catalog_names).index { |actual, expected| actual != expected }
   errors << "README.md: skill catalog headings must be sorted case-insensitively; " \
             "position #{mismatch + 1} is #{catalog_names[mismatch].inspect}, " \
             "expected #{expected_catalog_names[mismatch].inspect}"
+end
+
+catalog_paths = catalog_entries.map(&:last).sort
+expected_catalog_paths = (Dir.glob("#{ROOT}/*/SKILL.md") + Dir.glob("#{ROOT}/bundles/*/SKILL.md"))
+                         .map { |path| path.delete_prefix("#{ROOT}/") }
+                         .sort
+missing_catalog_paths = expected_catalog_paths - catalog_paths
+unexpected_catalog_paths = catalog_paths - expected_catalog_paths
+duplicate_catalog_names = catalog_names.group_by { |name| name }.select { |_name, values| values.length > 1 }.keys.sort
+duplicate_catalog_paths = catalog_paths.group_by { |path| path }.select { |_path, values| values.length > 1 }.keys.sort
+mislabeled_catalog_entries = catalog_entries.reject do |name, path|
+  name == File.basename(File.dirname(path))
+end
+errors << "README.md: missing catalog path(s): #{missing_catalog_paths.join(', ')}" unless missing_catalog_paths.empty?
+errors << "README.md: unexpected catalog path(s): #{unexpected_catalog_paths.join(', ')}" unless unexpected_catalog_paths.empty?
+errors << "README.md: duplicate catalog name(s): #{duplicate_catalog_names.join(', ')}" unless duplicate_catalog_names.empty?
+errors << "README.md: duplicate catalog path(s): #{duplicate_catalog_paths.join(', ')}" unless duplicate_catalog_paths.empty?
+unless mislabeled_catalog_entries.empty?
+  labels = mislabeled_catalog_entries.map { |name, path| "#{name.inspect} -> #{path}" }
+  errors << "README.md: catalog label/path mismatch(es): #{labels.join(', ')}"
 end
 
 skills.each do |skill|

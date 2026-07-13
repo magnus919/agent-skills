@@ -1,6 +1,6 @@
 ---
 name: flaresolverr
-description: Use FlareSolverr through a small CLI when a site requires a browser-backed request to pass Cloudflare or DDoS-GUARD challenges.
+description: Use the minimal FlareSolverr wrapper for a one-off health check or browser-backed GET/POST when ordinary retrieval is blocked by Cloudflare or DDoS-GUARD. Choose flaresolverr-cli instead for named session lifecycle, cookie-only returns, dry-run planning, or the full operational command surface.
 ---
 
 # FlareSolverr
@@ -12,6 +12,18 @@ python3 scripts/flaresolverr --server http://localhost:8191 health
 ```
 
 Use this skill when ordinary HTTP retrieval is blocked by a browser challenge. FlareSolverr must already be running; this skill does not bypass authentication or authorize access to restricted content.
+
+## When not to use
+
+Use [flaresolverr-cli](../flaresolverr-cli/SKILL.md) when the task names that CLI, requires creating/listing/destroying named sessions, needs cookie-only responses or dry-run planning, or needs the full operational command surface. Keep this skill for the smaller one-off health, GET, or POST path.
+
+## Mutation Gate
+
+The health command is read-only discovery. GET and POST send traffic to an external target, and POST may change target state.
+
+> Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
+
+A POST or any request intended to change target state requires an explicit user directive. This skill does not authorize deletion, privilege changes, authentication bypass, or irreversible cleanup.
 
 ## CLI
 

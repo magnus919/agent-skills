@@ -106,6 +106,10 @@ Build and review assumptions-led financial models, unit economics, pricing, fund
 
 Use a private FlareSolverr service through a dependency-free JSON CLI when ordinary HTTP retrieval is blocked by a browser challenge.
 
+### [flaresolverr-cli](flaresolverr-cli/SKILL.md)
+
+Use the full stdlib FlareSolverr CLI for health checks, browser-session lifecycle, and challenge-solving GET or form-POST requests with structured output and dry-run support.
+
 ### [forgejo-cli](forgejo-cli/SKILL.md)
 
 Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, metadata, webhooks, and user settings. Includes a guarded generic `/api/v1/` route for version-specific endpoints such as Actions and admin APIs.
@@ -232,6 +236,10 @@ Query, search, and download public datasets from the City of Raleigh Open Data p
 ### [remote-systems-administration](remote-systems-administration/SKILL.md)
 
 Administer and troubleshoot remote Linux, FreeBSD, NetBSD, OpenBSD, and macOS hosts safely, one system or a controlled fleet at a time. Covers SSH, Ansible, Paramiko, portable diagnostics, platform-specific services, packages, configuration, firewalls, rollback, and evidence-led verification.
+
+### [research-and-vault](bundles/research-and-vault/SKILL.md)
+
+Run a repeatable research-to-notes sequence: gather sources, record URLs and dates, extract independent atomic claims, then create a durable note with explicit coverage gaps.
 
 ### [research-methodology](research-methodology/SKILL.md)
 

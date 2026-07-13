@@ -116,7 +116,8 @@ When the user mentions these keywords, load the corresponding skill:
 | "langgraph", "multi-agent", "state machine", "graph-based workflow", "LangGraph", "supervisor pattern", "swarm pattern", "agent orchestration", "graph state", "subgraph", "agent routing", "tool-calling loop", "agent loop", "stateful agent", "durable execution", "human in the loop langgraph", "checkpointer", "langgraph persistence" | [langgraph](langgraph/SKILL.md) |
 | "debate", "council", "multi-perspective", "structured debate", "get multiple perspectives", "expert panel", "decision landscape", "what would experts say", "what are we missing", "convergence", "false consensus", "agent-council", "pre-mortem" | [agent-council](agent-council/SKILL.md) |
 | "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
-| "FlareSolverr", "Cloudflare challenge", "DDoS-GUARD", "browser-backed request" | [flaresolverr](flaresolverr/SKILL.md) |
+| "flaresolverr-cli", "FlareSolverr session", "request.get", "request.post", "return-only-cookies" | [flaresolverr-cli](flaresolverr-cli/SKILL.md) |
+| "Cloudflare challenge", "DDoS-GUARD", "browser-backed request" | [flaresolverr](flaresolverr/SKILL.md) |
 | "Three.js", "three.js", "WebGL", "3D scene", "GLTF", "browser 3D" | [three](three/SKILL.md) |
 | "last.fm", "scrobble", "music discovery", "listening history", "similar artists", "lastfm", "weekly top artists", "genre charts" | [lastfm](lastfm/SKILL.md) |
 | "MeshCore Companion", "meshcore-packet-capture", "MeshCore packet capture", "BLE radio capture", "serial radio capture", "MeshCore MQTT", "LetsMesh", "PACKETCAPTURE_", "meshcore-packet-capture Docker", "MeshCore NixOS" | [meshcore-packet-capture](meshcore-packet-capture/SKILL.md) |
@@ -137,6 +138,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "artifact-pyramids", "artifact pyramids" | [artifact-pyramids](artifact-pyramids/SKILL.md) |
 | "chief of staff", "CoS", "executive office", "gatekeeping", "triage", "decision memo", "executive briefing", "board materials", "force multiplication", "leader effectiveness", "organizational sensing", "organizational radar", "team health", "institutional memory", "leadership transition", "calendar triage", "meeting audit", "strategic time", "attention allocation" | [chief-of-staff-methodology](chief-of-staff-methodology/SKILL.md) |
 | "site-reliability-engineering", "site reliability engineering" | [site-reliability-engineering](site-reliability-engineering/SKILL.md) |
+| "research and vault", "research-to-notes", "research to durable note", "research extraction and vault", "research-to-note pipeline" | [research-and-vault](bundles/research-and-vault/SKILL.md) |
 | "research-methodology", "research methodology" | [research-methodology](research-methodology/SKILL.md) |
 | "remote system administration", "remote administration", "remote SSH", "SSH administration", "Ansible administration", "Paramiko automation", "remote Linux", "remote FreeBSD", "remote NetBSD", "remote OpenBSD", "remote macOS", "remote service", "remote firewall", "remote package update", "fleet administration", "fleet rollout", "remote launchctl", "remote rcctl", "remote systemctl" | [remote-systems-administration](remote-systems-administration/SKILL.md) |
 | "technical-documentation", "technical documentation" | [technical-documentation](technical-documentation/SKILL.md) |
