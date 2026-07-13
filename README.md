@@ -36,6 +36,10 @@ Create comprehensive brand identity documentation for any brand. Guides you thro
 
 Make system boundaries, responsibilities, and relationships legible at the architectural level appropriate to the reader.
 
+### [chief-of-staff-methodology](chief-of-staff-methodology/SKILL.md)
+
+Prepare executive decisions, information triage, organizational sensing, institutional memory, and calendar choices with accountable human authority, transparent data use, and reviewable trade-offs.
+
 ### [cli-builder](cli-builder/SKILL.md)
 
 Build and refactor CLI tools for AI agent consumption. 10 universal patterns (non-interactive, `--json`, `--dry-run`, idempotent, lazy auth, progressive help), an agent-compatibility test suite, a Python API client pattern, and a bash scaffold template. Principles grounded in real failures from building 15+ agent-facing CLIs.
