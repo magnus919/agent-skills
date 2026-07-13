@@ -45,4 +45,4 @@ Source review completed July 2026. Framework URLs verified live.
 | Skill | Relationship | Status |
 |---|---|---|
 | `product-discovery` | Upstream — feeds validated evidence into methodology | Ships in this catalog |
-| `product-design-and-ux` | Downstream — consumes specs from methodology | Proposed (issue #24); not yet shipped in this catalog |
+| `product-design-and-ux` | Downstream — turns approved scope and evidence into user-facing behavior and interaction handoff | Ships in this catalog |

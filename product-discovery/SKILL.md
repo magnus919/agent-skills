@@ -48,7 +48,7 @@ Load the reference for the phase you're entering.
 | Limited time with a stakeholder | Load `references/time-constrained-discovery.md` — maximize signal in minimal time |
 | An AI agent conducting interviews | Load `references/ai-conducted-discovery.md` — account for sycophancy and trust dynamics |
 
-**Done with discovery?** Jump to the [Is Discovery Complete?](#quick-reference-is-discovery-complete) checklist at the bottom.
+**Done with discovery?** Use [product-methodology](../product-methodology/SKILL.md) to choose scope, then [product-design-and-ux](../product-design-and-ux/SKILL.md) to define user-facing behavior. Jump to the [Is Discovery Complete?](#quick-reference-is-discovery-complete) checklist at the bottom.
 
 ## Trigger Conditions
 

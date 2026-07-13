@@ -60,7 +60,7 @@ Load this skill when:
 ## When Not to Use
 
 - **Stakeholder discovery and interviews** — load `product-discovery` first. This skill starts from validated evidence, not raw stakeholder conversations.
-- **Interaction design, task flows, or usability** — `product-design-and-ux` is the downstream concern (currently a proposed skill, not yet shipped in this catalog). This skill produces the spec; design-and-ux produces the interaction model.
+- **Interaction design, task flows, state/recovery models, or usability-study planning** — use [product-design-and-ux](../product-design-and-ux/SKILL.md) after this skill has chosen scope. This skill decides what to build and why; design-and-ux defines user-facing behavior.
 
 ## Working Method
 
