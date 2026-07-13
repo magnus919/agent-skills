@@ -131,6 +131,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "default alive", "default dead", "runway", "burn rate", "burn multiple", "financial projection", "startup finances", "cash on hand", "breakeven", "how long until", "profitability" | [yc-default-alive-calculator](yc-default-alive-calculator/SKILL.md) |
 | "growth rate", "weekly growth", "monthly growth", "startup growth", "compound growth", "traction", "are we growing", "growth benchmark", "how fast should we grow", "YC growth", "product-market fit", "acceleration", "growth trajectory" | [yc-weekly-growth-compass](yc-weekly-growth-compass/SKILL.md) |
 | "artifact-pyramids", "artifact pyramids" | [artifact-pyramids](artifact-pyramids/SKILL.md) |
+| "chief of staff", "CoS", "executive office", "gatekeeping", "triage", "decision memo", "executive briefing", "board materials", "force multiplication", "leader effectiveness", "organizational sensing", "organizational radar", "team health", "institutional memory", "leadership transition", "calendar triage", "meeting audit", "strategic time", "attention allocation" | [chief-of-staff-methodology](chief-of-staff-methodology/SKILL.md) |
 | "site-reliability-engineering", "site reliability engineering" | [site-reliability-engineering](site-reliability-engineering/SKILL.md) |
 | "research-methodology", "research methodology" | [research-methodology](research-methodology/SKILL.md) |
 | "technical-documentation", "technical documentation" | [technical-documentation](technical-documentation/SKILL.md) |
