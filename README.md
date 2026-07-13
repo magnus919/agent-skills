@@ -283,6 +283,10 @@ Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view
 
 Replace completion claims with a disciplined evidence trail that shows what was checked, what passed, and what remains uncertain.
 
+### [web-accessibility](web-accessibility/SKILL.md)
+
+Design, build, and review accessible web interfaces through native semantics, keyboard and focus contracts, error recovery, adaptive UI, assistive-technology testing, and WCAG 2.2-informed evidence without mistaking automated scans for conformance.
+
 ### [woodpecker-ci](woodpecker-ci/SKILL.md)
 Operate self-hosted Woodpecker CI from installation through production troubleshooting. Covers Forgejo/Gitea integration, server and agent setup, Docker and Kubernetes backends, workflow syntax, secrets, plugins, matrices, CLI/local execution, upgrades, security, and incident response.
 
