@@ -191,6 +191,10 @@ PeerTube federated video platform from the terminal. Browse videos and channels,
 
 Discover product requirements from human stakeholders — map who to talk to, ask questions that surface hidden assumptions, detect gaps in real time, resolve conflicts, and translate conversations into structured specs. Phase 0 upstream of any spec-driven pipeline. Ships 8 reference files covering stakeholder mapping, question patterns, gap detection, conflict resolution, transcript-to-spec distillation, AI-conducted discovery, power dynamics, and time-constrained discovery; plus 5 templates (discovery plan, interview guide, distillation worksheet, gap register, interpretation log).
 
+### [product-methodology](product-methodology/SKILL.md)
+
+Product management frameworks for translating validated evidence into prioritized backlogs, documented decisions, specifications, and stakeholder communications. Covers RICE scoring, MoSCoW prioritization, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication. Ships 7 reference files covering each framework and a source index, plus 2 fillable templates (decision log and spec). Picks up where product-discovery ends.
+
 ### [prowlarr-cli](prowlarr-cli/SKILL.md)
 
 Manage your Prowlarr indexer hub from the terminal — list and inspect indexers, view query/grab statistics, check health, manage connected *arr applications, and test indexer connectivity.
