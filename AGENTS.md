@@ -135,6 +135,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "site-reliability-engineering", "site reliability engineering" | [site-reliability-engineering](site-reliability-engineering/SKILL.md) |
 | "research-methodology", "research methodology" | [research-methodology](research-methodology/SKILL.md) |
 | "technical-documentation", "technical documentation" | [technical-documentation](technical-documentation/SKILL.md) |
+| "secure software engineering", "build securely", "secure by design", "security requirements", "security acceptance criteria", "threat model this design", "secure code review", "secure defaults", "authorization design", "multi-tenant isolation", "release evidence", "SBOM", "software supply chain", "AI security", "LLM security", "prompt injection", "tool authorization", "RAG security" | [secure-software-engineering](secure-software-engineering/SKILL.md) |
 | "security-audit-methodology", "security audit methodology" | [security-audit-methodology](security-audit-methodology/SKILL.md) |
 | "mermaid-diagrams", "mermaid diagrams" | [mermaid-diagrams](mermaid-diagrams/SKILL.md) |
 | "adr-authoring", "adr authoring" | [adr-authoring](adr-authoring/SKILL.md) |
