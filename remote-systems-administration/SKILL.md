@@ -42,7 +42,7 @@ Before the first state-changing command, confirm:
 - intended state, expected blast radius, rollback command or artifact, and stop condition;
 - validation at both the component layer and the relevant external boundary.
 
-Read-only discovery may proceed without confirmation. Destructive actions, privilege changes, firewall/remote-access changes, package removals, storage operations, and reboot/shutdown require an explicit directive after this preflight.
+Read-only discovery may proceed without confirmation. **Read-only means no persistent state:** do not create rollback scripts or captures, stage update metadata, alter files, or call a state-changing operation `preflight`. Stop once the needed platform and control-plane evidence is established. Destructive actions, privilege changes, firewall/remote-access changes, package removals, storage operations, and reboot/shutdown require an explicit directive after this preflight.
 
 ## Routing references
 
