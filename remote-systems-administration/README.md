@@ -16,7 +16,12 @@ It is deliberately platform-aware. The agent learns to find the active control p
 | `references/portable-operations.md` | POSIX baseline, SSH, discovery, diagnostics, and bounded evidence |
 | `references/ansible.md` | Deep Ansible administration: inventory, roles, collections, secrets, testing, execution, troubleshooting, and safe fleet rollout |
 | `references/fleet-automation.md` | Paramiko guidance plus fleet-control comparison and per-host result requirements |
-| `references/linux.md` | Linux init, packages, logs, and firewall routing |
+| `references/linux.md` | Linux distribution/control-plane classification and cross-family routing |
+| `references/linux-debian-ubuntu.md` | APT/dpkg, Ubuntu lifecycle, and network ownership boundaries |
+| `references/linux-rhel-fedora.md` | DNF/RPM, supported major upgrades, and firewalld ownership |
+| `references/linux-suse.md` | zypper/RPM and transactional-root distinctions |
+| `references/linux-arch.md` | pacman full-upgrade and recovery boundaries |
+| `references/linux-alpine.md` | apk, OpenRC, and diskless persistence boundaries |
 | `references/freebsd.md` | FreeBSD rc, packages, jails, and firewall routing |
 | `references/netbsd.md` | NetBSD rc.d, services, pkgsrc, and firewall routing |
 | `references/openbsd.md` | OpenBSD rcctl, updates, packages, and PF routing |
@@ -30,16 +35,26 @@ It is deliberately platform-aware. The agent learns to find the active control p
 Start with a read-only preflight. Replace the example target with a host you are authorized to inspect.
 
 ```sh
-ssh admin@example-host 'uname -srm; command -v systemctl service rcctl launchctl; id'
+ssh -o BatchMode=yes -o ConnectTimeout=10 admin@example-host '
+  printf "host="; hostname; uname -srm; id
+  [ -r /etc/os-release ] && while IFS= read -r line; do
+    case $line in ID=*|ID_LIKE=*|VERSION_ID=*) printf "%s\n" "$line";; esac
+  done < /etc/os-release
+  ps -p 1 -o pid= -o comm= 2>/dev/null || true
+  for tool in systemctl service rcctl launchctl apt-cache dnf yum zypper pacman apk pkg pkg_add softwareupdate nmcli networkctl firewall-cmd nft pfctl ipfw npfctl; do
+    command -v "$tool" 2>/dev/null || true
+  done
+  command -v sw_vers >/dev/null 2>&1 && sw_vers
+'
 ```
 
-Then load the matching platform reference before choosing a service manager, package tool, or firewall control plane. For fleet work, put targets in an Ansible inventory, run a canary with `--limit`, and use `--check --diff` only with its limitations understood.
+Then load the matching OS/family reference and run its command preflight before choosing a service manager, package tool, or firewall control plane. Only then, and after the safety gate, select a specific mutation command. For fleet work, put targets in an Ansible inventory, run a canary with `--limit`, and use `--check --diff` only with its limitations understood.
 
 ## Triggers
 
 Use this skill when you need to:
 
-- diagnose or administer a remote Linux, FreeBSD, OpenBSD, or macOS host;
+- diagnose or administer a remote Linux (including Debian/Ubuntu, RHEL/Fedora, SUSE, Arch, or Alpine), FreeBSD, NetBSD, OpenBSD, or macOS host;
 - manage services, packages, updates, configuration, logs, or firewalls;
 - use SSH, a bastion, file transfer, Ansible, or Paramiko;
 - make a controlled change across several Unix-like machines;

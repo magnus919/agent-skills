@@ -8,13 +8,21 @@ A remote hostname is not a platform classification. Establish identity and avail
 ssh -o BatchMode=yes -o ConnectTimeout=10 admin@example-host '
   printf "host="; hostname
   uname -srm
-  command -v systemctl service rcctl launchctl || true
-  command -v apt-get dnf yum zypper pacman pkg pkg_add softwareupdate brew || true
   id
+  if [ -r /etc/os-release ]; then
+    while IFS= read -r line; do
+      case $line in ID=*|ID_LIKE=*|VERSION_ID=*) printf "%s\n" "$line";; esac
+    done < /etc/os-release
+  fi
+  ps -p 1 -o pid= -o comm= 2>/dev/null || true
+  for tool in systemctl service rcctl launchctl apt-cache dnf yum zypper pacman apk pkg pkg_add softwareupdate nmcli networkctl firewall-cmd nft pfctl ipfw npfctl; do
+    command -v "$tool" 2>/dev/null || true
+  done
+  command -v sw_vers >/dev/null 2>&1 && sw_vers
 '
 ```
 
-Use a known host alias and a managed `known_hosts` file. Keep `BatchMode=yes` for non-interactive automation so authentication failures stop rather than prompting or hanging. Do not use `StrictHostKeyChecking=no`; an unexpected host key must be investigated through an authorized identity channel.
+Interpret the output in this order: OS/release evidence, then init/service manager, then package manager, then the persistent network, firewall, and configuration owner. A binary's presence creates a follow-up question; it never authorizes selecting that control plane. Missing optional tools are evidence to continue classification, not a failure. Use a known host alias and a managed `known_hosts` file. Keep `BatchMode=yes` for non-interactive automation so authentication failures stop rather than prompting or hanging. Do not use `StrictHostKeyChecking=no`; an unexpected host key must be investigated through an authorized identity channel.
 
 ## SSH access patterns
 

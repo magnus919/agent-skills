@@ -1,41 +1,141 @@
 # FreeBSD Overlay
 
-## FreeBSD is not Linux
+## Scope and discovery
 
-FreeBSD uses its own base system, release engineering, rc framework, package toolchain, configuration conventions, and optional subsystems such as jails and ZFS. Do not transplant Linux systemd, APT/RPM, or nftables instructions.
+FreeBSD has separate base-system, rc, package, ports, firewall, jail, and storage control planes.
+Do not transplant Linux systemd, APT/RPM, or nftables instructions onto a FreeBSD host.
+Record FreeBSD release, patch level, architecture, kernel, virtualization, and support/lifecycle context.
+Discover active services, package origin, ports use, jail context, filesystem layout, network owner, and firewall owner.
+Determine whether the command target is the host, a jail, or an application inside a jail.
+Identify ZFS boot environments, snapshots, backups, and console/recovery access before lifecycle work.
+Treat host/jail ambiguity and unknown firewall ownership as blockers for mutation.
 
-Start by identifying the FreeBSD release, architecture, active services, package state, jail context, filesystem layout, and firewall implementation. When a host is inside a jail, distinguish a jail-level operation from a host-level operation before acting.
+## Read-only preflight
 
-## Services and configuration
+Inspect rc configuration layers, installed rc scripts, enabled service variables, and daemon-specific configuration provenance.
+Inspect bounded syslog/application evidence, process/listener state, and the relevant client or dependent boundary.
+Inspect installed packages, package repository policy, package audit state, ports usage, disk space, and planned service impact.
+Inspect base release and update state separately from third-party package state.
+Inspect active PF, IPFW, or IPFILTER ownership and whether network state is host or jail scoped.
+Inspect filesystems, mounts, ZFS datasets, boot environments, snapshot scope, and backup/recovery evidence.
+End discovery when the requested scope, active owners, and validation boundary are established.
 
-FreeBSD uses rc scripts and configuration conventions centered on files such as `/etc/rc.conf` and site-local `/etc/rc.conf.local`; `service` is the customary control interface for installed rc.d scripts. Inspect current configuration and the relevant rc script before enabling, restarting, or changing boot persistence.
+## Command preflight
 
-```sh
-service <name> status
-service <name> onestatus
-service <name> restart
-```
+Run only commands that exist on the observed host or jail. Firewall commands identify state, not the policy owner or permission to alter it. PF inspection requires authorized privilege on the target; a missing, empty, or permission-denied PF result is `unknown`, not evidence that PF is inactive.
 
-The exact behavior belongs to the service's rc script. “Running” or a successful `service` exit does not prove that a daemon is listening or serving its dependency chain. Follow it with bounded logs/socket checks and the relevant external validation.
+| Question | Read-only command |
+|---|---|
+| Base release and kernel | `freebsd-version -ku`; `uname -a` |
+| rc service and bounded state | `service <service> status`; `sysrc -a | grep '^<service>_'`; `sockstat -4 -6 -l` |
+| Package versus base state | `pkg info <package>`; `pkg -vv`; `pkg which <path>` |
+| Jail scope | `jls`; `sysctl security.jail.jailed` |
+| Firewall owner evidence | `command -v pfctl >/dev/null 2>&1 && sudo -n pfctl -s info`; `command -v ipfw >/dev/null 2>&1 && ipfw list`; `command -v ipfstat >/dev/null 2>&1 && ipfstat -io` |
 
-## Packages, ports, and base-system lifecycle
+## Services and logs
 
-Use `pkg` for binary packages. The FreeBSD Handbook distinguishes packages from ports: packages are prebuilt artifacts, while ports automate source builds and permit compile-time choices. A package operation can affect dependencies and running services; plan the resulting restart/reload and validation.
+FreeBSD normally uses rc scripts and local configuration centered on `/etc/rc.conf` and `/etc/rc.conf.local`.
+`/etc/defaults/rc.conf` supplies defaults and is not the local override target.
+Package and ports configuration commonly lives under `/usr/local/etc`; base configuration commonly lives under `/etc`.
+Use the observed rc script and service interface for inspection; its supported actions are script-specific.
+Before an authorized lifecycle action, inspect configuration, enabled variables, bounded logs, process, and listener.
+Afterward, verify rc/service result, logs, listener, and the intended application or dependency boundary.
+A successful service action is component evidence only, not proof of user-visible availability.
 
-Base-system updates and third-party packages are distinct lifecycles. Do not use package commands as a substitute for an OS release procedure. For release changes, kernel/base updates, boot-environment strategy, and ZFS rollback planning, follow the release-specific FreeBSD documentation.
+## Packages, ports, and repositories
 
-On a ZFS host that supports it, `bectl` manages bootable ZFS clones. It can provide a deliberate pre-change recovery path because a boot environment can be selected by the boot loader. First verify `bectl check`, dataset scope, and excluded datasets; do not present a ZFS snapshot or boot environment as a universal rollback mechanism.
+`pkg` manages prebuilt binary packages; ports is a separate source-build framework with compile-time choices.
+Do not treat packages and ports as interchangeable update paths or mix their assumptions without ownership review.
+Inspect installed packages, repositories, candidate changes, disk capacity, dependency impact, and service restart requirements.
+`pkg audit -F` is advisory evidence and does not replace package/update planning.
+Unexpected removals, repository changes, ABI transitions, or local-port rebuild requirements are stop conditions.
+Do not force dependency, signature, or file-conflict behavior merely to complete an automation run.
+Verify package database state and expected service/application behavior after an authorized transaction.
 
-Before a broad package operation, inventory installed packages, update candidates, held policy if applicable, application compatibility, disk space, backups/snapshots, and restart impact. `pkg audit -F` is an advisory/vulnerability check, not a change command.
+## Release and base lifecycle
 
-## Firewalls and networking
+FreeBSD base-system updates, release upgrades, and third-party packages are separate lifecycle paths.
+Do not use `pkg` as a substitute for a release upgrade or kernel/base-system procedure.
+Use release-specific FreeBSD documentation for supported base update and upgrade decisions.
+Plan bootloader, kernel, module, jail, and application compatibility before an authorized lifecycle action.
+On an appropriate ZFS system, `bectl` can provide a deliberate boot-environment recovery option.
+Verify boot-environment health, dataset scope, excluded data, and boot selection before calling it rollback.
+Reboot only with explicit authorization, recovery access, and post-boot service plus boundary verification.
 
-FreeBSD may use PF, IPFW, or another installed system. Discover the active firewall and configuration owner. PF and IPFW have distinct grammars and persistence mechanisms. Validate FreeBSD PF rules on the target and do not copy OpenBSD PF syntax or assumptions.
+## Networking and firewall ownership
 
-Firewall, route, DNS, interface, and remote-access changes require a retained session plus another recovery path. Validate syntax/configuration, make the smallest change, confirm that the administrator path remains open, then test the intended traffic flow.
+FreeBSD supports PF, IPFW, and IPFILTER; their grammars, state, and persistence are distinct.
+Discover the active packet filter and the owner of routes, DNS, interfaces, and jail networking before edits.
+Do not copy OpenBSD PF assumptions or translate firewall rules mechanically across FreeBSD control planes.
+For firewall, route, DNS, interface, SSH, or jail-network changes, use the [connectivity safety gate](safety-and-verification.md#connectivity-preserving-changes).
+The gate requires explicit directive, retained session, independent recovery, validated rollback, small scope, and stop condition.
+Verify retained administration access and the intended allow/deny or service flow before closing the change.
 
-## Jails and storage
+## Storage, jails, and persistence
 
-Jails are an operating-system-level isolation mechanism with host/jail boundaries. Identify whether the target process, package database, network interface, and filesystem belong to a jail or its host. Do not administer a jail as if it controlled host services or firewall policy.
+Jails have host/jail boundaries for processes, packages, filesystems, and network interfaces.
+Identify the jail manager and whether the requested operation belongs to the jail or the host.
+Do not expect a jail-local change to control host services, host firewall policy, or host storage.
+ZFS snapshots can help recovery but are not authorization for destructive rollback.
+Confirm datasets, boot/data inclusion, dependent services, replication/backup state, and application consistency.
+Mount, dataset, encryption, partition, and deletion work requires the shared lifecycle or destructive gate.
 
-FreeBSD deployments often use ZFS. A snapshot can be a valuable rollback primitive, but it is not an authorization to use destructive rollback commands. Identify dataset scope, dependent services, replication/backup state, and recovery impact before snapshot, rollback, or dataset operations.
+## Failure signatures
+
+### Service action has no effect
+
+Symptom: A service action succeeds or returns quietly, but the daemon is absent or unchanged.
+Cause: The rc variable is not enabled, the script lacks that action, or another supervisor owns the process.
+Evidence: rc configuration, rc script behavior, process state, and bounded logs establish the owner.
+Safe next action: Inspect the script and configuration; do not repeat lifecycle actions blindly.
+
+### Package update breaks base assumption
+
+Symptom: A package operation is expected to update a base component or resolve a base release issue.
+Cause: Package/ports and the FreeBSD base system are distinct lifecycle paths.
+Evidence: Installed file/package ownership and release state show separate provenance.
+Safe next action: Stop and route base maintenance through release-specific FreeBSD guidance.
+
+### PF rule copied from OpenBSD fails
+
+Symptom: Candidate PF syntax or behavior differs from an OpenBSD-derived expectation.
+Cause: FreeBSD's PF integration and target release behavior must be validated locally.
+Evidence: Target parser output, active ruleset, and FreeBSD documentation identify the difference.
+Safe next action: Retain current policy and use FreeBSD-specific validation under the connectivity gate.
+
+### Jail change cannot affect host policy
+
+Symptom: A jail-local package or service change does not alter host networking or firewall behavior.
+Cause: The operation was performed on the wrong side of the host/jail boundary.
+Evidence: Jail identity, interface assignment, package database, and process scope show the boundary.
+Safe next action: Re-establish authorized host versus jail scope before any further change.
+
+### Boot-environment rollback misses data
+
+Symptom: A proposed boot-environment restore does not cover application data or required datasets.
+Cause: The boot environment's dataset scope is narrower than the recovery claim.
+Evidence: `bectl` and ZFS dataset relationships plus backup records show exclusions.
+Safe next action: Do not execute rollback until data recovery and application consistency are planned.
+
+### Active service lacks usable listener
+
+Symptom: The service reports running but clients cannot reach its protocol endpoint.
+Cause: Configuration, socket binding, dependency, jail/network scope, or application failure is present.
+Evidence: Process arguments, bounded logs, socket state, and boundary probe disagree.
+Safe next action: Diagnose read-only at the failed layer before any restart or package change.
+
+## Handoff
+
+Report host versus jail scope, release/base state, package/ports provenance, and service/network/firewall owners.
+Include bounded rc, package, log, listener, filesystem, and external-boundary evidence.
+State recovery path, boot-environment/data scope, and every remaining uncertainty.
+For mutation, provide exact target, rollback artifact, independent recovery, validation, and stop condition.
+Exclude secrets, full configuration files, unrestricted logs, and assumptions imported from Linux or OpenBSD.
+
+## Official sources
+
+- [FreeBSD Handbook: configuration](https://docs.freebsd.org/en/books/handbook/config/)
+- [FreeBSD Handbook: ports and packages](https://docs.freebsd.org/en/books/handbook/ports/)
+- [FreeBSD Handbook: firewalls](https://docs.freebsd.org/en/books/handbook/firewalls/)
+- [bectl(8)](https://man.freebsd.org/cgi/man.cgi?query=bectl&sektion=8)
+- [Source index](source-index.md)

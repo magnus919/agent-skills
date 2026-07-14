@@ -1,10 +1,35 @@
-# Linux Overlay
+# Linux Classification and Routing
 
-## Discover the Linux control planes
+“Linux” is a kernel family, not an operating model. Before a mutation, discover the distribution/release, init system, package manager, configuration owner, firewall implementation, and management layer. `/etc/os-release`, `ps -p 1`, and executable presence are observations, not authority to overwrite managed state.
 
-“Linux” is a kernel family, not one operating model. Before a mutation, discover the distribution/release, init system, package manager, configuration owner, firewall implementation, and whether a higher-level system such as a configuration manager owns the setting.
+## Classify before selecting a control plane
 
-Useful indicators include `/etc/os-release`, `ps -p 1`, `command -v systemctl`, and package-manager discovery. Treat these as observations, not a permission to overwrite files managed by another system.
+| Observed evidence | Route | Do not infer |
+|---|---|---|
+| `ID=debian` or `ubuntu`, or a Debian-derived system with `ID_LIKE=debian`; APT/dpkg | `linux-debian-ubuntu.md` | Ubuntu network ownership or release-upgrade procedure from APT/dpkg alone |
+| `ID=rhel`, `fedora`, or compatible `ID_LIKE`; Yum/DNF/RPM | `linux-rhel-fedora.md` | Vendor support, DNF module semantics on a yum-only target, or a RHEL major-upgrade path for every derivative |
+| `ID=sles`, `opensuse*`, or `ID_LIKE=suse`; zypper/RPM | `linux-suse.md` | That the root is transactional or read-only |
+| `ID=arch` or Arch-derived; pacman | `linux-arch.md` | Repository/support policy or a safe partial upgrade |
+| `ID=alpine`; apk/OpenRC | `linux-alpine.md` | That package/configuration changes persist across boot |
+| Missing, contradictory, minimal, or unsupported derivative | retain this reference and vendor docs | Family, lifecycle, firewall owner, or mutation path |
+
+Record `ID`, `ID_LIKE`, `VERSION_ID`, init PID, package manager, enabled repositories, firewall process/configuration, and file owner or configuration manager. Package transaction semantics, firewall ownership, release lifecycle, and reboot/rollback procedure follow that classification.
+
+**Unsupported-derivative stop rule:** If `ID`/`ID_LIKE` does not identify a documented family, or the vendor changes its package, init, transactional-root, or network model, stop after read-only discovery. Obtain the vendor procedure and explicit authorization before a mutation.
+
+**Derivative lifecycle stop rule:** `ID_LIKE` is a routing clue, not proof that every derivative follows Debian or Ubuntu release or lifecycle procedures. For a Debian-derived target, use the documented vendor procedure only after confirming it applies to the observed distribution and releases.
+
+## Read-only family command routing
+
+`ID` and `ID_LIKE` route this inspection only; they do not authorize a derivative's release procedure. Run the matching overlay preflight next.
+
+| Observed family | Next overlay | Family-native read-only evidence |
+|---|---|---|
+| Debian/Ubuntu | `linux-debian-ubuntu.md` | `apt-cache policy <package>`; `apt-mark showhold`; `dpkg-query -W -f='${Status} ${Version}\n' <package>` |
+| RHEL/Fedora | `linux-rhel-fedora.md` | DNF target: `dnf repolist`; `dnf history list`; `dnf module list --enabled`. Yum-only target: `yum repolist`; `yum history`; `yum info <package>` |
+| SUSE/openSUSE | `linux-suse.md` | `zypper repos`; `zypper locks`; `zypper --no-refresh patches` |
+| Arch | `linux-arch.md` | `pacman -Q <package>`; `pacman -Qu`; `pacman -Qdt` |
+| Alpine | `linux-alpine.md` | `apk policy <package>`; `apk info -vv`; `cat /etc/apk/world` |
 
 ## Services and logs
 
@@ -35,7 +60,15 @@ Before upgrades:
 
 Do not claim that a package update is rollback-safe merely because the manager supports downgrade. Availability, dependency graphs, database migrations, and configuration changes determine actual reversibility.
 
-## Package-manager families and configuration collisions
+## Cross-family failure signatures
+
+| Signature | Likely boundary | Safe response |
+|---|---|---|
+| Package database lock or concurrent transaction | timer/automation or another operator | identify holder; do not delete a lock or start a competing transaction |
+| Package manager succeeds but config does not take effect | conffile, generated configuration, or manager ownership | inspect conflict/generated files and active configuration |
+| Firewall command exists but policy reverts | firewalld, nftables, cloud-init, or configuration management owns it | discover owner; do not layer a second control plane |
+| Host returns after reboot but service is unavailable | kernel/base update, unit enablement, or dependency | verify boot, logs, listener, and external boundary |
+| Update appears successful but reverts after boot | transactional or diskless root | classify persistence/snapshot mode before retrying |
 
 Package manager discovery is not enough to choose a safe transaction. It must be paired with the distribution release, enabled repositories, package origin, held/excluded policy, and configuration-file behavior. A package transaction can leave a generated or conflict copy of an edited configuration rather than silently replacing it. Inspect and resolve that state deliberately before declaring a configuration change active.
 

@@ -21,6 +21,8 @@ Use this as an operating decision layer, not a bag of remote commands. Unix-like
 4. **Preview, constrain, verify.** Limit the target set; use native validation, dry-run, diff, or a canary when available; then verify the affected service and its user-visible boundary. A zero exit code proves only that command ran.
 5. **Report evidence, not a story.** Preserve bounded per-host results: target, command category, before/after evidence, failures, rollback state, and the remaining uncertainty. Never paste secrets, keys, full configuration files, or unbounded logs into the response.
 
+Run the shared classification probe in `references/portable-operations.md`, then load the matching OS/family overlay and run its command preflight. Select a mutation command only after the required preflight and safety gate.
+
 ## Read-only discovery handoff
 
 Use this compact format after a preflight. Fill a field only from observed evidence; otherwise write `unknown` or `not supplied`.
@@ -63,7 +65,12 @@ Read-only discovery may proceed without confirmation. **Read-only means no persi
 | SSH, POSIX diagnostics, bounded output, file transfer, logs, and host discovery | Portable operations | `references/portable-operations.md` |
 | Ansible administration, inventories, roles, collections, secrets, linting, Molecule, rollout, troubleshooting, or platform-specific automation | Ansible administration | `references/ansible.md` |
 | Paramiko, or a compact comparison of fleet-control choices and result-accounting requirements | Fleet automation | `references/fleet-automation.md` |
-| Linux init systems, packages, journaling, configuration, and firewall routing | Linux overlay | `references/linux.md` |
+| Linux classification, init discovery, cross-family safety, or an unknown/minimal derivative | Linux classification | `references/linux.md` |
+| Debian, Ubuntu, or an APT/dpkg host after release and ownership discovery | Debian/Ubuntu overlay | `references/linux-debian-ubuntu.md` |
+| RHEL, Fedora, or a compatible RPM/DNF host after vendor support and lifecycle discovery | RHEL/Fedora overlay | `references/linux-rhel-fedora.md` |
+| SLES, openSUSE, or a zypper/RPM host, including transactional-root discovery | SUSE overlay | `references/linux-suse.md` |
+| Arch Linux or an Arch-derived pacman host after support/repository discovery | Arch overlay | `references/linux-arch.md` |
+| Alpine Linux or an apk/OpenRC host after persistence-mode discovery | Alpine overlay | `references/linux-alpine.md` |
 | FreeBSD rc(8), rc.conf, pkg, jails, and pf/ipfw routing | FreeBSD overlay | `references/freebsd.md` |
 | NetBSD rc.d, rc.conf, service, and pkgsrc routing | NetBSD overlay | `references/netbsd.md` |
 | OpenBSD rcctl, rc.conf.local, pkg_add, syspatch, and pf | OpenBSD overlay | `references/openbsd.md` |
