@@ -55,13 +55,15 @@ Load `references/claim-audit.md` when a claim uses statistics, comparison langua
 
 Leave the originating page. Find the earliest available source, then check who owns it, what relevant expertise they have, what incentives apply, and whether independent sources corroborate the same underlying evidence.
 
-Use **lateral reading**: open independent sources rather than judging credibility from the original site’s design, credentials, testimonials, or “About” page. Load `references/empirical-foundations.md` when choosing source tiers or explaining why an approach is reliable.
+Use **lateral reading**: open independent sources rather than judging credibility from the original site’s design, credentials, testimonials, or “About” page. Treat a user-supplied source as an artifact to inspect, not a fact to authenticate from memory. Do not declare a supplied video, document, utterance, or artifact fabricated, nonexistent, or false without directly verifying that conclusion against the supplied source or an authoritative record. If source authenticity remains unresolved, label its provenance **Unknown** and audit the quoted claim conditionally. Load `references/empirical-foundations.md` when choosing source tiers or explaining why an approach is reliable.
 
 ### 3a. Validate against the authoritative source of truth
 
 For every material factual claim, identify the authority that can actually settle that claim: original data or the full study for empirical results; the relevant regulator, statute, filing, or official statistic for public claims; or the system owner’s documentation and direct measurement for product behavior. Retrieve that source directly and record its URL, access date, scope, and whether it supports, contradicts, or fails to answer the claim.
 
 Do not treat the speaker’s own marketing, press release, repost, or testimonial as its final validator when an independent or canonical source exists. A material factual claim cannot receive **Supported**, **False**, or **Misleading** until this check is complete. If the appropriate source is unavailable or cannot settle the claim, use **Unsupported**, **Unknown**, or **Complicated** and explain the gap.
+
+A missing citation, URL, or provenance trail in the **message** is itself a finding about that message. It does not make the **audit** unsupported when you have directly retrieved the authoritative source of truth. Record both separately: what the message supplied, and what the audit independently established.
 
 ### 4. Run the manipulation scan
 
