@@ -61,7 +61,8 @@ Read-only discovery may proceed without confirmation. **Read-only means no persi
 | Need | Load | File |
 |---|---|---|
 | SSH, POSIX diagnostics, bounded output, file transfer, logs, and host discovery | Portable operations | `references/portable-operations.md` |
-| Ansible, Paramiko, inventory design, canaries, serial rollout, and per-host results | Fleet automation | `references/fleet-automation.md` |
+| Ansible administration, inventories, roles, collections, secrets, linting, Molecule, rollout, troubleshooting, or platform-specific automation | Ansible administration | `references/ansible.md` |
+| Paramiko, or a compact comparison of fleet-control choices and result-accounting requirements | Fleet automation | `references/fleet-automation.md` |
 | Linux init systems, packages, journaling, configuration, and firewall routing | Linux overlay | `references/linux.md` |
 | FreeBSD rc(8), rc.conf, pkg, jails, and pf/ipfw routing | FreeBSD overlay | `references/freebsd.md` |
 | NetBSD rc.d, rc.conf, service, and pkgsrc routing | NetBSD overlay | `references/netbsd.md` |
