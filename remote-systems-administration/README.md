@@ -14,7 +14,8 @@ It is deliberately platform-aware. The agent learns to find the active control p
 |---|---|
 | `SKILL.md` | Operating contract, routing, boundaries, and verification checklist |
 | `references/portable-operations.md` | POSIX baseline, SSH, discovery, diagnostics, and bounded evidence |
-| `references/fleet-automation.md` | Ansible, Paramiko, inventory, canary, and rollout guidance |
+| `references/ansible.md` | Deep Ansible administration: inventory, roles, collections, secrets, testing, execution, troubleshooting, and safe fleet rollout |
+| `references/fleet-automation.md` | Paramiko guidance plus fleet-control comparison and per-host result requirements |
 | `references/linux.md` | Linux init, packages, logs, and firewall routing |
 | `references/freebsd.md` | FreeBSD rc, packages, jails, and firewall routing |
 | `references/netbsd.md` | NetBSD rc.d, services, pkgsrc, and firewall routing |
