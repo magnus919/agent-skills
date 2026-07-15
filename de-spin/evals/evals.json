@@ -1,0 +1,56 @@
+{
+  "skill_name": "de-spin",
+  "evals": [
+    {
+      "id": "qualified-marketing-claim",
+      "prompt": "Audit this landing-page claim: 'Cut your energy bill by up to 70%. Trusted by thousands of homeowners.' Tell me what is true, false, and complicated.",
+      "expected_output": "A claim audit that separates the literal upper-bound claim from its implied typical outcome, asks for baseline, eligibility conditions, method, and independent evidence, and does not call the statement false solely because it lacks proof.",
+      "assertions": [
+        "Uses a calibrated verdict rather than declaring intent or deception.",
+        "Output contains an '## Authoritative-source check' that names the source needed to validate the savings claim.",
+        "Output contains the exact headings '## Bottom line', '## What is true', '## What is false', '## What is complicated, and why', and '## Evidence ledger'.",
+        "Separates literal wording from the likely implication about typical customer savings.",
+        "Identifies conditions, baseline, and representative outcomes as missing evidence.",
+        "Treats 'trusted by thousands' as social proof requiring independent verification."
+      ]
+    },
+    {
+      "id": "breaking-news-rumor",
+      "prompt": "A viral post says: 'Multiple outlets confirm that a major bank will fail this weekend. Withdraw your cash now before it is too late.' Assess it before I share it.",
+      "expected_output": "A high-stakes audit that identifies urgency, repetition, and apparent source multiplicity as investigation signals; requires primary regulatory or bank evidence and recommends not amplifying the rumor while verification is pending.",
+      "assertions": [
+        "Classifies the decision as high stakes and raises the verification threshold.",
+        "Names a regulator, bank disclosure, or other authoritative source of truth before making a factual verdict.",
+        "Output contains '## Decision-safe next step' and does not treat a missing source as a false verdict.",
+        "Distinguishes multiple independent origins from reposts or affiliated coverage.",
+        "Does not assert the bank will or will not fail without evidence.",
+        "Provides a concrete, low-risk verification step."
+      ]
+    },
+    {
+      "id": "mixed-evidence-causal-claim",
+      "prompt": "Evaluate: 'Remote work caused productivity to collapse. A CEO says their team shipped less after going remote, so companies should return to office immediately.'",
+      "expected_output": "A complicated or unsupported verdict that separates anecdote from causal evidence, identifies alternative explanations and missing comparison data, and distinguishes the factual productivity question from the policy value judgment.",
+      "assertions": [
+        "Separates causal, factual, and normative claims.",
+        "Identifies the study or data source of truth needed to support a causal productivity claim.",
+        "Output contains a calibrated verdict and an '## What is complicated, and why' section.",
+        "Names plausible confounders or the needed counterfactual without inventing data.",
+        "Does not treat one CEO's account as representative evidence.",
+        "Uses a 'What is complicated, and why' section."
+      ]
+    },
+    {
+      "id": "unverifiable-origin",
+      "prompt": "Assess this screenshot: 'A government scientist privately admitted that the water supply will be poisoned next month.' It has no author, date, agency, location, or source link.",
+      "expected_output": "An Unknown or Unsupported verdict that identifies the missing provenance, declines to infer deception or safety from the screenshot, and gives a proportionate verification path through the relevant public authority.",
+      "assertions": [
+        "Uses 'Unknown' or 'Unsupported', not 'False', unless direct contradictory evidence is supplied.",
+        "Identifies the relevant public authority as the authoritative source of truth rather than treating the screenshot as evidence.",
+        "Output contains '## Evidence ledger' and records the missing origin as an evidence gap.",
+        "Does not infer the poster's motive or authenticity from the screenshot's style.",
+        "Provides a proportionate, non-amplifying next step."
+      ]
+    }
+  ]
+}
