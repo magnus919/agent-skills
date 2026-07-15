@@ -63,6 +63,8 @@ For every material factual claim, identify the authority that can actually settl
 
 Do not treat the speaker’s own marketing, press release, repost, or testimonial as its final validator when an independent or canonical source exists. A material factual claim cannot receive **Supported**, **False**, or **Misleading** until this check is complete. If the appropriate source is unavailable or cannot settle the claim, use **Unsupported**, **Unknown**, or **Complicated** and explain the gap.
 
+Before a final “not found” conclusion about an official record, use an external search restricted to the canonical publisher’s domain (for example, `site:publisher.example "exact entity" "distinct factual anchor"`), then retrieve any matching canonical page. A guessed URL, redirect, blocked result, or failed publisher search is evidence only about that path, not proof that the canonical source is absent. Record the discovery query or canonical URL used.
+
 A missing citation, URL, or provenance trail in the **message** is itself a finding about that message. It does not make the **audit** unsupported when you have directly retrieved the authoritative source of truth. Record both separately: what the message supplied, and what the audit independently established.
 
 ### 4. Run the manipulation scan
