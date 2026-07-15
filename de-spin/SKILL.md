@@ -65,6 +65,8 @@ Do not treat the speaker’s own marketing, press release, repost, or testimonia
 
 Before a final “not found” conclusion about an official record, use an external search restricted to the canonical publisher’s domain (for example, `site:publisher.example "exact entity" "distinct factual anchor"`), then retrieve any matching canonical page. A guessed URL, redirect, blocked result, or failed publisher search is evidence only about that path, not proof that the canonical source is absent. Record the discovery query or canonical URL used.
 
+When evidence comes from a table, chart, PDF extraction, or visually ordered list, verify the label-to-value mapping from the authoritative artifact itself. Do not assign values from flattened extraction order alone. Quote the exact row, figure, or surrounding labels in the working ledger; if the mapping remains ambiguous, mark it **Unknown**.
+
 A missing citation, URL, or provenance trail in the **message** is itself a finding about that message. It does not make the **audit** unsupported when you have directly retrieved the authoritative source of truth. Record both separately: what the message supplied, and what the audit independently established.
 
 ### 4. Run the manipulation scan
@@ -93,6 +95,14 @@ Find the best credible evidence against the message’s conclusion, not merely a
 Re-evaluate the verdict after this pass. If contrary evidence directly outweighs the message’s support, do not retain **Supported**; use **False**, **Misleading**, **Complicated**, **Unsupported**, or **Unknown** according to the evidence gap and scope.
 
 If sources conflict, explain the mechanism of disagreement: different populations, timeframes, measures, incentives, definitions, or causal assumptions. Do not flatten real disagreement into a false binary.
+
+### 5a. Reconcile delegated checks before publication
+
+Treat subagent and specialist findings as leads, not evidence. Re-open each material source they cite and verify the claim, URL, metric definition, and label-to-value mapping before incorporating it.
+
+Keep a completion ledger for every commissioned check: **pending**, **reconciled**, **rejected**, or **cancelled**. Resolve disagreements against the authoritative source and record why a finding was rejected.
+
+**Publication gate:** do not publish, send, file, or present a final verdict while any commissioned check is pending. Drafting may continue, but the irreversible/public action waits until every check is reconciled or explicitly cancelled. If the delegation mechanism is asynchronous and cannot be awaited in the current turn, defer publication rather than publish-and-amend.
 
 ### 6. Report a structured truth assessment
 
@@ -128,4 +138,4 @@ For a high-stakes claim, retain source URLs and access dates. Load `references/c
 
 ## Exit criteria
 
-Stop when every material claim has a verdict or an explicit evidence gap, the report separates truth from implication, and the next verification step is proportionate to the decision stakes.
+Stop when every material claim has a verdict or an explicit evidence gap, the report separates truth from implication, the next verification step is proportionate to the decision stakes, and every commissioned check is reconciled, rejected, or cancelled. Public or irreversible delivery remains blocked while any check is pending.
