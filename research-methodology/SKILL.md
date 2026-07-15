@@ -25,6 +25,20 @@ All three share the same lifecycle (Scope → Gather → Evaluate → Analyze �
 SCOPE → GATHER → EVALUATE → ANALYZE → SYNTHESIZE → REPORT
 ```
 
+## Durable Artifact Gate
+
+Research is not complete when an agent has produced a plausible answer. It is complete when the reusable evidence and reasoning have been preserved in the durable format that is natural to the host system and its users.
+
+Before reporting, make the preservation decision explicit:
+
+1. **Identify the durable destination.** Use the host's normal long-lived research surface: linked knowledge records, a tracked report package, a research database, a project document, or another user-visible artifact. Do not leave the only useful output in chat, a transient workspace, or an untracked scratch file.
+2. **Extract at the source's natural granularity.** Capture every distinct, reusable claim, data point, method, contradiction, and open question that materially changes future reasoning. Do not use a fixed atom, finding, or note count as a stopping rule. Continue until each retained source is accounted for in the extraction log.
+3. **Preserve provenance and relationships.** Each durable artifact must retain its source URL or citation, access date, evidence strength, and links to the question, related artifacts, and any synthesis that depends on it.
+4. **Separate extraction from synthesis.** A brief or report explains the conclusion; it does not replace the underlying evidence records. Preserve source-level records and reusable claims before compacting them into a synthesis.
+5. **Record what was not preserved.** If a source was rejected, too weak, inaccessible, redundant, or out of scope, record that decision in the research log. A future researcher must be able to distinguish an intentional exclusion from an overlooked source.
+
+The right artifact shape depends on the environment. Do not assume a particular database, note-taking application, or orchestration system. The invariant is durable, navigable, evidence-linked research that a later user or agent can discover and build on.
+
 ## Reference Files
 
 ### Tracks
@@ -50,6 +64,8 @@ SCOPE → GATHER → EVALUATE → ANALYZE → SYNTHESIZE → REPORT
 |-------|-----------------|
 | `assets/research-brief.md` | Structured brief with findings, confidence assessment, evidence table, open questions |
 | `assets/research-log.md` | Traceable record of searches, sources, and decisions |
+
+Use both assets for every substantial investigation. Before closing the work, complete their durable-artifact sections and verify that retained sources and extracted claims are represented in the destination system.
 
 ## Pre-Publication Gateway
 

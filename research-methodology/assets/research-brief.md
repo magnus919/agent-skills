@@ -68,3 +68,20 @@
 |---|-------|-----|------|-----------------|
 | 1 | | | Paper / Blog / Doc | |
 | 2 | | | | |
+
+---
+
+## 7. Durable Artifact Inventory
+
+*A research brief is a synthesis, not the only deliverable. List the long-lived artifacts created or updated so a future user or agent can find the source-level evidence and reusable claims.*
+
+| Artifact | Type | Destination / path | What it preserves | Source coverage |
+|----------|------|--------------------|-------------------|-----------------|
+| | Evidence record / claim record / synthesis / dataset / other | | | Source # / source URL |
+
+### Preservation check
+
+- [ ] Every retained source has a durable evidence record or an explicit exclusion decision in the research log.
+- [ ] Every material reusable claim, contradiction, and open question has been extracted at an appropriate granularity.
+- [ ] Every artifact preserves provenance, access date, and relationships to the research question and synthesis.
+- [ ] No essential evidence exists only in chat or a temporary workspace.
