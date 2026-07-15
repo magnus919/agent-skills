@@ -253,6 +253,10 @@ Run a repeatable research-to-notes sequence: gather sources, record URLs and dat
 
 Turn an open question into a bounded, evidence-led investigation rather than a plausible-sounding synthesis.
 
+### [restic](restic/SKILL.md)
+
+Install, configure, operate, secure, automate, tune, troubleshoot, and recover restic backups across local, SFTP, S3-compatible, cloud, and REST backends. Ships deep references for repository selection, backup design, retention/prune, restore drills, threat modeling, performance, observability, migration, and recovery, plus safe preflight and verification scripts and scheduling templates.
+
 ### [secure-software-engineering](secure-software-engineering/SKILL.md)
 
 Build security into software requirements, design, implementation, review, and release decisions. Covers threat modeling, authorization, data and secret handling, dependencies, tenant isolation, security evidence, incident learning, and AI boundaries without treating a checklist as proof of security.

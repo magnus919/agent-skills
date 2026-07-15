@@ -1,0 +1,14 @@
+[Unit]
+Description=Restic backup job
+Documentation=https://restic.readthedocs.io/en/stable/
+
+[Service]
+Type=oneshot
+# Create this file locally with mode 0600. Do not commit secrets.
+EnvironmentFile=/etc/restic/backup.env
+# Replace with the local protected wrapper that sets sources and tags.
+ExecStart=/usr/local/sbin/restic-backup
+# Preserve useful logs in journald; do not enable shell tracing in the wrapper.
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
