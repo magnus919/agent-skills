@@ -117,6 +117,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "langgraph", "multi-agent", "state machine", "graph-based workflow", "LangGraph", "supervisor pattern", "swarm pattern", "agent orchestration", "graph state", "subgraph", "agent routing", "tool-calling loop", "agent loop", "stateful agent", "durable execution", "human in the loop langgraph", "checkpointer", "langgraph persistence" | [langgraph](langgraph/SKILL.md) |
 | "debate", "council", "multi-perspective", "structured debate", "get multiple perspectives", "expert panel", "decision landscape", "what would experts say", "what are we missing", "convergence", "false consensus", "agent-council", "pre-mortem" | [agent-council](agent-council/SKILL.md) |
 | "skill format", "how do I make a skill", "agentskills.io" | [agent-skills](agent-skills/SKILL.md) |
+| "Fireflies", "Fireflies.ai", "meeting transcripts", "meeting notes", "audio upload", "webhook verification", "AskFred", "AI meeting analytics" | [fireflies](fireflies/SKILL.md) |
 | "flaresolverr-cli", "FlareSolverr session", "request.get", "request.post", "return-only-cookies" | [flaresolverr-cli](flaresolverr-cli/SKILL.md) |
 | "Cloudflare challenge", "DDoS-GUARD", "browser-backed request" | [flaresolverr](flaresolverr/SKILL.md) |
 | "Three.js", "three.js", "WebGL", "3D scene", "GLTF", "browser 3D" | [three](three/SKILL.md) |

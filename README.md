@@ -106,13 +106,17 @@ fixed-layout, accessibility, and media overlays. Portable across any AgentSkills
 
 Build and review assumptions-led financial models, unit economics, pricing, fundraising scenarios, and SaaS operating metrics.
 
+### [fireflies](fireflies/SKILL.md)
+
+Fireflies.ai meeting intelligence from the terminal. Query transcripts, summaries, analytics, AskFred, and workspace data through source-faithful GraphQL documents; safely preview confirmed mutations and verify Webhooks V2 signatures locally.
+
 ### [flaresolverr](flaresolverr/SKILL.md)
 
 Use a private FlareSolverr service through a dependency-free JSON CLI when ordinary HTTP retrieval is blocked by a browser challenge.
 
 ### [flaresolverr-cli](flaresolverr-cli/SKILL.md)
 
-Use the full stdlib FlareSolverr CLI for health checks, browser-session lifecycle, and challenge-solving GET or form-POST requests with structured output and dry-run support.
+Use a small FlareSolverr JSON CLI for browser-backed GET and POST requests, readiness checks, and session lifecycle management.
 
 ### [forgejo-cli](forgejo-cli/SKILL.md)
 

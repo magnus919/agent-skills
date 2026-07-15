@@ -1,0 +1,251 @@
+#!/usr/bin/env python3
+"""Fireflies GraphQL CLI. Requires Python 3.9+ and no third-party packages."""
+import argparse
+import hashlib
+import hmac
+import json
+import os
+import re
+import sys
+from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
+
+DEFAULT_ENDPOINT = "https://api.fireflies.ai/graphql"
+EX_USAGE, EX_CONFIG, EX_TRANSPORT, EX_GRAPHQL, EX_CONFIRM = 2, 3, 4, 5, 6
+
+DOCS = {
+    "transcripts_list": "query Transcripts($keyword: String, $scope: TranscriptsQueryScope, $fromDate: DateTime, $toDate: DateTime, $limit: Int, $skip: Int, $hostEmail: String, $userId: String, $mine: Boolean, $organizers: [String], $participants: [String], $channelId: String) { transcripts(keyword: $keyword, scope: $scope, fromDate: $fromDate, toDate: $toDate, limit: $limit, skip: $skip, host_email: $hostEmail, user_id: $userId, mine: $mine, organizers: $organizers, participants: $participants, channel_id: $channelId) { id title date duration organizer_email participants transcript_url } }",
+    "transcript": "query Transcript($id: String!) { transcript(id: $id) { id title date duration organizer_email participants transcript_url summary { overview } speakers { id name } sentences { index text speaker_name start_time end_time } analytics { sentiments { negative_pct neutral_pct positive_pct } } } }",
+    "users": "query Users { users { user_id email name is_admin integrations } }",
+    "me": "query User { user { user_id email name is_admin integrations } }",
+    "user": "query User($id: String!) { user(id: $id) { user_id email name is_admin integrations } }",
+    "contacts": "query Contacts { contacts { email name picture last_meeting_date } }",
+    "channels": "query Channels { channels { id title is_private created_at updated_at created_by members { user_id email name } } }",
+    "channel": "query Channel($id: ID!) { channel(id: $id) { id title is_private created_at updated_at created_by members { user_id email name } } }",
+    "groups": "query UserGroups($mine: Boolean) { user_groups(mine: $mine) { id name handle members { user_id first_name last_name email } } }",
+    "bites": "query Bites($mine: Boolean, $transcriptId: ID, $myTeam: Boolean, $limit: Int, $skip: Int) { bites(mine: $mine, transcript_id: $transcriptId, my_team: $myTeam, limit: $limit, skip: $skip) { id transcript_id name status summary start_time end_time } }",
+    "bite": "query Bite($id: ID!) { bite(id: $id) { id transcript_id name status summary start_time end_time } }",
+    "apps": "query GetAIAppsOutputs($appId: String, $transcriptId: String, $skip: Float, $limit: Float) { apps(app_id: $appId, transcript_id: $transcriptId, skip: $skip, limit: $limit) { outputs { transcript_id user_id app_id created_at title prompt response } } }",
+    "analytics": "query Analytics($startTime: String, $endTime: String) { analytics(start_time: $startTime, end_time: $endTime) { team { conversation { average_filler_words } meeting { count duration } } users { user_id user_name user_email conversation { talk_listen_pct } meeting { count duration } } } }",
+    "active": "query ActiveMeetings { active_meetings { id title organizer_email meeting_link start_time end_time privacy state } }",
+    "live_items": "query LiveActionItems($id: ID!) { live_action_items(meeting_id: $id) { name action_item } }",
+    "audit": "query AuditEvents($limit: Int, $cursor: String, $filters: AuditEventFiltersInput!) { auditEvents(limit: $limit, cursor: $cursor, filters: $filters) { events { id time action actor { user_id } resource { type id } } has_more next_cursor } }",
+    "rules": "query RuleExecutions($limit: Int, $cursor: String, $filters: RuleExecutionFiltersInput) { rule_executions_by_meeting(limit: $limit, cursor: $cursor, filters: $filters) { meetings { meeting_id meeting { id title organizer_email } executions { extension_id extension_title stopped_at user_name } } has_more next_cursor } }",
+    "askfred_threads": "query GetAskFredThreads { askfred_threads { id title transcript_id user_id created_at } }",
+    "delete": "mutation DeleteTranscript($id: String!) { deleteTranscript(id: $id) { id title organizer_email date duration } }",
+    "rename": "mutation UpdateMeetingTitle($input: UpdateMeetingTitleInput!) { updateMeetingTitle(input: $input) { title } }",
+    "privacy": "mutation UpdateMeetingPrivacy($input: UpdateMeetingPrivacyInput!) { updateMeetingPrivacy(input: $input) { id title privacy } }",
+    "state": "mutation UpdateMeetingState($input: UpdateMeetingStateInput!) { updateMeetingState(input: $input) { success action } }",
+    "share": "mutation ShareMeeting($input: ShareMeetingInput!) { shareMeeting(input: $input) { success message } }",
+    "revoke": "mutation RevokeSharedMeetingAccess($input: RevokeSharedMeetingAccessInput!) { revokeSharedMeetingAccess(input: $input) { success message } }",
+    "bite_create": "mutation CreateBite($transcriptId: ID!, $start: Float!, $end: Float!, $name: String, $type: String, $summary: String, $privacy: [String]) { createBite(transcript_id: $transcriptId, start_time: $start, end_time: $end, name: $name, media_type: $type, summary: $summary, privacies: $privacy) { id name status } }",
+    "live_add": "mutation CreateLiveActionItem($input: CreateLiveActionItemInput!) { createLiveActionItem(input: $input) { success } }",
+    "upload": "mutation UploadAudio($input: AudioUploadInput) { uploadAudio(input: $input) { success title message } }",
+    "askfred_create": "mutation CreateThread($input: CreateAskFredThreadInput!) { createAskFredThread(input: $input) { message { id thread_id query answer suggested_queries status created_at } } }",
+    "askfred_continue": "mutation ContinueThread($input: ContinueAskFredThreadInput!) { continueAskFredThread(input: $input) { message { id thread_id query answer suggested_queries status created_at } } }",
+    "askfred_delete": "mutation DeleteThread($id: String!) { deleteAskFredThread(id: $id) { id title transcript_id user_id created_at } }",
+    "introspection": "query IntrospectionQuery { __schema { queryType { name } mutationType { name } types { name kind } } }",
+}
+
+def fail(message, code=EX_USAGE):
+    print("Error: " + message, file=sys.stderr)
+    raise SystemExit(code)
+
+def json_value(value, label):
+    try: return json.loads(value)
+    except json.JSONDecodeError as exc: fail(f"{label} must be valid JSON: {exc}")
+
+def globals_anywhere(argv):
+    values = {"json": False, "dry_run": False, "quiet": False, "verbose": False,
+              "api_key": None, "endpoint": None, "timeout": 30.0}
+    result, i = [argv[0]], 1
+    flags = {"--json": ("json", False), "--dry-run": ("dry_run", False), "--quiet": ("quiet", False), "--verbose": ("verbose", False), "--api-key": ("api_key", True), "--endpoint": ("endpoint", True), "--timeout": ("timeout", True)}
+    while i < len(argv):
+        arg = argv[i]
+        if arg in flags:
+            key, takes_value = flags[arg]
+            if takes_value:
+                if i + 1 == len(argv): fail(f"{arg} requires a value")
+                values[key] = argv[i + 1]; i += 2
+            else: values[key] = True; i += 1
+        else: result.append(arg); i += 1
+    try: values["timeout"] = float(values["timeout"])
+    except ValueError: fail("--timeout must be a number")
+    return values, result
+
+def operation_kind(document):
+    cleaned = re.sub(r"(?:#.*$|\s)+", " ", document).lstrip()
+    match = re.match(r"(?:query|mutation)\b", cleaned, re.I)
+    if match: return match.group(0).lower()
+    return "query" if cleaned.startswith("{") else None
+
+class Client:
+    def __init__(self, options): self.options = options
+    def run(self, document, variables=None, operation_name=None):
+        payload = {"query": document, "variables": variables or {}}
+        if operation_name: payload["operationName"] = operation_name
+        if self.options["dry_run"]: return {"dry_run": True, "endpoint": self.endpoint, "payload": payload}, 0
+        if not self.api_key: fail("FIREFLIES_API_KEY is not set; use --api-key or --dry-run.", EX_CONFIG)
+        body = json.dumps(payload).encode("utf-8")
+        request = Request(self.endpoint, body, {"Authorization": "Bearer " + self.api_key, "Content-Type": "application/json", "Accept": "application/json"})
+        try:
+            with urlopen(request, timeout=self.options["timeout"]) as response: raw = response.read().decode("utf-8")
+        except HTTPError as exc:
+            raw = exc.read().decode("utf-8", "replace")
+            try:
+                data = json.loads(raw)
+                return data, EX_GRAPHQL if data.get("errors") else EX_TRANSPORT
+            except json.JSONDecodeError: fail(f"HTTP {exc.code}: {raw[:300]}", EX_TRANSPORT)
+        except URLError as exc: fail(f"transport error: {exc.reason}", EX_TRANSPORT)
+        try: data = json.loads(raw)
+        except json.JSONDecodeError: fail("server returned invalid JSON", EX_TRANSPORT)
+        return data, EX_GRAPHQL if data.get("errors") else 0
+    @property
+    def endpoint(self): return self.options["endpoint"] or os.getenv("FIREFLIES_ENDPOINT") or DEFAULT_ENDPOINT
+    @property
+    def api_key(self): return self.options["api_key"] or os.getenv("FIREFLIES_API_KEY")
+
+def emit(data, options, code=0):
+    print(json.dumps(data, indent=None if options["json"] else 2, sort_keys=True, default=str))
+    if code == EX_GRAPHQL:
+        errors = data.get("errors", []) if isinstance(data, dict) else []
+        print("GraphQL error: " + str(errors[0].get("message", "unknown error") if errors else "unknown error"), file=sys.stderr)
+    raise SystemExit(code)
+
+def add_example(parser, text): parser.epilog = "Examples:\n  " + text
+def add_confirm(parser): parser.add_argument("--confirm", action="store_true", help="Required literal confirmation for a real mutation.")
+def add_doc_args(parser):
+    parser.add_argument("--document", required=True, help="GraphQL document."); parser.add_argument("--variables", help="Variables JSON object."); parser.add_argument("--variables-file", help="Path to variables JSON object."); parser.add_argument("--operation-name", help="GraphQL operationName.")
+def ensure_confirm(args, options):
+    if not options["dry_run"] and not args.confirm: fail("a real mutation requires --confirm", EX_CONFIRM)
+def run_doc(client, options, document, variables=None, operation_name=None):
+    data, code = client.run(document, variables, operation_name); emit(data, options, code)
+def transcript_vars(args):
+    values = {"keyword": args.keyword, "scope": args.scope, "fromDate": args.from_date, "toDate": args.to_date, "limit": args.limit, "skip": args.skip, "hostEmail": args.host_email, "userId": args.user_id, "mine": args.mine, "organizers": split_csv(args.organizers), "participants": split_csv(args.participants), "channelId": args.channel_id}
+    if args.limit > 50: fail("--limit cannot exceed Fireflies' documented maximum of 50")
+    return {k:v for k,v in values.items() if v is not None}
+def split_csv(value): return value.split(",") if value else None
+
+def build_parser():
+    parser = argparse.ArgumentParser(prog="fireflies", description="Source-faithful Fireflies.ai GraphQL CLI.", formatter_class=argparse.RawDescriptionHelpFormatter, epilog="Global flags work before or after commands. Example: fireflies transcripts list --limit 10 --json")
+    parser.add_argument("--json", action="store_true", help="Emit one JSON document."); parser.add_argument("--api-key", help="Override FIREFLIES_API_KEY."); parser.add_argument("--endpoint", help="Override FIREFLIES_ENDPOINT."); parser.add_argument("--timeout", type=float, help="HTTP timeout seconds."); parser.add_argument("--dry-run", action="store_true", help="Show exact GraphQL payload without HTTP."); parser.add_argument("--quiet", action="store_true", help="Suppress optional diagnostics."); parser.add_argument("--verbose", action="store_true", help="Enable diagnostics on stderr.")
+    root = parser.add_subparsers(dest="root", required=True)
+    for name, kind in (("query", "query"), ("mutation", "mutation")):
+        p = root.add_parser(name, help=f"Run a generic GraphQL {kind}."); add_doc_args(p)
+        if kind == "mutation": add_confirm(p)
+        add_example(p, f"fireflies {name} --document '{kind} {{ ... }}'" + (" --confirm" if kind == "mutation" else ""))
+    t = root.add_parser("transcripts", help="Read or delete transcripts."); ts = t.add_subparsers(dest="action", required=True)
+    p = ts.add_parser("list", help="List transcripts.");
+    for flag, dest in (("--keyword","keyword"),("--scope","scope"),("--from-date","from_date"),("--to-date","to_date"),("--host-email","host_email"),("--user-id","user_id"),("--organizers","organizers"),("--participants","participants"),("--channel-id","channel_id")): p.add_argument(flag, dest=dest)
+    p.add_argument("--limit", type=int, default=10); p.add_argument("--skip", type=int, default=0); p.add_argument("--mine", action="store_true", default=None); add_example(p, "fireflies transcripts list --keyword roadmap --limit 10")
+    p=ts.add_parser("get", help="Get transcript details."); p.add_argument("id"); add_example(p,"fireflies transcripts get transcript-id")
+    p=ts.add_parser("delete", help="Delete a transcript."); p.add_argument("id"); add_confirm(p); add_example(p,"fireflies transcripts delete transcript-id --confirm")
+    u=root.add_parser("users", help="Read users."); us=u.add_subparsers(dest="action",required=True)
+    for action in ("me","list","get"):
+        p=us.add_parser(action);
+        if action == "get": p.add_argument("id")
+        add_example(p,f"fireflies users {action}" + (" user-id" if action=="get" else ""))
+    simple = {"contacts":"Contacts","channels":"Channels","groups":"User groups","apps":"AI app outputs"}
+    for name, help_text in simple.items():
+        p=root.add_parser(name, help=help_text); sub=p.add_subparsers(dest="action", required=True); q=sub.add_parser("list"); add_example(q,f"fireflies {name} list")
+        if name == "channels": q=sub.add_parser("get"); q.add_argument("id"); add_example(q,"fireflies channels get channel-id")
+        if name == "apps": q.add_argument("--app-id"); q.add_argument("--transcript-id"); q.add_argument("--limit",type=float); q.add_argument("--skip",type=float)
+        if name == "groups": q.add_argument("--mine",action="store_true",default=None)
+    b=root.add_parser("bites",help="Read or create Bites."); bs=b.add_subparsers(dest="action",required=True); p=bs.add_parser("list"); p.add_argument("--mine",action="store_true",default=None);p.add_argument("--transcript-id");p.add_argument("--my-team",action="store_true",default=None);p.add_argument("--limit",type=int);p.add_argument("--skip",type=int);add_example(p,"fireflies bites list --mine")
+    p=bs.add_parser("get");p.add_argument("id");add_example(p,"fireflies bites get bite-id")
+    p=bs.add_parser("create");p.add_argument("--transcript-id",required=True);p.add_argument("--start",type=float,required=True);p.add_argument("--end",type=float,required=True);p.add_argument("--name");p.add_argument("--type");p.add_argument("--summary");p.add_argument("--privacy",action="append");add_confirm(p);add_example(p,"fireflies bites create --transcript-id id --start 0 --end 30 --confirm")
+    p=root.add_parser("analytics",help="Get team/user analytics.");p.add_argument("--start",required=True);p.add_argument("--end",required=True);add_example(p,"fireflies analytics --start 2026-01-01 --end 2026-01-31")
+    m=root.add_parser("meetings",help="Manage documented meeting properties."); ms=m.add_subparsers(dest="action",required=True)
+    for action in ("active","rename","privacy","state","share","revoke-share"):
+        p=ms.add_parser(action); add_example(p,f"fireflies meetings {action} meeting-id" + (" --confirm" if action!="active" else ""))
+        if action!="active": p.add_argument("id");add_confirm(p)
+        if action=="rename":p.add_argument("--title",required=True)
+        if action=="privacy":p.add_argument("--privacy",required=True)
+        if action=="state":p.add_argument("--state",required=True,choices=("pause_recording","resume_recording"))
+        if action=="share":p.add_argument("--emails",required=True)
+        if action=="revoke-share":p.add_argument("--email",required=True)
+    p=root.add_parser("live-action-items",help="List a meeting's live action items.");p.add_argument("meeting_id");add_example(p,"fireflies live-action-items meeting-id")
+    p=root.add_parser("live",help="Create action items during a live meeting.");ls=p.add_subparsers(dest="action",required=True);p=ls.add_parser("add",help="Create a live action item.");p.add_argument("--meeting-id",required=True,help="Live meeting ID.");p.add_argument("--action-item",required=True,help="Natural-language action-item prompt.");add_confirm(p);add_example(p,"fireflies live add --meeting-id meeting-id --action-item 'Follow up' --confirm")
+    a=root.add_parser("audio",help="Upload remote audio/video.");au=a.add_subparsers(dest="action",required=True);p=au.add_parser("upload");p.add_argument("--url",required=True);p.add_argument("--title");p.add_argument("--webhook");p.add_argument("--language");p.add_argument("--save-video",action="store_true",default=None);p.add_argument("--client-reference-id");add_confirm(p);add_example(p,"fireflies audio upload --url https://example.com/call.mp3 --confirm")
+    af=root.add_parser("askfred",help="Use AskFred; requires AI credits for mutations.");afs=af.add_subparsers(dest="action",required=True);p=afs.add_parser("threads");add_example(p,"fireflies askfred threads")
+    p=afs.add_parser("create");p.add_argument("--question",required=True);p.add_argument("--transcript-id");p.add_argument("--transcript-ids");p.add_argument("--language");add_confirm(p);add_example(p,"fireflies askfred create --question 'What changed?' --transcript-id id --confirm")
+    p=afs.add_parser("continue");p.add_argument("thread_id");p.add_argument("--question",required=True);add_confirm(p);add_example(p,"fireflies askfred continue thread-id --question 'Why?' --confirm")
+    p=afs.add_parser("delete");p.add_argument("thread_id");add_confirm(p);add_example(p,"fireflies askfred delete thread-id --confirm")
+    for name, title in (("audit-events","Enterprise/admin audit event query"),("rule-executions","Enterprise/admin rule execution query")):
+        p=root.add_parser(name,help=title);p.add_argument("--limit",type=int);p.add_argument("--cursor");p.add_argument("--filter",required=True,help="Documented filter JSON.");add_example(p,f"fireflies {name} --filter '{{\"category\":\"...\"}}'")
+    w=root.add_parser("webhook",help="Local Webhooks V2 verification.");ws=w.add_subparsers(dest="action",required=True);p=ws.add_parser("verify");p.add_argument("--secret",required=True);p.add_argument("--signature",required=True);p.add_argument("--body",required=True);add_example(p,"fireflies webhook verify --secret secret --signature sha256=... --body payload.json")
+    s=root.add_parser("schema",help="Explicit schema tools.");ss=s.add_subparsers(dest="action",required=True);p=ss.add_parser("introspect",help="Run GraphQL introspection if deployment permits it.");add_example(p,"fireflies schema introspect")
+    def add_fallback_examples(current):
+        for action in current._actions:
+            if isinstance(action, argparse._SubParsersAction):
+                for child in action.choices.values():
+                    if not child.epilog:
+                        child.epilog = "Examples:\n  fireflies --help"
+                    add_fallback_examples(child)
+    add_fallback_examples(parser)
+    return parser
+
+def main(argv=None):
+    options, filtered = globals_anywhere(argv or sys.argv)
+    parser = build_parser()
+    args = parser.parse_args(filtered[1:])
+    client = Client(options)
+    if args.root in ("query", "mutation"):
+        document = args.document
+        kind = operation_kind(document)
+        if kind != args.root: fail(f"{args.root} accepts only GraphQL {args.root} documents")
+        if args.root == "mutation": ensure_confirm(args, options)
+        if args.variables and args.variables_file: fail("use only one of --variables and --variables-file")
+        variables = json_value(args.variables, "--variables") if args.variables else (json_value(Path(args.variables_file).read_text(), "variables file") if args.variables_file else {})
+        if not isinstance(variables, dict): fail("variables must be a JSON object")
+        run_doc(client, options, document, variables, args.operation_name)
+    if args.root == "transcripts":
+        if args.action == "list": run_doc(client, options, DOCS["transcripts_list"], transcript_vars(args))
+        if args.action == "get": run_doc(client, options, DOCS["transcript"], {"id":args.id})
+        ensure_confirm(args, options); run_doc(client, options, DOCS["delete"], {"id":args.id})
+    if args.root == "users": run_doc(client, options, DOCS["users"] if args.action=="list" else (DOCS["me"] if args.action=="me" else DOCS["user"]), {} if args.action!="get" else {"id":args.id})
+    if args.root in ("contacts","channels","groups","apps"):
+        key = args.root if args.root != "channels" or args.action=="list" else "channel"; variables = {}
+        if args.root=="channels" and args.action=="get":variables={"id":args.id}
+        if args.root=="groups":variables={"mine":args.mine}
+        if args.root=="apps":variables={"appId":args.app_id,"transcriptId":args.transcript_id,"limit":args.limit,"skip":args.skip}
+        run_doc(client,options,DOCS[key],{k:v for k,v in variables.items() if v is not None})
+    if args.root == "bites":
+        if args.action=="list":
+            if not any((args.mine,args.transcript_id,args.my_team)): fail("bites list requires --mine, --transcript-id, or --my-team")
+            run_doc(client,options,DOCS["bites"],{k:v for k,v in {"mine":args.mine,"transcriptId":args.transcript_id,"myTeam":args.my_team,"limit":args.limit,"skip":args.skip}.items() if v is not None})
+        if args.action=="get":run_doc(client,options,DOCS["bite"],{"id":args.id})
+        ensure_confirm(args,options);run_doc(client,options,DOCS["bite_create"],{"transcriptId":args.transcript_id,"start":args.start,"end":args.end,"name":args.name,"type":args.type,"summary":args.summary,"privacy":args.privacy})
+    if args.root=="analytics":run_doc(client,options,DOCS["analytics"],{"startTime":args.start,"endTime":args.end})
+    if args.root=="meetings":
+        if args.action=="active":run_doc(client,options,DOCS["active"])
+        ensure_confirm(args,options)
+        if args.action=="rename": run_doc(client,options,DOCS["rename"],{"input":{"id":args.id,"title":args.title}})
+        if args.action=="privacy": run_doc(client,options,DOCS["privacy"],{"input":{"id":args.id,"privacy":args.privacy}})
+        if args.action=="state": run_doc(client,options,DOCS["state"],{"input":{"meeting_id":args.id,"action":args.state}})
+        if args.action=="share": run_doc(client,options,DOCS["share"],{"input":{"meeting_id":args.id,"emails":split_csv(args.emails)}})
+        run_doc(client,options,DOCS["revoke"],{"input":{"meeting_id":args.id,"email":args.email}})
+    if args.root=="live-action-items":run_doc(client,options,DOCS["live_items"],{"id":args.meeting_id})
+    if args.root=="live": ensure_confirm(args,options);run_doc(client,options,DOCS["live_add"],{"input":{"meeting_id":args.meeting_id,"prompt":args.action_item}})
+    if args.root=="audio":
+        ensure_confirm(args,options); inp={"url":args.url,"title":args.title,"webhook":args.webhook,"custom_language":args.language,"save_video":args.save_video,"client_reference_id":args.client_reference_id};run_doc(client,options,DOCS["upload"],{"input":{k:v for k,v in inp.items() if v is not None}})
+    if args.root=="askfred":
+        if args.action=="threads":run_doc(client,options,DOCS["askfred_threads"])
+        ensure_confirm(args,options)
+        if args.action=="create":
+            inp={"query":args.question,"transcript_id":args.transcript_id,"response_language":args.language}
+            if args.transcript_ids:inp["filters"]={"transcript_ids":json_value(args.transcript_ids,"--transcript-ids")}
+            run_doc(client,options,DOCS["askfred_create"],{"input":{k:v for k,v in inp.items() if v is not None}})
+        if args.action=="continue":run_doc(client,options,DOCS["askfred_continue"],{"input":{"thread_id":args.thread_id,"query":args.question}})
+        run_doc(client,options,DOCS["askfred_delete"],{"id":args.thread_id})
+    if args.root in ("audit-events","rule-executions"):run_doc(client,options,DOCS["audit" if args.root=="audit-events" else "rules"],{"limit":args.limit,"cursor":args.cursor,"filters":json_value(args.filter,"--filter")})
+    if args.root=="webhook":
+        body=sys.stdin.buffer.read() if args.body=="-" else Path(args.body).read_bytes(); prefix="sha256="; supplied=args.signature[len(prefix):] if args.signature.startswith(prefix) else ""; expected=hmac.new(args.secret.encode(),body,hashlib.sha256).hexdigest(); result={"valid":bool(supplied) and hmac.compare_digest(expected,supplied)}
+        try: result["event"]=json.loads(body).get("event")
+        except (json.JSONDecodeError,AttributeError): pass
+        emit(result,options)
+    if args.root=="schema":run_doc(client,options,DOCS["introspection"],{},"IntrospectionQuery")
+
+if __name__ == "__main__":
+    main()
