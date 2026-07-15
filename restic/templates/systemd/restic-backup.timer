@@ -1,0 +1,11 @@
+[Unit]
+Description=Schedule Restic backup job
+
+[Timer]
+# Replace with the required backup cadence. Persistent catches up after downtime.
+OnCalendar=*-*-* 02:15:00
+Persistent=true
+RandomizedDelaySec=15m
+
+[Install]
+WantedBy=timers.target
