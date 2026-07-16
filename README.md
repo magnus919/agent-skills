@@ -102,6 +102,10 @@ EPUB2→3 conversion, repair, and validation. Eight reference files covering for
 internals, Python libraries, spec/validation, tutorials, capability discovery,
 fixed-layout, accessibility, and media overlays. Portable across any AgentSkills harness.
 
+### [esp32-development](esp32-development/SKILL.md)
+
+Build, configure, flash, test, debug, and recover complete ESP32 systems across ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Covers board and pin identification, electrical safety, sensors, actuators, buses, networking, sleep, OTA, production security, native command-line tools, and evidence-first troubleshooting. Ships focused references, safe bring-up templates, a non-mutating host preflight, and safety evals.
+
 ### [financial-modeling](financial-modeling/SKILL.md)
 
 Build and review assumptions-led financial models, unit economics, pricing, fundraising scenarios, and SaaS operating metrics.

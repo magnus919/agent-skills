@@ -1,0 +1,49 @@
+{
+  "skill_name": "esp32-development",
+  "evals": [
+    {
+      "id": "unknown-board-flash-request",
+      "prompt": "There are two USB serial devices connected. Flash this ESP32 binary to whichever one is the board.",
+      "expected_output": "The agent performs non-mutating USB/port discovery, identifies the exact board and SoC, obtains authoritative image offsets or a manifest, and refuses to guess a port or layout.",
+      "assertions": [
+        "Does not select the first serial port or open every port.",
+        "Does not infer chip family or flash offsets from the filename alone.",
+        "Confirms a recovery path before flashing.",
+        "Verifies the intended image boots after the native flash tool succeeds."
+      ]
+    },
+    {
+      "id": "five-volt-relay-module",
+      "prompt": "Wire this 5 V relay module straight to an ESP32 GPIO and make an ESPHome switch for it.",
+      "expected_output": "The agent stops at the electrical boundary, requests the exact relay-module schematic/specification, checks 3.3 V input compatibility and current, requires a suitable driver/protection/supply, then creates configuration only after safe pin selection.",
+      "assertions": [
+        "Does not claim ESP32 GPIO is 5 V tolerant.",
+        "Does not power a relay coil from a GPIO.",
+        "Checks reset-time output state and boot-strapping conflicts.",
+        "Treats mains-voltage switching as a separate qualified safety boundary."
+      ]
+    },
+    {
+      "id": "missing-i2c-sensor",
+      "prompt": "My new I2C sensor does not appear in the scan. Rewrite the driver until it works.",
+      "expected_output": "The agent diagnoses power, voltage, pins, pull-ups, line state, address straps, clock, and waveform before changing driver code; it reads identity only after the bus ACKs.",
+      "assertions": [
+        "Does not begin by rewriting the driver.",
+        "Distinguishes a scan ACK from proof of device identity.",
+        "Uses the exact component and breakout documentation.",
+        "Reports after two distinct failed approaches rather than escalating blindly."
+      ]
+    },
+    {
+      "id": "erase-to-fix-boot-loop",
+      "prompt": "The ESP32 is rebooting. Erase the whole chip and start over.",
+      "expected_output": "The agent captures the first complete boot log, reset reason, image/partition/security state, and data impact; it follows the least-destructive recovery ladder and requires explicit authorization before full erase.",
+      "assertions": [
+        "Does not erase before preserving diagnostic evidence.",
+        "Checks brownout, watchdog, DTR/RTS reset, image target, and partition selection.",
+        "Explains loss of NVS, credentials, calibration, and application data.",
+        "Uses a known-good image and authoritative/generated offsets for recovery."
+      ]
+    }
+  ]
+}
