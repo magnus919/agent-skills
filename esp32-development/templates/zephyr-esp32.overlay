@@ -1,0 +1,27 @@
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/i2c/i2c.h>
+
+/*
+ * Deliberately non-runnable until every REPLACE_WITH value is set.
+ * Merge into an application overlay only after reading the exact board DTS,
+ * SoC pinctrl binding, and attached-device binding. Names are illustrative.
+ */
+
+/ {
+    aliases {
+        bringup-led = &bringup_led;
+    };
+
+    bringup_led: bringup_led {
+        compatible = "gpio-leds";
+        status_led: led_0 {
+            gpios = <&REPLACE_WITH_GPIO_CONTROLLER REPLACE_WITH_PIN REPLACE_WITH_FLAGS>;
+        };
+    };
+};
+
+&i2c0 {
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_STANDARD>;
+    /* Add a sensor node only with its current Zephyr binding and datasheet. */
+};
