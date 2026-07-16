@@ -23,6 +23,16 @@ Treat the board, attached circuit, firmware, and host toolchain as one system. A
 6. Before the first flash or hardware mutation, confirm the target port, chip family, image/partition layout, rollback or reflashing path, and electrical safety. Never guess a flash offset.
 7. Preserve calibration controls for real sensors, clocks, ADCs, PWM devices, and actuators. Physical variation is expected.
 
+## Pre-response evidence gate
+
+Complete this gate before drafting a non-trivial plan or recommendation:
+
+1. Build a claim ledger for every material positive claim, negative claim, command, and numeric design choice. A URL in `source-index.md` is navigation, not evidence; retrieve the exact chip/current-version page or mark the claim `UNKNOWN`.
+2. Command help proves syntax only. Record required target state plus reset, DTR/RTS, download-mode, RAM-stub, port, and mutation effects from current documentation. If operational preconditions are unverified, do not present the command as executable.
+3. Missing hardware artifacts stay missing. Do not replace them with archetypes, examples, or words such as `usually`, `typical`, or `some modules`; state what the observed label does not establish.
+4. Do not invent thresholds, margins, intervals, durations, point counts, percentages, or model forms. Derive them from an authoritative source or a measurement criterion; otherwise leave them `UNKNOWN`.
+5. Audit the final response against the ledger. Remove or downgrade every material claim that lacks its required evidence.
+
 ## First read-only discovery
 
 ```sh
