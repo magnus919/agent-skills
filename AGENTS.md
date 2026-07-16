@@ -153,6 +153,7 @@ When the user mentions these keywords, load the corresponding skill:
 | "c4-diagramming", "c4 diagramming" | [c4-diagramming](c4-diagramming/SKILL.md) |
 | "technology-radar", "technology radar" | [technology-radar](technology-radar/SKILL.md) |
 | "strategy", "strategic planning", "OKRs", "strategic narrative", "Five Forces", "Blue Ocean", "competitive positioning", "moat", "Ansoff", "Three Horizons", "market entry", "capital allocation", "M&A evaluation", "BCG Matrix", "portfolio management" | [strategy-frameworks](strategy-frameworks/SKILL.md) |
+| "Vercel Eve", "eve agent", "eve dev", "eve build", "eve start", "Eve self-hosting", "durable Eve session", "Eve sandbox", "Eve Workflow", "Eve subagent", "Eve agent skills", "Eve deployment", "Eve reverse proxy" | [vercel-eve](vercel-eve/SKILL.md) |
 | "verification-methodology", "verification methodology" | [verification-methodology](verification-methodology/SKILL.md) |
 | "accessibility", "a11y", "WCAG", "ARIA", "accessible name", "screen reader", "keyboard navigation", "focus management", "focus trap", "dialog", "modal", "combobox", "listbox", "accessible form", "form validation", "error recovery", "accessible authentication", "color contrast", "reduced motion", "target size", "accessibility testing" | [web-accessibility](web-accessibility/SKILL.md) |
 | "seo-audit", "seo audit" | [seo-audit](seo-audit/SKILL.md) |

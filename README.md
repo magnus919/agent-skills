@@ -329,6 +329,10 @@ Trakt.tv media discovery from the terminal. Browse trending, anticipated, and po
 
 Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view subscriber analytics. API key from transistor.fm settings.
 
+### [vercel-eve](vercel-eve/SKILL.md)
+
+Build, deploy, self-host, secure, and troubleshoot durable backend AI agents with Vercel Eve. Covers the filesystem-first agent project, typed tools, skills, subagents, connections, sandboxes, durable sessions, Vercel deployment, and the operational contracts required for a Node-hosted deployment.
+
 ### [verification-methodology](verification-methodology/SKILL.md)
 
 Replace completion claims with a disciplined evidence trail that shows what was checked, what passed, and what remains uncertain.
