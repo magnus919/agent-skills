@@ -27,7 +27,7 @@ Treat Supabase as a Postgres-centered system with multiple independently version
 | Need | Read first |
 |---|---|
 | Understand services, trust boundaries, keys, and environment differences | [architecture and boundaries](references/architecture-and-boundaries.md) |
-| Install/use the CLI or establish a reproducible local workflow | [local development and CLI](references/local-development-and-cli.md) |
+| Install/use the CLI, establish a local workflow, or operate managed Functions, secrets, branches, SSL enforcement, CIDR restrictions, and network bans | [local development and CLI](references/local-development-and-cli.md) |
 | Create schemas, migrations, seed data, RLS policies, tests, and generated types | [database development and testing](references/database-development-and-testing.md) |
 | Build with Auth, REST, Realtime, Storage, and Edge Functions | [application services](references/application-services.md) |
 | Deploy or harden the official Docker stack | [self-hosting deployment](references/self-hosting-deployment.md) |

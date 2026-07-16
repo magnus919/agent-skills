@@ -28,6 +28,14 @@ A recoverable self-hosted deployment includes more than Postgres:
 
 Do not call a backup complete until it restores into a separate target and representative Auth, REST/RLS, Storage, Realtime, and Functions flows pass.
 
+## Recovery-key gate
+
+Restore the backed-up `db-config` volume before database data so the original `pgsodium_root.key` is available when encrypted values are read. Confirm presence without disclosing content or a reusable fingerprint: run a non-printing `test -s` inside the database container and inspect only file type, ownership, and permissions. Never use `cat`, `hexdump`, or a content hash in reports.
+
+Preserve the recovered `.env` JWT secret, asymmetric signing material, publishable/anonymous keys, secret/service-role keys, and database password during recovery. Running key generators against a recovered deployment is rotation, not restoration, and can invalidate sessions or clients. Use `generate-keys.sh` followed by `add-new-auth-keys.sh` only for a genuinely new manual installation whose keys do not exist; treat later regeneration as an explicit rotation event.
+
+For first boot, validate resolved configuration, inspect service state and bounded logs, observe migrations advancing, wait for health convergence, and run the official plus external-boundary smoke checks. A nonzero first start is inconclusive while logs show forward progress. Do not invent polling intervals, expected durations, or a universal restart rule.
+
 ## Logical dump and restore
 
 For Supabase-aware migration/restore, prefer `supabase db dump` over raw `pg_dump`; it filters managed internals and reserved roles:
