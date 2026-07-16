@@ -119,6 +119,29 @@ supabase config push
 
 Use `functions serve` and application tests before deployment. Keep local and platform secrets out of source; `config.toml` should use `env(NAME)` references where supported. `config push`, `functions deploy`, and `secrets set` mutate the linked managed project, so verify the project reference and intended environment first. Read current CLI help and Functions documentation before assuming a flag applies to self-hosted Docker; the platform deploy command and mounted self-hosted Functions workflow are different.
 
+## Managed database perimeter
+
+Treat command discovery, eligibility, mutation, and verification as separate gates. Capture current state first:
+
+```sh
+supabase --version
+supabase ssl-enforcement get --project-ref PROJECT_REF
+supabase network-restrictions get --project-ref PROJECT_REF
+supabase network-bans get --project-ref PROJECT_REF
+```
+
+Before mutation, confirm the project and account permissions, record the current outputs as rollback evidence, preserve an alternate administrative and database access path, and inspect current command help. Help proves syntax, not plan eligibility or safe operational effect.
+
+```sh
+supabase ssl-enforcement update --project-ref PROJECT_REF --enable-db-ssl-enforcement
+supabase ssl-enforcement update --project-ref PROJECT_REF --disable-db-ssl-enforcement
+supabase network-restrictions update --project-ref PROJECT_REF \
+  --db-allow-cidr CIDR_1 --db-allow-cidr CIDR_2
+supabase network-bans remove --project-ref PROJECT_REF --db-unban-ip IP_ADDRESS
+```
+
+`network-restrictions update` replaces the current CIDR set unless `--append` is chosen deliberately. Do not default to `--bypass-cidr-checks`. Remove only an IP proven by `network-bans get` to be banned; distinguish bans from CIDR restrictions, TLS, credentials, and routing failures first. After a change, repeat the corresponding `get`, then test a real TLS database connection from an allowed source and a denied source. Restore the recorded SSL and restriction state if access or application checks fail. Do not invent `--experimental` requirements or rollback timers.
+
 ## Managed branches and previews
 
 Managed-platform branches are isolated preview or persistent environments, not Git branches and not a self-hosted Compose feature. Confirm current availability, pricing, and beta status before designing a workflow around them.
