@@ -32,8 +32,11 @@ Checked 2026-07-15. Prefer stable or versioned pages for implementation. `latest
 | Serial monitoring | [IDF Monitor](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/tools/idf-monitor.html) | Decoding, reset behavior, `--no-reset`, filtering. |
 | Flash failures | [Flashing Troubleshooting](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/flashing-troubleshooting.html) | Port, boot mode, reset wiring, power, and connection failures. |
 | Classic ESP32 GPIO | [GPIO and RTC GPIO](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/gpio.html) | Pin restrictions for classic ESP32 only. Switch URL family for S/C/H/P targets. |
+| ESP32-S3 GPIO | [GPIO and RTC GPIO](https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-reference/peripherals/gpio.html) | S3 strapping, flash/PSRAM, and built-in USB pin constraints. |
+| ESP32-C3 GPIO | [GPIO and RTC GPIO](https://docs.espressif.com/projects/esp-idf/en/stable/esp32c3/api-reference/peripherals/gpio.html) | C3 strapping, flash, USB, RTC GPIO, and sleep-wake constraints. |
 | Peripheral catalog | [Peripherals API](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/index.html) | Current ESP-IDF drivers and supported peripherals. |
 | ADC | [ADC driver](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/adc.html) | Conversion modes, calibration, SoC limitations. |
+| ADC calibration | [ADC Calibration Driver](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/adc/adc_calibration.html) | Factory eFuse calibration and documented fallback-reference behavior. |
 | Sleep | [Sleep Modes](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/sleep_modes.html) | Power domains and wake behavior. |
 | Runtime power | [Power Management](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/power_management.html) | Frequency scaling, automatic light sleep, locks, and profiling. |
 | Partitions | [Partition Tables](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/partition-tables.html) | CSV layout, offsets, types, generated tables, erase implications. |
@@ -43,6 +46,10 @@ Checked 2026-07-15. Prefer stable or versioned pages for implementation. `latest
 | Postmortem data | [Core Dump](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/core_dump.html) | Capture and decode task/register state against the matching ELF. |
 | JTAG | [JTAG Debugging](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/jtag-debugging/index.html) | OpenOCD/GDB, adapters, voltage, and classic ESP32 constraints. |
 | Security | [ESP-IDF Security](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/security/index.html) | Entry point for secure boot, flash encryption, eFuses, signing, and hardening. |
+| Secure Boot V1 | [Secure Boot V1](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/security/secure-boot-v1.html) | Legacy classic-ESP32 scheme and revision boundaries. |
+| Secure Boot V2 | [Secure Boot V2](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/security/secure-boot-v2.html) | Current scheme, signing flow, chip-revision boundaries, and provisioning constraints. |
+| Flash Encryption | [Flash Encryption](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/security/flash-encryption.html) | Development/release modes, key lifecycle, UART restrictions, and irreversible state. |
+| eFuses | [eFuse Manager](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/efuse.html) | Coding scheme, readable state, field semantics, and programming boundaries. |
 | Hardware design | [ESP Hardware Design Guidelines](https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/) | Family-specific schematic, power, reset, flash/PSRAM, RF, and strapping guidance. |
 | Silicon limitations | [ESP Chip Errata](https://docs.espressif.com/projects/esp-chip-errata/en/latest/) | Family/revision-specific defects and workarounds. |
 | Classic ESP32 datasheet | [ESP32 Series Datasheet](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) | Absolute limits, electrical characteristics, pins, boot configuration. Use matching family datasheet for other SoCs. |

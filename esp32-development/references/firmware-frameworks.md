@@ -79,7 +79,7 @@ Use when Zephyr's Kconfig, devicetree, RTOS services, portability, or driver mod
 
 ```sh
 west boards
-west build -p always -b BOARD samples/basic/blinky
+west build -p=always -b BOARD samples/basic/blinky
 west flash
 west debug
 ```

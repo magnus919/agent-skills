@@ -89,7 +89,9 @@ Before provisioning:
 6. verify OTA, rollback/anti-rollback, serial recovery restrictions, and RMA path;
 7. record non-secret provisioning evidence without publishing key material.
 
-Do not copy eFuse commands from a generic guide. Do not enable flash encryption or secure boot merely to satisfy a checklist. The correct state depends on the threat model and a proven update/recovery lifecycle.
+Secure Boot V1 and V2 are not interchangeable; choose the scheme supported by the exact chip revision and current ESP-IDF documentation. Flash Encryption development mode preserves reflashing paths for testing, while release mode applies production restrictions. Do not ship a development-mode security posture by accident: select the mode from the threat model only after OTA, recovery, manufacturing, and RMA behavior is proven.
+
+Do not copy eFuse commands from a generic guide. Capture the chip-specific eFuse summary, coding scheme, and remaining writable fields before any burn. Do not enable flash encryption or secure boot merely to satisfy a checklist. The correct state depends on the threat model and a proven update/recovery lifecycle.
 
 ## Bounded escalation
 

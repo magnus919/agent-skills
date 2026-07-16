@@ -29,6 +29,8 @@ Treat ADC conversion as a measurement chain:
 6. Characterize offset, gain, noise, and nonlinearity against known references.
 7. Record sample rate, averaging/filtering, and radio state.
 
+Before trusting calibrated voltage, check whether the target has factory eFuse calibration data. When the selected driver falls back to a default reference, measure and record the actual reference for that board rather than silently accepting a nominal value.
+
 Classic ESP32 ADC2 contention with Wi-Fi is a family/API-specific concern. Check the current driver documentation rather than applying that rule universally.
 
 ## DAC, PWM, RMT, MCPWM, and pulse counting
@@ -89,7 +91,7 @@ ESP32 TWAI is the controller interface where supported; it still needs an extern
 
 ## USB and JTAG
 
-USB device/host/OTG and built-in USB Serial/JTAG support vary by family and board routing. Verify which connector reaches which controller. JTAG uses 3.3 V-level signals on classic ESP32 and requires an ESP32-compatible OpenOCD adapter/configuration; classic ESP32 does not use SWD. Production security configuration may disable or restrict debugging.
+USB device/host/OTG and built-in USB Serial/JTAG support vary by family and board routing. Verify which connector reaches which controller. On ESP32-S3, GPIO19/20 can be consumed by built-in USB; reassigning them can remove the serial/JTAG recovery path. JTAG uses 3.3 V-level signals on classic ESP32 and requires an ESP32-compatible OpenOCD adapter/configuration; classic ESP32 does not use SWD. Production security configuration may disable or restrict debugging.
 
 ## Driver selection
 

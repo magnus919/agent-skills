@@ -118,7 +118,7 @@ Use serial for initial provisioning and recovery. Use OTA only after API/OTA cre
 
 ```sh
 west boards
-west build -p always -b BOARD samples/hello_world
+west build -p=always -b BOARD samples/hello_world
 west flash
 west debug
 ```

@@ -31,6 +31,13 @@ For every selected pin, check all of the following against the exact target:
 
 Classic ESP32 examples such as GPIO0/2/5/12/15 strapping behavior, GPIO6–11 flash use, GPIO34–39 input-only behavior, and ADC2/Wi-Fi contention are not universal family rules. Treat them as prompts to inspect the matching family documentation, not as a portable pin table.
 
+Two family-specific traps illustrate why that lookup matters:
+
+- On classic ESP32, the GPIO12/MTDI reset level selects the VDD_SDIO flash-supply voltage. An external pull that selects the wrong voltage can prevent flash boot. Follow the exact module schematic and datasheet rather than copying a generic pull network.
+- On ESP32-C3, only GPIO0–GPIO5 are RTC GPIOs available for Deep-sleep wake; other GPIOs can wake only from Light-sleep. Recheck the matching GPIO and sleep documentation for every other family.
+
+Do not disable `CONFIG_ESP_BROWNOUT_DET` to make resets disappear. A brownout during a flash write or security-provisioning operation can corrupt persistent state. Measure and repair the supply path.
+
 ## Inputs
 
 - Never leave a safety-relevant digital input floating. Use an internal or external pull as supported by the exact pin and required impedance.
