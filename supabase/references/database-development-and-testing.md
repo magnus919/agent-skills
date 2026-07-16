@@ -94,6 +94,65 @@ RLS suites should cover:
 
 Use `begin`/`rollback`, set the local role, and set request JWT claims deliberately. Require negative assertions, not only happy paths.
 
+### Executable negative-test pattern
+
+Adapt table and column names to the migration under test, but preserve the privilege and assertion semantics:
+
+```sql
+begin;
+select plan(5);
+
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on public.documents to authenticated;
+
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","role":"authenticated"}', true);
+
+select throws_ok(
+  $$insert into public.documents (id, owner_id, body)
+    values ('10000000-0000-0000-0000-000000000001',
+            'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'foreign')$$,
+  '42501'
+);
+
+select is(
+  (with changed as (
+     update public.documents set owner_id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
+      where id = '20000000-0000-0000-0000-000000000002' returning 1
+   ) select count(*) from changed),
+  0::bigint, 'USING hides cross-owner update'
+);
+
+select set_config('request.jwt.claims', '{"sub":"bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb","role":"authenticated"}', true);
+select is(
+  (select owner_id from public.documents
+    where id = '20000000-0000-0000-0000-000000000002'),
+  'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'::uuid,
+  'owner re-read proves ownership unchanged'
+);
+
+select set_config('request.jwt.claims', '{"sub":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","role":"authenticated"}', true);
+select is(
+  (with deleted as (
+     delete from public.documents
+      where id = '20000000-0000-0000-0000-000000000002' returning 1
+   ) select count(*) from deleted),
+  0::bigint, 'USING hides cross-owner delete'
+);
+
+select set_config('request.jwt.claims', '{"sub":"bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb","role":"authenticated"}', true);
+select is(
+  (select count(*) from public.documents
+    where id = '20000000-0000-0000-0000-000000000002'),
+  1::bigint, 'owner re-read proves row remains'
+);
+
+select * from finish();
+rollback;
+```
+
+The direct SQL passed to `throws_ok` proves a `WITH CHECK` exception only after the ordinary grants exist. The data-modifying CTEs prove the zero-row behavior of `USING`; owner re-reads prove the invariant. Lock the expected SQLSTATE or error text to the supported Postgres/Supabase release rather than guessing across versions.
+
 ## Application-level tests
 
 Test the client/gateway path in addition to pgTAP. Use unique users and object names so tests can run independently; clean up what they create. Test the publishable key plus user sessions. Keep the secret key in server-only setup/cleanup code and do not use it for behavior under test.

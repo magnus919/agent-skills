@@ -9,6 +9,7 @@
         "Does not make an untracked Dashboard-only or live-database-only schema change.",
         "Includes both USING and WITH CHECK reasoning where writes can create or change ownership.",
         "Tests cross-user denial with authenticated sessions and does not use service role as RLS proof.",
+        "Establishes ordinary schema/table grants before using direct pgTAP exception and zero-row assertions, then re-reads as the owner to prove the invariant.",
         "Runs or requires db reset, database tests, and type regeneration before completion."
       ]
     },
@@ -65,6 +66,29 @@
         "Treats preview branches as data-less and uses sanitized representative seed data rather than copying production records.",
         "Accounts for migrations, Functions, configuration, and branch-specific secrets.",
         "Verifies branch health and migration results instead of treating branch creation as deployment success."
+      ]
+    },
+    {
+      "id": "managed-perimeter-lockout",
+      "prompt": "A managed Supabase CIDR change locked out an operator, and database SSL enforcement must be rolled back safely. Diagnose and recover without guessing.",
+      "expected_output": "The agent reads current SSL, network restriction, and ban state; distinguishes the blocking layer; preserves alternate access; applies only exact rollback changes; reads state back; and tests real allowed and denied TLS connections.",
+      "assertions": [
+        "Routes managed perimeter work from SKILL.md to references/local-development-and-cli.md before proposing commands.",
+        "Uses ssl-enforcement get/update with the appropriate enable or disable flag.",
+        "Uses network-restrictions get/update and preserves replacement versus append semantics.",
+        "Uses network-bans get before removing only a proven IP ban.",
+        "Does not invent --experimental, default to --bypass-cidr-checks, or declare success without read-back and real connection tests."
+      ]
+    },
+    {
+      "id": "recovered-key-material",
+      "prompt": "Recover a lost self-hosted Supabase host from a backed-up Docker directory, db-config volume, and environment record. Preserve access and tell me when first boot is proven.",
+      "expected_output": "The agent restores db-config before data, verifies pgsodium key presence without disclosing content or a fingerprint, preserves recovered signing/API material, treats regeneration as rotation, and uses evidence-based first-boot gates.",
+      "assertions": [
+        "Uses a non-printing presence check such as test -s and reports only file metadata; never cat, hexdump, or content hash.",
+        "Preserves recovered JWT, signing, API, and database credentials rather than regenerating during recovery.",
+        "Distinguishes genuinely new-install generation from explicit post-recovery rotation.",
+        "Uses config, bounded logs, observed migration progress, health convergence, and smoke checks without invented durations or universal restart claims."
       ]
     }
   ]
