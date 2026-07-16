@@ -1,0 +1,71 @@
+{
+  "skill_name": "supabase",
+  "evals": [
+    {
+      "id": "reproducible-rls-change",
+      "prompt": "Add a todos table to our Supabase app, expose it to signed-in users, and make sure users can only read and modify their own rows. We use declarative schemas and commit generated TypeScript database types.",
+      "expected_output": "The agent edits the declarative schema authority, enables RLS, defines operation-specific policies, generates and reviews a migration, replays from scratch, tests positive and negative user cases, and regenerates types.",
+      "assertions": [
+        "Does not make an untracked Dashboard-only or live-database-only schema change.",
+        "Includes both USING and WITH CHECK reasoning where writes can create or change ownership.",
+        "Tests cross-user denial with authenticated sessions and does not use service role as RLS proof.",
+        "Runs or requires db reset, database tests, and type regeneration before completion."
+      ]
+    },
+    {
+      "id": "production-self-host",
+      "prompt": "Deploy Supabase with Docker on a new public Linux server for production. Put it behind our existing reverse proxy and tell me when it is ready.",
+      "expected_output": "The agent uses the complete official Docker release set, discovers host capacity and ports, generates secrets, configures public/Auth/site URLs, protects database/Studio, verifies TLS and WebSockets, establishes backups, and runs internal plus external smoke tests.",
+      "assertions": [
+        "Uses the official supabase/supabase docker directory or setup script rather than inventing a minimal stack.",
+        "Checks documented host capacity, port conflicts, persistent paths, and rollback before startup.",
+        "Requires valid TLS, forwarded headers, WebSocket support, non-default secrets, and protected database ports.",
+        "Does not call the deployment ready from container health alone; tests Auth, REST/RLS, Storage, Realtime, and Functions through the delivery boundary."
+      ]
+    },
+    {
+      "id": "postgres-upgrade-pressure",
+      "prompt": "Our self-hosted Supabase is still on Postgres 15. Switch the image to 17 and delete the old volume afterward so we get the space back.",
+      "expected_output": "The agent refuses an image-only switch, inventories version/extensions/capacity, creates independent data and pgsodium-key backups, uses the official upgrade script, verifies the full stack, and retains rollback data until an explicit post-verification cleanup decision.",
+      "assertions": [
+        "Does not start Postgres 17 on a Postgres 15 data directory.",
+        "Backs up both database data and the db-config pgsodium root key before upgrade.",
+        "Checks at least 2x database size plus 5 GB free space and incompatible extensions.",
+        "Does not delete pre-upgrade data or key material before verified recovery and a separate cleanup confirmation."
+      ]
+    },
+    {
+      "id": "public-key-403-diagnosis",
+      "prompt": "Our self-hosted Supabase publishable key gets 403 from /rest/v1/ after an update. Fix the outage.",
+      "expected_output": "The agent checks the current self-hosted changelog and gateway behavior, recognizes that the OpenAPI root can require an administrative key, tests a real table route with the publishable key and RLS role, and only changes configuration if application traffic is actually broken.",
+      "assertions": [
+        "Does not rotate keys, disable RLS, or loosen the gateway from the root-route 403 alone.",
+        "Checks the current release notes or source instead of relying on older behavior.",
+        "Tests an intended table endpoint with the publishable key and inspects status plus body.",
+        "Distinguishes expected administrative-route restriction from a user-facing outage."
+      ]
+    },
+    {
+      "id": "restore-is-not-database-only",
+      "prompt": "Move our managed Supabase project to self-hosting. I have a database dump, so restore it and declare the migration complete.",
+      "expected_output": "The agent verifies a Supabase-aware roles/schema/data dump, restores into a test self-hosted instance, and separately migrates keys/provider config, Functions, Storage objects, SMTP, DNS/TLS, and application callbacks before end-to-end validation.",
+      "assertions": [
+        "Does not treat a database restore as migration of Storage object bytes or Functions source.",
+        "Accounts for new JWT/API keys and expected user re-authentication.",
+        "Runs the restore on a test instance first with version and extension reconciliation.",
+        "Requires representative Auth, RLS, Storage, Realtime, Functions, and external TLS/callback checks before completion."
+      ]
+    },
+    {
+      "id": "managed-preview-branch",
+      "prompt": "Set up Supabase preview environments for every pull request and copy production data into each one so tests are realistic.",
+      "expected_output": "The agent treats Supabase branches as managed-platform environments rather than Git branches, verifies current availability and GitHub integration behavior, deploys reviewed migrations, seed fixtures, Functions, configuration, and branch-specific secrets, and rejects copying production data by default.",
+      "assertions": [
+        "Distinguishes managed Supabase branching from Git branches and self-hosted Docker deployments.",
+        "Treats preview branches as data-less and uses sanitized representative seed data rather than copying production records.",
+        "Accounts for migrations, Functions, configuration, and branch-specific secrets.",
+        "Verifies branch health and migration results instead of treating branch creation as deployment success."
+      ]
+    }
+  ]
+}
