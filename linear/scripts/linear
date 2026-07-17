@@ -233,13 +233,13 @@ def issue_list(client, args):
     ):
         value = getattr(args, name)
         if value:
-            if name == "label":
+            if name == "team":
+                filters.append("team: { key: { eq: $team } }")
+            elif name == "label":
                 filters.append("%s: { some: { name: { eq: $%s } } }" % (field, name))
             else:
                 filters.append("%s: { name: { eq: $%s } }" % (field, name))
             variables[name] = value
-    if args.team:
-        filters[0] = "team: { key: { eq: $team } }"
     query = (
         "query Issues($first: Int!%s) { issues(first: $first%s) { nodes { %s } } }"
         % (
@@ -301,8 +301,14 @@ def resolve_project(client, ref):
     return matches[0]
 
 
+class LinearArgumentParser(argparse.ArgumentParser):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("epilog", GLOBAL_OPTIONS_HELP)
+        super().__init__(*args, **kwargs)
+
+
 def build_parser():
-    parser = argparse.ArgumentParser(
+    parser = LinearArgumentParser(
         prog="linear", description="Task-oriented Linear GraphQL CLI."
     )
     parser.add_argument("--json", action="store_true", help="Emit JSON to stdout.")
@@ -456,24 +462,7 @@ def build_parser():
         description="Example: linear cycle get 123e4567-e89b-12d3-a456-426614174000",
     )
     p.add_argument("cycle")
-    add_global_options_to_leaf_help(parser)
     return parser
-
-
-def add_global_options_to_leaf_help(parser):
-    subparsers = next(
-        (
-            action
-            for action in parser._actions
-            if isinstance(action, argparse._SubParsersAction)
-        ),
-        None,
-    )
-    if subparsers is None:
-        parser.epilog = GLOBAL_OPTIONS_HELP
-        return
-    for subparser in subparsers.choices.values():
-        add_global_options_to_leaf_help(subparser)
 
 
 def extract_globals(argv):

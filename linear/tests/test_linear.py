@@ -83,6 +83,28 @@ class LinearCliTests(unittest.TestCase):
         self.assertNotIn("documentBySlugId", query)
         self.assertEqual(variables, {"ref": "38359beef67c"})
 
+    def test_issue_list_builds_team_and_state_filters_independently(self):
+        class Client:
+            def run(self, query, variables):
+                self.query, self.variables = query, variables
+                return {"issues": {"nodes": []}}
+
+        client = Client()
+        parser = cli.build_parser()
+        args = parser.parse_args(
+            cli.extract_globals(
+                ["issue", "list", "--team", "ENG", "--state", "Started", "--json"]
+            )
+        )
+        with redirect_stdout(io.StringIO()):
+            cli.issue_list(client, args)
+
+        self.assertIn("team: { key: { eq: $team } }", client.query)
+        self.assertIn("state: { name: { eq: $state } }", client.query)
+        self.assertEqual(
+            client.variables, {"first": 10, "team": "ENG", "state": "Started"}
+        )
+
     def test_issue_update_and_move_use_verified_id_variable_type(self):
         original = cli.Client.run
         queries = []
