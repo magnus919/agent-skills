@@ -28,6 +28,10 @@ CYCLE_FIELDS = (
     "id number name description startsAt endsAt progress team { id name key }"
 )
 PREVIEW_NOTE = "Previews intent before live resolution. Friendly names (team key, state name) are resolved only during the real run. Use read-only discovery to verify resolution."
+GLOBAL_OPTIONS_HELP = (
+    "Global options (accepted anywhere): --json; --dry-run; "
+    "--limit LIMIT (1-100; default: 10)."
+)
 
 
 def fail(message, code=2):
@@ -452,7 +456,24 @@ def build_parser():
         description="Example: linear cycle get 123e4567-e89b-12d3-a456-426614174000",
     )
     p.add_argument("cycle")
+    add_global_options_to_leaf_help(parser)
     return parser
+
+
+def add_global_options_to_leaf_help(parser):
+    subparsers = next(
+        (
+            action
+            for action in parser._actions
+            if isinstance(action, argparse._SubParsersAction)
+        ),
+        None,
+    )
+    if subparsers is None:
+        parser.epilog = GLOBAL_OPTIONS_HELP
+        return
+    for subparser in subparsers.choices.values():
+        add_global_options_to_leaf_help(subparser)
 
 
 def extract_globals(argv):

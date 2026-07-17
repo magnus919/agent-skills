@@ -422,6 +422,10 @@ class LinearCliTests(unittest.TestCase):
                 code, output, error = self.run_cli(path + ["--help"])
                 self.assertEqual(code, 0, error)
                 self.assertIn("Example:", output)
+                self.assertIn("--json", output)
+                self.assertIn("--dry-run", output)
+                self.assertIn("--limit LIMIT", output)
+                self.assertIn("1-100", output)
 
     def test_update_and_comment_dry_runs_include_requested_intent(self):
         code, output, error = self.run_cli(
