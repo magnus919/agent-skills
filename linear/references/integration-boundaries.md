@@ -33,4 +33,6 @@ use `raw` only after confirming the exact field, permissions, target, scope, and
 
 Use the GraphQL schema explorer before promoting a repeated raw operation into this CLI. A command
 belongs in the focused surface only when it has a recurring agent workflow, a clear safe default,
-and offline tests for its request shape and failure behavior.
+and a bounded contract. Promotion is complete only when CLI help and routing, SKILL/README command
+maps, official source provenance, offline request/failure tests, schema re-verification, and the
+repository regression gates all agree. Until then, keep the verified operation behind narrow `raw`.
