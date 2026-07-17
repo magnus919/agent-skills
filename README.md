@@ -182,6 +182,10 @@ Last.fm music data API from the terminal. Lookup user listening history, get art
 
 Manage your Lidarr music library from the terminal — search and browse artists and albums, add new artists, check calendars, view queue and download history.
 
+### [linear](linear/SKILL.md)
+
+Work with Linear teams, projects, cycles, issues, comments, workflow transitions, and documents using a small, dependency-free GraphQL CLI with bounded reads, dry-run previews, and focused reference guidance.
+
 ### [llamaindex](llamaindex/SKILL.md)
 
 An expert-level skill for building LLM applications over your data with LlamaIndex. RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge graph construction, and production deployment.
