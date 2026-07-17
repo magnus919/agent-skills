@@ -17,7 +17,7 @@ Pass/fail assessment against pre-defined criteria.
 
 1. **Receive** — restate the artifact, claim, or implementation being verified and the decision it will support.
 2. **Assess criteria** — convert requirements into observable pass/fail conditions; identify what would disprove each claim.
-3. **Investigate** — collect direct, reproducible evidence and record commands, source locations, or source URLs.
+3. **Investigate** — collect direct, reproducible evidence and record commands, source locations, or source URLs. Own this collection when the source is accessible: do not ask the user to relay evidence you can retrieve yourself. Ask only for access you genuinely lack.
 4. **Decide** — mark each criterion passed, failed, blocked, or not applicable. Do not convert missing evidence into a pass.
 5. **Report** — use the verdict template to distinguish verified facts, assumptions, and remaining work.
 
