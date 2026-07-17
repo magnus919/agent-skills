@@ -303,6 +303,19 @@ class LinearCliTests(unittest.TestCase):
             )
         )
 
+    def test_is_mutation_ignores_read_contexts(self):
+        self.assertFalse(cli.is_mutation('query { __type(name: "Mutation") { name } }'))
+        self.assertFalse(cli.is_mutation("query { mutation: viewer { id } }"))
+        self.assertFalse(cli.is_mutation("fragment mutation on Issue { id }"))
+        self.assertFalse(
+            cli.is_mutation(r'query { __type(name: """hello\""" mutation""") { name } }')
+        )
+        self.assertTrue(
+            cli.is_mutation(
+                r'fragment F on Mutation { issueArchive(id: """hello\\""") { success } } mutation { ...F }'
+            )
+        )
+
     def test_raw_with_comment_mutation_exits_confirm(self):
         code, _output, error = self.run_cli(
             ["raw", '# comment\nmutation { issueArchive(id: "x") { success } }']

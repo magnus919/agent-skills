@@ -79,8 +79,59 @@ def parse_document_ref(ref):
 
 
 def is_mutation(query):
-    stripped = re.sub(r"#[^\n]*", "", query)
-    return bool(re.search(r"\bmutation\b", stripped, re.I))
+    index = 0
+    braces = parens = brackets = 0
+    definition = None
+    while index < len(query):
+        if query.startswith('"""', index):
+            index += 3
+            while index < len(query):
+                if query.startswith('"""', index):
+                    cursor = index - 1
+                    while cursor >= 0 and query[cursor] == "\\":
+                        cursor -= 1
+                    if (index - cursor - 1) % 2 == 0:
+                        index += 3
+                        break
+                index += 1
+            continue
+        if query[index] == '"':
+            index += 1
+            while index < len(query) and query[index] != '"':
+                index += 2 if query[index] == "\\" else 1
+            index += 1
+            continue
+        if query[index] == "#":
+            newline = query.find("\n", index)
+            index = len(query) if newline < 0 else newline + 1
+            continue
+        match = re.match(r"[_A-Za-z][_0-9A-Za-z]*", query[index:])
+        if match:
+            token = match.group(0).lower()
+            if not (braces or parens or brackets) and definition is None:
+                if token == "mutation":
+                    return True
+                if token in ("query", "subscription", "fragment"):
+                    definition = token
+            index += len(match.group(0))
+            continue
+        char = query[index]
+        if char == "{":
+            braces += 1
+        elif char == "}":
+            braces = max(0, braces - 1)
+            if not (braces or parens or brackets):
+                definition = None
+        elif char == "(":
+            parens += 1
+        elif char == ")":
+            parens = max(0, parens - 1)
+        elif char == "[":
+            brackets += 1
+        elif char == "]":
+            brackets = max(0, brackets - 1)
+        index += 1
+    return False
 
 
 class Client:
