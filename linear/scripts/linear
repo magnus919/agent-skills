@@ -85,9 +85,15 @@ def is_mutation(query):
     while index < len(query):
         if query.startswith('"""', index):
             index += 3
-            while index < len(query) and not query.startswith('"""', index):
-                index += 2 if query.startswith('\\"""', index) else 1
-            index += 3
+            while index < len(query):
+                if query.startswith('"""', index):
+                    cursor = index - 1
+                    while cursor >= 0 and query[cursor] == "\\":
+                        cursor -= 1
+                    if (index - cursor - 1) % 2 == 0:
+                        index += 3
+                        break
+                index += 1
             continue
         if query[index] == '"':
             index += 1
