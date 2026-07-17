@@ -1,0 +1,762 @@
+#!/usr/bin/env python3
+"""Small, dependency-free CLI for Linear's public GraphQL API."""
+
+import argparse
+import json
+import os
+import re
+import sys
+from urllib.error import HTTPError, URLError
+from urllib.parse import unquote, urlparse
+from urllib.request import Request, urlopen
+
+ENDPOINT = "https://api.linear.app/graphql"
+DEFAULT_LIMIT = 10
+MAX_LIMIT = 100
+UUID_RE = re.compile(
+    r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I
+)
+
+ISSUE_FIELDS = "id identifier title description priority url createdAt updatedAt team { id name key } state { id name type } assignee { id name } labels { nodes { id name } }"
+ISSUE_DETAIL_FIELDS = (
+    ISSUE_FIELDS
+    + " project { id name url } cycle { id number name startsAt endsAt } parent { id identifier title } children(first: 50) { nodes { id identifier title state { id name type } } } comments(first: 50) { nodes { id body createdAt user { id name } } } relations(first: 50) { nodes { id type relatedIssue { id identifier title } } } dueDate attachments { nodes { id url title } }"
+)
+DOCUMENT_FIELDS = "id title slugId url createdAt updatedAt content"
+PROJECT_FIELDS = "id name description status { id name type } progress teams(first: 10) { nodes { id name key } } url"
+CYCLE_FIELDS = (
+    "id number name description startsAt endsAt progress team { id name key }"
+)
+PREVIEW_NOTE = "Previews intent before live resolution. Friendly names (team key, state name) are resolved only during the real run. Use read-only discovery to verify resolution."
+
+
+def fail(message, code=2):
+    print("Error: " + message, file=sys.stderr)
+    raise SystemExit(code)
+
+
+def require_found(value, kind, ref):
+    if value is None:
+        fail("%s %r was not found" % (kind, ref))
+    return value
+
+
+def parse_json(value, label):
+    try:
+        result = json.loads(value)
+    except json.JSONDecodeError as exc:
+        fail("%s must be valid JSON: %s" % (label, exc))
+    if not isinstance(result, dict):
+        fail("%s must be a JSON object" % label)
+    return result
+
+
+def parse_document_ref(ref):
+    """Return ('id', uuid) or ('slugId', slug) without treating a slug as an ID."""
+    if UUID_RE.match(ref):
+        return "id", ref
+    parsed = urlparse(ref)
+    if parsed.scheme and parsed.netloc:
+        if parsed.netloc.lower() not in ("linear.app", "www.linear.app"):
+            fail("document URL must be hosted by linear.app")
+        parts = [unquote(part) for part in parsed.path.split("/") if part]
+        try:
+            index = parts.index("document")
+            document_slug = parts[index + 1]
+        except (ValueError, IndexError):
+            fail("document URL must contain /document/SLUG")
+        match = re.search(r"-([0-9a-f]{12})$", document_slug, re.I)
+        if not match:
+            fail("document URL has no slug ID")
+        return "slugId", match.group(1)
+    if not ref or "/" in ref:
+        fail("document reference must be a UUID, slug ID, or Linear document URL")
+    return "slugId", ref
+
+
+def is_mutation(query):
+    stripped = re.sub(r"#[^\n]*", "", query)
+    return bool(re.search(r"\bmutation\b", stripped, re.I))
+
+
+class Client:
+    def __init__(self, args):
+        self.args = args
+
+    def authorization(self):
+        key = os.getenv("LINEAR_API_KEY")
+        token = os.getenv("LINEAR_ACCESS_TOKEN")
+        if key and token:
+            fail("set exactly one of LINEAR_API_KEY or LINEAR_ACCESS_TOKEN", 3)
+        if key:
+            return key
+        if token:
+            return "Bearer " + token
+        return None
+
+    def run(self, query, variables=None):
+        if self.args.dry_run:
+            return {
+                "dry_run": True,
+                "endpoint": ENDPOINT,
+                "query": query,
+                "variables": variables or {},
+            }
+        auth = self.authorization()
+        if not auth:
+            fail(
+                "LINEAR_API_KEY or LINEAR_ACCESS_TOKEN is required unless using --dry-run",
+                3,
+            )
+        payload = json.dumps({"query": query, "variables": variables or {}}).encode(
+            "utf-8"
+        )
+        request = Request(
+            ENDPOINT,
+            payload,
+            {
+                "Authorization": auth,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+        )
+        try:
+            with urlopen(request, timeout=30) as response:
+                body = response.read().decode("utf-8")
+        except HTTPError as exc:
+            body = exc.read().decode("utf-8", "replace")
+            try:
+                data = json.loads(body)
+            except json.JSONDecodeError:
+                fail("HTTP %s: %s" % (exc.code, body[:300]), 4)
+            return self.handle_response(data)
+        except URLError as exc:
+            fail("network error: %s" % exc.reason, 4)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            fail("Linear returned invalid JSON", 4)
+        return self.handle_response(data)
+
+    def handle_response(self, data):
+        if data.get("errors"):
+            first = data["errors"][0]
+            message = first.get("message", "unknown GraphQL error")
+            print("GraphQL error: " + message, file=sys.stderr)
+            raise SystemExit(5)
+        return data.get("data", data)
+
+
+def emit(value, args):
+    if args.json or args.dry_run:
+        print(json.dumps(value, sort_keys=True))
+        return
+    print(json.dumps(value, indent=2, sort_keys=True))
+
+
+def validate_limit(args):
+    if not 1 <= args.limit <= MAX_LIMIT:
+        fail("--limit must be between 1 and %d" % MAX_LIMIT)
+
+
+def require_confirmation(args):
+    if not args.dry_run and not args.confirm:
+        fail(
+            "a real mutation requires --confirm after confirming target, scope, and rollback path",
+            6,
+        )
+
+
+def nodes(data, key):
+    connection = data.get(key) or {}
+    return connection.get("nodes", []) if isinstance(connection, dict) else connection
+
+
+def resolve_team(client, team):
+    query = "query ResolveTeam($first: Int!) { teams(first: $first) { nodes { id name key } } }"
+    data = client.run(query, {"first": MAX_LIMIT})
+    matches = [
+        item
+        for item in nodes(data, "teams")
+        if item["id"] == team
+        or item["key"].lower() == team.lower()
+        or item["name"].lower() == team.lower()
+    ]
+    if len(matches) != 1:
+        fail(
+            "team %r did not resolve to exactly one team; use its exact key or name"
+            % team
+        )
+    return matches[0]
+
+
+def resolve_issue(client, ref):
+    query = "query Issue($id: String!) { issue(id: $id) { %s } }" % ISSUE_FIELDS
+    data = client.run(query, {"id": ref})
+    return require_found(data.get("issue"), "issue", ref)
+
+
+def resolve_state(client, issue, state_name):
+    query = "query TeamStates($id: String!, $first: Int!) { team(id: $id) { states(first: $first) { nodes { id name type } } } }"
+    data = client.run(query, {"id": issue["team"]["id"], "first": MAX_LIMIT})
+    states = (data.get("team") or {}).get("states") or {}
+    states = states.get("nodes", states) if isinstance(states, dict) else states
+    matches = [state for state in states if state["name"].lower() == state_name.lower()]
+    if len(matches) != 1:
+        available = ", ".join(state["name"] for state in states) or "none"
+        fail(
+            "state %r did not resolve in team %s; available states: %s"
+            % (state_name, issue["team"]["key"], available)
+        )
+    return matches[0]
+
+
+def preview(args, operations, mutation=False):
+    value = {"dry_run": True, "operations": operations}
+    if mutation:
+        value["preview_note"] = PREVIEW_NOTE
+    emit(value, args)
+
+
+def issue_list(client, args):
+    filters = []
+    variables = {"first": args.limit}
+    for name, field in (
+        ("team", "team"),
+        ("state", "state"),
+        ("assignee", "assignee"),
+        ("label", "labels"),
+    ):
+        value = getattr(args, name)
+        if value:
+            if name == "label":
+                filters.append("%s: { some: { name: { eq: $%s } } }" % (field, name))
+            else:
+                filters.append("%s: { name: { eq: $%s } }" % (field, name))
+            variables[name] = value
+    if args.team:
+        filters[0] = "team: { key: { eq: $team } }"
+    query = (
+        "query Issues($first: Int!%s) { issues(first: $first%s) { nodes { %s } } }"
+        % (
+            "".join(", $%s: String!" % name for name in variables if name != "first"),
+            ", filter: { %s }" % ", ".join(filters) if filters else "",
+            ISSUE_FIELDS,
+        )
+    )
+    emit(client.run(query, variables), args)
+
+
+def document_query(ref):
+    kind, value = parse_document_ref(ref)
+    if kind == "id":
+        return (
+            "query Document($ref: String!) { document(id: $ref) { %s } }"
+            % DOCUMENT_FIELDS,
+            {"ref": value},
+        )
+    return (
+        "query DocumentBySlugId($ref: String!) { documents(filter: { slugId: { eq: $ref } }, first: 1) { nodes { %s } } }"
+        % DOCUMENT_FIELDS,
+        {"ref": value},
+    )
+
+
+def project_list(client, args):
+    variables = {"first": args.limit}
+    filter_clause = ""
+    if args.team:
+        variables["team"] = args.team
+        filter_clause = (
+            ", filter: { accessibleTeams: { some: { key: { eq: $team } } } }"
+        )
+    query = (
+        "query Projects($first: Int!%s) { projects(first: $first%s) { nodes { %s } } }"
+        % (", $team: String!" if args.team else "", filter_clause, PROJECT_FIELDS)
+    )
+    emit(client.run(query, variables), args)
+
+
+def resolve_project(client, ref):
+    if UUID_RE.match(ref):
+        query = (
+            "query Project($id: String!) { project(id: $id) { %s } }" % PROJECT_FIELDS
+        )
+        project = client.run(query, {"id": ref}).get("project")
+        return require_found(project, "project", ref)
+    query = (
+        "query ProjectsByName($name: String!) { projects(first: 2, filter: { name: { eq: $name } }) { nodes { %s } } }"
+        % PROJECT_FIELDS
+    )
+    matches = nodes(client.run(query, {"name": ref}), "projects")
+    if len(matches) != 1:
+        fail(
+            "project %r did not resolve to exactly one project; use its UUID or exact name"
+            % ref
+        )
+    return matches[0]
+
+
+def build_parser():
+    parser = argparse.ArgumentParser(
+        prog="linear", description="Task-oriented Linear GraphQL CLI."
+    )
+    parser.add_argument("--json", action="store_true", help="Emit JSON to stdout.")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Preview GraphQL operations without network access.",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=DEFAULT_LIMIT,
+        help="Page size for reads (1-100; default: 10).",
+    )
+    root = parser.add_subparsers(dest="noun", required=True)
+    root.add_parser(
+        "whoami",
+        help="Show the authenticated Linear viewer.",
+        description="Example: linear whoami --json",
+    )
+    root.add_parser(
+        "raw",
+        help='Run an explicit GraphQL escape hatch. Example: linear raw "query { viewer { id } }".',
+        description='Example: linear raw "query { viewer { id } }"',
+    )
+    raw = root.choices["raw"]
+    raw.add_argument("query")
+    raw.add_argument(
+        "--variables", default="{}", help="JSON object of GraphQL variables."
+    )
+    raw.add_argument(
+        "--confirm", action="store_true", help="Required for a real raw mutation."
+    )
+
+    team = root.add_parser("team", help="Read teams.")
+    team.add_subparsers(dest="action", required=True).add_parser(
+        "list",
+        help="List teams.",
+        description="Example: linear team list --limit 20 --json",
+    )
+    issue = root.add_parser("issue", help="Read and manage issues.")
+    actions = issue.add_subparsers(dest="action", required=True)
+    p = actions.add_parser(
+        "list",
+        help="List issues. Example: linear issue list --team ENG --state Started --limit 20.",
+        description="Example: linear issue list --team ENG --state Started --limit 20",
+    )
+    p.add_argument("--team", metavar="TEAM_KEY", help="Exact team key.")
+    p.add_argument("--state")
+    p.add_argument("--assignee")
+    p.add_argument("--label")
+    p = actions.add_parser(
+        "search",
+        help='Search issues. Example: linear issue search "customer import".',
+        description='Example: linear issue search "customer import"',
+    )
+    p.add_argument("query")
+    p = actions.add_parser(
+        "get",
+        help="Get an issue by UUID or identifier. Example: linear issue get ENG-42 or linear issue get <uuid>.",
+        description="Example: linear issue get ENG-42 or linear issue get <uuid>.",
+    )
+    p.add_argument("issue")
+    p.add_argument(
+        "--detail",
+        action="store_true",
+        help="Include project, cycle, hierarchy, comments, relations, and attachments.",
+    )
+    p = actions.add_parser(
+        "create",
+        help='Create an issue. Example: linear issue create --team ENG --title "Fix login" --priority high.',
+        description='Example: linear issue create --team ENG --title "Fix login" --priority high',
+    )
+    p.add_argument(
+        "--team", required=True, metavar="TEAM", help="Team key or exact name."
+    )
+    p.add_argument("--title", required=True)
+    p.add_argument("--description")
+    p.add_argument("--priority", choices=("none", "urgent", "high", "medium", "low"))
+    p.add_argument("--confirm", action="store_true")
+    p = actions.add_parser(
+        "update",
+        help="Update an issue.",
+        description='Example: linear issue update ENG-42 --title "Updated title"',
+    )
+    p.add_argument("issue")
+    p.add_argument("--title")
+    p.add_argument("--description")
+    p.add_argument("--priority", choices=("none", "urgent", "high", "medium", "low"))
+    p.add_argument("--confirm", action="store_true")
+    p = actions.add_parser(
+        "move",
+        help='Move an issue to a workflow state. Example: linear issue move ENG-42 --state "In Progress".',
+        description='Example: linear issue move ENG-42 --state "In Progress"',
+    )
+    p.add_argument("issue")
+    p.add_argument("--state", required=True)
+    p.add_argument("--confirm", action="store_true")
+    p = actions.add_parser(
+        "comment",
+        help="Add an issue comment.",
+        description='Example: linear issue comment ENG-42 --body "Ready for review"',
+    )
+    p.add_argument("issue")
+    p.add_argument("--body", required=True)
+    p.add_argument("--confirm", action="store_true")
+    document = root.add_parser("document", help="Read Linear documents.")
+    actions = document.add_subparsers(dest="action", required=True)
+    actions.add_parser(
+        "list",
+        help="List documents.",
+        description="Example: linear document list --limit 20 --json",
+    )
+    p = actions.add_parser(
+        "search",
+        help="Search documents.",
+        description="Example: linear document search roadmap",
+    )
+    p.add_argument("query")
+    p = actions.add_parser(
+        "get",
+        help="Get a document by UUID, slug ID, or URL. Example: linear document get <uuid>, linear document get <slug>, or linear document get https://linear.app/acme/document/doc-slug.",
+        description="Example: linear document get roadmap-q3",
+    )
+    p.add_argument("ref")
+    project = root.add_parser("project", help="Read Linear projects.")
+    actions = project.add_subparsers(dest="action", required=True)
+    p = actions.add_parser(
+        "list",
+        help="List projects.",
+        description="Example: linear project list --team ENG --json",
+    )
+    p.add_argument("--team", metavar="TEAM_KEY", help="Exact team key.")
+    p = actions.add_parser(
+        "get",
+        help="Get a project by UUID or exact name.",
+        description='Example: linear project get "Roadmap"',
+    )
+    p.add_argument("project")
+    cycle = root.add_parser("cycle", help="Read Linear cycles.")
+    actions = cycle.add_subparsers(dest="action", required=True)
+    p = actions.add_parser(
+        "list",
+        help="List cycles.",
+        description="Example: linear cycle list --team ENG --json",
+    )
+    p.add_argument("--team", metavar="TEAM_KEY", help="Exact team key.")
+    p = actions.add_parser(
+        "get",
+        help="Get a cycle by UUID.",
+        description="Example: linear cycle get 123e4567-e89b-12d3-a456-426614174000",
+    )
+    p.add_argument("cycle")
+    return parser
+
+
+def extract_globals(argv):
+    values, retained, index = [], [], 0
+    flags = {"--json": 0, "--dry-run": 0, "--limit": 1}
+    while index < len(argv):
+        arg = argv[index]
+        if arg in flags:
+            values.append(arg)
+            if flags[arg]:
+                if index + 1 == len(argv):
+                    fail(arg + " requires a value")
+                values.append(argv[index + 1])
+                index += 1
+        else:
+            retained.append(arg)
+        index += 1
+    return values + retained
+
+
+def main(argv=None):
+    parser = build_parser()
+    args = parser.parse_args(
+        extract_globals(list(argv if argv is not None else sys.argv[1:]))
+    )
+    validate_limit(args)
+    if (
+        args.noun == "issue"
+        and args.action == "update"
+        and all(
+            value is None for value in (args.title, args.description, args.priority)
+        )
+    ):
+        fail("issue update requires at least one field to change")
+    client = Client(args)
+    if args.noun == "whoami":
+        emit(client.run("query Viewer { viewer { id name email displayName } }"), args)
+        return
+    if args.noun == "raw":
+        variables = parse_json(args.variables, "--variables")
+        mutation = is_mutation(args.query)
+        if mutation:
+            require_confirmation(args)
+        if mutation and args.dry_run:
+            preview(
+                args,
+                [
+                    {
+                        "operation": "raw mutation",
+                        "query": args.query,
+                        "variables": variables,
+                    }
+                ],
+                mutation=True,
+            )
+            return
+        emit(client.run(args.query, variables), args)
+        return
+    if args.noun == "team":
+        emit(
+            client.run(
+                "query Teams($first: Int!) { teams(first: $first) { nodes { id name key description } } }",
+                {"first": args.limit},
+            ),
+            args,
+        )
+        return
+    if args.noun == "issue":
+        if args.action == "list":
+            issue_list(client, args)
+            return
+        if args.action == "search":
+            emit(
+                client.run(
+                    "query SearchIssues($term: String!, $first: Int!) { searchIssues(term: $term, first: $first) { nodes { %s } } }"
+                    % ISSUE_FIELDS,
+                    {"term": args.query, "first": args.limit},
+                ),
+                args,
+            )
+            return
+        if args.action == "get":
+            if args.dry_run:
+                preview(
+                    args,
+                    [
+                        {
+                            "operation": "resolve issue",
+                            "reference": args.issue,
+                            "detail": args.detail,
+                        }
+                    ],
+                )
+                return
+            if args.detail:
+                emit(
+                    require_found(
+                        client.run(
+                            "query Issue($id: String!) { issue(id: $id) { %s } }"
+                            % ISSUE_DETAIL_FIELDS,
+                            {"id": args.issue},
+                        ).get("issue"),
+                        "issue",
+                        args.issue,
+                    ),
+                    args,
+                )
+                return
+            emit(resolve_issue(client, args.issue), args)
+            return
+        require_confirmation(args)
+        if args.action == "create":
+            if args.dry_run:
+                preview(
+                    args,
+                    [
+                        {"operation": "resolve team", "reference": args.team},
+                        {
+                            "operation": "issueCreate",
+                            "input": {
+                                "team": args.team,
+                                "title": args.title,
+                                "description": args.description,
+                                "priority": args.priority,
+                            },
+                        },
+                    ],
+                    mutation=True,
+                )
+                return
+            team = resolve_team(client, args.team)
+            inp = {
+                "teamId": team["id"],
+                "title": args.title,
+                "description": args.description,
+                "priority": {
+                    "none": 0,
+                    "urgent": 1,
+                    "high": 2,
+                    "medium": 3,
+                    "low": 4,
+                }.get(args.priority),
+            }
+            emit(
+                client.run(
+                    "mutation IssueCreate($input: IssueCreateInput!) { issueCreate(input: $input) { success issue { %s } } }"
+                    % ISSUE_FIELDS,
+                    {
+                        "input": {
+                            key: value
+                            for key, value in inp.items()
+                            if value is not None
+                        }
+                    },
+                ),
+                args,
+            )
+            return
+        if args.dry_run:
+            operations = [{"operation": "resolve issue", "reference": args.issue}]
+            if args.action == "move":
+                operations.append(
+                    {
+                        "operation": "issueMove",
+                        "issue": args.issue,
+                        "target_state": args.state,
+                    }
+                )
+            elif args.action == "update":
+                operations.append(
+                    {
+                        "operation": "issueUpdate",
+                        "issue": args.issue,
+                        "input": {
+                            key: value
+                            for key, value in {
+                                "title": args.title,
+                                "description": args.description,
+                                "priority": args.priority,
+                            }.items()
+                            if value is not None
+                        },
+                    }
+                )
+            else:
+                operations.append(
+                    {
+                        "operation": "commentCreate",
+                        "issue": args.issue,
+                        "body": args.body,
+                    }
+                )
+            preview(args, operations, mutation=True)
+            return
+        issue = resolve_issue(client, args.issue)
+        if args.action == "update":
+            inp = {
+                "title": args.title,
+                "description": args.description,
+                "priority": {
+                    "none": 0,
+                    "urgent": 1,
+                    "high": 2,
+                    "medium": 3,
+                    "low": 4,
+                }.get(args.priority),
+            }
+            inp = {key: value for key, value in inp.items() if value is not None}
+            if not inp:
+                fail("issue update requires at least one field to change")
+            emit(
+                client.run(
+                    "mutation IssueUpdate($id: String!, $input: IssueUpdateInput!) { issueUpdate(id: $id, input: $input) { success issue { %s } } }"
+                    % ISSUE_FIELDS,
+                    {"id": issue["id"], "input": inp},
+                ),
+                args,
+            )
+            return
+        if args.action == "move":
+            state = resolve_state(client, issue, args.state)
+            emit(
+                client.run(
+                    "mutation IssueUpdate($id: String!, $input: IssueUpdateInput!) { issueUpdate(id: $id, input: $input) { success issue { %s } } }"
+                    % ISSUE_FIELDS,
+                    {"id": issue["id"], "input": {"stateId": state["id"]}},
+                ),
+                args,
+            )
+            return
+        emit(
+            client.run(
+                "mutation Comment($input: CommentCreateInput!) { commentCreate(input: $input) { success comment { id body createdAt } } }",
+                {"input": {"issueId": issue["id"], "body": args.body}},
+            ),
+            args,
+        )
+        return
+    if args.noun == "document":
+        if args.action == "list":
+            emit(
+                client.run(
+                    "query Documents($first: Int!) { documents(first: $first) { nodes { id title slugId url updatedAt } } }",
+                    {"first": args.limit},
+                ),
+                args,
+            )
+            return
+        if args.action == "search":
+            emit(
+                client.run(
+                    "query SearchDocuments($term: String!, $first: Int!) { searchDocuments(term: $term, first: $first) { nodes { id title slugId url updatedAt } } }",
+                    {"term": args.query, "first": args.limit},
+                ),
+                args,
+            )
+            return
+        kind, _value = parse_document_ref(args.ref)
+        query, variables = document_query(args.ref)
+        data = client.run(query, variables)
+        emit(
+            require_found(
+                data.get("document")
+                if kind == "id"
+                else (nodes(data, "documents") or [None])[0],
+                "document",
+                args.ref,
+            ),
+            args,
+        )
+        return
+    if args.noun == "project":
+        if args.action == "list":
+            project_list(client, args)
+            return
+        emit(resolve_project(client, args.project), args)
+        return
+    if args.noun == "cycle":
+        if args.action == "list":
+            variables = {"first": args.limit}
+            filter_clause = ""
+            if args.team:
+                variables["team"] = args.team
+                filter_clause = ", filter: { team: { key: { eq: $team } } }"
+            query = (
+                "query Cycles($first: Int!%s) { cycles(first: $first%s) { nodes { %s } } }"
+                % (", $team: String!" if args.team else "", filter_clause, CYCLE_FIELDS)
+            )
+            emit(client.run(query, variables), args)
+            return
+        emit(
+            require_found(
+                client.run(
+                    "query Cycle($id: String!) { cycle(id: $id) { %s } }"
+                    % CYCLE_FIELDS,
+                    {"id": args.cycle},
+                ).get("cycle"),
+                "cycle",
+                args.cycle,
+            ),
+            args,
+        )
+        return
+
+
+if __name__ == "__main__":
+    main()
