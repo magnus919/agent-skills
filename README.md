@@ -148,7 +148,7 @@ Build, customize, and debug advanced Hugo CMS themes. Covers template architectu
 
 ### [jellyfin-cli](jellyfin-cli/SKILL.md)
 
-Jellyfin media server from the terminal. Check server info, browse recently added, search your library by type, list libraries, and view statistics.
+Jellyfin media server from the terminal. Check server info, browse recently added and library contents, search and inspect media, see next-up episodes, and view statistics.
 
 ### [jira-cli](jira-cli/SKILL.md)
 
