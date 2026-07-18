@@ -10,7 +10,7 @@ import json
 import os
 import sys
 import warnings
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict
 
 warnings.simplefilter("ignore")
 
@@ -19,18 +19,9 @@ import requests
 DEFAULT_SERVER = "http://localhost:8096"
 ENV_URL = os.getenv("JELLYFIN_URL", DEFAULT_SERVER)
 ENV_KEY = os.getenv("JELLYFIN_API_KEY", "")
+ENV_USER_ID = os.getenv("JELLYFIN_USER_ID", "")
 
-QUIET = False
-GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
-
-
-def log(msg):
-    if not QUIET and not GLOBAL_FLAGS.get("json", False):
-        print(msg)
-
-
-def warn(msg):
-    print(f"Warning: {msg}", file=sys.stderr)
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False}
 
 
 def die(msg, exit_code=1):
@@ -46,7 +37,7 @@ def emit(human, data):
 
 
 def _preparse_global_flags(argv):
-    GLOBAL_BOOLS = {"--json", "--dry-run", "--quiet", "--verbose"}
+    GLOBAL_BOOLS = {"--json", "--dry-run"}
     flags, filtered = {}, [argv[0]]
     i = 1
     while i < len(argv):
@@ -101,9 +92,12 @@ class JellyfinClient:
     def get_users(self):
         return self._get("/Users")
 
-    def get_recent(self, user_id, limit=10, fields="Overview,DateCreated"):
-        return self._get(f"/Users/{user_id}/Items/Latest",
-                         params={"limit": limit, "fields": fields})
+    def get_recent(self, user_id, limit=10, include_types=None):
+        params = {"userId": user_id, "fields": "DateCreated"}
+        if include_types:
+            params["includeItemTypes"] = ",".join(include_types)
+        params["limit"] = limit
+        return self._get("/Items/Latest", params=params)
 
     def get_next_up(self, user_id, limit=10):
         return self._get(f"/Shows/NextUp",
@@ -141,12 +135,6 @@ class JellyfinClient:
         return self._get("/Items/Counts")
 
 
-def get_admin_user_id(client):
-    users = client.get_users() or []
-    admin = next((u for u in users if u.get("Policy", {}).get("IsAdministrator")), None)
-    return admin.get("Id", "") if admin else ""
-
-
 def fmt_date(ts):
     if not ts:
         return "?"
@@ -155,7 +143,13 @@ def fmt_date(ts):
 
 def cmd_info(client, args):
     if client.dry_run:
-        return emit("[dry-run] Get server info", {"dry_run": True})
+        return emit("[dry-run] GET /System/Info; GET /Users", {
+            "dry_run": True,
+            "requests": [
+                {"path": "/System/Info", "params": {}},
+                {"path": "/Users", "params": {}},
+            ],
+        })
     data = client.get_info() or {}
     name = data.get("ServerName", "?")
     version = data.get("Version", "?")
@@ -168,25 +162,30 @@ def cmd_info(client, args):
 def cmd_recent(client, args):
     p = argparse.ArgumentParser(prog="jellyfin-cli recent")
     p.add_argument("--limit", type=int, default=10)
-    p.add_argument("--movies", action="store_true")
-    p.add_argument("--episodes", action="store_true")
+    media_type = p.add_mutually_exclusive_group()
+    media_type.add_argument("--movies", action="store_true")
+    media_type.add_argument("--episodes", action="store_true")
+    p.add_argument("--user-id", default=ENV_USER_ID,
+                   help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
     parsed, _ = p.parse_known_args(args)
 
+    include_types = ["Episode"] if parsed.episodes else ["Movie"] if parsed.movies else None
     if client.dry_run:
-        return emit("[dry-run] Get recent items", {"dry_run": True})
+        params = {"userId": parsed.user_id or None, "fields": "DateCreated"}
+        if include_types:
+            params["includeItemTypes"] = ",".join(include_types)
+        params["limit"] = parsed.limit
+        return emit("[dry-run] GET /Items/Latest " + json.dumps(params), {
+            "dry_run": True, "path": "/Items/Latest", "params": params,
+        })
 
-    uid = get_admin_user_id(client)
-    if not uid:
-        return emit("No admin user found.", {"error": "no admin user"})
+    if not parsed.user_id:
+        die("recent requires --user-id or JELLYFIN_USER_ID.")
 
-    items = client.get_recent(uid, limit=parsed.limit) or []
+    items = client.get_recent(parsed.user_id, limit=parsed.limit,
+                              include_types=include_types) or []
     if not items:
         return emit("No recent items.", {"items": []})
-
-    if parsed.episodes:
-        items = [i for i in items if i.get("Type") == "Episode"]
-    elif parsed.movies:
-        items = [i for i in items if i.get("Type") == "Movie"]
 
     lines, out = [], []
     for i in items:
@@ -209,10 +208,15 @@ def cmd_search(client, args):
     p.add_argument("--limit", type=int, default=20)
     parsed, _ = p.parse_known_args(args)
 
-    if client.dry_run:
-        return emit(f"[dry-run] Search: {parsed.query}", {"dry_run": True})
-
     types = parsed.type.split(",") if parsed.type else None
+    if client.dry_run:
+        params = {"searchTerm": parsed.query, "limit": parsed.limit, "recursive": True}
+        if types:
+            params["includeItemTypes"] = ",".join(types)
+        return emit("[dry-run] GET /Search/Hints " + json.dumps(params), {
+            "dry_run": True, "path": "/Search/Hints", "params": params,
+        })
+
     data = client.search(parsed.query, limit=parsed.limit, include_types=types) or {}
     hints = data.get("SearchHints", [])
     if not hints:
@@ -232,23 +236,28 @@ def cmd_search(client, args):
 
 def cmd_libraries(client, args):
     if client.dry_run:
-        return emit("[dry-run] List libraries", {"dry_run": True})
-    data = client.get_libraries() or []
-    if not data:
+        return emit("[dry-run] GET /Library/MediaFolders {}", {
+            "dry_run": True, "path": "/Library/MediaFolders", "params": {},
+        })
+    data = client.get_libraries() or {}
+    libraries = data.get("Items", []) if isinstance(data, dict) else data
+    if not libraries:
         return emit("No libraries found.", {"libraries": []})
     lines, out = [], []
-    for lib in data:
+    for lib in libraries:
         name = lib.get("Name", "?")
         lid = lib.get("Id", "?")
         ctype = lib.get("CollectionType", "?")
         lines.append(f"  {name:30}  [{ctype}]  id={lid}")
         out.append({"name": name, "id": lid, "type": ctype})
-    emit(f"{len(data)} libraries:\n" + "\n".join(lines), {"libraries": out})
+    emit(f"{len(libraries)} libraries:\n" + "\n".join(lines), {"libraries": out})
 
 
 def cmd_stats(client, args):
     if client.dry_run:
-        return emit("[dry-run] Get server stats", {"dry_run": True})
+        return emit("[dry-run] GET /Items/Counts {}", {
+            "dry_run": True, "path": "/Items/Counts", "params": {},
+        })
     data = client.get_stats() or {}
     emit(f"📊 Library stats:\n"
          f"   Movies: {data.get('MovieCount', '?')}\n"
@@ -260,20 +269,28 @@ def cmd_stats(client, args):
 
 
 def main():
-    global GLOBAL_FLAGS, QUIET
+    global GLOBAL_FLAGS
     GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
-    if GLOBAL_FLAGS.get("quiet", False):
-        QUIET = True
     if GLOBAL_FLAGS.get("json", False):
         warnings.simplefilter("ignore")
 
     parser = argparse.ArgumentParser(prog="jellyfin-cli", description="Jellyfin media server CLI.")
+    parser.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+    parser.add_argument("--dry-run", action="store_true", help="Preview API requests without network access")
     sub = parser.add_subparsers(dest="command")
-    sub.add_parser("info", help="Server info")
-    re = sub.add_parser("recent", help="Recently added"); re.add_argument("--limit", type=int, default=10); re.add_argument("--movies", action="store_true"); re.add_argument("--episodes", action="store_true")
-    se = sub.add_parser("search", help="Search media"); se.add_argument("--query", "-q", required=True); se.add_argument("--type"); se.add_argument("--limit", type=int, default=20)
-    sub.add_parser("libraries", help="List libraries")
-    sub.add_parser("stats", help="Library statistics")
+    sub.add_parser("info", help="Server info", description="Show Jellyfin server details.", epilog="Example: jellyfin-cli info")
+    re = sub.add_parser("recent", help="Recently added", description="Show recently added movies or episodes.", epilog="Example: jellyfin-cli recent --movies --limit 5")
+    re.add_argument("--limit", type=int, default=10, help="Maximum items to return (default: 10)")
+    media_type = re.add_mutually_exclusive_group()
+    media_type.add_argument("--movies", action="store_true", help="Show only movies")
+    media_type.add_argument("--episodes", action="store_true", help="Show only episodes")
+    re.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
+    se = sub.add_parser("search", help="Search media", description="Search the Jellyfin media library.", epilog="Example: jellyfin-cli search --query dune --type Movie")
+    se.add_argument("--query", "-q", required=True, help="Text to search for")
+    se.add_argument("--type", help="Comma-separated item types, such as Movie,Series")
+    se.add_argument("--limit", type=int, default=20, help="Maximum results to return (default: 20)")
+    sub.add_parser("libraries", help="List libraries", description="List configured media libraries.", epilog="Example: jellyfin-cli libraries")
+    sub.add_parser("stats", help="Library statistics", description="Show media library item counts.", epilog="Example: jellyfin-cli stats")
 
     args = parser.parse_args(filtered_argv[1:])
     if not args.command:
