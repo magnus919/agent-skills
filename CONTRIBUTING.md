@@ -32,6 +32,10 @@ ruby scripts/validate-skills.rb
 
 The same validation runs in GitHub Actions for pushes and pull requests. If a skill includes executable scripts or a package, run its documented checks as well and include the commands and results in your pull request.
 
+## Deprecating a skill
+
+When replacing a skill, preserve its old directory as a routing stub. Prefix its description with `Deprecated: use <replacement>`, explain the migration in the stub, and remove it only after compatibility is no longer required.
+
 ## Pull requests
 
 - Create a branch from `main`: `feat/short-description`, `fix/short-description`, or `docs/short-description`.

@@ -66,7 +66,6 @@ The `SKILL.md` file must contain YAML frontmatter followed by Markdown body cont
 | `compatibility` | No | Max 500 chars. Indicates environment requirements. |
 | `metadata` | No | Arbitrary key-value mapping. |
 | `allowed-tools` | No | Space-separated string of pre-approved tools. (Experimental) |
-| `confirmation` | No | Boolean (default: false). Signals destructive operations requiring explicit user confirmation. |
 
 #### `name` field rules
 - 1–64 characters

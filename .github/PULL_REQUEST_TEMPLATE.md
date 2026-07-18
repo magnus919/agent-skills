@@ -19,4 +19,6 @@
 
 ## Review notes
 
+- [ ] Final-head review evidence is tied to commit SHA `<sha>`, and all actionable findings are resolved.
+
 <!-- Call out compatibility concerns, intentional simplifications, or follow-up work. -->

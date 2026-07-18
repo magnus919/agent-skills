@@ -38,6 +38,8 @@ Or install from the skill directory:
 pip install -e /path/to/agent-council/
 ```
 
+Pip and wheel installs include generated and user-supplied personas, but not the `hermes-profiles` library. To use real bundled profiles, start from a recursive source checkout.
+
 ## Usage
 
 ```bash

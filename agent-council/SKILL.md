@@ -82,7 +82,7 @@ Options:
 
 ## Profile Selection
 
-By default, the council auto-selects relevant profiles from a library of **39 real professional profiles** (shipped as a git submodule from the [hermes-profiles](https://github.com/magnus919/hermes-profiles) repository). Each profile has a SOUL.md — an identity document with real methodology, values, and operating principles — rather than fabricated personas.
+In a recursive source checkout, the council auto-selects relevant real professional profiles from the included [hermes-profiles](https://github.com/magnus919/hermes-profiles) library. Each profile has a SOUL.md — an identity document with real methodology, values, and operating principles — rather than a fabricated persona. Pip and wheel installs do not bundle that library; use generated or user-supplied personas instead.
 
 ### Auto-selection
 
@@ -102,10 +102,10 @@ Three ways to populate the council, with different tradeoffs:
 
 | Method | Best for | Diversity | Setup |
 |--------|----------|-----------|-------|
-| `--profiles` (auto-select) | Single-domain questions with clear keywords | High — profiles have real SOUL.md methodology | Zero — just ask the question |
-| `--profiles name1,name2` | Targeted debates where you know the stakeholders | Highest — you pick specific methodological voices | Know the profile names |
+| `--profiles` (auto-select) | Single-domain questions with clear keywords | High — profiles have real SOUL.md methodology | Recursive source checkout required |
+| `--profiles name1,name2` | Targeted debates where you know the stakeholders | Highest — you pick specific methodological voices | Recursive source checkout and profile names |
 | `--persona-file file.json` | Full control over agent identities, custom domains | Variable — depends on how you design them | Create a JSON file |
-| Auto (no flag) | Default — uses profiles if available, falls back to generated | Good — auto-selects from 39 profiles | Zero |
+| Auto (no flag) | Default — uses profiles if available, falls back to generated | Good — varies with available profiles | No setup for generated personas; recursive source checkout for real profiles |
 
 For most cases, let it auto-select or use `--profiles` with 3-5 names. Only use `--persona-file` when you need specific invented expertise that doesn't map to any existing profile.
 
