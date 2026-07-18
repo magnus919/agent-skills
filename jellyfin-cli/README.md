@@ -1,6 +1,6 @@
 # Jellyfin Media Server from the Terminal
 
-Query your Jellyfin media library — recently added movies and episodes, search across your library, browse libraries, and check server stats.
+Query your Jellyfin media library — recently added movies and episodes, search and inspect items, browse library contents, see next-up episodes, and check server stats.
 
 ## Why Install This Skill
 
@@ -8,7 +8,8 @@ When your agent loads this skill, it can **navigate your home media server** wit
 
 - **See what's new** — recently added movies and TV episodes
 - **Search your library** — find any movie, show, or episode by keyword
-- **Browse libraries** — list all configured media libraries
+- **Navigate your library** — inspect search results, browse collections, and page through items
+- **See what is next** — find the next unwatched episodes for a user
 - **Check server details** — server name, version, operating system, user count
 
 ## What You Get
@@ -24,10 +25,15 @@ When your agent loads this skill, it can **navigate your home media server** wit
 scripts/jellyfin-cli --help
 export JELLYFIN_URL="http://your-server:8096"
 export JELLYFIN_API_KEY="your-api-key"
-export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent
+export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent, next-up, and item
 ```
 
 API key from Dashboard → API Keys in the Jellyfin admin panel.
+
+```bash
+scripts/jellyfin-cli search --query "dune" --type Movie
+scripts/jellyfin-cli next-up --limit 5
+```
 
 ## Triggers
 
@@ -35,4 +41,4 @@ Load this when asking about Jellyfin, media server content, recently added movie
 
 ## Requirements
 
-Python 3.8+ with `requests` library. Jellyfin server with API key; `recent` also requires a Jellyfin user ID.
+Python 3.8+ with `requests` library. Jellyfin server with API key; `recent`, `next-up`, and `item` also require a Jellyfin user ID.

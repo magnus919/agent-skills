@@ -121,8 +121,8 @@ class JellyfinClient:
             params["includeItemTypes"] = ",".join(types)
         return self._get("/Items", params=params)
 
-    def get_item(self, item_id):
-        return self._get(f"/Items/{item_id}")
+    def get_item(self, item_id, user_id):
+        return self._get(f"/Items/{item_id}", params={"userId": user_id})
 
     def get_seasons(self, series_id, user_id):
         return self._get(f"/Shows/{series_id}/Seasons", params={"userId": user_id})
@@ -139,6 +139,25 @@ def fmt_date(ts):
     if not ts:
         return "?"
     return ts[:10] if len(ts) > 10 else ts
+
+
+def normalize_item(item):
+    """Return available Jellyfin item metadata with stable CLI field names."""
+    fields = {
+        "id": item.get("Id"),
+        "name": item.get("Name"),
+        "type": item.get("Type"),
+        "year": item.get("ProductionYear"),
+        "series": item.get("SeriesName"),
+        "season_number": item.get("ParentIndexNumber"),
+        "episode_number": item.get("IndexNumber"),
+        "overview": item.get("Overview"),
+        "date_added": fmt_date(item["DateCreated"]) if item.get("DateCreated") else None,
+        "community_rating": item.get("CommunityRating"),
+        "official_rating": item.get("OfficialRating"),
+        "runtime_ticks": item.get("RunTimeTicks"),
+    }
+    return {key: value for key, value in fields.items() if value is not None and value != ""}
 
 
 def cmd_info(client, args):
@@ -234,6 +253,78 @@ def cmd_search(client, args):
     emit(f"{len(hints)} result(s):\n" + "\n".join(lines), {"results": out})
 
 
+def cmd_next_up(client, args):
+    p = argparse.ArgumentParser(prog="jellyfin-cli next-up")
+    p.add_argument("--user-id", default=ENV_USER_ID)
+    p.add_argument("--limit", type=int, default=10)
+    parsed, _ = p.parse_known_args(args)
+
+    params = {"userId": parsed.user_id or None, "limit": parsed.limit}
+    if client.dry_run:
+        return emit("[dry-run] GET /Shows/NextUp " + json.dumps(params), {
+            "dry_run": True, "path": "/Shows/NextUp", "params": params,
+        })
+    if not parsed.user_id:
+        die("next-up requires --user-id or JELLYFIN_USER_ID.")
+
+    data = client.get_next_up(parsed.user_id, limit=parsed.limit) or {}
+    items = [normalize_item(item) for item in data.get("Items", [])]
+    lines = [f"  {item.get('name', '?')}  [{item.get('type', '?')}]" for item in items]
+    emit("Next up:\n" + "\n".join(lines) if lines else "No next-up episodes.", {
+        "items": items, "total_record_count": data.get("TotalRecordCount", 0),
+    })
+
+
+def cmd_item(client, args):
+    p = argparse.ArgumentParser(prog="jellyfin-cli item")
+    p.add_argument("--id", required=True)
+    p.add_argument("--user-id", default=ENV_USER_ID)
+    parsed, _ = p.parse_known_args(args)
+
+    params = {"userId": parsed.user_id or None}
+    path = f"/Items/{parsed.id}"
+    if client.dry_run:
+        return emit("[dry-run] GET " + path + " " + json.dumps(params), {
+            "dry_run": True, "path": path, "params": params,
+        })
+    if not parsed.user_id:
+        die("item requires --user-id or JELLYFIN_USER_ID.")
+
+    item = normalize_item(client.get_item(parsed.id, parsed.user_id) or {})
+    emit(f"{item.get('name', '?')}  [{item.get('type', '?')}]", item)
+
+
+def cmd_browse(client, args):
+    p = argparse.ArgumentParser(prog="jellyfin-cli browse")
+    p.add_argument("--library-id", required=True)
+    p.add_argument("--type")
+    p.add_argument("--limit", type=int, default=50)
+    p.add_argument("--start-index", type=int, default=0)
+    parsed, _ = p.parse_known_args(args)
+
+    types = parsed.type.split(",") if parsed.type else None
+    params = {
+        "parentId": parsed.library_id, "limit": parsed.limit, "sortBy": "SortName",
+        "sortOrder": "Ascending", "startIndex": parsed.start_index, "recursive": True,
+    }
+    if types:
+        params["includeItemTypes"] = ",".join(types)
+    if client.dry_run:
+        return emit("[dry-run] GET /Items " + json.dumps(params), {
+            "dry_run": True, "path": "/Items", "params": params,
+        })
+
+    data = client.get_items(parsed.library_id, types=types, limit=parsed.limit,
+                            start_index=parsed.start_index) or {}
+    items = [normalize_item(item) for item in data.get("Items", [])]
+    lines = [f"  {item.get('name', '?')}  [{item.get('type', '?')}]" for item in items]
+    emit("Browse results:\n" + "\n".join(lines) if lines else "No items found.", {
+        "items": items,
+        "start_index": data.get("StartIndex", parsed.start_index),
+        "total_record_count": data.get("TotalRecordCount", 0),
+    })
+
+
 def cmd_libraries(client, args):
     if client.dry_run:
         return emit("[dry-run] GET /Library/MediaFolders {}", {
@@ -274,7 +365,8 @@ def main():
     if GLOBAL_FLAGS.get("json", False):
         warnings.simplefilter("ignore")
 
-    parser = argparse.ArgumentParser(prog="jellyfin-cli", description="Jellyfin media server CLI.")
+    parser = argparse.ArgumentParser(prog="jellyfin-cli", description="Jellyfin media server CLI.",
+                                     epilog="Example: jellyfin-cli search --query dune")
     parser.add_argument("--json", action="store_true", help="Output machine-readable JSON")
     parser.add_argument("--dry-run", action="store_true", help="Preview API requests without network access")
     sub = parser.add_subparsers(dest="command")
@@ -289,6 +381,17 @@ def main():
     se.add_argument("--query", "-q", required=True, help="Text to search for")
     se.add_argument("--type", help="Comma-separated item types, such as Movie,Series")
     se.add_argument("--limit", type=int, default=20, help="Maximum results to return (default: 20)")
+    nu = sub.add_parser("next-up", help="Next unwatched episodes", description="Show the next unwatched episodes for a Jellyfin user.", epilog="Example: jellyfin-cli next-up --user-id USER_ID --limit 5")
+    nu.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
+    nu.add_argument("--limit", type=int, default=10, help="Maximum episodes to return (default: 10)")
+    it = sub.add_parser("item", help="Show item details", description="Show metadata for one Jellyfin library item.", epilog="Example: jellyfin-cli item --id ITEM_ID --user-id USER_ID")
+    it.add_argument("--id", required=True, help="Jellyfin item ID")
+    it.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
+    br = sub.add_parser("browse", help="Browse a library", description="List items in a Jellyfin media library.", epilog="Example: jellyfin-cli browse --library-id LIBRARY_ID --type Movie --limit 20")
+    br.add_argument("--library-id", required=True, help="Jellyfin library ID")
+    br.add_argument("--type", help="Comma-separated item types, such as Movie,Series")
+    br.add_argument("--limit", type=int, default=50, help="Maximum items to return (default: 50)")
+    br.add_argument("--start-index", type=int, default=0, help="Zero-based result offset (default: 0)")
     sub.add_parser("libraries", help="List libraries", description="List configured media libraries.", epilog="Example: jellyfin-cli libraries")
     sub.add_parser("stats", help="Library statistics", description="Show media library item counts.", epilog="Example: jellyfin-cli stats")
 
@@ -301,6 +404,7 @@ def main():
 
     cmd_map = {
         "info": cmd_info, "recent": cmd_recent, "search": cmd_search,
+        "next-up": cmd_next_up, "item": cmd_item, "browse": cmd_browse,
         "libraries": cmd_libraries, "stats": cmd_stats,
     }
     handler = cmd_map.get(args.command)

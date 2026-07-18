@@ -1,13 +1,13 @@
 ---
 name: jellyfin-cli
-description: Query your Jellyfin media server from the terminal — recently added movies
-  and episodes, search across your library, browse libraries, and check server info
-  and stats. Use when the user asks about Jellyfin, media server, movies, TV shows,
-  recently added content, or their media library.
+description: Query your Jellyfin media server from the terminal — recently added media,
+  search, item details, next-up episodes, library browsing, server info, and stats. Use
+  when the user asks about Jellyfin, media server, movies, TV shows, next episodes, or
+  their media library.
 license: MIT
 compatibility: Requires JELLYFIN_URL (default http://localhost:8096) and JELLYFIN_API_KEY
-  env vars; `recent` also requires JELLYFIN_USER_ID or --user-id. Python 3.8+ and
-  the `requests` library. Generate an API key at Dashboard → API Keys in the Jellyfin admin panel.
+  env vars; `recent`, `next-up`, and `item` also require JELLYFIN_USER_ID or --user-id.
+  Python 3.8+ and the `requests` library. Generate an API key at Dashboard → API Keys in the Jellyfin admin panel.
 metadata:
   tags: jellyfin, media-server, movies, tv, episodes, recently-added, library, home-media,
     api-client
@@ -16,7 +16,7 @@ metadata:
 
 # jellyfin-cli — Jellyfin Media Server from the Terminal
 
-Query recently added movies and TV episodes, search your media library, list libraries, check server info, and view library statistics — all from your Jellyfin server's REST API.
+Query recently added movies and TV episodes, search and inspect media, browse libraries, see next-up episodes, check server info, and view library statistics — all from your Jellyfin server's REST API.
 
 ## Setup
 
@@ -27,7 +27,7 @@ Query recently added movies and TV episodes, search your media library, list lib
 ```bash
 export JELLYFIN_URL="http://your-server:8096"   # include protocol and port
 export JELLYFIN_API_KEY="your-api-key-here"
-export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent
+export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent, next-up, and item
 ```
 
 Run the bundled CLI as `scripts/jellyfin-cli`. `--help` and `--dry-run` work without credentials.
@@ -70,6 +70,20 @@ scripts/jellyfin-cli search --query "dune" --json         # machine-readable
 
 The `--type` flag accepts a comma-separated list of item types (e.g. `Movie,Series,Episode`).
 
+### Navigation — Inspect media and browse libraries
+
+```bash
+scripts/jellyfin-cli search --query "dune" --type Movie    # find an item ID
+scripts/jellyfin-cli item --id ITEM_ID                      # inspect that item
+scripts/jellyfin-cli libraries                               # find a library ID
+scripts/jellyfin-cli browse --library-id LIBRARY_ID --type Movie --limit 20
+scripts/jellyfin-cli browse --library-id LIBRARY_ID --start-index 20
+scripts/jellyfin-cli next-up --limit 10                      # next episodes for JELLYFIN_USER_ID
+scripts/jellyfin-cli next-up --user-id USER_ID --json
+```
+
+Use `search -> item` to look up a result's metadata, and `libraries -> browse` to page through a collection. `next-up` returns the next unwatched episodes for the selected user. `item` and `next-up` require `JELLYFIN_USER_ID` or `--user-id`; all three commands are read-only.
+
 ### libraries — List media libraries
 
 ```bash
@@ -106,7 +120,7 @@ scripts/jellyfin-cli --dry-run search --query "dune"       # preview request wit
 ## Known Gotchas
 
 - **JELLYFIN_URL must include protocol and port** — Both are required, e.g. `http://192.168.1.100:8096`. A bare hostname or IP without `http://` and `:8096` will fail. The default is `http://localhost:8096`.
-- **Recent requires an explicit user** — Set `JELLYFIN_USER_ID` or pass `recent --user-id USER_ID`. The CLI never selects an administrator automatically. A real recent request without either value fails before network access; dry-run previews the request with a null user ID.
+- **User-scoped commands require an explicit user** — Set `JELLYFIN_USER_ID` or pass `--user-id USER_ID` to `recent`, `next-up`, or `item`. The CLI never selects an administrator automatically. A real request without either value fails before network access; dry-run previews the request with a null user ID.
 - **Recent type filtering is server-side** — `--movies` and `--episodes` become the `/Items/Latest` `includeItemTypes` parameter before `limit`; no local filtering is applied.
 - **Search type values** — The `--type` flag for `search` uses Jellyfin item type names (e.g. `Movie`, `Series`, `Episode`, `MusicArtist`, `MusicAlbum`). Multiple types are comma-separated without spaces.
 - **API key location** — Generate the key in the Jellyfin Dashboard under **Dashboard → API Keys**. The key is sent as the `X-Emby-Token` header.
