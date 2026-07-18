@@ -20,3 +20,11 @@ jobs:
           ruby-version: '3.3'
       - name: Validate skill format and links
         run: ruby scripts/validate-skills.rb
+      - name: Check tracked repository artifacts
+        run: python3 scripts/check-artifacts.py
+      - name: Build tracked Python packages
+        run: |
+          wheel_dir=$(mktemp -d)
+          while IFS= read -r pyproject; do
+            python3 -m pip wheel --no-deps "./$(dirname "$pyproject")" --wheel-dir "$wheel_dir"
+          done < <(git ls-files -- ':(glob)**/pyproject.toml')

@@ -2,7 +2,7 @@
 
 A collection of AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems. Skills follow the [Agent Skills open format](https://agentskills.io), making them compatible with any agent framework that supports the standard.
 
-Bundles organize related skills under a single umbrella with shared reference material and auto-loading by trigger context; they appear in the same alphabetical catalog as standalone skills.
+Bundles are this repository's convention for organizing related skills under a single umbrella with shared reference material; they appear in the same alphabetical catalog as standalone skills. Compatible harnesses are guaranteed to see the umbrella skill. Nested subskill auto-loading depends on the harness or on the umbrella skill's instructions.
 
 ## Skills
 

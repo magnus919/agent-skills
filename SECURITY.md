@@ -17,4 +17,4 @@ Do not include credentials, private URLs, or personal data in the report unless 
 
 You should receive an acknowledgement within seven days. We will investigate, keep the reporter informed when practical, and coordinate disclosure after a fix or mitigation is available.
 
-Supported versions are the latest commit on `main` and the most recent tagged release. Older releases may receive security fixes when the impact warrants it.
+Supported version: the current `main` branch only.

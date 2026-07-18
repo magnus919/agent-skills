@@ -2,7 +2,6 @@
 
 import json
 import os
-import subprocess
 import sys
 from pathlib import Path
 
@@ -11,22 +10,8 @@ import yaml
 from agent_council.state import ProfileInfo
 
 
-# Path to the profiles submodule within the skill directory
+# Path to the locally available profiles library within the skill directory.
 PROFILES_DIR = Path(__file__).resolve().parent.parent.parent / "profiles" / "profiles"
-
-
-def _update_submodule() -> None:
-    """Pull the latest profiles from the hermes-profiles submodule."""
-    skill_root = PROFILES_DIR.parent  # agent-council/profiles/
-    try:
-        subprocess.run(
-            ["git", "submodule", "update", "--remote", "--init"],
-            cwd=skill_root.parent,  # agent-council/
-            capture_output=True,
-            timeout=30,
-        )
-    except Exception:
-        pass  # Non-fatal — use whatever version we have
 
 
 def _list_available() -> list[str]:
@@ -63,8 +48,7 @@ def _load_profile(name: str) -> ProfileInfo | None:
 
 
 def load_all() -> list[ProfileInfo]:
-    """Load all available profiles. Updates submodule first."""
-    _update_submodule()
+    """Load all locally available profiles."""
     profiles = []
     for name in _list_available():
         p = _load_profile(name)
@@ -75,7 +59,6 @@ def load_all() -> list[ProfileInfo]:
 
 def select_by_names(names: list[str]) -> list[ProfileInfo]:
     """Load specific profiles by name."""
-    _update_submodule()
     profiles = []
     for name in names:
         name = name.strip().lower()

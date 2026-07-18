@@ -33,7 +33,7 @@ The `SKILL.md` file must contain YAML frontmatter followed by Markdown content.
 | `compatibility` | No       | Max 500 characters. Indicates environment requirements (intended product, system packages, network access, etc.). |
 | `metadata`      | No       | Arbitrary key-value mapping for additional metadata.                                                              |
 | `allowed-tools` | No       | Space-separated string of pre-approved tools the skill may use. (Experimental)                                    |
-| `confirmation` | No | Boolean (default: false). Signals destructive or state-changing operations requiring explicit user confirmation. |
+
 
 <Card>
   **Minimal example:**
@@ -196,10 +196,6 @@ The optional `allowed-tools` field:
   allowed-tools: Bash(git:*) Bash(jq:*) Read
   ```
 </Card>
-
-#### `confirmation` field
-
-The optional `confirmation` field must be a boolean. When `true`, the agent must obtain explicit user confirmation before carrying out destructive or state-changing operations directed by the skill. This is a safety signal, not a permissions system. Most skills should omit it.
 
 ### Body content
 
