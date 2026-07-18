@@ -9,7 +9,7 @@ When your agent loads this skill, it can **navigate your home media server** wit
 - **See what's new** — recently added movies and TV episodes
 - **Search your library** — find any movie, show, or episode by keyword
 - **Browse libraries** — list all configured media libraries
-- **Check server health** — server name, version, uptime, user count
+- **Check server details** — server name, version, operating system, user count
 
 ## What You Get
 
@@ -21,8 +21,10 @@ When your agent loads this skill, it can **navigate your home media server** wit
 ## Quick Start
 
 ```bash
+scripts/jellyfin-cli --help
 export JELLYFIN_URL="http://your-server:8096"
 export JELLYFIN_API_KEY="your-api-key"
+export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent
 ```
 
 API key from Dashboard → API Keys in the Jellyfin admin panel.
@@ -33,4 +35,4 @@ Load this when asking about Jellyfin, media server content, recently added movie
 
 ## Requirements
 
-Python 3.8+ with `requests` library. Jellyfin server with API key.
+Python 3.8+ with `requests` library. Jellyfin server with API key; `recent` also requires a Jellyfin user ID.
