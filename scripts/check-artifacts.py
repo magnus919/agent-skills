@@ -70,7 +70,9 @@ def run_checks(files: list[Path]) -> list[str]:
     for directory in test_directories(files):
         relative = directory.relative_to(ROOT)
         result = unittest.TextTestRunner(verbosity=0).run(
-            unittest.defaultTestLoader.discover(str(directory))
+            unittest.defaultTestLoader.discover(
+                str(directory), top_level_dir=str(directory)
+            )
         )
         if not result.wasSuccessful():
             errors.append(
