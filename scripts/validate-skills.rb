@@ -77,6 +77,7 @@ skills.each do |skill|
   if data.key?("metadata") && (!data["metadata"].is_a?(Hash) || !data["metadata"].all? { |key, value| key.is_a?(String) && value.is_a?(String) })
     errors << "#{relative}: metadata must map strings to strings"
   end
+  errors << "#{relative}: metadata.hermes is client-specific and not allowed" if data.dig("metadata", "hermes")
   errors << "#{relative}: must stay under 500 lines" unless text.lines.length < 500
 
   root = File.dirname(skill)
