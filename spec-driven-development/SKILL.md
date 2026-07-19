@@ -11,9 +11,6 @@ compatibility: Tool-agnostic — methodology applies to any AI coding agent. Tem
 metadata:
   source: https://github.com/magnus919/agent-skills/spec-driven-development
   spec-version: 1.2.0
-  hermes: tags=["sdd", "specifications", "ai-code-generation", "software-factory",
-    "bdd", "gherkin", "quality-gates", "phase-gates"], related_skills=["sdd-authoring",
-    "sdd-review", "sdd-verification", "sdd-work-decomposition"]
 ---
 
 # Spec-Driven Development for AI Software Factories
