@@ -1,0 +1,864 @@
+{
+  "name": "magnus-agent-skills",
+  "owner": {
+    "name": "Magnus Hedemark"
+  },
+  "description": "AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems.",
+  "plugins": [
+    {
+      "name": "adr-authoring",
+      "source": "./",
+      "skills": [
+        "./adr-authoring"
+      ],
+      "strict": false,
+      "description": "Write, review, and maintain architecture decision records with clear context, alternatives, consequences, and lifecycle governance. Use when a consequential technical decision must remain understandable."
+    },
+    {
+      "name": "agent-council",
+      "source": "./",
+      "skills": [
+        "./agent-council"
+      ],
+      "strict": false,
+      "description": "Multi-agent structured debate system. Spawn a panel of expert agents to debate any question, with convergence-aware iteration and typed synthesis output. Run via `agent-council` CLI. Compatible with any AI agent harness that supports agentskills.io skills (Claude Code, Cursor, Hermes Agent, OpenHands, etc.)."
+    },
+    {
+      "name": "agent-evals-and-observability",
+      "source": "./",
+      "skills": [
+        "./agent-evals-and-observability"
+      ],
+      "strict": false,
+      "description": "Design, run, review, or release framework- and vendor-neutral evaluations and observability for AI agents. Use when defining agent evals, datasets, graders, trajectory review, regression analysis, release gates, production traces, or privacy-aware telemetry. Covers task and trajectory contracts, statistical comparisons, and incident-to-case learning; route framework implementation to pydanticai or langgraph when needed."
+    },
+    {
+      "name": "agent-skills",
+      "source": "./",
+      "skills": [
+        "./agent-skills"
+      ],
+      "strict": false,
+      "description": "Reference for the Agent Skills open format — the directory structure, SKILL.md frontmatter schema, naming conventions, progressive disclosure model, and best practices for creating skills. Use this whenever creating, reviewing, or editing skills in this repository to ensure they follow the standard spec."
+    },
+    {
+      "name": "api-design-and-evolution",
+      "source": "./",
+      "skills": [
+        "./api-design-and-evolution"
+      ],
+      "strict": false,
+      "description": "Design, document, review, and evolve consumer-facing APIs and event interfaces. Use when choosing REST/HTTP, GraphQL, RPC, events, webhooks, or streaming; writing OpenAPI or AsyncAPI contracts; defining schemas, pagination, mutations, errors, idempotency, or API compatibility; or planning API versioning, deprecation, and migration. Use secure-software-engineering for a full security lifecycle, ADR authoring for durable architecture decisions, and spec-driven-development for a delivery specification and implementation gates."
+    },
+    {
+      "name": "artifact-pyramids",
+      "source": "./",
+      "skills": [
+        "./artifact-pyramids"
+      ],
+      "strict": false,
+      "description": "Organize durable agent research outputs as summaries, analysis, and evidence dossiers. Use when producing multi-layer research artifacts or coordinating research handoffs."
+    },
+    {
+      "name": "autogen",
+      "source": "./",
+      "skills": [
+        "./autogen"
+      ],
+      "strict": false,
+      "description": "Expert skill for conversational multi-agent AI with Microsoft AutoGen. AssistantAgent, UserProxyAgent, GroupChat, code execution, nested chats, cancellation tokens, tool integration, and MCP support. Use when building conversation-driven multi-agent systems or comparing agent frameworks."
+    },
+    {
+      "name": "backend-engineering",
+      "source": "./",
+      "skills": [
+        "./backend-engineering"
+      ],
+      "strict": false,
+      "description": "Backend engineering methodology — API implementation patterns (REST, gRPC, GraphQL), service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic."
+    },
+    {
+      "name": "brand-designer",
+      "source": "./",
+      "skills": [
+        "./brand-designer"
+      ],
+      "strict": false,
+      "description": "Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Use when you need to capture a brand's identity in structured, durable form — for vault storage, agency handoff, or press kit distribution."
+    },
+    {
+      "name": "c4-diagramming",
+      "source": "./",
+      "skills": [
+        "./c4-diagramming"
+      ],
+      "strict": false,
+      "description": "Create C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need clear system context, container, component, or code-level views."
+    },
+    {
+      "name": "chief-of-staff-methodology",
+      "source": "./",
+      "skills": [
+        "./chief-of-staff-methodology"
+      ],
+      "strict": false,
+      "description": "Prepare accountable executive decisions, information triage, briefing, calendar choices, organizational sensing, and institutional memory without assuming authority or monitoring people. Use when a chief of staff or CoS, executive office, gatekeeping, decision memo, executive briefing, board materials, organizational sensing, team health, institutional memory, calendar triage, meeting audit, strategic time, or attention allocation is requested."
+    },
+    {
+      "name": "cli-builder",
+      "source": "./",
+      "skills": [
+        "./cli-builder"
+      ],
+      "strict": false,
+      "description": "Build or refactor CLI tools designed for AI agent consumption: non-interactive, flag-driven, idempotent, with --json output and --dry-run preview. Use when creating a new script the agent will call, adding agent-friendly flags to an existing tool, or debugging why an agent keeps failing to use your CLI."
+    },
+    {
+      "name": "color-management",
+      "source": "./",
+      "skills": [
+        "./color-management"
+      ],
+      "strict": false,
+      "description": "Expert-level color management for ICC profiles, working spaces, gamut mapping, and color science. Use when inspecting ICC profiles, converting between color spaces, checking gamut clipping, validating well-behaved working spaces, or troubleshooting color workflow issues with ImageMagick, ArgyllCMS, Exiftool, or LittleCMS."
+    },
+    {
+      "name": "confluence-cli",
+      "source": "./",
+      "skills": [
+        "./confluence-cli"
+      ],
+      "strict": false,
+      "description": "Interact with Atlassian Confluence from the terminal: list spaces, browse pages, view page content, search with CQL, and create pages. Use when the user mentions Confluence, a space key (e.g. DEV), or asks about documentation, wiki pages, space content, or knowledge base articles."
+    },
+    {
+      "name": "crewai",
+      "source": "./",
+      "skills": [
+        "./crewai"
+      ],
+      "strict": false,
+      "description": "Expert skill for role-based multi-agent orchestration with CrewAI. Agents with Role/Goal/Backstory, task design, crew composition (sequential or hierarchical), tool integration, callbacks, and production deployment. Use when orchestrating multi-agent teams or comparing agent frameworks."
+    },
+    {
+      "name": "crowdsec",
+      "source": "./",
+      "skills": [
+        "./crowdsec"
+      ],
+      "strict": false,
+      "description": "Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF. Covers Security Engine setup (Linux, Docker), cscli hub management, remediation components, AppSec WAF, profiles, notifications, blocklists, CTI, and metrics. Use when setting up or troubleshooting CrowdSec."
+    },
+    {
+      "name": "daily-life-discovery",
+      "source": "./",
+      "skills": [
+        "./daily-life-discovery"
+      ],
+      "strict": false,
+      "description": "Guide a consent-based conversation that helps a person discover how an AI agent could improve their day-to-day life: routines, friction, attention, decisions, relationships, learning, and small experiments. Use when someone asks for a daily check-in, wants the agent to learn how they work, says \"grill me,\" wants a conversational journal, or asks what an AI could help with. Do not use for therapy, diagnosis, crisis support, covert monitoring, or product requirements interviews."
+    },
+    {
+      "name": "data-architect",
+      "source": "./",
+      "skills": [
+        "./data-architect"
+      ],
+      "strict": false,
+      "description": "A virtual data architect for teams who don't have one. If your data pipelines are growing faster than your team, nobody agrees on what 'customer' means, your cloud bill is climbing without clear reason, or you're about to choose a data platform and need someone who's seen this before — load this skill. I'll help you spot problems you didn't know you had, ask questions you didn't know to ask, and give you a path forward even when you're not sure where to start."
+    },
+    {
+      "name": "data-engineering",
+      "source": "./",
+      "skills": [
+        "./data-engineering"
+      ],
+      "strict": false,
+      "description": "Data engineering methodology — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Grounded in operational patterns for production data systems."
+    },
+    {
+      "name": "data-scientist",
+      "source": "./",
+      "skills": [
+        "./data-scientist"
+      ],
+      "strict": false,
+      "description": "PhD-level expertise in data science, statistics, and machine learning. Use when the task requires rigorous statistical analysis, experimental design, causal inference, advanced modeling, research methodology, or data science project leadership. Load when the user asks about statistical methods, experimental design, model selection, A/B testing, hypothesis testing, power analysis, regression, causality, Bayesian analysis, or research methodology."
+    },
+    {
+      "name": "de-spin",
+      "source": "./",
+      "skills": [
+        "./de-spin"
+      ],
+      "strict": false,
+      "description": "Use when someone asks what is true, false, misleading, unsupported, unknown, or genuinely complicated in a persuasive message, article, pitch, advertisement, policy claim, or viral post. Analyze propaganda, spin, selective framing, urgency, social proof, deceptive marketing, and AI-generated persuasion by tracing claims to evidence and separating literal truth from implied conclusions. Do not use to read deception from demeanor, adjudicate intent, or replace broad domain research."
+    },
+    {
+      "name": "docker-compose",
+      "source": "./",
+      "skills": [
+        "./docker-compose"
+      ],
+      "strict": false,
+      "description": "Use Docker Compose to define, run, debug, and harden multi-container applications. Load for compose.yaml design, networking, volumes, secrets, profiles, overrides, watch mode, lifecycle operations, or troubleshooting."
+    },
+    {
+      "name": "dspy",
+      "source": "./",
+      "skills": [
+        "./dspy"
+      ],
+      "strict": false,
+      "description": "Expert skill for programming—not prompting—language models with Stanford's DSPy framework. Signatures, modules (Predict, ChainOfThought, ReAct), optimizer/teleprompter selection, compilation, caching, evaluation. Use when doing programmatic prompt optimization or building compiled prompt programs."
+    },
+    {
+      "name": "epub",
+      "source": "./",
+      "skills": [
+        "./epub"
+      ],
+      "strict": false,
+      "description": "EPUB file format expert — read, write, and edit EPUB2/EPUB3 ebooks. Extract text, metadata, structure, and knowledge from EPUB files for enrichment or memory. Create valid EPUBs from scratch. Validate against the EPUB specification. Use when the user mentions epub, ebook, EPUB file, ebook format, read epub, write epub, create ebook, extract from epub, epub to text, or ebook structure."
+    },
+    {
+      "name": "esp32-development",
+      "source": "./",
+      "skills": [
+        "./esp32-development"
+      ],
+      "strict": false,
+      "description": "Build, configure, flash, test, debug, and recover firmware for ESP32-family boards, including ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Use when identifying an ESP32 board, choosing a framework, wiring GPIO or peripheral buses, integrating sensors or actuators, diagnosing serial/boot/power/network failures, or planning OTA and production security. Do not use as a substitute for the exact board schematic, SoC datasheet, or attached component datasheet."
+    },
+    {
+      "name": "financial-modeling",
+      "source": "./",
+      "skills": [
+        "./financial-modeling"
+      ],
+      "strict": false,
+      "description": "Build and review assumptions-led financial models, unit economics, pricing, fundraising scenarios, and SaaS operating metrics. Use when calculating CAC, LTV, payback, runway, ARR, churn, NDR, Rule of 40, or sales efficiency; when modeling revenue, costs, cash flow, pricing, cap tables, or financing."
+    },
+    {
+      "name": "fireflies",
+      "source": "./",
+      "skills": [
+        "./fireflies"
+      ],
+      "strict": false,
+      "description": "Query Fireflies.ai meeting transcripts, meeting notes, summaries, contacts, channels, AI meeting analytics, AskFred, audio uploads, and webhook signatures through its GraphQL API. Use when a user mentions Fireflies, Fireflies.ai, meeting transcripts or notes stored in Fireflies, AskFred, or Fireflies webhooks. Do not use for local audio transcription, calendar management, or meetings that are not Fireflies data."
+    },
+    {
+      "name": "flaresolverr",
+      "source": "./",
+      "skills": [
+        "./flaresolverr"
+      ],
+      "strict": false,
+      "description": "Use the minimal FlareSolverr wrapper for a one-off health check or browser-backed GET/POST when ordinary retrieval is blocked by Cloudflare or DDoS-GUARD. Choose flaresolverr-cli instead for named session lifecycle, cookie-only returns, dry-run planning, or the full operational command surface."
+    },
+    {
+      "name": "flaresolverr-cli",
+      "source": "./",
+      "skills": [
+        "./flaresolverr-cli"
+      ],
+      "strict": false,
+      "description": "Use a small FlareSolverr JSON CLI for browser-backed GET and POST requests, readiness checks, and session lifecycle management when a site requires Cloudflare or DDoS-GUARD challenge handling."
+    },
+    {
+      "name": "forgejo-cli",
+      "source": "./",
+      "skills": [
+        "./forgejo-cli"
+      ],
+      "strict": false,
+      "description": "Use when managing a Forgejo or Gitea server from the terminal: issues, pull requests, repositories, file contents, labels, milestones, releases, webhooks, user settings, or any /api/v1 endpoint through a safe generic API command."
+    },
+    {
+      "name": "frontend-engineering",
+      "source": "./",
+      "skills": [
+        "./frontend-engineering"
+      ],
+      "strict": false,
+      "description": "Frontend engineering methodology — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation."
+    },
+    {
+      "name": "ghost-cli",
+      "source": "./",
+      "skills": [
+        "./ghost-cli"
+      ],
+      "strict": false,
+      "description": "Manage Ghost CMS content from the terminal — create and list posts, pages, and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration."
+    },
+    {
+      "name": "github-runner",
+      "source": "./",
+      "skills": [
+        "./github-runner"
+      ],
+      "strict": false,
+      "description": "Deploy, manage, and troubleshoot self-hosted GitHub Actions runners. Covers systemd service, Docker containers, Kubernetes (Actions Runner Controller), and the Scale Set Client. Use when setting up a CI runner, debugging registration failures, designing autoscaling, or hardening runner security."
+    },
+    {
+      "name": "go-to-market",
+      "source": "./",
+      "skills": [
+        "./go-to-market"
+      ],
+      "strict": false,
+      "description": "CMO methodology — positioning and messaging frameworks (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), competitive response (pricing wars, feature races, brand defense)."
+    },
+    {
+      "name": "gutenberg",
+      "source": "./",
+      "skills": [
+        "./gutenberg"
+      ],
+      "strict": false,
+      "description": "Search, download, and extract public-domain books from Project Gutenberg. Look up books by ID or keyword via gutendex, download plain-text and EPUB editions, strip licensing boilerplate, extract clean text from EPUB for illustrated works, and classify fiction vs non-fiction. Ships a portable CLI script with zero external dependencies. Use when the user says \"gutenberg\", \"public domain\", \"download a book\", \"classic literature\", \"free ebook\", \"gutenberg.org\", or names any public-domain title or author."
+    },
+    {
+      "name": "haystack",
+      "source": "./",
+      "skills": [
+        "./haystack"
+      ],
+      "strict": false,
+      "description": "Expert skill for production search and NLP pipelines with Haystack (deepset). Pipeline DAG composition, document stores, retrievers, PromptBuilder (Jinja2), generators, evaluation, Hayhooks deployment. Use when building search pipelines or comparing NLP application frameworks."
+    },
+    {
+      "name": "hugo-theme",
+      "source": "./",
+      "skills": [
+        "./hugo-theme"
+      ],
+      "strict": false,
+      "description": "Build, customize, and debug advanced Hugo CMS themes — template architecture, asset pipeline (CSS/JS/image processing), shortcodes and render hooks, page bundles, cover images, Hugo Modules, performance, SEO, and CI/CD. Use when working on a Hugo theme or site template layer."
+    },
+    {
+      "name": "jellyfin-cli",
+      "source": "./",
+      "skills": [
+        "./jellyfin-cli"
+      ],
+      "strict": false,
+      "description": "Query your Jellyfin media server from the terminal — recently added media, search, item details, next-up episodes, library browsing, server info, and stats. Use when the user asks about Jellyfin, media server, movies, TV shows, next episodes, or their media library."
+    },
+    {
+      "name": "jira-cli",
+      "source": "./",
+      "skills": [
+        "./jira-cli"
+      ],
+      "strict": false,
+      "description": "Interact with Atlassian Jira from the terminal: search issues, view details, create issues, add comments, list projects, and transition status. Use when the user mentions Jira, a ticket key (e.g. PROJ-123), or asks about issues, bugs, tasks, projects, or sprint work."
+    },
+    {
+      "name": "jira-jql",
+      "source": "./",
+      "skills": [
+        "./jira-jql"
+      ],
+      "strict": false,
+      "description": "Expert-level skill for Jira Query Language (JQL). Use when the user asks about writing, debugging, optimizing, or understanding JQL queries; needs to filter Jira issues by complex criteria, date ranges, history, or cross-project conditions; wants to build saved filters, dashboard gadgets, or automation rules; or needs guidance on JQL performance, functions, operators, history operators (WAS/CHANGED), relative dates, role-based query patterns, or the JQL REST API."
+    },
+    {
+      "name": "kanban-guru",
+      "source": "./",
+      "skills": [
+        "./kanban-guru"
+      ],
+      "strict": false,
+      "description": "A virtual Kanban expert who can diagnose flow problems, design board configurations, set up multi-portfolio operating models, calibrate WIP limits, establish service level expectations, and guide Scrum-to-Kanban transitions. Load this when your team is struggling with throughput, cycle times are unpredictable, multiple stakeholders compete for the same engineers, or you're wondering if Kanban is right for you."
+    },
+    {
+      "name": "kubernetes",
+      "source": "./",
+      "skills": [
+        "./kubernetes"
+      ],
+      "strict": false,
+      "description": "Operate, troubleshoot, secure, upgrade, and automate Kubernetes clusters and workloads safely across upstream Kubernetes, k3s, RKE2, MicroK8s, k0s, Talos, OpenShift/OKD, kind, Minikube, Rancher-managed clusters, EKS, AKS, and GKE. Use when a task involves kubectl, Kubernetes APIs, Pods, Deployments, StatefulSets, Services, Ingress or Gateway API, CRDs, RBAC, NetworkPolicy, storage, scheduling, autoscaling, cluster lifecycle, or the bundled agent-first k8s-cli."
+    },
+    {
+      "name": "langchain",
+      "source": "./",
+      "skills": [
+        "./langchain"
+      ],
+      "strict": false,
+      "description": "Expert skill for building LLM applications with LangChain — LCEL chains, RAG pipelines, agent orchestration, LangGraph integration, LangSmith observability, and production deployment via LangServe. Use when working with LangChain or comparing LLM application frameworks."
+    },
+    {
+      "name": "langgraph",
+      "source": "./",
+      "skills": [
+        "./langgraph"
+      ],
+      "strict": false,
+      "description": "Build multi-agent AI systems with LangGraph — the low-level orchestration framework for stateful, graph-based agent workflows. Covers supervisor, swarm, and hierarchical multi-agent patterns; subgraph composition; state management (checkpointers/stores); persistence; evals; and production debugging. Reach for this when designing agent architectures that need cycles, conditional branching, parallel execution, or human-in-the-loop patterns."
+    },
+    {
+      "name": "lastfm",
+      "source": "./",
+      "skills": [
+        "./lastfm"
+      ],
+      "strict": false,
+      "description": "Interact with the Last.fm music data API: lookup user listening history, get artist/album/track metadata, discover similar music via collaborative filtering, explore global and per-country charts, search by artist/album/track, manage tags, and scrobble listening events. Use when the user asks about music data, listening statistics, music recommendations, similar artists, charts, or wants to scrobble or love tracks."
+    },
+    {
+      "name": "legal-strategy",
+      "source": "./",
+      "skills": [
+        "./legal-strategy"
+      ],
+      "strict": false,
+      "description": "CLO/General Counsel methodology — regulatory landscape analysis (GDPR, CCPA, AI Act, sector-specific), IP strategy (patent, trademark, trade secret, open source licensing), contract risk assessment (indemnification, liability caps, force majeure), data privacy frameworks (privacy-by-design, DPIAs, data mapping), corporate governance (board responsibilities, fiduciary duties, shareholder rights), employment law (classification, IP assignment, non-competes)."
+    },
+    {
+      "name": "linear",
+      "source": "./",
+      "skills": [
+        "./linear"
+      ],
+      "strict": false,
+      "description": "Manage Linear teams, projects, cycles, issues, comments, workflow state, and documents from a terminal through Linear's public GraphQL API. Use when a user asks to list, search, inspect, create, update, move, or comment on Linear work, or to find Linear documents. Do not use to embed a live agent inside Linear or to build an MCP integration."
+    },
+    {
+      "name": "llamaindex",
+      "source": "./",
+      "skills": [
+        "./llamaindex"
+      ],
+      "strict": false,
+      "description": "Expert skill for building LLM applications with the LlamaIndex framework — RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge graph construction, production deployment, and evaluation. Use when working with LlamaIndex or comparing RAG and agent orchestration frameworks."
+    },
+    {
+      "name": "mermaid-diagrams",
+      "source": "./",
+      "skills": [
+        "./mermaid-diagrams"
+      ],
+      "strict": false,
+      "description": "Author, render, and troubleshoot Mermaid diagrams for documentation, architecture, processes, and technical communication. Use when a text-based diagram needs to stay versionable."
+    },
+    {
+      "name": "meshcore-packet-capture",
+      "source": "./",
+      "skills": [
+        "./meshcore-packet-capture"
+      ],
+      "strict": false,
+      "description": "Capture MeshCore Companion packets via BLE, serial, or TCP."
+    },
+    {
+      "name": "ml-engineering",
+      "source": "./",
+      "skills": [
+        "./ml-engineering"
+      ],
+      "strict": false,
+      "description": "Machine learning engineering methodology — model training, fine-tuning (LoRA/QLoRA), evaluation, quantization, deployment, and MLOps pipeline design. Grounded in practical engineering patterns for production ML systems."
+    },
+    {
+      "name": "nous-branding",
+      "source": "./",
+      "skills": [
+        "./nous-branding"
+      ],
+      "strict": false,
+      "description": "Generate images and content consistent with the Nous Research brand identity. Use when creating visuals in the Nous / Theia / Hermes ecosystem: a \"cyber-classical\" style blending neo-classical statuary, cyberpunk/industrial grunge, and retro anime illustration. Covers official brand color palette, typography (Inter/IBM Plex Sans, JetBrains Mono, heavy distressed display faces), the Nous Girl mascot, texture system, and image prompt construction. Ships reference images for palette, mascot, and brand collage that can be used as img2img inputs."
+    },
+    {
+      "name": "open-knowledge-format",
+      "source": "./",
+      "skills": [
+        "./open-knowledge-format"
+      ],
+      "strict": false,
+      "description": "Google's Open Knowledge Format (OKF) v0.1 — an open, vendor-neutral spec for representing knowledge as markdown files with YAML frontmatter, designed for AI agent consumption. Use when the user mentions OKF, Open Knowledge Format, Google's knowledge format, LLM wiki bundles, agent knowledge packs, creating OKF bundles, validating OKF documents, or converting knowledge into the OKF standard."
+    },
+    {
+      "name": "openlibrary-cli",
+      "source": "./",
+      "skills": [
+        "./openlibrary-cli"
+      ],
+      "strict": false,
+      "description": "Search books, authors, and works on Open Library from the terminal. Look up books by ISBN, search titles and authors, and fetch detailed work/author records via the public Open Library API. No API key required."
+    },
+    {
+      "name": "opensource-contributions",
+      "source": "./",
+      "skills": [
+        "./opensource-contributions"
+      ],
+      "strict": false,
+      "description": "Make good open source contributions — check CONTRIBUTING.md first, follow project norms, be a good citizen. Covers bug reports, feature requests, and pull requests with a defensible default posture when the project hasn't documented expectations."
+    },
+    {
+      "name": "operational-design",
+      "source": "./",
+      "skills": [
+        "./operational-design"
+      ],
+      "strict": false,
+      "description": "COO methodology for process design, organizational scaling, operational metrics, compliance and audit, vendor management, and team topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10 to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness, RFP processes, SLA design, vendor scorecards, team topologies, Conway's Law, and Dunbar's Number."
+    },
+    {
+      "name": "org-design",
+      "source": "./",
+      "skills": [
+        "./org-design"
+      ],
+      "strict": false,
+      "description": "CHRO methodology — organizational design (team topologies, span of control, reporting structures), talent strategy (make-vs-buy, skill taxonomies, succession planning), compensation frameworks (market benchmarking, equity design, leveling), culture architecture (values codification, rituals, psychological safety), organizational health metrics (eNPS, retention risk, engagement surveys), DEI strategy (inclusive design, equitable systems, belonging)."
+    },
+    {
+      "name": "peertube",
+      "source": "./",
+      "skills": [
+        "./peertube"
+      ],
+      "strict": false,
+      "description": "Browse PeerTube federated video from the terminal: view videos and channels, search across instances, check server stats, and manage your account. Uses OAuth2 authentication with token persistence. Use when the user mentions PeerTube, federated video, decentralized video platforms, or browsing/uploading to a PeerTube instance."
+    },
+    {
+      "name": "platform-engineering",
+      "source": "./",
+      "skills": [
+        "./platform-engineering"
+      ],
+      "strict": false,
+      "description": "Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms."
+    },
+    {
+      "name": "product-design-and-ux",
+      "source": "./",
+      "skills": [
+        "./product-design-and-ux"
+      ],
+      "strict": false,
+      "description": "Define user-facing product behavior from validated evidence and approved scope. Use for information architecture, task flows, state and recovery models, interface contracts, usability-study plans, interaction-pattern tradeoffs, or engineering UX handoffs. Use after product discovery and product decisions; route WCAG/ARIA conformance work to web-accessibility and formal software specifications to spec-driven-development."
+    },
+    {
+      "name": "product-discovery",
+      "source": "./",
+      "skills": [
+        "./product-discovery"
+      ],
+      "strict": false,
+      "description": "Discover product requirements from human stakeholders — map who to talk to, ask questions that surface hidden assumptions, detect gaps in real time, resolve conflicts, and translate conversations into structured SDD specs. Phase 0 upstream of Spec-Driven Development."
+    },
+    {
+      "name": "product-methodology",
+      "source": "./",
+      "skills": [
+        "./product-methodology"
+      ],
+      "strict": false,
+      "description": "Product management frameworks for translating validated evidence into prioritized backlogs, decisions, specifications, and stakeholder communications. Covers RICE, MoSCoW, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication."
+    },
+    {
+      "name": "product-strategy",
+      "source": "./",
+      "skills": [
+        "./product-strategy"
+      ],
+      "strict": false,
+      "description": "CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management."
+    },
+    {
+      "name": "pydanticai",
+      "source": "./",
+      "skills": [
+        "./pydanticai"
+      ],
+      "strict": false,
+      "description": "Build type-safe AI agents and graph-based workflows with PydanticAI and PydanticGraph. Agent creation, function tools, capabilities, dependency injection, structured output, streaming, multi-agent patterns, testing, evals, and graph state machines. Use whenever you are building agents, tool-using LLM workflows, or graph-based state machines in Python."
+    },
+    {
+      "name": "qa-methodology",
+      "source": "./",
+      "skills": [
+        "./qa-methodology"
+      ],
+      "strict": false,
+      "description": "Quality assurance methodology — test strategy design, test automation patterns, regression testing, CI quality gates, test data management, and quality metrics. Grounded in practical patterns for teams that want confident shipping."
+    },
+    {
+      "name": "raleigh",
+      "source": "./",
+      "skills": [
+        "./raleigh"
+      ],
+      "strict": false,
+      "description": "Query, search, and download public datasets from the City of Raleigh Open Data portal. Use this whenever someone wants to explore city data — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, or any of 200+ public datasets."
+    },
+    {
+      "name": "remote-systems-administration",
+      "source": "./",
+      "skills": [
+        "./remote-systems-administration"
+      ],
+      "strict": false,
+      "description": "Administer and troubleshoot remote Linux, FreeBSD, NetBSD, OpenBSD, and macOS systems safely, one host or a fleet at a time. Use when a task requires SSH, Ansible, Paramiko, POSIX diagnostics, service management, software updates, system configuration, firewall changes, or evidence-led remote operations."
+    },
+    {
+      "name": "research-and-vault",
+      "source": "./",
+      "skills": [
+        "./research-and-vault"
+      ],
+      "strict": false,
+      "description": "Chain web research, atomic extraction, and durable knowledge capture into a repeatable workflow when the same research-to-notes sequence is needed."
+    },
+    {
+      "name": "research-methodology",
+      "source": "./",
+      "skills": [
+        "./research-methodology"
+      ],
+      "strict": false,
+      "description": "Plan, conduct, evaluate, and synthesize rigorous research. Use for journalistic, industry, or technical investigations that need credible evidence and a traceable method."
+    },
+    {
+      "name": "restic",
+      "source": "./",
+      "skills": [
+        "./restic"
+      ],
+      "strict": false,
+      "description": "Install, configure, operate, secure, automate, tune, troubleshoot, and recover restic backups across local, SFTP, S3-compatible, cloud, and REST backends. Use when creating or managing a restic repository, designing backup or retention policy, validating restores, handling repository health or locks, moving repositories, or building safe scheduled backup jobs. Do not use for a generic file-copy task that does not need encrypted, deduplicated snapshots."
+    },
+    {
+      "name": "secure-software-engineering",
+      "source": "./",
+      "skills": [
+        "./secure-software-engineering"
+      ],
+      "strict": false,
+      "description": "Use when designing or implementing software securely: define security requirements, threat-model a feature, choose secure defaults, design authentication and authorization, handle untrusted data and secrets, evaluate dependencies, or review security-sensitive changes. Use for prevention during requirements, design, implementation, and review; not for post-build security assessments or scanning an existing codebase."
+    },
+    {
+      "name": "security-audit-methodology",
+      "source": "./",
+      "skills": [
+        "./security-audit-methodology"
+      ],
+      "strict": false,
+      "description": "Plan authorized security reviews with threat modeling, architecture and dependency audits, and vulnerability classification. Use for scoped defensive security assessment."
+    },
+    {
+      "name": "seo-audit",
+      "source": "./",
+      "skills": [
+        "./seo-audit"
+      ],
+      "strict": false,
+      "description": "Audit websites and pages for technical SEO, on-page SEO, schema markup, content discoverability, and answer-engine readiness. Use when prioritizing search visibility improvements."
+    },
+    {
+      "name": "site-reliability-engineering",
+      "source": "./",
+      "skills": [
+        "./site-reliability-engineering"
+      ],
+      "strict": false,
+      "description": "Design, operate, and improve reliable production systems with SLOs, incident command, observability, error budgets, and operational practices."
+    },
+    {
+      "name": "software-architecture-analysis",
+      "source": "./",
+      "skills": [
+        "./software-architecture-analysis"
+      ],
+      "strict": false,
+      "description": "Reverse-engineer a software codebase to understand architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan that re-imagines the system under new constraints (local-first, privacy-first, self-hosted). Use when you need to understand how a system works from its source code or produce a specification without copying implementation details."
+    },
+    {
+      "name": "spec-driven-development",
+      "source": "./",
+      "skills": [
+        "./spec-driven-development"
+      ],
+      "strict": false,
+      "description": "Spec-Driven Development (SDD) methodology for AI software factories — where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each pipeline phase. Use when designing a spec → review → decompose → implement → verify pipeline that any AI coding tool (Claude Code, Cursor, Hermes Agent, Devin, OpenHands) can follow."
+    },
+    {
+      "name": "strategy-frameworks",
+      "source": "./",
+      "skills": [
+        "./strategy-frameworks"
+      ],
+      "strict": false,
+      "description": "Structure organizational strategy work: strategic direction, competitive and industry analysis, growth options, capital allocation, acquisitions, and portfolio choices. Use when framing consequential choices about where to compete, how to pursue an opportunity, or how to compare strategic options."
+    },
+    {
+      "name": "supabase",
+      "source": "./",
+      "skills": [
+        "./supabase"
+      ],
+      "strict": false,
+      "description": "Use this skill when developing applications with Supabase, running the Supabase CLI, designing migrations and RLS policies, testing database behavior, generating client types, deploying the official self-hosted Docker stack, or administering its Postgres, Auth, Storage, Realtime, Functions, API gateway, backups, upgrades, and security. Use it for managed and self-hosted projects. Do not use it for generic PostgreSQL work with no Supabase services or conventions."
+    },
+    {
+      "name": "systematic-debugging",
+      "source": "./",
+      "skills": [
+        "./systematic-debugging"
+      ],
+      "strict": false,
+      "description": "4-phase root cause debugging protocol: understand bugs before fixing. Use for ANY technical issue — test failures, production bugs, unexpected behavior, performance problems, build failures, or integration issues. ESPECIALLY when under time pressure, when \"one quick fix\" seems obvious, or when previous fix attempts have failed."
+    },
+    {
+      "name": "tailscale",
+      "source": "./",
+      "skills": [
+        "./tailscale"
+      ],
+      "strict": false,
+      "description": "Self-hosted Tailscale/Headscale ecosystem: deploy and manage a Headscale control server, configure tailscale clients, manage ACL policies, node lifecycle, subnet routing, DERP relays, and backup/migration. Use when the user mentions Tailscale, Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure."
+    },
+    {
+      "name": "technical-documentation",
+      "source": "./",
+      "skills": [
+        "./technical-documentation"
+      ],
+      "strict": false,
+      "description": "Create and review technical documentation, including READMEs, agent-facing instructions, API references, and CLI help. Use when documentation must help someone complete real work."
+    },
+    {
+      "name": "technology-radar",
+      "source": "./",
+      "skills": [
+        "./technology-radar"
+      ],
+      "strict": false,
+      "description": "Build and maintain technology radars for adoption, trial, assessment, and hold decisions. Use when governing technology choices, build-versus-buy decisions, or engineering portfolio risk."
+    },
+    {
+      "name": "tempest-cli",
+      "source": "./",
+      "skills": [
+        "./tempest-cli"
+      ],
+      "strict": false,
+      "description": "Query hyper-local weather from a WeatherFlow Tempest station: current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. Use when the user asks about the weather, temperature, rain, wind, humidity, forecast, or wants conditions from their own station rather than a generic weather service."
+    },
+    {
+      "name": "three",
+      "source": "./",
+      "skills": [
+        "./three"
+      ],
+      "strict": false,
+      "description": "Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations with a small vanilla JavaScript starting point."
+    },
+    {
+      "name": "tmdb-cli",
+      "source": "./",
+      "skills": [
+        "./tmdb-cli"
+      ],
+      "strict": false,
+      "description": "Search and discover movies, TV shows, and trending content via The Movie Database (TMDb) API v3. Use when the user asks about movies, TV, film, cinema, genres, certifications, ratings, cast, upcoming releases, or trending media."
+    },
+    {
+      "name": "traefik",
+      "source": "./",
+      "skills": [
+        "./traefik"
+      ],
+      "strict": false,
+      "description": "Deploy, configure, and troubleshoot Traefik v3 reverse proxy — covers all providers, routing, TLS/ACME, middlewares, and production patterns with YAML examples. Load when setting up or debugging a Traefik instance."
+    },
+    {
+      "name": "trakt",
+      "source": "./",
+      "skills": [
+        "./trakt"
+      ],
+      "strict": false,
+      "description": "Discover trending, anticipated, and popular movies and TV shows via the Trakt.tv API from the terminal. No authentication required for read-only discovery. Use when the user asks about what to watch, trending movies, popular shows, or media discovery."
+    },
+    {
+      "name": "transistor",
+      "source": "./",
+      "skills": [
+        "./transistor"
+      ],
+      "strict": false,
+      "description": "Manage Transistor.fm podcast hosting from the terminal: view shows, list episodes, check analytics, and get subscriber counts. Use when the user mentions Transistor, podcast hosting, podcast analytics, show management, or episode tracking."
+    },
+    {
+      "name": "vercel-eve",
+      "source": "./",
+      "skills": [
+        "./vercel-eve"
+      ],
+      "strict": false,
+      "description": "Build, develop, deploy, self-host, secure, and troubleshoot durable backend AI agents with Vercel Eve. Use when creating an Eve agent, adding tools, skills, subagents, channels, schedules, sandboxing, durable sessions, observability, or deploying Eve on Vercel or a Node host. Do not use for the separate Vercel AI SDK Agent APIs such as ToolLoopAgent or WorkflowAgent; use an AI SDK-specific skill for those."
+    },
+    {
+      "name": "verification-methodology",
+      "source": "./",
+      "skills": [
+        "./verification-methodology"
+      ],
+      "strict": false,
+      "description": "Verify work against explicit criteria using evidence, reproducible checks, and clear pass, conditional, or blocked verdicts. Use before declaring an artifact, implementation, or claim complete."
+    },
+    {
+      "name": "web-accessibility",
+      "source": "./",
+      "skills": [
+        "./web-accessibility"
+      ],
+      "strict": false,
+      "description": "Design, build, and review accessible web interfaces with native semantics, keyboard and focus behavior, forms and recovery, responsive input, motion, assistive-technology testing, and WCAG 2.2-informed evidence. Use for a11y, WCAG, ARIA, screen-reader, keyboard, focus, dialog, form, widget, or accessibility review work across frameworks."
+    },
+    {
+      "name": "woodpecker-ci",
+      "source": "./",
+      "skills": [
+        "./woodpecker-ci"
+      ],
+      "strict": false,
+      "description": "Operate Woodpecker CI from installation through production troubleshooting: configure servers and agents, connect Forgejo/Gitea or another forge, write and validate pipelines, manage secrets and plugins, use Docker or Kubernetes backends, run the CLI, and diagnose failed builds. Use when setting up, administering, or debugging Woodpecker CI."
+    },
+    {
+      "name": "workflow-architect",
+      "source": "./",
+      "skills": [
+        "./workflow-architect"
+      ],
+      "strict": false,
+      "description": "Discover your actual workflow through conversation or observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Use when you want to understand your own process, formalize it, or share it with collaborators. Also use when a session feels aimless — this skill gives it structure."
+    },
+    {
+      "name": "yc-default-alive-calculator",
+      "source": "./",
+      "skills": [
+        "./yc-default-alive-calculator"
+      ],
+      "strict": false,
+      "description": "Evaluate whether a startup is on a trajectory to profitability before running out of cash — Paul Graham's \"Default Alive / Default Dead\" framework. Takes revenue, burn rate, cash on hand, and growth rate; computes runway, burn multiple, and months to breakeven. Ships a deterministic CLI calculator. Load when founders ask about runway, burn rate, default alive, whether they need to raise money, or financial sustainability analysis."
+    },
+    {
+      "name": "yc-weekly-growth-compass",
+      "source": "./",
+      "skills": [
+        "./yc-weekly-growth-compass"
+      ],
+      "strict": false,
+      "description": "Paul Graham's \"Startup = Growth\" framework as an operational tool. Computes weekly growth rates, benchmarks against YC tiers (1% concerning, 5-7% good, 10%+ exceptional), projects compound growth over time, and frames every startup decision through the question \"does this serve your target growth rate?\" Ships a deterministic CLI calculator. Load when founders ask about growth rate, weekly growth, startup traction, metrics, or whether they're moving fast enough."
+    }
+  ]
+}
