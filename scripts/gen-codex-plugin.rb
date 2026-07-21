@@ -26,7 +26,7 @@ PUBLIC_SKILLS = (Dir.glob("#{ROOT}/*/SKILL.md") + Dir.glob("#{ROOT}/bundles/*/SK
 
 def build_plugin_json
   skill_paths = PUBLIC_SKILLS.map do |skill|
-    "./#{File.basename(File.dirname(skill))}"
+    "./#{File.dirname(skill).delete_prefix("#{ROOT}/")}"
   end.sort
 
   {
