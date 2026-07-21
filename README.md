@@ -406,7 +406,7 @@ Skills don't require installation in the traditional sense. They are loaded by y
 |---------|-------------|
 | **Claude Code** | [code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills) |
 | **OpenCode** | [opencode.ai/docs/skills](https://opencode.ai/docs/skills) |
-| **OpenAI Codex** | [developers.openai.com/codex/skills](https://developers.openai.com/codex/skills) |
+| **OpenAI Codex** | See below |
 | **GitHub Copilot** | [docs.github.com/en/copilot/concepts/agents/about-agent-skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) |
 | **Cursor** | [cursor.com/docs/context/skills](https://cursor.com/docs/context/skills) |
 | **Gemini CLI** | [geminicli.com/docs/cli/skills](https://geminicli.com/docs/cli/skills) |
@@ -435,6 +435,22 @@ hermes skills install <skill-name>
 ```
 
 Tap skills install into `~/.hermes/skills/` like any other hub skill. Use `hermes skills check` to see when updates are available.
+
+### OpenAI Codex
+
+Codex reads the same `SKILL.md` format directly — no conversion needed. Copy or symlink the skills you want into a directory Codex scans:
+
+```bash
+# Personal (all projects)
+mkdir -p ~/.codex/skills
+cp -r cli-builder ~/.codex/skills/
+
+# Project-scoped (this repo only)
+mkdir -p .codex/skills
+cp -r systematic-debugging .codex/skills/
+```
+
+Codex detects new skills automatically (restart if one doesn't appear). Full details: [developers.openai.com/codex/skills](https://developers.openai.com/codex/skills).
 
 ### Generic / Other Frameworks
 
