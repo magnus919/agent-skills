@@ -1,5 +1,7 @@
 # agent-skills
 
+[![skills.sh](https://skills.sh/b/magnus919/agent-skills)](https://skills.sh/magnus919/agent-skills)
+
 A collection of AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems. Skills follow the [Agent Skills open format](https://agentskills.io), making them compatible with any agent framework that supports the standard.
 
 Bundles are this repository's convention for organizing related skills under a single umbrella with shared reference material; they appear in the same alphabetical catalog as standalone skills. Compatible harnesses are guaranteed to see the umbrella skill. Nested subskill auto-loading depends on the harness or on the umbrella skill's instructions.
@@ -407,6 +409,32 @@ Paul Graham's "Startup = Growth" framework as an operational weekly practice. Co
 ---
 
 ## Installation
+
+### `skills` CLI (cross-harness)
+
+The fastest portable route is the open [`skills` CLI](https://github.com/vercel-labs/skills). The flat top-level skill layout works without a skills.sh-specific manifest. Bundle entry points live one directory deeper under `bundles/`, so include `--full-depth` when listing or selecting them.
+
+```bash
+# Inspect every available skill name, including bundle entry points
+npx skills add magnus919/agent-skills --full-depth --list
+
+# Install one skill into the current project for Codex
+npx skills add magnus919/agent-skills --skill systematic-debugging --agent codex --yes
+
+# Install one skill globally for Hermes Agent
+npx skills add magnus919/agent-skills --skill systematic-debugging --agent hermes-agent --global --yes
+
+# Bundle entry points are one directory deeper; select them with --full-depth
+npx skills add magnus919/agent-skills --skill neckbeard --full-depth --agent codex --yes
+```
+
+`--skill` matches the `name` in a skill's `SKILL.md`; use the names returned by `--list`. Top-level skills are discovered by default. Use `--full-depth` when selecting a bundle entry point under `bundles/`.
+
+For Hermes Agent, keep `--global`: the CLI then installs directly into `$HERMES_HOME/skills/` (normally `~/.hermes/skills/`), which Hermes loads natively. The CLI's project-scoped `.hermes/skills/` target is not auto-discovered by Hermes.
+
+The [skills.sh catalog page](https://skills.sh/magnus919/agent-skills) is populated from installation telemetry rather than a separately submitted registry manifest.
+
+### Harness-native installation
 
 Skills don't require installation in the traditional sense. They are loaded by your AI agent when triggered. Each agent framework documents its own skill directory path and loading mechanism — follow the links below for the authoritative setup guide for your harness.
 
