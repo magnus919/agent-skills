@@ -20,7 +20,7 @@ When your agent loads this skill, it becomes a **Traefik infrastructure engineer
 | `SKILL.md` | Quick-start deployment, core concepts, reference index |
 | `templates/` | Production-ready Docker Compose template |
 | `scripts/` | Health check script with JSON output |
-| `references/` | 10 reference files: static config, dynamic config, all providers, routing, TLS/ACME, middlewares, observability, production, TCP/UDP, troubleshooting |
+| `references/` | Reference files: static config, all providers, routing, TLS/ACME, middlewares, observability, production, TCP/UDP, CSP/SPA debugging, troubleshooting |
 
 ## Triggers
 
