@@ -29,7 +29,55 @@ Stop when every criterion has direct evidence or an explicit blocked/not-applica
 |-----------|-------------|
 | `references/criteria-assessment.md` | You need to evaluate whether work meets completion criteria |
 | `references/evidence-standards.md` | You need to judge whether evidence supports the claims made |
+| `references/magnus919-refine-to-ship-gate.md` | You are running the Magnus919 Refine-to-Ship verifier gate — 12 criteria, editorial change verification, output structure |
 | `references/verdict-template.md` | You need to produce a structured pass/fail/hold verdict |
+
+## Magnus919 Refine-to-Ship Gate Criteria
+
+12 criteria for the verifier profile. Each criterion maps to an observable, reproducible check.
+
+### All 12 Criteria
+
+| # | Criterion | How to Verify |
+|---|-----------|---------------|
+| 1 | **Dash scan** — zero em dash (U+2014), en dash (U+2013), horizontal bar (U+2015), or visible prose double-hyphen | `search_files` for `[\u2014\u2013\u2015]` and `\-\-`. Double-hyphens in YAML frontmatter delimiters are OK. |
+| 2 | **Fact-check** — all methodology claims map to source; no fabricated numbers, chronology, or universal claims | Cross-reference article claims to source document sections. Search for `\d+%`, `percent`, `average of`, `illustrative`. Search for `research proves`, `studies demonstrate`. |
+| 3 | **Voice-check** — Magnus fingerprint: conversational first-person, contractions, "But" pivots (not formal transitions), colons over semicolons, no consultant cadence | Search for `Furthermore`, `Moreover`, `Nevertheless`, `Consequently`, `Therefore`, `not only.*but also`, triplet parallelism. Count colons vs semicolons (should skew heavily toward colons). |
+| 4 | **Oxford commas, spelling, grammar** — American English, Oxford commas in series, no spelling errors | Manual read of series. Check for consistent formatting. |
+| 5 | **No formulaic AI closing** — zero "In conclusion", "To summarize", "In this article", generic motivational advice | `search_files` for `In conclusion`, `Ultimately,`, `To summarize`, `In this article`, `In this post`. |
+| 6 | **Methodology-first** — personal frame ≤ ~10% of article; rest is methodology | Count paragraphs in frame vs body. |
+| 7 | **Human stake integrated** — cognitive burden, expertise formation, transferred work, anti-surveillance, accountable authority | Verify dedicated section or dispersed coverage of all dimensions. |
+| 8 | **Privacy/anonymization** — zero company identifiers, role titles, named people, source filename, proprietary domain examples | `search_files` for company name, product names, domain-specific terminology from source. |
+| 9 | **Frontmatter** — title, slug, date, byline correct and value-identical to specification | `read_file` lines 1–11. |
+| 10 | **Links resolve** — each distinct URL appears once at first meaningful mention; all return 200 | `curl -s -o /dev/null -w "%{http_code}"` each URL. Verify link text is at first meaningful mention. |
+| 11 | **Hugo build + routes** — build exit 0; new route returns 200; old take-home-title route returns 404 | `hugo --quiet && echo EXIT:$?`. `curl` both routes. |
+| 12 | **No duplicate source bundle** — single directory, single `index.md`; no stale `*take-home*` directories | `ls` the page bundle directory. `find` in content/posts for duplicate slug patterns. |
+
+### Parent-Requested Editorial Changes
+
+When the parent profile specifies editorial changes during gate recovery, verify each one is present before proceeding with the full criteria scan:
+
+| Change Type | Verification Method |
+|-------------|-------------------|
+| Fabricated illustrative numbers removed | `search_files` for `\d+%`, `percent`, `PRs? per`, `average of` → zero hits |
+| Tense correction | `search_files` for the exact parent-specified phrase |
+| Closing replacement | `search_files` for the first and last sentence of the parent-specified closing |
+
+### Verdict Rules
+
+- **PASS:** All 12 criteria met. Produce 00-index.md, 01-summary/verdict.md, 02-analysis/per-criteria-results.md.
+- **BLOCK:** Any criterion fails. Produce gap-details.md with specific fix instructions. See `verifier-gate-recovery` skill for remediation patterns.
+
+### Output Structure
+
+```
+/private/tmp/verifier-gate/<slug>-refine/
+  00-index.md              — verdict, links to artifacts
+  01-summary/verdict.md    — per-criterion pass/fail table
+  02-analysis/
+    per-criteria-results.md  — detailed evidence per criterion
+    gap-details.md           — only if BLOCK, with remediation instructions
+```
 
 ## Portability
 
