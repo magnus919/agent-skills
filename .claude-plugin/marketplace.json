@@ -582,6 +582,15 @@
       "description": "CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management."
     },
     {
+      "name": "programming-principles",
+      "source": "./",
+      "skills": [
+        "./programming-principles"
+      ],
+      "strict": false,
+      "description": "Distilled coding principles from 14 classic software books."
+    },
+    {
       "name": "pydanticai",
       "source": "./",
       "skills": [
