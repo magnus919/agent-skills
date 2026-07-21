@@ -42,17 +42,12 @@ declared verification target was actually exercised.
 
 ## Quick Start
 
-Load the umbrella when a non-trivial change lands:
-
-```
-skill_view(name="neckbeard")
-```
-
-Then follow the core loop in `SKILL.md`. For a bug, the agent frames a change
-contract, loads `systematic-debugging` for root cause, makes the smallest safe
-fix, verifies at the real boundary, and writes an evidence ledger. For a feature,
-it routes discovery to `product-discovery` and specification to
-`spec-driven-development` before writing code.
+Load the umbrella when a non-trivial change lands — read `SKILL.md` and follow
+its core loop. For a bug, the agent frames a change contract, loads
+`systematic-debugging` for root cause, makes the smallest safe fix, verifies at
+the real boundary, and writes an evidence ledger. For a feature, it routes
+discovery to `product-discovery` and specification to `spec-driven-development`
+before writing code.
 
 To run the evaluation suite against your harness:
 
