@@ -114,11 +114,17 @@ When a stage has a specialist skill, load it and follow it. The full table with
 | Stage / need | Load this catalog skill instead of re-deriving |
 |---|---|
 | Stakeholder discovery, requirements, ACs | `product-discovery` |
+| User-facing behavior, interaction, information architecture | `product-design-and-ux` |
 | Formal specification, phase gates | `spec-driven-development` |
 | Reverse-engineering an existing codebase | `software-architecture-analysis` |
+| Designing or evolving an API / interface contract | `api-design-and-evolution` |
 | Root-cause debugging | `systematic-debugging` |
+| Security review, threat modeling, secure design | `secure-software-engineering` |
+| Accessibility (WCAG, keyboard/focus, error recovery) | `web-accessibility` |
+| Test strategy, regression testing, CI quality gates | `qa-methodology` |
 | Docs / README / API reference | `technical-documentation` |
 | Verification verdicts and evidence | `verification-methodology` |
+| Reliability, incident response, operational recovery, delivery | `site-reliability-engineering` |
 
 If a specialist skill is not installed, neckbeard's stage references provide a
 minimal fallback method — but note in the ledger that the specialist was absent.
