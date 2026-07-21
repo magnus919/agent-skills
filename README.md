@@ -414,15 +414,27 @@ Skills don't require installation in the traditional sense. They are loaded by y
 
 ### Hermes Agent
 
-Hermes Agent loads skills from `~/.hermes/skills/`, organized by category subdirectory:
+Two options depending on whether you want the whole catalog or individual skills.
 
-```bash
-cp -r cli-builder ~/.hermes/skills/devops/
-cp -r systematic-debugging ~/.hermes/skills/software-development/
-cp -r tempest-cli ~/.hermes/skills/devops/
+**Mount the entire repository** — point Hermes at your local checkout in `~/.hermes/config.yaml`:
+
+```yaml
+skills:
+  external_dirs:
+    - /path/to/agent-skills
 ```
 
-Hermes loads skill metadata at session start. Use the `/skills` command to list available skills, and `skill_view(name)` to load a specific skill's full instructions. Skills can also be pinned for persistent availability.
+Every skill in the repository becomes available immediately (next session). Edits in the checkout are picked up without reinstalling. Paths support `~` and `${VAR}` expansion.
+
+**Install individual skills** — add the repository as a tap, then cherry-pick:
+
+```bash
+hermes skills tap add magnus919/agent-skills
+hermes skills search <query>
+hermes skills install <skill-name>
+```
+
+Tap skills install into `~/.hermes/skills/` like any other hub skill. Use `hermes skills check` to see when updates are available.
 
 ### Generic / Other Frameworks
 
