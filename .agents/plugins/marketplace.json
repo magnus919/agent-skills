@@ -1,0 +1,20 @@
+{
+  "name": "magnus919",
+  "interface": {
+    "displayName": "Magnus Agent Skills"
+  },
+  "plugins": [
+    {
+      "name": "magnus919",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

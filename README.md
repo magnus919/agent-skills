@@ -449,19 +449,23 @@ Tap skills install into `~/.hermes/skills/` like any other hub skill. Use `herme
 
 ### OpenAI Codex
 
-Codex reads the same `SKILL.md` format directly — no conversion needed. Copy or symlink the skills you want into a directory Codex scans:
+This repository ships a Codex plugin. Add the marketplace and install:
 
 ```bash
-# Personal (all projects)
-mkdir -p ~/.codex/skills
-cp -r cli-builder ~/.codex/skills/
-
-# Project-scoped (this repo only)
-mkdir -p .codex/skills
-cp -r systematic-debugging .codex/skills/
+codex plugin marketplace add magnus919/agent-skills
+codex plugin install magnus919
 ```
 
-Codex detects new skills automatically (restart if one doesn't appear). Full details: [developers.openai.com/codex/skills](https://developers.openai.com/codex/skills).
+All public skills are bundled in a single plugin. Codex discovers them from the `skills` array in `.codex-plugin/plugin.json`.
+
+**Local/repo-scoped install** (for contributors or single-skill use):
+
+```bash
+mkdir -p .agents/skills
+ln -s ../../systematic-debugging .agents/skills/systematic-debugging
+```
+
+Codex scans `.agents/skills/` in every directory from cwd up to the repo root.
 
 ### Generic / Other Frameworks
 
