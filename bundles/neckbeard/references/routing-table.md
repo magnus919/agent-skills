@@ -15,12 +15,23 @@ ledger around it.
 | If the current work is… | Load this catalog skill | neckbeard still provides |
 |---|---|---|
 | Stakeholder discovery, requirements, acceptance criteria, edge cases | `product-discovery` | Change contract, ledger |
+| Turning approved scope into user-facing behavior, interaction, or information architecture | `product-design-and-ux` | Contract, ledger |
 | A formal specification with phase gates | `spec-driven-development` | Contract, ledger, stop rules |
 | Reverse-engineering / understanding an existing codebase | `software-architecture-analysis` | Ledger, assumptions list |
+| Designing or evolving an API / interface contract | `api-design-and-evolution` | Contract, ledger, boundary verification |
 | Root-cause debugging of a bug or failure | `systematic-debugging` | Contract, ledger, boundary verification |
+| Security review, threat modeling, or secure design/implementation | `secure-software-engineering` | Contract, ledger, trust-boundary checks |
+| Accessibility (WCAG, keyboard/focus contracts, error recovery) | `web-accessibility` | Ledger, non-negotiable confirmation |
+| Test strategy, regression testing, or CI quality gates | `qa-methodology` | Ledger, boundary verification |
 | Writing or reviewing docs, README, API reference | `technical-documentation` | Ledger |
 | Producing a pass/conditional/blocked verdict with evidence | `verification-methodology` | Ledger boundary rules |
+| Reliability objectives, incident response, operational recovery, or delivery | `site-reliability-engineering` | Contract, ledger, rollback evidence |
 | Architecture decision records | `adr-authoring` | Decision-record template, ledger |
+
+Two further specialists compose well but are narrower: `product-methodology`
+(prioritization, backlog, documented decisions) for the requirements stage, and
+`c4-diagramming` for communicating architecture in the design stage. Load them
+when their trigger matches; neckbeard still supplies the contract and ledger.
 
 ## "Use the existing skill instead" conditions
 

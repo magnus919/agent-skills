@@ -1,13 +1,13 @@
 ---
 name: neckbeard
 description: >-
-  Evidence-driven software delivery operating model. Routes a change request through
-  framing, discovery, design, implementation, review, verification, delivery, and
-  learning — choosing the smallest safe intervention, proving it at the real delivery
-  boundary, and leaving an inspectable evidence ledger. Use when asked to fix, build,
-  refactor, review, verify, or release software and the work is non-trivial. Composes
-  specialist catalog skills rather than replacing them. Not a persona, not a "10x
-  developer" prompt, and not a LOC-minimizer.
+  Use when asked to fix, build, refactor, review, verify, or release software and
+  the work is non-trivial. neckbeard routes the change through framing, discovery,
+  design, implementation, review, verification, delivery, and learning — choosing
+  the smallest *safe* intervention, proving it at the real delivery boundary, and
+  leaving an inspectable evidence ledger. Composes specialist catalog skills rather
+  than replacing them. Not a persona, not a '10x developer' prompt, not a
+  LOC-minimizer.
 license: MIT
 compatibility: Agent harness with file read/write, terminal, and skill loading. No network or runtime dependency required by the bundle itself.
 metadata:
@@ -114,11 +114,17 @@ When a stage has a specialist skill, load it and follow it. The full table with
 | Stage / need | Load this catalog skill instead of re-deriving |
 |---|---|
 | Stakeholder discovery, requirements, ACs | `product-discovery` |
+| User-facing behavior, interaction, information architecture | `product-design-and-ux` |
 | Formal specification, phase gates | `spec-driven-development` |
 | Reverse-engineering an existing codebase | `software-architecture-analysis` |
+| Designing or evolving an API / interface contract | `api-design-and-evolution` |
 | Root-cause debugging | `systematic-debugging` |
+| Security review, threat modeling, secure design | `secure-software-engineering` |
+| Accessibility (WCAG, keyboard/focus, error recovery) | `web-accessibility` |
+| Test strategy, regression testing, CI quality gates | `qa-methodology` |
 | Docs / README / API reference | `technical-documentation` |
 | Verification verdicts and evidence | `verification-methodology` |
+| Reliability, incident response, operational recovery, delivery | `site-reliability-engineering` |
 
 If a specialist skill is not installed, neckbeard's stage references provide a
 minimal fallback method — but note in the ledger that the specialist was absent.
