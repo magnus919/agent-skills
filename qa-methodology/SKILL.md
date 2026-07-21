@@ -35,6 +35,8 @@ Quality assurance is the practice of making confident shipping routine. This met
 | `references/test-data-management.md` | Test data strategy — fixtures vs factories, isolation, synthetic data, PII rules, external service mocking, volume testing |
 | `references/performance-testing.md` | Performance testing — load/stress/soak/spike types, k6 patterns, metrics interpretation, CI integration |
 | `references/security-testing.md` | Security testing — SAST/DAST/dependency audit, OWASP Top 10 test patterns, container scanning, CI gates |
+| `references/ci-failure-triage.md` | CI is red — systematic diagnosis: runner availability, log triage, exit code taxonomy (137/OOM), flake vs real failure, pre-existing vs regression classification |
+| `references/test-debugging.md` | A test that should pass is failing — mock path binding after package refactors, FastAPI startup races, httpx mock patterns, fixture recovery, execution integrity |
 
 ## Core Principles
 
