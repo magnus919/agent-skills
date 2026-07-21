@@ -34,6 +34,14 @@ Structure durable research work so people and agents can start with conclusions,
 
 An expert-level skill for building **conversational multi-agent systems** with Microsoft's AutoGen framework. Unlike graph-based or role-based orchestration, AutoGen uses **agent-to-agent conversations** as the orchestration primitive.
 
+### [backend-engineering](backend-engineering/SKILL.md)
+
+Backend engineering methodology — API implementation patterns (REST, gRPC, GraphQL), service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic.
+
+```bash
+cp -r backend-engineering ~/.hermes/skills/
+```
+
 ### [brand-designer](brand-designer/SKILL.md)
 
 Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Ships 7 templates, a brand-book CLI for validation/compilation, and a generate script for brand card and mockup imagery.
@@ -73,6 +81,14 @@ Guide a consent-based conversation that helps people discover how an AI agent co
 ### [data-architect](data-architect/SKILL.md)
 
 Act as a virtual data architect. Discover data assets, assess maturity, evaluate platforms, design architectures, establish governance, and create migration plans. Covers modern data patterns (data mesh, data lakehouse, streaming, real-time analytics) with vendor evaluation frameworks and maturity models.
+
+### [data-engineering](data-engineering/SKILL.md)
+
+Data engineering methodology — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Grounded in operational patterns for production data systems.
+
+```bash
+cp -r data-engineering ~/.hermes/skills/
+```
 
 ### [data-scientist](data-scientist/SKILL.md)
 
@@ -122,6 +138,14 @@ Use a small FlareSolverr JSON CLI for browser-backed GET and POST requests, read
 
 Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, metadata, webhooks, and user settings. Includes a guarded generic `/api/v1/` route for version-specific endpoints such as Actions and admin APIs.
 
+### [frontend-engineering](frontend-engineering/SKILL.md)
+
+Frontend engineering methodology — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation.
+
+```bash
+cp -r frontend-engineering ~/.hermes/skills/
+```
+
 ### [ghost-cli](ghost-cli/SKILL.md)
 
 Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.
@@ -129,6 +153,14 @@ Ghost CMS from the terminal. Manage posts and pages, list tags, and check site i
 ### [github-runner](github-runner/SKILL.md)
 
 Deploy, manage, and troubleshoot self-hosted GitHub Actions runners. Covers systemd, Docker, Kubernetes (ARC), and Scale Set Client deployments.
+
+### [go-to-market](go-to-market/SKILL.md)
+
+CMO methodology — positioning and messaging frameworks (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), competitive response (pricing wars, feature races, brand defense).
+
+```bash
+cp -r go-to-market ~/.hermes/skills/
+```
 
 ### [gutenberg](gutenberg/SKILL.md)
 
@@ -174,6 +206,14 @@ Build multi-agent AI systems with LangGraph — the low-level orchestration fram
 
 Last.fm music data API from the terminal. Lookup user listening history, get artist/album/track metadata, discover similar music via collaborative filtering, explore global and per-country charts, search, manage tags, and scrobble listening events. API key from last.fm/api/account/create (free). Includes a music discovery pipeline for turning liked tracks into recommendations.
 
+### [legal-strategy](legal-strategy/SKILL.md)
+
+CLO/General Counsel methodology — regulatory landscape analysis (GDPR, CCPA, AI Act, sector-specific), IP strategy (patent, trademark, trade secret, open source licensing), contract risk assessment (indemnification, liability caps, force majeure), data privacy frameworks (privacy-by-design, DPIAs, data mapping), corporate governance (board responsibilities, fiduciary duties, shareholder rights), employment law (classification, IP assignment, non-competes).
+
+```bash
+cp -r legal-strategy ~/.hermes/skills/
+```
+
 ### [linear](linear/SKILL.md)
 
 Work with Linear teams, projects, cycles, issues, comments, workflow transitions, and documents using a small, dependency-free GraphQL CLI with bounded reads, dry-run previews, and focused reference guidance.
@@ -189,6 +229,14 @@ Create maintainable diagrams that render reliably in the documentation surfaces 
 ### [meshcore-packet-capture](meshcore-packet-capture/SKILL.md)
 
 Operate MeshCore Companion radio packet capture over BLE, serial, or TCP. Covers MQTT publishing, TOML and environment configuration, token authentication, Docker, systemd, launchd, NixOS, and evidence-first troubleshooting.
+
+### [ml-engineering](ml-engineering/SKILL.md)
+
+Machine learning engineering methodology — model training, fine-tuning (LoRA/QLoRA), evaluation, quantization, deployment, and MLOps pipeline design. Grounded in practical engineering patterns for production ML systems.
+
+```bash
+cp -r ml-engineering ~/.hermes/skills/
+```
 
 ### [nous-branding](nous-branding/SKILL.md)
 
@@ -213,9 +261,33 @@ Open Library book metadata from the terminal. Search books and authors, get work
 
 Comprehensive open source contribution guidance — from reading CONTRIBUTING.md and filing good bug reports through branching, committing, PR creation, and the release cycle. Covers both contributor and maintainer workflows with progressive disclosure: a concise orchestrator SKILL.md loads detailed phase references on demand. Includes a portable PR template compliance checker script. Agent disclosure template for AI-assisted contributions.
 
+### [operational-design](operational-design/SKILL.md)
+
+COO methodology for process design, organizational scaling, operational metrics, compliance and audit, vendor management, and team topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10 to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness, RFP processes, SLA design, vendor scorecards, team topologies, Conway's Law, and Dunbar's Number.
+
+```bash
+cp -r operational-design ~/.hermes/skills/
+```
+
+### [org-design](org-design/SKILL.md)
+
+CHRO methodology — organizational design (team topologies, span of control, reporting structures), talent strategy (make-vs-buy, skill taxonomies, succession planning), compensation frameworks (market benchmarking, equity design, leveling), culture architecture (values codification, rituals, psychological safety), organizational health metrics (eNPS, retention risk, engagement surveys), DEI strategy (inclusive design, equitable systems, belonging).
+
+```bash
+cp -r org-design ~/.hermes/skills/
+```
+
 ### [peertube](peertube/SKILL.md)
 
 PeerTube federated video platform from the terminal. Browse videos and channels, search across instances, view server info. OAuth2 login with token persistence. Set PEERTUBE_SERVER to point at any instance.
+
+### [platform-engineering](platform-engineering/SKILL.md)
+
+Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms.
+
+```bash
+cp -r platform-engineering ~/.hermes/skills/
+```
 
 ### [product-design-and-ux](product-design-and-ux/SKILL.md)
 
@@ -229,9 +301,25 @@ Discover product requirements from human stakeholders — map who to talk to, as
 
 Product management frameworks for translating validated evidence into prioritized backlogs, documented decisions, specifications, and stakeholder communications. Covers RICE scoring, MoSCoW prioritization, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication. Ships 7 reference files covering each framework and a source index, plus 2 fillable templates (decision log and spec). Picks up where product-discovery ends.
 
+### [product-strategy](product-strategy/SKILL.md)
+
+CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management.
+
+```bash
+cp -r product-strategy ~/.hermes/skills/
+```
+
 ### [pydanticai](pydanticai/SKILL.md)
 
 Build production-grade AI agents and graph-based state machines with PydanticAI and PydanticGraph. Covers agent creation, function tools with RunContext dependencies, structured output validation, streaming (text/events/graph nodes), a 20+ capability plugin system with on-demand loading (Thinking, WebSearch, MCP, Hooks, etc.), 16 model providers with FallbackModel and concurrency limiting, multi-agent delegation and programmatic hand-off, comprehensive testing with TestModel/FunctionModel, and the PydanticEvals evaluation framework. Includes the full PydanticGraph API — both BaseNode (class-based) and GraphBuilder (function-based) with parallel map/broadcast operations, joins with reducers, decisions, Mermaid rendering, and step-by-step execution. Ships 8 reference files covering core agents, capabilities/hooks, graph, models/output, patterns/integrations, testing/evals, worked examples, and an API surface quick reference.
+
+### [qa-methodology](qa-methodology/SKILL.md)
+
+Quality assurance methodology — test strategy design, test automation patterns, regression testing, CI quality gates, test data management, and quality metrics. Grounded in practical patterns for teams that want confident shipping.
+
+```bash
+cp -r qa-methodology ~/.hermes/skills/
+```
 
 ### [raleigh](raleigh/SKILL.md)
 
