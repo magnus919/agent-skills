@@ -1,12 +1,11 @@
 ---
 name: programming-principles
 description: Distilled coding principles from 14 classic software books.
-version: 0.2.0
-author: Hermes
 license: MIT
 compatibility: Platform-agnostic. Works with any agent that supports the Agent Skills
   directory format. No external dependencies.
-source: https://github.com/mattpocock/agent-rules-books
+metadata:
+  source: https://github.com/mattpocock/agent-rules-books
 ---
 
 # Programming Principles (14 Books)
