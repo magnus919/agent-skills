@@ -99,16 +99,22 @@ Route the chosen work to the stage that owns it and follow that stage's method
 - **Discovery / requirements** → problem framing, stakeholders, acceptance
   criteria, edge cases. Specialist: `product-discovery`.
 - **Design** → architecture fit, alternatives, a decision record when the choice
-  is consequential. Specialist: `spec-driven-development` for formal specs.
+  is consequential. Specialist: `spec-driven-development` for formal specs;
+  `product-design-and-ux` for user-facing behavior, interaction, or information
+  architecture; `api-design-and-evolution` for an interface contract.
 - **Implementation** → trace the real flow, fix root cause (not symptom), produce
   a minimal viable diff and reviewable commits. Specialist: `systematic-debugging`
-  for bugs.
+  for bugs. For security-sensitive changes (untrusted input, auth, secrets,
+  trust-boundary crossings), load `secure-software-engineering`; for accessible
+  UI, load `web-accessibility`.
 - **Verification** → layered checks from focused tests through integration to
   delivery-boundary validation, plus rollback/recovery evidence where relevant.
-  Specialist: `verification-methodology`.
+  Specialist: `verification-methodology`; `qa-methodology` for test strategy and
+  regression coverage.
 - **Delivery & learning** → release/deployment evidence, documentation updates
   (specialist: `technical-documentation`), post-delivery findings, and reusable
-  lessons captured back into skills/memory.
+  lessons captured back into skills/memory. For reliability objectives, incident
+  response, or operational recovery, load `site-reliability-engineering`.
 
 **Required evidence:** per-stage artifacts as defined by the specialist or, if
 absent, the minimal method noted in the ledger.
