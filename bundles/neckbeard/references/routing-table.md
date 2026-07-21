@@ -27,6 +27,7 @@ ledger around it.
 | Producing a pass/conditional/blocked verdict with evidence | `verification-methodology` | Ledger boundary rules |
 | Reliability objectives, incident response, operational recovery, or delivery | `site-reliability-engineering` | Contract, ledger, rollback evidence |
 | Architecture decision records | `adr-authoring` | Decision-record template, ledger |
+| Code review, refactoring, or implementation quality assessment against classic engineering principles | `programming-principles` | Contract, ledger, boundary verification |
 
 Two further specialists compose well but are narrower: `product-methodology`
 (prioritization, backlog, documented decisions) for the requirements stage, and

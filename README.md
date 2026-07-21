@@ -273,6 +273,10 @@ Product management frameworks for translating validated evidence into prioritize
 
 CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management.
 
+### [programming-principles](programming-principles/SKILL.md)
+
+Distilled coding principles from 14 classic software engineering books (Clean Code, DDD, Refactoring, Release It!, DDIA, Code Complete, and more). Cross-cutting principles organized by concern, task-to-book mapping, per-book mini and full rule sets, and a structured code-assessment workflow.
+
 ### [pydanticai](pydanticai/SKILL.md)
 
 Build production-grade AI agents and graph-based state machines with PydanticAI and PydanticGraph. Covers agent creation, function tools with RunContext dependencies, structured output validation, streaming (text/events/graph nodes), a 20+ capability plugin system with on-demand loading (Thinking, WebSearch, MCP, Hooks, etc.), 16 model providers with FallbackModel and concurrency limiting, multi-agent delegation and programmatic hand-off, comprehensive testing with TestModel/FunctionModel, and the PydanticEvals evaluation framework. Includes the full PydanticGraph API — both BaseNode (class-based) and GraphBuilder (function-based) with parallel map/broadcast operations, joins with reducers, decisions, Mermaid rendering, and step-by-step execution. Ships 8 reference files covering core agents, capabilities/hooks, graph, models/output, patterns/integrations, testing/evals, worked examples, and an API surface quick reference.
