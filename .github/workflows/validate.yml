@@ -22,6 +22,8 @@ jobs:
         run: ruby scripts/validate-skills.rb
       - name: Check tracked repository artifacts
         run: python3 scripts/check-artifacts.py
+      - name: Validate Claude Code marketplace
+        run: ruby scripts/gen-claude-marketplace.rb
       - name: Build tracked Python packages
         run: |
           wheel_dir=$(mktemp -d)

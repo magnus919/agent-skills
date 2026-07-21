@@ -404,13 +404,24 @@ Skills don't require installation in the traditional sense. They are loaded by y
 
 | Harness | Setup Guide |
 |---------|-------------|
-| **Claude Code** | [code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills) |
+| **Claude Code** | See below |
 | **OpenCode** | [opencode.ai/docs/skills](https://opencode.ai/docs/skills) |
 | **OpenAI Codex** | See below |
 | **GitHub Copilot** | [docs.github.com/en/copilot/concepts/agents/about-agent-skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) |
 | **Cursor** | [cursor.com/docs/context/skills](https://cursor.com/docs/context/skills) |
 | **Gemini CLI** | [geminicli.com/docs/cli/skills](https://geminicli.com/docs/cli/skills) |
 | **Hermes Agent** | See below |
+
+### Claude Code
+
+This repository ships a Claude Code plugin marketplace. Add it once, then install any skill as a plugin:
+
+```
+/plugin marketplace add magnus919/agent-skills
+/plugin install cli-builder@magnus-agent-skills
+```
+
+Every top-level skill and bundle is listed in `.claude-plugin/marketplace.json`. Installed skills are namespaced by plugin name (for example, `/cli-builder:cli-builder`). To update after the repository changes, run `/plugin marketplace update magnus-agent-skills`.
 
 ### Hermes Agent
 
