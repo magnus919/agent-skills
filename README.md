@@ -26,10 +26,6 @@ Reference for the Agent Skills open format itself — directory structure, front
 
 Design, document, review, and evolve consumer-facing HTTP, GraphQL, RPC, event, webhook, and streaming interfaces. Covers consumer jobs, domain semantics, contracts, failure behavior, compatibility, deprecation, migration, and deployed-boundary verification.
 
-### [arr-cli](arr-cli/SKILL.md)
-
-Radarr and Sonarr media library management. Two CLIs (`radarr-cli` for movies, `sonarr-cli` for TV series) with one shared skill wrapper. List movies and series, search for additions, check calendars and wanted/missing episodes. Separate API keys per app.
-
 ### [artifact-pyramids](artifact-pyramids/SKILL.md)
 
 Structure durable research work so people and agents can start with conclusions, then inspect the analysis and underlying evidence only when needed.
@@ -178,10 +174,6 @@ Build multi-agent AI systems with LangGraph — the low-level orchestration fram
 
 Last.fm music data API from the terminal. Lookup user listening history, get artist/album/track metadata, discover similar music via collaborative filtering, explore global and per-country charts, search, manage tags, and scrobble listening events. API key from last.fm/api/account/create (free). Includes a music discovery pipeline for turning liked tracks into recommendations.
 
-### [lidarr-cli](lidarr-cli/SKILL.md)
-
-Manage your Lidarr music library from the terminal — search and browse artists and albums, add new artists, check calendars, view queue and download history.
-
 ### [linear](linear/SKILL.md)
 
 Work with Linear teams, projects, cycles, issues, comments, workflow transitions, and documents using a small, dependency-free GraphQL CLI with bounded reads, dry-run previews, and focused reference guidance.
@@ -236,10 +228,6 @@ Discover product requirements from human stakeholders — map who to talk to, as
 ### [product-methodology](product-methodology/SKILL.md)
 
 Product management frameworks for translating validated evidence into prioritized backlogs, documented decisions, specifications, and stakeholder communications. Covers RICE scoring, MoSCoW prioritization, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication. Ships 7 reference files covering each framework and a source index, plus 2 fillable templates (decision log and spec). Picks up where product-discovery ends.
-
-### [prowlarr-cli](prowlarr-cli/SKILL.md)
-
-Manage your Prowlarr indexer hub from the terminal — list and inspect indexers, view query/grab statistics, check health, manage connected *arr applications, and test indexer connectivity.
 
 ### [pydanticai](pydanticai/SKILL.md)
 
