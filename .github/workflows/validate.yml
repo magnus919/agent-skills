@@ -26,6 +26,10 @@ jobs:
         run: ruby scripts/gen-claude-marketplace.rb
       - name: Validate Codex plugin packaging
         run: ruby scripts/gen-codex-plugin.rb
+      - name: Test llms.txt generator
+        run: ruby scripts/test-gen-llms-txt.rb
+      - name: Validate llms.txt catalog
+        run: ruby scripts/gen-llms-txt.rb
       - name: Build tracked Python packages
         run: |
           wheel_dir=$(mktemp -d)
