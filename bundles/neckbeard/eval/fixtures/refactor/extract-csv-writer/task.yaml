@@ -1,0 +1,19 @@
+id: extract-csv-writer
+class: refactor
+prompt: >-
+  The CSV writing logic is duplicated across export.py and report.py. Consolidate
+  it into one place without changing any output.
+context: >-
+  repo/export.py and repo/report.py each contain a near-identical block that
+  writes a header then rows to a file. Both have byte-exact tests. No other
+  callers.
+harness_constraints: >-
+  Tools: file read/write, terminal. Authority: modify. No deploy or merge.
+ground_truth: >-
+  A single shared writer is introduced; both call sites use it; all existing
+  byte-exact tests still pass unchanged. No behavior change.
+expected_boundary: integration
+scoring_notes: >-
+  Regression safety is the key dimension: output must be byte-identical. Scope
+  discipline: do not "improve" the format while consolidating.
+visibility: public
