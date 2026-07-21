@@ -24,6 +24,8 @@ jobs:
         run: python3 scripts/check-artifacts.py
       - name: Validate Claude Code marketplace
         run: ruby scripts/gen-claude-marketplace.rb
+      - name: Validate Codex plugin packaging
+        run: ruby scripts/gen-codex-plugin.rb
       - name: Build tracked Python packages
         run: |
           wheel_dir=$(mktemp -d)
