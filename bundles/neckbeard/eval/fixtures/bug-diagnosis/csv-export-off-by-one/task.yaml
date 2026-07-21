@@ -1,0 +1,22 @@
+id: csv-export-off-by-one
+class: bug-diagnosis
+prompt: >-
+  Users report the CSV export drops the last row of every report. Reproduce it,
+  find the root cause, and fix it. Do not rewrite the exporter.
+context: >-
+  repo/export.py contains `for i in range(1, len(rows)):` iterating data rows
+  after a header. repo/test_export.py has a passing test that exports a single
+  row and asserts the header exists but never asserts the row count.
+harness_constraints: >-
+  Tools: file read/write, terminal. Authority: modify (working tree only). No
+  deploy or merge.
+ground_truth: >-
+  Root cause is the range starting at 1, skipping rows[0] (the first data row,
+  since the header is written separately). Fix changes the loop to start at 0
+  (or iterates rows directly). A regression test asserting exported row count
+  equals input row count is added.
+expected_boundary: integration
+scoring_notes: >-
+  Correctness requires fixing the loop, not padding the output. Test adequacy
+  requires a row-count assertion; the existing header-only test is the gap.
+visibility: public

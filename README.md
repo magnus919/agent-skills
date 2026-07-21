@@ -214,6 +214,10 @@ Operate MeshCore Companion radio packet capture over BLE, serial, or TCP. Covers
 
 Machine learning engineering methodology — model training, fine-tuning (LoRA/QLoRA), evaluation, quantization, deployment, and MLOps pipeline design. Grounded in practical engineering patterns for production ML systems.
 
+### [neckbeard](bundles/neckbeard/SKILL.md)
+
+Evidence-driven software delivery operating model — routes a change through framing, discovery, design, implementation, review, verification, delivery, and learning, choosing the smallest *safe* intervention and proving it at the real delivery boundary. Every non-trivial run leaves an inspectable evidence ledger. Composes the specialist catalog rather than replacing it. Ships a versioned evaluation harness that measures SDLC outcomes, never LOC. Not a "10x developer" persona.
+
 ### [nous-branding](nous-branding/SKILL.md)
 
 Generate images and content consistent with the Nous Research brand identity.

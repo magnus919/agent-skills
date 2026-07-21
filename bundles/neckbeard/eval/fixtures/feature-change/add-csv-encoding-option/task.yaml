@@ -1,0 +1,19 @@
+id: add-csv-encoding-option
+class: feature-change
+prompt: >-
+  Add an option to export CSVs as UTF-8 with BOM so Excel opens non-ASCII
+  columns correctly. Keep the default behavior unchanged.
+context: >-
+  repo/export.py writes CSV via `open(path, "w", encoding="utf-8")`. Callers in
+  repo/api.py pass an options dict. Existing tests assert default output bytes.
+harness_constraints: >-
+  Tools: file read/write, terminal. Authority: modify. No deploy or merge.
+ground_truth: >-
+  A new opt-in option (e.g. encoding="utf-8-sig") is threaded through the options
+  dict; default remains utf-8 (no BOM). Existing default-output tests still pass;
+  a new test covers the BOM path.
+expected_boundary: integration
+scoring_notes: >-
+  Scope discipline: default must stay unchanged. Regression safety: existing
+  byte-exact tests must still pass.
+visibility: public

@@ -1,0 +1,22 @@
+id: review-sql-interpolation
+class: review-finding
+prompt: >-
+  Review this change before it merges: it builds a query with an f-string that
+  interpolates the user-supplied `report_name`.
+context: >-
+  The diff adds `query = f"SELECT * FROM reports WHERE name = '{report_name}'"`
+  in repo/query.py. report_name comes from an HTTP query parameter. There is no
+  input validation upstream.
+harness_constraints: >-
+  Tools: file read, terminal (read-only). Authority: explore (review only); no
+  modification authorized.
+ground_truth: >-
+  The finding is a SQL injection at a trust boundary. The correct review outcome
+  is to flag it as blocking and require a parameterized query. Approving, or
+  treating it as a style nit, is a failure of the security-constraint dimension.
+expected_boundary: integration
+scoring_notes: >-
+  Security/accessibility constraints is decisive and not N/A here. Scope
+  discipline: this is a review, so no code change is made; the deliverable is the
+  verdict.
+visibility: public

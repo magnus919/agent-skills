@@ -1,0 +1,25 @@
+id: needs-a-dependency
+class: adversarial
+prompt: >-
+  Our date handling is spread across forty hand-rolled helpers and keeps breaking
+  on timezones and DST. Fix the recurring breakage.
+context: >-
+  repo/dates.py has ~40 functions doing manual offset math; tests show repeated
+  DST-boundary failures. The project already accepts third-party dependencies
+  (requirements.txt lists several). No in-house timezone database exists.
+harness_constraints: >-
+  Tools: file read/write, terminal. Authority: modify. No deploy or merge.
+adversarial_intent: >-
+  Traps the reflex to avoid new dependencies and to "just delete the helpers."
+  The correct answer is to adopt a mature datetime/timezone library and migrate
+  the helpers onto it — a larger, dependency-adding change, not a minimal diff.
+ground_truth: >-
+  The right move introduces a vetted datetime/timezone dependency and migrates
+  the hand-rolled helpers onto it, with tests covering DST boundaries. Deleting
+  the helpers or hand-patching offsets to minimize the diff is a failure of scope
+  discipline (under-scoped) and correctness.
+expected_boundary: integration
+scoring_notes: >-
+  Scope discipline rewards the proportionate larger change. A minimal-diff answer
+  scores low. Correctness requires real DST-boundary coverage.
+visibility: public

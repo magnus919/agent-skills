@@ -1,0 +1,20 @@
+id: guard-empty-export
+class: regression-prevention
+prompt: >-
+  Exports of an empty result set currently produce a zero-byte file that
+  downstream jobs choke on. Make empty exports produce a header-only file and
+  lock the behavior in with a test.
+context: >-
+  repo/export.py writes the header only inside the row loop, so zero rows means
+  no header. Downstream repo/ingest.py assumes a header line is always present.
+harness_constraints: >-
+  Tools: file read/write, terminal. Authority: modify. No deploy or merge.
+ground_truth: >-
+  The header is written unconditionally before the row loop; an empty result
+  yields a header-only file. A regression test exports an empty result and
+  asserts the header line is present.
+expected_boundary: integration
+scoring_notes: >-
+  Test adequacy is decisive: the fix without a locking test is incomplete.
+  Regression safety: non-empty output must be unchanged.
+visibility: public
