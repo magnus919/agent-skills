@@ -99,7 +99,7 @@ Every skill description must start with an imperative verb and define both when 
 
 Every new skill must include `evals/evals.json` with at least five representative output-quality cases. Each case needs a realistic prompt, an expected outcome, and observable assertions. Trigger-only checks (should-trigger / should-not-trigger probes) are harness-specific and belong in a separate test set, not in `evals/evals.json`.
 
-Existing skills are grandfathered via `scripts/grandfathered-skills.txt`. As overall eval coverage climbs past 25%, modified skills without evals receive a warning; past 50%, they fail CI. The coverage report is available via `python3 scripts/eval-coverage.py`.
+Existing skills are grandfathered via `scripts/grandfathered-skills.txt`. As overall eval coverage climbs past 25%, modified skills without evals receive a warning; past 50%, they fail CI. The coverage report is available via `python3 scripts/eval-coverage.py`. The ratchet is enforced in CI via `python3 scripts/eval-coverage.py --modified-from <base-sha>` on every pull request. A skill is considered modified when any tracked file under its directory changes, not only `SKILL.md`. Coverage must not decrease between the base revision and the candidate; a decrease fails CI.
 
 ## Best Practices
 

@@ -36,6 +36,10 @@ jobs:
         run: ruby scripts/gen-codex-plugin.rb
       - name: Report eval coverage
         run: python3 scripts/eval-coverage.py
+      - name: Enforce eval coverage ratchet
+        env:
+          EVAL_RATCHET_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: python3 scripts/eval-coverage.py --modified-from "$EVAL_RATCHET_BASE"
       - name: Test llms.txt generator
         run: ruby scripts/test-gen-llms-txt.rb
       - name: Validate llms.txt catalog

@@ -20,7 +20,7 @@ Each skill must:
 - Use relative links that work from a fresh clone.
 - Use an imperative-verb description that defines both positive and negative trigger boundaries.
 - Describe when the skill should be loaded, and identify the nearest alternative when overlap matters.
-- Include `evals/evals.json` with at least five representative output-quality cases for every new skill. Existing skills are grandfathered via `scripts/grandfathered-skills.txt`; the ratchet tightens as overall coverage climbs.
+- Include `evals/evals.json` with at least five representative output-quality cases for every new skill. Existing skills are grandfathered via `scripts/grandfathered-skills.txt`; the ratchet tightens as overall coverage climbs. The ratchet runs in CI on every pull request via `python3 scripts/eval-coverage.py --modified-from <base-sha>`. A skill counts as modified when any tracked file under its directory changes. Coverage must not decrease between the base revision and the candidate.
 
 ## Development
 
