@@ -34,6 +34,8 @@ jobs:
         run: ruby scripts/gen-claude-marketplace.rb
       - name: Validate Codex plugin packaging
         run: ruby scripts/gen-codex-plugin.rb
+      - name: Test eval coverage ratchet
+        run: python3 scripts/test-eval-coverage.py
       - name: Report eval coverage
         run: python3 scripts/eval-coverage.py
       - name: Enforce eval coverage ratchet

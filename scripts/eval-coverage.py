@@ -48,6 +48,25 @@ def find_skills() -> list[Path]:
     return sorted(skills)
 
 
+def find_skills_at(ref: str) -> list[Path]:
+    """Find canonical skill directories tracked at a git revision."""
+    result = subprocess.run(
+        ["git", "ls-tree", "-r", "--name-only", ref],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    skills = []
+    for name in result.stdout.splitlines():
+        if (
+            name.endswith("/SKILL.md")
+            and "/agent-council/profiles/skills/" not in name
+        ):
+            skills.append(Path(name).parent)
+    return sorted(skills)
+
+
 def load_grandfathered() -> set[str]:
     if not GRANDFATHER_FILE.exists():
         return set()
@@ -107,7 +126,13 @@ def modified_skills(base_ref: str) -> set[Path]:
     ]
     # Map each changed file to its owning skill directory by checking
     # whether the file path starts with a known skill directory prefix.
-    known_skills = find_skills()
+    # Include skills from both revisions so complete directory deletions
+    # remain observable under their old name.
+    known_skills = sorted(
+        set(find_skills()) | set(find_skills_at(base_ref)),
+        key=lambda path: len(path.parts),
+        reverse=True,
+    )
     modified: set[Path] = set()
     for changed in changed_files:
         changed_path = Path(changed)
@@ -119,6 +144,32 @@ def modified_skills(base_ref: str) -> set[Path]:
             except ValueError:
                 continue
     return modified
+
+
+def evaluate_ratchet(
+    modified: set[Path],
+    current: set[Path],
+    without_evals: set[Path],
+    coverage_pct: float,
+) -> tuple[list[str], list[str]]:
+    """Apply warning and failure thresholds to modified current skills."""
+    warnings: list[str] = []
+    errors: list[str] = []
+    for skill_dir in sorted(modified & current & without_evals):
+        name = str(skill_dir)
+        if coverage_pct >= FAIL_THRESHOLD:
+            errors.append(
+                f"{name}: modified skill has no evals "
+                f"(coverage {coverage_pct:.1f}% >= {FAIL_THRESHOLD}% — "
+                "evals required on modification)"
+            )
+        elif coverage_pct >= WARN_THRESHOLD:
+            warnings.append(
+                f"{name}: modified skill has no evals "
+                f"(coverage {coverage_pct:.1f}% >= {WARN_THRESHOLD}% — "
+                "evals recommended)"
+            )
+    return warnings, errors
 
 
 def coverage_decreased(base_ref: str) -> tuple[bool, float, float]:
@@ -207,20 +258,12 @@ def main() -> int:
     ratchet_errors: list[str] = []
     if args.modified_from:
         modified = modified_skills(args.modified_from)
-        for skill_dir in sorted(modified):
-            name = str(skill_dir)
-            has, _ = check_evals(skill_dir)
-            if not has:
-                if coverage_pct >= FAIL_THRESHOLD:
-                    ratchet_errors.append(
-                        f"{name}: modified skill has no evals "
-                        f"(coverage {coverage_pct:.1f}% >= {FAIL_THRESHOLD}% — evals required on modification)"
-                    )
-                elif coverage_pct >= WARN_THRESHOLD:
-                    ratchet_warnings.append(
-                        f"{name}: modified skill has no evals "
-                        f"(coverage {coverage_pct:.1f}% >= {WARN_THRESHOLD}% — evals recommended)"
-                    )
+        ratchet_warnings, ratchet_errors = evaluate_ratchet(
+            modified=modified,
+            current=set(skills),
+            without_evals={Path(name) for name in without_evals},
+            coverage_pct=coverage_pct,
+        )
 
         # Monotonic coverage floor: fail if coverage decreased.
         decreased, base_pct, head_pct = coverage_decreased(args.modified_from)

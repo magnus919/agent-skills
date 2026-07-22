@@ -31,6 +31,7 @@ git clone https://github.com/magnus919/agent-skills.git
 cd agent-skills
 ruby scripts/validate-skills.rb
 ruby scripts/validate-skill-quality.rb --base origin/main
+python3 scripts/test-eval-coverage.py
 python3 scripts/eval-coverage.py
 ```
 
