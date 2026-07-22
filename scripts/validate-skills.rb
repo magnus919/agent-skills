@@ -2,10 +2,14 @@
 # frozen_string_literal: true
 
 require "yaml"
+require "set"
+require "json"
 
 ROOT = File.expand_path("..", __dir__)
 ALLOWED_FIELDS = %w[name description license compatibility metadata allowed-tools].freeze
 README_HEADINGS = ["Why Install This Skill", "What You Get", "Quick Start", "Triggers", "Requirements"].freeze
+GRANDFATHER_FILE = File.join(ROOT, "scripts", "grandfathered-skills.txt")
+MIN_EVAL_CASES = 5
 
 errors = []
 skills = Dir.glob("#{ROOT}/**/SKILL.md").sort.reject do |skill|
@@ -43,6 +47,8 @@ unless mislabeled_catalog_entries.empty?
   labels = mislabeled_catalog_entries.map { |name, path| "#{name.inspect} -> #{path}" }
   errors << "README.md: catalog label/path mismatch(es): #{labels.join(', ')}"
 end
+
+grandfathered = File.exist?(GRANDFATHER_FILE) ? File.readlines(GRANDFATHER_FILE, chomp: true).reject { |l| l.strip.empty? || l.start_with?("#") }.to_set : Set.new
 
 skills.each do |skill|
   relative = skill.delete_prefix("#{ROOT}/")
@@ -95,6 +101,25 @@ skills.each do |skill|
   readme_text = File.read(readme)
   README_HEADINGS.each do |heading|
     errors << "#{relative}: README missing #{heading}" unless readme_text.match?(/^#+ #{Regexp.escape(heading)}\s*$/)
+  end
+
+  # Phase 1: new skills (not grandfathered) must have evals with >= MIN_EVAL_CASES cases
+  skill_dir = File.dirname(skill).delete_prefix("#{ROOT}/")
+  unless grandfathered.include?(skill_dir)
+    evals_path = File.join(root, "evals", "evals.json")
+    unless File.file?(evals_path)
+      errors << "#{relative}: new skill must have evals/evals.json (not in grandfathered-skills.txt)"
+      next
+    end
+    begin
+      evals_data = JSON.parse(File.read(evals_path))
+      case_count = evals_data.is_a?(Hash) && evals_data["evals"].is_a?(Array) ? evals_data["evals"].length : 0
+      if case_count < MIN_EVAL_CASES
+        errors << "#{relative}: evals/evals.json has #{case_count} case(s), minimum is #{MIN_EVAL_CASES}"
+      end
+    rescue JSON::ParserError => e
+      errors << "#{relative}: evals/evals.json is invalid JSON: #{e.message.lines.first.strip}"
+    end
   end
 end
 
