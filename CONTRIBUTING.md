@@ -28,9 +28,12 @@ Clone the repository and run the validator from its root:
 git clone https://github.com/magnus919/agent-skills.git
 cd agent-skills
 ruby scripts/validate-skills.rb
+ruby scripts/validate-skill-quality.rb --base origin/main
 ```
 
-The same validation runs in GitHub Actions for pushes and pull requests. If a skill includes executable scripts or a package, run its documented checks as well and include the commands and results in your pull request.
+The structural validator checks the whole repository. The quality validator checks only added, renamed, modified, or uncommitted `SKILL.md` files relative to the supplied base. Changed descriptions must begin with an imperative verb and define a negative boundary in the description or a `When not to use` section. Generic no-op instructions are reported as warnings. The same validation runs in GitHub Actions for pushes and pull requests.
+
+If a skill includes executable scripts or a package, run its documented checks as well and include the commands and results in your pull request.
 
 ## Deprecating a skill
 

@@ -14,12 +14,20 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
       - name: Validate skill format and links
         run: ruby scripts/validate-skills.rb
+      - name: Test changed-skill quality validation
+        run: ruby scripts/test-validate-skill-quality.rb
+      - name: Validate changed skill quality
+        env:
+          SKILL_QUALITY_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: ruby scripts/validate-skill-quality.rb --base "$SKILL_QUALITY_BASE"
       - name: Check tracked repository artifacts
         run: python3 scripts/check-artifacts.py
       - name: Validate Claude Code marketplace
