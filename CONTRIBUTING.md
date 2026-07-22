@@ -18,20 +18,33 @@ Each skill must:
 - Include a human-facing `README.md` with the required sections described in `AGENTS.md`.
 - Keep core instructions concise and put deeper material in `references/`, `templates/`, or `scripts/`.
 - Use relative links that work from a fresh clone.
+- Use an imperative-verb description that defines both positive and negative trigger boundaries.
 - Describe when the skill should be loaded, and identify the nearest alternative when overlap matters.
+- Include `evals/evals.json` with at least five representative output-quality cases for every new skill. Existing skills are grandfathered via `scripts/grandfathered-skills.txt`; the ratchet tightens as overall coverage climbs.
 
 ## Development
 
-Clone the repository and run the validator from its root:
+Clone the repository and run the validators from its root:
 
 ```sh
 git clone https://github.com/magnus919/agent-skills.git
 cd agent-skills
 ruby scripts/validate-skills.rb
 ruby scripts/validate-skill-quality.rb --base origin/main
+python3 scripts/eval-coverage.py
 ```
 
 The structural validator checks the whole repository. The quality validator checks only added, renamed, modified, or uncommitted `SKILL.md` files relative to the supplied base. Changed descriptions must begin with an imperative verb and define a negative boundary in the description or a `When not to use` section. Generic no-op instructions are reported as warnings. The same validation runs in GitHub Actions for pushes and pull requests.
+
+This repository also tracks generated catalog files. CI validates their freshness but does not regenerate them. If a check reports a stale artifact, regenerate locally:
+
+```sh
+ruby scripts/gen-claude-marketplace.rb --write
+ruby scripts/gen-codex-plugin.rb --write
+ruby scripts/gen-llms-txt.rb --write
+```
+
+Each generator also runs in check mode (without `--write`) to verify freshness.
 
 If a skill includes executable scripts or a package, run its documented checks as well and include the commands and results in your pull request.
 
