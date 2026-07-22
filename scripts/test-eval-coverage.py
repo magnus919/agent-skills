@@ -104,6 +104,114 @@ class TestModifiedSkills(unittest.TestCase):
             eval_coverage.ROOT = old_root
         self.assertIn(Path("beta"), mods)
 
+    def test_added_skill_detected(self) -> None:
+        write_skill(self.repo, "existing")
+        base = self._commit("initial")
+        write_skill(self.repo, "added")
+        self._commit("add skill")
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        try:
+            mods = eval_coverage.modified_skills(base)
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertIn(Path("added"), mods)
+
+    def test_renamed_skill_detected_under_new_name(self) -> None:
+        write_skill(self.repo, "before")
+        base = self._commit("initial")
+        git(self.repo, "mv", "before", "after")
+        self._commit("rename skill")
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        try:
+            mods = eval_coverage.modified_skills(base)
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertIn(Path("after"), mods)
+        self.assertNotIn(Path("before"), mods)
+
+    def test_deleted_skill_detected_under_old_name(self) -> None:
+        write_skill(self.repo, "removed")
+        base = self._commit("initial")
+        git(self.repo, "rm", "-r", "removed")
+        self._commit("delete skill")
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        try:
+            mods = eval_coverage.modified_skills(base)
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertIn(Path("removed"), mods)
+
+    def test_deleted_skill_flows_through_ratchet_without_eval_error(self) -> None:
+        write_skill(self.repo, "removed")
+        base = self._commit("initial")
+        git(self.repo, "rm", "-r", "removed")
+        self._commit("delete skill")
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        try:
+            modified = eval_coverage.modified_skills(base)
+            current = set(eval_coverage.find_skills())
+            without_evals = {
+                skill for skill in current if not eval_coverage.check_evals(skill)[0]
+            }
+            warnings, errors = eval_coverage.evaluate_ratchet(
+                modified=modified,
+                current=current,
+                without_evals=without_evals,
+                coverage_pct=100.0,
+            )
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertIn(Path("removed"), modified)
+        self.assertEqual([], warnings)
+        self.assertEqual([], errors)
+
+    def test_script_fixture_and_readme_changes_detected(self) -> None:
+        paths = {
+            "scripted": Path("scripts") / "run.py",
+            "fixtured": Path("fixtures") / "case.txt",
+            "documented": Path("README.md"),
+        }
+        for skill, relative in paths.items():
+            write_skill(self.repo, skill)
+            target = Path(self.repo) / skill / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("v1")
+        base = self._commit("initial")
+        for skill, relative in paths.items():
+            (Path(self.repo) / skill / relative).write_text("v2")
+        self._commit("edit supporting files")
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        try:
+            mods = eval_coverage.modified_skills(base)
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertTrue({Path(name) for name in paths}.issubset(mods))
+
+    def test_nested_change_maps_to_nearest_skill_owner(self) -> None:
+        parent = "bundles/example"
+        child = "bundles/example/skills/child"
+        write_skill(self.repo, parent)
+        write_skill(self.repo, child)
+        reference = Path(self.repo) / child / "references" / "guide.md"
+        reference.parent.mkdir(parents=True)
+        reference.write_text("v1")
+        base = self._commit("initial")
+        reference.write_text("v2")
+        self._commit("edit child reference")
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        try:
+            mods = eval_coverage.modified_skills(base)
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertIn(Path(child), mods)
+        self.assertNotIn(Path(parent), mods)
+
     def test_eval_manifest_deletion_detected(self) -> None:
         write_skill(self.repo, "gamma", evals=[make_case("c1")])
         base = self._commit("initial")
@@ -197,6 +305,60 @@ class TestCoverageDecreased(unittest.TestCase):
         self.assertFalse(decreased)
         self.assertAlmostEqual(base_pct, 0.0)
         self.assertAlmostEqual(head_pct, 100.0)
+
+
+class TestRatchetThresholds(unittest.TestCase):
+    """Threshold policy must warn at 25% and fail at 50%."""
+
+    def test_below_warning_threshold_is_advisory_only(self) -> None:
+        warnings, errors = eval_coverage.evaluate_ratchet(
+            modified={Path("alpha")},
+            current={Path("alpha")},
+            without_evals={Path("alpha")},
+            coverage_pct=24.9,
+        )
+        self.assertEqual([], warnings)
+        self.assertEqual([], errors)
+
+    def test_warning_threshold_emits_warning(self) -> None:
+        warnings, errors = eval_coverage.evaluate_ratchet(
+            modified={Path("alpha")},
+            current={Path("alpha")},
+            without_evals={Path("alpha")},
+            coverage_pct=25.0,
+        )
+        self.assertEqual(1, len(warnings))
+        self.assertEqual([], errors)
+
+    def test_warning_band_remains_warning_below_failure_threshold(self) -> None:
+        warnings, errors = eval_coverage.evaluate_ratchet(
+            modified={Path("alpha")},
+            current={Path("alpha")},
+            without_evals={Path("alpha")},
+            coverage_pct=49.9,
+        )
+        self.assertEqual(1, len(warnings))
+        self.assertEqual([], errors)
+
+    def test_failure_threshold_emits_error(self) -> None:
+        warnings, errors = eval_coverage.evaluate_ratchet(
+            modified={Path("alpha")},
+            current={Path("alpha")},
+            without_evals={Path("alpha")},
+            coverage_pct=50.0,
+        )
+        self.assertEqual([], warnings)
+        self.assertEqual(1, len(errors))
+
+    def test_deleted_skill_does_not_require_new_evals(self) -> None:
+        warnings, errors = eval_coverage.evaluate_ratchet(
+            modified={Path("removed")},
+            current=set(),
+            without_evals=set(),
+            coverage_pct=100.0,
+        )
+        self.assertEqual([], warnings)
+        self.assertEqual([], errors)
 
 
 if __name__ == "__main__":
