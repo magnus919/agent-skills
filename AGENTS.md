@@ -11,7 +11,7 @@ Every skill in this repository conforms to the [Agent Skills specification](http
 | Directory | Each skill in its own directory named by the skill |
 | Entry point | `SKILL.md` with YAML frontmatter + markdown body |
 | `name` field | Lowercase, hyphens only, matches parent directory name |
-| `description` field | Trigger-oriented, describes what and when |
+| `description` field | Trigger-oriented, starts with an imperative verb, defines both positive and negative trigger boundaries |
 | Progressive disclosure | Core instructions in `SKILL.md` (< 500 lines, < 5,000 tokens), supporting material in `references/`, `templates/`, `scripts/` |
 | File references | Relative paths from skill root, one level deep |
 | **Human-readable README** | **`README.md`** in skill root — required for every skill. See [README Format](#readme-format) below |
@@ -93,7 +93,13 @@ Use each skill's `description` field as the primary routing source. For keyword 
 
 ## Use-When Sections
 
-Every skill description must identify when to load it. Skills with meaningful overlap should also include a `## When not to use` section naming the nearest alternative or prerequisite. Keep these sections trigger-oriented and concise; implementation details belong in references.
+Every skill description must start with an imperative verb and define both when to load it and when not to. Skills with meaningful overlap should also include a `## When not to use` section naming the nearest alternative or prerequisite. Keep these sections trigger-oriented and concise; implementation details belong in references. The repository's quality validator enforces these requirements on changed skills.
+
+## Eval Requirements
+
+Every new skill must include `evals/evals.json` with at least five representative output-quality cases. Each case needs a realistic prompt, an expected outcome, and observable assertions. Trigger-only checks (should-trigger / should-not-trigger probes) are harness-specific and belong in a separate test set, not in `evals/evals.json`.
+
+Existing skills are grandfathered via `scripts/grandfathered-skills.txt`. As overall eval coverage climbs past 25%, modified skills without evals receive a warning; past 50%, they fail CI. The coverage report is available via `python3 scripts/eval-coverage.py`.
 
 ## Best Practices
 
@@ -117,12 +123,25 @@ Skills that perform diagnosis, planning, or multi-step work must state when they
 
 When creating or modifying a skill in this repo, validate against the format:
 - `name` matches parent directory name
-- `description` is 1-1024 chars, non-empty
+- `description` is 1-1024 chars, non-empty, starts with an imperative verb, and defines a negative boundary
 - Body under 500 lines and 5,000 tokens
 - All file references use relative paths from skill root
 - Frontmatter YAML is valid
 - **`README.md` exists in the skill root** with all required sections (see [README Format](#readme-format) above)
 - **README is written for humans** — no agent instructions, JSON schemas, or progressive disclosure notes in the README. Those belong in `SKILL.md`.
+- **`evals/evals.json` exists** with at least five output-quality cases for new skills (see [Eval Requirements](#eval-requirements))
+
+### Generated Artifacts
+
+This repository tracks generated catalog files (`.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json`, `llms.txt`). CI validates that these are current; it does not regenerate them. If CI reports a stale artifact, regenerate locally:
+
+```sh
+ruby scripts/gen-claude-marketplace.rb --write
+ruby scripts/gen-codex-plugin.rb --write
+ruby scripts/gen-llms-txt.rb --write
+```
+
+Each script also runs in check mode (without `--write`) to verify freshness.
 
 ### Respect Attribution
 

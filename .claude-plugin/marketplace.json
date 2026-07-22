@@ -39,7 +39,7 @@
         "./agent-skills"
       ],
       "strict": false,
-      "description": "Reference for the Agent Skills open format — the directory structure, SKILL.md frontmatter schema, naming conventions, progressive disclosure model, and best practices for creating skills. Use this whenever creating, reviewing, or editing skills in this repository to ensure they follow the standard spec."
+      "description": "Use this skill when creating, reviewing, or editing Agent Skills-format skills, or when implementing skill discovery and loading in an agent client. It covers directory structure, SKILL.md metadata, progressive disclosure, evals, and repository conventions. Do not use this skill for general software work that does not involve the Agent Skills format or lifecycle."
     },
     {
       "name": "api-design-and-evolution",
