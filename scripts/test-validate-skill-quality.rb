@@ -66,7 +66,9 @@ class ValidateSkillQualityTest < Minitest::Test
       "## When not to use\n\n> <!-- boundary goes here -->\n",
       "## When not to use\n\n```text\nUse another skill instead.\n```\n",
       "## When not to use\n\n> ```text\n> Use another skill instead.\n> ```\n",
-      "## When not to use\n\n`TODO: Document this later.`\n"
+      "## When not to use\n\n`TODO: Document this later.`\n",
+      "## When not to use\n\nDetails will be added later.\n",
+      "## When not to use\n\nThis section explains deployment behavior.\n"
     ]
 
     bodies.each do |body|
@@ -126,6 +128,56 @@ class ValidateSkillQualityTest < Minitest::Test
     end
   end
 
+  def test_inline_markdown_does_not_hide_no_op_phrases
+    body = <<~MARKDOWN
+      # Ruby review
+      Follow **best practices**.
+      Write *maintainable* code.
+      Follow __best practices__.
+      Write _maintainable_ code.
+      `Follow best practices.`
+      Call `follow_best_practices()`.
+      Call `follow__best__practices()`.
+      Follow ***best practices***.
+      Follow **_best practices_**.
+      Follow _**best practices**_.
+      Follow **best** *practices*.
+      Follow *best* **practices**.
+      Write **maintainable** **code**.
+
+      ## When not to use
+      Use a deployment skill for releases.
+    MARKDOWN
+
+    with_skill("Review Ruby code for correctness.", body) do |path|
+      warnings = SkillQualityValidator.new.validate(path).select { |finding| finding.severity == :warning }
+      assert_equal 11, warnings.length
+      assert_equal [6, 7, 8, 9, 10, 13, 14, 15, 16, 17, 18], warnings.map(&:line).sort
+    end
+  end
+
+  def test_whole_phrase_emphasis_is_detected_for_every_no_op_family
+    phrases = [
+      "Write clear code",
+      "Follow best practices",
+      "Handle errors gracefully",
+      "Ensure high quality",
+      "Make it easy to read",
+      "Write maintainable code"
+    ]
+
+    phrases.each do |phrase|
+      ["**_#{phrase}_**.", "__#{phrase}__."].each do |formatted|
+        body = "#{formatted}\n\n## When not to use\nUse a deployment skill for releases.\n"
+        with_skill("Review Ruby code for correctness.", body) do |path|
+          warnings = SkillQualityValidator.new.validate(path).select { |finding| finding.severity == :warning }
+          assert_equal 1, warnings.length, formatted
+          assert_equal 5, warnings.first.line, formatted
+        end
+      end
+    end
+  end
+
   def test_malformed_frontmatter_is_reported_without_crashing
     Dir.mktmpdir do |directory|
       path = File.join(directory, "SKILL.md")
@@ -153,9 +205,11 @@ class ValidateSkillQualityTest < Minitest::Test
       git(root, "mv", "old-name/RENAMED.md", "renamed/SKILL.md")
       write_skill(root, "untracked/SKILL.md", valid_description("untracked"))
       write_skill(root, "SKILL.md", valid_description("root-level"))
+      write_skill(root, "agent-council/profiles/skills/vendored/SKILL.md", valid_description("vendored"))
+      write_skill(root, "not-agent-council/profiles/skills/changed/SKILL.md", valid_description("similarly named"))
 
       assert_equal(
-        %w[SKILL.md added/SKILL.md modified/SKILL.md renamed/SKILL.md untracked/SKILL.md],
+        %w[SKILL.md added/SKILL.md modified/SKILL.md not-agent-council/profiles/skills/changed/SKILL.md renamed/SKILL.md untracked/SKILL.md],
         ChangedSkillSelector.new(root: root, base: base).paths
       )
     end
