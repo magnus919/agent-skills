@@ -23,11 +23,19 @@ GRANDFATHER_FILE = ROOT / "scripts" / "grandfathered-skills.txt"
 WARN_THRESHOLD = 25   # modified skills without evals get a warning
 FAIL_THRESHOLD = 50   # modified skills without evals fail CI
 
+# Pathspec that matches every tracked file under a canonical skill directory.
+# A canonical skill lives at <root>/<skill-name>/SKILL.md or
+# <root>/bundles/<bundle-name>/skills/<skill-name>/SKILL.md.  The glob
+# ``*/SKILL.md`` covers the first shape; ``bundles/*/skills/*/SKILL.md``
+# covers the second.  We use the same glob for both ls-files and diff so
+# that modified-skill detection sees the same universe as find_skills().
+SKILL_PATHSPEC = ":(glob)**/SKILL.md"
+
 
 def find_skills() -> list[Path]:
     """Find all canonical skill directories via git-tracked SKILL.md files."""
     result = subprocess.run(
-        ["git", "ls-files", "-z", "--", "*/SKILL.md"],
+        ["git", "ls-files", "-z", "--", SKILL_PATHSPEC],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -81,18 +89,84 @@ def count_references(skill_name: str, all_skill_dirs: list[Path]) -> int:
 
 
 def modified_skills(base_ref: str) -> set[Path]:
-    """Return skill directories with changes between base_ref and HEAD."""
+    """Return skill directories with any tracked file changed since base_ref.
+
+    A skill is considered modified when *any* file under its directory
+    changes — not just SKILL.md.  This covers references, scripts,
+    fixtures, README, and eval manifests.
+    """
     result = subprocess.run(
-        ["git", "diff", "--name-only", base_ref, "HEAD", "--", "*/SKILL.md"],
+        ["git", "diff", "--name-only", base_ref, "HEAD"],
         cwd=ROOT,
         capture_output=True,
         text=True,
     )
-    modified = set()
-    for line in result.stdout.strip().splitlines():
-        if line and "/agent-council/profiles/skills/" not in line:
-            modified.add(Path(line).parent)
+    changed_files = [
+        line for line in result.stdout.strip().splitlines()
+        if line and "/agent-council/profiles/skills/" not in line
+    ]
+    # Map each changed file to its owning skill directory by checking
+    # whether the file path starts with a known skill directory prefix.
+    known_skills = find_skills()
+    modified: set[Path] = set()
+    for changed in changed_files:
+        changed_path = Path(changed)
+        for skill_dir in known_skills:
+            try:
+                changed_path.relative_to(skill_dir)
+                modified.add(skill_dir)
+                break
+            except ValueError:
+                continue
     return modified
+
+
+def coverage_decreased(base_ref: str) -> tuple[bool, float, float]:
+    """Compare eval coverage between base_ref and HEAD.
+
+    Returns (decreased, base_pct, head_pct).  Coverage is the percentage
+    of canonical skills that have a non-empty evals/evals.json.
+    """
+    head_skills = find_skills()
+    head_with = sum(1 for s in head_skills if check_evals(s)[0])
+    head_pct = (head_with / len(head_skills) * 100) if head_skills else 0.0
+
+    # Count skills with evals at the base revision.
+    result = subprocess.run(
+        ["git", "ls-tree", "-r", "--name-only", base_ref],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    base_skill_dirs: set[Path] = set()
+    for line in result.stdout.strip().splitlines():
+        if (
+            line
+            and line.endswith("/SKILL.md")
+            and "/agent-council/profiles/skills/" not in line
+        ):
+            base_skill_dirs.add(Path(line).parent)
+
+    base_with = 0
+    for skill_dir in base_skill_dirs:
+        evals_path = f"{skill_dir}/evals/evals.json"
+        cat = subprocess.run(
+            ["git", "show", f"{base_ref}:{evals_path}"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if cat.returncode != 0:
+            continue
+        try:
+            data = json.loads(cat.stdout)
+            if isinstance(data, dict) and isinstance(data.get("evals"), list) and len(data["evals"]) > 0:
+                base_with += 1
+        except (json.JSONDecodeError, ValueError):
+            pass
+
+    base_pct = (base_with / len(base_skill_dirs) * 100) if base_skill_dirs else 0.0
+    return head_pct < base_pct, base_pct, head_pct
 
 
 def main() -> int:
@@ -147,6 +221,14 @@ def main() -> int:
                         f"{name}: modified skill has no evals "
                         f"(coverage {coverage_pct:.1f}% >= {WARN_THRESHOLD}% — evals recommended)"
                     )
+
+        # Monotonic coverage floor: fail if coverage decreased.
+        decreased, base_pct, head_pct = coverage_decreased(args.modified_from)
+        if decreased:
+            ratchet_errors.append(
+                f"eval coverage decreased from {base_pct:.1f}% to {head_pct:.1f}% "
+                f"(base {args.modified_from} → HEAD) — coverage must not regress"
+            )
 
     if args.json:
         print(
