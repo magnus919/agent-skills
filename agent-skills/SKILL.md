@@ -1,10 +1,11 @@
 ---
 name: agent-skills
 description: >-
-  Reference for the Agent Skills open format — the directory structure, SKILL.md
-  frontmatter schema, naming conventions, progressive disclosure model, and best
-  practices for creating skills. Use this whenever creating, reviewing, or editing
-  skills in this repository to ensure they follow the standard spec.
+  Use this skill when creating, reviewing, or editing Agent Skills-format skills,
+  or when implementing skill discovery and loading in an agent client. It covers
+  directory structure, SKILL.md metadata, progressive disclosure, evals, and
+  repository conventions. Do not use this skill for general software work that
+  does not involve the Agent Skills format or lifecycle.
 license: MIT
 ---
 
@@ -23,6 +24,7 @@ A skill is a directory containing, at minimum, a `SKILL.md` file:
 ```
 skill-name/
 ├── SKILL.md          # Required: metadata + instructions
+├── evals/            # Required for new skills in this repository
 ├── scripts/          # Optional: executable code
 ├── references/       # Optional: documentation
 ├── assets/           # Optional: templates, resources
@@ -36,9 +38,10 @@ skill-name/
 1. Read [the specification](references/specification.md) before changing `SKILL.md` metadata or directory structure.
 2. Ground instructions in real domain knowledge, project artifacts, and observed failure modes. Read [best practices](references/best-practices.md) when designing or materially revising instructions.
 3. Keep the skill a coherent, triggerable unit. Put only essential instructions in `SKILL.md`; put conditional detail in focused reference files and state exactly when to read each one.
-4. Use a precise `description` that says both what the skill does and when it applies. For trigger design or review, read [optimizing descriptions](references/optimizing-descriptions.md).
-5. When bundling executable code, read [using scripts](references/using-scripts.md). Document prerequisites and non-interactive invocation in the skill.
-6. Before handoff, run the validation checks in this skill and correct every finding.
+4. Use a precise `description` that says what the skill does, when it applies, and when it does **not** apply. For skills with meaningful overlap, name the nearest alternative or prerequisite in a `## When not to use` section. Test the boundary with at least three should-trigger prompts and two should-not-trigger near-misses; keep these harness-specific trigger checks separate from portable output-quality evals. Read [optimizing descriptions](references/optimizing-descriptions.md) for trigger design.
+5. For every new skill, create `evals/evals.json` with at least five representative output-quality cases. Each case needs a realistic prompt, an expected outcome, and observable assertions. Include edge cases that exercise risky or ambiguous behavior. Read [evaluating skills](references/evaluating-skills.md) for the eval format and iteration workflow.
+6. When bundling executable code, read [using scripts](references/using-scripts.md). Document prerequisites and non-interactive invocation in the skill.
+7. Before handoff, run the validation checks in this skill and correct every finding.
 
 ### Review a skill
 
@@ -46,7 +49,7 @@ skill-name/
 2. Check that the description has both positive and negative trigger boundaries, the workflow is actionable, and resource references are conditional and reachable.
 3. Check that any script has documented dependencies, safe non-interactive inputs, clear errors, and structured output where useful.
 4. For this repository, also verify its required human-facing `README.md`: title, **Why Install This Skill**, **What You Get**, **Quick Start** (unless genuinely reference-only), **Triggers**, and **Requirements**. Keep it human-facing, concise, and free of agent-only instructions.
-5. For quality-sensitive or high-impact skills, create representative evals and read [evaluating skills](references/evaluating-skills.md) before declaring the work complete.
+5. Verify every new skill has `evals/evals.json` with at least five output-quality cases, and check that their expected outcomes and assertions test meaningful behavior. For an existing skill without evals, flag the gap but do not block the review solely for that legacy absence. Read [evaluating skills](references/evaluating-skills.md) before declaring the work complete.
 
 ### Client implementation work
 
@@ -106,7 +109,7 @@ Agents load skills in three stages:
 2. **Instructions** (< 5000 tokens recommended): Full `SKILL.md` loaded when activated
 3. **Resources** (as needed): Files in `scripts/`, `references/`, `assets/` loaded on demand
 
-## Optional Directories
+## Supporting Directories
 
 ### `scripts/`
 Executable code agents can run. Scripts should:
@@ -120,6 +123,9 @@ Additional documentation loaded on demand. Keep individual files focused — age
 
 ### `assets/`
 Static resources: templates, images, data files, schemas.
+
+### `evals/`
+Portable output-quality cases for the skill. New skills in this repository must include `evals/evals.json` with at least five cases; trigger-only checks belong in the harness-specific test set instead of this file.
 
 ## File References
 
