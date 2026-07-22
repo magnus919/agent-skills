@@ -28,13 +28,17 @@ class SkillQualityValidator
     /(?:\A|[.!?;:]\s+)distinct from\s+[`*_"']*[[:alnum:]]/i
   ].freeze
   BOUNDARY_HEADING = /^\#{1,6}\s+When not to use\s*\#*\s*$/i
+  BOUNDARY_CONTENT_PATTERN = /\b(?:avoid|belongs?|choose|defer|do not|don't|does not|doesn't|instead|never|no|not|only|outside|prefer|prerequisite|required?|requires?|rather than|route|see|skip|use|when)\b/i
+  MARKDOWN_LEAD = "(?<![[:alnum:]])[*_`~]*"
+  MARKDOWN_GAP = "[*_`~]*\\s+[*_`~]*"
+  MARKDOWN_TRAIL = "[*_`~]*"
   NO_OP_PATTERNS = {
-    "write clear or clean code" => /\bwrite\s+(?:clear|clean)\s+code\b/i,
-    "follow best practices" => /\bfollow\s+best\s+practices\b/i,
-    "handle errors appropriately or gracefully" => /\bhandle\s+errors\s+(?:appropriately|gracefully)\b/i,
-    "ensure high quality" => /\bensure\s+high\s+quality\b/i,
-    "make it easy to read" => /\bmake\s+it\s+easy\s+to\s+read\b/i,
-    "write maintainable code" => /\bwrite\s+maintainable\s+code\b/i
+    "write clear or clean code" => /#{MARKDOWN_LEAD}write#{MARKDOWN_GAP}(?:clear|clean)#{MARKDOWN_GAP}code#{MARKDOWN_TRAIL}\b/i,
+    "follow best practices" => /#{MARKDOWN_LEAD}follow#{MARKDOWN_GAP}best#{MARKDOWN_GAP}practices#{MARKDOWN_TRAIL}\b/i,
+    "handle errors appropriately or gracefully" => /#{MARKDOWN_LEAD}handle#{MARKDOWN_GAP}errors#{MARKDOWN_GAP}(?:appropriately|gracefully)#{MARKDOWN_TRAIL}\b/i,
+    "ensure high quality" => /#{MARKDOWN_LEAD}ensure#{MARKDOWN_GAP}high#{MARKDOWN_GAP}quality#{MARKDOWN_TRAIL}\b/i,
+    "make it easy to read" => /#{MARKDOWN_LEAD}make#{MARKDOWN_GAP}it#{MARKDOWN_GAP}easy#{MARKDOWN_GAP}to#{MARKDOWN_GAP}read#{MARKDOWN_TRAIL}\b/i,
+    "write maintainable code" => /#{MARKDOWN_LEAD}write#{MARKDOWN_GAP}maintainable#{MARKDOWN_GAP}code#{MARKDOWN_TRAIL}\b/i
   }.freeze
 
   Finding = Struct.new(:severity, :path, :line, :message)
@@ -144,7 +148,7 @@ class SkillQualityValidator
       next false if visible.empty? || visible.match?(/\A[-*_]{3,}\z/)
       next false if visible.match?(/\A(?:TODO|TBD|TBA)\b/i)
 
-      visible.scan(/[[:alnum:]]+/).length >= 3
+      visible.scan(/[[:alnum:]]+/).length >= 3 && visible.match?(BOUNDARY_CONTENT_PATTERN)
     end
   end
 
@@ -182,7 +186,7 @@ class ChangedSkillSelector
     selected.merge(git_paths("ls-files", "--others", "--exclude-standard", "-z", "--", SKILL_PATHSPEC))
 
     selected
-      .reject { |path| path.include?("agent-council/profiles/skills/") }
+      .reject { |path| path.start_with?("agent-council/profiles/skills/") }
       .select { |path| (@root / path).file? }
       .sort
   end
