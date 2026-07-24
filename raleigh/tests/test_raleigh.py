@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import builtins
 import csv
 import importlib.machinery
 import io
@@ -44,6 +45,20 @@ from raleighlib import cli as cli_lib
 
 CLI_SCRIPT = _SCRIPT_DIR / "raleigh"
 cli = importlib.machinery.SourceFileLoader("raleigh_cli", str(CLI_SCRIPT)).load_module()
+
+
+def setUpModule():
+    global _network_guard
+    _network_guard = patch.object(
+        core._OPENER,
+        "open",
+        side_effect=AssertionError("Raleigh unit tests must not make live network calls"),
+    )
+    _network_guard.start()
+
+
+def tearDownModule():
+    _network_guard.stop()
 
 
 class CoreTests(unittest.TestCase):
@@ -403,7 +418,10 @@ class ImageryTests(unittest.TestCase):
         self.assertFalse(imagery.supports_capability(info, "Edit"))
 
     def test_export_image_url_construction(self):
-        with patch("raleighlib.imagery.core.raw_request") as mock_req:
+        with patch(
+            "raleighlib.imagery.service_info",
+            return_value={"capabilities": "Image"},
+        ), patch("raleighlib.imagery.core.raw_request") as mock_req:
             mock_req.return_value = b"\xff\xd8\xff"
             result = imagery.export_image(
                 "https://maps.raleighnc.gov/images/rest/services/Orthos2025/ImageServer",
@@ -625,6 +643,21 @@ class TransitTests(unittest.TestCase):
         self.assertEqual(alerts["entities"][0]["id"], "alert-1")
         self.assertIn("feed_timestamp", alerts)
 
+    def test_decode_realtime_without_protobuf_reports_optional_dependency(self):
+        real_import = builtins.__import__
+
+        def reject_protobuf(name, *args, **kwargs):
+            if name.startswith("google.protobuf"):
+                raise ModuleNotFoundError(name)
+            return real_import(name, *args, **kwargs)
+
+        with patch("builtins.__import__", side_effect=reject_protobuf):
+            with self.assertRaisesRegex(
+                ValueError,
+                r"GTFS-Realtime decoding requires google\.protobuf>=6\.31\.1,<7",
+            ):
+                transit._decode_realtime(b"")
+
     def test_parse_gtfs_zip_fixture(self):
         data = (pathlib.Path(__file__).parent / "fixtures" / "gtfs.zip").read_bytes()
         feed = transit.parse_gtfs_zip(data)
@@ -706,6 +739,8 @@ class DevelopmentTests(unittest.TestCase):
             urllib.error.HTTPError(development.SEARCH_URL, 403, "Forbidden", Message(), None),
         ]
         for failure in failures:
+            if isinstance(failure, urllib.error.HTTPError):
+                self.addCleanup(failure.close)
             with self.subTest(failure=type(failure).__name__, detail=str(failure)):
                 with patch("raleighlib.development.fetch_criteria", return_value=criteria), patch(
                     "raleighlib.development.core.json_request", side_effect=failure
@@ -1643,7 +1678,7 @@ class RealtimeFilterTests(unittest.TestCase):
         self.assertEqual(filtered[0]["trip_id"], "T1")
 
 
-class SubprocessCliTests(unittest.TestCase):
+class CliEntrypointTests(unittest.TestCase):
     def test_cli_subprocess_help(self):
         result = subprocess.run(
             [sys.executable, str(CLI_SCRIPT), "--help"],
@@ -1674,40 +1709,51 @@ class SubprocessCliTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("--limit", result.stdout)
 
-    def test_cli_subprocess_failure_returns_nonzero_no_traceback(self):
-        result = subprocess.run(
-            [sys.executable, str(CLI_SCRIPT), "info", "DoesNotExist"],
-            capture_output=True, text=True, timeout=30,
-        )
-        self.assertNotEqual(result.returncode, 0)
-        self.assertNotIn("Traceback", result.stderr)
-        self.assertIn("not found", result.stderr)
+    def test_cli_failure_returns_nonzero_no_traceback(self):
+        with patch("raleighlib.cli.hub.catalog_from_cache_or_live", return_value=[]):
+            code, _, err = self.run_cli(["info", "DoesNotExist"])
+        self.assertNotEqual(code, 0)
+        self.assertNotIn("Traceback", err)
+        self.assertIn("not found", err)
 
-    def test_cli_imagery_identify_subprocess(self):
-        result = subprocess.run(
-            [sys.executable, str(CLI_SCRIPT), "imagery", "identify", "Orthos2025", "--point=-78.65,35.75", "--json"],
-            capture_output=True, text=True, timeout=60,
-        )
-        self.assertEqual(result.returncode, 0, result.stderr)
-        data = json.loads(result.stdout)
-        self.assertIn("location", data)
+    def test_cli_imagery_identify_json(self):
+        result = {"location": {"x": -78.65, "y": 35.75}, "value": "12"}
+        with patch("raleighlib.cli.imagery.identify", return_value=result):
+            code, out, err = self.run_cli(
+                ["imagery", "identify", "Orthos2025", "--point=-78.65,35.75", "--json"]
+            )
+        self.assertEqual(code, 0, err)
+        self.assertEqual(json.loads(out), result)
 
-    def test_cli_imagery_statistics_subprocess(self):
-        result = subprocess.run(
-            [sys.executable, str(CLI_SCRIPT), "imagery", "statistics", "Orthos2025", "--bbox=-78.7,35.7,-78.6,35.8", "--json"],
-            capture_output=True, text=True, timeout=60,
-        )
-        self.assertEqual(result.returncode, 0, result.stderr)
-        data = json.loads(result.stdout)
-        self.assertIn("statistics", data)
+    def test_cli_imagery_statistics_json(self):
+        result = {"statistics": [{"min": 0, "max": 255}]}
+        with patch("raleighlib.cli.imagery.compute_statistics", return_value=result):
+            code, out, err = self.run_cli(
+                ["imagery", "statistics", "Orthos2025", "--bbox=-78.7,35.7,-78.6,35.8", "--json"]
+            )
+        self.assertEqual(code, 0, err)
+        self.assertEqual(json.loads(out), result)
 
     def test_cli_imagery_identify_error_is_concise(self):
-        result = subprocess.run(
-            [sys.executable, str(CLI_SCRIPT), "imagery", "identify", "NonexistentService", "--point=-78.65,35.75", "--json"],
-            capture_output=True, text=True, timeout=30,
-        )
-        self.assertNotEqual(result.returncode, 0)
-        self.assertNotIn("Traceback", result.stderr)
+        with patch(
+            "raleighlib.cli.imagery.identify",
+            side_effect=imagery.CapabilityError("service unavailable"),
+        ):
+            code, _, err = self.run_cli(
+                ["imagery", "identify", "NonexistentService", "--point=-78.65,35.75", "--json"]
+            )
+        self.assertNotEqual(code, 0)
+        self.assertNotIn("Traceback", err)
+        self.assertIn("service unavailable", err)
+
+    def run_cli(self, arguments):
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            try:
+                result = cli.main(arguments)
+            except SystemExit as exc:
+                return exc.code, stdout.getvalue(), stderr.getvalue()
+        return result, stdout.getvalue(), stderr.getvalue()
 
 
 class FinalReviewRegressionTests(unittest.TestCase):

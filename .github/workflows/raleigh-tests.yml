@@ -1,0 +1,47 @@
+name: Raleigh tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'raleigh/**'
+      - '.github/workflows/raleigh-tests.yml'
+      - '.github/workflows/validate.yml'
+  pull_request:
+    paths:
+      - 'raleigh/**'
+      - '.github/workflows/raleigh-tests.yml'
+      - '.github/workflows/validate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python ${{ matrix.python }} / protobuf ${{ matrix.protobuf }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.14']
+        protobuf: [absent, present]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install optional protobuf runtime
+        if: matrix.protobuf == 'present'
+        run: python -m pip install 'protobuf>=6.31.1,<7'
+      - name: Ensure optional protobuf runtime is absent
+        if: matrix.protobuf == 'absent'
+        run: |
+          python -m pip uninstall -y protobuf
+          if python -c 'import google.protobuf' 2>/dev/null; then
+            echo 'protobuf remains installed' >&2
+            exit 1
+          fi
+      - name: Run deterministic Raleigh unit tests
+        run: python3 -m unittest raleigh/tests/test_raleigh.py
