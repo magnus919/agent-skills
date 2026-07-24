@@ -100,7 +100,6 @@ traefik
 trakt
 transistor
 vercel-eve
-verification-methodology
 web-accessibility
 woodpecker-ci
 yc-default-alive-calculator

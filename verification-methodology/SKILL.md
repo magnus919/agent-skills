@@ -1,6 +1,6 @@
 ---
 name: verification-methodology
-description: Verify work against explicit criteria using evidence, reproducible checks, and clear pass, conditional, or blocked verdicts. Use before declaring an artifact, implementation, or claim complete.
+description: Verify work against explicit criteria using direct, source-faithful evidence, reproducible checks, and clear verdicts. Use before declaring an artifact, implementation, or claim complete; do not use for exploratory research without pass/fail criteria.
 license: MIT
 compatibility: No runtime dependency.
 metadata:
@@ -17,11 +17,26 @@ Pass/fail assessment against pre-defined criteria.
 
 1. **Receive** — restate the artifact, claim, or implementation being verified and the decision it will support.
 2. **Assess criteria** — convert requirements into observable pass/fail conditions; identify what would disprove each claim.
-3. **Investigate** — collect direct, reproducible evidence and record commands, source locations, or source URLs. Own this collection when the source is accessible: do not ask the user to relay evidence you can retrieve yourself. Ask only for access you genuinely lack.
+3. **Investigate** — collect direct, reproducible evidence from the source named by the request and record commands, source locations, or source URLs. Own this collection when the source is accessible: do not ask the user to relay evidence you can retrieve yourself. Ask only for access you genuinely lack.
 4. **Decide** — mark each criterion passed, failed, blocked, or not applicable. Do not convert missing evidence into a pass.
 5. **Report** — use the verdict template to distinguish verified facts, assumptions, and remaining work.
 
 Stop when every criterion has direct evidence or an explicit blocked/not-applicable verdict. Escalate when the criterion is ambiguous, evidence conflicts, or the required access is unavailable.
+
+## Source Fidelity
+
+Treat the requested or configured local service as part of the verification criterion, not as an interchangeable topic label.
+
+1. Load the matching skill and use its documented executable or service path before adjacent integrations, generic web search, or public project sources.
+2. Use the path resolved by the skill itself. A missing global `PATH` entry does not prove that a bundled executable is unavailable.
+3. If the direct source fails, report the attempted command or endpoint and its exact failure. Do not silently substitute evidence from another source.
+4. Use a substitute only when the user requests broader context or explicitly accepts the fallback. Label substitute evidence as secondary and do not present it as the requested source's state.
+
+Example: for “What’s new on Jellyfin?” in an environment with a configured Jellyfin skill and bundled CLI, query that server through the bundled CLI first. Home Assistant entities and public Jellyfin project activity answer different questions.
+
+## When not to use
+
+Do not use this skill for open-ended exploration that has no artifact, claim, decision, or observable completion criterion. Use a research or discovery skill first, then return here when there is something falsifiable to verify.
 
 ## Reference Files
 
