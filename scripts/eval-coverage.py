@@ -11,13 +11,17 @@ Usage:
 """
 
 import argparse
+import io
 import json
 import subprocess
 import sys
+import tarfile
+import tempfile
 from pathlib import Path
 
+from eval_validation import NOT_ASSESSED, STATE_NAMES, ValidationResult, validate_manifest
+
 ROOT = Path(__file__).resolve().parent.parent
-GRANDFATHER_FILE = ROOT / "scripts" / "grandfathered-skills.txt"
 
 # Phase 3 ratchet thresholds (percent of skills with evals)
 WARN_THRESHOLD = 25   # modified skills without evals get a warning
@@ -48,10 +52,28 @@ def find_skills() -> list[Path]:
     return sorted(skills)
 
 
+def resolve_ref_to_commit(ref: str) -> str:
+    """Resolve *ref* to a commit SHA or raise ValueError.
+
+    The caller must use only the returned SHA in subsequent git commands.
+    """
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", "--end-of-options", f"{ref}^{{commit}}"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise ValueError(
+            f"invalid --modified-from ref: {ref!r} is not an existing commit"
+        )
+    return result.stdout.strip()
+
+
 def find_skills_at(ref: str) -> list[Path]:
     """Find canonical skill directories tracked at a git revision."""
     result = subprocess.run(
-        ["git", "ls-tree", "-r", "--name-only", ref],
+        ["git", "ls-tree", "-r", "--name-only", ref, "--"],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -66,30 +88,16 @@ def find_skills_at(ref: str) -> list[Path]:
             skills.append(Path(name).parent)
     return sorted(skills)
 
-
-def load_grandfathered() -> set[str]:
-    if not GRANDFATHER_FILE.exists():
-        return set()
-    return {
-        line.strip()
-        for line in GRANDFATHER_FILE.read_text().splitlines()
-        if line.strip() and not line.strip().startswith("#")
-    }
+def check_eval_states(skill_dir: Path) -> ValidationResult:
+    """Return validation and evidence states for one skill."""
+    evals_file = ROOT / skill_dir / "evals" / "evals.json"
+    return validate_manifest(evals_file, ROOT)
 
 
 def check_evals(skill_dir: Path) -> tuple[bool, int]:
-    """Return (has_valid_evals, case_count) for a skill directory."""
-    evals_file = ROOT / skill_dir / "evals" / "evals.json"
-    if not evals_file.exists():
-        return False, 0
-    try:
-        data = json.loads(evals_file.read_text(encoding="utf-8"))
-        if isinstance(data, dict) and isinstance(data.get("evals"), list):
-            count = len(data["evals"])
-            return count > 0, count
-        return False, 0
-    except (json.JSONDecodeError, OSError):
-        return False, 0
+    """Return (has_schema_valid_manifest, case_count) for compatibility."""
+    result = check_eval_states(skill_dir)
+    return result.states["schema_valid"] is True, result.case_count
 
 
 def count_references(skill_name: str, all_skill_dirs: list[Path]) -> int:
@@ -107,7 +115,7 @@ def count_references(skill_name: str, all_skill_dirs: list[Path]) -> int:
     return count
 
 
-def modified_skills(base_ref: str) -> set[Path]:
+def modified_skills(base_ref_commit: str) -> set[Path]:
     """Return skill directories with any tracked file changed since base_ref.
 
     A skill is considered modified when *any* file under its directory
@@ -115,7 +123,7 @@ def modified_skills(base_ref: str) -> set[Path]:
     fixtures, README, and eval manifests.
     """
     result = subprocess.run(
-        ["git", "diff", "--name-only", base_ref, "HEAD"],
+        ["git", "diff", "--name-only", base_ref_commit, "HEAD", "--"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -129,7 +137,7 @@ def modified_skills(base_ref: str) -> set[Path]:
     # Include skills from both revisions so complete directory deletions
     # remain observable under their old name.
     known_skills = sorted(
-        set(find_skills()) | set(find_skills_at(base_ref)),
+        set(find_skills()) | set(find_skills_at(base_ref_commit)),
         key=lambda path: len(path.parts),
         reverse=True,
     )
@@ -159,62 +167,50 @@ def evaluate_ratchet(
         name = str(skill_dir)
         if coverage_pct >= FAIL_THRESHOLD:
             errors.append(
-                f"{name}: modified skill has no evals "
+                f"{name}: modified skill has no schema-valid eval manifest "
                 f"(coverage {coverage_pct:.1f}% >= {FAIL_THRESHOLD}% — "
                 "evals required on modification)"
             )
         elif coverage_pct >= WARN_THRESHOLD:
             warnings.append(
-                f"{name}: modified skill has no evals "
+                f"{name}: modified skill has no schema-valid eval manifest "
                 f"(coverage {coverage_pct:.1f}% >= {WARN_THRESHOLD}% — "
                 "evals recommended)"
             )
     return warnings, errors
 
 
-def coverage_decreased(base_ref: str) -> tuple[bool, float, float]:
+def coverage_decreased(base_ref_commit: str) -> tuple[bool, float, float]:
     """Compare eval coverage between base_ref and HEAD.
 
     Returns (decreased, base_pct, head_pct).  Coverage is the percentage
-    of canonical skills that have a non-empty evals/evals.json.
+    of canonical skills that have a schema-valid v1 evals/evals.json.
     """
     head_skills = find_skills()
     head_with = sum(1 for s in head_skills if check_evals(s)[0])
     head_pct = (head_with / len(head_skills) * 100) if head_skills else 0.0
 
-    # Count skills with evals at the base revision.
-    result = subprocess.run(
-        ["git", "ls-tree", "-r", "--name-only", base_ref],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-    )
-    base_skill_dirs: set[Path] = set()
-    for line in result.stdout.strip().splitlines():
-        if (
-            line
-            and line.endswith("/SKILL.md")
-            and "/agent-council/profiles/skills/" not in line
-        ):
-            base_skill_dirs.add(Path(line).parent)
-
+    base_skill_dirs = set(find_skills_at(base_ref_commit))
     base_with = 0
-    for skill_dir in base_skill_dirs:
-        evals_path = f"{skill_dir}/evals/evals.json"
-        cat = subprocess.run(
-            ["git", "show", f"{base_ref}:{evals_path}"],
-            cwd=ROOT,
+    archive = subprocess.run(
+        ["git", "archive", "--format=tar", base_ref_commit, "--"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    ).stdout
+    with tempfile.TemporaryDirectory() as tmp:
+        snapshot = Path(tmp)
+        with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as tar:
+            tar.extractall(snapshot, filter="data")
+        subprocess.run(["git", "init", "-q"], cwd=snapshot, check=True)
+        subprocess.run(
+            ["git", "add", "-f", "--all"], cwd=snapshot, check=True,
             capture_output=True,
-            text=True,
         )
-        if cat.returncode != 0:
-            continue
-        try:
-            data = json.loads(cat.stdout)
-            if isinstance(data, dict) and isinstance(data.get("evals"), list) and len(data["evals"]) > 0:
+        for skill_dir in base_skill_dirs:
+            manifest = snapshot / skill_dir / "evals" / "evals.json"
+            if validate_manifest(manifest, snapshot).states["schema_valid"] is True:
                 base_with += 1
-        except (json.JSONDecodeError, ValueError):
-            pass
 
     base_pct = (base_with / len(base_skill_dirs) * 100) if base_skill_dirs else 0.0
     return head_pct < base_pct, base_pct, head_pct
@@ -230,22 +226,54 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    resolved_base_ref = None
+    if args.modified_from:
+        try:
+            resolved_base_ref = resolve_ref_to_commit(args.modified_from)
+        except ValueError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 2
+
     skills = find_skills()
-    grandfathered = load_grandfathered()
 
     total = len(skills)
-    with_evals: list[dict] = []
+    skill_states: list[dict] = []
     without_evals: list[str] = []
 
     for skill_dir in skills:
-        has, count = check_evals(skill_dir)
+        validation = check_eval_states(skill_dir)
+        has = validation.states["schema_valid"]
+        count = validation.case_count
         name = str(skill_dir)
-        if has:
-            with_evals.append({"skill": name, "cases": count})
-        else:
+        skill_states.append({"skill": name, "cases": count, **validation.states})
+        if has is not True:
             without_evals.append(name)
 
-    coverage_pct = (len(with_evals) / total * 100) if total else 0.0
+    supported_states = ("manifest_present", "schema_valid")
+    state_summary: dict[str, dict[str, object]] = {}
+    for state in supported_states:
+        count = sum(1 for entry in skill_states if entry[state] is True)
+        state_summary[state] = {
+            "assessment": "supported",
+            "count": count,
+            "percentage": round((count / total * 100) if total else 0.0, 1),
+        }
+
+    not_assessed_reasons = {
+        "executable_grader_bindings_present": "No repository contract for executable grader bindings in schema v1.",
+        "recent_run_evidence_present": "No versioned provenance/freshness contract is defined for schema v1.",
+        "release_gated_evidence_present": "No versioned release-gate contract is defined for schema v1.",
+    }
+    for state in STATE_NAMES:
+        if state in state_summary:
+            continue
+        state_summary[state] = {
+            "assessment": NOT_ASSESSED,
+            "count": None,
+            "percentage": None,
+            "reason": not_assessed_reasons[state],
+        }
+    coverage_pct = state_summary["schema_valid"]["percentage"]
 
     # Sort skills without evals: most-referenced first, then alphabetical
     ref_counts = {
@@ -256,8 +284,8 @@ def main() -> int:
     # Phase 3 ratchet check
     ratchet_warnings: list[str] = []
     ratchet_errors: list[str] = []
-    if args.modified_from:
-        modified = modified_skills(args.modified_from)
+    if resolved_base_ref:
+        modified = modified_skills(resolved_base_ref)
         ratchet_warnings, ratchet_errors = evaluate_ratchet(
             modified=modified,
             current=set(skills),
@@ -266,7 +294,7 @@ def main() -> int:
         )
 
         # Monotonic coverage floor: fail if coverage decreased.
-        decreased, base_pct, head_pct = coverage_decreased(args.modified_from)
+        decreased, base_pct, head_pct = coverage_decreased(resolved_base_ref)
         if decreased:
             ratchet_errors.append(
                 f"eval coverage decreased from {base_pct:.1f}% to {head_pct:.1f}% "
@@ -278,14 +306,8 @@ def main() -> int:
             json.dumps(
                 {
                     "total_skills": total,
-                    "skills_with_evals": len(with_evals),
-                    "skills_without_evals": len(without_evals),
-                    "coverage_pct": round(coverage_pct, 1),
-                    "with_evals": with_evals,
-                    "without_evals": [
-                        {"skill": n, "references": ref_counts.get(n, 0)}
-                        for n in without_evals
-                    ],
+                    "states": state_summary,
+                    "skills": skill_states,
                     "ratchet": {
                         "warn_threshold": WARN_THRESHOLD,
                         "fail_threshold": FAIL_THRESHOLD,
@@ -297,14 +319,18 @@ def main() -> int:
             )
         )
     else:
-        print(f"Eval coverage: {len(with_evals)}/{total} skills ({coverage_pct:.1f}%)")
+        print("Eval evidence states (a manifest alone does not prove behavioral quality):")
+        for state in STATE_NAMES:
+            summary = state_summary[state]
+            if summary["assessment"] == "supported":
+                print(
+                    f"  {state}: {summary['count']}/{total} skills "
+                    f"({summary['percentage']:.1f}%)"
+                )
+                continue
+            print(f"  {state}: not assessed ({summary['reason']})")
         print()
-        if with_evals:
-            print("Skills WITH evals:")
-            for entry in with_evals:
-                print(f"  + {entry['skill']} ({entry['cases']} cases)")
-            print()
-        print(f"Skills WITHOUT evals ({len(without_evals)}), by reference count:")
+        print(f"Skills WITHOUT schema-valid eval manifests ({len(without_evals)}), by reference count:")
         for name in without_evals:
             refs = ref_counts.get(name, 0)
             print(f"  - {name} (referenced by {refs} skills)")

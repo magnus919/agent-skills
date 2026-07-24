@@ -20,8 +20,18 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Python validator dependencies
+        run: python3 -m pip install -r requirements-dev.txt
       - name: Validate skill format and links
         run: ruby scripts/validate-skills.rb
+      - name: Test eval manifest validation
+        run: python3 scripts/test-eval-validation.py
+      - name: Validate eval manifests
+        run: python3 scripts/validate-evals.py
       - name: Test changed-skill quality validation
         run: ruby scripts/test-validate-skill-quality.rb
       - name: Validate changed skill quality
