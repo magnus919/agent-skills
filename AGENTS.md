@@ -170,6 +170,10 @@ Each script also runs in check mode (without `--write`) to verify freshness.
 
 Some skills in this repo are adapted from other open-source projects. Attribution is maintained in the source field. Do not remove or modify attribution.
 
+### Linking PRs to Issues
+
+When a PR resolves an issue, use a GitHub closing keyword in the PR body — `Closes #N`, `Fixes #N`, or `Resolves #N` — so the issue auto-closes on merge. Do not use `Implements`, `Addresses`, or `For`, which GitHub ignores.
+
 ## Troubleshooting
 
 **Skill not loading when expected:** The `description` field may need trigger keyword updates. Check that the user's phrasing overlaps with the skill's description vocabulary.
