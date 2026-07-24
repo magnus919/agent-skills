@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/magnus919/agent-skills/schemas/run-manifest-v1.schema.json",
+  "title": "Eval run manifest v1",
+  "description": "Machine-readable record binding a single eval trial to its inputs, outputs, and execution context.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trial_id",
+    "candidate",
+    "case",
+    "adapter",
+    "harness",
+    "model",
+    "permissions",
+    "network_policy",
+    "limits",
+    "cache_state",
+    "started_at",
+    "finished_at",
+    "status",
+    "outputs",
+    "duration_ms",
+    "failures",
+    "missing_evidence"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "trial_id": {"type": "string", "format": "uuid"},
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill_name", "skill_path", "tree_hash"],
+      "properties": {
+        "skill_name": {"type": "string", "minLength": 1},
+        "skill_path": {"type": "string", "minLength": 1},
+        "tree_hash": {"type": "string", "minLength": 1}
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "prompt_hash", "fixture_hashes"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "prompt_hash": {"type": "string", "minLength": 1},
+        "fixture_hashes": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1}
+      }
+    },
+    "harness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1}
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model_id"],
+      "properties": {
+        "provider": {"type": "string"},
+        "model_id": {"type": "string"}
+      }
+    },
+    "permissions": {"type": "object"},
+    "network_policy": {"type": "string"},
+    "limits": {"type": "object"},
+    "cache_state": {"type": "string"},
+    "started_at": {"type": "string", "format": "date-time"},
+    "finished_at": {"type": "string", "format": "date-time"},
+    "status": {
+      "type": "string",
+      "enum": ["completed", "error", "timeout", "stopped"]
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["response", "activation_evidence", "artifact_digests", "tool_event_count"],
+      "properties": {
+        "response": {"type": ["string", "null"]},
+        "activation_evidence": {"type": ["string", "null"]},
+        "artifact_digests": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        },
+        "tool_event_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "duration_ms": {"type": "number", "minimum": 0},
+    "token_usage": {
+      "type": ["object", "null"],
+      "properties": {
+        "input_tokens": {"type": "integer"},
+        "output_tokens": {"type": "integer"}
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "message"],
+        "properties": {
+          "type": {"type": "string"},
+          "message": {"type": "string"}
+        }
+      }
+    },
+    "missing_evidence": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}
