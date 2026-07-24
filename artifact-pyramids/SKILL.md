@@ -133,6 +133,10 @@ The numbered prefixes mirror the pyramid's top-to-bottom orientation: 01 is most
 6. **03-dossiers/ is flat — no subdirectories.** The dossier layer is a flat reference library. Organize with epoch-prefixed or category-prefixed filenames (`epoch-1-validation-edit-3.json`), not nested directories. Subdirectories inside 03-dossiers/ violate the flat-file contract and break the SOURCES navigation path.
 7. **Root-level files are amended; lower-level files are fixed.** In multi-epoch or multi-phase systems, `00-index.md`, `01-summary/findings.md`, and `02-analysis/` trajectory files grow as new data arrives. They are rewritten to reflect the current state. Files in `03-dossiers/` and per-category analysis files below `02-analysis/` are created once and never modified — they represent a fixed point in time.
 
+## Validation Script Pitfall
+
+`scripts/pyramid-status.sh` currently discovers layers by matching **file names**, not canonical directory names. A compliant tree such as `01-summary/findings.md`, `02-analysis/topic.md`, and `03-dossiers/source.md` can therefore be falsely reported as missing L1/L2 when the nested file names do not themselves match the script's layer patterns. It also reports missing YAML frontmatter as a quality issue even though frontmatter is not required by the layer contracts above. Treat this script as a heuristic only; verify canonical directories, one L1 file, per-dimension L2 files, flat L3 files, final `## SOURCES` sections, and link resolution independently.
+
 ## When NOT to use
 
 - Single-turn Q&A with no research artifacts to preserve
