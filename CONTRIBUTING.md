@@ -20,7 +20,9 @@ Each skill must:
 - Use relative links that work from a fresh clone.
 - Use an imperative-verb description that defines both positive and negative trigger boundaries.
 - Describe when the skill should be loaded, and identify the nearest alternative when overlap matters.
-- Include `evals/evals.json` with at least five representative output-quality cases for every new skill. Existing skills are grandfathered via `scripts/grandfathered-skills.txt`; the ratchet tightens as overall coverage climbs. The ratchet runs in CI on every pull request via `python3 scripts/eval-coverage.py --modified-from <base-sha>`. A skill counts as modified when any tracked file under its directory changes. Coverage must not decrease between the base revision and the candidate.
+- Include `evals/evals.json` with explicit `schema_version: 1` and at least five representative output-quality cases for every new skill. This is a repository-owned contract, not part of the normative Agent Skills specification; see [`schemas/evals-v1.schema.json`](schemas/evals-v1.schema.json). Use canonical `assertions`, not `expectations`. Existing skills are grandfathered via `scripts/grandfathered-skills.txt`; the ratchet tightens as schema-valid manifest coverage climbs. The ratchet runs in CI on every pull request via `python3 scripts/eval-coverage.py --modified-from <base-sha>`. A skill counts as modified when any tracked file under its directory changes. Schema-valid manifest coverage must not decrease between the base revision and the candidate.
+
+The coverage report keeps claims separate. `manifest_present` means only that a file exists. Per skill, `schema_valid` is `not_applicable` when `evals/evals.json` is missing, `false` when a present manifest fails parsing/schema/semantic validation, and `true` only when the manifest passes repository v1 validation. Aggregate schema-valid coverage counts only skills where `schema_valid` is `true`. The remaining states are named but intentionally `not_assessed` in v1: `executable_grader_bindings_present`, `recent_run_evidence_present`, and `release_gated_evidence_present`. Those require separate versioned contracts for grader bindings, provenance/freshness, and release-gate evidence.
 
 ## Development
 
@@ -29,8 +31,13 @@ Clone the repository and run the validators from its root:
 ```sh
 git clone https://github.com/magnus919/agent-skills.git
 cd agent-skills
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install -r requirements-dev.txt
 ruby scripts/validate-skills.rb
 ruby scripts/validate-skill-quality.rb --base origin/main
+python3 scripts/test-eval-validation.py
+python3 scripts/validate-evals.py
 python3 scripts/test-eval-coverage.py
 python3 scripts/eval-coverage.py
 ```

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/magnus919/agent-skills/schemas/evals-v1.schema.json",
+  "title": "agent-skills repository eval manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "skill_name", "evals"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "skill_name": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "evals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/eval_case"}
+    }
+  },
+  "$defs": {
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?=.*\\S)(?!/)(?!\\./)(?!.*//)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\/$).+$"
+    },
+    "eval_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "prompt", "expected_output", "assertions"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "prompt": {"type": "string", "minLength": 1, "pattern": "\\S"},
+        "expected_output": {"type": "string", "minLength": 1, "pattern": "\\S"},
+        "assertions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "pattern": "\\S"}
+        },
+        "files": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/relative_path"}
+        }
+      }
+    }
+  }
+}

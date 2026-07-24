@@ -4,6 +4,7 @@
 require "yaml"
 require "set"
 require "json"
+require "open3"
 
 ROOT = File.expand_path("..", __dir__)
 ALLOWED_FIELDS = %w[name description license compatibility metadata allowed-tools].freeze
@@ -12,6 +13,8 @@ GRANDFATHER_FILE = File.join(ROOT, "scripts", "grandfathered-skills.txt")
 MIN_EVAL_CASES = 5
 
 errors = []
+eval_stdout, eval_stderr, eval_status = Open3.capture3("python3", File.join(ROOT, "scripts", "validate-evals.py"), chdir: ROOT)
+errors.concat(eval_stderr.lines(chomp: true)) unless eval_status.success?
 skills = Dir.glob("#{ROOT}/**/SKILL.md").sort.reject do |skill|
   skill.include?("/agent-council/profiles/skills/")
 end

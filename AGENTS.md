@@ -97,9 +97,31 @@ Every skill description must start with an imperative verb and define both when 
 
 ## Eval Requirements
 
-Every new skill must include `evals/evals.json` with at least five representative output-quality cases. Each case needs a realistic prompt, an expected outcome, and observable assertions. Trigger-only checks (should-trigger / should-not-trigger probes) are harness-specific and belong in a separate test set, not in `evals/evals.json`.
+`evals/evals.json` is a versioned contract owned by this repository; it is not part of the normative Agent Skills specification. The declarative contract is [`schemas/evals-v1.schema.json`](schemas/evals-v1.schema.json), and `assertions` is the canonical case field. Do not substitute or alias `expectations`.
 
-Existing skills are grandfathered via `scripts/grandfathered-skills.txt`. As overall eval coverage climbs past 25%, modified skills without evals receive a warning; past 50%, they fail CI. The coverage report is available via `python3 scripts/eval-coverage.py`. The ratchet is enforced in CI via `python3 scripts/eval-coverage.py --modified-from <base-sha>` on every pull request. A skill is considered modified when any tracked file under its directory changes, not only `SKILL.md`. Coverage must not decrease between the base revision and the candidate; a decrease fails CI.
+Every new skill must include a schema-versioned `evals/evals.json` with at least five representative output-quality cases. Each case needs a stable ID, realistic prompt, expected outcome, and observable assertions. Renaming an eval ID breaks durable evidence references; do not attempt heuristic rename matching. Trigger-only checks (should-trigger / should-not-trigger probes) are harness-specific and belong in a separate test set, not in `evals/evals.json`.
+
+Coverage reports these five states separately:
+
+| State | Evidence required |
+|-------|-------------------|
+| `manifest_present` | `evals/evals.json` exists. This alone does not prove behavioral quality. |
+| `schema_valid` | The manifest passes the repository's v1 structural and semantic validation. |
+| `executable_grader_bindings_present` | Not assessed in v1. Requires a separate versioned grader-binding contract. |
+| `recent_run_evidence_present` | Not assessed in v1. Requires a separate versioned provenance/freshness contract. |
+| `release_gated_evidence_present` | Not assessed in v1. Requires a separate versioned release-gate contract. |
+
+v1 only covers manifest structure and semantic validity. It does not establish runtime provenance or release-gate evidence. Validate the contract and run its focused tests with:
+
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install -r requirements-dev.txt
+python3 scripts/test-eval-validation.py
+python3 scripts/validate-evals.py
+```
+
+Existing skills are grandfathered via `scripts/grandfathered-skills.txt`. As schema-valid manifest coverage climbs past 25%, modified skills without valid manifests receive a warning; past 50%, they fail CI. The coverage report is available via `python3 scripts/eval-coverage.py`. The ratchet is enforced in CI via `python3 scripts/eval-coverage.py --modified-from <base-sha>` on every pull request. A skill is considered modified when any tracked file under its directory changes, not only `SKILL.md`. Schema-valid manifest coverage must not decrease between the base revision and the candidate; a decrease fails CI.
 
 ## Best Practices
 
@@ -130,6 +152,7 @@ When creating or modifying a skill in this repo, validate against the format:
 - **`README.md` exists in the skill root** with all required sections (see [README Format](#readme-format) above)
 - **README is written for humans** — no agent instructions, JSON schemas, or progressive disclosure notes in the README. Those belong in `SKILL.md`.
 - **`evals/evals.json` exists** with at least five output-quality cases for new skills (see [Eval Requirements](#eval-requirements))
+- `python3 scripts/validate-evals.py` accepts every present eval manifest
 
 ### Generated Artifacts
 

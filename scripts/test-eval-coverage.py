@@ -6,16 +6,20 @@ coverage-decrease detection, and threshold behavior.
 """
 
 import json
+import io
 import os
 import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 # Import the module under test.  The script is named eval-coverage.py
 # (hyphenated), so we load it via importlib rather than a normal import.
 import importlib.util  # noqa: E402
+from eval_validation import NOT_APPLICABLE  # noqa: E402
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 _spec = importlib.util.spec_from_file_location(
@@ -49,7 +53,7 @@ def write_skill(repo: str, name: str, evals: list[dict] | None = None) -> None:
         evals_dir = skill_dir / "evals"
         evals_dir.mkdir(exist_ok=True)
         (evals_dir / "evals.json").write_text(
-            json.dumps({"skill_name": name, "evals": evals}, indent=2)
+            json.dumps({"schema_version": 1, "skill_name": name, "evals": evals}, indent=2)
         )
 
 
@@ -275,6 +279,24 @@ class TestCoverageDecreased(unittest.TestCase):
         self.assertAlmostEqual(base_pct, 100.0)
         self.assertAlmostEqual(head_pct, 50.0)
 
+    def test_replacing_valid_manifest_with_invalid_is_regression(self) -> None:
+        write_skill(self.repo, "s1", evals=[make_case("c1")])
+        base = self._commit("valid manifest")
+        (Path(self.repo) / "s1" / "evals" / "evals.json").write_text(
+            json.dumps({"schema_version": 1, "skill_name": "s1", "evals": []}),
+            encoding="utf-8",
+        )
+        self._commit("break manifest")
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        try:
+            decreased, base_pct, head_pct = eval_coverage.coverage_decreased(base)
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertTrue(decreased)
+        self.assertAlmostEqual(base_pct, 100.0)
+        self.assertAlmostEqual(head_pct, 0.0)
+
     def test_no_decrease_when_stable(self) -> None:
         write_skill(self.repo, "s1", evals=[make_case("c1")])
         write_skill(self.repo, "s2")
@@ -359,6 +381,163 @@ class TestRatchetThresholds(unittest.TestCase):
         )
         self.assertEqual([], warnings)
         self.assertEqual([], errors)
+
+
+class TestBaseRefValidation(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.repo = self.tmp.name
+        git(self.repo, "init", "-b", "main")
+        git(self.repo, "config", "user.email", "test@test.invalid")
+        git(self.repo, "config", "user.name", "Test")
+        write_skill(self.repo, "alpha", evals=[make_case("c1")])
+        git(self.repo, "add", "-A")
+        git(self.repo, "commit", "-m", "initial")
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def test_main_rejects_invalid_modified_from_ref(self) -> None:
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        stderr = io.StringIO()
+        try:
+            with mock.patch.object(
+                sys, "argv", ["eval-coverage.py", "--modified-from", "does-not-exist"]
+            ), redirect_stderr(stderr):
+                exit_code = eval_coverage.main()
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertEqual(2, exit_code)
+        self.assertEqual(
+            "ERROR: invalid --modified-from ref: 'does-not-exist' is not an existing commit\n",
+            stderr.getvalue(),
+        )
+
+    def test_main_rejects_option_like_modified_from_ref(self) -> None:
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        stderr = io.StringIO()
+        try:
+            with mock.patch.object(
+                sys, "argv", ["eval-coverage.py", "--modified-from=--name-only"]
+            ), redirect_stderr(stderr):
+                exit_code = eval_coverage.main()
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertEqual(2, exit_code)
+        self.assertEqual(
+            "ERROR: invalid --modified-from ref: '--name-only' is not an existing commit\n",
+            stderr.getvalue(),
+        )
+
+    def test_main_accepts_valid_branch_ref(self) -> None:
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        stderr = io.StringIO()
+        try:
+            with mock.patch.object(
+                sys, "argv", ["eval-coverage.py", "--modified-from", "main", "--json"]
+            ), redirect_stderr(stderr), redirect_stdout(io.StringIO()):
+                exit_code = eval_coverage.main()
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertEqual(0, exit_code)
+        self.assertEqual("", stderr.getvalue())
+
+
+class TestCoverageOutput(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.repo = self.tmp.name
+        git(self.repo, "init", "-b", "main")
+        write_skill(self.repo, "covered", evals=[make_case("c1")])
+        write_skill(self.repo, "uncovered")
+        git(self.repo, "add", "-A")
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def test_json_names_all_five_states_and_per_skill_values(self) -> None:
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        output = io.StringIO()
+        try:
+            with mock.patch.object(sys, "argv", ["eval-coverage.py", "--json"]), redirect_stdout(output):
+                exit_code = eval_coverage.main()
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertEqual(0, exit_code)
+        report = json.loads(output.getvalue())
+        expected = {
+            "manifest_present",
+            "schema_valid",
+            "executable_grader_bindings_present",
+            "recent_run_evidence_present",
+            "release_gated_evidence_present",
+        }
+        self.assertEqual(expected, set(report["states"]))
+        self.assertEqual("supported", report["states"]["manifest_present"]["assessment"])
+        self.assertEqual("supported", report["states"]["schema_valid"]["assessment"])
+        for key in (
+            "executable_grader_bindings_present",
+            "recent_run_evidence_present",
+            "release_gated_evidence_present",
+        ):
+            self.assertEqual("not_assessed", report["states"][key]["assessment"])
+            self.assertIsNone(report["states"][key]["count"])
+            self.assertIsNone(report["states"][key]["percentage"])
+            self.assertTrue(report["states"][key]["reason"])
+        for skill in report["skills"]:
+            self.assertTrue(expected.issubset(skill))
+            self.assertIsInstance(skill["manifest_present"], bool)
+            self.assertIn(skill["schema_valid"], (True, False, NOT_APPLICABLE))
+            self.assertEqual("not_assessed", skill["executable_grader_bindings_present"])
+            self.assertEqual("not_assessed", skill["recent_run_evidence_present"])
+            self.assertEqual("not_assessed", skill["release_gated_evidence_present"])
+
+        per_skill = {entry["skill"]: entry for entry in report["skills"]}
+        self.assertTrue(per_skill["covered"]["schema_valid"])
+        self.assertEqual(NOT_APPLICABLE, per_skill["uncovered"]["schema_valid"])
+
+    def test_human_output_uses_same_state_names_and_not_assessed_wording(self) -> None:
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        output = io.StringIO()
+        try:
+            with mock.patch.object(sys, "argv", ["eval-coverage.py"]), redirect_stdout(output):
+                exit_code = eval_coverage.main()
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertEqual(0, exit_code)
+        text = output.getvalue()
+        self.assertIn("manifest_present", text)
+        self.assertIn("schema_valid", text)
+        self.assertIn("executable_grader_bindings_present: not assessed", text)
+        self.assertIn("recent_run_evidence_present: not assessed", text)
+        self.assertIn("release_gated_evidence_present: not assessed", text)
+
+    def test_present_invalid_and_missing_manifest_reporting(self) -> None:
+        invalid_manifest = Path(self.repo) / "uncovered" / "evals"
+        invalid_manifest.mkdir(parents=True, exist_ok=True)
+        (invalid_manifest / "evals.json").write_text(
+            json.dumps({"schema_version": 1, "skill_name": "uncovered", "evals": []}),
+            encoding="utf-8",
+        )
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        try:
+            covered = eval_coverage.check_eval_states(Path("covered"))
+            uncovered = eval_coverage.check_eval_states(Path("uncovered"))
+            missing = eval_coverage.check_eval_states(Path("missing"))
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertTrue(covered.states["manifest_present"])
+        self.assertTrue(covered.states["schema_valid"])
+        self.assertTrue(uncovered.states["manifest_present"])
+        self.assertFalse(uncovered.states["schema_valid"])
+        self.assertFalse(missing.states["manifest_present"])
+        self.assertEqual(NOT_APPLICABLE, missing.states["schema_valid"])
 
 
 if __name__ == "__main__":
