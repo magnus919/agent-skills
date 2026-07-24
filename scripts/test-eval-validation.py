@@ -314,9 +314,10 @@ class EvalValidationTest(unittest.TestCase):
         outside = self.root / "outside.json"
         outside.write_text("{}\n", encoding="utf-8")
         directory = self.skill / "fixtures"
-        symlink_target = self.skill / "fixtures" / "target.json"
+        directory.mkdir(parents=True, exist_ok=True)
+        symlink_target = directory / "target.json"
         symlink_target.write_text("{}\n", encoding="utf-8")
-        os.symlink(symlink_target, self.skill / "fixtures" / "linked.json")
+        os.symlink(symlink_target, directory / "linked.json")
         git(self.root, "add", "-A")
 
         invalid_paths = [
