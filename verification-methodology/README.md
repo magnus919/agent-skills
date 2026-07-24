@@ -14,16 +14,17 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
 | `references/` | Reference material: `criteria-assessment.md`, `evidence-standards.md`, `verdict-template.md` |
+| `evals/evals.json` | Regression cases for direct-source selection, bundled executable discovery, failure reporting, and explicit fallback handling. |
 
 ## Quick Start
 
-Define the criteria, collect direct evidence, and produce a verdict using `references/verdict-template.md`.
+Define the criteria, collect evidence from the requested source before any substitute, and produce a verdict using `references/verdict-template.md`.
 
 Install or expose this directory using your agent's standard Agent Skills loading mechanism, then ask for work that matches the triggers below.
 
 ## Triggers
 
-- Verify work against explicit criteria using evidence, reproducible checks, and clear pass, conditional, or blocked verdicts. Use before declaring an artifact, implementation, or claim complete.
+- Verify work against explicit criteria using direct, source-faithful evidence, reproducible checks, and clear verdicts. Use before declaring an artifact, implementation, or claim complete.
 - Requests involving the method, deliverables, or review process described in `SKILL.md`.
 - Work where a reusable template or reference from this skill would reduce avoidable mistakes.
 
