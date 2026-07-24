@@ -33,7 +33,10 @@ import raleighlib.arcgis as arcgis
 import raleighlib.imagery as imagery
 import raleighlib.geocode as geocode
 import raleighlib.transit as transit
-from raleighlib import gtfs_realtime_pb2
+try:
+    from raleighlib import gtfs_realtime_pb2
+except ModuleNotFoundError:
+    gtfs_realtime_pb2 = None
 import raleighlib.development as development
 import raleighlib.civic as civic
 import raleighlib.meetings as meetings
@@ -611,6 +614,7 @@ class TransitTests(unittest.TestCase):
         self.assertEqual(enriched[0]["route_id"], "R1")
         self.assertEqual(enriched[1]["route_id"], "R1")
 
+    @unittest.skipUnless(gtfs_realtime_pb2, "optional protobuf runtime unavailable")
     @patch("raleighlib.transit.core.raw_request")
     def test_fetch_realtime_decodes_protobuf(self, mock_raw):
         data = (pathlib.Path(__file__).parent / "fixtures" / "gtfs-realtime.bin").read_bytes()
@@ -627,6 +631,7 @@ class TransitTests(unittest.TestCase):
         self.assertEqual(len(feed["routes"]), 1)
         self.assertEqual(feed["routes"][0]["route_short_name"], "1")
 
+    @unittest.skipUnless(gtfs_realtime_pb2, "optional protobuf runtime unavailable")
     def test_fetch_realtime_empty_feed(self):
         data = (pathlib.Path(__file__).parent / "fixtures" / "gtfs-realtime-empty.bin").read_bytes()
         with patch("raleighlib.transit.core.raw_request", return_value=data), patch(
@@ -637,12 +642,14 @@ class TransitTests(unittest.TestCase):
         self.assertIn("feed_timestamp", alerts)
         self.assertIn("staleness_seconds", alerts)
 
+    @unittest.skipUnless(gtfs_realtime_pb2, "optional protobuf runtime unavailable")
     def test_fetch_realtime_malformed_feed(self):
         data = (pathlib.Path(__file__).parent / "fixtures" / "gtfs-realtime-malformed.bin").read_bytes()
         with patch("raleighlib.transit.core.raw_request", return_value=data):
             with self.assertRaisesRegex(ValueError, "malformed"):
                 transit.get_alerts()
 
+    @unittest.skipUnless(gtfs_realtime_pb2, "optional protobuf runtime unavailable")
     def test_fetch_realtime_stale_feed(self):
         data = (pathlib.Path(__file__).parent / "fixtures" / "gtfs-realtime-stale-alert.bin").read_bytes()
         with patch("raleighlib.transit.core.raw_request", return_value=data), patch(
@@ -1793,6 +1800,7 @@ class FinalReviewRegressionTests(unittest.TestCase):
         self.assertEqual(informed["trip_headsign"], "Downtown")
         self.assertEqual(informed["stop_name"], "Main St")
 
+    @unittest.skipUnless(gtfs_realtime_pb2, "optional protobuf runtime unavailable")
     def test_malformed_realtime_cli_reports_error_without_traceback(self):
         malformed = (pathlib.Path(__file__).parent / "fixtures" / "gtfs-realtime-malformed.bin").read_bytes()
         stderr = io.StringIO()
@@ -1895,6 +1903,7 @@ class FinalReviewRegressionTests(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertFalse(destination.exists())
 
+    @unittest.skipUnless(gtfs_realtime_pb2, "optional protobuf runtime unavailable")
     def test_realtime_rejects_parseable_uninitialized_message(self):
         with self.assertRaisesRegex(ValueError, "required fields"):
             transit._decode_realtime(b"")
@@ -2009,6 +2018,7 @@ class FinalReviewRegressionTests(unittest.TestCase):
             with self.assertRaisesRegex(meetings.CompatibilityError, "repeated"):
                 list(meetings._past_meeting_items(2025))
 
+    @unittest.skipUnless(gtfs_realtime_pb2, "optional protobuf runtime unavailable")
     def test_realtime_entities_require_exactly_one_present_payload(self):
         message = gtfs_realtime_pb2.FeedMessage()
         message.header.gtfs_realtime_version = "2.0"
