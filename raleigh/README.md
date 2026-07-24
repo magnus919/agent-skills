@@ -50,6 +50,14 @@ Load this for any City of Raleigh civic data — crime, food inspections, permit
 
 Python 3.10+. All static features use only the Python standard library. GTFS-Realtime vehicle positions, trip updates, and alerts require the optional `protobuf` runtime (`google.protobuf>=6.31.1,<7`); a vendored binding generated with protoc 31.1 supplies message definitions, but it does not replace the runtime. No API key required.
 
+## Testing
+
+Run the deterministic unit suite from the repository root:
+
+```bash
+python3 -m unittest raleigh/tests/test_raleigh.py
+```
+
 ## Safety Notes
 
 All operations are read-only against public endpoints. The CLI enforces a fixed allowlist of service hosts and never calls authentication, payment, submission, or private-data endpoints.
