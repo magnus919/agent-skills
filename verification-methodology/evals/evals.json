@@ -1,0 +1,60 @@
+{
+  "skill_name": "verification-methodology",
+  "evals": [
+    {
+      "id": "configured-jellyfin-server-first",
+      "prompt": "The jellyfin-cli skill is installed, its bundled CLI and valid server configuration are available, and the user asks: ‘What’s new on Jellyfin?’ Verify the answer.",
+      "expected_output": "A source-faithful investigation that loads jellyfin-cli and uses the skill-resolved bundled CLI to query recently added items on the configured server before considering adjacent integrations or public project sources.",
+      "assertions": [
+        "Loads the jellyfin-cli skill before investigating service content.",
+        "The first content query uses the bundled CLI's documented recent-items command through the path resolved by the skill.",
+        "Does not query Home Assistant, GitHub, web search, or public Jellyfin project activity before attempting the configured server.",
+        "Reports the configured server's results as server state rather than conflating them with project news."
+      ]
+    },
+    {
+      "id": "bundled-executable-not-on-path",
+      "prompt": "The storage-audit skill resolves its executable to /opt/skills/storage-audit/scripts/storage-audit, but `which storage-audit` returns nothing. Verify the current storage report.",
+      "expected_output": "An investigation that executes the skill-resolved absolute path instead of concluding that the tool is unavailable because it is absent from the global PATH.",
+      "assertions": [
+        "Attempts /opt/skills/storage-audit/scripts/storage-audit before trying a substitute.",
+        "Does not treat a failed `which` lookup as proof that the bundled executable is unavailable.",
+        "Records the exact executable path used as reproducible evidence.",
+        "Bases the verdict on the bundled tool's result or exact failure."
+      ]
+    },
+    {
+      "id": "direct-source-failure-no-silent-substitution",
+      "prompt": "Use the configured inventory CLI to verify which laptops are currently enrolled. The direct command exits with an authentication error, while a public vendor status page is reachable.",
+      "expected_output": "A blocked or hold verdict that reports the exact direct-source authentication failure and identifies the access needed, without presenting the public vendor status page as evidence of local enrollment state.",
+      "assertions": [
+        "Reports the attempted inventory command or endpoint and the authentication failure.",
+        "Marks local enrollment verification blocked or on hold rather than passed.",
+        "Does not substitute the public vendor status page for the requested inventory source.",
+        "States what access or configuration would resolve the block."
+      ]
+    },
+    {
+      "id": "explicit-broader-context-allows-secondary-source",
+      "prompt": "First verify what version my configured Jellyfin server runs, then compare it with the latest upstream Jellyfin release notes.",
+      "expected_output": "A two-source answer that queries the configured server first, then consults an authoritative upstream release source because the user explicitly requested the comparison, with each source and claim clearly labeled.",
+      "assertions": [
+        "Queries the configured Jellyfin server for its installed version before the upstream comparison.",
+        "Uses an authoritative upstream release source for the latest release claim.",
+        "Labels local server evidence and upstream project evidence separately.",
+        "Does not imply that the latest upstream version is already installed locally."
+      ]
+    },
+    {
+      "id": "requested-trakt-source-before-adjacent-catalog",
+      "prompt": "A configured Trakt skill documents a canonical CLI and credential source. Verify the user's Trakt watchlist. A movie-catalog integration is also available.",
+      "expected_output": "A Trakt-first investigation that follows the skill's documented CLI and credential path, without switching to the adjacent movie catalog unless the user explicitly accepts that fallback.",
+      "assertions": [
+        "Loads the Trakt skill and follows its documented executable and credential discovery path.",
+        "Attempts the Trakt watchlist query before any adjacent movie-catalog query.",
+        "Does not replace a Trakt authentication failure with results from another catalog.",
+        "Reports Trakt evidence or the exact Trakt failure as the basis for the verdict."
+      ]
+    }
+  ]
+}
