@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/magnus919/agent-skills/compare/v0.4.0...v0.5.0) (2026-07-24)
+
+
+### Features
+
+* expand Raleigh civic data skill ([eff14ca](https://github.com/magnus919/agent-skills/commit/eff14ca2b7b92fd5df7b55880d1686ca0a93585d))
+* **raleigh:** expand civic data skill ([903ea05](https://github.com/magnus919/agent-skills/commit/903ea0559ec66e1847ec1596314f82bb5bf97784))
+
+
+### Bug Fixes
+
+* complete eval ratchet verification ([#109](https://github.com/magnus919/agent-skills/issues/109)) ([1e10a56](https://github.com/magnus919/agent-skills/commit/1e10a5619961a746ebd4117fc6e1364a36a88cf8))
+* enforce eval coverage ratchet for complete changed skill directories ([#107](https://github.com/magnus919/agent-skills/issues/107)) ([fc8a895](https://github.com/magnus919/agent-skills/commit/fc8a8952ee65e8ab625c72fbd059e7d79ac19ca1)), closes [#102](https://github.com/magnus919/agent-skills/issues/102)
+
 ## [0.4.0](https://github.com/magnus919/agent-skills/compare/v0.3.0...v0.4.0) (2026-07-22)
 
 
