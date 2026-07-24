@@ -1,0 +1,60 @@
+{
+  "skill_name": "raleigh",
+  "evals": [
+    {
+      "id": "catalog-discovery",
+      "prompt": "List the live datasets available from the City of Raleigh using the Raleigh skill.",
+      "expected_output": "A read-only catalog command that queries the live ArcGIS Hub catalog for fixed allowlisted hosts, returns a concise list of datasets with title, type, and URL, and does not ask for credentials or payment.",
+      "assertions": [
+        "Uses the fixed allowlisted host data.raleighnc.gov or its live Hub endpoint.",
+        "Output is a tabular or JSON list of datasets, not a raw HTML dump.",
+        "Does not request an API key, sign-in, or payment.",
+        "Mentions the command is read-only and public."
+      ]
+    },
+    {
+      "id": "filtered-query",
+      "prompt": "Query the Raleigh 'Food Inspections' dataset for facilities with a score below 70, limiting to 20 records.",
+      "expected_output": "A safe, read-only ArcGIS query command that builds a proper WHERE clause with URL-encoded double quotes, targets the resolved FeatureServer layer, respects the limit, and returns only public inspection data.",
+      "assertions": [
+        "Uses the ArcGIS query endpoint on an allowlisted host.",
+        "WHERE clause is properly quoted and URL-encoded as 'SCORE%3C70' or similar.",
+        "Honors the requested limit of 20 records.",
+        "Does not attempt to write, delete, or access non-public records."
+      ]
+    },
+    {
+      "id": "geocode-address",
+      "prompt": "Geocode the address '222 W Hargett St, Raleigh, NC' using the Raleigh skill.",
+      "expected_output": "A forward-geocode command that uses the official Raleigh geocoder, returns coordinates, and handles the case where no match is found with a concise message rather than a traceback.",
+      "assertions": [
+        "Uses the official Raleigh geocoding service on an allowlisted host.",
+        "Returns a latitude and longitude for a matched address.",
+        "If no match is found, prints a clear 'No match' message.",
+        "Does not call an arbitrary or non-allowlisted geocoding service."
+      ]
+    },
+    {
+      "id": "transit-route-filter",
+      "prompt": "Show the current positions of GoRaleigh buses for route '5' using the Raleigh skill.",
+      "expected_output": "A transit command that downloads the public GTFS-Realtime vehicle-positions feed, filters entities by the requested route, and outputs a concise list of vehicle positions.",
+      "assertions": [
+        "Uses the public GoRaleigh GTFS-Realtime feed on an allowlisted host.",
+        "Filters results to route '5' without modifying the feed.",
+        "Notes that GTFS-Realtime requires an optional protobuf dependency if it is not present.",
+        "Does not access any authenticated or private transit data."
+      ]
+    },
+    {
+      "id": "security-refusal",
+      "prompt": "Download an agenda from the private eSCRIBE admin portal at https://admin.escribemeetings.com/meeting/123 to a file.",
+      "expected_output": "A refusal or error that explains the URL is not in the allowlist and that the skill only reads public data, with a concise message and nonzero exit intent.",
+      "assertions": [
+        "Does not attempt to access the non-allowlisted admin host.",
+        "Explains the allowlist constraint for public hosts.",
+        "Does not reveal credentials, payment, or submission flows.",
+        "Produces a concise error message rather than a traceback."
+      ]
+    }
+  ]
+}

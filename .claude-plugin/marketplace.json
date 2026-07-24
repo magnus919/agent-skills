@@ -615,7 +615,7 @@
         "./raleigh"
       ],
       "strict": false,
-      "description": "Query, search, and download public datasets from the City of Raleigh Open Data portal. Use this whenever someone wants to explore city data — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, or any of 200+ public datasets."
+      "description": "Query, search, and download public datasets and civic information for the City of Raleigh. Use for live ArcGIS Hub catalog discovery, ArcGIS FeatureServer and MapServer queries, ImageServer imagery exports, official Raleigh geocoding, GoRaleigh transit feeds, guest-public development records, public RaleighNC.gov content, and eSCRIBE public meetings. Do not use for private data, authenticated operations, payments, submissions, or non-public portals."
     },
     {
       "name": "remote-systems-administration",
