@@ -831,7 +831,10 @@ class CivicTests(unittest.TestCase):
                 {"type": "node--news", "id": "n2", "attributes": {"status": True, "title": "Two"}},
             ],
         }
-        with patch("raleighlib.civic.core.json_request", side_effect=[page1, page2]) as mock_req:
+        with patch(
+            "raleighlib.civic._resource_type_to_path",
+            return_value="https://raleighnc.gov/jsonapi/node/news",
+        ), patch("raleighlib.civic.core.json_request", side_effect=[page1, page2]) as mock_req:
             results = civic.fetch_jsonapi("node--news", limit=2)
         self.assertEqual(len(results), 2)
         self.assertEqual(mock_req.call_count, 2)
@@ -993,7 +996,7 @@ class MeetingsTests(unittest.TestCase):
     def test_list_upcoming_parses_html(self):
         html = (pathlib.Path(__file__).parent / "fixtures" / "escribe-listing.html").read_bytes()
         with patch("raleighlib.meetings.core.raw_request", return_value=html):
-            meetings_list = meetings.list_upcoming()
+            meetings_list = meetings.list_upcoming(today=date(2026, 7, 23))
         self.assertEqual(len(meetings_list), 1)
         self.assertEqual(meetings_list[0]["title"], "City Council Meeting - Third Tuesday")
         self.assertEqual(meetings_list[0]["date"], "Tuesday, July 23, 2026 @ 11:30 AM")
