@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import subprocess
 import uuid
@@ -11,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from .models import AdapterInput, AdapterOutput, EvalCase
+from .path_safety import contained_path, hash_contained_file, validate_case_id
 
 MANIFEST_SCHEMA_VERSION = 1
 
@@ -53,13 +53,9 @@ def build_manifest(
 
     artifact_digests: dict[str, str] = {}
     for artifact_rel in adapter_output.artifacts:
-        artifact_path = adapter_input.output_dir / artifact_rel
-        if artifact_path.is_file():
-            artifact_digests[artifact_rel] = hashlib.sha256(
-                artifact_path.read_bytes()
-            ).hexdigest()[:16]
-        else:
-            artifact_digests[artifact_rel] = "missing"
+        artifact_digests[artifact_rel] = (
+            hash_contained_file(adapter_input.output_dir, artifact_rel) or "missing"
+        )
 
     failures: list[dict[str, str]] = []
     if adapter_output.error:
@@ -70,7 +66,7 @@ def build_manifest(
         "trial_id": str(uuid.uuid4()),
         "candidate": {
             "skill_name": _skill_name(skill_path),
-            "skill_path": str(skill_path),
+            "skill_path": skill_path.name,
             "tree_hash": _git_tree_hash(skill_path),
         },
         "case": {
@@ -114,7 +110,8 @@ def write_manifest(manifest: dict[str, Any], output_dir: Path) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     trial_id = manifest.get("trial_id", "unknown")
     case_id = manifest.get("case", {}).get("case_id", "unknown")
+    validate_case_id(case_id)
     filename = f"{case_id}--{trial_id[:8]}.manifest.json"
-    path = output_dir / filename
+    path = contained_path(output_dir, filename)
     path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     return path

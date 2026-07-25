@@ -18,7 +18,7 @@
     "relative_path": {
       "type": "string",
       "minLength": 1,
-      "pattern": "^(?=.*\\S)(?!/)(?!\\./)(?!.*//)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\/$).+$"
+      "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])(?=.*\\S)(?!/)(?!\\./)(?!.*//)(?!.*(?:^|/)\\.(?:/|$))(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\/$).+$"
     },
     "eval_case": {
       "type": "object",
@@ -29,7 +29,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 64,
-          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])[a-z0-9]+(?:-[a-z0-9]+)*$"
         },
         "prompt": {"type": "string", "minLength": 1, "pattern": "\\S"},
         "expected_output": {"type": "string", "minLength": 1, "pattern": "\\S"},

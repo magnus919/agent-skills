@@ -13,6 +13,7 @@ from .cli_adapter import CliSubprocessAdapter
 from .fake_adapter import FakeAdapter
 from .manifest import build_manifest, write_manifest
 from .models import AdapterInput, EvalCase
+from .path_safety import contained_path
 
 
 def load_cases(manifest_path: Path) -> list[EvalCase]:
@@ -64,8 +65,8 @@ def run_trial(
     output_dir: Path,
     model: str,
 ) -> Path:
-    work_dir = output_dir / "work" / case.id
-    case_output_dir = output_dir / "trials" / case.id
+    work_dir = contained_path(output_dir, "work", case.id)
+    case_output_dir = contained_path(output_dir, "trials", case.id)
 
     adapter_input = AdapterInput(
         skill_path=skill_path,
@@ -93,7 +94,7 @@ def run_trial(
         finished_at=finished_at,
     )
 
-    return write_manifest(manifest, output_dir / "manifests")
+    return write_manifest(manifest, contained_path(output_dir, "manifests"))
 
 
 def main() -> int:
