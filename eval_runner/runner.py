@@ -26,6 +26,7 @@ def load_cases(manifest_path: Path) -> list[EvalCase]:
                 expected_output=entry["expected_output"],
                 assertions=entry.get("assertions", []),
                 files=entry.get("files", []),
+                case_set=entry.get("case_set", "dev"),
             )
         )
     return cases

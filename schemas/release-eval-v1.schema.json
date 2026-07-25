@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/magnus919/agent-skills/schemas/release-eval-v1.schema.json",
+  "title": "Release evaluation report v1",
+  "description": "Release-grade evaluation matrix with repeated trials, rubric graders, and explicit gate outcomes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_id",
+    "generated_at",
+    "skill_name",
+    "freeze_snapshot",
+    "case_results",
+    "rubric_results",
+    "pairwise_results",
+    "calibration",
+    "release_decision"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "report_id": {"type": "string", "format": "uuid"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "skill_name": {"type": "string", "minLength": 1},
+    "freeze_snapshot": {"$ref": "#/$defs/freeze_snapshot"},
+    "case_results": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/case_result"}
+    },
+    "rubric_results": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/rubric_result"}
+    },
+    "pairwise_results": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/pairwise_result"}
+    },
+    "calibration": {"$ref": "#/$defs/calibration"},
+    "release_decision": {"$ref": "#/$defs/release_decision"}
+  },
+  "$defs": {
+    "freeze_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_tree_hash",
+        "baseline_tree_hash",
+        "dataset_hash",
+        "grader_versions",
+        "randomization_seed",
+        "exclusions",
+        "frozen_at"
+      ],
+      "properties": {
+        "candidate_tree_hash": {"type": "string", "minLength": 1},
+        "baseline_tree_hash": {"type": "string", "minLength": 1},
+        "dataset_hash": {"type": "string", "minLength": 1},
+        "grader_versions": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        },
+        "randomization_seed": {"type": "integer"},
+        "exclusions": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "frozen_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "case_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "case_set",
+        "trial_count",
+        "success_count",
+        "failure_count",
+        "error_count",
+        "timeout_count",
+        "success_frequency",
+        "consistent",
+        "missing_evidence",
+        "paired_delta"
+      ],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "case_set": {
+          "type": "string",
+          "enum": ["dev", "regression", "release"]
+        },
+        "trial_count": {"type": "integer", "minimum": 1},
+        "success_count": {"type": "integer", "minimum": 0},
+        "failure_count": {"type": "integer", "minimum": 0},
+        "error_count": {"type": "integer", "minimum": 0},
+        "timeout_count": {"type": "integer", "minimum": 0},
+        "success_frequency": {"type": "number", "minimum": 0, "maximum": 1},
+        "consistent": {"type": "boolean"},
+        "missing_evidence": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "paired_delta": {
+          "type": "string",
+          "enum": ["candidate_improvement", "candidate_regression", "both_pass", "both_fail", "insufficient_data"]
+        }
+      }
+    },
+    "rubric_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "grader_id",
+        "grader_version",
+        "blinded",
+        "verdict",
+        "scores",
+        "rationale"
+      ],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "grader_id": {"type": "string", "minLength": 1},
+        "grader_version": {"type": "string", "minLength": 1},
+        "blinded": {"type": "boolean"},
+        "verdict": {
+          "type": "string",
+          "enum": ["pass", "fail", "abstain", "insufficient_evidence"]
+        },
+        "scores": {
+          "type": "object",
+          "additionalProperties": {"type": "number"}
+        },
+        "rationale": {"type": "string"}
+      }
+    },
+    "pairwise_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "position_a",
+        "position_b",
+        "winner",
+        "order_reversal_tested",
+        "order_reversal_consistent"
+      ],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "position_a": {"type": "string", "enum": ["candidate", "baseline"]},
+        "position_b": {"type": "string", "enum": ["candidate", "baseline"]},
+        "winner": {
+          "type": "string",
+          "enum": ["a", "b", "tie", "abstain"]
+        },
+        "order_reversal_tested": {"type": "boolean"},
+        "order_reversal_consistent": {"type": ["boolean", "null"]}
+      }
+    },
+    "calibration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "human_sample_count",
+        "judge_agreement_rate",
+        "disagreement_slices",
+        "calibrated"
+      ],
+      "properties": {
+        "human_sample_count": {"type": "integer", "minimum": 0},
+        "judge_agreement_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "disagreement_slices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["slice", "disagreement_rate"],
+            "properties": {
+              "slice": {"type": "string"},
+              "disagreement_rate": {"type": "number", "minimum": 0, "maximum": 1}
+            }
+          }
+        },
+        "calibrated": {"type": "boolean"}
+      }
+    },
+    "release_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "reasons", "hard_gate_violations"],
+      "properties": {
+        "outcome": {
+          "type": "string",
+          "enum": ["PASS", "CONDITIONAL", "HOLD", "BLOCK"]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "hard_gate_violations": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}
