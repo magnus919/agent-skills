@@ -34,7 +34,11 @@
       "required": ["skill_name", "skill_path", "tree_hash"],
       "properties": {
         "skill_name": {"type": "string", "minLength": 1},
-        "skill_path": {"type": "string", "minLength": 1},
+        "skill_path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])(?=.*\\S)(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)[^/]+(?:/[^/]+)*$"
+        },
         "tree_hash": {"type": "string", "minLength": 1}
       }
     },
@@ -43,7 +47,12 @@
       "additionalProperties": false,
       "required": ["case_id", "prompt_hash", "fixture_hashes"],
       "properties": {
-        "case_id": {"type": "string", "minLength": 1},
+        "case_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
         "prompt_hash": {"type": "string", "minLength": 1},
         "fixture_hashes": {
           "type": "object",

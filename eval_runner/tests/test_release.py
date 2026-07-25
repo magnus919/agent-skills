@@ -396,6 +396,30 @@ def test_build_release_report_validates_against_schema():
     assert not errors, f"Schema validation failed: {[e.message for e in errors]}"
 
 
+def test_release_schema_matches_runtime_case_ids():
+    try:
+        from jsonschema import Draft202012Validator
+    except ImportError:
+        print("SKIP: jsonschema not installed")
+        return
+
+    schema_path = (
+        Path(__file__).resolve().parent.parent.parent
+        / "schemas"
+        / "release-eval-v1.schema.json"
+    )
+    schema = json.loads(schema_path.read_text())
+    for definition in ["case_result", "rubric_result", "pairwise_result"]:
+        case_id_schema = schema["$defs"][definition]["properties"]["case_id"]
+        validator = Draft202012Validator(case_id_schema)
+        assert not list(validator.iter_errors("valid-case-1")), definition
+        for unsafe_case_id in ["../case", "Uppercase", "case_id", "case\n"]:
+            assert list(validator.iter_errors(unsafe_case_id)), (
+                definition,
+                unsafe_case_id,
+            )
+
+
 def test_write_release_report():
     import tempfile
 
@@ -463,6 +487,7 @@ if __name__ == "__main__":
     test_freeze_snapshot_incomplete()
     test_build_release_report_structure()
     test_build_release_report_validates_against_schema()
+    test_release_schema_matches_runtime_case_ids()
     test_write_release_report()
     test_dataset_hash_deterministic()
     print("All release evaluation tests passed.")
