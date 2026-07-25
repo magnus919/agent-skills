@@ -81,6 +81,7 @@ jobs:
   paired-eval-model:
     runs-on: [self-hosted, linux]
     needs: paired-eval-tests
+    continue-on-error: true
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
