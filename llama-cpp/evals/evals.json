@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "llama-cpp",
+  "evals": [
+    {
+      "id": "hardware-aware-cuda-build",
+      "prompt": "Build llama.cpp with CUDA for this Linux workstation and tune it for the installed NVIDIA GPU. Tell me when GPU acceleration is working.",
+      "expected_output": "The agent discovers the exact host, GPU, driver, CUDA toolkit, compiler, CMake, and portability target; pins a llama.cpp revision; chooses current CMake options; inspects configure output; and proves the built binary sees and uses the intended device during a bounded model load.",
+      "assertions": [
+        "Discovers the GPU model, compute/toolkit compatibility, driver, host architecture, compiler, and whether the artifact is host-native or portable before selecting build options.",
+        "Uses current CMake-based CUDA guidance from installed or pinned upstream documentation rather than obsolete Makefile variables.",
+        "Verifies version, generated help, and --list-devices, then requires model-load logs showing device buffer or layer placement before claiming acceleration.",
+        "Does not infer GPU use merely from a successful build, an accepted --n-gpu-layers argument, or nvidia-smi listing the device."
+      ]
+    },
+    {
+      "id": "gguf-memory-fit-and-provenance",
+      "prompt": "I have 24 GB VRAM and 64 GB RAM. Pick a GGUF of a 32B chat model from Hugging Face, use a 64K context, and download whatever you recommend.",
+      "expected_output": "The agent identifies the exact model and workload, checks model-card license and lineage, pins the repository revision and file, dry-runs the download, inspects GGUF metadata, and budgets weights, KV cache, concurrency, buffers, and margin before proposing a quant and launch experiment.",
+      "assertions": [
+        "Does not select a quantization from parameter count and VRAM alone or present Q4_K_M as universally best.",
+        "Checks the model card, license, base-model lineage, quantizer/provenance, exact revision, file, size, shards, and sidecars before acquisition.",
+        "Accounts for trained context and scaling support, KV cache type and size, parallel sequences, batch buffers, host/device placement, and safety margin.",
+        "Uses a download dry run or equivalent size evidence and treats 64K quality and sustained fit as measurements to verify, not assumptions."
+      ]
+    },
+    {
+      "id": "verified-secure-server-startup",
+      "prompt": "Start llama-server as an OpenAI-compatible endpoint for the model at /models/chat.gguf. Make it available to other machines on my network and tell me when it is ready.",
+      "expected_output": "The agent first proves a loopback launch, waits for model readiness, obtains the reported model identifier, completes a representative OpenAI-compatible inference request, then confirms the LAN exposure, authentication, TLS/proxy, firewall, CORS, logging, and rollback boundary before changing the bind address.",
+      "assertions": [
+        "Starts with or proposes loopback verification before binding to a non-loopback address.",
+        "Distinguishes a 503 loading health response from ready state and verifies a representative inference response rather than process existence alone.",
+        "Queries the running server for its model identifier and tests the exact client route and response fields instead of assuming full OpenAI API parity.",
+        "Requires an explicit network boundary plus API-key handling, TLS or a trusted reverse proxy, firewall/CORS decisions, and does not expose experimental built-in shell or filesystem tools."
+      ]
+    },
+    {
+      "id": "performance-regression-diagnosis",
+      "prompt": "After updating llama.cpp, generation dropped from 42 to 29 tokens per second. Fix the regression. The model file did not change.",
+      "expected_output": "The agent preserves old and new versions, reconstructs matched build, backend, device, model, context, batch, cache, offload, thermal, and workload conditions; separates prompt processing from token generation and end-to-end latency; repeats structured benchmarks; and changes one variable at a time.",
+      "assertions": [
+        "Does not start by changing multiple tuning flags or assume the update itself is the cause.",
+        "Compares exact commits, build options, resolved devices/offload, drivers, model hash, context, batches, threads, cache, and thermal/background conditions.",
+        "Uses repeated llama-bench prompt-processing and token-generation measurements with raw structured output and reports variance.",
+        "Recognizes that llama-bench excludes tokenization and sampling and uses an end-to-end measurement if the reported regression is user-visible latency."
+      ]
+    },
+    {
+      "id": "chat-template-tool-call-failure",
+      "prompt": "My GGUF chats normally, but llama-server returns role markers in content and malformed JSON whenever I send OpenAI tools. Force the ChatML template and lower the temperature so it works.",
+      "expected_output": "The agent resists the requested speculative fix, identifies the exact fine-tune, inspects model-card and GGUF templates plus server props/log format, reproduces one minimal tool call, and only tests a source-supported tool-use template override while preserving the original configuration.",
+      "assertions": [
+        "Does not immediately force ChatML or treat lower temperature as a template/parser repair.",
+        "Inspects the original model card, GGUF chat and tool-use metadata, selected server format, special tokens, and current function-calling documentation.",
+        "Reproduces a minimal deterministic tool with required arguments and verifies tool name, JSON arguments, finish reason, and follow-up flow without executing the proposed tool.",
+        "Checks cache precision and template override effects on output quality and preserves a rollback to the original launch."
+      ]
+    },
+    {
+      "id": "multi-gpu-oom-and-slowdown",
+      "prompt": "A model fits across two unequal NVIDIA GPUs, but tensor split now OOMs on long prompts and is slower than one GPU. Enable peer-to-peer and find the fastest split.",
+      "expected_output": "The agent records device order, memory, interconnect, collectives, split mode, resolved allocation, context, slots, cache, and batch; recognizes tensor mode constraints and P2P risk; compares stable layer, tensor, and single-GPU or partial-offload baselines under matched workloads; and retains the fastest stable configuration with quality checks.",
+      "assertions": [
+        "Does not enable peer-to-peer before confirming support and a rollback, and notes that it can cause instability or corrupted output on some systems.",
+        "Accounts for long-context KV cache, parallel slots, batch buffers, per-device margin, Flash Attention, cache types, architecture support, and automatic-fit limitations.",
+        "Treats layer split as the stable comparison, row split as deprecated, and tensor split as experimental at the reviewed upstream revision.",
+        "Benchmarks against a matched single-GPU or partial-offload baseline and does not assume two GPUs must be faster."
+      ]
+    }
+  ]
+}
