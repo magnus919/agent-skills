@@ -288,6 +288,19 @@ def test_eval_case_rejects_unsafe_fixture_paths():
         else:
             raise AssertionError(f"unsafe fixture path accepted: {fixture_path!r}")
 
+    try:
+        EvalCase(
+            id="fixture-case",
+            prompt="prompt",
+            expected_output="output",
+            assertions=[],
+            files=["fixture.txt", "fixture.txt"],
+        )
+    except ValueError as exc:
+        assert "must be unique" in str(exc)
+    else:
+        raise AssertionError("duplicate fixture paths were accepted")
+
 
 def test_manifest_rejects_unsafe_artifact_paths():
     with tempfile.TemporaryDirectory() as tmp:

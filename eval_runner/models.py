@@ -29,6 +29,8 @@ class EvalCase:
 
     def __post_init__(self) -> None:
         validate_case_id(self.id)
+        if len(self.files) != len(set(self.files)):
+            raise ValueError("eval case fixture paths must be unique")
         for relative_path in self.files:
             validate_relative_path(relative_path)
 
