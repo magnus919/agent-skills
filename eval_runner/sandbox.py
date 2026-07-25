@@ -20,6 +20,30 @@ EXCLUDED_SUFFIXES = {".pyc"}
 PRODUCTION_SURFACE = {"SKILL.md", "README.md", "references", "templates", "scripts", "assets"}
 
 
+def _require_contained(path: Path, root: Path) -> None:
+    try:
+        path.resolve().relative_to(root.resolve())
+    except ValueError as exc:
+        raise ValueError(f"sandbox source escapes skill root: {path}") from exc
+
+
+def _reject_symlinks(path: Path, root: Path) -> None:
+    """Fail closed if *path* or anything beneath it is a symlink."""
+    if path.is_symlink():
+        raise ValueError(f"sandbox source contains symlink: {path}")
+    _require_contained(path, root)
+    if not path.is_dir():
+        return
+    for current_root, dirs, files in os.walk(path, followlinks=False):
+        current = Path(current_root)
+        _require_contained(current, root)
+        for name in [*dirs, *files]:
+            child = current / name
+            if child.is_symlink():
+                raise ValueError(f"sandbox source contains symlink: {child}")
+            _require_contained(child, root)
+
+
 def _is_excluded(path: Path, skill_root: Path) -> bool:
     rel = path.relative_to(skill_root)
     parts = rel.parts
@@ -43,20 +67,35 @@ def stage_skill_sandbox(skill_path: Path, *, readonly: bool = True) -> Path:
     Returns the staged skill directory path. Caller is responsible for cleanup
     (typically via tempfile.TemporaryDirectory context).
     """
-    staging_root = Path(tempfile.mkdtemp(prefix="eval-sandbox-"))
-    staged = staging_root / skill_path.name
-    staged.mkdir()
-
+    if skill_path.is_symlink():
+        raise ValueError(f"skill path must not be a symlink: {skill_path}")
+    skill_root = skill_path.resolve()
+    items: list[Path] = []
     for item in skill_path.iterdir():
         if _is_excluded(item, skill_path):
             continue
         if item.name not in PRODUCTION_SURFACE and item.is_dir():
             continue
+        _reject_symlinks(item, skill_root)
+        items.append(item)
+
+    staging_root = Path(tempfile.mkdtemp(prefix="eval-sandbox-"))
+    staged = staging_root / skill_path.name
+    staged.mkdir()
+
+    for item in items:
         dest = staged / item.name
         if item.is_dir():
-            shutil.copytree(item, dest, ignore=shutil.ignore_patterns(*EXCLUDED_DIRS))
+            shutil.copytree(
+                item,
+                dest,
+                ignore=shutil.ignore_patterns(*EXCLUDED_DIRS),
+                symlinks=True,
+            )
         else:
-            shutil.copy2(item, dest)
+            shutil.copy2(item, dest, follow_symlinks=False)
+
+    _reject_symlinks(staged, staging_root)
 
     if readonly:
         for root, dirs, files in os.walk(staged):
@@ -83,20 +122,42 @@ def stage_paired_sandboxes(skill_path: Path) -> tuple[Path, Path]:
     Returns (candidate_path, baseline_path).
     """
     candidate = stage_skill_sandbox(skill_path, readonly=True)
-    baseline = stage_baseline_sandbox(skill_path)
+    try:
+        baseline = stage_baseline_sandbox(skill_path)
+    except Exception:
+        cleanup_sandbox(candidate)
+        raise
     return candidate, baseline
 
 
 def cleanup_sandbox(staged_path: Path) -> None:
-    """Remove a staged sandbox, restoring write permissions first."""
-    if not staged_path.exists():
+    """Remove a staged sandbox without following replacement symlinks."""
+    staging_root = staged_path.parent
+    open_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    try:
+        root_fd = os.open(staging_root, open_flags)
+    except FileNotFoundError:
         return
-    for root, dirs, files in os.walk(staged_path):
-        for d in dirs:
-            p = Path(root) / d
-            p.chmod(p.stat().st_mode | stat.S_IWUSR)
-        for f in files:
-            p = Path(root) / f
-            p.chmod(p.stat().st_mode | stat.S_IWUSR)
-    staged_path.chmod(staged_path.stat().st_mode | stat.S_IWUSR)
-    shutil.rmtree(staged_path.parent, ignore_errors=True)
+    except OSError:
+        # A replacement symlink must be unlinked, never traversed. If the path
+        # changed to anything else, fail closed and leave it for inspection.
+        if staging_root.is_symlink():
+            staging_root.unlink()
+            return
+        raise
+
+    try:
+        for _root, _dirs, _files, dir_fd in os.fwalk(
+            ".",
+            topdown=True,
+            follow_symlinks=False,
+            dir_fd=root_fd,
+        ):
+            current_mode = stat.S_IMODE(os.fstat(dir_fd).st_mode)
+            os.fchmod(dir_fd, current_mode | stat.S_IWUSR)
+    finally:
+        os.close(root_fd)
+
+    # rmtree uses descriptor-relative operations on supported Unix platforms
+    # and refuses to descend through symlinks introduced after the fwalk.
+    shutil.rmtree(staging_root)
