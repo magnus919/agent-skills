@@ -81,8 +81,10 @@ Preserve a baseline before changing context size, generation and batch threads, 
 
 - Do not infer accelerator use from the command line alone; require device and load-log evidence.
 - Do not expose an unauthenticated server beyond loopback by accident. Authentication is not a substitute for network and TLS controls.
+- Do not print or `tee` unredacted unit definitions, process environments, environment-file contents, API keys, or other credential-bearing configuration. Prefer redacted metadata; never retain secrets merely as evidence. If exact rollback requires a secret-bearing backup, keep it temporarily outside the repository with mode `0600`, minimum retention, and explicit cleanup. Do not publish raw or low-entropy secret hashes.
 - Do not enable `llama-server` built-in filesystem or shell tools in an untrusted environment.
 - Do not override a chat template until model metadata, the original model card, and rendered behavior have been inspected.
+- For `finish_reason: "length"` with populated `reasoning_content` and empty `content`, inspect the access-controlled raw response but report only sanitized field state, lengths, `finish_reason`, and `usage`. From the same baseline, run separate one-variable probes: a bounded output-budget increase and, when the exact template supports it, `chat_template_kwargs.enable_thinking: false`. In streaming, inspect the documented schema for `choices[].delta.reasoning_content`, `choices[].delta.content`, and terminal `choices[].finish_reason`; record each as absent, null, empty, or populated rather than assuming presence. Treat `reasoning_effort: "none"` and server-side reasoning flags as version-sensitive, source-verified alternatives, not portable defaults.
 - Do not compare benchmark numbers from different models, quants, commits, backends, contexts, batches, thermal states, or workloads as if only one variable changed.
 - Do not treat `llama-bench` tokens per second as TTFT; its measurements exclude tokenization and sampling.
 - Do not claim a larger configured context preserves quality unless the model and scaling behavior support it and the workload was evaluated.
