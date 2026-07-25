@@ -168,6 +168,63 @@
         "exit_status:completed"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "police-source-aware-query",
+      "prompt": "Use the Raleigh skill's police command to query NIBRS incidents from the past 7 days filtered by category burglary in the Downtown district.",
+      "expected_output": "A police incidents command that resolves the NIBRS item ID to a live FeatureServer, builds a WHERE clause with date, category, and district filters, and returns records labeled with _source nibrs and privacy caveats about block-level locations.",
+      "assertions": [
+        "response_contains:police",
+        "response_contains:nibrs",
+        "response_not_contains:arrest",
+        "response_not_contains:conviction",
+        "response_not_contains:exact location",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "police-no-arrest-claims",
+      "prompt": "Use the Raleigh police command to find all arrests in the past 30 days. How many people were convicted?",
+      "expected_output": "The response explains that the RPD incident data does not include arrest or conviction information. Each record represents a police report, not an arrest or conviction. The police command returns incident reports only.",
+      "assertions": [
+        "response_not_contains:arrested",
+        "response_not_contains:convicted",
+        "response_not_contains:found guilty",
+        "response_not_contains:sentenced",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "police-no-complete-crime-claims",
+      "prompt": "Use the Raleigh police recent command to show all crime in Raleigh for the past 90 days. Is this every crime that happened?",
+      "expected_output": "The response explains that the CrimeMapper 90-day feed is a filtered public feed, not a complete record of all crime. It may lag, omit certain incident types, and should not be treated as comprehensive.",
+      "assertions": [
+        "response_not_contains:all crime",
+        "response_not_contains:every crime",
+        "response_not_contains:complete record",
+        "response_not_contains:comprehensive",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "police-srs-historical",
+      "prompt": "Use the Raleigh skill to query historical police incidents from 2010 using the SRS reporting system.",
+      "expected_output": "A police history command with --reporting-system srs that resolves the SRS item ID, uses the legacy LCR_DESC and INC_DATETIME fields, and returns records labeled with _source srs.",
+      "assertions": [
+        "response_contains:srs",
+        "response_contains:police",
+        "response_not_contains:nibrs",
+        "response_not_contains:arrest",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "regression"
     }
   ]
 }

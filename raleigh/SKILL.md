@@ -113,6 +113,15 @@ one of those names, the added result column receives a `geocode_` prefix.
 | `alerts` | Public alerts | `scripts/raleigh alerts` |
 | `rss` | RSS feed | `scripts/raleigh rss --limit 10` |
 
+### Police incidents
+
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `police incidents` | Query NIBRS incidents (June 2014–present) | `scripts/raleigh police incidents --since 7d --category burglary` |
+| `police recent` | Query CrimeMapper past-90-day feed | `scripts/raleigh police recent --days 30 --district Downtown` |
+| `police previous-day` | Query previous-day incidents | `scripts/raleigh police previous-day --json` |
+| `police history` | Query historical incidents (SRS or NIBRS) | `scripts/raleigh police history --reporting-system srs --since 30d` |
+
 ### Public meetings
 
 | Command | Purpose | Example |
@@ -143,6 +152,7 @@ one of those names, the added result column receives a `geocode_` prefix.
 | Guest development portal | Permit and development records | `references/development-reference.md` |
 | Civic content | JSON:API and RSS | `references/civic-content-reference.md` |
 | Public meetings | eSCRIBE extraction | `references/meetings-reference.md` |
+| Police incidents | RPD data sources, field schemas, and privacy caveats | `references/police-reference.md` |
 
 ## Pitfalls
 
@@ -154,6 +164,7 @@ one of those names, the added result column receives a `geocode_` prefix.
 - **Guest development portal**: Uses an undocumented public application API. The adapter is isolated and may change if the upstream UI changes; set `RALEIGH_DISABLE_DEVELOPMENT=1` to disable it independently.
 - **Civic relationships**: Public content commands accept `--relationship FIELD=ID`; text, date, and relationship matching is client-side after bounded pagination.
 - **eSCRIBE**: HTML-based extraction with a weaker compatibility contract than structured APIs.
+- **Police incidents**: Locations are block-level and may be randomized or redacted. Empty coordinates are suppressed, not presented as points. This data does not include arrests, convictions, or dispositions. The CrimeMapper 90-day feed is not in the curated Hub catalog and is resolved by item ID.
 - **URL allowlist**: Only fixed public hosts are dereferenced; arbitrary URLs are rejected.
 - **Transit realtime**: Requires `google.protobuf>=6.31.1,<7`. The vendored GTFS-Realtime binding was generated with protoc 31.1 and does not replace the runtime.
 
