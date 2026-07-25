@@ -23,6 +23,7 @@ class EvalCase:
     expected_output: str
     assertions: list[str]
     files: list[str] = field(default_factory=list)
+    case_set: str = "dev"
 
     @property
     def prompt_hash(self) -> str:

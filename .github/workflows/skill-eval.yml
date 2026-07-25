@@ -8,6 +8,7 @@ on:
       - '*/scripts/**'
       - 'eval_runner/**'
       - 'schemas/comparison-report-v1.schema.json'
+      - 'schemas/release-eval-v1.schema.json'
   push:
     branches:
       - main
@@ -17,6 +18,7 @@ on:
       - '*/scripts/**'
       - 'eval_runner/**'
       - 'schemas/comparison-report-v1.schema.json'
+      - 'schemas/release-eval-v1.schema.json'
 
 permissions:
   contents: read
@@ -37,6 +39,8 @@ jobs:
         run: python3 -m pip install -r requirements-dev.txt
       - name: Run paired evaluation unit tests
         run: python3 eval_runner/tests/test_paired.py
+      - name: Run release evaluation unit tests
+        run: python3 eval_runner/tests/test_release.py
       - name: Run existing eval runner tests
         run: python3 eval_runner/tests/test_runner.py
 

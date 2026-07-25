@@ -43,6 +43,10 @@
           "type": "array",
           "uniqueItems": true,
           "items": {"$ref": "#/$defs/relative_path"}
+        },
+        "case_set": {
+          "type": "string",
+          "enum": ["dev", "regression", "release"]
         }
       }
     }
