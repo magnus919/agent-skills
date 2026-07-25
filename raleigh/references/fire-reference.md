@@ -148,3 +148,41 @@ Every feature in JSON output includes:
 | `_station` | Normalized station number or null |
 
 With `fire response-times`, each feature also includes the `_…_seconds` and `_…_status` keys above. The top-level FeatureCollection includes a `_sources` array with `item_id`, `label`, and `caveats` for the source used.
+
+## Fire Protection Proximity (Wake County MAR)
+
+`fire protection` queries the Wake County `MAR Fire Protection Data Public` table (item `8ab8c4f1a8eb473bacfcc1a1c1980b6c`), updated nightly. It returns source-provided station rankings, road-network distances, ISO ratings, and nearest-hydrant distances. The CLI never calculates its own routing, distances, or ISO values.
+
+### Input Modes
+
+| Flag | Behavior |
+|------|----------|
+| `--csaid <id>` | Query the table directly by canonical site-address identifier. |
+| `--address "..."` | Geocode via the official Raleigh locator, resolve to a CSAID through the Wake County MAR Addresses layer, then query. |
+
+Address resolution requires a geocode score >= 90, a single top-ranked geocoder result, and a unique CSAID in a small envelope around the geocoded point. An exact normalized MAR address match wins, including an explicit unit; otherwise a unique base-address record is preferred over nearby unit-level records. Ambiguous or unmatched addresses produce a clear error suggesting `--csaid`.
+
+### Source Schema
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `CSAID` | Integer | Canonical site-address identifier |
+| `STATION_RANK` | Integer | Proximity rank (1 = nearest) |
+| `STATIONID` | String | Station identifier (e.g. `AF1`, `CF6`) |
+| `STATION_DISTANCE` | Double | Road-network distance to station |
+| `STATION_ISO` | String | Station ISO rating |
+| `Hydrant_Distance` | Double | Distance to nearest hydrant |
+
+The source does not advertise distance units; values are passed through as-is.
+
+### Output
+
+JSON output includes `csaid`, `item_id`, `retrieved_at`, a ranked `stations` array, `hydrant_distance`, `distance_units` (currently `null` because the source does not advertise units), and `caveats`. With `--address`, an `address_resolution` object is included with the matched address, score, and coordinates.
+
+### Caveats
+
+- This is source-provided proximity data, not live emergency response data.
+- The table is non-spatial (type: Table); hydrant locations are not exposed, only distance.
+- The table is updated nightly by Wake County; records may lag real-world changes.
+- Duplicate CSAID rows are expected (one per ranked station, typically 3 per site).
+- Missing required fields or conflicting hydrant distances are reported as source drift rather than silently interpreted.

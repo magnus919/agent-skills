@@ -43,6 +43,7 @@ import raleighlib.civic as civic
 import raleighlib.meetings as meetings
 import raleighlib.police as police
 import raleighlib.fire as fire
+import raleighlib.fire_protection as fire_protection
 from raleighlib import cli as cli_lib
 
 CLI_SCRIPT = _SCRIPT_DIR / "raleigh"
@@ -3148,6 +3149,321 @@ class IncidentsTests(unittest.TestCase):
     def test_cli_incidents_active_no_subcommand_shows_help(self):
         with self.assertRaises(SystemExit):
             cli.main(["incidents"])
+
+
+class FireProtectionTests(unittest.TestCase):
+    """Tests for the Wake County MAR fire-protection proximity lookup."""
+
+    ITEM_META = {
+        "id": "8ab8c4f1a8eb473bacfcc1a1c1980b6c",
+        "url": "https://services1.arcgis.com/a7CWfuGP5ZnLYE7I/arcgis/rest/services/MAR_Fire_Protection_Data_view/FeatureServer",
+    }
+    LAYER_META = {
+        "layers": [{"id": 0, "name": "mar_fire_protection_distances"}],
+        "type": "Table",
+        "fields": [
+            {"name": "OBJECTID", "type": "esriFieldTypeOID"},
+            {"name": "STATION_RANK", "type": "esriFieldTypeInteger"},
+            {"name": "STATION_DISTANCE", "type": "esriFieldTypeDouble"},
+            {"name": "STATIONID", "type": "esriFieldTypeString"},
+            {"name": "CSAID", "type": "esriFieldTypeInteger"},
+            {"name": "STATION_ISO", "type": "esriFieldTypeString"},
+            {"name": "Hydrant_Distance", "type": "esriFieldTypeDouble"},
+        ],
+    }
+
+    PROTECTION_RECORDS = [
+        {"attributes": {"OBJECTID": 1, "STATION_RANK": 1, "STATION_DISTANCE": 12099.37, "STATIONID": "AF1", "CSAID": 5286547, "STATION_ISO": "1", "Hydrant_Distance": 57.53}},
+        {"attributes": {"OBJECTID": 2, "STATION_RANK": 2, "STATION_DISTANCE": 11848.80, "STATIONID": "AF3", "CSAID": 5286547, "STATION_ISO": "1", "Hydrant_Distance": 57.53}},
+        {"attributes": {"OBJECTID": 3, "STATION_RANK": 3, "STATION_DISTANCE": 21100.67, "STATIONID": "CF6", "CSAID": 5286547, "STATION_ISO": "1", "Hydrant_Distance": 57.53}},
+    ]
+
+    GEOCODE_CANDIDATES = [
+        {
+            "address": "222 W Hargett St, Raleigh, NC, 27601",
+            "location": {"x": -78.643, "y": 35.779},
+            "score": 100,
+            "attributes": {"Score": 100, "Match_addr": "222 W Hargett St, Raleigh, NC, 27601"},
+        }
+    ]
+
+    MAR_RESPONSE = {
+        "features": [
+            {"attributes": {"CSAID": 5286547, "ADDRESS": "222 W Hargett St", "SUBADDR_TYPE": None}},
+        ]
+    }
+
+    def _mock_protection(self, records=None, item_meta=None, layer_meta=None):
+        records = records if records is not None else self.PROTECTION_RECORDS
+        item_meta = item_meta or self.ITEM_META
+        layer_meta = layer_meta or self.LAYER_META
+
+        def fake_json_request(url, **kwargs):
+            if "sharing/rest/content/items/" in url:
+                return item_meta
+            if url.rstrip("/").endswith("FeatureServer") or url.rstrip("/").endswith("FeatureServer/"):
+                return layer_meta
+            if "/query" in url:
+                return {"features": records}
+            return layer_meta
+
+        return patch("raleighlib.fire_protection.core.json_request", side_effect=fake_json_request), patch(
+            "raleighlib.arcgis.core.json_request", side_effect=fake_json_request
+        )
+
+    def test_query_fire_protection_returns_ranked_stations(self):
+        p1, p2 = self._mock_protection()
+        with p1, p2:
+            result = fire_protection.query_fire_protection(5286547)
+        self.assertEqual(result["csaid"], 5286547)
+        self.assertEqual(result["item_id"], "8ab8c4f1a8eb473bacfcc1a1c1980b6c")
+        self.assertIn("retrieved_at", result)
+        self.assertEqual(len(result["stations"]), 3)
+        self.assertEqual(result["stations"][0]["rank"], 1)
+        self.assertEqual(result["stations"][0]["station_id"], "AF1")
+        self.assertAlmostEqual(result["stations"][0]["distance"], 12099.37)
+        self.assertEqual(result["stations"][0]["iso"], "1")
+
+    def test_query_fire_protection_hydrant_distance_from_first_non_null(self):
+        p1, p2 = self._mock_protection()
+        with p1, p2:
+            result = fire_protection.query_fire_protection(5286547)
+        self.assertAlmostEqual(result["hydrant_distance"], 57.53)
+        self.assertIsNone(result["distance_units"])
+
+    def test_query_fire_protection_rejects_conflicting_hydrant_distances(self):
+        inconsistent = [
+            {"attributes": {**self.PROTECTION_RECORDS[0]["attributes"]}},
+            {"attributes": {**self.PROTECTION_RECORDS[1]["attributes"], "Hydrant_Distance": 99.0}},
+        ]
+        p1, p2 = self._mock_protection(records=inconsistent)
+        with p1, p2:
+            with self.assertRaisesRegex(fire_protection.FireProtectionError, "inconsistent hydrant"):
+                fire_protection.query_fire_protection(5286547)
+
+    def test_query_fire_protection_no_records(self):
+        p1, p2 = self._mock_protection(records=[])
+        with p1, p2:
+            result = fire_protection.query_fire_protection(9999999)
+        self.assertEqual(result["stations"], [])
+        self.assertIsNone(result["hydrant_distance"])
+
+    def test_query_fire_protection_null_distances(self):
+        null_records = [
+            {"attributes": {"OBJECTID": 1, "STATION_RANK": 1, "STATION_DISTANCE": None, "STATIONID": "AF1", "CSAID": 100, "STATION_ISO": None, "Hydrant_Distance": None}},
+        ]
+        p1, p2 = self._mock_protection(records=null_records)
+        with p1, p2:
+            result = fire_protection.query_fire_protection(100)
+        self.assertIsNone(result["stations"][0]["distance"])
+        self.assertIsNone(result["stations"][0]["iso"])
+        self.assertIsNone(result["hydrant_distance"])
+
+    def test_query_fire_protection_missing_station_id(self):
+        missing_records = [
+            {"attributes": {"OBJECTID": 1, "STATION_RANK": 1, "STATION_DISTANCE": 5000.0, "STATIONID": None, "CSAID": 100, "STATION_ISO": "2", "Hydrant_Distance": 100.0}},
+        ]
+        p1, p2 = self._mock_protection(records=missing_records)
+        with p1, p2:
+            result = fire_protection.query_fire_protection(100)
+        self.assertIsNone(result["stations"][0]["station_id"])
+
+    def test_query_fire_protection_schema_drift_extra_fields(self):
+        drift_records = [
+            {"attributes": {"OBJECTID": 1, "STATION_RANK": 1, "STATION_DISTANCE": 5000.0, "STATIONID": "X1", "CSAID": 100, "STATION_ISO": "1", "Hydrant_Distance": 50.0, "NEW_FIELD": "unexpected"}},
+        ]
+        p1, p2 = self._mock_protection(records=drift_records)
+        with p1, p2:
+            result = fire_protection.query_fire_protection(100)
+        self.assertEqual(result["stations"][0]["station_id"], "X1")
+        self.assertEqual(len(result["stations"]), 1)
+
+    def test_query_fire_protection_schema_drift_missing_required_field(self):
+        drift_meta = {
+            **self.LAYER_META,
+            "fields": [
+                field
+                for field in self.LAYER_META["fields"]
+                if field["name"] != "STATION_DISTANCE"
+            ],
+        }
+        p1, p2 = self._mock_protection(layer_meta=drift_meta)
+        with p1, p2:
+            with self.assertRaisesRegex(fire_protection.FireProtectionError, "schema drift.*STATION_DISTANCE"):
+                fire_protection.query_fire_protection(100)
+
+    def test_resolve_csaid_from_address_success(self):
+        with patch("raleighlib.fire_protection.geocode.find_address_candidates", return_value=self.GEOCODE_CANDIDATES), \
+             patch("raleighlib.fire_protection.core.json_request", return_value=self.MAR_RESPONSE):
+            result = fire_protection.resolve_csaid_from_address("222 W Hargett St")
+        self.assertEqual(result["csaid"], 5286547)
+        self.assertEqual(result["match_address"], "222 W Hargett St, Raleigh, NC, 27601")
+        self.assertEqual(result["score"], 100)
+
+    def test_resolve_csaid_unmatched_address(self):
+        with patch("raleighlib.fire_protection.geocode.find_address_candidates", return_value=[]):
+            with self.assertRaisesRegex(fire_protection.FireProtectionError, "No geocode match"):
+                fire_protection.resolve_csaid_from_address("999 Nonexistent St")
+
+    def test_resolve_csaid_rejects_tied_geocoder_matches(self):
+        ambiguous = [
+            self.GEOCODE_CANDIDATES[0],
+            {
+                **self.GEOCODE_CANDIDATES[0],
+                "address": "222 E Hargett St, Raleigh, NC, 27601",
+                "location": {"x": -78.63, "y": 35.779},
+            },
+        ]
+        with patch(
+            "raleighlib.fire_protection.geocode.find_address_candidates",
+            return_value=ambiguous,
+        ):
+            with self.assertRaisesRegex(
+                fire_protection.FireProtectionError, "equally ranked geocode matches"
+            ):
+                fire_protection.resolve_csaid_from_address("222 Hargett St")
+
+    def test_resolve_csaid_no_mar_record(self):
+        empty_mar = {"features": []}
+        with patch("raleighlib.fire_protection.geocode.find_address_candidates", return_value=self.GEOCODE_CANDIDATES), \
+             patch("raleighlib.fire_protection.core.json_request", return_value=empty_mar):
+            with self.assertRaisesRegex(fire_protection.FireProtectionError, "no unique Wake County MAR record"):
+                fire_protection.resolve_csaid_from_address("222 W Hargett St")
+
+    def test_resolve_csaid_ambiguous_mar_records(self):
+        ambiguous_mar = {"features": [
+            {"attributes": {"CSAID": 111, "SUBADDR_TYPE": None}},
+            {"attributes": {"CSAID": 222, "SUBADDR_TYPE": None}},
+        ]}
+        with patch("raleighlib.fire_protection.geocode.find_address_candidates", return_value=self.GEOCODE_CANDIDATES), \
+             patch("raleighlib.fire_protection.core.json_request", return_value=ambiguous_mar):
+            with self.assertRaisesRegex(fire_protection.FireProtectionError, "no unique Wake County MAR record"):
+                fire_protection.resolve_csaid_from_address("222 W Hargett St")
+
+    def test_resolve_csaid_duplicate_same_csaid_is_ok(self):
+        duplicate_mar = {"features": [
+            {"attributes": {"CSAID": 5286547, "SUBADDR_TYPE": None}},
+            {"attributes": {"CSAID": 5286547, "SUBADDR_TYPE": None}},
+        ]}
+        with patch("raleighlib.fire_protection.geocode.find_address_candidates", return_value=self.GEOCODE_CANDIDATES), \
+             patch("raleighlib.fire_protection.core.json_request", return_value=duplicate_mar):
+            result = fire_protection.resolve_csaid_from_address("222 W Hargett St")
+        self.assertEqual(result["csaid"], 5286547)
+
+    def test_resolve_csaid_prefers_base_address_over_subaddress(self):
+        mixed_mar = {"features": [
+            {"attributes": {"CSAID": 100, "ADDRESS": "222 W Hargett St STE 100", "SUBADDR_TYPE": "STE"}},
+            {"attributes": {"CSAID": 200, "ADDRESS": "222 W Hargett St", "SUBADDR_TYPE": None}},
+        ]}
+        with patch("raleighlib.fire_protection.geocode.find_address_candidates", return_value=self.GEOCODE_CANDIDATES), \
+             patch("raleighlib.fire_protection.core.json_request", return_value=mixed_mar):
+            result = fire_protection.resolve_csaid_from_address("222 W Hargett St")
+        self.assertEqual(result["csaid"], 200)
+
+    def test_resolve_csaid_prefers_explicit_subaddress_match(self):
+        suite_candidates = [{
+            **self.GEOCODE_CANDIDATES[0],
+            "address": "222 W Hargett St, STE 100, Raleigh, NC, 27601",
+            "attributes": {
+                "StAddr": "222 W Hargett St",
+                "SubAddr": "STE 100",
+            },
+        }]
+        mixed_mar = {"features": [
+            {"attributes": {"CSAID": 100, "ADDRESS": "222 W Hargett St STE 100", "SUBADDR_TYPE": "STE"}},
+            {"attributes": {"CSAID": 200, "ADDRESS": "222 W Hargett St", "SUBADDR_TYPE": None}},
+        ]}
+        with patch(
+            "raleighlib.fire_protection.geocode.find_address_candidates",
+            return_value=suite_candidates,
+        ), patch(
+            "raleighlib.fire_protection.core.json_request",
+            return_value=mixed_mar,
+        ):
+            result = fire_protection.resolve_csaid_from_address(
+                "222 W Hargett St STE 100"
+            )
+        self.assertEqual(result["csaid"], 100)
+
+    def test_resolve_csaid_geocode_no_coordinates(self):
+        no_coords = [{"address": "X", "location": {}, "score": 100, "attributes": {}}]
+        with patch("raleighlib.fire_protection.geocode.find_address_candidates", return_value=no_coords):
+            with self.assertRaisesRegex(fire_protection.FireProtectionError, "no coordinates"):
+                fire_protection.resolve_csaid_from_address("X")
+
+    def test_resolve_item_url_rejects_missing_url(self):
+        with patch("raleighlib.fire_protection.core.json_request", return_value={"id": "x"}):
+            with self.assertRaisesRegex(fire_protection.FireProtectionError, "no service URL"):
+                fire_protection._resolve_fire_protection_layer()
+
+    def test_cli_fire_protection_csaid_json(self):
+        p1, p2 = self._mock_protection()
+        with p1, p2:
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "fire", "protection", "--csaid", "5286547"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        self.assertEqual(data["csaid"], 5286547)
+        self.assertEqual(len(data["stations"]), 3)
+
+    def test_cli_fire_protection_csaid_table(self):
+        p1, p2 = self._mock_protection()
+        with p1, p2:
+            out = io.StringIO()
+            err = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = cli.main(["fire", "protection", "--csaid", "5286547"])
+        self.assertEqual(code, 0)
+        self.assertIn("RANK", out.getvalue())
+        self.assertIn("AF1", out.getvalue())
+        self.assertIn("Source-provided", err.getvalue())
+
+    def test_cli_fire_protection_table_preserves_zero_distance(self):
+        zero_record = [{
+            "attributes": {
+                **self.PROTECTION_RECORDS[0]["attributes"],
+                "STATION_DISTANCE": 0,
+            }
+        }]
+        p1, p2 = self._mock_protection(records=zero_record)
+        with p1, p2:
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["fire", "protection", "--csaid", "5286547"])
+        self.assertEqual(code, 0)
+        self.assertIn("AF1      0", out.getvalue())
+
+    def test_cli_fire_protection_address_json(self):
+        def fake_json_request(url, **kwargs):
+            if "sharing/rest/content/items/" in url:
+                return self.ITEM_META
+            if url.rstrip("/").endswith("FeatureServer") or url.rstrip("/").endswith("FeatureServer/"):
+                return self.LAYER_META
+            if "Wake_County_MAR_Address_Data_Public" in url:
+                return self.MAR_RESPONSE
+            if "/query" in url:
+                return {"features": self.PROTECTION_RECORDS}
+            return self.LAYER_META
+
+        with patch("raleighlib.fire_protection.core.json_request", side_effect=fake_json_request), \
+             patch("raleighlib.arcgis.core.json_request", side_effect=fake_json_request), \
+             patch("raleighlib.fire_protection.geocode.find_address_candidates", return_value=self.GEOCODE_CANDIDATES):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "fire", "protection", "--address", "222 W Hargett St"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        self.assertIn("address_resolution", data)
+        self.assertEqual(data["address_resolution"]["csaid"], 5286547)
+
+    def test_cli_fire_protection_requires_address_or_csaid(self):
+        with self.assertRaises(SystemExit):
+            cli.main(["fire", "protection"])
+
+    def test_protection_hosts_allowlisted(self):
+        self.assertTrue(core.is_allowed_host(fire_protection.FIRE_PROTECTION_ITEM_URL))
+        self.assertTrue(core.is_allowed_host(fire_protection.MAR_ADDRESSES_LAYER_URL))
 
 
 if __name__ == "__main__":
