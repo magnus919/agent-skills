@@ -1,0 +1,143 @@
+name: Paired skill evaluation smoke
+
+on:
+  pull_request:
+    paths:
+      - '*/SKILL.md'
+      - '*/evals/evals.json'
+      - '*/scripts/**'
+      - 'eval_runner/**'
+      - 'schemas/comparison-report-v1.schema.json'
+
+permissions:
+  contents: read
+
+jobs:
+  paired-eval-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Run paired evaluation unit tests
+        run: python3 eval_runner/tests/test_paired.py
+      - name: Run existing eval runner tests
+        run: python3 eval_runner/tests/test_runner.py
+
+  paired-eval-smoke:
+    runs-on: ubuntu-latest
+    needs: paired-eval-tests
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Detect changed skills with evals
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          changed=$(git diff --name-only "$BASE_SHA" HEAD -- '*/evals/evals.json' | head -5)
+          if [ -z "$changed" ]; then
+            echo "manifests=" >> "$GITHUB_OUTPUT"
+          else
+            echo "manifests=$changed" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run paired evaluation (fake adapter)
+        if: steps.changed.outputs.manifests != ''
+        env:
+          MANIFESTS: ${{ steps.changed.outputs.manifests }}
+        run: |
+          exit_code=0
+          for manifest in $MANIFESTS; do
+            echo "=== Paired eval: $manifest ==="
+            python3 -m eval_runner.paired "$manifest" \
+              --adapter fake \
+              --output-dir "eval-output-paired/$(dirname "$(dirname "$manifest")" | xargs basename)" \
+              || exit_code=1
+          done
+          exit $exit_code
+      - name: Upload paired eval artifacts
+        if: always() && steps.changed.outputs.manifests != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: paired-eval-artifacts
+          path: eval-output-paired/
+          retention-days: 7
+
+  paired-eval-model:
+    runs-on: [self-hosted, linux]
+    needs: paired-eval-tests
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Check model endpoint
+        id: endpoint
+        run: |
+          if curl -sf --connect-timeout 5 http://gpuslut01:8080/v1/models > /dev/null 2>&1; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Detect changed skills with evals
+        id: changed
+        if: steps.endpoint.outputs.available == 'true'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          changed=$(git diff --name-only "$BASE_SHA" HEAD -- '*/evals/evals.json' | head -5)
+          if [ -z "$changed" ]; then
+            echo "manifests=" >> "$GITHUB_OUTPUT"
+          else
+            echo "manifests=$changed" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run paired evaluation (real model)
+        if: steps.endpoint.outputs.available == 'true' && steps.changed.outputs.manifests != ''
+        env:
+          MANIFESTS: ${{ steps.changed.outputs.manifests }}
+          EVAL_MODEL: ${{ vars.EVAL_MODEL || 'google_gemma-4-26B-A4B-it-IQ4_XS.gguf' }}
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL || 'http://gpuslut01:8080' }}
+        run: |
+          exit_code=0
+          for manifest in $MANIFESTS; do
+            skill=$(dirname "$(dirname "$manifest")" | xargs basename)
+            echo "=== Paired eval (model): $skill ==="
+            python3 -m eval_runner.paired "$manifest" \
+              --adapter openai \
+              --base-url "$EVAL_BASE_URL" \
+              --model "$EVAL_MODEL" \
+              --max-tokens 4096 \
+              --no-thinking \
+              --timeout 300 \
+              --output-dir "eval-output-model/$skill" \
+              || exit_code=1
+          done
+          exit $exit_code
+      - name: Upload model eval artifacts
+        if: always() && steps.endpoint.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: paired-eval-model-artifacts
+          path: eval-output-model/
+          retention-days: 14

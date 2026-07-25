@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/magnus919/agent-skills/schemas/comparison-report-v1.schema.json",
+  "title": "Paired evaluation comparison report v1",
+  "description": "Case-level comparison of candidate and baseline evaluation trials.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_id",
+    "generated_at",
+    "skill_name",
+    "case_id",
+    "candidate",
+    "baseline",
+    "paired_delta"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "report_id": {"type": "string", "format": "uuid"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "skill_name": {"type": "string", "minLength": 1},
+    "case_id": {"type": "string", "minLength": 1},
+    "candidate": {"$ref": "#/$defs/arm_result"},
+    "baseline": {"$ref": "#/$defs/arm_result"},
+    "paired_delta": {
+      "type": "string",
+      "enum": ["candidate_improvement", "candidate_regression", "both_pass", "both_fail"]
+    }
+  },
+  "$defs": {
+    "arm_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trial_id",
+        "passed",
+        "infra_error",
+        "pass_count",
+        "fail_count",
+        "manual_count",
+        "assertions",
+        "manifest"
+      ],
+      "properties": {
+        "trial_id": {"type": "string"},
+        "passed": {"type": "boolean"},
+        "infra_error": {"type": "boolean"},
+        "pass_count": {"type": "integer", "minimum": 0},
+        "fail_count": {"type": "integer", "minimum": 0},
+        "manual_count": {"type": "integer", "minimum": 0},
+        "assertions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["assertion", "verdict", "detail"],
+            "properties": {
+              "assertion": {"type": "string"},
+              "verdict": {
+                "type": "string",
+                "enum": ["pass", "fail", "manual_review", "infra_error"]
+              },
+              "detail": {"type": "string"}
+            }
+          }
+        },
+        "manifest": {"type": "object"}
+      }
+    }
+  }
+}
