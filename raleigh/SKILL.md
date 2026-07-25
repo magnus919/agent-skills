@@ -122,6 +122,13 @@ one of those names, the added result column receives a `geocode_` prefix.
 | `police previous-day` | Query previous-day incidents | `scripts/raleigh police previous-day --json` |
 | `police history` | Query historical incidents (SRS or NIBRS) | `scripts/raleigh police history --reporting-system srs --since 30d` |
 
+### Fire incidents
+
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `fire incidents` | Query RFD incidents (full history 2007–present or past month) | `scripts/raleigh fire incidents --since 30d --group Fire` |
+| `fire response-times` | Compute labeled response durations | `scripts/raleigh fire response-times --since 1y --group Fire` |
+
 ### Public meetings
 
 | Command | Purpose | Example |
@@ -153,6 +160,7 @@ one of those names, the added result column receives a `geocode_` prefix.
 | Civic content | JSON:API and RSS | `references/civic-content-reference.md` |
 | Public meetings | eSCRIBE extraction | `references/meetings-reference.md` |
 | Police incidents | RPD data sources, field schemas, and privacy caveats | `references/police-reference.md` |
+| Fire incidents | RFD data sources, 2026 schema transition, durations, and privacy caveats | `references/fire-reference.md` |
 
 ## Pitfalls
 
@@ -165,6 +173,7 @@ one of those names, the added result column receives a `geocode_` prefix.
 - **Civic relationships**: Public content commands accept `--relationship FIELD=ID`; text, date, and relationship matching is client-side after bounded pagination.
 - **eSCRIBE**: HTML-based extraction with a weaker compatibility contract than structured APIs.
 - **Police incidents**: Locations are block-level and may be randomized or redacted. Empty coordinates are suppressed, not presented as points. This data does not include arrests, convictions, or dispositions. The CrimeMapper 90-day feed is not in the curated Hub catalog and is resolved by item ID.
+- **Fire incidents**: RFD deprecated `incident_type`/`incident_type_description` for records after 2026-01-01, replaced by `incident_group_name`, `incident_subgroup_code`, and `incident_type_name`. The `fire` commands normalize both eras into stable `_` keys without fabricating cross-era mappings, and preserve raw fields in JSON. Incident types 300–399 and 661 are excluded by RFD for EMS/privacy. The full-history `station` field is unpopulated for most records after early 2021; the past-month feed provides `station_name`.
 - **URL allowlist**: Only fixed public hosts are dereferenced; arbitrary URLs are rejected.
 - **Transit realtime**: Requires `google.protobuf>=6.31.1,<7`. The vendored GTFS-Realtime binding was generated with protoc 31.1 and does not replace the runtime.
 

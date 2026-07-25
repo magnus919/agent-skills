@@ -26,6 +26,7 @@ from raleighlib import development
 from raleighlib import civic
 from raleighlib import meetings
 from raleighlib import police
+from raleighlib import fire
 
 
 def _output_json(data: Any) -> None:
@@ -397,6 +398,32 @@ def build_parser() -> argparse.ArgumentParser:
     police_history.add_argument("--district", help="Filter by police district substring.")
     police_history.add_argument("--limit", type=_positive_int, default=20)
     police_history.add_argument("--offset", type=_nonnegative_int, default=0)
+
+    # Fire incident commands.
+    fire_p = sub.add_parser("fire", help="Raleigh Fire Department incident data.")
+    fire_sub = fire_p.add_subparsers(dest="fire_command")
+
+    fire_incidents = fire_sub.add_parser("incidents", help="Query RFD incidents (full history 2007–present or past month).")
+    fire_incidents.add_argument("--source", choices=["full-history", "past-month"], default="full-history",
+                                help="Dataset to query (default: full-history).")
+    fire_incidents.add_argument("--since", type=_duration_value, help="Time range, e.g. 30d, 24h, 2w, 1y.")
+    fire_incidents.add_argument("--station", type=_positive_int, help="Filter by station number.")
+    fire_incidents.add_argument("--platoon", help="Filter by platoon (e.g. A, B, C).")
+    fire_incidents.add_argument("--group", help="Filter by incident group substring (populated only for 2026+ records).")
+    fire_incidents.add_argument("--type", dest="incident_type", help="Filter by incident type name/description substring or legacy NFIRS code.")
+    fire_incidents.add_argument("--limit", type=_positive_int, default=20)
+    fire_incidents.add_argument("--offset", type=_nonnegative_int, default=0)
+
+    fire_rt = fire_sub.add_parser("response-times", help="Compute response durations from dispatch/arrival/cleared timestamps.")
+    fire_rt.add_argument("--source", choices=["full-history", "past-month"], default="full-history",
+                         help="Dataset to query (default: full-history).")
+    fire_rt.add_argument("--since", type=_duration_value, help="Time range, e.g. 30d, 24h, 2w, 1y.")
+    fire_rt.add_argument("--station", type=_positive_int, help="Filter by station number.")
+    fire_rt.add_argument("--platoon", help="Filter by platoon (e.g. A, B, C).")
+    fire_rt.add_argument("--group", help="Filter by incident group substring (populated only for 2026+ records).")
+    fire_rt.add_argument("--type", dest="incident_type", help="Filter by incident type name/description substring or legacy NFIRS code.")
+    fire_rt.add_argument("--limit", type=_positive_int, default=20)
+    fire_rt.add_argument("--offset", type=_nonnegative_int, default=0)
 
     return parser
 
@@ -1101,9 +1128,9 @@ def cmd_catalog_check(args: argparse.Namespace) -> int:
 
 
 def _duration_value(value: str) -> str:
-    """Validate a duration string like '7d', '24h', '2w'."""
-    if not re.fullmatch(r"\d+[dhw]", value.strip()):
-        raise argparse.ArgumentTypeError("duration must be a positive integer followed by d (days), h (hours), or w (weeks)")
+    """Validate a duration string like '7d', '24h', '2w', '1y'."""
+    if not re.fullmatch(r"\d+[dhwy]", value.strip()):
+        raise argparse.ArgumentTypeError("duration must be a positive integer followed by d (days), h (hours), w (weeks), or y (years)")
     amount = int(value.strip()[:-1])
     if amount < 1:
         raise argparse.ArgumentTypeError("duration must be positive")
@@ -1114,7 +1141,7 @@ def _duration_to_ms(value: str) -> int:
     """Convert a validated duration string to a Unix-milliseconds timestamp in the past."""
     amount = int(value[:-1])
     unit = value[-1]
-    multiplier = {"h": 3600, "d": 86400, "w": 604800}
+    multiplier = {"h": 3600, "d": 86400, "w": 604800, "y": 31536000}
     seconds_ago = amount * multiplier[unit]
     now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
     return now_ms - (seconds_ago * 1000)
@@ -1190,6 +1217,131 @@ def cmd_police_history(args: argparse.Namespace) -> int:
     return _police_output(result, args)
 
 
+def _format_ms_datetime(value: Any) -> str:
+    """Format a Unix-milliseconds timestamp for table output, or '' if unusable."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return ""
+    try:
+        return datetime.fromtimestamp(value / 1000, timezone.utc).strftime("%Y-%m-%d %H:%MZ")
+    except (OverflowError, OSError, ValueError):
+        return ""
+
+
+def _fire_query_args(args: argparse.Namespace) -> tuple[int | None, dict[str, Any]]:
+    """Shared filter extraction for fire commands, with source-specific notes."""
+    since_ms = _duration_to_ms(args.since) if args.since else None
+    if args.group and since_ms is not None and since_ms < fire.SCHEMA_TRANSITION_EPOCH_MS:
+        print(
+            "Note: incident_group_name is populated only for 2026+ records; "
+            "older records will be excluded by the group filter.",
+            file=sys.stderr,
+        )
+    if args.station and args.source == "full-history":
+        print(
+            "Note: station is unpopulated for most full-history records after "
+            "early 2021; use --source past-month for current station data.",
+            file=sys.stderr,
+        )
+    filters = {
+        "station": args.station,
+        "platoon": args.platoon,
+        "group": args.group,
+        "incident_type": args.incident_type,
+        "limit": args.limit,
+        "offset": args.offset,
+    }
+    return since_ms, filters
+
+
+def _fire_output(result: dict[str, Any], args: argparse.Namespace) -> int:
+    """Shared output logic for fire incidents."""
+    if args.json:
+        _output_json(result)
+    else:
+        features = result.get("features", [])
+        if features:
+            rows = []
+            for f in features:
+                props = f.get("properties", {})
+                station = props.get("_station")
+                rows.append([
+                    str(props.get("incident_number") or ""),
+                    str(props.get("_classification_era") or ""),
+                    str(props.get("_incident_group") or ""),
+                    str(props.get("_incident_type") or ""),
+                    str(station if station is not None else ""),
+                    str(props.get("platoon") or ""),
+                    _format_ms_datetime(props.get("dispatch_date_time")),
+                ])
+            _output_table(["INCIDENT", "ERA", "GROUP", "TYPE", "STATION", "PLATOON", "DISPATCHED"], rows)
+        else:
+            print("No records returned.")
+        print(fire.PRIVACY_CAVERAT, file=sys.stderr)
+    return 0
+
+
+def _fire_duration_cell(props: dict[str, Any], key: str, status_key: str) -> str:
+    """Format a duration value for table output, blank unless the pair validated."""
+    if props.get(status_key) != "ok":
+        return ""
+    value = props.get(key)
+    return f"{value:.0f}" if isinstance(value, (int, float)) else ""
+
+
+def _fire_response_times_output(result: dict[str, Any], args: argparse.Namespace) -> int:
+    """Shared output logic for fire response-times."""
+    features = result.get("features", [])
+    valid = 0
+    rejected = 0
+    for f in features:
+        status = f.get("properties", {}).get("_dispatch_to_arrive_status")
+        if status == "ok":
+            valid += 1
+        elif status is not None:
+            rejected += 1
+
+    if args.json:
+        _output_json(result)
+    else:
+        if features:
+            rows = []
+            for f in features:
+                props = f.get("properties", {})
+                rows.append([
+                    str(props.get("incident_number") or ""),
+                    str(props.get("_incident_group") or ""),
+                    _fire_duration_cell(props, "_dispatch_to_arrive_seconds", "_dispatch_to_arrive_status"),
+                    _fire_duration_cell(props, "_arrive_to_clear_seconds", "_arrive_to_clear_status"),
+                    _fire_duration_cell(props, "_dispatch_to_clear_seconds", "_dispatch_to_clear_status"),
+                    str(props.get("_dispatch_to_arrive_status") or ""),
+                ])
+            _output_table(
+                ["INCIDENT", "GROUP", "DISPATCH->ARRIVE (S)", "ARRIVE->CLEAR (S)", "DISPATCH->CLEAR (S)", "STATUS"],
+                rows,
+            )
+        else:
+            print("No records returned.")
+        print(
+            f"{len(features)} records: {valid} with a valid dispatch-to-arrival "
+            f"duration, {rejected} rejected (missing, malformed, or reversed timestamps).",
+            file=sys.stderr,
+        )
+        print(fire.PRIVACY_CAVERAT, file=sys.stderr)
+    return 0
+
+
+def cmd_fire_incidents(args: argparse.Namespace) -> int:
+    since_ms, filters = _fire_query_args(args)
+    result = fire.query_incidents(args.source, since_ms=since_ms, **filters)
+    return _fire_output(result, args)
+
+
+def cmd_fire_response_times(args: argparse.Namespace) -> int:
+    since_ms, filters = _fire_query_args(args)
+    result = fire.query_incidents(args.source, since_ms=since_ms, include_response_times=True, **filters)
+    return _fire_response_times_output(result, args)
+
+
 _COMMANDS: dict[str, Any] = {
     "catalog": cmd_catalog,
     "search": cmd_search,
@@ -1245,6 +1397,11 @@ _POLICE_COMMANDS: dict[str, Any] = {
     "recent": cmd_police_recent,
     "previous-day": cmd_police_previous_day,
     "history": cmd_police_history,
+}
+
+_FIRE_COMMANDS: dict[str, Any] = {
+    "incidents": cmd_fire_incidents,
+    "response-times": cmd_fire_response_times,
 }
 
 
@@ -1329,6 +1486,12 @@ def main(argv: list[str] | None = None) -> int:
             parser.parse_args([args.command, "--help"])
             return 2
 
+        if args.command == "fire":
+            if args.fire_command in _FIRE_COMMANDS:
+                return _FIRE_COMMANDS[args.fire_command](args)
+            parser.parse_args([args.command, "--help"])
+            return 2
+
         if args.command == "geocode":
             return cmd_geocode(args)
         if args.command == "reverse-geocode":
@@ -1357,7 +1520,7 @@ def main(argv: list[str] | None = None) -> int:
 
         parser.print_help()
         return 2
-    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, FileExistsError, ValueError, KeyError) as exc:
+    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, fire.FireError, FileExistsError, ValueError, KeyError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
     except urllib.error.HTTPError as exc:
