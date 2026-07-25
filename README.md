@@ -200,6 +200,10 @@ CLO/General Counsel methodology — regulatory landscape analysis (GDPR, CCPA, A
 
 Work with Linear teams, projects, cycles, issues, comments, workflow transitions, and documents using a small, dependency-free GraphQL CLI with bounded reads, dry-run previews, and focused reference guidance.
 
+### [llama-cpp](llama-cpp/SKILL.md)
+
+Operate llama.cpp from hardware-aware installation and GGUF selection through verified local inference, OpenAI-compatible serving, reproducible tuning, multi-GPU operation, and evidence-led troubleshooting. Uses dated upstream sources, operation and benchmark templates, and six output-quality eval cases without adding a wrapper CLI.
+
 ### [llamaindex](llamaindex/SKILL.md)
 
 An expert-level skill for building LLM applications over your data with LlamaIndex. RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge graph construction, and production deployment.

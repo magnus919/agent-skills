@@ -69,6 +69,7 @@
     "./lastfm",
     "./legal-strategy",
     "./linear",
+    "./llama-cpp",
     "./llamaindex",
     "./mermaid-diagrams",
     "./meshcore-packet-capture",

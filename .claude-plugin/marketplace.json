@@ -429,6 +429,15 @@
       "description": "Manage Linear teams, projects, cycles, issues, comments, workflow state, and documents from a terminal through Linear's public GraphQL API. Use when a user asks to list, search, inspect, create, update, move, or comment on Linear work, or to find Linear documents. Do not use to embed a live agent inside Linear or to build an MCP integration."
     },
     {
+      "name": "llama-cpp",
+      "source": "./",
+      "skills": [
+        "./llama-cpp"
+      ],
+      "strict": false,
+      "description": "Operate, configure, benchmark, and troubleshoot llama.cpp across CPU, Metal, CUDA, HIP/ROCm, Vulkan, SYCL, and hybrid or multi-GPU systems. Use when installing or building llama.cpp, selecting or inspecting GGUF models, running llama-cli, serving an OpenAI-compatible API with llama-server, tuning memory and performance, or diagnosing backend, context, template, and API failures. Do not use for model training or fine-tuning, general inference-framework selection, llama-cpp-python or other bindings, LlamaIndex, Ollama, or LM Studio operation."
+    },
+    {
       "name": "llamaindex",
       "source": "./",
       "skills": [
