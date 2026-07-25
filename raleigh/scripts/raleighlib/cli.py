@@ -8,10 +8,11 @@ import io
 import json
 import math
 import os
+import re
 import sys
 import urllib.error
 import urllib.parse
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -24,6 +25,7 @@ from raleighlib import transit
 from raleighlib import development
 from raleighlib import civic
 from raleighlib import meetings
+from raleighlib import police
 
 
 def _output_json(data: Any) -> None:
@@ -362,6 +364,39 @@ def build_parser() -> argparse.ArgumentParser:
     check_p.add_argument("--snapshot", action="store_true", help="Use the cached/live catalog snapshot instead of fetching fresh.")
     check_p.add_argument("--type", help="Check only datasets of this type (FeatureServer, MapServer, ImageServer).")
     check_p.add_argument("--full", action="store_true", help="Check every catalog item (overrides --sample).")
+
+    # Police incident commands.
+    police_p = sub.add_parser("police", help="Raleigh Police Department incident data.")
+    police_sub = police_p.add_subparsers(dest="police_command")
+
+    police_incidents = police_sub.add_parser("incidents", help="Query NIBRS incidents (June 2014–present).")
+    police_incidents.add_argument("--since", type=_duration_value, help="Time range, e.g. 7d, 24h, 2w.")
+    police_incidents.add_argument("--category", help="Filter by crime description substring.")
+    police_incidents.add_argument("--district", help="Filter by police district substring.")
+    police_incidents.add_argument("--limit", type=_positive_int, default=20)
+    police_incidents.add_argument("--offset", type=_nonnegative_int, default=0)
+
+    police_recent = police_sub.add_parser("recent", help="Query CrimeMapper past-90-day incidents.")
+    police_recent.add_argument("--days", type=_positive_int, default=90, help="Days back (max 90).")
+    police_recent.add_argument("--category", help="Filter by crime description substring.")
+    police_recent.add_argument("--district", help="Filter by police district substring.")
+    police_recent.add_argument("--limit", type=_positive_int, default=20)
+    police_recent.add_argument("--offset", type=_nonnegative_int, default=0)
+
+    police_prev = police_sub.add_parser("previous-day", help="Query previous-day incidents.")
+    police_prev.add_argument("--category", help="Filter by crime description substring.")
+    police_prev.add_argument("--district", help="Filter by police district substring.")
+    police_prev.add_argument("--limit", type=_positive_int, default=20)
+    police_prev.add_argument("--offset", type=_nonnegative_int, default=0)
+
+    police_history = police_sub.add_parser("history", help="Query historical incidents (SRS or NIBRS).")
+    police_history.add_argument("--reporting-system", choices=["srs", "nibrs"], default="nibrs",
+                                help="Reporting system (default: nibrs).")
+    police_history.add_argument("--since", type=_duration_value, help="Time range, e.g. 30d, 4w.")
+    police_history.add_argument("--category", help="Filter by crime description substring.")
+    police_history.add_argument("--district", help="Filter by police district substring.")
+    police_history.add_argument("--limit", type=_positive_int, default=20)
+    police_history.add_argument("--offset", type=_nonnegative_int, default=0)
 
     return parser
 
@@ -1065,6 +1100,96 @@ def cmd_catalog_check(args: argparse.Namespace) -> int:
     return 0 if not failures else 1
 
 
+def _duration_value(value: str) -> str:
+    """Validate a duration string like '7d', '24h', '2w'."""
+    if not re.fullmatch(r"\d+[dhw]", value.strip()):
+        raise argparse.ArgumentTypeError("duration must be a positive integer followed by d (days), h (hours), or w (weeks)")
+    amount = int(value.strip()[:-1])
+    if amount < 1:
+        raise argparse.ArgumentTypeError("duration must be positive")
+    return value.strip()
+
+
+def _duration_to_ms(value: str) -> int:
+    """Convert a validated duration string to a Unix-milliseconds timestamp in the past."""
+    amount = int(value[:-1])
+    unit = value[-1]
+    multiplier = {"h": 3600, "d": 86400, "w": 604800}
+    seconds_ago = amount * multiplier[unit]
+    now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
+    return now_ms - (seconds_ago * 1000)
+
+
+def _police_output(result: dict[str, Any], args: argparse.Namespace) -> int:
+    """Shared output logic for police commands."""
+    if args.json:
+        _output_json(result)
+    else:
+        features = result.get("features", [])
+        if features:
+            rows = []
+            for f in features:
+                props = f.get("properties", {})
+                rows.append([
+                    str(props.get("_source", "")),
+                    str(props.get("crime_description") or props.get("LCR_DESC") or ""),
+                    str(props.get("district") or props.get("DISTRICT") or ""),
+                    str(props.get("reported_block_address") or ""),
+                    str(props.get("_location_status", "")),
+                ])
+            _output_table(["SOURCE", "DESCRIPTION", "DISTRICT", "BLOCK ADDRESS", "LOC STATUS"], rows)
+        else:
+            print("No records returned.")
+        print(police.LOCATION_CAVERAT, file=sys.stderr)
+    return 0
+
+
+def cmd_police_incidents(args: argparse.Namespace) -> int:
+    since_ms = _duration_to_ms(args.since) if args.since else None
+    if since_ms is not None and since_ms < police.NIBRS_EPOCH_MS:
+        print(
+            "Warning: --since predates NIBRS availability (June 2014); "
+            "results will only include June 2014 onward. Use 'police history --reporting-system srs' for older data.",
+            file=sys.stderr,
+        )
+    result = police.query_incidents(
+        "nibrs", since_ms=since_ms, category=args.category, district=args.district,
+        limit=args.limit, offset=args.offset,
+    )
+    return _police_output(result, args)
+
+
+def cmd_police_recent(args: argparse.Namespace) -> int:
+    if args.days > 90:
+        raise cli_error("--days cannot exceed 90 (the CrimeMapper feed covers at most 90 days)")
+    since_ms = int(datetime.now(timezone.utc).timestamp() * 1000) - (args.days * 86400 * 1000)
+    result = police.query_incidents(
+        "crimemapper-90d", since_ms=since_ms, category=args.category, district=args.district,
+        limit=args.limit, offset=args.offset,
+    )
+    return _police_output(result, args)
+
+
+def cmd_police_previous_day(args: argparse.Namespace) -> int:
+    result = police.query_incidents(
+        "previous-day", category=args.category, district=args.district,
+        limit=args.limit, offset=args.offset,
+    )
+    return _police_output(result, args)
+
+
+def cmd_police_history(args: argparse.Namespace) -> int:
+    source_key = args.reporting_system
+    if source_key == "nibrs":
+        print("Note: defaulting to NIBRS; use --reporting-system srs for pre-2014 data.", file=sys.stderr)
+    since_ms = _duration_to_ms(args.since) if args.since else None
+    result = police.query_incidents(
+        source_key, since_ms=since_ms, category=args.category, district=args.district,
+        limit=args.limit, offset=args.offset,
+    )
+    return _police_output(result, args)
+
+
 _COMMANDS: dict[str, Any] = {
     "catalog": cmd_catalog,
     "search": cmd_search,
@@ -1113,6 +1238,13 @@ _MEETINGS_COMMANDS: dict[str, Any] = {
     "show": cmd_meetings_show,
     "download-agenda": cmd_meetings_download_agenda,
     "download-minutes": cmd_meetings_download_minutes,
+}
+
+_POLICE_COMMANDS: dict[str, Any] = {
+    "incidents": cmd_police_incidents,
+    "recent": cmd_police_recent,
+    "previous-day": cmd_police_previous_day,
+    "history": cmd_police_history,
 }
 
 
@@ -1191,6 +1323,12 @@ def main(argv: list[str] | None = None) -> int:
             parser.parse_args([args.command, "--help"])
             return 2
 
+        if args.command == "police":
+            if args.police_command in _POLICE_COMMANDS:
+                return _POLICE_COMMANDS[args.police_command](args)
+            parser.parse_args([args.command, "--help"])
+            return 2
+
         if args.command == "geocode":
             return cmd_geocode(args)
         if args.command == "reverse-geocode":
@@ -1219,7 +1357,7 @@ def main(argv: list[str] | None = None) -> int:
 
         parser.print_help()
         return 2
-    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, FileExistsError, ValueError, KeyError) as exc:
+    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, FileExistsError, ValueError, KeyError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
     except urllib.error.HTTPError as exc:

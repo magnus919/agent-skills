@@ -41,6 +41,7 @@ except ModuleNotFoundError:
 import raleighlib.development as development
 import raleighlib.civic as civic
 import raleighlib.meetings as meetings
+import raleighlib.police as police
 from raleighlib import cli as cli_lib
 
 CLI_SCRIPT = _SCRIPT_DIR / "raleigh"
@@ -2323,6 +2324,267 @@ class FinalReviewRegressionTests(unittest.TestCase):
         for arguments in invalid:
             with self.subTest(arguments=arguments), self.assertRaises(SystemExit):
                 parser.parse_args(arguments)
+
+
+class PoliceTests(unittest.TestCase):
+    """Tests for the RPD incident command group."""
+
+    NIBRS_ITEM_META = {
+        "id": "24c0b37fa9bb4e16ba8bcaa7e806c615",
+        "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Police_Incidents/FeatureServer",
+    }
+    NIBRS_LAYER_META = {
+        "layers": [{"id": 0, "name": "Incidents"}],
+        "geometryType": "esriGeometryPoint",
+        "fields": [
+            {"name": "OBJECTID", "type": "esriFieldTypeOID"},
+            {"name": "crime_description", "type": "esriFieldTypeString"},
+            {"name": "district", "type": "esriFieldTypeString"},
+            {"name": "reported_date", "type": "esriFieldTypeDate"},
+            {"name": "reported_block_address", "type": "esriFieldTypeString"},
+        ],
+    }
+    SRS_LAYER_META = {
+        "layers": [{"id": 0, "name": "Incidents"}],
+        "geometryType": "esriGeometryPoint",
+        "fields": [
+            {"name": "OBJECTID", "type": "esriFieldTypeOID"},
+            {"name": "LCR_DESC", "type": "esriFieldTypeString"},
+            {"name": "DISTRICT", "type": "esriFieldTypeString"},
+            {"name": "INC_DATETIME", "type": "esriFieldTypeDate"},
+        ],
+    }
+
+    def _mock_resolution(self, item_meta=None, layer_meta=None):
+        """Return a patch context that mocks item resolution and layer metadata."""
+        item_meta = item_meta or self.NIBRS_ITEM_META
+        layer_meta = layer_meta or self.NIBRS_LAYER_META
+
+        def fake_json_request(url, **kwargs):
+            if "sharing/rest/content/items/" in url:
+                return item_meta
+            if url.rstrip("/").endswith("FeatureServer") or url.rstrip("/").endswith("FeatureServer/"):
+                return layer_meta
+            if "/query" in url:
+                return {"features": []}
+            return layer_meta
+
+        return patch("raleighlib.police.core.json_request", side_effect=fake_json_request), patch(
+            "raleighlib.arcgis.core.json_request", side_effect=fake_json_request
+        )
+
+    def test_resolve_item_url_rejects_missing_url(self):
+        with patch("raleighlib.police.core.json_request", return_value={"id": "x"}):
+            with self.assertRaisesRegex(police.PoliceError, "no service URL"):
+                police.resolve_item_url("x")
+
+    def test_resolve_item_url_uses_allowlisted_host(self):
+        self.assertTrue(core.is_allowed_host(police.ITEM_RESOLUTION_URL.format(item_id="test")))
+
+    def test_source_selection_nibrs(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]) as mock_query:
+            result = police.query_incidents("nibrs", limit=5)
+        self.assertEqual(result["_sources"][0]["item_id"], "24c0b37fa9bb4e16ba8bcaa7e806c615")
+        self.assertEqual(result["type"], "FeatureCollection")
+
+    def test_source_selection_srs(self):
+        srs_item = {"id": "09af62a32ae8436bae6eda74aa7f172b", "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Police_Incidents_(UCR)/FeatureServer"}
+        p1, p2 = self._mock_resolution(item_meta=srs_item, layer_meta=self.SRS_LAYER_META)
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            result = police.query_incidents("srs", limit=5)
+        self.assertEqual(result["_sources"][0]["item_id"], "09af62a32ae8436bae6eda74aa7f172b")
+
+    def test_source_selection_crimemapper(self):
+        cm_item = {"id": "a1f2d9204a184404b5a4c7e0fdceb6d0", "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Raleigh_Police_Incidents_Last_90_Days/FeatureServer"}
+        p1, p2 = self._mock_resolution(item_meta=cm_item)
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            result = police.query_incidents("crimemapper-90d", limit=5)
+        self.assertEqual(result["_sources"][0]["item_id"], "a1f2d9204a184404b5a4c7e0fdceb6d0")
+
+    def test_source_selection_previous_day(self):
+        pd_item = {"id": "693811eb361f4da286891eca1fae5943", "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Daily_Police_Incidents/FeatureServer"}
+        p1, p2 = self._mock_resolution(item_meta=pd_item)
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            result = police.query_incidents("previous-day", limit=5)
+        self.assertEqual(result["_sources"][0]["item_id"], "693811eb361f4da286891eca1fae5943")
+
+    def test_unknown_source_raises(self):
+        with self.assertRaisesRegex(police.PoliceError, "Unknown source"):
+            police.query_incidents("nonexistent")
+
+    NIBRS_FIELDS = {"OBJECTID", "crime_description", "district", "reported_date", "reported_block_address"}
+    SRS_FIELDS = {"OBJECTID", "LCR_DESC", "DISTRICT", "INC_DATETIME"}
+
+    def test_date_filter_builds_where_clause(self):
+        where = police.build_where_clause("nibrs", self.NIBRS_FIELDS, since_ms=1700000000000)
+        self.assertIn("reported_date >= 1700000000000", where)
+
+    def test_category_filter_quotes_value(self):
+        where = police.build_where_clause("nibrs", self.NIBRS_FIELDS, category="BURGLARY")
+        self.assertIn("UPPER(crime_description) LIKE '%BURGLARY%'", where)
+
+    def test_category_filter_escapes_single_quotes(self):
+        where = police.build_where_clause("nibrs", self.NIBRS_FIELDS, category="O'Brien")
+        self.assertIn("O''BRIEN", where)
+
+    def test_category_filter_escapes_like_wildcards(self):
+        where = police.build_where_clause("nibrs", self.NIBRS_FIELDS, category="100%_done")
+        self.assertIn("100\\%\\_DONE", where)
+
+    def test_district_filter(self):
+        where = police.build_where_clause("nibrs", self.NIBRS_FIELDS, district="DOWNTOWN")
+        self.assertIn("UPPER(district) LIKE '%DOWNTOWN%'", where)
+
+    def test_srs_uses_different_field_names(self):
+        where = police.build_where_clause("srs", self.SRS_FIELDS, category="LARCENY", since_ms=1700000000000)
+        self.assertIn("UPPER(LCR_DESC) LIKE '%LARCENY%'", where)
+        self.assertIn("INC_DATETIME >= 1700000000000", where)
+
+    def test_missing_field_skips_filter_with_warning(self):
+        sparse_fields = {"OBJECTID"}
+        with redirect_stderr(io.StringIO()) as stderr:
+            where = police.build_where_clause("nibrs", sparse_fields, category="BURGLARY")
+        self.assertEqual(where, "1=1")
+        self.assertIn("not found", stderr.getvalue())
+
+    def test_redacted_location_null_geometry(self):
+        record = {"attributes": {"crime_description": "BURGLARY"}, "geometry": None}
+        self.assertEqual(police._location_status(record), "redacted")
+        self.assertIsNone(police._normalize_geometry(record))
+
+    def test_zero_coordinates_treated_as_redacted(self):
+        record = {"attributes": {}, "geometry": {"x": 0, "y": 0}}
+        self.assertEqual(police._location_status(record), "redacted")
+        self.assertIsNone(police._normalize_geometry(record))
+
+    def test_valid_coordinates_preserved(self):
+        record = {"attributes": {}, "geometry": {"x": -78.64, "y": 35.78}}
+        self.assertEqual(police._location_status(record), "block_level")
+        geom = police._normalize_geometry(record)
+        self.assertEqual(geom, {"type": "Point", "coordinates": [-78.64, 35.78]})
+
+    def test_out_of_area_coordinates_flagged(self):
+        record = {"attributes": {}, "geometry": {"x": -122.4, "y": 37.7}}
+        self.assertEqual(police._location_status(record), "out_of_area")
+        geom = police._normalize_geometry(record)
+        self.assertIsNotNone(geom)
+
+    def test_query_enriches_features_with_source_metadata(self):
+        records = [
+            {"attributes": {"crime_description": "BURGLARY", "district": "NORTH"}, "geometry": {"x": -78.64, "y": 35.78}},
+            {"attributes": {"crime_description": "LARCENY"}, "geometry": None},
+        ]
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=records):
+            result = police.query_incidents("nibrs", limit=10)
+        features = result["features"]
+        self.assertEqual(len(features), 2)
+        self.assertEqual(features[0]["properties"]["_source"], "nibrs")
+        self.assertEqual(features[0]["properties"]["_item_id"], "24c0b37fa9bb4e16ba8bcaa7e806c615")
+        self.assertIn("_retrieved_at", features[0]["properties"])
+        self.assertEqual(features[0]["properties"]["_location_status"], "block_level")
+        self.assertEqual(features[1]["properties"]["_location_status"], "redacted")
+        self.assertIsNone(features[1]["geometry"])
+
+    def test_pagination_respects_limit(self):
+        records = [{"attributes": {"OBJECTID": i}, "geometry": None} for i in range(50)]
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=records[:5]) as mock_query:
+            result = police.query_incidents("nibrs", limit=5)
+        self.assertEqual(len(result["features"]), 5)
+        mock_query.assert_called_once()
+        self.assertEqual(mock_query.call_args[1]["max_records"], 5)
+
+    def test_cli_police_incidents_json(self):
+        records = [{"attributes": {"crime_description": "BURGLARY"}, "geometry": {"x": -78.64, "y": 35.78}}]
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=records):
+            out = io.StringIO()
+            with redirect_stdout(out):
+                code = cli.main(["--json", "police", "incidents", "--since", "7d", "--limit", "5"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        self.assertEqual(data["type"], "FeatureCollection")
+        self.assertEqual(data["features"][0]["properties"]["_source"], "nibrs")
+
+    def test_cli_police_recent_rejects_over_90_days(self):
+        with self.assertRaises(SystemExit):
+            cli.main(["police", "recent", "--days", "91"])
+
+    def test_cli_police_history_defaults_to_nibrs(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            err = io.StringIO()
+            with redirect_stderr(err), redirect_stdout(io.StringIO()):
+                code = cli.main(["--json", "police", "history"])
+        self.assertEqual(code, 0)
+        self.assertIn("defaulting to NIBRS", err.getvalue())
+
+    def test_cli_police_history_srs(self):
+        srs_item = {"id": "09af62a32ae8436bae6eda74aa7f172b", "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Police_Incidents_(UCR)/FeatureServer"}
+        p1, p2 = self._mock_resolution(item_meta=srs_item, layer_meta=self.SRS_LAYER_META)
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "police", "history", "--reporting-system", "srs"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        self.assertEqual(data["_sources"][0]["item_id"], "09af62a32ae8436bae6eda74aa7f172b")
+
+    def test_cli_police_invalid_since(self):
+        with self.assertRaises(SystemExit):
+            cli.main(["police", "incidents", "--since", "abc"])
+
+    def test_cli_police_human_output_prints_caveat(self):
+        records = [{"attributes": {"crime_description": "BURGLARY", "district": "NORTH"}, "geometry": {"x": -78.64, "y": 35.78}}]
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=records):
+            err = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                code = cli.main(["police", "incidents", "--since", "7d"])
+        self.assertEqual(code, 0)
+        self.assertIn("block-level", err.getvalue())
+        self.assertIn("arrests", err.getvalue())
+
+    def test_sql_injection_category_is_safe(self):
+        where = police.build_where_clause("nibrs", self.NIBRS_FIELDS, category="'; DROP TABLE--")
+        self.assertIn("''; DROP TABLE--", where)
+        self.assertNotIn("'; DROP", where.replace("''", ""))
+
+    def test_cli_police_recent_json(self):
+        records = [{"attributes": {"crime_description": "LARCENY"}, "geometry": {"x": -78.64, "y": 35.78}}]
+        cm_item = {"id": "a1f2d9204a184404b5a4c7e0fdceb6d0", "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Raleigh_Police_Incidents_Last_90_Days/FeatureServer"}
+        p1, p2 = self._mock_resolution(item_meta=cm_item)
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=records):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "police", "recent", "--days", "30"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        self.assertEqual(data["features"][0]["properties"]["_source"], "crimemapper-90d")
+
+    def test_cli_police_previous_day_json(self):
+        records = [{"attributes": {"crime_description": "ASSAULT"}, "geometry": None}]
+        pd_item = {"id": "693811eb361f4da286891eca1fae5943", "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Daily_Police_Incidents/FeatureServer"}
+        p1, p2 = self._mock_resolution(item_meta=pd_item)
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=records):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "police", "previous-day"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        self.assertEqual(data["features"][0]["properties"]["_source"], "previous-day")
+        self.assertIsNone(data["features"][0]["geometry"])
+
+    def test_cli_police_incidents_warns_predating_nibrs(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            err = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                code = cli.main(["--json", "police", "incidents", "--since", "5000d"])
+        self.assertEqual(code, 0)
+        self.assertIn("predates NIBRS", err.getvalue())
 
 
 if __name__ == "__main__":
