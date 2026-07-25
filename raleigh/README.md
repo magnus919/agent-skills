@@ -15,6 +15,7 @@ When your agent loads this skill, it becomes a **Raleigh civic data specialist**
 - **Development records** — guest-public searches in the Permit and Development Portal
 - **Civic content** — news, events, projects, services, directory entries, and alerts from RaleighNC.gov
 - **Public meetings** — agendas, minutes, and videos from eSCRIBE
+- **Active incidents** — live RWECC public incident feed (undocumented endpoint, clearly labeled)
 - **No API key required** — all data is publicly available
 
 ## What You Get
@@ -40,6 +41,7 @@ scripts/raleigh download "Raleigh Dog Parks" -f csv -o dog_parks.csv
 scripts/raleigh geocode "222 W Hargett St"
 scripts/raleigh transit routes
 scripts/raleigh news --limit 5
+scripts/raleigh incidents active --agency raleigh-fire
 ```
 
 ## Triggers

@@ -1,0 +1,7 @@
+[
+  {"jurisdiction": "Raleigh Police Department", "problem": "Test", "address": "1 St", "lat": 35.7, "long": -78.6, "timestamp": "2026-07-24 10:00:00.000"},
+  {"jurisdiction": "", "problem": "Bad", "address": "2 St", "lat": 35.7, "long": -78.6, "timestamp": "2026-07-24 10:01:00.000"},
+  {"problem": "No Jurisdiction", "address": "3 St", "lat": 35.7, "long": -78.6, "timestamp": "2026-07-24 10:02:00.000"},
+  "not-a-record",
+  {"jurisdiction": "Raleigh Fire Department", "problem": "Valid Fire", "address": "4 St", "lat": 999, "long": -78.6, "timestamp": "2026-07-24 10:03:00.000"}
+]

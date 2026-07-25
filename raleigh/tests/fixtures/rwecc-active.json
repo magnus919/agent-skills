@@ -1,0 +1,42 @@
+[
+  {
+    "jurisdiction": "Raleigh Police Department",
+    "problem": "MVC - Fatal",
+    "address": "Blue Ridge Rd / Macon Pond Rd",
+    "lat": 35.81933,
+    "long": -78.704862,
+    "timestamp": "2026-07-24 22:28:54.000"
+  },
+  {
+    "jurisdiction": "Raleigh Fire Department",
+    "problem": "Structure Fire",
+    "address": "100 Block Example St",
+    "lat": 35.78,
+    "long": -78.64,
+    "timestamp": "2026-07-24 21:15:00.000"
+  },
+  {
+    "jurisdiction": "Raleigh Police Department",
+    "problem": "Larceny",
+    "address": "200 Block Sample Ave",
+    "lat": 35.79,
+    "long": -78.65,
+    "timestamp": "2026-07-24 20:45:00.000"
+  },
+  {
+    "jurisdiction": "Raleigh Fire Department",
+    "problem": "EMS Call",
+    "address": "300 Block Test Blvd",
+    "lat": null,
+    "long": null,
+    "timestamp": "2026-07-24 20:30:00.000"
+  },
+  {
+    "jurisdiction": "Raleigh Police Department",
+    "problem": "MVC - Fatal",
+    "address": "Blue Ridge Rd / Macon Pond Rd",
+    "lat": 35.81933,
+    "long": -78.704862,
+    "timestamp": "2026-07-24 22:28:54.000"
+  }
+]
