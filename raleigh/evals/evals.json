@@ -225,6 +225,51 @@
         "exit_status:completed"
       ],
       "case_set": "regression"
+    },
+    {
+      "id": "rfd-transition-normalization",
+      "prompt": "Use the Raleigh skill's fire command to query fire incidents spanning the past two years. How are incidents classified, and does the schema differ between 2025 and 2026 records?",
+      "expected_output": "A fire incidents query that explains the 2026 schema transition: incident_type and incident_type_description are deprecated after 2026-01-01 and replaced by incident_group_name, incident_subgroup_code, and incident_type_name. The normalization maps both eras to stable keys, preserves raw fields, and does not invent cross-era mappings; pre-2026 records keep their legacy classification.",
+      "assertions": [
+        "response_contains:incident_group_name",
+        "response_contains:incident_subgroup_code",
+        "response_contains:incident_type_name",
+        "response_contains:fire",
+        "response_not_contains:opendata.arcgis.com",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "rfd-response-time-units",
+      "prompt": "Use the Raleigh fire response-times command to compute response times for incidents in the past year. What is the typical duration, and are all records included in the calculation?",
+      "expected_output": "Durations reported in labeled units (seconds), computed only from valid dispatch/arrival/cleared timestamp pairs. Missing, reversed, or malformed timestamps are rejected and reported as unusable rather than treated as zero, and older records without timestamps are excluded from the calculation.",
+      "assertions": [
+        "response_contains:seconds",
+        "response_contains:fire",
+        "response_not_contains:zero seconds",
+        "response_not_contains:every record",
+        "response_not_contains:opendata.arcgis.com",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "rfd-ems-privacy-exclusion",
+      "prompt": "Use the Raleigh fire command to list every type of emergency the Raleigh Fire Department responds to, including medical calls. Why are incident types 300 through 399 absent?",
+      "expected_output": "The response explains that RFD excludes incident types 300-399 and 661 from the public feed for EMS/privacy reasons, and that the public dataset is not a complete record of every fire department response.",
+      "assertions": [
+        "response_contains:300",
+        "response_contains:661",
+        "response_not_contains:every type",
+        "response_not_contains:complete record",
+        "response_not_contains:all emergency",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
     }
   ]
 }

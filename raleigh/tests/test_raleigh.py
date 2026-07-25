@@ -42,6 +42,7 @@ import raleighlib.development as development
 import raleighlib.civic as civic
 import raleighlib.meetings as meetings
 import raleighlib.police as police
+import raleighlib.fire as fire
 from raleighlib import cli as cli_lib
 
 CLI_SCRIPT = _SCRIPT_DIR / "raleigh"
@@ -2585,6 +2586,399 @@ class PoliceTests(unittest.TestCase):
                 code = cli.main(["--json", "police", "incidents", "--since", "5000d"])
         self.assertEqual(code, 0)
         self.assertIn("predates NIBRS", err.getvalue())
+
+
+class FireTests(unittest.TestCase):
+    """Tests for the RFD incident command group and 2026 schema normalization."""
+
+    FULL_ITEM_META = {
+        "id": "ea466e39e9ca4448b645c33a0d6c60ad",
+        "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Fire_Incidents_Public/FeatureServer",
+    }
+    MONTH_ITEM_META = {
+        "id": "c983765e304a41d19087c8d95aa46d54",
+        "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Fire_Incidents_Past_Month/FeatureServer",
+    }
+    FULL_FIELDS = {
+        "OBJECTID", "incident_number", "incident_type", "incident_type_description",
+        "arrive_date_time", "cleared_date_time", "dispatch_date_time", "exposure",
+        "platoon", "station", "address", "GlobalID", "incident_group_name",
+        "incident_subgroup_code", "incident_type_name",
+    }
+    MONTH_FIELDS = {
+        "OBJECTID", "incident_number", "arrive_date_time", "cleared_date_time",
+        "dispatch_date_time", "platoon", "address", "GlobalID", "station_name",
+        "incident_group_name", "incident_subgroup_code", "incident_type_name",
+    }
+    FULL_LAYER_META = {
+        "layers": [{"id": 0, "name": "Incidents"}],
+        "geometryType": "esriGeometryPoint",
+        "fields": [{"name": n, "type": "esriFieldTypeString"} for n in sorted(FULL_FIELDS)],
+    }
+    MONTH_LAYER_META = {
+        "layers": [{"id": 0, "name": "Incidents"}],
+        "geometryType": "esriGeometryPoint",
+        "fields": [{"name": n, "type": "esriFieldTypeString"} for n in sorted(MONTH_FIELDS)],
+    }
+
+    LEGACY_RECORD = {
+        "attributes": {
+            "incident_number": "16-0020175",
+            "incident_type": 444,
+            "incident_type_description": "Power line down",
+            "arrive_date_time": None,
+            "cleared_date_time": None,
+            "dispatch_date_time": None,
+            "exposure": 0,
+            "platoon": "C",
+            "station": 6,
+            "address": "GRANT AVE & DUPLIN RD RALEIGH, NC 27608",
+            "incident_group_name": None,
+            "incident_subgroup_code": None,
+            "incident_type_name": None,
+        },
+        "geometry": None,
+    }
+    CURRENT_RECORD = {
+        "attributes": {
+            "incident_number": "26-032165",
+            "incident_type": None,
+            "incident_type_description": None,
+            "arrive_date_time": 1784849490000,
+            "cleared_date_time": 1784851063000,
+            "dispatch_date_time": 1784849175000,
+            "exposure": None,
+            "platoon": "C",
+            "station": None,
+            "address": "936 Rock Quarry Rd & Rock Quarry Rd Raleigh, NC 27610",
+            "incident_group_name": "No Emergency",
+            "incident_subgroup_code": "Good Intent",
+            "incident_type_name": "No Incident Found Upon Arrival / Location Error",
+        },
+        "geometry": {"x": -78.64, "y": 35.78},
+    }
+    MONTH_RECORD = {
+        "attributes": {
+            "incident_number": "26-027403",
+            "arrive_date_time": None,
+            "cleared_date_time": 1782191991000,
+            "dispatch_date_time": 1782191792000,
+            "platoon": "C",
+            "address": "200 Park & North Hills St Raleigh, NC 27609-2628",
+            "station_name": "Station 09",
+            "incident_group_name": "Public Service",
+            "incident_subgroup_code": "Alarms (Non Medical)",
+            "incident_type_name": "Fire / Smoke Alarm",
+        },
+        "geometry": {"x": -78.64, "y": 35.79},
+    }
+
+    def _mock_resolution(self, item_meta=None, layer_meta=None):
+        """Return patch contexts mocking item resolution and layer metadata."""
+        item_meta = item_meta or self.FULL_ITEM_META
+        layer_meta = layer_meta or self.FULL_LAYER_META
+
+        def fake_json_request(url, **kwargs):
+            if "sharing/rest/content/items/" in url:
+                return item_meta
+            if url.rstrip("/").endswith("FeatureServer") or url.rstrip("/").endswith("FeatureServer/"):
+                return layer_meta
+            if "/query" in url:
+                return {"features": []}
+            return layer_meta
+
+        return patch("raleighlib.fire.core.json_request", side_effect=fake_json_request), patch(
+            "raleighlib.arcgis.core.json_request", side_effect=fake_json_request
+        )
+
+    def test_resolve_item_url_rejects_missing_url(self):
+        with patch("raleighlib.fire.core.json_request", return_value={"id": "x"}):
+            with self.assertRaisesRegex(fire.FireError, "no service URL"):
+                fire.resolve_item_url("x")
+
+    def test_resolve_item_url_uses_allowlisted_host(self):
+        self.assertTrue(core.is_allowed_host(fire.ITEM_RESOLUTION_URL.format(item_id="test")))
+
+    def test_source_selection_full_history(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            result = fire.query_incidents("full-history", limit=5)
+        self.assertEqual(result["_sources"][0]["item_id"], "ea466e39e9ca4448b645c33a0d6c60ad")
+        self.assertEqual(result["type"], "FeatureCollection")
+
+    def test_source_selection_past_month(self):
+        p1, p2 = self._mock_resolution(item_meta=self.MONTH_ITEM_META, layer_meta=self.MONTH_LAYER_META)
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            result = fire.query_incidents("past-month", limit=5)
+        self.assertEqual(result["_sources"][0]["item_id"], "c983765e304a41d19087c8d95aa46d54")
+
+    def test_unknown_source_raises(self):
+        with self.assertRaisesRegex(fire.FireError, "Unknown source"):
+            fire.query_incidents("nonexistent")
+
+    def test_date_filter_uses_timestamp_literal(self):
+        where = fire.build_where_clause("full-history", self.FULL_FIELDS, since_ms=1700000000000)
+        self.assertIn("dispatch_date_time >= TIMESTAMP '2023-11-14 22:13:20'", where)
+
+    def test_date_filter_out_of_bounds_raises(self):
+        with self.assertRaisesRegex(fire.FireError, "out of bounds"):
+            fire.build_where_clause("full-history", self.FULL_FIELDS, since_ms=10**18)
+
+    def test_station_filter_full_history_is_integer_equality(self):
+        where = fire.build_where_clause("full-history", self.FULL_FIELDS, station=9)
+        self.assertIn("station = 9", where)
+
+    def test_station_filter_past_month_matches_station_name(self):
+        where = fire.build_where_clause("past-month", self.MONTH_FIELDS, station=9)
+        self.assertIn("UPPER(station_name) LIKE 'STATION 09'", where)
+        self.assertIn("UPPER(station_name) LIKE 'STATION 9'", where)
+
+    def test_station_filter_past_month_double_digit_not_duplicated(self):
+        where = fire.build_where_clause("past-month", self.MONTH_FIELDS, station=21)
+        self.assertEqual(where.count("STATION 21"), 1)
+
+    def test_platoon_filter_is_case_insensitive_equality(self):
+        where = fire.build_where_clause("full-history", self.FULL_FIELDS, platoon="c")
+        self.assertIn("UPPER(platoon) = 'C'", where)
+
+    def test_platoon_filter_escapes_quotes(self):
+        where = fire.build_where_clause("full-history", self.FULL_FIELDS, platoon="O'Brien")
+        self.assertIn("O''BRIEN", where)
+
+    def test_group_filter_uses_like_and_escapes_wildcards(self):
+        where = fire.build_where_clause("full-history", self.FULL_FIELDS, group="100%_fire")
+        self.assertIn("UPPER(incident_group_name) LIKE '%100\\%\\_FIRE%'", where)
+
+    def test_type_filter_past_month_uses_type_name(self):
+        where = fire.build_where_clause("past-month", self.MONTH_FIELDS, incident_type="alarm")
+        self.assertIn("UPPER(incident_type_name) LIKE '%ALARM%'", where)
+
+    def test_type_filter_full_history_spans_both_eras(self):
+        where = fire.build_where_clause("full-history", self.FULL_FIELDS, incident_type="alarm")
+        self.assertIn("UPPER(incident_type_name) LIKE '%ALARM%'", where)
+        self.assertIn("UPPER(incident_type_description) LIKE '%ALARM%'", where)
+
+    def test_type_filter_full_history_numeric_matches_legacy_code(self):
+        where = fire.build_where_clause("full-history", self.FULL_FIELDS, incident_type="745")
+        self.assertIn("incident_type = 745", where)
+
+    def test_type_filter_legacy_only_fields_still_match(self):
+        legacy_only = self.FULL_FIELDS - {"incident_type_name"}
+        where = fire.build_where_clause("full-history", legacy_only, incident_type="alarm")
+        self.assertIn("UPPER(incident_type_description) LIKE '%ALARM%'", where)
+        self.assertNotIn("incident_type_name", where)
+
+    def test_missing_field_skips_filter_with_warning(self):
+        with redirect_stderr(io.StringIO()) as stderr:
+            where = fire.build_where_clause("full-history", {"OBJECTID"}, group="Fire")
+        self.assertEqual(where, "1=1")
+        self.assertIn("not found", stderr.getvalue())
+
+    def test_sql_injection_group_is_safe(self):
+        where = fire.build_where_clause("full-history", self.FULL_FIELDS, group="'; DROP TABLE--")
+        self.assertIn("''; DROP TABLE--", where)
+        self.assertNotIn("'; DROP", where.replace("''", ""))
+
+    def test_normalize_legacy_record_preserves_historical_classification(self):
+        norm = fire.normalize_classification(self.LEGACY_RECORD["attributes"])
+        self.assertEqual(norm["_classification_era"], "legacy")
+        self.assertEqual(norm["_incident_code"], 444)
+        self.assertEqual(norm["_incident_type"], "Power line down")
+        self.assertIsNone(norm["_incident_group"])
+        self.assertIsNone(norm["_incident_subgroup"])
+
+    def test_normalize_current_record_uses_replacement_fields(self):
+        norm = fire.normalize_classification(self.CURRENT_RECORD["attributes"])
+        self.assertEqual(norm["_classification_era"], "current")
+        self.assertEqual(norm["_incident_group"], "No Emergency")
+        self.assertEqual(norm["_incident_subgroup"], "Good Intent")
+        self.assertEqual(norm["_incident_type"], "No Incident Found Upon Arrival / Location Error")
+        self.assertIsNone(norm["_incident_code"])
+
+    def test_normalize_empty_string_group_treated_as_missing(self):
+        attrs = {"incident_group_name": "  ", "incident_subgroup_code": "", "incident_type_name": None}
+        norm = fire.normalize_classification(attrs)
+        self.assertEqual(norm["_classification_era"], "unknown")
+        self.assertIsNone(norm["_incident_group"])
+
+    def test_normalize_prefers_current_fields_when_both_present(self):
+        attrs = dict(self.LEGACY_RECORD["attributes"])
+        attrs["incident_group_name"] = "Fire"
+        attrs["incident_type_name"] = "Structure Fire"
+        norm = fire.normalize_classification(attrs)
+        self.assertEqual(norm["_classification_era"], "current")
+        self.assertEqual(norm["_incident_type"], "Structure Fire")
+        self.assertEqual(norm["_incident_code"], 444)
+
+    def test_normalize_station_from_integer(self):
+        self.assertEqual(fire.normalize_station({"station": 6}), 6)
+
+    def test_normalize_station_from_station_name(self):
+        self.assertEqual(fire.normalize_station({"station_name": "Station 09"}), 9)
+
+    def test_normalize_station_rejects_unusable_values(self):
+        self.assertIsNone(fire.normalize_station({"station": None, "station_name": None}))
+        self.assertIsNone(fire.normalize_station({"station_name": "Headquarters"}))
+        self.assertIsNone(fire.normalize_station({"station": 0}))
+        self.assertIsNone(fire.normalize_station({"station": True}))
+
+    def test_response_times_valid_pair_computes_seconds(self):
+        times = fire.compute_response_times(self.CURRENT_RECORD["attributes"])
+        self.assertEqual(times["_dispatch_to_arrive_seconds"], 315.0)
+        self.assertEqual(times["_dispatch_to_arrive_status"], "ok")
+        self.assertEqual(times["_arrive_to_clear_seconds"], 1573.0)
+        self.assertEqual(times["_dispatch_to_clear_seconds"], 1888.0)
+
+    def test_response_times_missing_timestamp_rejected(self):
+        times = fire.compute_response_times(self.LEGACY_RECORD["attributes"])
+        self.assertIsNone(times["_dispatch_to_arrive_seconds"])
+        self.assertEqual(times["_dispatch_to_arrive_status"], "missing_timestamp")
+
+    def test_response_times_partial_pairs_validated_independently(self):
+        times = fire.compute_response_times(self.MONTH_RECORD["attributes"])
+        self.assertEqual(times["_dispatch_to_arrive_status"], "missing_timestamp")
+        self.assertEqual(times["_arrive_to_clear_status"], "missing_timestamp")
+        self.assertEqual(times["_dispatch_to_clear_seconds"], 199.0)
+        self.assertEqual(times["_dispatch_to_clear_status"], "ok")
+
+    def test_response_times_reversed_timestamps_rejected(self):
+        attrs = {"dispatch_date_time": 2000, "arrive_date_time": 1000, "cleared_date_time": None}
+        times = fire.compute_response_times(attrs)
+        self.assertIsNone(times["_dispatch_to_arrive_seconds"])
+        self.assertEqual(times["_dispatch_to_arrive_status"], "reversed_timestamps")
+
+    def test_response_times_malformed_timestamps_rejected(self):
+        for bad in ("not-a-time", -5, float("nan"), float("inf"), True):
+            attrs = {"dispatch_date_time": bad, "arrive_date_time": 5000, "cleared_date_time": None}
+            times = fire.compute_response_times(attrs)
+            self.assertIsNone(times["_dispatch_to_arrive_seconds"])
+            self.assertEqual(times["_dispatch_to_arrive_status"], "malformed_timestamp")
+
+    def test_geometry_zero_coordinates_suppressed(self):
+        record = {"attributes": {}, "geometry": {"x": 0, "y": 0}}
+        self.assertIsNone(fire._normalize_geometry(record))
+
+    def test_geometry_valid_point_preserved(self):
+        geom = fire._normalize_geometry(self.CURRENT_RECORD)
+        self.assertEqual(geom, {"type": "Point", "coordinates": [-78.64, 35.78]})
+
+    def test_query_enriches_features_with_source_and_normalization(self):
+        records = [self.LEGACY_RECORD, self.CURRENT_RECORD]
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=records):
+            result = fire.query_incidents("full-history", limit=10)
+        features = result["features"]
+        self.assertEqual(features[0]["properties"]["_source"], "full-history")
+        self.assertEqual(features[0]["properties"]["_item_id"], "ea466e39e9ca4448b645c33a0d6c60ad")
+        self.assertIn("_retrieved_at", features[0]["properties"])
+        self.assertEqual(features[0]["properties"]["_classification_era"], "legacy")
+        self.assertEqual(features[0]["properties"]["_station"], 6)
+        self.assertEqual(features[1]["properties"]["_classification_era"], "current")
+        self.assertIsNone(features[0]["geometry"])
+
+    def test_query_response_times_included_only_when_requested(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[self.CURRENT_RECORD]):
+            plain = fire.query_incidents("full-history", limit=1)
+            timed = fire.query_incidents("full-history", limit=1, include_response_times=True)
+        self.assertNotIn("_dispatch_to_arrive_seconds", plain["features"][0]["properties"])
+        self.assertEqual(timed["features"][0]["properties"]["_dispatch_to_arrive_seconds"], 315.0)
+
+    def test_pagination_respects_limit(self):
+        records = [{"attributes": {"OBJECTID": i}, "geometry": None} for i in range(5)]
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=records) as mock_query:
+            result = fire.query_incidents("full-history", limit=5)
+        self.assertEqual(len(result["features"]), 5)
+        self.assertEqual(mock_query.call_args[1]["max_records"], 5)
+
+    def test_cli_fire_incidents_json(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[self.CURRENT_RECORD]):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "fire", "incidents", "--since", "30d", "--limit", "5"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        self.assertEqual(data["type"], "FeatureCollection")
+        self.assertEqual(data["features"][0]["properties"]["_source"], "full-history")
+        self.assertEqual(data["features"][0]["properties"]["_classification_era"], "current")
+
+    def test_cli_fire_incidents_past_month_json(self):
+        p1, p2 = self._mock_resolution(item_meta=self.MONTH_ITEM_META, layer_meta=self.MONTH_LAYER_META)
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[self.MONTH_RECORD]):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "fire", "incidents", "--source", "past-month", "--station", "9"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        self.assertEqual(data["_sources"][0]["item_id"], "c983765e304a41d19087c8d95aa46d54")
+        self.assertEqual(data["features"][0]["properties"]["_station"], 9)
+
+    def test_cli_fire_response_times_json_includes_durations(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[self.CURRENT_RECORD]):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "fire", "response-times", "--since", "1y", "--group", "Fire"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        props = data["features"][0]["properties"]
+        self.assertEqual(props["_dispatch_to_arrive_seconds"], 315.0)
+        self.assertEqual(props["_dispatch_to_arrive_status"], "ok")
+
+    def test_cli_fire_response_times_human_output_labels_units_and_summary(self):
+        p1, p2 = self._mock_resolution()
+        records = [self.CURRENT_RECORD, self.LEGACY_RECORD]
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=records):
+            out = io.StringIO()
+            err = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = cli.main(["fire", "response-times", "--since", "30d"])
+        self.assertEqual(code, 0)
+        self.assertIn("DISPATCH->ARRIVE (S)", out.getvalue())
+        self.assertIn("1 with a valid dispatch-to-arrival duration", err.getvalue())
+        self.assertIn("1 rejected", err.getvalue())
+
+    def test_cli_fire_incidents_human_output_prints_caveat(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[self.CURRENT_RECORD]):
+            err = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                code = cli.main(["fire", "incidents", "--since", "7d"])
+        self.assertEqual(code, 0)
+        self.assertIn("300", err.getvalue())
+        self.assertIn("661", err.getvalue())
+
+    def test_cli_fire_group_filter_notes_pretransition_exclusion(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            err = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                code = cli.main(["fire", "incidents", "--since", "40w", "--group", "Fire"])
+        self.assertEqual(code, 0)
+        self.assertIn("2026+", err.getvalue())
+
+    def test_cli_fire_station_full_history_notes_sparse_station(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            err = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                code = cli.main(["fire", "incidents", "--station", "9"])
+        self.assertEqual(code, 0)
+        self.assertIn("past-month", err.getvalue())
+
+    def test_cli_fire_invalid_since_rejected(self):
+        with self.assertRaises(SystemExit):
+            cli.main(["fire", "incidents", "--since", "abc"])
+
+    def test_cli_fire_since_accepts_years(self):
+        p1, p2 = self._mock_resolution()
+        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "fire", "response-times", "--since", "1y"])
+        self.assertEqual(code, 0)
 
 
 if __name__ == "__main__":
