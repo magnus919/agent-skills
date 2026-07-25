@@ -7,6 +7,7 @@ on:
       - '*/evals/evals.json'
       - '*/scripts/**'
       - 'eval_runner/**'
+      - '.github/workflows/skill-eval.yml'
       - 'schemas/comparison-report-v1.schema.json'
       - 'schemas/release-eval-v1.schema.json'
   push:
@@ -17,6 +18,7 @@ on:
       - '*/evals/evals.json'
       - '*/scripts/**'
       - 'eval_runner/**'
+      - '.github/workflows/skill-eval.yml'
       - 'schemas/comparison-report-v1.schema.json'
       - 'schemas/release-eval-v1.schema.json'
 
@@ -28,11 +30,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
       - name: Install dependencies
@@ -49,11 +51,11 @@ jobs:
     needs: paired-eval-tests
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
       - name: Install dependencies
@@ -93,7 +95,7 @@ jobs:
           exit $exit_code
       - name: Upload paired eval artifacts
         if: always() && steps.changed.outputs.manifests != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: paired-eval-artifacts
           path: eval-output-paired/
@@ -105,11 +107,11 @@ jobs:
     needs: paired-eval-tests
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
       - name: Install dependencies
@@ -117,8 +119,13 @@ jobs:
       - name: Check model endpoint
         id: endpoint
         env:
-          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL || 'http://gpuslut01:8080' }}
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+          EVAL_MODEL: ${{ vars.EVAL_MODEL }}
         run: |
+          if [ -z "$EVAL_BASE_URL" ] || [ -z "$EVAL_MODEL" ]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if curl -sf --connect-timeout 5 "$EVAL_BASE_URL/v1/models" > /dev/null 2>&1; then
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
@@ -148,8 +155,8 @@ jobs:
         if: steps.endpoint.outputs.available == 'true' && steps.changed.outputs.manifests != ''
         env:
           MANIFESTS: ${{ steps.changed.outputs.manifests }}
-          EVAL_MODEL: ${{ vars.EVAL_MODEL || 'google_gemma-4-26B-A4B-it-IQ4_XS.gguf' }}
-          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL || 'http://gpuslut01:8080' }}
+          EVAL_MODEL: ${{ vars.EVAL_MODEL }}
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
         run: |
           exit_code=0
           for manifest in $MANIFESTS; do
@@ -159,6 +166,7 @@ jobs:
               --adapter openai \
               --base-url "$EVAL_BASE_URL" \
               --model "$EVAL_MODEL" \
+              --model-label configured-model \
               --max-tokens 4096 \
               --no-thinking \
               --timeout 300 \
@@ -168,7 +176,7 @@ jobs:
           exit $exit_code
       - name: Upload model eval artifacts
         if: always() && steps.endpoint.outputs.available == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: paired-eval-model-artifacts
           path: eval-output-model/

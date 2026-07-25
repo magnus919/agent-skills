@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .grader import GradeResult
+from .path_safety import contained_path, validate_case_id
 
 COMPARISON_SCHEMA_VERSION = 1
 
@@ -73,8 +74,9 @@ def build_comparison_report(
 def write_comparison_report(report: dict[str, Any], output_dir: Path) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     case_id = report.get("case_id", "unknown")
+    validate_case_id(case_id)
     report_id = report.get("report_id", "unknown")[:8]
-    path = output_dir / f"{case_id}--{report_id}.comparison.json"
+    path = contained_path(output_dir, f"{case_id}--{report_id}.comparison.json")
     path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return path
 

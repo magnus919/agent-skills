@@ -19,6 +19,7 @@ from .comparison import build_comparison_report, format_comparison_summary, writ
 from .grader import grade_output
 from .manifest import build_manifest, write_manifest
 from .models import AdapterInput, EvalCase
+from .path_safety import contained_path
 from .sandbox import cleanup_sandbox, stage_paired_sandboxes
 
 
@@ -28,18 +29,19 @@ def run_paired_trial(
     skill_path: Path,
     output_dir: Path,
     model: str,
+    model_label: str | None = None,
 ) -> dict[str, Any]:
     """Run one case in candidate and baseline conditions, grade, and compare."""
     candidate_sandbox, baseline_sandbox = stage_paired_sandboxes(skill_path)
 
     try:
-        candidate_output_dir = output_dir / "candidate" / case.id
-        baseline_output_dir = output_dir / "baseline" / case.id
+        candidate_output_dir = contained_path(output_dir, "candidate", case.id)
+        baseline_output_dir = contained_path(output_dir, "baseline", case.id)
 
         candidate_input = AdapterInput(
             skill_path=candidate_sandbox,
             case=case,
-            work_dir=output_dir / "work" / "candidate" / case.id,
+            work_dir=contained_path(output_dir, "work", "candidate", case.id),
             output_dir=candidate_output_dir,
             model=model,
             permissions={"skill_readonly": True, "grader_visible": False},
@@ -49,7 +51,7 @@ def run_paired_trial(
         baseline_input = AdapterInput(
             skill_path=baseline_sandbox,
             case=case,
-            work_dir=output_dir / "work" / "baseline" / case.id,
+            work_dir=contained_path(output_dir, "work", "baseline", case.id),
             output_dir=baseline_output_dir,
             model=model,
             permissions={"skill_readonly": False, "grader_visible": False},
@@ -64,13 +66,14 @@ def run_paired_trial(
         baseline_result = adapter.execute(baseline_input)
         b_finished = datetime.now(timezone.utc)
 
+        reported_model = model_label or model
         candidate_manifest = build_manifest(
             adapter_name=adapter.name,
             adapter_version=adapter.version,
             harness_name=adapter.name,
             harness_version=adapter.version,
-            model_provider="unspecified" if not model else model.split("/")[0],
-            model_id=model or "unspecified",
+            model_provider="unspecified" if not reported_model else reported_model.split("/")[0],
+            model_id=reported_model or "unspecified",
             adapter_input=candidate_input,
             adapter_output=candidate_result,
             started_at=c_started,
@@ -82,16 +85,17 @@ def run_paired_trial(
             adapter_version=adapter.version,
             harness_name=adapter.name,
             harness_version=adapter.version,
-            model_provider="unspecified" if not model else model.split("/")[0],
-            model_id=model or "unspecified",
+            model_provider="unspecified" if not reported_model else reported_model.split("/")[0],
+            model_id=reported_model or "unspecified",
             adapter_input=baseline_input,
             adapter_output=baseline_result,
             started_at=b_started,
             finished_at=b_finished,
         )
 
-        write_manifest(candidate_manifest, output_dir / "manifests")
-        write_manifest(baseline_manifest, output_dir / "manifests")
+        manifests_dir = contained_path(output_dir, "manifests")
+        write_manifest(candidate_manifest, manifests_dir)
+        write_manifest(baseline_manifest, manifests_dir)
 
         candidate_grade = grade_output(case.id, case.assertions, candidate_result)
         baseline_grade = grade_output(case.id, case.assertions, baseline_result)
@@ -105,13 +109,15 @@ def run_paired_trial(
             baseline_manifest=baseline_manifest,
         )
 
-        write_comparison_report(report, output_dir / "reports")
+        write_comparison_report(report, contained_path(output_dir, "reports"))
 
         return report
 
     finally:
-        cleanup_sandbox(candidate_sandbox)
-        cleanup_sandbox(baseline_sandbox)
+        try:
+            cleanup_sandbox(candidate_sandbox)
+        finally:
+            cleanup_sandbox(baseline_sandbox)
 
 
 def run_paired_evaluation(
@@ -120,11 +126,12 @@ def run_paired_evaluation(
     skill_path: Path,
     output_dir: Path,
     model: str,
+    model_label: str | None = None,
 ) -> list[dict[str, Any]]:
     """Run all cases as paired trials and return comparison reports."""
     reports = []
     for case in cases:
-        report = run_paired_trial(adapter, case, skill_path, output_dir, model)
+        report = run_paired_trial(adapter, case, skill_path, output_dir, model, model_label)
         reports.append(report)
     return reports
 
@@ -144,6 +151,11 @@ def main() -> int:
     parser.add_argument("--adapter", choices=["fake", "cli", "openai"], default="fake")
     parser.add_argument("--output-dir", type=Path, default=Path("eval-output-paired"))
     parser.add_argument("--model", default="")
+    parser.add_argument(
+        "--model-label",
+        default=None,
+        help="logical model label recorded in artifacts (defaults to --model)",
+    )
     parser.add_argument("--case", dest="case_id", default=None)
     parser.add_argument("--command", default=None)
     parser.add_argument("--prompt-mode", default="stdin", choices=["stdin", "arg"])
@@ -221,7 +233,14 @@ def main() -> int:
     print(f"output:  {output_dir}")
     print()
 
-    reports = run_paired_evaluation(adapter, cases, skill_path, output_dir, args.model)
+    reports = run_paired_evaluation(
+        adapter,
+        cases,
+        skill_path,
+        output_dir,
+        args.model,
+        args.model_label,
+    )
 
     improvements = 0
     regressions = 0

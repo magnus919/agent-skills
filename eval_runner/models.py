@@ -8,6 +8,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
+from .path_safety import hash_contained_file, validate_case_id, validate_relative_path
+
 
 class ExitStatus(str, Enum):
     COMPLETED = "completed"
@@ -25,6 +27,13 @@ class EvalCase:
     files: list[str] = field(default_factory=list)
     case_set: str = "dev"
 
+    def __post_init__(self) -> None:
+        validate_case_id(self.id)
+        if len(self.files) != len(set(self.files)):
+            raise ValueError("eval case fixture paths must be unique")
+        for relative_path in self.files:
+            validate_relative_path(relative_path)
+
     @property
     def prompt_hash(self) -> str:
         return hashlib.sha256(self.prompt.encode()).hexdigest()[:16]
@@ -32,11 +41,7 @@ class EvalCase:
     def fixture_hashes(self, skill_root: Path) -> dict[str, str]:
         hashes: dict[str, str] = {}
         for rel in self.files:
-            target = skill_root / rel
-            if target.is_file():
-                hashes[rel] = hashlib.sha256(target.read_bytes()).hexdigest()[:16]
-            else:
-                hashes[rel] = "missing"
+            hashes[rel] = hash_contained_file(skill_root, rel) or "missing"
         return hashes
 
 

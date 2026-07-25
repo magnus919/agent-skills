@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -12,7 +13,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from eval_runner.models import AdapterOutput, EvalCase, ExitStatus, ToolEvent
 from eval_runner.grader import AssertionVerdict, grade_output
 from eval_runner.sandbox import cleanup_sandbox, stage_paired_sandboxes, stage_skill_sandbox
-from eval_runner.comparison import build_comparison_report, format_comparison_summary
+from eval_runner.comparison import (
+    build_comparison_report,
+    format_comparison_summary,
+    write_comparison_report,
+)
 from eval_runner.paired import run_paired_trial
 from eval_runner.fake_adapter import FakeAdapter
 
@@ -207,6 +212,25 @@ def test_comparison_report_validates_against_schema():
     assert not errors, f"Schema validation failed: {[e.message for e in errors]}"
 
 
+def test_comparison_schema_matches_runtime_case_ids():
+    try:
+        from jsonschema import Draft202012Validator
+    except ImportError:
+        print("SKIP: jsonschema not installed")
+        return
+
+    schema_path = (
+        Path(__file__).resolve().parent.parent.parent
+        / "schemas"
+        / "comparison-report-v1.schema.json"
+    )
+    schema = json.loads(schema_path.read_text())
+    validator = Draft202012Validator(schema["properties"]["case_id"])
+    assert not list(validator.iter_errors("valid-case-1"))
+    for unsafe_case_id in ["../case", "Uppercase", "case_id", "case\n"]:
+        assert list(validator.iter_errors(unsafe_case_id)), unsafe_case_id
+
+
 def test_paired_trial_end_to_end():
     adapter = FakeAdapter()
 
@@ -243,6 +267,155 @@ def test_paired_trial_candidate_cannot_read_evals():
         cleanup_sandbox(staged)
 
 
+def test_sandbox_rejects_top_level_symlink():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        skill = _make_skill_dir(tmp_path)
+        outside = tmp_path / "outside.md"
+        outside.write_text("private")
+        (skill / "linked.md").symlink_to(outside)
+
+        try:
+            stage_skill_sandbox(skill, readonly=False)
+        except ValueError as exc:
+            assert "symlink" in str(exc)
+        else:
+            raise AssertionError("top-level symlink was staged")
+
+
+def test_sandbox_rejects_nested_symlink():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        skill = _make_skill_dir(tmp_path)
+        outside = tmp_path / "outside.md"
+        outside.write_text("private")
+        (skill / "references" / "linked.md").symlink_to(outside)
+
+        try:
+            stage_skill_sandbox(skill, readonly=False)
+        except ValueError as exc:
+            assert "symlink" in str(exc)
+        else:
+            raise AssertionError("nested symlink was staged")
+
+
+def test_paired_trial_uses_generic_model_label_in_artifacts():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        report = run_paired_trial(
+            FakeAdapter(),
+            _make_case(),
+            _make_skill_dir(tmp_path),
+            tmp_path / "output",
+            "private-runtime-model",
+            "configured-model",
+        )
+        assert report["candidate"]["manifest"]["model"]["model_id"] == "configured-model"
+        assert report["baseline"]["manifest"]["model"]["model_id"] == "configured-model"
+
+
+def test_comparison_writer_rejects_unsafe_case_id():
+    with tempfile.TemporaryDirectory() as tmp:
+        try:
+            write_comparison_report(
+                {"case_id": "../../escape", "report_id": "report"},
+                Path(tmp) / "reports",
+            )
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("comparison writer accepted an unsafe case ID")
+
+
+def test_paired_trial_rejects_symlinked_output_subdirectory():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        (output_dir / "candidate").symlink_to(outside, target_is_directory=True)
+
+        try:
+            run_paired_trial(
+                FakeAdapter(),
+                _make_case(),
+                _make_skill_dir(tmp_path),
+                output_dir,
+                "fake-model",
+            )
+        except ValueError as exc:
+            assert "escapes designated root" in str(exc)
+        else:
+            raise AssertionError("symlinked output subdirectory escaped containment")
+
+
+def test_cleanup_does_not_follow_replaced_sandbox_symlink():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        staged = stage_skill_sandbox(_make_skill_dir(tmp_path))
+        staging_root = staged.parent
+        moved = staged.with_name("moved-skill")
+        staged.rename(moved)
+
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        victim = outside / "victim.txt"
+        victim.write_text("do not touch")
+        original_mode = victim.stat().st_mode
+        staged.symlink_to(outside, target_is_directory=True)
+
+        cleanup_sandbox(staged)
+
+        assert victim.read_text() == "do not touch"
+        assert victim.stat().st_mode == original_mode
+        assert not staging_root.exists()
+
+
+def test_cleanup_does_not_follow_replaced_nested_symlink():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        skill = _make_skill_dir(tmp_path)
+        references = skill / "references"
+        (references / "cleanup-reference.md").write_text("reference")
+        staged = stage_skill_sandbox(skill)
+        staging_root = staged.parent
+
+        staged_references = staged / "references"
+        staged.chmod(0o700)
+        staged_references.chmod(0o700)
+        staged_references.rename(staged / "moved-references")
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        victim = outside / "victim.txt"
+        victim.write_text("do not touch")
+        original_mode = outside.stat().st_mode
+        staged_references.symlink_to(outside, target_is_directory=True)
+
+        cleanup_sandbox(staged)
+
+        assert victim.read_text() == "do not touch"
+        assert outside.stat().st_mode == original_mode
+        assert not staging_root.exists()
+
+
+def test_workflow_uses_variables_without_deployment_defaults_and_pins_actions():
+    workflow = (
+        Path(__file__).resolve().parent.parent.parent
+        / ".github"
+        / "workflows"
+        / "skill-eval.yml"
+    ).read_text()
+    assert "vars.EVAL_BASE_URL ||" not in workflow
+    assert "vars.EVAL_MODEL ||" not in workflow
+    assert "http://" not in workflow
+    assert ".gguf" not in workflow
+    assert "--model-label configured-model" in workflow
+    action_refs = re.findall(r"uses: actions/[^@]+@([^ #\n]+)", workflow)
+    assert action_refs
+    assert all(re.fullmatch(r"[0-9a-f]{40}", ref) for ref in action_refs)
+
+
 if __name__ == "__main__":
     test_sandbox_excludes_eval_and_tests()
     test_sandbox_readonly()
@@ -253,6 +426,15 @@ if __name__ == "__main__":
     test_grader_manual_review()
     test_comparison_report_structure()
     test_comparison_report_validates_against_schema()
+    test_comparison_schema_matches_runtime_case_ids()
     test_paired_trial_end_to_end()
     test_paired_trial_candidate_cannot_read_evals()
+    test_sandbox_rejects_top_level_symlink()
+    test_sandbox_rejects_nested_symlink()
+    test_paired_trial_uses_generic_model_label_in_artifacts()
+    test_comparison_writer_rejects_unsafe_case_id()
+    test_paired_trial_rejects_symlinked_output_subdirectory()
+    test_cleanup_does_not_follow_replaced_sandbox_symlink()
+    test_cleanup_does_not_follow_replaced_nested_symlink()
+    test_workflow_uses_variables_without_deployment_defaults_and_pins_actions()
     print("All paired evaluation tests passed.")

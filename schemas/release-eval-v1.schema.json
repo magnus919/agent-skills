@@ -84,7 +84,12 @@
         "paired_delta"
       ],
       "properties": {
-        "case_id": {"type": "string", "minLength": 1},
+        "case_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
         "case_set": {
           "type": "string",
           "enum": ["dev", "regression", "release"]
@@ -119,7 +124,12 @@
         "rationale"
       ],
       "properties": {
-        "case_id": {"type": "string", "minLength": 1},
+        "case_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
         "grader_id": {"type": "string", "minLength": 1},
         "grader_version": {"type": "string", "minLength": 1},
         "blinded": {"type": "boolean"},
@@ -146,7 +156,12 @@
         "order_reversal_consistent"
       ],
       "properties": {
-        "case_id": {"type": "string", "minLength": 1},
+        "case_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
         "position_a": {"type": "string", "enum": ["candidate", "baseline"]},
         "position_b": {"type": "string", "enum": ["candidate", "baseline"]},
         "winner": {
