@@ -58,6 +58,28 @@ Run the deterministic unit suite from the repository root:
 python3 -m unittest raleigh/tests/test_raleigh.py
 ```
 
+## Eval Suite
+
+The Raleigh skill ships executable eval cases in `evals/evals.json` that grade agent output quality — not just CLI correctness. Cases cover public-safety data provenance, privacy language, stale-endpoint detection, dispatch disclaimer, empty-feed handling, and security refusal.
+
+Run the paired eval pipeline (fake adapter, no model needed):
+
+```bash
+python3 -m eval_runner.paired raleigh/evals/evals.json --adapter fake --output-dir eval-output/raleigh
+```
+
+Run with a real model (requires an OpenAI-compatible endpoint):
+
+```bash
+python3 -m eval_runner.paired raleigh/evals/evals.json \
+  --adapter openai \
+  --base-url http://localhost:8080 \
+  --model your-model-id \
+  --output-dir eval-output/raleigh
+```
+
+Assertions use deterministic graders (`response_contains:`, `response_not_contains:`, `exit_status:`, `activation_evidence_contains:`). A candidate that cites a stale endpoint, deprecated field, or unsupported completeness claim fails. Infrastructure errors (timeout, crash) are reported separately from skill-quality failures.
+
 ## Safety Notes
 
 All operations are read-only against public endpoints. The CLI enforces a fixed allowlist of service hosts and never calls authentication, payment, submission, or private-data endpoints.
