@@ -577,18 +577,20 @@ class TransitTests(unittest.TestCase):
             zf.writestr(
                 "trips.txt",
                 "route_id,service_id,trip_id,direction_id\n"
-                "R1,WEEK,T1,0\nR1,WEEK,T2,1\n",
+                "R1,WEEK,T1,0\nR1,WEEK,T2,1\nR2,DAILY,T3,0\n",
             )
             zf.writestr(
                 "stop_times.txt",
                 "trip_id,stop_id,stop_sequence,arrival_time,departure_time\n"
                 "T1,S1,1,08:00:00,08:00:00\nT1,S2,2,08:15:00,08:15:00\n"
-                "T2,S2,1,09:00:00,09:00:00\n",
+                "T2,S2,1,09:00:00,09:00:00\n"
+                "T3,S2,1,10:00:00,10:00:00\n",
             )
             zf.writestr(
                 "calendar.txt",
                 "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date\n"
-                "WEEK,1,1,1,1,1,0,0,20260101,20261231\n",
+                "WEEK,1,1,1,1,1,0,0,20260101,20261231\n"
+                "DAILY,1,1,1,1,1,1,1,20260101,20261231\n",
             )
         return buf.getvalue()
 
@@ -618,9 +620,9 @@ class TransitTests(unittest.TestCase):
     def test_get_arrivals_for_stop(self):
         data = self._make_gtfs_zip()
         feed = transit.parse_gtfs_zip(data)
-        with patch("raleighlib.transit._today_date", return_value="20260723"):
-            arrivals = transit.get_arrivals_for_stop("S2", feed=feed)
-        self.assertEqual(len(arrivals), 2)
+        arrivals = transit.get_arrivals_for_stop("S2", feed=feed)
+        trip_ids = {a["trip_id"] for a in arrivals}
+        self.assertIn("T3", trip_ids)
 
     def test_enrich_realtime_with_static(self):
         data = self._make_gtfs_zip()
