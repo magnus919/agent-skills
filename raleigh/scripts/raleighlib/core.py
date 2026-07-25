@@ -36,6 +36,7 @@ ALLOWED_HOSTS: frozenset[str] = frozenset({
     "www.goraleigh.org",
     "raleighnc.gov",
     "pub-raleighnc.escribemeetings.com",
+    "incidents.rwecc.com",
 })
 
 

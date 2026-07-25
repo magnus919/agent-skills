@@ -27,6 +27,7 @@ from raleighlib import civic
 from raleighlib import meetings
 from raleighlib import police
 from raleighlib import fire
+from raleighlib import incidents
 
 
 def _output_json(data: Any) -> None:
@@ -424,6 +425,14 @@ def build_parser() -> argparse.ArgumentParser:
     fire_rt.add_argument("--type", dest="incident_type", help="Filter by incident type name/description substring or legacy NFIRS code.")
     fire_rt.add_argument("--limit", type=_positive_int, default=20)
     fire_rt.add_argument("--offset", type=_nonnegative_int, default=0)
+
+    incidents_p = sub.add_parser("incidents", help="Raleigh-Wake ECC active incident feed (undocumented).")
+    incidents_sub = incidents_p.add_subparsers(dest="incidents_command")
+    incidents_active = incidents_sub.add_parser("active", help="Currently active incidents.")
+    incidents_active.add_argument("--agency", help="Filter by agency substring (e.g. raleigh-fire, raleigh-police).")
+    incidents_active.add_argument("--type", dest="incident_type", help="Filter by incident type substring.")
+    incidents_active.add_argument("--limit", type=_positive_int, default=50)
+    incidents_active.add_argument("--no-cache", action="store_true", help="Bypass the short-lived cache.")
 
     return parser
 
@@ -1342,6 +1351,35 @@ def cmd_fire_response_times(args: argparse.Namespace) -> int:
     return _fire_response_times_output(result, args)
 
 
+def cmd_incidents_active(args: argparse.Namespace) -> int:
+    result = incidents.fetch_active(
+        agency=args.agency,
+        incident_type=args.incident_type,
+        limit=args.limit,
+        use_cache=not args.no_cache,
+    )
+    if args.json:
+        _output_json(result)
+    else:
+        rows = []
+        for inc in result["incidents"]:
+            rows.append([
+                inc["jurisdiction"],
+                inc["problem"],
+                inc.get("address") or "",
+                inc.get("timestamp") or "",
+            ])
+        if rows:
+            _output_table(["AGENCY", "PROBLEM", "ADDRESS", "TIMESTAMP"], rows)
+        else:
+            print("No active incidents returned.")
+        for warning in result.get("warnings", []):
+            print(f"Warning: {warning}", file=sys.stderr)
+        print(f"\n{result['source']}", file=sys.stderr)
+        print(f"Retrieved: {result['retrieved_at']}", file=sys.stderr)
+    return 0
+
+
 _COMMANDS: dict[str, Any] = {
     "catalog": cmd_catalog,
     "search": cmd_search,
@@ -1402,6 +1440,10 @@ _POLICE_COMMANDS: dict[str, Any] = {
 _FIRE_COMMANDS: dict[str, Any] = {
     "incidents": cmd_fire_incidents,
     "response-times": cmd_fire_response_times,
+}
+
+_INCIDENTS_COMMANDS: dict[str, Any] = {
+    "active": cmd_incidents_active,
 }
 
 
@@ -1492,6 +1534,12 @@ def main(argv: list[str] | None = None) -> int:
             parser.parse_args([args.command, "--help"])
             return 2
 
+        if args.command == "incidents":
+            if args.incidents_command in _INCIDENTS_COMMANDS:
+                return _INCIDENTS_COMMANDS[args.incidents_command](args)
+            parser.parse_args([args.command, "--help"])
+            return 2
+
         if args.command == "geocode":
             return cmd_geocode(args)
         if args.command == "reverse-geocode":
@@ -1520,7 +1568,7 @@ def main(argv: list[str] | None = None) -> int:
 
         parser.print_help()
         return 2
-    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, fire.FireError, FileExistsError, ValueError, KeyError) as exc:
+    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, fire.FireError, incidents.IncidentFeedError, FileExistsError, ValueError, KeyError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
     except urllib.error.HTTPError as exc:

@@ -2981,5 +2981,174 @@ class FireTests(unittest.TestCase):
         self.assertEqual(code, 0)
 
 
+_FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
+
+
+class IncidentsTests(unittest.TestCase):
+    def setUp(self):
+        os.environ.pop("RALEIGH_DISABLE_INCIDENTS", None)
+        self._tmp = tempfile.TemporaryDirectory()
+        os.environ["RALEIGH_CACHE"] = self._tmp.name
+
+    def tearDown(self):
+        os.environ.pop("RALEIGH_CACHE", None)
+        os.environ.pop("RALEIGH_DISABLE_INCIDENTS", None)
+        self._tmp.cleanup()
+
+    def _load_fixture(self, name: str) -> bytes:
+        return (_FIXTURES_DIR / name).read_bytes()
+
+    def _mock_feed(self, fixture_name: str):
+        return patch(
+            "raleighlib.core.raw_request",
+            return_value=self._load_fixture(fixture_name),
+        )
+
+    def test_fetch_active_returns_incidents(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-active.json"):
+            result = incidents_mod.fetch_active(use_cache=False)
+        self.assertEqual(len(result["incidents"]), 4)
+        self.assertIn("source", result)
+        self.assertIn("retrieved_at", result)
+        self.assertIn("NOT all 911 calls", result["source"])
+
+    def test_fetch_active_deduplicates(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-active.json"):
+            result = incidents_mod.fetch_active(use_cache=False)
+        keys = [
+            (r["jurisdiction"], r["problem"], r["address"], r["timestamp"])
+            for r in result["incidents"]
+        ]
+        self.assertEqual(len(keys), len(set(keys)))
+
+    def test_fetch_active_agency_filter(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-active.json"):
+            result = incidents_mod.fetch_active(agency="raleigh-fire", use_cache=False)
+        for inc in result["incidents"]:
+            self.assertIn("fire", inc["jurisdiction"].casefold())
+
+    def test_fetch_active_unknown_agency_warns(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-active.json"):
+            result = incidents_mod.fetch_active(agency="wake-county-sheriff", use_cache=False)
+        self.assertTrue(any("not a known agency" in w for w in result["warnings"]))
+
+    def test_fetch_active_type_filter(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-active.json"):
+            result = incidents_mod.fetch_active(incident_type="fire", use_cache=False)
+        for inc in result["incidents"]:
+            self.assertIn("fire", inc["problem"].casefold())
+
+    def test_fetch_active_limit(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-active.json"):
+            result = incidents_mod.fetch_active(limit=2, use_cache=False)
+        self.assertLessEqual(len(result["incidents"]), 2)
+
+    def test_fetch_active_empty_feed_warns(self):
+        import raleighlib.incidents as incidents_mod
+        with patch("raleighlib.core.raw_request", return_value=b"[]"):
+            result = incidents_mod.fetch_active(use_cache=False)
+        self.assertEqual(len(result["incidents"]), 0)
+        self.assertTrue(any("does not prove" in w for w in result["warnings"]))
+
+    def test_fetch_active_schema_drift_object(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-schema-drift.json"):
+            with self.assertRaises(incidents_mod.IncidentFeedError) as ctx:
+                incidents_mod.fetch_active(use_cache=False)
+        self.assertIn("schema drift", str(ctx.exception))
+
+    def test_fetch_active_malformed_records_skipped(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-malformed-records.json"):
+            result = incidents_mod.fetch_active(use_cache=False)
+        self.assertEqual(len(result["incidents"]), 2)
+        self.assertTrue(any("skipped" in w for w in result["warnings"]))
+
+    def test_fetch_active_missing_coordinates_preserved_as_none(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-active.json"):
+            result = incidents_mod.fetch_active(agency="raleigh-fire", use_cache=False)
+        ems = [r for r in result["incidents"] if r["problem"] == "EMS Call"]
+        self.assertTrue(ems)
+        self.assertIsNone(ems[0]["lat"])
+        self.assertIsNone(ems[0]["long"])
+
+    def test_fetch_active_out_of_range_coordinates_nulled(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-malformed-records.json"):
+            result = incidents_mod.fetch_active(use_cache=False)
+        fire_rec = [r for r in result["incidents"] if "Fire" in r["jurisdiction"]]
+        self.assertTrue(fire_rec)
+        self.assertIsNone(fire_rec[0]["lat"])
+
+    def test_fetch_active_disabled(self):
+        import raleighlib.incidents as incidents_mod
+        os.environ["RALEIGH_DISABLE_INCIDENTS"] = "1"
+        with self.assertRaises(incidents_mod.IncidentFeedError) as ctx:
+            incidents_mod.fetch_active(use_cache=False)
+        self.assertIn("disabled", str(ctx.exception))
+
+    def test_fetch_active_malformed_json(self):
+        import raleighlib.incidents as incidents_mod
+        with patch("raleighlib.core.raw_request", return_value=b"not json{{{"):
+            with self.assertRaises(incidents_mod.IncidentFeedError) as ctx:
+                incidents_mod.fetch_active(use_cache=False)
+        self.assertIn("malformed JSON", str(ctx.exception))
+
+    def test_fetch_active_network_failure(self):
+        import raleighlib.incidents as incidents_mod
+        with patch("raleighlib.core.raw_request", side_effect=urllib.error.URLError("timeout")):
+            with self.assertRaises(incidents_mod.IncidentFeedError) as ctx:
+                incidents_mod.fetch_active(use_cache=False)
+        self.assertIn("unavailable", str(ctx.exception))
+
+    def test_fetch_active_uses_cache(self):
+        import raleighlib.incidents as incidents_mod
+        with self._mock_feed("rwecc-active.json"):
+            result1 = incidents_mod.fetch_active(use_cache=False)
+        result2 = incidents_mod.fetch_active(use_cache=True)
+        self.assertEqual(len(result1["incidents"]), len(result2["incidents"]))
+
+    def test_cli_incidents_active_json(self):
+        with self._mock_feed("rwecc-active.json"):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "incidents", "active"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        self.assertIn("incidents", data)
+        self.assertIn("source", data)
+
+    def test_cli_incidents_active_table(self):
+        with self._mock_feed("rwecc-active.json"):
+            out = io.StringIO()
+            err = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = cli.main(["incidents", "active"])
+        self.assertEqual(code, 0)
+        self.assertIn("AGENCY", out.getvalue())
+        self.assertIn("NOT all 911 calls", err.getvalue())
+
+    def test_cli_incidents_active_agency_filter(self):
+        with self._mock_feed("rwecc-active.json"):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                code = cli.main(["--json", "incidents", "active", "--agency", "raleigh-police"])
+        self.assertEqual(code, 0)
+        data = json.loads(out.getvalue())
+        for inc in data["incidents"]:
+            self.assertIn("police", inc["jurisdiction"].casefold())
+
+    def test_cli_incidents_active_no_subcommand_shows_help(self):
+        with self.assertRaises(SystemExit):
+            cli.main(["incidents"])
+
+
 if __name__ == "__main__":
     unittest.main()
