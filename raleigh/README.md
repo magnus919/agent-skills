@@ -16,6 +16,7 @@ When your agent loads this skill, it becomes a **Raleigh civic data specialist**
 - **Civic content** — news, events, projects, services, directory entries, and alerts from RaleighNC.gov
 - **Public meetings** — agendas, minutes, and videos from eSCRIBE
 - **Active incidents** — live RWECC public incident feed (undocumented endpoint, clearly labeled)
+- **Fire protection** — Wake County MAR station proximity, ISO ratings, and hydrant distances
 - **No API key required** — all data is publicly available
 
 ## What You Get
@@ -42,6 +43,7 @@ scripts/raleigh geocode "222 W Hargett St"
 scripts/raleigh transit routes
 scripts/raleigh news --limit 5
 scripts/raleigh incidents active --agency raleigh-fire
+scripts/raleigh fire protection --address "222 W Hargett St"
 ```
 
 ## Triggers

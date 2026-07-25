@@ -27,6 +27,7 @@ from raleighlib import civic
 from raleighlib import meetings
 from raleighlib import police
 from raleighlib import fire
+from raleighlib import fire_protection
 from raleighlib import incidents
 
 
@@ -58,6 +59,13 @@ def _positive_int(value: str) -> int:
     number = int(value)
     if not 1 <= number <= 100_000:
         raise argparse.ArgumentTypeError("value must be between 1 and 100000")
+    return number
+
+
+def _csaid_value(value: str) -> int:
+    number = int(value)
+    if not 1 <= number <= 99_999_999:
+        raise argparse.ArgumentTypeError("CSAID must be between 1 and 99999999")
     return number
 
 
@@ -425,6 +433,11 @@ def build_parser() -> argparse.ArgumentParser:
     fire_rt.add_argument("--type", dest="incident_type", help="Filter by incident type name/description substring or legacy NFIRS code.")
     fire_rt.add_argument("--limit", type=_positive_int, default=20)
     fire_rt.add_argument("--offset", type=_nonnegative_int, default=0)
+
+    fire_prot = fire_sub.add_parser("protection", help="Wake County MAR fire-protection proximity lookup.")
+    fire_prot_group = fire_prot.add_mutually_exclusive_group(required=True)
+    fire_prot_group.add_argument("--address", help="Address to geocode and resolve to a CSAID.")
+    fire_prot_group.add_argument("--csaid", type=_csaid_value, help="Canonical site-address identifier (CSAID).")
 
     incidents_p = sub.add_parser("incidents", help="Raleigh-Wake ECC active incident feed (undocumented).")
     incidents_sub = incidents_p.add_subparsers(dest="incidents_command")
@@ -1351,6 +1364,48 @@ def cmd_fire_response_times(args: argparse.Namespace) -> int:
     return _fire_response_times_output(result, args)
 
 
+def cmd_fire_protection(args: argparse.Namespace) -> int:
+    if args.csaid is not None:
+        csaid = args.csaid
+        resolution = None
+    else:
+        resolution = fire_protection.resolve_csaid_from_address(args.address)
+        csaid = resolution["csaid"]
+
+    result = fire_protection.query_fire_protection(csaid)
+    if resolution:
+        result["address_resolution"] = resolution
+
+    if args.json:
+        _output_json(result)
+    else:
+        if resolution:
+            print(f"Address: {resolution['match_address']} (score: {resolution['score']})")
+        print(f"CSAID: {result['csaid']}")
+        print(f"Retrieved: {result['retrieved_at']}")
+        print()
+        stations = result.get("stations", [])
+        if stations:
+            rows = []
+            for s in stations:
+                rank = s.get("rank")
+                distance = s.get("distance")
+                rows.append([
+                    str(rank if rank is not None else ""),
+                    str(s.get("station_id") or ""),
+                    str(distance if distance is not None else ""),
+                    str(s.get("iso") or ""),
+                ])
+            _output_table(["RANK", "STATION", "DISTANCE", "ISO"], rows)
+        else:
+            print("No station records for this CSAID.")
+        hd = result.get("hydrant_distance")
+        if hd is not None:
+            print(f"\nNearest hydrant distance: {hd}")
+        print(fire_protection.PROTECTION_CAVERAT, file=sys.stderr)
+    return 0
+
+
 def cmd_incidents_active(args: argparse.Namespace) -> int:
     result = incidents.fetch_active(
         agency=args.agency,
@@ -1440,6 +1495,7 @@ _POLICE_COMMANDS: dict[str, Any] = {
 _FIRE_COMMANDS: dict[str, Any] = {
     "incidents": cmd_fire_incidents,
     "response-times": cmd_fire_response_times,
+    "protection": cmd_fire_protection,
 }
 
 _INCIDENTS_COMMANDS: dict[str, Any] = {
@@ -1568,7 +1624,7 @@ def main(argv: list[str] | None = None) -> int:
 
         parser.print_help()
         return 2
-    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, fire.FireError, incidents.IncidentFeedError, FileExistsError, ValueError, KeyError) as exc:
+    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, fire.FireError, fire_protection.FireProtectionError, incidents.IncidentFeedError, FileExistsError, ValueError, KeyError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
     except urllib.error.HTTPError as exc:

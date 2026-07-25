@@ -129,6 +129,7 @@ one of those names, the added result column receives a `geocode_` prefix.
 |---------|---------|---------|
 | `fire incidents` | Query RFD incidents (full history 2007–present or past month) | `scripts/raleigh fire incidents --since 30d --group Fire` |
 | `fire response-times` | Compute labeled response durations | `scripts/raleigh fire response-times --since 1y --group Fire` |
+| `fire protection` | Wake County MAR fire-protection proximity lookup | `scripts/raleigh fire protection --address "222 W Hargett St"` |
 
 ### Active incidents (RWECC)
 
@@ -183,6 +184,7 @@ one of those names, the added result column receives a `geocode_` prefix.
 - **eSCRIBE**: HTML-based extraction with a weaker compatibility contract than structured APIs.
 - **Police incidents**: Locations are block-level and may be randomized or redacted. Empty coordinates are suppressed, not presented as points. This data does not include arrests, convictions, or dispositions. The CrimeMapper 90-day feed is not in the curated Hub catalog and is resolved by item ID.
 - **Fire incidents**: RFD deprecated `incident_type`/`incident_type_description` for records after 2026-01-01, replaced by `incident_group_name`, `incident_subgroup_code`, and `incident_type_name`. The `fire` commands normalize both eras into stable `_` keys without fabricating cross-era mappings, and preserve raw fields in JSON. Incident types 300–399 and 661 are excluded by RFD for EMS/privacy. The full-history `station` field is unpopulated for most records after early 2021; the past-month feed provides `station_name`.
+- **Fire protection**: The Wake County MAR Fire Protection table is a non-spatial table keyed by CSAID. Address input is composed through the Raleigh locator and the Wake County MAR Addresses layer; if the address cannot be resolved to a unique CSAID, supply `--csaid` directly. Distances are source-provided road-network values; the source does not advertise units. This data does not expose hydrant locations, only nearest-hydrant distance. It must not be used for emergency response.
 - **Active incidents (RWECC)**: Uses an undocumented public application endpoint (`incidents.rwecc.com/getdata`). The adapter is isolated and may break if the upstream contract changes; set `RALEIGH_DISABLE_INCIDENTS=1` to disable it independently. This is a filtered active feed, NOT all 911 calls and NOT authoritative emergency status. An empty response does not prove zero incidents. Cache lifetime is 90 seconds.
 - **URL allowlist**: Only fixed public hosts are dereferenced; arbitrary URLs are rejected.
 - **Transit realtime**: Requires `google.protobuf>=6.31.1,<7`. The vendored GTFS-Realtime binding was generated with protoc 31.1 and does not replace the runtime.

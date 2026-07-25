@@ -74,3 +74,37 @@ The following public service boundaries were exercised successfully on 2026-07-2
 - Upstream public services may change after this verification date; catalog validation and deterministic fixtures are the detection mechanisms.
 - `skills-ref` remains unavailable locally, so only the repository's canonical skill validator was exercised.
 - No commit, push, pull request, CI run, deployment, or merge is claimed by this ledger.
+
+## Issue 124 Addendum: Fire Protection Proximity
+
+### Intent
+
+- Add read-only Wake County MAR fire-protection lookup by address or CSAID.
+- Return only source-provided station ranks, road-network distances, ISO values, and nearest-hydrant distance.
+- Reject ambiguous address resolution and detectable source drift instead of guessing.
+
+### Design decisions
+
+- `--address` uses the official Raleigh locator, then resolves the geocoded point through the public Wake County MAR Addresses layer. An exact structured street/subaddress match wins; otherwise a unique base address is preferred. A tied top geocoder result or multiple eligible CSAIDs is an error.
+- `--csaid` queries the official fire-protection table directly.
+- Required source fields are checked on each lookup. Extra fields are tolerated; missing required fields and inconsistent hydrant distances fail clearly.
+- Distance units remain `null` in JSON because the source metadata does not advertise units. Raw distance values are not converted or labeled with guessed units.
+- Hydrant locations are not claimed or returned because the source exposes only `Hydrant_Distance`.
+
+### Verification
+
+- `python3 -m pytest tests/test_raleigh.py`: **308 passed** with one pre-existing import deprecation warning.
+- `python3 -m ruff check raleigh/scripts/raleighlib/fire_protection.py raleigh/scripts/raleighlib/cli.py`: passed.
+- `python3 scripts/validate-evals.py raleigh`: all 8 repository eval manifests validated.
+- `ruby scripts/validate-skills.rb`: **107 canonical skills validated**.
+- `ruby scripts/validate-skill-quality.rb --base origin/main`: **1 changed skill, 0 errors, 0 warnings**.
+- `python3 scripts/eval-coverage.py --modified-from origin/main`: ratchet passed; Raleigh remains schema-valid.
+- `git diff --check`: passed.
+- Live `fire protection --address "222 W Hargett St, Raleigh" --json`: resolved CSAID `2734541` and returned three ranked stations from item `8ab8c4f1a8eb473bacfcc1a1c1980b6c`.
+- Live `fire protection --address "222 W Hargett St STE 106, Raleigh" --json`: resolved the explicit suite to CSAID `5131326`, not the building-level CSAID.
+- Live `fire protection --csaid 2734541 --json`: returned the same station and hydrant source values.
+
+### Remaining boundaries
+
+- The service is updated nightly, so future upstream changes remain outside this verification window; required-field checks provide bounded drift detection.
+- No emergency-response accuracy, distance unit, hydrant location, commit, push, pull request, CI run, deployment, or merge is claimed.
