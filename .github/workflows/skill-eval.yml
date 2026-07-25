@@ -8,6 +8,15 @@ on:
       - '*/scripts/**'
       - 'eval_runner/**'
       - 'schemas/comparison-report-v1.schema.json'
+  push:
+    branches:
+      - main
+    paths:
+      - '*/SKILL.md'
+      - '*/evals/evals.json'
+      - '*/scripts/**'
+      - 'eval_runner/**'
+      - 'schemas/comparison-report-v1.schema.json'
 
 permissions:
   contents: read
@@ -48,14 +57,22 @@ jobs:
       - name: Detect changed skills with evals
         id: changed
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
-          changed=$(git diff --name-only "$BASE_SHA" HEAD -- '*/evals/evals.json' | head -5)
-          if [ -z "$changed" ]; then
-            echo "manifests=" >> "$GITHUB_OUTPUT"
-          else
-            echo "manifests=$changed" >> "$GITHUB_OUTPUT"
-          fi
+          manifests=$(
+            git diff --name-only "$BASE_SHA" HEAD -- \
+              '*/SKILL.md' '*/evals/evals.json' '*/scripts/**' \
+              | awk -F/ 'NF > 1 { print $1 }' \
+              | sort -u \
+              | while read -r skill; do
+                  if [ -f "$skill/evals/evals.json" ]; then
+                    printf '%s\n' "$skill/evals/evals.json"
+                  fi
+                done \
+              | head -5 \
+              | paste -sd' ' -
+          )
+          echo "manifests=$manifests" >> "$GITHUB_OUTPUT"
       - name: Run paired evaluation (fake adapter)
         if: steps.changed.outputs.manifests != ''
         env:
@@ -79,9 +96,9 @@ jobs:
           retention-days: 7
 
   paired-eval-model:
-    runs-on: [self-hosted, linux]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, linux, agent-skills-eval]
     needs: paired-eval-tests
-    continue-on-error: true
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -95,8 +112,10 @@ jobs:
         run: python3 -m pip install -r requirements-dev.txt
       - name: Check model endpoint
         id: endpoint
+        env:
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL || 'http://gpuslut01:8080' }}
         run: |
-          if curl -sf --connect-timeout 5 http://gpuslut01:8080/v1/models > /dev/null 2>&1; then
+          if curl -sf --connect-timeout 5 "$EVAL_BASE_URL/v1/models" > /dev/null 2>&1; then
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
@@ -105,14 +124,22 @@ jobs:
         id: changed
         if: steps.endpoint.outputs.available == 'true'
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_SHA: ${{ github.event.before }}
         run: |
-          changed=$(git diff --name-only "$BASE_SHA" HEAD -- '*/evals/evals.json' | head -5)
-          if [ -z "$changed" ]; then
-            echo "manifests=" >> "$GITHUB_OUTPUT"
-          else
-            echo "manifests=$changed" >> "$GITHUB_OUTPUT"
-          fi
+          manifests=$(
+            git diff --name-only "$BASE_SHA" HEAD -- \
+              '*/SKILL.md' '*/evals/evals.json' '*/scripts/**' \
+              | awk -F/ 'NF > 1 { print $1 }' \
+              | sort -u \
+              | while read -r skill; do
+                  if [ -f "$skill/evals/evals.json" ]; then
+                    printf '%s\n' "$skill/evals/evals.json"
+                  fi
+                done \
+              | head -5 \
+              | paste -sd' ' -
+          )
+          echo "manifests=$manifests" >> "$GITHUB_OUTPUT"
       - name: Run paired evaluation (real model)
         if: steps.endpoint.outputs.available == 'true' && steps.changed.outputs.manifests != ''
         env:
