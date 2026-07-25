@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "operating_mode": "disabled",
+  "last_verified": "YYYY-MM-DD",
+  "accountability": {
+    "deployer": "<replace>",
+    "accountable_operator": "<replace>",
+    "human_contact": "<replace>",
+    "complaints_contact": "<replace>",
+    "incident_owner": "<replace>"
+  },
+  "identity": {
+    "ai_disclosed": false,
+    "credential_claims_disabled": true,
+    "human_presence_claims_disabled": true
+  },
+  "population": {
+    "adult_only": true,
+    "minor_pathway_verified": false,
+    "vulnerable_adult_safeguarding_verified": false,
+    "jurisdictions": []
+  },
+  "safety": {
+    "narrow_fallback_verified": false,
+    "crisis_protocol_verified": false,
+    "medical_emergency_protocol_verified": false,
+    "self_harm_protocol_verified": false,
+    "harm_to_others_protocol_verified": false,
+    "abuse_and_trafficking_protocol_verified": false,
+    "domestic_violence_digital_safety_verified": false,
+    "safeguarding_human_review_verified": false,
+    "location_behavior_documented": false,
+    "protocol_owner": "<replace>"
+  },
+  "privacy": {
+    "data_flow_documented": false,
+    "subprocessors_documented": false,
+    "telemetry_documented": false,
+    "model_training_use_documented": false,
+    "embeddings_documented": false,
+    "backups_documented": false,
+    "access_roles_documented": false,
+    "retention_documented": false,
+    "correction_export_documented": false,
+    "deletion_propagation_verified": false,
+    "breach_contact_documented": false
+  },
+  "records": {
+    "durable_memory_enabled": false,
+    "record_types_separated": false,
+    "raw_transcripts_disabled_by_default": true,
+    "sensitive_narratives_disabled_by_default": true
+  },
+  "sponsors": {
+    "sponsored_coaching_enabled": false,
+    "separate_agreements_required": true,
+    "technical_separation_verified": false,
+    "coercion_review_verified": false,
+    "reidentification_review_verified": false,
+    "prohibited_disclosures_enforced": false
+  },
+  "tools": {
+    "sensitive_actions_enabled": false,
+    "per_action_preview_verified": false,
+    "per_action_confirmation_verified": false,
+    "crisis_and_coercion_lockout_verified": false
+  },
+  "contact": {
+    "proactive_contact_enabled": false,
+    "notification_privacy_verified": false,
+    "frequency_and_stop_controls_verified": false,
+    "dependency_tapering_verified": false
+  },
+  "human_governance": {
+    "independent_coaching_supervision_verified": false,
+    "clinical_safeguarding_consultation_verified": false,
+    "privacy_security_review_verified": false,
+    "accessibility_review_verified": false,
+    "cultural_language_review_verified": false,
+    "review_sample_governance_verified": false
+  },
+  "operations": {
+    "critical_eval_suite_passed": false,
+    "model_change_regression_gate_verified": false,
+    "rollback_verified": false,
+    "disablement_verified": false,
+    "incident_process_verified": false
+  }
+}

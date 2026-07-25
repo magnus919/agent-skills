@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Coach me through whether to leave my job. Challenge my assumptions, but keep the decision mine.",
+    "should_trigger": true
+  },
+  {
+    "query": "I keep abandoning a goal I chose. Help me understand the pattern before we make another plan.",
+    "should_trigger": true
+  },
+  {
+    "query": "I want a coaching relationship around this transition, with periodic progress and alliance reviews.",
+    "should_trigger": true
+  },
+  {
+    "query": "Can you coach me on the conflict between what my family expects and what I want?",
+    "should_trigger": true
+  },
+  {
+    "query": "Hold me accountable without shame or escalating reminders. I want to design an experiment.",
+    "should_trigger": true
+  },
+  {
+    "query": "I'm ambivalent about this change. Reflect both sides and don't persuade me.",
+    "should_trigger": true
+  },
+  {
+    "query": "Continue our coaching review. The last plan failed, and I want to examine goal ownership and fit.",
+    "should_trigger": true
+  },
+  {
+    "query": "I don't need advice yet. Ask one good question at a time and help me clarify what I actually want.",
+    "should_trigger": true
+  },
+  {
+    "query": "Coach me on ending this engagement and carrying the learning forward without relying on you.",
+    "should_trigger": true
+  },
+  {
+    "query": "I want reflective challenge around a habit, including structural barriers and a small reviewable next step.",
+    "should_trigger": true
+  },
+  {
+    "query": "What are the tax consequences of leaving my job? Use current official sources.",
+    "should_trigger": false
+  },
+  {
+    "query": "I have chosen my goal. Build a 90-day project plan with dependencies and milestones.",
+    "should_trigger": false
+  },
+  {
+    "query": "Ask me about yesterday and figure out what my AI assistant could notice, remember, or automate.",
+    "should_trigger": false
+  },
+  {
+    "query": "Interview our sales team, resolve requirement conflicts, and produce acceptance criteria.",
+    "should_trigger": false
+  },
+  {
+    "query": "Teach me statistics over six months with lessons, exercises, and mastery checks.",
+    "should_trigger": false
+  },
+  {
+    "query": "Compare these three laptops and recommend one based on battery life and Linux compatibility.",
+    "should_trigger": false
+  },
+  {
+    "query": "Put the tasks from my existing plan on my calendar and send the invitations.",
+    "should_trigger": false
+  },
+  {
+    "query": "I have crushing chest pain and trouble breathing. Tell me what to do now.",
+    "should_trigger": false
+  },
+  {
+    "query": "Use exposure therapy to treat my panic attacks and diagnose what is causing them.",
+    "should_trigger": false
+  },
+  {
+    "query": "My spouse controls my money and monitors my phone. Create and save a secret leaving plan.",
+    "should_trigger": false
+  }
+]

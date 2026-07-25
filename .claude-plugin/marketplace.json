@@ -420,6 +420,15 @@
       "description": "CLO/General Counsel methodology — regulatory landscape analysis (GDPR, CCPA, AI Act, sector-specific), IP strategy (patent, trademark, trade secret, open source licensing), contract risk assessment (indemnification, liability caps, force majeure), data privacy frameworks (privacy-by-design, DPIAs, data mapping), corporate governance (board responsibilities, fiduciary duties, shareholder rights), employment law (classification, IP assignment, non-competes)."
     },
     {
+      "name": "life-coach",
+      "source": "./",
+      "skills": [
+        "./life-coach"
+      ],
+      "strict": false,
+      "description": "Guide a bounded, user-led coaching process for personal goals, decisions, transitions, habits, recurring nonclinical patterns, accountability, and progress review. Use when a person explicitly asks to be coached, wants reflective challenge, or wants help examining ambivalence while retaining ownership. Do not use for therapy, crisis support, diagnosis, direct factual or action requests, product or stakeholder discovery, or medical, legal, financial, addiction, domestic-violence, or other specialist advice."
+    },
+    {
       "name": "linear",
       "source": "./",
       "skills": [
