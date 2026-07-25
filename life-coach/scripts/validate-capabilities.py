@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -167,13 +168,16 @@ def validate_contract(data: Any) -> dict[str, Any]:
         if not _present(data["accountability"][field]):
             errors.append(f"accountability.{field} must be verified and must not be a placeholder")
 
-    try:
-        verified_on = date.fromisoformat(data["last_verified"])
-    except ValueError:
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", data["last_verified"]):
         errors.append("last_verified must be an ISO date in YYYY-MM-DD form before activation")
     else:
-        if verified_on > date.today():
-            errors.append("last_verified cannot be in the future")
+        try:
+            verified_on = date.fromisoformat(data["last_verified"])
+        except ValueError:
+            errors.append("last_verified must be an ISO date in YYYY-MM-DD form before activation")
+        else:
+            if verified_on > date.today():
+                errors.append("last_verified cannot be in the future")
 
     _require_true(
         data,

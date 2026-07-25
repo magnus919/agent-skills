@@ -77,6 +77,23 @@ class CapabilityContractTests(unittest.TestCase):
             result["errors"],
         )
 
+    def test_routine_ephemeral_rejects_non_calendar_iso_date_forms(self) -> None:
+        for value in ("20260725", "2026-W30-6"):
+            with self.subTest(value=value):
+                contract = copy.deepcopy(self.contract)
+                contract["operating_mode"] = "routine-adult-ephemeral"
+                contract["last_verified"] = value
+                for field in module.SECTIONS["accountability"]:
+                    contract["accountability"][field] = f"verified-{field}"
+                contract["identity"]["ai_disclosed"] = True
+                contract["safety"]["narrow_fallback_verified"] = True
+                result = module.validate_contract(contract)
+                self.assertFalse(result["eligible"])
+                self.assertIn(
+                    "last_verified must be an ISO date in YYYY-MM-DD form before activation",
+                    result["errors"],
+                )
+
     def test_full_service_fails_closed_on_unknown_controls(self) -> None:
         contract = copy.deepcopy(self.contract)
         contract["operating_mode"] = "full-service"
