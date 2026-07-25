@@ -196,6 +196,10 @@ Last.fm music data API from the terminal. Lookup user listening history, get art
 
 CLO/General Counsel methodology — regulatory landscape analysis (GDPR, CCPA, AI Act, sector-specific), IP strategy (patent, trademark, trade secret, open source licensing), contract risk assessment (indemnification, liability caps, force majeure), data privacy frameworks (privacy-by-design, DPIAs, data mapping), corporate governance (board responsibilities, fiduciary duties, shareholder rights), employment law (classification, IP assignment, non-competes).
 
+### [life-coach](life-coach/SKILL.md)
+
+Guide bounded, user-led coaching for adult nonclinical goals, decisions, transitions, habits, ambivalence, accountability, and progress review. Keeps choices with the person, routes direct requests and specialist needs correctly, and includes expert references, original templates, safety and anti-dependency boundaries, deployment controls, and a capability-contract validator.
+
 ### [linear](linear/SKILL.md)
 
 Work with Linear teams, projects, cycles, issues, comments, workflow transitions, and documents using a small, dependency-free GraphQL CLI with bounded reads, dry-run previews, and focused reference guidance.
