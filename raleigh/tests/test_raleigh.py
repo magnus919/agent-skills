@@ -618,7 +618,8 @@ class TransitTests(unittest.TestCase):
     def test_get_arrivals_for_stop(self):
         data = self._make_gtfs_zip()
         feed = transit.parse_gtfs_zip(data)
-        arrivals = transit.get_arrivals_for_stop("S2", feed=feed)
+        with patch("raleighlib.transit._today_date", return_value="20260723"):
+            arrivals = transit.get_arrivals_for_stop("S2", feed=feed)
         self.assertEqual(len(arrivals), 2)
 
     def test_enrich_realtime_with_static(self):
