@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -166,6 +167,14 @@ def validate_contract(data: Any) -> dict[str, Any]:
         if not _present(data["accountability"][field]):
             errors.append(f"accountability.{field} must be verified and must not be a placeholder")
 
+    try:
+        verified_on = date.fromisoformat(data["last_verified"])
+    except ValueError:
+        errors.append("last_verified must be an ISO date in YYYY-MM-DD form before activation")
+    else:
+        if verified_on > date.today():
+            errors.append("last_verified cannot be in the future")
+
     _require_true(
         data,
         [
@@ -202,8 +211,9 @@ def validate_contract(data: Any) -> dict[str, Any]:
         _require_true(data, full_true, errors)
         if not _present(data["safety"]["protocol_owner"]):
             errors.append("safety.protocol_owner must be verified and must not be a placeholder")
-        if not data["population"]["jurisdictions"]:
-            errors.append("population.jurisdictions must name at least one reviewed jurisdiction")
+        jurisdictions = data["population"]["jurisdictions"]
+        if not jurisdictions or any(not _present(jurisdiction) for jurisdiction in jurisdictions):
+            errors.append("population.jurisdictions must name at least one reviewed jurisdiction and contain no blank or placeholder values")
 
         if data["records"]["durable_memory_enabled"]:
             _require_true(
