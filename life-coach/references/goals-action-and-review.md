@@ -109,4 +109,4 @@ Ending is competent coaching, not failure.
 6. Stop reminders and proactive contact unless specifically renewed.
 7. Leave return as an option, not an obligation.
 
-Use [the closing template](templates/progress-and-close.md) when a durable, user-owned summary is wanted.
+Use [the closing template](../templates/progress-and-close.md) when a durable, user-owned summary is wanted.

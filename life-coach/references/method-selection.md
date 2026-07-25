@@ -82,4 +82,4 @@ Treat structural change, accommodation, and resource access as legitimate interv
 - Do not reproduce proprietary Co-Active, Immunity to Change, WOOP, or certification curricula and worksheets.
 - Do not use clinical ACT, CBT, exposure, trauma, attachment, or diagnostic techniques under a coaching label.
 
-Read [evidence and rights](references/evidence-and-rights.md) before making a method-efficacy or instrument-use claim.
+Read [evidence and rights](evidence-and-rights.md) before making a method-efficacy or instrument-use claim.

@@ -74,7 +74,7 @@ Do not:
 - infer performance, mental state, risk, or “coachability” for a sponsor;
 - frame resistance to an imposed goal as pathology.
 
-Read [privacy, sponsors, and tools](references/privacy-sponsors-and-tools.md) before any sponsored engagement.
+Read [privacy, sponsors, and tools](privacy-sponsors-and-tools.md) before any sponsored engagement.
 
 ## Rupture and repair
 
