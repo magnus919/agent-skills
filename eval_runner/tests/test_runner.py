@@ -192,6 +192,33 @@ def test_manifest_validates_against_schema():
         assert not errors, f"Schema validation failed: {[e.message for e in errors]}"
 
 
+def test_manifest_schema_enforces_public_identity_fields():
+    try:
+        from jsonschema import Draft202012Validator
+    except ImportError:
+        print("SKIP: jsonschema not installed")
+        return
+
+    schema_path = (
+        Path(__file__).resolve().parent.parent.parent
+        / "schemas"
+        / "run-manifest-v1.schema.json"
+    )
+    schema = json.loads(schema_path.read_text())
+    candidate_properties = schema["properties"]["candidate"]["properties"]
+    case_id_schema = schema["properties"]["case"]["properties"]["case_id"]
+
+    skill_path_validator = Draft202012Validator(candidate_properties["skill_path"])
+    assert not list(skill_path_validator.iter_errors("skill-name"))
+    for unsafe_path in ["/private/skill", "../skill", "folder\\skill", "skill\n"]:
+        assert list(skill_path_validator.iter_errors(unsafe_path)), unsafe_path
+
+    case_id_validator = Draft202012Validator(case_id_schema)
+    assert not list(case_id_validator.iter_errors("valid-case-1"))
+    for unsafe_case_id in ["../case", "Uppercase", "case_id", "case\n"]:
+        assert list(case_id_validator.iter_errors(unsafe_case_id)), unsafe_case_id
+
+
 def test_eval_case_prompt_hash_deterministic():
     case = _make_case()
     assert case.prompt_hash == case.prompt_hash
@@ -445,6 +472,7 @@ if __name__ == "__main__":
     test_fake_adapter_missing_evidence()
     test_manifest_serialization()
     test_manifest_validates_against_schema()
+    test_manifest_schema_enforces_public_identity_fields()
     test_eval_case_prompt_hash_deterministic()
     test_eval_case_rejects_unsafe_ids()
     test_eval_case_rejects_unsafe_fixture_paths()

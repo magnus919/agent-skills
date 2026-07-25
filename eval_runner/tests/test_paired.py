@@ -212,6 +212,25 @@ def test_comparison_report_validates_against_schema():
     assert not errors, f"Schema validation failed: {[e.message for e in errors]}"
 
 
+def test_comparison_schema_matches_runtime_case_ids():
+    try:
+        from jsonschema import Draft202012Validator
+    except ImportError:
+        print("SKIP: jsonschema not installed")
+        return
+
+    schema_path = (
+        Path(__file__).resolve().parent.parent.parent
+        / "schemas"
+        / "comparison-report-v1.schema.json"
+    )
+    schema = json.loads(schema_path.read_text())
+    validator = Draft202012Validator(schema["properties"]["case_id"])
+    assert not list(validator.iter_errors("valid-case-1"))
+    for unsafe_case_id in ["../case", "Uppercase", "case_id", "case\n"]:
+        assert list(validator.iter_errors(unsafe_case_id)), unsafe_case_id
+
+
 def test_paired_trial_end_to_end():
     adapter = FakeAdapter()
 
@@ -407,6 +426,7 @@ if __name__ == "__main__":
     test_grader_manual_review()
     test_comparison_report_structure()
     test_comparison_report_validates_against_schema()
+    test_comparison_schema_matches_runtime_case_ids()
     test_paired_trial_end_to_end()
     test_paired_trial_candidate_cannot_read_evals()
     test_sandbox_rejects_top_level_symlink()

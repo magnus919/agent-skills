@@ -20,7 +20,12 @@
     "report_id": {"type": "string", "format": "uuid"},
     "generated_at": {"type": "string", "format": "date-time"},
     "skill_name": {"type": "string", "minLength": 1},
-    "case_id": {"type": "string", "minLength": 1},
+    "case_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
     "candidate": {"$ref": "#/$defs/arm_result"},
     "baseline": {"$ref": "#/$defs/arm_result"},
     "paired_delta": {
