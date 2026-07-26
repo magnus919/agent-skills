@@ -93,3 +93,7 @@ Every feature in JSON output includes:
 | `_location_status` | One of: `block_level`, `redacted`, `out_of_area`, `unknown` |
 
 The top-level FeatureCollection includes a `_sources` array with `item_id`, `label`, and `caveats` for each source used.
+
+## Official Published Statistics
+
+`police stats` and `police reports` use the official RaleighNC.gov crime-data page rather than aggregating these incident datasets. The page currently publishes annual and quarterly PDFs but no inline totals, so the CLI preserves the publication label, year, quarter, and canonical document URL without parsing the PDF. See `references/public-safety-statistics-reference.md`.

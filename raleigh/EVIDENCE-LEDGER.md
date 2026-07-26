@@ -146,3 +146,47 @@ The following public service boundaries were exercised successfully on 2026-07-2
 - Upstream schemas, selectors, forms, and availability can change after the verification date. Required-field and parser-contract checks fail visibly when detectable.
 - Deterministic fixtures exercise results, no-results, schema/markup changes, service/error pages, malformed fragments, and recent-record fallback. They do not prove future upstream stability.
 - No bulk enumeration, authenticated action, invoice retrieval or payment, private contact access, inspection-detail retrieval, write operation, commit, push, pull request, CI run, deployment, or merge is claimed.
+
+## Issue 126 Addendum: Official Police and Fire Aggregate Statistics
+
+### Intent and authority
+
+- Expose official RPD and RFD published statistics and report indexes without presenting incident-row calculations as official totals.
+- Preserve RFD medical totals as aggregate-only data that cannot be joined to or used to infer excluded incident records.
+- Modify the local Raleigh skill only. No publish, deploy, merge, document download, or PDF-extraction authority was used.
+
+### Inspected artifacts and decisions
+
+- Reviewed issue `#126`, the official RPD crime-data page, the official RFD statistics page, their Drupal JSON:API service nodes and included paragraph resources, existing police/fire adapters, CLI routing, tests, references, and recent fire-report commit `4eaf5aa`.
+- The official pages expose one stable structured boundary: service-node JSON:API responses with included HTML fragments. RFD publishes current incident totals and sprinkler-save tables inline; RPD currently publishes document links only.
+- Chose one shared JSON:API adapter over separate page scrapers. Rejected incident-row aggregation because source coverage differs, and rejected PDF parsing because no stable tested extraction contract exists.
+- Returned documents are restricted by agency to the official Raleigh page or City government-cloud PDF path, sanitized, checked for traversal and malformed URL components, and availability-probed with `HEAD`. Redirect targets must satisfy the same agency-specific contract.
+- Fire `reports --date/--incident-number` remains the existing incident-report mode. `fire reports --year/--quarter` and no-selector mode use the aggregate publication index.
+
+### Files changed
+
+- Added `scripts/raleighlib/public_safety_stats.py`, representative police/fire JSON:API fixtures, and `references/public-safety-statistics-reference.md`.
+- Updated `scripts/raleighlib/core.py`, `scripts/raleighlib/cli.py`, `tests/test_raleigh.py`, `SKILL.md`, `README.md`, police/fire references, and `evals/evals.json`.
+
+### Verification
+
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **368 tests passed**.
+- `python3 -m ruff check raleigh/scripts/raleighlib/core.py raleigh/scripts/raleighlib/public_safety_stats.py raleigh/scripts/raleighlib/cli.py`: passed.
+- `python3 scripts/validate-evals.py raleigh`: **11 eval manifests validated**.
+- `ruby scripts/validate-skills.rb`: **110 canonical skills validated**.
+- `ruby scripts/validate-skill-quality.rb --base origin/main`: **1 changed skill, 0 errors, 0 warnings**.
+- `python3 scripts/eval-coverage.py --modified-from origin/main`: ratchet passed; Raleigh remains schema-valid.
+- Live `police reports --year 2025 --quarter 4 --json`: returned the official `Q4 stats` label and canonical government-cloud PDF URL after an availability probe.
+- Live `police stats --year 2025 --json`: returned the annual and quarterly publication index with an explicit document-only warning and no fabricated totals.
+- Live `fire stats --year 2026 --json`: returned seven official published categories, including medical `7,882`, source revision/retrieval metadata, the annual document URL, and the aggregate-only privacy warning.
+- Live `fire reports --year 2025 --quarter 1 --json`: returned the canonical official quarterly page.
+- Live `fire reports --date 2026-07-24 --json`: exercised the unchanged ArcGIS incident-report path successfully.
+- Review passes found and then verified fixes for terminal-control handling, path traversal and URL components, empty or missing sections and tables, document availability, redirect targets, malformed or ambiguous JSON:API relationships, and eval coverage.
+
+### Remaining boundaries and follow-up triggers
+
+- PDF contents were not parsed or semantically verified. Add extraction only after a stable format and representative regression fixtures exist.
+- `HEAD` availability confirms reachability at request time, not document correctness or future availability.
+- Upstream node IDs, headings, table headers, publication labels, or origins may change. Detectable changes fail visibly; revise the adapter and fixtures only after re-verifying the official source contract.
+- No model-backed eval run, CI run, commit, push, pull request, deployment, release, or merge is claimed.
+- Roll back the aggregate adapter and CLI wiring if the official site removes JSON:API access or publication links cannot be validated without broadening the trust boundary.

@@ -11,7 +11,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 
 DEFAULT_TIMEOUT = 30
@@ -35,6 +35,7 @@ ALLOWED_HOSTS: frozenset[str] = frozenset({
     "www.goraleighlive.org",
     "www.goraleigh.org",
     "raleighnc.gov",
+    "cityofraleigh0drupal.blob.core.usgovcloudapi.net",
     "pub-raleighnc.escribemeetings.com",
     "incidents.rwecc.com",
 })
@@ -129,6 +130,9 @@ class AllowlistRedirectHandler(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         if not is_allowed_host(newurl):
             raise SecurityError(f"Redirect led to a non-allowlisted host: {newurl}")
+        final_url_validator = getattr(req, "_raleigh_final_url_validator", None)
+        if final_url_validator is not None:
+            final_url_validator(newurl)
         # Strip sensitive headers when crossing origins.
         old_origin = _origin(req.full_url)
         new_origin = _origin(newurl)
@@ -138,7 +142,10 @@ class AllowlistRedirectHandler(urllib.request.HTTPRedirectHandler):
                 if name.lower() in _SENSITIVE_HEADERS:
                     del new_headers[name]
         # Preserve method/body only for 307/308; otherwise downgrade to GET.
-        if code not in (307, 308):
+        if req.get_method() == "HEAD":
+            method = "HEAD"
+            data = None
+        elif code not in (307, 308):
             new_headers.pop("Content-Length", None)
             new_headers.pop("Content-Type", None)
             method = "GET"
@@ -149,7 +156,7 @@ class AllowlistRedirectHandler(urllib.request.HTTPRedirectHandler):
         if data is not None and old_origin != new_origin:
             raise SecurityError("Cross-origin redirects cannot preserve a request body")
         _enforce_method_policy(method, newurl)
-        return urllib.request.Request(
+        redirected = urllib.request.Request(
             newurl,
             headers=new_headers,
             method=method,
@@ -157,6 +164,9 @@ class AllowlistRedirectHandler(urllib.request.HTTPRedirectHandler):
             origin_req_host=req.origin_req_host,
             unverifiable=True,
         )
+        if final_url_validator is not None:
+            setattr(redirected, "_raleigh_final_url_validator", final_url_validator)
+        return redirected
 
 
 # Prebuilt opener with the bounded allowlisted redirect handler.
@@ -211,7 +221,7 @@ def _is_allowed_post(url: str) -> bool:
 def _enforce_method_policy(method: str | None, url: str) -> None:
     """Reject disallowed methods before any network I/O."""
     method = (method or "GET").upper()
-    if method == "GET":
+    if method in {"GET", "HEAD"}:
         return
     if method == "POST" and _is_allowed_post(url):
         return
@@ -300,6 +310,7 @@ def json_request(
     data: bytes | None = None,
     headers: dict[str, str] | None = None,
     max_bytes: int = DEFAULT_MAX_JSON_BYTES,
+    final_url_validator: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     """Fetch JSON from an allowlisted URL and return the parsed body."""
     if not is_allowed_host(url):
@@ -312,10 +323,14 @@ def json_request(
     req = urllib.request.Request(
         url, headers=req_headers, method=effective_method, data=data
     )
+    if final_url_validator is not None:
+        setattr(req, "_raleigh_final_url_validator", final_url_validator)
     with _OPENER.open(req, timeout=timeout or _get_timeout()) as resp:
         final_url = resp.geturl()
         if not is_allowed_host(final_url):
             raise SecurityError(f"Redirect led to a non-allowlisted host: {final_url}")
+        if final_url_validator is not None:
+            final_url_validator(final_url)
         body = _read_limited(resp, max_bytes)
         if not body:
             return {}
@@ -347,6 +362,29 @@ def raw_request(
         if not is_allowed_host(final_url):
             raise SecurityError(f"Redirect led to a non-allowlisted host: {final_url}")
         return _read_limited(resp, max_bytes)
+
+
+def probe_url(
+    url: str,
+    timeout: int | None = None,
+    final_url_validator: Callable[[str], None] | None = None,
+) -> str:
+    """Verify that an allowlisted HTTPS resource is available without reading it."""
+    if not is_allowed_host(url):
+        raise SecurityError(f"URL host is not allowlisted: {url}")
+    _enforce_method_policy("HEAD", url)
+    request = urllib.request.Request(
+        url, headers=_request_headers(), method="HEAD"
+    )
+    if final_url_validator is not None:
+        setattr(request, "_raleigh_final_url_validator", final_url_validator)
+    with _OPENER.open(request, timeout=timeout or _get_timeout()) as response:
+        final_url = response.geturl()
+        if not is_allowed_host(final_url):
+            raise SecurityError(f"Redirect led to a non-allowlisted host: {final_url}")
+        if final_url_validator is not None:
+            final_url_validator(final_url)
+        return final_url
 
 
 def cache_dir() -> Path:

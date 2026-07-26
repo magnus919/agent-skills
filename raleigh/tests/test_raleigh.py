@@ -45,6 +45,7 @@ import raleighlib.police as police
 import raleighlib.fire as fire
 import raleighlib.fire_protection as fire_protection
 import raleighlib.rfd_reports as rfd_reports
+import raleighlib.public_safety_stats as public_safety_stats
 from raleighlib import cli as cli_lib
 
 CLI_SCRIPT = _SCRIPT_DIR / "raleigh"
@@ -85,6 +86,38 @@ class CoreTests(unittest.TestCase):
     def test_raw_request_rejects_unlisted_hosts(self):
         with self.assertRaises(core.SecurityError):
             core.raw_request("https://evil.example.com/data.bin")
+
+    def test_probe_url_uses_head_without_reading_document(self):
+        url = "https://cityofraleigh0drupal.blob.core.usgovcloudapi.net/drupal-prod/COR23/report.pdf"
+        response = MagicMock()
+        response.geturl.return_value = url
+        response.__enter__.return_value = response
+        with patch.object(core._OPENER, "open", return_value=response) as opened:
+            self.assertEqual(core.probe_url(url), url)
+        request = opened.call_args.args[0]
+        self.assertEqual(request.get_method(), "HEAD")
+        response.read.assert_not_called()
+
+    def test_head_redirect_preserves_head_method(self):
+        source = "https://raleighnc.gov/fire/news/report"
+        destination = "https://raleighnc.gov/fire/news/revised-report"
+        request = urllib.request.Request(source, method="HEAD")
+        redirected = core.AllowlistRedirectHandler().redirect_request(
+            request, None, 302, "redirect", {}, destination
+        )
+        self.assertEqual(redirected.get_method(), "HEAD")
+
+    def test_redirect_runs_request_specific_validator_before_following(self):
+        source = "https://raleighnc.gov/jsonapi/node/service/example"
+        destination = "https://data.raleighnc.gov/other"
+        request = urllib.request.Request(source, method="GET")
+        validator = MagicMock(side_effect=core.SecurityError("wrong endpoint"))
+        setattr(request, "_raleigh_final_url_validator", validator)
+        with self.assertRaisesRegex(core.SecurityError, "wrong endpoint"):
+            core.AllowlistRedirectHandler().redirect_request(
+                request, None, 302, "redirect", {}, destination
+            )
+        validator.assert_called_once_with(destination)
 
     def test_cache_read_write_roundtrip(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -2988,6 +3021,315 @@ class FireTests(unittest.TestCase):
             with redirect_stdout(out), redirect_stderr(io.StringIO()):
                 code = cli.main(["--json", "fire", "response-times", "--since", "1y"])
         self.assertEqual(code, 0)
+
+
+class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
+    """Official aggregate totals and publication indexes from RaleighNC.gov."""
+
+    FIXTURES = pathlib.Path(__file__).parent / "fixtures"
+
+    def setUp(self):
+        self.probe_patcher = patch("raleighlib.public_safety_stats.core.probe_url")
+        self.probe = self.probe_patcher.start()
+        self.probe.side_effect = lambda url, **kwargs: (
+            kwargs.get("final_url_validator", lambda value: None)(url) or url
+        )
+        self.addCleanup(self.probe_patcher.stop)
+
+    def _fixture(self, agency: str):
+        return json.loads((self.FIXTURES / f"published-{agency}-statistics.json").read_text())
+
+    def test_police_reports_preserve_runtime_year_label_and_document_url(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("police")):
+            result = public_safety_stats.reports("police", 2025, 4)
+        self.assertEqual(result["classification"], "official_published_reports")
+        self.assertEqual(result["reports"][0]["label"], "Q4 stats")
+        self.assertEqual(result["reports"][0]["quarter"], 4)
+        self.assertTrue(result["reports"][0]["document_url"].endswith("q4-2025.pdf"))
+
+    def test_police_document_only_year_is_explicit(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("police")):
+            result = public_safety_stats.statistics("police", 2025)
+        self.assertEqual(result["datasets"], [])
+        self.assertEqual(result["reports"][0]["period"], "annual")
+        self.assertIn("document-only", result["warnings"][0])
+
+    def test_fire_totals_preserve_labels_values_year_and_source(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("fire")):
+            result = public_safety_stats.statistics("fire", 2026)
+        totals = result["datasets"][0]
+        medical = next(item for item in totals["values"] if item["label"] == "Medical")
+        self.assertEqual(totals["year"], 2026)
+        self.assertEqual(medical["value"], 7882)
+        self.assertEqual(medical["published_value"], "7,882")
+        self.assertEqual(result["source"]["url"], public_safety_stats.SOURCES["fire"]["page_url"])
+        self.assertIn("retrieved_at", result["source"])
+
+    def test_fire_medical_totals_remain_aggregate_only(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("fire")):
+            result = public_safety_stats.statistics("fire", 2026)
+        self.assertIn("must not be joined", result["warnings"][0])
+        self.assertNotIn("incident_number", json.dumps(result))
+
+    def test_fire_sprinkler_statistics_are_a_distinct_dataset(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("fire")):
+            result = public_safety_stats.statistics("fire", 2024)
+        self.assertEqual(result["datasets"][0]["kind"], "sprinkler_saves")
+        saves = next(item for item in result["datasets"][0]["values"] if "Number" in item["label"])
+        self.assertEqual(saves["published_value"], "20")
+
+    def test_missing_year_and_quarter_fail_visibly(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("police")):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "no published"):
+                public_safety_stats.statistics("police", 2024)
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "no published"):
+                public_safety_stats.reports("police", 2026, 4)
+
+    def test_malformed_jsonapi_nested_objects_fail_visibly(self):
+        for field, value, message in (
+            ("path", None, "page identity changed"),
+            ("relationships", None, "relationships are invalid"),
+        ):
+            with self.subTest(field=field):
+                fixture = self._fixture("police")
+                if field == "path":
+                    fixture["data"]["attributes"][field] = value
+                else:
+                    fixture["data"][field] = value
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
+                        public_safety_stats.reports("police")
+
+    def test_invalid_jsonapi_revision_timestamp_fails_visibly(self):
+        for value, message in ((None, "timestamp is missing"), ("not-a-date", "timestamp is invalid")):
+            with self.subTest(value=value):
+                fixture = self._fixture("police")
+                fixture["data"]["attributes"]["changed"] = value
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
+                        public_safety_stats.reports("police")
+
+    def test_malformed_jsonapi_relationship_identifier_fails_visibly(self):
+        fixture = self._fixture("police")
+        relationship = fixture["data"]["relationships"]["field_content_primary"]["data"][0]
+        relationship["id"] = []
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "identifiers are invalid"):
+                public_safety_stats.reports("police")
+
+    def test_malformed_jsonapi_included_resource_fails_visibly(self):
+        for value in ([], {"type": "paragraph--stories_text", "id": []}):
+            with self.subTest(value=value):
+                fixture = self._fixture("police")
+                fixture["included"][0] = value
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "included resource identifiers are invalid"):
+                        public_safety_stats.reports("police")
+
+    def test_duplicate_jsonapi_resource_identifiers_fail_visibly(self):
+        for field, message in (
+            ("relationship", "relationship identifiers are duplicated"),
+            ("included", "included resource identifiers are duplicated"),
+        ):
+            with self.subTest(field=field):
+                fixture = self._fixture("police")
+                if field == "relationship":
+                    data = fixture["data"]["relationships"]["field_content_primary"]["data"]
+                else:
+                    data = fixture["included"]
+                data.append(data[0])
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
+                        public_safety_stats.reports("police")
+
+    def test_jsonapi_redirect_outside_exact_endpoint_fails(self):
+        fixture = self._fixture("police")
+
+        def redirected(url, **kwargs):
+            kwargs["final_url_validator"]("https://data.raleighnc.gov/other")
+            return fixture
+
+        with patch("raleighlib.public_safety_stats.core.json_request", side_effect=redirected):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "exact JSON:API endpoint"):
+                public_safety_stats.reports("police")
+
+    def test_police_report_index_has_a_fanout_limit(self):
+        fixture = self._fixture("police")
+        formatted = fixture["included"][0]["attributes"]["field_stories_text_formatted"]
+        link = '<a href="https://cityofraleigh0drupal.blob.core.usgovcloudapi.net/drupal-prod/COR23/report.pdf">Q1 stats</a>'
+        formatted["value"] = "<h5>2026</h5>" + link * (public_safety_stats.MAX_PUBLISHED_REPORTS + 1)
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "report limit"):
+                public_safety_stats.reports("police")
+
+    def test_report_link_outside_canonical_origins_fails_closed(self):
+        fixture = self._fixture("police")
+        html = fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"]
+        fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"] = html.replace(
+            "https://cityofraleigh0drupal.blob.core.usgovcloudapi.net", "https://example.com"
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "document origins"):
+                public_safety_stats.reports("police")
+
+    def test_report_link_parameters_fail_closed(self):
+        fixture = self._fixture("police")
+        html = fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"]
+        fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"] = html.replace(
+            "q4-2025.pdf", "q4-2025.pdf;download"
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "HTTPS contract"):
+                public_safety_stats.reports("police")
+
+    def test_fire_report_dot_segments_fail_closed(self):
+        fixture = self._fixture("fire")
+        html = fixture["included"][2]["attributes"]["field_stories_text_formatted"]["value"]
+        fixture["included"][2]["attributes"]["field_stories_text_formatted"]["value"] = html.replace(
+            "/fire/news/keeping-score-q1-2025-fire-statistics",
+            "https://raleighnc.gov/fire/news/%2e%2e/%2e%2e/admin-q1-2025",
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "traversal"):
+                public_safety_stats.reports("fire")
+
+    def test_unavailable_document_fails_visibly(self):
+        self.probe.side_effect = urllib.error.HTTPError(
+            "https://example.invalid/report.pdf", 404, "Not Found", {}, None
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("police")):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "unavailable"):
+                public_safety_stats.reports("police", 2025, 4)
+
+    def test_document_transport_timeout_is_a_concise_cli_error(self):
+        self.probe.side_effect = TimeoutError("timed out")
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("police")):
+            out, err = io.StringIO(), io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = cli.main(["--json", "police", "reports", "--year", "2025", "--quarter", "4"])
+        self.assertEqual(code, 1)
+        self.assertEqual(out.getvalue(), "")
+        self.assertIn("published document is unavailable", err.getvalue())
+        self.assertNotIn("Traceback", err.getvalue())
+
+    def test_jsonapi_transport_timeout_is_a_concise_cli_error(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", side_effect=TimeoutError("timed out")):
+            out, err = io.StringIO(), io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = cli.main(["--json", "fire", "stats", "--year", "2026"])
+        self.assertEqual(code, 1)
+        self.assertEqual(out.getvalue(), "")
+        self.assertIn("published statistics source is unavailable", err.getvalue())
+        self.assertNotIn("Traceback", err.getvalue())
+        self.probe.assert_not_called()
+
+    def test_document_redirect_outside_publication_contract_fails(self):
+        self.probe.side_effect = None
+        self.probe.return_value = "https://data.raleighnc.gov/admin"
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("police")):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "document origins"):
+                public_safety_stats.reports("police", 2025, 4)
+
+    def test_terminal_controls_are_removed_from_published_text(self):
+        fixture = self._fixture("police")
+        html = fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"]
+        fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"] = html.replace(
+            "Q4 stats", "Q4 \x1b]52;c;Y2xpcGJvYXJk\x07 stats"
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            result = public_safety_stats.reports("police", 2025, 4)
+        self.assertNotIn("\x1b", result["reports"][0]["label"])
+        self.assertNotIn("\x07", result["reports"][0]["label"])
+
+    def test_fire_table_markup_drift_fails_visibly(self):
+        fixture = self._fixture("fire")
+        html = fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"]
+        fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"] = html.replace(
+            "Incident Type", "Changed Header"
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "headers changed"):
+                public_safety_stats.statistics("fire", 2026)
+
+    def test_one_cell_fire_statistics_row_fails_visibly(self):
+        fixture = self._fixture("fire")
+        formatted = fixture["included"][0]["attributes"]["field_stories_text_formatted"]
+        formatted["value"] = formatted["value"].replace(
+            "<tr><td><strong>Fire</strong></td><td>401</td></tr>",
+            "<tr><td><strong>Fire</strong></td></tr>",
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "malformed row"):
+                public_safety_stats.statistics("fire", 2026)
+
+    def test_empty_fire_quarterly_label_fails_visibly(self):
+        fixture = self._fixture("fire")
+        formatted = fixture["included"][2]["attributes"]["field_stories_text_formatted"]
+        formatted["value"] = formatted["value"].replace(
+            ">fire statistics from the previous quarter</a>", "></a>"
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "publication label is missing"):
+                public_safety_stats.reports("fire")
+
+    def test_malformed_published_thousands_separator_fails_visibly(self):
+        fixture = self._fixture("fire")
+        formatted = fixture["included"][0]["attributes"]["field_stories_text_formatted"]
+        formatted["value"] = formatted["value"].replace("7,882", "7,8,82")
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "malformed row"):
+                public_safety_stats.statistics("fire", 2026)
+
+    def test_header_only_fire_table_fails_visibly(self):
+        fixture = self._fixture("fire")
+        fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"] = (
+            "<table><tr><td>Incident Type</td><td>Totals</td></tr></table>"
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "table is missing"):
+                public_safety_stats.statistics("fire", 2026)
+
+    def test_missing_fire_statistics_sections_fail_visibly(self):
+        for index, heading, message in (
+            (0, "Renamed Current Totals", "incident statistics section is missing"),
+            (3, "Renamed Sprinkler Totals", "sprinkler statistics section is missing"),
+        ):
+            with self.subTest(heading=heading):
+                fixture = self._fixture("fire")
+                fixture["included"][index]["attributes"]["field_heading"] = heading
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
+                        public_safety_stats.statistics("fire")
+
+    def test_cli_police_reports_and_fire_stats_json(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("police")):
+            out = io.StringIO()
+            with redirect_stdout(out):
+                code = cli.main(["--json", "police", "reports", "--year", "2025", "--quarter", "4"])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out.getvalue())["reports"][0]["quarter"], 4)
+
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("fire")):
+            out = io.StringIO()
+            with redirect_stdout(out):
+                code = cli.main(["--json", "fire", "stats", "--year", "2026"])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out.getvalue())["datasets"][0]["kind"], "incident_totals")
+
+    def test_fire_reports_year_uses_publication_index_without_incident_query(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("fire")), patch(
+            "raleighlib.cli.fire.query_reports"
+        ) as incidents:
+            out = io.StringIO()
+            with redirect_stdout(out):
+                code = cli.main(["--json", "fire", "reports", "--year", "2025", "--quarter", "1"])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out.getvalue())["classification"], "official_published_reports")
+        incidents.assert_not_called()
+
+    def test_fire_reports_rejects_mixed_incident_and_publication_modes(self):
+        with self.assertRaisesRegex(SystemExit, "cannot be combined"):
+            cli.main(["fire", "reports", "--date", "2026-07-24", "--year", "2026"])
 
 
 class FireReportTests(unittest.TestCase):

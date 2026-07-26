@@ -29,6 +29,7 @@ from raleighlib import police
 from raleighlib import fire
 from raleighlib import fire_protection
 from raleighlib import rfd_reports
+from raleighlib import public_safety_stats
 from raleighlib import incidents
 
 
@@ -420,6 +421,12 @@ def build_parser() -> argparse.ArgumentParser:
     police_history.add_argument("--limit", type=_positive_int, default=20)
     police_history.add_argument("--offset", type=_nonnegative_int, default=0)
 
+    police_stats = police_sub.add_parser("stats", help="Official published crime statistics and availability.")
+    police_stats.add_argument("--year", type=_year, help="Published year; omit to enumerate available years.")
+    police_reports = police_sub.add_parser("reports", help="Official annual and quarterly crime report links.")
+    police_reports.add_argument("--year", type=_year, help="Published year; omit to enumerate all reports.")
+    police_reports.add_argument("--quarter", type=int, choices=range(1, 5), help="Quarter 1-4 (requires --year).")
+
     # Fire incident commands.
     fire_p = sub.add_parser("fire", help="Raleigh Fire Department incident data.")
     fire_sub = fire_p.add_subparsers(dest="fire_command")
@@ -451,10 +458,15 @@ def build_parser() -> argparse.ArgumentParser:
     fire_prot_group.add_argument("--address", help="Address to geocode and resolve to a CSAID.")
     fire_prot_group.add_argument("--csaid", type=_csaid_value, help="Canonical site-address identifier (CSAID).")
 
-    fire_reports = fire_sub.add_parser("reports", help="Exact ArcGIS fire-report lookup with guarded RFD fallback.")
-    fire_reports_group = fire_reports.add_mutually_exclusive_group(required=True)
+    fire_stats = fire_sub.add_parser("stats", help="Official published incident and sprinkler-save statistics.")
+    fire_stats.add_argument("--year", type=_year, help="Published year; omit to enumerate available years.")
+
+    fire_reports = fire_sub.add_parser("reports", help="Published aggregate reports or exact incident-report lookup.")
+    fire_reports_group = fire_reports.add_mutually_exclusive_group()
     fire_reports_group.add_argument("--date", type=_iso_date, help="Exact dispatch date (YYYY-MM-DD).")
     fire_reports_group.add_argument("--incident-number", type=_nonempty_text, help="Exact incident number.")
+    fire_reports.add_argument("--year", type=_year, help="Published aggregate-report year; omit to enumerate all reports.")
+    fire_reports.add_argument("--quarter", type=int, choices=range(1, 5), help="Published quarter 1-4 (requires --year).")
     fire_reports.add_argument("--allow-rfd-fallback", action="store_true", help="Use the RFD date form only when ArcGIS returns no records.")
     fire_reports.add_argument("--include-narrative", action="store_true", help="Fetch one exact incident narrative (requires --incident-number).")
     fire_reports.add_argument("--acknowledge-insecure-rfd", action="store_true", help="Acknowledge that RFD data crosses unencrypted HTTP for this invocation.")
@@ -1265,6 +1277,49 @@ def cmd_police_history(args: argparse.Namespace) -> int:
     return _police_output(result, args)
 
 
+def _published_output(result: dict[str, Any], args: argparse.Namespace) -> int:
+    if args.json:
+        _output_json(result)
+        return 0
+    datasets = result.get("datasets", [])
+    rows = []
+    for dataset in datasets:
+        for item in dataset.get("values", []):
+            rows.append([
+                str(dataset.get("year") or ""),
+                str(dataset.get("kind") or ""),
+                str(item.get("label") or ""),
+                str(item.get("published_value") or item.get("value") or ""),
+            ])
+    if rows:
+        _output_table(["YEAR", "KIND", "LABEL", "PUBLISHED VALUE"], rows)
+    reports = result.get("reports", [])
+    report_rows = [[
+        str(item.get("year") or ""),
+        f"Q{item['quarter']}" if item.get("quarter") else str(item.get("period") or ""),
+        str(item.get("label") or ""),
+        str(item.get("document_url") or ""),
+    ] for item in reports]
+    if report_rows:
+        if rows:
+            print()
+        _output_table(["YEAR", "PERIOD", "LABEL", "DOCUMENT"], report_rows)
+    if not rows and not report_rows:
+        print("No published statistics returned.")
+    print("Available years: " + ", ".join(str(year) for year in result.get("available_years", [])))
+    for warning in result.get("warnings", []):
+        print(f"Warning: {warning}", file=sys.stderr)
+    return 0
+
+
+def cmd_police_stats(args: argparse.Namespace) -> int:
+    return _published_output(public_safety_stats.statistics("police", args.year), args)
+
+
+def cmd_police_reports(args: argparse.Namespace) -> int:
+    return _published_output(public_safety_stats.reports("police", args.year, args.quarter), args)
+
+
 def _format_ms_datetime(value: Any) -> str:
     """Format a Unix-milliseconds timestamp for table output, or '' if unusable."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
@@ -1432,6 +1487,10 @@ def cmd_fire_protection(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_fire_stats(args: argparse.Namespace) -> int:
+    return _published_output(public_safety_stats.statistics("fire", args.year), args)
+
+
 def _fire_reports_output(result: dict[str, Any], args: argparse.Namespace) -> int:
     if args.json:
         _output_json(result)
@@ -1461,6 +1520,17 @@ def _fire_reports_output(result: dict[str, Any], args: argparse.Namespace) -> in
 
 
 def cmd_fire_reports(args: argparse.Namespace) -> int:
+    incident_mode = bool(args.date or args.incident_number)
+    aggregate_mode = args.year is not None or args.quarter is not None or not incident_mode
+    incident_options = args.allow_rfd_fallback or args.include_narrative or args.acknowledge_insecure_rfd
+    if incident_mode and (args.year is not None or args.quarter is not None):
+        raise cli_error("published --year/--quarter cannot be combined with --date/--incident-number")
+    if aggregate_mode:
+        if incident_options:
+            raise cli_error("incident fallback and narrative flags require --date or --incident-number")
+        return _published_output(
+            public_safety_stats.reports("fire", args.year, args.quarter), args
+        )
     if args.include_narrative and not args.incident_number:
         raise cli_error("--include-narrative requires --incident-number")
     if (args.allow_rfd_fallback or args.include_narrative) and not args.acknowledge_insecure_rfd:
@@ -1614,12 +1684,15 @@ _POLICE_COMMANDS: dict[str, Any] = {
     "recent": cmd_police_recent,
     "previous-day": cmd_police_previous_day,
     "history": cmd_police_history,
+    "stats": cmd_police_stats,
+    "reports": cmd_police_reports,
 }
 
 _FIRE_COMMANDS: dict[str, Any] = {
     "incidents": cmd_fire_incidents,
     "response-times": cmd_fire_response_times,
     "protection": cmd_fire_protection,
+    "stats": cmd_fire_stats,
     "reports": cmd_fire_reports,
     "inspections": cmd_fire_inspections,
 }
@@ -1750,7 +1823,7 @@ def main(argv: list[str] | None = None) -> int:
 
         parser.print_help()
         return 2
-    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, fire.FireError, fire_protection.FireProtectionError, rfd_reports.RFDReportError, incidents.IncidentFeedError, FileExistsError, ValueError, KeyError) as exc:
+    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, fire.FireError, fire_protection.FireProtectionError, rfd_reports.RFDReportError, public_safety_stats.PublishedStatisticsError, incidents.IncidentFeedError, FileExistsError, ValueError, KeyError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
     except urllib.error.HTTPError as exc:
