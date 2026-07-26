@@ -1,5 +1,5 @@
 ---
-name: gibson-cyberpunk
+name: cyberpunk
 description: >-
   Create or analyze settings, scenes, world operations, and image direction in
   the literary cyberpunk mode of William Gibson's Sprawl fiction: dense,
@@ -11,7 +11,7 @@ description: >-
 license: MIT
 ---
 
-# Gibson Cyberpunk
+# Cyberpunk
 
 Use the Sprawl fiction as a way to reason about pressure, infrastructure, and ordinary lives inside vast systems, not as a bag of neon props. The result should feel inhabited because the systems have consequences, not because every surface has a glowing sign.
 

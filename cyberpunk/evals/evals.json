@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "skill_name": "gibson-cyberpunk",
+  "skill_name": "cyberpunk",
   "evals": [
     {
       "id": "repair-economy-image-brief",
