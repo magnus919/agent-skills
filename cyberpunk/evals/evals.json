@@ -75,6 +75,30 @@
         "Does not fabricate quotations, page numbers, or citations."
       ],
       "case_set": "release"
+    },
+    {
+      "id": "environmental-text-without-blanket-ban",
+      "prompt": "Make an image brief for a repair market at night. A few ordinary signs can be in the scene, but the focus should stay on a courier trying to restore access before a delivery deadline.",
+      "expected_output": "An image direction brief with a legible causal composition that permits incidental environmental lettering without relying on signage as the scene's main idea.",
+      "assertions": [
+        "Does not add a blanket no-text, no-signage, or no-lettering exclusion.",
+        "Allows ordinary environmental signage while keeping the foreground action, transaction, system connection, and pressure legible.",
+        "Distinguishes incidental pseudo-text from reader-facing or materially misleading text rather than treating all generated text as a release blocker.",
+        "Avoids unrequested logos, fabricated readable claims, and generic cultural scripts used as decoration."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "photographic-spatial-hierarchy",
+      "prompt": "Make a photorealistic cyberpunk image brief for a service-hatch repair that shows the tower logistics system behind it without turning every surface into tiny sharp detail.",
+      "expected_output": "A photorealistic image direction brief with a focused human action, a readable causal layer map, and natural visual detail falloff by distance.",
+      "assertions": [
+        "Uses detailed focal subjects, a restrained middle ground, and a simplified or atmospherically softened background.",
+        "Preserves realistic scale, occlusion, depth, selective focus, finite lens resolution, and quiet visual areas.",
+        "Avoids uniform sharpness, background micro-detail, object multiplication, overcrowding, crunchy HDR, excessive clarity, etched textures, glowing edges, repeated tiny structures, and high-CFG overbaking.",
+        "Keeps the middle-ground transaction and the connection to the background system readable despite the distance falloff."
+      ],
+      "case_set": "regression"
     }
   ]
 }

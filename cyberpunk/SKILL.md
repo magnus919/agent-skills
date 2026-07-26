@@ -44,7 +44,7 @@ Use the primary texts as canon. Treat the 1980s publication context and criticis
 3. **Choose two systems that collide.** Pair an official system with an improvised one: corporate logistics and gray-market repair, a security boundary and a courier route, a network protocol and a body clinic, or an orbital supply chain and a street market.
 4. **Show accretion.** Describe the trace of repeated use: patched conduit, a repurposed loading bay, informal wayfinding, incompatible interfaces, a service that became a market. The environment should read as an archaeological record of ownership, technology, and adaptation, not as a single finished design.
 5. **Make technology furniture.** Treat extraordinary devices as habitual surroundings. State what they change in work, intimacy, risk, memory, or status, but keep attention on the person using, repairing, ignoring, or working around them.
-6. **Give culture agency.** Treat language, food, fashion, music, and ritual as practices people choose, adapt, trade, and contest. Avoid using a culture as anonymous future texture or reducing it to signage.
+6. **Give culture agency.** Treat language, food, fashion, music, and ritual as practices people choose, adapt, trade, and contest. Avoid using a culture as anonymous future texture or reducing it to signage; ordinary signage can still support a specific place or practice.
 7. **End with consequence.** Explain what the pressure costs the character, who benefits, and what remains uncertain. Large systems should be felt through a specific decision.
 
 ## The Gibsonian test
@@ -67,8 +67,8 @@ Before drafting prose, make a **layer map**. Do not send a prompt that merely li
 3. **Background system and connection:** name the distant system, then specify one visible vertical or causal connection to the foreground: a freight lift, stair, service catwalk, rail line, cable run, pneumatic tube, or access flow.
 4. **Anchored material history:** place two or three repair, reuse, or neglect traces at the layers where they matter; do not leave them as a background noun list.
 5. **Readable pressure:** state the access failure, queue, deadline, scarcity, or surveillance condition that viewers can see shaping the transaction.
-6. **Legibility:** require foreground, middle ground, background, and their connection to remain readable in-frame. Do not use shallow depth of field, smoke, rain, signage, or lighting to hide the causal chain.
-7. **Light, weather, and exclusions:** choose light/weather only to support the action. Exclude borrowed named characters, readable fake-brand overload, default sexualization, and frictionless luxury unless contrast is the point.
+6. **Legibility:** require foreground, middle ground, background, and their connection to remain readable in-frame. Natural distance falloff can simplify the background, but do not use shallow depth of field, smoke, rain, signage, or lighting to hide the causal chain.
+7. **Light, weather, text, and exclusions:** choose light/weather only to support the action. Do not add a blanket no-text negative: incidental environmental text and user-requested, meaningful lettering are allowed. Avoid unrequested real brands or logos, fabricated readable claims, and decorative text that overwhelms the action. Exclude borrowed named characters, default sexualization, and frictionless luxury unless contrast is the point.
 
 Use the template in [visual direction](references/visual-direction.md). For an exact canon request, offer an analytical breakdown or an original adjacent composition instead of a scene recreation.
 
