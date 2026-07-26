@@ -321,6 +321,15 @@
       "description": "CMO methodology — positioning and messaging frameworks (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), competitive response (pricing wars, feature races, brand defense)."
     },
     {
+      "name": "grafana",
+      "source": "./",
+      "skills": [
+        "./grafana"
+      ],
+      "strict": false,
+      "description": "Operate, configure, provision, secure, and troubleshoot Grafana OSS, Enterprise, and Cloud, including dashboards, folders, data sources, annotations, alert rules, contact points, notification policies, silences, mute timings, service accounts, RBAC, plugins, APIs, and as-code workflows. Use for Grafana product work and Grafana-side integrations. Do not use for defining SLOs or paging policy, operating Prometheus/Loki/Tempo/InfluxDB backends, generic Docker/Kubernetes/Terraform/reverse-proxy work, plugin development, or authorized security assessments; use the corresponding specialist skill."
+    },
+    {
       "name": "gutenberg",
       "source": "./",
       "skills": [
