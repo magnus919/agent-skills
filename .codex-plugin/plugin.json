@@ -57,6 +57,7 @@
     "./ghost-cli",
     "./github-runner",
     "./go-to-market",
+    "./grafana",
     "./gutenberg",
     "./haystack",
     "./hugo-theme",

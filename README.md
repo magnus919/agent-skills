@@ -152,6 +152,10 @@ Deploy, manage, and troubleshoot self-hosted GitHub Actions runners. Covers syst
 
 CMO methodology — positioning and messaging frameworks (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), competitive response (pricing wars, feature races, brand defense).
 
+### [grafana](grafana/SKILL.md)
+
+Operate Grafana OSS, Enterprise, and Cloud with version-aware discovery, decision-oriented dashboards, end-to-end alert routing, explicit as-code ownership, evidence-led troubleshooting, and guarded security or production changes.
+
 ### [gutenberg](gutenberg/SKILL.md)
 
 Search, download, and extract public-domain books from Project Gutenberg. Look up books by ID or keyword via gutendex, download plain-text and EPUB editions, strip licensing boilerplate, and classify fiction vs non-fiction. Ships a portable Python CLI with zero external dependencies.
