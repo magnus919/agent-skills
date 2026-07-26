@@ -42,8 +42,8 @@ Use the primary texts as canon. Treat the 1980s publication context and criticis
 1. **Name the pressure.** Give a person a near-term need, such as a debt, delivery, repair, favor, escape route, credential, or scarce access. Make the need legible before describing the city.
 2. **Locate the person in a stratum.** Identify who controls the space, who maintains it, how people enter it, and what fails there. Height, access, and cleanliness can differ, but do not reduce every class relation to a literal floor number.
 3. **Choose two systems that collide.** Pair an official system with an improvised one: corporate logistics and gray-market repair, a security boundary and a courier route, a network protocol and a body clinic, or an orbital supply chain and a street market.
-4. **Show accretion.** Describe the trace of repeated use: patched conduit, a repurposed loading bay, informal wayfinding, incompatible interfaces, a service that became a market. The environment should look modified over time, not designed all at once.
-5. **Make technology ordinary.** State what it changes in work, intimacy, risk, memory, or status. Do not pause simply to admire its novelty.
+4. **Show accretion.** Describe the trace of repeated use: patched conduit, a repurposed loading bay, informal wayfinding, incompatible interfaces, a service that became a market. The environment should read as an archaeological record of ownership, technology, and adaptation, not as a single finished design.
+5. **Make technology furniture.** Treat extraordinary devices as habitual surroundings. State what they change in work, intimacy, risk, memory, or status, but keep attention on the person using, repairing, ignoring, or working around them.
 6. **Give culture agency.** Treat language, food, fashion, music, and ritual as practices people choose, adapt, trade, and contest. Avoid using a culture as anonymous future texture or reducing it to signage.
 7. **End with consequence.** Explain what the pressure costs the character, who benefits, and what remains uncertain. Large systems should be felt through a specific decision.
 

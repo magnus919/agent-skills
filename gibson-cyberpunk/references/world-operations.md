@@ -35,7 +35,11 @@ For every advanced tool, identify:
 - **Failure:** What breaks, becomes unsafe, or exposes someone when maintenance stops?
 - **Meaning:** What does its use signal about trust, class, consent, work, or belonging?
 
-This prevents sterile “future gadget” description. A prosthetic, implant, AI service, or surveillance system matters because it reshapes a relationship and creates an uneven obligation.
+This prevents sterile “future gadget” description. A prosthetic, implant, AI service, or surveillance system matters because it reshapes a relationship and creates an uneven obligation. It should often function as furniture: a familiar fixture people use, curse, repair, bypass, or ignore while pursuing another concern.
+
+## Read the city as an archaeological record
+
+Treat the built environment as evidence of successive bargains rather than a complete plan. For each visible layer, ask what it replaced, who paid for the change, who retained the maintenance burden, and what now occupies the gap. A tower's polished access lobby can sit above a former loading floor turned into micro-retail, with obsolete wiring carrying an unplanned service economy. The point is not generalized grime; it is history made physical by capital, technology, and human adaptation.
 
 ## Cultural layering without extraction
 

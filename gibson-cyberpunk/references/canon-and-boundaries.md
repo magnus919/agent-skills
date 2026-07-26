@@ -21,8 +21,9 @@ The texts repeatedly stage:
 - power distributed among corporations, families, criminal intermediaries, security arrangements, and autonomous intelligences rather than centered in a civic state;
 - people who survive through specialist knowledge, informal exchange, personal obligation, and access to systems they do not control;
 - bodies as vulnerable, modified, commodified, and socially situated, not as clean upgrades;
-- built environments that show use, maintenance, uneven access, and commercial saturation;
-- global cultural movement without an uncomplicated single future culture.
+- built environments that show use, maintenance, uneven access, and commercial saturation, making prior ownership and adaptation visible in the present;
+- global cultural movement without an uncomplicated single future culture;
+- advanced technology as routine infrastructure and intimate equipment rather than an object of sustained wonder.
 
 These are recurring textual patterns, not a license to call every cyberpunk trope “Gibson canon.” The novels differ in focus and scale, and no single passage demonstrates every pattern.
 
