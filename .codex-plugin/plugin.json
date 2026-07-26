@@ -54,6 +54,7 @@
     "./forgejo-cli",
     "./frontend-engineering",
     "./ghost-cli",
+    "./gibson-cyberpunk",
     "./github-runner",
     "./go-to-market",
     "./gutenberg",

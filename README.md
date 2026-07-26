@@ -140,6 +140,10 @@ Frontend engineering methodology — component architecture, state management, A
 
 Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.
 
+### [gibson-cyberpunk](gibson-cyberpunk/SKILL.md)
+
+Create or analyze original settings, scenes, world operations, and image direction through the material, social, and human-scale logic of William Gibson’s Sprawl fiction. Distinguishes canon, inference, and original adaptation; does not imitate Gibson’s prose or continue named canon.
+
 ### [github-runner](github-runner/SKILL.md)
 
 Deploy, manage, and troubleshoot self-hosted GitHub Actions runners. Covers systemd, Docker, Kubernetes (ARC), and Scale Set Client deployments.

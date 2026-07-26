@@ -294,6 +294,15 @@
       "description": "Manage Ghost CMS content from the terminal — create and list posts, pages, and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration."
     },
     {
+      "name": "gibson-cyberpunk",
+      "source": "./",
+      "skills": [
+        "./gibson-cyberpunk"
+      ],
+      "strict": false,
+      "description": "Create or analyze settings, scenes, world operations, and image direction in the literary cyberpunk mode of William Gibson's Sprawl fiction: dense, accreted urban systems; uneven high technology; corporate power; mediated culture; and human-scale survival inside global networks. Use for Gibson-informed creative work, setting design, or visual briefs, not for generic neon cyberpunk, faithful continuation of named canon, or imitation of Gibson's prose."
+    },
+    {
       "name": "github-runner",
       "source": "./",
       "skills": [
