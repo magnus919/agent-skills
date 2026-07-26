@@ -3153,6 +3153,17 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
         self.assertIn("published document is unavailable", err.getvalue())
         self.assertNotIn("Traceback", err.getvalue())
 
+    def test_jsonapi_transport_timeout_is_a_concise_cli_error(self):
+        with patch("raleighlib.public_safety_stats.core.json_request", side_effect=TimeoutError("timed out")):
+            out, err = io.StringIO(), io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = cli.main(["--json", "fire", "stats", "--year", "2026"])
+        self.assertEqual(code, 1)
+        self.assertEqual(out.getvalue(), "")
+        self.assertIn("published statistics source is unavailable", err.getvalue())
+        self.assertNotIn("Traceback", err.getvalue())
+        self.probe.assert_not_called()
+
     def test_document_redirect_outside_publication_contract_fails(self):
         self.probe.side_effect = None
         self.probe.return_value = "https://data.raleighnc.gov/admin"

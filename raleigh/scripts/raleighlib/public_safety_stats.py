@@ -146,7 +146,17 @@ def _fetch_page(agency: str) -> tuple[dict[str, Any], dict[str, str]]:
         f"https://raleighnc.gov/jsonapi/node/service/{source['id']}"
         "?include=field_content_primary"
     )
-    payload = core.require_object(core.json_request(url), "published statistics request")
+    try:
+        response = core.json_request(url)
+    except (
+        core.SecurityError,
+        urllib.error.HTTPError,
+        urllib.error.URLError,
+        OSError,
+        http.client.HTTPException,
+    ) as exc:
+        raise PublishedStatisticsError(f"published statistics source is unavailable: {exc}") from exc
+    payload = core.require_object(response, "published statistics request")
     data = payload.get("data")
     included = payload.get("included")
     if not isinstance(data, dict) or not isinstance(included, list):
