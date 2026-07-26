@@ -3162,6 +3162,18 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
             with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "table is missing"):
                 public_safety_stats.statistics("fire", 2026)
 
+    def test_missing_fire_statistics_sections_fail_visibly(self):
+        for index, heading, message in (
+            (0, "Renamed Current Totals", "incident statistics section is missing"),
+            (3, "Renamed Sprinkler Totals", "sprinkler statistics section is missing"),
+        ):
+            with self.subTest(heading=heading):
+                fixture = self._fixture("fire")
+                fixture["included"][index]["attributes"]["field_heading"] = heading
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
+                        public_safety_stats.statistics("fire")
+
     def test_cli_police_reports_and_fire_stats_json(self):
         with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("police")):
             out = io.StringIO()

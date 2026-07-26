@@ -170,7 +170,7 @@ The following public service boundaries were exercised successfully on 2026-07-2
 
 ### Verification
 
-- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **355 tests passed**.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **356 tests passed**.
 - `python3 -m ruff check raleigh/scripts/raleighlib/core.py raleigh/scripts/raleighlib/public_safety_stats.py raleigh/scripts/raleighlib/cli.py`: passed.
 - `python3 scripts/validate-evals.py raleigh`: **11 eval manifests validated**.
 - `ruby scripts/validate-skills.rb`: **110 canonical skills validated**.
@@ -181,7 +181,7 @@ The following public service boundaries were exercised successfully on 2026-07-2
 - Live `fire stats --year 2026 --json`: returned seven official published categories, including medical `7,882`, source revision/retrieval metadata, the annual document URL, and the aggregate-only privacy warning.
 - Live `fire reports --year 2025 --quarter 1 --json`: returned the canonical official quarterly page.
 - Live `fire reports --date 2026-07-24 --json`: exercised the unchanged ArcGIS incident-report path successfully.
-- Review passes found and then verified fixes for terminal-control handling, path traversal and URL components, empty tables, document availability, redirect targets, malformed or ambiguous JSON:API relationships, and eval coverage.
+- Review passes found and then verified fixes for terminal-control handling, path traversal and URL components, empty or missing sections and tables, document availability, redirect targets, malformed or ambiguous JSON:API relationships, and eval coverage.
 
 ### Remaining boundaries and follow-up triggers
 

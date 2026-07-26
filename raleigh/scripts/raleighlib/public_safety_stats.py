@@ -260,6 +260,13 @@ def _parse_fire(fragments: dict[str, str], page_url: str) -> tuple[list[dict[str
             "quarter": int(period.group(1)), "label": link["text"], "document_url": url,
         })
 
+    statistic_headings = [
+        heading for heading in fragments
+        if re.fullmatch(r"20\d{2} Statistics", heading)
+    ]
+    if not statistic_headings:
+        raise PublishedStatisticsError("fire incident statistics section is missing")
+
     datasets: list[dict[str, Any]] = []
     for heading, html in fragments.items():
         match = re.fullmatch(r"(20\d{2}) Statistics", heading)
@@ -280,21 +287,22 @@ def _parse_fire(fragments: dict[str, str], page_url: str) -> tuple[list[dict[str
         datasets.append({"year": int(match.group(1)), "kind": "incident_totals", "values": values})
 
     sprinkler_html = fragments.get("Sprinkler Saves Stats")
-    if sprinkler_html is not None:
-        parser = _FragmentParser()
-        parser.feed(sprinkler_html)
-        year_match = re.search(r"\b(20\d{2}) Sprinkler Saves Statistics\b", _clean(" ".join(parser.text)))
-        if year_match is None or len(parser.tables) != 1 or len(parser.tables[0]) < 2:
-            raise PublishedStatisticsError("fire sprinkler statistics contract changed")
-        rows = parser.tables[0]
-        if rows[0] != ["Type", "Description", "Statistic", "Percentage"]:
-            raise PublishedStatisticsError("fire sprinkler statistics table headers changed")
-        values = []
-        for row in rows[1:]:
-            if len(row) != 4 or not row[1] or not row[2]:
-                raise PublishedStatisticsError("fire sprinkler statistics table contains a malformed row")
-            values.append({"type": row[0] or None, "label": row[1], "published_value": row[2], "published_percentage": row[3]})
-        datasets.append({"year": int(year_match.group(1)), "kind": "sprinkler_saves", "values": values})
+    if sprinkler_html is None:
+        raise PublishedStatisticsError("fire sprinkler statistics section is missing")
+    parser = _FragmentParser()
+    parser.feed(sprinkler_html)
+    year_match = re.search(r"\b(20\d{2}) Sprinkler Saves Statistics\b", _clean(" ".join(parser.text)))
+    if year_match is None or len(parser.tables) != 1 or len(parser.tables[0]) < 2:
+        raise PublishedStatisticsError("fire sprinkler statistics contract changed")
+    rows = parser.tables[0]
+    if rows[0] != ["Type", "Description", "Statistic", "Percentage"]:
+        raise PublishedStatisticsError("fire sprinkler statistics table headers changed")
+    values = []
+    for row in rows[1:]:
+        if len(row) != 4 or not row[1] or not row[2]:
+            raise PublishedStatisticsError("fire sprinkler statistics table contains a malformed row")
+        values.append({"type": row[0] or None, "label": row[1], "published_value": row[2], "published_percentage": row[3]})
+    datasets.append({"year": int(year_match.group(1)), "kind": "sprinkler_saves", "values": values})
 
     if not reports or not datasets:
         raise PublishedStatisticsError("fire statistics source returned no publications or structured totals")
