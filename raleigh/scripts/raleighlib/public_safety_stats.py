@@ -176,14 +176,24 @@ def _fetch_page(agency: str) -> tuple[dict[str, Any], dict[str, str]]:
             not isinstance(item, dict)
             or not isinstance(item.get("type"), str)
             or not isinstance(item.get("id"), str)
+            or not item["type"]
+            or not item["id"]
         ):
             raise PublishedStatisticsError("published statistics relationship identifiers are invalid")
         referenced.add((item["type"], item["id"]))
     fragments: dict[str, str] = {}
     for item in included:
-        if not isinstance(item, dict) or item.get("type") != "paragraph--stories_text":
+        if (
+            not isinstance(item, dict)
+            or not isinstance(item.get("type"), str)
+            or not isinstance(item.get("id"), str)
+            or not item["type"]
+            or not item["id"]
+        ):
+            raise PublishedStatisticsError("published statistics included resource identifiers are invalid")
+        if item["type"] != "paragraph--stories_text":
             continue
-        if (item.get("type"), item.get("id")) not in referenced:
+        if (item["type"], item["id"]) not in referenced:
             raise PublishedStatisticsError("published statistics included an unreferenced content section")
         item_attrs = item.get("attributes")
         if not isinstance(item_attrs, dict) or item_attrs.get("status") is not True:

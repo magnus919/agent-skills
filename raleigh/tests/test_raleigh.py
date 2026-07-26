@@ -3094,6 +3094,15 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
             with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "identifiers are invalid"):
                 public_safety_stats.reports("police")
 
+    def test_malformed_jsonapi_included_resource_fails_visibly(self):
+        for value in ([], {"type": "paragraph--stories_text", "id": []}):
+            with self.subTest(value=value):
+                fixture = self._fixture("police")
+                fixture["included"][0] = value
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "included resource identifiers are invalid"):
+                        public_safety_stats.reports("police")
+
     def test_report_link_outside_canonical_origins_fails_closed(self):
         fixture = self._fixture("police")
         html = fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"]
