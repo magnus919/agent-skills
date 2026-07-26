@@ -3142,6 +3142,17 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
             with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "unavailable"):
                 public_safety_stats.reports("police", 2025, 4)
 
+    def test_document_transport_timeout_is_a_concise_cli_error(self):
+        self.probe.side_effect = TimeoutError("timed out")
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=self._fixture("police")):
+            out, err = io.StringIO(), io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = cli.main(["--json", "police", "reports", "--year", "2025", "--quarter", "4"])
+        self.assertEqual(code, 1)
+        self.assertEqual(out.getvalue(), "")
+        self.assertIn("published document is unavailable", err.getvalue())
+        self.assertNotIn("Traceback", err.getvalue())
+
     def test_document_redirect_outside_publication_contract_fails(self):
         self.probe.side_effect = None
         self.probe.return_value = "https://data.raleighnc.gov/admin"

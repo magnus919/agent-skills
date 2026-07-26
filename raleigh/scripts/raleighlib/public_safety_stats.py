@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import http.client
 import urllib.error
 import urllib.parse
 from datetime import datetime, timezone
@@ -340,7 +341,13 @@ def _assert_available(items: list[dict[str, Any]]) -> None:
         try:
             final_url = core.probe_url(url)
             _document_url(final_url, url, agency)
-        except (core.SecurityError, urllib.error.HTTPError, urllib.error.URLError) as exc:
+        except (
+            core.SecurityError,
+            urllib.error.HTTPError,
+            urllib.error.URLError,
+            OSError,
+            http.client.HTTPException,
+        ) as exc:
             raise PublishedStatisticsError(f"published document is unavailable: {url}: {exc}") from exc
 
 
