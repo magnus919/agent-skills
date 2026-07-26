@@ -13,13 +13,7 @@ A Gibson-informed image usually earns density through relations among people, wo
 ## Prompt template
 
 ```text
-[Medium and framing] of [person or small group] [performing a concrete action]
-in [specific spatial layer]. The setting shows [two material traces of accretion]
-and [one operating pressure]. [Light/weather] supports [the action or mood],
-while [background system] remains legible but secondary. Lived-in, maintained
-and imperfect, culturally specific through [practice or relationship], not
-through generic signage. Original setting and characters; no copyrighted
-characters, logos, or recreated scenes; no readable gibberish text.
+[Medium and framing; keep foreground, middle ground, background, and their connection legible in-frame] of [foreground person or small group] [concrete action] with [object, access point, or failure constraint] in hand. Middle ground: [named transaction, witnesses, queue, desk, hatch, stall, or checkpoint] where that action changes another person's options. Background: [system] connected visibly through [freight lift, stairs, service catwalk, rail line, cable run, pneumatic tube, or access flow]. Place [two material traces of accretion] at [their relevant layers]. The readable pressure is [deadline, queue, access failure, scarcity, or surveillance condition]. [Light/weather] reveals rather than obscures the action and connection; no shallow depth of field that turns systems into atmosphere. Culturally specific through [practice or relationship], not generic signage. Original setting and characters; no copyrighted characters, logos, recreated scenes, or readable gibberish text.
 ```
 
 ### Example: original adjacent image direction
@@ -51,4 +45,4 @@ no copied fictional characters, no unreadable text.
 
 Exclude: recognizable protected characters or locations; direct cover-art composition; model-typical illegible text; default femme-fatale sexualization; unexplained weapon posing; a homogeneous crowd; pristine “future showroom” surfaces; and a generic East Asian visual shorthand for futurity.
 
-Before delivery, inspect whether the image has one readable human action, a clear spatial hierarchy, visible material history, and an operational pressure. If it only says “cyberpunk” through purple-blue light and rain, revise the brief.
+Before generation, reject and rewrite any brief that merely lists people, infrastructure, and neon atmosphere. Require a layer map with a foreground action, named middle-ground transaction, background system, visible connection, anchored material history, and readable pressure. Before delivery, inspect whether every mapped layer and connection remains legible in-frame; if the causal chain is buried by shallow depth of field, smoke, rain, signage, or spectacle, revise the brief.
