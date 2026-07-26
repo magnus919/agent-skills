@@ -11,7 +11,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 
 DEFAULT_TIMEOUT = 30
@@ -304,6 +304,7 @@ def json_request(
     data: bytes | None = None,
     headers: dict[str, str] | None = None,
     max_bytes: int = DEFAULT_MAX_JSON_BYTES,
+    final_url_validator: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     """Fetch JSON from an allowlisted URL and return the parsed body."""
     if not is_allowed_host(url):
@@ -320,6 +321,8 @@ def json_request(
         final_url = resp.geturl()
         if not is_allowed_host(final_url):
             raise SecurityError(f"Redirect led to a non-allowlisted host: {final_url}")
+        if final_url_validator is not None:
+            final_url_validator(final_url)
         body = _read_limited(resp, max_bytes)
         if not body:
             return {}

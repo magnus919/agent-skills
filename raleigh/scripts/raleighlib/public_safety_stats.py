@@ -25,6 +25,7 @@ SOURCES = {
         "page_url": "https://raleighnc.gov/fire/services/view-raleigh-fire-statistics",
     },
 }
+MAX_PUBLISHED_REPORTS = 100
 
 
 class PublishedStatisticsError(ValueError):
@@ -146,8 +147,13 @@ def _fetch_page(agency: str) -> tuple[dict[str, Any], dict[str, str]]:
         f"https://raleighnc.gov/jsonapi/node/service/{source['id']}"
         "?include=field_content_primary"
     )
+
+    def validate_final_url(final_url: str) -> None:
+        if final_url != url:
+            raise PublishedStatisticsError("published statistics source left its exact JSON:API endpoint")
+
     try:
-        response = core.json_request(url)
+        response = core.json_request(url, final_url_validator=validate_final_url)
     except (
         core.SecurityError,
         urllib.error.HTTPError,
@@ -191,8 +197,12 @@ def _fetch_page(agency: str) -> tuple[dict[str, Any], dict[str, str]]:
             or not item["id"]
         ):
             raise PublishedStatisticsError("published statistics relationship identifiers are invalid")
-        referenced.add((item["type"], item["id"]))
+        key = (item["type"], item["id"])
+        if key in referenced:
+            raise PublishedStatisticsError("published statistics relationship identifiers are duplicated")
+        referenced.add(key)
     fragments: dict[str, str] = {}
+    included_identifiers: set[tuple[str, str]] = set()
     for item in included:
         if (
             not isinstance(item, dict)
@@ -202,9 +212,13 @@ def _fetch_page(agency: str) -> tuple[dict[str, Any], dict[str, str]]:
             or not item["id"]
         ):
             raise PublishedStatisticsError("published statistics included resource identifiers are invalid")
+        key = (item["type"], item["id"])
+        if key in included_identifiers:
+            raise PublishedStatisticsError("published statistics included resource identifiers are duplicated")
+        included_identifiers.add(key)
         if item["type"] != "paragraph--stories_text":
             continue
-        if (item["type"], item["id"]) not in referenced:
+        if key not in referenced:
             raise PublishedStatisticsError("published statistics included an unreferenced content section")
         item_attrs = item.get("attributes")
         if not isinstance(item_attrs, dict) or item_attrs.get("status") is not True:
@@ -253,6 +267,8 @@ def _parse_police(fragments: dict[str, str], page_url: str) -> tuple[list[dict[s
         })
     if not reports:
         raise PublishedStatisticsError("police report index returned no publications")
+    if len(reports) > MAX_PUBLISHED_REPORTS:
+        raise PublishedStatisticsError(f"police report index exceeded the {MAX_PUBLISHED_REPORTS}-report limit")
     return [], reports
 
 
@@ -293,6 +309,9 @@ def _parse_fire(fragments: dict[str, str], page_url: str) -> tuple[list[dict[str
     if not statistic_headings:
         raise PublishedStatisticsError("fire incident statistics section is missing")
 
+    if len(reports) > MAX_PUBLISHED_REPORTS:
+        raise PublishedStatisticsError(f"fire report index exceeded the {MAX_PUBLISHED_REPORTS}-report limit")
+
     datasets: list[dict[str, Any]] = []
     for heading, html in fragments.items():
         match = re.fullmatch(r"(20\d{2}) Statistics", heading)
@@ -307,7 +326,8 @@ def _parse_fire(fragments: dict[str, str], page_url: str) -> tuple[list[dict[str
             raise PublishedStatisticsError("fire statistics table headers changed")
         values = []
         for row in rows[1:]:
-            if len(row) != 2 or not row[0] or not re.fullmatch(r"\d[\d,]*", row[1]):
+            valid_number = re.fullmatch(r"(?:0|[1-9]\d*|[1-9]\d{0,2}(?:,\d{3})+)", row[1])
+            if len(row) != 2 or not row[0] or valid_number is None:
                 raise PublishedStatisticsError("fire statistics table contains a malformed row")
             values.append({"label": row[0], "value": int(row[1].replace(",", "")), "published_value": row[1]})
         datasets.append({"year": int(match.group(1)), "kind": "incident_totals", "values": values})
@@ -346,6 +366,8 @@ def _published(agency: str) -> dict[str, Any]:
 
 
 def _assert_available(items: list[dict[str, Any]]) -> None:
+    if len(items) > MAX_PUBLISHED_REPORTS:
+        raise PublishedStatisticsError(f"publication selection exceeded the {MAX_PUBLISHED_REPORTS}-report limit")
     unique = {(item["document_url"], item["agency"]) for item in items}
     for url, agency in unique:
         try:

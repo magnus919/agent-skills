@@ -3103,6 +3103,42 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
                     with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "included resource identifiers are invalid"):
                         public_safety_stats.reports("police")
 
+    def test_duplicate_jsonapi_resource_identifiers_fail_visibly(self):
+        for field, message in (
+            ("relationship", "relationship identifiers are duplicated"),
+            ("included", "included resource identifiers are duplicated"),
+        ):
+            with self.subTest(field=field):
+                fixture = self._fixture("police")
+                if field == "relationship":
+                    data = fixture["data"]["relationships"]["field_content_primary"]["data"]
+                else:
+                    data = fixture["included"]
+                data.append(data[0])
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
+                        public_safety_stats.reports("police")
+
+    def test_jsonapi_redirect_outside_exact_endpoint_fails(self):
+        fixture = self._fixture("police")
+
+        def redirected(url, **kwargs):
+            kwargs["final_url_validator"]("https://data.raleighnc.gov/other")
+            return fixture
+
+        with patch("raleighlib.public_safety_stats.core.json_request", side_effect=redirected):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "exact JSON:API endpoint"):
+                public_safety_stats.reports("police")
+
+    def test_police_report_index_has_a_fanout_limit(self):
+        fixture = self._fixture("police")
+        formatted = fixture["included"][0]["attributes"]["field_stories_text_formatted"]
+        link = '<a href="https://cityofraleigh0drupal.blob.core.usgovcloudapi.net/drupal-prod/COR23/report.pdf">Q1 stats</a>'
+        formatted["value"] = "<h5>2026</h5>" + link * (public_safety_stats.MAX_PUBLISHED_REPORTS + 1)
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "report limit"):
+                public_safety_stats.reports("police")
+
     def test_report_link_outside_canonical_origins_fails_closed(self):
         fixture = self._fixture("police")
         html = fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"]
@@ -3190,6 +3226,14 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
         )
         with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
             with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "headers changed"):
+                public_safety_stats.statistics("fire", 2026)
+
+    def test_malformed_published_thousands_separator_fails_visibly(self):
+        fixture = self._fixture("fire")
+        formatted = fixture["included"][0]["attributes"]["field_stories_text_formatted"]
+        formatted["value"] = formatted["value"].replace("7,882", "7,8,82")
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "malformed row"):
                 public_safety_stats.statistics("fire", 2026)
 
     def test_header_only_fire_table_fails_visibly(self):
