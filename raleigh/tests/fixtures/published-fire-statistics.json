@@ -1,0 +1,56 @@
+{
+  "data": {
+    "type": "node--service",
+    "id": "f95a0f43-3dbf-4378-b7c7-b1bdda20eb24",
+    "attributes": {
+      "status": true,
+      "title": "View Raleigh Fire Statistics",
+      "changed": "2026-04-23T13:21:39+00:00",
+      "path": {"alias": "/fire/services/view-raleigh-fire-statistics"}
+    },
+    "relationships": {"field_content_primary": {"data": [
+      {"type": "paragraph--stories_text", "id": "current"},
+      {"type": "paragraph--stories_text", "id": "history"},
+      {"type": "paragraph--stories_text", "id": "quarter"},
+      {"type": "paragraph--stories_text", "id": "sprinkler"}
+    ]}}
+  },
+  "included": [
+    {
+      "type": "paragraph--stories_text",
+      "id": "current",
+      "attributes": {
+        "status": true,
+        "field_heading": "2026 Statistics",
+        "field_stories_text_formatted": {"value": "<table><tr><td><strong>Incident Type</strong></td><td><strong>Totals</strong></td></tr><tr><td><strong>Fire</strong></td><td>401</td></tr><tr><td><strong>Medical</strong></td><td>7,882</td></tr></table>"}
+      }
+    },
+    {
+      "type": "paragraph--stories_text",
+      "id": "history",
+      "attributes": {
+        "status": true,
+        "field_heading": "Previous Years Statistics",
+        "field_stories_text_formatted": {"value": "<p><a href=\"https://cityofraleigh0drupal.blob.core.usgovcloudapi.net/drupal-prod/COR18/2026.pdf\">2026</a> | <a href=\"https://cityofraleigh0drupal.blob.core.usgovcloudapi.net/drupal-prod/COR18/2025.pdf\">2025</a></p>"}
+      }
+    },
+    {
+      "type": "paragraph--stories_text",
+      "id": "quarter",
+      "attributes": {
+        "status": true,
+        "field_heading": "Quarterly Report",
+        "field_stories_text_formatted": {"value": "<p>View <a href=\"/fire/news/keeping-score-q1-2025-fire-statistics\">fire statistics from the previous quarter</a>.</p>"}
+      }
+    },
+    {
+      "type": "paragraph--stories_text",
+      "id": "sprinkler",
+      "attributes": {
+        "status": true,
+        "field_heading": "Sprinkler Saves Stats",
+        "field_stories_text_formatted": {"value": "<p><strong>2024 Sprinkler Saves Statistics</strong></p><table><tr><th>Type</th><th>Description</th><th>Statistic</th><th>Percentage</th></tr><tr><td>Fire Sprinkler Protected Properties</td><td>Total Property Value</td><td>$365,426,749</td><td>n/a</td></tr><tr><td></td><td>Total Number of Sprinkler Saves 2024 (YTD)</td><td>20</td><td>n/a</td></tr></table>"}
+      }
+    }
+  ]
+}

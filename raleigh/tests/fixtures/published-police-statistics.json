@@ -1,0 +1,26 @@
+{
+  "data": {
+    "type": "node--service",
+    "id": "40ebbee4-2477-4f7d-9623-257685345e3d",
+    "attributes": {
+      "status": true,
+      "title": "Raleigh's Crime Data",
+      "changed": "2026-07-10T13:59:08+00:00",
+      "path": {"alias": "/police/services/raleighs-crime-data"}
+    },
+    "relationships": {"field_content_primary": {"data": [{"type": "paragraph--stories_text", "id": "summary"}]}}
+  },
+  "included": [
+    {
+      "type": "paragraph--stories_text",
+      "id": "summary",
+      "attributes": {
+        "status": true,
+        "field_heading": "Summary of Crime Statistics by Year",
+        "field_stories_text_formatted": {
+          "value": "<h5><span>2026</span></h5><ul><li><a href=\"https://cityofraleigh0drupal.blob.core.usgovcloudapi.net/drupal-prod/COR23/rpd-crime-data-26q1.pdf\">Q1 stats</a> (PDF)</li></ul><h5>2025</h5><ul><li><a href=\"https://cityofraleigh0drupal.blob.core.usgovcloudapi.net/drupal-prod/COR23/annual-crime-data-2025.pdf\">Annual Crime Data</a> (PDF)</li><li><a href=\"https://cityofraleigh0drupal.blob.core.usgovcloudapi.net/drupal-prod/COR23/raleigh-crime-data-q4-2025.pdf\"><span>Q4 stats</span></a> (PDF)</li></ul>"
+        }
+      }
+    }
+  ]
+}

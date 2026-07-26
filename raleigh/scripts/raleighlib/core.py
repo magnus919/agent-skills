@@ -35,6 +35,7 @@ ALLOWED_HOSTS: frozenset[str] = frozenset({
     "www.goraleighlive.org",
     "www.goraleigh.org",
     "raleighnc.gov",
+    "cityofraleigh0drupal.blob.core.usgovcloudapi.net",
     "pub-raleighnc.escribemeetings.com",
     "incidents.rwecc.com",
 })
@@ -138,7 +139,10 @@ class AllowlistRedirectHandler(urllib.request.HTTPRedirectHandler):
                 if name.lower() in _SENSITIVE_HEADERS:
                     del new_headers[name]
         # Preserve method/body only for 307/308; otherwise downgrade to GET.
-        if code not in (307, 308):
+        if req.get_method() == "HEAD":
+            method = "HEAD"
+            data = None
+        elif code not in (307, 308):
             new_headers.pop("Content-Length", None)
             new_headers.pop("Content-Type", None)
             method = "GET"
@@ -211,7 +215,7 @@ def _is_allowed_post(url: str) -> bool:
 def _enforce_method_policy(method: str | None, url: str) -> None:
     """Reject disallowed methods before any network I/O."""
     method = (method or "GET").upper()
-    if method == "GET":
+    if method in {"GET", "HEAD"}:
         return
     if method == "POST" and _is_allowed_post(url):
         return
@@ -347,6 +351,21 @@ def raw_request(
         if not is_allowed_host(final_url):
             raise SecurityError(f"Redirect led to a non-allowlisted host: {final_url}")
         return _read_limited(resp, max_bytes)
+
+
+def probe_url(url: str, timeout: int | None = None) -> str:
+    """Verify that an allowlisted HTTPS resource is available without reading it."""
+    if not is_allowed_host(url):
+        raise SecurityError(f"URL host is not allowlisted: {url}")
+    _enforce_method_policy("HEAD", url)
+    request = urllib.request.Request(
+        url, headers=_request_headers(), method="HEAD"
+    )
+    with _OPENER.open(request, timeout=timeout or _get_timeout()) as response:
+        final_url = response.geturl()
+        if not is_allowed_host(final_url):
+            raise SecurityError(f"Redirect led to a non-allowlisted host: {final_url}")
+        return final_url
 
 
 def cache_dir() -> Path:

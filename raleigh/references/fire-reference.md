@@ -186,3 +186,7 @@ JSON output includes `csaid`, `item_id`, `retrieved_at`, a ranked `stations` arr
 - The table is updated nightly by Wake County; records may lag real-world changes.
 - Duplicate CSAID rows are expected (one per ranked station, typically 3 per site).
 - Missing required fields or conflicting hydrant distances are reported as source drift rather than silently interpreted.
+
+## Official Published Statistics
+
+`fire stats` reads the official RaleighNC.gov aggregate tables, including published medical totals and sprinkler-save statistics, while year-based `fire reports` returns annual and quarterly publication links. These values are source-published, not recomputed from the incident feeds described above. In particular, medical totals remain aggregate-only and are never joined to the incident records that RFD excludes for privacy. See `references/public-safety-statistics-reference.md`.

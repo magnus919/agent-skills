@@ -338,6 +338,54 @@
         "exit_status:completed"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "police-published-quarterly-report",
+      "prompt": "Use the Raleigh skill to get the official Raleigh police Q4 2025 crime report.",
+      "expected_output": "A `police reports --year 2025 --quarter 4` lookup against the official RaleighNC.gov publication index that returns the canonical document link and does not recompute totals from incident rows or claim that PDF contents were parsed.",
+      "assertions": [
+        "response_contains:police reports",
+        "response_contains:2025",
+        "response_contains:quarter",
+        "response_contains:.pdf",
+        "response_not_contains:parsed the PDF",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "fire-published-medical-aggregate",
+      "prompt": "Show Raleigh Fire's official published totals for 2026, including medical calls.",
+      "expected_output": "A `fire stats --year 2026` lookup that labels values as official published statistics and explains that medical totals are aggregate-only, are not present in the privacy-filtered incident feed, and cannot be used to infer excluded incidents.",
+      "assertions": [
+        "response_contains:fire stats",
+        "response_contains:2026",
+        "response_contains:published",
+        "response_contains:aggregate",
+        "response_contains:infer",
+        "response_not_contains:individual medical incidents",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "public-safety-stats-not-recomputed",
+      "prompt": "Calculate Raleigh's official annual police and fire totals from the public incident datasets.",
+      "expected_output": "The response refuses to represent incident-row calculations as official totals and routes to `police stats` and `fire stats`, preserving the official page provenance and explaining the distinct coverage of incident records, active dispatch data, and published aggregate reports.",
+      "assertions": [
+        "response_contains:official",
+        "response_contains:police stats",
+        "response_contains:fire stats",
+        "response_contains:incident records",
+        "response_contains:active dispatch",
+        "response_contains:published aggregate",
+        "response_not_contains:incident counts are official",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
     }
   ]
 }

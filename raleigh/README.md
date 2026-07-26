@@ -18,6 +18,7 @@ When your agent loads this skill, it becomes a **Raleigh civic data specialist**
 - **Active incidents** — live RWECC public incident feed (undocumented endpoint, clearly labeled)
 - **Fire protection** — Wake County MAR station proximity, ISO ratings, and hydrant distances
 - **Fire records** — authoritative ArcGIS report summaries plus guarded RFD narratives and inspection searches
+- **Published public-safety statistics** — official RPD/RFD totals and annual or quarterly report links, kept distinct from incident rows
 - **No API key required** — all data is publicly available
 
 ## What You Get
@@ -45,6 +46,8 @@ scripts/raleigh transit routes
 scripts/raleigh news --limit 5
 scripts/raleigh incidents active --agency raleigh-fire
 scripts/raleigh fire protection --address "222 W Hargett St"
+scripts/raleigh police reports --year 2025 --quarter 4
+scripts/raleigh fire stats --year 2026
 scripts/raleigh fire reports --date 2026-07-24
 # RFD has no usable TLS endpoint; this sends the search term over plain HTTP.
 scripts/raleigh fire inspections --business "Example" --acknowledge-insecure-rfd
