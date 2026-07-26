@@ -179,6 +179,15 @@ def _fetch_page(agency: str) -> tuple[dict[str, Any], dict[str, str]]:
         or path.get("alias") != urllib.parse.urlparse(source["page_url"]).path
     ):
         raise PublishedStatisticsError("published statistics page identity changed")
+    changed = attrs.get("changed")
+    if not isinstance(changed, str) or not changed.strip():
+        raise PublishedStatisticsError("published statistics page revision timestamp is missing")
+    try:
+        changed_at = datetime.fromisoformat(changed.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise PublishedStatisticsError("published statistics page revision timestamp is invalid") from exc
+    if changed_at.tzinfo is None:
+        raise PublishedStatisticsError("published statistics page revision timestamp has no timezone")
 
     relationships = data.get("relationships")
     if not isinstance(relationships, dict):
@@ -233,7 +242,7 @@ def _fetch_page(agency: str) -> tuple[dict[str, Any], dict[str, str]]:
     metadata = {
         "url": source["page_url"],
         "retrieved_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "published_changed_at": str(attrs.get("changed") or ""),
+        "published_changed_at": changed,
     }
     return {"fragments": fragments}, metadata
 
@@ -293,6 +302,8 @@ def _parse_fire(fragments: dict[str, str], page_url: str) -> tuple[list[dict[str
     quarterly_parser = _FragmentParser()
     quarterly_parser.feed(quarterly_html)
     for link in quarterly_parser.links:
+        if not link["text"]:
+            raise PublishedStatisticsError("fire quarterly report publication label is missing")
         url = _document_url(link["href"], page_url, "fire")
         period = re.search(r"(?:^|[-_/])q([1-4])-(20\d{2})(?:[-_/]|$)", url, re.IGNORECASE)
         if period is None:
@@ -326,8 +337,10 @@ def _parse_fire(fragments: dict[str, str], page_url: str) -> tuple[list[dict[str
             raise PublishedStatisticsError("fire statistics table headers changed")
         values = []
         for row in rows[1:]:
+            if len(row) != 2 or not row[0]:
+                raise PublishedStatisticsError("fire statistics table contains a malformed row")
             valid_number = re.fullmatch(r"(?:0|[1-9]\d*|[1-9]\d{0,2}(?:,\d{3})+)", row[1])
-            if len(row) != 2 or not row[0] or valid_number is None:
+            if valid_number is None:
                 raise PublishedStatisticsError("fire statistics table contains a malformed row")
             values.append({"label": row[0], "value": int(row[1].replace(",", "")), "published_value": row[1]})
         datasets.append({"year": int(match.group(1)), "kind": "incident_totals", "values": values})
@@ -370,9 +383,12 @@ def _assert_available(items: list[dict[str, Any]]) -> None:
         raise PublishedStatisticsError(f"publication selection exceeded the {MAX_PUBLISHED_REPORTS}-report limit")
     unique = {(item["document_url"], item["agency"]) for item in items}
     for url, agency in unique:
-        try:
-            final_url = core.probe_url(url)
+        def validate_final_url(final_url: str) -> None:
             _document_url(final_url, url, agency)
+
+        try:
+            final_url = core.probe_url(url, final_url_validator=validate_final_url)
+            validate_final_url(final_url)
         except (
             core.SecurityError,
             urllib.error.HTTPError,

@@ -130,6 +130,9 @@ class AllowlistRedirectHandler(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         if not is_allowed_host(newurl):
             raise SecurityError(f"Redirect led to a non-allowlisted host: {newurl}")
+        final_url_validator = getattr(req, "_raleigh_final_url_validator", None)
+        if final_url_validator is not None:
+            final_url_validator(newurl)
         # Strip sensitive headers when crossing origins.
         old_origin = _origin(req.full_url)
         new_origin = _origin(newurl)
@@ -153,7 +156,7 @@ class AllowlistRedirectHandler(urllib.request.HTTPRedirectHandler):
         if data is not None and old_origin != new_origin:
             raise SecurityError("Cross-origin redirects cannot preserve a request body")
         _enforce_method_policy(method, newurl)
-        return urllib.request.Request(
+        redirected = urllib.request.Request(
             newurl,
             headers=new_headers,
             method=method,
@@ -161,6 +164,9 @@ class AllowlistRedirectHandler(urllib.request.HTTPRedirectHandler):
             origin_req_host=req.origin_req_host,
             unverifiable=True,
         )
+        if final_url_validator is not None:
+            setattr(redirected, "_raleigh_final_url_validator", final_url_validator)
+        return redirected
 
 
 # Prebuilt opener with the bounded allowlisted redirect handler.
@@ -317,6 +323,8 @@ def json_request(
     req = urllib.request.Request(
         url, headers=req_headers, method=effective_method, data=data
     )
+    if final_url_validator is not None:
+        setattr(req, "_raleigh_final_url_validator", final_url_validator)
     with _OPENER.open(req, timeout=timeout or _get_timeout()) as resp:
         final_url = resp.geturl()
         if not is_allowed_host(final_url):
@@ -356,7 +364,11 @@ def raw_request(
         return _read_limited(resp, max_bytes)
 
 
-def probe_url(url: str, timeout: int | None = None) -> str:
+def probe_url(
+    url: str,
+    timeout: int | None = None,
+    final_url_validator: Callable[[str], None] | None = None,
+) -> str:
     """Verify that an allowlisted HTTPS resource is available without reading it."""
     if not is_allowed_host(url):
         raise SecurityError(f"URL host is not allowlisted: {url}")
@@ -364,10 +376,14 @@ def probe_url(url: str, timeout: int | None = None) -> str:
     request = urllib.request.Request(
         url, headers=_request_headers(), method="HEAD"
     )
+    if final_url_validator is not None:
+        setattr(request, "_raleigh_final_url_validator", final_url_validator)
     with _OPENER.open(request, timeout=timeout or _get_timeout()) as response:
         final_url = response.geturl()
         if not is_allowed_host(final_url):
             raise SecurityError(f"Redirect led to a non-allowlisted host: {final_url}")
+        if final_url_validator is not None:
+            final_url_validator(final_url)
         return final_url
 
 

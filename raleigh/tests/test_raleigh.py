@@ -107,6 +107,18 @@ class CoreTests(unittest.TestCase):
         )
         self.assertEqual(redirected.get_method(), "HEAD")
 
+    def test_redirect_runs_request_specific_validator_before_following(self):
+        source = "https://raleighnc.gov/jsonapi/node/service/example"
+        destination = "https://data.raleighnc.gov/other"
+        request = urllib.request.Request(source, method="GET")
+        validator = MagicMock(side_effect=core.SecurityError("wrong endpoint"))
+        setattr(request, "_raleigh_final_url_validator", validator)
+        with self.assertRaisesRegex(core.SecurityError, "wrong endpoint"):
+            core.AllowlistRedirectHandler().redirect_request(
+                request, None, 302, "redirect", {}, destination
+            )
+        validator.assert_called_once_with(destination)
+
     def test_cache_read_write_roundtrip(self):
         with tempfile.TemporaryDirectory() as tmp:
             os.environ["RALEIGH_CACHE"] = tmp
@@ -3019,7 +3031,9 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
     def setUp(self):
         self.probe_patcher = patch("raleighlib.public_safety_stats.core.probe_url")
         self.probe = self.probe_patcher.start()
-        self.probe.side_effect = lambda url: url
+        self.probe.side_effect = lambda url, **kwargs: (
+            kwargs.get("final_url_validator", lambda value: None)(url) or url
+        )
         self.addCleanup(self.probe_patcher.stop)
 
     def _fixture(self, agency: str):
@@ -3082,6 +3096,15 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
                     fixture["data"]["attributes"][field] = value
                 else:
                     fixture["data"][field] = value
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
+                        public_safety_stats.reports("police")
+
+    def test_invalid_jsonapi_revision_timestamp_fails_visibly(self):
+        for value, message in ((None, "timestamp is missing"), ("not-a-date", "timestamp is invalid")):
+            with self.subTest(value=value):
+                fixture = self._fixture("police")
+                fixture["data"]["attributes"]["changed"] = value
                 with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
                     with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
                         public_safety_stats.reports("police")
@@ -3227,6 +3250,27 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
         with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
             with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "headers changed"):
                 public_safety_stats.statistics("fire", 2026)
+
+    def test_one_cell_fire_statistics_row_fails_visibly(self):
+        fixture = self._fixture("fire")
+        formatted = fixture["included"][0]["attributes"]["field_stories_text_formatted"]
+        formatted["value"] = formatted["value"].replace(
+            "<tr><td><strong>Fire</strong></td><td>401</td></tr>",
+            "<tr><td><strong>Fire</strong></td></tr>",
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "malformed row"):
+                public_safety_stats.statistics("fire", 2026)
+
+    def test_empty_fire_quarterly_label_fails_visibly(self):
+        fixture = self._fixture("fire")
+        formatted = fixture["included"][2]["attributes"]["field_stories_text_formatted"]
+        formatted["value"] = formatted["value"].replace(
+            ">fire statistics from the previous quarter</a>", "></a>"
+        )
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "publication label is missing"):
+                public_safety_stats.reports("fire")
 
     def test_malformed_published_thousands_separator_fails_visibly(self):
         fixture = self._fixture("fire")

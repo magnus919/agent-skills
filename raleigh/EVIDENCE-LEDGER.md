@@ -170,12 +170,12 @@ The following public service boundaries were exercised successfully on 2026-07-2
 
 ### Verification
 
-- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **364 tests passed**.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **368 tests passed**.
 - `python3 -m ruff check raleigh/scripts/raleighlib/core.py raleigh/scripts/raleighlib/public_safety_stats.py raleigh/scripts/raleighlib/cli.py`: passed.
 - `python3 scripts/validate-evals.py raleigh`: **11 eval manifests validated**.
 - `ruby scripts/validate-skills.rb`: **110 canonical skills validated**.
-- `ruby scripts/validate-skill-quality.rb --base HEAD`: **1 changed skill, 0 errors, 0 warnings**.
-- `python3 scripts/eval-coverage.py --modified-from HEAD`: ratchet passed; Raleigh remains schema-valid.
+- `ruby scripts/validate-skill-quality.rb --base origin/main`: **1 changed skill, 0 errors, 0 warnings**.
+- `python3 scripts/eval-coverage.py --modified-from origin/main`: ratchet passed; Raleigh remains schema-valid.
 - Live `police reports --year 2025 --quarter 4 --json`: returned the official `Q4 stats` label and canonical government-cloud PDF URL after an availability probe.
 - Live `police stats --year 2025 --json`: returned the annual and quarterly publication index with an explicit document-only warning and no fabricated totals.
 - Live `fire stats --year 2026 --json`: returned seven official published categories, including medical `7,882`, source revision/retrieval metadata, the annual document URL, and the aggregate-only privacy warning.
