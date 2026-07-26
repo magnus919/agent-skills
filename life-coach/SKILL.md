@@ -16,7 +16,7 @@ compatibility: Agent-agnostic. Adult nonclinical coaching only; memory, sponsors
 
 Support the person's own thinking and action without impersonating a human professional, manufacturing insight, or turning every personal request into coaching.
 
-## Mandatory activation gate
+## Mandatory session gate
 
 Before the first substantive coaching response, read [safety, scope, and referral](references/safety-scope-and-referral.md). Its stop and route-away rules override every method in this skill.
 
@@ -33,9 +33,9 @@ Then classify the requested mode:
 
 The person's requested mode wins. Do not respond to “schedule this,” “compare these,” or “tell me the rule” with a coaching question. If the mode is genuinely ambiguous, ask one compact choice such as: “Would reflection, options, or a plan be most useful?”
 
-## No-capability mode
+## Ordinary no-capability fallback
 
-If the host cannot verify privacy, memory, sponsor, proactive-contact, human-review, age, safeguarding, or tool-action behavior:
+Ordinary coaching does not require a capability contract. If no verified manifest is available, use this bounded fallback without showing the coaching user a deployment questionnaire:
 
 - limit use to adult, routine, nonclinical conversation;
 - do not promise confidentiality or privacy properties;
@@ -43,7 +43,9 @@ If the host cannot verify privacy, memory, sponsor, proactive-contact, human-rev
 - do not serve minors, sponsor-funded engagements, or safeguarding situations;
 - use the narrow safety fallback in the mandatory safety reference when risk appears.
 
-For a deployed coaching service, read [deployment and governance](references/deployment-and-governance.md) and validate a completed capability contract before activation.
+The brief coaching-user agreement in step 1 below is a micro-agreement about what would help in this exchange. It is not operator onboarding, evidence attestation, or capability activation.
+
+Offer operator onboarding when the user expresses deployment or configuration intent. On a persistent host that can remember onboarding status, a missing manifest may prompt one setup offer: record whether it was accepted, declined, or deferred, and respect a prior decline or deferral until the operator raises setup again. If the host cannot remember onboarding status, do not repeatedly interrupt ordinary coaching to offer setup. A request for an optional capability may still prompt a targeted explanation that the capability is unavailable and a setup offer for that capability. Then read [capability onboarding](references/capability-onboarding.md) and [deployment and governance](references/deployment-and-governance.md). Ask one operator question at a time; inspect host facts before asking; preview before writing; keep artifacts in host-owned external configuration; validate; and leave the deployment disabled on failure.
 
 ## Compact coaching loop
 
@@ -79,10 +81,10 @@ Read [coaching conversations](references/coaching-conversations.md) for the full
 | Ambivalence, goal friction, habits, options, experiments, or named frameworks | [Method selection](references/method-selection.md) |
 | Goals, action, accountability, progress, or ending | [Goals, action, and review](references/goals-action-and-review.md) |
 | Culture, identity, disability, neurodiversity, structural barriers, or rupture | [Culture and accessibility](references/culture-and-accessibility.md) |
-| Memory, records, sponsor-funded coaching, proactive contact, or tools | [Privacy, sponsors, and tools](references/privacy-sponsors-and-tools.md) |
-| Designing or operating a coaching service | [Deployment and governance](references/deployment-and-governance.md) |
+| Memory, records, sponsor-funded coaching, proactive contact, human review, or tools | [Privacy, sponsors, and tools](references/privacy-sponsors-and-tools.md); require the verified capability or keep it off |
+| Configuring capabilities or a missing contract on a persistent host | [Capability onboarding](references/capability-onboarding.md), then [Deployment and governance](references/deployment-and-governance.md) |
 | Evidence claims, framework limits, sources, or instrument rights | [Evidence and rights](references/evidence-and-rights.md) |
-| Reusable worksheet or agreement | Choose an original file from `templates/` and complete only the fields the person wants |
+| Reusable coaching worksheet or coaching agreement | Choose an original coaching file from `templates/`; complete only the fields the person wants, and never complete the tracked activation-manifest example through this route |
 
 ## When not to use
 

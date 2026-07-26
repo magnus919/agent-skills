@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "mode": "disabled",
+  "deployment": {
+    "id": "<deployment-id>",
+    "environment": "<environment>"
+  },
+  "verification": {
+    "verified_on": "YYYY-MM-DD",
+    "review_due_on": "YYYY-MM-DD",
+    "attested_by": "<attestor>",
+    "basis_ref": "<verification-record-ref>"
+  },
+  "accountability": {
+    "operator": "<accountable-operator>",
+    "support_route": "<support-route>"
+  },
+  "scope": {
+    "adult_only": true,
+    "jurisdictions": []
+  },
+  "evidence": {
+    "ai_scope_disclosure_ref": "<evidence-ref>",
+    "safety_fallback_ref": "<evidence-ref>",
+    "data_notice_ref": "<evidence-ref>"
+  },
+  "governance_profile_ref": null,
+  "capabilities": {
+    "coaching_memory": {
+      "enabled": false,
+      "control_profile_ref": null
+    },
+    "sponsored_coaching": {
+      "enabled": false,
+      "control_profile_ref": null
+    },
+    "proactive_contact": {
+      "enabled": false,
+      "control_profile_ref": null
+    },
+    "sensitive_actions": {
+      "enabled": false,
+      "control_profile_ref": null
+    },
+    "human_review": {
+      "enabled": false,
+      "control_profile_ref": null
+    }
+  }
+}

@@ -96,3 +96,6 @@ Desktop.ini
 $RECYCLE.BIN/
 *.lnk
 graphify-out/
+
+# Local life-coach operator fallback (external host-owned storage is canonical)
+life-coach/local/
