@@ -60,14 +60,15 @@ Before delivering, check:
 
 ## Image-direction default
 
-Build an image brief in this order:
+Before drafting prose, make a **layer map**. Do not send a prompt that merely lists cyberpunk ingredients.
 
-1. **Focal human action:** one person or small group doing something concrete.
-2. **Spatial layer:** street, concourse, service deck, mall, tower threshold, transit connection, clinic, market, or orbital work zone.
-3. **Material history:** two or three signs of use, repair, adaptation, or neglect.
-4. **System pressure:** surveillance, a queue, a delivery deadline, access control, a vendor economy, scarcity, or a corporate perimeter.
-5. **Light and weather:** choose only what supports the action. Night, rain, haze, and advertising are options, not requirements.
-6. **Exclusions:** no borrowed named characters, no readable fake-brand overload, no default sexualization, and no frictionless luxury unless the contrast is the point.
+1. **Foreground action:** name the person or small group, the concrete action, and the object or constraint in their hands.
+2. **Middle-ground transaction:** name the witnesses, queue, desk, hatch, stall, or checkpoint where the action changes another person's options.
+3. **Background system and connection:** name the distant system, then specify one visible vertical or causal connection to the foreground: a freight lift, stair, service catwalk, rail line, cable run, pneumatic tube, or access flow.
+4. **Anchored material history:** place two or three repair, reuse, or neglect traces at the layers where they matter; do not leave them as a background noun list.
+5. **Readable pressure:** state the access failure, queue, deadline, scarcity, or surveillance condition that viewers can see shaping the transaction.
+6. **Legibility:** require foreground, middle ground, background, and their connection to remain readable in-frame. Do not use shallow depth of field, smoke, rain, signage, or lighting to hide the causal chain.
+7. **Light, weather, and exclusions:** choose light/weather only to support the action. Exclude borrowed named characters, readable fake-brand overload, default sexualization, and frictionless luxury unless contrast is the point.
 
 Use the template in [visual direction](references/visual-direction.md). For an exact canon request, offer an analytical breakdown or an original adjacent composition instead of a scene recreation.
 
