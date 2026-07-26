@@ -170,10 +170,15 @@ def _fetch_page(agency: str) -> tuple[dict[str, Any], dict[str, str]]:
     related = relationship.get("data") if isinstance(relationship, dict) else None
     if not isinstance(related, list):
         raise PublishedStatisticsError("published statistics content relationship is missing")
-    referenced = {
-        (item.get("type"), item.get("id"))
-        for item in related if isinstance(item, dict)
-    }
+    referenced: set[tuple[str, str]] = set()
+    for item in related:
+        if (
+            not isinstance(item, dict)
+            or not isinstance(item.get("type"), str)
+            or not isinstance(item.get("id"), str)
+        ):
+            raise PublishedStatisticsError("published statistics relationship identifiers are invalid")
+        referenced.add((item["type"], item["id"]))
     fragments: dict[str, str] = {}
     for item in included:
         if not isinstance(item, dict) or item.get("type") != "paragraph--stories_text":

@@ -3086,6 +3086,14 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
                     with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
                         public_safety_stats.reports("police")
 
+    def test_malformed_jsonapi_relationship_identifier_fails_visibly(self):
+        fixture = self._fixture("police")
+        relationship = fixture["data"]["relationships"]["field_content_primary"]["data"][0]
+        relationship["id"] = []
+        with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+            with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "identifiers are invalid"):
+                public_safety_stats.reports("police")
+
     def test_report_link_outside_canonical_origins_fails_closed(self):
         fixture = self._fixture("police")
         html = fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"]
