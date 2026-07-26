@@ -151,17 +151,22 @@ def _fetch_page(agency: str) -> tuple[dict[str, Any], dict[str, str]]:
     if not isinstance(data, dict) or not isinstance(included, list):
         raise PublishedStatisticsError("published statistics source returned invalid JSON:API data")
     attrs = data.get("attributes")
+    path = attrs.get("path") if isinstance(attrs, dict) else None
     if (
         data.get("type") != "node--service"
         or data.get("id") != source["id"]
         or not isinstance(attrs, dict)
+        or not isinstance(path, dict)
         or attrs.get("status") is not True
         or attrs.get("title") != source["title"]
-        or attrs.get("path", {}).get("alias") != urllib.parse.urlparse(source["page_url"]).path
+        or path.get("alias") != urllib.parse.urlparse(source["page_url"]).path
     ):
         raise PublishedStatisticsError("published statistics page identity changed")
 
-    relationship = data.get("relationships", {}).get("field_content_primary", {})
+    relationships = data.get("relationships")
+    if not isinstance(relationships, dict):
+        raise PublishedStatisticsError("published statistics content relationships are invalid")
+    relationship = relationships.get("field_content_primary", {})
     related = relationship.get("data") if isinstance(relationship, dict) else None
     if not isinstance(related, list):
         raise PublishedStatisticsError("published statistics content relationship is missing")

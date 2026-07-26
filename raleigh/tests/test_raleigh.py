@@ -3071,6 +3071,21 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
             with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, "no published"):
                 public_safety_stats.reports("police", 2026, 4)
 
+    def test_malformed_jsonapi_nested_objects_fail_visibly(self):
+        for field, value, message in (
+            ("path", None, "page identity changed"),
+            ("relationships", None, "relationships are invalid"),
+        ):
+            with self.subTest(field=field):
+                fixture = self._fixture("police")
+                if field == "path":
+                    fixture["data"]["attributes"][field] = value
+                else:
+                    fixture["data"][field] = value
+                with patch("raleighlib.public_safety_stats.core.json_request", return_value=fixture):
+                    with self.assertRaisesRegex(public_safety_stats.PublishedStatisticsError, message):
+                        public_safety_stats.reports("police")
+
     def test_report_link_outside_canonical_origins_fails_closed(self):
         fixture = self._fixture("police")
         html = fixture["included"][0]["attributes"]["field_stories_text_formatted"]["value"]
