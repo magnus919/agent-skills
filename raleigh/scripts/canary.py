@@ -36,6 +36,7 @@ from raleighlib import transit
 from raleighlib import development
 from raleighlib import civic
 from raleighlib import meetings
+from raleighlib import police
 
 MAX_RETRIES = 2
 RETRY_DELAY_SECONDS = 5
@@ -368,6 +369,42 @@ def probe_imagery_catalog() -> list[dict[str, Any]]:
     return results
 
 
+def probe_police() -> list[dict[str, Any]]:
+    """Exercise bounded date-filtered queries against fixed RPD sources."""
+    results: list[dict[str, Any]] = []
+    for source_key in ("nibrs", "crimemapper-90d"):
+        collection, err = _probe_with_retry(
+            police.query_incidents,
+            source_key,
+            since_ms=police.NIBRS_EPOCH_MS,
+            limit=1,
+        )
+        if err:
+            results.append({"source": "police", "target": source_key, "status": "fail", **err})
+            continue
+        if (
+            not isinstance(collection, dict)
+            or collection.get("type") != "FeatureCollection"
+            or not isinstance(collection.get("features"), list)
+        ):
+            results.append({
+                "source": "police",
+                "target": source_key,
+                "status": "fail",
+                "failure_class": "schema_drift",
+                "error": "expected GeoJSON FeatureCollection",
+                "attempt": 1,
+            })
+            continue
+        results.append({
+            "source": "police",
+            "target": source_key,
+            "status": "pass",
+            "count": len(collection["features"]),
+        })
+    return results
+
+
 ALL_PROBES = [
     ("hub-catalog", probe_hub_catalog),
     ("geocode", probe_geocode),
@@ -377,6 +414,7 @@ ALL_PROBES = [
     ("civic-rss", probe_civic_rss),
     ("meetings", probe_meetings),
     ("imagery", probe_imagery_catalog),
+    ("police", probe_police),
 ]
 
 

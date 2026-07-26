@@ -98,6 +98,15 @@ def _discover_fields(layer_url: str) -> set[str]:
     return {f.get("name", "") for f in fields if isinstance(f, dict)}
 
 
+def _ms_to_timestamp_literal(ms: int) -> str:
+    """Format Unix milliseconds as an ArcGIS TIMESTAMP literal in UTC."""
+    try:
+        dt = datetime.fromtimestamp(ms / 1000, timezone.utc)
+    except (OverflowError, OSError, ValueError) as exc:
+        raise PoliceError(f"date range out of bounds: {ms}") from exc
+    return "TIMESTAMP '" + dt.strftime("%Y-%m-%d %H:%M:%S") + "'"
+
+
 def build_where_clause(
     source_key: str,
     available_fields: set[str],
@@ -119,7 +128,7 @@ def build_where_clause(
     if since_ms is not None:
         date_field = field_map["date"]
         if date_field in available_fields:
-            clauses.append(f"{date_field} >= {since_ms}")
+            clauses.append(f"{date_field} >= {_ms_to_timestamp_literal(since_ms)}")
         else:
             print(
                 f"Warning: date field '{date_field}' not found in {source_key}; skipping date filter",

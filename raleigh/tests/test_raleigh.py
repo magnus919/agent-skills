@@ -46,6 +46,7 @@ import raleighlib.fire as fire
 import raleighlib.fire_protection as fire_protection
 import raleighlib.rfd_reports as rfd_reports
 import raleighlib.public_safety_stats as public_safety_stats
+import canary as canary_lib
 from raleighlib import cli as cli_lib
 
 CLI_SCRIPT = _SCRIPT_DIR / "raleigh"
@@ -2461,7 +2462,11 @@ class PoliceTests(unittest.TestCase):
 
     def test_date_filter_builds_where_clause(self):
         where = police.build_where_clause("nibrs", self.NIBRS_FIELDS, since_ms=1700000000000)
-        self.assertIn("reported_date >= 1700000000000", where)
+        self.assertIn("reported_date >= TIMESTAMP '2023-11-14 22:13:20'", where)
+
+    def test_date_filter_rejects_out_of_range_epoch(self):
+        with self.assertRaisesRegex(police.PoliceError, "date range out of bounds"):
+            police.build_where_clause("nibrs", self.NIBRS_FIELDS, since_ms=10**30)
 
     def test_category_filter_quotes_value(self):
         where = police.build_where_clause("nibrs", self.NIBRS_FIELDS, category="BURGLARY")
@@ -2482,7 +2487,7 @@ class PoliceTests(unittest.TestCase):
     def test_srs_uses_different_field_names(self):
         where = police.build_where_clause("srs", self.SRS_FIELDS, category="LARCENY", since_ms=1700000000000)
         self.assertIn("UPPER(LCR_DESC) LIKE '%LARCENY%'", where)
-        self.assertIn("INC_DATETIME >= 1700000000000", where)
+        self.assertIn("INC_DATETIME >= TIMESTAMP '2023-11-14 22:13:20'", where)
 
     def test_missing_field_skips_filter_with_warning(self):
         sparse_fields = {"OBJECTID"}
@@ -2628,6 +2633,17 @@ class PoliceTests(unittest.TestCase):
                 code = cli.main(["--json", "police", "incidents", "--since", "5000d"])
         self.assertEqual(code, 0)
         self.assertIn("predates NIBRS", err.getvalue())
+
+    def test_canary_probes_date_filtered_nibrs_and_crimemapper_queries(self):
+        collection = {"type": "FeatureCollection", "features": []}
+        with patch("canary.police.query_incidents", return_value=collection) as query:
+            results = canary_lib.probe_police()
+        self.assertEqual([result["target"] for result in results], ["nibrs", "crimemapper-90d"])
+        self.assertTrue(all(result["status"] == "pass" for result in results))
+        self.assertEqual(query.call_count, 2)
+        for call in query.call_args_list:
+            self.assertEqual(call.kwargs["since_ms"], police.NIBRS_EPOCH_MS)
+            self.assertEqual(call.kwargs["limit"], 1)
 
 
 class FireTests(unittest.TestCase):
