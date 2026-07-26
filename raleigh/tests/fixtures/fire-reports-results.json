@@ -1,0 +1,18 @@
+{
+  "features": [
+    {
+      "attributes": {
+        "incident_number": "26-032170",
+        "dispatch_date_time": 1784866612000,
+        "arrive_date_time": 1784866814000,
+        "cleared_date_time": 1784868386000,
+        "address": "505 FLORENCE ST",
+        "station_name": "Station 01",
+        "platoon": "A",
+        "incident_group_name": "Hazardous Situation",
+        "incident_subgroup_code": "Hazardous Materials",
+        "incident_type_name": "Gas Leak / Gas Odor"
+      }
+    }
+  ]
+}

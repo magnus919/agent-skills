@@ -13,7 +13,7 @@ import math
 import re
 import sys
 import urllib.parse
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from raleighlib import arcgis
@@ -66,6 +66,20 @@ PRIVACY_CAVERAT = (
     "EMS/privacy reasons. This is not a complete record of all fire department "
     "responses and must not be used for emergency response."
 )
+
+REPORT_FIELDS = (
+    "incident_number",
+    "dispatch_date_time",
+    "arrive_date_time",
+    "cleared_date_time",
+    "address",
+    "station_name",
+    "platoon",
+    "incident_group_name",
+    "incident_subgroup_code",
+    "incident_type_name",
+)
+REPORT_LIMIT = 200
 
 _STATION_NAME_RE = re.compile(r"^station\s*0*(\d+)\s*$", re.IGNORECASE)
 
@@ -408,4 +422,85 @@ def query_incidents(
             }
         ],
         "features": features,
+    }
+
+
+def query_reports(
+    *,
+    report_date: str | None = None,
+    incident_number: str | None = None,
+) -> dict[str, Any]:
+    """Query the authoritative past-month layer by one exact bounded selector."""
+    if bool(report_date) == bool(incident_number):
+        raise FireError("provide exactly one report date or incident number")
+
+    layer_url = resolve_layer_url("past-month")
+    available_fields = _discover_fields(layer_url)
+    missing = set(REPORT_FIELDS) - available_fields
+    if missing:
+        raise FireError(
+            "Fire report source schema drift; missing fields: "
+            + ", ".join(sorted(missing))
+        )
+
+    query: dict[str, str | None] = {
+        "date": report_date,
+        "incident_number": incident_number,
+    }
+    if report_date:
+        try:
+            start = date.fromisoformat(report_date)
+        except ValueError as exc:
+            raise FireError("report date must use YYYY-MM-DD") from exc
+        end = start + timedelta(days=1)
+        where = (
+            f"dispatch_date_time >= TIMESTAMP '{start.isoformat()} 00:00:00' AND "
+            f"dispatch_date_time < TIMESTAMP '{end.isoformat()} 00:00:00'"
+        )
+    else:
+        number = (incident_number or "").strip()
+        if not number:
+            raise FireError("incident number must not be empty")
+        where = f"incident_number = '{_escape_sql_value(number)}'"
+
+    response = arcgis.query_layer(
+        layer_url,
+        where=where,
+        out_fields=",".join(REPORT_FIELDS),
+        return_geometry=False,
+        result_record_count=REPORT_LIMIT,
+        order_by_fields="dispatch_date_time ASC,incident_number ASC",
+    )
+    records = response.get("features")
+    if not isinstance(records, list):
+        raise FireError("Fire report source returned invalid features")
+    if response.get("exceededTransferLimit"):
+        raise FireError(f"Fire report query exceeded the {REPORT_LIMIT}-record safety limit")
+
+    retrieved_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    reports: list[dict[str, Any]] = []
+    for record in records:
+        if not isinstance(record, dict) or not isinstance(record.get("attributes"), dict):
+            raise FireError("Fire report source returned a malformed record")
+        attrs = record["attributes"]
+        if not _present(attrs.get("incident_number")):
+            raise FireError("Fire report source returned a record without incident_number")
+        reports.append({
+            "source": "arcgis",
+            "source_fragility": "authoritative-structured",
+            **{field: attrs.get(field) for field in REPORT_FIELDS},
+        })
+
+    return {
+        "query": query,
+        "reports": reports,
+        "sources": [{
+            "source": "arcgis",
+            "item_id": RFD_SOURCES["past-month"]["item_id"],
+            "url": layer_url,
+            "retrieved_at": retrieved_at,
+        }],
+        "warnings": [
+            "The rolling ArcGIS feed may lag the RFD Report System and is not proof of completeness."
+        ],
     }

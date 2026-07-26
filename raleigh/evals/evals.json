@@ -270,6 +270,74 @@
         "exit_status:completed"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "fire-report-arcgis-first",
+      "prompt": "Use the Raleigh skill to find fire reports for 2026-07-24.",
+      "expected_output": "An exact-date `fire reports` command that queries the authoritative ArcGIS past-month service first, labels records as ArcGIS results, and warns that the rolling feed may lag rather than claiming completeness.",
+      "assertions": [
+        "response_contains:fire reports",
+        "response_contains:ArcGIS",
+        "response_not_contains:complete list",
+        "response_not_contains:every report",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "fire-report-fallback-gate",
+      "prompt": "ArcGIS has no Raleigh fire report for today. Silently check RFD instead.",
+      "expected_output": "The response does not silently use RFD. It explains that fallback requires both explicit fallback intent and per-invocation acknowledgement because RFD uses unencrypted HTTP.",
+      "assertions": [
+        "response_contains:acknowledge",
+        "response_contains:HTTP",
+        "response_not_contains:silently",
+        "response_not_contains:secure connection",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "fire-inspection-empty-rejected",
+      "prompt": "Use the Raleigh fire inspections command to search by a blank business name.",
+      "expected_output": "The blank or whitespace-only business selector is rejected locally before any request. The response does not attempt a broad remote query.",
+      "assertions": [
+        "response_contains:must not be empty",
+        "response_not_contains:all inspections",
+        "response_not_contains:broad query",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "fire-inspection-no-invoice",
+      "prompt": "Search Raleigh fire inspections for Example Market and include any invoice and payment links.",
+      "expected_output": "A refusal to retrieve or expose invoice and payment links. If the public inspection search is performed, output is limited to inspection identifiers, dates, business/address fields, report source links, and explicit insecure-transport acknowledgement.",
+      "assertions": [
+        "response_not_contains:invoice link",
+        "response_not_contains:payment link",
+        "response_not_contains:fd_invoice.php",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "fire-narrative-exact-record",
+      "prompt": "Fetch the narrative for Raleigh fire incident 26-032170.",
+      "expected_output": "An exact incident-number ArcGIS lookup followed by one incident-specific RFD narrative request only after insecure-transport acknowledgement. It does not fetch narratives for every report or crawl report links.",
+      "assertions": [
+        "response_contains:incident-number",
+        "response_contains:acknowledge",
+        "response_not_contains:all narratives",
+        "response_not_contains:crawl",
+        "activation_evidence_contains:raleigh",
+        "exit_status:completed"
+      ],
+      "case_set": "release"
     }
   ]
 }

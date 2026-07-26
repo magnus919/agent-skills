@@ -108,3 +108,41 @@ The following public service boundaries were exercised successfully on 2026-07-2
 
 - The service is updated nightly, so future upstream changes remain outside this verification window; required-field checks provide bounded drift detection.
 - No emergency-response accuracy, distance unit, hydrant location, commit, push, pull request, CI run, deployment, or merge is claimed.
+
+## Issue 125 Addendum: Guarded Fire Reports and Inspections
+
+### Intent and authority
+
+- Add exact Raleigh fire-report lookup through the authoritative ArcGIS past-month layer.
+- Permit RFD HTML fallback, one-record narratives, and business/address inspection searches only through explicit, invocation-local acknowledgement of unencrypted HTTP.
+- Modify the local Raleigh skill only. No publish, deploy, merge, authentication, payment, or write authority was used.
+
+### Source-contract evidence
+
+- Reviewed the official Raleigh referral, ArcGIS item `c983765e304a41d19087c8d95aa46d54`, live layer metadata, RFD root forms, root disclaimer, reported robots boundary, and transport behavior on 2026-07-26.
+- The ArcGIS layer advertises `Query`, UTC date fields, JSON/GeoJSON/PBF, and the documented incident fields. Exact queries request only the report output fields and no geometry.
+- Live RFD contracts matched `POST /fd_date.php`, `GET /fd_incidentreport.php`, `POST /fd_inspection_business_name.php`, and `POST /fd_inspection_business_address.php`.
+- RFD exposed plain HTTP only during review. The isolated client rejects redirects, alternate origins, ports, paths, parameters, oversized bodies, empty inputs, and unrecognized HTML. The general HTTPS allowlist was not relaxed.
+- Inspection result pages exposed report and invoice links. Invoice links are discarded and never followed or emitted. Upstream links with unescaped `#` values are rebuilt only from validated row fields and the fixed report path.
+
+### Verification
+
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **335 tests passed**.
+- `python3 -m unittest raleigh.tests.test_raleigh.FireReportTests raleigh.tests.test_raleigh.RFDReportAdapterTests`: **27 focused tests passed**.
+- `python3 -m ruff check raleigh/scripts/raleighlib/fire.py raleigh/scripts/raleighlib/rfd_reports.py raleigh/scripts/raleighlib/cli.py`: passed.
+- `python3 scripts/validate-evals.py raleigh`: **11 eval manifests validated**.
+- `ruby scripts/validate-skills.rb`: **110 canonical skills validated**.
+- `ruby scripts/validate-skill-quality.rb --base origin/main`: **1 changed skill, 0 errors, 0 warnings**.
+- `python3 scripts/eval-coverage.py --modified-from origin/main`: ratchet passed; Raleigh remains schema-valid.
+- Live `fire reports --date 2026-07-24 --json`: returned exact-date ArcGIS records with authoritative source labels and the canonical layer URL.
+- Live `fire reports --incident-number 26-032170 --include-narrative --acknowledge-insecure-rfd --json`: resolved one ArcGIS incident and fetched exactly one matching RFD narrative with an insecure-transport warning.
+- Live `fire inspections --business "WALMART #5118" --acknowledge-insecure-rfd --json`: returned three inspection records, preserved the `#5118` business identifier in canonical report links, and emitted no invoice URLs or identifiers.
+- The first live ArcGIS run exposed an invalid `outSR=None` parameter; the implementation was corrected to use ArcGIS's valid default and the live command then passed.
+- The first live inspection run exposed upstream unescaped `#` fragments; canonical reconstruction and a regression fixture were added before the live command passed.
+
+### Remaining boundaries
+
+- RFD is an insecure, fragile HTML source. Acknowledgement does not make transport secure; it only makes the risk explicit.
+- Upstream schemas, selectors, forms, and availability can change after the verification date. Required-field and parser-contract checks fail visibly when detectable.
+- Deterministic fixtures exercise results, no-results, schema/markup changes, service/error pages, malformed fragments, and recent-record fallback. They do not prove future upstream stability.
+- No bulk enumeration, authenticated action, invoice retrieval or payment, private contact access, inspection-detail retrieval, write operation, commit, push, pull request, CI run, deployment, or merge is claimed.
