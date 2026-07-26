@@ -1,100 +1,64 @@
 # Deployment and Governance
 
-Use this reference when embedding the skill in a product or service. A skill file can shape conversation; it cannot implement encryption, identity, retention, crisis response, accessibility, supervision, monitoring, or legal compliance.
+Use this reference when embedding the skill in a product or service. A skill file can shape conversation; it cannot implement identity, privacy, retention, safety response, accessibility, human review, monitoring, or legal compliance.
 
-## Activation contract
+## Activation declarations
 
-Complete `templates/capability-contract.json` from verified deployment facts and run:
+Follow [capability onboarding](capability-onboarding.md). Completed manifests and evidence belong in host-owned configuration outside the skill and repository. The tracked example remains blank. Validate a host-owned copy with:
 
 ```sh
-python3 scripts/validate-capabilities.py templates/capability-contract.json
+python3 scripts/validate-capabilities.py /host/config/capability-contract.json
 ```
 
-The validator checks structure and conservative activation rules. It does not prove that declarations are true. Verify each capability through the host, provider, policy owner, and live acceptance tests.
+The validator distinguishes structural validity, declaration validity, and valid active declarations. It does not inspect live controls or establish deployment readiness. `DECLARATIONS VALID` means only that non-disabled static declarations passed validation; deployment decisions require applicable live evidence and accountable authorization. Unknown or disputed facts remain off.
 
-### Full-service prerequisites
+### Routine baseline
 
-A deployment offering durable coaching, memory, sponsors, proactive contact, minors, human review, or tools needs named ownership and tested behavior for:
+`routine-adult-no-coaching-memory` permits bounded adult, routine, nonclinical conversation without coaching memory or any optional capability. It requires:
 
-- AI identity and accountable operator;
-- current crisis, medical-emergency, self-harm, harm-to-others, domestic-violence, trafficking, age, and safeguarding routes;
-- jurisdiction and location handling without inferred or stale data;
-- human contact and escalation where advertised;
-- privacy, subprocessors, training use, embeddings, telemetry, backups, access, breach handling, retention, correction, export, and deletion propagation;
-- technical separation of coaching, telemetry, incident, evaluation, supervision, and sponsor records;
-- sponsor authorization, coercion review, role-based access, and re-identification controls;
-- per-action previews and authorization;
-- accessibility across relevant interfaces and languages;
-- independent coaching supervision and separate licensed clinical or safeguarding consultation;
-- complaint, incident, change, rollback, and disablement ownership.
+- deployment and environment identity;
+- verification provenance, a policy-set review due date, and an accountable operator;
+- a real user support route;
+- fixed adult-only scope and code-shaped uppercase jurisdiction declarations whose actual coverage is verified by the attestor and evidence;
+- evidence for AI/scope disclosure, the narrow safety fallback, and the user-facing data notice.
 
-Unknown or untested critical capabilities fail closed.
+Without this verified baseline, ordinary invocation may still use the no-capability fallback described in `SKILL.md`; a deployed service that cannot support its narrow safety fallback must remain disabled.
 
-### No-capability fallback
+### Optional capabilities
 
-Without a verified contract, restrict the skill to adult, routine, nonclinical, ephemeral conversation. Do not store, schedule, contact, report, serve sponsors or minors, claim human escalation, or invite high-sensitivity disclosures. The mandatory safety reference's narrow fallback still applies. Disable the skill if even that fallback cannot be supported.
+`capability-enabled` requires at least one enabled capability, an overall governance profile, and a current capability-specific control profile for each enabled item. Profiles must point to host-owned evidence for actual behavior, owners, consent and notices, data handling, acceptance tests, incident handling, disablement, and change review.
+
+| Capability | Minimum control-profile concerns |
+|---|---|
+| `coaching_memory` | Exact proposed record preview, consent, access, retention, correction/export, deletion propagation, record separation, and write verification |
+| `sponsored_coaching` | Separate agreements, coercion and retaliation review, technical separation, exact reportable fields, access controls, and re-identification review |
+| `proactive_contact` | Exact content/channel/timing, notification privacy, frequency and stop controls, reliance monitoring, and disablement |
+| `sensitive_actions` | Exact per-action preview and confirmation, authorization, visibility, reversibility, safety/coercion lockout, and result verification |
+| `human_review` | Reviewer role and qualifications, purpose limitation, consent, minimization, sponsor separation, access audit, retention, and complaint route |
+
+This public skill is adult-only and has no minor activation route. Safeguarding, therapy, clinical care, and specialist advice remain outside coaching regardless of optional capabilities.
 
 ## Layer map
 
 | Layer | Can enforce |
 |---|---|
-| Skill | mode choice, disclosure language, consent prompts, inquiry behavior, scope, uncertainty, referral language, anti-dependency, action preview |
-| Host/platform | memory controls, tool permissions, age routing, sponsor separation, accessibility surface, human handoff, user-visible correction and deletion |
+| Skill | mode choice, AI/scope language, micro-agreement, inquiry behavior, referral language, anti-dependency, action preview |
+| Host/platform | memory controls, tool permissions, sponsor separation, accessibility surface, human handoff, correction/export/deletion |
 | Provider/infrastructure | authentication, authorization, encryption, isolation, availability, secure logging, retention mechanics, incident response |
-| Human governance | coaching supervision, clinical and safeguarding consultation, legal/privacy review, incident adjudication, evidence maintenance, release decisions |
+| Human governance | attestations, specialist review, incident adjudication, evidence maintenance, release and disablement decisions |
 
 Expose missing capabilities instead of pretending the skill implements them.
 
 ## Evaluation and release
 
-Maintain ordinary, adversarial, false-positive, and multi-turn cases across:
+Maintain ordinary, adversarial, false-positive, and multi-turn cases for mode routing, user ownership, therapy drift, cultural context, safety fallback, privacy, sponsor coercion, record control, human review, tool authorization, dependency behavior, accessibility, and endings.
 
-- mode routing and direct-answer precedence;
-- agreement, listening, user agenda, and rupture repair;
-- method fit and therapy drift;
-- structural and cultural context;
-- crisis, medical emergency, self-harm, harm to others, abuse, safeguarding, and unsafe guardians;
-- privacy, sponsor coercion and leakage, record control, human review, and tools;
-- romantic or dependency behavior and proactive contact;
-- unsupported credentials, privacy, safety, supervision, efficacy, and conformance claims;
-- accessibility and language variation;
-- endings and increasing independence.
+A confirmed critical failure in imminent-danger handling, therapy scope, privacy disclosure, sponsor leakage, coercion, romantic boundaries, violent-harm facilitation, or sensitive action authorization blocks release. Aggregate scores cannot compensate. Rerun critical tests after model, prompt, provider, retrieval, tool, policy, data-flow, or platform changes.
 
-A single confirmed critical failure in crisis handling, safeguarding, therapy scope, privacy disclosure, sponsor leakage, coercion, sexual or romantic boundaries, violent-harm facilitation, or sensitive tool authorization blocks release. Aggregate scores cannot compensate.
+## Claims and change control
 
-Use repeated stochastic runs and adversarial multi-turn trajectories. Test false positives as well as missed danger. Keep eval data synthetic or explicitly consented, minimized, and governed. Rerun after model, prompt, provider, retrieval, tool, policy, or platform changes.
+Never claim credentials, professional conformance, equivalence to trained human coaching, confidentiality, legal privilege, duty of care, intervention capability, secure storage, deletion, accessibility, human escalation, or jurisdiction coverage without applicable live evidence.
 
-## Professional review
+On complaint, control failure, drift, stale evidence, or material change: disable or restrict the affected capability; preserve only necessary incident evidence under host controls; obtain the appropriate human review; fix the enforceable layer; add a regression case; rerun the actual deployment; and restore only after the accountable operator accepts current evidence and rollback remains available.
 
-Before a safety-sensitive service claims production readiness, obtain real, independent review from:
-
-- a qualified coaching supervisor or credentialed senior coach;
-- a licensed mental-health or safeguarding specialist;
-- privacy and security expertise;
-- accessibility and relevant cultural or language expertise.
-
-Document who reviewed what, disagreements, limitations, and required changes. Simulated personas and model critiques are not credentialed review.
-
-## Claims discipline
-
-Never claim:
-
-- ICF, EMCC, NBHWC, or other certification, endorsement, accreditation, or conformance;
-- equivalence or superiority to trained human coaching;
-- confidentiality, legal privilege, duty of care, or mandated reporting not actually provided;
-- clinical validation or therapeutic effect;
-- secure storage, deletion, accessibility, human escalation, uptime, or jurisdiction coverage without live evidence;
-- that passing static skill evals establishes coaching efficacy or safety.
-
-Publish the tested scope, model and host context, known failures, and recency of evidence instead.
-
-## Change and incident loop
-
-1. Detect a complaint, critical failure, drift, or standards change.
-2. Disable or restrict the affected capability when risk warrants it.
-3. Preserve minimum necessary evidence under incident controls.
-4. Obtain the appropriate human review.
-5. Fix the enforceable layer, not only the wording.
-6. Add or strengthen a regression case.
-7. rerun the critical suite on the actual deployment.
-8. restore only after a named owner accepts evidence and rollback remains available.
+The authorized reviewer sets `review_due_on` according to the applicable control or review policy. Material changes trigger revalidation before that date.

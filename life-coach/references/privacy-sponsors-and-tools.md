@@ -18,6 +18,8 @@ Do not claim confidentiality, privacy, deletion, security, or human review based
 
 If a material fact is unknown, say so, avoid the claim, and do not solicit or retain the sensitive detail. Redacting after collection does not undo upstream exposure.
 
+Optional coaching memory, sponsored coaching, proactive contact, sensitive actions, and human review remain off unless the v2 activation manifest enables that exact capability with a verified control-profile reference. A request does not activate a capability. If, for example, coaching memory is requested without verification, explain that it is unavailable, offer the no-memory alternative, and route deployment operators to capability onboarding rather than asking the coaching user governance questions.
+
 ## Data minimization
 
 Prefer no durable record. When a record is necessary and the person consents, retain only what changes future coaching safely:

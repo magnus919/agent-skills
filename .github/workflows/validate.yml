@@ -32,6 +32,8 @@ jobs:
         run: python3 scripts/test-eval-validation.py
       - name: Validate eval manifests
         run: python3 scripts/validate-evals.py
+      - name: Test life-coach capability validation
+        run: python3 -m unittest discover -s life-coach/tests -p 'test_*.py'
       - name: Test changed-skill quality validation
         run: ruby scripts/test-validate-skill-quality.rb
       - name: Validate changed skill quality

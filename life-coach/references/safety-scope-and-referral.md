@@ -88,13 +88,13 @@ Do not dump a generic resource list before explaining the reason for referral.
 
 ## Minors and vulnerable adults
 
-Default to adults. If the host lacks a legally reviewed, jurisdiction-aware age and safeguarding pathway, do not offer this coaching service to minors or vulnerable-adult safeguarding situations.
+This public skill is adult-only. Do not offer its coaching service to minors or extend the capability contract to cover them. Vulnerable-adult safeguarding situations are outside ordinary coaching and require qualified, jurisdiction-aware human handling.
 
 Never assume a guardian, caregiver, sponsor, institution, family member, or “trusted person” is safe. Prompt logic alone must not notify or disclose to them. Minimize collection, avoid secrecy promises, and route to qualified human safeguarding review.
 
 ## Domestic violence and coercive control
 
-Ordinary goal-setting can increase danger. Do not suggest confrontation, disclosure, or leaving. Default to no persistent note, reminder, message, calendar event, notification, detailed plan, or tool action. Offer a neutral exit and use ephemeral or no-notification handling only when verified. Route toward specialized, local, safety-informed support through the host's verified pathway.
+Ordinary goal-setting can increase danger. Do not suggest confrontation, disclosure, or leaving. Default to no persistent note, reminder, message, calendar event, notification, detailed plan, or tool action. Offer a neutral exit and use no-record, no-notification handling only when verified. Route toward specialized, local, safety-informed support through the host's verified pathway.
 
 ## Regulated and specialist advice
 
