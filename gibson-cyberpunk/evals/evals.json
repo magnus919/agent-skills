@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "skill_name": "gibson-cyberpunk",
+  "evals": [
+    {
+      "id": "repair-economy-image-brief",
+      "prompt": "Make an image prompt for an original Gibson-informed city, but do not just give me neon rain and a person in a coat.",
+      "expected_output": "An original image direction brief centered on a concrete human action, material history, and an operating pressure.",
+      "assertions": [
+        "Names a focal human action rather than posing an unnamed character.",
+        "Includes at least two specific signs of repair, reuse, or weathering with material causes or functions.",
+        "Identifies a social or operational pressure such as a queue, deadline, access boundary, or repair dependency.",
+        "Uses light, weather, or advertisements only in support of the composition rather than as the entire concept.",
+        "Excludes copyrighted characters, logos, and recreated scenes."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "corporate-power-mechanism",
+      "prompt": "The megacorp owns the city in my cyberpunk story. Flesh that out in a Gibson way.",
+      "expected_output": "A world-operation explanation that turns an abstract power claim into mechanisms, dependencies, intermediaries, and possible workarounds.",
+      "assertions": [
+        "Names at least one concrete mechanism of corporate control such as permits, logistics, access, contracts, or data infrastructure.",
+        "Identifies a dependency, intermediary, or limit that prevents the corporation from being all-powerful by assertion.",
+        "Connects the system to a human-scale decision, cost, or opportunity.",
+        "Does not treat a corporate logo on a tower as sufficient worldbuilding."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "culture-with-agency",
+      "prompt": "Make this future market feel multicultural. Add Japanese and Caribbean flavor to the signs and clothes.",
+      "expected_output": "A respectful redirect from decorative cultural shorthand to specific practices, actors, and relationships with agency.",
+      "assertions": [
+        "Does not use generic scripts, ethnicity, or borrowed fashion as undifferentiated future decoration.",
+        "Suggests a concrete practice, actor, or relationship that can ground cultural specificity.",
+        "Acknowledges that cultural exchange may involve choice, commerce, adaptation, contest, or unequal representation.",
+        "Keeps the setting original instead of borrowing named Sprawl people or locations."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "ordinary-technology-consequences",
+      "prompt": "Everyone in this district has neural implants. Give me an atmospheric paragraph about how advanced it is.",
+      "expected_output": "A response that makes the technology ordinary through maintenance, access, failure, and social consequence instead of gadget admiration.",
+      "assertions": [
+        "Asks or supplies a capability, dependency, distribution, failure mode, and social meaning for the implant technology.",
+        "Connects the technology to work, intimacy, status, risk, consent, or another lived relationship.",
+        "Avoids presenting universal access or flawless upgrades without support.",
+        "Uses an original voice rather than attempting to imitate William Gibson."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "named-canon-continuation-boundary",
+      "prompt": "Write a new scene in William Gibson's exact voice where Case returns to Chiba City for one last run.",
+      "expected_output": "A clear boundary against prose imitation and unauthorized canon continuation, followed by useful alternatives.",
+      "assertions": [
+        "Does not write in William Gibson's voice or continue the requested named canon scene.",
+        "Briefly explains the boundary without overclaiming legal conclusions.",
+        "Offers an original adjacent scene with new names and setting, or an analytical breakdown of the requested elements.",
+        "Keeps any discussion of canon separate from newly invented material."
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "analysis-evidence-separation",
+      "prompt": "Explain why the Sprawl is really just a prediction that corporations replace governments, and cite the trilogy.",
+      "expected_output": "A calibrated analysis that refuses an overbroad deterministic claim and separates textual observation, inference, and modern extrapolation.",
+      "assertions": [
+        "Frames the claim as an interpretation rather than an established prediction.",
+        "Distinguishes the fiction's distributed power arrangements from an uncomplicated assertion that governments disappear.",
+        "Identifies primary texts as the source of canon claims and gives context for any critical interpretation.",
+        "Does not fabricate quotations, page numbers, or citations."
+      ],
+      "case_set": "release"
+    }
+  ]
+}
