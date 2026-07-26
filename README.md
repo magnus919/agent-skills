@@ -72,6 +72,10 @@ An expert-level skill for building **role-based multi-agent teams** with CrewAI.
 
 Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF. Covers Security Engine installation (Linux, Docker), cscli hub management, remediation components (firewall, Traefik, Nginx), AppSec WAF, profiles, notifications, blocklists, CTI, metrics, and production best practices. Ships 7 reference files for deep dives into config, AppSec, Docker, Traefik integration, database backends, hub collections, and troubleshooting.
 
+### [cyberpunk](cyberpunk/SKILL.md)
+
+Create or analyze original settings, scenes, world operations, and image direction through the material, social, and human-scale logic of William Gibson’s Sprawl fiction. Distinguishes canon, inference, and original adaptation; does not imitate Gibson’s prose or continue named canon.
+
 ### [daily-life-discovery](daily-life-discovery/SKILL.md)
 
 Guide a consent-based conversation that helps people discover how an AI agent could improve their day-to-day life, then match those needs to verified capabilities, reusable skills, and focused platform CLIs.
@@ -139,10 +143,6 @@ Frontend engineering methodology — component architecture, state management, A
 ### [ghost-cli](ghost-cli/SKILL.md)
 
 Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.
-
-### [gibson-cyberpunk](gibson-cyberpunk/SKILL.md)
-
-Create or analyze original settings, scenes, world operations, and image direction through the material, social, and human-scale logic of William Gibson’s Sprawl fiction. Distinguishes canon, inference, and original adaptation; does not imitate Gibson’s prose or continue named canon.
 
 ### [github-runner](github-runner/SKILL.md)
 

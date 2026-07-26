@@ -1,4 +1,4 @@
-# Gibson Cyberpunk — Build Futures That Feel Used, Unequal, and Alive
+# Cyberpunk — Build Futures That Feel Used, Unequal, and Alive
 
 ## Why Install This Skill
 
