@@ -28,6 +28,7 @@ from raleighlib import meetings
 from raleighlib import police
 from raleighlib import fire
 from raleighlib import fire_protection
+from raleighlib import rfd_reports
 from raleighlib import incidents
 
 
@@ -112,10 +113,21 @@ def _longitude(value: str) -> float:
 
 
 def _iso_date(value: str) -> str:
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        raise argparse.ArgumentTypeError("date must use YYYY-MM-DD")
     try:
-        date.fromisoformat(value)
+        parsed = date.fromisoformat(value)
     except ValueError as exc:
         raise argparse.ArgumentTypeError("date must use YYYY-MM-DD") from exc
+    return parsed.isoformat()
+
+
+def _nonempty_text(value: str) -> str:
+    value = value.strip()
+    if not value:
+        raise argparse.ArgumentTypeError("value must not be empty")
+    if len(value) > 200 or any(ord(char) < 32 for char in value):
+        raise argparse.ArgumentTypeError("value is invalid")
     return value
 
 
@@ -438,6 +450,20 @@ def build_parser() -> argparse.ArgumentParser:
     fire_prot_group = fire_prot.add_mutually_exclusive_group(required=True)
     fire_prot_group.add_argument("--address", help="Address to geocode and resolve to a CSAID.")
     fire_prot_group.add_argument("--csaid", type=_csaid_value, help="Canonical site-address identifier (CSAID).")
+
+    fire_reports = fire_sub.add_parser("reports", help="Exact ArcGIS fire-report lookup with guarded RFD fallback.")
+    fire_reports_group = fire_reports.add_mutually_exclusive_group(required=True)
+    fire_reports_group.add_argument("--date", type=_iso_date, help="Exact dispatch date (YYYY-MM-DD).")
+    fire_reports_group.add_argument("--incident-number", type=_nonempty_text, help="Exact incident number.")
+    fire_reports.add_argument("--allow-rfd-fallback", action="store_true", help="Use the RFD date form only when ArcGIS returns no records.")
+    fire_reports.add_argument("--include-narrative", action="store_true", help="Fetch one exact incident narrative (requires --incident-number).")
+    fire_reports.add_argument("--acknowledge-insecure-rfd", action="store_true", help="Acknowledge that RFD data crosses unencrypted HTTP for this invocation.")
+
+    fire_inspections = fire_sub.add_parser("inspections", help="Search fragile RFD inspection records over acknowledged HTTP.")
+    fire_inspections_group = fire_inspections.add_mutually_exclusive_group(required=True)
+    fire_inspections_group.add_argument("--business", type=_nonempty_text, help="Nonempty business-name search.")
+    fire_inspections_group.add_argument("--address", type=_nonempty_text, help="Nonempty address search.")
+    fire_inspections.add_argument("--acknowledge-insecure-rfd", action="store_true", help="Acknowledge that the search crosses unencrypted HTTP for this invocation.")
 
     incidents_p = sub.add_parser("incidents", help="Raleigh-Wake ECC active incident feed (undocumented).")
     incidents_sub = incidents_p.add_subparsers(dest="incidents_command")
@@ -1406,6 +1432,104 @@ def cmd_fire_protection(args: argparse.Namespace) -> int:
     return 0
 
 
+def _fire_reports_output(result: dict[str, Any], args: argparse.Namespace) -> int:
+    if args.json:
+        _output_json(result)
+        return 0
+    reports = result.get("reports", [])
+    if reports:
+        rows = []
+        for report in reports:
+            dispatched = report.get("dispatch_date_time")
+            rows.append([
+                str(report.get("source") or ""),
+                str(report.get("incident_number") or ""),
+                _format_ms_datetime(dispatched) if dispatched is not None else str(report.get("incident_date") or ""),
+                str(report.get("incident_type_name") or ""),
+                str(report.get("address") or ""),
+            ])
+        _output_table(["SOURCE", "INCIDENT", "DATE", "TYPE", "ADDRESS"], rows)
+    else:
+        print("No records returned; this does not prove no report exists.")
+    narrative = result.get("narrative")
+    if isinstance(narrative, dict) and narrative.get("narrative"):
+        print(f"\nNarrative ({narrative.get('incident_number', '')}):")
+        print(narrative["narrative"])
+    for warning in result.get("warnings", []):
+        print(f"Warning: {warning}", file=sys.stderr)
+    return 0
+
+
+def cmd_fire_reports(args: argparse.Namespace) -> int:
+    if args.include_narrative and not args.incident_number:
+        raise cli_error("--include-narrative requires --incident-number")
+    if (args.allow_rfd_fallback or args.include_narrative) and not args.acknowledge_insecure_rfd:
+        raise cli_error("RFD access requires --acknowledge-insecure-rfd")
+
+    result = fire.query_reports(
+        report_date=args.date,
+        incident_number=args.incident_number,
+    )
+    if not result["reports"] and args.allow_rfd_fallback:
+        if not args.date:
+            raise cli_error("--allow-rfd-fallback requires --date")
+        print(f"Warning: {rfd_reports.INSECURE_WARNING}", file=sys.stderr)
+        result["reports"] = rfd_reports.search_date(
+            args.date, acknowledged=args.acknowledge_insecure_rfd
+        )
+        result["sources"].append({
+            "source": "rfd-html",
+            "url": rfd_reports.BASE_URL + rfd_reports.DATE_PATH,
+            "source_fragility": "fragile-html-over-http",
+        })
+        result["warnings"].append(rfd_reports.INSECURE_WARNING)
+
+    if args.include_narrative:
+        if len(result["reports"]) != 1:
+            raise cli_error("exactly one ArcGIS report is required to fetch a narrative")
+        report = result["reports"][0]
+        dispatched = report.get("dispatch_date_time")
+        if isinstance(dispatched, bool) or not isinstance(dispatched, (int, float)):
+            raise cli_error("the ArcGIS report has no usable dispatch date for narrative lookup")
+        incident_date = datetime.fromtimestamp(
+            dispatched / 1000, timezone.utc
+        ).date().isoformat()
+        print(f"Warning: {rfd_reports.INSECURE_WARNING}", file=sys.stderr)
+        result["narrative"] = rfd_reports.fetch_narrative(
+            report["incident_number"],
+            incident_date,
+            acknowledged=args.acknowledge_insecure_rfd,
+        )
+        result["warnings"].append(rfd_reports.INSECURE_WARNING)
+    return _fire_reports_output(result, args)
+
+
+def cmd_fire_inspections(args: argparse.Namespace) -> int:
+    if not args.acknowledge_insecure_rfd:
+        raise cli_error("RFD access requires --acknowledge-insecure-rfd")
+    print(f"Warning: {rfd_reports.INSECURE_WARNING}", file=sys.stderr)
+    result = rfd_reports.search_inspections(
+        business=args.business,
+        address=args.address,
+        acknowledged=True,
+    )
+    if args.json:
+        _output_json(result)
+    else:
+        rows = [[
+            str(item.get("source") or ""),
+            str(item.get("inspection_number") or ""),
+            str(item.get("completed_date") or ""),
+            str(item.get("business_name") or ""),
+            str(item.get("address") or ""),
+        ] for item in result["inspections"]]
+        if rows:
+            _output_table(["SOURCE", "INSPECTION", "COMPLETED", "BUSINESS", "ADDRESS"], rows)
+        else:
+            print("No inspection records returned.")
+    return 0
+
+
 def cmd_incidents_active(args: argparse.Namespace) -> int:
     result = incidents.fetch_active(
         agency=args.agency,
@@ -1496,6 +1620,8 @@ _FIRE_COMMANDS: dict[str, Any] = {
     "incidents": cmd_fire_incidents,
     "response-times": cmd_fire_response_times,
     "protection": cmd_fire_protection,
+    "reports": cmd_fire_reports,
+    "inspections": cmd_fire_inspections,
 }
 
 _INCIDENTS_COMMANDS: dict[str, Any] = {
@@ -1624,7 +1750,7 @@ def main(argv: list[str] | None = None) -> int:
 
         parser.print_help()
         return 2
-    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, fire.FireError, fire_protection.FireProtectionError, incidents.IncidentFeedError, FileExistsError, ValueError, KeyError) as exc:
+    except (core.SecurityError, core.RequestPolicyError, core.ResponseTooLargeError, hub.CatalogError, civic.ResourceError, development.UnsupportedEndpointError, imagery.CapabilityError, police.PoliceError, fire.FireError, fire_protection.FireProtectionError, rfd_reports.RFDReportError, incidents.IncidentFeedError, FileExistsError, ValueError, KeyError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
     except urllib.error.HTTPError as exc:

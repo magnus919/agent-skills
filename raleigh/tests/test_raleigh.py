@@ -44,6 +44,7 @@ import raleighlib.meetings as meetings
 import raleighlib.police as police
 import raleighlib.fire as fire
 import raleighlib.fire_protection as fire_protection
+import raleighlib.rfd_reports as rfd_reports
 from raleighlib import cli as cli_lib
 
 CLI_SCRIPT = _SCRIPT_DIR / "raleigh"
@@ -51,16 +52,23 @@ cli = importlib.machinery.SourceFileLoader("raleigh_cli", str(CLI_SCRIPT)).load_
 
 
 def setUpModule():
-    global _network_guard
+    global _network_guard, _rfd_network_guard
     _network_guard = patch.object(
         core._OPENER,
         "open",
         side_effect=AssertionError("Raleigh unit tests must not make live network calls"),
     )
     _network_guard.start()
+    _rfd_network_guard = patch.object(
+        rfd_reports._OPENER,
+        "open",
+        side_effect=AssertionError("Raleigh unit tests must not make live RFD calls"),
+    )
+    _rfd_network_guard.start()
 
 
 def tearDownModule():
+    _rfd_network_guard.stop()
     _network_guard.stop()
 
 
@@ -2980,6 +2988,215 @@ class FireTests(unittest.TestCase):
             with redirect_stdout(out), redirect_stderr(io.StringIO()):
                 code = cli.main(["--json", "fire", "response-times", "--since", "1y"])
         self.assertEqual(code, 0)
+
+
+class FireReportTests(unittest.TestCase):
+    """Exact ArcGIS report queries and guarded RFD fallback behavior."""
+
+    FIXTURES = pathlib.Path(__file__).parent / "fixtures"
+    FIELDS = set(fire.REPORT_FIELDS) | {"OBJECTID"}
+
+    def _fixture(self, name: str):
+        return json.loads((self.FIXTURES / name).read_text())
+
+    def _query(self, response=None, fields=None):
+        return patch("raleighlib.fire.resolve_layer_url", return_value="https://services.arcgis.com/example/FeatureServer/0"), patch(
+            "raleighlib.fire._discover_fields", return_value=fields or self.FIELDS
+        ), patch("raleighlib.fire.arcgis.query_layer", return_value=response or self._fixture("fire-reports-empty.json"))
+
+    def test_exact_date_query_is_bounded_and_selective(self):
+        p1, p2, p3 = self._query(self._fixture("fire-reports-results.json"))
+        with p1, p2, p3 as query:
+            result = fire.query_reports(report_date="2026-07-24")
+        kwargs = query.call_args.kwargs
+        self.assertIn("dispatch_date_time >= TIMESTAMP '2026-07-24 00:00:00'", kwargs["where"])
+        self.assertIn("dispatch_date_time < TIMESTAMP '2026-07-25 00:00:00'", kwargs["where"])
+        self.assertEqual(kwargs["out_fields"], ",".join(fire.REPORT_FIELDS))
+        self.assertFalse(kwargs["return_geometry"])
+        self.assertEqual(kwargs["result_record_count"], fire.REPORT_LIMIT)
+        self.assertEqual(result["reports"][0]["source"], "arcgis")
+
+    def test_exact_incident_number_is_escaped(self):
+        p1, p2, p3 = self._query()
+        with p1, p2, p3 as query:
+            fire.query_reports(incident_number="26-'123")
+        self.assertEqual(query.call_args.kwargs["where"], "incident_number = '26-''123'")
+
+    def test_report_query_requires_exactly_one_selector(self):
+        with self.assertRaisesRegex(fire.FireError, "exactly one"):
+            fire.query_reports()
+        with self.assertRaisesRegex(fire.FireError, "exactly one"):
+            fire.query_reports(report_date="2026-07-24", incident_number="26-1")
+
+    def test_schema_drift_fails_closed(self):
+        drift = self._fixture("fire-reports-schema-drift.json")
+        fields = {field["name"] for field in drift["fields"]}
+        p1, p2, p3 = self._query(fields=fields)
+        with p1, p2, p3, self.assertRaisesRegex(fire.FireError, "schema drift"):
+            fire.query_reports(report_date="2026-07-24")
+
+    def test_service_error_is_visible(self):
+        service_error = self._fixture("fire-reports-service-error.json")
+        def fail_query(*args, **kwargs):
+            core.raise_for_arcgis_error(service_error, "ArcGIS query")
+        p1, p2, _ = self._query()
+        with p1, p2, patch("raleighlib.fire.arcgis.query_layer", side_effect=fail_query):
+            with self.assertRaisesRegex(ValueError, "Service unavailable"):
+                fire.query_reports(report_date="2026-07-24")
+
+    def test_malformed_arcgis_record_fails(self):
+        p1, p2, p3 = self._query({"features": [{"attributes": {}}]})
+        with p1, p2, p3, self.assertRaisesRegex(fire.FireError, "without incident_number"):
+            fire.query_reports(report_date="2026-07-24")
+
+    def test_recent_lag_fallback_requires_both_flags(self):
+        empty = {"query": {"date": "2026-07-24", "incident_number": None}, "reports": [], "sources": [], "warnings": []}
+        with patch("raleighlib.cli.fire.query_reports", return_value=empty), patch("raleighlib.cli.rfd_reports.search_date") as fallback:
+            with self.assertRaisesRegex(SystemExit, "acknowledge"):
+                cli.main(["fire", "reports", "--date", "2026-07-24", "--allow-rfd-fallback"])
+        fallback.assert_not_called()
+
+    def test_recent_lag_invokes_one_bounded_fallback(self):
+        lag = self._fixture("fire-reports-recent-lag.json")
+        empty = {"query": {"date": "2026-07-24", "incident_number": None}, "reports": lag["features"], "sources": [], "warnings": []}
+        fallback_result = [{"source": "rfd-html", "incident_number": "26-032170"}]
+        with patch("raleighlib.cli.fire.query_reports", return_value=empty), patch("raleighlib.cli.rfd_reports.search_date", return_value=fallback_result) as fallback:
+            out, err = io.StringIO(), io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = cli.main(["--json", "fire", "reports", "--date", "2026-07-24", "--allow-rfd-fallback", "--acknowledge-insecure-rfd"])
+        self.assertEqual(code, 0)
+        fallback.assert_called_once_with("2026-07-24", acknowledged=True)
+        self.assertEqual(json.loads(out.getvalue())["reports"][0]["source"], "rfd-html")
+        self.assertIn("unencrypted HTTP", err.getvalue())
+
+    def test_narrative_requires_exact_incident(self):
+        with patch("raleighlib.cli.fire.query_reports") as query:
+            with self.assertRaisesRegex(SystemExit, "requires --incident-number"):
+                cli.main(["fire", "reports", "--date", "2026-07-24", "--include-narrative", "--acknowledge-insecure-rfd"])
+        query.assert_not_called()
+
+    def test_whitespace_incident_number_rejected_before_network(self):
+        with patch("raleighlib.cli.fire.query_reports") as query:
+            with self.assertRaises(SystemExit):
+                cli.main(["fire", "reports", "--incident-number", "   "])
+        query.assert_not_called()
+
+    def test_noncanonical_iso_date_rejected_before_network(self):
+        for value in ("20260724", "2026-W30-5"):
+            with self.subTest(value=value), patch("raleighlib.cli.fire.query_reports") as query:
+                with self.assertRaises(SystemExit):
+                    cli.main(["fire", "reports", "--date", value])
+                query.assert_not_called()
+
+
+class RFDReportAdapterTests(unittest.TestCase):
+    FIXTURES = pathlib.Path(__file__).parent / "fixtures"
+
+    def _html(self, name: str) -> str:
+        return (self.FIXTURES / name).read_text()
+
+    def test_insecure_access_is_blocked_before_network(self):
+        with patch.object(rfd_reports._OPENER, "open") as network:
+            with self.assertRaisesRegex(rfd_reports.RFDReportError, "acknowledge"):
+                rfd_reports._request(rfd_reports.DATE_PATH, {"date": "2026-07-24"}, "POST", acknowledged=False)
+        network.assert_not_called()
+
+    def test_only_four_fixed_contracts_are_allowed(self):
+        with self.assertRaisesRegex(rfd_reports.RFDReportError, "unsupported"):
+            rfd_reports._validate_contract("/fd_invoice.php", {"id": "1"}, "GET")
+        with self.assertRaisesRegex(rfd_reports.RFDReportError, "unsupported"):
+            rfd_reports._validate_contract(rfd_reports.DATE_PATH, {"wrong": "x"}, "POST")
+
+    def test_date_results_preserve_identifiers_and_source(self):
+        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-date-results.html")):
+            result = rfd_reports.search_date("2026-07-24", acknowledged=True)
+        self.assertEqual(result[0]["incident_number"], "26-032170")
+        self.assertEqual(result[0]["source"], "rfd-html")
+        self.assertIn("fd_incidentreport.php", result[0]["source_url"])
+
+    def test_date_result_mismatch_fails_closed(self):
+        mismatched = self._html("rfd-date-results.html").replace(
+            "incidentdate=2026-07-24", "incidentdate=2026-07-23"
+        )
+        with patch("raleighlib.rfd_reports._request", return_value=mismatched):
+            with self.assertRaisesRegex(rfd_reports.RFDReportError, "do not match"):
+                rfd_reports.search_date("2026-07-24", acknowledged=True)
+
+    def test_date_no_results_is_recognized(self):
+        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-date-empty.html")):
+            self.assertEqual(rfd_reports.search_date("2026-07-24", acknowledged=True), [])
+
+    def test_date_markup_drift_fails_visibly(self):
+        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-date-markup-drift.html")):
+            with self.assertRaisesRegex(rfd_reports.RFDReportError, "contract drift"):
+                rfd_reports.search_date("2026-07-24", acknowledged=True)
+
+    def test_date_malformed_row_fails_visibly(self):
+        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-date-malformed.html")):
+            with self.assertRaisesRegex(rfd_reports.RFDReportError, "malformed result row"):
+                rfd_reports.search_date("2026-07-24", acknowledged=True)
+
+    def test_error_page_fails_visibly(self):
+        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-error-page.html")):
+            with self.assertRaisesRegex(rfd_reports.RFDReportError, "contract drift"):
+                rfd_reports.search_date("2026-07-24", acknowledged=True)
+
+    def test_inspection_results_never_expose_invoice_links(self):
+        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-inspection-results.html")):
+            result = rfd_reports.search_inspections(business="Example", acknowledged=True)
+        encoded = json.dumps(result)
+        self.assertEqual(result["inspections"][0]["inspection_number"], "RFD-2026-0004935")
+        source_params = urllib.parse.parse_qs(urllib.parse.urlparse(result["inspections"][0]["source_url"]).query)
+        self.assertEqual(source_params["name"], ["EXAMPLE MARKET #1"])
+        self.assertNotIn("invoice", encoded.casefold())
+        self.assertNotIn("0004429", encoded)
+
+    def test_inspection_empty_input_is_rejected(self):
+        with patch("raleighlib.rfd_reports._request") as request:
+            with self.assertRaisesRegex(rfd_reports.RFDReportError, "must not be empty"):
+                rfd_reports.search_inspections(address="   ", acknowledged=True)
+        request.assert_not_called()
+
+    def test_inspection_empty_state_is_recognized(self):
+        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-inspection-empty.html")):
+            result = rfd_reports.search_inspections(address="Example", acknowledged=True)
+        self.assertEqual(result["inspections"], [])
+
+    def test_narrative_is_exact_and_incident_specific(self):
+        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-narrative-result.html")):
+            result = rfd_reports.fetch_narrative("26-032170", "2026-07-24", acknowledged=True)
+        self.assertEqual(result["incident_number"], "26-032170")
+        self.assertIn("ventilated", result["narrative"])
+
+    def test_narrative_mismatch_fails(self):
+        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-narrative-result.html")):
+            with self.assertRaisesRegex(rfd_reports.RFDReportError, "did not match"):
+                rfd_reports.fetch_narrative("26-999999", "2026-07-24", acknowledged=True)
+
+    def test_plain_http_text_removes_terminal_controls(self):
+        hostile = self._html("rfd-date-results.html").replace(
+            "505 FLORENCE ST", "505 \x1b]52;c;Y2xpcGJvYXJk\x07 FLORENCE ST"
+        )
+        with patch("raleighlib.rfd_reports._request", return_value=hostile):
+            result = rfd_reports.search_date("2026-07-24", acknowledged=True)
+        self.assertNotIn("\x1b", result[0]["address"])
+        self.assertNotIn("\x07", result[0]["address"])
+
+    def test_cli_inspection_requires_acknowledgement(self):
+        with patch("raleighlib.cli.rfd_reports.search_inspections") as search:
+            with self.assertRaisesRegex(SystemExit, "acknowledge"):
+                cli.main(["fire", "inspections", "--business", "Example"])
+        search.assert_not_called()
+
+    def test_cli_inspection_json_keeps_warning_on_stderr(self):
+        payload = {"query": {"business": "Example"}, "inspections": [], "source": {}, "warnings": [rfd_reports.INSECURE_WARNING]}
+        with patch("raleighlib.cli.rfd_reports.search_inspections", return_value=payload):
+            out, err = io.StringIO(), io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = cli.main(["--json", "fire", "inspections", "--business", "Example", "--acknowledge-insecure-rfd"])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out.getvalue())["warnings"], [rfd_reports.INSECURE_WARNING])
+        self.assertIn("unencrypted HTTP", err.getvalue())
 
 
 _FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"

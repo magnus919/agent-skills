@@ -1,0 +1,6 @@
+{
+  "fields": [
+    {"name": "incident_number"},
+    {"name": "dispatch_date_time"}
+  ]
+}

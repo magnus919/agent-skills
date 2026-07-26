@@ -1,6 +1,6 @@
 # Raleigh Open Data — City of Raleigh Public Data
 
-Query, search, and download public datasets and civic information for the City of Raleigh. Discover live ArcGIS Hub datasets, query FeatureServer and MapServer layers, export ImageServer imagery, geocode addresses, read GoRaleigh transit feeds, search guest-public development records, browse RaleighNC.gov content, and extract eSCRIBE public meetings.
+Query, search, and download public datasets and civic information for the City of Raleigh. Discover live ArcGIS Hub datasets, query FeatureServer and MapServer layers, export imagery, geocode addresses, read transit feeds, search public development and fire records, browse RaleighNC.gov content, and extract public meetings.
 
 ## Why Install This Skill
 
@@ -17,6 +17,7 @@ When your agent loads this skill, it becomes a **Raleigh civic data specialist**
 - **Public meetings** — agendas, minutes, and videos from eSCRIBE
 - **Active incidents** — live RWECC public incident feed (undocumented endpoint, clearly labeled)
 - **Fire protection** — Wake County MAR station proximity, ISO ratings, and hydrant distances
+- **Fire records** — authoritative ArcGIS report summaries plus guarded RFD narratives and inspection searches
 - **No API key required** — all data is publicly available
 
 ## What You Get
@@ -44,11 +45,14 @@ scripts/raleigh transit routes
 scripts/raleigh news --limit 5
 scripts/raleigh incidents active --agency raleigh-fire
 scripts/raleigh fire protection --address "222 W Hargett St"
+scripts/raleigh fire reports --date 2026-07-24
+# RFD has no usable TLS endpoint; this sends the search term over plain HTTP.
+scripts/raleigh fire inspections --business "Example" --acknowledge-insecure-rfd
 ```
 
 ## Triggers
 
-Load this for any City of Raleigh civic data — crime, food inspections, permits, zoning, traffic, parks, budgets, transit, news, events, or public meetings.
+Load this for any City of Raleigh civic data — crime, food or fire inspections, fire reports, permits, zoning, traffic, parks, budgets, transit, news, events, or public meetings.
 
 ## Requirements
 
@@ -86,4 +90,4 @@ Assertions use deterministic graders (`response_contains:`, `response_not_contai
 
 ## Safety Notes
 
-All operations are read-only against public endpoints. The CLI enforces a fixed allowlist of service hosts and never calls authentication, payment, submission, or private-data endpoints.
+All operations are read-only against fixed public endpoints. The general client enforces HTTPS. The isolated RFD adapter permits only four fixed plain-HTTP contracts after per-invocation acknowledgement, rejects empty searches and redirects, and never follows or exposes invoice links. Authentication, payment, submission, bulk crawling, and private-data endpoints are unsupported.
