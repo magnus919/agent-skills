@@ -13,8 +13,8 @@ This skill helps your agent create or analyze a world with that underlying logic
 | `SKILL.md` | A compact workflow for scenes, images, setting design, and analysis |
 | `references/canon-and-boundaries.md` | Corpus, source discipline, and a clear distinction between canon, inference, and original adaptation |
 | `references/world-operations.md` | Practical models for infrastructure, power, culture, technology, and plot pressure |
-| `references/visual-direction.md` | Composition grammar, prompt template, examples, and visual pitfalls |
-| `evals/evals.json` | Six representative behavior checks, including copyright and stereotyping boundaries |
+| `references/visual-direction.md` | Composition grammar, photographic depth hierarchy, prompt template, examples, and visual pitfalls |
+| `evals/evals.json` | Eight representative behavior checks, including copyright, stereotyping, text-policy, and photographic-realism boundaries |
 | `tests/trigger-cases.md` | Positive and near-miss activation checks |
 
 ## Quick Start
