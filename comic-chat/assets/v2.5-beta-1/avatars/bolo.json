@@ -1,0 +1,218 @@
+{
+  "bodies": [],
+  "faces": [
+    {
+      "delta_xCX": 2,
+      "delta_yCX": -5,
+      "emotion": 9,
+      "foreground": "bolo/faces-00.png",
+      "intensity": 0,
+      "mask": "bolo/faces-00-mask.png",
+      "xCX": 97,
+      "yCX": 128
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": -5,
+      "emotion": 1,
+      "foreground": "bolo/faces-01.png",
+      "intensity": 51,
+      "mask": "bolo/faces-01-mask.png",
+      "xCX": 97,
+      "yCX": 128
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": -5,
+      "emotion": 3,
+      "foreground": "bolo/faces-02.png",
+      "intensity": 76,
+      "mask": "bolo/faces-02-mask.png",
+      "xCX": 97,
+      "yCX": 128
+    },
+    {
+      "delta_xCX": 3,
+      "delta_yCX": -5,
+      "emotion": 1,
+      "foreground": "bolo/faces-03.png",
+      "intensity": 153,
+      "mask": "bolo/faces-03-mask.png",
+      "xCX": 95,
+      "yCX": 131
+    },
+    {
+      "delta_xCX": 3,
+      "delta_yCX": -5,
+      "emotion": 9,
+      "foreground": "bolo/faces-04.png",
+      "intensity": 0,
+      "mask": "bolo/faces-04-mask.png",
+      "xCX": 95,
+      "yCX": 131
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -3,
+      "emotion": 1,
+      "foreground": "bolo/faces-05.png",
+      "intensity": 255,
+      "mask": "bolo/faces-05-mask.png",
+      "xCX": 86,
+      "yCX": 135
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -6,
+      "emotion": 2,
+      "foreground": "bolo/faces-06.png",
+      "intensity": 255,
+      "mask": "bolo/faces-06-mask.png",
+      "xCX": 93,
+      "yCX": 126
+    },
+    {
+      "delta_xCX": 6,
+      "delta_yCX": -3,
+      "emotion": 5,
+      "foreground": "bolo/faces-07.png",
+      "intensity": 255,
+      "mask": "bolo/faces-07-mask.png",
+      "xCX": 97,
+      "yCX": 123
+    },
+    {
+      "delta_xCX": -1,
+      "delta_yCX": -5,
+      "emotion": 6,
+      "foreground": "bolo/faces-08.png",
+      "intensity": 255,
+      "mask": "bolo/faces-08-mask.png",
+      "xCX": 95,
+      "yCX": 129
+    },
+    {
+      "delta_xCX": 3,
+      "delta_yCX": 0,
+      "emotion": 7,
+      "foreground": "bolo/faces-09.png",
+      "intensity": 255,
+      "mask": "bolo/faces-09-mask.png",
+      "xCX": 95,
+      "yCX": 131
+    },
+    {
+      "delta_xCX": 1,
+      "delta_yCX": -3,
+      "emotion": 4,
+      "foreground": "bolo/faces-10.png",
+      "intensity": 255,
+      "mask": "bolo/faces-10-mask.png",
+      "xCX": 97,
+      "yCX": 128
+    },
+    {
+      "delta_xCX": 1,
+      "delta_yCX": -4,
+      "emotion": 8,
+      "foreground": "bolo/faces-11.png",
+      "intensity": 255,
+      "mask": "bolo/faces-11-mask.png",
+      "xCX": 93,
+      "yCX": 131
+    }
+  ],
+  "flags": 5,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [
+    {
+      "emotion": 9,
+      "foreground": "bolo/torsos-00.png",
+      "intensity": 0,
+      "mask": "bolo/torsos-00-mask.png",
+      "xCX": 107,
+      "yCX": 27
+    },
+    {
+      "emotion": 11,
+      "foreground": "bolo/torsos-01.png",
+      "intensity": 255,
+      "mask": "bolo/torsos-01-mask.png",
+      "xCX": 89,
+      "yCX": 36
+    },
+    {
+      "emotion": 12,
+      "foreground": "bolo/torsos-02.png",
+      "intensity": 255,
+      "mask": "bolo/torsos-02-mask.png",
+      "xCX": 120,
+      "yCX": 35
+    },
+    {
+      "emotion": 2,
+      "foreground": "bolo/torsos-03.png",
+      "intensity": 255,
+      "mask": "bolo/torsos-03-mask.png",
+      "xCX": 94,
+      "yCX": 32
+    },
+    {
+      "emotion": 9,
+      "foreground": "bolo/torsos-04.png",
+      "intensity": 0,
+      "mask": "bolo/torsos-04-mask.png",
+      "xCX": 94,
+      "yCX": 32
+    },
+    {
+      "emotion": 5,
+      "foreground": "bolo/torsos-05.png",
+      "intensity": 255,
+      "mask": "bolo/torsos-05-mask.png",
+      "xCX": 111,
+      "yCX": 30
+    },
+    {
+      "emotion": 9,
+      "foreground": "bolo/torsos-06.png",
+      "intensity": 0,
+      "mask": "bolo/torsos-06-mask.png",
+      "xCX": 113,
+      "yCX": 28
+    },
+    {
+      "emotion": 6,
+      "foreground": "bolo/torsos-07.png",
+      "intensity": 51,
+      "mask": "bolo/torsos-07-mask.png",
+      "xCX": 113,
+      "yCX": 28
+    },
+    {
+      "emotion": 6,
+      "foreground": "bolo/torsos-08.png",
+      "intensity": 255,
+      "mask": "bolo/torsos-08-mask.png",
+      "xCX": 108,
+      "yCX": 30
+    },
+    {
+      "emotion": 3,
+      "foreground": "bolo/torsos-09.png",
+      "intensity": 255,
+      "mask": "bolo/torsos-09-mask.png",
+      "xCX": 167,
+      "yCX": 33
+    },
+    {
+      "emotion": 10,
+      "foreground": "bolo/torsos-10.png",
+      "intensity": 255,
+      "mask": "bolo/torsos-10-mask.png",
+      "xCX": 95,
+      "yCX": 58
+    }
+  ],
+  "type": 2
+}

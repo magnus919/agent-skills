@@ -1,0 +1,314 @@
+{
+  "bodies": [],
+  "faces": [
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -2,
+      "emotion": 9,
+      "foreground": "margaret/faces-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 82,
+      "yCX": 118
+    },
+    {
+      "delta_xCX": 4,
+      "delta_yCX": -3,
+      "emotion": 9,
+      "foreground": "margaret/faces-01.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 85,
+      "yCX": 113
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -1,
+      "emotion": 9,
+      "foreground": "margaret/faces-02.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 116
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 2,
+      "emotion": 2,
+      "foreground": "margaret/faces-03.png",
+      "intensity": 127,
+      "mask": null,
+      "xCX": 73,
+      "yCX": 121
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 2,
+      "emotion": 9,
+      "foreground": "margaret/faces-04.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 73,
+      "yCX": 121
+    },
+    {
+      "delta_xCX": 5,
+      "delta_yCX": 3,
+      "emotion": 2,
+      "foreground": "margaret/faces-05.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 121
+    },
+    {
+      "delta_xCX": 5,
+      "delta_yCX": 3,
+      "emotion": 9,
+      "foreground": "margaret/faces-06.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 121
+    },
+    {
+      "delta_xCX": 1,
+      "delta_yCX": -3,
+      "emotion": 6,
+      "foreground": "margaret/faces-07.png",
+      "intensity": 178,
+      "mask": null,
+      "xCX": 70,
+      "yCX": 112
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -1,
+      "emotion": 8,
+      "foreground": "margaret/faces-08.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 76,
+      "yCX": 112
+    },
+    {
+      "delta_xCX": 7,
+      "delta_yCX": 1,
+      "emotion": 9,
+      "foreground": "margaret/faces-09.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 85,
+      "yCX": 117
+    },
+    {
+      "delta_xCX": 7,
+      "delta_yCX": 1,
+      "emotion": 1,
+      "foreground": "margaret/faces-10.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 85,
+      "yCX": 117
+    },
+    {
+      "delta_xCX": 7,
+      "delta_yCX": 1,
+      "emotion": 9,
+      "foreground": "margaret/faces-11.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 69,
+      "yCX": 112
+    },
+    {
+      "delta_xCX": 7,
+      "delta_yCX": 1,
+      "emotion": 5,
+      "foreground": "margaret/faces-12.png",
+      "intensity": 127,
+      "mask": null,
+      "xCX": 69,
+      "yCX": 112
+    },
+    {
+      "delta_xCX": -1,
+      "delta_yCX": -1,
+      "emotion": 3,
+      "foreground": "margaret/faces-13.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 110
+    },
+    {
+      "delta_xCX": -6,
+      "delta_yCX": -2,
+      "emotion": 4,
+      "foreground": "margaret/faces-14.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 63,
+      "yCX": 113
+    },
+    {
+      "delta_xCX": -1,
+      "delta_yCX": -2,
+      "emotion": 4,
+      "foreground": "margaret/faces-15.png",
+      "intensity": 76,
+      "mask": null,
+      "xCX": 67,
+      "yCX": 110
+    },
+    {
+      "delta_xCX": -5,
+      "delta_yCX": -1,
+      "emotion": 7,
+      "foreground": "margaret/faces-16.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 69,
+      "yCX": 124
+    },
+    {
+      "delta_xCX": -5,
+      "delta_yCX": -1,
+      "emotion": 6,
+      "foreground": "margaret/faces-17.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 69,
+      "yCX": 124
+    },
+    {
+      "delta_xCX": -5,
+      "delta_yCX": -2,
+      "emotion": 2,
+      "foreground": "margaret/faces-18.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 65,
+      "yCX": 116
+    },
+    {
+      "delta_xCX": 5,
+      "delta_yCX": 0,
+      "emotion": 1,
+      "foreground": "margaret/faces-19.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 75,
+      "yCX": 116
+    }
+  ],
+  "flags": 5,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [
+    {
+      "emotion": 11,
+      "foreground": "margaret/torsos-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 93,
+      "yCX": 28
+    },
+    {
+      "emotion": 9,
+      "foreground": "margaret/torsos-01.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 103,
+      "yCX": 19
+    },
+    {
+      "emotion": 6,
+      "foreground": "margaret/torsos-02.png",
+      "intensity": 127,
+      "mask": null,
+      "xCX": 103,
+      "yCX": 19
+    },
+    {
+      "emotion": 12,
+      "foreground": "margaret/torsos-03.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 98,
+      "yCX": 35
+    },
+    {
+      "emotion": 9,
+      "foreground": "margaret/torsos-04.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 161,
+      "yCX": 24
+    },
+    {
+      "emotion": 9,
+      "foreground": "margaret/torsos-05.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 95,
+      "yCX": 23
+    },
+    {
+      "emotion": 2,
+      "foreground": "margaret/torsos-06.png",
+      "intensity": 127,
+      "mask": null,
+      "xCX": 95,
+      "yCX": 23
+    },
+    {
+      "emotion": 6,
+      "foreground": "margaret/torsos-07.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 115,
+      "yCX": 20
+    },
+    {
+      "emotion": 10,
+      "foreground": "margaret/torsos-08.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 80,
+      "yCX": 61
+    },
+    {
+      "emotion": 8,
+      "foreground": "margaret/torsos-09.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 80,
+      "yCX": 61
+    },
+    {
+      "emotion": 2,
+      "foreground": "margaret/torsos-10.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 107,
+      "yCX": 31
+    },
+    {
+      "emotion": 3,
+      "foreground": "margaret/torsos-11.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 54,
+      "yCX": 30
+    },
+    {
+      "emotion": 6,
+      "foreground": "margaret/torsos-12.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 54,
+      "yCX": 30
+    }
+  ],
+  "type": 2
+}

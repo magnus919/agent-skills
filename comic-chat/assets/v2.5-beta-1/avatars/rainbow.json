@@ -1,0 +1,17 @@
+{
+  "bodies": [
+    {
+      "emotion": 9,
+      "foreground": "rainbow/bodies-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 153,
+      "yCX": 149
+    }
+  ],
+  "faces": [],
+  "flags": 5,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [],
+  "type": 1
+}

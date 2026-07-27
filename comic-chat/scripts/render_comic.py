@@ -13,6 +13,7 @@ from typing import Dict, List, Optional, Tuple
 from PIL import Image, ImageDraw, ImageFont, ImageOps, PngImagePlugin
 
 MAGIC = 0x81
+V25_MAGIC = 0x8181
 KEY_NAME, KEY_FLAGS, KEY_ICON, KEY_NFACES, KEY_NTORSOS, KEY_START, KEY_END, KEY_STYLE, KEY_NBODIES = range(1, 10)
 TYPE_SIMPLE, TYPE_COMPLEX = 1, 2
 HEADMASK, TORSOMASK, TORSOFIRST = 1, 2, 4
@@ -67,8 +68,8 @@ def parse_avb(path: Path) -> Dict[str, object]:
     if len(data) < 6:
         raise AssetError(f"{path.name}: AVB header is truncated")
     magic, avatar_type, _version = struct.unpack_from("<HHH", data)
-    if magic != MAGIC:
-        raise AssetError(f"{path.name}: invalid AVB magic {magic:#x}; expected {MAGIC:#x}")
+    if magic not in (MAGIC, V25_MAGIC):
+        raise AssetError(f"{path.name}: invalid AVB magic {magic:#x}; expected legacy {MAGIC:#x} or v2.5 {V25_MAGIC:#x}")
     cursor = 6
     avatar: Dict[str, object] = {"type": avatar_type, "flags": 0, "bodies": [], "faces": [], "torsos": []}
     while cursor + 2 <= len(data):
@@ -126,12 +127,44 @@ def parse_avb(path: Path) -> Dict[str, object]:
     return avatar
 
 
-def read_pose(path: Path, avatar: Dict[str, object], record: Dict[str, int]) -> Tuple[Image.Image, Optional[Image.Image]]:
+def parse_avatar(path: Path) -> Dict[str, object]:
+    if path.suffix == ".json":
+        try:
+            avatar = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError) as error:
+            raise AssetError(f"{path.name}: invalid modern avatar manifest: {error}") from error
+        if not isinstance(avatar, dict) or avatar.get("format") != "comic-chat-v25-avatar-assets/1" or avatar.get("type") not in (TYPE_SIMPLE, TYPE_COMPLEX):
+            raise AssetError(f"{path.name}: unsupported modern avatar manifest")
+        return avatar
+    return parse_avb(path)
+
+
+def read_pose(path: Path, avatar: Dict[str, object], record: Dict[str, object]) -> Tuple[Image.Image, Optional[Image.Image]]:
+    foreground = record["foreground"]
+    mask_offset = record.get("mask")
+    if isinstance(foreground, str):
+        foreground_path = path.parent / foreground
+        if not foreground_path.is_file():
+            raise AssetError(f"{path.name}: missing extracted pose art {foreground}")
+        used_paths = avatar.setdefault("_used_paths", [])
+        assert isinstance(used_paths, list)
+        used_paths.append(foreground_path)
+        try:
+            with Image.open(foreground_path) as image:
+                art = image.convert("RGBA")
+            mask = None
+            if isinstance(mask_offset, str):
+                mask_path = path.parent / mask_offset
+                used_paths.append(mask_path)
+                with Image.open(mask_path) as image:
+                    mask = image.convert("RGBA")
+            return art, mask
+        except OSError as error:
+            raise AssetError(f"{path.name}: unreadable extracted pose art: {error}") from error
     data = avatar["data"]
-    assert isinstance(data, bytes)
-    art = read_embedded_bmp(data, record["foreground"], path.name)
-    mask_offset = record["mask"]
-    return art, read_embedded_bmp(data, mask_offset, path.name) if mask_offset else None
+    assert isinstance(data, bytes) and isinstance(foreground, int)
+    art = read_embedded_bmp(data, foreground, path.name)
+    return art, read_embedded_bmp(data, mask_offset, path.name) if isinstance(mask_offset, int) and mask_offset else None
 
 
 def select_record(path: Path, records: object, pose: int, label: str) -> Dict[str, int]:
@@ -224,7 +257,7 @@ def composite_complex_avatar(canvas: Image.Image, path: Path, avatar: Dict[str, 
 
 
 def avatar_art(path: Path, character: Dict[str, object]) -> Image.Image:
-    avatar = parse_avb(path)
+    avatar = parse_avatar(path)
     avatar_type = avatar["type"]
     if avatar_type == TYPE_SIMPLE:
         if "face_pose" in character or "torso_pose" in character:
@@ -435,7 +468,7 @@ def render(scene: Dict[str, object], assets: Path) -> Tuple[Image.Image, List[Pa
             avatar = asset_path(assets, "avatars", character["avatar"])
             used.append(avatar)
             try:
-                parsed_avatar = parse_avb(avatar)
+                parsed_avatar = parse_avatar(avatar)
                 if parsed_avatar["type"] == TYPE_COMPLEX:
                     if "pose" in character:
                         raise SceneError(f"{avatar.name}: complex avatars require face_pose and torso_pose, not pose")
@@ -445,6 +478,9 @@ def render(scene: Dict[str, object], assets: Path) -> Tuple[Image.Image, List[Pa
                     art_size, _layers = complex_avatar_layers(avatar, parsed_avatar, face_pose, torso_pose)
                     position = (round(character["x"] * (panel_width - art_size[0] * character.get("scale", 1))), round(character["y"] * (height - art_size[1] * character.get("scale", 1))))
                     composite_complex_avatar(panel_image, avatar, parsed_avatar, face_pose, torso_pose, position, float(character.get("scale", 1)), character.get("flip", False))
+                    extracted_paths = parsed_avatar.get("_used_paths", [])
+                    if isinstance(extracted_paths, list):
+                        used.extend(extracted_paths)
                 else:
                     art = avatar_art(avatar, character)
                     position = (round(character["x"] * (panel_width - art.width * character.get("scale", 1))), round(character["y"] * (height - art.height * character.get("scale", 1))))
@@ -488,7 +524,7 @@ def main() -> int:
         metadata.add_text("comic_chat_renderer", "comic-chat deterministic Pillow renderer")
         metadata.add_text("comic_chat_scene_sha256", hashlib.sha256(scene_bytes).hexdigest())
         metadata.add_text("comic_chat_assets", json.dumps({str(path.relative_to(args.assets_dir.resolve())): sha256_file(path) for path in sorted(set(used))}, sort_keys=True))
-        metadata.add_text("comic_chat_source", "Microsoft comic-chat 48a162249484ab8d116c243e8203b0956d350c09; v1.0-pre-modern/comicart")
+        metadata.add_text("comic_chat_source", "Microsoft comic-chat 48a162249484ab8d116c243e8203b0956d350c09; v2.5-beta-1/comicart converted to bundled PNG assets")
         args.output.parent.mkdir(parents=True, exist_ok=True)
         image.convert("RGB").save(args.output, "PNG", pnginfo=metadata)
     except (OSError, json.JSONDecodeError, SceneError, AssetError) as error:

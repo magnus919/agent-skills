@@ -1,0 +1,246 @@
+{
+  "bodies": [],
+  "faces": [
+    {
+      "delta_xCX": 4,
+      "delta_yCX": 0,
+      "emotion": 9,
+      "foreground": "hugh/faces-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 90,
+      "yCX": 129
+    },
+    {
+      "delta_xCX": -5,
+      "delta_yCX": -5,
+      "emotion": 1,
+      "foreground": "hugh/faces-01.png",
+      "intensity": 153,
+      "mask": null,
+      "xCX": 82,
+      "yCX": 133
+    },
+    {
+      "delta_xCX": -1,
+      "delta_yCX": 12,
+      "emotion": 6,
+      "foreground": "hugh/faces-02.png",
+      "intensity": 178,
+      "mask": null,
+      "xCX": 92,
+      "yCX": 150
+    },
+    {
+      "delta_xCX": 5,
+      "delta_yCX": 5,
+      "emotion": 9,
+      "foreground": "hugh/faces-03.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 92,
+      "yCX": 136
+    },
+    {
+      "delta_xCX": 6,
+      "delta_yCX": 8,
+      "emotion": 2,
+      "foreground": "hugh/faces-04.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 85,
+      "yCX": 144
+    },
+    {
+      "delta_xCX": -8,
+      "delta_yCX": 4,
+      "emotion": 3,
+      "foreground": "hugh/faces-05.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 85,
+      "yCX": 134
+    },
+    {
+      "delta_xCX": -8,
+      "delta_yCX": 4,
+      "emotion": 9,
+      "foreground": "hugh/faces-06.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 85,
+      "yCX": 134
+    },
+    {
+      "delta_xCX": -1,
+      "delta_yCX": 4,
+      "emotion": 5,
+      "foreground": "hugh/faces-07.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 92,
+      "yCX": 130
+    },
+    {
+      "delta_xCX": -1,
+      "delta_yCX": 4,
+      "emotion": 9,
+      "foreground": "hugh/faces-08.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 92,
+      "yCX": 130
+    },
+    {
+      "delta_xCX": 6,
+      "delta_yCX": 14,
+      "emotion": 4,
+      "foreground": "hugh/faces-09.png",
+      "intensity": 178,
+      "mask": null,
+      "xCX": 100,
+      "yCX": 151
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 13,
+      "emotion": 7,
+      "foreground": "hugh/faces-10.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 103,
+      "yCX": 162
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 13,
+      "emotion": 6,
+      "foreground": "hugh/faces-11.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 103,
+      "yCX": 162
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 15,
+      "emotion": 8,
+      "foreground": "hugh/faces-12.png",
+      "intensity": 127,
+      "mask": null,
+      "xCX": 92,
+      "yCX": 152
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 15,
+      "emotion": 1,
+      "foreground": "hugh/faces-13.png",
+      "intensity": 76,
+      "mask": null,
+      "xCX": 92,
+      "yCX": 152
+    }
+  ],
+  "flags": 5,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [
+    {
+      "emotion": 9,
+      "foreground": "hugh/torsos-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 127,
+      "yCX": 27
+    },
+    {
+      "emotion": 12,
+      "foreground": "hugh/torsos-01.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 164,
+      "yCX": 29
+    },
+    {
+      "emotion": 11,
+      "foreground": "hugh/torsos-02.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 103,
+      "yCX": 28
+    },
+    {
+      "emotion": 10,
+      "foreground": "hugh/torsos-03.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 165,
+      "yCX": 78
+    },
+    {
+      "emotion": 8,
+      "foreground": "hugh/torsos-04.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 165,
+      "yCX": 78
+    },
+    {
+      "emotion": 2,
+      "foreground": "hugh/torsos-05.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 131,
+      "yCX": 36
+    },
+    {
+      "emotion": 9,
+      "foreground": "hugh/torsos-06.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 131,
+      "yCX": 36
+    },
+    {
+      "emotion": 3,
+      "foreground": "hugh/torsos-07.png",
+      "intensity": 127,
+      "mask": null,
+      "xCX": 123,
+      "yCX": 33
+    },
+    {
+      "emotion": 9,
+      "foreground": "hugh/torsos-08.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 123,
+      "yCX": 33
+    },
+    {
+      "emotion": 3,
+      "foreground": "hugh/torsos-09.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 200,
+      "yCX": 22
+    },
+    {
+      "emotion": 4,
+      "foreground": "hugh/torsos-10.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 137,
+      "yCX": 26
+    },
+    {
+      "emotion": 6,
+      "foreground": "hugh/torsos-11.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 157,
+      "yCX": 35
+    }
+  ],
+  "type": 2
+}

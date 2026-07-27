@@ -1,0 +1,121 @@
+{
+  "bodies": [
+    {
+      "emotion": 11,
+      "foreground": "jordan/bodies-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 12,
+      "foreground": "jordan/bodies-01.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 2,
+      "foreground": "jordan/bodies-02.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 6,
+      "foreground": "jordan/bodies-03.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 3,
+      "foreground": "jordan/bodies-04.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 8,
+      "foreground": "jordan/bodies-05.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 10,
+      "foreground": "jordan/bodies-06.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 9,
+      "foreground": "jordan/bodies-07.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 1,
+      "foreground": "jordan/bodies-08.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 9,
+      "foreground": "jordan/bodies-09.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 4,
+      "foreground": "jordan/bodies-10.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 9,
+      "foreground": "jordan/bodies-11.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 7,
+      "foreground": "jordan/bodies-12.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 5,
+      "foreground": "jordan/bodies-13.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    }
+  ],
+  "faces": [],
+  "flags": 5,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [],
+  "type": 1
+}

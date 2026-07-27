@@ -1,19 +1,20 @@
 # Comic Chat: Deterministic PNG Comic Strips
 
-Turn a small JSON scene plan into a static comic strip using the historical Comic Chat artwork, with no image model or chat server involved.
+Turn a small JSON scene plan into a static Comic Chat-style strip using a bundled, portable rendition of the historical Microsoft artwork. There is no image model, chat server, or network dependency at render time.
 
 ## Why Install This Skill
 
-Comic Chat's original art is charming but difficult to reuse: avatars are stored as old AVB files with embedded bitmaps, and complex face and torso records need source-defined composition. This skill provides a command-line renderer that does that work locally and records non-sensitive provenance in the finished PNG.
+The original Comic Chat art is charming but hard to reuse: v2.5 backdrops and avatars live in proprietary BGB and AVB containers, and complex characters need source-defined face, torso, mask, and layer composition. This skill bundles the converted v2.5 beta 1 art as PNG layers and JSON manifests, then renders it deterministically.
 
-Use it for screenshots, documentation illustrations, workshop handouts, or reproducible visual stories. You define panels, dialogue, and character placement in JSON; the renderer produces the same PNG from the same scene and assets.
+Use it for screenshots, documentation illustrations, workshop handouts, or reproducible visual stories. You define panels, dialogue, and character placement in JSON; the renderer produces the same PNG from the same scene and bundled assets.
 
 ## What You Get
 
 | Contents | Provides |
 |---|---|
-| `scripts/render_comic.py` | Pillow renderer and AVB embedded-DIB extractor |
-| `scripts/fetch_assets.py` | Pinned, cache-controlled upstream asset setup |
+| `assets/v2.5-beta-1/` | Bundled PNG backdrops, PNG avatar layers, JSON manifests, and upstream license |
+| `scripts/render_comic.py` | Deterministic Pillow renderer for the bundled pack |
+| `scripts/convert_art.py` | Reproducible BGB/AVB-to-PNG conversion from the pinned Microsoft source |
 | `examples/scene.json` | Runnable three-panel, two-speaker scene |
 | `references/` | Scene contract, source lineage, and licensing notes |
 | `evals/evals.json` | Portable output-quality cases |
@@ -22,21 +23,23 @@ Use it for screenshots, documentation illustrations, workshop handouts, or repro
 
 ```sh
 python3 -m pip install Pillow
-python3 scripts/fetch_assets.py --cache-dir "$HOME/.cache/comic-chat"
-python3 scripts/render_comic.py --assets-dir "$HOME/.cache/comic-chat/source/v1.0-pre-modern/comicart" --scene examples/scene.json --output comic.png
+python3 scripts/render_comic.py \
+  --assets-dir assets/v2.5-beta-1 \
+  --scene examples/scene.json \
+  --output comic.png
 ```
 
-`fetch_assets.py` creates or updates the pinned archive checkout at `$HOME/.cache/comic-chat/source`; use a cache directory you control. The render command writes `comic.png` and prints the selected asset provenance. PNG metadata stores relative asset names and digests plus the pinned upstream source label, never your local asset path.
+The render command writes `comic.png` and prints selected-asset provenance. PNG metadata records relative asset names and SHA-256 digests plus the pinned Microsoft source label, never your local asset path.
 
 ## Triggers
 
 - Render a static Comic Chat-style PNG strip.
-- Compose a panel scene from Comic Chat avatars, face art, and backdrops.
-- Extract an embedded DIB from a Comic Chat AVB asset for a reproducible illustration.
+- Compose a panel scene from bundled Comic Chat avatars, face art, and backdrops.
+- Convert Microsoft Comic Chat v2.5 BGB or AVB source art into reusable PNG assets.
 
 ## Requirements
 
 - Python 3.9 or newer
 - Pillow (`python3 -m pip install Pillow`)
-- Git and network access only when running `fetch_assets.py`
-- A local asset tree supplied through `--assets-dir`
+- No network access for rendering with the bundled pack
+- Git and network access only when obtaining the upstream source to regenerate assets

@@ -1,0 +1,129 @@
+{
+  "bodies": [
+    {
+      "emotion": 5,
+      "foreground": "connor/bodies-00.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 9,
+      "foreground": "connor/bodies-01.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 8,
+      "foreground": "connor/bodies-02.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 3,
+      "foreground": "connor/bodies-03.png",
+      "intensity": 153,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 3,
+      "foreground": "connor/bodies-04.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 1,
+      "foreground": "connor/bodies-05.png",
+      "intensity": 153,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 6,
+      "foreground": "connor/bodies-06.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 7,
+      "foreground": "connor/bodies-07.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 1,
+      "foreground": "connor/bodies-08.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 8,
+      "foreground": "connor/bodies-09.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 5,
+      "foreground": "connor/bodies-10.png",
+      "intensity": 127,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 1,
+      "foreground": "connor/bodies-11.png",
+      "intensity": 76,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 9,
+      "foreground": "connor/bodies-12.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 2,
+      "foreground": "connor/bodies-13.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    },
+    {
+      "emotion": 9,
+      "foreground": "connor/bodies-14.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 133,
+      "yCX": 131
+    }
+  ],
+  "faces": [],
+  "flags": 0,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [],
+  "type": 1
+}

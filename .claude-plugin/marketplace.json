@@ -129,7 +129,7 @@
         "./comic-chat"
       ],
       "strict": false,
-      "description": "Render deterministic PNG comic strips from scene JSON using the historical Microsoft Comic Chat backdrop and avatar art. Use when creating a static Comic Chat-style comic panel or strip from supplied assets; do not use for a chat application, IRC client, generative image creation, or animated video."
+      "description": "Render deterministic PNG comic strips from scene JSON using bundled historical Microsoft Comic Chat art. Use for a static Comic Chat-style panel or strip, not a chat application, IRC client, image generation, or animation."
     },
     {
       "name": "confluence-cli",

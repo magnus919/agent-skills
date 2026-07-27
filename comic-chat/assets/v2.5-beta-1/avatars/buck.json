@@ -1,0 +1,254 @@
+{
+  "bodies": [],
+  "faces": [
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 9,
+      "foreground": "buck/faces-00.png",
+      "intensity": 0,
+      "mask": "buck/faces-00-mask.png",
+      "xCX": 54,
+      "yCX": 156
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 5,
+      "foreground": "buck/faces-01.png",
+      "intensity": 255,
+      "mask": "buck/faces-01-mask.png",
+      "xCX": 50,
+      "yCX": 150
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 6,
+      "foreground": "buck/faces-02.png",
+      "intensity": 255,
+      "mask": "buck/faces-02-mask.png",
+      "xCX": 58,
+      "yCX": 156
+    },
+    {
+      "delta_xCX": 1,
+      "delta_yCX": 0,
+      "emotion": 7,
+      "foreground": "buck/faces-03.png",
+      "intensity": 255,
+      "mask": "buck/faces-03-mask.png",
+      "xCX": 50,
+      "yCX": 153
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 8,
+      "foreground": "buck/faces-04.png",
+      "intensity": 255,
+      "mask": "buck/faces-04-mask.png",
+      "xCX": 56,
+      "yCX": 156
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 0,
+      "emotion": 1,
+      "foreground": "buck/faces-05.png",
+      "intensity": 255,
+      "mask": "buck/faces-05-mask.png",
+      "xCX": 56,
+      "yCX": 152
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 0,
+      "emotion": 2,
+      "foreground": "buck/faces-06.png",
+      "intensity": 255,
+      "mask": "buck/faces-06-mask.png",
+      "xCX": 46,
+      "yCX": 148
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 3,
+      "foreground": "buck/faces-07.png",
+      "intensity": 255,
+      "mask": "buck/faces-07-mask.png",
+      "xCX": 57,
+      "yCX": 154
+    },
+    {
+      "delta_xCX": 1,
+      "delta_yCX": 0,
+      "emotion": 4,
+      "foreground": "buck/faces-08.png",
+      "intensity": 255,
+      "mask": "buck/faces-08-mask.png",
+      "xCX": 54,
+      "yCX": 154
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 1,
+      "foreground": "buck/faces-09.png",
+      "intensity": 127,
+      "mask": "buck/faces-09-mask.png",
+      "xCX": 54,
+      "yCX": 160
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 4,
+      "foreground": "buck/faces-10.png",
+      "intensity": 127,
+      "mask": "buck/faces-10-mask.png",
+      "xCX": 51,
+      "yCX": 152
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 0,
+      "emotion": 6,
+      "foreground": "buck/faces-11.png",
+      "intensity": 127,
+      "mask": "buck/faces-11-mask.png",
+      "xCX": 58,
+      "yCX": 149
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": 0,
+      "emotion": 9,
+      "foreground": "buck/faces-12.png",
+      "intensity": 0,
+      "mask": "buck/faces-12-mask.png",
+      "xCX": 52,
+      "yCX": 157
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 9,
+      "foreground": "buck/faces-13.png",
+      "intensity": 0,
+      "mask": "buck/faces-13-mask.png",
+      "xCX": 55,
+      "yCX": 157
+    }
+  ],
+  "flags": 5,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [
+    {
+      "emotion": 9,
+      "foreground": "buck/torsos-00.png",
+      "intensity": 0,
+      "mask": "buck/torsos-00-mask.png",
+      "xCX": 58,
+      "yCX": 14
+    },
+    {
+      "emotion": 5,
+      "foreground": "buck/torsos-01.png",
+      "intensity": 255,
+      "mask": "buck/torsos-01-mask.png",
+      "xCX": 62,
+      "yCX": 14
+    },
+    {
+      "emotion": 7,
+      "foreground": "buck/torsos-02.png",
+      "intensity": 255,
+      "mask": "buck/torsos-02-mask.png",
+      "xCX": 64,
+      "yCX": 18
+    },
+    {
+      "emotion": 6,
+      "foreground": "buck/torsos-03.png",
+      "intensity": 255,
+      "mask": "buck/torsos-03-mask.png",
+      "xCX": 64,
+      "yCX": 18
+    },
+    {
+      "emotion": 8,
+      "foreground": "buck/torsos-04.png",
+      "intensity": 255,
+      "mask": "buck/torsos-04-mask.png",
+      "xCX": 86,
+      "yCX": 26
+    },
+    {
+      "emotion": 10,
+      "foreground": "buck/torsos-05.png",
+      "intensity": 255,
+      "mask": "buck/torsos-05-mask.png",
+      "xCX": 74,
+      "yCX": 18
+    },
+    {
+      "emotion": 3,
+      "foreground": "buck/torsos-06.png",
+      "intensity": 255,
+      "mask": "buck/torsos-06-mask.png",
+      "xCX": 61,
+      "yCX": 17
+    },
+    {
+      "emotion": 2,
+      "foreground": "buck/torsos-07.png",
+      "intensity": 255,
+      "mask": "buck/torsos-07-mask.png",
+      "xCX": 61,
+      "yCX": 17
+    },
+    {
+      "emotion": 3,
+      "foreground": "buck/torsos-08.png",
+      "intensity": 127,
+      "mask": "buck/torsos-08-mask.png",
+      "xCX": 61,
+      "yCX": 17
+    },
+    {
+      "emotion": 4,
+      "foreground": "buck/torsos-09.png",
+      "intensity": 255,
+      "mask": "buck/torsos-09-mask.png",
+      "xCX": 50,
+      "yCX": 21
+    },
+    {
+      "emotion": 1,
+      "foreground": "buck/torsos-10.png",
+      "intensity": 255,
+      "mask": "buck/torsos-10-mask.png",
+      "xCX": 74,
+      "yCX": 17
+    },
+    {
+      "emotion": 12,
+      "foreground": "buck/torsos-11.png",
+      "intensity": 255,
+      "mask": "buck/torsos-11-mask.png",
+      "xCX": 60,
+      "yCX": 26
+    },
+    {
+      "emotion": 11,
+      "foreground": "buck/torsos-12.png",
+      "intensity": 255,
+      "mask": "buck/torsos-12-mask.png",
+      "xCX": 38,
+      "yCX": 23
+    }
+  ],
+  "type": 2
+}

@@ -1,0 +1,17 @@
+{
+  "bodies": [
+    {
+      "emotion": 9,
+      "foreground": "glenda/bodies-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 152,
+      "yCX": 70
+    }
+  ],
+  "faces": [],
+  "flags": 0,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [],
+  "type": 1
+}

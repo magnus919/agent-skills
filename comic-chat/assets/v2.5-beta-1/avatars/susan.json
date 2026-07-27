@@ -1,0 +1,298 @@
+{
+  "bodies": [],
+  "faces": [
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 1,
+      "foreground": "susan/faces-00.png",
+      "intensity": 178,
+      "mask": null,
+      "xCX": 99,
+      "yCX": 137
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 2,
+      "foreground": "susan/faces-01.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 93,
+      "yCX": 145
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 4,
+      "foreground": "susan/faces-02.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 100,
+      "yCX": 146
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 6,
+      "foreground": "susan/faces-03.png",
+      "intensity": 178,
+      "mask": null,
+      "xCX": 105,
+      "yCX": 147
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 5,
+      "foreground": "susan/faces-04.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 99,
+      "yCX": 131
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 2,
+      "foreground": "susan/faces-05.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 86,
+      "yCX": 135
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 9,
+      "foreground": "susan/faces-06.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 93,
+      "yCX": 150
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 1,
+      "foreground": "susan/faces-07.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 87,
+      "yCX": 129
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 9,
+      "foreground": "susan/faces-08.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 117,
+      "yCX": 155
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 1,
+      "foreground": "susan/faces-09.png",
+      "intensity": 229,
+      "mask": null,
+      "xCX": 131,
+      "yCX": 153
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 8,
+      "foreground": "susan/faces-10.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 113,
+      "yCX": 148
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 6,
+      "foreground": "susan/faces-11.png",
+      "intensity": 229,
+      "mask": null,
+      "xCX": 117,
+      "yCX": 155
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 9,
+      "foreground": "susan/faces-12.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 124,
+      "yCX": 149
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 7,
+      "foreground": "susan/faces-13.png",
+      "intensity": 229,
+      "mask": null,
+      "xCX": 123,
+      "yCX": 153
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 1,
+      "foreground": "susan/faces-14.png",
+      "intensity": 25,
+      "mask": null,
+      "xCX": 87,
+      "yCX": 125
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 6,
+      "foreground": "susan/faces-15.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 90,
+      "yCX": 125
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 9,
+      "foreground": "susan/faces-16.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 119
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 1,
+      "foreground": "susan/faces-17.png",
+      "intensity": 25,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 119
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 9,
+      "foreground": "susan/faces-18.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 80,
+      "yCX": 130
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": -9,
+      "emotion": 1,
+      "foreground": "susan/faces-19.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 89,
+      "yCX": 127
+    }
+  ],
+  "flags": 2,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [
+    {
+      "emotion": 9,
+      "foreground": "susan/torsos-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 129,
+      "yCX": 10
+    },
+    {
+      "emotion": 12,
+      "foreground": "susan/torsos-01.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 93,
+      "yCX": 11
+    },
+    {
+      "emotion": 4,
+      "foreground": "susan/torsos-02.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 99,
+      "yCX": 11
+    },
+    {
+      "emotion": 11,
+      "foreground": "susan/torsos-03.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 73,
+      "yCX": 11
+    },
+    {
+      "emotion": 9,
+      "foreground": "susan/torsos-04.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 103,
+      "yCX": 10
+    },
+    {
+      "emotion": 9,
+      "foreground": "susan/torsos-05.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 90,
+      "yCX": 12
+    },
+    {
+      "emotion": 9,
+      "foreground": "susan/torsos-06.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 78,
+      "yCX": 10
+    },
+    {
+      "emotion": 9,
+      "foreground": "susan/torsos-07.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 73,
+      "yCX": 10
+    },
+    {
+      "emotion": 14,
+      "foreground": "susan/torsos-08.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 145,
+      "yCX": 13
+    },
+    {
+      "emotion": 10,
+      "foreground": "susan/torsos-09.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 125,
+      "yCX": 101
+    },
+    {
+      "emotion": 6,
+      "foreground": "susan/torsos-10.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 91,
+      "yCX": 11
+    }
+  ],
+  "type": 2
+}

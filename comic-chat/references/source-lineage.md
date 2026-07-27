@@ -1,7 +1,16 @@
 # Source Lineage
 
-The development assets are from Microsoft `comic-chat`, revision `48a162249484ab8d116c243e8203b0956d350c09`, specifically `v1.0-pre-modern/comicart`. The fetch script pins that revision by default and reports the resolved commit after checkout.
+The bundled assets derive from Microsoft’s [`comic-chat`](https://github.com/microsoft/comic-chat) repository at revision `48a162249484ab8d116c243e8203b0956d350c09`, using `v2.5-beta-1/comicart`. `assets/LICENSE` preserves the upstream MIT license and copyright notice.
 
-The AVB layout is grounded in `v1.0-pre-modern/avatario.h` and `avatario.cpp`: the six-byte header is magic (`0x81`), avatar type, and version; keys precede simple-body, complex-face, and complex-torso records. Each 35- or 43-byte record begins with foreground, transparency-mask, and aura offsets. Complex records also carry the signed coordinates used by `CBodyDouble::GetBodyBox` to compose face and torso. `avatar.cpp` seeks to those offsets and loads a `CDIB`. `dib.cpp` validates the `BM` file header and reads its declared size.
+`convert_art.py` converts every v2.5 BGB backdrop into a lossless PNG and every v2.5 AVB avatar into PNG foreground/mask layers plus a JSON manifest. The source format uses magic `0x8181`, zlib-compressed DIB pixels, source palette records, and an offset-adjustment record. The converter validates headers, dimensions, palette encoding, offsets, and decompressed byte counts before writing PNG output.
 
-The renderer implements this narrow, best-effort path. It accepts complete embedded BMP/DIB data only and supports Pillow-decodable bitmap modes. For each complex pose, it applies the source order from `bodycam.cpp:469-494` directly to the existing panel pixels: an enabled face mask requires `HEADMASK`, an enabled torso mask requires `TORSOMASK`, and `TORSOFIRST` controls torso/head order. The mask uses channel-wise `MERGEPAINT` (`destination OR NOT mask`), followed by the foreground's channel-wise `SRCAND` (`destination AND foreground`). Consequently, white foreground pixels preserve the panel backdrop and black line pixels remain black instead of producing an opaque white bitmap rectangle. Scaling, flip, and panel clipping are applied before these operations. Simple-avatar drawing does not apply masks because `CBodySingle::DrawBody` draws its foreground directly. It does not emulate every legacy palette, RLE, aura, or panel-layout behavior. A named `fc_*.bmp` asset is the explicit fallback when AVB extraction fails; it remains separately documented ordinary RGBA composition rather than AVB GDI raster emulation.
+The renderer reads only the bundled PNGs and manifests at runtime. For complex avatars it preserves source layer coordinates, `HEADMASK`, `TORSOMASK`, and `TORSOFIRST` order, using the documented `MERGEPAINT` then `SRCAND` behavior. It is a narrow, deterministic renderer rather than a claim of pixel-perfect Windows-app emulation.
+
+To regenerate the pack from a controlled checkout of the pinned source:
+
+```sh
+python3 scripts/convert_art.py \
+  --source-dir /path/to/comic-chat/v2.5-beta-1/comicart \
+  --output-dir assets/v2.5-beta-1/backdrop \
+  --avatars-output-dir assets/v2.5-beta-1/avatars
+```

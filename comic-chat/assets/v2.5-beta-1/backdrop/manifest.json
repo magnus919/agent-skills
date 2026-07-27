@@ -1,0 +1,30 @@
+{
+  "buckroom.bgb": {
+    "copyright": "Copyright \u00a9 1996, 1997, 1998 Microsoft Corporation",
+    "png": "buckroom.png"
+  },
+  "clouds.bgb": {
+    "copyright": "Copyright \u00a9 1996, 1997, 1998 Microsoft Corporation",
+    "png": "clouds.png"
+  },
+  "field.bgb": {
+    "copyright": "Copyright \u00a9 1996, 1997, 1998 Microsoft Corporation",
+    "png": "field.png"
+  },
+  "pastoral.bgb": {
+    "copyright": "Copyright \u00a9 1996, 1997, 1998 Microsoft Corporation",
+    "png": "pastoral.png"
+  },
+  "room.bgb": {
+    "copyright": "Copyright \u00a9 1996, 1997, 1998 Microsoft Corporation",
+    "png": "room.png"
+  },
+  "space.bgb": {
+    "copyright": "Copyright \u00a9 1996, 1997, 1998 Microsoft Corporation",
+    "png": "space.png"
+  },
+  "yellow.bgb": {
+    "copyright": "Copyright \u00a9 1996, 1997, 1998 Microsoft Corporation",
+    "png": "yellow.png"
+  }
+}

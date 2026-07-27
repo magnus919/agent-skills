@@ -1,0 +1,208 @@
+{
+  "bodies": [],
+  "faces": [
+    {
+      "delta_xCX": 2,
+      "delta_yCX": -6,
+      "emotion": 9,
+      "foreground": "lance/faces-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 89,
+      "yCX": 129
+    },
+    {
+      "delta_xCX": 3,
+      "delta_yCX": -4,
+      "emotion": 6,
+      "foreground": "lance/faces-01.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 85,
+      "yCX": 139
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": -4,
+      "emotion": 2,
+      "foreground": "lance/faces-02.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 85,
+      "yCX": 137
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": -5,
+      "emotion": 2,
+      "foreground": "lance/faces-03.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 93,
+      "yCX": 140
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": -4,
+      "emotion": 4,
+      "foreground": "lance/faces-04.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 67,
+      "yCX": 124
+    },
+    {
+      "delta_xCX": 2,
+      "delta_yCX": -4,
+      "emotion": 9,
+      "foreground": "lance/faces-05.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 67,
+      "yCX": 124
+    },
+    {
+      "delta_xCX": 4,
+      "delta_yCX": -9,
+      "emotion": 5,
+      "foreground": "lance/faces-06.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 77,
+      "yCX": 125
+    },
+    {
+      "delta_xCX": 4,
+      "delta_yCX": -6,
+      "emotion": 3,
+      "foreground": "lance/faces-07.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 137
+    },
+    {
+      "delta_xCX": 4,
+      "delta_yCX": -6,
+      "emotion": 9,
+      "foreground": "lance/faces-08.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 137
+    },
+    {
+      "delta_xCX": 4,
+      "delta_yCX": -7,
+      "emotion": 3,
+      "foreground": "lance/faces-09.png",
+      "intensity": 153,
+      "mask": null,
+      "xCX": 83,
+      "yCX": 126
+    },
+    {
+      "delta_xCX": 4,
+      "delta_yCX": -7,
+      "emotion": 9,
+      "foreground": "lance/faces-10.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 83,
+      "yCX": 126
+    }
+  ],
+  "flags": 5,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [
+    {
+      "emotion": 9,
+      "foreground": "lance/torsos-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 95,
+      "yCX": 16
+    },
+    {
+      "emotion": 12,
+      "foreground": "lance/torsos-01.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 100,
+      "yCX": 19
+    },
+    {
+      "emotion": 11,
+      "foreground": "lance/torsos-02.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 73,
+      "yCX": 17
+    },
+    {
+      "emotion": 9,
+      "foreground": "lance/torsos-03.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 18
+    },
+    {
+      "emotion": 6,
+      "foreground": "lance/torsos-04.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 74,
+      "yCX": 18
+    },
+    {
+      "emotion": 14,
+      "foreground": "lance/torsos-05.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 160,
+      "yCX": 12
+    },
+    {
+      "emotion": 10,
+      "foreground": "lance/torsos-06.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 94,
+      "yCX": 51
+    },
+    {
+      "emotion": 6,
+      "foreground": "lance/torsos-07.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 132,
+      "yCX": 24
+    },
+    {
+      "emotion": 13,
+      "foreground": "lance/torsos-08.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 137,
+      "yCX": 17
+    },
+    {
+      "emotion": 17,
+      "foreground": "lance/torsos-09.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 109,
+      "yCX": 17
+    },
+    {
+      "emotion": 15,
+      "foreground": "lance/torsos-10.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 82,
+      "yCX": 7
+    }
+  ],
+  "type": 2
+}

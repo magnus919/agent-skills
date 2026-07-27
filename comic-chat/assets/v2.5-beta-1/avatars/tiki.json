@@ -1,0 +1,306 @@
+{
+  "bodies": [],
+  "faces": [
+    {
+      "delta_xCX": -2,
+      "delta_yCX": -2,
+      "emotion": 5,
+      "foreground": "tiki/faces-00.png",
+      "intensity": 153,
+      "mask": null,
+      "xCX": 64,
+      "yCX": 156
+    },
+    {
+      "delta_xCX": 6,
+      "delta_yCX": -1,
+      "emotion": 2,
+      "foreground": "tiki/faces-01.png",
+      "intensity": 229,
+      "mask": null,
+      "xCX": 65,
+      "yCX": 155
+    },
+    {
+      "delta_xCX": 6,
+      "delta_yCX": -1,
+      "emotion": 9,
+      "foreground": "tiki/faces-02.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 65,
+      "yCX": 155
+    },
+    {
+      "delta_xCX": 7,
+      "delta_yCX": -11,
+      "emotion": 4,
+      "foreground": "tiki/faces-03.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 89,
+      "yCX": 155
+    },
+    {
+      "delta_xCX": 7,
+      "delta_yCX": -11,
+      "emotion": 5,
+      "foreground": "tiki/faces-04.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 89,
+      "yCX": 155
+    },
+    {
+      "delta_xCX": 10,
+      "delta_yCX": 10,
+      "emotion": 2,
+      "foreground": "tiki/faces-05.png",
+      "intensity": 178,
+      "mask": null,
+      "xCX": 79,
+      "yCX": 164
+    },
+    {
+      "delta_xCX": -8,
+      "delta_yCX": -12,
+      "emotion": 4,
+      "foreground": "tiki/faces-06.png",
+      "intensity": 229,
+      "mask": null,
+      "xCX": 63,
+      "yCX": 150
+    },
+    {
+      "delta_xCX": -8,
+      "delta_yCX": -12,
+      "emotion": 5,
+      "foreground": "tiki/faces-07.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 63,
+      "yCX": 150
+    },
+    {
+      "delta_xCX": -3,
+      "delta_yCX": -7,
+      "emotion": 1,
+      "foreground": "tiki/faces-08.png",
+      "intensity": 51,
+      "mask": null,
+      "xCX": 88,
+      "yCX": 157
+    },
+    {
+      "delta_xCX": -3,
+      "delta_yCX": -7,
+      "emotion": 9,
+      "foreground": "tiki/faces-09.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 88,
+      "yCX": 157
+    },
+    {
+      "delta_xCX": -5,
+      "delta_yCX": -4,
+      "emotion": 1,
+      "foreground": "tiki/faces-10.png",
+      "intensity": 229,
+      "mask": null,
+      "xCX": 71,
+      "yCX": 156
+    },
+    {
+      "delta_xCX": -5,
+      "delta_yCX": -4,
+      "emotion": 9,
+      "foreground": "tiki/faces-11.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 71,
+      "yCX": 156
+    },
+    {
+      "delta_xCX": 6,
+      "delta_yCX": -10,
+      "emotion": 8,
+      "foreground": "tiki/faces-12.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 94,
+      "yCX": 161
+    },
+    {
+      "delta_xCX": -4,
+      "delta_yCX": -3,
+      "emotion": 6,
+      "foreground": "tiki/faces-13.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 57,
+      "yCX": 173
+    },
+    {
+      "delta_xCX": -8,
+      "delta_yCX": 2,
+      "emotion": 7,
+      "foreground": "tiki/faces-14.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 72,
+      "yCX": 205
+    },
+    {
+      "delta_xCX": -5,
+      "delta_yCX": -4,
+      "emotion": 3,
+      "foreground": "tiki/faces-15.png",
+      "intensity": 204,
+      "mask": null,
+      "xCX": 78,
+      "yCX": 164
+    },
+    {
+      "delta_xCX": -5,
+      "delta_yCX": -4,
+      "emotion": 9,
+      "foreground": "tiki/faces-16.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 78,
+      "yCX": 164
+    },
+    {
+      "delta_xCX": -3,
+      "delta_yCX": 1,
+      "emotion": 1,
+      "foreground": "tiki/faces-17.png",
+      "intensity": 153,
+      "mask": null,
+      "xCX": 66,
+      "yCX": 185
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 3,
+      "emotion": 6,
+      "foreground": "tiki/faces-18.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 70,
+      "yCX": 177
+    },
+    {
+      "delta_xCX": 3,
+      "delta_yCX": -6,
+      "emotion": 9,
+      "foreground": "tiki/faces-19.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 87,
+      "yCX": 169
+    }
+  ],
+  "flags": 5,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [
+    {
+      "emotion": 9,
+      "foreground": "tiki/torsos-00.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 79,
+      "yCX": 16
+    },
+    {
+      "emotion": 6,
+      "foreground": "tiki/torsos-01.png",
+      "intensity": 102,
+      "mask": null,
+      "xCX": 79,
+      "yCX": 16
+    },
+    {
+      "emotion": 9,
+      "foreground": "tiki/torsos-02.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 40,
+      "yCX": 13
+    },
+    {
+      "emotion": 12,
+      "foreground": "tiki/torsos-03.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 66,
+      "yCX": 32
+    },
+    {
+      "emotion": 2,
+      "foreground": "tiki/torsos-04.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 66,
+      "yCX": 32
+    },
+    {
+      "emotion": 11,
+      "foreground": "tiki/torsos-05.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 57,
+      "yCX": 18
+    },
+    {
+      "emotion": 10,
+      "foreground": "tiki/torsos-06.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 102,
+      "yCX": 10
+    },
+    {
+      "emotion": 9,
+      "foreground": "tiki/torsos-07.png",
+      "intensity": 0,
+      "mask": null,
+      "xCX": 73,
+      "yCX": 24
+    },
+    {
+      "emotion": 8,
+      "foreground": "tiki/torsos-08.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 40,
+      "yCX": 12
+    },
+    {
+      "emotion": 6,
+      "foreground": "tiki/torsos-09.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 94,
+      "yCX": 6
+    },
+    {
+      "emotion": 7,
+      "foreground": "tiki/torsos-10.png",
+      "intensity": 255,
+      "mask": null,
+      "xCX": 112,
+      "yCX": 27
+    },
+    {
+      "emotion": 6,
+      "foreground": "tiki/torsos-11.png",
+      "intensity": 153,
+      "mask": null,
+      "xCX": 112,
+      "yCX": 27
+    }
+  ],
+  "type": 2
+}

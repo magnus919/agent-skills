@@ -83,6 +83,15 @@ class RendererTests(unittest.TestCase):
         with self.assertRaises(RENDERER.AssetError):
             RENDERER.read_embedded_bmp(b"BM\x40\x00\x00\x00", 0, "bad.avb")
 
+    def test_v25_avatar_magic_is_accepted(self):
+        data = bytearray(avb_bytes(RENDERER.TYPE_SIMPLE, 0, [{"color": "blue"}]))
+        data[:2] = struct.pack("<H", 0x8181)
+        with tempfile.TemporaryDirectory() as directory:
+            avatar = Path(directory) / "v25.avb"
+            avatar.write_bytes(data)
+            parsed = RENDERER.parse_avb(avatar)
+        self.assertEqual(parsed["type"], RENDERER.TYPE_SIMPLE)
+
     def test_simple_fixture_parses_and_renders(self):
         data = avb_bytes(RENDERER.TYPE_SIMPLE, 0, [{"color": "blue"}])
         with tempfile.TemporaryDirectory() as directory:
@@ -209,7 +218,7 @@ class RendererTests(unittest.TestCase):
                 assets = json.loads(image.text["comic_chat_assets"])
                 self.assertEqual(set(assets), {"backdrop/field.bmp"})
                 self.assertEqual(len(assets["backdrop/field.bmp"]), 64)
-                self.assertIn("v1.0-pre-modern", image.text["comic_chat_source"])
+                self.assertIn("v2.5-beta-1", image.text["comic_chat_source"])
 
     def test_balloon_treatments_are_visually_distinct(self):
         font = ImageFont.load_default()

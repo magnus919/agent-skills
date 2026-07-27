@@ -1,0 +1,262 @@
+{
+  "bodies": [],
+  "faces": [
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 9,
+      "foreground": "kirby/faces-00.png",
+      "intensity": 0,
+      "mask": "kirby/faces-00-mask.png",
+      "xCX": 30,
+      "yCX": 149
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 9,
+      "foreground": "kirby/faces-01.png",
+      "intensity": 0,
+      "mask": "kirby/faces-01-mask.png",
+      "xCX": 26,
+      "yCX": 149
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 9,
+      "foreground": "kirby/faces-02.png",
+      "intensity": 0,
+      "mask": "kirby/faces-02-mask.png",
+      "xCX": 27,
+      "yCX": 146
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 5,
+      "foreground": "kirby/faces-03.png",
+      "intensity": 127,
+      "mask": "kirby/faces-03-mask.png",
+      "xCX": 27,
+      "yCX": 146
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 8,
+      "foreground": "kirby/faces-04.png",
+      "intensity": 255,
+      "mask": "kirby/faces-04-mask.png",
+      "xCX": 28,
+      "yCX": 145
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 2,
+      "foreground": "kirby/faces-05.png",
+      "intensity": 255,
+      "mask": "kirby/faces-05-mask.png",
+      "xCX": 44,
+      "yCX": 132
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 8,
+      "foreground": "kirby/faces-06.png",
+      "intensity": 0,
+      "mask": "kirby/faces-06-mask.png",
+      "xCX": 44,
+      "yCX": 132
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 7,
+      "foreground": "kirby/faces-07.png",
+      "intensity": 255,
+      "mask": "kirby/faces-07-mask.png",
+      "xCX": 29,
+      "yCX": 145
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 6,
+      "foreground": "kirby/faces-08.png",
+      "intensity": 255,
+      "mask": "kirby/faces-08-mask.png",
+      "xCX": 26,
+      "yCX": 145
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 3,
+      "foreground": "kirby/faces-09.png",
+      "intensity": 255,
+      "mask": "kirby/faces-09-mask.png",
+      "xCX": 27,
+      "yCX": 145
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 4,
+      "foreground": "kirby/faces-10.png",
+      "intensity": 255,
+      "mask": "kirby/faces-10-mask.png",
+      "xCX": 29,
+      "yCX": 143
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 5,
+      "foreground": "kirby/faces-11.png",
+      "intensity": 255,
+      "mask": "kirby/faces-11-mask.png",
+      "xCX": 25,
+      "yCX": 145
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 1,
+      "foreground": "kirby/faces-12.png",
+      "intensity": 255,
+      "mask": "kirby/faces-12-mask.png",
+      "xCX": 26,
+      "yCX": 144
+    },
+    {
+      "delta_xCX": 0,
+      "delta_yCX": 0,
+      "emotion": 9,
+      "foreground": "kirby/faces-13.png",
+      "intensity": 0,
+      "mask": "kirby/faces-13-mask.png",
+      "xCX": 27,
+      "yCX": 142
+    }
+  ],
+  "flags": 5,
+  "format": "comic-chat-v25-avatar-assets/1",
+  "torsos": [
+    {
+      "emotion": 10,
+      "foreground": "kirby/torsos-00.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-00-mask.png",
+      "xCX": 56,
+      "yCX": 28
+    },
+    {
+      "emotion": 9,
+      "foreground": "kirby/torsos-01.png",
+      "intensity": 0,
+      "mask": "kirby/torsos-01-mask.png",
+      "xCX": 56,
+      "yCX": 19
+    },
+    {
+      "emotion": 9,
+      "foreground": "kirby/torsos-02.png",
+      "intensity": 0,
+      "mask": "kirby/torsos-02-mask.png",
+      "xCX": 56,
+      "yCX": 18
+    },
+    {
+      "emotion": 8,
+      "foreground": "kirby/torsos-03.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-03-mask.png",
+      "xCX": 49,
+      "yCX": 17
+    },
+    {
+      "emotion": 2,
+      "foreground": "kirby/torsos-04.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-04-mask.png",
+      "xCX": 54,
+      "yCX": 14
+    },
+    {
+      "emotion": 8,
+      "foreground": "kirby/torsos-05.png",
+      "intensity": 127,
+      "mask": "kirby/torsos-05-mask.png",
+      "xCX": 54,
+      "yCX": 14
+    },
+    {
+      "emotion": 7,
+      "foreground": "kirby/torsos-06.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-06-mask.png",
+      "xCX": 55,
+      "yCX": 82
+    },
+    {
+      "emotion": 6,
+      "foreground": "kirby/torsos-07.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-07-mask.png",
+      "xCX": 59,
+      "yCX": 21
+    },
+    {
+      "emotion": 3,
+      "foreground": "kirby/torsos-08.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-08-mask.png",
+      "xCX": 48,
+      "yCX": 17
+    },
+    {
+      "emotion": 4,
+      "foreground": "kirby/torsos-09.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-09-mask.png",
+      "xCX": 57,
+      "yCX": 23
+    },
+    {
+      "emotion": 5,
+      "foreground": "kirby/torsos-10.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-10-mask.png",
+      "xCX": 57,
+      "yCX": 14
+    },
+    {
+      "emotion": 1,
+      "foreground": "kirby/torsos-11.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-11-mask.png",
+      "xCX": 56,
+      "yCX": 18
+    },
+    {
+      "emotion": 12,
+      "foreground": "kirby/torsos-12.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-12-mask.png",
+      "xCX": 49,
+      "yCX": 21
+    },
+    {
+      "emotion": 11,
+      "foreground": "kirby/torsos-13.png",
+      "intensity": 255,
+      "mask": "kirby/torsos-13-mask.png",
+      "xCX": 59,
+      "yCX": 30
+    }
+  ],
+  "type": 2
+}
