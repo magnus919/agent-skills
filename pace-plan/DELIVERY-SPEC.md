@@ -340,12 +340,12 @@ Rules:
 
 | # | Assumption / Question | Impact if Wrong | Resolution |
 |---|---|---|---|
-| 1 | The user wants a full remediation and delivery spec, not immediate implementation | Work may exceed the intended scope | This artifact stops at Gate 1 pending review |
-| 2 | `pace-planning/` contains only artifacts created during the flawed research pass | Cleanup could delete someone else's work | Verify provenance and current worktree before deletion |
-| 3 | A tracked issue-specific evidence file is desirable inside the final `pace-plan` skill | A public skill may carry unnecessary research process detail | At decomposition, choose focused `references/evidence-base.md` only if it materially helps future maintenance; otherwise preserve evidence in the approved issue/PR record |
-| 4 | The existing GitHub comment should be corrected rather than silently deleted | The owner may prefer deletion or a follow-up correction | Ask for explicit target/scope/rollback approval and preferred correction mode |
+| 1 | The user wants a full remediation and delivery spec, not immediate implementation | Work may exceed the intended scope | Resolved: the user subsequently authorized implementation through the neckbeard workflow |
+| 2 | `pace-planning/` contains only artifacts created during the flawed research pass | Cleanup could delete someone else's work | Resolved: provenance was verified, unique direct evidence was migrated, and the scratch tree was removed |
+| 3 | A tracked issue-specific evidence file is desirable inside the final `pace-plan` skill | A public skill may carry unnecessary research process detail | Resolved: `references/evidence-base.md` was retained because it materially bounds normative source claims |
+| 4 | The existing GitHub comment should be corrected rather than silently deleted | The owner may prefer deletion or a follow-up correction | Resolved: the owner approved the exact reversible edit, which was published and refetched for verification |
 | 5 | CISA's publication date and footer date differ (`2024` URL/publication, `As of 2023` footer) | Citation metadata could be misleading | Record both publication listing and document footer metadata |
-| 6 | No executable script is needed for the skill | A future concrete need may emerge | Keep scripts out of scope until a demonstrated repetitive computation requires one |
+| 6 | No executable script is needed for the skill | A future concrete need may emerge | Resolved for v1: keep scripts out of scope until a demonstrated repetitive computation requires one |
 
 ## Gate 1 Review Checklist
 

@@ -2,7 +2,7 @@
 
 ## Source Specification
 
-- **Spec:** `DELIVERY-SPEC.md` version 0.1.0
+- **Spec:** `DELIVERY-SPEC.md` version 1.0.0
 - **Spec review gate:** Approved
 - **Verification author:** OpenCode
 - **Verification date:** 2026-07-26 local / 2026-07-27 UTC
