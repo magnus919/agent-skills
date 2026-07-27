@@ -76,7 +76,7 @@ Compare the running object with every potential writer. Do not edit a provisione
 
 ### 3. Validate semantics before presentation
 
-Run representative queries over a known time range. Confirm metric/log/trace type, units, labels, aggregation, cardinality, null/no-data behavior, time zone, refresh interval, and query cost. For repeated panels or multi-dimensional alerts, bound the dimension set and prove it remains actionable.
+Run representative queries over a known time range. Confirm metric/log/trace type, units, labels, aggregation, cardinality, null/no-data behavior, time zone, refresh interval, and query cost. Derive defaults, thresholds, refresh cadence, top-N limits, and minimum-traffic cutoffs from target evidence, approved policy, or an explicit measurement objective; otherwise leave them open rather than choosing plausible values. For repeated panels or multi-dimensional alerts, bound the dimension set and prove it remains actionable.
 
 ### 4. Preview and apply through the owner
 
