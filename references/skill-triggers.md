@@ -6,7 +6,6 @@ Each skill's `description` field is the canonical routing contract. This conveni
 |---|---|
 | "API design", "design an API", "API contract", "OpenAPI", "AsyncAPI", "GraphQL schema", "REST API", "RPC API", "webhook design", "event schema", "streaming API", "API versioning", "API deprecation", "API migration", "API compatibility", "idempotency key", "pagination design", "API error taxonomy" | [api-design-and-evolution](../api-design-and-evolution/SKILL.md) |
 | "build a CLI", "make a CLI tool", "agent-friendly CLI", "add --json flag" | [cli-builder](../cli-builder/SKILL.md) |
-| "Comic Chat", "comic strip PNG", "Comic Chat avatar", "AVB avatar", "render comic panel", "comic scene JSON", "comic backdrop" | [comic-chat](../comic-chat/SKILL.md) |
 | "SDD", "spec-driven development", "specification driven", "software factory", "spec first", "spec as code", "SPEC.md template", "write a spec for AI", "AI code generation pipeline", "acceptance criteria", "quality gates", "phase gate review", "BDD for AI", "OpenAPI first", "executable specification" | [spec-driven-development](../spec-driven-development/SKILL.md) |
 | "debug this", "root cause", "why is this broken", "fix this bug" | [systematic-debugging](../systematic-debugging/SKILL.md) |
 | "Docker Compose", "docker compose", "compose.yaml", "multi-container", "healthcheck", "Compose Watch", "Compose profiles", "Compose networks", "Compose volumes", "Compose secrets", "Compose override" | [docker-compose](../docker-compose/SKILL.md) |
