@@ -60,10 +60,6 @@ Build and refactor CLI tools for AI agent consumption. 10 universal patterns (no
 
 Expert-level ICC profile color management for open-source workflows. Covers color science fundamentals (CIELAB, xyY, chromaticity), working space selection (sRGB, ProPhotoRGB, ACEScg, Rec.2020), ICC profile operations (convert, assign, extract, embed), gamut analysis, sRGB variant comparison, and color difference (dE) computation. Ships 6 Python scripts that wrap ImageMagick, ArgyllCMS, Exiftool, and LittleCMS; 5 reference files covering overview, operations, tool commands, working space data, and a full glossary. Distilled from Elle Stone's ninedegreesbelow.com and Bruce Lindbloom's color science resources.
 
-### [comic-chat](comic-chat/SKILL.md)
-
-Render deterministic PNG comic strips from scene JSON using historical Microsoft Comic Chat backdrop and avatar art. Includes a Pillow renderer, embedded-AVB DIB extraction, explicit face-BMP fallback, source-provenance metadata, and cache-controlled asset setup; it is not a chat application.
-
 ### [confluence-cli](confluence-cli/SKILL.md)
 
 Atlassian Confluence from the terminal. List spaces, browse pages, view content with body extraction, search with CQL, and create pages. Same API token as Jira.
