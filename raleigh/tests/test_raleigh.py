@@ -2656,6 +2656,15 @@ class PoliceTests(unittest.TestCase):
         self.assertTrue(all(result["failure_class"] == "schema_drift" for result in results))
         query.assert_not_called()
 
+    def test_canary_rejects_empty_police_query(self):
+        collection = {"type": "FeatureCollection", "features": []}
+        with patch("canary.police.resolve_layer_url", return_value="https://example.test/0"), patch(
+            "canary.arcgis.layer_fields", return_value=[{"name": "reported_date"}]
+        ), patch("canary.police.query_incidents", return_value=collection):
+            results = canary_lib.probe_police()
+        self.assertTrue(all(result["status"] == "fail" for result in results))
+        self.assertTrue(all(result["failure_class"] == "schema_drift" for result in results))
+
     def test_canary_fails_after_exhausted_transport_error(self):
         failure = [{
             "source": "test",

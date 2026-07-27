@@ -213,8 +213,8 @@ The following public service boundaries were exercised successfully on 2026-07-2
 
 ### Verification
 
-- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh.tests.test_raleigh.PoliceTests`: **34 tests passed**.
-- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **372 tests passed**.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh.tests.test_raleigh.PoliceTests`: **35 tests passed**.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **373 tests passed**.
 - `python3 -m ruff check raleigh/scripts/raleighlib/police.py`: passed.
 - `python3 scripts/validate-evals.py raleigh`: **12 eval manifests validated**.
 - `ruby scripts/validate-skills.rb`: **111 canonical skills validated**.
