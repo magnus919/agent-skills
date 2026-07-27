@@ -72,7 +72,7 @@ The exercised target is the local repository delivery boundary: skill structure,
 - Remove the `pace-plan` catalog entry and package, then rerun all generators if the skill is rejected before delivery.
 - Revisit path quality language if a retained primary source contradicts the current failure-domain interpretation.
 - Revise eval assertions after real model runs expose false passes or false failures.
-- Restore the original GitHub body from `/var/folders/gn/gpr8z9bn72z5kqm_fmjndj180000gn/T/opencode/issue-159-comment-5086185139-original.json` only if explicitly directed.
+- Restore the original GitHub body from the operator-local pre-mutation JSON backup only if explicitly directed; no machine-local path is part of the portable skill package.
 
 ## Status
 

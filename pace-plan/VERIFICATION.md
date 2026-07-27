@@ -113,7 +113,7 @@ The complete local `pace-plan` skill, documentation, templates, references, eval
 
 - **Target:** https://github.com/magnus919/agent-skills/issues/159#issuecomment-5086185139
 - **Approved scope:** Replace unsupported source claims, correct the typo, and remove invalid local-path references.
-- **Backup:** `/var/folders/gn/gpr8z9bn72z5kqm_fmjndj180000gn/T/opencode/issue-159-comment-5086185139-original.json`
+- **Backup:** An operator-local JSON copy of the original public comment was captured before mutation and intentionally not committed.
 - **Verification:** GitHub was fetched after publication, and the stored body matched the approved replacement exactly.
 
 ## Verification Limitations

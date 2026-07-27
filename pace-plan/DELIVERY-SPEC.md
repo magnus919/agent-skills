@@ -3,10 +3,10 @@
 ## Status
 
 - **Author:** OpenCode
-- **Version:** 0.1.0 (draft)
-- **Status:** Under Review
-- **Reviewed by:** Pending
-- **Gate verdict:** Pending
+- **Version:** 1.0.0
+- **Status:** Approved
+- **Reviewed by:** OpenCode plus independent issue/spec and safety/source review agents
+- **Gate verdict:** Approved
 
 ## Problem Statement
 
@@ -349,16 +349,17 @@ Rules:
 
 ## Gate 1 Review Checklist
 
-- [ ] Every acceptance criterion has a binary PASS/FAIL test.
-- [ ] Every review finding maps to at least one acceptance criterion.
-- [ ] External mutation remains separately approval-gated.
-- [ ] Source doctrine and design synthesis are explicitly distinguished.
-- [ ] Original issue requirements are represented without adding vendor-specific behavior.
-- [ ] Required README, references, templates, evals, and validation commands are covered.
-- [ ] Edge cases include missing tiers, shared dependencies, mismatched endpoints, absent authority, unsafe activation, inaccessible sources, and concurrent worktree changes.
+- [x] Every acceptance criterion has a binary PASS/FAIL test.
+- [x] Every review finding maps to at least one acceptance criterion.
+- [x] External mutation remains separately approval-gated.
+- [x] Source doctrine and design synthesis are explicitly distinguished.
+- [x] Original issue requirements are represented without adding vendor-specific behavior.
+- [x] Required README, references, templates, evals, and validation commands are covered.
+- [x] Edge cases include missing tiers, shared dependencies, mismatched endpoints, absent authority, unsafe activation, inaccessible sources, and concurrent worktree changes.
 
 ## Revision History
 
 | Version | Date | Author | Change |
 |---|---|---|---|
 | 0.1.0 | 2026-07-26 | OpenCode | Initial remediation and delivery specification |
+| 1.0.0 | 2026-07-26 | OpenCode | Approved after implementation, independent review, and repository-boundary verification |
