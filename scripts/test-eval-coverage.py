@@ -8,6 +8,7 @@ coverage-decrease detection, and threshold behavior.
 import json
 import io
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -278,6 +279,22 @@ class TestCoverageDecreased(unittest.TestCase):
         self.assertTrue(decreased)
         self.assertAlmostEqual(base_pct, 100.0)
         self.assertAlmostEqual(head_pct, 50.0)
+
+    def test_removing_eval_covered_skill_is_not_a_regression(self) -> None:
+        write_skill(self.repo, "retained")
+        write_skill(self.repo, "removed", evals=[make_case("c1")])
+        base = self._commit("one evaluated skill")
+        shutil.rmtree(Path(self.repo) / "removed")
+        self._commit("remove evaluated skill")
+        old_root = eval_coverage.ROOT
+        eval_coverage.ROOT = Path(self.repo)
+        try:
+            decreased, base_pct, head_pct = eval_coverage.coverage_decreased(base)
+        finally:
+            eval_coverage.ROOT = old_root
+        self.assertFalse(decreased)
+        self.assertAlmostEqual(base_pct, 0.0)
+        self.assertAlmostEqual(head_pct, 0.0)
 
     def test_replacing_valid_manifest_with_invalid_is_regression(self) -> None:
         write_skill(self.repo, "s1", evals=[make_case("c1")])

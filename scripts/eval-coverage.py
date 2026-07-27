@@ -181,16 +181,18 @@ def evaluate_ratchet(
 
 
 def coverage_decreased(base_ref_commit: str) -> tuple[bool, float, float]:
-    """Compare eval coverage between base_ref and HEAD.
+    """Compare schema-valid eval coverage for skills retained across revisions.
 
-    Returns (decreased, base_pct, head_pct).  Coverage is the percentage
-    of canonical skills that have a schema-valid v1 evals/evals.json.
+    Removed skills do not count as a regression; retained skills losing a
+    valid manifest do. New skills are governed by the modified-skill ratchet.
     """
     head_skills = find_skills()
-    head_with = sum(1 for s in head_skills if check_evals(s)[0])
-    head_pct = (head_with / len(head_skills) * 100) if head_skills else 0.0
 
+    # Compare only skills present at both revisions. Removing a skill should
+    # not count as a coverage regression, while removing or invalidating the
+    # eval manifest of a retained skill still must fail the ratchet.
     base_skill_dirs = set(find_skills_at(base_ref_commit))
+    retained_skill_dirs = base_skill_dirs & set(head_skills)
     base_with = 0
     archive = subprocess.run(
         ["git", "archive", "--format=tar", base_ref_commit, "--"],
@@ -207,12 +209,24 @@ def coverage_decreased(base_ref_commit: str) -> tuple[bool, float, float]:
             ["git", "add", "-f", "--all"], cwd=snapshot, check=True,
             capture_output=True,
         )
-        for skill_dir in base_skill_dirs:
+        for skill_dir in retained_skill_dirs:
             manifest = snapshot / skill_dir / "evals" / "evals.json"
             if validate_manifest(manifest, snapshot).states["schema_valid"] is True:
                 base_with += 1
 
-    base_pct = (base_with / len(base_skill_dirs) * 100) if base_skill_dirs else 0.0
+    # Use the same retained-skill population on both sides of the comparison.
+    # New and deleted skills are handled by their own ratchet rules.
+    head_with_retained = sum(
+        1 for skill_dir in retained_skill_dirs if check_evals(skill_dir)[0]
+    )
+    base_pct = (
+        base_with / len(retained_skill_dirs) * 100 if retained_skill_dirs else 0.0
+    )
+    head_pct = (
+        head_with_retained / len(retained_skill_dirs) * 100
+        if retained_skill_dirs
+        else 0.0
+    )
     return head_pct < base_pct, base_pct, head_pct
 
 
