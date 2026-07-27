@@ -267,6 +267,10 @@ COO methodology for process design, organizational scaling, operational metrics,
 
 CHRO methodology — organizational design (team topologies, span of control, reporting structures), talent strategy (make-vs-buy, skill taxonomies, succession planning), compensation frameworks (market benchmarking, equity design, leveling), culture architecture (values codification, rituals, psychological safety), organizational health metrics (eNPS, retention risk, engagement surveys), DEI strategy (inclusive design, equitable systems, belonging).
 
+### [pace-plan](pace-plan/SKILL.md)
+
+Build and maintain owner-approved Primary, Alternate, Contingency, and Emergency communications plans with explicit dependencies, authorities, transition triggers, check-ins, bounded exercises, troubleshooting evidence, and corrective actions. Preserves unknown local facts instead of inventing operational details or authority.
+
 ### [peertube](peertube/SKILL.md)
 
 PeerTube federated video platform from the terminal. Browse videos and channels, search across instances, view server info. OAuth2 login with token persistence. Set PEERTUBE_SERVER to point at any instance.
