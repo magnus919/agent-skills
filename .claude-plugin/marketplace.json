@@ -123,6 +123,15 @@
       "description": "Expert-level color management for ICC profiles, working spaces, gamut mapping, and color science. Use when inspecting ICC profiles, converting between color spaces, checking gamut clipping, validating well-behaved working spaces, or troubleshooting color workflow issues with ImageMagick, ArgyllCMS, Exiftool, or LittleCMS."
     },
     {
+      "name": "comic-chat",
+      "source": "./",
+      "skills": [
+        "./comic-chat"
+      ],
+      "strict": false,
+      "description": "Render deterministic PNG comic strips from scene JSON using the historical Microsoft Comic Chat backdrop and avatar art. Use when creating a static Comic Chat-style comic panel or strip from supplied assets; do not use for a chat application, IRC client, generative image creation, or animated video."
+    },
+    {
       "name": "confluence-cli",
       "source": "./",
       "skills": [

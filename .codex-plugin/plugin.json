@@ -35,6 +35,7 @@
     "./chief-of-staff-methodology",
     "./cli-builder",
     "./color-management",
+    "./comic-chat",
     "./confluence-cli",
     "./crewai",
     "./crowdsec",

@@ -1,0 +1,27 @@
+{
+  "width": 1200,
+  "height": 560,
+  "gutter": 14,
+  "panels": [
+    {
+      "backdrop": "field.bmp",
+      "caption": "A reproducible Comic Chat scene",
+      "characters": [
+        {"avatar": "bolo.avb", "face_pose": 10, "torso_pose": 10, "fallback_face": "fc_hap_s.bmp", "x": 0.06, "y": 0.45, "scale": 1.0, "say": "This is a PNG strip, not a chat app.", "balloon": "speech"}
+      ]
+    },
+    {
+      "backdrop": "pastoral.bmp",
+      "characters": [
+        {"avatar": "cro.avb", "face_pose": 12, "torso_pose": 12, "fallback_face": "fc_neu_s.bmp", "x": 0.42, "y": 0.34, "scale": 1.0, "flip": true, "say": "Every asset is recorded in the PNG.", "balloon": "thought"}
+      ]
+    },
+    {
+      "backdrop": "pastoral.bmp",
+      "characters": [
+        {"avatar": "bolo.avb", "face_pose": 10, "torso_pose": 10, "fallback_face": "fc_sho_s.bmp", "x": 0.08, "y": 0.45, "scale": 0.96, "say": "Source art stays visible.", "balloon": "shout"},
+        {"avatar": "cro.avb", "face_pose": 12, "torso_pose": 12, "fallback_face": "fc_neu_s.bmp", "x": 0.55, "y": 0.39, "scale": 0.72, "say": "quietly reproducible", "balloon": "whisper"}
+      ]
+    }
+  ]
+}
