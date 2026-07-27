@@ -204,17 +204,17 @@ The following public service boundaries were exercised successfully on 2026-07-2
 - Live metadata resolved NIBRS item `24c0b37fa9bb4e16ba8bcaa7e806c615` and CrimeMapper item `a1f2d9204a184404b5a4c7e0fdceb6d0` to queryable layer `0` with the expected date fields and query capabilities.
 - Both layers rejected bare epoch-millisecond date comparisons such as `reported_date >= 1700000000000` with `Invalid query parameters`, while the equivalent UTC `TIMESTAMP 'YYYY-MM-DD HH:MM:SS'` predicate succeeded. The working previous-day control did not add a date predicate.
 - Police date filters now use the same bounded ArcGIS timestamp-literal conversion already proven by the fire adapter. Raw user filter values are not logged.
-- The scheduled canary now runs one-record, date-filtered probes for NIBRS and CrimeMapper so this live contract is checked independently of mocked fixtures.
+- The scheduled canary now verifies the required date field and a non-empty one-record, date-filtered response for NIBRS and CrimeMapper so this live contract is checked independently of mocked fixtures. Exhausted transport failures also fail the workflow after bounded retries instead of producing a false-green run.
 
 ### Files changed
 
 - Updated `scripts/raleighlib/police.py`, `scripts/canary.py`, and `tests/test_raleigh.py`.
-- Added deterministic assertions for NIBRS and SRS timestamp predicates, out-of-range epochs, and both bounded canary calls.
+- Added deterministic assertions for NIBRS and SRS timestamp predicates, out-of-range epochs, both bounded canary calls, police schema drift, and exhausted canary transport failures.
 
 ### Verification
 
-- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh.tests.test_raleigh.PoliceTests`: **32 tests passed**.
-- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **370 tests passed**.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh.tests.test_raleigh.PoliceTests`: **34 tests passed**.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest raleigh/tests/test_raleigh.py`: **372 tests passed**.
 - `python3 -m ruff check raleigh/scripts/raleighlib/police.py`: passed.
 - `python3 scripts/validate-evals.py raleigh`: **12 eval manifests validated**.
 - `ruby scripts/validate-skills.rb`: **111 canonical skills validated**.

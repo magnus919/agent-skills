@@ -373,6 +373,27 @@ def probe_police() -> list[dict[str, Any]]:
     """Exercise bounded date-filtered queries against fixed RPD sources."""
     results: list[dict[str, Any]] = []
     for source_key in ("nibrs", "crimemapper-90d"):
+        layer_url, err = _probe_with_retry(police.resolve_layer_url, source_key)
+        if err:
+            results.append({"source": "police", "target": source_key, "status": "fail", **err})
+            continue
+        fields, err = _probe_with_retry(arcgis.layer_fields, layer_url)
+        if err:
+            results.append({"source": "police", "target": source_key, "status": "fail", **err})
+            continue
+        field_names = {
+            field.get("name") for field in fields if isinstance(field, dict)
+        }
+        if "reported_date" not in field_names:
+            results.append({
+                "source": "police",
+                "target": source_key,
+                "status": "fail",
+                "failure_class": "schema_drift",
+                "error": "missing required field: reported_date",
+                "attempt": 1,
+            })
+            continue
         collection, err = _probe_with_retry(
             police.query_incidents,
             source_key,
@@ -393,6 +414,16 @@ def probe_police() -> list[dict[str, Any]]:
                 "status": "fail",
                 "failure_class": "schema_drift",
                 "error": "expected GeoJSON FeatureCollection",
+                "attempt": 1,
+            })
+            continue
+        if not collection["features"]:
+            results.append({
+                "source": "police",
+                "target": source_key,
+                "status": "fail",
+                "failure_class": "schema_drift",
+                "error": "date-filtered query returned no records",
                 "attempt": 1,
             })
             continue
@@ -453,7 +484,7 @@ def run_canary() -> dict[str, Any]:
         else:
             durable_failures += 1
 
-    passed = durable_failures == 0
+    passed = durable_failures == 0 and transient_failures == 0
     report = {
         "canary": "raleigh-live-endpoint",
         "started_at": started,

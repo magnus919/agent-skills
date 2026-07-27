@@ -2635,8 +2635,10 @@ class PoliceTests(unittest.TestCase):
         self.assertIn("predates NIBRS", err.getvalue())
 
     def test_canary_probes_date_filtered_nibrs_and_crimemapper_queries(self):
-        collection = {"type": "FeatureCollection", "features": []}
-        with patch("canary.police.query_incidents", return_value=collection) as query:
+        collection = {"type": "FeatureCollection", "features": [{"properties": {}}]}
+        with patch("canary.police.resolve_layer_url", return_value="https://example.test/0"), patch(
+            "canary.arcgis.layer_fields", return_value=[{"name": "reported_date"}]
+        ), patch("canary.police.query_incidents", return_value=collection) as query:
             results = canary_lib.probe_police()
         self.assertEqual([result["target"] for result in results], ["nibrs", "crimemapper-90d"])
         self.assertTrue(all(result["status"] == "pass" for result in results))
@@ -2644,6 +2646,28 @@ class PoliceTests(unittest.TestCase):
         for call in query.call_args_list:
             self.assertEqual(call.kwargs["since_ms"], police.NIBRS_EPOCH_MS)
             self.assertEqual(call.kwargs["limit"], 1)
+
+    def test_canary_rejects_police_source_without_date_field(self):
+        with patch("canary.police.resolve_layer_url", return_value="https://example.test/0"), patch(
+            "canary.arcgis.layer_fields", return_value=[{"name": "OBJECTID"}]
+        ), patch("canary.police.query_incidents") as query:
+            results = canary_lib.probe_police()
+        self.assertTrue(all(result["status"] == "fail" for result in results))
+        self.assertTrue(all(result["failure_class"] == "schema_drift" for result in results))
+        query.assert_not_called()
+
+    def test_canary_fails_after_exhausted_transport_error(self):
+        failure = [{
+            "source": "test",
+            "target": "endpoint",
+            "status": "fail",
+            "failure_class": "transport_outage",
+            "error": "timed out",
+        }]
+        with patch.object(canary_lib, "ALL_PROBES", [("test", lambda: failure)]):
+            report = canary_lib.run_canary()
+        self.assertFalse(report["passed"])
+        self.assertEqual(report["summary"]["transient_failures"], 1)
 
 
 class FireTests(unittest.TestCase):
