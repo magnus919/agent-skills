@@ -34,6 +34,14 @@ Load this skill for executive-office work involving:
 - Institutional memory, leadership transitions, documented decisions, or commitments.
 - Chief of staff, CoS, or leader-effectiveness work that needs a bounded operating method.
 
+## When Not to Use
+
+Do not use this skill as a meeting-transcript action-item generator or a general
+backlog-capture mechanism. A recommendation, a discussion topic, or an inferred
+next step belongs in a briefing or decision record unless an accountable owner
+has confirmed a discrete commitment and a realistic due date. Use the authorized
+task-system skill only after those conditions are satisfied.
+
 ## What This Skill Provides
 
 This skill provides six methodology domains as progressive disclosure through
