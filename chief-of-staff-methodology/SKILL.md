@@ -34,6 +34,14 @@ Load this skill for executive-office work involving:
 - Institutional memory, leadership transitions, documented decisions, or commitments.
 - Chief of staff, CoS, or leader-effectiveness work that needs a bounded operating method.
 
+## When Not to Use
+
+Do not use this skill as a meeting-transcript action-item generator or a general
+backlog-capture mechanism. A recommendation, a discussion topic, or an inferred
+next step belongs in a briefing or decision record unless an accountable owner
+has confirmed a discrete commitment and a realistic due date. Use the authorized
+task-system skill only after those conditions are satisfied.
+
 ## What This Skill Provides
 
 This skill provides six methodology domains as progressive disclosure through
@@ -59,6 +67,34 @@ means; no specific profile, memory, calendar, or orchestration system is assumed
 3. Route ordinary work to its authorized owner. Keep direct, protected routes open for safety, ethics, legal, HR, fraud, retaliation, and whistleblowing concerns.
 4. Prepare options and trade-offs, then give a clearly labeled recommendation when the request calls for one. The accountable human reviews and decides.
 5. Record only decision-relevant material under the access, retention, correction, and handoff rules in the applicable reference.
+
+## Task Creation Discipline
+
+**Applicability:** Only when creating or updating tasks in an authorized task system.
+
+A task is a record of a concrete, documented commitment, not a place to store
+advice, aspirations, meeting summaries, inferred next steps, or recurring
+leadership habits. Create a task only when the source establishes all of the
+following:
+
+1. A discrete outcome or next action that can be completed or explicitly reviewed.
+2. An accountable owner who has made, confirmed, or accepted the commitment.
+3. A realistic due date grounded in an explicit deadline, an agreed review date,
+   or context that supports a specific date. Never invent a date merely to fill
+   a required field.
+4. Enough provenance in the task or linked record for the owner to understand
+   the commitment and correct it.
+
+Before creating the task, check all four conditions. If the source offers a
+recommendation, a general principle, or an inferred action without an owner or
+defensible due date, preserve it as a briefing observation or ask the accountable
+human to confirm the commitment and date. Do not create the task.
+
+When a task is created, include the owner and due date in the creation request,
+then read it back and verify both fields persisted. If either is absent or wrong,
+repair it before reporting success. A past deadline is a triage signal: surface
+it as overdue for an explicit reschedule, completion, or closure decision rather
+than silently assigning a new date.
 
 ## Accountable Human Authority
 

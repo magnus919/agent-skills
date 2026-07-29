@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "skill_name": "chief-of-staff-methodology",
+  "evals": [
+    {
+      "id": "documented-commitment-with-deadline",
+      "prompt": "In the meeting, Jordan said: ‘I will send the revised operating plan to Priya by 2026-08-07.’ Add it to our authorized task system.",
+      "expected_output": "A task for Jordan with a discrete action, a 2026-08-07 due date, and a link or citation to the meeting record; the agent reads it back to verify owner and date.",
+      "assertions": [
+        "Creates exactly one task with Jordan as the accountable owner.",
+        "The task has a due date of 2026-08-07.",
+        "The task states the discrete deliverable, revised operating plan.",
+        "The task preserves meeting provenance or links to the record.",
+        "The completion report confirms a post-creation read-back of the owner and due date."
+      ]
+    },
+    {
+      "id": "meeting-advice-is-not-a-task",
+      "prompt": "The retrospective suggested that senior engineers should join more customer conversations. Put the action items in our task system.",
+      "expected_output": "No task is created because the statement is a general recommendation without an accountable owner, a discrete committed action, or a due date. The agent retains it as a briefing observation or requests confirmation.",
+      "assertions": [
+        "Does not create a task from the recommendation.",
+        "Explains which task-creation conditions are missing.",
+        "Offers a non-task briefing or a request for an accountable owner and due date."
+      ]
+    },
+    {
+      "id": "commitment-without-date",
+      "prompt": "I committed to review the vendor proposal, but we did not agree on a deadline. Create a task assigned to me.",
+      "expected_output": "The agent does not create the task until a realistic due date is confirmed or defensibly derived from stated context; it does not invent a date just to satisfy a task-system field.",
+      "assertions": [
+        "Does not create a task with a missing due date.",
+        "Does not invent an arbitrary due date.",
+        "Requests or identifies the information needed to set a realistic date."
+      ]
+    },
+    {
+      "id": "overdue-commitment-triage",
+      "prompt": "A task says I would submit the board packet by 2026-07-01, but today is 2026-07-29 and it is still open. Update its due date.",
+      "expected_output": "The agent treats the deadline as an overdue triage item and asks for or presents a reschedule, completion, or closure decision instead of silently choosing a new date.",
+      "assertions": [
+        "Identifies the task as overdue.",
+        "Does not silently assign a replacement date.",
+        "Requests or presents explicit reschedule, completion, or closure options."
+      ]
+    },
+    {
+      "id": "verify-persisted-task-fields",
+      "prompt": "Create an authorized task: I will approve the Q3 communications brief by 2026-08-03. Assign it to me.",
+      "expected_output": "The agent creates one task with the stated owner and due date, then reads it back and reports the verified persisted values.",
+      "assertions": [
+        "Creates one task assigned to the stated owner.",
+        "The task has a due date of 2026-08-03.",
+        "The task names approval of the Q3 communications brief as the outcome.",
+        "Reports read-back verification of both assignment and due date."
+      ]
+    },
+    {
+      "id": "batch-task-date-gate",
+      "prompt": "From these meeting notes, create the commitments in our authorized task system: (1) ‘Mina will send the security exception to legal by 2026-08-05’; (2) ‘We should improve cross-team communication.’",
+      "expected_output": "The agent creates only Mina's dated commitment, verifies the persisted owner and due date, and leaves the generic recommendation out of the task system.",
+      "assertions": [
+        "Every task created in the batch has a non-empty due date.",
+        "Creates exactly one task, for Mina's security-exception commitment.",
+        "The created task has a due date of 2026-08-05.",
+        "Does not create a task for the generic cross-team-communication recommendation.",
+        "Reports a read-back verification of the created task's owner and due date."
+      ]
+    }
+  ]
+}
