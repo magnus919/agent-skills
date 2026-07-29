@@ -1,0 +1,74 @@
+name: CI failure to issue
+
+on:
+  workflow_run:
+    workflows: ["Validate skills"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Create issue for CI failure on main
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.payload.workflow_run.id}`;
+            const title = `CI failure on main: ${context.payload.workflow_run.display_title}`;
+            const body = `## CI Failure Detected
+
+            **Workflow:** [${context.payload.workflow_run.name}](${runUrl})
+            **Branch:** ${context.payload.workflow_run.head_branch}
+            **Commit:** ${context.payload.workflow_run.head_sha.substring(0, 7)}
+            **Failed at:** ${new Date(context.payload.workflow_run.updated_at).toISOString()}
+
+            The validate workflow failed on the main branch. This issue was automatically created to track the failure.
+
+            ### Investigation Steps
+            1. Review the [failed run](${runUrl}) for error details
+            2. Check [runbooks](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/runbooks.md) for resolution steps
+            3. If this is a known issue, link to the existing tracking issue
+
+            ### Labels
+            This issue was auto-labeled \`type/bug\` and \`priority/P1-high\` as CI failures on main block all contributions.
+            `;
+
+            const labels = ['type/bug', 'priority/P1-high', 'area/ci-cd'];
+
+            // Check for existing open issue from previous CI failure (dedup)
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'area/ci-cd,type/bug',
+              state: 'open',
+              per_page: 5,
+            });
+
+            const duplicate = existing.find(issue =>
+              issue.title.includes('CI failure on main')
+            );
+
+            if (duplicate) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: duplicate.number,
+                body: `CI failure re-occurred: [${context.payload.workflow_run.display_title}](${runUrl})`,
+              });
+              console.log(`Updated existing issue #${duplicate.number}`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels,
+              });
+              console.log('Created new issue for CI failure');
+            }

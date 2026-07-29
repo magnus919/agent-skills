@@ -57,6 +57,15 @@ This repository has no deployment step. All changes are validated in CI and merg
 
 ## Monitoring
 
-- [GitHub Actions dashboard](https://github.com/magnus919/agent-skills/actions) for CI health
-- [GitHub Security Advisories](https://github.com/magnus919/agent-skills/security) for vulnerability alerts
-- [Dependabot alerts](https://github.com/magnus919/agent-skills/security/dependabot) for dependency updates
+### Dashboards
+- [GitHub Actions dashboard](https://github.com/magnus919/agent-skills/actions) — CI pipeline health and deploy status
+- [GitHub Actions validate workflow](https://github.com/magnus919/agent-skills/actions/workflows/validate.yml) — Primary validation pipeline
+- [GitHub Security Advisories](https://github.com/magnus919/agent-skills/security) — Vulnerability alerts and advisory history
+- [Dependabot alerts](https://github.com/magnus919/agent-skills/security/dependabot) — Dependency update PRs and security notifications
+
+### Deploy Impact Visibility
+- All changes flow through the validate workflow on each push and PR
+- CI status is visible in PR checks and on the [Actions tab](https://github.com/magnus919/agent-skills/actions)
+- Release notes are auto-generated in [CHANGELOG.md](https://github.com/magnus919/agent-skills/blob/main/CHANGELOG.md)
+- Release history is tracked in [GitHub Releases](https://github.com/magnus919/agent-skills/releases)
+- CI failures on `main` automatically create tracking issues (via `ci-failure-to-issue.yml` workflow)

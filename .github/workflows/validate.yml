@@ -58,6 +58,8 @@ jobs:
         run: npx jscpd --config .jscpd.json .
       - name: Security review (bandit)
         run: python3 -m bandit -r scripts/ -f txt --severity-level high
+      - name: Check dependency release age (supply chain)
+        run: python3 scripts/check-dependency-age.py
       - name: Validate skill format and links
         run: ruby scripts/validate-skills.rb
       - name: Test eval manifest validation
