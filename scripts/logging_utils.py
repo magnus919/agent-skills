@@ -10,7 +10,7 @@ import re
 import sys
 from typing import Any
 
-from loguru import logger as _logger  # type: ignore[import-not-found]
+from loguru import logger as _logger  # type: ignore[import-not-found,unused-ignore]
 
 # Patterns detected and redacted in log messages
 _REDACT_PATTERNS: list[tuple[str, str]] = [
@@ -39,9 +39,9 @@ def _redact_sensitive(message: str) -> str:
     return message
 
 
-def _redacting_patcher(record: dict[str, Any]) -> None:
+def _redacting_patcher(record: Any) -> None:
     """Loguru patcher that redacts sensitive data from the message."""
-    record["message"] = _redact_sensitive(str(record["message"]))
+    record["message"] = _redact_sensitive(str(record["message"]))  # type: ignore[index,unused-ignore]
 
 
 def configure_logger(
