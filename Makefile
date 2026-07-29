@@ -47,7 +47,7 @@ deps:
 
 # ─── Security ───────────────────────────────────────────────────
 security:
-	.venv/bin/python3 -m bandit -r scripts/ -ll -f txt --severity-level high
+	.venv/bin/python3 -m bandit -r scripts/ -f txt --severity-level high
 
 # ─── Documentation ──────────────────────────────────────────────
 docs:
