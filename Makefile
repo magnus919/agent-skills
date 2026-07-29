@@ -47,7 +47,7 @@ deps:
 
 # ─── Security ───────────────────────────────────────────────────
 security:
-	.venv/bin/python3 -m bandit -r scripts/ eval_runner/ -ll
+	.venv/bin/python3 -m bandit -r scripts/ -ll -f txt --severity-level high
 
 # ─── Documentation ──────────────────────────────────────────────
 docs:

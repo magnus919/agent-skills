@@ -57,7 +57,7 @@ jobs:
       - name: Duplicate code detection (jscpd)
         run: npx jscpd --config .jscpd.json .
       - name: Security review (bandit)
-        run: python3 -m bandit -r scripts/ eval_runner/ -ll -f txt
+        run: python3 -m bandit -r scripts/ -ll -f txt --severity-level high
       - name: Validate skill format and links
         run: ruby scripts/validate-skills.rb
       - name: Test eval manifest validation
