@@ -263,23 +263,45 @@ def _output_json(envelope: dict[str, Any]) -> None:
 
 
 def _output_text(envelope: dict[str, Any], args: argparse.Namespace) -> None:
-    """Write human-readable output for the command result."""
+    """Write human-readable output for the command result.
+
+    Plain-text output is consistent with --json mode: same entity counts,
+    addresses, and key values are displayed. The output format adapts to the
+    data shape returned by each command.
+    """
     data = envelope.get("data", {})
 
     if isinstance(data, dict) and data.get("status") == "not_implemented":
         print(data.get("message", "Command not yet implemented."))
-    elif isinstance(data, dict) and "cli_version" in data:
+        return
+
+    if isinstance(data, dict) and "cli_version" in data:
         _output_version_text(data)
     elif isinstance(data, list):
-        for item in data:
-            print(item)
+        _output_list(data)
+    elif isinstance(data, dict) and "items" in data:
+        _output_paginated(data)
     elif isinstance(data, dict):
-        for key, value in data.items():
-            if key == "status":
-                continue
-            print(f"{key}: {value}")
+        _output_dict(data)
     else:
         print(data)
+
+    # Show diagnostics and warnings
+    warnings = envelope.get("warnings", [])
+    diagnostics = envelope.get("diagnostics", [])
+    _output_warnings(warnings, diagnostics)
+
+    # Footer with metadata
+    success = envelope.get("success", False)
+    partial = envelope.get("partial", False)
+    duration = envelope.get("duration_ms", 0)
+    if args.json:
+        pass  # Footer only for plain-text
+    else:
+        status = "SUCCESS" if success else "FAILED"
+        if partial:
+            status += " (partial)"
+        print(f"\n[{status} in {duration}ms]")
 
 
 def _output_version_text(data: dict[str, Any]) -> None:
@@ -302,6 +324,124 @@ def _output_version_text(data: dict[str, Any]) -> None:
             f"{platform_info.get('machine', '?')} "
             f"(Python {platform_info.get('python_version', '?')})"
         )
+
+
+def _output_list(items: list[Any]) -> None:
+    """Output a simple list of items."""
+    if not items:
+        print("(empty)")
+        return
+    for item in items:
+        if isinstance(item, dict):
+            _print_entity(item)
+        else:
+            print(str(item))
+
+
+def _output_paginated(data: dict[str, Any]) -> None:
+    """Output paginated results with count and cursor info."""
+    items = data.get("items", [])
+    total = data.get("total", len(items))
+    has_more = data.get("has_more", False)
+    next_cursor = data.get("next_cursor")
+
+    print(f"Total: {total}")
+
+    if not items:
+        print("(no results)")
+        return
+
+    for item in items:
+        if isinstance(item, dict):
+            _print_entity(item)
+        else:
+            print(str(item))
+
+    if has_more and next_cursor:
+        print(f"\n--- more results available (cursor: {next_cursor}) ---")
+
+
+def _output_dict(data: dict[str, Any]) -> None:
+    """Output a flat dict as key: value pairs, handling nested entities."""
+    for key, value in data.items():
+        if key == "status":
+            continue
+        if isinstance(value, dict):
+            if "space" in value and "offset" in value and "display" in value:
+                # Address object
+                print(
+                    f"{key}: {value.get('display', value['offset'])}"
+                    f"{' (file_offset=' + str(value['file_offset']) + ')' if value.get('file_offset') is not None else ''}"
+                )
+            else:
+                print(f"{key}:")
+                for sub_k, sub_v in value.items():
+                    print(f"  {sub_k}: {sub_v}")
+        elif isinstance(value, list):
+            if not value:
+                print(f"{key}: []")
+            else:
+                print(f"{key}:")
+                for idx, item in enumerate(value):
+                    if isinstance(item, dict):
+                        _print_entity(item, indent="  ")
+                    else:
+                        print(f"  [{idx}] {item}")
+        elif value is None:
+            print(f"{key}: (null)")
+        else:
+            print(f"{key}: {value}")
+
+
+def _print_entity(entity: dict[str, Any], indent: str = "") -> None:
+    """Print a single entity in a compact human-readable format."""
+    name = entity.get("name", entity.get("text", entity.get("symbol", "")))
+    address = entity.get("address", {})
+    addr_display: str = ""
+    if isinstance(address, dict):
+        addr_display = str(address.get("display", address.get("offset", "")))
+    elif address is not None:
+        addr_display = str(address)
+
+    # Build a one-line summary
+    parts = []
+    if name:
+        parts.append(str(name))
+    if addr_display:
+        parts.append(f"@ {addr_display}")
+
+    # Common extra fields
+    if "size_bytes" in entity:
+        parts.append(f"{entity['size_bytes']}B")
+    if "length" in entity and entity.get("length"):
+        parts.append(f"len={entity['length']}")
+    if "kind" in entity:
+        parts.append(str(entity["kind"]))
+    if "state" in entity:
+        parts.append(str(entity["state"]))
+    if "encoding" in entity:
+        parts.append(str(entity["encoding"]))
+    if "confidence" in entity:
+        parts.append(str(entity["confidence"]))
+    if entity.get("module"):
+        parts.append(f"({entity['module']})")
+
+    line = f"{indent}{' | '.join(parts)}" if parts else f"{indent}(unnamed)"
+    print(line)
+
+
+def _output_warnings(
+    warnings: list[dict[str, Any]],
+    diagnostics: list[dict[str, Any]],
+) -> None:
+    """Output warnings and diagnostics to stderr."""
+    for w in warnings:
+        msg = w.get("message", str(w))
+        print(f"Warning: {msg}", file=sys.stderr)
+    for d in diagnostics:
+        severity = d.get("severity", "INFO")
+        msg = d.get("message", str(d))
+        print(f"[{severity}] {msg}", file=sys.stderr)
 
 
 # ---------------------------------------------------------------------------
