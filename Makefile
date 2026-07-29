@@ -1,4 +1,4 @@
-.PHONY: dev lint typecheck test complexity deps coverage security runbooks docs validate
+.PHONY: dev lint typecheck test complexity deps coverage security dep-age runbooks docs validate
 
 # ─── Development Setup ──────────────────────────────────────────
 dev: .venv
@@ -49,6 +49,9 @@ deps:
 security:
 	.venv/bin/python3 -m bandit -r scripts/ -f txt --severity-level high
 
+dep-age:
+	.venv/bin/python3 scripts/check-dependency-age.py
+
 # ─── Documentation ──────────────────────────────────────────────
 docs:
 	ruby scripts/validate-skills.rb
@@ -57,5 +60,5 @@ docs:
 	python3 scripts/validate-evals.py
 
 # ─── Full Validation ────────────────────────────────────────────
-validate: lint format-check typecheck complexity deps test-cov
+validate: lint format-check typecheck complexity deps dep-age test-cov
 	@echo "All checks passed."
