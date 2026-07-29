@@ -19,7 +19,7 @@ speculative profiles of employees.
 
 | Path | What it provides |
 |---|---|
-| `SKILL.md` | A host-neutral operating method, authority limits, and trigger guidance. |
+| `SKILL.md` | A host-neutral operating method, authority limits, task-creation discipline, and trigger guidance. |
 | `references/gatekeeping-and-triage.md` | Decision-rights routing and accessible escalation paths. |
 | `references/executive-briefing.md` | Reviewable decision briefs and update structures. |
 | `references/force-multiplication.md` | Observable leverage mechanisms for leader support. |
