@@ -1,9 +1,10 @@
-"""Project lifecycle — workspace, manifests, locking, and cache.
+"""Project lifecycle — workspace, manifests, locking, cache, and state machine.
 
 All persistent state mutations use atomic write patterns (tempfile + os.rename)
 to ensure project.json is never partially written. File locks serialize
 concurrent access. The manifest system detects corrupted project manifests
 and raises InvalidConfigError (exit code 4) with diagnostic information.
+The state machine enforces valid lifecycle transitions.
 """
 
 from __future__ import annotations
@@ -35,6 +36,14 @@ from binary_analysis.projects.manifest import (
     save_manifest,
     update_manifest_field,
 )
+from binary_analysis.projects.state_machine import (
+    can_analyze,
+    can_clean,
+    can_import,
+    is_valid_transition,
+    should_reject_migrate,
+    transition_to_failed,
+)
 from binary_analysis.projects.workspace import (
     create_workspace,
     get_project_path,
@@ -59,6 +68,9 @@ __all__ = [
     "cache_get",
     "cache_list",
     "cache_set",
+    "can_analyze",
+    "can_clean",
+    "can_import",
     "create_manifest",
     "create_workspace",
     "get_lock_holder",
@@ -66,11 +78,14 @@ __all__ = [
     "get_workspace_root",
     "get_workspace_subdirs",
     "is_locked",
+    "is_valid_transition",
     "list_workspaces",
     "load_manifest",
     "release_lock",
     "remove_workspace",
     "save_manifest",
+    "should_reject_migrate",
+    "transition_to_failed",
     "update_manifest_field",
     "validate_project_name",
     "workspace_exists",
