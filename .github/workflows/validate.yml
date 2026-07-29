@@ -36,6 +36,28 @@ jobs:
         run: python3 -m radon cc scripts/ eval_runner/ --min B --total-average
       - name: Unused dependency check (deptry)
         run: python3 -m deptry .
+      - name: Check for large files
+        run: |
+          large_files=$(git ls-files -- ':(glob)**' | while read -r f; do
+            if [ -f "$f" ]; then
+              size=$(stat -c%s "$f" 2>/dev/null || echo 0)
+              if [ "$size" -gt 512000 ]; then
+                echo "$f ($((size / 1024)) KB)"
+              fi
+            fi
+          done)
+          if [ -n "$large_files" ]; then
+            echo "Files exceeding 500 KB:"
+            echo "$large_files"
+            exit 1
+          fi
+          echo "No large files detected."
+      - name: Scan technical debt markers
+        run: python3 scripts/scan-tech-debt.py
+      - name: Duplicate code detection (jscpd)
+        run: npx jscpd --config .jscpd.json .
+      - name: Security review (bandit)
+        run: python3 -m bandit -r scripts/ eval_runner/ -ll -f txt
       - name: Validate skill format and links
         run: ruby scripts/validate-skills.rb
       - name: Test eval manifest validation
@@ -46,6 +68,12 @@ jobs:
         run: python3 -m unittest discover -s life-coach/tests -p 'test_*.py'
       - name: Run core test suite with coverage
         run: python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py eval_runner/tests/ -v --durations=10 --cov=scripts --cov=eval_runner --cov-fail-under=60 --cov-report=term-missing
+      - name: Run tests in parallel (isolation check)
+        run: python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py eval_runner/tests/ -n auto -v --durations=10
+      - name: Validate AGENTS.md consistency
+        run: python3 scripts/validate-agents-md.py
+      - name: Run integration tests
+        run: python3 -m pytest tests/integration/ -v --durations=10 -o "addopts=-ra --strict-markers --tb=short --durations=10"
       - name: Test changed-skill quality validation
         run: ruby scripts/test-validate-skill-quality.rb
       - name: Validate changed skill quality
