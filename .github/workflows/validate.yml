@@ -102,5 +102,7 @@ jobs:
         run: |
           wheel_dir=$(mktemp -d)
           while IFS= read -r pyproject; do
+            # Skip root pyproject.toml (not a distributable package)
+            [ "$pyproject" = "pyproject.toml" ] && continue
             python3 -m pip wheel --no-deps "./$(dirname "$pyproject")" --wheel-dir "$wheel_dir"
           done < <(git ls-files -- ':(glob)**/pyproject.toml')
