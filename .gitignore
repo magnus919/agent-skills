@@ -1,6 +1,7 @@
 # ─── Secrets & Configuration ──────────────────────────────────
 .env
 .env.*
+!.env.example
 *.env
 .envrc
 *.pem
@@ -42,6 +43,9 @@ venv/
 virtualenv/
 .uv/
 .python-version
+.coverage
+coverage.xml
+htmlcov/
 
 # ─── macOS ────────────────────────────────────────────────────
 .DS_Store

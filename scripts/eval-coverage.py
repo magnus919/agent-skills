@@ -24,8 +24,8 @@ from eval_validation import NOT_ASSESSED, STATE_NAMES, ValidationResult, validat
 ROOT = Path(__file__).resolve().parent.parent
 
 # Phase 3 ratchet thresholds (percent of skills with evals)
-WARN_THRESHOLD = 25   # modified skills without evals get a warning
-FAIL_THRESHOLD = 50   # modified skills without evals fail CI
+WARN_THRESHOLD = 25  # modified skills without evals get a warning
+FAIL_THRESHOLD = 50  # modified skills without evals fail CI
 
 # Pathspec that matches every tracked file under a canonical skill directory.
 # A canonical skill lives at <root>/<skill-name>/SKILL.md or
@@ -64,9 +64,7 @@ def resolve_ref_to_commit(ref: str) -> str:
         text=True,
     )
     if result.returncode != 0:
-        raise ValueError(
-            f"invalid --modified-from ref: {ref!r} is not an existing commit"
-        )
+        raise ValueError(f"invalid --modified-from ref: {ref!r} is not an existing commit")
     return result.stdout.strip()
 
 
@@ -81,12 +79,10 @@ def find_skills_at(ref: str) -> list[Path]:
     )
     skills = []
     for name in result.stdout.splitlines():
-        if (
-            name.endswith("/SKILL.md")
-            and "/agent-council/profiles/skills/" not in name
-        ):
+        if name.endswith("/SKILL.md") and "/agent-council/profiles/skills/" not in name:
             skills.append(Path(name).parent)
     return sorted(skills)
+
 
 def check_eval_states(skill_dir: Path) -> ValidationResult:
     """Return validation and evidence states for one skill."""
@@ -129,7 +125,8 @@ def modified_skills(base_ref_commit: str) -> set[Path]:
         text=True,
     )
     changed_files = [
-        line for line in result.stdout.strip().splitlines()
+        line
+        for line in result.stdout.strip().splitlines()
         if line and "/agent-council/profiles/skills/" not in line
     ]
     # Map each changed file to its owning skill directory by checking
@@ -206,7 +203,9 @@ def coverage_decreased(base_ref_commit: str) -> tuple[bool, float, float]:
             tar.extractall(snapshot, filter="data")
         subprocess.run(["git", "init", "-q"], cwd=snapshot, check=True)
         subprocess.run(
-            ["git", "add", "-f", "--all"], cwd=snapshot, check=True,
+            ["git", "add", "-f", "--all"],
+            cwd=snapshot,
+            check=True,
             capture_output=True,
         )
         for skill_dir in retained_skill_dirs:
@@ -290,9 +289,7 @@ def main() -> int:
     coverage_pct = state_summary["schema_valid"]["percentage"]
 
     # Sort skills without evals: most-referenced first, then alphabetical
-    ref_counts = {
-        name: count_references(Path(name).name, skills) for name in without_evals
-    }
+    ref_counts = {name: count_references(Path(name).name, skills) for name in without_evals}
     without_evals.sort(key=lambda n: (-ref_counts[n], n))
 
     # Phase 3 ratchet check
@@ -338,21 +335,19 @@ def main() -> int:
             summary = state_summary[state]
             if summary["assessment"] == "supported":
                 print(
-                    f"  {state}: {summary['count']}/{total} skills "
-                    f"({summary['percentage']:.1f}%)"
+                    f"  {state}: {summary['count']}/{total} skills ({summary['percentage']:.1f}%)"
                 )
                 continue
             print(f"  {state}: not assessed ({summary['reason']})")
         print()
-        print(f"Skills WITHOUT schema-valid eval manifests ({len(without_evals)}), by reference count:")
+        print(
+            f"Skills WITHOUT schema-valid eval manifests ({len(without_evals)}), by reference count:"
+        )
         for name in without_evals:
             refs = ref_counts.get(name, 0)
             print(f"  - {name} (referenced by {refs} skills)")
         print()
-        print(
-            f"Ratchet: warn at {WARN_THRESHOLD}%, "
-            f"fail-on-modify at {FAIL_THRESHOLD}%"
-        )
+        print(f"Ratchet: warn at {WARN_THRESHOLD}%, fail-on-modify at {FAIL_THRESHOLD}%")
         if ratchet_warnings:
             print()
             print("Ratchet warnings:")

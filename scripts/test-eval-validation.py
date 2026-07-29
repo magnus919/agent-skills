@@ -12,7 +12,6 @@ from pathlib import Path
 
 from eval_validation import NOT_APPLICABLE, SCHEMA_VERSION, find_skill_manifests, validate_manifest
 
-
 SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT = SCRIPT_DIR.parent
 
@@ -52,7 +51,9 @@ class EvalValidationTest(unittest.TestCase):
         git(self.root, "config", "user.name", "Test")
         self.skill = self.root / "example"
         (self.skill / "evals").mkdir(parents=True)
-        (self.skill / "SKILL.md").write_text("---\nname: example\ndescription: test\n---\n", encoding="utf-8")
+        (self.skill / "SKILL.md").write_text(
+            "---\nname: example\ndescription: test\n---\n", encoding="utf-8"
+        )
         self.manifest = self.skill / "evals" / "evals.json"
 
     def tearDown(self) -> None:
@@ -163,17 +164,25 @@ class EvalValidationTest(unittest.TestCase):
     def test_unknown_top_level_and_case_fields_fail(self) -> None:
         top_level_errors = self.errors(self.valid(unknown_field=True))
         self.assertTrue(
-            any("Additional properties" in error and "unknown_field" in error for error in top_level_errors)
+            any(
+                "Additional properties" in error and "unknown_field" in error
+                for error in top_level_errors
+            )
         )
 
         case_errors = self.errors(self.valid(evals=[eval_case(unknown_field=True)]))
         self.assertTrue(
-            any("Additional properties" in error and "unknown_field" in error for error in case_errors)
+            any(
+                "Additional properties" in error and "unknown_field" in error
+                for error in case_errors
+            )
         )
 
     def test_evidence_property_is_rejected_as_unknown_v1_property(self) -> None:
         errors = self.errors(self.valid(evidence={"grader_bindings": ["scripts/grader.py"]}))
-        self.assertTrue(any("Additional properties" in error and "evidence" in error for error in errors))
+        self.assertTrue(
+            any("Additional properties" in error and "evidence" in error for error in errors)
+        )
 
     def test_duplicate_json_object_keys_fail_before_semantic_validation(self) -> None:
         self.manifest.write_text(
@@ -261,7 +270,9 @@ class EvalValidationTest(unittest.TestCase):
         os.symlink(external_dir, fixtures_dir / "external")
         git(self.root, "add", "-A")
 
-        errors = self.errors(self.valid(evals=[eval_case(files=["fixtures/external/outside.json"])]))
+        errors = self.errors(
+            self.valid(evals=[eval_case(files=["fixtures/external/outside.json"])])
+        )
         self.assertTrue(any("symlink" in error for error in errors))
 
     def test_tracked_but_missing_file_fails_when_index_still_lists_it(self) -> None:
@@ -347,7 +358,9 @@ class EvalValidationTest(unittest.TestCase):
         self.assertTrue(any("does not exist" in error for error in missing_errors))
         self.assertFalse(any("not tracked by Git" in error for error in missing_errors))
 
-        self.write(self.valid(evals=[eval_case(files=["fixtures/untracked.json"])]), track_all=False)
+        self.write(
+            self.valid(evals=[eval_case(files=["fixtures/untracked.json"])]), track_all=False
+        )
         git(self.root, "add", str(self.manifest.relative_to(self.root)))
         tracked_untracked = git_output(
             self.root,

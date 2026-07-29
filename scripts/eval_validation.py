@@ -87,11 +87,7 @@ def _tracked_files(repo_root: Path) -> set[str]:
     result = _git(repo_root, "ls-files", "-z")
     if result.returncode != 0:
         return set()
-    return {
-        path
-        for path in result.stdout.decode("utf-8", errors="replace").split("\0")
-        if path
-    }
+    return {path for path in result.stdout.decode("utf-8", errors="replace").split("\0") if path}
 
 
 def _tracked_mode(repo_root: Path, relative_path: str) -> str | None:
@@ -131,7 +127,7 @@ def _targeted_schema_version_errors(data: dict[str, Any], result: ValidationResu
     if "schema_version" not in data:
         result.error(
             "$.schema_version",
-            "missing required schema_version; add \"schema_version\": 1",
+            'missing required schema_version; add "schema_version": 1',
         )
         return
     version = data["schema_version"]

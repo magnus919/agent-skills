@@ -63,17 +63,19 @@ class OpenAICompatAdapter:
         messages: list[dict[str, str]] = []
         skill_content = self._load_skill_content(input.skill_path)
         if skill_content:
-            messages.append({
-                "role": "system",
-                "content": (
-                    "You are an AI assistant with expertise from the following skill. "
-                    "Use the knowledge, frameworks, and methodology described in the skill "
-                    "to answer the user's question directly. Do NOT show commands or scripts "
-                    "to run — instead, apply the framework yourself and provide the answer "
-                    "with your reasoning.\n\n"
-                    f"<skill>\n{skill_content}\n</skill>"
-                ),
-            })
+            messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        "You are an AI assistant with expertise from the following skill. "
+                        "Use the knowledge, frameworks, and methodology described in the skill "
+                        "to answer the user's question directly. Do NOT show commands or scripts "
+                        "to run — instead, apply the framework yourself and provide the answer "
+                        "with your reasoning.\n\n"
+                        f"<skill>\n{skill_content}\n</skill>"
+                    ),
+                }
+            )
         messages.append({"role": "user", "content": input.case.prompt})
         return messages
 
@@ -118,17 +120,17 @@ class OpenAICompatAdapter:
 
             tool_events = []
             if reasoning:
-                tool_events.append(ToolEvent(
-                    name="reasoning",
-                    arguments={"model": self._model},
-                    result_summary=reasoning[:500],
-                ))
+                tool_events.append(
+                    ToolEvent(
+                        name="reasoning",
+                        arguments={"model": self._model},
+                        result_summary=reasoning[:500],
+                    )
+                )
 
             skill_content = self._load_skill_content(input.skill_path)
             activation_evidence = (
-                f"skill loaded from {input.skill_path.name}/SKILL.md"
-                if skill_content
-                else None
+                f"skill loaded from {input.skill_path.name}/SKILL.md" if skill_content else None
             )
 
             return AdapterOutput(

@@ -25,12 +25,16 @@ from eval_runner.release import (
 )
 
 
-def _trial(case_id: str, status: str = "completed", passed: bool = True, missing: list[str] | None = None) -> dict:
+def _trial(
+    case_id: str, status: str = "completed", passed: bool = True, missing: list[str] | None = None
+) -> dict:
     return {
         "trial_id": f"t-{case_id}-{status}",
         "case": {"case_id": case_id, "prompt_hash": "abc", "fixture_hashes": {}},
         "status": status,
-        "failures": [] if passed and status == "completed" else [{"type": "assertion", "message": "fail"}],
+        "failures": []
+        if passed and status == "completed"
+        else [{"type": "assertion", "message": "fail"}],
         "missing_evidence": missing or [],
     }
 
@@ -121,7 +125,9 @@ def test_case_aggregation_to_dict():
 
 def test_rubric_grader_pass():
     grader = RubricGrader("test-grader", "1.0", ("relevance", "completeness"))
-    result = grader.grade("the expected output is here and complete", "expected output is here and complete")
+    result = grader.grade(
+        "the expected output is here and complete", "expected output is here and complete"
+    )
     assert result["verdict"] == "pass"
     assert result["grader_id"] == "test-grader"
     assert result["grader_version"] == "1.0"
@@ -158,7 +164,9 @@ def test_apply_rubric_adds_case_id():
 def test_plan_pairwise_deterministic():
     plans1 = plan_pairwise(["c1", "c2", "c3"], seed=42)
     plans2 = plan_pairwise(["c1", "c2", "c3"], seed=42)
-    assert [(p.case_id, p.position_a) for p in plans1] == [(p.case_id, p.position_a) for p in plans2]
+    assert [(p.case_id, p.position_a) for p in plans1] == [
+        (p.case_id, p.position_a) for p in plans2
+    ]
 
 
 def test_plan_pairwise_blinded_positions():
@@ -216,7 +224,14 @@ def test_calibration_low_agreement_not_calibrated():
 
 def test_release_decision_pass():
     cases = [
-        {"case_id": "c1", "case_set": "release", "success_frequency": 1.0, "consistent": True, "missing_evidence": [], "paired_delta": "both_pass"},
+        {
+            "case_id": "c1",
+            "case_set": "release",
+            "success_frequency": 1.0,
+            "consistent": True,
+            "missing_evidence": [],
+            "paired_delta": "both_pass",
+        },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
     decision = compute_release_decision(cases, [], cal)
@@ -224,14 +239,23 @@ def test_release_decision_pass():
 
 
 def test_release_decision_block_on_hard_gate():
-    decision = compute_release_decision([], [], CalibrationRecord(), hard_gate_violations=["privacy violation"])
+    decision = compute_release_decision(
+        [], [], CalibrationRecord(), hard_gate_violations=["privacy violation"]
+    )
     assert decision["outcome"] == "BLOCK"
     assert "privacy violation" in decision["reasons"][0]
 
 
 def test_release_decision_hold_on_missing_evidence():
     cases = [
-        {"case_id": "c1", "case_set": "release", "success_frequency": 1.0, "consistent": True, "missing_evidence": ["response"], "paired_delta": "both_pass"},
+        {
+            "case_id": "c1",
+            "case_set": "release",
+            "success_frequency": 1.0,
+            "consistent": True,
+            "missing_evidence": ["response"],
+            "paired_delta": "both_pass",
+        },
     ]
     decision = compute_release_decision(cases, [], CalibrationRecord())
     assert decision["outcome"] == "HOLD"
@@ -239,7 +263,14 @@ def test_release_decision_hold_on_missing_evidence():
 
 def test_release_decision_block_on_low_frequency():
     cases = [
-        {"case_id": "c1", "case_set": "release", "success_frequency": 0.5, "consistent": False, "missing_evidence": [], "paired_delta": "both_pass"},
+        {
+            "case_id": "c1",
+            "case_set": "release",
+            "success_frequency": 0.5,
+            "consistent": False,
+            "missing_evidence": [],
+            "paired_delta": "both_pass",
+        },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
     decision = compute_release_decision(cases, [], cal)
@@ -248,7 +279,14 @@ def test_release_decision_block_on_low_frequency():
 
 def test_release_decision_block_on_regression():
     cases = [
-        {"case_id": "c1", "case_set": "regression", "success_frequency": 1.0, "consistent": True, "missing_evidence": [], "paired_delta": "candidate_regression"},
+        {
+            "case_id": "c1",
+            "case_set": "regression",
+            "success_frequency": 1.0,
+            "consistent": True,
+            "missing_evidence": [],
+            "paired_delta": "candidate_regression",
+        },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
     decision = compute_release_decision(cases, [], cal)
@@ -257,7 +295,14 @@ def test_release_decision_block_on_regression():
 
 def test_release_decision_conditional_on_inconsistency():
     cases = [
-        {"case_id": "c1", "case_set": "release", "success_frequency": 0.9, "consistent": False, "missing_evidence": [], "paired_delta": "both_pass"},
+        {
+            "case_id": "c1",
+            "case_set": "release",
+            "success_frequency": 0.9,
+            "consistent": False,
+            "missing_evidence": [],
+            "paired_delta": "both_pass",
+        },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
     decision = compute_release_decision(cases, [], cal)
@@ -266,7 +311,14 @@ def test_release_decision_conditional_on_inconsistency():
 
 def test_release_decision_conditional_on_uncalibrated_judge():
     cases = [
-        {"case_id": "c1", "case_set": "release", "success_frequency": 1.0, "consistent": True, "missing_evidence": [], "paired_delta": "both_pass"},
+        {
+            "case_id": "c1",
+            "case_set": "release",
+            "success_frequency": 1.0,
+            "consistent": True,
+            "missing_evidence": [],
+            "paired_delta": "both_pass",
+        },
     ]
     rubric = [{"case_id": "c1", "verdict": "pass"}]
     cal = CalibrationRecord()
@@ -277,7 +329,14 @@ def test_release_decision_conditional_on_uncalibrated_judge():
 
 def test_release_decision_conditional_on_rubric_abstain():
     cases = [
-        {"case_id": "c1", "case_set": "release", "success_frequency": 1.0, "consistent": True, "missing_evidence": [], "paired_delta": "both_pass"},
+        {
+            "case_id": "c1",
+            "case_set": "release",
+            "success_frequency": 1.0,
+            "consistent": True,
+            "missing_evidence": [],
+            "paired_delta": "both_pass",
+        },
     ]
     rubric = [{"case_id": "c1", "verdict": "abstain"}]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
@@ -336,9 +395,7 @@ def test_build_release_report_validates_against_schema():
         return
 
     schema_path = (
-        Path(__file__).resolve().parent.parent.parent
-        / "schemas"
-        / "release-eval-v1.schema.json"
+        Path(__file__).resolve().parent.parent.parent / "schemas" / "release-eval-v1.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     Draft202012Validator.check_schema(schema)
@@ -404,9 +461,7 @@ def test_release_schema_matches_runtime_case_ids():
         return
 
     schema_path = (
-        Path(__file__).resolve().parent.parent.parent
-        / "schemas"
-        / "release-eval-v1.schema.json"
+        Path(__file__).resolve().parent.parent.parent / "schemas" / "release-eval-v1.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     for definition in ["case_result", "rubric_result", "pairwise_result"]:

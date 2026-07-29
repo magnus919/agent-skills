@@ -80,7 +80,9 @@ def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
         actual = output.exit_status.value
         if actual == expected:
             return AssertionResult(assertion, AssertionVerdict.PASS)
-        return AssertionResult(assertion, AssertionVerdict.FAIL, f"expected {expected}, got {actual}")
+        return AssertionResult(
+            assertion, AssertionVerdict.FAIL, f"expected {expected}, got {actual}"
+        )
 
     if kind == "artifact_exists":
         if value in output.artifacts:
@@ -95,24 +97,36 @@ def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
             actual_val = str(output.environment_state[key])
             if actual_val == expected_val:
                 return AssertionResult(assertion, AssertionVerdict.PASS)
-            return AssertionResult(assertion, AssertionVerdict.FAIL, f"{key}={actual_val}, expected {expected_val}")
-        return AssertionResult(assertion, AssertionVerdict.FAIL, f"key '{key}' not in environment_state")
+            return AssertionResult(
+                assertion, AssertionVerdict.FAIL, f"{key}={actual_val}, expected {expected_val}"
+            )
+        return AssertionResult(
+            assertion, AssertionVerdict.FAIL, f"key '{key}' not in environment_state"
+        )
 
     if kind == "activation_evidence_contains":
         if output.activation_evidence and value in output.activation_evidence:
             return AssertionResult(assertion, AssertionVerdict.PASS)
-        return AssertionResult(assertion, AssertionVerdict.FAIL, f"'{value}' not in activation_evidence")
+        return AssertionResult(
+            assertion, AssertionVerdict.FAIL, f"'{value}' not in activation_evidence"
+        )
 
     if kind == "tool_event_count_gte":
         try:
             threshold = int(value)
         except ValueError:
-            return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "non-integer threshold")
+            return AssertionResult(
+                assertion, AssertionVerdict.MANUAL_REVIEW, "non-integer threshold"
+            )
         if len(output.tool_events) >= threshold:
             return AssertionResult(assertion, AssertionVerdict.PASS)
-        return AssertionResult(assertion, AssertionVerdict.FAIL, f"{len(output.tool_events)} < {threshold}")
+        return AssertionResult(
+            assertion, AssertionVerdict.FAIL, f"{len(output.tool_events)} < {threshold}"
+        )
 
-    return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, f"unknown assertion kind '{kind}'")
+    return AssertionResult(
+        assertion, AssertionVerdict.MANUAL_REVIEW, f"unknown assertion kind '{kind}'"
+    )
 
 
 def grade_output(case_id: str, assertions: list[str], output: AdapterOutput) -> GradeResult:
@@ -124,11 +138,15 @@ def grade_output(case_id: str, assertions: list[str], output: AdapterOutput) -> 
     """
     if output.exit_status != ExitStatus.COMPLETED:
         results = [
-            AssertionResult(a, AssertionVerdict.INFRA_ERROR, f"exit_status={output.exit_status.value}")
+            AssertionResult(
+                a, AssertionVerdict.INFRA_ERROR, f"exit_status={output.exit_status.value}"
+            )
             for a in assertions
         ]
         return GradeResult(case_id=case_id, passed=False, results=results, infra_error=True)
 
     results = [_check_assertion(a, output) for a in assertions]
-    passed = all(r.verdict in (AssertionVerdict.PASS, AssertionVerdict.MANUAL_REVIEW) for r in results)
+    passed = all(
+        r.verdict in (AssertionVerdict.PASS, AssertionVerdict.MANUAL_REVIEW) for r in results
+    )
     return GradeResult(case_id=case_id, passed=passed, results=results)

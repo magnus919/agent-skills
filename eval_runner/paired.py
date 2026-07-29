@@ -8,7 +8,6 @@ Mutable state is reset for every trial.
 
 from __future__ import annotations
 
-import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -165,8 +164,12 @@ def main() -> int:
     parser.add_argument("--base-url", default=None, help="OpenAI-compatible API base URL")
     parser.add_argument("--api-key", default=None, help="API key (optional)")
     parser.add_argument("--max-tokens", type=int, default=4096)
-    parser.add_argument("--max-skill-chars", type=int, default=None, help="truncate skill content to N chars")
-    parser.add_argument("--no-thinking", action="store_true", help="disable thinking/reasoning mode (llama.cpp)")
+    parser.add_argument(
+        "--max-skill-chars", type=int, default=None, help="truncate skill content to N chars"
+    )
+    parser.add_argument(
+        "--no-thinking", action="store_true", help="disable thinking/reasoning mode (llama.cpp)"
+    )
     args = parser.parse_args()
 
     manifest_path = args.manifest.resolve()
@@ -253,7 +256,9 @@ def main() -> int:
         elif delta == "candidate_regression":
             regressions += 1
 
-    print(f"summary: {len(reports)} case(s), {improvements} improvement(s), {regressions} regression(s)")
+    print(
+        f"summary: {len(reports)} case(s), {improvements} improvement(s), {regressions} regression(s)"
+    )
     return 1 if regressions > 0 else 0
 
 

@@ -22,7 +22,6 @@ from __future__ import annotations
 import os
 import subprocess
 import time
-from pathlib import Path
 
 from .models import AdapterInput, AdapterOutput, ExitStatus, ToolEvent
 
@@ -82,16 +81,9 @@ class CliSubprocessAdapter:
             )
             elapsed_ms = (time.monotonic() - start) * 1000
 
-            if proc.returncode == 0:
-                exit_status = ExitStatus.COMPLETED
-            else:
-                exit_status = ExitStatus.ERROR
+            exit_status = ExitStatus.COMPLETED if proc.returncode == 0 else ExitStatus.ERROR
 
-            artifacts = [
-                f.name
-                for f in input.output_dir.iterdir()
-                if f.is_file()
-            ]
+            artifacts = [f.name for f in input.output_dir.iterdir() if f.is_file()]
 
             tool_events = []
             if proc.stderr:

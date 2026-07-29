@@ -5,11 +5,11 @@ from __future__ import annotations
 import json
 import subprocess
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .models import AdapterInput, AdapterOutput, EvalCase
+from .models import AdapterInput, AdapterOutput
 from .path_safety import contained_path, hash_contained_file, validate_case_id
 
 MANIFEST_SCHEMA_VERSION = 1

@@ -5,9 +5,11 @@ Uses a temporary git repository to verify modified-skill detection,
 coverage-decrease detection, and threshold behavior.
 """
 
-import json
+# Import the module under test.  The script is named eval-coverage.py
+# (hyphenated), so we load it via importlib rather than a normal import.
+import importlib.util
 import io
-import os
+import json
 import shutil
 import subprocess
 import sys
@@ -17,15 +19,10 @@ from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest import mock
 
-# Import the module under test.  The script is named eval-coverage.py
-# (hyphenated), so we load it via importlib rather than a normal import.
-import importlib.util  # noqa: E402
-from eval_validation import NOT_APPLICABLE  # noqa: E402
+from eval_validation import NOT_APPLICABLE
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-_spec = importlib.util.spec_from_file_location(
-    "eval_coverage", SCRIPT_DIR / "eval-coverage.py"
-)
+_spec = importlib.util.spec_from_file_location("eval_coverage", SCRIPT_DIR / "eval-coverage.py")
 eval_coverage = importlib.util.module_from_spec(_spec)
 sys.modules["eval_coverage"] = eval_coverage
 _spec.loader.exec_module(eval_coverage)  # type: ignore[union-attr]
@@ -159,9 +156,7 @@ class TestModifiedSkills(unittest.TestCase):
         try:
             modified = eval_coverage.modified_skills(base)
             current = set(eval_coverage.find_skills())
-            without_evals = {
-                skill for skill in current if not eval_coverage.check_evals(skill)[0]
-            }
+            without_evals = {skill for skill in current if not eval_coverage.check_evals(skill)[0]}
             warnings, errors = eval_coverage.evaluate_ratchet(
                 modified=modified,
                 current=current,
@@ -419,9 +414,12 @@ class TestBaseRefValidation(unittest.TestCase):
         eval_coverage.ROOT = Path(self.repo)
         stderr = io.StringIO()
         try:
-            with mock.patch.object(
-                sys, "argv", ["eval-coverage.py", "--modified-from", "does-not-exist"]
-            ), redirect_stderr(stderr):
+            with (
+                mock.patch.object(
+                    sys, "argv", ["eval-coverage.py", "--modified-from", "does-not-exist"]
+                ),
+                redirect_stderr(stderr),
+            ):
                 exit_code = eval_coverage.main()
         finally:
             eval_coverage.ROOT = old_root
@@ -436,9 +434,10 @@ class TestBaseRefValidation(unittest.TestCase):
         eval_coverage.ROOT = Path(self.repo)
         stderr = io.StringIO()
         try:
-            with mock.patch.object(
-                sys, "argv", ["eval-coverage.py", "--modified-from=--name-only"]
-            ), redirect_stderr(stderr):
+            with (
+                mock.patch.object(sys, "argv", ["eval-coverage.py", "--modified-from=--name-only"]),
+                redirect_stderr(stderr),
+            ):
                 exit_code = eval_coverage.main()
         finally:
             eval_coverage.ROOT = old_root
@@ -453,9 +452,13 @@ class TestBaseRefValidation(unittest.TestCase):
         eval_coverage.ROOT = Path(self.repo)
         stderr = io.StringIO()
         try:
-            with mock.patch.object(
-                sys, "argv", ["eval-coverage.py", "--modified-from", "main", "--json"]
-            ), redirect_stderr(stderr), redirect_stdout(io.StringIO()):
+            with (
+                mock.patch.object(
+                    sys, "argv", ["eval-coverage.py", "--modified-from", "main", "--json"]
+                ),
+                redirect_stderr(stderr),
+                redirect_stdout(io.StringIO()),
+            ):
                 exit_code = eval_coverage.main()
         finally:
             eval_coverage.ROOT = old_root
@@ -480,7 +483,10 @@ class TestCoverageOutput(unittest.TestCase):
         eval_coverage.ROOT = Path(self.repo)
         output = io.StringIO()
         try:
-            with mock.patch.object(sys, "argv", ["eval-coverage.py", "--json"]), redirect_stdout(output):
+            with (
+                mock.patch.object(sys, "argv", ["eval-coverage.py", "--json"]),
+                redirect_stdout(output),
+            ):
                 exit_code = eval_coverage.main()
         finally:
             eval_coverage.ROOT = old_root

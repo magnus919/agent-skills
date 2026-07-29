@@ -28,9 +28,7 @@ class FakeAdapter:
         start = time.monotonic()
 
         case = input.case
-        response = (
-            f"[fake] Processed case '{case.id}': {case.prompt[:80]}"
-        )
+        response = f"[fake] Processed case '{case.id}': {case.prompt[:80]}"
         activation_evidence = f"skill loaded from {input.skill_path.name}/SKILL.md"
 
         tool_events = [

@@ -10,16 +10,16 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from eval_runner.models import AdapterOutput, EvalCase, ExitStatus, ToolEvent
-from eval_runner.grader import AssertionVerdict, grade_output
-from eval_runner.sandbox import cleanup_sandbox, stage_paired_sandboxes, stage_skill_sandbox
 from eval_runner.comparison import (
     build_comparison_report,
     format_comparison_summary,
     write_comparison_report,
 )
-from eval_runner.paired import run_paired_trial
 from eval_runner.fake_adapter import FakeAdapter
+from eval_runner.grader import AssertionVerdict, grade_output
+from eval_runner.models import AdapterOutput, EvalCase, ExitStatus, ToolEvent
+from eval_runner.paired import run_paired_trial
+from eval_runner.sandbox import cleanup_sandbox, stage_paired_sandboxes, stage_skill_sandbox
 
 
 def _make_skill_dir(tmp: Path) -> Path:
@@ -47,7 +47,8 @@ def _make_case(assertions: list[str] | None = None) -> EvalCase:
         id="paired-test-01",
         prompt="Do the thing",
         expected_output="The thing is done",
-        assertions=assertions or [
+        assertions=assertions
+        or [
             "response_contains:paired-test-01",
             "exit_status:completed",
             "activation_evidence_contains:test-skill",
@@ -80,8 +81,8 @@ def test_sandbox_readonly():
 
         skill_md = staged / "SKILL.md"
         assert skill_md.is_file()
-        import os
         import stat
+
         mode = skill_md.stat().st_mode
         assert not (mode & stat.S_IWUSR)
 
@@ -108,7 +109,9 @@ def test_grader_pass():
         activation_evidence="loaded test-skill/SKILL.md",
         tool_events=[ToolEvent(name="x")],
     )
-    result = grade_output("c1", ["response_contains:paired-test-01", "exit_status:completed"], output)
+    result = grade_output(
+        "c1", ["response_contains:paired-test-01", "exit_status:completed"], output
+    )
     assert result.passed
     assert result.pass_count == 2
     assert result.fail_count == 0
@@ -197,7 +200,9 @@ def test_comparison_report_validates_against_schema():
     )
     assertions = ["response_contains:paired-test-01"]
     c_grade = grade_output("c1", assertions, output)
-    b_grade = grade_output("c1", assertions, AdapterOutput(exit_status=ExitStatus.COMPLETED, response=""))
+    b_grade = grade_output(
+        "c1", assertions, AdapterOutput(exit_status=ExitStatus.COMPLETED, response="")
+    )
 
     report = build_comparison_report(
         skill_name="test-skill",
@@ -401,10 +406,7 @@ def test_cleanup_does_not_follow_replaced_nested_symlink():
 
 def test_workflow_uses_variables_without_deployment_defaults_and_pins_actions():
     workflow = (
-        Path(__file__).resolve().parent.parent.parent
-        / ".github"
-        / "workflows"
-        / "skill-eval.yml"
+        Path(__file__).resolve().parent.parent.parent / ".github" / "workflows" / "skill-eval.yml"
     ).read_text()
     assert "vars.EVAL_BASE_URL ||" not in workflow
     assert "vars.EVAL_MODEL ||" not in workflow

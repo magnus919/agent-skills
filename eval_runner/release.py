@@ -248,7 +248,7 @@ class PairwisePlan:
     seed: int
 
     @property
-    def reversed(self) -> "PairwisePlan":
+    def reversed(self) -> PairwisePlan:
         return PairwisePlan(
             case_id=self.case_id,
             position_a=self.position_b,
@@ -287,9 +287,12 @@ def evaluate_pairwise(
     score_a = _mean_score(grade_a)
     score_b = _mean_score(grade_b)
 
-    if grade_a["verdict"] == "abstain" or grade_b["verdict"] == "abstain":
-        winner = "abstain"
-    elif grade_a["verdict"] == "insufficient_evidence" or grade_b["verdict"] == "insufficient_evidence":
+    if (
+        grade_a["verdict"] == "abstain"
+        or grade_b["verdict"] == "abstain"
+        or grade_a["verdict"] == "insufficient_evidence"
+        or grade_b["verdict"] == "insufficient_evidence"
+    ):
         winner = "abstain"
     elif abs(score_a - score_b) < 0.05:
         winner = "tie"
@@ -298,7 +301,7 @@ def evaluate_pairwise(
     else:
         winner = "b"
 
-    reversed_plan = plan.reversed
+    reversed_plan = plan.reversed  # noqa: F841 (used for future blinded grading)
     grade_rev_a = judge.grade(response_b, expected, blinded=True)
     grade_rev_b = judge.grade(response_a, expected, blinded=True)
     score_rev_a = _mean_score(grade_rev_a)
@@ -383,13 +386,9 @@ def compute_release_decision(
     release_cases = [c for c in case_results if c["case_set"] == "release"]
     regression_cases = [c for c in case_results if c["case_set"] == "regression"]
 
-    missing_evidence_cases = [
-        c["case_id"] for c in case_results if c.get("missing_evidence")
-    ]
+    missing_evidence_cases = [c["case_id"] for c in case_results if c.get("missing_evidence")]
     if missing_evidence_cases:
-        reasons.append(
-            f"missing evidence in cases: {', '.join(missing_evidence_cases)}"
-        )
+        reasons.append(f"missing evidence in cases: {', '.join(missing_evidence_cases)}")
         return {
             "outcome": "HOLD",
             "reasons": reasons,
@@ -397,24 +396,16 @@ def compute_release_decision(
         }
 
     inconsistent = [c["case_id"] for c in case_results if not c["consistent"]]
-    low_frequency = [
-        c["case_id"]
-        for c in release_cases
-        if c["success_frequency"] < 0.8
-    ]
+    low_frequency = [c["case_id"] for c in release_cases if c["success_frequency"] < 0.8]
 
     rubric_abstains = [
-        r["case_id"]
-        for r in rubric_results
-        if r["verdict"] in ("abstain", "insufficient_evidence")
+        r["case_id"] for r in rubric_results if r["verdict"] in ("abstain", "insufficient_evidence")
     ]
 
     uncalibrated_advisory = not calibration.calibrated
 
     if low_frequency:
-        reasons.append(
-            f"release cases below 80% success: {', '.join(low_frequency)}"
-        )
+        reasons.append(f"release cases below 80% success: {', '.join(low_frequency)}")
         return {
             "outcome": "BLOCK",
             "reasons": reasons,
@@ -422,9 +413,7 @@ def compute_release_decision(
         }
 
     regressions = [
-        c["case_id"]
-        for c in regression_cases
-        if c["paired_delta"] == "candidate_regression"
+        c["case_id"] for c in regression_cases if c["paired_delta"] == "candidate_regression"
     ]
     if regressions:
         reasons.append(f"regressions detected: {', '.join(regressions)}")

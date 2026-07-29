@@ -14,11 +14,7 @@ _CASE_ID_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*", re.ASCII)
 
 def validate_case_id(case_id: str) -> str:
     """Return a safe case ID or raise ValueError for unsafe input."""
-    if (
-        not isinstance(case_id, str)
-        or len(case_id) > 64
-        or _CASE_ID_RE.fullmatch(case_id) is None
-    ):
+    if not isinstance(case_id, str) or len(case_id) > 64 or _CASE_ID_RE.fullmatch(case_id) is None:
         raise ValueError(
             "invalid eval case ID: expected 1-64 lowercase ASCII letters or digits "
             "separated by single hyphens"

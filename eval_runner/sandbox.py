@@ -51,9 +51,7 @@ def _is_excluded(path: Path, skill_root: Path) -> bool:
         return True
     if path.name in EXCLUDED_FILES:
         return True
-    if path.suffix in EXCLUDED_SUFFIXES:
-        return True
-    return False
+    return path.suffix in EXCLUDED_SUFFIXES
 
 
 def _set_readonly(path: Path) -> None:

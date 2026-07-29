@@ -5,13 +5,14 @@ from __future__ import annotations
 import json
 import sys
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from eval_runner import models as models
 from eval_runner import fake_adapter as fake_adapter_mod
 from eval_runner import manifest as manifest_mod
+from eval_runner import models as models
 from eval_runner import path_safety as path_safety_mod
 from eval_runner.path_safety import contained_path
 from eval_runner.runner import load_cases
@@ -23,8 +24,6 @@ ExitStatus = models.ExitStatus
 FakeAdapter = fake_adapter_mod.FakeAdapter
 build_manifest = manifest_mod.build_manifest
 write_manifest = manifest_mod.write_manifest
-
-from datetime import datetime, timezone
 
 
 def _make_case() -> EvalCase:
@@ -150,9 +149,7 @@ def test_manifest_validates_against_schema():
         return
 
     schema_path = (
-        Path(__file__).resolve().parent.parent.parent
-        / "schemas"
-        / "run-manifest-v1.schema.json"
+        Path(__file__).resolve().parent.parent.parent / "schemas" / "run-manifest-v1.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     Draft202012Validator.check_schema(schema)
@@ -200,9 +197,7 @@ def test_manifest_schema_enforces_public_identity_fields():
         return
 
     schema_path = (
-        Path(__file__).resolve().parent.parent.parent
-        / "schemas"
-        / "run-manifest-v1.schema.json"
+        Path(__file__).resolve().parent.parent.parent / "schemas" / "run-manifest-v1.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     candidate_properties = schema["properties"]["candidate"]["properties"]
@@ -255,12 +250,15 @@ def test_eval_case_rejects_unsafe_ids():
         else:
             raise AssertionError(f"unsafe case ID accepted: {case_id!r}")
 
-    assert EvalCase(
-        id="x" * 64,
-        prompt="prompt",
-        expected_output="output",
-        assertions=[],
-    ).id == "x" * 64
+    assert (
+        EvalCase(
+            id="x" * 64,
+            prompt="prompt",
+            expected_output="output",
+            assertions=[],
+        ).id
+        == "x" * 64
+    )
 
 
 def test_eval_case_rejects_unsafe_fixture_paths():
