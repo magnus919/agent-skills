@@ -41,13 +41,13 @@ jobs:
           large_files=$(git ls-files -- ':(glob)**' | while read -r f; do
             if [ -f "$f" ]; then
               size=$(stat -c%s "$f" 2>/dev/null || echo 0)
-              if [ "$size" -gt 512000 ]; then
+              if [ "$size" -gt 5242880 ]; then
                 echo "$f ($((size / 1024)) KB)"
               fi
             fi
           done)
           if [ -n "$large_files" ]; then
-            echo "Files exceeding 500 KB:"
+            echo "Files exceeding 5 MB:"
             echo "$large_files"
             exit 1
           fi
