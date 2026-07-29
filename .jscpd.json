@@ -1,0 +1,19 @@
+{
+  "threshold": 15,
+  "reporters": ["consoleFull"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/__pycache__/**",
+    "**/.mypy_cache/**",
+    "**/.pytest_cache/**",
+    "**/.ruff_cache/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.git/**",
+    "**/templates/**",
+    "**/evals/**",
+    "**/fixtures/**",
+    "**/references/**"
+  ],
+  "format": ["python", "ruby", "javascript", "typescript", "markdown"]
+}

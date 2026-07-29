@@ -31,6 +31,8 @@ ignore = [
 "eval_runner/comparison.py" = ["TCH"]
 "eval_runner/adapter.py" = ["TCH"]
 "eval_runner/manifest.py" = ["E402"]
+# Integration tests need sys.path manipulation before imports
+"tests/integration/*.py" = ["E402"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -40,7 +42,7 @@ line-ending = "auto"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-testpaths = ["scripts", "eval_runner/tests"]
+testpaths = ["scripts", "eval_runner/tests", "tests/integration"]
 python_files = "test_*.py"
 python_classes = "*Test*"
 python_functions = "test_*"
@@ -79,6 +81,7 @@ warn_unreachable = true
 [[tool.mypy.overrides]]
 module = [
     "eval_runner.tests.*",
+    "tests.integration.*",
     "eval_runner.openai_adapter",
     "eval_runner.fake_adapter",
     "test-eval-coverage",
@@ -125,5 +128,5 @@ extend_exclude = [
     "yc-weekly-growth-compass",
 ]
 [tool.deptry.per_rule_ignores]
-DEP002 = ["ruff", "pytest", "pytest-cov", "mypy", "radon", "deptry", "requests", "types-jsonschema"]
+DEP002 = ["ruff", "pytest", "pytest-cov", "pytest-xdist", "mypy", "radon", "deptry", "bandit", "requests", "types-jsonschema"]
 DEP001 = ["eval_validation"]
