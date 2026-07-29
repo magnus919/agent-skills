@@ -70,3 +70,60 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "raise NotImplementedError",
 ]
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = [
+    "eval_runner.tests.*",
+    "eval_runner.openai_adapter",
+    "eval_runner.fake_adapter",
+    "test-eval-coverage",
+    "test-eval-validation",
+    "check-artifacts",
+]
+ignore_errors = true
+
+[tool.radon]
+cc_min = "B"
+
+[tool.deptry]
+requirements_files = ["requirements-dev.txt"]
+extend_exclude = [
+    "agent-council",
+    "bundles",
+    "templates",
+    "tests",
+    "life-coach",
+    "raleigh",
+    "forgejo-cli",
+    "jellyfin-cli",
+    "comic-chat",
+    "fireflies",
+    "linear",
+    "autogen",
+    "crewai",
+    "dspy",
+    "haystack",
+    "langchain",
+    "langgraph",
+    "llamaindex",
+    "nous-branding",
+    "open-knowledge-format",
+    "color-management",
+    "data-scientist",
+    "data-architect",
+    "esp32-development",
+    "site-reliability-engineering",
+    "opensource-contributions",
+    "artifact-pyramids",
+    "woodpecker-ci",
+    "yc-default-alive-calculator",
+    "yc-weekly-growth-compass",
+]
+[tool.deptry.per_rule_ignores]
+DEP002 = ["ruff", "pytest", "pytest-cov", "mypy", "radon", "deptry", "requests", "types-jsonschema"]
+DEP001 = ["eval_validation"]

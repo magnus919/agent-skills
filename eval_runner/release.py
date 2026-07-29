@@ -327,7 +327,7 @@ def evaluate_pairwise(
 
 
 def _mean_score(grade: dict[str, Any]) -> float:
-    scores = grade.get("scores", {})
+    scores: dict[str, float] = grade.get("scores", {})
     if not scores:
         return 0.0
     return sum(scores.values()) / len(scores)

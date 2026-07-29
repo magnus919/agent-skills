@@ -30,6 +30,12 @@ jobs:
         run: python3 -m ruff check scripts/ eval_runner/
       - name: Check Python formatting (ruff)
         run: python3 -m ruff format --check scripts/ eval_runner/
+      - name: Type check (mypy)
+        run: python3 -m mypy scripts/ eval_runner/
+      - name: Complexity check (radon)
+        run: python3 -m radon cc scripts/ eval_runner/ --min B --total-average
+      - name: Unused dependency check (deptry)
+        run: python3 -m deptry .
       - name: Validate skill format and links
         run: ruby scripts/validate-skills.rb
       - name: Test eval manifest validation
@@ -39,7 +45,7 @@ jobs:
       - name: Test life-coach capability validation
         run: python3 -m unittest discover -s life-coach/tests -p 'test_*.py'
       - name: Run core test suite with coverage
-        run: python3 -m pytest scripts/ eval_runner/tests/ -v --durations=10 --cov=scripts --cov=eval_runner --cov-fail-under=60 --cov-report=term-missing
+        run: python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py eval_runner/tests/ -v --durations=10 --cov=scripts --cov=eval_runner --cov-fail-under=60 --cov-report=term-missing
       - name: Test changed-skill quality validation
         run: ruby scripts/test-validate-skill-quality.rb
       - name: Validate changed skill quality

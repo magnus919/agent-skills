@@ -215,17 +215,9 @@ def coverage_decreased(base_ref_commit: str) -> tuple[bool, float, float]:
 
     # Use the same retained-skill population on both sides of the comparison.
     # New and deleted skills are handled by their own ratchet rules.
-    head_with_retained = sum(
-        1 for skill_dir in retained_skill_dirs if check_evals(skill_dir)[0]
-    )
-    base_pct = (
-        base_with / len(retained_skill_dirs) * 100 if retained_skill_dirs else 0.0
-    )
-    head_pct = (
-        head_with_retained / len(retained_skill_dirs) * 100
-        if retained_skill_dirs
-        else 0.0
-    )
+    head_with_retained = sum(1 for skill_dir in retained_skill_dirs if check_evals(skill_dir)[0])
+    base_pct = base_with / len(retained_skill_dirs) * 100 if retained_skill_dirs else 0.0
+    head_pct = head_with_retained / len(retained_skill_dirs) * 100 if retained_skill_dirs else 0.0
     return head_pct < base_pct, base_pct, head_pct
 
 
@@ -250,7 +242,7 @@ def main() -> int:
     skills = find_skills()
 
     total = len(skills)
-    skill_states: list[dict] = []
+    skill_states: list[dict[str, object]] = []
     without_evals: list[str] = []
 
     for skill_dir in skills:
@@ -287,6 +279,7 @@ def main() -> int:
             "reason": not_assessed_reasons[state],
         }
     coverage_pct = state_summary["schema_valid"]["percentage"]
+    coverage_pct_float: float = float(coverage_pct) if coverage_pct is not None else 0.0  # type: ignore[arg-type]
 
     # Sort skills without evals: most-referenced first, then alphabetical
     ref_counts = {name: count_references(Path(name).name, skills) for name in without_evals}
@@ -301,7 +294,7 @@ def main() -> int:
             modified=modified,
             current=set(skills),
             without_evals={Path(name) for name in without_evals},
-            coverage_pct=coverage_pct,
+            coverage_pct=coverage_pct_float,
         )
 
         # Monotonic coverage floor: fail if coverage decreased.
