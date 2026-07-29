@@ -15,23 +15,20 @@ from loguru import logger as _logger  # type: ignore[import-not-found]
 # Patterns detected and redacted in log messages
 _REDACT_PATTERNS: list[tuple[str, str]] = [
     # API keys and tokens (common formats)
-    (r'(?i)(api[_-]?key|apikey|secret[_-]?key|auth[_-]?token|access[_-]?token|bearer)\s*[:=]\s*[\S]+',
-     r'\1=<REDACTED>'),
+    (
+        r"(?i)(api[_-]?key|apikey|secret[_-]?key|auth[_-]?token|access[_-]?token|bearer)\s*[:=]\s*[\S]+",
+        r"\1=<REDACTED>",
+    ),
     # JWT tokens
-    (r'eyJ[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}',
-     '<JWT_REDACTED>'),
+    (r"eyJ[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}", "<JWT_REDACTED>"),
     # GitHub tokens
-    (r'gh[pousr]_[A-Za-z0-9_]{20,}',
-     '<GITHUB_TOKEN_REDACTED>'),
+    (r"gh[pousr]_[A-Za-z0-9_]{20,}", "<GITHUB_TOKEN_REDACTED>"),
     # Generic hex tokens (32+ hex chars)
-    (r'\b[a-fA-F0-9]{32,}\b',
-     '<HEX_TOKEN_REDACTED>'),
+    (r"\b[a-fA-F0-9]{32,}\b", "<HEX_TOKEN_REDACTED>"),
     # Email addresses
-    (r'\b[\w.+-]+@[\w-]+\.[\w.-]+\b',
-     '<EMAIL_REDACTED>'),
+    (r"\b[\w.+-]+@[\w-]+\.[\w.-]+\b", "<EMAIL_REDACTED>"),
     # IPv4 addresses
-    (r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b',
-     '<IP_REDACTED>'),
+    (r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b", "<IP_REDACTED>"),
 ]
 
 

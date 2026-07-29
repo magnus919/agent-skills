@@ -127,11 +127,13 @@ class TestValidateEvalsIntegration(unittest.TestCase):
         """A manifest with empty evals array should fail."""
         skill = _make_skill_dir(self.root, "empty-skill")
         (skill / "evals" / "evals.json").write_text(
-            json.dumps({
-                "schema_version": 1,
-                "skill_name": "empty-skill",
-                "evals": [],
-            })
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "skill_name": "empty-skill",
+                    "evals": [],
+                }
+            )
         )
         result = validate_manifest(skill / "evals" / "evals.json", self.root)
         self.assertGreater(len(result.errors), 0)

@@ -43,16 +43,14 @@ def validate_references(blocks: list[tuple[int, str]]) -> tuple[int, int, list[s
     Returns (pass_count, fail_count, error_messages).
     """
     errors: list[str] = []
-    script_ref_pattern = re.compile(r'scripts/[\w./-]+')
+    script_ref_pattern = re.compile(r"scripts/[\w./-]+")
 
     for lineno, block in blocks:
         refs = script_ref_pattern.findall(block)
         for ref in refs:
             full_path = ROOT / ref
             if not full_path.exists():
-                errors.append(
-                    f"AGENTS.md:{lineno}: referenced script '{ref}' does not exist"
-                )
+                errors.append(f"AGENTS.md:{lineno}: referenced script '{ref}' does not exist")
 
     # Check that AGENTS.md references requirements-dev.txt if it mentions pip install
     content = AGENTS_MD.read_text()

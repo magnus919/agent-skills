@@ -10,8 +10,20 @@ import sys
 from pathlib import Path
 
 MARKERS = ("TODO", "FIXME", "HACK", "XXX")
-EXCLUDE_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", ".mypy_cache",
-                ".pytest_cache", ".ruff_cache", "dist", "build", "logs", ".hermes"}
+EXCLUDE_DIRS = {
+    ".git",
+    ".venv",
+    "venv",
+    "node_modules",
+    "__pycache__",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    "dist",
+    "build",
+    "logs",
+    ".hermes",
+}
 EXCLUDE_PATTERNS = {"*.pyc", "*.pyo", "*.egg-info", "*.whl", "*.min.js", "*.min.css"}
 
 
@@ -45,9 +57,25 @@ def scan_file(filepath: Path) -> list[tuple[int, str, str]]:
 def main() -> int:
     try:
         result = subprocess.run(
-            ["git", "ls-files", "--cached", "--others", "--exclude-standard",
-             "*.py", "*.rb", "*.sh", "*.js", "*.ts", "*.yml", "*.yaml", "*.toml", "*.md"],
-            capture_output=True, text=True, check=True
+            [
+                "git",
+                "ls-files",
+                "--cached",
+                "--others",
+                "--exclude-standard",
+                "*.py",
+                "*.rb",
+                "*.sh",
+                "*.js",
+                "*.ts",
+                "*.yml",
+                "*.yaml",
+                "*.toml",
+                "*.md",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
         )
     except subprocess.CalledProcessError:
         print("ERROR: Failed to list tracked files.", file=sys.stderr)

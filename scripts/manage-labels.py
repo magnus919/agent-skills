@@ -168,8 +168,10 @@ def main() -> int:
 
     for name, config in LABELS.items():
         if name in existing:
-            if (existing[name]["color"] != config["color"] or
-                    existing[name]["description"] != config["description"]):
+            if (
+                existing[name]["color"] != config["color"]
+                or existing[name]["description"] != config["description"]
+            ):
                 if dry_run:
                     print(f"  [DRY RUN] Would update: {name}")
                 else:
