@@ -128,5 +128,5 @@ extend_exclude = [
     "yc-weekly-growth-compass",
 ]
 [tool.deptry.per_rule_ignores]
-DEP002 = ["ruff", "pytest", "pytest-cov", "mypy", "radon", "deptry", "requests", "types-jsonschema"]
+DEP002 = ["ruff", "pytest", "pytest-cov", "pytest-xdist", "mypy", "radon", "deptry", "bandit", "requests", "types-jsonschema"]
 DEP001 = ["eval_validation"]
