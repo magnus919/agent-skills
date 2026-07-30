@@ -434,3 +434,196 @@ class BackendAdapter(ABC):
             A bounded CallGraph entity.
         """
         ...
+
+    def search(
+        self,
+        binary: Binary,
+        query: str,
+        search_type: str = "function",
+    ) -> list[dict[str, Any]]:
+        """Search for entities matching a query string.
+
+        Searches across functions, strings, symbols, imports, and exports
+        depending on the search type. Returns a list of result dicts with
+        entity type, name, address, and relevance.
+
+        Args:
+            binary: The binary to search within.
+            query: The search query string.
+            search_type: Type of entity to search ("function", "string", "symbol",
+                         "import", "export", "all"; default "function").
+
+        Returns:
+            List of result dicts with keys: entity_type, name, address, and
+            optional match_detail.
+
+        This is a concrete method with a default implementation that searches
+        the basic fixtures. Backends may override for more sophisticated search.
+        """
+        results: list[dict[str, Any]] = []
+        query_lower = query.lower()
+
+        def _match(name: str) -> bool:
+            """Case-insensitive substring match."""
+            return query_lower in name.lower()
+
+        if search_type in ("function", "all"):
+            for fn in self.get_functions(binary, exclude_external=False, exclude_thunks=False):
+                if _match(fn.name):
+                    results.append(
+                        {
+                            "entity_type": "function",
+                            "name": fn.name,
+                            "address": fn.address.to_dict() if fn.address else None,
+                            "match_detail": f"Function name matches '{query}'",
+                            "size_bytes": fn.size_bytes,
+                        }
+                    )
+
+        if search_type in ("string", "all"):
+            for s in self.get_strings(binary):
+                if _match(s.text):
+                    results.append(
+                        {
+                            "entity_type": "string",
+                            "name": s.text,
+                            "address": s.address.to_dict() if s.address else None,
+                            "match_detail": f"String contains '{query}'",
+                            "encoding": s.encoding,
+                            "length": s.length,
+                        }
+                    )
+
+        if search_type in ("symbol", "all"):
+            for sym in self.get_symbols(binary):
+                if _match(sym.name):
+                    results.append(
+                        {
+                            "entity_type": "symbol",
+                            "name": sym.name,
+                            "address": sym.address.to_dict() if sym.address else None,
+                            "match_detail": f"Symbol name matches '{query}'",
+                            "scope": sym.scope,
+                        }
+                    )
+
+        if search_type in ("import", "all"):
+            for imp in self.get_imports(binary):
+                if _match(imp.symbol) or _match(imp.module):
+                    results.append(
+                        {
+                            "entity_type": "import",
+                            "name": imp.symbol,
+                            "address": imp.address.to_dict() if imp.address else None,
+                            "match_detail": f"Import matches '{query}' in module '{imp.module}'",
+                            "module": imp.module,
+                        }
+                    )
+
+        if search_type in ("export", "all"):
+            for exp in self.get_exports(binary):
+                if _match(exp.name):
+                    results.append(
+                        {
+                            "entity_type": "export",
+                            "name": exp.name,
+                            "address": exp.address.to_dict() if exp.address else None,
+                            "match_detail": f"Export name matches '{query}'",
+                            "kind": exp.kind,
+                        }
+                    )
+
+        return results
+
+    def trace(
+        self,
+        binary: Binary,
+        from_address: Address,
+        to_address: Address,
+        max_paths: int = 10,
+        max_depth: int = 10,
+    ) -> tuple[list[list[dict[str, Any]]], bool]:
+        """Find bounded paths between two entities.
+
+        Traces call paths from a source address to a target address within
+        the disclosed path count and depth limits.
+
+        Args:
+            binary: The binary to trace within.
+            from_address: The source entity address.
+            to_address: The destination entity address.
+            max_paths: Maximum number of paths to return (default 10).
+            max_depth: Maximum path depth to explore (default 10).
+
+        Returns:
+            A tuple of (paths, truncated) where paths is a list of paths,
+            each path is a list of entity dicts with name, address, and
+            depth, and truncated is True if paths were truncated at limits.
+
+        This is a concrete method with a default implementation that traces
+        through the call graph. Backends may override for more sophisticated
+        path finding.
+        """
+        # Get all functions
+        functions = self.get_functions(binary, exclude_external=False, exclude_thunks=False)
+
+        # Build an adjacency map: function address -> list of callee addresses
+        adj: dict[str, list[str]] = {}
+        addr_to_name: dict[str, str] = {}
+
+        for fn in functions:
+            if fn.address is None:
+                continue
+            offset = fn.address.offset
+            addr_to_name[offset] = fn.name
+            callees = self.get_callees(binary, fn)
+            targets = []
+            for edge in callees:
+                if edge.to_address is not None:
+                    targets.append(edge.to_address.offset)
+            adj[offset] = targets
+
+        from_offset = from_address.offset
+        to_offset = to_address.offset
+
+        paths: list[list[dict[str, Any]]] = []
+        truncated = False
+
+        # BFS/DFS with depth limiting
+        def _dfs(
+            current: str, target: str, visited: set[str], current_path: list[str], depth: int
+        ) -> None:
+            nonlocal truncated
+            if len(paths) >= max_paths:
+                truncated = True
+                return
+            if depth > max_depth:
+                truncated = True
+                return
+            if current == target:
+                # Build the path
+                path_entities: list[dict[str, Any]] = []
+                for d, addr in enumerate([*current_path, current]):
+                    path_entities.append(
+                        {
+                            "name": addr_to_name.get(addr, addr),
+                            "address": {
+                                "space": "ram",
+                                "offset": addr,
+                                "display": addr,
+                            },
+                            "depth": d,
+                        }
+                    )
+                paths.append(path_entities)
+                return
+            if current in visited:
+                return
+            visited.add(current)
+            for neighbor in adj.get(current, []):
+                if neighbor not in visited:
+                    _dfs(neighbor, target, visited.copy(), [*current_path, current], depth + 1)
+
+        _dfs(from_offset, to_offset, set(), [], 1)
+
+        return paths, truncated

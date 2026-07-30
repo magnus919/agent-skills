@@ -357,10 +357,49 @@ def execute_import(args: argparse.Namespace) -> dict[str, Any]:
     # 6. Compute SHA-256 client-side (always, even if backend fails)
     binary_sha256 = _compute_sha256(binary_path)
     file_size = os.path.getsize(binary_path)
+    import_mode = "reference" if reference_mode else "copy"
+
+    # 6a. Check for duplicate binary (same SHA-256 already imported)
+    binaries_dir = os.path.join(project_path, "binaries")
+    if os.path.isdir(binaries_dir):
+        for fname in os.listdir(binaries_dir):
+            if fname.endswith(".json"):
+                existing_path = os.path.join(binaries_dir, fname)
+                try:
+                    with open(existing_path) as f:
+                        existing = json.load(f)
+                    if existing.get("sha256") == binary_sha256:
+                        existing_binary_id = existing.get("id", fname.replace(".json", ""))
+                        return {
+                            "success": True,
+                            "partial": False,
+                            "warnings": [],
+                            "diagnostics": [
+                                {
+                                    "severity": "INFO",
+                                    "message": (
+                                        f"Binary with SHA-256 {binary_sha256[:16]}... "
+                                        f"is already imported (binary_id: {existing_binary_id}). "
+                                        "Re-import is a no-op; returning the existing binary identity."
+                                    ),
+                                    "category": "import",
+                                    "recoverable": True,
+                                }
+                            ],
+                            "data": {
+                                "binary_id": existing_binary_id,
+                                "binary_sha256": binary_sha256,
+                                "binary_path": binary_path,
+                                "format": existing.get("format", detected_format),
+                                "import_mode": existing.get("import_mode", import_mode),
+                                "size_bytes": existing.get("size_bytes", file_size),
+                            },
+                        }
+                except Exception:
+                    continue
 
     # 7. Handle copy vs reference mode
     binary_id = str(uuid4())
-    import_mode = "reference" if reference_mode else "copy"
     stored_path = binary_path
 
     if reference_mode:

@@ -22,6 +22,7 @@ from binary_analysis.cli import (
     functions,
     project,
     references,
+    search,
     structural,
     version,
 )
@@ -230,6 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
     structural.add_subparser(sub)
     functions.add_subparser(sub)
     references.add_subparser(sub)
+    search.add_subparser(sub)
 
     return parser
 
@@ -305,6 +307,10 @@ def _dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return references.execute_callees(args)
     elif command == "callgraph":
         return references.execute_callgraph(args)
+    elif command == "search":
+        return search.execute_search(args)
+    elif command == "trace":
+        return search.execute_trace(args)
     else:
         raise InvalidArgsError(f"Unknown command: {command}")  # pragma: no cover
 
