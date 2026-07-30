@@ -1045,7 +1045,7 @@ def write_report(
 
         # Write the HTML, then convert to PDF if weasyprint is available
         try:
-            import weasyprint  # noqa: F401
+            import weasyprint
 
             pdf_bytes = weasyprint.HTML(string=html_content).write_pdf()
             with open(output_path, "wb") as f:

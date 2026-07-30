@@ -27,6 +27,7 @@ from binary_analysis.cli import (
     security,
     structural,
     version,
+    worker,
 )
 from binary_analysis.cli.helpers import (
     SCHEMA_VERSION,
@@ -236,6 +237,7 @@ def build_parser() -> argparse.ArgumentParser:
     search.add_subparser(sub)
     security.add_subparser(sub)
     reporting.add_subparser(sub)
+    worker.add_subparser(sub)
 
     return parser
 
@@ -252,6 +254,10 @@ def _resolve_command_name(args: argparse.Namespace) -> str:
         subcmd = getattr(args, "project_command", None)
         if subcmd:
             return f"project {subcmd}"
+    if command == "worker":
+        subcmd = getattr(args, "worker_command", None)
+        if subcmd:
+            return f"worker {subcmd}"
     return command or ""
 
 
@@ -327,6 +333,8 @@ def _dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return reporting.execute_export_report(args)
     elif command == "audit":
         return reporting.execute_audit(args)
+    elif command == "worker":
+        return worker.execute(args)
     else:
         raise InvalidArgsError(f"Unknown command: {command}")  # pragma: no cover
 
