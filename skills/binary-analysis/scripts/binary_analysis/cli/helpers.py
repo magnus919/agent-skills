@@ -129,7 +129,7 @@ def build_paginated_response(
     Returns:
         A dict with items, total, page_size, has_more, and next_page_token.
     """
-    import base64 as _base64
+    import base64 as _b64
 
     has_more = (offset + limit) < total
     next_page_token: str | None = None
@@ -138,7 +138,7 @@ def build_paginated_response(
             next_page_token = cursor_encoder({"offset": offset + limit})
         else:
             cursor_data = json.dumps({"offset": offset + limit}).encode("utf-8")
-            next_page_token = _base64.urlsafe_b64encode(cursor_data).decode("ascii")
+            next_page_token = _b64.b64encode(cursor_data).decode("ascii")
 
     return {
         "items": items,
