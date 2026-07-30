@@ -22,6 +22,7 @@ from binary_analysis.cli import (
     functions,
     project,
     references,
+    reporting,
     search,
     security,
     structural,
@@ -234,6 +235,7 @@ def build_parser() -> argparse.ArgumentParser:
     references.add_subparser(sub)
     search.add_subparser(sub)
     security.add_subparser(sub)
+    reporting.add_subparser(sub)
 
     return parser
 
@@ -321,6 +323,10 @@ def _dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return security.execute_suspicious_apis(args)
     elif command == "capability-map":
         return security.execute_capability_map(args)
+    elif command == "export-report":
+        return reporting.execute_export_report(args)
+    elif command == "audit":
+        return reporting.execute_audit(args)
     else:
         raise InvalidArgsError(f"Unknown command: {command}")  # pragma: no cover
 

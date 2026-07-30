@@ -18,7 +18,7 @@ from binary_analysis.cli.helpers import (
     build_paginated_response,
     clamp_page_size,
 )
-from binary_analysis.domain.enums import ProjectState
+from binary_analysis.domain.enums import AuditResult, ProjectState
 from binary_analysis.domain.errors import (
     InvalidArgsError,
     ProjectNotFoundError,
@@ -47,6 +47,7 @@ from binary_analysis.projects.workspace import (
     validate_project_name,
     workspace_exists,
 )
+from binary_analysis.reporting.audit import write_audit_event
 
 # Current workspace version for migration
 _WORKSPACE_VERSION = "1"
@@ -286,6 +287,16 @@ def _execute_create(args: argparse.Namespace) -> dict[str, Any]:
     project_dir_str = str(create_workspace(project_name))
     manifest = create_manifest(project_name)
     save_manifest(project_dir_str, manifest)
+
+    # Record audit event
+    write_audit_event(
+        project_dir_str,
+        command="project create",
+        result=AuditResult.SUCCESS,
+        duration_ms=0,
+        args={"name": project_name},
+        project_id=manifest["id"],
+    )
 
     return {
         "success": True,

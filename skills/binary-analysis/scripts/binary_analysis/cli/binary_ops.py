@@ -24,7 +24,7 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID, uuid4
 
-from binary_analysis.domain.enums import ExitCode, ProjectState
+from binary_analysis.domain.enums import AuditResult, ExitCode, ProjectState
 from binary_analysis.domain.errors import (
     AnalysisFailedError,
     BackendFailureError,
@@ -53,6 +53,7 @@ from binary_analysis.projects.workspace import (
     get_project_path,
     workspace_exists,
 )
+from binary_analysis.reporting.audit import write_audit_event
 
 # ---------------------------------------------------------------------------
 # Supported binary formats (magic bytes detection)
@@ -484,6 +485,25 @@ def execute_import(args: argparse.Namespace) -> dict[str, Any]:
     manifest["current_binary"] = binary_record
     manifest["updated_at"] = datetime.now(timezone.utc).isoformat()
     save_manifest(project_path, manifest)
+
+    # Record audit event
+    write_audit_event(
+        project_path,
+        command="import",
+        result=AuditResult.SUCCESS,
+        duration_ms=0,
+        args={
+            "path": binary_path,
+            "mode": import_mode,
+        },
+        project_id=manifest.get("id"),
+        binary_id=binary_id,
+        details={
+            "sha256": binary_sha256,
+            "format": backend_format,
+            "size_bytes": file_size,
+        },
+    )
 
     return {
         "success": True,
@@ -921,6 +941,24 @@ def execute_analyze(args: argparse.Namespace) -> dict[str, Any]:
     # Persist any diagnostics (including warnings from partial analysis)
     if diagnostics:
         persist_diagnostics(project_path, diagnostics, command="analyze")
+
+    # Record audit event
+    result = AuditResult.PARTIAL if failed_analysers else AuditResult.SUCCESS
+    write_audit_event(
+        project_path,
+        command="analyze",
+        result=result,
+        duration_ms=0,
+        args={
+            "profile": profile_name,
+        },
+        project_id=manifest.get("id"),
+        binary_id=current_binary.get("id"),
+        details={
+            "completed_analysers": completed_analysers,
+            "failed_analysers": failed_analysers,
+        },
+    )
 
     return {
         "success": True,
