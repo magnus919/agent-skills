@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from typing import Any
 
 from binary_analysis.cli.helpers import (
@@ -242,6 +243,7 @@ def _resolve_project_name(project_name_or_id: str) -> str:
 
 def _execute_create(args: argparse.Namespace) -> dict[str, Any]:
     """Execute the 'project create' subcommand."""
+    t_start = time.perf_counter()
     project_name = args.name
     dry_run = getattr(args, "dry_run", False)
 
@@ -289,11 +291,12 @@ def _execute_create(args: argparse.Namespace) -> dict[str, Any]:
     save_manifest(project_dir_str, manifest)
 
     # Record audit event
+    duration_ms = int((time.perf_counter() - t_start) * 1000)
     write_audit_event(
         project_dir_str,
         command="project create",
         result=AuditResult.SUCCESS,
-        duration_ms=0,
+        duration_ms=duration_ms,
         args={"name": project_name},
         project_id=manifest["id"],
     )

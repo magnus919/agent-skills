@@ -192,12 +192,13 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
     adapter.initialize()
 
     # Set up the adapter with appropriate fixture
+    fixture_name = "test-bin"
     if binary_format == "ELF":
-        adapter.set_fixture("test-bin", FakeAdapter.elf_fixture())
+        adapter.set_fixture(fixture_name, FakeAdapter.elf_fixture())
     elif binary_format == "Mach-O":
-        adapter.set_fixture("test-bin", FakeAdapter.macho_fixture())
+        adapter.set_fixture(fixture_name, FakeAdapter.macho_fixture())
     else:
-        adapter.set_fixture("test-bin", FakeAdapter.pe_fixture())
+        adapter.set_fixture(fixture_name, FakeAdapter.pe_fixture())
 
     from uuid import UUID
 
@@ -212,6 +213,8 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
         size_bytes=current_binary.get("size_bytes", 0),
         analysis_profile=profile_name,
     )
+    # Register binary with adapter so backend queries return real fixture data
+    adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": fixture_name}
 
     # Run the triage
     try:

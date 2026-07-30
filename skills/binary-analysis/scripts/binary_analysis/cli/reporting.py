@@ -15,6 +15,7 @@ Events are atomic single-line JSON objects with command, args, result
 from __future__ import annotations
 
 import argparse
+import time
 from typing import Any
 
 from binary_analysis.adapters.fake import FakeAdapter
@@ -124,6 +125,7 @@ def execute_export_report(args: argparse.Namespace) -> dict[str, Any]:
         A result dict with success, partial, warnings, diagnostics, data,
         and optional _exit_code for non-success paths.
     """
+    t_start = time.perf_counter()
     project_name = args.project
     report_type_str = getattr(args, "type", "triage")
     output_format = getattr(args, "format", "markdown")
@@ -325,11 +327,12 @@ def execute_export_report(args: argparse.Namespace) -> dict[str, Any]:
         all_warnings.append(make_warning(w, category="report-rendering"))
 
     # Write audit event for report generation
+    duration_ms = int((time.perf_counter() - t_start) * 1000)
     write_audit_event(
         project_path,
         command="export-report",
         result=AuditResult.SUCCESS,
-        duration_ms=0,
+        duration_ms=duration_ms,
         args={
             "type": report_type.value,
             "format": output_format,

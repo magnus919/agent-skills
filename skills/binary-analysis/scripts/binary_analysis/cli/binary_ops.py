@@ -20,6 +20,7 @@ import json
 import os
 import shutil
 import threading
+import time
 from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID, uuid4
@@ -261,6 +262,7 @@ def execute_import(args: argparse.Namespace) -> dict[str, Any]:
     7. Store binary record, update manifest, transition to IMPORTED
     8. Return result with binary identity
     """
+    t_start = time.perf_counter()
     project_name = args.project
     binary_path = args.path
     reference_mode: bool = getattr(args, "reference", False)
@@ -509,11 +511,12 @@ def execute_import(args: argparse.Namespace) -> dict[str, Any]:
     save_manifest(project_path, manifest)
 
     # Record audit event
+    duration_ms = int((time.perf_counter() - t_start) * 1000)
     write_audit_event(
         project_path,
         command="import",
         result=AuditResult.SUCCESS,
-        duration_ms=0,
+        duration_ms=duration_ms,
         args={
             "path": binary_path,
             "mode": import_mode,
@@ -557,6 +560,7 @@ def execute_analyze(args: argparse.Namespace) -> dict[str, Any]:
     8. On timeout: return partial results, exit code 12
     9. On hard failure: transition to FAILED, exit code 11
     """
+    t_start = time.perf_counter()
     project_name = args.project
     profile_name: str = getattr(args, "profile", "standard")
     timeout_seconds: int = getattr(args, "timeout", 300)
@@ -966,11 +970,12 @@ def execute_analyze(args: argparse.Namespace) -> dict[str, Any]:
 
     # Record audit event
     result = AuditResult.PARTIAL if failed_analysers else AuditResult.SUCCESS
+    duration_ms = int((time.perf_counter() - t_start) * 1000)
     write_audit_event(
         project_path,
         command="analyze",
         result=result,
-        duration_ms=0,
+        duration_ms=duration_ms,
         args={
             "profile": profile_name,
         },

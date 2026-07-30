@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import platform as _platform
+import sys
 from typing import Any
 
 from binary_analysis import __version__ as _cli_version
@@ -100,6 +101,11 @@ def clamp_page_size(limit: int | None) -> int:
     if limit is None or limit < 1:
         return PAGE_SIZE_DEFAULT
     if limit > PAGE_SIZE_MAX:
+        print(
+            f"Warning: Requested page size {limit} exceeds maximum {PAGE_SIZE_MAX}. "
+            f"Clamping to {PAGE_SIZE_MAX}.",
+            file=sys.stderr,
+        )
         return PAGE_SIZE_MAX
     return limit
 
