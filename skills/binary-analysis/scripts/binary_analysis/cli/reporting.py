@@ -25,6 +25,9 @@ from binary_analysis.domain.errors import (
     ProjectNotFoundError,
 )
 from binary_analysis.projects.manifest import load_manifest
+from binary_analysis.projects.path_security import (
+    validate_output_path,
+)
 from binary_analysis.projects.workspace import get_project_path, workspace_exists
 from binary_analysis.reporting.audit import read_audit_events, write_audit_event
 from binary_analysis.reporting.generator import (
@@ -188,6 +191,30 @@ def execute_export_report(args: argparse.Namespace) -> dict[str, Any]:
         raise ProjectNotFoundError(project_name)
 
     project_path = str(get_project_path(project_name))
+
+    # Validate custom output path (VAL-SAFE-014)
+    custom_output = getattr(args, "output", None)
+    if custom_output:
+        try:
+            validated_output = validate_output_path(custom_output, project_path)
+        except ValueError as e:
+            return {
+                "success": False,
+                "partial": False,
+                "warnings": [],
+                "diagnostics": [
+                    make_diagnostic(
+                        f"Invalid output path: {e}",
+                        severity="ERROR",
+                        category="path_security",
+                    ),
+                ],
+                "data": None,
+                "_exit_code": ExitCode.GENERIC_ERROR,
+            }
+        _custom_output: str | None = validated_output
+    else:
+        _custom_output = None
 
     # Load project manifest
     manifest = load_manifest(project_path)

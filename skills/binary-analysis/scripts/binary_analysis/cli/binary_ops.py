@@ -44,6 +44,9 @@ from binary_analysis.projects.manifest import (
     load_manifest,
     save_manifest,
 )
+from binary_analysis.projects.path_security import (
+    validate_binary_import_path,
+)
 from binary_analysis.projects.state_machine import (
     can_analyze,
     can_import,
@@ -265,6 +268,25 @@ def execute_import(args: argparse.Namespace) -> dict[str, Any]:
     # 1. Resolve project
     project_path = _resolve_project_path(project_name)
     manifest = load_manifest(project_path)
+
+    # 1.5. Validate binary path for safety (VAL-SAFE-003)
+    # Reject path traversal sequences, symlink escapes, and system-sensitive paths
+    try:
+        binary_path = validate_binary_import_path(binary_path, project_path)
+    except ValueError as e:
+        return {
+            "success": False,
+            "partial": False,
+            "warnings": [],
+            "diagnostics": [
+                {
+                    "severity": "ERROR",
+                    "message": str(e),
+                    "category": "path_security",
+                }
+            ],
+            "data": None,
+        }
 
     current_state_str = manifest.get("state", "")
     try:

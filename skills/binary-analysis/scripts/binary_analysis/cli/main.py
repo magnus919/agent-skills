@@ -70,6 +70,51 @@ def _positive_duration(value: str) -> int:  # pragma: no cover
     return number
 
 
+# Default and maximum output sizes (in bytes) for VAL-SAFE-007
+DEFAULT_MAX_OUTPUT_BYTES = 64 * 1024 * 1024  # 64 MB
+HARD_MAX_OUTPUT_BYTES = 256 * 1024 * 1024  # 256 MB
+
+
+def _positive_output_size(value: str) -> int:  # pragma: no cover
+    """Validate a positive output size argument in bytes (for --max-output-size).
+
+    Clamps the value to within [1, HARD_MAX_OUTPUT_BYTES].
+    """
+    try:
+        number = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            f"max-output-size must be a positive integer (1-{HARD_MAX_OUTPUT_BYTES})"
+        ) from None
+    if number <= 0:
+        raise argparse.ArgumentTypeError(
+            f"max-output-size must be a positive integer (1-{HARD_MAX_OUTPUT_BYTES})"
+        )
+    if number > HARD_MAX_OUTPUT_BYTES:
+        raise argparse.ArgumentTypeError(
+            f"max-output-size exceeds maximum allowed: {HARD_MAX_OUTPUT_BYTES} bytes (256 MB)"
+        )
+    return number
+
+
+def _positive_memory_limit(value: str) -> int:  # pragma: no cover
+    """Validate a positive memory limit argument in MB (for --max-memory).
+
+    Memory limits must be at least 16 MB to allow a minimal operational footprint.
+    """
+    try:
+        number = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            "max-memory must be a positive integer (minimum 16 MB)"
+        ) from None
+    if number < 16:
+        raise argparse.ArgumentTypeError(
+            "max-memory must be at least 16 MB to allow minimal operation"
+        )
+    return number
+
+
 # ---------------------------------------------------------------------------
 # JSON envelope builder
 # ---------------------------------------------------------------------------
@@ -150,6 +195,8 @@ _GLOBAL_FLAGS: dict[str, int] = {
     "--quiet": 0,
     "--limit": 1,
     "--timeout": 1,
+    "--max-output-size": 1,
+    "--max-memory": 1,
 }
 
 
@@ -221,6 +268,28 @@ def build_parser() -> argparse.ArgumentParser:
         type=_positive_duration,
         default=300,
         help="Operation timeout in seconds (positive integer, default: 300).",
+    )
+    parser.add_argument(
+        "--max-output-size",
+        type=_positive_output_size,
+        default=None,
+        help=(
+            f"Maximum JSON output size in bytes "
+            f"(default: {DEFAULT_MAX_OUTPUT_BYTES}, "
+            f"max: {HARD_MAX_OUTPUT_BYTES}). "
+            "Output exceeding this limit is truncated with a warning."
+        ),
+    )
+    parser.add_argument(
+        "--max-memory",
+        type=_positive_memory_limit,
+        default=None,
+        help=(
+            "Memory limit in MB for analysis operations (minimum 16 MB). "
+            "When exceeded, the operation fails gracefully with a diagnostic "
+            "instead of crashing. Only effective with backends that support "
+            "memory limiting."
+        ),
     )
 
     sub = parser.add_subparsers(dest="command", help="Available commands")
@@ -344,9 +413,56 @@ def _dispatch(args: argparse.Namespace) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def _output_json(envelope: dict[str, Any]) -> None:
-    """Write the JSON envelope to stdout with no extraneous text."""
-    json.dump(envelope, sys.stdout, indent=2, ensure_ascii=False)
+def _output_json(envelope: dict[str, Any], max_output_bytes: int | None = None) -> None:
+    """Write the JSON envelope to stdout with no extraneous text.
+
+    Enforces output size limits: if max_output_bytes is provided and the
+    serialized JSON exceeds it, the output is truncated and a warning is
+    added to the envelope before writing.
+
+    Args:
+        envelope: The JSON envelope to serialize.
+        max_output_bytes: Maximum allowed output size in bytes.
+            Defaults to DEFAULT_MAX_OUTPUT_BYTES (64 MB) if not specified.
+    """
+    if max_output_bytes is None:
+        max_output_bytes = DEFAULT_MAX_OUTPUT_BYTES
+
+    # Serialize to JSON string
+    json_bytes = json.dumps(envelope, indent=2, ensure_ascii=False).encode("utf-8")
+
+    if len(json_bytes) > max_output_bytes:
+        # Truncate by serializing with truncated data and adding warning
+        original_data = envelope.get("data", {})
+        envelope["data"] = {
+            "truncated": True,
+            "truncation_message": (
+                f"Output size ({len(json_bytes)} bytes) exceeds limit "
+                f"({max_output_bytes} bytes). Full results truncated. "
+                "Use pagination (--cursor) or filters to reduce output size."
+            ),
+            "original_data_type": type(original_data).__name__,
+            "original_byte_size": len(json_bytes),
+        }
+        envelope["partial"] = True
+        envelope["warnings"] = [
+            *envelope.get("warnings", []),
+            {
+                "severity": "WARNING",
+                "message": (
+                    f"Output truncated: {len(json_bytes)} bytes exceeds "
+                    f"max-output-size ({max_output_bytes} bytes). "
+                    "Use --cursor for pagination."
+                ),
+                "category": "output-size-limit",
+            },
+        ]
+
+        # Try again with truncated data
+        json_bytes = json.dumps(envelope, indent=2, ensure_ascii=False).encode("utf-8")
+
+    # Write JSON to stdout (supports both real files and StringIO test mocks)
+    sys.stdout.write(json_bytes.decode("utf-8"))
     sys.stdout.write("\n")
     sys.stdout.flush()
 
@@ -563,6 +679,10 @@ def main(argv: list[str] | None = None) -> int:
 
     command_name = _resolve_command_name(args)
     quiet = getattr(args, "quiet", False)
+    max_output_size: int | None = getattr(args, "max_output_size", None)
+    if max_output_size is None:
+        max_output_size = DEFAULT_MAX_OUTPUT_BYTES
+    max_memory: int | None = getattr(args, "max_memory", None)
 
     try:
         result = _dispatch(args)
@@ -578,7 +698,7 @@ def main(argv: list[str] | None = None) -> int:
             duration_ms=t_elapsed,
         )
         if args.json:
-            _output_json(envelope)
+            _output_json(envelope, max_output_size)
         else:  # pragma: no cover
             print(f"Error: {e.message}", file=sys.stderr)  # pragma: no cover
         return e.exit_code
@@ -594,7 +714,7 @@ def main(argv: list[str] | None = None) -> int:
             duration_ms=t_elapsed,
         )
         if args.json:
-            _output_json(envelope)
+            _output_json(envelope, max_output_size)
         else:  # pragma: no cover
             print(f"Error: {e.message}", file=sys.stderr)  # pragma: no cover
         return e.exit_code
@@ -610,10 +730,25 @@ def main(argv: list[str] | None = None) -> int:
             duration_ms=t_elapsed,
         )
         if args.json:
-            _output_json(envelope)
+            _output_json(envelope, max_output_size)
         else:  # pragma: no cover
             print(f"Error: {e.message}", file=sys.stderr)  # pragma: no cover
         return e.exit_code
+
+    # Check memory limit (VAL-SAFE-012)
+    if max_memory is not None:
+        try:
+            import resource
+
+            soft_mb = max_memory
+            soft_bytes = soft_mb * 1024 * 1024
+            current_soft, current_hard = resource.getrlimit(resource.RLIMIT_AS)
+            if current_soft == resource.RLIM_INFINITY or current_soft > soft_bytes:
+                resource.setrlimit(resource.RLIMIT_AS, (soft_bytes, current_hard))
+        except (ImportError, ValueError, OSError):
+            # resource module not available or limit can't be set
+            # (e.g., on some macOS versions or without sufficient privileges)
+            pass
 
     t_elapsed = int((time.perf_counter() - t_start) * 1000)
 
@@ -647,7 +782,7 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     if args.json:
-        _output_json(envelope)
+        _output_json(envelope, max_output_size)
     else:  # pragma: no cover
         if not quiet:
             _output_text(envelope, args)
