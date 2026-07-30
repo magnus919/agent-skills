@@ -14,6 +14,7 @@ Tests cover:
 from __future__ import annotations
 
 import time
+from typing import Any
 from uuid import uuid4
 
 import pytest
@@ -806,6 +807,217 @@ class TestDeterministicBehavior:
 # ---------------------------------------------------------------------------
 # Partial results
 # ---------------------------------------------------------------------------
+
+
+class TestEnvironmentConfiguration:
+    """Tests for BINARY_FAKE_* environment variable support in FakeAdapter.__init__.
+
+    These env vars enable black-box CLI testing of failure and injection modes
+    without modifying CLI command modules.
+    """
+
+    def test_env_import_failure_triggers_import_failed_error(
+        self, monkeypatch: Any, project: Project
+    ) -> None:
+        """BINARY_FAKE_IMPORT_FAILURE triggers ImportFailedError (exit 10)."""
+        monkeypatch.setenv("BINARY_FAKE_IMPORT_FAILURE", "Simulated import error from env")
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+
+        with pytest.raises(ImportFailedError) as exc:
+            adapter.import_binary("anyfile.exe", project)
+        assert exc.value.exit_code == 10
+        assert "Simulated import error from env" in str(exc.value)
+
+    def test_env_analysis_failure_triggers_analysis_failed_error(
+        self, monkeypatch: Any, binary: Binary
+    ) -> None:
+        """BINARY_FAKE_ANALYSIS_FAILURE triggers AnalysisFailedError (exit 11)."""
+        monkeypatch.setenv("BINARY_FAKE_ANALYSIS_FAILURE", "Analysis crash from env")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+        # We need to import a binary first so the adapter knows about it
+        b = adapter.import_binary("test.exe", Project(id=uuid4(), name="test-proj"))
+
+        profile = AnalysisProfile(name="standard", analysers=["functions"])
+        with pytest.raises(AnalysisFailedError) as exc:
+            adapter.analyze(b, profile)
+        assert exc.value.exit_code == 11
+        assert "Analysis crash from env" in str(exc.value)
+
+    def test_env_backend_failure_triggers_backend_failure_error(
+        self, monkeypatch: Any, binary: Binary
+    ) -> None:
+        """BINARY_FAKE_BACKEND_FAILURE=method:msg triggers BackendFailureError (exit 13)."""
+        monkeypatch.setenv("BINARY_FAKE_BACKEND_FAILURE", "get_functions:JVM OOM from env")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+        b = adapter.import_binary("test.exe", Project(id=uuid4(), name="test-proj"))
+
+        with pytest.raises(BackendFailureError) as exc:
+            adapter.get_functions(b)
+        assert exc.value.exit_code == 13
+        assert "JVM OOM from env" in str(exc.value)
+
+    def test_env_backend_failure_defaults_to_get_functions(
+        self, monkeypatch: Any, binary: Binary
+    ) -> None:
+        """BINARY_FAKE_BACKEND_FAILURE without colon defaults to get_functions."""
+        monkeypatch.setenv("BINARY_FAKE_BACKEND_FAILURE", "Generic backend failure")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+        b = adapter.import_binary("test.exe", Project(id=uuid4(), name="test-proj"))
+
+        with pytest.raises(BackendFailureError) as exc:
+            adapter.get_functions(b)
+        assert exc.value.exit_code == 13
+        assert "Generic backend failure" in str(exc.value)
+
+    def test_env_slow_import_adds_delay(self, monkeypatch: Any, project: Project) -> None:
+        """BINARY_FAKE_SLOW_IMPORT_MS adds configurable delay to import."""
+        monkeypatch.setenv("BINARY_FAKE_SLOW_IMPORT_MS", "100")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+
+        start = time.time()
+        adapter.import_binary("test.exe", project)
+        elapsed = time.time() - start
+        assert elapsed >= 0.1, f"Expected >= 100ms delay, got {elapsed * 1000:.0f}ms"
+
+    def test_env_slow_analyze_adds_delay(self, monkeypatch: Any, binary: Binary) -> None:
+        """BINARY_FAKE_SLOW_ANALYZE_MS adds configurable delay to analyze."""
+        monkeypatch.setenv("BINARY_FAKE_SLOW_ANALYZE_MS", "100")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+        b = adapter.import_binary("test.exe", Project(id=uuid4(), name="test-proj"))
+
+        profile = AnalysisProfile(name="quick", analysers=["functions"])
+        start = time.time()
+        adapter.analyze(b, profile)
+        elapsed = time.time() - start
+        assert elapsed >= 0.1, f"Expected >= 100ms delay, got {elapsed * 1000:.0f}ms"
+
+    def test_env_slow_decompile_adds_delay(self, monkeypatch: Any, binary: Binary) -> None:
+        """BINARY_FAKE_SLOW_DECOMPILE_MS adds configurable delay to decompile."""
+        monkeypatch.setenv("BINARY_FAKE_SLOW_DECOMPILE_MS", "100")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+        b = adapter.import_binary("test.exe", Project(id=uuid4(), name="test-proj"))
+
+        funcs = adapter.get_functions(b)
+        main = next(f for f in funcs if f.name == "main")
+        start = time.time()
+        adapter.decompile(b, main)
+        elapsed = time.time() - start
+        assert elapsed >= 0.1, f"Expected >= 100ms delay, got {elapsed * 1000:.0f}ms"
+
+    def test_env_unmapped_ranges_marks_addresses_as_unmapped(
+        self, monkeypatch: Any, binary: Binary
+    ) -> None:
+        """BINARY_FAKE_UNMAPPED_RANGES marks address ranges as unmapped."""
+        monkeypatch.setenv("BINARY_FAKE_UNMAPPED_RANGES", "0x5000:0x6000,0x7000:0x7100")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+        b = adapter.import_binary("test.exe", Project(id=uuid4(), name="test-proj"))
+
+        # Address 0x5000 should be unmapped
+        addr1 = Address(space="ram", offset="0x5000", display="0x5000")
+        with pytest.raises(ValueError, match="unmapped"):
+            adapter.read_bytes(b, addr1, 16)
+
+        # Address 0x7000 should also be unmapped
+        addr2 = Address(space="ram", offset="0x7000", display="0x7000")
+        with pytest.raises(ValueError, match="unmapped"):
+            adapter.read_bytes(b, addr2, 16)
+
+        # Address 0x401000 should still be mapped
+        addr3 = Address(space="ram", offset="0x401000", display="0x401000")
+        _data, length = adapter.read_bytes(b, addr3, 16)
+        assert length == 16
+
+    def test_env_truncation_limits_bytes_at_specified_addresses(
+        self, monkeypatch: Any, binary: Binary
+    ) -> None:
+        """BINARY_FAKE_TRUNCATION limits bytes at specified addresses."""
+        monkeypatch.setenv("BINARY_FAKE_TRUNCATION", "0x401000:8,0x402000:4")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+        b = adapter.import_binary("test.exe", Project(id=uuid4(), name="test-proj"))
+
+        # Request 16 bytes at 0x401000, should get only 8
+        addr1 = Address(space="ram", offset="0x401000", display="0x401000")
+        data1, length1 = adapter.read_bytes(b, addr1, 16)
+        assert length1 == 8
+        assert len(data1) == 8
+
+        # Request 16 bytes at 0x402000, should get only 4
+        addr2 = Address(space="ram", offset="0x402000", display="0x402000")
+        data2, length2 = adapter.read_bytes(b, addr2, 16)
+        assert length2 == 4
+        assert len(data2) == 4
+
+    def test_env_empty_vars_do_not_affect_behavior(
+        self, monkeypatch: Any, project: Project
+    ) -> None:
+        """Empty env vars produce a normal, fully functional adapter."""
+        monkeypatch.setenv("BINARY_FAKE_IMPORT_FAILURE", "")
+        monkeypatch.setenv("BINARY_FAKE_ANALYSIS_FAILURE", "")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+
+        # Should import normally
+        b = adapter.import_binary("test.exe", project)
+        assert isinstance(b, Binary)
+        assert b.format == "PE"
+
+    def test_env_vars_work_without_modifying_cli_modules(
+        self, monkeypatch: Any, project: Project
+    ) -> None:
+        """Env vars are read in FakeAdapter.__init__ only; CLI modules are untouched."""
+        monkeypatch.setenv("BINARY_FAKE_IMPORT_FAILURE", "Env import failure")
+        monkeypatch.setenv("BINARY_FAKE_SLOW_ANALYZE_MS", "50")
+
+        # Create adapter as CLI modules do (same pattern)
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+        adapter.set_fixture("elf-default", FakeAdapter.elf_fixture())
+        adapter.set_fixture("macho-default", FakeAdapter.macho_fixture())
+
+        # Import should fail from env var
+        with pytest.raises(ImportFailedError) as exc:
+            adapter.import_binary("test.exe", project)
+        assert exc.value.exit_code == 10
+        assert "Env import failure" in str(exc.value)
+
+    def test_multiple_env_vars_combined(self, monkeypatch: Any, binary: Binary) -> None:
+        """Multiple env vars combine correctly."""
+        monkeypatch.setenv("BINARY_FAKE_BACKEND_FAILURE", "get_sections:Backend crash")
+        monkeypatch.setenv("BINARY_FAKE_SLOW_DECOMPILE_MS", "50")
+        monkeypatch.setenv("BINARY_FAKE_UNMAPPED_RANGES", "0x9999:0x999a")
+
+        adapter = FakeAdapter()
+        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
+        b = adapter.import_binary("test.exe", Project(id=uuid4(), name="test-proj"))
+
+        # Backend failure on get_sections
+        with pytest.raises(BackendFailureError) as exc:
+            adapter.get_sections(b)
+        assert exc.value.exit_code == 13
+        assert "Backend crash" in str(exc.value)
+
+        # Unmapped range
+        addr = Address(space="ram", offset="0x9999", display="0x9999")
+        with pytest.raises(ValueError, match="unmapped"):
+            adapter.read_bytes(b, addr, 1)
 
 
 class TestPartialResults:

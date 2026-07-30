@@ -11,6 +11,7 @@ Implements the BackendAdapter interface with configurable responses:
 
 from __future__ import annotations
 
+import os
 import time
 from typing import Any, ClassVar
 from uuid import uuid4
@@ -920,6 +921,115 @@ class FakeAdapter(BackendAdapter):
         self._override_sections: dict[str, list[Section]] = {}
         self._override_functions: dict[str, list[Function]] = {}
         self._override_strings: dict[str, list[String]] = {}
+
+        # Read BINARY_FAKE_* environment variables for black-box CLI testing
+        self._read_env_config()
+
+    # ------------------------------------------------------------------
+    # Environment variable configuration
+    # ------------------------------------------------------------------
+
+    def _read_env_config(self) -> None:
+        """Read BINARY_FAKE_* environment variables and apply failure/injection modes.
+
+        This enables black-box CLI testing without modifying CLI command modules.
+        All supported env vars are read once during __init__ and converted to
+        FakeAdapter configuration via the standard configure_* API.
+
+        Supported env vars:
+
+        - BINARY_FAKE_IMPORT_FAILURE : str — error message; triggers ImportFailedError
+        - BINARY_FAKE_ANALYSIS_FAILURE : str — error message; triggers AnalysisFailedError
+        - BINARY_FAKE_BACKEND_FAILURE : str — "method:message" or just "message";
+          triggers BackendFailureError
+        - BINARY_FAKE_SLOW_IMPORT_MS : int — milliseconds of delay before import
+        - BINARY_FAKE_SLOW_ANALYZE_MS : int — milliseconds of delay before analyze
+        - BINARY_FAKE_SLOW_DECOMPILE_MS : int — milliseconds of delay before decompile
+        - BINARY_FAKE_UNMAPPED_RANGES : str — "start:end,..." hex ranges to mark unmapped
+        - BINARY_FAKE_TRUNCATION : str — "addr:max_bytes,..." hex pairs for byte truncation
+        """
+        # --- Import failure ---
+        import_failure = os.environ.get("BINARY_FAKE_IMPORT_FAILURE", "")
+        if import_failure:
+            # Empty-string key matches any path ("" in "anything" is True)
+            self.configure_import_failure("", import_failure)
+
+        # --- Analysis failure ---
+        analysis_failure = os.environ.get("BINARY_FAKE_ANALYSIS_FAILURE", "")
+        if analysis_failure:
+            self.configure_analysis_failure(analysis_failure)
+
+        # --- Backend failure (format: "method:message" or just "message") ---
+        backend_failure = os.environ.get("BINARY_FAKE_BACKEND_FAILURE", "")
+        if backend_failure:
+            if ":" in backend_failure:
+                method, msg = backend_failure.split(":", 1)
+                self.configure_backend_failure(method.strip(), msg.strip())
+            else:
+                self.configure_backend_failure("get_functions", backend_failure)
+
+        # --- Slow operations (milliseconds → seconds) ---
+        for env_name, operation in [
+            ("BINARY_FAKE_SLOW_IMPORT_MS", "import"),
+            ("BINARY_FAKE_SLOW_ANALYZE_MS", "analyze"),
+            ("BINARY_FAKE_SLOW_DECOMPILE_MS", "decompile"),
+        ]:
+            value = os.environ.get(env_name, "")
+            if value:
+                try:
+                    delay = float(value) / 1000.0
+                    if delay > 0:
+                        self.configure_slow_operation(operation, delay)
+                except ValueError:
+                    pass  # Ignore non-numeric values
+
+        # --- Unmapped ranges (format: "0xSTART:0xEND,...") ---
+        unmapped = os.environ.get("BINARY_FAKE_UNMAPPED_RANGES", "")
+        if unmapped:
+            self._parse_range_list(unmapped, self.configure_unmapped_range)
+
+        # --- Truncation (format: "0xADDR:MAX_BYTES,...") ---
+        truncation = os.environ.get("BINARY_FAKE_TRUNCATION", "")
+        if truncation:
+            self._parse_pair_list(truncation, self.configure_truncation)
+
+    @staticmethod
+    def _parse_range_list(raw: str, configure: Any) -> None:
+        """Parse a comma-separated list of 'start:end' hex ranges.
+
+        Args:
+            raw: Comma-separated hex range spec (e.g., "0x5000:0x6000,0x7000:0x7100").
+            configure: Callable(start: int, end: int) to apply each parsed range.
+        """
+        for item in raw.split(","):
+            item = item.strip()
+            if ":" in item:
+                try:
+                    start_str, end_str = item.split(":", 1)
+                    start = int(start_str.strip(), 16)
+                    end = int(end_str.strip(), 16)
+                    configure(start, end)
+                except (ValueError, IndexError):
+                    pass
+
+    @staticmethod
+    def _parse_pair_list(raw: str, configure: Any) -> None:
+        """Parse a comma-separated list of 'addr:value' hex:int pairs.
+
+        Args:
+            raw: Comma-separated hex pair spec (e.g., "0x401000:8,0x402000:4").
+            configure: Callable(addr: int, value: int) to apply each parsed pair.
+        """
+        for item in raw.split(","):
+            item = item.strip()
+            if ":" in item:
+                try:
+                    addr_str, val_str = item.split(":", 1)
+                    addr = int(addr_str.strip(), 16)
+                    val = int(val_str.strip())
+                    configure(addr, val)
+                except (ValueError, IndexError):
+                    pass
 
     # ------------------------------------------------------------------
     # Configuration API
