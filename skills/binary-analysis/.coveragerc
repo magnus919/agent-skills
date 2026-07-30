@@ -1,0 +1,12 @@
+[run]
+# Omit placeholder/skeleton modules for future milestones.
+# These modules raise NotImplementedError and contain no testable logic.
+omit =
+    */reporting/*
+    */rules/*
+    */worker/*
+
+[report]
+# Exclude lines marked with '# pragma: no cover' (plain-text output helpers).
+exclude_lines =
+    pragma: no cover
