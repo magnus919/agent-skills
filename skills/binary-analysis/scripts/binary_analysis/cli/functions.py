@@ -1,11 +1,12 @@
-"""Focused analysis commands — functions, disassemble, and bytes.
+"""Focused analysis commands — functions, disassemble, bytes, and decompile.
 
 All commands follow the standard JSON envelope pattern. Functions returns
 paginated results. Disassemble and bytes operate on bounded targets (function
-selectors or address ranges).
+selectors or address ranges). Decompile returns reconstructed pseudocode.
 
 Validation assertions covered:
 - VAL-STRUCT-011, 012, 013: Functions list with filtering
+- VAL-FOCUS-001, 002, 003, 004, 005, 032: Decompile
 - VAL-FOCUS-006, 007, 008, 009, 010: Disassemble
 - VAL-FOCUS-011, 012, 013, 014: Bytes
 """
@@ -14,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import concurrent.futures
 import re
 from typing import Any
 from uuid import UUID, uuid4
@@ -26,7 +28,12 @@ from binary_analysis.domain.errors import (
     BinaryNotFoundError,
     EntityNotFoundError,
     InvalidArgsError,
+    OperationTimeoutError,
     ProjectNotFoundError,
+)
+from binary_analysis.domain.selectors import (
+    parse_selector,
+    resolve_function,
 )
 from binary_analysis.projects.manifest import load_manifest
 from binary_analysis.projects.workspace import (
@@ -309,7 +316,7 @@ def _validate_cursor_scope(
 
 
 def add_subparser(subparsers: Any) -> None:
-    """Register focused analysis subcommands: functions, disassemble, bytes."""
+    """Register focused analysis subcommands: functions, decompile, disassemble, bytes."""
 
     # -- Functions --
     functions_parser = subparsers.add_parser(
@@ -333,6 +340,23 @@ def add_subparser(subparsers: Any) -> None:
     )
     functions_parser.add_argument(
         "--sort", default="address", help="Sort field (default: address)."
+    )
+
+    # -- Decompile --
+    decompile_parser = subparsers.add_parser(
+        "decompile",
+        help="Decompile a function to reconstructed pseudocode with address map.",
+    )
+    decompile_parser.add_argument("--project", required=True, help="Project name or UUID.")
+    decompile_parser.add_argument(
+        "selector",
+        nargs="?",
+        default=None,
+        help=(
+            "A single function selector: function:<name> (e.g., 'function:main') "
+            "or shorthand function name (e.g., 'main'). "
+            "Exactly one function selector is required."
+        ),
     )
 
     # -- Disassemble --
@@ -727,6 +751,205 @@ def execute_bytes(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "success": True,
         "partial": partial,
+        "warnings": [],
+        "diagnostics": diagnostics,
+        "data": data,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Command: decompile
+# ---------------------------------------------------------------------------
+
+
+def _validate_decompile_selector(raw: str) -> str:
+    """Validate and normalize a decompile selector.
+
+    The decompile command accepts exactly one function selector.
+    Multiple selectors (comma-separated), wildcards ('*'), and address
+    ranges ('..') are rejected with INVALID_ARGS (exit code 2).
+
+    Args:
+        raw: The raw selector string from the CLI.
+
+    Returns:
+        The normalized function name string.
+
+    Raises:
+        InvalidArgsError: If the selector is invalid.
+    """
+    if not raw:
+        raise InvalidArgsError(
+            "Decompile requires exactly one function selector. "
+            "Provide a function selector (e.g., 'function:main') or "
+            "a shorthand function name (e.g., 'main')."
+        )
+
+    # VAL-FOCUS-003: Reject multiple selectors (comma-separated)
+    if "," in raw:
+        raise InvalidArgsError(
+            "Decompile requires exactly one function selector. "
+            f"Multiple selectors are not supported: {raw!r}. "
+            "Provide a single function selector like 'function:main' or 'main'."
+        )
+
+    # VAL-FOCUS-003: Reject wildcards
+    if "*" in raw:
+        raise InvalidArgsError(
+            "Decompile requires exactly one function selector. "
+            f"Wildcards are not supported: {raw!r}. "
+            "Provide a single function selector like 'function:main' or 'main'."
+        )
+
+    # VAL-FOCUS-003: Reject address ranges
+    if ".." in raw:
+        raise InvalidArgsError(
+            "Decompile requires exactly one function selector. "
+            f"Address ranges are not supported: {raw!r}. "
+            "Provide a single function selector like 'function:main' or 'main'."
+        )
+
+    # Check for empty function: prefix (e.g., "function:" with no name)
+    if raw.strip().lower().startswith("function:") and len(raw.strip()) <= len("function:"):
+        raise InvalidArgsError(
+            "Decompile requires a valid function selector. "
+            f"Empty function name in selector: {raw!r}. "
+            "Provide a function selector like 'function:main' or 'main'."
+        )
+
+    # Parse the selector
+    parsed = parse_selector(raw)
+
+    # VAL-FOCUS-003: Reject non-function selectors (e.g., address:...)
+    if parsed.kind == "address":
+        raise InvalidArgsError(
+            "Decompile requires exactly one function selector. "
+            f"Address selectors are not supported: {raw!r}. "
+            "Provide a function selector like 'function:main' or 'main'."
+        )
+
+    # Extract function name
+    func_name = parsed.value
+    if not func_name:
+        raise InvalidArgsError(
+            "Decompile requires a valid function selector. "
+            f"Empty selector value in: {raw!r}. "
+            "Provide a function selector like 'function:main' or 'main'."
+        )
+
+    return func_name
+
+
+def execute_decompile(args: argparse.Namespace) -> dict[str, Any]:
+    """Execute the 'decompile' command.
+
+    VAL-FOCUS-001: Returns pseudocode (labeled as reconstructed), address_map, diagnostics.
+    VAL-FOCUS-002: Ambiguous selector → exit code 8 with candidate functions list.
+    VAL-FOCUS-003: Multiple selectors/wildcards/ranges → exit code 2.
+    VAL-FOCUS-004: Entity not found → exit code 9.
+    VAL-FOCUS-005: Timeout → partial results with exit code 12.
+    VAL-FOCUS-032: Large function respects time limit; no crash or hang.
+    """
+    project_name = args.project
+    raw_selector: str | None = getattr(args, "selector", None)
+    timeout_seconds: int = getattr(args, "timeout", 300)
+
+    if not raw_selector:
+        raise InvalidArgsError(
+            "Decompile requires exactly one function selector. "
+            "Provide a function selector (e.g., 'function:main') or "
+            "a shorthand function name (e.g., 'main')."
+        )
+
+    # Validate selector (exactly one function, no wildcards/ranges/multiples)
+    _ = _validate_decompile_selector(raw_selector)
+
+    project_path = _resolve_project_path(project_name)
+    manifest = load_manifest(project_path)
+
+    adapter, binary_entity, _project_info = _get_adapter_and_binary(project_path, manifest)
+
+    # Retrieve all functions and resolve the selector
+    try:
+        all_functions = adapter.get_functions(
+            binary_entity, exclude_external=False, exclude_thunks=False
+        )
+    except BinaryAnalysisError:
+        raise
+    except Exception as e:
+        raise BackendFailureError(
+            f"Failed to retrieve functions for decompilation: {e}",
+            original_error=str(e),
+        ) from e
+
+    # Resolve the function selector
+    parsed = parse_selector(raw_selector)
+    selected_function = resolve_function(parsed, all_functions, require_unique=True)
+
+    # Build function info for the result
+    fn_info: dict[str, Any] = {
+        "name": selected_function.name,
+        "address": selected_function.address.to_dict() if selected_function.address else None,
+        "size_bytes": selected_function.size_bytes,
+        "signature": selected_function.signature,
+    }
+
+    # Perform decompilation with timeout
+    try:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(adapter.decompile, binary_entity, selected_function)
+            try:
+                decomp_result = future.result(timeout=timeout_seconds)
+            except concurrent.futures.TimeoutError:
+                # VAL-FOCUS-005, VAL-FOCUS-032: Timeout → partial results
+                future.cancel()
+                raise OperationTimeoutError(
+                    f"Decompilation of function '{selected_function.name}' "
+                    f"timed out after {timeout_seconds}s. "
+                    "Partial results may be available from a shorter analysis run."
+                ) from None
+    except OperationTimeoutError:
+        raise
+    except BinaryAnalysisError:
+        raise
+    except Exception as e:
+        raise BackendFailureError(
+            f"Decompilation failed for function '{selected_function.name}': {e}",
+            original_error=str(e),
+        ) from e
+
+    # Build the address map: string keys for line numbers → canonical address objects
+    address_map: dict[str, Any] = {}
+    for line_num, addr_obj in decomp_result.address_map.items():
+        address_map[str(line_num)] = addr_obj
+
+    # Build diagnostics
+    diagnostics: list[dict[str, Any]] = list(decomp_result.diagnostics)
+    manifest_state = manifest.get("state", "")
+    if manifest_state and manifest_state != "READY":
+        diagnostics.append(
+            {
+                "severity": "INFO",
+                "message": (
+                    "Project has not been fully analyzed. "
+                    "Decompilation results may be incomplete. "
+                    "Run 'binary analyze --project <proj>' for complete analysis."
+                ),
+                "category": "analysis_state",
+            }
+        )
+
+    data: dict[str, Any] = {
+        "pseudocode": decomp_result.pseudocode,
+        "address_map": address_map,
+        "diagnostics": diagnostics,
+        "language": decomp_result.language,
+        "function": fn_info,
+    }
+
+    return {
+        "success": True,
+        "partial": False,
         "warnings": [],
         "diagnostics": diagnostics,
         "data": data,

@@ -1,8 +1,9 @@
 """Unit tests for focused analysis CLI commands.
 
-Covers: functions, disassemble, and bytes.
+Covers: functions, disassemble, bytes, and decompile.
 Validates against:
 - VAL-STRUCT-011, 012, 013: Functions
+- VAL-FOCUS-001, 002, 003, 004, 005, 032: Decompile
 - VAL-FOCUS-006, 007, 008, 009, 010: Disassemble
 - VAL-FOCUS-011, 012, 013, 014: Bytes
 """
@@ -896,3 +897,405 @@ class TestJsonFormat:
         assert isinstance(data["hex"], str)
         assert isinstance(data["base64"], str)
         assert isinstance(data["length"], int)
+
+
+# ---------------------------------------------------------------------------
+# Test: Decompile command
+# ---------------------------------------------------------------------------
+
+
+class TestDecompileCommand:
+    """Tests for the 'decompile' command (VAL-FOCUS-001, 002, 003, 004, 005, 032)."""
+
+    def test_decompile_basic(self, monkeypatch, project_ready):
+        """VAL-FOCUS-001: Decompile returns pseudocode, address_map, and diagnostics."""
+        from binary_analysis.cli.functions import execute_decompile
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector="function:main")
+        result = execute_decompile(args)
+
+        assert result["success"] is True
+        assert "data" in result
+
+        data = result["data"]
+        assert "pseudocode" in data
+        assert isinstance(data["pseudocode"], str)
+        assert len(data["pseudocode"]) > 0
+
+        assert "address_map" in data
+        assert isinstance(data["address_map"], dict)
+
+        assert "diagnostics" in data
+        assert isinstance(data["diagnostics"], list)
+
+        # Pseudocode must be labeled as reconstructed, not original source
+        assert "reconstructed" in data["pseudocode"].lower()
+        assert "original source" not in data["pseudocode"].lower()
+
+    def test_decompile_shorthand_selector(self, monkeypatch, project_ready):
+        """Decompile accepts shorthand selector without 'function:' prefix."""
+        from binary_analysis.cli.functions import execute_decompile
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector="main")
+        result = execute_decompile(args)
+
+        assert result["success"] is True
+        data = result["data"]
+        assert "pseudocode" in data
+        assert len(data["pseudocode"]) > 0
+
+    def test_decompile_address_map_structure(self, monkeypatch, project_ready):
+        """VAL-FOCUS-001: Address map maps source line numbers to canonical address objects."""
+        from binary_analysis.cli.functions import execute_decompile
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector="function:main")
+        result = execute_decompile(args)
+
+        address_map = result["data"]["address_map"]
+        assert len(address_map) > 0
+
+        for line_key, addr_obj in address_map.items():
+            # line keys are strings representing integers
+            assert isinstance(line_key, str)
+            assert int(line_key) > 0
+            # address object is a canonical address
+            assert isinstance(addr_obj, dict)
+            assert "space" in addr_obj
+            assert "offset" in addr_obj
+            assert "display" in addr_obj
+
+    def test_decompile_ambiguous_selector(self, monkeypatch, project_ready):
+        """VAL-FOCUS-002: Ambiguous selector returns exit code 8 with candidate functions."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import AmbiguousSelectorError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        import binary_analysis.cli.functions as func_mod
+
+        original_get_adapter = func_mod._get_adapter_and_binary
+
+        def patched_get_adapter(project_path, manifest):
+            adapter, binary, proj_info = original_get_adapter(project_path, manifest)
+            # Add a duplicate-named function to create ambiguity
+            from binary_analysis.domain.entities import Address, Function
+            from binary_analysis.domain.enums import Confidence, FunctionNameSource
+
+            dup_fn = Function(
+                name="main",
+                address=Address(space="ram", offset="0x402000", display="0x402000"),
+                size_bytes=128,
+                confidence=Confidence.HIGH,
+                name_source=FunctionNameSource.ORIGINAL,
+                is_external=False,
+                is_thunk=False,
+            )
+            # Configure override functions with duplicates
+            override_fns = adapter._get_binary_fixture(binary).get("functions", [])
+            override_fns = [*list(override_fns), dup_fn]
+            adapter._override_functions[str(binary.id)] = override_fns
+            return adapter, binary, proj_info
+
+        func_mod._get_adapter_and_binary = patched_get_adapter
+
+        try:
+            args = _make_args(project="test-proj", selector="function:main")
+            with pytest.raises(AmbiguousSelectorError) as exc_info:
+                execute_decompile(args)
+
+            assert exc_info.value.exit_code == 8
+            assert len(exc_info.value.candidates) > 1
+            # Verify candidate structure
+            for candidate in exc_info.value.candidates:
+                assert "name" in candidate
+                assert "address" in candidate
+        finally:
+            func_mod._get_adapter_and_binary = original_get_adapter
+
+    def test_decompile_multiple_selectors_rejected(self, monkeypatch, project_ready):
+        """VAL-FOCUS-003: Multiple function selectors rejected with exit code 2."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import InvalidArgsError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        # Simulate multiple selectors by passing a composite selector with comma
+        # or try a wildcard pattern
+        args = _make_args(project="test-proj", selector="function:main,function:check_password")
+        with pytest.raises(InvalidArgsError) as exc_info:
+            execute_decompile(args)
+        assert exc_info.value.exit_code == 2
+        assert "single" in str(exc_info.value).lower()
+
+    def test_decompile_wildcard_rejected(self, monkeypatch, project_ready):
+        """VAL-FOCUS-003: Wildcard selector rejected with exit code 2."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import InvalidArgsError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector="function:*")
+        with pytest.raises(InvalidArgsError) as exc_info:
+            execute_decompile(args)
+        assert exc_info.value.exit_code == 2
+
+    def test_decompile_range_rejected(self, monkeypatch, project_ready):
+        """VAL-FOCUS-003: Address range selector rejected with exit code 2."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import InvalidArgsError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector="0x401000..0x401200")
+        with pytest.raises(InvalidArgsError) as exc_info:
+            execute_decompile(args)
+        assert exc_info.value.exit_code == 2
+        assert "single" in str(exc_info.value).lower() or "function" in str(exc_info.value).lower()
+
+    def test_decompile_no_selector(self, monkeypatch, project_ready):
+        """VAL-FOCUS-003: No selector provided → exit code 2."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import InvalidArgsError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector=None)
+        with pytest.raises(InvalidArgsError) as exc_info:
+            execute_decompile(args)
+        assert exc_info.value.exit_code == 2
+
+    def test_decompile_entity_not_found(self, monkeypatch, project_ready):
+        """VAL-FOCUS-004: Entity not found returns exit code 9, no pseudocode."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import EntityNotFoundError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector="function:nonexistent_function_xyz")
+        with pytest.raises(EntityNotFoundError) as exc_info:
+            execute_decompile(args)
+        assert exc_info.value.exit_code == 9
+
+    def test_decompile_timeout_partial_results(self, monkeypatch, project_ready):
+        """VAL-FOCUS-005: Timeout returns partial results with exit code 12."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import OperationTimeoutError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        import binary_analysis.cli.functions as func_mod
+
+        original_get_adapter = func_mod._get_adapter_and_binary
+
+        def patched_get_adapter(project_path, manifest):
+            adapter, binary, proj_info = original_get_adapter(project_path, manifest)
+            # Make decompile slow (10 second delay) but timeout at 0.5s
+            adapter.configure_slow_operation("decompile", 10.0)
+            return adapter, binary, proj_info
+
+        func_mod._get_adapter_and_binary = patched_get_adapter
+
+        try:
+            args = _make_args(project="test-proj", selector="function:main", timeout=1)
+            with pytest.raises(OperationTimeoutError) as exc_info:
+                execute_decompile(args)
+            assert exc_info.value.exit_code == 12
+        finally:
+            func_mod._get_adapter_and_binary = original_get_adapter
+
+    def test_decompile_large_function_time_limit(self, monkeypatch, project_ready):
+        """VAL-FOCUS-032: Large function decompilation respects time limit.
+
+        Either completes within timeout with bounded output, or returns
+        partial results with timeout. No crash or hang.
+        """
+        from binary_analysis.cli.functions import execute_decompile
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        import binary_analysis.cli.functions as func_mod
+
+        original_get_adapter = func_mod._get_adapter_and_binary
+
+        def patched_get_adapter(project_path, manifest):
+            adapter, binary, proj_info = original_get_adapter(project_path, manifest)
+            # Simulate a function with many basic blocks (large function)
+            # Use a moderate delay that should complete within timeout
+            adapter.configure_slow_operation("decompile", 0.1)
+            return adapter, binary, proj_info
+
+        func_mod._get_adapter_and_binary = patched_get_adapter
+
+        try:
+            args = _make_args(project="test-proj", selector="function:main", timeout=10)
+            result = execute_decompile(args)
+
+            # Should complete within timeout - no crash or hang
+            assert result["success"] is True
+            assert "data" in result
+            assert "pseudocode" in result["data"]
+            assert len(result["data"]["pseudocode"]) > 0
+        finally:
+            func_mod._get_adapter_and_binary = original_get_adapter
+
+    def test_decompile_large_function_timeout_with_partial(self, monkeypatch, project_ready):
+        """VAL-FOCUS-032: Large function that times out returns partial with exit 12."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import OperationTimeoutError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        import binary_analysis.cli.functions as func_mod
+
+        original_get_adapter = func_mod._get_adapter_and_binary
+
+        def patched_get_adapter(project_path, manifest):
+            adapter, binary, proj_info = original_get_adapter(project_path, manifest)
+            # Very slow decompile - should timeout
+            adapter.configure_slow_operation("decompile", 10.0)
+            return adapter, binary, proj_info
+
+        func_mod._get_adapter_and_binary = patched_get_adapter
+
+        try:
+            args = _make_args(project="test-proj", selector="function:main", timeout=0.5)
+            with pytest.raises(OperationTimeoutError) as exc_info:
+                execute_decompile(args)
+            assert exc_info.value.exit_code == 12
+            # Message should indicate timeout
+            assert (
+                "timed out" in str(exc_info.value).lower()
+                or "timeout" in str(exc_info.value).lower()
+            )
+        finally:
+            func_mod._get_adapter_and_binary = original_get_adapter
+
+    def test_decompile_not_a_function_selector(self, monkeypatch, project_ready):
+        """Non-function selectors like 'address:' are rejected with exit 2."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import InvalidArgsError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector="address:0x401000..0x401200")
+        with pytest.raises(InvalidArgsError) as exc_info:
+            execute_decompile(args)
+        assert exc_info.value.exit_code == 2
+
+    def test_decompile_empty_function_name(self, monkeypatch, project_ready):
+        """Empty function name after 'function:' prefix → error."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import InvalidArgsError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector="function:")
+        with pytest.raises(InvalidArgsError) as exc_info:
+            execute_decompile(args)
+        assert exc_info.value.exit_code == 2
+
+    def test_decompile_backend_failure(self, monkeypatch, project_ready):
+        """Backend failure during decompile → exit code 13."""
+        from binary_analysis.cli.functions import execute_decompile
+        from binary_analysis.domain.errors import BackendFailureError
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        import binary_analysis.cli.functions as func_mod
+
+        original_get_adapter = func_mod._get_adapter_and_binary
+
+        def patched_get_adapter(project_path, manifest):
+            adapter, binary, proj_info = original_get_adapter(project_path, manifest)
+            adapter.configure_backend_failure("decompile", "Simulated decompile crash")
+            return adapter, binary, proj_info
+
+        func_mod._get_adapter_and_binary = patched_get_adapter
+
+        try:
+            args = _make_args(project="test-proj", selector="function:main")
+            with pytest.raises(BackendFailureError) as exc_info:
+                execute_decompile(args)
+            assert exc_info.value.exit_code == 13
+        finally:
+            func_mod._get_adapter_and_binary = original_get_adapter
+
+    def test_decompile_json_format(self, monkeypatch, project_ready):
+        """Decompile command produces valid JSON with all required fields."""
+        from binary_analysis.cli.functions import execute_decompile
+
+        monkeypatch.setattr(
+            "binary_analysis.cli.functions._resolve_project_path",
+            lambda _: str(project_ready),
+        )
+
+        args = _make_args(project="test-proj", selector="function:main")
+        result = execute_decompile(args)
+
+        assert "success" in result
+        assert "partial" in result
+        assert "warnings" in result
+        assert "diagnostics" in result
+        assert "data" in result
+
+        data = result["data"]
+        assert "pseudocode" in data
+        assert "address_map" in data
+        assert "diagnostics" in data
+        assert "language" in data
+        assert "function" in data
+        assert isinstance(data["pseudocode"], str)
+        assert isinstance(data["address_map"], dict)
+        assert isinstance(data["diagnostics"], list)
+        assert isinstance(data["language"], str)

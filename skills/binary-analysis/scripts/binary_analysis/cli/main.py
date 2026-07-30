@@ -289,6 +289,8 @@ def _dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return structural.execute_strings(args)
     elif command == "functions":
         return functions.execute_functions(args)
+    elif command == "decompile":
+        return functions.execute_decompile(args)
     elif command == "disassemble":
         return functions.execute_disassemble(args)
     elif command == "bytes":
