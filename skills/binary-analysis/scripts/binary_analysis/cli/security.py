@@ -1,6 +1,6 @@
 """Security analysis CLI commands — triage, diagnostics, suspicious-apis, capability-map.
 
-Implements the triage and diagnostics commands for milestone: security-ship.
+Implements the security commands for milestone: security-ship.
 
 Triage: Runs the rule engine against backend data to produce structured
 observations (deterministic facts), heuristics (rule-derived interpretations
@@ -8,6 +8,15 @@ with confidence), and unknowns (unresolved questions).
 
 Diagnostics: Retrieves all persistent diagnostics accumulated across
 the project lifecycle from previous commands (analyze, triage, etc.).
+
+Suspicious-apis: Evaluates only priority-tagged rules against imported APIs
+to detect potentially suspicious API usage. Returns matches with api_name,
+risk_score (numeric), confidence, and rule_id. Includes rules_applied list.
+
+Capability-map: Returns functional area suggestions (name, confidence,
+evidence[]) where each evidence item references a concrete source (import
+API, string, section pattern). Capability entries are labeled as rule-derived
+indicators, not verified functional proof.
 """
 
 from __future__ import annotations
@@ -42,7 +51,7 @@ from binary_analysis.projects.workspace import get_project_path, workspace_exist
 
 
 def add_subparser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    """Register triage and diagnostics subcommands."""
+    """Register triage, diagnostics, suspicious-apis, and capability-map subcommands."""
     triage_parser = sub.add_parser(
         "triage",
         help="Run triage analysis: observations, heuristics, and unknowns",
@@ -85,6 +94,55 @@ def add_subparser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> N
         "--project",
         required=True,
         help="Project name or UUID to retrieve diagnostics for.",
+    )
+
+    suspicious_parser = sub.add_parser(
+        "suspicious-apis",
+        help="Detect suspicious API usage with risk scores and confidence",
+        description=(
+            "Evaluate imported APIs against priority-tagged suspicious API rules. "
+            "Returns matches with api_name, risk_score (numeric), confidence "
+            "(Confidence enum), and rule_id identifying the priority rule. "
+            "Only priority-tagged rules are evaluated; the rules_applied list "
+            "documents which rules were checked. Results are bounded by the "
+            "result count limit (default 100, max 1000)."
+        ),
+    )
+    suspicious_parser.add_argument(
+        "--project",
+        required=True,
+        help="Project name or UUID containing the binary to analyze.",
+    )
+    suspicious_parser.add_argument(
+        "--limit",
+        type=int,
+        default=100,
+        help="Maximum number of matches to return (default: 100, max: 1000).",
+    )
+
+    capability_parser = sub.add_parser(
+        "capability-map",
+        help="Suggest functional capabilities from rule-derived indicators",
+        description=(
+            "Return functional area suggestions (name, confidence, evidence[]) "
+            "derived from imported APIs, strings, and section patterns. Each "
+            "evidence item references a concrete source (e.g., import: 'CreateFileW', "
+            "string: '/etc/passwd'). Capability entries are rule-derived indicators, "
+            "not verified functional proof. Confidence values are used rather than "
+            "unconditional certainty/verified fields. Results are bounded by the "
+            "result count limit (default 100, max 1000)."
+        ),
+    )
+    capability_parser.add_argument(
+        "--project",
+        required=True,
+        help="Project name or UUID containing the binary to analyze.",
+    )
+    capability_parser.add_argument(
+        "--limit",
+        type=int,
+        default=100,
+        help="Maximum number of capabilities to return (default: 100, max: 1000).",
     )
 
 
@@ -427,4 +485,287 @@ def execute_diagnostics(args: argparse.Namespace) -> dict[str, Any]:
         },
         "_provenance_project_state": manifest.get("state"),
         "_provenance_project_id": manifest.get("id"),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Suspicious APIs command
+# ---------------------------------------------------------------------------
+
+
+def execute_suspicious_apis(args: argparse.Namespace) -> dict[str, Any]:
+    """Execute the suspicious-apis command.
+
+    Evaluates only priority-tagged rules against imported APIs. Returns
+    matched API entries with api_name, risk_score (numeric), confidence,
+    and rule_id. Includes the rules_applied list of evaluated rule IDs.
+
+    Returns:
+        A result dict with success, partial, warnings, diagnostics, data.
+    """
+    from binary_analysis.rules.suspicious_apis import SuspiciousApisEngine
+
+    project_name = args.project
+    limit = clamp_page_size(getattr(args, "limit", 100))
+
+    # Validate project exists
+    if not workspace_exists(project_name):
+        raise ProjectNotFoundError(project_name)
+
+    project_path = str(get_project_path(project_name))
+
+    # Load project manifest
+    manifest = load_manifest(project_path)
+
+    # Check for binary
+    current_binary = manifest.get("current_binary")
+    if current_binary is None:
+        raise BinaryNotFoundError()
+
+    binary_id = current_binary.get("id", "unknown")
+    binary_sha256 = current_binary.get("sha256", "unknown")
+    binary_format = current_binary.get("format", "unknown")
+    binary_arch = current_binary.get("architecture", "unknown")
+
+    _prov_project_id = manifest.get("id")
+    _prov_binary_id = binary_id
+    _prov_binary_sha256 = binary_sha256
+    _prov_project_state = manifest.get("state")
+
+    # Create adapter and load binary
+    adapter = FakeAdapter()
+    adapter.initialize()
+
+    if binary_format == "ELF":
+        fixture_name = "test-bin"
+        adapter.set_fixture(fixture_name, FakeAdapter.elf_fixture())
+    elif binary_format == "Mach-O":
+        fixture_name = "test-bin"
+        adapter.set_fixture(fixture_name, FakeAdapter.macho_fixture())
+    else:
+        fixture_name = "test-bin"
+        adapter.set_fixture(fixture_name, FakeAdapter.pe_fixture())
+
+    from uuid import UUID
+
+    from binary_analysis.domain.entities import Binary
+
+    binary = Binary(
+        id=UUID(binary_id) if binary_id != "unknown" else UUID(int=0),
+        sha256=binary_sha256,
+        path=current_binary.get("path", ""),
+        format=binary_format,
+        architecture=binary_arch,
+        size_bytes=current_binary.get("size_bytes", 0),
+    )
+    # Register binary with adapter so fixture queries work
+    adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": fixture_name}
+
+    # Run the suspicious APIs engine
+    try:
+        engine = SuspiciousApisEngine(adapter, binary)
+        matches, rules_applied = engine.run(limit=limit)
+    except Exception as e:
+        diags = [
+            make_diagnostic(
+                f"Unexpected error during suspicious-apis analysis: {e}",
+                severity="ERROR",
+                category="suspicious-apis",
+                recoverable=False,
+            )
+        ]
+        return {
+            "success": False,
+            "partial": False,
+            "warnings": [],
+            "diagnostics": diags,
+            "data": {"matches": [], "rules_applied": []},
+            "_exit_code": ExitCode.GENERIC_ERROR,
+            "_provenance_project_state": _prov_project_state,
+            "_provenance_project_id": _prov_project_id,
+            "_provenance_binary_id": _prov_binary_id,
+            "_provenance_binary_sha256": _prov_binary_sha256,
+        }
+
+    # Serialize matches
+    matches_data: list[dict[str, Any]] = []
+    for match in matches:
+        matches_data.append(
+            {
+                "api_name": match.api_name,
+                "risk_score": match.risk_score,
+                "confidence": match.confidence.value,
+                "rule_id": match.rule_id,
+            }
+        )
+
+    # Build truncation warning if needed
+    warnings: list[dict[str, Any]] = []
+    total_matches = len(matches)
+    if total_matches >= limit:
+        warnings.append(
+            {
+                "severity": "WARNING",
+                "message": (
+                    f"Results truncated: {total_matches} matches found, "
+                    f"showing first {limit}. Use --limit to adjust."
+                ),
+                "category": "truncation",
+            }
+        )
+
+    return {
+        "success": True,
+        "partial": False,
+        "warnings": warnings,
+        "diagnostics": [],
+        "data": {
+            "matches": matches_data,
+            "rules_applied": rules_applied,
+        },
+        "_provenance_project_state": _prov_project_state,
+        "_provenance_project_id": _prov_project_id,
+        "_provenance_binary_id": _prov_binary_id,
+        "_provenance_binary_sha256": _prov_binary_sha256,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Capability map command
+# ---------------------------------------------------------------------------
+
+
+def execute_capability_map(args: argparse.Namespace) -> dict[str, Any]:
+    """Execute the capability-map command.
+
+    Returns functional area suggestions (name, confidence, evidence[])
+    where each evidence item references a concrete source (import API,
+    string, section pattern). Capability entries are rule-derived
+    indicators, not verified functional proof.
+
+    Returns:
+        A result dict with success, partial, warnings, diagnostics, data.
+    """
+    from binary_analysis.rules.capabilities import CapabilityMapEngine
+
+    project_name = args.project
+    limit = clamp_page_size(getattr(args, "limit", 100))
+
+    # Validate project exists
+    if not workspace_exists(project_name):
+        raise ProjectNotFoundError(project_name)
+
+    project_path = str(get_project_path(project_name))
+
+    # Load project manifest
+    manifest = load_manifest(project_path)
+
+    # Check for binary
+    current_binary = manifest.get("current_binary")
+    if current_binary is None:
+        raise BinaryNotFoundError()
+
+    binary_id = current_binary.get("id", "unknown")
+    binary_sha256 = current_binary.get("sha256", "unknown")
+    binary_format = current_binary.get("format", "unknown")
+    binary_arch = current_binary.get("architecture", "unknown")
+
+    _prov_project_id = manifest.get("id")
+    _prov_binary_id = binary_id
+    _prov_binary_sha256 = binary_sha256
+    _prov_project_state = manifest.get("state")
+
+    # Create adapter and load binary
+    adapter = FakeAdapter()
+    adapter.initialize()
+
+    if binary_format == "ELF":
+        fixture_name = "test-bin"
+        adapter.set_fixture(fixture_name, FakeAdapter.elf_fixture())
+    elif binary_format == "Mach-O":
+        fixture_name = "test-bin"
+        adapter.set_fixture(fixture_name, FakeAdapter.macho_fixture())
+    else:
+        fixture_name = "test-bin"
+        adapter.set_fixture(fixture_name, FakeAdapter.pe_fixture())
+
+    from uuid import UUID
+
+    from binary_analysis.domain.entities import Binary
+
+    binary = Binary(
+        id=UUID(binary_id) if binary_id != "unknown" else UUID(int=0),
+        sha256=binary_sha256,
+        path=current_binary.get("path", ""),
+        format=binary_format,
+        architecture=binary_arch,
+        size_bytes=current_binary.get("size_bytes", 0),
+    )
+    # Register binary with adapter so fixture queries work
+    adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": fixture_name}
+
+    # Run the capability map engine
+    try:
+        engine = CapabilityMapEngine(adapter, binary)
+        capabilities = engine.run(limit=limit)
+    except Exception as e:
+        diags = [
+            make_diagnostic(
+                f"Unexpected error during capability-map analysis: {e}",
+                severity="ERROR",
+                category="capability-map",
+                recoverable=False,
+            )
+        ]
+        return {
+            "success": False,
+            "partial": False,
+            "warnings": [],
+            "diagnostics": diags,
+            "data": {"capabilities": []},
+            "_exit_code": ExitCode.GENERIC_ERROR,
+            "_provenance_project_state": _prov_project_state,
+            "_provenance_project_id": _prov_project_id,
+            "_provenance_binary_id": _prov_binary_id,
+            "_provenance_binary_sha256": _prov_binary_sha256,
+        }
+
+    # Serialize capabilities
+    capabilities_data: list[dict[str, Any]] = []
+    for cap in capabilities:
+        capabilities_data.append(
+            {
+                "name": cap.name,
+                "confidence": cap.confidence.value,
+                "evidence": cap.evidence,
+            }
+        )
+
+    # Build truncation warning if needed
+    warnings: list[dict[str, Any]] = []
+    total_caps = len(capabilities)
+    if total_caps >= limit:
+        warnings.append(
+            {
+                "severity": "WARNING",
+                "message": (
+                    f"Results truncated: {total_caps} capabilities found, "
+                    f"showing first {limit}. Use --limit to adjust."
+                ),
+                "category": "truncation",
+            }
+        )
+
+    return {
+        "success": True,
+        "partial": False,
+        "warnings": warnings,
+        "diagnostics": [],
+        "data": {
+            "capabilities": capabilities_data,
+        },
+        "_provenance_project_state": _prov_project_state,
+        "_provenance_project_id": _prov_project_id,
+        "_provenance_binary_id": _prov_binary_id,
+        "_provenance_binary_sha256": _prov_binary_sha256,
     }

@@ -317,6 +317,10 @@ def _dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return security.execute_triage(args)
     elif command == "diagnostics":
         return security.execute_diagnostics(args)
+    elif command == "suspicious-apis":
+        return security.execute_suspicious_apis(args)
+    elif command == "capability-map":
+        return security.execute_capability_map(args)
     else:
         raise InvalidArgsError(f"Unknown command: {command}")  # pragma: no cover
 
