@@ -12,6 +12,12 @@ Validates all VAL-SEC assertions:
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+_scripts_dir = Path(__file__).resolve().parents[2] / "scripts"
+if str(_scripts_dir) not in sys.path:
+    sys.path.insert(0, str(_scripts_dir))
+
 import io
 import json
 import os

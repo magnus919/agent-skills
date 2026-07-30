@@ -5,6 +5,12 @@ Covers all 13 error types with their exit code mappings.
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+_scripts_dir = Path(__file__).resolve().parents[2] / "scripts"
+if str(_scripts_dir) not in sys.path:
+    sys.path.insert(0, str(_scripts_dir))
+
 from binary_analysis.domain.enums import ExitCode
 from binary_analysis.domain.errors import (
     AmbiguousSelectorError,

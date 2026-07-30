@@ -10,6 +10,12 @@ Validates VAL-CLI-004, VAL-CLI-005, VAL-CLI-006, VAL-CLI-007, VAL-SAFE-006:
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+_scripts_dir = Path(__file__).resolve().parents[2] / "scripts"
+if str(_scripts_dir) not in sys.path:
+    sys.path.insert(0, str(_scripts_dir))
+
 import hashlib
 import json
 
