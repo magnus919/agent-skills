@@ -15,7 +15,7 @@ import time
 from datetime import datetime, timezone
 from typing import Any
 
-from binary_analysis.cli import binary_ops, bootstrap, doctor, project, version
+from binary_analysis.cli import binary_ops, bootstrap, doctor, project, structural, version
 from binary_analysis.cli.helpers import (
     SCHEMA_VERSION,
     enrich_provenance,
@@ -218,6 +218,7 @@ def build_parser() -> argparse.ArgumentParser:
     version.add_subparser(sub)
     project.add_subparser(sub)
     binary_ops.add_subparser(sub)
+    structural.add_subparser(sub)
 
     return parser
 
@@ -265,6 +266,18 @@ def _dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return binary_ops.execute_analyze(args)
     elif command == "metadata":
         return binary_ops.execute_metadata(args)
+    elif command == "sections":
+        return structural.execute_sections(args)
+    elif command == "entrypoints":
+        return structural.execute_entrypoints(args)
+    elif command == "imports":
+        return structural.execute_imports(args)
+    elif command == "exports":
+        return structural.execute_exports(args)
+    elif command == "symbols":
+        return structural.execute_symbols(args)
+    elif command == "strings":
+        return structural.execute_strings(args)
     else:
         raise InvalidArgsError(f"Unknown command: {command}")  # pragma: no cover
 

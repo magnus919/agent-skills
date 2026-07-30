@@ -281,7 +281,7 @@ def _install_pyghidra() -> dict[str, Any]:
 
     # Verify installation by importing
     try:
-        import pyghidra  # type: ignore[import-not-found]
+        import pyghidra  # type: ignore[import-not-found,unused-ignore]
 
         version = getattr(pyghidra, "__version__", "unknown")
         pyghidra_path = getattr(pyghidra, "__file__", "unknown")

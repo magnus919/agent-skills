@@ -256,7 +256,7 @@ def _find_pyghidra() -> Dependency:
     Tries to import pyghidra. If it fails, checks if it can be installed via pip.
     """
     try:
-        import pyghidra  # type: ignore[import-not-found]
+        import pyghidra  # type: ignore[import-not-found,unused-ignore]
 
         version = getattr(pyghidra, "__version__", "unknown")
         pyghidra_path = getattr(pyghidra, "__file__", None)
