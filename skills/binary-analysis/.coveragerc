@@ -5,7 +5,6 @@ omit =
     */reporting/*
     */rules/*
     */worker/*
-    */adapters/ghidra/*
 
 [report]
 # Exclude lines marked with '# pragma: no cover' (plain-text output helpers).

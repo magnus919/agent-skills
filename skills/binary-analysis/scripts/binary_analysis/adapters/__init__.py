@@ -12,6 +12,7 @@ from binary_analysis.adapters.base import (
     DecompilationResult,
 )
 from binary_analysis.adapters.fake import FakeAdapter
+from binary_analysis.adapters.ghidra import GhidraAdapter
 
 __all__ = [
     "AnalysisProfile",
@@ -22,4 +23,5 @@ __all__ = [
     "ConcurrencyMode",
     "DecompilationResult",
     "FakeAdapter",
+    "GhidraAdapter",
 ]
