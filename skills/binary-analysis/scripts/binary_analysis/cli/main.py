@@ -15,20 +15,20 @@ import time
 from datetime import datetime, timezone
 from typing import Any
 
-from binary_analysis import __version__
 from binary_analysis.cli import bootstrap, doctor, project, version
+from binary_analysis.cli.helpers import (
+    SCHEMA_VERSION,
+    enrich_provenance,
+)
+from binary_analysis.cli.helpers import (
+    default_provenance as _default_provenance,
+)
 from binary_analysis.domain.enums import ExitCode
 from binary_analysis.domain.errors import (
     BinaryAnalysisError,
     DependencyMissingError,
     InvalidArgsError,
 )
-
-# ---------------------------------------------------------------------------
-# Schema version
-# ---------------------------------------------------------------------------
-
-SCHEMA_VERSION = "1.0.0"
 
 # ---------------------------------------------------------------------------
 # Argument type validators
@@ -71,6 +71,12 @@ def build_envelope(
     data: Any,
     duration_ms: int,
     provenance: dict[str, Any] | None = None,
+    *,
+    project_id: str | None = None,
+    binary_id: str | None = None,
+    binary_sha256: str | None = None,
+    architecture: str | None = None,
+    analysis_profile: str | None = None,
 ) -> dict[str, Any]:
     """Build the standard JSON envelope for every command response.
 
@@ -82,13 +88,27 @@ def build_envelope(
         diagnostics: List of diagnostic entries.
         data: The command-specific data payload.
         duration_ms: Wall-clock duration in milliseconds.
-        provenance: Optional provenance metadata.
+        provenance: Optional provenance metadata (base fields).
+        project_id: Optional project UUID for project-context commands.
+        binary_id: Optional binary UUID for binary-context commands.
+        binary_sha256: Optional binary SHA-256 for binary-context commands.
+        architecture: Optional architecture spec for binary commands.
+        analysis_profile: Optional profile name for post-analysis commands.
 
     Returns:
         A dict suitable for JSON serialization.
     """
     if provenance is None:
         provenance = _default_provenance()
+
+    provenance = enrich_provenance(
+        provenance,
+        project_id=project_id,
+        binary_id=binary_id,
+        binary_sha256=binary_sha256,
+        architecture=architecture,
+        analysis_profile=analysis_profile,
+    )
 
     return {
         "schema_version": SCHEMA_VERSION,
@@ -101,18 +121,6 @@ def build_envelope(
         "diagnostics": diagnostics,
         "provenance": provenance,
         "data": data,
-    }
-
-
-def _default_provenance() -> dict[str, Any]:
-    """Return default provenance metadata for stub commands."""
-    return {
-        "cli_version": __version__,
-        "schema_version": SCHEMA_VERSION,
-        "adapter": "none",
-        "adapter_version": "0.1.0",
-        "backend": "none",
-        "backend_version": "0.1.0",
     }
 
 
@@ -343,7 +351,7 @@ def _output_paginated(data: dict[str, Any]) -> None:
     items = data.get("items", [])
     total = data.get("total", len(items))
     has_more = data.get("has_more", False)
-    next_cursor = data.get("next_cursor")
+    next_page_token = data.get("next_page_token")
 
     print(f"Total: {total}")
 
@@ -357,8 +365,8 @@ def _output_paginated(data: dict[str, Any]) -> None:
         else:
             print(str(item))
 
-    if has_more and next_cursor:
-        print(f"\n--- more results available (cursor: {next_cursor}) ---")
+    if has_more and next_page_token:
+        print(f"\n--- more results available (next_page_token: {next_page_token}) ---")
 
 
 def _output_dict(data: dict[str, Any]) -> None:

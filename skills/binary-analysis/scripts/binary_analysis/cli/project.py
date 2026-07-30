@@ -10,11 +10,14 @@ destructive operations.
 from __future__ import annotations
 
 import argparse
-import base64
 import json
 import sys
 from typing import Any
 
+from binary_analysis.cli.helpers import (
+    build_paginated_response,
+    clamp_page_size,
+)
 from binary_analysis.domain.enums import ProjectState
 from binary_analysis.domain.errors import (
     InvalidArgsError,
@@ -69,11 +72,11 @@ def _build_project_subparsers(subparsers: Any) -> None:
     list_parser = subparsers.add_parser("list", help="List projects with pagination.")
     # --limit is registered here for the subparser's --help, but the global
     # --limit is consumed first by argparse. The handler reads from the
-    # global args.limit with fallback to 100.
+    # global args.limit with fallback to 100 (PAGE_SIZE_DEFAULT).
     list_parser.add_argument(
-        "--cursor",
+        "--page-token",
         default=None,
-        help="Pagination cursor from previous response.",
+        help="Opaque pagination cursor from previous response (next_page_token).",
     )
 
     status_parser = subparsers.add_parser("status", help="Show project state and metadata.")
@@ -306,28 +309,26 @@ def _execute_create(args: argparse.Namespace) -> dict[str, Any]:
 def _execute_list(args: argparse.Namespace) -> dict[str, Any]:
     """Execute the 'project list' subcommand with cursor-based pagination."""
     # Read limit from global args (consumed by argparse before subparser).
-    # Fall back to 100 if not set.
-    limit = getattr(args, "limit", None)
-    if limit is None:
-        limit = 100
-    cursor_str = getattr(args, "cursor", None)
+    limit = clamp_page_size(getattr(args, "limit", None))
+    page_token_str: str | None = getattr(args, "page_token", None)
 
     # Collect all project names
     all_names = list_workspaces()
 
-    # Decode cursor if present
+    # Decode cursor if present (opaque base64-encoded JSON with offset)
     start_index = 0
-    if cursor_str:
+    if page_token_str:
         try:
-            cursor_data = _decode_cursor(cursor_str)
+            import base64
+
+            cursor_data = json.loads(base64.urlsafe_b64decode(page_token_str.encode("ascii")))
             start_index = cursor_data.get("offset", 0)
         except Exception:
-            raise InvalidArgsError("Invalid cursor value") from None
+            raise InvalidArgsError("Invalid page_token value") from None
 
     # Slice for pagination
     total = len(all_names)
     page_names = all_names[start_index : start_index + limit]
-    has_more = (start_index + limit) < total
 
     # Load manifests for each project in the page
     items: list[dict[str, Any]] = []
@@ -354,33 +355,34 @@ def _execute_list(args: argparse.Namespace) -> dict[str, Any]:
                 }
             )
 
-    # Build next cursor
-    next_cursor: str | None = None
-    if has_more:
-        next_cursor = _encode_cursor({"offset": start_index + limit})
+    paginated = build_paginated_response(
+        items=items,
+        total=total,
+        offset=start_index,
+        limit=limit,
+    )
 
     return {
         "success": True,
         "partial": False,
         "warnings": [],
         "diagnostics": [],
-        "data": {
-            "items": items,
-            "total": total,
-            "cursor": next_cursor,
-            "has_more": has_more,
-        },
+        "data": paginated,
     }
 
 
 def _encode_cursor(data: dict[str, Any]) -> str:
-    """Encode a cursor dict as a base64-encoded JSON string."""
+    """Encode a cursor dict as a base64-encoded JSON string (opaque cursor)."""
+    import base64
+
     json_bytes = json.dumps(data).encode("utf-8")
     return base64.urlsafe_b64encode(json_bytes).decode("ascii")
 
 
 def _decode_cursor(cursor_str: str) -> dict[str, Any]:
     """Decode a base64-encoded cursor string back to a dict."""
+    import base64
+
     json_bytes = base64.urlsafe_b64decode(cursor_str.encode("ascii"))
     result: dict[str, Any] = json.loads(json_bytes)
     return result

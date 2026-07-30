@@ -240,7 +240,7 @@ class TestProjectListPagination:
     """Tests for project list pagination."""
 
     def test_pagination_with_cursor_and_has_more(self, capsys: pytest.CaptureFixture) -> None:
-        """Paginated list returns cursor and has_more fields."""
+        """Paginated list returns next_page_token and has_more fields."""
         # Create several projects
         for i in range(5):
             _capture_json(["project", "create", f"proj-{i:02d}"], capsys)
@@ -248,40 +248,35 @@ class TestProjectListPagination:
         _, result = _capture_json(["project", "list", "--limit", "2"], capsys)
         data = result["data"]
         assert len(data["items"]) <= 2
-        assert "cursor" in data or "next_cursor" in data
+        assert "next_page_token" in data
         assert "has_more" in data
         assert "total" in data
         assert data["total"] >= 5
 
     def test_final_page_has_null_cursor(self, capsys: pytest.CaptureFixture) -> None:
-        """Final page has cursor=null and has_more=false."""
+        """Final page has next_page_token=null and has_more=false."""
         for i in range(3):
             _capture_json(["project", "create", f"page-{i}"], capsys)
 
         _, result = _capture_json(["project", "list", "--limit", "5"], capsys)
         data = result["data"]
         # With limit 5 and only 3 projects, should be final page
-        cursor_value = data.get("cursor") or data.get("next_cursor")
-        # Either the cursor field should be null or has_more should be false
-        # depending on the exact JSON shape
-        assert data.get("has_more") is not True or cursor_value is not None
-        if data.get("has_more") is False:
-            # This is the final page
-            pass  # OK
+        assert data.get("has_more") is False, "Expected has_more=False on final page"
+        assert data.get("next_page_token") is None, "Expected next_page_token=null on final page"
 
     def test_cursor_navigates_pages(self, capsys: pytest.CaptureFixture) -> None:
-        """Using a cursor from a previous page returns next page."""
+        """Using a page_token from a previous page returns next page."""
         for i in range(5):
             _capture_json(["project", "create", f"cursor-{i}"], capsys)
 
         # Page 1
         _, page1 = _capture_json(["project", "list", "--limit", "2"], capsys)
-        page1_cursor = page1["data"].get("cursor") or page1["data"].get("next_cursor")
+        page1_token = page1["data"].get("next_page_token")
 
-        if page1_cursor and page1["data"].get("has_more"):
+        if page1_token and page1["data"].get("has_more"):
             # Page 2
             _, page2 = _capture_json(
-                ["project", "list", "--limit", "2", "--cursor", page1_cursor], capsys
+                ["project", "list", "--limit", "2", "--page-token", page1_token], capsys
             )
             assert page2["success"] is True
             # Items should be different
@@ -306,8 +301,7 @@ class TestEmptyProjectList:
         data = result["data"]
         assert data["items"] == []
         assert data["total"] == 0
-        cursor_value = data.get("cursor") or data.get("next_cursor")
-        assert cursor_value is None
+        assert data.get("next_page_token") is None
         assert data.get("has_more") is not True
 
 
