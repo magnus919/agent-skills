@@ -38,6 +38,7 @@ _VALID_TRANSITIONS: dict[ProjectState, set[ProjectState]] = {
 _ANALYZABLE_STATES: set[ProjectState] = {
     ProjectState.IMPORTED,
     ProjectState.STALE,
+    ProjectState.READY,  # Can detect staleness without re-analyzing
 }
 
 # States from which import is allowed

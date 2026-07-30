@@ -15,7 +15,7 @@ import time
 from datetime import datetime, timezone
 from typing import Any
 
-from binary_analysis.cli import bootstrap, doctor, project, version
+from binary_analysis.cli import binary_ops, bootstrap, doctor, project, version
 from binary_analysis.cli.helpers import (
     SCHEMA_VERSION,
     enrich_provenance,
@@ -77,6 +77,7 @@ def build_envelope(
     binary_sha256: str | None = None,
     architecture: str | None = None,
     analysis_profile: str | None = None,
+    project_state: str | None = None,
 ) -> dict[str, Any]:
     """Build the standard JSON envelope for every command response.
 
@@ -109,6 +110,9 @@ def build_envelope(
         architecture=architecture,
         analysis_profile=analysis_profile,
     )
+
+    if project_state is not None:
+        provenance["project_state"] = project_state
 
     return {
         "schema_version": SCHEMA_VERSION,
@@ -213,6 +217,7 @@ def build_parser() -> argparse.ArgumentParser:
     bootstrap.add_subparser(sub)
     version.add_subparser(sub)
     project.add_subparser(sub)
+    binary_ops.add_subparser(sub)
 
     return parser
 
@@ -254,6 +259,12 @@ def _dispatch(args: argparse.Namespace) -> dict[str, Any]:
                 "No project subcommand specified. "
                 "Available: create, list, status, clean, remove, migrate."
             )
+    elif command == "import":
+        return binary_ops.execute_import(args)
+    elif command == "analyze":
+        return binary_ops.execute_analyze(args)
+    elif command == "metadata":
+        return binary_ops.execute_metadata(args)
     else:
         raise InvalidArgsError(f"Unknown command: {command}")  # pragma: no cover
 
@@ -543,6 +554,10 @@ def main(argv: list[str] | None = None) -> int:
     diagnostics = result.get("diagnostics", [])
     data = result.get("data", {})
 
+    # Extract provenance overrides from result
+    provenance_project_state: str | None = result.get("_provenance_project_state")
+    provenance_analysis_profile: str | None = result.get("_provenance_analysis_profile")
+
     envelope = build_envelope(
         command=command_name,
         success=success,
@@ -551,6 +566,8 @@ def main(argv: list[str] | None = None) -> int:
         diagnostics=diagnostics,
         data=data,
         duration_ms=t_elapsed,
+        project_state=provenance_project_state,
+        analysis_profile=provenance_analysis_profile,
     )
 
     if args.json:
