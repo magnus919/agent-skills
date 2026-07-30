@@ -23,6 +23,7 @@ from binary_analysis.cli import (
     project,
     references,
     search,
+    security,
     structural,
     version,
 )
@@ -232,6 +233,7 @@ def build_parser() -> argparse.ArgumentParser:
     functions.add_subparser(sub)
     references.add_subparser(sub)
     search.add_subparser(sub)
+    security.add_subparser(sub)
 
     return parser
 
@@ -311,6 +313,10 @@ def _dispatch(args: argparse.Namespace) -> dict[str, Any]:
         return search.execute_search(args)
     elif command == "trace":
         return search.execute_trace(args)
+    elif command == "triage":
+        return security.execute_triage(args)
+    elif command == "diagnostics":
+        return security.execute_diagnostics(args)
     else:
         raise InvalidArgsError(f"Unknown command: {command}")  # pragma: no cover
 
@@ -603,6 +609,9 @@ def main(argv: list[str] | None = None) -> int:
     # Extract provenance overrides from result
     provenance_project_state: str | None = result.get("_provenance_project_state")
     provenance_analysis_profile: str | None = result.get("_provenance_analysis_profile")
+    provenance_project_id: str | None = result.get("_provenance_project_id")
+    provenance_binary_id: str | None = result.get("_provenance_binary_id")
+    provenance_binary_sha256: str | None = result.get("_provenance_binary_sha256")
 
     envelope = build_envelope(
         command=command_name,
@@ -612,6 +621,9 @@ def main(argv: list[str] | None = None) -> int:
         diagnostics=diagnostics,
         data=data,
         duration_ms=t_elapsed,
+        project_id=provenance_project_id,
+        binary_id=provenance_binary_id,
+        binary_sha256=provenance_binary_sha256,
         project_state=provenance_project_state,
         analysis_profile=provenance_analysis_profile,
     )

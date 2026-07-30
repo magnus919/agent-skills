@@ -23,6 +23,12 @@ from binary_analysis.projects.cache import (
     cache_list,
     cache_set,
 )
+from binary_analysis.projects.diagnostics import (
+    clear_diagnostics,
+    get_diagnostics_summary,
+    load_diagnostics,
+    persist_diagnostics,
+)
 from binary_analysis.projects.lock import (
     LockError,
     acquire_lock,
@@ -71,8 +77,10 @@ __all__ = [
     "can_analyze",
     "can_clean",
     "can_import",
+    "clear_diagnostics",
     "create_manifest",
     "create_workspace",
+    "get_diagnostics_summary",
     "get_lock_holder",
     "get_project_path",
     "get_workspace_root",
@@ -80,7 +88,9 @@ __all__ = [
     "is_locked",
     "is_valid_transition",
     "list_workspaces",
+    "load_diagnostics",
     "load_manifest",
+    "persist_diagnostics",
     "release_lock",
     "remove_workspace",
     "save_manifest",

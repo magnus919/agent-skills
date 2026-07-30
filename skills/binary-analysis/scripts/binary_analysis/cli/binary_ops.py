@@ -34,6 +34,7 @@ from binary_analysis.domain.errors import (
     ProjectNotFoundError,
     UnsupportedFormatError,
 )
+from binary_analysis.projects.diagnostics import persist_diagnostics
 from binary_analysis.projects.lock import (
     acquire_lock,
     is_locked,
@@ -890,6 +891,9 @@ def execute_analyze(args: argparse.Namespace) -> dict[str, Any]:
         save_manifest(project_path, manifest)
         release_lock(project_path)
 
+        # Persist diagnostics for later retrieval
+        persist_diagnostics(project_path, diagnostics, command="analyze")
+
         return {
             "success": False,
             "partial": True,
@@ -913,6 +917,10 @@ def execute_analyze(args: argparse.Namespace) -> dict[str, Any]:
     manifest["updated_at"] = datetime.now(timezone.utc).isoformat()
     save_manifest(project_path, manifest)
     release_lock(project_path)
+
+    # Persist any diagnostics (including warnings from partial analysis)
+    if diagnostics:
+        persist_diagnostics(project_path, diagnostics, command="analyze")
 
     return {
         "success": True,

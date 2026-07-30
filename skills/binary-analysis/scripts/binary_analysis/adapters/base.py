@@ -29,6 +29,7 @@ from binary_analysis.domain.entities import (
     Section,
     String,
     Symbol,
+    TriageResult,
 )
 
 
@@ -434,6 +435,33 @@ class BackendAdapter(ABC):
             A bounded CallGraph entity.
         """
         ...
+
+    def run_triage(self, binary: Binary, profile: AnalysisProfile | None = None) -> TriageResult:
+        """Run the triage analysis pipeline on a binary.
+
+        Collects observations, evaluates heuristics, and identifies unknowns.
+        Returns a TriageResult with structured findings. The default
+        implementation uses the TriageEngine from the rules module.
+
+        Args:
+            binary: The binary to triage.
+            profile: Optional analysis profile for context.
+
+        Returns:
+            A TriageResult with observations, heuristics, and unknowns.
+        """
+        from binary_analysis.rules.engine import TriageEngine
+
+        engine = TriageEngine(self, binary)
+        obs, heur, unk, diags = engine.run()
+        partial = len(diags) > 0
+        return TriageResult(
+            observations=obs,
+            heuristics=heur,
+            unknowns=unk,
+            engine_diagnostics=diags,
+            partial=partial,
+        )
 
     def search(
         self,

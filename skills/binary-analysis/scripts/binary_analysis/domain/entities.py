@@ -408,3 +408,33 @@ class AuditEvent:
     binary_id: UUID | None = None
     user: str | None = None
     details: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class TriageResult:
+    """Aggregate result of a triage analysis.
+
+    Contains observations (facts), heuristics (interpretations),
+    unknowns (open questions), and engine diagnostics.
+    """
+
+    observations: list[Observation] = field(default_factory=list)
+    heuristics: list[Heuristic] = field(default_factory=list)
+    unknowns: list[Unknown] = field(default_factory=list)
+    engine_diagnostics: list[dict[str, Any]] = field(default_factory=list)
+    partial: bool = False
+
+
+@dataclass
+class DiagnosticsResult:
+    """Cumulative diagnostics across project lifecycle.
+
+    Contains all persistent diagnostics from analysis, triage,
+    and other commands, plus any current engine diagnostics.
+    """
+
+    diagnostics: list[dict[str, Any]] = field(default_factory=list)
+    total: int = 0
+    by_severity: dict[str, int] = field(
+        default_factory=lambda: {"INFO": 0, "WARNING": 0, "ERROR": 0}
+    )
