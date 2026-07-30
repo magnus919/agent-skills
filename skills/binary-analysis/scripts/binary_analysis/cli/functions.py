@@ -20,7 +20,10 @@ import re
 from typing import Any
 from uuid import UUID, uuid4
 
-from binary_analysis.cli.helpers import clamp_page_size
+from binary_analysis.cli.helpers import (
+    clamp_page_size,
+    make_warning,
+)
 from binary_analysis.domain.entities import Address
 from binary_analysis.domain.errors import (
     BackendFailureError,
@@ -115,10 +118,7 @@ def _get_adapter_and_binary(
     elif "mach" in binary_fmt:
         fixture_name = "macho-default"
 
-    adapter._binaries[str(binary_id)] = {
-        "binary": binary_entity,
-        "fixture_name": fixture_name,
-    }
+    adapter.register_binary(binary_entity, fixture_name)
 
     project_info = {
         "id": manifest.get("id", ""),
@@ -406,7 +406,7 @@ def execute_functions(args: argparse.Namespace) -> dict[str, Any]:
     VAL-STRUCT-013: --no-exclude-external/--no-exclude-thunks override defaults.
     """
     project_name = args.project
-    limit = clamp_page_size(getattr(args, "limit", None))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", None))
     cursor_str: str | None = getattr(args, "cursor", None)
     sort_key: str = getattr(args, "sort", "address")
     no_exclude_external: bool = getattr(args, "no_exclude_external", False)
@@ -493,6 +493,10 @@ def execute_functions(args: argparse.Namespace) -> dict[str, Any]:
     }
 
     diagnostics: list[dict[str, Any]] = []
+    warnings: list[dict[str, Any]] = []
+    if clamp_warning:
+        warnings.append(make_warning(clamp_warning, severity="WARNING", category="pagination"))
+
     if project_state and project_state != "READY":
         diagnostics.append(
             {
@@ -509,7 +513,7 @@ def execute_functions(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "success": True,
         "partial": False,
-        "warnings": [],
+        "warnings": warnings,
         "diagnostics": diagnostics,
         "data": data,
     }

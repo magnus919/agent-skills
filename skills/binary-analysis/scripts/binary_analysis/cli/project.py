@@ -323,8 +323,15 @@ def _execute_create(args: argparse.Namespace) -> dict[str, Any]:
 def _execute_list(args: argparse.Namespace) -> dict[str, Any]:
     """Execute the 'project list' subcommand with cursor-based pagination."""
     # Read limit from global args (consumed by argparse before subparser).
-    limit = clamp_page_size(getattr(args, "limit", None))
+    limit, _clamp_warning = clamp_page_size(getattr(args, "limit", None))
     page_token_str: str | None = getattr(args, "page_token", None)
+
+    # Build warnings
+    warnings: list[dict[str, Any]] = []
+    if _clamp_warning:
+        from binary_analysis.cli.helpers import make_warning
+
+        warnings.append(make_warning(_clamp_warning, severity="WARNING", category="pagination"))
 
     # Collect all project names
     all_names = list_workspaces()
@@ -379,7 +386,7 @@ def _execute_list(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "success": True,
         "partial": False,
-        "warnings": [],
+        "warnings": warnings,
         "diagnostics": [],
         "data": paginated,
     }

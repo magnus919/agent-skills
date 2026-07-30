@@ -113,10 +113,7 @@ def _get_adapter_and_binary(
     elif "mach" in binary_fmt:
         fixture_name = "macho-default"
 
-    adapter._binaries[str(binary_id)] = {
-        "binary": binary_entity,
-        "fixture_name": fixture_name,
-    }
+    adapter.register_binary(binary_entity, fixture_name)
 
     project_info = {
         "id": manifest.get("id", ""),

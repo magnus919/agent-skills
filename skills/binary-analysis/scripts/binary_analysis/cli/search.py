@@ -129,10 +129,7 @@ def _get_adapter_and_binary(
     elif "mach" in binary_fmt:
         fixture_name = "macho-default"
 
-    adapter._binaries[str(binary_id)] = {
-        "binary": binary_entity,
-        "fixture_name": fixture_name,
-    }
+    adapter.register_binary(binary_entity, fixture_name)
 
     project_info = {
         "id": manifest.get("id", ""),
@@ -296,7 +293,7 @@ def execute_search(args: argparse.Namespace) -> dict[str, Any]:
             "Provide a search term to match against entities (e.g., 'binary search --project proj \"main\"')."
         )
 
-    page_size = clamp_page_size(raw_limit)
+    page_size, clamp_warning = clamp_page_size(raw_limit)
 
     project_path = _resolve_project_path(project_name)
     manifest = load_manifest(project_path)
@@ -356,6 +353,9 @@ def execute_search(args: argparse.Namespace) -> dict[str, Any]:
     # Build warnings/diagnostics
     warnings: list[dict[str, Any]] = []
     diagnostics: list[dict[str, Any]] = []
+
+    if clamp_warning:
+        warnings.append(make_warning(clamp_warning, severity="WARNING", category="pagination"))
 
     if len(results) > MAX_SEARCH_RESULTS:
         warnings.append(

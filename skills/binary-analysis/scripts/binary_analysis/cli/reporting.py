@@ -279,7 +279,7 @@ def execute_export_report(args: argparse.Namespace) -> dict[str, Any]:
         size_bytes=current_binary.get("size_bytes", 0),
         analysis_profile=profile_name,
     )
-    adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": fixture_name}
+    adapter.register_binary(binary, fixture_name)
 
     # Collect report data based on type
     report_data: dict[str, Any] = {}

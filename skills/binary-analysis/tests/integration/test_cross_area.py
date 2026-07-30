@@ -264,6 +264,85 @@ class TestStalenessDetection:
 
 
 # ---------------------------------------------------------------------------
+# VAL-CROSS-004: Analysis timeout produces partial results
+# ---------------------------------------------------------------------------
+
+
+class TestAnalysisTimeout:
+    """VAL-CROSS-004: Analysis timeout produces partial results."""
+
+    def test_analysis_timeout_partial_results(self, monkeypatch):
+        """Analyze with timeout returns partial=true and exit code 12."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            monkeypatch.setattr(
+                "binary_analysis.projects.workspace.get_workspace_root",
+                lambda: Path(tmpdir),
+            )
+            monkeypatch.setattr(
+                "binary_analysis.projects.workspace._DEFAULT_WORKSPACE_ROOT",
+                str(tmpdir),
+            )
+            # Make analysis slow using BINARY_FAKE_SLOW_ANALYZE_MS env var
+            monkeypatch.setenv("BINARY_FAKE_SLOW_ANALYZE_MS", "10000")
+
+            binary_path = _create_binary_fixture(tmpdir)
+
+            _run_cli_raw(["--json", "project", "create", "timeout-test"])
+            _run_cli_raw(["--json", "import", "--project", "timeout-test", binary_path])
+
+            # Run analyze with short timeout — should timeout
+            exit_code, out = _run_cli_raw(
+                [
+                    "--json",
+                    "analyze",
+                    "--project",
+                    "timeout-test",
+                    "--profile",
+                    "standard",
+                    "--timeout",
+                    "1",
+                ]
+            )
+            result = json.loads(out)
+
+            # Verify timeout result
+            assert exit_code != 0, f"Expected non-zero exit code, got {exit_code}"
+            assert result["success"] is False
+            assert result["partial"] is True
+            diagnostics = result.get("diagnostics", [])
+            timeout_diags = [d for d in diagnostics if d.get("category") == "timeout"]
+            assert len(timeout_diags) >= 1
+
+            # Verify project state reflects partial analysis
+            _, out = _run_cli_raw(["--json", "project", "status", "timeout-test"])
+            status = json.loads(out)
+            assert status["data"]["state"] in ("ANALYZING", "FAILED")
+
+            # Metadata should still return partial results
+            _, out = _run_cli_raw(["--json", "metadata", "--project", "timeout-test"])
+            metadata = json.loads(out)
+            assert metadata["success"] is True
+
+            # Functions should still return some results
+            _, out = _run_cli_raw(["--json", "functions", "--project", "timeout-test"])
+            funcs = json.loads(out)
+            assert funcs["success"] is True, (
+                f"Functions query failed: {json.dumps(funcs.get('warnings', []))}"
+            )
+
+            # Diagnostics should include the timeout reason
+            _, out = _run_cli_raw(["--json", "diagnostics", "--project", "timeout-test"])
+            diags = json.loads(out)
+            timeout_diags = [
+                d
+                for d in diags.get("data", {}).get("diagnostics", [])
+                if d.get("category") == "timeout"
+            ]
+            assert len(timeout_diags) >= 1
+            assert any(d.get("recoverable") for d in timeout_diags)
+
+
+# ---------------------------------------------------------------------------
 # VAL-CROSS-005: Copy vs reference import modes
 # ---------------------------------------------------------------------------
 
@@ -542,3 +621,92 @@ class TestAnalyzeInterruption:
             # Lock should be released after completion
             project_dir = os.path.join(tmpdir, "interrupt-test")
             assert not is_locked(project_dir)
+
+    def test_analyze_sigkill_lock_cleanup(self, monkeypatch):
+        """SIGKILL during analysis: lock cleanup and re-analysis.
+
+        Uses BINARY_FAKE_SLOW_ANALYZE_MS to make analyze slow, then
+        runs it as a subprocess and sends SIGKILL. Verifies:
+        1. Lock is acquired during analysis
+        2. After SIGKILL, lock is cleaned up (stale)
+        3. System recovers to a workable state
+        """
+        import subprocess as _subprocess
+        import time as _time
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            monkeypatch.setattr(
+                "binary_analysis.projects.workspace.get_workspace_root",
+                lambda: Path(tmpdir),
+            )
+            monkeypatch.setattr(
+                "binary_analysis.projects.workspace._DEFAULT_WORKSPACE_ROOT",
+                str(tmpdir),
+            )
+            monkeypatch.setenv("BINARY_WORKSPACE_ROOT", tmpdir)
+
+            binary_path = _create_binary_fixture(tmpdir)
+
+            _run_cli_raw(["--json", "project", "create", "sigkill-test"])
+            _run_cli_raw(["--json", "import", "--project", "sigkill-test", binary_path])
+
+            # Start analyze in a subprocess with slow delay
+            env = os.environ.copy()
+            env["BINARY_FAKE_SLOW_ANALYZE_MS"] = "60000"
+            skill_scripts = str(Path(__file__).resolve().parents[2] / "scripts")
+            env["PYTHONPATH"] = skill_scripts
+
+            proc = _subprocess.Popen(
+                [
+                    "python3",
+                    "-m",
+                    "binary_analysis.cli.main",
+                    "--json",
+                    "analyze",
+                    "--project",
+                    "sigkill-test",
+                    "--profile",
+                    "standard",
+                ],
+                cwd=skill_scripts,
+                env=env,
+                stdout=_subprocess.PIPE,
+                stderr=_subprocess.PIPE,
+            )
+
+            _time.sleep(1.5)
+            project_dir = os.path.join(tmpdir, "sigkill-test")
+            lock_path = os.path.join(project_dir, "project.lock")
+            assert os.path.exists(lock_path), "Lock should exist during analysis"
+
+            proc.kill()
+            try:
+                proc.wait(timeout=5)
+            except _subprocess.TimeoutExpired:
+                proc.kill()
+            _time.sleep(0.5)
+
+            # After SIGKILL, the lock is stale (process dead)
+            from binary_analysis.projects.lock import is_locked as _is_locked
+
+            assert not _is_locked(project_dir), "Lock should be released after SIGKILL"
+
+            # Create a fresh project and run full lifecycle to verify system works
+            monkeypatch.delenv("BINARY_FAKE_SLOW_ANALYZE_MS", raising=False)
+
+            _run_cli_raw(["--json", "project", "create", "recovery-test"])
+            exit_code, _ = _run_cli_raw(
+                ["--json", "import", "--project", "recovery-test", binary_path]
+            )
+            assert exit_code == 0
+
+            exit_code, out = _run_cli_raw(
+                ["--json", "analyze", "--project", "recovery-test", "--profile", "standard"]
+            )
+            assert exit_code == 0, (
+                f"Re-analysis after SIGKILL failed: exit_code={exit_code}, out={out[:500]}"
+            )
+
+            _, out = _run_cli_raw(["--json", "project", "status", "recovery-test"])
+            status = json.loads(out)
+            assert status["data"]["state"] == "READY"

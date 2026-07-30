@@ -30,6 +30,7 @@ from binary_analysis.adapters.fake import FakeAdapter
 from binary_analysis.cli.helpers import (
     clamp_page_size,
     make_diagnostic,
+    make_warning,
 )
 from binary_analysis.domain.enums import ExitCode
 from binary_analysis.domain.errors import (
@@ -162,7 +163,12 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
     """
     project_name = args.project
     profile_name = getattr(args, "profile", "standard")
-    limit = clamp_page_size(getattr(args, "limit", 100))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", 100))
+
+    # Initialize warnings list; clamp warning is added first if present
+    all_warnings: list[dict[str, Any]] = []
+    if clamp_warning:
+        all_warnings.append(make_warning(clamp_warning, severity="WARNING", category="pagination"))
 
     # Validate project exists
     if not workspace_exists(project_name):
@@ -216,7 +222,7 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
         analysis_profile=profile_name,
     )
     # Register binary with adapter so backend queries return real fixture data
-    adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": fixture_name}
+    adapter.register_binary(binary, fixture_name)
 
     # Run the triage
     try:
@@ -237,7 +243,7 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
         return {
             "success": False,
             "partial": True,
-            "warnings": [],
+            "warnings": all_warnings,
             "diagnostics": diags,
             "data": {
                 "observations": [],
@@ -266,7 +272,7 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
         return {
             "success": False,
             "partial": True,
-            "warnings": [],
+            "warnings": all_warnings,
             "diagnostics": diags,
             "data": {
                 "observations": [],
@@ -294,7 +300,7 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
         return {
             "success": False,
             "partial": True,
-            "warnings": [],
+            "warnings": all_warnings,
             "diagnostics": diags,
             "data": {
                 "observations": [],
@@ -322,7 +328,7 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
         return {
             "success": False,
             "partial": True,
-            "warnings": [],
+            "warnings": all_warnings,
             "diagnostics": diags,
             "data": {
                 "observations": [],
@@ -339,7 +345,6 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
 
     # Collect all diagnostics from triage
     all_diagnostics: list[dict[str, Any]] = []
-    all_warnings: list[dict[str, Any]] = []
 
     for ed in triage_result.engine_diagnostics:
         all_diagnostics.append(ed)
@@ -596,7 +601,12 @@ def execute_suspicious_apis(args: argparse.Namespace) -> dict[str, Any]:
     from binary_analysis.rules.suspicious_apis import SuspiciousApisEngine
 
     project_name = args.project
-    limit = clamp_page_size(getattr(args, "limit", 100))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", 100))
+
+    # Initialize warnings; add clamp warning if present
+    all_warnings: list[dict[str, Any]] = []
+    if clamp_warning:
+        all_warnings.append(make_warning(clamp_warning, severity="WARNING", category="pagination"))
 
     # Validate project exists
     if not workspace_exists(project_name):
@@ -649,7 +659,7 @@ def execute_suspicious_apis(args: argparse.Namespace) -> dict[str, Any]:
         size_bytes=current_binary.get("size_bytes", 0),
     )
     # Register binary with adapter so fixture queries work
-    adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": fixture_name}
+    adapter.register_binary(binary, fixture_name)
 
     # Run the suspicious APIs engine
     try:
@@ -690,7 +700,7 @@ def execute_suspicious_apis(args: argparse.Namespace) -> dict[str, Any]:
         )
 
     # Build truncation warning and pagination cursor if needed (VAL-SEC-012)
-    warnings: list[dict[str, Any]] = []
+    warnings: list[dict[str, Any]] = list(all_warnings)
     next_cursor: str | None = None
     if total_matches > limit:
         warnings.append(
@@ -742,7 +752,12 @@ def execute_capability_map(args: argparse.Namespace) -> dict[str, Any]:
     from binary_analysis.rules.capabilities import CapabilityMapEngine
 
     project_name = args.project
-    limit = clamp_page_size(getattr(args, "limit", 100))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", 100))
+
+    # Initialize warnings; add clamp warning if present
+    all_warnings: list[dict[str, Any]] = []
+    if clamp_warning:
+        all_warnings.append(make_warning(clamp_warning, severity="WARNING", category="pagination"))
 
     # Validate project exists
     if not workspace_exists(project_name):
@@ -795,7 +810,7 @@ def execute_capability_map(args: argparse.Namespace) -> dict[str, Any]:
         size_bytes=current_binary.get("size_bytes", 0),
     )
     # Register binary with adapter so fixture queries work
-    adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": fixture_name}
+    adapter.register_binary(binary, fixture_name)
 
     # Run the capability map engine
     try:
@@ -835,7 +850,7 @@ def execute_capability_map(args: argparse.Namespace) -> dict[str, Any]:
         )
 
     # Build truncation warning and pagination cursor if needed (VAL-SEC-012)
-    warnings: list[dict[str, Any]] = []
+    warnings: list[dict[str, Any]] = list(all_warnings)
     next_cursor: str | None = None
     if total_caps > limit:
         warnings.append(

@@ -538,15 +538,23 @@ class TestResultCountLimits:
         """Page sizes above 1000 are clamped to 1000."""
         from binary_analysis.cli.helpers import clamp_page_size
 
-        assert clamp_page_size(5000) == 1000
+        value, warning = clamp_page_size(5000)
+        assert value == 1000
+        assert warning is not None
 
     def test_clamp_page_size_defaults_to_100(self):
         """None or invalid values default to 100."""
         from binary_analysis.cli.helpers import clamp_page_size
 
-        assert clamp_page_size(None) == 100
-        assert clamp_page_size(0) == 100
-        assert clamp_page_size(-1) == 100
+        value1, warning1 = clamp_page_size(None)
+        assert value1 == 100
+        assert warning1 is None
+        value2, warning2 = clamp_page_size(0)
+        assert value2 == 100
+        assert warning2 is None
+        value3, warning3 = clamp_page_size(-1)
+        assert value3 == 100
+        assert warning3 is None
 
     def test_limit_5000_clamped_with_warning(self, capsys):
         """--limit 5000 is clamped to max."""
@@ -561,6 +569,12 @@ class TestResultCountLimits:
         data = envelope.get("data", {})
         page_size = data.get("page_size", 0)
         assert page_size <= 1000
+        # The warning should appear in the JSON envelope's warnings array
+        warnings = envelope.get("warnings", [])
+        clamp_warnings = [w for w in warnings if w.get("category") == "pagination"]
+        assert len(clamp_warnings) >= 1
+        assert "5000" in clamp_warnings[0]["message"]
+        assert "1000" in clamp_warnings[0]["message"]
 
 
 # ---------------------------------------------------------------------------

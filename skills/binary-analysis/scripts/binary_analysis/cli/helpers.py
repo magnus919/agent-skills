@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 import platform as _platform
-import sys
 from typing import Any
 
 from binary_analysis import __version__ as _cli_version
@@ -86,7 +85,7 @@ def enrich_provenance(
 # ---------------------------------------------------------------------------
 
 
-def clamp_page_size(limit: int | None) -> int:
+def clamp_page_size(limit: int | None) -> tuple[int, str | None]:
     """Clamp a page size to the valid range [1, PAGE_SIZE_MAX].
 
     None or values <= 0 default to PAGE_SIZE_DEFAULT.
@@ -96,18 +95,18 @@ def clamp_page_size(limit: int | None) -> int:
         limit: Requested page size, or None for default.
 
     Returns:
-        Clamped page size as a positive integer in [1, PAGE_SIZE_MAX].
+        Tuple of (clamped_page_size, warning_message_or_None).
+        The warning message is present only when clamping occurred.
     """
     if limit is None or limit < 1:
-        return PAGE_SIZE_DEFAULT
+        return PAGE_SIZE_DEFAULT, None
     if limit > PAGE_SIZE_MAX:
-        print(
-            f"Warning: Requested page size {limit} exceeds maximum {PAGE_SIZE_MAX}. "
-            f"Clamping to {PAGE_SIZE_MAX}.",
-            file=sys.stderr,
+        warning = (
+            f"Requested page size {limit} exceeds maximum {PAGE_SIZE_MAX}. "
+            f"Clamped to {PAGE_SIZE_MAX}."
         )
-        return PAGE_SIZE_MAX
-    return limit
+        return PAGE_SIZE_MAX, warning
+    return limit, None
 
 
 def build_paginated_response(

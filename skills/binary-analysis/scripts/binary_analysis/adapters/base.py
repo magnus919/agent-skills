@@ -436,6 +436,20 @@ class BackendAdapter(ABC):
         """
         ...
 
+    def register_binary(self, binary: Binary, fixture_name: str) -> None:  # noqa: B027
+        """Register a binary with a fixture name for fixture-based lookup.
+
+        This is a hook for fixture-based adapters (like FakeAdapter) that
+        need to map Binary entities to pre-defined test fixture data. Real
+        adapters (like GhidraAdapter) that use actual backend analysis
+        should leave this as a no-op.
+
+        Args:
+            binary: The canonical Binary entity to register.
+            fixture_name: The name of the fixture dataset to associate.
+        """
+        pass  # Default no-op for real adapters
+
     def run_triage(self, binary: Binary, profile: AnalysisProfile | None = None) -> TriageResult:
         """Run the triage analysis pipeline on a binary.
 

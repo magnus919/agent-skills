@@ -1097,6 +1097,21 @@ class FakeAdapter(BackendAdapter):
     # BackendAdapter implementation
     # ------------------------------------------------------------------
 
+    def register_binary(self, binary: Binary, fixture_name: str) -> None:
+        """Register a binary with a fixture name for fixture-based lookup.
+
+        Populates the internal _binaries mapping so that get_* methods
+        (which call _get_binary_fixture) can find the right fixture data.
+
+        Args:
+            binary: The canonical Binary entity to register.
+            fixture_name: The name of the fixture dataset to associate.
+        """
+        self._binaries[str(binary.id)] = {
+            "binary": binary,
+            "fixture_name": fixture_name,
+        }
+
     def initialize(self) -> None:
         self._initialized = True
 
@@ -1141,10 +1156,7 @@ class FakeAdapter(BackendAdapter):
         )
 
         # Store the binary
-        self._binaries[str(binary.id)] = {
-            "binary": binary,
-            "fixture_name": self._resolve_fixture_name(path, project),
-        }
+        self.register_binary(binary, self._resolve_fixture_name(path, project))
 
         return binary
 

@@ -17,6 +17,7 @@ from uuid import UUID, uuid4
 
 from binary_analysis.cli.helpers import (
     clamp_page_size,
+    make_warning,
 )
 from binary_analysis.domain.errors import (
     BackendFailureError,
@@ -275,10 +276,7 @@ def _get_adapter_and_binary(
     elif "mach" in binary_fmt:
         fixture_name = "macho-default"
 
-    adapter._binaries[str(binary_id)] = {
-        "binary": binary_entity,
-        "fixture_name": fixture_name,
-    }
+    adapter.register_binary(binary_entity, fixture_name)
 
     project_info = {
         "id": manifest.get("id", ""),
@@ -338,6 +336,7 @@ def _build_structural_result(
     sort_key: str | None = None,
     applied_filters: list[dict[str, Any]] | None = None,
     diagnostics_extra: list[dict[str, Any]] | None = None,
+    warnings_extra: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Build a paginated structural query result.
 
@@ -368,7 +367,7 @@ def _build_structural_result(
     result: dict[str, Any] = {
         "success": True,
         "partial": False,
-        "warnings": [],
+        "warnings": list(warnings_extra or []),
         "diagnostics": list(diagnostics_extra or []),
         "data": data,
     }
@@ -387,7 +386,7 @@ def execute_sections(args: argparse.Namespace) -> dict[str, Any]:
     Returns canonical section objects with pagination.
     """
     project_name = args.project
-    limit = clamp_page_size(getattr(args, "limit", None))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", None))
     cursor_str: str | None = getattr(args, "cursor", None)
     sort_key: str = getattr(args, "sort", "address")
     command = "sections"
@@ -457,6 +456,11 @@ def execute_sections(args: argparse.Namespace) -> dict[str, Any]:
         project_id=project_id,
         sort_key=sort_key,
         diagnostics_extra=diagnostics,
+        warnings_extra=(
+            [make_warning(clamp_warning, severity="WARNING", category="pagination")]
+            if clamp_warning
+            else None
+        ),
     )
 
 
@@ -466,7 +470,7 @@ def execute_entrypoints(args: argparse.Namespace) -> dict[str, Any]:
     Returns entry point objects with kind and confidence.
     """
     project_name = args.project
-    limit = clamp_page_size(getattr(args, "limit", None))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", None))
     cursor_str: str | None = getattr(args, "cursor", None)
     command = "entrypoints"
 
@@ -528,6 +532,11 @@ def execute_entrypoints(args: argparse.Namespace) -> dict[str, Any]:
         command=command,
         project_id=project_id,
         diagnostics_extra=diagnostics,
+        warnings_extra=(
+            [make_warning(clamp_warning, severity="WARNING", category="pagination")]
+            if clamp_warning
+            else None
+        ),
     )
 
 
@@ -537,7 +546,7 @@ def execute_imports(args: argparse.Namespace) -> dict[str, Any]:
     Returns imported symbols with module, symbol, address, resolution, ordinal.
     """
     project_name = args.project
-    limit = clamp_page_size(getattr(args, "limit", None))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", None))
     cursor_str: str | None = getattr(args, "cursor", None)
     command = "imports"
 
@@ -597,6 +606,11 @@ def execute_imports(args: argparse.Namespace) -> dict[str, Any]:
         command=command,
         project_id=project_id,
         diagnostics_extra=diagnostics,
+        warnings_extra=(
+            [make_warning(clamp_warning, severity="WARNING", category="pagination")]
+            if clamp_warning
+            else None
+        ),
     )
 
 
@@ -606,7 +620,7 @@ def execute_exports(args: argparse.Namespace) -> dict[str, Any]:
     Returns exported symbols with name, address, ordinal, forwarder, kind.
     """
     project_name = args.project
-    limit = clamp_page_size(getattr(args, "limit", None))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", None))
     cursor_str: str | None = getattr(args, "cursor", None)
     command = "exports"
 
@@ -666,6 +680,11 @@ def execute_exports(args: argparse.Namespace) -> dict[str, Any]:
         command=command,
         project_id=project_id,
         diagnostics_extra=diagnostics,
+        warnings_extra=(
+            [make_warning(clamp_warning, severity="WARNING", category="pagination")]
+            if clamp_warning
+            else None
+        ),
     )
 
 
@@ -676,7 +695,7 @@ def execute_symbols(args: argparse.Namespace) -> dict[str, Any]:
     IMPORTED symbols are cross-linked to imports table.
     """
     project_name = args.project
-    limit = clamp_page_size(getattr(args, "limit", None))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", None))
     cursor_str: str | None = getattr(args, "cursor", None)
     command = "symbols"
 
@@ -769,6 +788,11 @@ def execute_symbols(args: argparse.Namespace) -> dict[str, Any]:
         command=command,
         project_id=project_id,
         diagnostics_extra=diagnostics,
+        warnings_extra=(
+            [make_warning(clamp_warning, severity="WARNING", category="pagination")]
+            if clamp_warning
+            else None
+        ),
     )
 
 
@@ -780,7 +804,7 @@ def execute_strings(args: argparse.Namespace) -> dict[str, Any]:
     Combined filters work together and are reported in applied_filters.
     """
     project_name = args.project
-    limit = clamp_page_size(getattr(args, "limit", None))
+    limit, clamp_warning = clamp_page_size(getattr(args, "limit", None))
     cursor_str: str | None = getattr(args, "cursor", None)
     min_length: int = getattr(args, "min_length", 4)
     contains: str | None = getattr(args, "contains", None)
@@ -869,4 +893,9 @@ def execute_strings(args: argparse.Namespace) -> dict[str, Any]:
         filters=filters if filters else None,
         applied_filters=applied_filters,
         diagnostics_extra=diagnostics,
+        warnings_extra=(
+            [make_warning(clamp_warning, severity="WARNING", category="pagination")]
+            if clamp_warning
+            else None
+        ),
     )

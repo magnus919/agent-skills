@@ -134,30 +134,40 @@ class TestPaginationDefaultsAndBounds:
     """Verify default page size, max clamping, and rejection/clamping of 0."""
 
     def test_default_page_size_is_100(self) -> None:
-        """clamp_page_size(None) must return 100."""
-        assert clamp_page_size(None) == PAGE_SIZE_DEFAULT
+        """clamp_page_size(None) must return 100 with no warning."""
+        value, warning = clamp_page_size(None)
+        assert value == PAGE_SIZE_DEFAULT
+        assert warning is None
         assert PAGE_SIZE_DEFAULT == 100
 
     def test_clamp_above_max(self) -> None:
-        """Values above PAGE_SIZE_MAX must be clamped to PAGE_SIZE_MAX."""
-        assert clamp_page_size(2000) == PAGE_SIZE_MAX
-        assert clamp_page_size(1001) == PAGE_SIZE_MAX
+        """Values above PAGE_SIZE_MAX must be clamped to PAGE_SIZE_MAX with warning."""
+        value1, warning1 = clamp_page_size(2000)
+        assert value1 == PAGE_SIZE_MAX
+        assert warning1 is not None
+        value2, warning2 = clamp_page_size(1001)
+        assert value2 == PAGE_SIZE_MAX
+        assert warning2 is not None
         assert PAGE_SIZE_MAX == 1000
 
     def test_zero_clamped_to_default(self) -> None:
         """--page-size 0 must be clamped to default (not error)."""
-        assert clamp_page_size(0) == PAGE_SIZE_DEFAULT
+        value, warning = clamp_page_size(0)
+        assert value == PAGE_SIZE_DEFAULT
+        assert warning is None
 
     def test_negative_clamped_to_default(self) -> None:
         """Negative page sizes must be clamped to default."""
-        assert clamp_page_size(-5) == PAGE_SIZE_DEFAULT
+        value, warning = clamp_page_size(-5)
+        assert value == PAGE_SIZE_DEFAULT
+        assert warning is None
 
     def test_valid_value_passed_through(self) -> None:
-        """Valid values must pass through unchanged."""
-        assert clamp_page_size(1) == 1
-        assert clamp_page_size(50) == 50
-        assert clamp_page_size(100) == 100
-        assert clamp_page_size(1000) == 1000
+        """Valid values must pass through unchanged with no warning."""
+        for v in (1, 50, 100, 1000):
+            value, warning = clamp_page_size(v)
+            assert value == v
+            assert warning is None
 
     def test_page_size_above_max_clamped_in_build_response(self) -> None:
         """build_paginated_response with limit > max should not exceed max items."""
