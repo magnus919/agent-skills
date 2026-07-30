@@ -1,9 +1,17 @@
-"""Doctor command — check dependency health."""
+"""Doctor command — check dependency health.
+
+Detects missing dependencies (Java, Ghidra, PyGhidra) and reports
+diagnostic entries with severity, component, message, and remediation hints.
+When all dependencies are healthy, returns success=true with zero ERROR entries.
+"""
 
 from __future__ import annotations
 
 import argparse
 from typing import Any
+
+from binary_analysis.bootstrap.deps import discover_dependencies
+from binary_analysis.domain.enums import ExitCode
 
 
 def add_subparser(subparsers: Any) -> argparse.ArgumentParser:
@@ -18,17 +26,52 @@ def add_subparser(subparsers: Any) -> argparse.ArgumentParser:
 def execute(args: argparse.Namespace) -> dict[str, Any]:
     """Run the doctor command.
 
-    Returns a result dict suitable for JSON envelope output.
-    Currently a stub — real implementation comes in a later feature.
+    Discovers Java, Ghidra, and PyGhidra and reports diagnostic entries
+    for each. Missing components get ERROR severity with remediation hints.
+    Healthy components get INFO severity.
+
+    Returns:
+        A result dict with diagnostics and component status.
     """
-    return {
-        "success": True,
+    deps = discover_dependencies()
+    diagnostics: list[dict[str, Any]] = []
+    components: list[dict[str, Any]] = []
+    has_error = False
+
+    for dep in deps:
+        components.append(dep.to_dict())
+
+        if dep.status == "missing" or dep.status == "error":
+            has_error = True
+            diagnostics.append(
+                {
+                    "severity": "ERROR",
+                    "component": dep.name,
+                    "message": dep.message,
+                    "remediation": dep.remediation,
+                }
+            )
+        else:
+            diagnostics.append(
+                {
+                    "severity": "INFO",
+                    "component": dep.name,
+                    "message": dep.message,
+                    "remediation": dep.remediation,
+                }
+            )
+
+    result: dict[str, Any] = {
+        "success": not has_error,
         "partial": False,
         "warnings": [],
-        "diagnostics": [],
+        "diagnostics": diagnostics,
         "data": {
-            "status": "not_implemented",
-            "message": "Doctor command not yet implemented.",
-            "components": [],
+            "components": components,
         },
     }
+
+    if has_error:
+        result["_exit_code"] = ExitCode.DEPENDENCY_MISSING
+
+    return result

@@ -551,6 +551,10 @@ def main(argv: list[str] | None = None) -> int:
         if not quiet:
             _output_text(envelope, args)
 
+    # Respect explicit exit_code from command result, otherwise derive from success
+    explicit_code = result.get("_exit_code")
+    if isinstance(explicit_code, int):
+        return explicit_code
     return ExitCode.SUCCESS if success else ExitCode.GENERIC_ERROR
 
 

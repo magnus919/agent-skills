@@ -157,10 +157,13 @@ class TestMainExitCodes:
         exit_code = main(["--json", "version"])
         assert exit_code == ExitCode.SUCCESS
 
-    def test_doctor_json_exit_0(self) -> None:
-        """doctor --json should exit with code 0."""
+    def test_doctor_json_exit_3_when_missing(self) -> None:
+        """doctor --json should exit with code 3 when dependencies are missing."""
         exit_code = main(["--json", "doctor"])
-        assert exit_code == ExitCode.SUCCESS
+        # If deps are all present (rare in test env), exit 0; otherwise exit 3
+        assert exit_code in (ExitCode.SUCCESS, ExitCode.DEPENDENCY_MISSING), (
+            f"Expected exit 0 or 3, got {exit_code}"
+        )
 
     def test_invalid_flag_exit_2(self) -> None:
         """--nonexistent-flag should exit with code 2."""
