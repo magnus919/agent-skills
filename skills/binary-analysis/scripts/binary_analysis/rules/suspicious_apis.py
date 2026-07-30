@@ -366,16 +366,18 @@ class SuspiciousApisEngine:
         self._rules: list[SuspiciousApiRule] = []
         self._active_rules: list[SuspiciousApiRule] = []
 
-    def run(self, limit: int = 100) -> tuple[list[SuspiciousApiMatch], list[str]]:
+    def run(self, limit: int = 100) -> tuple[list[SuspiciousApiMatch], list[str], int]:
         """Evaluate all priority rules against the binary's imports.
 
         Args:
             limit: Maximum number of matches to return.
 
         Returns:
-            Tuple of (matches, rules_applied) where matches is the list of
-            SuspiciousApiMatch results (bounded by limit) and rules_applied
-            is the list of rule_id strings that were evaluated.
+            Tuple of (matches, rules_applied, total_matches) where matches is the
+            list of SuspiciousApiMatch results (bounded by limit), rules_applied
+            is the list of rule_id strings that were evaluated, and total_matches
+            is the original total count of matches before slicing (used for
+            accurate truncation warnings).
         """
         # Load and filter to priority rules only
         self._load_rules()
@@ -391,6 +393,7 @@ class SuspiciousApisEngine:
             imports = []
 
         matches: list[SuspiciousApiMatch] = []
+        total_matches: int = 0
 
         # Build a set of imported symbols for fast lookup
         imported_symbols: dict[str, Import] = {}
@@ -409,6 +412,9 @@ class SuspiciousApisEngine:
 
             if not matching_symbols:
                 continue
+
+            # Count total matches across all matching symbols (before slicing)
+            total_matches += len(matching_symbols)
 
             # Compute confidence based on match density
             match_count = len(matching_symbols)
@@ -439,11 +445,10 @@ class SuspiciousApisEngine:
                     )
                 )
 
-            # Stop if we've hit the limit
-            if len(matches) >= limit:
-                break
+            # Stop adding matches if we've hit the limit, but continue counting
+            # for accurate total_matches
 
-        return matches[:limit], rules_applied
+        return matches[:limit], rules_applied, total_matches
 
     def _load_rules(self) -> None:
         """Load all rule definitions (including non-priority ones)."""

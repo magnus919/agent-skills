@@ -72,9 +72,9 @@ def _build_project_subparsers(subparsers: Any) -> None:
     )
 
     list_parser = subparsers.add_parser("list", help="List projects with pagination.")
-    # --limit is registered here for the subparser's --help, but the global
-    # --limit is consumed first by argparse. The handler reads from the
-    # global args.limit with fallback to 100 (PAGE_SIZE_DEFAULT).
+    # --limit is read from the root parser (consumed before the subparser by
+    # _extract_globals). The list subparser does not register its own --limit
+    # to avoid overwriting the root parser's value.
     list_parser.add_argument(
         "--page-token",
         default=None,
@@ -466,27 +466,7 @@ def _execute_clean(args: argparse.Namespace) -> dict[str, Any]:
     except ValueError:
         current_state = ProjectState.CREATED
 
-    # Only FAILED projects can be cleaned
-    if not can_clean(current_state):
-        return {
-            "success": False,
-            "partial": False,
-            "warnings": [],
-            "diagnostics": [
-                {
-                    "severity": "ERROR",
-                    "message": (
-                        f"Clean is only allowed on FAILED projects. "
-                        f"Current state: {current_state.value}. "
-                        f"Use 'project remove' to delete this project."
-                    ),
-                    "category": "state_machine",
-                }
-            ],
-            "data": None,
-        }
-
-    # Confirmation check
+    # Confirmation check (VAL-PROJ-009: must come before state validation)
     if not skip_confirmation:
         try:
             prompt = (
@@ -523,6 +503,26 @@ def _execute_clean(args: argparse.Namespace) -> dict[str, Any]:
                 ],
                 "data": None,
             }
+
+    # Only FAILED projects can be cleaned (validated after confirmation)
+    if not can_clean(current_state):
+        return {
+            "success": False,
+            "partial": False,
+            "warnings": [],
+            "diagnostics": [
+                {
+                    "severity": "ERROR",
+                    "message": (
+                        f"Clean is only allowed on FAILED projects. "
+                        f"Current state: {current_state.value}. "
+                        f"Use 'project remove' to delete this project."
+                    ),
+                    "category": "state_machine",
+                }
+            ],
+            "data": None,
+        }
 
     # Clear cache
     cache_clear(project_path)

@@ -1127,7 +1127,7 @@ class TestCapabilityMapRuleDerived:
         adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": "test-bin"}
 
         engine = CapabilityMapEngine(adapter, binary)
-        results = engine.run()
+        results, _total_caps = engine.run()
 
         for result in results:
             assert isinstance(result.confidence, Confidence)
@@ -1159,12 +1159,11 @@ class TestSecurityResultLimits:
         assert len(data["unknowns"]) <= 100
 
     def test_triage_honors_explicit_limit(self, capsys):
-        """Triage respects --limit flag (verified via engine-level limit slicing)."""
-        # The triage results are sliced at the engine output level.
-        # Due to the global --limit flag's interaction with the triage
-        # subparser, the effective limit may differ from what's specified
-        # on the command line. This test verifies that the triage output
-        # is at least bounded.
+        """Triage respects --limit flag (verified via engine-level limit slicing).
+
+        With SUPPRESS default on the triage subparser's --limit, the root
+        parser's parsed value is preserved rather than overwritten.
+        """
         _make_analyzed_project("limit-triage-explicit")
         exit_code, envelope = _capture_json(
             ["triage", "--project", "limit-triage-explicit", "--limit", "5"], capsys
@@ -1294,10 +1293,11 @@ class TestSuspiciousApisEngine:
         adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": "test-bin"}
 
         engine = SuspiciousApisEngine(adapter, binary)
-        matches, rules_applied = engine.run()
+        matches, rules_applied, total_matches = engine.run()
 
         assert len(rules_applied) > 0, "Expected rules to be applied"
         assert len(matches) > 0, "Expected suspicious API matches"
+        assert total_matches >= len(matches), "Total should be >= sliced count"
 
         api_names = {m.api_name for m in matches}
         # PE fixture has these imports
@@ -1328,7 +1328,7 @@ class TestSuspiciousApisEngine:
         adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": "test-bin"}
 
         engine = SuspiciousApisEngine(adapter, binary)
-        matches, _rules_applied = engine.run()
+        matches, _rules_applied, _total_matches = engine.run()
 
         for match in matches:
             assert isinstance(match.api_name, str) and len(match.api_name) > 0
@@ -1360,9 +1360,10 @@ class TestSuspiciousApisEngine:
         adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": "test-bin"}
 
         engine = SuspiciousApisEngine(adapter, binary)
-        matches, _rules_applied = engine.run(limit=2)
+        matches, _rules_applied, total_matches = engine.run(limit=2)
 
         assert len(matches) <= 2
+        assert total_matches >= len(matches), "Total should reflect full count before slicing"
 
 
 # ---------------------------------------------------------------------------
@@ -1396,9 +1397,10 @@ class TestCapabilityMapEngine:
         adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": "test-bin"}
 
         engine = CapabilityMapEngine(adapter, binary)
-        results = engine.run()
+        results, total_caps = engine.run()
 
         assert len(results) > 0, "Expected at least one capability to be detected"
+        assert total_caps >= len(results), "Total should be >= sliced count"
         # PE fixture has file-system imports
         names = {r.name for r in results}
         assert any(
@@ -1436,7 +1438,7 @@ class TestCapabilityMapEngine:
         adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": "test-bin"}
 
         engine = CapabilityMapEngine(adapter, binary)
-        results = engine.run()
+        results, _total_caps = engine.run()
 
         for result in results:
             assert isinstance(result.name, str) and len(result.name) > 0
@@ -1448,7 +1450,7 @@ class TestCapabilityMapEngine:
                 assert has_source, f"Evidence item lacks concrete source: {ev}"
 
     def test_engine_respects_limit(self):
-        """Engine bounds results to the specified limit."""
+        """Engine bounds returned results to the specified limit."""
         from binary_analysis.adapters.fake import FakeAdapter
         from binary_analysis.domain.entities import Binary
         from binary_analysis.rules.capabilities import CapabilityMapEngine
@@ -1470,9 +1472,10 @@ class TestCapabilityMapEngine:
         adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": "test-bin"}
 
         engine = CapabilityMapEngine(adapter, binary)
-        results = engine.run(limit=2)
+        results, total_caps = engine.run(limit=2)
 
         assert len(results) <= 2
+        assert total_caps >= len(results), "Total should reflect full count before slicing"
 
     def test_engine_no_certainty_field(self):
         """Engine never outputs certainty or verified fields."""
@@ -1497,7 +1500,7 @@ class TestCapabilityMapEngine:
         adapter._binaries[str(binary.id)] = {"binary": binary, "fixture_name": "test-bin"}
 
         engine = CapabilityMapEngine(adapter, binary)
-        results = engine.run()
+        results, _total_caps = engine.run()
 
         for result in results:
             # Verify no attr named certainty or verified

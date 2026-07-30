@@ -78,7 +78,7 @@ def add_subparser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> N
     triage_parser.add_argument(
         "--limit",
         type=int,
-        default=100,
+        default=argparse.SUPPRESS,
         help="Maximum results per category (default: 100, max: 1000).",
     )
 
@@ -118,7 +118,7 @@ def add_subparser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> N
     suspicious_parser.add_argument(
         "--limit",
         type=int,
-        default=100,
+        default=argparse.SUPPRESS,
         help="Maximum number of matches to return (default: 100, max: 1000).",
     )
 
@@ -143,7 +143,7 @@ def add_subparser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> N
     capability_parser.add_argument(
         "--limit",
         type=int,
-        default=100,
+        default=argparse.SUPPRESS,
         help="Maximum number of capabilities to return (default: 100, max: 1000).",
     )
 
@@ -654,7 +654,7 @@ def execute_suspicious_apis(args: argparse.Namespace) -> dict[str, Any]:
     # Run the suspicious APIs engine
     try:
         engine = SuspiciousApisEngine(adapter, binary)
-        matches, rules_applied = engine.run(limit=limit)
+        matches, rules_applied, total_matches = engine.run(limit=limit)
     except Exception as e:
         diags = [
             make_diagnostic(
@@ -691,9 +691,8 @@ def execute_suspicious_apis(args: argparse.Namespace) -> dict[str, Any]:
 
     # Build truncation warning and pagination cursor if needed (VAL-SEC-012)
     warnings: list[dict[str, Any]] = []
-    total_matches = len(matches)
     next_cursor: str | None = None
-    if total_matches >= limit:
+    if total_matches > limit:
         warnings.append(
             {
                 "severity": "WARNING",
@@ -801,7 +800,7 @@ def execute_capability_map(args: argparse.Namespace) -> dict[str, Any]:
     # Run the capability map engine
     try:
         engine = CapabilityMapEngine(adapter, binary)
-        capabilities = engine.run(limit=limit)
+        capabilities, total_caps = engine.run(limit=limit)
     except Exception as e:
         diags = [
             make_diagnostic(
@@ -837,9 +836,8 @@ def execute_capability_map(args: argparse.Namespace) -> dict[str, Any]:
 
     # Build truncation warning and pagination cursor if needed (VAL-SEC-012)
     warnings: list[dict[str, Any]] = []
-    total_caps = len(capabilities)
     next_cursor: str | None = None
-    if total_caps >= limit:
+    if total_caps > limit:
         warnings.append(
             {
                 "severity": "WARNING",

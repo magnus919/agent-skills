@@ -731,14 +731,17 @@ class CapabilityMapEngine:
         self._binary = binary
         self._rules: list[CapabilityRule] = []
 
-    def run(self, limit: int = 100) -> list[CapabilityResult]:
+    def run(self, limit: int = 100) -> tuple[list[CapabilityResult], int]:
         """Evaluate all capability rules against binary data.
 
         Args:
             limit: Maximum number of capability results to return.
 
         Returns:
-            List of CapabilityResult entries, bounded by limit.
+            Tuple of (capabilities, total_capabilities) where capabilities is the
+            list of CapabilityResult entries (bounded by limit) and
+            total_capabilities is the original total count before slicing
+            (used for accurate truncation warnings).
         """
         self._load_rules()
 
@@ -817,10 +820,8 @@ class CapabilityMapEngine:
                 )
             )
 
-            if len(results) >= limit:
-                break
-
-        return results[:limit]
+        total_capabilities = len(results)
+        return results[:limit], total_capabilities
 
     def _load_rules(self) -> None:
         """Load all capability rule definitions."""
