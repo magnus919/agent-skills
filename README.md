@@ -40,6 +40,10 @@ An expert-level skill for building **conversational multi-agent systems** with M
 
 Backend engineering methodology — API implementation patterns (REST, gRPC, GraphQL), service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic.
 
+### [binary-analysis](binary-analysis/SKILL.md)
+
+Analyze unknown PE, ELF, Mach-O, and firmware files through a deterministic CLI backed by Ghidra's static-analysis engine. Covers triage, imports, decompilation, call paths, and structured evidence reports without executing or modifying the binary.
+
 ### [brand-designer](brand-designer/SKILL.md)
 
 Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Ships 7 templates, a brand-book CLI for validation/compilation, and a generate script for brand card and mockup imagery.

@@ -78,6 +78,15 @@
       "description": "Backend engineering methodology — API implementation patterns (REST, gRPC, GraphQL), service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic."
     },
     {
+      "name": "binary-analysis",
+      "source": "./",
+      "skills": [
+        "./binary-analysis"
+      ],
+      "strict": false,
+      "description": "Analyze unknown binary files through a deterministic CLI that wraps Ghidra's static-analysis engine. Use when you need to inspect a PE, ELF, or Mach-O file — triage suspicious binaries, map imported APIs, decompile functions, trace call paths, or produce structured evidence reports. Do not use for runtime analysis (debugging, dynamic tracing, sandbox execution), for modifying or patching binaries, or for binaries you already know everything about. The skill owns planning, hypothesis formation, and evidence synthesis; the CLI owns all deterministic operations."
+    },
+    {
       "name": "brand-designer",
       "source": "./",
       "skills": [

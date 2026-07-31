@@ -97,7 +97,7 @@ cc_min = "B"
 requirements_files = ["requirements-dev.txt"]
 extend_exclude = [
     "agent-council",
-    "skills/binary-analysis",
+    "binary-analysis",
     "bundles",
     "templates",
     "tests",

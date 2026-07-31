@@ -46,7 +46,7 @@ After installing this skill, your agent can:
 ### 1. Check your environment
 
 ```bash
-cd skills/binary-analysis
+cd binary-analysis
 scripts/binary doctor --json
 ```
 
