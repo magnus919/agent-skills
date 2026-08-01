@@ -68,9 +68,13 @@ def run_checks(files: list[Path]) -> list[str]:
 
     for directory in test_directories(files):
         relative = directory.relative_to(ROOT)
+        before = set(sys.modules)
         result = unittest.TextTestRunner(verbosity=0).run(
             unittest.defaultTestLoader.discover(str(directory), top_level_dir=str(directory))
         )
+        for mod in list(sys.modules):
+            if mod not in before:
+                del sys.modules[mod]
         if not result.wasSuccessful():
             errors.append(
                 f"unittest discover {relative}: "

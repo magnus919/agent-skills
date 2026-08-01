@@ -26,6 +26,7 @@
     "./artifact-pyramids",
     "./autogen",
     "./backend-engineering",
+    "./binary-analysis",
     "./brand-designer",
     "./bundles/neckbeard",
     "./bundles/research-and-vault",
