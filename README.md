@@ -68,6 +68,10 @@ Discover and compare cloud-native technologies from the live CNCF Landscape API,
 
 Expert-level ICC profile color management for open-source workflows. Covers color science fundamentals (CIELAB, xyY, chromaticity), working space selection (sRGB, ProPhotoRGB, ACEScg, Rec.2020), ICC profile operations (convert, assign, extract, embed), gamut analysis, sRGB variant comparison, and color difference (dE) computation. Ships 6 Python scripts that wrap ImageMagick, ArgyllCMS, Exiftool, and LittleCMS; 5 reference files covering overview, operations, tool commands, working space data, and a full glossary. Distilled from Elle Stone's ninedegreesbelow.com and Bruce Lindbloom's color science resources.
 
+### [conditional-customer-success](conditional-customer-success/SKILL.md)
+
+A conditional skill for products with recurring human relationships — success plans, health evidence, renewal and expansion signals, QBRs, escalation, and closed-loop Voice of Customer. Declines to load for products without accounts, renewals, QBRs, or a customer-success team (internal tools, transactional products, public services without account-based engagement). Provides four product-model adaptations (B2B subscription, transactional, public-service, internal product), reference material on privacy and human-judgment boundaries, and four templates (applicability decision, success plan, health/risk record, escalation and feedback closure).
+
 ### [confluence-cli](confluence-cli/SKILL.md)
 
 Atlassian Confluence from the terminal. List spaces, browse pages, view content with body extraction, search with CQL, and create pages. Same API token as Jira.

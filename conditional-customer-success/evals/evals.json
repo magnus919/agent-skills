@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "skill_name": "conditional-customer-success",
+  "evals": [
+    {
+      "id": "b2b-subscription-success-plan-and-health",
+      "prompt": "I manage customer success for a B2B SaaS platform with 200 accounts, named account managers, quarterly business reviews, and annual contract renewals. We need a success plan and health assessment for our largest account (Acme Corp, 500 seats, $1.2M ARR). Their activation rate is 78% (down from 85% last quarter), feature adoption breadth is 3 of 12 capabilities, support-ticket volume is up 40%, and their executive sponsor just changed. Build the success plan and health record.",
+      "expected_output": "A success plan with desired outcomes, product-capability alignment, measurable milestones, and a named relationship owner. A health/risk record covering adoption health (activation decline, low feature breadth), engagement health (support-ticket surge), value-realization health (outcome alignment), and relationship health (executive-sponsor change). Each dimension has signals with source, trend, and confidence. Conflicting signals (if any) are surfaced rather than averaged. The record includes a risk register for the sponsor change. The escalation path defines who decides and on what evidence. No automated health score (no red/yellow/green without evidence).",
+      "assertions": [
+        "The success plan names desired outcomes, product-capability alignment, milestones, and a relationship owner",
+        "The health record covers adoption, engagement, value-realization, and relationship dimensions with evidence per signal",
+        "The activation-rate decline (78%, down from 85%) is recorded as a health signal with trend direction, not a score",
+        "The executive-sponsor change is recorded as a relationship-health risk with mitigation, not ignored",
+        "Conflicting signals, if any, are surfaced explicitly rather than averaged into a single indicator",
+        "The response includes an escalation path with a named decision-maker and decision options",
+        "No automated health score is produced without accompanying evidence and confidence"
+      ]
+    },
+    {
+      "id": "internal-tool-customer-success-decline",
+      "prompt": "Our team built an internal developer tool for the engineering org — it's a CI/CD dashboard that 80 engineers use. There are no accounts, no renewals, no QBRs, and no customer-success team. The infra lead wants to apply 'customer success' practices to improve dashboard adoption. Should we load the customer-success skill?",
+      "expected_output": "An applicability assessment that DECLINES to apply customer-success practice. The assessment records that no preconditions are present: no accounts (it's a shared internal tool), no renewals, no QBRs, no customer-success team. It routes the caller to product-adoption (for dashboard adoption diagnostics — activation, workflow fit, behavior change) and product-analytics-and-measurement (for instrumentation of dashboard usage metrics). It does NOT apply success plans, health scores, QBR structure, or escalation paths. The response explicitly states why customer-success is the wrong framework for this context.",
+      "assertions": [
+        "The response DECLINES to apply customer-success practice and records which preconditions are absent",
+        "The response states that no accounts, no renewals, no QBRs, and no CS team are present",
+        "The response routes to product-adoption for adoption diagnostics (not CS method)",
+        "The response routes to product-analytics-and-measurement for usage instrumentation",
+        "The response does NOT produce a success plan, health score, QBR structure, or escalation path",
+        "The response explains why customer-success is the wrong framework for an internal shared tool"
+      ]
+    },
+    {
+      "id": "public-service-accessibility-cs-routing",
+      "prompt": "We run a public-service portal for unemployment benefit applications. We have citizens applying, not 'customers' with accounts. There are no renewals, no QBRs, and no customer-success team. The program director wants to track 'citizen success' and asked us to load the customer-success skill. How should we respond?",
+      "expected_output": "An applicability assessment for a public-service context. The assessment notes that while public-service products can have service-outcome tracking, the standard customer-success framework (success plans, QBRs, account health) does not fit a context with no accounts, no renewals, no QBRs, and no CS team. If there is no account-based engagement, the skill should DECLINE. If there is case-management with account-like engagement, the skill may apply minimally with adaptations: service-outcome plans (not commercial success plans), equity-gap metrics as health evidence (not revenue or MRR), and program-governance escalation (not commercial escalation). The response must state the privacy boundaries (citizen data is not customer data) and route primary responsibility to product-adoption (for service-adoption diagnostics) and product-analytics-and-measurement (for outcome measurement).",
+      "assertions": [
+        "The response produces an applicability assessment that addresses the public-service context",
+        "The response identifies the absence of accounts, renewals, QBRs, and a CS team as preconditions",
+        "The response states the privacy boundary: citizen data is not customer data and must not be treated as such",
+        "The response routes to product-adoption and product-analytics-and-measurement as primary owners",
+        "The response does NOT apply commercial success-plan or QBR frameworks without adaptation",
+        "If minimal CS application is possible (case-management context), adaptations are defined explicitly"
+      ]
+    },
+    {
+      "id": "renewal-risk-with-mixed-signals",
+      "prompt": "We have an enterprise account up for renewal in 60 days. The account shows: product usage (daily active users) is up 22% quarter-over-quarter, feature adoption expanded from 2 to 5 capabilities, and the success-plan milestones are 80% achieved. However, support-ticket sentiment is sharply negative (3 unresolved critical bugs), the executive sponsor has gone silent (no response to last 3 outreach attempts), and a competitor's sales team has been meeting with their procurement department. The CS team wants a health assessment and renewal-risk recommendation.",
+      "expected_output": "A health/risk record that surfaces conflicting signals explicitly: product adoption is strong (DAU up 22%, feature breadth expanding, milestones on track) BUT engagement and relationship health are at-risk (critical bugs unresolved, sponsor silent, competitor active). The record does NOT produce a single score or confident verdict. Instead, it surfaces the conflict: adoption says 'healthy,' relationship says 'at-risk,' and the renewal context makes the relationship signal the binding constraint. The response defines an escalation path with evidence package, a named decision-maker, decision options (remediation sprint before renewal, executive-to-executive outreach, competitor-response plan), and a fallback if no decision is made. The health record includes confidence assessments per signal and proposes an investigation path for the silent sponsor (reach adjacent contacts, check for organizational change). It explicitly recommends human judgment over automated renewal scoring.",
+      "assertions": [
+        "The response surfaces conflicting signals explicitly: strong adoption vs. at-risk relationship",
+        "The response does NOT produce a single confident score or automated renewal recommendation",
+        "The response identifies the renewal context as making the relationship signal the binding constraint",
+        "The response includes an escalation path with a named decision-maker and at least two decision options",
+        "The response proposes an investigation path for the silent sponsor rather than assuming the worst",
+        "The response explicitly requires human judgment for the renewal decision",
+        "The health record includes confidence assessments and provenance for each signal"
+      ]
+    },
+    {
+      "id": "conflicting-health-evidence-decision-path",
+      "prompt": "A mid-market account shows: NPS of 72 (promoter), feature adoption at 91% of licensed capabilities, weekly active users above target for 6 consecutive months, and the account executive reports the relationship is 'great.' However, the product-analytics data shows time-to-complete-core-workflow has increased 340% over 90 days (from 4 minutes to 17.6 minutes), error-rate-per-session is up 5x, and the account has opened 14 support tickets in 30 days (up from 2/month baseline). The renewal is in 90 days. The CEO wants a 'health score.' Provide the health assessment.",
+      "expected_output": "A health assessment that REFUSES to produce a single health score. Instead, it presents the conflicting evidence across two clusters: Cluster A (healthy) — NPS 72, 91% feature adoption, WAUs above target, AE reports strong relationship. Cluster B (at-risk) — workflow time up 340%, error rate up 5x, support tickets up 7x. The assessment explains the conflict: the customer likes the product (NPS) and uses it (WAUs), but the product experience is degrading in ways that NPS hasn't yet reflected (lagging indicator). The response defines a decision path: (1) investigate the root cause of workflow degradation and error-rate increase — is this a product regression, a scale issue, or a configuration problem? (2) set a 30-day review to check if NPS responds to the degradation (NPS is a lagging indicator and may drop later). (3) escalation to product/engineering for the technical degradation, separate from the CS renewal track. The response explicitly states why a single health score would be misleading and why conflicting evidence must drive investigation, not aggregation.",
+      "assertions": [
+        "The response REFUSES to produce a single health score and explains why it would be misleading",
+        "The response presents conflicting evidence as two explicit clusters, not an average",
+        "The response identifies that NPS is a lagging indicator that may not yet reflect the product degradation",
+        "The response defines a decision path with investigation steps, a review cadence, and escalation triggers",
+        "The response routes technical degradation to product/engineering separately from the CS renewal track",
+        "The response sets a specific review date to re-examine the conflict, not a 'monitor and wait' vague directive",
+        "The response explains that conflicting evidence must drive investigation rather than aggregation"
+      ]
+    }
+  ]
+}

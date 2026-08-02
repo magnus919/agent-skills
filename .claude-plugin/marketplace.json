@@ -141,6 +141,15 @@
       "description": "Expert-level color management for ICC profiles, working spaces, gamut mapping, and color science. Use when inspecting ICC profiles, converting between color spaces, checking gamut clipping, validating well-behaved working spaces, or troubleshooting color workflow issues with ImageMagick, ArgyllCMS, Exiftool, or LittleCMS."
     },
     {
+      "name": "conditional-customer-success",
+      "source": "./",
+      "skills": [
+        "./conditional-customer-success"
+      ],
+      "strict": false,
+      "description": "Guide recurring human-relationship practices — success plans, health evidence, renewal and expansion signals, QBRs, handoffs, escalation, and closed-loop Voice of Customer. Do not use this skill for products without accounts, renewals, QBRs, or a customer-success team, including some internal tools, pure transactional products without recurring relationships, and public services without account-based engagement. Load only when the product context includes a recurring human relationship; decline or route away otherwise."
+    },
+    {
       "name": "confluence-cli",
       "source": "./",
       "skills": [
