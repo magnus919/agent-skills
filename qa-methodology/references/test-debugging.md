@@ -1,80 +1,117 @@
 # Test Debugging
 
-Diagnosing broken tests. Load when a test that should pass is failing, a mock
-isn't intercepting, a fixture is producing wrong state, or a test behaves
-differently in CI than locally. This is distinct from test *design* (that's
-`test-strategy.md`) and test *quality* (that's the contribution-test-quality
-skill's scorecard).
+Diagnosing broken tests. Load when a test that should pass is failing, a mock isn't intercepting, a fixture is producing wrong state, or a test behaves differently in CI than locally. Distinct from test *design* (that's [test-strategy.md](./test-strategy.md)) and CI infrastructure triage (that's [ci-failure-triage.md](./ci-failure-triage.md)).
 
 ## Diagnostic Order
 
-1. **Read the actual failure output.** Not the summary line — the full
-   traceback, assertion values, and any captured stdout/stderr.
-2. **Reproduce locally** with the same command CI runs (including paths,
-   markers, and filters).
-3. **Check collection.** `pytest --collect-only <path>` — is the test even
-   being collected? Zero items means the test is invisible.
-4. **Check environment completeness.** Install the project's declared dev/test
-   dependencies using its own manifest. A bare editable install plus `pytest`
-   can omit plugins the project deliberately keeps out of runtime dependencies.
-5. **Isolate the variable.** Run the single failing test, then the file, then
-   the directory. Narrow until the failure appears and disappears.
+1. **Read the actual failure output.** Not the summary line — the full traceback, assertion values, and any captured stdout/stderr.
+2. **Reproduce locally** with the same command CI runs (including paths, markers, and filters).
+3. **Check collection.** `pytest --collect-only <path>` — is the test even being collected? Zero items means the test is invisible.
+4. **Check environment completeness.** Install the project's declared dev/test dependencies using its own manifest.
+5. **Isolate the variable.** Run the single failing test, then the file, then the directory. Narrow until the failure appears and disappears.
 
-## Mock Path Binding After Package Refactors
+## CI-vs-Local Divergence Checklist
 
-When a Python module is refactored into a package (`research.py` →
-`research/__init__.py` + submodules), all test mock paths targeting that module
-break silently.
+When a test passes locally but fails in CI (or vice versa), work through these causes systematically:
+
+| # | Divergence Cause | Symptom | Diagnosis | Fix |
+|---|-----------------|---------|-----------|-----|
+| 1 | **Environment variables** | Test reads `os.environ` differently | `diff <(env | sort) <(ci_env | sort)` | Pin required env vars in CI config; use `.env.test` locally |
+| 2 | **Timing and concurrency** | Race conditions surface under CI load | Run failing test 50× locally with `pytest-repeat`; add `--count=50` | Fix the race (proper synchronization), not the timing |
+| 3 | **Test ordering / shared state** | Passes alone, fails in suite | Run with `pytest-randomly` or reverse order | Eliminate shared mutable state; each test constructs its own fixtures |
+| 4 | **Filesystem differences** | Path separators, symlinks, case sensitivity (Linux CI vs macOS local) | Check for hardcoded paths; `find . -name "Test_*" vs "test_*"` | Use `pathlib.Path`; never hardcode separators |
+| 5 | **Network access** | CI has no internet or restricted egress | Check for real HTTP calls; CI logs show `ConnectionRefused` | Mock external calls; use recorded fixtures (VCR.py) |
+| 6 | **Dependency versions** | CI resolves different versions than local | Compare `pip freeze` / `npm ls` outputs | Commit lockfiles; use exact pins in CI |
+| 7 | **Timezone and locale** | Date formatting, string collation differ | `echo $TZ $LANG` locally vs CI | Set `TZ=UTC` and `LC_ALL=C` explicitly in tests |
+
+### Gotcha: "Works on My Machine" Is a Bug Report
+
+A CI-only failure is not "CI being flaky" until you have ruled out all seven causes above. The most common root causes are ordering (3) and environment variables (1).
+
+## Test Ordering and Shared State
+
+Tests that pass individually but fail as a suite have ordering dependencies. This is a test design defect, not an infrastructure problem.
+
+### Detection
+
+```bash
+# Install pytest-randomly — it randomizes order on every run
+pip install pytest-randomly
+
+# Run with a specific seed to reproduce
+pytest --randomly-seed=12345 tests/
+
+# Reverse execution order
+pip install pytest-reverse
+pytest --reverse tests/
+```
+
+### Common Shared-State Patterns
+
+| Pattern | Symptom | Fix |
+|---------|---------|-----|
+| Module-level mutable global | Test A sets state; Test B reads it | Reset in fixture `setup`/`teardown`; prefer function-scoped fixtures |
+| Class-level `setUpClass` mutation | Later tests depend on earlier test's writes | Move to per-test setup; use `setUp` not `setUpClass` |
+| Database rows from prior test | Query returns unexpected count | Transaction rollback per test (see [test-data-management.md](./test-data-management.md)) |
+| File artifacts on disk | Test reads a file another test created | Use `tmp_path` fixture; never write to shared directories |
+| Environment variable mutation | `os.environ["X"] = "y"` leaks across tests | Use `monkeypatch.setenv()` (auto-reverts) |
+| Monkeypatched module attribute | `module.GLOBAL = value` without cleanup | Use `monkeypatch.setattr()` (auto-reverts) |
+
+### pytest-randomly as a Design Tool
+
+Run pytest-randomly in CI on every run. Tests that fail under random ordering have latent shared-state bugs. Fix the isolation defect rather than pinning the order — pinning hides the problem until the next refactor breaks the assumed order.
+
+## Mock Path Binding at the Usage Point
+
+When you `patch()` a name in Python, you must patch it **where it is looked up** (the usage point), not where it is defined.
 
 ### Root Cause
 
-Relative imports bind local references at import time, before `patch()` runs:
+Python imports bind names into the importing module's namespace at import time:
 
 ```python
-# agent/research/loop.py
-from ..llm import LLMClient  # binds LLMClient in loop.py's namespace NOW
+# myapp/service.py
+from myapp.clients import HttpClient  # binds 'HttpClient' in service.py's namespace
+
+def fetch_data():
+    client = HttpClient()  # looks up 'HttpClient' in service.py's globals
+    return client.get("/api/data")
 ```
 
-Mocking at the source module (`agent.llm.LLMClient`) replaces the class object,
-but `loop.py`'s local reference still points to the original. The mock is
-invisible.
+```python
+# WRONG: patches the definition point — service.py still has the original reference
+@patch("myapp.clients.HttpClient")
 
-### Fix: Mock at the Usage Point
-
-| Wrong (source-level) | Right (usage-level) |
-|---|---|
-| `patch("agent.llm.LLMClient")` | `patch("agent.research.loop.LLMClient")` |
-| `patch("agent.clients.HttpClient")` | `patch("agent.research.loop.HttpClient")` |
-
-Each submodule has its own namespace. Mock at each one exercised by the test.
+# RIGHT: patches where service.py looks it up
+@patch("myapp.service.HttpClient")
+def test_fetch_data(mock_client):
+    mock_client.return_value.get.return_value = {"result": "ok"}
+    assert fetch_data() == {"result": "ok"}
+```
 
 ### Signals This Is the Problem
 
-- `AttributeError: module X does not have the attribute Y` for a class that IS
-  imported at the top of the source file
-- Real API calls (401 errors, timeouts) leaking through despite a source-level
-  `patch()` return_value
-- The refactor commit message mentions "split X.py into X/ package"
+| Signal | Meaning |
+|--------|---------|
+| `AttributeError: module X does not have the attribute Y` | Patching at a module that doesn't import Y directly |
+| Real HTTP calls despite `patch()` with `return_value` | Patched the wrong namespace; real client still bound |
+| Mock works in one test file but not another | Each importing module has its own binding; patch each |
+| Refactor moved code to a subpackage | All `patch()` paths targeting the old module are now wrong |
+
+### Rule of Thumb
+
+| Import Style | Patch Target |
+|-------------|-------------|
+| `from module import Class` | `patch("consumer_module.Class")` |
+| `import module; module.Class()` | `patch("module.Class")` |
+| `from module import func` used in 3 files | Patch in all 3 consumer modules |
 
 ## FastAPI Startup Race
 
-When a FastAPI app's `@app.on_event("startup")` handler re-assigns module-level
-state, any mock state set before `with TestClient(app) as tc:` is silently
-overwritten.
+When a FastAPI app's `@app.on_event("startup")` handler re-assigns module-level state, any mock state set before `with TestClient(app) as tc:` is silently overwritten.
 
 ```python
-# server.py
-_active_engines: dict = {}
-
-@app.on_event("startup")
-async def startup():
-    global _active_engines
-    _active_engines = discover_engines()  # overrides anything test set
-```
-
-### Fix: Set Mock State After Context Entry
-
-```python
+# Fix: set mock state AFTER context entry
 @pytest.fixture
 def client():
     with TestClient(app) as tc:  # startup runs here
@@ -82,122 +119,36 @@ def client():
         yield tc
 ```
 
-### Alternative: Guard the Startup Handler
-
-```python
-@app.on_event("startup")
-async def startup():
-    global _active_engines
-    if not _active_engines:  # allow test pre-seeding
-        _active_engines = discover_engines()
-```
-
-## httpx Mock Testing
-
-When testing async httpx-based adapters that create their own
-`httpx.AsyncClient` inline, patch the constructor with a mock transport:
-
-```python
-class MockHTTP:
-    def __init__(self, handler):
-        self.transport = httpx.MockTransport(handler)
-
-    async def __aenter__(self):
-        self.mock_client = httpx.AsyncClient(transport=self.transport)
-        self.patcher = patch("httpx.AsyncClient")
-        mock_class = self.patcher.start()
-        mock_class.return_value.__aenter__.return_value = self.mock_client
-        return self
-
-    async def __aexit__(self, *args):
-        self.patcher.stop()
-
-# Usage:
-async with MockHTTP(lambda r: httpx.Response(200, json={"results": []})):
-    result = await adapter.search("query")
-```
-
 ## Test Execution Integrity
 
 A passing command is not necessarily an executed test suite.
 
-1. **Read the collection summary.** `0 items`, `N skipped`, or exit code `5`
-   means the intended behavior was not exercised.
-2. **For a module-level target**, require a nonzero collected count and a
-   passing test relevant to the change.
-3. **If a test is skipped** because its fixture, path, or module lookup is
-   wrong, repair that harness defect before opening the PR. Do not describe
-   the run as passed.
-4. **Re-run after the repair** and record the actual result (e.g., `62 passed`),
-   not only the command exit status.
+1. **Read the collection summary.** `0 items`, `N skipped`, or exit code `5` means the intended behavior was not exercised.
+2. **For a module-level target**, require a nonzero collected count and a passing test relevant to the change.
+3. **If a test is skipped** because its fixture or path is wrong, repair that harness defect before opening the PR.
+4. **Re-run after the repair** and record the actual result (e.g., `62 passed`), not only the exit status.
 
 ### CI Collection-Path Gate
 
-A new test can pass locally and provide zero CI protection when it lives outside
-the directories selected by the workflow.
+A new test can pass locally and provide zero CI protection when it lives outside the directories selected by the workflow.
 
-1. Read the exact CI test command, including explicit paths, `-k` filters,
-   markers, ignore flags, and project addopts.
-2. Confirm the new test's path is included by that command. Do not infer
-   collection from a `test_*.py` filename alone.
+1. Read the exact CI test command, including explicit paths, `-k` filters, markers, and ignore flags.
+2. Confirm the new test's path is included by that command.
 3. Put the test under an already-collected directory when that matches its scope.
-4. Inspect CI logs for the test/module after pushing. A green broad suite that
-   never collected the new test is not evidence for the new contract.
+4. Inspect CI logs for the test/module after pushing.
 
-## Deterministic Integration Seeds
+## Gotchas
 
-When an integration test proves a narrow behavior (ownership, authorization,
-ordering, isolation) but creates its precondition through a live or variable
-dependency (web search, third-party content, provider ranking):
+- **Do not mask a test design failure with retries or `xfail`.** If a test fails under random ordering, fix the isolation — don't pin the order.
+- **Do not treat a green exit code as evidence.** Read the collection count. Zero collected tests with exit 0 is not a passing suite.
+- **Mock at usage, not source.** After any module→package refactor, audit every `patch()` path against the new import structure.
+- **Set mocks after startup, not before.** Any framework lifecycle hook that re-assigns module state will overwrite pre-context mock setup.
+- **Patching `time.sleep` instead of freezing time** creates fragile tests. Use freezegun or timecop (see [test-data-management.md](./test-data-management.md)).
 
-1. State the behavior the test is actually proving.
-2. Seed the minimal prerequisite through an existing deterministic fixture or
-   a stable, already-tested service path.
-3. Assert the seed succeeded with a small contract check.
-4. Preserve the original behavior assertion unchanged.
+## Composition
 
-An HTTP-successful search with zero results can be valid. If a test fails at
-`assert refs`, it has not exercised the ownership/isolation condition it claims
-to cover. Retrying or tuning runner resources does not repair that test design.
+- Systematic debugging methodology (hypothesis-driven, evidence-first): [systematic-debugging](../../systematic-debugging/SKILL.md)
+- CI infrastructure triage (exit codes, bisect, runner issues): [ci-failure-triage.md](./ci-failure-triage.md)
+- Test data isolation and time freezing: [test-data-management.md](./test-data-management.md)
 
-## API Signature Changes — Fixture Recovery
-
-When a function gains a new parameter, unit tests that mock that function
-silently fail. Every fixture that creates a mock of the changed function needs
-the new method wired.
-
-### Batch Fix Method
-
-Do NOT use `read_file`/`write_file` for bulk fixture updates — they add
-line-number prefixes. Instead:
-
-```python
-from pathlib import Path
-path = Path("tests/test_file.py")
-content = path.read_text()
-old = "scraper = MagicMock()\n        scraper.scrape = AsyncMock()"
-new = """scraper = MagicMock()
-        scraper.scrape = AsyncMock()
-        scraper.scrape_with_fallback = AsyncMock()"""
-path.write_text(content.replace(old, new))
-```
-
-## Lockfile Hygiene During Verification
-
-`uv run` can rewrite a tracked `uv.lock` while resolving a local workspace
-package. Before testing, inspect status. If testing alone created unrelated
-lockfile drift, restore only that exact generated file after confirming it was
-not intentional. Use `uv run --no-sync` when the existing environment is
-sufficient. Never restore a lockfile containing intentional dependency changes.
-
-## Pitfalls
-
-- **Do not mask a test design failure with retries or `xfail`.** If a test for
-  isolation seeds itself through a live search, the fix is deterministic
-  seeding — not retrying until the search returns results.
-- **Do not treat a green exit code as evidence.** Read the collection count.
-  Zero collected tests with exit 0 is not a passing suite.
-- **Mock at usage, not source.** After any module→package refactor, audit every
-  `patch()` path in the test suite against the new import structure.
-- **Set mocks after startup, not before.** Any framework lifecycle hook that
-  re-assigns module state will overwrite pre-context mock setup.
+*Sources: pytest-randomly (GitHub, adamchainz), pytest docs on monkeypatch (docs.pytest.org), Python unittest.mock docs (docs.python.org), freezegun (GitHub, spulec).*

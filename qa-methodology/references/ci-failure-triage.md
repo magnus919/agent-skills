@@ -1,16 +1,10 @@
 # CI Failure Triage
 
-Systematic diagnosis of CI failures. Load when a CI check is red and you need
-to find the root cause — not when you're designing test strategy (that's
-`test-strategy.md`) or building quality gates (that's
-`test-automation-gates-metrics.md`).
+Systematic diagnosis of CI failures. Load when a CI check is red and you need to find the root cause — not when you're designing test strategy (that's [test-strategy.md](./test-strategy.md)) or building quality gates (that's [quality-gates-and-metrics.md](./quality-gates-and-metrics.md)).
 
 ## The One Rule
 
-**RED IS DEAD.** Any non-green CI conclusion (failure, canceled, timed-out job)
-blocks the PR. Do not dismiss a failure as "pre-existing" or "unrelated" without
-evidence. The only valid response to a red run is investigation. The only valid
-declaration of "ready" is a fully green run.
+**RED IS DEAD.** Any non-green CI conclusion (failure, canceled, timed-out job) blocks the PR. Do not dismiss a failure as "pre-existing" or "unrelated" without evidence. The only valid response to a red run is investigation.
 
 What does NOT count as proof of "pre-existing":
 
@@ -19,134 +13,73 @@ What does NOT count as proof of "pre-existing":
 - "This test is known to be flaky" — belief, not evidence, until you rerun
 - A verbal reassurance in the PR body without a rerun or log excerpt
 
-## Diagnostic Chain (in order)
+## Diagnostic Procedure
 
-Start broad, drill narrow. Each step rules out an entire class of causes.
+Follow these steps in order. Each step rules out an entire class of causes before moving to the next.
 
-### 1. Runner Availability
+1. **Reproduce and confirm the failure.** Rerun the failing job to confirm it is deterministic. Pull the full log (not the dot summary) and grep for the actual assertion or error: `gh run view <run_id> --log --job <job_id> | grep -A 20 'FAILURES\|assert\|Error\|traceback'`. If it passes on rerun, apply the flake protocol below before proceeding.
 
-Are there runners registered, and are they online?
+2. **Classify by exit code or error type.** Use the exit-code taxonomy below to determine whether the failure is a test assertion failure (code bug), an infrastructure failure (environment), or a resource failure (OOM/timeout). This determines which investigation path to follow.
 
-```bash
-# Repo-level runners
-gh api repos/<owner>/<repo>/actions/runners
+3. **Isolate: environment vs code vs flake.** Check whether the failure is in a file your PR modified (`git diff --stat main | grep <failing_file>`). If not in your diff and all other PRs fail the same check, it is infrastructure. If only your branch fails and the file is in your diff, it is likely your regression.
 
-# Org-level runners (often where they actually live)
-gh api orgs/<owner>/actions/runners
-```
+4. **Localize the fault.** Use `git bisect run` for regressions (see below), diff analysis for new failures, or log timeline analysis for infrastructure issues. Narrow to the specific commit, configuration change, or resource threshold.
 
-Look for: `status=online`, `busy=false`, and that labels match the workflow's
-`runs-on:` directive.
+5. **Fix and verify.** Apply the fix, push, and confirm the CI run goes green. A green rerun after a fix is evidence of resolution. Document the root cause in the PR thread. If the fix is in infrastructure (not your PR), file an issue and link it.
 
-| Finding | Meaning |
-|---------|---------|
-| 0 runners | No runner deployed, or runner container crashed |
-| All busy | Insufficient capacity, previous runs stacking up |
-| Runner exists but job stays queued | Label mismatch between workflow and runner |
+## Exit-Code Taxonomy
 
-### 2. Are CI Runs Being Created?
+| Code | Signal | Meaning | Common Cause | Triage Path |
+|------|--------|---------|-------------|-------------|
+| 1 | — | Generic failure | Test assertion failed, uncaught exception | Read traceback; fix code or test |
+| 2 | — | Usage error / shell builtin misuse | Invalid CLI arguments, bash syntax error | Check command invocation in CI config |
+| 126 | — | Permission denied | Script not executable, file permissions wrong | `chmod +x` the script; check CI user |
+| 127 | — | Command not found | Missing dependency, wrong PATH, typo in command | Verify tool installation step; check `$PATH` |
+| 137 | SIGKILL (9) | OOM kill or forced termination | Container exceeded memory limit; host OOM killer | Check `docker inspect` for `OOMKilled`; increase memory or fix leak |
+| 139 | SIGSEGV (11) | Segmentation fault | Native code crash, corrupted memory, C extension bug | Reproduce locally with ASAN; check native deps |
+| 143 | SIGTERM (15) | Graceful termination request | CI timeout, orchestrator cancellation, shutdown hook | Check job timeout settings; look for slow tests |
 
-```bash
-gh run list --repo <owner>/<repo> --branch <branch> --limit 5 \
-  --json databaseId,status,conclusion
-```
+### Exit 137 Deep Dive
 
-| Conclusion | Meaning |
-|------------|---------|
-| `skipped` | Workflow didn't run — `[skip ci]` in commit, bot push without trigger permissions, or branch protection blocked it |
-| `queued` | Runner hasn't picked it up yet |
-| Empty + `in_progress` | Running normally |
-| Empty + no runs at all | Workflow trigger doesn't match the PR event |
+Exit 137 indicates SIGKILL but does **not** prove OOM. Do not change memory limits until evidence establishes the cause.
 
-### 3. Per-PR Check Status
+**Evidence to collect before classifying:**
+- `docker inspect <container>` → `State.OOMKilled: true/false`
+- `dmesg | grep -i oom` on the host
+- `docker stats --no-stream` snapshot during the run
+- Whether the same test passes with higher memory limits
 
-```bash
-gh pr view <num> --json statusCheckRollup \
-  --jq '.statusCheckRollup[] | {name: .name, status: .status, conclusion: .conclusion}'
-```
+## Flake-vs-Failure Protocol
 
-### 4. Get Failure Logs
+| Condition | Action |
+|-----------|--------|
+| Test fails once, passes on immediate rerun | Rerun once. If it passes, document the rerun in the PR thread. Do **not** rerun twice — two reruns masks a 50%-flaky test. |
+| Test fails the same way on rerun | It is a real failure. Proceed with full triage. |
+| Test flakes > 1% over 10 runs | Investigate root cause immediately (timing, shared state, external dependency). Do not suppress. |
+| Test passes on rerun but the original red run stands unexplained | The failure is not cleared. Investigate or quarantine. |
 
-```bash
-# List recent runs for the branch
-gh run list --repo owner/repo --branch feat/my-branch --limit 3 \
-  --json status,conclusion,databaseId,url
+**The rerun-once rule:** rerun exactly once to distinguish flake from failure. Never rerun until green — that converts a signal into noise.
 
-# Get job IDs for a failed run
-gh run view <run_id> --json jobs \
-  --jq '.jobs[] | {name: .name, conclusion: .conclusion, id: .databaseId}'
+## Git Bisect for Automated Fault Localization
 
-# Stream full logs for a failed job
-gh run view <run_id> --log --job <job_id>
-
-# Grep for the actual failure (pytest compact mode hides assertions)
-gh run view <run_id> --log --job <job_id> | grep -A 20 'FAILURES\|assert\|Error\|traceback'
-```
-
-**Pull the full log, not the dot summary.** pytest compact mode (`....F......`)
-hides the assertion. Always grep for `FAILURES`, `assert`, `Error`, `traceback`.
-
-### 5. Classify the Failure
-
-| Signal | Classification |
-|--------|---------------|
-| Failure in a file your PR modified | Likely your regression |
-| Failure in a file your PR didn't modify | Possibly pre-existing — but verify, don't assume |
-| `ModuleNotFoundError` for unrelated module | Test container missing a dependency |
-| "Timed out waiting for stack" | Test infrastructure, not your code |
-| All dependabot PRs fail the same checks | CI infrastructure is broken |
-| Gitleaks flags a line that existed on main | False positive — verify the line predates your PR |
-| Exit 137 | See Exit 137 section below |
-
-### 6. Rerun and Confirm
+When a regression appeared somewhere in a range of commits, `git bisect run` automates binary search:
 
 ```bash
-gh run rerun <run_id>
+# Find which commit broke the test suite
+git bisect start
+git bisect bad HEAD
+git bisect good <last-known-green-sha>
+git bisect run pytest tests/test_payment.py -x --timeout=60
 ```
 
-If it passes on rerun: evidence of transient failure. Document the rerun in the
-PR thread. If it fails the same way: it's real. Trace the root cause before
-claiming it's unrelated to your change.
+The script passed to `bisect run` must exit 0 for "good" and non-zero for "bad". Exit 125 tells bisect to skip the current commit (useful for commits that don't compile).
 
-## Exit 137: Container Termination
+```bash
+# Skip commits that don't build
+git bisect run bash -c 'make build || exit 125; pytest tests/ -x'
+```
 
-Exit 137 indicates SIGKILL but does **not** prove OOM. Do not call it a flake
-or change memory limits until container and host evidence establishes the cause.
-
-### Procedure
-
-1. **Preserve the baseline.** Record the exact run URL, commit SHA, runner
-   labels, failing step, and the preceding successful step.
-2. **Compare recent runs.** Check whether the same workflow passed and failed
-   on nearby commits. Separate deterministic test failures from abrupt process
-   termination.
-3. **Re-run once under observation.** A green rerun establishes intermittency;
-   it does not clear the historical red run or prove resource pressure. While
-   the job is active, capture a read-only snapshot:
-   - Host memory, swap, and disk availability
-   - `docker stats --no-stream`
-   - `docker inspect` state for project containers (`State.ExitCode`, `State.OOMKilled`)
-   - Recent kernel OOM messages (`dmesg | grep -i oom`)
-4. **Fix evidence collection before guessing.** The CI workflow must collect
-   diagnostics *before* teardown:
-   - `docker compose ps -a`
-   - Bounded `docker compose logs`
-   - Inspect output for every project container
-   - Runner memory/disk snapshot
-   - Test-process exit status
-   - A failure-only workflow artifact containing the report
-
-   Treat every collection command as best-effort (`|| true`). A dead container
-   must not abort collection of remaining evidence.
-5. **Classify only from evidence.** Possible outcomes: container OOM,
-   host-level kill, test-process crash, runner contention, or a real test
-   assertion failure. Each has a different repair.
-
-### Workflow Pattern
-
-Failure collection must be `if: failure()` and must precede an `if: always()`
-cleanup step. Do not rely only on `docker compose logs`: a dead or removed
-container may make that command fail and erase the only diagnostic step.
+**When to use bisect:** the failure is deterministic, the green→red transition happened within a known commit range, and the test can run unattended in < 5 minutes.
 
 ## Pre-existing vs Regression Classification
 
@@ -164,36 +97,31 @@ git diff --stat main | grep <failing_file>
 | Failing file IS in your diff | Unlikely | Likely |
 | New assertion failure in your test | No | Yes |
 
-**Even when classified as pre-existing:** rerun the job. If it stays red, the
-failure is real regardless of who introduced it. File an issue if genuinely out
-of scope, and link it from the PR body.
+**Even when classified as pre-existing:** rerun the job. If it stays red, the failure is real regardless of who introduced it. File an issue if genuinely out of scope, and link it from the PR body.
 
-## Flaky Test Management
+## Runner and Infrastructure Checks
 
-| Condition | Action |
-|-----------|--------|
-| Test flakes > 1% over 10 runs | Investigate and fix or remove immediately |
-| Test depends on external service availability | Seed through deterministic fixture; give external availability its own test |
-| Test depends on timing/race | Loop 50-100 times, document failure rate, fix the race |
-| Test passes on rerun but failed first | Document the rerun. Do not merge while the original red run stands unexplained |
+| Finding | Meaning | Action |
+|---------|---------|--------|
+| 0 runners online | Runner crashed or never deployed | Contact infra; check runner container |
+| All runners busy | Capacity issue; previous runs stacking | Wait or add runners |
+| Job queued indefinitely | Label mismatch (`runs-on:` vs runner labels) | Fix workflow label |
+| `skipped` conclusion | `[skip ci]` in commit, or trigger mismatch | Check commit message and workflow `on:` |
 
 ## Compose Readiness Corollary
 
-When a dependency exposes a readiness endpoint, use a Compose healthcheck plus
-`depends_on.condition: service_healthy`. `service_started` only proves process
-creation. Base the healthcheck on the endpoint's documented ready state, use
-standard-library tools already in the image, and keep its total retry budget
-inside the CI wait budget.
+When a dependency exposes a readiness endpoint, use a Compose healthcheck plus `depends_on.condition: service_healthy`. `service_started` only proves process creation. Keep the healthcheck retry budget inside the CI wait budget.
 
-## Pitfalls
+## Gotchas
 
-- **Do not change memory limits, retry counts, or dependency timing until the
-  failed run's primary test log and failure artifact agree on what failed.**
-  An exit code is a symptom, not a root cause.
-- **Do not classify the whole run from the last visible message.** When a long
-  `set -e` validation chain returns non-zero after printing several PASS lines,
-  rerun each check independently and record its exit status.
-- **A green rerun does not clear the historical red run.** It establishes
-  intermittency. The original failure still needs an explanation.
-- **Do not repeat the identical failing chain without isolating the failing
-  command.** Isolate first, then fix.
+- **Do not change memory limits, retry counts, or dependency timing until the failed run's primary test log and failure artifact agree on what failed.** An exit code is a symptom, not a root cause.
+- **Do not classify the whole run from the last visible message.** When a long `set -e` chain returns non-zero, rerun each check independently.
+- **A green rerun does not clear the historical red run.** It establishes intermittency. The original failure still needs an explanation.
+- **Rerunning more than once converts signal to noise.** One rerun distinguishes flake from failure; two reruns hides a coin-flip test.
+
+## Composition
+
+- Systematic debugging methodology for complex root-cause analysis: [systematic-debugging](../../systematic-debugging/SKILL.md)
+- Test isolation and CI-vs-local divergence: [test-debugging.md](./test-debugging.md)
+
+*Sources: git-bisect documentation (git-scm.com/docs/git-bisect), GitHub Actions exit codes (docs.github.com), Linux signal numbers (man 7 signal), DORA State of DevOps Reports (CI failure analysis).*
