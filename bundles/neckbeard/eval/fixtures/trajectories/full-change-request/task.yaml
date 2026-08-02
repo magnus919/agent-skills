@@ -1,0 +1,11 @@
+kind: trajectory
+id: full-change-request
+path: full
+prompt: "Issue #42: the CSV export silently drops rows when the dataset contains embedded newlines. Fix the bug, add a regression test, open a PR, and carry it through review and release."
+phases: "1: Intake and provenance | 2: Current-state discovery and reproduction | 3: Architecture/design delta and risk assessment | 4: Specification and work decomposition | 5: Pre-implementation test and verification planning | 6: Domain-specific implementation | 7: Independent review and boundary verification | 8: Readiness, CI/review feedback loops, and exact-final-head re-verification | 9: Authorized post-merge release and closeout"
+gates: "gate-1: architecture/design delta approval: pass | gate-2: QA-owned test and verification plan: pass | gate-3: specification and task-plan completeness: pass | gate-4: independent review: pass | gate-5: boundary verification: pass"
+terminal_state: released
+final_head_sha: 4a7f2b9c1e8d3a6b5f0c2e9d7a4b1f8c3e6a0d5b
+routing_selected: "backend-engineering, qa-methodology, spec-driven-development, systematic-debugging, software-architecture-analysis, verification-methodology, release-engineering, programming-principles"
+routing_skipped: "frontend-engineering: no client-side application code modified | data-engineering: no schema or migration files changed | cli-builder: no CLI interface modified | web-accessibility: no user-facing markup changed | opensource-contributions: non-public repository"
+visibility: public
