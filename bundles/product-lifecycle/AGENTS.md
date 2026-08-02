@@ -41,6 +41,7 @@ fails (Phase 7), and justified retirement (Phase 9).
 | `references/phases.md` | Per-phase contracts with entry evidence, output artifacts, escalation behavior, completion criteria, and ledger spec |
 | `references/discovery-brief.md` | Bundle boundary, comparison with existing bundles, surveyed skills, non-ownership statement |
 | `references/capability-map.md` | Capability area → owning skill lookup table |
+| `manifest.yaml` | Machine-readable bundle composition contract (schema v1): purpose, stages, included skills, handoffs, prerequisites, conflicts, eval suite |
 
 ## Environment
 

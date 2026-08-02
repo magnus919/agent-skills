@@ -1,0 +1,214 @@
+# Bundle manifest (bundle-manifest-v1) — see schemas/bundle-manifest-v1.schema.json
+# and docs/bundle-manifest-design.md. Paths are relative to this bundle dir.
+
+schema_version: 1
+bundle_name: product-lifecycle
+
+purpose: >-
+  Route a product through its full lifecycle — discovery, strategy and
+  portfolio choice, roadmap, UX and requirements, experimentation, delivery
+  handoff, adoption, success, and lifecycle review — by composing existing
+  specialist product skills with phase-entry evidence, handoff artifacts, and
+  escalation rules.
+
+audience: >-
+  Product managers, product operations, and portfolio teams navigating a
+  product across multiple lifecycle phases; agents that need to know which
+  specialist skill to load at each phase and what evidence to hand off to the
+  next phase.
+
+stages:
+  - name: Discovery
+    skills:
+      - ../../product-discovery/SKILL.md
+  - name: Strategy and portfolio choice
+    skills:
+      - ../../product-strategy/SKILL.md
+      - ../../strategy-frameworks/SKILL.md
+  - name: Roadmap
+    skills:
+      - ../../product-roadmapping-and-portfolio/SKILL.md
+  - name: UX and requirements
+    skills:
+      - ../../product-design-and-ux/SKILL.md
+  - name: Experimentation
+    skills:
+      - ../../product-experimentation/SKILL.md
+  - name: Delivery handoff
+    skills:
+      - ../../implementation-planning/SKILL.md
+      - ../../production-readiness/SKILL.md
+      - ../../release-engineering/SKILL.md
+  - name: Adoption
+    skills:
+      - ../../product-adoption/SKILL.md
+  - name: Success
+    skills:
+      - ../../product-analytics-and-measurement/SKILL.md
+      - ../../conditional-customer-success/SKILL.md
+  - name: Lifecycle review
+    skills:
+      - ../../product-lifecycle-learning/SKILL.md
+
+included_skills:
+  - ../../product-discovery/SKILL.md
+  - ../../product-strategy/SKILL.md
+  - ../../strategy-frameworks/SKILL.md
+  - ../../product-roadmapping-and-portfolio/SKILL.md
+  - ../../product-design-and-ux/SKILL.md
+  - ../../product-experimentation/SKILL.md
+  - ../../implementation-planning/SKILL.md
+  - ../../production-readiness/SKILL.md
+  - ../../release-engineering/SKILL.md
+  - ../../product-adoption/SKILL.md
+  - ../../product-analytics-and-measurement/SKILL.md
+  - ../../conditional-customer-success/SKILL.md
+  - ../../product-lifecycle-learning/SKILL.md
+  - ../../product-methodology/SKILL.md
+  - ../../product-operations-and-governance/SKILL.md
+  - ../../financial-modeling/SKILL.md
+  - ../../go-to-market/SKILL.md
+  - ../../data-scientist/SKILL.md
+  - ../../spec-driven-development/SKILL.md
+  - ../../privacy-engineering/SKILL.md
+  - ../../secure-software-engineering/SKILL.md
+  - ../../verification-methodology/SKILL.md
+  - ../../qa-methodology/SKILL.md
+  - ../../site-reliability-engineering/SKILL.md
+  - ../../platform-engineering/SKILL.md
+  - ../../bundles/neckbeard/SKILL.md
+
+prerequisites:
+  - artifact: Product idea, market signal, or stakeholder request
+  - artifact: Problem statement and discovery log
+    skill: ../../product-discovery/SKILL.md
+  - artifact: Strategic assessment and portfolio decision
+    skill: ../../product-strategy/SKILL.md
+  - artifact: Roadmap entry and bet record
+    skill: ../../product-roadmapping-and-portfolio/SKILL.md
+  - artifact: UX contracts and acceptance criteria
+    skill: ../../product-design-and-ux/SKILL.md
+  - artifact: Experiment readout and assumptions register
+    skill: ../../product-experimentation/SKILL.md
+
+outputs:
+  - lifecycle-evidence-ledger
+  - problem-statement
+  - strategic-assessment
+  - roadmap-entry
+  - interface-contracts
+  - experiment-brief
+  - implementation-plan
+  - readiness-verdict
+  - release-plan
+  - adoption-plan
+  - outcome-measurement
+  - outcome-review
+  - lifecycle-decision
+
+handoffs:
+  - to: production-excellence bundle
+    artifact: readiness-verdict
+    note: >-
+      Phase 6 delivery handoff routes the production-readiness verdict to the
+      production-excellence launch gate when that bundle is available.
+  - to: delivery team
+    artifact: implementation-plan
+    note: >-
+      Phase 6 hands the implementation plan and release plan to the delivery
+      team (and neckbeard for SDLC change-request work).
+  - to: next phase (via evidence ledger)
+    artifact: lifecycle-evidence-ledger
+    note: >-
+      Every phase reads and writes the shared lifecycle evidence ledger; the
+      next phase never re-derives prior-phase evidence.
+  - to: product-lifecycle-learning
+    artifact: lifecycle-decision
+    note: >-
+      Phase 9 records the continue/improve/harvest/pivot/pause/retire decision
+      and retained learning in the learning loop.
+
+conflicts:
+  - skill: ../../production-readiness/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Both bundles include production-readiness. Use production-excellence for
+      launch-gate decisions; use product-lifecycle for phase 6 delivery
+      handoff routing. Load the bundle matching the active decision context,
+      never both at once.
+  - skill: ../../production-readiness/SKILL.md
+    with: agent-production-operations
+    guidance: >-
+      agent-production-operations consumes readiness outcomes as authority-
+      gating inputs. Route phase 6 readiness reviews here; runtime authority
+      decisions go to agent-production-operations.
+  - skill: ../../release-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Release engineering is shared. Route by context: lifecycle delivery
+      handoff (this bundle) versus gate-entry release evidence
+      (production-excellence).
+  - skill: ../../release-engineering/SKILL.md
+    with: agent-production-operations
+    guidance: >-
+      Release engineering is shared. Route by context: lifecycle delivery
+      handoff (this bundle) versus agent staged-rollout planning
+      (agent-production-operations).
+  - skill: ../../site-reliability-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      SRE is shared. This bundle routes to it for reliability needs in
+      delivery handoff; production-excellence routes to it for gate-entry
+      SLO/error-budget evidence.
+  - skill: ../../site-reliability-engineering/SKILL.md
+    with: agent-production-operations
+    guidance: >-
+      SRE is shared. This bundle uses it for delivery reliability;
+      agent-production-operations uses it for runtime latency/cost budgets
+      and incident handoff.
+  - skill: ../../secure-software-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Security engineering is shared. Route by phase/domain: trust-boundary
+      work in lifecycle phases (this bundle) versus security evidence for
+      launch gates (production-excellence).
+  - skill: ../../secure-software-engineering/SKILL.md
+    with: agent-production-operations
+    guidance: >-
+      Security engineering is shared. Route by context: lifecycle-phase
+      security needs (this bundle) versus agent authority contracts and
+      disablement security (agent-production-operations).
+  - skill: ../../platform-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Platform engineering is shared. Route by context: lifecycle delivery
+      handoff (this bundle) versus gate-entry platform evidence
+      (production-excellence).
+  - skill: ../../platform-engineering/SKILL.md
+    with: agent-production-operations
+    guidance: >-
+      Platform engineering is shared. Route by context: lifecycle delivery
+      handoff (this bundle) versus agent sandboxing and tool-execution
+      isolation (agent-production-operations).
+  - skill: ../../privacy-engineering/SKILL.md
+    with: agent-production-operations
+    guidance: >-
+      Privacy engineering is shared. This bundle routes to it for PII,
+      consent, retention, and data flows in any phase;
+      agent-production-operations routes to it for trace scrubbing and
+      user-data-access grants.
+  - skill: ../../qa-methodology/SKILL.md
+    with: production-excellence
+    guidance: >-
+      QA methodology is shared. Route by context: lifecycle phase 6 quality
+      gates (this bundle) versus launch verification evidence
+      (production-excellence).
+  - skill: ../../verification-methodology/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Verification methodology is shared. This bundle uses it at every phase
+      gate for evidence; production-excellence uses it for boundary labeling
+      of launch evidence.
+
+eval_suite:
+  - evals/evals.json
