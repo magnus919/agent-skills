@@ -66,7 +66,7 @@ RICE Score = (Reach × Impact × Confidence) / Effort
 - **Confidence**: How sure you are about estimates (20%–100%)
 - **Effort**: Total team-weeks required
 
-See `rrice-framework.md` in the product-methodology skill for the full treatment.
+See `rice-framework.md` in the product-methodology skill for the full treatment.
 
 ### Kano Model
 
