@@ -80,6 +80,7 @@
     "./llamaindex",
     "./mermaid-diagrams",
     "./meshcore-packet-capture",
+    "./migration-engineering",
     "./ml-engineering",
     "./nous-branding",
     "./open-knowledge-format",

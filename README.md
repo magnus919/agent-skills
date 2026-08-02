@@ -244,6 +244,10 @@ Create maintainable diagrams that render reliably in the documentation surfaces 
 
 Operate MeshCore Companion radio packet capture over BLE, serial, or TCP. Covers MQTT publishing, TOML and environment configuration, token authentication, Docker, systemd, launchd, NixOS, and evidence-first troubleshooting.
 
+### [migration-engineering](migration-engineering/SKILL.md)
+
+Plan and execute safe cross-system migrations — schema, data, API, infrastructure, and service — with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Distinguishes rollback, roll-forward, restore, and irreversible recovery paths. Routes implementation to API, data, platform, release, and SRE specialists.
+
 ### [ml-engineering](ml-engineering/SKILL.md)
 
 Machine learning engineering methodology — model training, fine-tuning (LoRA/QLoRA), evaluation, quantization, deployment, and MLOps pipeline design. Grounded in practical engineering patterns for production ML systems.
