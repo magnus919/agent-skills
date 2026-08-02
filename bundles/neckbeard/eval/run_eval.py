@@ -148,14 +148,16 @@ def _validate_phase_labels(path: Path, field: str, value: str, *, with_reason: b
         expected = JOURNEY_PHASES[num]
         phase_name = rest
         if with_reason:
-            # Format: "N: Phase Name: reason" — split on the LAST colon after the name
-            idx = rest.find(": ")
-            if idx == -1:
+            # Format: "N: Phase Name: reason" — split on the LAST ": " so
+            # colons inside the phase name do not break parsing (consistent
+            # with the rsplit convention used by _validate_gate_labels).
+            parts = rest.rsplit(": ", 1)
+            if len(parts) != 2:
                 errors.append(
                     f"{path}: {field} phase {num} entry lacks a skip reason: '{entry}'"
                 )
                 continue
-            phase_name = rest[:idx].strip()
+            phase_name = parts[0].strip()
         if phase_name != expected:
             errors.append(
                 f"{path}: {field} phase {num} label '{phase_name}' "

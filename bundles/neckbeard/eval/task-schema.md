@@ -56,8 +56,18 @@ field) continue to use the schema above, unchanged.
 | `skipped_phases` | no | Pipe-separated `N: Phase Name: reason` entries. Every skipped phase must carry a reason. |
 | `skipped_gates` | no | Pipe-separated `gate-N: reason` entries. |
 | `final_head_sha` | conditional | The exact commit SHA the final verification verdict binds to. **Required for `full`-path fixtures.** |
-| `routing_selected` | no | Comma-separated specialist skills loaded during the run. |
-| `routing_skipped` | no | Pipe-separated `skill: reason` entries for specialists not loaded. |
+| `routing_selected` | no | Comma-separated specialist skills loaded during the run. Metadata only — not validated by the runner (see note below). |
+| `routing_skipped` | no | Pipe-separated `skill: reason` entries for specialists not loaded. Metadata only — not validated by the runner (see note below). |
+
+**Routing fields are metadata-only.** The runner does not cross-validate
+`routing_selected` or `routing_skipped` entries against the routing table
+([../references/routing-table.md](../references/routing-table.md)). These fields
+document the expected routing outcome for human and judge review; they are not
+schema-checked because the routing table is a prose reference that evolves
+independently of the fixture set, and coupling the harness to its markdown
+format would add fragile parsing without improving fixture correctness.
+Reviewers should verify routing entries against the routing table manually
+during trajectory scoring.
 
 ### Full-path constraints
 
