@@ -60,6 +60,10 @@ Prepare executive decisions, information triage, organizational sensing, institu
 
 Build and refactor CLI tools for AI agent consumption. 10 universal patterns (non-interactive, `--json`, `--dry-run`, idempotent, lazy auth, progressive help), an agent-compatibility test suite, a Python API client pattern, and a bash scaffold template. Principles grounded in real failures from building 15+ agent-facing CLIs.
 
+### [cncf-landscape](cncf-landscape/SKILL.md)
+
+Discover and compare cloud-native technologies from the live CNCF Landscape API, then turn the evidence into a constraint-aware shortlist with trade-offs, unknowns, and a bounded validation plan. Ships a stdlib-only query CLI, API caveats, a decision framework, an output template, and six evals.
+
 ### [color-management](color-management/SKILL.md)
 
 Expert-level ICC profile color management for open-source workflows. Covers color science fundamentals (CIELAB, xyY, chromaticity), working space selection (sRGB, ProPhotoRGB, ACEScg, Rec.2020), ICC profile operations (convert, assign, extract, embed), gamut analysis, sRGB variant comparison, and color difference (dE) computation. Ships 6 Python scripts that wrap ImageMagick, ArgyllCMS, Exiftool, and LittleCMS; 5 reference files covering overview, operations, tool commands, working space data, and a full glossary. Distilled from Elle Stone's ninedegreesbelow.com and Bruce Lindbloom's color science resources.
@@ -309,11 +313,15 @@ Build production-grade AI agents and graph-based state machines with PydanticAI 
 
 ### [qa-methodology](qa-methodology/SKILL.md)
 
-Quality assurance methodology — test strategy design, test automation patterns, regression testing, CI quality gates, test data management, and quality metrics. Grounded in practical patterns for teams that want confident shipping.
+QA and SDET methodology for senior-to-principal engineers — test strategy, automation, regression, risk-based prioritization, exploratory testing, mutation-guided test hardening, quality gates, AI code quality gates for agentic development, agentic eval design, career leveling, and SDET engineering. Ships 16 references, 6 templates, 3 assets, 2 tested scripts, and 10 evals.
 
 ### [raleigh](raleigh/SKILL.md)
 
 Query, search, and download public datasets from the City of Raleigh Open Data portal. Wraps the ArcGIS REST API to access 170+ datasets — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, and more. No API key needed. Ships a Python CLI with catalog, search, info, query, download, and categories commands.
+
+### [release-engineering](release-engineering/SKILL.md)
+
+Senior-to-principal release engineering methodology — release process models and CD pipelines, progressive delivery and feature flags, versioning and artifacts, readiness gates, rollback planning, change-governance and compliance evidence, DORA metrics, and multi-team release coordination. Ships 15 references, 6 templates, 4 assets, 5 stdlib-only Python CLIs, and 8 evals.
 
 ### [remote-systems-administration](remote-systems-administration/SKILL.md)
 

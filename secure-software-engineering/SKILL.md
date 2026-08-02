@@ -43,7 +43,7 @@ Loop to the affected phase when evidence contradicts an assumption or a design c
 | Designing logs, audit events, monitoring, or forensic evidence | [references/secure-logging-audit.md](references/secure-logging-audit.md) |
 | Sharing infrastructure or data across tenants | [references/multi-tenant-isolation.md](references/multi-tenant-isolation.md) |
 | Reviewing a change or defining a security review gate | [references/secure-code-review.md](references/secure-code-review.md) |
-| Preparing artifacts, exceptions, rollback, or response for release | [references/release-evidence.md](references/release-evidence.md) |
+| Preparing artifacts, exceptions, rollback, or response for release | [references/release-evidence.md](references/release-evidence.md); load [release-engineering](../release-engineering/SKILL.md) to carry those controls and evidence through build, registry, promotion, and deployment gates |
 | Learning from an incident, near miss, or escaped defect | [references/incident-learning.md](references/incident-learning.md) |
 | Designing an LLM, RAG pipeline, model integration, or agent tool | [references/ai-llm-security.md](references/ai-llm-security.md) |
 

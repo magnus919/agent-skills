@@ -27,6 +27,67 @@ fixtures/<class>/<id>/
 └── repo/            # optional: the repository context the task runs against
 ```
 
+## Trajectory fixtures
+
+A trajectory fixture describes a **multi-phase change-request journey** rather
+than a single task. Where a single-task fixture has one `class` and one
+`expected_boundary`, a trajectory fixture records the full sequence of journey
+phases traversed, the gates evaluated, routing decisions (selected and skipped
+specialists with reasons), and the expected terminal state. Trajectory fixtures
+let the harness validate that the journey's observable structure — phases,
+gates, skips, head-SHA binding — is internally consistent before any model run.
+
+The runner recognizes a trajectory fixture by `kind: trajectory` and validates
+it against the trajectory sub-schema below. Single-task fixtures (no `kind`
+field) continue to use the schema above, unchanged.
+
+### Trajectory `task.yaml` fields
+
+| Field | Required | Meaning |
+|---|---|---|
+| `kind` | yes | Must be `trajectory`. |
+| `id` | yes | Stable, unique identifier (must match the directory name). |
+| `path` | yes | Journey path: `lightweight`, `full`, `refactor`, or `high-risk`. |
+| `prompt` | yes | The change request as presented to the agent under test. Self-contained. |
+| `phases` | yes | Pipe-separated journey phases as `N: Phase Name`, using the exact phase names from [../references/journey.md](../references/journey.md) (e.g. `1: Intake and provenance`). |
+| `gates` | yes | Pipe-separated gate entries as `gate-N: description: verdict`, where verdict is `pass`, `conditional`, or `blocked`. |
+| `terminal_state` | yes | Expected terminal state: `merged`, `closed`, `blocked`, or `released`. |
+| `visibility` | yes | `public` or `holdout` (same holdout hygiene as single-task fixtures). |
+| `skipped_phases` | no | Pipe-separated `N: Phase Name: reason` entries. Every skipped phase must carry a reason. |
+| `skipped_gates` | no | Pipe-separated `gate-N: reason` entries. |
+| `final_head_sha` | conditional | The exact commit SHA the final verification verdict binds to. **Required for `full`-path fixtures.** |
+| `routing_selected` | no | Comma-separated specialist skills loaded during the run. Metadata only — not validated by the runner (see note below). |
+| `routing_skipped` | no | Pipe-separated `skill: reason` entries for specialists not loaded. Metadata only — not validated by the runner (see note below). |
+
+**Routing fields are metadata-only.** The runner does not cross-validate
+`routing_selected` or `routing_skipped` entries against the routing table
+([../references/routing-table.md](../references/routing-table.md)). These fields
+document the expected routing outcome for human and judge review; they are not
+schema-checked because the routing table is a prose reference that evolves
+independently of the fixture set, and coupling the harness to its markdown
+format would add fragile parsing without improving fixture correctness.
+Reviewers should verify routing entries against the routing table manually
+during trajectory scoring.
+
+### Full-path constraints
+
+A `full`-path trajectory fixture must:
+- traverse **all nine** journey phases in `phases`,
+- record **all five** gates (`gate-1` through `gate-5`) in `gates`, and
+- bind a `final_head_sha`.
+
+The runner enforces these constraints during `--validate-only`.
+
+### Trajectory fixture layout
+
+```
+fixtures/trajectories/<id>/
+└── task.yaml
+```
+
+Trajectory fixtures live under `fixtures/trajectories/`, separate from
+single-task fixtures (which live under `fixtures/<class>/<id>/`).
+
 ## Rules
 
 - **Self-contained prompts.** The agent under test sees only `prompt`, `context`,
@@ -38,3 +99,6 @@ fixtures/<class>/<id>/
   or no code change — so the bundle cannot win by reflexively minimizing.
 - **Holdout hygiene.** Track visibility. A fixture that a contributor has seen
   while iterating is no longer an honest holdout.
+- **Trajectory labels must match journey.md.** Phase numbers and names in
+  `phases` and `skipped_phases` must exactly match the canonical journey phases.
+  Gate IDs must be `gate-1` through `gate-5`. The runner validates this.

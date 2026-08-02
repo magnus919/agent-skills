@@ -24,7 +24,9 @@ A comprehensive methodology for designing, operating, and improving reliable pro
 | "Do a reliability review" | Architecture review against SRE principles, risk assessment |
 | "I need an incident commander" | Incident command framework, role cards, communication templates |
 | "Automate this operational task" | Toil assessment, automation decision tree, runbook pattern |
+## When not to use
 
+Use [release-engineering](../release-engineering/SKILL.md) to plan releases, compose promotion and rollback gates, or coordinate a release train. Use [systematic-debugging](../systematic-debugging/SKILL.md) to find the cause of a specific failure.
 
 ## Reference Files
 
@@ -38,7 +40,7 @@ A comprehensive methodology for designing, operating, and improving reliable pro
 | Monitoring & Alerting | `references/monitoring-alerting.md` | Observability design, alert rules |
 | On-Call Best Practices | `references/oncall-best-practices.md` | Rotation design, team sizing |
 | Toil Elimination | `references/toil-elimination.md` | Automation prioritization, ops review |
-| Release Engineering | `references/release-engineering.md` | Deployment pipeline design |
+| Release Engineering | [release-engineering](../release-engineering/SKILL.md) | Release planning, promotion, progressive delivery, and rollback design; use the local reference only for SRE-specific integration context |
 | Effective Troubleshooting | `references/troubleshooting.md` | Debugging methodology |
 | Senior SRE Role Blueprint | `references/senior-sre-blueprint.md` | Role definition, KPI framework |
 | SRE Communication Guide | `references/sre-communication-guide.md` | Stakeholder updates, incident communication |
