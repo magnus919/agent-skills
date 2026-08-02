@@ -29,6 +29,7 @@
     "./binary-analysis",
     "./brand-designer",
     "./bundles/neckbeard",
+    "./bundles/product-lifecycle",
     "./bundles/research-and-vault",
     "./bundles/tailscale",
     "./bundles/workflow-architect",

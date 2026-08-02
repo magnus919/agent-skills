@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "skill_name": "product-lifecycle",
+  "evals": [
+    {
+      "id": "new-product-complete-lifecycle",
+      "prompt": "We have an idea for a new product: a privacy-first personal finance dashboard that aggregates bank accounts, credit cards, and investments into a single view. The founders have strong opinions but haven't talked to any potential users yet. Take this through the full product lifecycle — discovery through lifecycle review — and produce the evidence at each phase.",
+      "expected_output": "Scenario: a new product idea traversing the full lifecycle across multiple phases with phase handoffs. Phase 1 (discovery) loads product-discovery, produces a problem statement and stakeholder map, and classifies the product as consumer. Phase 2 (strategy) loads product-strategy, produces a strategic assessment and portfolio recommendation. Phase 3 (roadmap) loads product-roadmapping-and-portfolio, produces an outcome roadmap entry and bet record. Phase 4 (UX) loads product-design-and-ux, produces information architecture and interface contracts. Phase 5 (experimentation) loads product-experimentation, produces an experiment brief — for a consumer finance product this may be a concierge test or prototype rather than an A/B test. Phase 6 (delivery handoff) loads implementation-planning, production-readiness, and release-engineering, producing an implementation plan, readiness verdict, and release plan. Phase 7 (adoption) loads product-adoption, producing an adoption plan with consumer-specific onboarding and activation paths. Phase 8 (success) loads product-analytics-and-measurement — note that customer-success routing is skipped because this is a consumer product, with the skip recorded in the evidence ledger. Phase 9 (lifecycle review) loads product-lifecycle-learning, producing an outcome review, assumption ledger update, and a lifecycle decision. The lifecycle evidence ledger carries evidence across all nine phases. The routing decision in Phase 8 explicitly records the skip of conditional-customer-success with reason 'product type: consumer — customer-success routing not applicable.'",
+      "assertions": [
+        "All nine lifecycle phases are addressed with named specialist skills loaded per phase",
+        "Phase 8 explicitly records the skip of conditional-customer-success with the reason citing consumer product type",
+        "The lifecycle evidence ledger is referenced as the cross-phase handoff artifact",
+        "Phase 1 classifies the product type (consumer) and this classification is carried in the ledger",
+        "Phase 5 selects a method appropriate to a new consumer product (not defaulting to A/B)",
+        "Phase 6 produces a production-readiness verdict and release plan",
+        "Phase 9 produces a lifecycle decision with rationale"
+      ]
+    },
+    {
+      "id": "ambiguous-stakeholder-request",
+      "prompt": "Our CEO sent a one-line Slack message: 'We should add AI features to the platform.' There's no scope, no user problem, no success criteria, and three different VPs have different interpretations of what this means (one thinks chatbots, one thinks recommendations, one thinks internal tooling). Figure out what to do with this request.",
+      "expected_output": "Scenario: an ambiguous stakeholder request that requires discovery before any commitment. Phase 1 (discovery) loads product-discovery and identifies that the request has no articulated user problem. The discovery phase engages stakeholders to surface the underlying needs behind each VP's interpretation. The discovery log records conflicting interpretations and surfaces assumptions. The escalation path may trigger: if the problem cannot be articulated in user terms after discovery engagement, the lifecycle stops at Phase 1 with the escalation reason 'problem cannot be articulated in user terms after stakeholder engagement.' The evidence ledger records what was learned — the three interpretations, the underlying needs surfaced, and why no single problem statement emerged. Alternatively, if discovery converges on a coherent problem, the lifecycle proceeds through strategy and portfolio choice. In either case, the ambiguous request is NOT routed directly to delivery — discovery is mandatory before any commitment.",
+      "assertions": [
+        "Phase 1 (discovery) is loaded and produces a discovery log with stakeholder interpretations",
+        "The response does not skip directly to delivery or implementation",
+        "If the lifecycle stops, the escalation reason is recorded in the evidence ledger",
+        "If the lifecycle proceeds, a problem statement exists that a stakeholder recognizes",
+        "The handling distinguishes between 'ask for clarification' and 'proceed with what we know'",
+        "No specialist beyond product-discovery is loaded until discovery has a problem statement"
+      ]
+    },
+    {
+      "id": "failed-experiment-stop-path",
+      "prompt": "Our hypothesis was that adding a 'trending topics' sidebar to the news reader would increase daily active usage by 15%. We ran a 4-week A/B test with 50,000 users per variant. The result: the sidebar had no statistically significant effect on DAU (p=0.42), and qualitative feedback showed users found it distracting. The experiment disproved the hypothesis. Decide what to do next.",
+      "expected_output": "Scenario: a failed experiment that requires a stop/pivot decision. Phase 5 (experimentation) loads product-experimentation and produces an experiment readout. The readout records the hypothesis, method (A/B test), observed results (no significant effect, p=0.42), and the decision: stop — hypothesis disproved. The assumptions register is updated to record that 'trending topics increases engagement' is false for this user population. The lifecycle evidence ledger records the experiment evidence. Phase 9 (lifecycle review) loads product-lifecycle-learning and captures retained learning: the assumption that social-proof content increases engagement was disproved; this feeds back into the roadmap and future experiment design. The lifecycle may terminate at Phase 5 with a stopped outcome, or proceed through Phase 9 for formal learning capture. The key behavior: a disproved hypothesis is a legitimate and valuable lifecycle outcome, not a failure to be hidden or re-tested.",
+      "assertions": [
+        "The experiment readout records the hypothesis, method, observed results, and stop decision",
+        "The assumptions register is updated to record the disproved hypothesis",
+        "The lifecycle evidence ledger records the experiment evidence",
+        "Phase 9 captures retained learning from the failed experiment",
+        "The response does NOT suggest re-running the same experiment or tweaking the variant",
+        "The stop decision is treated as a legitimate outcome, not a failure"
+      ]
+    },
+    {
+      "id": "non-adoption-outcome",
+      "prompt": "We launched an internal tool for expense reporting six months ago. Despite mandatory training and executive sponsorship, only 12% of employees use it (target was 70% within 3 months). Most people still email receipts to finance. The product team wants to know whether to invest more in adoption or accept that this tool isn't working.",
+      "expected_output": "Scenario: a non-adoption outcome that requires diagnosis and a decision. Phase 7 (adoption) loads product-adoption and diagnoses the adoption failure. The adoption diagnostic examines onboarding (was training effective?), activation (did users see value in first use?), time-to-value (how long to complete an expense report vs. emailing?), and structural barriers (is the tool solving a real problem for employees or just for finance?). Note: this is an internal tool — customer-success routing is not loaded. Phase 8 (success) loads product-analytics-and-measurement and measures outcomes against the 70% adoption target. Phase 9 (lifecycle review) loads product-lifecycle-learning and produces a lifecycle decision — likely retire or pivot, with a deprecation plan if retiring. The evidence ledger records the adoption diagnostic, the outcome measurement, and the lifecycle decision. The response may conclude that the tool was solving finance's problem, not employees' problem — a structural mismatch that more adoption investment won't fix.",
+      "assertions": [
+        "Phase 7 loads product-adoption and produces an adoption diagnostic",
+        "The diagnostic examines onboarding, activation, time-to-value, and structural barriers",
+        "Internal-tool context is recognized (no customer-success routing)",
+        "Phase 8 measures outcomes against the adoption target",
+        "Phase 9 produces a lifecycle decision (retire or pivot) with rationale",
+        "The evidence ledger carries the adoption evidence across phases",
+        "The response does NOT default to 'invest more in adoption' without diagnosis"
+      ]
+    },
+    {
+      "id": "justified-retirement-decision",
+      "prompt": "Our legacy on-premises monitoring product has been in harvest mode for two years. Revenue has declined 40% year-over-year, the remaining 12 enterprise customers have active migration plans to our cloud product, and the engineering team supporting it costs more than the revenue it generates. The last customer is scheduled to migrate in Q3. Make the retirement decision and plan the sunset.",
+      "expected_output": "Scenario: a justified retirement decision — a STOP path where work halts with evidence and escalation. Phase 8 (success) loads product-analytics-and-measurement and confirms the outcome: revenue decline, customer migration progress, cost/revenue ratio. Phase 9 (lifecycle review) loads product-lifecycle-learning and produces an outcome review comparing expected (harvest → retire) vs. observed (declining revenue, migrating customers, negative margin). The lifecycle decision is 'retire' with a sunset plan that includes: deprecation communication to remaining customers with migration timeline, internal cleanup (decommissioning schedule, team transition plan), and retained learning (what made the cloud product a successful replacement, lessons for future on-prem→cloud migrations). The evidence ledger records the retirement decision, the sunset plan, and the retained learning. The lifecycle terminates in a stopped/escalated path — the product is being retired, which is the correct and justified outcome. The STOP is not a failure; it is a disciplined closeout of a product that has reached end-of-life.",
+      "assertions": [
+        "Phase 9 produces a 'retire' lifecycle decision with evidence-based rationale",
+        "A sunset plan exists with deprecation communication, migration path, and internal cleanup",
+        "The lifecycle evidence ledger records the retirement decision and sunset plan",
+        "Retained learning is captured for future cycles",
+        "The retirement is treated as a justified and disciplined outcome, not a failure",
+        "The STOP path is explicit — work halts after retirement planning, not after re-investment",
+        "Customer treatment during sunset is addressed (migration path, communication timeline)"
+      ]
+    },
+    {
+      "id": "cross-phase-evidence-handoff",
+      "prompt": "A B2B SaaS product team completed discovery and strategy for a new integration marketplace. Discovery validated strong demand from enterprise customers. Strategy positioned it as a platform differentiator. Now the roadmap phase needs to sequence it, UX needs to design the marketplace experience, and delivery needs a plan. Walk through phases 3-6 with explicit evidence handoffs between phases.",
+      "expected_output": "Scenario: cross-phase navigation with explicit evidence handoffs. Phase 3 (roadmap) loads product-roadmapping-and-portfolio, reads the discovery log and strategic assessment from the evidence ledger (written by phases 1-2), and produces an outcome roadmap entry and bet record — writing these to the ledger. Phase 4 (UX) loads product-design-and-ux, reads the roadmap entry and bet record from the ledger, and produces information architecture and interface contracts. Phase 5 (experimentation) loads product-experimentation, reads the UX contracts, and designs an experiment — for a B2B marketplace this might be a concierge test with 3-5 design partners rather than an A/B test. Phase 6 (delivery handoff) loads implementation-planning, production-readiness, and release-engineering, reading the experiment readout and UX contracts from the ledger, producing an implementation plan, readiness verdict, and release plan. At each phase transition, the ledger is the mechanism for handoff — the next phase reads what the prior phase wrote. No phase re-derives evidence that already exists in the ledger. The B2B SaaS context means conditional-customer-success would be loaded in Phase 8 (not in this trajectory, but noted in the ledger).",
+      "assertions": [
+        "Each phase reads prior-phase evidence from the lifecycle evidence ledger",
+        "Phase 3 reads discovery log and strategic assessment from Phases 1-2",
+        "Phase 4 reads roadmap entry and bet record from Phase 3",
+        "Phase 5 reads UX contracts from Phase 4",
+        "Phase 6 reads experiment readout and UX contracts from Phases 4-5",
+        "No phase re-derives evidence that already exists in the ledger",
+        "The evidence ledger is explicitly referenced as the cross-phase handoff mechanism"
+      ]
+    }
+  ]
+}
