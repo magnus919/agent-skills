@@ -33,6 +33,15 @@
       "description": "Design, run, review, or release framework- and vendor-neutral evaluations and observability for AI agents. Use when defining agent evals, datasets, graders, trajectory review, regression analysis, release gates, production traces, or privacy-aware telemetry. Covers task and trajectory contracts, statistical comparisons, and incident-to-case learning; route framework implementation to pydanticai or langgraph when needed."
     },
     {
+      "name": "agent-production-operations",
+      "source": "./",
+      "skills": [
+        "./agent-production-operations"
+      ],
+      "strict": false,
+      "description": "Operate an evaluated agent with tools and authority in production through a runtime control plane covering versioning, staged rollout, fallback, cost and latency budgets, tool health, human escalation, disablement, and trace-to-eval feedback. Do not use for building agents, designing evals, or general release, SRE, security, or platform engineering — those methods stay with their specialist skills."
+    },
+    {
       "name": "agent-skills",
       "source": "./",
       "skills": [

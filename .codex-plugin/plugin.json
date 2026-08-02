@@ -28,6 +28,7 @@
     "./backend-engineering",
     "./binary-analysis",
     "./brand-designer",
+    "./bundles/agent-production-operations",
     "./bundles/neckbeard",
     "./bundles/research-and-vault",
     "./bundles/tailscale",
