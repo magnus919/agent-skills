@@ -352,6 +352,9 @@ Build and maintain outcome-based product roadmaps and portfolio views that seque
 
 CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management.
 
+### [production-excellence](bundles/production-excellence/SKILL.md)
+Cross-domain production gate model — assembles readiness, migration, recovery, capacity/cost, and incident-learning evidence into a launch or operational decision (go/no-go/defer/exception/escalation) with an accountable owner and a post-launch learning path. Composes 12 specialist skills (production-readiness, migration-engineering, resilience-and-recovery, capacity-and-cost-engineering, incident-learning, SRE, release, platform, security, data, QA, verification) without copying their runbooks. Ships 4 references (discovery brief, evidence packet, gate model, handoff record) and 5 integrated evals covering normal release, blocked launch, data migration, dependency outage, and cost/SLO conflict.
+
 ### [production-readiness](production-readiness/SKILL.md)
 
 Assemble cross-domain production evidence into a risk-scaled launch decision. Defines three risk classes (Low/Standard/High) with proportional evidence requirements, an 11-category evidence checklist with named source or explicit gap for every category, and four launch-decision outcomes (Go/No-go/Defer/Exception) with accountable owners. Routes detailed technical checks to release-engineering, SRE, security, data, QA, platform, and implementation-planning. Ships 2 references (discovery brief, readiness record template) and 5 evals.

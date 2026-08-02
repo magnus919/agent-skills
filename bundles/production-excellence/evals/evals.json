@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "skill_name": "production-excellence",
+  "evals": [
+    {
+      "id": "normal-release-safe-launch",
+      "prompt": "We are launching a new user-facing API service to production. The readiness review is complete with all 11 evidence categories sourced: ownership is assigned to the API platform team, SLOs are defined (99.9% availability, p99 latency < 200ms), security review passed, rollback plan uses blue-green deployment, capacity model shows 3x headroom at launch, restore test passed yesterday, and QA verification confirms all acceptance criteria pass at the integration boundary. The risk class is Standard. Run the production-excellence gate model and produce the operational handoff record.",
+      "expected_output": "The gate model produces a Go outcome. The operational handoff record includes the service name (API service), risk class (Standard), outcome (Go), the accountable service owner (API platform team lead), evidence summary for all domains (readiness, migration: none, resilience: restore test dated yesterday, capacity/cost: 3x headroom, incident learning: no prior incidents, security: passed, release: blue-green plan, QA: integration-boundary verification), no gaps, and post-launch learning paths routed to incident-learning and product-lifecycle-learning with a review cadence.",
+      "assertions": [
+        "gate outcome is Go",
+        "all evidence domains are sourced with named references",
+        "no gaps exist in the evidence packet",
+        "operational handoff record names the service owner",
+        "post-launch learning paths reference incident-learning and product-lifecycle-learning",
+        "risk class is Standard"
+      ]
+    },
+    {
+      "id": "blocked-launch-untested-rollback",
+      "prompt": "We are launching a database schema migration for our payment service — a High-risk change because it crosses a trust boundary and is irreversible without a verified rollback. The migration plan expands the schema with a new column, backfills data, and then drops the old column. The readiness review is otherwise complete (ownership, SLOs, security, QA all pass). However, the rollback procedure has never been tested — the team wrote a rollback script but has not run it against a production-like snapshot. The migration-engineering specialist confirms the step is irreversible without the tested rollback. Run the production-excellence gate model.",
+      "expected_output": "The gate model produces a No-go outcome. The blocking reason is: the rollback procedure has never been tested and the migration step is irreversible without it. The evidence packet records the gap in the migration domain (no tested rollback). The handoff record records the No-go with the gap owner (the migration team lead), the gap description (untested rollback for irreversible schema migration), and the condition for re-evaluation (successful rollback rehearsal against a production-like snapshot). The risk class (High) prohibits exceptions — no exception is offered without escalation.",
+      "assertions": [
+        "gate outcome is No-go or blocked",
+        "blocking reason explicitly references untested rollback",
+        "evidence packet records the migration-domain gap",
+        "gap owner is named",
+        "no exception is granted for a High-risk irreversible migration without tested rollback",
+        "the handoff record is populated even for the No-go outcome",
+        "risk class High prevents exception without escalation"
+      ]
+    },
+    {
+      "id": "data-migration-routes-to-migration-engineering",
+      "prompt": "We are migrating 200M customer records from an on-premises PostgreSQL database to a cloud-hosted database. The migration-engineering specialist has produced a plan: dual-write for 30 days, backfill the historical data with checksum verification, run reconciliation queries daily, and cut over with a 5-minute maintenance window. A rollback path exists: keep the on-premises database in read-only mode for 14 days post-cutover. The readiness review is complete, capacity model shows the cloud instance can handle 2x peak load, and QA has verified reconciliation correctness. The risk class is High. Run the production-excellence gate model and produce the operational handoff record.",
+      "expected_output": "The gate model produces a Go outcome because: the migration plan from migration-engineering includes dual-write, backfill, reconciliation, cutover, and a rollback path (14-day read-only window). The evidence packet references the migration-engineering artifacts explicitly. The handoff record captures the migration type (data migration), recovery path (rollback via 14-day read-only window), verification method (daily reconciliation queries + checksum), and cutover window (5 minutes). Post-launch learning routes to incident-learning for any reconciliation failures and to product-lifecycle-learning for expected-vs-observed data integrity comparison.",
+      "assertions": [
+        "gate outcome is Go",
+        "migration domain evidence references migration-engineering artifacts",
+        "recovery path is explicit: 14-day read-only rollback window",
+        "cutover window is specified",
+        "reconciliation and checksum verification are cited",
+        "handoff record routes post-launch to incident-learning and product-lifecycle-learning",
+        "risk class is High but all evidence domains are sourced"
+      ]
+    },
+    {
+      "id": "dependency-outage-routes-to-resilience",
+      "prompt": "We are launching a mobile notification service that depends on an upstream push-notification provider. The resilience-and-recovery assessment reveals that the upstream provider had a 45-minute outage last month affecting 30% of notifications, and the provider's SLA is 99.5% (below our service's 99.9% SLO target). The resilience specialist recommends a circuit-breaker with a fallback queue and a degraded-mode UX that shows 'delayed delivery' instead of silent failure. However, the circuit-breaker has not been exercised in a game day — the team has the code but has not run a dependency-failure simulation. All other domains are sourced. The risk class is Standard. Run the production-excellence gate model.",
+      "expected_output": "The gate model produces a Defer outcome (or No-go, depending on whether the untested circuit-breaker is considered a blocking gap for Standard risk). The resilience domain has a gap: the circuit-breaker has not been exercised. The evidence packet records this gap with the resilience owner and a due date for the game-day exercise. If Defer: the condition for re-evaluation is a successful dependency-failure simulation. If No-go: the blocking reason is that the upstream dependency's SLA (99.5%) conflicts with the service's SLO (99.9%) and the mitigation (circuit-breaker) has not been tested. In either case, the handoff record records the resilience gap explicitly and routes post-launch dependency monitoring to incident-learning.",
+      "assertions": [
+        "gate outcome is Defer or No-go",
+        "resilience domain gap is explicitly recorded: untested circuit-breaker or dependency-failure simulation",
+        "upstream provider SLA vs service SLO conflict is cited",
+        "degraded-mode UX is referenced as part of the resilience plan",
+        "handoff record captures the gap with owner and resolution condition",
+        "post-launch learning references incident-learning for dependency monitoring"
+      ]
+    },
+    {
+      "id": "cost-slo-conflict",
+      "prompt": "We are scaling our data-processing pipeline to handle 10x daily volume. The capacity-and-cost-engineering specialist has produced a model: at current unit cost, scaling to 10x would increase monthly infrastructure spend from $50K to $420K. The budget constraint is $300K/month. Two options exist: (A) scale to 8x within budget but relax the SLO from p99 < 500ms to p99 < 2s during peak hours, or (B) scale to 10x with a budget increase to $420K requiring VP approval. The SRE team confirms the SLO relaxation (option A) would still meet user expectations. The readiness review is otherwise complete, and the risk class is Standard. Run the production-excellence gate model to resolve this cost/SLO conflict.",
+      "expected_output": "The gate model identifies a cost/SLO conflict and produces either: (1) Go with option A (scale to 8x, relaxed SLO) if the SRE and capacity evidence supports it, recording the tradeoff decision with the accountable owner; or (2) Exception if option B is chosen and VP approval is granted for the budget increase; or (3) Escalation if the choice between A and B cannot be resolved at the service-owner level. In any outcome, the decision is explicitly anchored to: service ownership (who owns the cost/SLO tradeoff), risk (the risk of relaxing the SLO vs the risk of budget overrun), evidence (the capacity model with explicit assumptions, the SRE SLO assessment), and verification (how the scaled system's latency will be verified post-launch). The handoff record captures the capacity/cost domain evidence, the SLO decision, and routes post-launch cost and latency monitoring to product-lifecycle-learning for expected-vs-observed comparison.",
+      "assertions": [
+        "cost/SLO conflict is explicitly identified",
+        "capacity-and-cost-engineering model is cited with unit cost and budget constraint",
+        "at least two options are compared with tradeoffs",
+        "the decision is anchored to service ownership, risk, evidence, and verification",
+        "handoff record captures the capacity/cost evidence and the SLO decision",
+        "post-launch learning routes to product-lifecycle-learning for expected-vs-observed comparison",
+        "outcome is Go, Exception, or Escalation — not No-go without exploring the tradeoff"
+      ]
+    }
+  ]
+}
