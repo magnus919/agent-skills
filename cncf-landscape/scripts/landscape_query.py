@@ -205,13 +205,16 @@ def fetch_records(
     timeout: float,
     opener: Callable[..., Any] | None = None,
 ) -> tuple[list[Mapping[str, Any]], Mapping[str, Any]]:
-    request = Request(
-        url,
-        headers={
-            "Accept": "application/json",
-            "User-Agent": "cncf-landscape-agent-skill/1.0",
-        },
-    )
+    try:
+        request = Request(
+            url,
+            headers={
+                "Accept": "application/json",
+                "User-Agent": "cncf-landscape-agent-skill/1.0",
+            },
+        )
+    except ValueError as exc:
+        raise LandscapeError(f"Invalid Landscape API URL {url}: {exc}") from exc
     open_url = opener or urlopen
     try:
         with open_url(request, timeout=timeout) as response:

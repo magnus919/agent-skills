@@ -2,8 +2,10 @@
 """Offline tests for the CNCF Landscape query client."""
 
 import importlib.util
+import io
 import json
 import unittest
+from contextlib import redirect_stderr
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "landscape_query.py"
@@ -141,6 +143,15 @@ class LandscapeQueryTests(unittest.TestCase):
         response = FakeResponse(b"<html>single page app</html>", content_type="text/html")
         with self.assertRaisesRegex(MODULE.LandscapeError, "Expected JSON"):
             MODULE.fetch_records("https://example.test/api/projects/all.json", 4.0, fake_opener(response))
+
+    def test_malformed_base_url_uses_cli_error_path(self):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            exit_code = MODULE.main(["--base-url", "not-a-url", "--timeout", "1"])
+
+        self.assertEqual(exit_code, 2)
+        self.assertIn("Error: Invalid Landscape API URL", stderr.getvalue())
+        self.assertNotIn("Traceback", stderr.getvalue())
 
     def test_non_object_records_fail_closed(self):
         response = FakeResponse(b"[{}\n,\"not an object\"]")
