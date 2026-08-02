@@ -1,0 +1,27 @@
+id: test-hardening-mutant-guard
+class: regression-prevention
+prompt: >-
+  The outbound-webhook URL validator already rejects an overlong DNS hostname
+  permanently. A mutation pilot found that changing the resolver classification
+  from permanent to retryable would be an easy regression to reintroduce. Add a
+  focused regression test without changing production code.
+context: >-
+  The public validator raises a permanent validation error for the overlong
+  hostname. Existing tests do not distinguish that behavior from the retryable
+  DNS error. The test must not depend on live DNS or interpreter-specific
+  resolver behavior.
+harness_constraints: >-
+  Tools: file read/write, terminal, and a targeted mutation or controlled
+  weakening. Authority: modify tests only. No production-code, dependency,
+  deployment, or merge authority.
+ground_truth: >-
+  Add a hermetic public-behavior test that passes against the clean implementation
+  and fails when the named classification is changed to retryable. Assert the
+  semantic non-retryability invariant rather than the exact current base-class
+  identity. Production code remains unchanged.
+expected_boundary: unit
+scoring_notes: >-
+  The ordinary "fails on main" bug-fix gate is not applicable because production
+  behavior is already correct. Test adequacy requires clean-baseline pass plus
+  mutant-fail evidence, and hermeticity requires no live DNS dependency.
+visibility: public

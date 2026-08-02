@@ -40,8 +40,8 @@ silent omission is prohibited.
 |---|---|
 | **Owner** | neckbeard discovery step (core loop step 2); specialist routing via [routing-table.md](routing-table.md) |
 | **Input** | Phase 1 output: change contract with provenance, authority, and repository conventions. |
-| **Output** | Packet group (d) completed: baseline (pre-change) evidence with boundary labels (`component` / `integration` / `end-to-end` / `production`); problem restated from primary evidence; affected surfaces confirmed. **When the request is a bug:** reproduction evidence is mandatory — repro steps, observed vs. expected behavior, and environment/version — recorded in group (d) before phase 3 may proceed. **When the request is not a bug:** the output states "non-bug request — reproduction not required" and records the current-state evidence that was gathered. |
-| **Gate** | Current behavior is described from artifacts (code, tests, runtime output, project docs) — not a guess. For bugs, the reproduction is confirmed or the inability to reproduce is documented. |
+| **Output** | Packet group (d) completed: baseline (pre-change) evidence with boundary labels (`component` / `integration` / `end-to-end` / `production`); problem restated from primary evidence; affected surfaces confirmed. **When the request is a bug:** reproduction evidence is mandatory — repro steps, observed vs. expected behavior, and environment/version — recorded in group (d) before phase 3 may proceed. **When the request is not a bug:** the output states "non-bug request — reproduction not required" and records the current-state evidence that was gathered. **For lightweight test-hardening:** record that the clean behavior is already correct, identify the named mutation or controlled weakening, and do not require a live production reproduction. |
+| **Gate** | Current behavior is described from artifacts (code, tests, runtime output, project docs) — not a guess. For bugs, the reproduction is confirmed or the inability to reproduce is documented. For test-hardening, the clean baseline and the intended failure of the named weakening are the relevant evidence. |
 | **Escalation** | Behavior cannot be reproduced or observed and the gap blocks design; or discovery reveals the request is a duplicate, already fixed, or a phantom issue (see no-change-needed termination below). |
 | **Platform mapping** | **GitHub mode:** linked issues, referenced PRs, and commit history inspected via `gh` and `git log`. **Enterprise mode:** ticket-tracker linkage, internal wikis, and version-control history inspected. |
 
@@ -95,8 +95,8 @@ silent omission is prohibited.
 |---|---|
 | **Owner** | Review specialists per dimension (see gate 4 in [stages.md](stages.md)): `programming-principles` (code quality), `software-architecture-analysis` (architecture), `secure-software-engineering` / `security-audit-methodology` (security), `web-accessibility` (accessibility), `technical-documentation` (docs). Boundary verification: `verification-methodology`. |
 | **Input** | Phase 6 output: complete implementation at a known head SHA. |
-| **Output** | `VERIFICATION.md` with layered verdicts (PASS/FAIL/BLOCKED/NOT-APPLICABLE) bound to the exact head SHA; independent review verdict (gate 4) with per-dimension coverage recorded; packet group (h) updated with gate 4 and gate 5 verdicts. |
-| **Gate** | **Gate 4** — independent review (distinct from spec-compliance checking; see [stages.md](stages.md)). **Gate 5** — boundary verification at the declared target. Both verdicts bind to the exact head SHA. |
+| **Output** | `VERIFICATION.md` with layered verdicts (PASS/FAIL/BLOCKED/NOT-APPLICABLE) bound to the exact head SHA; independent review verdict (gate 4) with per-dimension coverage recorded; packet group (h) updated with gate 4 and gate 5 verdicts. For the lightweight path, the review is requested only after the candidate is frozen and one bounded reviewer or the required platform review is sufficient unless a risk trigger requires more. |
+| **Gate** | **Gate 4** — independent review (distinct from spec-compliance checking; see [stages.md](stages.md)). **Gate 5** — boundary verification at the declared target. Both verdicts bind to the exact head SHA. A timed-out review is inconclusive and does not trigger repeated review rounds against a mutable or superseded candidate. |
 | **Escalation** | Review reveals a security vulnerability requiring expert intervention; or the only available verification is weaker than the declared target and the gap is material (see [risk-authority-gates.md](risk-authority-gates.md)). |
 | **Platform mapping** | **GitHub mode:** review via PR review comments; CI checks as boundary evidence. **Enterprise mode:** review via enterprise review tooling; named approver sign-off recorded; enterprise CI results as boundary evidence. |
 
@@ -106,7 +106,7 @@ silent omission is prohibited.
 |---|---|
 | **Owner** | neckbeard delivery step (core loop step 6); lifecycle mechanics per [lifecycle.md](lifecycle.md) |
 | **Input** | Phase 7 output: review and verification verdicts (gates 4 and 5) at a known head SHA. |
-| **Output** | Packet group (i) populated: review-submission (PR or equivalent) number, CI status, review status, **final verified head SHA**. The final verified head SHA must equal the actual head of the delivered change. A **material** post-review change (see materiality rule below) invalidates prior verdicts and requires re-entry through phase 7 (review and boundary verification) before readiness can be declared. After a **non-material** change, prior verdicts stand but the recorded head SHA is updated and the update is logged. CI and review feedback loops iterate until both pass at the final head. |
+| **Output** | Packet group (i) populated: review-submission (PR or equivalent) number, CI status, review status, **final verified head SHA**. The final verified head SHA must equal the actual head of the delivered change. A **material** post-review change (see materiality rule below) invalidates prior verdicts and requires re-entry through phase 7 (review and boundary verification) before readiness can be declared. After a **non-material** change, prior verdicts stand but the recorded head SHA is updated and the update is logged. CI and review feedback loops iterate until both pass at the final head. For lightweight test-hardening in a repository with expensive CI, local design, hermeticity, focused tests, targeted mutation, lint, compilation, and scope checks must pass before the first push; the goal is one stable candidate and one remote verification cycle. |
 | **Gate** | **Readiness gate:** CI passes at the exact final head SHA; review is approved at the exact final head SHA; all gate verdicts in group (h) are bound to the final head SHA. This gate declares the change **ready for review submission or merge consideration** — it does **not** authorize merge or release. |
 | **Escalation** | CI fails and the failure is not diagnosable from logs after two attempts; or review feedback is irreconcilable with the specification; or a material change after review cannot be re-verified within the granted authority. |
 | **Platform mapping** | **GitHub mode:** PR opened with closing-keyword convention discovered per repository; CI monitored until green; review feedback addressed; final verdict bound to the exact head SHA. **Enterprise mode:** review submission via enterprise tooling; enterprise CI monitored; approver sign-off recorded; merge gated on enterprise approval workflow. |
@@ -166,7 +166,7 @@ criterion — silent omission is prohibited
 
 | Path | Character | Mandatory phases | Conditional phases |
 |---|---|---|---|
-| **Lightweight** | Narrow, low-risk (single-surface fix, docs-only, config tweak) | 1, 6, 7, 8, 9 | 2, 3, 4, 5 |
+| **Lightweight** | Narrow, low-risk (single-surface fix, test-hardening regression guard, docs-only, config tweak) | 1, 6, 7, 8, 9 | 2, 3, 4, 5 |
 | **Full** | Standard feature work | All nine (1–9) | None |
 | **Refactor** | Behavior-preserving structural change | 1, 2, 3, 6, 7, 8, 9 | 4, 5 |
 | **High-risk** | Safety, security, compliance, or production-criticality | All nine (1–9); all five gates; escalation review at gates 1, 2, and 5 | None — no conditional skips permitted |
@@ -179,15 +179,23 @@ conditional skips).
 
 ### Lightweight path — dropped phases and skip criteria
 
+This path includes narrow code changes, test-hardening regression guards, docs-only
+changes, and config tweaks. For the test-hardening subtype, use the dedicated
+contract in [lightweight-test-hardening.md](lightweight-test-hardening.md).
+
 | Dropped phase | Skip criterion |
 |---|---|
-| 2 — Discovery and reproduction | The change surface is a single function or module and the current behavior is already understood from the change request; no reproduction is needed. |
+| 2 — Discovery and reproduction | The change surface is a single function or module and the current behavior is already understood from the change request; no reproduction is needed. For the test-hardening subtype, record the clean behavior and named mutation or controlled weakening instead of requiring a live production repro. |
 | 3 — Architecture/design delta | No module boundary, service dependency, cross-component contract, or system-level structure is affected (per the `software-architecture-analysis` skip rule in the [routing table](routing-table.md)). |
 | 4 — Specification and decomposition | The change is fully described by the change contract with testable acceptance criteria; no separate `SPEC.md` or phased decomposition is needed (per the `spec-driven-development` skip rule). |
 | 5 — Test and verification planning | No `VERIFICATION-PLAN.md` is required beyond the implementer's own focused tests; the change introduces no new verification surface (per the `qa-methodology` skip rule). |
 
 Gates 1, 3, and 2 are conditional on this path (skipped with their phases);
 gates 4 and 5 remain mandatory. See [stages.md](stages.md) for the full matrix.
+For test-hardening, gate 5 uses clean-baseline pass plus named-mutant failure;
+the ordinary production-bug requirement that a new test fail on clean `main`
+does not apply. Gate 4 is one bounded final review after the candidate is frozen
+unless a risk trigger or repository policy requires more.
 
 ### Refactor path — conditional phases
 
