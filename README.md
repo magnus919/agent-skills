@@ -68,6 +68,10 @@ Discover and compare cloud-native technologies from the live CNCF Landscape API,
 
 Expert-level ICC profile color management for open-source workflows. Covers color science fundamentals (CIELAB, xyY, chromaticity), working space selection (sRGB, ProPhotoRGB, ACEScg, Rec.2020), ICC profile operations (convert, assign, extract, embed), gamut analysis, sRGB variant comparison, and color difference (dE) computation. Ships 6 Python scripts that wrap ImageMagick, ArgyllCMS, Exiftool, and LittleCMS; 5 reference files covering overview, operations, tool commands, working space data, and a full glossary. Distilled from Elle Stone's ninedegreesbelow.com and Bruce Lindbloom's color science resources.
 
+### [conditional-customer-success](conditional-customer-success/SKILL.md)
+
+A conditional skill for products with recurring human relationships — success plans, health evidence, renewal and expansion signals, QBRs, escalation, and closed-loop Voice of Customer. Declines to load for products without accounts, renewals, QBRs, or a customer-success team (internal tools, transactional products, public services without account-based engagement). Provides four product-model adaptations (B2B subscription, transactional, public-service, internal product), reference material on privacy and human-judgment boundaries, and four templates (applicability decision, success plan, health/risk record, escalation and feedback closure).
+
 ### [confluence-cli](confluence-cli/SKILL.md)
 
 Atlassian Confluence from the terminal. List spaces, browse pages, view content with body extraction, search with CQL, and create pages. Same API token as Jira.
@@ -175,6 +179,10 @@ An expert-level skill for building **production search and NLP pipelines** with 
 ### [hugo-theme](hugo-theme/SKILL.md)
 
 Build, customize, and debug advanced Hugo CMS themes. Covers template architecture, asset pipeline (Hugo Pipes, Tailwind CSS, PostCSS, images), shortcodes and render hooks, page bundles and content adapters, Hugo Modules, performance optimization, SEO/structured data, design/UX/accessibility, custom output formats, and CI/CD. Ships 7 reference files covering each topic area.
+
+### [implementation-planning](implementation-planning/SKILL.md)
+
+Turn an approved requirement or specification into an executable, dependency-aware delivery plan. Covers work breakdown into vertical slices, dependency mapping with critical-path analysis, ownership assignment, sequencing and parallelism, staged rollout strategy with rollback paths, and verification traceability against the original requirement. Supports cross-team, cross-repository, data migration, and staged-rollout scenarios. Does not plan unapproved work — entry gate enforces prerequisite approval.
 
 ### [jellyfin-cli](jellyfin-cli/SKILL.md)
 
@@ -315,6 +323,10 @@ Close the launch-to-learning loop for product features and capabilities — comp
 
 Product management frameworks for translating validated evidence into prioritized backlogs, documented decisions, specifications, and stakeholder communications. Covers RICE scoring, MoSCoW prioritization, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication. Ships 7 reference files covering each framework and a source index, plus 2 fillable templates (decision log and spec). Picks up where product-discovery ends.
 
+
+### [product-operations-and-governance](product-operations-and-governance/SKILL.md)
+
+Define and run product governance — recurring decision rights, intake, portfolio cadences, evidence standards, and cross-functional operating contracts. Covers six review cadences (intake/opportunity, portfolio, roadmap, experiment, launch, lifecycle/health) with named accountable owners, minimum evidence standards per decision type, and escalation paths. Supports lightweight mode (small teams, minimal ceremony) and high-assurance mode (regulated/safety-critical) with configurable governance patterns. Distinguishes product governance from executive governance (routes to chief-of-staff-methodology, strategy-frameworks) and technical delivery gates (routes to release-engineering, spec-driven-development). Ships 1 reference (discovery brief), 5 fillable templates (operating model, decision-rights map, review cadence, exception record, escalation record), and 6 evals.
 
 ### [product-roadmapping-and-portfolio](product-roadmapping-and-portfolio/SKILL.md)
 
