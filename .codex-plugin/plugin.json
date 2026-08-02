@@ -63,6 +63,7 @@
     "./gutenberg",
     "./haystack",
     "./hugo-theme",
+    "./implementation-planning",
     "./jellyfin-cli",
     "./jira-cli",
     "./jira-jql",

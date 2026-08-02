@@ -375,6 +375,15 @@
       "description": "Build, customize, and debug advanced Hugo CMS themes — template architecture, asset pipeline (CSS/JS/image processing), shortcodes and render hooks, page bundles, cover images, Hugo Modules, performance, SEO, and CI/CD. Use when working on a Hugo theme or site template layer."
     },
     {
+      "name": "implementation-planning",
+      "source": "./",
+      "skills": [
+        "./implementation-planning"
+      ],
+      "strict": false,
+      "description": "Plan the implementation of an approved requirement or specification: produce an executable, dependency-aware delivery plan covering work breakdown, dependency mapping, critical path, ownership, parallelism and sequencing, rollout strategy, rollback and recovery paths, and verification against the original requirement. Supports cross-team, cross-repository, migration, and staged-rollout scenarios. Do not use for pre-approval discovery or needs-finding, authoring a specification from scratch, coding or implementation, the neckbeard issue-to-PR delivery flow itself, or any work whose prerequisite decision has not been approved — planning unapproved work is an explicit stop condition."
+    },
+    {
       "name": "jellyfin-cli",
       "source": "./",
       "skills": [
