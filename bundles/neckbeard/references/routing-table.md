@@ -13,6 +13,14 @@ each skip with its reason in the delivery packet
 ([delivery-packet.md](delivery-packet.md), group (e)). Silent omission is
 prohibited.
 
+**Platform neutrality.** This routing matrix works for both public OSS
+repositories and private/enterprise development contexts. GitHub is a documented
+reference mode, not the only possible platform. The `opensource-contributions`
+row is conditional on public/OSS repositories; for private or enterprise-internal
+repositories, enterprise contribution governance applies instead (see
+[lifecycle.md](lifecycle.md), enterprise mode). No row assumes public-repo
+defaults without qualification.
+
 ## Routing matrix
 
 | Catalog skill | Applicability signal | Skip when | neckbeard provides |
