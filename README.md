@@ -313,7 +313,7 @@ Build production-grade AI agents and graph-based state machines with PydanticAI 
 
 ### [qa-methodology](qa-methodology/SKILL.md)
 
-QA and SDET methodology for senior-to-principal engineers — test strategy, automation, regression, risk-based prioritization, exploratory testing, quality gates, AI code quality gates for agentic development, agentic eval design, career leveling, and SDET engineering. Ships 16 references, 5 templates, 3 assets, 2 tested scripts, and 7 evals.
+QA and SDET methodology for senior-to-principal engineers — test strategy, automation, regression, risk-based prioritization, exploratory testing, mutation-guided test hardening, quality gates, AI code quality gates for agentic development, agentic eval design, career leveling, and SDET engineering. Ships 16 references, 6 templates, 3 assets, 2 tested scripts, and 10 evals.
 
 ### [raleigh](raleigh/SKILL.md)
 

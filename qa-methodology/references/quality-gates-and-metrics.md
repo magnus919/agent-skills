@@ -4,6 +4,8 @@
 
 A quality gate is an enforced checkpoint that must be satisfied before software proceeds. Classify every gate as one of three types:
 
+Mutation evidence is normally targeted and advisory: it can focus review on plausible behavior-changing faults in a defined diff or risk slice, but it is not unconditional high-performance blocking evidence or standalone proof of quality. A project should block on mutation evidence only after independently validating a narrower policy, including its scope, operators, equivalent-mutant treatment, failure handling, and denominator.
+
 | Type | Pipeline Behavior | Example |
 |------|------------------|---------|
 | **Blocking** | Pipeline stops; artifact not promoted | Unit test failure, critical CVE |
@@ -29,7 +31,7 @@ Tighten gates as the team matures. Review quarterly:
 | Starting | Tests compile + pass | Coverage > 50% |
 | Growing | Unit pass, coverage > 70%, 0 critical static-analysis | Coverage > 80% |
 | Maturing | All tests pass, coverage > 80%, 0 high CVEs | Flake rate < 2% |
-| High-perf | All pass, coverage > 85%, mutation score > 70% on P0 | Perf regression < 5% |
+| High-perf | All pass, coverage > 85%, targeted mutation evidence reviewed on P0 changes | Perf regression < 5% |
 
 > **Gotcha — Too many blocking gates:** When everything blocks, developers bypass or game the pipeline. Keep blocking gates to critical checks; use advisory for everything else. If a gate fires on > 50% of PRs, loosen it temporarily while the team improves.
 
@@ -74,11 +76,11 @@ The DORA metrics (from Google's DevOps Research and Assessment team) measure del
 | Defect escape rate | **Actionable** | Directly tells you where testing is failing |
 | Flake rate | **Actionable** | Rising flake rate predicts loss of CI trust |
 | MTTR by severity | **Actionable** | Drives investment in debugging/rollback tooling |
-| Mutation score (P0 code) | **Actionable** | Tells you if tests actually catch faults |
+| Mutation review evidence | **Actionable with context** | A defined-scope triage input about plausible fault detection; mutation score alone is not proof of test quality |
 | Change failure rate | **Actionable** | Direct DORA quality signal |
 | Regression test ROI | **Actionable** | (Tests that caught a regression) / (total regression tests) — guides suite pruning |
 
-**Rule:** If a metric changes and you don't know what action to take, it's vanity. Track 5–10 metrics maximum (the 5-10 rule); more than 10 causes analysis paralysis.
+**Rule:** If a metric changes and you don't know what action to take, it's vanity. Track 5–10 metrics maximum (the 5-10 rule); more than 10 causes analysis paralysis. Mutation results should preserve scope, exclusions, unknowns, and incomplete/tooling-failure outcomes rather than reducing them to a universal score.
 
 ## Defect Severity and Priority Classification
 

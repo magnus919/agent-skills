@@ -66,10 +66,12 @@ When an agent generates both code AND tests in the same session, both artifacts 
 
 | Technique | What It Catches | Tools |
 |-----------|----------------|-------|
-| **Mutation testing** | Tests that never fail (vacuous assertions) | PIT (Java), Stryker (JS/TS), mutmut (Python) |
+| **Mutation-guided review** | Tests that never fail, miss behavior, or overfit an implementation | PIT (Java), Stryker (JS/TS), mutmut (Python) |
 | **Property-based testing** | Missing edge cases, boundary violations | Hypothesis (Python), fast-check (JS/TS) |
 | **Differential testing** | Divergence between implementations or spec interpretations | Custom harnesses comparing two implementations |
 | **Independent oracle** | Mirrored bugs from shared context | Tests written in separate session from implementation |
+
+Mutation analysis is one independent-verification input, not a standalone proof of quality. The implementing agent cannot self-certify a generated test: a fresh verifier or human must inspect whether it is behaviorally useful and rerun the baseline, candidate test, and exact retained mutant. Reject or revise tests that are tautological, overfit, implementation-coupled, flaky, redundant, or vacuous. Record uncertainty when the run has no coverage, timeouts, flaky outcomes, or infrastructure/tooling failures rather than issuing a clean verdict.
 
 ## Regression Under AI PR Volume
 
@@ -182,4 +184,4 @@ You are done applying this reference when:
 
 ---
 
-*Sources: Ahmed, Ganhotra, Shinnar, Hirzel, "Is the Cure Still Worse Than the Disease? Test Overfitting by LLMs in APR" (IBM Research, arXiv:2511.16858, 2025); Pearce et al., "Examining Zero-Shot Vulnerability Repair with Large Language Models" (IEEE S&P, 2022, ~40% vulnerable code rate); Bacchelli & Bird, "Expectations, Outcomes, and Challenges of Modern Code Review" (ICSE, 2013); Pact Foundation (docs.pact.io); METR, "Recent Frontier Models Are Reward Hacking" (metr.org, 2025, 30.4% reward-hacking rate on RE-Bench).*
+*Sources: Ahmed, Ganhotra, Shinnar, Hirzel, "Is the Cure Still Worse Than the Disease? Test Overfitting by LLMs in APR" (IBM Research, arXiv:2511.16858, 2025); Pearce et al., "Examining Zero-Shot Vulnerability Repair with Large Language Models" (IEEE S&P, 2022, ~40% vulnerable code rate); Bacchelli & Bird, "Expectations, Outcomes, and Challenges of Modern Code Review" (ICSE, 2013); PIT project README (github.com/hcoles/pitest; pitest.org); StrykerJS project README (github.com/stryker-mutator/stryker-js; stryker-mutator.io); mutmut documentation (mutmut.readthedocs.io); ACH (arXiv:2501.12862); Pact Foundation (docs.pact.io); METR, "Recent Frontier Models Are Reward Hacking" (metr.org, 2025, 30.4% reward-hacking rate on RE-Bench).*
