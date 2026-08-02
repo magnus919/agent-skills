@@ -180,6 +180,10 @@ An expert-level skill for building **production search and NLP pipelines** with 
 
 Build, customize, and debug advanced Hugo CMS themes. Covers template architecture, asset pipeline (Hugo Pipes, Tailwind CSS, PostCSS, images), shortcodes and render hooks, page bundles and content adapters, Hugo Modules, performance optimization, SEO/structured data, design/UX/accessibility, custom output formats, and CI/CD. Ships 7 reference files covering each topic area.
 
+### [implementation-planning](implementation-planning/SKILL.md)
+
+Turn an approved requirement or specification into an executable, dependency-aware delivery plan. Covers work breakdown into vertical slices, dependency mapping with critical-path analysis, ownership assignment, sequencing and parallelism, staged rollout strategy with rollback paths, and verification traceability against the original requirement. Supports cross-team, cross-repository, data migration, and staged-rollout scenarios. Does not plan unapproved work — entry gate enforces prerequisite approval.
+
 ### [jellyfin-cli](jellyfin-cli/SKILL.md)
 
 Jellyfin media server from the terminal. Check server info, browse recently added and library contents, search and inspect media, see next-up episodes, and view statistics.
@@ -315,6 +319,10 @@ Run end-to-end product experiments from assumption to decision — translate ass
 
 Product management frameworks for translating validated evidence into prioritized backlogs, documented decisions, specifications, and stakeholder communications. Covers RICE scoring, MoSCoW prioritization, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication. Ships 7 reference files covering each framework and a source index, plus 2 fillable templates (decision log and spec). Picks up where product-discovery ends.
 
+
+### [product-operations-and-governance](product-operations-and-governance/SKILL.md)
+
+Define and run product governance — recurring decision rights, intake, portfolio cadences, evidence standards, and cross-functional operating contracts. Covers six review cadences (intake/opportunity, portfolio, roadmap, experiment, launch, lifecycle/health) with named accountable owners, minimum evidence standards per decision type, and escalation paths. Supports lightweight mode (small teams, minimal ceremony) and high-assurance mode (regulated/safety-critical) with configurable governance patterns. Distinguishes product governance from executive governance (routes to chief-of-staff-methodology, strategy-frameworks) and technical delivery gates (routes to release-engineering, spec-driven-development). Ships 1 reference (discovery brief), 5 fillable templates (operating model, decision-rights map, review cadence, exception record, escalation record), and 6 evals.
 
 ### [product-roadmapping-and-portfolio](product-roadmapping-and-portfolio/SKILL.md)
 

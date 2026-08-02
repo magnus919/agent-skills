@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "implementation-planning",
+  "evals": [
+    {
+      "id": "ambiguous-conflicting-requirements",
+      "prompt": "Approved spec for 'Unified Search' states: 'Search must return results in under 200ms' and 'Search must scan all document repositories including legacy systems that average 3s response times.' These two requirements conflict. Plan the implementation.",
+      "expected_output": "Identifies the conflict between latency target (200ms) and legacy-system dependency (3s). Does not silently accept both. Either resolves the conflict (e.g., async pre-indexing, excluding legacy from real-time, or renegotiating the SLA) or flags it as an unresolved decision with owner and deadline. The plan does not proceed with both requirements treated as simultaneously satisfiable without resolution.",
+      "assertions": [
+        "Explicitly identifies the conflict between the two requirements.",
+        "Does not produce a workstream that assumes both requirements are simultaneously satisfiable.",
+        "Either resolves the conflict with a concrete design choice or flags it as an unresolved decision with owner and deadline.",
+        "References the approved spec as the source of both requirements.",
+        "Output includes a traceability statement linking the conflict back to the original spec."
+      ]
+    },
+    {
+      "id": "cross-repository-dependencies",
+      "prompt": "Approved requirement: 'Add OIDC-based single sign-on to the customer portal.' The portal is in repo A (frontend team), the auth service is in repo B (platform team), and user profile data lives in repo C (identity team). Auth service must add OIDC support before the portal can integrate. Plan the implementation across the three repositories.",
+      "expected_output": "Three workstreams across three repos with explicit ownership. Hard dependency: repo B (auth service OIDC) blocks repo A (portal integration). Repo C (profile data) is a soft dependency that can run in parallel. Includes cross-repo handoff contracts (API contract for OIDC endpoints), integration checkpoints, and a coordination mechanism. Each repo has a named owner.",
+      "assertions": [
+        "At least three workstreams, each mapped to a repository and team.",
+        "Hard dependency from portal (repo A) to auth service (repo B) is explicit.",
+        "Repo C (profile data) is correctly identified as parallel or soft dependency.",
+        "Cross-repo handoff contract includes API interface definition.",
+        "Coordination mechanism named (e.g., shared channel, sync meeting)."
+      ]
+    },
+    {
+      "id": "data-migration-with-rollback",
+      "prompt": "Approved spec: 'Migrate the orders table from a monolithic Postgres database to a dedicated orders service with its own database. No downtime. Must be able to roll back within 10 minutes at any stage.' Plan the implementation.",
+      "expected_output": "Staged migration plan with dual-write period, backfill, verification, cutover, and cleanup. Each stage has a rollback procedure with a time estimate under 10 minutes. Forward and backward schema compatibility addressed. Includes data reconciliation before old data is dropped.",
+      "assertions": [
+        "Dual-write or backfill strategy defined for the transition period.",
+        "At least three stages (e.g., dual-write, cutover, cleanup).",
+        "Each stage has a rollback procedure with time estimate.",
+        "Schema compatibility (forward and backward) addressed.",
+        "Data reconciliation step before old data cleanup."
+      ]
+    },
+    {
+      "id": "risky-rollout-with-observability",
+      "prompt": "Approved requirement: 'Replace the existing payment provider integration with Provider Y across all regions (US, EU, APAC). Provider Y is new and untested at our scale. The business cannot tolerate more than 0.1% payment failure rate during transition.' Plan the rollout.",
+      "expected_output": "Staged rollout by region with explicit gates. Starts with lowest-risk region, includes observability signals (payment failure rate, latency, error budget consumption), defines per-stage rollback triggers, and gates each stage on the failure-rate SLA. Does not propose a big-bang switch. Includes a parallel-run or shadow-mode phase.",
+      "assertions": [
+        "Staged rollout by region, not big-bang.",
+        "Lowest-risk region first with explicit rationale.",
+        "Per-stage observability signals defined (failure rate, latency).",
+        "Rollback trigger references the 0.1% failure-rate SLA.",
+        "At least one stage includes parallel-run or shadow-mode before full cutover."
+      ]
+    },
+    {
+      "id": "reject-unapproved-prerequisite",
+      "prompt": "The product manager shared a draft PRD for 'AI-Powered Recommendations' in a Google Doc. There is no approved spec, no architecture decision record, and no review gate has been passed. The PM asks: 'Can you put together an implementation plan so we can estimate timeline for the board meeting?' Plan the implementation.",
+      "expected_output": "Does NOT produce an implementation plan. States that the input is not approved and cites the missing approval explicitly: no approved spec, no ADR, no review gate passed. Routes to upstream skills (spec-driven-development for spec authoring, product-discovery if requirements are unvalidated). Does not produce a draft plan, partial work breakdown, or timeline estimate.",
+      "assertions": [
+        "Does not produce an implementation plan or work breakdown.",
+        "Explicitly states the missing approval: no approved spec, no ADR, no review gate.",
+        "Declines to estimate timeline without an approved foundation.",
+        "Routes to upstream skills (spec-driven-development or product-discovery).",
+        "Does not produce a 'draft' or 'preliminary' plan to work around the gate."
+      ]
+    },
+    {
+      "id": "multi-team-ownership-conflict",
+      "prompt": "Approved spec for 'Real-Time Dashboard' requires: (a) streaming pipeline owned by data-infra team, (b) API layer owned by backend team, (c) frontend owned by web team, (d) deployment owned by platform team. The data-infra team and backend team both claim they own the API contract between pipeline and API. No one has authority to resolve the dispute. Plan the implementation.",
+      "expected_output": "Identifies the ownership conflict over the API contract as a blocking unresolved decision. Does not assign the contract to one team by assumption. Flags it as DEC-U with owner (the decision-maker who can resolve it, not either team) and deadline. The dependent workstreams are marked as blocked until the decision is resolved. Does not produce a plan that silently picks a side.",
+      "assertions": [
+        "Ownership conflict over the API contract is explicitly identified.",
+        "Recorded as an unresolved decision, not resolved by assumption.",
+        "Dependent workstreams marked as blocked until the decision is resolved.",
+        "Decision owner is a role with authority to resolve the dispute.",
+        "Does not assign the API contract to either team unilaterally."
+      ]
+    }
+  ]
+}
