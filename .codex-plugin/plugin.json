@@ -107,6 +107,7 @@
     "./release-engineering",
     "./remote-systems-administration",
     "./research-methodology",
+    "./resilience-and-recovery",
     "./restic",
     "./secure-software-engineering",
     "./security-audit-methodology",

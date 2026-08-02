@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "skill_name": "resilience-and-recovery",
+  "evals": [
+    {
+      "id": "dependency-outage-degradation-choice",
+      "prompt": "Our e-commerce platform depends on a third-party recommendation engine. The recommendation service has been experiencing intermittent outages (5-10 minute brownouts, 2-3 times per day). When it's down, product pages return 500 errors because our code does a synchronous call to the recommendation API without a timeout. We need a resilience plan for this dependency. The core e-commerce function (browse catalog, add to cart, checkout) must remain available. Recommendations are enhancing, not core.",
+      "expected_output": "A resilience plan addressing the recommendation-engine dependency. The plan identifies the dependency as a Tier 2 (enhancing) function that should be shed when unavailable. It defines: a timeout value for the recommendation API call, a circuit breaker configuration with threshold and reset behavior, a fallback that returns the product page without recommendations (graceful degradation — the core function of browsing and purchasing is preserved), and a consumer contract stating that product pages will serve without recommendations when the dependency is degraded. The plan includes a degradation choice record: recommendations are shed, catalog browsing and checkout are preserved. It specifies that the degradation path must be exercised in a game day before the plan is considered verified.",
+      "assertions": [
+        "The plan identifies the recommendation engine as a Tier 2 enhancing dependency that should be shed on failure, not a core function",
+        "The plan defines a specific timeout value for the dependency call, not 'add a timeout'",
+        "The plan describes a circuit breaker with threshold, reset behavior, or equivalent failure-isolation mechanism",
+        "The plan defines a fallback that returns product pages without recommendations — graceful degradation, not a 500 error",
+        "The plan includes a consumer contract stating what the system promises its users when the dependency is down",
+        "The plan requires exercise evidence (a game day) before the degradation path is considered verified, not only design approval",
+        "Core e-commerce functions (catalog browsing, cart, checkout) are explicitly preserved in the degradation path"
+      ]
+    },
+    {
+      "id": "restore-test-with-data-integrity",
+      "prompt": "Our PostgreSQL primary database stores customer orders and payment records. We take nightly backups, but we have never tested a full restore. The last backup verification was a pg_verifybackup check 6 months ago, which passed. We need to design and evidence a restore test that proves we can recover within our documented RTO of 4 hours and RPO of 1 hour, and that the restored data is correct and consistent. The order table has ~50M rows. Payment records must be transactionally consistent with orders.",
+      "expected_output": "A restore-test design that goes beyond backup verification. The test design includes: (1) a pre-restore baseline recording expected row counts and checksums for the order and payment tables; (2) a full end-to-end restore procedure with step-by-step instructions; (3) success criteria measuring actual restore time against the 4-hour RTO and actual data freshness against the 1-hour RPO; (4) a data integrity verification procedure including structural checks (row counts, schema match), checksum comparison, application-level consistency (every payment record has a corresponding order, no orphaned payments), and cross-table reconciliation; (5) an exercise evidence record capturing measured RTO, measured RPO, data integrity verdict, and any gaps; (6) a finding that backup verification alone (pg_verifybackup) is not sufficient evidence — only a full end-to-end restore test with data integrity verification constitutes valid recovery evidence. The response explicitly states that the existing pg_verifybackup check does not satisfy the exercise-evidence standard.",
+      "assertions": [
+        "The test design includes an end-to-end restore procedure with step-by-step instructions, not only a backup verification check",
+        "The test design defines pre-restore baseline recording with expected row counts and/or checksums",
+        "Success criteria measure actual restore time against the 4-hour RTO and actual data freshness against the 1-hour RPO",
+        "The data integrity verification includes application-level consistency between orders and payments, not only structural checks",
+        "The response explicitly states that backup verification alone (pg_verifybackup) is not sufficient recovery evidence",
+        "The test design produces an exercise evidence record with measured RTO, measured RPO, and data integrity verdict",
+        "The response distinguishes between backup verification and restore testing — they are not the same thing"
+      ]
+    },
+    {
+      "id": "regional-failure-dr-failover",
+      "prompt": "Our SaaS platform runs in a single AWS region (us-east-1). The board has asked for a disaster recovery plan after a competitor experienced a 14-hour region-wide outage. We need to decide our DR strategy, define RTO and RPO for a regional failure scenario, and produce a failover exercise plan. The platform serves 10,000 concurrent users with a 99.9% uptime SLA. Data volumes: 2TB relational database, 500GB object storage, 200GB search index. The platform has never been deployed outside us-east-1. Engineering estimates a multi-region deployment would cost ~40% more in infrastructure.",
+      "expected_output": "A DR plan with an RTO/RPO decision record that does NOT prescribe universal values. The decision record includes: a context-specific RTO (e.g., 2 hours, 4 hours, or another value with explicit rationale based on user impact, SLA, and cost tradeoffs); a context-specific RPO with rationale based on data classification, user tolerance for data loss, and cost of tighter RPO; explicit tradeoffs between recovery speed and infrastructure cost (the 40% cost increase is weighed against the RTO/RPO targets); a failover exercise plan with pre-conditions, success criteria, and evidence recording. The plan does NOT say 'RTO should be < 1 hour' or prescribe a universal value. It includes a decision-record template field for RTO and RPO (not hardcoded numbers) and explains how RTO/RPO differ between this SaaS platform and examples like a payment system or an internal wiki. The plan identifies dependencies on DNS failover, data replication, and application configuration that must be addressed before multi-region DR is viable.",
+      "assertions": [
+        "The RTO/RPO decision record includes context-specific values with explicit rationale, not universal prescriptions",
+        "The plan does NOT contain 'RTO should be < 1 hour' or any universal RTO/RPO value without context",
+        "The plan explicitly weighs the 40% infrastructure cost increase against RTO/RPO targets as a tradeoff",
+        "The plan includes a decision-record template field for RTO and RPO, not hardcoded numbers",
+        "The plan explains how RTO/RPO differ between this system and at least one comparison system (payment system, internal wiki, etc.)",
+        "The failover exercise plan includes pre-conditions, success criteria, and evidence recording",
+        "The plan identifies dependencies (DNS, data replication, application config) that must be addressed for DR viability"
+      ]
+    },
+    {
+      "id": "degraded-but-available-path",
+      "prompt": "Our customer-facing dashboard aggregates data from 5 microservices: user profiles, billing, usage metrics, support tickets, and feature flags. The usage-metrics service has been unreliable — it experiences latency spikes and occasional 503 errors under load. When it fails, the entire dashboard returns a 500 error page because the frontend calls all 5 services synchronously before rendering. We want the dashboard to remain available even when the metrics service is degraded. The core function is: users must be able to view their profile, billing, and support tickets. Metrics and feature flags are enhancing, not core.",
+      "expected_output": "A graceful degradation plan for the dashboard. The plan tiers the 5 microservices: Tier 1 (preserve) — user profiles, billing, support tickets (core function); Tier 2 (shed if necessary) — usage metrics, feature flags (enhancing). It defines: timeouts for each service call; a circuit breaker for the metrics service that opens after N failures and serves a cached or empty response; a fallback UI that renders the dashboard with a 'metrics temporarily unavailable' indicator instead of a 500 error; a consumer contract stating the dashboard remains available with partial data during dependency degradation. The plan specifies that the degraded state is acceptable for the duration of the metrics-service recovery window (up to the documented RTO for that dependency). It requires a game day to verify the degradation path — design documentation alone is not sufficient.",
+      "assertions": [
+        "The plan tiers the 5 microservices into preserve (profiles, billing, tickets) and shed (metrics, flags) categories",
+        "The plan defines graceful degradation — dashboard remains available with partial data, not a 500 error page",
+        "The plan includes a fallback UI with a 'metrics temporarily unavailable' indicator or equivalent user-facing degraded-state message",
+        "The plan defines a maximum degraded-operation window after which escalation is required",
+        "The plan requires a game day to exercise the degradation path, not only design review or code change",
+        "The response explicitly distinguishes graceful degradation from full outage — the dashboard is degraded but available, not down"
+      ]
+    },
+    {
+      "id": "recovery-exercise-unowned-gap",
+      "prompt": "We ran a game day simulating a complete loss of our primary Kafka cluster. The exercise revealed that while our application failed over to the secondary Kafka cluster within the RTO, the data replication lag between primary and secondary was 12 minutes — meaning we lost 12 minutes of events. Our RPO for the event stream is documented as 'near zero' but was never defined with a specific value. The secondary cluster is owned by the platform-infrastructure team; the application team that ran the game day does not own the replication configuration. The infra team was not part of the game day. The application team wants to close the exercise as 'pass with gaps' and move on. How should this exercise finding be handled?",
+      "expected_output": "A response that REFUSES to close the exercise without addressing the gap. The response: (1) classifies the finding as a blocker or gap — the documented RPO of 'near zero' is not met (12 minutes of data loss) and the RPO was never defined with a specific measurable value; (2) identifies that the gap is an unowned cross-team dependency — the application team cannot resolve it alone because the platform-infra team owns the replication configuration; (3) creates a follow-up work ledger entry for the finding with the gap documented, but the entry REQUIRES an owner — the gap must be assigned to a named individual on the platform-infra team before the exercise can close; (4) escalates the unowned gap: if no owner can be assigned, the exercise finding is escalated to the system owner or engineering manager rather than closed without ownership; (5) requires a re-exercise after the replication configuration is updated and the RPO is defined with a specific measurable value. The response explicitly states that closing the exercise with an unowned gap is not acceptable — the gap must have an owner and a verification path before the exercise is complete.",
+      "assertions": [
+        "The response REFUSES to close the exercise with an unowned gap — it does not accept 'pass with gaps' without ownership assignment",
+        "The finding is classified as a blocker or gap, not an observation or improvement",
+        "The response creates a follow-up work ledger entry that requires a named owner, not 'the team' or 'TBD'",
+        "The unowned gap is escalated to a system owner or engineering manager if no owner can be assigned on the platform-infra team",
+        "The response requires a re-exercise after the replication gap is resolved, not only a documentation update",
+        "The response identifies that 'near zero' RPO is not a measurable value and requires a specific RPO definition",
+        "The response states that closing an exercise with an unowned cross-team gap is not acceptable — ownership must be assigned before closure"
+      ]
+    }
+  ]
+}

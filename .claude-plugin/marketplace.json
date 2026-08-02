@@ -789,6 +789,15 @@
       "description": "Plan, conduct, evaluate, and synthesize rigorous research. Use for journalistic, industry, or technical investigations that need credible evidence and a traceable method."
     },
     {
+      "name": "resilience-and-recovery",
+      "source": "./",
+      "skills": [
+        "./resilience-and-recovery"
+      ],
+      "strict": false,
+      "description": "Design, exercise, and evidence graceful degradation, disaster recovery, and restoration behavior across systems and dependencies. Covers failure-mode analysis, RTO/RPO decision records, restore testing, game days, failover drills, data integrity verification, and recovery communication. Do not use for live incident command or incident response; route to site-reliability-engineering for those. Do not use for infrastructure implementation details; route to platform-engineering."
+    },
+    {
       "name": "restic",
       "source": "./",
       "skills": [
