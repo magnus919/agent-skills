@@ -287,6 +287,10 @@ PeerTube federated video platform from the terminal. Browse videos and channels,
 
 Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms.
 
+### [product-analytics-and-measurement](product-analytics-and-measurement/SKILL.md)
+
+Turn intended product outcomes into observable, governed evidence. Covers metric trees (leading/lagging indicators, countermetrics, guardrails), event and tracking plans (identity, session, data quality, ownership), instrumentation QA, funnels, cohorts, retention, adoption, dashboard contracts, privacy-aware measurement, and decision cadence. Routes statistical inference to data-scientist and data pipelines to data-engineering.
+
 ### [product-design-and-ux](product-design-and-ux/SKILL.md)
 
 Turn validated evidence and approved product scope into traceable user-facing behavior: information architecture, plain-language content, task flows, applicable state and recovery models, interface contracts, authorized usability evidence, and observable engineering handoffs. Portable and framework-neutral; routes WCAG/ARIA depth to web-accessibility and formal software acceptance to spec-driven-development. Ships 10 focused references and 6 fillable templates.
