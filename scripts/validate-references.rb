@@ -15,8 +15,9 @@ module ReferenceFileScan
   # new skills cannot silently reintroduce stale file references, and so the
   # real reference checks stay strict for everything not listed here.
   NON_FILE_PATTERNS = [
-    # Generic / doc-type names used as prose concepts, not specific repo files.
-    %r{\A(?:README|SKILL|index|log|_index|00-index|SPEC|TASK-PLAN|VERIFICATION-PLAN|VERIFICATION|CHANGE-CONTRACT|ARCHITECTURE-DELTA|DESIGN|DEVELOPMENT|REFERENCE|FORMS|CLAUDE|CHANGELOG|CONFIG|versions|DOCKER|NIXOS|SECURITY-AUDIT|campaign|finance|legal|instructions)\.md\z},
+    # Generic / doc-type names used as prose concepts, not specific repo files
+    # (includes neckbeard delivery-packet field names and packaging doc names).
+    %r{\A(?:README|SKILL|index|log|_index|00-index|SPEC|DELIVERY-SPEC|V2-SPEC|TASK-PLAN|VERIFICATION-PLAN|VERIFICATION|REVIEW|CHANGE-CONTRACT|ARCHITECTURE-DELTA|DESIGN|DEVELOPMENT|REFERENCE|FORMS|CLAUDE|CHANGELOG|CONFIG|versions|DOCKER|NIXOS|SECURITY-AUDIT|EVIDENCE-LEDGER|campaign|finance|legal|instructions)\.md\z},
     # Numbered ADR / doc naming examples ("Good:", "Bad:", placeholders) in
     # adr-authoring/references/adr-format.md and project-setup-guide.md.
     %r{\A(?:\d{3}-|PLAT-\d{3}-|NNNN-)},
@@ -68,7 +69,7 @@ module ReferenceFileScan
         line.scan(/`([^`]+\.md)`/).flatten.each do |token|
           token = token.strip
           next if token.empty? || non_file?(token)
-          next if resolve_candidates(root, File.dirname(ref), File.dirname(File.dirname(ref)), token, siblings).any? { |path| File.exist?(path) }
+          next if resolve_candidates(root, File.dirname(ref), File.dirname(File.dirname(ref)), token, siblings).any? { |path| file_exists_case_sensitive?(path) }
 
           errors << "#{ref_rel}:#{idx + 1}: stale prose backtick reference to nonexistent file `#{token}`"
         end
@@ -115,5 +116,15 @@ module ReferenceFileScan
 
   def non_file?(token)
     NON_FILE_PATTERNS.any? { |pattern| token.match?(pattern) }
+  end
+
+  # Existence check that stays case-sensitive even on case-insensitive host
+  # filesystems (e.g., default macOS APFS), so results match CI's Linux
+  # runners. File.exist? alone resolves `EVIDENCE-LEDGER.md` to an existing
+  # lowercase `evidence-ledger.md` on macOS but not on Linux.
+  def file_exists_case_sensitive?(path)
+    return false unless File.exist?(path)
+
+    Dir.children(File.dirname(path)).include?(File.basename(path))
   end
 end

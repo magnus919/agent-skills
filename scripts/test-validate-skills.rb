@@ -100,6 +100,36 @@ class ReferenceFileScanTest < Minitest::Test
     end
   end
 
+  def test_case_mismatched_reference_is_detected
+    # Case-sensitivity must match CI's Linux runners even on a
+    # case-insensitive host filesystem (default macOS APFS).
+    with_fixture do |root|
+      write_skill_ref(root, "test-skill/references/guide.md",
+                      "See `OVERVIEW.md` in this skill.\n")
+      write_file(root, "test-skill/references/overview.md", "# Overview\n")
+      errors = ReferenceFileScan.stale_reference_errors(root, "test-skill")
+      assert_equal 1, errors.length
+      assert_includes errors.first, "OVERVIEW.md"
+    end
+  end
+
+  def test_exact_case_reference_passes
+    with_fixture do |root|
+      write_skill_ref(root, "test-skill/references/guide.md",
+                      "See `OVERVIEW.md` in this skill.\n")
+      write_file(root, "test-skill/references/OVERVIEW.md", "# Overview\n")
+      assert_empty ReferenceFileScan.stale_reference_errors(root, "test-skill")
+    end
+  end
+
+  def test_packet_field_names_are_not_file_references
+    with_fixture do |root|
+      write_skill_ref(root, "test-skill/references/overview.md",
+                      "Fields: `SPEC.md`, `TASK-PLAN.md`, `VERIFICATION-PLAN.md`, `VERIFICATION.md`, `EVIDENCE-LEDGER.md`, `CHANGE-CONTRACT.md`, `ARCHITECTURE-DELTA.md`.\n")
+      assert_empty ReferenceFileScan.stale_reference_errors(root, "test-skill")
+    end
+  end
+
   def test_all_repo_references_scan_clean
     # Guard against the scan drifting from the repository's own conventions:
     # the check must pass on the real tree (the stale RICE reference is gone).
