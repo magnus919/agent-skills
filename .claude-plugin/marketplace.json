@@ -717,6 +717,15 @@
       "description": "Run end-to-end product experiments from assumption to decision: translate assumptions into testable hypotheses and experiment briefs, select the right method among qualitative interviews, prototypes, concierge tests, fake doors, feature flags, and A/B tests, and produce readouts that update the roadmap and decision record. Do not use when a qualitative or prototype test is the clearly right answer without statistical measurement; do not prescribe A/B testing by default; do not treat statistical significance as the only decision criterion or hide ethical and guardrail considerations."
     },
     {
+      "name": "product-lifecycle",
+      "source": "./",
+      "skills": [
+        "./product-lifecycle"
+      ],
+      "strict": false,
+      "description": "Route a product through its full lifecycle — discovery, strategy, portfolio choice, roadmap, UX and requirements, experimentation, delivery handoff, adoption, success, and lifecycle review — by composing existing specialist product skills with phase-entry evidence, handoff artifacts, and escalation rules. Use when evaluating a new product idea, managing a product through its lifecycle, or connecting product phases that currently operate in isolation. Do not use for a single product task that is already owned by a specialist skill (load that skill directly); do not use for software delivery lifecycle work (route to neckbeard); do not use to duplicate product discovery, strategy, UX, experimentation, analytics, release, or delivery methods."
+    },
+    {
       "name": "product-lifecycle-learning",
       "source": "./",
       "skills": [
@@ -760,6 +769,15 @@
       ],
       "strict": false,
       "description": "CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management."
+    },
+    {
+      "name": "production-excellence",
+      "source": "./",
+      "skills": [
+        "./production-excellence"
+      ],
+      "strict": false,
+      "description": "Route cross-domain production evidence (readiness, migration, recovery, capacity/cost, incident-learning) into a launch or operational decision — go, no-go, defer, exception, or escalation — with an accountable owner and a post-launch learning path. Compose production specialists without copying their runbooks. Do not use for incident command, release-pipeline mechanics, platform architecture, threat modeling, data-pipeline design, or any task owned end-to-end by a single specialist skill; do not use as a generic checklist detached from service ownership, risk, evidence, and verification."
     },
     {
       "name": "production-readiness",

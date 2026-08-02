@@ -30,6 +30,8 @@
     "./brand-designer",
     "./bundles/agent-production-operations",
     "./bundles/neckbeard",
+    "./bundles/product-lifecycle",
+    "./bundles/production-excellence",
     "./bundles/research-and-vault",
     "./bundles/tailscale",
     "./bundles/workflow-architect",

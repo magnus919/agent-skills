@@ -335,6 +335,10 @@ Discover product requirements from human stakeholders — map who to talk to, as
 
 Run end-to-end product experiments from assumption to decision — translate assumptions into testable hypotheses, select the right method (qualitative interviews, prototypes, concierge tests, fake doors, feature flags, A/B tests), define guardrails and ethics, and produce readouts that update the roadmap and decision record. Ships 4 references (discovery brief, method selection, guardrails and ethics, experiment readout) and 4 fillable templates (assumption map, experiment brief, guardrail and decision rule record, readout learning entry). Routes statistical design to data-scientist and rollout mechanics to release-engineering.
 
+### [product-lifecycle](bundles/product-lifecycle/SKILL.md)
+
+Route a product through its full lifecycle — discovery, strategy and portfolio choice, roadmap, UX and requirements, experimentation, delivery handoff, adoption, success, and lifecycle review — by composing existing specialist product skills with phase-entry evidence, handoff artifacts, and stop/escalation rules. A thin orchestration bundle that provides cross-skill routing and a lifecycle evidence ledger; never duplicates a specialist's methodology. Ships 2 references (phases with per-phase contracts and ledger spec, capability map), a discovery brief, an AGENTS.md loading guide, and 6 evals covering complete lifecycle trajectories, stopped/escalated paths, and evidence handoffs. Does not assume B2B SaaS; customer-success routing is conditional on product type.
+
 ### [product-lifecycle-learning](product-lifecycle-learning/SKILL.md)
 
 Close the launch-to-learning loop for product features and capabilities — compare expected vs. observed outcomes using explicit epistemic categories (expected/observed/uncertain/inferred), update the assumption ledger, assess feature health across multiple dimensions, and make disciplined continue/improve/harvest/pivot/pause/retire decisions. Covers full retirement lifecycles with deprecation communication, migration paths, customer treatment during sunset, and internal cleanup. Produces durable retained learning records that feed back into roadmap, analytics, adoption, experimentation, and specifications. Ships 4 references (discovery brief, epistemic discipline, retirement lifecycle, feedback destinations) and 6 templates (outcome review, assumption ledger update, feature health record, retirement decision, sunset plan, retained learning record).
@@ -355,6 +359,9 @@ Build and maintain outcome-based product roadmaps and portfolio views that seque
 ### [product-strategy](product-strategy/SKILL.md)
 
 CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management.
+
+### [production-excellence](bundles/production-excellence/SKILL.md)
+Cross-domain production gate model — assembles readiness, migration, recovery, capacity/cost, and incident-learning evidence into a launch or operational decision (go/no-go/defer/exception/escalation) with an accountable owner and a post-launch learning path. Composes 12 specialist skills (production-readiness, migration-engineering, resilience-and-recovery, capacity-and-cost-engineering, incident-learning, SRE, release, platform, security, data, QA, verification) without copying their runbooks. Ships 4 references (discovery brief, evidence packet, gate model, handoff record) and 5 integrated evals covering normal release, blocked launch, data migration, dependency outage, and cost/SLO conflict.
 
 ### [production-readiness](production-readiness/SKILL.md)
 
