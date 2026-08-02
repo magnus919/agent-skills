@@ -5,6 +5,7 @@ require "yaml"
 require "set"
 require "json"
 require "open3"
+require_relative "validate-references"
 
 ROOT = File.expand_path("..", __dir__)
 ALLOWED_FIELDS = %w[name description license compatibility metadata allowed-tools].freeze
@@ -124,6 +125,10 @@ skills.each do |skill|
       errors << "#{relative}: evals/evals.json is invalid JSON: #{e.message.lines.first.strip}"
     end
   end
+
+  # Phase 1: prose backtick references in references/*.md must resolve to a
+  # real file (catches stale framework-file references like the RICE typo).
+  errors.concat(ReferenceFileScan.stale_reference_errors(ROOT, skill_dir))
 end
 
 if errors.empty?
