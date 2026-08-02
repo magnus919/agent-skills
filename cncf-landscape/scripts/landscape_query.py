@@ -6,8 +6,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -112,15 +113,15 @@ def _fold(value: Any) -> str:
     return str(value or "").strip().casefold()
 
 
-def _repositories(record: Mapping[str, Any]) -> List[Mapping[str, Any]]:
+def _repositories(record: Mapping[str, Any]) -> list[Mapping[str, Any]]:
     repositories = record.get("repositories")
     if not isinstance(repositories, list):
         return []
     return [item for item in repositories if isinstance(item, dict)]
 
 
-def _numeric_values(record: Mapping[str, Any], field: str) -> List[int]:
-    values: List[int] = []
+def _numeric_values(record: Mapping[str, Any], field: str) -> list[int]:
+    values: list[int] = []
     for repository in _repositories(record):
         value = repository.get(field)
         if isinstance(value, bool):
@@ -130,11 +131,11 @@ def _numeric_values(record: Mapping[str, Any], field: str) -> List[int]:
     return values
 
 
-def _licenses(record: Mapping[str, Any]) -> List[str]:
+def _licenses(record: Mapping[str, Any]) -> list[str]:
     return [str(value) for value in (repo.get("license") for repo in _repositories(record)) if value]
 
 
-def _latest_releases(record: Mapping[str, Any]) -> List[str]:
+def _latest_releases(record: Mapping[str, Any]) -> list[str]:
     return [str(value) for value in (repo.get("latest_release") for repo in _repositories(record)) if value]
 
 
@@ -170,9 +171,7 @@ def matches(record: Mapping[str, Any], args: argparse.Namespace) -> bool:
         return False
     if args.min_stars is not None and max(_numeric_values(record, "stars"), default=0) < args.min_stars:
         return False
-    if args.min_contributors is not None and max(_numeric_values(record, "contributors"), default=0) < args.min_contributors:
-        return False
-    return True
+    return args.min_contributors is None or max(_numeric_values(record, "contributors"), default=0) >= args.min_contributors
 
 
 def _sort_key(record: Mapping[str, Any], field: str) -> Any:
@@ -184,13 +183,13 @@ def _sort_key(record: Mapping[str, Any], field: str) -> Any:
         return max(_numeric_values(record, "contributors"), default=0)
     if field == "latest-release":
         return max(_latest_releases(record), default="")
-    raise LandscapeError("Unsupported sort field: {}".format(field))
+    raise LandscapeError(f"Unsupported sort field: {field}")
 
 
 def select_records(
     records: Sequence[Mapping[str, Any]],
     args: argparse.Namespace,
-) -> List[Mapping[str, Any]]:
+) -> list[Mapping[str, Any]]:
     selected = [record for record in records if matches(record, args)]
     descending = not args.ascending and args.sort != "name"
     selected.sort(key=lambda record: _sort_key(record, args.sort), reverse=descending)
@@ -204,8 +203,8 @@ def select_records(
 def fetch_records(
     url: str,
     timeout: float,
-    opener: Optional[Callable[..., Any]] = None,
-) -> Tuple[List[Mapping[str, Any]], Mapping[str, Any]]:
+    opener: Callable[..., Any] | None = None,
+) -> tuple[list[Mapping[str, Any]], Mapping[str, Any]]:
     request = Request(
         url,
         headers={
@@ -221,35 +220,34 @@ def fetch_records(
             content_type = str(headers.get("Content-Type", ""))
             payload = response.read()
     except HTTPError as exc:
-        raise LandscapeError("Landscape API returned HTTP {} for {}".format(exc.code, url)) from exc
+        raise LandscapeError(f"Landscape API returned HTTP {exc.code} for {url}") from exc
     except URLError as exc:
-        raise LandscapeError("Could not reach Landscape API at {}: {}".format(url, exc.reason)) from exc
+        raise LandscapeError(f"Could not reach Landscape API at {url}: {exc.reason}") from exc
     except OSError as exc:
-        raise LandscapeError("Could not read Landscape API at {}: {}".format(url, exc)) from exc
+        raise LandscapeError(f"Could not read Landscape API at {url}: {exc}") from exc
 
     if status < 200 or status >= 300:
-        raise LandscapeError("Landscape API returned HTTP {} for {}".format(status, url))
+        raise LandscapeError(f"Landscape API returned HTTP {status} for {url}")
     if "json" not in content_type.casefold():
         raise LandscapeError(
-            "Expected JSON from {} but received Content-Type {!r}; an SPA fallback may have returned HTML.".format(
-                url, content_type or "(missing)"
-            )
+            f"Expected JSON from {url} but received Content-Type {(content_type or '(missing)')!r}; "
+            "an SPA fallback may have returned HTML."
         )
     try:
         decoded = json.loads(payload.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise LandscapeError("Landscape API response from {} was not valid UTF-8 JSON".format(url)) from exc
+        raise LandscapeError(f"Landscape API response from {url} was not valid UTF-8 JSON") from exc
     if not isinstance(decoded, list):
-        raise LandscapeError("Expected a JSON array from {}".format(url))
-    records: List[Mapping[str, Any]] = []
+        raise LandscapeError(f"Expected a JSON array from {url}")
+    records: list[Mapping[str, Any]] = []
     for item in decoded:
         if not isinstance(item, dict):
-            raise LandscapeError("Landscape API response from {} contained a non-object record".format(url))
+            raise LandscapeError(f"Landscape API response from {url} contained a non-object record")
         records.append(item)
     return records, headers
 
 
-def _filters(args: argparse.Namespace) -> Dict[str, Any]:
+def _filters(args: argparse.Namespace) -> dict[str, Any]:
     return {
         key: value
         for key, value in {
@@ -269,7 +267,7 @@ def _filters(args: argparse.Namespace) -> Dict[str, Any]:
     }
 
 
-def run(args: argparse.Namespace, opener: Optional[Callable[..., Any]] = None) -> Dict[str, Any]:
+def run(args: argparse.Namespace, opener: Callable[..., Any] | None = None) -> dict[str, Any]:
     url = args.base_url.rstrip("/") + SOURCE_PATHS[args.source]
     records, headers = fetch_records(url, args.timeout, opener=opener)
     selected = select_records(records, args)
@@ -286,13 +284,13 @@ def run(args: argparse.Namespace, opener: Optional[Callable[..., Any]] = None) -
     }
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
         result = run(args)
     except LandscapeError as exc:
-        print("Error: {}".format(exc), file=sys.stderr)
+        print(f"Error: {exc}", file=sys.stderr)
         return 2
     json.dump(result, sys.stdout, indent=2)
     print()

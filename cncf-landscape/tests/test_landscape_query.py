@@ -6,7 +6,6 @@ import json
 import unittest
 from pathlib import Path
 
-
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "landscape_query.py"
 SPEC = importlib.util.spec_from_file_location("landscape_query", SCRIPT)
 if SPEC is None or SPEC.loader is None:
