@@ -264,3 +264,4 @@ used in this bundle. Reference files are loaded on trigger:
 | [references/tool-authority-health.md](references/tool-authority-health.md) | Tool availability/failure and authority usage/breach record |
 | [references/trace-to-eval-feedback.md](references/trace-to-eval-feedback.md) | Production-to-evaluation feedback loop |
 | [evals/evals.json](evals/evals.json) | Integrated output-quality evaluation cases |
+| [manifest.yaml](manifest.yaml) | Machine-readable composition contract (schema v1): purpose, audience, stages, included skills, prerequisites, outputs, handoffs, conflicts, and eval suite; consumed by the lifecycle capability matrix |

@@ -1,0 +1,119 @@
+# Example bundle manifest (bundle-manifest-v1)
+#
+# This file is a filled-in example that validates against
+# schemas/bundle-manifest-v1.schema.json. It exercises every contract field
+# with realistic values: schema_version, bundle_name, purpose, audience,
+# stages, included_skills, prerequisites, outputs, handoffs, conflicts, and
+# eval_suite.
+#
+# Paths are relative to the bundle's own directory (this example lives in
+# docs/examples/, two levels below the repository root, so ../../ resolves to
+# the repository root — the same depth as a real bundles/<name>/manifest.yaml).
+# Canonical manifests live at bundles/<name>/manifest.yaml.
+
+schema_version: 1
+bundle_name: product-lifecycle
+
+purpose: >-
+  Route a product through its full lifecycle — discovery, strategy, roadmap,
+  UX and requirements, experimentation, delivery handoff, adoption, success,
+  and lifecycle review — by composing existing specialist product skills with
+  phase-entry evidence, handoff artifacts, and escalation rules.
+
+audience: >-
+  Product managers and product operations teams navigating a product across
+  multiple lifecycle phases; agents that need to know which specialist skill
+  to load at each phase and what evidence to hand off between phases.
+
+stages:
+  - name: Discovery
+    skills:
+      - ../../product-discovery/SKILL.md
+  - name: Strategy and portfolio choice
+    skills:
+      - ../../product-strategy/SKILL.md
+      - ../../strategy-frameworks/SKILL.md
+  - name: Roadmap
+    skills:
+      - ../../product-roadmapping-and-portfolio/SKILL.md
+  - name: UX and requirements
+    skills:
+      - ../../product-design-and-ux/SKILL.md
+  - name: Experimentation
+    skills:
+      - ../../product-experimentation/SKILL.md
+  - name: Delivery handoff
+    skills:
+      - ../../implementation-planning/SKILL.md
+      - ../../production-readiness/SKILL.md
+      - ../../release-engineering/SKILL.md
+  - name: Adoption
+    skills:
+      - ../../product-adoption/SKILL.md
+  - name: Success
+    skills:
+      - ../../product-analytics-and-measurement/SKILL.md
+  - name: Lifecycle review
+    skills:
+      - ../../product-lifecycle-learning/SKILL.md
+
+included_skills:
+  - ../../product-discovery/SKILL.md
+  - ../../product-strategy/SKILL.md
+  - ../../strategy-frameworks/SKILL.md
+  - ../../product-roadmapping-and-portfolio/SKILL.md
+  - ../../product-design-and-ux/SKILL.md
+  - ../../product-experimentation/SKILL.md
+  - ../../implementation-planning/SKILL.md
+  - ../../production-readiness/SKILL.md
+  - ../../release-engineering/SKILL.md
+  - ../../product-adoption/SKILL.md
+  - ../../product-analytics-and-measurement/SKILL.md
+  - ../../product-lifecycle-learning/SKILL.md
+
+prerequisites:
+  - artifact: Product idea, market signal, or stakeholder request
+  - artifact: Problem statement and discovery log
+    skill: ../../product-discovery/SKILL.md
+  - artifact: Strategic assessment and portfolio decision
+    skill: ../../product-strategy/SKILL.md
+  - artifact: UX contracts and acceptance criteria
+    skill: ../../product-design-and-ux/SKILL.md
+
+outputs:
+  - lifecycle-evidence-ledger
+  - readiness-verdict
+  - implementation-plan
+  - release-plan
+  - adoption-plan
+  - lifecycle-decision
+
+handoffs:
+  - to: production-excellence bundle
+    artifact: readiness-verdict
+    note: >-
+      Phase 6 delivery handoff routes the production-readiness verdict to the
+      production-excellence launch gate when that bundle is available.
+  - to: next phase (via evidence ledger)
+    artifact: lifecycle-evidence-ledger
+    note: >-
+      Every phase reads and writes the shared lifecycle evidence ledger; the
+      next phase never re-derives prior-phase evidence.
+
+conflicts:
+  - skill: ../../production-readiness/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Both bundles include production-readiness. Use production-excellence for
+      launch-gate decisions; use product-lifecycle for phase 6 delivery
+      handoff routing. Load the bundle that matches the active decision
+      context, never both at once.
+  - skill: ../../release-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Release engineering is a shared specialist. Route by context: lifecycle
+      delivery handoff (product-lifecycle) versus gate-entry release evidence
+      (production-excellence).
+
+eval_suite:
+  - evals/evals.json

@@ -20,6 +20,7 @@ After installing, your agent can run a production gate review for any change —
 | `references/gates.md` | Full gate and exception model: go, no-go, defer, exception, and escalation outcomes, each with conditions, evidence requirements, risk-class applicability, and post-gate handoff rules |
 | `references/handoff-record.md` | Operational handoff record template: service identification, gate outcome, evidence summary, gap register, post-launch learning paths (incident-learning and product-lifecycle-learning), and sign-off fields |
 | `evals/evals.json` | Five integrated evaluation cases covering normal release, untested rollback, data migration, dependency outage, and cost/SLO conflict |
+| `manifest.yaml` | Machine-readable bundle manifest (schema v1): purpose, audience, stages, included skills, prerequisites, outputs, handoffs, conflicts, and eval suite |
 
 ## Quick Start
 

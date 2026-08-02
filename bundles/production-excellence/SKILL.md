@@ -176,3 +176,4 @@ See [AGENTS.md](AGENTS.md) for agent-specific loading notes.
 | [references/evidence-packet.md](references/evidence-packet.md) | Assembling cross-domain evidence for a production decision |
 | [references/gates.md](references/gates.md) | Running the gate model — go/no-go/defer/exception/escalation |
 | [references/handoff-record.md](references/handoff-record.md) | Producing the operational handoff record and post-launch learning path |
+| [manifest.yaml](manifest.yaml) | Machine-readable composition contract (schema v1): purpose, audience, stages, included skills, prerequisites, outputs, handoffs, conflicts, and eval suite; consumed by the lifecycle capability matrix |

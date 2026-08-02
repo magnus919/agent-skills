@@ -39,6 +39,7 @@ load this bundle.
 | `references/discovery-brief.md` | Bounded discovery brief comparing with existing bundles (neckbeard, workflow-architect, tailscale, research-and-vault) and stating the bundle boundary |
 | `references/capability-map.md` | Capability area → owning skill lookup table for quick reference without traversing the full lifecycle |
 | `evals/evals.json` | Schema-v1 output-quality evaluation cases covering a complete lifecycle, ambiguous requests, failed experiments, non-adoption, and justified retirement |
+| `manifest.yaml` | Machine-readable bundle manifest (schema v1): purpose, audience, stages, included skills, prerequisites, outputs, handoffs, conflicts, and eval suite |
 
 ## Quick Start
 
