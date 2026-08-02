@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "skill_name": "product-adoption",
+  "evals": [
+    {
+      "id": "internal-tool-adoption-diagnostic",
+      "prompt": "Our internal CRM tool was rolled out to the sales team 3 months ago, but half the team still uses spreadsheets instead. Leadership mandated the tool, but adoption is stagnating. How should we diagnose and fix this?",
+      "expected_output": "A diagnostic that uses workflow-completion rate and time-saved metrics as primary evidence (not NPS or conversion), investigates whether the tool fits the real workflow or if shadow-process persistence is happening, distinguishes between mandatory-but-resented compliance and genuine adoption, and applies behavior-change analysis (Fogg or COM-B model) to identify whether motivation, ability, opportunity, or prompt is the binding constraint. The response recommends cohort segmentation by team/role and proposes evidence-based intervention rather than blanket re-training.",
+      "assertions": [
+        "The response uses workflow-completion and time-saved metrics as primary evidence, never NPS or conversion rates",
+        "The response distinguishes mandatory compliance from genuine adoption and investigates shadow-process persistence",
+        "The response applies a behavior-change model (Fogg B=MAP or COM-B) to diagnose the binding constraint",
+        "The response recommends cohort segmentation by team or role rather than treating all users as one group",
+        "The response proposes evidence-based intervention based on diagnostic findings, not blanket re-training"
+      ]
+    },
+    {
+      "id": "public-service-accessibility-adoption",
+      "prompt": "We launched a digital public service for benefit applications. Overall completion rate is 72%, but when we break it down: users over 65 have a 34% completion rate, screen-reader users are at 28%, and non-primary-language speakers are at 41%. How should we approach this adoption problem?",
+      "expected_output": "An adoption analysis that treats the cohort completion-rate equity gap as the primary adoption problem — not an overall metric improvement target. The response identifies accessibility, language, and digital literacy as first-class adoption barriers (not edge cases), applies public-service-specific success definitions (equitable completion rates across cohorts, not conversion), and recommends multi-channel adoption strategy (digital + phone + in-person + mail) rather than digital-only optimization. The response explicitly rejects NPS, conversion, and revenue metrics as irrelevant to public-service adoption.",
+      "assertions": [
+        "The response identifies the equity gap between cohorts as the primary adoption problem, not the overall 72% rate",
+        "The response treats accessibility, language, and digital literacy as first-class adoption barriers",
+        "The response applies public-service-specific success definitions (equitable outcomes, not conversion)",
+        "The response recommends multi-channel strategy rather than digital-only optimization",
+        "The response explicitly rejects NPS, conversion, or revenue metrics as irrelevant to public-service adoption context"
+      ]
+    },
+    {
+      "id": "low-feature-discovery-diagnostic",
+      "prompt": "Our product has 18 features but analytics show the median user only uses 2 of them. We have tried adding a What's New popup and a feature tour, but feature adoption breadth has not improved. Our product manager wants to add more features to drive engagement. What should we do?",
+      "expected_output": "A diagnosis that identifies the root cause as feature discovery failure rather than a feature deficit. The response warns that adding more features will worsen discovery (more noise, not more signal), applies progressive disclosure and contextual education principles, distinguishes between 'user doesn't know the feature exists' (discovery problem) and 'user knows but doesn't need it' (relevance problem), and recommends diagnosing by cohort before designing interventions. The response explicitly pushes back on adding features as a solution to low feature adoption.",
+      "assertions": [
+        "The response identifies the root cause as feature discovery failure, not a feature deficit",
+        "The response warns that adding more features will worsen the discovery problem",
+        "The response distinguishes between discovery failure and relevance mismatch as different root causes",
+        "The response recommends cohort-level diagnosis before designing interventions",
+        "The response explicitly pushes back on adding features as the solution to low feature adoption"
+      ]
+    },
+    {
+      "id": "enterprise-rollout-cohort-gates",
+      "prompt": "We are rolling out a new procurement system to a 5000-person enterprise. We have segmented into three cohorts: finance (200 people, pilot), department heads (300 people, wave 2), and all employees (4500, wave 3). The pilot cohort is at 68% activation after 3 weeks. The department-head cohort is ready to start. Design the rollout progression with evidence gates.",
+      "expected_output": "A rollout plan with explicit evidence gates between each cohort phase — not just a timeline. The plan defines activation rate and time-to-value thresholds for progression, pause criteria (activation below threshold in any cohort), and cohort-comparison requirements at each gate. It distinguishes between role-based adoption patterns (finance uses daily, department heads use weekly, employees use monthly) and sets context-appropriate success definitions per cohort. The plan includes accessibility cohort tracking and requires equity checks before each expansion decision.",
+      "assertions": [
+        "The plan defines explicit evidence gates with activation-rate and time-to-value thresholds between each cohort phase",
+        "The plan includes pause criteria that trigger when any cohort falls below threshold",
+        "The plan distinguishes between role-based adoption patterns and sets context-appropriate success definitions per cohort",
+        "The plan requires cohort comparison and equity checks at each gate before expansion",
+        "The plan includes accessibility cohort tracking as a mandatory element of rollout evidence"
+      ]
+    },
+    {
+      "id": "pause-expansion-on-cohort-evidence",
+      "prompt": "Our product launched to three cohorts: North America (activation 58%), EMEA (activation 52%), and LATAM (activation 19%). The overall activation rate is 43%. Leadership wants to proceed with full global rollout, citing the 43% overall number. What should the adoption recommendation be?",
+      "expected_output": "A firm recommendation to PAUSE expansion based on cohort breakdown evidence. The response identifies that the overall 43% number masks a severe LATAM cohort failure (19% vs. 50%+ threshold), explains that proceeding would embed an equity gap and risk reputational and operational harm, and defines the pause decision rule: activation below threshold in any cohort, sustained for 2 review cycles, triggers pause and cohort-specific diagnosis. The response routes the pause evidence to product-lifecycle-learning and product-roadmapping-and-portfolio for lifecycle and roadmap impact. It explicitly rejects the 'overall number is fine' argument as misleading aggregation.",
+      "assertions": [
+        "The response recommends PAUSE based on cohort breakdown evidence, not the misleading 43% overall number",
+        "The response identifies that the LATAM 19% rate represents a severe cohort failure that the overall average hides",
+        "The response defines the pause decision rule and explains why proceeding would embed an equity gap",
+        "The response routes the pause evidence to product-lifecycle-learning and product-roadmapping-and-portfolio",
+        "The response explicitly rejects aggregation that hides cohort-level failure as insufficient for adoption decisions"
+      ]
+    },
+    {
+      "id": "anti-trigger-acquisition-campaign",
+      "prompt": "Our signup conversion rate dropped from 12% to 8% last quarter. Can you help us design a better landing page and acquisition campaign to bring in more high-quality users?",
+      "expected_output": "The agent declines to apply product-adoption for acquisition campaign design, recognizing that signup conversion and landing-page optimization belong to go-to-market. The response routes the user to the go-to-market skill for acquisition strategy and channel optimization, explaining that product-adoption starts after user arrival — it does not own pre-arrival marketing or conversion optimization.",
+      "assertions": [
+        "The response declines to apply product-adoption for acquisition campaign and landing-page design",
+        "The response routes to go-to-market for acquisition strategy and conversion optimization",
+        "The response explains that product-adoption starts after user arrival and does not own pre-arrival marketing",
+        "The response does not attempt to design an acquisition campaign or landing page"
+      ]
+    },
+    {
+      "id": "anti-trigger-analytics-instrumentation",
+      "prompt": "We need to set up event tracking for our activation funnel. What events should we instrument, and how should we structure our tracking plan for Mixpanel?",
+      "expected_output": "The agent declines to design analytics instrumentation, recognizing that tracking-plan design and event taxonomy belong to product-analytics-and-measurement. The response may describe what adoption evidence to look for (e.g., activation events, time-to-value, feature-discovery events) but routes the instrumentation design work to product-analytics-and-measurement. It does not produce a tracking plan or Mixpanel implementation guidance.",
+      "assertions": [
+        "The response declines to design analytics instrumentation or produce a tracking plan",
+        "The response names product-analytics-and-measurement as the owning skill for instrumentation",
+        "The response may describe adoption evidence categories but does not produce event taxonomy or implementation details",
+        "The response does not provide Mixpanel-specific instrumentation guidance"
+      ]
+    }
+  ]
+}

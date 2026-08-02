@@ -287,6 +287,10 @@ PeerTube federated video platform from the terminal. Browse videos and channels,
 
 Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms.
 
+### [product-adoption](product-adoption/SKILL.md)
+
+Diagnose and design product adoption — onboarding, activation, behavior change, feature discovery, rollout segmentation, and sustained use after launch. Covers consumer, B2B, internal-tool, and public-service contexts with evidence-based decision points (proceed, pause, stop, accelerate). Distinguishes acquisition, activation, adoption, retention, and expansion as separate stages with different owners and interventions. Ships 3 references (discovery brief, adoption lifecycle concepts, non-SaaS adoption contexts, behavior change and education) and 4 templates (adoption plan, activation/time-to-value diagnostic, segmentation and rollout record, sustained-use review).
+
 ### [product-design-and-ux](product-design-and-ux/SKILL.md)
 
 Turn validated evidence and approved product scope into traceable user-facing behavior: information architecture, plain-language content, task flows, applicable state and recovery models, interface contracts, authorized usability evidence, and observable engineering handoffs. Portable and framework-neutral; routes WCAG/ARIA depth to web-accessibility and formal software acceptance to spec-driven-development. Ships 10 focused references and 6 fillable templates.
