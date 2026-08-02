@@ -52,6 +52,10 @@ Create comprehensive brand identity documentation for any brand. Guides you thro
 
 Make system boundaries, responsibilities, and relationships legible at the architectural level appropriate to the reader.
 
+### [capacity-and-cost-engineering](capacity-and-cost-engineering/SKILL.md)
+
+Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Covers growth forecasting, peak sizing, degraded-mode capacity, budget/quota controls, load/soak test evidence standards, and SLO-cost tradeoff records. Routes financial P&L and fundraising to financial-modeling, infrastructure implementation to platform-engineering, degradation-path design to resilience-and-recovery, and feeds capacity/cost evidence to production-readiness. Ships a discovery brief comparing seven adjacent skills, five fillable templates (capacity model, unit-economics record, budget/quota decision, load/soak test plan, SLO-cost tradeoff record), and five evals.
+
 ### [chief-of-staff-methodology](chief-of-staff-methodology/SKILL.md)
 
 Prepare executive decisions, information triage, organizational sensing, institutional memory, and calendar choices with accountable human authority, transparent data use, and reviewable trade-offs.
@@ -302,6 +306,10 @@ PeerTube federated video platform from the terminal. Browse videos and channels,
 ### [platform-engineering](platform-engineering/SKILL.md)
 
 Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms.
+
+### [privacy-engineering](privacy-engineering/SKILL.md)
+
+Translate privacy principles and legal requirements into verifiable engineering artifacts — data-lifecycle records, privacy acceptance criteria, data-flow and access maps, retention/deletion verification plans, and privacy change reviews. Covers seven privacy dimensions (purpose, lifecycle/retention, access, deletion, tenant/isolation, residency, consent) as structured concerns, with specific guidance for agent traces and product analytics telemetry. Routes legal interpretation to legal-strategy and security implementation to secure-software-engineering. Ships 1 discovery brief, 5 templates, and 6 evals.
 
 ### [product-adoption](product-adoption/SKILL.md)
 
