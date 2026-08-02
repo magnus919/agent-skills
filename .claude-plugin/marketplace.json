@@ -123,6 +123,15 @@
       "description": "Build or refactor CLI tools designed for AI agent consumption: non-interactive, flag-driven, idempotent, with --json output and --dry-run preview. Use when creating a new script the agent will call, adding agent-friendly flags to an existing tool, or debugging why an agent keeps failing to use your CLI."
     },
     {
+      "name": "cncf-landscape",
+      "source": "./",
+      "skills": [
+        "./cncf-landscape"
+      ],
+      "strict": false,
+      "description": "Use this skill when discovering and comparing cloud-native technologies from the CNCF Landscape for an architecture or engineering decision. Query the live public Landscape API, filter candidates by capability, category, maturity, license, and repository signals, then produce an evidence-backed shortlist with trade-offs, unknowns, and validation steps. Do not use it as a substitute for project documentation, production-readiness testing, legal review, or general architecture methodology."
+    },
+    {
       "name": "color-management",
       "source": "./",
       "skills": [

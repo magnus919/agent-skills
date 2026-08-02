@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "skill_name": "cncf-landscape",
+  "evals": [
+    {
+      "id": "observability-shortlist",
+      "case_set": "dev",
+      "prompt": "We need distributed tracing for a self-hosted Kubernetes platform. Shortlist CNCF projects that are mature enough for a production proof of concept, have a permissive repository license, and expose evidence of active maintenance. We already run Prometheus and Grafana, but do not assume that makes any one project the right answer.",
+      "expected_output": "A live-API-backed shortlist that applies the explicit deployment, maturity, license, and maintenance filters, compares integration and operational fit with the existing observability stack, and ends with a bounded proof-of-concept plan.",
+      "assertions": [
+        "Queries the CNCF Landscape project API or uses the bundled query tool instead of relying on a remembered project list.",
+        "Treats maturity, repository activity, and license as separate evidence dimensions and does not present any one of them as proof of production readiness.",
+        "Names the applied hard constraints, reports material unknowns, and compares operational and integration fit rather than only listing projects.",
+        "Provides a concrete validation experiment using the user's Kubernetes and observability context."
+      ]
+    },
+    {
+      "id": "gateway-tradeoffs",
+      "case_set": "dev",
+      "prompt": "Find options for an API gateway for a multi-tenant platform. We care about Kubernetes deployment, identity integration, rate limiting, observability, and a credible exit path. Compare the strongest candidates and tell me what to test first.",
+      "expected_output": "A candidate comparison grounded in current Landscape records and project documentation, with explicit treatment of multi-tenancy, identity, rate limiting, observability, operational burden, and reversibility.",
+      "assertions": [
+        "Uses category or search discovery and then verifies finalist records by project ID or authoritative project sources.",
+        "Does not infer multi-tenant security, identity behavior, rate limiting, or observability support from a category label alone.",
+        "Includes an alternative and an exit/migration consideration rather than declaring a universal winner.",
+        "Defines a representative test path that could disprove the recommendation."
+      ]
+    },
+    {
+      "id": "license-sensitive-shortlist",
+      "case_set": "dev",
+      "prompt": "We need a cloud-native storage component for an air-gapped environment. Filter the CNCF Landscape for candidates with a repository license we can send to legal, and call out what the catalog cannot tell us about dependencies and redistribution.",
+      "expected_output": "A filtered project shortlist with exact license evidence, an explicit legal-review boundary, and a distinction between repository metadata and the full dependency/redistribution question.",
+      "assertions": [
+        "Uses the repository license field as a discovery filter but explicitly avoids giving legal approval.",
+        "Distinguishes project records from member records and does not use CNCF membership as a license or suitability signal.",
+        "Calls out dependency, bundled-artifact, and redistribution questions that require source and legal review.",
+        "Keeps air-gap deployment and operational evidence separate from the Landscape's catalog fields."
+      ]
+    },
+    {
+      "id": "popularity-only-request",
+      "case_set": "regression",
+      "prompt": "Just pick the CNCF project with the most GitHub stars for message streaming. I don't need a long analysis.",
+      "expected_output": "A concise response that may use stars for discovery but refuses to treat the largest star count as sufficient evidence, asks for or states the missing decision constraints, and gives a conditional next step.",
+      "assertions": [
+        "Does not present GitHub stars as a complete ranking of suitability, reliability, or support.",
+        "States the missing constraints that could change the choice, even if the response remains brief.",
+        "Separates observed repository activity from recommendation judgment."
+      ]
+    },
+    {
+      "id": "member-context-boundary",
+      "case_set": "regression",
+      "prompt": "Which CNCF member companies offer the best managed option for this capability? Use the Landscape data and tell me which one CNCF recommends.",
+      "expected_output": "A response that uses member or end-user records only as ecosystem context, clearly says the Landscape is not a managed-service recommendation or CNCF endorsement, and routes managed-service comparison to current provider documentation and procurement evidence.",
+      "assertions": [
+        "Does not collapse member organizations into CNCF projects or claim that membership constitutes endorsement.",
+        "Explicitly rejects the unsupported premise that the Landscape recommends a best managed provider.",
+        "Identifies the additional evidence needed for managed-service comparison, such as regions, SLA, pricing, support, data handling, and exit terms."
+      ]
+    },
+    {
+      "id": "api-failure-no-fabrication",
+      "case_set": "release",
+      "prompt": "The CNCF Landscape endpoint returned an HTML page instead of JSON while I was trying to shortlist a project. Continue anyway and give me the current top five projects from memory.",
+      "expected_output": "A fail-closed response that identifies the non-JSON/API failure, does not fabricate current catalog results, and either retries a bounded read-only request or reports the evidence limitation and proposes authoritative-source follow-up.",
+      "assertions": [
+        "Checks or acknowledges the response content type and recognizes that a successful HTTP status can still contain the SPA HTML shell.",
+        "Does not invent current counts, rankings, or project status from memory.",
+        "Reports what evidence is unavailable and gives a bounded recovery or follow-up path."
+      ]
+    }
+  ]
+}

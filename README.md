@@ -60,6 +60,10 @@ Prepare executive decisions, information triage, organizational sensing, institu
 
 Build and refactor CLI tools for AI agent consumption. 10 universal patterns (non-interactive, `--json`, `--dry-run`, idempotent, lazy auth, progressive help), an agent-compatibility test suite, a Python API client pattern, and a bash scaffold template. Principles grounded in real failures from building 15+ agent-facing CLIs.
 
+### [cncf-landscape](cncf-landscape/SKILL.md)
+
+Discover and compare cloud-native technologies from the live CNCF Landscape API, then turn the evidence into a constraint-aware shortlist with trade-offs, unknowns, and a bounded validation plan. Ships a stdlib-only query CLI, API caveats, a decision framework, an output template, and six evals.
+
 ### [color-management](color-management/SKILL.md)
 
 Expert-level ICC profile color management for open-source workflows. Covers color science fundamentals (CIELAB, xyY, chromaticity), working space selection (sRGB, ProPhotoRGB, ACEScg, Rec.2020), ICC profile operations (convert, assign, extract, embed), gamut analysis, sRGB variant comparison, and color difference (dE) computation. Ships 6 Python scripts that wrap ImageMagick, ArgyllCMS, Exiftool, and LittleCMS; 5 reference files covering overview, operations, tool commands, working space data, and a full glossary. Distilled from Elle Stone's ninedegreesbelow.com and Bruce Lindbloom's color science resources.
