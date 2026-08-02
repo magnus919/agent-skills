@@ -37,6 +37,7 @@
     "./cli-builder",
     "./cncf-landscape",
     "./color-management",
+    "./conditional-customer-success",
     "./confluence-cli",
     "./crewai",
     "./crowdsec",
