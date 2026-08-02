@@ -315,6 +315,10 @@ QA and SDET methodology for senior-to-principal engineers — test strategy, aut
 
 Query, search, and download public datasets from the City of Raleigh Open Data portal. Wraps the ArcGIS REST API to access 170+ datasets — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, and more. No API key needed. Ships a Python CLI with catalog, search, info, query, download, and categories commands.
 
+### [release-engineering](release-engineering/SKILL.md)
+
+Senior-to-principal release engineering methodology — release process models and CD pipelines, progressive delivery and feature flags, versioning and artifacts, readiness gates, rollback planning, change-governance and compliance evidence, DORA metrics, and multi-team release coordination. Ships 15 references, 6 templates, 4 assets, 5 stdlib-only Python CLIs, and 8 evals.
+
 ### [remote-systems-administration](remote-systems-administration/SKILL.md)
 
 Administer and troubleshoot remote Linux, FreeBSD, NetBSD, OpenBSD, and macOS hosts safely, one system or a controlled fleet at a time. Covers SSH, Ansible, Paramiko, portable diagnostics, platform-specific services, packages, configuration, firewalls, rollback, and evidence-led verification.
