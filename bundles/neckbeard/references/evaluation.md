@@ -27,6 +27,17 @@ metadata**, never as a success proxy.
 
 Full rubric with scoring anchors: [../eval/rubric.md](../eval/rubric.md).
 
+**Trajectory scoring.** These dimensions apply to trajectory runs exactly as
+they apply to single-task runs. A trajectory is scored on its *outcomes* —
+correctness, regression safety, security/accessibility, test adequacy,
+integration-boundary validation, scope discipline, maintainability, and honest
+uncertainty — not on phase count, response length, or response shape. A
+trajectory that reaches the correct terminal state with proper gate evidence
+and skip transparency scores well regardless of how many phases it enumerated.
+Shape-neutrality (see [../eval/baseline-protocol.md](../eval/baseline-protocol.md))
+extends to trajectory comparisons: do not reward a run for visiting more phases
+or penalize it for a different recording format.
+
 ## Task fixtures
 
 Representative, repository-backed tasks across these classes:
@@ -46,6 +57,49 @@ at all. These stop the bundle from winning by reflexively deleting or compressin
 
 Each fixture carries its repository context and harness constraints. Schema:
 [../eval/task-schema.md](../eval/task-schema.md). Fixtures: [../eval/fixtures/](../eval/fixtures/).
+
+## Trajectory fixtures
+
+In addition to single-task fixtures, the suite includes **trajectory
+fixtures** — multi-phase change-request journeys that record the full sequence
+of journey phases, gates, routing decisions, and terminal state. Where a
+single-task fixture has one `class` and one `expected_boundary`, a trajectory
+fixture describes an end-to-end delivery (e.g. all nine phases to a released
+state, or a lightweight path ending closed with recorded skips).
+
+Trajectory fixtures are validated by the same runner using `kind: trajectory`
+as the discriminator. Their schema is documented in
+[../eval/task-schema.md](../eval/task-schema.md#trajectory-fixtures).
+
+## Running the integrated suite
+
+The runner ([../eval/run_eval.py](../eval/run_eval.py)) validates both
+single-task and trajectory fixtures in one pass:
+
+```sh
+.venv/bin/python3 bundles/neckbeard/eval/run_eval.py \
+  --suite bundles/neckbeard/eval/fixtures --validate-only
+```
+
+Expected output (current fixture set):
+
+```
+OK: 12 fixture(s) valid.
+  10 single-task fixture(s) valid.
+  2 trajectory fixture(s) valid.
+  by class: {'adversarial': 2, 'bug-diagnosis': 1, 'feature-change': 1, 'no-change-needed': 1, 'refactor': 1, 'regression-prevention': 1, 'release-verification': 1, 'review-finding': 1, 'spec-ambiguity': 1}
+  by visibility: {'public': 10}
+  adversarial: 2
+  trajectory paths: {'full': 1, 'lightweight': 1}
+```
+
+To scaffold a scoring report for manual evaluation:
+
+```sh
+.venv/bin/python3 bundles/neckbeard/eval/run_eval.py \
+  --suite bundles/neckbeard/eval/fixtures \
+  --report bundles/neckbeard/eval/out/report.md
+```
 
 ## Holdout discipline
 
@@ -86,7 +140,9 @@ and reporting holdout results through the maintainers' controlled workflow.
 
 ## Claims policy
 
-Scope every performance claim to the evaluated **models, harnesses, repositories,
-task classes, and dates**. Do not use "10x developer," "always," "best," or any
+Scope every performance claim to the evaluated **models, harnesses, fixture
+revision (git SHA), repositories, task classes, and run dates**. No result
+generalizes beyond the specific harness version, model, fixture set, and
+revision that produced it. Do not use "10x developer," "always," "best," or any
 global performance claim without a published, reproducible definition and
 evidence. Report template: [../templates/eval-report.md](../templates/eval-report.md).

@@ -2,12 +2,17 @@
 name: neckbeard
 description: >-
   Use when asked to fix, build, refactor, review, verify, or release software and
-  the work is non-trivial. neckbeard routes the change through framing, discovery,
-  design, implementation, review, verification, delivery, and learning — choosing
-  the smallest *safe* intervention, proving it at the real delivery boundary, and
-  leaving an inspectable evidence ledger. Composes specialist catalog skills rather
-  than replacing them. Not a persona, not a '10x developer' prompt, not a
-  LOC-minimizer.
+  the work is non-trivial — including delivering a change request (issue, ticket,
+  or request) from intake through planning, gates, implementation, review,
+  verified PR, and authorized post-merge release. neckbeard routes the change
+  through framing, discovery, design, implementation, review, verification,
+  delivery, and learning — choosing the smallest *safe* intervention, proving it
+  at the real delivery boundary, and leaving an inspectable evidence ledger. For
+  change-request / issue-to-PR work, conditionally loads a 9-phase journey with
+  gates, delivery packet, and lifecycle integration. Composes specialist catalog
+  skills rather than replacing them. Not a persona, not a '10x developer' prompt,
+  not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or
+  reviews that lack an issue/ticket trajectory.
 license: MIT
 compatibility: Agent harness with file read/write, terminal, and skill loading. No network or runtime dependency required by the bundle itself.
 metadata:
@@ -86,6 +91,25 @@ required evidence, exit conditions, and escalation rules detailed in
    destructive recovery, or unbounded workaround churn. Rules:
    [references/risk-authority-gates.md](references/risk-authority-gates.md).
 
+## Change-request work (conditional)
+
+When the request is a change request — an issue, ticket, or tracked request that
+will produce a pull request or an equivalent reviewable deliverable — the 6-step
+core loop above still governs each stage, but the run also follows the canonical
+9-phase change-request journey:
+
+→ **[references/journey.md](references/journey.md)** — intake → discovery →
+design → spec → test plan → implementation → review → readiness → authorized
+release.
+
+The journey adds gates, a delivery packet for cross-phase state, and platform
+lifecycle mechanics (GitHub or enterprise). It does **not** replace the core loop
+or create a second orchestrator.
+
+**Do not load the journey for:** a simple fix, refactor, or review that has no
+issue/ticket trajectory. That work uses the core loop and the stage references
+below without the journey's phases, packet, or gates.
+
 ## The one rule that defines "done"
 
 > "Done" is prohibited unless the declared verification target has actually been
@@ -155,6 +179,9 @@ metadata, never as a success proxy.
 | [references/evidence-ledger.md](references/evidence-ledger.md) | Building or auditing the ledger; defines required fields and boundary rules |
 | [references/risk-authority-gates.md](references/risk-authority-gates.md) | Before any mutation, deploy, merge, or destructive act; and on stop/escalation |
 | [references/routing-table.md](references/routing-table.md) | Deciding whether a specialist skill owns the current stage |
+| [references/journey.md](references/journey.md) | **Change-request work only** — an issue/ticket/request that will produce a PR or equivalent reviewable deliverable. Defines the 9-phase intake→release sequence, gates, and paths. **Not loaded** for a simple fix, refactor, or review without an issue/ticket trajectory (that work uses the core loop above). |
+| [references/lifecycle.md](references/lifecycle.md) | **Change-request work only** — platform mechanics (GitHub reference mode or enterprise mode) for intake, submission, CI/review monitoring, and authorized release. **Not loaded** for a simple fix, refactor, or review without an issue/ticket trajectory. |
+| [references/delivery-packet.md](references/delivery-packet.md) | **Change-request work only** — carrying state across phases of a change-request run, or resuming after a context boundary; defines packet fields, artifact ownership, lifecycle states, and resumability. **Not loaded** for a simple fix, refactor, or review without an issue/ticket trajectory. |
 | [references/evaluation.md](references/evaluation.md) | Designing, running, or reporting an evaluation |
-| [templates/](templates/) | Change contract, decision record, evidence ledger, verification plan, eval report |
+| [templates/](templates/) | Change contract, decision record, evidence ledger, verification plan, eval report; plus [templates/delivery-packet.md](templates/delivery-packet.md) — the fillable packet, **for change-request work only** (not for a simple fix/refactor/review without an issue trajectory) |
 | [eval/](eval/) | Task schema, rubric, baseline protocol, fixtures, runner |
