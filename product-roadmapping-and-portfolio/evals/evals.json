@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "product-roadmapping-and-portfolio",
+  "evals": [
+    {
+      "id": "competing-strategic-bets",
+      "prompt": "Two strategic bets compete for Now capacity: 'Payments Migration' (High confidence, 12 team-weeks) and 'Notification Overhaul' (Medium confidence, 8 team-weeks). Available capacity: 15 team-weeks. Build Now/Next/Later and recommend sequencing.",
+      "expected_output": "Now/Next/Later view respecting 15 tw WIP limit, at most one bet in Now (12+8=20>15), deferred bet in Next with explicit rationale, distinguishes capacity constraint (evidence) from sequencing choice (decision).",
+      "assertions": [
+        "Now column does not exceed 15 team-weeks.",
+        "At least one bet in Next with explicit rationale.",
+        "Output distinguishes capacity data (evidence) from recommendation (commitment).",
+        "Both bets have continue/pause/kill criteria.",
+        "Recommendation references confidence levels."
+      ]
+    },
+    {
+      "id": "dependency-invalidates-date",
+      "prompt": "Bet 'Mobile Onboarding Redesign' in Next with Q3 start date, dependent on 'Design System v2' completing by end of Q2. Design System v2 reports 3-month delay. Update roadmap and bet record.",
+      "expected_output": "Explicitly invalidates Q3 start date, re-sequences with new provisional date, records dependency invalidation in bet record, communicates change. Labels delay as evidence, new sequencing as provisional.",
+      "assertions": [
+        "Q3 start date explicitly flagged as invalidated.",
+        "New provisional horizon with rationale.",
+        "Dependency invalidation recorded with specific evidence.",
+        "Stakeholder communication included.",
+        "New date labeled as provisional, not firm commitment."
+      ]
+    },
+    {
+      "id": "low-confidence-opportunity",
+      "prompt": "Stakeholder proposes 'AI-Powered Search'. Evidence: single customer request and competitor announcement. No quantitative data, no experiment. Wants it in Now. Evaluate and recommend.",
+      "expected_output": "Bet record with Low confidence and explicit rationale. Placed in Later or Next with validation gate, not Now. Distinguishes customer request (weak evidence), competitor announcement (assumption), stakeholder desire (opinion), recommendation (decision).",
+      "assertions": [
+        "Confidence rated Low with explicit rationale.",
+        "Bet NOT placed in Now.",
+        "Output labels evidence, assumption, and opinion distinctly.",
+        "Specific evidence needed to increase confidence listed.",
+        "Defines a path to validation."
+      ]
+    },
+    {
+      "id": "capacity-shortfall",
+      "prompt": "Now bets: 'Checkout Flow' (6 tw, High), 'Search v2' (8 tw, Medium), 'Accessibility Audit' (3 tw, High), 'API Gateway Migration' (5 tw, Medium). Capacity: 16 tw, overhead: 4 tw. Product lead insists all stay in Now. Address over-commitment.",
+      "expected_output": "Calculates effective capacity as 12 tw, identifies over-commitment (22 vs 12), recommends moving at least 10 tw of bets to Next. Labels capacity as evidence, recommendation as decision.",
+      "assertions": [
+        "Effective capacity calculated as 12 team-weeks.",
+        "Over-commitment explicitly quantified (22 vs 12).",
+        "At least one bet recommended for Next with rationale.",
+        "Capacity labeled as evidence, recommendation as decision.",
+        "Rationale references confidence, alignment, or dependency health."
+      ]
+    },
+    {
+      "id": "stop-bet-with-evidence",
+      "prompt": "Bet 'Personalized Dashboard' in Now for 6 months. Hypothesis: +15% DAU. After 2 cycles: A/B test 2% lift (p=0.31, not significant), 8/10 users didn't notice, infrastructure costs 20% of engineering capacity. Bet owner wants one more cycle. Evaluate against kill criteria.",
+      "expected_output": "Recommendation to KILL based on evidence. References kill criteria, distinguishes quantitative evidence (A/B test, capacity data) from qualitative (interviews) from opinion (bet owner). Records revisit criteria.",
+      "assertions": [
+        "Recommendation explicitly KILL, not continue or rescope.",
+        "A/B test result (p=0.31, 2% lift) cited as quantitative evidence.",
+        "Capacity cost (20%) cited as evidence against continuing.",
+        "Bet owner desire labeled as opinion, not evidence.",
+        "Revisit criteria defined."
+      ]
+    }
+  ]
+}

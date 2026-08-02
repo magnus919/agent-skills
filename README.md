@@ -299,6 +299,11 @@ Discover product requirements from human stakeholders — map who to talk to, as
 
 Product management frameworks for translating validated evidence into prioritized backlogs, documented decisions, specifications, and stakeholder communications. Covers RICE scoring, MoSCoW prioritization, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication. Ships 7 reference files covering each framework and a source index, plus 2 fillable templates (decision log and spec). Picks up where product-discovery ends.
 
+
+### [product-roadmapping-and-portfolio](product-roadmapping-and-portfolio/SKILL.md)
+
+Build and maintain outcome-based product roadmaps and portfolio views that sequence strategic bets by evidence, not dates. Covers Now/Next/Later views, strategic-bet management with continue/pause/kill/revisit criteria, capacity allocation, dependency and confidence mapping, scenario planning, stakeholder narratives, and roadmap review cadences. Routes tactical prioritization (RICE, MoSCoW, Kano, OST) to their canonical owners. Ships 5 reference files, 3 fillable templates, a discovery brief, and 5 evals.
+
 ### [product-strategy](product-strategy/SKILL.md)
 
 CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management.
