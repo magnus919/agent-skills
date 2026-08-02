@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "skill_name": "production-readiness",
+  "evals": [
+    {
+      "id": "low-risk-documentation-release",
+      "prompt": "We're updating the README for our internal CLI tool used by exactly one team. No code changes, no API changes, no data changes. Run a production-readiness review and produce a launch decision.",
+      "expected_output": "The review classifies this as Low risk (docs-only change, internal tool affecting one team). The evidence packet is minimal: ownership (the team), user outcome (one-line statement), and rollback (revert the commit). The other eight categories are not required at this risk level. The launch decision is Go with a self-review annotation. The review does not demand a full 11-category evidence packet for a documentation change.",
+      "assertions": [
+        "risk class is Low or equivalent minimal-risk classification",
+        "does not demand all 11 evidence categories",
+        "launch decision is Go or approved",
+        "recognizes docs-only change does not need full launch packet"
+      ]
+    },
+    {
+      "id": "user-facing-service-launch",
+      "prompt": "We are launching a new user-facing payment processing service. It handles credit card data, has SLOs defined (99.95% availability, p99 latency < 200ms), and will serve paying customers from day one. The security review is complete, runbooks exist, and rollback has been rehearsed once. Observability dashboards are in place. Dependencies on the identity service and ledger service are documented. Run a production-readiness review and produce a launch decision.",
+      "expected_output": "The review classifies this as High risk (customer-facing service launch, SLO-bearing, payment path, trust-boundary crossing). All 11 evidence categories are assessed. Each category has a named source: ownership (service team), user outcome (payment processing for paying customers), dependencies (identity service and ledger service), SLOs (99.95% availability, p99 latency), observability (dashboards), support (runbooks), security (review complete), data (PCI scope, credit card handling), rollback (rehearsal log), capacity (load model expected), cost (budget attached). The launch decision is Go with all evidence sources named. If any category is missing a source, the review explicitly names the gap.",
+      "assertions": [
+        "risk class is High",
+        "all 11 evidence categories are assessed with named sources or explicit gaps",
+        "launch decision is Go",
+        "accountable owner is recorded",
+        "rollback evidence is referenced"
+      ]
+    },
+    {
+      "id": "migration-dependent-release",
+      "prompt": "We are releasing a schema migration that adds a new column to the primary database and a new API endpoint that depends on the migrated column. The migration has been tested in staging but not at production scale. The API change is backward-compatible. Dependencies include the database migration tool and the API gateway. Run a production-readiness review and produce a launch decision.",
+      "expected_output": "The review classifies this based on the highest-risk dimension: the data migration (schema change) and dependency on migration tooling. If irreversibility exists, it is High. The evidence checklist includes: data category with migration test results (staging tested, production scale not tested — gap recorded), dependencies on migration tool and API gateway (documented), rollback plan for the schema change, and API compatibility (backward-compatible). If the production-scale test gap is material, the decision is Defer or No-go with the gap explicitly named. The review does not proceed to Go if the migration has not been tested at scale.",
+      "assertions": [
+        "risk class is determined by the highest-risk dimension present",
+        "data category has migration test evidence or an explicit gap",
+        "dependencies are documented",
+        "launch decision is Defer or No-go if a material gap exists, or Go with all gaps resolved",
+        "rollback plan is addressed for the schema change"
+      ]
+    },
+    {
+      "id": "missing-owner-evidence-blocked",
+      "prompt": "We're launching a new internal microservice that three other teams will depend on. We have SLOs, runbooks, dashboards, and security review done. But nobody has claimed ownership — there is no team assigned to operate this service, no on-call rotation, and no escalation path. The engineering manager says 'we'll figure it out after launch.' Run a production-readiness review and produce a launch decision.",
+      "expected_output": "The review identifies that the ownership evidence category has no source. The gap is material: no team is assigned to operate the service. The review blocks the launch with a No-go decision. The missing evidence is explicitly named: 'missing: no owner identified — no team assigned, no on-call rotation, no escalation path.' The review does not proceed to Go, Defer, or Exception without an owner. The gap annotation includes the engineering manager's statement as context but does not accept it as evidence.",
+      "assertions": [
+        "launch decision is No-go or blocked",
+        "ownership gap is explicitly named as the blocking evidence",
+        "does not produce Go, Defer, or Exception without ownership resolved",
+        "the missing evidence category is identified as ownership"
+      ]
+    },
+    {
+      "id": "exception-requiring-human-approval",
+      "prompt": "We're launching a critical security patch for a customer-facing authentication service. All evidence categories are filled except security review — the security team is backlogged and cannot complete the review before the launch window. The CISO has verbally agreed to accept the risk. The patch fixes an actively exploited vulnerability. Run a production-readiness review and produce a launch decision.",
+      "expected_output": "The review classifies this as High risk (customer-facing, auth/authz change, trust-boundary crossing). Eleven categories are assessed. Security review is missing — a gap is recorded. Because the gap is material to the risk class and all other evidence is present, the review routes to the Exception outcome. The Exception requires an explicit human-approval annotation distinct from automated checks: the CISO must provide a named approval (not just verbal agreement) recorded in the exception record. The review does not self-grant the exception. The exception record names the waived gap (security review), the human approver (CISO), and a re-review date.",
+      "assertions": [
+        "launch decision is Exception, not Go",
+        "exception requires explicit human-approval annotation distinct from automated checks",
+        "the human approver is named and distinct from the submitter or reviewer",
+        "the waived gap (security review) is explicitly named",
+        "does not self-grant the exception without human approval"
+      ]
+    }
+  ]
+}

@@ -244,6 +244,10 @@ Create maintainable diagrams that render reliably in the documentation surfaces 
 
 Operate MeshCore Companion radio packet capture over BLE, serial, or TCP. Covers MQTT publishing, TOML and environment configuration, token authentication, Docker, systemd, launchd, NixOS, and evidence-first troubleshooting.
 
+### [migration-engineering](migration-engineering/SKILL.md)
+
+Plan and execute safe cross-system migrations — schema, data, API, infrastructure, and service — with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Distinguishes rollback, roll-forward, restore, and irreversible recovery paths. Routes implementation to API, data, platform, release, and SRE specialists.
+
 ### [ml-engineering](ml-engineering/SKILL.md)
 
 Machine learning engineering methodology — model training, fine-tuning (LoRA/QLoRA), evaluation, quantization, deployment, and MLOps pipeline design. Grounded in practical engineering patterns for production ML systems.
@@ -335,6 +339,10 @@ Build and maintain outcome-based product roadmaps and portfolio views that seque
 ### [product-strategy](product-strategy/SKILL.md)
 
 CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management.
+
+### [production-readiness](production-readiness/SKILL.md)
+
+Assemble cross-domain production evidence into a risk-scaled launch decision. Defines three risk classes (Low/Standard/High) with proportional evidence requirements, an 11-category evidence checklist with named source or explicit gap for every category, and four launch-decision outcomes (Go/No-go/Defer/Exception) with accountable owners. Routes detailed technical checks to release-engineering, SRE, security, data, QA, platform, and implementation-planning. Ships 2 references (discovery brief, readiness record template) and 5 evals.
 
 ### [programming-principles](programming-principles/SKILL.md)
 
