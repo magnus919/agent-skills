@@ -618,6 +618,15 @@
       "description": "Diagnose and design product adoption for onboarding, activation, behavior change, feature discovery, rollout, and sustained use after launch. Covers consumer, B2B, internal-tool, and public-service contexts with evidence-based decision points and cohort segmentation. Does not own acquisition campaigns or marketing conversion (routes to go-to-market), product-analytics instrumentation (routes to product-analytics-and-measurement), or customer-success account management and health scoring (routes to conditional-customer-success)."
     },
     {
+      "name": "product-analytics-and-measurement",
+      "source": "./",
+      "skills": [
+        "./product-analytics-and-measurement"
+      ],
+      "strict": false,
+      "description": "Define observable, governed evidence for product outcomes through metric trees, event/tracking plans, instrumentation QA, and measurement governance. Use when defining product metrics, designing tracking plans, building event taxonomies, running product funnels or cohort analysis, setting up dashboard contracts, or auditing instrumentation quality. Do NOT use for statistical inference or experiment design (route to data-scientist), data pipeline implementation (route to data-engineering), data architecture decisions (route to data-architect), observability or infrastructure monitoring (route to site-reliability-engineering), or general business intelligence and dashboard building (route to BI tooling)."
+    },
+    {
       "name": "product-design-and-ux",
       "source": "./",
       "skills": [
@@ -634,6 +643,15 @@
       ],
       "strict": false,
       "description": "Discover product requirements from human stakeholders — map who to talk to, ask questions that surface hidden assumptions, detect gaps in real time, resolve conflicts, and translate conversations into structured SDD specs. Phase 0 upstream of Spec-Driven Development."
+    },
+    {
+      "name": "product-experimentation",
+      "source": "./",
+      "skills": [
+        "./product-experimentation"
+      ],
+      "strict": false,
+      "description": "Run end-to-end product experiments from assumption to decision: translate assumptions into testable hypotheses and experiment briefs, select the right method among qualitative interviews, prototypes, concierge tests, fake doors, feature flags, and A/B tests, and produce readouts that update the roadmap and decision record. Do not use when a qualitative or prototype test is the clearly right answer without statistical measurement; do not prescribe A/B testing by default; do not treat statistical significance as the only decision criterion or hide ethical and guardrail considerations."
     },
     {
       "name": "product-methodology",

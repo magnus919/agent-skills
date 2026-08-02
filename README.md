@@ -291,6 +291,10 @@ Infrastructure as code, CI/CD, container orchestration, service networking — m
 
 Diagnose and design product adoption — onboarding, activation, behavior change, feature discovery, rollout segmentation, and sustained use after launch. Covers consumer, B2B, internal-tool, and public-service contexts with evidence-based decision points (proceed, pause, stop, accelerate). Distinguishes acquisition, activation, adoption, retention, and expansion as separate stages with different owners and interventions. Ships 3 references (discovery brief, adoption lifecycle concepts, non-SaaS adoption contexts, behavior change and education) and 4 templates (adoption plan, activation/time-to-value diagnostic, segmentation and rollout record, sustained-use review).
 
+### [product-analytics-and-measurement](product-analytics-and-measurement/SKILL.md)
+
+Turn intended product outcomes into observable, governed evidence. Covers metric trees (leading/lagging indicators, countermetrics, guardrails), event and tracking plans (identity, session, data quality, ownership), instrumentation QA, funnels, cohorts, retention, adoption, dashboard contracts, privacy-aware measurement, and decision cadence. Routes statistical inference to data-scientist and data pipelines to data-engineering.
+
 ### [product-design-and-ux](product-design-and-ux/SKILL.md)
 
 Turn validated evidence and approved product scope into traceable user-facing behavior: information architecture, plain-language content, task flows, applicable state and recovery models, interface contracts, authorized usability evidence, and observable engineering handoffs. Portable and framework-neutral; routes WCAG/ARIA depth to web-accessibility and formal software acceptance to spec-driven-development. Ships 10 focused references and 6 fillable templates.
@@ -298,6 +302,10 @@ Turn validated evidence and approved product scope into traceable user-facing be
 ### [product-discovery](product-discovery/SKILL.md)
 
 Discover product requirements from human stakeholders — map who to talk to, ask questions that surface hidden assumptions, detect gaps in real time, resolve conflicts, and translate conversations into structured specs. Phase 0 upstream of any spec-driven pipeline. Ships 8 reference files covering stakeholder mapping, question patterns, gap detection, conflict resolution, transcript-to-spec distillation, AI-conducted discovery, power dynamics, and time-constrained discovery; plus 5 templates (discovery plan, interview guide, distillation worksheet, gap register, interpretation log).
+
+### [product-experimentation](product-experimentation/SKILL.md)
+
+Run end-to-end product experiments from assumption to decision — translate assumptions into testable hypotheses, select the right method (qualitative interviews, prototypes, concierge tests, fake doors, feature flags, A/B tests), define guardrails and ethics, and produce readouts that update the roadmap and decision record. Ships 4 references (discovery brief, method selection, guardrails and ethics, experiment readout) and 4 fillable templates (assumption map, experiment brief, guardrail and decision rule record, readout learning entry). Routes statistical design to data-scientist and rollout mechanics to release-engineering.
 
 ### [product-methodology](product-methodology/SKILL.md)
 
