@@ -312,6 +312,10 @@ Run end-to-end product experiments from assumption to decision — translate ass
 Product management frameworks for translating validated evidence into prioritized backlogs, documented decisions, specifications, and stakeholder communications. Covers RICE scoring, MoSCoW prioritization, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication. Ships 7 reference files covering each framework and a source index, plus 2 fillable templates (decision log and spec). Picks up where product-discovery ends.
 
 
+### [product-operations-and-governance](product-operations-and-governance/SKILL.md)
+
+Define and run product governance — recurring decision rights, intake, portfolio cadences, evidence standards, and cross-functional operating contracts. Covers six review cadences (intake/opportunity, portfolio, roadmap, experiment, launch, lifecycle/health) with named accountable owners, minimum evidence standards per decision type, and escalation paths. Supports lightweight mode (small teams, minimal ceremony) and high-assurance mode (regulated/safety-critical) with configurable governance patterns. Distinguishes product governance from executive governance (routes to chief-of-staff-methodology, strategy-frameworks) and technical delivery gates (routes to release-engineering, spec-driven-development). Ships 1 reference (discovery brief), 5 fillable templates (operating model, decision-rights map, review cadence, exception record, escalation record), and 6 evals.
+
 ### [product-roadmapping-and-portfolio](product-roadmapping-and-portfolio/SKILL.md)
 
 Build and maintain outcome-based product roadmaps and portfolio views that sequence strategic bets by evidence, not dates. Covers Now/Next/Later views, strategic-bet management with continue/pause/kill/revisit criteria, capacity allocation, dependency and confidence mapping, scenario planning, stakeholder narratives, and roadmap review cadences. Routes tactical prioritization (RICE, MoSCoW, Kano, OST) to their canonical owners. Ships 5 reference files, 3 fillable templates, a discovery brief, and 5 evals.

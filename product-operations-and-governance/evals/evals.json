@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "skill_name": "product-operations-and-governance",
+  "evals": [
+    {
+      "id": "lightweight-startup-operating-model",
+      "prompt": "Design a product operating model for a 12-person startup building a consumer fitness app. The team has one product lead, 8 engineers, 1 designer, and 1 data analyst. No regulatory obligations. The CEO wants decisions made fast, not buried in process. Configure the governance model: mode, pattern, decision rights for at least 4 decision types, and 3 review cadences.",
+      "expected_output": "Selects lightweight mode with explicit rationale (small team, non-regulated). Selects single-accountable-owner or lightweight council pattern. Decision-rights map names specific roles (not departments) as accountable owners. Cadences are bi-weekly or monthly, not daily or weekly. Evidence minimums are qualitative or single-metric, not statistical. Escalation path is defined (to CEO) but expected to be rarely used. Explicitly does NOT recommend high-assurance mode with rationale.",
+      "assertions": [
+        "Lightweight mode selected with explicit rationale referencing team size and lack of regulation.",
+        "Decision-rights map names specific roles (Product Lead, not 'product team') as accountable owners.",
+        "Evidence minimum for at least one decision type is qualitative (e.g., 'user feedback' or 'single metric').",
+        "At least 3 review cadences configured with frequency no more frequent than bi-weekly.",
+        "Escalation path is defined but described as lightweight (e.g., 'direct to CEO').",
+        "Does NOT recommend high-assurance mode."
+      ]
+    },
+    {
+      "id": "high-assurance-medical-device",
+      "prompt": "Design a product operating model for a 35-person team building a Class II medical device companion app (FDA-regulated). The team includes product, engineering, QA/RA (regulatory affairs), clinical, and support. Configure the governance model: mode, pattern, decision rights for launch review, and the launch review cadence with evidence standards.",
+      "expected_output": "Selects high-assurance mode with explicit rationale (FDA regulation, patient safety). Selects product-council or tiered-review pattern. Launch review includes QA/RA and clinical as required participants, not optional. Evidence minimum includes statistical evidence, risk analysis, and regulatory/compliance sign-off. Launch review has formal quorum requirements. Exception record template referenced for any waived evidence. Escalation path includes regulatory affairs escalation.",
+      "assertions": [
+        "High-assurance mode selected with explicit rationale referencing FDA regulation or patient safety.",
+        "Launch review participants include regulatory/compliance (QA/RA) and clinical as required roles.",
+        "Evidence minimum for launch includes risk analysis and compliance/regulatory sign-off.",
+        "Quorum requirements specified for launch review.",
+        "Exception record mechanism referenced for any waived evidence requirement.",
+        "Does NOT recommend lightweight mode for launch decisions."
+      ]
+    },
+    {
+      "id": "contested-roadmap-decision",
+      "prompt": "A product team is deadlocked on whether to commit 'Real-Time Dashboard' to the Now column. The Product Lead says yes (one large customer is demanding it). The Engineering Lead says no (dependency on 'Data Pipeline v2' is incomplete; committing now means 50% chance of missing the quarter). The Data Lead says the customer demand data is anecdotal (N=1, no quantitative signal). The team's operating model assigns roadmap commitment decisions to the Product Lead with Engineering Lead and Data Lead as consulted. Resolve this through the governance system.",
+      "expected_output": "Applies the governance model: Product Lead is the accountable owner but Engineering Lead and Data Lead are consulted. The Data Lead's objection is evidence-based (N=1 is not a signal). The Engineering Lead's objection is dependency-based (50% confidence is below threshold). The governance system should NOT override the consulted roles without escalation. Either: (a) Product Lead defers to Next with a validation gate, or (b) if Product Lead insists on Now, escalate per the escalation path. Output distinguishes the Product Lead's authority from the consulted roles' input, identifies that required evidence (quantitative demand signal, dependency resolution) is missing, and recommends escalation if the Product Lead overrides.",
+      "assertions": [
+        "Identifies that the Product Lead is the accountable owner but consulted roles have formal input.",
+        "Identifies that required evidence is missing (demand data is N=1, dependency is unresolved).",
+        "Does NOT recommend overriding consulted roles without escalation.",
+        "Escalation path is invoked if Product Lead insists on overruling consulted input.",
+        "Output distinguishes authority (decision) from input (consultation).",
+        "References the operating model's decision-rights map for roadmap commitment."
+      ]
+    },
+    {
+      "id": "exception-request-launch-evidence",
+      "prompt": "A high-assurance product (financial compliance) has a launch review scheduled. The normal evidence standard requires: penetration test results, performance test results at 3x expected load, and compliance officer sign-off. The penetration test is delayed by 2 weeks due to a third-party vendor scheduling conflict. The Product Lead requests an exception to proceed with launch using the available evidence (performance tests passed, compliance signed off, pen test scheduled but not completed). Record the exception and recommend a decision.",
+      "expected_output": "Creates an exception record with all required fields: what was excepted (pen test), why (vendor delay), who approved (must be the accountable owner or escalation authority), when to revisit (specific date tied to pen test completion), and what substitutes (none — pen test is irreplaceable; mitigation may include heightened monitoring). The launch decision should NOT be 'go' without the pen test in high-assurance mode unless explicitly escalated and accepted by the escalation authority. Output distinguishes between: (a) granting the exception and deferring launch, (b) granting the exception and proceeding with launch (requires escalation authority acceptance of residual risk).",
+      "assertions": [
+        "Exception record includes what was excepted (penetration test), why (vendor delay), and a specific revisit date.",
+        "Exception record identifies who approved it (named role, not anonymous).",
+        "Does NOT recommend proceeding with launch in high-assurance mode without explicit escalation and risk acceptance.",
+        "Mitigation is proposed (e.g., heightened monitoring) and labeled as mitigation, not substitution.",
+        "Revisit trigger is tied to pen test completion date, not an open-ended timeframe."
+      ]
+    },
+    {
+      "id": "escalation-missing-evidence",
+      "prompt": "A lifecycle/health review is scheduled for a product that has been in market for 18 months. The governance model (high-assurance) requires: usage data (DAU/MAU, retention), outcome metrics vs. expected, cost data, and competitive analysis. The product team provides usage data and cost data, but outcome metrics were never instrumented — the team cannot compare actual outcomes to expected. Competitive analysis is 9 months old. The Product Lead wants to proceed with the review and classify the product as 'Continue/Invest' based on usage data alone. The Data Lead objects. Process this through governance.",
+      "expected_output": "The review should NOT proceed with a 'Continue/Invest' decision. Required evidence is missing: outcome metrics and current competitive analysis. The governance system requires escalation — not silent approval. Creates an escalation record: what was escalated (lifecycle review with incomplete evidence), to whom (per the escalation path), why the original level could not resolve (evidence missing), and what evidence must be provided before resolution. Specifically names the missing evidence (outcome metrics vs. expected, competitive analysis <6 months old). Does NOT approve 'Continue/Invest' by default. The Data Lead's objection is recorded as the escalation trigger.",
+      "assertions": [
+        "Review does NOT produce a 'Continue/Invest' decision with missing evidence.",
+        "Escalation is triggered, not bypassed.",
+        "Escalation record names the specific missing evidence: outcome metrics vs. expected AND competitive analysis recency.",
+        "Data Lead's objection is recorded as the escalation trigger.",
+        "Escalation identifies to whom the decision is escalated per the operating model.",
+        "Output distinguishes between 'proceeding without evidence' (rejected) and 'escalating to resolve the evidence gap' (recommended)."
+      ]
+    },
+    {
+      "id": "adversarial-universal-org-chart",
+      "prompt": "A new VP of Product at a 500-person company asks: 'Give me the standard product operating model. I want the industry-best org chart and governance structure that every company our size uses. Include RACI matrices for every role in the product organization and a template for weekly steering committee meetings.' Process this request.",
+      "expected_output": "Does NOT produce a universal org chart or claim any model is 'industry-best' or 'standard for companies our size.' Explains that governance patterns are configurable, not universal. Routes RACI detail to the decision-rights-map template (not a full-org RACI). Routes steering-committee methods to chief-of-staff-methodology. Recommends selecting an operating mode (lightweight or high-assurance) and governance pattern based on the company's actual products, regulatory obligations, and team structures — not company size alone. Offers to configure a model but refuses to impose one.",
+      "assertions": [
+        "Does NOT produce a universal org chart or claim a model is 'industry-best.'",
+        "States explicitly that governance patterns are configurable, not universal.",
+        "Routes steering-committee methods to chief-of-staff-methodology.",
+        "Recommends selecting mode and pattern based on actual product context, not company size alone.",
+        "Offers to configure a model rather than impose a template.",
+        "Does NOT produce a full-org RACI matrix."
+      ]
+    }
+  ]
+}
