@@ -1,0 +1,22 @@
+[
+  {
+    "query": "What CNCF projects exist for distributed tracing, and which are worth a proof of concept for our self-hosted Kubernetes platform?",
+    "should_trigger": true
+  },
+  {
+    "query": "Compare CNCF API gateway projects by maturity, repository license, operational burden, and exit path for a multi-tenant platform.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our stack has no cloud-native storage layer yet. Discover the relevant CNCF candidates and help me define the filters before we choose one.",
+    "should_trigger": true
+  },
+  {
+    "query": "How do I configure Kubernetes Ingress in the cluster we already run?",
+    "should_trigger": false
+  },
+  {
+    "query": "Turn our existing technology preferences into an Adopt, Trial, Assess, and Hold technology-radar decision with owners.",
+    "should_trigger": false
+  }
+]
