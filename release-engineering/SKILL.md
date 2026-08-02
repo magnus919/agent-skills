@@ -98,6 +98,11 @@ Senior-to-principal release engineering methodology: designing and operating the
 | `scripts/release_plan_scaffold.py` | Scaffolding a release plan document from flags or a git range |
 | `evals/evals.json` | Running output-quality evals for this skill (schema v1, 8 cases) |
 
+## Adjacent Skills
+
+- Use [qa-methodology](../qa-methodology/SKILL.md) to define test strategy, regression scope, flake policy, and quality-gate semantics. This skill combines the resulting evidence with operational and governance evidence for a release decision.
+- For AI-agent releases, use [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) to design and interpret behavioral, trajectory, and model-regression evidence before incorporating it into a release gate.
+
 ## Scripts
 
 | Script | Invocation | Purpose |

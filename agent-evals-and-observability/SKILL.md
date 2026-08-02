@@ -24,7 +24,7 @@ Evaluation asks whether behavior meets a defined criterion on a declared dataset
 3. Select complementary graders that observe the claimed property. Use deterministic checks for observable mechanics; use execution/environment checks for state and side effects; use human, model-judge, pairwise/ranking, domain, and safety review where appropriate.
 4. Run the candidate and baseline under comparable conditions. Preserve run configuration, stochastic repeats where variability affects the decision, failures/timeouts, and trajectory evidence.
 5. Report a multidimensional profile and uncertainty. Use paired comparisons where possible; inspect slices, missingness, base rates, confounders, effect sizes, and multiple comparisons. Non-significance is not equivalence.
-6. Apply a risk-tiered release gate: hard safety, privacy, authorization, and side-effect invariants cannot be averaged away. Record authority, insufficient-evidence outcomes, rollback, and follow-up.
+6. Apply a risk-tiered release gate: hard safety, privacy, authorization, and side-effect invariants cannot be averaged away. Record authority, insufficient-evidence outcomes, rollback, and follow-up. Load [release-engineering](../release-engineering/SKILL.md) when this evidence must be incorporated into artifact promotion, deployment, rollback, or a broader release train.
 7. Instrument production with minimized, redacted telemetry. Feed verified incidents and near misses into cases after consent, transformation, and contamination review.
 
 Stop when the supported decision, evidence gaps, residual risks, and responsible owner are recorded. Escalate rather than infer a pass when required evidence is unavailable or conflicts.

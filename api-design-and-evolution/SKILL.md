@@ -19,11 +19,13 @@ Start with the consumer job, domain meaning, authority boundary, and failure mod
 then choose the interface style and contract format. Keep facts, assumptions, and
 policy decisions distinguishable.
 
-## When To Use
+## When to use
 
 Use for a new or changed REST/HTTP API, GraphQL schema, RPC operation, event or
 message contract, webhook, or streaming interface. Use it before implementation and
 again whenever consumer-visible behavior changes.
+
+## When not to use
 
 Do not use this as an ADR template, a complete product-discovery method, a security
 assessment, or an implementation test plan. Hand those concerns to
@@ -67,7 +69,10 @@ assessment, or an implementation test plan. Hand those concerns to
    and [references/evolution-and-deprecation.md](references/evolution-and-deprecation.md).
    Review the contract using [templates/contract-review.md](templates/contract-review.md).
    Test provider conformance, consumer expectations, compatibility diffs, examples,
-   negative cases, and the deployed boundary.
+   negative cases, and the deployed boundary. Load
+   [release-engineering](../release-engineering/SKILL.md) for release sequencing,
+   artifact promotion, progressive exposure, and coordinated rollback after the
+   compatibility policy is defined.
 
 ## Reference Guide
 

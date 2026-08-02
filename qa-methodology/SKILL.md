@@ -116,6 +116,7 @@ Route to the named sibling skill instead:
 - [spec-driven-development](../spec-driven-development/SKILL.md) — writing specs, running the SDD pipeline, gate verdict format, revision loops
 - [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) — eval framework governance, statistical comparisons, telemetry and privacy controls, grader implementation
 - [verification-methodology](../verification-methodology/SKILL.md) — collecting evidence and rendering verdicts against explicit pass/fail criteria
+- [release-engineering](../release-engineering/SKILL.md) — composing test evidence into release-candidate readiness, promotion, go/no-go, production rollout, and rollback decisions; QA owns test strategy and gate semantics
 - [systematic-debugging](../systematic-debugging/SKILL.md) — root-cause analysis of production incidents, bug reproduction, fault localization
 - [secure-software-engineering](../secure-software-engineering/SKILL.md) — security implementation, threat modeling, secure defaults, dependency evaluation
 

@@ -32,6 +32,8 @@ Load neckbeard when a request is a non-trivial software change — a bug to
 diagnose, a feature to build, a refactor, a review, a release to verify — and
 you need a bounded, stage-aware way to carry it to a defensible "done."
 
+## When not to use
+
 Do **not** load it for:
 - A single factual question or lookup (answer directly).
 - A one-line edit whose contract is already fully specified (just do it, but
@@ -124,7 +126,8 @@ When a stage has a specialist skill, load it and follow it. The full table with
 | Test strategy, regression testing, CI quality gates | `qa-methodology` |
 | Docs / README / API reference | `technical-documentation` |
 | Verification verdicts and evidence | `verification-methodology` |
-| Reliability, incident response, operational recovery, delivery | `site-reliability-engineering` |
+| Release planning, versioning, pipeline promotion, readiness, rollout, or rollback design | `release-engineering` |
+| Reliability, incident response, or operational recovery | `site-reliability-engineering` |
 
 If a specialist skill is not installed, neckbeard's stage references provide a
 minimal fallback method — but note in the ledger that the specialist was absent.
