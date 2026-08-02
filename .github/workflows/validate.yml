@@ -100,6 +100,14 @@ jobs:
         run: ruby scripts/test-gen-llms-txt.rb
       - name: Validate llms.txt catalog
         run: ruby scripts/gen-llms-txt.rb
+      - name: Validate bundle manifests
+        run: ruby scripts/validate-bundles.rb
+      - name: Test bundle manifest validation
+        run: ruby scripts/test-validate-bundles.rb
+      - name: Validate lifecycle capability matrix catalog
+        run: ruby scripts/gen-lifecycle-matrix.rb
+      - name: Validate lifecycle capability matrix
+        run: ruby scripts/validate-lifecycle-matrix.rb
       - name: Build tracked Python packages
         run: |
           wheel_dir=$(mktemp -d)
