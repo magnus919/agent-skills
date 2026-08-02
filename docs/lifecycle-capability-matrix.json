@@ -1,0 +1,888 @@
+{
+  "schema_version": 1,
+  "generated_by": "scripts/gen-lifecycle-matrix.rb",
+  "bundles": [
+    {
+      "name": "agent-production-operations",
+      "derivation": "manifest",
+      "source": "bundles/agent-production-operations/manifest.yaml",
+      "fields": {
+        "purpose": {
+          "value": "Operate an evaluated agent with tools and authority in production through a runtime control plane covering versioning, staged rollout, fallback, cost and latency budgets, tool health, human escalation, disablement, and trace-to-eval feedback.",
+          "source": "bundles/agent-production-operations/manifest.yaml#/purpose"
+        },
+        "audience": {
+          "value": "Agent operators and platform teams running evaluated agents with tools and delegated authority in production; agents that need the runtime control decisions between evaluation, release, SRE, security, and platform specialists.",
+          "source": "bundles/agent-production-operations/manifest.yaml#/audience"
+        },
+        "stages": {
+          "value": [
+            {
+              "name": "Contract definition",
+              "skills": [
+                "../../agent-evals-and-observability/SKILL.md",
+                "../../production-readiness/SKILL.md",
+                "../../incident-learning/SKILL.md"
+              ]
+            },
+            {
+              "name": "Versioning and rollout planning",
+              "skills": [
+                "../../release-engineering/SKILL.md",
+                "../../platform-engineering/SKILL.md"
+              ]
+            },
+            {
+              "name": "Staged rollout",
+              "skills": [
+                "../../platform-engineering/SKILL.md",
+                "../../site-reliability-engineering/SKILL.md"
+              ]
+            },
+            {
+              "name": "Runtime monitoring",
+              "skills": [
+                "../../site-reliability-engineering/SKILL.md",
+                "../../secure-software-engineering/SKILL.md"
+              ]
+            },
+            {
+              "name": "Trace-to-eval feedback",
+              "skills": [
+                "../../agent-evals-and-observability/SKILL.md"
+              ]
+            },
+            {
+              "name": "Learning and disablement",
+              "skills": [
+                "../../incident-learning/SKILL.md",
+                "../../production-readiness/SKILL.md",
+                "../../privacy-engineering/SKILL.md"
+              ]
+            }
+          ],
+          "source": "bundles/agent-production-operations/manifest.yaml#/stages"
+        },
+        "included_skills": {
+          "value": [
+            "../../agent-evals-and-observability/SKILL.md",
+            "../../release-engineering/SKILL.md",
+            "../../site-reliability-engineering/SKILL.md",
+            "../../secure-software-engineering/SKILL.md",
+            "../../platform-engineering/SKILL.md",
+            "../../production-readiness/SKILL.md",
+            "../../incident-learning/SKILL.md",
+            "../../privacy-engineering/SKILL.md"
+          ],
+          "source": "bundles/agent-production-operations/manifest.yaml#/included_skills"
+        },
+        "prerequisites": {
+          "value": [
+            {
+              "artifact": "Agent evaluation results and observability instrumentation",
+              "skill": "../../agent-evals-and-observability/SKILL.md"
+            },
+            {
+              "artifact": "Production-readiness evidence (go/no-go/defer/exception outcomes)",
+              "skill": "../../production-readiness/SKILL.md"
+            },
+            {
+              "artifact": "Incident-learning records (verified closure, follow-up work map)",
+              "skill": "../../incident-learning/SKILL.md"
+            },
+            {
+              "artifact": "Release pipeline and artifact promotion baseline",
+              "skill": "../../release-engineering/SKILL.md"
+            }
+          ],
+          "source": "bundles/agent-production-operations/manifest.yaml#/prerequisites"
+        },
+        "outputs": {
+          "value": [
+            "agent-production-contract",
+            "runtime-control-plan",
+            "staged-rollout-plan",
+            "tool-authority-health-record",
+            "trace-to-eval-feedback-loop",
+            "disablement-record"
+          ],
+          "source": "bundles/agent-production-operations/manifest.yaml#/outputs"
+        },
+        "handoffs": {
+          "value": [
+            {
+              "to": "release-engineering",
+              "artifact": "staged-rollout-plan",
+              "note": "Rollout stages and promotion gates integrate with the release pipeline; rollback triggers tie agent health to release mechanics."
+            },
+            {
+              "to": "agent-evals-and-observability",
+              "artifact": "trace-to-eval-feedback-loop",
+              "note": "Production traces and incidents feed new evaluation cases and release-gate updates."
+            },
+            {
+              "to": "incident-learning",
+              "artifact": "tool-authority-health-record",
+              "note": "Tool-failure and authority-breach records feed post-incident analysis and verified-closure tracking."
+            },
+            {
+              "to": "human operator",
+              "artifact": "disablement-record",
+              "note": "Disablement revokes credentials, removes the agent from routing/load-balancing, and records the reason, timestamp, and authorizing evidence."
+            }
+          ],
+          "source": "bundles/agent-production-operations/manifest.yaml#/handoffs"
+        },
+        "conflicts": {
+          "value": [
+            {
+              "skill": "../../production-readiness/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Both bundles include production-readiness. This bundle consumes readiness outcomes as authority-gating inputs; production-excellence produces the go/no-go/defer/exception decisions."
+            },
+            {
+              "skill": "../../production-readiness/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Both bundles include production-readiness. Route phase 6 delivery readiness reviews to product-lifecycle; runtime authority decisions for an agent in production go to this bundle."
+            },
+            {
+              "skill": "../../release-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Release engineering is shared. Route by context: agent staged-rollout planning (this bundle) versus launch-gate release plans (production-excellence)."
+            },
+            {
+              "skill": "../../release-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Release engineering is shared. Route by context: agent staged-rollout planning (this bundle) versus lifecycle delivery handoff (product-lifecycle)."
+            },
+            {
+              "skill": "../../site-reliability-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "SRE is shared. This bundle uses it for runtime latency/cost budgets and incident handoff; production-excellence uses it for gate-entry reliability evidence. Incident command stays with SRE in both cases."
+            },
+            {
+              "skill": "../../site-reliability-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "SRE is shared. This bundle uses it for agent runtime budgets; product-lifecycle routes to it for delivery reliability."
+            },
+            {
+              "skill": "../../secure-software-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Security engineering is shared. Route by context: agent authority contracts and disablement security (this bundle) versus launch-gate security evidence (production-excellence)."
+            },
+            {
+              "skill": "../../secure-software-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Security engineering is shared. Route by context: agent trust-boundary and disablement security (this bundle) versus lifecycle-phase security needs (product-lifecycle)."
+            },
+            {
+              "skill": "../../platform-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Platform engineering is shared. Route by context: agent sandboxing and tool-execution isolation (this bundle) versus launch-gate platform evidence (production-excellence)."
+            },
+            {
+              "skill": "../../platform-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Platform engineering is shared. Route by context: agent sandboxing and tool-execution isolation (this bundle) versus lifecycle delivery handoff (product-lifecycle)."
+            },
+            {
+              "skill": "../../incident-learning/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Both bundles consume incident-learning records. This bundle consumes verified-closure records as escalation and disablement inputs; production-excellence uses incident history as gate-entry evidence."
+            },
+            {
+              "skill": "../../privacy-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Privacy engineering is shared. This bundle routes to it for trace scrubbing and user-data-access grants; product-lifecycle routes to it for PII, consent, retention, and data flows in any phase."
+            }
+          ],
+          "source": "bundles/agent-production-operations/manifest.yaml#/conflicts"
+        },
+        "eval_suite": {
+          "value": [
+            "evals/evals.json"
+          ],
+          "source": "bundles/agent-production-operations/manifest.yaml#/eval_suite"
+        }
+      }
+    },
+    {
+      "name": "neckbeard",
+      "derivation": "frontmatter-description-and-deferred-migration",
+      "source": "bundles/neckbeard/SKILL.md",
+      "fields": {
+        "purpose": {
+          "value": "Use when asked to fix, build, refactor, review, verify, or release software and the work is non-trivial — including delivering a change request (issue, ticket, or request) from intake through planning, gates, implementation, review, verified PR, and authorized post-merge release. neckbeard routes the change through framing, discovery, design, implementation, review, verification, delivery, and learning — choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger. For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates, delivery packet, and lifecycle integration. Composes specialist catalog skills rather than replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory.",
+          "source": "bundles/neckbeard/SKILL.md#/description",
+          "derivation": "frontmatter-description"
+        },
+        "audience": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "stages": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "included_skills": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "prerequisites": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "outputs": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "handoffs": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "conflicts": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "eval_suite": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        }
+      }
+    },
+    {
+      "name": "product-lifecycle",
+      "derivation": "manifest",
+      "source": "bundles/product-lifecycle/manifest.yaml",
+      "fields": {
+        "purpose": {
+          "value": "Route a product through its full lifecycle — discovery, strategy and portfolio choice, roadmap, UX and requirements, experimentation, delivery handoff, adoption, success, and lifecycle review — by composing existing specialist product skills with phase-entry evidence, handoff artifacts, and escalation rules.",
+          "source": "bundles/product-lifecycle/manifest.yaml#/purpose"
+        },
+        "audience": {
+          "value": "Product managers, product operations, and portfolio teams navigating a product across multiple lifecycle phases; agents that need to know which specialist skill to load at each phase and what evidence to hand off to the next phase.",
+          "source": "bundles/product-lifecycle/manifest.yaml#/audience"
+        },
+        "stages": {
+          "value": [
+            {
+              "name": "Discovery",
+              "skills": [
+                "../../product-discovery/SKILL.md"
+              ]
+            },
+            {
+              "name": "Strategy and portfolio choice",
+              "skills": [
+                "../../product-strategy/SKILL.md",
+                "../../strategy-frameworks/SKILL.md"
+              ]
+            },
+            {
+              "name": "Roadmap",
+              "skills": [
+                "../../product-roadmapping-and-portfolio/SKILL.md"
+              ]
+            },
+            {
+              "name": "UX and requirements",
+              "skills": [
+                "../../product-design-and-ux/SKILL.md"
+              ]
+            },
+            {
+              "name": "Experimentation",
+              "skills": [
+                "../../product-experimentation/SKILL.md"
+              ]
+            },
+            {
+              "name": "Delivery handoff",
+              "skills": [
+                "../../implementation-planning/SKILL.md",
+                "../../production-readiness/SKILL.md",
+                "../../release-engineering/SKILL.md"
+              ]
+            },
+            {
+              "name": "Adoption",
+              "skills": [
+                "../../product-adoption/SKILL.md"
+              ]
+            },
+            {
+              "name": "Success",
+              "skills": [
+                "../../product-analytics-and-measurement/SKILL.md",
+                "../../conditional-customer-success/SKILL.md"
+              ]
+            },
+            {
+              "name": "Lifecycle review",
+              "skills": [
+                "../../product-lifecycle-learning/SKILL.md"
+              ]
+            }
+          ],
+          "source": "bundles/product-lifecycle/manifest.yaml#/stages"
+        },
+        "included_skills": {
+          "value": [
+            "../../product-discovery/SKILL.md",
+            "../../product-strategy/SKILL.md",
+            "../../strategy-frameworks/SKILL.md",
+            "../../product-roadmapping-and-portfolio/SKILL.md",
+            "../../product-design-and-ux/SKILL.md",
+            "../../product-experimentation/SKILL.md",
+            "../../implementation-planning/SKILL.md",
+            "../../production-readiness/SKILL.md",
+            "../../release-engineering/SKILL.md",
+            "../../product-adoption/SKILL.md",
+            "../../product-analytics-and-measurement/SKILL.md",
+            "../../conditional-customer-success/SKILL.md",
+            "../../product-lifecycle-learning/SKILL.md",
+            "../../product-methodology/SKILL.md",
+            "../../product-operations-and-governance/SKILL.md",
+            "../../financial-modeling/SKILL.md",
+            "../../go-to-market/SKILL.md",
+            "../../data-scientist/SKILL.md",
+            "../../spec-driven-development/SKILL.md",
+            "../../privacy-engineering/SKILL.md",
+            "../../secure-software-engineering/SKILL.md",
+            "../../verification-methodology/SKILL.md",
+            "../../qa-methodology/SKILL.md",
+            "../../site-reliability-engineering/SKILL.md",
+            "../../platform-engineering/SKILL.md",
+            "../../bundles/neckbeard/SKILL.md"
+          ],
+          "source": "bundles/product-lifecycle/manifest.yaml#/included_skills"
+        },
+        "prerequisites": {
+          "value": [
+            {
+              "artifact": "Product idea, market signal, or stakeholder request"
+            },
+            {
+              "artifact": "Problem statement and discovery log",
+              "skill": "../../product-discovery/SKILL.md"
+            },
+            {
+              "artifact": "Strategic assessment and portfolio decision",
+              "skill": "../../product-strategy/SKILL.md"
+            },
+            {
+              "artifact": "Roadmap entry and bet record",
+              "skill": "../../product-roadmapping-and-portfolio/SKILL.md"
+            },
+            {
+              "artifact": "UX contracts and acceptance criteria",
+              "skill": "../../product-design-and-ux/SKILL.md"
+            },
+            {
+              "artifact": "Experiment readout and assumptions register",
+              "skill": "../../product-experimentation/SKILL.md"
+            }
+          ],
+          "source": "bundles/product-lifecycle/manifest.yaml#/prerequisites"
+        },
+        "outputs": {
+          "value": [
+            "lifecycle-evidence-ledger",
+            "problem-statement",
+            "strategic-assessment",
+            "roadmap-entry",
+            "interface-contracts",
+            "experiment-brief",
+            "implementation-plan",
+            "readiness-verdict",
+            "release-plan",
+            "adoption-plan",
+            "outcome-measurement",
+            "outcome-review",
+            "lifecycle-decision"
+          ],
+          "source": "bundles/product-lifecycle/manifest.yaml#/outputs"
+        },
+        "handoffs": {
+          "value": [
+            {
+              "to": "production-excellence bundle",
+              "artifact": "readiness-verdict",
+              "note": "Phase 6 delivery handoff routes the production-readiness verdict to the production-excellence launch gate when that bundle is available."
+            },
+            {
+              "to": "delivery team",
+              "artifact": "implementation-plan",
+              "note": "Phase 6 hands the implementation plan and release plan to the delivery team (and neckbeard for SDLC change-request work)."
+            },
+            {
+              "to": "next phase (via evidence ledger)",
+              "artifact": "lifecycle-evidence-ledger",
+              "note": "Every phase reads and writes the shared lifecycle evidence ledger; the next phase never re-derives prior-phase evidence."
+            },
+            {
+              "to": "product-lifecycle-learning",
+              "artifact": "lifecycle-decision",
+              "note": "Phase 9 records the continue/improve/harvest/pivot/pause/retire decision and retained learning in the learning loop."
+            }
+          ],
+          "source": "bundles/product-lifecycle/manifest.yaml#/handoffs"
+        },
+        "conflicts": {
+          "value": [
+            {
+              "skill": "../../production-readiness/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Both bundles include production-readiness. Use production-excellence for launch-gate decisions; use product-lifecycle for phase 6 delivery handoff routing. Load the bundle matching the active decision context, never both at once."
+            },
+            {
+              "skill": "../../production-readiness/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "agent-production-operations consumes readiness outcomes as authority- gating inputs. Route phase 6 readiness reviews here; runtime authority decisions go to agent-production-operations."
+            },
+            {
+              "skill": "../../release-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Release engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus gate-entry release evidence (production-excellence)."
+            },
+            {
+              "skill": "../../release-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Release engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus agent staged-rollout planning (agent-production-operations)."
+            },
+            {
+              "skill": "../../site-reliability-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "SRE is shared. This bundle routes to it for reliability needs in delivery handoff; production-excellence routes to it for gate-entry SLO/error-budget evidence."
+            },
+            {
+              "skill": "../../site-reliability-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "SRE is shared. This bundle uses it for delivery reliability; agent-production-operations uses it for runtime latency/cost budgets and incident handoff."
+            },
+            {
+              "skill": "../../secure-software-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Security engineering is shared. Route by phase/domain: trust-boundary work in lifecycle phases (this bundle) versus security evidence for launch gates (production-excellence)."
+            },
+            {
+              "skill": "../../secure-software-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Security engineering is shared. Route by context: lifecycle-phase security needs (this bundle) versus agent authority contracts and disablement security (agent-production-operations)."
+            },
+            {
+              "skill": "../../platform-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Platform engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus gate-entry platform evidence (production-excellence)."
+            },
+            {
+              "skill": "../../platform-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Platform engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus agent sandboxing and tool-execution isolation (agent-production-operations)."
+            },
+            {
+              "skill": "../../privacy-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Privacy engineering is shared. This bundle routes to it for PII, consent, retention, and data flows in any phase; agent-production-operations routes to it for trace scrubbing and user-data-access grants."
+            },
+            {
+              "skill": "../../qa-methodology/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "QA methodology is shared. Route by context: lifecycle phase 6 quality gates (this bundle) versus launch verification evidence (production-excellence)."
+            },
+            {
+              "skill": "../../verification-methodology/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Verification methodology is shared. This bundle uses it at every phase gate for evidence; production-excellence uses it for boundary labeling of launch evidence."
+            }
+          ],
+          "source": "bundles/product-lifecycle/manifest.yaml#/conflicts"
+        },
+        "eval_suite": {
+          "value": [
+            "evals/evals.json"
+          ],
+          "source": "bundles/product-lifecycle/manifest.yaml#/eval_suite"
+        }
+      }
+    },
+    {
+      "name": "production-excellence",
+      "derivation": "manifest",
+      "source": "bundles/production-excellence/manifest.yaml",
+      "fields": {
+        "purpose": {
+          "value": "Route cross-domain production evidence (readiness, migration, recovery, capacity/cost, incident-learning) into a launch or operational decision — go, no-go, defer, exception, or escalation — with an accountable owner and a post-launch learning path.",
+          "source": "bundles/production-excellence/manifest.yaml#/purpose"
+        },
+        "audience": {
+          "value": "Service owners, SRE, release, platform, security, data, and QA teams coordinating a production change; agents assembling cross-domain production evidence into a defensible launch decision without re-deriving specialist runbooks.",
+          "source": "bundles/production-excellence/manifest.yaml#/audience"
+        },
+        "stages": {
+          "value": [
+            {
+              "name": "Cross-domain evidence assembly",
+              "skills": [
+                "../../production-readiness/SKILL.md",
+                "../../migration-engineering/SKILL.md",
+                "../../resilience-and-recovery/SKILL.md",
+                "../../capacity-and-cost-engineering/SKILL.md",
+                "../../incident-learning/SKILL.md"
+              ]
+            },
+            {
+              "name": "Gate evaluation",
+              "skills": [
+                "../../production-readiness/SKILL.md",
+                "../../site-reliability-engineering/SKILL.md",
+                "../../verification-methodology/SKILL.md",
+                "../../qa-methodology/SKILL.md"
+              ]
+            },
+            {
+              "name": "Operational handoff",
+              "skills": [
+                "../../release-engineering/SKILL.md",
+                "../../platform-engineering/SKILL.md",
+                "../../secure-software-engineering/SKILL.md",
+                "../../data-engineering/SKILL.md"
+              ]
+            },
+            {
+              "name": "Post-launch learning",
+              "skills": [
+                "../../incident-learning/SKILL.md"
+              ]
+            }
+          ],
+          "source": "bundles/production-excellence/manifest.yaml#/stages"
+        },
+        "included_skills": {
+          "value": [
+            "../../production-readiness/SKILL.md",
+            "../../migration-engineering/SKILL.md",
+            "../../resilience-and-recovery/SKILL.md",
+            "../../capacity-and-cost-engineering/SKILL.md",
+            "../../incident-learning/SKILL.md",
+            "../../site-reliability-engineering/SKILL.md",
+            "../../release-engineering/SKILL.md",
+            "../../platform-engineering/SKILL.md",
+            "../../secure-software-engineering/SKILL.md",
+            "../../data-engineering/SKILL.md",
+            "../../qa-methodology/SKILL.md",
+            "../../verification-methodology/SKILL.md"
+          ],
+          "source": "bundles/production-excellence/manifest.yaml#/included_skills"
+        },
+        "prerequisites": {
+          "value": [
+            {
+              "artifact": "Readiness review evidence packet (risk-scaled, 11 categories)",
+              "skill": "../../production-readiness/SKILL.md"
+            },
+            {
+              "artifact": "Migration plan, compatibility windows, and reconciliation evidence",
+              "skill": "../../migration-engineering/SKILL.md"
+            },
+            {
+              "artifact": "Resilience and recovery evidence (RTO/RPO, restore tests, game days)",
+              "skill": "../../resilience-and-recovery/SKILL.md"
+            },
+            {
+              "artifact": "Capacity and cost model evidence (demand, scaling, unit cost)",
+              "skill": "../../capacity-and-cost-engineering/SKILL.md"
+            },
+            {
+              "artifact": "Incident history, causal hypotheses, and verified-closure records",
+              "skill": "../../incident-learning/SKILL.md"
+            },
+            {
+              "artifact": "SLO and error-budget status",
+              "skill": "../../site-reliability-engineering/SKILL.md"
+            },
+            {
+              "artifact": "Release plan and rollback strategy",
+              "skill": "../../release-engineering/SKILL.md"
+            }
+          ],
+          "source": "bundles/production-excellence/manifest.yaml#/prerequisites"
+        },
+        "outputs": {
+          "value": [
+            "gate-decision",
+            "operational-handoff-record",
+            "accountable-owner-record",
+            "evidence-gap-register"
+          ],
+          "source": "bundles/production-excellence/manifest.yaml#/outputs"
+        },
+        "handoffs": {
+          "value": [
+            {
+              "to": "incident-learning",
+              "artifact": "operational-handoff-record",
+              "note": "Post-launch incidents (SLO degradations, unexpected failures, capacity breaches) route back to incident-learning with launch context; verified closure is required for follow-up items."
+            },
+            {
+              "to": "product-lifecycle-learning",
+              "artifact": "operational-handoff-record",
+              "note": "Expected outcomes recorded in the handoff (SLO targets, capacity assumptions, cost projections) feed expected-vs-observed comparison at the handoff review cadence."
+            },
+            {
+              "to": "agent-production-operations",
+              "artifact": "gate-decision",
+              "note": "Readiness outcomes (go/no-go/defer/exception) gate agent authority expansion when the runtime control plane is in use."
+            },
+            {
+              "to": "service owner",
+              "artifact": "accountable-owner-record",
+              "note": "Every gate outcome names an accountable owner and records the evidence supporting it; no gate passes on a bare checklist."
+            }
+          ],
+          "source": "bundles/production-excellence/manifest.yaml#/handoffs"
+        },
+        "conflicts": {
+          "value": [
+            {
+              "skill": "../../production-readiness/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Both bundles include production-readiness. This bundle owns the launch gate decision; product-lifecycle routes phase 6 delivery handoff. Load the bundle matching the active decision context, never both at once."
+            },
+            {
+              "skill": "../../production-readiness/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "agent-production-operations consumes readiness outcomes as authority- gating inputs. Readiness reviews and go/no-go/defer/exception outcomes are produced here and consumed there."
+            },
+            {
+              "skill": "../../release-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Release engineering is shared. Route by context: gate-entry release evidence (this bundle) versus lifecycle delivery handoff (product-lifecycle)."
+            },
+            {
+              "skill": "../../release-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Release engineering is shared. Route by context: launch-gate release plans (this bundle) versus agent staged-rollout planning (agent-production-operations)."
+            },
+            {
+              "skill": "../../site-reliability-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "SRE is shared. This bundle routes to it for gate-entry SLO/error-budget evidence; product-lifecycle routes to it for delivery reliability."
+            },
+            {
+              "skill": "../../site-reliability-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "SRE is shared. This bundle uses it for gate-entry reliability evidence; agent-production-operations uses it for runtime latency/cost budgets and incident handoff. Incident command stays with SRE in both cases."
+            },
+            {
+              "skill": "../../secure-software-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Security engineering is shared. Route by context: security evidence for launch gates (this bundle) versus trust-boundary work in lifecycle phases (product-lifecycle)."
+            },
+            {
+              "skill": "../../secure-software-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Security engineering is shared. Route by context: launch-gate security evidence (this bundle) versus agent authority contracts and disablement security (agent-production-operations)."
+            },
+            {
+              "skill": "../../platform-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Platform engineering is shared. Route by context: gate-entry platform evidence (this bundle) versus lifecycle delivery handoff (product-lifecycle)."
+            },
+            {
+              "skill": "../../platform-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Platform engineering is shared. Route by context: launch-gate platform evidence (this bundle) versus agent sandboxing and tool-execution isolation (agent-production-operations)."
+            },
+            {
+              "skill": "../../incident-learning/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Both bundles consume incident-learning records. This bundle uses incident history as gate-entry evidence; agent-production-operations consumes verified-closure records as escalation and disablement inputs."
+            },
+            {
+              "skill": "../../qa-methodology/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "QA methodology is shared. Route by context: launch verification evidence (this bundle) versus lifecycle phase 6 quality gates (product-lifecycle)."
+            },
+            {
+              "skill": "../../verification-methodology/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Verification methodology is shared. This bundle uses it for boundary labeling of launch evidence; product-lifecycle uses it at every phase gate."
+            }
+          ],
+          "source": "bundles/production-excellence/manifest.yaml#/conflicts"
+        },
+        "eval_suite": {
+          "value": [
+            "evals/evals.json"
+          ],
+          "source": "bundles/production-excellence/manifest.yaml#/eval_suite"
+        }
+      }
+    },
+    {
+      "name": "research-and-vault",
+      "derivation": "frontmatter-description-and-deferred-migration",
+      "source": "bundles/research-and-vault/SKILL.md",
+      "fields": {
+        "purpose": {
+          "value": "Chain web research, atomic extraction, and durable knowledge capture into a repeatable workflow when the same research-to-notes sequence is needed.",
+          "source": "bundles/research-and-vault/SKILL.md#/description",
+          "derivation": "frontmatter-description"
+        },
+        "audience": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "stages": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "included_skills": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "prerequisites": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "outputs": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "handoffs": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "conflicts": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "eval_suite": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        }
+      }
+    },
+    {
+      "name": "tailscale",
+      "derivation": "frontmatter-description-and-deferred-migration",
+      "source": "bundles/tailscale/SKILL.md",
+      "fields": {
+        "purpose": {
+          "value": "Self-hosted Tailscale/Headscale ecosystem: deploy and manage a Headscale control server, configure tailscale clients, manage ACL policies, node lifecycle, subnet routing, DERP relays, and backup/migration. Use when the user mentions Tailscale, Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure.",
+          "source": "bundles/tailscale/SKILL.md#/description",
+          "derivation": "frontmatter-description"
+        },
+        "audience": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "stages": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "included_skills": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "prerequisites": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "outputs": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "handoffs": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "conflicts": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "eval_suite": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        }
+      }
+    },
+    {
+      "name": "workflow-architect",
+      "derivation": "frontmatter-description-and-deferred-migration",
+      "source": "bundles/workflow-architect/SKILL.md",
+      "fields": {
+        "purpose": {
+          "value": "Discover your actual workflow through conversation or observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Use when you want to understand your own process, formalize it, or share it with collaborators. Also use when a session feels aimless — this skill gives it structure.",
+          "source": "bundles/workflow-architect/SKILL.md#/description",
+          "derivation": "frontmatter-description"
+        },
+        "audience": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "stages": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "included_skills": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "prerequisites": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "outputs": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "handoffs": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "conflicts": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        },
+        "eval_suite": {
+          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
+          "source": "docs/bundle-manifest-design.md#migration-path",
+          "derivation": "migration-deferred"
+        }
+      }
+    }
+  ]
+}

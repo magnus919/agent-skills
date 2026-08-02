@@ -118,3 +118,4 @@ For capability lookup without traversing the full lifecycle, use the
 | [references/phases.md](references/phases.md) | Entering any lifecycle phase; defines entry evidence, output artifacts, escalation behavior, and completion criteria per phase |
 | [references/discovery-brief.md](references/discovery-brief.md) | Understanding the bundle boundary and how it compares to existing bundles |
 | [references/capability-map.md](references/capability-map.md) | Looking up which specialist skill owns a specific capability without traversing the full lifecycle |
+| [manifest.yaml](manifest.yaml) | Machine-readable composition contract (schema v1): purpose, audience, stages, included skills, prerequisites, outputs, handoffs, conflicts, and eval suite; consumed by the lifecycle capability matrix |

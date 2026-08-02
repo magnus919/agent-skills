@@ -1,0 +1,171 @@
+# Bundle manifest (bundle-manifest-v1) — see schemas/bundle-manifest-v1.schema.json
+# and docs/bundle-manifest-design.md. Paths are relative to this bundle dir.
+
+schema_version: 1
+bundle_name: agent-production-operations
+
+purpose: >-
+  Operate an evaluated agent with tools and authority in production through a
+  runtime control plane covering versioning, staged rollout, fallback, cost
+  and latency budgets, tool health, human escalation, disablement, and
+  trace-to-eval feedback.
+
+audience: >-
+  Agent operators and platform teams running evaluated agents with tools and
+  delegated authority in production; agents that need the runtime control
+  decisions between evaluation, release, SRE, security, and platform
+  specialists.
+
+stages:
+  - name: Contract definition
+    skills:
+      - ../../agent-evals-and-observability/SKILL.md
+      - ../../production-readiness/SKILL.md
+      - ../../incident-learning/SKILL.md
+  - name: Versioning and rollout planning
+    skills:
+      - ../../release-engineering/SKILL.md
+      - ../../platform-engineering/SKILL.md
+  - name: Staged rollout
+    skills:
+      - ../../platform-engineering/SKILL.md
+      - ../../site-reliability-engineering/SKILL.md
+  - name: Runtime monitoring
+    skills:
+      - ../../site-reliability-engineering/SKILL.md
+      - ../../secure-software-engineering/SKILL.md
+  - name: Trace-to-eval feedback
+    skills:
+      - ../../agent-evals-and-observability/SKILL.md
+  - name: Learning and disablement
+    skills:
+      - ../../incident-learning/SKILL.md
+      - ../../production-readiness/SKILL.md
+      - ../../privacy-engineering/SKILL.md
+
+included_skills:
+  - ../../agent-evals-and-observability/SKILL.md
+  - ../../release-engineering/SKILL.md
+  - ../../site-reliability-engineering/SKILL.md
+  - ../../secure-software-engineering/SKILL.md
+  - ../../platform-engineering/SKILL.md
+  - ../../production-readiness/SKILL.md
+  - ../../incident-learning/SKILL.md
+  - ../../privacy-engineering/SKILL.md
+
+prerequisites:
+  - artifact: Agent evaluation results and observability instrumentation
+    skill: ../../agent-evals-and-observability/SKILL.md
+  - artifact: Production-readiness evidence (go/no-go/defer/exception outcomes)
+    skill: ../../production-readiness/SKILL.md
+  - artifact: Incident-learning records (verified closure, follow-up work map)
+    skill: ../../incident-learning/SKILL.md
+  - artifact: Release pipeline and artifact promotion baseline
+    skill: ../../release-engineering/SKILL.md
+
+outputs:
+  - agent-production-contract
+  - runtime-control-plan
+  - staged-rollout-plan
+  - tool-authority-health-record
+  - trace-to-eval-feedback-loop
+  - disablement-record
+
+handoffs:
+  - to: release-engineering
+    artifact: staged-rollout-plan
+    note: >-
+      Rollout stages and promotion gates integrate with the release pipeline;
+      rollback triggers tie agent health to release mechanics.
+  - to: agent-evals-and-observability
+    artifact: trace-to-eval-feedback-loop
+    note: >-
+      Production traces and incidents feed new evaluation cases and
+      release-gate updates.
+  - to: incident-learning
+    artifact: tool-authority-health-record
+    note: >-
+      Tool-failure and authority-breach records feed post-incident analysis
+      and verified-closure tracking.
+  - to: human operator
+    artifact: disablement-record
+    note: >-
+      Disablement revokes credentials, removes the agent from
+      routing/load-balancing, and records the reason, timestamp, and
+      authorizing evidence.
+
+conflicts:
+  - skill: ../../production-readiness/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Both bundles include production-readiness. This bundle consumes
+      readiness outcomes as authority-gating inputs; production-excellence
+      produces the go/no-go/defer/exception decisions.
+  - skill: ../../production-readiness/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Both bundles include production-readiness. Route phase 6 delivery
+      readiness reviews to product-lifecycle; runtime authority decisions for
+      an agent in production go to this bundle.
+  - skill: ../../release-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Release engineering is shared. Route by context: agent staged-rollout
+      planning (this bundle) versus launch-gate release plans
+      (production-excellence).
+  - skill: ../../release-engineering/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Release engineering is shared. Route by context: agent staged-rollout
+      planning (this bundle) versus lifecycle delivery handoff
+      (product-lifecycle).
+  - skill: ../../site-reliability-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      SRE is shared. This bundle uses it for runtime latency/cost budgets and
+      incident handoff; production-excellence uses it for gate-entry
+      reliability evidence. Incident command stays with SRE in both cases.
+  - skill: ../../site-reliability-engineering/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      SRE is shared. This bundle uses it for agent runtime budgets;
+      product-lifecycle routes to it for delivery reliability.
+  - skill: ../../secure-software-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Security engineering is shared. Route by context: agent authority
+      contracts and disablement security (this bundle) versus launch-gate
+      security evidence (production-excellence).
+  - skill: ../../secure-software-engineering/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Security engineering is shared. Route by context: agent trust-boundary
+      and disablement security (this bundle) versus lifecycle-phase security
+      needs (product-lifecycle).
+  - skill: ../../platform-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Platform engineering is shared. Route by context: agent sandboxing and
+      tool-execution isolation (this bundle) versus launch-gate platform
+      evidence (production-excellence).
+  - skill: ../../platform-engineering/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Platform engineering is shared. Route by context: agent sandboxing and
+      tool-execution isolation (this bundle) versus lifecycle delivery
+      handoff (product-lifecycle).
+  - skill: ../../incident-learning/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Both bundles consume incident-learning records. This bundle consumes
+      verified-closure records as escalation and disablement inputs;
+      production-excellence uses incident history as gate-entry evidence.
+  - skill: ../../privacy-engineering/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Privacy engineering is shared. This bundle routes to it for trace
+      scrubbing and user-data-access grants; product-lifecycle routes to it
+      for PII, consent, retention, and data flows in any phase.
+
+eval_suite:
+  - evals/evals.json
