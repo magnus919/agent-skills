@@ -672,6 +672,15 @@
       "description": "Query, search, and download public datasets and civic information for the City of Raleigh. Use for live ArcGIS Hub catalog discovery, ArcGIS FeatureServer and MapServer queries, ImageServer imagery exports, official Raleigh geocoding, GoRaleigh transit feeds, guest-public development records, public RaleighNC.gov content, eSCRIBE public meetings, Raleigh fire reports and inspections, and the Raleigh-Wake ECC active incident feed. Do not use for private data, authenticated operations, payments, submissions, bulk crawling, or non-public portals."
     },
     {
+      "name": "release-engineering",
+      "source": "./",
+      "skills": [
+        "./release-engineering"
+      ],
+      "strict": false,
+      "description": "Design, automate, and operate end-to-end software releases: release process models and pipelines (trunk-based development, CD stages, release trains), progressive delivery and feature flags, versioning and artifact management (SemVer, conventional commits, changelogs, SBOM/provenance), readiness and quality gates, rollback and recovery planning, change-management and audit compliance (SOC 2, SOX, PCI), DORA metrics, and multi-team release coordination. Do not use for application feature implementation (backend-engineering/frontend-engineering), production incident root-cause debugging or on-call/SLO operations (systematic-debugging / site-reliability-engineering), security implementation or threat modeling (secure-software-engineering), or internal developer platform construction (platform-engineering)."
+    },
+    {
       "name": "remote-systems-administration",
       "source": "./",
       "skills": [

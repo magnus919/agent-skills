@@ -95,6 +95,7 @@
     "./pydanticai",
     "./qa-methodology",
     "./raleigh",
+    "./release-engineering",
     "./remote-systems-administration",
     "./research-methodology",
     "./restic",
