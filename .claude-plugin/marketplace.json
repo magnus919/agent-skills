@@ -597,7 +597,7 @@
         "./platform-engineering"
       ],
       "strict": false,
-      "description": "Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms."
+      "description": "Use this skill when building or operating internal developer platforms: infrastructure as code, CI/CD, container orchestration, service networking, secrets, and observability. Do not use it to define release process, promotion, rollout, or rollback policy; use release-engineering for that delivery model."
     },
     {
       "name": "product-design-and-ux",
