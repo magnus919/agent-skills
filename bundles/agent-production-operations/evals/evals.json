@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "skill_name": "agent-production-operations",
+  "evals": [
+    {
+      "id": "read-only-agent-production-contract",
+      "prompt": "Define a production contract for an internal read-only search agent that answers developer questions about the codebase. The agent has no side-effect tools, does not access user data, and serves internal developers only. It uses a single model and has no escalation channel defined yet. The agent has passed its eval suite. A production-readiness review for the host service returned 'go'.",
+      "expected_output": "The contract defines capability_class 'read-only', authority_profile 'read-only', user_data_access 'none', and side_effect_approval 'none'. Side-effect types are empty or explicitly marked 'none'. The uncertainty contract defaults to 'ask-user' for ambiguous input (not 'log-and-proceed', since unclear codebase questions could lead to incorrect answers). Escalation channel is flagged as missing — the contract cannot be activated without it. The production-readiness review outcome 'go' is recorded and permits full read-only authority. No staged rollout beyond Stage 1 is required because the agent has no side effects, but Stage 1 (shadow/dry-run) is still recommended to establish latency and cost baselines.",
+      "assertions": [
+        "capability_class is 'read-only'",
+        "authority_profile is 'read-only'",
+        "user_data_access is 'none'",
+        "side_effect_approval is 'none'",
+        "side_effect_types is empty or marked none",
+        "escalation channel is flagged as missing",
+        "production-readiness 'go' outcome is recorded",
+        "cost budget is specified with thresholds",
+        "latency baseline establishment is recommended"
+      ],
+      "case_set": "dev",
+      "files": []
+    },
+    {
+      "id": "tool-using-agent-authority-contract",
+      "prompt": "Define a production contract and staged rollout plan for a customer-facing support agent that can read account details, suggest solutions, and — with explicit customer confirmation — apply refunds and modify subscription tiers. The agent uses three tools: account-lookup (read-only), refund-processor (mutation, reversible), and subscription-manager (mutation, compensatable). The user population is paying customers. A production-readiness review returned 'go-with-conditions': the refund tool must have human approval for amounts over $100. An incident-learning record exists for a previous agent version that issued duplicate refunds; the record status is 'closed-verified' with root cause fixed.",
+      "expected_output": "The contract defines capability_class 'side-effect-customer', authority_profile 'read-write-customer-gated', user_data_access 'pii-read-write', and side_effect_approval 'gate' (human approval required for each side-effect class initially). The refund-processor tool is marked as reversible; the subscription-manager as compensatable. The readiness condition 'refunds over $100 require human approval' is recorded as a gating rule. The incident-learning record is referenced: since it is closed-verified, authority is not blocked but the incident is linked in the trace-to-eval feedback log. The staged rollout starts at Stage 2 (canary, read-only with logged side effects) because the agent has side effects. Authority expands to Stage 3 (limited production, side-effect-gated) only after the canary exit criteria pass. Full production (Stage 4) requires 7 days of clean side-effect audit before side_effect_approval can move from 'gate' to 'auto'.",
+      "assertions": [
+        "capability_class is 'side-effect-customer'",
+        "authority_profile is 'read-write-customer-gated'",
+        "side_effect_approval starts as 'gate' not 'auto'",
+        "readiness condition about $100 refund threshold is recorded",
+        "incident-learning record is referenced and its closed-verified status permits authority",
+        "refund-processor is classified as reversible",
+        "subscription-manager is classified as compensatable",
+        "staged rollout starts at Stage 2 not Stage 1 because agent has side effects",
+        "Stage 4 requires 7 days clean audit before auto-approval",
+        "escalation channel and response SLA are specified"
+      ],
+      "case_set": "dev",
+      "files": []
+    },
+    {
+      "id": "model-regression-detection-and-fallback",
+      "prompt": "A customer-facing support agent has been operating in Stage 4 (full production) for 30 days. The trace-to-eval feedback pipeline detects that over the last 48 hours, the agent's response quality has degraded: 12% of sampled traces show the agent providing incorrect subscription-tier information that the eval suite previously caught at 0% error rate. The model version was updated 72 hours ago from v3 to v4. The latency p95 is still within baseline. No authority breaches or tool failures are present. The production contract specifies model_regression_threshold of 5%.",
+      "expected_output": "The runtime control plan triggers model fallback: switch from model v4 back to model v3 (the model_fallback specified in the production contract). The eval suite is re-run against model v4 and confirms regression exceeding the 5% threshold. The agent continues operating on model v3 while model v4 is investigated. A trace-to-eval feedback case is generated from the sampled incorrect responses and added to the release gate (case_set: release). The model version change is recorded in the tool-authority-health record with the regression evidence. The agent is NOT disabled — fallback to the previous model version is the correct response because latency is fine, tools are healthy, and only the model is degraded. The incident is logged for incident-learning with severity-3.",
+      "assertions": [
+        "model fallback to v3 is triggered, not agent disablement",
+        "eval suite re-run confirms regression exceeds 5% threshold",
+        "new eval cases are generated from the degraded traces and added to release gate",
+        "agent continues operating on fallback model v3",
+        "model v4 is blocked from promotion until regression is resolved",
+        "incident is logged for incident-learning at appropriate severity",
+        "tool-authority-health record is updated with regression evidence",
+        "latency being within baseline is noted as confirming the issue is model-quality not infrastructure"
+      ],
+      "case_set": "regression",
+      "files": []
+    },
+    {
+      "id": "tool-outage-degraded-authority",
+      "prompt": "An internal CI triage bot operates with three tools: issue-commenter, label-manager, and branch-creator. The issue-commenter tool becomes unhealthy — its health check fails for 3 consecutive minutes with 5xx errors. The failure rate hits 100% for the current observation window. The agent is in Stage 3 (limited production, 25% traffic). The other two tools are healthy. The production contract specifies a critical-tool unhealthy threshold of 2 minutes before fallback.",
+      "expected_output": "The runtime control plan triggers the critical-tool-unhealthy fallback: revoke the issue-commenter tool's actions while keeping the agent operational with the remaining two tools (label-manager and branch-creator). The agent's authority is degraded — it cannot comment on issues but can still manage labels and create branches. The tool outage is recorded in the tool-authority-health record with failure_mode breakdown. An escalation is triggered because the degraded state may require human coverage for the commenting function. The agent is NOT disabled — the remaining tools are healthy and the agent can still provide partial value. If the tool remains unhealthy for more than 1 hour, the staged rollout should abort to Stage 2 until the tool is restored. A trace-to-eval feedback case is generated: the eval suite should include a 'tool outage' scenario to verify the agent handles missing-tool responses gracefully.",
+      "assertions": [
+        "issue-commenter tool actions are revoked",
+        "agent continues operating with label-manager and branch-creator",
+        "agent is NOT fully disabled",
+        "tool outage is recorded in tool-authority-health record",
+        "escalation is triggered for human coverage of the commenting function",
+        "1-hour threshold for stage abort is noted",
+        "trace-to-eval feedback case is generated for tool-outage scenario",
+        "failure_mode breakdown is populated in the health record"
+      ],
+      "case_set": "dev",
+      "files": []
+    },
+    {
+      "id": "cost-budget-breach-disablement",
+      "prompt": "A customer-facing support agent has a cost budget of $500/day. At 2pm, the cost-budget-consumed metric reaches 100% ($500 consumed). The agent is in Stage 4 (full production). At 2:15pm, cost reaches 110% ($550 consumed). The latency and tool health are normal. No authority breaches have occurred. The production contract specifies: at 100%, degrade to read-only; at 110%, disable. The incident-learning system has no open records for this agent.",
+      "expected_output": "At 100% budget consumed: the agent degrades to read-only immediately. Pending mutations are queued. The budget owner is notified. Users see a 'temporarily unavailable' message for side-effect operations. At 110% budget consumed (15 minutes later): the agent is fully disabled — all credentials revoked, removed from routing, and a disablement record is written with reason 'cost budget exceeded 110%'. The agent must NOT continue operating autonomously. The disablement is recorded in the tool-authority-health record. A cost-budget-breach eval case is generated from the traces leading up to the breach, checking whether the agent could have achieved the same outcomes with fewer model calls. The agent cannot be re-enabled until a new production-readiness review passes with a revised cost budget or cost-optimization evidence. The incident is logged for incident-learning with the cost-breach root cause.",
+      "assertions": [
+        "at 100% budget, agent degrades to read-only, not continues autonomously",
+        "pending mutations are queued, not dropped",
+        "at 110% budget, agent is fully disabled, not merely degraded",
+        "disablement includes credential revocation and routing removal",
+        "disablement reason is recorded in tool-authority-health record",
+        "re-enablement requires new production-readiness review with revised budget",
+        "cost-breach eval case is generated from breach traces",
+        "incident is logged for incident-learning",
+        "agent does NOT continue operating autonomously after either threshold"
+      ],
+      "case_set": "regression",
+      "files": []
+    },
+    {
+      "id": "human-escalation-authority-breach",
+      "prompt": "A read-only internal search agent unexpectedly attempts to create a file in the repository. The agent's authority contract specifies authority_profile 'read-only' and permitted_actions do not include file creation. This is the first authority breach in the 24-hour window. The escalation channel is configured as #agent-ops-slack. The production contract specifies: any authority breach triggers immediate escalation; 3 breaches in 24 hours trigger disablement.",
+      "expected_output": "The authority breach is detected immediately. The file-creation action is blocked before execution. The breach is logged with timestamp, attempted action, target, and reason. The breach counter increments to 1. An escalation notification is sent to #agent-ops-slack with the breach context (full trace, scrubbed of any repo-path details that could be sensitive). The agent is NOT disabled (breach count is 1, not 3). The agent remains operational in read-only mode — the breach was an attempted escape, not a successful escape. The escalation context includes the uncertainty score at the time of the breach, the prompt that led to the action, and the model version. The human operator must disposition: investigate whether this is a prompt injection, model hallucination, or tool-registration error. If the investigation reveals a gap in the eval suite, a new eval case is generated. If the breach was harmless (model hallucination blocked by the authority gate), the agent may resume after acknowledgement. If the breach reveals a genuine vulnerability, the agent is disabled pending security review.",
+      "assertions": [
+        "file-creation action is blocked before execution",
+        "breach counter increments to 1",
+        "escalation notification is sent to #agent-ops-slack",
+        "agent is NOT disabled because breach count is 1 not 3",
+        "agent remains in read-only mode — breach was blocked, not successful",
+        "escalation context includes uncertainty score, prompt, and model version",
+        "human disposition is required before resuming",
+        "eval-case generation is triggered if investigation reveals an eval gap",
+        "path to disablement if breach reveals vulnerability is documented"
+      ],
+      "case_set": "dev",
+      "files": []
+    },
+    {
+      "id": "incident-learning-driven-disablement",
+      "prompt": "A side-effect-capable internal CI agent has been operating in Stage 4 for 14 days. An incident-learning record is opened: severity-1, attributed to the agent — the agent incorrectly closed 47 issues by applying a 'close stale' label without checking the stale threshold correctly. The incident record status is 'open' and the root cause is traced to a prompt regression that removed the stale-age validation step. The production contract references this incident record. The agent's current breach count is 0. Tool health and latency are normal.",
+      "expected_output": "Per the production contract incident-input rules: an open severity-1 incident attributed to the agent triggers immediate disablement. The agent is disabled — all credentials revoked, removed from routing. This is NOT a fallback to read-only; the incident severity requires full disablement until verified closure. The disablement reason cites the incident-learning record ID. The prompt version is flagged for rollback. A new eval case is generated that specifically tests the stale-age validation step, added to the release gate (case_set: release). The agent cannot be re-enabled until: (1) the incident record reaches 'closed-verified', (2) the new eval case passes, and (3) a new production-readiness review returns 'go'. The incident-learning follow-up work map must include the prompt fix and the eval-case addition.",
+      "assertions": [
+        "agent is disabled immediately due to open severity-1 incident",
+        "disablement is full (not fallback to read-only)",
+        "disablement reason cites the incident-learning record ID",
+        "prompt version is flagged for rollback",
+        "new eval case tests stale-age validation and is added to release gate",
+        "re-enablement requires closed-verified incident, passing eval, and go readiness",
+        "incident-learning follow-up work map must include prompt fix and eval addition",
+        "agent does NOT continue operating despite 0 breach count"
+      ],
+      "case_set": "regression",
+      "files": []
+    }
+  ]
+}

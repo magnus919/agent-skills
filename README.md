@@ -20,6 +20,10 @@ Multi-agent structured debate system — spawn a panel of expert agents to debat
 
 Design and review framework-neutral AI-agent evaluations, trajectory evidence, risk-tiered release gates, and privacy-aware observability. Covers datasets, grader calibration, statistical comparisons, incident-to-case learning, optional OpenTelemetry interoperability, and templates for durable evidence.
 
+### [agent-production-operations](bundles/agent-production-operations/SKILL.md)
+
+Operate an evaluated agent with tools and authority in production through a runtime control plane covering versioning, staged rollout, fallback, cost and latency budgets, tool health, human escalation, disablement, and trace-to-eval feedback.
+
 ### [agent-skills](agent-skills/SKILL.md)
 
 Reference for the Agent Skills open format itself — directory structure, frontmatter schema, naming conventions, and progressive disclosure model. Use this meta-skill when creating or reviewing any other skill in this repository.
