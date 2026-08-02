@@ -36,8 +36,13 @@ declared verification target was actually exercised.
 | `references/evidence-ledger.md` | The ledger schema and the rules for distinguishing a component check from a delivery-boundary check |
 | `references/risk-authority-gates.md` | Stop and escalation rules; the gate before any mutation, deploy, merge, or destructive act |
 | `references/routing-table.md` | "Use existing skill instead" table so the bundle composes the catalog rather than swallowing it |
+| `references/journey.md` | Canonical 9-phase change-request journey — intake, discovery, design, spec, test plan, implementation, review, readiness, authorized release — with four delivery paths |
+| `references/lifecycle.md` | Platform mechanics for GitHub (reference mode) and enterprise contexts — intake snapshots, CI/review monitoring, terminal states, and post-merge release authority |
+| `references/delivery-packet.md` | Durable cross-phase handoff: provenance, resumability, gate verdicts, exact-head binding, lifecycle states, and an artifact ownership map |
 | `references/evaluation.md` | Evaluation methodology: fixtures, baselines, rubrics, multi-run reporting, claims policy |
 | `templates/` | Change contract, decision record, evidence ledger, verification plan, evaluation report |
+| `templates/delivery-packet.md` | Fillable delivery packet template mirroring the nine field groups defined in the reference |
+| `evals/evals.json` | Schema-v1 output-quality evaluation cases covering routing, gates, skip reasons, exact-head binding, and terminal states |
 | `eval/` | Versioned evaluation harness: task schema, scoring rubric, baseline protocol, fixtures, and a runner |
 
 ## Quick Start
@@ -61,9 +66,13 @@ python3 eval/run_eval.py --suite eval/fixtures --report out/report.md
 - A change needs a defensible "done" backed by evidence, not a claim.
 - You want an inspectable record of what was inspected, assumed, changed, and left unverified.
 - You need to evaluate whether a delivery skill actually improves outcomes.
+- You are delivering a **change request** — an issue, ticket, or tracked request — from intake through planning, gates, implementation, and review to a verified PR (or equivalent reviewable deliverable).
+- You need to carry work from an **issue to a PR to an authorized post-merge release** with resumable, exact-head-bound state across phases.
 
 Do not trigger for single factual questions, fully-specified one-line edits, or
-tasks already owned end-to-end by a more specific skill.
+tasks already owned end-to-end by a more specific skill. The change-request
+journey is not loaded for a plain fix, refactor, or review that has no
+issue/ticket trajectory.
 
 ## Requirements
 
