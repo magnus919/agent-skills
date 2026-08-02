@@ -376,6 +376,10 @@ Run a repeatable research-to-notes sequence: gather sources, record URLs and dat
 
 Turn an open question into a bounded, evidence-led investigation rather than a plausible-sounding synthesis.
 
+### [resilience-and-recovery](resilience-and-recovery/SKILL.md)
+
+Design, exercise, and evidence resilience and recovery behavior across systems and dependencies — graceful degradation, restore-based recovery, RTO/RPO decision records, game days, failover drills, data integrity verification, and recovery communication. Ships 7 references, 1 template, 1 discovery brief, and 5 evals.
+
 ### [restic](restic/SKILL.md)
 
 Install, configure, operate, secure, automate, tune, troubleshoot, and recover restic backups across local, SFTP, S3-compatible, cloud, and REST backends. Ships deep references for repository selection, backup design, retention/prune, restore drills, threat modeling, performance, observability, migration, and recovery, plus safe preflight and verification scripts and scheduling templates.
