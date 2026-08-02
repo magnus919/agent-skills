@@ -627,6 +627,15 @@
       "description": "Discover product requirements from human stakeholders — map who to talk to, ask questions that surface hidden assumptions, detect gaps in real time, resolve conflicts, and translate conversations into structured SDD specs. Phase 0 upstream of Spec-Driven Development."
     },
     {
+      "name": "product-experimentation",
+      "source": "./",
+      "skills": [
+        "./product-experimentation"
+      ],
+      "strict": false,
+      "description": "Run end-to-end product experiments from assumption to decision: translate assumptions into testable hypotheses and experiment briefs, select the right method among qualitative interviews, prototypes, concierge tests, fake doors, feature flags, and A/B tests, and produce readouts that update the roadmap and decision record. Do not use when a qualitative or prototype test is the clearly right answer without statistical measurement; do not prescribe A/B testing by default; do not treat statistical significance as the only decision criterion or hide ethical and guardrail considerations."
+    },
+    {
       "name": "product-methodology",
       "source": "./",
       "skills": [
