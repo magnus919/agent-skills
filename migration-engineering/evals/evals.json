@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "skill_name": "migration-engineering",
+  "evals": [
+    {
+      "id": "additive-schema-change",
+      "prompt": "Plan a migration to add a non-nullable 'status' column with a default value to a high-traffic 'orders' table in PostgreSQL. The table receives 10,000 writes per minute. Zero downtime is required. Existing readers and writers must not be affected during the change.",
+      "expected_output": "An expand-phase plan: add the column as nullable first (or with a default that Postgres can apply without rewriting the table), populate existing rows, then add the NOT NULL constraint. Identifies the expand phase as purely additive with no contract phase needed. Distinguishes between Postgres versions where adding a column with a default causes a table rewrite vs. versions where it is metadata-only. No dual-running or backfill is needed because this is a single-table schema change. The plan notes that this change is fully rollback-able (drop column or remove constraint). Includes observability: lock duration, replication lag, and write throughput during the migration.",
+      "assertions": [
+        "Describes the expand phase as adding the column without breaking existing readers or writers.",
+        "Identifies the Postgres version-specific behavior of adding columns with defaults.",
+        "Classifies recovery as rollback (the change is additive and reversible).",
+        "Includes observability signals: lock duration, replication lag, write throughput.",
+        "States that no contract phase is needed for this purely additive change.",
+        "Does not propose dual-running or backfill for a single-table schema change."
+      ]
+    },
+    {
+      "id": "backfill-with-reconciliation",
+      "prompt": "Plan a migration to move user profile data (10 million rows) from a monolithic Postgres database to a dedicated user-profile service with its own database. Both systems must remain operational during the transition. After cutover, the old profiles table will be dropped. The business requires that no user profile data is lost or corrupted during the migration.",
+      "expected_output": "A dual-run/backfill plan with reconciliation. Phases: (1) deploy new user-profile service writing to its own database, (2) full backfill of existing 10M rows from Postgres to the new service, (3) enable dual-writes so new profile updates go to both systems, (4) continuous reconciliation comparing source and target for completeness, accuracy, timeliness, and consistency, (5) after reconciliation passes for a defined period, cut over reads to the new service, (6) after a verification window, stop dual-writes, (7) drop old profiles table. The plan includes rollback at each stage: before cutover, rollback is reversing the read switch; after cutover but before dropping old table, rollback is reverting reads to the old table. Dropping the old table is identified as an irreversible step that requires explicit acknowledgment.",
+      "assertions": [
+        "Describes a full backfill of 10M rows followed by dual-writes.",
+        "Includes continuous reconciliation across completeness, accuracy, timeliness, and consistency dimensions.",
+        "Identifies cutover read-switch as a distinct phase gated on reconciliation passing.",
+        "Classifies pre-drop rollback as possible (revert reads to old table).",
+        "Identifies dropping the old profiles table as an irreversible step.",
+        "Requires explicit acknowledgment before the irreversible drop step.",
+        "Describes observability: rows migrated, reconciliation drift, dual-write latency."
+      ]
+    },
+    {
+      "id": "api-version-migration",
+      "prompt": "Plan a migration to move consumers from a REST v1 API to a GraphQL v2 API for an e-commerce product catalog. 200 external partners integrate with v1. The v1 API must remain available for 12 months after v2 launch. No partner should experience a breaking change without at least 6 months notice. Partners who migrate to v2 early should see no degradation.",
+      "expected_output": "An expand/contract API migration plan. Expand phase: deploy v2 GraphQL API alongside v1 REST. Compatibility window: 12 months minimum, with consumer migration tracking per partner. Define what 'migrated' means per partner (e.g., zero v1 traffic for 30 consecutive days). Deprecation: announce v1 deprecation at 6 months, with a hard shutdown date at 12 months. Recovery: v1 remains available throughout the window, so rollback at any point means canceling the deprecation notice. V1 removal at 12 months is a potentially irreversible step if v1 cannot be redeployed — plan must address this. Observability: per-partner traffic by API version, migration-completion dashboard, error-rate comparison between v1 and v2.",
+      "assertions": [
+        "Describes expand phase: deploy v2 alongside v1 without removing v1.",
+        "Defines a compatibility window with an explicit duration (12 months) and consumer migration tracking.",
+        "Defines what 'migrated' means per consumer (e.g., zero v1 traffic for N days).",
+        "Classifies v1 deprecation as reversible (cancel the notice) during the compatibility window.",
+        "Addresses that v1 removal at end-of-window may be irreversible if redeployment is not possible.",
+        "Includes observability: per-partner traffic by version, migration dashboard, error-rate comparison.",
+        "Addresses customer impact: partners get 6 months notice before any breaking change."
+      ]
+    },
+    {
+      "id": "irreversible-cutover",
+      "prompt": "Plan a migration to replace an on-premises hardware security module (HSM) with a cloud-based key management service (KMS). The HSM is being physically decommissioned — once powered off and shipped back to the vendor, it cannot be restored. All cryptographic keys must be migrated. The business requires zero unavailability of signing services during the transition.",
+      "expected_output": "A migration plan that explicitly identifies the HSM decommissioning as an irreversible step. The plan includes: (1) key export/replication to the cloud KMS while HSM is still operational, (2) dual-running where both HSM and KMS can serve signing requests, (3) gradual traffic shift to KMS with per-key verification, (4) a defined observation period where KMS handles production signing traffic, (5) after verification, the physical HSM decommissioning step marked as IRREVERSIBLE with explicit acceptance criteria, stakeholder sign-off, and a contingency plan. Recovery classification: before HSM decommissioning, rollback is possible (shift traffic back to HSM); after decommissioning, the situation is irreversible — if the KMS fails, the contingency is a disaster-recovery KMS instance, not a rollback. The plan must NOT claim rollback is possible after decommissioning.",
+      "assertions": [
+        "Explicitly identifies HSM physical decommissioning as an irreversible step.",
+        "Distinguishes recovery before decommissioning (rollback possible) from after (irreversible).",
+        "Requires explicit acceptance criteria and stakeholder sign-off for the irreversible step.",
+        "Includes a contingency plan for the irreversible state (DR KMS instance).",
+        "Does NOT claim rollback is always possible or that the HSM can be restored after decommissioning.",
+        "Describes observability: per-key signing verification, traffic-shift percentage, signing latency.",
+        "Classifies recovery paths using all four categories: rollback (pre-decommissioning), restore (key restoration from backup if available), roll-forward (fix KMS configuration), and irreversible (HSM decommissioning)."
+      ]
+    },
+    {
+      "id": "reconciliation-failure",
+      "prompt": "Plan a migration to move financial transaction data (500 million rows) from an Oracle database to a new PostgreSQL-based ledger service. Mid-migration, reconciliation detects that 0.3% of migrated rows have a mismatch in the 'amount' column — the source shows one value and the target shows another. The business requires zero data loss for financial transactions. The migration owner asks whether to proceed with cutover and fix the mismatches later.",
+      "expected_output": "The plan must STOP on the reconciliation failure. It must NOT proceed with cutover. The response must: (1) identify the reconciliation failure as a hard stop condition, (2) diagnose possible causes (e.g., type-conversion error in the backfill script, timezone handling in timestamps that affected amounts, a race condition in the CDC pipeline), (3) prescribe a fix-forward procedure: pause the backfill, correct the root cause, re-reconcile the affected rows, and re-run reconciliation until it passes for 100% of the population, (4) escalate the decision to proceed despite reconciliation failure to the migration owner with explicit risk documentation, (5) state that proceeding with cutover while reconciliation is failing violates the correctness evidence requirement. The plan must NOT recommend or describe how to proceed with cutover while the mismatch exists.",
+      "assertions": [
+        "Identifies reconciliation failure as a hard stop condition — cutover must not proceed.",
+        "Diagnoses possible causes of the mismatch (type conversion, timezone, race condition).",
+        "Prescribes a fix-forward procedure: pause, correct root cause, re-reconcile, re-verify.",
+        "Escalates the decision to proceed despite failure to the migration owner with risk documentation.",
+        "Does NOT describe or recommend proceeding with cutover while reconciliation is failing.",
+        "States that correctness evidence (reconciliation passing) is a prerequisite for cutover.",
+        "Includes observability for the reconciliation failure: mismatch rate, affected rows, error distribution."
+      ]
+    }
+  ]
+}
