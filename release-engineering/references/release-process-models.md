@@ -86,8 +86,8 @@ Release branches remain a valid tool when they are **cut just-in-time from trunk
 |---------|---------|-------|
 | **Ubuntu** | 6-month cycle (`YY.MM` versions) | Feature freeze and release freeze ladder leading up to each release |
 | **Chromium** | 4-week branch cadence | Branch point every 4 weeks, stabilization to stable, patches on the branch |
-| **GitLab** | Monthly (`YY.MM`), released on the 22nd | Patch releases for regressions and security fixes between majors |
-| **Firefox** | 6-week rapid-release cycle | Version-numbered trains with a single beta channel feeding stable |
+| **GitLab** | Monthly (`YY.MM`), self-managed release on the third Thursday of the month (one-week delay if needed) | Patch releases for regressions and security fixes between majors |
+| **Firefox** | 2-week cycle (`main` → `beta` merge every 2 weeks) | Version-numbered trains with a single beta channel feeding stable; ~5 betas per cycle, RC QA-tagged, uplifts via tracking/approval flags |
 
 The freeze ladder is the train's engine: each milestone (feature freeze → release candidate → final release) converts "should we include this?" from a debate into a date. What is not frozen by the freeze date rides the next train — and the only way that is acceptable is feature flags, which let a feature land on the train while *exposure* waits (see [progressive-delivery.md](./progressive-delivery.md)).
 

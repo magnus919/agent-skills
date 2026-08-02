@@ -18,9 +18,12 @@ Pre-release handling (--pre-release alpha|beta|rc):
   - If the current version is already a pre-release with the SAME tag
     and a numeric suffix (e.g. 1.2.0-alpha.1), the next pre-release
     increments the number without bumping the core (1.2.0-alpha.2).
-    Drop --pre-release to graduate to a stable release.
   - Otherwise the core is bumped per the rules above and the tag is
     applied with a fresh ".1" suffix (e.g. 1.3.0-beta.1).
+  - When --pre-release is omitted, the core is bumped per the rules
+    above and a stable version is emitted; a pre-release current
+    version is not carried into the result (e.g. 1.2.0-alpha.1 with a
+    feat commit -> 1.3.0).
 
 Output is a single line with the next version, or structured JSON with
 --json.

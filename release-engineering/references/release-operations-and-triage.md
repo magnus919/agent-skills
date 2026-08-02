@@ -27,7 +27,7 @@ Chrome ships a new milestone to stable **every 4 weeks**: 4 weeks of development
 ### GitLab: Monthly Self-Managed Releases Off Continuous Delivery
 
 - **Two-part model:** a **monthly self-managed release** (`XX.YY.0`) plus **continuous delivery on GitLab.com**, where auto-deploy packages built from `master` deploy multiple times per day.
-- **Patches twice a month** (scheduled) plus **unplanned critical patches as needed**; the stated priority of both processes is "GitLab availability & security."
+- **Release day:** the self-managed release ships on the **third Thursday** of each month (with a one-week delay if needed); patches land twice a month (scheduled) plus unplanned critical patches as needed; the stated priority of both processes is "GitLab availability & security."
 - **Flow:** engineer merge → pipeline packages an **auto-deploy package** (multiple/day) → deployed to GitLab.com if no Production Change Locks or unhealthy environments → changes that succeed on GitLab.com become the **release candidate** for self-managed → RC runs automated QA in test environments → RC tagged and published. **All changes must deploy to GitLab.com before they are considered for a self-managed release** — dogfooding is the gate.
 - **Patch ceremony:** e.g., an Early Merge Phase on Mondays where release managers deploy security fixes to GitLab.com; MRs labeled `~"security-target"` link to the security tracking issue.
 

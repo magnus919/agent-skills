@@ -289,6 +289,141 @@ class TestDoraMetricsGuards(unittest.TestCase):
             os.unlink(path)
 
 
+class TestDoraMetricsEdgeBehavior(unittest.TestCase):
+    """Edge behavior locked by review fixes: environment-scoped window,
+    change-lead-time clamping, and recovery-candidate ordering."""
+
+    def test_mixed_environment_window_scoped_to_environment(self):
+        """DF window covers only the selected environment's deployments."""
+        events = {
+            "deployments": [
+                {
+                    "started_at": "2026-01-01T00:00:00Z",
+                    "finished_at": "2026-01-01T00:30:00Z",
+                    "commit_sha": None,
+                    "environment": "prod",
+                    "success": True,
+                    "unplanned": False,
+                },
+                {
+                    "started_at": "2026-01-03T00:00:00Z",
+                    "finished_at": "2026-01-03T00:30:00Z",
+                    "commit_sha": None,
+                    "environment": "prod",
+                    "success": True,
+                    "unplanned": False,
+                },
+                {
+                    "started_at": "2026-01-01T00:00:00Z",
+                    "finished_at": "2026-01-01T00:30:00Z",
+                    "commit_sha": None,
+                    "environment": "staging",
+                    "success": True,
+                    "unplanned": False,
+                },
+                {
+                    "started_at": "2026-01-10T00:00:00Z",
+                    "finished_at": "2026-01-10T00:30:00Z",
+                    "commit_sha": None,
+                    "environment": "staging",
+                    "success": True,
+                    "unplanned": False,
+                },
+            ],
+            "commits": [],
+        }
+        path = write_events(events)
+        try:
+            rc, out, _ = run_dora(["--events", path, "--json"])
+            self.assertEqual(rc, 0)
+            data = json.loads(out)
+            df = data["deployment_frequency"]
+            self.assertTrue(df["available"])
+            # Prod window is Jan 1 00:00 -> Jan 3 00:30 (2 days + 30 min),
+            # NOT the all-environments window that extends to Jan 10.
+            self.assertAlmostEqual(df["window_days"], 2.020833, places=4)
+            self.assertAlmostEqual(
+                df["deployments_per_day"], 2.0 / 2.020833, places=4
+            )
+            self.assertEqual(df["successful_deployments"], 2)
+        finally:
+            os.unlink(path)
+
+    def test_negative_change_lead_time_clamped_to_zero(self):
+        """A deploy finishing before its commit was created yields CLT 0."""
+        events = {
+            "deployments": [
+                {
+                    "started_at": "2026-01-01T00:00:00Z",
+                    "finished_at": "2026-01-01T00:30:00Z",
+                    "commit_sha": "aaa",
+                    "environment": "prod",
+                    "success": True,
+                    "unplanned": False,
+                }
+            ],
+            "commits": [{"sha": "aaa", "created_at": "2026-01-02T12:00:00Z"}],
+        }
+        path = write_events(events)
+        try:
+            rc, out, _ = run_dora(["--events", path, "--json"])
+            self.assertEqual(rc, 0)
+            data = json.loads(out)
+            clt = data["change_lead_time"]
+            self.assertTrue(clt["available"])
+            self.assertEqual(clt["seconds"], 0.0)
+        finally:
+            os.unlink(path)
+
+    def test_recovery_must_start_after_failed_deploy_finished(self):
+        """A success that began mid-failure is not counted as recovery."""
+        events = {
+            "deployments": [
+                {
+                    "started_at": "2026-01-01T00:00:00Z",
+                    "finished_at": "2026-01-01T01:00:00Z",
+                    "commit_sha": None,
+                    "environment": "prod",
+                    "success": False,
+                    "unplanned": True,
+                },
+                {
+                    # Started mid-failure (before the failed deploy
+                    # finished at 01:00) — must NOT count as recovery.
+                    "started_at": "2026-01-01T00:30:00Z",
+                    "finished_at": "2026-01-01T00:45:00Z",
+                    "commit_sha": None,
+                    "environment": "prod",
+                    "success": True,
+                    "unplanned": False,
+                },
+                {
+                    "started_at": "2026-01-01T01:30:00Z",
+                    "finished_at": "2026-01-01T02:00:00Z",
+                    "commit_sha": None,
+                    "environment": "prod",
+                    "success": True,
+                    "unplanned": False,
+                },
+            ],
+            "commits": [],
+        }
+        path = write_events(events)
+        try:
+            rc, out, _ = run_dora(["--events", path, "--json"])
+            self.assertEqual(rc, 0)
+            data = json.loads(out)
+            fdrt = data["failed_deployment_recovery_time"]
+            self.assertTrue(fdrt["available"])
+            # Recovery = post-failure success finished (02:00) minus failed
+            # started (00:00) = 2 hours; the mid-failure success is excluded.
+            self.assertAlmostEqual(fdrt["seconds"], 7200.0, places=3)
+            self.assertEqual(fdrt["recovered"], 1)
+            self.assertEqual(fdrt["unrecovered"], 0)
+        finally:
+            os.unlink(path)
+
+
 class TestDoraMetricsExitCodes(unittest.TestCase):
     """Exit codes for malformed input and usage errors."""
 

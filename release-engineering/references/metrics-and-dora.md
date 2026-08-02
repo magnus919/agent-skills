@@ -48,7 +48,7 @@ The metric set's evolution matters when you read older material:
 
 ### Worked Example (30-Day Window)
 
-A service deploys 22 times in 30 days; 20 succeed; 3 of the successful deploys were unplanned hotfixes; 1 deploy fails in production and is rolled back 40 minutes later. A change commits on day 3 and reaches production on day 7.
+A service deploys 21 times in 30 days; 20 succeed; 3 of the successful deploys were unplanned hotfixes; 1 deploy fails in production and is rolled back 40 minutes later. A change commits on day 3 and reaches production on day 7.
 
 | Metric | Computation | Result |
 |--------|-------------|--------|
@@ -56,9 +56,9 @@ A service deploys 22 times in 30 days; 20 succeed; 3 of the successful deploys w
 | Change lead time (that change) | day 7 deploy finish − day 3 commit | 4 days (aggregate: median across all changes) |
 | Change failure rate | 1 failed deploy / 21 total | 4.8% |
 | Failed deployment recovery time | 40 min from failure start to rollback completion | 40 min (aggregate: median) |
-| Deployment rework rate | 3 unplanned hotfix deploys / 20 successful | 15% |
+| Deployment rework rate | 3 unplanned hotfix deploys / 21 total | 14.3% |
 
-Note the rework rate (15%) exceeding CFR (4.8%) — the typical pattern, because unplanned remediation deploys outnumber outright failed deploys.
+Note the rework rate (14.3%) exceeding CFR (4.8%) — the typical pattern, because unplanned remediation deploys outnumber outright failed deploys.
 
 ## Exact Definitions, Formulas, and Data Sources
 

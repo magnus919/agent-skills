@@ -37,7 +37,7 @@
 
 | Field | Value |
 |-------|-------|
-| Version scheme | SemVer / CalVer (see [versioning-decision-table.md](versioning-decision-table.md)) |
+| Version scheme | SemVer / CalVer (see [versioning-decision-table.md](../assets/versioning-decision-table.md)) |
 | Primary artifact(s) | [e.g., image registry.example.com/api:2.4.0, dist/api-2.4.0.tar.gz] |
 | Artifact digest(s) | [sha256:... — of the exact artifact promoted to production] |
 | SBOM / provenance | [link to SBOM (CycloneDX/SPDX) and SLSA provenance attestation] |

@@ -12,16 +12,18 @@
 | Failed deployment recovery time | Time to restore service after a failed deploy | Median time from failed deploy start to next successful deploy; unit: minutes/hours | Incident + deploy timeline |
 | Deployment rework rate | Share of deployments needing rework (rollback, hotfix, forward fix) | Unplanned rework deployments ÷ total deployments × 100 (%) | Deploy records flagged as unplanned |
 
-## Classic 2024 Thresholds (the "four keys" at the time)
+## Classic 2024 Thresholds (the last four-tier table)
 
 | Tier | Deployment frequency | Change lead time | Change failure rate | Failed deployment recovery time |
 |------|----------------------|------------------|---------------------|-------------------------------|
-| Elite | On-demand (multiple deploys/day) | Less than one hour | 0–5% | Less than one hour |
-| High | Between once per day and once per week | Between one day and one week | 0–15% | Less than one day |
-| Medium | Between once per week and once per month | Between one week and one month | 0–15% | Less than one week |
-| Low | Between once per month and once every six months | Between one month and six months | 0–30% | Less than one month |
+| Elite | On-demand (multiple deploys/day) | Less than one day | 5% | Less than one hour |
+| High | Daily to weekly | One day to one week | 20% | Less than one day |
+| Medium | Weekly to monthly | One week to one month | 10% | Less than one day |
+| Low | Monthly to biannual | One to six months | 40% | One week to one month |
 
-> **2025 change caveat —** the DORA team replaced the fixed tier labels with performance **clusters** (e.g., "high-performing", "low-performing") computed from the joint distribution of the four keys, and added **deployment rework rate** as a fifth metric. Do not hard-code 2024 threshold tables into dashboards; treat them as historical reference points and prefer the cluster model benchmarked against your own population.
+Note the 2024 **inversion**: High shows a higher change failure rate (20%) than Medium (10%) — clusters are descriptive groupings, not a monotonic scorecard.
+
+> **2025 change caveat —** the DORA team **retired the Elite/High/Medium/Low tiers entirely** in the 2025 report (renamed "State of AI-assisted Software Development"), replacing them with seven qualitative archetypes built on eight measures. 2025 publishes metric *distributions*, not tiers. **Deployment rework rate** was added in 2024 as the fifth metric, not in 2025. Do not hard-code the 2024 threshold table into dashboards; treat it as a historical reference point anchored to the 2024 report.
 
 ## Top Pitfalls
 
@@ -38,4 +40,4 @@
 - DORA — research and metric definitions: https://dora.dev/
 - Accelerate (Forsgren, Humble, Kim, 2018): https://itrevolution.com/product/accelerate/
 - DORA metrics measurement guidance: https://dora.dev/research/measurement/
-- Google Cloud DORA blog (2025 cluster change): https://cloud.google.com/blog/products/devops-sre
+- Google Cloud DORA blog (2025 tier retirement): https://cloud.google.com/blog/products/devops-sre

@@ -15,20 +15,32 @@ Metrics (scoped to --environment, default "prod"):
   1. Deployment frequency        Successful deployments per day. The
                                  observation window spans the earliest
                                  deployment start to the latest deployment
-                                 finish in the events file (minimum 1 day).
+                                 finish among deployments in the selected
+                                 environment (minimum 1 day), so mixed-
+                                 environment events files do not widen the
+                                 window with other environments' activity.
+                                 If the environment has zero deployments,
+                                 the window is unavailable and the metric
+                                 is reported as unavailable.
   2. Change lead time            Median of (finished_at - commit created_at)
                                  over successful deployments whose commit_sha
-                                 resolves to a commit with a timestamp.
-                                 Reported as unavailable when no deployment
-                                 has commit timestamp data.
+                                 resolves to a commit with a timestamp. A
+                                 negative duration (a deployment finishing
+                                 before its commit was created) is clamped
+                                 to 0. Reported as unavailable when no
+                                 deployment has commit timestamp data.
   3. Change failure rate         (failed / total) * 100.
   4. Failed deployment recovery time
                                  Median of (next successful deployment
                                  finished_at - failed deployment started_at)
                                  over failed deployments that have a later
-                                 successful deployment. Reported as
-                                 unavailable when a failed deployment has not
-                                 yet been recovered (or there are none).
+                                 successful deployment. A recovery
+                                 deployment counts only if it starts at or
+                                 after the failed deployment finished (a
+                                 success that began mid-failure is not a
+                                 recovery). Reported as unavailable when a
+                                 failed deployment has not yet been
+                                 recovered (or there are none).
   5. Deployment rework rate      (unplanned / total) * 100.
 
 Timestamps are ISO-8601 strings ('Z' suffix accepted; naive timestamps are
@@ -179,11 +191,13 @@ def load_events(path):
 
 
 def observation_window(deployments):
-    """Return (window_days, min_start, max_finish) over all deployments.
+    """Return (window_days, min_start, max_finish) over the given deployments.
 
     The window spans the earliest started_at to the latest finished_at;
     it is clamped to a minimum of one day so frequency is well-defined
-    for single-deployment windows.
+    for single-deployment windows. Pass the environment-filtered
+    deployment set so mixed-environment events files do not widen the
+    window with other environments' activity.
     """
     if not deployments:
         return 1.0, None, None
@@ -207,8 +221,9 @@ def compute_metrics(events, environment):
 
     no_deploys_reason = "no deployments in environment '{}'".format(environment)
 
-    # 1. Deployment frequency: successful prod deploys per day.
-    window_days, _, _ = observation_window(events["deployments"])
+    # 1. Deployment frequency: successful prod deploys per day, over a
+    # window scoped to this environment's deployments.
+    window_days, _, _ = observation_window(deployments)
     if total == 0:
         deployment_frequency = {"available": False, "reason": no_deploys_reason}
     else:
@@ -228,7 +243,11 @@ def compute_metrics(events, environment):
         if created is None:
             without_commit_data += 1
             continue
-        lead_times.append((deploy["finished_at"] - created).total_seconds())
+        # Clamp negative durations (a deployment finishing before its
+        # commit was created) to zero rather than reporting negative time.
+        lead_times.append(
+            max(0.0, (deploy["finished_at"] - created).total_seconds())
+        )
     if not lead_times:
         change_lead_time = {
             "available": False,
@@ -260,6 +279,8 @@ def compute_metrics(events, environment):
         }
 
     # 4. Failed deployment recovery time: median next-success - failed start.
+    # A recovery deployment must start at or after the failed deployment
+    # finished, so a success that began mid-failure is not counted.
     ordered = sorted(deployments, key=lambda d: (d["started_at"], d["finished_at"]))
     recoveries = []
     unrecovered = 0
@@ -268,7 +289,7 @@ def compute_metrics(events, environment):
             continue
         next_success = None
         for candidate in ordered[index + 1:]:
-            if candidate["success"] and candidate["started_at"] >= deploy["started_at"]:
+            if candidate["success"] and candidate["started_at"] >= deploy["finished_at"]:
                 next_success = candidate
                 break
         if next_success is None:
