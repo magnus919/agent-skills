@@ -393,6 +393,15 @@
       "description": "Plan the implementation of an approved requirement or specification: produce an executable, dependency-aware delivery plan covering work breakdown, dependency mapping, critical path, ownership, parallelism and sequencing, rollout strategy, rollback and recovery paths, and verification against the original requirement. Supports cross-team, cross-repository, migration, and staged-rollout scenarios. Do not use for pre-approval discovery or needs-finding, authoring a specification from scratch, coding or implementation, the neckbeard issue-to-PR delivery flow itself, or any work whose prerequisite decision has not been approved — planning unapproved work is an explicit stop condition."
     },
     {
+      "name": "incident-learning",
+      "source": "./",
+      "skills": [
+        "./incident-learning"
+      ],
+      "strict": false,
+      "description": "Convert operational incident and near-miss evidence into durable product, engineering, test, evaluation, and governance improvements with verified closure. Separate observed facts from causal hypotheses and unresolved uncertainty; map follow-up work across code, tests, skills, operations, product, and governance; track ownership, verification, and closure for every finding. Do not use to assign blame or produce a generic postmortem template; do not close learning because tickets were created — require evidence the intended change occurred."
+    },
+    {
       "name": "jellyfin-cli",
       "source": "./",
       "skills": [
