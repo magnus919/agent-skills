@@ -155,6 +155,7 @@ metadata, never as a success proxy.
 | [references/evidence-ledger.md](references/evidence-ledger.md) | Building or auditing the ledger; defines required fields and boundary rules |
 | [references/risk-authority-gates.md](references/risk-authority-gates.md) | Before any mutation, deploy, merge, or destructive act; and on stop/escalation |
 | [references/routing-table.md](references/routing-table.md) | Deciding whether a specialist skill owns the current stage |
+| [references/delivery-packet.md](references/delivery-packet.md) | Carrying state across phases of a change-request run, or resuming after a context boundary; defines packet fields, artifact ownership, lifecycle states, and resumability |
 | [references/evaluation.md](references/evaluation.md) | Designing, running, or reporting an evaluation |
 | [templates/](templates/) | Change contract, decision record, evidence ledger, verification plan, eval report |
 | [eval/](eval/) | Task schema, rubric, baseline protocol, fixtures, runner |
