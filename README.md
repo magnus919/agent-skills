@@ -52,6 +52,10 @@ Create comprehensive brand identity documentation for any brand. Guides you thro
 
 Make system boundaries, responsibilities, and relationships legible at the architectural level appropriate to the reader.
 
+### [capacity-and-cost-engineering](capacity-and-cost-engineering/SKILL.md)
+
+Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Covers growth forecasting, peak sizing, degraded-mode capacity, budget/quota controls, load/soak test evidence standards, and SLO-cost tradeoff records. Routes financial P&L and fundraising to financial-modeling, infrastructure implementation to platform-engineering, degradation-path design to resilience-and-recovery, and feeds capacity/cost evidence to production-readiness. Ships a discovery brief comparing seven adjacent skills, five fillable templates (capacity model, unit-economics record, budget/quota decision, load/soak test plan, SLO-cost tradeoff record), and five evals.
+
 ### [chief-of-staff-methodology](chief-of-staff-methodology/SKILL.md)
 
 Prepare executive decisions, information triage, organizational sensing, institutional memory, and calendar choices with accountable human authority, transparent data use, and reviewable trade-offs.

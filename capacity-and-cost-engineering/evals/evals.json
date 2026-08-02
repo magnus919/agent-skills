@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "skill_name": "capacity-and-cost-engineering",
+  "evals": [
+    {
+      "id": "growth-forecast",
+      "prompt": "Our API serves 200 requests/second with 8 instances running at 55% average CPU. We're growing 10% month-over-month and need a 12-month capacity projection. Our SLO is 99.9% availability with P99 latency < 100ms. Current monthly infrastructure cost is $8,000. We don't have load-test data for the current configuration. Produce a capacity model that connects demand, performance, reliability, and spend.",
+      "expected_output": "A capacity model with a 12-month projection. The model connects demand (200 req/s, 10% MoM growth) to capacity (instances, CPU) through a utilization target stated with rationale — not a universal percentage. It projects the scaling timeline: in which month do current instances saturate, and what is the trigger for scaling? It connects to performance (the P99 latency < 100ms SLO constrains how high utilization can go before latency degrades) and reliability (the 99.9% availability SLO requires headroom for failover — capacity must cover N+1 or equivalent). It connects to spend: projected monthly cost at each scaling step. The model MUST identify that without load-test data, the capacity/demand ratio (how many req/s an instance can serve at the P99 target) is an ASSUMPTION, not evidence. It labels this assumption explicitly and states that a load test is required to validate the model. The model includes a scaling trigger (e.g., sustained CPU > X% for Y minutes), an owner, and at least one explicit tradeoff (e.g., earlier scaling = higher cost but lower risk of SLO breach).",
+      "assertions": [
+        "The model includes a 12-month projection with specific months when scaling is needed",
+        "The model states a utilization target with rationale specific to this service, not a universal percentage",
+        "The model connects the utilization target to the P99 latency SLO — performance constrains utilization",
+        "The model connects the availability SLO to capacity — reliability requires headroom for redundancy or failover",
+        "The model projects cost at each scaling step, connecting capacity to spend",
+        "The model identifies that the capacity/demand ratio is an assumption without load-test data and labels it as such",
+        "The model states that a load test is required to validate — modeling without load evidence is incomplete",
+        "The model includes at least one owner and at least one tradeoff"
+      ]
+    },
+    {
+      "id": "peak-event",
+      "prompt": "Our e-commerce platform handles 5,000 requests/second at baseline. For Black Friday, we expect 35,000 requests/second peak sustained for 8 hours. We currently run 50 instances. Our SLO is 99.9% availability, P99 latency < 200ms. Monthly cost at baseline is $45,000. The peak is in 6 weeks. We have no load test at 35,000 req/s. Produce a peak capacity plan with cost projection.",
+      "expected_output": "A peak capacity plan that sizes for the peak event, not the baseline. The plan models peak demand (35,000 req/s for 8 hours) as a separate scenario from baseline (5,000 req/s) and does not average them. It defines peak shape (ramp, duration, cooldown), not just the peak number. It calculates capacity required at peak with headroom — and states the headroom rationale. It projects the cost of peak capacity and compares it to baseline cost. The plan REQUIRES a load test at the projected peak throughput before the event — it does not accept a capacity model without load evidence as sufficient. It defines the post-peak scale-down plan with a trigger: when does capacity return to baseline, and what is the cost of capacity that lingers after the peak? If peak capacity cost exceeds a reasonable budget multiplier, it offers a degraded-peak alternative (what functions shed, what user impact). Assumptions are listed, ownership is named, and at least one tradeoff is explicit.",
+      "assertions": [
+        "The plan models peak demand separately from baseline — it does not average them or use baseline as proxy",
+        "The plan defines peak shape (ramp, duration, cooldown), not only the peak throughput number",
+        "The plan REQUIRES a load test at projected peak throughput before the event — modeling without load evidence is explicitly insufficient",
+        "The plan defines a post-peak scale-down plan with a trigger — capacity that persists after the peak is addressed",
+        "The plan projects peak capacity cost and compares it to baseline, connecting capacity to spend",
+        "If peak cost is material, the plan offers a degraded-peak alternative with user impact stated",
+        "Assumptions are listed, ownership is named, and at least one tradeoff is explicit"
+      ]
+    },
+    {
+      "id": "slo-cost-conflict",
+      "prompt": "Our payment-processing service has an SLO of 99.99% availability (4.3 minutes downtime/month). To meet this, we run active-active across 3 regions at a cost of $180,000/month. Our finance team has imposed a $120,000/month budget cap for this service starting next quarter. At current demand (2,000 transactions/second), a 2-region active-passive deployment would cost $110,000/month and support 99.9% availability (43 minutes downtime/month). A single-region deployment would cost $60,000/month at 99.5% availability. The SLO owner argues that payment processing cannot go below 99.99% — every minute of downtime loses revenue. The finance owner says the budget cap is non-negotiable. Produce an SLO-cost tradeoff record that surfaces the conflict with evidence and ownership.",
+      "expected_output": "An SLO-cost tradeoff record that surfaces the conflict explicitly — it does not pick a side silently or accept a degradation without evidence. The record states the current SLO (99.99%), the cost to meet it ($180K/month), and the budget cap ($120K/month), with a gap of $60K/month. It compares at least two alternatives: 2-region active-passive at 99.9% ($110K/month, within budget) and single-region at 99.5% ($60K/month). Each alternative includes: the SLO, the capacity configuration, the cost, the error budget difference, and the user impact. The record names the SLO owner and the finance owner as stakeholders. It identifies that this is a conflict requiring an accountable decision-maker above both owners — it does not resolve the conflict by defaulting to the budget or to the SLO. The record includes load-test or production evidence for the capacity/SLO relationship (or explicitly states if that evidence is missing). The guardrail 'cost optimization must not degrade reliability, privacy, or user outcomes' is invoked — the record states that if payment processing cannot degrade below 99.99% without unacceptable user or business harm, the tradeoff is escalated, not accepted. The decision field requires a named accountable owner, not 'the team' or 'TBD.' Assumptions and tradeoffs are explicit.",
+      "assertions": [
+        "The record states the current SLO, cost to meet it, and budget cap with the explicit $60K/month gap",
+        "The record compares at least two alternatives (2-region and single-region) with SLO, capacity, cost, error budget, and user impact for each",
+        "The record names both the SLO owner and the finance owner as stakeholders in the conflict",
+        "The record identifies that an accountable decision-maker above both owners is needed — it does not resolve by defaulting to the budget or the SLO",
+        "The record invokes the guardrail that cost optimization must not degrade reliability, privacy, or user outcomes, and states escalation if payment processing cannot degrade",
+        "The decision field requires a named accountable owner, not 'the team' or 'TBD'",
+        "Load-test or production evidence for the capacity/SLO relationship is included or explicitly identified as missing",
+        "Assumptions and tradeoffs are explicit"
+      ]
+    },
+    {
+      "id": "quota-decision",
+      "prompt": "Our API gateway serves 10 external customers, each with a contracted rate limit. We currently enforce a global rate limit of 10,000 requests/second, but one customer has started running bursty workloads that consume 60% of the global limit for short periods, starving other customers. Our monthly infrastructure budget is $25,000 and we're at $23,000. We need a quota and rate-limit enforcement decision. The API has an SLO of 99.9% availability, P99 latency < 150ms. We have production metrics showing that the bursty customer's traffic correlates with P99 latency spikes to 300ms for other customers.",
+      "expected_output": "A budget/quota decision that addresses the shared-resource contention problem with per-customer rate limits, not only a global limit. The decision defines per-customer quotas based on contracted entitlements, with a global limit as a backstop. It specifies the enforcement mechanism (e.g., API gateway rate limiter, token bucket) and the response when a customer exceeds their quota (HTTP 429 with Retry-After). It connects to performance: the bursty customer's traffic causes P99 latency spikes for other customers — per-customer quotas are justified by the SLO (P99 < 150ms), not only fairness. It connects to cost: the budget is at $23K/$25K, and per-customer quotas prevent one customer from driving infrastructure scale-up that would breach the budget. It defines budget thresholds (alert at 90%, soft cap at 95%, hard cap at 100%) with operational consequences at each level. It includes cost attribution: how is each customer's usage attributed to infrastructure cost? The decision names an owner for the quota configuration and a budget owner, and the enforcement mechanism is specified in operational terms (not 'set up rate limiting' without details). Assumptions and tradeoffs are explicit.",
+      "assertions": [
+        "The decision defines per-customer quotas, not only a global rate limit — it addresses the shared-resource contention",
+        "The enforcement mechanism is specified in operational terms: what happens when a customer exceeds quota (HTTP 429, Retry-After, etc.)",
+        "The decision connects the quota to the SLO — the bursty customer's impact on P99 latency for other customers justifies enforcement",
+        "The decision connects to budget — per-customer quotas prevent a single customer from driving a budget breach",
+        "Budget thresholds (alert, soft cap, hard cap) are defined with operational consequences at each level",
+        "Cost attribution method is specified — how each customer's usage maps to infrastructure cost",
+        "An owner is named for the quota configuration and a budget owner is named",
+        "Assumptions and tradeoffs are explicit"
+      ]
+    },
+    {
+      "id": "misleading-unit-cost",
+      "prompt": "Our team calculated unit cost for our video-transcoding service as: total monthly infrastructure cost ($30,000) divided by total API requests (15,000,000) = $0.002 per request. Based on this, they claim we can serve 2x the requests for $60,000/month. But I notice: (1) the $30,000 includes a $12,000 reserved-instance commitment that is already paid annually and is a fixed cost, not variable; (2) the transcoding service uses GPU instances that are already at 90% utilization — doubling requests would require additional GPU instances, not just more of the current ones; (3) the service runs in one region, and doubling capacity would require a second region for availability, adding data-transfer costs; (4) the calculation divides by total API requests, but 80% of those are lightweight metadata requests (GET /status, GET /job) that use negligible resources — the transcoding work is done by the other 20% of requests, which consume GPU time. I need a corrected unit-cost calculation and a capacity-and-cost projection for 2x demand.",
+      "expected_output": "A corrected unit-cost calculation that identifies and fixes the misleading elements. The response identifies at least three errors: (1) the $12K reserved-instance commitment is a fixed cost — including it in a per-request unit cost that is used to project variable cost at 2x demand overestimates the marginal cost of new requests (the fixed cost doesn't double with demand); (2) GPU utilization is already at 90% — doubling requests requires additional GPU instances, not just multiplying the current cost, and the new instances incur different costs (on-demand or new reservations); (3) dividing by total API requests when 80% are lightweight metadata requests produces a misleading average — the correct unit cost should be based on transcoding requests (the 20% that consume GPU) or should compute separate unit costs for lightweight and heavyweight request types. The response recomputes the unit cost: separates fixed ($12K) from variable ($18K) costs, calculates GPU cost per transcoding request, and projects the cost at 2x demand distinguishing between the portion that uses existing fixed capacity and the portion that requires new GPU instances. The recomputed projection is higher than $60,000 and states why. The response explicitly states that cost optimization must not justify degrading reliability, privacy, or user outcomes — if the corrected projection exceeds budget, the tradeoff is escalated, not silently accepted by dropping the SLO or cutting corners. The corrected calculation includes an owner and states what evidence is needed to validate it.",
+      "assertions": [
+        "The response identifies that the reserved-instance commitment is a fixed cost and explains why including it in a per-request projection is misleading",
+        "The response identifies that GPU utilization at 90% means doubling requests requires new instances — the existing capacity cannot absorb the growth",
+        "The response identifies that averaging across lightweight and heavyweight requests produces a misleading unit cost — it separates or recomputes based on the resource-consuming request type",
+        "The corrected calculation separates fixed and variable costs and projects 2x demand with a distinction between costs covered by existing capacity and costs requiring new capacity",
+        "The recomputed projection is higher than the naive $60,000 and states why with arithmetic",
+        "The response explicitly states that cost optimization must not justify degrading reliability, privacy, or user outcomes, and that if budget is exceeded the tradeoff is escalated",
+        "The corrected calculation includes an owner and states what evidence is needed to validate it"
+      ]
+    }
+  ]
+}
