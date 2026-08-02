@@ -299,6 +299,10 @@ PeerTube federated video platform from the terminal. Browse videos and channels,
 
 Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms.
 
+### [privacy-engineering](privacy-engineering/SKILL.md)
+
+Translate privacy principles and legal requirements into verifiable engineering artifacts — data-lifecycle records, privacy acceptance criteria, data-flow and access maps, retention/deletion verification plans, and privacy change reviews. Covers seven privacy dimensions (purpose, lifecycle/retention, access, deletion, tenant/isolation, residency, consent) as structured concerns, with specific guidance for agent traces and product analytics telemetry. Routes legal interpretation to legal-strategy and security implementation to secure-software-engineering. Ships 1 discovery brief, 5 templates, and 6 evals.
+
 ### [product-adoption](product-adoption/SKILL.md)
 
 Diagnose and design product adoption — onboarding, activation, behavior change, feature discovery, rollout segmentation, and sustained use after launch. Covers consumer, B2B, internal-tool, and public-service contexts with evidence-based decision points (proceed, pause, stop, accelerate). Distinguishes acquisition, activation, adoption, retention, and expansion as separate stages with different owners and interventions. Ships 3 references (discovery brief, adoption lifecycle concepts, non-SaaS adoption contexts, behavior change and education) and 4 templates (adoption plan, activation/time-to-value diagnostic, segmentation and rollout record, sustained-use review).
