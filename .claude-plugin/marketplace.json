@@ -654,6 +654,15 @@
       "description": "Run end-to-end product experiments from assumption to decision: translate assumptions into testable hypotheses and experiment briefs, select the right method among qualitative interviews, prototypes, concierge tests, fake doors, feature flags, and A/B tests, and produce readouts that update the roadmap and decision record. Do not use when a qualitative or prototype test is the clearly right answer without statistical measurement; do not prescribe A/B testing by default; do not treat statistical significance as the only decision criterion or hide ethical and guardrail considerations."
     },
     {
+      "name": "product-lifecycle-learning",
+      "source": "./",
+      "skills": [
+        "./product-lifecycle-learning"
+      ],
+      "strict": false,
+      "description": "Close the launch-to-learning loop for product features and capabilities: collect observed outcomes, compare them against expected outcomes with explicit epistemic categories (expected/observed/uncertain/inferred), update assumptions, assess feature health, and choose among continue/improve/harvest/pivot/pause/retire — including retirement lifecycles with deprecation, migration, customer treatment, and retained reusable learning. Do not use for incident postmortems or root-cause analysis (routes to incident-learning or site-reliability-engineering); do not use for analytics instrumentation or metric dashboard design (routes to product-analytics-and-measurement); do not use arbitrary thresholds as universal retirement rules — decisions require human judgment and context."
+    },
+    {
       "name": "product-methodology",
       "source": "./",
       "skills": [
