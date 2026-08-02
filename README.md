@@ -188,6 +188,10 @@ Build, customize, and debug advanced Hugo CMS themes. Covers template architectu
 
 Turn an approved requirement or specification into an executable, dependency-aware delivery plan. Covers work breakdown into vertical slices, dependency mapping with critical-path analysis, ownership assignment, sequencing and parallelism, staged rollout strategy with rollback paths, and verification traceability against the original requirement. Supports cross-team, cross-repository, data migration, and staged-rollout scenarios. Does not plan unapproved work — entry gate enforces prerequisite approval.
 
+### [incident-learning](incident-learning/SKILL.md)
+
+Convert operational incident and near-miss evidence into verified, owned improvements across product, code, tests, evals, operations, and governance. Separates observed facts from causal hypotheses and unresolved uncertainty; maps escaped-from gaps (requirements, monitoring, authority, migration, adoption); assigns domain-specific follow-up work with owners and verification methods; and requires evidence of the implemented change — not just tickets — for closure. Routes implementation to SRE, QA, verification, agent evals, product lifecycle learning, implementation planning, resilience-and-recovery, and production-readiness. Ships 4 references (discovery brief, evidence/inference taxonomy, escaped-from analysis, follow-up domains, verification and closure), 4 templates (incident-learning record, causal/evidence ledger, follow-up work map, verification and closure record), and 5 evals.
+
 ### [jellyfin-cli](jellyfin-cli/SKILL.md)
 
 Jellyfin media server from the terminal. Check server info, browse recently added and library contents, search and inspect media, see next-up episodes, and view statistics.

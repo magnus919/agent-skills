@@ -66,6 +66,7 @@
     "./haystack",
     "./hugo-theme",
     "./implementation-planning",
+    "./incident-learning",
     "./jellyfin-cli",
     "./jira-cli",
     "./jira-jql",
