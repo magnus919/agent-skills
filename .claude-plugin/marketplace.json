@@ -663,6 +663,15 @@
       "description": "Product management frameworks for translating validated evidence into prioritized backlogs, decisions, specifications, and stakeholder communications. Covers RICE, MoSCoW, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication."
     },
     {
+      "name": "product-roadmapping-and-portfolio",
+      "source": "./",
+      "skills": [
+        "./product-roadmapping-and-portfolio"
+      ],
+      "strict": false,
+      "description": "Build and maintain outcome-based product roadmaps and portfolio views that sequence strategic bets by evidence, not dates. Covers Now/Next/Later views, strategic-bet management, capacity allocation, dependency and confidence mapping, scenario planning, continue/pause/kill/revisit criteria, stakeholder narratives, and roadmap review cadences. Use when building or reviewing a product roadmap, managing a portfolio of bets, or communicating strategic sequencing to stakeholders. Do NOT use for tactical prioritization mechanics (RICE, MoSCoW, Kano, OST — route to product-methodology or product-strategy), for project scheduling or Gantt charts, or for delivery-flow management (route to kanban-guru)."
+    },
+    {
       "name": "product-strategy",
       "source": "./",
       "skills": [
