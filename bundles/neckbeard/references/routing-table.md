@@ -25,7 +25,8 @@ ledger around it.
 | Test strategy, regression testing, or CI quality gates | `qa-methodology` | Ledger, boundary verification |
 | Writing or reviewing docs, README, API reference | `technical-documentation` | Ledger |
 | Producing a pass/conditional/blocked verdict with evidence | `verification-methodology` | Ledger boundary rules |
-| Reliability objectives, incident response, operational recovery, or delivery | `site-reliability-engineering` | Contract, ledger, rollback evidence |
+| Release planning, versioning, pipeline promotion, readiness, rollout, or rollback design | `release-engineering` | Contract, ledger, rollback evidence |
+| Reliability objectives, incident response, or operational recovery | `site-reliability-engineering` | Contract, ledger, rollback evidence |
 | Architecture decision records | `adr-authoring` | Decision-record template, ledger |
 | Code review, refactoring, or implementation quality assessment against classic engineering principles | `programming-principles` | Contract, ledger, boundary verification |
 

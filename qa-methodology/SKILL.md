@@ -1,51 +1,129 @@
 ---
 name: qa-methodology
-description: Quality assurance methodology — test strategy design, test automation
-  patterns, regression testing, CI quality gates, test data management, and quality
-  metrics. Grounded in practical patterns for teams that want confident shipping.
+description: >-
+  Design and apply QA methodology for software teams: test strategy, regression testing,
+  CI failure triage, test automation, quality gates and metrics, risk-based testing,
+  exploratory testing, test design techniques, AI code quality gates (independent
+  verification, acceptance-criteria testability review for agentic Spec-Driven
+  Development), agentic eval design (dataset test design, judge-as-system-under-test,
+  flaky-eval discipline), QA career levels (Senior/Staff/Principal), and SDET
+  engineering (test infrastructure, gTAA, CI/CD integration). Do not use for
+  root-cause debugging of production incidents, security implementation or threat
+  modeling, or evaluation framework governance and statistical analysis — route those
+  to systematic-debugging, secure-software-engineering, and
+  agent-evals-and-observability respectively.
 license: MIT
+compatibility: >-
+  Platform-agnostic methodology. Scripts require Python 3.8+ (stdlib only).
+  No CI platform, test framework, or AI agent mandate.
 metadata:
-  tags: qa, testing, quality-assurance, test-automation, regression, CI, quality-gates,
-    flaky-tests, quality-metrics
-  source_repo: https://github.com/magnus919/hermes-profiles
+  source_repo: hermes-profiles
+  skill_version: "2.0.0"
+  tags: qa, testing, quality-assurance, test-automation, regression, CI, quality-gates, risk-based-testing, exploratory-testing, SDET, agentic-evals, AI-code-quality
 ---
 
 # QA Methodology
 
-Quality assurance is the practice of making confident shipping routine. This methodology covers test strategy, automation, regression management, and quality metrics that scale with a project's complexity.
+Senior-to-principal QA and SDET methodology: test strategy, automation, regression, risk-based prioritization, exploratory testing, quality gates, AI code quality gates for agentic Spec-Driven Development, agentic eval design, career leveling, and SDET engineering.
 
-## The QA Engineer's Domain
+## Ownership
 
 | You own | You don't own |
 |---------|--------------|
-| Test strategy — what to test, at what level, with what priority | Code review — that's the reviewer |
-| Test automation — framework selection, test harness setup, CI integration | Root cause analysis of bugs — that's the debugger |
-| Regression testing — suites that catch regressions without becoming brittle | Feature implementation — that's the developer |
-| Quality gates — CI integration, pass/fail criteria, blocking vs non-blocking | Kanban workflow design — that's the kanban strategist |
-| Test data management — fixtures, factories, synthetic data | Production monitoring — that's SRE |
-| Quality metrics — coverage analysis, defect density, MTD | Verdict on completion — that's the verifier |
-
-## Reference Files
-
-| Reference | When to load |
-|-----------|-------------|
-| `references/test-strategy.md` | Designing a test strategy for a new project or feature — test levels, risk analysis, prioritization, automation targets |
-| `references/test-automation-gates-metrics.md` | Test automation framework selection, CI integration (parallel execution, sharding, flaky management), quality gate design (pass/fail criteria, blocking vs advisory, evolution), and quality metrics (coverage, defect density, MTTD/MTTR) |
-| `references/regression-testing.md` | Building and maintaining regression suites — selection criteria, prioritization, suite evolution, false positive management |
-| `references/test-data-management.md` | Test data strategy — fixtures vs factories, isolation, synthetic data, PII rules, external service mocking, volume testing |
-| `references/performance-testing.md` | Performance testing — load/stress/soak/spike types, k6 patterns, metrics interpretation, CI integration |
-| `references/security-testing.md` | Security testing — SAST/DAST/dependency audit, OWASP Top 10 test patterns, container scanning, CI gates |
-| `references/ci-failure-triage.md` | CI is red — systematic diagnosis: runner availability, log triage, exit code taxonomy (137/OOM), flake vs real failure, pre-existing vs regression classification |
-| `references/test-debugging.md` | A test that should pass is failing — mock path binding after package refactors, FastAPI startup races, httpx mock patterns, fixture recovery, execution integrity |
+| Test strategy — what to test, at what level, with what priority | Root-cause debugging — route to [systematic-debugging](../systematic-debugging/SKILL.md) |
+| Test automation — framework selection, parallelism, flaky management | Security implementation and threat modeling — route to [secure-software-engineering](../secure-software-engineering/SKILL.md) |
+| Regression suites — selection, impact analysis, suite evolution | Spec pipeline mechanics and gate verdicts — route to [spec-driven-development](../spec-driven-development/SKILL.md) |
+| Quality gates — blocking vs advisory, metrics, DORA | Eval framework governance and statistics — route to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) |
+| Risk-based testing — P×I scoring, prioritization, registers | Verification verdicts against explicit criteria — route to [verification-methodology](../verification-methodology/SKILL.md) |
+| Exploratory testing — SBTM charters, heuristics, tours | Feature implementation — that's the developer |
+| AI code quality gates — independent verification, AC testability | Production monitoring and incident response — that's SRE |
+| Agentic eval design — dataset design, judge bias, flaky-eval discipline | |
+| QA career levels — Senior/Staff/Principal scope progression | |
+| SDET engineering — test infrastructure, gTAA, CI/CD integration | |
 
 ## Core Principles
 
-**If it isn't tested, it's broken** — Untested code is not working code; it's code whose failure mode hasn't been discovered yet.
+**If it isn't tested, it's broken.** Untested code is code whose failure mode hasn't been discovered yet.
 
-**Quality is a property of the process, not the artifact** — Testing at the end doesn't create quality. Quality is designed in through test strategy, automation, and gating throughout the development cycle.
+**Quality is a property of the process, not the artifact.** Testing at the end doesn't create quality. Quality is designed in through strategy, automation, and gating throughout the cycle.
 
-**Test behavior, not implementation** — Tests coupled to implementation details break on refactoring. Tests coupled to behavior survive it. Prefer testing what the system does, not how it does it.
+**Test behavior, not implementation.** Tests coupled to behavior survive refactoring; tests coupled to implementation break on it.
 
-**Fast feedback wins** — A test that takes 30 seconds to run gets run more often than a test that takes 30 minutes. Invest in test speed proportional to feedback frequency.
+**Risk drives priority.** Not everything deserves equal test investment. Score probability × impact, then allocate accordingly.
 
-**Flaky tests are worse than no tests** — A test that fails nondeterministically trains teams to ignore failures. Fix or remove flaky tests on detection.
+**Flaky tests are worse than no tests.** A nondeterministic failure trains teams to ignore all failures. Quarantine on detection; rerun once, never twice.
+
+**Independent verification is non-negotiable.** The implementing agent (or developer) must not self-verify. Separate session, fresh context, no shared priors.
+
+## Loading Guide
+
+| File | Load when |
+|------|-----------|
+| `references/test-strategy.md` | Designing a test strategy — pyramid shape, shift-left/right, cost-of-failure, coverage as diagnostic |
+| `references/test-automation.md` | Selecting frameworks, parallelism/sharding, flaky quarantine, predictive ML test selection |
+| `references/quality-gates-and-metrics.md` | Designing quality gates (blocking vs advisory), DORA metrics, vanity-vs-actionable metrics, mutation testing |
+| `references/regression-testing.md` | Building regression suites — impact analysis, selection math, suite evolution, shift-right feedback |
+| `references/test-data-management.md` | Test data strategy — fixtures, factories, time-travel, masking, GDPR/PII rules |
+| `references/performance-testing.md` | Load/stress/soak testing — k6/Locust/Gatling/JMeter, SLO thresholds, CI cadence |
+| `references/security-testing.md` | Security testing — OWASP Top 10:2025, STRIDE, SAST/DAST/SCA, supply chain/SBOM |
+| `references/ci-failure-triage.md` | CI is red — exit-code taxonomy (1/2/126/127/137/139/143), git bisect, flake-vs-failure protocol |
+| `references/test-debugging.md` | A test that should pass is failing — CI-vs-local divergence, ordering/shared state, mock binding |
+| `references/risk-based-testing.md` | Prioritizing by risk — P×I formula, 5×5 matrix, risk workshop, register, reassessment triggers |
+| `references/exploratory-testing.md` | Exploratory testing — SBTM, charter writing, SFDIPOT/HICCUPPS heuristics, tours |
+| `references/test-design-techniques.md` | Choosing test design techniques — EP, BVA, decision tables, state transition, pairwise, error guessing |
+| `references/qa-career-levels.md` | QA career growth — Senior/Staff/Principal scope, leveling mechanics, archetypes, misconceptions |
+| `references/sdet-engineering.md` | SDET role and skills — gTAA/TAF architecture, POM, SOLID for tests, build-vs-buy, testability |
+| `references/ai-code-quality-gates.md` | Reviewing AI-generated code — independent verification, AC testability, agent-test quality, human-in-the-loop |
+| `references/agentic-eval-design.md` | Designing agent evals — dataset test design, judge bias, flaky-eval discipline, CI gate tiers, replay |
+| `templates/test-strategy.md` | Producing a test strategy document — fill in scope, risk tiers, level allocation, automation targets |
+| `templates/risk-register.md` | Recording risk assessment results — fill in items, P×I scores, owners, mitigations |
+| `templates/exploratory-charter.md` | Writing an SBTM charter — fill in target, resources, discovery goal, timebox |
+| `templates/bug-report.md` | Filing a structured bug report — fill in reproduction steps, expected vs actual, severity |
+| `templates/verification-plan.md` | Planning independent verification — fill in AC-to-method traceability, verifier assignment, exit criteria |
+| `assets/risk-matrix-grid.md` | Scoring risks during a workshop — 5×5 P×I grid with zone thresholds |
+| `assets/test-design-techniques-checklist.md` | Selecting techniques for a feature — quick-reference checklist mapping scenario type to technique |
+| `assets/qa-definition-of-done.md` | Defining release readiness — QA contribution to definition of done |
+| `scripts/risk-prioritize.py` | Computing P×I rankings from a risk-items JSON file |
+| `scripts/check-ac-testability.py` | Checking acceptance criteria for vague verbs and missing observable outcomes |
+| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 6-7 cases) |
+
+## Scripts
+
+| Script | Invocation | Purpose |
+|--------|-----------|---------|
+| risk-prioritize | `python3 scripts/risk-prioritize.py --json <input.json>` | Reads risk items (probability, impact), computes P×I scores, emits ranked JSON |
+| check-ac-testability | `python3 scripts/check-ac-testability.py <spec.md>` | Scans acceptance criteria for untestable language, exits non-zero if any are flagged |
+
+## Triggers
+
+Load this skill when the task involves:
+
+- **Test strategy** — designing what/how/priority to test for a project or feature
+- **Regression testing** — building, selecting, or evolving regression suites
+- **CI triage** — diagnosing CI failures, exit codes, flake-vs-real classification
+- **Test automation** — framework selection, parallelism, flaky quarantine, ML selection
+- **Quality gates** — gate design, blocking vs advisory, metrics, DORA
+- **Risk-based testing** — P×I scoring, risk registers, prioritization workshops
+- **Exploratory testing** — SBTM charters, oracle heuristics, session debriefs
+- **Agentic evals** — eval dataset design, judge bias, flaky-eval discipline, CI tiers
+- **SDD gate review** — QA ownership at spec-driven gates, AC testability, independent verification
+- **SDET** — test infrastructure engineering, gTAA, CI/CD integration, career scope
+
+## When not to use
+
+Route to the named sibling skill instead:
+
+- [spec-driven-development](../spec-driven-development/SKILL.md) — writing specs, running the SDD pipeline, gate verdict format, revision loops
+- [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) — eval framework governance, statistical comparisons, telemetry and privacy controls, grader implementation
+- [verification-methodology](../verification-methodology/SKILL.md) — collecting evidence and rendering verdicts against explicit pass/fail criteria
+- [release-engineering](../release-engineering/SKILL.md) — composing test evidence into release-candidate readiness, promotion, go/no-go, production rollout, and rollback decisions; QA owns test strategy and gate semantics
+- [systematic-debugging](../systematic-debugging/SKILL.md) — root-cause analysis of production incidents, bug reproduction, fault localization
+- [secure-software-engineering](../secure-software-engineering/SKILL.md) — security implementation, threat modeling, secure defaults, dependency evaluation
+
+## Stop and Exit Conditions
+
+- **Test strategy complete when:** strategy document names risk tiers, level allocation, automation targets, and exit criteria for each tier.
+- **Risk assessment complete when:** every identified risk has a P×I score, an owner, and a mitigation or acceptance decision recorded in the register.
+- **CI triage complete when:** failure is classified (flake vs real, env vs code), root cause is localized, and a fix or escalation path is identified.
+- **Gate review complete when:** every acceptance criterion maps to a verification method, the verifier is independent of the implementer, and evidence is attached.
+- **Bounded escalation:** stop after three non-converging diagnostic passes and report the evidence collected so far.

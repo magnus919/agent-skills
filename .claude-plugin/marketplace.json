@@ -597,7 +597,7 @@
         "./platform-engineering"
       ],
       "strict": false,
-      "description": "Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms."
+      "description": "Use this skill when building or operating internal developer platforms: infrastructure as code, CI/CD, container orchestration, service networking, secrets, and observability. Do not use it to define release process, promotion, rollout, or rollback policy; use release-engineering for that delivery model."
     },
     {
       "name": "product-design-and-ux",
@@ -660,7 +660,7 @@
         "./qa-methodology"
       ],
       "strict": false,
-      "description": "Quality assurance methodology — test strategy design, test automation patterns, regression testing, CI quality gates, test data management, and quality metrics. Grounded in practical patterns for teams that want confident shipping."
+      "description": "Design and apply QA methodology for software teams: test strategy, regression testing, CI failure triage, test automation, quality gates and metrics, risk-based testing, exploratory testing, test design techniques, AI code quality gates (independent verification, acceptance-criteria testability review for agentic Spec-Driven Development), agentic eval design (dataset test design, judge-as-system-under-test, flaky-eval discipline), QA career levels (Senior/Staff/Principal), and SDET engineering (test infrastructure, gTAA, CI/CD integration). Do not use for root-cause debugging of production incidents, security implementation or threat modeling, or evaluation framework governance and statistical analysis — route those to systematic-debugging, secure-software-engineering, and agent-evals-and-observability respectively."
     },
     {
       "name": "raleigh",
@@ -670,6 +670,15 @@
       ],
       "strict": false,
       "description": "Query, search, and download public datasets and civic information for the City of Raleigh. Use for live ArcGIS Hub catalog discovery, ArcGIS FeatureServer and MapServer queries, ImageServer imagery exports, official Raleigh geocoding, GoRaleigh transit feeds, guest-public development records, public RaleighNC.gov content, eSCRIBE public meetings, Raleigh fire reports and inspections, and the Raleigh-Wake ECC active incident feed. Do not use for private data, authenticated operations, payments, submissions, bulk crawling, or non-public portals."
+    },
+    {
+      "name": "release-engineering",
+      "source": "./",
+      "skills": [
+        "./release-engineering"
+      ],
+      "strict": false,
+      "description": "Design, automate, and operate end-to-end software releases: release process models and pipelines (trunk-based development, CD stages, release trains), progressive delivery and feature flags, versioning and artifact management (SemVer, conventional commits, changelogs, SBOM/provenance), readiness and quality gates, rollback and recovery planning, change-management and audit compliance (SOC 2, SOX, PCI), DORA metrics, and multi-team release coordination. Do not use for application feature implementation (backend-engineering/frontend-engineering), production incident root-cause debugging or on-call/SLO operations (systematic-debugging / site-reliability-engineering), security implementation or threat modeling (secure-software-engineering), or internal developer platform construction (platform-engineering)."
     },
     {
       "name": "remote-systems-administration",

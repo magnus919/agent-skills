@@ -1,8 +1,10 @@
 ---
 name: platform-engineering
-description: Infrastructure as code, CI/CD, container orchestration, service networking
-  — methodology and reference patterns for building and operating internal developer
-  platforms.
+description: >-
+  Use this skill when building or operating internal developer platforms: infrastructure
+  as code, CI/CD, container orchestration, service networking, secrets, and
+  observability. Do not use it to define release process, promotion, rollout, or
+  rollback policy; use release-engineering for that delivery model.
 license: MIT
 metadata:
   tags: ''
@@ -26,7 +28,11 @@ Load this skill when the task involves:
 | Observability strategy | Prometheus rules, Grafana dashboards-as-code, Loki logging, tracing |
 | Secret management design | Vault, SOPS, External Secrets Operator patterns |
 | Cloud architecture assessment | Multi-cloud patterns, provider foundations, cost governance |
-| Deployment pipeline review | End-to-end delivery pipeline audit, release engineering patterns |
+| Deployment pipeline review | Delivery-platform architecture; load [release-engineering](../release-engineering/SKILL.md) when defining the release model, promotion gates, rollout, or rollback policy |
+
+## When not to use
+
+Use [release-engineering](../release-engineering/SKILL.md) to define release process, promotion, rollout, or rollback policy. This skill builds and operates the delivery platform that implements those decisions.
 
 ## Loading Order
 
@@ -85,4 +91,5 @@ The profile using this skill produces artifact pyramids. The response to any cal
 - `tailscale` — mesh networking and ACL policies
 - `implementation-planning` — work breakdown and dependency ordering
 - `mermaid-diagrams` — architecture diagram generation
-- `site-reliability-engineering` — sister domain (post-deployment reliability)
+- `site-reliability-engineering` — sister domain for post-deployment reliability
+- `release-engineering` — release process, artifact promotion, readiness, rollout, and rollback policy; this skill owns the delivery platform that implements those decisions

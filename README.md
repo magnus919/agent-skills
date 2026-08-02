@@ -309,11 +309,15 @@ Build production-grade AI agents and graph-based state machines with PydanticAI 
 
 ### [qa-methodology](qa-methodology/SKILL.md)
 
-Quality assurance methodology — test strategy design, test automation patterns, regression testing, CI quality gates, test data management, and quality metrics. Grounded in practical patterns for teams that want confident shipping.
+QA and SDET methodology for senior-to-principal engineers — test strategy, automation, regression, risk-based prioritization, exploratory testing, quality gates, AI code quality gates for agentic development, agentic eval design, career leveling, and SDET engineering. Ships 16 references, 5 templates, 3 assets, 2 tested scripts, and 7 evals.
 
 ### [raleigh](raleigh/SKILL.md)
 
 Query, search, and download public datasets from the City of Raleigh Open Data portal. Wraps the ArcGIS REST API to access 170+ datasets — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, and more. No API key needed. Ships a Python CLI with catalog, search, info, query, download, and categories commands.
+
+### [release-engineering](release-engineering/SKILL.md)
+
+Senior-to-principal release engineering methodology — release process models and CD pipelines, progressive delivery and feature flags, versioning and artifacts, readiness gates, rollback planning, change-governance and compliance evidence, DORA metrics, and multi-team release coordination. Ships 15 references, 6 templates, 4 assets, 5 stdlib-only Python CLIs, and 8 evals.
 
 ### [remote-systems-administration](remote-systems-administration/SKILL.md)
 
