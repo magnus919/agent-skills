@@ -340,6 +340,10 @@ Build and maintain outcome-based product roadmaps and portfolio views that seque
 
 CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management.
 
+### [production-readiness](production-readiness/SKILL.md)
+
+Assemble cross-domain production evidence into a risk-scaled launch decision. Defines three risk classes (Low/Standard/High) with proportional evidence requirements, an 11-category evidence checklist with named source or explicit gap for every category, and four launch-decision outcomes (Go/No-go/Defer/Exception) with accountable owners. Routes detailed technical checks to release-engineering, SRE, security, data, QA, platform, and implementation-planning. Ships 2 references (discovery brief, readiness record template) and 5 evals.
+
 ### [programming-principles](programming-principles/SKILL.md)
 
 Distilled coding principles from 14 classic software engineering books (Clean Code, DDD, Refactoring, Release It!, DDIA, Code Complete, and more). Cross-cutting principles organized by concern, task-to-book mapping, per-book mini and full rule sets, and a structured code-assessment workflow.

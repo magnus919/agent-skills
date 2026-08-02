@@ -726,6 +726,15 @@
       "description": "CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management."
     },
     {
+      "name": "production-readiness",
+      "source": "./",
+      "skills": [
+        "./production-readiness"
+      ],
+      "strict": false,
+      "description": "Define the minimum production evidence packet by risk class and produce go/no-go/defer/exception launch decisions with accountable owners. Cover ownership, user/business outcome, dependencies, SLOs, observability, support, security, data, rollback, capacity, and cost — every category with a named source or explicit missing-evidence outcome. Route detailed checks to existing specialist skills. Do not use for release pipeline mechanics (release-engineering) or incident response and SLO operations (site-reliability-engineering)."
+    },
+    {
       "name": "programming-principles",
       "source": "./",
       "skills": [
