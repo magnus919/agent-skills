@@ -368,21 +368,49 @@ The nine journey phases (see [journey.md](journey.md) for full definitions):
 
 ### Lightweight path
 
-For narrow, low-risk changes (single-surface bug fix, docs-only, config
-tweak). Mandates phases 1, 6, 7, 8, 9.
+For narrow, low-risk changes (single-surface bug fix, test-hardening regression
+guard, docs-only change, or config tweak). Mandates phases 1, 6, 7, 8, 9.
+
+Test-hardening is a named lightweight subtype. Use it only when production
+behavior is already correct, production/runtime code remains unchanged, and a
+focused test plus a bounded controlled weakening can expose the regression. Its
+specific evidence and escalation rules are in
+[lightweight-test-hardening.md](lightweight-test-hardening.md).
 
 **Dropped phases with skip criteria:**
 
 | Dropped phase | Skip criterion |
 |---|---|
-| 2 — Discovery and reproduction | The change surface is a single function or module and the current behavior is already understood from the change request; no reproduction is needed. |
+| 2 — Discovery and reproduction | The change surface is a single function or module and the current behavior is already understood from the change request; no reproduction is needed. For the test-hardening subtype, record the clean behavior and named mutation or controlled weakening instead of requiring a live production repro. |
 | 3 — Architecture/design delta | No module boundary, service dependency, cross-component contract, or system-level structure is affected (per the `software-architecture-analysis` skip rule in the [routing table](routing-table.md)). |
 | 4 — Specification and decomposition | The change is fully described by the change contract with testable acceptance criteria; no separate `SPEC.md` or phased decomposition is needed (per the `spec-driven-development` skip rule). |
 | 5 — Test and verification planning | No `VERIFICATION-PLAN.md` is required beyond the implementer's own focused tests; the change introduces no new verification surface (per the `qa-methodology` skip rule). |
 
 Each skip is recorded with its criterion in packet group (e). Gates 1, 3,
 and 2 are conditional on this path (skipped with their phases); gates 4 and
-5 remain mandatory.
+5 remain mandatory. Gate 4 may be satisfied by one bounded final review after
+the candidate is frozen, or by the repository's required platform review; a
+second long-running reviewer is not implied by the lightweight path.
+
+### Lightweight test-hardening variant
+
+The test-hardening variant applies when a mutation, coverage gap, or controlled
+weakening exposes a missing regression guard while the clean production behavior
+is already correct.
+
+Its gate 5 evidence is:
+
+- the clean baseline passes;
+- the named mutant or controlled weakening fails the new test;
+- the test exercises the public contract with hermetic setup at the relevant
+  failure boundary; and
+- focused tests, lint, compilation, scope, and changed-file security checks pass.
+
+The ordinary production-bug rule that a new test must fail on clean `main` does
+not apply. The variant does not require a broad mutation campaign, a full
+architecture/specification packet, or a full-repository scan unless another
+trigger surface applies. For expensive CI, those local checks are completed
+before the first push so the remote run verifies a stable candidate.
 
 ### Full path
 

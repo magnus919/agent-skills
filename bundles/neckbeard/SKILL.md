@@ -72,6 +72,14 @@ required evidence, exit conditions, and escalation rules detailed in
    explicitly requested behavior. Record any deliberate ceiling and its upgrade
    trigger.
 
+   Classify a test-hardening request explicitly when production behavior is
+   already correct and the work adds a focused guard for a coverage gap or named
+   mutation. That is a lightweight-path subtype, not an ordinary production
+   bugfix: use baseline-pass / mutant-fail evidence instead of requiring the new
+   test to fail on clean `main`. Load
+   [references/lightweight-test-hardening.md](references/lightweight-test-hardening.md)
+   for the bounded contract and escalation triggers.
+
 4. **Execute by SDLC stage.** Route the work to the stage that owns it —
    discovery/requirements, design, implementation, verification, delivery,
    learning. Load the matching specialist skill where one exists rather than
@@ -109,6 +117,29 @@ or create a second orchestrator.
 **Do not load the journey for:** a simple fix, refactor, or review that has no
 issue/ticket trajectory. That work uses the core loop and the stage references
 below without the journey's phases, packet, or gates.
+
+## Path selection before ceremony
+
+Select the delivery path immediately after current-state discovery and before
+creating path-specific artifacts. Use the affected surface and risk, not line
+count alone.
+
+For a test-hardening request, choose the lightweight path only when production
+behavior is already correct, production code remains unchanged, the change is
+confined to tests or fixtures, and a focused deterministic check plus a bounded
+controlled weakening can expose the regression. Record the invariant, the clean
+baseline evidence, the named mutation, and the non-goals. Do not apply the
+ordinary bugfix requirement that a new test fail on clean `main`.
+
+For expensive or serialized CI, local design, hermeticity, focused tests,
+targeted mutation, lint, compilation, and scope checks must pass before the
+first push. Freeze the candidate before requesting one bounded final review or
+the repository's required platform review. A timed-out review is inconclusive,
+not a reason to launch repeated review rounds. Material changes invalidate the
+relevant verification and bind the replacement verdicts to the new exact head.
+
+The detailed test-hardening contract and escalation triggers are in
+[references/lightweight-test-hardening.md](references/lightweight-test-hardening.md).
 
 ## The one rule that defines "done"
 
@@ -180,6 +211,7 @@ metadata, never as a success proxy.
 | [references/risk-authority-gates.md](references/risk-authority-gates.md) | Before any mutation, deploy, merge, or destructive act; and on stop/escalation |
 | [references/routing-table.md](references/routing-table.md) | Deciding whether a specialist skill owns the current stage |
 | [references/journey.md](references/journey.md) | **Change-request work only** — an issue/ticket/request that will produce a PR or equivalent reviewable deliverable. Defines the 9-phase intake→release sequence, gates, and paths. **Not loaded** for a simple fix, refactor, or review without an issue/ticket trajectory (that work uses the core loop above). |
+| [references/lightweight-test-hardening.md](references/lightweight-test-hardening.md) | Test-only regression guards for already-correct production behavior: baseline-pass / mutant-fail evidence, hermeticity, finality-before-push, bounded review, and escalation triggers. |
 | [references/lifecycle.md](references/lifecycle.md) | **Change-request work only** — platform mechanics (GitHub reference mode or enterprise mode) for intake, submission, CI/review monitoring, and authorized release. **Not loaded** for a simple fix, refactor, or review without an issue/ticket trajectory. |
 | [references/delivery-packet.md](references/delivery-packet.md) | **Change-request work only** — carrying state across phases of a change-request run, or resuming after a context boundary; defines packet fields, artifact ownership, lifecycle states, and resumability. **Not loaded** for a simple fix, refactor, or review without an issue/ticket trajectory. |
 | [references/evaluation.md](references/evaluation.md) | Designing, running, or reporting an evaluation |

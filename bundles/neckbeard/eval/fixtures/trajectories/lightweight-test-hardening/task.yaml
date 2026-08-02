@@ -1,0 +1,12 @@
+kind: trajectory
+id: lightweight-test-hardening
+path: lightweight
+prompt: "In a public OSS repository, issue #123 says the webhook URL validator's permanent rejection of overlong hostnames needs a regression guard. Add the test, keep production code unchanged, and open a PR."
+phases: "1: Intake and provenance | 6: Domain-specific implementation | 7: Independent review and boundary verification | 8: Readiness, CI/review feedback loops, and exact-final-head re-verification | 9: Authorized post-merge release and closeout"
+skipped_phases: "2: Current-state discovery and reproduction: current behavior and the named resolver-classification mutation are already understood; this is test hardening, not a production defect requiring live reproduction | 3: Architecture/design delta and risk assessment: test-only change with no module boundary, service dependency, or cross-component contract affected | 4: Specification and work decomposition: the change contract and focused acceptance criteria fully describe the one-test change | 5: Pre-implementation test and verification planning: the test-hardening reference defines the focused baseline-pass/mutant-fail plan and no new verification surface is introduced"
+gates: "gate-4: one bounded final review after the candidate is frozen: pass | gate-5: clean baseline and targeted mutant verification at the final head: pass"
+skipped_gates: "gate-1: skipped with phase 3, no architecture delta on lightweight test-hardening path | gate-2: skipped with phase 5, focused test-hardening plan is sufficient | gate-3: skipped with phase 4, no specification decomposition needed"
+terminal_state: merged
+routing_selected: "opensource-contributions, qa-methodology, verification-methodology"
+routing_skipped: "backend-engineering: production code unchanged | frontend-engineering: no client-side application code modified | data-engineering: no schema or migration files changed | cli-builder: no CLI interface modified | spec-driven-development: no separate specification needed | software-architecture-analysis: no architecture surface affected"
+visibility: public

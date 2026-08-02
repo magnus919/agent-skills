@@ -25,7 +25,10 @@ Install it when you want delivery discipline that is inspectable. Every
 non-trivial run produces an evidence ledger: intent, inspected artifacts,
 assumptions, rejected alternatives, files changed, checks run, observed outputs,
 and the boundaries that were *not* verified. "Done" is prohibited unless the
-declared verification target was actually exercised.
+declared verification target was actually exercised. For a test-only regression
+guard around already-correct production behavior, the bundle uses a bounded
+lightweight path with clean-baseline and targeted-mutant evidence rather than
+ordinary bug-fix reproduction requirements.
 
 ## What You Get
 
@@ -33,6 +36,7 @@ declared verification target was actually exercised.
 |---|---|
 | `SKILL.md` | Thin umbrella that routes a request through the delivery spine and composes specialist catalog skills |
 | `references/stages.md` | Entry conditions, required evidence, exit conditions, and escalation rules for each SDLC stage |
+| `references/lightweight-test-hardening.md` | Bounded path for test-only regression guards: baseline-pass / mutant-fail evidence, hermeticity, finality-before-push, and review pacing |
 | `references/evidence-ledger.md` | The ledger schema and the rules for distinguishing a component check from a delivery-boundary check |
 | `references/risk-authority-gates.md` | Stop and escalation rules; the gate before any mutation, deploy, merge, or destructive act |
 | `references/routing-table.md` | "Use existing skill instead" table so the bundle composes the catalog rather than swallowing it |
@@ -42,7 +46,7 @@ declared verification target was actually exercised.
 | `references/evaluation.md` | Evaluation methodology: fixtures, baselines, rubrics, multi-run reporting, claims policy |
 | `templates/` | Change contract, decision record, evidence ledger, verification plan, evaluation report |
 | `templates/delivery-packet.md` | Fillable delivery packet template mirroring the nine field groups defined in the reference |
-| `evals/evals.json` | Schema-v1 output-quality evaluation cases covering routing, gates, skip reasons, exact-head binding, and terminal states |
+| `evals/evals.json` | Schema-v1 output-quality evaluation cases covering routing, gates, skip reasons, exact-head binding, terminal states, and lightweight test-hardening semantics |
 | `eval/` | Versioned evaluation harness: task schema, scoring rubric, baseline protocol, fixtures, and a runner |
 
 ## Quick Start

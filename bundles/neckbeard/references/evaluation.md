@@ -46,7 +46,8 @@ Representative, repository-backed tasks across these classes:
 - feature change
 - refactor
 - specification ambiguity
-- regression prevention
+- regression prevention, including test-hardening guards for already-correct
+  production behavior
 - review finding
 - release verification
 - **"no change needed"** cases
@@ -63,9 +64,11 @@ Each fixture carries its repository context and harness constraints. Schema:
 In addition to single-task fixtures, the suite includes **trajectory
 fixtures** — multi-phase change-request journeys that record the full sequence
 of journey phases, gates, routing decisions, and terminal state. Where a
-single-task fixture has one `class` and one `expected_boundary`, a trajectory
-fixture describes an end-to-end delivery (e.g. all nine phases to a released
-state, or a lightweight path ending closed with recorded skips).
+single-task fixture has one `class` and `expected_boundary`, a
+trajectory fixture describes an end-to-end delivery (e.g. all nine phases to a
+released state, a lightweight path ending closed with recorded skips, or a
+lightweight test-hardening path with clean-baseline and targeted-mutant
+verification).
 
 Trajectory fixtures are validated by the same runner using `kind: trajectory`
 as the discriminator. Their schema is documented in
@@ -84,13 +87,13 @@ single-task and trajectory fixtures in one pass:
 Expected output (current fixture set):
 
 ```
-OK: 12 fixture(s) valid.
-  10 single-task fixture(s) valid.
-  2 trajectory fixture(s) valid.
-  by class: {'adversarial': 2, 'bug-diagnosis': 1, 'feature-change': 1, 'no-change-needed': 1, 'refactor': 1, 'regression-prevention': 1, 'release-verification': 1, 'review-finding': 1, 'spec-ambiguity': 1}
-  by visibility: {'public': 10}
+OK: 14 fixture(s) valid.
+  11 single-task fixture(s) valid.
+  3 trajectory fixture(s) valid.
+  by class: {'adversarial': 2, 'bug-diagnosis': 1, 'feature-change': 1, 'no-change-needed': 1, 'refactor': 1, 'regression-prevention': 2, 'release-verification': 1, 'review-finding': 1, 'spec-ambiguity': 1}
+  by visibility: {'public': 11}
   adversarial: 2
-  trajectory paths: {'full': 1, 'lightweight': 1}
+  trajectory paths: {'full': 1, 'lightweight': 2}
 ```
 
 To scaffold a scoring report for manual evaluation:
