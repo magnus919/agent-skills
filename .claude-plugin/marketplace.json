@@ -528,6 +528,15 @@
       "description": "Capture MeshCore Companion packets via BLE, serial, or TCP."
     },
     {
+      "name": "migration-engineering",
+      "source": "./",
+      "skills": [
+        "./migration-engineering"
+      ],
+      "strict": false,
+      "description": "Plan and execute safe cross-system migrations — schema, data, API, infrastructure, and service — with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Covers expand/contract, reversible and irreversible recovery paths, migration observability, correctness evidence, ownership, and customer impact. Do not use for single-technology quick fixes, tool-specific how-to guides, or migrations whose scope does not cross a system boundary; do not prescribe one migration technology or claim rollback is always possible."
+    },
+    {
       "name": "ml-engineering",
       "source": "./",
       "skills": [
