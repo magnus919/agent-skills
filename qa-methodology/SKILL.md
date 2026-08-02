@@ -5,7 +5,8 @@ description: >-
   CI failure triage, test automation, quality gates and metrics, risk-based testing,
   exploratory testing, test design techniques, AI code quality gates (independent
   verification, acceptance-criteria testability review for agentic Spec-Driven
-  Development), agentic eval design (dataset test design, judge-as-system-under-test,
+  Development), mutation-guided test hardening and review evidence (surviving mutants,
+  weak assertions, diff-aware mutation testing), agentic eval design (dataset test design, judge-as-system-under-test,
   flaky-eval discipline), QA career levels (Senior/Staff/Principal), and SDET
   engineering (test infrastructure, gTAA, CI/CD integration). Do not use for
   root-cause debugging of production incidents, security implementation or threat
@@ -19,7 +20,7 @@ compatibility: >-
 metadata:
   source_repo: hermes-profiles
   skill_version: "2.0.0"
-  tags: qa, testing, quality-assurance, test-automation, regression, CI, quality-gates, risk-based-testing, exploratory-testing, SDET, agentic-evals, AI-code-quality
+  tags: qa, testing, quality-assurance, test-automation, regression, CI, quality-gates, risk-based-testing, exploratory-testing, mutation-testing, SDET, agentic-evals, AI-code-quality
 ---
 
 # QA Methodology
@@ -37,6 +38,7 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | Risk-based testing — P×I scoring, prioritization, registers | Verification verdicts against explicit criteria — route to [verification-methodology](../verification-methodology/SKILL.md) |
 | Exploratory testing — SBTM charters, heuristics, tours | Feature implementation — that's the developer |
 | AI code quality gates — independent verification, AC testability | Production monitoring and incident response — that's SRE |
+| Mutation-guided test hardening — bounded mutation review evidence and survivor triage | Verification verdicts against explicit criteria — route to [verification-methodology](../verification-methodology/SKILL.md) |
 | Agentic eval design — dataset design, judge bias, flaky-eval discipline | |
 | QA career levels — Senior/Staff/Principal scope progression | |
 | SDET engineering — test infrastructure, gTAA, CI/CD integration | |
@@ -60,7 +62,7 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | File | Load when |
 |------|-----------|
 | `references/test-strategy.md` | Designing a test strategy — pyramid shape, shift-left/right, cost-of-failure, coverage as diagnostic |
-| `references/test-automation.md` | Selecting frameworks, parallelism/sharding, flaky quarantine, predictive ML test selection |
+| `references/test-automation.md` | Selecting frameworks, parallelism/sharding, flaky quarantine, predictive ML test selection, mutation-guided hardening |
 | `references/quality-gates-and-metrics.md` | Designing quality gates (blocking vs advisory), DORA metrics, vanity-vs-actionable metrics, mutation testing |
 | `references/regression-testing.md` | Building regression suites — impact analysis, selection math, suite evolution, shift-right feedback |
 | `references/test-data-management.md` | Test data strategy — fixtures, factories, time-travel, masking, GDPR/PII rules |
@@ -80,12 +82,13 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `templates/exploratory-charter.md` | Writing an SBTM charter — fill in target, resources, discovery goal, timebox |
 | `templates/bug-report.md` | Filing a structured bug report — fill in reproduction steps, expected vs actual, severity |
 | `templates/verification-plan.md` | Planning independent verification — fill in AC-to-method traceability, verifier assignment, exit criteria |
+| `templates/mutation-review.md` | Recording bounded mutation review scope, classifications, survivor tests, and independent evidence |
 | `assets/risk-matrix-grid.md` | Scoring risks during a workshop — 5×5 P×I grid with zone thresholds |
 | `assets/test-design-techniques-checklist.md` | Selecting techniques for a feature — quick-reference checklist mapping scenario type to technique |
 | `assets/qa-definition-of-done.md` | Defining release readiness — QA contribution to definition of done |
 | `scripts/risk-prioritize.py` | Computing P×I rankings from a risk-items JSON file |
 | `scripts/check-ac-testability.py` | Checking acceptance criteria for vague verbs and missing observable outcomes |
-| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 6-7 cases) |
+| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 10 cases) |
 
 ## Scripts
 
@@ -103,6 +106,7 @@ Load this skill when the task involves:
 - **CI triage** — diagnosing CI failures, exit codes, flake-vs-real classification
 - **Test automation** — framework selection, parallelism, flaky quarantine, ML selection
 - **Quality gates** — gate design, blocking vs advisory, metrics, DORA
+- **Mutation-guided test hardening** — diff-aware mutation scope, surviving mutants, weak assertions, and review evidence
 - **Risk-based testing** — P×I scoring, risk registers, prioritization workshops
 - **Exploratory testing** — SBTM charters, oracle heuristics, session debriefs
 - **Agentic evals** — eval dataset design, judge bias, flaky-eval discipline, CI tiers

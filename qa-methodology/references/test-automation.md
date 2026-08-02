@@ -127,36 +127,46 @@ When suites exceed 10,000 tests, full-run-on-every-PR becomes impractical. Predi
 | Random data collision | Seeded randomness or UUID-based test data |
 | Test interdependence | `pytest-randomly` to expose ordering issues |
 
-## Mutation Testing as Test-Effectiveness Signal
+## Mutation-Guided Test Hardening
 
-Mutation testing measures whether your tests **actually detect injected faults**, not just whether they execute code (which is all coverage measures).
-
-### How It Works
-
-1. Tool introduces small code changes (mutants): `>` → `>=`, `+` → `-`, remove a statement
-2. Run the test suite against each mutant
-3. If tests fail → mutant killed (good). If tests pass → mutant survived (bad: tests don't catch this fault)
-4. **Mutation score** = killed mutants / total mutants
+Mutation-guided test hardening is targeted review evidence, not a mutation engine, portable report format, or score-optimization exercise. Coverage and mutation effectiveness answer different questions: line/branch coverage says whether execution reached code; mutation analysis asks whether tests detect plausible behavior-changing faults. Do not interpret a mutation score as a universal quality grade. It depends on operator quality, equivalent-mutant handling, scope, exclusions, timeouts, and denominator integrity.
 
 ### Tool Landscape
 
-| Tool | Language | Notes |
-|------|----------|-------|
-| **PIT (pitest.org)** | Java/Kotlin | Industry standard for JVM; incremental mode |
-| **Stryker** | JS/TS, C#, Scala | Supports Jest, Mocha, Vitest |
-| **mutmut** | Python | Lightweight; integrates with pytest |
+Use the project's established native tool and its raw report as authoritative. Confirm the installed version and supported configuration in the project's documentation; the table only identifies the official project documentation, not a promise of interchangeable features.
 
-### Interpretation
+| Tool | Primary ecosystem | Official source |
+|------|-------------------|-----------------|
+| PIT | Java and JVM mutation testing | [PIT project README](https://github.com/hcoles/pitest) · [pitest.org](https://pitest.org) |
+| StrykerJS | JavaScript and TypeScript mutation testing | [StrykerJS project README](https://github.com/stryker-mutator/stryker-js) · [stryker-mutator.io](https://stryker-mutator.io/) |
+| mutmut | Python mutation testing | [mutmut documentation](https://mutmut.readthedocs.io/en/latest/) |
 
-| Mutation Score | Interpretation |
-|---------------|---------------|
-| > 80% | Strong test suite; tests assert behavior, not just execution |
-| 60–80% | Adequate; focus on survived mutants in P0/P1 code |
-| < 60% | Tests likely assert weakly (e.g., "no exception" without checking output) |
+### Bounded Review Loop
 
-> **Gotcha — Coverage ≠ effectiveness:** A suite at 95% line coverage with a 40% mutation score has extensive dead assertions. Use mutation testing as the true quality signal for high-risk modules; coverage alone is necessary but not sufficient.
+Use this loop when a changed behavior, review concern, or weak assertion warrants stronger evidence:
 
-**Practical adoption:** Run mutation testing on P0/P1 modules weekly (not on every PR — it's expensive). Gate advisory: mutation score < 60% on payment/auth code triggers a review flag.
+1. Choose changed lines/files or an explicitly justified risk slice. Broaden the slice for dependency, configuration, harness, environment, shared-abstraction, or cross-cutting changes.
+2. Run the project's established native mutation tool. PIT, StrykerJS, and mutmut are examples of the existing landscape; use the project's supported tool and raw report as authoritative, without assuming undocumented versions or features.
+3. Record an explicit mutant budget, timeout, seed, exclusions, operator set, test command, tool/version, and environment.
+4. Classify every result at minimum as `killed`, `survived`, `equivalent/likely equivalent`, `no coverage`, `timeout`, `flaky`, `invalid`, or `infrastructure/tooling failure`.
+5. Treat survivors as triage inputs, not automatic defects. Propose a focused behavior-level test only where the surviving fault is meaningful.
+6. Check the candidate for behavioral relevance, non-tautology, non-vacuity, non-redundancy, maintainability, flake risk, and implementation coupling. A generated test may be valuable even when it does not increase the score; a killed mutant does not prove the test is good.
+7. Independently rerun the baseline, candidate test, and exact retained mutant. The implementer cannot self-certify the generated test; use a fresh verifier or human.
+8. Record raw-report locations, commands, classifications, uncertainty, and reviewer decision in [templates/mutation-review.md](../templates/mutation-review.md).
+
+Define the denominator explicitly, for example `classified mutants / in-scope mutants`, and state how equivalent, excluded, unknown, incomplete, and infrastructure-failed mutants are accounted for. They must not silently disappear or inflate a clean result. Keep mutation use advisory and risk-based rather than an unconditional repository-wide gate or universal score threshold. A project may independently validate a narrower policy, but that policy needs its own evidence and review.
+
+### Reproduction Sequence
+
+```text
+record base/head and scope -> run native tool with bounded settings
+-> preserve raw report -> classify every mutant and denominator
+-> propose behavior-level test for meaningful survivor
+-> fresh verifier reruns baseline, candidate, exact mutant
+-> attach commands, outputs, uncertainty, and decision
+```
+
+For review artifacts use [mutation-review.md](../templates/mutation-review.md). For independent evidence and evaluation boundaries, see [ai-code-quality-gates.md](./ai-code-quality-gates.md), [verification-methodology](../../verification-methodology/SKILL.md), and [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md).
 
 ## Composition Links
 
@@ -167,4 +177,4 @@ Mutation testing measures whether your tests **actually detect injected faults**
 
 ---
 
-*Sources: Playwright docs (2025), pytest-xdist docs, Launchable (launchableinc.com), Predić et al. arXiv:2106.13891 (2021), PIT (pitest.org), Stryker Mutator (stryker-mutator.io), mutmut (GitHub), DORA Accelerate (2018).*
+*Sources: Playwright docs (2025), pytest-xdist docs, Launchable (launchableinc.com), Predić et al. arXiv:2106.13891 (2021), PIT project README (github.com/hcoles/pitest; pitest.org), StrykerJS project README (github.com/stryker-mutator/stryker-js; stryker-mutator.io), mutmut documentation (mutmut.readthedocs.io), and ACH (arXiv:2501.12862).*
