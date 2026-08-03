@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "linear",
+  "evals": [
+    {
+      "id": "smallest-read-query",
+      "prompt": "I need to list the open issues assigned to me across all teams in our Linear workspace, with their titles and states. The API can return huge amounts of data, so I want the smallest query that gets exactly what I need. What does the GraphQL query look like?",
+      "expected_output": "A minimal Linear GraphQL query that requests only the needed fields: a viewer query with the current user, issues filtered by assignee and state (filter for state.type equal to 'started' or 'unstarted' or by status name) with pagination handled via after and first, requesting only id, title, and state name (plus updatedAt if ordering matters). The response explains the field-selection discipline: requesting only the fields used keeps the response small and avoids GraphQL over-fetching, and it shows how pagination works with the issues connection (first and after, pageInfo.hasNextPage and endCursor) rather than assuming all results come back at once. It includes the practical details: authentication via an API key header and the base endpoint.",
+      "assertions": [
+        "The query requests only the needed fields (id, title, state) with the correct filter",
+        "Pagination via first and after with pageInfo is used correctly",
+        "The response explains why minimal field selection matters for GraphQL",
+        "Authentication and endpoint details for the Linear API are included",
+        "The query is scoped to the current user's assigned issues"
+      ]
+    },
+    {
+      "id": "create-update-issue",
+      "prompt": "I want a CLI action that creates a Linear issue for a bug report and then moves it to the correct team and project, but I want to avoid creating duplicate issues when the action is run twice. How do I design the create-and-update operation safely?",
+      "expected_output": "A safe create-and-update design: the response recommends checking for an existing issue first (search by the deduplication key such as the bug title or a stored external ID) before creating, then creating with only the required fields (teamId, title, description) and updating state, assignee, or project in a follow-up mutation only if needed. It explains Linear's mutation pattern: mutations are issued with an input object and return the updated issue, and since creation is not inherently idempotent, the client must implement deduplication or store the created issue ID. It covers the state-change semantics: moving an issue between states uses the workflow's state IDs, and it prescribes verifying the result after the mutation by re-querying the issue rather than trusting the mutation response alone.",
+      "assertions": [
+        "The design checks for an existing issue before creating to avoid duplicates",
+        "Creation sends only required fields and updates are separate mutations",
+        "The response explains that Linear mutations are not inherently idempotent and deduplication is client-side",
+        "State changes use the workflow's state IDs",
+        "The result is verified by re-querying the created issue"
+      ]
+    },
+    {
+      "id": "document-lookup",
+      "prompt": "A teammate shared a Linear document link with me, but I only remember the title fragment and that it lives in a project. I need to find the document and read its content from the CLI. What is the smallest set of queries to find and read it?",
+      "expected_output": "A document lookup path: first a search query against documents filtered by the title fragment and project (using the searchDocuments or documents connection with a filter on title), then, once the document id is known, a query for that document fetching the content field. The response explains the differences between Linear document types (project documents versus organization documents) and the fields available (title, content, project), and it prescribes reading only the content field needed for the task rather than fetching attachments and metadata. It also covers handling the not-found case: empty results mean the title fragment or project filter is wrong, and the response suggests loosening the filter before concluding the document does not exist.",
+      "assertions": [
+        "The lookup uses a title-fragment search scoped to the project first",
+        "The read step fetches the document by id requesting only the content field",
+        "Document types and fields (title, content, project) are explained",
+        "The not-found case is handled by loosening filters before concluding absence",
+        "The response stays minimal: two queries, not a crawl of the workspace"
+      ]
+    },
+    {
+      "id": "cycle-management",
+      "prompt": "I manage a team that runs two-week cycles. I need to see the current cycle's workload, what is unassigned, and how full the cycle is. What queries should I use and what should I not assume about how cycles work in Linear?",
+      "expected_output": "A cycle-management query set: fetch the current cycle for the team (cycles connection filtered by state 'active' or by name/date window), then query its issues with assignee and state, computing workload from the issues' estimates if the team uses them. The response explains what not to assume: cycles are team-scoped and may overlap with previous cycles' leftovers, issue estimates are optional and may be absent, and completion percentage is derived from the issues' states, not stored as a field. It prescribes using the cycle's issues connection with only the fields needed (assignee, state, estimate, completedAt) and computing the picture client-side, plus handling teams that do not use cycles at all (the query returns empty and the response should say so rather than inventing one).",
+      "assertions": [
+        "The current cycle is found via the team's cycles connection filtered to active state",
+        "Workload is computed from the cycle's issues with assignee, state, and estimates where present",
+        "The response states that completion is derived from issue states, not a stored field",
+        "The assumption that all teams use cycles or estimates is explicitly rejected",
+        "The empty-cycle case is handled honestly"
+      ]
+    },
+    {
+      "id": "error-recovery",
+      "prompt": "My script that syncs Linear issues to a spreadsheet started failing today with rate-limit errors, and sometimes the API returns an error that does not say whether my mutation applied. How should I handle API errors and verify state after failures?",
+      "expected_output": "An error-handling design for the Linear API: the response distinguishes retryable failures (rate limits with a Retry-After or reset timestamp, transient network errors) from permanent ones (authentication failures, invalid input, unknown identifiers) and prescribes backoff with the rate-limit reset rather than blind retries. For ambiguous mutations — an error where it is unclear whether the change applied — the response prescribes re-querying the affected entity to observe the actual state before retrying, and it explains Linear's typical behavior: mutations are synchronous and return the object on success, but network-level uncertainty means verification is the reliable recovery path. It also covers tracking request IDs or identifiers so the retry logic can deduplicate.",
+      "assertions": [
+        "Retryable failures (rate limits, transient network) are distinguished from permanent errors",
+        "Rate-limit handling uses the reset window with backoff",
+        "Ambiguous mutation failures are resolved by re-querying the entity's actual state",
+        "The response explains Linear's synchronous mutation behavior and its limits under network uncertainty",
+        "Retry logic can deduplicate via identifiers or request tracking"
+      ]
+    }
+  ]
+}

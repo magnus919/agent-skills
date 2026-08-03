@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "security-audit-methodology",
+  "evals": [
+    {
+      "id": "authorized-audit-plan",
+      "prompt": "We have been asked to review the security posture of an internal web application before it is exposed to customers. Where do I start: what authorization do I need, what is in scope, and what does the plan look like?",
+      "expected_output": "An audit plan that establishes authorization and scope before any assessment activity: the response starts with the written authorization for the review (who requested it, what systems are in scope, what actions are permitted, and the boundaries of the engagement), then defines the assessment scope by system and threat surface, and outlines the plan phases: architecture and threat-model review, configuration and dependency review, and targeted testing of the in-scope controls. The response explicitly distinguishes a defensive, authorized review from offensive operations and states the rule that anything outside the written scope is out of bounds until re-authorized. It also covers the deliverable structure: a findings report with severity, evidence, and remediation guidance, and it prescribes confirming authorization details with the requester before starting.",
+      "assertions": [
+        "The plan requires written authorization defining scope, permitted actions, and boundaries before assessment",
+        "Scope is defined by system and threat surface, with out-of-scope items explicit",
+        "The plan phases cover architecture review, configuration and dependency review, and targeted control testing",
+        "The response distinguishes authorized defensive review from offensive operations",
+        "The deliverable is a findings report with severity, evidence, and remediation"
+      ]
+    },
+    {
+      "id": "threat-modeling-session",
+      "prompt": "Our payments service is getting a new API endpoint that accepts webhooks from a third-party provider. I want to threat-model this addition before it ships. How do I run the session and what should come out of it?",
+      "expected_output": "A structured threat-modeling session for the webhook endpoint: the response defines the system boundary and trust zones (the third-party provider, the internet, the API service, internal systems), enumerates the assets and data flows into and out of the endpoint, and walks the threats against each flow — unauthenticated or spoofed webhooks triggering actions, replay of captured webhook requests, payload injection into downstream processing, denial of service via volume or large payloads, and the webhook endpoint being used to probe internal behavior. For each threat the session produces a decision: accepted with justification, mitigated with a specific control (signature verification, timestamp and nonce replay protection, payload schema validation, rate limiting, idempotent processing), or flagged for follow-up. The output is a recorded threat register with owners, so the session is not a discussion but a decision artifact.",
+      "assertions": [
+        "The session defines trust zones and data flows for the webhook endpoint",
+        "Webhook-specific threats are covered: spoofing, replay, injection, and abuse via volume",
+        "Each threat is resolved to accept, mitigate, or follow-up with a named control",
+        "Mitigations include signature verification, replay protection, and schema validation",
+        "The output is a recorded threat register with owners"
+      ]
+    },
+    {
+      "id": "architecture-audit",
+      "prompt": "I need to review the architecture of a legacy application that will be internet-facing for the first time. It was built for an internal network. What are the highest-priority architectural security questions to answer?",
+      "expected_output": "An architecture audit structured around the highest-priority security properties: the response identifies the critical questions — where trust boundaries are and what crosses them (input that was trusted internally but will now be attacker-controlled), how authentication and authorization are enforced and whether they are centralized or scattered, how secrets are stored and rotated, what data the application handles and how it is protected in transit and at rest, how the application is isolated from other systems it shares a network with, and how failures are observed (logging and alerting on security events). The response prioritizes the questions by the risk of moving from internal to internet-facing: any trust assumption that was safe on an internal network is now an exposure, and it explains how each answer maps to a finding or a remediation decision in the audit report.",
+      "assertions": [
+        "The audit leads with trust-boundary questions: what was trusted internally that will now be attacker-controlled",
+        "Authentication and authorization enforcement points are examined for centralization",
+        "Secrets handling, data protection, and network isolation are covered",
+        "Observability of security events is part of the audit",
+        "Questions are prioritized by the internal-to-internet risk shift"
+      ]
+    },
+    {
+      "id": "dependency-audit",
+      "prompt": "Our application uses 200+ dependencies and we have never audited them. There are known CVEs reported in the vulnerability scanner but the team ignores them because 'everything has CVEs.' How do I run a dependency audit that produces an actionable outcome?",
+      "expected_output": "A dependency audit that moves from a raw CVE list to a risk-ranked decision list: the response prescribes triaging the scanner output by reachability (does the vulnerable code path actually run in this application), exploitability (public exploits, attacker-accessible input), and the version gap, so findings are ordered by real exposure rather than count. It explains how to verify reachability with the dependency graph and code paths instead of trusting the scanner's default severity, and it separates the actionable buckets: patch now (reachable, exploitable), patch in the next cycle (reachable but lower risk), and track (not reachable today but should be monitored or the dependency scheduled for removal). The response also covers the structural fixes: a policy for adding dependencies (the review before adoption), upgrading cadence, and retiring abandoned dependencies that accumulate risk without being used.",
+      "assertions": [
+        "Audit findings are triaged by reachability, exploitability, and version gap, not scanner severity alone",
+        "Reachability is verified with the dependency graph and code paths",
+        "Findings are bucketed into patch-now, next-cycle, and track categories",
+        "A dependency-adoption policy and upgrade cadence are prescribed",
+        "Abandoned or unused dependencies are identified for removal"
+      ]
+    },
+    {
+      "id": "vulnerability-classification",
+      "prompt": "Our audit found a list of issues: an exposed admin panel, a session cookie without secure flags, an SQL injection in a search endpoint, and a missing rate limit on login. I need to write the findings report. How do I classify and communicate these so the team fixes the right things first?",
+      "expected_output": "A findings report with classification and communication that drives correct prioritization: the response assigns severity per finding using a consistent method that combines exploitability and impact — the SQL injection is exploitable, attacker-reachable, and leads to data exposure so it is critical and must be fixed first; the exposed admin panel is high because it is internet-reachable but requires an account or adds exposure; the login rate-limit absence is high for brute-force risk; the cookie flag is medium-low because it requires a separate attack to be useful. Each finding gets the evidence needed to reproduce or locate it, the affected component, and a concrete remediation. The report separates what must be fixed before launch from what can be scheduled, and it avoids severity inflation that trains teams to ignore findings. The response also explains how to present the report to engineering so remediation is actionable, not defensive.",
+      "assertions": [
+        "Severity is assigned with a consistent method combining exploitability and impact",
+        "Each finding includes evidence, affected component, and concrete remediation",
+        "Findings are separated into launch-blocking and schedule-able categories",
+        "The response explains why the SQL injection outranks the cookie flag with reasoning",
+        "Severity inflation is avoided so the report drives action"
+      ]
+    }
+  ]
+}

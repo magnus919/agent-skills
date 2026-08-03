@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "docker-compose",
+  "evals": [
+    {
+      "id": "compose-file-design",
+      "prompt": "I need a compose.yaml for a web service with a Postgres database and a Redis cache, with a worker that consumes the service's job queue. The developer needs this to run locally with one command. What does the compose file look like and what pitfalls should I avoid?",
+      "expected_output": "A compose.yaml design with separate services for the app, database, cache, and worker; healthchecks on the database and app so dependencies wait correctly (depends_on with condition service_healthy rather than start-order alone); named volumes for Postgres and Redis persistence so data survives restarts; environment configuration via interpolation with sensible defaults in a .env file; and an explanation of the pitfalls: hardcoding secrets in the file, no version pinning on images, ports colliding with other local projects, and the worker being defined as a separate service so it does not get started twice. The response also covers how the app service reaches the database by service name over the default network.",
+      "assertions": [
+        "The compose file defines app, database, cache, and worker as separate services",
+        "Healthchecks and depends_on condition service_healthy are used instead of bare start ordering",
+        "Named volumes persist database and cache data across restarts",
+        "Secrets are not hardcoded and configuration uses interpolation",
+        "The response explains service-name DNS and the port-collision pitfall"
+      ]
+    },
+    {
+      "id": "networking-design",
+      "prompt": "My compose stack has three services that should talk to each other, one service that must NOT be reachable from outside the container network, and one that should be exposed on a specific port. How do I design the networking?",
+      "expected_output": "A networking design that explains Compose's default network and when custom networks are needed: services on the same network resolve each other by service name; a database or internal worker should not publish ports to the host (no ports: mapping, or only internal network membership), while the public-facing service publishes the desired host port. The response shows how to define custom networks to segment services (an internal network for db and worker, a frontend network for the public service and any proxies), how aliases and static IPs are avoided in favor of service names, and how to verify reachability between containers. It covers the security point that publishing ports is opt-in and that services left unpublished are unreachable from the host and the internet.",
+      "assertions": [
+        "The response explains service-name DNS on the default Compose network",
+        "Internal services are kept off published ports and segmented onto an internal network",
+        "Only the public service publishes a host port",
+        "Custom networks are used to segment internal from external-facing services",
+        "Reachability verification between containers is included"
+      ]
+    },
+    {
+      "id": "secrets-management",
+      "prompt": "My compose file currently has the database password and API keys written directly in the YAML, committed to git. The stack runs locally and in CI. How do I move secrets out of the file while keeping the developer experience smooth?",
+      "expected_output": "A secrets strategy appropriate to Compose's deployment range: environment interpolation from a gitignored .env file for local development, Compose's top-level secrets with file-based secrets for services that support them (file_mount target paths, appropriate uid/gid), and a clear statement that plaintext secrets in the YAML or in images must be removed. The response shows the migration: create the .env file with placeholder keys, reference ${VAR} with defaults where safe, add .env to .gitignore, keep a .env.example documenting the required variables, and for CI show injecting secrets through the CI provider rather than the repository. It flags the residual risk that environment variables are visible in process listings and container inspect, and notes where file-based secrets are the stronger option.",
+      "assertions": [
+        "Secrets are moved to a gitignored .env with ${VAR} interpolation and a documented .env.example",
+        "File-based Compose secrets are used for services that support them",
+        "The migration removes plaintext secrets from YAML and images",
+        "CI secrets are injected via the CI provider, not committed",
+        "The response notes the residual exposure of env-based secrets and where file secrets are stronger"
+      ]
+    },
+    {
+      "id": "profiles-overrides",
+      "prompt": "I have one compose project used for development and production. Dev needs hot reload, a fake mail server, and exposed debug ports; prod needs none of that and should be lean. How do I structure the compose files so dev and prod stay in sync but behave differently?",
+      "expected_output": "A structure using the base compose.yaml for the shared topology plus override layers: a compose.override.yaml with dev-specific settings (bind mounts for hot reload, exposed debug ports, the fake mail service) that Compose applies automatically in development, and a compose.prod.yaml or explicit -f invocation for production that keeps the same services but removes dev conveniences. The response explains profiles as the alternative for selectively starting optional services, how to verify the merged effective configuration (docker compose config), and the rule that the base file stays the source of truth for the topology so dev and prod cannot drift into different stacks.",
+      "assertions": [
+        "The response uses a base compose.yaml plus an override layer for dev-specific settings",
+        "Production uses an explicit file or invocation without dev conveniences",
+        "Profiles are shown for selectively started optional services",
+        "docker compose config is used to verify the merged effective configuration",
+        "The base file remains the source of truth so dev and prod do not drift"
+      ]
+    },
+    {
+      "id": "troubleshooting-failing-stack",
+      "prompt": "My compose stack was working yesterday and today `docker compose up` fails: the app container exits immediately with an error I do not understand, and the database looks fine. Walk me through diagnosing this systematically.",
+      "expected_output": "A troubleshooting procedure that gathers the actual state before guessing: check which services are up with docker compose ps, read the failing container's logs (docker compose logs app) for the real error, inspect the exit reason with docker compose ps and container inspect, and test the dependency assumption directly (can the app reach the database by service name — network check, credentials, schema). The response distinguishes the common causes: the app's error message is the primary evidence and should be read before restarting; environment changes since yesterday (the .env file, image tags, ports in use, database data volume state) are the likely regression source. It prescribes reproducing after each fix and verifying the stack is healthy rather than just running.",
+      "assertions": [
+        "The response starts with state gathering: ps, logs of the failing container, and the real error",
+        "The dependency assumption is tested directly, such as service-name connectivity and credentials",
+        "Changes since the last working run are checked as the likely regression source",
+        "Container inspect or exit reasons are examined before restarting",
+        "Fixes are verified by reproducing and confirming a healthy stack"
+      ]
+    }
+  ]
+}

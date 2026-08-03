@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "go-to-market",
+  "evals": [
+    {
+      "id": "dunford-positioning",
+      "prompt": "We are a workflow-automation product for finance teams and have been describing ourselves as 'the intelligent automation platform for modern finance.' Sales says prospects do not understand what we do. How do I build a proper positioning statement using the Dunford method?",
+      "expected_output": "A positioning statement built through the April Dunford steps rather than adjectives: first identify the real competitive alternatives the prospect is comparing (spreadsheets and manual work, their existing ERP tooling, internal scripts, or a named competitor), then isolate the unique attributes that actually beat those alternatives, weigh the value of those attributes for the target segment, and identify the best-fit customer for whom those attributes matter most. The response rewrites the vague 'intelligent automation platform' claim into a positioning that names the category context, the target, the alternatives, the differentiators, and the value in prospect terms, and it explicitly rejects features-dump positioning in favor of the few attributes that win the comparison.",
+      "assertions": [
+        "The response follows the Dunford steps: alternatives, unique attributes, value, best-fit customer",
+        "The positioning names the real competitive alternatives prospects compare against",
+        "The vague 'intelligent automation platform' framing is replaced with a concrete category and differentiator",
+        "The response rejects feature-dump positioning and limits claims to the winning attributes",
+        "The resulting statement names target, alternatives, differentiators, and value in prospect terms"
+      ]
+    },
+    {
+      "id": "message-hierarchy",
+      "prompt": "Our marketing site lists 14 features and every campaign explains all of them. I want to introduce a message hierarchy so every asset tells the same story. How do I build one and what goes in each level?",
+      "expected_output": "A message hierarchy built top-down from the positioning: the core value proposition at the top that every asset must communicate, the key messages that support it (the few claims that differentiate and convert), and the proof points and feature-level details that substantiate those messages at the bottom. The response explains the discipline: assets lead with the value proposition, each supporting message is backed by at least one proof point, feature lists are demoted below the story, and the hierarchy is used to triage new content (if an asset cannot fit the hierarchy, the asset is wrong, not the hierarchy). It applies the structure to the product with concrete examples for each level.",
+      "assertions": [
+        "The hierarchy has distinct levels: value proposition, supporting messages, proof points",
+        "Each supporting message is backed by proof points",
+        "Feature lists are demoted below the story rather than leading",
+        "The hierarchy is used to triage new content so assets stay consistent",
+        "Concrete examples are given for each level for the product at hand"
+      ]
+    },
+    {
+      "id": "plg-vs-slg-strategy",
+      "prompt": "We are a developer tool with a free tier that grows by word of mouth, and management is pressuring us to build an enterprise sales team because the biggest accounts are not self-serving. How should I think about PLG versus SLG, and what is the hybrid that actually works here?",
+      "expected_output": "A PLG-versus-SLG analysis that does not treat them as a binary: the response maps which motions are working (self-serve adoption for the long tail, product-qualified leads emerging from usage data) and which gap the sales team is meant to close (procurement, security review, custom contracts, larger deployments). It recommends a product-led acquisition with sales-assisted expansion: the free tier and onboarding stay self-serve, sales engages product-qualified accounts at the moment usage signals indicate expansion potential, and the handoff is defined by signals, not arbitrary account size. It defines the operating metrics for the hybrid: self-serve activation, PQL qualification rate, sales cycle on assisted deals, and expansion revenue, and it warns against bolting on a sales team that sells before the product-led motion has data to route leads on.",
+      "assertions": [
+        "The response treats PLG and SLG as complementary motions rather than an either-or choice",
+        "The hybrid is defined as product-led acquisition with sales-assisted expansion",
+        "The sales handoff is driven by product-qualified lead signals, not arbitrary account size",
+        "Operating metrics are defined for both the self-serve and assisted motions",
+        "The response warns against selling before the product-led data can route leads effectively"
+      ]
+    },
+    {
+      "id": "growth-modeling-cac-ltv",
+      "prompt": "We spend across paid search, content, and partnerships and have no idea which channel actually pays back. I want a growth model that allocates budget by channel. What should it contain and what data do I need to feed it?",
+      "expected_output": "A channel-level growth model with the economics made explicit per channel: CAC (blended and by channel with a consistent attribution definition), payback period against gross margin, LTV computed from cohort retention curves rather than an arbitrary multiple, and contribution per channel. The response distinguishes first-touch attribution noise from the decisions the model actually supports, requires cohort-based LTV so churn is represented honestly, and frames the allocation rule: budget flows to channels within payback constraints, with a test budget for uncertain channels and a guardrail that total spend respects cash and margin. It lists the exact data required (cost by channel, signups by channel, cohort retention, price and margin) and flags which inputs are estimates needing validation.",
+      "assertions": [
+        "CAC and LTV are defined with consistent attribution and cohort-based retention",
+        "Payback period against gross margin is part of the model",
+        "Budget allocation follows an explicit rule with payback constraints and a test budget",
+        "The response names the exact data inputs and which are estimates needing validation",
+        "Total spend is governed by margin and cash guardrails, not channel enthusiasm"
+      ]
+    },
+    {
+      "id": "beachhead-market-entry",
+      "prompt": "We are a compliance-automation startup deciding whether to expand from fintech into healthcare and manufacturing simultaneously. I think we should pick one beachhead first. How do I make that call and what does a land-and-expand plan look like for the chosen segment?",
+      "expected_output": "A beachhead analysis that picks one segment by the criteria that matter for a land-and-expand motion: a segment where the product already solves a painful problem without major adaptation, where a referenceable cluster of customers exists, where the buying motion is repeatable, and where adjacent expansion potential is high. The response weighs fintech, healthcare, and manufacturing against those criteria and recommends one, then builds the land-and-expand plan for it: how to win the first reference accounts, the expansion sequence from initial use case to broader footprint within the segment, and the repeatable playbook that will be transferred to the next segment. It explicitly defers the second segment with the trigger conditions for entering it, so expansion is sequenced rather than simultaneous.",
+      "assertions": [
+        "The beachhead is chosen against explicit criteria: pain fit, referenceable cluster, repeatable buying, expansion potential",
+        "The response weighs the named segments against the criteria and picks one",
+        "The plan covers winning reference accounts and the expansion sequence within the segment",
+        "The playbook is designed to be repeatable and transferable to the next segment",
+        "Entry into the second segment is deferred with stated trigger conditions"
+      ]
+    }
+  ]
+}

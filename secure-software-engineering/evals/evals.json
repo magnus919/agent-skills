@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "secure-software-engineering",
+  "evals": [
+    {
+      "id": "threat-model-feature",
+      "prompt": "We are adding a file-upload endpoint to our web application that accepts images from unauthenticated users and serves them back. Before we build it, I want a threat model. What do I consider, and how should I structure the threat modeling session?",
+      "expected_output": "A threat model for the upload feature organized around the system's assets, trust boundaries, and attackers: the response walks the data flow (upload, storage, validation, serving) and identifies the threats at each boundary — malicious file content (malware and polyglot files), denial of service (unbounded size, decompression bombs, resource exhaustion), stored cross-site scripting when files are served inline, path traversal and overwrite of existing files, content-type spoofing bypassing image validation, and abuse of the storage as a hosting vector. For each threat it proposes controls mapped to the threat: strict content validation by magic bytes plus re-encoding, size and count limits, serving from a separate origin or with Content-Disposition and no inline HTML, randomized storage keys never derived from user input, and rate limits. The response uses a structured method (e.g., STRIDE or a data-flow walk) and records decisions so the review is auditable.",
+      "assertions": [
+        "The threat model walks the data flow and identifies threats at each trust boundary",
+        "Upload-specific threats are covered: malware, decompression bombs, stored XSS, path traversal, content-type spoofing",
+        "Controls are mapped to each threat, including magic-byte validation, size limits, and randomized storage keys",
+        "Serving mitigations such as separate origin or Content-Disposition are specified",
+        "A structured method is used and decisions are recorded for auditability"
+      ]
+    },
+    {
+      "id": "security-requirements",
+      "prompt": "We are designing a new customer-facing API that exposes account data, and security keeps being an afterthought. I want security requirements written into the design before implementation. What requirements should the design carry?",
+      "expected_output": "A security-requirements set written as testable design constraints, not slogans: authentication requirements (which mechanism, token lifetime and refresh policy, where tokens are stored), authorization requirements (least privilege, per-resource access checks at the data layer rather than hidden in the UI), data-handling requirements (encryption in transit and at rest, what sensitive fields are collected at all and the minimization rule), input and output requirements (validation of untrusted input, no sensitive data in logs or error messages), and operational requirements (secret management, audit logging of access to sensitive data, key rotation). The response explains how each requirement is verified during implementation and review, and it prioritizes the requirements by the harm they prevent so the team knows what cannot be deferred.",
+      "assertions": [
+        "Requirements are written as testable constraints covering authentication, authorization, and data handling",
+        "Authorization is specified as least-privilege with data-layer access checks",
+        "Data minimization, encryption, and sensitive-data-in-logs rules are explicit",
+        "Operational requirements cover secret management, audit logging, and key rotation",
+        "Requirements are prioritized by the harm they prevent"
+      ]
+    },
+    {
+      "id": "authn-authz-review",
+      "prompt": "In a code review I noticed our new endpoint checks 'is the user logged in?' but not 'is this user allowed to see this specific document?'. The frontend hides buttons based on role, and the API trusts that. What is the risk and what should the design enforce?",
+      "expected_output": "A review finding that separates authentication from authorization: the response explains the risk precisely — hiding buttons in the frontend is not a security control, and an API that trusts UI state allows direct requests to access documents the caller should not see, which is an insecure-direct-object-reference or missing-object-level-authorization pattern. It prescribes the fix: every API handler must independently check authorization against the resource (the caller's identity and their relationship to the specific document) at the data-access boundary, not in the controller only, with deny-by-default behavior and tests that hit the endpoint directly without the UI to prove access is denied. It also covers the general principle: authorization checks belong where the data is read, and the frontend's role-based UI is a UX concern, not a control.",
+      "assertions": [
+        "The response identifies the missing object-level authorization as the core risk",
+        "It explains why frontend button-hiding is not a security control and direct API access bypasses it",
+        "The fix enforces per-resource authorization at the data-access boundary with deny-by-default",
+        "Tests are prescribed that hit the endpoint without the UI to prove denial",
+        "The response distinguishes authentication from authorization and UI-state from security control"
+      ]
+    },
+    {
+      "id": "untrusted-input-secrets",
+      "prompt": "Our service parses user-supplied YAML files, runs some of the fields through a templating engine, and stores API keys in a config file committed to the repository. I know both are wrong but I need a concrete plan to fix them. What do I do?",
+      "expected_output": "A hardening plan for both problems with the risks stated precisely: YAML parsing is unsafe for untrusted input (aliases and object construction can execute code), so the response prescribes parsing with a safe configuration (no arbitrary object instantiation) or moving to a stricter format with a schema, and treating the templating engine as code execution by design with input sandboxed and never fed raw user content. The second half addresses the committed API keys: rotate the exposed keys immediately, remove them from history-aware secrets management going forward (inject via environment or a secret store, never the repository), and scan the repository to confirm no other secrets remain. The response sequences the work by urgency: rotate exposed keys first, then fix parsing, then templating, with verification for each step.",
+      "assertions": [
+        "The YAML risk is stated precisely and fixed with safe parsing or a stricter schema",
+        "The templating engine is treated as code execution and hardened against untrusted input",
+        "Exposed API keys are rotated immediately and moved to environment or secret-store injection",
+        "A repository scan confirms no other secrets remain",
+        "The plan is sequenced by urgency with verification at each step"
+      ]
+    },
+    {
+      "id": "dependency-evaluation",
+      "prompt": "A teammate wants to add a new npm package to our backend service. It is popular, but we have been burned before by abandoned dependencies and supply-chain surprises. What is a proper dependency evaluation before we accept it?",
+      "expected_output": "A dependency evaluation covering the dimensions that matter for supply-chain safety: maintenance and community health (release cadence, response to issues, bus factor), the dependency's own dependency tree (transitive bloat and known vulnerabilities), provenance and integrity (published from a verified account, signatures, and the maintainer's reputation), license compatibility, the security-relevant surface (does it parse untrusted input, does it touch the network or filesystem), and the fallback cost if it is abandoned (how much code would need to be forked). The response produces a decision framework: acceptable with a pinned version and periodic review, acceptable only behind isolation, or rejected, and it prescribes the ongoing controls: lockfiles, automated vulnerability scanning in CI, and a review cadence for critical-path dependencies.",
+      "assertions": [
+        "The evaluation covers maintenance health, transitive dependencies, and known vulnerabilities",
+        "Provenance, integrity, and license compatibility are checked",
+        "The security-relevant surface of the package is assessed",
+        "The decision framework includes rejection and isolation options, not just acceptance",
+        "Ongoing controls are prescribed: lockfiles, CI scanning, and review cadence"
+      ]
+    }
+  ]
+}
