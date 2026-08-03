@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "ml-engineering",
+  "evals": [
+    {
+      "id": "fine-tuning-plan-review",
+      "prompt": "A teammate wants to fine-tune a 7B model on 40,000 internal support tickets to improve answer quality. Their plan: full fine-tuning on a single A100, 20 epochs, no baseline eval, a random 80/20 split of the tickets for train and eval, and they will report the final eval loss as the success metric. Review this fine-tuning plan against ml-engineering methodology and tell them what to change.",
+      "expected_output": "A fine-tuning plan review that reorders the work around measurement: run a baseline with the base model against the eval set before spending any training budget, and decide whether fine-tuning is even needed. The reviewer questions the full fine-tuning choice for a 7B on one GPU (LoRA or QLoRA fits the compute budget and the data size) and replaces 20 epochs with early stopping driven by a held-out validation split. The eval split must not be randomly carved from the same tickets used for training: a leakage audit (for example with the eval-set overlap checker) and a time- or source-based split is required so the reported numbers mean something. Success is defined by a small set of task-specific eval cases with a rubric, not by eval loss, and every run records seed, data version, hyperparameters, and environment so it can be reproduced.",
+      "assertions": [
+        "The review demands a base-model baseline against the eval set before training budget is spent",
+        "The review recommends LoRA or QLoRA over full fine-tuning given the data size and single-GPU budget",
+        "The review flags the random 80/20 split as a contamination risk and requires a leakage audit or time/source-based split",
+        "The review rejects eval loss as the success metric and requires task-specific eval cases with a rubric",
+        "The review requires a reproducibility record covering seed, data version, hyperparameters, and environment"
+      ]
+    },
+    {
+      "id": "eval-set-design",
+      "prompt": "We are about to fine-tune a model on customer-support conversations and need an eval set to decide whether the fine-tune ships. Design the eval set: how many examples, what should they cover, how do we score them, and how do we keep the eval set from leaking into training data?",
+      "expected_output": "An eval-set design built around the deployment task: 50-200 representative examples drawn from real production traffic (plus synthetic edge cases), each paired with a reference answer and a scoring rubric that defines correct, partially correct, and incorrect for that task. The set is stratified to include common intents, rare intents, and known failure modes, and it is versioned and frozen before training starts so it cannot silently drift. Leakage control is explicit: examples are deduplicated against the training corpus, the eval-set overlap checker runs between the train and eval corpora before every training run, and the set is rotated or replenished periodically so the model cannot memorize it. Per-example scores are tracked, not just the aggregate, so a regression in one capability is visible.",
+      "assertions": [
+        "The design specifies 50-200 representative examples with reference answers and a scoring rubric",
+        "The design covers stratification across common intents, rare intents, and known failure modes",
+        "The design freezes and versions the eval set before training starts",
+        "The design requires a leakage/overlap check between the eval set and training corpus before each run",
+        "The design tracks per-example scores so regressions in individual capabilities are visible"
+      ]
+    },
+    {
+      "id": "quantization-decision",
+      "prompt": "We serve a 70B model and want to cut serving cost by quantizing it. Someone proposed jumping straight to 4-bit weights to double throughput. Walk me through how to decide whether to quantize, what to compare, and how to prove the choice is safe.",
+      "expected_output": "A quantization decision process that measures before it optimizes: establish the baseline quality of the unquantized model on the production eval set first, then treat each candidate (GGUF q4/q5/q8, GPTQ, AWQ, bitsandbytes) as a hypothesis to test against that baseline. Each candidate is evaluated with the same eval set and the same calibration-data strategy, comparing quality deltas per capability as well as VRAM footprint, tokens-per-second, and latency under production concurrency. The decision is recorded with the measured numbers, the hardware and serving engine used, and the quality threshold the model must stay above; if a quantized variant regresses a critical capability, it is rejected or shipped only for the workloads where the regression does not matter. The eval set and the recording keep the decision reproducible and comparable when a new model or engine version lands.",
+      "assertions": [
+        "The process measures the unquantized baseline on the production eval set before quantizing",
+        "The comparison covers GGUF/GPTQ/AWQ/bitsandbytes candidates with the same eval set and calibration strategy",
+        "The comparison measures quality deltas per capability plus VRAM, throughput, and latency under production concurrency",
+        "The decision is recorded with measured numbers, hardware, serving engine, and an explicit quality threshold",
+        "A variant that regresses a critical capability is rejected or limited to workloads where the regression is acceptable"
+      ]
+    },
+    {
+      "id": "deployment-plan",
+      "prompt": "Our fine-tuned LoRA adapter passed eval and needs to go to production serving. Design the deployment plan: serving stack, hardware, rollout, and how we know the deployed model is actually better and not silently broken.",
+      "expected_output": "A deployment plan that treats the model like any other artifact: the LoRA adapter and base model are versioned and pinned together, the serving engine (for example llama.cpp or vLLM) is chosen by the latency and concurrency budget, and GPU sizing is derived from measured tokens-per-second under load rather than model-card arithmetic. Rollout is staged: shadow or canary traffic first, compared against the incumbent model with the production eval set, then a gradual ramp with an automatic rollback if latency, error rate, or a sampled eval score crosses the threshold. Monitoring is set up before release: request latency, token throughput, GPU utilization, and a continuously sampled eval score so a regression surfaces within the deployment window instead of in next week's report. The plan names the rollback path (revert the adapter version, keep the serving config) and who signs off on each stage.",
+      "assertions": [
+        "The plan pins model and adapter versions together and derives GPU sizing from measured throughput under load",
+        "The plan chooses a serving engine (llama.cpp or vLLM) against the latency and concurrency budget",
+        "The plan uses shadow or canary rollout compared against the incumbent model before ramping",
+        "The plan defines an automatic rollback trigger on latency, error rate, or sampled eval score",
+        "The plan requires pre-release monitoring and continuous sampled eval scoring during the rollout"
+      ]
+    },
+    {
+      "id": "regression-triage",
+      "prompt": "After we shipped a fine-tuning update, aggregate benchmark scores went up, but one capability subset dropped noticeably: the model now fumbles multi-turn repair dialogs that it handled before. Triage this regression and decide what to do.",
+      "expected_output": "A regression triage that disaggregates before concluding: the aggregate improvement is real but hides the subset loss, so the first step is per-subset and per-example comparison against the previous run, with the eval set frozen at the same version. The triage checks whether the drop is a genuine behavior change or an eval artifact: whether examples leaked or were reshuffled between the train and eval corpora (an overlap check), whether the eval set was rotated, and whether the delta is within run-to-run noise. If the regression is real, the likely causes are examined: data mix drift, the fine-tune overfitting the new examples, or a capability trade-off introduced by the update. The decision is explicit: retrain with a corrected data mix, tune the LoRA rank or learning rate, or roll back the adapter while keeping the eval-regression table as the record of what was measured and decided.",
+      "assertions": [
+        "The triage disaggregates results per subset and per example against the previous run on a frozen eval set",
+        "The triage rules out eval artifacts including train/eval overlap or leakage and eval-set rotation",
+        "The triage checks whether the delta is within run-to-run noise before calling it a real regression",
+        "The triage investigates data-mix drift, overfitting, and capability trade-offs as root causes",
+        "The triage ends with an explicit decision: retrain, adjust hyperparameters, or roll back, recorded in the eval-regression table"
+      ]
+    },
+    {
+      "id": "training-run-reproducibility",
+      "prompt": "A colleague trained a model a month ago and cannot reproduce it now: same script, same data folder name, different result. What information was missing from their record, and what should a training-run record capture so this never happens again?",
+      "expected_output": "A reproducibility diagnosis that lists what a training-run record must pin down: the base model identity and commit or hash, the exact data version (folder name is not a version; the record needs a hash or dataset revision), the full training configuration (seed, optimizer, learning rate and schedule, warmup, gradient accumulation, batch size, epochs, precision and mixed-precision settings, LoRA rank/alpha/target modules if applicable), the framework and library versions, and the hardware. The record also captures the eval methodology so the same eval set and scoring code produce the same numbers, and it stores the trained artifact path and its hash. The colleague's missing pieces are almost certainly the seed, the data version hash, and the environment pin; the fix is a filled training-run record template committed next to the training code so a future run starts from a reproducible baseline instead of a folder name.",
+      "assertions": [
+        "The diagnosis requires base-model identity and data version by hash, not folder name",
+        "The diagnosis requires the full training configuration including seed, optimizer, schedule, batch size, and precision",
+        "The diagnosis requires framework and library versions plus hardware details",
+        "The diagnosis requires pinning the eval methodology so scores are comparable across runs",
+        "The fix is a committed training-run record template that captures all of the above"
+      ]
+    }
+  ]
+}
