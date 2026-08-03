@@ -5,7 +5,7 @@
     {
       "id": "ambiguous-conflicting-requirements",
       "prompt": "Approved spec for 'Unified Search' states: 'Search must return results in under 200ms' and 'Search must scan all document repositories including legacy systems that average 3s response times.' These two requirements conflict. Plan the implementation.",
-      "expected_output": "Identifies the conflict between latency target (200ms) and legacy-system dependency (3s). Does not silently accept both. Either resolves the conflict (e.g., async pre-indexing, excluding legacy from real-time, or renegotiating the SLA) or flags it as an unresolved decision with owner and deadline. The plan does not proceed with both requirements treated as simultaneously satisfiable without resolution.",
+      "expected_output": "Identifies the conflict between latency target (200ms) and legacy-system dependency (3s). Does not silently accept both. Either resolves the conflict (e.g., async pre-indexing, excluding legacy from real-time, or renegotiating the SLA) or flags it as an unresolved decision with owner and deadline. The plan does not proceed with both requirements treated as simultaneously satisfiable without resolution. Claims are scoped to the harness, model, fixtures, and revision under test.",
       "assertions": [
         "Explicitly identifies the conflict between the two requirements.",
         "Does not produce a workstream that assumes both requirements are simultaneously satisfiable.",

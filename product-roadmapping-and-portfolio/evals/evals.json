@@ -53,7 +53,7 @@
     {
       "id": "stop-bet-with-evidence",
       "prompt": "Bet 'Personalized Dashboard' in Now for 6 months. Hypothesis: +15% DAU. After 2 cycles: A/B test 2% lift (p=0.31, not significant), 8/10 users didn't notice, infrastructure costs 20% of engineering capacity. Bet owner wants one more cycle. Evaluate against kill criteria.",
-      "expected_output": "Recommendation to KILL based on evidence. References kill criteria, distinguishes quantitative evidence (A/B test, capacity data) from qualitative (interviews) from opinion (bet owner). Records revisit criteria.",
+      "expected_output": "Recommendation to KILL based on evidence. References kill criteria, distinguishes quantitative evidence (A/B test, capacity data) from qualitative (interviews) from opinion (bet owner). Records revisit criteria. Claims are scoped to the harness, model, fixtures, and revision under test.",
       "assertions": [
         "Recommendation explicitly KILL, not continue or rescope.",
         "A/B test result (p=0.31, 2% lift) cited as quantitative evidence.",
