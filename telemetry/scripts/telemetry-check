@@ -1,0 +1,782 @@
+#!/usr/bin/env python3
+"""telemetry-check - read-only Prometheus rule sanity and scrape-target reachability checker.
+
+Checks the Prometheus side of the Prometheus + OpenTelemetry + Loki telemetry
+stack before it is deployed or changed:
+
+  * --rules FILE   parses a Prometheus recording/alerting rules file with a
+                   minimal YAML reader (stdlib only) and runs sanity checks
+                   mirroring promtool: group name uniqueness, exactly one of
+                   record/alert per rule, a non-empty expr, balanced
+                   delimiters in the expression, valid durations, recording
+                   rule names and label names, and string-only label values.
+  * --scrape FILE  parses a Prometheus scrape configuration (scrape_configs),
+                   extracts static targets, and probes TCP reachability of
+                   each target.
+  * --targets FILE probes a plain host:port list (one per line) or a YAML/JSON
+                   list of targets.
+
+The tool is strictly read-only: it only reads local files and opens short TCP
+connect probes. It never mutates configuration, never writes files, and never
+sends telemetry data anywhere. Full PromQL parsing belongs to promtool; this
+script provides structural sanity that catches the common classes of errors
+before a rules file reaches a Prometheus server.
+
+Exit codes: 0 all checks passed (warnings allowed), 1 issues found or a fatal
+error, 2 usage error.
+"""
+import argparse
+import datetime
+import json
+import re
+import socket
+import sys
+from typing import Any, Dict, List, Optional, Tuple
+
+TOOL_NAME = "telemetry-check"
+TOOL_VERSION = "1.0.0"
+
+# --- minimal YAML reader (block mappings, sequences, flow collections,       ---
+# --- plain/quoted scalars, block scalars, comments)                          ---
+
+BLOCK_SCALAR_MARKERS = ("|", ">", "|-", ">-", "|+", ">+")
+YAML_RESERVED_STARTS = ("&", "*", "!", "%", "@", "`")
+
+
+class YAMLError(ValueError):
+    """Raised when a file is not valid YAML within the supported subset."""
+
+
+class Scalar:
+    """A YAML scalar leaf; tracks whether the source value was quoted."""
+
+    __slots__ = ("value", "quoted")
+
+    def __init__(self, value: str, quoted: bool = False) -> None:
+        self.value = value
+        self.quoted = quoted
+
+    def __repr__(self) -> str:
+        return "Scalar(%r)" % (self.value,)
+
+
+def _split_comment(line: str) -> str:
+    """Return the line with any unquoted # comment removed."""
+    in_single = False
+    in_double = False
+    for index, char in enumerate(line):
+        if char == "'" and not in_double:
+            in_single = not in_single
+        elif char == '"' and not in_single:
+            in_double = not in_double
+        elif char == "#" and not in_single and not in_double:
+            return line[:index]
+    return line
+
+
+def _split_key_value(content: str) -> Tuple[Optional[str], Optional[str]]:
+    """Split 'key: value' on the first colon outside quotes and flow nesting."""
+    in_single = False
+    in_double = False
+    depth = 0
+    for index, char in enumerate(content):
+        if char in "[{":
+            depth += 1
+        elif char in "]}":
+            depth = max(0, depth - 1)
+        elif char == "'" and not in_double:
+            in_single = not in_single
+        elif char == '"' and not in_single:
+            in_double = not in_double
+        elif char == ":" and depth == 0 and not in_single and not in_double:
+            if index + 1 == len(content) or content[index + 1] in " \t":
+                return content[:index].strip(), content[index + 1:].strip()
+    return None, None
+
+
+def _split_flow(inner: str) -> List[str]:
+    """Split a flow collection body on commas outside quotes and nesting."""
+    parts: List[str] = []
+    start = 0
+    in_single = False
+    in_double = False
+    depth = 0
+    for index, char in enumerate(inner):
+        if char == "'" and not in_double:
+            in_single = not in_single
+        elif char == '"' and not in_single:
+            in_double = not in_double
+        elif char in "[{":
+            depth += 1
+        elif char in "]}":
+            depth = max(0, depth - 1)
+        elif char == "," and depth == 0 and not in_single and not in_double:
+            parts.append(inner[start:index].strip())
+            start = index + 1
+    parts.append(inner[start:].strip())
+    return [part for part in parts if part]
+
+
+def _parse_scalar(raw: str) -> Scalar:
+    value = raw.strip()
+    quoted = False
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
+        quote = value[0]
+        inner = value[1:-1]
+        if quote == '"':
+            inner = inner.replace('\\"', '"').replace("\\\\", "\\")
+        elif quote == "'":
+            inner = inner.replace("''", "'")
+        return Scalar(inner, True)
+    return Scalar(value, False)
+
+
+def _parse_flow(raw: str, line_no: int) -> Any:
+    """Parse a single-line flow mapping or sequence."""
+    if raw.startswith("{") and raw.endswith("}"):
+        inner = raw[1:-1].strip()
+        result: Dict[str, Any] = {}
+        if inner:
+            for part in _split_flow(inner):
+                key, value = _split_key_value(part)
+                if key is None:
+                    raise YAMLError("malformed flow mapping at line %d" % line_no)
+                result[key] = _parse_scalar(value)
+        return result
+    if raw.startswith("[") and raw.endswith("]"):
+        inner = raw[1:-1].strip()
+        if not inner:
+            return []
+        result = []
+        for part in _split_flow(inner):
+            if part.startswith("{") or part.startswith("["):
+                result.append(_parse_flow(part, line_no))
+            else:
+                result.append(_parse_scalar(part))
+        return result
+    raise YAMLError("malformed flow collection at line %d" % (line_no + 1))
+
+
+def _tokenize(text: str) -> List[Tuple[int, str]]:
+    lines: List[Tuple[int, str]] = []
+    first_content = True
+    for raw in text.splitlines():
+        content = _split_comment(raw).rstrip()
+        if not content.strip():
+            continue
+        indent = len(content) - len(content.lstrip(" "))
+        prefix = content[:indent]
+        if "\t" in prefix:
+            raise YAMLError("tab indentation is not supported (line %d)" % (len(lines) + 1))
+        body = content.strip()
+        if body == "---":
+            if first_content:
+                continue
+            raise YAMLError("multi-document YAML is not supported (line %d)" % (len(lines) + 1))
+        if body == "...":
+            raise YAMLError("unexpected document end marker (line %d)" % (len(lines) + 1))
+        if body.startswith(YAML_RESERVED_STARTS):
+            raise YAMLError(
+                "YAML tags, anchors, aliases, and directives are not supported (line %d)"
+                % (len(lines) + 1)
+            )
+        lines.append((indent, body))
+        first_content = False
+    return lines
+
+
+def _parse_block_scalar(
+    lines: List[Tuple[int, str]], index: int, parent_indent: int
+) -> Tuple[Scalar, int]:
+    marker = lines[index][1].split(":", 1)[1].strip()
+    fold = marker.startswith(">")
+    index += 1
+    parts: List[str] = []
+    while index < len(lines) and lines[index][0] > parent_indent:
+        parts.append(lines[index][1])
+        index += 1
+    if fold:
+        return Scalar(" ".join(parts)), index
+    return Scalar("\n".join(parts)), index
+
+
+def _parse_value(
+    lines: List[Tuple[int, str]], index: int, parent_indent: int, raw: str, line_no: int
+) -> Tuple[Any, int]:
+    """Parse the value of 'key: <raw>' at lines[index]; returns (value, index)."""
+    if raw in BLOCK_SCALAR_MARKERS:
+        return _parse_block_scalar(lines, index, parent_indent)
+    if raw == "":
+        if index + 1 < len(lines) and lines[index + 1][0] > parent_indent:
+            return _parse_node(lines, index + 1)
+        return None, index
+    if raw.startswith("{") or raw.startswith("["):
+        return _parse_flow(raw, line_no), index + 1
+    return _parse_scalar(raw), index + 1
+
+
+def _parse_mapping(
+    lines: List[Tuple[int, str]], index: int, indent: int
+) -> Tuple[Dict[str, Any], int]:
+    mapping: Dict[str, Any] = {}
+    while index < len(lines):
+        cur_indent, content = lines[index]
+        if cur_indent < indent:
+            break
+        if cur_indent > indent:
+            raise YAMLError("bad indentation: unexpected block at line %d" % (index + 1))
+        if content.startswith("- "):
+            raise YAMLError("expected a mapping key at line %d" % (index + 1))
+        key, raw = _split_key_value(content)
+        if key is None:
+            raise YAMLError("expected 'key: value' at line %d" % (index + 1))
+        if key in mapping:
+            raise YAMLError("duplicate key %r at line %d" % (key, index + 1))
+        mapping[key], index = _parse_value(lines, index, indent, raw, index)
+    return mapping, index
+
+
+def _parse_sequence(
+    lines: List[Tuple[int, str]], index: int, indent: int
+) -> Tuple[List[Any], int]:
+    items: List[Any] = []
+    while index < len(lines):
+        cur_indent, content = lines[index]
+        if cur_indent != indent or not content.startswith("- "):
+            break
+        rest = content[2:].strip()
+        if rest == "":
+            if index + 1 >= len(lines) or lines[index + 1][0] <= indent:
+                raise YAMLError("empty sequence item at line %d" % (index + 1))
+            item, index = _parse_node(lines, index + 1)
+            items.append(item)
+            continue
+        key, raw = _split_key_value(rest)
+        if key is None:
+            items.append(_parse_scalar(rest))
+            index += 1
+            continue
+        item: Dict[str, Any] = {}
+        item[key], index = _parse_value(lines, index, indent + 2, raw, index)
+        if index < len(lines) and lines[index][0] > indent:
+            key_indent = lines[index][0]
+            if key_indent != indent + 2:
+                raise YAMLError(
+                    "bad indentation of mapping key at line %d" % (index + 1)
+                )
+            extra, index = _parse_mapping(lines, index, key_indent)
+            item.update(extra)
+        items.append(item)
+    return items, index
+
+
+def _parse_node(
+    lines: List[Tuple[int, str]], index: int
+) -> Tuple[Any, int]:
+    indent, content = lines[index]
+    if content.startswith("- "):
+        return _parse_sequence(lines, index, indent)
+    return _parse_mapping(lines, index, indent)
+
+
+def parse_yaml(text: str) -> Any:
+    """Parse a YAML document from the supported subset; raises YAMLError."""
+    lines = _tokenize(text)
+    if not lines:
+        return {}
+    node, index = _parse_node(lines, 0)
+    if index != len(lines):
+        raise YAMLError("unexpected content after the document (line %d)" % (index + 1))
+    return node
+
+
+# --- Prometheus rule sanity checks (mirror promtool check rules)             ---
+
+RECORD_NAME_RE = re.compile(r"^[a-zA-Z_:][a-zA-Z0-9_:]*$")
+LABEL_NAME_RE = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
+DURATION_RE = re.compile(
+    r"^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?"
+    r"(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$"
+)
+NON_STRING_SCALAR_RE = re.compile(
+    r"^[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?$|^(true|false|null|~)$", re.IGNORECASE
+)
+GROUP_KEYS = {"name", "interval", "query_offset", "limit", "rules", "labels"}
+RULE_KEYS = {"record", "alert", "expr", "for", "keep_firing_for", "labels", "annotations"}
+OPEN_TO_CLOSE = {"(": ")", "[": "]", "{": "}"}
+CLOSERS = set(OPEN_TO_CLOSE.values())
+
+
+def as_str(value: Any) -> Optional[str]:
+    if value is None:
+        return None
+    if isinstance(value, Scalar):
+        return value.value
+    return str(value)
+
+
+def balanced_delimiters(expr: str) -> bool:
+    stack: List[str] = []
+    in_single = False
+    in_double = False
+    for char in expr:
+        if char == "'" and not in_double:
+            in_single = not in_single
+        elif char == '"' and not in_single:
+            in_double = not in_double
+        elif not in_single and not in_double:
+            if char in OPEN_TO_CLOSE:
+                stack.append(OPEN_TO_CLOSE[char])
+            elif char in CLOSERS:
+                if not stack or stack.pop() != char:
+                    return False
+    return not stack
+
+
+def check_duration(value: Optional[str], errors: List[str], context: str) -> None:
+    if value is None:
+        return
+    value = value.strip()
+    if value == "":
+        return
+    if not DURATION_RE.match(value):
+        errors.append(
+            "%s: invalid duration %r (expected a Prometheus duration such as "
+            "5m, 1h, 30s, 1h30m, or 24h)" % (context, value)
+        )
+
+
+def check_labels(labels: Any, errors: List[str], context: str) -> None:
+    if labels is None:
+        return
+    if not isinstance(labels, dict):
+        errors.append("%s must be a mapping" % context)
+        return
+    for key, value in labels.items():
+        if key == "__name__":
+            errors.append("%s: label name '__name__' is reserved" % context)
+        elif not LABEL_NAME_RE.match(key):
+            errors.append(
+                "%s: invalid label name %r (expected ^[a-zA-Z_][a-zA-Z0-9_]*$)"
+                % (context, key)
+            )
+        if isinstance(value, Scalar) and not value.quoted:
+            if NON_STRING_SCALAR_RE.match(value.value):
+                errors.append(
+                    "%s: label %r value %r is not a YAML string (quote it)"
+                    % (context, key, value.value)
+                )
+        elif not isinstance(value, Scalar):
+            errors.append(
+                "%s: label %r value is not a string" % (context, key)
+            )
+
+
+def check_rule(rule: Any, group_name: str, errors: List[str], warnings: List[str]) -> None:
+    if not isinstance(rule, dict):
+        errors.append("group %r: each rule must be a mapping" % group_name)
+        return
+    for key in rule:
+        if key not in RULE_KEYS:
+            warnings.append("group %r: unknown rule field %r" % (group_name, key))
+
+    record = as_str(rule.get("record"))
+    alert = as_str(rule.get("alert"))
+    has_record = bool(record and record.strip())
+    has_alert = bool(alert and alert.strip())
+    if has_record and has_alert:
+        errors.append("group %r: only one of 'record' and 'alert' must be set" % group_name)
+    if not has_record and not has_alert:
+        errors.append("group %r: one of 'record' or 'alert' must be set" % group_name)
+
+    expr = as_str(rule.get("expr"))
+    if expr is None or expr.strip() == "":
+        errors.append("group %r: field 'expr' must be set in rule" % group_name)
+    elif not balanced_delimiters(expr):
+        errors.append(
+            "group %r: expression has unbalanced parentheses, brackets, or braces"
+            % group_name
+        )
+
+    if has_record:
+        if "{" in record or "}" in record:
+            errors.append(
+                "group %r: braces present in recording rule name %r "
+                "(should it be in expr?)" % (group_name, record)
+            )
+        elif not RECORD_NAME_RE.match(record):
+            warnings.append(
+                "group %r: recording rule name %r does not match the recommended "
+                "metric-name pattern [a-zA-Z_:][a-zA-Z0-9_:]*" % (group_name, record)
+            )
+        if rule.get("annotations"):
+            errors.append(
+                "group %r: invalid field 'annotations' in recording rule" % group_name
+            )
+        for key in ("for", "keep_firing_for"):
+            if key in rule and as_str(rule.get(key)):
+                errors.append(
+                    "group %r: invalid field %r in recording rule" % (group_name, key)
+                )
+
+    if has_alert:
+        if alert.strip() == "":
+            errors.append("group %r: alert name must not be empty" % group_name)
+        for key in ("for", "keep_firing_for"):
+            if key in rule and rule.get(key) is not None:
+                check_duration(
+                    as_str(rule.get(key)),
+                    errors,
+                    "group %r rule %r field %r" % (group_name, alert, key),
+                )
+
+    check_labels(rule.get("labels"), errors, "group %r rule labels" % group_name)
+    check_labels(rule.get("annotations"), errors, "group %r rule annotations" % group_name)
+
+
+def load_document(path: str) -> Tuple[Any, Optional[str]]:
+    """Read a file and parse it as YAML; returns (document, error_message)."""
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            text = handle.read()
+    except OSError as exc:
+        return None, "cannot read file: %s" % exc
+    try:
+        return parse_yaml(text), None
+    except YAMLError as exc:
+        return None, "invalid YAML: %s" % exc
+
+
+def check_rules_file(path: str) -> Dict[str, Any]:
+    result: Dict[str, Any] = {"name": "rules", "file": path}
+    doc, error = load_document(path)
+    if error is not None:
+        result["status"] = "error"
+        result["error"] = error
+        return result
+    if not isinstance(doc, dict) or doc.get("groups") is None:
+        result["status"] = "error"
+        result["error"] = "rules file must be a YAML mapping with a 'groups' list"
+        return result
+    groups = doc["groups"]
+    if not isinstance(groups, list):
+        result["status"] = "error"
+        result["error"] = "'groups' must be a list"
+        return result
+
+    errors: List[str] = []
+    warnings: List[str] = []
+    seen_names: Dict[str, bool] = {}
+    rule_count = 0
+    for group in groups:
+        if not isinstance(group, dict):
+            errors.append("each group must be a mapping")
+            continue
+        name = as_str(group.get("name"))
+        if name is None or name.strip() == "":
+            errors.append("group is missing a non-empty 'name'")
+        elif name in seen_names:
+            errors.append("group name %r is repeated in the same file" % name)
+        else:
+            seen_names[name] = True
+        for key in group:
+            if key not in GROUP_KEYS:
+                warnings.append("unknown group field %r" % key)
+        check_labels(group.get("labels"), errors, "group %r labels" % (name or "?"))
+        for key in ("interval", "query_offset"):
+            if key in group and group.get(key) is not None:
+                check_duration(
+                    as_str(group.get(key)), errors, "group %r field %r" % (name or "?", key)
+                )
+        rules = group.get("rules")
+        if rules is None:
+            continue
+        if not isinstance(rules, list):
+            errors.append("group %r 'rules' must be a list" % (name or "?"))
+            continue
+        for rule in rules:
+            rule_count += 1
+            check_rule(rule, name or "?", errors, warnings)
+
+    result["groups"] = len(groups)
+    result["rules"] = rule_count
+    result["errors"] = errors
+    result["warnings"] = warnings
+    result["status"] = "ok" if not errors else "issues"
+    return result
+
+
+# --- scrape-target reachability                                              ---
+
+def split_target(target: str) -> Tuple[Optional[str], Optional[int]]:
+    target = target.strip()
+    if target.startswith("["):
+        end = target.find("]")
+        if end == -1:
+            return target, None
+        host = target[1:end]
+        rest = target[end + 1:]
+        if rest.startswith(":") and rest[1:].isdigit():
+            return host, int(rest[1:])
+        return host, None
+    if target.count(":") == 1:
+        host, _, port = target.partition(":")
+        if port.isdigit():
+            return host, int(port)
+    return target, None
+
+
+def probe_target(target: str, timeout: float) -> Dict[str, Any]:
+    host, port = split_target(target)
+    if port is None:
+        return {
+            "target": target,
+            "reachable": False,
+            "error": "no port specified; expected host:port",
+        }
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return {"target": target, "reachable": True, "error": None}
+    except OSError as exc:
+        return {"target": target, "reachable": False, "error": str(exc)}
+
+
+def _collect_scrape_targets(doc: Any, errors: List[str], warnings: List[str]) -> List[Dict[str, str]]:
+    targets: List[Dict[str, str]] = []
+    configs = doc.get("scrape_configs")
+    if not isinstance(configs, list):
+        errors.append("'scrape_configs' must be a list")
+        return targets
+    for cfg in configs:
+        if not isinstance(cfg, dict):
+            errors.append("each scrape_config must be a mapping")
+            continue
+        job_name = as_str(cfg.get("job_name")) or "<unnamed>"
+        static = cfg.get("static_configs")
+        if static is None:
+            warnings.append(
+                "job %r has no static_configs; service-discovery targets are not probed"
+                % job_name
+            )
+            continue
+        if not isinstance(static, list):
+            errors.append("job %r static_configs must be a list" % job_name)
+            continue
+        for entry in static:
+            if not isinstance(entry, dict):
+                errors.append("job %r static_configs entries must be mappings" % job_name)
+                continue
+            entry_targets = entry.get("targets")
+            if entry_targets is None:
+                continue
+            if not isinstance(entry_targets, list):
+                errors.append("job %r targets must be a list" % job_name)
+                continue
+            for item in entry_targets:
+                value = as_str(item)
+                if value and value.strip():
+                    targets.append({"target": value.strip(), "job": job_name})
+    return targets
+
+
+def check_scrape_config(path: str, timeout: float) -> Dict[str, Any]:
+    result: Dict[str, Any] = {"name": "scrape_targets", "file": path}
+    doc, error = load_document(path)
+    if error is not None:
+        result["status"] = "error"
+        result["error"] = error
+        return result
+    if not isinstance(doc, dict):
+        result["status"] = "error"
+        result["error"] = "scrape config must be a YAML mapping with 'scrape_configs'"
+        return result
+
+    errors: List[str] = []
+    warnings: List[str] = []
+    targets = _collect_scrape_targets(doc, errors, warnings)
+    probes = [probe_target(entry["target"], timeout) for entry in targets]
+    unreachable = [probe for probe in probes if not probe["reachable"]]
+
+    result["jobs"] = len(doc.get("scrape_configs") or [])
+    result["targets"] = probes
+    result["errors"] = errors
+    result["warnings"] = warnings
+    result["status"] = "ok" if not errors and not unreachable else "issues"
+    return result
+
+
+def check_targets_file(path: str, timeout: float) -> Dict[str, Any]:
+    result: Dict[str, Any] = {"name": "targets", "file": path}
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            text = handle.read()
+    except OSError as exc:
+        result["status"] = "error"
+        result["error"] = "cannot read file: %s" % exc
+        return result
+
+    targets: Optional[List[Any]] = None
+    loaded = False
+    try:
+        loaded = json.loads(text)
+        if isinstance(loaded, list):
+            targets = loaded
+    except (ValueError, TypeError):
+        loaded = None
+    if loaded is None:
+        try:
+            doc = parse_yaml(text)
+            loaded = doc
+        except YAMLError:
+            loaded = None
+        if isinstance(loaded, list):
+            targets = loaded
+        elif isinstance(loaded, dict):
+            if "targets" in loaded and loaded["targets"] is not None:
+                targets = loaded["targets"]
+            elif "scrape_configs" in loaded:
+                errors: List[str] = []
+                warnings: List[str] = []
+                collected = _collect_scrape_targets(loaded, errors, warnings)
+                probes = [probe_target(entry["target"], timeout) for entry in collected]
+                result["jobs"] = len(loaded.get("scrape_configs") or [])
+                result["targets"] = probes
+                result["errors"] = errors
+                result["warnings"] = warnings
+                unreachable = [p for p in probes if not p["reachable"]]
+                result["status"] = "ok" if not errors and not unreachable else "issues"
+                return result
+            else:
+                result["status"] = "error"
+                result["error"] = "unrecognized targets file format"
+                return result
+
+    if targets is None:
+        targets = []
+        for line in text.splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            targets.append(Scalar(line))
+
+    probes = [
+        probe_target(as_str(item) or "", timeout)
+        for item in targets
+        if as_str(item) and as_str(item).strip()
+    ]
+    unreachable = [probe for probe in probes if not probe["reachable"]]
+    result["targets"] = probes
+    result["errors"] = []
+    result["warnings"] = []
+    result["status"] = "ok" if not unreachable else "issues"
+    return result
+
+
+# --- output                                                                  ---
+
+def emit(payload: Dict[str, Any], as_json: bool) -> None:
+    if as_json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return
+    lines: List[str] = []
+    for check in payload["checks"]:
+        lines.append("== %s: %s ==" % (check["name"], check.get("file", "")))
+        if check["status"] == "error":
+            lines.append("  error: %s" % check["error"])
+            continue
+        for warning in check.get("warnings", []):
+            lines.append("  warning: %s" % warning)
+        for error in check.get("errors", []):
+            lines.append("  error: %s" % error)
+        if "groups" in check:
+            lines.append("  %d group(s), %d rule(s)" % (check["groups"], check["rules"]))
+        for probe in check.get("targets", []):
+            if probe["reachable"]:
+                lines.append("  %s reachable" % probe["target"])
+            else:
+                lines.append("  %s UNREACHABLE: %s" % (probe["target"], probe["error"]))
+    if not lines:
+        lines.append("no checks to report")
+    print("\n".join(lines))
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog=TOOL_NAME,
+        description=(
+            "Read-only Prometheus rule sanity and scrape-target reachability checker "
+            "for the Prometheus + OpenTelemetry + Loki telemetry stack. The tool only "
+            "reads local files and opens short TCP connect probes; it never mutates "
+            "configuration, writes files, or sends telemetry data."
+        ),
+        epilog=(
+            "Exit codes: 0 all checks passed, 1 issues found or a fatal error, "
+            "2 usage error. Use promtool check rules for full PromQL validation."
+        ),
+    )
+    parser.add_argument(
+        "--rules",
+        action="append",
+        default=[],
+        metavar="FILE",
+        help="check Prometheus recording/alerting rules in FILE (repeatable)",
+    )
+    parser.add_argument(
+        "--scrape",
+        action="append",
+        default=[],
+        metavar="FILE",
+        help="check a Prometheus scrape config in FILE and probe its static targets "
+        "(repeatable)",
+    )
+    parser.add_argument(
+        "--targets",
+        action="append",
+        default=[],
+        metavar="FILE",
+        help="probe targets listed in FILE: one host:port per line, or a YAML/JSON "
+        "list of targets (repeatable)",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="emit machine-readable JSON on stdout",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=3.0,
+        help="seconds per TCP connect probe (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="%s %s" % (TOOL_NAME, TOOL_VERSION),
+    )
+    args = parser.parse_args(argv)
+
+    if not (args.rules or args.scrape or args.targets):
+        parser.error("at least one of --rules, --scrape, or --targets is required")
+
+    checks: List[Dict[str, Any]] = []
+    for path in args.rules:
+        checks.append(check_rules_file(path))
+    for path in args.scrape:
+        checks.append(check_scrape_config(path, args.timeout))
+    for path in args.targets:
+        checks.append(check_targets_file(path, args.timeout))
+
+    ok = all(check["status"] == "ok" for check in checks)
+    payload: Dict[str, Any] = {
+        "tool": TOOL_NAME,
+        "version": TOOL_VERSION,
+        "ok": ok,
+        "checks": checks,
+        "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    }
+    emit(payload, args.json)
+    return 0 if ok else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
