@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "telemetry",
+  "evals": [
+    {
+      "id": "prometheus-rule-authoring-review",
+      "prompt": "Our SRE wants to add two rules to a Prometheus rules file: a recording rule that computes the 5-minute request rate per endpoint and an alert that pages when the API error rate exceeds 5% for ten minutes. What should the rule file look like, what sanity checks should run before it is loaded, and what are the common authoring mistakes to avoid?",
+      "expected_output": "A rules file with one group containing two rules: a recording rule named with the level:metric:operation convention (for example job:http_requests:rate5m) with expr sum by (job, endpoint) (rate(http_requests_total[5m])), and an alerting rule (for example ApiHighErrorRate) with the error-rate expression, a for: 10m clause, labels such as severity and team, and annotations with a summary and a runbook link. The response states that each rule must set exactly one of record or alert, expr must be present and parse, durations must be valid Prometheus durations, and label values must be strings. It validates with promtool check rules for full PromQL parsing and the bundled telemetry-check --rules for structural sanity before reload, then verifies with the /api/v1/rules endpoint. Common mistakes called out: putting both record and alert on one rule, writing an expression that is too large to review, misusing relabeling so the labels the rule queries do not exist, and forgetting for on alerts that should require sustained conditions.",
+      "assertions": [
+        "The response produces a rules file with a recording rule using the level:metric:operation naming convention and an alerting rule with expr, for, labels, and annotations",
+        "Exactly one of record or alert per rule, a non-empty expr, and valid Prometheus durations are stated as requirements",
+        "Validation with promtool check rules and telemetry-check --rules before reload is prescribed, with verification via the rules API",
+        "At least three authoring mistakes are named (both record and alert set, oversized expressions, relabeling/label mismatches, missing for)"
+      ]
+    },
+    {
+      "id": "otel-collector-pipeline-design",
+      "prompt": "We are standing up an OpenTelemetry Collector that receives OTLP traces and metrics from a few services and sends them to a backend. We want to sample 10% of success traces but keep all error traces, and we are worried about the collector using too much memory. How should the pipelines and processors be designed?",
+      "expected_output": "A pipeline design with separate traces and metrics pipelines: traces through otlp receiver, memory_limiter, batch, tail_sampling, then the otlp exporter; metrics through otlp receiver, memory_limiter, batch, then the metrics exporter. The response explains that tail_sampling decides per trace at the batch level, so it belongs on the trace pipeline after batching, with policies that keep spans whose status.code or http.status_code indicates an error and a probabilistic policy for the rest, and that the sampling decision should be recorded as a span attribute. It prescribes one memory_limiter processor before exporters with a limit sized against the container memory budget, batching to amortize exporter cost, and warns not to apply trace samplers to the metrics pipeline. It verifies with the collector health endpoint and receiver/exporter metrics advancing, and notes that a debug exporter is for temporary troubleshooting only.",
+      "assertions": [
+        "Separate traces and metrics pipelines with receivers, processors, and exporters are specified",
+        "tail_sampling is placed on the trace pipeline after batching, with error-keeping and probabilistic policies",
+        "memory_limiter runs before exporters and is sized against the container memory budget",
+        "The response warns that trace samplers must not be applied to the metrics pipeline and verification uses collector health and per-signal metrics"
+      ]
+    },
+    {
+      "id": "loki-label-and-retention-review",
+      "prompt": "Our team is about to ship a new service and wants to push its logs to Loki with labels for app, environment, tenant, user_id, and request_id so they can filter per user. They also have not set any retention. What is wrong with this plan and what should the label and retention design be?",
+      "expected_output": "A review that app, environment, and tenant are reasonable Loki labels because they are low-cardinality and used as index matchers, but user_id and request_id are high-cardinality per-line fields that explode the inverted index and stream count if indexed. The response puts user_id and request_id in the log line and extracts them with LogQL | json or | regexp when needed, and sets retention deliberately per tenant: retention_enabled true with a retention_period and retention_size, enforced by the compactor, with an owner and a review schedule. It explains the cost model: label matchers run against the inverted index (cheap), line filters and parsing run per line (expensive), and a label whose values change with every log line does not belong in the index. Verification uses loki_ingester_streams to confirm stream cardinality stays bounded and compactor metrics to confirm retention is running.",
+      "assertions": [
+        "app/environment/tenant are accepted as low-cardinality labels while user_id and request_id are called out as high-cardinality index hazards",
+        "High-cardinality fields are moved into the log line and extracted with LogQL json or regexp parsing",
+        "Retention is set per tenant with retention_enabled, retention_period, retention_size, compactor enforcement, and an owner",
+        "The inverted-index versus per-line-filter cost model is explained and loki_ingester_streams is used as the cardinality signal"
+      ]
+    },
+    {
+      "id": "prometheus-retention-and-ha-decision",
+      "prompt": "Our single Prometheus instance keeps growing: queries are fine, but the disk fills every few months and someone keeps raising the retention flag to keep more history. Management now wants a second instance so we are 'highly available'. How should we reason about retention and HA before adding machines?",
+      "expected_output": "A decision process that separates the questions: retention is a deliberate capacity and compliance choice (how long the data must answer which questions), not a flag to raise reactively; and HA is a redundancy choice (two identically configured instances scraping the same targets with consistent external labels so a query layer can deduplicate), which does not increase storage capacity or history length. The response prescribes setting retention by the question the data answers (alerting windows, trend analysis, audit), bounding it with retention.time and retention.size, watching prometheus_tsdb_head_series and compaction metrics for the actual cost, and routing long-term history to a separate store with its own owner instead of stretching the hot instance. It states that two replicas do not double history, do not share rule state, and need a dedup layer or consistent labeling so alerts do not double-fire, and that rule evaluation consistency across replicas matters more than uptime.",
+      "assertions": [
+        "Retention is framed as a capacity and compliance decision driven by the questions the data must answer, not a reactive flag",
+        "HA is framed as redundant identical instances with consistent external labels and a dedup layer, explicitly not a storage or history increase",
+        "Retention flags and TSDB metrics for bounding cost are named, with long-term history routed to a separate store",
+        "The double-fire risk and rule-state locality of HA pairs are stated"
+      ]
+    },
+    {
+      "id": "trace-span-correlation-setup",
+      "prompt": "We run the OpenTelemetry Collector and send OTLP logs, metrics, and traces to the backend. When an alert fires on a metric, the on-call engineer has to search logs by timestamp and guess which request was slow. What should we configure so a metric alert can pivot to the exact trace and its log lines?",
+      "expected_output": "A correlation setup: the spanmetrics processor derives RED metrics from spans with trace_id exemplars so PromQL histograms carry the trace ID of slow requests; OTLP log records carry trace_id and span_id and the collector's Loki exporter maps them to structured metadata so LogQL can filter {app=\"x\"} | trace_id=\"...\"; and resource attributes such as service.name and deployment.environment flow through all three signals as the join keys. The response explains that correlation depends on context propagation from the application SDKs, so a missing trace_id in logs usually means propagation is not wired, and prescribes verifying the pivot end-to-end with one query: fire a test request, find its trace ID in the metrics exemplar, and confirm the same ID appears in Loki. It notes that instrumenting application code and propagation are backend-engineering territory while the collector-side join is this skill's scope, and that changing the pipeline requires re-verifying the pivot query.",
+      "assertions": [
+        "spanmetrics with trace_id exemplars and the Loki exporter mapping trace_id/span_id to structured metadata are specified",
+        "Resource attributes are identified as the cross-signal join keys",
+        "Dependency on application-side context propagation is stated, with a missing trace_id diagnosed as a propagation problem",
+        "Verification is an end-to-end pivot query from metric exemplar to trace to log lines"
+      ]
+    },
+    {
+      "id": "stack-ingest-outage-diagnosis",
+      "prompt": "A dashboard panel shows no data for the last hour for one service, while other services are fine. The Prometheus scrape targets list shows the job as up, the OTel Collector is healthy, and Loki shows the service's logs. What is the evidence-ordered diagnosis, and what should we check at each layer before changing anything?",
+      "expected_output": "An evidence-ordered diagnosis that works from the symptom down: first confirm which layer lost data by checking each component's own signals — the Prometheus targets API for scrape health and the actual metric series (the job can be up while the metric is empty, which points at metric_relabel_configs dropping the series), collector receiver and exporter metrics for delivery, and the rules API for evaluation state; then check config-level causes: relabeling that renamed or dropped labels, a scrape config change that changed the series identity, or a recording rule whose expression no longer matches. The response keeps the diagnosis read-only (telemetry-check --rules and --scrape plus read-only API queries) and treats any config change as a mutation requiring confirmation with a rollback path. It explicitly avoids assuming correlation is causation, e.g. a slow query and missing data are separate evidence, and verifies any fix by re-running the checks and confirming the series appears at the delivery boundary.",
+      "assertions": [
+        "The diagnosis works layer by layer from the symptom with each component's own signals (targets API, series existence, collector receiver/exporter metrics, rules API)",
+        "Config-level causes such as relabeling drops, series-identity changes, and rule-expression mismatches are considered",
+        "The diagnosis is kept read-only with the bundled checker and read-only API queries, and changes require confirmation with a rollback path",
+        "Correlation is not presented as causation and fixes are verified by re-running the checks"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+# Sample Prometheus scrape configuration used by telemetry-check tests.
+scrape_configs:
+  - job_name: node-exporter
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["127.0.0.1:9100", "127.0.0.1:9111"]
+        labels:
+          env: dev
+  - job_name: api
+    static_configs:
+      - targets:
+          - "127.0.0.1:8080"
