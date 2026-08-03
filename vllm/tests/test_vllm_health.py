@@ -12,6 +12,7 @@ import socket
 import subprocess
 import sys
 import threading
+import time
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -86,6 +87,48 @@ class StubVLLMServer:
         return f"http://127.0.0.1:{self.port}"
 
 
+class SlowVLLMServer(StubVLLMServer):
+    """A stub that responds slowly, for timeout testing."""
+
+    @staticmethod
+    def _make_handler():
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+
+            def do_GET(self):
+                time.sleep(2.0)
+                payload = b"OK"
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+
+        return Handler
+
+
+class LargeMetricsServer(StubVLLMServer):
+    """A stub whose /metrics body exceeds the probe's read bound."""
+
+    @staticmethod
+    def _make_handler():
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+
+            def do_GET(self):
+                if self.path == "/metrics":
+                    payload = (b"vllm:gpu_cache_usage_perc 0.5\n" + b"x" * 80 * 1024)
+                else:
+                    payload = b"OK"
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+
+        return Handler
+
+
 def free_port():
     """Return a currently-unused local port (socket is closed after)."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -152,6 +195,30 @@ class ProbeTests(unittest.TestCase):
         proc = run_script("--url", f"http://127.0.0.1:{free_port()}", "--check", "health")
         self.assertEqual(proc.returncode, 1)
         self.assertIn("FAIL", proc.stdout)
+
+    def test_timeout_emits_documented_exit_code_124(self):
+        slow = SlowVLLMServer()
+        slow.start()
+        try:
+            proc = run_script("--url", slow.url(), "--check", "health", "--timeout", "0.5")
+            self.assertEqual(proc.returncode, 124)
+            self.assertIn("timed out", proc.stdout)
+        finally:
+            slow.stop()
+
+    def test_metrics_read_is_bounded_and_reports_truncation(self):
+        large = LargeMetricsServer()
+        large.start()
+        try:
+            proc = run_script("--url", large.url(), "--check", "metrics", "--json")
+            self.assertEqual(proc.returncode, 0)
+            payload = load_json(proc)
+            check = payload["checks"][0]
+            self.assertTrue(check["ok"])
+            self.assertTrue(check["truncated"])
+            self.assertEqual(check["bytes_read"], 64 * 1024)
+        finally:
+            large.stop()
 
     def test_empty_models_is_a_failure(self):
         # A server that responds 200 but lists no models must fail the models check.

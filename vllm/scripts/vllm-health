@@ -15,11 +15,12 @@ Exit codes: 0 all checks passed, 1 issues found or a fatal error,
 """
 import argparse
 import json
+import socket
 import sys
 import urllib.error
 import urllib.parse
 import urllib.request
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 DEFAULT_URL = "http://127.0.0.1:8000"
 DEFAULT_TIMEOUT = 10
@@ -32,6 +33,10 @@ CHECKS = [
     "load",
     "metrics",
 ]
+
+
+class ProbeTimeout(Exception):
+    """Raised when a server request exceeds the configured timeout."""
 
 
 def parse_args(argv: List[str]) -> argparse.Namespace:
@@ -63,12 +68,20 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def http_get(url: str, timeout: float) -> tuple[int, bytes]:
-    """GET *url* and return (status, body). Raises on network errors."""
+def http_get(url: str, timeout: float, max_bytes: Optional[int] = None) -> tuple[int, bytes]:
+    """GET *url* and return (status, body); read at most *max_bytes* when set.
+
+    Raises ProbeTimeout when the request exceeds *timeout*, and RuntimeError on
+    connection failures.
+    """
     request = urllib.request.Request(url, method="GET")
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
-            return response.status, response.read()
+            if max_bytes is None:
+                return response.status, response.read()
+            return response.status, response.read(max_bytes)
+    except (socket.timeout, TimeoutError) as error:
+        raise ProbeTimeout(f"request timed out after {timeout}s") from error
     except urllib.error.HTTPError as error:
         return error.code, error.read()
     except urllib.error.URLError as error:
@@ -129,7 +142,13 @@ def check_load(base_url: str, timeout: float) -> Dict[str, Any]:
 
 
 def check_metrics(base_url: str, timeout: float) -> Dict[str, Any]:
-    status, body = http_get(urllib.parse.urljoin(base_url.rstrip("/") + "/", "metrics"), timeout)
+    status, body = http_get(
+        urllib.parse.urljoin(base_url.rstrip("/") + "/", "metrics"),
+        timeout,
+        max_bytes=METRICS_BOUND_BYTES + 1,
+    )
+    truncated = len(body) > METRICS_BOUND_BYTES
+    body = body[:METRICS_BOUND_BYTES]
     text = body.decode("utf-8", errors="replace")
     keys = [
         "vllm:gpu_cache_usage_perc",
@@ -142,7 +161,8 @@ def check_metrics(base_url: str, timeout: float) -> Dict[str, Any]:
         "name": "metrics",
         "status_code": status,
         "ok": status == 200,
-        "bytes_read": min(len(body), METRICS_BOUND_BYTES),
+        "bytes_read": len(body),
+        "truncated": truncated,
         "key_metrics_present": observed,
     }
 
@@ -159,6 +179,8 @@ def run_checks(base_url: str, selected: List[str], timeout: float) -> List[Dict[
     for name in selected:
         try:
             results.append(runners[name](base_url, timeout))
+        except ProbeTimeout as error:
+            results.append({"name": name, "ok": False, "timed_out": True, "error": str(error)})
         except RuntimeError as error:
             results.append({"name": name, "ok": False, "error": str(error)})
     return results
@@ -190,6 +212,8 @@ def main(argv: List[str]) -> int:
                     print(f"      model: {model_id}")
 
     failed = any(not result.get("ok") for result in results)
+    if any(result.get("timed_out") for result in results):
+        return 124
     return 1 if failed else 0
 
 
