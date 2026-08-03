@@ -1005,6 +1005,15 @@
       "description": "Query hyper-local weather from a WeatherFlow Tempest station: current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. Use when the user asks about the weather, temperature, rain, wind, humidity, forecast, or wants conditions from their own station rather than a generic weather service."
     },
     {
+      "name": "terraform",
+      "source": "./",
+      "skills": [
+        "./terraform"
+      ],
+      "strict": false,
+      "description": "Operate Terraform and OpenTofu across the whole infrastructure lifecycle: module structure, state backends and locking, plan/apply workflow, drift detection, remote state, upgrade and refactor flows, and evidence-based diagnostics. Use when running or inspecting terraform plans, applies, state files, imports, or state surgery, or when the bundled tfops script should handle the task. Do not use for IaC methodology or cloud design decisions - those route up to platform-engineering."
+    },
+    {
       "name": "three",
       "source": "./",
       "skills": [
