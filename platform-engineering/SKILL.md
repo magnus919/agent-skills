@@ -39,7 +39,7 @@ Use [release-engineering](../release-engineering/SKILL.md) to define release pro
 ```
 skill_view('platform-engineering')          # This — methodology index
 skill_view('artifact-pyramids')              # Output contract
-skill_view('docker-management')              # Container lifecycle (if needed)
+skill_view('docker-compose')                 # Container lifecycle and Compose (if needed)
 skill_view('traefik')                        # Reverse proxy (if needed)
 skill_view('tailscale')                      # Mesh networking (if needed)
 skill_view('implementation-planning')        # Work breakdown (if needed)
@@ -86,7 +86,7 @@ The profile using this skill produces artifact pyramids. The response to any cal
 ## Related Skills
 
 - `artifact-pyramids` — output contract specification
-- `docker-management` — container lifecycle and Compose
+- `docker-compose` — container lifecycle and multi-container Compose orchestration
 - `traefik` — reverse proxy and ingress configuration
 - `tailscale` — mesh networking and ACL policies
 - `implementation-planning` — work breakdown and dependency ordering

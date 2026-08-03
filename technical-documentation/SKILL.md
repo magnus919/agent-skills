@@ -1,6 +1,6 @@
 ---
 name: technical-documentation
-description: Create and review technical documentation, including READMEs, agent-facing instructions, API references, and CLI help. Use when documentation must help someone complete real work.
+description: Create and review technical documentation, including READMEs, agent-facing instructions, API references, and CLI help. Use when documentation must help someone complete real work. Do not use for marketing copy, brand messaging, or long-form editorial content.
 license: MIT
 compatibility: No runtime dependency.
 metadata:
@@ -17,12 +17,12 @@ Technical documentation is the interface between a tool and its user. This metho
 
 | You own | You don't own |
 |---------|--------------|
-| API documentation — endpoint references, parameters, examples | Editorial and long-form narrative content — that's the writer |
+| API documentation — endpoint references, parameters, examples | Editorial and long-form narrative content — owned by the editorial function, outside this skill's scope |
 | README authorship — project overview, quickstart, configuration | Brand messaging and marketing copy — that's the brand designer |
-| CLI documentation — help text, usage patterns, exit codes | Code architecture decisions — those belong to the technical architect |
+| CLI documentation — help text, usage patterns, exit codes | Code architecture decisions — that's the software-architecture-analysis |
 | Agent-facing docs — AGENTS.md, skill documentation | Project roadmap and product vision — that's the product manager |
-| Reference documentation — config files, troubleshooting, architecture | Performance optimization guidance — that's the debugger/SRE |
-| Documentation site structure — IA, cross-referencing, search | Code quality and standards — that's the reviewer/QA engineer |
+| Reference documentation — config files, troubleshooting, architecture | Performance optimization guidance — that's the systematic-debugging / SRE |
+| Documentation site structure — IA, cross-referencing, search | Code quality and standards — that's the qa-methodology / QA engineer |
 
 ## Reference Files
 

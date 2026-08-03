@@ -1,10 +1,10 @@
 ---
 name: data-engineering
-description: Data engineering methodology — database operations (vector, relational,
-  graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading),
-  SQL analytical patterns, data quality monitoring, schema migration, and storage
-  infrastructure management. Grounded in operational patterns for production data
-  systems.
+description: Design and operate data infrastructure — database operations (vector,
+  relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental
+  loading), SQL analytical patterns, data quality monitoring, schema migration, and
+  storage infrastructure management. Do not use for statistical analysis or ML model
+  development.
 license: MIT
 metadata:
   tags: data-engineering, etl, dbt, sql, database, graph-db, time-series, vector-db,
@@ -25,7 +25,7 @@ Data engineering is the operational backbone of data-driven systems. This method
 | Analytical SQL — window functions, CTEs, query optimization, execution plan analysis, star schema queries | Training infrastructure and model deployment — that's the ML engineer |
 | Graph database operations — Neo4j data modeling, Cypher queries, graph algorithms, import/export | Application-level data access patterns — that's the developer |
 | Time-series database operations — InfluxDB schema design, downsampling, retention policies, Telegraf | Infrastructure provisioning — that's the platform engineer |
-| Data quality monitoring — integrity checks, deduplication, anomaly detection, freshness validation | Visual dashboard design — that's the analyst or UX designer |
+| Data quality monitoring — integrity checks, deduplication, anomaly detection, freshness validation | Visual dashboard design — that's the analyst / product-design-and-ux |
 | Storage infrastructure — capacity planning, performance tuning, archival strategies | 
 
 ## Reference Files
