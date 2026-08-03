@@ -21,10 +21,32 @@ It is an analytical aid, not financial, investment, tax, accounting, or legal ad
 | `references/fundraising.md` | Valuation methods, cap tables, term-sheet concepts, and fundraising preparation. |
 | `references/saas-metrics.md` | ARR, retention, efficiency metrics, period alignment, and metric limitations. |
 | `references/source-index.md` | Source provenance, review date, and authoritative reference links. |
+| `templates/` | Fillable records: unit-economics record, pricing decision record, fundraising scenario, and model sanity checklist. |
+| `scripts/` | `saas-metrics.py` — computes ARR, monthly and annualized logo churn, NDR, and Rule of 40 from stated inputs. |
+| `evals/` | Output-quality eval manifest for the skill's methodology cases. |
 
 ## Quick Start
 
-This is a reference-only skill. No setup, API key, command, or dependency is required.
+Compute the headline SaaS operating metrics in one command. The script needs only Python 3 (standard library) and takes stated inputs, so the same numbers you would put in a spreadsheet produce a consistent result:
+
+```bash
+python3 financial-modeling/scripts/saas-metrics.py \
+  --mrr 120000 --customers 480 --churned-customers 10 \
+  --expansion 9000 --contraction 3000 --churned-mrr 4200 \
+  --growth-pct 38 --margin-pct 6
+```
+
+Output:
+
+```text
+ARR (annualized recurring revenue): $1,440,000.00
+Monthly logo churn: 2.08%
+Annualized logo churn: 22.33%
+NDR (net dollar retention): 101.50%
+Rule of 40 (growth + margin): 44.00
+```
+
+Add `--json` for machine-readable output, pass `--churn-pct 2.1` instead of customer counts when churn is already known, and omit the `--expansion`/`--contraction`/`--churned-mrr` group (or the growth/margin pair) when those metrics are not in scope. The script exits 2 on inconsistent inputs, so it can gate a report or CI step. Load `SKILL.md` for the methodology and reference table, then use the templates to record unit economics, pricing decisions, fundraising scenarios, or a model sanity check.
 
 ## Triggers
 
@@ -34,7 +56,7 @@ This is a reference-only skill. No setup, API key, command, or dependency is req
 
 ## Requirements
 
-No software dependencies or credentials. Useful analysis requires reliable business inputs with a defined currency, time period, and accounting basis.
+No API keys or credentials. The `saas-metrics.py` script needs only Python 3 (standard library). Useful analysis requires reliable business inputs with a defined currency, time period, and accounting basis.
 
 ## Source and Maintenance
 
