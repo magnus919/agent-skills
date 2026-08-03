@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "traefik",
+  "evals": [
+    {
+      "id": "http-routing-config",
+      "prompt": "I am setting up Traefik v3 as a reverse proxy in front of two services: a web app on port 3000 and an API on port 8080. Requests to app.example.com should go to the web app and api.example.com to the API. How do I configure the routers and services?",
+      "expected_output": "A Traefik configuration with the routing model explained: the response defines HTTP routers keyed on host rules (Host(`app.example.com`) and Host(`api.example.com`)), each router with a rule, a priority understanding for overlapping rules (Traefik v3 uses rule specificity, with explicit priorities only when needed), and each router pointing to a service defined with its load balancer and the correct backend port. The response explains the provider model: the same routing can be declared in a static config with a file provider or via the Docker provider's labels, and it shows a concrete YAML example for the file provider covering entryPoints, routers, and services, plus the corresponding Docker labels. It covers the operational details: which entrypoint the routers attach to, how to verify with a healthcheck or curl through the proxy, and the common mistake of a router rule that matches too broadly.",
+      "assertions": [
+        "Routers are keyed on host rules with correct rule syntax for the two domains",
+        "Services are defined with the right load balancer backend ports",
+        "The response shows the file-provider YAML and the Docker-label equivalent",
+        "Entrypoints and rule-priority behavior are explained",
+        "Verification via curl or healthcheck is included"
+      ]
+    },
+    {
+      "id": "tls-acme",
+      "prompt": "My Traefik proxy is up and routing works over HTTP, but I need HTTPS with automatic certificates for two domains. I have a DNS provider with an API for verification. How do I configure TLS with ACME, and how do I know the certificates are being issued correctly?",
+      "expected_output": "An ACME configuration for Traefik: the response prescribes the certificatesResolver in the static config with the ACME storage path, the challenge type chosen for the setup (DNS challenge via the DNS provider's API when HTTP challenge is not viable, e.g., for wildcards or restricted inbound ports), and the provider credentials wired securely via environment or secrets rather than plaintext in the config. It explains how certificates attach to routers: routers with TLS enabled automatically request certificates for their Host rules through the resolver, and it covers the operational verification: checking the ACME storage for the issued certificates, confirming the certificate's SANs and expiry, testing the HTTPS handshake with curl, and monitoring renewal behavior. It flags the common failures: a resolver with no storage file permissions, wrong challenge provider credentials, and the ACME staging versus production endpoint confusion.",
+      "assertions": [
+        "The certificatesResolver is configured with storage and the DNS challenge using the provider API",
+        "Provider credentials are wired via environment or secrets, not plaintext",
+        "TLS-enabled routers automatically obtain certificates for their host rules",
+        "Verification covers the ACME store, SANs, expiry, and an HTTPS handshake test",
+        "Common ACME failures and staging-versus-production confusion are addressed"
+      ]
+    },
+    {
+      "id": "middleware-chain",
+      "prompt": "I need to protect my API with rate limiting, add security headers to responses, and require a client certificate or basic auth for an admin path. How do I use Traefik middlewares for this, and how do they chain together?",
+      "expected_output": "A middleware design showing how middlewares compose: the response defines each middleware (rateLimit with a source criterion and burst, headers middleware adding the security headers, basicAuth with a hashed credentials file or forwardAuth for a client certificate requirement) and chains them on the routers that need them, explaining the ordering semantics — middleware chains apply in declared order and the response explains where auth sits relative to rate limiting so unauthenticated floods are rejected before hitting the backend. It covers the provider-agnostic mechanics: middlewares are defined once and referenced by name from routers (file provider or Docker labels), and the response flags the traps: middleware definitions that are declared but never referenced, rate limit source criteria that are too coarse, and basicAuth credentials stored as plaintext instead of hashed. It includes a concrete chain example with verification.",
+      "assertions": [
+        "Each middleware is defined with correct parameters: rateLimit, headers, basicAuth or forwardAuth",
+        "Middleware chains are ordered with rationale, including auth before backend access",
+        "Middlewares are defined once and referenced by routers",
+        "Common traps are flagged: unreferenced middlewares, plaintext credentials, coarse rate-limit keys",
+        "A concrete chained example with verification is included"
+      ]
+    },
+    {
+      "id": "docker-provider-labels",
+      "prompt": "I want Traefik to discover my containers automatically: every container with a label should get a route without me editing a central config file. How do I use the Docker provider labels, and what labels do I need for a container to be routed?",
+      "expected_output": "A Docker-provider setup with the discovery model explained: the response prescribes enabling the docker provider in the static config (with the docker socket mounted and the provider enabled, noting the socket permission model), then shows the container labels that define routing: traefik.enable=true, the router rule (Host(...)), the entrypoint, the service port, and optionally middlewares and TLS settings. It explains the label conventions: the double-label form for router and service definitions, how labels map to the same router-service model as the file provider, and the provider's default behaviors such as network selection and when a container is excluded. The response flags the security and operational gotchas: the docker socket access grants proxy privileges, containers with multiple networks need the right network selected, and label typos silently produce no route. Verification is prescribed by hitting the generated route and inspecting the Traefik dashboard or API.",
+      "assertions": [
+        "The Docker provider is enabled with the socket mount and its permission model explained",
+        "The required labels for a routed container are listed: enable, rule, entrypoint, port",
+        "Label-to-router-service mapping and double-label conventions are explained",
+        "Socket security and multi-network selection gotchas are flagged",
+        "Verification via the generated route and dashboard or API is prescribed"
+      ]
+    },
+    {
+      "id": "bad-gateway-troubleshoot",
+      "prompt": "My Traefik setup was working and now one route returns 502 Bad Gateway while others work. The backend container is running and the app inside responds on localhost. Where do I look?",
+      "expected_output": "A 502 diagnosis that walks the proxy-to-backend path: the response explains that 502 means Traefik could not reach the backend and directs the checks in order — is the backend actually listening on the address Traefik uses (containers on the same Docker network resolve and connect by service name, so localhost-only listeners fail), does the service definition use the correct port and scheme (http versus https against the backend), is the container on the network Traefik is configured to watch, and did the backend restart and change IP with the service pointing at a stale address. It also covers the health-check angle: if a healthcheck is defined, Traefik only routes to healthy backends, so an unhealthy backend yields a 502 even though the container runs. The response prescribes testing connectivity from inside the proxy's context and checking the Traefik logs for the specific dial error, which usually names the failing address.",
+      "assertions": [
+        "The 502 cause is explained as backend unreachability, not a routing-rule failure",
+        "The localhost-listener pitfall is called out: Traefik connects by service name over the container network",
+        "Service port, scheme, and network membership are checked",
+        "Healthcheck routing to healthy-backends-only is covered as a 502 source",
+        "Traefik logs are prescribed as the source of the specific dial error"
+      ]
+    }
+  ]
+}

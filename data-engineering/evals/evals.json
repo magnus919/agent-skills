@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "data-engineering",
+  "evals": [
+    {
+      "id": "incremental-load-pipeline-design",
+      "prompt": "We load a 50 GB orders table from Postgres into our warehouse nightly with a full refresh, and it now takes four hours and is starting to collide with business hours. I want to move to incremental loading with dbt. How should I design this so it stays correct when source rows are updated or deleted, not just appended?",
+      "expected_output": "An incremental loading design that moves from full refresh to a dbt incremental model with a configurable lookback window. The design distinguishes append-only sources from mutable ones: for append-only data a simple incremental filter on an updated_at or event timestamp works; for mutable rows it combines a timestamp-based incremental window with a full-refresh fallback or a merge strategy (incremental_strategy='merge') keyed on the natural key, or uses a CDC capture layer when upstream changes are frequent. The design addresses idempotency of reruns, backfill procedures when the window logic changes, and a data-quality check that row counts reconcile with the source between full refreshes.",
+      "assertions": [
+        "The response recommends incremental models with a configurable lookback window instead of nightly full refresh",
+        "The response distinguishes append-only sources from mutable sources and picks a merge or CDC strategy for updates and deletes",
+        "The response covers idempotent reruns and a backfill procedure when the incremental window changes",
+        "The response includes a reconciliation or row-count check that catches silent data drift",
+        "The response gives a concrete dbt pattern such as incremental_strategy or incremental_predicates rather than hand-waving"
+      ]
+    },
+    {
+      "id": "schema-migration-plan",
+      "prompt": "We need to split a users table into users and profiles in our production Postgres database, and the analytics warehouse reads the same table. Several services write to it. How do I plan this migration so the change is safe, reversible, and does not break downstream consumers?",
+      "expected_output": "A schema migration plan following expand-contract (parallel change): first add the new profiles table and backfill it while writes continue to users; then update writers to dual-write and readers to read from the new structure behind a flag; run a validation job comparing the two paths; finally cut over and drop or freeze the legacy columns. The plan includes a rollback path at each stage, uses transactional DDL where the platform allows it or staged changes otherwise, coordinates with the warehouse sync to avoid mid-migration loads, and names the owners and timing for each step.",
+      "assertions": [
+        "The response uses an expand-contract or parallel-change pattern rather than a single destructive migration",
+        "The response sequences the change: additive schema, dual-write, backfill, cutover, then cleanup",
+        "The response includes validation between old and new paths and a rollback path at each stage",
+        "The response coordinates downstream consumers such as the warehouse to avoid loading inconsistent state",
+        "The response names owners and timing for cutover and legacy-column removal"
+      ]
+    },
+    {
+      "id": "data-quality-monitoring",
+      "prompt": "Our dashboards recently showed impossible numbers: negative revenue, suddenly empty customer tables, and a 3x spike in distinct users. We have no data-quality monitoring today. What should I set up so these problems are caught at load time rather than discovered by the CEO?",
+      "expected_output": "A data-quality monitoring design with automated checks at pipeline boundaries: schema and null-rate checks, uniqueness and primary-key checks, freshness (staleness) checks on timestamp columns, row-count anomaly detection against a rolling baseline, and distribution tests for critical metrics (range checks, negative-value detection, ratio sanity like revenue-to-orders). The design wires these checks into the pipeline as gate or warn steps with owners on the failing run, produces a daily quality report, and distinguishes hard failures from anomalies that need human review. It also covers backfilling checks on historical data to find where the breakage started.",
+      "assertions": [
+        "The response defines automated checks at pipeline boundaries: freshness, null rates, uniqueness, row-count anomalies",
+        "The response includes distribution and range checks that catch negative revenue and impossible spikes",
+        "The response wires checks as gate or warn steps with clear owners on failure",
+        "The response includes anomaly detection against a rolling baseline rather than only fixed thresholds",
+        "The response covers backfilling checks on history to locate when data broke"
+      ]
+    },
+    {
+      "id": "sql-analytical-pattern",
+      "prompt": "I need to compute a weekly retention cohort in SQL over our events table (event_time, user_id, event_name) with columns: signup week, week 0, week 1, week 2 retention. The events table has 300 million rows. How should I write this so it runs in reasonable time?",
+      "expected_output": "A SQL pattern that computes the cohort table from first-event timestamps rather than scanning all events repeatedly: derive each user's signup week in a CTE, join events back to the signup week, compute weeks_since = date difference bucketed per user-week, and pivot with conditional aggregation. The response includes an incremental or filtered-scope recommendation (only events after cohort start), an index or partition hint for the join columns, and verification steps that the cohort numbers reconcile with a hand-checked subset. It should avoid naive correlated subqueries per cohort and explain the cost difference.",
+      "assertions": [
+        "The response derives the signup week once in a CTE and joins events to it rather than scanning per cohort",
+        "The response computes weeks-since-signup and pivots with conditional aggregation",
+        "The response limits the scan scope by filtering events after cohort start or using partitions",
+        "The response includes reconciliation checks against a manually computed subset",
+        "The response explains the cost and why the naive per-cohort approach is slow"
+      ]
+    },
+    {
+      "id": "vector-database-selection",
+      "prompt": "We want to add semantic search over 10 million product descriptions for an internal assistant. I see options like pgvector on our existing Postgres, Pinecone, Qdrant, and Weaviate. We already run Postgres in production. How should we choose, and what is the simplest first step?",
+      "expected_output": "A storage selection recommendation that treats the choice as workload-driven: starts with pgvector on the existing Postgres because it keeps operational surface small, supports hybrid search with existing metadata filters, and handles 10 million vectors comfortably if the index is chosen correctly (HNSW with tuned m/ef_construction), with the caveat that dedicated vector stores add value only when scale, availability, or specialized filtering demands outgrow Postgres. The design includes the migration path, embedding model and dimension choice, index build strategy, and an evaluation harness measuring recall and latency on a labeled set before committing.",
+      "assertions": [
+        "The response evaluates the choice against the workload rather than assuming a dedicated vector database is needed",
+        "The response recommends starting with pgvector on existing Postgres for a small operational surface and explains when to outgrow it",
+        "The response covers index choice (HNSW parameters) and dimension/embedding-model considerations",
+        "The response includes an evaluation harness with labeled queries measuring recall and latency",
+        "The response lays out a migration path from the first step to a dedicated store if needed"
+      ]
+    }
+  ]
+}

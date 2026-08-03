@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "adr-authoring",
+  "evals": [
+    {
+      "id": "adr-authoring",
+      "prompt": "We just decided to switch our service-to-service communication from synchronous REST calls to an event-driven model with a message broker. I need to record this as an architecture decision record so future engineers understand why. What should the ADR contain and how should I write it?",
+      "expected_output": "An ADR following the standard structure: a status line (proposed, accepted, or superseded with the date and decider), the context that explains the forces and constraints at the time (the coupling pain, the scale trajectory, the team's operational constraints), the decision stated in one unambiguous sentence, the alternatives that were considered with the reasons they were rejected (synchronous REST with retries, a shared database change feed), the consequences of the decision split into positive and negative so the trade-off is visible (decoupling and independent scaling against the new operational burden of message ordering, delivery guarantees, and debugging async flows), and the compliance and follow-up items. The response explains what makes it durable: the context captures the reasoning so the decision survives personnel changes, the alternatives are recorded honestly, and the consequences include what the team must now do differently.",
+      "assertions": [
+        "The ADR contains status, context, decision, alternatives, and consequences sections",
+        "The decision is stated in one unambiguous sentence",
+        "Alternatives are recorded with the reasons they were rejected",
+        "Consequences are split into positive and negative with the trade-off visible",
+        "The context captures the reasoning so the decision survives personnel changes"
+      ]
+    },
+    {
+      "id": "template-selection",
+      "prompt": "We are starting to write ADRs for a new project and I have seen many formats: the original Nygard format, MADR, and heavier enterprise templates. The team has different preferences. How do I choose a template, and should I even pick one?",
+      "expected_output": "A template-selection approach that prioritizes consistency and the decision's needs over format loyalty: the response explains that the template catalog exists because decision contexts differ — the original Nygard format suits a focused technical decision, MADR adds structure for incremental updates, and heavier formats carry the governance fields larger organizations need — and prescribes picking one default for the org with the selection made on criteria: the depth of governance required, how the ADRs will be consumed (read by the team, audited by a governance board), and the update pattern (append-only records versus evolving documents). It recommends starting with a lightweight default and migrating to a heavier format only if the governance need appears, and it stresses that the bigger win is a fixed convention — one template, one naming scheme, one location — over the choice of which format, because consistency is what makes ADRs searchable and reliable.",
+      "assertions": [
+        "Template choice is tied to the decision context and governance need, not format loyalty",
+        "The response compares Nygard, MADR, and heavier formats on concrete criteria",
+        "A lightweight default with optional migration is recommended",
+        "Consistency of convention is valued above the specific format choice",
+        "The recommendation covers naming and location conventions"
+      ]
+    },
+    {
+      "id": "adr-lifecycle-governance",
+      "prompt": "We have an ADR that was accepted, then partially reversed a year later, and now a proposal wants to replace it entirely. Our ADR folder is a flat list of files with no states and nobody knows what is actually in force. How do I manage the ADR lifecycle and status transitions?",
+      "expected_output": "A lifecycle governance design that makes status the primary way to understand an ADR: the response defines the status model (proposed, accepted, superseded, deprecated, and rejected), the transition rules (an accepted ADR moves to superseded when a new ADR replaces it and links to the replacement; a partially reversed decision is recorded as a new decision or a revision rather than silently editing the original), and the practical mechanics: each ADR carries its status and date in the header, superseded ADRs link to their successor, and the folder has an index (a README or status table) showing what is currently in force. The response prescribes the workflow: decisions flow through review before acceptance, supersession is explicit with a reason, and the index is part of the review so the team can see the current architecture at a glance instead of reading every file.",
+      "assertions": [
+        "The status model covers proposed, accepted, superseded, deprecated, and rejected with transition rules",
+        "Superseded ADRs link to their replacement and record the reason",
+        "Partial reversals are recorded as new decisions or revisions rather than silent edits",
+        "An index shows what is currently in force",
+        "The review workflow keeps statuses and the index current"
+      ]
+    },
+    {
+      "id": "adr-quality-review",
+      "prompt": "I am reviewing ADRs before we accept them and I keep seeing the same problems: decisions with no alternatives, consequences that only list the positives, and context sections that describe the solution instead of the problem. What should my review checklist check?",
+      "expected_output": "An ADR review checklist focused on the properties that make a decision durable: the response prescribes checking that the context describes the problem and forces, not the chosen solution; that the decision is a clear statement of what was decided and what was explicitly not decided; that alternatives are real alternatives that were seriously considered, with the rejection reasons recorded; that consequences include the negative and operational costs, not only benefits; and that the ADR records who decided, when, and under what constraints. It also covers the sustainability checks: whether the ADR would still make sense to a reader in two years who does not know the authors, whether the trade-offs are stated in terms that can be revisited when the context changes, and whether it leaves the team with follow-up items or open questions that should be tracked rather than hidden.",
+      "assertions": [
+        "The checklist verifies context describes the problem, not the chosen solution",
+        "Alternatives are verified as seriously considered with rejection reasons",
+        "Consequences must include negatives and operational costs",
+        "The ADR records who decided, when, and under what constraints",
+        "The review assesses durability: would it make sense in two years, and are follow-ups tracked"
+      ]
+    },
+    {
+      "id": "fitness-functions",
+      "prompt": "We have an accepted ADR mandating that new services must use our standard logging format, but a year later half the services violate it and nobody noticed until an incident. I want the architecture rules enforced automatically. How do I turn ADRs into checkable constraints?",
+      "expected_output": "A fitness-function approach that turns ADR decisions into automated checks: the response explains the concept — a fitness function is an automated test or check that continuously validates an architectural characteristic, and the ADR maps to one or more functions (a check that scans service code or configuration for the standard logging setup, run in CI or as a periodic audit). It prescribes the workflow: for each ADR with a mechanical consequence, define the check, implement it in the project's test or CI layer, and attach it to the ADR record so the link between decision and enforcement is explicit. The response covers the boundary: not every decision is mechanically checkable (judgment calls stay in review), but anything with a detectable pattern should be checked, and the check must be part of the definition of done for new services, not a retrofit after incidents. It includes an example check shape for the logging standard.",
+      "assertions": [
+        "The fitness-function concept is explained as automated enforcement of architectural rules",
+        "Each mechanical ADR consequence maps to a concrete check",
+        "The ADR record links to its enforcement check",
+        "The boundary between checkable and judgment-based decisions is stated",
+        "Enforcement is part of definition of done, not a post-incident retrofit"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "cli-builder",
+  "evals": [
+    {
+      "id": "design-agent-friendly-cli",
+      "prompt": "We are building a new CLI that lets agents manage our deployment environments. I want it designed for AI agent consumption from the start. What are the design rules, and what should the first version of the command surface look like?",
+      "expected_output": "A CLI design following agent-consumption principles: non-interactive by default with every behavior driven by flags, machine-readable JSON output via a --json flag, an explicit --dry-run preview for any state-changing operation, idempotent commands that can be rerun safely, a clear and stable help surface with progressive discovery, and sensible default output for humans when JSON is not requested. The response sketches the concrete command surface for environment management (list, create, promote, destroy with --dry-run, --json, and confirmation gating on destructive ops), explains why an agent-friendly design omits interactive prompts and colored-only output, and specifies the exit-code and error-output contract an agent relies on.",
+      "assertions": [
+        "The design is non-interactive and flag-driven with every behavior reachable without prompts",
+        "--json machine-readable output and --dry-run preview are part of the core contract",
+        "Destructive operations require an explicit gate such as a confirmation flag",
+        "The response sketches a concrete command surface for the environment-management use case",
+        "The response specifies exit codes and stable error output that agents can rely on"
+      ]
+    },
+    {
+      "id": "refactor-interactive-cli",
+      "prompt": "We have an existing CLI that asks 'Continue? (y/n)' before every action, prints tables, and exits 0 even when it fails. Agents keep hanging on the prompt or misreading success. How do I refactor it for agent use without rewriting everything?",
+      "expected_output": "A refactor plan that targets the specific agent-hostile behaviors: replace interactive confirmations with a --yes/--no-confirm flag while keeping the human default, add --json output alongside the human table, fix exit codes so failures are non-zero and errors go to stderr with a stable machine-readable error field, and add a --dry-run that shows what the command would do. The response prioritizes the changes by the failures they fix (prompt removal and exit codes first, JSON second) and shows how to keep backward compatibility for humans, and it includes a verification checklist: run every command with --help, confirm no command blocks on input, confirm exit codes are truthful.",
+      "assertions": [
+        "Interactive confirmations are replaced by a flag while human defaults are preserved",
+        "Exit codes are made truthful with errors on stderr in a stable format",
+        "--json and --dry-run are added alongside the human output",
+        "Changes are prioritized by the agent failures they fix",
+        "A verification checklist confirms no command blocks and exit codes are truthful"
+      ]
+    },
+    {
+      "id": "json-output-contract",
+      "prompt": "I am adding --json to our status command. What makes JSON output good for agents? I have seen CLIs that dump raw API responses and call it JSON support. What should I actually do?",
+      "expected_output": "A JSON output design that treats the schema as a contract: a documented, stable, versioned schema with consistent field names and types, values that are normalized (timestamps in ISO-8601, enums spelled consistently, numbers not strings), an object at the top level that always contains the same envelope even for errors, and no stray human text mixed into stdout. The response explains why dumping the upstream API response is a trap (it couples agents to an unstable vendor schema and leaks internal fields), recommends a curated projection of the fields an agent actually needs, and specifies that errors under --json must be structured with a machine-readable code and message rather than only a stack trace. It also covers deterministic ordering and stable IDs so agents can diff outputs.",
+      "assertions": [
+        "JSON output is defined as a documented, stable schema with normalized types",
+        "The response warns against dumping raw upstream API responses and recommends a curated projection",
+        "Errors under --json are structured with a code and message, not only a trace",
+        "Output is deterministic with stable ordering and IDs so agents can diff",
+        "The envelope is consistent across success and failure cases"
+      ]
+    },
+    {
+      "id": "dry-run-idempotency",
+      "prompt": "Our cleanup script deletes expired sessions when run, and an agent ran it twice and deleted sessions that were renewed between runs. I want --dry-run and idempotent behavior so this cannot happen again. How should I redesign the command?",
+      "expected_output": "A redesign with a dry-run that shows exactly what the command would change (computed from the current state, listing each session and why it qualifies) and a real run that is idempotent: qualifying sessions are selected and deleted by ID with a guard that re-checks the condition immediately before deletion, so a session renewed between the dry-run and the run is skipped. The response specifies the guard order (select by condition, re-verify per item, delete by ID), the --dry-run exit code and output contract, a --force or confirmation gate for the destructive path, and a rerun test proving the second run reports nothing left to do.",
+      "assertions": [
+        "--dry-run computes and displays the exact changes from current state",
+        "The destructive run re-verifies each item's condition before deleting by ID, preventing stale deletions",
+        "The response specifies the gate between dry-run and real execution",
+        "Idempotency is proven by a rerun that reports nothing left to do",
+        "The redesign addresses the specific race that caused the double-deletion incident"
+      ]
+    },
+    {
+      "id": "debugging-agent-cli-failures",
+      "prompt": "An agent keeps failing to use our CLI: sometimes it passes flags the CLI does not have, other times it misreads the output, and occasionally it calls the wrong subcommand entirely. How do I debug this and make the tool easier to use correctly?",
+      "expected_output": "A debugging approach that looks at the tool surface before blaming the agent: the response walks through the failure modes and their tool-side causes — invented flags and wrong subcommands are usually a discoverability problem (help text not surfacing the real command tree, ambiguous names, missing examples), misread output is usually a formatting problem (tables that break parsers, progress bars, no JSON mode, colors obscuring values). The response prescribes concrete fixes: a complete and correct --help with examples for each subcommand, unambiguous naming, stable JSON output with documented fields, and a strict mode that errors on unknown flags instead of silently ignoring them, plus a test harness that replays the agent's failing invocations against the CLI to confirm the fixes.",
+      "assertions": [
+        "The response maps each failure mode to a tool-side cause rather than blaming the agent",
+        "Discoverability fixes include complete help, examples, and unambiguous naming",
+        "Output readability fixes include JSON mode and removing parser-hostile formatting",
+        "Unknown flags are rejected in strict mode rather than silently ignored",
+        "A replay harness verifies the fixes against the agent's actual failing invocations"
+      ]
+    }
+  ]
+}

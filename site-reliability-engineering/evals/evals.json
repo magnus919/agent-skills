@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "site-reliability-engineering",
+  "evals": [
+    {
+      "id": "slo-error-budget-policy",
+      "prompt": "We have no SLOs and every service team defines reliability differently. I want to introduce SLOs with error budgets for our API platform. How do I pick the first SLOs, set targets, and define what the error budget actually controls?",
+      "expected_output": "An SLO design grounded in user-facing reliability rather than internal metrics: the response identifies the user journeys that matter (API availability and latency percentiles for the core request path), picks SLOs on the metrics users actually experience (e.g., availability and latency at p95/p99 measured from the edge), sets targets that are ambitious but realistic given current performance, and defines the error budget as 100% minus the SLO target over a rolling window. It specifies how the budget governs action: when burn is high, releases freeze or changes require review; when the budget is healthy, velocity proceeds. It also covers alerting on error-budget burn rate rather than waiting for budget exhaustion, and the review cadence where targets are revisited with evidence.",
+      "assertions": [
+        "SLOs are chosen on user-facing metrics such as availability and latency percentiles for core journeys",
+        "Targets are set relative to current performance and the error budget is defined as a rolling window",
+        "Error-budget policy governs action: release freezes or review gates when burn is high",
+        "Burn-rate alerting is prescribed instead of alerting only on budget exhaustion",
+        "A review cadence revisits targets with evidence"
+      ]
+    },
+    {
+      "id": "incident-command",
+      "prompt": "We just had a major outage: the checkout service is down, the on-call engineer is overwhelmed, and everyone is jumping into the chat with suggestions. I have been told to take over incident command. What do I do in the first ten minutes and how do I run the response?",
+      "expected_output": "An incident-command response that establishes structure under pressure: declare the incident, assign roles (incident commander, communications lead, and operations leads for investigation and mitigation) so the commander is not also debugging, and set up a dedicated channel and timeline. The commander's first actions: confirm the blast radius and current status, stabilize with the fastest safe mitigation while investigation continues in parallel, and drive communication with one consistent narrative to stakeholders. The response explains the commander's core discipline: decide who does what, watch the clock, and do not get pulled into individual debugging threads, plus the post-mitigation sequence: verify recovery, declare the incident over, and schedule the postmortem with the timeline captured while fresh.",
+      "assertions": [
+        "Roles are assigned (commander, communications, operations) so the commander is not debugging",
+        "The first actions confirm blast radius and stabilize with the fastest safe mitigation",
+        "One consistent communications narrative is maintained for stakeholders",
+        "The commander's discipline of not joining individual debugging threads is explicit",
+        "The response covers verification of recovery, declaring the incident over, and scheduling the postmortem"
+      ]
+    },
+    {
+      "id": "burn-rate-alerting",
+      "prompt": "Our current alerting pages someone only when the error rate crosses 5% for five minutes, and we are constantly paged for noise or miss slow burn entirely. I want alerting driven by the error budget instead. How do I design it?",
+      "expected_output": "A burn-rate alerting design tied to the SLO error budget: the response defines burn rate as the ratio of actual error consumption to budgeted consumption over a window and sets up multi-window alerts — a fast-burn window (e.g., 14x budget over 1 hour) for immediate pages and a slow-burn window (e.g., 2x over 6 hours or 1x over days) for gradual degradation, so both sudden spikes and slow creeping failures page appropriately. It explains the rationale: the 5%-for-5-minutes rule is decoupled from the SLO and cannot distinguish a budget-destroying event from a blip. It covers severity routing (page for budget-destroying burn, ticket for moderate burn), the runbooks tied to each alert, and calibration so noisy pages are reduced.",
+      "assertions": [
+        "Burn rate is defined as error consumption relative to the budgeted rate",
+        "Multi-window alerts distinguish fast burn from slow burn",
+        "The response explains why fixed threshold alerting is decoupled from the SLO and misses slow burn",
+        "Severity routing maps budget-destroying burn to pages and moderate burn to tickets",
+        "Alert calibration to reduce noise is part of the design"
+      ]
+    },
+    {
+      "id": "capacity-operational-review",
+      "prompt": "Every Black Friday our services degrade because traffic triples and we are always caught short. We scale reactively. I want a capacity process that prevents this and covers the day itself. What does the operational plan look like?",
+      "expected_output": "A capacity and operational-readiness plan built on evidence: the response starts with demand forecasting from historical traffic patterns, planned growth, and marketing calendars, then defines capacity requirements per service with headroom targets, load-testing the expected peak before the event, and the scaling plan (autoscaling policies, provisioned capacity, and the manual levers if automation fails). The operational plan for the event covers the runbook: pre-event checks, live dashboards with the capacity signals, a paging and escalation structure for the day, and explicit decision rules for shedding load or degrading gracefully under saturation. It ends with the post-event review: what the forecast got wrong, what headroom was actually needed, and the adjustments carried into the next cycle.",
+      "assertions": [
+        "Demand forecasting is grounded in historical patterns, growth, and event calendars",
+        "Capacity requirements include headroom targets and load testing before the event",
+        "The scaling plan covers automation plus the manual levers if automation fails",
+        "The event-day plan has dashboards, escalation structure, and load-shedding decision rules",
+        "A post-event review feeds corrections into the next capacity cycle"
+      ]
+    },
+    {
+      "id": "error-budget-decision",
+      "prompt": "Our payment service is burning through its error budget three times faster than expected this quarter due to a known flaky dependency. The team wants to ship a big feature this week, and the error budget is nearly exhausted. How do I make the call with the budget?",
+      "expected_output": "A decision made through the error-budget policy rather than a gut call: the response walks the analysis — how fast the budget is burning, what the burn implies about user impact, whether the flaky dependency is being addressed with an owner and timeline, and what the policy says about releases under high burn. It explains the two honest paths: if the budget is nearly exhausted, the policy gates the release (freeze or require exceptional approval), and if the team believes the feature will not worsen the burn, that is a hypothesis to support with evidence, not an exception to negotiate. The response treats the exhausted budget as the forcing function to fix the dependency, and it distinguishes a one-off exceptional release with a stated owner and deadline from repeatedly ignoring the budget, which makes the policy meaningless.",
+      "assertions": [
+        "The decision follows the error-budget policy with an analysis of burn rate and user impact",
+        "High burn gates the release rather than being negotiated around",
+        "Claims that the feature will not worsen burn are treated as evidence-backed hypotheses",
+        "The dependency causing the burn gets an owner and timeline",
+        "One-off exceptions with stated owners are distinguished from policy-ignoring patterns"
+      ]
+    }
+  ]
+}

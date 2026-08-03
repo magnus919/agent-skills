@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "product-strategy",
+  "evals": [
+    {
+      "id": "north-star-metric",
+      "prompt": "We are a B2B analytics product and need a North Star metric to align the company. The team is proposing daily active users, but I worry it rewards cheap usage over delivered value. How should we define our North Star metric and how do we keep it honest?",
+      "expected_output": "A North Star metric definition that starts from the core value users receive rather than the cheapest engagement signal: for a B2B analytics product, a metric such as weekly reporting frequency per workspace or number of teams with a produced report, tied to the moment a user gets value from the product. The response explains why raw DAU is risky as a North Star for a B2B product (it rewards logging in, not outcomes) and shows how to validate the chosen metric against retention and paid-plan correlation before committing. It defines the guardrail metrics that prevent gaming (if the North Star rises while activation or retention falls, the metric is wrong) and explains how the metric cascades into team-level metrics without every team inheriting the same number.",
+      "assertions": [
+        "The response ties the North Star to delivered value rather than cheap engagement such as DAU",
+        "The proposed metric is validated against retention or paid-plan correlation before adoption",
+        "The response explains why raw DAU is a risky North Star for a B2B product",
+        "Guardrail metrics are defined so a rising North Star with falling health signals is caught",
+        "The response cascades the metric into team-level metrics without forcing one number everywhere"
+      ]
+    },
+    {
+      "id": "competitive-positioning-analysis",
+      "prompt": "A well-funded competitor just launched a cheaper version of our product. I need to understand whether this is a real threat and how to position against it, before we react by cutting price. What analysis should I run?",
+      "expected_output": "A competitive analysis that separates signal from noise: an assessment of where the competitor actually wins (feature set, price, distribution, customer segment), an honest capability comparison against our product across the dimensions customers care about, and a segment analysis of which customers the cheaper offering genuinely threatens versus which are underserved by it. The response explicitly pushes back on reflexive price-cutting by analyzing whether the competitor's customers are price-driven segments we do not currently serve or core customers who would leave for features, not price. It positions the response around our defensible differentiators and the customers whose needs the competitor does not meet, and it sets up monitoring for the signs that the threat is real (share loss in our core segment, win-rate changes).",
+      "assertions": [
+        "The response analyzes which segments the competitor genuinely threatens versus which they underserve",
+        "It compares capabilities on the dimensions customers actually care about",
+        "The response pushes back on reflexive price-cutting and analyzes what would drive real defection",
+        "Positioning is built around defensible differentiators, not reactive pricing",
+        "The response sets up monitoring signals such as win-rate and segment share changes"
+      ]
+    },
+    {
+      "id": "tam-sam-som-sizing",
+      "prompt": "We are a team-collaboration tool and need a market-size estimate for an investor deck. How do I build TAM, SAM, and SOM credibly without inventing numbers, and what should the numbers actually claim?",
+      "expected_output": "A market sizing built top-down and bottom-up with the numbers reconciled: TAM from a defensible unit model (number of knowledge workers or teams in the target geographies times a credible per-seat spending benchmark), SAM narrowed by the segments the product actually serves (region, company size, category budget), and SOM grounded in what the business can actually capture within a stated horizon given go-to-market capacity and observed win rates. The response explains the source and assumption for each number, cross-checks the top-down estimate against a bottom-up calculation from customer counts and pricing, and states the sizing claims in ranges with the key assumptions exposed so the deck number is defensible rather than aspirational.",
+      "assertions": [
+        "The response builds TAM, SAM, and SOM with a stated unit model for each",
+        "Top-down estimates are cross-checked against a bottom-up calculation",
+        "SOM is grounded in go-to-market capacity and observed win rates within a stated horizon",
+        "Assumptions and sources are exposed for each number",
+        "The sizing is presented as ranges with defensible claims, not single aspirational figures"
+      ]
+    },
+    {
+      "id": "roadmap-prioritization-framework",
+      "prompt": "Our roadmap is a collection of what the loudest customer asked for last. I want to introduce a prioritization framework across strategy, product, and engineering without turning planning into a bureaucracy. How do I choose and run one?",
+      "expected_output": "A prioritization approach that picks the framework by decision type rather than applying one everywhere: strategic bets by the executive team (using a framework suited to options and trade-offs), feature-level prioritization by product using a scored model like RICE or a weighted opportunity model, and engineering sequencing by cost and dependency. The response explains how to run it without bureaucracy: a single shared backlog with the scoring inputs visible, scores treated as input to a discussion rather than a verdict, a monthly cadence where the framework output is reviewed and adjusted, and a rule that anyone can propose but the scoring inputs must be evidence-backed. It covers how the framework connects strategy to roadmap so top-level bets constrain what gets prioritized.",
+      "assertions": [
+        "The response matches frameworks to decision types: strategy, feature priority, and engineering sequencing",
+        "The process keeps scoring inputs visible and treats scores as discussion input, not verdict",
+        "The cadence is lightweight, such as a monthly review, without heavy process",
+        "Proposals require evidence-backed scoring inputs",
+        "Strategic bets constrain feature-level prioritization so the roadmap follows strategy"
+      ]
+    },
+    {
+      "id": "product-market-fit-assessment",
+      "prompt": "We have been selling our developer tool for eight months. Usage is growing but churn is noticeable. Investors ask if we have product-market fit. How do I assess this rigorously rather than with vibes?",
+      "expected_output": "A product-market-fit assessment built from evidence across the standard signals: a Sean Ellis-style survey of active users (the share who would be very disappointed without the product, with the 40% benchmark contextualized for a developer tool), retention cohort analysis showing whether usage stabilizes or decays for each acquisition cohort, the qualitative pattern of how users found and adopted the product (organic pull versus sales push), and the economic test of whether the value delivered exceeds acquisition cost per retained user. The response explains how to interpret mixed signals honestly: a product can be loved by a segment and fail on others, so fit is assessed per segment, and it prescribes what to do next based on where the evidence lands rather than declaring fit from a single metric.",
+      "assertions": [
+        "The response uses multiple signals: disappointment surveys, retention cohorts, organic adoption, and unit economics",
+        "The 40% benchmark is contextualized for the product type rather than applied mechanically",
+        "Fit is assessed per segment, allowing for mixed signals",
+        "Retention cohort analysis shows whether usage stabilizes or decays",
+        "The response prescribes next steps from the evidence pattern rather than declaring a verdict from one metric"
+      ]
+    }
+  ]
+}

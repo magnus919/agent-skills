@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "kubernetes",
+  "evals": [
+    {
+      "id": "crashloopbackoff-diagnosis",
+      "prompt": "A pod in my cluster is in CrashLoopBackOff: it starts and dies every few seconds. I ran kubectl get pods and see the state but nothing else. How do I diagnose this systematically, from the fastest checks to the deeper ones?",
+      "expected_output": "A systematic CrashLoopBackOff diagnosis ordered by evidence value: describe the pod (kubectl describe pod) to see events, restart counts, and why it is being killed; read the container logs (kubectl logs with the previous container flag for the dying attempt) for the actual error; distinguish the failure classes — application error at startup (bad config, missing env var, crash in code), readiness or liveness probe failures killing a healthy app (probe path, port, or timeout wrong), resource limits being exceeded (OOMKilled in the container status), and image or command problems (imagePullBackOff, wrong entrypoint). The response then maps each class to its fix: fix the config or code for app errors, correct the probe definition for probe failures, raise limits or fix the memory profile for OOM, and check image tags and pull secrets for image errors. It prescribes verifying the fix by watching the pod reach Running and Ready.",
+      "assertions": [
+        "Diagnosis starts with describe and logs, including the previous container's logs",
+        "Failure classes are distinguished: app crash, probe failures, OOM, image problems",
+        "Each class is mapped to its specific fix",
+        "Probe-related deaths are identified as a distinct class where the app may be healthy",
+        "Verification is by watching the pod reach Running and Ready"
+      ]
+    },
+    {
+      "id": "rbac-networkpolicy-design",
+      "prompt": "I am deploying a three-tier app: frontend, API, and database. I want least-privilege access: the frontend may talk only to the API, the API only to the database, and nothing external may reach the database. How do I implement this with Kubernetes RBAC and NetworkPolicy?",
+      "expected_output": "A design that uses NetworkPolicy as the primary isolation mechanism and RBAC for control-plane access: the response defines a deny-by-default posture with policies that allow the specific flows (frontend to API on the API port, API to database on the database port) using pod selectors and ports, and a policy for the database that only the API pods can reach. For RBAC it specifies the identities and roles: separate service accounts per tier, role bindings scoped to what each workload needs, and the principle that pods get credentials only through their own service accounts. The response explains the practical gotchas: NetworkPolicy is enforced by the CNI (default-deny requires explicit policies, and a namespace with no policies allows all), ingress and egress policy fields work independently, and selector-based policy must match the actual pod labels. It prescribes verifying with a connectivity test between tiers and from outside.",
+      "assertions": [
+        "NetworkPolicy is used for data-plane isolation with a deny-by-default posture",
+        "Policies specify exact pod selectors and ports for each allowed flow",
+        "RBAC uses per-tier service accounts with scoped role bindings",
+        "The response explains that NetworkPolicy enforcement depends on the CNI and default behavior",
+        "Verification via connectivity tests between tiers and from outside is prescribed"
+      ]
+    },
+    {
+      "id": "ingress-routing-troubleshoot",
+      "prompt": "Traffic to my service works when I port-forward but returns 503 through the Ingress. The ingress controller is running. What should I check to find where the path breaks?",
+      "expected_output": "A routing diagnosis that walks the path layer by layer: check the ingress resource itself (host and path rules match the request, the service name and port in the ingress backend are correct, annotations are valid), check the service (selector matches the pod labels, the targetPort exists, endpoints are populated — a service with no endpoints returns 503), and check the controller (ingress class matches the controller, the controller can reach the pods). The response distinguishes 503 from 404 (503 means the ingress found the route but the backend was unreachable, pointing at service endpoints, while 404 points at the routing rules), and it explains the port-forward-works-but-ingress-fails pattern: the service selector or namespace mismatch is the usual culprit since port-forward bypasses the service. It prescribes checking kubectl get endpoints as the fastest discriminator.",
+      "assertions": [
+        "The diagnosis walks ingress resource, service, and controller layers in order",
+        "The 503-versus-404 distinction is explained and used to narrow the cause",
+        "Service selector and endpoint population are checked as the prime suspect",
+        "The port-forward-works-but-ingress-fails pattern is explained",
+        "kubectl get endpoints is prescribed as the fast discriminator"
+      ]
+    },
+    {
+      "id": "upgrade-planning",
+      "prompt": "We run a self-managed cluster on k3s with a few production workloads and are several minor versions behind. I want to plan an upgrade that does not take down the workloads. What does a safe upgrade plan look like?",
+      "expected_output": "An upgrade plan that treats version drift as the primary risk and sequencing as the control: the response starts by inventorying the current versions (server, kubelet, and the client tools) and the Kubernetes minor-version skew policy, checks the target version's deprecations against the workloads' API usage (verify the resource API versions the manifests use are still served), and upgrades in controlled stages: back up etcd state first, upgrade one node or a non-production cluster as a rehearsal, then roll the control plane and worker nodes, draining nodes before upgrades and uncordoning after. It includes the rollback path (restore backup, or downgrade within supported bounds) and verification at each stage: node versions, workload health, and the API-version compatibility checks. It also flags the common failure: upgrading the control plane without checking deprecated APIs breaks workloads after the upgrade, and using the in-place k3s install script without reading the release notes.",
+      "assertions": [
+        "The plan inventories versions and checks the skew policy before upgrading",
+        "Deprecated API usage in the workloads' manifests is checked against the target version",
+        "Upgrades are staged with etcd backup, a rehearsal environment, and drain-then-upgrade node rolling",
+        "A rollback path is defined for each stage",
+        "Verification at each stage covers node versions, workload health, and API compatibility"
+      ]
+    },
+    {
+      "id": "autoscaling-rightsizing",
+      "prompt": "Our API pods run at 30% CPU average but the cluster sometimes spikes and the HPA scales to 20 replicas that mostly sit idle. I want autoscaling that matches demand without waste. How should I configure it?",
+      "expected_output": "An autoscaling and rightsizing design: the response starts with the workloads' actual profile — measure sustained CPU and memory percentiles over a representative period (not the average), set resource requests from the p95/p99 so the scheduler reserves honestly without over-reserving, and configure the HPA on the metric that reflects demand (CPU utilization relative to requests, or a custom metric such as request latency or queue depth if CPU is a poor proxy). It explains the HPA tuning knobs: min/max replicas chosen from the measured demand curve, target utilization set so it scales before latency degrades but not on noise, and the scaling-delay parameters (stabilization window, cooldown) that prevent the thrash between 5 and 20 replicas. The response also covers the interplay with cluster autoscaling: the HPA's ceiling must be reconcilable with node capacity, and idle spike behavior is addressed by the utilization target and scale-down stabilization rather than more replicas.",
+      "assertions": [
+        "Rightsizing starts from measured percentile CPU and memory, with requests set from the high percentile",
+        "The HPA metric is chosen to match demand, with custom metrics considered over CPU alone",
+        "Min/max replicas and target utilization come from the measured demand curve",
+        "Stabilization windows are used to prevent replica thrash",
+        "The HPA ceiling and cluster autoscaling are reconciled"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "agent-skills",
+  "evals": [
+    {
+      "id": "skill-creation-structure",
+      "prompt": "I want to create a new skill called 'pdf-tools' that teaches an agent how to merge, split, and extract text from PDFs. What is the required directory structure and what must the SKILL.md contain to be format-compliant?",
+      "expected_output": "A format-compliant skill scaffold: a directory named pdf-tools containing SKILL.md with YAML frontmatter and a markdown body, a human-facing README.md, and for a new skill an evals/evals.json with at least five output-quality cases. The response specifies the frontmatter contract: name must match the directory name in lowercase hyphenated form, description must be 1-1024 characters, start with an imperative verb, and define both positive triggers and a negative boundary (when not to use this skill), and the body must stay under 500 lines with supporting material in references/ loaded on demand. It also explains why progressive disclosure matters: core instructions in SKILL.md, detail in references/scripts, so activation cost stays low.",
+      "assertions": [
+        "The scaffold names the required structure: SKILL.md, README.md, and evals/evals.json for new skills",
+        "Frontmatter rules are specified: name matches directory, imperative-verb description with negative boundary",
+        "The 500-line body limit and progressive disclosure structure are stated",
+        "File references are relative from the skill root",
+        "The rationale for progressive disclosure (low activation cost) is explained"
+      ]
+    },
+    {
+      "id": "skill-review-compliance",
+      "prompt": "I need to review a skill in our repository before merging it. The skill has a SKILL.md, a README.md, and a scripts folder, but I am not sure it is format-compliant. What checklist should I run, and what are the most common compliance failures?",
+      "expected_output": "A review checklist covering the format requirements: name matches the directory, description is 1-1024 characters starting with an imperative verb and defining a negative boundary, body under 500 lines, valid frontmatter with only allowed fields, README.md present with the required human-facing sections, file references resolve to real relative paths, and for new skills an eval manifest with at least five cases using the canonical assertions field. The response lists the most common failures: descriptions that do not start with an imperative verb, missing negative boundaries, frontmatter fields beyond the allowed set, stale or broken relative links, references to skills that do not exist in the catalog, and evals that alias expectations instead of using assertions. It prescribes running the repository's validation scripts to catch what the checklist misses.",
+      "assertions": [
+        "The checklist covers frontmatter, description rules, body limits, README sections, references, and evals",
+        "Common failures are enumerated: non-imperative descriptions, missing negative boundaries, bad links, dead routing",
+        "The canonical assertions field versus the expectations alias is called out",
+        "The review verifies relative references resolve",
+        "Running the repository validators is prescribed as the final check"
+      ]
+    },
+    {
+      "id": "progressive-disclosure-fix",
+      "prompt": "A skill I wrote has a 900-line SKILL.md because I put everything in the main file. Agents loading it consume enormous context even when they only need one section. How do I restructure it for progressive disclosure?",
+      "expected_output": "A restructuring plan that moves the SKILL.md to a lean core: keep the description-driven triggers, the operating instructions, and the routing that tells the agent when to load which reference, then move the detailed material into references/ files organized by concern, templates/ for fillable documents, and scripts/ for executable tooling, each referenced from SKILL.md with the load condition. The response explains the progressive disclosure contract: metadata at startup, instructions on activation, resources on demand, and that the SKILL.md should state when to read each supporting file rather than embedding it. It also covers the practical audit: after the split, the body must be under 500 lines, every reference must resolve, and nothing the core workflow depends on may be left only in a reference the agent is not told to load.",
+      "assertions": [
+        "The plan moves detail into references, templates, and scripts while keeping SKILL.md as the lean core",
+        "The response applies the load-on-demand contract: instructions on activation, resources on demand",
+        "SKILL.md states when to load each supporting file rather than embedding it",
+        "The post-split body is verified under 500 lines with all references resolving",
+        "Core workflow dependencies are not stranded in unlinked references"
+      ]
+    },
+    {
+      "id": "evals-manifest-authoring",
+      "prompt": "I am adding an eval manifest to an existing skill that has no evals. What must the manifest contain to pass the repository's v1 validation, and what makes the cases actually useful for judging output quality?",
+      "expected_output": "An eval manifest written to the v1 contract: schema_version 1, skill_name matching the skill directory, and an evals array of at least five cases, each with a stable lowercase-hyphenated id, a realistic prompt, an expected_output describing the correct behavior, and a list of assertions that are observable claims about the output, using the canonical assertions field and never the expectations alias. The response explains what makes cases useful: prompts that reflect real activation scenarios for the skill, assertions that are specific enough to fail meaningfully rather than vague quality platitudes, stable IDs that durable evidence references can rely on, and coverage across the skill's main behaviors. It also notes the trigger-only probes belong in a separate harness-specific test set, not in evals.json.",
+      "assertions": [
+        "The manifest uses schema_version 1, matching skill_name, and at least five cases",
+        "Each case has a stable id, realistic prompt, expected_output, and observable assertions",
+        "The assertions field is canonical and the expectations alias is never used",
+        "Cases reflect real activation scenarios and are specific enough to fail meaningfully",
+        "Trigger-only probes are excluded from evals.json as harness-specific"
+      ]
+    },
+    {
+      "id": "client-discovery-loading",
+      "prompt": "I am building an agent client that needs to discover and load skills from a directory of Agent Skills-format skills. How should discovery and loading work so the client respects the format's cost model?",
+      "expected_output": "A discovery and loading design implementing the three-stage model: at startup the client reads only each skill's name and description from frontmatter as metadata, when a user request matches a description the client loads the full SKILL.md, and supporting files under references/, templates/, and scripts/ are loaded on demand when the skill's instructions say to. The response explains why loading everything at startup defeats the format's purpose (context cost grows with catalog size) and how routing works: the description is the trigger surface, so description quality directly determines whether the right skill activates. It covers the failure modes: skills whose descriptions do not overlap the user's phrasing fail to trigger, and a client that reads beyond frontmatter during discovery pays the cost the format was designed to avoid.",
+      "assertions": [
+        "Discovery reads only name and description frontmatter at startup",
+        "Full SKILL.md is loaded only on trigger match and supporting files on demand",
+        "The response explains the context-cost rationale for staged loading",
+        "Description quality is tied to routing correctness",
+        "The failure modes of eager loading and weak trigger overlap are covered"
+      ]
+    }
+  ]
+}

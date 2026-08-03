@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "systematic-debugging",
+  "evals": [
+    {
+      "id": "resist-quick-fix",
+      "prompt": "Our API started returning 500s after last night's deploy. The obvious suspect is the new rate-limiting middleware that was added in that deploy, and my teammate wants to roll it back immediately. What should we do before touching anything, and how do I prove the cause?",
+      "expected_output": "A response that follows the iron law: understand the bug before fixing. It starts by reproducing the failure consistently and narrowing when it began (checking the deploy window, logs, and error rates), gathering evidence before acting: the exact error payload, the stack trace, request patterns, and a minimal reproduction. It explicitly resists the rollback-before-diagnosis instinct by checking whether the rate limiter actually appears in the failing path and what evidence links it, and it prescribes the smallest experiment that confirms or refutes the hypothesis (compare a request that bypasses the middleware) before any rollback. It also checks recent changes beyond the middleware, because 'obvious suspect' framing usually comes from deploy proximity, not causality.",
+      "assertions": [
+        "The response resists immediate rollback and requires a consistent reproduction first",
+        "Evidence gathering includes the exact error, stack trace, request patterns, and deploy-window correlation",
+        "The response designs a minimal experiment that confirms or refutes the middleware hypothesis",
+        "It checks recent changes beyond the obvious suspect rather than assuming deploy proximity means causality",
+        "The response states what must be proven before acting on the fix"
+      ]
+    },
+    {
+      "id": "test-failure-root-cause",
+      "prompt": "A unit test that passed for months started failing this morning. The test asserts a function returns a sorted list, and it now returns nearly-sorted. Nobody remembers changing the function. How do I find the real cause?",
+      "expected_output": "A root-cause investigation that treats the failing test as a signal to trace back to a change: check recent commits touching the function, its inputs, or shared dependencies (a locale, timezone, or Python-version change can flip sort behavior), reproduce with the exact failing input, and isolate by testing the function in isolation versus through the changed path. The response explicitly suspects environment and dependency drift, not just source edits: a date-parsing change, a different locale sort, or a dependency upgrade can alter behavior while the function is untouched. It prescribes bisecting the change history, checking the environment between the last pass and first failure, and writing a regression test that pins the previously-passing behavior once the cause is confirmed.",
+      "assertions": [
+        "The response traces the failure to a change via git history and the first-failure time window",
+        "It checks environment and dependency drift such as locale, timezone, or version changes",
+        "It reproduces with the exact failing input and isolates the function from the changed path",
+        "Bisecting the change history is part of the procedure",
+        "A regression test pins the previously-passing behavior once the cause is confirmed"
+      ]
+    },
+    {
+      "id": "performance-regression",
+      "prompt": "Our checkout endpoint slowed from 120 ms to 900 ms over the last two weeks without a single obvious change. Users are complaining. I have profiler output but do not know where to start. How do I investigate a slow regression systematically?",
+      "expected_output": "A systematic performance investigation that establishes the baseline and the shape of the regression first: which percentile slowed, whether it is latency spikes or uniform slowdown, which call path the profiler attributes time to, and when the slope started (two weeks suggests gradual drift such as growing data or accumulating state, not a single deploy). The response ranks hypotheses by evidence: growing table sizes and missing index usage, connection-pool exhaustion, cache misses, new work added to the hot path, and background load. It prescribes measuring before optimizing: capture a flame graph under realistic load, compare against the 120 ms baseline, verify each candidate cause with a targeted experiment, and fix with a regression test or benchmark that prevents the slowdown from returning.",
+      "assertions": [
+        "The response characterizes the regression shape: percentiles, spikes versus uniform slowdown, and when it began",
+        "Gradual-drift causes such as growing data, state accumulation, and pool exhaustion are ranked as hypotheses",
+        "The response mandates measurement (flame graph, baseline comparison) before optimization",
+        "Each candidate cause is verified with a targeted experiment",
+        "A benchmark or regression test guards against the slowdown returning"
+      ]
+    },
+    {
+      "id": "multi-component-evidence",
+      "prompt": "An end-to-end purchase flow fails intermittently across our mobile app, API gateway, payment provider, and background job pipeline. Each team says their component looks fine. Where do I start looking for evidence in a multi-component system?",
+      "expected_output": "A cross-component investigation that follows the data flow and the failure's shape instead of starting at any one team's logs: the response correlates the failure across components by tracing a single failing request end to end (trace IDs, timestamps across services), establishes the failure distribution (which steps fail, at what rate, correlated with what), and looks for the boundary conditions that single-component views miss: timeouts at handoff points, mismatched payload schemas between services, retry storms, and clock or concurrency mismatches. It prescribes building the end-to-end picture from one trace first, then comparing the failing trace against a successful one to find the divergence point, and only then narrowing to the owning team.",
+      "assertions": [
+        "The response traces a single failing request end to end before judging any component",
+        "It establishes the failure distribution and correlations across the system",
+        "Boundary conditions such as timeouts at handoffs, schema mismatches, and retry storms are explicitly checked",
+        "A failing trace is diffed against a successful trace to find the divergence point",
+        "Narrowing to an owning team happens only after the cross-component picture is built"
+      ]
+    },
+    {
+      "id": "schema-environment-divergence",
+      "prompt": "The same service behaves differently in staging and production: features that work in staging fail in prod with validation errors. The code and config are supposedly identical. What could differ, and how do I find the divergence?",
+      "expected_output": "A schema-and-environment divergence investigation: the response enumerates what actually differs between environments despite identical code — database schema drift (a migration ran in staging but not prod, or vice versa), environment variables and feature flags, secret rotation, dependency versions resolved differently, and data itself (prod data hitting validation paths staging data never exercises). It prescribes diffing the real artifacts: schema migrations applied in each database, the resolved dependency lockfiles, the environment configuration, and the actual data shapes hitting the validation code. It warns that 'identical config' is usually an assumption, and the first step is to verify the assumption by diffing the environments rather than re-reading the code.",
+      "assertions": [
+        "The response enumerates real divergence sources: schema drift, flags and env vars, secrets, dependency resolution, data shapes",
+        "It mandates diffing the applied migrations in each database rather than trusting the code is identical",
+        "Environment variables, feature flags, and resolved dependencies are compared",
+        "The response treats 'identical config' as an assumption to verify by diffing, not a fact",
+        "Prod-specific data shapes are checked against the validation paths that reject them"
+      ]
+    }
+  ]
+}

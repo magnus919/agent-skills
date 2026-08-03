@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "api-design-and-evolution",
+  "evals": [
+    {
+      "id": "rest-api-contract-design",
+      "prompt": "We are building a public REST API for our invoicing product. I need the contract for the invoices resource: endpoints, pagination, error handling, and filtering. What should the contract specify and what decisions matter most for consumers?",
+      "expected_output": "A REST contract design for the invoices resource that makes the consumer-facing decisions explicit: the resource URL structure with consistent plural nouns and stable identifiers, the HTTP methods and their semantics (list, get, create, update, delete) with proper status codes, pagination as a stable mechanism (cursor or offset with a stated default and maximum page size), consistent error responses with a machine-readable error code, message, and correlation ID, idempotency for creation via a client-supplied key, and filtering and sorting parameters that are documented and bounded. The response explains the compatibility discipline: fields and parameters are additive, response shapes are stable, and the OpenAPI document is the source of truth that consumers build against.",
+      "assertions": [
+        "The contract defines the full invoice resource surface: methods, status codes, and URL structure",
+        "Pagination is specified as a stable mechanism with defaults and limits",
+        "Error responses have a consistent machine-readable shape with codes and correlation IDs",
+        "Creation is idempotent via a client-supplied key",
+        "Filtering and sorting are documented and bounded, with OpenAPI as the source of truth"
+      ]
+    },
+    {
+      "id": "versioning-deprecation",
+      "prompt": "We need to change the response of our customers endpoint from a flat structure to a nested one, which will break current consumers. The API is used by dozens of partners. How do I version this change and manage the deprecation lifecycle responsibly?",
+      "expected_output": "A versioning and deprecation plan that avoids breaking consumers: the response evaluates versioning options (URL path versioning versus content negotiation versus additive-only evolution) and selects one for the change, then defines the deprecation lifecycle: ship the new version alongside the old, announce the deprecation with a concrete timeline, add Sunset headers and deprecation notices in responses so consumers see it programmatically, migrate the known partners with support, and remove the old version only after the deadline with the usage metrics confirming no remaining traffic. The response explains that a breaking change that could be done additively (new field, old field kept) should not force a version bump, and it sets the policy for when a major version is genuinely warranted.",
+      "assertions": [
+        "The response evaluates versioning strategies and picks one for the change",
+        "The change is assessed for additive compatibility before forcing a major version",
+        "A deprecation lifecycle is defined: parallel versions, announcement, Sunset headers, timeline",
+        "Partner migration is supported and removal is gated on usage metrics",
+        "Deprecation notices are surfaced programmatically to consumers"
+      ]
+    },
+    {
+      "id": "event-interface-asyncapi",
+      "prompt": "We are adding an events interface so internal services and external partners can subscribe to invoice.created and invoice.paid events. I have never designed an event interface. What does the contract look like and what decisions do I need to make?",
+      "expected_output": "An event-interface design with an AsyncAPI contract as the source of truth: the event names and their payload schemas (what fields each event carries and the guarantees about them), the delivery semantics (at-least-once with a message ID, deduplication keys, and ordering caveats), the channel or topic naming scheme, and the compatibility rules for evolving payloads (additive fields only, versioned schema for breaking changes). The response explains the core consumer-contract decisions: exactly-once is not provided so consumers must deduplicate, ordering is per-partition not global, and retries need a dead-letter policy. It specifies what the producer guarantees versus what consumers must handle.",
+      "assertions": [
+        "The design is documented as an AsyncAPI contract with named events and payload schemas",
+        "Delivery semantics are explicit: at-least-once, message IDs, deduplication, ordering caveats",
+        "Channel or topic naming and payload evolution rules are specified",
+        "The response states that consumers must handle deduplication and that ordering is per-partition",
+        "Retry and dead-letter handling are part of the consumer contract"
+      ]
+    },
+    {
+      "id": "api-review-existing-contract",
+      "prompt": "A teammate wrote an OpenAPI spec for a new bookings API and asked for a review before publishing it to partners. What should I look for in a contract review beyond syntax correctness?",
+      "expected_output": "An API contract review that checks the decisions that create or avoid future breaking changes: naming consistency and URL structure, response envelope consistency, error schema uniformity, pagination on list endpoints, whether create/update are idempotent or need to be, whether required fields are truly required or just asserted, parameter validation and bounds, and whether the spec matches the documented behavior in examples. The review prioritizes findings by consumer impact: anything that forces a breaking change later or that partners will mis-implement gets flagged first, followed by inconsistencies and documentation gaps. The response frames the review output as actionable findings with severity rather than a general comment thread.",
+      "assertions": [
+        "The review checks future-compatibility decisions: idempotency, pagination, error uniformity, required-field truthfulness",
+        "Findings are prioritized by consumer impact and breaking-change risk",
+        "The review compares the spec against its own examples for consistency",
+        "Parameter validation and bounds are checked",
+        "The review produces actionable, severity-ranked findings"
+      ]
+    },
+    {
+      "id": "error-handling-idempotency",
+      "prompt": "Our mobile app sometimes retries a payment API call and ends up charging customers twice. The API returns 500 on timeouts, and the client retries blindly. How should the API and client coordinate so retries are safe?",
+      "expected_output": "A retry-safety design centered on idempotency: the API accepts an idempotency key from the client, stores the key with the result of the first attempt, and returns the stored result on any retry with the same key instead of processing again. The response specifies the client contract: generate a key per logical operation, reuse it on retries, and treat 5xx and network timeouts as retryable while 4xx are not. It also covers the API-side decisions: idempotency-key validity window, uniqueness enforcement under concurrency, and what happens when a key is replayed with a different payload, plus the timeout-error shape (409 or a dedicated response that lets the client know the outcome is being determined) so the client does not double-submit.",
+      "assertions": [
+        "The design uses client-supplied idempotency keys stored with the first attempt's result",
+        "Replayed keys return the stored result rather than re-processing",
+        "The client contract distinguishes retryable (5xx, network) from non-retryable (4xx) failures",
+        "Key validity, uniqueness under concurrency, and key-replay-with-different-payload are addressed",
+        "The timeout response shape prevents the double-submit race"
+      ]
+    }
+  ]
+}

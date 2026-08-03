@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "agent-evals-and-observability",
+  "evals": [
+    {
+      "id": "eval-dataset-design",
+      "prompt": "I want to build an evaluation set for our customer-support agent to judge whether responses are good before every release. What does the dataset design look like: what cases belong in it, how many, and how do I keep it from going stale?",
+      "expected_output": "An eval dataset design organized around the agent's task contract: the response defines a set of representative tasks sampled from real production traffic (the actual questions and edge cases users ask), each with a task description, the input, and the expected behavior, and it explains the population discipline: cases are drawn from production distributions including the failure modes the team cares about, plus a curated set of edge cases and regression cases from past incidents. The dataset's size is matched to the decision it supports (a small curated set for release gating versus a larger sampling set for tuning), and the response covers the freshness contract: a process for adding new cases from production incidents and removing or re-validating cases that no longer reflect the product, with versioning so results stay comparable across releases.",
+      "assertions": [
+        "The dataset is sampled from real production traffic and past failure modes, not invented by the team alone",
+        "Each case carries a task description, input, and expected behavior",
+        "Dataset size is matched to the decision it supports",
+        "A freshness process adds incident-derived cases and retires stale ones",
+        "Versioning keeps results comparable across releases"
+      ]
+    },
+    {
+      "id": "grader-criteria",
+      "prompt": "Our eval harness has tasks and recorded agent outputs, but the scoring is a single human judgment of 'looks good.' I want objective, repeatable grading. How do I write grader criteria that multiple reviewers (or a judge model) can apply consistently?",
+      "expected_output": "Grading criteria written as discrete, checkable requirements rather than holistic impressions: each task has pass-fail or rubric-scored criteria derived from the task contract — required content must be present, required steps must be taken, forbidden behaviors must be absent, and correctness is defined against a reference answer or verifiable facts rather than style. The response explains the rubric design: a small number of criteria (not a long checklist of trivia), each stated so that a reviewer can determine pass or fail without interpretation, with explicit handling of partial credit and a rule for when a single failure fails the whole case (e.g., a safety violation or a wrong factual claim). It also covers calibration: sample-scoring a set of outputs against the rubric, reconciling disagreements, and iterating the rubric until reviewers converge.",
+      "assertions": [
+        "Criteria are discrete and checkable, derived from the task contract",
+        "Required content, required steps, and forbidden behaviors are separated",
+        "Partial credit and fail-the-case rules are explicit",
+        "A calibration pass with disagreement reconciliation is prescribed",
+        "Rubric iteration continues until reviewers converge"
+      ]
+    },
+    {
+      "id": "regression-analysis",
+      "prompt": "Our agent's overall score went up after a prompt change, but a few individual tasks got much worse, and I suspect they are the ones that matter. How do I analyze eval results across releases to catch regressions rather than a single averaged number?",
+      "expected_output": "A regression analysis that looks below the aggregate score: the response prescribes comparing per-case results between the baseline and candidate release, separating the cases that improved, regressed, and stayed the same, and weighting the regressed cases by their production frequency and severity so a drop on a high-traffic task outweighs gains on rare ones. It explains the statistical ground rules: small eval sets produce noisy deltas, so the analysis distinguishes meaningful changes from sampling noise (via confidence bounds or a stated sample requirement) and flags regressions for investigation even when the average improves. It also covers bucketing by case category (customer-visible errors, safety, style) so the team can see which behavior class moved, and it prescribes a fix loop: investigate the regressed cases, decide whether the change or the eval is wrong, and re-run.",
+      "assertions": [
+        "Analysis compares per-case results between baseline and candidate, not just the average",
+        "Regressed cases are weighted by production frequency and severity",
+        "Statistical noise in small eval sets is accounted for with confidence bounds",
+        "Results are bucketed by behavior class such as safety, errors, and style",
+        "A fix loop investigates regressed cases and re-runs after changes"
+      ]
+    },
+    {
+      "id": "release-gate-design",
+      "prompt": "We want to gate releases on eval results so a bad change cannot ship. How do I design the release gate so it blocks real regressions without making every release an evals fire drill?",
+      "expected_output": "A release-gate design that separates the gating decision from the raw score: the response defines the gate criteria in terms of the regression analysis rather than a single threshold — no regressions on critical-path cases, no regressions beyond a tolerance band on the overall set, and the gate uses the previously established baseline for the same version of the eval set (so set changes do not silently move the goalposts). It prescribes the operational mechanics: the gate runs in CI, produces a comparable report against the merged baseline, blocks on the blocking criteria, and routes borderline results to a human review queue with the evidence attached rather than an automatic pass or fail. It also covers the escape hatch: an explicit override process with a recorded reason and owner, so the gate stays credible.",
+      "assertions": [
+        "The gate uses regression-relative criteria, not a single absolute score",
+        "The baseline is pinned to the same eval-set version so goalposts do not move",
+        "The gate runs in CI with a comparable report and blocks on critical-path regressions",
+        "Borderline results route to human review with evidence, not automatic pass or fail",
+        "An explicit, recorded override process keeps the gate credible"
+      ]
+    },
+    {
+      "id": "incident-to-case-learning",
+      "prompt": "A customer-facing incident last week traced back to an agent answer we never tested: the agent confidently gave wrong configuration advice. I want the incident to become a permanent eval case so it cannot regress. What is the incident-to-case workflow and how does trajectory review fit in?",
+      "expected_output": "An incident-to-case workflow that converts the postmortem into durable eval coverage: the response walks the process — extract the failing behavior from the incident (the wrong output, the context that produced it, the harm), turn it into a task case with the correct expected behavior and grader criteria, add it to the regression set, and verify it fails on the current release and passes on the fix. It explains where trajectory review fits: for agent failures, the answer alone may not show the flaw, so the review examines the reasoning trajectory (the steps, tool calls, and sources the agent used) to understand whether the error was a knowledge gap, a retrieval failure, or a reasoning failure, which determines the fix and the right case shape. The response also covers the loop: the new case joins the baseline, so any future release that reintroduces the behavior is blocked.",
+      "assertions": [
+        "The workflow converts the incident into a task case with expected behavior and grader criteria",
+        "The case is verified to fail on the current release and pass on the fix",
+        "Trajectory review is used to classify the failure as knowledge, retrieval, or reasoning",
+        "The failure classification drives both the fix and the case shape",
+        "The new case joins the baseline so the regression is blocked going forward"
+      ]
+    }
+  ]
+}
