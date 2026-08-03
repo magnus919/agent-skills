@@ -11,8 +11,9 @@ Bump rules (Conventional Commits 1.0.0):
   - BREAKING CHANGE footer, or a `!` after the type/scope  -> MAJOR
   - feat                                                    -> MINOR
   - fix and all other types                                 -> PATCH
-  - 0.x versions (initial development): MAJOR bumps become MINOR,
-    MINOR bumps become PATCH (the public API is not yet stable).
+  - 0.x versions (initial development): MAJOR and MINOR bumps both become
+    MINOR under the documented Release Please-compatible policy, while
+    PATCH bumps remain PATCH.
 
 Pre-release handling (--pre-release alpha|beta|rc):
   - If the current version is already a pre-release with the SAME tag
@@ -194,7 +195,7 @@ def bump_core(current, level):
         return (major + 1, 0, 0)
     if level == "minor":
         if major == 0:
-            return (major, minor, patch + 1)
+            return (major, minor + 1, 0)
         return (major, minor + 1, 0)
     return (major, minor, patch + 1)
 
