@@ -317,6 +317,10 @@ Infrastructure as code, CI/CD, container orchestration, service networking — m
 
 Operate Playwright for browser automation: E2E test authoring with robust locators, network interception and mocking, parallel workers, CI integration, headless scraping, and accessibility snapshot checks. Ships a `pwrun` smoke harness (`--json`), a test-suite scaffold, 8 references, and 6 evals.
 
+### [postgres](postgres/SKILL.md)
+
+Operate PostgreSQL safely: configuration review, index and query-plan analysis, vacuum and bloat management, WAL archiving and point-in-time recovery, replication and failover, extensions, major-version upgrades, and evidence-based diagnostics. Ships the read-only `pgdiag` collector (`--json`, `--plan-for`, `--help` without a cluster), 9 dated references, tests, and 6 evals. Routes app data access to backend-engineering and schema design to data-architect/data-engineering.
+
 ### [privacy-engineering](privacy-engineering/SKILL.md)
 
 Translate privacy principles and legal requirements into verifiable engineering artifacts — data-lifecycle records, privacy acceptance criteria, data-flow and access maps, retention/deletion verification plans, and privacy change reviews. Covers seven privacy dimensions (purpose, lifecycle/retention, access, deletion, tenant/isolation, residency, consent) as structured concerns, with specific guidance for agent traces and product analytics telemetry. Routes legal interpretation to legal-strategy and security implementation to secure-software-engineering. Ships 1 discovery brief, 5 templates, and 6 evals.

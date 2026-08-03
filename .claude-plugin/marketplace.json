@@ -681,6 +681,15 @@
       "description": "Operate Playwright for browser automation end to end: author and debug E2E test suites (robust locators, network interception and mocking, parallel workers, accessibility snapshot checks), wire them into CI, and drive headless browsing and scraping with an extract -> validate -> save loop. Use when writing, running, fixing, or scraping with Playwright, when a Playwright CI failure or JSON report needs triage, or when the bundled pwrun script should analyze a run. Do not use for QA strategy or test framework selection (route to qa-methodology), for frontend component or architecture design (route to frontend-engineering), or for Cloudflare/DDoS-GUARD challenge bypass (use flaresolverr)."
     },
     {
+      "name": "postgres",
+      "source": "./",
+      "skills": [
+        "./postgres"
+      ],
+      "strict": false,
+      "description": "Operate PostgreSQL instances safely: configuration review, index and query-plan analysis, vacuum and bloat management, WAL archiving and point-in-time recovery, replication and failover, extensions, major-version upgrades, and evidence-based diagnostics with the bundled read-only pgdiag script. Use when running or inspecting a PostgreSQL server, diagnosing performance or backup health, or planning an upgrade or failover. Do not use for application-level data access patterns (that's backend-engineering) or schema design (that's data-architect/data-engineering)."
+    },
+    {
       "name": "privacy-engineering",
       "source": "./",
       "skills": [

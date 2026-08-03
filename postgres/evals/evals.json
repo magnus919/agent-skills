@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "postgres",
+  "evals": [
+    {
+      "id": "config-review-for-new-instance",
+      "prompt": "We just provisioned a PostgreSQL 16 instance for a read-heavy reporting workload and left every setting at default. What configuration should we review before it goes live, and which changes require a restart versus a reload?",
+      "expected_output": "A configuration review that names the operator-critical parameters and classifies each change by when it takes effect: shared_buffers, effective_cache_size, work_mem, and maintenance_work_mem for cache and memory sizing; wal_level (must be replica or higher for archiving and streaming replication), max_wal_senders, and max_replication_slots; archive_mode and archive_command for WAL archiving readiness; autovacuum settings for maintenance; log_min_duration_statement and track_io_timing so slow-query and I/O evidence exist before they are needed. The response states that memory and process-shape parameters (shared_buffers, max_connections, wal_level, max_wal_senders, max_replication_slots, shared_preload_libraries) require a restart while most tuning and logging parameters reload with pg_reload_conf(), and that the runtime source of truth is pg_settings, not the file. It verifies each change with SHOW or current_setting() after applying, and routes connection-pooling and application access patterns to backend-engineering and schema decisions to data-architect.",
+      "assertions": [
+        "The review names shared_buffers, effective_cache_size, work_mem, maintenance_work_mem, wal_level, archive_mode, and logging parameters",
+        "Changes are classified as restart-required (memory and process shape) versus reload-only (pg_reload_conf)",
+        "pg_settings is identified as the runtime source of truth rather than the configuration file",
+        "WAL archiving readiness (wal_level replica, archive_mode, archive_command) is included for a production instance",
+        "Application access patterns route to backend-engineering and schema design routes to data-architect"
+      ]
+    },
+    {
+      "id": "backup-restore-plan-wal-pitr",
+      "prompt": "Our PostgreSQL 15 instance has archive_mode off and we only take nightly pg_dump snapshots. A user accidentally deleted a row at 14:32 and we need to restore it. What is wrong with the current setup and what should the backup and recovery plan look like?",
+      "expected_output": "A diagnosis that the current setup cannot recover the specific row: a nightly dump alone recovers only to the last dump, and archive_mode off means there is no WAL archive to replay. The plan prescribes enabling wal_level replica and archive_mode on with a working archive_command, verifying pg_stat_archiver shows archived_count growing and failed_count flat, taking a base backup with pg_basebackup -X stream, and testing a point-in-time recovery to a recovery_target_time on a scratch instance as the only proof the backup supports recovery. The response explains that a base backup plus continuous WAL gives point-in-time recovery (PITR): restore the base, replay archived WAL up to the target time, verify the row exists at the boundary, then promote. It frames RPO/RTO trade-offs and notes that backup strategy methodology routes to data-engineering while the PostgreSQL mechanics live in this skill, and that a restore is a mutation requiring an explicit human directive.",
+      "assertions": [
+        "The current setup is diagnosed as unable to recover the deleted row because archive_mode is off and there is no WAL archive",
+        "The plan enables wal_level replica and archive_mode with a working archive_command",
+        "Archiver health is verified via pg_stat_archiver with archived_count growing and failed_count flat",
+        "A base backup with pg_basebackup plus WAL replay to recovery_target_time is described, with a restore drill as the evidence",
+        "Backup strategy methodology routes to data-engineering and a restore is treated as a mutation requiring confirmation"
+      ]
+    },
+    {
+      "id": "performance-diagnosis-slow-query",
+      "prompt": "A reporting query over the orders table (about 5 million rows) started taking 40 seconds this week. The table has an index on order_date. How do I diagnose this with evidence before changing anything?",
+      "expected_output": "An evidence-first diagnosis: run the read-only diagnostic to capture identity, config, connection, and index-usage context, then EXPLAIN (ANALYZE, BUFFERS) the actual query and compare estimated to actual rows. The response checks pg_stat_user_indexes for idx_scan on the order_date index and pg_stat_user_tables for seq_scan and seq_tup_read to see whether the planner chose a sequential scan; checks whether planner statistics are stale by looking at n_dead_tup and whether autovacuum has run recently; and only then considers planner parameters such as random_page_cost or effective_cache_size. It treats a plan change over time as a clue (new data volume, new statistics, changed parameter) and verifies any fix by re-running EXPLAIN and re-checking index scan counts. The response explicitly routes adding a new index for the workload to data-architect and keeps this skill's role as measurement and operation, and notes that correlation between a slow query and high dead tuples is not automatically causation.",
+      "assertions": [
+        "Diagnosis starts with read-only evidence collection and EXPLAIN (ANALYZE, BUFFERS) rather than a config guess",
+        "Index usage and seq scan statistics (pg_stat_user_indexes, pg_stat_user_tables) are checked",
+        "Stale planner statistics are considered via dead-tuple trends and autovacuum recency",
+        "Planner parameters are changed one at a time and verified by re-running the plan",
+        "Schema decisions such as adding a new index route to data-architect and correlation is not presented as causation"
+      ]
+    },
+    {
+      "id": "replication-and-failover-plan",
+      "prompt": "We want a standby for our primary PostgreSQL 16 instance so we can survive a server loss. What do we need to configure, how do we verify the standby is healthy, and what should the failover procedure include?",
+      "expected_output": "A replication setup and failover plan: wal_level must be replica or higher, max_wal_senders and max_replication_slots sized for the standby, a physical replication slot created per standby, and the standby built with pg_basebackup -X stream with primary_conninfo and standby.signal. Health is verified on the primary via pg_stat_replication showing state streaming with replay_lsn close to the primary and replay_lag within the agreed bound, and on the standby via pg_is_in_recovery with pg_last_wal_receive_lsn and pg_last_wal_replay_lsn advancing. The failover procedure names who promotes (pg_ctl promote or SELECT pg_promote()), how clients are redirected and verified with a fresh connection, and how the old primary is rejoined with pg_rewind so two primaries never accept writes. The response distinguishes synchronous from asynchronous replication and states the durability trade-off, and treats promotion as a mutation requiring an explicit human directive and a rollback path.",
+      "assertions": [
+        "Setup covers wal_level, max_wal_senders, max_replication_slots, a replication slot, and pg_basebackup -X stream",
+        "Health is verified with pg_stat_replication state streaming and lag within the agreed bound",
+        "The failover procedure names promotion, client redirection, and rejoining the old primary with pg_rewind",
+        "Synchronous versus asynchronous durability trade-offs are stated explicitly",
+        "Promotion is treated as a mutation requiring a human directive and a rollback path"
+      ]
+    },
+    {
+      "id": "vacuum-and-bloat-investigation",
+      "prompt": "Our pg_stat_user_tables shows n_dead_tup growing on several large tables and some tables' file sizes look much bigger than their live data. What does this mean and what should we do, and what must we not do?",
+      "expected_output": "An explanation that rising n_dead_tup means the vacuum loop is falling behind: autovacuum is not reclaiming dead tuples fast enough, and the file-size-to-live-data gap is the bloat signal. The response first looks for why autovacuum lags — long-running transactions pinning old snapshots, not enough autovacuum_max_workers, connection saturation, or tables larger than the autovacuum nap cycle — using pg_stat_progress_vacuum and age(datfrozenxid) to check wraparound risk, then prescribes a targeted, confirmed maintenance vacuum (VACUUM ANALYZE on the specific tables) in a maintenance window. It states the hard boundaries: VACUUM FULL is a last resort that rewrites the table and takes exclusive locks and must never be routine, autovacuum must never be disabled to save load, and a high dead-tuple count is evidence of a lagging maintenance loop, not a diagnosis by itself. Verification is re-running the bloat probe and confirming the trend reversed and autovacuum is keeping up.",
+      "assertions": [
+        "Rising dead tuples are interpreted as the vacuum loop falling behind, with bloat as the file-size-to-live-data signal",
+        "Root causes of autovacuum lag are checked: long transactions, worker starvation, connection saturation, table size",
+        "The fix is a targeted confirmed maintenance vacuum, not a blanket or routine VACUUM FULL",
+        "VACUUM FULL's lock and rewrite cost and the never-disable-autovacuum boundary are stated",
+        "Verification re-runs the bloat probe and confirms the trend reversed"
+      ]
+    },
+    {
+      "id": "major-version-upgrade-plan",
+      "prompt": "We are on PostgreSQL 15 with the PostGIS and pgvector extensions and want to move to PostgreSQL 16 with minimal downtime. What is the safe plan and what are the traps?",
+      "expected_output": "A sequenced major-upgrade plan: read the release notes and upgrade guide for the full version span first, inventory extensions and check each one's major-upgrade notes (PostGIS and pgvector are not binary-compatible across major versions and need reinstall or rebuild on the new binaries), run pg_upgrade --check as a no-change preflight, and rehearse on a scratch environment with the real data shape. The response distinguishes pg_upgrade link mode (fast, but the old cluster shares inodes and is not a clean rollback) from copy mode or logical dump/restore (slower, but keeps a rollback path), prescribes running analyze on the new cluster before debugging any 'slow queries', and requires verifying at the application boundary before decommissioning the old cluster. Logical replication is named as the near-zero-downtime alternative whose migration methodology routes to data-engineering. The upgrade is a mutation requiring a maintenance window, a verified backup, and an explicit human directive.",
+      "assertions": [
+        "Release notes and upgrade guides for the full version span are read before anything runs",
+        "Extension major-upgrade gotchas (PostGIS, pgvector) are checked and handled per extension",
+        "pg_upgrade --check is used as a no-change preflight and link mode versus copy mode trade-offs are stated",
+        "analyze runs on the new cluster before slow-query debugging, and the old cluster is kept until boundary verification",
+        "Logical replication is named as the near-zero-downtime path with migration methodology routed to data-engineering"
+      ]
+    }
+  ]
+}
