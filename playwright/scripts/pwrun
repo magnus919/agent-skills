@@ -1,0 +1,418 @@
+#!/usr/bin/env python3
+"""pwrun - agent-first smoke harness for Playwright test suites.
+
+Inspects a Playwright suite and triages its runs without requiring node or a
+browser: doctor checks the toolchain, inventory describes the suite structure,
+report summarizes a Playwright JSON test report (--reporter=json), and smoke
+delegates a real run to `npx playwright test`.
+
+Commands
+--------
+doctor      Report node, @playwright/test, browsers, and config availability.
+inventory   List test files and describe the suite (config, projects, specs).
+report      Summarize a Playwright JSON report (--report FILE).
+smoke       Run a quick smoke pass against a URL (delegates to npx playwright test).
+
+Exit codes: 0 ok, 1 analysis error, 2 usage error, 127 dependency missing,
+124 delegate timeout.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+from typing import Any, Optional
+
+CONFIG_NAMES = (
+    "playwright.config.ts",
+    "playwright.config.js",
+    "playwright.config.mts",
+    "playwright.config.cjs",
+    "playwright.config.mjs",
+)
+SPEC_SUFFIXES = (".spec.ts", ".spec.js", ".spec.mts", ".spec.mjs", ".test.ts", ".test.js")
+DEFAULT_TEST_DIRS = ("e2e", "tests", "specs", "playwright")
+COMMON_DEFAULTS = {
+    "json": False,
+    "timeout": 120,
+    "config": None,
+    "report": None,
+    "url": "http://localhost:3000",
+    "spec": None,
+}
+
+HELP_JSON = {
+    "name": "pwrun",
+    "summary": "Agent-first smoke harness for Playwright test suites",
+    "usage": "pwrun COMMAND [options]  (or: pwrun --help, pwrun doctor|inventory|report|smoke)",
+    "commands": [
+        {"name": "doctor", "help": "Report node, @playwright/test, browsers, and config availability"},
+        {"name": "inventory", "help": "List test files and describe the suite structure"},
+        {"name": "report", "help": "Summarize a Playwright JSON report (--report FILE)"},
+        {"name": "smoke", "help": "Run a quick smoke pass against a URL (delegates to npx playwright test)"},
+    ],
+    "flags": [
+        {"name": "--json", "help": "Emit a structured JSON result on stdout"},
+        {"name": "--config", "help": "Path to the Playwright config file (auto-detected)"},
+        {"name": "--report", "help": "Path to a Playwright JSON test report (report command)"},
+        {"name": "--url", "help": "Target URL for the smoke command (default http://localhost:3000)"},
+        {"name": "--spec", "help": "Spec file filter for the smoke command"},
+        {"name": "--timeout", "help": "Delegate command timeout in seconds (default 120)"},
+    ],
+    "exit_codes": {"0": "ok", "1": "analysis error", "2": "usage error", "127": "dependency missing", "124": "delegate timeout"},
+}
+
+
+def emit(payload: Any, as_json: bool) -> None:
+    """Write a payload to stdout; JSON when --json, readable text otherwise."""
+    if as_json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return
+    if isinstance(payload, str):
+        print(payload)
+        return
+    lines = []
+    for key, value in payload.items():
+        if isinstance(value, (list, dict)) and value:
+            lines.append(f"{key}: {json.dumps(value, sort_keys=True)}")
+        else:
+            lines.append(f"{key}: {value}")
+    print("\n".join(lines))
+
+
+def find_tool(tool: str) -> Optional[str]:
+    """Locate a tool on PATH."""
+    return shutil.which(tool)
+
+
+def detect_config(explicit: Optional[str]) -> Optional[str]:
+    """Resolve the Playwright config path: explicit wins, then cwd scan."""
+    if explicit:
+        return explicit if os.path.isfile(explicit) else None
+    for name in CONFIG_NAMES:
+        if os.path.isfile(name):
+            return name
+    return None
+
+
+def find_specs(root: str) -> list[str]:
+    """Walk the working tree (bounded) and list Playwright spec files."""
+    found: list[str] = []
+    skipped_dirs = {".git", "node_modules", ".venv", "dist", "build", "coverage", ".next", "__pycache__"}
+    for base, dirs, files in os.walk(root):
+        dirs[:] = sorted(d for d in dirs if d not in skipped_dirs)
+        for name in sorted(files):
+            if name.endswith(SPEC_SUFFIXES):
+                found.append(os.path.join(base, name))
+    return found
+
+
+def read_config_projects(config_path: str) -> list[str]:
+    """Best-effort project-name extraction from a config file (no ts execution)."""
+    try:
+        text = open(config_path, "r", encoding="utf-8").read()
+    except OSError:
+        return []
+    projects: list[str] = []
+    for match in re.finditer(r"name\s*:\s*['\"]([^'\"]+)['\"]", text):
+        projects.append(match.group(1))
+    return projects
+
+
+def cmd_doctor(args: argparse.Namespace) -> int:
+    """Check the local toolchain and report availability."""
+    node = find_tool("node")
+    npx = find_tool("npx")
+    payload: dict[str, Any] = {
+        "ok": True,
+        "node_found": node is not None,
+        "node": node or "(not found)",
+        "npx_found": npx is not None,
+        "playwright_package": None,
+        "config": detect_config(getattr(args, "config", None)),
+    }
+    if node and npx:
+        try:
+            probe = subprocess.run(
+                [npx, "--no-install", "playwright", "--version"],
+                capture_output=True,
+                text=True,
+                timeout=args.timeout,
+            )
+        except subprocess.TimeoutExpired:
+            payload["playwright_package"] = "probe timed out"
+            payload["ok"] = False
+            emit(payload, args.json)
+            return 124
+        if probe.returncode == 0:
+            payload["playwright_package"] = (probe.stdout or probe.stderr).strip()
+        else:
+            payload["playwright_package"] = None
+            payload["playwright_hint"] = (
+                "run `npm i -D @playwright/test` in the project, then `npx playwright install` for browsers"
+            )
+    else:
+        payload["playwright_hint"] = "node/npx not found on PATH; install Node.js and @playwright/test"
+    payload["browsers_available"] = _browser_cache_snapshot() if node else []
+    emit(payload, args.json)
+    return 0
+
+
+def _browser_cache_snapshot() -> list[str]:
+    """List installed Playwright browser executables from the standard cache dir."""
+    home = os.environ.get("HOME") or "~"
+    candidates = [
+        os.path.join(home, ".cache", "ms-playwright"),
+        os.path.join(home, "Library", "Caches", "ms-playwright"),
+    ]
+    installed: list[str] = []
+    for cache in candidates:
+        if os.path.isdir(cache):
+            installed.extend(sorted(entry for entry in os.listdir(cache) if not entry.startswith(".")))
+    return installed
+
+
+def cmd_inventory(args: argparse.Namespace) -> int:
+    """Describe the suite: config, projects, and spec files."""
+    config = detect_config(getattr(args, "config", None))
+    specs = find_specs(os.getcwd())
+    payload: dict[str, Any] = {
+        "ok": True,
+        "config": config,
+        "projects": read_config_projects(config) if config else [],
+        "spec_count": len(specs),
+        "specs": specs,
+        "test_dirs": sorted({os.path.dirname(s) for s in specs}),
+    }
+    emit(payload, args.json)
+    return 0
+
+
+def walk_suites(suite: dict[str, Any]) -> list[tuple[dict[str, Any], dict[str, Any]]]:
+    """Yield (spec, suite) pairs for every spec/test in a Playwright report tree.
+
+    Handles both the modern shape (suites[].specs[].tests[]) and the legacy
+    shape (suites[].tests[] with results[]).
+    """
+    pairs: list[tuple[dict[str, Any], dict[str, Any]]] = []
+    for spec in suite.get("specs", []) or []:
+        for test in spec.get("tests", []) or []:
+            pairs.append((spec, test))
+    for legacy in suite.get("tests", []) or []:
+        pairs.append((legacy, legacy))
+    for child in suite.get("suites", []) or []:
+        pairs.extend(walk_suites(child))
+    return pairs
+
+
+def error_of(test: dict[str, Any]) -> Optional[str]:
+    """Return the failure message from the last result of a test, if any."""
+    results = test.get("results") or []
+    for result in reversed(results):
+        error = result.get("error")
+        if error:
+            return str(error.get("message", error))
+    return None
+
+
+def summarize_report_data(data: Any, path: str) -> dict[str, Any]:
+    """Summarize a parsed Playwright JSON report into a bounded payload."""
+    if not isinstance(data, dict):
+        raise ValueError("report root must be a JSON object")
+
+    stats = data.get("stats") or {}
+    expected = int(stats.get("expected", 0) or 0)
+    unexpected = int(stats.get("unexpected", 0) or 0)
+    flaky = int(stats.get("flaky", 0) or 0)
+    skipped = int(stats.get("skipped", 0) or 0)
+
+    failures: list[dict[str, Any]] = []
+    passed_specs: list[str] = []
+    for suite in data.get("suites", []) or []:
+        for spec, test in walk_suites(suite):
+            status = test.get("status", "")
+            title = spec.get("title") or test.get("title") or "(untitled)"
+            file = spec.get("file") or test.get("file") or ""
+            project = test.get("projectName") or ""
+            entry = {"title": title, "file": file, "project": project, "status": status}
+            results = test.get("results") or []
+            last_status = results[-1].get("status") if results else None
+            if status in ("unexpected", "failed") or last_status == "failed":
+                error = error_of(test)
+                if error:
+                    entry["error"] = error[:2000]
+                failures.append(entry)
+            elif status in ("expected", "flaky", "passed", "skipped"):
+                passed_specs.append(entry)
+
+    return {
+        "ok": unexpected == 0 and not failures,
+        "report_file": path,
+        "stats": {
+            "expected": expected,
+            "unexpected": unexpected,
+            "flaky": flaky,
+            "skipped": skipped,
+            "duration_ms": stats.get("duration"),
+            "start_time": stats.get("startTime"),
+        },
+        "failures": failures,
+        "passed_specs_count": len(passed_specs),
+        "summary": (
+            f"{expected} expected, {unexpected} unexpected, {flaky} flaky, {skipped} skipped; "
+            f"{len(failures)} failing test(s)"
+        ),
+    }
+
+
+def summarize_report(path: str) -> dict[str, Any]:
+    """Summarize a Playwright JSON report file into a bounded payload."""
+    with open(path, "r", encoding="utf-8") as handle:
+        data = json.load(handle)
+    return summarize_report_data(data, path)
+
+
+def cmd_report(args: argparse.Namespace) -> int:
+    """Summarize a Playwright JSON report."""
+    path = getattr(args, "report", None)
+    if not path:
+        emit(
+            {
+                "ok": False,
+                "error": "report requires --report FILE",
+                "hint": "Generate one with `npx playwright test --reporter=json` (optionally -o test-results.json).",
+            },
+            args.json,
+        )
+        return 2
+    try:
+        payload = summarize_report(path)
+    except (OSError, json.JSONDecodeError) as error:
+        emit({"ok": False, "error": f"report {path} is not readable JSON: {error}", "command": "report"}, args.json)
+        return 1
+    except ValueError as error:
+        emit({"ok": False, "error": f"report {path} is invalid: {error}", "command": "report"}, args.json)
+        return 1
+    emit(payload, args.json)
+    return 0 if payload["ok"] else 1
+
+
+def cmd_smoke(args: argparse.Namespace) -> int:
+    """Run a quick smoke pass by delegating to npx playwright test."""
+    node = find_tool("node")
+    npx = find_tool("npx")
+    if not node or not npx:
+        emit(
+            {
+                "ok": False,
+                "error": "node/npx not found; smoke requires a Node toolchain",
+                "hint": "Install Node.js, run `npm i -D @playwright/test`, then `npx playwright install`.",
+            },
+            args.json,
+        )
+        return 127
+    parts = ["playwright", "test"]
+    if getattr(args, "spec", None):
+        parts.append(args.spec)
+    parts.extend(["--reporter=json"])
+    env = os.environ.copy()
+    if getattr(args, "url", None):
+        env["PW_SMOKE_URL"] = args.url
+    try:
+        proc = subprocess.run([npx, "--no-install"] + parts, capture_output=True, text=True, timeout=args.timeout, env=env)
+    except subprocess.TimeoutExpired:
+        emit(
+            {
+                "ok": False,
+                "error": "playwright test delegate timed out",
+                "timeout_seconds": args.timeout,
+                "command": parts,
+            },
+            args.json,
+        )
+        return 124
+    payload: dict[str, Any] = {
+        "ok": proc.returncode == 0,
+        "exit_code": proc.returncode,
+        "command": parts,
+        "url": getattr(args, "url", None),
+    }
+    stdout = proc.stdout or ""
+    try:
+        report = json.loads(stdout)
+    except (ValueError, json.JSONDecodeError):
+        report = None
+    if report is not None:
+        try:
+            payload["report_summary"] = summarize_report_data(report, path="(smoke run)")
+        except ValueError as error:
+            payload["report_summary"] = {"ok": False, "error": str(error)}
+        payload["ok"] = bool(payload["report_summary"].get("ok"))
+    else:
+        payload["stdout_tail"] = stdout[-2000:]
+        payload["stderr_tail"] = (proc.stderr or "")[-2000:]
+    emit(payload, args.json)
+    return 0 if payload["ok"] else 1
+
+
+def add_common(parser: argparse.ArgumentParser) -> None:
+    """Attach global flags with SUPPRESS defaults so values survive subcommand parsing."""
+    parser.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="Emit a structured JSON result on stdout")
+    parser.add_argument("--config", default=argparse.SUPPRESS, help="Path to the Playwright config file (auto-detected)")
+    parser.add_argument("--report", default=argparse.SUPPRESS, help="Path to a Playwright JSON test report (report command)")
+    parser.add_argument("--url", default=argparse.SUPPRESS, help="Target URL for the smoke command (default http://localhost:3000)")
+    parser.add_argument("--spec", default=argparse.SUPPRESS, help="Spec file filter for the smoke command")
+    parser.add_argument("--timeout", type=int, default=argparse.SUPPRESS, help="Delegate command timeout in seconds")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    common = argparse.ArgumentParser(add_help=False)
+    add_common(common)
+
+    parser = argparse.ArgumentParser(
+        prog="pwrun",
+        description=(
+            "Agent-first smoke harness for Playwright test suites: toolchain checks, "
+            "suite inventory, JSON report triage, and a smoke delegation with JSON output."
+        ),
+        epilog="Exit codes: 0 ok, 1 analysis error, 2 usage error, 127 dependency missing, 124 delegate timeout.",
+    )
+    add_common(parser)
+
+    sub = parser.add_subparsers(dest="command", required=True, metavar="COMMAND")
+
+    doctor = sub.add_parser("doctor", parents=[common], help="Report node, @playwright/test, browsers, and config availability")
+    doctor.set_defaults(handler=cmd_doctor)
+
+    inventory = sub.add_parser("inventory", parents=[common], help="List test files and describe the suite structure")
+    inventory.set_defaults(handler=cmd_inventory)
+
+    report = sub.add_parser("report", parents=[common], help="Summarize a Playwright JSON report (--report FILE)")
+    report.set_defaults(handler=cmd_report)
+
+    smoke = sub.add_parser("smoke", parents=[common], help="Run a quick smoke pass against a URL (delegates to npx playwright test)")
+    smoke.set_defaults(handler=cmd_smoke)
+
+    return parser
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    # `--help --json` must emit parseable JSON (used by smoke probes and agents).
+    if "--help" in argv and "--json" in argv:
+        print(json.dumps(HELP_JSON, indent=2, sort_keys=True))
+        return 0
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    for dest, default in COMMON_DEFAULTS.items():
+        if not hasattr(args, dest):
+            setattr(args, dest, default)
+    return args.handler(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

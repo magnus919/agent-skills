@@ -1,0 +1,269 @@
+{
+  "config": {
+    "configFile": "playwright.config.ts",
+    "rootDir": "/repo/shop-frontend",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalTimeout": 0,
+    "maxFailures": 0,
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "id": "project-chromium",
+        "name": "chromium",
+        "testDir": "e2e",
+        "testMatch": ["**/*.spec.ts"]
+      },
+      {
+        "outputDir": "test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "id": "project-mobile",
+        "name": "mobile-chromium",
+        "testDir": "e2e",
+        "testMatch": ["**/*.spec.ts"]
+      }
+    ],
+    "reporter": [["list"], ["json", { "outputFile": "test-results.json" }]],
+    "reportSlowTests": { "max": 5, "threshold": 60000 },
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.49.1",
+    "workers": 4,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "errors": [],
+  "stats": {
+    "startTime": "2026-08-03T09:30:00.000Z",
+    "duration": 18240,
+    "expected": 5,
+    "unexpected": 1,
+    "flaky": 0,
+    "skipped": 1
+  },
+  "suites": [
+    {
+      "title": "",
+      "file": "",
+      "line": 0,
+      "column": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "checkout flow",
+          "file": "/repo/shop-frontend/e2e/checkout.spec.ts",
+          "line": 1,
+          "column": 1,
+          "specs": [
+            {
+              "title": "adds an item to the cart",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "project-chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 812,
+                      "error": null,
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-03T09:30:01.120Z",
+                      "attachments": [],
+                      "steps": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "spec-cart-add"
+            },
+            {
+              "title": "completes the purchase with a saved card",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "project-chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "failed",
+                      "duration": 30000,
+                      "error": {
+                        "message": "Timeout 30000ms exceeded.\n=========================== logs ===========================\nwaiting for locator('button:has-text(\"Place order\")')\n  locator resolved to 0 elements\n  locator resolved to 0 elements\n  locator resolved to 0 elements"
+                      },
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-03T09:30:02.000Z",
+                      "attachments": [],
+                      "steps": []
+                    },
+                    {
+                      "workerIndex": 1,
+                      "status": "failed",
+                      "duration": 30000,
+                      "error": {
+                        "message": "Timeout 30000ms exceeded.\n=========================== logs ===========================\nwaiting for locator('button:has-text(\"Place order\")')\n  locator resolved to 0 elements"
+                      },
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2026-08-03T09:30:33.000Z",
+                      "attachments": [],
+                      "steps": []
+                    },
+                    {
+                      "workerIndex": 2,
+                      "status": "failed",
+                      "duration": 30000,
+                      "error": {
+                        "message": "Timeout 30000ms exceeded.\n=========================== logs ===========================\nwaiting for locator('button:has-text(\"Place order\")')\n  locator resolved to 0 elements\n  page.on('dialog') or dialogs opened by user actions"
+                      },
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 2,
+                      "startTime": "2026-08-03T09:31:04.000Z",
+                      "attachments": [],
+                      "steps": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "spec-checkout-purchase"
+            },
+            {
+              "title": "applies a promo code",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "project-chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "status": "passed",
+                      "duration": 934,
+                      "error": null,
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-03T09:30:03.000Z",
+                      "attachments": [],
+                      "steps": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "spec-promo"
+            },
+            {
+              "title": "shows an empty cart message",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "project-chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 421,
+                      "error": null,
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-03T09:30:04.000Z",
+                      "attachments": [],
+                      "steps": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "spec-empty-cart"
+            },
+            {
+              "title": "validates cart totals",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "project-mobile",
+                  "projectName": "mobile-chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "status": "passed",
+                      "duration": 1102,
+                      "error": null,
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-08-03T09:30:05.000Z",
+                      "attachments": [],
+                      "steps": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "spec-totals"
+            },
+            {
+              "title": "runs checkout on a phone viewport",
+              "ok": false,
+              "tags": ["@mobile"],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "project-mobile",
+                  "projectName": "mobile-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "spec-checkout-mobile"
+            }
+          ],
+          "suites": []
+        }
+      ]
+    }
+  ]
+}

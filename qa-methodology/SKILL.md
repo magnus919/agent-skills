@@ -33,6 +33,7 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 |---------|--------------|
 | Test strategy — what to test, at what level, with what priority | Root-cause debugging — route to [systematic-debugging](../systematic-debugging/SKILL.md) |
 | Test automation — framework selection, parallelism, flaky management | Security implementation and threat modeling — route to [secure-software-engineering](../secure-software-engineering/SKILL.md) |
+| E2E automation strategy and coverage decisions | Operating a browser test tool (Playwright) — authoring/running specs, selectors, network mocking, scraping — route to [playwright](../playwright/SKILL.md) |
 | Regression suites — selection, impact analysis, suite evolution | Spec pipeline mechanics and gate verdicts — route to [spec-driven-development](../spec-driven-development/SKILL.md) |
 | Quality gates — blocking vs advisory, metrics, DORA | Eval framework governance and statistics — route to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) |
 | Risk-based testing — P×I scoring, prioritization, registers | Verification verdicts against explicit criteria — route to [verification-methodology](../verification-methodology/SKILL.md) |
@@ -123,6 +124,7 @@ Route to the named sibling skill instead:
 - [release-engineering](../release-engineering/SKILL.md) — composing test evidence into release-candidate readiness, promotion, go/no-go, production rollout, and rollback decisions; QA owns test strategy and gate semantics
 - [systematic-debugging](../systematic-debugging/SKILL.md) — root-cause analysis of production incidents, bug reproduction, fault localization
 - [secure-software-engineering](../secure-software-engineering/SKILL.md) — security implementation, threat modeling, secure defaults, dependency evaluation
+- [playwright](../playwright/SKILL.md) — operating the Playwright tool itself: authoring and running E2E specs, selector robustness, network mocking, headless scraping, and headed debugging
 
 ## Stop and Exit Conditions
 

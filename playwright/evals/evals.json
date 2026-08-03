@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "playwright",
+  "evals": [
+    {
+      "id": "e2e-checkout-authoring",
+      "prompt": "Write a Playwright E2E test for the checkout flow: add an item to the cart, apply a promo code, and complete the purchase. The app runs at http://localhost:3000 via npm run dev. What should the spec look like and what config is needed so it runs reliably in CI too?",
+      "expected_output": "A spec structure that describes one user journey per test using test.describe and test.beforeEach, drives the flow with user-facing locators (getByRole for buttons like 'Checkout' and 'Place order', getByLabel for the promo input), and asserts with web-first assertions (toHaveText on the confirmation heading, toHaveURL on the order route) instead of waitForTimeout sleeps. The answer recommends a playwright.config.ts with testDir, baseURL, projects (desktop and mobile), webServer pointing at 'npm run dev' with a readiness URL and reuseExistingServer false on CI, retries on CI only, and trace on-first-retry, plus reporters including JSON so the run is triageable with pwrun report.",
+      "assertions": [
+        "The spec is structured as one user journey per test with describe/beforeEach",
+        "Interactions use role and label locators rather than brittle CSS",
+        "Assertions are web-first (toHaveText, toHaveURL) with no fixed sleeps",
+        "The config declares webServer, baseURL, projects, CI-only retries, and trace on-first-retry",
+        "The JSON reporter is included so CI failures can be triaged from the report"
+      ]
+    },
+    {
+      "id": "flaky-selector-repair",
+      "prompt": "Our checkout test is flaky: it passes locally but fails in CI about 30% of the time at page.getByText('Buy now').click(), complaining the locator resolved to 0 elements or sometimes to 2. How should I investigate and fix it?",
+      "expected_output": "A selector repair procedure: measure the flake deterministically by running the spec alone with --workers=1 --repeat-each=5, then use --debug or the trace to see what the locator actually resolved to. The answer explains that getByText('Buy now') is ambiguous (two elements, e.g. a button and a promo snippet) and late-rendering (0 elements because the product list loads after navigation). The fix is a role-based locator scoped to the product card — getByRole('button', { name: 'Buy now' }) inside a card filtered by product name — plus a web-first assertion on the card container before acting, and never adding waitForTimeout or first() as a band-aid. Verification is five consecutive green repeat-each runs and a green CI run.",
+      "assertions": [
+        "The flake is measured deterministically with --workers=1 --repeat-each before changing code",
+        "The cause is diagnosed as ambiguous text match plus late rendering",
+        "The fix uses a role-based locator scoped by product card, not first() or sleeps",
+        "A web-first assertion on the container precedes the action",
+        "Verification is repeated green runs and a green CI run"
+      ]
+    },
+    {
+      "id": "network-mock-payment-api",
+      "prompt": "Our E2E suite depends on a third-party payment tokenization API that is rate-limited and sometimes unavailable, making tests flaky. How do I make the payment flow tests hermetic while still testing the app's real behavior?",
+      "expected_output": "A network interception plan using page.route in test.beforeEach: fulfill the tokenization endpoint with a realistic JSON body and content type so the app receives a token as in production, register routes before navigation, and abort analytics/tracker traffic that pollutes tests. The answer warns never to mock the app's own server or the code under test, keeps the mock payloads schema-accurate, and shows asserting on the request the app actually sent via page.on('request') to verify the body. It notes that only third-party boundaries are mocked and that a controlled real-API variant is preferable for integration verification.",
+      "assertions": [
+        "page.route fulfills the third-party endpoint with a realistic body and content type before navigation",
+        "Analytics and tracker traffic is blocked so tests stay hermetic",
+        "The app's own server and the code under test are explicitly not mocked",
+        "The request the app sent is asserted via page.on('request')",
+        "A controlled real-API variant is offered as the integration verification option"
+      ]
+    },
+    {
+      "id": "scrape-product-catalog",
+      "prompt": "A documentation site renders its product catalog table only after JavaScript loads. Scrape the table (columns: name, version, license) into a structured file without breaking the site's rules.",
+      "expected_output": "A headless scraping plan following extract -> validate -> save: launch Chromium headless with an identifying user agent, load the page with wait_until networkidle, scope a locator to the repeating table rows and read cell texts into plain records, validate that every record has name/version/license before saving, and write one bounded JSON artifact with timestamp and source URL. The answer checks robots.txt and terms, adds a delay between pages, caps the scrape with MAX_RECORDS/MAX_PAGES, and refuses to extract personal data or persist auth storage. It routes Cloudflare challenge cases to flaresolverr instead of this skill.",
+      "assertions": [
+        "The page is loaded in a headless browser because the table is JavaScript-rendered",
+        "Extraction is scoped to the repeating rows and produces structured records, not HTML blobs",
+        "Records are validated for required fields before saving",
+        "Robots.txt, terms, rate limits, and bounded extraction are respected",
+        "Auth storage is never persisted and challenge pages route to flaresolverr"
+      ]
+    },
+    {
+      "id": "ci-failure-triage",
+      "prompt": "The CI run for the E2E suite failed. The only artifact is test-results/test-results.json from the Playwright JSON reporter. The console shows '3 expected, 2 unexpected'. What are the next steps to diagnose and fix?",
+      "expected_output": "A triage procedure that starts by summarizing the JSON report with the pwrun script (scripts/pwrun report --report test-results.json --json) to get the failing spec titles and the error message from the last retry without opening a browser, then opens the trace artifact for the failed tests to see the failing action, network, and console. The answer classifies the failure: environment (missing browser deps on the runner, webServer readiness), selector problem (referencing the selectors reference), or a real app regression. It prescribes fixing and re-running, and adding the trace-on-first-retry config plus artifact upload if the run lacked them, keeping evidence bounded by not dumping the full report.",
+      "assertions": [
+        "The JSON report is summarized with the pwrun report command before any other debugging",
+        "The trace artifact is opened to inspect the failing action, network, and console",
+        "The failure is classified as environment, selector, or app regression",
+        "Missing trace/artifact config is added if the run lacked them",
+        "Evidence stays bounded: summaries and targeted artifacts, not full dumps"
+      ]
+    },
+    {
+      "id": "frontend-test-implementation",
+      "prompt": "A React team is adding a new feature (filter + sortable product list) and wants tests that prevent regressions. They ask how to implement testing for it across levels, including browser-level coverage. What should the plan look like and when is Playwright the right tool?",
+      "expected_output": "A test implementation plan across the pyramid: component tests with Testing Library for state and rendering, then Playwright E2E specs for the user journeys that matter (sorting, filtering, empty state) as the browser-level layer, keeping the component-to-E2E split based on what each level proves. The answer routes the frontend implementation guidance to frontend-engineering and notes this skill owns writing and running the Playwright specs: role-based locators, web-first assertions, mocking the products API at the route boundary, parallel workers for speed, and CI wiring with webServer, retries, and the JSON reporter for triage. It flags not to E2E-test everything — component tests cover most logic, E2E covers the journeys.",
+      "assertions": [
+        "The plan spans component tests (Testing Library) and Playwright E2E for user journeys",
+        "The split is justified by what each level proves, not by convention",
+        "Playwright specs use role-based locators, web-first assertions, and route-level API mocking",
+        "CI wiring (webServer, retries, JSON reporter) is included",
+        "Component-versus-E2E routing guidance points to frontend-engineering for design and this skill for browser execution"
+      ]
+    }
+  ]
+}

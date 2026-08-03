@@ -26,6 +26,7 @@ Frontend engineering is the craft of building the user-facing layer of applicati
 | Responsive design implementation — layout systems, breakpoints, cross-device testing | Visual identity and brand guidelines — that's the brand-designer |
 | Client-side performance — bundle optimization, lazy loading, Core Web Vitals, render optimization | Editorial content and copy — owned by the content and marketing team, outside this skill's scope |
 | Frontend testing — component tests, integration tests, visual regression, accessibility tests | Code review and quality gates — that's the qa-methodology |
+| E2E test scenarios and user-flow coverage for frontend features | Operating the browser test tool (Playwright) — authoring/running specs, selectors, network mocking, scraping — route to [playwright](../playwright/SKILL.md) |
 | Build tooling — bundler config, TypeScript config, linting, formatting, dev environment | CI/CD pipeline infrastructure — that's the platform-engineer |
 
 ## Reference Files
