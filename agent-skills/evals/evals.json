@@ -17,11 +17,11 @@
     {
       "id": "skill-review-compliance",
       "prompt": "I need to review a skill in our repository before merging it. The skill has a SKILL.md, a README.md, and a scripts folder, but I am not sure it is format-compliant. What checklist should I run, and what are the most common compliance failures?",
-      "expected_output": "A review checklist covering the format requirements: name matches the directory, description is 1-1024 characters starting with an imperative verb and defining a negative boundary, body under 500 lines, valid frontmatter with only allowed fields, README.md present with the required human-facing sections, file references resolve to real relative paths, and for new skills an eval manifest with at least five cases using the canonical assertions field. The response lists the most common failures: descriptions that do not start with an imperative verb, missing negative boundaries, frontmatter fields beyond the allowed set, stale or broken relative links, references to skills that do not exist in the catalog, and evals that alias expectations instead of using assertions. It prescribes running the repository's validation scripts to catch what the checklist misses.",
+      "expected_output": "A review checklist covering the format requirements: name matches the directory, description is 1-1024 characters starting with an imperative verb and defining a negative boundary, body under 500 lines, valid frontmatter with only allowed fields, README.md present with the required human-facing sections, file references resolve to real relative paths, and for new skills an eval manifest with at least five cases using the canonical assertions field. The response lists the most common failures: descriptions that do not start with an imperative verb, missing negative boundaries, frontmatter fields beyond the allowed set, stale or broken relative links, references to skills that do not exist in the catalog, and evals that use a non-canonical alias instead of the canonical assertions field. It prescribes running the repository's validation scripts to catch what the checklist misses.",
       "assertions": [
         "The checklist covers frontmatter, description rules, body limits, README sections, references, and evals",
         "Common failures are enumerated: non-imperative descriptions, missing negative boundaries, bad links, dead routing",
-        "The canonical assertions field versus the expectations alias is called out",
+        "The canonical assertions field versus the non-canonical alias is called out",
         "The review verifies relative references resolve",
         "Running the repository validators is prescribed as the final check"
       ]
@@ -41,11 +41,11 @@
     {
       "id": "evals-manifest-authoring",
       "prompt": "I am adding an eval manifest to an existing skill that has no evals. What must the manifest contain to pass the repository's v1 validation, and what makes the cases actually useful for judging output quality?",
-      "expected_output": "An eval manifest written to the v1 contract: schema_version 1, skill_name matching the skill directory, and an evals array of at least five cases, each with a stable lowercase-hyphenated id, a realistic prompt, an expected_output describing the correct behavior, and a list of assertions that are observable claims about the output, using the canonical assertions field and never the expectations alias. The response explains what makes cases useful: prompts that reflect real activation scenarios for the skill, assertions that are specific enough to fail meaningfully rather than vague quality platitudes, stable IDs that durable evidence references can rely on, and coverage across the skill's main behaviors. It also notes the trigger-only probes belong in a separate harness-specific test set, not in evals.json.",
+      "expected_output": "An eval manifest written to the v1 contract: schema_version 1, skill_name matching the skill directory, and an evals array of at least five cases, each with a stable lowercase-hyphenated id, a realistic prompt, an expected_output describing the correct behavior, and a list of assertions that are observable claims about the output, using the canonical assertions field and never a non-canonical alias. The response explains what makes cases useful: prompts that reflect real activation scenarios for the skill, assertions that are specific enough to fail meaningfully rather than vague quality platitudes, stable IDs that durable evidence references can rely on, and coverage across the skill's main behaviors. It also notes the trigger-only probes belong in a separate harness-specific test set, not in evals.json.",
       "assertions": [
         "The manifest uses schema_version 1, matching skill_name, and at least five cases",
         "Each case has a stable id, realistic prompt, expected_output, and observable assertions",
-        "The assertions field is canonical and the expectations alias is never used",
+        "The assertions field is canonical and non-canonical aliases are never used",
         "Cases reflect real activation scenarios and are specific enough to fail meaningfully",
         "Trigger-only probes are excluded from evals.json as harness-specific"
       ]
