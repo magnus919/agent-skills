@@ -119,6 +119,8 @@ Analyze propaganda, spin, selective framing, deceptive marketing, and AI-generat
 ### [docker-compose](docker-compose/SKILL.md)
 Define, run, debug, and harden multi-container applications with Docker Compose. Covers the Compose Specification, lifecycle and healthchecks, service networking, volumes, secrets, profiles, interpolation, overrides, Compose Watch, CI, production patterns, and troubleshooting. Ships 9 references, 5 templates, and a portable diagnostics script.
 
+### [documents](documents/SKILL.md)
+Generate, inspect, validate, and fix PDF, Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) documents through one shared workflow (scope, content model, template, render, validate, deliver) with per-format references, generation templates, and a stdlib validation script that performs structural sanity plus a render check with graceful degradation when no renderer is installed.
 ### [dspy](dspy/SKILL.md)
 
 An expert-level skill for **programmatic prompt optimization** with Stanford's DSPy framework. You write Python programs with typed signatures; DSPy optimizes the prompts automatically. This is the framework for prompt engineering that doesn't feel like engineering.

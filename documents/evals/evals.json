@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "documents",
+  "evals": [
+    {
+      "id": "pdf-report-generation",
+      "prompt": "Generate a one-page PDF report from this markdown: '# Q3 Revenue Summary', '## Highlights', '- Revenue grew 12% quarter over quarter', '- Two new enterprise customers closed', '## Outlook', 'Flat growth expected in Q4 due to seasonality.' The report needs a title, a highlights section, and an outlook section, and it must open reliably in any PDF reader.",
+      "expected_output": "A PDF file (report.pdf) produced from the markdown content model through the shared workflow: scope, content model, template, render, validate, deliver. The artifact starts with a %PDF- header, contains page objects, and ends with the %%EOF trailer, so it opens in any reader. Text remains selectable (a real text stream, not a rasterized image). Before delivery the agent runs scripts/validate-documents.py --render-check --json report.pdf, confirms exit 0 with status ok (or render check unavailable when no renderer is installed), and records the validation result with the artifact.",
+      "assertions": [
+        "The output is a real PDF artifact with a %PDF- header, page objects, and %%EOF trailer",
+        "The content model (title, highlights, outlook) maps one-to-one onto the rendered document",
+        "The text is selectable rather than rasterized",
+        "The validation script is run and its result (ok, or unavailable render check) is reported with the artifact",
+        "Delivery records the content source and template used so the report can be regenerated"
+      ]
+    },
+    {
+      "id": "word-memo-generation",
+      "prompt": "Turn these meeting notes into a Word (.docx) memo with a title, two sections with real heading styles, and a short paragraph in each: Title: 'Product Sync 2026-07-14'. Section 'Decisions' with 'The team adopted the quarterly roadmap and moved the mobile launch to September.' Section 'Action items' with 'Anika to draft the pricing page copy by Friday. Dev to wire the new payment provider by end of month.'",
+      "expected_output": "A .docx file (memo.docx) that is a valid OOXML package: ZIP container with [Content_Types].xml and word/document.xml, and the XML well-formed. Headings use heading styles (w:pStyle referencing a style), not manually bolded runs, so the navigation pane and TOC work. Body text lives in w:t runs. The agent runs scripts/validate-documents.py --json memo.docx, confirms exit 0 and status ok, and reports the structure check before delivering.",
+      "assertions": [
+        "The memo is a .docx OOXML package with [Content_Types].xml and word/document.xml present",
+        "Headings use heading styles so the document is navigable, not ad-hoc formatting",
+        "Body text is stored in w:t runs",
+        "The validation script exits 0 with status ok on the produced file",
+        "The delivery notes the styles used and confirms no placeholder text remains"
+      ]
+    },
+    {
+      "id": "excel-sheet-generation",
+      "prompt": "Build an Excel (.xlsx) workbook from this CSV: Quarter,Revenue\\nQ1,100\\nQ2,150\\nQ3,120. Add a header row, a Total row that sums the Revenue column, and number formatting for the revenue cells. Save as revenue.xlsx.",
+      "expected_output": "An .xlsx workbook (revenue.xlsx) with xl/workbook.xml and at least one xl/worksheets/sheet1.xml part, well-formed XML inside a valid ZIP container. The header row holds Quarter and Revenue labels, the three data rows hold the CSV values as real cell values, and the Total row uses a formula (SUM) that also carries a cached value so viewers that do not recalculate still show 370. Revenue cells use a number format. The agent validates with scripts/validate-documents.py --json revenue.xlsx (exit 0, status ok) and spot-checks a cell value against the source CSV before delivery.",
+      "assertions": [
+        "The workbook is a valid ZIP container with xl/workbook.xml and worksheet parts",
+        "The header row, data rows, and Total row are real cells with the CSV values",
+        "The Total row uses a SUM formula with a cached result (370)",
+        "Revenue cells carry an explicit number format",
+        "The validation script exits 0 with status ok and a cell value is spot-checked against the source"
+      ]
+    },
+    {
+      "id": "powerpoint-deck-generation",
+      "prompt": "Create a 3-slide PowerPoint (.pptx) deck from this outline: Slide 1 title 'Q3 Review', subtitle 'Finance team'. Slide 2 'Revenue' with bullets 'Up 12% QoQ', 'Two new logos'. Slide 3 'Next quarter' with bullets 'Flat growth expected', 'Focus on retention'. Add speaker notes to each content slide and save as q3-review.pptx.",
+      "expected_output": "A .pptx deck (q3-review.pptx) with ppt/presentation.xml and three ppt/slides/slideN.xml parts inside a valid ZIP container, all XML well-formed. Every slide ID in the presentation's sldIdLst resolves through presentation.xml.rels to a real slide part, so the deck opens without repair prompts. Slide titles and bullets are text in a:p/a:r/a:t elements within each slide's shape tree, and speaker notes exist for the content slides. The agent validates with scripts/validate-documents.py --json q3-review.pptx (exit 0, status ok) and confirms the slide count matches the outline.",
+      "assertions": [
+        "The deck is a valid ZIP container with ppt/presentation.xml and three slide parts",
+        "Every slide ID in sldIdLst resolves to a real slide part through the relationships file",
+        "Titles and bullets are present as slide text elements and match the outline",
+        "Speaker notes are included for the content slides",
+        "The validation script exits 0 with status ok and the slide count matches the outline"
+      ]
+    },
+    {
+      "id": "multi-format-validation-gate",
+      "prompt": "A colleague generated four files for a client delivery: report.pdf, brief.docx, data.xlsx, and deck.pptx. Before sending them out, verify every file is structurally sound and will render, and explain what the validation result means including what happens when no renderer is installed on the machine.",
+      "expected_output": "A validation pass over all four formats using scripts/validate-documents.py --render-check --json with the four files: report.pdf, brief.docx, data.xlsx, deck.pptx. The agent interprets the JSON report: status ok means every file passed structural checks (PDF header/EOF/page objects; OOXML ZIP container, content types, required parts, XML well-formedness); per-file render results are ok when a renderer produced output, and unavailable when no renderer is installed for that format, which is reported honestly rather than treated as a defect. Any file that fails structure or rendering is flagged with its failed checks and the agent fixes or rebuilds it before delivery. The explanation notes exit codes 0 (pass or render unavailable), 1 (failure), 2 (usage error).",
+      "assertions": [
+        "All four files (pdf, docx, xlsx, pptx) are validated in one pass with the shared script",
+        "The report distinguishes structural status (ok/fail) from render status (ok/unavailable)",
+        "A missing renderer is reported as unavailable, not as a document failure",
+        "Failed checks are identified per file and the artifact is fixed or rebuilt before delivery",
+        "Exit codes are explained: 0 pass, 1 failure, 2 usage error"
+      ]
+    },
+    {
+      "id": "docx-text-extraction",
+      "prompt": "A teammate has a .docx file with a draft policy and wants the full text pulled out as clean plain text, plus a check that the document structure (headings and paragraphs) is intact. Extract the text and report on the document's structural health.",
+      "expected_output": "An extraction pass over the .docx that reads word/document.xml, pulls w:t text in document order (headings and paragraphs preserved in reading order), and returns clean plain text. The same pass validates the document structurally with scripts/validate-documents.py: the ZIP container is a real archive, [Content_Types].xml is present, word/document.xml is well-formed XML, and heading styles are present so the outline is intact. The report states the text extraction result and the structural health verdict (ok, or the specific failed checks if the file is corrupt).",
+      "assertions": [
+        "Text is extracted from word/document.xml in document order",
+        "Headings and paragraphs are preserved in the extracted plain text",
+        "The structural validation runs and reports the ZIP, content-types, and document.xml checks",
+        "The report separates extraction success from structural health",
+        "Corrupt files are diagnosed with their specific failed checks rather than a generic error"
+      ]
+    }
+  ]
+}

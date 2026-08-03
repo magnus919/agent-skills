@@ -52,6 +52,7 @@
     "./data-scientist",
     "./de-spin",
     "./docker-compose",
+    "./documents",
     "./dspy",
     "./epub",
     "./esp32-development",
