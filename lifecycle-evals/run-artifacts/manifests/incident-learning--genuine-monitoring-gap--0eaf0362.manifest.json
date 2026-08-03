@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "0eaf0362-f3ac-491f-96e2-49f2fc699449",
+  "candidate": {
+    "skill_name": "incident-learning",
+    "skill_path": "incident-learning",
+    "tree_hash": "1a0e93248f8b65c9"
+  },
+  "case": {
+    "case_id": "genuine-monitoring-gap",
+    "prompt_hash": "acfbce2efdfbf300",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.585687+00:00",
+  "finished_at": "2026-08-03T00:03:34.585710+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'genuine-monitoring-gap': Our API gateway experienced a 22-minute outage yesterday. Users reported it \u2014 we",
+    "activation_evidence": "skill loaded from incident-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 9
+  },
+  "duration_ms": 0.009707990102469921,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

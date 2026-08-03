@@ -1,0 +1,728 @@
+{
+  "schema_version": 1,
+  "generated_by": "lifecycle-evals/scripts/validate-corpus-coverage.py",
+  "behavioral_categories": [
+    "ambiguity",
+    "conflicting-evidence",
+    "unsafe-authority",
+    "failure",
+    "stop-retire"
+  ],
+  "integrated_scenarios": [
+    "product-launch",
+    "failed-experiment",
+    "migration-reconciliation-failure",
+    "blocked-readiness-review",
+    "agent-tool-failure",
+    "privacy-boundary-escalation"
+  ],
+  "manifests": [
+    {
+      "skill": "agent-production-operations",
+      "manifest": "bundles/agent-production-operations/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "cost-budget-breach-disablement",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "human-escalation-authority-breach",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "incident-learning-driven-disablement",
+          "behavioral_categories": [
+            "stop-retire"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "integrated-privacy-boundary-escalation",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": [
+            "privacy-boundary-escalation"
+          ]
+        },
+        {
+          "case_id": "model-regression-detection-and-fallback",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "read-only-agent-production-contract",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "tool-outage-degraded-authority",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": [
+            "agent-tool-failure"
+          ]
+        },
+        {
+          "case_id": "tool-using-agent-authority-contract",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "product-lifecycle",
+      "manifest": "bundles/product-lifecycle/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "ambiguous-stakeholder-request",
+          "behavioral_categories": [
+            "ambiguity"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "cross-phase-evidence-handoff",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "failed-experiment-stop-path",
+          "behavioral_categories": [
+            "failure",
+            "stop-retire"
+          ],
+          "integrated_scenarios": [
+            "failed-experiment"
+          ]
+        },
+        {
+          "case_id": "justified-retirement-decision",
+          "behavioral_categories": [
+            "stop-retire"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "new-product-complete-lifecycle",
+          "behavioral_categories": [],
+          "integrated_scenarios": [
+            "product-launch"
+          ]
+        },
+        {
+          "case_id": "non-adoption-outcome",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "production-excellence",
+      "manifest": "bundles/production-excellence/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "blocked-launch-untested-rollback",
+          "behavioral_categories": [
+            "failure",
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": [
+            "blocked-readiness-review"
+          ]
+        },
+        {
+          "case_id": "cost-slo-conflict",
+          "behavioral_categories": [
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "data-migration-routes-to-migration-engineering",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "dependency-outage-routes-to-resilience",
+          "behavioral_categories": [
+            "conflicting-evidence",
+            "failure"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "integrated-migration-reconciliation-failure",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": [
+            "migration-reconciliation-failure"
+          ]
+        },
+        {
+          "case_id": "normal-release-safe-launch",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "capacity-and-cost-engineering",
+      "manifest": "capacity-and-cost-engineering/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "growth-forecast",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "misleading-unit-cost",
+          "behavioral_categories": [
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "peak-event",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "quota-decision",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "slo-cost-conflict",
+          "behavioral_categories": [
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "conditional-customer-success",
+      "manifest": "conditional-customer-success/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "b2b-subscription-success-plan-and-health",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "conflicting-health-evidence-decision-path",
+          "behavioral_categories": [
+            "ambiguity",
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "internal-tool-customer-success-decline",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "public-service-accessibility-cs-routing",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "renewal-risk-with-mixed-signals",
+          "behavioral_categories": [
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "implementation-planning",
+      "manifest": "implementation-planning/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "ambiguous-conflicting-requirements",
+          "behavioral_categories": [
+            "ambiguity",
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "cross-repository-dependencies",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "data-migration-with-rollback",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "multi-team-ownership-conflict",
+          "behavioral_categories": [
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "reject-unapproved-prerequisite",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "risky-rollout-with-observability",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "incident-learning",
+      "manifest": "incident-learning/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "agent-authority-failure",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "genuine-monitoring-gap",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "noisy-incident-report-evidence-separation",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "non-actionable-follow-up-rejection",
+          "behavioral_categories": [
+            "stop-retire"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "process-failure-incident",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "migration-engineering",
+      "manifest": "migration-engineering/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "additive-schema-change",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "api-version-migration",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "backfill-with-reconciliation",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "irreversible-cutover",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "reconciliation-failure",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "privacy-engineering",
+      "manifest": "privacy-engineering/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "agent-traces-privacy",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "analytics-telemetry-privacy",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "deletion-revocation-verification",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "jurisdiction-escalation-legal-review",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "multi-tenant-data-isolation",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "residency-constraint-engineering",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "product-adoption",
+      "manifest": "product-adoption/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "anti-trigger-acquisition-campaign",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "anti-trigger-analytics-instrumentation",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "enterprise-rollout-cohort-gates",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "internal-tool-adoption-diagnostic",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "low-feature-discovery-diagnostic",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "pause-expansion-on-cohort-evidence",
+          "behavioral_categories": [
+            "stop-retire"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "public-service-accessibility-adoption",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "product-analytics-and-measurement",
+      "manifest": "product-analytics-and-measurement/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "conflicting-metrics-resolution",
+          "behavioral_categories": [
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "internal-product-metrics",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "new-feature-metrics",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "privacy-boundary-measurement",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "public-service-measurement",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "unmeasurable-north-star-rejection",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "product-experimentation",
+      "manifest": "product-experimentation/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "feature-flag-rollout-with-guardrails",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "guardrail-omission-withholds-ship",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "prototype-test-method-selection",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "significant-but-no-ship-boundary",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "underpowered-experiment-rejection",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "product-lifecycle-learning",
+      "manifest": "product-lifecycle-learning/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "ambiguous-mixed-results-with-confounds",
+          "behavioral_categories": [
+            "ambiguity",
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "anti-pattern-arbitrary-threshold-rejection",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "anti-pattern-incident-postmortem-routing",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "feature-that-should-be-retired",
+          "behavioral_categories": [
+            "stop-retire"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "feature-with-clear-non-adoption",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "retirement-requiring-migration-and-customer-communication",
+          "behavioral_categories": [
+            "stop-retire"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "successful-feature-outcomes-exceed-expectations",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "product-operations-and-governance",
+      "manifest": "product-operations-and-governance/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "adversarial-universal-org-chart",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "contested-roadmap-decision",
+          "behavioral_categories": [
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "escalation-missing-evidence",
+          "behavioral_categories": [
+            "failure",
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "exception-request-launch-evidence",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "high-assurance-medical-device",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "lightweight-startup-operating-model",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "product-roadmapping-and-portfolio",
+      "manifest": "product-roadmapping-and-portfolio/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "capacity-shortfall",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "competing-strategic-bets",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "dependency-invalidates-date",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "low-confidence-opportunity",
+          "behavioral_categories": [
+            "ambiguity"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "stop-bet-with-evidence",
+          "behavioral_categories": [
+            "stop-retire"
+          ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "production-readiness",
+      "manifest": "production-readiness/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "exception-requiring-human-approval",
+          "behavioral_categories": [
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "low-risk-documentation-release",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "migration-dependent-release",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "missing-owner-evidence-blocked",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "user-facing-service-launch",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "resilience-and-recovery",
+      "manifest": "resilience-and-recovery/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "degraded-but-available-path",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "dependency-outage-degradation-choice",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "recovery-exercise-unowned-gap",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "regional-failure-dr-failover",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "restore-test-with-data-integrity",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        }
+      ]
+    }
+  ]
+}

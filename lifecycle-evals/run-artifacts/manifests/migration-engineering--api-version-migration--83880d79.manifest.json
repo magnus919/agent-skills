@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "83880d79-6a50-4a84-a273-d390e4f94abe",
+  "candidate": {
+    "skill_name": "migration-engineering",
+    "skill_path": "migration-engineering",
+    "tree_hash": "bf70383b462904cb"
+  },
+  "case": {
+    "case_id": "api-version-migration",
+    "prompt_hash": "2d12d30b94be35bb",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.242594+00:00",
+  "finished_at": "2026-08-03T00:03:34.242615+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'api-version-migration': Plan a migration to move consumers from a REST v1 API to a GraphQL v2 API for an",
+    "activation_evidence": "skill loaded from migration-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.007542024832218885,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

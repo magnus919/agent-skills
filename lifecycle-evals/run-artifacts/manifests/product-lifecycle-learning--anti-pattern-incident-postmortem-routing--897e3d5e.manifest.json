@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "897e3d5e-3b91-4599-9a21-4ac60d8f64f7",
+  "candidate": {
+    "skill_name": "product-lifecycle-learning",
+    "skill_path": "product-lifecycle-learning",
+    "tree_hash": "9d51ca4b4916224a"
+  },
+  "case": {
+    "case_id": "anti-pattern-incident-postmortem-routing",
+    "prompt_hash": "703b9c311d534624",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.039621+00:00",
+  "finished_at": "2026-08-03T00:03:34.039642+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'anti-pattern-incident-postmortem-routing': Our payment service had a 4-hour outage last week that affected 12,000 transacti",
+    "activation_evidence": "skill loaded from product-lifecycle-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 5
+  },
+  "duration_ms": 0.007666007149964571,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

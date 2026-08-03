@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "0d677c45-e2eb-4d31-bb76-d22d62bcef98",
+  "candidate": {
+    "skill_name": "resilience-and-recovery",
+    "skill_path": "resilience-and-recovery",
+    "tree_hash": "755bd94d2a1d205d"
+  },
+  "case": {
+    "case_id": "degraded-but-available-path",
+    "prompt_hash": "8cdf562d7eb2bc8a",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.382334+00:00",
+  "finished_at": "2026-08-03T00:03:34.382354+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'degraded-but-available-path': Our customer-facing dashboard aggregates data from 5 microservices: user profile",
+    "activation_evidence": "skill loaded from resilience-and-recovery/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.008624978363513947,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

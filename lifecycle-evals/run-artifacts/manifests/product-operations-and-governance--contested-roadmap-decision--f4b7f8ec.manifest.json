@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "f4b7f8ec-b427-423d-8700-28d406940d31",
+  "candidate": {
+    "skill_name": "product-operations-and-governance",
+    "skill_path": "product-operations-and-governance",
+    "tree_hash": "7b7250f1bab75c9f"
+  },
+  "case": {
+    "case_id": "contested-roadmap-decision",
+    "prompt_hash": "2ccd7a5db74ac66f",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.857279+00:00",
+  "finished_at": "2026-08-03T00:03:33.857301+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'contested-roadmap-decision': A product team is deadlocked on whether to commit 'Real-Time Dashboard' to the N",
+    "activation_evidence": "skill loaded from product-operations-and-governance/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.006999995093792677,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

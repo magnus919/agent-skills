@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "08870dbe-81fb-4a36-96d1-76b04b0d5cf9",
+  "candidate": {
+    "skill_name": "product-experimentation",
+    "skill_path": "product-experimentation",
+    "tree_hash": "0d2736d80e41a86a"
+  },
+  "case": {
+    "case_id": "prototype-test-method-selection",
+    "prompt_hash": "27ce93cecb8e70d1",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.453133+00:00",
+  "finished_at": "2026-08-03T00:03:33.453283+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'prototype-test-method-selection': We are considering building a new feature that lets users collaborate on documen",
+    "activation_evidence": "skill loaded from product-experimentation/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.011917029041796923,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

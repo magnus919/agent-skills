@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "1cc9b7bd-f5ef-4745-bd79-5eb9fb913fe6",
+  "candidate": {
+    "skill_name": "incident-learning",
+    "skill_path": "incident-learning",
+    "tree_hash": "1a0e93248f8b65c9"
+  },
+  "case": {
+    "case_id": "noisy-incident-report-evidence-separation",
+    "prompt_hash": "b722443b6247d806",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.572572+00:00",
+  "finished_at": "2026-08-03T00:03:34.572794+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'noisy-incident-report-evidence-separation': Our payment service had an outage yesterday from 14:00 to 14:45 UTC. Here's what",
+    "activation_evidence": "skill loaded from incident-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 10
+  },
+  "duration_ms": 0.01733301905915141,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

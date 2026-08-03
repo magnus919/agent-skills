@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "23c6390b-fc53-4a76-9be3-9378cbbca3dc",
+  "candidate": {
+    "skill_name": "production-excellence",
+    "skill_path": "production-excellence",
+    "tree_hash": "b86016bfbbba6919"
+  },
+  "case": {
+    "case_id": "cost-slo-conflict",
+    "prompt_hash": "7c1f22ed44329d9e",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:35.015785+00:00",
+  "finished_at": "2026-08-03T00:03:35.015803+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'cost-slo-conflict': We are scaling our data-processing pipeline to handle 10x daily volume. The capa",
+    "activation_evidence": "skill loaded from production-excellence/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.0071249669417738914,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

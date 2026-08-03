@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "5b5d4773-f12b-40a6-8efc-df459f3b7323",
+  "candidate": {
+    "skill_name": "product-lifecycle-learning",
+    "skill_path": "product-lifecycle-learning",
+    "tree_hash": "9d51ca4b4916224a"
+  },
+  "case": {
+    "case_id": "ambiguous-mixed-results-with-confounds",
+    "prompt_hash": "503f8f89bcda4778",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.986855+00:00",
+  "finished_at": "2026-08-03T00:03:33.986875+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'ambiguous-mixed-results-with-confounds': We launched a redesigned onboarding flow 90 days ago. Expected outcomes: increas",
+    "activation_evidence": "skill loaded from product-lifecycle-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.007874972652643919,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

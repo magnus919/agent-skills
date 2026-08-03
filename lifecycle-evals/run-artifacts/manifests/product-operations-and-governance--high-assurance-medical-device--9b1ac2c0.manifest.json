@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "9b1ac2c0-5aec-4e95-bfac-7741ce77abee",
+  "candidate": {
+    "skill_name": "product-operations-and-governance",
+    "skill_path": "product-operations-and-governance",
+    "tree_hash": "7b7250f1bab75c9f"
+  },
+  "case": {
+    "case_id": "high-assurance-medical-device",
+    "prompt_hash": "ba75c35a13b4d348",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.843611+00:00",
+  "finished_at": "2026-08-03T00:03:33.843632+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'high-assurance-medical-device': Design a product operating model for a 35-person team building a Class II medica",
+    "activation_evidence": "skill loaded from product-operations-and-governance/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.0077500008046627045,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

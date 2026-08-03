@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "a6a1497f-6d17-485f-a424-96b1385ed365",
+  "candidate": {
+    "skill_name": "product-experimentation",
+    "skill_path": "product-experimentation",
+    "tree_hash": "0d2736d80e41a86a"
+  },
+  "case": {
+    "case_id": "underpowered-experiment-rejection",
+    "prompt_hash": "c5f0c5567fdd8cc2",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.480865+00:00",
+  "finished_at": "2026-08-03T00:03:33.480886+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'underpowered-experiment-rejection': Our SaaS product has 200 total users and we want to A/B test a new onboarding fl",
+    "activation_evidence": "skill loaded from product-experimentation/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.009125040378421545,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

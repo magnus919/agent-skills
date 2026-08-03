@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "6792e04a-810c-4ba0-8195-f0dacf13cfb4",
+  "candidate": {
+    "skill_name": "agent-production-operations",
+    "skill_path": "agent-production-operations",
+    "tree_hash": "b86016bfbbba6919"
+  },
+  "case": {
+    "case_id": "read-only-agent-production-contract",
+    "prompt_hash": "97a383921cede5b8",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:35.077979+00:00",
+  "finished_at": "2026-08-03T00:03:35.078126+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'read-only-agent-production-contract': Define a production contract for an internal read-only search agent that answers",
+    "activation_evidence": "skill loaded from agent-production-operations/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 11
+  },
+  "duration_ms": 0.008624978363513947,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

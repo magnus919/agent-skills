@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "2bd23c36-9d08-4ef5-95c1-a7802d13ff82",
+  "candidate": {
+    "skill_name": "privacy-engineering",
+    "skill_path": "privacy-engineering",
+    "tree_hash": "c348463b697ce394"
+  },
+  "case": {
+    "case_id": "residency-constraint-engineering",
+    "prompt_hash": "1593a864be8f77c6",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.742809+00:00",
+  "finished_at": "2026-08-03T00:03:34.742830+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'residency-constraint-engineering': Our application serves users in the EU and the US. We store user data in AWS us-",
+    "activation_evidence": "skill loaded from privacy-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.008917006198316813,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

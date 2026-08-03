@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "cc5be10f-1e2b-4eec-be70-88ad63cc268d",
+  "candidate": {
+    "skill_name": "implementation-planning",
+    "skill_path": "implementation-planning",
+    "tree_hash": "33603566b9f3a28b"
+  },
+  "case": {
+    "case_id": "ambiguous-conflicting-requirements",
+    "prompt_hash": "161cde9ca90f95bb",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.060836+00:00",
+  "finished_at": "2026-08-03T00:03:33.061136+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'ambiguous-conflicting-requirements': Approved spec for 'Unified Search' states: 'Search must return results in under ",
+    "activation_evidence": "skill loaded from implementation-planning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.008375034667551517,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

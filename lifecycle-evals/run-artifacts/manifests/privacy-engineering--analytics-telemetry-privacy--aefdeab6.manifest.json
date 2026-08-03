@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "aefdeab6-5db4-44c0-9f88-6072d485d74e",
+  "candidate": {
+    "skill_name": "privacy-engineering",
+    "skill_path": "privacy-engineering",
+    "tree_hash": "c348463b697ce394"
+  },
+  "case": {
+    "case_id": "analytics-telemetry-privacy",
+    "prompt_hash": "43e6454072ce1656",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.688180+00:00",
+  "finished_at": "2026-08-03T00:03:34.688351+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'analytics-telemetry-privacy': We are adding product analytics to our consumer finance app. We want to track fe",
+    "activation_evidence": "skill loaded from privacy-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.011500029359012842,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

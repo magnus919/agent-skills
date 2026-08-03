@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "25c282b4-920f-4f18-8100-ae5916f65de0",
+  "candidate": {
+    "skill_name": "product-experimentation",
+    "skill_path": "product-experimentation",
+    "tree_hash": "0d2736d80e41a86a"
+  },
+  "case": {
+    "case_id": "guardrail-omission-withholds-ship",
+    "prompt_hash": "7d4fa48c6fdad5cc",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.495239+00:00",
+  "finished_at": "2026-08-03T00:03:33.495259+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'guardrail-omission-withholds-ship': Our team ran an experiment on a new recommendation algorithm. The primary metric",
+    "activation_evidence": "skill loaded from product-experimentation/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.007292022928595543,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

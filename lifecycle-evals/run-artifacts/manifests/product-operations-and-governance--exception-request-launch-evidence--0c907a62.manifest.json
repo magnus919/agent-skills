@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "0c907a62-b285-4cd2-896c-a1d83be55d04",
+  "candidate": {
+    "skill_name": "product-operations-and-governance",
+    "skill_path": "product-operations-and-governance",
+    "tree_hash": "7b7250f1bab75c9f"
+  },
+  "case": {
+    "case_id": "exception-request-launch-evidence",
+    "prompt_hash": "95a0555e9420ecc1",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.870640+00:00",
+  "finished_at": "2026-08-03T00:03:33.870662+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'exception-request-launch-evidence': A high-assurance product (financial compliance) has a launch review scheduled. T",
+    "activation_evidence": "skill loaded from product-operations-and-governance/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.006792019121348858,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "ef63fc4e-f14a-4375-a4a8-fa706a421aa2",
+  "candidate": {
+    "skill_name": "capacity-and-cost-engineering",
+    "skill_path": "capacity-and-cost-engineering",
+    "tree_hash": "0fad0f317ad12846"
+  },
+  "case": {
+    "case_id": "misleading-unit-cost",
+    "prompt_hash": "c0513c98e9dfa44b",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.513029+00:00",
+  "finished_at": "2026-08-03T00:03:34.513051+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'misleading-unit-cost': Our team calculated unit cost for our video-transcoding service as: total monthl",
+    "activation_evidence": "skill loaded from capacity-and-cost-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.007709022611379623,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

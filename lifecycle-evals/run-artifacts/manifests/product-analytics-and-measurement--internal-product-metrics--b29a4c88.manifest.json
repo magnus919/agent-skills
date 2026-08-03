@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "b29a4c88-cb4a-4c76-b950-c6bc54e6e778",
+  "candidate": {
+    "skill_name": "product-analytics-and-measurement",
+    "skill_path": "product-analytics-and-measurement",
+    "tree_hash": "954585de83c5e8ed"
+  },
+  "case": {
+    "case_id": "internal-product-metrics",
+    "prompt_hash": "32bcaaed1ce05748",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.217072+00:00",
+  "finished_at": "2026-08-03T00:03:33.217095+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'internal-product-metrics': Our internal developer platform team wants to measure whether the platform is ac",
+    "activation_evidence": "skill loaded from product-analytics-and-measurement/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.009500014130026102,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

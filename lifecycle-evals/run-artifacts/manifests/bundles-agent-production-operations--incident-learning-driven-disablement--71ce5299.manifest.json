@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "71ce5299-ecb6-407b-bd4c-da3fb46846e7",
+  "candidate": {
+    "skill_name": "agent-production-operations",
+    "skill_path": "agent-production-operations",
+    "tree_hash": "b86016bfbbba6919"
+  },
+  "case": {
+    "case_id": "incident-learning-driven-disablement",
+    "prompt_hash": "77ecd881787800cd",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:35.172715+00:00",
+  "finished_at": "2026-08-03T00:03:35.172745+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'incident-learning-driven-disablement': A side-effect-capable internal CI agent has been operating in Stage 4 for 14 day",
+    "activation_evidence": "skill loaded from agent-production-operations/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 9
+  },
+  "duration_ms": 0.01333298860117793,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

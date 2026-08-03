@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "75379ce0-3ae8-4354-8e64-2d1a079a84f6",
+  "candidate": {
+    "skill_name": "incident-learning",
+    "skill_path": "incident-learning",
+    "tree_hash": "1a0e93248f8b65c9"
+  },
+  "case": {
+    "case_id": "non-actionable-follow-up-rejection",
+    "prompt_hash": "0ea3fd2d4bbe862e",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.627319+00:00",
+  "finished_at": "2026-08-03T00:03:34.627339+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'non-actionable-follow-up-rejection': After an incident where a Redis cache eviction caused a 2-second latency spike f",
+    "activation_evidence": "skill loaded from incident-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 9
+  },
+  "duration_ms": 0.008333008736371994,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

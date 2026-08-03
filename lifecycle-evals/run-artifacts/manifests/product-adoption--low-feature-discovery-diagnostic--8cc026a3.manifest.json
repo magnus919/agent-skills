@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "8cc026a3-4836-44cf-9c6d-17b8e8ab4274",
+  "candidate": {
+    "skill_name": "product-adoption",
+    "skill_path": "product-adoption",
+    "tree_hash": "1e87f1a4e547e23f"
+  },
+  "case": {
+    "case_id": "low-feature-discovery-diagnostic",
+    "prompt_hash": "fdd2bd281e8a53a5",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.599473+00:00",
+  "finished_at": "2026-08-03T00:03:33.599494+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'low-feature-discovery-diagnostic': Our product has 18 features but analytics show the median user only uses 2 of th",
+    "activation_evidence": "skill loaded from product-adoption/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.007666007149964571,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

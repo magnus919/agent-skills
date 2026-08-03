@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "ce9c297a-ed6c-46f7-bba8-5f379a4b2a80",
+  "candidate": {
+    "skill_name": "implementation-planning",
+    "skill_path": "implementation-planning",
+    "tree_hash": "33603566b9f3a28b"
+  },
+  "case": {
+    "case_id": "data-migration-with-rollback",
+    "prompt_hash": "978ba90f40a3ee02",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.095879+00:00",
+  "finished_at": "2026-08-03T00:03:33.095902+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'data-migration-with-rollback': Approved spec: 'Migrate the orders table from a monolithic Postgres database to ",
+    "activation_evidence": "skill loaded from implementation-planning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.008500006515532732,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

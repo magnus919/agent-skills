@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "5f94c149-852d-49eb-b6c7-244ba523b175",
+  "candidate": {
+    "skill_name": "product-analytics-and-measurement",
+    "skill_path": "product-analytics-and-measurement",
+    "tree_hash": "954585de83c5e8ed"
+  },
+  "case": {
+    "case_id": "privacy-boundary-measurement",
+    "prompt_hash": "28e83441dee96131",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.275148+00:00",
+  "finished_at": "2026-08-03T00:03:33.275172+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'privacy-boundary-measurement': We are designing analytics for a health-related consumer app. We need to track u",
+    "activation_evidence": "skill loaded from product-analytics-and-measurement/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.007166003342717886,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

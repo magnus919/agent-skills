@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "e4eac380-0ff2-4eac-b114-3e88a577b772",
+  "candidate": {
+    "skill_name": "implementation-planning",
+    "skill_path": "implementation-planning",
+    "tree_hash": "33603566b9f3a28b"
+  },
+  "case": {
+    "case_id": "cross-repository-dependencies",
+    "prompt_hash": "19401f6d9b09f8c0",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.082127+00:00",
+  "finished_at": "2026-08-03T00:03:33.082145+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'cross-repository-dependencies': Approved requirement: 'Add OIDC-based single sign-on to the customer portal.' Th",
+    "activation_evidence": "skill loaded from implementation-planning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.006749993190169334,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}
