@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "terraform",
+  "evals": [
+    {
+      "id": "state-backend-migration",
+      "prompt": "We keep Terraform state in a local terraform.tfstate file and now two engineers apply to the same directory at the same time. We want to move to a shared remote backend with locking. What is the migration flow and what should we verify before and after?",
+      "expected_output": "A backend migration plan: choose a remote backend that supports locking (for example S3 with a DynamoDB lock table, GCS, Azure Storage, or a Terraform/OpenTofu cloud), add the backend block, run terraform init with the migration flag so the existing state is copied to the new backend, and verify the lock works by starting a concurrent operation. The response explains that state is a secrets-bearing artifact so the backend must be encrypted at rest and access-restricted, that state push/pull are dangerous manual operations only used with a backup, and that locking prevents concurrent writers while a stale lock may require force-unlock only after confirming no other run is active. Verification is a clean plan from the new backend and a successful lock/unlock cycle.",
+      "assertions": [
+        "The migration flow includes choosing a locking-capable backend and terraform init with the migrate flag",
+        "State is treated as secrets-bearing and the backend is encrypted and access-restricted",
+        "Locking behavior is verified with a concurrent operation",
+        "Manual state push/pull are flagged as dangerous and backup-first",
+        "A clean plan from the new backend is the verification"
+      ]
+    },
+    {
+      "id": "plan-review-before-apply",
+      "prompt": "Before running apply on a production workspace, the plan shows 3 to create, 2 to change in place, and 1 to replace (destroy then create). The replaced resource is a database instance. How should I review this plan and what should make me stop?",
+      "expected_output": "A plan-review procedure that treats the replace as the highest-risk item: the response counts creates/updates/destroys/replaces, identifies the database replacement as destroy-before-create and checks the lifecycle rules and backup/restore path before allowing it, and stops if any resource has prevent_destroy, if sensitive values change unexpectedly, if the diff references resources outside the workspace scope, or if the state shows tainted resources being applied blind. The response prescribes running the plan with JSON output for machine review, confirming the state serial and backend lock, and applying only after the plan has been explicitly reviewed, then verifying the external boundary (database reachable, data intact) after apply.",
+      "assertions": [
+        "The plan is reviewed as a diff with counts of create/update/destroy/replace",
+        "The database replacement is flagged as the highest-risk change requiring backup and lifecycle checks",
+        "Stop conditions include prevent_destroy, unexpected sensitive changes, scope leakage, and blind tainted applies",
+        "JSON plan output is used for machine review",
+        "Post-apply verification checks the external boundary and data integrity"
+      ]
+    },
+    {
+      "id": "drift-investigation",
+      "prompt": "Our terraform plan in CI shows a diff for a security group that nobody remembers changing. The environment was supposed to be untouched this quarter. How do I investigate whether this is real drift and decide what to do?",
+      "expected_output": "A drift investigation that first proves the diff is real before touching anything: the response compares the current plan against the previous known-good plan and the state serial to rule out a stale state, checks git history and change records for the workspace, and then classifies the cause — an out-of-band manual change to the live security group, a config edit that was never applied, or a state/config desync. The response maps each cause to its remediation: reconcile with a reviewed plan and apply when the desired state is the config, import the resource if it was never managed, and never delete-and-recreate out of reflex. The response prescribes a drift cadence of periodic plans so unexpected diffs are caught before they become incidents, and verification is a clean re-plan after remediation.",
+      "assertions": [
+        "The investigation proves the diff is real before changing anything, using state serial and previous plans",
+        "Git history and change records are checked to rule out a known change",
+        "Drift causes are classified: out-of-band change, unapplied config, or state desync",
+        "Remediation maps each cause to reconcile, import, or reviewed apply, never delete-and-recreate reflex",
+        "A periodic plan cadence is prescribed so unexpected diffs surface early"
+      ]
+    },
+    {
+      "id": "module-structure-review",
+      "prompt": "A teammate wants to add a new Terraform module for a shared load balancer used by three services. What should the review look for in the module's structure and interfaces before it can be consumed?",
+      "expected_output": "A module review that checks composition and interface discipline: the module declares required_providers and pins versions, exposes a small set of inputs with defaults and validation, outputs only what consumers need, and uses for_each or count for repetition rather than duplicating resource blocks. The reviewer checks that the module does not hardcode environment-specific values, that it references data sources or remote state only where appropriate, that the lock file is committed, and that the module is versioned by tag for consumption. The response notes that module design methodology belongs to platform-engineering while this review checks the operational execution: valid config, correct interface surface, and a safe consumption path for the three services.",
+      "assertions": [
+        "required_providers and version pins are verified",
+        "Inputs are validated with defaults and outputs expose only the minimal surface",
+        "for_each or count is preferred over duplicated resource blocks",
+        "Environment-specific values are not hardcoded and the lock file is committed",
+        "Modules are consumed by version tag, with design methodology routed to platform-engineering"
+      ]
+    },
+    {
+      "id": "upgrade-and-refactor-flow",
+      "prompt": "We are on Terraform 1.3 and want to upgrade to the current release, and in the same change rename several resources to follow a new naming convention. What is the safe sequence and where are the traps?",
+      "expected_output": "A sequenced upgrade-then-refactor plan: first read the upgrade guides for every minor version in the span to collect deprecations and behavior changes, validate and plan in a non-production environment, then apply the upgrade before any refactor so provider and language changes are isolated. For the rename, the response prescribes moved blocks so the plan shows pure renames with no destroy/create, falling back to reviewed state mv only when moved does not fit, and never deleting state to force recreation. The response flags the traps: skipping intermediate upgrade guides, refactoring before upgrading (compounding two change classes), and state surgery without a backup and a held lock. Verification is a clean plan showing renames only, applied in staging first, with drift-free re-plan after.",
+      "assertions": [
+        "Upgrade guides are read for the whole version span before anything runs",
+        "The upgrade is validated and applied in a non-production environment first",
+        "Renames use moved blocks so the plan shows no destroy/create",
+        "Refactoring before upgrading is flagged as a compounding-risk trap",
+        "State surgery requires a backup and held lock, with a clean re-plan as verification"
+      ]
+    },
+    {
+      "id": "diagnose-lock-error",
+      "prompt": "terraform plan just failed with an error that the state is locked by another operation. There is no CI job running that I know of. What are the next steps, in order, and what must I never do?",
+      "expected_output": "A lock-error diagnosis in evidence order: first identify the backend and find the lock holder through backend-specific inspection (for example the DynamoDB lock item or the cloud workspace run), check whether a real operation is genuinely in progress, and only after confirming nothing is running unlock the stale lock with the force-unlock command using the lock ID from the error. The response states the hard boundary: never force-unlock while an apply may be running, never delete the lock row blindly, and never bypass locking by switching to the local backend just to run a command. Verification is a successful plan after the lock is cleared and confirming the lock re-engages for the next operation.",
+      "assertions": [
+        "The diagnosis finds the lock holder through backend-specific inspection before any action",
+        "Force-unlock is only used after confirming no operation is genuinely running, with the lock ID from the error",
+        "Never force-unlock a live apply or delete the lock row blindly",
+        "Switching to the local backend to bypass locking is forbidden",
+        "A successful plan with the lock re-engaging is the verification"
+      ]
+    }
+  ]
+}

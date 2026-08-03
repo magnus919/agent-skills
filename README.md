@@ -459,6 +459,10 @@ Turn scattered technology preferences into explicit, reviewable decisions with o
 
 Hyper-local weather from a WeatherFlow Tempest station. Query current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. A complete reference implementation of the cli-builder patterns in a working, testable project — including the CLI binary and full API field layout reference.
 
+### [terraform](terraform/SKILL.md)
+
+Operate Terraform and OpenTofu safely across the whole infrastructure lifecycle: module structure, state backends and locking, plan/apply workflow, drift detection, remote state, upgrade and refactor flows, and evidence-based diagnostics. Ships the agent-first `tfops` wrapper with direct state-file analysis, a `--dry-run`/`--yes`/`--force` mutation gate, tests, and dated references.
+
 ### [three](three/SKILL.md)
 
 Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations.

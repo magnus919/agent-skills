@@ -129,6 +129,7 @@
     "./technical-documentation",
     "./technology-radar",
     "./tempest-cli",
+    "./terraform",
     "./three",
     "./tmdb-cli",
     "./traefik",

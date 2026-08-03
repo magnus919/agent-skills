@@ -1,0 +1,418 @@
+#!/usr/bin/env python3
+"""tfops - agent-first operational wrapper for Terraform and OpenTofu.
+
+This wrapper delegates lifecycle semantics to the terraform (or tofu) binary
+when one is available, and adds bounded JSON output, explicit mutation
+confirmation, direct state-file analysis, and deterministic exit behavior.
+--help and --state analysis work with no terraform binary installed, so an
+agent can inventory and inspect state files anywhere.
+
+Commands
+--------
+doctor     Report binary, config, backend, and state availability.
+validate   Run `terraform validate` (JSON) when a binary exists.
+plan       Direct state-file analysis with --state, or `terraform plan -json`.
+state      Inspect a local state file directly (no binary required).
+apply      Apply infrastructure changes (mutation: requires --yes).
+import     Import an existing resource into state (mutation: requires --yes).
+
+Exit codes: 0 ok, 1 analysis/runtime error, 2 usage or gate refusal,
+127 required binary not found, 124 delegate timeout.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import shutil
+import subprocess
+import sys
+from typing import Any, Optional
+
+STATE_FORMAT_VERSIONS = {"1.0", "1.1", "1.2", "1.3"}
+MUTATING_COMMANDS = {"apply", "import"}
+COMMON_DEFAULTS = {
+    "json": False,
+    "dry_run": False,
+    "yes": False,
+    "force": False,
+    "state": None,
+    "timeout": 60,
+}
+
+
+def emit(payload: Any, as_json: bool) -> None:
+    """Write a payload to stdout; JSON when --json, readable text otherwise."""
+    if as_json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return
+    if isinstance(payload, str):
+        print(payload)
+        return
+    lines = []
+    for key, value in payload.items():
+        if isinstance(value, (list, dict)) and value:
+            lines.append(f"{key}: {json.dumps(value, sort_keys=True)}")
+        else:
+            lines.append(f"{key}: {value}")
+    print("\n".join(lines))
+
+
+def find_binary() -> Optional[str]:
+    """Locate a terraform-compatible binary: TERRAFORM env wins, then tofu, then terraform."""
+    override = os.environ.get("TERRAFORM")
+    if override:
+        return override if os.path.exists(override) else None
+    for candidate in ("tofu", "terraform"):
+        located = shutil.which(candidate)
+        if located:
+            return located
+    return None
+
+
+def run_delegate(binary: str, parts: list[str], args: argparse.Namespace) -> int:
+    """Run a terraform/tofu command and wrap its output in the JSON envelope."""
+    command = [binary] + parts
+    try:
+        proc = subprocess.run(command, capture_output=True, text=True, timeout=args.timeout)
+    except subprocess.TimeoutExpired:
+        emit(
+            {
+                "ok": False,
+                "error": f"{binary} timed out",
+                "timeout_seconds": args.timeout,
+                "command": parts,
+            },
+            args.json,
+        )
+        return 124
+    payload: dict[str, Any] = {
+        "ok": proc.returncode == 0,
+        "exit_code": proc.returncode,
+        "command": parts,
+    }
+    if proc.stdout:
+        payload["stdout"] = proc.stdout
+    if proc.stderr:
+        payload["stderr"] = proc.stderr
+    emit(payload, args.json)
+    return proc.returncode
+
+
+def resource_address(resource: dict[str, Any]) -> str:
+    parts = [part for part in (resource.get("module"), resource.get("type"), resource.get("name")) if part]
+    return ".".join(parts)
+
+
+def analyze_state(path: str) -> dict[str, Any]:
+    """Parse a Terraform state file and return a bounded inventory summary."""
+    with open(path, "r", encoding="utf-8") as handle:
+        data = json.load(handle)
+    if not isinstance(data, dict):
+        raise ValueError("state file root must be a JSON object")
+    fmt = data.get("format_version")
+    if fmt is not None and str(fmt) not in STATE_FORMAT_VERSIONS:
+        raise ValueError(f"unsupported state format_version {fmt!r}")
+    if "resources" not in data:
+        raise ValueError("missing 'resources' key; not a Terraform state document")
+    resources = data.get("resources", [])
+    if not isinstance(resources, list):
+        raise ValueError("state 'resources' must be a list")
+    managed = [r for r in resources if r.get("mode") == "managed"]
+    datas = [r for r in resources if r.get("mode") == "data"]
+    modules = sorted({(r.get("module") or "root") for r in resources})
+    providers = sorted({r.get("provider", "") for r in resources if r.get("provider")})
+    tainted = [
+        resource_address(r)
+        for r in resources
+        for inst in r.get("instances", [])
+        if isinstance(inst, dict) and inst.get("status") == "tainted"
+    ]
+    return {
+        "format_version": fmt,
+        "terraform_version": data.get("terraform_version"),
+        "serial": data.get("serial"),
+        "lineage": data.get("lineage"),
+        "resource_count": len(resources),
+        "managed_resources": len(managed),
+        "data_resources": len(datas),
+        "modules": modules,
+        "providers": providers,
+        "tainted": tainted,
+        "outputs": sorted(data.get("outputs", {}).keys()),
+    }
+
+
+def inspect_state(path: str) -> dict[str, Any]:
+    """Detailed per-resource state listing for the `state` subcommand."""
+    with open(path, "r", encoding="utf-8") as handle:
+        data = json.load(handle)
+    resources = []
+    for resource in data.get("resources", []):
+        instances = resource.get("instances", [])
+        addresses = [resource_address(resource) + (f"[{i}]" if len(instances) > 1 else "") for i in range(len(instances))]
+        statuses = sorted({inst.get("status", "ok") for inst in instances if isinstance(inst, dict)})
+        resources.append(
+            {
+                "address": resource_address(resource),
+                "mode": resource.get("mode", "managed"),
+                "type": resource.get("type"),
+                "name": resource.get("name"),
+                "provider": resource.get("provider"),
+                "instance_count": len(instances),
+                "instance_addresses": addresses,
+                "statuses": statuses,
+            }
+        )
+    return {"resources": resources, "resource_count": len(resources)}
+
+
+def load_state(args: argparse.Namespace) -> tuple[Optional[dict[str, Any]], Optional[str]]:
+    """Load and analyze the state file named by --state; return (payload, error)."""
+    path = args.state
+    if not path:
+        return None, "plan --state requires a state file path (--state FILE)"
+    try:
+        return analyze_state(path), None
+    except (OSError, json.JSONDecodeError) as error:
+        return None, f"state file {path} is not readable JSON: {error}"
+    except ValueError as error:
+        return None, f"state file {path} is not a Terraform state: {error}"
+
+
+def mutation_refusal(command: str, as_json: bool) -> None:
+    emit(
+        {
+            "ok": False,
+            "error": f"{command} is a mutation and requires --yes",
+            "hint": "Run with --dry-run first to preview, then repeat with --yes after reviewing scope.",
+        },
+        as_json,
+    )
+
+
+def cmd_doctor(args: argparse.Namespace) -> int:
+    binary = find_binary()
+    payload: dict[str, Any] = {
+        "ok": True,
+        "binary_found": binary is not None,
+        "binary": binary or os.environ.get("TERRAFORM") or "terraform (not found)",
+    }
+    if binary:
+        version_proc = subprocess.run([binary, "version"], capture_output=True, text=True, timeout=args.timeout)
+        payload["version_output"] = (version_proc.stdout or version_proc.stderr).strip()
+    config_files = sorted(
+        name
+        for name in os.listdir(os.getcwd())
+        if name.endswith((".tf", ".tf.json")) and os.path.isfile(name)
+    )
+    payload["config_files"] = config_files
+    payload["backend_hint"] = (
+        "inspect a backend block with terraform backend config or the reference "
+        "references/02-state-and-backends.md"
+        if config_files
+        else "no .tf config files in the working directory"
+    )
+    if args.state:
+        state, error = load_state(args)
+        if error:
+            payload["state_error"] = error
+        else:
+            payload["state"] = state
+    emit(payload, args.json)
+    return 0
+
+
+def cmd_validate(args: argparse.Namespace) -> int:
+    binary = find_binary()
+    if not binary:
+        emit(
+            {
+                "ok": False,
+                "error": "terraform/tofu not found",
+                "hint": "Install terraform or OpenTofu, or set TERRAFORM to a compatible binary.",
+            },
+            args.json,
+        )
+        return 127
+    return run_delegate(binary, ["validate", "-json", "-input=false"], args)
+
+
+def cmd_plan(args: argparse.Namespace) -> int:
+    if args.state:
+        state, error = load_state(args)
+        if error:
+            emit({"ok": False, "error": error, "command": "plan"}, args.json)
+            return 1
+        payload: dict[str, Any] = {"ok": True, "command": "plan", "state_file": args.state, "plan": state}
+        payload["summary"] = (
+            f"{state['resource_count']} resources ({state['managed_resources']} managed, "
+            f"{state['data_resources']} data) across {len(state['modules'])} module(s); "
+            f"{len(state['tainted'])} tainted resource(s) require planned replacement; "
+            "a full plan requires configuration plus backend state access"
+        )
+        emit(payload, args.json)
+        return 0
+    binary = find_binary()
+    if not binary:
+        emit(
+            {
+                "ok": False,
+                "error": "terraform/tofu not found; provide --state FILE to analyze a state file directly",
+                "hint": "Install terraform or OpenTofu, or set TERRAFORM to a compatible binary.",
+            },
+            args.json,
+        )
+        return 127
+    return run_delegate(binary, ["plan", "-json", "-input=false", "-no-color"], args)
+
+
+def cmd_state(args: argparse.Namespace) -> int:
+    if not args.state:
+        emit({"ok": False, "error": "state requires --state FILE", "hint": "Pass --state to the local state file to inspect."}, args.json)
+        return 2
+    try:
+        detail = inspect_state(args.state)
+    except (OSError, json.JSONDecodeError, ValueError) as error:
+        emit({"ok": False, "error": f"state file {args.state} is not readable: {error}", "command": "state"}, args.json)
+        return 1
+    payload = {"ok": True, "command": "state", "state_file": args.state, **detail}
+    emit(payload, args.json)
+    return 0
+
+
+def cmd_apply(args: argparse.Namespace) -> int:
+    if args.dry_run:
+        if args.state:
+            state, error = load_state(args)
+            if error:
+                emit({"ok": False, "error": error, "command": "apply"}, args.json)
+                return 1
+            payload = {
+                "ok": True,
+                "command": "apply",
+                "dry_run": True,
+                "state_file": args.state,
+                "would_apply": state["managed_resources"],
+                "would_replace": state["tainted"],
+                "note": "dry-run preview only; no changes applied",
+            }
+            emit(payload, args.json)
+            return 0
+        binary = find_binary()
+        if not binary:
+            emit(
+                {"ok": False, "error": "terraform/tofu not found; --dry-run without --state needs a binary"},
+                args.json,
+            )
+            return 127
+        return run_delegate(binary, ["plan", "-json", "-input=false", "-no-color"], args)
+    if not args.yes:
+        mutation_refusal("apply", args.json)
+        return 2
+    if args.state:
+        state, error = load_state(args)
+        if error:
+            emit({"ok": False, "error": error, "command": "apply"}, args.json)
+            return 1
+        if state["tainted"] and not args.force:
+            emit(
+                {
+                    "ok": False,
+                    "error": "state contains tainted resources; refusing to apply without a reviewed plan",
+                    "tainted": state["tainted"],
+                    "hint": "Run a plan first, or pass --force to proceed despite the taint guard.",
+                },
+                args.json,
+            )
+            return 2
+    binary = find_binary()
+    if not binary:
+        emit({"ok": False, "error": "terraform/tofu not found", "hint": "Install terraform or OpenTofu, or set TERRAFORM."}, args.json)
+        return 127
+    return run_delegate(binary, ["apply", "-auto-approve", "-json", "-input=false", "-no-color"], args)
+
+
+def cmd_import(args: argparse.Namespace) -> int:
+    if args.dry_run:
+        emit(
+            {
+                "ok": True,
+                "command": "import",
+                "dry_run": True,
+                "address": args.address,
+                "id": args.id,
+                "note": "dry-run preview only; nothing imported",
+            },
+            args.json,
+        )
+        return 0
+    if not args.yes:
+        mutation_refusal("import", args.json)
+        return 2
+    binary = find_binary()
+    if not binary:
+        emit({"ok": False, "error": "terraform/tofu not found", "hint": "Install terraform or OpenTofu, or set TERRAFORM."}, args.json)
+        return 127
+    return run_delegate(binary, ["import", "-json", "-input=false", args.address, args.id], args)
+
+
+def add_common(parser: argparse.ArgumentParser) -> None:
+    """Attach global flags with SUPPRESS defaults so values survive subcommand parsing."""
+    parser.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="Emit a structured JSON result on stdout")
+    parser.add_argument("--dry-run", action="store_true", default=argparse.SUPPRESS, help="Preview only; never mutate state")
+    parser.add_argument("--yes", action="store_true", default=argparse.SUPPRESS, help="Confirm a mutating operation (apply, import)")
+    parser.add_argument("--force", action="store_true", default=argparse.SUPPRESS, help="Bypass the taint/drift guard on mutations")
+    parser.add_argument("--state", default=argparse.SUPPRESS, help="Local state file to analyze directly (no binary required)")
+    parser.add_argument("--timeout", type=int, default=argparse.SUPPRESS, help="Delegate command timeout in seconds")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    common = argparse.ArgumentParser(add_help=False)
+    add_common(common)
+
+    parser = argparse.ArgumentParser(
+        prog="tfops",
+        description=(
+            "Agent-first operational wrapper for Terraform and OpenTofu: state analysis, "
+            "plan/apply workflow, diagnostics, and gated mutations with JSON output."
+        ),
+    )
+    add_common(parser)
+
+    sub = parser.add_subparsers(dest="command", required=True, metavar="COMMAND")
+
+    doctor = sub.add_parser("doctor", parents=[common], help="Report binary, config, backend, and state availability")
+    doctor.set_defaults(handler=cmd_doctor)
+
+    validate = sub.add_parser("validate", parents=[common], help="Run terraform validate (JSON)")
+    validate.set_defaults(handler=cmd_validate)
+
+    plan = sub.add_parser("plan", parents=[common], help="Preview a plan: state analysis (--state) or terraform plan -json")
+    plan.set_defaults(handler=cmd_plan)
+
+    apply = sub.add_parser("apply", parents=[common], help="Apply infrastructure changes (mutation: requires --yes)")
+    apply.set_defaults(handler=cmd_apply)
+
+    state = sub.add_parser("state", parents=[common], help="Inspect a local state file directly (no binary required)")
+    state.set_defaults(handler=cmd_state)
+
+    imp = sub.add_parser("import", parents=[common], help="Import an existing resource into state (mutation: requires --yes)")
+    imp.add_argument("address", help="Resource address to import into, e.g. aws_instance.web")
+    imp.add_argument("id", help="Provider-side ID of the existing resource")
+    imp.set_defaults(handler=cmd_import)
+
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    for dest, default in COMMON_DEFAULTS.items():
+        if not hasattr(args, dest):
+            setattr(args, dest, default)
+    return args.handler(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
