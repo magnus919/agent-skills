@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "b42cff87-7390-46d8-9e21-64b9989fb909",
+  "candidate": {
+    "skill_name": "product-lifecycle",
+    "skill_path": "product-lifecycle",
+    "tree_hash": "b86016bfbbba6919"
+  },
+  "case": {
+    "case_id": "non-adoption-outcome",
+    "prompt_hash": "514d1900e6fb4f6b",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.856871+00:00",
+  "finished_at": "2026-08-03T00:03:34.856899+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'non-adoption-outcome': We launched an internal tool for expense reporting six months ago. Despite manda",
+    "activation_evidence": "skill loaded from product-lifecycle/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.010082963854074478,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

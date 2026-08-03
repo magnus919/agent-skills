@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "d79fd0ae-6451-4138-b19c-31867dee597a",
+  "candidate": {
+    "skill_name": "product-operations-and-governance",
+    "skill_path": "product-operations-and-governance",
+    "tree_hash": "7b7250f1bab75c9f"
+  },
+  "case": {
+    "case_id": "escalation-missing-evidence",
+    "prompt_hash": "a719f8766b1c6609",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.884553+00:00",
+  "finished_at": "2026-08-03T00:03:33.884573+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'escalation-missing-evidence': A lifecycle/health review is scheduled for a product that has been in market for",
+    "activation_evidence": "skill loaded from product-operations-and-governance/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.007292022928595543,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

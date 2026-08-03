@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "c0f992f1-8d46-497f-af80-e6cd2d36035e",
+  "candidate": {
+    "skill_name": "product-lifecycle-learning",
+    "skill_path": "product-lifecycle-learning",
+    "tree_hash": "9d51ca4b4916224a"
+  },
+  "case": {
+    "case_id": "anti-pattern-arbitrary-threshold-rejection",
+    "prompt_hash": "7e64ced777ccbb8a",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.026692+00:00",
+  "finished_at": "2026-08-03T00:03:34.026709+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'anti-pattern-arbitrary-threshold-rejection': I want you to create a dashboard that automatically retires any feature that dro",
+    "activation_evidence": "skill loaded from product-lifecycle-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.006874965038150549,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

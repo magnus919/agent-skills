@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "ea21b45d-1c46-4a8b-963a-1e61a7fbe927",
+  "candidate": {
+    "skill_name": "resilience-and-recovery",
+    "skill_path": "resilience-and-recovery",
+    "tree_hash": "755bd94d2a1d205d"
+  },
+  "case": {
+    "case_id": "restore-test-with-data-integrity",
+    "prompt_hash": "240a9f6a66de29f6",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.353649+00:00",
+  "finished_at": "2026-08-03T00:03:34.353673+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'restore-test-with-data-integrity': Our PostgreSQL primary database stores customer orders and payment records. We t",
+    "activation_evidence": "skill loaded from resilience-and-recovery/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.010374991688877344,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

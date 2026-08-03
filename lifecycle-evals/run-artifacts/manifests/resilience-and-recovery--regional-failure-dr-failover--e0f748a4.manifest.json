@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "e0f748a4-c883-434e-9a18-cf94651ebf9e",
+  "candidate": {
+    "skill_name": "resilience-and-recovery",
+    "skill_path": "resilience-and-recovery",
+    "tree_hash": "755bd94d2a1d205d"
+  },
+  "case": {
+    "case_id": "regional-failure-dr-failover",
+    "prompt_hash": "6ae9bca8baa743fc",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.367571+00:00",
+  "finished_at": "2026-08-03T00:03:34.367596+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'regional-failure-dr-failover': Our SaaS platform runs in a single AWS region (us-east-1). The board has asked f",
+    "activation_evidence": "skill loaded from resilience-and-recovery/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.009500014130026102,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

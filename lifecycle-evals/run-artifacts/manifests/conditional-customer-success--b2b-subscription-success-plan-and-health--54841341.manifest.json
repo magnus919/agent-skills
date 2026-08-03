@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "54841341-e39b-47ab-9ff7-cbb874e7a615",
+  "candidate": {
+    "skill_name": "conditional-customer-success",
+    "skill_path": "conditional-customer-success",
+    "tree_hash": "39ede540f58ad8d0"
+  },
+  "case": {
+    "case_id": "b2b-subscription-success-plan-and-health",
+    "prompt_hash": "f463d713ae1a79c6",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.713706+00:00",
+  "finished_at": "2026-08-03T00:03:33.713870+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'b2b-subscription-success-plan-and-health': I manage customer success for a B2B SaaS platform with 200 accounts, named accou",
+    "activation_evidence": "skill loaded from conditional-customer-success/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.011791998986154795,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "b7925080-fa0e-47f0-b1f8-241e2a44dd88",
+  "candidate": {
+    "skill_name": "product-lifecycle-learning",
+    "skill_path": "product-lifecycle-learning",
+    "tree_hash": "9d51ca4b4916224a"
+  },
+  "case": {
+    "case_id": "feature-that-should-be-retired",
+    "prompt_hash": "ed94d8939cbb97d4",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.000320+00:00",
+  "finished_at": "2026-08-03T00:03:34.000339+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'feature-that-should-be-retired': We have a legacy reporting dashboard that was built 4 years ago. It has 12 daily",
+    "activation_evidence": "skill loaded from product-lifecycle-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.007541966624557972,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

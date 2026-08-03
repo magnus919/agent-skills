@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "550940c5-2cce-43f8-ac93-6781bb29316f",
+  "candidate": {
+    "skill_name": "resilience-and-recovery",
+    "skill_path": "resilience-and-recovery",
+    "tree_hash": "755bd94d2a1d205d"
+  },
+  "case": {
+    "case_id": "recovery-exercise-unowned-gap",
+    "prompt_hash": "97c46644ce38c142",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.396682+00:00",
+  "finished_at": "2026-08-03T00:03:34.396709+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'recovery-exercise-unowned-gap': We ran a game day simulating a complete loss of our primary Kafka cluster. The e",
+    "activation_evidence": "skill loaded from resilience-and-recovery/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.010041985660791397,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

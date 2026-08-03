@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "483012b1-2c85-40ff-b0a1-1e2b2b41f6c9",
+  "candidate": {
+    "skill_name": "product-analytics-and-measurement",
+    "skill_path": "product-analytics-and-measurement",
+    "tree_hash": "954585de83c5e8ed"
+  },
+  "case": {
+    "case_id": "new-feature-metrics",
+    "prompt_hash": "31890f8bbfb7bbd3",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.201686+00:00",
+  "finished_at": "2026-08-03T00:03:33.201844+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'new-feature-metrics': We are launching a new collaborative editing feature in our SaaS document produc",
+    "activation_evidence": "skill loaded from product-analytics-and-measurement/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.011333031579852104,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

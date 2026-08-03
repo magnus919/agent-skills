@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "81018ed2-1196-4d46-829b-cecc9448770f",
+  "candidate": {
+    "skill_name": "product-operations-and-governance",
+    "skill_path": "product-operations-and-governance",
+    "tree_hash": "7b7250f1bab75c9f"
+  },
+  "case": {
+    "case_id": "lightweight-startup-operating-model",
+    "prompt_hash": "88c4b5bc1910dd2b",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.829425+00:00",
+  "finished_at": "2026-08-03T00:03:33.829592+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'lightweight-startup-operating-model': Design a product operating model for a 12-person startup building a consumer fit",
+    "activation_evidence": "skill loaded from product-operations-and-governance/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.012416974641382694,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

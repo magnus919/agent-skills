@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "4fc6effb-a04b-4219-886f-40e7737db082",
+  "candidate": {
+    "skill_name": "incident-learning",
+    "skill_path": "incident-learning",
+    "tree_hash": "1a0e93248f8b65c9"
+  },
+  "case": {
+    "case_id": "process-failure-incident",
+    "prompt_hash": "2acb73f460eda3f8",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.599807+00:00",
+  "finished_at": "2026-08-03T00:03:34.599830+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'process-failure-incident': A production database migration was applied directly by a developer outside the ",
+    "activation_evidence": "skill loaded from incident-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 9
+  },
+  "duration_ms": 0.009500014130026102,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

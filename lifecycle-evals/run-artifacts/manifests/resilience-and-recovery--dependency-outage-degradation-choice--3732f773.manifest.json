@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "3732f773-73d1-4524-a0d0-bd48d476c211",
+  "candidate": {
+    "skill_name": "resilience-and-recovery",
+    "skill_path": "resilience-and-recovery",
+    "tree_hash": "755bd94d2a1d205d"
+  },
+  "case": {
+    "case_id": "dependency-outage-degradation-choice",
+    "prompt_hash": "1c7485b149aae7b8",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.338751+00:00",
+  "finished_at": "2026-08-03T00:03:34.338897+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'dependency-outage-degradation-choice': Our e-commerce platform depends on a third-party recommendation engine. The reco",
+    "activation_evidence": "skill loaded from resilience-and-recovery/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.013625016435980797,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

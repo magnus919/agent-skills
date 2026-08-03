@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "8c03da25-38f1-4bbc-8e10-a6c3283599d3",
+  "candidate": {
+    "skill_name": "privacy-engineering",
+    "skill_path": "privacy-engineering",
+    "tree_hash": "c348463b697ce394"
+  },
+  "case": {
+    "case_id": "multi-tenant-data-isolation",
+    "prompt_hash": "def97b6d5b24cfd5",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.715776+00:00",
+  "finished_at": "2026-08-03T00:03:34.715797+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'multi-tenant-data-isolation': Our B2B SaaS platform hosts data for multiple enterprise customers in a shared d",
+    "activation_evidence": "skill loaded from privacy-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.007333990652114153,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

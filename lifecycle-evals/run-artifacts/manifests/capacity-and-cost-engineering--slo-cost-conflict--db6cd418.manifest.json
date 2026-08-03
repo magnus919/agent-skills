@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "db6cd418-a5d0-4be8-9b85-522532beaff1",
+  "candidate": {
+    "skill_name": "capacity-and-cost-engineering",
+    "skill_path": "capacity-and-cost-engineering",
+    "tree_hash": "0fad0f317ad12846"
+  },
+  "case": {
+    "case_id": "slo-cost-conflict",
+    "prompt_hash": "af91f21bffce3868",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.486556+00:00",
+  "finished_at": "2026-08-03T00:03:34.486593+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'slo-cost-conflict': Our payment-processing service has an SLO of 99.99% availability (4.3 minutes do",
+    "activation_evidence": "skill loaded from capacity-and-cost-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 9
+  },
+  "duration_ms": 0.01895800232887268,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "d47b1e8b-9a71-4361-8467-b0020d22ed92",
+  "candidate": {
+    "skill_name": "production-readiness",
+    "skill_path": "production-readiness",
+    "tree_hash": "37997a4cff6e49e9"
+  },
+  "case": {
+    "case_id": "user-facing-service-launch",
+    "prompt_hash": "3cb351dcc8abf9d0",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.115072+00:00",
+  "finished_at": "2026-08-03T00:03:34.115095+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'user-facing-service-launch': We are launching a new user-facing payment processing service. It handles credit",
+    "activation_evidence": "skill loaded from production-readiness/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.008167000487446785,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

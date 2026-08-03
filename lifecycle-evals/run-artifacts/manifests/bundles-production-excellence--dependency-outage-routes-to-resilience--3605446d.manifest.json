@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "3605446d-bebe-45f0-a251-58edcc66a248",
+  "candidate": {
+    "skill_name": "production-excellence",
+    "skill_path": "production-excellence",
+    "tree_hash": "b86016bfbbba6919"
+  },
+  "case": {
+    "case_id": "dependency-outage-routes-to-resilience",
+    "prompt_hash": "2b1323412f244af5",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:35.001907+00:00",
+  "finished_at": "2026-08-03T00:03:35.001925+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'dependency-outage-routes-to-resilience': We are launching a mobile notification service that depends on an upstream push-",
+    "activation_evidence": "skill loaded from production-excellence/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.006583984941244125,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

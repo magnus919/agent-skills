@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "ba3de522-4db8-4340-8c39-7ac91ddde3be",
+  "candidate": {
+    "skill_name": "agent-production-operations",
+    "skill_path": "agent-production-operations",
+    "tree_hash": "b86016bfbbba6919"
+  },
+  "case": {
+    "case_id": "tool-using-agent-authority-contract",
+    "prompt_hash": "1a025f8308baf911",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:35.092715+00:00",
+  "finished_at": "2026-08-03T00:03:35.092742+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'tool-using-agent-authority-contract': Define a production contract and staged rollout plan for a customer-facing suppo",
+    "activation_evidence": "skill loaded from agent-production-operations/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 11
+  },
+  "duration_ms": 0.010749965440481901,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

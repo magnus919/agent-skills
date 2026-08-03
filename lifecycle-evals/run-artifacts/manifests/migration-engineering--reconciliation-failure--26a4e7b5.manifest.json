@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "26a4e7b5-db36-4755-8803-5b066c32bcf9",
+  "candidate": {
+    "skill_name": "migration-engineering",
+    "skill_path": "migration-engineering",
+    "tree_hash": "bf70383b462904cb"
+  },
+  "case": {
+    "case_id": "reconciliation-failure",
+    "prompt_hash": "babe92f854fd598a",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.271951+00:00",
+  "finished_at": "2026-08-03T00:03:34.271972+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'reconciliation-failure': Plan a migration to move financial transaction data (500 million rows) from an O",
+    "activation_evidence": "skill loaded from migration-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.008375034667551517,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "3f2f1f1b-ceff-4e80-9c37-3d1f1bfa57a5",
+  "candidate": {
+    "skill_name": "product-lifecycle",
+    "skill_path": "product-lifecycle",
+    "tree_hash": "b86016bfbbba6919"
+  },
+  "case": {
+    "case_id": "justified-retirement-decision",
+    "prompt_hash": "cf4dbbfc474441bd",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.870027+00:00",
+  "finished_at": "2026-08-03T00:03:34.870053+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'justified-retirement-decision': Our legacy on-premises monitoring product has been in harvest mode for two years",
+    "activation_evidence": "skill loaded from product-lifecycle/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.009707990102469921,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

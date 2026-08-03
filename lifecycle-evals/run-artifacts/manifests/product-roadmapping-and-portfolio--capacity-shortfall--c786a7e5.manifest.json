@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "c786a7e5-5c0f-4615-ae28-dd9d88d1b37b",
+  "candidate": {
+    "skill_name": "product-roadmapping-and-portfolio",
+    "skill_path": "product-roadmapping-and-portfolio",
+    "tree_hash": "c74f4b54b98fc0a6"
+  },
+  "case": {
+    "case_id": "capacity-shortfall",
+    "prompt_hash": "4827dc708b3e7080",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.378148+00:00",
+  "finished_at": "2026-08-03T00:03:33.378166+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'capacity-shortfall': Now bets: 'Checkout Flow' (6 tw, High), 'Search v2' (8 tw, Medium), 'Accessibili",
+    "activation_evidence": "skill loaded from product-roadmapping-and-portfolio/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.006832997314631939,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

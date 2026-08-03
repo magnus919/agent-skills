@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "1e8170ba-3af4-4af2-a60b-31e970240091",
+  "candidate": {
+    "skill_name": "product-experimentation",
+    "skill_path": "product-experimentation",
+    "tree_hash": "0d2736d80e41a86a"
+  },
+  "case": {
+    "case_id": "significant-but-no-ship-boundary",
+    "prompt_hash": "9c9c0d30bdc7771e",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.508391+00:00",
+  "finished_at": "2026-08-03T00:03:33.508413+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'significant-but-no-ship-boundary': Our A/B test on a new notification frequency algorithm showed a statistically si",
+    "activation_evidence": "skill loaded from product-experimentation/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.008000002708286047,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

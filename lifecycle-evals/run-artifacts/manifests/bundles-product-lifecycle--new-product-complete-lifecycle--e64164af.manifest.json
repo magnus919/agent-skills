@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "e64164af-8bb8-408c-93b4-706ff57ed97c",
+  "candidate": {
+    "skill_name": "product-lifecycle",
+    "skill_path": "product-lifecycle",
+    "tree_hash": "b86016bfbbba6919"
+  },
+  "case": {
+    "case_id": "new-product-complete-lifecycle",
+    "prompt_hash": "a61f51d692623245",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.815360+00:00",
+  "finished_at": "2026-08-03T00:03:34.815521+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'new-product-complete-lifecycle': We have an idea for a new product: a privacy-first personal finance dashboard th",
+    "activation_evidence": "skill loaded from product-lifecycle/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 9
+  },
+  "duration_ms": 0.011249969247728586,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "fa887898-77f0-42f6-9a31-2b1c92406639",
+  "candidate": {
+    "skill_name": "migration-engineering",
+    "skill_path": "migration-engineering",
+    "tree_hash": "bf70383b462904cb"
+  },
+  "case": {
+    "case_id": "backfill-with-reconciliation",
+    "prompt_hash": "95e0669b165b321a",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.228631+00:00",
+  "finished_at": "2026-08-03T00:03:34.228656+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'backfill-with-reconciliation': Plan a migration to move user profile data (10 million rows) from a monolithic P",
+    "activation_evidence": "skill loaded from migration-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.008124974556267262,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

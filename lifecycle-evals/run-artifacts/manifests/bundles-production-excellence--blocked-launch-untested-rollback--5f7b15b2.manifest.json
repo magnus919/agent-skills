@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "5f7b15b2-4282-4c93-8f1d-4a66c9c3de00",
+  "candidate": {
+    "skill_name": "production-excellence",
+    "skill_path": "production-excellence",
+    "tree_hash": "b86016bfbbba6919"
+  },
+  "case": {
+    "case_id": "blocked-launch-untested-rollback",
+    "prompt_hash": "663cde03f0f0f456",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.959828+00:00",
+  "finished_at": "2026-08-03T00:03:34.959852+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'blocked-launch-untested-rollback': We are launching a database schema migration for our payment service \u2014 a High-ri",
+    "activation_evidence": "skill loaded from production-excellence/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.009790994226932526,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

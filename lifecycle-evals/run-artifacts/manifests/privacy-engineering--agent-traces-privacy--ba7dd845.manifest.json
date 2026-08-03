@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "ba7dd845-27e6-469c-95c7-735a33efab09",
+  "candidate": {
+    "skill_name": "privacy-engineering",
+    "skill_path": "privacy-engineering",
+    "tree_hash": "c348463b697ce394"
+  },
+  "case": {
+    "case_id": "agent-traces-privacy",
+    "prompt_hash": "2647efeaea7b23d9",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.702814+00:00",
+  "finished_at": "2026-08-03T00:03:34.702839+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'agent-traces-privacy': Our customer-support AI agent handles user conversations that include PII (names",
+    "activation_evidence": "skill loaded from privacy-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.009125040378421545,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

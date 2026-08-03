@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "dd22fd29-7d39-4b04-ba8a-87bf23c789ba",
+  "candidate": {
+    "skill_name": "product-adoption",
+    "skill_path": "product-adoption",
+    "tree_hash": "1e87f1a4e547e23f"
+  },
+  "case": {
+    "case_id": "enterprise-rollout-cohort-gates",
+    "prompt_hash": "67890f73cf20f901",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.612352+00:00",
+  "finished_at": "2026-08-03T00:03:33.612379+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'enterprise-rollout-cohort-gates': We are rolling out a new procurement system to a 5000-person enterprise. We have",
+    "activation_evidence": "skill loaded from product-adoption/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.009167008101940155,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

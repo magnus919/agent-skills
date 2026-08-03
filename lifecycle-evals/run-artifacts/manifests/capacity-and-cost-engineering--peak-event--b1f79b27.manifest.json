@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "b1f79b27-52a4-4b93-8e3f-03b2517e5751",
+  "candidate": {
+    "skill_name": "capacity-and-cost-engineering",
+    "skill_path": "capacity-and-cost-engineering",
+    "tree_hash": "0fad0f317ad12846"
+  },
+  "case": {
+    "case_id": "peak-event",
+    "prompt_hash": "fb48b5b888ab663e",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.472806+00:00",
+  "finished_at": "2026-08-03T00:03:34.472834+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'peak-event': Our e-commerce platform handles 5,000 requests/second at baseline. For Black Fri",
+    "activation_evidence": "skill loaded from capacity-and-cost-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.010707997716963291,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "82da80f8-304c-4296-92f1-71addc0bbf7b",
+  "candidate": {
+    "skill_name": "migration-engineering",
+    "skill_path": "migration-engineering",
+    "tree_hash": "bf70383b462904cb"
+  },
+  "case": {
+    "case_id": "irreversible-cutover",
+    "prompt_hash": "98d0949693dc9f5c",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.256628+00:00",
+  "finished_at": "2026-08-03T00:03:34.256657+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'irreversible-cutover': Plan a migration to replace an on-premises hardware security module (HSM) with a",
+    "activation_evidence": "skill loaded from migration-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 8
+  },
+  "duration_ms": 0.010957999620586634,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

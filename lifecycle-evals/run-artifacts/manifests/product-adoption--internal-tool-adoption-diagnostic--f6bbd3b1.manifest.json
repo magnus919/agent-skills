@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "f6bbd3b1-bd67-489a-836f-d06e69a8f1f9",
+  "candidate": {
+    "skill_name": "product-adoption",
+    "skill_path": "product-adoption",
+    "tree_hash": "1e87f1a4e547e23f"
+  },
+  "case": {
+    "case_id": "internal-tool-adoption-diagnostic",
+    "prompt_hash": "0f361d1273745753",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.570418+00:00",
+  "finished_at": "2026-08-03T00:03:33.570621+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'internal-tool-adoption-diagnostic': Our internal CRM tool was rolled out to the sales team 3 months ago, but half th",
+    "activation_evidence": "skill loaded from product-adoption/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.008958042599260807,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

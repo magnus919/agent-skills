@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "23196a81-1ae9-43b5-9aef-5d0c9ec58e34",
+  "candidate": {
+    "skill_name": "product-lifecycle-learning",
+    "skill_path": "product-lifecycle-learning",
+    "tree_hash": "9d51ca4b4916224a"
+  },
+  "case": {
+    "case_id": "successful-feature-outcomes-exceed-expectations",
+    "prompt_hash": "88b134349d8f14b2",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.959375+00:00",
+  "finished_at": "2026-08-03T00:03:33.959555+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'successful-feature-outcomes-exceed-expectations': Our new search-with-AI feature launched 90 days ago. We expected 30% of users to",
+    "activation_evidence": "skill loaded from product-lifecycle-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.013125012628734112,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

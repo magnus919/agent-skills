@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "3cdb11ab-7148-4dfc-aa56-9ebbd61354c0",
+  "candidate": {
+    "skill_name": "migration-engineering",
+    "skill_path": "migration-engineering",
+    "tree_hash": "bf70383b462904cb"
+  },
+  "case": {
+    "case_id": "additive-schema-change",
+    "prompt_hash": "beb8b4d69ffd6606",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.215332+00:00",
+  "finished_at": "2026-08-03T00:03:34.215491+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'additive-schema-change': Plan a migration to add a non-nullable 'status' column with a default value to a",
+    "activation_evidence": "skill loaded from migration-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 7
+  },
+  "duration_ms": 0.013208016753196716,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

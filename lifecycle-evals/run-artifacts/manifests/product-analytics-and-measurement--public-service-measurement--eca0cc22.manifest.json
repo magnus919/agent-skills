@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "eca0cc22-d08f-43be-aa1d-e07cb0dad175",
+  "candidate": {
+    "skill_name": "product-analytics-and-measurement",
+    "skill_path": "product-analytics-and-measurement",
+    "tree_hash": "954585de83c5e8ed"
+  },
+  "case": {
+    "case_id": "public-service-measurement",
+    "prompt_hash": "1383432c73c3e402",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:33.234899+00:00",
+  "finished_at": "2026-08-03T00:03:33.234921+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'public-service-measurement': Our government digital service allows citizens to apply for benefits online. We ",
+    "activation_evidence": "skill loaded from product-analytics-and-measurement/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.007874972652643919,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

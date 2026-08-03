@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "832ed421-e8f8-424a-93e0-0aa141ab8980",
+  "candidate": {
+    "skill_name": "production-readiness",
+    "skill_path": "production-readiness",
+    "tree_hash": "37997a4cff6e49e9"
+  },
+  "case": {
+    "case_id": "low-risk-documentation-release",
+    "prompt_hash": "5bf905a64565964f",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.100830+00:00",
+  "finished_at": "2026-08-03T00:03:34.100985+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'low-risk-documentation-release': We're updating the README for our internal CLI tool used by exactly one team. No",
+    "activation_evidence": "skill loaded from production-readiness/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 5
+  },
+  "duration_ms": 0.009040988516062498,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

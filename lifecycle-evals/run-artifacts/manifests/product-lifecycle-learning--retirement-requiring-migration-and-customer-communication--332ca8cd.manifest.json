@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "332ca8cd-59cb-4099-a718-ac26507eade6",
+  "candidate": {
+    "skill_name": "product-lifecycle-learning",
+    "skill_path": "product-lifecycle-learning",
+    "tree_hash": "9d51ca4b4916224a"
+  },
+  "case": {
+    "case_id": "retirement-requiring-migration-and-customer-communication",
+    "prompt_hash": "1fffd530d8bd9058",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.012821+00:00",
+  "finished_at": "2026-08-03T00:03:34.012841+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'retirement-requiring-migration-and-customer-communication': Our B2B SaaS product is retiring the legacy API (v1) that 340 enterprise custome",
+    "activation_evidence": "skill loaded from product-lifecycle-learning/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.009166018571704626,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

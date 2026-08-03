@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "9060b8d2-953d-4187-ae03-18977b940307",
+  "candidate": {
+    "skill_name": "production-readiness",
+    "skill_path": "production-readiness",
+    "tree_hash": "37997a4cff6e49e9"
+  },
+  "case": {
+    "case_id": "exception-requiring-human-approval",
+    "prompt_hash": "705af3083a5f78ea",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.155256+00:00",
+  "finished_at": "2026-08-03T00:03:34.155276+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'exception-requiring-human-approval': We're launching a critical security patch for a customer-facing authentication s",
+    "activation_evidence": "skill loaded from production-readiness/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 6
+  },
+  "duration_ms": 0.008291972335428,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}

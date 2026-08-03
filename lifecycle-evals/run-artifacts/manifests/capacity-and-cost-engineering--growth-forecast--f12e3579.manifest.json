@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "trial_id": "f12e3579-00a0-4a03-a3f8-3d1ce8f907b7",
+  "candidate": {
+    "skill_name": "capacity-and-cost-engineering",
+    "skill_path": "capacity-and-cost-engineering",
+    "tree_hash": "0fad0f317ad12846"
+  },
+  "case": {
+    "case_id": "growth-forecast",
+    "prompt_hash": "33c5f92d08cd84e0",
+    "fixture_hashes": {}
+  },
+  "adapter": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "harness": {
+    "name": "fake",
+    "version": "0.1.0"
+  },
+  "model": {
+    "provider": "unspecified",
+    "model_id": "unspecified"
+  },
+  "permissions": {},
+  "network_policy": "unspecified",
+  "limits": {
+    "timeout_seconds": 120,
+    "network_policy": "unspecified"
+  },
+  "cache_state": "unspecified",
+  "started_at": "2026-08-03T00:03:34.458858+00:00",
+  "finished_at": "2026-08-03T00:03:34.459003+00:00",
+  "status": "completed",
+  "outputs": {
+    "response": "[fake] Processed case 'growth-forecast': Our API serves 200 requests/second with 8 instances running at 55% average CPU. ",
+    "activation_evidence": "skill loaded from capacity-and-cost-engineering/SKILL.md",
+    "artifact_digests": {},
+    "tool_event_count": 9
+  },
+  "duration_ms": 0.008374976459890604,
+  "token_usage": {
+    "input_tokens": 100,
+    "output_tokens": 50
+  },
+  "failures": [],
+  "missing_evidence": []
+}
