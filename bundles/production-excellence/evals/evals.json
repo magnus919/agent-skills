@@ -18,7 +18,7 @@
     {
       "id": "blocked-launch-untested-rollback",
       "prompt": "We are launching a database schema migration for our payment service — a High-risk change because it crosses a trust boundary and is irreversible without a verified rollback. The migration plan expands the schema with a new column, backfills data, and then drops the old column. The readiness review is otherwise complete (ownership, SLOs, security, QA all pass). However, the rollback procedure has never been tested — the team wrote a rollback script but has not run it against a production-like snapshot. The migration-engineering specialist confirms the step is irreversible without the tested rollback. Run the production-excellence gate model.",
-      "expected_output": "The gate model produces a No-go outcome. The blocking reason is: the rollback procedure has never been tested and the migration step is irreversible without it. The evidence packet records the gap in the migration domain (no tested rollback). The handoff record records the No-go with the gap owner (the migration team lead), the gap description (untested rollback for irreversible schema migration), and the condition for re-evaluation (successful rollback rehearsal against a production-like snapshot). The risk class (High) prohibits exceptions — no exception is offered without escalation.",
+      "expected_output": "The gate model produces a No-go outcome. The blocking reason is: the rollback procedure has never been tested and the migration step is irreversible without it. The evidence packet records the gap in the migration domain (no tested rollback). The handoff record records the No-go with the gap owner (the migration team lead), the gap description (untested rollback for irreversible schema migration), and the condition for re-evaluation (successful rollback rehearsal against a production-like snapshot). The risk class (High) prohibits exceptions — no exception is offered without escalation. Claims are scoped to the harness, model, fixtures, and revision under test.",
       "assertions": [
         "gate outcome is No-go or blocked",
         "blocking reason explicitly references untested rollback",
@@ -41,6 +41,20 @@
         "reconciliation and checksum verification are cited",
         "handoff record routes post-launch to incident-learning and product-lifecycle-learning",
         "risk class is High but all evidence domains are sourced"
+      ]
+    },
+    {
+      "id": "integrated-migration-reconciliation-failure",
+      "prompt": "We are migrating 200M customer records from an on-premises PostgreSQL database to a cloud-hosted database, with a 30-day dual-write window and a 14-day read-only rollback path already planned by migration-engineering. Mid-migration, the daily reconciliation job detects a mismatch: 0.4% of migrated rows have an amount-column divergence between source and target (800,000 rows affected). The migration owner asks whether we can proceed with the planned cutover and fix the mismatches after launch, since the mismatch rate is 'small.' Run the production-excellence gate model and decide how the launch should proceed.",
+      "expected_output": "The gate model produces a No-go outcome: the cutover must not proceed while reconciliation is failing. The reconciliation failure is recorded as evidence in the production evidence packet with the mismatch rate (0.4%), the affected population (800,000 rows), and the affected column (amount). The trajectory routes to migration-engineering's reconciliation-failure handling — it does not paper over the mismatch. The gate records a recovery decision (rollback to the dual-write state or roll-forward after the root cause is fixed and reconciliation re-passes) with an accountable owner named. Re-evaluation is conditioned on reconciliation passing for 100% of the population; no launch or successful production-readiness verdict is issued while the mismatch exists. The handoff record is populated for the No-go outcome: it captures the reconciliation failure, the recovery decision, the owner, and the re-evaluation condition, and it does NOT route to post-launch learning because no launch occurred. Claims are scoped to the harness, model, fixtures, and revision under test.",
+      "assertions": [
+        "gate outcome is No-go or blocked — the launch does not proceed",
+        "reconciliation failure evidence is recorded in the evidence packet with mismatch rate, affected population, and affected column",
+        "the trajectory routes to migration-engineering reconciliation-failure handling rather than proceeding",
+        "a rollback or roll-forward recovery decision is recorded with an accountable owner",
+        "no launch or successful production-readiness verdict is issued while the mismatch exists",
+        "re-evaluation is conditioned on reconciliation passing for the full population",
+        "the handoff record is populated for the No-go outcome with the failure, decision, owner, and re-evaluation condition"
       ]
     },
     {
