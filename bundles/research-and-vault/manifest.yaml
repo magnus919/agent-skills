@@ -1,0 +1,67 @@
+# Bundle manifest (bundle-manifest-v1) — see schemas/bundle-manifest-v1.schema.json
+# and docs/bundle-manifest-design.md. Paths are relative to this bundle dir.
+
+schema_version: 1
+bundle_name: research-and-vault
+
+purpose: >-
+  Chain web research, atomic extraction, and durable knowledge capture into a
+  repeatable research-to-note workflow: capture source URLs and dates before
+  interpretation, extract independent atomic claims before synthesis, and write
+  the durable note only after source coverage and gaps are explicit.
+
+audience: >-
+  Agents and knowledge workers that repeatedly need the full research-to-note
+  sequence (web research, atomic extraction, durable capture) and want a stable
+  order of operations with a clear handoff artifact instead of ad-hoc steps;
+  not for single lookups or single notes, which route to the domain skill
+  directly.
+
+stages:
+  - name: Web research
+    skills:
+      - ../../research-methodology/SKILL.md
+  - name: Source capture
+    skills:
+      - ../../research-methodology/SKILL.md
+  - name: Atomic extraction
+    skills:
+      - ../../research-methodology/SKILL.md
+  - name: Synthesis and durable capture
+    skills:
+      - ../../research-methodology/SKILL.md
+
+included_skills:
+  - ../../research-methodology/SKILL.md
+
+prerequisites:
+  - artifact: A research question or topic and access to web-research tooling
+    skill: ../../research-methodology/SKILL.md
+
+outputs:
+  - source-capture-record
+  - atomic-claim-extract
+  - durable-note
+
+handoffs:
+  - to: research-methodology
+    artifact: source-capture-record
+    note: >-
+      Source URLs and dates are captured before interpretation and carried into
+      extraction and synthesis; never interpret a source before its URL and
+      date are recorded.
+  - to: research-methodology
+    artifact: atomic-claim-extract
+    note: >-
+      Independent atomic claims are extracted before synthesis so the durable
+      note can trace each claim to its source.
+  - to: user
+    artifact: durable-note
+    note: >-
+      The finished durable note reports its output path and any unresolved gaps
+      in source coverage.
+
+conflicts: []
+
+eval_suite:
+  - evals/evals.json

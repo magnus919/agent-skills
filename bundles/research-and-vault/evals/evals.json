@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "skill_name": "research-and-vault",
+  "evals": [
+    {
+      "id": "research-to-note-complete-sequence",
+      "prompt": "Our team needs to understand the current state of vector-database benchmark methodology before we pick a database. Run the full research-to-note sequence for this topic and produce the durable note.",
+      "expected_output": "Scenario: a full research-to-note run of the bundle. The agent performs web research on vector-database benchmark methodology, captures each source URL and access date before any interpretation, extracts independent atomic claims from each source, and only then synthesizes the durable note. The note reports its output path and any unresolved gaps in source coverage. The sequence order is: research, source capture, atomic extraction, synthesis, report — no interpretation precedes URL/date capture, and no synthesis precedes atomic extraction.",
+      "assertions": [
+        "Source URLs and access dates are recorded before interpretation of the source content",
+        "Independent atomic claims are extracted per source before synthesis",
+        "The durable note is written only after source coverage and gaps are explicit",
+        "The note reports its output path and unresolved gaps",
+        "The bundle loads research-methodology for the research stage"
+      ]
+    },
+    {
+      "id": "source-capture-before-interpretation",
+      "prompt": "I found three articles about MLOps cost estimation and I want to know what the consensus is. Capture the sources and tell me the consensus.",
+      "expected_output": "Scenario: source capture precedes interpretation. The agent records the three article URLs and access dates first, then reads and interprets them. Each claim in the summary is traceable to a captured source. If a source cannot be captured with a date, the agent flags it as a gap rather than silently relying on it.",
+      "assertions": [
+        "The three source URLs and access dates are recorded before any interpretation is offered",
+        "Claims in the consensus summary are traceable to captured sources",
+        "A source without a recorded date is flagged as a gap, not silently used",
+        "The response does not offer interpretation of a source whose URL/date was never captured"
+      ]
+    },
+    {
+      "id": "atomic-extraction-before-synthesis",
+      "prompt": "Synthesize what the literature says about retrieval-augmented generation evaluation. I have collected five papers.",
+      "expected_output": "Scenario: atomic extraction precedes synthesis. The agent first extracts independent atomic claims from each of the five papers (one claim per distinct finding, each tied to its paper), then synthesizes across the papers. The synthesis distinguishes supported claims, contested claims, and gaps, and never merges distinct findings into a vague composite.",
+      "assertions": [
+        "Atomic claims are extracted per paper before any synthesis is produced",
+        "Each extracted claim is tied to its source paper",
+        "Synthesis distinguishes supported, contested, and missing/gap findings",
+        "Distinct findings are not merged into a vague composite claim"
+      ]
+    },
+    {
+      "id": "gap-explicit-reporting",
+      "prompt": "Research whether local-first synchronization is production-ready, then write the durable note. Note that I could not get access to one of the key blog posts you might find.",
+      "expected_output": "Scenario: the run completes with an explicit gap report. The agent completes the research-to-note sequence, and the durable note records the inaccessible key blog post as an unresolved gap in source coverage. The gap section lists what was missing and the impact on the conclusions, and the note does not overstate confidence where a key source is missing.",
+      "assertions": [
+        "The durable note contains an explicit unresolved-gaps section",
+        "The inaccessible blog post is named in the gap section",
+        "The impact of the missing source on the conclusions is stated",
+        "Confidence in conclusions is not overstated given the missing source"
+      ]
+    },
+    {
+      "id": "single-lookup-routing",
+      "prompt": "What is the HTTP status code for 'I'm a teapot'?",
+      "expected_output": "Scenario: a single factual lookup, NOT a research-to-note sequence. The bundle routes the question to the appropriate domain skill (or answers directly) instead of running the full five-step sequence. No durable note is produced, no atomic extraction is performed, and no source-capture record is created. The response is the short factual answer.",
+      "assertions": [
+        "The full research-to-note sequence is NOT invoked for a single lookup",
+        "No durable-note artifact is produced",
+        "The question is answered directly or routed to the domain skill",
+        "The response is the short factual answer"
+      ]
+    }
+  ]
+}

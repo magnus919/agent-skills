@@ -1,0 +1,93 @@
+# Bundle manifest (bundle-manifest-v1) — see schemas/bundle-manifest-v1.schema.json
+# and docs/bundle-manifest-design.md. Paths are relative to this bundle dir.
+
+schema_version: 1
+bundle_name: tailscale
+
+purpose: >-
+  Operate a self-hosted Tailscale/Headscale ecosystem end to end: deploy and
+  manage a Headscale control server, configure Tailscale clients, define ACL
+  policy, manage node lifecycle, advertise subnet routes and exit nodes,
+  operate DERP relays, and back up, restore, or migrate the control plane.
+
+audience: >-
+  Platform and homelab operators running self-hosted Tailscale/Headscale
+  infrastructure; agents that need to know which sub-skill to load for deploy,
+  policy, client, node, routing, DERP, or backup tasks in a WireGuard mesh.
+
+stages:
+  - name: Deploy control server
+    skills:
+      - skills/headscale-deploy/SKILL.md
+  - name: Policy
+    skills:
+      - skills/tailnet-policy/SKILL.md
+  - name: Client connectivity
+    skills:
+      - skills/tailscale-client/SKILL.md
+  - name: Node lifecycle
+    skills:
+      - skills/headscale-node-lifecycle/SKILL.md
+  - name: Routing
+    skills:
+      - skills/headscale-routing/SKILL.md
+  - name: DERP relays
+    skills:
+      - skills/headscale-derp/SKILL.md
+  - name: Backup and restore
+    skills:
+      - skills/headscale-backup/SKILL.md
+
+included_skills:
+  - skills/headscale-deploy/SKILL.md
+  - skills/tailnet-policy/SKILL.md
+  - skills/tailscale-client/SKILL.md
+  - skills/headscale-node-lifecycle/SKILL.md
+  - skills/headscale-routing/SKILL.md
+  - skills/headscale-derp/SKILL.md
+  - skills/headscale-backup/SKILL.md
+
+prerequisites:
+  - artifact: A Linux host and install target for the Headscale control server
+    skill: skills/headscale-deploy/SKILL.md
+  - artifact: HEADSCALE_URL and HEADSCALE_API_KEY credentials
+    skill: skills/headscale-deploy/SKILL.md
+  - artifact: A running Headscale instance with the headscale CLI available
+    skill: skills/headscale-deploy/SKILL.md
+
+outputs:
+  - headscale-server
+  - tailnet-policy
+  - registered-nodes
+  - routed-networks
+  - derp-map
+  - backup-archive
+  - restored-instance
+
+handoffs:
+  - to: tailnet-policy
+    artifact: headscale-server
+    note: >-
+      A running control server is required before ACL policy is applied and
+      before the tailnet opens to other users.
+  - to: headscale-node-lifecycle
+    artifact: headscale-server
+    note: >-
+      Nodes are registered, approved, tagged, and decommissioned against the
+      running control server.
+  - to: headscale-backup
+    artifact: headscale-server
+    note: >-
+      Backups (sqlite + config + policy + certs) run regularly against the
+      production control server; restore re-creates the instance from the
+      archive.
+  - to: user
+    artifact: backup-archive
+    note: >-
+      The backup archive is the disaster-recovery artifact for the tailnet;
+      keep it off the control server host.
+
+conflicts: []
+
+eval_suite:
+  - evals/evals.json

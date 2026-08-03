@@ -1,0 +1,72 @@
+# Bundle manifest (bundle-manifest-v1) — see schemas/bundle-manifest-v1.schema.json
+# and docs/bundle-manifest-design.md. Paths are relative to this bundle dir.
+
+schema_version: 1
+bundle_name: workflow-architect
+
+purpose: >-
+  Discover a user's actual workflow through active interrogation or passive
+  observation, then generate a tailored Agent Skills bundle that encodes it as
+  loadable skills with trigger conditions, a decision map, a manifest, and an
+  optional kanban board — turning a session that feels aimless into structure.
+
+audience: >-
+  Users and agents that want to formalize how they work — understand their own
+  process, encode it as trigger-driven skills they can reuse, or share it with
+  collaborators. Not for single factual questions or tasks already owned by a
+  more specific skill.
+
+stages:
+  - name: Active interview
+    skills:
+      - skills/interviewer/SKILL.md
+  - name: Passive observation
+    skills:
+      - skills/observer/SKILL.md
+  - name: Synthesis and generation
+    skills:
+      - skills/bundle-builder/SKILL.md
+
+included_skills:
+  - skills/interviewer/SKILL.md
+  - skills/observer/SKILL.md
+  - skills/bundle-builder/SKILL.md
+
+prerequisites:
+  - artifact: Session context with enough turns for observation (or user answers for interview)
+    skill: skills/observer/SKILL.md
+  - artifact: Convergence on workflow phases, branching signals, and tool preferences
+    skill: skills/interviewer/SKILL.md
+
+outputs:
+  - skills-bundle
+  - decision-map
+  - manifest
+  - kanban-board
+
+handoffs:
+  - to: user
+    artifact: skills-bundle
+    note: >-
+      The generated bundle is written to the host skill directory and
+      registered so the umbrella and sub-skills load on trigger phrases.
+  - to: user
+    artifact: decision-map
+    note: >-
+      The Mermaid decision map visualizes workflow phases and branching
+      signals for review and sharing.
+  - to: user
+    artifact: manifest
+    note: >-
+      The generated manifest maps skill names to trigger conditions, entry
+      points, and transition signals for the bundle.
+  - to: user
+    artifact: kanban-board
+    note: >-
+      The kanban board is included only when the workflow follows a predictable
+      linear path where WIP limits and lane transitions add value.
+
+conflicts: []
+
+eval_suite:
+  - evals/evals.json
