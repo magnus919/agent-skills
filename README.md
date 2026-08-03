@@ -313,6 +313,10 @@ PeerTube federated video platform from the terminal. Browse videos and channels,
 
 Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms.
 
+### [playwright](playwright/SKILL.md)
+
+Operate Playwright for browser automation: E2E test authoring with robust locators, network interception and mocking, parallel workers, CI integration, headless scraping, and accessibility snapshot checks. Ships a `pwrun` smoke harness (`--json`), a test-suite scaffold, 8 references, and 6 evals.
+
 ### [privacy-engineering](privacy-engineering/SKILL.md)
 
 Translate privacy principles and legal requirements into verifiable engineering artifacts — data-lifecycle records, privacy acceptance criteria, data-flow and access maps, retention/deletion verification plans, and privacy change reviews. Covers seven privacy dimensions (purpose, lifecycle/retention, access, deletion, tenant/isolation, residency, consent) as structured concerns, with specific guidance for agent traces and product analytics telemetry. Routes legal interpretation to legal-strategy and security implementation to secure-software-engineering. Ships 1 discovery brief, 5 templates, and 6 evals.
