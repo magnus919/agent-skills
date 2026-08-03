@@ -258,6 +258,15 @@
       "description": "Use Docker Compose to define, run, debug, and harden multi-container applications. Load for compose.yaml design, networking, volumes, secrets, profiles, overrides, watch mode, lifecycle operations, or troubleshooting."
     },
     {
+      "name": "documents",
+      "source": "./",
+      "skills": [
+        "./documents"
+      ],
+      "strict": false,
+      "description": "Generate, inspect, validate, and fix PDF, Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) documents: turn structured content into render-ready artifacts, verify structural and output quality before delivery, and repair broken files. Use when a task involves creating, editing, converting, or validating office documents and PDFs. Do not use for ebook packaging (use epub), for images, video, or other media production, for API or code documentation, or for data pipelines (use data-engineering)."
+    },
+    {
       "name": "dspy",
       "source": "./",
       "skills": [
