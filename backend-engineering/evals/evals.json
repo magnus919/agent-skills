@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "backend-engineering",
+  "evals": [
+    {
+      "id": "api-implementation-review",
+      "prompt": "A teammate just implemented a REST endpoint to update a customer profile (PUT /customers/{id}). The handler parses the request body directly with no schema validation, writes the fields straight to the database from the handler function, returns 200 with an empty body on success, and catches every database error and turns it into a generic 500 with a stack trace in the response. Review this implementation against backend-engineering patterns and tell me what to change.",
+      "expected_output": "An API implementation review that walks the endpoint from request to response: validate the request against an explicit schema before the handler runs and return 400 with a structured error body listing the offending fields; separate the HTTP layer from business logic so the handler delegates to a service layer instead of writing to the database directly; return a representation of the updated resource (200 with the updated entity, or 204 only for delete-style operations) with consistent content negotiation; map known failures to specific status codes (404 for a missing customer, 409 for a version conflict) and reserve 500 for unexpected errors, logging the stack trace server-side rather than echoing it to the client; and add an idempotency consideration for retried PUTs by supporting If-Match/ETag or a version field.",
+      "assertions": [
+        "The review requires request schema validation that returns a 400 with a structured body identifying the invalid fields",
+        "The review separates the HTTP handler from business logic and moves database access into a service or repository layer",
+        "The review requires a resource representation in the success response and maps known failures to specific 4xx status codes",
+        "The review says stack traces must stay in server logs, not client responses, and 500 is reserved for unexpected errors",
+        "The review adds a concurrency or idempotency mechanism such as If-Match with an ETag or a version field for updates"
+      ]
+    },
+    {
+      "id": "api-endpoint-resource-modeling",
+      "prompt": "I am designing the API for a subscription billing system. I need endpoints for listing subscriptions, fetching a subscription with its invoices, changing a plan, and cancelling. How should I model the resources and endpoints, and how do I handle pagination, filtering, and the transition between plan states?",
+      "expected_output": "A resource model with nouns and stable identifiers: /subscriptions for the collection, /subscriptions/{id} for a single subscription, and /subscriptions/{id}/invoices as a nested read-only collection with cursor or offset pagination, ordering, and filtering by status. State transitions such as plan changes and cancellation are expressed as explicit operations on the resource (PATCH with a status field, or purpose-specific actions) rather than inventing endpoints for verbs. The design covers idempotency keys for state-changing operations so retries cannot double-charge, a 404 versus 403 distinction for cross-tenant access, and versioning that keeps the existing client contract stable while the model evolves.",
+      "assertions": [
+        "The response models resources as nouns with nested read-only collections for related data such as invoices",
+        "The response covers pagination, ordering, and filtering for collection endpoints",
+        "The response expresses state transitions as operations on the resource rather than verb-only endpoints",
+        "The response requires idempotency keys on state-changing operations such as plan changes and cancellation",
+        "The response distinguishes 404 from 403 for access control and addresses API versioning"
+      ]
+    },
+    {
+      "id": "service-structure-review",
+      "prompt": "Our order service started as a prototype and is now in production. All business logic lives in the route handlers, shared helpers are piling up in a 3,000-line utils.py, the database is accessed directly from handlers, and every feature branch touches the same files. I want to restructure it so it is testable and survives the next two years of features. Where do I start?",
+      "expected_output": "A service structure plan that introduces layers with a strict dependency direction: transport (HTTP/gRPC handlers) at the edge, an application/service layer owning business rules and use cases, and a persistence layer behind a repository or data-access interface. Utils.py is decomposed into focused modules grouped by responsibility, and shared logic is extracted into the layer where its dependencies live. The plan defines ports and adapters at the boundaries (repository interface, message publisher, clock) so the service layer can be unit-tested with fakes, and it sequences the refactor: introduce the boundary interfaces first with the existing behavior as the contract, move business rules out of handlers feature by feature, and keep each step covered by tests.",
+      "assertions": [
+        "The response structures the service into transport, application/service, and persistence layers with a strict dependency direction",
+        "The response decomposes the shared utils module into focused, responsibility-scoped modules",
+        "The response uses ports and adapters (repository interface, message publisher, clock) so business logic is testable with fakes",
+        "The response sequences the refactor starting from boundary interfaces with existing behavior as the contract",
+        "The response requires test coverage at each step of the refactor"
+      ]
+    },
+    {
+      "id": "error-handling-design",
+      "prompt": "Our new payments service needs consistent error handling across REST endpoints and background job processing. Today every handler invents its own error responses, retries are missing, and when a webhook fails we lose the event. Design the error-handling model for this service.",
+      "expected_output": "An error-handling model with three parts: classification, representation, and recovery. Classification distinguishes client errors (validation, not found, conflict), transient server-side failures (timeouts, overload, dependency outages), and permanent server failures. The response format is structured and consistent — a stable error code, a human message, and a correlation ID — with the mapping from internal exceptions to codes owned in one place. Recovery is per failure class: retries with exponential backoff and jitter for transient failures, idempotency keys so retried operations are safe, dead-letter handling for background jobs that exhaust retries, and circuit breaking toward degraded dependencies. Every handled error carries enough context for observability (trace ID, request ID, service) so the handler does not need the stack trace.",
+      "assertions": [
+        "The response classifies errors into client, transient, and permanent failure classes",
+        "The response defines a single structured error representation with a stable code, message, and correlation ID",
+        "The response prescribes retry with exponential backoff and jitter for transient failures",
+        "The response requires idempotency keys and dead-letter handling for jobs that exhaust retries",
+        "The response ties error responses to observability correlation IDs rather than exposing stack traces"
+      ]
+    },
+    {
+      "id": "database-n-plus-one-detection",
+      "prompt": "GET /orders returns a list of orders, and each order row is followed by a loop that fetches that order's line items and customer one at a time. The endpoint is fast with 10 orders and crawls with 500. Walk me through diagnosing and fixing this, and how I would catch the same problem in the next codebase.",
+      "expected_output": "A diagnosis that names the N+1 query pattern: one query for the orders plus one query per order for line items and customer, so 500 orders produce 1,001 queries. The fix batches the data access: one query with a WHERE IN over the collected order ids for line items and one for customers, joining or grouping in memory, and indexing the foreign keys involved. The response also covers pagination so a page is bounded, and prevention: review loops that contain query calls (for example by running the n1-query-spotter script over the codebase), prefer ORM eager-loading or explicit batch queries, and add a query-count assertion to tests so a regression fails the suite.",
+      "assertions": [
+        "The response names the N+1 pattern and quantifies it as one query per row on top of the initial query",
+        "The response fixes it by batching with WHERE IN queries or joins and indexing the foreign keys",
+        "The response adds pagination so the result set is bounded",
+        "The response mentions running the n1-query-spotter script or reviewing loops that contain query calls as a prevention step",
+        "The response adds query-count assertions to tests so N+1 regressions fail CI"
+      ]
+    },
+    {
+      "id": "integration-retry-idempotency",
+      "prompt": "We call a third-party inventory API from our order service. Occasionally the API times out or returns 503, and when that happens the whole request fails and the user retries manually, which sometimes creates duplicate inventory holds. Design the integration layer for this dependency.",
+      "expected_output": "An integration layer design with a client wrapper that owns timeouts, retries with exponential backoff and jitter for transient statuses and timeouts, and a circuit breaker so a failing dependency does not stall every caller. Idempotency keys on the inventory-hold request let the client retry safely without duplicate holds, and the design handles the ambiguity case (timeout before response) by checking the hold status with a GET before retrying the mutation. The layer also defines what happens after retries are exhausted: the order request fails fast with a structured, classified error instead of hanging, and a fallback (queue the operation or surface a clear error) is chosen deliberately.",
+      "assertions": [
+        "The response wraps the dependency in a client with explicit timeouts and retry with exponential backoff and jitter",
+        "The response adds a circuit breaker so a failing dependency does not stall all callers",
+        "The response uses idempotency keys so retried inventory-hold requests cannot create duplicates",
+        "The response resolves timeout ambiguity by querying the hold status before retrying the mutation",
+        "The response defines failure behavior after retries are exhausted rather than hanging"
+      ]
+    }
+  ]
+}

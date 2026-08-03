@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "frontend-engineering",
+  "evals": [
+    {
+      "id": "component-state-design",
+      "prompt": "I am building a checkout flow with a cart summary, shipping address form, payment method selector, and order confirmation. The whole flow currently lives in one giant component with a dozen useState hooks and props threaded through five levels. Redesign the component structure and the state ownership for this flow.",
+      "expected_output": "A component decomposition that breaks the checkout flow into focused, composable components — CartSummary, ShippingAddressForm, PaymentMethodSelector, OrderConfirmation — each with a narrow props interface and its own local state where the state is only used there. The design co-locates state with the components that need it: form field state stays local to each form, the cart contents and order status are server state fetched and cached, and only genuinely shared state (for example the active step or the selected payment method used across siblings) lives in a shared context or store. Every data-dependent component defines loading, empty, error, and success states, and props stay flat and explicit so components remain reusable outside the checkout flow.",
+      "assertions": [
+        "The response decomposes the flow into focused components with narrow, explicit props interfaces",
+        "The response co-locates local state with the components that need it and separates server state from client state",
+        "The response limits shared/global state to what multiple components genuinely need",
+        "The response designs all four states (loading, empty, error, success) for data-dependent components",
+        "The response keeps components reusable by avoiding deep prop drilling and context sprawl"
+      ]
+    },
+    {
+      "id": "state-management-selection",
+      "prompt": "Our team is about to pick a state management approach for a dashboard app: it fetches a lot of server data (users, reports, settings), has some shared UI state (open sidebar, active filters), and lots of form state. We are debating a global store, server-cache libraries, and just component state. What should we choose and where should each kind of state live?",
+      "expected_output": "A state management decision that separates the three kinds of state instead of picking one tool for everything. Server state (users, reports, settings) belongs in a server-cache layer that owns fetching, caching, deduplication, invalidation, and background refetch rather than being copied into a global store. Shared UI state (sidebar, active filters) lives in the smallest scope that covers its consumers — a component-level context or a lightweight store slice. Form and ephemeral state stays local to components. The response explains the tradeoff: a global store adds complexity and becomes a dumping ground when used for server data, while server-cache libraries handle the hard parts (retries, staleness, mutation cache updates) that hand-rolled fetching duplicates. It also covers how the choice scales as the app grows and what migration path looks like if the team already has a store.",
+      "assertions": [
+        "The response separates server state, shared UI state, and local state instead of choosing one tool for all three",
+        "The response routes server data through a server-cache layer with caching, deduplication, and invalidation",
+        "The response keeps shared UI state in the smallest scope that covers its consumers",
+        "The response keeps form and ephemeral state local to components",
+        "The response explains the tradeoffs and a migration path from an existing global store"
+      ]
+    },
+    {
+      "id": "api-integration-design",
+      "prompt": "Our React app needs to talk to a REST API that requires a bearer token, returns paged collections, and occasionally returns 429s. Right now every component calls fetch directly and each screen re-implements token handling and error display. Design the API integration layer for this frontend.",
+      "expected_output": "An API integration layer with a single API client module that owns the base URL, request serialization, auth token attachment and refresh-on-401 handling, and a standard error shape the UI can render. The layer exposes typed functions per domain (listUsers, fetchReport) that components call instead of raw fetch, handles retry with backoff for 429 responses, and normalizes errors into a common structure with a user-facing message plus a machine-readable code. Components receive data through a data-fetching layer (query hook or cache) so loading, error, and success states are handled once instead of per component. The design covers pagination: the client exposes cursor or page helpers so infinite scroll and paginated tables do not reimplement slicing, and auth flows (OAuth/JWT refresh) are handled in the client rather than in components.",
+      "assertions": [
+        "The response centralizes HTTP in one API client module that owns base URL, serialization, and auth token handling",
+        "The response handles 401-triggered token refresh and retry with backoff for 429 responses in the client layer",
+        "The response normalizes errors into a common shape with a user-facing message and a machine-readable code",
+        "The response routes data through a data-fetching layer so loading/error/success states are handled once",
+        "The response covers pagination helpers and keeps auth flows out of individual components"
+      ]
+    },
+    {
+      "id": "data-fetching-loading-error-empty",
+      "prompt": "I need a user profile page that fetches a user by id from /users/{id} and shows their posts. The API can return 404 for a missing user, 500 on server trouble, and an empty list of posts is valid. Design the data-dependent component states for this page.",
+      "expected_output": "A component design that treats loading, error, empty, and success as first-class states. Loading renders a skeleton or spinner with an accessible busy indicator (aria-busy) rather than a blank screen. Error handling distinguishes the 404 case — a clear 'user not found' message with a link back to the directory — from 500s, which show a retry affordance and a user-friendly message while logging the technical detail to the monitoring tool. Empty posts render a purpose-built empty state (an illustration plus a call to action), not an error, because an empty list is a valid success. The success state renders the profile with the posts. The response also covers refetching after a failed load without losing the user's place, and cancelling or ignoring stale responses when the user navigates away.",
+      "assertions": [
+        "The response defines four distinct states: loading, error, empty, and success",
+        "The response renders an accessible loading state instead of a blank screen",
+        "The response distinguishes 404 from 500 handling with different user-facing outcomes",
+        "The response treats an empty list as a valid success with its own empty-state design",
+        "The response covers retry without losing user context and ignoring stale responses after navigation"
+      ]
+    },
+    {
+      "id": "performance-review",
+      "prompt": "Our marketing site loads slowly: the initial bundle is 1.4 MB, images are not sized, and Lighthouse shows LCP 4.2 s and CLS 0.35. Walk me through reviewing and fixing the frontend performance of this site.",
+      "expected_output": "A performance review structured around measuring before optimizing: run Lighthouse and collect Core Web Vitals (LCP, CLS, INP, TBT) with field data to confirm the regression source. The fixes target the named problems: split the bundle by route with code splitting and lazy loading so the initial bundle only contains above-the-fold code, remove or defer heavy dependencies, serve properly sized and compressed images with explicit dimensions to eliminate layout shift, preload the LCP element, and use modern formats (AVIF/WebP). CLS is fixed by reserving space for images, ads, and fonts (font-display swap, size-adjust) and avoiding injecting content above already-rendered content. The response prioritizes by impact: the biggest wins first, re-measure after each change, and add a performance budget so regressions are caught in CI.",
+      "assertions": [
+        "The response starts by measuring with Lighthouse and field Core Web Vitals before changing anything",
+        "The response reduces the initial bundle via route-based code splitting and lazy loading",
+        "The response fixes CLS by reserving space for images and fonts and avoiding injected layout shift",
+        "The response addresses image sizing, compression, and modern formats for LCP",
+        "The response prioritizes fixes by impact and adds a performance budget enforced in CI"
+      ]
+    },
+    {
+      "id": "performance-budget-implementation",
+      "prompt": "We want to stop our app from getting slower release after release. I need to set up a performance budget: what metrics should it cover, how do we measure it, and how do we enforce it so a regression fails the build? We ship our JS bundle report as JSON.",
+      "expected_output": "A performance-budget plan covering the three dimensions that matter: a byte budget for the initial JS/CSS bundle (for example 250 KB gzipped of route-level code, enforced per route), timing budgets for Core Web Vitals (LCP under 2.5 s, CLS under 0.1, INP under 200 ms) measured by Lighthouse in CI, and a request/asset budget for third-party scripts. The plan measures the bundle from the build output — running the bundle-budget-checker script on the bundle report with --total and --chunk budgets so an oversized chunk fails the build — and measures vitals with Lighthouse in a CI job that fails on budget breach. The response covers the workflow: budgets live in a committed config, alerts go to the team when a PR exceeds them, and every change is compared against the same baseline so the budget is meaningful.",
+      "assertions": [
+        "The response defines byte budgets for route-level JS/CSS and timing budgets for Core Web Vitals",
+        "The response measures the bundle from build output and enforces it in CI",
+        "The response mentions running the bundle-budget-checker script on the bundle report with total and chunk budgets",
+        "The response covers third-party script and request budgets",
+        "The response commits budgets as config and compares every change against the same baseline"
+      ]
+    }
+  ]
+}
