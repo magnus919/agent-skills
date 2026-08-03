@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "strategy-frameworks",
+  "evals": [
+    {
+      "id": "strategic-direction",
+      "prompt": "Our company has grown reactively for years and the leadership team cannot agree on where we are going. I have been asked to structure a strategic-direction conversation. How do I run it and what artifact should come out?",
+      "expected_output": "A strategic-direction process that uses a framework to make the conversation structured rather than free-form: the response selects the strategic-planning approach and runs it through the working method — state the decision and its owner, articulate the current situation and the constraints, generate the direction options with the assumptions behind each, and record the trade-offs and the conditions that would change the choice. The output artifact names the direction, the alternatives considered, the evidence, the key assumptions, and the next validation step. The response explains the discipline: the framework produces questions and options, not a verdict, and strategic logic is paired with financial, customer, and operational analysis rather than asserted. It also covers where the output lands in the organization's planning cycle so the direction is not a document that dies on a shelf.",
+      "assertions": [
+        "The process is framework-structured with a stated decision, owner, and constraints",
+        "Direction options are generated with assumptions and evidence made visible",
+        "The artifact names the decision, alternatives, evidence, assumptions, and next validation step",
+        "The response states that frameworks produce questions and options, not verdicts",
+        "The output connects to the planning cycle so it is acted on"
+      ]
+    },
+    {
+      "id": "competitive-analysis",
+      "prompt": "We are entering a market with two strong incumbents and several startups. I need to understand the competitive landscape to decide whether entering is even wise and how to position. What analysis should I do and what framework fits?",
+      "expected_output": "A competitive analysis using industry-structure frameworks to examine the attractiveness of the market before the positioning question: the response applies a five-forces-style analysis to the market (rivalry intensity, threat of entry, supplier and buyer power, substitutes) to surface where the profit pool is and how hard it is to capture, then layers a competitor-positioning view (who serves which segments, on what dimensions they compete) to identify an underserved position. It explains the working method: state the decision (enter or not, and how), make the assumptions about competitors' likely responses explicit, and record the trade-offs and the evidence that would change the recommendation. The output names the decision, the alternatives, the evidence, and the next validation step rather than producing a framework-labeled verdict.",
+      "assertions": [
+        "Market attractiveness is assessed with an industry-structure framework before positioning",
+        "Competitor mapping identifies an underserved position rather than a crowded me-too one",
+        "Assumptions about competitor responses are explicit",
+        "The working method records evidence, trade-offs, and the decision",
+        "The output includes the next validation step, not just a framework classification"
+      ]
+    },
+    {
+      "id": "growth-strategy-options",
+      "prompt": "Our core product is mature and growth has flattened. The options on the table are expanding into adjacent segments, moving upmarket, or building a platform play. How do I structure the growth-strategy decision so we compare the options fairly?",
+      "expected_output": "A growth-option analysis that compares the candidates on common criteria rather than their internal enthusiasm: the response frames each option (adjacent segments, upmarket, platform) with its market evidence, the capabilities it requires and whether they exist, the capital and timeline involved, and the risk profile, then evaluates them against the company's current position and constraints. The framework is used to generate questions and options: for each candidate the response identifies the critical uncertainty and the smallest experiment or evidence step that would validate or kill it. The output names the recommended option with its alternatives, assumptions, trade-offs, and the next validation step, and the response explicitly rejects picking an option because it is more exciting rather than better evidenced.",
+      "assertions": [
+        "Each growth option is assessed on common criteria: evidence, capabilities, capital, timeline, risk",
+        "The framework generates the critical uncertainty and the smallest validation step per option",
+        "Options are compared fairly rather than by internal enthusiasm",
+        "The output names the recommendation, alternatives, assumptions, and trade-offs",
+        "The next validation step is explicit for the chosen path"
+      ]
+    },
+    {
+      "id": "resource-allocation",
+      "prompt": "Our company has three business units and limited capital for next year. Each unit is asking for more than it got last year, and the requests together exceed what we can fund. How do I structure the capital-allocation decision across the portfolio?",
+      "expected_output": "A resource-allocation process that compares the units on the economics of the choice rather than last year's budget: the response defines the decision criteria (return prospects, strategic fit, risk, and the funding required to actually move the needle for each unit), gathers comparable evidence for each unit against those criteria, and frames the options including the portfolio-level trade-offs — funding one unit fully versus spreading thin, or investing in new growth versus defending the core. It records the assumptions and the conditions under which the allocation would change, and it names the decision owner for the final call. The response explains the discipline that allocation decisions are about marginal return, not fairness or history, and it structures the conversation so the leadership team sees the trade-offs explicitly instead of negotiating from last year's numbers.",
+      "assertions": [
+        "Units are compared on marginal-return criteria, not last year's budget or fairness",
+        "Common evidence is gathered for each unit against the defined criteria",
+        "Portfolio-level trade-offs are framed explicitly, including defend-core versus new-growth",
+        "Assumptions and change conditions are recorded",
+        "A named decision owner makes the final call"
+      ]
+    },
+    {
+      "id": "portfolio-choice",
+      "prompt": "We are considering acquiring a small competitor to close a capability gap, and separately a team inside is proposing to build the same capability from scratch. How do I structure the build-versus-buy portfolio decision?",
+      "expected_output": "A build-versus-buy analysis that compares the two options on the dimensions that matter: time to capability, total cost including integration and ongoing ownership, risk (acquisition integration risk versus build delivery risk), strategic control, and the option value each path creates. The response gathers comparable evidence for both options, makes the assumptions explicit (what the acquisition would actually cost including integration, what the build timeline really requires, what talent is available), and identifies the critical uncertainty that should decide between them plus the smallest step to resolve it, such as a scoped pilot or deeper diligence. It records the trade-offs and the decision owner, and it explicitly rejects defaulting to build because it feels cheaper or acquire because it is faster without comparing the full cost picture.",
+      "assertions": [
+        "Build and acquire are compared on common dimensions: time, total cost, risk, control, option value",
+        "Assumptions about integration cost and delivery timelines are made explicit",
+        "The critical uncertainty and the smallest step to resolve it are identified",
+        "The trade-offs and decision owner are recorded",
+        "Neither path is chosen by default without the full cost comparison"
+      ]
+    }
+  ]
+}

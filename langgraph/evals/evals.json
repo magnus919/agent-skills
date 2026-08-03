@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "langgraph",
+  "evals": [
+    {
+      "id": "pattern-selection",
+      "prompt": "We are building an agent that handles customer support tickets: it needs to classify the ticket, call a specialist tool for the issue type, and sometimes escalate to a human. I keep reading about supervisor patterns, swarm patterns, and hierarchical patterns. How do I choose the right orchestration pattern?",
+      "expected_output": "A pattern-selection analysis grounded in the workflow's structure rather than pattern-name enthusiasm: the response examines the workflow's control flow — the ticket must be routed by type, specialist sub-agents do bounded work, and human escalation is an interrupt — and maps it to the pattern that fits: a supervisor pattern where a router node decides the specialist and checks the result, with explicit state passing, rather than a free-running swarm where agents autonomously hand off work, because the workflow has a defined decision point and bounded sub-tasks. It explains the distinguishing questions: is the next step decided centrally (supervisor) or by agents themselves (swarm), does the graph have a fixed skeleton with choices (state graph with conditional edges) or recursive spawning (hierarchical), and where human-in-the-loop interrupts live. It prescribes sketching the control flow before choosing the pattern and names the gotcha: reaching for a swarm when the workflow is a deterministic pipeline adds nondeterminism and observability cost.",
+      "assertions": [
+        "The response maps the workflow's control flow to a concrete pattern choice",
+        "Supervisor and swarm patterns are distinguished by who decides the next step",
+        "Human-in-the-loop interrupts are placed in the design",
+        "The response warns against free-running swarm patterns for deterministic routed workflows",
+        "It prescribes sketching control flow before pattern selection"
+      ]
+    },
+    {
+      "id": "state-schema-design",
+      "prompt": "I am designing a LangGraph agent that researches a topic, drafts a report, and revises it after review. The agents need to share the research findings and the draft, but I keep hearing that shared mutable state causes bugs in LangGraph. How should I design the state schema?",
+      "expected_output": "A state-schema design that separates the concerns of shared data from per-step data: the response explains LangGraph's state model — a shared state object that nodes annotate, with reducers controlling how updates merge — and prescribes modeling the fields the whole graph needs (the topic, the research findings, the draft, review feedback) with typed annotations and explicit reducers where messages or lists accumulate, while transient per-node data that should not persist stays local to the node. It explains the common bugs: using a plain list field without a reducer so each node overwrites prior messages, mutating shared state in place instead of returning updates, and stuffing node-local scratch data into the shared state where it pollutes downstream nodes. The response prescribes the reducer choice (add for accumulating lists, replace for single-value updates, and a custom reducer for merging dicts) and shows how to inspect the state at each step for debugging.",
+      "assertions": [
+        "The response separates graph-shared state from per-node transient data",
+        "Reducers are explained and prescribed for accumulating or merging fields",
+        "The overwriting-list bug and in-place mutation pitfall are called out",
+        "Typed annotations with reducer behavior are part of the design",
+        "State inspection per step is prescribed for debugging"
+      ]
+    },
+    {
+      "id": "subgraph-composition",
+      "prompt": "My agent has three independent phases — research, drafting, and review — and each phase is itself a multi-node graph. I want to compose them so each phase stays reusable and testable. How do I structure this with subgraphs, and where do I get it wrong?",
+      "expected_output": "A subgraph-composition design where each phase is a self-contained graph with its own internal nodes and a narrow contract with the parent: the response prescribes defining each phase as a compiled subgraph whose input and output are explicit typed states, then composing them in the parent graph as single nodes that pass and receive only the agreed fields. It explains the common failure modes: coupling phases through the shared state by reading fields the phase does not own, making the subgraph's internal nodes reachable from outside (breaking encapsulation and making tests brittle), and mismatched state schemas between the parent and subgraph that surface as silent drops or type errors. The response covers testing each phase independently with its own fixtures and the parent test that verifies the handoff between phases, and it shows how the composition stays legible when each subgraph is treated as a node.",
+      "assertions": [
+        "Each phase is a self-contained subgraph with a narrow input-output contract",
+        "The parent graph composes subgraphs as single nodes passing only agreed fields",
+        "Encapsulation failures (external access to internal nodes, shared-state coupling) are flagged",
+        "State-schema mismatches between parent and subgraph are called out",
+        "Independent phase tests plus a handoff test are prescribed"
+      ]
+    },
+    {
+      "id": "human-in-the-loop-interrupt",
+      "prompt": "My agent drafts an expense report and should pause for a human to approve it before submitting. If the approval fails or the reviewer edits the draft, the agent must revise and re-pause. How do I implement this interrupt pattern without losing the agent's state?",
+      "expected_output": "A human-in-the-loop implementation built on interrupts and checkpoints: the response prescribes using the graph's interrupt mechanism at the approval node so the graph pauses with its state intact, then resumes when the human decision arrives, with the checkpointing layer persisting the full state so a process restart resumes the same run. It covers the design decisions: the interrupt payload (what the human sees and the structured decision input they return), validating the resumed input before continuing, the branch after the interrupt (approved proceeds, rejected or edited returns to the revision node with the feedback added to state), and the guardrails against the loop spinning: an explicit revision budget with a cap on re-pauses. It also explains the debugging angle: after an interrupt, inspecting the checkpointed state is how you verify nothing was lost.",
+      "assertions": [
+        "The interrupt mechanism is used with checkpointing so state survives pauses and restarts",
+        "The interrupt payload and structured human decision input are designed",
+        "Resumed input is validated before the graph continues",
+        "The approve-revise-repause branch is implemented with a revision budget cap",
+        "Checkpointed state inspection verifies nothing is lost"
+      ]
+    },
+    {
+      "id": "production-debugging",
+      "prompt": "Our LangGraph agent works in tests but in production it sometimes ends in the wrong node: a tool result is missing from state, and a conditional edge routes to the error path even though the tool succeeded. How do I debug state and routing issues in a running graph?",
+      "expected_output": "A debugging procedure that makes the graph's execution observable: the response prescribes inspecting the state and event stream at each step — using the graph's streaming or state-inspection facilities to see the exact state before and after each node, verifying what the tool call actually returned versus what the node wrote to state, and checking the conditional edge's routing function against that state to see why it chose the error path. It separates the failure classes: a node that did not write its output to state (missing field or wrong key), a reducer that overwrote a previous value, a conditional router reading the wrong field or applying the wrong predicate, and a tool result that never landed because the tool node errored or was skipped. The response prescribes reproducing with the production-shaped input, adding targeted logging at the state transitions, and writing a regression test that pins the routing decision.",
+      "assertions": [
+        "The debug procedure inspects state and events at each node transition",
+        "It verifies what the tool returned versus what the node wrote to state",
+        "Conditional routing functions are checked against the actual state",
+        "Failure classes are separated: missing writes, reducer overwrites, wrong routing field",
+        "A regression test pins the routing decision"
+      ]
+    }
+  ]
+}

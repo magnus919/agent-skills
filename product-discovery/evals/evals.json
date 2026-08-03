@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "product-discovery",
+  "evals": [
+    {
+      "id": "stakeholder-map",
+      "prompt": "We are starting discovery for a billing-system overhaul. I want to map who to talk to before scheduling any interviews. What does a complete stakeholder map look like and how do I decide who belongs in it?",
+      "expected_output": "A stakeholder map that covers the full set of people whose needs and constraints shape the outcome: decision-makers who fund and approve scope, end users who operate the system day to day, operators and support staff who handle billing escalations, downstream teams who consume billing data (finance, sales ops, data), and adjacent system owners whose systems integrate with billing. For each stakeholder the map records their role, what they need from the system, what constraints they impose, and how their input could conflict with others. The response explains the selection criteria: include anyone whose unmet need would block adoption or whose assumptions would silently break the design if left unspoken.",
+      "assertions": [
+        "The response builds a stakeholder map covering decision-makers, end users, operators, downstream consumers, and adjacent system owners",
+        "For each stakeholder the response captures needs, constraints, and potential conflicts",
+        "The response gives selection criteria for who belongs in the map rather than an arbitrary list",
+        "The response identifies where stakeholder interests conflict and how to surface those conflicts in discovery",
+        "The response is specific to the billing-system context rather than a generic template"
+      ]
+    },
+    {
+      "id": "surface-hidden-assumptions",
+      "prompt": "During interviews for our new reporting feature, stakeholders keep saying 'just like the current export, but better.' Nobody can define what better means. What questions should I ask to surface the hidden assumptions behind that phrase?",
+      "expected_output": "A set of discovery questions designed to make the unstated assumptions explicit: what specific pain drives the request (which current export behavior is broken or slow), what outcome would count as success in measurable terms, who uses the export and for what decision, what the edge cases are that the current export handles badly (large files, empty data, formatting, timestamps in different timezones), what they would accept as a v1 versus what cannot wait, and what they would NOT want to change. The response frames each question to expose the underlying job and acceptance criteria, and it flags the pattern where vague phrasing signals either an unexamined assumption or an unstated constraint, then shows how to test the assumption by restating it and asking for confirmation.",
+      "assertions": [
+        "The response provides concrete questions that force definition of 'better' into measurable success criteria",
+        "The questions probe who uses the output, for what decision, and which current behaviors are broken",
+        "The questions surface edge cases and constraints the current export handles",
+        "The response distinguishes v1 scope from deferred wants",
+        "The response shows how to test an assumption by restating it and asking for confirmation"
+      ]
+    },
+    {
+      "id": "conflict-resolution",
+      "prompt": "Two stakeholders disagree on the new checkout redesign: the payments team wants fewer steps to reduce abandonment, while the fraud team wants more verification to reduce chargebacks. Discovery is stuck. How do I resolve this without picking a winner politically?",
+      "expected_output": "A conflict-resolution approach that treats the disagreement as a design constraint to be understood, not a battle to be won: first the response maps each stakeholder's underlying goal and the evidence behind it (abandonment data versus chargeback data), then looks for a resolution space that satisfies both — differentiating verification by risk tier, moving verification off the critical path to a background check, or adding a post-purchase verification step — and evaluates the options against both goals with the trade-off made explicit. The response keeps both stakeholders in the decision, documents the trade-off in the discovery output, and escalates only when the trade-off is genuinely unresolvable and requires a product decision, at which point it frames the decision for the accountable owner with the evidence on both sides.",
+      "assertions": [
+        "The response reframes the conflict as constraints to be designed against, not personalities to be managed",
+        "The response maps each side's underlying goal and the evidence supporting it",
+        "The response generates resolution options that serve both goals, such as risk-tiered verification or off-critical-path checks",
+        "The response documents the trade-off and keeps both stakeholders in the decision",
+        "The response frames escalation to the accountable owner as a last resort with evidence on both sides"
+      ]
+    },
+    {
+      "id": "gap-detection",
+      "prompt": "We have written requirements for a mobile app feature but I suspect we are missing whole scenarios. The requirements cover the happy path in detail. How do I systematically find the gaps before we commit to a spec?",
+      "expected_output": "A gap-detection procedure that walks the requirements against structured scenario categories rather than brainstorming: failure and recovery paths (what happens when the network drops, a payment fails, a sync conflicts), permission and entitlement states (users without access, expired sessions, shared accounts), boundary and empty states (no data, zero results, maximum data volume), multi-user and concurrency cases (two people editing the same object), and time-dependent behavior (timezones, midnight boundaries, scheduled jobs). For each category the response produces probe questions that turn into concrete scenarios, and it flags the highest-risk gaps for the feature at hand, such as offline-first behavior for a mobile app, and requires that the discovered gaps be added to the discovery output before spec sign-off.",
+      "assertions": [
+        "The response uses structured scenario categories such as failure paths, empty states, permissions, concurrency, and time boundaries",
+        "Each category is turned into concrete probe scenarios rather than generic advice",
+        "The response identifies the highest-risk gaps specific to a mobile app, such as offline and sync behavior",
+        "The response requires discovered gaps to be captured in the discovery output before spec sign-off",
+        "The response covers boundary states like zero results, maximum volume, and conflicting edits"
+      ]
+    },
+    {
+      "id": "translate-to-sdd-spec",
+      "prompt": "Discovery is done for the notifications-center feature. I have interview notes, stakeholder maps, and a list of validated scenarios. Now I need to hand this off so it becomes a proper spec for the build pipeline. What should the handoff contain and how do I structure it?",
+      "expected_output": "A structured handoff that translates discovery evidence into the inputs a spec pipeline needs: a problem statement grounded in the stakeholder evidence, the validated user scenarios written as concrete given-when-then behavior, explicit scope boundaries listing what is out of scope and why, unresolved questions and the owners for each, and the acceptance criteria per scenario that the implementation phase can verify against. The response explains the mapping from discovery artifacts to spec sections so the evidence trail stays intact — each requirement traceable to the interview or scenario that produced it — and it notes where the discovery output is incomplete and should not be silently papered over in the spec.",
+      "assertions": [
+        "The response structures the handoff around problem statement, validated scenarios, scope boundaries, and acceptance criteria",
+        "Scenarios are written in concrete given-when-then behavior an implementation pipeline can verify",
+        "The response keeps each requirement traceable to the discovery evidence that produced it",
+        "Unresolved questions are listed with owners rather than silently resolved",
+        "The response flags incomplete discovery areas instead of papering over them"
+      ]
+    }
+  ]
+}

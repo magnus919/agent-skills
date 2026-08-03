@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "product-methodology",
+  "evals": [
+    {
+      "id": "rice-prioritization",
+      "prompt": "We have six candidate features for next quarter and a team of four engineers. I want to prioritize them. Our data team can estimate reach and impact, and we know our confidence in each estimate varies. Walk me through a RICE scoring session and how to turn the scores into a quarter plan.",
+      "expected_output": "A RICE prioritization that computes reach x impact x confidence / effort for each candidate, with the inputs sourced and assumptions stated for each estimate rather than invented. The response handles the confidence axis honestly: low-confidence estimates are either discounted or flagged for validation before the quarter, and the response explains how to treat scores that are close together (within rounding noise) as a tie to be resolved by strategic fit, dependencies, or sequencing, not by score precision. It translates the ranked list into a quarter plan that respects team capacity, sequences dependencies, and reserves slack for discovery and validation work.",
+      "assertions": [
+        "The response computes RICE scores with reach, impact, confidence, and effort for each candidate",
+        "Each estimate is sourced or explicitly flagged as an assumption rather than invented",
+        "The response handles low-confidence estimates and near-tie scores honestly instead of trusting precision",
+        "The response converts the ranked list into a capacity-aware quarter plan with dependencies and slack",
+        "The response explains when scores should be treated as ties resolved by strategic fit or sequencing"
+      ]
+    },
+    {
+      "id": "opportunity-solution-tree",
+      "prompt": "Activation is flat even though we keep shipping features. I want to structure the thinking before we plan more work. How do I build an opportunity solution tree for improving activation, and what makes it different from just a feature list?",
+      "expected_output": "An opportunity solution tree that starts from the desired outcome (higher activation) and branches into the opportunities where the outcome could be unlocked, then into candidate solutions for each opportunity, keeping the tree connected to evidence: each opportunity is stated as an unmet user need or gap with evidence behind it, and each solution links back to the opportunity it serves. The response explains the discipline that solutions are generated only for evidence-backed opportunities, that the tree makes it visible when the team is building solutions for opportunities that are not actually blocking the outcome, and that it gives a shared language for killing weak branches before they become features. It applies the structure to the activation problem with concrete example branches.",
+      "assertions": [
+        "The response structures the tree as outcome to opportunities to solutions, each level connected",
+        "Opportunities are stated as evidence-backed user needs, not feature ideas",
+        "Each solution is traced back to the opportunity it serves",
+        "The response explains how the tree makes solution-for-its-own-sake visible and killable",
+        "The response includes concrete example branches for the activation problem"
+      ]
+    },
+    {
+      "id": "moscow-scoping",
+      "prompt": "Our stakeholders all marked everything as 'must have' for the reporting dashboard. The team can realistically ship half of it. How do I run a MoSCoW session that produces a defensible scope instead of a fight?",
+      "expected_output": "A MoSCoW scoping approach that establishes the rules before categorization: must-have means the release fails its core promise without it, should-have and could-have are valuable but have clear release-date trade-offs, and won't-have is explicit this time. The response resolves the everything-is-must-have pattern by forcing a dependency test (what breaks if this is missing at launch), an alternative test (what already satisfies this need), and a cost-benefit test against the release date. It records the rationale for each category so the scope is defensible, sequences should-haves into a follow-up commitment so they are not lost, and produces a scope the team commits to with a definition of done for the release.",
+      "assertions": [
+        "The response establishes category rules before categorization, including a strict test for must-have",
+        "The response uses dependency, alternative, and cost-benefit tests to break the everything-is-must-have pattern",
+        "Category decisions are recorded with rationale so the scope is defensible",
+        "Should-haves are sequenced into a follow-up commitment rather than dropped",
+        "The session ends with a team-committed scope and a release definition of done"
+      ]
+    },
+    {
+      "id": "decision-log-entry",
+      "prompt": "We just decided to drop the iOS build of the admin app in favor of a responsive web version, reversing a decision we made last quarter. I want this recorded properly so future teams understand why. What should the decision log entry contain?",
+      "expected_output": "A decision log entry that records the decision in a durable, queryable format: date, deciders, the decision in one sentence, the context and evidence at the time, the alternatives considered with the reasons they were rejected, the anticipated consequences and how they will be monitored, and explicit links to the superseded decision from last quarter with the reason the context changed. The response treats the reversal honestly as a response to changed evidence (support costs, team skills, adoption data) rather than as an inconsistency, and it specifies where the entry lives and how the superseded entry is marked so the log tells a coherent story.",
+      "assertions": [
+        "The entry records date, deciders, the decision, context, alternatives, and consequences",
+        "The entry links to and marks the superseded prior decision, explaining what evidence changed",
+        "The response frames the reversal as evidence-driven rather than inconsistent",
+        "The entry specifies how consequences will be monitored",
+        "The response names where the log entry lives and how superseded entries are marked"
+      ]
+    },
+    {
+      "id": "audience-specific-communication",
+      "prompt": "We decided to move the roadmap from committed-date promises to a themes-based model. I need to communicate this to three audiences: the sales team, the C-suite, and existing customers. They will each react differently. What should I say to each, and what should I deliberately not promise?",
+      "expected_output": "Audience-specific communication that adapts the message while keeping it consistent: sales gets the honest mechanics (which commitments remain, how roadmap items are now framed in deals, where the risk lies), the C-suite gets the strategic rationale, the risk the change manages (missed-date commitments damaging trust), and the metrics that will show it working, and customers get the benefit (fewer broken dates, clearer priorities) plus what explicitly will not change for them. The response deliberately avoids promising specific dates the new model does not support, prepares answers for the skeptical questions each audience will ask, and sequences the communication so internal audiences hear it before customers.",
+      "assertions": [
+        "The response produces distinct messaging for sales, C-suite, and customers that stays internally consistent",
+        "Sales messaging covers how roadmap items are framed in deals and where risk remains",
+        "C-suite messaging gives strategic rationale and the metrics that will show success",
+        "Customer messaging names benefits and explicitly what will not change",
+        "The response identifies promises to avoid and sequences internal communication before customer communication"
+      ]
+    }
+  ]
+}

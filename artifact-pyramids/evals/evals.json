@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "artifact-pyramids",
+  "evals": [
+    {
+      "id": "pyramid-scaffold",
+      "prompt": "I am starting a research project on the competitive landscape of the observability market and need to produce durable, agent-consumable research artifacts. How do I scaffold the output as an artifact pyramid, and what goes in each layer?",
+      "expected_output": "A scaffold following the three-layer pyramid: an L1 summary file that states the research question, the key findings, and the most important implications with links down to the L2 analysis files; L2 analysis files per dimension (market sizing, competitor profiles, technical feasibility) that are self-contained and each link to L3 dossiers; and L3 dossiers holding the raw evidence: source excerpts, data tables, interview notes, and methodology notes. The response explains that production is top-down with recursive gap analysis: write the summary, embed links to analysis files, write analysis files that link to dossiers, and re-check for gaps after each round. It also requires the SOURCES navigation section at the bottom of every file with absolute paths and a description of what each deeper file contains.",
+      "assertions": [
+        "The scaffold defines L1 summary, L2 analysis collection, and L3 dossiers with distinct content contracts",
+        "L1 links down to L2 files and L2 files link down to L3 dossiers",
+        "Production is top-down with recursive gap analysis between layers",
+        "Every file carries the SOURCES navigation section with paths and descriptions",
+        "The layers are applied to the observability-market research topic with concrete example files"
+      ]
+    },
+    {
+      "id": "l1-summary-authoring",
+      "prompt": "I have completed the research for our market-entry question and need to write the top-layer summary file. What belongs in an L1 summary, what must be excluded, and how do I know when the summary is complete?",
+      "expected_output": "An L1 summary written to the layer's contract: the research question and its scope, the key findings as conclusions with the most important implications for the decision, and nothing else — no raw data dumps, no methodology narration, and no findings that lack a home in an L2 file. The response explains the boundary rules: anything that is supporting evidence belongs in an L2 analysis or L3 dossier and is linked, not embedded; the summary must be independently consumable by an agent that reads only L1; and completion is checked by the quality gates for the layer: the question is answered, every finding is traceable to a linked L2 file, and no gap remains that the summary papered over.",
+      "assertions": [
+        "The L1 summary contains the research question, key findings, and implications only",
+        "Raw evidence and methodology detail are excluded and routed to L2 or L3 via links",
+        "The summary is independently consumable without reading the lower layers",
+        "Every finding is traceable to a linked L2 file",
+        "Completion is checked against the layer's quality gates, including uncovered gaps"
+      ]
+    },
+    {
+      "id": "l2-analysis-sources",
+      "prompt": "I am writing the market-analysis layer of a pyramid about the developer-tooling market. Each analysis file must be self-contained and consumable. How do I structure one L2 file, and what is the SOURCES convention that keeps the pyramid navigable?",
+      "expected_output": "An L2 analysis file structured as a self-contained dimension analysis: the dimension's scope and the question it answers, the analysis with its conclusions, the caveats and uncertainty, and links down to the L3 dossiers holding the underlying evidence. The response demonstrates the SOURCES convention: a section at the bottom of the file listing each referenced dossier with its absolute path and a one-line description of what the consumer will find there, phrased to answer what the deeper file contains rather than just naming it. It explains why the navigation section matters: it is the affordance that lets a consuming agent decide whether to pull the next layer, and it is required on every file at every layer.",
+      "assertions": [
+        "The L2 file is structured around the dimension's question, analysis, conclusions, and caveats",
+        "It links down to the L3 dossiers that hold the evidence",
+        "The SOURCES section lists absolute paths with descriptions of what each deeper file contains",
+        "The response explains the navigation section as the agent's pull-decision affordance",
+        "The convention is applied with a concrete market-analysis example"
+      ]
+    },
+    {
+      "id": "pyramid-audit",
+      "prompt": "I inherited a research output directory with a 00-index file, several markdown files, and a dump of raw interview transcripts, but nothing links to anything. I suspect it is not a valid artifact pyramid. How do I audit it and what do I fix?",
+      "expected_output": "An audit against the pyramid's structural contracts: the response checks layer presence (an L1 summary file, L2 analysis files, and L3 dossiers), checks the navigation mechanism (every file carries a SOURCES section with absolute paths), checks content placement (findings belong in L1, analysis in L2, raw evidence in L3 — not a 00-index stuffing findings meant for L1, and not raw transcripts masquerading as analysis), and checks link integrity between layers. The response produces a concrete remediation plan: promote or split the 00-index content into a proper L1 summary, reorganize the raw transcripts into dossiers, rewrite analysis files to be self-contained, and add the SOURCES sections and cross-links. It also notes the validation-script pitfall: structural checks pass on directory shape alone and do not prove content contracts, so the audit must read the files.",
+      "assertions": [
+        "The audit checks all three layers exist with the right content contracts",
+        "It verifies the SOURCES navigation and link integrity between layers",
+        "Misplaced content (findings in an index, raw transcripts as analysis) is specifically flagged",
+        "A concrete remediation plan reorganizes the inherited files into a valid pyramid",
+        "The response warns that directory-shape checks do not prove content compliance"
+      ]
+    },
+    {
+      "id": "composite-synthesis",
+      "prompt": "I ran three subagent research teams in parallel — one on market, one on competitors, one on technical feasibility — and each returned its own pyramid. I need one root-level deliverable for the decision maker. How do I merge them into a composite pyramid?",
+      "expected_output": "A composite synthesis procedure: the root pyramid's L1 summary is built from the three subagent pyramids' L1 findings, with a per-dimension L2 analysis layer that each maps to the corresponding subagent pyramid as its evidence source, using the SOURCES convention to reference the subagent pyramids rather than copying their content. The response explains the orchestrator flow: define the root question, map each subagent pyramid to a dimension, verify each subagent pyramid is complete before synthesis, reconcile conflicting findings across teams explicitly rather than silently averaging them, and produce the root SOURCES sections pointing at each sub-pyramid with a description of what it contains.",
+      "assertions": [
+        "The root L1 is synthesized from the sub-pyramids' L1 findings per dimension",
+        "Each root L2 dimension references its subagent pyramid as the evidence source",
+        "Conflicting findings across teams are reconciled explicitly, not averaged silently",
+        "Sub-pyramids are verified complete before synthesis",
+        "The root SOURCES sections point at each sub-pyramid with descriptions"
+      ]
+    }
+  ]
+}

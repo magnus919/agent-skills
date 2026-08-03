@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "spec-driven-development",
+  "evals": [
+    {
+      "id": "spec-authoring",
+      "prompt": "We are starting an AI-assisted software project and I need to write the first specification for a feature that imports customer data from CSV files with validation and deduplication. What does a good spec look like in this pipeline, and what must it contain before implementation can begin?",
+      "expected_output": "A specification that functions as the contract for the pipeline: a clear problem statement and scope, the functional behavior written as concrete given-when-then scenarios (valid import, malformed rows, duplicate detection, partial failures), explicit edge cases and error handling, acceptance criteria per scenario that a verifier can check mechanically, and the boundaries of what is out of scope. The response explains why the spec is the input to implementation rather than documentation produced after, why ambiguity in the spec becomes divergence in the code, and it includes the Gherkin-style scenarios so an agent can implement and verify against them directly.",
+      "assertions": [
+        "The spec contains a problem statement, scope, and out-of-scope boundaries",
+        "Functional behavior is written as concrete given-when-then scenarios",
+        "Edge cases and error handling for malformed input and partial failures are specified",
+        "Each scenario has mechanically checkable acceptance criteria",
+        "The spec is structured to be the direct input to implementation, not post-hoc documentation"
+      ]
+    },
+    {
+      "id": "quality-gate-review",
+      "prompt": "Our implementation gate just rejected a feature because the generated code does not match the spec: the error messages differ, and one validation rule was implemented differently than specified. The spec and code disagree in small ways. How do I run the review and decide what gets fixed?",
+      "expected_output": "A gate review that treats spec-code divergence as the primary defect signal: the response classifies each discrepancy (behavioral mismatch, cosmetic difference, ambiguous spec that allowed two readings, missing edge case) and routes them correctly — behavior and validation mismatches are code fixes against the spec, ambiguity is a spec revision before re-implementation, and cosmetic differences are ignored unless they affect observability. It prescribes re-running the verification against the corrected code, keeping the spec as the source of truth, and records the review outcome so the loop is auditable. It also warns against weakening the gate to pass the code instead of fixing the mismatch.",
+      "assertions": [
+        "Each discrepancy is classified as behavioral, cosmetic, or spec-ambiguity with a different routing",
+        "Behavioral mismatches are fixed in code against the spec as source of truth",
+        "Ambiguity is resolved by revising the spec before re-implementation",
+        "Verification is re-run after fixes and the outcome is recorded",
+        "The response warns against weakening the gate instead of fixing the mismatch"
+      ]
+    },
+    {
+      "id": "decomposition-into-tasks",
+      "prompt": "I have a spec for a two-week feature but it is one large block of work. The team implements it as a single prompt and gets back a mess that does not verify. How should I decompose the spec so each unit of implementation is verifiable?",
+      "expected_output": "A decomposition that slices the spec along verify-able seams rather than by file or guesswork: each task maps to a subset of the spec's scenarios with its own acceptance criteria, dependencies between tasks are explicit, and the order is chosen so early tasks establish the contract (schema and interfaces) that later tasks implement against. The response explains the rule that a task is complete when its scenarios pass the gate, that decomposition follows the spec structure rather than the code structure, and that interfaces between tasks are themselves specified so tasks integrate without renegotiation. It shows the slice boundaries for the import feature and what each slice's verification looks like.",
+      "assertions": [
+        "Decomposition slices the spec along scenario boundaries with per-task acceptance criteria",
+        "Dependencies between tasks are explicit and ordering is contract-first",
+        "Interfaces between tasks are specified so integration does not require renegotiation",
+        "A task is defined as complete only when its scenarios pass the gate",
+        "Concrete slice boundaries are shown for the import feature"
+      ]
+    },
+    {
+      "id": "gate-recovery-revision",
+      "prompt": "The implementation gate failed a feature three times. Each retry was a fresh generation from the full spec and each produced different, still-failing code. The team wants to rewrite the spec from scratch. How should we run the revision loop properly?",
+      "expected_output": "A revision-loop diagnosis that distinguishes the failure cause before rewriting: the response examines why three independent generations failed differently, which points to a spec problem (ambiguity, contradictions, missing edge cases) rather than luck, and prescribes patching the spec at the specific failure points instead of a full rewrite, because a full rewrite discards the parts that already verified and resets the convergence. It explains the patch-not-rewrite discipline: keep the spec's stable core, tighten only the failing scenarios, re-review the patch scope, and re-run the gate. It also covers re-reviewing the affected implementation slice rather than re-generating everything.",
+      "assertions": [
+        "The response diagnoses spec-level causes of divergent repeated failures before rewriting",
+        "The revision is scoped as a patch to the failing scenarios, not a full spec rewrite",
+        "The response explains why full rewrites discard verified progress and slow convergence",
+        "The patch is re-reviewed and the gate re-run",
+        "Only the affected implementation slice is reworked, not the whole feature"
+      ]
+    },
+    {
+      "id": "pipeline-mode-selection",
+      "prompt": "We have a tiny one-file script change and a brand-new multi-service feature, and I am told to run both through the same spec pipeline. The tiny change is drowning in process. How do I decide the pipeline mode for a given change?",
+      "expected_output": "A pipeline-mode decision that scales the process to the change's risk and size: the response defines the criteria (behavioral surface area, blast radius, number of integration points, reversibility) and maps them to modes — a trivial mechanical change gets a lightweight path with a short spec and direct verification, while a new multi-service feature gets the full pipeline with decomposition and gates at each phase. It explains that the pipeline's purpose is enforcing correctness where divergence is expensive, and that over-applying full ceremony to trivial changes erodes trust in the process. It also covers the guardrail that the mode decision itself is recorded so it can be audited.",
+      "assertions": [
+        "The response defines explicit criteria for selecting the pipeline mode by risk and size",
+        "Trivial changes get a lightweight path while new features get the full pipeline",
+        "The rationale ties pipeline depth to where divergence is expensive",
+        "The response warns that over-ceremony on trivial changes erodes process trust",
+        "The mode decision is recorded for auditability"
+      ]
+    }
+  ]
+}

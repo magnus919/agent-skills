@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "three",
+  "evals": [
+    {
+      "id": "basic-scene-setup",
+      "prompt": "I want to build a first Three.js scene that shows a rotating cube on a colored background in the browser. What is the minimal correct setup: renderer, scene, camera, geometry, and the render loop?",
+      "expected_output": "A working minimal Three.js scene setup: a WebGLRenderer created and appended to the DOM with a chosen clear color and size that matches the container, a Scene, a PerspectiveCamera positioned at a reasonable distance looking at the origin, a geometry with a MeshBasicMaterial or MeshStandardMaterial plus lighting if needed, a renderer.render call, and an animation loop driven by requestAnimationFrame that rotates the cube and renders each frame. The response explains why the render loop must call requestAnimationFrame continuously for animation and why the camera must look at the object after being positioned. It should present the code as a complete, copy-pasteable example rather than fragments, and note the WebGL context requirements for the page.",
+      "assertions": [
+        "The setup creates renderer, scene, camera, geometry, and material with correct wiring",
+        "The renderer is appended to the DOM and sized to its container",
+        "The camera is positioned and oriented toward the object",
+        "The animation loop uses requestAnimationFrame to rotate and render each frame",
+        "The example is complete enough to copy and run"
+      ]
+    },
+    {
+      "id": "animation-loop",
+      "prompt": "My cube appears but does not move. I added rotation in the code but nothing animates. What is the usual cause of a static scene, and how do I structure the animation loop correctly?",
+      "expected_output": "A diagnosis of the static-scene problem with the loop structure as the core fix: the response explains that renderer.render must be called inside a requestAnimationFrame callback that schedules itself, so a single render outside the loop produces a still frame, and that rotation applied once before a single render is invisible. It prescribes the standard pattern: a function that updates object properties based on time (using clock.getDelta or elapsed time for frame-rate-independent speed), calls renderer.render, and schedules the next frame with requestAnimationFrame. It also covers the common secondary causes: the renderer or canvas is behind another element, the camera does not actually face the object, or rotation is applied to the wrong object, and it suggests checking the browser console for context errors.",
+      "assertions": [
+        "The static-scene cause is diagnosed as rendering outside a self-scheduling requestAnimationFrame loop",
+        "Time-based updates are prescribed so motion is frame-rate independent",
+        "The loop structure is shown as a complete pattern",
+        "Secondary causes such as camera orientation and canvas stacking are checked",
+        "Console context errors are suggested as a diagnostic step"
+      ]
+    },
+    {
+      "id": "resize-handling",
+      "prompt": "My Three.js scene looks right when the window loads but distorts or crops when I resize the browser window. The canvas does not track the container. How do I handle resize correctly?",
+      "expected_output": "A resize-handling pattern that keeps the renderer and camera consistent with the container: the response prescribes listening for the resize event (or using a ResizeObserver on the container for layout-driven changes), updating the renderer size with renderer.setSize using the new pixel dimensions with updateStyle handling, and updating the camera's aspect ratio with camera.aspect and camera.updateProjectionMatrix before the next render. It explains the distortion mechanics: without updating aspect, the projection matrix stays from the old size and the scene stretches, and it covers device-pixel-ratio handling with renderer.setPixelRatio so the scene stays sharp on high-DPI displays without the canvas being enormous.",
+      "assertions": [
+        "The resize handler updates renderer size and camera aspect and calls updateProjectionMatrix",
+        "A ResizeObserver is suggested for container-driven layout changes",
+        "The mechanics of aspect mismatch causing distortion are explained",
+        "Pixel-ratio handling keeps the scene sharp without oversized canvases",
+        "The pattern is integrated with the render loop"
+      ]
+    },
+    {
+      "id": "blank-canvas-debug",
+      "prompt": "My scene renders nothing — just a black or blank canvas. There are no console errors. The code looks right to me. How do I debug a Three.js scene that silently renders nothing?",
+      "expected_output": "A systematic debug procedure for a silently blank scene: verify the canvas is actually in the DOM and sized (a zero-height container or display:none parent produces nothing), verify the camera is inside the scene and looking at the geometry with correct near/far planes, verify the geometry has a material that is not transparent or fully dark under the current lighting (a MeshStandardMaterial without lights renders black, a MeshBasicMaterial does not need lights), verify the object is inside the camera frustum by position and scale, and check for a scene that never receives renderer.render. The response walks these checks as a decision tree ordered by likelihood and includes quick probes: temporarily using MeshBasicMaterial to rule out lighting, logging the camera-to-object distance, and inspecting the canvas size via the DOM.",
+      "assertions": [
+        "The debug procedure checks canvas presence and sizing first, including zero-height containers",
+        "Camera setup including frustum and orientation is verified",
+        "Material and lighting interaction is tested by switching to MeshBasicMaterial",
+        "Object position and scale inside the camera frustum are verified",
+        "The response orders checks by likelihood and includes concrete probes"
+      ]
+    },
+    {
+      "id": "raycaster-interaction",
+      "prompt": "I want users to click on 3D objects in my scene to select them. I have several meshes in the scene and a camera that can move. How do I implement click-to-select with raycasting correctly?",
+      "expected_output": "A raycasting implementation that maps the click correctly: the response derives the normalized device coordinates from the mouse event using the renderer's viewport size, creates a raycaster, sets it from the camera with the NDC coordinates, intersects against the selectable meshes (only objects in the intersected set, not the whole scene graph unnecessarily), and handles the results: nearest intersection wins, highlighting the selected mesh and clearing previous selection. The response covers the pitfalls: forgetting to account for canvas position when computing NDC if the canvas is not fullscreen, raycasting before the renderer size is updated, and intersecting with invisible helpers or materials. It presents the complete pattern including the mousemove or click listener and cleanup of the previous highlight.",
+      "assertions": [
+        "Normalized device coordinates are computed from the event relative to the canvas",
+        "The raycaster is set from the camera and intersects a scoped set of objects",
+        "Nearest-intersection selection with highlight and clear-previous is implemented",
+        "Canvas-position and renderer-size pitfalls are handled",
+        "The pattern is complete with event listeners and cleanup"
+      ]
+    }
+  ]
+}

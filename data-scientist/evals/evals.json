@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "data-scientist",
+  "evals": [
+    {
+      "id": "ab-test-design-power",
+      "prompt": "We want to test a new onboarding flow that we believe will increase activation rate from 20% to 22%. How many users do we need in the experiment, how long should it run, and what analysis should we do at the end? I want to be rigorous and avoid a false-positive-driven launch.",
+      "expected_output": "An experiment design that starts by stating the unit of randomization (user), the metric (activation rate), and the minimum detectable effect (2 percentage points), then computes required sample size per arm using a standard two-proportion power calculation (alpha 0.05, power 0.8), accounting for multiple metrics and multiple variants with a correction if applicable. It covers duration planning from expected daily traffic plus a buffer for novelty effects and seasonality, pre-registers the primary metric and stopping rule, and prescribes the analysis: check sample ratio mismatch, compute confidence interval on the effect, run sensitivity checks, and distinguish statistical significance from practical significance before launch.",
+      "assertions": [
+        "The response specifies the randomization unit, primary metric, baseline rate, and minimum detectable effect before computing sample size",
+        "The response computes sample size with stated alpha, power, and a two-proportion formula",
+        "The response plans duration from daily traffic including buffers for novelty and seasonality",
+        "The response pre-registers the primary metric and stopping rule and checks for sample ratio mismatch",
+        "The response distinguishes statistical from practical significance before recommending launch"
+      ]
+    },
+    {
+      "id": "causal-inference-vs-correlation",
+      "prompt": "Sales data shows customers who attend our webinars churn 40% less than those who do not. My boss wants to make webinars the centerpiece of the retention strategy based on this. Is that justified, and what would it take to actually establish causality?",
+      "expected_output": "A response that resists the correlational conclusion: webinar attendees differ systematically from non-attendees (they are more engaged, more likely to be on certain plans, earlier in lifecycle), so the naive comparison suffers from selection bias and confounding. It proposes the hierarchy of evidence for the question: randomized encouragement designs, natural experiments or instrument variables, difference-in-differences using a roll-out, or propensity-score/regression adjustments as weaker alternatives, and specifies what data would be needed to support each. It also states what analysis should be run now to quantify the selection bias (compare observables between groups) before any investment decision.",
+      "assertions": [
+        "The response flags selection bias and confounding as the core problem with the observed comparison",
+        "The response explains why attendees differ systematically from non-attendees and how that undermines the causal claim",
+        "The response proposes an identification strategy such as randomized encouragement, diff-in-diff, or instrumental variables",
+        "The response includes a near-term analysis comparing observables between groups to quantify selection",
+        "The response does not endorse the webinar strategy on the correlation alone"
+      ]
+    },
+    {
+      "id": "model-selection-task",
+      "prompt": "We need to predict which accounts will churn in the next 30 days so our sales team can intervene. We have 40k accounts, 120 features with lots of missing values, class imbalance (about 5% churn), and the team has been tuning XGBoost for weeks. How should I frame model selection here, and what should drive the final choice?",
+      "expected_output": "A model-selection framing that leads with the business decision context: churn prediction is a ranking task for intervention, so evaluation should use recall-at-k or precision-at-k at the intervention capacity, not raw accuracy on an imbalanced set. It recommends a baseline (logistic regression or simple heuristic) before complex models, a proper train/validation/test split that respects time ordering (no random split leaking future information), handling of missingness that is validated rather than assumed, and a cost-aware threshold choice based on the cost of a false positive versus a missed churner. The response compares the XGBoost candidate against baselines with the ranking metric and states that the choice is justified by validated lift, not tuning effort.",
+      "assertions": [
+        "The response reframes evaluation around ranking metrics (recall-at-k or precision-at-k) tied to intervention capacity",
+        "The response mandates a time-respecting split rather than a random split",
+        "The response requires a simple baseline before accepting the tuned model",
+        "The response treats threshold choice as cost-aware, weighing false positives against missed churners",
+        "The response rejects accuracy as the evaluation metric on an imbalanced set"
+      ]
+    },
+    {
+      "id": "bayesian-vs-frequentist",
+      "prompt": "We ran an experiment and the frequentist analysis says the effect is not significant (p=0.09). A colleague says we should switch to a Bayesian analysis because it will let us conclude there is a high probability the change is positive. Is that a valid reason to switch analysis methods?",
+      "expected_output": "A response that distinguishes the legitimate from the illegitimate uses of Bayesian analysis: switching after peeking because the frequentist result is not convenient is p-hacking by another name, and a Bayesian analysis with a flat prior run after the fact will not manufacture evidence. It explains that a Bayesian approach can add value when designed up front: an informative prior based on prior experiments, a decision rule on the posterior (P(effect > 0) and expected loss), and sequential monitoring that is principled. It notes that the two frameworks answer different questions and that the analysis choice must be pre-registered, and it shows how to compute the posterior probability of a positive effect and the posterior probability of a practically meaningful effect from the observed data.",
+      "assertions": [
+        "The response flags switching methods after seeing the p-value as post-hoc analysis rather than principled",
+        "The response explains that a flat-prior Bayesian analysis run post hoc does not create evidence",
+        "The response describes when Bayesian analysis is genuinely useful: informative priors, decision rules, principled sequential monitoring",
+        "The response distinguishes the question each framework answers and requires pre-registration of the analysis plan",
+        "The response computes or specifies computing P(effect > 0) and the posterior probability of a meaningful effect"
+      ]
+    },
+    {
+      "id": "analysis-report-uncertainty",
+      "prompt": "I ran a regression analysis on customer spend and found a coefficient for the new pricing plan of +$12/month. I need to write a report for leadership. What should the report contain beyond the coefficient, and how should I communicate the uncertainty?",
+      "expected_output": "An analysis report structured for decision-makers: the question and the decision it informs, the data and its limitations, the model and its key assumptions stated plainly, and the estimate with a confidence interval rather than a single point, expressed in decision-relevant language (range of plausible effects, probability of the effect being positive or economically meaningful if a Bayesian interpretation is used). The report discloses confounders and omitted-variable risk, checks robustness (alternative model specifications, sensitivity to outliers), and ends with what would change the conclusion. It avoids overprecision and states clearly what is measured versus assumed.",
+      "assertions": [
+        "The response structures the report around the decision the analysis informs",
+        "The response communicates the estimate with a confidence interval rather than a single point",
+        "The response discloses model assumptions, confounders, and omitted-variable risk",
+        "The response includes robustness checks such as alternative specifications or sensitivity to outliers",
+        "The response states what is measured versus assumed and what would change the conclusion"
+      ]
+    }
+  ]
+}
