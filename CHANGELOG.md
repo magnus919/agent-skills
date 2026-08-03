@@ -58,7 +58,6 @@
 * **qa-methodology:** refresh traditional QA core references and split monolithic file ([966edcf](https://github.com/magnus919/agent-skills/commit/966edcf0c75e2eb64f4320e1f455d64776928ba5))
 * **reference-queries:** implement xrefs, callers, callees, and callgraph CLI commands ([93b0431](https://github.com/magnus919/agent-skills/commit/93b04315a9cdfe987d7390aff947aae5df59dd4d))
 * **release-engineering:** add release engineering skill bundle ([818d8ca](https://github.com/magnus919/agent-skills/commit/818d8cafa2b435b1556fdafa8603aa70f39cf01d))
-* **release-engineering:** add release engineering skill bundle ([6730015](https://github.com/magnus919/agent-skills/commit/67300153120c0f98fc12d46ee0c5ebb779ed2de7))
 * **reporting:** implement export-report and audit commands ([010a308](https://github.com/magnus919/agent-skills/commit/010a3086aa373afc82edb4a0947ee8cfee16be4a))
 * **resilience-and-recovery:** add resilience-and-recovery skill ([#223](https://github.com/magnus919/agent-skills/issues/223)) ([c032580](https://github.com/magnus919/agent-skills/commit/c032580197f2f370d4f96895fafc09b36c21f4dd))
 * **safety-hardening:** implement path security, output limits, memory limits, and report containment ([e62cf47](https://github.com/magnus919/agent-skills/commit/e62cf47a9b2b01905bfbf0864be7fe13365c7908))
@@ -83,13 +82,13 @@
 * permit removal of eval-covered skills ([687d7d7](https://github.com/magnus919/agent-skills/commit/687d7d7c33510b7496c50052161596f34ad58eae))
 * **product-strategy:** correct stale RICE reference ([#211](https://github.com/magnus919/agent-skills/issues/211)) ([8d30f22](https://github.com/magnus919/agent-skills/commit/8d30f22cb89508b2982c36b8a627a79944f5f2b6))
 * **release-engineering:** address review findings in DORA asset, cadence, link, metrics script ([2b90656](https://github.com/magnus919/agent-skills/commit/2b906565d443bf7d460cfe1a8f5d5c258844de51))
+* **release-engineering:** align 0.x version bumps with Release Please's minor-feature policy
+* **release-engineering:** validate Keep a Changelog and Release Please formats
 * relocate binary analysis skill ([6387f7f](https://github.com/magnus919/agent-skills/commit/6387f7f4752a2dd8fd7a92a7e640ec6b62c11698))
-* relocate binary analysis skill ([f66ed48](https://github.com/magnus919/agent-skills/commit/f66ed48b8c683a0b7bc6a49d86ae39f2e994aaf3))
 * require dated commitments for CoS tasks ([857dfc6](https://github.com/magnus919/agent-skills/commit/857dfc6e1cecccf94ec241a89be20bca3a539fb3))
 * **security-ship:** ensure diagnostics have both recoverable values and add pagination cursors to security commands ([d04af37](https://github.com/magnus919/agent-skills/commit/d04af37602eae8304e4c089076c047a0eae8fb9c))
 * **security-ship:** fix --limit routing, truncation warnings, and clean confirmation order ([7b0109b](https://github.com/magnus919/agent-skills/commit/7b0109b328c097e6c40c1ff07ac3ce4c01e98aa2))
 * **security-ship:** fix three scrutiny blocking issues ([a20adde](https://github.com/magnus919/agent-skills/commit/a20adde298209480b49279aca84a5b6e3c54457e))
-* snapshot and restore sys.modules between discover iterations. ([96f0bd4](https://github.com/magnus919/agent-skills/commit/96f0bd4e46c8023cd5035aba2299df70562c2837))
 * state CoS task-capture boundary ([f285316](https://github.com/magnus919/agent-skills/commit/f285316206258471343c66ea9bfaf15f07f3bfbc))
 
 

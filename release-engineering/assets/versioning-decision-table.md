@@ -36,9 +36,14 @@
 | `BREAKING CHANGE:` footer, or `feat!` / `fix!` | MAJOR | `feat!: drop v1 API` |
 | `feat` | MINOR | `feat(auth): add refresh tokens` |
 | `fix` | PATCH | `fix(api): retry on 429` |
-| `perf`, `refactor`, `docs`, `test`, `chore`, `ci`, `build`, `style` | No bump (or PATCH, if you choose) | `docs: update readme` |
+| `perf`, `refactor`, `docs`, `test`, `chore`, `ci`, `build`, `style` | PATCH in this skill | `docs: update readme` |
 
-> **Gotcha —** the bump is decided by the highest-priority type in the release range: one `BREAKING CHANGE` forces a major even if the rest are fixes. Automate with the `version_bump.py` script.
+For `0.y.z`, this skill's Release Please-compatible policy maps both
+`feat` and breaking changes to MINOR (`0.5.0` -> `0.6.0`), while fixes and
+other changes remain PATCH. At `1.0.0` and later, normal SemVer priority
+applies.
+
+> **Gotcha —** the bump is decided by the highest-priority type in the release range: one `BREAKING CHANGE` forces a MAJOR at 1.0.0+, or a MINOR bump in 0.x, even if the rest are fixes. Automate with the `version_bump.py` script.
 
 ## Prerelease and Build Metadata Rules
 

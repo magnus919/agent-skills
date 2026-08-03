@@ -1,7 +1,7 @@
 """Tests for changelog_check.py.
 
-Covers: Keep a Changelog validation (title, [Unreleased], version headers,
-dates, change types, reference links), --json output, and exit codes.
+Covers: Keep a Changelog and Release Please validation, format selection,
+--json output, and exit codes.
 
 Discoverable by both pytest and unittest (unittest.TestCase classes).
 """
@@ -36,6 +36,21 @@ All notable changes to this project will be documented in this file.
 
 [Unreleased]: https://github.com/example/proj/compare/v1.1.0...HEAD
 [1.1.0]: https://github.com/example/proj/releases/tag/v1.1.0
+"""
+
+VALID_RELEASE_PLEASE = """\
+# Changelog
+
+## [0.6.0](https://github.com/magnus919/agent-skills/compare/v0.5.0...v0.6.0) (2026-08-03)
+
+### Features
+* add a feature ([abc123](https://github.com/example/proj/commit/abc123))
+
+### Bug Fixes
+* fix a bug ([def456](https://github.com/example/proj/commit/def456))
+
+### Reverts
+* revert an earlier change ([fedcba](https://github.com/example/proj/commit/fedcba))
 """
 
 
@@ -140,6 +155,36 @@ class TestChangelogCheckValid(unittest.TestCase):
         path = write_changelog(content)
         try:
             rc, _, _ = run_changelog([path])
+            self.assertEqual(rc, 0)
+        finally:
+            os.unlink(path)
+
+    def test_release_please_format_valid(self):
+        """Release Please's dated linked headers and star bullets pass."""
+        path = write_changelog(VALID_RELEASE_PLEASE)
+        try:
+            rc, out, _ = run_changelog([path])
+            self.assertEqual(rc, 0)
+            self.assertIn("release-please", out.lower())
+        finally:
+            os.unlink(path)
+
+    def test_release_please_explicit_format_valid(self):
+        """The Release Please format can be selected explicitly."""
+        path = write_changelog(VALID_RELEASE_PLEASE)
+        try:
+            rc, out, _ = run_changelog([path, "--format", "release-please"])
+            self.assertEqual(rc, 0)
+            self.assertIn("release-please", out.lower())
+        finally:
+            os.unlink(path)
+
+    def test_release_please_custom_section_valid(self):
+        """Custom Release Please section names remain valid."""
+        content = VALID_RELEASE_PLEASE.replace("### Features", "### Documentation")
+        path = write_changelog(content)
+        try:
+            rc, _, _ = run_changelog([path, "--format", "release-please"])
             self.assertEqual(rc, 0)
         finally:
             os.unlink(path)
@@ -256,6 +301,32 @@ class TestChangelogCheckProblems(unittest.TestCase):
         finally:
             os.unlink(path)
 
+    def test_malformed_release_please_header_exit_1(self):
+        """A Release Please header without its compare link is invalid."""
+        content = VALID_RELEASE_PLEASE.replace(
+            "## [0.6.0](https://github.com/magnus919/agent-skills/compare/v0.5.0...v0.6.0) (2026-08-03)",
+            "## [0.6.0] (2026-08-03)",
+        )
+        path = write_changelog(content)
+        try:
+            rc, out, _ = run_changelog([path, "--format", "release-please"])
+            self.assertEqual(rc, 1)
+            self.assertIn("header", out.lower())
+        finally:
+            os.unlink(path)
+
+    def test_release_please_rejects_unreleased_section(self):
+        """Release Please files must not contain Keep a Changelog Unreleased."""
+        path = write_changelog(VALID_RELEASE_PLEASE.replace(
+            "# Changelog\n", "# Changelog\n\n## [Unreleased]\n"
+        ))
+        try:
+            rc, out, _ = run_changelog([path, "--format", "release-please"])
+            self.assertEqual(rc, 1)
+            self.assertIn("unreleased", out.lower())
+        finally:
+            os.unlink(path)
+
 
 class TestChangelogCheckExitCodes(unittest.TestCase):
     """Exit codes for missing files and usage errors."""
@@ -300,6 +371,29 @@ class TestChangelogCheckJsonOutput(unittest.TestCase):
             self.assertTrue(data["valid"])
             self.assertEqual(data["problem_count"], 0)
             self.assertEqual(data["problems"], [])
+            self.assertEqual(data["format"], "keep-a-changelog")
+        finally:
+            os.unlink(path)
+
+    def test_json_release_please_reports_format(self):
+        """JSON reports the selected and detected Release Please format."""
+        path = write_changelog(VALID_RELEASE_PLEASE)
+        try:
+            rc, out, _ = run_changelog([path, "--json"])
+            self.assertEqual(rc, 0)
+            data = json.loads(out)
+            self.assertEqual(data["format"], "release-please")
+            self.assertEqual(data["detected_format"], "release-please")
+        finally:
+            os.unlink(path)
+
+    def test_explicit_keep_format_rejects_release_please(self):
+        """Explicit Keep a Changelog validation remains strict."""
+        path = write_changelog(VALID_RELEASE_PLEASE)
+        try:
+            rc, out, _ = run_changelog([path, "--format", "keep-a-changelog"])
+            self.assertEqual(rc, 1)
+            self.assertIn("unreleased", out.lower())
         finally:
             os.unlink(path)
 

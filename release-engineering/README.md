@@ -15,7 +15,7 @@ It also covers the parts of release work that quietly break teams: versioning an
 | `references/` | 15 dense topic files: role-and-career, skills-competency-model, release-process-models, cd-and-pipeline-stages, progressive-delivery, change-governance-and-compliance, readiness-and-quality-gates, rollback-and-recovery, versioning-and-artifacts, feature-flag-lifecycle, monorepo-polyrepo-release, toolchain-landscape, supply-chain-security, metrics-and-dora, release-operations-and-triage |
 | `templates/` | 6 fillable templates: release-plan, release-readiness-checklist, rollback-runbook, release-notes, change-governance-record, hotfix-emergency-release-plan |
 | `assets/` | 4 quick-reference files: dora-metrics-reference, versioning-decision-table, deployment-strategy-matrix, release-toolchain-cheatsheet |
-| `scripts/` | 5 Python CLIs: version_bump (next-SemVer from conventional commits), semver_check (validate/compare/sort), changelog_check (Keep a Changelog validator), dora_metrics (five-metric computation), release_plan_scaffold (plan generator) |
+| `scripts/` | 5 Python CLIs: version_bump (next-SemVer from conventional commits, including the documented 0.x policy), semver_check (validate/compare/sort), changelog_check (Keep a Changelog and Release Please validator), dora_metrics (five-metric computation), release_plan_scaffold (plan generator) |
 | `evals/` | Schema-v1 output-quality eval manifest (8 cases) |
 
 ## Quick Start
@@ -30,6 +30,8 @@ Validate a changelog before it ships:
 
 ```bash
 python3 release-engineering/scripts/changelog_check.py CHANGELOG.md
+# Or select Release Please's linked-header format explicitly:
+python3 release-engineering/scripts/changelog_check.py CHANGELOG.md --format release-please
 ```
 
 Compute the five DORA metrics from deployment and commit event data:
