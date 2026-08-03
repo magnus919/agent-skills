@@ -1,0 +1,411 @@
+#!/usr/bin/env python3
+"""pgdiag - read-only PostgreSQL operational diagnostics with bounded evidence.
+
+Collects operational evidence from a live PostgreSQL instance through the
+psql client without mutating anything: server identity and version,
+configuration values, connection pressure, index usage, bloat signals, WAL
+archiving health, recovery and replication state, installed extensions, and
+database sizes. Every psql session opens with default_transaction_read_only=on
+so the server itself rejects any write attempt; the tool only ever issues
+read-only statements.
+
+The script uses the Python standard library only, and --help works with no
+PostgreSQL server and no psql binary installed. Diagnostic data is emitted as
+bounded JSON with --json, or as human-readable text otherwise.
+
+Exit codes: 0 ok, 1 runtime/collection error, 2 usage error,
+127 psql binary not found, 124 timeout.
+"""
+import argparse
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
+
+READ_ONLY_SQL = "SET default_transaction_read_only = on"
+READ_ONLY_PREFIXES = ("SELECT", "SHOW", "WITH", "EXPLAIN")
+DEFAULT_TIMEOUT = 30
+
+CHECKS = [
+    {
+        "name": "identity",
+        "title": "Server identity and version",
+        "sql": (
+            "SELECT current_database(), current_user, "
+            "current_setting('server_version'), "
+            "current_setting('server_version_num'), "
+            "pg_is_in_recovery(), pg_postmaster_start_time()"
+        ),
+    },
+    {
+        "name": "config",
+        "title": "Configuration values",
+        "sql": (
+            "SELECT 'max_connections', current_setting('max_connections') "
+            "UNION ALL SELECT 'shared_buffers', current_setting('shared_buffers') "
+            "UNION ALL SELECT 'effective_cache_size', current_setting('effective_cache_size') "
+            "UNION ALL SELECT 'work_mem', current_setting('work_mem') "
+            "UNION ALL SELECT 'maintenance_work_mem', current_setting('maintenance_work_mem') "
+            "UNION ALL SELECT 'wal_level', current_setting('wal_level') "
+            "UNION ALL SELECT 'max_wal_size', current_setting('max_wal_size') "
+            "UNION ALL SELECT 'checkpoint_timeout', current_setting('checkpoint_timeout') "
+            "UNION ALL SELECT 'archive_mode', current_setting('archive_mode') "
+            "UNION ALL SELECT 'archive_command', current_setting('archive_command') "
+            "UNION ALL SELECT 'archive_timeout', current_setting('archive_timeout') "
+            "UNION ALL SELECT 'max_wal_senders', current_setting('max_wal_senders') "
+            "UNION ALL SELECT 'max_replication_slots', current_setting('max_replication_slots') "
+            "UNION ALL SELECT 'autovacuum', current_setting('autovacuum') "
+            "UNION ALL SELECT 'autovacuum_max_workers', current_setting('autovacuum_max_workers') "
+            "UNION ALL SELECT 'autovacuum_naptime', current_setting('autovacuum_naptime') "
+            "UNION ALL SELECT 'log_min_duration_statement', current_setting('log_min_duration_statement') "
+            "UNION ALL SELECT 'log_statement', current_setting('log_statement') "
+            "UNION ALL SELECT 'ssl', current_setting('ssl') "
+            "UNION ALL SELECT 'track_io_timing', current_setting('track_io_timing') "
+            "UNION ALL SELECT 'random_page_cost', current_setting('random_page_cost') "
+            "UNION ALL SELECT 'seq_page_cost', current_setting('seq_page_cost')"
+        ),
+    },
+    {
+        "name": "connections",
+        "title": "Connection activity by state",
+        "sql": (
+            "SELECT state, count(*) FROM pg_stat_activity "
+            "GROUP BY state ORDER BY count(*) DESC"
+        ),
+    },
+    {
+        "name": "index_usage",
+        "title": "Most-used indexes",
+        "sql": (
+            "SELECT schemaname, relname, indexrelname, idx_scan, idx_tup_read, idx_tup_fetch "
+            "FROM pg_stat_user_indexes ORDER BY idx_scan DESC LIMIT 10"
+        ),
+    },
+    {
+        "name": "unused_indexes",
+        "title": "Indexes with no recorded scans",
+        "sql": (
+            "SELECT schemaname, relname, indexrelname, idx_scan "
+            "FROM pg_stat_user_indexes WHERE idx_scan = 0 "
+            "ORDER BY relname, indexrelname LIMIT 10"
+        ),
+    },
+    {
+        "name": "invalid_indexes",
+        "title": "Indexes marked unusable",
+        "sql": (
+            "SELECT c.relname AS index_name, i.indrelid::regclass AS table_name "
+            "FROM pg_index i JOIN pg_class c ON c.oid = i.indexrelid "
+            "WHERE NOT i.indisvalid"
+        ),
+    },
+    {
+        "name": "seq_scan_heavy",
+        "title": "Tables with heavy sequential scans",
+        "sql": (
+            "SELECT schemaname, relname, seq_scan, seq_tup_read, idx_scan "
+            "FROM pg_stat_user_tables WHERE seq_scan > 0 "
+            "ORDER BY seq_tup_read DESC LIMIT 10"
+        ),
+    },
+    {
+        "name": "bloat",
+        "title": "Dead-tuple accumulation signals",
+        "sql": (
+            "SELECT schemaname, relname, n_live_tup, n_dead_tup, "
+            "round(100.0 * n_dead_tup / NULLIF(n_live_tup + n_dead_tup, 0), 1) AS dead_pct "
+            "FROM pg_stat_user_tables WHERE n_dead_tup > 0 "
+            "ORDER BY n_dead_tup DESC LIMIT 10"
+        ),
+    },
+    {
+        "name": "wal_archive",
+        "title": "WAL archiving health",
+        "sql": (
+            "SELECT archived_count, failed_count, last_archived_wal, "
+            "last_archived_time, last_failed_wal, last_failed_time "
+            "FROM pg_stat_archiver"
+        ),
+    },
+    {
+        "name": "recovery",
+        "title": "Recovery state",
+        "sql": (
+            "SELECT pg_is_in_recovery(), pg_last_wal_receive_lsn(), pg_last_wal_replay_lsn()"
+        ),
+    },
+    {
+        "name": "replication",
+        "title": "Replication state",
+        "sql": (
+            "SELECT application_name, state, sync_state, client_addr, "
+            "sent_lsn, write_lsn, flush_lsn, replay_lsn "
+            "FROM pg_stat_replication"
+        ),
+    },
+    {
+        "name": "extensions",
+        "title": "Installed extensions",
+        "sql": "SELECT extname, extversion FROM pg_extension ORDER BY extname",
+    },
+    {
+        "name": "databases",
+        "title": "Database sizes",
+        "sql": (
+            "SELECT datname, pg_size_pretty(pg_database_size(datname)) AS size "
+            "FROM pg_database ORDER BY pg_database_size(datname) DESC"
+        ),
+    },
+]
+
+CHECKS_BY_NAME = {check["name"]: check for check in CHECKS}
+
+
+def emit(payload: Dict[str, Any], as_json: bool) -> None:
+    """Write a payload to stdout; JSON when --json, readable text otherwise."""
+    if as_json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return
+    lines: List[str] = []
+    for check in payload.get("checks", []):
+        lines.append(f"== {check['name']}: {check['title']} ==")
+        if check["status"] == "error":
+            lines.append(f"  error: {check['error']}")
+            continue
+        for row in check.get("rows", []):
+            lines.append("  " + " | ".join(str(value) for value in row))
+    if "error" in payload:
+        lines.append(f"error: {payload['error']}")
+    if not lines:
+        lines.append("no diagnostics collected")
+    print("\n".join(lines))
+
+
+def locate_psql(explicit: Optional[str]) -> Optional[str]:
+    """Resolve the psql binary: --psql wins, otherwise search the PATH."""
+    if explicit:
+        if os.path.isfile(explicit) and os.access(explicit, os.X_OK):
+            return explicit
+        return None
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        for name in ("psql", "psql.exe"):
+            candidate = os.path.join(directory, name)
+            if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+                return candidate
+    return None
+
+
+def build_command(binary: str, args: argparse.Namespace, sql: str) -> List[str]:
+    """Assemble a single-session psql command that is read-only by default."""
+    command = [binary, "-X", "-q", "-A", "-t", "-F", "|"]
+    if args.host:
+        command += ["-h", args.host]
+    if args.port:
+        command += ["-p", str(args.port)]
+    if args.user:
+        command += ["-U", args.user]
+    if args.dbname:
+        command += ["-d", args.dbname]
+    command += ["-c", READ_ONLY_SQL, "-c", sql]
+    return command
+
+
+def validate_plan_query(query: str) -> Optional[str]:
+    """Return a normalized single read-only query for EXPLAIN, or None if unsafe.
+
+    Accepts only a single statement (allowing one trailing semicolon) whose
+    first keyword is a read-only prefix. The read-only session setting remains
+    the authoritative guard: EXPLAIN only plans, it never executes, and any
+    server-side write rejection still applies to the session.
+    """
+    stripped = query.strip()
+    if not stripped:
+        return None
+    without_semicolon = stripped[:-1] if stripped.endswith(";") else stripped
+    if ";" in without_semicolon:
+        return None
+    first_word = without_semicolon.lstrip().split(None, 1)[0].upper()
+    if first_word not in READ_ONLY_PREFIXES:
+        return None
+    return without_semicolon
+
+
+def run_check(binary: str, args: argparse.Namespace, check: Dict[str, Any]) -> Dict[str, Any]:
+    """Run one diagnostic check; never allow a failure to stop the others."""
+    result: Dict[str, Any] = {"name": check["name"], "title": check["title"]}
+    command = build_command(binary, args, check["sql"])
+    try:
+        proc = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=args.timeout,
+        )
+    except subprocess.TimeoutExpired:
+        result["status"] = "error"
+        result["error"] = f"psql timed out after {args.timeout}s"
+        return result
+    if proc.returncode != 0:
+        result["status"] = "error"
+        result["error"] = proc.stderr.strip() or f"psql exited {proc.returncode}"
+        return result
+    rows = [line.split("|") for line in proc.stdout.splitlines() if line.strip()]
+    result["status"] = "ok"
+    result["rows"] = rows
+    return result
+
+
+def run_plan(binary: str, args: argparse.Namespace, query: str) -> Dict[str, Any]:
+    """EXPLAIN (FORMAT JSON) a caller-supplied read-only query."""
+    result: Dict[str, Any] = {"name": "plan", "title": "Query plan", "status": "ok"}
+    command = build_command(binary, args, f"EXPLAIN (FORMAT JSON) {query}")
+    try:
+        proc = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=args.timeout,
+        )
+    except subprocess.TimeoutExpired:
+        result["status"] = "error"
+        result["error"] = f"psql timed out after {args.timeout}s"
+        return result
+    if proc.returncode != 0:
+        result["status"] = "error"
+        result["error"] = proc.stderr.strip() or f"psql exited {proc.returncode}"
+        return result
+    output = proc.stdout.strip()
+    try:
+        result["plan"] = json.loads(output)
+    except json.JSONDecodeError:
+        result["plan"] = output
+    return result
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="pgdiag",
+        description=(
+            "Collect read-only PostgreSQL operational diagnostics through psql. "
+            "Every session runs with default_transaction_read_only=on, so the "
+            "server rejects any write attempt."
+        ),
+        epilog=(
+            "Exit codes: 0 ok, 1 runtime/collection error, 2 usage error, "
+            "127 psql binary not found, 124 timeout."
+        ),
+    )
+    parser.add_argument("--host", help="server host (default: local socket or PGHOST)")
+    parser.add_argument("--port", type=int, help="server port (default: 5432 or PGPORT)")
+    parser.add_argument("--user", help="role name (default: current OS user or PGUSER)")
+    parser.add_argument("--dbname", help="database to connect to (default: user name)")
+    parser.add_argument(
+        "--psql",
+        help="path to the psql binary (default: first psql on PATH)",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="emit machine-readable JSON on stdout",
+    )
+    parser.add_argument(
+        "--plan-for",
+        metavar="QUERY",
+        help=(
+            "run EXPLAIN (FORMAT JSON) on a single read-only statement "
+            "(SELECT, SHOW, WITH, or EXPLAIN) and add it as the plan check"
+        ),
+    )
+    parser.add_argument(
+        "--check",
+        action="append",
+        default=[],
+        metavar="NAME",
+        help=(
+            "run only the named check; repeatable. Names: "
+            + ", ".join(check["name"] for check in CHECKS)
+        ),
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=DEFAULT_TIMEOUT,
+        help="seconds to wait per psql invocation (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="pgdiag 1.0.0",
+    )
+    args = parser.parse_args(argv)
+
+    binary = locate_psql(args.psql)
+    if binary is None:
+        emit(
+            {
+                "ok": False,
+                "error": (
+                    "psql binary not found; install the PostgreSQL client or pass "
+                    "--psql with an explicit path"
+                ),
+            },
+            args.json,
+        )
+        return 127
+
+    if args.check:
+        unknown = [name for name in args.check if name not in CHECKS_BY_NAME]
+        if unknown:
+            parser.error(f"unknown check(s): {', '.join(unknown)}")
+        selected = [CHECKS_BY_NAME[name] for name in args.check]
+    else:
+        selected = list(CHECKS)
+
+    results = [run_check(binary, args, check) for check in selected]
+
+    if args.plan_for:
+        query = validate_plan_query(args.plan_for)
+        if query is None:
+            emit(
+                {
+                    "ok": False,
+                    "error": (
+                        "--plan-for requires a single read-only statement whose first "
+                        "keyword is SELECT, SHOW, WITH, or EXPLAIN"
+                    ),
+                },
+                args.json,
+            )
+            return 2
+        results.append(run_plan(binary, args, query))
+
+    server: Dict[str, Any] = {}
+    for result in results:
+        if result["name"] == "identity" and result["status"] == "ok" and result.get("rows"):
+            row = result["rows"][0]
+            server = {
+                "database": row[0],
+                "user": row[1],
+                "version": row[2],
+                "version_num": row[3],
+                "in_recovery": row[4],
+                "started_at": row[5],
+            }
+            break
+
+    ok = any(result["status"] == "ok" for result in results)
+    payload: Dict[str, Any] = {
+        "ok": ok,
+        "psql": binary,
+        "server": server,
+        "checks": results,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    emit(payload, args.json)
+    return 0 if ok else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
