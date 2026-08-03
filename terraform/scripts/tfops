@@ -193,10 +193,11 @@ def mutation_refusal(command: str, as_json: bool) -> None:
 
 def cmd_doctor(args: argparse.Namespace) -> int:
     binary = find_binary()
+    missing = f"{os.environ.get('TERRAFORM') or 'terraform'} (not found)"
     payload: dict[str, Any] = {
         "ok": True,
         "binary_found": binary is not None,
-        "binary": binary or os.environ.get("TERRAFORM") or "terraform (not found)",
+        "binary": binary or missing,
     }
     if binary:
         version_proc = subprocess.run([binary, "version"], capture_output=True, text=True, timeout=args.timeout)
