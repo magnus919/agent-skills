@@ -201,8 +201,9 @@ def format_money(value):
 def print_human(report):
     metrics = report["metrics"]
     print(f"ARR (annualized recurring revenue): {format_money(metrics['arr'])}")
-    print(f"Monthly logo churn: {metrics['monthly_logo_churn_pct']:.2f}%")
-    print(f"Annualized logo churn: {metrics['annualized_logo_churn_pct']:.2f}%")
+    if "monthly_logo_churn_pct" in metrics:
+        print(f"Monthly logo churn: {metrics['monthly_logo_churn_pct']:.2f}%")
+        print(f"Annualized logo churn: {metrics['annualized_logo_churn_pct']:.2f}%")
     if "ndr_pct" in metrics:
         print(f"NDR (net dollar retention): {metrics['ndr_pct']:.2f}%")
     if "rule_of_40" in metrics:

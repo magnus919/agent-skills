@@ -74,6 +74,47 @@ class TestCliBasics(unittest.TestCase):
         self.assertIn("Rule of 40 (growth + margin): 44.00", stdout)
 
 
+class TestHumanOutputWithoutChurn(unittest.TestCase):
+    """Human-readable output must not crash when churn inputs are omitted.
+
+    Regression: print_human indexed monthly_logo_churn_pct / annualized_logo_churn_pct
+    unconditionally while compute_metrics only populates them when churn inputs are
+    given, so --mrr alone (or --mrr + NDR / growth+margin) died with a KeyError (exit 1).
+    """
+
+    def test_mrr_alone_human_readable_exits_zero(self):
+        rc, stdout, stderr = run_script(["--mrr", "120000"])
+        self.assertEqual(rc, 0, f"stderr: {stderr}")
+        self.assertIn("ARR (annualized recurring revenue): $1,440,000.00", stdout)
+        self.assertNotIn("Monthly logo churn", stdout)
+        self.assertNotIn("Annualized logo churn", stdout)
+
+    def test_mrr_with_ndr_human_readable_exits_zero(self):
+        rc, stdout, stderr = run_script(
+            [
+                "--mrr", "120000",
+                "--expansion", "9000",
+                "--contraction", "3000",
+                "--churned-mrr", "4200",
+            ]
+        )
+        self.assertEqual(rc, 0, f"stderr: {stderr}")
+        self.assertIn("ARR (annualized recurring revenue): $1,440,000.00", stdout)
+        self.assertIn("NDR (net dollar retention): 101.50%", stdout)
+        self.assertNotIn("Monthly logo churn", stdout)
+        self.assertNotIn("Annualized logo churn", stdout)
+
+    def test_mrr_with_growth_and_margin_human_readable_exits_zero(self):
+        rc, stdout, stderr = run_script(
+            ["--mrr", "120000", "--growth-pct", "38", "--margin-pct", "6"]
+        )
+        self.assertEqual(rc, 0, f"stderr: {stderr}")
+        self.assertIn("ARR (annualized recurring revenue): $1,440,000.00", stdout)
+        self.assertIn("Rule of 40 (growth + margin): 44.00", stdout)
+        self.assertNotIn("Monthly logo churn", stdout)
+        self.assertNotIn("Annualized logo churn", stdout)
+
+
 class TestComputeMetrics(unittest.TestCase):
     def test_arr_is_mrr_times_twelve(self):
         metrics = saas_metrics.compute_metrics(mrr=100000)
