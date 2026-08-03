@@ -37,6 +37,19 @@ Backend engineering is the craft of building the server-side systems that power 
 | `references/integration-patterns.md` | Integrating with external systems — retry with backoff, circuit breakers, idempotency keys, webhook verification, message queue consumers |
 | `references/error-handling.md` | Handling errors systematically — classification (client vs server), structured responses, exception handling patterns, observability correlation |
 
+## Templates
+
+| Template | When to Use |
+|-----------|-------------|
+| `templates/service-design-record.md` | Designing or restructuring a service — structure, API surface, data access, error handling, and testing plan in one reviewable record |
+| `templates/error-handling-taxonomy.md` | Defining or auditing a service's error contract — classification, response format, retry/idempotency policy, and error-path tests |
+
+## Scripts
+
+| Script | When to Use |
+|-----------|-------------|
+| `scripts/n1-query-spotter.py` | Scanning Python source for potential N+1 query patterns (query-like calls inside loops); `--json` for CI-friendly output, exit 1 on findings |
+
 ## Core Principles
 
 **The interface is the contract** — API boundaries are service-level contracts. Every endpoint signature, request schema, response format, and error code is a promise to consumers. Breaking changes are coordination problems, not version bumps.

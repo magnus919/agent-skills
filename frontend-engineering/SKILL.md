@@ -38,6 +38,19 @@ Frontend engineering is the craft of building the user-facing layer of applicati
 | `references/responsive-layout-testing.md` | Implementing responsive designs (layout system selection — Grid vs Flexbox vs Container Queries, breakpoint strategies, cross-device testing methodology) and testing frontend code (component testing with Testing Library, integration testing with Playwright/Cypress, visual regression, accessibility testing with axe-core and Lighthouse CI, test data management) |
 | `references/performance.md` | Optimizing client-side performance — Core Web Vitals, bundle analysis, code splitting, render optimization |
 
+## Templates
+
+| Template | When to Use |
+|-----------|-------------|
+| `templates/component-state-design-record.md` | Designing a component tree and state ownership for a feature — decomposition, state scoping, data fetching, and error/loading UX |
+| `templates/performance-budget.md` | Defining performance targets — bundle byte budgets, Core Web Vitals budgets, measurement setup, and CI enforcement |
+
+## Scripts
+
+| Script | When to Use |
+|-----------|-------------|
+| `scripts/bundle-budget-checker.py` | Checking a bundle size report against total and per-chunk budgets; fails (exit 1) when a budget is exceeded, so CI can block performance regressions |
+
 ## Core Principles
 
 **Components are the unit of composition, not pages** — Design and build components as reusable, composable units. Pages are assembled from components, not built as monoliths. A well-designed component can be reused in contexts its creator never imagined.
