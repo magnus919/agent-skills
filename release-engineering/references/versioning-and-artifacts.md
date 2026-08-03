@@ -42,7 +42,7 @@ Two rules that commonly surprise: numeric identifiers compare **numerically** (`
 `0.y.z` means **initial development**: the spec explicitly states that "anything may change at any time" and the public API should not be considered stable. Practical consequences:
 
 - `0.1.0` → `0.2.0` usually signals breaking changes in pre-1.0 libraries — the `1.0.0` MAJOR convention is effectively deferred.
-- Many tools map `feat` commits to MINOR even in 0.x, which can silently bump `0.3.0` → `0.4.0` for an additive change. Decide and document your 0.x policy; a common choice is "breaking changes bump MINOR until 1.0."
+- This skill's default Release Please-compatible policy maps `feat` and breaking commits to MINOR in 0.x (`0.5.0` → `0.6.0`); fixes and other commit types remain PATCH (`0.5.0` → `0.5.1`). This keeps pre-1.0 release lines meaningful while preserving normal SemVer behavior at 1.0+.
 - Consumers pinning `0.x` with caret ranges (`^0.3.1`) get **no automatic updates** in most package managers (npm, for example, treats caret on `0.x` as `>=0.3.1 <0.4.0`), which is exactly the behavior you want for a pre-stable API.
 
 Declare a policy so both humans and automation agree on what a `0.x` bump means:
@@ -50,7 +50,7 @@ Declare a policy so both humans and automation agree on what a `0.x` bump means:
 | Policy | Rule | Consequence |
 |--------|------|-------------|
 | **Strict** | Breaking changes bump MAJOR even in 0.x | Version jumps `0.3.0` → `1.0.0` early; signals commitment before the API is ready |
-| **Deferred** (most common) | Breaking changes bump MINOR until 1.0 | `0.3.0` → `0.4.0`; 1.0 arrives when the API stabilizes |
+| **Deferred** (skill default) | Features and breaking changes bump MINOR until 1.0; fixes and other changes bump PATCH | `0.5.0` → `0.6.0` for `feat`, `0.5.0` → `0.5.1` for `fix`; 1.0 arrives when the API stabilizes |
 | **Tooling-default** | Whatever your release tool computes from commits | Usually `feat`→MINOR; document that pre-1.0 MINOR may break |
 
 > **Gotcha — The 0.x trap:** A 1.0.0 release is a promise about API stability. If your library has public consumers, treat 1.0.0 as a deliberate commitment — and conversely, do not stay in `0.x` forever because bumping to 1.0 feels risky; consumers already treat `0.x` as unstable either way.
@@ -138,7 +138,7 @@ Consistency matters more than the exact mapping: if `perf` bumps PATCH in one re
 
 Automated bump tooling reads this history: **semantic-release** analyzes commits and performs version + changelog + publish with no human gate; **release-please** generates a release PR (version bump + changelog) that a human merges; **git-cliff** generates the changelog from commits without publishing. For monorepo specifics (per-package vs combined releases), see [monorepo-polyrepo-release.md](./monorepo-polyrepo-release.md).
 
-## Changelogs (Keep a Changelog)
+## Changelogs (Keep a Changelog and Release Please)
 
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) is the de-facto human changelog format, designed for **people, not machines** (machines read commits). Core conventions:
 
@@ -169,7 +169,7 @@ A minimal conforming structure:
 [2.1.0]: https://github.com/acme/app/compare/v2.0.0...v2.1.0
 ```
 
-The `scripts/changelog_check.py` in this skill validates this shape: required `# Changelog` title, `[Unreleased]` section, strict-SemVer date-stamped version headers, allowed change types, and consistent reference links.
+The `scripts/changelog_check.py` in this skill validates this shape with `--format keep-a-changelog` (or safe `--format auto` detection). It also validates Release Please output with linked dated headers such as `## [0.6.0](https://github.com/example/proj/compare/v0.5.0...v0.6.0) (2026-08-03)`, conventional `###` sections such as `Features`, `Bug Fixes`, and `Reverts`, and `*` bullets with inline links. Release Please section labels are configurable. Release Please files do not use an `Unreleased` section; select that format explicitly in CI when auto-detection is not appropriate.
 
 ## Artifact Immutability and Promotion
 

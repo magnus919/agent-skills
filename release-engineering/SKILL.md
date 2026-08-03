@@ -93,7 +93,7 @@ Senior-to-principal release engineering methodology: designing and operating the
 | `assets/release-toolchain-cheatsheet.md` | Quick tool lookup by category — one-liner and when-to-pick per tool |
 | `scripts/version_bump.py` | Computing the next SemVer from conventional commits or a git range |
 | `scripts/semver_check.py` | Validating, comparing, or sorting strict SemVer versions |
-| `scripts/changelog_check.py` | Validating a CHANGELOG.md against Keep a Changelog |
+| `scripts/changelog_check.py` | Validating Keep a Changelog or Release Please CHANGELOG.md files |
 | `scripts/dora_metrics.py` | Computing the five DORA metrics from deployment and commit event data |
 | `scripts/release_plan_scaffold.py` | Scaffolding a release plan document from flags or a git range |
 | `evals/evals.json` | Running output-quality evals for this skill (schema v1, 8 cases) |
@@ -107,9 +107,9 @@ Senior-to-principal release engineering methodology: designing and operating the
 
 | Script | Invocation | Purpose |
 |--------|-----------|---------|
-| version_bump | `python3 scripts/version_bump.py --current-version 1.4.0 --git-range v1.4.0..HEAD` | Computes the next SemVer from Conventional Commits — breaking → major, feat → minor, fix → patch; optional prerelease tag |
+| version_bump | `python3 scripts/version_bump.py --current-version 1.4.0 --git-range v1.4.0..HEAD` | Computes the next SemVer from Conventional Commits — breaking → major (minor in 0.x), feat → minor, fix → patch; optional prerelease tag |
 | semver_check | `python3 scripts/semver_check.py --check 1.2.3-beta.1` | Validates strict SemVer 2.0.0, compares two versions, or sorts a list |
-| changelog_check | `python3 scripts/changelog_check.py CHANGELOG.md` | Validates a changelog against Keep a Changelog — headers, dates, change types, link references |
+| changelog_check | `python3 scripts/changelog_check.py CHANGELOG.md [--format auto|keep-a-changelog|release-please]` | Validates supported changelog headers, dates, sections, bullets, and links; reports selected/detected format |
 | dora_metrics | `python3 scripts/dora_metrics.py --events events.json` | Computes all five DORA metrics from deployment and commit event data |
 | release_plan_scaffold | `python3 scripts/release_plan_scaffold.py --version 2.0.0 --owner alice --output plan.md` | Scaffolds a release plan document with filled placeholders from flags or a git range |
 

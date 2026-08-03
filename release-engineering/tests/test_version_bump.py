@@ -114,15 +114,15 @@ class TestVersionBumpBumpRules(unittest.TestCase):
         finally:
             os.unlink(commits)
 
-    def test_zero_major_feat_bumps_patch(self):
-        """On a 0.x version, feat bumps patch."""
+    def test_zero_major_feat_bumps_minor(self):
+        """On a 0.x version, feat follows Release Please and bumps minor."""
         commits = write_temp_file("feat: add helper\n")
         try:
             rc, out, _ = run_version_bump(
-                ["--current-version", "0.2.0", "--commits-file", commits]
+                ["--current-version", "0.5.0", "--commits-file", commits]
             )
             self.assertEqual(rc, 0)
-            self.assertIn("0.2.1", out)
+            self.assertIn("0.6.0", out)
         finally:
             os.unlink(commits)
 

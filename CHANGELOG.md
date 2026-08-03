@@ -1,5 +1,101 @@
 # Changelog
 
+## [0.6.0](https://github.com/magnus919/agent-skills/compare/v0.5.0...v0.6.0) (2026-08-03)
+
+
+### Features
+
+* add CNCF Landscape technology selection skill ([622f341](https://github.com/magnus919/agent-skills/commit/622f341ea467616174592e036c5d3fa8f121ae03))
+* add comic chat PNG renderer skill ([2494a66](https://github.com/magnus919/agent-skills/commit/2494a663952f32d5807f900804bafc05aa417352))
+* add lightweight test-hardening path to neckbeard ([#230](https://github.com/magnus919/agent-skills/issues/230)) ([36d3fa8](https://github.com/magnus919/agent-skills/commit/36d3fa837e928951aa17bfc7ec4dc772f47becc6))
+* **agent-production-operations:** add agent production operations bundle ([#229](https://github.com/magnus919/agent-skills/issues/229)) ([ac1ad5d](https://github.com/magnus919/agent-skills/commit/ac1ad5dbd905fe8de6ea3298896b56d845f30fc7)), closes [#201](https://github.com/magnus919/agent-skills/issues/201)
+* binary-analysis skill with Ghidra backend ([0d4a365](https://github.com/magnus919/agent-skills/commit/0d4a3652e4ccb3c25869f5baca52a29f08ddbf44))
+* **binary-analysis:** implement CLI skeleton with argparse, JSON envelope, and exit codes ([e9397bb](https://github.com/magnus919/agent-skills/commit/e9397bbb542b195e6c9741805bad491a13ff9ef5))
+* **bundles:** define bundle manifests and lifecycle capability matrix ([#203](https://github.com/magnus919/agent-skills/issues/203)) ([#231](https://github.com/magnus919/agent-skills/issues/231)) ([aa893e3](https://github.com/magnus919/agent-skills/commit/aa893e3ec20594da4982f645a31b2675f0abdcf8))
+* **capacity-and-cost-engineering:** add capacity-and-cost-engineering skill ([#199](https://github.com/magnus919/agent-skills/issues/199)) ([#224](https://github.com/magnus919/agent-skills/issues/224)) ([a471888](https://github.com/magnus919/agent-skills/commit/a4718886761af0f90438cfd7c14f2460f4dfff89))
+* **ci:** add linting, formatting, coverage, and security configs ([476d7e1](https://github.com/magnus919/agent-skills/commit/476d7e11b02f2bee65a2368adff02d9366376791))
+* **ci:** add mypy, radon, and deptry to CI pipeline ([bfe05ef](https://github.com/magnus919/agent-skills/commit/bfe05ef18aed5f90e17b2da4b725d1a4d565bfe1))
+* **conditional-customer-success:** add conditional customer success skill ([#192](https://github.com/magnus919/agent-skills/issues/192)) ([#218](https://github.com/magnus919/agent-skills/issues/218)) ([1dd564e](https://github.com/magnus919/agent-skills/commit/1dd564e3d9eb8d73129332658d8b7504beeb0f89))
+* **decompile:** implement decompile command with pseudocode, address map, and diagnostics ([3e4f07a](https://github.com/magnus919/agent-skills/commit/3e4f07a34cf14550802005c111f91eb76aa710b9))
+* **doctor-bootstrap:** implement doctor, bootstrap, and version commands ([55c1451](https://github.com/magnus919/agent-skills/commit/55c145185fd88d51267f5fa776d67207546fd874))
+* **domain-foundation:** implement canonical domain model with entities, enums, schemas, errors, and selectors ([3481663](https://github.com/magnus919/agent-skills/commit/3481663595a097a8cb5b1d9fa87db74024ff7813))
+* **fake-backend:** implement FakeAdapter with controllable backend testing ([6184673](https://github.com/magnus919/agent-skills/commit/6184673f3585da829d5b64feaba1a6154f16ace4))
+* fix remaining agent readiness signals for level 5 ([865a1e9](https://github.com/magnus919/agent-skills/commit/865a1e90c6bb6bdb23c2b182be2fddbf26fd0c17))
+* **fix-coverage-config:** add .coveragerc with placeholder module omissions and exclude plain-text output helpers ([86b248e](https://github.com/magnus919/agent-skills/commit/86b248e89a2425fdff520be48eb6aa042f4c6579))
+* **fix-fake-adapter-env:** add BINARY_FAKE_* env var support to FakeAdapter ([c408259](https://github.com/magnus919/agent-skills/commit/c408259a7269da8528c250961e6f52b0875df66b))
+* **fix-missing-tests:** add register_binary(), clamp warnings in JSON envelope, and new tests ([50e48de](https://github.com/magnus919/agent-skills/commit/50e48deeb7b318b630a6fe4f645e9a34de176246))
+* **function-queries:** implement functions, disassemble, and bytes CLI commands ([3cf347b](https://github.com/magnus919/agent-skills/commit/3cf347b06035f6651585686966d867e43e19a5d7))
+* **ghidra-adapter:** implement GhidraAdapter skeleton with PyGhidra bridge ([9e8234f](https://github.com/magnus919/agent-skills/commit/9e8234f70f8df1d77b6ca6484f6942bc42f4739e))
+* **implementation-planning:** add implementation planning skill ([#217](https://github.com/magnus919/agent-skills/issues/217)) ([f82515e](https://github.com/magnus919/agent-skills/commit/f82515e85d6620e962a93d6341be9d0474b83215)), closes [#186](https://github.com/magnus919/agent-skills/issues/186)
+* **import-analyze:** implement binary import, analyze, and metadata commands ([f4e254a](https://github.com/magnus919/agent-skills/commit/f4e254ac6703005fcdb702b63aa64dbaaaa0dfa4))
+* improve agent readiness with dev tooling, CI checks, and tests ([6b44d6f](https://github.com/magnus919/agent-skills/commit/6b44d6f490481de100667d900066024f88deafe3))
+* **incident-learning:** add incident-learning skill ([#226](https://github.com/magnus919/agent-skills/issues/226)) ([4f14ce3](https://github.com/magnus919/agent-skills/commit/4f14ce3df6e447848392dd477de13a9b5531c7d8)), closes [#200](https://github.com/magnus919/agent-skills/issues/200)
+* **json-contracts:** implement JSON contract consistency across all commands ([801a5be](https://github.com/magnus919/agent-skills/commit/801a5be65f2478dd8a04677be1c0f7a90093cd75))
+* **migration-engineering:** add migration-engineering skill ([#222](https://github.com/magnus919/agent-skills/issues/222)) ([652521a](https://github.com/magnus919/agent-skills/commit/652521a09e16f222ada2a74ce6a7ed760396dc91))
+* **neckbeard:** issue-to-PR delivery workflow ([#181](https://github.com/magnus919/agent-skills/issues/181)-[#185](https://github.com/magnus919/agent-skills/issues/185)) ([#208](https://github.com/magnus919/agent-skills/issues/208)) ([4a4958b](https://github.com/magnus919/agent-skills/commit/4a4958b6761bcdb4382770e4096b92f5a644fcf7))
+* **privacy-engineering:** add privacy-engineering skill ([#202](https://github.com/magnus919/agent-skills/issues/202)) ([#225](https://github.com/magnus919/agent-skills/issues/225)) ([6f429a9](https://github.com/magnus919/agent-skills/commit/6f429a91b1a41505c512fe529dd10d67f3b141eb))
+* **product-adoption:** add product adoption skill ([#214](https://github.com/magnus919/agent-skills/issues/214)) ([11a6595](https://github.com/magnus919/agent-skills/commit/11a6595d1ca9539fb97e118fdd17fb5026788905))
+* **product-analytics-and-measurement:** add product analytics and measurement skill ([#213](https://github.com/magnus919/agent-skills/issues/213)) ([6b650b7](https://github.com/magnus919/agent-skills/commit/6b650b722c2657a45c2f97630bca9ca72e687fcf))
+* **product-experimentation:** add product experimentation skill ([#212](https://github.com/magnus919/agent-skills/issues/212)) ([0b32a96](https://github.com/magnus919/agent-skills/commit/0b32a96521e72b21fa5a387da271f19365ce8c0f))
+* **product-lifecycle-learning:** add product lifecycle learning skill ([#194](https://github.com/magnus919/agent-skills/issues/194)) ([#219](https://github.com/magnus919/agent-skills/issues/219)) ([2c247a1](https://github.com/magnus919/agent-skills/commit/2c247a17473edce9b41ccd90f59f01e42d22a7ca))
+* **product-lifecycle:** add thin product-lifecycle bundle ([#227](https://github.com/magnus919/agent-skills/issues/227)) ([46b92aa](https://github.com/magnus919/agent-skills/commit/46b92aa489891e45be0bf3afe3d69021394c1737)), closes [#187](https://github.com/magnus919/agent-skills/issues/187)
+* **product-operations-and-governance:** add product operations and governance skill ([#216](https://github.com/magnus919/agent-skills/issues/216)) ([7756266](https://github.com/magnus919/agent-skills/commit/77562664b87cb3d556e154600735b5a1eb863a95)), closes [#193](https://github.com/magnus919/agent-skills/issues/193)
+* **product-roadmapping-and-portfolio:** add product roadmapping and portfolio skill ([#215](https://github.com/magnus919/agent-skills/issues/215)) ([5d95dd6](https://github.com/magnus919/agent-skills/commit/5d95dd6a303303244af42ca821e998a4454efbd3)), closes [#189](https://github.com/magnus919/agent-skills/issues/189)
+* **production-excellence:** add thin production-excellence bundle ([#228](https://github.com/magnus919/agent-skills/issues/228)) ([8c05a07](https://github.com/magnus919/agent-skills/commit/8c05a076bb1a29700bdadc246f2bf7a93faff34c))
+* **production-readiness:** add production-readiness skill ([#221](https://github.com/magnus919/agent-skills/issues/221)) ([2183c22](https://github.com/magnus919/agent-skills/commit/2183c221352a939636c278b54e10087b6fe31aa9))
+* **project-lifecycle:** implement all project lifecycle commands and state machine ([756b50e](https://github.com/magnus919/agent-skills/commit/756b50e285cfa038de4731aeb6204b737885804a))
+* **project-system:** implement workspace, manifest, locking, and cache ([defe46c](https://github.com/magnus919/agent-skills/commit/defe46c1386d4c518318e95ba557a2ad96f74a33))
+* **qa-methodology:** add 2 stdlib-only CLI scripts and colocated pytest suite ([974fde0](https://github.com/magnus919/agent-skills/commit/974fde017cf6760d491caec7f4c0c79bb1b54b04))
+* **qa-methodology:** add 3 new traditional QA references ([ff69b09](https://github.com/magnus919/agent-skills/commit/ff69b0982f036543392352c635ecbefff78893da))
+* **qa-methodology:** add 5 fillable templates and 3 assets ([3325787](https://github.com/magnus919/agent-skills/commit/332578766db926695a31adc24060aa6d0665abe8))
+* **qa-methodology:** add modern agentic references (ai-code-quality-gates, agentic-eval-design) ([aa8c027](https://github.com/magnus919/agent-skills/commit/aa8c027a6e2d0ed8fba3af93f3bd7ce6dfe1e3de))
+* **qa-methodology:** add modern QA career levels and SDET engineering references ([9b10ff5](https://github.com/magnus919/agent-skills/commit/9b10ff546ae968b6df9909ae6f7192c148543d33))
+* **qa-methodology:** add mutation-guided test hardening evidence workflow ([8bd042e](https://github.com/magnus919/agent-skills/commit/8bd042eae5a851419c3f6324e4709eb894a8e36f)), closes [#209](https://github.com/magnus919/agent-skills/issues/209)
+* **qa-methodology:** add schema-v1 evals with 7 output-quality cases ([107d6d1](https://github.com/magnus919/agent-skills/commit/107d6d11631f70e957b16605ca0bdf4a098e833d))
+* **qa-methodology:** rebuild as thin-index QA/SDET skill bundle ([726de89](https://github.com/magnus919/agent-skills/commit/726de898e8d8b81b9cfb2a13902f38d0cf8c63a0))
+* **qa-methodology:** rebuild SKILL.md as thin index and rewrite README.md ([8b0220b](https://github.com/magnus919/agent-skills/commit/8b0220b75b62907e9c954cc7dc60584ba077b616))
+* **qa-methodology:** refresh 5 traditional QA support references ([5bad13a](https://github.com/magnus919/agent-skills/commit/5bad13af568567529071f65d4cd756ac8492a1c8))
+* **qa-methodology:** refresh traditional QA core references and split monolithic file ([966edcf](https://github.com/magnus919/agent-skills/commit/966edcf0c75e2eb64f4320e1f455d64776928ba5))
+* **reference-queries:** implement xrefs, callers, callees, and callgraph CLI commands ([93b0431](https://github.com/magnus919/agent-skills/commit/93b04315a9cdfe987d7390aff947aae5df59dd4d))
+* **release-engineering:** add release engineering skill bundle ([818d8ca](https://github.com/magnus919/agent-skills/commit/818d8cafa2b435b1556fdafa8603aa70f39cf01d))
+* **reporting:** implement export-report and audit commands ([010a308](https://github.com/magnus919/agent-skills/commit/010a3086aa373afc82edb4a0947ee8cfee16be4a))
+* **resilience-and-recovery:** add resilience-and-recovery skill ([#223](https://github.com/magnus919/agent-skills/issues/223)) ([c032580](https://github.com/magnus919/agent-skills/commit/c032580197f2f370d4f96895fafc09b36c21f4dd))
+* **safety-hardening:** implement path security, output limits, memory limits, and report containment ([e62cf47](https://github.com/magnus919/agent-skills/commit/e62cf47a9b2b01905bfbf0864be7fe13365c7908))
+* **search-trace:** implement search and trace commands with cross-area integration flows ([1ead735](https://github.com/magnus919/agent-skills/commit/1ead735513a00bfb3b8dc5a93a82cfb074e30072))
+* **security-rules:** implement suspicious-apis and capability-map commands ([d005b9a](https://github.com/magnus919/agent-skills/commit/d005b9aadaa2e7404d4718a7a55877a40c000f20))
+* **skill-content:** write SKILL.md and README.md for binary-analysis skill ([72d8462](https://github.com/magnus919/agent-skills/commit/72d8462f073cb20cdeb8dc6b48c08c9515bfc431))
+* **skill-evals:** write 6 eval cases for binary-analysis skill ([f79124d](https://github.com/magnus919/agent-skills/commit/f79124d360ae4212816bf595a7ccff9425252a90))
+* **skill-references:** write 11 reference files for binary-analysis skill ([a799e0f](https://github.com/magnus919/agent-skills/commit/a799e0f7eb46d48867f0ca9cff5b94c0b22d21f7))
+* **structural-queries:** implement sections, entrypoints, imports, exports, symbols, and strings CLI commands ([7df699b](https://github.com/magnus919/agent-skills/commit/7df699ba20d94d09479104caafbad403962269db))
+* **triage-diagnostics:** implement triage and diagnostics commands ([0e05960](https://github.com/magnus919/agent-skills/commit/0e05960dd6c53ffa2b07b929469ffa5a22c61ec8))
+* **worker:** implement optional local worker with start/stop/status commands and one-shot fallback ([5e8f1d3](https://github.com/magnus919/agent-skills/commit/5e8f1d3aafbb5f06a2aa7898cd16a4d390db7012))
+
+
+### Bug Fixes
+
+* **ci:** add binary-analysis to deptry extend_exclude ([8ea4053](https://github.com/magnus919/agent-skills/commit/8ea4053e01826008582b9e942fdecae7c3932361))
+* **ci:** add sys.path setup in test __init__.py for unittest discover ([4c7f5c4](https://github.com/magnus919/agent-skills/commit/4c7f5c42f49cdc9eba4c537a47f6fe2352b20ded))
+* **ci:** add sys.path setup to all test sub-package __init__.py files ([f9354df](https://github.com/magnus919/agent-skills/commit/f9354df2870a97fe85d15e66ad1df1de94afc3f7))
+* **ci:** add sys.path setup to individual binary-analysis test files ([736859e](https://github.com/magnus919/agent-skills/commit/736859eafa9ab7c40d0291479a6d87f4a6895055))
+* **ci:** prevent sys.modules cross-contamination between test directories in check-artifacts ([96f0bd4](https://github.com/magnus919/agent-skills/commit/96f0bd4e46c8023cd5035aba2299df70562c2837))
+* **ci:** use full path for deptry binary-analysis exclude ([b56183b](https://github.com/magnus919/agent-skills/commit/b56183bbabed58089bf79e3d571433e8fe6dd217))
+* permit removal of eval-covered skills ([687d7d7](https://github.com/magnus919/agent-skills/commit/687d7d7c33510b7496c50052161596f34ad58eae))
+* **product-strategy:** correct stale RICE reference ([#211](https://github.com/magnus919/agent-skills/issues/211)) ([8d30f22](https://github.com/magnus919/agent-skills/commit/8d30f22cb89508b2982c36b8a627a79944f5f2b6))
+* **release-engineering:** address review findings in DORA asset, cadence, link, metrics script ([2b90656](https://github.com/magnus919/agent-skills/commit/2b906565d443bf7d460cfe1a8f5d5c258844de51))
+* **release-engineering:** align 0.x version bumps with Release Please's minor-feature policy
+* **release-engineering:** validate Keep a Changelog and Release Please formats
+* relocate binary analysis skill ([6387f7f](https://github.com/magnus919/agent-skills/commit/6387f7f4752a2dd8fd7a92a7e640ec6b62c11698))
+* require dated commitments for CoS tasks ([857dfc6](https://github.com/magnus919/agent-skills/commit/857dfc6e1cecccf94ec241a89be20bca3a539fb3))
+* **security-ship:** ensure diagnostics have both recoverable values and add pagination cursors to security commands ([d04af37](https://github.com/magnus919/agent-skills/commit/d04af37602eae8304e4c089076c047a0eae8fb9c))
+* **security-ship:** fix --limit routing, truncation warnings, and clean confirmation order ([7b0109b](https://github.com/magnus919/agent-skills/commit/7b0109b328c097e6c40c1ff07ac3ce4c01e98aa2))
+* **security-ship:** fix three scrutiny blocking issues ([a20adde](https://github.com/magnus919/agent-skills/commit/a20adde298209480b49279aca84a5b6e3c54457e))
+* state CoS task-capture boundary ([f285316](https://github.com/magnus919/agent-skills/commit/f285316206258471343c66ea9bfaf15f07f3bfbc))
+
+
+### Reverts
+
+* restore clean base64 import in helpers.py ([746df95](https://github.com/magnus919/agent-skills/commit/746df95150e7ec092c2d37daa8261f4c3d12004a))
+
 ## [0.5.0](https://github.com/magnus919/agent-skills/compare/v0.4.0...v0.5.0) (2026-07-27)
 
 
