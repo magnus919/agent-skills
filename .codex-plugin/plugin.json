@@ -141,6 +141,7 @@
     "./transistor",
     "./vercel-eve",
     "./verification-methodology",
+    "./vllm",
     "./web-accessibility",
     "./woodpecker-ci",
     "./yc-default-alive-calculator",

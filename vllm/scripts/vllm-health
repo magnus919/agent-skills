@@ -1,0 +1,221 @@
+#!/usr/bin/env python3
+"""vllm-health - read-only probe for a running vLLM OpenAI-compatible server.
+
+Collects bounded operational evidence from a live vLLM server over HTTP(S)
+without mutating anything: /health liveness, /version, /v1/models (served
+model names), /load metrics, and a bounded prefix of /metrics. The script
+issues GET requests only, never writes files, and never sends data anywhere.
+
+The script uses the Python standard library only, and --help works with no
+vLLM server running. Output is bounded JSON with --json, or human-readable
+text otherwise.
+
+Exit codes: 0 all checks passed, 1 issues found or a fatal error,
+2 usage error, 124 timeout.
+"""
+import argparse
+import json
+import socket
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+from typing import Any, Dict, List, Optional
+
+DEFAULT_URL = "http://127.0.0.1:8000"
+DEFAULT_TIMEOUT = 10
+METRICS_BOUND_BYTES = 64 * 1024
+
+CHECKS = [
+    "health",
+    "version",
+    "models",
+    "load",
+    "metrics",
+]
+
+
+class ProbeTimeout(Exception):
+    """Raised when a server request exceeds the configured timeout."""
+
+
+def parse_args(argv: List[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog="vllm-health",
+        description=(
+            "Read-only probe for a running vLLM OpenAI-compatible server: "
+            "health, version, models, load, and bounded metrics."
+        ),
+    )
+    parser.add_argument(
+        "--url",
+        default=DEFAULT_URL,
+        help=f"Base URL of the vLLM server (default: {DEFAULT_URL})",
+    )
+    parser.add_argument(
+        "--check",
+        action="append",
+        choices=CHECKS,
+        help="Run only the named check(s); repeatable (default: all checks)",
+    )
+    parser.add_argument("--json", action="store_true", help="Emit bounded JSON output")
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=DEFAULT_TIMEOUT,
+        help=f"Per-request timeout in seconds (default: {DEFAULT_TIMEOUT})",
+    )
+    return parser.parse_args(argv)
+
+
+def http_get(url: str, timeout: float, max_bytes: Optional[int] = None) -> tuple[int, bytes]:
+    """GET *url* and return (status, body); read at most *max_bytes* when set.
+
+    Raises ProbeTimeout when the request exceeds *timeout*, and RuntimeError on
+    connection failures.
+    """
+    request = urllib.request.Request(url, method="GET")
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            if max_bytes is None:
+                return response.status, response.read()
+            return response.status, response.read(max_bytes)
+    except (socket.timeout, TimeoutError) as error:
+        raise ProbeTimeout(f"request timed out after {timeout}s") from error
+    except urllib.error.HTTPError as error:
+        return error.code, error.read()
+    except urllib.error.URLError as error:
+        raise RuntimeError(f"connection failed: {error.reason}") from error
+
+
+def check_health(base_url: str, timeout: float) -> Dict[str, Any]:
+    status, body = http_get(urllib.parse.urljoin(base_url.rstrip("/") + "/", "health"), timeout)
+    return {
+        "name": "health",
+        "status_code": status,
+        "ok": status == 200,
+        "body": body.decode("utf-8", errors="replace")[:200],
+    }
+
+
+def check_version(base_url: str, timeout: float) -> Dict[str, Any]:
+    status, body = http_get(urllib.parse.urljoin(base_url.rstrip("/") + "/", "version"), timeout)
+    return {
+        "name": "version",
+        "status_code": status,
+        "ok": status == 200,
+        "body": body.decode("utf-8", errors="replace")[:200],
+    }
+
+
+def check_models(base_url: str, timeout: float) -> Dict[str, Any]:
+    status, body = http_get(urllib.parse.urljoin(base_url.rstrip("/") + "/", "v1/models"), timeout)
+    model_ids: List[str] = []
+    if status == 200:
+        try:
+            payload = json.loads(body.decode("utf-8"))
+            model_ids = [entry.get("id", "") for entry in payload.get("data", []) if isinstance(entry, dict)]
+        except (ValueError, TypeError):
+            model_ids = []
+    return {
+        "name": "models",
+        "status_code": status,
+        "ok": status == 200 and bool(model_ids),
+        "model_ids": model_ids[:20],
+    }
+
+
+def check_load(base_url: str, timeout: float) -> Dict[str, Any]:
+    status, body = http_get(urllib.parse.urljoin(base_url.rstrip("/") + "/", "load"), timeout)
+    parsed: Dict[str, Any] = {}
+    if status == 200:
+        try:
+            parsed = json.loads(body.decode("utf-8"))
+        except (ValueError, TypeError):
+            parsed = {}
+    return {
+        "name": "load",
+        "status_code": status,
+        "ok": status == 200,
+        "load": parsed,
+    }
+
+
+def check_metrics(base_url: str, timeout: float) -> Dict[str, Any]:
+    status, body = http_get(
+        urllib.parse.urljoin(base_url.rstrip("/") + "/", "metrics"),
+        timeout,
+        max_bytes=METRICS_BOUND_BYTES + 1,
+    )
+    truncated = len(body) > METRICS_BOUND_BYTES
+    body = body[:METRICS_BOUND_BYTES]
+    text = body.decode("utf-8", errors="replace")
+    keys = [
+        "vllm:gpu_cache_usage_perc",
+        "vllm:num_requests_running",
+        "vllm:num_requests_waiting",
+        "vllm:generation_tokens_total",
+    ]
+    observed = {key: (key in text) for key in keys}
+    return {
+        "name": "metrics",
+        "status_code": status,
+        "ok": status == 200,
+        "bytes_read": len(body),
+        "truncated": truncated,
+        "key_metrics_present": observed,
+    }
+
+
+def run_checks(base_url: str, selected: List[str], timeout: float) -> List[Dict[str, Any]]:
+    runners = {
+        "health": check_health,
+        "version": check_version,
+        "models": check_models,
+        "load": check_load,
+        "metrics": check_metrics,
+    }
+    results = []
+    for name in selected:
+        try:
+            results.append(runners[name](base_url, timeout))
+        except ProbeTimeout as error:
+            results.append({"name": name, "ok": False, "timed_out": True, "error": str(error)})
+        except RuntimeError as error:
+            results.append({"name": name, "ok": False, "error": str(error)})
+    return results
+
+
+def main(argv: List[str]) -> int:
+    try:
+        args = parse_args(argv)
+    except SystemExit as error:
+        return int(error.code) if error.code is not None else 2
+
+    if args.timeout <= 0:
+        print("error: --timeout must be positive", file=sys.stderr)
+        return 2
+
+    selected = args.check or CHECKS
+    base_url = args.url.rstrip("/")
+    results = run_checks(base_url, selected, args.timeout)
+
+    if args.json:
+        print(json.dumps({"url": base_url, "checks": results}, indent=2))
+    else:
+        for result in results:
+            status = "OK" if result.get("ok") else "FAIL"
+            detail = result.get("error") or result.get("status_code") or ""
+            print(f"[{status}] {result.get('name')} {detail}")
+            if result.get("name") == "models":
+                for model_id in result.get("model_ids", []):
+                    print(f"      model: {model_id}")
+
+    failed = any(not result.get("ok") for result in results)
+    if any(result.get("timed_out") for result in results):
+        return 124
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

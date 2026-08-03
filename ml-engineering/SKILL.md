@@ -6,7 +6,7 @@ description: >-
   decisions, inference deployment, and regression triage, grounded in practical
   engineering patterns for production ML systems. Do not use for statistical
   modeling and experimental design (that's the data scientist) or for operating
-  a specific inference engine (that's a tool skill such as llama-cpp).
+  a specific inference engine (that's a tool skill such as llama-cpp or vllm).
 license: MIT
 metadata:
   tags: ml, machine-learning, fine-tuning, training, evaluation, quantization, mlops,
@@ -25,7 +25,7 @@ Machine learning engineering is the bridge between model research and production
 | Model training — LoRA/QLoRA fine-tuning, full fine-tuning, distributed training | Statistical modeling and experimental design — that's the data scientist |
 | Model evaluation — benchmark suites, custom eval sets, regression testing | Causal inference and hypothesis testing — that's the data scientist |
 | Quantization — GGUF, GPTQ, AWQ, bitsandbytes | Training data collection and labeling — that's the data/ML ops team |
-| Inference serving — vLLM, [llama.cpp](../llama-cpp/SKILL.md), TGI, Triton | Business metrics and KPI definition — that's the product manager |
+| Inference serving — [vLLM](../vllm/SKILL.md), [llama.cpp](../llama-cpp/SKILL.md), TGI, Triton | Business metrics and KPI definition — that's the product manager |
 | Evaluation harness — lm-eval-harness, custom pipelines | Data pipeline architecture — that's the data engineer |
 | Model deployment — containerization, versioning, A/B testing | Infrastructure provisioning — that's the platform engineer |
 
@@ -70,4 +70,4 @@ Machine learning engineering is the bridge between model research and production
 
 ## When not to use
 
-Do not use this skill for statistical modeling, experimental design, or causal inference — that's the data scientist's discipline. Do not use it to operate a specific inference engine: for llama.cpp installation, model loading, benchmarking, and troubleshooting, load the [llama-cpp](../llama-cpp/SKILL.md) tool skill instead. This skill provides the methodology (eval-set design, quantization trade-offs, deployment plans, regression triage); the tool skills own the runbooks.
+Do not use this skill for statistical modeling, experimental design, or causal inference — that's the data scientist's discipline. Do not use it to operate a specific inference engine: for llama.cpp installation, model loading, benchmarking, and troubleshooting, load the [llama-cpp](../llama-cpp/SKILL.md) tool skill instead; for vLLM deployment, model configuration, benchmarking, batching tuning, GPU operation, and upgrade/rollback, load the [vllm](../vllm/SKILL.md) tool skill instead. This skill provides the methodology (eval-set design, quantization trade-offs, deployment plans, regression triage); the tool skills own the runbooks.
