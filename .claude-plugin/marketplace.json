@@ -582,6 +582,15 @@
       "description": "Plan and execute production ML engineering work — model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
     },
     {
+      "name": "mobile-development",
+      "source": "./",
+      "skills": [
+        "./mobile-development"
+      ],
+      "strict": false,
+      "description": "Build, test, sign, and ship mobile apps across iOS, Android, Flutter, and React Native — project scaffolding, builds and code signing, device and emulator testing, store submission (App Store and Play Store), app lifecycle and backgrounding, offline and sync, and mobile-specific testing. Use when the task involves creating, building, testing, or shipping a mobile app for iOS or Android, or reasoning about mobile behavior such as background execution, push notifications, offline storage, and data sync. Do not use for web frontend work (that is frontend-engineering), backend services and APIs (that is backend-engineering), or desktop and web platform targets outside the iOS and Android scope."
+    },
+    {
       "name": "neckbeard",
       "source": "./",
       "skills": [

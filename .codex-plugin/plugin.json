@@ -88,6 +88,7 @@
     "./meshcore-packet-capture",
     "./migration-engineering",
     "./ml-engineering",
+    "./mobile-development",
     "./nous-branding",
     "./open-knowledge-format",
     "./openlibrary-cli",

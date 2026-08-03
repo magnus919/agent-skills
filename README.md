@@ -266,6 +266,10 @@ Plan and execute safe cross-system migrations — schema, data, API, infrastruct
 
 Machine learning engineering methodology — model training, fine-tuning (LoRA/QLoRA), evaluation, quantization, deployment, and MLOps pipeline design. Grounded in practical engineering patterns for production ML systems.
 
+### [mobile-development](mobile-development/SKILL.md)
+
+Build, test, sign, and ship mobile apps across iOS, Android, Flutter, and React Native as ONE family skill with per-framework references: project scaffolding, builds and code signing, device and emulator testing, store submission (App Store/TestFlight and Google Play), app lifecycle and backgrounding, offline and sync, and mobile-specific testing. Ships 4 framework references (ios, android, flutter, react-native) and 6 evals. Routes web UI work to frontend-engineering and server-side work to backend-engineering.
+
 ### [neckbeard](bundles/neckbeard/SKILL.md)
 
 Evidence-driven software delivery operating model — routes a change through framing, discovery, design, implementation, review, verification, delivery, and learning, choosing the smallest *safe* intervention and proving it at the real delivery boundary. Every non-trivial run leaves an inspectable evidence ledger. Composes the specialist catalog rather than replacing it. Ships a versioned evaluation harness that measures SDLC outcomes, never LOC. Not a "10x developer" persona.
