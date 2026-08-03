@@ -67,6 +67,14 @@ skill_view('platform-engineering', file_path='references/infrastructure-as-code.
 | `references/automation-languages.md` | Go CLI patterns, Python SDK integration, Bash bootstrap/conventions for platform tooling |
 | `references/release-engineering.md` | Container image lifecycle, artifact versioning strategies, release gate checklists, Helm chart promotion |
 
+## Templates
+
+| Template | When to Use |
+|-----------|-------------|
+| `templates/golden-path-self-service-portal.md` | Designing a golden path or self-service portal for a developer workflow (scoping, journey, guardrails, escape hatch, metrics) |
+| `templates/iac-review-record.md` | Recording a structured review of Terraform/OpenTofu/Pulumi/Ansible modules before they ship |
+| `templates/observability-contract.md` | Declaring the metrics/logs/traces contract a service must meet before production traffic |
+
 ## Output Contract
 
 The profile using this skill produces artifact pyramids. The response to any caller is the absolute path to `00-index.md`. See `artifact-pyramids` skill for the specification.

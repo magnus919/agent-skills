@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "platform-engineering",
+  "evals": [
+    {
+      "id": "ci-cd-pipeline-design",
+      "prompt": "We are migrating a monolith to microservices and I need to design the CI/CD pipeline for one of the new services. Requirements: every merge to main must produce a deployable artifact, staging should look like production, and we want to move to GitOps-based promotion instead of pushing from a laptop. What should the pipeline look like and where do the approval gates belong?",
+      "expected_output": "A CI/CD pipeline design with distinct stages: build and test on every pull request, artifact production and registry push on merge to main, environment promotion via GitOps (Argo CD or Flux) where the cluster reconciles to Git as the source of truth, and approval gates placed at the environment boundary (staging to production) rather than inside build. The design covers OIDC-based cloud authentication instead of static keys, image signing and provenance, semantic versioning of artifacts, and a rollback path that reverts the Git manifest rather than redeploying a build.",
+      "assertions": [
+        "The response defines a multi-stage pipeline where build and test run on pull requests and artifact production runs on merge to main",
+        "The response uses GitOps promotion with Git as the source of truth for environment state",
+        "The response places manual or protected approval gates at the staging-to-production boundary, not inside the build stage",
+        "The response replaces static cloud credentials with OIDC workload identity for pipeline authentication",
+        "The response covers artifact signing, provenance, and a Git-revert-based rollback path"
+      ]
+    },
+    {
+      "id": "iac-review-module-structure",
+      "prompt": "A new platform team member wrote Terraform modules for our AWS landing zone and I need to review them before they are used across the organization. The modules combine VPC, EKS, and IAM in one root module, store state locally, and hardcode account IDs in the code. What should the review focus on and what structural changes should I request?",
+      "expected_output": "An infrastructure-as-code review record that flags the root module as too broad and requests composition from smaller, single-purpose modules; requires a remote state backend with locking (e.g., S3 with DynamoDB or Terraform Cloud) instead of local state; removes hardcoded account IDs in favor of variables, data sources, or provider-level configuration; checks for state exposure of secrets and requires secret material to come from a secret manager or dynamic credentials rather than plaintext variables; validates that for_each and module composition are used instead of copy-pasted resource blocks, and that outputs expose the minimal surface area consumers need.",
+      "assertions": [
+        "The review flags monolith root modules and recommends composing smaller single-purpose modules",
+        "The review requires a remote state backend with locking instead of local state",
+        "The review flags hardcoded account IDs and requires parameterization via variables or data sources",
+        "The review addresses secrets in state and requires secret material to come from a secret manager or dynamic credentials",
+        "The review recommends for_each-driven composition and a minimal output surface area"
+      ]
+    },
+    {
+      "id": "observability-strategy-design",
+      "prompt": "Our new checkout service goes live next month and we currently have no monitoring, no dashboards, and no alerting. I want an observability strategy that tells us when the service is broken and lets us debug latency regressions after release. Where do I start and what should be the default contract for every service we build?",
+      "expected_output": "An observability strategy organized around the three signals: metrics (RED and USE patterns via Prometheus counters, gauges, histograms), logs (structured JSON shipped to a Loki-style store), and traces (OpenTelemetry spans with W3C trace context propagated across service boundaries). The strategy defines an observability contract for every service: a /metrics endpoint, structured logging, at least one RED dashboard, recording rules for latency and error rate, burn-rate-based alerting tied to an error budget rather than threshold guessing, and a golden signal dashboard as code in Git so dashboards are reviewable and reproducible. It also specifies the cardinality and label hygiene rules that keep the metrics usable at scale.",
+      "assertions": [
+        "The response structures the strategy around metrics, logs, and traces with named tooling for each signal",
+        "The response defines a default observability contract every service must meet, including a metrics endpoint and structured logging",
+        "The response uses RED and USE patterns and burn-rate alerting tied to an error budget",
+        "The response requires dashboards-as-code stored in Git so they are reviewable and reproducible",
+        "The response covers OpenTelemetry tracing with W3C context propagation and metrics cardinality hygiene"
+      ]
+    },
+    {
+      "id": "secret-management-design",
+      "prompt": "We run Kubernetes with GitOps and currently store database credentials in plaintext Kubernetes Secrets committed to a private Git repository. I want a secret-management design that stops putting credentials in Git, handles rotation, and works for both static config secrets and dynamically generated credentials. Which approach fits and what is the migration path?",
+      "expected_output": "A secret-management design that separates the problem into static configuration secrets and dynamic credentials. For static secrets in GitOps, the design recommends SOPS-encrypted files with age or KMS keys for small configs, or Sealed Secrets for cluster-bound secrets, with External Secrets Operator to sync from a central store such as HashiCorp Vault or a cloud secret manager. For dynamic credentials (database passwords, cloud access keys), it recommends Vault dynamic secrets with short TTLs and automatic revocation rather than long-lived static secrets. The design covers the migration path: inventory current plaintext secrets, encrypt at rest in Git, rotate existing credentials during the cutover, and wire renewal/rotation into the workload lifecycle. It also calls out that SOPS and Sealed Secrets are static-only and do not provide rotation or audit, which is why a dynamic store is needed for anything that changes.",
+      "assertions": [
+        "The response separates static configuration secrets from dynamically generated credentials and recommends a different mechanism for each",
+        "The response recommends SOPS or Sealed Secrets for static secrets in Git and External Secrets Operator for syncing from a central store",
+        "The response recommends Vault dynamic secrets with short TTLs and revocation for database and cloud credentials",
+        "The response includes a migration path that inventories plaintext secrets and rotates credentials at cutover",
+        "The response identifies that SOPS and Sealed Secrets lack rotation and audit, motivating a dynamic store"
+      ]
+    },
+    {
+      "id": "cloud-architecture-assessment",
+      "prompt": "Our leadership wants to move the entire platform to a second cloud provider in parallel with AWS to reduce vendor lock-in and cut costs. I have been asked to assess whether this is a good idea before we commit. What factors should the assessment weigh, and what should the recommendation look like?",
+      "expected_output": "A cloud architecture assessment that evaluates the multi-cloud proposal against decision criteria rather than assuming multi-cloud is inherently beneficial. It weighs regulatory data-residency requirements, the small set of services where lock-in actually matters (object storage, Kubernetes), operational cost of duplicated IAM, networking, and skills across providers, and calls out that multi-cloud is not a cost-savings strategy because egress charges and duplicated operational overhead usually outweigh rate differences. The assessment recommends single-cloud for the default path with provider-agnostic abstractions (Terraform/OpenTofu providers, Kubernetes) used as escape hatches rather than abstraction layers for everything, and it covers cost governance: tagging, budget alerts, right-sizing, and committed-use discounts applied to the primary provider before adding a second one.",
+      "assertions": [
+        "The response evaluates multi-cloud against decision criteria including data residency and lock-in, not as a blanket strategy",
+        "The response states that multi-cloud is not a cost-savings strategy and explains egress and duplicated-operations costs",
+        "The response limits provider-agnostic abstraction to escape-hatch patterns such as Terraform providers and Kubernetes",
+        "The response recommends applying cost governance (tagging, budgets, right-sizing, committed use) before expanding providers",
+        "The response treats single-cloud as the default and multi-cloud as justified only by specific regulatory or availability requirements"
+      ]
+    },
+    {
+      "id": "golden-path-self-service-portal",
+      "prompt": "Our developers keep opening tickets to get a database, a namespace, and a CI pipeline for each new service, and the platform team is the bottleneck. I want to design a golden path with a self-service portal so developers can provision their own stack. How do I scope the first golden path and what guardrails should the portal enforce?",
+      "expected_output": "A golden-path and self-service portal design that treats the platform as a product with developers as customers. The first golden path is scoped to the most common request (a new service: repository, CI pipeline, namespace, database, observability defaults) and implemented as a repeatable template with Terraform modules, a pipeline template, and an API-first portal that calls those templates behind the scenes. The design enforces guardrails as policy rather than documentation: least-privilege IAM generated from the request, budget and quota limits, mandatory observability and security baselines, and an escape hatch that lets developers leave the golden path with an exception review instead of forking it. It prioritizes self-service over tickets, measures cognitive load and time-to-first-deploy as the primary success metrics, and keeps every scaffolded artifact in Git for review.",
+      "assertions": [
+        "The response scopes the first golden path to a single high-frequency request and implements it as a repeatable template",
+        "The response uses an API-first self-service portal that provisions through templates rather than tickets",
+        "The response enforces guardrails as policy, including least-privilege IAM, budget limits, and observability baselines",
+        "The response includes an escape hatch with exception review so the golden path is a paved road, not a cage",
+        "The response measures success by developer cognitive load and time-to-first-deploy and keeps scaffolded artifacts in Git"
+      ]
+    }
+  ]
+}

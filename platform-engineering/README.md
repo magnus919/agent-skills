@@ -12,6 +12,8 @@ Your agent gets a structured loading order and dense reference patterns for IaC,
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
 | `references/` | Deep-dive reference files loaded on demand |
+| `templates/` | Fillable records: golden-path/self-service portal design, IaC review record, observability contract |
+| `evals/` | Output-quality eval manifest for the skill's methodology cases |
 
 ## Triggers
 
