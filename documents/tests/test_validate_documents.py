@@ -144,6 +144,40 @@ class RenderCheckTests(unittest.TestCase):
         finally:
             vd.render_pdf = original
 
+    def test_render_pdf_dispatches_renderer_specific_args(self):
+        # Each supported PDF renderer has its own CLI; a machine with only
+        # mutool or ghostscript (no pdftoppm) must still render correctly.
+        import tempfile as _tf
+
+        captured = {}
+
+        def fake_run(cmd, capture_output, timeout):
+            captured["cmd"] = cmd
+            return subprocess.CompletedProcess(cmd, 0, b"", b"")
+
+        original_run = vd.subprocess.run
+        original_find = vd.find_pdf_renderer
+        vd.subprocess.run = fake_run
+        try:
+            with _tf.TemporaryDirectory() as tmp:
+                vd.find_pdf_renderer = lambda: "/usr/bin/pdftoppm"
+                vd.render_pdf(FIXTURES_DIR / "sample.pdf", Path(tmp))
+                self.assertIn("-png", captured["cmd"])
+                self.assertNotIn("draw", captured["cmd"])
+
+                vd.find_pdf_renderer = lambda: "/usr/bin/mutool"
+                vd.render_pdf(FIXTURES_DIR / "sample.pdf", Path(tmp))
+                self.assertIn("draw", captured["cmd"])
+                self.assertIn("-o", captured["cmd"])
+
+                vd.find_pdf_renderer = lambda: "/usr/bin/gs"
+                vd.render_pdf(FIXTURES_DIR / "sample.pdf", Path(tmp))
+                self.assertIn("-sDEVICE=png16m", captured["cmd"])
+                self.assertTrue(any(arg.startswith("-sOutputFile=") for arg in captured["cmd"]))
+        finally:
+            vd.subprocess.run = original_run
+            vd.find_pdf_renderer = original_find
+
 
 class CliTests(unittest.TestCase):
     def run_cli(self, *args):

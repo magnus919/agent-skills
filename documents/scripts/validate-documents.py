@@ -25,9 +25,9 @@ degradation).
 
 Exit codes:
   0  all files pass structural validation (and any attempted render succeeded,
-     or no renderer was available)
+     or no renderer was available); unsupported extensions are skipped, not failed
   1  at least one file fails structural validation or an attempted render failed
-  2  usage or I/O error (missing path, unreadable file, unsupported input)
+  2  usage or I/O error (missing path, unreadable file)
 """
 
 import argparse
@@ -65,6 +65,7 @@ SHEET_PATTERN = re.compile(r"^xl/worksheets/sheet\d+\.xml$")
 SLIDE_PATTERN = re.compile(r"^ppt/slides/slide\d+\.xml$")
 PDF_HEADER = re.compile(rb"%PDF-\d\.\d")
 PAGE_OBJECT = re.compile(rb"/Type\s*/Page[^s]")
+PAGES_TREE_COUNT = re.compile(rb"/Count\s+([1-9]\d*)")
 OLE2_MAGIC = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
 
 
@@ -88,11 +89,19 @@ def check_pdf(data):
     results.append(
         check("EOF marker", b"%%EOF" in data[-2048:], "expected a %%EOF trailer marker near the end")
     )
-    page_count = len(PAGE_OBJECT.findall(data))
+    # Page objects may be stored in compressed object streams (PDF 1.5+ ObjStm),
+    # which hides their "/Type /Page" bytes from a raw scan. The Pages tree's
+    # /Count entry stays legible in the common case, so accept either signal.
+    raw_pages = len(PAGE_OBJECT.findall(data))
+    count_match = PAGES_TREE_COUNT.search(data)
+    tree_pages = int(count_match.group(1)) if count_match else 0
+    total_pages = max(raw_pages, tree_pages)
     results.append(
-        check("page objects", page_count >= 1, "found %d page object(s)" % page_count)
+        check("page objects", total_pages >= 1,
+              "found %d raw page object(s) and a /Count of %d in the page tree"
+              % (raw_pages, tree_pages))
     )
-    if page_count == 0:
+    if total_pages == 0:
         results.append(
             check("content stream", b"BT" in data and b"ET" in data,
                   "no page objects; checked for a text stream (BT/ET) as a fallback",
@@ -212,7 +221,13 @@ def find_office_renderer():
 
 
 def render_pdf(path, tmpdir):
-    """Render the first page of a PDF to a raster; returns a render result dict."""
+    """Render the first page of a PDF to a raster; returns a render result dict.
+
+    Each supported renderer has a different CLI: pdftoppm takes ``-png``,
+    ``mutool`` needs ``draw -o``, and ghostscript needs ``-sDEVICE``. The
+    argument list is dispatched per renderer so a machine with any one of the
+    three can run the render check.
+    """
     renderer = find_pdf_renderer()
     if not renderer:
         return {
@@ -220,22 +235,37 @@ def render_pdf(path, tmpdir):
             "renderer": None,
             "reason": "no PDF renderer installed (pdftoppm, mutool, or ghostscript)",
         }
+    name = Path(renderer).name
     prefix = str(tmpdir / "page")
+    if name == "pdftoppm":
+        cmd = [renderer, "-png", "-r", "72", "-f", "1", "-l", "1", str(path), prefix]
+    elif name == "mutool":
+        cmd = [renderer, "draw", "-o", prefix + "-%d.png", "-r", "72", str(path), "1-1"]
+    elif name == "gs":
+        cmd = [
+            renderer,
+            "-dSAFER", "-dBATCH", "-dNOPAUSE",
+            "-sDEVICE=png16m", "-r72",
+            "-sOutputFile=" + prefix + "-%d.png",
+            str(path),
+        ]
+    else:
+        return {
+            "status": "unavailable",
+            "renderer": name,
+            "reason": "unsupported PDF renderer %r (expected pdftoppm, mutool, or gs)" % name,
+        }
     try:
-        proc = subprocess.run(
-            [renderer, "-png", "-r", "72", "-f", "1", "-l", "1", str(path), prefix],
-            capture_output=True,
-            timeout=60,
-        )
+        proc = subprocess.run(cmd, capture_output=True, timeout=60)
     except (OSError, subprocess.TimeoutExpired) as exc:
-        return {"status": "failed", "renderer": Path(renderer).name, "reason": "renderer error: %s" % exc}
+        return {"status": "failed", "renderer": name, "reason": "renderer error: %s" % exc}
     pages = sorted(tmpdir.glob("page*.png"))
     if proc.returncode != 0:
         reason = (proc.stderr or proc.stdout or b"").decode("utf-8", "replace").strip()[:300]
-        return {"status": "failed", "renderer": Path(renderer).name, "reason": reason or "renderer exited nonzero"}
+        return {"status": "failed", "renderer": name, "reason": reason or "renderer exited nonzero"}
     if not pages:
-        return {"status": "failed", "renderer": Path(renderer).name, "reason": "renderer produced no output pages"}
-    return {"status": "ok", "renderer": Path(renderer).name, "pages": len(pages)}
+        return {"status": "failed", "renderer": name, "reason": "renderer produced no output pages"}
+    return {"status": "ok", "renderer": name, "pages": len(pages)}
 
 
 def render_ooxml(path, tmpdir):
@@ -335,7 +365,8 @@ def validate_files(paths, render_check=False):
                 "format": None,
                 "size": len(data),
                 "status": "skipped",
-                "checks": [check("format", False, "unsupported extension %r (expected .pdf, .docx, .xlsx, .pptx)" % path.suffix)],
+                "reason": "unsupported extension %r (expected .pdf, .docx, .xlsx, .pptx)" % path.suffix,
+                "checks": [],
                 "render": {"status": "not_requested"},
             })
             continue
@@ -414,6 +445,8 @@ def print_human(report):
         else:
             verdict = "SKIPPED"
         print("%s: %s - %s" % (entry["path"], fmt, verdict))
+        if entry.get("reason"):
+            print("  reason: %s" % entry["reason"])
         for item in entry["checks"]:
             mark = "ok" if item["ok"] else "FAIL"
             print("  [%s] %s: %s" % (mark, item["name"], item["detail"]))
