@@ -131,6 +131,7 @@
     "./systematic-debugging",
     "./technical-documentation",
     "./technology-radar",
+    "./telemetry",
     "./tempest-cli",
     "./terraform",
     "./three",

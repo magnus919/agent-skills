@@ -1,0 +1,29 @@
+# Sample Prometheus recording and alerting rules used by telemetry-check.
+# Mirrors the structure promtool check rules accepts: groups of recording and
+# alerting rules with labels, annotations, and durations.
+groups:
+  - name: api-slo
+    interval: 1m
+    rules:
+      - record: job:http_requests:rate5m
+        expr: sum by (job) (rate(http_requests_total{job="api"}[5m]))
+      - record: job:http_errors:rate5m
+        expr: sum by (job) (rate(http_requests_total{job="api",status=~"5.."}[5m]))
+      - alert: ApiHighErrorRate
+        expr: job:http_errors:rate5m / job:http_requests:rate5m > 0.05
+        for: 10m
+        labels:
+          severity: page
+          team: platform
+        annotations:
+          summary: "API error rate above 5% for 10 minutes"
+          runbook: "https://example.com/runbooks/api-high-error-rate"
+  - name: node-health
+    rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance {{ $labels.instance }} is down"

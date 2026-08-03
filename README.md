@@ -465,6 +465,10 @@ Make documentation useful at the moment someone needs to install, operate, exten
 
 Turn scattered technology preferences into explicit, reviewable decisions with owners, evidence, and a clear adoption posture.
 
+### [telemetry](telemetry/SKILL.md)
+
+Operate the Prometheus + OpenTelemetry + Loki observability stack as one unit: scrape config, recording and alerting rules, relabeling, retention, and HA; OpenTelemetry Collector pipelines (receivers, processors, exporters, sampling, trace/span correlation); and Loki ingest, LogQL, retention, and label design. Ships the read-only `telemetry-check` script (rule sanity + scrape-target reachability, `--json`), fixtures, tests, dated references, and 6 evals. Routes strategy to platform-engineering and dashboards to grafana.
+
 ### [tempest-cli](tempest-cli/SKILL.md)
 
 Hyper-local weather from a WeatherFlow Tempest station. Query current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. A complete reference implementation of the cli-builder patterns in a working, testable project — including the CLI binary and full API field layout reference.
