@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "skill_name": "workflow-architect",
+  "evals": [
+    {
+      "id": "active-interview-convergence",
+      "prompt": "/workflow-architect — I don't have a formal process for my mornings. Interview me to figure out my actual routine.",
+      "expected_output": "Scenario: active interrogation mode. The agent loads skills/interviewer/SKILL.md and guides the user through 8-15 adaptive questions covering entry points, phases, branching signals, tool preferences, loop conditions, exit criteria, and pain points. The interviewer branches its probes on the user's answers, records workflow state under workflow-architect:state:, and converges when phases, branching signals, and tool preferences are stable. On convergence it loads skills/bundle-builder/SKILL.md to synthesize the bundle. The interview stops asking questions once convergence is reached rather than continuing indefinitely.",
+      "assertions": [
+        "skills/interviewer/SKILL.md is loaded in active mode",
+        "The interview asks adaptive questions across entry points, phases, branching signals, tools, loops, exits, and pain points",
+        "Probes branch based on the user's answers",
+        "Workflow state is persisted under the workflow-architect:state: prefix",
+        "Convergence triggers bundle-builder synthesis instead of unbounded questioning"
+      ]
+    },
+    {
+      "id": "passive-observation-trigger",
+      "prompt": "I've been working in this session for a while. /workflow-architect passive — figure out what I do. (Then the user says 'analyze my process'.)",
+      "expected_output": "Scenario: passive observation mode. The agent loads skills/observer/SKILL.md silently and does nothing until the trigger phrase ('analyze my process') appears, then scans the session context and reconstructs the workflow phases, branching signals, and tool preferences from what actually happened. If the session context is too thin (fewer than ~20 substantive turns), the observer recommends switching to active interrogation instead of fabricating a workflow from sparse evidence.",
+      "assertions": [
+        "skills/observer/SKILL.md is loaded and stays dormant until a trigger phrase",
+        "No workflow analysis is produced before the trigger phrase",
+        "Session context is scanned only after the trigger",
+        "Thin context results in a recommendation to switch to active mode, not fabrication",
+        "Workflow state is persisted under the workflow-architect:state: prefix"
+      ]
+    },
+    {
+      "id": "bundle-generation-output",
+      "prompt": "I finished the interview and we converged on my workflow: morning triage, deep work, and end-of-day review phases. Generate my skills bundle.",
+      "expected_output": "Scenario: bundle synthesis. The agent loads skills/bundle-builder/SKILL.md and renders a valid Agent Skills bundle: an umbrella SKILL.md with trigger-oriented description, one sub-skill per phase with its own description and triggers, a manifest mapping skill names to trigger conditions and transition signals, and a Mermaid decision map. The bundle is written to the host skill directory, the umbrella and sub-skills are registered, and the agent verifies the umbrella and at least one sub-skill load. The user is told where it landed, what skills it contains, and a trigger phrase they can use to enter the workflow.",
+      "assertions": [
+        "skills/bundle-builder/SKILL.md is loaded for synthesis",
+        "The output bundle has an umbrella SKILL.md and one sub-skill per workflow phase",
+        "The manifest maps skill names to trigger conditions and transition signals",
+        "A Mermaid decision map is produced",
+        "The umbrella and at least one sub-skill are verified to load",
+        "The user is told the output location, skill list, and an entry trigger phrase"
+      ]
+    },
+    {
+      "id": "thin-context-degradation",
+      "prompt": "/workflow-architect passive — I just started this session and there are only two messages. Tell me my workflow.",
+      "expected_output": "Scenario: degraded observation input. The session has far fewer than 20 substantive turns, so the observer does NOT reconstruct a workflow. It explicitly states that observation mode needs more context and recommends switching to active interrogation mode (the 8-15 question interview) to build the workflow model reliably. No workflow bundle is generated from the thin context.",
+      "assertions": [
+        "No workflow is reconstructed from the thin session context",
+        "The limitation (needs ~20+ substantive turns) is stated explicitly",
+        "The observer recommends active interrogation mode as the alternative",
+        "No bundle is generated from sparse evidence"
+      ]
+    },
+    {
+      "id": "kanban-decision-criteria",
+      "prompt": "My workflow is a single linear pipeline: triage inbox, draft, edit, publish. Should the generated bundle include a kanban board?",
+      "expected_output": "Scenario: kanban inclusion decision. The agent applies the kanban decision criteria from references/kanban-decision-criteria.md: a predictable linear path with clear lane transitions can benefit from a kanban board with WIP limits. For this triage → draft → edit → publish pipeline the board is included, with board slug, phases, and WIP limits in the generated bundle. The decision is explained; a non-linear, context-heavy workflow would omit the board.",
+      "assertions": [
+        "The kanban decision criteria reference is consulted",
+        "The linear triage → draft → edit → publish pipeline is recognized as a kanban candidate",
+        "The generated bundle includes a kanban board with phases and WIP limits",
+        "The decision rationale is explained to the user"
+      ]
+    },
+    {
+      "id": "trigger-condition-quality",
+      "prompt": "Generate my workflow bundle. One of my phases is 'deep work' — what should its description look like?",
+      "expected_output": "Scenario: trigger-condition authoring. The sub-skill descriptions follow the Agent Skills trigger format: an imperative-verb description that both positively and negatively bounds when the sub-skill loads (e.g., 'load when the user shifts into deep work mode' with a negative boundary for shallow task-switching). The description vocabulary matches how the user actually talks about entering that phase, and the umbrella description carries the broad entry triggers for the bundle. No sub-skill description is a bare phase name with no trigger guidance.",
+      "assertions": [
+        "Sub-skill descriptions start with an imperative verb and define a positive trigger",
+        "Sub-skill descriptions include a negative boundary for when not to load",
+        "Trigger vocabulary matches how the user describes entering the phase",
+        "No sub-skill description is a bare phase name without trigger guidance"
+      ]
+    }
+  ]
+}

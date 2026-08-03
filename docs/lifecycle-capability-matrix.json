@@ -208,53 +208,235 @@
     },
     {
       "name": "neckbeard",
-      "derivation": "frontmatter-description-and-deferred-migration",
-      "source": "bundles/neckbeard/SKILL.md",
+      "derivation": "manifest",
+      "source": "bundles/neckbeard/manifest.yaml",
       "fields": {
         "purpose": {
-          "value": "Use when asked to fix, build, refactor, review, verify, or release software and the work is non-trivial — including delivering a change request (issue, ticket, or request) from intake through planning, gates, implementation, review, verified PR, and authorized post-merge release. neckbeard routes the change through framing, discovery, design, implementation, review, verification, delivery, and learning — choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger. For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates, delivery packet, and lifecycle integration. Composes specialist catalog skills rather than replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory.",
-          "source": "bundles/neckbeard/SKILL.md#/description",
-          "derivation": "frontmatter-description"
+          "value": "A disciplined SDLC delivery operating model for non-trivial software change — fix, build, refactor, review, verify, or release — that routes the work through framing, discovery, design, implementation, review, verification, delivery, and learning, choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger.",
+          "source": "bundles/neckbeard/manifest.yaml#/purpose"
         },
         "audience": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": "Software engineers and agents delivering non-trivial software changes (bug fixes, features, refactors, reviews, releases) that need a bounded, stage-aware path to a defensible 'done' with recorded evidence; teams running issue-to-PR change-request journeys with gates and an authorized release.",
+          "source": "bundles/neckbeard/manifest.yaml#/audience"
         },
         "stages": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "name": "Intake and framing",
+              "skills": [
+                "../../product-discovery/SKILL.md"
+              ]
+            },
+            {
+              "name": "Current-state discovery",
+              "skills": [
+                "../../software-architecture-analysis/SKILL.md",
+                "../../systematic-debugging/SKILL.md"
+              ]
+            },
+            {
+              "name": "Design",
+              "skills": [
+                "../../api-design-and-evolution/SKILL.md",
+                "../../product-design-and-ux/SKILL.md"
+              ]
+            },
+            {
+              "name": "Specification",
+              "skills": [
+                "../../spec-driven-development/SKILL.md"
+              ]
+            },
+            {
+              "name": "Test planning",
+              "skills": [
+                "../../qa-methodology/SKILL.md"
+              ]
+            },
+            {
+              "name": "Implementation",
+              "skills": [
+                "../../secure-software-engineering/SKILL.md",
+                "../../web-accessibility/SKILL.md"
+              ]
+            },
+            {
+              "name": "Review and verification",
+              "skills": [
+                "../../verification-methodology/SKILL.md",
+                "../../technical-documentation/SKILL.md"
+              ]
+            },
+            {
+              "name": "Readiness and release",
+              "skills": [
+                "../../release-engineering/SKILL.md",
+                "../../site-reliability-engineering/SKILL.md"
+              ]
+            }
+          ],
+          "source": "bundles/neckbeard/manifest.yaml#/stages"
         },
         "included_skills": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "../../product-discovery/SKILL.md",
+            "../../software-architecture-analysis/SKILL.md",
+            "../../systematic-debugging/SKILL.md",
+            "../../api-design-and-evolution/SKILL.md",
+            "../../product-design-and-ux/SKILL.md",
+            "../../spec-driven-development/SKILL.md",
+            "../../qa-methodology/SKILL.md",
+            "../../secure-software-engineering/SKILL.md",
+            "../../web-accessibility/SKILL.md",
+            "../../verification-methodology/SKILL.md",
+            "../../technical-documentation/SKILL.md",
+            "../../release-engineering/SKILL.md",
+            "../../site-reliability-engineering/SKILL.md"
+          ],
+          "source": "bundles/neckbeard/manifest.yaml#/included_skills"
         },
         "prerequisites": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "artifact": "A non-trivial change request, issue, or task with a verifiable contract"
+            },
+            {
+              "artifact": "Current-state evidence (repository, tests, config, recent history)",
+              "skill": "../../software-architecture-analysis/SKILL.md"
+            },
+            {
+              "artifact": "Change contract and evidence ledger entries",
+              "skill": "../../verification-methodology/SKILL.md"
+            }
+          ],
+          "source": "bundles/neckbeard/manifest.yaml#/prerequisites"
         },
         "outputs": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "change-contract",
+            "evidence-ledger",
+            "delivery-packet",
+            "implementation-plan",
+            "verification-report",
+            "release-record"
+          ],
+          "source": "bundles/neckbeard/manifest.yaml#/outputs"
         },
         "handoffs": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "to": "verification-methodology",
+              "artifact": "verification-report",
+              "note": "The verification report records the declared verification target and the boundary actually exercised; verdicts bind to the exact head and never claim a boundary that was not checked."
+            },
+            {
+              "to": "release-engineering",
+              "artifact": "release-record",
+              "note": "Release planning, versioning, pipeline promotion, readiness, and authorized release routing for the delivered change."
+            },
+            {
+              "to": "human reviewer",
+              "artifact": "delivery-packet",
+              "note": "Change-request journeys hand the delivery packet — gates and evidence — to the required review before merge; a timed-out review is inconclusive, not a reason to launch repeated review rounds."
+            },
+            {
+              "to": "next change (via evidence ledger)",
+              "artifact": "evidence-ledger",
+              "note": "Each run emits a compact evidence record (intent, inspected artifacts, assumptions, rejected alternatives, checks run, observed outputs, unverified boundaries) that carries learning into the next change."
+            }
+          ],
+          "source": "bundles/neckbeard/manifest.yaml#/handoffs"
         },
         "conflicts": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "skill": "../../product-discovery/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Product discovery is shared. Route by context: neckbeard loads it for intake and framing of a change request; product-lifecycle owns the full discovery phase of a product lifecycle."
+            },
+            {
+              "skill": "../../product-design-and-ux/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Product design is shared. neckbeard loads it for user-facing behavior, interaction, and information architecture during design; product-lifecycle owns the UX and requirements phase of a product."
+            },
+            {
+              "skill": "../../spec-driven-development/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Specification is shared. neckbeard uses it for formal specification and phase gates on a change request; product-lifecycle uses it for requirements and acceptance criteria in its lifecycle phases."
+            },
+            {
+              "skill": "../../qa-methodology/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "QA methodology is shared. neckbeard loads it for test strategy and regression gates on a change; product-lifecycle routes to it for phase 6 quality gates."
+            },
+            {
+              "skill": "../../qa-methodology/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "QA methodology is shared. neckbeard loads it for change-request test planning; production-excellence uses it for launch verification evidence."
+            },
+            {
+              "skill": "../../secure-software-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Security engineering is shared. Route by context: change-level security review and threat modeling (neckbeard) versus lifecycle-phase security needs (product-lifecycle)."
+            },
+            {
+              "skill": "../../secure-software-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Security engineering is shared. Route by context: change-level security review (neckbeard) versus launch-gate security evidence (production-excellence)."
+            },
+            {
+              "skill": "../../secure-software-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Security engineering is shared. Route by context: change-level security review (neckbeard) versus agent authority contracts and disablement security (agent-production-operations)."
+            },
+            {
+              "skill": "../../verification-methodology/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Verification methodology is shared. neckbeard requires it to exercise the declared verification boundary on a change; product-lifecycle uses it at every phase gate for evidence."
+            },
+            {
+              "skill": "../../verification-methodology/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Verification methodology is shared. neckbeard uses it for change-request verification verdicts; production-excellence uses it for boundary labeling of launch evidence."
+            },
+            {
+              "skill": "../../release-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "Release engineering is shared. Route by context: change-request release planning (neckbeard) versus lifecycle delivery handoff (product-lifecycle)."
+            },
+            {
+              "skill": "../../release-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "Release engineering is shared. Route by context: change-request release planning (neckbeard) versus launch-gate release evidence (production-excellence)."
+            },
+            {
+              "skill": "../../release-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "Release engineering is shared. Route by context: change-request release planning (neckbeard) versus agent staged-rollout planning (agent-production-operations)."
+            },
+            {
+              "skill": "../../site-reliability-engineering/SKILL.md",
+              "with": "product-lifecycle",
+              "guidance": "SRE is shared. neckbeard routes to it for reliability and operational recovery of a delivered change; product-lifecycle routes to it for delivery reliability."
+            },
+            {
+              "skill": "../../site-reliability-engineering/SKILL.md",
+              "with": "production-excellence",
+              "guidance": "SRE is shared. Route by context: change-level reliability (neckbeard) versus gate-entry SLO/error-budget evidence (production-excellence)."
+            },
+            {
+              "skill": "../../site-reliability-engineering/SKILL.md",
+              "with": "agent-production-operations",
+              "guidance": "SRE is shared. Route by context: change-level reliability (neckbeard) versus agent runtime latency/cost budgets and incident handoff (agent-production-operations)."
+            }
+          ],
+          "source": "bundles/neckbeard/manifest.yaml#/conflicts"
         },
         "eval_suite": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "evals/evals.json"
+          ],
+          "source": "bundles/neckbeard/manifest.yaml#/eval_suite"
         }
       }
     },
@@ -730,157 +912,345 @@
     },
     {
       "name": "research-and-vault",
-      "derivation": "frontmatter-description-and-deferred-migration",
-      "source": "bundles/research-and-vault/SKILL.md",
+      "derivation": "manifest",
+      "source": "bundles/research-and-vault/manifest.yaml",
       "fields": {
         "purpose": {
-          "value": "Chain web research, atomic extraction, and durable knowledge capture into a repeatable workflow when the same research-to-notes sequence is needed.",
-          "source": "bundles/research-and-vault/SKILL.md#/description",
-          "derivation": "frontmatter-description"
+          "value": "Chain web research, atomic extraction, and durable knowledge capture into a repeatable research-to-note workflow: capture source URLs and dates before interpretation, extract independent atomic claims before synthesis, and write the durable note only after source coverage and gaps are explicit.",
+          "source": "bundles/research-and-vault/manifest.yaml#/purpose"
         },
         "audience": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": "Agents and knowledge workers that repeatedly need the full research-to-note sequence (web research, atomic extraction, durable capture) and want a stable order of operations with a clear handoff artifact instead of ad-hoc steps; not for single lookups or single notes, which route to the domain skill directly.",
+          "source": "bundles/research-and-vault/manifest.yaml#/audience"
         },
         "stages": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "name": "Web research",
+              "skills": [
+                "../../research-methodology/SKILL.md"
+              ]
+            },
+            {
+              "name": "Source capture",
+              "skills": [
+                "../../research-methodology/SKILL.md"
+              ]
+            },
+            {
+              "name": "Atomic extraction",
+              "skills": [
+                "../../research-methodology/SKILL.md"
+              ]
+            },
+            {
+              "name": "Synthesis and durable capture",
+              "skills": [
+                "../../research-methodology/SKILL.md"
+              ]
+            }
+          ],
+          "source": "bundles/research-and-vault/manifest.yaml#/stages"
         },
         "included_skills": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "../../research-methodology/SKILL.md"
+          ],
+          "source": "bundles/research-and-vault/manifest.yaml#/included_skills"
         },
         "prerequisites": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "artifact": "A research question or topic and access to web-research tooling",
+              "skill": "../../research-methodology/SKILL.md"
+            }
+          ],
+          "source": "bundles/research-and-vault/manifest.yaml#/prerequisites"
         },
         "outputs": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "source-capture-record",
+            "atomic-claim-extract",
+            "durable-note"
+          ],
+          "source": "bundles/research-and-vault/manifest.yaml#/outputs"
         },
         "handoffs": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "to": "research-methodology",
+              "artifact": "source-capture-record",
+              "note": "Source URLs and dates are captured before interpretation and carried into extraction and synthesis; never interpret a source before its URL and date are recorded."
+            },
+            {
+              "to": "research-methodology",
+              "artifact": "atomic-claim-extract",
+              "note": "Independent atomic claims are extracted before synthesis so the durable note can trace each claim to its source."
+            },
+            {
+              "to": "user",
+              "artifact": "durable-note",
+              "note": "The finished durable note reports its output path and any unresolved gaps in source coverage."
+            }
+          ],
+          "source": "bundles/research-and-vault/manifest.yaml#/handoffs"
         },
         "conflicts": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+
+          ],
+          "source": "bundles/research-and-vault/manifest.yaml#/conflicts"
         },
         "eval_suite": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "evals/evals.json"
+          ],
+          "source": "bundles/research-and-vault/manifest.yaml#/eval_suite"
         }
       }
     },
     {
       "name": "tailscale",
-      "derivation": "frontmatter-description-and-deferred-migration",
-      "source": "bundles/tailscale/SKILL.md",
+      "derivation": "manifest",
+      "source": "bundles/tailscale/manifest.yaml",
       "fields": {
         "purpose": {
-          "value": "Self-hosted Tailscale/Headscale ecosystem: deploy and manage a Headscale control server, configure tailscale clients, manage ACL policies, node lifecycle, subnet routing, DERP relays, and backup/migration. Use when the user mentions Tailscale, Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure.",
-          "source": "bundles/tailscale/SKILL.md#/description",
-          "derivation": "frontmatter-description"
+          "value": "Operate a self-hosted Tailscale/Headscale ecosystem end to end: deploy and manage a Headscale control server, configure Tailscale clients, define ACL policy, manage node lifecycle, advertise subnet routes and exit nodes, operate DERP relays, and back up, restore, or migrate the control plane.",
+          "source": "bundles/tailscale/manifest.yaml#/purpose"
         },
         "audience": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": "Platform and homelab operators running self-hosted Tailscale/Headscale infrastructure; agents that need to know which sub-skill to load for deploy, policy, client, node, routing, DERP, or backup tasks in a WireGuard mesh.",
+          "source": "bundles/tailscale/manifest.yaml#/audience"
         },
         "stages": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "name": "Deploy control server",
+              "skills": [
+                "skills/headscale-deploy/SKILL.md"
+              ]
+            },
+            {
+              "name": "Policy",
+              "skills": [
+                "skills/tailnet-policy/SKILL.md"
+              ]
+            },
+            {
+              "name": "Client connectivity",
+              "skills": [
+                "skills/tailscale-client/SKILL.md"
+              ]
+            },
+            {
+              "name": "Node lifecycle",
+              "skills": [
+                "skills/headscale-node-lifecycle/SKILL.md"
+              ]
+            },
+            {
+              "name": "Routing",
+              "skills": [
+                "skills/headscale-routing/SKILL.md"
+              ]
+            },
+            {
+              "name": "DERP relays",
+              "skills": [
+                "skills/headscale-derp/SKILL.md"
+              ]
+            },
+            {
+              "name": "Backup and restore",
+              "skills": [
+                "skills/headscale-backup/SKILL.md"
+              ]
+            }
+          ],
+          "source": "bundles/tailscale/manifest.yaml#/stages"
         },
         "included_skills": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "skills/headscale-deploy/SKILL.md",
+            "skills/tailnet-policy/SKILL.md",
+            "skills/tailscale-client/SKILL.md",
+            "skills/headscale-node-lifecycle/SKILL.md",
+            "skills/headscale-routing/SKILL.md",
+            "skills/headscale-derp/SKILL.md",
+            "skills/headscale-backup/SKILL.md"
+          ],
+          "source": "bundles/tailscale/manifest.yaml#/included_skills"
         },
         "prerequisites": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "artifact": "A Linux host and install target for the Headscale control server",
+              "skill": "skills/headscale-deploy/SKILL.md"
+            },
+            {
+              "artifact": "HEADSCALE_URL and HEADSCALE_API_KEY credentials",
+              "skill": "skills/headscale-deploy/SKILL.md"
+            },
+            {
+              "artifact": "A running Headscale instance with the headscale CLI available",
+              "skill": "skills/headscale-deploy/SKILL.md"
+            }
+          ],
+          "source": "bundles/tailscale/manifest.yaml#/prerequisites"
         },
         "outputs": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "headscale-server",
+            "tailnet-policy",
+            "registered-nodes",
+            "routed-networks",
+            "derp-map",
+            "backup-archive",
+            "restored-instance"
+          ],
+          "source": "bundles/tailscale/manifest.yaml#/outputs"
         },
         "handoffs": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "to": "tailnet-policy",
+              "artifact": "headscale-server",
+              "note": "A running control server is required before ACL policy is applied and before the tailnet opens to other users."
+            },
+            {
+              "to": "headscale-node-lifecycle",
+              "artifact": "headscale-server",
+              "note": "Nodes are registered, approved, tagged, and decommissioned against the running control server."
+            },
+            {
+              "to": "headscale-backup",
+              "artifact": "headscale-server",
+              "note": "Backups (sqlite + config + policy + certs) run regularly against the production control server; restore re-creates the instance from the archive."
+            },
+            {
+              "to": "user",
+              "artifact": "backup-archive",
+              "note": "The backup archive is the disaster-recovery artifact for the tailnet; keep it off the control server host."
+            }
+          ],
+          "source": "bundles/tailscale/manifest.yaml#/handoffs"
         },
         "conflicts": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+
+          ],
+          "source": "bundles/tailscale/manifest.yaml#/conflicts"
         },
         "eval_suite": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "evals/evals.json"
+          ],
+          "source": "bundles/tailscale/manifest.yaml#/eval_suite"
         }
       }
     },
     {
       "name": "workflow-architect",
-      "derivation": "frontmatter-description-and-deferred-migration",
-      "source": "bundles/workflow-architect/SKILL.md",
+      "derivation": "manifest",
+      "source": "bundles/workflow-architect/manifest.yaml",
       "fields": {
         "purpose": {
-          "value": "Discover your actual workflow through conversation or observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Use when you want to understand your own process, formalize it, or share it with collaborators. Also use when a session feels aimless — this skill gives it structure.",
-          "source": "bundles/workflow-architect/SKILL.md#/description",
-          "derivation": "frontmatter-description"
+          "value": "Discover a user's actual workflow through active interrogation or passive observation, then generate a tailored Agent Skills bundle that encodes it as loadable skills with trigger conditions, a decision map, a manifest, and an optional kanban board — turning a session that feels aimless into structure.",
+          "source": "bundles/workflow-architect/manifest.yaml#/purpose"
         },
         "audience": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": "Users and agents that want to formalize how they work — understand their own process, encode it as trigger-driven skills they can reuse, or share it with collaborators. Not for single factual questions or tasks already owned by a more specific skill.",
+          "source": "bundles/workflow-architect/manifest.yaml#/audience"
         },
         "stages": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "name": "Active interview",
+              "skills": [
+                "skills/interviewer/SKILL.md"
+              ]
+            },
+            {
+              "name": "Passive observation",
+              "skills": [
+                "skills/observer/SKILL.md"
+              ]
+            },
+            {
+              "name": "Synthesis and generation",
+              "skills": [
+                "skills/bundle-builder/SKILL.md"
+              ]
+            }
+          ],
+          "source": "bundles/workflow-architect/manifest.yaml#/stages"
         },
         "included_skills": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "skills/interviewer/SKILL.md",
+            "skills/observer/SKILL.md",
+            "skills/bundle-builder/SKILL.md"
+          ],
+          "source": "bundles/workflow-architect/manifest.yaml#/included_skills"
         },
         "prerequisites": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "artifact": "Session context with enough turns for observation (or user answers for interview)",
+              "skill": "skills/observer/SKILL.md"
+            },
+            {
+              "artifact": "Convergence on workflow phases, branching signals, and tool preferences",
+              "skill": "skills/interviewer/SKILL.md"
+            }
+          ],
+          "source": "bundles/workflow-architect/manifest.yaml#/prerequisites"
         },
         "outputs": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "skills-bundle",
+            "decision-map",
+            "manifest",
+            "kanban-board"
+          ],
+          "source": "bundles/workflow-architect/manifest.yaml#/outputs"
         },
         "handoffs": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            {
+              "to": "user",
+              "artifact": "skills-bundle",
+              "note": "The generated bundle is written to the host skill directory and registered so the umbrella and sub-skills load on trigger phrases."
+            },
+            {
+              "to": "user",
+              "artifact": "decision-map",
+              "note": "The Mermaid decision map visualizes workflow phases and branching signals for review and sharing."
+            },
+            {
+              "to": "user",
+              "artifact": "manifest",
+              "note": "The generated manifest maps skill names to trigger conditions, entry points, and transition signals for the bundle."
+            },
+            {
+              "to": "user",
+              "artifact": "kanban-board",
+              "note": "The kanban board is included only when the workflow follows a predictable linear path where WIP limits and lane transitions add value."
+            }
+          ],
+          "source": "bundles/workflow-architect/manifest.yaml#/handoffs"
         },
         "conflicts": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+
+          ],
+          "source": "bundles/workflow-architect/manifest.yaml#/conflicts"
         },
         "eval_suite": {
-          "value": "migration deferred — see docs/bundle-manifest-design.md §Migration path",
-          "source": "docs/bundle-manifest-design.md#migration-path",
-          "derivation": "migration-deferred"
+          "value": [
+            "evals/evals.json"
+          ],
+          "source": "bundles/workflow-architect/manifest.yaml#/eval_suite"
         }
       }
     }

@@ -11,12 +11,12 @@ the migration path, and the field definitions. Regenerate with
 | Bundle | Purpose | Audience | Lifecycle stages | Included skills | Prerequisites | Outputs | Handoffs | Conflicts | Eval suite |
 |---|---|---|---|---|---|---|---|---|---|
 | agent-production-operations | Operate an evaluated agent with tools and authority in production through a runtime control plane covering versioning, staged rollout, fallback, cost and latency budgets, tool health, human escalation, disablement, and trace-to-eval feedback. | Agent operators and platform teams running evaluated agents with tools and delegated authority in production; agents that need the runtime control decisions between evaluation, release, SRE, security, and platform specialists. | Contract definition → Versioning and rollout planning → Staged rollout → Runtime monitoring → Trace-to-eval feedback → Learning and disablement | agent-evals-and-observability, release-engineering, site-reliability-engineering, secure-software-engineering, platform-engineering, production-readiness, incident-learning, privacy-engineering | Agent evaluation results and observability instrumentation(agent-evals-and-observability); Production-readiness evidence (go/no-go/defer/exception outcomes)(production-readiness); Incident-learning records (verified closure, follow-up work map)(incident-learning); Release pipeline and artifact promotion baseline(release-engineering) | agent-production-contract, runtime-control-plan, staged-rollout-plan, tool-authority-health-record, trace-to-eval-feedback-loop, disablement-record | staged-rollout-plan → release-engineering; trace-to-eval-feedback-loop → agent-evals-and-observability; tool-authority-health-record → incident-learning; disablement-record → human operator | production-readiness (with production-excellence); production-readiness (with product-lifecycle); release-engineering (with production-excellence); release-engineering (with product-lifecycle); site-reliability-engineering (with production-excellence); site-reliability-engineering (with product-lifecycle); secure-software-engineering (with production-excellence); secure-software-engineering (with product-lifecycle); platform-engineering (with production-excellence); platform-engineering (with product-lifecycle); incident-learning (with production-excellence); privacy-engineering (with product-lifecycle) | evals/evals.json |
-| neckbeard | Use when asked to fix, build, refactor, review, verify, or release software and the work is non-trivial — including delivering a change request (issue, ticket, or request) from intake through planning, gates, implementation, review, verified PR, and authorized post-merge release. neckbeard routes the change through framing, discovery, design, implementation, review, verification, delivery, and learning — choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger. For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates, delivery packet, and lifecycle integration. Composes specialist catalog skills rather than replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory. | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path |
+| neckbeard | A disciplined SDLC delivery operating model for non-trivial software change — fix, build, refactor, review, verify, or release — that routes the work through framing, discovery, design, implementation, review, verification, delivery, and learning, choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger. | Software engineers and agents delivering non-trivial software changes (bug fixes, features, refactors, reviews, releases) that need a bounded, stage-aware path to a defensible 'done' with recorded evidence; teams running issue-to-PR change-request journeys with gates and an authorized release. | Intake and framing → Current-state discovery → Design → Specification → Test planning → Implementation → Review and verification → Readiness and release | product-discovery, software-architecture-analysis, systematic-debugging, api-design-and-evolution, product-design-and-ux, spec-driven-development, qa-methodology, secure-software-engineering, web-accessibility, verification-methodology, technical-documentation, release-engineering, site-reliability-engineering | A non-trivial change request, issue, or task with a verifiable contract; Current-state evidence (repository, tests, config, recent history)(software-architecture-analysis); Change contract and evidence ledger entries(verification-methodology) | change-contract, evidence-ledger, delivery-packet, implementation-plan, verification-report, release-record | verification-report → verification-methodology; release-record → release-engineering; delivery-packet → human reviewer; evidence-ledger → next change (via evidence ledger) | product-discovery (with product-lifecycle); product-design-and-ux (with product-lifecycle); spec-driven-development (with product-lifecycle); qa-methodology (with product-lifecycle); qa-methodology (with production-excellence); secure-software-engineering (with product-lifecycle); secure-software-engineering (with production-excellence); secure-software-engineering (with agent-production-operations); verification-methodology (with product-lifecycle); verification-methodology (with production-excellence); release-engineering (with product-lifecycle); release-engineering (with production-excellence); release-engineering (with agent-production-operations); site-reliability-engineering (with product-lifecycle); site-reliability-engineering (with production-excellence); site-reliability-engineering (with agent-production-operations) | evals/evals.json |
 | product-lifecycle | Route a product through its full lifecycle — discovery, strategy and portfolio choice, roadmap, UX and requirements, experimentation, delivery handoff, adoption, success, and lifecycle review — by composing existing specialist product skills with phase-entry evidence, handoff artifacts, and escalation rules. | Product managers, product operations, and portfolio teams navigating a product across multiple lifecycle phases; agents that need to know which specialist skill to load at each phase and what evidence to hand off to the next phase. | Discovery → Strategy and portfolio choice → Roadmap → UX and requirements → Experimentation → Delivery handoff → Adoption → Success → Lifecycle review | product-discovery, product-strategy, strategy-frameworks, product-roadmapping-and-portfolio, product-design-and-ux, product-experimentation, implementation-planning, production-readiness, release-engineering, product-adoption, product-analytics-and-measurement, conditional-customer-success, product-lifecycle-learning, product-methodology, product-operations-and-governance, financial-modeling, go-to-market, data-scientist, spec-driven-development, privacy-engineering, secure-software-engineering, verification-methodology, qa-methodology, site-reliability-engineering, platform-engineering, neckbeard | Product idea, market signal, or stakeholder request; Problem statement and discovery log(product-discovery); Strategic assessment and portfolio decision(product-strategy); Roadmap entry and bet record(product-roadmapping-and-portfolio); UX contracts and acceptance criteria(product-design-and-ux); Experiment readout and assumptions register(product-experimentation) | lifecycle-evidence-ledger, problem-statement, strategic-assessment, roadmap-entry, interface-contracts, experiment-brief, implementation-plan, readiness-verdict, release-plan, adoption-plan, outcome-measurement, outcome-review, lifecycle-decision | readiness-verdict → production-excellence bundle; implementation-plan → delivery team; lifecycle-evidence-ledger → next phase (via evidence ledger); lifecycle-decision → product-lifecycle-learning | production-readiness (with production-excellence); production-readiness (with agent-production-operations); release-engineering (with production-excellence); release-engineering (with agent-production-operations); site-reliability-engineering (with production-excellence); site-reliability-engineering (with agent-production-operations); secure-software-engineering (with production-excellence); secure-software-engineering (with agent-production-operations); platform-engineering (with production-excellence); platform-engineering (with agent-production-operations); privacy-engineering (with agent-production-operations); qa-methodology (with production-excellence); verification-methodology (with production-excellence) | evals/evals.json |
 | production-excellence | Route cross-domain production evidence (readiness, migration, recovery, capacity/cost, incident-learning) into a launch or operational decision — go, no-go, defer, exception, or escalation — with an accountable owner and a post-launch learning path. | Service owners, SRE, release, platform, security, data, and QA teams coordinating a production change; agents assembling cross-domain production evidence into a defensible launch decision without re-deriving specialist runbooks. | Cross-domain evidence assembly → Gate evaluation → Operational handoff → Post-launch learning | production-readiness, migration-engineering, resilience-and-recovery, capacity-and-cost-engineering, incident-learning, site-reliability-engineering, release-engineering, platform-engineering, secure-software-engineering, data-engineering, qa-methodology, verification-methodology | Readiness review evidence packet (risk-scaled, 11 categories)(production-readiness); Migration plan, compatibility windows, and reconciliation evidence(migration-engineering); Resilience and recovery evidence (RTO/RPO, restore tests, game days)(resilience-and-recovery); Capacity and cost model evidence (demand, scaling, unit cost)(capacity-and-cost-engineering); Incident history, causal hypotheses, and verified-closure records(incident-learning); SLO and error-budget status(site-reliability-engineering); Release plan and rollback strategy(release-engineering) | gate-decision, operational-handoff-record, accountable-owner-record, evidence-gap-register | operational-handoff-record → incident-learning; operational-handoff-record → product-lifecycle-learning; gate-decision → agent-production-operations; accountable-owner-record → service owner | production-readiness (with product-lifecycle); production-readiness (with agent-production-operations); release-engineering (with product-lifecycle); release-engineering (with agent-production-operations); site-reliability-engineering (with product-lifecycle); site-reliability-engineering (with agent-production-operations); secure-software-engineering (with product-lifecycle); secure-software-engineering (with agent-production-operations); platform-engineering (with product-lifecycle); platform-engineering (with agent-production-operations); incident-learning (with agent-production-operations); qa-methodology (with product-lifecycle); verification-methodology (with product-lifecycle) | evals/evals.json |
-| research-and-vault | Chain web research, atomic extraction, and durable knowledge capture into a repeatable workflow when the same research-to-notes sequence is needed. | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path |
-| tailscale | Self-hosted Tailscale/Headscale ecosystem: deploy and manage a Headscale control server, configure tailscale clients, manage ACL policies, node lifecycle, subnet routing, DERP relays, and backup/migration. Use when the user mentions Tailscale, Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure. | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path |
-| workflow-architect | Discover your actual workflow through conversation or observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Use when you want to understand your own process, formalize it, or share it with collaborators. Also use when a session feels aimless — this skill gives it structure. | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path | migration deferred — see docs/bundle-manifest-design.md §Migration path |
+| research-and-vault | Chain web research, atomic extraction, and durable knowledge capture into a repeatable research-to-note workflow: capture source URLs and dates before interpretation, extract independent atomic claims before synthesis, and write the durable note only after source coverage and gaps are explicit. | Agents and knowledge workers that repeatedly need the full research-to-note sequence (web research, atomic extraction, durable capture) and want a stable order of operations with a clear handoff artifact instead of ad-hoc steps; not for single lookups or single notes, which route to the domain skill directly. | Web research → Source capture → Atomic extraction → Synthesis and durable capture | research-methodology | A research question or topic and access to web-research tooling(research-methodology) | source-capture-record, atomic-claim-extract, durable-note | source-capture-record → research-methodology; atomic-claim-extract → research-methodology; durable-note → user | none declared | evals/evals.json |
+| tailscale | Operate a self-hosted Tailscale/Headscale ecosystem end to end: deploy and manage a Headscale control server, configure Tailscale clients, define ACL policy, manage node lifecycle, advertise subnet routes and exit nodes, operate DERP relays, and back up, restore, or migrate the control plane. | Platform and homelab operators running self-hosted Tailscale/Headscale infrastructure; agents that need to know which sub-skill to load for deploy, policy, client, node, routing, DERP, or backup tasks in a WireGuard mesh. | Deploy control server → Policy → Client connectivity → Node lifecycle → Routing → DERP relays → Backup and restore | headscale-deploy, tailnet-policy, tailscale-client, headscale-node-lifecycle, headscale-routing, headscale-derp, headscale-backup | A Linux host and install target for the Headscale control server(headscale-deploy); HEADSCALE_URL and HEADSCALE_API_KEY credentials(headscale-deploy); A running Headscale instance with the headscale CLI available(headscale-deploy) | headscale-server, tailnet-policy, registered-nodes, routed-networks, derp-map, backup-archive, restored-instance | headscale-server → tailnet-policy; headscale-server → headscale-node-lifecycle; headscale-server → headscale-backup; backup-archive → user | none declared | evals/evals.json |
+| workflow-architect | Discover a user's actual workflow through active interrogation or passive observation, then generate a tailored Agent Skills bundle that encodes it as loadable skills with trigger conditions, a decision map, a manifest, and an optional kanban board — turning a session that feels aimless into structure. | Users and agents that want to formalize how they work — understand their own process, encode it as trigger-driven skills they can reuse, or share it with collaborators. Not for single factual questions or tasks already owned by a more specific skill. | Active interview → Passive observation → Synthesis and generation | interviewer, observer, bundle-builder | Session context with enough turns for observation (or user answers for interview)(observer); Convergence on workflow phases, branching signals, and tool preferences(interviewer) | skills-bundle, decision-map, manifest, kanban-board | skills-bundle → user; decision-map → user; manifest → user; kanban-board → user | none declared | evals/evals.json |
 
 ## Details
 
@@ -69,16 +69,60 @@ the migration path, and the field definitions. Regenerate with
 
 ### neckbeard
 
-- Derivation: `frontmatter-description-and-deferred-migration` — source: `bundles/neckbeard/SKILL.md`
-- **Purpose:** Use when asked to fix, build, refactor, review, verify, or release software and the work is non-trivial — including delivering a change request (issue, ticket, or request) from intake through planning, gates, implementation, review, verified PR, and authorized post-merge release. neckbeard routes the change through framing, discovery, design, implementation, review, verification, delivery, and learning — choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger. For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates, delivery packet, and lifecycle integration. Composes specialist catalog skills rather than replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory.
-- **Audience:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Stages:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Included skills:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Prerequisites:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Outputs:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Handoffs:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Conflicts:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Eval suite:** migration deferred — see docs/bundle-manifest-design.md §Migration path
+- Derivation: `manifest` — source: `bundles/neckbeard/manifest.yaml`
+- **Purpose:** A disciplined SDLC delivery operating model for non-trivial software change — fix, build, refactor, review, verify, or release — that routes the work through framing, discovery, design, implementation, review, verification, delivery, and learning, choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger.
+- **Audience:** Software engineers and agents delivering non-trivial software changes (bug fixes, features, refactors, reviews, releases) that need a bounded, stage-aware path to a defensible 'done' with recorded evidence; teams running issue-to-PR change-request journeys with gates and an authorized release.
+- **Stages (ordered):**
+  1. Intake and framing — product-discovery (`../../product-discovery/SKILL.md`)
+  2. Current-state discovery — software-architecture-analysis (`../../software-architecture-analysis/SKILL.md`), systematic-debugging (`../../systematic-debugging/SKILL.md`)
+  3. Design — api-design-and-evolution (`../../api-design-and-evolution/SKILL.md`), product-design-and-ux (`../../product-design-and-ux/SKILL.md`)
+  4. Specification — spec-driven-development (`../../spec-driven-development/SKILL.md`)
+  5. Test planning — qa-methodology (`../../qa-methodology/SKILL.md`)
+  6. Implementation — secure-software-engineering (`../../secure-software-engineering/SKILL.md`), web-accessibility (`../../web-accessibility/SKILL.md`)
+  7. Review and verification — verification-methodology (`../../verification-methodology/SKILL.md`), technical-documentation (`../../technical-documentation/SKILL.md`)
+  8. Readiness and release — release-engineering (`../../release-engineering/SKILL.md`), site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
+- **Included skills:**
+  - product-discovery (`../../product-discovery/SKILL.md`)
+  - software-architecture-analysis (`../../software-architecture-analysis/SKILL.md`)
+  - systematic-debugging (`../../systematic-debugging/SKILL.md`)
+  - api-design-and-evolution (`../../api-design-and-evolution/SKILL.md`)
+  - product-design-and-ux (`../../product-design-and-ux/SKILL.md`)
+  - spec-driven-development (`../../spec-driven-development/SKILL.md`)
+  - qa-methodology (`../../qa-methodology/SKILL.md`)
+  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`)
+  - web-accessibility (`../../web-accessibility/SKILL.md`)
+  - verification-methodology (`../../verification-methodology/SKILL.md`)
+  - technical-documentation (`../../technical-documentation/SKILL.md`)
+  - release-engineering (`../../release-engineering/SKILL.md`)
+  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
+- **Prerequisites:**
+  - A non-trivial change request, issue, or task with a verifiable contract
+  - Current-state evidence (repository, tests, config, recent history) — via software-architecture-analysis (`../../software-architecture-analysis/SKILL.md`)
+  - Change contract and evidence ledger entries — via verification-methodology (`../../verification-methodology/SKILL.md`)
+- **Outputs:** change-contract, evidence-ledger, delivery-packet, implementation-plan, verification-report, release-record
+- **Handoffs:**
+  - verification-report → verification-methodology — The verification report records the declared verification target and the boundary actually exercised; verdicts bind to the exact head and never claim a boundary that was not checked.
+  - release-record → release-engineering — Release planning, versioning, pipeline promotion, readiness, and authorized release routing for the delivered change.
+  - delivery-packet → human reviewer — Change-request journeys hand the delivery packet — gates and evidence — to the required review before merge; a timed-out review is inconclusive, not a reason to launch repeated review rounds.
+  - evidence-ledger → next change (via evidence ledger) — Each run emits a compact evidence record (intent, inspected artifacts, assumptions, rejected alternatives, checks run, observed outputs, unverified boundaries) that carries learning into the next change.
+- **Conflicts:**
+  - product-discovery (`../../product-discovery/SKILL.md`) with product-lifecycle — Product discovery is shared. Route by context: neckbeard loads it for intake and framing of a change request; product-lifecycle owns the full discovery phase of a product lifecycle.
+  - product-design-and-ux (`../../product-design-and-ux/SKILL.md`) with product-lifecycle — Product design is shared. neckbeard loads it for user-facing behavior, interaction, and information architecture during design; product-lifecycle owns the UX and requirements phase of a product.
+  - spec-driven-development (`../../spec-driven-development/SKILL.md`) with product-lifecycle — Specification is shared. neckbeard uses it for formal specification and phase gates on a change request; product-lifecycle uses it for requirements and acceptance criteria in its lifecycle phases.
+  - qa-methodology (`../../qa-methodology/SKILL.md`) with product-lifecycle — QA methodology is shared. neckbeard loads it for test strategy and regression gates on a change; product-lifecycle routes to it for phase 6 quality gates.
+  - qa-methodology (`../../qa-methodology/SKILL.md`) with production-excellence — QA methodology is shared. neckbeard loads it for change-request test planning; production-excellence uses it for launch verification evidence.
+  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with product-lifecycle — Security engineering is shared. Route by context: change-level security review and threat modeling (neckbeard) versus lifecycle-phase security needs (product-lifecycle).
+  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with production-excellence — Security engineering is shared. Route by context: change-level security review (neckbeard) versus launch-gate security evidence (production-excellence).
+  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with agent-production-operations — Security engineering is shared. Route by context: change-level security review (neckbeard) versus agent authority contracts and disablement security (agent-production-operations).
+  - verification-methodology (`../../verification-methodology/SKILL.md`) with product-lifecycle — Verification methodology is shared. neckbeard requires it to exercise the declared verification boundary on a change; product-lifecycle uses it at every phase gate for evidence.
+  - verification-methodology (`../../verification-methodology/SKILL.md`) with production-excellence — Verification methodology is shared. neckbeard uses it for change-request verification verdicts; production-excellence uses it for boundary labeling of launch evidence.
+  - release-engineering (`../../release-engineering/SKILL.md`) with product-lifecycle — Release engineering is shared. Route by context: change-request release planning (neckbeard) versus lifecycle delivery handoff (product-lifecycle).
+  - release-engineering (`../../release-engineering/SKILL.md`) with production-excellence — Release engineering is shared. Route by context: change-request release planning (neckbeard) versus launch-gate release evidence (production-excellence).
+  - release-engineering (`../../release-engineering/SKILL.md`) with agent-production-operations — Release engineering is shared. Route by context: change-request release planning (neckbeard) versus agent staged-rollout planning (agent-production-operations).
+  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with product-lifecycle — SRE is shared. neckbeard routes to it for reliability and operational recovery of a delivered change; product-lifecycle routes to it for delivery reliability.
+  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with production-excellence — SRE is shared. Route by context: change-level reliability (neckbeard) versus gate-entry SLO/error-budget evidence (production-excellence).
+  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with agent-production-operations — SRE is shared. Route by context: change-level reliability (neckbeard) versus agent runtime latency/cost budgets and incident handoff (agent-production-operations).
+- **Eval suite:** evals/evals.json
 
 ### product-lifecycle
 
@@ -206,39 +250,81 @@ the migration path, and the field definitions. Regenerate with
 
 ### research-and-vault
 
-- Derivation: `frontmatter-description-and-deferred-migration` — source: `bundles/research-and-vault/SKILL.md`
-- **Purpose:** Chain web research, atomic extraction, and durable knowledge capture into a repeatable workflow when the same research-to-notes sequence is needed.
-- **Audience:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Stages:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Included skills:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Prerequisites:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Outputs:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Handoffs:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Conflicts:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Eval suite:** migration deferred — see docs/bundle-manifest-design.md §Migration path
+- Derivation: `manifest` — source: `bundles/research-and-vault/manifest.yaml`
+- **Purpose:** Chain web research, atomic extraction, and durable knowledge capture into a repeatable research-to-note workflow: capture source URLs and dates before interpretation, extract independent atomic claims before synthesis, and write the durable note only after source coverage and gaps are explicit.
+- **Audience:** Agents and knowledge workers that repeatedly need the full research-to-note sequence (web research, atomic extraction, durable capture) and want a stable order of operations with a clear handoff artifact instead of ad-hoc steps; not for single lookups or single notes, which route to the domain skill directly.
+- **Stages (ordered):**
+  1. Web research — research-methodology (`../../research-methodology/SKILL.md`)
+  2. Source capture — research-methodology (`../../research-methodology/SKILL.md`)
+  3. Atomic extraction — research-methodology (`../../research-methodology/SKILL.md`)
+  4. Synthesis and durable capture — research-methodology (`../../research-methodology/SKILL.md`)
+- **Included skills:**
+  - research-methodology (`../../research-methodology/SKILL.md`)
+- **Prerequisites:**
+  - A research question or topic and access to web-research tooling — via research-methodology (`../../research-methodology/SKILL.md`)
+- **Outputs:** source-capture-record, atomic-claim-extract, durable-note
+- **Handoffs:**
+  - source-capture-record → research-methodology — Source URLs and dates are captured before interpretation and carried into extraction and synthesis; never interpret a source before its URL and date are recorded.
+  - atomic-claim-extract → research-methodology — Independent atomic claims are extracted before synthesis so the durable note can trace each claim to its source.
+  - durable-note → user — The finished durable note reports its output path and any unresolved gaps in source coverage.
+- **Conflicts:** none declared
+- **Eval suite:** evals/evals.json
 
 ### tailscale
 
-- Derivation: `frontmatter-description-and-deferred-migration` — source: `bundles/tailscale/SKILL.md`
-- **Purpose:** Self-hosted Tailscale/Headscale ecosystem: deploy and manage a Headscale control server, configure tailscale clients, manage ACL policies, node lifecycle, subnet routing, DERP relays, and backup/migration. Use when the user mentions Tailscale, Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure.
-- **Audience:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Stages:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Included skills:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Prerequisites:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Outputs:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Handoffs:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Conflicts:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Eval suite:** migration deferred — see docs/bundle-manifest-design.md §Migration path
+- Derivation: `manifest` — source: `bundles/tailscale/manifest.yaml`
+- **Purpose:** Operate a self-hosted Tailscale/Headscale ecosystem end to end: deploy and manage a Headscale control server, configure Tailscale clients, define ACL policy, manage node lifecycle, advertise subnet routes and exit nodes, operate DERP relays, and back up, restore, or migrate the control plane.
+- **Audience:** Platform and homelab operators running self-hosted Tailscale/Headscale infrastructure; agents that need to know which sub-skill to load for deploy, policy, client, node, routing, DERP, or backup tasks in a WireGuard mesh.
+- **Stages (ordered):**
+  1. Deploy control server — headscale-deploy (`skills/headscale-deploy/SKILL.md`)
+  2. Policy — tailnet-policy (`skills/tailnet-policy/SKILL.md`)
+  3. Client connectivity — tailscale-client (`skills/tailscale-client/SKILL.md`)
+  4. Node lifecycle — headscale-node-lifecycle (`skills/headscale-node-lifecycle/SKILL.md`)
+  5. Routing — headscale-routing (`skills/headscale-routing/SKILL.md`)
+  6. DERP relays — headscale-derp (`skills/headscale-derp/SKILL.md`)
+  7. Backup and restore — headscale-backup (`skills/headscale-backup/SKILL.md`)
+- **Included skills:**
+  - headscale-deploy (`skills/headscale-deploy/SKILL.md`)
+  - tailnet-policy (`skills/tailnet-policy/SKILL.md`)
+  - tailscale-client (`skills/tailscale-client/SKILL.md`)
+  - headscale-node-lifecycle (`skills/headscale-node-lifecycle/SKILL.md`)
+  - headscale-routing (`skills/headscale-routing/SKILL.md`)
+  - headscale-derp (`skills/headscale-derp/SKILL.md`)
+  - headscale-backup (`skills/headscale-backup/SKILL.md`)
+- **Prerequisites:**
+  - A Linux host and install target for the Headscale control server — via headscale-deploy (`skills/headscale-deploy/SKILL.md`)
+  - HEADSCALE_URL and HEADSCALE_API_KEY credentials — via headscale-deploy (`skills/headscale-deploy/SKILL.md`)
+  - A running Headscale instance with the headscale CLI available — via headscale-deploy (`skills/headscale-deploy/SKILL.md`)
+- **Outputs:** headscale-server, tailnet-policy, registered-nodes, routed-networks, derp-map, backup-archive, restored-instance
+- **Handoffs:**
+  - headscale-server → tailnet-policy — A running control server is required before ACL policy is applied and before the tailnet opens to other users.
+  - headscale-server → headscale-node-lifecycle — Nodes are registered, approved, tagged, and decommissioned against the running control server.
+  - headscale-server → headscale-backup — Backups (sqlite + config + policy + certs) run regularly against the production control server; restore re-creates the instance from the archive.
+  - backup-archive → user — The backup archive is the disaster-recovery artifact for the tailnet; keep it off the control server host.
+- **Conflicts:** none declared
+- **Eval suite:** evals/evals.json
 
 ### workflow-architect
 
-- Derivation: `frontmatter-description-and-deferred-migration` — source: `bundles/workflow-architect/SKILL.md`
-- **Purpose:** Discover your actual workflow through conversation or observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Use when you want to understand your own process, formalize it, or share it with collaborators. Also use when a session feels aimless — this skill gives it structure.
-- **Audience:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Stages:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Included skills:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Prerequisites:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Outputs:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Handoffs:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Conflicts:** migration deferred — see docs/bundle-manifest-design.md §Migration path
-- **Eval suite:** migration deferred — see docs/bundle-manifest-design.md §Migration path
+- Derivation: `manifest` — source: `bundles/workflow-architect/manifest.yaml`
+- **Purpose:** Discover a user's actual workflow through active interrogation or passive observation, then generate a tailored Agent Skills bundle that encodes it as loadable skills with trigger conditions, a decision map, a manifest, and an optional kanban board — turning a session that feels aimless into structure.
+- **Audience:** Users and agents that want to formalize how they work — understand their own process, encode it as trigger-driven skills they can reuse, or share it with collaborators. Not for single factual questions or tasks already owned by a more specific skill.
+- **Stages (ordered):**
+  1. Active interview — interviewer (`skills/interviewer/SKILL.md`)
+  2. Passive observation — observer (`skills/observer/SKILL.md`)
+  3. Synthesis and generation — bundle-builder (`skills/bundle-builder/SKILL.md`)
+- **Included skills:**
+  - interviewer (`skills/interviewer/SKILL.md`)
+  - observer (`skills/observer/SKILL.md`)
+  - bundle-builder (`skills/bundle-builder/SKILL.md`)
+- **Prerequisites:**
+  - Session context with enough turns for observation (or user answers for interview) — via observer (`skills/observer/SKILL.md`)
+  - Convergence on workflow phases, branching signals, and tool preferences — via interviewer (`skills/interviewer/SKILL.md`)
+- **Outputs:** skills-bundle, decision-map, manifest, kanban-board
+- **Handoffs:**
+  - skills-bundle → user — The generated bundle is written to the host skill directory and registered so the umbrella and sub-skills load on trigger phrases.
+  - decision-map → user — The Mermaid decision map visualizes workflow phases and branching signals for review and sharing.
+  - manifest → user — The generated manifest maps skill names to trigger conditions, entry points, and transition signals for the bundle.
+  - kanban-board → user — The kanban board is included only when the workflow follows a predictable linear path where WIP limits and lane transitions add value.
+- **Conflicts:** none declared
+- **Eval suite:** evals/evals.json

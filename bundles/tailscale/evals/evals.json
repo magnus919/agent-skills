@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "skill_name": "tailscale",
+  "evals": [
+    {
+      "id": "headscale-deploy-full",
+      "prompt": "Stand up a self-hosted tailnet: install and configure the Headscale control server on a fresh Ubuntu 24.04 host with a custom domain, then verify it is healthy.",
+      "expected_output": "Scenario: full control-server deployment. The agent loads headscale-deploy, installs Headscale (release binary or distro package), writes a headscale config binding to the custom domain, enables and starts the service, and verifies health with the health-check script (server version, DB integrity). HEADSCALE_URL and an API key are created/recorded. The deployment records the config file path and the verification output, and does not proceed to client registration until the server reports healthy.",
+      "assertions": [
+        "The headscale-deploy sub-skill is loaded and followed",
+        "A headscale config is written binding the server to the custom domain",
+        "The service is enabled and started",
+        "Health is verified (version, DB integrity) before proceeding",
+        "HEADSCALE_URL and an API key are available for downstream sub-skills"
+      ]
+    },
+    {
+      "id": "acl-policy-segmented",
+      "prompt": "We have three teams (eng, ops, finance) sharing one tailnet. Finance nodes must talk only to finance nodes; eng and ops can talk to each other but not to finance; ops nodes can reach the database subnet router. Write the ACL policy.",
+      "expected_output": "Scenario: tagged, segmented ACL policy design. The agent loads tailnet-policy and writes a policy file with tag owners and ACL rules: finance-to-finance only, eng+ops mutual access, ops access to the database subnet router, all other traffic denied by default. The policy is validated against the policy schema before being applied, and the apply step is gated on explicit confirmation because it changes access control on a live tailnet.",
+      "assertions": [
+        "The tailnet-policy sub-skill is loaded",
+        "Tag owners and tags are declared for the three teams",
+        "ACL rules enforce finance isolation, eng/ops mutual access, and ops-to-database-router access",
+        "Default-deny is preserved for everything else",
+        "Applying the policy to the live tailnet is gated on explicit confirmation"
+      ]
+    },
+    {
+      "id": "node-lifecycle-preauth",
+      "prompt": "Provision five new servers into the tailnet: generate pre-authenticated keys, install and register the tailscale client on each, approve the nodes, then decommission two of them that are no longer needed.",
+      "expected_output": "Scenario: node lifecycle management. The agent loads headscale-node-lifecycle, generates a reusable (or single-use) pre-auth key, registers the five nodes, approves them, and verifies they show up in node list with the expected tags. The two decommissioned nodes are removed via the headscale CLI and confirmed absent from node list. Auth-key and node lifecycle operations are recorded with the commands and output observed.",
+      "assertions": [
+        "The headscale-node-lifecycle sub-skill is loaded",
+        "A pre-auth key is generated and used for node registration",
+        "The five nodes are registered and approved",
+        "The two decommissioned nodes are removed and confirmed absent",
+        "Commands and observed outputs are recorded"
+      ]
+    },
+    {
+      "id": "subnet-router-and-exit-node",
+      "prompt": "Expose our 192.168.10.0/24 lab network through a subnet router on node relay-1, and let the tailnet use node exit-1 as an exit node. Advertise and approve both.",
+      "expected_output": "Scenario: routing configuration. The agent loads headscale-routing, configures relay-1 to advertise 192.168.10.0/24, approves the route on the control server, and configures exit-1 to advertise exit-node capability with the exit-node approval. The final tailscale status shows the routes accepted and the exit node available. The difference between subnet-router and exit-node approval is handled explicitly.",
+      "assertions": [
+        "The headscale-routing sub-skill is loaded",
+        "relay-1 advertises 192.168.10.0/24 and the route is approved",
+        "exit-1 advertises exit-node capability and is approved",
+        "Final status confirms routes accepted and exit node available",
+        "Subnet-router and exit-node approvals are handled distinctly"
+      ]
+    },
+    {
+      "id": "derp-relay-config",
+      "prompt": "Direct peer connections fail across the office NAT. Configure a custom DERP relay map for our region and verify clients can relay through it.",
+      "expected_output": "Scenario: DERP relay operation. The agent loads headscale-derp, writes a custom DERP map (region, relay node, STUN) into the headscale config, reloads/restarts the control server, and verifies a client can establish a DERP connection when direct connection fails. The verification observes the relay path in tailscale status rather than assuming the config was picked up.",
+      "assertions": [
+        "The headscale-derp sub-skill is loaded",
+        "A custom DERP map with region, relay node, and STUN is written",
+        "The headscale config is reloaded/restarted",
+        "Relay connectivity is verified via tailscale status, not assumed"
+      ]
+    },
+    {
+      "id": "backup-and-restore",
+      "prompt": "Back up our production headscale server (sqlite + config + policy + certs), then simulate a restore onto a fresh host to prove the backup works.",
+      "expected_output": "Scenario: backup and restore drill. The agent loads headscale-backup, runs the backup script to produce an archive, inspects its contents (sqlite, config, policy, certs present), then restores the archive onto a fresh host and verifies the server starts with the same tailnet state (nodes, policy). The restore is exercised, not just documented. The backup archive is noted as the disaster-recovery artifact kept off the control-server host.",
+      "assertions": [
+        "The headscale-backup sub-skill is loaded",
+        "A backup archive is produced containing sqlite, config, policy, and certs",
+        "The archive is restored onto a fresh host",
+        "The restored server verifiably starts with the same tailnet state",
+        "The backup archive is stored off the control-server host"
+      ]
+    }
+  ]
+}
