@@ -19,12 +19,8 @@ Agent-facing docs have different requirements than human-facing docs. Agents rea
 ## Loading Order
 
 Specify which skills to load and in what order. Skills should be loaded explicitly,
-not assumed.
-
-\`\`\`python
-skill_view('artifact-pyramids')    # 1. Output format
-skill_view('deployment-methodology')  # 2. Methodology
-\`\`\`
+not assumed. For example: load `artifact-pyramids` for the output format, then
+`platform-engineering` (or `release-engineering`) for the deployment methodology.
 
 ## Output Contract
 

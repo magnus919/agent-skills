@@ -1,9 +1,10 @@
 ---
 name: backend-engineering
-description: Backend engineering methodology — API implementation patterns (REST,
-  gRPC, GraphQL), service architecture (clean/hexagonal/layered), database access
-  patterns, integration and middleware design, error handling, and service-level testing.
-  Language and framework agnostic.
+description: Design and implement backend services and APIs — REST, gRPC, GraphQL
+  endpoint patterns, service architecture (clean/hexagonal/layered), database access
+  patterns, integration and middleware design, error handling, and service-level
+  testing. Language and framework agnostic. Do not use for frontend, data engineering,
+  or platform infrastructure provisioning.
 license: MIT
 metadata:
   tags: backend, api, services, server, database, integration, middleware, query-optimization,
@@ -13,16 +14,16 @@ metadata:
 
 # Backend Engineering Methodology
 
-Backend engineering is the craft of building the server-side systems that power applications — APIs, services, data access, integrations, and the runtime behavior that makes the architecture real. This methodology covers the implementation patterns between architecture design (technical-architect) and quality validation (reviewer).
+Backend engineering is the craft of building the server-side systems that power applications — APIs, services, data access, integrations, and the runtime behavior that makes the architecture real. This methodology covers the implementation patterns between architecture design (software-architecture-analysis) and quality validation (qa-methodology).
 
 ## The Backend Engineer's Domain
 
 | You own | You don't own |
 |---------|--------------|
-| API implementation — REST/gRPC/GraphQL endpoints, request validation, response formatting, error handling, middleware chains | API contract and service boundary design — that's the technical-architect |
+| API implementation — REST/gRPC/GraphQL endpoints, request validation, response formatting, error handling, middleware chains | API contract and service boundary design — that's the api-design-and-evolution |
 | Service logic — business rules, workflow orchestration, state management, background job processing | Deployment pipeline and infrastructure — that's the platform-engineer |
 | Database access patterns — query design, connection management, transaction boundaries, N+1 detection, pagination | Schema design and migrations — that's the data-architect / data-engineer |
-| Integration code — third-party API clients, webhook handlers, message queue consumers/producers | Code review and quality gates — that's the reviewer |
+| Integration code — third-party API clients, webhook handlers, message queue consumers/producers | Code review and quality gates — that's the qa-methodology |
 | Observability instrumentation at the service level — structured logging, metrics, tracing hooks | Observability infrastructure — that's the SRE / platform-engineer |
 | Service-level tests — unit tests for business logic, integration tests for API contracts | Test strategy and automation — that's the QA-engineer |
 

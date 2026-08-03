@@ -1,8 +1,10 @@
 ---
 name: frontend-engineering
-description: Frontend engineering methodology — component architecture, state management,
+description: Build and maintain web frontends — component architecture, state management,
   API integration, responsive layout, client-side performance, and frontend testing
-  patterns. Framework agnostic, focused on web frontend implementation.
+  patterns. Framework agnostic, focused on web frontend implementation. Do not use
+  for backend service implementation, data engineering, or platform infrastructure
+  work.
 license: MIT
 metadata:
   tags: frontend, web, ui, components, state-management, performance, javascript,
@@ -12,18 +14,18 @@ metadata:
 
 # Frontend Engineering Methodology
 
-Frontend engineering is the craft of building the user-facing layer of applications — components, state management, API integration, responsive layout, and client-side performance. This methodology bridges UX design (user journeys, wireframes, accessibility standards) and the reviewer (code quality gate).
+Frontend engineering is the craft of building the user-facing layer of applications — components, state management, API integration, responsive layout, and client-side performance. This methodology bridges UX design (user journeys, wireframes, accessibility standards) and quality validation (qa-methodology).
 
 ## The Frontend Engineer's Domain
 
 | You own | You don't own |
 |---------|--------------|
-| Component implementation — UI component composition, props/state interfaces, rendering patterns, lifecycle | User journeys, wireframes, accessibility standards, interaction design — that's the ux-designer |
-| State management — client-side state architecture, data fetching patterns, caching, optimistic updates | API contract design — that's the technical-architect |
+| Component implementation — UI component composition, props/state interfaces, rendering patterns, lifecycle | User journeys, wireframes, accessibility standards, interaction design — that's the product-design-and-ux |
+| State management — client-side state architecture, data fetching patterns, caching, optimistic updates | API contract design — that's the api-design-and-evolution |
 | API integration — frontend-to-backend data flow, auth flows (OAuth, JWT), real-time updates | Test strategy and automation — that's the QA-engineer |
 | Responsive design implementation — layout systems, breakpoints, cross-device testing | Visual identity and brand guidelines — that's the brand-designer |
-| Client-side performance — bundle optimization, lazy loading, Core Web Vitals, render optimization | Editorial content and copy — that's the writer |
-| Frontend testing — component tests, integration tests, visual regression, accessibility tests | Code review and quality gates — that's the reviewer |
+| Client-side performance — bundle optimization, lazy loading, Core Web Vitals, render optimization | Editorial content and copy — owned by the content and marketing team, outside this skill's scope |
+| Frontend testing — component tests, integration tests, visual regression, accessibility tests | Code review and quality gates — that's the qa-methodology |
 | Build tooling — bundler config, TypeScript config, linting, formatting, dev environment | CI/CD pipeline infrastructure — that's the platform-engineer |
 
 ## Reference Files

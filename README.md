@@ -42,7 +42,7 @@ An expert-level skill for building **conversational multi-agent systems** with M
 
 ### [backend-engineering](backend-engineering/SKILL.md)
 
-Backend engineering methodology — API implementation patterns (REST, gRPC, GraphQL), service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic.
+Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint patterns, service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic. Do not use for frontend, data engineering, or platform infrastructure provisioning.
 
 ### [binary-analysis](binary-analysis/SKILL.md)
 
@@ -106,7 +106,7 @@ Act as a virtual data architect. Discover data assets, assess maturity, evaluate
 
 ### [data-engineering](data-engineering/SKILL.md)
 
-Data engineering methodology — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Grounded in operational patterns for production data systems.
+Design and operate data infrastructure — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Do not use for statistical analysis or ML model development.
 
 ### [data-scientist](data-scientist/SKILL.md)
 
@@ -158,7 +158,7 @@ Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, 
 
 ### [frontend-engineering](frontend-engineering/SKILL.md)
 
-Frontend engineering methodology — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation.
+Build and maintain web frontends — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation. Do not use for backend service implementation, data engineering, or platform infrastructure work.
 
 ### [ghost-cli](ghost-cli/SKILL.md)
 
@@ -293,7 +293,7 @@ Comprehensive open source contribution guidance — from reading CONTRIBUTING.md
 
 ### [operational-design](operational-design/SKILL.md)
 
-COO methodology for process design, organizational scaling, operational metrics, compliance and audit, vendor management, and team topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10 to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness, RFP processes, SLA design, vendor scorecards, team topologies, Conway's Law, and Dunbar's Number.
+Design and improve operational processes and organizational scaling — process design, operational metrics, compliance and audit, vendor management, and team topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10 to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness, RFP processes, SLA design, vendor scorecards, team topologies, Conway's Law, and Dunbar's Number. Do not use for engineering delivery, financial modeling, or technology evaluation.
 
 ### [org-design](org-design/SKILL.md)
 

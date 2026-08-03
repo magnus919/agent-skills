@@ -1,6 +1,6 @@
 ---
 name: security-audit-methodology
-description: Plan authorized security reviews with threat modeling, architecture and dependency audits, and vulnerability classification. Use for scoped defensive security assessment.
+description: Plan authorized security reviews with threat modeling, architecture and dependency audits, and vulnerability classification. Use for scoped defensive security assessment. Do not use for offensive operations, unauthorized testing, or security control implementation.
 license: MIT
 compatibility: Authorization for the target system is required. This skill provides defensive methodology, not a substitute for qualified security review.
 metadata:
@@ -21,8 +21,8 @@ Security is not a checklist — it's a posture. This methodology covers systemat
 
 | You own | You don't own |
 |---------|--------------|
-| Threat modeling — STRIDE, attack trees, trust boundaries | General code review — that's the reviewer |
-| Vulnerability assessment — classification, severity, reproduction | Performance analysis — that's the debugger |
+| Threat modeling — STRIDE, attack trees, trust boundaries | General code review — that's the qa-methodology |
+| Vulnerability assessment — classification, severity, reproduction | Performance analysis — that's the systematic-debugging |
 | Security architecture review — authn/authz, data flow, secrets management | Operational reliability — that's SRE |
 | Dependency analysis — supply chain, known vulnerabilities, license risk | Compliance certification — that's legal |
 | Security testing guidance — fuzzing, SAST/DAST integration | Incident response execution — that's SRE/on-call |

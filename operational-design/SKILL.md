@@ -1,10 +1,12 @@
 ---
 name: operational-design
-description: COO methodology for process design, organizational scaling, operational
-  metrics, compliance and audit, vendor management, and team topology. Covers value
-  stream mapping, BPMN, bottleneck analysis, scaling from 10 to 100 to 1000 people,
-  KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness, RFP processes,
-  SLA design, vendor scorecards, team topologies, Conway's Law, and Dunbar's Number.
+description: Design and improve operational processes and organizational scaling — process
+  design, operational metrics, compliance and audit, vendor management, and team
+  topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10
+  to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness,
+  RFP processes, SLA design, vendor scorecards, team topologies, Conway's Law, and
+  Dunbar's Number. Do not use for engineering delivery, financial modeling, or technology
+  evaluation.
 license: MIT
 metadata:
   tags: coo, operations, process-design, scaling, compliance, vendor-management, team-topologies
@@ -44,7 +46,7 @@ Load this skill when the task involves:
 
 ```
 skill_view('operational-design')                    # This — methodology index
-skill_view('executive-methodology')                  # Shared decision frameworks
+skill_view('strategy-frameworks')                    # Shared decision frameworks
 skill_view('artifact-pyramids')                      # Output contract
 skill_view('operational-design', file_path='references/process-design.md')
 skill_view('operational-design', file_path='references/scaling-frameworks.md')
@@ -74,8 +76,7 @@ skill_view('operational-design', file_path='references/vendor-management.md')
 
 ## Related Skills
 
-- `executive-methodology` — shared decision frameworks and governance
-- `strategy-frameworks` — CEO-side strategic direction and competitive analysis
+- `strategy-frameworks` — CEO-side strategic direction, competitive analysis, and shared decision frameworks
 - `technology-radar` — CTO-side technology evaluation and architecture governance
 - `financial-modeling` — CFO-side unit economics and SaaS metrics
 - `artifact-pyramids` — output contract specification
