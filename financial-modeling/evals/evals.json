@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "financial-modeling",
+  "evals": [
+    {
+      "id": "unit-economics-review",
+      "prompt": "A SaaS startup reports $90 monthly ARPU, 58% gross margin, $3,600 CAC, and 4.2% monthly logo churn for its self-serve segment, and the team is celebrating that LTV/CAC is above 3. Review their unit economics and tell them what to check before trusting that conclusion.",
+      "expected_output": "A unit-economics review that recomputes the headline numbers instead of accepting the claim: with a simple LTV formulation, LTV is roughly $1,240 (monthly ARPU x gross margin / monthly churn), which puts LTV/CAC near 0.35 and CAC payback around 69 months on a gross-margin basis — both far outside the claimed healthy band. The review then questions the inputs: whether CAC is blended or channel-specific, whether churn is stable and measured on the same period as ARPU and margin, and whether the segment's gross margin and expansion assumptions hold. It concludes that the 3x LTV/CAC and payback bands are context-dependent heuristics, and that the segment and channel-level numbers must be produced before any health conclusion is drawn.",
+      "assertions": [
+        "The review recomputes simple LTV from ARPU, gross margin, and monthly churn and shows LTV/CAC well below 1, contradicting the claimed 3x",
+        "The review flags a CAC payback of roughly 60-80 months as a financing concern on the stated numbers",
+        "The review asks whether CAC is blended versus segment- or channel-specific and whether ARPU, margin, and churn definitions and periods are consistent",
+        "The review treats LTV/CAC and payback thresholds as context-dependent heuristics rather than universal pass/fail rules"
+      ]
+    },
+    {
+      "id": "pricing-decision",
+      "prompt": "The team wants to raise the price of the $100/month tier to $120/month. Analysts estimate monthly logo churn will rise from 5% to 8% at the new price, with gross margin unchanged at 60%. Walk through how to decide whether the increase is worth it, using the pricing and unit-economics methodology.",
+      "expected_output": "A pricing decision analysis that works through the unit-economics trade-off before recommending anything: under the simple LTV formulation, current LTV is $1,200 (100 x 0.60 / 0.05) and the new price with higher churn drops LTV to $900 (120 x 0.60 / 0.08), so on the stated assumptions the price increase destroys customer value even though it raises price. The analysis does not stop at the LTV comparison: it treats the price change as a hypothesis to test, defines the goal (conversion, margin, expansion, or cash collection), proposes a controlled test on new customers or a segment with existing-customer treatment and contract obligations spelled out, and lists what to track — conversion, discounting, activation, retention, support demand, contribution margin, and cash timing. The decision records the trade-off explicitly and monitors the affected cohorts after rollout.",
+      "assertions": [
+        "The analysis computes current LTV of $1,200 and new LTV of $900 under the stated churn assumptions and shows the price increase lowers LTV",
+        "The analysis treats the price change as a hypothesis to test rather than a settled decision",
+        "The analysis proposes a controlled test with a defined goal and tracks conversion, discounting, retention, contribution margin, and cash timing",
+        "The analysis records an explicit trade-off and a plan to monitor the affected cohorts after rollout"
+      ]
+    },
+    {
+      "id": "fundraising-scenario",
+      "prompt": "The company needs to raise a Series A to extend runway past the base-case cash-out date. Prepare the fundraising scenario: how much to raise, what runway the round buys under base, upside, and downside cases, the fully diluted cap-table impact of a $10M pre-money round with a 15% option-pool increase, and what to prepare for diligence.",
+      "expected_output": "A fundraising scenario built from the cash model rather than a valuation headline: the raise size is tied to the base-case net monthly cash burn and target runway, and the scenario shows how long the money lasts in base, upside, and downside cases so the financing is sized against the worst realistic timing. The cap table is modeled on a fully diluted basis showing pre-money valuation, new money, post-money valuation, the option-pool increase and who bears its dilution, and ownership by holder class before terms are accepted. Key term-sheet concepts — liquidation preference, participation, anti-dilution, pro-rata and ROFR rights — are modeled at several exit values across security classes rather than taken at face value. The preparation list covers a reconciled financial model, the current cap table, historical financial statements, customer and retention analysis, material contracts, and a clear account of risks and assumptions for diligence.",
+      "assertions": [
+        "The scenario sizes the raise from the base-case cash model and shows runway under base, upside, and downside cases",
+        "The scenario models the cap table fully diluted with pre-money, new money, post-money, option-pool increase, and ownership by holder class",
+        "The scenario models key term-sheet concepts such as liquidation preference, participation, and anti-dilution across several exit values and security classes",
+        "The scenario lists diligence preparation including a reconciled financial model, cap table, customer and retention analysis, and material contracts"
+      ]
+    },
+    {
+      "id": "saas-metrics-interpretation",
+      "prompt": "A board deck claims NDR of 112%, monthly logo churn of 2.1%, and a Rule of 40 score of 38%, and concludes the company is healthy. Interpret these SaaS metrics for the board and list the questions to ask before accepting the conclusion.",
+      "expected_output": "An interpretation that first pins down definitions and periods: NDR is (starting recurring revenue plus expansion minus contraction minus churn) divided by starting recurring revenue on the same cohort and period, logo churn is customers churned over customers at the start of the month, and Rule of 40 is the revenue growth rate plus a stated profit margin (EBITDA or free-cash-flow margin — not interchangeable). The analysis then questions the health conclusion: whether the 112% NDR comes from durable expansion or one-time price changes, whether churn is segmented by customer size and contract cadence (a blended 2.1% can hide a bad enterprise or SMB cohort), and which growth and margin definitions produced the 38% Rule of 40 score. The final questions to the board cover definition changes, reclassifications, acquisitions, currency effects, and whether the metrics reconcile to customer-level or contract-level movements.",
+      "assertions": [
+        "The interpretation defines NDR, logo churn, and Rule of 40 with their period and cohort requirements and distinguishes EBITDA from free-cash-flow margin",
+        "The interpretation questions whether the 112% NDR reflects durable expansion or one-time effects",
+        "The interpretation segments churn by customer size and contract cadence instead of trusting the blended rate",
+        "The interpretation asks about definition changes, reclassifications, acquisitions, currency effects, and reconciliation to customer-level movements"
+      ]
+    },
+    {
+      "id": "model-sanity-check",
+      "prompt": "A colleague hands you a 24-month SaaS model forecasting 5x revenue growth with flat headcount and 80% gross margin, and wants to take it to the board. Sanity-check the model before it goes out.",
+      "expected_output": "A sanity check that works from structure to drivers before touching the headline numbers: the model must link the P&L, balance sheet, and cash-flow statement, reconcile ending cash to the balance sheet, and use one currency and one period convention throughout. The check then cross-checks the operational drivers against the outputs — the implied customer additions, ARPU, churn, and headcount productivity must be shown and internally consistent, and the 5x growth with flat headcount is flagged as requiring an explicit productivity or automation assumption that is not stated. The gross-margin assumption is tested against COGS and variable-cost drivers rather than accepted as a constant. The check requires base, upside, and downside scenarios and a sensitivity analysis on the drivers that most change ending cash, and it labels every illustrative figure as hypothetical rather than a forecast.",
+      "assertions": [
+        "The sanity check verifies statement linkage including ending cash reconciling to the balance sheet and consistent currency and period conventions",
+        "The sanity check cross-checks operational drivers such as customers, ARPU, churn, and headcount against the revenue and margin outputs",
+        "The sanity check flags the 5x growth with flat headcount as requiring an explicit productivity or automation assumption",
+        "The sanity check requires base, upside, and downside scenarios and sensitivity analysis on the drivers that most change ending cash"
+      ]
+    },
+    {
+      "id": "runway-burn-analysis",
+      "prompt": "The startup has $1.2M in cash, burns a net $180K per month, and forecasts $90K in monthly recurring revenue. Compute runway and tell them what to model before deciding whether to raise or cut spend.",
+      "expected_output": "A runway analysis that computes the finite quotient first — roughly 6-7 months of runway ($1.2M divided by $180K net monthly cash burn) — and then explains why the number alone is not a decision. The analysis insists on a cash-flow basis rather than P&L loss when receivables, payables, deferred revenue, and timing are material, and it tests slower collections, delayed revenue, and higher spend as sensitivity cases so the raise or cut decision is sized against the downside. Runway bands are treated as management heuristics that depend on financing access, contractual commitments, and the time needed to execute a contingency plan; one-time costs and a slower collections assumption are included in the scenario that drives the decision.",
+      "assertions": [
+        "The analysis computes runway as available cash divided by net monthly cash burn, roughly 6-7 months on the stated figures",
+        "The analysis requires a cash-flow basis rather than P&L loss where collections, deferred revenue, and timing are material",
+        "The analysis tests slower collections, delayed revenue, and higher spend as sensitivity cases",
+        "The analysis treats runway bands as management heuristics that depend on financing access and execution time"
+      ]
+    }
+  ]
+}

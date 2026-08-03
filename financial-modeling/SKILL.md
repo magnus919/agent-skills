@@ -48,6 +48,25 @@ Load only the reference relevant to the task:
 | [SaaS metrics](references/saas-metrics.md) | Defining and interpreting ARR, churn, NDR, Rule of 40, Magic Number, or burn multiple |
 | [Source index](references/source-index.md) | Reviewing provenance, porting scope, source URLs, and currency boundaries |
 
+## Templates
+
+| Template | When to use |
+|---|---|
+| [Unit economics record](templates/unit-economics-record.md) | Recording segment- or channel-level CAC, LTV, payback, and contribution margin with stated definitions |
+| [Pricing decision record](templates/pricing-decision-record.md) | Structuring a pricing or price-change decision: options, unit-economics trade-offs, test plan, and decision |
+| [Fundraising scenario](templates/fundraising-scenario.md) | Preparing a raise: size from the cash model, runway per case, fully diluted cap-table impact, and diligence prep |
+| [Model sanity checklist](templates/model-sanity-checklist.md) | Cross-checking a model for structure, linkage, driver consistency, and scenario coverage before sharing it |
+
+## Scripts
+
+| Script | When to use |
+|---|---|
+| [saas-metrics.py](scripts/saas-metrics.py) | Computing ARR, monthly and annualized logo churn, NDR, and Rule of 40 from stated inputs; `--json` for machine-readable output |
+
+## Evals
+
+`evals/evals.json` — output-quality eval manifest for this skill: unit-economics review, pricing decision, fundraising scenario, SaaS metrics interpretation, model sanity check, and runway and burn analysis.
+
 ## Working Method
 
 1. Define the decision, audience, currency, time period, and accounting basis before calculating anything.
