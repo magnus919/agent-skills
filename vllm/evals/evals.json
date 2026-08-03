@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "vllm",
+  "evals": [
+    {
+      "id": "serving-config-review",
+      "prompt": "A team wants to serve a 70B instruct model (bf16) on two A100 80GB GPUs in one node with a 32K context window. Draft the vllm serve command with serving flags, explain the memory and parallelism reasoning, and state what to verify after startup.",
+      "expected_output": "A vllm serve command that pins the model and revision, serves a stable API name, and configures parallelism and memory deliberately: --model <repo> --revision <sha> --served-model-name <api-name> --tensor-parallel-size 2 --max-model-len 32768 --gpu-memory-utilization 0.9 --trust-remote-code only if the model card requires it. The reasoning explains that a 70B bf16 checkpoint needs roughly 140GB of weights, so two 80GB GPUs with tensor parallelism are required (weights plus KV cache plus activations must fit under the per-instance gpu-memory-utilization cap), that --pipeline-parallel-size would only be needed across nodes, that --max-model-len 32K directly sizes the KV cache (larger context means fewer concurrent sequences), and that TP requires NVLink and equal per-GPU memory. Post-startup verification: the startup log shows memory profiling completed and the GPU KV cache size, /v1/models lists the served name, and a representative chat request returns tokens. The record goes into the serving config template so the deployment is reproducible and rollback is a redeploy of the same pinned image and arguments.",
+      "assertions": [
+        "The command pins model, revision, served-model-name, tensor-parallel-size 2, max-model-len, and gpu-memory-utilization",
+        "The 70B bf16 weight size (~140GB) is used to justify two A100 80GB GPUs under the memory-utilization cap",
+        "max-model-len is tied to KV cache sizing and concurrent-sequence capacity",
+        "Verification includes startup memory profiling, /v1/models, and a representative chat request",
+        "The serving config template is used so the deployment is reproducible and rollback is a pinned-image redeploy"
+      ]
+    },
+    {
+      "id": "quantization-and-parallelism-sizing",
+      "prompt": "Our 8B model in bf16 takes 16GB of VRAM and we want to serve 256 concurrent long-context requests. We have a single 80GB H100. Should we quantize, enable tensor parallelism, or both, and what trade-offs should we record before changing anything?",
+      "expected_output": "A sizing analysis that measures before optimizing: establish the baseline with the current bf16 serving config, record the reported GPU KV cache size and max concurrency for the target context, then evaluate options against that baseline. On a single H100, tensor parallelism is not applicable (TP shards across multiple GPUs) so the levers are quantization and KV cache settings: an FP8 or INT4 weight format shrinks weights and frees GPU memory for a larger KV cache, --kv-cache-dtype fp8 shrinks the cache for long contexts on supported hardware, and --max-model-len or --max-num-seqs bound concurrency. The trade-offs are stated explicitly: quantization changes output quality and requires kernels that match the hardware generation, and more KV cache (longer context or higher concurrency) increases gpu-cache-usage until requests wait. The change record freezes version, model, quantization, context, batching, and workload, and verification re-runs the frozen benchmark plus a quality spot-check rather than assuming the quantized model matches bf16 behavior.",
+      "assertions": [
+        "The response measures the baseline (KV cache size, max concurrency) before optimizing",
+        "Tensor parallelism is correctly deemed not applicable on a single GPU",
+        "Quantization (FP8/INT4 weights) and kv-cache-dtype fp8 are evaluated as the memory levers, with quality trade-offs stated",
+        "KV cache pressure is tied to gpu-cache-usage and waiting requests",
+        "Verification re-runs the frozen benchmark and a quality spot-check under matched conditions"
+      ]
+    },
+    {
+      "id": "openai-api-integration",
+      "prompt": "We started vllm serve with a chat model and the OpenAI SDK returns a 404 for /v1/chat/completions, while /v1/models works. Diagnose the likely causes and describe how to verify the fix, without exposing the server.",
+      "expected_output": "A diagnostic sequence over the read-only probes: confirm /health and /v1/models respond, then check what /v1/models actually lists and compare it with the model name the client sends, since a served-model-name mismatch or an unserved model id produces 404-style failures on inference routes. The next checks are version and load state, and the server log for whether the model loaded and which endpoints are registered on this release, because vLLM serves /v1/chat/completions only for text-generation models that carry a chat template; a model without a chat template cannot serve chat and needs --chat-template, and some pooling or embedding models do not register chat endpoints at all. The fix is verified by sending one bounded chat request with the exact served model name and checking for generated tokens, and by confirming the server is only reachable on the intended interface with API auth or a reverse proxy in place. The response does not expose logs or tokens and treats any bind-address or API-key change as a confirmed mutation.",
+      "assertions": [
+        "Diagnosis starts with /health, /v1/models, and the served model name versus the client's model field",
+        "Chat templates and model type (generative versus pooling) are named as the cause of missing /v1/chat/completions routes",
+        "The fix is verified with one bounded chat request returning generated tokens",
+        "Exposure controls (bind address, API keys, reverse proxy) are checked without dumping logs or secrets",
+        "A bind or auth change is treated as a mutation requiring confirmation"
+      ]
+    },
+    {
+      "id": "benchmark-run-review",
+      "prompt": "A colleague claims a vLLM upgrade doubled our token throughput: 420 tok/s before, 850 tok/s after. Review their evidence before we roll the upgrade to production.",
+      "expected_output": "A skeptical review of the benchmark evidence: the comparison is only meaningful if every other condition was frozen, so the reviewer asks for or reconstructs the matched conditions — pinned vLLM versions on both sides, identical model and revision, same quantization and dtype, same tensor parallelism, max-model-len, max-num-seqs, max-num-batched-tokens, GPU model and driver, dataset, prompt and output lengths, request rate, and concurrency — and requires the raw benchmark records from vllm bench serve showing request throughput, output token throughput, TTFT/TPOT/ITL percentiles, and variance across repetitions. A throughput doubling without changes to hardware or workload is a red flag for a mismatch (for example comparing different concurrency, a different dataset, or fp8 versus bf16). The reviewer also separates throughput from latency: if the goal is user-facing latency, TPOT and TTFT under realistic load matter more than raw tok/s. The upgrade only ships if the matched benchmark confirms the claim and the run record template was used on both sides.",
+      "assertions": [
+        "The review demands matched conditions (version, model, quant, parallelism, context, batching, GPU, workload) on both sides",
+        "Raw vllm bench serve output with throughput, TTFT/TPOT/ITL percentiles, and variance is required, not a single number",
+        "A suspicious doubling is probed for a mismatch in concurrency, dataset, or precision",
+        "Throughput and latency (TTFT/TPOT under load) are treated as separate metrics",
+        "The benchmark run record template is required on both sides before the upgrade ships"
+      ]
+    },
+    {
+      "id": "continuous-batching-tuning",
+      "prompt": "Our vLLM server reports gpu_cache_usage_perc above 0.95 with requests waiting, and p50 latency is fine but p99 spiked. We already run with default batching settings. What should we change, and what should we measure?",
+      "expected_output": "A one-variable-at-a-time tuning plan anchored on evidence: the cache-usage and waiting-request metrics say the deployment is at KV cache capacity, so the options are to bound concurrency (lower --max-num-seqs to cap sequences per iteration), reduce per-request token demand (lower --max-model-len or cap output tokens), enable or widen chunked prefill (--enable-chunked-prefill with a deliberate --max-num-batched-tokens) so prefill no longer blocks decode, or scale out, rather than raising --max-num-seqs further which would worsen p99. Prefix caching (--enable-prefix-caching) is evaluated if requests share system prompts, since a higher hit rate lowers effective input tokens. Every change is measured with the frozen benchmark plus the /metrics counters (gpu_cache_usage_perc, num_requests_running/waiting) before and after, one change at a time, and p99 is reported with its distribution rather than a single run.",
+      "assertions": [
+        "The plan ties gpu_cache_usage_perc near 1.0 with waiting requests to KV cache capacity, not to raising max-num-seqs",
+        "Concrete levers are named: max-num-seqs, max-model-len or output cap, chunked prefill with max-num-batched-tokens, or scale-out",
+        "Prefix caching is evaluated for shared-prefix workloads",
+        "Changes are made one at a time with the frozen benchmark and /metrics counters before and after",
+        "p99 is reported with distribution or variance, not a single run"
+      ]
+    },
+    {
+      "id": "upgrade-rollback-troubleshooting",
+      "prompt": "We upgraded the vllm/vllm-openai image from :v0.25.1 to :v0.26.0 and the server now crashes at startup with a CUDA out of memory error, even though the model did not change. Diagnose and decide: fix forward or roll back?",
+      "expected_output": "A bounded diagnosis that starts with the read-only evidence: confirm the exact image digest on both versions, the serving args, the model revision, and the GPU inventory (nvidia-smi), then compare the startup logs of the failing v0.26.0 run against the v0.25.1 run. OOM at startup after an engine upgrade with the same model points at changed memory defaults or changed flag semantics: vLLM releases change default KV cache allocation, max-model-len derivation, CUDA graph capture, and flag names, so the same config may now reserve more memory; the fix-forward path re-reads the v0.26.0 release notes for changed defaults, lowers gpu-memory-utilization or max-model-len on the scratch instance, validates the model loads and passes the frozen benchmark, and only then redeploys. The rollback path is already cheap because the previous pinned image and serving config were recorded: redeploy vllm/vllm-openai:v0.25.1 with the old args, verify /health, /v1/models, and one representative request, and re-run the benchmark. The response decides rollback first if the team cannot validate forward in the window, and never mutates the production deployment without a human directive naming target, scope, and rollback path.",
+      "assertions": [
+        "Diagnosis uses exact image digests, serving args, model revision, nvidia-smi, and side-by-side startup logs",
+        "Changed memory defaults and flag semantics across releases are named as the leading OOM-after-upgrade cause",
+        "The fix-forward path validates on a scratch instance with release notes and the frozen benchmark before redeploying",
+        "The rollback path redeploys the pinned previous image plus recorded config and verifies at the delivery boundary",
+        "No production mutation happens without a human directive naming target, scope, and rollback path"
+      ]
+    }
+  ]
+}

@@ -579,7 +579,7 @@
         "./ml-engineering"
       ],
       "strict": false,
-      "description": "Plan and execute production ML engineering work — model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp)."
+      "description": "Plan and execute production ML engineering work — model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
     },
     {
       "name": "neckbeard",
@@ -1093,6 +1093,15 @@
       ],
       "strict": false,
       "description": "Verify work against explicit criteria using direct, source-faithful evidence, reproducible checks, and clear verdicts. Use before declaring an artifact, implementation, or claim complete; do not use for exploratory research without pass/fail criteria."
+    },
+    {
+      "name": "vllm",
+      "source": "./",
+      "skills": [
+        "./vllm"
+      ],
+      "strict": false,
+      "description": "Operate, configure, benchmark, and troubleshoot vLLM inference servers: Docker and Kubernetes deployment, quantization-aware model configuration (tensor parallelism, KV cache), OpenAI-compatible API serving, throughput and latency benchmarking, continuous batching tuning, GPU operation, and upgrade/rollback. Use when deploying or running a vLLM server (vllm serve, vllm/vllm-openai), sizing a model and its KV cache for GPUs, selecting quantization and parallelism, serving via /v1 endpoints, measuring serving throughput or latency, tuning batching, or diagnosing GPU, OOM, or startup failures in a vLLM deployment. Do not use for model training, fine-tuning, evaluation-set design, or engine-selection methodology (that is ml-engineering), or for operating the llama.cpp stack with GGUF models (that is llama-cpp); other inference engines (TGI, Ollama, Triton) are out of scope."
     },
     {
       "name": "web-accessibility",
