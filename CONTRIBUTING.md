@@ -24,6 +24,27 @@ Each skill must:
 
 The coverage report keeps claims separate. `manifest_present` means only that a file exists. Per skill, `schema_valid` is `not_applicable` when `evals/evals.json` is missing, `false` when a present manifest fails parsing/schema/semantic validation, and `true` only when the manifest passes repository v1 validation. Aggregate schema-valid coverage counts only skills where `schema_valid` is `true`. The remaining states are named but intentionally `not_assessed` in v1: `executable_grader_bindings_present`, `recent_run_evidence_present`, and `release_gated_evidence_present`. Those require separate versioned contracts for grader bindings, provenance/freshness, and release-gate evidence.
 
+## Skill catalog structure
+
+The catalog is two-layered by design. Keep your change in the layer that matches the job, and prefer beefing up an existing skill over creating a near-duplicate:
+
+- **Methodology skills** teach judgment for a discipline (frameworks, decision models, ownership boundaries): `backend-engineering`, `platform-engineering`, `qa-methodology`, the product family, and friends.
+- **Operational tool skills** own a named tool or system agents actually run: `kubernetes`, `docker-compose`, `traefik`, `grafana`, `supabase`, `restic`, and the `*-cli` wrappers.
+
+Decision guide:
+
+| Situation | Do |
+|---|---|
+| An existing skill's description already claims the topic | Thicken it — add references, templates, scripts, and evals. Don't split. |
+| A named tool has no owner skill | New operational tool skill — one skill per tool, with a script, `README.md`, and `evals/evals.json`. |
+| A judgment discipline has no owner skill | New methodology skill — keep runbooks out; patterns go in `references/`. |
+| Formats/tools share one workflow and one trigger (PDF/Word/Excel/PowerPoint; EPUB) | One family skill with per-format references, like `epub`. Promote to a bundle with sub-skills only when reference depth outgrows it. |
+| Routing references | Must point at real skills in this repository. Fix dead links (`docker-management`, `technical-architect`, `reviewer`, ...) when you touch a skill. |
+| A new `*-cli` wrapper | Ship a script that adds depth beyond a thin wrapper, plus `README.md` and evals. Thicken existing wrappers before adding siblings. |
+| Any change to an existing skill | Add or update its eval manifest in the same change so the coverage ratchet never decreases. |
+
+See `AGENTS.md` ("Catalog Structure: Methodology vs. Operational Tooling") for the full statement of the split.
+
 ## Development
 
 Clone the repository and run the validators from its root:

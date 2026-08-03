@@ -123,6 +123,28 @@ python3 scripts/validate-evals.py
 
 Existing skills are grandfathered via `scripts/grandfathered-skills.txt`. As schema-valid manifest coverage climbs past 25%, modified skills without valid manifests receive a warning; past 50%, they fail CI. The coverage report is available via `python3 scripts/eval-coverage.py`. The ratchet is enforced in CI via `python3 scripts/eval-coverage.py --modified-from <base-sha>` on every pull request. A skill is considered modified when any tracked file under its directory changes, not only `SKILL.md`. Schema-valid manifest coverage must not decrease between the base revision and the candidate; a decrease fails CI.
 
+## Catalog Structure: Methodology vs. Operational Tooling
+
+The catalog is intentionally two-layered. Keep every change in the layer that matches the work, and route between layers explicitly.
+
+- **Methodology skills** teach judgment for a discipline: frameworks, decision models, ownership boundaries, and process (`backend-engineering`, `frontend-engineering`, `data-engineering`, `platform-engineering`, `ml-engineering`, `qa-methodology`, `site-reliability-engineering`, `release-engineering`, and the product family). They describe *how to think about a discipline*, not how to operate a named tool.
+- **Operational tool skills** own a named tool or system that agents actually run (`kubernetes`, `docker-compose`, `traefik`, `grafana`, `supabase`, `restic`, `llama-cpp`, and the `*-cli` wrappers). They carry configuration patterns, runbooks, diagnostics, and scripts for that one tool.
+
+Routing between layers:
+
+- Methodology skills route *down* to tool skills for "operate X" (`platform-engineering` → `kubernetes`, `traefik`, `docker-compose`).
+- Tool skills route *up* to methodology skills for design and strategy (`grafana` → `site-reliability-engineering` for SLO design).
+- Every routing target must be a real skill in this repository. Dead links (routing to `docker-management`, `technical-architect`, `reviewer`, `ux-designer`, or `writer` when those skills are not in this repo) are a defect; fix them when you touch a skill.
+
+Creation rules:
+
+1. **Beef up before you split.** If an existing skill's description already claims a topic and the skill is thin, thicken it (references, templates, scripts, evals) instead of creating a near-duplicate.
+2. **One skill per named tool; one discipline per methodology skill.** Do not merge unrelated tools into a mega-skill — the trigger model depends on one-skill-per-named-tool. Do not turn a methodology skill into a tool manual.
+3. **Family skills for formats.** Tools or formats that share one agent workflow and one trigger (e.g., `epub`; a documents family for PDF/Word/Excel/PowerPoint) live as ONE skill with per-format references. Promote to a bundle with sub-skills only when per-format depth exceeds what references can hold (see the `tailscale` bundle pattern).
+4. **No thin wrappers.** A new tool/CLI skill must ship an executable script, a human-facing `README.md`, and an eval manifest. Adding shallow wrappers without depth is discouraged; thicken existing wrappers before adding siblings.
+5. **Runbooks live in tool skills.** Configuration-and-operations material belongs in tool skills, not in methodology references, which carry patterns and judgment.
+6. **New skills ship evals; modified skills keep the ratchet green.** Every new skill includes `evals/evals.json` with at least five output-quality cases (see Eval Requirements). When you modify an existing skill, add or update its eval manifest in the same change so coverage never decreases.
+
 ## Best Practices
 
 ### Do Load by Trigger
