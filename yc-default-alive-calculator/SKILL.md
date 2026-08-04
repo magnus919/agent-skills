@@ -13,7 +13,7 @@ metadata:
   spec-version: '1.0'
   tags: startup-finance, runway-analysis, ycombinator, paul-graham, fundraising, financial-modeling,
     default-alive, burn-rate, startup-metrics
-  sources: https://paulgraham.com/default.html, https://paulgraham.com/die.html, https://www.ycombinator.com/about
+  sources: https://paulgraham.com/aord.html, https://paulgraham.com/die.html, https://www.ycombinator.com/about
   skills: yc-weekly-growth-compass
   requires-toolsets: terminal
 ---
@@ -34,6 +34,14 @@ A startup is "default alive" if its current revenue trajectory will reach profit
 | "What's my burn multiple?" | Investor-ready metrics |
 | "How long until we break even?" | Trajectory check |
 | "Default alive/dead analysis" | Explicit framework request |
+
+## When Not to Use
+
+- **Detailed financial planning.** This is a diagnostic, not a budget. It projects one growth curve with fixed assumptions; it does not model hiring plans, contract timing, seasonality, or capital expenditures. Use a proper financial model for those.
+- **Fundraising valuation.** The verdict tells you whether raising money is existential; it does not compute a valuation, cap table, or round size.
+- **Cost structures the default assumptions don't describe.** The model splits burn into fixed and variable components (default 70/30). Hardware, R&D, or manufacturing companies with very different cost structures will get a misleading projection.
+- **Unknown or unstable growth.** The model assumes a steady monthly growth rate with a small decay. A company in launch mode or product-market-fit search does not produce a meaningful projection.
+- **As the only input to a board decision.** Treat the verdict as a conversation starter with your CFO or accountant, not as financial advice.
 
 ## How to Use
 
@@ -64,7 +72,7 @@ python scripts/default-alive.py \
   --monthly-growth 8
 ```
 
-Output shows: runway (months), burn multiple, months to breakeven extrapolated, default alive/dead verdict, and the key levers available.
+Output shows: the verdict, burn multiple (net burn ÷ net new ARR), burn-to-revenue ratio (net burn ÷ MRR), projected cash-out month, months to breakeven, cash gap coverage at current spend, the model's assumptions, and the key levers available.
 
 #### Required inputs
 
@@ -87,12 +95,15 @@ Output shows: runway (months), burn multiple, months to breakeven extrapolated, 
 
 | Field | Meaning |
 |-------|---------|
-| `runway_months` | Months until cash runs out (at current burn) |
-| `burn_multiple` | Net burn ÷ net new ARR |
+| `projected_cashout_month` | Month cash runs out under the model; `null` if never within the 10-year projection |
+| `burn_multiple` | Graham's burn multiple: net burn ÷ net new ARR |
+| `burn_to_revenue_ratio` | Net burn ÷ MRR (secondary diagnostic, not Graham's metric) |
 | `months_to_breakeven` | Months until revenue ≥ expenses (extrapolated) |
 | `default_verdict` | `ALIVE`, `DEAD`, or `MARGINAL` |
 | `revenue_at_breakeven` | Projected revenue when/if breakeven reached |
 | `gap_to_breakeven` | Monthly shortfall remaining |
+| `months_of_gap_remaining` | Static runway at current spend: cash ÷ monthly gap |
+| `model_assumptions` | `fixed_burn_pct`, `variable_burn_ratio`, `growth_decay_pct`, `projection_cap_months`, `safety_buffer_months` |
 | `levers` | What can change the outcome (increase price, cut costs, etc.) |
 
 ## Methodology
@@ -147,48 +158,47 @@ When the verdict is DEAD or MARGINAL, evaluate these levers (in rough order of i
 
 ## Examples
 
-### YC Typical Profile (Default Alive)
+### YC Typical Profile (Default Dead under the model)
 
 ```bash
-python scripts/default-alive.py \
+python3 scripts/default-alive.py \
   --monthly-revenue 30000 \
   --monthly-burn 75000 \
   --cash-on-hand 500000 \
   --monthly-growth 10
 ```
 
-- Runway: ~11 months
-- Burn multiple: 1.5x
-- Breakeven: ~14 months (3 months short on runway → MARGINAL)
-- Verdict: **MARGINAL** — needs faster growth, cost cuts, or funding
+- Projected cash-out: month 14
+- Burn multiple: 1.25x (net burn / net new ARR)
+- Breakeven would require 22 months, after cash runs out
+- Verdict: **DEAD** — needs faster growth, cost cuts, or funding
 
 ### Pre-Revenue Startup (Default Dead)
 
 ```bash
-python scripts/default-alive.py \
+python3 scripts/default-alive.py \
   --monthly-revenue 0 \
   --monthly-burn 80000 \
   --cash-on-hand 400000 \
   --monthly-growth 0
 ```
 
-- Runway: 5 months
+- Projected cash-out: month 8 (the model burns only the fixed 70% of burn at zero revenue)
 - Burn multiple: undefined (no revenue)
 - Verdict: **DEAD** — fundraising is existential
 
 ### Capital-Efficient SaaS (Default Alive)
 
 ```bash
-python scripts/default-alive.py \
+python3 scripts/default-alive.py \
   --monthly-revenue 150000 \
   --monthly-burn 180000 \
   --cash-on-hand 2000000 \
   --monthly-growth 7
 ```
 
-- Runway: ~66 months (effectively infinite)
-- Burn multiple: 0.2x
-- Breakeven: ~3 months
+- Projected cash-out: none within the 10-year projection
+- Burn multiple: 0.24x (net burn / net new ARR)
 - Verdict: **ALIVE**
 
 ## References

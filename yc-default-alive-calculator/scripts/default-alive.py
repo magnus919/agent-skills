@@ -16,9 +16,6 @@ See SKILL.md for full documentation and methodology.
 
 import argparse
 import json
-import math
-import sys
-from typing import Optional
 
 # ---------------------------------------------------------------------------
 # Core calculation
@@ -62,8 +59,8 @@ def project_trajectory(
     current_growth = growth_rate
 
     trajectory = []
-    breakeven_month: Optional[int] = None
-    cashout_month: Optional[int] = None
+    breakeven_month: int | None = None
+    cashout_month: int | None = None
 
     for month in range(1, MAX_PROJECTION_MONTHS + 1):
         # Revenue grows (or decays) at current growth rate
@@ -117,29 +114,27 @@ def project_trajectory(
     # Diagnostics
     # ------------------------------------------------------------------
 
-    runway_months = cashout_month if cashout_month else MAX_PROJECTION_MONTHS
+    runway_months = cashout_month if cashout_month else None  # None = never runs out within projection
     net_burn = monthly_burn - monthly_revenue
-    burn_multiple = round(net_burn / max(monthly_revenue, 1), 2) if monthly_revenue > 0 else None
 
-    # Net new ARR (monthly growth in ARR terms)
-    last_month_revenue = monthly_revenue
+    # Secondary diagnostic: net burn / MRR. This is NOT Graham's burn multiple.
+    burn_to_revenue_ratio = round(net_burn / max(monthly_revenue, 1), 2) if monthly_revenue > 0 else None
+
+    # Graham's burn multiple: net burn / net new ARR (annualized new recurring revenue added this month)
     current_arr = monthly_revenue * 12
     if monthly_growth_pct > 0 and monthly_revenue > 0:
         next_arr = (monthly_revenue * (1 + monthly_growth_pct / 100)) * 12
         net_new_arr = next_arr - current_arr
-        arr_burn_multiple = round(net_burn / max(net_new_arr, 1), 2) if net_new_arr > 0 else None
+        burn_multiple = round(net_burn / max(net_new_arr, 1), 2) if net_new_arr > 0 else None
     else:
         net_new_arr = 0
-        arr_burn_multiple = None
+        burn_multiple = None
 
     # Verdict
     if breakeven_month is not None and cashout_month is not None:
         if breakeven_month < cashout_month:
             post_breakeven_runway = cashout_month - breakeven_month
-            if post_breakeven_runway >= SAFETY_BUFFER_MONTHS:
-                verdict = "ALIVE"
-            else:
-                verdict = "MARGINAL"
+            verdict = "ALIVE" if post_breakeven_runway >= SAFETY_BUFFER_MONTHS else "MARGINAL"
         else:
             verdict = "DEAD"
     elif breakeven_month is not None and cashout_month is None:
@@ -194,20 +189,27 @@ def project_trajectory(
         "diagnostics": {
             "net_monthly_burn": round(net_burn, 2),
             "burn_multiple": burn_multiple,
-            "arr_burn_multiple": arr_burn_multiple,
+            "burn_to_revenue_ratio": burn_to_revenue_ratio,
             "current_arr": round(current_arr, 2),
             "net_new_arr": round(net_new_arr, 2),
-            "runway_months": runway_months,
+            "projected_cashout_month": runway_months,
             "months_to_breakeven": breakeven_month,
             "cashout_month": cashout_month,
             "gap_to_breakeven": round(gap_to_breakeven, 2),
             "months_of_gap_remaining": months_of_gap,
             "months_projected": len(trajectory),
         },
+        "model_assumptions": {
+            "fixed_burn_pct": fixed_burn_pct,
+            "variable_burn_ratio": round(variable_burn_ratio, 4),
+            "growth_decay_pct": growth_decay_pct,
+            "projection_cap_months": MAX_PROJECTION_MONTHS,
+            "safety_buffer_months": SAFETY_BUFFER_MONTHS,
+        },
         "verdict": verdict,
         "explanation": _generate_explanation(
             verdict, runway_months, breakeven_month, cashout_month,
-            burn_multiple, arr_burn_multiple, monthly_revenue, monthly_burn,
+            burn_multiple, burn_to_revenue_ratio, monthly_revenue, monthly_burn,
             cash_on_hand,
         ),
         "levers": levers,
@@ -219,11 +221,11 @@ def project_trajectory(
 
 def _generate_explanation(
     verdict: str,
-    runway_months: int,
-    breakeven_month: Optional[int],
-    cashout_month: Optional[int],
-    burn_multiple: Optional[float],
-    arr_burn_multiple: Optional[float],
+    runway_months: int | None,
+    breakeven_month: int | None,
+    cashout_month: int | None,
+    burn_multiple: float | None,
+    burn_to_revenue_ratio: float | None,
     monthly_revenue: float,
     monthly_burn: float,
     cash_on_hand: float,
@@ -232,27 +234,31 @@ def _generate_explanation(
     lines = []
 
     if verdict == "ALIVE":
-        lines.append(f"✅ DEFAULT ALIVE — You will reach profitability before running out of cash.")
+        lines.append("✅ DEFAULT ALIVE — You will reach profitability before running out of cash.")
         if breakeven_month:
             lines.append(f"  Breakeven projected at month {breakeven_month}.")
     elif verdict == "DEAD":
-        lines.append(f"❌ DEFAULT DEAD — You will run out of cash before reaching profitability.")
+        lines.append("❌ DEFAULT DEAD — You will run out of cash before reaching profitability.")
         if cashout_month:
             lines.append(f"  Cash runs out at month {cashout_month}.")
         if breakeven_month:
             lines.append(f"  Breakeven would require {breakeven_month} months — too late.")
     else:
-        lines.append(f"⚠️  MARGINAL — Breakeven is possible but dangerously close to cash-out.")
+        lines.append("⚠️  MARGINAL — Breakeven is possible but dangerously close to cash-out.")
         if breakeven_month and cashout_month:
             lines.append(f"  Breakeven at month {breakeven_month}, cash-out at month {cashout_month}.")
             lines.append(f"  Only {cashout_month - breakeven_month} months of post-breakeven buffer (need {SAFETY_BUFFER_MONTHS}+).")
 
     lines.append("")
     if burn_multiple is not None:
-        lines.append(f"  Burn Multiple: {burn_multiple}x  ({'efficient' if burn_multiple < 2 else 'inefficient' if burn_multiple < 3 else 'critical'})")
-    if arr_burn_multiple is not None:
-        lines.append(f"  ARR Burn Multiple: {arr_burn_multiple}x  (net burn / net new ARR)")
-    lines.append(f"  Runway: {runway_months} months")
+        qualifier = "efficient" if burn_multiple < 1 else "healthy" if burn_multiple < 2 else "warning" if burn_multiple < 3 else "critical"
+        lines.append(f"  Burn Multiple: {burn_multiple}x  ({qualifier}, net burn / net new ARR)")
+    if burn_to_revenue_ratio is not None:
+        lines.append(f"  Burn to Revenue: {burn_to_revenue_ratio}x  (net burn / MRR)")
+    if runway_months is None:
+        lines.append("  Projected cash-out: none within the 10-year projection")
+    else:
+        lines.append(f"  Projected cash-out (model): month {runway_months}")
     lines.append(f"  Monthly gap: ${monthly_burn - monthly_revenue:,.0f}")
     lines.append(f"  Cash: ${cash_on_hand:,.0f}")
 
@@ -295,17 +301,29 @@ def format_output(result: dict, verbose: bool) -> str:
     lines.append("── Diagnostics ─────────────────────────────────────────")
     lines.append(f"  Net monthly burn:    ${diag['net_monthly_burn']:>8,.0f}")
     if diag["burn_multiple"] is not None:
-        lines.append(f"  Burn Multiple:        {diag['burn_multiple']:>8.2f}x")
-    if diag["arr_burn_multiple"] is not None:
-        lines.append(f"  ARR Burn Multiple:    {diag['arr_burn_multiple']:>8.2f}x  (net burn ÷ net new ARR)")
+        lines.append(f"  Burn Multiple:        {diag['burn_multiple']:>8.2f}x  (net burn ÷ net new ARR)")
+    if diag["burn_to_revenue_ratio"] is not None:
+        lines.append(f"  Burn to Revenue:      {diag['burn_to_revenue_ratio']:>8.2f}x  (net burn ÷ MRR)")
     lines.append(f"  Current ARR:         ${diag['current_arr']:>8,.0f}")
     if diag["net_new_arr"]:
         lines.append(f"  Net new ARR/month:   ${diag['net_new_arr']:>8,.0f}")
-    lines.append(f"  Runway:               {diag['runway_months']:>8} months")
+    cashout = diag["projected_cashout_month"]
+    cashout_label = "none within 10y projection" if cashout is None else f"month {cashout}"
+    lines.append(f"  Projected cash-out:   {cashout_label:>8}")
     lines.append(f"  Months to breakeven:  {diag['months_to_breakeven'] or 'never':>8}")
     if diag["months_of_gap_remaining"]:
         lines.append(f"  Cash gap coverage:    {diag['months_of_gap_remaining']:>8.1f} months at current spend")
     lines.append("")
+
+    # Model assumptions
+    if "model_assumptions" in result:
+        a = result["model_assumptions"]
+        lines.append("── Model Assumptions ──────────────────────────────")
+        lines.append(f"  Fixed burn:            {a['fixed_burn_pct']:.0f}% of burn fixed; {100 - a['fixed_burn_pct']:.0f}% scales with revenue")
+        lines.append(f"  Variable burn ratio:   {a['variable_burn_ratio']:.2f} per $1 of revenue")
+        lines.append(f"  Growth decay:          {a['growth_decay_pct']:.1f}% per month")
+        lines.append(f"  Projection cap:        {a['projection_cap_months']} months | Safety buffer: {a['safety_buffer_months']} months")
+        lines.append("")
 
     # Levers
     if result["levers"]:
