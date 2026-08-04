@@ -26,7 +26,7 @@ A comprehensive methodology for designing, operating, and improving reliable pro
 | "Automate this operational task" | Toil assessment, automation decision tree, runbook pattern |
 ## When not to use
 
-Use [release-engineering](../release-engineering/SKILL.md) to plan releases, compose promotion and rollback gates, or coordinate a release train. Use [systematic-debugging](../systematic-debugging/SKILL.md) to find the cause of a specific failure.
+Use [release-engineering](../release-engineering/SKILL.md) to plan releases, compose promotion and rollback gates, or coordinate a release train. Use [systematic-debugging](../systematic-debugging/SKILL.md) to find the cause of a specific failure. Operating the telemetry stack itself — Prometheus scrape configs, OpenTelemetry Collector pipelines, Loki ingest and retention, Prometheus rules files — belongs to [telemetry](../telemetry/SKILL.md); this skill owns the SLI/SLO and alert *design* those rules implement. Grafana product work — dashboards, panels, Grafana-side alert rules, contact points, notification policies — belongs to [grafana](../grafana/SKILL.md).
 
 ## Reference Files
 

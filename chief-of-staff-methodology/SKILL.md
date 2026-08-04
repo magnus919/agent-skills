@@ -147,6 +147,9 @@ professionals for matters in their remit.
 - `product-methodology` for product decisions and prioritization.
 - `strategy-frameworks` for strategy choices and trade-offs.
 - `verification-methodology` for evidence-backed completion claims.
+- `slack` — channel triage and message search through the Slack Web API; confirmed posting only. The everyday read layer for "what was said, find it later."
+- `notion` — knowledge search, page and database reads through the Notion API; confirmed edits only.
+- `email` — transactional email sends and delivery verification (bounces, spam reports, event-webhook signature check) through SendGrid. Read-only discovery before any send.
 
 ## Portability
 

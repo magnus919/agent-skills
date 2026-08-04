@@ -42,6 +42,10 @@ Data engineering is the operational backbone of data-driven systems. This method
 | `references/database-migrations.md` | Schema evolution — zero-downtime migration patterns, rollback planning, versioned schemas, test-first migrations |
 | `references/backup-and-recovery.md` | Backup strategies per data store type, RPO/RTO planning, WAL archiving, snapshot management, recovery plan template |
 
+## Related Skills
+
+- [postgres](../postgres/SKILL.md) — operating a PostgreSQL server itself: configuration review, index and query-plan diagnosis, vacuum/bloat management, WAL archiving and point-in-time recovery, replication and failover, upgrades. This skill owns the engine-specific runbooks; data-engineering owns the engine-neutral methodology.
+
 ## Core Principles
 
 **Data without integrity is noise** — No pipeline, model, or dashboard is worth more than the quality of the data feeding it. Validate at every boundary.

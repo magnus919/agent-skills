@@ -44,6 +44,14 @@ The minimum verification set is:
 - lint, compilation, and changed-scope checks pass; and
 - changed-file security and public-metadata checks pass.
 
+When the repository already has a mutation-testing setup, record the mutant
+evidence in `qa-methodology`'s bounded mutation-review format
+([templates/mutation-review.md](../../qa-methodology/templates/mutation-review.md))
+and follow its mutation-guided hardening methodology
+([references/test-automation.md](../../qa-methodology/references/test-automation.md)).
+The evidence contract above still governs; the mutation-review record is the
+format, not a relaxation of the thresholds.
+
 A full mutation campaign, full-repository scan, or broad integration run is not
 required by this subtype unless the changed surface or repository policy makes
 it relevant. Record any boundary that was not exercised.

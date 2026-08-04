@@ -38,6 +38,11 @@ Example: for “What’s new on Jellyfin?” in an environment with a configured
 
 Do not use this skill for open-ended exploration that has no artifact, claim, decision, or observable completion criterion. Use a research or discovery skill first, then return here when there is something falsifiable to verify.
 
+## Related Skills
+
+- [playwright](../playwright/SKILL.md) — browser-based E2E checks as a verification instrument: authoring and running specs against the real UI boundary.
+- [documents](../documents/SKILL.md) — producing verification reports or evidence packets as PDF/Word/Excel/PowerPoint deliverables.
+
 ## Reference Files
 
 | Reference | When to load |

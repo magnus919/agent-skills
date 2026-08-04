@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "technical-documentation",
+  "evals": [
+    {
+      "id": "readme-quickstart",
+      "prompt": "I am writing a README for a small CLI tool that parses CSV files. What should the README contain and how should it be structured so a new user can go from zero to running the tool?",
+      "expected_output": "A README structured around getting the reader from install to first successful run: a one-paragraph project overview that states what the tool does (and does not do), the installation command, a minimal quickstart showing the exact command a new user runs with realistic sample input and output, then configuration options and common usage examples with every flag documented, then troubleshooting notes for the failures users actually hit, and finally pointers to related docs. The quickstart comes before the deep reference because the reader's first question is 'does this solve my problem and how do I run it?' Each example shows the command and its output so the reader can verify they are on track. The README documents the interface — flags, exit codes, file formats — not the implementation internals.",
+      "assertions": [
+        "The response opens with a short project overview and what the tool does and does not do",
+        "The response places a minimal quickstart with a real command and sample output before deep reference material",
+        "The response documents every flag, option, and exit code with worked examples",
+        "The response includes troubleshooting for failures users actually encounter",
+        "The response documents the interface rather than internal implementation"
+      ]
+    },
+    {
+      "id": "api-reference-generation",
+      "prompt": "We have a REST API with endpoints for creating and listing invoices and we want to document it. Our OpenAPI spec already exists. What does a good API reference look like and how do we generate and maintain it?",
+      "expected_output": "An API reference that is generated from the OpenAPI spec so it cannot drift from the implementation: a live preview or docs-as-code build that renders the spec, with a CI check that fails when the spec is out of sync with the code. Each endpoint page documents the URL and method, path and query parameters with types and defaults, request and response body examples, error responses with status codes and what each one means, and authentication requirements. Examples are concrete: a real request with a bearer token and the exact JSON response. The response covers keeping examples current by generating them from tests or fixtures, and explains when hand-written prose still adds value beyond the generated reference, such as conceptual guides that tie endpoints together.",
+      "assertions": [
+        "The response generates the reference from the OpenAPI spec and keeps it in sync via CI",
+        "The response covers path/query parameters, request and response examples, error codes, and auth per endpoint",
+        "The response uses concrete request and response examples rather than placeholders",
+        "The response keeps examples current by generating them from tests or fixtures",
+        "The response distinguishes generated reference pages from hand-written conceptual guides"
+      ]
+    },
+    {
+      "id": "cli-help-design",
+      "prompt": "We are designing the help output and man page for a CLI tool with subcommands (e.g. a deployment tool with deploy, rollback, status). What is good CLI help text and how do we structure the usage line, flags, and subcommand hierarchy?",
+      "expected_output": "A CLI help design centered on a usage line that teaches the command shape at a glance: the executable name, required positionals in order, and optional flags with their abbreviated forms (for example 'myctl deploy <environment> [--tag TAG] [--dry-run]'). The top-level help lists subcommands with one-line descriptions that say what each does and when to use it, and each subcommand's help repeats the full usage line, documents every flag with its type and default, and shows a concrete example. Exit codes are documented as part of the contract. Flag naming is consistent (verb-first subcommands, kebab-case long flags), help text stays one screen per command, and a man page mirrors the same structure for offline reading. The response calls out that help text is a user interface and should be treated with the same care as any other surface.",
+      "assertions": [
+        "The response designs a usage line that teaches the command shape with required positionals and optional flags",
+        "The response structures the subcommand hierarchy with one-line descriptions per subcommand",
+        "The response documents every flag with type and default plus a concrete example per subcommand",
+        "The response documents exit codes as part of the CLI contract",
+        "The response keeps help scannable and treats it as a user interface surface"
+      ]
+    },
+    {
+      "id": "agent-facing-docs",
+      "prompt": "Our repository is going to be worked on by AI agents and we want to write an AGENTS.md. What should it contain and how should it be written so an agent can operate effectively without being told everything every time?",
+      "expected_output": "An AGENTS.md written for the agent as a reader: it states the repository's conventions that affect behavior (commands to run for tests, lint, and builds; where configuration lives; how changes are validated; what not to touch), points to canonical references instead of repeating them, and uses trigger-oriented descriptions so the agent knows when to load which documentation or skill. Instructions are imperative and specific ('run make validate before committing', 'python3 -m pytest tests/ -q') rather than advisory. The file is kept short and layered — a top-level file with the always-relevant rules and deeper references for special cases — because an agent loads it on every session and context is finite. The response avoids duplicating what already exists in README or CONTRIBUTING and instead links to them, and it documents the output contract the repo expects from agent work.",
+      "assertions": [
+        "The response targets the agent as the reader with imperative, specific instructions",
+        "The response documents concrete commands for tests, lint, build, and validation",
+        "The response keeps the file short and layered with progressive disclosure for special cases",
+        "The response links to existing docs instead of duplicating README or CONTRIBUTING content",
+        "The response uses trigger-oriented descriptions so the agent knows when to load deeper material"
+      ]
+    },
+    {
+      "id": "doc-site-ia",
+      "prompt": "Our docs site has grown to 200 pages and readers keep getting lost. How should we structure the information architecture, cross-referencing, and search so the right page surfaces fast?",
+      "expected_output": "An information architecture plan organized around reader tasks rather than the internal org chart: a small set of top-level sections that mirror the main questions readers bring (getting started, guides by task, reference, troubleshooting), with progressive disclosure so overview pages summarize and link to deep dives instead of dumping everything inline. Cross-referencing follows a rule: link a concept at its first meaningful mention and link to the reference from every guide that uses it, so there is exactly one canonical page per concept and guides point at it. Search is designed for the content model — good titles and headings that match query vocabulary, redirects from old names, and no orphan pages (every page reachable from a section index). The response covers a maintenance convention: a page without an owner or an in-link is a candidate for deletion, because every doc is a liability.",
+      "assertions": [
+        "The response organizes IA around reader tasks with a small set of top-level sections",
+        "The response applies progressive disclosure with overviews linking to deep dives",
+        "The response defines a cross-referencing rule with one canonical page per concept",
+        "The response designs search around titles and headings matching query vocabulary with no orphan pages",
+        "The response includes a maintenance convention for pruning pages without owners or in-links"
+      ]
+    },
+    {
+      "id": "troubleshooting-doc",
+      "prompt": "Users keep hitting the same error when they configure our tool: the service fails to start with a certificate error. Write a troubleshooting section that actually helps them.",
+      "expected_output": "A troubleshooting section that opens with the symptom the reader is searching for — the exact error message or a plain-language version of it — and walks through the most likely cause to the fix: check that the certificate file path in the config matches the location named in the error, verify the file is in PEM format, confirm the CA bundle includes the issuing chain, and restart with the corrected config. Each step states what success looks like so the reader knows when they are done. The section shows the exact commands to run and the expected output for the healthy case, distinguishes the common misconfiguration from the rarer ones (expired certificate, hostname mismatch), and links to the config reference for the full option list. The fix steps are ordered by likelihood and cost so the reader tries the cheapest fix first.",
+      "assertions": [
+        "The response opens with the exact symptom and a plain-language error description",
+        "The response orders fix steps by likelihood and cost with the cheapest fix first",
+        "The response shows the exact commands and what success looks like after each step",
+        "The response distinguishes the common cause from rarer alternatives like expiry or hostname mismatch",
+        "The response links to the full configuration reference rather than duplicating it"
+      ]
+    }
+  ]
+}

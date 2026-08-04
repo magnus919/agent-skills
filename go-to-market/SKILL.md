@@ -1,10 +1,11 @@
 ---
 name: go-to-market
-description: CMO methodology — positioning and messaging frameworks (April Dunford's
-  positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG,
-  SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV
-  by channel, cohort analysis), market entry strategy (beachhead, land-and-expand),
-  competitive response (pricing wars, feature races, brand defense).
+description: Plan and execute go-to-market strategy — positioning and messaging frameworks
+  (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid,
+  organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling
+  (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand),
+  and competitive response (pricing wars, feature races, brand defense). Do not use for
+  sales execution and pipeline management, product strategy, or visual brand identity design.
 license: MIT
 metadata:
   tags: go-to-market, cmo, marketing, positioning, messaging, acquisition, brand-architecture,
@@ -49,9 +50,17 @@ skill_view('go-to-market', file_path='references/growth-modeling.md')
 
 The profile using this skill produces artifact pyramids. The response to any caller is the absolute path to `00-index.md`. See `artifact-pyramids` skill for the specification.
 
+## When not to use
+
+- **Sales execution and pipeline management** — this skill owns acquisition *strategy*, not running the funnel. CRM operations (contact lookup, deal pipeline views, confirmed stage changes) belong to [crm](../crm/SKILL.md).
+- **Product strategy and roadmap** — product vision, PMF, and prioritization belong to `product-strategy` and `product-methodology`.
+- **Visual brand identity design** — logo, palette, and brand systems belong to `brand-designer`.
+- **Marketing campaign execution** — this skill defines the channel strategy and positioning; operating the channel tools is the corresponding tool skill's job.
+
 ## Related Skills
 
-- `artifact-pyramids` — output contract
-- `product-strategy` — CPO methodology (product vision, PMF, market sizing)
-- `brand-designer` — visual brand identity design
-- `seo-content-optimization` — organic search and content strategy
+- [artifact-pyramids](../artifact-pyramids/SKILL.md) — output contract
+- [product-strategy](../product-strategy/SKILL.md) — CPO methodology (product vision, PMF, market sizing)
+- [brand-designer](../brand-designer/SKILL.md) — visual brand identity design
+- [seo-audit](../seo-audit/SKILL.md) — organic search audit and content strategy
+- [crm](../crm/SKILL.md) — HubSpot CRM operations: contact lookup, deal pipeline views, and confirmed deal stage changes

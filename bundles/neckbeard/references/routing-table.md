@@ -46,11 +46,17 @@ defaults without qualification.
 | `programming-principles` | Change is primarily a refactoring (files renamed/moved/split without behavior change), code-review request, or quality assessment; diff touches many files with structural reorganization | Change is greenfield implementation or a targeted bug fix; no structural reorganization, review request, or quality assessment is the primary objective | Contract, ledger, boundary verification |
 | `backend-engineering` | Change modifies server-side logic, service architecture (clean/hexagonal/layered), database access patterns, API implementation code, middleware, or service-to-service integration | No server-side logic, service architecture, database access pattern, API implementation, middleware, or integration code is modified | Contract, ledger |
 | `frontend-engineering` | Change modifies client-side application code, component hierarchy, state management, browser APIs, or UI rendering logic | No client-side application code, component, state management, browser API, or UI rendering logic is modified | Contract, ledger |
+| `mobile-development` | Change creates or modifies mobile app source for iOS, Android, Flutter, or React Native (`*.swift`, Kotlin sources, Flutter `lib/` Dart files, React Native components and Metro config) | No mobile app source file is created or modified; the change is web frontend or backend only | Contract, ledger |
+| `documents` | A deliverable is required in office-document format (PDF, Word, Excel, PowerPoint) for human stakeholders — a report, memo, spreadsheet, or deck generated from the change | The deliverable is markdown or the repository's native format; no office-format artifact is requested | Contract, ledger |
 | `cli-builder` | Change creates or modifies a command-line interface: argument parsing, flag design, subcommands, `--json` output, `--dry-run` preview, or exit-code contracts | No CLI argument parsing, flag, subcommand, or CLI output contract is created or modified | Contract, ledger |
 | `data-engineering` | Change modifies database schemas, migration files (`migrations/`, `*.sql`), ETL/ELT pipelines, data quality checks, or analytical SQL | No schema, migration file, ETL/ELT pipeline, data quality check, or analytical SQL is created or modified | Contract, ledger |
 | `data-architect` | Change requires a data-model design artifact, storage-platform evaluation, data-governance definition (ownership, lineage, cataloging), or cross-system data-flow diagram before implementation | No data-model artifact, storage-platform evaluation, data-governance definition, or cross-system data-flow design is required; schema changes are mechanical | Contract, ledger |
 | `agent-evals-and-observability` | Change modifies AI/agent behavior: eval definitions, agent task contracts, grader bindings, trajectory fixtures, prompt templates, or agent observability/telemetry | No agent eval, task contract, grader, trajectory fixture, prompt template, or agent telemetry is created or modified | Contract, ledger |
 | `opensource-contributions` | **Conditional — public/OSS repos only.** Repository remote is public, an open-source license is present, and a `CONTRIBUTING.md` or equivalent contribution governance file exists (verify via repo remote or `gh api`); contribution norms, agent disclosure, or fork etiquette apply | Repository is private or enterprise-internal (non-public remote, no open-source license); record skip as "non-public repository." Also skip when no contribution-norm question arises even in a public repo | Contract, ledger |
+
+## Test-hardening evidence
+
+When the change is a focused regression guard for already-correct production behavior (the lightweight test-hardening path, [lightweight-test-hardening.md](lightweight-test-hardening.md)), the `qa-methodology` row supplies the evidence format: use its bounded mutation-review record ([templates/mutation-review.md](../../qa-methodology/templates/mutation-review.md)) and mutation-guided hardening methodology ([references/test-automation.md](../../qa-methodology/references/test-automation.md)) when the repository already runs mutation testing. The lightweight-path contract still governs applicability and evidence thresholds.
 
 ## Change-surface coverage
 
@@ -65,7 +71,9 @@ signal triggers:
 | Architecture | `software-architecture-analysis`, `c4-diagramming`, `adr-authoring` |
 | API/interface | `api-design-and-evolution` |
 | Data (schema/migration) | `data-engineering`, `data-architect` |
-| Implementation domain | `backend-engineering`, `frontend-engineering`, `cli-builder` |
+| Implementation domain | `backend-engineering`, `frontend-engineering`, `mobile-development`, `cli-builder` |
+| Mobile app code | `mobile-development` |
+| Office-format deliverables | `documents` |
 | Security | `secure-software-engineering`, `security-audit-methodology` |
 | AI/agent behavior | `agent-evals-and-observability` |
 | Documentation | `technical-documentation` |
