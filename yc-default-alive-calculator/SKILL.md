@@ -35,6 +35,14 @@ A startup is "default alive" if its current revenue trajectory will reach profit
 | "How long until we break even?" | Trajectory check |
 | "Default alive/dead analysis" | Explicit framework request |
 
+## When Not to Use
+
+- **Detailed financial planning.** This is a diagnostic, not a budget. It projects one growth curve with fixed assumptions; it does not model hiring plans, contract timing, seasonality, or capital expenditures. Use a proper financial model for those.
+- **Fundraising valuation.** The verdict tells you whether raising money is existential; it does not compute a valuation, cap table, or round size.
+- **Cost structures the default assumptions don't describe.** The model splits burn into fixed and variable components (default 70/30). Hardware, R&D, or manufacturing companies with very different cost structures will get a misleading projection.
+- **Unknown or unstable growth.** The model assumes a steady monthly growth rate with a small decay. A company in launch mode or product-market-fit search does not produce a meaningful projection.
+- **As the only input to a board decision.** Treat the verdict as a conversation starter with your CFO or accountant, not as financial advice.
+
 ## How to Use
 
 ### Quick Answer (No Script)
