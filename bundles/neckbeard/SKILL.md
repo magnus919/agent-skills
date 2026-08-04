@@ -179,6 +179,7 @@ When a stage has a specialist skill, load it and follow it. The full table with
 | Security review, threat modeling, secure design | `secure-software-engineering` |
 | Accessibility (WCAG, keyboard/focus, error recovery) | `web-accessibility` |
 | Test strategy, regression testing, CI quality gates | `qa-methodology` |
+| Mobile app implementation (iOS/Android/Flutter/React Native) | `mobile-development` |
 | Docs / README / API reference | `technical-documentation` |
 | Verification verdicts and evidence | `verification-methodology` |
 | Release planning, versioning, pipeline promotion, readiness, rollout, or rollback design | `release-engineering` |

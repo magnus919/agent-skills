@@ -249,6 +249,7 @@ directories, or prose references for skills not yet landed.
 | [../product-adoption/SKILL.md](../product-adoption/SKILL.md) | Onboarding, activation, behavior change, feature discovery, sustained use | Provides adoption signals (activation, feature adoption, sustained use) as health dimensions |
 | [../product-experimentation/SKILL.md](../product-experimentation/SKILL.md) | Experiment design, readout, ship/no-ship decisions | Consumed when CS evidence suggests an experiment (e.g., intervention test for at-risk accounts) |
 | [../go-to-market/SKILL.md](../go-to-market/SKILL.md) | Acquisition campaigns, marketing conversion | Does NOT own. CS consumes acquisition context only. |
+| [../crm/SKILL.md](../crm/SKILL.md) | HubSpot CRM operations — contact records, deal pipeline views, confirmed deal stage changes | Provides account records and pipeline/health context for health/risk records and QBR preparation |
 
 ### Routes to (prose references — skills not yet landed)
 

@@ -390,7 +390,7 @@
         "./go-to-market"
       ],
       "strict": false,
-      "description": "CMO methodology — positioning and messaging frameworks (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), competitive response (pricing wars, feature races, brand defense)."
+      "description": "Plan and execute go-to-market strategy — positioning and messaging frameworks (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), and competitive response (pricing wars, feature races, brand defense). Do not use for sales execution and pipeline management, product strategy, or visual brand identity design."
     },
     {
       "name": "grafana",

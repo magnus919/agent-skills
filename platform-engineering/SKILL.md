@@ -23,9 +23,11 @@ Load this skill when the task involves:
 |---------|---------------|
 | Design a CI/CD pipeline | Pipeline structure, GitOps sync strategies, release automation |
 | Infrastructure as code plan | Terraform/OpenTofu module patterns, state management, Pulumi/Ansible patterns |
-| Container orchestration design | K8s pod lifecycle, Helm chart conventions, Kustomize overlays, Docker Compose |
+| Container orchestration design | K8s pod lifecycle, Helm chart conventions, Kustomize overlays, Docker Compose; operating a cluster (manifests, RBAC, workloads, upgrades) routes to [kubernetes](../kubernetes/SKILL.md) |
 | Service networking / mesh | Traefik/nginx/Caddy config, Tailscale/Headscale ACL, WireGuard, service mesh |
-| Observability strategy | Prometheus rules, Grafana dashboards-as-code, Loki logging, tracing |
+| Observability strategy | Prometheus rules, Grafana dashboards-as-code, Loki logging, tracing; operating the Prometheus/OTel/Loki stack (scrape, rules, retention) routes to [telemetry](../telemetry/SKILL.md), Grafana product work routes to [grafana](../grafana/SKILL.md) |
+| Infrastructure execution | Terraform/OpenTofu plan/apply workflow, state backends, drift detection, upgrades — route to [terraform](../terraform/SKILL.md) |
+| PostgreSQL operations | Server config review, indexes and query plans, vacuum/bloat, backups/PITR, replication — route to [postgres](../postgres/SKILL.md) |
 | Secret management design | Vault, SOPS, External Secrets Operator patterns |
 | Cloud architecture assessment | Multi-cloud patterns, provider foundations, cost governance |
 | Deployment pipeline review | Delivery-platform architecture; load [release-engineering](../release-engineering/SKILL.md) when defining the release model, promotion gates, rollout, or rollback policy |
@@ -95,6 +97,11 @@ The profile using this skill produces artifact pyramids. The response to any cal
 
 - `artifact-pyramids` — output contract specification
 - `docker-compose` — container lifecycle and multi-container Compose orchestration
+- `kubernetes` — cluster operations: manifests, RBAC, workloads, Helm, upgrades, troubleshooting
+- `terraform` — Terraform/OpenTofu execution: plan/apply workflow, state backends and locking, drift detection, upgrades and refactors
+- `telemetry` — Prometheus/OpenTelemetry Collector/Loki stack operations: scrape configs, rules files, retention, HA
+- `postgres` — PostgreSQL operations: configuration review, index and query-plan diagnosis, vacuum/bloat, backups/PITR, replication and failover
+- `grafana` — Grafana product work: dashboards, panels, data sources, alert rules, contact points, notification policies
 - `traefik` — reverse proxy and ingress configuration
 - `tailscale` — mesh networking and ACL policies
 - `implementation-planning` — work breakdown and dependency ordering

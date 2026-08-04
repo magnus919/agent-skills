@@ -33,6 +33,10 @@ Technical documentation is the interface between a tool and its user. This metho
 | `references/agent-facing-docs.md` | Writing AGENTS.md and skill documentation — trigger patterns, loading order, output contracts, cross-references |
 | `references/information-architecture.md` | Structuring a documentation site — progressive disclosure, cross-referencing, search optimization, maintenance strategy |
 
+## Related Skills
+
+- [documents](../documents/SKILL.md) — producing office-format deliverables (PDF, Word, Excel, PowerPoint) from documentation content; doc-site and markup conventions stay here.
+
 ## Core Principles
 
 **Document the interface, not the implementation** — Users need to know what a function does, what it expects, and what it returns. How it works internally is for the source code.
