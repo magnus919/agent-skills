@@ -48,8 +48,17 @@ def get_api_key() -> str:
     return key
 
 
+def _encode_form_fields(fields: Dict[str, Any]) -> bytes:
+    """Encode form fields, mapping booleans to Stripe's lowercase true/false."""
+    normalized = {
+        key: "true" if value is True else "false" if value is False else value
+        for key, value in fields.items()
+    }
+    return urllib.parse.urlencode(normalized).encode("utf-8")
+
+
 def api_request(method: str, path: str, api_key: str,
-                fields: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+                fields: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     base = f"{API_BASE}/{path.lstrip('/')}"
     if fields and method == "GET":
         query = "&".join(f"{key}={urllib.parse.quote(str(value))}" for key, value in fields.items())
@@ -57,7 +66,7 @@ def api_request(method: str, path: str, api_key: str,
         data = None
     elif fields:
         url = base
-        data = urllib.parse.urlencode(fields).encode("utf-8")
+        data = _encode_form_fields(fields)
     else:
         url = base
         data = None
@@ -168,7 +177,7 @@ def cmd_subscriptions_cancel(args: argparse.Namespace, api_key: str) -> Dict[str
     # setting cancel_at_period_end back to false) rather than cancelling
     # immediately.
     payload = api_request("POST", f"subscriptions/{args.subscription_id}", api_key,
-                          {"cancel_at_period_end": "true"})
+                          {"cancel_at_period_end": True})
     if payload.get("cancel_at_period_end") is not True:
         raise StripeError(
             "Stripe did not confirm the cancellation (cancel_at_period_end is "

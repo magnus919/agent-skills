@@ -220,14 +220,12 @@ class ProbeTests(unittest.TestCase):
         finally:
             large.stop()
 
-    def test_empty_models_is_a_failure(self):
-        # A server that responds 200 but lists no models must fail the models check.
+    def test_models_check_parses_from_stub(self):
+        """The models check parses the stub's served model list (positive path)."""
         proc = run_script(
             "--url", f"http://127.0.0.1:{self.server.port}", "--check", "models", "--json"
         )
         payload = load_json(proc)
-        # Stub lists test-model, so this is a sanity assertion on parsing, not a
-        # negative-path test; the negative path is covered by test_unreachable_server.
         self.assertEqual(payload["checks"][0]["ok"], True)
 
 
