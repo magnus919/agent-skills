@@ -88,6 +88,10 @@ Atlassian Confluence from the terminal. List spaces, browse pages, view content 
 
 An expert-level skill for building **role-based multi-agent teams** with CrewAI. Agents are defined as Roles with Goals and Backstories; crews are composed with sequential or hierarchical workflows.
 
+### [crm](crm/SKILL.md)
+
+Operate HubSpot CRM from the terminal: list and search contact records, view deal pipeline stages, and move deals between stages with confirmation. Ships a bounded stdlib CLI (contacts list/get/search, deals list/update-stage, pipelines list) with `--json`, `--limit`, and a `--dry-run`/`--yes` mutation gate for stage changes.
+
 ### [crowdsec](crowdsec/SKILL.md)
 
 Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF. Covers Security Engine installation (Linux, Docker), cscli hub management, remediation components (firewall, Traefik, Nginx), AppSec WAF, profiles, notifications, blocklists, CTI, metrics, and production best practices. Ships 7 reference files for deep dives into config, AppSec, Docker, Traefik integration, database backends, hub collections, and troubleshooting.
@@ -124,6 +128,10 @@ Generate, inspect, validate, and fix PDF, Word (.docx), Excel (.xlsx), and Power
 ### [dspy](dspy/SKILL.md)
 
 An expert-level skill for **programmatic prompt optimization** with Stanford's DSPy framework. You write Python programs with typed signatures; DSPy optimizes the prompts automatically. This is the framework for prompt engineering that doesn't feel like engineering.
+
+### [email](email/SKILL.md)
+
+Send and diagnose transactional email through Twilio SendGrid: send with `--dry-run`/`--yes` confirmation, check deliverability (bounces and spam reports), and verify Signed Event Webhook signatures with a self-contained ECDSA P-256 verifier. Ships a bounded stdlib CLI with `--json` and `--limit`.
 
 ### [epub](epub/SKILL.md)
 
@@ -273,6 +281,10 @@ Build, test, sign, and ship mobile apps across iOS, Android, Flutter, and React 
 ### [neckbeard](bundles/neckbeard/SKILL.md)
 
 Evidence-driven software delivery operating model — routes a change through framing, discovery, design, implementation, review, verification, delivery, and learning, choosing the smallest *safe* intervention and proving it at the real delivery boundary. Every non-trivial run leaves an inspectable evidence ledger. Composes the specialist catalog rather than replacing it. Ships a versioned evaluation harness that measures SDLC outcomes, never LOC. Not a "10x developer" persona.
+
+### [notion](notion/SKILL.md)
+
+Operate Notion from the terminal: retrieve pages, query databases, search pages and databases, and update page properties with confirmation. Ships a bounded stdlib CLI (pages get/create/update, databases query, search) with `--json`, `--limit`, and a `--dry-run`/`--yes` mutation gate for creates and updates.
 
 ### [nous-branding](nous-branding/SKILL.md)
 
@@ -437,6 +449,10 @@ Identify search-discoverability problems through evidence, prioritize the work, 
 
 Build practical reliability practices around the work teams actually perform: measurable service objectives, useful alerts, incident response, and learning-oriented follow-up.
 
+### [slack](slack/SKILL.md)
+
+Operate Slack workspaces from the terminal: list channels, read messages, follow threads, search history, list files, and verify webhook signatures. Ships a bounded stdlib CLI with `--json`, `--limit`, and a `--dry-run`/`--yes` mutation gate for sends.
+
 ### [software-architecture-analysis](software-architecture-analysis/SKILL.md)
 
 Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan under new constraints (local-first, privacy-first, self-hosted). Includes an interface extraction pattern for designing swappable storage provider abstractions.
@@ -448,6 +464,10 @@ Spec-Driven Development (SDD) methodology for AI software factories — where st
 ### [strategy-frameworks](strategy-frameworks/SKILL.md)
 
 Structure organizational strategy decisions about direction, industry structure, growth, capital allocation, acquisitions, and portfolios. Uses frameworks as prompts for evidence and trade-offs, not automatic recommendations.
+
+### [stripe](stripe/SKILL.md)
+
+Read Stripe account state from the terminal — balance, payment intents, and subscriptions — with guarded subscription cancellations. Ships a read-only-first stdlib CLI with `--json`, `--limit`, and a `--dry-run`/`--yes` mutation gate for cancellations (period-end default).
 
 ### [supabase](supabase/SKILL.md)
 

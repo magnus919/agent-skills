@@ -1,0 +1,411 @@
+#!/usr/bin/env python3
+"""email-cli - bounded, agent-first command line for transactional email.
+
+Sends transactional email through Twilio SendGrid and checks deliverability
+(bounces, spam reports) using only the Python standard library. Includes
+verification of SendGrid's Signed Event Webhook (ECDSA P-256) with a
+self-contained implementation — no third-party crypto dependency.
+
+Design rules:
+
+- Read-only by default. Sending email is a guarded mutation: it requires
+  --dry-run to preview, then --yes to confirm. Mutation requires explicit
+  confirmation.
+- Bounded reads: deliverability listings cap results with --limit and never
+  page past the requested cap.
+- --json emits machine-readable JSON; the default is human-readable text.
+- --help works with no SENDGRID_API_KEY set and makes no network calls.
+
+Environment:
+  SENDGRID_API_KEY       SendGrid API key with mail.send + suppression access
+
+Webhook signature verification (the Signed Event Webhook) follows Twilio's
+reference implementation: data = timestamp + raw body (bytes concatenated,
+no separator), SHA-256 digest, verified as an ECDSA signature over the P-256
+curve with the webhook public key; the header signature is base64-decoded
+ASN.1 DER (r, s).
+
+Exit codes: 0 success, 1 API error or failed verification, 2 usage error.
+"""
+import argparse
+import base64
+import hashlib
+import json
+import os
+import sys
+import time
+import urllib.error
+import urllib.request
+from typing import Any, Dict, Optional, Tuple
+
+API_BASE = os.environ.get("SENDGRID_API_BASE", "https://api.sendgrid.com/v3")
+DEFAULT_LIMIT = 20
+MAX_LIMIT = 100
+REQUEST_TIMEOUT = 15
+DEFAULT_MAX_AGE_SECONDS = 300
+TEXT_TRUNCATE = 500
+
+
+class EmailError(Exception):
+    """Raised when the SendGrid API returns an error or verification fails."""
+
+
+def get_api_key() -> str:
+    key = os.environ.get("SENDGRID_API_KEY", "")
+    if not key:
+        raise EmailError("SENDGRID_API_KEY environment variable is not set")
+    return key
+
+
+# --------------------------------------------------------------------------
+# ECDSA P-256 verification (stdlib-only)
+# --------------------------------------------------------------------------
+
+# secp256r1 / prime256v1 domain parameters
+_P256 = 0xFFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF
+_P256_A = _P256 - 3
+_P256_B = 0x5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B
+_P256_GX = 0x6B17D1F2E12C4247F8BCE6E563A440F277037D812DEB33A0F4A13945D898C296
+_P256_GY = 0x4FE342E2FE1A7F9B8EE7EB4A7C0F9E162BCE33576B315ECECBB6406837BF51F5
+_P256_N = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551
+_P256_G = (_P256_GX, _P256_GY)
+_POINT_AT_INFINITY = None  # represented by None
+
+
+def _mod_inverse(value: int, modulus: int) -> int:
+    return pow(value % modulus, -1, modulus)
+
+
+def _point_add(p1: Optional[Tuple[int, int]], p2: Optional[Tuple[int, int]]) -> Optional[Tuple[int, int]]:
+    if p1 is None:
+        return p2
+    if p2 is None:
+        return p1
+    x1, y1 = p1
+    x2, y2 = p2
+    if x1 == x2 and (y1 + y2) % _P256 == 0:
+        return None
+    if p1 == p2:
+        lam = (3 * x1 * x1 + _P256_A) * _mod_inverse(2 * y1, _P256) % _P256
+    else:
+        lam = (y2 - y1) * _mod_inverse(x2 - x1, _P256) % _P256
+    x3 = (lam * lam - x1 - x2) % _P256
+    y3 = (lam * (x1 - x3) - y1) % _P256
+    return (x3, y3)
+
+
+def _point_mul(scalar: int, point: Optional[Tuple[int, int]]) -> Optional[Tuple[int, int]]:
+    result = None
+    addend = point
+    while scalar:
+        if scalar & 1:
+            result = _point_add(result, addend)
+        addend = _point_add(addend, addend)
+        scalar >>= 1
+    return result
+
+
+def _parse_public_key(pem: str) -> Tuple[int, int]:
+    """Extract the uncompressed P-256 point (0x04 + x + y) from a PEM key."""
+    lines = [line.strip() for line in pem.splitlines() if line.strip() and "-----" not in line]
+    try:
+        der = base64.b64decode("".join(lines))
+    except (ValueError, TypeError) as error:
+        raise EmailError("public key is not valid base64 PEM") from error
+    marker = bytes([0x04])
+    idx = der.find(marker)
+    if idx < 0 or idx + 65 > len(der):
+        raise EmailError("public key is not a valid EC P-256 uncompressed point")
+    point = der[idx + 1 : idx + 65]
+    x = int.from_bytes(point[:32], "big")
+    y = int.from_bytes(point[32:], "big")
+    # Point-on-curve check: y^2 == x^3 + ax + b (mod p)
+    if (y * y - (x * x * x + _P256_A * x + _P256_B)) % _P256 != 0:
+        raise EmailError("public key point is not on the P-256 curve")
+    return (x, y)
+
+
+def _parse_der_signature(raw: bytes) -> Tuple[int, int]:
+    """Parse a minimal DER SEQUENCE of two INTEGERs into (r, s)."""
+    if len(raw) < 8 or raw[0] != 0x30:
+        raise EmailError("signature is not a DER SEQUENCE")
+    offset = 2  # skip 0x30 + length byte (short-form lengths only)
+    integers = []
+    for _ in range(2):
+        if offset >= len(raw) or raw[offset] != 0x02:
+            raise EmailError("signature is not two DER INTEGERs")
+        length = raw[offset + 1]
+        start = offset + 2
+        if start + length > len(raw):
+            raise EmailError("signature INTEGER overruns the blob")
+        integers.append(int.from_bytes(raw[start : start + length], "big"))
+        offset = start + length
+    if len(integers) != 2:
+        raise EmailError("signature must contain r and s")
+    return (integers[0], integers[1])
+
+
+def verify_webhook_signature(public_key_pem: str, body: bytes, signature: str, timestamp: str,
+                             max_age_seconds: int = DEFAULT_MAX_AGE_SECONDS) -> Dict[str, Any]:
+    """Verify a SendGrid Signed Event Webhook request.
+
+    Data is `timestamp + raw body` (bytes, no separator), SHA-256 digest,
+    ECDSA P-256 verification against the webhook public key; the
+    X-Twilio-Email-Event-Webhook-Signature header value is base64-decoded
+    ASN.1 DER (r, s).
+    """
+    if max_age_seconds > 0:
+        try:
+            if abs(int(time.time()) - int(timestamp)) > max_age_seconds:
+                raise EmailError(
+                    f"webhook timestamp is outside the {max_age_seconds}s replay window"
+                )
+        except ValueError as error:
+            raise EmailError(f"webhook timestamp is not a valid Unix timestamp: {timestamp!r}") from error
+    try:
+        decoded = base64.b64decode(signature, validate=True)
+    except (ValueError, TypeError) as error:
+        raise EmailError("signature header is not valid base64") from error
+    point = _parse_public_key(public_key_pem)
+    r, s = _parse_der_signature(decoded)
+    if not (1 <= r < _P256_N and 1 <= s < _P256_N):
+        raise EmailError("webhook signature (r, s) values are out of range")
+    digest = hashlib.sha256(timestamp.encode("utf-8") + body).digest()
+    e = int.from_bytes(digest, "big")
+    w = _mod_inverse(s, _P256_N)
+    u1 = (e * w) % _P256_N
+    u2 = (r * w) % _P256_N
+    result = _point_add(_point_mul(u1, _P256_G), _point_mul(u2, point))
+    if result is None or result[0] % _P256_N != r:
+        raise EmailError("webhook signature does not match the public key")
+    return {"ok": True, "verified": True, "timestamp": timestamp}
+
+
+# --------------------------------------------------------------------------
+# SendGrid API helpers
+# --------------------------------------------------------------------------
+
+
+def api_request(method: str, path: str, api_key: str,
+                body: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    data = json.dumps(body).encode("utf-8") if body is not None else None
+    request = urllib.request.Request(
+        f"{API_BASE}/{path.lstrip('/')}",
+        data=data,
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        method=method,
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+            raw = response.read().decode("utf-8")
+            return json.loads(raw) if raw else {}
+    except urllib.error.HTTPError as error:
+        detail = ""
+        try:
+            detail = json.loads(error.read().decode("utf-8")).get("errors", "")
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            pass
+        raise EmailError(f"SendGrid API HTTP {error.code}: {detail or error.reason}") from error
+    except urllib.error.URLError as error:
+        raise EmailError(f"SendGrid API unreachable: {error.reason}") from error
+    except json.JSONDecodeError as error:
+        raise EmailError(f"SendGrid API returned non-JSON: {error}") from error
+
+
+def truncate(text: str, limit: int = TEXT_TRUNCATE) -> str:
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1] + "…"
+
+
+def summarize_bounce(item: Dict[str, Any]) -> Dict[str, Any]:
+    return {"email": item.get("email", ""), "created": item.get("created", ""),
+            "reason": truncate(item.get("reason", "")), "status": item.get("status", "")}
+
+
+def summarize_spam_report(item: Dict[str, Any]) -> Dict[str, Any]:
+    return {"email": item.get("email", ""), "created": item.get("created", ""),
+            "ip": item.get("ip", ""), "reason": truncate(item.get("reason", ""))}
+
+
+# --------------------------------------------------------------------------
+# Command implementations
+# --------------------------------------------------------------------------
+
+
+def cmd_send(args: argparse.Namespace, api_key: str) -> Dict[str, Any]:
+    if not args.dry_run and not args.yes:
+        raise EmailError(
+            "refusing to send email without confirmation: pass --dry-run to "
+            "preview or --yes to confirm the mutation"
+        )
+    payload = {
+        "from": {"email": args.from_addr},
+        "personalizations": [{"to": [{"email": to} for to in args.to], "subject": args.subject}],
+        "content": [{"type": "text/plain", "value": args.body}],
+    }
+    if args.html:
+        payload["content"].append({"type": "text/html", "value": args.html})
+    if args.dry_run:
+        return {"ok": True, "dry_run": True, "would_send": {
+            "from": args.from_addr, "to": args.to, "subject": args.subject,
+            "body_preview": truncate(args.body),
+        }}
+    # SendGrid returns 202 with an empty body; the message id is an HTTP header.
+    request = urllib.request.Request(
+        f"{API_BASE}/mail/send",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        method="POST",
+    )
+    message_id = ""
+    try:
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+            message_id = response.headers.get("X-Message-Id", "")
+    except urllib.error.HTTPError as error:
+        detail = ""
+        try:
+            detail = json.loads(error.read().decode("utf-8")).get("errors", "")
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            pass
+        raise EmailError(f"SendGrid API HTTP {error.code}: {detail or error.reason}") from error
+    except urllib.error.URLError as error:
+        raise EmailError(f"SendGrid API unreachable: {error.reason}") from error
+    return {"ok": True, "message_id": message_id}
+
+
+def cmd_deliverability(args: argparse.Namespace, api_key: str) -> Dict[str, Any]:
+    if args.action == "bounces":
+        payload = api_request("GET", f"suppression/bounces?limit={args.limit}", api_key)
+        items = [summarize_bounce(i) for i in payload]
+        return {"ok": True, "kind": "bounces", "items": items, "count": len(items)}
+    payload = api_request("GET", f"suppression/spam_reports?limit={args.limit}", api_key)
+    items = [summarize_spam_report(i) for i in payload]
+    return {"ok": True, "kind": "spam_reports", "items": items, "count": len(items)}
+
+
+def cmd_webhook_verify(args: argparse.Namespace, unused_api_key: str) -> Dict[str, Any]:
+    try:
+        body = open(args.body_file, "rb").read()
+    except OSError as error:
+        raise EmailError(f"cannot read body file {args.body_file}: {error}") from error
+    try:
+        public_key = open(args.public_key_file, "r", encoding="utf-8").read()
+    except OSError as error:
+        raise EmailError(f"cannot read public key file {args.public_key_file}: {error}") from error
+    return verify_webhook_signature(public_key, body, args.signature, args.timestamp, args.max_age)
+
+
+# --------------------------------------------------------------------------
+# Output helpers
+# --------------------------------------------------------------------------
+
+
+def emit(data: Dict[str, Any], json_mode: bool) -> int:
+    if json_mode:
+        print(json.dumps(data, indent=2, sort_keys=True))
+    else:
+        _emit_human(data)
+    return 0
+
+
+def _emit_human(data: Dict[str, Any]) -> None:
+    if data.get("dry_run"):
+        print("DRY RUN (no email sent):")
+        print(f"  from:    {data['would_send']['from']}")
+        print(f"  to:      {', '.join(data['would_send']['to'])}")
+        print(f"  subject: {data['would_send']['subject']}")
+    elif "message_id" in data:
+        print(f"sent: message_id={data['message_id']}")
+    elif "items" in data:
+        print(f"{data['kind']} ({data['count']}):")
+        for item in data["items"]:
+            if "status" in item:
+                print(f"  {item['email']}  {item['status']}  {item['reason']}")
+            else:
+                print(f"  {item['email']}  {item['reason']}")
+    elif data.get("verified"):
+        print("webhook signature verified (ECDSA P-256 match)")
+    else:
+        print(json.dumps(data, indent=2, sort_keys=True))
+
+
+# --------------------------------------------------------------------------
+# CLI
+# --------------------------------------------------------------------------
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="email-cli",
+        description=(
+            "Bounded, agent-first CLI for transactional email via Twilio "
+            "SendGrid: send, deliverability checks (bounces, spam reports), "
+            "and Signed Event Webhook signature verification. Sending is a "
+            "guarded mutation requiring --dry-run then --yes."
+        ),
+    )
+    parser.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT, metavar="N",
+                        help=f"cap reads at N results (default {DEFAULT_LIMIT}, max {MAX_LIMIT})")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    send = sub.add_parser("send", help="send a transactional email (guarded mutation)")
+    send.add_argument("--to", action="append", required=True, metavar="EMAIL",
+                      help="recipient email (repeatable)")
+    send.add_argument("--from", dest="from_addr", required=True, metavar="EMAIL",
+                      help="verified sender email")
+    send.add_argument("--subject", required=True, help="email subject")
+    send.add_argument("--body", required=True, help="plain-text body")
+    send.add_argument("--html", help="optional HTML body")
+    send.add_argument("--dry-run", action="store_true", help="preview the email without sending")
+    send.add_argument("--yes", action="store_true", help="confirm the mutation and send")
+
+    deliverability = sub.add_parser("deliverability", help="check deliverability signals (read-only)")
+    del_sub = deliverability.add_subparsers(dest="action", required=True)
+    del_bounces = del_sub.add_parser("bounces", help="list bounced recipients")
+    del_spam = del_sub.add_parser("spam-reports", help="list spam-reporting recipients")
+
+    webhook = sub.add_parser("webhook", help="verify a SendGrid webhook request (read-only)")
+    wv_sub = webhook.add_subparsers(dest="action", required=True)
+    wv_verify = wv_sub.add_parser("verify", help="verify X-Twilio-Email-Event-Webhook-Signature")
+    wv_verify.add_argument("--body-file", required=True, help="path to the raw webhook request body")
+    wv_verify.add_argument("--signature", required=True,
+                           help="X-Twilio-Email-Event-Webhook-Signature header value (base64)")
+    wv_verify.add_argument("--timestamp", required=True,
+                           help="X-Twilio-Email-Event-Webhook-Timestamp header value (Unix seconds)")
+    wv_verify.add_argument("--public-key-file", required=True,
+                           help="path to the webhook public verification key (PEM)")
+    wv_verify.add_argument("--max-age", type=int, default=DEFAULT_MAX_AGE_SECONDS,
+                           help=f"replay window in seconds (0 disables; default {DEFAULT_MAX_AGE_SECONDS})")
+
+    return parser
+
+
+def main(argv: Optional[list] = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.limit < 1 or args.limit > MAX_LIMIT:
+        parser.error(f"--limit must be between 1 and {MAX_LIMIT}")
+    try:
+        if args.command == "webhook":
+            result = cmd_webhook_verify(args, "")
+        else:
+            api_key = get_api_key()
+            if args.command == "send":
+                result = cmd_send(args, api_key)
+            elif args.command == "deliverability":
+                result = cmd_deliverability(args, api_key)
+            else:  # pragma: no cover - argparse prevents this
+                parser.error(f"unknown command: {args.command}")
+        return emit(result, args.json)
+    except EmailError as error:
+        if args.json:
+            print(json.dumps({"ok": False, "error": str(error)}, indent=2, sort_keys=True))
+        else:
+            print(f"email-cli: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

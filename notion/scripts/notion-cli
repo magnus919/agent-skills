@@ -1,0 +1,321 @@
+#!/usr/bin/env python3
+"""notion-cli - bounded, agent-first command line for the Notion API.
+
+Reads Notion pages and databases and, with explicit confirmation, creates or
+updates pages over HTTPS using only the Python standard library. Covers pages,
+databases (query), search, and page updates.
+
+Design rules:
+
+- Read-only by default. Every state-changing command (creating or updating a
+  page) is a guarded mutation: it requires --dry-run to preview, then --yes to
+  confirm. Mutation requires explicit confirmation.
+- Bounded reads: search and database queries cap results with --limit and
+  never page past the requested cap.
+- --json emits machine-readable JSON; the default is human-readable text.
+- --help works with no NOTION_TOKEN set and makes no network calls.
+
+Environment:
+  NOTION_TOKEN         Notion integration token (secret_...)
+  NOTION_VERSION       API version header (default: 2022-06-28)
+
+Exit codes: 0 success, 1 Notion API error or failed check, 2 usage error.
+"""
+import argparse
+import json
+import os
+import sys
+import urllib.error
+import urllib.request
+from typing import Any, Dict, List, Optional
+
+API_BASE = os.environ.get("NOTION_API_BASE", "https://api.notion.com/v1")
+DEFAULT_VERSION = "2022-06-28"
+DEFAULT_LIMIT = 20
+MAX_LIMIT = 100
+REQUEST_TIMEOUT = 15
+TEXT_TRUNCATE = 500
+
+
+class NotionError(Exception):
+    """Raised when the Notion API returns an error or transport fails."""
+
+
+def get_token() -> str:
+    token = os.environ.get("NOTION_TOKEN", "")
+    if not token:
+        raise NotionError("NOTION_TOKEN environment variable is not set")
+    return token
+
+
+def headers(token: str) -> Dict[str, str]:
+    return {
+        "Authorization": f"Bearer {token}",
+        "Notion-Version": os.environ.get("NOTION_VERSION", DEFAULT_VERSION),
+        "Content-Type": "application/json",
+    }
+
+
+def api_request(method: str, path: str, token: str, body: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """Send a JSON request to a Notion API path and return the payload."""
+    data = json.dumps(body).encode("utf-8") if body is not None else None
+    request = urllib.request.Request(
+        f"{API_BASE}/{path.lstrip('/')}",
+        data=data,
+        headers=headers(token),
+        method=method,
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        detail = ""
+        try:
+            detail = json.loads(error.read().decode("utf-8")).get("message", "")
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            pass
+        raise NotionError(f"Notion API HTTP {error.code}: {detail or error.reason}") from error
+    except urllib.error.URLError as error:
+        raise NotionError(f"Notion API unreachable: {error.reason}") from error
+    except json.JSONDecodeError as error:
+        raise NotionError(f"Notion API returned non-JSON: {error}") from error
+
+
+def truncate(text: str, limit: int = TEXT_TRUNCATE) -> str:
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1] + "…"
+
+
+def page_title(page: Dict[str, Any]) -> str:
+    """Best-effort title extraction from a Notion page object."""
+    properties = page.get("properties", {})
+    for key in ("title", "Name"):
+        prop = properties.get(key)
+        if not prop:
+            continue
+        if prop.get("type") == "title":
+            parts = prop.get("title", [])
+            if parts:
+                return truncate(parts[0].get("plain_text", ""))
+    return page.get("id", "")
+
+
+def summarize_page(page: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "id": page.get("id", ""),
+        "title": page_title(page),
+        "url": page.get("url", ""),
+        "object": page.get("object", "page"),
+        "last_edited_time": page.get("last_edited_time", ""),
+        "created_time": page.get("created_time", ""),
+    }
+
+
+def summarize_database(database: Dict[str, Any]) -> Dict[str, Any]:
+    title_parts = database.get("title", [])
+    title = truncate("".join(p.get("plain_text", "") for p in title_parts)) if title_parts else ""
+    return {
+        "id": database.get("id", ""),
+        "title": title,
+        "url": database.get("url", ""),
+        "last_edited_time": database.get("last_edited_time", ""),
+    }
+
+
+# --------------------------------------------------------------------------
+# Command implementations
+# --------------------------------------------------------------------------
+
+
+def cmd_pages_get(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    page = api_request("GET", f"pages/{args.page_id}", token)
+    return {"ok": True, "page": summarize_page(page)}
+
+
+def cmd_pages_create(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    if not args.dry_run and not args.yes:
+        raise NotionError(
+            "refusing to create a page without confirmation: pass --dry-run to "
+            "preview or --yes to confirm the mutation"
+        )
+    parent = {"type": "page_id", "page_id": args.parent_page} if args.parent_page \
+        else {"type": "database_id", "database_id": args.parent_database}
+    body: Dict[str, Any] = {"parent": parent, "properties": {}}
+    if args.title:
+        body["properties"]["title"] = {"title": [{"text": {"content": args.title}}]}
+    if args.dry_run:
+        return {"ok": True, "dry_run": True, "would_create": body}
+    page = api_request("POST", "pages", token, body)
+    return {"ok": True, "page": summarize_page(page)}
+
+
+def cmd_pages_update(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    if not args.dry_run and not args.yes:
+        raise NotionError(
+            "refusing to update a page without confirmation: pass --dry-run to "
+            "preview or --yes to confirm the mutation"
+        )
+    try:
+        with open(args.properties, "r", encoding="utf-8") as handle:
+            properties = json.load(handle)
+    except OSError as error:
+        raise NotionError(f"cannot read properties file {args.properties}: {error}") from error
+    except json.JSONDecodeError as error:
+        raise NotionError(f"properties file is not valid JSON: {error}") from error
+    if not isinstance(properties, dict):
+        raise NotionError("properties file must contain a JSON object of property values")
+    body = {"properties": properties}
+    if args.dry_run:
+        return {"ok": True, "dry_run": True, "would_update": {"page_id": args.page_id, "properties": properties}}
+    page = api_request("PATCH", f"pages/{args.page_id}", token, body)
+    return {"ok": True, "page": summarize_page(page)}
+
+
+def cmd_databases_query(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    body: Dict[str, Any] = {"page_size": args.limit}
+    if args.filter:
+        try:
+            with open(args.filter, "r", encoding="utf-8") as handle:
+                body["filter"] = json.load(handle)
+        except OSError as error:
+            raise NotionError(f"cannot read filter file {args.filter}: {error}") from error
+        except json.JSONDecodeError as error:
+            raise NotionError(f"filter file is not valid JSON: {error}") from error
+    payload = api_request("POST", f"databases/{args.database_id}/query", token, body)
+    pages = [summarize_page(p) for p in payload.get("results", [])]
+    return {"ok": True, "database_id": args.database_id, "pages": pages,
+            "has_more": payload.get("has_more", False)}
+
+
+def cmd_search(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    payload = api_request("POST", "search", token, {"query": args.query, "page_size": args.limit})
+    results = []
+    for item in payload.get("results", []):
+        if item.get("object") == "database":
+            results.append({"object": "database", **summarize_database(item)})
+        else:
+            results.append({"object": "page", **summarize_page(item)})
+    return {"ok": True, "query": args.query, "results": results,
+            "has_more": payload.get("has_more", False)}
+
+
+# --------------------------------------------------------------------------
+# Output helpers
+# --------------------------------------------------------------------------
+
+
+def emit(data: Dict[str, Any], json_mode: bool) -> int:
+    if json_mode:
+        print(json.dumps(data, indent=2, sort_keys=True))
+    else:
+        _emit_human(data)
+    return 0
+
+
+def _emit_human(data: Dict[str, Any]) -> None:
+    if "page" in data and "dry_run" not in data:
+        page = data["page"]
+        print(f"{page['title']}  <{page['id']}>  {page['url']}")
+    elif "pages" in data:
+        print(f"database <{data['database_id']}> (has_more={data['has_more']}):")
+        for page in data["pages"]:
+            print(f"  {page['title']}  <{page['id']}>")
+    elif "results" in data:
+        print(f"search '{data['query']}' (has_more={data['has_more']}):")
+        for result in data["results"]:
+            print(f"  [{result['object']}] {result['title']}  <{result['id']}>")
+    elif data.get("dry_run"):
+        if "would_create" in data:
+            print("DRY RUN (nothing created):")
+            print(json.dumps(data["would_create"], indent=2))
+        else:
+            print("DRY RUN (nothing updated):")
+            print(json.dumps(data["would_update"], indent=2))
+    else:
+        print(json.dumps(data, indent=2, sort_keys=True))
+
+
+# --------------------------------------------------------------------------
+# CLI
+# --------------------------------------------------------------------------
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="notion-cli",
+        description=(
+            "Bounded, agent-first CLI for the Notion API: pages, database "
+            "queries, search, and guarded page updates. Read-only by default; "
+            "create/update require --dry-run then --yes."
+        ),
+    )
+    parser.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT, metavar="N",
+                        help=f"cap reads at N results (default {DEFAULT_LIMIT}, max {MAX_LIMIT})")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    pages = sub.add_parser("pages", help="get, create, or update pages")
+    page_sub = pages.add_subparsers(dest="action", required=True)
+
+    page_get = page_sub.add_parser("get", help="retrieve a page (read-only)")
+    page_get.add_argument("--page-id", required=True, help="page ID (32-hex or UUID form)")
+
+    page_create = page_sub.add_parser("create", help="create a page (guarded mutation)")
+    page_create.add_argument("--parent-page", help="parent page ID for the new page")
+    page_create.add_argument("--parent-database", help="parent database ID for the new page")
+    page_create.add_argument("--title", help="page title text")
+    page_create.add_argument("--dry-run", action="store_true", help="preview the payload without creating")
+    page_create.add_argument("--yes", action="store_true", help="confirm the mutation and create")
+
+    page_update = page_sub.add_parser("update", help="update page properties (guarded mutation)")
+    page_update.add_argument("--page-id", required=True, help="page ID to update")
+    page_update.add_argument("--properties", required=True,
+                             help="path to a JSON file of property values")
+    page_update.add_argument("--dry-run", action="store_true", help="preview the payload without updating")
+    page_update.add_argument("--yes", action="store_true", help="confirm the mutation and update")
+
+    databases = sub.add_parser("databases", help="query a database (read-only)")
+    db_sub = databases.add_subparsers(dest="action", required=True)
+    db_query = db_sub.add_parser("query", help="query database pages")
+    db_query.add_argument("--database-id", required=True, help="database ID to query")
+    db_query.add_argument("--filter", help="path to a JSON filter object")
+
+    search = sub.add_parser("search", help="search pages and databases (read-only)")
+    search.add_argument("action", nargs="?", default="query", choices=["query"])
+    search.add_argument("--query", required=True, help="search query text")
+
+    return parser
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.limit < 1 or args.limit > MAX_LIMIT:
+        parser.error(f"--limit must be between 1 and {MAX_LIMIT}")
+    try:
+        token = get_token()
+        if args.command == "pages":
+            if args.action == "get":
+                result = cmd_pages_get(args, token)
+            elif args.action == "create":
+                result = cmd_pages_create(args, token)
+            else:
+                result = cmd_pages_update(args, token)
+        elif args.command == "databases":
+            result = cmd_databases_query(args, token)
+        elif args.command == "search":
+            result = cmd_search(args, token)
+        else:  # pragma: no cover - argparse prevents this
+            parser.error(f"unknown command: {args.command}")
+        return emit(result, args.json)
+    except NotionError as error:
+        if args.json:
+            print(json.dumps({"ok": False, "error": str(error)}, indent=2, sort_keys=True))
+        else:
+            print(f"notion-cli: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

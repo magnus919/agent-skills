@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "crm",
+  "evals": [
+    {
+      "id": "contact-lookup",
+      "prompt": "A user asks: 'Find the contact record for Ada Lovelace in HubSpot and show me her email and company.'",
+      "expected_output": "Run crm-cli contacts search --query 'Ada Lovelace' (bounded) and report the matching contact's email, company, and record ID from the summarized properties. If multiple contacts match, list all candidates with IDs and ask the user to disambiguate. Reads only — nothing is changed.",
+      "assertions": [
+        "Contacts are searched via crm-cli contacts search with a bounded --limit",
+        "The response reports email, company, and record ID for the match",
+        "Multiple candidates are listed for disambiguation instead of picking arbitrarily",
+        "The operation is read-only"
+      ]
+    },
+    {
+      "id": "pipeline-view",
+      "prompt": "A user asks: 'Show me every deal in the default pipeline that is still in the Appointment Scheduled stage, with amounts.'",
+      "expected_output": "Run crm-cli pipelines list to resolve the pipeline and stage IDs, then crm-cli deals list --pipeline <id> --stage <stage-id> (bounded) and report each deal's name, amount, and stage. The response confirms the filter used and notes the total count. Reads only — nothing is moved.",
+      "assertions": [
+        "Pipeline and stage IDs are resolved via crm-cli pipelines list before filtering",
+        "Deals are listed with a pipeline and stage filter and a bounded --limit",
+        "Each deal reports name, amount, and stage",
+        "The operation is read-only"
+      ]
+    },
+    {
+      "id": "stage-update-confirmed",
+      "prompt": "A user asks: 'Move deal 901 (Acme renewal) to Closed Won. It is currently in Appointment Scheduled.'",
+      "expected_output": "The agent states the current stage and the target, previews the change with crm-cli deals update-stage --id 901 --stage closedwon --dry-run, and asks for explicit confirmation. Only after confirmation does it run the update with --yes, then verifies by re-reading the deal's stage. If the user only asked to draft the change, nothing is applied.",
+      "assertions": [
+        "The exact deal and target stage are previewed with --dry-run before any change",
+        "The current stage and target stage are stated before confirmation",
+        "The update runs only after explicit user confirmation, via --yes",
+        "The result is verified with a follow-up read of the deal stage"
+      ]
+    },
+    {
+      "id": "search-before-mutation",
+      "prompt": "A user asks: 'Which deals have \"renewal\" in the name, and should we move the biggest one to Closed Won?'",
+      "expected_output": "The agent performs the search as a read: lists deals with renewal-related names via crm-cli deals list and reports names, amounts, and stages, identifying the largest candidate. It does NOT move any deal on its own: a stage change is a guarded mutation requiring explicit confirmation with a --dry-run preview and --yes, so it asks the user to confirm which deal and to which stage before acting.",
+      "assertions": [
+        "The deal search is performed read-only via crm-cli deals list",
+        "The largest candidate is identified with amount and stage",
+        "No deal is moved without explicit confirmation and a --dry-run preview",
+        "The mutation gate is explained to the user"
+      ]
+    },
+    {
+      "id": "pipeline-stage-mapping",
+      "prompt": "A user asks: 'What stages exist in our deals pipeline and which one means a deal is won?'",
+      "expected_output": "Run crm-cli pipelines list and report each pipeline with its stages: stage label plus stage ID. The response identifies the won/lost stages by their labels (e.g. Closed Won / Closed Lost) and explains that stage changes use the stage ID, not the label, because the API keys on the ID. Reads only.",
+      "assertions": [
+        "Pipelines and stages are read via crm-cli pipelines list",
+        "Each stage is reported with both label and ID",
+        "Won/lost stages are identified by label",
+        "The response notes that updates use stage IDs, not labels"
+      ]
+    },
+    {
+      "id": "access-model-triage",
+      "prompt": "A user asks: 'The API returns a 403 when I list deals. Did we lose our deals?'",
+      "expected_output": "The response distinguishes the failure modes: a 403 from the HubSpot API means the private app token lacks the object scope (crm.objects.deals.read), not that the deals are gone. It advises checking the private app's scopes in the HubSpot settings, re-generating or re-granting the token scope, then re-running crm-cli deals list. It does not claim data loss, does not re-run blindly, and performs no mutations during triage.",
+      "assertions": [
+        "A 403 is explained as a scope problem rather than data loss",
+        "The fix is checking and re-granting the private app object scopes",
+        "Triage is read-only and no mutation is attempted",
+        "Data loss is only concluded with concrete evidence"
+      ]
+    }
+  ]
+}
