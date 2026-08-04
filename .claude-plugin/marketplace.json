@@ -186,6 +186,15 @@
       "description": "Expert skill for role-based multi-agent orchestration with CrewAI. Agents with Role/Goal/Backstory, task design, crew composition (sequential or hierarchical), tool integration, callbacks, and production deployment. Use when orchestrating multi-agent teams or comparing agent frameworks."
     },
     {
+      "name": "crm",
+      "source": "./",
+      "skills": [
+        "./crm"
+      ],
+      "strict": false,
+      "description": "Operate HubSpot CRM from a terminal or agent: list and search contact records, view deal pipeline stages, and — with explicit confirmation — move deals between stages, backed by a bundled crm-cli script that is read-only by default and gates every stage change behind a --dry-run/--yes confirmation. Use when an agent needs to answer questions about contacts or deals, produce pipeline views, or apply a confirmed stage change. Do not use for building HubSpot apps or workflow automations (that is HubSpot app development), marketing/sequence automation, or other CRMs like Salesforce (that is their own tooling)."
+    },
+    {
       "name": "crowdsec",
       "source": "./",
       "skills": [
@@ -274,6 +283,15 @@
       ],
       "strict": false,
       "description": "Expert skill for programming—not prompting—language models with Stanford's DSPy framework. Signatures, modules (Predict, ChainOfThought, ReAct), optimizer/teleprompter selection, compilation, caching, evaluation. Use when doing programmatic prompt optimization or building compiled prompt programs."
+    },
+    {
+      "name": "email",
+      "source": "./",
+      "skills": [
+        "./email"
+      ],
+      "strict": false,
+      "description": "Send and diagnose transactional email through Twilio SendGrid from a terminal or agent: send messages, check deliverability (bounces and spam reports), and verify Signed Event Webhook signatures (ECDSA P-256) — with a bundled email-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to send a transactional email, triage bounces or spam complaints, or confirm an inbound SendGrid webhook is authentic. Do not use for marketing or bulk email campaigns (that is SendGrid Marketing Campaigns), building email template systems, or other email providers (that is their own tooling)."
     },
     {
       "name": "epub",
@@ -598,6 +616,15 @@
       ],
       "strict": false,
       "description": "Use when asked to fix, build, refactor, review, verify, or release software and the work is non-trivial — including delivering a change request (issue, ticket, or request) from intake through planning, gates, implementation, review, verified PR, and authorized post-merge release. neckbeard routes the change through framing, discovery, design, implementation, review, verification, delivery, and learning — choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger. For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates, delivery packet, and lifecycle integration. Composes specialist catalog skills rather than replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory."
+    },
+    {
+      "name": "notion",
+      "source": "./",
+      "skills": [
+        "./notion"
+      ],
+      "strict": false,
+      "description": "Operate Notion from a terminal or agent: retrieve pages, query databases, search pages and databases, and update page properties — with a bundled notion-cli script that is read-only by default and gates every create or update behind a --dry-run/--yes confirmation. Use when an agent needs to read Notion content, answer questions from a team wiki or database, or make a confirmed edit. Do not use for building Notion integrations or block-level page composition beyond property updates (that is Notion API application development), or for other knowledge bases (that is their own tooling)."
     },
     {
       "name": "nous-branding",
@@ -951,6 +978,15 @@
       "description": "Design, operate, and improve reliable production systems with SLOs, incident command, observability, error budgets, and operational practices."
     },
     {
+      "name": "slack",
+      "source": "./",
+      "skills": [
+        "./slack"
+      ],
+      "strict": false,
+      "description": "Operate Slack workspaces from a terminal or agent: list channels, read messages, follow threads, search message history, list files, and verify inbound webhook signatures — with a bundled slack-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to read or post Slack data, triage incidents, or answer questions about what was said in a workspace. Do not use for building Slack apps or bots (that is application development) or workspace administration like user provisioning and org settings (that is the Slack admin console)."
+    },
+    {
       "name": "software-architecture-analysis",
       "source": "./",
       "skills": [
@@ -976,6 +1012,15 @@
       ],
       "strict": false,
       "description": "Structure organizational strategy work: strategic direction, competitive and industry analysis, growth options, capital allocation, acquisitions, and portfolio choices. Use when framing consequential choices about where to compete, how to pursue an opportunity, or how to compare strategic options."
+    },
+    {
+      "name": "stripe",
+      "source": "./",
+      "skills": [
+        "./stripe"
+      ],
+      "strict": false,
+      "description": "Read Stripe account state from a terminal or agent: balance, payment intents, and subscriptions — and perform guarded mutations like canceling a subscription — backed by a bundled stripe-cli script that is read-only first and gates every state-changing command behind a --dry-run/--yes confirmation. Use when an agent needs to answer questions about account balance, recent payments, active subscriptions, or apply a confirmed subscription cancellation. Do not use for building Stripe payments into an application (that is Stripe integration development), managing Stripe dashboard settings, or other payment processors (that is their own tooling)."
     },
     {
       "name": "supabase",

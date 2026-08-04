@@ -1,0 +1,299 @@
+#!/usr/bin/env python3
+"""crm-cli - bounded, agent-first command line for the HubSpot CRM API.
+
+Reads HubSpot CRM records (contacts, deals) and, with explicit confirmation,
+updates deal stages over HTTPS using only the Python standard library. Covers
+records, search, and pipeline views.
+
+Design rules:
+
+- Read-only by default. Every state-changing command (moving a deal to a new
+  stage) is a guarded mutation: it requires --dry-run to preview, then --yes
+  to confirm. Mutation requires explicit confirmation.
+- Bounded reads: every listing and search caps results with --limit and never
+  pages past the requested cap.
+- --json emits machine-readable JSON; the default is human-readable text.
+- --help works with no HUBSPOT_TOKEN set and makes no network calls.
+
+Environment:
+  HUBSPOT_TOKEN         HubSpot private app access token
+
+Exit codes: 0 success, 1 HubSpot API error or failed check, 2 usage error.
+"""
+import argparse
+import json
+import os
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+from typing import Any, Dict, List, Optional
+
+API_BASE = os.environ.get("HUBSPOT_API_BASE", "https://api.hubapi.com/crm/v3")
+DEFAULT_LIMIT = 20
+MAX_LIMIT = 100
+REQUEST_TIMEOUT = 15
+TEXT_TRUNCATE = 500
+
+
+class CrmError(Exception):
+    """Raised when the HubSpot API returns an error or transport fails."""
+
+
+def get_token() -> str:
+    token = os.environ.get("HUBSPOT_TOKEN", "")
+    if not token:
+        raise CrmError("HUBSPOT_TOKEN environment variable is not set")
+    return token
+
+
+def api_request(method: str, path: str, token: str,
+                body: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    data = json.dumps(body).encode("utf-8") if body is not None else None
+    request = urllib.request.Request(
+        f"{API_BASE}/{path.lstrip('/')}",
+        data=data,
+        headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+        method=method,
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+            raw = response.read().decode("utf-8")
+            return json.loads(raw) if raw else {}
+    except urllib.error.HTTPError as error:
+        detail = ""
+        try:
+            detail = json.loads(error.read().decode("utf-8")).get("message", "")
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            pass
+        raise CrmError(f"HubSpot API HTTP {error.code}: {detail or error.reason}") from error
+    except urllib.error.URLError as error:
+        raise CrmError(f"HubSpot API unreachable: {error.reason}") from error
+    except json.JSONDecodeError as error:
+        raise CrmError(f"HubSpot API returned non-JSON: {error}") from error
+
+
+def truncate(text: str, limit: int = TEXT_TRUNCATE) -> str:
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1] + "…"
+
+
+def summarize_contact(contact: Dict[str, Any]) -> Dict[str, Any]:
+    properties = contact.get("properties", {})
+    return {
+        "id": contact.get("id", ""),
+        "firstname": properties.get("firstname", ""),
+        "lastname": properties.get("lastname", ""),
+        "email": properties.get("email", ""),
+        "company": properties.get("company", ""),
+        "createdate": properties.get("createdate", ""),
+    }
+
+
+def summarize_deal(deal: Dict[str, Any]) -> Dict[str, Any]:
+    properties = deal.get("properties", {})
+    return {
+        "id": deal.get("id", ""),
+        "dealname": truncate(properties.get("dealname", "")),
+        "amount": properties.get("amount", ""),
+        "pipeline": properties.get("pipeline", ""),
+        "dealstage": properties.get("dealstage", ""),
+        "hs_lastmodifieddate": properties.get("hs_lastmodifieddate", ""),
+    }
+
+
+def summarize_pipeline(pipeline: Dict[str, Any]) -> Dict[str, Any]:
+    stages = []
+    for stage in pipeline.get("stages", []):
+        stages.append({"id": stage.get("id", ""), "label": stage.get("label", ""),
+                       "displayOrder": stage.get("displayOrder")})
+    return {"id": pipeline.get("id", ""), "label": pipeline.get("label", ""),
+            "stages": stages}
+
+
+# --------------------------------------------------------------------------
+# Command implementations
+# --------------------------------------------------------------------------
+
+
+def _contacts_common(args: argparse.Namespace, token: str, fields: Dict[str, str]) -> Dict[str, Any]:
+    query = "&".join(f"{key}={urllib.parse.quote(value)}" for key, value in fields.items())
+    payload = api_request("GET", f"objects/contacts?{query}", token)
+    contacts = [summarize_contact(c) for c in payload.get("results", [])]
+    return {"ok": True, "contacts": contacts, "total": payload.get("total", len(contacts)),
+            "paging": payload.get("paging", {})}
+
+
+def cmd_contacts_list(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    return _contacts_common(args, token, {"limit": str(args.limit)})
+
+
+def cmd_contacts_get(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    payload = api_request("GET", f"objects/contacts/{args.contact_id}", token)
+    return {"ok": True, "contact": summarize_contact(payload)}
+
+
+def cmd_contacts_search(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    payload = api_request("POST", "objects/contacts/search", token,
+                          {"query": args.query, "limit": args.limit})
+    contacts = [summarize_contact(c) for c in payload.get("results", [])]
+    return {"ok": True, "query": args.query, "contacts": contacts,
+            "total": payload.get("total", len(contacts))}
+
+
+def cmd_deals_list(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    fields = {"limit": str(args.limit)}
+    if args.pipeline:
+        fields["pipeline"] = args.pipeline
+    if args.stage:
+        fields["dealstage"] = args.stage
+    query = "&".join(f"{key}={urllib.parse.quote(value)}" for key, value in fields.items())
+    payload = api_request("GET", f"objects/deals?{query}", token)
+    deals = [summarize_deal(d) for d in payload.get("results", [])]
+    return {"ok": True, "deals": deals, "total": payload.get("total", len(deals)),
+            "paging": payload.get("paging", {})}
+
+
+def cmd_deals_update_stage(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    if not args.dry_run and not args.yes:
+        raise CrmError(
+            "refusing to move a deal without confirmation: pass --dry-run to "
+            "preview or --yes to confirm the mutation"
+        )
+    body = {"properties": {"dealstage": args.stage}}
+    if args.dry_run:
+        return {"ok": True, "dry_run": True, "would_update": {
+            "deal_id": args.deal_id, "dealstage": args.stage}}
+    payload = api_request("PATCH", f"objects/deals/{args.deal_id}", token, body)
+    return {"ok": True, "deal": summarize_deal(payload)}
+
+
+def cmd_pipelines_list(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    payload = api_request("GET", "pipelines/deals", token)
+    pipelines = [summarize_pipeline(p) for p in payload.get("results", [])]
+    return {"ok": True, "pipelines": pipelines, "count": len(pipelines)}
+
+
+# --------------------------------------------------------------------------
+# Output helpers
+# --------------------------------------------------------------------------
+
+
+def emit(data: Dict[str, Any], json_mode: bool) -> int:
+    if json_mode:
+        print(json.dumps(data, indent=2, sort_keys=True))
+    else:
+        _emit_human(data)
+    return 0
+
+
+def _emit_human(data: Dict[str, Any]) -> None:
+    if "contact" in data and "dry_run" not in data:
+        contact = data["contact"]
+        name = f"{contact['firstname']} {contact['lastname']}".strip()
+        print(f"{name or contact['email'] or contact['id']}  <{contact['id']}>  {contact['email']}")
+    elif "contacts" in data:
+        print(f"contacts ({data['total']}):")
+        for contact in data["contacts"]:
+            name = f"{contact['firstname']} {contact['lastname']}".strip()
+            print(f"  {name or contact['email'] or contact['id']}  <{contact['id']}>")
+    elif "deals" in data:
+        print(f"deals ({data['total']}):")
+        for deal in data["deals"]:
+            print(f"  {deal['dealname']}  ${deal['amount']}  stage={deal['dealstage']}  <{deal['id']}>")
+    elif "pipelines" in data:
+        print(f"deals pipelines ({data['count']}):")
+        for pipeline in data["pipelines"]:
+            labels = ", ".join(f"{s['label']}({s['id']})" for s in pipeline["stages"])
+            print(f"  {pipeline['label']} <{pipeline['id']}>: {labels}")
+    elif data.get("dry_run"):
+        print("DRY RUN (no change):")
+        print(f"  deal:   {data['would_update']['deal_id']}")
+        print(f"  stage:  {data['would_update']['dealstage']}")
+    elif "deal" in data:
+        deal = data["deal"]
+        print(f"updated deal {deal['dealname']} -> stage {deal['dealstage']}")
+    else:
+        print(json.dumps(data, indent=2, sort_keys=True))
+
+
+# --------------------------------------------------------------------------
+# CLI
+# --------------------------------------------------------------------------
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="crm-cli",
+        description=(
+            "Bounded, agent-first CLI for the HubSpot CRM API: contact records, "
+            "contact search, deal pipeline views, and guarded deal stage "
+            "updates. Read-only by default; stage changes require --dry-run "
+            "then --yes."
+        ),
+    )
+    parser.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT, metavar="N",
+                        help=f"cap reads at N results (default {DEFAULT_LIMIT}, max {MAX_LIMIT})")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    contacts = sub.add_parser("contacts", help="contact records and search (read-only)")
+    contact_sub = contacts.add_subparsers(dest="action", required=True)
+    contact_list = contact_sub.add_parser("list", help="list contacts")
+    contact_get = contact_sub.add_parser("get", help="get one contact")
+    contact_get.add_argument("--id", dest="contact_id", required=True, help="contact ID")
+    contact_search = contact_sub.add_parser("search", help="search contacts")
+    contact_search.add_argument("--query", required=True, help="search query text")
+
+    deals = sub.add_parser("deals", help="deal pipeline views and updates")
+    deal_sub = deals.add_subparsers(dest="action", required=True)
+    deal_list = deal_sub.add_parser("list", help="list deals in the pipeline view (read-only)")
+    deal_list.add_argument("--pipeline", help="filter to a pipeline ID")
+    deal_list.add_argument("--stage", help="filter to a dealstage ID")
+    deal_update = deal_sub.add_parser("update-stage", help="move a deal to a stage (guarded mutation)")
+    deal_update.add_argument("--id", dest="deal_id", required=True, help="deal ID")
+    deal_update.add_argument("--stage", required=True, help="target dealstage ID")
+    deal_update.add_argument("--dry-run", action="store_true", help="preview the change without applying")
+    deal_update.add_argument("--yes", action="store_true", help="confirm the mutation and apply")
+
+    pipelines = sub.add_parser("pipelines", help="list deal pipelines and stages (read-only)")
+    pipelines.add_argument("action", nargs="?", default="list", choices=["list"])
+
+    return parser
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.limit < 1 or args.limit > MAX_LIMIT:
+        parser.error(f"--limit must be between 1 and {MAX_LIMIT}")
+    try:
+        token = get_token()
+        if args.command == "contacts":
+            if args.action == "list":
+                result = cmd_contacts_list(args, token)
+            elif args.action == "get":
+                result = cmd_contacts_get(args, token)
+            else:
+                result = cmd_contacts_search(args, token)
+        elif args.command == "deals":
+            if args.action == "list":
+                result = cmd_deals_list(args, token)
+            else:
+                result = cmd_deals_update_stage(args, token)
+        elif args.command == "pipelines":
+            result = cmd_pipelines_list(args, token)
+        else:  # pragma: no cover - argparse prevents this
+            parser.error(f"unknown command: {args.command}")
+        return emit(result, args.json)
+    except CrmError as error:
+        if args.json:
+            print(json.dumps({"ok": False, "error": str(error)}, indent=2, sort_keys=True))
+        else:
+            print(f"crm-cli: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

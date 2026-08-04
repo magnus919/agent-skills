@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "stripe",
+  "evals": [
+    {
+      "id": "balance-read",
+      "prompt": "A user asks: 'What is our Stripe account balance right now?'",
+      "expected_output": "Run stripe-cli balance show and report the available and pending balances per currency. The response states that this is a read-only snapshot and that pending funds are not yet settled. It does not mutate anything and does not page — the balance endpoint has no pagination.",
+      "assertions": [
+        "The balance is read via stripe-cli balance show",
+        "Available and pending balances are reported per currency",
+        "Pending funds are described as not yet settled",
+        "The operation is read-only"
+      ]
+    },
+    {
+      "id": "payment-status-check",
+      "prompt": "A user asks: 'Did payment pi_123 for $42 go through? Our customer says they were charged twice.'",
+      "expected_output": "Run stripe-cli payments list (bounded) and locate payment pi_123, reporting its amount, currency, and status. The response explains what the status means (e.g. succeeded means captured; requires_action means the customer must complete authentication) and that duplicate charges must be checked by comparing distinct payment intents before any refund decision. Refunds are out of the skill's mutation surface, so the response stops at evidence and asks a human before any charge-level action.",
+      "assertions": [
+        "Payments are read via stripe-cli payments list with a bounded --limit",
+        "The specific payment is located and its amount, currency, and status reported",
+        "Status semantics are explained (succeeded vs requires_action)",
+        "No refund or charge-level mutation is attempted"
+      ]
+    },
+    {
+      "id": "subscription-listing",
+      "prompt": "A user asks: 'Which subscriptions are currently active, and what do they cost per month?'",
+      "expected_output": "Run stripe-cli subscriptions list (bounded) and report each active subscription with its ID, status, customer, and per-item prices with intervals. The response notes has_more if additional subscriptions exist beyond the cap. Reads only — no subscription is modified.",
+      "assertions": [
+        "Subscriptions are read via stripe-cli subscriptions list with a bounded --limit",
+        "Each subscription reports ID, status, customer, and item prices with intervals",
+        "has_more is reported when the cap hides further subscriptions",
+        "The operation is read-only"
+      ]
+    },
+    {
+      "id": "guarded-subscription-cancel",
+      "prompt": "A user asks: 'Cancel subscription sub_123. It renews in 3 days and the customer no longer wants it.'",
+      "expected_output": "The agent states the subscription's current status and that the cancellation will be scheduled at the end of the current billing period (customer keeps service until then), previews with stripe-cli subscriptions cancel --id sub_123 --dry-run, and asks for explicit confirmation. Only after confirmation does it run the cancel with --yes, then verifies the response shows cancel_at_period_end true and re-reads the subscription. If the user only asked to draft the change, nothing is canceled.",
+      "assertions": [
+        "The cancellation is previewed with --dry-run before any change",
+        "The period-end scheduling semantics are stated before confirmation",
+        "The cancel runs only after explicit user confirmation, via --yes",
+        "The response verifies cancel_at_period_end is true and re-reads the subscription"
+      ]
+    },
+    {
+      "id": "read-before-mutation",
+      "prompt": "A user asks: 'Which subscriptions should we cancel to reduce spend? Show me the most expensive first.'",
+      "expected_output": "The agent performs the analysis as a read: stripe-cli subscriptions list (bounded) and payments where relevant, sorting active subscriptions by monthly item amount and presenting the list with IDs and costs. It does NOT cancel anything on its own: each cancellation is a guarded mutation requiring explicit confirmation with a --dry-run preview and --yes, so it presents the candidates and asks the user to confirm which subscriptions to cancel.",
+      "assertions": [
+        "The subscription analysis is performed read-only via stripe-cli subscriptions list",
+        "Subscriptions are ordered by cost with IDs and amounts reported",
+        "No subscription is canceled without explicit confirmation and a --dry-run preview",
+        "The mutation gate is explained to the user"
+      ]
+    },
+    {
+      "id": "key-and-environment-hygiene",
+      "prompt": "A user asks: 'I want to check our production balance. Which key should I use, and what happens if STRIPE_API_KEY is not set?'",
+      "expected_output": "The response explains key types: sk_test_ keys hit test data, sk_live_ keys hit real production data — never mix them, and prefer a restricted read-only key (balance:read, payment_intents:read, subscriptions:read) for balance queries. It states that stripe-cli exits 1 with a clear error naming STRIPE_API_KEY when unset, while --help works without it. No key material is hardcoded or logged.",
+      "assertions": [
+        "Test versus live key behavior is explained and mixing is warned against",
+        "A restricted read-only key is recommended for balance queries",
+        "The missing-key error and --help behavior are described accurately",
+        "No key material is hardcoded or logged"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,400 @@
+#!/usr/bin/env python3
+"""slack-cli - bounded, agent-first command line for the Slack Web API.
+
+Reads Slack data and, with explicit confirmation, sends messages over HTTPS
+using only the Python standard library. Covers messages, channels, threads,
+search, files, and webhook signature verification.
+
+Design rules:
+
+- Read-only by default. Every state-changing command (sending a message or
+  replying in a thread) is a guarded mutation: it requires --dry-run to
+  preview, then --yes to confirm. Mutation requires explicit confirmation.
+- Bounded reads: every listing command caps results with --limit and never
+  pages past the requested cap.
+- --json emits machine-readable JSON; the default is human-readable text.
+- --help works with no SLACK_TOKEN set and makes no network calls.
+
+Environment:
+  SLACK_TOKEN          Slack bot/user token (xoxb-... / xoxp-...)
+  SLACK_WEBHOOK_SECRET Slack app signing secret (for `webhook verify`)
+
+Exit codes: 0 success, 1 Slack API error or failed check, 2 usage error.
+"""
+import argparse
+import hashlib
+import hmac
+import json
+import os
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+from typing import Any, Dict, List, Optional
+
+API_BASE = os.environ.get("SLACK_API_BASE", "https://slack.com/api")
+DEFAULT_LIMIT = 20
+MAX_LIMIT = 100
+REQUEST_TIMEOUT = 15
+WEBHOOK_MAX_AGE_SECONDS = 300
+TEXT_TRUNCATE = 500
+
+
+class SlackError(Exception):
+    """Raised when the Slack API returns ok:false or transport fails."""
+
+
+def get_token() -> str:
+    token = os.environ.get("SLACK_TOKEN", "")
+    if not token:
+        raise SlackError("SLACK_TOKEN environment variable is not set")
+    return token
+
+
+def api_call(method: str, fields: Dict[str, str], token: str) -> Dict[str, Any]:
+    """POST form fields to a Slack API method and return the JSON payload."""
+    data = urllib.parse.urlencode(fields).encode("utf-8")
+    request = urllib.request.Request(
+        f"{API_BASE}/{method}",
+        data=data,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        raise SlackError(
+            f"Slack API HTTP {error.code}: {error.read().decode('utf-8', 'replace')}"
+        ) from error
+    except urllib.error.URLError as error:
+        raise SlackError(f"Slack API unreachable: {error.reason}") from error
+    except json.JSONDecodeError as error:
+        raise SlackError(f"Slack API returned non-JSON: {error}") from error
+    if not payload.get("ok"):
+        raise SlackError(f"Slack API error: {payload.get('error', 'unknown')}")
+    return payload
+
+
+def truncate(text: str, limit: int = TEXT_TRUNCATE) -> str:
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1] + "…"
+
+
+def summarize_message(item: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "ts": item.get("ts", ""),
+        "user": item.get("user", ""),
+        "type": item.get("type", "message"),
+        "channel": item.get("channel", ""),
+        "text": truncate(item.get("text", "")),
+        "thread_ts": item.get("thread_ts", ""),
+        "reply_count": item.get("reply_count"),
+    }
+
+
+def summarize_channel(item: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "id": item.get("id", ""),
+        "name": item.get("name", ""),
+        "is_channel": item.get("is_channel", False),
+        "is_private": item.get("is_private", False),
+        "is_archived": item.get("is_archived", False),
+        "num_members": item.get("num_members"),
+    }
+
+
+def summarize_file(item: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "id": item.get("id", ""),
+        "name": item.get("name", ""),
+        "title": truncate(item.get("title", "")),
+        "filetype": item.get("filetype", ""),
+        "size": item.get("size"),
+        "created": item.get("created"),
+        "permalink": item.get("permalink", ""),
+    }
+
+
+# --------------------------------------------------------------------------
+# Command implementations
+# --------------------------------------------------------------------------
+
+
+def cmd_channels_list(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    payload = api_call(
+        "conversations.list",
+        {
+            "types": args.types,
+            "limit": str(args.limit),
+            "exclude_archived": "true" if args.exclude_archived else "false",
+        },
+        token,
+    )
+    channels = [summarize_channel(c) for c in payload.get("channels", [])]
+    return {"ok": True, "channels": channels, "response_metadata": payload.get("response_metadata", {})}
+
+
+def cmd_messages_list(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    fields = {"channel": args.channel, "limit": str(args.limit)}
+    if args.cursor:
+        fields["cursor"] = args.cursor
+    payload = api_call("conversations.history", fields, token)
+    messages = [summarize_message(m) for m in payload.get("messages", [])]
+    return {"ok": True, "channel": args.channel, "messages": messages,
+            "response_metadata": payload.get("response_metadata", {})}
+
+
+def cmd_messages_send(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    if not args.dry_run and not args.yes:
+        raise SlackError(
+            "refusing to send without confirmation: pass --dry-run to preview "
+            "or --yes to confirm the mutation"
+        )
+    if args.dry_run:
+        return {
+            "ok": True,
+            "dry_run": True,
+            "would_post": {
+                "channel": args.channel,
+                "thread_ts": args.thread_ts or None,
+                "text": truncate(args.text),
+            },
+        }
+    fields = {"channel": args.channel, "text": args.text}
+    if args.thread_ts:
+        fields["thread_ts"] = args.thread_ts
+    payload = api_call("chat.postMessage", fields, token)
+    return {
+        "ok": True,
+        "ts": payload.get("ts", ""),
+        "channel": payload.get("channel", ""),
+        "message": summarize_message(payload.get("message", {})),
+    }
+
+
+def cmd_threads_list(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    fields = {"channel": args.channel, "ts": args.ts, "limit": str(args.limit)}
+    if args.cursor:
+        fields["cursor"] = args.cursor
+    payload = api_call("conversations.replies", fields, token)
+    messages = [summarize_message(m) for m in payload.get("messages", [])]
+    return {"ok": True, "channel": args.channel, "thread_ts": args.ts, "messages": messages,
+            "response_metadata": payload.get("response_metadata", {})}
+
+
+def cmd_search(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    payload = api_call(
+        "search.messages",
+        {"query": args.query, "count": str(args.limit), "sort": "timestamp", "sort_dir": "desc"},
+        token,
+    )
+    matches = payload.get("messages", {}).get("matches", [])
+    results = [summarize_message(m) for m in matches[: args.limit]]
+    return {
+        "ok": True,
+        "query": args.query,
+        "total_matches": payload.get("messages", {}).get("total", 0),
+        "matches": results,
+    }
+
+
+def cmd_files_list(args: argparse.Namespace, token: str) -> Dict[str, Any]:
+    fields = {"limit": str(args.limit), "show_files_hidden_by_limit": "true"}
+    if args.channel:
+        fields["channel"] = args.channel
+    if args.user:
+        fields["user"] = args.user
+    payload = api_call("files.list", fields, token)
+    files = [summarize_file(f) for f in payload.get("files", [])]
+    return {"ok": True, "files": files, "response_metadata": payload.get("response_metadata", {})}
+
+
+def verify_webhook_signature(body: bytes, signature: str, timestamp: str, secret: str) -> Dict[str, Any]:
+    """Verify a Slack request against the app signing secret (HMAC-SHA256).
+
+    Slack signs the request as "v0=hex(HMAC_SHA256(secret, 'v0:' + timestamp
+    + ':' + body))" and also sends X-Slack-Request-Timestamp. The timestamp
+    is checked for replay freshness before the signature is compared.
+    """
+    if not signature.startswith("v0="):
+        raise SlackError(f"unsupported signature format: {signature[:16]!r}")
+    try:
+        if abs(int(time.time()) - int(timestamp)) > WEBHOOK_MAX_AGE_SECONDS:
+            raise SlackError(
+                f"webhook timestamp is outside the {WEBHOOK_MAX_AGE_SECONDS}s replay window"
+            )
+    except ValueError as error:
+        raise SlackError(f"webhook timestamp is not a valid Unix timestamp: {timestamp!r}") from error
+    base = f"v0:{timestamp}:".encode("utf-8") + body
+    expected = "v0=" + hmac.new(secret.encode("utf-8"), base, hashlib.sha256).hexdigest()
+    valid = hmac.compare_digest(expected, signature)
+    if not valid:
+        raise SlackError("webhook signature does not match the signing secret")
+    return {"ok": True, "verified": True, "timestamp": timestamp}
+
+
+def cmd_webhook_verify(args: argparse.Namespace, unused_token: str) -> Dict[str, Any]:
+    try:
+        body = open(args.body_file, "rb").read()
+    except OSError as error:
+        raise SlackError(f"cannot read body file {args.body_file}: {error}") from error
+    secret = args.secret or os.environ.get("SLACK_WEBHOOK_SECRET", "")
+    if not secret:
+        raise SlackError(
+            "no webhook secret available: pass --secret or set SLACK_WEBHOOK_SECRET"
+        )
+    return verify_webhook_signature(body, args.signature, args.timestamp, secret)
+
+
+# --------------------------------------------------------------------------
+# Output helpers
+# --------------------------------------------------------------------------
+
+
+def emit(data: Dict[str, Any], json_mode: bool) -> int:
+    if json_mode:
+        print(json.dumps(data, indent=2, sort_keys=True))
+    else:
+        _emit_human(data)
+    return 0
+
+
+def _emit_human(data: Dict[str, Any]) -> None:
+    if "channels" in data:
+        for channel in data["channels"]:
+            flag = "#" if channel.get("is_channel") else "🔒" if channel.get("is_private") else "?"
+            print(f"{flag} {channel['name']}  <{channel['id']}>  members={channel.get('num_members') or '?'}")
+    elif "messages" in data and "thread_ts" not in data:
+        for message in data["messages"]:
+            print(f"[{message['ts']}] <{message['user']}> {message['text']}")
+    elif "messages" in data:
+        for message in data["messages"]:
+            print(f"[{message['ts']}] <{message['user']}> (reply) {message['text']}")
+    elif "matches" in data:
+        print(f"total matches: {data['total_matches']}")
+        for match in data["matches"]:
+            print(f"[{match['ts']}] <{match['user']}> {match['text']}")
+    elif "files" in data:
+        for item in data["files"]:
+            print(f"{item['name']}  <{item['id']}>  {item['filetype']}  {item['size']} bytes")
+    elif data.get("dry_run"):
+        print("DRY RUN (no message sent):")
+        print(f"  channel: {data['would_post']['channel']}")
+        print(f"  text:    {data['would_post']['text']}")
+    elif "ts" in data and "message" in data:
+        print(f"posted to <{data['channel']}> as message {data['ts']}")
+    elif data.get("verified"):
+        print("webhook signature verified (HMAC-SHA256 match)")
+    else:
+        print(json.dumps(data, indent=2, sort_keys=True))
+
+
+# --------------------------------------------------------------------------
+# CLI
+# --------------------------------------------------------------------------
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="slack-cli",
+        description=(
+            "Bounded, agent-first CLI for the Slack Web API: messages, channels, "
+            "threads, search, files, and webhook signature verification. "
+            "Read-only by default; sending requires --dry-run then --yes."
+        ),
+    )
+    parser.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT, metavar="N",
+                        help=f"cap reads at N results (default {DEFAULT_LIMIT}, max {MAX_LIMIT})")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    channels = sub.add_parser("channels", help="list channels (read-only)")
+    channels.add_argument("action", nargs="?", default="list", choices=["list"])
+    channels.add_argument("--types", default="public_channel,private_channel",
+                          help="comma-separated channel types (default: public,private)")
+    channels.add_argument("--exclude-archived", action="store_true",
+                          help="exclude archived channels")
+    channels.add_argument("--cursor", help="pagination cursor from a previous response")
+
+    messages = sub.add_parser("messages", help="list or send messages")
+    msg_sub = messages.add_subparsers(dest="action", required=True)
+
+    msg_list = msg_sub.add_parser("list", help="list messages in a channel (read-only)")
+    msg_list.add_argument("--channel", required=True, help="channel ID (C...)")
+    msg_list.add_argument("--cursor", help="pagination cursor from a previous response")
+
+    msg_send = msg_sub.add_parser("send", help="send a message (guarded mutation)")
+    msg_send.add_argument("--channel", required=True, help="channel ID (C...)")
+    msg_send.add_argument("--text", required=True, help="message text")
+    msg_send.add_argument("--thread-ts", help="reply in a thread at this ts")
+    msg_send.add_argument("--dry-run", action="store_true", help="preview the message without sending")
+    msg_send.add_argument("--yes", action="store_true", help="confirm the mutation and send")
+
+    threads = sub.add_parser("threads", help="list replies in a thread (read-only)")
+    threads.add_argument("action", nargs="?", default="list", choices=["list"])
+    threads.add_argument("--channel", required=True, help="channel ID (C...)")
+    threads.add_argument("--ts", required=True, help="parent message timestamp (ts)")
+    threads.add_argument("--cursor", help="pagination cursor from a previous response")
+
+    search = sub.add_parser("search", help="search messages (read-only)")
+    search.add_argument("action", nargs="?", default="messages", choices=["messages"])
+    search.add_argument("--query", required=True, help="search query (see Slack search syntax)")
+
+    files = sub.add_parser("files", help="list files (read-only)")
+    files.add_argument("action", nargs="?", default="list", choices=["list"])
+    files.add_argument("--channel", help="restrict to files in a channel")
+    files.add_argument("--user", help="restrict to files shared by a user")
+
+    webhook = sub.add_parser("webhook", help="verify a Slack webhook request (read-only)")
+    wv_sub = webhook.add_subparsers(dest="action", required=True)
+    wv_verify = wv_sub.add_parser("verify", help="verify X-Slack-Signature (HMAC-SHA256)")
+    wv_verify.add_argument("--body-file", required=True,
+                           help="path to the raw webhook request body")
+    wv_verify.add_argument("--signature", required=True,
+                           help="X-Slack-Signature header value (v0=...)")
+    wv_verify.add_argument("--timestamp", required=True,
+                           help="X-Slack-Request-Timestamp header value (Unix seconds)")
+    wv_verify.add_argument("--secret", help="signing secret (default: $SLACK_WEBHOOK_SECRET)")
+
+    return parser
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.limit < 1 or args.limit > MAX_LIMIT:
+        parser.error(f"--limit must be between 1 and {MAX_LIMIT}")
+    try:
+        if args.command == "webhook":
+            result = cmd_webhook_verify(args, "")
+        else:
+            token = get_token()
+            if args.command == "channels":
+                result = cmd_channels_list(args, token)
+            elif args.command == "messages":
+                result = cmd_messages_list(args, token) if args.action == "list" else cmd_messages_send(args, token)
+            elif args.command == "threads":
+                result = cmd_threads_list(args, token)
+            elif args.command == "search":
+                result = cmd_search(args, token)
+            elif args.command == "files":
+                result = cmd_files_list(args, token)
+            else:  # pragma: no cover - argparse prevents this
+                parser.error(f"unknown command: {args.command}")
+        return emit(result, args.json)
+    except SlackError as error:
+        if args.json:
+            print(json.dumps({"ok": False, "error": str(error)}, indent=2, sort_keys=True))
+        else:
+            print(f"slack-cli: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

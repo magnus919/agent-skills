@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "slack",
+  "evals": [
+    {
+      "id": "channel-discovery",
+      "prompt": "A user asks: 'Find the channel where the on-call team discusses incidents and post its name and ID. I believe it is something like #incidents or #oncall.'",
+      "expected_output": "Run slack-cli channels list with a bounded --limit and match the channel name case-insensitively against the user's guesses, returning the exact channel name, its C-prefixed ID, whether it is private, and its member count. If more than one candidate matches, list all candidates with IDs and ask the user to disambiguate rather than guessing. Reads only — no messages are posted.",
+      "assertions": [
+        "The response resolves a channel name to its C-prefixed channel ID using slack-cli channels list",
+        "Reads are bounded with --limit and the response never pages past the cap",
+        "Multiple candidates are listed for the user to disambiguate instead of picking arbitrarily",
+        "The operation is read-only and no message is sent"
+      ]
+    },
+    {
+      "id": "message-history-read",
+      "prompt": "A user asks: 'What did people say in #deployments in the last few hours? Summarize the discussion. Do not post anything.'",
+      "expected_output": "Run slack-cli messages list --channel with the resolved channel ID and a bounded --limit, then summarize the returned messages in chronological order: who said what, and the timestamps. Quote short excerpts with message ts values so the user can jump to the source. The summary explicitly notes the cap (e.g. 'last 20 messages') and offers to page further with a cursor if needed. Nothing is posted.",
+      "assertions": [
+        "The channel name is resolved to an ID before reading history",
+        "Messages are read with a bounded --limit and summarized in chronological order",
+        "Short excerpts are quoted with their ts identifiers",
+        "The response states the read cap and explicitly does not post anything"
+      ]
+    },
+    {
+      "id": "thread-follow-up",
+      "prompt": "A user asks: 'Someone replied in the thread under message 1712345678.000001 in #support. What did they say and what is the open question?'",
+      "expected_output": "Run slack-cli threads list --channel with the resolved support channel ID and --ts 1712345678.000001, bounded by --limit, and summarize the replies in order: each reply's author, text, and ts. The parent message is identified as the first result. The response flags the open question if one is visible, quotes short excerpts, and does not reply into the thread without an explicit request.",
+      "assertions": [
+        "The thread is read via slack-cli threads list with the parent ts",
+        "Replies are summarized in order with authors and ts values",
+        "The parent message is identified as the first result of the replies call",
+        "The agent does not post into the thread without explicit confirmation"
+      ]
+    },
+    {
+      "id": "search-history",
+      "prompt": "A user asks: 'Search Slack history for when we last discussed the database migration and who was involved. I do not know which channel.'",
+      "expected_output": "Run slack-cli search messages --query for terms like 'database migration' with a bounded --limit, and report each match: channel, author, timestamp, and a short excerpt. The response uses the total_matches count to indicate how many hits exist beyond the cap, offers to narrow the search with Slack syntax (in:, from:, before:/after:) if the hit list is large, and stays read-only.",
+      "assertions": [
+        "Slack search is run with a bounded --limit and the query is derived from the user's topic",
+        "Each match reports channel, author, timestamp, and a short excerpt",
+        "The total match count is used to suggest narrowing the query",
+        "The operation is read-only"
+      ]
+    },
+    {
+      "id": "guarded-send",
+      "prompt": "A user asks: 'Post to #incidents that we are investigating the checkout failure and will update in 30 minutes.'",
+      "expected_output": "The agent resolves #incidents to its channel ID, then presents a preview of the exact message (channel, text, and that it will be posted as a new message, not a thread reply) via slack-cli messages send --dry-run and asks the user to confirm. Only after explicit confirmation does it run messages send --yes and report the returned ts and channel. If the user only asked to draft or preview, nothing is posted.",
+      "assertions": [
+        "The exact message is previewed with --dry-run before any send",
+        "The send happens only after explicit user confirmation, via --yes",
+        "The response reports the posted message ts and channel as delivery evidence",
+        "No API call is made without confirmation"
+      ]
+    },
+    {
+      "id": "webhook-verification",
+      "prompt": "A user runs an endpoint that receives Slack events and asks: 'An event just arrived with X-Slack-Request-Timestamp 1712345678 and X-Slack-Signature v0=... The raw body is in body.json. Is it really from Slack?'",
+      "expected_output": "Run slack-cli webhook verify with the exact raw body file, the signature header value, and the timestamp, using the app signing secret (SLACK_WEBHOOK_SECRET or --secret). Explain that verification computes HMAC-SHA256 over 'v0:' + timestamp + ':' + the exact raw body and compares constant-time with the header. A pass reports verified: true and the event may be processed; a fail or stale-timestamp error means the request must be rejected with 401 and treated as forged.",
+      "assertions": [
+        "The exact raw body, signature, and timestamp are passed to slack-cli webhook verify",
+        "The HMAC-SHA256 verification construction (v0:timestamp:body) is explained",
+        "A verified result is distinguished from a rejection with 401 on failure or stale timestamp",
+        "The response does not re-encode or reformat the body before verification"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "email",
+  "evals": [
+    {
+      "id": "guarded-transactional-send",
+      "prompt": "A user asks: 'Send a password reset email to carol@example.com from no-reply@example.com with subject \"Password reset\" and body \"Use this link to reset your password.\"'",
+      "expected_output": "The agent previews the exact email (from, to, subject, body) with email-cli send --dry-run and asks the user to confirm, then runs send with --yes after confirmation and reports the returned x-message-id. It explains that SendGrid returns 202 Accepted and that acceptance is not the same as delivery. If the user only asked to draft the email, nothing is sent.",
+      "assertions": [
+        "The exact email is previewed with --dry-run before any send",
+        "The send happens only after explicit user confirmation, via --yes",
+        "The response reports the x-message-id and explains 202 Accepted means queued, not delivered",
+        "No API call is made without confirmation"
+      ]
+    },
+    {
+      "id": "bounce-triage",
+      "prompt": "A user asks: 'Several users say they never received their signup confirmation emails. What should I check first?'",
+      "expected_output": "The agent runs email-cli deliverability bounces (bounded) and reports bounced addresses with reasons and status codes, distinguishing hard bounces (permanent, likely bad addresses) from soft/transient ones. It checks spam reports as a secondary signal, and explains that 202 Accepted means the provider accepted the mail — delivery evidence comes from bounce events, spam reports, or the activity feed. It does not re-send to bounced addresses and does not change anything without confirmation.",
+      "assertions": [
+        "Bounces are checked first via email-cli deliverability bounces, bounded by --limit",
+        "Hard versus transient bounces are distinguished using the status/reason",
+        "Spam reports are checked as a secondary deliverability signal",
+        "No re-send or mutation happens without confirmation"
+      ]
+    },
+    {
+      "id": "webhook-authenticity",
+      "prompt": "A user's webhook endpoint just received a SendGrid delivery event with X-Twilio-Email-Event-Webhook-Signature and X-Twilio-Email-Event-Webhook-Timestamp headers, and the raw body is saved to body.json. They ask: 'Is this event really from SendGrid? Can I mark the message delivered?'",
+      "expected_output": "The agent runs email-cli webhook verify with the exact raw body file, the signature header value, the timestamp header value, and the webhook public key PEM. It explains the scheme: SHA-256 over timestamp + raw body (no separator), ECDSA P-256 verification against the public key, with a replay-window timestamp check. A verified result means the event can be processed; a stale timestamp or failed signature means the request must be rejected (401) and treated as forged. The response never re-encodes the body before verification.",
+      "assertions": [
+        "The exact raw body, signature, timestamp, and public key are passed to email-cli webhook verify",
+        "The ECDSA scheme (SHA-256 of timestamp + raw body, P-256, base64 DER signature) is explained",
+        "Verified events are distinguished from rejections on stale timestamp or failed signature",
+        "The body is not re-encoded before verification"
+      ]
+    },
+    {
+      "id": "spam-complaint-response",
+      "prompt": "A user asks: 'We got a spam complaint from jane@example.com. What should we do?'",
+      "expected_output": "The agent runs email-cli deliverability spam-reports (bounded), confirms jane@example.com is listed, and explains the operating response: stop sending to that address (it is already suppressed by SendGrid), do not re-send, review the content and sending cadence that triggered the complaint, and consider whether the address was opted-in. Reads are bounded and no message is sent without confirmation.",
+      "assertions": [
+        "Spam reports are read via email-cli deliverability spam-reports with a bounded --limit",
+        "The response instructs stopping mail to the complaining address rather than re-sending",
+        "Content and cadence are reviewed as the likely cause",
+        "The operation is read-only"
+      ]
+    },
+    {
+      "id": "deliverability-read-before-mutation",
+      "prompt": "A user asks: 'Our signup emails have a 20% bounce rate. Diagnose it and tell me what to change before I approve a re-send.'",
+      "expected_output": "The agent treats the diagnosis as read-only: runs deliverability bounces and spam-reports, groups the bounce reasons (invalid domain, mailbox full, greylisting), and hypothesizes the cause (bad address capture, validation missing at signup, sender reputation). It proposes concrete changes (add email validation, stop mailing to hard-bounced addresses, review content) but does not send anything: a re-send is a mutation requiring explicit approval with --dry-run preview and --yes confirmation.",
+      "assertions": [
+        "Diagnosis is performed read-only via deliverability reads",
+        "Bounce reasons are grouped to separate address problems from reputation problems",
+        "Concrete changes are proposed but not executed",
+        "Any re-send is framed as a confirmed mutation with preview and approval"
+      ]
+    },
+    {
+      "id": "missing-key-and-error-hygiene",
+      "prompt": "A user tries to run email-cli deliverability bounces but SENDGRID_API_KEY is not set. What happens and what is the right response?",
+      "expected_output": "The agent explains that email-cli exits 1 with a clear error naming the missing SENDGRID_API_KEY (and the JSON variant emits {\"ok\": false, \"error\": \"...\"}), that --help works without the key for discovery, and that the correct fix is to export the API key with mail.send and suppression read access. The response does not hardcode or log any key material and does not attempt the call without credentials.",
+      "assertions": [
+        "The missing SENDGRID_API_KEY produces exit 1 with a descriptive error naming the variable",
+        "--help is identified as working without credentials",
+        "The fix is exporting an appropriately scoped API key",
+        "No key material is hardcoded or logged"
+      ]
+    }
+  ]
+}

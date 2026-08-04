@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "notion",
+  "evals": [
+    {
+      "id": "page-retrieval",
+      "prompt": "A user asks: 'Show me what the on-call runbook page says. I have the page ID page-9f8e7d6c5b4a3210.'",
+      "expected_output": "Run notion-cli pages get --page-id page-9f8e7d6c5b4a3210 and report the page title, URL, last-edited time, and a summary of the meaningful property values. The response quotes short values with the page ID for verification and does not dump the raw block tree or full property payload. If the page is not accessible, it checks whether the page is shared with the integration before concluding it is missing.",
+      "assertions": [
+        "The page is retrieved via notion-cli pages get with the exact page ID",
+        "The response summarizes the title, URL, and property values without dumping raw payloads",
+        "Quotes are short and include the page ID for verification",
+        "An inaccessible page is checked against the integration sharing model before being called missing"
+      ]
+    },
+    {
+      "id": "database-query",
+      "prompt": "A user asks: 'How many open bugs are tracked in our issues database (db-1234), and what are the five oldest? Show me their titles and statuses.'",
+      "expected_output": "Run notion-cli databases query --database-id db-1234 with a bounded --limit (at least 20) and optionally a JSON filter on the Status property equals 'Open' to narrow the answer. Report the row count visible under the cap, then the five oldest rows by created time with title and status. The response notes whether has_more indicates further rows beyond the cap and offers to page with a higher limit. Reads only — nothing is updated.",
+      "assertions": [
+        "The database is queried via notion-cli databases query with the database ID",
+        "The query uses a bounded --limit and reports has_more state",
+        "A Status filter is used when narrowing to open bugs",
+        "The response is read-only and offers to page if rows exceed the cap"
+      ]
+    },
+    {
+      "id": "workspace-search",
+      "prompt": "A user asks: 'Search Notion for anything about the postmortem for last week's checkout outage. I do not remember where we wrote it.'",
+      "expected_output": "Run notion-cli search query with terms derived from the request (e.g. 'postmortem checkout outage') and a bounded --limit. Report each result as page or database with title, ID, and URL, noting how many results were returned versus the cap. If the term set is too broad, suggest a more specific query or narrowing keywords. The response stays read-only.",
+      "assertions": [
+        "Search is run via notion-cli search query with terms derived from the user's topic",
+        "Each result identifies object type (page/database), title, ID, and URL",
+        "The bounded cap and has_more state are reported",
+        "The operation is read-only"
+      ]
+    },
+    {
+      "id": "guarded-property-update",
+      "prompt": "A user asks: 'Mark the runbook page page-9f8e7d6c5b4a3210 as Reviewed and set the reviewer to me. The current status is Draft.'",
+      "expected_output": "The agent builds the properties payload ({'Status': {'select': {'name': 'Reviewed'}}, 'Reviewer': {'rich_text': [{'text': {'content': '<user>'}}]}}), states the current value (Draft) and the replacement, then previews via notion-cli pages update --dry-run and asks for explicit confirmation. Only after the user confirms does it run pages update --yes, then verifies with pages get that the properties changed. If the user only asked to draft the change, nothing is written.",
+      "assertions": [
+        "The exact properties payload is previewed with --dry-run before any update",
+        "The current value and replacement are stated before confirmation",
+        "The update runs only after explicit user confirmation, via --yes",
+        "The result is verified with a follow-up pages get"
+      ]
+    },
+    {
+      "id": "page-creation-confirmed",
+      "prompt": "A user asks: 'Add a row to the incident log database db-5678 titled \"Checkout latency spike\" so we can track it.'",
+      "expected_output": "The agent resolves the parent (database db-5678), builds the page payload with the title property, previews it with notion-cli pages create --parent-database db-5678 --title 'Checkout latency spike' --dry-run, and asks for confirmation. After explicit confirmation it runs the create with --yes and reports the new page ID and URL. It does not create anything if the user only asked for a draft.",
+      "assertions": [
+        "The create payload is previewed with --dry-run before any request",
+        "The parent database and title are explicit in the preview",
+        "Creation happens only after explicit user confirmation, via --yes",
+        "The response reports the new page ID and URL as delivery evidence"
+      ]
+    },
+    {
+      "id": "access-model-triage",
+      "prompt": "A user asks: 'The integration can't find page-1111. Did we delete it?' The search API returns no result for the page title they expect.",
+      "expected_output": "The response distinguishes the failure modes: a 404/object_not_found from the Notion API usually means the page exists in the workspace but is not shared with the integration, not that it was deleted. It advises checking the page's sharing settings (add the integration to the page or its parent), then re-running notion-cli pages get or search. It does not claim the page is deleted without evidence, and it never creates or updates anything during triage.",
+      "assertions": [
+        "object_not_found is explained as an access-model result rather than proof of deletion",
+        "The fix is to share the page with the integration and re-check",
+        "Triage is read-only and no mutation is attempted",
+        "Deletion is only concluded with concrete evidence"
+      ]
+    }
+  ]
+}
