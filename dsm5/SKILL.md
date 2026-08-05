@@ -95,16 +95,28 @@ Follow these steps in order. Steps 1 and 2 gate everything else.
 2. **Clarify the question and the audience.** Who is asking — a clinician, a
    patient, or a family member? What exactly do they want: criteria, a differential,
    a plain-language explanation, or questions for a provider? If the question is
-   ambiguous, ask rather than assume.
+   ambiguous, ask rather than assume. **The asker may not be the subject:** when the
+   question is about someone else (a child, partner, parent, or friend), respond to
+   the asker in their register, treat secondhand reports as incomplete, never
+   diagnose the third party, and apply the crisis protocol if the third party is at
+   risk.
 3. **Route to the right reference(s).** Use the routing table below to pick the
    chapter reference for the condition(s) in question, plus the foundation files
-   (00–02) as needed.
-4. **Read the relevant reference file(s).** Extract the criteria, specifiers, codes,
-   and differential sections for the candidate conditions before answering.
-5. **Gather the presentation details you need.** Duration, onset, course, functional
-   impairment, and the universal exclusions (substance/medication effects, other
-   medical conditions) appear in almost every criteria set. Ask the user for these —
-   do not assume them from a partial description.
+   (00–02) as needed. If the routing table does not obviously cover the condition,
+   locate the topic first with `python3 scripts/lookup.py "<keyword>"` and read the
+   file it recommends.
+4. **Read the relevant reference file(s).** Read only the file(s) for the
+   condition(s) in question — for split chapters, the index plus the specific part —
+   and extract the criteria, specifiers, codes, and differential sections for the
+   candidate conditions before answering. Do not read whole chapters. **Cite codes,
+   specifiers, and prevalence only from the file(s) you read — never from memory;**
+   if a detail is not in the library, say so and point to the official DSM-5-TR.
+5. **Answer first, then gather what you need.** Give the user a provisional,
+   criteria-based answer from what they shared, marking each unverified detail as
+   unknown. Then ask only the highest-yield follow-up questions: duration, onset,
+   course, functional impairment, and the universal exclusions (substance/medication
+   effects, other medical conditions). Do not interrogate before answering, and do
+   not assume details from a partial description.
 6. **Compare the presentation against the criteria.** Be explicit about which
    criteria appear met, unmet, or unknown. "Unknown" is a legitimate category;
    record it as such instead of guessing.
@@ -116,9 +128,14 @@ Follow these steps in order. Steps 1 and 2 gate everything else.
    plain language, no jargon, validation, and concrete next steps.
 9. **Close with stated uncertainty.** Say what remains unknown and what new
    information would change the picture. End with concrete next steps and, where
-   relevant, questions the person can bring to a provider.
+   relevant, questions the person can bring to a provider. Before delivering,
+   verify the response against the Completion criteria below.
 
 ## Reference routing table
+
+> **Reading split chapters:** rows marked "(index → read the part for the
+> condition)" point to a chapter index. Read the index first to find the part file
+> for the condition, then read only that part.
 
 | When the question is about... | Read |
 |---|---|
@@ -164,6 +181,11 @@ Follow these steps in order. Steps 1 and 2 gate everything else.
   verdict, describe what support and treatment can look like in general terms, and
   give them two to four specific questions to ask a provider. Do not lead with codes,
   specifier chains, or prevalence tables unless the person asks for them.
+- **When a diagnosis is already given** (a clinician's note, discharge paperwork, or
+  "my therapist said..."), do not re-derive the diagnosis from symptoms. Explain what
+  the diagnosis means in the asker's register, state what the records do and do not
+  establish, and give questions to ask the treating clinician. Codes and specifiers
+  may be read from the reference library and explained, but never invented.
 - **Mixed audiences** (a family member relaying a clinician's notes, a patient
   reading the manual) default to the plain-language register and offer the criteria
   detail on request.
@@ -203,6 +225,27 @@ Association. *Diagnostic and Statistical Manual of Mental Disorders, Fifth Editi
 Text Revision (DSM-5-TR)*. Washington, DC: APA, 2022. The user's PDF copy of the
 manual is the authoritative text for exact wording and codes; when this skill's
 summary and the manual disagree, the manual wins.
+
+## Answer shape
+
+A complete answer follows this structure, in order:
+
+1. **Safety line.** Triage first: if any risk is present, deliver the crisis response
+   and stop; otherwise one brief line that safety was considered (e.g., "Nothing you
+   described suggests immediate danger, but...").
+2. **Provisional framing.** "What you describe is consistent with X" — never "you
+   have X."
+3. **Criteria comparison.** State which criteria appear met, unmet, and unknown,
+   using the actual criteria structure (e.g., "5 of 9 symptoms for 2 weeks").
+4. **Differential.** Name the closest alternatives and the feature that would
+   distinguish each.
+5. **Next steps.** Concrete action: evaluation, what to bring, what to ask.
+6. **Uncertainty + provider questions.** What remains unknown, what new information
+   would change the picture, and 2-4 questions the person can bring to a clinician.
+
+This is the shape every complete answer follows, regardless of audience. Clinician
+answers keep the same structure with criteria language and more detail; patient and
+family answers use plain language with the same six parts.
 
 ## Completion criteria
 
