@@ -108,3 +108,4 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "SendGrid", "transactional email", "send email", "email deliverability", "bounced email", "spam report", "email webhook", "email-cli", "event webhook signature" | [email](../email/SKILL.md) |
 | "HubSpot", "CRM", "contact lookup", "deal pipeline", "pipeline view", "move a deal", "crm-cli", "HubSpot contact" | [crm](../crm/SKILL.md) |
 | "Stripe", "account balance", "payment intent", "subscription", "cancel subscription", "stripe-cli", "Stripe payments", "payment status" | [stripe](../stripe/SKILL.md) |
+| "mental health", "DSM", "DSM-5", "DSM-5-TR", "psychiatric symptoms", "symptoms could be", "diagnostic criteria", "mental health condition", "neurocognitive condition", "neurological condition", "differential diagnosis", "explain a diagnosis", "questions for my clinician", "questions for my therapist", "delirium vs dementia", "ADHD vs anxiety" | [dsm5](../dsm5/SKILL.md) |

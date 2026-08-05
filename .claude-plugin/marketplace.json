@@ -276,6 +276,15 @@
       "description": "Generate, inspect, validate, and fix PDF, Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) documents: turn structured content into render-ready artifacts, verify structural and output quality before delivery, and repair broken files. Use when a task involves creating, editing, converting, or validating office documents and PDFs. Do not use for ebook packaging (use epub), for images, video, or other media production, for API or code documentation, or for data pipelines (use data-engineering)."
     },
     {
+      "name": "dsm5",
+      "source": "./",
+      "skills": [
+        "./dsm5"
+      ],
+      "strict": false,
+      "description": "Assess and explain questions about mental health and neurocognitive conditions against DSM-5-TR diagnostic criteria, and guide evidence-based conversations for clinicians, patients, and family members. Use when someone asks about symptoms, possible conditions, differential diagnoses, diagnostic criteria, prevalence, specifiers, or wants to understand or explain a mental health or neurological condition in plain language. Do not use for formal diagnosis, treatment decisions, crisis intervention, legal or insurance determinations, or any situation that requires a licensed clinician's judgment."
+    },
+    {
       "name": "dspy",
       "source": "./",
       "skills": [

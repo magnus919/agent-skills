@@ -125,6 +125,8 @@ Define, run, debug, and harden multi-container applications with Docker Compose.
 
 ### [documents](documents/SKILL.md)
 Generate, inspect, validate, and fix PDF, Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) documents through one shared workflow (scope, content model, template, render, validate, deliver) with per-format references, generation templates, and a stdlib validation script that performs structural sanity plus a render check with graceful degradation when no renderer is installed.
+### [dsm5](dsm5/SKILL.md)
+Assess and explain mental health and neurocognitive questions against DSM-5-TR diagnostic criteria, and guide evidence-based conversations for clinicians, patients, and family members. Use for symptoms, possible conditions, differential diagnoses, criteria, prevalence, and specifiers — not for formal diagnosis, treatment decisions, crisis intervention, or legal/insurance determinations.
 ### [dspy](dspy/SKILL.md)
 
 An expert-level skill for **programmatic prompt optimization** with Stanford's DSPy framework. You write Python programs with typed signatures; DSPy optimizes the prompts automatically. This is the framework for prompt engineering that doesn't feel like engineering.
