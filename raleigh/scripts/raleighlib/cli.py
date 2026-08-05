@@ -683,12 +683,23 @@ def cmd_categories(args: argparse.Namespace) -> int:
 
 
 def cmd_imagery_catalog(args: argparse.Namespace) -> int:
-    services = imagery.list_services()
+    services, restricted_folders = imagery.list_services()
     limit = args.limit
     if args.json:
         _output_json(services[:limit])
+        if restricted_folders:
+            print(
+                f"note: {len(restricted_folders)} imagery folder(s) require a token "
+                f"and were skipped: {', '.join(restricted_folders)}",
+                file=sys.stderr,
+            )
     else:
         _output_table(["NAME", "TYPE"], [[s.get("name", ""), s.get("type", "")] for s in services[:limit]])
+        if restricted_folders:
+            print(
+                f"Note: {len(restricted_folders)} imagery folder(s) require a token "
+                f"and were skipped: {', '.join(restricted_folders)}"
+            )
     return 0
 
 

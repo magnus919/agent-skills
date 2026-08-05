@@ -24,12 +24,23 @@ def _checked_json(data: Any, operation: str) -> dict[str, Any]:
     return data
 
 
+def _is_token_required_error(exc: Exception) -> bool:
+    """Return True when an ArcGIS error indicates the resource needs a token."""
+    return "token required" in str(exc).lower()
+
+
 def list_services(
     root_url: str = IMAGE_ROOT,
     max_folders: int = MAX_IMAGE_FOLDERS,
     max_services: int = MAX_IMAGE_SERVICES,
-) -> list[dict[str, Any]]:
-    """Recursively discover ImageServer services from the REST directory."""
+) -> tuple[list[dict[str, Any]], list[str]]:
+    """Recursively discover ImageServer services from the REST directory.
+
+    Returns ``(services, restricted_folders)`` where ``restricted_folders``
+    names folders whose listing requires a token. Those folders are skipped:
+    this tool only reads publicly accessible services, and a token-gated folder
+    is not a public-data contract violation.
+    """
     if max_folders < 0 or max_services < 1:
         raise ValueError("imagery discovery bounds are invalid")
     sep = "&" if "?" in root_url else "?"
@@ -55,12 +66,19 @@ def list_services(
             f"Image service listing exceeded {max_services} services"
         )
     services = list(root_services)
+    restricted_folders: list[str] = []
     for folder in folders:
         folder_url = f"{root_url}/{urllib.parse.quote(folder, safe='')}"
         sep = "&" if "?" in folder_url else "?"
-        folder_data = _checked_json(
-            core.json_request(f"{folder_url}{sep}f=pjson"), "Image folder listing"
-        )
+        try:
+            folder_data = _checked_json(
+                core.json_request(f"{folder_url}{sep}f=pjson"), "Image folder listing"
+            )
+        except ValueError as exc:
+            if _is_token_required_error(exc):
+                restricted_folders.append(folder)
+                continue
+            raise
         folder_services = folder_data.get("services", [])
         if not isinstance(folder_services, list) or any(
             not isinstance(service, dict) for service in folder_services
@@ -74,7 +92,7 @@ def list_services(
             svc = dict(svc)
             svc["folder"] = folder
             services.append(svc)
-    return services
+    return services, restricted_folders
 
 
 def service_info(url: str) -> dict[str, Any]:

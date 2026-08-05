@@ -452,10 +452,45 @@ class ImageryTests(unittest.TestCase):
             return root
 
         with patch("raleighlib.imagery.core.json_request", side_effect=mock_response):
-            services = imagery.list_services()
+            services, restricted = imagery.list_services()
         names = {s["name"] for s in services}
         self.assertIn("Base/Image", names)
         self.assertIn("Ortho/2025", names)
+        self.assertEqual(restricted, [])
+
+    def test_list_services_skips_token_required_folder(self):
+        root = {
+            "folders": ["Public", "Gated"],
+            "services": [],
+        }
+        public_folder = {"services": [{"name": "Public/Ortho", "type": "ImageServer"}]}
+
+        def mock_response(url):
+            if "Gated" in url:
+                raise ValueError("Image folder listing failed: Token Required")
+            if "Public" in url:
+                return public_folder
+            return root
+
+        with patch("raleighlib.imagery.core.json_request", side_effect=mock_response):
+            services, restricted = imagery.list_services()
+        self.assertEqual([s["name"] for s in services], ["Public/Ortho"])
+        self.assertEqual(restricted, ["Gated"])
+
+    def test_list_services_still_raises_on_non_token_folder_error(self):
+        root = {
+            "folders": ["Broken"],
+            "services": [],
+        }
+
+        def mock_response(url):
+            if "Broken" in url:
+                raise ValueError("Image folder listing failed: Invalid URL")
+            return root
+
+        with patch("raleighlib.imagery.core.json_request", side_effect=mock_response):
+            with self.assertRaisesRegex(ValueError, "Invalid URL"):
+                imagery.list_services()
 
     def test_supports_capability(self):
         info = {"capabilities": "Catalog,Image,Metadata"}
@@ -1236,7 +1271,7 @@ class CliTests(unittest.TestCase):
 
     def test_imagery_catalog_subcommand(self):
         with patch("raleighlib.cli.imagery.list_services") as mock_list:
-            mock_list.return_value = [{"name": "Orthos2025", "type": "ImageServer"}]
+            mock_list.return_value = ([{"name": "Orthos2025", "type": "ImageServer"}], [])
             code, out, err = self.run_cli(["imagery", "catalog", "--json"])
         self.assertEqual(code, 0, err)
         self.assertIn("Orthos2025", out)
@@ -1560,10 +1595,23 @@ class GlobalFlagTests(unittest.TestCase):
 
     def test_global_flags_after_nested_subcommand(self):
         with patch("raleighlib.cli.imagery.list_services") as mock_list:
-            mock_list.return_value = [{"name": "Orthos2025", "type": "ImageServer"}]
+            mock_list.return_value = ([{"name": "Orthos2025", "type": "ImageServer"}], [])
             code, out, err = self.run_cli(["imagery", "catalog", "--json", "--limit", "1"])
         self.assertEqual(code, 0, err)
         self.assertIn("Orthos2025", out)
+
+    def test_imagery_catalog_reports_restricted_folders(self):
+        with patch("raleighlib.cli.imagery.list_services") as mock_list:
+            mock_list.return_value = (
+                [{"name": "Orthos2025", "type": "ImageServer"}],
+                ["Imagery", "Utilities"],
+            )
+            code, out, err = self.run_cli(["imagery", "catalog"])
+        self.assertEqual(code, 0, err)
+        self.assertIn("Orthos2025", out)
+        self.assertIn("Imagery", out)
+        self.assertIn("Utilities", out)
+        self.assertIn("require a token", out)
 
     def test_global_flags_before_subcommand(self):
         with patch("raleighlib.cli.hub.catalog_from_cache_or_live") as mock_catalog:
@@ -2677,6 +2725,42 @@ class PoliceTests(unittest.TestCase):
             report = canary_lib.run_canary()
         self.assertFalse(report["passed"])
         self.assertEqual(report["summary"]["transient_failures"], 1)
+
+    def test_canary_imagery_probe_reports_restricted_folders_as_non_failing(self):
+        with patch("canary.imagery.list_services", return_value=(
+            [{"name": "Orthos2025", "type": "ImageServer"}],
+            ["Imagery", "Utilities"],
+        )):
+            results = canary_lib.probe_imagery_catalog()
+        self.assertTrue(all(result["status"] == "pass" for result in results))
+        targets = {result["target"]: result.get("failure_class") for result in results}
+        self.assertEqual(targets["catalog"], None)
+        self.assertEqual(targets["folder:Imagery"], "restricted_folder")
+        self.assertEqual(targets["folder:Utilities"], "restricted_folder")
+        self.assertEqual(len(results), 3)
+
+    def test_canary_imagery_probe_fails_on_unexpected_shape(self):
+        with patch("canary.imagery.list_services", return_value=[
+            {"name": "Orthos2025", "type": "ImageServer"},
+        ]):
+            results = canary_lib.probe_imagery_catalog()
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["status"], "fail")
+        self.assertEqual(results[0]["failure_class"], "schema_drift")
+
+    def test_canary_summary_counts_restricted_folders_without_failing(self):
+        observations = [
+            {"source": "imagery", "target": "catalog", "status": "pass", "count": 1},
+            {
+                "source": "imagery", "target": "folder:Imagery", "status": "pass",
+                "failure_class": "restricted_folder", "error": "token required", "attempt": 1,
+            },
+        ]
+        with patch.object(canary_lib, "ALL_PROBES", [("imagery", lambda: observations)]):
+            report = canary_lib.run_canary()
+        self.assertTrue(report["passed"])
+        self.assertEqual(report["summary"]["restricted_folders"], 1)
+        self.assertEqual(report["summary"]["durable_failures"], 0)
 
 
 class FireTests(unittest.TestCase):
