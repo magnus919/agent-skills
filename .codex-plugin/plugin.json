@@ -54,6 +54,7 @@
     "./de-spin",
     "./docker-compose",
     "./documents",
+    "./dsm5",
     "./dspy",
     "./email",
     "./epub",
