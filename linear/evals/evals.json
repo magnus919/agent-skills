@@ -61,6 +61,18 @@
         "The response explains Linear's synchronous mutation behavior and its limits under network uncertainty",
         "Retry logic can deduplicate via identifiers or request tracking"
       ]
+    },
+    {
+      "id": "safe-project-and-issue-mutations",
+      "prompt": "I need to rename a Linear project, move it to the 'started' status, and create an issue inside it assigned to Ada, tagged with the bug label, with a due date — without accidentally applying anything before I review it. How do I do this safely with the linear CLI, and what should I not assume about the API?",
+      "expected_output": "A safe mutation flow built on the linear skill's verbs: first read to confirm targets (team list, project get, state list, and issue search to check for an existing issue), then preview every write with --dry-run --json (project update with --name/--status, and issue create with --project/--assignee/--label/--due), then rerun each with --confirm --json after reviewing the preview. The response explains that friendly names are resolved only during a live run, that project statuses, workflow states, and labels are workspace- or team-defined and must be resolved by exact name rather than assumed, that due dates are ISO YYYY-MM-DD, and that Linear's projectUpdate rejects project descriptions longer than 255 characters. It also states the recovery path: issue update and issue move can revert an issue change, issue unarchive reverses an archive, and destructive deletion is deliberately not exposed as a CLI verb.",
+      "assertions": [
+        "The flow reads before writing and checks for an existing issue first",
+        "Every mutation is previewed with --dry-run and applied only with --confirm",
+        "Project status, workflow state, and label resolution by exact name is explained, not assumed",
+        "The 255-character project description limit is mentioned",
+        "The recovery path (update/move/unarchive) and the absence of a delete verb are stated"
+      ]
     }
   ]
 }
