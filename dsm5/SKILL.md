@@ -125,30 +125,30 @@ Follow these steps in order. Steps 1 and 2 gate everything else.
 | how to have these conversations, skill scope, safety | `references/01-safety-and-boundaries.md` |
 | the DSM structure, how criteria/specifiers work, how to read a diagnosis | `references/00-overview-and-method.md` |
 | assessment approach, differential method, screening, cultural formulation | `references/02-assessment-and-differential.md` and `references/32-assessment-measures-and-cultural-formulation.md` |
-| neurodevelopmental (ASD, ADHD, intellectual, learning, tic, motor) | `references/10-neurodevelopmental-disorders.md` |
-| schizophrenia/psychotic | `references/11-schizophrenia-spectrum-and-other-psychotic.md` |
-| bipolar | `references/12-bipolar-and-related-disorders.md` |
-| depression | `references/13-depressive-disorders.md` |
-| anxiety | `references/14-anxiety-disorders.md` |
-| OCD and related | `references/15-obsessive-compulsive-and-related-disorders.md` |
-| trauma/PTSD/acute stress/adjustment | `references/16-trauma-and-stressor-related-disorders.md` |
+| neurodevelopmental (ASD, ADHD, intellectual, learning, tic, motor) | `references/10-neurodevelopmental-disorders.md` (index → read the part for the condition) |
+| schizophrenia/psychotic | `references/11-schizophrenia-spectrum-and-other-psychotic.md` (index → read the part for the condition) |
+| bipolar | `references/12-bipolar-and-related-disorders.md` (index → read the part for the condition) |
+| depression | `references/13-depressive-disorders.md` (index → read the part for the condition) |
+| anxiety | `references/14-anxiety-disorders.md` (index → read the part for the condition) |
+| OCD and related | `references/15-obsessive-compulsive-and-related-disorders.md` (index → read the part for the condition) |
+| trauma/PTSD/acute stress/adjustment | `references/16-trauma-and-stressor-related-disorders.md` (index → read the part for the condition) |
 | dissociation | `references/17-dissociative-disorders.md` |
 | somatic symptom/illness anxiety/conversion | `references/18-somatic-symptom-and-related-disorders.md` |
-| feeding and eating | `references/19-feeding-and-eating-disorders.md` |
+| feeding and eating | `references/19-feeding-and-eating-disorders.md` (index → read the part for the condition) |
 | elimination (enuresis/encopresis) | `references/20-elimination-disorders.md` |
-| sleep-wake | `references/21-sleep-wake-disorders.md` |
-| sexual dysfunctions | `references/22-sexual-dysfunctions.md` |
+| sleep-wake | `references/21-sleep-wake-disorders.md` (index → read the part for the condition) |
+| sexual dysfunctions | `references/22-sexual-dysfunctions.md` (index → read the part for the condition) |
 | gender dysphoria | `references/23-gender-dysphoria.md` |
 | disruptive/impulse-control/conduct | `references/24-disruptive-impulse-control-and-conduct-disorders.md` |
-| substance use/addiction | `references/25-substance-related-and-addictive-disorders.md` |
-| delirium, dementia, mild cognitive impairment, neurological conditions | `references/26-neurocognitive-disorders.md` |
-| personality disorders | `references/27-personality-disorders.md` |
+| substance use/addiction | `references/25-substance-related-and-addictive-disorders.md` (index → read the part for the condition) |
+| delirium, dementia, mild cognitive impairment, neurological conditions | `references/26-neurocognitive-disorders.md` (index → read the part for the condition) |
+| personality disorders | `references/27-personality-disorders.md` (index → read the part for the condition) |
 | paraphilic disorders | `references/28-paraphilic-disorders.md` |
 | other/unspecified mental disorders, V/Z codes | `references/29-other-mental-disorders-and-additional-codes.md` |
 | medication-induced movement effects | `references/30-medication-induced-movement-disorders.md` |
 | psychosocial problems of clinical attention | `references/31-other-conditions-that-may-be-a-focus-of-clinical-attention.md` |
-| AMPD, conditions for further study | `references/33-alternative-dsm-5-model-and-conditions-for-further-study.md` |
-| overlapping symptoms across conditions | `references/40-cross-cutting-differentials.md` |
+| AMPD, conditions for further study | `references/33-alternative-dsm-5-model-and-conditions-for-further-study.md` (index → read the part for the condition) |
+| overlapping symptoms across conditions | `references/40-cross-cutting-differentials.md` (index → read the part for the condition) |
 
 ## Audience adaptation
 
@@ -239,6 +239,14 @@ need.
   `references/02-assessment-and-differential.md`.
 - **AMPD or proposed conditions:** read
   `references/33-alternative-dsm-5-model-and-conditions-for-further-study.md`.
+- **Split chapter references:** some chapter references are split into an index plus
+  part files; read the index first to route to the part for the condition, and read
+  only that part.
 - **Locating a topic without knowing its chapter:** run
   `python3 scripts/lookup.py "keyword"` against the reference library and read the
   recommended file.
+
+**Large-file handling:** reference files are sized to be read in a single call (each
+part ≤ ~40,000 characters; indexes ≤ ~10,000). If a tool reports a file as truncated,
+re-read it in chunks with an offset, or use `python3 scripts/lookup.py` to find the
+specific part file instead of reading a whole chapter.

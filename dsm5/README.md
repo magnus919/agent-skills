@@ -28,10 +28,7 @@ says so.
 | Item | What it provides |
 |---|---|
 | `SKILL.md` | The conversation workflow: safety triage first, question/audience clarification, reference routing, criteria comparison, differential reasoning, and calibrated communication. |
-| `references/00-overview-and-method.md`, `01-safety-and-boundaries.md`, `02-assessment-and-differential.md` | Foundation files: how the DSM-5-TR is organized and how to read a diagnosis, the skill's scope and crisis protocol, and how a clinical assessment and differential are structured. |
-| `references/10`–`31` | Per-chapter references for every DSM-5-TR diagnostic class — criteria, specifiers, ICD-10-CM codes, prevalence, onset, course, and differential sections — with extra depth on neurocognitive and deficit conditions. |
-| `references/32`–`33` | Part III material: assessment measures and cultural formulation, plus the Alternative DSM-5 Model for Personality Disorders and conditions for further study. |
-| `references/40-cross-cutting-differentials.md` | Overlapping-symptom comparisons across conditions, for questions that span chapters. |
+| `references/` (66 files) | Chapter indexes plus part files: foundation (00–02), per-chapter references for all 22 DSM-5-TR diagnostic classes (10–31), Part III (32–33), and cross-cutting differentials (40). Large chapters are split into an index plus focused part files so any agent can read a file in one call. |
 | `scripts/lookup.py` | A keyword search across every reference file — finds where a topic lives and which files to read first. |
 | `evals/evals.json` | Output-quality test cases that keep the skill's answers honest across safety, criteria fidelity, and plain-language scenarios. |
 

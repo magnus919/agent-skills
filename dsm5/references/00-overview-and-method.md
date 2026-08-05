@@ -261,3 +261,13 @@ has seven steps:
 - For the clinical assessment approach, measures, and cultural formulation: [02-assessment-and-differential.md](02-assessment-and-differential.md)
 - For a specific disorder class: the chapter file (table above)
 - For comparing overlapping presentations: [40-cross-cutting-differentials.md](40-cross-cutting-differentials.md)
+
+## Maintaining this library
+
+Reference files must stay small enough to be read in a single call: about 40,000
+characters maximum per part, with chapter indexes no larger than about 10,000
+characters. If a chapter reference would exceed roughly 50,000 characters, split it
+into an index (keeping the original filename so existing links keep resolving to the
+index) plus part files named `NN-<topic>.md`, and update the index's "Parts of this
+chapter reference" routing table. Every part needs the part header, an index pointer,
+and the attribution line, as the existing parts demonstrate.
