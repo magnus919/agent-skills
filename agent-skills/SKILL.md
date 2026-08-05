@@ -121,6 +121,8 @@ Executable code agents can run. Scripts should:
 ### `references/`
 Additional documentation loaded on demand. Keep individual files focused — agents load these when instructed, so smaller files save context.
 
+- Every file under `references/` must be at or under **60,000 characters**. When a reference grows past the cap, split it into focused files (e.g., `references/<topic>-a.md`, `references/<topic>-b.md`) and update `SKILL.md` so each new file is reachable and the load-on-demand instructions name the right file.
+
 ### `assets/`
 Static resources: templates, images, data files, schemas.
 

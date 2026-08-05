@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "skill_name": "programming-principles",
+  "evals": [
+    {
+      "id": "task-to-book-mapping-payments",
+      "prompt": "I'm building a money-transfer service that enqueues transfers to a message queue and a worker applies them to accounts. I need transfers to never be lost or double-applied, and the queue must not take the system down when traffic spikes. Which books from this skill should I load, and what should each contribute?",
+      "expected_output": "The response routes the task through the skill's task-to-book mapping table instead of loading all 14 books at once. It names Designing Data-Intensive Applications for the messaging and consistency concerns — making write semantics explicit (durable when, visible when, how duplicates are handled), treating duplicate delivery and partial writes as normal input, and describing events as facts consumers tolerate replays of — and Release It! for the production-reliability concerns: bounded queues, load shedding, timeouts on every outbound call, and finite retries with backoff so a broker failure does not cascade. It adds Clean Architecture or A Philosophy of Software Design for keeping the broker and worker framework behind a port or adapter so domain logic never depends on infrastructure, and explains why each book applies to this specific situation (for example, idempotency keys or dedup to prevent double-apply, finite queue length for spikes). It closes by recommending one primary always-on book and loading the others on demand to avoid context saturation.",
+      "assertions": [
+        "The response maps the task to Designing Data-Intensive Applications and ties it to message delivery semantics and data consistency",
+        "The response maps the task to Release It! and ties it to queue overload, timeouts, and bounded retries",
+        "The response recommends keeping the queue and worker framework behind a port or adapter rather than coupling domain logic to infrastructure",
+        "The response explains why each recommended book applies to the specific situation rather than listing books generically",
+        "The response recommends selecting one primary book and loading others on demand to avoid context saturation"
+      ],
+      "files": [
+        "references/designing-data-intensive-apps.mini.md",
+        "references/release-it.mini.md"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "code-review-principles-on-diff",
+      "prompt": "Review this diff using the skill's principles. The PR adds a processOrder(order, notify=true) function that validates input, writes to the database, and sends an email all inside one 200-line method, with a comment '// now update the db' above the database call and a comment explaining what the function name means. The service constructs its own Database and Mailer directly. What do the books say?",
+      "expected_output": "The response reviews the diff through concrete book-derived principles rather than generic praise. From Clean Code it flags that the function mixes validation, persistence, and side effects at multiple levels of abstraction and should be split into phases; that the boolean notify flag is a mode switch that should be modeled as separate functions or a parameter object rather than a flag; that the comment narrating the database call and the comment compensating for an unclear function name violate the rule that comments exist for rationale and constraints, not narration; and that a 200-line function too long to name precisely is a candidate for extraction. From Clean Architecture it flags the service directly instantiating Database and Mailer as infrastructure leaking into application logic, a dependency-rule violation: the inner layer should own interfaces and outer infrastructure should implement them. It names concrete next steps such as extracting the validation, persistence, and notification phases or introducing ports for the database and mailer.",
+      "assertions": [
+        "The response flags the boolean notify flag as a mode switch that should split the function",
+        "The response identifies that the function mixes validation, persistence, and side effects at multiple levels of abstraction",
+        "The response calls out comments that narrate code or compensate for an unclear name",
+        "The response flags direct instantiation of Database and Mailer as a dependency-rule violation",
+        "The response proposes a concrete fix such as extracting phases or introducing ports rather than generic advice"
+      ],
+      "files": [
+        "references/clean-code.mini.md",
+        "references/clean-architecture.mini.md"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "refactor-vs-rewrite-decision",
+      "prompt": "Our billing module is 3,000 lines, has no tests, and nobody fully understands it. We need to add a new pricing tier next sprint. Half the team wants to rewrite it in the new architecture; I think we should refactor. What does the skill say?",
+      "expected_output": "The response takes a position grounded in Refactoring and Working Effectively with Legacy Code rather than splitting the difference. It states that a rewrite is not the recommended first move for untested, poorly understood code — Working Effectively with Legacy Code corrects 'rewrite = first move' — and that refactoring is behavior-preserving structural improvement taken in small, reversible, buildable, testable steps. It recommends characterization tests as the safety net before changing any behavior in the untested module, finding or creating a seam to change behavior without editing the surrounding code, and breaking the one blocking dependency before the feature work. It frames the work as preparatory refactoring: reshape the structure blocking the new pricing tier first, then add the tier, then clean up debt. It may note the 3,000-line module exceeds the ~400-line decomposition threshold, but the fix is incremental decomposition along stable responsibility boundaries, not a rewrite, and the work stops once the blocking smell is gone.",
+      "assertions": [
+        "The response states that a rewrite is not the recommended first move for untested, poorly understood code",
+        "The response recommends characterization tests before changing behavior in the untested module",
+        "The response cites behavior-preserving refactoring in small, reversible, testable steps",
+        "The response mentions finding or creating a seam and breaking the one blocking dependency",
+        "The response ties the plan to the specific feature by using preparatory refactoring before adding the pricing tier",
+        "The response flags the module size as a decomposition candidate without proposing a full rewrite"
+      ],
+      "files": [
+        "references/refactoring.mini.md",
+        "references/working-effectively-with-legacy-code.mini.md"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "no-op-generic-guidance",
+      "prompt": "Our team wrote a 'code quality policy' that says: write clean code, follow best practices, keep things maintainable, and refactor when needed. I'm supposed to enforce this in code review. Is this useful, and what should it actually say?",
+      "expected_output": "The response calls the policy out as vague, unactionable guidance that cannot be enforced or verified, then replaces each cliché with concrete book-derived principles a reviewer can actually check. It notes that 'write clean code' is circular without operational rules and translates it into observable statements: functions at one level of abstraction with few parameters and no boolean flags; one term per concept and names that reveal intent; a wrapper, layer, or abstraction must hide more complexity than it adds, so pass-through wrappers are debt; timeouts and bounded retries with backoff on every outbound call; and refactoring as small behavior-preserving steps with a stop condition rather than a standing instruction to 'refactor when needed'. It offers a rewritten policy or checklist where every item names a concrete signal a reviewer can look for in a diff.",
+      "assertions": [
+        "The response explicitly identifies the policy as vague or unactionable",
+        "The response replaces at least three generic phrases with concrete, checkable principles",
+        "The response names at least one book as the source of a concrete principle",
+        "The response ties at least one replacement to an observable review check such as a boolean flag or a pass-through wrapper",
+        "The response provides a concrete rewrite or checklist for the policy"
+      ],
+      "files": [
+        "references/clean-code.mini.md",
+        "references/a-philosophy-of-software-design.mini.md"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "rule-distillation-ddia",
+      "prompt": "I haven't read Designing Data-Intensive Applications. Give me the distilled rules from that book that I can actually apply when designing a service that writes to a database and publishes events.",
+      "expected_output": "The response distills DDIA-specific rules rather than generic distributed-systems advice. It states that the source of truth, derived representations, and consistency expectations must be made explicit, distinguishing strong from eventual consistency. It says crashes, partial writes, duplicates, and timeouts are normal input to be designed for, not edge cases. It requires making write semantics explicit: durable when, visible when, how conflicts are resolved, and whether stale reads are allowed. It covers events as facts and consumers that tolerate lag, duplicates, replay, and versioned payloads. It covers schema and API evolution across old and new readers and writers. It matches transactions and isolation levels to the actual invariants instead of applying blanket defaults. The rules are organized so they read as an actionable checklist.",
+      "assertions": [
+        "The response states that source of truth, derived representations, and consistency expectations must be explicit",
+        "The response treats crashes, partial writes, duplicates, and timeouts as normal input rather than edge cases",
+        "The response requires making write semantics explicit, such as durability, visibility, and conflict resolution",
+        "The response covers event consumers tolerating lag, duplicates, replay, and versioned payloads",
+        "The response mentions schema and API evolution across old and new readers and writers",
+        "The response says transactions and isolation should match actual invariants rather than blanket defaults"
+      ],
+      "files": [
+        "references/designing-data-intensive-apps.mini.md"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "principle-conflict-speculative-abstraction",
+      "prompt": "Some of us want to wrap our database in a repository interface now, 'because we might migrate someday.' Others say that's speculative — the wrapper is a pass-through today and violates YAGNI. The skill's books seem to disagree. How do we weigh these principles?",
+      "expected_output": "The response surfaces the genuine tension and gives a weighing rule instead of picking a side by dogma. It cites A Philosophy of Software Design's rule that a wrapper, layer, or abstraction must hide more complexity than it adds and that pass-through layers are debt, and Clean Architecture's rule that boundaries are chosen by volatility and policy importance, not by size or habit. It cites Refactoring's bias against speculative generality — the simplest named move is preferred and the skill targets the current blocking smell, not imagined ones. It then gives a decision rule: name the concrete change that would actually consume the interface — a real second storage implementation, an in-memory test double that is needed now, or a migration with an actual timeline — and if no such consumer exists today, defer the abstraction; if one exists, the interface earns its place. It avoids treating the overlapping books as equal guidance and commits to one weighing frame.",
+      "assertions": [
+        "The response names the APoSD rule that a wrapper must hide more complexity than it adds and that pass-through layers are debt",
+        "The response cites choosing boundaries by volatility and policy importance rather than habit",
+        "The response identifies the tension honestly rather than choosing a side by dogma",
+        "The response gives a concrete decision rule for when the abstraction is justified, such as a real second implementation or test double",
+        "The response recommends deferring speculative abstraction when no concrete change pressure exists",
+        "The response cites Refactoring's bias against speculative generality or preference for the simplest named move"
+      ],
+      "files": [
+        "references/a-philosophy-of-software-design.mini.md",
+        "references/refactoring.mini.md"
+      ],
+      "case_set": "dev"
+    }
+  ]
+}

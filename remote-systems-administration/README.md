@@ -14,7 +14,7 @@ It is deliberately platform-aware. The agent learns to find the active control p
 |---|---|
 | `SKILL.md` | Operating contract, routing, boundaries, and verification checklist |
 | `references/portable-operations.md` | POSIX baseline, SSH, discovery, diagnostics, and bounded evidence |
-| `references/ansible.md` | Deep Ansible administration: inventory, roles, collections, secrets, testing, execution, troubleshooting, and safe fleet rollout |
+| `references/ansible.md` (index) + `references/ansible-administration-and-safety.md` + `references/ansible-runbooks-and-advanced-operations.md` | Deep Ansible administration: inventory, roles, collections, secrets, testing, execution, troubleshooting, and safe fleet rollout (the index routes to the two part files) |
 | `references/fleet-automation.md` | Paramiko guidance plus fleet-control comparison and per-host result requirements |
 | `references/linux.md` | Linux distribution/control-plane classification and cross-family routing |
 | `references/linux-debian-ubuntu.md` | APT/dpkg, Ubuntu lifecycle, and network ownership boundaries |

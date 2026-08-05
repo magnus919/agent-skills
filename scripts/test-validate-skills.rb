@@ -136,6 +136,53 @@ class ReferenceFileScanTest < Minitest::Test
     assert_empty ReferenceFileScan.stale_reference_errors(File.expand_path("..", __dir__), "product-strategy")
   end
 
+  def test_oversized_reference_under_limit_passes
+    with_fixture do |root|
+      content = "a" * 59_999
+      write_skill_ref(root, "test-skill/references/details.md", content)
+      assert_empty ReferenceFileScan.oversized_reference_errors(root, "test-skill")
+    end
+  end
+
+  def test_oversized_reference_over_limit_fails_with_path_and_size
+    with_fixture do |root|
+      content = "a" * 60_001
+      write_skill_ref(root, "test-skill/references/details.md", content)
+      errors = ReferenceFileScan.oversized_reference_errors(root, "test-skill")
+      assert_equal 1, errors.length
+      assert_includes errors.first, "test-skill/references/details.md"
+      assert_includes errors.first, "60001"
+    end
+  end
+
+  def test_oversized_reference_exactly_at_limit_passes
+    with_fixture do |root|
+      content = "a" * 60_000
+      write_skill_ref(root, "test-skill/references/details.md", content)
+      assert_equal 60_000, File.read(File.join(root, "test-skill/references/details.md")).length
+      assert_empty ReferenceFileScan.oversized_reference_errors(root, "test-skill")
+    end
+  end
+
+  def test_oversized_reference_error_mentions_split_remediation
+    with_fixture do |root|
+      content = "a" * 60_001
+      write_skill_ref(root, "test-skill/references/details.md", content)
+      errors = ReferenceFileScan.oversized_reference_errors(root, "test-skill")
+      assert_equal 1, errors.length
+      assert_includes errors.first, "split the file into focused files"
+      assert_includes errors.first, "update SKILL.md's index"
+    end
+  end
+
+  def test_oversized_reference_scan_ignores_non_markdown_files
+    with_fixture do |root|
+      content = "a" * 60_001
+      write_skill_ref(root, "test-skill/references/notes.txt", content)
+      assert_empty ReferenceFileScan.oversized_reference_errors(root, "test-skill")
+    end
+  end
+
   private
 
   # The stale token is assembled at runtime so the misspelling never appears
