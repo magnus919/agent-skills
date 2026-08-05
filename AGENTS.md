@@ -14,6 +14,7 @@ Every skill in this repository conforms to the [Agent Skills specification](http
 | `description` field | Trigger-oriented, starts with an imperative verb, defines both positive and negative trigger boundaries |
 | Progressive disclosure | Core instructions in `SKILL.md` (< 500 lines, < 5,000 tokens), supporting material in `references/`, `templates/`, `scripts/` |
 | File references | Relative paths from skill root, one level deep |
+| Reference file size | Every file under a skill's `references/` must be ≤ 60,000 characters; oversized files are split into focused files and the skill's index/routing is updated |
 | **Human-readable README** | **`README.md`** in skill root — required for every skill. See [README Format](#readme-format) below |
 
 ## README Format

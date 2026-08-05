@@ -129,6 +129,9 @@ skills.each do |skill|
   # Phase 1: prose backtick references in references/*.md must resolve to a
   # real file (catches stale framework-file references like the RICE typo).
   errors.concat(ReferenceFileScan.stale_reference_errors(ROOT, skill_dir))
+  # Phase 1: references/*.md files must stay within the per-file character cap
+  # (oversized files are split into focused files and re-indexed in SKILL.md).
+  errors.concat(ReferenceFileScan.oversized_reference_errors(ROOT, skill_dir))
 end
 
 if errors.empty?

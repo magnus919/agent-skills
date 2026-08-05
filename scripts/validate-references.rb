@@ -53,6 +53,11 @@ module ReferenceFileScan
   # records history rather than pointing at a live file.
   REMOVAL_MARKER = /\bremoved\b/i
 
+  # Per-file character cap for references/*.md (issue #277). Reference files
+  # are loaded on demand into an agent's context, so oversized files waste
+  # context; files past the cap must be split and re-indexed in SKILL.md.
+  MAX_REFERENCE_CHARS = 60_000
+
   module_function
 
   # Returns error strings for stale prose backtick references to nonexistent
@@ -74,6 +79,22 @@ module ReferenceFileScan
           errors << "#{ref_rel}:#{idx + 1}: stale prose backtick reference to nonexistent file `#{token}`"
         end
       end
+    end
+    errors
+  end
+
+  # Returns error strings for reference files under <root>/<skill_rel>/references/
+  # that exceed MAX_REFERENCE_CHARS characters. Shares stale_reference_errors's
+  # scan scope: one level deep, *.md only.
+  def oversized_reference_errors(root, skill_rel)
+    errors = []
+    ref_dir = File.join(root, skill_rel, "references")
+    Dir.glob("#{ref_dir}/*.md").sort.each do |ref|
+      ref_rel = ref.delete_prefix("#{root}/")
+      size = File.read(ref).length
+      next unless size > MAX_REFERENCE_CHARS
+
+      errors << "#{ref_rel}: #{size} characters — reference files must be <= #{MAX_REFERENCE_CHARS} characters; split the file into focused files under references/ and update SKILL.md's index (split-and-reindex remediation)"
     end
     errors
   end

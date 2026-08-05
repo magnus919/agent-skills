@@ -1,6 +1,6 @@
 ---
 name: programming-principles
-description: Distilled coding principles from 14 classic software books.
+description: Apply distilled coding principles from 14 classic software books to code review, refactoring, design, and implementation decisions. Do not use for language- or framework-specific tutorials, tool manuals, or tasks already governed by a project's established conventions.
 license: MIT
 compatibility: Platform-agnostic. Works with any agent that supports the Agent Skills
   directory format. No external dependencies.
@@ -256,7 +256,7 @@ Smell catalog and technique catalog. Corrects: "pattern = always the answer."
 - Diagnose the smell before choosing the technique
 - Prefer the simplest treatment: rename before extract, extract before redesign
 - Each smell has a specific root cause and treatment path
-- See `references/refactoring-guru-smells.md` for the full catalog
+- See `references/refactoring-guru.full.md` for the full catalog
 
 ## Compatibility Guide
 
@@ -300,12 +300,17 @@ skill_view(name='programming-principles', file_path='references/{book-dir}.mini.
 | `references/working-effectively-with-legacy-code.mini.md` | Working Effectively with Legacy Code |
 | `references/code-assessment-workflow.md` | Assessment methodology — not a book, but the workflow for combining all books against a real repo |
 
-Each book also has a **full** version (11-63 KB) for deep reference when you need
+Each book also has a **full** version (11-42 KB) for deep reference when you need
 the complete rule catalog. Load on demand:
 
 ```
 skill_view(name='programming-principles', file_path='references/{name}.full.md')
 ```
+
+Note: `references/refactoring-guru.full.md` is an index that routes to two part
+files (`refactoring-guru.full-smells-and-priorities.md` and
+`refactoring-guru.full-technique-playbook-and-safety.md`). Loading the index
+shows the "Parts of this reference" table; then load the specific part you need.
 
 | Full File | Book | Size |
 |-----------|------|------|
@@ -319,7 +324,7 @@ skill_view(name='programming-principles', file_path='references/{name}.full.md')
 | `references/implementing-domain-driven-design.full.md` | Implementing DDD | 12 KB |
 | `references/patterns-of-eaa.full.md` | Patterns of Enterprise App Architecture | 15 KB |
 | `references/refactoring.full.md` | Refactoring | 17 KB |
-| `references/refactoring-guru.full.md` | Refactoring.Guru | 62 KB |
+| `references/refactoring-guru.full.md` | Refactoring.Guru | index + 2 parts |
 | `references/release-it.full.md` | Release It! | 13 KB |
 | `references/the-pragmatic-programmer.full.md` | The Pragmatic Programmer | 13 KB |
 | `references/working-effectively-with-legacy-code.full.md` | Working Effectively with Legacy Code | 13 KB |

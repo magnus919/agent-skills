@@ -4,7 +4,9 @@ description: >-
   Administer and troubleshoot remote Linux, FreeBSD, NetBSD, OpenBSD, and macOS systems
   safely, one host or a fleet at a time. Use when a task requires SSH, Ansible,
   Paramiko, POSIX diagnostics, service management, software updates, system
-  configuration, firewall changes, or evidence-led remote operations.
+  configuration, firewall changes, or evidence-led remote operations. Do not use for
+  local-only desktop administration, container or cluster orchestration (route to
+  kubernetes), or cloud consoles that expose no remote shell.
 license: MIT
 compatibility: Requires legitimate remote access. Native SSH is the baseline; Ansible or Python with Paramiko is optional for fleet automation.
 ---
@@ -63,7 +65,7 @@ Read-only discovery may proceed without confirmation. **Read-only means no persi
 | Need | Load | File |
 |---|---|---|
 | SSH, POSIX diagnostics, bounded output, file transfer, logs, and host discovery | Portable operations | `references/portable-operations.md` |
-| Ansible administration, inventories, roles, collections, secrets, linting, Molecule, rollout, troubleshooting, or platform-specific automation | Ansible administration | `references/ansible.md` |
+| Ansible administration, inventories, roles, collections, secrets, linting, Molecule, rollout, troubleshooting, or platform-specific automation | Ansible administration | `references/ansible.md` (index → `ansible-administration-and-safety.md`, `ansible-runbooks-and-advanced-operations.md`) |
 | Paramiko, or a compact comparison of fleet-control choices and result-accounting requirements | Fleet automation | `references/fleet-automation.md` |
 | Linux classification, init discovery, cross-family safety, or an unknown/minimal derivative | Linux classification | `references/linux.md` |
 | Debian, Ubuntu, or an APT/dpkg host after release and ownership discovery | Debian/Ubuntu overlay | `references/linux-debian-ubuntu.md` |

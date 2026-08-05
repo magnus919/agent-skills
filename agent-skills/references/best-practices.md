@@ -91,6 +91,8 @@ The [specification](/specification#progressive-disclosure) recommends keeping `S
 
 The key is telling the agent *when* to load each file. "Read `references/api-errors.md` if the API returns a non-200 status code" is more useful than a generic "see references/ for details." This lets the agent load context on demand rather than up front, which is how [progressive disclosure](/specification#progressive-disclosure) is designed to work.
 
+The repository validator also caps individual reference files at **60,000 characters**. When a reference grows past the cap, split it into focused parts — for example, break an oversized `references/<topic>.md` into `references/<topic>-a.md` and `references/<topic>-b.md`, keeping file references one level deep, then update the skill's index/routing table and any load-on-demand instructions so each new file stays reachable. The cap is enforced by `scripts/validate-references.rb`, which runs via `scripts/validate-skills.rb` in CI.
+
 ## Calibrating control
 
 Not every part of a skill needs the same level of prescriptiveness. Match the specificity of your instructions to the fragility of the task.
