@@ -6,8 +6,13 @@ non-Hub adapter endpoint shipped by the CLI.  Validates source-specific
 minimum schemas, classifies failures, retries bounded transient errors,
 and writes a machine-readable JSON report.
 
+Token-gated imagery folders are reported as ``restricted_folder``
+observations (non-failing): the CLI only reads public data, so a folder
+that requires a token is not a contract failure, but it stays visible in
+the report.
+
 Exit codes:
-  0  all probes passed (or only empty-but-valid observations)
+  0  all probes passed (or only empty-but-valid / restricted observations)
   1  one or more durable contract failures detected
   2  script-level error (bad arguments, import failure, etc.)
 """
@@ -48,6 +53,7 @@ FAILURE_CLASSES = (
     "schema_drift",
     "parser_failure",
     "empty_but_valid",
+    "restricted_folder",
 )
 
 
@@ -346,15 +352,25 @@ def probe_meetings() -> list[dict[str, Any]]:
 
 def probe_imagery_catalog() -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
-    services, err = _probe_with_retry(imagery.list_services)
+    listing, err = _probe_with_retry(imagery.list_services)
     if err:
         results.append({"source": "imagery", "target": "catalog", "status": "fail", **err})
         return results
 
-    if not isinstance(services, list):
+    if not isinstance(listing, tuple) or len(listing) != 2:
         results.append({
             "source": "imagery", "target": "catalog", "status": "fail",
-            "failure_class": "schema_drift", "error": "expected list of services", "attempt": 1,
+            "failure_class": "schema_drift",
+            "error": "list_services returned an unexpected shape", "attempt": 1,
+        })
+        return results
+
+    services, restricted_folders = listing
+    if not isinstance(services, list) or not isinstance(restricted_folders, list):
+        results.append({
+            "source": "imagery", "target": "catalog", "status": "fail",
+            "failure_class": "schema_drift",
+            "error": "list_services returned non-list fields", "attempt": 1,
         })
         return results
 
@@ -363,9 +379,18 @@ def probe_imagery_catalog() -> list[dict[str, Any]]:
             "source": "imagery", "target": "catalog", "status": "pass",
             "failure_class": "empty_but_valid", "error": "no imagery services", "attempt": 1,
         })
-        return results
+    else:
+        results.append({"source": "imagery", "target": "catalog", "status": "pass", "count": len(services)})
 
-    results.append({"source": "imagery", "target": "catalog", "status": "pass", "count": len(services)})
+    for folder in restricted_folders:
+        results.append({
+            "source": "imagery",
+            "target": f"folder:{folder}",
+            "status": "pass",
+            "failure_class": "restricted_folder",
+            "error": "folder listing requires a token; skipped",
+            "attempt": 1,
+        })
     return results
 
 
@@ -455,6 +480,7 @@ def run_canary() -> dict[str, Any]:
     durable_failures = 0
     transient_failures = 0
     empty_valid = 0
+    restricted = 0
 
     for name, probe_fn in ALL_PROBES:
         try:
@@ -477,6 +503,8 @@ def run_canary() -> dict[str, Any]:
         if r.get("status") != "fail":
             if r.get("failure_class") == "empty_but_valid":
                 empty_valid += 1
+            elif r.get("failure_class") == "restricted_folder":
+                restricted += 1
             continue
         fc = r.get("failure_class", "unknown")
         if _is_transient(fc):
@@ -495,6 +523,7 @@ def run_canary() -> dict[str, Any]:
             "durable_failures": durable_failures,
             "transient_failures": transient_failures,
             "empty_but_valid": empty_valid,
+            "restricted_folders": restricted,
         },
         "results": all_results,
     }
@@ -516,7 +545,18 @@ def write_github_summary(report: dict[str, Any]) -> None:
     lines.append(f"| Durable failures | {s['durable_failures']} |")
     lines.append(f"| Transient failures | {s['transient_failures']} |")
     lines.append(f"| Empty-but-valid | {s['empty_but_valid']} |")
+    lines.append(f"| Restricted folders | {s.get('restricted_folders', 0)} |")
     lines.append("")
+
+    restricted = [r for r in report["results"] if r.get("failure_class") == "restricted_folder"]
+    if restricted:
+        lines.append("### Restricted folders (token required; skipped, non-failing)")
+        lines.append("")
+        lines.append("| Source | Target | Evidence |")
+        lines.append("|--------|--------|----------|")
+        for r in restricted:
+            lines.append(f"| {r.get('source', '?')} | {r.get('target', '?')} | {r.get('error', '')[:120]} |")
+        lines.append("")
 
     failures = [r for r in report["results"] if r.get("status") == "fail"]
     if failures:
@@ -551,7 +591,8 @@ def main() -> int:
         f"{s['total_results']} probes, "
         f"{s['durable_failures']} durable failures, "
         f"{s['transient_failures']} transient failures, "
-        f"{s['empty_but_valid']} empty-but-valid"
+        f"{s['empty_but_valid']} empty-but-valid, "
+        f"{s.get('restricted_folders', 0)} restricted folders"
     )
     print(f"Report written to {report_path}")
 

@@ -65,6 +65,11 @@ scripts/raleigh download "Raleigh Dog Parks" -f csv -o dog_parks.csv
 | `imagery identify` | Identify pixel value at point | `scripts/raleigh imagery identify Orthos2025 --point=-78.65,35.75` |
 | `imagery statistics` | Compute extent statistics | `scripts/raleigh imagery statistics Orthos2025 --bbox=-78.7,35.7,-78.6,35.8` |
 
+`imagery catalog` lists only publicly readable services. Folders whose
+listing requires a token (currently `Imagery` and `Utilities`) are skipped
+and reported as restricted rather than failing the command; the daily live
+canary tracks them the same way.
+
 ### Geocoding
 
 | Command | Purpose | Example |
