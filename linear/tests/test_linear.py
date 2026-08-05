@@ -60,7 +60,7 @@ class LinearCliTests(unittest.TestCase):
         state_client = StateClient()
         self.assertEqual(
             cli.resolve_state(
-                state_client, {"team": {"id": "team-id", "key": "ENG"}}, "Done"
+                state_client, {"id": "team-id", "key": "ENG"}, "Done"
             ),
             {"id": "state-id", "name": "Done", "type": "completed"},
         )
@@ -443,14 +443,14 @@ class LinearCliTests(unittest.TestCase):
                     "update",
                     "move",
                     "comment",
+                    "archive",
+                    "unarchive",
                 )
             ),
             *(["document", action] for action in ("list", "search", "get")),
-            *(
-                [noun, action]
-                for noun in ("project", "cycle")
-                for action in ("list", "get")
-            ),
+            *(["project", action] for action in ("list", "get", "update")),
+            *(["cycle", action] for action in ("list", "get")),
+            ["state", "list"],
         ]
         for path in paths:
             with self.subTest(path=path):
@@ -630,7 +630,7 @@ class LinearCliTests(unittest.TestCase):
         with redirect_stderr(stderr):
             with self.assertRaises(SystemExit):
                 cli.resolve_state(
-                    Client(), {"team": {"id": "team-id", "key": "ENG"}}, "Missing"
+                    Client(), {"id": "team-id", "key": "ENG"}, "Missing"
                 )
         self.assertIn("available states: Todo, Done", stderr.getvalue())
 
@@ -654,6 +654,514 @@ class LinearCliTests(unittest.TestCase):
         self.assertEqual(code, 5)
         self.assertEqual(output, "")
         self.assertIn("GraphQL error: test", error)
+
+    def test_project_update_requires_a_field_before_network(self):
+        original = cli.urlopen
+        try:
+            cli.urlopen = lambda *_args, **_kwargs: self.fail(
+                "invalid project update made a network call"
+            )
+            code, output, error = self.run_cli(
+                ["project", "update", "Roadmap", "--json"]
+            )
+        finally:
+            cli.urlopen = original
+        self.assertEqual(code, 2)
+        self.assertEqual(output, "")
+        self.assertIn("at least one field", error)
+
+    def test_project_update_resolves_status_dates_and_priority(self):
+        original = cli.Client.run
+        calls = []
+
+        def run(_self, query, variables):
+            calls.append((query, variables))
+            if query.startswith("query ProjectsByName"):
+                return {
+                    "projects": {"nodes": [{"id": "project-id", "name": "Roadmap"}]}
+                }
+            if query.startswith("query ProjectStatuses"):
+                return {
+                    "projectStatuses": {
+                        "nodes": [
+                            {
+                                "id": "status-id",
+                                "name": "In Progress",
+                                "type": "started",
+                            }
+                        ]
+                    }
+                }
+            return {
+                "projectUpdate": {"success": True, "project": {"id": "project-id"}}
+            }
+
+        try:
+            cli.Client.run = run
+            code, output, error = self.run_cli(
+                [
+                    "project",
+                    "update",
+                    "Roadmap",
+                    "--name",
+                    "Q3 Roadmap",
+                    "--status",
+                    "started",
+                    "--start-date",
+                    "2026-08-10",
+                    "--target-date",
+                    "2026-11-30",
+                    "--priority",
+                    "high",
+                    "--confirm",
+                    "--json",
+                ]
+            )
+        finally:
+            cli.Client.run = original
+        self.assertEqual(code, 0, error)
+        query, variables = calls[-1]
+        self.assertIn(
+            "mutation ProjectUpdate($id: String!, $input: ProjectUpdateInput!)",
+            query,
+        )
+        self.assertIn("projectUpdate(id: $id, input: $input)", query)
+        self.assertIn("success project", query)
+        self.assertEqual(variables["id"], "project-id")
+        self.assertEqual(
+            variables["input"],
+            {
+                "name": "Q3 Roadmap",
+                "statusId": "status-id",
+                "startDate": "2026-08-10",
+                "targetDate": "2026-11-30",
+                "priority": 2,
+            },
+        )
+
+    def test_project_description_length_guard(self):
+        original = cli.urlopen
+        try:
+            cli.urlopen = lambda *_args, **_kwargs: self.fail(
+                "oversized description made a network call"
+            )
+            code, output, error = self.run_cli(
+                [
+                    "project",
+                    "update",
+                    "Roadmap",
+                    "--description",
+                    "x" * 256,
+                    "--confirm",
+                    "--json",
+                ]
+            )
+        finally:
+            cli.urlopen = original
+        self.assertEqual(code, 2)
+        self.assertEqual(output, "")
+        self.assertIn("255", error)
+
+    def test_project_update_dry_run_includes_intent(self):
+        code, output, error = self.run_cli(
+            [
+                "project",
+                "update",
+                "Roadmap",
+                "--description",
+                "Q3 plan",
+                "--status",
+                "started",
+                "--dry-run",
+                "--json",
+            ]
+        )
+        self.assertEqual(code, 0, error)
+        operations = json.loads(output)["operations"]
+        self.assertIn(
+            {"operation": "resolve project status", "reference": "started"},
+            operations,
+        )
+        self.assertEqual(operations[-1]["operation"], "projectUpdate")
+        self.assertEqual(operations[-1]["input"]["description"], "Q3 plan")
+
+    def test_issue_archive_and_unarchive_require_confirm(self):
+        for action in ("archive", "unarchive"):
+            with self.subTest(action=action):
+                code, _output, error = self.run_cli(
+                    ["issue", action, "ENG-42", "--json"]
+                )
+                self.assertEqual(code, 6)
+                self.assertIn("--confirm", error)
+
+    def test_issue_archive_uses_entity_payload(self):
+        original = cli.Client.run
+        queries = []
+
+        def run(_self, query, variables):
+            queries.append(query)
+            if query.startswith("query Issue"):
+                return {
+                    "issue": {"id": "issue-id", "team": {"id": "team-id", "key": "ENG"}}
+                }
+            return {
+                "issueArchive": {"success": True, "entity": {"id": "issue-id"}}
+            }
+
+        try:
+            cli.Client.run = run
+            code, output, error = self.run_cli(
+                ["issue", "archive", "ENG-42", "--confirm", "--json"]
+            )
+        finally:
+            cli.Client.run = original
+        self.assertEqual(code, 0, error)
+        self.assertIn("mutation IssueArchive($id: String!)", queries[-1])
+        self.assertIn("issueArchive(id: $id) { success entity", queries[-1])
+        self.assertEqual(
+            json.loads(output),
+            {"issueArchive": {"entity": {"id": "issue-id"}, "success": True}},
+        )
+
+    def test_state_list_resolves_team_and_lists_states(self):
+        original = cli.Client.run
+        calls = []
+
+        def run(_self, query, variables):
+            calls.append((query, variables))
+            if query.startswith("query ResolveTeam"):
+                return {
+                    "teams": {
+                        "nodes": [
+                            {"id": "team-id", "key": "ENG", "name": "Engineering"}
+                        ]
+                    }
+                }
+            return {
+                "team": {
+                    "states": {
+                        "nodes": [{"id": "s1", "name": "Todo", "type": "backlog"}]
+                    }
+                }
+            }
+
+        try:
+            cli.Client.run = run
+            code, output, error = self.run_cli(
+                ["state", "list", "--team", "ENG", "--json"]
+            )
+        finally:
+            cli.Client.run = original
+        self.assertEqual(code, 0, error)
+        self.assertIn(
+            "query TeamStates($id: String!, $first: Int!)", calls[-1][0]
+        )
+        self.assertEqual(calls[-1][1], {"id": "team-id", "first": 10})
+        self.assertEqual(
+            json.loads(output),
+            {"team": {"states": {"nodes": [{"id": "s1", "name": "Todo", "type": "backlog"}]}}},
+        )
+
+    def test_state_list_dry_run_previews_without_network(self):
+        original = cli.urlopen
+        try:
+            cli.urlopen = lambda *_args, **_kwargs: self.fail(
+                "dry-run made a network call"
+            )
+            code, output, error = self.run_cli(
+                ["state", "list", "--team", "ENG", "--dry-run", "--json"]
+            )
+        finally:
+            cli.urlopen = original
+        self.assertEqual(code, 0, error)
+        self.assertTrue(json.loads(output)["dry_run"])
+
+    def test_resolve_user_matches_name_and_email_and_rejects_ambiguity(self):
+        class Client:
+            def __init__(self, users):
+                self.users = users
+
+            def run(self, _query, _variables):
+                return {"users": {"nodes": self.users}}
+
+        users = [
+            {
+                "id": "u1",
+                "name": "Ada Lovelace",
+                "displayName": "Ada",
+                "email": "ada@example.com",
+            },
+            {
+                "id": "u2",
+                "name": "Grace Hopper",
+                "displayName": "Grace",
+                "email": "grace@example.com",
+            },
+        ]
+        self.assertEqual(cli.resolve_user(Client(users), "ada@example.com")["id"], "u1")
+        self.assertEqual(cli.resolve_user(Client(users), "Ada Lovelace")["id"], "u1")
+        self.assertEqual(cli.resolve_user(Client(users), "grace")["id"], "u2")
+        with redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit) as exc:
+                cli.resolve_user(Client(users), "missing")
+        self.assertEqual(exc.exception.code, 2)
+
+    def test_resolve_label_reports_available_names(self):
+        class Client:
+            def run(self, _query, _variables):
+                return {
+                    "team": {
+                        "labels": {
+                            "nodes": [
+                                {"id": "l1", "name": "bug"},
+                                {"id": "l2", "name": "feature"},
+                            ]
+                        }
+                    }
+                }
+
+        self.assertEqual(
+            cli.resolve_label(Client(), {"id": "team-id", "key": "ENG"}, "Bug")["id"],
+            "l1",
+        )
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            with self.assertRaises(SystemExit):
+                cli.resolve_label(Client(), {"id": "team-id", "key": "ENG"}, "Missing")
+        self.assertIn("available labels: bug, feature", stderr.getvalue())
+
+    def test_resolve_project_status_matches_name_or_type(self):
+        class Client:
+            def run(self, _query, _variables):
+                return {
+                    "projectStatuses": {
+                        "nodes": [
+                            {"id": "ps1", "name": "Planned", "type": "planned"},
+                            {"id": "ps2", "name": "In Progress", "type": "started"},
+                        ]
+                    }
+                }
+
+        self.assertEqual(cli.resolve_project_status(Client(), "Planned")["id"], "ps1")
+        self.assertEqual(cli.resolve_project_status(Client(), "started")["id"], "ps2")
+        with redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit):
+                cli.resolve_project_status(Client(), "nope")
+
+    def test_parse_date_rejects_bad_format(self):
+        self.assertEqual(cli.parse_date("2026-08-31", "--due"), "2026-08-31")
+        with redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit) as exc:
+                cli.parse_date("08/31/2026", "--due")
+        self.assertEqual(exc.exception.code, 2)
+
+    def test_issue_create_resolves_project_parent_assignee_labels_state_and_due(self):
+        original = cli.Client.run
+        calls = []
+
+        def run(_self, query, variables):
+            calls.append((query, variables))
+            if query.startswith("query ResolveTeam"):
+                return {
+                    "teams": {
+                        "nodes": [
+                            {"id": "team-id", "key": "ENG", "name": "Engineering"}
+                        ]
+                    }
+                }
+            if query.startswith("query ProjectsByName"):
+                return {
+                    "projects": {"nodes": [{"id": "project-id", "name": "Platform"}]}
+                }
+            if query.startswith("query Issue("):
+                return {"issue": {"id": "parent-id"}}
+            if query.startswith("query Users"):
+                return {
+                    "users": {
+                        "nodes": [
+                            {
+                                "id": "user-id",
+                                "name": "Ada Lovelace",
+                                "displayName": "Ada",
+                                "email": "ada@example.com",
+                            }
+                        ]
+                    }
+                }
+            if query.startswith("query TeamLabels"):
+                return {
+                    "team": {"labels": {"nodes": [{"id": "label-id", "name": "bug"}]}}
+                }
+            if query.startswith("query TeamStates"):
+                return {
+                    "team": {
+                        "states": {
+                            "nodes": [
+                                {
+                                    "id": "state-id",
+                                    "name": "In Progress",
+                                    "type": "started",
+                                }
+                            ]
+                        }
+                    }
+                }
+            return {"issueCreate": {"success": True, "issue": {"id": "issue-id"}}}
+
+        try:
+            cli.Client.run = run
+            code, output, error = self.run_cli(
+                [
+                    "issue",
+                    "create",
+                    "--team",
+                    "ENG",
+                    "--title",
+                    "Ship it",
+                    "--project",
+                    "Platform",
+                    "--parent",
+                    "ENG-41",
+                    "--assignee",
+                    "Ada Lovelace",
+                    "--label",
+                    "bug",
+                    "--state",
+                    "In Progress",
+                    "--due",
+                    "2026-08-31",
+                    "--confirm",
+                    "--json",
+                ]
+            )
+        finally:
+            cli.Client.run = original
+        self.assertEqual(code, 0, error)
+        query, variables = calls[-1]
+        self.assertIn("mutation IssueCreate($input: IssueCreateInput!)", query)
+        self.assertEqual(
+            variables["input"],
+            {
+                "teamId": "team-id",
+                "title": "Ship it",
+                "projectId": "project-id",
+                "parentId": "parent-id",
+                "assigneeId": "user-id",
+                "labelIds": ["label-id"],
+                "stateId": "state-id",
+                "dueDate": "2026-08-31",
+            },
+        )
+
+    def test_issue_update_resolves_assignee_labels_due_and_project(self):
+        original = cli.Client.run
+        calls = []
+
+        def run(_self, query, variables):
+            calls.append((query, variables))
+            if query.startswith("query Issue"):
+                return {
+                    "issue": {"id": "issue-id", "team": {"id": "team-id", "key": "ENG"}}
+                }
+            if query.startswith("query Users"):
+                return {
+                    "users": {
+                        "nodes": [
+                            {
+                                "id": "user-id",
+                                "name": "Ada Lovelace",
+                                "displayName": "Ada",
+                                "email": "ada@example.com",
+                            }
+                        ]
+                    }
+                }
+            if query.startswith("query TeamLabels"):
+                return {
+                    "team": {
+                        "labels": {
+                            "nodes": [
+                                {"id": "label-id", "name": "bug"},
+                                {"id": "label2-id", "name": "priority"},
+                            ]
+                        }
+                    }
+                }
+            if query.startswith("query ProjectsByName"):
+                return {
+                    "projects": {"nodes": [{"id": "project-id", "name": "Platform"}]}
+                }
+            return {"issueUpdate": {"success": True, "issue": {"id": "issue-id"}}}
+
+        try:
+            cli.Client.run = run
+            code, output, error = self.run_cli(
+                [
+                    "issue",
+                    "update",
+                    "ENG-42",
+                    "--assignee",
+                    "Ada Lovelace",
+                    "--label",
+                    "bug",
+                    "--remove-label",
+                    "priority",
+                    "--due",
+                    "2026-09-15",
+                    "--project",
+                    "Platform",
+                    "--confirm",
+                    "--json",
+                ]
+            )
+        finally:
+            cli.Client.run = original
+        self.assertEqual(code, 0, error)
+        query, variables = calls[-1]
+        self.assertIn(
+            "mutation IssueUpdate($id: String!, $input: IssueUpdateInput!)", query
+        )
+        self.assertEqual(variables["id"], "issue-id")
+        self.assertEqual(
+            variables["input"],
+            {
+                "assigneeId": "user-id",
+                "addedLabelIds": ["label-id"],
+                "removedLabelIds": ["label2-id"],
+                "dueDate": "2026-09-15",
+                "projectId": "project-id",
+            },
+        )
+
+    def test_issue_create_dry_run_lists_resolution_intent(self):
+        code, output, error = self.run_cli(
+            [
+                "issue",
+                "create",
+                "--team",
+                "ENG",
+                "--title",
+                "Ship it",
+                "--project",
+                "Platform",
+                "--assignee",
+                "Ada",
+                "--label",
+                "bug",
+                "--dry-run",
+                "--json",
+            ]
+        )
+        self.assertEqual(code, 0, error)
+        operations = json.loads(output)["operations"]
+        self.assertIn(
+            {"operation": "resolve project", "reference": "Platform"}, operations
+        )
+        self.assertIn(
+            {"operation": "resolve assignee", "reference": "Ada"}, operations
+        )
+        self.assertEqual(operations[-1]["operation"], "issueCreate")
+        self.assertEqual(operations[-1]["input"]["labels"], ["bug"])
 
 
 if __name__ == "__main__":
