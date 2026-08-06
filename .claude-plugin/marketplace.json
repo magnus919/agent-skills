@@ -366,6 +366,15 @@
       "description": "Use when managing a Forgejo or Gitea server from the terminal: issues, pull requests, repositories, file contents, labels, milestones, releases, webhooks, user settings, or any /api/v1 endpoint through a safe generic API command."
     },
     {
+      "name": "forward-deployed-engineering",
+      "source": "./",
+      "skills": [
+        "./forward-deployed-engineering"
+      ],
+      "strict": false,
+      "description": "Guide embedded technical engagements from ambiguous stakeholder need through discovery, framing, hypothesis, build, evaluation, deployment, adoption, measurement, and generalization while preserving evidence, decision rights, and field learning. Use when one accountable technical lead must carry continuity across customer or stakeholder discovery, implementation, production fit, adoption, and measurable outcomes. Do not use for a bounded repository change, product investment governance, ongoing reliability or platform ownership, an isolated specialist task, or advisory work that ends before implementation and adoption."
+    },
+    {
       "name": "frontend-engineering",
       "source": "./",
       "skills": [
