@@ -5,11 +5,11 @@ measurable capability and a deliberate generalization decision.
 
 ## Why Install This Skill
 
-Technical engagements often fail between disciplines: discovery produces no
-usable context for builders, prototypes are mistaken for production systems,
-deployments are declared successful without adoption, and useful field patterns
-never return to the product or platform. This bundle gives an accountable lead
-a durable continuity contract across those boundaries.
+This bundle is designed to guard against continuity risks between disciplines:
+discovery that leaves builders without usable context, prototypes mistaken for
+production systems, deployments declared complete without adoption, and field
+patterns transferred without evidence or an accountable receiving owner. It
+gives an accountable lead a durable contract across those boundaries.
 
 After installation, an agent can frame the engagement and decision rights,
 route specialist work without duplicating it, preserve assumptions and risks,
@@ -22,21 +22,23 @@ configuration, become reusable, transfer to another owner, or be retired.
 |---|---|
 | `SKILL.md` | Lifecycle trigger, boundary, loading protocol, stop rules, and file map |
 | `manifest.yaml` | Machine-readable stages, routed skills, outputs, handoffs, and conflicts |
-| `references/discovery-brief.md` | Overlap audit, source decisions, and failure-mode rationale |
+| `references/discovery-brief.md` | Overlap audit, source decisions, and design-risk rationale |
 | `references/source-index.md` | Recoverable primary sources, supported claims, limitations, and refresh rules |
 | `references/lifecycle-and-artifacts.md` | Stage contracts and continuity artifacts |
+| `references/route-selection.md` | Per-stage specialist entry conditions and direct-routing boundaries |
 | `references/authority-and-escalation.md` | Decision rights, constrained-environment discovery, and escalation rules |
 | `references/adoption-and-measurement.md` | Adoption diagnosis, outcome evidence, and applied-AI release evidence |
 | `references/generalization-and-productization.md` | Classification and productization decision model |
 | `references/communication.md` | Evidence-labeled status, handoff, and escalation patterns |
-| `templates/` | Charter, workflow map, ledger, status, scorecard, and productization templates |
-| `evals/evals.json` | Eight output-quality cases covering lifecycle and negative boundaries |
+| `templates/` | Ten templates matching the declared continuity, decision, handoff, measurement, and learning outputs |
+| `evals/evals.json` | Fifteen output-quality cases covering lifecycle, authority, and adjacent-skill boundaries |
 
 ## Quick Start
 
 1. Load `SKILL.md` and create `templates/engagement-charter.md`.
 2. Record the stakeholder workflow and unknowns before proposing architecture.
-3. Load the specialist for the active stage from `manifest.yaml`.
+3. Treat `manifest.yaml` stage skills as candidates and apply
+   `references/route-selection.md` before loading one primary specialist.
 4. Carry the ledger through deployment, adoption, measurement, and generalization.
 
 ## Triggers

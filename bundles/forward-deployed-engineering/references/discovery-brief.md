@@ -26,19 +26,24 @@ standardized methodology.
 The four audited class-level skills are not modified by this bundle. The
 manifest routes to them where their existing methods are needed.
 
-## Source-backed commonalities
+## Themes across the source set
 
-The primary employer-authored sources support a narrow common core: embedded
-customer or stakeholder work; discovery, scoping, design, implementation, and
-production rollout; technical delivery paired with engagement; adoption or
-workflow impact; rigorous engineering in the field; and return of reusable
-patterns or feedback to product and engineering. They do not establish a
-universal title, staffing model, technology stack, travel pattern, or lifecycle
-sequence. See [source-index.md](source-index.md).
+The three sources do not establish one common role contract. Palantir supports
+embedded implementation, engineering review and operation, and return of field
+configurations and expertise. OpenAI supports discovery through rollout,
+adoption and workflow-impact measurement, eval-driven feedback, and pattern
+codification. The limited Databricks extract supports customer-facing
+productionization and cross-functional work. Together they orient the bundle,
+but no source proves the full nine-stage lifecycle or every artifact. They also
+do not establish a universal title, staffing model, technology stack, travel
+pattern, or lifecycle sequence. See [source-index.md](source-index.md).
 
-## Failure modes and mitigations
+## Design risks and mitigations
 
-| Failure mode | Continuity mitigation |
+The following are risks this normative design is intended to guard against;
+the source set does not establish their frequency or prevalence.
+
+| Design risk | Continuity mitigation |
 |---|---|
 | Bespoke-service sprawl | Record reuse boundary and generalization decision for every local solution |
 | Hero culture | Name authority, review, support, and receiving owners; make escalation normal |

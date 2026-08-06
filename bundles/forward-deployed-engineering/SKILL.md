@@ -31,7 +31,7 @@ methods; the nine-stage sequence is not an externally standardized methodology.
 
 At every stage, maintain one [engagement charter](templates/engagement-charter.md),
 one [stakeholder/workflow map](templates/stakeholder-workflow-map.md), and one
-[assumptions-decisions-risks ledger](templates/assumptions-decisions-risks.md).
+[assumptions-decisions-risks ledger](templates/assumptions-decisions-risks-ledger.md).
 Each stage records entry evidence, the artifact produced, the accountable
 decision maker, unresolved unknowns, and the next handoff. Never silently turn
 an observation into a requirement, a prototype into a production claim, or a
@@ -43,8 +43,9 @@ local success into a reusable product capability.
    outcome, scope, authority, constraints, success measure, and stop conditions.
 2. Load [lifecycle and artifacts](references/lifecycle-and-artifacts.md) and
    update the shared ledger after every stage.
-3. Load the specialist named for the active stage in `manifest.yaml`; follow its
-   method rather than copying it into this bundle.
+3. Treat the stage skills in `manifest.yaml` as candidates. Apply the
+   [route-selection conditions](references/route-selection.md), load one primary
+   specialist, and follow its method rather than copying it into this bundle.
 4. Before action in a constrained or sensitive environment, load
    [authority and escalation](references/authority-and-escalation.md) and route
    access, security, privacy, irreversible, cost, and external-commitment
@@ -107,6 +108,7 @@ specialist instead of invoking this lifecycle.
 | [references/discovery-brief.md](references/discovery-brief.md) | Reviewing the boundary, overlap audit, or evidence basis |
 | [references/source-index.md](references/source-index.md) | Checking an externally verifiable role claim or refresh date |
 | [references/lifecycle-and-artifacts.md](references/lifecycle-and-artifacts.md) | Starting or handing off any lifecycle stage |
+| [references/route-selection.md](references/route-selection.md) | Selecting one stage specialist without violating its entry boundary |
 | [references/authority-and-escalation.md](references/authority-and-escalation.md) | Working under access, security, privacy, cost, or authority constraints |
 | [references/adoption-and-measurement.md](references/adoption-and-measurement.md) | Evaluating activation, workflow adoption, and measurable impact |
 | [references/generalization-and-productization.md](references/generalization-and-productization.md) | Deciding what field work becomes or does not become reusable |

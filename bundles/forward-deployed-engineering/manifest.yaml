@@ -22,7 +22,6 @@ stages:
   - name: Frame
     skills:
       - ../../product-design-and-ux/SKILL.md
-      - ../../product-operations-and-governance/SKILL.md
       - ../../privacy-engineering/SKILL.md
       - ../../secure-software-engineering/SKILL.md
   - name: Hypothesize
@@ -59,12 +58,10 @@ stages:
     skills:
       - ../../product-lifecycle-learning/SKILL.md
       - ../../product-methodology/SKILL.md
-      - ../../implementation-planning/SKILL.md
 
 included_skills:
   - ../../product-discovery/SKILL.md
   - ../../product-design-and-ux/SKILL.md
-  - ../../product-operations-and-governance/SKILL.md
   - ../../product-experimentation/SKILL.md
   - ../../agent-evals-and-observability/SKILL.md
   - ../../implementation-planning/SKILL.md
@@ -86,18 +83,14 @@ included_skills:
   - ../../secure-software-engineering/SKILL.md
 
 prerequisites:
-  - artifact: Stakeholder request, operational context, and named accountable lead
-  - artifact: Engagement charter with scope, authority, constraints, outcomes, and stop conditions
-  - artifact: Stakeholder/workflow map and initial unknowns
-    skill: ../../product-discovery/SKILL.md
-  - artifact: Assumptions, decisions, risks, and evidence ledger
-  - artifact: Authorized access, rollback, and verification plan before constrained action
-    skill: ../../remote-systems-administration/SKILL.md
+  - artifact: Stakeholder request or observed workflow opportunity and a named accountable lead
+  - artifact: Authority to conduct non-destructive discovery with access to relevant stakeholders or workflow evidence
 
 outputs:
   - engagement-charter
   - stakeholder-workflow-map
   - assumptions-decisions-risks-ledger
+  - engagement-status
   - stage-handoff-record
   - evaluation-and-release-decision
   - adoption-scorecard
@@ -151,8 +144,9 @@ conflicts:
   - skill: ../../implementation-planning/SKILL.md
     with: product-lifecycle
     guidance: >-
-      This bundle uses implementation planning to preserve engagement continuity;
-      product-lifecycle owns product delivery handoff. Route a bounded code change to neckbeard.
+      This bundle routes implementation planning only during Build after an authorized
+      owner approves the requirement; product-lifecycle owns product delivery handoff.
+      Route a bounded code change to neckbeard.
   - skill: ../../production-readiness/SKILL.md
     with: production-excellence
     guidance: >-
@@ -328,11 +322,5 @@ conflicts:
     guidance: >-
       This bundle uses prioritization only to support engagement generalization;
       product-lifecycle owns product prioritization and portfolio methods.
-  - skill: ../../product-operations-and-governance/SKILL.md
-    with: product-lifecycle
-    guidance: >-
-      This bundle records engagement decision rights and routes governance;
-      product-lifecycle owns recurring product governance and portfolio cadences.
-
 eval_suite:
   - evals/evals.json

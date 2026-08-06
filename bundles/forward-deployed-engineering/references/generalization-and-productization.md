@@ -21,4 +21,7 @@ The productization record must distinguish engagement observations from the
 inference that a pattern generalizes, the recommendation, the authorized
 decision, and the commitment to implement or transfer it. Return reusable
 patterns and negative learning to the appropriate product, platform, research,
-or deployment owner without bypassing their authority.
+or deployment owner without bypassing their authority. A classification is not
+an implementation approval: route to
+[implementation-planning](../../../implementation-planning/SKILL.md) only after
+the receiving owner approves a requirement or specification.
