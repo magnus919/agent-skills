@@ -159,7 +159,11 @@ delegates to the pinned CLI. It adds value beyond a thin npx alias:
   the 21 accepted format names (the 12 canonical parsers plus the 9 aliases,
   exit 2 on an invalid name), maps known failure classes to friendly hints
   (no-OCR, encrypted, malformed, unsupported), and forwards the CLI's exit
-  code. Stdin input via `-` is passed straight through.
+  code. Stdin input via `-` is passed straight through. A dash-leading
+  filename is supported through the CLI's `--` marker with the options first:
+  `anydoc convert -f csv -- -weird` (the wrapper emits `-o`/`-f` before `--`,
+  since npx forwards `--` to the CLI and anything after it reads as an extra
+  input). Absolute paths never need this.
 - **`batch <inputs...> [--out-dir DIR] [--json] [--dry-run]`** — converts many
   documents one at a time, prints per-file status, continues past failures,
   and exits 1 when any input failed. Output naming is deterministic: each

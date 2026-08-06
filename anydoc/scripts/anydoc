@@ -50,7 +50,7 @@ def emit_json(obj):
     print(json.dumps(obj, ensure_ascii=False))
 
 
-def fail_command(args, command, message, code):
+def fail_command(args, command, message, code, error_class=None):
     """Record a wrapper-level failure: diagnostics to stderr, JSON when asked."""
     print("anydoc: " + message, file=sys.stderr)
     if getattr(args, "json", False):
@@ -62,6 +62,7 @@ def fail_command(args, command, message, code):
                 "exit_code": code,
                 "error": "anydoc: " + message,
                 "hint": None,
+                "error_class": error_class,
                 "output": getattr(args, "output", None),
             }
         )
@@ -157,16 +158,36 @@ def runtime_errors():
 # --- CLI invocation ---------------------------------------------------------
 
 def build_cli_command(file, out, fmt):
-    """Build the exact argv the wrapper passes to the pinned CLI."""
+    """Build the exact argv the wrapper passes to the pinned CLI.
+
+    Dash-leading filenames (a path like `-weird`) need the CLI's `--`
+    end-of-options marker so the file is read as the positional input. npx
+    forwards `--` to the CLI verbatim, so `-o`/`-f` must be placed BEFORE the
+    separator — after it they read as extra positional inputs ("unexpected
+    second input"). Absolute paths never start with `-` and take the plain
+    form.
+    """
+    options = []
+    if out:
+        options.extend(["-o", out])
+    if fmt:
+        options.extend(["-f", fmt])
     argv = ["npx", "-y", PINNED]
     if file != "-" and file.startswith("-"):
-        argv.append("--")
-    argv.append(file)
-    if out:
-        argv.extend(["-o", out])
-    if fmt:
-        argv.extend(["-f", fmt])
+        argv.extend(options)
+        argv.extend(["--", file])
+    else:
+        argv.append(file)
+        argv.extend(options)
     return argv
+
+
+class CliTimeoutError(Exception):
+    """Raised when the pinned CLI does not complete within RUN_TIMEOUT seconds."""
+
+    def __init__(self, message):
+        super().__init__(message)
+        self.message = message
 
 
 def run_cli(argv):
@@ -185,11 +206,14 @@ def run_cli(argv):
             os.killpg(exc.pid, signal.SIGKILL)
         except (ProcessLookupError, PermissionError):
             pass
-        fail("conversion did not complete within %d seconds" % RUN_TIMEOUT)
+        raise CliTimeoutError(
+            "conversion did not complete within %d seconds" % RUN_TIMEOUT
+        ) from exc
 
 
 def error_class_hint(stderr):
-    """Map a raw CLI stderr line to (error_class, hint-or-None)."""
+    """Map a failure message (CLI stderr or a wrapper pre-validation message)
+    to (error_class, hint-or-None)."""
     if "document is encrypted" in stderr:
         return (
             "encrypted",
@@ -229,6 +253,9 @@ def error_class_hint(stderr):
             "the file could not be read — check that the path exists and is "
             "readable.",
         )
+    # Wrapper pre-validation messages (batch per-file entries).
+    if "input file not found" in stderr or "input path is a directory" in stderr:
+        return ("io", None)
     return ("unknown", None)
 
 
@@ -275,7 +302,10 @@ def cmd_convert(args):
     for error in runtime_errors():
         return fail_command(args, "convert", error, 1)
 
-    proc = run_cli(command)
+    try:
+        proc = run_cli(command)
+    except CliTimeoutError as err:
+        return fail_command(args, "convert", err.message, 1, error_class="timeout")
     if proc.returncode == 0:
         if args.json:
             emit_json(
@@ -381,20 +411,25 @@ def cmd_batch(args):
     results = []
     for record in records:
         if record["error"] is not None:
+            error_class, hint = error_class_hint(record["error"])
             results.append(
                 {
                     "input": record["input"],
                     "output": record["output"],
                     "status": "failed",
                     "error": "anydoc: " + record["error"],
-                    "hint": None,
+                    "hint": hint,
+                    "error_class": error_class,
                 }
             )
             print("anydoc: " + record["error"], file=sys.stderr)
             if not args.json:
                 print("FAIL %s" % record["input"])
             continue
-        proc = run_cli(build_cli_command(record["input"], record["output"], None))
+        try:
+            proc = run_cli(build_cli_command(record["input"], record["output"], None))
+        except CliTimeoutError as err:
+            return fail_command(args, "batch", err.message, 1, error_class="timeout")
         if proc.returncode == 0:
             results.append(
                 {
@@ -417,6 +452,7 @@ def cmd_batch(args):
                     "status": "failed",
                     "error": stderr,
                     "hint": hint,
+                    "error_class": error_class,
                 }
             )
             print_cli_error(stderr)
@@ -568,7 +604,7 @@ def build_parser():
         epilog=(
             "Examples:\n"
             "  anydoc batch a.docx b.xlsx c.csv --out-dir out/\n"
-            "  anydoc batch docs/*.docx --out-dir vault/inbox/ --dry-run --json\n"
+            "  anydoc batch notes/*.docx --out-dir vault/inbox/ --dry-run --json\n"
             "\nDuplicate inputs convert per occurrence (a later conversion "
             "overwrites the earlier output); same-basename inputs from "
             "different directories collide on the same <stem>.md and the last "

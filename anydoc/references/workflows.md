@@ -3,8 +3,10 @@
 All recipes use the pinned CLI `npx -y @firecrawl/anydoc@0.1.6` (ground truth)
 and the skill's wrapper `scripts/anydoc` where it adds value. Commands are
 shown relative to the repository root; `anydoc/fixtures/...` paths can be
-replaced with any document path. Each raw-CLI invocation converts **exactly one
-document** — there is no batch mode.
+replaced with any document path. The vault-ingestion recipe (section 5) is
+written to be run from a temp or vault directory holding *your own*
+documents. Each raw-CLI invocation converts **exactly one document** — there
+is no batch mode.
 
 ## 1. Single conversion
 
@@ -102,10 +104,18 @@ vault or knowledge base:
 2. **Batch-convert** with the wrapper into a markdown folder:
 
    ```bash
-   python3 anydoc/scripts/anydoc batch docs/*.docx docs/*.xlsx docs/*.csv --out-dir vault/inbox/
+   python3 anydoc/scripts/anydoc batch notes/*.docx notes/*.xlsx notes/*.csv --out-dir vault/inbox/
    ```
 
    (or the raw-CLI loop above if you are not using the wrapper).
+
+   > **Run this from a temp or vault directory — never from the agent-skills
+   > repo root.** The glob matches whatever directory you name, and the
+   > repository tracks a top-level `docs/` directory (distinct from the
+   > `documents/` skill): globbing `docs/*.docx` there, or deleting/cleaning
+   > those matches, would damage tracked repository files. Keep the source
+   > documents in their own folder (here `notes/`) and convert into a
+   > separate `vault/inbox/` folder.
 3. **Verify each output** (step 6) — at minimum confirm exit 0 and that the
    structural markers your formats produce are present (headings for Word/PDF,
    `|` tables for spreadsheets/CSV).

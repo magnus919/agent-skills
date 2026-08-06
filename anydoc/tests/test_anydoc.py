@@ -11,6 +11,7 @@ import io
 import json
 import os
 import shutil
+import signal
 import stat
 import subprocess
 import sys
@@ -18,6 +19,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]  # anydoc/
 SCRIPT = ROOT / "scripts" / "anydoc"
@@ -380,6 +382,9 @@ class WrapperCoreTests(unittest.TestCase):
                 "resource-limit",
                 (),
             ),
+            # Wrapper pre-validation messages map to the "io" class with no hint.
+            ("input file not found: /x/missing.docx", "io", ()),
+            ("input path is a directory, not a file: /x/dir", "io", ()),
         )
         for message, expected_class, keywords in cases:
             with self.subTest(message=message):
@@ -404,10 +409,15 @@ class WrapperCoreTests(unittest.TestCase):
             cli.build_cli_command("-", None, "csv"),
             ["npx", "-y", PINNED, "-", "-f", "csv"],
         )
-        # a dash-leading filename is protected with `--`
+        # a dash-leading filename places -o/-f BEFORE the `--` separator
+        # (npx forwards `--` to the CLI, so options after it read as inputs)
         self.assertEqual(
-            cli.build_cli_command("-weird", "o.md", None),
-            ["npx", "-y", PINNED, "--", "-weird", "-o", "o.md"],
+            cli.build_cli_command("-weird", "o.md", "csv"),
+            ["npx", "-y", PINNED, "-o", "o.md", "-f", "csv", "--", "-weird"],
+        )
+        self.assertEqual(
+            cli.build_cli_command("-weird", None, None),
+            ["npx", "-y", PINNED, "--", "-weird"],
         )
 
     @unittest.skipUnless(shutil.which("node") and shutil.which("npx"), "toolchain missing")
@@ -419,6 +429,74 @@ class WrapperCoreTests(unittest.TestCase):
             ["convert", str(DOCX), "-f", "docm", "--dry-run"]
         )
         self.assertEqual(code, 0, stderr)
+
+    # --- CLI timeout: --json must still yield one parseable JSON document ---
+
+    def _timeout_side_effect(self):
+        """A subprocess.run replacement that raises a TimeoutExpired."""
+
+        def _boom(*args, **kwargs):
+            exc = subprocess.TimeoutExpired(
+                cmd=args[0], timeout=cli.RUN_TIMEOUT
+            )
+            exc.pid = 4242  # set post-construction, as subprocess.run does
+            raise exc
+
+        return _boom
+
+    def test_run_cli_timeout_kills_group_and_raises(self):
+        with mock.patch.object(
+            cli.subprocess, "run", side_effect=self._timeout_side_effect()
+        ), mock.patch.object(cli.os, "killpg") as mock_kill:
+            with self.assertRaises(cli.CliTimeoutError):
+                cli.run_cli(["npx", "-y", cli.PINNED, "x.docx"])
+            mock_kill.assert_called_once_with(4242, signal.SIGKILL)
+
+    def test_convert_timeout_with_json_emits_error_envelope(self):
+        with mock.patch.object(cli, "runtime_errors", return_value=[]), mock.patch.object(
+            cli.subprocess, "run", side_effect=self._timeout_side_effect()
+        ), mock.patch.object(cli.os, "killpg") as mock_kill:
+            code, stdout, stderr = run_in_process(
+                ["convert", str(DOCX), "--json"]
+            )
+        self.assertEqual(code, 1)
+        mock_kill.assert_called_once_with(4242, signal.SIGKILL)
+        doc = json.loads(stdout)  # exactly one parseable JSON document
+        self.assertFalse(doc["ok"])
+        self.assertEqual(doc["exit_code"], 1)
+        self.assertEqual(doc["error_class"], "timeout")
+        self.assertIn("did not complete within 120 seconds", doc["error"])
+        self.assertIn("did not complete within 120 seconds", stderr)
+        self.assertNotIn("Traceback", stderr)
+
+    def test_convert_timeout_without_json_uses_stderr(self):
+        with mock.patch.object(cli, "runtime_errors", return_value=[]), mock.patch.object(
+            cli.subprocess, "run", side_effect=self._timeout_side_effect()
+        ), mock.patch.object(cli.os, "killpg"):
+            code, stdout, stderr = run_in_process(["convert", str(DOCX)])
+        self.assertEqual(code, 1)
+        self.assertEqual(stdout, "")
+        self.assertIn("did not complete within 120 seconds", stderr)
+        self.assertNotIn("Traceback", stderr)
+
+    def test_batch_timeout_with_json_emits_error_envelope(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out_dir = Path(tmp) / "out"
+            with mock.patch.object(
+                cli, "runtime_errors", return_value=[]
+            ), mock.patch.object(
+                cli.subprocess, "run", side_effect=self._timeout_side_effect()
+            ), mock.patch.object(cli.os, "killpg"):
+                code, stdout, stderr = run_in_process(
+                    ["batch", str(DOCX), "--out-dir", str(out_dir), "--json"]
+                )
+        self.assertEqual(code, 1)
+        doc = json.loads(stdout)
+        self.assertFalse(doc["ok"])
+        self.assertEqual(doc["command"], "batch")
+        self.assertEqual(doc["error_class"], "timeout")
+        self.assertIn("did not complete within 120 seconds", stderr)
+        self.assertNotIn("Traceback", stderr)
 
 
 class RealCliTests(unittest.TestCase):
@@ -651,6 +729,44 @@ class RealCliTests(unittest.TestCase):
             self.assertEqual(doc["exit_code"], 1)
             self.assertEqual(doc["summary"], {"total": 2, "succeeded": 1, "failed": 1})
             self.assertIn("encrypted", result.stderr)
+
+    def test_batch_json_failure_entries_share_error_class_shape(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = Path(tmp) / "missing.docx"
+            result = run_script(
+                [
+                    "batch",
+                    str(ENCRYPTED),
+                    str(missing),
+                    "--out-dir",
+                    str(Path(tmp) / "out"),
+                    "--json",
+                ]
+            )
+        self.assertEqual(result.returncode, 1)
+        doc = json.loads(result.stdout)
+        by_input = {entry["input"]: entry for entry in doc["files"]}
+        cli_fail = by_input[str(ENCRYPTED)]
+        pre_fail = by_input[str(missing)]
+        self.assertEqual(cli_fail["status"], "failed")
+        self.assertEqual(cli_fail["error_class"], "encrypted")
+        self.assertEqual(pre_fail["status"], "failed")
+        self.assertEqual(pre_fail["error_class"], "io")
+        self.assertEqual(
+            set(cli_fail.keys()),
+            set(pre_fail.keys()),
+            "all batch failure entries must share the same shape",
+        )
+
+    def test_convert_dash_leading_filename(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "-weird").write_bytes(CSV.read_bytes())
+            result = run_script(
+                ["convert", "-f", "csv", "--", "-weird"],
+                cwd=tmp,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("| Kind | Value | Note |", result.stdout)
 
     def test_batch_duplicates_convert_per_occurrence(self):
         with tempfile.TemporaryDirectory() as tmp:
