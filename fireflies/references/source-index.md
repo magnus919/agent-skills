@@ -1,6 +1,8 @@
 # Source Index
 
-Access date: 2026-07-15. Sources are primary Fireflies documentation only.
+Access date: 2026-07-15. Sources are primary Fireflies documentation only. CLI documents were
+re-validated against live schema introspection on 2026-08-05 (see api-reference.md for the
+documented drift between these pages and the live API).
 
 | Source | Relevant claim and scope |
 |---|---|

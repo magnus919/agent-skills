@@ -37,6 +37,17 @@ scripts/fireflies audio upload --url https://media.example/call.mp3 --webhook ht
 scripts/fireflies audio upload --url https://media.example/call.mp3 --webhook https://app.example/fireflies --client-reference-id import-42 --confirm --json
 ```
 
+## Upload a File (Two-Phase)
+
+Use this when the media is not on a public URL and you must push the bytes yourself.
+
+```bash
+scripts/fireflies audio create-upload --content-type audio/wav --file-size 5242880 --dry-run --json
+scripts/fireflies audio create-upload --content-type audio/wav --file-size 5242880 --confirm --json
+# PUT the file to upload_url from the response, then:
+scripts/fireflies audio confirm-upload --meeting-id meeting-id --confirm --json
+```
+
 ## AskFred Conversation
 
 Use AskFred for natural-language analysis when the account has AI credits.

@@ -81,5 +81,43 @@ class FirefliesTests(unittest.TestCase):
         self.assertIn("negative_pct neutral_pct positive_pct",transcript["query"])
         audit=json.loads(self.run_cli("audit-events","--filter",'{"category":"MEETING_OPERATIONS"}',"--dry-run","--json").stdout)["payload"]
         self.assertIn("events { id time action actor { user_id } resource { type id } }",audit["query"])
+    def test_transcripts_list_document_is_current(self):
+        payload=json.loads(self.run_cli("transcripts","list","--title","X","--organizers","a@b.c","--participants","d@e.f","--dry-run","--json").stdout)["payload"]
+        self.assertNotIn("TranscriptsQueryScope",payload["query"])
+        self.assertIn("$organizers: [String!]",payload["query"]); self.assertIn("$participants: [String!]",payload["query"])
+        self.assertIn("title: $title",payload["query"])
+        self.assertEqual(payload["variables"]["organizers"],["a@b.c"]); self.assertEqual(payload["variables"]["participants"],["d@e.f"])
+        self.assertEqual(payload["variables"]["title"],"X")
+    def test_bite_create_uses_live_arg_names_and_enum(self):
+        payload=json.loads(self.run_cli("bites","create","--transcript-id","tid","--start","0","--end","30","--privacy","participants","--dry-run","--json").stdout)["payload"]
+        self.assertIn("transcript_Id",payload["query"]); self.assertIn("[BitePrivacy!]",payload["query"])
+        self.assertEqual(payload["variables"]["privacy"],["participants"])
+    def test_meetings_update_channel_payload(self):
+        payload=json.loads(self.run_cli("meetings","update-channel","--channel-id","CH","--transcript-ids","A,B,C","--dry-run","--json").stdout)["payload"]
+        self.assertIn("updateMeetingChannel",payload["query"])
+        self.assertEqual(payload["variables"]["input"],{"transcript_ids":["A","B","C"],"channel_id":"CH"})
+    def test_meetings_share_expiry_payload(self):
+        payload=json.loads(self.run_cli("meetings","share","mid","--emails","a@b.c,d@e.f","--expiry-days","14","--dry-run","--json").stdout)["payload"]
+        self.assertEqual(payload["variables"]["input"]["expiry_days"],14)
+        self.assertEqual(payload["variables"]["input"]["emails"],["a@b.c","d@e.f"])
+    def test_live_add_to_payload(self):
+        payload=json.loads(self.run_cli("live","add-to","--meeting-link","https://x","--title","T","--duration","30","--dry-run","--json").stdout)["payload"]
+        self.assertIn("addToLiveMeeting",payload["query"])
+        self.assertEqual(payload["variables"]["meeting_link"],"https://x"); self.assertEqual(payload["variables"]["duration"],30)
+    def test_live_soundbite_payload(self):
+        payload=json.loads(self.run_cli("live","soundbite","--meeting-id","M","--prompt","P","--dry-run","--json").stdout)["payload"]
+        self.assertIn("createLiveSoundbite",payload["query"])
+        self.assertEqual(payload["variables"]["input"],{"meeting_id":"M","prompt":"P"})
+    def test_audio_two_phase_upload_payloads(self):
+        create=json.loads(self.run_cli("audio","create-upload","--content-type","audio/wav","--file-size","1000","--dry-run","--json").stdout)["payload"]
+        self.assertIn("createUploadUrl",create["query"]); self.assertEqual(create["variables"]["input"],{"content_type":"audio/wav","file_size":1000})
+        confirm=json.loads(self.run_cli("audio","confirm-upload","--meeting-id","M","--dry-run","--json").stdout)["payload"]
+        self.assertIn("confirmUpload",confirm["query"]); self.assertEqual(confirm["variables"]["input"],{"meeting_id":"M"})
+    def test_users_set_role_payload(self):
+        payload=json.loads(self.run_cli("users","set-role","--user-id","U","--role","admin","--dry-run","--json").stdout)["payload"]
+        self.assertIn("setUserRole",payload["query"]); self.assertEqual(payload["variables"],{"userId":"U","role":"admin"})
+    def test_askfred_get_payload(self):
+        payload=json.loads(self.run_cli("askfred","get","thread-id","--dry-run","--json").stdout)["payload"]
+        self.assertIn("askfred_thread(id: $id)",payload["query"]); self.assertEqual(payload["variables"],{"id":"thread-id"})
 
 if __name__ == "__main__": unittest.main()
