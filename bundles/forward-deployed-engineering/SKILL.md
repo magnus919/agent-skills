@@ -49,7 +49,9 @@ map](templates/stakeholder-workflow-map.md), and one
 Each stage records entry evidence, the artifact produced, the accountable
 decision maker, unresolved unknowns, and the next handoff. Never silently turn
 an observation into a requirement, a prototype into a production claim, or a
-local success into a reusable product capability.
+local success into a reusable product capability. For the expected depth and
+evidence labeling of these artifacts, see the
+[worked example engagement](references/worked-example-engagement.md).
 
 ### Where to enter the lifecycle
 
@@ -151,5 +153,6 @@ specialist instead of invoking this lifecycle.
 | [references/adoption-and-measurement.md](references/adoption-and-measurement.md) | Evaluating activation, workflow adoption, and measurable impact |
 | [references/generalization-and-productization.md](references/generalization-and-productization.md) | Deciding what field work becomes or does not become reusable |
 | [references/communication.md](references/communication.md) | Writing status, decision, escalation, or handoff communication |
-| [templates/](templates/) | Creating the charter, maps, ledgers, scorecards, status, or productization record |
+| [references/worked-example-engagement.md](references/worked-example-engagement.md) | Calibrating expected artifact depth or evidence labeling at any stage |
+| [templates/](templates/) | Creating the charter, workflow map, ledger, stage handoff, engagement status, evaluation and release decision, adoption scorecard, outcome measurement record, productization record, or field learning record |
 | [manifest.yaml](manifest.yaml) | Reading machine-readable stages, routes, outputs, and conflicts |
