@@ -29,8 +29,22 @@ methods; the nine-stage sequence is not an externally standardized methodology.
 
 `Discover → Frame → Hypothesize → Build → Evaluate → Deploy → Adopt → Measure → Generalize`
 
-At every stage, maintain one [engagement charter](templates/engagement-charter.md),
-one [stakeholder/workflow map](templates/stakeholder-workflow-map.md), and one
+| Stage | Required question | Minimum output | Stop condition |
+|---|---|---|---|
+| Discover | What user workflow and problem are real? | [Stakeholder/workflow map](templates/stakeholder-workflow-map.md) and unknowns | No recognizable problem or access to the relevant workflow |
+| Frame | What is in scope, who decides, and what outcome matters? | [Engagement charter](templates/engagement-charter.md) and [assumptions/decisions/risks ledger](templates/assumptions-decisions-risks-ledger.md) | Authority, constraints, or outcome cannot be named |
+| Hypothesize | What smallest intervention could change the workflow? | Testable hypothesis and decision rule | No falsifiable hypothesis or unsafe test |
+| Build | What operationally complete slice can be built? | Thin-slice implementation plan and owner | Dependencies or permissions are infeasible |
+| Evaluate | What evidence supports quality, safety, and usefulness? | [Evaluation and release decision](templates/evaluation-and-release-decision.md) | Baseline, representative evidence, or risk constraints missing |
+| Deploy | Can it be released, recovered, and verified in the authorized environment? | Readiness, rollout, rollback, and verification record | No authorized access, rollback, or release decision |
+| Adopt | Do intended users activate and use it in the target workflow? | [Adoption scorecard](templates/adoption-scorecard.md) and intervention record | Adoption failure is unexplained or ownership/support is absent |
+| Measure | Did the capability change the agreed outcome? | [Outcome measurement record](templates/outcome-measurement-record.md) | Instrumentation cannot distinguish expected from observed |
+| Generalize | What should happen to the local learning? | [Productization record](templates/productization-record.md) and [field-learning record](templates/field-learning-record.md) | No evidence or receiving owner for the proposed next step |
+
+At every stage, read the current charter, workflow map, and ledger and add
+evidence rather than re-deriving prior decisions. Maintain one [engagement
+charter](templates/engagement-charter.md), one [stakeholder/workflow
+map](templates/stakeholder-workflow-map.md), and one
 [assumptions-decisions-risks ledger](templates/assumptions-decisions-risks-ledger.md).
 Each stage records entry evidence, the artifact produced, the accountable
 decision maker, unresolved unknowns, and the next handoff. Never silently turn
@@ -50,9 +64,11 @@ local success into a reusable product capability.
    [authority and escalation](references/authority-and-escalation.md) and route
    access, security, privacy, irreversible, cost, and external-commitment
    decisions to their authorized owner.
-5. Before calling applied AI or any risky capability production-ready, load the
-   evaluation specialist and require baseline, representative and adversarial
-   evidence, constraints, and a release decision.
+5. Before calling applied AI or any risky capability production-ready, load
+   [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md)
+   and [production-readiness](../../production-readiness/SKILL.md), and require
+   baseline, representative and adversarial evidence, constraints, and a
+   release decision.
 6. Treat adoption and measured workflow impact as completion conditions, not
    postscript communications. Use [adoption and measurement](references/adoption-and-measurement.md).
 7. Apply the classification rules in [generalization and
