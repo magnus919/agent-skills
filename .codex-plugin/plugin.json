@@ -29,6 +29,7 @@
     "./binary-analysis",
     "./brand-designer",
     "./bundles/agent-production-operations",
+    "./bundles/forward-deployed-engineering",
     "./bundles/neckbeard",
     "./bundles/product-lifecycle",
     "./bundles/production-excellence",

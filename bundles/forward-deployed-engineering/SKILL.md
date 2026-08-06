@@ -1,0 +1,117 @@
+---
+name: forward-deployed-engineering
+description: >-
+  Guide embedded technical engagements from ambiguous stakeholder need through
+  discovery, framing, hypothesis, build, evaluation, deployment, adoption,
+  measurement, and generalization while preserving evidence, decision rights,
+  and field learning. Use when one accountable technical lead must carry
+  continuity across customer or stakeholder discovery, implementation,
+  production fit, adoption, and measurable outcomes. Do not use for a bounded
+  repository change, product investment governance, ongoing reliability or
+  platform ownership, an isolated specialist task, or advisory work that ends
+  before implementation and adoption.
+license: MIT
+compatibility: Agent harness with file read/write, terminal, and skill loading. No network or runtime dependency required by the bundle itself.
+metadata:
+  spec-version: "1.0"
+  tags: forward-deployed-engineering, embedded-delivery, adoption, measurement, generalization
+---
+
+# Forward-Deployed Engineering
+
+Use this bundle when the work is an embedded technical engagement whose success
+depends on continuity, not merely a recommendation or a code change. This is a
+normative operating model synthesized from the role observations in
+[source-index.md](references/source-index.md) and from routed specialist
+methods; the nine-stage sequence is not an externally standardized methodology.
+
+## Lifecycle
+
+`Discover → Frame → Hypothesize → Build → Evaluate → Deploy → Adopt → Measure → Generalize`
+
+At every stage, maintain one [engagement charter](templates/engagement-charter.md),
+one [stakeholder/workflow map](templates/stakeholder-workflow-map.md), and one
+[assumptions-decisions-risks ledger](templates/assumptions-decisions-risks-ledger.md).
+Each stage records entry evidence, the artifact produced, the accountable
+decision maker, unresolved unknowns, and the next handoff. Never silently turn
+an observation into a requirement, a prototype into a production claim, or a
+local success into a reusable product capability.
+
+## Loading protocol
+
+1. Establish the charter before solution design: problem, users, workflow,
+   outcome, scope, authority, constraints, success measure, and stop conditions.
+2. Load [lifecycle and artifacts](references/lifecycle-and-artifacts.md) and
+   update the shared ledger after every stage.
+3. Treat the stage skills in `manifest.yaml` as candidates. Apply the
+   [route-selection conditions](references/route-selection.md), load one primary
+   specialist, and follow its method rather than copying it into this bundle.
+4. Before action in a constrained or sensitive environment, load
+   [authority and escalation](references/authority-and-escalation.md) and route
+   access, security, privacy, irreversible, cost, and external-commitment
+   decisions to their authorized owner.
+5. Before calling applied AI or any risky capability production-ready, load the
+   evaluation specialist and require baseline, representative and adversarial
+   evidence, constraints, and a release decision.
+6. Treat adoption and measured workflow impact as completion conditions, not
+   postscript communications. Use [adoption and measurement](references/adoption-and-measurement.md).
+7. Apply the classification rules in [generalization and
+   productization](references/generalization-and-productization.md), then close
+   with the [productization record](templates/productization-record.md). Classify
+   local work as configuration, reusable pattern, product capability,
+   transfer/replacement, or retirement, with evidence and an owner.
+8. Treat artifacts as private by default and apply the [external-sharing
+   gate](references/communication.md#external-sharing-gate) before they leave
+   the authorized engagement context.
+
+Load only the primary specialist for the active stage. Add a secondary
+specialist only for a named blocker, risk, or handoff; do not preload every
+skill in the manifest. If one specialist fully owns the request, stop routing
+and hand the task to that specialist instead of running the FDE lifecycle.
+
+## Epistemic and communication contract
+
+Label each material statement as one of: **source fact**, **engagement
+observation**, **inference**, **recommendation**, **decision**, or
+**commitment**. Use the [communication reference](references/communication.md)
+for concise status and escalation updates. The [discovery brief](references/discovery-brief.md)
+records the overlap audit and source limitations.
+
+## Completion and stop rules
+
+The engagement is complete only when the capability is technically verified,
+deployed within the authorized boundary, adopted by the intended workflow,
+measured against an agreed outcome, and its learning has a generalization
+decision. A prototype, demo, or stakeholder approval alone is not completion.
+
+Stop and preserve the ledger when the problem cannot be articulated, authority
+or access is missing, evidence fails, adoption remains unexplained or below the
+decision rule, or the next action exceeds the charter. Escalate rather than
+guess on security, privacy, irreversible changes, material cost, external
+commitments, or business authority. Route a well-specified repository bug
+directly to [neckbeard](../../bundles/neckbeard/SKILL.md) and the relevant
+specialist instead of invoking this lifecycle.
+
+## When not to use
+
+- Use [neckbeard](../../bundles/neckbeard/SKILL.md) for a well-bounded repository change.
+- Use [product-lifecycle](../../bundles/product-lifecycle/SKILL.md) for product investment and lifecycle governance.
+- Use [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) for ongoing reliability ownership.
+- Use [platform-engineering](../../platform-engineering/SKILL.md) for internal platform design or operation.
+- Load a single specialist directly when one discipline fully owns the task.
+- Do not use for advisory analysis that ends before implementation, adoption, and outcome continuity.
+
+## File map
+
+| Path | Load when |
+|---|---|
+| [references/discovery-brief.md](references/discovery-brief.md) | Reviewing the boundary, overlap audit, or evidence basis |
+| [references/source-index.md](references/source-index.md) | Checking an externally verifiable role claim or refresh date |
+| [references/lifecycle-and-artifacts.md](references/lifecycle-and-artifacts.md) | Starting or handing off any lifecycle stage |
+| [references/route-selection.md](references/route-selection.md) | Selecting one stage specialist without violating its entry boundary |
+| [references/authority-and-escalation.md](references/authority-and-escalation.md) | Working under access, security, privacy, cost, or authority constraints |
+| [references/adoption-and-measurement.md](references/adoption-and-measurement.md) | Evaluating activation, workflow adoption, and measurable impact |
+| [references/generalization-and-productization.md](references/generalization-and-productization.md) | Deciding what field work becomes or does not become reusable |
+| [references/communication.md](references/communication.md) | Writing status, decision, escalation, or handoff communication |
+| [templates/](templates/) | Creating the charter, maps, ledgers, scorecards, status, or productization record |
+| [manifest.yaml](manifest.yaml) | Reading machine-readable stages, routes, outputs, and conflicts |

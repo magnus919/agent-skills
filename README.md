@@ -168,6 +168,10 @@ Use a small FlareSolverr JSON CLI for browser-backed GET and POST requests, read
 
 Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, metadata, webhooks, and user settings. Includes a guarded generic `/api/v1/` route for version-specific endpoints such as Actions and admin APIs.
 
+### [forward-deployed-engineering](bundles/forward-deployed-engineering/SKILL.md)
+
+Carry an embedded technical engagement from an ambiguous need to an adopted, measurable capability and a deliberate generalization decision across discovery, build, deployment, adoption, and field learning.
+
 ### [frontend-engineering](frontend-engineering/SKILL.md)
 
 Build and maintain web frontends — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation. Do not use for backend service implementation, data engineering, or platform infrastructure work.

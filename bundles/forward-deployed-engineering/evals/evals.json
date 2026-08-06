@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "skill_name": "forward-deployed-engineering",
+  "evals": [
+    {
+      "id": "ambiguous-request-discovery-first",
+      "prompt": "A sponsor says, 'Add AI to our operations.' Three teams describe different pain points and nobody has supplied a workflow, baseline, scope, or success measure. Decide what the embedded technical lead should do next.",
+      "expected_output": "The response starts with stakeholder and workflow discovery, records competing interpretations and unknowns, creates an engagement charter or equivalent framing record, and refuses to design architecture or commit to implementation before a recognized problem and decision authority exist.",
+      "assertions": [
+        "Identifies the missing workflow, user problem, outcome, scope, and authority as discovery gaps",
+        "Produces a draft charter, stakeholder/workflow map, and unknowns ledger with named fields before architecture",
+        "Separates observed stakeholder statements from inferences and recommendations",
+        "Defines a stop condition if discovery cannot converge on a recognizable problem"
+      ]
+    },
+    {
+      "id": "constrained-environment-before-action",
+      "prompt": "Deploy a diagnostic capability into a constrained environment with unclear account permissions, network egress, maintenance windows, recovery access, and verification procedures. The sponsor wants it installed today.",
+      "expected_output": "The response performs read-only discovery first, records access route, privilege, egress, change window, rollback/recovery, and external-boundary verification, then seeks the authorized decision before installation.",
+      "assertions": [
+        "Lists access, privilege, egress, change window, rollback or recovery, and verification as pre-action evidence",
+        "Does not treat sponsor urgency as authorization",
+        "Names the system, security, or change owner needed for missing authority",
+        "Preserves safe read-only discovery while the action is blocked"
+      ]
+    },
+    {
+      "id": "applied-ai-release-evidence",
+      "prompt": "An LLM workflow demo looked excellent for five hand-picked examples. The team wants to call it production-ready for a high-impact workflow. Produce the release recommendation.",
+      "expected_output": "The response declines a production-ready claim until it has a representative baseline, adversarial and failure cases, explicit risk constraints, evaluation results, residual-risk owner, rollout and rollback evidence, and an authorized release decision.",
+      "assertions": [
+        "Rejects the demo as sufficient production evidence",
+        "Requires baseline, representative cases, adversarial or failure cases, and risk constraints",
+        "Requires explicit release decision, rollout, rollback, and residual-risk ownership",
+        "Routes agent or LLM evaluation to agent-evals-and-observability and release readiness to production-readiness"
+      ]
+    },
+    {
+      "id": "technical-success-adoption-failure",
+      "prompt": "A capability is deployed, passes technical tests, and is available to all intended users, but only 8% use it after two months. Diagnose and decide what happens next.",
+      "expected_output": "The response treats the engagement as incomplete, measures activation and workflow outcomes against a baseline, and investigates access, workflow fit, trust, education, support, ownership, and incentives before recommending more features or training.",
+      "assertions": [
+        "Does not equate deployment or technical tests with completion",
+        "Examines activation, workflow fit, trust or education, support or ownership, and incentives",
+        "Requests baseline, target, segment, time-to-value, and decision rule evidence",
+        "Records an intervention or stop/pivot decision tied to observed adoption evidence"
+      ]
+    },
+    {
+      "id": "generalization-classification",
+      "prompt": "A one-off workflow configuration solved one stakeholder's problem. Another team asks to turn it into a platform feature. Make the generalization decision.",
+      "expected_output": "The response classifies the work as configuration, reusable pattern, product capability, transfer/replacement, or retirement using evidence about repeated need, transferable constraints, support, security/privacy, cost, and a receiving owner.",
+      "assertions": [
+        "Names one explicit classification and records any missing evidence as bounded uncertainty rather than deferring the requested decision",
+        "Distinguishes local observation from the inference that the pattern generalizes",
+        "Uses repeated need, transferable constraints, reuse boundary, non-generalizable conditions, support, security or privacy, and cost in the classification",
+        "Names a receiving owner and next action rather than promoting by enthusiasm"
+      ]
+    },
+    {
+      "id": "authority-boundary-escalation",
+      "prompt": "The engagement lead wants to export sensitive data, make an irreversible schema change, increase spend beyond the agreed budget, and promise a delivery date to an external stakeholder. The charter does not grant those powers.",
+      "expected_output": "The response stops each out-of-charter action, records the exact decision needed, and escalates privacy/security, irreversible-change, budget, and business-commitment decisions to their authorized owners while continuing safe work.",
+      "assertions": [
+        "Separates privacy or security, irreversible change, cost, and external commitment decisions",
+        "Does not infer authority from the technical lead's accountability",
+        "Names an authorized owner or gate for each escalation",
+        "States what safe read-only or non-destructive work can continue",
+        "Does not proceed with any of the four proposed actions until the corresponding authorization is recorded"
+      ]
+    },
+    {
+      "id": "bounded-bug-negative-boundary",
+      "prompt": "A repository has a reproducible null dereference with a failing unit test, a clear expected behavior, and no stakeholder discovery or deployment engagement required. What process should handle it?",
+      "expected_output": "The response routes directly to neckbeard and the relevant implementation or testing specialist, without invoking the full forward-deployed lifecycle or inventing an embedded engagement charter.",
+      "assertions": [
+        "Recognizes the work as a well-specified repository change",
+        "Routes to neckbeard and the relevant specialist rather than FDE lifecycle stages",
+        "Does not require stakeholder workflow discovery, adoption measurement, or productization for this task"
+      ]
+    },
+    {
+      "id": "epistemic-and-handoff-discipline",
+      "prompt": "Write a status and handoff for an engagement where users reported faster work, logs show a 12% reduction in median completion time, the lead believes trust improved, and the product team has not yet accepted a reusable pattern.",
+      "expected_output": "The response labels user reports and measured values as observations, labels improved trust as an inference, states the recommendation separately, records that productization is not yet a decision, and gives the receiving owner evidence, uncertainty, acceptance condition, and next action.",
+      "assertions": [
+        "Labels source or engagement observations, inference, recommendation, decision, and commitment separately",
+        "Does not present the trust explanation as measured fact",
+        "Does not claim productization was approved",
+        "Includes receiving owner, evidence, uncertainty, acceptance condition, and next action in the handoff"
+      ]
+    },
+    {
+      "id": "full-lifecycle-continuity",
+      "prompt": "An embedded technical lead has been asked to improve a regulated claims-review workflow. Stakeholders disagree about the bottleneck, the environment has controlled access, an initial prototype may use an LLM, and success requires production adoption plus a decision about whether the result should become a reusable capability. Produce the end-to-end engagement operating plan and durable handoff path.",
+      "expected_output": "The response carries one evidence and authority thread through Discover, Frame, Hypothesize, Build, Evaluate, Deploy, Adopt, Measure, and Generalize; names the durable artifacts and specialist methods at the right stages; defines stop and escalation gates; and ends with adoption evidence plus an explicit generalization classification and receiving owner.",
+      "assertions": [
+        "Covers all nine lifecycle stages in order without replacing specialist methods",
+        "Maintains the charter, workflow map, assumptions-decisions-risks ledger, evidence labels, authority, and handoffs across stage transitions",
+        "Requires constrained-environment discovery, representative and adversarial evaluation, production readiness, rollout, rollback, adoption, and workflow-outcome evidence before completion",
+        "Separates local success from generalization and ends with a classification, receiving owner, and acceptance condition",
+        "Applies the private-by-default external-sharing gate to reusable field learning"
+      ]
+    },
+    {
+      "id": "ongoing-reliability-negative-boundary",
+      "prompt": "A mature service already has an accountable service owner and needs ongoing SLO definition, alert tuning, incident response, error-budget policy, and reliability improvement. There is no embedded stakeholder engagement or adoption problem. What process should handle it?",
+      "expected_output": "The response routes directly to site-reliability-engineering and relevant operational specialists without invoking the forward-deployed lifecycle, an engagement charter, product adoption work, or generalization ceremony.",
+      "assertions": [
+        "Recognizes ongoing reliability ownership as outside the FDE bundle",
+        "Routes to site-reliability-engineering and relevant operational specialists",
+        "Does not invent stakeholder discovery, adoption measurement, or productization work"
+      ]
+    },
+    {
+      "id": "advisory-only-negative-boundary",
+      "prompt": "A leadership team wants a two-hour advisory review of three architecture options and a recommendation. They explicitly do not want implementation, deployment, adoption ownership, or an embedded technical lead. Should the forward-deployed lifecycle run?",
+      "expected_output": "The response declines the FDE bundle and routes the bounded advisory analysis to the relevant architecture or decision specialist, because the work ends before implementation and adoption.",
+      "assertions": [
+        "Recognizes advisory work ending before implementation and adoption as outside the FDE boundary",
+        "Routes to the relevant architecture or decision specialist",
+        "Does not create an engagement charter or nine-stage lifecycle for the advisory review"
+      ]
+    },
+    {
+      "id": "product-lifecycle-negative-boundary",
+      "prompt": "A product leadership team must decide which of four market opportunities belongs in next year's portfolio, allocate investment, and establish lifecycle governance. No embedded delivery engagement has been authorized. What process should own the work?",
+      "expected_output": "The response routes the portfolio investment and lifecycle-governance decision to the product-lifecycle bundle, without starting an FDE engagement or treating a portfolio choice as field delivery continuity.",
+      "assertions": [
+        "Recognizes portfolio investment and lifecycle governance as outside the FDE bundle",
+        "Routes directly to product-lifecycle",
+        "Does not create an engagement charter, implementation plan, adoption scorecard, or FDE generalization record"
+      ]
+    },
+    {
+      "id": "platform-operation-negative-boundary",
+      "prompt": "An internal platform team already owns a developer portal and golden-path services. It needs to design and operate the next platform capability, define its interfaces, and manage ongoing platform adoption across engineering teams. There is no external embedded engagement. What process should own it?",
+      "expected_output": "The response routes direct platform design and operation to platform-engineering, without wrapping ongoing platform ownership in the FDE lifecycle.",
+      "assertions": [
+        "Recognizes direct internal platform design and operation as outside the FDE bundle",
+        "Routes directly to platform-engineering",
+        "Does not invent an FDE engagement, field-learning handoff, or separate productization ceremony"
+      ]
+    },
+    {
+      "id": "isolated-specialist-negative-boundary",
+      "prompt": "A system's workflow, scope, owner, and acceptance criteria are already settled. The only remaining task is to define a retention schedule and deletion controls for personal data. No implementation or adoption continuity is requested. What process should own it?",
+      "expected_output": "The response routes the bounded privacy task directly to privacy-engineering, without loading the FDE bundle or unrelated stage specialists.",
+      "assertions": [
+        "Recognizes that one specialist fully owns the bounded request",
+        "Routes directly to privacy-engineering",
+        "Does not run stakeholder discovery, the nine-stage FDE lifecycle, or load unrelated specialists"
+      ]
+    },
+    {
+      "id": "partial-and-stale-authority",
+      "prompt": "A security owner documented approval for read-only log inspection. A sponsor says the CTO verbally approved exporting those logs, a database owner approved a reversible index but not the requested schema rewrite, and last quarter's budget waiver has expired. Separate what may proceed from what must stop.",
+      "expected_output": "The response permits only the documented read-only inspection, refuses to launder verbal, partial, or stale authority into broader powers, and records the export, schema, and spend decisions for their authorized owners before those actions proceed.",
+      "assertions": [
+        "Permits the documented read-only inspection and no broader action",
+        "Treats verbal assurance, partial approval, and expired approval as insufficient for the proposed export, schema rewrite, and spend",
+        "Names the missing decision and authorized owner for each blocked action",
+        "Does not infer one decision owner's approval applies to another authority domain"
+      ]
+    }
+  ]
+}
