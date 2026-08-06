@@ -28,6 +28,10 @@ Operate an evaluated agent with tools and authority in production through a runt
 
 Reference for the Agent Skills open format itself — directory structure, frontmatter schema, naming conventions, and progressive disclosure model. Use this meta-skill when creating or reviewing any other skill in this repository.
 
+### [anydoc](anydoc/SKILL.md)
+
+Convert Word, PowerPoint, Excel, OpenDocument, RTF, EPUB, CSV, and text-based PDF documents to GitHub-Flavored Markdown locally with the Any Doc CLI. Use when a task needs the contents of an office document, spreadsheet, presentation, ebook, or PDF you cannot read directly. Do not use for generating, editing, or validating documents, for ebook packaging, or for OCR of scanned or image-only PDFs.
+
 ### [api-design-and-evolution](api-design-and-evolution/SKILL.md)
 
 Design, document, review, and evolve consumer-facing HTTP, GraphQL, RPC, event, webhook, and streaming interfaces. Covers consumer jobs, domain semantics, contracts, failure behavior, compatibility, deprecation, migration, and deployed-boundary verification.

@@ -22,6 +22,7 @@
     "./agent-council",
     "./agent-evals-and-observability",
     "./agent-skills",
+    "./anydoc",
     "./api-design-and-evolution",
     "./artifact-pyramids",
     "./autogen",
