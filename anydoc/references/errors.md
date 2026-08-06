@@ -178,20 +178,45 @@ matters.
 
 The wrapper mirrors the CLI's contract and adds pre-validation and hints:
 
-- **Pre-validation errors (exit 1)**: a missing input path or a directory-as-
-  input is caught before the CLI runs — stderr names the path and the problem,
-  with no traceback and no prompt.
+- **Pre-validation errors (exit 1)**: a missing input path, a directory-as-
+  input, or an `-o` path that is an existing directory is caught before the
+  CLI runs — stderr names the path and the problem (e.g.
+  `anydoc: input file not found: <path>`,
+  `anydoc: input path is a directory, not a file: <path>`,
+  `anydoc: output path is a directory: <path> (pass a file path; -o does not
+  create directories)`), with no traceback and no prompt.
+- **Usage errors (exit 2)**: an unknown option, a missing input, or an invalid
+  `-f` value exits 2 with a usage message on stderr before any CLI invocation.
+  The accepted `-f` names are the 12 canonical formats plus the 9 aliases
+  (`anydoc: invalid format 'bogus'; expected one of: ...`).
 - **Friendly hints (exit 1)**: known failure classes get a hint plus a next
-  step on stderr — no-OCR (`scanned-image-only.pdf` → "OCR is required; route
-  to OCR tooling / Firecrawl Parse"), encrypted ("file is encrypted /
-  password-protected; supply an unencrypted copy"), malformed ("not a readable
-  zip archive; re-export or re-download"), unsupported ("unrecognized file
-  content and extension; check the extension or pass `-f`").
+  step on stderr — no-OCR (`scanned-image-only.pdf` → "anydoc does not
+  perform OCR. Route the file to OCR tooling or the hosted Firecrawl Parse
+  API; do not retry it locally."), encrypted ("the document is encrypted or
+  password-protected — supply an unencrypted copy"), malformed ("the document
+  is malformed or corrupt (not a readable zip archive) — re-export or
+  re-download the file and retry"), unsupported ("unsupported or unrecognized
+  file type — check that the extension is one of the supported formats, or
+  force it with `-f <format>`"). The raw CLI error line is always printed
+  first, verbatim.
 - **Node check (exit 1)**: if `node` is missing or older than v20, stderr
-  states that Node.js >= 20 is required, before any CLI invocation.
+  states that Node.js >= 20 is required (`anydoc: Node.js >= 20 is required
+  but `node` was not found on PATH ...` / `anydoc: Node.js version v18.20.0 is
+  too old; anydoc requires Node.js >= 20 ...`), before any CLI invocation.
 - **npx missing (exit 1)**: stderr names `npx` and the pinned package
-  (`@firecrawl/anydoc@0.1.6`).
+  (`@firecrawl/anydoc@0.1.6`): `anydoc: `npx` was not found on PATH —
+  conversion runs via `npx -y @firecrawl/anydoc@0.1.6`. Install Node.js >= 20
+  (which ships npx), or install the CLI permanently with `npm install -g
+  @firecrawl/anydoc`.`.
 - **Batch exit policy**: `batch` exits 1 when any input failed; per-file
-  status and a summary print to stdout, failure detail to stderr.
+  status lines (`ok <file> -> <out.md>` / `FAIL <file>`) and a summary
+  (`summary: N total, S succeeded, F failed`) print to stdout, failure detail
+  to stderr.
+- **`--json`**: exactly one JSON document on stdout in success and failure
+  (result, exit code, output path, optional embedded markdown for `convert`;
+  per-file status plus summary for `batch`); human diagnostics stay on stderr.
+- **`--dry-run`**: prints the plan (the exact `npx` command line and output
+  paths) and executes nothing — no CLI spawn, no output files, no directory
+  creation.
 - The wrapper always passes `-y` to npx and never prompts, even on a cold
   cache.

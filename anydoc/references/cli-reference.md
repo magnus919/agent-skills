@@ -154,21 +154,37 @@ The skill ships a Python 3 standard-library wrapper at `scripts/anydoc` that
 delegates to the pinned CLI. It adds value beyond a thin npx alias:
 
 - **`convert <file|-> [-o out.md] [-f <format>] [--json] [--dry-run]`** —
-  pre-validates the input path (missing file, directory input) before invoking
-  the CLI, maps known failure classes to friendly hints (no-OCR, encrypted,
-  malformed, unsupported), and forwards the CLI's exit code.
+  pre-validates the input path (missing file, directory input) and the `-o`
+  path (existing directory) before invoking the CLI, validates `-f` against
+  the 21 accepted format names (the 12 canonical parsers plus the 9 aliases,
+  exit 2 on an invalid name), maps known failure classes to friendly hints
+  (no-OCR, encrypted, malformed, unsupported), and forwards the CLI's exit
+  code. Stdin input via `-` is passed straight through.
 - **`batch <inputs...> [--out-dir DIR] [--json] [--dry-run]`** — converts many
-  documents one at a time, prints per-file status, continues past failures, and
-  exits 1 when any input failed.
+  documents one at a time, prints per-file status, continues past failures,
+  and exits 1 when any input failed. Output naming is deterministic: each
+  input becomes `<stem>.md` under `--out-dir`, which is created when missing
+  and defaults to the current working directory. Duplicate inputs convert per
+  occurrence (a later conversion overwrites the earlier output); same-basename
+  inputs from different directories collide on the same `<stem>.md` and the
+  last one wins.
 - **`info [--version]`** — reports the tool name and the pinned CLI version
-  (0.1.6) without invoking the converter.
-- Global **`--json`** (machine-readable result on stdout, diagnostics on
-  stderr) and **`--dry-run`** (print what would run, execute nothing).
-- Checks for Node >= 20 before running; always invokes npx with `-y`; never
-  prompts; exit codes 0/1/2 mirror the CLI.
+  (`anydoc 0.1.6 (wraps @firecrawl/anydoc@0.1.6)`) without invoking the
+  converter; `info --version` prints exactly `0.1.6`.
+- Global **`--json`** (exactly one JSON document on stdout; diagnostics stay
+  on stderr) and **`--dry-run`** (print what would run — the exact `npx`
+  command line and output paths — and execute nothing: no CLI spawn, no
+  output files, no directory creation). With `--json`, `convert` embeds the
+  converted markdown in the JSON document when `-o` is not given.
+- Checks for Node >= 20 (missing `node`, or a version below 20, exits 1 with
+  a clear message naming Node.js and the required version) and for `npx`
+  (missing `npx` exits 1 naming `npx` and the pinned package
+  `@firecrawl/anydoc@0.1.6`); always invokes npx with `-y`; never prompts;
+  exit codes 0/1/2 mirror the CLI.
 
 Run it as `anydoc/scripts/anydoc <subcommand> ...` from the repository root,
 `scripts/anydoc <subcommand> ...` from the skill directory, or
-`python3 anydoc/scripts/anydoc <subcommand> ...` anywhere. See
+`python3 anydoc/scripts/anydoc <subcommand> ...` anywhere (the executable bit
+and `#!/usr/bin/env python3` shebang let it run directly). See
 [workflows.md](workflows.md) for recipes and [errors.md](errors.md) for the
 error vocabulary.

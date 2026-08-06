@@ -1,0 +1,636 @@
+#!/usr/bin/env python3
+"""anydoc — convert office documents to GitHub-Flavored Markdown locally.
+
+Python 3 standard-library wrapper around the pinned Any Doc CLI
+(`npx -y @firecrawl/anydoc@0.1.6`). Adds input pre-validation, friendly
+hints for the known failure classes, batch conversion, and `--json` /
+`--dry-run` output on top of the raw CLI.
+
+Commands:
+  convert <file|-> [-o out.md] [-f <format>] [--json] [--dry-run]
+  batch <inputs...> [--out-dir DIR] [--json] [--dry-run]
+  info [--version]
+
+Exit codes: 0 success / 1 conversion or pre-validation failure / 2 usage error.
+With `--json`, exactly one JSON document goes to stdout; all diagnostics go to
+stderr. The wrapper never prompts: npx is always invoked with `-y`.
+"""
+
+import argparse
+import json
+import os
+import re
+import shutil
+import signal
+import subprocess
+import sys
+from pathlib import Path
+
+TOOL_NAME = "anydoc"
+CLI_PACKAGE = "@firecrawl/anydoc"
+CLI_VERSION = "0.1.6"
+PINNED = "%s@%s" % (CLI_PACKAGE, CLI_VERSION)
+NODE_MIN_MAJOR = 20
+RUN_TIMEOUT = 120
+
+# The 12 canonical parsers plus the 9 extension aliases the CLI accepts for -f.
+CANONICAL_FORMATS = "doc docx odt pdf ppt pptx rtf epub xlsx ods odp csv".split()
+FORMAT_ALIASES = "docm xls xlsm xlsb pps pot pptm ppsx ppsm".split()
+VALID_FORMATS = frozenset(CANONICAL_FORMATS + FORMAT_ALIASES)
+FORMATS_LIST_TEXT = ", ".join(CANONICAL_FORMATS)
+
+
+def fail(message, code=1):
+    """Print a diagnostics line to stderr and exit with `code`."""
+    print("anydoc: " + message, file=sys.stderr)
+    raise SystemExit(code)
+
+
+def emit_json(obj):
+    print(json.dumps(obj, ensure_ascii=False))
+
+
+def fail_command(args, command, message, code):
+    """Record a wrapper-level failure: diagnostics to stderr, JSON when asked."""
+    print("anydoc: " + message, file=sys.stderr)
+    if getattr(args, "json", False):
+        emit_json(
+            {
+                "tool": TOOL_NAME,
+                "command": command,
+                "ok": False,
+                "exit_code": code,
+                "error": "anydoc: " + message,
+                "hint": None,
+                "output": getattr(args, "output", None),
+            }
+        )
+    return code
+
+
+# --- pre-validation ---------------------------------------------------------
+
+def validate_input(path):
+    """Return an error message for an unusable input path, or None."""
+    if path == "-":
+        return None
+    target = Path(path)
+    if not target.exists():
+        return "input file not found: %s" % path
+    if target.is_dir():
+        return "input path is a directory, not a file: %s" % path
+    return None
+
+
+def validate_output(path):
+    """Return an error message for an unusable -o path, or None."""
+    if path is None:
+        return None
+    if Path(path).is_dir():
+        return (
+            "output path is a directory: %s (pass a file path; -o does not "
+            "create directories)" % path
+        )
+    return None
+
+
+def validate_format(fmt):
+    """Return an error message for an invalid -f value, or None."""
+    if fmt is not None and fmt not in VALID_FORMATS:
+        return (
+            "invalid format '%s'; expected one of: %s (extension aliases like "
+            "xls, docm, ppsx are accepted)" % (fmt, FORMATS_LIST_TEXT)
+        )
+    return None
+
+
+# --- runtime checks (node >= 20, npx) ---------------------------------------
+
+def node_version():
+    """Return (major, full_version) for the node on PATH, or None."""
+    node = shutil.which("node")
+    if node is None:
+        return None
+    try:
+        proc = subprocess.run(
+            [node, "--version"], capture_output=True, text=True, timeout=10
+        )
+    except OSError:
+        return None
+    if proc.returncode != 0:
+        return None
+    version = (proc.stdout or "").strip()
+    match = re.match(r"^v?(\d+)\.", version)
+    if match is None:
+        return None
+    return int(match.group(1)), version
+
+
+def runtime_errors():
+    """Return a list of node/npx problems, empty when the environment is ready."""
+    errors = []
+    info = node_version()
+    if info is None:
+        errors.append(
+            "Node.js >= %d is required but `node` was not found on PATH "
+            "(conversion runs via npx -y %s). Install Node.js >= %d and retry."
+            % (NODE_MIN_MAJOR, PINNED, NODE_MIN_MAJOR)
+        )
+    else:
+        major, version = info
+        if major < NODE_MIN_MAJOR:
+            errors.append(
+                "Node.js version %s is too old; anydoc requires Node.js >= %d "
+                "(conversion runs via npx -y %s). Upgrade Node.js and retry."
+                % (version, NODE_MIN_MAJOR, PINNED)
+            )
+    if shutil.which("npx") is None:
+        errors.append(
+            "`npx` was not found on PATH — conversion runs via `npx -y %s`. "
+            "Install Node.js >= %d (which ships npx), or install the CLI "
+            "permanently with `npm install -g %s`."
+            % (PINNED, NODE_MIN_MAJOR, CLI_PACKAGE)
+        )
+    return errors
+
+
+# --- CLI invocation ---------------------------------------------------------
+
+def build_cli_command(file, out, fmt):
+    """Build the exact argv the wrapper passes to the pinned CLI."""
+    argv = ["npx", "-y", PINNED]
+    if file != "-" and file.startswith("-"):
+        argv.append("--")
+    argv.append(file)
+    if out:
+        argv.extend(["-o", out])
+    if fmt:
+        argv.extend(["-f", fmt])
+    return argv
+
+
+def run_cli(argv):
+    try:
+        return subprocess.run(
+            argv,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=RUN_TIMEOUT,
+            start_new_session=True,
+        )
+    except subprocess.TimeoutExpired as exc:
+        try:
+            os.killpg(exc.pid, signal.SIGKILL)
+        except (ProcessLookupError, PermissionError):
+            pass
+        fail("conversion did not complete within %d seconds" % RUN_TIMEOUT)
+
+
+def error_class_hint(stderr):
+    """Map a raw CLI stderr line to (error_class, hint-or-None)."""
+    if "document is encrypted" in stderr:
+        return (
+            "encrypted",
+            "the document is encrypted or password-protected — supply an "
+            "unencrypted copy; anydoc has no password or decryption option.",
+        )
+    if "OCR is required" in stderr or "no extractable text" in stderr:
+        return (
+            "no-ocr",
+            "scanned or image-only PDF — anydoc does not perform OCR. Route "
+            "the file to OCR tooling or the hosted Firecrawl Parse API; do "
+            "not retry it locally.",
+        )
+    if "malformed document" in stderr:
+        return (
+            "malformed",
+            "the document is malformed or corrupt (not a readable zip "
+            "archive) — re-export or re-download the file and retry.",
+        )
+    if "resource limit exceeded" in stderr:
+        return ("resource-limit", None)
+    if "EISDIR" in stderr:
+        return (
+            "output-dir",
+            "the output path is a directory — pass a file path (-o does not "
+            "create directories).",
+        )
+    if "unsupported input" in stderr:
+        return (
+            "unsupported",
+            "unsupported or unrecognized file type — check that the extension "
+            "is one of the supported formats, or force it with -f <format>.",
+        )
+    if "io error" in stderr:
+        return (
+            "io",
+            "the file could not be read — check that the path exists and is "
+            "readable.",
+        )
+    return ("unknown", None)
+
+
+def print_cli_error(stderr):
+    if not stderr:
+        stderr = "conversion failed"
+    line = stderr if stderr.startswith("anydoc: ") else "anydoc: " + stderr
+    print(line, file=sys.stderr)
+
+
+# --- subcommands ------------------------------------------------------------
+
+def cmd_convert(args):
+    error = validate_input(args.file)
+    if error is not None:
+        return fail_command(args, "convert", error, 1)
+    error = validate_output(args.output)
+    if error is not None:
+        return fail_command(args, "convert", error, 1)
+    error = validate_format(args.format)
+    if error is not None:
+        return fail_command(args, "convert", error, 2)
+
+    command = build_cli_command(args.file, args.output, args.format)
+    if args.dry_run:
+        plan = " ".join(command)
+        if args.json:
+            emit_json(
+                {
+                    "tool": TOOL_NAME,
+                    "command": "convert",
+                    "ok": True,
+                    "exit_code": 0,
+                    "dry_run": True,
+                    "input": args.file,
+                    "output": args.output,
+                    "command_line": plan,
+                }
+            )
+        else:
+            print("dry-run: would run: %s" % plan)
+        return 0
+
+    for error in runtime_errors():
+        return fail_command(args, "convert", error, 1)
+
+    proc = run_cli(command)
+    if proc.returncode == 0:
+        if args.json:
+            emit_json(
+                {
+                    "tool": TOOL_NAME,
+                    "command": "convert",
+                    "ok": True,
+                    "exit_code": 0,
+                    "output": args.output,
+                    "markdown": None if args.output else proc.stdout,
+                }
+            )
+        elif not args.output:
+            sys.stdout.write(proc.stdout)
+        return 0
+
+    stderr = (proc.stderr or "").strip()
+    error_class, hint = error_class_hint(stderr)
+    print_cli_error(stderr)
+    if hint is not None:
+        print("anydoc: hint: " + hint, file=sys.stderr)
+    if args.json:
+        emit_json(
+            {
+                "tool": TOOL_NAME,
+                "command": "convert",
+                "ok": False,
+                "exit_code": proc.returncode,
+                "error": stderr,
+                "hint": hint,
+                "error_class": error_class,
+                "output": args.output,
+            }
+        )
+    return proc.returncode
+
+
+def cmd_batch(args):
+    out_dir = Path(args.out_dir) if args.out_dir else Path.cwd()
+
+    records = []
+    for input_path in args.inputs:
+        error = validate_input(input_path)
+        records.append(
+            {
+                "input": input_path,
+                "output": str(out_dir / (Path(input_path).stem + ".md")),
+                "error": error,
+            }
+        )
+
+    if args.dry_run:
+        plan = []
+        for record in records:
+            plan.append(
+                {
+                    "input": record["input"],
+                    "output": record["output"],
+                    "command": " ".join(
+                        build_cli_command(record["input"], record["output"], None)
+                    ),
+                    "would_fail": record["error"] is not None,
+                    "error": record["error"],
+                }
+            )
+        if args.json:
+            emit_json(
+                {
+                    "tool": TOOL_NAME,
+                    "command": "batch",
+                    "ok": True,
+                    "exit_code": 0,
+                    "dry_run": True,
+                    "out_dir": str(out_dir),
+                    "plan": plan,
+                }
+            )
+        else:
+            for entry in plan:
+                marker = (
+                    "  [would fail: %s]" % entry["error"] if entry["error"] else ""
+                )
+                print(
+                    "plan: convert %s -> %s%s"
+                    % (entry["input"], entry["output"], marker)
+                )
+                print("  command: %s" % entry["command"])
+        return 0
+
+    if out_dir.exists() and not out_dir.is_dir():
+        return fail_command(
+            args,
+            "batch",
+            "output directory path is not a directory: %s" % out_dir,
+            1,
+        )
+
+    for error in runtime_errors():
+        return fail_command(args, "batch", error, 1)
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    results = []
+    for record in records:
+        if record["error"] is not None:
+            results.append(
+                {
+                    "input": record["input"],
+                    "output": record["output"],
+                    "status": "failed",
+                    "error": "anydoc: " + record["error"],
+                    "hint": None,
+                }
+            )
+            print("anydoc: " + record["error"], file=sys.stderr)
+            if not args.json:
+                print("FAIL %s" % record["input"])
+            continue
+        proc = run_cli(build_cli_command(record["input"], record["output"], None))
+        if proc.returncode == 0:
+            results.append(
+                {
+                    "input": record["input"],
+                    "output": record["output"],
+                    "status": "ok",
+                    "error": None,
+                    "hint": None,
+                }
+            )
+            if not args.json:
+                print("ok %s -> %s" % (record["input"], record["output"]))
+        else:
+            stderr = (proc.stderr or "").strip()
+            error_class, hint = error_class_hint(stderr)
+            results.append(
+                {
+                    "input": record["input"],
+                    "output": record["output"],
+                    "status": "failed",
+                    "error": stderr,
+                    "hint": hint,
+                }
+            )
+            print_cli_error(stderr)
+            if hint is not None:
+                print("anydoc: hint: " + hint, file=sys.stderr)
+            if not args.json:
+                print("FAIL %s" % record["input"])
+
+    succeeded = sum(1 for r in results if r["status"] == "ok")
+    failed = len(results) - succeeded
+    if not args.json:
+        print(
+            "summary: %d total, %d succeeded, %d failed"
+            % (len(results), succeeded, failed)
+        )
+    if args.json:
+        emit_json(
+            {
+                "tool": TOOL_NAME,
+                "command": "batch",
+                "ok": failed == 0,
+                "exit_code": 1 if failed else 0,
+                "dry_run": False,
+                "out_dir": str(out_dir),
+                "files": results,
+                "summary": {
+                    "total": len(results),
+                    "succeeded": succeeded,
+                    "failed": failed,
+                },
+            }
+        )
+    return 1 if failed else 0
+
+
+def cmd_info(args):
+    if args.version:
+        print(CLI_VERSION)
+        return 0
+    if args.json:
+        emit_json(
+            {
+                "tool": TOOL_NAME,
+                "command": "info",
+                "ok": True,
+                "exit_code": 0,
+                "name": TOOL_NAME,
+                "cli": PINNED,
+                "version": CLI_VERSION,
+            }
+        )
+    else:
+        print("%s %s (wraps %s)" % (TOOL_NAME, CLI_VERSION, PINNED))
+    return 0
+
+
+# --- CLI plumbing -----------------------------------------------------------
+
+def extract_globals(argv):
+    """Hoist --json / --dry-run to the front so they work anywhere in argv."""
+    values, retained = [], []
+    for arg in argv:
+        if arg in ("--json", "--dry-run"):
+            values.append(arg)
+        else:
+            retained.append(arg)
+    return values + retained
+
+
+def build_parser():
+    parser = argparse.ArgumentParser(
+        prog="anydoc",
+        description=(
+            "Convert office documents to GitHub-Flavored Markdown locally via "
+            "the pinned Any Doc CLI (%s)." % PINNED
+        ),
+        epilog=(
+            "Examples:\n"
+            "  anydoc convert report.docx\n"
+            "  anydoc convert report.docx -o report.md\n"
+            "  anydoc convert - -f csv < data.csv\n"
+            "  anydoc batch a.docx b.csv --out-dir out/\n"
+            "  anydoc info\n"
+            "\nExit codes: 0 success / 1 conversion or pre-validation failure "
+            "/ 2 usage error. JSON goes to stdout; diagnostics go to stderr. "
+            "The wrapper never prompts (npx runs with -y)."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Emit exactly one JSON document on stdout; diagnostics stay on stderr.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print what would run and execute nothing (no CLI spawn, no output files).",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    convert = subparsers.add_parser(
+        "convert",
+        help="Convert one document (path or - for stdin) to markdown.",
+        description=(
+            "Convert one document to GitHub-Flavored Markdown. Pass - as the "
+            "input to read the document from stdin (CSV from stdin needs -f csv)."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  anydoc convert report.docx\n"
+            "  anydoc convert report.docx -o report.md\n"
+            "  anydoc convert - -f csv < data.csv\n"
+            "\nWith --json the converted markdown is embedded in the JSON "
+            "document when -o is not given. Exit codes: 0 success / 1 "
+            "conversion or pre-validation failure / 2 usage error."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    convert.add_argument(
+        "file", metavar="<file|->", help="Document path, or - to read from stdin."
+    )
+    convert.add_argument(
+        "-o",
+        "--output",
+        metavar="out.md",
+        help="Write the markdown to this file instead of stdout (silently overwrites).",
+    )
+    convert.add_argument(
+        "-f",
+        "--format",
+        metavar="<format>",
+        help=(
+            "Force the input format instead of detecting it: one of %s "
+            "(extension aliases like xls, docm, ppsx are accepted)."
+            % FORMATS_LIST_TEXT
+        ),
+    )
+
+    batch = subparsers.add_parser(
+        "batch",
+        help="Convert many documents, one at a time, to an output directory.",
+        description=(
+            "Convert many documents to markdown files. Each input is converted "
+            "independently; the batch continues past failures and prints a "
+            "summary. Output naming is deterministic: <stem>.md in --out-dir "
+            "(created when missing; default: the current working directory)."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  anydoc batch a.docx b.xlsx c.csv --out-dir out/\n"
+            "  anydoc batch docs/*.docx --out-dir vault/inbox/ --dry-run --json\n"
+            "\nDuplicate inputs convert per occurrence (a later conversion "
+            "overwrites the earlier output); same-basename inputs from "
+            "different directories collide on the same <stem>.md and the last "
+            "one wins. Exit codes: 0 when every input converted; 1 when any "
+            "input failed; 2 for a usage error."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    batch.add_argument(
+        "inputs", nargs="+", metavar="<input>", help="Document paths to convert."
+    )
+    batch.add_argument(
+        "--out-dir",
+        metavar="DIR",
+        help="Directory for the converted .md files (created when missing; default: the current directory).",
+    )
+
+    info = subparsers.add_parser(
+        "info",
+        help="Show the tool name and the pinned CLI version.",
+        description="Report the wrapper tool name and the pinned Any Doc CLI version.",
+        epilog=(
+            "Examples:\n"
+            "  anydoc info\n"
+            "  anydoc info --version\n"
+            "\n--version prints exactly the pinned CLI version (0.1.6)."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    info.add_argument(
+        "--version",
+        action="store_true",
+        help="Print only the pinned CLI version and exit.",
+    )
+    return parser
+
+
+def main(argv=None):
+    parser = build_parser()
+    args = parser.parse_args(
+        extract_globals(list(argv if argv is not None else sys.argv[1:]))
+    )
+    if args.command == "convert":
+        return cmd_convert(args)
+    if args.command == "batch":
+        return cmd_batch(args)
+    if args.command == "info":
+        return cmd_info(args)
+    parser.print_help()
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        code = main()
+    except BrokenPipeError:
+        code = 0
+    try:
+        sys.exit(code)
+    except BrokenPipeError:
+        # Downstream pipe closed early (e.g. `anydoc convert big.docx | head`)
+        # — exit 0, mirroring the CLI's EPIPE behavior, without stderr noise.
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, sys.stdout.fileno())
+        sys.exit(0)
