@@ -51,6 +51,26 @@ decision maker, unresolved unknowns, and the next handoff. Never silently turn
 an observation into a requirement, a prototype into a production claim, or a
 local success into a reusable product capability.
 
+### Where to enter the lifecycle
+
+Enter at the stage that matches what already exists. Do not restart earlier
+stages unless the current charter's stop conditions require it.
+
+| What you already have | Enter at |
+|---|---|
+| A stakeholder request or observed workflow opportunity, no validated problem | Discover |
+| Validated problem and stakeholders, no charter | Frame (establish the charter first) |
+| Charter, workflow map, and ledger; no approved requirement | Hypothesize |
+| Approved requirement; thin slice in progress | Build |
+| Built and tested slice; no release decision | Evaluate |
+| Released within the authorized boundary | Adopt |
+| Adopted and measuring against the decision rule | Measure |
+| Post-launch evidence and a generalization question | Generalize |
+| A well-specified bounded change with no continuity need | Route to [neckbeard](../../bundles/neckbeard/SKILL.md) instead |
+
+Before acting at any entry point, review the current charter, workflow map,
+ledger, and preceding stage-handoff record as entry evidence.
+
 ## Loading protocol
 
 1. Establish the charter before solution design: problem, users, workflow,
@@ -110,12 +130,14 @@ specialist instead of invoking this lifecycle.
 
 ## When not to use
 
-- Use [neckbeard](../../bundles/neckbeard/SKILL.md) for a well-bounded repository change.
-- Use [product-lifecycle](../../bundles/product-lifecycle/SKILL.md) for product investment and lifecycle governance.
-- Use [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) for ongoing reliability ownership.
-- Use [platform-engineering](../../platform-engineering/SKILL.md) for internal platform design or operation.
-- Load a single specialist directly when one discipline fully owns the task.
-- Do not use for advisory analysis that ends before implementation, adoption, and outcome continuity.
+| Scenario | Reach for | Why |
+|---|---|---|
+| Well-bounded repository change | [neckbeard](../../bundles/neckbeard/SKILL.md) | Owns intake through verified PR and authorized release for a bounded change |
+| Product investment, portfolio, or lifecycle governance | [product-lifecycle](../../bundles/product-lifecycle/SKILL.md) | Owns investment and lifecycle governance, not delivery continuity |
+| Ongoing reliability ownership (SLOs, alerts, incidents) | [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) | Standing operational ownership, not an embedded engagement |
+| Internal platform design or operation | [platform-engineering](../../platform-engineering/SKILL.md) | Platform ownership, not customer delivery |
+| One discipline fully owns the task | That specialist directly | FDE stops routing when one specialist owns the request |
+| Advisory analysis ending before implementation and adoption | The relevant architecture or decision specialist | FDE completion requires adoption and outcome continuity |
 
 ## File map
 
