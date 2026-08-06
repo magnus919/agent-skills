@@ -29,13 +29,49 @@ methods; the nine-stage sequence is not an externally standardized methodology.
 
 `Discover → Frame → Hypothesize → Build → Evaluate → Deploy → Adopt → Measure → Generalize`
 
-At every stage, maintain one [engagement charter](templates/engagement-charter.md),
-one [stakeholder/workflow map](templates/stakeholder-workflow-map.md), and one
+| Stage | Required question | Minimum output | Stop condition |
+|---|---|---|---|
+| Discover | What user workflow and problem are real? | [Stakeholder/workflow map](templates/stakeholder-workflow-map.md) and unknowns | No recognizable problem or access to the relevant workflow |
+| Frame | What is in scope, who decides, and what outcome matters? | [Engagement charter](templates/engagement-charter.md) and [assumptions/decisions/risks ledger](templates/assumptions-decisions-risks-ledger.md) | Authority, constraints, or outcome cannot be named |
+| Hypothesize | What smallest intervention could change the workflow? | Testable hypothesis and decision rule | No falsifiable hypothesis or unsafe test |
+| Build | What operationally complete slice can be built? | Thin-slice implementation plan and owner | Dependencies or permissions are infeasible |
+| Evaluate | What evidence supports quality, safety, and usefulness? | [Evaluation and release decision](templates/evaluation-and-release-decision.md) | Baseline, representative evidence, or risk constraints missing |
+| Deploy | Can it be released, recovered, and verified in the authorized environment? | Readiness, rollout, rollback, and verification record | No authorized access, rollback, or release decision |
+| Adopt | Do intended users activate and use it in the target workflow? | [Adoption scorecard](templates/adoption-scorecard.md) and intervention record | Adoption failure is unexplained or ownership/support is absent |
+| Measure | Did the capability change the agreed outcome? | [Outcome measurement record](templates/outcome-measurement-record.md) | Instrumentation cannot distinguish expected from observed |
+| Generalize | What should happen to the local learning? | [Productization record](templates/productization-record.md) and [field-learning record](templates/field-learning-record.md) | No evidence or receiving owner for the proposed next step |
+
+At every stage, read the current charter, workflow map, and ledger and add
+evidence rather than re-deriving prior decisions. Maintain one [engagement
+charter](templates/engagement-charter.md), one [stakeholder/workflow
+map](templates/stakeholder-workflow-map.md), and one
 [assumptions-decisions-risks ledger](templates/assumptions-decisions-risks-ledger.md).
 Each stage records entry evidence, the artifact produced, the accountable
 decision maker, unresolved unknowns, and the next handoff. Never silently turn
 an observation into a requirement, a prototype into a production claim, or a
-local success into a reusable product capability.
+local success into a reusable product capability. For the expected depth and
+evidence labeling of these artifacts, see the
+[worked example engagement](references/worked-example-engagement.md).
+
+### Where to enter the lifecycle
+
+Enter at the stage that matches what already exists. Do not restart earlier
+stages unless the current charter's stop conditions require it.
+
+| What you already have | Enter at |
+|---|---|
+| A stakeholder request or observed workflow opportunity, no validated problem | Discover |
+| Validated problem and stakeholders, no charter | Frame (establish the charter first) |
+| Charter, workflow map, and ledger; no approved requirement | Hypothesize |
+| Approved requirement; thin slice in progress | Build |
+| Built and tested slice; no release decision | Evaluate |
+| Released within the authorized boundary | Adopt |
+| Adopted and measuring against the decision rule | Measure |
+| Post-launch evidence and a generalization question | Generalize |
+| A well-specified bounded change with no continuity need | Route to [neckbeard](../../bundles/neckbeard/SKILL.md) instead |
+
+Before acting at any entry point, review the current charter, workflow map,
+ledger, and preceding stage-handoff record as entry evidence.
 
 ## Loading protocol
 
@@ -50,9 +86,11 @@ local success into a reusable product capability.
    [authority and escalation](references/authority-and-escalation.md) and route
    access, security, privacy, irreversible, cost, and external-commitment
    decisions to their authorized owner.
-5. Before calling applied AI or any risky capability production-ready, load the
-   evaluation specialist and require baseline, representative and adversarial
-   evidence, constraints, and a release decision.
+5. Before calling applied AI or any risky capability production-ready, load
+   [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md)
+   and [production-readiness](../../production-readiness/SKILL.md), and require
+   baseline, representative and adversarial evidence, constraints, and a
+   release decision.
 6. Treat adoption and measured workflow impact as completion conditions, not
    postscript communications. Use [adoption and measurement](references/adoption-and-measurement.md).
 7. Apply the classification rules in [generalization and
@@ -94,12 +132,14 @@ specialist instead of invoking this lifecycle.
 
 ## When not to use
 
-- Use [neckbeard](../../bundles/neckbeard/SKILL.md) for a well-bounded repository change.
-- Use [product-lifecycle](../../bundles/product-lifecycle/SKILL.md) for product investment and lifecycle governance.
-- Use [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) for ongoing reliability ownership.
-- Use [platform-engineering](../../platform-engineering/SKILL.md) for internal platform design or operation.
-- Load a single specialist directly when one discipline fully owns the task.
-- Do not use for advisory analysis that ends before implementation, adoption, and outcome continuity.
+| Scenario | Reach for | Why |
+|---|---|---|
+| Well-bounded repository change | [neckbeard](../../bundles/neckbeard/SKILL.md) | Owns intake through verified PR and authorized release for a bounded change |
+| Product investment, portfolio, or lifecycle governance | [product-lifecycle](../../bundles/product-lifecycle/SKILL.md) | Owns investment and lifecycle governance, not delivery continuity |
+| Ongoing reliability ownership (SLOs, alerts, incidents) | [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) | Standing operational ownership, not an embedded engagement |
+| Internal platform design or operation | [platform-engineering](../../platform-engineering/SKILL.md) | Platform ownership, not customer delivery |
+| One discipline fully owns the task | That specialist directly | FDE stops routing when one specialist owns the request |
+| Advisory analysis ending before implementation and adoption | The relevant architecture or decision specialist | FDE completion requires adoption and outcome continuity |
 
 ## File map
 
@@ -113,5 +153,6 @@ specialist instead of invoking this lifecycle.
 | [references/adoption-and-measurement.md](references/adoption-and-measurement.md) | Evaluating activation, workflow adoption, and measurable impact |
 | [references/generalization-and-productization.md](references/generalization-and-productization.md) | Deciding what field work becomes or does not become reusable |
 | [references/communication.md](references/communication.md) | Writing status, decision, escalation, or handoff communication |
-| [templates/](templates/) | Creating the charter, maps, ledgers, scorecards, status, or productization record |
+| [references/worked-example-engagement.md](references/worked-example-engagement.md) | Calibrating expected artifact depth or evidence labeling at any stage |
+| [templates/](templates/) | Creating the charter, workflow map, ledger, stage handoff, engagement status, evaluation and release decision, adoption scorecard, outcome measurement record, productization record, or field learning record |
 | [manifest.yaml](manifest.yaml) | Reading machine-readable stages, routes, outputs, and conflicts |

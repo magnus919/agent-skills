@@ -1,20 +1,13 @@
 # Lifecycle and Artifacts
 
 The lifecycle is a continuity contract, not a claim about industry standard
-practice. Every stage reads the current charter, workflow map, and ledger; it
-adds evidence rather than re-deriving prior decisions.
+practice. The nine-stage contract — required question, minimum output, and
+stop condition per stage — lives in [SKILL.md](../SKILL.md#lifecycle) and is
+the single source of truth for stage expectations.
 
-| Stage | Required question | Minimum output | Stop condition |
-|---|---|---|---|
-| Discover | What user workflow and problem are real? | [Stakeholder/workflow map](../templates/stakeholder-workflow-map.md) and unknowns | No recognizable problem or access to the relevant workflow |
-| Frame | What is in scope, who decides, and what outcome matters? | [Engagement charter](../templates/engagement-charter.md) and [assumptions/decisions/risks ledger](../templates/assumptions-decisions-risks-ledger.md) | Authority, constraints, or outcome cannot be named |
-| Hypothesize | What smallest intervention could change the workflow? | Testable hypothesis and decision rule | No falsifiable hypothesis or unsafe test |
-| Build | What operationally complete slice can be built? | Thin-slice implementation plan and owner | Dependencies or permissions are infeasible |
-| Evaluate | What evidence supports quality, safety, and usefulness? | [Evaluation and release decision](../templates/evaluation-and-release-decision.md) | Baseline, representative evidence, or risk constraints missing |
-| Deploy | Can it be released, recovered, and verified in the authorized environment? | Readiness, rollout, rollback, and verification record | No authorized access, rollback, or release decision |
-| Adopt | Do intended users activate and use it in the target workflow? | Adoption scorecard and intervention record | Adoption failure is unexplained or ownership/support is absent |
-| Measure | Did the capability change the agreed outcome? | [Outcome measurement record](../templates/outcome-measurement-record.md) | Instrumentation cannot distinguish expected from observed |
-| Generalize | What should happen to the local learning? | [Productization record](../templates/productization-record.md) and [field-learning record](../templates/field-learning-record.md) | No evidence or receiving owner for the proposed next step |
+Every stage records entry evidence, the artifact produced, the accountable
+decision maker, unresolved unknowns, and the next handoff in the shared
+records below.
 
 ## Shared record fields
 
