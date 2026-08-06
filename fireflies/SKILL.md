@@ -37,6 +37,12 @@ the target, scope, and rollback path; then route the change through the CLI's li
 | People, channels, groups, contacts, apps | `users`, `channels`, `groups`, `contacts`, `apps` |
 | Meeting analytics or live meetings | `analytics --start DATE --end DATE`, `meetings active` |
 | Ask a transcript question | `askfred create --question TEXT --transcript-id ID --confirm` |
+| Read one AskFred thread | `askfred get THREAD_ID` |
+| Assign an admin/user role | `users set-role --user-id ID --role admin --confirm` |
+| Move meetings into a channel | `meetings update-channel --channel-id ID --transcript-ids A,B,C --confirm` |
+| Add a live meeting by link | `live add-to --meeting-link URL --confirm` |
+| Create a soundbite clip | `live soundbite --meeting-id ID --prompt TEXT --confirm` |
+| Two-phase file upload | `audio create-upload ... --confirm` then `audio confirm-upload --meeting-id ID --confirm` |
 | Run an exact current/future API operation | `query --document GRAPHQL --variables JSON` |
 | Verify a delivered webhook locally | `webhook verify --secret SECRET --signature sha256=... --body FILE` |
 

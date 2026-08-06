@@ -1,0 +1,61 @@
+{
+ "schema_version": 1,
+ "skill_name": "fireflies",
+ "evals": [
+  {
+   "id": "list-transcripts",
+   "prompt": "I recorded a meeting about the Q3 roadmap and I need to find its transcript. Use the Fireflies skill to list the available transcripts and locate the one I am looking for. How would you do that?",
+   "expected_output": "The agent uses the fireflies skill's transcripts list command with a keyword filter to search meeting titles, then reads the returned transcript metadata (id, title, date, organizer) to identify the Q3 roadmap meeting. It explains that the command is a read-only GraphQL query requiring FIREFLIES_API_KEY, and that the response is JSON.",
+   "assertions": [
+    "Uses the fireflies transcripts list command with a keyword filter",
+    "Notes the command is a read-only query requiring FIREFLIES_API_KEY",
+    "Identifies the transcript by its id and title from the returned metadata",
+    "Does not propose a mutation for a read-only lookup"
+   ]
+  },
+  {
+   "id": "inspect-transcript",
+   "prompt": "I have a transcript ID and want to understand what was discussed: the summary, who spoke, and what was said. What does the skill offer for inspecting a single meeting in detail?",
+   "expected_output": "The agent points to the fireflies transcripts get command with the transcript ID, which returns the transcript with summary overview, speakers, timestamped sentences, and sentiment analytics. It explains the fields are selected conservatively and the output is JSON.",
+   "assertions": [
+    "Uses the fireflies transcripts get command with a transcript ID",
+    "Mentions the summary, speakers, and sentences in the returned detail",
+    "Notes the output is JSON",
+    "Keeps the answer to a single read-only command"
+   ]
+  },
+  {
+   "id": "mutation-safety",
+   "prompt": "I want to rename a meeting to 'Q3 planning sync'. The skill's mutations require confirmation. Show me how to preview the exact change before sending it, then how to apply it.",
+   "expected_output": "The agent first runs the fireflies meetings rename command with --dry-run --json to inspect the exact GraphQL mutation and payload without making an HTTP request, then runs the same command with --confirm to apply it. It explains that every mutation requires the literal --confirm flag and that dry-run needs no API key.",
+   "assertions": [
+    "Uses the fireflies meetings rename command",
+    "Runs --dry-run --json first to preview the payload",
+    "Runs --confirm to apply the approved change",
+    "Explains dry-run makes no HTTP request and needs no API key"
+   ]
+  },
+  {
+   "id": "webhook-verification",
+   "prompt": "Fireflies delivered a Webhooks V2 event to my server and I want to verify the HMAC signature locally before trusting the payload. How does the skill handle this?",
+   "expected_output": "The agent uses the fireflies webhook verify command with the shared secret, the sha256= signature, and the payload file path. It explains this is a fully local HMAC-SHA256 check that makes no network request and requires no API key, and returns a JSON result with a valid boolean and the event name.",
+   "assertions": [
+    "Uses the fireflies webhook verify command",
+    "Passes --secret, --signature, and --body",
+    "Explains the check is local HMAC-SHA256 with no network call",
+    "Mentions the JSON result reports whether the signature is valid"
+   ]
+  },
+  {
+   "id": "askfred-questions",
+   "prompt": "I want to ask a natural-language question about a meeting transcript, like 'What decisions were made?', and then ask a follow-up. What does the skill provide?",
+   "expected_output": "The agent describes the AskFred workflow: fireflies askfred create with --question and --transcript-id to start a thread, then askfred continue with the thread ID and a new --question for the follow-up. It notes AskFred mutations require AI credits and --confirm.",
+   "assertions": [
+    "Uses fireflies askfred create with --question and --transcript-id",
+    "Uses fireflies askfred continue with the thread ID for follow-ups",
+    "Notes AskFred mutations require AI credits and --confirm",
+    "Does not claim AskFred works without an API key"
+   ]
+  }
+ ]
+}
