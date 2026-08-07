@@ -138,7 +138,7 @@ Use this routing table before reaching for a conversion command:
 
 | User's request | Reach for | Why |
 | --- | --- | --- |
-| Generate, edit, inspect, or validate a PDF/Word/Excel/PowerPoint artifact | `documents` skill | anydoc converts existing documents to Markdown; it does not author or validate them. |
+| Generate, edit, inspect rendered layout, or validate a PDF/Word/Excel/PowerPoint artifact | `documents` skill | anydoc extracts existing document contents to Markdown; it does not author, preserve rendered layout, or validate artifacts. |
 | Package or author an EPUB | `epub` skill | anydoc reads an existing EPUB to Markdown but never writes or validates an EPUB container. |
 | OCR a scanned or image-only PDF | OCR tooling or the hosted Firecrawl Parse API | anydoc has no OCR path; report the documented unsupported error and do not retry locally. |
 | Scrape HTML or other web content | A web-scraping skill | HTML is not a supported anydoc input. |
