@@ -44,6 +44,19 @@ CLI and adds input pre-validation, friendly error hints, batch conversion, and
 also shows the raw `npx` invocation, so the skill works with or without the
 helper.
 
+## First-use decision gate
+
+Before invoking anydoc, classify the request:
+
+| If the user needs... | Do this |
+| --- | --- |
+| The contents of an existing supported document | Continue to [Command Map](#command-map). |
+| Generation, editing, validation, EPUB packaging, HTML scraping, OCR, or password decryption | Stop and use the route in [When not to use](#when-not-to-use). |
+| A format-fidelity or failure decision | Load the matching row in [Reference Routing](#reference-routing) before choosing a command. |
+| A conversion result | Choose stdout, `-o`, or batch; run it; then follow [Verification](#verification). |
+
+> **Hard boundary:** anydoc reads existing supported documents to Markdown. It does not create, edit, validate, package, OCR, decrypt, or scrape them.
+
 ## When to use
 
 - **Convert a document to markdown** — Word, PowerPoint, Excel, OpenDocument,
@@ -63,16 +76,16 @@ parsers**. The canonical formats are `doc, docx, odt, pdf, ppt, pptx, rtf,
 epub, xlsx, ods, odp, csv`; extension aliases map through them (`.docm`→docx,
 `.xls`→xlsx, `.pptm`→pptx, and so on).
 
-| Family | Extensions | Expected GFM output |
-| --- | --- | --- |
-| Word | `.doc` `.docx` `.docm` | `#`–`######` headings, GFM tables, `[^n]` footnotes |
-| PowerPoint | `.ppt` `.pps` `.pot` `.pptx` `.pptm` `.ppsx` `.ppsm` | slide titles as plain paragraphs, bullet lists, speaker notes as `>` blockquotes, GFM tables (PPTX/ODP; legacy `.ppt` flattens tables to text lines) |
-| Excel | `.xls` `.xlsx` `.xlsm` `.xlsb` | `## <sheet name>` heading + one GFM table per worksheet; number formats dropped (raw cell values) |
-| OpenDocument | `.odt` `.ods` `.odp` | same document/slide shapes as DOCX/PPTX; ODS keeps formatted display values |
-| Rich Text Format | `.rtf` | same document shape as DOCX/ODT |
-| EPUB | `.epub` | `#` chapter headings, GFM tables, internal anchor links |
-| CSV | `.csv` | one GFM table; label-like first row promoted to header; delimiter sniffing; UTF-16 with BOM |
-| PDF | `.pdf` | headings + inline emphasis, but a lower-fidelity pipeline: tables flatten to text, footnotes and links degrade. **Scanned or image-only PDFs fail** — anydoc does not OCR |
+| Family | Extensions | Expected GFM output | Decision cue |
+| --- | --- | --- | --- |
+| Word | `.doc` `.docx` `.docm` | `#`–`######` headings, GFM tables, `[^n]` footnotes | Use when content extraction is enough; use `documents` when rendered layout matters. |
+| PowerPoint | `.ppt` `.pps` `.pot` `.pptx` `.pptm` `.ppsx` `.ppsm` | slide titles as plain paragraphs, bullet lists, speaker notes as `>` blockquotes, GFM tables (PPTX/ODP; legacy `.ppt` flattens tables to text lines) | Need table fidelity? Prefer PPTX or ODP; legacy `.ppt` preserves cell text but not table structure. |
+| Excel | `.xls` `.xlsx` `.xlsm` `.xlsb` | `## <sheet name>` heading + one GFM table per worksheet; number formats dropped (raw cell values) | Need displayed percentages, currency, or number formats? Prefer ODS; XLS/XLSX output is raw values. |
+| OpenDocument | `.odt` `.ods` `.odp` | same document/slide shapes as DOCX/PPTX; ODS keeps formatted display values | Prefer ODS when spreadsheet display formatting is part of the meaning. |
+| Rich Text Format | `.rtf` | same document shape as DOCX/ODT | Use for text extraction, not layout preservation. |
+| EPUB | `.epub` | `#` chapter headings, GFM tables, internal anchor links | Use to read an existing EPUB; use `epub` to author or package one. |
+| CSV | `.csv` | one GFM table; label-like first row promoted to header; delimiter sniffing; UTF-16 with BOM | Use for delimited tabular content; inspect delimiter and encoding when output looks wrong. |
+| PDF | `.pdf` | headings + inline emphasis, but a lower-fidelity pipeline: tables flatten to text, footnotes and links degrade. **Scanned or image-only PDFs fail** — anydoc does not OCR | Use only for text-based PDFs; route scanned PDFs to OCR and treat tables as lower fidelity. |
 
 See [references/formats.md](references/formats.md) for the full per-format
 expectations and fidelity caveats, and [references/errors.md](references/errors.md)
@@ -84,14 +97,14 @@ Commands are shown relative to the repository root. `<file>` is any document
 path (for example `anydoc/fixtures/fixture-handmade-outline.docx`); `-` reads
 the document from stdin.
 
-| Need | Command |
-| --- | --- |
-| Convert one file (markdown to stdout) | `anydoc/scripts/anydoc convert <file>` |
-| Convert one file to a markdown file | `anydoc/scripts/anydoc convert <file> -o out.md` |
-| Convert many files to a directory | `anydoc/scripts/anydoc batch <file1> <file2> ... --out-dir out/` |
-| Show the tool and pinned CLI version | `anydoc/scripts/anydoc info` |
-| Raw pinned CLI, one document | `npx -y @firecrawl/anydoc@0.1.6 <file> [-o out.md]` |
-| Raw pinned CLI, read stdin | `cat data.csv \| npx -y @firecrawl/anydoc@0.1.6 - --format csv` |
+| Need | Command | Choose it when |
+| --- | --- | --- |
+| Convert one file to small markdown on stdout | `anydoc/scripts/anydoc convert <file>` | The caller needs immediate content and does not need a saved artifact. |
+| Convert one file to a markdown file | `anydoc/scripts/anydoc convert <file> -o out.md` | The output is large, must be reviewed later, or should be preserved as an artifact. |
+| Convert many files to a directory | `anydoc/scripts/anydoc batch <file1> <file2> ... --out-dir out/` | The request is a bounded batch and per-file output/status is useful. |
+| Show the tool and pinned CLI version | `anydoc/scripts/anydoc info` | You need to confirm the executable and version before troubleshooting or reporting an environment issue. |
+| Raw pinned CLI, one document | `npx -y @firecrawl/anydoc@0.1.6 <file> [-o out.md]` | The wrapper is unavailable; preserve the pinned CLI and its documented semantics. |
+| Raw pinned CLI, read stdin | `cat data.csv \| npx -y @firecrawl/anydoc@0.1.6 - --format csv` | Bytes already arrive on stdin and the format is known; keep the producer pipeline separate from the converter. |
 
 Notes:
 
@@ -108,49 +121,53 @@ Notes:
 
 ## Reference Routing
 
-Load these on demand — one per topic:
+Load only the row that answers the immediate question; the command examples and verification contract remain in this file.
 
-- [references/formats.md](references/formats.md) — the 8 families / 21
-  extensions / 12 parsers, what GFM each format produces, and the fidelity
-  caveats (xlsx/xls number-format drop vs ODS preserved display values, legacy
-  `.ppt` table flattening, PDF lower-fidelity pipeline, merged-cell covered
-  spans, ODP same-serializer).
-- [references/cli-reference.md](references/cli-reference.md) — verbatim
-  `--help`, every flag (`-o`, `-f`, `-h`, `-V`, `--format=x`, `--`), stdin via
-  `-`, stdout/stderr conventions including EPIPE, version pinning, Node >= 20,
-  and first-run/offline network behavior.
-- [references/errors.md](references/errors.md) — exit codes 0/1/2, the verbatim
-  error-message vocabulary (io, unsupported, malformed, encrypted, EISDIR,
-  resource-limit, usage errors), the no-OCR caveat, and troubleshooting recipes.
-- [references/workflows.md](references/workflows.md) — single conversion,
-  batch loops, vault ingestion, stdin/stdout piping, output verification,
-  large-file/resource-limit behavior, and startup cost.
-- [references/sources.md](references/sources.md) — upstream URLs, access dates,
-  fixture provenance, and how every documented claim was verified against the
-  real CLI.
+| When you need to... | Load | It answers |
+| --- | --- | --- |
+| Choose a format or predict fidelity | [references/formats.md](references/formats.md) | Supported families, output shapes, and caveats such as raw XLSX values, ODS display values, legacy `.ppt` table flattening, and PDF degradation. |
+| Select flags, stdin syntax, output behavior, or version details | [references/cli-reference.md](references/cli-reference.md) | Verbatim help, accepted options, stdin rules, stdout/stderr behavior, pinning, and runtime requirements. |
+| Classify a failure or decide whether to retry | [references/errors.md](references/errors.md) | Exit codes, exact error vocabulary, no-OCR/encryption boundaries, and the next route. |
+| Choose a single-file, stdin, batch, vault, or large-output recipe | [references/workflows.md](references/workflows.md) | End-to-end recipes, safe output handling, per-file failure routing, and resource-limit behavior. |
+| Verify a documented upstream or fixture claim | [references/sources.md](references/sources.md) | Source URLs, access dates, fixture provenance, and the verification basis for documented claims. |
+| Shape the final evidence report | [references/report-examples.md](references/report-examples.md) | Complete success, expected-failure, and fidelity-boundary reports to imitate after following Verification. |
 
 ## When not to use
 
-- **Generating, editing, or validating documents** — anydoc only converts
-  existing documents *to markdown*; it never creates, edits, or checks
-  documents. Use the `documents` skill for generation, inspection, and
-  validation of PDF/Word/Excel/PowerPoint artifacts.
-- **Ebook packaging or EPUB authoring** — use the `epub` skill. anydoc reads
-  EPUBs to markdown but never writes or validates EPUB containers.
-- **Scanned or image-only PDFs (OCR)** — anydoc does not perform OCR. Such
-  PDFs fail as `unsupported` with the OCR message; route the file to OCR
-  tooling or the hosted Firecrawl Parse API instead of retrying locally. Do
-  not claim local OCR support.
-- **HTML and other web content** — HTML is not a supported input format; use a
-  web-scraping skill instead.
-- **Binary media (images, video, audio)** — embedded images render as alt text
-  only; anydoc cannot transcribe media content.
-- **Layout or rendering work** — output is GitHub-Flavored Markdown only; there
-  is no pagination, font, or template control.
-- **Password-protected files** — encrypted documents fail with
-  `anydoc: document is encrypted`; there is no password or decryption option.
+Use this routing table before reaching for a conversion command:
+
+| User's request | Reach for | Why |
+| --- | --- | --- |
+| Generate, edit, inspect, or validate a PDF/Word/Excel/PowerPoint artifact | `documents` skill | anydoc converts existing documents to Markdown; it does not author or validate them. |
+| Package or author an EPUB | `epub` skill | anydoc reads an existing EPUB to Markdown but never writes or validates an EPUB container. |
+| OCR a scanned or image-only PDF | OCR tooling or the hosted Firecrawl Parse API | anydoc has no OCR path; report the documented unsupported error and do not retry locally. |
+| Scrape HTML or other web content | A web-scraping skill | HTML is not a supported anydoc input. |
+| Transcribe binary media such as images, video, or audio | A media or transcription tool | Embedded images become alt text; anydoc cannot transcribe media. |
+| Preserve pagination, fonts, templates, or rendered layout | A document/layout tool | The only output contract is GitHub-Flavored Markdown. |
+| Convert a password-protected file | An unencrypted copy from the document owner | anydoc has no password or decryption option. |
 
 ## Verification
+
+**Report evidence, not just success.** For every attempted conversion, return the input, exact command or wrapper path, observed exit code, output destination (stdout or file), structural markers checked, and any documented caveat or next route.
+
+**Compact report shape:**
+```text
+Input: <path or stdin source>
+Command: <exact wrapper or pinned CLI path>
+Exit: <observed code>
+Output: <stdout or destination file>
+Checks: <markers or fidelity facts observed>
+Caveat/route: <documented limitation or next action>
+```
+
+### Common stop conditions
+
+| Condition | Do not | Next |
+| --- | --- | --- |
+| Scanned or image-only PDF / OCR-required error | Retry the same file locally | Route to OCR tooling or the hosted Firecrawl Parse API. |
+| Encrypted or password-protected document | Guess a password or retry unchanged | Request an unencrypted copy or owner-authorized re-export. |
+| Unsupported, malformed, or resource-limit error | Guess a parser or claim partial success | Match the exact error in [references/errors.md](references/errors.md) and follow its bounded route. |
+| Exit 0 but expected structural markers are absent | Report success from the exit code alone | Inspect the output shape and source fidelity before reporting completion. |
 
 Confirm a conversion before reporting it as done:
 
