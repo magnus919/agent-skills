@@ -64,6 +64,12 @@ when drafting content before entering JSON.
 
 ## Workflow
 
+Match the process to the request. A narrow question - one neighborhood, one
+restaurant, one transfer, one practical fact - can be answered directly with
+sources in a short reply. Run the full dossier pipeline only when the traveler
+wants a guide, PDF, companion page, or a multi-day plan. The dossier format is
+a deliverable choice, not an automatic output for every travel question.
+
 ### 1. Establish the trip contract
 
 Collect, or confirm:
