@@ -32,6 +32,7 @@ moment.]
 ### [Anchor title]
 
 - Place: [specific venue, route, event, or neighborhood]
+- Image: [optional local file path, alt text, and credit]
 - Why it fits: [concrete mechanism of fit]
 - Best window: [time/day/season]
 - Cost: [range, currency, and assumptions]
@@ -43,6 +44,8 @@ moment.]
 
 ### Day [number] — [label]
 
+- Kind: [optional: arrive, city, excursion, or coast — drives the color of the
+  day strip on the "trip at a glance" page]
 - Anchor: [one thing worth protecting]
 - Texture: [meal, market, street, shop, or ordinary-life detail]
 - Pause: [recovery space or empty time]

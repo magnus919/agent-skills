@@ -6,7 +6,7 @@ Turn a destination, a real traveler, and a few constraints into a considered tra
 
 Most itinerary tools optimize for coverage. This skill helps an agent design for fit: the pace, people, budget, interests, energy, and small details that make a trip feel like it belongs to the travelers.
 
-It can produce a print-ready HTML dossier for PDF conversion, a responsive companion page, or both. It keeps current logistics and recommendations tied to sources, and it can create a sanitized edition for sharing without exposing exact dates, lodging, booking identifiers, or private notes.
+It can produce a print-ready HTML dossier for PDF conversion, a responsive companion page, or both. The visual system is editorial by default: a darkened photographic cover with a route journey line, ghost section numbers, a color-coded day strip, pace and budget meters, and a unified warm photo grade across anchor photos. It keeps current logistics and recommendations tied to sources, and it can create a sanitized edition for sharing without exposing exact dates, lodging, booking identifiers, or private notes.
 
 ## What You Get
 
