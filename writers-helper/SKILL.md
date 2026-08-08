@@ -1,5 +1,5 @@
 ---
-name: writing
+name: writers-helper
 description: >-
   Guide any writer, fiction or nonfiction, through the whole writing lifecycle:
   premise and planning, outlining and worldbuilding, research, drafting and

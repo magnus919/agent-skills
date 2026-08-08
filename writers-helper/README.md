@@ -1,4 +1,4 @@
-# writing — Your personal writer's assistant
+# writers-helper — Your personal writer's assistant
 
 A complete writing companion for fiction and nonfiction: it helps you plan a book, research it, draft it, revise it, break through creative blocks, build writing habits, and take it all the way to a publisher — proposals, query letters, agents, and book deals included.
 
@@ -33,13 +33,13 @@ For the tools:
 
 ```bash
 # Generate 3 prompts for the crisis section of your story
-python3 writing/scripts/writing-prompt.py --position crisis --count 3
+python3 writers-helper/scripts/writing-prompt.py --position crisis --count 3
 
 # Analyze a draft
-python3 writing/scripts/manuscript-stats.py mydraft.txt
+python3 writers-helper/scripts/manuscript-stats.py mydraft.txt
 
 # Plan a 60-minute writing session
-python3 writing/scripts/session-planner.py --minutes 60 --target-words 1000
+python3 writers-helper/scripts/session-planner.py --minutes 60 --target-words 1000
 ```
 
 Each script is Python 3, standard library only, and non-interactive. Run with `--help` for options.

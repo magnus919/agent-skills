@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "skill_name": "writing",
+  "skill_name": "writers-helper",
   "evals": [
     {
       "id": "position-aware-prompt",
