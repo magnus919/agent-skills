@@ -1167,6 +1167,15 @@
       "description": "Manage Transistor.fm podcast hosting from the terminal: view shows, list episodes, check analytics, and get subscriber counts. Use when the user mentions Transistor, podcast hosting, podcast analytics, show management, or episode tracking."
     },
     {
+      "name": "travel-guide",
+      "source": "./",
+      "skills": [
+        "./travel-guide"
+      ],
+      "strict": false,
+      "description": "Create personalized, source-grounded travel dossiers from a destination, dates, duration, travelers, and constraints. Ask only the questions that change the plan, use explicitly permitted personal context without exposing it, research current logistics, and produce a cited, visually coherent PDF or responsive companion web page. Use when someone wants an individualized itinerary, trip brief, travel field guide, or shareable travel website. Do not use for real-time booking, ticket purchasing, visa or legal advice, or generic destination summaries without a specific traveler and trip."
+    },
+    {
       "name": "vercel-eve",
       "source": "./",
       "skills": [
