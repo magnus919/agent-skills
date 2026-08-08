@@ -1,5 +1,47 @@
 # Changelog
 
+## [0.7.0](https://github.com/magnus919/agent-skills/compare/v0.6.0...v0.7.0) (2026-08-08)
+
+
+### Features
+
+* add personalized travel-guide skill ([c446858](https://github.com/magnus919/agent-skills/commit/c44685800ed4b2d71e7d98eaab555d3e5742d931))
+* **linear:** project mutations and richer issue verbs in CLI ([#288](https://github.com/magnus919/agent-skills/issues/288)) ([b8a5092](https://github.com/magnus919/agent-skills/commit/b8a5092c2664ed8d86e2d3babe7b25e63c91b948)), closes [#287](https://github.com/magnus919/agent-skills/issues/287)
+* **skill:** add anydoc — office documents to GitHub-Flavored Markdown ([#295](https://github.com/magnus919/agent-skills/issues/295)) ([f37dc73](https://github.com/magnus919/agent-skills/commit/f37dc7382900de896be336f57377ad8546a45aa9))
+* **skill:** add collaboration & business-app tool layer (Slack, Notion, email, CRM, payments) ([#269](https://github.com/magnus919/agent-skills/issues/269)) ([3256a87](https://github.com/magnus919/agent-skills/commit/3256a87bcb59c4a8b5ca622d97b192792495dca5))
+* **skill:** add documents family skill (PDF / Word / Excel / PowerPoint) ([#262](https://github.com/magnus919/agent-skills/issues/262)) ([c49666e](https://github.com/magnus919/agent-skills/commit/c49666e29a29600d2cacb30de75e96d273d102f1))
+* **skill:** add dsm5 — evidence-based companion to the DSM-5-TR ([#276](https://github.com/magnus919/agent-skills/issues/276)) ([d346970](https://github.com/magnus919/agent-skills/commit/d346970bf8e4d0a2a907b65ae02adced5665485b))
+* **skill:** add genius-life creativity practice skill ([#299](https://github.com/magnus919/agent-skills/issues/299)) ([9a42be5](https://github.com/magnus919/agent-skills/commit/9a42be585e489d9fb429fcf390f18cf38bf3de32))
+* **skill:** add mobile development skill (iOS / Android / Flutter / React Native) ([#248](https://github.com/magnus919/agent-skills/issues/248)) ([#268](https://github.com/magnus919/agent-skills/issues/268)) ([f687218](https://github.com/magnus919/agent-skills/commit/f68721873ef1aca36b139c6a543d2a3a0a9ba813))
+* **skill:** add Playwright skill (E2E testing + scraping + headless browsing) ([#264](https://github.com/magnus919/agent-skills/issues/264)) ([ac1beb1](https://github.com/magnus919/agent-skills/commit/ac1beb117d8d8f9b6be38b7e5699485d76121af6))
+* **skill:** add PostgreSQL operational skill ([#245](https://github.com/magnus919/agent-skills/issues/245)) ([#265](https://github.com/magnus919/agent-skills/issues/265)) ([cd14da2](https://github.com/magnus919/agent-skills/commit/cd14da26ccb2625efc1f6e069b21dcede192af5d))
+* **skill:** add scripts, templates, and evals to backend-engineering and frontend-engineering ([#256](https://github.com/magnus919/agent-skills/issues/256)) ([48c1a1e](https://github.com/magnus919/agent-skills/commit/48c1a1e6f594d8b0ae9c87d08792dffcc2c9db07))
+* **skill:** add telemetry skill (Prometheus + OpenTelemetry + Loki) ([#246](https://github.com/magnus919/agent-skills/issues/246)) ([#266](https://github.com/magnus919/agent-skills/issues/266)) ([f83d48b](https://github.com/magnus919/agent-skills/commit/f83d48ba53ca4908cba3a66bfa24af8c53b49d3c))
+* **skill:** add Terraform operational skill ([#263](https://github.com/magnus919/agent-skills/issues/263)) ([00abbf9](https://github.com/magnus919/agent-skills/commit/00abbf90a4b370a9557ca2a32fa29bae0d641b1d))
+* **skill:** add vLLM inference-serving skill ([#247](https://github.com/magnus919/agent-skills/issues/247)) ([#267](https://github.com/magnus919/agent-skills/issues/267)) ([6181f17](https://github.com/magnus919/agent-skills/commit/6181f1746dc23abceaa713fe9af3bd37e8409436))
+* **skill:** add writing skill for the full writing lifecycle ([#301](https://github.com/magnus919/agent-skills/issues/301)) ([ecdfc65](https://github.com/magnus919/agent-skills/commit/ecdfc658c11e8f2181349efe6ae9c9f4c6c718b1))
+* **skill:** beef up ml-engineering with scripts/templates/evals ([#257](https://github.com/magnus919/agent-skills/issues/257)) ([92299e1](https://github.com/magnus919/agent-skills/commit/92299e1238b105c92c52b177eaa008b625d324df))
+* **skill:** cross-pollinate the new tool wave into catalog routing ([#275](https://github.com/magnus919/agent-skills/issues/275)) ([6f67a34](https://github.com/magnus919/agent-skills/commit/6f67a34ef1fb2ca5334270f74a3e39826cbcfce0))
+* **skill:** rename writing skill to writers-helper ([#302](https://github.com/magnus919/agent-skills/issues/302)) ([6fe5aed](https://github.com/magnus919/agent-skills/commit/6fe5aed86eedf88bcdbe2846731ca6def5833c4d))
+* **skill:** thicken platform-engineering with evals, templates, and deeper cloud/IaC references ([#255](https://github.com/magnus919/agent-skills/issues/255)) ([abe1ab3](https://github.com/magnus919/agent-skills/commit/abe1ab3a0003a4c4f865387476a36ea8cb21066f)), closes [#238](https://github.com/magnus919/agent-skills/issues/238)
+* **validation:** enforce 60K-char cap on skill reference files ([#279](https://github.com/magnus919/agent-skills/issues/279)) ([3eb7bd4](https://github.com/magnus919/agent-skills/commit/3eb7bd4096a8b3d2f7f3a27f52b2b617fd8a6b31))
+
+
+### Bug Fixes
+
+* **anydoc:** clarify rendered-layout inspection route ([#297](https://github.com/magnus919/agent-skills/issues/297)) ([43fd4b9](https://github.com/magnus919/agent-skills/commit/43fd4b9518e47e6392a8fbbd31d772900a194fe7))
+* **calculator:** honest burn-multiple and runway labels, surface model assumptions ([#274](https://github.com/magnus919/agent-skills/issues/274)) ([f9db3db](https://github.com/magnus919/agent-skills/commit/f9db3dbe4b94930175ab4d621e6242078a60e7d4))
+* correct vllm models-check test name and stripe cancel boolean ([#270](https://github.com/magnus919/agent-skills/issues/270)) ([0ff3734](https://github.com/magnus919/agent-skills/commit/0ff373467cc2230330dcc2512a6615ad5a395234))
+* **evals:** reword expectations prose in agent-skills eval manifest ([#237](https://github.com/magnus919/agent-skills/issues/237)) ([#261](https://github.com/magnus919/agent-skills/issues/261)) ([d68c1b3](https://github.com/magnus919/agent-skills/commit/d68c1b3552360af931311b8aa56674bdb0125263))
+* **raleigh:** skip token-gated imagery folders in discovery and canary ([#280](https://github.com/magnus919/agent-skills/issues/280)) ([e99c6d2](https://github.com/magnus919/agent-skills/commit/e99c6d29942a156b7867b9b8ed815095072453ce))
+* repair dead cross-skill routing references in methodology skills ([#251](https://github.com/magnus919/agent-skills/issues/251)) ([0223e2b](https://github.com/magnus919/agent-skills/commit/0223e2bc18f345c472cf5f89e3f2533f9f8157fe)), closes [#234](https://github.com/magnus919/agent-skills/issues/234)
+* **skill:** guard churn prints in saas-metrics human-readable output ([#259](https://github.com/magnus919/agent-skills/issues/259)) ([a45952d](https://github.com/magnus919/agent-skills/commit/a45952d9c148a2c61ffe2908de9d9f3771230204))
+* SkillOpt 3-epoch optimization of forward-deployed-engineering bundle ([#294](https://github.com/magnus919/agent-skills/issues/294)) ([cff17c5](https://github.com/magnus919/agent-skills/commit/cff17c59748a679718d1e42be5a5719190bc3f90))
+* SkillOpt optimization of travel-guide skill (3 epochs) ([29a367e](https://github.com/magnus919/agent-skills/commit/29a367e90bc84a53a31fa1722d286ed4c38dad17))
+* **skill:** SkillOpt 3-epoch optimization — dsm5 navigation, decisions, and answer patterns ([#281](https://github.com/magnus919/agent-skills/issues/281)) ([5d10100](https://github.com/magnus919/agent-skills/commit/5d101007ef30a48f3a3f05c0a959f2aad1a25608))
+* **skill:** split oversized dsm5 references into index + parts ([#278](https://github.com/magnus919/agent-skills/issues/278)) ([c312b36](https://github.com/magnus919/agent-skills/commit/c312b36166325a7afb476a2c109d0885b3b5408b))
+* **skills:** reconcile fireflies CLI with live GraphQL schema ([#290](https://github.com/magnus919/agent-skills/issues/290)) ([eadb82e](https://github.com/magnus919/agent-skills/commit/eadb82e069f3e2595683f57be9a5ba4a89ca5ea2))
+
 ## [0.6.0](https://github.com/magnus919/agent-skills/compare/v0.5.0...v0.6.0) (2026-08-03)
 
 
