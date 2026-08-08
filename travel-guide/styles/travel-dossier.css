@@ -110,7 +110,7 @@ p { line-height: 1.52; }
   .cover, .cover-inner { min-height: 10.9in; }
   .sheet { max-width: none; min-height: 0; padding: .65in .72in; }
   .cover-inner { padding: .75in .72in; }
-  .page-break { break-before: page; }
+  .sheet, .page-break { break-before: page; }
   .companion-nav { display: none; }
   a { color: inherit; }
   .cover-stat, .anchor-card, .day-card, .callout, .skip-card { break-inside: avoid; }

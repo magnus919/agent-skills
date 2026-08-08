@@ -5,6 +5,11 @@ structured trip model.
 
 ## Source and render pipeline
 
+Do all work in a dedicated working folder (`$WORK`): create it explicitly
+(for example `$(mktemp -d)` on macOS/Linux) and keep the JSON model, HTML,
+CSS, and final PDF there. Never write outputs into the skill directory or
+the user's home directory root.
+
 Keep the JSON model, HTML, CSS, and final PDF as separate artifacts:
 
 ```text
@@ -25,14 +30,17 @@ notes cannot drift.
 The bundled renderer is dependency-free and produces self-contained HTML with
 embedded CSS. Local image files are embedded when they can be read; remote image
 URLs remain links and must be checked in the target environment. A missing local
-image is a warning, not a reason to pretend the page is complete.
+image is a warning, not a reason to pretend the page is complete. Prefer
+traveler-supplied or locally available images, especially for private dossiers:
+a remote image makes the artifact depend on an external host and can leak its
+location. Never hotlink an arbitrary web image into a private artifact.
 
 Run:
 
 ```bash
-python3 scripts/validate-trip-brief.py trip-brief.json --strict --json
-python3 scripts/render-travel-guide.py trip-brief.json \
-  --mode dossier --output dossier.html --json
+python3 scripts/validate-trip-brief.py "$WORK/trip-brief.json" --strict --json
+python3 scripts/render-travel-guide.py "$WORK/trip-brief.json" \
+  --mode dossier --output "$WORK/dossier.html" --json
 ```
 
 Use a print-capable browser with background printing enabled and browser
@@ -43,9 +51,16 @@ structural validation.
 
 ## PDF quality gate
 
+A headless print command can appear to hang after writing the file (browser
+allocator, profile, or network issues are common causes). Treat a hang as an
+environment symptom, not proof of failure: first verify the written file
+structurally and visually, then decide whether a retry or a different renderer
+is needed. A valid PDF that was written before the hang is still deliverable.
+
 Before delivery, verify all of the following:
 
 - the file has a real PDF header, page objects, and EOF trailer;
+- every major section begins on a fresh page;
 - text remains selectable;
 - the cover image and every intended local image are present;
 - no page is blank, clipped, or unexpectedly split;

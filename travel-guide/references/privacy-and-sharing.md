@@ -31,6 +31,8 @@ Default to redacting or generalizing:
 - private transport or flight details;
 - email addresses, phone numbers, payment details, and personal notes;
 - exact budget totals when they are sensitive;
+- profile preference and constraint fields, unless the traveler explicitly
+  preserves them;
 - URLs containing tokens, reservation IDs, or private query parameters.
 
 The traveler can explicitly preserve a field, but the preservation should be
@@ -38,11 +40,13 @@ intentional and visible in the delivery note.
 
 ## Deterministic redaction
 
-Create a sanitized JSON model from the private model with:
+Run the sanitizer in the trip's dedicated working folder (`$WORK`), never in
+the skill directory or the user's home directory root. Create a sanitized
+JSON model from the private model with:
 
 ```bash
-python3 scripts/sanitize-trip-brief.py private.json \
-  --profile shareable --output shareable.json --json
+python3 scripts/sanitize-trip-brief.py "$WORK/private.json" \
+  --profile shareable --output "$WORK/shareable.json" --json
 ```
 
 Render and validate the shareable model separately. Never edit the private PDF
@@ -52,6 +56,8 @@ layers, metadata, or source files and is difficult to audit.
 Review the sanitized output for:
 
 - text that names a traveler indirectly;
+- title, eyebrow, subtitle, thesis, or audience fields that reveal the private
+  edition or name a traveler;
 - embedded image metadata or filenames containing private information;
 - source URLs with personal query strings;
 - map links that expose an exact home, hotel, or meeting point;
