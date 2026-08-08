@@ -74,7 +74,10 @@ Collect, or confirm:
 - who is traveling and any real differences in needs;
 - budget range and currency, if relevant;
 - mobility, dietary, sensory, language, or booking constraints;
-- desired output: private PDF, shareable PDF, companion web page, or all three.
+- desired output: private PDF, shareable PDF, companion web page, or all three;
+- intended audience: the traveler, the travel party, or wider sharing. The
+  working model is private by default; ask who the output is for when it is
+  not clear.
 
 If a missing answer would change the recommendations, ask a pointed question.
 Do not run a long questionnaire. Read the intake reference for the question
@@ -121,24 +124,30 @@ editorial reference before drafting the dossier.
 
 ### 5. Render the artifacts
 
+Work in a dedicated working folder for this trip: create one explicitly (for
+example `$(mktemp -d)` on macOS/Linux, or a named folder under the system
+temp directory) and keep the trip model, rendered HTML, sanitized editions,
+and PDFs there. Never write outputs into the skill directory or the user's
+home directory root. The examples below use `$WORK` for that folder.
+
 Keep content separate from layout. Validate the content model first:
 
 ```bash
-python3 scripts/validate-trip-brief.py trip-brief.json --strict --json
+python3 scripts/validate-trip-brief.py "$WORK/trip-brief.json" --strict --json
 ```
 
 Render a print-oriented HTML dossier:
 
 ```bash
-python3 scripts/render-travel-guide.py trip-brief.json \
-  --mode dossier --output travel-dossier.html --json
+python3 scripts/render-travel-guide.py "$WORK/trip-brief.json" \
+  --mode dossier --output "$WORK/travel-dossier.html" --json
 ```
 
 For a responsive companion page, use the same model:
 
 ```bash
-python3 scripts/render-travel-guide.py trip-brief.json \
-  --mode companion --output index.html --json
+python3 scripts/render-travel-guide.py "$WORK/trip-brief.json" \
+  --mode companion --output "$WORK/index.html" --json
 ```
 
 The renderer embeds the bundled CSS and local image assets when possible. Use a
@@ -152,8 +161,8 @@ Keep the private model as the source of truth. Create a sanitized copy rather
 than painting over a finished PDF:
 
 ```bash
-python3 scripts/sanitize-trip-brief.py trip-brief.json \
-  --profile shareable --output trip-brief-shareable.json --json
+python3 scripts/sanitize-trip-brief.py "$WORK/trip-brief.json" \
+  --profile shareable --output "$WORK/trip-brief-shareable.json" --json
 ```
 
 Render and validate the sanitized model separately. Do not assume that a

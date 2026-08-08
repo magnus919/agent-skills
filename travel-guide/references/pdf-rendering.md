@@ -5,6 +5,11 @@ structured trip model.
 
 ## Source and render pipeline
 
+Do all work in a dedicated working folder (`$WORK`): create it explicitly
+(for example `$(mktemp -d)` on macOS/Linux) and keep the JSON model, HTML,
+CSS, and final PDF there. Never write outputs into the skill directory or
+the user's home directory root.
+
 Keep the JSON model, HTML, CSS, and final PDF as separate artifacts:
 
 ```text
@@ -30,9 +35,9 @@ image is a warning, not a reason to pretend the page is complete.
 Run:
 
 ```bash
-python3 scripts/validate-trip-brief.py trip-brief.json --strict --json
-python3 scripts/render-travel-guide.py trip-brief.json \
-  --mode dossier --output dossier.html --json
+python3 scripts/validate-trip-brief.py "$WORK/trip-brief.json" --strict --json
+python3 scripts/render-travel-guide.py "$WORK/trip-brief.json" \
+  --mode dossier --output "$WORK/dossier.html" --json
 ```
 
 Use a print-capable browser with background printing enabled and browser
@@ -46,6 +51,7 @@ structural validation.
 Before delivery, verify all of the following:
 
 - the file has a real PDF header, page objects, and EOF trailer;
+- every major section begins on a fresh page;
 - text remains selectable;
 - the cover image and every intended local image are present;
 - no page is blank, clipped, or unexpectedly split;

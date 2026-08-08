@@ -25,28 +25,30 @@ It can produce a print-ready HTML dossier for PDF conversion, a responsive compa
 
 ## Quick Start
 
-From this skill directory:
+Work in a dedicated working folder so no artifacts land in your home
+directory or the skill directory. From this skill directory:
 
 ```bash
-cp templates/trip-brief.json ./my-trip.json
+mkdir -p work
+cp templates/trip-brief.json work/my-trip.json
 # Fill the JSON with the actual trip, recommendations, and source ledger.
-python3 scripts/validate-trip-brief.py ./my-trip.json --strict --json
-python3 scripts/render-travel-guide.py ./my-trip.json \
-  --mode dossier --output ./my-trip.html --json
+python3 scripts/validate-trip-brief.py work/my-trip.json --strict --json
+python3 scripts/render-travel-guide.py work/my-trip.json \
+  --mode dossier --output work/my-trip.html --json
 ```
 
-Open `my-trip.html` in a print-capable browser and save it as PDF. For a companion page instead:
+Open `work/my-trip.html` in a print-capable browser and save it as PDF. For a companion page instead:
 
 ```bash
-python3 scripts/render-travel-guide.py ./my-trip.json \
-  --mode companion --output ./site/index.html --json
+python3 scripts/render-travel-guide.py work/my-trip.json \
+  --mode companion --output work/site/index.html --json
 ```
 
 To create a shareable model first:
 
 ```bash
-python3 scripts/sanitize-trip-brief.py ./my-trip.json \
-  --profile shareable --output ./my-trip-shareable.json --json
+python3 scripts/sanitize-trip-brief.py work/my-trip.json \
+  --profile shareable --output work/my-trip-shareable.json --json
 ```
 
 ## Triggers

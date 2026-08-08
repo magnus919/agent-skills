@@ -64,6 +64,7 @@ class TravelGuideScriptsTest(unittest.TestCase):
             data["trip"]["end_date"] = "2027-04-18"
             data["trip"]["travelers"] = ["Alex Example"]
             data["trip"]["budget"] = {"label": "private", "amount_range": "9999"}
+            data["profile"] = {"known_preferences": ["botanical gardens"], "constraints": ["avoid crowds"]}
             data["sources"][0]["url"] = "https://example.org/source?token=secret#private"
             source.write_text(json.dumps(data), encoding="utf-8")
             result = run_script("sanitize-trip-brief.py", source, "--profile", "shareable", "--output", output, "--json")
@@ -73,6 +74,8 @@ class TravelGuideScriptsTest(unittest.TestCase):
             self.assertIsNone(sanitized["trip"]["start_date"])
             self.assertEqual(sanitized["trip"]["travelers"], ["the travel party"])
             self.assertEqual(sanitized["trip"]["budget"], {"label": "budget withheld"})
+            self.assertEqual(sanitized["profile"]["known_preferences"], ["preferences withheld"])
+            self.assertEqual(sanitized["profile"]["constraints"], ["constraints withheld"])
             self.assertNotIn("token=secret", sanitized["sources"][0]["url"])
 
     def test_sanitized_model_remains_renderable(self):

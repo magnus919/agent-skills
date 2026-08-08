@@ -23,6 +23,8 @@ DEFAULT_FIELDS = {
     "phone",
     "private_notes",
     "budget",
+    "known_preferences",
+    "constraints",
 }
 REPLACEMENTS = {
     "start_date": None,
@@ -37,6 +39,8 @@ REPLACEMENTS = {
     "phone": "contact withheld",
     "private_notes": "private note withheld",
     "budget": {"label": "budget withheld"},
+    "known_preferences": ["preferences withheld"],
+    "constraints": ["constraints withheld"],
 }
 URL_KEYS = {"url", "href", "booking_url", "map_url"}
 
