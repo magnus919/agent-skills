@@ -155,6 +155,7 @@
     "./vllm",
     "./web-accessibility",
     "./woodpecker-ci",
+    "./writing",
     "./yc-default-alive-calculator",
     "./yc-weekly-growth-compass"
   ]
