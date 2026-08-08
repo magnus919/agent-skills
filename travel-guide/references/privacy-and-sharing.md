@@ -56,6 +56,8 @@ layers, metadata, or source files and is difficult to audit.
 Review the sanitized output for:
 
 - text that names a traveler indirectly;
+- title, eyebrow, subtitle, thesis, or audience fields that reveal the private
+  edition or name a traveler;
 - embedded image metadata or filenames containing private information;
 - source URLs with personal query strings;
 - map links that expose an exact home, hotel, or meeting point;
