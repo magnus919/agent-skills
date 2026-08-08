@@ -8,6 +8,7 @@
   --gold: #d8a929;
   --signal: #b51f39;
   --orange: #ed8730;
+  --teal: #1f7a7a;
   --white: #fffdf8;
   --serif: Georgia, "Times New Roman", serif;
   --sans: Arial, Helvetica, sans-serif;
@@ -49,6 +50,15 @@ img { max-width: 100%; height: auto; }
 .cover-stat-label { display: block; color: var(--gold); font-size: .66rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
 .cover-stat-value { display: block; margin-top: .2rem; font-size: 1.05rem; font-weight: 700; }
 .image-credit { margin: 2.5rem 0 0; color: rgba(255,255,255,.7); font-size: .68rem; }
+.journey { width: 100%; max-width: 34rem; margin: 1.6rem 0 0; }
+
+.sheet { position: relative; isolation: isolate; counter-increment: sheet; }
+.sheet::before {
+  content: counter(sheet, decimal-leading-zero);
+  position: absolute; top: 2.6rem; right: 1.2rem; z-index: -1;
+  font-size: 7.5rem; font-weight: 800; letter-spacing: -.05em; line-height: 1;
+  color: rgba(23, 25, 27, .055); pointer-events: none;
+}
 
 .sheet { max-width: 920px; margin: 0 auto; padding: 4.5rem 8vw; background: var(--paper); }
 .sheet + .sheet { border-top: 1px solid var(--line); }
@@ -57,6 +67,7 @@ h2 { margin: 0 0 1.25rem; color: var(--ink); font-size: clamp(1.8rem, 4vw, 3.1re
 h3 { margin: 0; color: var(--ink); font-size: 1.15rem; line-height: 1.12; }
 p { line-height: 1.52; }
 .lede { max-width: 42rem; font-family: var(--serif); font-size: 1.3rem; line-height: 1.45; }
+.lede::first-letter { float: left; margin: .12em .12em 0 0; color: var(--signal); font-family: var(--serif); font-size: 3.6em; line-height: .8; font-weight: 700; }
 .muted { color: var(--muted); }
 .rule { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
 
@@ -65,10 +76,27 @@ p { line-height: 1.52; }
 .route-card strong, .practical-card strong { display: block; margin-bottom: .35rem; }
 .route-card small, .practical-card small { color: var(--muted); }
 
+.trip-meters { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1.6rem; margin: 1.6rem 0 .4rem; }
+.meter-label { display: block; color: var(--signal); font-size: .64rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.meter-cells { display: flex; gap: 3px; margin: .45rem 0 .3rem; }
+.meter-cells .cell { width: 1.15rem; height: .5rem; background: var(--line); }
+.meter-cells .cell.on { background: var(--gold); }
+.meter-value { color: var(--muted); font-size: .82rem; }
+
+.glance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: .6rem; margin: 1.4rem 0 .6rem; }
+.glance-day { padding: .85rem .95rem .9rem; background: var(--white); border-top: 4px solid var(--gold); break-inside: avoid; }
+.glance-day.kind-city { border-top-color: var(--signal); }
+.glance-day.kind-excursion { border-top-color: var(--orange); }
+.glance-day.kind-coast { border-top-color: var(--teal); }
+.glance-num { display: block; color: var(--muted); font-size: .64rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.glance-day strong { display: block; margin: .3rem 0 .25rem; font-size: .95rem; line-height: 1.25; }
+.glance-day small { display: block; color: var(--muted); font-size: .78rem; line-height: 1.35; }
+.glance-note { margin: .8rem 0 0; font-size: .78rem; }
+
 .anchor-list { display: grid; gap: 1.3rem; }
 .anchor-card { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.1rem; padding: 1.25rem 0; border-top: 1px solid var(--line); break-inside: avoid; }
 .anchor-card.has-image { grid-template-columns: 11rem minmax(0, 1fr); }
-.anchor-image { width: 100%; height: 8.5rem; border-radius: .25rem; object-fit: cover; background: #d3d0c7; }
+.anchor-image { width: 100%; height: 8.5rem; border-radius: .25rem; object-fit: cover; background: #d3d0c7; filter: sepia(.34) saturate(.72) contrast(1.08) brightness(.94); }
 .number { display: inline-grid; width: 1.8rem; height: 1.8rem; margin-right: .45rem; place-items: center; border-radius: 50%; background: var(--signal); color: var(--white); font-weight: 800; }
 .anchor-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .65rem; margin-top: 1rem; font-size: .88rem; }
 .anchor-meta dt { color: var(--signal); font-size: .64rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }

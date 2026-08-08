@@ -63,9 +63,14 @@ Before delivery, verify all of the following:
 - every major section begins on a fresh page;
 - text remains selectable;
 - the cover image and every intended local image are present;
+- the cover journey line renders when the route has two or more stops;
+- the day strip ("trip at a glance") shows one card per day with legible kind
+  colors, and the meters render when pace or budget are supplied;
+- ghost section numbers do not collide with content;
 - no page is blank, clipped, or unexpectedly split;
 - title, tables, captions, and source URLs are readable;
 - contrast works on the dark cover and in grayscale content pages;
+- anchor photos carry the unified warm grade and remain legible;
 - page count is consistent with the requested scope;
 - links and document metadata are set when the renderer supports them;
 - the source JSON and renderer output are retained for regeneration.

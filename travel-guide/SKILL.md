@@ -188,10 +188,12 @@ Adapt the length to the trip, but preserve the information hierarchy:
 7. skip this: attractive but poor-fit options, where useful;
 8. sources and freshness: links, retrieval dates, and unresolved uncertainty.
 
-The visual default is a dark photographic cover, warm gold eyebrow, white
-headline, restrained red accent, generous white content pages, numbered
-sections, compact cards, and readable tables. Preserve contrast and selectable
-text. Do not let decoration hide uncertainty or practical caveats.
+The visual default is a dark photographic cover with a route journey line, warm
+gold eyebrow, white headline, restrained red accent, generous white content
+pages, ghost section numbers, a color-coded day strip right after the brief,
+pace and budget meters, compact cards, a unified warm photo grade on anchor
+images, and readable tables. Preserve contrast and selectable text. Do not let
+decoration hide uncertainty or practical caveats.
 
 ## Exit criteria
 

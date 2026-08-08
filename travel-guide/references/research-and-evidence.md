@@ -81,6 +81,24 @@ Do not book or purchase anything. A booking link is a pointer, not evidence that
 availability exists. Mark availability as unverified unless the user or a
 booking tool has explicitly confirmed it.
 
+## Photo sourcing
+
+Photos are part of the visual contract: the cover and anchor cards take local
+images from the trip model, and the renderer embeds them into the artifact. The
+traveler's own photos are the best source. For anything else:
+
+- prefer free-license sources (for example Wikimedia Commons with a CC0, CC BY,
+  or CC BY-SA license) over scraped web images;
+- record the author and license in the image credit field so the rendered
+  dossier can show it;
+- download the file into the working folder and reference it by relative path
+  so the renderer embeds it; never hotlink an arbitrary web image into a
+  private artifact;
+- give every image a descriptive alt attribute that says what the photo shows,
+  not what it proves;
+- do not use a photo to imply that a recommendation is verified. A picture of a
+  famous site is not a source for its opening hours.
+
 ## Research stop conditions
 
 Stop and report a limitation when:

@@ -79,16 +79,25 @@ surprises that depend on access, money, health, or another person's consent.
 The default visual language is editorial rather than app-like:
 
 - a full-bleed, darkened cover photograph;
+- a route journey line on the cover (one dot per stop, dashed connector,
+  night counts) when the route has two or more stops;
 - a warm gold eyebrow and restrained red accent;
 - large, left-aligned white title text;
 - white content pages with generous margins;
-- numbered sections and compact, scannable cards;
+- ghost section numbers and compact, scannable cards;
+- a color-coded day strip right after the brief, one card per day, with the
+  day's kind (arrive, city, excursion, coast) driving the card color;
+- pace and budget meters in the brief when the trip model supplies them;
+- a unified warm photo grade on anchor images so mixed-source photos read as
+  one editorial set;
 - dark table headers with clear column labels;
 - short captions and visible image credits.
 
 Use images to establish place and texture, not to imply that an image proves a
 recommendation. Keep body text selectable and readable in grayscale or with
 high-contrast settings. Every meaningful image needs useful alternative text.
+The day strip is a glanceable overview, not a schedule: it must never invent a
+timed plan that the day cards do not support.
 
 ## Companion web page
 

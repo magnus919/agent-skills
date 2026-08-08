@@ -104,6 +104,9 @@ def validate(data, strict=False):
             value = anchor.get(key)
             if not isinstance(value, str) or not value.strip():
                 errors.append("%s.%s is required" % (prefix, key))
+        image = anchor.get("image")
+        if image is not None and not isinstance(image, dict):
+            errors.append("%s.image must be an object" % prefix)
         if not isinstance(anchor.get("source_ids", []), list):
             errors.append("%s.source_ids must be an array" % prefix)
         elif strict and not anchor.get("source_ids"):
@@ -125,6 +128,9 @@ def validate(data, strict=False):
                 errors.append("%s.%s is required" % (prefix, key))
         if not isinstance(day.get("source_ids", []), list):
             errors.append("%s.source_ids must be an array" % prefix)
+        kind = day.get("kind")
+        if kind is not None and (not isinstance(kind, str) or kind.strip().lower() not in ("arrive", "city", "excursion", "coast")):
+            warnings.append("%s.kind should be one of arrive, city, excursion, coast" % prefix)
 
     sources = data.get("sources")
     if not isinstance(sources, list):
