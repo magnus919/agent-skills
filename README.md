@@ -180,6 +180,10 @@ Carry an embedded technical engagement from an ambiguous need to an adopted, mea
 
 Build and maintain web frontends — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation. Do not use for backend service implementation, data engineering, or platform infrastructure work.
 
+### [genius-life](genius-life/SKILL.md)
+
+Guide a person in cultivating creativity in their own work and life: open conversational sessions on creative blocks, habits, environment, motivation, and resilience, or structured development of a concrete project or fledgling idea through a five-phase practice. Do not use for therapy or clinical support, general life coaching, product or stakeholder discovery, or as a study guide for a book.
+
 ### [ghost-cli](ghost-cli/SKILL.md)
 
 Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.
