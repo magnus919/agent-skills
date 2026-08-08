@@ -562,7 +562,7 @@ Operate self-hosted Woodpecker CI from installation through production troublesh
 
 Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Ships 3 sub-skills, 3 reference documents, 4 templates, and a worked example output bundle.
 
-### [writing](writing/SKILL.md)
+### [writers-helper](writers-helper/SKILL.md)
 
 A complete writing companion for fiction and nonfiction: premise and planning, outlining and worldbuilding, research, drafting and finishing, editing and revision, creative blocks and prompts, writing habits, and the business of publishing — book proposals, query letters, synopses, agents, publishers, and book deals. Ships 10 expert references, 13 fill-in templates, and 5 Python tools (prompt generator, session planner, manuscript stats analyzer, habit journal, submission tracker). Distilled from a 44-book writing-craft and publishing library.
 
