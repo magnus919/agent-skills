@@ -1,0 +1,6 @@
+<svg class="route-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Route mark">
+  <circle cx="32" cy="32" r="29" fill="#111315" stroke="#d8a929" stroke-width="2"/>
+  <path d="M18 43c7-13 12-20 19-24 4-2 8-2 10 1 2 3 1 7-2 10-5 5-11 4-15 1" fill="none" stroke="#f7f6f2" stroke-linecap="round" stroke-width="4"/>
+  <circle cx="18" cy="43" r="4" fill="#b51f39"/>
+  <circle cx="46" cy="20" r="4" fill="#ed8730"/>
+</svg>

@@ -102,6 +102,7 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "Playwright", "E2E test", "end-to-end test", "headless browser", "browser automation", "Playwright config", "selectors", "network mocking", "pwrun" | [playwright](../playwright/SKILL.md) |
 | "vLLM", "LLM serving", "inference server", "continuous batching", "tensor parallelism", "OpenAI-compatible API", "vLLM deployment", "GPU inference", "LLM benchmarking" | [vllm](../vllm/SKILL.md) |
 | "PDF", "Word document", "docx", "Excel", "xlsx", "PowerPoint", "pptx", "generate a report", "convert to PDF", "office document", "document validation", "generate a deck" | [documents](../documents/SKILL.md) |
+| "travel guide", "travel dossier", "personalized itinerary", "trip brief", "travel field guide", "travel companion web page", "travel PDF", "shareable itinerary" | [travel-guide](../travel-guide/SKILL.md) |
 | "mobile app", "iOS app", "Android app", "Flutter", "React Native", "App Store submission", "Play Store", "code signing", "Xcode", "emulator", "push notifications", "offline sync", "mobile testing" | [mobile-development](../mobile-development/SKILL.md) |
 | "Slack", "Slack channel", "Slack message", "Slack search", "Slack thread", "post to Slack", "slack-cli", "Slack Web API" | [slack](../slack/SKILL.md) |
 | "Notion", "Notion page", "Notion database", "Notion search", "notion-cli", "Notion API", "query Notion", "edit Notion" | [notion](../notion/SKILL.md) |
