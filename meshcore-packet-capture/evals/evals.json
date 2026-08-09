@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "skill_name": "meshcore-packet-capture",
+  "evals": [
+    {
+      "id": "neighbors-now-cli",
+      "prompt": "A user wants to run a single neighbors discovery + scopes cycle against their connected MeshCore companion right now, then have the capture process keep running afterward. Which meshcore-packet-capture CLI flag combination triggers one cycle immediately without quitting? What flag would make it exit after the cycle?",
+      "expected_output": "--neighbors-now runs one cycle immediately; --neighbors-exit (combined with --neighbors-now) exits once the cycle finishes.",
+      "assertions": [
+        "response_contains:--neighbors-now",
+        "response_contains:--neighbors-exit",
+        "exit_status:completed",
+        "activation_evidence_contains:meshcore-packet-capture"
+      ],
+      "files": ["SKILL.md", "references/configuration.md"]
+    },
+    {
+      "id": "neighbors-broker-optin",
+      "prompt": "A deployment publishes packet captures to an MQTT broker but no neighbors snapshot ever appears, even though the firmware supports it. The capture logs show a connected radio and healthy broker. What per-broker config must be set, and what additional requirement exists for the neighbors topic?",
+      "expected_output": "The broker block must set neighbors = true, and an IATA (or an explicit [broker.topics] neighbors override) is required; the cycle only runs when at least one enabled broker opts in.",
+      "assertions": [
+        "response_contains:neighbors = true",
+        "response_contains:IATA",
+        "exit_status:completed",
+        "activation_evidence_contains:meshcore-packet-capture"
+      ],
+      "files": ["SKILL.md", "references/configuration.md"]
+    },
+    {
+      "id": "payload-decoding-limits",
+      "prompt": "With decode_payloads enabled, which MeshCore packet types gain a nested decoded object, and which type remains opaque to a passive observer?",
+      "expected_output": "GRP_TXT channel messages are decrypted (sender, text) and ADVERTs are parsed (name, role, lat/lon); direct TXT_MSG messages cannot be decrypted by a passive observer.",
+      "assertions": [
+        "response_contains:GRP_TXT",
+        "response_contains:TXT_MSG",
+        "response_contains:decoded",
+        "exit_status:completed",
+        "activation_evidence_contains:meshcore-packet-capture"
+      ],
+      "files": ["SKILL.md", "references/configuration.md"]
+    },
+    {
+      "id": "user-service-install",
+      "prompt": "A Linux user has a local checkout of meshcore-packet-capture and wants a per-user systemd service without root install under /opt or /etc. What installer invocation creates it, and what command removes it later?",
+      "expected_output": "./install.sh --user-service creates the per-user service (optionally with --repo-dir PATH); ./uninstall.sh --user-service removes it, with --remove-venv to also delete the local .venv.",
+      "assertions": [
+        "response_contains:--user-service",
+        "response_contains:--repo-dir",
+        "response_contains:--remove-venv",
+        "exit_status:completed",
+        "activation_evidence_contains:meshcore-packet-capture"
+      ],
+      "files": ["SKILL.md", "references/deployment-and-troubleshooting.md"]
+    },
+    {
+      "id": "config-precedence",
+      "prompt": "In meshcore-packet-capture, which source wins when the same setting appears in the process environment, an explicit --config TOML file, and a .env file? Where should a user put their own overrides on a managed install?",
+      "expected_output": "Real process environment variables win over TOML, which wins over .env; user overrides belong in /etc/meshcore-packet-capture/config.d/99-user.toml (kept after updates).",
+      "assertions": [
+        "response_contains:99-user.toml",
+        "response_contains:environment",
+        "exit_status:completed",
+        "activation_evidence_contains:meshcore-packet-capture"
+      ],
+      "files": ["SKILL.md", "references/configuration.md"]
+    }
+  ]
+}
