@@ -43,6 +43,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 | Interoperate with OpenTelemetry | [references/opentelemetry-genai.md](references/opentelemetry-genai.md) |
 | Need framework-specific implementation | [references/framework-routing.md](references/framework-routing.md) |
 | Exercise the methodology with safe probes | [references/synthetic-scenarios.md](references/synthetic-scenarios.md) |
+| Benchmark an agent's Supabase task competence with the official harness | [supabase agent evals reference](../supabase/references/agent-evals.md) |
 | Verify a source claim or status | [references/source-index.md](references/source-index.md) |
 
 ## Templates
@@ -58,4 +59,4 @@ Use [templates/eval-plan.md](templates/eval-plan.md), [templates/dataset-manifes
 
 ## When Not To Use
 
-Use [systematic-debugging](../systematic-debugging/SKILL.md) to investigate one active defect before proposing fixes. Use [verification-methodology](../verification-methodology/SKILL.md) for general evidence-backed completion claims, [secure-software-engineering](../secure-software-engineering/SKILL.md) to design preventive controls, and framework skills for SDK-specific code.
+Use [systematic-debugging](../systematic-debugging/SKILL.md) to investigate one active defect before proposing fixes. Use [verification-methodology](../verification-methodology/SKILL.md) for general evidence-backed completion claims, [secure-software-engineering](../secure-software-engineering/SKILL.md) to design preventive controls, and framework skills for SDK-specific code. To benchmark an agent's competence on Supabase tasks with the official scored scenarios, use the [supabase agent evals reference](../supabase/references/agent-evals.md) — this skill covers methodology, not a named harness.
