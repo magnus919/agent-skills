@@ -1,7 +1,7 @@
 ---
 name: supabase
 description: >-
-  Use this skill when developing applications with Supabase, running the Supabase CLI, designing migrations and RLS policies, testing database behavior, generating client types, deploying the official self-hosted Docker stack, or administering its Postgres, Auth, Storage, Realtime, Functions, API gateway, backups, upgrades, and security. Use it for managed and self-hosted projects. Do not use it for generic PostgreSQL work with no Supabase services or conventions.
+  Use this skill when developing applications with Supabase, running the Supabase CLI, designing migrations and RLS policies, testing database behavior, generating client types, deploying the official self-hosted Docker stack, or administering its Postgres, Auth, Storage, Realtime, Functions, API gateway, backups, upgrades, and security. Use it for managed and self-hosted projects. Do not use for generic PostgreSQL work with no Supabase services or conventions.
 license: MIT
 compatibility: Requires network access for documentation lookup. Local development requires the Supabase CLI and a Docker-compatible runtime; self-hosting requires Linux, Git, Docker Engine, and Docker Compose.
 metadata:
@@ -33,6 +33,7 @@ Treat Supabase as a Postgres-centered system with multiple independently version
 | Deploy or harden the official Docker stack | [self-hosting deployment](references/self-hosting-deployment.md) |
 | Back up, restore, update, upgrade, monitor, or recover a self-hosted instance | [administration and recovery](references/administration-and-recovery.md) |
 | Diagnose unhealthy containers, bad URLs, auth failures, drift, or migration failures | [troubleshooting](references/troubleshooting.md) |
+| Evaluate how well an agent can use Supabase with scored scenarios | [agent evals harness](references/agent-evals.md) |
 | Check claim currency or authoritative source coverage | [source index](references/source-index.md) |
 
 ## First read-only discovery

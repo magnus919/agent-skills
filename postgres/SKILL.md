@@ -164,5 +164,5 @@ Diagnose in evidence order: identity/version → configuration → connections �
 - **Application-level data access patterns** (connection pooling in app code, ORM usage, query construction, transactions in services) — that is [backend-engineering](../backend-engineering/SKILL.md).
 - **Schema design and data modeling** (tables, keys, normalization, dimensional models) — that is [data-architect](../data-architect/SKILL.md) and [data-engineering](../data-engineering/SKILL.md).
 - **Database methodology across engines** (backup strategy, migration patterns, analytical SQL) — that is `data-engineering`.
-- **Supabase platform administration** (managed projects, CLI stack, the self-hosted Supabase stack) — that is [supabase](../supabase/SKILL.md); plain PostgreSQL operations without Supabase conventions belong here.
+- **Supabase platform administration** (managed projects, CLI stack, the self-hosted Supabase stack) — that is [supabase](../supabase/SKILL.md); plain PostgreSQL operations without Supabase conventions belong here. To measure an agent's Supabase task competence, use the skill's [agent evals harness reference](../supabase/references/agent-evals.md).
 - **Other database engines** (Redis, MongoDB, Elasticsearch, vector stores) — those stay in `data-engineering` references; this skill owns PostgreSQL only.

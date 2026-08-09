@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "skill_name": "anydoc",
+  "evals": [
+    {
+      "id": "docx-headings",
+      "prompt": "Convert this Word document to markdown and extract its headings.",
+      "expected_output": "The conversion exits 0 with empty stderr and emits GitHub-Flavored Markdown whose structure is expressed as ATX headings, including the lines `## Style heading stays a heading`, `### Direct level overrides the style`, and `# Direct outline without a style`.",
+      "assertions": [
+        "The output contains the heading line `## Style heading stays a heading`",
+        "The output contains the heading line `### Direct level overrides the style`",
+        "The output contains the heading line `# Direct outline without a style`"
+      ],
+      "files": ["fixtures/fixture-handmade-outline.docx"]
+    },
+    {
+      "id": "xlsx-table-cell-values",
+      "prompt": "Convert this spreadsheet to markdown and show me the cell values as a table.",
+      "expected_output": "The conversion exits 0 and emits a `## Values` heading followed by a GFM table whose cells carry the raw cell values: `Percent | 0.155`, `Currency | 1234.5`, `Thousands | 9876543`, `Date | 2026-03-15` — the number formats are dropped, so the output must NOT contain `15.5%` or `$1,234.50`.",
+      "assertions": [
+        "The output contains a `## Values` heading",
+        "The output contains the table row `| Percent | 0.155 | fifteen and a half |`",
+        "The output contains the raw value `1234.5` for the Currency row",
+        "The output does not contain the formatted values `15.5%` or `$1,234.50`"
+      ],
+      "files": ["fixtures/sheet.xlsx"]
+    },
+    {
+      "id": "pptx-slides-structure",
+      "prompt": "Convert this PowerPoint deck to markdown, keeping the slide structure.",
+      "expected_output": "The conversion exits 0 and preserves slide structure: slide titles like `Deck Title Slide` and `Numbers Slide` render as plain paragraphs (not headings), top-level bullets carry an indented nested detail, speaker notes render as blockquotes (`> Speaker note for the intro slide.`), and the slide table renders as a GFM table with the row `| North | 42 |`.",
+      "assertions": [
+        "The output contains `Deck Title Slide` as a plain paragraph, not a markdown heading",
+        "The output contains the blockquote line `> Speaker note for the intro slide.`",
+        "The output contains the GFM table row `| North | 42 |`"
+      ],
+      "files": ["fixtures/pres.pptx"]
+    },
+    {
+      "id": "csv-table",
+      "prompt": "Convert this CSV file to a markdown table.",
+      "expected_output": "The conversion exits 0 and renders the file as a single GFM table with the first row promoted to the header: `| Kind | Value | Note |` with a separator row and body rows carrying the cell values `15.5%` and `fifteen and a half`.",
+      "assertions": [
+        "The output contains the header row `| Kind | Value | Note |`",
+        "The output contains a row carrying the cell values `15.5%` and `fifteen and a half`"
+      ],
+      "files": ["fixtures/fixture-sheet.csv"]
+    },
+    {
+      "id": "legacy-doc-converts",
+      "prompt": "Convert this legacy .doc file to markdown.",
+      "expected_output": "The conversion exits 0 with empty stderr and emits the shared document serializer's GFM shape: a `# Fixture Document` title, `##` section headings (including `## Lists` and `## Table`), a GFM table with merged cells as empty covered spans, and `[^1]: ...` footnote definitions at the end of the document.",
+      "assertions": [
+        "The output contains the heading `# Fixture Document`",
+        "The output contains at least three `##` section headings including `## Lists` and `## Table`",
+        "The output contains a `[^1]:` footnote definition block"
+      ],
+      "files": ["fixtures/text.doc"]
+    },
+    {
+      "id": "image-only-pdf-no-ocr",
+      "prompt": "Convert this scanned PDF to markdown.",
+      "expected_output": "The conversion FAILS by design: exit code 1, empty stdout, and exactly one stderr line `anydoc: unsupported input: PDF has no extractable text (Scanned, 1 pages): OCR is required`. anydoc does not perform OCR; the correct response is to route the file to OCR tooling or the hosted Firecrawl Parse API, not to retry locally.",
+      "assertions": [
+        "The conversion exits with code 1 and emits no markdown",
+        "Stderr contains the verbatim message `anydoc: unsupported input: PDF has no extractable text (Scanned, 1 pages): OCR is required`",
+        "The response states that OCR is required and routes to OCR tooling or Firecrawl Parse rather than retrying locally"
+      ],
+      "files": ["fixtures/scanned-image-only.pdf"]
+    },
+    {
+      "id": "ods-preserved-values",
+      "prompt": "Convert this OpenDocument spreadsheet to markdown. I need the formatted display values.",
+      "expected_output": "The conversion exits 0 and emits a `## Values` heading plus a GFM table whose cells carry the FORMATTED display values — `Percent | 15.5%`, `Currency | $1,234.50`, `Thousands | 9,876,543` — explicitly contrasting with the xlsx/xls number-format drop.",
+      "assertions": [
+        "The output contains the table row `| Percent | 15.5% | fifteen and a half |`",
+        "The output contains the formatted values `15.5%` and `$1,234.50`",
+        "The output does not contain the raw values `0.155` or `1234.5`"
+      ],
+      "files": ["fixtures/sheet.ods"]
+    },
+    {
+      "id": "odt-converts",
+      "prompt": "Convert this ODT document to markdown and show me the structure.",
+      "expected_output": "The conversion exits 0 with empty stderr and emits the document shape shared with DOCX/DOC/RTF: a `# Fixture Document` title, `##` section headings, a GFM table, and `[^1]:` / `[^2]:` footnote definition lines at the end.",
+      "assertions": [
+        "The output contains the heading `# Fixture Document`",
+        "The output contains `##` section headings such as `## Lists` and `## Table`",
+        "The output contains the footnote definition `[^1]: Footnote after an astral character.`"
+      ],
+      "files": ["fixtures/text.odt"]
+    },
+    {
+      "id": "pdf-text-lower-fidelity",
+      "prompt": "Convert this text-based PDF to markdown. Will the table survive the conversion?",
+      "expected_output": "The conversion exits 0 with empty stderr and preserves top-level structure via `# Fixture Document` and `##` section headings (`## Lists`, `## Table`, `## Notes and special text`), but the PDF pipeline is lower-fidelity: the table flattens into the plain paragraph `Wide head End Tall B2 C2 B3 C3` with no GFM table, footnote markers degrade to inline superscript glyphs with no `[^1]:` definition block, and links are not emitted as markdown links.",
+      "assertions": [
+        "The output contains `# Fixture Document` and the `##` section headings including `## Table`",
+        "The table region flattens to the plain paragraph `Wide head End Tall B2 C2 B3 C3` with no GFM table row",
+        "The output contains no `[^1]:` footnote definition block"
+      ],
+      "files": ["fixtures/fixture-text.pdf"]
+    },
+    {
+      "id": "legacy-ppt-flattens-tables",
+      "prompt": "Convert this legacy PowerPoint file to markdown and keep the slides' content.",
+      "expected_output": "The conversion exits 0 and preserves slide text: plain-paragraph titles `Deck Title Slide` and `Numbers Slide` and the blockquote speaker note `> Speaker note for the intro slide.`. The Numbers Slide table flattens to bare text lines (`Region`, `Total`, `North`, `42`) rather than a GFM table, unlike PPTX and ODP.",
+      "assertions": [
+        "The output contains the blockquote line `> Speaker note for the intro slide.`",
+        "The table content renders as bare text lines including `North` and `42`",
+        "The output does not contain a GFM table row `| North | 42 |`"
+      ],
+      "files": ["fixtures/pres.ppt"]
+    },
+    {
+      "id": "odp-slides-structure",
+      "prompt": "Convert this OpenDocument presentation to markdown, preserving the slide structure.",
+      "expected_output": "The conversion exits 0 and emits the same slide shape as PPTX: `Deck Title Slide` renders as a plain paragraph (not a heading), the speaker note renders as the blockquote `> Speaker note for the intro slide.`, and the slide table renders as a GFM table containing the row `| North | 42 |`.",
+      "assertions": [
+        "The output contains `Deck Title Slide` as a plain paragraph, not a markdown heading",
+        "The output contains the blockquote line `> Speaker note for the intro slide.`",
+        "The output contains the GFM table row `| North | 42 |`"
+      ],
+      "files": ["fixtures/pres.odp"]
+    },
+    {
+      "id": "rtf-converts",
+      "prompt": "Convert this RTF document to markdown and extract the structure.",
+      "expected_output": "The conversion exits 0 with empty stderr and emits the shared document serializer's shape: `# Fixture Document`, `##` section headings including `## Lists` and `## Table`, a GFM table with merged cells as empty covered spans, and `[^1]:` footnote definitions at the end.",
+      "assertions": [
+        "The output contains the heading `# Fixture Document`",
+        "The output contains `##` section headings such as `## Lists` and `## Table`",
+        "The output contains the footnote definition `[^1]: Footnote after an astral character.`"
+      ],
+      "files": ["fixtures/text.rtf"]
+    },
+    {
+      "id": "epub-converts",
+      "prompt": "Convert this EPUB ebook to markdown, keeping the chapter structure.",
+      "expected_output": "The conversion exits 0 with empty stderr and emits `# Fixture Book`, `# Chapter One` and `# Chapter Two` headings, a GFM table containing `| Bolts | 12 |`, and internal anchor links that resolve to fragments such as `[Chapter Two](#epub-text-ch002-xhtml-chapter-two)`.",
+      "assertions": [
+        "The output contains the chapter heading `# Chapter One`",
+        "The output contains the GFM table row `| Bolts | 12 |`",
+        "The output contains the internal anchor link `[Chapter Two](#epub-text-ch002-xhtml-chapter-two)`"
+      ],
+      "files": ["fixtures/book.epub"]
+    },
+    {
+      "id": "csv-quoted-cells",
+      "prompt": "Convert this CSV to a markdown table. Some cells contain commas and newlines.",
+      "expected_output": "The conversion exits 0 and renders the file as a single GFM table with the first row promoted to the header: `| name | desc | qty |` followed by a separator row, with quoted content intact — `| padded | comma, inside | 3 |` keeps the embedded comma and `| plain | multi line | 4 |` keeps the embedded newline.",
+      "assertions": [
+        "The output contains the promoted header row `| name | desc | qty |`",
+        "The output contains the row `| padded | comma, inside | 3 |` with the embedded comma preserved"
+      ],
+      "files": ["fixtures/fixture-handmade-quoted.csv"]
+    }
+  ]
+}
