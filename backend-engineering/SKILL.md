@@ -53,6 +53,7 @@ Backend engineering is the craft of building the server-side systems that power 
 ## Related Skills
 
 - [postgres](../postgres/SKILL.md) — diagnosing the PostgreSQL side of a database problem: configuration review, index and query-plan issues, vacuum/bloat, backups/PITR, replication and failover. Application-level data access patterns stay here; engine-level operations route there.
+- [supabase](../supabase/SKILL.md) — building on Supabase: migrations, RLS, Auth, Storage, and Edge Functions. To measure an agent's Supabase task competence, use its [agent evals harness reference](../supabase/references/agent-evals.md).
 
 ## Core Principles
 

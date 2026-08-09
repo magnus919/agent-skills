@@ -91,6 +91,28 @@
         "Distinguishes genuinely new-install generation from explicit post-recovery rotation.",
         "Uses config, bounded logs, observed migration progress, health convergence, and smoke checks without invented durations or universal restart claims."
       ]
+    },
+    {
+      "id": "agent-eval-harness-run",
+      "prompt": "We want to know how well our coding agent can actually use Supabase end to end. Point me at the official way to benchmark agents against Supabase tasks and run one representative scenario.",
+      "expected_output": "The agent routes to the skill's agent evals harness reference, identifies supabase/evals as the official harness, distinguishes it from the skill's own evals/evals.json, picks an eval scenario and experiment matching the workflow under evaluation, and gives exact commands to clone, install, and run it.",
+      "assertions": [
+        "Routes to references/agent-evals.md rather than inventing a local benchmark.",
+        "Distinguishes the external supabase/evals harness from this skill's own evals/evals.json output-quality contract.",
+        "Uses the real harness commands (git clone --recurse-submodules, pnpm install, pnpm eval with --eval and --experiment) without inventing flags.",
+        "Verifies scenario IDs and metadata values against the current supabase/evals repository before citing them."
+      ]
+    },
+    {
+      "id": "agent-eval-competence-comparison",
+      "prompt": "Compare two agent configurations on Supabase RLS and security work. Tell me which one is better at writing secure policies, and how you measured it.",
+      "expected_output": "The agent maps RLS and security workflows to the harness's build-rls-* and resolve-security-* scenarios, runs a head-to-head experiment comparison, and reports results from the harness viewer with the evidence the skill's verification matrix requires.",
+      "assertions": [
+        "Selects harness scenarios that exercise RLS and authorization (for example build-rls-* and resolve-security-*) instead of generic prompts.",
+        "Uses --experiment-suite or repeated --experiment flags for head-to-head comparison and reports the comparison basis.",
+        "Does not present harness scores as proof beyond what the scenario scorer observes; keeps authorization claims tied to real policy behavior.",
+        "Confirms scenario IDs against the current supabase/evals repository before running."
+      ]
     }
   ]
 }

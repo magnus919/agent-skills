@@ -13,6 +13,7 @@ This skill gives your agent one evidence-led workflow for managed projects, CLI-
 | Resource | Purpose |
 |---|---|
 | `SKILL.md` | Discovery-first workflow, safety boundaries, routing, and completion checks |
+| `references/agent-evals.md` | The official supabase/evals harness: eval/experiment concepts, the two runtimes, run commands, and scenario-to-workflow mapping |
 | `references/architecture-and-boundaries.md` | Service map, keys, trust boundaries, and environment differences |
 | `references/local-development-and-cli.md` | CLI installation, project layout, local workflow, linking, and deployment |
 | `references/database-development-and-testing.md` | Migrations, declarative schemas, seeds, RLS, pgTAP, and type generation |
