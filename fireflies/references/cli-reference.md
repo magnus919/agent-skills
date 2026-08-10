@@ -10,7 +10,7 @@ subcommands: `--json`, `--api-key`, `--endpoint`, `--timeout`, `--dry-run`, `--q
 |---|---|
 | `query --document DOC [--variables JSON|--variables-file PATH]` | Generic read-only GraphQL |
 | `mutation --document DOC ... --confirm` | Generic mutation |
-| `transcripts list|get|delete` | Search, inspect, or delete meetings |
+| `transcripts list|get|delete` | Search, inspect, or delete meetings; `get` also returns `video_url`/`audio_url` recording download links |
 | `users`, `contacts`, `channels`, `groups`, `bites`, `apps` | Workspace/content reads; `users set-role --user-id ID --role admin|user` assigns roles |
 | `analytics`, `meetings active`, `live-action-items` | Analytics and live data |
 | `meetings rename|privacy|state|share|revoke-share|update-channel` | Meeting mutations; `share` accepts `--expiry-days` |
