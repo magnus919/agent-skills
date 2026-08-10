@@ -16,7 +16,7 @@ EX_USAGE, EX_CONFIG, EX_TRANSPORT, EX_GRAPHQL, EX_CONFIRM = 2, 3, 4, 5, 6
 
 DOCS = {
     "transcripts_list": "query Transcripts($title: String, $keyword: String, $scope: String, $fromDate: DateTime, $toDate: DateTime, $limit: Int, $skip: Int, $hostEmail: String, $userId: String, $mine: Boolean, $organizers: [String!], $participants: [String!], $channelId: String, $organizerEmail: String, $participantEmail: String) { transcripts(title: $title, keyword: $keyword, scope: $scope, fromDate: $fromDate, toDate: $toDate, limit: $limit, skip: $skip, host_email: $hostEmail, user_id: $userId, mine: $mine, organizers: $organizers, participants: $participants, channel_id: $channelId, organizer_email: $organizerEmail, participant_email: $participantEmail) { id title date duration organizer_email participants transcript_url } }",
-    "transcript": "query Transcript($id: String!) { transcript(id: $id) { id title date duration organizer_email participants transcript_url summary { overview } speakers { id name } sentences { index text speaker_name start_time end_time } analytics { sentiments { negative_pct neutral_pct positive_pct } } } }",
+    "transcript": "query Transcript($id: String!) { transcript(id: $id) { id title date duration organizer_email participants transcript_url video_url audio_url summary { overview } speakers { id name } sentences { index text speaker_name start_time end_time } analytics { sentiments { negative_pct neutral_pct positive_pct } } } }",
     "users": "query Users { users { user_id email name is_admin integrations } }",
     "me": "query User { user { user_id email name is_admin integrations } }",
     "user": "query User($id: String!) { user(id: $id) { user_id email name is_admin integrations } }",

@@ -41,6 +41,8 @@ follows (live schema wins):
 - `createBite` names its argument `transcript_Id` (capital I) and `privacies` takes
   `[BitePrivacy!]` (enum: `public`, `team`, `participants`).
 - `shareMeeting` input gained `expiry_days` (7, 14, or 30).
+- `transcript` selection gained `video_url` and `audio_url` (meeting recording download links),
+  verified by live introspection on 2026-08-10.
 - `updateMeetingChannel` (changelog 2.15.0), `addToLiveMeeting`, `createLiveSoundbite`,
   `createUploadUrl`/`confirmUpload`, `setUserRole`, and `askfred_thread` were added as ergonomic
   commands after the audit found them documented but uncovered.

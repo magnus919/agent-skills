@@ -79,6 +79,7 @@ class FirefliesTests(unittest.TestCase):
         self.assertEqual(analytics["variables"],{"startTime":"2026-01-01","endTime":"2026-01-31"})
         transcript=json.loads(self.run_cli("transcripts","get","transcript-id","--dry-run","--json").stdout)["payload"]
         self.assertIn("negative_pct neutral_pct positive_pct",transcript["query"])
+        self.assertIn("video_url audio_url",transcript["query"])
         audit=json.loads(self.run_cli("audit-events","--filter",'{"category":"MEETING_OPERATIONS"}',"--dry-run","--json").stdout)["payload"]
         self.assertIn("events { id time action actor { user_id } resource { type id } }",audit["query"])
     def test_transcripts_list_document_is_current(self):

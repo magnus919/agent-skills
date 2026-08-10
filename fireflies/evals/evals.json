@@ -56,6 +56,17 @@
     "Notes AskFred mutations require AI credits and --confirm",
     "Does not claim AskFred works without an API key"
    ]
+  },
+  {
+   "id": "recording-urls",
+   "prompt": "I have a transcript ID for a meeting I attended and I want to download the audio and video recordings of it. How does the skill give me those files?",
+   "expected_output": "The agent uses the fireflies transcripts get command with the transcript ID; the returned JSON includes video_url and audio_url fields, which are the download links for the meeting's video and audio recordings. It explains the query is a read-only GraphQL query requiring FIREFLIES_API_KEY and returns JSON.",
+   "assertions": [
+    "Uses the fireflies transcripts get command with a transcript ID",
+    "Identifies video_url and audio_url in the returned fields as the recording download links",
+    "Notes the query is read-only and requires FIREFLIES_API_KEY",
+    "Does not propose an upload or mutation for a read-only lookup"
+   ]
   }
  ]
 }
