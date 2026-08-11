@@ -90,6 +90,10 @@ The default visual language is editorial rather than app-like:
 - pace and budget meters in the brief when the trip model supplies them;
 - a unified warm photo grade on anchor images so mixed-source photos read as
   one editorial set;
+- a bottom-of-page footer per section: a content-derived field note (the first
+  anchor's failure mode, the first day's alternative, the practical recheck
+  item, or the first skip reason) when one exists, a next-section line, and a
+  ghost route mark;
 - dark table headers with clear column labels;
 - short captions and visible image credits.
 
@@ -97,7 +101,10 @@ Use images to establish place and texture, not to imply that an image proves a
 recommendation. Keep body text selectable and readable in grayscale or with
 high-contrast settings. Every meaningful image needs useful alternative text.
 The day strip is a glanceable overview, not a schedule: it must never invent a
-timed plan that the day cards do not support.
+timed plan that the day cards do not support. The section footer is the same
+kind of restraint: it repeats one line already in the model rather than adding
+new recommendations, and a section with nothing worth saying simply omits the
+field note.
 
 ## Companion web page
 
