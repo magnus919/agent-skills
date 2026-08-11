@@ -178,6 +178,41 @@ class TravelGuideScriptsTest(unittest.TestCase):
             payload = json.loads(result.stdout)
             self.assertTrue(any("kind" in warning for warning in payload["warnings"]))
 
+    def test_section_footer_shows_next_section_and_watermark(self):
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            brief = directory / "brief.json"
+            brief.write_text(json.dumps(self._filled_brief()), encoding="utf-8")
+            output = directory / "dossier.html"
+            result = run_script("render-travel-guide.py", brief, "--output", output, "--json")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            rendered = output.read_text(encoding="utf-8")
+            self.assertIn('class="section-footer"', rendered)
+            self.assertIn("Next:", rendered)
+            self.assertIn("Trip at a glance", rendered)
+            self.assertIn('class="route-watermark"', rendered)
+            self.assertIn("End of dossier", rendered)
+
+    def test_section_footer_field_notes_repeat_model_lines(self):
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            brief = directory / "brief.json"
+            data = self._filled_brief()
+            data["anchors"][0]["failure_mode"] = "Rain sends the walk indoors."
+            data["days"][0]["alternative"] = "A nearby café and an early night."
+            data["practical"] = [{"label": "Recheck before departure", "value": "Museum hours change seasonally.", "source_ids": ["S1"]}]
+            brief.write_text(json.dumps(data), encoding="utf-8")
+            output = directory / "dossier.html"
+            result = run_script("render-travel-guide.py", brief, "--output", output, "--json")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            rendered = output.read_text(encoding="utf-8")
+            self.assertIn("If it goes wrong", rendered)
+            self.assertIn("Rain sends the walk indoors.", rendered)
+            self.assertIn("Plan B", rendered)
+            self.assertIn("A nearby café and an early night.", rendered)
+            self.assertIn("Recheck before departure", rendered)
+            self.assertIn("Museum hours change seasonally.", rendered)
+
 
 if __name__ == "__main__":
     unittest.main()

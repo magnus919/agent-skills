@@ -148,6 +148,70 @@ def render_meters(brief):
     return '<div class="trip-meters">%s</div>' % "".join(parts)
 
 
+SECTION_ORDER = ["brief", "glance", "anchors", "days", "special", "skip", "practical", "sources"]
+SECTION_HEADINGS = {
+    "brief": ("The brief", "Why this trip, now?"),
+    "glance": ("Trip at a glance", "The whole trip, one glance."),
+    "anchors": ("The anchors", "Protect the good parts."),
+    "days": ("Day architecture", "Enough shape to wander."),
+    "special": ("Make it special", "Make it special."),
+    "skip": ("A useful no", "Skip this."),
+    "practical": ("Field notes", "Keep the friction small."),
+    "sources": ("Evidence and freshness", "Sources."),
+}
+
+
+def field_note(section, brief):
+    """One content-derived line for the section footer; None when nothing fits."""
+    if section == "anchors":
+        first = next((a for a in brief.get("anchors", []) if isinstance(a, dict)), None)
+        if first and first.get("failure_mode"):
+            return ("If it goes wrong", first["failure_mode"])
+    if section == "days":
+        first = next((d for d in brief.get("days", []) if isinstance(d, dict)), None)
+        if first and first.get("alternative"):
+            return ("Plan B", first["alternative"])
+    if section == "practical":
+        for item in brief.get("practical", []):
+            if isinstance(item, dict) and "recheck" in str(item.get("label", "")).lower() and item.get("value"):
+                return ("Recheck before departure", item["value"])
+    if section == "skip":
+        first = next((s for s in brief.get("skip", []) if isinstance(s, dict)), None)
+        if first and first.get("reason"):
+            return ("Why we skip it", first["reason"])
+    return None
+
+
+def section_footer(section, brief):
+    """Bottom-of-page footer: field note, next-section line, and a ghost mark."""
+    note = field_note(section, brief)
+    note_html = ""
+    if note:
+        note_html = '<span class="fn-label">%s</span><span class="fn-text">%s</span>' % (
+            esc(note[0]), esc(note[1]))
+    index = SECTION_ORDER.index(section)
+    next_html = ""
+    if index < len(SECTION_ORDER) - 1:
+        next_name = SECTION_ORDER[index + 1]
+        kicker, heading = SECTION_HEADINGS[next_name]
+        num = "%02d" % (index + 2)
+        next_html = ('<span class="next-up">Next: <span class="next-kicker">%s</span> — %s'
+                     '<span class="next-num">%s</span></span>') % (esc(kicker), esc(heading), num)
+    else:
+        next_html = '<span class="next-up"><span class="next-kicker">End of dossier</span></span>'
+    mark = render_mark()
+    watermark = '<div class="route-watermark" aria-hidden="true">%s</div>' % mark if mark else ""
+    return '<div class="section-footer">%s%s</div>\n%s' % (note_html, next_html, watermark)
+
+
+def inject_footer(section_html, section, brief):
+    footer_html = section_footer(section, brief)
+    index = section_html.rfind("</section>")
+    if index == -1:
+        return section_html + "\n" + footer_html
+    return section_html[:index] + "\n" + footer_html + "\n" + section_html[index:]
+
+
 def render_cover(brief, base_dir, warnings):
     trip = brief.get("trip", {})
     cover = brief.get("cover", {})
@@ -409,7 +473,18 @@ def render_sources(brief):
 
 
 def render_body(brief, base_dir, warnings, mode):
-    body = [render_cover(brief, base_dir, warnings), render_brief(brief), render_glance(brief), render_anchors(brief, base_dir, warnings), render_days(brief), render_special(brief), render_skip(brief), render_practical(brief), render_sources(brief)]
+    sections = [
+        ("brief", render_brief(brief)),
+        ("glance", render_glance(brief)),
+        ("anchors", render_anchors(brief, base_dir, warnings)),
+        ("days", render_days(brief)),
+        ("special", render_special(brief)),
+        ("skip", render_skip(brief)),
+        ("practical", render_practical(brief)),
+        ("sources", render_sources(brief)),
+    ]
+    body = [render_cover(brief, base_dir, warnings)]
+    body.extend(inject_footer(html, name, brief) for name, html in sections)
     nav = ""
     if mode == "companion":
         nav = '<nav class="companion-nav" aria-label="Guide sections"><a href="#brief">Brief</a><a href="#glance">At a glance</a><a href="#anchors">Anchors</a><a href="#days">Days</a><a href="#special">Special</a><a href="#practical">Field notes</a><a href="#sources">Sources</a></nav>'
