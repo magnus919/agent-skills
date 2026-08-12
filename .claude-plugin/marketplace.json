@@ -897,6 +897,15 @@
       "description": "Apply distilled coding principles from 14 classic software books to code review, refactoring, design, and implementation decisions. Do not use for language- or framework-specific tutorials, tool manuals, or tasks already governed by a project's established conventions."
     },
     {
+      "name": "promise-theory",
+      "source": "./",
+      "skills": [
+        "./promise-theory"
+      ],
+      "strict": false,
+      "description": "Design and diagnose coordination in hybrid human + AI agent workforces using promise theory (Burgess/Bergstra): model agents as autonomous, coordination as voluntary offers plus acceptance, and trust as calibrated assessment. Use for delegation modeling, capability manifests and agent contracts, coordination-failure diagnosis, trust/verification calibration, convergent self-healing systems, and converting obligation-based designs to promise-based. Do not use for enforceable centralized control, legal contract drafting (promise theory is not contract law), simple single-agent prompting, imperative push-based orchestration, or tool manuals — route those to the tool's own skill."
+    },
+    {
       "name": "pydanticai",
       "source": "./",
       "skills": [

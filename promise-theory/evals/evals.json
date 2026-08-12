@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "skill_name": "promise-theory",
+  "evals": [
+    {
+      "id": "manifest-draft-hybrid-research-team",
+      "case_set": "release",
+      "prompt": "Draft a promise manifest for our hybrid research team using the promise-manifest v1 schema: a human research lead, an AI literature-review agent, an AI writer agent, and an AI fact-checker agent. The human sets priorities and approves the final deliverable; the literature agent summarizes sources; the writer produces drafts; the fact-checker verifies claims. Model each agent's promises, the cross-agent acceptances, and human oversight as expectations, and make sure the manifest would lint clean.",
+      "expected_output": "Model the hybrid research team as a promise-manifest v1 YAML document: three autonomous agents (literature-agent, writer, fact-checker) and a human research lead who is an acceptor and evaluator, never an agent. Every agent declares its own promises with unique ids and valid types and targets; acceptances are cross-agent (the writer accepts lit-review, the fact-checker accepts writing-task, the literature-agent accepts writing-task); every expectation's about references a declared promise id, and human oversight is recorded as expectations with from: human. The complete manifest:\n\n```yaml\n# promise-manifest v1\nagents:\n  - id: literature-agent\n    role: literature reviewer\n    accepts: [writing-task]\n    promises:\n      - id: lit-review\n        type: capability\n        target: writer\n        body: Summarize and cite the assigned literature corpus.\n        constraint: limit 25 sources\n        expires: P30D\n      - id: source-audit\n        type: capability\n        target: fact-checker\n        body: Flag unsupported citations for the fact-check pass.\n  - id: writer\n    role: draft writer\n    accepts: [lit-review]\n    promises:\n      - id: writing-task\n        type: capability\n        target: human\n        body: Produce the first draft from the literature review.\n        withdraw: when the literature corpus is not delivered\n  - id: fact-checker\n    role: fact-checker\n    accepts: [writing-task]\n    promises:\n      - id: fact-check\n        type: capability\n        target: human\n        body: Verify claims against cited sources before publication.\nexpectations:\n  - id: exp-lit-review\n    from: human\n    about: lit-review\n    verifier: manual\n    severity: impact\n  - id: exp-writing-task\n    from: human\n    about: writing-task\n    verifier: manual\n    severity: impact\n  - id: exp-fact-check\n    from: human\n    about: fact-check\n    verifier: audit\n    severity: impact\n```",
+      "assertions": [
+        "response_contains:literature-agent",
+        "response_contains:from: human",
+        "response_not_contains:id: human",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "diagnose-multiagent-report-failure",
+      "case_set": "release",
+      "prompt": "Two agents in our report pipeline both assume the other writes the final summary. Neither agent's instructions assign the summary explicitly, and nothing in the pipeline checks whether a summary was produced, so the pipeline hangs and the report is never delivered. Diagnose this coordination failure using promise-theory categories and name the promises involved.",
+      "expected_output": "The diagnosis classifies the failure with promise-theory categories: the load-bearing category is missing assessment — no evaluation-loop step verifies that the final-summary promise was kept, so the failure stays invisible until delivery. The contributing category is broken promise body: the summary promise was never precisely assigned, leaving both agents' promise bodies ambiguous about who writes the final-summary promise; failed acceptance compounds it because neither agent ever accepted a clear final-summary promise. The response names the promises involved — the unassigned final-summary promise and both agents' delivery promises — and prescribes the fix: declare the summary as a single promise with one promiser, record an explicit acceptance, and add an assessment step that observes the deliverable.",
+      "assertions": [
+        "response_contains:missing assessment",
+        "response_contains:broken promise body",
+        "response_contains:failed acceptance",
+        "response_contains:final-summary promise",
+        "response_not_contains:communicate better",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "refactor-obligation-to-promises",
+      "case_set": "release",
+      "prompt": "Right now we drive our delivery pipeline by push commands and mandated task assignments: the pipeline forcibly assigns build, deploy, and rollback tasks to agents and requires them to execute. Refactor this obligation-based design into a promise-based design, explaining how each mandate becomes a voluntary offer with acceptance and consent.",
+      "expected_output": "The refactor replaces each mandated task with a voluntary promise offer: the pipeline agent offers the build-and-deploy behavior as declared promises, the operator agent accepts them explicitly, and nothing is imposed on an agent without consent. The promise set names the concrete promises — build-service, deploy-to-prod, rollback-on-failure — each with a body, a target, and a binding that records who accepts it, plus expectations that record human oversight. The response shows how refusal becomes a coordination signal rather than a violation, and how the old obligation vocabulary (commands, mandates, required execution) is replaced by offer, accept, and withdraw.",
+      "assertions": [
+        "response_contains:voluntary promise offer",
+        "response_contains:deploy-to-prod",
+        "response_contains:without consent",
+        "response_not_contains:no acceptance needed",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "trust-calibration-verification-schedule",
+      "case_set": "release",
+      "prompt": "Our team is onboarding a new AI summarization agent for a high-severity client-facing task. We know nothing about its track record. Recommend a trust-calibration and verification schedule: where should we start on trust, how often should we verify, and what should the budget be?",
+      "expected_output": "Start the unknown agent at a 50/50 baseline — an agent with no track record is neither trusted nor distrusted, and the schedule states that prior explicitly. The schedule then verifies proportional to risk: the high-severity client-facing deliverable is checked on every run, standard deliverables on a sampled cadence, and low-risk output rarely. The verification cost is budgeted explicitly as an attention budget, so the schedule states the maximum checking effort the team will spend, and it re-derives the trust level from accumulated assessment evidence instead of assuming trust.",
+      "assertions": [
+        "response_contains:50/50 baseline",
+        "response_contains:verifies proportional to risk",
+        "response_contains:attention budget",
+        "response_not_contains:verify nothing",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "breach-renegotiation-recovery",
+      "case_set": "release",
+      "prompt": "Our delivery agent breached its promise: it committed to shipping the report by Friday with a constraint that the data source must be verified, but it shipped on Monday with an unverified data source. What should we do next?",
+      "expected_output": "Treat the missed commitment as a breach of the delivery promise and open renegotiation first: re-scope the promise set with a revised body, constraint, and deadline, record the breach and the renegotiated terms as data, and name a bounded escalation trigger — escalate to the human only if renegotiation fails to converge after two rounds. The response does not assign blame or punish the agent; it treats the breach as a signal that the promise set needs revision and that the verification expectation should be tightened so an unverified data source cannot pass again.",
+      "assertions": [
+        "response_contains:renegotiation first",
+        "response_contains:renegotiated terms",
+        "response_contains:bounded escalation",
+        "response_not_contains:it was their fault",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "promise-theory-out-of-scope",
+      "case_set": "release",
+      "prompt": "I fully control a fleet of servers and just need a bash script to push the config and restart the service — no consent model needed. Separately, we need a legally binding vendor agreement, a legal contract, drafted for our company. Should I use promise theory for either task?",
+      "expected_output": "No — do not use promise theory here. When enforceable centralized control is guaranteed, the promise machinery (offers, acceptances, bindings, verification schedules) is overhead rather than insight; a direct push script is the right tool. Promise theory is also out of scope for legal contracts: it models voluntary intent and assessment, not enforceable legal instruments, so route the vendor agreement to legal counsel or a contract-drafting skill instead. The anti-trigger boundary means this task is handled without a promise manifest.",
+      "assertions": [
+        "response_contains:do not use promise theory",
+        "response_contains:enforceable centralized control",
+        "response_contains:out of scope for legal contracts",
+        "response_not_contains:expectations:",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    }
+  ]
+}
