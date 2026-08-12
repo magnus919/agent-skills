@@ -1,0 +1,75 @@
+# Promise Review: <review title or period>
+
+A retrospective is renegotiation of the team's promise set, not blame. This
+template records what was promised, what was kept and breached (with
+evidence), the root cause of each breach in promise-theory diagnosis
+categories, the renegotiated promise set, and the resulting action items.
+Promise ids below must match the promise manifest and agent contract under
+review so all artifacts stay cross-referenced.
+
+- Review period: <start date> to <end date>
+- Date of review: <YYYY-MM-DD>
+- Participants (who assessed): <names / agent ids>
+- Manifest version(s) under review: <v1, v2, ...>
+- Contract version(s) under review: <0.1.0, ...>
+
+## 1. Promise list under review
+
+Every promise in scope, drawn from the manifest(s) in force during the
+period.
+
+| Promise id | Promiser | Target | Body (from manifest) | Manifest version |
+|---|---|---|---|---|
+| <promise-id> | <agent-id> | <agent-id | human | all> | <body> | <version> |
+| <promise-id> | <agent-id> | <...> | <...> | <...> |
+
+## 2. Outcomes — kept and breached, with evidence
+
+For every promise: verdict (kept / breached / not yet due / withdrawn), who
+assessed, when, and against what observation. Cite the promise-ledger
+entries, traces, eval results, or human review records that support the
+verdict.
+
+| Promise id | Verdict | Assessed by | When | Against what observation | Evidence (ledger / trace / eval / review) |
+|---|---|---|---|---|---|
+| <promise-id> | <kept | breached | not yet due | withdrawn> | <human | agent-id | guard> | <date> | <the observation checked> | <entry id / artifact> |
+| <promise-id> | <...> | <...> | <...> | <...> | <...> |
+
+## 3. Root-cause analysis — diagnosis categories
+
+For each breached promise, assign exactly one of the three diagnosis
+categories (the multi-agent failure taxonomy mapped to promise vocabulary):
+
+- **specification** — broken promise body: the promise was unclear, wrong,
+  or unverifiable as written
+- **inter-agent conflict** — failed acceptance or incompatible co-languages
+  between agents
+- **verification** — missing or inadequate assessment: the breach was not
+  detected, or was detected too late
+
+| Breached promise id | Diagnosis category | Evidence for the diagnosis | What the category implies for the fix |
+|---|---|---|---|
+| <promise-id> | <specification | inter-agent conflict | verification> | <...> | <e.g., "rewrite the body", "renegotiate the acceptance handshake", "add a monitor"> |
+
+## 4. Renegotiated promise set
+
+The output of this review is a revised promise set: amended bodies,
+acceptance criteria, verifiers, severities, and withdrawals; promises added
+or retired; and any trust-estimate or verification-rate adjustments. Each
+change links to the section 3 diagnosis that motivated it. Version the
+revised set.
+
+| Promise id | Change (body / acceptance criteria / verifier / severity / withdrawal / added / retired) | New value | Reason (linked diagnosis) |
+|---|---|---|---|
+| <promise-id> | <change kind> | <new value> | <specification / inter-agent conflict / verification> |
+| <promise-id> | <...> | <...> | <...> |
+
+## 5. Action items
+
+| # | Action | Owner | Due | Verification of completion |
+|---|---|---|---|---|
+| 1 | <what will be done> | <human | agent-id> | <date> | <how completion will be checked> |
+| 2 | <...> | <...> | <...> | <...> |
+
+When an action changes a promise or contract, fold it into the next manifest
+and contract revision so the artifacts do not drift apart.

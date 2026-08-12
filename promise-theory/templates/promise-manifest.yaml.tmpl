@@ -1,0 +1,100 @@
+# promise-manifest v1
+#
+# Capability and intent declaration for a set of autonomous agents. A manifest
+# publishes what each agent can and will do, what it accepts from other agents,
+# and what the team expects of those promises. It is the first artifact of the
+# promise lifecycle: declare -> accept -> verify -> review (see the agent
+# contract and promise review templates in this directory).
+#
+# FILLING GUIDE
+# -------------
+# Replace the example ids, roles, bodies, and lists below with your own values,
+# keeping the structure. Then lint the filled file with:
+#
+#     python3 scripts/promise-contract.py lint promise-manifest.yaml
+#
+# The linter enforces the rules below (exit 0 = valid with full coverage;
+# exit 1 = violations to fix, each named on its own line):
+#
+#   * agent ids are unique; promise ids are unique across the WHOLE manifest
+#   * "human" and "all" are reserved tokens and cannot be agent ids
+#   * `accepts` may only list promise ids declared by a DIFFERENT agent
+#     (cross-agent bindings). Human acceptance is modeled via an
+#     `expectations` entry with `from: human`, never via `accepts`.
+#   * `expectations.about` must reference an existing promise id (coverage)
+#   * `expectations.from` is "human" or a declared agent id
+#   * enums: type = capability | intent | constraint | self-promise
+#     target = <agent-id> | human | all
+#     verifier = eval | manual | monitor | audit
+#     severity = impact | standard | low
+#   * `expires` is an ISO-8601 duration (PT15M, P30D) or a date/datetime
+#     (YYYY-MM-DD or RFC 3339)
+#   * when `type: self-promise`, target MUST equal the promising agent's own id
+#
+# The example values below form a valid, fully covered manifest: every
+# `accepts` reference points at a promise declared by another agent, and every
+# `expectations.about` points at a promise declared in this file.
+
+agents:
+  # --- Agent 1: literature summarizer --------------------------------------
+  - id: research-agent            # required; unique across the manifest
+    role: literature summarizer   # required; free text
+    accepts: [research-direction] # optional; promise ids declared by OTHER agents
+    promises:                     # required; at least one per agent
+      - id: lit-review            # required; unique across the whole manifest
+        type: capability          # capability | intent | constraint | self-promise
+        target: human             # <agent-id> | human | all
+        body: Survey and summarize literature on promise theory.
+        constraint: limit 20 sources   # optional; non-empty when present
+        withdraw: when coordinator withdraws direction  # optional; non-empty when present
+        expires: P30D                  # optional; duration or date/datetime
+      - id: evidence-tables
+        type: capability
+        target: human
+        body: Produce evidence tables with citations for each summary.
+      - id: no-fabrication
+        type: constraint          # example of a negative capability
+        target: human
+        body: Never fabricate citations; mark unverifiable sources as unverified.
+
+  # --- Agent 2: reviewer (accepts the summarizer's lit-review promise) ------
+  - id: reviewer                  # unique; do not reuse another agent's id
+    role: fact-checker
+    accepts: [lit-review]
+    promises:
+      - id: fact-check
+        type: capability
+        target: research-agent    # directed at another agent in the manifest
+        body: Verify claims against cited sources and report discrepancies.
+        withdraw: when the claim is outside my declared domain
+
+  # --- Agent 3: coordinator agent (an autonomous agent, not the human) ------
+  - id: coordinator
+    role: workflow coordinator
+    accepts: [evidence-tables, fact-check]
+    promises:
+      - id: research-direction
+        type: intent
+        target: research-agent
+        body: Provide research direction and review summaries by the agreed cadence.
+      - id: self-quality
+        type: self-promise
+        target: coordinator       # REQUIRED: must equal this agent's own id
+        body: Run a self-check pass over my own output before publishing.
+
+expectations:                     # required; at least one entry
+  - id: exp-lit-review            # required; unique
+    from: human                   # "human" or a declared agent id
+    about: lit-review             # REQUIRED: reference an existing promise id
+    verifier: manual              # eval | manual | monitor | audit
+    severity: impact              # impact | standard | low
+  - id: exp-fact-check
+    from: research-agent          # agents can hold expectations too
+    about: fact-check
+    verifier: eval
+    severity: standard
+  - id: exp-research-direction
+    from: human
+    about: research-direction
+    verifier: monitor
+    severity: impact
