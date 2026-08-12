@@ -66,8 +66,12 @@ Load this skill when any of these triggers matches:
 
 ## Quick Start
 
+Run these commands from the skill directory (`promise-theory/`); `python3 scripts/promise-contract.py --help` lists every command and flag.
+
 1. **Draft a promise manifest.** Copy `templates/promise-manifest.yaml.tmpl` to a working file (for example `promise-manifest.yaml`) and fill the placeholders: agent ids and roles, at least one promise per agent (body, type, target), and at least one `expectations` entry whose `about` references a declared promise id.
-2. **Lint it.** Run `python3 scripts/promise-contract.py lint promise-manifest.yaml`. Exit 0 with full expectation coverage means the manifest is valid; exit 1 names the violations to fix (coverage gaps, dangling acceptances, invalid enums), and re-running after each fix converges to clean.
+2. **Lint it.** Run `python3 scripts/promise-contract.py lint promise-manifest.yaml`. Exit 0 with full expectation coverage means the manifest is valid; exit 1 names the violations to fix (coverage gaps, dangling acceptances, invalid enums) or reports a malformed file as a parse error — never a traceback. Re-run after each fix until clean.
+3. **Add `--json` for machine-readable output.** Run `python3 scripts/promise-contract.py lint promise-manifest.yaml --json` to get a single JSON object on stdout (`valid`, `errors`, `warnings`, `coverage`, `bindings`) and nothing else.
+4. **Add `--dry-run` to confirm no writes.** Run `python3 scripts/promise-contract.py lint promise-manifest.yaml --dry-run` to repeat the same check; lint is read-only, so nothing is written or modified.
 
 ## Related Skills
 
