@@ -19,6 +19,7 @@ When your agent loads this skill, it gains the ability to **create, review, and 
 | `references/best-practices.md` | Guidance for useful, well-scoped instructions |
 | `references/optimizing-descriptions.md` | How to design and test reliable automatic triggers |
 | `references/using-scripts.md` | How to bundle safe, agent-friendly executable helpers |
+| `references/vetting-third-party-skills.md` | How to vet a skill from a registry, colleague, or LLM before running it |
 | `references/evaluating-skills.md` | A practical evaluation loop for testing skill quality |
 | `references/client-implementation.md` | Guidance for products that discover and load skills |
 
