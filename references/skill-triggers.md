@@ -112,3 +112,4 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "Stripe", "account balance", "payment intent", "subscription", "cancel subscription", "stripe-cli", "Stripe payments", "payment status" | [stripe](../stripe/SKILL.md) |
 | "mental health", "DSM", "DSM-5", "DSM-5-TR", "psychiatric symptoms", "symptoms could be", "diagnostic criteria", "mental health condition", "neurocognitive condition", "neurological condition", "differential diagnosis", "explain a diagnosis", "questions for my clinician", "questions for my therapist", "delirium vs dementia", "ADHD vs anxiety" | [dsm5](../dsm5/SKILL.md) |
 | "promise-theory", "promise theory", "promises" | [promise-theory](../promise-theory/SKILL.md) |
+| "semantic spacetime", "semantic drift", "shared meaning", "world model divergence", "semantic ground", "temporal blindness", "gamma(3,4)" | [semantic-spacetime](../semantic-spacetime/SKILL.md) |

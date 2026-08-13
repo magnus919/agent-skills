@@ -1,0 +1,86 @@
+# Semantic Spacetime Analysis: <analysis-title>
+
+Semantic Spacetime analysis report. Fill this skeleton from a completed model
+in [sst-model.yaml.tmpl](sst-model.yaml.tmpl) (the versioned `sst-model-v1`
+format). Every section below corresponds to a construct defined in that model
+— agents, nodes, edges, acceptances, trajectories, observations — so the
+report and the model stay in sync; do not invent new fields.
+
+- Analysis version: <0.1.0>
+- Status: <DRAFTED | IN_REVIEW | COMPLETE>
+- Date: <YYYY-MM-DD>
+- Model version analyzed: <sst-model-v1>
+- Analyst: <agent-id or human name>
+
+## 1. System description
+
+Describe the system being modeled in plain language: who the agents are (their
+ids and roles from the model's `agents`), what the semantic spacetime covers,
+and the question the analysis answers (e.g., "why did the two agents'
+interpretations diverge?").
+
+- Agents: <agent-ids and roles>
+- Scope of the spacetime: <what the nodes/edges cover>
+- Analysis question: <the question this report answers>
+
+## 2. Semantic spacetime map
+
+Summarize the model's graph as built in `sst-model.yaml.tmpl`:
+
+- Nodes: <node-ids grouped by type: event | thing | concept>
+- Edges: <the gamma(3,4) edge set, each as from --link-value--> to, with the
+  link meaning 0 = NEAR, +/-1 = LEADS TO, +/-2 = CONTAINS, +/-3 = EXPRESSES>
+- Acceptances: <promise -> accepting agent pairs from the model's `acceptances`>
+- Trajectories: <the declared `trajectories`, i.e., the paths intent takes
+  through the graph>
+- Observations: <the proper-time record: what changed and when, from the
+  model's `observations`>
+
+## 3. Findings: drift, divergence, absorbing states
+
+List each finding with the evidence that grounds it (which nodes, edges,
+trajectories, or observations support it):
+
+### Finding <F1> — <short name>
+- Observation: <what the record shows — quote the relevant `observations` entries>
+- Interpretation: <which semantic elements drifted apart, which trajectory
+  diverged, or which node is an absorbing state>
+- Absorbing-state / information-leak check: <if a partial-graph dead-end is
+  present, state where information stops flowing and where intent must be
+  injected>
+
+### Finding <F2> — <short name>
+- Observation: <...>
+- Interpretation: <...>
+- Absorbing-state / information-leak check: <...>
+
+## 4. Interventions
+
+For each finding, propose a concrete change to the model (and, if applicable,
+to the system it models):
+
+- <F1> intervention: <e.g., re-anchor a dangling concept to a thing or event;
+  add an edge to close the leak; renegotiate a promise whose acceptance is
+  missing>
+- <F2> intervention: <e.g., record a new observation at a finer timescale
+  (timelike measurement) before asserting the semantics>
+
+## 5. Verification / measurement plan
+
+State how each intervention will be measured, using the model's own record
+machinery:
+
+- What to observe: <new `observations` entries or `trajectories` to add>
+- Measurement mode: <spacelike (repeated trials, constant state) | timelike
+  (continuous accumulation) — see the skill's foundations reference>
+- Success criterion: <the observable that must hold, e.g., semantic distance
+  between the two `concept` nodes stays at 0 NEAR across N observations>
+- Refresh budget: <how often the interpretation must be re-confirmed — stale
+  knowledge decays geometrically unless refreshed>
+
+## 6. Exit
+
+This analysis is complete when the system is modeled as a semantic spacetime,
+findings are recorded with evidence, and the verification plan is stated.
+When diagnosing drift: stop after three non-converging passes and report the
+evidence.

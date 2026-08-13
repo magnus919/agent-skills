@@ -1005,6 +1005,15 @@
       "description": "Plan authorized security reviews with threat modeling, architecture and dependency audits, and vulnerability classification. Use for scoped defensive security assessment. Do not use for offensive operations, unauthorized testing, or security control implementation."
     },
     {
+      "name": "semantic-spacetime",
+      "source": "./",
+      "skills": [
+        "./semantic-spacetime"
+      ],
+      "strict": false,
+      "description": "Model and diagnose shared semantic ground between agents with Semantic Spacetime (Mark Burgess, 2014-2025): a discrete graph model of meaning over time, where local proper time replaces global clocks, causality is cooperative promises, and gamma(3,4) graphs expose semantic drift, world model divergence, and absorbing states. Use for designing convergent self-healing coordination, modeling intent and trajectories over time, mapping promises onto spacetime, diagnosing semantic drift or dead-ends, and analyzing temporal blindness in agents. Do not use for physics or relativity, pure vector embeddings or RAG without temporal-causal structure, enforceable centralized control, simple single-agent prompting, or tool manuals — route those to the appropriate skill."
+    },
+    {
       "name": "seo-audit",
       "source": "./",
       "skills": [
