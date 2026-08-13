@@ -9,7 +9,8 @@ time, causality, the promise-theory substrate, and adjacent fields. What does
 not belong here: quantum-gravity or physics derivation (this is not a physics
 theory — see §4), the CFEngine/infrastructure application history, and the
 agent-coordination synthesis; those belong to the skill's application and
-agent-coordination references, which are added in a later milestone. For
+agent-coordination references ([applications-infrastructure.md](applications-infrastructure.md)
+and [agent-coordination.md](agent-coordination.md)). For
 one-line definitions see [glossary.md](glossary.md); for sources see
 [bibliography.md](bibliography.md).
 
@@ -188,7 +189,7 @@ injection of remedial information"* — and the boundary where the graph leaks i
 outgoing LEADS TO/EXPRESSES edges that matter) accumulates meaning and stops
 propagating it; intent or policy must be injected manually at that boundary.
 For a bounded diagnosis procedure using this concept, see the skill's
-diagnosis-and-debugging reference (added in a later milestone).
+[diagnosis-and-debugging.md](diagnosis-and-debugging.md) reference.
 
 ## 4. The "not physics" boundary
 
@@ -285,8 +286,9 @@ requires measurement** — meaning cannot be asserted before the dynamics are
 measured at the right scale. Different scales yield different conclusions; a
 measurement that is stable at one scale can be wrong at another. This duality
 is the theory-level ground for the "dynamics always trumps semantics" lesson of
-the infrastructure lineage (covered in the application reference, added in a
-later milestone) and for Gotcha 4 in SKILL.md.
+the infrastructure lineage (covered in the application reference,
+[applications-infrastructure.md](applications-infrastructure.md)) and for
+Gotcha 4 in SKILL.md.
 
 ## 8. Distance: metric vs semantic
 
@@ -302,7 +304,7 @@ Part III defines two kinds of distance [VERIFIED — arXiv:1608.02193v4]:
 The distinction is operational: two concepts can be close in coordinates yet
 far in interpretation, and vice versa. A weighted hop count over a γ(3,4) graph
 is a semantic-distance instance of the hop-count family — the family this
-skill's model tooling will implement for measuring drift between two snapshots
+skill's model tooling implements for measuring drift between two snapshots
 of a system's meaning.
 
 ## 9. Learning and knowledge

@@ -391,7 +391,9 @@ Promise graphs are directed graphs whose edges are promises; since each edge
 requires a counter-promise to be *effective*, "a link requires the mutual
 consent of two autonomous agents," making promise graphs more primitive than
 ordinary graph adjacency — and the foundation for Burgess's notion of *semantic
-spacetime* (Burgess, "Spacetimes with Semantics (I)," arXiv:1411.5563, 2014).
+spacetime* (Burgess, "Spacetimes with Semantics (I)," arXiv:1411.5563, 2014);
+the skill that develops this downstream concept is
+[semantic-spacetime](../../semantic-spacetime/SKILL.md).
 Graph-inspection is where broken promises show up: two promises of the same
 type with different constraints are a contradiction (Burgess, "Promise You A
 Rose Garden," 2007).
