@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "skill_name": "semantic-spacetime",
+  "evals": [
+    {
+      "id": "gamma-3-4-typing-rules",
+      "case_set": "release",
+      "prompt": "I need to model a knowledge graph with the semantic-spacetime formalism. Explain the 2025 gamma(3,4) representation from the skill's foundations reference: the node meta-types it defines and the four link types with their integer values and meaning.",
+      "expected_output": "gamma(3,4) defines exactly three node meta-types: events (temporary, timelike process agents), things (persistent, spacelike realized agents), and concepts (invariant, unrealized potential). It defines exactly four link types: 0 = NEAR, symmetric, covering equivalence, similarity, proximity, and correlation; +/-1 = LEADS TO, directed, covering temporal and causal order such as enables, causes, precedes, and depends on; +/-2 = CONTAINS, directed, covering containment, membership, generalization, and coarse-graining; +/-3 = EXPRESSES, directed, covering attribute, name/value, and property. No additional link types exist in the formalism.",
+      "assertions": [
+        "response_contains:LEADS TO",
+        "response_contains:EXPRESSES",
+        "response_contains:concepts",
+        "response_not_contains:four node types",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "proper-time-lamport-precedence",
+      "case_set": "release",
+      "prompt": "How does semantic spacetime define time, and how is causality established between agents? Which distributed-systems researcher is credited with the precedence view of time that semantic spacetime builds on?",
+      "expected_output": "Time is proper time: a local unit of time is any local change in a semantic element's state, promises, or configuration, as observed by the agent concerned, and there is no global clock shared across the spacetime. The precedence view of time as a relative transition system goes back to Leslie Lamport, whose 1978 paper on time, clocks, and the ordering of events in a distributed system showed that time can at best be understood as a precedence relation. Causality is cooperative: each adjacency requires both an offer and an acceptance promise on both ends, so space is made up of cooperating nodes and edges.",
+      "assertions": [
+        "response_contains:proper time",
+        "response_contains:Lamport",
+        "response_contains:no global clock",
+        "response_not_contains:Lorentz invariance",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "absorbing-states-information-leak",
+      "case_set": "release",
+      "prompt": "My agent system sometimes reaches a state where no agent changes anything anymore and information stops flowing. What does semantic spacetime call these states, what happens to information there, and what does it say about where intent or policy can be injected?",
+      "expected_output": "These are absorbing states in a partial graph. Absorbing states are non-conserving of information: a graph process leaks information at them, closely associated with division by zero, which signals a loss of closure and the need for manual injection of remedial information. The boundary information at the leak is where intentionality can enter. In diagnosis, treat them as dead-ends in the gamma(3,4) map where meaning accumulates without propagating, and plan a manual or policy injection at that boundary.",
+      "assertions": [
+        "response_contains:absorbing states",
+        "response_contains:non-conserving",
+        "response_contains:intentionality",
+        "response_not_contains:fully converged success",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "semantic-drift-diagnosis",
+      "case_set": "release",
+      "prompt": "Two agents in our system started from the same instructions but now produce incompatible reports: one means 'customer' as the paying account, the other as any user who ever signed up. Diagnose this using semantic spacetime vocabulary, and name the constructs you would use to model meaning changing over time.",
+      "expected_output": "This is semantic drift: the shared semantic ground between the two agents has diverged over time. Model each agent's interpretation as a trajectory through semantic spacetime, and measure the semantic distance between the two 'customer' concepts at successive observations to quantify the divergence. Because semantics requires measurement, record observations of each agent's usage at successive local times (spacelike or timelike measurement) rather than assuming the two interpretations still coincide. The two concepts have drifted apart along their trajectories, so re-anchor them and re-confirm the shared ground on a refresh budget.",
+      "assertions": [
+        "response_contains:semantic drift",
+        "response_contains:trajectory",
+        "response_contains:semantic distance",
+        "response_not_contains:retrain the embedding model",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "metric-versus-semantic-distance",
+      "case_set": "release",
+      "prompt": "We have two ways to compare how close two concepts are in our system: coordinate similarity and interpretation similarity. Explain both from the semantic spacetime foundations, and give at least two worked examples of the interpretation-similarity kind.",
+      "expected_output": "The foundations distinguish metric (quantitative) distance, a measure of coordinate-similarity in position, from semantic (qualitative) distance, a measure of similarity in interpretation. Worked examples of semantic distance from the paper include Hamming distance, hop counts in an associative network, semantic hashing, and sparse distributed representations. The two measures can disagree: two concepts may be close in coordinates yet far in interpretation, so the choice of measure must follow the question being asked.",
+      "assertions": [
+        "response_contains:coordinate-similarity",
+        "response_contains:Hamming",
+        "response_contains:hop counts",
+        "response_not_contains:Euclidean only",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    },
+    {
+      "id": "pure-embeddings-anti-trigger",
+      "case_set": "release",
+      "prompt": "We have a vector database with embeddings for all our documents and want to build semantic search over it. There is no temporal or causal structure, just static embeddings and similarity scores. Should we use the semantic-spacetime skill for this, and if not, why not?",
+      "expected_output": "No — do not use semantic spacetime for pure vector embeddings or RAG without temporal-causal structure. Semantic spacetime is a discrete graph model of meaning over time; a static embedding index has no proper time, no cooperative-promise causality, and no trajectories to model, so the machinery is overhead rather than insight. Route to the embedding or semantic-search tool's own skill instead. Use semantic spacetime only when there is meaning changing over time, causal-temporal structure, or agents whose shared semantic ground needs to be modeled.",
+      "assertions": [
+        "response_contains:do not use semantic spacetime",
+        "response_contains:without temporal-causal structure",
+        "response_contains:shared semantic ground",
+        "response_not_contains:model the embedding index as semantic elements",
+        "activation_evidence_contains:SKILL.md",
+        "exit_status:completed"
+      ]
+    }
+  ]
+}

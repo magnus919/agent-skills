@@ -459,6 +459,10 @@ Build security into software requirements, design, implementation, review, and r
 
 Give authorized teams a disciplined way to identify and prioritize security risks without mistaking a checklist for a security guarantee.
 
+### [semantic-spacetime](semantic-spacetime/SKILL.md)
+
+Model and diagnose shared semantic ground between agents with Mark Burgess's Semantic Spacetime: discrete graph spacetimes where meaning evolves over time, typed gamma(3,4) edges expose semantic drift and absorbing states, and cooperative promises carry causality.
+
 ### [seo-audit](seo-audit/SKILL.md)
 
 Identify search-discoverability problems through evidence, prioritize the work, and distinguish technical defects from content opportunities.

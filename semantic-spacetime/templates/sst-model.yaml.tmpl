@@ -1,0 +1,102 @@
+# sst-model-v1
+#
+# Semantic Spacetime model format. A model is a versioned, machine-readable
+# description of a system as a semantic spacetime: autonomous agents with
+# scalar promises, typed semantic nodes (events / things / concepts), typed
+# gamma(3,4) edges, cross-agent acceptances, declared trajectories, and an
+# observation log (the proper-time record).
+#
+# FILLING GUIDE
+# -------------
+# Copy this template to a working file (e.g. sst-model.yaml) and replace the
+# example values with your own, keeping the structure. Every field below is
+# documented inline and in this guide. The block between the markers
+# '# --- example ---' and '# --- end example ---' is a complete, valid model:
+# imitate it. A filled model must satisfy every rule listed here; a later
+# milestone ships a linter that reports violations by name.
+#
+# TOP-LEVEL FIELDS
+# ----------------
+# schema_version  REQUIRED. Must be the integer 1. Bump only when the format
+#                 changes; the format is a versioned contract.
+# agents          REQUIRED. List of autonomous agents that make promises.
+# nodes           REQUIRED. List of semantic elements of the spacetime graph,
+#                 typed as event, thing, or concept.
+# edges           REQUIRED. List of gamma(3,4) edges between nodes.
+# acceptances     OPTIONAL. List of cross-agent acceptance records tying a
+#                 promise to the agent that accepted it.
+# trajectories    OPTIONAL. List of declared paths through the node graph.
+# observations    OPTIONAL. List of proper-time records: what changed, and when.
+#
+# RULES (the linter will enforce these)
+# -------------------------------------
+#   * schema_version must be 1 (integer, not a string).
+#   * agent ids are unique and lowercase-hyphen (^[a-z0-9]+(?:-[a-z0-9]+)*$);
+#     "all" is a reserved target token and cannot be an agent id.
+#   * promise ids are unique across the WHOLE model (agents and acceptances).
+#   * node ids are unique and lowercase-hyphen.
+#   * node type is exactly one of: event | thing | concept.
+#   * edge from/to must reference existing node ids; edge link must be an
+#     integer in -3..3 inclusive (0 = NEAR, +/-1 = LEADS TO, +/-2 = CONTAINS,
+#     +/-3 = EXPRESSES).
+#   * acceptance.promise must reference a declared promise id, and
+#     acceptance.from must equal the agent that declares that promise.
+#   * trajectory path entries must reference existing node ids; a path has at
+#     least one entry.
+#   * observation.changed, when present, must reference a declared node id or
+#     promise id.
+
+# --- example ---
+schema_version: 1
+agents:
+  - id: operator              # required; unique; lowercase-hyphen
+    role: workflow operator   # required; free text
+    promises:                 # optional; scalar promises this agent makes
+      - id: deliver-report    # required; unique across the whole model
+        body: Deliver the weekly status report by Friday.   # required; free text
+        type: capability      # optional; capability | intent | constraint
+        target: reviewer      # optional; <agent-id> | <node-id> | all
+      - id: no-unverified-claims
+        body: Never assert a claim without a measured source.
+        type: constraint
+        target: all
+  - id: reviewer
+    role: semantic reviewer
+    promises:
+      - id: review-report
+        body: Review the report for semantic drift against the agreed vocabulary.
+        type: capability
+        target: operator
+nodes:                        # required; at least one semantic element
+  - id: report-event          # required; unique; lowercase-hyphen
+    type: event               # required; event | thing | concept
+  - id: report-thing
+    type: thing
+  - id: drift-concept
+    type: concept
+edges:                        # required; at least one gamma(3,4) edge
+  - from: report-event        # required; must be a declared node id
+    to: report-thing          # required; must be a declared node id
+    link: 1                   # required; integer in -3..3
+  - from: report-thing
+    to: drift-concept
+    link: 3
+  - from: drift-concept
+    to: report-thing
+    link: 2
+acceptances:                  # optional; cross-agent acceptance records
+  - promise: deliver-report   # required; must reference a declared promise id
+    from: operator            # required; must equal the agent that declares it
+    to: reviewer              # required; a declared agent id
+trajectories:                 # optional; declared paths through the graph
+  - id: report-flow           # required; unique
+    path: [report-event, report-thing, drift-concept]  # required; node ids, >= 1 entry
+    label: report moves from event to reviewed thing   # optional; free text
+observations:                 # optional; the proper-time record
+  - at: t1                    # required; tick label or timestamp, free text
+    event: report drafted     # required; what changed, free text
+    changed: report-event     # optional; a declared node id or promise id
+  - at: t2
+    event: reviewer flags drift in vocabulary
+    changed: drift-concept
+# --- end example ---
