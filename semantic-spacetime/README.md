@@ -14,6 +14,10 @@ After installing, your agent can map a team of agents onto a semantic spacetime 
 |---|---|
 | `SKILL.md` | When to use Semantic Spacetime, when not to, and what to load for the task at hand |
 | `references/foundations.md` | The academic core: definitions, the γ(3,4) formalism, proper time, causality, the promise substrate, and adjacent fields |
+| `references/applications-infrastructure.md` | The CFEngine → IaC → Kubernetes/GitOps/IBN → MAPE-K lineage: convergence semantics, the promise-keeping-as-data gap, SLOs as semantic contracts, and the record-of-time machinery, with a citable lessons list |
+| `references/agent-coordination.md` | Agentic AI: Burgess's agent papers, SSTorytime and MCP-SST, drift and temporal-blindness literature, spatial-temporal world models, the MCP/A2A substrate, and five labeled synthesis patterns |
+| `references/patterns.md` | Ten named patterns (semantic anchor, trajectory, convergence loop, promise propagation, drift detection, absorbing states, shared manifold, γ(3,4) modeling, distance metrics, reconciliation), each with when-to-use and anti-patterns |
+| `references/diagnosis-and-debugging.md` | A bounded procedure for diagnosing semantic drift, divergence, dead-ends, and meaning gaps — stop after three non-converging passes and report the evidence |
 | `references/glossary.md` | Heading-led definitions of every term the skill uses |
 | `references/bibliography.md` | Annotated primary sources with URLs, organized by area |
 | `templates/` | The `sst-model.yaml.tmpl` model format (agents, nodes, edges, acceptances, trajectories, observations) and the `sst-analysis.md.tmpl` report skeleton |

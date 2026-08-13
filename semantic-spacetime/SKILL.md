@@ -81,6 +81,10 @@ material only when a row in [Load By Need](#load-by-need) matches your task.
 | Need | Load |
 |------|------|
 | Re-derive the formal model: semantic element, semantic spacetime, proper time, γ(3,4) typing rules, learning/knowledge formalism, promise substrate | [references/foundations.md](references/foundations.md) |
+| Learn from the CFEngine and infrastructure lineage before designing convergent systems (convergence semantics, IaC/Kubernetes/GitOps/IBN lessons, promise-keeping-as-data, SLOs, the record axis) | [references/applications-infrastructure.md](references/applications-infrastructure.md) |
+| Model an agent team in SST terms or design agent coordination (Burgess's agent papers, drift/temporal-blindness literature, MCP/A2A substrate, synthesis patterns) | [references/agent-coordination.md](references/agent-coordination.md) |
+| Apply a named pattern — semantic anchor, trajectory, convergence loop, promise propagation, drift detection, absorbing-state detection, shared semantic manifold, γ(3,4) modeling, distance metrics, reconciliation | [references/patterns.md](references/patterns.md) |
+| Diagnose semantic drift, divergence, dead-ends (absorbing states), or meaning gaps with a bounded procedure | [references/diagnosis-and-debugging.md](references/diagnosis-and-debugging.md) |
 | Hit an unfamiliar term while modeling or diagnosing | [references/glossary.md](references/glossary.md) |
 | Find or verify a primary source — the papers, project pages, and adjacent work behind a claim | [references/bibliography.md](references/bibliography.md) |
 
@@ -139,15 +143,18 @@ these steps from the skill directory (`semantic-spacetime/`):
    events; global order is an observer-relative artifact. See the proper-time
    section in [references/foundations.md](references/foundations.md).
 4. **Semantics requires measurement.** Meaning cannot be asserted before it is
-   measured at the right scale — "dynamics always trumps semantics." SST's
-   spacelike (repeated trials, constant state) and timelike (continuously
+   measured at the right scale — "dynamics always trumps semantics" (the
+   CFEngine-lineage lesson in
+   [references/applications-infrastructure.md](references/applications-infrastructure.md)).
+   SST's spacelike (repeated trials, constant state) and timelike (continuously
    adapting) measurements are the two ways to stabilize observation; see the
    measurement-duality section of [references/foundations.md](references/foundations.md).
 5. **Promise-keeping must be stored as data.** The gap documented in the
    CFEngine lineage — reporting whether a promise is kept right now without
    ever storing promise-keeping as queryable data — is exactly the gap SST's
-   semantic-time record axis addresses. Record observations as versioned data
-   or trust cannot accumulate.
+   semantic-time record axis addresses (see the promise-keeping-as-data gap in
+   [references/applications-infrastructure.md](references/applications-infrastructure.md)).
+   Record observations as versioned data or trust cannot accumulate.
 
 ## Exit Conditions
 
