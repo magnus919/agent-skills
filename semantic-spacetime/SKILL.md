@@ -90,8 +90,11 @@ material only when a row in [Load By Need](#load-by-need) matches your task.
 
 ## Quick Start
 
-Both templates are self-documenting; fill them per the inline comments. Run
-these steps from the skill directory (`semantic-spacetime/`):
+The bundled CLI (`scripts/semantic-spacetime.py`) is stdlib-only — any
+`python3` runs it, nothing to install — and every command is read-only. Run
+the commands below from the repository root; the CLI resolves no files
+relative to its own location, so the same commands work from any directory
+with absolute paths.
 
 1. **Draft an SST model.** Copy `templates/sst-model.yaml.tmpl` to a working
    file (for example `sst-model.yaml`) and replace the example values: declare
@@ -99,16 +102,30 @@ these steps from the skill directory (`semantic-spacetime/`):
    {event, thing, concept}), edges (from, to, link in -3..3), acceptances,
    trajectories, and observations. The machine-delimited block between
    `# --- example ---` and `# --- end example ---` shows a complete, valid
-   model to imitate.
-2. **Model a system as a semantic spacetime.** Every local change in state,
-   promises, or configuration is a unit of proper time; record it as an
-   observation. Connect nodes with the four γ(3,4) link types and route intent
-   along the edges.
-3. **Draft the analysis report.** Copy `templates/sst-analysis.md.tmpl` to a
+   model to imitate; the same model is committed, fully filled, at
+   `tests/fixtures/sample-model.yaml`.
+2. **Lint it** against the sst-model-v1 format — exit 0 prints a coverage
+   summary, exit 1 prints named violations:
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model lint semantic-spacetime/tests/fixtures/sample-model.yaml`
+3. **Map the γ(3,4) graph** (`--format` is one of text | mermaid | json):
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model map semantic-spacetime/tests/fixtures/sample-model.yaml --format mermaid`
+4. **Measure semantic distance** — weighted hop count (each hop weighs
+   |link| + 1):
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model distance semantic-spacetime/tests/fixtures/sample-model.yaml --from report-event --to drift-concept`
+5. **Trace trajectories** — every simple path with link types annotated;
+   cycles are noted and the enumeration terminates on any finite model:
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model trajectory semantic-spacetime/tests/fixtures/sample-model.yaml --from report-event --to drift-concept`
+6. **Diff two snapshots** — added/removed/changed semantic regions; identical
+   snapshots report `no drift`. Point the command at your two snapshot files
+   (running it on the same file twice demonstrates the no-drift case):
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model drift semantic-spacetime/tests/fixtures/sample-model.yaml semantic-spacetime/tests/fixtures/sample-model.yaml`
+7. **Machine-readable output.** Append `--json` to any command for a single
+   JSON object on stdout. `--dry-run` is accepted everywhere as a no-op guard.
+8. **Draft the analysis report.** Copy `templates/sst-analysis.md.tmpl` to a
    working file (for example `sst-analysis.md`) and fill the skeleton: system
    description → semantic spacetime map → drift/divergence/absorbing-state
    findings → interventions → verification/measurement plan.
-4. **Diagnose drift when agents disagree.** If agents diverge, treat the
+9. **Diagnose drift when agents disagree.** If agents diverge, treat the
    disagreement as an observation, measure the semantic distance between their
    interpretations, and locate the absorbing state or leaking boundary where
    information stops flowing.

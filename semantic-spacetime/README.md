@@ -21,15 +21,36 @@ After installing, your agent can map a team of agents onto a semantic spacetime 
 | `references/glossary.md` | Heading-led definitions of every term the skill uses |
 | `references/bibliography.md` | Annotated primary sources with URLs, organized by area |
 | `templates/` | The `sst-model.yaml.tmpl` model format (agents, nodes, edges, acceptances, trajectories, observations) and the `sst-analysis.md.tmpl` report skeleton |
+| `scripts/semantic-spacetime.py` | A stdlib-only CLI: lint a model, map the γ(3,4) graph, measure semantic distance, trace trajectories, and diff snapshots for drift (`--json` and `--dry-run` supported) |
+| `tests/` | A stdlib unittest suite (runs in CI) and trigger/anti-trigger routing probes, plus a fully-filled sample model fixture |
 | `evals/` | Output-quality evals for the skill |
 | `LICENSE` | MIT license |
 
 ## Quick Start
 
-1. Copy `templates/sst-model.yaml.tmpl` to a working file (for example `sst-model.yaml`).
-2. Fill in your system: agents with roles and promises, semantic nodes typed as events, things, or concepts, edges with link values from -3 to 3, plus acceptances, trajectories, and observations. Every field has an inline comment explaining it; the delimited example block shows a complete model.
-3. Copy `templates/sst-analysis.md.tmpl` to a working file (for example `sst-analysis.md`).
-4. Fill the report skeleton: system description, the semantic spacetime map, drift/divergence/absorbing-state findings, interventions, and a verification/measurement plan.
+Nothing to install: the CLI is stdlib-only Python 3.10+. From the repository
+root, run:
+
+1. Lint a model against the sst-model-v1 format — exit 0 prints a coverage
+   summary, exit 1 prints named violations:
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model lint semantic-spacetime/tests/fixtures/sample-model.yaml`
+2. Map the γ(3,4) graph (text | mermaid | json):
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model map semantic-spacetime/tests/fixtures/sample-model.yaml --format mermaid`
+3. Measure semantic distance (weighted hop count, |link| + 1 per hop):
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model distance semantic-spacetime/tests/fixtures/sample-model.yaml --from report-event --to drift-concept`
+4. Trace trajectories (simple paths with link types; cycles noted):
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model trajectory semantic-spacetime/tests/fixtures/sample-model.yaml --from report-event --to drift-concept`
+5. Diff two snapshots — added/removed/changed regions; identical snapshots
+   report `no drift` (run it on the same file twice to see the no-drift case):
+   `python3 semantic-spacetime/scripts/semantic-spacetime.py model drift semantic-spacetime/tests/fixtures/sample-model.yaml semantic-spacetime/tests/fixtures/sample-model.yaml`
+6. Append `--json` to any command for a single machine-readable object;
+   `--dry-run` is a no-op guard.
+
+To draft your own model, copy `templates/sst-model.yaml.tmpl` and fill it per
+the inline comments — the delimited example block shows a complete model.
+Copy `templates/sst-analysis.md.tmpl` for the analysis report skeleton:
+system description, the semantic spacetime map, drift/divergence/absorbing-state
+findings, interventions, and a verification/measurement plan.
 
 ## Triggers
 
@@ -42,4 +63,7 @@ After installing, your agent can map a team of agents onto a semantic spacetime 
 
 ## Requirements
 
-Nothing to install. The skill is Markdown, YAML templates, and JSON evals; the bundled model format is versioned (`sst-model-v1`) and documented in the template itself. Works with any agent client that loads Agent Skills.
+Python 3.10+ (stdlib only) for the bundled CLI; nothing else to install. The
+skill content is Markdown, YAML templates, and JSON evals; the bundled model
+format is versioned (`sst-model-v1`) and documented in the template itself.
+Works with any agent client that loads Agent Skills.
