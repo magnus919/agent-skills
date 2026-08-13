@@ -12,8 +12,8 @@
 # example values with your own, keeping the structure. Every field below is
 # documented inline and in this guide. The block between the markers
 # '# --- example ---' and '# --- end example ---' is a complete, valid model:
-# imitate it. A filled model must satisfy every rule listed here; a later
-# milestone ships a linter that reports violations by name.
+# imitate it. A filled model must satisfy every rule listed here; the bundled
+# CLI (scripts/semantic-spacetime.py 'model lint') reports violations by name.
 #
 # TOP-LEVEL FIELDS
 # ----------------
@@ -30,6 +30,8 @@
 #
 # RULES (the linter will enforce these)
 # -------------------------------------
+#   * strict schema: unknown top-level sections and unknown fields inside any
+#     known section are rejected (exit 1 with a named violation).
 #   * schema_version must be 1 (integer, not a string).
 #   * agent ids are unique and lowercase-hyphen (^[a-z0-9]+(?:-[a-z0-9]+)*$);
 #     "all" is a reserved target token and cannot be an agent id.
@@ -41,10 +43,14 @@
 #     +/-3 = EXPRESSES).
 #   * acceptance.promise must reference a declared promise id, and
 #     acceptance.from must equal the agent that declares that promise.
-#   * trajectory path entries must reference existing node ids; a path has at
-#     least one entry.
+#   * trajectory path entries must reference existing node ids (no
+#     edge-connectivity check in v1); a path has at least one entry.
 #   * observation.changed, when present, must reference a declared node id or
 #     promise id.
+#   * input is one restricted-YAML document (mappings, flow lists, quoted or
+#     unquoted scalars, comments, indentation-based nesting); anchors/aliases,
+#     block scalars, and multi-document streams are rejected with exit 1, and a
+#     single JSON document is accepted as an equivalent representation.
 
 # --- example ---
 schema_version: 1

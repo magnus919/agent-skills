@@ -28,6 +28,9 @@ sys.path.insert(0, SKILL_ROOT)
 SCRIPT = os.path.join(SKILL_ROOT, "scripts", "semantic-spacetime.py")
 TEMPLATE_PATH = os.path.join(SKILL_ROOT, "templates", "sst-model.yaml.tmpl")
 FIXTURE_PATH = os.path.join(SKILL_ROOT, "tests", "fixtures", "sample-model.yaml")
+INVALID_FIXTURE_PATH = os.path.join(
+    SKILL_ROOT, "tests", "fixtures", "invalid-model.yaml"
+)
 REPO_ROOT = os.path.dirname(SKILL_ROOT)
 
 VALID_YAML = """schema_version: 1
@@ -284,6 +287,47 @@ class SemanticSpacetimeCliTest(unittest.TestCase):
         combined = p.stdout + p.stderr
         self.assertIn("object", combined)
         self.assertIn("9", combined)
+
+    # -- strict schema rejection (VAL-CROSS-009) -------------------------------
+
+    def test_unknown_top_level_section_rejected(self):
+        # 'regions:' is outside the sst-model-v1 schema: exit 1 with a named
+        # violation naming the key and its (top-level) location.
+        p = self.run_cli("model", "lint", INVALID_FIXTURE_PATH)
+        self.assertEqual(p.returncode, 1)
+        combined = p.stdout + p.stderr
+        self.assertIn("regions", combined)
+        self.assertIn("unknown top-level", combined)
+        self.assertNotIn("Traceback", combined)
+
+    def test_unknown_field_in_node_rejected(self):
+        # 'bogus-field: 42' inside node 'report-event' is a named violation in
+        # the --json errors list, with the key and its location.
+        p = self.run_cli("model", "lint", INVALID_FIXTURE_PATH, "--json")
+        self.assertEqual(p.returncode, 1)
+        data = json.loads(p.stdout)
+        self.assertIs(data["valid"], False)
+        self.assertTrue(data["errors"])
+        joined = "\n".join(data["errors"])
+        self.assertIn("bogus-field", joined)
+        self.assertIn("unknown field", joined)
+        self.assertIn("report-event", joined)
+        self.assertIn("regions", joined)
+        self.assertEqual(p.stderr, "")
+
+    def test_unknown_fields_in_other_sections_named(self):
+        model = VALID_YAML.replace(
+            "role: workflow operator\n", "role: workflow operator\n    bogus: 1\n", 1
+        ).replace("link: 1\n", "link: 1\n    bogus: 2\n", 1)
+        bad = self.write_tmp("bad-sections.yaml", model)
+        p = self.run_cli("model", "lint", bad, "--json")
+        self.assertEqual(p.returncode, 1)
+        data = json.loads(p.stdout)
+        self.assertIs(data["valid"], False)
+        joined = "\n".join(data["errors"])
+        self.assertEqual(joined.count("unknown field 'bogus'"), 2)
+        self.assertIn("agent 'operator'", joined)
+        self.assertIn("edge 'report-event -> report-thing'", joined)
 
     # -- template contract (VAL-CLI-012, VAL-CROSS-008, VAL-ROUTE-020) ---------
 

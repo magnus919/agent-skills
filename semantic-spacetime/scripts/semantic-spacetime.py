@@ -28,7 +28,9 @@ Model input (see templates/sst-model.yaml.tmpl):
   comments, indentation-based nesting) or an equivalent JSON document. YAML
   constructs outside the subset (anchors/aliases &a/*a, block scalars |/>,
   multi-document streams) are rejected with exit 1. JSON and equivalent YAML
-  lint identically.
+  lint identically. The schema is strict: unknown top-level sections and
+  unknown fields inside known sections are rejected with a named violation
+  (exit 1) naming the unknown key and its location.
 
 Semantic distance weighting:
   Each directed hop contributes weight |link| + 1, so 0=NEAR -> 1,
@@ -53,6 +55,24 @@ PROMISE_TYPES = ("capability", "intent", "constraint")
 MAP_FORMATS = ("text", "mermaid", "json")
 SUBCOMMANDS = ("lint", "map", "distance", "trajectory", "drift")
 RESERVED_TARGET = "all"
+
+# Strict sst-model-v1 field sets: anything outside these is a named violation.
+TOP_LEVEL_KEYS = (
+    "schema_version",
+    "agents",
+    "nodes",
+    "edges",
+    "acceptances",
+    "trajectories",
+    "observations",
+)
+AGENT_KEYS = ("id", "role", "promises")
+PROMISE_KEYS = ("id", "body", "type", "target")
+NODE_KEYS = ("id", "type")
+EDGE_KEYS = ("from", "to", "link")
+ACCEPTANCE_KEYS = ("promise", "from", "to")
+TRAJECTORY_KEYS = ("id", "path", "label")
+OBSERVATION_KEYS = ("at", "event", "changed")
 
 LINK_LABELS = {0: "NEAR", 1: "LEADS TO", 2: "CONTAINS", 3: "EXPRESSES"}
 
@@ -412,6 +432,18 @@ def _empty_summary():
     }
 
 
+def _unknown_field_errors(mapping, allowed, location):
+    """Violations for keys in `mapping` outside the `allowed` field set.
+
+    Each message names the unknown key and its location (e.g. the enclosing
+    node/agent id) so the violation is actionable. Sorted for determinism.
+    """
+    return [
+        f"{location}: unknown field '{key}'"
+        for key in sorted(set(mapping) - set(allowed))
+    ]
+
+
 def validate_model(doc):
     """Validate a parsed model against every sst-model-v1 lint rule.
 
@@ -434,6 +466,13 @@ def validate_model(doc):
         )
     elif schema_version != 1:
         errors.append(f"'schema_version' must be 1 for sst-model-v1; got {schema_version}")
+
+    # ---- strict top-level schema (unknown sections are named violations) ----
+    for key in sorted(set(doc) - set(TOP_LEVEL_KEYS)):
+        errors.append(
+            f"unknown top-level key '{key}' "
+            f"(expected one of: {', '.join(TOP_LEVEL_KEYS)})"
+        )
 
     # ---- agents and promises ----
     agents_raw = doc.get("agents")
@@ -474,6 +513,7 @@ def validate_model(doc):
             agent_ids.append(aid)
         aname = f"'{aid}'" if aid else f"#{ai + 1}"
         summary["agents"] += 1
+        errors.extend(_unknown_field_errors(agent, AGENT_KEYS, f"agent {aname}"))
 
         role = agent.get("role")
         if role is None:
@@ -513,6 +553,7 @@ def validate_model(doc):
             pname = f"'{pid}'" if pid else f"#{pi + 1}"
             pctx = f"promise {pname} (agent {aname})"
             summary["promises"] += 1
+            errors.extend(_unknown_field_errors(prom, PROMISE_KEYS, pctx))
 
             body = prom.get("body")
             if body is None:
@@ -572,6 +613,7 @@ def validate_model(doc):
             node_ids.append(nid)
         nname = f"'{nid}'" if nid else f"#{ni + 1}"
         summary["nodes"] += 1
+        errors.extend(_unknown_field_errors(node, NODE_KEYS, f"node {nname}"))
 
         ntype = node.get("type")
         if ntype is None:
@@ -605,6 +647,7 @@ def validate_model(doc):
         if isinstance(frm, str) and isinstance(to, str):
             ename = f"edge '{frm} -> {to}'"
         summary["edges"] += 1
+        errors.extend(_unknown_field_errors(edge, EDGE_KEYS, ename))
 
         if not isinstance(frm, str) or not frm.strip():
             errors.append(
@@ -648,6 +691,7 @@ def validate_model(doc):
             errors.append(f"acceptance #{ai + 1}: expected a mapping, got {_describe(acc)}")
             continue
         aname = f"acceptance #{ai + 1}"
+        errors.extend(_unknown_field_errors(acc, ACCEPTANCE_KEYS, aname))
         pid = acc.get("promise")
         if not isinstance(pid, str) or not pid.strip():
             errors.append(
@@ -711,6 +755,7 @@ def validate_model(doc):
                 errors.append(f"trajectory id '{tid}' is duplicated; trajectory ids must be unique")
             seen_traj_ids.append(tid)
             tname = f"trajectory '{tid}'"
+        errors.extend(_unknown_field_errors(traj, TRAJECTORY_KEYS, tname))
 
         path = traj.get("path")
         if path is None:
@@ -755,6 +800,7 @@ def validate_model(doc):
             )
         else:
             oname = f"observation '{at}'"
+        errors.extend(_unknown_field_errors(obs, OBSERVATION_KEYS, oname))
         event = obs.get("event")
         if not isinstance(event, str) or not event.strip():
             errors.append(f"{oname}: missing or invalid required field 'event' (must be free text)")

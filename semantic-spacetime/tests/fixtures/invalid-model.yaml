@@ -1,0 +1,24 @@
+# Deliberately invalid sst-model-v1 model (fixture for the strict-schema lint
+# tests). Every field satisfies the normal rules EXCEPT the two strict-schema
+# violations below, so lint reports exactly these named violations:
+#   * 'bogus-field' is an unknown field inside node 'report-event'
+#   * 'regions' is an unknown top-level section
+# Expect 'model lint' to exit 1 and name both the key and its location.
+schema_version: 1
+agents:
+  - id: operator
+    role: workflow operator
+    promises:
+      - id: deliver-report
+        body: Deliver the weekly status report by Friday.
+nodes:
+  - id: report-event
+    type: event
+    bogus-field: 42
+edges:
+  - from: report-event
+    to: report-event
+    link: 1
+regions:
+  - id: r1
+    kind: concept
