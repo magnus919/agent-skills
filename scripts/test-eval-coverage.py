@@ -193,8 +193,8 @@ class TestModifiedSkills(unittest.TestCase):
         self.assertTrue({Path(name) for name in paths}.issubset(mods))
 
     def test_nested_change_maps_to_nearest_skill_owner(self) -> None:
-        parent = "bundles/example"
-        child = "bundles/example/skills/child"
+        parent = "example"
+        child = "example/skills/child"
         write_skill(self.repo, parent)
         write_skill(self.repo, child)
         reference = Path(self.repo) / child / "references" / "guide.md"
