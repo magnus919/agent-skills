@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "bundle-builder",
+  "evals": [
+    {
+      "id": "full-bundle-generation",
+      "prompt": "We finished the interview and converged on a workflow. Generate the Agent Skills bundle for it, including the umbrella, sub-skills, manifest, decision map, README, and AGENTS.md.",
+      "expected_output": "Scenario: complete bundle generation from converged state. The agent loads bundle-builder, asks for a bundle name (or uses the fallback), reads all workflow-architect:state:* memory entries, and writes the bundle directory: SKILL.md umbrella first, manifest.yaml, README.md, one sub-skill per phase (kebab-case), decision-map.md, AGENTS.md, and references/generated-from.md. The agent registers the umbrella and sub-skills with the Hermes skill system and verifies at least one loads via skill_view.",
+      "assertions": [
+        "The bundle name is established (asked or fallback)",
+        "The umbrella SKILL.md is written first with trigger-keyword description",
+        "All phase sub-skills, manifest, README, decision map, AGENTS.md, and generated-from metadata are written",
+        "The umbrella and sub-skills are registered with the skill system",
+        "At least one generated skill is verified loadable via skill_view"
+      ]
+    },
+    {
+      "id": "missing-state-abort",
+      "prompt": "Generate a workflow bundle from the interview you ran earlier.",
+      "expected_output": "Scenario: missing-state handling. If the workflow-architect:state:* entries are absent or missing required fields (entry_points, phases, branching, exit_criteria), the agent aborts with a clear message naming exactly what is missing and directs the user to run the interviewer (active) or observer (passive) first. It does not fabricate a bundle from partial or absent state.",
+      "assertions": [
+        "The agent reads the workflow-architect:state:* memory entries first",
+        "A missing required field (entry_points, phases, branching, exit_criteria) triggers an abort message",
+        "The abort message names the missing field(s)",
+        "The user is routed back to interviewer/observer instead of a fabricated bundle"
+      ]
+    },
+    {
+      "id": "kanban-inclusion-decision",
+      "prompt": "I have a workflow with phases A then B then C then D in a fixed order, and I'm always waiting on teammates between phases. Should the bundle include a kanban board?",
+      "expected_output": "Scenario: kanban decision using the decision criteria. The agent consults the kanban-decision-criteria reference and decides kanban is appropriate because the phases form a clear linear sequence and the user mentions waiting on others/status tracking. It generates the kanban/ directory (board-setup.sh, task-blueprints.yaml, README.md) and presents the decision with the reason to the user. If the workflow were emergent instead, the agent would recommend against kanban.",
+      "assertions": [
+        "The kanban decision criteria reference is consulted",
+        "A linear-sequence + handoff workflow leads to kanban inclusion",
+        "The kanban directory (board-setup.sh, task-blueprints, README) is generated when appropriate",
+        "The inclusion decision and its reason are presented to the user"
+      ]
+    },
+    {
+      "id": "sub-skill-registration-verification",
+      "prompt": "Generate the bundle and make sure the generated skills actually show up in the skill list and can be loaded.",
+      "expected_output": "Scenario: sub-skill registration and verification. After writing each phase sub-skill file, the agent registers each one with skill_manage(action='create') so it appears in skills_list() and is loadable via skill_view(name='<bundle-name>/<phase-name>'), then verifies at least one sub-skill loads without error. If registration fails, the agent checks that the sub-skill frontmatter name matches the filename and the YAML is valid.",
+      "assertions": [
+        "Each generated sub-skill is registered with the Hermes skill system",
+        "Registered sub-skills appear in skills_list()",
+        "At least one sub-skill is verified loadable via skill_view",
+        "A registration failure triggers a frontmatter/name-match diagnostic"
+      ]
+    },
+    {
+      "id": "state-cleanup-after-generation",
+      "prompt": "Bundle generation is done. Make sure future sessions don't get polluted by leftover interview state.",
+      "expected_output": "Scenario: state cleanup. After writing all bundle files and verifying the umbrella and sub-skills load, the agent removes all workflow-architect:state:* memory entries so they don't pollute future sessions, and tells the user where the bundle was written and what it contains.",
+      "assertions": [
+        "All workflow-architect:state:* memory entries are removed after generation",
+        "The user is told where the bundle was written and what it contains",
+        "The umbrella loads correctly after cleanup"
+      ]
+    },
+    {
+      "id": "umbrella-mandatory-first-step",
+      "prompt": "Start generating my bundle. Here's the workflow state.",
+      "expected_output": "Scenario: umbrella-first ordering. The agent writes the umbrella SKILL.md as the mandatory first step before any other file, because without it the agent's skill scanner has no entry point to match trigger keywords and the bundle would be invisible even though sub-skills exist on disk. The output reflects this ordering and the rationale for the umbrella as the discovery entry point.",
+      "assertions": [
+        "The umbrella SKILL.md is written before any other bundle file",
+        "The umbrella is registered via skill_manage(action='create')",
+        "The rationale (umbrella is the discovery entry point) is stated",
+        "The bundle is verifiably discoverable via the umbrella"
+      ]
+    }
+  ]
+}

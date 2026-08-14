@@ -59,9 +59,9 @@ MANIFESTS = (
     "capacity-and-cost-engineering/evals/evals.json",
     "incident-learning/evals/evals.json",
     "privacy-engineering/evals/evals.json",
-    "bundles/product-lifecycle/evals/evals.json",
-    "bundles/production-excellence/evals/evals.json",
-    "bundles/agent-production-operations/evals/evals.json",
+    "product-lifecycle/evals/evals.json",
+    "production-excellence/evals/evals.json",
+    "agent-production-operations/evals/evals.json",
 )
 
 INDEX_PATH = ROOT / "lifecycle-evals" / "references" / "coverage-index.json"

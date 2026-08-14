@@ -14,7 +14,7 @@ Repair the issue #159 research defects and deliver a source-grounded, authority-
 - GitHub issue `magnus919/agent-skills#159` and existing issue comment `5086185139`.
 - `AGENTS.md`, `agent-skills/SKILL.md`, and skill-format references.
 - `spec-driven-development/SKILL.md`, SPEC and VERIFICATION templates, and quality gates.
-- `bundles/neckbeard/SKILL.md`, stage, authority, and evidence-ledger references.
+- `neckbeard/SKILL.md`, stage, authority, and evidence-ledger references.
 - `research-methodology/SKILL.md` and original assets from `HEAD`.
 - Directly extracted CISA/NCSWIC PACE PDF and its CISA publication page.
 - Existing skill, README, eval, validator, and generated-catalog patterns in this repository.

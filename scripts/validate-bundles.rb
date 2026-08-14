@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Validates bundle manifests (bundles/*/manifest.yaml) against the
+# Validates bundle manifests (*/manifest.yaml) against the
 # bundle-manifest v1 contract declared in schemas/bundle-manifest-v1.schema.json.
 #
 # Checks:
@@ -37,7 +37,7 @@ REQUIRED_FIELDS = %w[
 ].freeze
 
 def manifest_paths
-  Dir.glob("#{ROOT}/bundles/*/manifest.yaml").sort
+  Dir.glob("#{ROOT}/*/manifest.yaml").sort
 end
 
 def errors_for(manifest)

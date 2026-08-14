@@ -20,12 +20,12 @@ each have at least one case (see the coverage summary at the end).
 
 | Scenario | Home manifest | Required trajectory |
 |---|---|---|
-| **product-launch** | `bundles/product-lifecycle/evals/evals.json` | Full lifecycle routing with phase-entry evidence, handoff artifacts, launch decision, evidence-ledger entry. |
-| **failed-experiment** | `bundles/product-lifecycle/evals/evals.json` | Negative outcome recorded with evidence; stop/no-ship decision; retained learning routed into lifecycle review. |
-| **migration-reconciliation-failure** | `bundles/production-excellence/evals/evals.json` | Reconciliation detects a mismatch; failure recorded; no-go/rollback/roll-forward decision with evidence and owner; does NOT proceed to launch. |
-| **blocked-readiness-review** | `bundles/production-excellence/evals/evals.json` | Blocked/no-go outcome; missing evidence named; accountable owner assigned; exception requires human approval. |
-| **agent-tool-failure** | `bundles/agent-production-operations/evals/evals.json` | Tool outage recorded; fallback/escalation/disablement per runtime control plan; trace-to-eval feedback entry written; does not continue as if the tool succeeded. |
-| **privacy-boundary-escalation** | `bundles/agent-production-operations/evals/evals.json` | Stops before any cross-boundary data processing; escalates to jurisdiction-specific legal/human review; records the boundary and escalation. |
+| **product-launch** | `product-lifecycle/evals/evals.json` | Full lifecycle routing with phase-entry evidence, handoff artifacts, launch decision, evidence-ledger entry. |
+| **failed-experiment** | `product-lifecycle/evals/evals.json` | Negative outcome recorded with evidence; stop/no-ship decision; retained learning routed into lifecycle review. |
+| **migration-reconciliation-failure** | `production-excellence/evals/evals.json` | Reconciliation detects a mismatch; failure recorded; no-go/rollback/roll-forward decision with evidence and owner; does NOT proceed to launch. |
+| **blocked-readiness-review** | `production-excellence/evals/evals.json` | Blocked/no-go outcome; missing evidence named; accountable owner assigned; exception requires human approval. |
+| **agent-tool-failure** | `agent-production-operations/evals/evals.json` | Tool outage recorded; fallback/escalation/disablement per runtime control plan; trace-to-eval feedback entry written; does not continue as if the tool succeeded. |
+| **privacy-boundary-escalation** | `agent-production-operations/evals/evals.json` | Stops before any cross-boundary data processing; escalates to jurisdiction-specific legal/human review; records the boundary and escalation. |
 
 ## Cases
 

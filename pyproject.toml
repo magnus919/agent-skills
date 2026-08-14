@@ -97,9 +97,16 @@ cc_min = "B"
 requirements_files = ["requirements-dev.txt"]
 extend_exclude = [
     "agent-council",
+    "agent-production-operations",
     "binary-analysis",
-    "bundles",
+    "forward-deployed-engineering",
+    "neckbeard",
+    "product-lifecycle",
+    "production-excellence",
+    "research-and-vault",
+    "tailscale",
     "templates",
+    "workflow-architect",
     "tests",
     "life-coach",
     "raleigh",

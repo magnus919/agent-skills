@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "skill_name": "tailnet-policy",
+  "evals": [
+    {
+      "id": "segmented-environments-policy",
+      "prompt": "We have dev and prod nodes in one tailnet. Dev nodes can talk to dev nodes, prod nodes to prod nodes, and admins can reach both. Write the policy.",
+      "expected_output": "Scenario: segmented environment policy. The agent writes a huJSON policy with tagOwners for tag:dev and tag:prod, and grants rules: dev-to-dev, prod-to-prod, and admin-to-both, preserving default-deny for anything else. The output explains tag ownership and that the policy file lives at the path configured in headscale config.yaml, and that the policy is validated before reload.",
+      "assertions": [
+        "tagOwners declares tag:dev and tag:prod owned by admins",
+        "Grants enforce dev-to-dev and prod-to-prod isolation",
+        "Admin access to both environments is granted",
+        "Default-deny is preserved for unspecified traffic",
+        "The policy is validated before being applied"
+      ]
+    },
+    {
+      "id": "modern-grants-vs-legacy-acls",
+      "prompt": "Our headscale policy is written with the old users/ports ACL syntax. Convert it to the modern grants syntax so we get protocol and via filtering support.",
+      "expected_output": "Scenario: migrating legacy ACLs to grants. The agent identifies the deprecated users/ports ACL rules and rewrites them as grants with src/dst/ip (and proto where applicable), using the migrate-acls-to-grants.py script or by hand. The output explains the ACL-vs-grants differences (port filtering via ip field, proto support, via routing) and validates the converted policy before reload. The agent keeps the users/src distinction correct and does not interleave legacy ACL fields into grants.",
+      "assertions": [
+        "Legacy users/ports ACL rules are converted to src/dst/ip grants",
+        "The migration uses grants where possible with proto/via preserved",
+        "The converted policy is validated before reload",
+        "The difference between ACL users/ports and grant src/ip fields is respected"
+      ]
+    },
+    {
+      "id": "tag-based-access-pattern",
+      "prompt": "Only monitoring nodes may talk to the webserver and database nodes, and webserver nodes may talk to the database only on port 5432. Write this as a tag-based policy.",
+      "expected_output": "Scenario: tag-based access control. The agent writes tagOwners for tag:monitoring, tag:webserver, and tag:database (owned by admins), and grants: monitoring-to-webserver-and-database, and webserver-to-database limited to tcp:5432. The output explains that tags decouple policy from user identity and verifies the rules are restrictive rather than allow-all.",
+      "assertions": [
+        "tagOwners declares the three tags owned by admins",
+        "Monitoring can reach webserver and database nodes",
+        "Webserver-to-database is scoped to tcp:5432 only",
+        "The policy is restrictive (no unintended allow-all)",
+        "The tag-based identity model is applied"
+      ]
+    },
+    {
+      "id": "auto-approvers-policy",
+      "prompt": "Write a policy that lets admins and a specific user auto-approve subnet routes and exit nodes so trusted infrastructure doesn't need manual route approval.",
+      "expected_output": "Scenario: auto-approvers policy. The agent writes an autoApprovers block mapping CIDR ranges to the users/groups that can auto-approve them and an exitNode list for exit-node auto-approval. The output explains the routes vs exitNode semantics and that these nodes bypass manual route approval.",
+      "assertions": [
+        "autoApprovers.routes maps CIDRs to the admin group and a specific user",
+        "autoApprovers.exitNode lists who can advertise exit nodes",
+        "The routes-vs-exitNode semantics are explained",
+        "The policy is valid and reload-ready"
+      ]
+    },
+    {
+      "id": "policy-validation-with-tests",
+      "prompt": "Before we ship an ACL change, validate it: confirm alice can reach the webserver on 443 and bob cannot reach the database on 22. Check with an automated test.",
+      "expected_output": "Scenario: policy validation with embedded tests. The agent adds tests entries to the policy (alice to webserver tcp:443 accept, bob to database tcp:22 drop) and runs validate-policy.py --policy <file> to validate. The output reports pass/fail for each expected result and notes that tests validate at parse time, not runtime, and that a passing test does not guarantee live behavior.",
+      "assertions": [
+        "Policy tests encode the expected accept and drop results",
+        "validate-policy.py is run against the policy file",
+        "The test results are reported as pass/fail per case",
+        "The limitation that tests are parse-time, not runtime, is stated"
+      ]
+    },
+    {
+      "id": "headscale-unsupported-features",
+      "prompt": "We copied a Tailscale-cloud policy into our self-hosted headscale and it uses devicePosture, ipSets, and OIDC group names. Will these work? Fix the policy for headscale.",
+      "expected_output": "Scenario: adapting Tailscale-only features to headscale. The agent identifies that headscale does not support devicePosture/device:managed, ipSets/ipprotocol, or OIDC groups in ACLs. It removes or rewrites those constructs, replacing OIDC groups with autogroup:admin/autogroup:member and validating the resulting policy. The output explains each unsupported feature and the substitution used.",
+      "assertions": [
+        "devicePosture and ipSets constructs are identified as unsupported and removed",
+        "OIDC groups are replaced with autogroup:admin/autogroup:member",
+        "Each unsupported-feature substitution is explained",
+        "The corrected policy is validated before use"
+      ]
+    }
+  ]
+}

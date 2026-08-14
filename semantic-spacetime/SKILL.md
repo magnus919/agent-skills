@@ -137,7 +137,7 @@ with absolute paths.
 | [promise-theory](../promise-theory/SKILL.md) | You need the substrate vocabulary SST builds on: promises, offers and acceptances, convergence, the Downstream Principle, and coordination diagnosis (also routed from `references/foundations.md`) |
 | [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) | You need to turn measurement and verification of semantic claims into evals, traces, and release gates (also routed from `references/foundations.md`) |
 | [agent-council](../agent-council/SKILL.md) | You want structured multi-agent debate as a mechanism for negotiating shared meaning between agents |
-| [workflow-architect](../bundles/workflow-architect/SKILL.md) | You want to encode a semantic-spacetime-informed workflow as a reusable skill bundle |
+| [workflow-architect](../workflow-architect/SKILL.md) | You want to encode a semantic-spacetime-informed workflow as a reusable skill bundle |
 | [artifact-pyramids](../artifact-pyramids/SKILL.md) | You need to structure SST evidence — models, maps, observations — as summaries → analysis → evidence dossiers |
 | [agent-skills](../agent-skills/SKILL.md) | You are authoring or editing an Agent Skills-format skill — the format this skill follows |
 | [cli-builder](../cli-builder/SKILL.md) | You are building or refactoring the bundled CLI for SST models (it will follow cli-builder conventions: non-interactive, `--json`, `--dry-run`) |

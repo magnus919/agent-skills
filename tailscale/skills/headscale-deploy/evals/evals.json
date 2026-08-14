@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "skill_name": "headscale-deploy",
+  "evals": [
+    {
+      "id": "docker-compose-deploy",
+      "prompt": "Deploy a self-hosted Headscale control server using Docker Compose on our Ubuntu host so our tailnet is not dependent on Tailscale's SaaS.",
+      "expected_output": "Scenario: Docker Compose deployment. The agent loads headscale-deploy and provisions Headscale via Docker Compose, either by generating a compose file with install-headscale.sh --docker or authoring one manually with the headscale image, volume mounts for /var/lib/headscale and /etc/headscale, and ports for control (e.g. 8080) and STUN (3478/udp). The container is started with restart unless-stopped. The agent then verifies the instance is healthy before handing off. The server_url is bound to a real public domain.",
+      "assertions": [
+        "The headscale-deploy sub-skill is loaded",
+        "A Docker Compose file defines the headscale image, volumes, and ports",
+        "The service is started with restart unless-stopped",
+        "Health is verified (curl health endpoint or health-check script) after start",
+        "server_url is bound to a public domain"
+      ]
+    },
+    {
+      "id": "binary-install-systemd",
+      "prompt": "Install the headscale control server directly on a lightweight Ubuntu server without Docker. We don't want containers here.",
+      "expected_output": "Scenario: bare-metal binary install. The agent uses install-headscale.sh to detect the platform, download the release tarball, install the binary to /usr/local/bin, create the headscale system user, write a systemd unit, and generate a default config at /etc/headscale/config.yaml. The service is started and enabled. The output reports the installed version and the config path.",
+      "assertions": [
+        "The headscale binary is installed to /usr/local/bin",
+        "The headscale system user is created",
+        "A systemd unit file is written",
+        "A default config is created at /etc/headscale/config.yaml",
+        "The service is started, enabled, and its version reported"
+      ]
+    },
+    {
+      "id": "config-server-url-and-magicdns",
+      "prompt": "Configure our new headscale server: it should listen on 0.0.0.0:8080, use the public URL https://headscale.example.com, enable MagicDNS under the example.com domain, and disable the embedded DERP relay.",
+      "expected_output": "Scenario: explicit server configuration. The agent edits config.yaml setting server_url to https://headscale.example.com, listen_addr to 0.0.0.0:8080, dns_config.base_domain to example.com with dns_config.magic_dns true, and derp.server.enabled false. Because headscale does not hot-reload config, the agent restarts the service after the change and verifies the settings took effect.",
+      "assertions": [
+        "server_url, listen_addr, dns_config.base_domain, and dns_config.magic_dns are set as requested",
+        "derp.server.enabled is disabled",
+        "The service is restarted because headscale does not hot-reload config",
+        "The changed settings are verified after restart"
+      ]
+    },
+    {
+      "id": "health-verification-gate",
+      "prompt": "I think our headscale deployment is broken — nothing can connect. Run a full health check and tell me what's wrong before we register any clients.",
+      "expected_output": "Scenario: health verification before client registration. The agent runs the health-check script (e.g. headscale-health-check.sh --json) covering server version, database integrity, and API access, plus headscale nodes list and apikeys list. It interprets the results and identifies failures (e.g. DB corruption, TLS issue, service down) with evidence from the check output. The agent does not proceed to client registration while the server is unhealthy.",
+      "assertions": [
+        "A comprehensive health check (version, DB integrity, API) is run",
+        "headscale nodes list and apikeys list are checked for reachability",
+        "Failures are interpreted and diagnosed with evidence",
+        "Client registration is not attempted while the server is unhealthy"
+      ]
+    },
+    {
+      "id": "tls-letsencrypt-auto",
+      "prompt": "Set up automatic HTTPS for our headscale server at headscale.example.com using Let's Encrypt so clients connect over TLS without manual certificates.",
+      "expected_output": "Scenario: automatic TLS via Let's Encrypt. The agent configures tls_letsencrypt_hostname to headscale.example.com (and related LetsEncrypt config) so headscale auto-provisions certificates, ensuring port 80 is reachable for the HTTP-01 challenge. Alternatively it routes through a reverse proxy (Caddy/Nginx/Traefik) if port 80 is constrained. The output verifies the HTTPS endpoint and that clients can reach the control plane.",
+      "assertions": [
+        "tls_letsencrypt_hostname is configured for the public domain",
+        "The HTTP-01 challenge reachability (port 80) is considered",
+        "TLS is terminated or provisioned and the HTTPS endpoint is verified",
+        "Clients can reach the control plane over TLS"
+      ]
+    },
+    {
+      "id": "backend-choice-scalability",
+      "prompt": "We're planning a tailnet that could grow past 100 nodes and we want high availability. Which database backend should we use, and why? Set it up.",
+      "expected_output": "Scenario: backend selection and provisioning. The agent recommends PostgreSQL over SQLite for tailnets over ~100 nodes or high-availability needs, and explains that choosing upfront avoids a non-trivial migration later. The agent configures db_type accordingly and points headscale at the PostgreSQL DSN, or if SQLite is already in place, flags the migration cost before proceeding.",
+      "assertions": [
+        "The agent recommends PostgreSQL for >100 nodes or HA",
+        "The rationale (SQLite limits, migration cost) is explained before changing config",
+        "db_type is set to the chosen backend",
+        "The migration cost of switching an existing install is surfaced"
+      ]
+    }
+  ]
+}

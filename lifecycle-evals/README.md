@@ -81,7 +81,7 @@ After changing case content or tags, refresh the committed index with
 | `run-artifacts/manifests/` | One committed snapshot of fake-adapter run output (per-trial manifests), refreshed at merge time |
 
 The 17 eval manifests themselves live in their owning skills:
-`<skill>/evals/evals.json` for the 14 top-level skills and `bundles/<bundle>/evals/evals.json`
+`<skill>/evals/evals.json` for the 14 top-level skills and `<bundle>/evals/evals.json`
 for the 3 bundle umbrellas.
 
 ## Per-case status semantics
@@ -126,8 +126,8 @@ block / decline) assert exactly that negative outcome.
 
 ## Claims policy (non-claim statement)
 
-This corpus is a **small, fixed output-quality corpus** (14 skills × ≥5 cases + 3 bundles
-of integrated cases). **Fake-adapter runs prove pipeline reproducibility and case
+This corpus is a **small, fixed output-quality corpus** (14 skills × ≥5 cases + 3 bundle
+umbrellas of integrated cases). **Fake-adapter runs prove pipeline reproducibility and case
 executability only.** They produce **no pass-rate, accuracy, or capability claims about any
 model** — no "10x", no "best", no universal performance claims. Any future **real-adapter**
 run (a model-backed harness) must be separately scoped, labeled (adapter + model + model

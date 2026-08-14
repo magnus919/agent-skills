@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "interviewer",
+  "evals": [
+    {
+      "id": "session-opener-progression",
+      "prompt": "I want you to figure out how I work so you can build me a workflow bundle. Let's start.",
+      "expected_output": "Scenario: opening the interview. The agent loads the interviewer sub-skill and starts with a broad session-opener question ('Walk me through a typical session from the very start.') rather than a battery of discrete questions. It records the user's entry point (e.g. 'check task list, prioritize by urgency') into the state model and adapts the next probe based on the answer, not by asking every opener in sequence.",
+      "assertions": [
+        "The interviewer sub-skill is loaded",
+        "The interview opens with a broad session-opener question",
+        "The user's stated entry point is recorded into the state model",
+        "The next probe adapts to the user's answer rather than being sequential"
+      ]
+    },
+    {
+      "id": "branching-signal-detection",
+      "prompt": "Usually I check open PRs assigned to me first. If there are none, I look at my kanban board and pick the top item.",
+      "expected_output": "Scenario: branching detection. The agent recognizes the conditional language ('if ... otherwise ...') as a branching signal and records it (e.g. 'pending PRs → review mode, otherwise → kanban triage'), then probes the branch with a follow-up question (e.g. 'after you finish the PR review, what tells you you're done?'). It does not treat the two branches as a single linear phase.",
+      "assertions": [
+        "The conditional ('if/otherwise') is recognized as a branching signal",
+        "The branching signal is recorded in the state model",
+        "A follow-up probe targets the just-identified branch",
+        "The branches are not flattened into a single linear phase"
+      ]
+    },
+    {
+      "id": "phase-discovery-and-transition",
+      "prompt": "Most sessions start with triage. Then I do deep work on whatever I picked, and I switch to research mode if I hit something unfamiliar.",
+      "expected_output": "Scenario: phase discovery with mode distinction and transition signals. The agent identifies distinct modes (triage, deep work, research) as phases, listens for the mode-switch language, and probes for transition signals that mark when the user leaves one phase for another. It records phases with typical tools/openers/exits rather than a single undifferentiated workflow.",
+      "assertions": [
+        "Distinct modes (triage, deep work, research) are identified as phases",
+        "Mode-switch language is captured as branching/mode distinction",
+        "Transition signals between phases are probed",
+        "Phases are recorded with typical tools, openers, and exits"
+      ]
+    },
+    {
+      "id": "convergence-check-presentation",
+      "prompt": "We've covered my entry points, three phases, two branching signals, my tools, and how I wind down sessions. Are we done?",
+      "expected_output": "Scenario: convergence evaluation. The agent checks the convergence criteria (3+ phases, entry points, branching, tools mapped to 2+ phases, exit criteria) and the convergence score (>= 0.6). If met, it presents a summary of phases, branching, tools, and pain points and asks the user to confirm before generating the bundle, then loads bundle-builder on confirmation. If not met, it continues probing rather than presenting prematurely.",
+      "assertions": [
+        "The convergence criteria and score are evaluated against the state model",
+        "A summary of phases, branching, tools, and pain points is presented",
+        "The user is asked to confirm the picture before generating",
+        "On confirmation, bundle-builder is loaded"
+      ]
+    },
+    {
+      "id": "refinement-loop-after-correction",
+      "prompt": "That summary is mostly right, but I don't always do research inside deep work — it's a separate session entirely. Update your model.",
+      "expected_output": "Scenario: refinement after user correction. The agent accepts the correction, updates the state model (splitting the research phase out of deep work), and re-checks convergence before presenting again or proceeding. It does not argue with the user or retain the incorrect model.",
+      "assertions": [
+        "The user's correction is accepted and reflected in the state model",
+        "The affected phase is updated (research separated from deep work)",
+        "Convergence is re-evaluated after the update",
+        "The agent does not proceed with the stale incorrect model"
+      ]
+    },
+    {
+      "id": "state-persistence-across-turns",
+      "prompt": "Let's pause the interview and pick it up tomorrow — I don't want to lose what we've mapped so far.",
+      "expected_output": "Scenario: state persistence. The agent persists all discovered dimensions to memory under the workflow-architect:state: prefix (entry_points, phases, branching, pain_points, exit_criteria, convergence_score) so the interview can resume across turns without restarting. The output confirms the state was saved and notes the known key-prefix convention.",
+      "assertions": [
+        "Interview state is persisted under the workflow-architect:state: prefix",
+        "All discovered dimensions (entry_points, phases, branching, pain_points, exit_criteria, convergence_score) are saved",
+        "The state is stored in a way that survives across turns",
+        "A note confirms the interview can resume without losing progress"
+      ]
+    }
+  ]
+}

@@ -12,10 +12,11 @@ repository refactors (see [Non-goals](#non-goals)).
 
 ## 1. Problem statement
 
-The repository has seven canonical bundles under `bundles/` (directories with a
-`SKILL.md` entrypoint): `product-lifecycle`, `production-excellence`,
-`agent-production-operations`, `neckbeard`, `workflow-architect`, `tailscale`,
-and `research-and-vault`. Only `workflow-architect` carries a bundle-metadata
+The repository has eight canonical bundles — top-level directories with a
+`SKILL.md` entrypoint: `product-lifecycle`, `production-excellence`,
+`agent-production-operations`, `forward-deployed-engineering`, `neckbeard`,
+`workflow-architect`, `tailscale`, and `research-and-vault`. Only
+`workflow-architect` carries a bundle-metadata
 concept today, and that concept is generation-time configuration for its own
 builder — not a common, machine-readable composition contract. Users and agents
 cannot consistently discover, from metadata alone, what a bundle is for, which
@@ -25,7 +26,7 @@ evaluated.
 
 ## 2. Survey of existing bundle metadata
 
-### 2.1 `bundles/workflow-architect/templates/manifest.yaml.tmpl`
+### 2.1 `workflow-architect/templates/manifest.yaml.tmpl`
 
 The template defines a generation-time manifest with the following fields:
 
@@ -42,7 +43,7 @@ deep-work archetypes, kanban boards). The `skills` entries describe **loading
 triggers** (keyword → nested skill) for that specific builder — not a general
 capability contract.
 
-### 2.2 `bundles/workflow-architect/references/example-output/developer-triage/manifest.yaml` (and `developer-pipeline-kanban`)
+### 2.2 `workflow-architect/references/example-output/developer-triage/manifest.yaml` (and `developer-pipeline-kanban`)
 
 Concrete instances of the template: `bundle_name`, `generated` (e.g.
 `2026-05-29`), `archetype` (`morning-triage-deep-work`,
@@ -54,7 +55,7 @@ generation configuration** — no bundle outside workflow-architect consumes it.
 
 ### 2.3 Bundles that carry no manifest today
 
-`bundles/neckbeard/`, `bundles/research-and-vault/`, and `bundles/tailscale/`
+`neckbeard/`, `research-and-vault/`, and `tailscale/`
 carry no manifest of any kind. Their capability description lives only in the
 `SKILL.md` frontmatter `description` field. `product-lifecycle`,
 `production-excellence`, and `agent-production-operations` (the three new
@@ -84,7 +85,7 @@ schema is therefore warranted — it reuses the repository's schema conventions
 
 The contract is `schemas/bundle-manifest-v1.schema.json` (JSON Schema,
 draft 2020-12, `additionalProperties: false`, versioned filename following the
-`evals-v1.schema.json` convention). A manifest lives at `bundles/<name>/manifest.yaml`
+`evals-v1.schema.json` convention). A manifest lives at `<name>/manifest.yaml`
 and is validated by `scripts/validate-bundles.rb`.
 
 ### 3.1 Fields preserved, dropped, and renamed vs. the existing manifest concept
@@ -144,9 +145,9 @@ path with a stated reason and future sequencing:
 | `research-and-vault` | No manifest added | Minimal bundle (SKILL.md + README only) with no composition surface yet | Add a manifest when it gains references/helpers |
 
 The **three new milestone bundles** — `product-lifecycle`, `production-excellence`,
-and `agent-production-operations` — ship schema-conformant `manifest.yaml` files
-now (`bundles/<name>/manifest.yaml`), each resolving `eval_suite` to its own
-`bundles/<name>/evals/evals.json`.
+and `agent-production-operations` — and `forward-deployed-engineering` ship
+schema-conformant `manifest.yaml` files now (`<name>/manifest.yaml`), each resolving
+`eval_suite` to its own `<name>/evals/evals.json`.
 
 For the matrix, bundles without a manifest are rendered with a purpose derived
 from their `SKILL.md` frontmatter `description` and the remaining cells set to
@@ -172,7 +173,7 @@ the documented deferral marker `migration deferred — see docs/bundle-manifest-
   independent of the generated matrix. Deleting the generated matrix loses no
   capability description.
 - **No unrelated refactors.** This issue touches only the changed surface
-  listed in the PR: `bundles/{product-lifecycle,production-excellence,
+  listed in the PR: `{product-lifecycle,production-excellence,
   agent-production-operations}/**` (additive manifest + doc rows), `schemas/`,
   `scripts/`, `docs/`, and `.github/workflows/validate.yml`.
 

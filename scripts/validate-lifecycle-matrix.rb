@@ -7,7 +7,7 @@
 #   docs/lifecycle-capability-matrix.json (machine-readable)
 #
 # Checks:
-#   (a) every canonical bundle (bundles/*/SKILL.md) has a row in the JSON
+#   (a) every canonical bundle (*/manifest.yaml) has a row in the JSON
 #       artifact (VAL-MNF-024)
 #   (b) every populated cell traces to its source: for manifest-derived rows
 #       the source manifest exists and the named field is present; for
@@ -16,7 +16,7 @@
 #       (VAL-MNF-011/024)
 #   (c) the structured artifacts are current: the generator's check mode
 #       passes (regenerated output matches the committed files) (VAL-MNF-024)
-#   (d) nested bundle helpers (bundles/<x>/skills/<sub>/SKILL.md) never appear
+#   (d) nested bundle helpers (<x>/skills/<sub>/SKILL.md) never appear
 #       in the four generated catalogs; only umbrella bundles do (VAL-MNF-020)
 #
 # Usage:
@@ -43,7 +43,7 @@ MATRIX_FIELDS = %w[
   conflicts eval_suite
 ].freeze
 DOCUMENTED_DERIVATIONS = %w[manifest frontmatter-description migration-deferred].freeze
-NESTED_HELPER_PATTERN = %r{bundles/[^/]+/skills/}
+NESTED_HELPER_PATTERN = %r{(?:^|/)skills/}
 
 errors = []
 
@@ -73,7 +73,7 @@ unless document.is_a?(Hash) && document["bundles"].is_a?(Array)
   errors << "docs/lifecycle-capability-matrix.json: top-level document must be a mapping with a bundles array"
 end
 
-canonical_bundles = Dir.glob("#{ROOT}/bundles/*/SKILL.md").map do |path|
+canonical_bundles = Dir.glob("#{ROOT}/*/manifest.yaml").map do |path|
   File.basename(File.dirname(path))
 end.sort
 rows = document.is_a?(Hash) ? document["bundles"] : []

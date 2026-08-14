@@ -28,11 +28,10 @@ WARN_THRESHOLD = 25  # modified skills without evals get a warning
 FAIL_THRESHOLD = 50  # modified skills without evals fail CI
 
 # Pathspec that matches every tracked file under a canonical skill directory.
-# A canonical skill lives at <root>/<skill-name>/SKILL.md or
-# <root>/bundles/<bundle-name>/skills/<skill-name>/SKILL.md.  The glob
-# ``*/SKILL.md`` covers the first shape; ``bundles/*/skills/*/SKILL.md``
-# covers the second.  We use the same glob for both ls-files and diff so
-# that modified-skill detection sees the same universe as find_skills().
+# A canonical skill lives at <root>/<skill-name>/SKILL.md.  The glob
+# ``*/SKILL.md`` covers that shape.  We use the same glob for both ls-files
+# and diff so that modified-skill detection sees the same universe as
+# find_skills().
 SKILL_PATHSPEC = ":(glob)**/SKILL.md"
 
 

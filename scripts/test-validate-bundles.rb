@@ -51,12 +51,12 @@ def valid_manifest_yaml
     stages:
       - name: Stage one
         skills:
-          - ../../alpha/SKILL.md
+          - ../alpha/SKILL.md
     included_skills:
-      - ../../alpha/SKILL.md
+      - ../alpha/SKILL.md
     prerequisites:
       - artifact: Input artifact
-        skill: ../../alpha/SKILL.md
+        skill: ../alpha/SKILL.md
     outputs:
       - decision
     handoffs:
@@ -98,12 +98,12 @@ end
 
 def write_bundle_pair(root, skill: "shared", alpha_conflicts: "conflicts: []", beta_conflicts: "conflicts: []")
   write_skill(root, skill)
-  write_manifest(root, "bundles/alpha/manifest.yaml", manifest_yaml(bundle_name: "alpha", skill_path: "../../#{skill}/SKILL.md", conflicts: alpha_conflicts))
-  write_manifest(root, "bundles/beta/manifest.yaml", manifest_yaml(bundle_name: "beta", skill_path: "../../#{skill}/SKILL.md", conflicts: beta_conflicts))
-  write_skill(root, "bundles/alpha", name: "alpha")
-  write_skill(root, "bundles/beta", name: "beta")
-  write_manifest(root, "bundles/alpha/evals/evals.json", "{}\n")
-  write_manifest(root, "bundles/beta/evals/evals.json", "{}\n")
+  write_manifest(root, "alpha/manifest.yaml", manifest_yaml(bundle_name: "alpha", skill_path: "../#{skill}/SKILL.md", conflicts: alpha_conflicts))
+  write_manifest(root, "beta/manifest.yaml", manifest_yaml(bundle_name: "beta", skill_path: "../#{skill}/SKILL.md", conflicts: beta_conflicts))
+  write_skill(root, "alpha", name: "alpha")
+  write_skill(root, "beta", name: "beta")
+  write_manifest(root, "alpha/evals/evals.json", "{}\n")
+  write_manifest(root, "beta/evals/evals.json", "{}\n")
 end
 
 def write_skill(root, relative, name: nil)
@@ -132,9 +132,9 @@ end
 
 def install_valid_bundle(root, bundle: "demo")
   write_skill(root, "alpha")
-  write_manifest(root, "bundles/#{bundle}/manifest.yaml", valid_manifest_yaml)
-  write_skill(root, "bundles/#{bundle}", name: bundle)
-  write_manifest(root, "bundles/#{bundle}/evals/evals.json", "{}\n")
+  write_manifest(root, "#{bundle}/manifest.yaml", valid_manifest_yaml)
+  write_skill(root, bundle, name: bundle)
+  write_manifest(root, "#{bundle}/evals/evals.json", "{}\n")
 end
 
 def run_validator(root, *args)
@@ -177,7 +177,7 @@ class ValidateBundlesTest < Minitest::Test
       install_tooling(root)
       declared = <<~CONFLICT
         conflicts:
-          - skill: ../../shared/SKILL.md
+          - skill: ../shared/SKILL.md
             with: beta
             guidance: Both bundles include shared; route by context.
       CONFLICT
@@ -195,14 +195,14 @@ class ValidateBundlesTest < Minitest::Test
       Dir.mktmpdir("bundle-incomplete") do |root|
         install_tooling(root)
         install_valid_bundle(root)
-        manifest_path = File.join(root, "bundles", "demo", "manifest.yaml")
+        manifest_path = File.join(root, "demo", "manifest.yaml")
         data = YAML.safe_load(File.read(manifest_path), permitted_classes: [], aliases: false)
         data.delete(field)
         File.write(manifest_path, data.to_yaml)
 
         _stdout, stderr, status = run_validator(root)
         refute status.success?, "expected rejection when #{field} is missing"
-        assert_includes stderr, "bundles/demo/manifest.yaml"
+        assert_includes stderr, "demo/manifest.yaml"
         assert_includes stderr, field
       end
     end
@@ -214,16 +214,16 @@ class ValidateBundlesTest < Minitest::Test
     Dir.mktmpdir("bundle-bad-skill") do |root|
       install_tooling(root)
       install_valid_bundle(root)
-      manifest_path = File.join(root, "bundles", "demo", "manifest.yaml")
+      manifest_path = File.join(root, "demo", "manifest.yaml")
       data = YAML.safe_load(File.read(manifest_path), permitted_classes: [], aliases: false)
-      data["included_skills"] = ["../../missing-skill/SKILL.md"]
+      data["included_skills"] = ["../missing-skill/SKILL.md"]
       File.write(manifest_path, data.to_yaml)
 
       _stdout, stderr, status = run_validator(root)
       refute status.success?
-      assert_includes stderr, "bundles/demo/manifest.yaml"
+      assert_includes stderr, "demo/manifest.yaml"
       assert_includes stderr, "included_skills"
-      assert_includes stderr, "../../missing-skill/SKILL.md"
+      assert_includes stderr, "../missing-skill/SKILL.md"
     end
   end
 
@@ -231,14 +231,14 @@ class ValidateBundlesTest < Minitest::Test
     Dir.mktmpdir("bundle-bad-handoff") do |root|
       install_tooling(root)
       install_valid_bundle(root)
-      manifest_path = File.join(root, "bundles", "demo", "manifest.yaml")
+      manifest_path = File.join(root, "demo", "manifest.yaml")
       data = YAML.safe_load(File.read(manifest_path), permitted_classes: [], aliases: false)
       data["handoffs"] = [{ "to" => "next team", "artifact" => "not-declared" }]
       File.write(manifest_path, data.to_yaml)
 
       _stdout, stderr, status = run_validator(root)
       refute status.success?
-      assert_includes stderr, "bundles/demo/manifest.yaml"
+      assert_includes stderr, "demo/manifest.yaml"
       assert_includes stderr, "handoffs"
       assert_includes stderr, "not-declared"
     end
@@ -248,16 +248,16 @@ class ValidateBundlesTest < Minitest::Test
     Dir.mktmpdir("bundle-bad-conflict") do |root|
       install_tooling(root)
       install_valid_bundle(root)
-      manifest_path = File.join(root, "bundles", "demo", "manifest.yaml")
+      manifest_path = File.join(root, "demo", "manifest.yaml")
       data = YAML.safe_load(File.read(manifest_path), permitted_classes: [], aliases: false)
-      data["conflicts"] = [{ "skill" => "../../missing-skill/SKILL.md", "with" => "other", "guidance" => "guidance" }]
+      data["conflicts"] = [{ "skill" => "../missing-skill/SKILL.md", "with" => "other", "guidance" => "guidance" }]
       File.write(manifest_path, data.to_yaml)
 
       _stdout, stderr, status = run_validator(root)
       refute status.success?
-      assert_includes stderr, "bundles/demo/manifest.yaml"
+      assert_includes stderr, "demo/manifest.yaml"
       assert_includes stderr, "conflicts"
-      assert_includes stderr, "../../missing-skill/SKILL.md"
+      assert_includes stderr, "../missing-skill/SKILL.md"
     end
   end
 
@@ -265,14 +265,14 @@ class ValidateBundlesTest < Minitest::Test
     Dir.mktmpdir("bundle-bad-eval") do |root|
       install_tooling(root)
       install_valid_bundle(root)
-      manifest_path = File.join(root, "bundles", "demo", "manifest.yaml")
+      manifest_path = File.join(root, "demo", "manifest.yaml")
       data = YAML.safe_load(File.read(manifest_path), permitted_classes: [], aliases: false)
       data["eval_suite"] = ["evals/missing.json"]
       File.write(manifest_path, data.to_yaml)
 
       _stdout, stderr, status = run_validator(root)
       refute status.success?
-      assert_includes stderr, "bundles/demo/manifest.yaml"
+      assert_includes stderr, "demo/manifest.yaml"
       assert_includes stderr, "eval_suite"
       assert_includes stderr, "evals/missing.json"
     end
@@ -287,8 +287,8 @@ class ValidateBundlesTest < Minitest::Test
 
       _stdout, stderr, status = run_validator(root)
       refute status.success?
-      assert_includes stderr, "bundles/alpha/manifest.yaml"
-      assert_includes stderr, "bundles/beta/manifest.yaml"
+      assert_includes stderr, "alpha/manifest.yaml"
+      assert_includes stderr, "beta/manifest.yaml"
       assert_includes stderr, "undeclared overlap"
     end
   end
@@ -313,8 +313,9 @@ class ValidateBundlesTest < Minitest::Test
     Dir.mktmpdir("gen-matrix") do |root|
       install_tooling(root)
       install_valid_bundle(root)
-      # manifest-less bundle exercises the documented deferral derivation.
-      write_skill(root, "bundles/legacy", name: "legacy")
+      # A top-level skill without a manifest.yaml is not a canonical bundle and
+      # must be excluded from the matrix (only <skill>/manifest.yaml dirs are).
+      write_skill(root, "legacy", name: "legacy")
 
       _stdout, stderr, status = run_generator(root, "--write")
       assert status.success?, stderr
@@ -325,8 +326,8 @@ class ValidateBundlesTest < Minitest::Test
 
       md = File.read(md_path)
       assert_includes md, "| demo |"
-      assert_includes md, "| legacy |"
-      assert_includes md, "migration deferred"
+      refute_includes md, "| legacy |"
+      refute_includes md, "migration deferred"
       refute_includes md, "|  |"
 
       _stdout, stderr, status = run_generator(root)
@@ -357,20 +358,19 @@ class ValidateBundlesTest < Minitest::Test
     Dir.mktmpdir("matrix-row") do |root|
       install_tooling(root)
       install_valid_bundle(root)
-      write_skill(root, "bundles/legacy", name: "legacy")
 
       _stdout, stderr, status = run_generator(root, "--write")
       assert status.success?, stderr
 
       json_path = File.join(root, "docs", "lifecycle-capability-matrix.json")
       document = JSON.parse(File.read(json_path))
-      document["bundles"].reject! { |row| row["name"] == "legacy" }
+      document["bundles"].reject! { |row| row["name"] == "demo" }
       File.write(json_path, JSON.pretty_generate(document) + "\n")
 
       _stdout, stderr, status = run_matrix_validator(root)
       refute status.success?
       assert_includes stderr, "missing row"
-      assert_includes stderr, "legacy"
+      assert_includes stderr, "demo"
     end
   end
 

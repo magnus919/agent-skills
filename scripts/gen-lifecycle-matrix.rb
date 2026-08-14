@@ -7,7 +7,7 @@
 #   docs/lifecycle-capability-matrix.json # machine-readable, per-cell source provenance
 #
 # Every matrix entry derives from a declared bundle manifest field
-# (bundles/<name>/manifest.yaml) or a documented derivation (SKILL.md
+# (<name>/manifest.yaml) or a documented derivation (SKILL.md
 # frontmatter description for manifest-less bundles; a documented deferral
 # marker for the remaining cells). See docs/bundle-manifest-design.md.
 #
@@ -35,10 +35,10 @@ DESIGN_NOTE = "docs/bundle-manifest-design.md#migration-path"
 
 # Public install candidates: top-level skills and bundle entrypoints.
 # Same glob as the other generators and validate-skills.rb; excludes
-# bundle-internal helper skills (bundles/<x>/skills/<sub>/SKILL.md).
-PUBLIC_SKILLS = (Dir.glob("#{ROOT}/*/SKILL.md") + Dir.glob("#{ROOT}/bundles/*/SKILL.md")).sort
+# bundle-internal helper skills (<x>/skills/<sub>/SKILL.md).
+PUBLIC_SKILLS = Dir.glob("#{ROOT}/*/SKILL.md").sort
 
-CANONICAL_BUNDLES = Dir.glob("#{ROOT}/bundles/*/SKILL.md").map do |path|
+CANONICAL_BUNDLES = Dir.glob("#{ROOT}/*/manifest.yaml").map do |path|
   File.basename(File.dirname(path))
 end.sort
 
@@ -97,9 +97,9 @@ def deferred_row(name, description)
   {
     "name" => name,
     "derivation" => "frontmatter-description-and-deferred-migration",
-    "source" => "bundles/#{name}/SKILL.md",
+    "source" => "#{name}/SKILL.md",
     "fields" => {
-      "purpose" => { "value" => description, "source" => "bundles/#{name}/SKILL.md#/description", "derivation" => "frontmatter-description" },
+      "purpose" => { "value" => description, "source" => "#{name}/SKILL.md#/description", "derivation" => "frontmatter-description" },
       "audience" => deferred_cell,
       "stages" => deferred_cell,
       "included_skills" => deferred_cell,
@@ -114,15 +114,15 @@ end
 
 def build_matrix
   CANONICAL_BUNDLES.map do |name|
-    manifest = File.join(ROOT, "bundles", name, "manifest.yaml")
-    relative_manifest = "bundles/#{name}/manifest.yaml"
+    manifest = File.join(ROOT, name, "manifest.yaml")
+    relative_manifest = "#{name}/manifest.yaml"
     if File.file?(manifest)
       data = YAML.safe_load(File.read(manifest), permitted_classes: [], aliases: false)
       raise "#{relative_manifest}: manifest must be a mapping" unless data.is_a?(Hash)
 
       manifest_row(name, data, relative_manifest)
     else
-      description = normalize_description(frontmatter(File.join(ROOT, "bundles", name, "SKILL.md"))["description"])
+      description = normalize_description(frontmatter(File.join(ROOT, name, "SKILL.md"))["description"])
       deferred_row(name, description)
     end
   end
@@ -137,7 +137,7 @@ def join_cells(values)
 end
 
 def summary_cell(row, field)
-  base = File.join(ROOT, "bundles", row["name"])
+  base = File.join(ROOT, row["name"])
   value = cell_value(row["fields"][field])
   result =
     case field
@@ -207,7 +207,7 @@ def render_markdown(matrix)
     lines << "### #{row['name']}"
     lines << ""
     lines << "- Derivation: `#{row['derivation']}` — source: `#{row['source']}`"
-    base = File.join(ROOT, "bundles", row["name"])
+    base = File.join(ROOT, row["name"])
     fields = row["fields"]
     lines << "- **Purpose:** #{cell_value(fields['purpose'])}"
     lines << "- **Audience:** #{cell_value(fields['audience'])}"

@@ -1,0 +1,204 @@
+# Bundle manifest (bundle-manifest-v1) — see ../schemas/bundle-manifest-v1.schema.json
+# and docs/bundle-manifest-design.md. Paths are relative to this bundle dir.
+
+schema_version: 1
+bundle_name: neckbeard
+
+purpose: >-
+  A disciplined SDLC delivery operating model for non-trivial software change —
+  fix, build, refactor, review, verify, or release — that routes the work
+  through framing, discovery, design, implementation, review, verification,
+  delivery, and learning, choosing the smallest *safe* intervention, proving it
+  at the real delivery boundary, and leaving an inspectable evidence ledger.
+
+audience: >-
+  Software engineers and agents delivering non-trivial software changes (bug
+  fixes, features, refactors, reviews, releases) that need a bounded,
+  stage-aware path to a defensible 'done' with recorded evidence; teams running
+  issue-to-PR change-request journeys with gates and an authorized release.
+
+stages:
+  - name: Intake and framing
+    skills:
+      - ../product-discovery/SKILL.md
+  - name: Current-state discovery
+    skills:
+      - ../software-architecture-analysis/SKILL.md
+      - ../systematic-debugging/SKILL.md
+  - name: Design
+    skills:
+      - ../api-design-and-evolution/SKILL.md
+      - ../product-design-and-ux/SKILL.md
+  - name: Specification
+    skills:
+      - ../spec-driven-development/SKILL.md
+  - name: Test planning
+    skills:
+      - ../qa-methodology/SKILL.md
+  - name: Implementation
+    skills:
+      - ../secure-software-engineering/SKILL.md
+      - ../web-accessibility/SKILL.md
+  - name: Review and verification
+    skills:
+      - ../verification-methodology/SKILL.md
+      - ../technical-documentation/SKILL.md
+  - name: Readiness and release
+    skills:
+      - ../release-engineering/SKILL.md
+      - ../site-reliability-engineering/SKILL.md
+
+included_skills:
+  - ../product-discovery/SKILL.md
+  - ../software-architecture-analysis/SKILL.md
+  - ../systematic-debugging/SKILL.md
+  - ../api-design-and-evolution/SKILL.md
+  - ../product-design-and-ux/SKILL.md
+  - ../spec-driven-development/SKILL.md
+  - ../qa-methodology/SKILL.md
+  - ../secure-software-engineering/SKILL.md
+  - ../web-accessibility/SKILL.md
+  - ../verification-methodology/SKILL.md
+  - ../technical-documentation/SKILL.md
+  - ../release-engineering/SKILL.md
+  - ../site-reliability-engineering/SKILL.md
+
+prerequisites:
+  - artifact: A non-trivial change request, issue, or task with a verifiable contract
+  - artifact: Current-state evidence (repository, tests, config, recent history)
+    skill: ../software-architecture-analysis/SKILL.md
+  - artifact: Change contract and evidence ledger entries
+    skill: ../verification-methodology/SKILL.md
+
+outputs:
+  - change-contract
+  - evidence-ledger
+  - delivery-packet
+  - implementation-plan
+  - verification-report
+  - release-record
+
+handoffs:
+  - to: verification-methodology
+    artifact: verification-report
+    note: >-
+      The verification report records the declared verification target and the
+      boundary actually exercised; verdicts bind to the exact head and never
+      claim a boundary that was not checked.
+  - to: release-engineering
+    artifact: release-record
+    note: >-
+      Release planning, versioning, pipeline promotion, readiness, and
+      authorized release routing for the delivered change.
+  - to: human reviewer
+    artifact: delivery-packet
+    note: >-
+      Change-request journeys hand the delivery packet — gates and evidence —
+      to the required review before merge; a timed-out review is inconclusive,
+      not a reason to launch repeated review rounds.
+  - to: next change (via evidence ledger)
+    artifact: evidence-ledger
+    note: >-
+      Each run emits a compact evidence record (intent, inspected artifacts,
+      assumptions, rejected alternatives, checks run, observed outputs,
+      unverified boundaries) that carries learning into the next change.
+
+conflicts:
+  - skill: ../product-discovery/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Product discovery is shared. Route by context: neckbeard loads it for
+      intake and framing of a change request; product-lifecycle owns the full
+      discovery phase of a product lifecycle.
+  - skill: ../product-design-and-ux/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Product design is shared. neckbeard loads it for user-facing behavior,
+      interaction, and information architecture during design;
+      product-lifecycle owns the UX and requirements phase of a product.
+  - skill: ../spec-driven-development/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Specification is shared. neckbeard uses it for formal specification and
+      phase gates on a change request; product-lifecycle uses it for
+      requirements and acceptance criteria in its lifecycle phases.
+  - skill: ../qa-methodology/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      QA methodology is shared. neckbeard loads it for test strategy and
+      regression gates on a change; product-lifecycle routes to it for phase 6
+      quality gates.
+  - skill: ../qa-methodology/SKILL.md
+    with: production-excellence
+    guidance: >-
+      QA methodology is shared. neckbeard loads it for change-request test
+      planning; production-excellence uses it for launch verification
+      evidence.
+  - skill: ../secure-software-engineering/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Security engineering is shared. Route by context: change-level security
+      review and threat modeling (neckbeard) versus lifecycle-phase security
+      needs (product-lifecycle).
+  - skill: ../secure-software-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Security engineering is shared. Route by context: change-level security
+      review (neckbeard) versus launch-gate security evidence
+      (production-excellence).
+  - skill: ../secure-software-engineering/SKILL.md
+    with: agent-production-operations
+    guidance: >-
+      Security engineering is shared. Route by context: change-level security
+      review (neckbeard) versus agent authority contracts and disablement
+      security (agent-production-operations).
+  - skill: ../verification-methodology/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Verification methodology is shared. neckbeard requires it to exercise
+      the declared verification boundary on a change; product-lifecycle uses
+      it at every phase gate for evidence.
+  - skill: ../verification-methodology/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Verification methodology is shared. neckbeard uses it for change-request
+      verification verdicts; production-excellence uses it for boundary
+      labeling of launch evidence.
+  - skill: ../release-engineering/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      Release engineering is shared. Route by context: change-request release
+      planning (neckbeard) versus lifecycle delivery handoff
+      (product-lifecycle).
+  - skill: ../release-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      Release engineering is shared. Route by context: change-request release
+      planning (neckbeard) versus launch-gate release evidence
+      (production-excellence).
+  - skill: ../release-engineering/SKILL.md
+    with: agent-production-operations
+    guidance: >-
+      Release engineering is shared. Route by context: change-request release
+      planning (neckbeard) versus agent staged-rollout planning
+      (agent-production-operations).
+  - skill: ../site-reliability-engineering/SKILL.md
+    with: product-lifecycle
+    guidance: >-
+      SRE is shared. neckbeard routes to it for reliability and operational
+      recovery of a delivered change; product-lifecycle routes to it for
+      delivery reliability.
+  - skill: ../site-reliability-engineering/SKILL.md
+    with: production-excellence
+    guidance: >-
+      SRE is shared. Route by context: change-level reliability (neckbeard)
+      versus gate-entry SLO/error-budget evidence (production-excellence).
+  - skill: ../site-reliability-engineering/SKILL.md
+    with: agent-production-operations
+    guidance: >-
+      SRE is shared. Route by context: change-level reliability (neckbeard)
+      versus agent runtime latency/cost budgets and incident handoff
+      (agent-production-operations).
+
+eval_suite:
+  - evals/evals.json

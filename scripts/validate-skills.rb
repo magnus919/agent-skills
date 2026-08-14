@@ -33,7 +33,7 @@ unless catalog_names == expected_catalog_names
 end
 
 catalog_paths = catalog_entries.map(&:last).sort
-expected_catalog_paths = (Dir.glob("#{ROOT}/*/SKILL.md") + Dir.glob("#{ROOT}/bundles/*/SKILL.md"))
+expected_catalog_paths = Dir.glob("#{ROOT}/*/SKILL.md")
                          .map { |path| path.delete_prefix("#{ROOT}/") }
                          .sort
 missing_catalog_paths = expected_catalog_paths - catalog_paths

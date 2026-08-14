@@ -23,30 +23,30 @@ the migration path, and the field definitions. Regenerate with
 
 ### agent-production-operations
 
-- Derivation: `manifest` — source: `bundles/agent-production-operations/manifest.yaml`
+- Derivation: `manifest` — source: `agent-production-operations/manifest.yaml`
 - **Purpose:** Operate an evaluated agent with tools and authority in production through a runtime control plane covering versioning, staged rollout, fallback, cost and latency budgets, tool health, human escalation, disablement, and trace-to-eval feedback.
 - **Audience:** Agent operators and platform teams running evaluated agents with tools and delegated authority in production; agents that need the runtime control decisions between evaluation, release, SRE, security, and platform specialists.
 - **Stages (ordered):**
-  1. Contract definition — agent-evals-and-observability (`../../agent-evals-and-observability/SKILL.md`), production-readiness (`../../production-readiness/SKILL.md`), incident-learning (`../../incident-learning/SKILL.md`)
-  2. Versioning and rollout planning — release-engineering (`../../release-engineering/SKILL.md`), platform-engineering (`../../platform-engineering/SKILL.md`)
-  3. Staged rollout — platform-engineering (`../../platform-engineering/SKILL.md`), site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
-  4. Runtime monitoring — site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`), secure-software-engineering (`../../secure-software-engineering/SKILL.md`)
-  5. Trace-to-eval feedback — agent-evals-and-observability (`../../agent-evals-and-observability/SKILL.md`)
-  6. Learning and disablement — incident-learning (`../../incident-learning/SKILL.md`), production-readiness (`../../production-readiness/SKILL.md`), privacy-engineering (`../../privacy-engineering/SKILL.md`)
+  1. Contract definition — agent-evals-and-observability (`../agent-evals-and-observability/SKILL.md`), production-readiness (`../production-readiness/SKILL.md`), incident-learning (`../incident-learning/SKILL.md`)
+  2. Versioning and rollout planning — release-engineering (`../release-engineering/SKILL.md`), platform-engineering (`../platform-engineering/SKILL.md`)
+  3. Staged rollout — platform-engineering (`../platform-engineering/SKILL.md`), site-reliability-engineering (`../site-reliability-engineering/SKILL.md`)
+  4. Runtime monitoring — site-reliability-engineering (`../site-reliability-engineering/SKILL.md`), secure-software-engineering (`../secure-software-engineering/SKILL.md`)
+  5. Trace-to-eval feedback — agent-evals-and-observability (`../agent-evals-and-observability/SKILL.md`)
+  6. Learning and disablement — incident-learning (`../incident-learning/SKILL.md`), production-readiness (`../production-readiness/SKILL.md`), privacy-engineering (`../privacy-engineering/SKILL.md`)
 - **Included skills:**
-  - agent-evals-and-observability (`../../agent-evals-and-observability/SKILL.md`)
-  - release-engineering (`../../release-engineering/SKILL.md`)
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`)
-  - platform-engineering (`../../platform-engineering/SKILL.md`)
-  - production-readiness (`../../production-readiness/SKILL.md`)
-  - incident-learning (`../../incident-learning/SKILL.md`)
-  - privacy-engineering (`../../privacy-engineering/SKILL.md`)
+  - agent-evals-and-observability (`../agent-evals-and-observability/SKILL.md`)
+  - release-engineering (`../release-engineering/SKILL.md`)
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`)
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`)
+  - platform-engineering (`../platform-engineering/SKILL.md`)
+  - production-readiness (`../production-readiness/SKILL.md`)
+  - incident-learning (`../incident-learning/SKILL.md`)
+  - privacy-engineering (`../privacy-engineering/SKILL.md`)
 - **Prerequisites:**
-  - Agent evaluation results and observability instrumentation — via agent-evals-and-observability (`../../agent-evals-and-observability/SKILL.md`)
-  - Production-readiness evidence (go/no-go/defer/exception outcomes) — via production-readiness (`../../production-readiness/SKILL.md`)
-  - Incident-learning records (verified closure, follow-up work map) — via incident-learning (`../../incident-learning/SKILL.md`)
-  - Release pipeline and artifact promotion baseline — via release-engineering (`../../release-engineering/SKILL.md`)
+  - Agent evaluation results and observability instrumentation — via agent-evals-and-observability (`../agent-evals-and-observability/SKILL.md`)
+  - Production-readiness evidence (go/no-go/defer/exception outcomes) — via production-readiness (`../production-readiness/SKILL.md`)
+  - Incident-learning records (verified closure, follow-up work map) — via incident-learning (`../incident-learning/SKILL.md`)
+  - Release pipeline and artifact promotion baseline — via release-engineering (`../release-engineering/SKILL.md`)
 - **Outputs:** agent-production-contract, runtime-control-plan, staged-rollout-plan, tool-authority-health-record, trace-to-eval-feedback-loop, disablement-record
 - **Handoffs:**
   - staged-rollout-plan → release-engineering — Rollout stages and promotion gates integrate with the release pipeline; rollback triggers tie agent health to release mechanics.
@@ -54,57 +54,57 @@ the migration path, and the field definitions. Regenerate with
   - tool-authority-health-record → incident-learning — Tool-failure and authority-breach records feed post-incident analysis and verified-closure tracking.
   - disablement-record → human operator — Disablement revokes credentials, removes the agent from routing/load-balancing, and records the reason, timestamp, and authorizing evidence.
 - **Conflicts:**
-  - production-readiness (`../../production-readiness/SKILL.md`) with production-excellence — Both bundles include production-readiness. This bundle consumes readiness outcomes as authority-gating inputs; production-excellence produces the go/no-go/defer/exception decisions.
-  - production-readiness (`../../production-readiness/SKILL.md`) with product-lifecycle — Both bundles include production-readiness. Route phase 6 delivery readiness reviews to product-lifecycle; runtime authority decisions for an agent in production go to this bundle.
-  - release-engineering (`../../release-engineering/SKILL.md`) with production-excellence — Release engineering is shared. Route by context: agent staged-rollout planning (this bundle) versus launch-gate release plans (production-excellence).
-  - release-engineering (`../../release-engineering/SKILL.md`) with product-lifecycle — Release engineering is shared. Route by context: agent staged-rollout planning (this bundle) versus lifecycle delivery handoff (product-lifecycle).
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with production-excellence — SRE is shared. This bundle uses it for runtime latency/cost budgets and incident handoff; production-excellence uses it for gate-entry reliability evidence. Incident command stays with SRE in both cases.
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with product-lifecycle — SRE is shared. This bundle uses it for agent runtime budgets; product-lifecycle routes to it for delivery reliability.
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with production-excellence — Security engineering is shared. Route by context: agent authority contracts and disablement security (this bundle) versus launch-gate security evidence (production-excellence).
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with product-lifecycle — Security engineering is shared. Route by context: agent trust-boundary and disablement security (this bundle) versus lifecycle-phase security needs (product-lifecycle).
-  - platform-engineering (`../../platform-engineering/SKILL.md`) with production-excellence — Platform engineering is shared. Route by context: agent sandboxing and tool-execution isolation (this bundle) versus launch-gate platform evidence (production-excellence).
-  - platform-engineering (`../../platform-engineering/SKILL.md`) with product-lifecycle — Platform engineering is shared. Route by context: agent sandboxing and tool-execution isolation (this bundle) versus lifecycle delivery handoff (product-lifecycle).
-  - incident-learning (`../../incident-learning/SKILL.md`) with production-excellence — Both bundles consume incident-learning records. This bundle consumes verified-closure records as escalation and disablement inputs; production-excellence uses incident history as gate-entry evidence.
-  - privacy-engineering (`../../privacy-engineering/SKILL.md`) with product-lifecycle — Privacy engineering is shared. This bundle routes to it for trace scrubbing and user-data-access grants; product-lifecycle routes to it for PII, consent, retention, and data flows in any phase.
+  - production-readiness (`../production-readiness/SKILL.md`) with production-excellence — Both bundles include production-readiness. This bundle consumes readiness outcomes as authority-gating inputs; production-excellence produces the go/no-go/defer/exception decisions.
+  - production-readiness (`../production-readiness/SKILL.md`) with product-lifecycle — Both bundles include production-readiness. Route phase 6 delivery readiness reviews to product-lifecycle; runtime authority decisions for an agent in production go to this bundle.
+  - release-engineering (`../release-engineering/SKILL.md`) with production-excellence — Release engineering is shared. Route by context: agent staged-rollout planning (this bundle) versus launch-gate release plans (production-excellence).
+  - release-engineering (`../release-engineering/SKILL.md`) with product-lifecycle — Release engineering is shared. Route by context: agent staged-rollout planning (this bundle) versus lifecycle delivery handoff (product-lifecycle).
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with production-excellence — SRE is shared. This bundle uses it for runtime latency/cost budgets and incident handoff; production-excellence uses it for gate-entry reliability evidence. Incident command stays with SRE in both cases.
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with product-lifecycle — SRE is shared. This bundle uses it for agent runtime budgets; product-lifecycle routes to it for delivery reliability.
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with production-excellence — Security engineering is shared. Route by context: agent authority contracts and disablement security (this bundle) versus launch-gate security evidence (production-excellence).
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with product-lifecycle — Security engineering is shared. Route by context: agent trust-boundary and disablement security (this bundle) versus lifecycle-phase security needs (product-lifecycle).
+  - platform-engineering (`../platform-engineering/SKILL.md`) with production-excellence — Platform engineering is shared. Route by context: agent sandboxing and tool-execution isolation (this bundle) versus launch-gate platform evidence (production-excellence).
+  - platform-engineering (`../platform-engineering/SKILL.md`) with product-lifecycle — Platform engineering is shared. Route by context: agent sandboxing and tool-execution isolation (this bundle) versus lifecycle delivery handoff (product-lifecycle).
+  - incident-learning (`../incident-learning/SKILL.md`) with production-excellence — Both bundles consume incident-learning records. This bundle consumes verified-closure records as escalation and disablement inputs; production-excellence uses incident history as gate-entry evidence.
+  - privacy-engineering (`../privacy-engineering/SKILL.md`) with product-lifecycle — Privacy engineering is shared. This bundle routes to it for trace scrubbing and user-data-access grants; product-lifecycle routes to it for PII, consent, retention, and data flows in any phase.
 - **Eval suite:** evals/evals.json
 
 ### forward-deployed-engineering
 
-- Derivation: `manifest` — source: `bundles/forward-deployed-engineering/manifest.yaml`
+- Derivation: `manifest` — source: `forward-deployed-engineering/manifest.yaml`
 - **Purpose:** Carry an embedded technical engagement from ambiguous stakeholder need through discovery, framing, hypothesis, build, evaluation, deployment, adoption, measurement, and generalization while preserving decision rights, evidence, handoffs, and reusable field learning.
 - **Audience:** Technical leads and agents embedded across stakeholder discovery, implementation, production fit, adoption, and measurable workflow outcomes; this is a continuity layer that routes specialist methods rather than replacing them.
 - **Stages (ordered):**
-  1. Discover — product-discovery (`../../product-discovery/SKILL.md`), data-engineering (`../../data-engineering/SKILL.md`), remote-systems-administration (`../../remote-systems-administration/SKILL.md`)
-  2. Frame — product-design-and-ux (`../../product-design-and-ux/SKILL.md`), privacy-engineering (`../../privacy-engineering/SKILL.md`), secure-software-engineering (`../../secure-software-engineering/SKILL.md`)
-  3. Hypothesize — product-experimentation (`../../product-experimentation/SKILL.md`), agent-evals-and-observability (`../../agent-evals-and-observability/SKILL.md`)
-  4. Build — implementation-planning (`../../implementation-planning/SKILL.md`), backend-engineering (`../../backend-engineering/SKILL.md`), frontend-engineering (`../../frontend-engineering/SKILL.md`), data-engineering (`../../data-engineering/SKILL.md`)
-  5. Evaluate — agent-evals-and-observability (`../../agent-evals-and-observability/SKILL.md`), qa-methodology (`../../qa-methodology/SKILL.md`), verification-methodology (`../../verification-methodology/SKILL.md`)
-  6. Deploy — production-readiness (`../../production-readiness/SKILL.md`), release-engineering (`../../release-engineering/SKILL.md`), platform-engineering (`../../platform-engineering/SKILL.md`), remote-systems-administration (`../../remote-systems-administration/SKILL.md`)
-  7. Adopt — product-adoption (`../../product-adoption/SKILL.md`), product-design-and-ux (`../../product-design-and-ux/SKILL.md`)
-  8. Measure — product-analytics-and-measurement (`../../product-analytics-and-measurement/SKILL.md`), agent-evals-and-observability (`../../agent-evals-and-observability/SKILL.md`), site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
-  9. Generalize — product-lifecycle-learning (`../../product-lifecycle-learning/SKILL.md`), product-methodology (`../../product-methodology/SKILL.md`)
+  1. Discover — product-discovery (`../product-discovery/SKILL.md`), data-engineering (`../data-engineering/SKILL.md`), remote-systems-administration (`../remote-systems-administration/SKILL.md`)
+  2. Frame — product-design-and-ux (`../product-design-and-ux/SKILL.md`), privacy-engineering (`../privacy-engineering/SKILL.md`), secure-software-engineering (`../secure-software-engineering/SKILL.md`)
+  3. Hypothesize — product-experimentation (`../product-experimentation/SKILL.md`), agent-evals-and-observability (`../agent-evals-and-observability/SKILL.md`)
+  4. Build — implementation-planning (`../implementation-planning/SKILL.md`), backend-engineering (`../backend-engineering/SKILL.md`), frontend-engineering (`../frontend-engineering/SKILL.md`), data-engineering (`../data-engineering/SKILL.md`)
+  5. Evaluate — agent-evals-and-observability (`../agent-evals-and-observability/SKILL.md`), qa-methodology (`../qa-methodology/SKILL.md`), verification-methodology (`../verification-methodology/SKILL.md`)
+  6. Deploy — production-readiness (`../production-readiness/SKILL.md`), release-engineering (`../release-engineering/SKILL.md`), platform-engineering (`../platform-engineering/SKILL.md`), remote-systems-administration (`../remote-systems-administration/SKILL.md`)
+  7. Adopt — product-adoption (`../product-adoption/SKILL.md`), product-design-and-ux (`../product-design-and-ux/SKILL.md`)
+  8. Measure — product-analytics-and-measurement (`../product-analytics-and-measurement/SKILL.md`), agent-evals-and-observability (`../agent-evals-and-observability/SKILL.md`), site-reliability-engineering (`../site-reliability-engineering/SKILL.md`)
+  9. Generalize — product-lifecycle-learning (`../product-lifecycle-learning/SKILL.md`), product-methodology (`../product-methodology/SKILL.md`)
 - **Included skills:**
-  - product-discovery (`../../product-discovery/SKILL.md`)
-  - product-design-and-ux (`../../product-design-and-ux/SKILL.md`)
-  - product-experimentation (`../../product-experimentation/SKILL.md`)
-  - agent-evals-and-observability (`../../agent-evals-and-observability/SKILL.md`)
-  - implementation-planning (`../../implementation-planning/SKILL.md`)
-  - backend-engineering (`../../backend-engineering/SKILL.md`)
-  - frontend-engineering (`../../frontend-engineering/SKILL.md`)
-  - data-engineering (`../../data-engineering/SKILL.md`)
-  - qa-methodology (`../../qa-methodology/SKILL.md`)
-  - verification-methodology (`../../verification-methodology/SKILL.md`)
-  - production-readiness (`../../production-readiness/SKILL.md`)
-  - release-engineering (`../../release-engineering/SKILL.md`)
-  - platform-engineering (`../../platform-engineering/SKILL.md`)
-  - remote-systems-administration (`../../remote-systems-administration/SKILL.md`)
-  - product-adoption (`../../product-adoption/SKILL.md`)
-  - product-analytics-and-measurement (`../../product-analytics-and-measurement/SKILL.md`)
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
-  - product-lifecycle-learning (`../../product-lifecycle-learning/SKILL.md`)
-  - product-methodology (`../../product-methodology/SKILL.md`)
-  - privacy-engineering (`../../privacy-engineering/SKILL.md`)
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`)
+  - product-discovery (`../product-discovery/SKILL.md`)
+  - product-design-and-ux (`../product-design-and-ux/SKILL.md`)
+  - product-experimentation (`../product-experimentation/SKILL.md`)
+  - agent-evals-and-observability (`../agent-evals-and-observability/SKILL.md`)
+  - implementation-planning (`../implementation-planning/SKILL.md`)
+  - backend-engineering (`../backend-engineering/SKILL.md`)
+  - frontend-engineering (`../frontend-engineering/SKILL.md`)
+  - data-engineering (`../data-engineering/SKILL.md`)
+  - qa-methodology (`../qa-methodology/SKILL.md`)
+  - verification-methodology (`../verification-methodology/SKILL.md`)
+  - production-readiness (`../production-readiness/SKILL.md`)
+  - release-engineering (`../release-engineering/SKILL.md`)
+  - platform-engineering (`../platform-engineering/SKILL.md`)
+  - remote-systems-administration (`../remote-systems-administration/SKILL.md`)
+  - product-adoption (`../product-adoption/SKILL.md`)
+  - product-analytics-and-measurement (`../product-analytics-and-measurement/SKILL.md`)
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`)
+  - product-lifecycle-learning (`../product-lifecycle-learning/SKILL.md`)
+  - product-methodology (`../product-methodology/SKILL.md`)
+  - privacy-engineering (`../privacy-engineering/SKILL.md`)
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`)
 - **Prerequisites:**
   - Stakeholder request or observed workflow opportunity and a named accountable lead
   - Authority to conduct non-destructive discovery with access to relevant stakeholders or workflow evidence
@@ -116,79 +116,79 @@ the migration path, and the field definitions. Regenerate with
   - productization-record → product, platform, or receiving delivery owner — Field learning is classified with evidence, reuse boundary, owner, and next action rather than being promoted by enthusiasm alone.
   - field-learning-record → engagement sponsor — The engagement closes with observed outcomes, unresolved uncertainty, and a durable transfer or follow-up path.
 - **Conflicts:**
-  - product-discovery (`../../product-discovery/SKILL.md`) with product-lifecycle — This bundle uses product-discovery for embedded delivery continuity and workflow context; product-lifecycle owns product investment and lifecycle governance.
-  - product-discovery (`../../product-discovery/SKILL.md`) with research-and-vault — Use product-discovery for stakeholder and workflow discovery; use research-and-vault for a reusable web-research-to-knowledge capture chain.
-  - product-experimentation (`../../product-experimentation/SKILL.md`) with product-lifecycle — This bundle routes experiments to test an engagement intervention; product-lifecycle routes product investment experiments within its lifecycle governance.
-  - implementation-planning (`../../implementation-planning/SKILL.md`) with product-lifecycle — This bundle routes implementation planning only during Build after an authorized owner approves the requirement; product-lifecycle owns product delivery handoff. Route a bounded code change to neckbeard.
-  - production-readiness (`../../production-readiness/SKILL.md`) with production-excellence — This bundle carries engagement evidence into the specialist readiness review; production-excellence owns the cross-domain launch gate decision.
-  - production-readiness (`../../production-readiness/SKILL.md`) with product-lifecycle — This bundle routes readiness for an embedded capability; product-lifecycle owns product lifecycle delivery handoff. Do not run both orchestration paths for one decision.
-  - release-engineering (`../../release-engineering/SKILL.md`) with production-excellence — This bundle routes deployment evidence from the engagement; production-excellence uses release evidence for a launch gate.
-  - release-engineering (`../../release-engineering/SKILL.md`) with product-lifecycle — This bundle uses release engineering for embedded rollout continuity; product-lifecycle uses it for product delivery handoff.
-  - platform-engineering (`../../platform-engineering/SKILL.md`) with production-excellence — This bundle routes platform work needed to deploy the engagement capability; production-excellence assembles platform evidence for launch gating.
-  - platform-engineering (`../../platform-engineering/SKILL.md`) with product-lifecycle — This bundle routes platform work needed by the engagement; product-lifecycle routes platform work in a product delivery handoff.
-  - platform-engineering (`../../platform-engineering/SKILL.md`) with agent-production-operations — This bundle routes product or engagement platform delivery; agent-production-operations owns runtime agent sandboxing and tool-execution isolation.
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with production-excellence — This bundle routes trust-boundary work during the engagement; production-excellence consumes security evidence for its launch gate.
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with product-lifecycle — This bundle routes security work in the embedded lifecycle; product-lifecycle routes security work in product lifecycle phases.
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with agent-production-operations — This bundle routes application and engagement security; agent-production-operations owns agent authority, disablement, and runtime security controls.
-  - privacy-engineering (`../../privacy-engineering/SKILL.md`) with product-lifecycle — This bundle routes privacy work for engagement data flows; product-lifecycle routes privacy work across product lifecycle phases.
-  - privacy-engineering (`../../privacy-engineering/SKILL.md`) with agent-production-operations — This bundle routes engagement privacy decisions; agent-production-operations routes trace scrubbing and user-data-access grants.
-  - qa-methodology (`../../qa-methodology/SKILL.md`) with production-excellence — This bundle routes quality evidence for the built capability; production-excellence uses QA evidence at the launch gate.
-  - qa-methodology (`../../qa-methodology/SKILL.md`) with product-lifecycle — This bundle routes evaluation and quality work for engagement delivery; product-lifecycle uses QA at product delivery handoff.
-  - verification-methodology (`../../verification-methodology/SKILL.md`) with production-excellence — This bundle uses verification to label engagement evidence; production-excellence uses it to verify launch-boundary evidence.
-  - verification-methodology (`../../verification-methodology/SKILL.md`) with product-lifecycle — This bundle verifies continuity artifacts and field outcomes; product-lifecycle verifies evidence at product phase gates.
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with production-excellence — This bundle routes reliability evidence for the engagement; production-excellence uses SRE evidence for its production gate.
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with product-lifecycle — This bundle routes reliability work needed for adoption and operation; product-lifecycle routes SRE work in product delivery handoff.
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with agent-production-operations — This bundle routes service reliability; agent-production-operations routes runtime latency, cost budgets, and incident handoff for agents.
-  - data-engineering (`../../data-engineering/SKILL.md`) with production-excellence — This bundle routes data work required by the engagement; production-excellence consumes data evidence in its operational handoff and launch gate.
-  - product-adoption (`../../product-adoption/SKILL.md`) with product-lifecycle — This bundle owns adoption continuity for an embedded engagement; product-lifecycle owns product adoption as one phase of product governance.
-  - product-analytics-and-measurement (`../../product-analytics-and-measurement/SKILL.md`) with product-lifecycle — This bundle measures workflow impact for engagement completion; product-lifecycle measures product outcomes in lifecycle review.
-  - product-lifecycle-learning (`../../product-lifecycle-learning/SKILL.md`) with product-lifecycle — This bundle uses field learning to decide generalization; product-lifecycle-learning owns the product lifecycle learning method and decision record.
-  - agent-evals-and-observability (`../../agent-evals-and-observability/SKILL.md`) with agent-production-operations — This bundle routes eval evidence for engagement release and learning; agent-production-operations consumes eval and trace evidence for runtime control.
-  - production-readiness (`../../production-readiness/SKILL.md`) with agent-production-operations — This bundle routes readiness for an embedded capability; agent-production-operations consumes readiness as an authority-gating input.
-  - release-engineering (`../../release-engineering/SKILL.md`) with agent-production-operations — This bundle uses release engineering for engagement rollout; agent-production-operations uses it for staged runtime rollout and fallback.
-  - product-design-and-ux (`../../product-design-and-ux/SKILL.md`) with neckbeard — This bundle routes UX for embedded workflow adoption; neckbeard uses UX only as needed for a bounded software change. Route by task boundary.
-  - product-discovery (`../../product-discovery/SKILL.md`) with neckbeard — This bundle owns embedded stakeholder and workflow discovery; neckbeard handles the bounded change after its requirements are known.
-  - qa-methodology (`../../qa-methodology/SKILL.md`) with neckbeard — This bundle routes QA for engagement evidence; neckbeard applies QA within its software delivery journey for a bounded repository change.
-  - release-engineering (`../../release-engineering/SKILL.md`) with neckbeard — This bundle routes release work across the engagement lifecycle; neckbeard owns release delivery for a bounded change.
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with neckbeard — This bundle routes security decisions across embedded delivery; neckbeard applies security to its bounded software change.
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with neckbeard — This bundle routes reliability for engagement outcomes; neckbeard routes reliability concerns within its software delivery journey.
-  - verification-methodology (`../../verification-methodology/SKILL.md`) with neckbeard — This bundle verifies stage continuity and outcome evidence; neckbeard verifies the bounded repository change.
-  - product-design-and-ux (`../../product-design-and-ux/SKILL.md`) with product-lifecycle — This bundle routes UX for embedded workflow adoption; product-lifecycle routes UX for product requirements and lifecycle governance.
-  - product-methodology (`../../product-methodology/SKILL.md`) with product-lifecycle — This bundle uses prioritization only to support engagement generalization; product-lifecycle owns product prioritization and portfolio methods.
+  - product-discovery (`../product-discovery/SKILL.md`) with product-lifecycle — This bundle uses product-discovery for embedded delivery continuity and workflow context; product-lifecycle owns product investment and lifecycle governance.
+  - product-discovery (`../product-discovery/SKILL.md`) with research-and-vault — Use product-discovery for stakeholder and workflow discovery; use research-and-vault for a reusable web-research-to-knowledge capture chain.
+  - product-experimentation (`../product-experimentation/SKILL.md`) with product-lifecycle — This bundle routes experiments to test an engagement intervention; product-lifecycle routes product investment experiments within its lifecycle governance.
+  - implementation-planning (`../implementation-planning/SKILL.md`) with product-lifecycle — This bundle routes implementation planning only during Build after an authorized owner approves the requirement; product-lifecycle owns product delivery handoff. Route a bounded code change to neckbeard.
+  - production-readiness (`../production-readiness/SKILL.md`) with production-excellence — This bundle carries engagement evidence into the specialist readiness review; production-excellence owns the cross-domain launch gate decision.
+  - production-readiness (`../production-readiness/SKILL.md`) with product-lifecycle — This bundle routes readiness for an embedded capability; product-lifecycle owns product lifecycle delivery handoff. Do not run both orchestration paths for one decision.
+  - release-engineering (`../release-engineering/SKILL.md`) with production-excellence — This bundle routes deployment evidence from the engagement; production-excellence uses release evidence for a launch gate.
+  - release-engineering (`../release-engineering/SKILL.md`) with product-lifecycle — This bundle uses release engineering for embedded rollout continuity; product-lifecycle uses it for product delivery handoff.
+  - platform-engineering (`../platform-engineering/SKILL.md`) with production-excellence — This bundle routes platform work needed to deploy the engagement capability; production-excellence assembles platform evidence for launch gating.
+  - platform-engineering (`../platform-engineering/SKILL.md`) with product-lifecycle — This bundle routes platform work needed by the engagement; product-lifecycle routes platform work in a product delivery handoff.
+  - platform-engineering (`../platform-engineering/SKILL.md`) with agent-production-operations — This bundle routes product or engagement platform delivery; agent-production-operations owns runtime agent sandboxing and tool-execution isolation.
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with production-excellence — This bundle routes trust-boundary work during the engagement; production-excellence consumes security evidence for its launch gate.
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with product-lifecycle — This bundle routes security work in the embedded lifecycle; product-lifecycle routes security work in product lifecycle phases.
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with agent-production-operations — This bundle routes application and engagement security; agent-production-operations owns agent authority, disablement, and runtime security controls.
+  - privacy-engineering (`../privacy-engineering/SKILL.md`) with product-lifecycle — This bundle routes privacy work for engagement data flows; product-lifecycle routes privacy work across product lifecycle phases.
+  - privacy-engineering (`../privacy-engineering/SKILL.md`) with agent-production-operations — This bundle routes engagement privacy decisions; agent-production-operations routes trace scrubbing and user-data-access grants.
+  - qa-methodology (`../qa-methodology/SKILL.md`) with production-excellence — This bundle routes quality evidence for the built capability; production-excellence uses QA evidence at the launch gate.
+  - qa-methodology (`../qa-methodology/SKILL.md`) with product-lifecycle — This bundle routes evaluation and quality work for engagement delivery; product-lifecycle uses QA at product delivery handoff.
+  - verification-methodology (`../verification-methodology/SKILL.md`) with production-excellence — This bundle uses verification to label engagement evidence; production-excellence uses it to verify launch-boundary evidence.
+  - verification-methodology (`../verification-methodology/SKILL.md`) with product-lifecycle — This bundle verifies continuity artifacts and field outcomes; product-lifecycle verifies evidence at product phase gates.
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with production-excellence — This bundle routes reliability evidence for the engagement; production-excellence uses SRE evidence for its production gate.
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with product-lifecycle — This bundle routes reliability work needed for adoption and operation; product-lifecycle routes SRE work in product delivery handoff.
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with agent-production-operations — This bundle routes service reliability; agent-production-operations routes runtime latency, cost budgets, and incident handoff for agents.
+  - data-engineering (`../data-engineering/SKILL.md`) with production-excellence — This bundle routes data work required by the engagement; production-excellence consumes data evidence in its operational handoff and launch gate.
+  - product-adoption (`../product-adoption/SKILL.md`) with product-lifecycle — This bundle owns adoption continuity for an embedded engagement; product-lifecycle owns product adoption as one phase of product governance.
+  - product-analytics-and-measurement (`../product-analytics-and-measurement/SKILL.md`) with product-lifecycle — This bundle measures workflow impact for engagement completion; product-lifecycle measures product outcomes in lifecycle review.
+  - product-lifecycle-learning (`../product-lifecycle-learning/SKILL.md`) with product-lifecycle — This bundle uses field learning to decide generalization; product-lifecycle-learning owns the product lifecycle learning method and decision record.
+  - agent-evals-and-observability (`../agent-evals-and-observability/SKILL.md`) with agent-production-operations — This bundle routes eval evidence for engagement release and learning; agent-production-operations consumes eval and trace evidence for runtime control.
+  - production-readiness (`../production-readiness/SKILL.md`) with agent-production-operations — This bundle routes readiness for an embedded capability; agent-production-operations consumes readiness as an authority-gating input.
+  - release-engineering (`../release-engineering/SKILL.md`) with agent-production-operations — This bundle uses release engineering for engagement rollout; agent-production-operations uses it for staged runtime rollout and fallback.
+  - product-design-and-ux (`../product-design-and-ux/SKILL.md`) with neckbeard — This bundle routes UX for embedded workflow adoption; neckbeard uses UX only as needed for a bounded software change. Route by task boundary.
+  - product-discovery (`../product-discovery/SKILL.md`) with neckbeard — This bundle owns embedded stakeholder and workflow discovery; neckbeard handles the bounded change after its requirements are known.
+  - qa-methodology (`../qa-methodology/SKILL.md`) with neckbeard — This bundle routes QA for engagement evidence; neckbeard applies QA within its software delivery journey for a bounded repository change.
+  - release-engineering (`../release-engineering/SKILL.md`) with neckbeard — This bundle routes release work across the engagement lifecycle; neckbeard owns release delivery for a bounded change.
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with neckbeard — This bundle routes security decisions across embedded delivery; neckbeard applies security to its bounded software change.
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with neckbeard — This bundle routes reliability for engagement outcomes; neckbeard routes reliability concerns within its software delivery journey.
+  - verification-methodology (`../verification-methodology/SKILL.md`) with neckbeard — This bundle verifies stage continuity and outcome evidence; neckbeard verifies the bounded repository change.
+  - product-design-and-ux (`../product-design-and-ux/SKILL.md`) with product-lifecycle — This bundle routes UX for embedded workflow adoption; product-lifecycle routes UX for product requirements and lifecycle governance.
+  - product-methodology (`../product-methodology/SKILL.md`) with product-lifecycle — This bundle uses prioritization only to support engagement generalization; product-lifecycle owns product prioritization and portfolio methods.
 - **Eval suite:** evals/evals.json
 
 ### neckbeard
 
-- Derivation: `manifest` — source: `bundles/neckbeard/manifest.yaml`
+- Derivation: `manifest` — source: `neckbeard/manifest.yaml`
 - **Purpose:** A disciplined SDLC delivery operating model for non-trivial software change — fix, build, refactor, review, verify, or release — that routes the work through framing, discovery, design, implementation, review, verification, delivery, and learning, choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger.
 - **Audience:** Software engineers and agents delivering non-trivial software changes (bug fixes, features, refactors, reviews, releases) that need a bounded, stage-aware path to a defensible 'done' with recorded evidence; teams running issue-to-PR change-request journeys with gates and an authorized release.
 - **Stages (ordered):**
-  1. Intake and framing — product-discovery (`../../product-discovery/SKILL.md`)
-  2. Current-state discovery — software-architecture-analysis (`../../software-architecture-analysis/SKILL.md`), systematic-debugging (`../../systematic-debugging/SKILL.md`)
-  3. Design — api-design-and-evolution (`../../api-design-and-evolution/SKILL.md`), product-design-and-ux (`../../product-design-and-ux/SKILL.md`)
-  4. Specification — spec-driven-development (`../../spec-driven-development/SKILL.md`)
-  5. Test planning — qa-methodology (`../../qa-methodology/SKILL.md`)
-  6. Implementation — secure-software-engineering (`../../secure-software-engineering/SKILL.md`), web-accessibility (`../../web-accessibility/SKILL.md`)
-  7. Review and verification — verification-methodology (`../../verification-methodology/SKILL.md`), technical-documentation (`../../technical-documentation/SKILL.md`)
-  8. Readiness and release — release-engineering (`../../release-engineering/SKILL.md`), site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
+  1. Intake and framing — product-discovery (`../product-discovery/SKILL.md`)
+  2. Current-state discovery — software-architecture-analysis (`../software-architecture-analysis/SKILL.md`), systematic-debugging (`../systematic-debugging/SKILL.md`)
+  3. Design — api-design-and-evolution (`../api-design-and-evolution/SKILL.md`), product-design-and-ux (`../product-design-and-ux/SKILL.md`)
+  4. Specification — spec-driven-development (`../spec-driven-development/SKILL.md`)
+  5. Test planning — qa-methodology (`../qa-methodology/SKILL.md`)
+  6. Implementation — secure-software-engineering (`../secure-software-engineering/SKILL.md`), web-accessibility (`../web-accessibility/SKILL.md`)
+  7. Review and verification — verification-methodology (`../verification-methodology/SKILL.md`), technical-documentation (`../technical-documentation/SKILL.md`)
+  8. Readiness and release — release-engineering (`../release-engineering/SKILL.md`), site-reliability-engineering (`../site-reliability-engineering/SKILL.md`)
 - **Included skills:**
-  - product-discovery (`../../product-discovery/SKILL.md`)
-  - software-architecture-analysis (`../../software-architecture-analysis/SKILL.md`)
-  - systematic-debugging (`../../systematic-debugging/SKILL.md`)
-  - api-design-and-evolution (`../../api-design-and-evolution/SKILL.md`)
-  - product-design-and-ux (`../../product-design-and-ux/SKILL.md`)
-  - spec-driven-development (`../../spec-driven-development/SKILL.md`)
-  - qa-methodology (`../../qa-methodology/SKILL.md`)
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`)
-  - web-accessibility (`../../web-accessibility/SKILL.md`)
-  - verification-methodology (`../../verification-methodology/SKILL.md`)
-  - technical-documentation (`../../technical-documentation/SKILL.md`)
-  - release-engineering (`../../release-engineering/SKILL.md`)
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
+  - product-discovery (`../product-discovery/SKILL.md`)
+  - software-architecture-analysis (`../software-architecture-analysis/SKILL.md`)
+  - systematic-debugging (`../systematic-debugging/SKILL.md`)
+  - api-design-and-evolution (`../api-design-and-evolution/SKILL.md`)
+  - product-design-and-ux (`../product-design-and-ux/SKILL.md`)
+  - spec-driven-development (`../spec-driven-development/SKILL.md`)
+  - qa-methodology (`../qa-methodology/SKILL.md`)
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`)
+  - web-accessibility (`../web-accessibility/SKILL.md`)
+  - verification-methodology (`../verification-methodology/SKILL.md`)
+  - technical-documentation (`../technical-documentation/SKILL.md`)
+  - release-engineering (`../release-engineering/SKILL.md`)
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`)
 - **Prerequisites:**
   - A non-trivial change request, issue, or task with a verifiable contract
-  - Current-state evidence (repository, tests, config, recent history) — via software-architecture-analysis (`../../software-architecture-analysis/SKILL.md`)
-  - Change contract and evidence ledger entries — via verification-methodology (`../../verification-methodology/SKILL.md`)
+  - Current-state evidence (repository, tests, config, recent history) — via software-architecture-analysis (`../software-architecture-analysis/SKILL.md`)
+  - Change contract and evidence ledger entries — via verification-methodology (`../verification-methodology/SKILL.md`)
 - **Outputs:** change-contract, evidence-ledger, delivery-packet, implementation-plan, verification-report, release-record
 - **Handoffs:**
   - verification-report → verification-methodology — The verification report records the declared verification target and the boundary actually exercised; verdicts bind to the exact head and never claim a boundary that was not checked.
@@ -196,73 +196,73 @@ the migration path, and the field definitions. Regenerate with
   - delivery-packet → human reviewer — Change-request journeys hand the delivery packet — gates and evidence — to the required review before merge; a timed-out review is inconclusive, not a reason to launch repeated review rounds.
   - evidence-ledger → next change (via evidence ledger) — Each run emits a compact evidence record (intent, inspected artifacts, assumptions, rejected alternatives, checks run, observed outputs, unverified boundaries) that carries learning into the next change.
 - **Conflicts:**
-  - product-discovery (`../../product-discovery/SKILL.md`) with product-lifecycle — Product discovery is shared. Route by context: neckbeard loads it for intake and framing of a change request; product-lifecycle owns the full discovery phase of a product lifecycle.
-  - product-design-and-ux (`../../product-design-and-ux/SKILL.md`) with product-lifecycle — Product design is shared. neckbeard loads it for user-facing behavior, interaction, and information architecture during design; product-lifecycle owns the UX and requirements phase of a product.
-  - spec-driven-development (`../../spec-driven-development/SKILL.md`) with product-lifecycle — Specification is shared. neckbeard uses it for formal specification and phase gates on a change request; product-lifecycle uses it for requirements and acceptance criteria in its lifecycle phases.
-  - qa-methodology (`../../qa-methodology/SKILL.md`) with product-lifecycle — QA methodology is shared. neckbeard loads it for test strategy and regression gates on a change; product-lifecycle routes to it for phase 6 quality gates.
-  - qa-methodology (`../../qa-methodology/SKILL.md`) with production-excellence — QA methodology is shared. neckbeard loads it for change-request test planning; production-excellence uses it for launch verification evidence.
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with product-lifecycle — Security engineering is shared. Route by context: change-level security review and threat modeling (neckbeard) versus lifecycle-phase security needs (product-lifecycle).
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with production-excellence — Security engineering is shared. Route by context: change-level security review (neckbeard) versus launch-gate security evidence (production-excellence).
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with agent-production-operations — Security engineering is shared. Route by context: change-level security review (neckbeard) versus agent authority contracts and disablement security (agent-production-operations).
-  - verification-methodology (`../../verification-methodology/SKILL.md`) with product-lifecycle — Verification methodology is shared. neckbeard requires it to exercise the declared verification boundary on a change; product-lifecycle uses it at every phase gate for evidence.
-  - verification-methodology (`../../verification-methodology/SKILL.md`) with production-excellence — Verification methodology is shared. neckbeard uses it for change-request verification verdicts; production-excellence uses it for boundary labeling of launch evidence.
-  - release-engineering (`../../release-engineering/SKILL.md`) with product-lifecycle — Release engineering is shared. Route by context: change-request release planning (neckbeard) versus lifecycle delivery handoff (product-lifecycle).
-  - release-engineering (`../../release-engineering/SKILL.md`) with production-excellence — Release engineering is shared. Route by context: change-request release planning (neckbeard) versus launch-gate release evidence (production-excellence).
-  - release-engineering (`../../release-engineering/SKILL.md`) with agent-production-operations — Release engineering is shared. Route by context: change-request release planning (neckbeard) versus agent staged-rollout planning (agent-production-operations).
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with product-lifecycle — SRE is shared. neckbeard routes to it for reliability and operational recovery of a delivered change; product-lifecycle routes to it for delivery reliability.
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with production-excellence — SRE is shared. Route by context: change-level reliability (neckbeard) versus gate-entry SLO/error-budget evidence (production-excellence).
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with agent-production-operations — SRE is shared. Route by context: change-level reliability (neckbeard) versus agent runtime latency/cost budgets and incident handoff (agent-production-operations).
+  - product-discovery (`../product-discovery/SKILL.md`) with product-lifecycle — Product discovery is shared. Route by context: neckbeard loads it for intake and framing of a change request; product-lifecycle owns the full discovery phase of a product lifecycle.
+  - product-design-and-ux (`../product-design-and-ux/SKILL.md`) with product-lifecycle — Product design is shared. neckbeard loads it for user-facing behavior, interaction, and information architecture during design; product-lifecycle owns the UX and requirements phase of a product.
+  - spec-driven-development (`../spec-driven-development/SKILL.md`) with product-lifecycle — Specification is shared. neckbeard uses it for formal specification and phase gates on a change request; product-lifecycle uses it for requirements and acceptance criteria in its lifecycle phases.
+  - qa-methodology (`../qa-methodology/SKILL.md`) with product-lifecycle — QA methodology is shared. neckbeard loads it for test strategy and regression gates on a change; product-lifecycle routes to it for phase 6 quality gates.
+  - qa-methodology (`../qa-methodology/SKILL.md`) with production-excellence — QA methodology is shared. neckbeard loads it for change-request test planning; production-excellence uses it for launch verification evidence.
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with product-lifecycle — Security engineering is shared. Route by context: change-level security review and threat modeling (neckbeard) versus lifecycle-phase security needs (product-lifecycle).
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with production-excellence — Security engineering is shared. Route by context: change-level security review (neckbeard) versus launch-gate security evidence (production-excellence).
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with agent-production-operations — Security engineering is shared. Route by context: change-level security review (neckbeard) versus agent authority contracts and disablement security (agent-production-operations).
+  - verification-methodology (`../verification-methodology/SKILL.md`) with product-lifecycle — Verification methodology is shared. neckbeard requires it to exercise the declared verification boundary on a change; product-lifecycle uses it at every phase gate for evidence.
+  - verification-methodology (`../verification-methodology/SKILL.md`) with production-excellence — Verification methodology is shared. neckbeard uses it for change-request verification verdicts; production-excellence uses it for boundary labeling of launch evidence.
+  - release-engineering (`../release-engineering/SKILL.md`) with product-lifecycle — Release engineering is shared. Route by context: change-request release planning (neckbeard) versus lifecycle delivery handoff (product-lifecycle).
+  - release-engineering (`../release-engineering/SKILL.md`) with production-excellence — Release engineering is shared. Route by context: change-request release planning (neckbeard) versus launch-gate release evidence (production-excellence).
+  - release-engineering (`../release-engineering/SKILL.md`) with agent-production-operations — Release engineering is shared. Route by context: change-request release planning (neckbeard) versus agent staged-rollout planning (agent-production-operations).
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with product-lifecycle — SRE is shared. neckbeard routes to it for reliability and operational recovery of a delivered change; product-lifecycle routes to it for delivery reliability.
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with production-excellence — SRE is shared. Route by context: change-level reliability (neckbeard) versus gate-entry SLO/error-budget evidence (production-excellence).
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with agent-production-operations — SRE is shared. Route by context: change-level reliability (neckbeard) versus agent runtime latency/cost budgets and incident handoff (agent-production-operations).
 - **Eval suite:** evals/evals.json
 
 ### product-lifecycle
 
-- Derivation: `manifest` — source: `bundles/product-lifecycle/manifest.yaml`
+- Derivation: `manifest` — source: `product-lifecycle/manifest.yaml`
 - **Purpose:** Route a product through its full lifecycle — discovery, strategy and portfolio choice, roadmap, UX and requirements, experimentation, delivery handoff, adoption, success, and lifecycle review — by composing existing specialist product skills with phase-entry evidence, handoff artifacts, and escalation rules.
 - **Audience:** Product managers, product operations, and portfolio teams navigating a product across multiple lifecycle phases; agents that need to know which specialist skill to load at each phase and what evidence to hand off to the next phase.
 - **Stages (ordered):**
-  1. Discovery — product-discovery (`../../product-discovery/SKILL.md`)
-  2. Strategy and portfolio choice — product-strategy (`../../product-strategy/SKILL.md`), strategy-frameworks (`../../strategy-frameworks/SKILL.md`)
-  3. Roadmap — product-roadmapping-and-portfolio (`../../product-roadmapping-and-portfolio/SKILL.md`)
-  4. UX and requirements — product-design-and-ux (`../../product-design-and-ux/SKILL.md`)
-  5. Experimentation — product-experimentation (`../../product-experimentation/SKILL.md`)
-  6. Delivery handoff — implementation-planning (`../../implementation-planning/SKILL.md`), production-readiness (`../../production-readiness/SKILL.md`), release-engineering (`../../release-engineering/SKILL.md`)
-  7. Adoption — product-adoption (`../../product-adoption/SKILL.md`)
-  8. Success — product-analytics-and-measurement (`../../product-analytics-and-measurement/SKILL.md`), conditional-customer-success (`../../conditional-customer-success/SKILL.md`)
-  9. Lifecycle review — product-lifecycle-learning (`../../product-lifecycle-learning/SKILL.md`)
+  1. Discovery — product-discovery (`../product-discovery/SKILL.md`)
+  2. Strategy and portfolio choice — product-strategy (`../product-strategy/SKILL.md`), strategy-frameworks (`../strategy-frameworks/SKILL.md`)
+  3. Roadmap — product-roadmapping-and-portfolio (`../product-roadmapping-and-portfolio/SKILL.md`)
+  4. UX and requirements — product-design-and-ux (`../product-design-and-ux/SKILL.md`)
+  5. Experimentation — product-experimentation (`../product-experimentation/SKILL.md`)
+  6. Delivery handoff — implementation-planning (`../implementation-planning/SKILL.md`), production-readiness (`../production-readiness/SKILL.md`), release-engineering (`../release-engineering/SKILL.md`)
+  7. Adoption — product-adoption (`../product-adoption/SKILL.md`)
+  8. Success — product-analytics-and-measurement (`../product-analytics-and-measurement/SKILL.md`), conditional-customer-success (`../conditional-customer-success/SKILL.md`)
+  9. Lifecycle review — product-lifecycle-learning (`../product-lifecycle-learning/SKILL.md`)
 - **Included skills:**
-  - product-discovery (`../../product-discovery/SKILL.md`)
-  - product-strategy (`../../product-strategy/SKILL.md`)
-  - strategy-frameworks (`../../strategy-frameworks/SKILL.md`)
-  - product-roadmapping-and-portfolio (`../../product-roadmapping-and-portfolio/SKILL.md`)
-  - product-design-and-ux (`../../product-design-and-ux/SKILL.md`)
-  - product-experimentation (`../../product-experimentation/SKILL.md`)
-  - implementation-planning (`../../implementation-planning/SKILL.md`)
-  - production-readiness (`../../production-readiness/SKILL.md`)
-  - release-engineering (`../../release-engineering/SKILL.md`)
-  - product-adoption (`../../product-adoption/SKILL.md`)
-  - product-analytics-and-measurement (`../../product-analytics-and-measurement/SKILL.md`)
-  - conditional-customer-success (`../../conditional-customer-success/SKILL.md`)
-  - product-lifecycle-learning (`../../product-lifecycle-learning/SKILL.md`)
-  - product-methodology (`../../product-methodology/SKILL.md`)
-  - product-operations-and-governance (`../../product-operations-and-governance/SKILL.md`)
-  - financial-modeling (`../../financial-modeling/SKILL.md`)
-  - go-to-market (`../../go-to-market/SKILL.md`)
-  - data-scientist (`../../data-scientist/SKILL.md`)
-  - spec-driven-development (`../../spec-driven-development/SKILL.md`)
-  - privacy-engineering (`../../privacy-engineering/SKILL.md`)
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`)
-  - verification-methodology (`../../verification-methodology/SKILL.md`)
-  - qa-methodology (`../../qa-methodology/SKILL.md`)
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
-  - platform-engineering (`../../platform-engineering/SKILL.md`)
-  - neckbeard (`../../bundles/neckbeard/SKILL.md`)
+  - product-discovery (`../product-discovery/SKILL.md`)
+  - product-strategy (`../product-strategy/SKILL.md`)
+  - strategy-frameworks (`../strategy-frameworks/SKILL.md`)
+  - product-roadmapping-and-portfolio (`../product-roadmapping-and-portfolio/SKILL.md`)
+  - product-design-and-ux (`../product-design-and-ux/SKILL.md`)
+  - product-experimentation (`../product-experimentation/SKILL.md`)
+  - implementation-planning (`../implementation-planning/SKILL.md`)
+  - production-readiness (`../production-readiness/SKILL.md`)
+  - release-engineering (`../release-engineering/SKILL.md`)
+  - product-adoption (`../product-adoption/SKILL.md`)
+  - product-analytics-and-measurement (`../product-analytics-and-measurement/SKILL.md`)
+  - conditional-customer-success (`../conditional-customer-success/SKILL.md`)
+  - product-lifecycle-learning (`../product-lifecycle-learning/SKILL.md`)
+  - product-methodology (`../product-methodology/SKILL.md`)
+  - product-operations-and-governance (`../product-operations-and-governance/SKILL.md`)
+  - financial-modeling (`../financial-modeling/SKILL.md`)
+  - go-to-market (`../go-to-market/SKILL.md`)
+  - data-scientist (`../data-scientist/SKILL.md`)
+  - spec-driven-development (`../spec-driven-development/SKILL.md`)
+  - privacy-engineering (`../privacy-engineering/SKILL.md`)
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`)
+  - verification-methodology (`../verification-methodology/SKILL.md`)
+  - qa-methodology (`../qa-methodology/SKILL.md`)
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`)
+  - platform-engineering (`../platform-engineering/SKILL.md`)
+  - neckbeard (`../neckbeard/SKILL.md`)
 - **Prerequisites:**
   - Product idea, market signal, or stakeholder request
-  - Problem statement and discovery log — via product-discovery (`../../product-discovery/SKILL.md`)
-  - Strategic assessment and portfolio decision — via product-strategy (`../../product-strategy/SKILL.md`)
-  - Roadmap entry and bet record — via product-roadmapping-and-portfolio (`../../product-roadmapping-and-portfolio/SKILL.md`)
-  - UX contracts and acceptance criteria — via product-design-and-ux (`../../product-design-and-ux/SKILL.md`)
-  - Experiment readout and assumptions register — via product-experimentation (`../../product-experimentation/SKILL.md`)
+  - Problem statement and discovery log — via product-discovery (`../product-discovery/SKILL.md`)
+  - Strategic assessment and portfolio decision — via product-strategy (`../product-strategy/SKILL.md`)
+  - Roadmap entry and bet record — via product-roadmapping-and-portfolio (`../product-roadmapping-and-portfolio/SKILL.md`)
+  - UX contracts and acceptance criteria — via product-design-and-ux (`../product-design-and-ux/SKILL.md`)
+  - Experiment readout and assumptions register — via product-experimentation (`../product-experimentation/SKILL.md`)
 - **Outputs:** lifecycle-evidence-ledger, problem-statement, strategic-assessment, roadmap-entry, interface-contracts, experiment-brief, implementation-plan, readiness-verdict, release-plan, adoption-plan, outcome-measurement, outcome-review, lifecycle-decision
 - **Handoffs:**
   - readiness-verdict → production-excellence bundle — Phase 6 delivery handoff routes the production-readiness verdict to the production-excellence launch gate when that bundle is available.
@@ -270,52 +270,52 @@ the migration path, and the field definitions. Regenerate with
   - lifecycle-evidence-ledger → next phase (via evidence ledger) — Every phase reads and writes the shared lifecycle evidence ledger; the next phase never re-derives prior-phase evidence.
   - lifecycle-decision → product-lifecycle-learning — Phase 9 records the continue/improve/harvest/pivot/pause/retire decision and retained learning in the learning loop.
 - **Conflicts:**
-  - production-readiness (`../../production-readiness/SKILL.md`) with production-excellence — Both bundles include production-readiness. Use production-excellence for launch-gate decisions; use product-lifecycle for phase 6 delivery handoff routing. Load the bundle matching the active decision context, never both at once.
-  - production-readiness (`../../production-readiness/SKILL.md`) with agent-production-operations — agent-production-operations consumes readiness outcomes as authority- gating inputs. Route phase 6 readiness reviews here; runtime authority decisions go to agent-production-operations.
-  - release-engineering (`../../release-engineering/SKILL.md`) with production-excellence — Release engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus gate-entry release evidence (production-excellence).
-  - release-engineering (`../../release-engineering/SKILL.md`) with agent-production-operations — Release engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus agent staged-rollout planning (agent-production-operations).
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with production-excellence — SRE is shared. This bundle routes to it for reliability needs in delivery handoff; production-excellence routes to it for gate-entry SLO/error-budget evidence.
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with agent-production-operations — SRE is shared. This bundle uses it for delivery reliability; agent-production-operations uses it for runtime latency/cost budgets and incident handoff.
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with production-excellence — Security engineering is shared. Route by phase/domain: trust-boundary work in lifecycle phases (this bundle) versus security evidence for launch gates (production-excellence).
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with agent-production-operations — Security engineering is shared. Route by context: lifecycle-phase security needs (this bundle) versus agent authority contracts and disablement security (agent-production-operations).
-  - platform-engineering (`../../platform-engineering/SKILL.md`) with production-excellence — Platform engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus gate-entry platform evidence (production-excellence).
-  - platform-engineering (`../../platform-engineering/SKILL.md`) with agent-production-operations — Platform engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus agent sandboxing and tool-execution isolation (agent-production-operations).
-  - privacy-engineering (`../../privacy-engineering/SKILL.md`) with agent-production-operations — Privacy engineering is shared. This bundle routes to it for PII, consent, retention, and data flows in any phase; agent-production-operations routes to it for trace scrubbing and user-data-access grants.
-  - qa-methodology (`../../qa-methodology/SKILL.md`) with production-excellence — QA methodology is shared. Route by context: lifecycle phase 6 quality gates (this bundle) versus launch verification evidence (production-excellence).
-  - verification-methodology (`../../verification-methodology/SKILL.md`) with production-excellence — Verification methodology is shared. This bundle uses it at every phase gate for evidence; production-excellence uses it for boundary labeling of launch evidence.
+  - production-readiness (`../production-readiness/SKILL.md`) with production-excellence — Both bundles include production-readiness. Use production-excellence for launch-gate decisions; use product-lifecycle for phase 6 delivery handoff routing. Load the bundle matching the active decision context, never both at once.
+  - production-readiness (`../production-readiness/SKILL.md`) with agent-production-operations — agent-production-operations consumes readiness outcomes as authority- gating inputs. Route phase 6 readiness reviews here; runtime authority decisions go to agent-production-operations.
+  - release-engineering (`../release-engineering/SKILL.md`) with production-excellence — Release engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus gate-entry release evidence (production-excellence).
+  - release-engineering (`../release-engineering/SKILL.md`) with agent-production-operations — Release engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus agent staged-rollout planning (agent-production-operations).
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with production-excellence — SRE is shared. This bundle routes to it for reliability needs in delivery handoff; production-excellence routes to it for gate-entry SLO/error-budget evidence.
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with agent-production-operations — SRE is shared. This bundle uses it for delivery reliability; agent-production-operations uses it for runtime latency/cost budgets and incident handoff.
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with production-excellence — Security engineering is shared. Route by phase/domain: trust-boundary work in lifecycle phases (this bundle) versus security evidence for launch gates (production-excellence).
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with agent-production-operations — Security engineering is shared. Route by context: lifecycle-phase security needs (this bundle) versus agent authority contracts and disablement security (agent-production-operations).
+  - platform-engineering (`../platform-engineering/SKILL.md`) with production-excellence — Platform engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus gate-entry platform evidence (production-excellence).
+  - platform-engineering (`../platform-engineering/SKILL.md`) with agent-production-operations — Platform engineering is shared. Route by context: lifecycle delivery handoff (this bundle) versus agent sandboxing and tool-execution isolation (agent-production-operations).
+  - privacy-engineering (`../privacy-engineering/SKILL.md`) with agent-production-operations — Privacy engineering is shared. This bundle routes to it for PII, consent, retention, and data flows in any phase; agent-production-operations routes to it for trace scrubbing and user-data-access grants.
+  - qa-methodology (`../qa-methodology/SKILL.md`) with production-excellence — QA methodology is shared. Route by context: lifecycle phase 6 quality gates (this bundle) versus launch verification evidence (production-excellence).
+  - verification-methodology (`../verification-methodology/SKILL.md`) with production-excellence — Verification methodology is shared. This bundle uses it at every phase gate for evidence; production-excellence uses it for boundary labeling of launch evidence.
 - **Eval suite:** evals/evals.json
 
 ### production-excellence
 
-- Derivation: `manifest` — source: `bundles/production-excellence/manifest.yaml`
+- Derivation: `manifest` — source: `production-excellence/manifest.yaml`
 - **Purpose:** Route cross-domain production evidence (readiness, migration, recovery, capacity/cost, incident-learning) into a launch or operational decision — go, no-go, defer, exception, or escalation — with an accountable owner and a post-launch learning path.
 - **Audience:** Service owners, SRE, release, platform, security, data, and QA teams coordinating a production change; agents assembling cross-domain production evidence into a defensible launch decision without re-deriving specialist runbooks.
 - **Stages (ordered):**
-  1. Cross-domain evidence assembly — production-readiness (`../../production-readiness/SKILL.md`), migration-engineering (`../../migration-engineering/SKILL.md`), resilience-and-recovery (`../../resilience-and-recovery/SKILL.md`), capacity-and-cost-engineering (`../../capacity-and-cost-engineering/SKILL.md`), incident-learning (`../../incident-learning/SKILL.md`)
-  2. Gate evaluation — production-readiness (`../../production-readiness/SKILL.md`), site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`), verification-methodology (`../../verification-methodology/SKILL.md`), qa-methodology (`../../qa-methodology/SKILL.md`)
-  3. Operational handoff — release-engineering (`../../release-engineering/SKILL.md`), platform-engineering (`../../platform-engineering/SKILL.md`), secure-software-engineering (`../../secure-software-engineering/SKILL.md`), data-engineering (`../../data-engineering/SKILL.md`)
-  4. Post-launch learning — incident-learning (`../../incident-learning/SKILL.md`)
+  1. Cross-domain evidence assembly — production-readiness (`../production-readiness/SKILL.md`), migration-engineering (`../migration-engineering/SKILL.md`), resilience-and-recovery (`../resilience-and-recovery/SKILL.md`), capacity-and-cost-engineering (`../capacity-and-cost-engineering/SKILL.md`), incident-learning (`../incident-learning/SKILL.md`)
+  2. Gate evaluation — production-readiness (`../production-readiness/SKILL.md`), site-reliability-engineering (`../site-reliability-engineering/SKILL.md`), verification-methodology (`../verification-methodology/SKILL.md`), qa-methodology (`../qa-methodology/SKILL.md`)
+  3. Operational handoff — release-engineering (`../release-engineering/SKILL.md`), platform-engineering (`../platform-engineering/SKILL.md`), secure-software-engineering (`../secure-software-engineering/SKILL.md`), data-engineering (`../data-engineering/SKILL.md`)
+  4. Post-launch learning — incident-learning (`../incident-learning/SKILL.md`)
 - **Included skills:**
-  - production-readiness (`../../production-readiness/SKILL.md`)
-  - migration-engineering (`../../migration-engineering/SKILL.md`)
-  - resilience-and-recovery (`../../resilience-and-recovery/SKILL.md`)
-  - capacity-and-cost-engineering (`../../capacity-and-cost-engineering/SKILL.md`)
-  - incident-learning (`../../incident-learning/SKILL.md`)
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
-  - release-engineering (`../../release-engineering/SKILL.md`)
-  - platform-engineering (`../../platform-engineering/SKILL.md`)
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`)
-  - data-engineering (`../../data-engineering/SKILL.md`)
-  - qa-methodology (`../../qa-methodology/SKILL.md`)
-  - verification-methodology (`../../verification-methodology/SKILL.md`)
+  - production-readiness (`../production-readiness/SKILL.md`)
+  - migration-engineering (`../migration-engineering/SKILL.md`)
+  - resilience-and-recovery (`../resilience-and-recovery/SKILL.md`)
+  - capacity-and-cost-engineering (`../capacity-and-cost-engineering/SKILL.md`)
+  - incident-learning (`../incident-learning/SKILL.md`)
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`)
+  - release-engineering (`../release-engineering/SKILL.md`)
+  - platform-engineering (`../platform-engineering/SKILL.md`)
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`)
+  - data-engineering (`../data-engineering/SKILL.md`)
+  - qa-methodology (`../qa-methodology/SKILL.md`)
+  - verification-methodology (`../verification-methodology/SKILL.md`)
 - **Prerequisites:**
-  - Readiness review evidence packet (risk-scaled, 11 categories) — via production-readiness (`../../production-readiness/SKILL.md`)
-  - Migration plan, compatibility windows, and reconciliation evidence — via migration-engineering (`../../migration-engineering/SKILL.md`)
-  - Resilience and recovery evidence (RTO/RPO, restore tests, game days) — via resilience-and-recovery (`../../resilience-and-recovery/SKILL.md`)
-  - Capacity and cost model evidence (demand, scaling, unit cost) — via capacity-and-cost-engineering (`../../capacity-and-cost-engineering/SKILL.md`)
-  - Incident history, causal hypotheses, and verified-closure records — via incident-learning (`../../incident-learning/SKILL.md`)
-  - SLO and error-budget status — via site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`)
-  - Release plan and rollback strategy — via release-engineering (`../../release-engineering/SKILL.md`)
+  - Readiness review evidence packet (risk-scaled, 11 categories) — via production-readiness (`../production-readiness/SKILL.md`)
+  - Migration plan, compatibility windows, and reconciliation evidence — via migration-engineering (`../migration-engineering/SKILL.md`)
+  - Resilience and recovery evidence (RTO/RPO, restore tests, game days) — via resilience-and-recovery (`../resilience-and-recovery/SKILL.md`)
+  - Capacity and cost model evidence (demand, scaling, unit cost) — via capacity-and-cost-engineering (`../capacity-and-cost-engineering/SKILL.md`)
+  - Incident history, causal hypotheses, and verified-closure records — via incident-learning (`../incident-learning/SKILL.md`)
+  - SLO and error-budget status — via site-reliability-engineering (`../site-reliability-engineering/SKILL.md`)
+  - Release plan and rollback strategy — via release-engineering (`../release-engineering/SKILL.md`)
 - **Outputs:** gate-decision, operational-handoff-record, accountable-owner-record, evidence-gap-register
 - **Handoffs:**
   - operational-handoff-record → incident-learning — Post-launch incidents (SLO degradations, unexpected failures, capacity breaches) route back to incident-learning with launch context; verified closure is required for follow-up items.
@@ -323,35 +323,35 @@ the migration path, and the field definitions. Regenerate with
   - gate-decision → agent-production-operations — Readiness outcomes (go/no-go/defer/exception) gate agent authority expansion when the runtime control plane is in use.
   - accountable-owner-record → service owner — Every gate outcome names an accountable owner and records the evidence supporting it; no gate passes on a bare checklist.
 - **Conflicts:**
-  - production-readiness (`../../production-readiness/SKILL.md`) with product-lifecycle — Both bundles include production-readiness. This bundle owns the launch gate decision; product-lifecycle routes phase 6 delivery handoff. Load the bundle matching the active decision context, never both at once.
-  - production-readiness (`../../production-readiness/SKILL.md`) with agent-production-operations — agent-production-operations consumes readiness outcomes as authority- gating inputs. Readiness reviews and go/no-go/defer/exception outcomes are produced here and consumed there.
-  - release-engineering (`../../release-engineering/SKILL.md`) with product-lifecycle — Release engineering is shared. Route by context: gate-entry release evidence (this bundle) versus lifecycle delivery handoff (product-lifecycle).
-  - release-engineering (`../../release-engineering/SKILL.md`) with agent-production-operations — Release engineering is shared. Route by context: launch-gate release plans (this bundle) versus agent staged-rollout planning (agent-production-operations).
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with product-lifecycle — SRE is shared. This bundle routes to it for gate-entry SLO/error-budget evidence; product-lifecycle routes to it for delivery reliability.
-  - site-reliability-engineering (`../../site-reliability-engineering/SKILL.md`) with agent-production-operations — SRE is shared. This bundle uses it for gate-entry reliability evidence; agent-production-operations uses it for runtime latency/cost budgets and incident handoff. Incident command stays with SRE in both cases.
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with product-lifecycle — Security engineering is shared. Route by context: security evidence for launch gates (this bundle) versus trust-boundary work in lifecycle phases (product-lifecycle).
-  - secure-software-engineering (`../../secure-software-engineering/SKILL.md`) with agent-production-operations — Security engineering is shared. Route by context: launch-gate security evidence (this bundle) versus agent authority contracts and disablement security (agent-production-operations).
-  - platform-engineering (`../../platform-engineering/SKILL.md`) with product-lifecycle — Platform engineering is shared. Route by context: gate-entry platform evidence (this bundle) versus lifecycle delivery handoff (product-lifecycle).
-  - platform-engineering (`../../platform-engineering/SKILL.md`) with agent-production-operations — Platform engineering is shared. Route by context: launch-gate platform evidence (this bundle) versus agent sandboxing and tool-execution isolation (agent-production-operations).
-  - incident-learning (`../../incident-learning/SKILL.md`) with agent-production-operations — Both bundles consume incident-learning records. This bundle uses incident history as gate-entry evidence; agent-production-operations consumes verified-closure records as escalation and disablement inputs.
-  - qa-methodology (`../../qa-methodology/SKILL.md`) with product-lifecycle — QA methodology is shared. Route by context: launch verification evidence (this bundle) versus lifecycle phase 6 quality gates (product-lifecycle).
-  - verification-methodology (`../../verification-methodology/SKILL.md`) with product-lifecycle — Verification methodology is shared. This bundle uses it for boundary labeling of launch evidence; product-lifecycle uses it at every phase gate.
+  - production-readiness (`../production-readiness/SKILL.md`) with product-lifecycle — Both bundles include production-readiness. This bundle owns the launch gate decision; product-lifecycle routes phase 6 delivery handoff. Load the bundle matching the active decision context, never both at once.
+  - production-readiness (`../production-readiness/SKILL.md`) with agent-production-operations — agent-production-operations consumes readiness outcomes as authority- gating inputs. Readiness reviews and go/no-go/defer/exception outcomes are produced here and consumed there.
+  - release-engineering (`../release-engineering/SKILL.md`) with product-lifecycle — Release engineering is shared. Route by context: gate-entry release evidence (this bundle) versus lifecycle delivery handoff (product-lifecycle).
+  - release-engineering (`../release-engineering/SKILL.md`) with agent-production-operations — Release engineering is shared. Route by context: launch-gate release plans (this bundle) versus agent staged-rollout planning (agent-production-operations).
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with product-lifecycle — SRE is shared. This bundle routes to it for gate-entry SLO/error-budget evidence; product-lifecycle routes to it for delivery reliability.
+  - site-reliability-engineering (`../site-reliability-engineering/SKILL.md`) with agent-production-operations — SRE is shared. This bundle uses it for gate-entry reliability evidence; agent-production-operations uses it for runtime latency/cost budgets and incident handoff. Incident command stays with SRE in both cases.
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with product-lifecycle — Security engineering is shared. Route by context: security evidence for launch gates (this bundle) versus trust-boundary work in lifecycle phases (product-lifecycle).
+  - secure-software-engineering (`../secure-software-engineering/SKILL.md`) with agent-production-operations — Security engineering is shared. Route by context: launch-gate security evidence (this bundle) versus agent authority contracts and disablement security (agent-production-operations).
+  - platform-engineering (`../platform-engineering/SKILL.md`) with product-lifecycle — Platform engineering is shared. Route by context: gate-entry platform evidence (this bundle) versus lifecycle delivery handoff (product-lifecycle).
+  - platform-engineering (`../platform-engineering/SKILL.md`) with agent-production-operations — Platform engineering is shared. Route by context: launch-gate platform evidence (this bundle) versus agent sandboxing and tool-execution isolation (agent-production-operations).
+  - incident-learning (`../incident-learning/SKILL.md`) with agent-production-operations — Both bundles consume incident-learning records. This bundle uses incident history as gate-entry evidence; agent-production-operations consumes verified-closure records as escalation and disablement inputs.
+  - qa-methodology (`../qa-methodology/SKILL.md`) with product-lifecycle — QA methodology is shared. Route by context: launch verification evidence (this bundle) versus lifecycle phase 6 quality gates (product-lifecycle).
+  - verification-methodology (`../verification-methodology/SKILL.md`) with product-lifecycle — Verification methodology is shared. This bundle uses it for boundary labeling of launch evidence; product-lifecycle uses it at every phase gate.
 - **Eval suite:** evals/evals.json
 
 ### research-and-vault
 
-- Derivation: `manifest` — source: `bundles/research-and-vault/manifest.yaml`
+- Derivation: `manifest` — source: `research-and-vault/manifest.yaml`
 - **Purpose:** Chain web research, atomic extraction, and durable knowledge capture into a repeatable research-to-note workflow: capture source URLs and dates before interpretation, extract independent atomic claims before synthesis, and write the durable note only after source coverage and gaps are explicit.
 - **Audience:** Agents and knowledge workers that repeatedly need the full research-to-note sequence (web research, atomic extraction, durable capture) and want a stable order of operations with a clear handoff artifact instead of ad-hoc steps; not for single lookups or single notes, which route to the domain skill directly.
 - **Stages (ordered):**
-  1. Web research — research-methodology (`../../research-methodology/SKILL.md`)
-  2. Source capture — research-methodology (`../../research-methodology/SKILL.md`)
-  3. Atomic extraction — research-methodology (`../../research-methodology/SKILL.md`)
-  4. Synthesis and durable capture — research-methodology (`../../research-methodology/SKILL.md`)
+  1. Web research — research-methodology (`../research-methodology/SKILL.md`)
+  2. Source capture — research-methodology (`../research-methodology/SKILL.md`)
+  3. Atomic extraction — research-methodology (`../research-methodology/SKILL.md`)
+  4. Synthesis and durable capture — research-methodology (`../research-methodology/SKILL.md`)
 - **Included skills:**
-  - research-methodology (`../../research-methodology/SKILL.md`)
+  - research-methodology (`../research-methodology/SKILL.md`)
 - **Prerequisites:**
-  - A research question or topic and access to web-research tooling — via research-methodology (`../../research-methodology/SKILL.md`)
+  - A research question or topic and access to web-research tooling — via research-methodology (`../research-methodology/SKILL.md`)
 - **Outputs:** source-capture-record, atomic-claim-extract, durable-note
 - **Handoffs:**
   - source-capture-record → research-methodology — Source URLs and dates are captured before interpretation and carried into extraction and synthesis; never interpret a source before its URL and date are recorded.
@@ -362,7 +362,7 @@ the migration path, and the field definitions. Regenerate with
 
 ### tailscale
 
-- Derivation: `manifest` — source: `bundles/tailscale/manifest.yaml`
+- Derivation: `manifest` — source: `tailscale/manifest.yaml`
 - **Purpose:** Operate a self-hosted Tailscale/Headscale ecosystem end to end: deploy and manage a Headscale control server, configure Tailscale clients, define ACL policy, manage node lifecycle, advertise subnet routes and exit nodes, operate DERP relays, and back up, restore, or migrate the control plane.
 - **Audience:** Platform and homelab operators running self-hosted Tailscale/Headscale infrastructure; agents that need to know which sub-skill to load for deploy, policy, client, node, routing, DERP, or backup tasks in a WireGuard mesh.
 - **Stages (ordered):**
@@ -396,7 +396,7 @@ the migration path, and the field definitions. Regenerate with
 
 ### workflow-architect
 
-- Derivation: `manifest` — source: `bundles/workflow-architect/manifest.yaml`
+- Derivation: `manifest` — source: `workflow-architect/manifest.yaml`
 - **Purpose:** Discover a user's actual workflow through active interrogation or passive observation, then generate a tailored Agent Skills bundle that encodes it as loadable skills with trigger conditions, a decision map, a manifest, and an optional kanban board — turning a session that feels aimless into structure.
 - **Audience:** Users and agents that want to formalize how they work — understand their own process, encode it as trigger-driven skills they can reuse, or share it with collaborators. Not for single factual questions or tasks already owned by a more specific skill.
 - **Stages (ordered):**

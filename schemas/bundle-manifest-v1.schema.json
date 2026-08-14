@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/magnus919/agent-skills/schemas/bundle-manifest-v1.schema.json",
   "title": "agent-skills bundle manifest v1",
-  "description": "Machine-readable composition contract for a canonical bundle under bundles/: purpose, audience, lifecycle stages, included skills, prerequisites, outputs, handoffs, conflicts, and eval-suite references. This is a metadata contract for discovery and composition — it is NOT a second skill format and does not alter the SKILL.md contract.",
+  "description": "Machine-readable composition contract for a canonical bundle under a top-level bundle directory: purpose, audience, lifecycle stages, included skills, prerequisites, outputs, handoffs, conflicts, and eval-suite references. This is a metadata contract for discovery and composition — it is NOT a second skill format and does not alter the SKILL.md contract.",
   "type": "object",
   "additionalProperties": false,
   "required": [

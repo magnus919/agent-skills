@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "skill_name": "tailscale-client",
+  "evals": [
+    {
+      "id": "client-install-platform",
+      "prompt": "Install the Tailscale client on a new Debian/Ubuntu workstation so we can join it to our self-hosted headscale tailnet.",
+      "expected_output": "Scenario: client installation. The agent loads tailscale-client and installs the official Tailscale client for Debian/Ubuntu (adding the apt repository and installing the tailscale package, or using ts-install.sh for automated detection). The output confirms the client and tailscaled daemon are installed and that the daemon is started so CLI commands work.",
+      "assertions": [
+        "The tailscale-client sub-skill is loaded",
+        "The client is installed via the correct platform method",
+        "The tailscaled daemon is confirmed running",
+        "The installed client version is reported"
+      ]
+    },
+    {
+      "id": "connect-to-headscale",
+      "prompt": "Connect this laptop to our self-hosted headscale server at https://headscale.example.com non-interactively using a pre-auth key, tagged as a laptop.",
+      "expected_output": "Scenario: client connection to a self-hosted control server. The agent runs tailscale up with --login-server=https://headscale.example.com and an auth key, optionally with --advertise-tags, so the device authenticates to headscale rather than Tailscale's SaaS. The output confirms the device registered and appears in the tailnet (or notes the pending-approval path). The output uses the headscale login-server flag, not the default Tailscale control plane.",
+      "assertions": [
+        "tailscale up uses --login-server pointing at the headscale URL",
+        "A pre-auth key is used for non-interactive registration",
+        "Tags are advertised where applicable",
+        "Registration with headscale is confirmed"
+      ]
+    },
+    {
+      "id": "diagnostics-interpretation",
+      "prompt": "A user says they can reach some peers but not others and it's slow. Run diagnostics on their machine and tell me what's wrong from the output.",
+      "expected_output": "Scenario: diagnostic collection and interpretation. The agent runs ts-diagnostics.sh (collecting tailscale status --json, ping, netcheck, version) and interprets the results with ts-connectivity-report.py, translating raw JSON into a readable verdict. It distinguishes direct peer connections from DERP relay paths (looking for relay vs direct tx/rx), reports NAT/port-mapping findings, and gives a concrete remediation.",
+      "assertions": [
+        "ts-diagnostics.sh collects status, ping, netcheck, and version output",
+        "The connectivity report is interpreted into a readable verdict",
+        "Direct vs DERP relay paths are distinguished in the output",
+        "A concrete remediation is given for the diagnosed problem"
+      ]
+    },
+    {
+      "id": "derp-fallback-troubleshoot",
+      "prompt": "Our peer-to-peer connections keep falling back to a DERP relay and everything is slow. How can I confirm that's happening and what can we do about it?",
+      "expected_output": "Scenario: diagnosing DERP-only fallback. The agent checks tailscale status --json and ping --verbose to determine whether peers are connected via a relay instead of a direct path, explaining that when NAT traversal fails peers connect only through DERP with added latency. The output suggests checking netcheck for UDP/STUN/NAT issues and remediation (fix NAT traversal, or accept relay latency if traversal can't be fixed).",
+      "assertions": [
+        "The relay-vs-direct path is confirmed in tailscale status/ping output",
+        "The cause (NAT traversal failure) is investigated with netcheck",
+        "The latency cost of DERP fallback is explained",
+        "A remediation or acceptance decision is given"
+      ]
+    },
+    {
+      "id": "magicdns-setup",
+      "prompt": "We want to reach tailnet nodes by hostname instead of raw 100.x IPs. Configure our client to use MagicDNS.",
+      "expected_output": "Scenario: MagicDNS configuration. The agent enables --accept-dns on tailscale up (or re-auths with the flag) so nodes resolve by hostname under the base domain. The output explains that without --accept-dns, nodes are only reachable by Tailscale IP, and verifies name resolution works.",
+      "assertions": [
+        "--accept-dns is enabled for the client",
+        "The output explains MagicDNS hostname vs raw-IP resolution",
+        "Hostname resolution of a tailnet node is verified"
+      ]
+    },
+    {
+      "id": "serve-local-service",
+      "prompt": "Expose a local dev web service running on port 8080 of this machine to other tailnet devices using Tailscale Serve.",
+      "expected_output": "Scenario: exposing a local service via Tailscale Serve. The agent runs tailscale serve to expose the local 8080 service on the tailnet, checks for port conflicts (lsof -i :8080) since Serve often uses 8080/8443, and confirms other tailnet devices can reach the exposed URL. The output reports the served URL and notes Serve is supported with headscale (unlike Funnel).",
+      "assertions": [
+        "tailscale serve is configured to expose the local 8080 service",
+        "Port conflicts are checked and resolved",
+        "The exposed tailnet URL is reported",
+        "The headscale compatibility of Serve is acknowledged"
+      ]
+    }
+  ]
+}
