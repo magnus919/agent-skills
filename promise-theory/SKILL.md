@@ -79,7 +79,7 @@ Run these commands from the skill directory (`promise-theory/`); `python3 script
 |-------|---------------|
 | [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) | You need the assessment layer: evals, guardrails, and observability that verify promises are kept (also routed from `references/trust-and-verification.md`) |
 | [agent-council](../agent-council/SKILL.md) | You need multi-agent debate as structured promise exchange and convergence (also routed from `references/agent-coordination.md`) |
-| [workflow-architect](../bundles/workflow-architect/SKILL.md) | You need to design a workflow as a chain of promises (also routed from `references/patterns.md`) |
+| [workflow-architect](../workflow-architect/SKILL.md) | You need to design a workflow as a chain of promises (also routed from `references/patterns.md`) |
 | [artifact-pyramids](../artifact-pyramids/SKILL.md) | You need to structure promise-keeping evidence as summaries → analysis → evidence dossiers (also routed from `references/trust-and-verification.md`) |
 | [agent-skills](../agent-skills/SKILL.md) | You are authoring or editing an Agent Skills-format skill — the format this skill follows |
 | [cli-builder](../cli-builder/SKILL.md) | You are building or refactoring the bundled CLI — `scripts/promise-contract.py` follows cli-builder conventions (non-interactive, `--json`, `--dry-run`) |

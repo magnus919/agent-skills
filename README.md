@@ -20,7 +20,7 @@ Multi-agent structured debate system — spawn a panel of expert agents to debat
 
 Design and review framework-neutral AI-agent evaluations, trajectory evidence, risk-tiered release gates, and privacy-aware observability. Covers datasets, grader calibration, statistical comparisons, incident-to-case learning, optional OpenTelemetry interoperability, and templates for durable evidence.
 
-### [agent-production-operations](bundles/agent-production-operations/SKILL.md)
+### [agent-production-operations](agent-production-operations/SKILL.md)
 
 Operate an evaluated agent with tools and authority in production through a runtime control plane covering versioning, staged rollout, fallback, cost and latency budgets, tool health, human escalation, disablement, and trace-to-eval feedback.
 
@@ -172,7 +172,7 @@ Use a small FlareSolverr JSON CLI for browser-backed GET and POST requests, read
 
 Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, metadata, webhooks, and user settings. Includes a guarded generic `/api/v1/` route for version-specific endpoints such as Actions and admin APIs.
 
-### [forward-deployed-engineering](bundles/forward-deployed-engineering/SKILL.md)
+### [forward-deployed-engineering](forward-deployed-engineering/SKILL.md)
 
 Carry an embedded technical engagement from an ambiguous need to an adopted, measurable capability and a deliberate generalization decision across discovery, build, deployment, adoption, and field learning.
 
@@ -292,7 +292,7 @@ Machine learning engineering methodology — model training, fine-tuning (LoRA/Q
 
 Build, test, sign, and ship mobile apps across iOS, Android, Flutter, and React Native as ONE family skill with per-framework references: project scaffolding, builds and code signing, device and emulator testing, store submission (App Store/TestFlight and Google Play), app lifecycle and backgrounding, offline and sync, and mobile-specific testing. Ships 4 framework references (ios, android, flutter, react-native) and 6 evals. Routes web UI work to frontend-engineering and server-side work to backend-engineering.
 
-### [neckbeard](bundles/neckbeard/SKILL.md)
+### [neckbeard](neckbeard/SKILL.md)
 
 Evidence-driven software delivery operating model — routes a change through framing, discovery, design, implementation, review, verification, delivery, and learning, choosing the smallest *safe* intervention and proving it at the real delivery boundary. Every non-trivial run leaves an inspectable evidence ledger. Composes the specialist catalog rather than replacing it. Ships a versioned evaluation harness that measures SDLC outcomes, never LOC. Not a "10x developer" persona.
 
@@ -375,7 +375,7 @@ Discover product requirements from human stakeholders — map who to talk to, as
 
 Run end-to-end product experiments from assumption to decision — translate assumptions into testable hypotheses, select the right method (qualitative interviews, prototypes, concierge tests, fake doors, feature flags, A/B tests), define guardrails and ethics, and produce readouts that update the roadmap and decision record. Ships 4 references (discovery brief, method selection, guardrails and ethics, experiment readout) and 4 fillable templates (assumption map, experiment brief, guardrail and decision rule record, readout learning entry). Routes statistical design to data-scientist and rollout mechanics to release-engineering.
 
-### [product-lifecycle](bundles/product-lifecycle/SKILL.md)
+### [product-lifecycle](product-lifecycle/SKILL.md)
 
 Route a product through its full lifecycle — discovery, strategy and portfolio choice, roadmap, UX and requirements, experimentation, delivery handoff, adoption, success, and lifecycle review — by composing existing specialist product skills with phase-entry evidence, handoff artifacts, and stop/escalation rules. A thin orchestration bundle that provides cross-skill routing and a lifecycle evidence ledger; never duplicates a specialist's methodology. Ships 2 references (phases with per-phase contracts and ledger spec, capability map), a discovery brief, an AGENTS.md loading guide, and 6 evals covering complete lifecycle trajectories, stopped/escalated paths, and evidence handoffs. Does not assume B2B SaaS; customer-success routing is conditional on product type.
 
@@ -400,7 +400,7 @@ Build and maintain outcome-based product roadmaps and portfolio views that seque
 
 CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management.
 
-### [production-excellence](bundles/production-excellence/SKILL.md)
+### [production-excellence](production-excellence/SKILL.md)
 Cross-domain production gate model — assembles readiness, migration, recovery, capacity/cost, and incident-learning evidence into a launch or operational decision (go/no-go/defer/exception/escalation) with an accountable owner and a post-launch learning path. Composes 12 specialist skills (production-readiness, migration-engineering, resilience-and-recovery, capacity-and-cost-engineering, incident-learning, SRE, release, platform, security, data, QA, verification) without copying their runbooks. Ships 4 references (discovery brief, evidence packet, gate model, handoff record) and 5 integrated evals covering normal release, blocked launch, data migration, dependency outage, and cost/SLO conflict.
 
 ### [production-readiness](production-readiness/SKILL.md)
@@ -435,7 +435,7 @@ Senior-to-principal release engineering methodology — release process models a
 
 Administer and troubleshoot remote Linux, FreeBSD, NetBSD, OpenBSD, and macOS hosts safely, one system or a controlled fleet at a time. Covers SSH, Ansible, Paramiko, portable diagnostics, platform-specific services, packages, configuration, firewalls, rollback, and evidence-led verification.
 
-### [research-and-vault](bundles/research-and-vault/SKILL.md)
+### [research-and-vault](research-and-vault/SKILL.md)
 
 Run a repeatable research-to-notes sequence: gather sources, record URLs and dates, extract independent atomic claims, then create a durable note with explicit coverage gaps.
 
@@ -499,7 +499,7 @@ Develop, self-host, and administer Supabase across the CLI local stack, managed 
 
 4-phase root cause debugging protocol: understand bugs before fixing. Covers schema/environment divergence, exception type specificity in fallback chains, progressive characterization grids for API/retrieval failures, dependency source detection (editable dev forks), macOS sandboxed application debugging, and the Rule of Three for recognizing architectural problems. Adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT) with significant expansion from real-world use.
 
-### [tailscale](bundles/tailscale/SKILL.md)
+### [tailscale](tailscale/SKILL.md)
 
 Self-hosted Tailscale/Headscale VPN ecosystem. Seven sub-skills covering Headscale server deployment, ACL/tailnet policy authoring, Tailscale client configuration, node lifecycle (auth keys, registration, tagging, decommissioning), subnet routing and exit nodes, DERP relay infrastructure, and backup/migration. Ships 23 scripts with `--json` and `--dry-run` support, 8 reference documents, and 6 templates.
 
@@ -566,7 +566,7 @@ Design, build, and review accessible web interfaces through native semantics, ke
 ### [woodpecker-ci](woodpecker-ci/SKILL.md)
 Operate self-hosted Woodpecker CI from installation through production troubleshooting. Covers Forgejo/Gitea integration, server and agent setup, Docker and Kubernetes backends, workflow syntax, secrets, plugins, matrices, CLI/local execution, upgrades, security, and incident response.
 
-### [workflow-architect](bundles/workflow-architect/SKILL.md)
+### [workflow-architect](workflow-architect/SKILL.md)
 
 Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Ships 3 sub-skills, 3 reference documents, 4 templates, and a worked example output bundle.
 
