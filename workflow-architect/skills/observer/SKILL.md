@@ -1,8 +1,8 @@
 ---
 name: observer
-description: The passive observation sub-skill for workflow-architect. Loaded silently,
-  it stays dormant until a trigger phrase activates it. On activation, it scans the
-  current session context to infer the user's workflow from what actually happened.
+description: Monitor a session passively to infer the user's workflow from what
+  actually happened, staying dormant until a trigger phrase activates observation
+  for workflow-architect.
 license: MIT
 compatibility: Hermes Agent — uses session_search and context scanning
 metadata:
@@ -109,3 +109,7 @@ When a trigger phrase is detected:
   captures richer intentional data.
 - **Silent mode:** The observer does not announce itself when loading.
   This is intentional — passive mode is meant to be invisible until triggered.
+
+## When not to use
+
+Do not use this skill for interactive discovery (load the interviewer instead), or when the session context is too thin to infer reliable patterns — active interrogation is more effective there. It is for passively observing an existing session only.

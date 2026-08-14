@@ -154,3 +154,7 @@ Refer to individual script help (`--help`) for usage details:
 | `hs-advertise-routes.sh`| Advertise subnet routes on a Tailscale node       |
 | `hs-approve-routes.sh`  | List and approve/reject routes on Headscale       |
 | `hs-list-routes.sh`     | List all routes with detailed status              |
+
+## When not to use
+
+Do not use this skill for node lifecycle management (load `headscale-node-lifecycle` instead) or for writing ACL policies (load `tailnet-policy`). It covers subnet routers and exit nodes only.

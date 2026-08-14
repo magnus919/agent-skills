@@ -1,8 +1,8 @@
 ---
 name: tailscale
-description: 'Self-hosted Tailscale/Headscale ecosystem: deploy and manage a Headscale
-  control server, configure tailscale clients, manage ACL policies, node lifecycle,
-  subnet routing, DERP relays, and backup/migration. Use when the user mentions Tailscale,
+description: 'Deploy and manage the self-hosted Tailscale/Headscale ecosystem: a
+  Headscale control server, tailscale clients, ACL policies, node lifecycle, subnet
+  routing, DERP relays, and backup/migration. Use when the user mentions Tailscale,
   Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure.'
 license: MIT
 compatibility: Requires bash, Python 3.8+, jq, curl, and access to a Headscale server
@@ -88,3 +88,7 @@ All scripts use `--json`, `--dry-run`, and have informative `--help` output.
 Scripts relative to bundle root: `scripts/<tool>` or `skills/<sub-skill>/scripts/<tool>`.
 
 See the individual sub-skill SKILL.md for detailed usage.
+
+## When not to use
+
+Do not load this umbrella when a task maps to a single sub-skill — load the matching sub-skill directly (e.g. `headscale-deploy`, `tailnet-policy`, `tailscale-client`). It assumes a self-hosted Headscale control server; for Tailscale's hosted SaaS control plane, or for non-Tailscale VPN tooling, use the appropriate network skill instead.

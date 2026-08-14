@@ -118,3 +118,7 @@ Use this skill when the user says any of:
 - "headscale derp"
 - "self-hosted tailscale"
 - "tailscale control server"
+
+## When not to use
+
+Do not use this skill for client-side setup (load `tailscale-client` instead), for ACL/policy authoring (load `tailnet-policy`), or for day-to-day management of an already-running server. It covers initial deployment and server configuration only.

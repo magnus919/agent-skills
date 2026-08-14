@@ -75,3 +75,7 @@ Set up a daily cron job:
 - "restore headscale"
 - "migrate headscale"
 - "headscale backup"
+
+## When not to use
+
+Do not use this skill for deploying or configuring a Headscale server — load `headscale-deploy` instead, or `headscale-node-lifecycle` for node management. It covers backup, restore, and migration of an existing installation only.

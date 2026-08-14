@@ -128,3 +128,7 @@ Update tags on an existing node.
 ```
 hs-tag-node.sh --node <id/name> --tags <tag1,tag2> [--replace | --add] [--dry-run] [--json]
 ```
+
+## When not to use
+
+Do not use this skill for installing or configuring the Tailscale client (load `tailscale-client` instead) or for ACL/policy authoring (load `tailnet-policy`). It covers node registration, tagging, listing, and decommissioning only.

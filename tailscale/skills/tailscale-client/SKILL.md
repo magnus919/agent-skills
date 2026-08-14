@@ -162,3 +162,7 @@ This skill should be loaded when the user mentions any of the following:
 - Tailscale SSH, Serve, MagicDNS, or Taildrop configuration
 - Troubleshooting "tailscaled not running" or "no connection"
 - Interpreting `tailscale status`, `tailscale ping`, or `tailscale netcheck` output
+
+## When not to use
+
+Do not use this skill for server-side Headscale deployment (load `headscale-deploy` instead) or for ACL/policy authoring (load `tailnet-policy`). It covers client installation, authentication, and diagnostics only.

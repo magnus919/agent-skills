@@ -120,3 +120,7 @@ with these dimensions:
 No environment variables required. State is stored via memory tool
 with the prefix `workflow-architect:state:` so it persists across turns
 during multi-turn interviews.
+
+## When not to use
+
+Do not use this skill for one-off task help or when there is no repeatable multi-phase workflow worth capturing — a standalone skill is a better fit. If you already have a well-defined process and only need it packaged, generate the bundle directly rather than re-running an interview.

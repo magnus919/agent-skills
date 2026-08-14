@@ -18,3 +18,7 @@ Use this thin orchestrator when a task needs the same sequence repeatedly:
 5. Report the output path and unresolved gaps.
 
 This skill composes existing capabilities; it does not duplicate their methodology. If the task is a single lookup or a single note, load the domain skill directly instead.
+
+## When not to use
+
+Do not use this skill for a one-off lookup or a single note — load the domain skill directly instead. It only adds value when the same research-to-notes sequence repeats and needs to be captured durably.

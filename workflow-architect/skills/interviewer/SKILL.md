@@ -1,9 +1,8 @@
 ---
 name: interviewer
-description: The active interrogation sub-skill for workflow-architect. Guides the
-  user through 8-15 adaptive questions to discover their workflow phases, branching
-  signals, tool preferences, and friction points. Loaded by the umbrella workflow-architect
-  skill when running in active mode.
+description: Discover the user's workflow through 8-15 adaptive questions for
+  workflow-architect, mapping phases, branching signals, tool preferences, and friction
+  points. Loaded by the umbrella workflow-architect skill when running in active mode.
 license: MIT
 compatibility: Hermes Agent — uses memory tool for state persistence
 metadata:
@@ -192,3 +191,7 @@ if the user's answers match a known archetype. If they do, note it in state
 and use it to seed better follow-up questions (e.g., "For a morning triage
 workflow, people often have a 'stale items bucket' — do you have something
 like that?")
+
+## When not to use
+
+Do not use this skill for passive observation (load the observer instead), or when the user prefers you to infer from what they already did rather than be interrogated. It is for active, interactive discovery only.

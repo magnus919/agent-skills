@@ -143,3 +143,7 @@ Tailscale clients automatically select the DERP region with the lowest latency. 
 ## Trigger Conditions
 
 This skill is activated by keywords: `DERP`, `relay`, `peer relay`, `STUN`, `direct connection failed`
+
+## When not to use
+
+Do not use this skill when direct peer connections work — DERP tuning is only needed when NAT traversal fails. For general client connectivity diagnostics, load `tailscale-client` instead.

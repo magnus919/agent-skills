@@ -1,9 +1,8 @@
 ---
 name: bundle-builder
-description: The synthesis engine for workflow-architect. Reads accumulated workflow
-  state from memory and renders it into a valid Agent Skills bundle directory with
-  sub-skills, manifest, decision map, and optional kanban board. Loaded after the
-  interviewer or observer achieves convergence.
+description: Render accumulated workflow state from memory into a valid Agent Skills
+  bundle directory for workflow-architect, with sub-skills, manifest, decision map,
+  and optional kanban board. Loaded after the interviewer or observer achieves convergence.
 license: MIT
 compatibility: Hermes Agent — uses write_file for bundle output, shell_quote
 metadata:
@@ -373,3 +372,7 @@ After writing all files:
    `skill_view(name='<bundle-name>-<first-phase-name>')`
 5. Suggest they enter the workflow via any trigger phrase covered by the
    umbrella's description, or by manually loading the umbrella skill
+
+## When not to use
+
+Do not load this skill without a converged workflow model — it requires the `workflow-architect:state:*` entries produced by the interviewer or observer. If the workflow has not been discovered yet, load the interviewer (active) or observer (passive) first.

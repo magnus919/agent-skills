@@ -290,3 +290,7 @@ This skill is automatically loaded when the user's message contains any of these
 - migrate acls
 - /etc/headscale/policy
 - policy.hujson
+
+## When not to use
+
+Do not use this skill for deploying the Headscale server (load `headscale-deploy` instead) or for client connectivity issues unrelated to access control (load `tailscale-client`). It covers huJSON policy authoring and testing only.
