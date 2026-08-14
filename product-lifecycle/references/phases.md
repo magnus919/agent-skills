@@ -255,7 +255,7 @@ to engineering and production skills rather than doing the work itself.
 - [release-engineering](../../release-engineering/SKILL.md) — release process, progressive delivery, versioning
 
 **Supporting:**
-- [neckbeard](../../bundles/neckbeard/SKILL.md) — change-request journey for the implementation itself
+- [neckbeard](../../neckbeard/SKILL.md) — change-request journey for the implementation itself
 - [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) — reliability and SLOs
 - [platform-engineering](../../platform-engineering/SKILL.md) — infrastructure and CI/CD
 - [secure-software-engineering](../../secure-software-engineering/SKILL.md) — security requirements and review

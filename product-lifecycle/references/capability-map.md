@@ -42,7 +42,7 @@ cross-phase routing; this map provides point lookup.
 | Platform engineering, infrastructure, CI/CD | [platform-engineering](../../platform-engineering/SKILL.md) |
 | QA strategy, test planning, quality gates | [qa-methodology](../../qa-methodology/SKILL.md) |
 | Verification methodology, evidence trails | [verification-methodology](../../verification-methodology/SKILL.md) |
-| Software delivery lifecycle (SDLC) | [neckbeard](../../bundles/neckbeard/SKILL.md) |
+| Software delivery lifecycle (SDLC) | [neckbeard](../../neckbeard/SKILL.md) |
 
 ## Cross-cutting concerns
 

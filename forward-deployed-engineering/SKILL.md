@@ -68,7 +68,7 @@ stages unless the current charter's stop conditions require it.
 | Released within the authorized boundary | Adopt |
 | Adopted and measuring against the decision rule | Measure |
 | Post-launch evidence and a generalization question | Generalize |
-| A well-specified bounded change with no continuity need | Route to [neckbeard](../../bundles/neckbeard/SKILL.md) instead |
+| A well-specified bounded change with no continuity need | Route to [neckbeard](../neckbeard/SKILL.md) instead |
 
 Before acting at any entry point, review the current charter, workflow map,
 ledger, and preceding stage-handoff record as entry evidence.
@@ -87,8 +87,8 @@ ledger, and preceding stage-handoff record as entry evidence.
    access, security, privacy, irreversible, cost, and external-commitment
    decisions to their authorized owner.
 5. Before calling applied AI or any risky capability production-ready, load
-   [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md)
-   and [production-readiness](../../production-readiness/SKILL.md), and require
+   [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md)
+   and [production-readiness](../production-readiness/SKILL.md), and require
    baseline, representative and adversarial evidence, constraints, and a
    release decision.
 6. Treat adoption and measured workflow impact as completion conditions, not
@@ -127,17 +127,17 @@ or access is missing, evidence fails, adoption remains unexplained or below the
 decision rule, or the next action exceeds the charter. Escalate rather than
 guess on security, privacy, irreversible changes, material cost, external
 commitments, or business authority. Route a well-specified repository bug
-directly to [neckbeard](../../bundles/neckbeard/SKILL.md) and the relevant
+directly to [neckbeard](../neckbeard/SKILL.md) and the relevant
 specialist instead of invoking this lifecycle.
 
 ## When not to use
 
 | Scenario | Reach for | Why |
 |---|---|---|
-| Well-bounded repository change | [neckbeard](../../bundles/neckbeard/SKILL.md) | Owns intake through verified PR and authorized release for a bounded change |
-| Product investment, portfolio, or lifecycle governance | [product-lifecycle](../../bundles/product-lifecycle/SKILL.md) | Owns investment and lifecycle governance, not delivery continuity |
-| Ongoing reliability ownership (SLOs, alerts, incidents) | [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) | Standing operational ownership, not an embedded engagement |
-| Internal platform design or operation | [platform-engineering](../../platform-engineering/SKILL.md) | Platform ownership, not customer delivery |
+| Well-bounded repository change | [neckbeard](../neckbeard/SKILL.md) | Owns intake through verified PR and authorized release for a bounded change |
+| Product investment, portfolio, or lifecycle governance | [product-lifecycle](../product-lifecycle/SKILL.md) | Owns investment and lifecycle governance, not delivery continuity |
+| Ongoing reliability ownership (SLOs, alerts, incidents) | [site-reliability-engineering](../site-reliability-engineering/SKILL.md) | Standing operational ownership, not an embedded engagement |
+| Internal platform design or operation | [platform-engineering](../platform-engineering/SKILL.md) | Platform ownership, not customer delivery |
 | One discipline fully owns the task | That specialist directly | FDE stops routing when one specialist owns the request |
 | Advisory analysis ending before implementation and adoption | The relevant architecture or decision specialist | FDE completion requires adoption and outcome continuity |
 

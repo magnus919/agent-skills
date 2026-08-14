@@ -1,4 +1,4 @@
-# Bundle manifest (bundle-manifest-v1) — see schemas/bundle-manifest-v1.schema.json
+# Bundle manifest (bundle-manifest-v1) — see ../schemas/bundle-manifest-v1.schema.json
 # and docs/bundle-manifest-design.md. Paths are relative to this bundle dir.
 
 schema_version: 1
@@ -20,23 +20,23 @@ audience: >-
 stages:
   - name: Web research
     skills:
-      - ../../research-methodology/SKILL.md
+      - ../research-methodology/SKILL.md
   - name: Source capture
     skills:
-      - ../../research-methodology/SKILL.md
+      - ../research-methodology/SKILL.md
   - name: Atomic extraction
     skills:
-      - ../../research-methodology/SKILL.md
+      - ../research-methodology/SKILL.md
   - name: Synthesis and durable capture
     skills:
-      - ../../research-methodology/SKILL.md
+      - ../research-methodology/SKILL.md
 
 included_skills:
-  - ../../research-methodology/SKILL.md
+  - ../research-methodology/SKILL.md
 
 prerequisites:
   - artifact: A research question or topic and access to web-research tooling
-    skill: ../../research-methodology/SKILL.md
+    skill: ../research-methodology/SKILL.md
 
 outputs:
   - source-capture-record

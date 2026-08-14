@@ -80,8 +80,8 @@ The runner ([../eval/run_eval.py](../eval/run_eval.py)) validates both
 single-task and trajectory fixtures in one pass:
 
 ```sh
-.venv/bin/python3 bundles/neckbeard/eval/run_eval.py \
-  --suite bundles/neckbeard/eval/fixtures --validate-only
+.venv/bin/python3 neckbeard/eval/run_eval.py \
+  --suite neckbeard/eval/fixtures --validate-only
 ```
 
 Expected output (current fixture set):
@@ -99,9 +99,9 @@ OK: 14 fixture(s) valid.
 To scaffold a scoring report for manual evaluation:
 
 ```sh
-.venv/bin/python3 bundles/neckbeard/eval/run_eval.py \
-  --suite bundles/neckbeard/eval/fixtures \
-  --report bundles/neckbeard/eval/out/report.md
+.venv/bin/python3 neckbeard/eval/run_eval.py \
+  --suite neckbeard/eval/fixtures \
+  --report neckbeard/eval/out/report.md
 ```
 
 ## Holdout discipline

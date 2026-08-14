@@ -37,15 +37,15 @@ behavior and completion criteria. Full phase contracts are in
 
 | # | Phase | Primary specialist(s) | Entry evidence | Output artifacts | Escalation behavior | Completion criteria |
 |---|---|---|---|---|---|---|
-| 1 | **Discovery** | [product-discovery](../../product-discovery/SKILL.md) | Product idea, market signal, or stakeholder request | Problem statement, stakeholder map, discovery log, product type classification | Stop if: problem cannot be articulated in user terms; no stakeholder describes a real need; problem is already solved; out of organizational remit | Problem statement exists that a stakeholder recognizes; product type classified; proceed/pause/stop decision recorded |
-| 2 | **Strategy and portfolio choice** | [product-strategy](../../product-strategy/SKILL.md), [strategy-frameworks](../../strategy-frameworks/SKILL.md) | Problem statement and discovery log from Phase 1 | Strategic assessment, market sizing, portfolio recommendation, investment thesis | Stop if: opportunity conflicts with strategy; market evidence contradicts thesis; resource constraints are infeasible; strategic direction is ambiguous | Strategic assessment with fit/no-fit reasoning; portfolio decision recorded; resource estimate recorded |
-| 3 | **Roadmap** | [product-roadmapping-and-portfolio](../../product-roadmapping-and-portfolio/SKILL.md) | Strategic assessment and portfolio decision from Phase 2 | Outcome roadmap entry, Now/Next/Later placement, strategic bet record, dependency map, capacity allocation | Stop if: dependencies cannot be resolved; capacity unavailable; confidence below threshold; conflicts with higher-priority bet | Roadmap entry exists; bet record complete with kill criteria; dependencies mapped and acknowledged |
-| 4 | **UX and requirements** | [product-design-and-ux](../../product-design-and-ux/SKILL.md) | Roadmap entry and bet record from Phase 3; discovery log | Information architecture, task flows, interface contracts, acceptance criteria | Stop if: UX reveals fundamentally different problem; user research contradicts hypothesis; behavior cannot be specified testably; constraints cannot be satisfied | IA and task flows documented; interface contracts exist; acceptance criteria are testable and traceable |
-| 5 | **Experimentation** | [product-experimentation](../../product-experimentation/SKILL.md) | UX contracts, assumptions register, risk assessment | Experiment brief, experiment readout, updated assumptions register, proceed/pivot/stop decision | Stop if: experiment cannot be designed ethically; method infeasible; reveals safety/privacy/security risk; hypothesis disproved with no viable pivot | Experiment brief exists with hypothesis and decision rule; readout exists; proceed/pivot/stop decision recorded with evidence |
-| 6 | **Delivery handoff** | [implementation-planning](../../implementation-planning/SKILL.md), [production-readiness](../../production-readiness/SKILL.md), [release-engineering](../../release-engineering/SKILL.md) | Proceed decision, UX contracts, acceptance criteria, assumptions register | Implementation plan, formal spec, production-readiness verdict (Go/No-go/Defer/Exception), release plan | Stop if: infeasible dependency; readiness returns No-go or blocked Exception; security/privacy/compliance blocks launch; release plan cannot satisfy change-governance | Implementation plan accepted by delivery team; readiness verdict recorded with evidence; release plan documented and reviewed |
-| 7 | **Adoption** | [product-adoption](../../product-adoption/SKILL.md) | Launch decision (Go), release evidence, target segments, success metrics | Adoption plan, activation baseline, segmentation record, adoption metrics | Stop if: adoption materially below threshold after intervention; fundamental product-market mismatch; structural adoption problem beyond product changes | Adoption plan executed; activation and adoption baselines measured; proceed/intervene/pivot/stop decision recorded |
-| 8 | **Success** | [product-analytics-and-measurement](../../product-analytics-and-measurement/SKILL.md) | Adoption evidence, success criteria, experiment readouts | Outcome measurement, metric tree with actuals vs. targets, success/mixed/not-met assessment | Stop if: outcomes materially below expectations with unknown root cause; measurement infrastructure insufficient; evidence contradicts investment thesis | Outcome metrics measured against criteria; success assessment recorded; ledger complete for review |
-| 9 | **Lifecycle review** | [product-lifecycle-learning](../../product-lifecycle-learning/SKILL.md) | Outcome measurement, full evidence ledger, original assumptions register | Outcome review (expected vs. observed), assumption ledger update, continue/improve/harvest/pivot/pause/retire decision, retained learning record | Stop if: retirement has material implications beyond team authority; retained learning contradicts foundational assumption; systemic pattern requires executive attention | Outcome review recorded; lifecycle decision recorded with rationale; retained learning captured; ledger closed |
+| 1 | **Discovery** | [product-discovery](../product-discovery/SKILL.md) | Product idea, market signal, or stakeholder request | Problem statement, stakeholder map, discovery log, product type classification | Stop if: problem cannot be articulated in user terms; no stakeholder describes a real need; problem is already solved; out of organizational remit | Problem statement exists that a stakeholder recognizes; product type classified; proceed/pause/stop decision recorded |
+| 2 | **Strategy and portfolio choice** | [product-strategy](../product-strategy/SKILL.md), [strategy-frameworks](../strategy-frameworks/SKILL.md) | Problem statement and discovery log from Phase 1 | Strategic assessment, market sizing, portfolio recommendation, investment thesis | Stop if: opportunity conflicts with strategy; market evidence contradicts thesis; resource constraints are infeasible; strategic direction is ambiguous | Strategic assessment with fit/no-fit reasoning; portfolio decision recorded; resource estimate recorded |
+| 3 | **Roadmap** | [product-roadmapping-and-portfolio](../product-roadmapping-and-portfolio/SKILL.md) | Strategic assessment and portfolio decision from Phase 2 | Outcome roadmap entry, Now/Next/Later placement, strategic bet record, dependency map, capacity allocation | Stop if: dependencies cannot be resolved; capacity unavailable; confidence below threshold; conflicts with higher-priority bet | Roadmap entry exists; bet record complete with kill criteria; dependencies mapped and acknowledged |
+| 4 | **UX and requirements** | [product-design-and-ux](../product-design-and-ux/SKILL.md) | Roadmap entry and bet record from Phase 3; discovery log | Information architecture, task flows, interface contracts, acceptance criteria | Stop if: UX reveals fundamentally different problem; user research contradicts hypothesis; behavior cannot be specified testably; constraints cannot be satisfied | IA and task flows documented; interface contracts exist; acceptance criteria are testable and traceable |
+| 5 | **Experimentation** | [product-experimentation](../product-experimentation/SKILL.md) | UX contracts, assumptions register, risk assessment | Experiment brief, experiment readout, updated assumptions register, proceed/pivot/stop decision | Stop if: experiment cannot be designed ethically; method infeasible; reveals safety/privacy/security risk; hypothesis disproved with no viable pivot | Experiment brief exists with hypothesis and decision rule; readout exists; proceed/pivot/stop decision recorded with evidence |
+| 6 | **Delivery handoff** | [implementation-planning](../implementation-planning/SKILL.md), [production-readiness](../production-readiness/SKILL.md), [release-engineering](../release-engineering/SKILL.md) | Proceed decision, UX contracts, acceptance criteria, assumptions register | Implementation plan, formal spec, production-readiness verdict (Go/No-go/Defer/Exception), release plan | Stop if: infeasible dependency; readiness returns No-go or blocked Exception; security/privacy/compliance blocks launch; release plan cannot satisfy change-governance | Implementation plan accepted by delivery team; readiness verdict recorded with evidence; release plan documented and reviewed |
+| 7 | **Adoption** | [product-adoption](../product-adoption/SKILL.md) | Launch decision (Go), release evidence, target segments, success metrics | Adoption plan, activation baseline, segmentation record, adoption metrics | Stop if: adoption materially below threshold after intervention; fundamental product-market mismatch; structural adoption problem beyond product changes | Adoption plan executed; activation and adoption baselines measured; proceed/intervene/pivot/stop decision recorded |
+| 8 | **Success** | [product-analytics-and-measurement](../product-analytics-and-measurement/SKILL.md) | Adoption evidence, success criteria, experiment readouts | Outcome measurement, metric tree with actuals vs. targets, success/mixed/not-met assessment | Stop if: outcomes materially below expectations with unknown root cause; measurement infrastructure insufficient; evidence contradicts investment thesis | Outcome metrics measured against criteria; success assessment recorded; ledger complete for review |
+| 9 | **Lifecycle review** | [product-lifecycle-learning](../product-lifecycle-learning/SKILL.md) | Outcome measurement, full evidence ledger, original assumptions register | Outcome review (expected vs. observed), assumption ledger update, continue/improve/harvest/pivot/pause/retire decision, retained learning record | Stop if: retirement has material implications beyond team authority; retained learning contradicts foundational assumption; systemic pattern requires executive attention | Outcome review recorded; lifecycle decision recorded with rationale; retained learning captured; ledger closed |
 
 ### Supporting and cross-cutting skills
 
@@ -54,19 +54,19 @@ and are routed to when their specific capability is needed.
 
 | Skill | When loaded |
 |---|---|
-| [product-methodology](../../product-methodology/SKILL.md) | When a phase produces alternatives that need ranking (RICE, MoSCoW, Kano, OST) |
-| [product-operations-and-governance](../../product-operations-and-governance/SKILL.md) | When setting up or changing governance; at phase boundaries needing formal decision authority |
-| [financial-modeling](../../financial-modeling/SKILL.md) | When unit economics, pricing, or business-model analysis is needed (Phases 2, 8) |
-| [go-to-market](../../go-to-market/SKILL.md) | When positioning, acquisition strategy, or growth modeling is needed (Phases 7, 8) |
-| [data-scientist](../../data-scientist/SKILL.md) | When statistical design, causal inference, or rigorous experiment analysis is needed (Phases 5, 8) |
-| [spec-driven-development](../../spec-driven-development/SKILL.md) | When formal specification with phase gates is needed (Phase 6) |
-| [privacy-engineering](../../privacy-engineering/SKILL.md) | When any phase handles PII, consent, retention, or data flows |
-| [secure-software-engineering](../../secure-software-engineering/SKILL.md) | When any phase touches trust boundaries, auth, or sensitive data |
-| [verification-methodology](../../verification-methodology/SKILL.md) | At every phase gate where evidence is required |
-| [qa-methodology](../../qa-methodology/SKILL.md) | When test strategy and quality gates are needed (Phase 6) |
-| [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) | When reliability, SLOs, or operational readiness is needed (Phase 6) |
-| [platform-engineering](../../platform-engineering/SKILL.md) | When infrastructure, CI/CD, or platform capabilities are needed (Phase 6) |
-| [neckbeard](../../bundles/neckbeard/SKILL.md) | When the software delivery lifecycle (SDLC) change-request journey is needed for implementation (Phase 6) |
+| [product-methodology](../product-methodology/SKILL.md) | When a phase produces alternatives that need ranking (RICE, MoSCoW, Kano, OST) |
+| [product-operations-and-governance](../product-operations-and-governance/SKILL.md) | When setting up or changing governance; at phase boundaries needing formal decision authority |
+| [financial-modeling](../financial-modeling/SKILL.md) | When unit economics, pricing, or business-model analysis is needed (Phases 2, 8) |
+| [go-to-market](../go-to-market/SKILL.md) | When positioning, acquisition strategy, or growth modeling is needed (Phases 7, 8) |
+| [data-scientist](../data-scientist/SKILL.md) | When statistical design, causal inference, or rigorous experiment analysis is needed (Phases 5, 8) |
+| [spec-driven-development](../spec-driven-development/SKILL.md) | When formal specification with phase gates is needed (Phase 6) |
+| [privacy-engineering](../privacy-engineering/SKILL.md) | When any phase handles PII, consent, retention, or data flows |
+| [secure-software-engineering](../secure-software-engineering/SKILL.md) | When any phase touches trust boundaries, auth, or sensitive data |
+| [verification-methodology](../verification-methodology/SKILL.md) | At every phase gate where evidence is required |
+| [qa-methodology](../qa-methodology/SKILL.md) | When test strategy and quality gates are needed (Phase 6) |
+| [site-reliability-engineering](../site-reliability-engineering/SKILL.md) | When reliability, SLOs, or operational readiness is needed (Phase 6) |
+| [platform-engineering](../platform-engineering/SKILL.md) | When infrastructure, CI/CD, or platform capabilities are needed (Phase 6) |
+| [neckbeard](../neckbeard/SKILL.md) | When the software delivery lifecycle (SDLC) change-request journey is needed for implementation (Phase 6) |
 | `production-excellence` bundle (when available) | When the full production-excellence bundle is available as a handoff target (Phase 6) — composes production-readiness, migration-engineering, resilience-and-recovery, capacity-and-cost-engineering, and incident-learning |
 
 ## Loading protocol
@@ -95,7 +95,7 @@ For capability lookup without traversing the full lifecycle, use the
   unnecessary for single-phase work.
 - **Software delivery lifecycle.** If the work is a code change, bug fix, or
   feature implementation — not product-level decision-making — route to
-  [neckbeard](../../bundles/neckbeard/SKILL.md).
+  [neckbeard](../neckbeard/SKILL.md).
 - **Duplicate methodology.** This bundle does NOT duplicate product-discovery,
   product-strategy, product-design-and-ux, product-experimentation,
   product-analytics-and-measurement, or release-engineering methods. Load those
@@ -104,12 +104,12 @@ For capability lookup without traversing the full lifecycle, use the
   Customer-success routing (Phase 8) is CONDITIONAL on product type.
   Internal tools, public-service products, transactional products, and consumer
   products proceed without loading
-  [conditional-customer-success](../../conditional-customer-success/SKILL.md).
+  [conditional-customer-success](../conditional-customer-success/SKILL.md).
 - **Strategic frameworks.** For standalone strategic analysis (Five Forces,
   Blue Ocean, Ansoff) without a lifecycle context, load
-  [strategy-frameworks](../../strategy-frameworks/SKILL.md) directly.
+  [strategy-frameworks](../strategy-frameworks/SKILL.md) directly.
 - **Financial modeling.** For standalone financial analysis without a lifecycle
-  context, load [financial-modeling](../../financial-modeling/SKILL.md) directly.
+  context, load [financial-modeling](../financial-modeling/SKILL.md) directly.
 
 ## File map
 

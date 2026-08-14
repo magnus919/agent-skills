@@ -1,4 +1,4 @@
-# Bundle manifest (bundle-manifest-v1) — see schemas/bundle-manifest-v1.schema.json
+# Bundle manifest (bundle-manifest-v1) — see ../schemas/bundle-manifest-v1.schema.json
 # and docs/bundle-manifest-design.md. Paths are relative to this bundle dir.
 
 schema_version: 1
@@ -19,56 +19,56 @@ audience: >-
 stages:
   - name: Cross-domain evidence assembly
     skills:
-      - ../../production-readiness/SKILL.md
-      - ../../migration-engineering/SKILL.md
-      - ../../resilience-and-recovery/SKILL.md
-      - ../../capacity-and-cost-engineering/SKILL.md
-      - ../../incident-learning/SKILL.md
+      - ../production-readiness/SKILL.md
+      - ../migration-engineering/SKILL.md
+      - ../resilience-and-recovery/SKILL.md
+      - ../capacity-and-cost-engineering/SKILL.md
+      - ../incident-learning/SKILL.md
   - name: Gate evaluation
     skills:
-      - ../../production-readiness/SKILL.md
-      - ../../site-reliability-engineering/SKILL.md
-      - ../../verification-methodology/SKILL.md
-      - ../../qa-methodology/SKILL.md
+      - ../production-readiness/SKILL.md
+      - ../site-reliability-engineering/SKILL.md
+      - ../verification-methodology/SKILL.md
+      - ../qa-methodology/SKILL.md
   - name: Operational handoff
     skills:
-      - ../../release-engineering/SKILL.md
-      - ../../platform-engineering/SKILL.md
-      - ../../secure-software-engineering/SKILL.md
-      - ../../data-engineering/SKILL.md
+      - ../release-engineering/SKILL.md
+      - ../platform-engineering/SKILL.md
+      - ../secure-software-engineering/SKILL.md
+      - ../data-engineering/SKILL.md
   - name: Post-launch learning
     skills:
-      - ../../incident-learning/SKILL.md
+      - ../incident-learning/SKILL.md
 
 included_skills:
-  - ../../production-readiness/SKILL.md
-  - ../../migration-engineering/SKILL.md
-  - ../../resilience-and-recovery/SKILL.md
-  - ../../capacity-and-cost-engineering/SKILL.md
-  - ../../incident-learning/SKILL.md
-  - ../../site-reliability-engineering/SKILL.md
-  - ../../release-engineering/SKILL.md
-  - ../../platform-engineering/SKILL.md
-  - ../../secure-software-engineering/SKILL.md
-  - ../../data-engineering/SKILL.md
-  - ../../qa-methodology/SKILL.md
-  - ../../verification-methodology/SKILL.md
+  - ../production-readiness/SKILL.md
+  - ../migration-engineering/SKILL.md
+  - ../resilience-and-recovery/SKILL.md
+  - ../capacity-and-cost-engineering/SKILL.md
+  - ../incident-learning/SKILL.md
+  - ../site-reliability-engineering/SKILL.md
+  - ../release-engineering/SKILL.md
+  - ../platform-engineering/SKILL.md
+  - ../secure-software-engineering/SKILL.md
+  - ../data-engineering/SKILL.md
+  - ../qa-methodology/SKILL.md
+  - ../verification-methodology/SKILL.md
 
 prerequisites:
   - artifact: Readiness review evidence packet (risk-scaled, 11 categories)
-    skill: ../../production-readiness/SKILL.md
+    skill: ../production-readiness/SKILL.md
   - artifact: Migration plan, compatibility windows, and reconciliation evidence
-    skill: ../../migration-engineering/SKILL.md
+    skill: ../migration-engineering/SKILL.md
   - artifact: Resilience and recovery evidence (RTO/RPO, restore tests, game days)
-    skill: ../../resilience-and-recovery/SKILL.md
+    skill: ../resilience-and-recovery/SKILL.md
   - artifact: Capacity and cost model evidence (demand, scaling, unit cost)
-    skill: ../../capacity-and-cost-engineering/SKILL.md
+    skill: ../capacity-and-cost-engineering/SKILL.md
   - artifact: Incident history, causal hypotheses, and verified-closure records
-    skill: ../../incident-learning/SKILL.md
+    skill: ../incident-learning/SKILL.md
   - artifact: SLO and error-budget status
-    skill: ../../site-reliability-engineering/SKILL.md
+    skill: ../site-reliability-engineering/SKILL.md
   - artifact: Release plan and rollback strategy
-    skill: ../../release-engineering/SKILL.md
+    skill: ../release-engineering/SKILL.md
 
 outputs:
   - gate-decision
@@ -101,78 +101,78 @@ handoffs:
       supporting it; no gate passes on a bare checklist.
 
 conflicts:
-  - skill: ../../production-readiness/SKILL.md
+  - skill: ../production-readiness/SKILL.md
     with: product-lifecycle
     guidance: >-
       Both bundles include production-readiness. This bundle owns the launch
       gate decision; product-lifecycle routes phase 6 delivery handoff. Load
       the bundle matching the active decision context, never both at once.
-  - skill: ../../production-readiness/SKILL.md
+  - skill: ../production-readiness/SKILL.md
     with: agent-production-operations
     guidance: >-
       agent-production-operations consumes readiness outcomes as authority-
       gating inputs. Readiness reviews and go/no-go/defer/exception outcomes
       are produced here and consumed there.
-  - skill: ../../release-engineering/SKILL.md
+  - skill: ../release-engineering/SKILL.md
     with: product-lifecycle
     guidance: >-
       Release engineering is shared. Route by context: gate-entry release
       evidence (this bundle) versus lifecycle delivery handoff
       (product-lifecycle).
-  - skill: ../../release-engineering/SKILL.md
+  - skill: ../release-engineering/SKILL.md
     with: agent-production-operations
     guidance: >-
       Release engineering is shared. Route by context: launch-gate release
       plans (this bundle) versus agent staged-rollout planning
       (agent-production-operations).
-  - skill: ../../site-reliability-engineering/SKILL.md
+  - skill: ../site-reliability-engineering/SKILL.md
     with: product-lifecycle
     guidance: >-
       SRE is shared. This bundle routes to it for gate-entry SLO/error-budget
       evidence; product-lifecycle routes to it for delivery reliability.
-  - skill: ../../site-reliability-engineering/SKILL.md
+  - skill: ../site-reliability-engineering/SKILL.md
     with: agent-production-operations
     guidance: >-
       SRE is shared. This bundle uses it for gate-entry reliability evidence;
       agent-production-operations uses it for runtime latency/cost budgets
       and incident handoff. Incident command stays with SRE in both cases.
-  - skill: ../../secure-software-engineering/SKILL.md
+  - skill: ../secure-software-engineering/SKILL.md
     with: product-lifecycle
     guidance: >-
       Security engineering is shared. Route by context: security evidence for
       launch gates (this bundle) versus trust-boundary work in lifecycle
       phases (product-lifecycle).
-  - skill: ../../secure-software-engineering/SKILL.md
+  - skill: ../secure-software-engineering/SKILL.md
     with: agent-production-operations
     guidance: >-
       Security engineering is shared. Route by context: launch-gate security
       evidence (this bundle) versus agent authority contracts and disablement
       security (agent-production-operations).
-  - skill: ../../platform-engineering/SKILL.md
+  - skill: ../platform-engineering/SKILL.md
     with: product-lifecycle
     guidance: >-
       Platform engineering is shared. Route by context: gate-entry platform
       evidence (this bundle) versus lifecycle delivery handoff
       (product-lifecycle).
-  - skill: ../../platform-engineering/SKILL.md
+  - skill: ../platform-engineering/SKILL.md
     with: agent-production-operations
     guidance: >-
       Platform engineering is shared. Route by context: launch-gate platform
       evidence (this bundle) versus agent sandboxing and tool-execution
       isolation (agent-production-operations).
-  - skill: ../../incident-learning/SKILL.md
+  - skill: ../incident-learning/SKILL.md
     with: agent-production-operations
     guidance: >-
       Both bundles consume incident-learning records. This bundle uses
       incident history as gate-entry evidence; agent-production-operations
       consumes verified-closure records as escalation and disablement inputs.
-  - skill: ../../qa-methodology/SKILL.md
+  - skill: ../qa-methodology/SKILL.md
     with: product-lifecycle
     guidance: >-
       QA methodology is shared. Route by context: launch verification evidence
       (this bundle) versus lifecycle phase 6 quality gates
       (product-lifecycle).
-  - skill: ../../verification-methodology/SKILL.md
+  - skill: ../verification-methodology/SKILL.md
     with: product-lifecycle
     guidance: >-
       Verification methodology is shared. This bundle uses it for boundary

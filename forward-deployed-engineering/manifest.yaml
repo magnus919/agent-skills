@@ -16,71 +16,71 @@ audience: >-
 stages:
   - name: Discover
     skills:
-      - ../../product-discovery/SKILL.md
-      - ../../data-engineering/SKILL.md
-      - ../../remote-systems-administration/SKILL.md
+      - ../product-discovery/SKILL.md
+      - ../data-engineering/SKILL.md
+      - ../remote-systems-administration/SKILL.md
   - name: Frame
     skills:
-      - ../../product-design-and-ux/SKILL.md
-      - ../../privacy-engineering/SKILL.md
-      - ../../secure-software-engineering/SKILL.md
+      - ../product-design-and-ux/SKILL.md
+      - ../privacy-engineering/SKILL.md
+      - ../secure-software-engineering/SKILL.md
   - name: Hypothesize
     skills:
-      - ../../product-experimentation/SKILL.md
-      - ../../agent-evals-and-observability/SKILL.md
+      - ../product-experimentation/SKILL.md
+      - ../agent-evals-and-observability/SKILL.md
   - name: Build
     skills:
-      - ../../implementation-planning/SKILL.md
-      - ../../backend-engineering/SKILL.md
-      - ../../frontend-engineering/SKILL.md
-      - ../../data-engineering/SKILL.md
+      - ../implementation-planning/SKILL.md
+      - ../backend-engineering/SKILL.md
+      - ../frontend-engineering/SKILL.md
+      - ../data-engineering/SKILL.md
   - name: Evaluate
     skills:
-      - ../../agent-evals-and-observability/SKILL.md
-      - ../../qa-methodology/SKILL.md
-      - ../../verification-methodology/SKILL.md
+      - ../agent-evals-and-observability/SKILL.md
+      - ../qa-methodology/SKILL.md
+      - ../verification-methodology/SKILL.md
   - name: Deploy
     skills:
-      - ../../production-readiness/SKILL.md
-      - ../../release-engineering/SKILL.md
-      - ../../platform-engineering/SKILL.md
-      - ../../remote-systems-administration/SKILL.md
+      - ../production-readiness/SKILL.md
+      - ../release-engineering/SKILL.md
+      - ../platform-engineering/SKILL.md
+      - ../remote-systems-administration/SKILL.md
   - name: Adopt
     skills:
-      - ../../product-adoption/SKILL.md
-      - ../../product-design-and-ux/SKILL.md
+      - ../product-adoption/SKILL.md
+      - ../product-design-and-ux/SKILL.md
   - name: Measure
     skills:
-      - ../../product-analytics-and-measurement/SKILL.md
-      - ../../agent-evals-and-observability/SKILL.md
-      - ../../site-reliability-engineering/SKILL.md
+      - ../product-analytics-and-measurement/SKILL.md
+      - ../agent-evals-and-observability/SKILL.md
+      - ../site-reliability-engineering/SKILL.md
   - name: Generalize
     skills:
-      - ../../product-lifecycle-learning/SKILL.md
-      - ../../product-methodology/SKILL.md
+      - ../product-lifecycle-learning/SKILL.md
+      - ../product-methodology/SKILL.md
 
 included_skills:
-  - ../../product-discovery/SKILL.md
-  - ../../product-design-and-ux/SKILL.md
-  - ../../product-experimentation/SKILL.md
-  - ../../agent-evals-and-observability/SKILL.md
-  - ../../implementation-planning/SKILL.md
-  - ../../backend-engineering/SKILL.md
-  - ../../frontend-engineering/SKILL.md
-  - ../../data-engineering/SKILL.md
-  - ../../qa-methodology/SKILL.md
-  - ../../verification-methodology/SKILL.md
-  - ../../production-readiness/SKILL.md
-  - ../../release-engineering/SKILL.md
-  - ../../platform-engineering/SKILL.md
-  - ../../remote-systems-administration/SKILL.md
-  - ../../product-adoption/SKILL.md
-  - ../../product-analytics-and-measurement/SKILL.md
-  - ../../site-reliability-engineering/SKILL.md
-  - ../../product-lifecycle-learning/SKILL.md
-  - ../../product-methodology/SKILL.md
-  - ../../privacy-engineering/SKILL.md
-  - ../../secure-software-engineering/SKILL.md
+  - ../product-discovery/SKILL.md
+  - ../product-design-and-ux/SKILL.md
+  - ../product-experimentation/SKILL.md
+  - ../agent-evals-and-observability/SKILL.md
+  - ../implementation-planning/SKILL.md
+  - ../backend-engineering/SKILL.md
+  - ../frontend-engineering/SKILL.md
+  - ../data-engineering/SKILL.md
+  - ../qa-methodology/SKILL.md
+  - ../verification-methodology/SKILL.md
+  - ../production-readiness/SKILL.md
+  - ../release-engineering/SKILL.md
+  - ../platform-engineering/SKILL.md
+  - ../remote-systems-administration/SKILL.md
+  - ../product-adoption/SKILL.md
+  - ../product-analytics-and-measurement/SKILL.md
+  - ../site-reliability-engineering/SKILL.md
+  - ../product-lifecycle-learning/SKILL.md
+  - ../product-methodology/SKILL.md
+  - ../privacy-engineering/SKILL.md
+  - ../secure-software-engineering/SKILL.md
 
 prerequisites:
   - artifact: Stakeholder request or observed workflow opportunity and a named accountable lead
@@ -126,198 +126,198 @@ handoffs:
       durable transfer or follow-up path.
 
 conflicts:
-  - skill: ../../product-discovery/SKILL.md
+  - skill: ../product-discovery/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle uses product-discovery for embedded delivery continuity and
       workflow context; product-lifecycle owns product investment and lifecycle governance.
-  - skill: ../../product-discovery/SKILL.md
+  - skill: ../product-discovery/SKILL.md
     with: research-and-vault
     guidance: >-
       Use product-discovery for stakeholder and workflow discovery; use research-and-vault
       for a reusable web-research-to-knowledge capture chain.
-  - skill: ../../product-experimentation/SKILL.md
+  - skill: ../product-experimentation/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle routes experiments to test an engagement intervention; product-lifecycle
       routes product investment experiments within its lifecycle governance.
-  - skill: ../../implementation-planning/SKILL.md
+  - skill: ../implementation-planning/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle routes implementation planning only during Build after an authorized
       owner approves the requirement; product-lifecycle owns product delivery handoff.
       Route a bounded code change to neckbeard.
-  - skill: ../../production-readiness/SKILL.md
+  - skill: ../production-readiness/SKILL.md
     with: production-excellence
     guidance: >-
       This bundle carries engagement evidence into the specialist readiness review;
       production-excellence owns the cross-domain launch gate decision.
-  - skill: ../../production-readiness/SKILL.md
+  - skill: ../production-readiness/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle routes readiness for an embedded capability; product-lifecycle
       owns product lifecycle delivery handoff. Do not run both orchestration paths for one decision.
-  - skill: ../../release-engineering/SKILL.md
+  - skill: ../release-engineering/SKILL.md
     with: production-excellence
     guidance: >-
       This bundle routes deployment evidence from the engagement; production-excellence
       uses release evidence for a launch gate.
-  - skill: ../../release-engineering/SKILL.md
+  - skill: ../release-engineering/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle uses release engineering for embedded rollout continuity;
       product-lifecycle uses it for product delivery handoff.
-  - skill: ../../platform-engineering/SKILL.md
+  - skill: ../platform-engineering/SKILL.md
     with: production-excellence
     guidance: >-
       This bundle routes platform work needed to deploy the engagement capability;
       production-excellence assembles platform evidence for launch gating.
-  - skill: ../../platform-engineering/SKILL.md
+  - skill: ../platform-engineering/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle routes platform work needed by the engagement; product-lifecycle
       routes platform work in a product delivery handoff.
-  - skill: ../../platform-engineering/SKILL.md
+  - skill: ../platform-engineering/SKILL.md
     with: agent-production-operations
     guidance: >-
       This bundle routes product or engagement platform delivery; agent-production-operations
       owns runtime agent sandboxing and tool-execution isolation.
-  - skill: ../../secure-software-engineering/SKILL.md
+  - skill: ../secure-software-engineering/SKILL.md
     with: production-excellence
     guidance: >-
       This bundle routes trust-boundary work during the engagement; production-excellence
       consumes security evidence for its launch gate.
-  - skill: ../../secure-software-engineering/SKILL.md
+  - skill: ../secure-software-engineering/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle routes security work in the embedded lifecycle; product-lifecycle
       routes security work in product lifecycle phases.
-  - skill: ../../secure-software-engineering/SKILL.md
+  - skill: ../secure-software-engineering/SKILL.md
     with: agent-production-operations
     guidance: >-
       This bundle routes application and engagement security; agent-production-operations
       owns agent authority, disablement, and runtime security controls.
-  - skill: ../../privacy-engineering/SKILL.md
+  - skill: ../privacy-engineering/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle routes privacy work for engagement data flows; product-lifecycle
       routes privacy work across product lifecycle phases.
-  - skill: ../../privacy-engineering/SKILL.md
+  - skill: ../privacy-engineering/SKILL.md
     with: agent-production-operations
     guidance: >-
       This bundle routes engagement privacy decisions; agent-production-operations
       routes trace scrubbing and user-data-access grants.
-  - skill: ../../qa-methodology/SKILL.md
+  - skill: ../qa-methodology/SKILL.md
     with: production-excellence
     guidance: >-
       This bundle routes quality evidence for the built capability; production-excellence
       uses QA evidence at the launch gate.
-  - skill: ../../qa-methodology/SKILL.md
+  - skill: ../qa-methodology/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle routes evaluation and quality work for engagement delivery;
       product-lifecycle uses QA at product delivery handoff.
-  - skill: ../../verification-methodology/SKILL.md
+  - skill: ../verification-methodology/SKILL.md
     with: production-excellence
     guidance: >-
       This bundle uses verification to label engagement evidence; production-excellence
       uses it to verify launch-boundary evidence.
-  - skill: ../../verification-methodology/SKILL.md
+  - skill: ../verification-methodology/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle verifies continuity artifacts and field outcomes; product-lifecycle
       verifies evidence at product phase gates.
-  - skill: ../../site-reliability-engineering/SKILL.md
+  - skill: ../site-reliability-engineering/SKILL.md
     with: production-excellence
     guidance: >-
       This bundle routes reliability evidence for the engagement; production-excellence
       uses SRE evidence for its production gate.
-  - skill: ../../site-reliability-engineering/SKILL.md
+  - skill: ../site-reliability-engineering/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle routes reliability work needed for adoption and operation;
       product-lifecycle routes SRE work in product delivery handoff.
-  - skill: ../../site-reliability-engineering/SKILL.md
+  - skill: ../site-reliability-engineering/SKILL.md
     with: agent-production-operations
     guidance: >-
       This bundle routes service reliability; agent-production-operations routes
       runtime latency, cost budgets, and incident handoff for agents.
-  - skill: ../../data-engineering/SKILL.md
+  - skill: ../data-engineering/SKILL.md
     with: production-excellence
     guidance: >-
       This bundle routes data work required by the engagement; production-excellence
       consumes data evidence in its operational handoff and launch gate.
-  - skill: ../../product-adoption/SKILL.md
+  - skill: ../product-adoption/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle owns adoption continuity for an embedded engagement; product-lifecycle
       owns product adoption as one phase of product governance.
-  - skill: ../../product-analytics-and-measurement/SKILL.md
+  - skill: ../product-analytics-and-measurement/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle measures workflow impact for engagement completion; product-lifecycle
       measures product outcomes in lifecycle review.
-  - skill: ../../product-lifecycle-learning/SKILL.md
+  - skill: ../product-lifecycle-learning/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle uses field learning to decide generalization; product-lifecycle-learning
       owns the product lifecycle learning method and decision record.
-  - skill: ../../agent-evals-and-observability/SKILL.md
+  - skill: ../agent-evals-and-observability/SKILL.md
     with: agent-production-operations
     guidance: >-
       This bundle routes eval evidence for engagement release and learning;
       agent-production-operations consumes eval and trace evidence for runtime control.
-  - skill: ../../production-readiness/SKILL.md
+  - skill: ../production-readiness/SKILL.md
     with: agent-production-operations
     guidance: >-
       This bundle routes readiness for an embedded capability; agent-production-operations
       consumes readiness as an authority-gating input.
-  - skill: ../../release-engineering/SKILL.md
+  - skill: ../release-engineering/SKILL.md
     with: agent-production-operations
     guidance: >-
       This bundle uses release engineering for engagement rollout; agent-production-operations
       uses it for staged runtime rollout and fallback.
-  - skill: ../../product-design-and-ux/SKILL.md
+  - skill: ../product-design-and-ux/SKILL.md
     with: neckbeard
     guidance: >-
       This bundle routes UX for embedded workflow adoption; neckbeard uses UX
       only as needed for a bounded software change. Route by task boundary.
-  - skill: ../../product-discovery/SKILL.md
+  - skill: ../product-discovery/SKILL.md
     with: neckbeard
     guidance: >-
       This bundle owns embedded stakeholder and workflow discovery; neckbeard
       handles the bounded change after its requirements are known.
-  - skill: ../../qa-methodology/SKILL.md
+  - skill: ../qa-methodology/SKILL.md
     with: neckbeard
     guidance: >-
       This bundle routes QA for engagement evidence; neckbeard applies QA within
       its software delivery journey for a bounded repository change.
-  - skill: ../../release-engineering/SKILL.md
+  - skill: ../release-engineering/SKILL.md
     with: neckbeard
     guidance: >-
       This bundle routes release work across the engagement lifecycle; neckbeard
       owns release delivery for a bounded change.
-  - skill: ../../secure-software-engineering/SKILL.md
+  - skill: ../secure-software-engineering/SKILL.md
     with: neckbeard
     guidance: >-
       This bundle routes security decisions across embedded delivery; neckbeard
       applies security to its bounded software change.
-  - skill: ../../site-reliability-engineering/SKILL.md
+  - skill: ../site-reliability-engineering/SKILL.md
     with: neckbeard
     guidance: >-
       This bundle routes reliability for engagement outcomes; neckbeard routes
       reliability concerns within its software delivery journey.
-  - skill: ../../verification-methodology/SKILL.md
+  - skill: ../verification-methodology/SKILL.md
     with: neckbeard
     guidance: >-
       This bundle verifies stage continuity and outcome evidence; neckbeard
       verifies the bounded repository change.
-  - skill: ../../product-design-and-ux/SKILL.md
+  - skill: ../product-design-and-ux/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle routes UX for embedded workflow adoption; product-lifecycle
       routes UX for product requirements and lifecycle governance.
-  - skill: ../../product-methodology/SKILL.md
+  - skill: ../product-methodology/SKILL.md
     with: product-lifecycle
     guidance: >-
       This bundle uses prioritization only to support engagement generalization;

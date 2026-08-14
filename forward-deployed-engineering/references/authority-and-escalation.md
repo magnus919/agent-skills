@@ -5,7 +5,7 @@
 Record the access route, identity and privilege needed, approved egress,
 systems and data in scope, change window, reviewer, rollback or recovery path,
 external-boundary verification, and evidence that the action succeeded. Load
-[remote-systems-administration](../../../remote-systems-administration/SKILL.md)
+[remote-systems-administration](../../remote-systems-administration/SKILL.md)
 for its operational method rather than inventing one here.
 
 ## Authority table
@@ -31,5 +31,5 @@ authority substitute.
 An applied-AI demo is not production-ready without a representative baseline,
 adversarial or failure cases, risk constraints, evaluation results, an owner for
 residual risk, rollout and rollback evidence, and an explicit release decision.
-Route evaluation details to [agent-evals-and-observability](../../../agent-evals-and-observability/SKILL.md)
-and readiness details to [production-readiness](../../../production-readiness/SKILL.md).
+Route evaluation details to [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md)
+and readiness details to [production-readiness](../../production-readiness/SKILL.md).

@@ -23,6 +23,6 @@ point; all routed skills are top-level catalog skills, not nested sub-skills.
 - Compatible harnesses are guaranteed to see this bundle's `SKILL.md`. Nested
   sub-skill auto-loading is not applicable (no nested skills exist).
 - The bundle's routing table in `SKILL.md` uses relative links from the bundle
-  root (`bundles/production-excellence/`) to top-level skill directories
-  (`../../<skill>/SKILL.md`). Harnesses must resolve these relative to the
+  root (`production-excellence/`) to top-level skill directories
+  (`../<skill>/SKILL.md`). Harnesses must resolve these relative to the
   repository root.

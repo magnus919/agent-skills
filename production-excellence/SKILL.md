@@ -46,19 +46,19 @@ Load when:
 Do **not** load this bundle for:
 
 - **Incident command or SLO operations** — those are owned by
-  [site-reliability-engineering](../../site-reliability-engineering/SKILL.md).
+  [site-reliability-engineering](../site-reliability-engineering/SKILL.md).
 - **Release-pipeline mechanics, versioning, or deployment strategies** — those are
-  owned by [release-engineering](../../release-engineering/SKILL.md).
+  owned by [release-engineering](../release-engineering/SKILL.md).
 - **Platform architecture or internal-developer-platform design** — those are
-  owned by [platform-engineering](../../platform-engineering/SKILL.md).
+  owned by [platform-engineering](../platform-engineering/SKILL.md).
 - **Threat modeling, security review procedure, or vulnerability assessment** —
   those are owned by
-  [secure-software-engineering](../../secure-software-engineering/SKILL.md).
+  [secure-software-engineering](../secure-software-engineering/SKILL.md).
 - **Data-pipeline design, ETL, or storage architecture** — those are owned by
-  [data-engineering](../../data-engineering/SKILL.md).
+  [data-engineering](../data-engineering/SKILL.md).
 - **Test-strategy design, regression-suite management, or test-automation
   framework design** — those are owned by
-  [qa-methodology](../../qa-methodology/SKILL.md).
+  [qa-methodology](../qa-methodology/SKILL.md).
 - **A generic checklist detached from service ownership, risk, evidence, and
   verification** — every gate in this bundle requires a named service owner,
   assessed risk, verified evidence, and a declaration of the verification
@@ -78,23 +78,23 @@ assembly and the gate decision.
 
 | Domain | Specialist skill | What the specialist owns | What the bundle adds |
 |---|---|---|---|
-| **Production readiness** | [production-readiness](../../production-readiness/SKILL.md) | Risk-scaled evidence packet (11 categories), go/no-go/defer/exception launch decisions, accountable owners | Cross-domain assembly with migration, recovery, capacity/cost, and incident evidence; gate integration |
-| **Migration** | [migration-engineering](../../migration-engineering/SKILL.md) | Expand/contract, compatibility windows, dual-running, backfills, reconciliation, cutover, recovery paths | Migration evidence as input to the gate model; handoff of migration verification to the operational record |
-| **Resilience and recovery** | [resilience-and-recovery](../../resilience-and-recovery/SKILL.md) | Failure modes, degradation choices, RTO/RPO, restore testing, DR, game days, failover, data integrity | Recovery evidence as a gate condition; exercise results feed the handoff record |
-| **Capacity and cost** | [capacity-and-cost-engineering](../../capacity-and-cost-engineering/SKILL.md) | Demand/capacity/scaling/utilization models, unit-cost connection to SLO decisions, cost-constrained scenarios | Capacity/cost evidence as a gate condition; SLO/cost tradeoff decisions feed the gate model |
-| **Incident learning** | [incident-learning](../../incident-learning/SKILL.md) | Observed facts, causal hypotheses, contributing conditions, follow-up work mapping, verified closure | Pre-existing incident evidence as a gate condition; post-launch incidents routed back to incident-learning |
+| **Production readiness** | [production-readiness](../production-readiness/SKILL.md) | Risk-scaled evidence packet (11 categories), go/no-go/defer/exception launch decisions, accountable owners | Cross-domain assembly with migration, recovery, capacity/cost, and incident evidence; gate integration |
+| **Migration** | [migration-engineering](../migration-engineering/SKILL.md) | Expand/contract, compatibility windows, dual-running, backfills, reconciliation, cutover, recovery paths | Migration evidence as input to the gate model; handoff of migration verification to the operational record |
+| **Resilience and recovery** | [resilience-and-recovery](../resilience-and-recovery/SKILL.md) | Failure modes, degradation choices, RTO/RPO, restore testing, DR, game days, failover, data integrity | Recovery evidence as a gate condition; exercise results feed the handoff record |
+| **Capacity and cost** | [capacity-and-cost-engineering](../capacity-and-cost-engineering/SKILL.md) | Demand/capacity/scaling/utilization models, unit-cost connection to SLO decisions, cost-constrained scenarios | Capacity/cost evidence as a gate condition; SLO/cost tradeoff decisions feed the gate model |
+| **Incident learning** | [incident-learning](../incident-learning/SKILL.md) | Observed facts, causal hypotheses, contributing conditions, follow-up work mapping, verified closure | Pre-existing incident evidence as a gate condition; post-launch incidents routed back to incident-learning |
 
 ### Supporting specialist routes
 
 | Domain | Specialist skill | When routed |
 |---|---|---|
-| **Reliability / SLOs** | [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) | SLO/error-budget status required for gate entry; incident response for post-launch issues |
-| **Release mechanics** | [release-engineering](../../release-engineering/SKILL.md) | Release plan, rollout/rollback strategy required for gate entry |
-| **Platform** | [platform-engineering](../../platform-engineering/SKILL.md) | Service-catalog entry, paved-road status for new services |
-| **Security** | [secure-software-engineering](../../secure-software-engineering/SKILL.md) | Security review evidence for trust-boundary changes |
-| **Data** | [data-engineering](../../data-engineering/SKILL.md) | Data-quality and pipeline evidence for data-path changes |
-| **QA** | [qa-methodology](../../qa-methodology/SKILL.md) | Verification evidence for all launches |
-| **Verification** | [verification-methodology](../../verification-methodology/SKILL.md) | Boundary labeling and gap declaration for evidence assessment |
+| **Reliability / SLOs** | [site-reliability-engineering](../site-reliability-engineering/SKILL.md) | SLO/error-budget status required for gate entry; incident response for post-launch issues |
+| **Release mechanics** | [release-engineering](../release-engineering/SKILL.md) | Release plan, rollout/rollback strategy required for gate entry |
+| **Platform** | [platform-engineering](../platform-engineering/SKILL.md) | Service-catalog entry, paved-road status for new services |
+| **Security** | [secure-software-engineering](../secure-software-engineering/SKILL.md) | Security review evidence for trust-boundary changes |
+| **Data** | [data-engineering](../data-engineering/SKILL.md) | Data-quality and pipeline evidence for data-path changes |
+| **QA** | [qa-methodology](../qa-methodology/SKILL.md) | Verification evidence for all launches |
+| **Verification** | [verification-methodology](../verification-methodology/SKILL.md) | Boundary labeling and gap declaration for evidence assessment |
 
 ## Cross-domain entry evidence
 
@@ -142,13 +142,13 @@ Launch outcomes and post-launch observations feed two learning routes:
 
 1. **Incident learning** — post-launch incidents (SLO degradations, unexpected
    failures, capacity breaches) are routed to
-   [incident-learning](../../incident-learning/SKILL.md). The handoff record
+   [incident-learning](../incident-learning/SKILL.md). The handoff record
    provides the launch context; the incident-learning skill's verified-closure
    requirement ensures follow-up items are tracked to completion.
 
 2. **Lifecycle learning** — expected outcomes recorded in the handoff (SLO
    targets, capacity assumptions, cost projections) are routed to
-   [product-lifecycle-learning](../../product-lifecycle-learning/SKILL.md)
+   [product-lifecycle-learning](../product-lifecycle-learning/SKILL.md)
    for expected-vs-observed comparison at the handoff's review cadence. The
    lifecycle-learning skill's continue/improve/harvest/pivot/pause/retire
    decisions are informed by the gap between predicted and observed production

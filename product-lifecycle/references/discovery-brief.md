@@ -18,7 +18,7 @@ must manually chain skills. This bundle provides that routing.
 
 ## Comparison with existing bundles
 
-### bundles/neckbeard
+### neckbeard
 
 neckbeard is an SDLC delivery operating model — it routes a **code change**
 through framing, discovery, design, implementation, review, verification,
@@ -33,7 +33,7 @@ release-engineering, and the neckbeard change-request journey for the
 implementation and delivery of product decisions. The two bundles intersect at
 the delivery-handoff boundary but own different domains.
 
-### bundles/workflow-architect
+### workflow-architect
 
 workflow-architect is a meta-skill that discovers a **person's** workflow
 through conversation or observation and generates a tailored skills bundle. It
@@ -43,14 +43,14 @@ provides a fixed, opinionated lifecycle routing table for product work. A user
 might run workflow-architect to discover their own product workflow and then
 use the product-lifecycle bundle as a reference for building it.
 
-### bundles/tailscale
+### tailscale
 
 tailscale is a domain-specific infrastructure bundle for self-hosted
 Tailscale/Headscale VPN. It has no product management content and no lifecycle
 routing. No overlap with product-lifecycle. Mentioned here only for comparison
 completeness.
 
-### bundles/research-and-vault
+### research-and-vault
 
 research-and-vault is a thin orchestrator for a repeatable research-to-notes
 pipeline: gather sources, extract atomic claims, create durable notes. It
@@ -99,7 +99,7 @@ Additional skills that may be routed to contextually: `site-reliability-engineer
 - **Release engineering, CI/CD, deployment.** Routes to `release-engineering` and `production-readiness`.
 - **Analytics instrumentation and pipelines.** Routes to `product-analytics-and-measurement` and `data-engineering`.
 - **Customer success account management.** Routes to `conditional-customer-success` (conditional on product type).
-- **Software delivery lifecycle.** Routes to `bundles/neckbeard` and `implementation-planning`.
+- **Software delivery lifecycle.** Routes to `neckbeard` and `implementation-planning`.
 - **Financial modeling and pricing.** Routes to `financial-modeling`.
 - **GTM strategy and execution.** Routes to `go-to-market`.
 - **Privacy, security, legal compliance.** Routes to `privacy-engineering`, `secure-software-engineering`, `legal-strategy`.

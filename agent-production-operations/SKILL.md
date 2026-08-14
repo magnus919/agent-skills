@@ -44,21 +44,21 @@ Do **not** load this bundle for:
 - Building or designing an agent from scratch — route to the appropriate
   framework skill (LangGraph, CrewAI, AutoGen, etc.).
 - Designing agent evaluations or observability — route to
-  [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md).
+  [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md).
 - General release engineering (CI/CD pipelines, artifact promotion) — route to
-  [release-engineering](../../release-engineering/SKILL.md).
+  [release-engineering](../release-engineering/SKILL.md).
 - General site reliability engineering (incident response, SLO definition,
   error budgets) — route to
-  [site-reliability-engineering](../../site-reliability-engineering/SKILL.md).
+  [site-reliability-engineering](../site-reliability-engineering/SKILL.md).
 - General security engineering (threat modeling, vulnerability assessment) —
-  route to [secure-software-engineering](../../secure-software-engineering/SKILL.md).
+  route to [secure-software-engineering](../secure-software-engineering/SKILL.md).
 - General platform infrastructure (compute, networking, storage) — route to
-  [platform-engineering](../../platform-engineering/SKILL.md).
+  [platform-engineering](../platform-engineering/SKILL.md).
 - Performing a production-readiness review — route to
-  [production-readiness](../../production-readiness/SKILL.md); this bundle
+  [production-readiness](../production-readiness/SKILL.md); this bundle
   **consumes** readiness outcomes, it does not produce them.
 - Conducting an incident postmortem — route to
-  [incident-learning](../../incident-learning/SKILL.md); this bundle
+  [incident-learning](../incident-learning/SKILL.md); this bundle
   **consumes** incident records as escalation and feedback inputs.
 
 ## Autonomy is not assumed uniform
@@ -85,13 +85,13 @@ domain is the active concern; the bundle owns the cross-domain coordination.
 
 | Concern | Specialist skill | When to load | What the bundle adds |
 |---|---|---|---|
-| Agent evaluation and observability | [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md) | Designing evals, instrumenting observability, detecting regression | Trace-to-eval feedback loop; eval-case generation from production incidents |
-| Release engineering | [release-engineering](../../release-engineering/SKILL.md) | Release pipeline design, artifact promotion, CI/CD | Agent-specific staged rollout with authority gating; rollback triggers tied to agent health |
-| Site reliability engineering | [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) | Incident response, SLO/SLI definition, error budgets | Agent-specific latency/cost budgets; tool-health SLOs; escalation handoff to incident command |
-| Security engineering | [secure-software-engineering](../../secure-software-engineering/SKILL.md) | Threat modeling, trust-boundary validation, secure design | Agent authority contracts with side-effect boundaries; disablement security (revoke, not just stop) |
-| Platform engineering | [platform-engineering](../../platform-engineering/SKILL.md) | Compute, networking, storage, service infrastructure | Agent sandboxing requirements; tool-execution isolation preferences |
-| Production readiness | [production-readiness](../../production-readiness/SKILL.md) | Readiness reviews, go/no-go/defer/exception decisions | Consumed as input: readiness outcomes gate agent authority expansion |
-| Incident learning | [incident-learning](../../incident-learning/SKILL.md) | Post-incident analysis, verified closure, follow-up work | Consumed as input: incident records feed escalation thresholds and eval-case generation |
+| Agent evaluation and observability | [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) | Designing evals, instrumenting observability, detecting regression | Trace-to-eval feedback loop; eval-case generation from production incidents |
+| Release engineering | [release-engineering](../release-engineering/SKILL.md) | Release pipeline design, artifact promotion, CI/CD | Agent-specific staged rollout with authority gating; rollback triggers tied to agent health |
+| Site reliability engineering | [site-reliability-engineering](../site-reliability-engineering/SKILL.md) | Incident response, SLO/SLI definition, error budgets | Agent-specific latency/cost budgets; tool-health SLOs; escalation handoff to incident command |
+| Security engineering | [secure-software-engineering](../secure-software-engineering/SKILL.md) | Threat modeling, trust-boundary validation, secure design | Agent authority contracts with side-effect boundaries; disablement security (revoke, not just stop) |
+| Platform engineering | [platform-engineering](../platform-engineering/SKILL.md) | Compute, networking, storage, service infrastructure | Agent sandboxing requirements; tool-execution isolation preferences |
+| Production readiness | [production-readiness](../production-readiness/SKILL.md) | Readiness reviews, go/no-go/defer/exception decisions | Consumed as input: readiness outcomes gate agent authority expansion |
+| Incident learning | [incident-learning](../incident-learning/SKILL.md) | Post-incident analysis, verified closure, follow-up work | Consumed as input: incident records feed escalation thresholds and eval-case generation |
 
 ## Loading protocol
 
@@ -169,7 +169,7 @@ used in this bundle. Reference files are loaded on trigger:
     agent action, and verified closure is not yet complete.
   - Human operator issues an explicit disable directive.
   - Tool compromise or credential leak detected (route through
-    [secure-software-engineering](../../secure-software-engineering/SKILL.md)).
+    [secure-software-engineering](../secure-software-engineering/SKILL.md)).
 - **Action**: revoke all credentials and tokens; remove from routing/load-balancing;
   record disablement reason, timestamp, and authorizing evidence; notify
   escalation channel; prevent automatic restart until a new
@@ -214,14 +214,14 @@ used in this bundle. Reference files are loaded on trigger:
     its authority contract.
   - Agent traces and conversation logs must be scrubbed of PII before entering
     the trace-to-eval feedback pipeline (route scrubbing design to
-    [privacy-engineering](../../privacy-engineering/SKILL.md)).
+    [privacy-engineering](../privacy-engineering/SKILL.md)).
   - Data retention for agent traces defaults to 30 days unless a shorter period
     is specified in the production contract.
   - Any PII access by a read-only agent triggers immediate escalation (the
     read-only profile should never touch PII).
 - **Privacy breach**: any PII access outside the granted scope triggers
   escalation and a mandatory security review via
-  [secure-software-engineering](../../secure-software-engineering/SKILL.md).
+  [secure-software-engineering](../secure-software-engineering/SKILL.md).
 
 ## Core workflow
 

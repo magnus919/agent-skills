@@ -47,7 +47,7 @@ results gate the next release.
 ## Quick Start
 
 1. Start with an agent that has passed evaluation (use
-   [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md)).
+   [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md)).
 
 2. Define the agent's production contract using
    [references/agent-production-contract.md](references/agent-production-contract.md).
@@ -55,9 +55,9 @@ results gate the next release.
 
 3. Consume the most recent production-readiness review outcome for the agent's
    host service from
-   [production-readiness](../../production-readiness/SKILL.md) and any open
+   [production-readiness](../production-readiness/SKILL.md) and any open
    incident-learning records from
-   [incident-learning](../../incident-learning/SKILL.md). Record both in the
+   [incident-learning](../incident-learning/SKILL.md). Record both in the
    contract.
 
 4. Plan versioning, staged rollout, and fallback using
