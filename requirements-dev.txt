@@ -9,4 +9,4 @@ mypy>=1.0
 radon>=6.0
 deptry>=0.20
 bandit>=1.7
-loguru>=0.7
+loguru>=0.7.3
