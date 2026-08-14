@@ -1,0 +1,66 @@
+name: Droid Tag
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  droid:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@droid')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@droid')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@droid')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@droid') || contains(github.event.issue.title, '@droid'))) ||
+      (github.event_name == 'pull_request' && (contains(github.event.pull_request.body, '@droid') || contains(github.event.pull_request.title, '@droid')))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+      # BYOK: register the DeepSeek V4 Flash custom model where the Droid CLI
+      # reads it (~/.factory/settings.json). The droid-action's `settings`
+      # input writes to ~/.factory/droid/settings.json, which the CLI does not
+      # read for customModels, so the model must be written here explicitly.
+      # The API key is referenced as ${DEEPSEEK_API_KEY} and expanded by the
+      # CLI from the step env at request time.
+      - name: Configure BYOK model (DeepSeek V4 Flash)
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.factory"
+          cat > "$HOME/.factory/settings.json" <<'FACTORY_JSON'
+          {
+            "customModels": [
+              {
+                "model": "deepseek-v4-flash",
+                "displayName": "DeepSeek V4 Flash (BYOK)",
+                "baseUrl": "https://api.deepseek.com/v1",
+                "apiKey": "${DEEPSEEK_API_KEY}",
+                "provider": "generic-chat-completion-api",
+                "maxOutputTokens": 16384
+              }
+            ]
+          }
+          FACTORY_JSON
+      - name: Run Droid Exec
+        uses: Factory-AI/droid-action@main
+        with:
+          factory_api_key: ${{ secrets.FACTORY_API_KEY }}
+          review_model: deepseek-v4-flash
+          security_model: deepseek-v4-flash
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
