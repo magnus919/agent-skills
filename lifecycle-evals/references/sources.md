@@ -38,9 +38,9 @@ Provenance for the inline inputs is the case content itself — see the per-case
 | `capacity-and-cost-engineering/evals/evals.json` | 5 | #199. Growth forecast, peak event, SLO/cost conflict, quota decision, misleading unit cost. |
 | `incident-learning/evals/evals.json` | 5 | #200. Noisy report, monitoring gap, process failure, agent authority failure, non-actionable follow-up rejection. |
 | `privacy-engineering/evals/evals.json` | 6 | #202. Analytics telemetry, agent traces, tenant isolation, deletion/revocation, residency, jurisdiction escalation. |
-| `bundles/product-lifecycle/evals/evals.json` | 6 | #187. Integrated trajectories incl. product launch and failed experiment; phase routing + lifecycle evidence ledger. |
-| `bundles/production-excellence/evals/evals.json` | 6 | #195. Integrated trajectories incl. blocked readiness review and migration-reconciliation failure; production evidence packet + operational handoff. |
-| `bundles/agent-production-operations/evals/evals.json` | 8 | #201. Integrated trajectories incl. agent tool failure and privacy-boundary escalation; runtime control plan + tool-authority-health + trace-to-eval feedback. |
+| `product-lifecycle/evals/evals.json` | 6 | #187. Integrated trajectories incl. product launch and failed experiment; phase routing + lifecycle evidence ledger. |
+| `production-excellence/evals/evals.json` | 6 | #195. Integrated trajectories incl. blocked readiness review and migration-reconciliation failure; production evidence packet + operational handoff. |
+| `agent-production-operations/evals/evals.json` | 8 | #201. Integrated trajectories incl. agent tool failure and privacy-boundary escalation; runtime control plan + tool-authority-health + trace-to-eval feedback. |
 
 ## No credentials, no external sources
 

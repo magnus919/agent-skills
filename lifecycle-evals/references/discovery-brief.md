@@ -7,14 +7,14 @@ discovery briefs committed by each milestone-4 skill/bundle (VAL-SKL-014).
 
 ## Surveyed surfaces
 
-1. **`bundles/neckbeard/eval/`** — the reference evaluation harness pattern: versioned
+1. **`neckbeard/eval/`** — the reference evaluation harness pattern: versioned
    task schema (`task-schema.md`), rubric, baseline protocol, fixtures organized by scenario
    (spec-ambiguity, adversarial, no-change-needed, regression-prevention, feature-change,
    release-verification, review-finding, bug-diagnosis, trajectories, refactor), and a
    runner (`run_eval.py`). Contributed the conventions this corpus follows: scenario-scoped
    `expected_output`, adversarial/negative cases, and the claims-scoping sentence
    ("Claims are scoped to the harness, model, fixtures, and revision under test").
-2. **`bundles/neckbeard/evals/evals.json`** — the reference manifest: 11 cases covering
+2. **`neckbeard/evals/evals.json`** — the reference manifest: 11 cases covering
    bug-fix reproduction, ambiguity, multi-surface routing, schema migration rollback,
    refactor characterization, docs-only reduced path, duplicate detection, material-change
    re-verification, release-authority block, and the lightweight test-hardening path. All
@@ -48,7 +48,7 @@ discovery briefs committed by each milestone-4 skill/bundle (VAL-SKL-014).
 ## Ownership boundaries
 
 - **Per-skill evals** (`<skill>/evals/evals.json` for the 14 top-level skills and
-  `bundles/<bundle>/evals/evals.json` for the 3 bundle umbrellas) are owned by the
+  `<bundle>/evals/evals.json` for the 3 bundle umbrellas) are owned by the
   milestone's per-skill issues (#186..#202) and by the per-skill evals area (VAL-EVL).
   #204 may modify only their `evals/` subtrees (VAL-DEL-014), never their
   `SKILL.md`/`README.md`/`references`/`templates`.
@@ -74,10 +74,10 @@ discovery briefs committed by each milestone-4 skill/bundle (VAL-SKL-014).
 3. **Two integrated scenarios were genuinely missing** and were added as new cases
    (existing IDs were never renamed — VAL-CRP-024):
    - `integrated-migration-reconciliation-failure` in
-     `bundles/production-excellence/evals/evals.json` (the pre-existing migration case was
+     `production-excellence/evals/evals.json` (the pre-existing migration case was
      a happy-path Go; a reconciliation-failure trajectory was required by VAL-CRP-012);
    - `integrated-privacy-boundary-escalation` in
-     `bundles/agent-production-operations/evals/evals.json` (the pre-existing
+     `agent-production-operations/evals/evals.json` (the pre-existing
      `human-escalation-authority-breach` case is a generic authority breach, not a
      privacy-boundary escalation — VAL-CRP-015 requires the specific form).
 4. **Coverage tagging** lives in one place: the `CATEGORY_MAP` embedded in
@@ -107,4 +107,4 @@ discovery briefs committed by each milestone-4 skill/bundle (VAL-SKL-014).
 - Real-adapter (model-backed) runs, which must be separately scoped, labeled, and reported
   if ever performed.
 - Any change to catalog files, shared routing files, or the off-limits pre-existing
-  bundles.
+  skills (the moved bundle umbrellas, now top-level peers).

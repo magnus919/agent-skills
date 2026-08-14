@@ -19,7 +19,7 @@
   "manifests": [
     {
       "skill": "agent-production-operations",
-      "manifest": "bundles/agent-production-operations/evals/evals.json",
+      "manifest": "agent-production-operations/evals/evals.json",
       "cases": [
         {
           "case_id": "cost-budget-breach-disablement",
@@ -77,103 +77,6 @@
           "behavioral_categories": [
             "unsafe-authority"
           ],
-          "integrated_scenarios": []
-        }
-      ]
-    },
-    {
-      "skill": "product-lifecycle",
-      "manifest": "bundles/product-lifecycle/evals/evals.json",
-      "cases": [
-        {
-          "case_id": "ambiguous-stakeholder-request",
-          "behavioral_categories": [
-            "ambiguity"
-          ],
-          "integrated_scenarios": []
-        },
-        {
-          "case_id": "cross-phase-evidence-handoff",
-          "behavioral_categories": [],
-          "integrated_scenarios": []
-        },
-        {
-          "case_id": "failed-experiment-stop-path",
-          "behavioral_categories": [
-            "failure",
-            "stop-retire"
-          ],
-          "integrated_scenarios": [
-            "failed-experiment"
-          ]
-        },
-        {
-          "case_id": "justified-retirement-decision",
-          "behavioral_categories": [
-            "stop-retire"
-          ],
-          "integrated_scenarios": []
-        },
-        {
-          "case_id": "new-product-complete-lifecycle",
-          "behavioral_categories": [],
-          "integrated_scenarios": [
-            "product-launch"
-          ]
-        },
-        {
-          "case_id": "non-adoption-outcome",
-          "behavioral_categories": [],
-          "integrated_scenarios": []
-        }
-      ]
-    },
-    {
-      "skill": "production-excellence",
-      "manifest": "bundles/production-excellence/evals/evals.json",
-      "cases": [
-        {
-          "case_id": "blocked-launch-untested-rollback",
-          "behavioral_categories": [
-            "failure",
-            "unsafe-authority"
-          ],
-          "integrated_scenarios": [
-            "blocked-readiness-review"
-          ]
-        },
-        {
-          "case_id": "cost-slo-conflict",
-          "behavioral_categories": [
-            "conflicting-evidence"
-          ],
-          "integrated_scenarios": []
-        },
-        {
-          "case_id": "data-migration-routes-to-migration-engineering",
-          "behavioral_categories": [],
-          "integrated_scenarios": []
-        },
-        {
-          "case_id": "dependency-outage-routes-to-resilience",
-          "behavioral_categories": [
-            "conflicting-evidence",
-            "failure"
-          ],
-          "integrated_scenarios": []
-        },
-        {
-          "case_id": "integrated-migration-reconciliation-failure",
-          "behavioral_categories": [
-            "failure"
-          ],
-          "integrated_scenarios": [
-            "migration-reconciliation-failure"
-          ]
-        },
-        {
-          "case_id": "normal-release-safe-launch",
-          "behavioral_categories": [],
           "integrated_scenarios": []
         }
       ]
@@ -577,6 +480,53 @@
       ]
     },
     {
+      "skill": "product-lifecycle",
+      "manifest": "product-lifecycle/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "ambiguous-stakeholder-request",
+          "behavioral_categories": [
+            "ambiguity"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "cross-phase-evidence-handoff",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "failed-experiment-stop-path",
+          "behavioral_categories": [
+            "failure",
+            "stop-retire"
+          ],
+          "integrated_scenarios": [
+            "failed-experiment"
+          ]
+        },
+        {
+          "case_id": "justified-retirement-decision",
+          "behavioral_categories": [
+            "stop-retire"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "new-product-complete-lifecycle",
+          "behavioral_categories": [],
+          "integrated_scenarios": [
+            "product-launch"
+          ]
+        },
+        {
+          "case_id": "non-adoption-outcome",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
       "skill": "product-operations-and-governance",
       "manifest": "product-operations-and-governance/evals/evals.json",
       "cases": [
@@ -652,6 +602,56 @@
           "behavioral_categories": [
             "stop-retire"
           ],
+          "integrated_scenarios": []
+        }
+      ]
+    },
+    {
+      "skill": "production-excellence",
+      "manifest": "production-excellence/evals/evals.json",
+      "cases": [
+        {
+          "case_id": "blocked-launch-untested-rollback",
+          "behavioral_categories": [
+            "failure",
+            "unsafe-authority"
+          ],
+          "integrated_scenarios": [
+            "blocked-readiness-review"
+          ]
+        },
+        {
+          "case_id": "cost-slo-conflict",
+          "behavioral_categories": [
+            "conflicting-evidence"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "data-migration-routes-to-migration-engineering",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "dependency-outage-routes-to-resilience",
+          "behavioral_categories": [
+            "conflicting-evidence",
+            "failure"
+          ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "integrated-migration-reconciliation-failure",
+          "behavioral_categories": [
+            "failure"
+          ],
+          "integrated_scenarios": [
+            "migration-reconciliation-failure"
+          ]
+        },
+        {
+          "case_id": "normal-release-safe-launch",
+          "behavioral_categories": [],
           "integrated_scenarios": []
         }
       ]
