@@ -125,25 +125,41 @@ class GenLlmsTxtTest < Minitest::Test
   def test_rejects_duplicate_catalog_names
     Dir.mktmpdir("gen-llms-txt") do |root|
       install_generator(root)
-      skill = <<~YAML
-        ---
-        name: duplicate
-        description: Duplicate fixture.
-        ---
-      YAML
-      write_skill(root, "duplicate", skill)
-      write_skill(root, "Duplicate", skill)
 
-      stdout, stderr, status = run_generator(root, "--write")
-      if Dir.glob("#{root}/*/SKILL.md").length == 2
+      if case_sensitive_fs?(root)
         # Case-sensitive filesystem: "duplicate" and "Duplicate" are distinct
-        # directories whose downcased catalog names collide, so the guard fires.
+        # directories, so the generator processes both. Each fixture must pass
+        # the name-match guard first (name matches its own directory name), then
+        # the downcased catalog names collide and the duplicate-catalog guard
+        # (not the name-match guard) fires.
+        write_skill(root, "duplicate", <<~YAML)
+          ---
+          name: duplicate
+          description: Duplicate fixture.
+          ---
+        YAML
+        write_skill(root, "Duplicate", <<~YAML)
+          ---
+          name: Duplicate
+          description: Duplicate fixture.
+          ---
+        YAML
+
+        _stdout, stderr, status = run_generator(root, "--write")
         refute status.success?
         assert_includes stderr, "duplicate catalog name \"duplicate\""
       else
         # Case-insensitive filesystem (e.g. macOS APFS): the two names collapse
         # into one directory, so the generator emits a single entry and must not
         # report a spurious duplicate.
+        write_skill(root, "duplicate", <<~YAML)
+          ---
+          name: duplicate
+          description: Duplicate fixture.
+          ---
+        YAML
+
+        stdout, stderr, status = run_generator(root, "--write")
         assert status.success?, stderr
         assert_includes stdout, "Wrote llms.txt (1 skills)."
       end
@@ -151,6 +167,14 @@ class GenLlmsTxtTest < Minitest::Test
   end
 
   private
+
+  # True when the filesystem under `root` distinguishes case in directory names.
+  # macOS APFS (case-insensitive) collapses "Probe"/"probe"; Ubuntu ext4
+  # (case-sensitive) keeps them distinct.
+  def case_sensitive_fs?(root)
+    FileUtils.mkdir_p(File.join(root, "Probe"))
+    !Dir.exist?(File.join(root, "probe"))
+  end
 
   def install_generator(root)
     FileUtils.mkdir_p(File.join(root, "scripts"))
