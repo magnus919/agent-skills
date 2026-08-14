@@ -313,7 +313,8 @@ class ValidateBundlesTest < Minitest::Test
     Dir.mktmpdir("gen-matrix") do |root|
       install_tooling(root)
       install_valid_bundle(root)
-      # manifest-less bundle exercises the documented deferral derivation.
+      # A top-level skill without a manifest.yaml is not a canonical bundle and
+      # must be excluded from the matrix (only <skill>/manifest.yaml dirs are).
       write_skill(root, "legacy", name: "legacy")
 
       _stdout, stderr, status = run_generator(root, "--write")
@@ -325,8 +326,8 @@ class ValidateBundlesTest < Minitest::Test
 
       md = File.read(md_path)
       assert_includes md, "| demo |"
-      assert_includes md, "| legacy |"
-      assert_includes md, "migration deferred"
+      refute_includes md, "| legacy |"
+      refute_includes md, "migration deferred"
       refute_includes md, "|  |"
 
       _stdout, stderr, status = run_generator(root)
@@ -357,20 +358,19 @@ class ValidateBundlesTest < Minitest::Test
     Dir.mktmpdir("matrix-row") do |root|
       install_tooling(root)
       install_valid_bundle(root)
-      write_skill(root, "legacy", name: "legacy")
 
       _stdout, stderr, status = run_generator(root, "--write")
       assert status.success?, stderr
 
       json_path = File.join(root, "docs", "lifecycle-capability-matrix.json")
       document = JSON.parse(File.read(json_path))
-      document["bundles"].reject! { |row| row["name"] == "legacy" }
+      document["bundles"].reject! { |row| row["name"] == "demo" }
       File.write(json_path, JSON.pretty_generate(document) + "\n")
 
       _stdout, stderr, status = run_matrix_validator(root)
       refute status.success?
       assert_includes stderr, "missing row"
-      assert_includes stderr, "legacy"
+      assert_includes stderr, "demo"
     end
   end
 

@@ -5,15 +5,15 @@
     {
       "name": "agent-production-operations",
       "derivation": "manifest",
-      "source": "bundles/agent-production-operations/manifest.yaml",
+      "source": "agent-production-operations/manifest.yaml",
       "fields": {
         "purpose": {
           "value": "Operate an evaluated agent with tools and authority in production through a runtime control plane covering versioning, staged rollout, fallback, cost and latency budgets, tool health, human escalation, disablement, and trace-to-eval feedback.",
-          "source": "bundles/agent-production-operations/manifest.yaml#/purpose"
+          "source": "agent-production-operations/manifest.yaml#/purpose"
         },
         "audience": {
           "value": "Agent operators and platform teams running evaluated agents with tools and delegated authority in production; agents that need the runtime control decisions between evaluation, release, SRE, security, and platform specialists.",
-          "source": "bundles/agent-production-operations/manifest.yaml#/audience"
+          "source": "agent-production-operations/manifest.yaml#/audience"
         },
         "stages": {
           "value": [
@@ -61,7 +61,7 @@
               ]
             }
           ],
-          "source": "bundles/agent-production-operations/manifest.yaml#/stages"
+          "source": "agent-production-operations/manifest.yaml#/stages"
         },
         "included_skills": {
           "value": [
@@ -74,7 +74,7 @@
             "../../incident-learning/SKILL.md",
             "../../privacy-engineering/SKILL.md"
           ],
-          "source": "bundles/agent-production-operations/manifest.yaml#/included_skills"
+          "source": "agent-production-operations/manifest.yaml#/included_skills"
         },
         "prerequisites": {
           "value": [
@@ -95,7 +95,7 @@
               "skill": "../../release-engineering/SKILL.md"
             }
           ],
-          "source": "bundles/agent-production-operations/manifest.yaml#/prerequisites"
+          "source": "agent-production-operations/manifest.yaml#/prerequisites"
         },
         "outputs": {
           "value": [
@@ -106,7 +106,7 @@
             "trace-to-eval-feedback-loop",
             "disablement-record"
           ],
-          "source": "bundles/agent-production-operations/manifest.yaml#/outputs"
+          "source": "agent-production-operations/manifest.yaml#/outputs"
         },
         "handoffs": {
           "value": [
@@ -131,7 +131,7 @@
               "note": "Disablement revokes credentials, removes the agent from routing/load-balancing, and records the reason, timestamp, and authorizing evidence."
             }
           ],
-          "source": "bundles/agent-production-operations/manifest.yaml#/handoffs"
+          "source": "agent-production-operations/manifest.yaml#/handoffs"
         },
         "conflicts": {
           "value": [
@@ -196,28 +196,28 @@
               "guidance": "Privacy engineering is shared. This bundle routes to it for trace scrubbing and user-data-access grants; product-lifecycle routes to it for PII, consent, retention, and data flows in any phase."
             }
           ],
-          "source": "bundles/agent-production-operations/manifest.yaml#/conflicts"
+          "source": "agent-production-operations/manifest.yaml#/conflicts"
         },
         "eval_suite": {
           "value": [
             "evals/evals.json"
           ],
-          "source": "bundles/agent-production-operations/manifest.yaml#/eval_suite"
+          "source": "agent-production-operations/manifest.yaml#/eval_suite"
         }
       }
     },
     {
       "name": "forward-deployed-engineering",
       "derivation": "manifest",
-      "source": "bundles/forward-deployed-engineering/manifest.yaml",
+      "source": "forward-deployed-engineering/manifest.yaml",
       "fields": {
         "purpose": {
           "value": "Carry an embedded technical engagement from ambiguous stakeholder need through discovery, framing, hypothesis, build, evaluation, deployment, adoption, measurement, and generalization while preserving decision rights, evidence, handoffs, and reusable field learning.",
-          "source": "bundles/forward-deployed-engineering/manifest.yaml#/purpose"
+          "source": "forward-deployed-engineering/manifest.yaml#/purpose"
         },
         "audience": {
           "value": "Technical leads and agents embedded across stakeholder discovery, implementation, production fit, adoption, and measurable workflow outcomes; this is a continuity layer that routes specialist methods rather than replacing them.",
-          "source": "bundles/forward-deployed-engineering/manifest.yaml#/audience"
+          "source": "forward-deployed-engineering/manifest.yaml#/audience"
         },
         "stages": {
           "value": [
@@ -293,7 +293,7 @@
               ]
             }
           ],
-          "source": "bundles/forward-deployed-engineering/manifest.yaml#/stages"
+          "source": "forward-deployed-engineering/manifest.yaml#/stages"
         },
         "included_skills": {
           "value": [
@@ -319,7 +319,7 @@
             "../../privacy-engineering/SKILL.md",
             "../../secure-software-engineering/SKILL.md"
           ],
-          "source": "bundles/forward-deployed-engineering/manifest.yaml#/included_skills"
+          "source": "forward-deployed-engineering/manifest.yaml#/included_skills"
         },
         "prerequisites": {
           "value": [
@@ -330,7 +330,7 @@
               "artifact": "Authority to conduct non-destructive discovery with access to relevant stakeholders or workflow evidence"
             }
           ],
-          "source": "bundles/forward-deployed-engineering/manifest.yaml#/prerequisites"
+          "source": "forward-deployed-engineering/manifest.yaml#/prerequisites"
         },
         "outputs": {
           "value": [
@@ -345,7 +345,7 @@
             "productization-record",
             "field-learning-record"
           ],
-          "source": "bundles/forward-deployed-engineering/manifest.yaml#/outputs"
+          "source": "forward-deployed-engineering/manifest.yaml#/outputs"
         },
         "handoffs": {
           "value": [
@@ -375,7 +375,7 @@
               "note": "The engagement closes with observed outcomes, unresolved uncertainty, and a durable transfer or follow-up path."
             }
           ],
-          "source": "bundles/forward-deployed-engineering/manifest.yaml#/handoffs"
+          "source": "forward-deployed-engineering/manifest.yaml#/handoffs"
         },
         "conflicts": {
           "value": [
@@ -575,28 +575,28 @@
               "guidance": "This bundle uses prioritization only to support engagement generalization; product-lifecycle owns product prioritization and portfolio methods."
             }
           ],
-          "source": "bundles/forward-deployed-engineering/manifest.yaml#/conflicts"
+          "source": "forward-deployed-engineering/manifest.yaml#/conflicts"
         },
         "eval_suite": {
           "value": [
             "evals/evals.json"
           ],
-          "source": "bundles/forward-deployed-engineering/manifest.yaml#/eval_suite"
+          "source": "forward-deployed-engineering/manifest.yaml#/eval_suite"
         }
       }
     },
     {
       "name": "neckbeard",
       "derivation": "manifest",
-      "source": "bundles/neckbeard/manifest.yaml",
+      "source": "neckbeard/manifest.yaml",
       "fields": {
         "purpose": {
           "value": "A disciplined SDLC delivery operating model for non-trivial software change — fix, build, refactor, review, verify, or release — that routes the work through framing, discovery, design, implementation, review, verification, delivery, and learning, choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger.",
-          "source": "bundles/neckbeard/manifest.yaml#/purpose"
+          "source": "neckbeard/manifest.yaml#/purpose"
         },
         "audience": {
           "value": "Software engineers and agents delivering non-trivial software changes (bug fixes, features, refactors, reviews, releases) that need a bounded, stage-aware path to a defensible 'done' with recorded evidence; teams running issue-to-PR change-request journeys with gates and an authorized release.",
-          "source": "bundles/neckbeard/manifest.yaml#/audience"
+          "source": "neckbeard/manifest.yaml#/audience"
         },
         "stages": {
           "value": [
@@ -654,7 +654,7 @@
               ]
             }
           ],
-          "source": "bundles/neckbeard/manifest.yaml#/stages"
+          "source": "neckbeard/manifest.yaml#/stages"
         },
         "included_skills": {
           "value": [
@@ -672,7 +672,7 @@
             "../../release-engineering/SKILL.md",
             "../../site-reliability-engineering/SKILL.md"
           ],
-          "source": "bundles/neckbeard/manifest.yaml#/included_skills"
+          "source": "neckbeard/manifest.yaml#/included_skills"
         },
         "prerequisites": {
           "value": [
@@ -688,7 +688,7 @@
               "skill": "../../verification-methodology/SKILL.md"
             }
           ],
-          "source": "bundles/neckbeard/manifest.yaml#/prerequisites"
+          "source": "neckbeard/manifest.yaml#/prerequisites"
         },
         "outputs": {
           "value": [
@@ -699,7 +699,7 @@
             "verification-report",
             "release-record"
           ],
-          "source": "bundles/neckbeard/manifest.yaml#/outputs"
+          "source": "neckbeard/manifest.yaml#/outputs"
         },
         "handoffs": {
           "value": [
@@ -724,7 +724,7 @@
               "note": "Each run emits a compact evidence record (intent, inspected artifacts, assumptions, rejected alternatives, checks run, observed outputs, unverified boundaries) that carries learning into the next change."
             }
           ],
-          "source": "bundles/neckbeard/manifest.yaml#/handoffs"
+          "source": "neckbeard/manifest.yaml#/handoffs"
         },
         "conflicts": {
           "value": [
@@ -809,28 +809,28 @@
               "guidance": "SRE is shared. Route by context: change-level reliability (neckbeard) versus agent runtime latency/cost budgets and incident handoff (agent-production-operations)."
             }
           ],
-          "source": "bundles/neckbeard/manifest.yaml#/conflicts"
+          "source": "neckbeard/manifest.yaml#/conflicts"
         },
         "eval_suite": {
           "value": [
             "evals/evals.json"
           ],
-          "source": "bundles/neckbeard/manifest.yaml#/eval_suite"
+          "source": "neckbeard/manifest.yaml#/eval_suite"
         }
       }
     },
     {
       "name": "product-lifecycle",
       "derivation": "manifest",
-      "source": "bundles/product-lifecycle/manifest.yaml",
+      "source": "product-lifecycle/manifest.yaml",
       "fields": {
         "purpose": {
           "value": "Route a product through its full lifecycle — discovery, strategy and portfolio choice, roadmap, UX and requirements, experimentation, delivery handoff, adoption, success, and lifecycle review — by composing existing specialist product skills with phase-entry evidence, handoff artifacts, and escalation rules.",
-          "source": "bundles/product-lifecycle/manifest.yaml#/purpose"
+          "source": "product-lifecycle/manifest.yaml#/purpose"
         },
         "audience": {
           "value": "Product managers, product operations, and portfolio teams navigating a product across multiple lifecycle phases; agents that need to know which specialist skill to load at each phase and what evidence to hand off to the next phase.",
-          "source": "bundles/product-lifecycle/manifest.yaml#/audience"
+          "source": "product-lifecycle/manifest.yaml#/audience"
         },
         "stages": {
           "value": [
@@ -893,7 +893,7 @@
               ]
             }
           ],
-          "source": "bundles/product-lifecycle/manifest.yaml#/stages"
+          "source": "product-lifecycle/manifest.yaml#/stages"
         },
         "included_skills": {
           "value": [
@@ -924,7 +924,7 @@
             "../../platform-engineering/SKILL.md",
             "../../bundles/neckbeard/SKILL.md"
           ],
-          "source": "bundles/product-lifecycle/manifest.yaml#/included_skills"
+          "source": "product-lifecycle/manifest.yaml#/included_skills"
         },
         "prerequisites": {
           "value": [
@@ -952,7 +952,7 @@
               "skill": "../../product-experimentation/SKILL.md"
             }
           ],
-          "source": "bundles/product-lifecycle/manifest.yaml#/prerequisites"
+          "source": "product-lifecycle/manifest.yaml#/prerequisites"
         },
         "outputs": {
           "value": [
@@ -970,7 +970,7 @@
             "outcome-review",
             "lifecycle-decision"
           ],
-          "source": "bundles/product-lifecycle/manifest.yaml#/outputs"
+          "source": "product-lifecycle/manifest.yaml#/outputs"
         },
         "handoffs": {
           "value": [
@@ -995,7 +995,7 @@
               "note": "Phase 9 records the continue/improve/harvest/pivot/pause/retire decision and retained learning in the learning loop."
             }
           ],
-          "source": "bundles/product-lifecycle/manifest.yaml#/handoffs"
+          "source": "product-lifecycle/manifest.yaml#/handoffs"
         },
         "conflicts": {
           "value": [
@@ -1065,28 +1065,28 @@
               "guidance": "Verification methodology is shared. This bundle uses it at every phase gate for evidence; production-excellence uses it for boundary labeling of launch evidence."
             }
           ],
-          "source": "bundles/product-lifecycle/manifest.yaml#/conflicts"
+          "source": "product-lifecycle/manifest.yaml#/conflicts"
         },
         "eval_suite": {
           "value": [
             "evals/evals.json"
           ],
-          "source": "bundles/product-lifecycle/manifest.yaml#/eval_suite"
+          "source": "product-lifecycle/manifest.yaml#/eval_suite"
         }
       }
     },
     {
       "name": "production-excellence",
       "derivation": "manifest",
-      "source": "bundles/production-excellence/manifest.yaml",
+      "source": "production-excellence/manifest.yaml",
       "fields": {
         "purpose": {
           "value": "Route cross-domain production evidence (readiness, migration, recovery, capacity/cost, incident-learning) into a launch or operational decision — go, no-go, defer, exception, or escalation — with an accountable owner and a post-launch learning path.",
-          "source": "bundles/production-excellence/manifest.yaml#/purpose"
+          "source": "production-excellence/manifest.yaml#/purpose"
         },
         "audience": {
           "value": "Service owners, SRE, release, platform, security, data, and QA teams coordinating a production change; agents assembling cross-domain production evidence into a defensible launch decision without re-deriving specialist runbooks.",
-          "source": "bundles/production-excellence/manifest.yaml#/audience"
+          "source": "production-excellence/manifest.yaml#/audience"
         },
         "stages": {
           "value": [
@@ -1125,7 +1125,7 @@
               ]
             }
           ],
-          "source": "bundles/production-excellence/manifest.yaml#/stages"
+          "source": "production-excellence/manifest.yaml#/stages"
         },
         "included_skills": {
           "value": [
@@ -1142,7 +1142,7 @@
             "../../qa-methodology/SKILL.md",
             "../../verification-methodology/SKILL.md"
           ],
-          "source": "bundles/production-excellence/manifest.yaml#/included_skills"
+          "source": "production-excellence/manifest.yaml#/included_skills"
         },
         "prerequisites": {
           "value": [
@@ -1175,7 +1175,7 @@
               "skill": "../../release-engineering/SKILL.md"
             }
           ],
-          "source": "bundles/production-excellence/manifest.yaml#/prerequisites"
+          "source": "production-excellence/manifest.yaml#/prerequisites"
         },
         "outputs": {
           "value": [
@@ -1184,7 +1184,7 @@
             "accountable-owner-record",
             "evidence-gap-register"
           ],
-          "source": "bundles/production-excellence/manifest.yaml#/outputs"
+          "source": "production-excellence/manifest.yaml#/outputs"
         },
         "handoffs": {
           "value": [
@@ -1209,7 +1209,7 @@
               "note": "Every gate outcome names an accountable owner and records the evidence supporting it; no gate passes on a bare checklist."
             }
           ],
-          "source": "bundles/production-excellence/manifest.yaml#/handoffs"
+          "source": "production-excellence/manifest.yaml#/handoffs"
         },
         "conflicts": {
           "value": [
@@ -1279,28 +1279,28 @@
               "guidance": "Verification methodology is shared. This bundle uses it for boundary labeling of launch evidence; product-lifecycle uses it at every phase gate."
             }
           ],
-          "source": "bundles/production-excellence/manifest.yaml#/conflicts"
+          "source": "production-excellence/manifest.yaml#/conflicts"
         },
         "eval_suite": {
           "value": [
             "evals/evals.json"
           ],
-          "source": "bundles/production-excellence/manifest.yaml#/eval_suite"
+          "source": "production-excellence/manifest.yaml#/eval_suite"
         }
       }
     },
     {
       "name": "research-and-vault",
       "derivation": "manifest",
-      "source": "bundles/research-and-vault/manifest.yaml",
+      "source": "research-and-vault/manifest.yaml",
       "fields": {
         "purpose": {
           "value": "Chain web research, atomic extraction, and durable knowledge capture into a repeatable research-to-note workflow: capture source URLs and dates before interpretation, extract independent atomic claims before synthesis, and write the durable note only after source coverage and gaps are explicit.",
-          "source": "bundles/research-and-vault/manifest.yaml#/purpose"
+          "source": "research-and-vault/manifest.yaml#/purpose"
         },
         "audience": {
           "value": "Agents and knowledge workers that repeatedly need the full research-to-note sequence (web research, atomic extraction, durable capture) and want a stable order of operations with a clear handoff artifact instead of ad-hoc steps; not for single lookups or single notes, which route to the domain skill directly.",
-          "source": "bundles/research-and-vault/manifest.yaml#/audience"
+          "source": "research-and-vault/manifest.yaml#/audience"
         },
         "stages": {
           "value": [
@@ -1329,13 +1329,13 @@
               ]
             }
           ],
-          "source": "bundles/research-and-vault/manifest.yaml#/stages"
+          "source": "research-and-vault/manifest.yaml#/stages"
         },
         "included_skills": {
           "value": [
             "../../research-methodology/SKILL.md"
           ],
-          "source": "bundles/research-and-vault/manifest.yaml#/included_skills"
+          "source": "research-and-vault/manifest.yaml#/included_skills"
         },
         "prerequisites": {
           "value": [
@@ -1344,7 +1344,7 @@
               "skill": "../../research-methodology/SKILL.md"
             }
           ],
-          "source": "bundles/research-and-vault/manifest.yaml#/prerequisites"
+          "source": "research-and-vault/manifest.yaml#/prerequisites"
         },
         "outputs": {
           "value": [
@@ -1352,7 +1352,7 @@
             "atomic-claim-extract",
             "durable-note"
           ],
-          "source": "bundles/research-and-vault/manifest.yaml#/outputs"
+          "source": "research-and-vault/manifest.yaml#/outputs"
         },
         "handoffs": {
           "value": [
@@ -1372,34 +1372,34 @@
               "note": "The finished durable note reports its output path and any unresolved gaps in source coverage."
             }
           ],
-          "source": "bundles/research-and-vault/manifest.yaml#/handoffs"
+          "source": "research-and-vault/manifest.yaml#/handoffs"
         },
         "conflicts": {
           "value": [
 
           ],
-          "source": "bundles/research-and-vault/manifest.yaml#/conflicts"
+          "source": "research-and-vault/manifest.yaml#/conflicts"
         },
         "eval_suite": {
           "value": [
             "evals/evals.json"
           ],
-          "source": "bundles/research-and-vault/manifest.yaml#/eval_suite"
+          "source": "research-and-vault/manifest.yaml#/eval_suite"
         }
       }
     },
     {
       "name": "tailscale",
       "derivation": "manifest",
-      "source": "bundles/tailscale/manifest.yaml",
+      "source": "tailscale/manifest.yaml",
       "fields": {
         "purpose": {
           "value": "Operate a self-hosted Tailscale/Headscale ecosystem end to end: deploy and manage a Headscale control server, configure Tailscale clients, define ACL policy, manage node lifecycle, advertise subnet routes and exit nodes, operate DERP relays, and back up, restore, or migrate the control plane.",
-          "source": "bundles/tailscale/manifest.yaml#/purpose"
+          "source": "tailscale/manifest.yaml#/purpose"
         },
         "audience": {
           "value": "Platform and homelab operators running self-hosted Tailscale/Headscale infrastructure; agents that need to know which sub-skill to load for deploy, policy, client, node, routing, DERP, or backup tasks in a WireGuard mesh.",
-          "source": "bundles/tailscale/manifest.yaml#/audience"
+          "source": "tailscale/manifest.yaml#/audience"
         },
         "stages": {
           "value": [
@@ -1446,7 +1446,7 @@
               ]
             }
           ],
-          "source": "bundles/tailscale/manifest.yaml#/stages"
+          "source": "tailscale/manifest.yaml#/stages"
         },
         "included_skills": {
           "value": [
@@ -1458,7 +1458,7 @@
             "skills/headscale-derp/SKILL.md",
             "skills/headscale-backup/SKILL.md"
           ],
-          "source": "bundles/tailscale/manifest.yaml#/included_skills"
+          "source": "tailscale/manifest.yaml#/included_skills"
         },
         "prerequisites": {
           "value": [
@@ -1475,7 +1475,7 @@
               "skill": "skills/headscale-deploy/SKILL.md"
             }
           ],
-          "source": "bundles/tailscale/manifest.yaml#/prerequisites"
+          "source": "tailscale/manifest.yaml#/prerequisites"
         },
         "outputs": {
           "value": [
@@ -1487,7 +1487,7 @@
             "backup-archive",
             "restored-instance"
           ],
-          "source": "bundles/tailscale/manifest.yaml#/outputs"
+          "source": "tailscale/manifest.yaml#/outputs"
         },
         "handoffs": {
           "value": [
@@ -1512,34 +1512,34 @@
               "note": "The backup archive is the disaster-recovery artifact for the tailnet; keep it off the control server host."
             }
           ],
-          "source": "bundles/tailscale/manifest.yaml#/handoffs"
+          "source": "tailscale/manifest.yaml#/handoffs"
         },
         "conflicts": {
           "value": [
 
           ],
-          "source": "bundles/tailscale/manifest.yaml#/conflicts"
+          "source": "tailscale/manifest.yaml#/conflicts"
         },
         "eval_suite": {
           "value": [
             "evals/evals.json"
           ],
-          "source": "bundles/tailscale/manifest.yaml#/eval_suite"
+          "source": "tailscale/manifest.yaml#/eval_suite"
         }
       }
     },
     {
       "name": "workflow-architect",
       "derivation": "manifest",
-      "source": "bundles/workflow-architect/manifest.yaml",
+      "source": "workflow-architect/manifest.yaml",
       "fields": {
         "purpose": {
           "value": "Discover a user's actual workflow through active interrogation or passive observation, then generate a tailored Agent Skills bundle that encodes it as loadable skills with trigger conditions, a decision map, a manifest, and an optional kanban board — turning a session that feels aimless into structure.",
-          "source": "bundles/workflow-architect/manifest.yaml#/purpose"
+          "source": "workflow-architect/manifest.yaml#/purpose"
         },
         "audience": {
           "value": "Users and agents that want to formalize how they work — understand their own process, encode it as trigger-driven skills they can reuse, or share it with collaborators. Not for single factual questions or tasks already owned by a more specific skill.",
-          "source": "bundles/workflow-architect/manifest.yaml#/audience"
+          "source": "workflow-architect/manifest.yaml#/audience"
         },
         "stages": {
           "value": [
@@ -1562,7 +1562,7 @@
               ]
             }
           ],
-          "source": "bundles/workflow-architect/manifest.yaml#/stages"
+          "source": "workflow-architect/manifest.yaml#/stages"
         },
         "included_skills": {
           "value": [
@@ -1570,7 +1570,7 @@
             "skills/observer/SKILL.md",
             "skills/bundle-builder/SKILL.md"
           ],
-          "source": "bundles/workflow-architect/manifest.yaml#/included_skills"
+          "source": "workflow-architect/manifest.yaml#/included_skills"
         },
         "prerequisites": {
           "value": [
@@ -1583,7 +1583,7 @@
               "skill": "skills/interviewer/SKILL.md"
             }
           ],
-          "source": "bundles/workflow-architect/manifest.yaml#/prerequisites"
+          "source": "workflow-architect/manifest.yaml#/prerequisites"
         },
         "outputs": {
           "value": [
@@ -1592,7 +1592,7 @@
             "manifest",
             "kanban-board"
           ],
-          "source": "bundles/workflow-architect/manifest.yaml#/outputs"
+          "source": "workflow-architect/manifest.yaml#/outputs"
         },
         "handoffs": {
           "value": [
@@ -1617,19 +1617,19 @@
               "note": "The kanban board is included only when the workflow follows a predictable linear path where WIP limits and lane transitions add value."
             }
           ],
-          "source": "bundles/workflow-architect/manifest.yaml#/handoffs"
+          "source": "workflow-architect/manifest.yaml#/handoffs"
         },
         "conflicts": {
           "value": [
 
           ],
-          "source": "bundles/workflow-architect/manifest.yaml#/conflicts"
+          "source": "workflow-architect/manifest.yaml#/conflicts"
         },
         "eval_suite": {
           "value": [
             "evals/evals.json"
           ],
-          "source": "bundles/workflow-architect/manifest.yaml#/eval_suite"
+          "source": "workflow-architect/manifest.yaml#/eval_suite"
         }
       }
     }
