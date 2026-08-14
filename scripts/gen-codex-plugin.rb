@@ -21,8 +21,8 @@ PLUGIN_NAME = "magnus919"
 PLUGIN_VERSION = "1.0.0"
 
 # Same glob as gen-claude-marketplace.rb: top-level skills + bundle entrypoints.
-# Excludes bundle-internal helpers (bundles/<x>/skills/<sub>/SKILL.md).
-PUBLIC_SKILLS = (Dir.glob("#{ROOT}/*/SKILL.md") + Dir.glob("#{ROOT}/bundles/*/SKILL.md")).sort
+# Excludes bundle-internal helpers (<x>/skills/<sub>/SKILL.md).
+PUBLIC_SKILLS = Dir.glob("#{ROOT}/*/SKILL.md").sort
 
 def build_plugin_json
   skill_paths = PUBLIC_SKILLS.map do |skill|

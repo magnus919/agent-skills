@@ -25,9 +25,9 @@ LLMS_TXT_PATH = File.join(ROOT, "llms.txt")
 
 # Public install candidates: top-level skills and bundle entrypoints.
 # Same glob as gen-claude-marketplace.rb, gen-codex-plugin.rb, validate-skills.rb and README catalog:
-#   #{ROOT}/*/SKILL.md  +  #{ROOT}/bundles/*/SKILL.md
-# Excludes bundle-internal helper skills (bundles/<x>/skills/<sub>/SKILL.md).
-PUBLIC_SKILLS = (Dir.glob("#{ROOT}/*/SKILL.md") + Dir.glob("#{ROOT}/bundles/*/SKILL.md")).sort
+#   #{ROOT}/*/SKILL.md
+# Excludes bundle-internal helper skills (<x>/skills/<sub>/SKILL.md).
+PUBLIC_SKILLS = Dir.glob("#{ROOT}/*/SKILL.md").sort
 
 def frontmatter(skill_path)
   text = File.read(skill_path)

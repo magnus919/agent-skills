@@ -26,8 +26,8 @@ MARKETPLACE_NAME = "magnus-agent-skills" # "agent-skills" is reserved by Claude 
 
 # Public install candidates: top-level skills and bundle entrypoints. This is
 # the same glob validate-skills.rb uses for the README catalog, and it excludes
-# bundle-internal helper skills (bundles/<bundle>/skills/<sub>/SKILL.md).
-PUBLIC_SKILLS = (Dir.glob("#{ROOT}/*/SKILL.md") + Dir.glob("#{ROOT}/bundles/*/SKILL.md")).sort
+# bundle-internal helper skills (<bundle>/skills/<sub>/SKILL.md).
+PUBLIC_SKILLS = Dir.glob("#{ROOT}/*/SKILL.md").sort
 
 def frontmatter(skill_path)
   text = File.read(skill_path)

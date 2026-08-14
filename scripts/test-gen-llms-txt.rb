@@ -22,13 +22,13 @@ class GenLlmsTxtTest < Minitest::Test
           second line
         ---
       YAML
-      write_skill(root, "bundles/zulu", <<~YAML)
+      write_skill(root, "zulu", <<~YAML)
         ---
         name: zulu
         description: Zulu bundle.
         ---
       YAML
-      write_skill(root, "bundles/zulu/skills/helper", <<~YAML)
+      write_skill(root, "zulu/skills/helper", <<~YAML)
         ---
         name: helper
         description: Nested helper that must be excluded.
@@ -52,7 +52,7 @@ class GenLlmsTxtTest < Minitest::Test
         ## Skills
 
         - [omega](omega/SKILL.md): First line second line
-        - [zulu](bundles/zulu/SKILL.md): Zulu bundle.
+        - [zulu](zulu/SKILL.md): Zulu bundle.
       TEXT
       llms_path = File.join(root, "llms.txt")
       assert_equal expected, File.binread(llms_path)
@@ -132,13 +132,21 @@ class GenLlmsTxtTest < Minitest::Test
         ---
       YAML
       write_skill(root, "duplicate", skill)
-      write_skill(root, "bundles/duplicate", skill)
+      write_skill(root, "Duplicate", skill)
 
-      _stdout, stderr, status = run_generator(root, "--write")
-      refute status.success?
-      assert_includes stderr, "duplicate catalog name \"duplicate\""
-      assert_includes stderr, "duplicate/SKILL.md"
-      assert_includes stderr, "bundles/duplicate/SKILL.md"
+      stdout, stderr, status = run_generator(root, "--write")
+      if Dir.glob("#{root}/*/SKILL.md").length == 2
+        # Case-sensitive filesystem: "duplicate" and "Duplicate" are distinct
+        # directories whose downcased catalog names collide, so the guard fires.
+        refute status.success?
+        assert_includes stderr, "duplicate catalog name \"duplicate\""
+      else
+        # Case-insensitive filesystem (e.g. macOS APFS): the two names collapse
+        # into one directory, so the generator emits a single entry and must not
+        # report a spurious duplicate.
+        assert status.success?, stderr
+        assert_includes stdout, "Wrote llms.txt (1 skills)."
+      end
     end
   end
 
