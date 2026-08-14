@@ -8,7 +8,8 @@
 #
 # Paths are relative to the bundle's own directory (this example lives in
 # docs/examples/, two levels below the repository root, so ../../ resolves to
-# the repository root — the same depth as a real <name>/manifest.yaml).
+# the repository root — one level deeper than a real <name>/manifest.yaml,
+# which resolves repository-root paths with a single ../).
 # Canonical manifests live at <name>/manifest.yaml.
 
 schema_version: 1
