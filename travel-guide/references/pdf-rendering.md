@@ -67,6 +67,10 @@ Before delivery, verify all of the following:
 - the day strip ("trip at a glance") shows one card per day with legible kind
   colors, and the meters render when pace or budget are supplied;
 - ghost section numbers do not collide with content;
+- each section footer sits at the bottom of its page without colliding with
+  content; the field note repeats a model line (failure mode, alternative,
+  recheck, or skip reason) and the next-section line matches the section that
+  actually follows;
 - no page is blank, clipped, or unexpectedly split;
 - title, tables, captions, and source URLs are readable;
 - contrast works on the dark cover and in grayscale content pages;

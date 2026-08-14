@@ -33,7 +33,7 @@ the target, scope, and rollback path; then route the change through the CLI's li
 | Need | Command |
 |---|---|
 | Find transcript metadata | `scripts/fireflies transcripts list --keyword TEXT --limit 10 --json` |
-| Read a meeting, summary, sentences, and analytics | `scripts/fireflies transcripts get ID --json` |
+| Read a meeting, summary, sentences, analytics, and recording links | `scripts/fireflies transcripts get ID --json` |
 | People, channels, groups, contacts, apps | `users`, `channels`, `groups`, `contacts`, `apps` |
 | Meeting analytics or live meetings | `analytics --start DATE --end DATE`, `meetings active` |
 | Ask a transcript question | `askfred create --question TEXT --transcript-id ID --confirm` |

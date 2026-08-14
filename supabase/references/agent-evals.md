@@ -83,3 +83,7 @@ Use the scenario set that matches the workflow under evaluation, and prefer scen
 
 - Do not use this reference to design evaluation methodology, datasets, or graders — that is [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md).
 - Do not confuse supabase/evals with this skill's own `evals/evals.json`: the former runs agents against scored scenarios, the latter is a static output-quality contract validated by this repository.
+
+## Attribution
+
+Concepts, runtime descriptions, and commands in this reference are derived from the [supabase/evals README](https://github.com/supabase/evals), Copyright Supabase, licensed under [Apache-2.0](https://github.com/supabase/evals/blob/main/LICENSE). Definitions are paraphrased or quoted for documentation; the harness and its skills submodule remain external to this repository.

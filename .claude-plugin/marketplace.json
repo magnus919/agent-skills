@@ -897,6 +897,15 @@
       "description": "Apply distilled coding principles from 14 classic software books to code review, refactoring, design, and implementation decisions. Do not use for language- or framework-specific tutorials, tool manuals, or tasks already governed by a project's established conventions."
     },
     {
+      "name": "promise-theory",
+      "source": "./",
+      "skills": [
+        "./promise-theory"
+      ],
+      "strict": false,
+      "description": "Design and diagnose coordination in hybrid human + AI agent workforces using promise theory (Burgess/Bergstra): model agents as autonomous, coordination as voluntary offers plus acceptance, and trust as calibrated assessment. Use for delegation modeling, capability manifests and agent contracts, coordination-failure diagnosis, trust/verification calibration, convergent self-healing systems, and converting obligation-based designs to promise-based. Do not use for enforceable centralized control, legal contract drafting (promise theory is not contract law), simple single-agent prompting, imperative push-based orchestration, or tool manuals — route those to the tool's own skill."
+    },
+    {
       "name": "pydanticai",
       "source": "./",
       "skills": [
@@ -994,6 +1003,15 @@
       ],
       "strict": false,
       "description": "Plan authorized security reviews with threat modeling, architecture and dependency audits, and vulnerability classification. Use for scoped defensive security assessment. Do not use for offensive operations, unauthorized testing, or security control implementation."
+    },
+    {
+      "name": "semantic-spacetime",
+      "source": "./",
+      "skills": [
+        "./semantic-spacetime"
+      ],
+      "strict": false,
+      "description": "Model and diagnose shared semantic ground between agents with Semantic Spacetime (Mark Burgess, 2014-2025): a discrete graph model of meaning over time, where local proper time replaces global clocks, causality is cooperative promises, and gamma(3,4) graphs expose semantic drift, world model divergence, and absorbing states. Use for designing convergent self-healing coordination, modeling intent and trajectories over time, mapping promises onto spacetime, diagnosing semantic drift or dead-ends, and analyzing temporal blindness in agents. Do not use for physics or relativity, pure vector embeddings or RAG without temporal-causal structure, enforceable centralized control, simple single-agent prompting, or tool manuals — route those to the appropriate skill."
     },
     {
       "name": "seo-audit",

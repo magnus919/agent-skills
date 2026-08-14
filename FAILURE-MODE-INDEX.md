@@ -10,5 +10,6 @@ Use this index when the work is blocked by a recognizable failure pattern rather
 | A multi-agent decision is converging too early | One perspective appears sufficient but alternatives have not been tested | [agent-council](agent-council/SKILL.md) |
 | A contribution may duplicate existing work | The requested feature sounds like something already in the repository | [opensource-contributions](opensource-contributions/SKILL.md) |
 | A workflow is repeated manually | The same sequence of skills is executed more than once | [workflow-architect](bundles/workflow-architect/SKILL.md) |
+| Meaning drifts or disagrees between agents | Agents use the same word for different meanings, or semantic divergence and dead-ends block progress | [semantic-spacetime](semantic-spacetime/SKILL.md) |
 
 This is a routing aid, not a replacement for reading the selected skill. Add a row only when the failure mode has a concrete trigger and an existing skill that addresses it.

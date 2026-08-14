@@ -411,6 +411,10 @@ Assemble cross-domain production evidence into a risk-scaled launch decision. De
 
 Distilled coding principles from 14 classic software engineering books (Clean Code, DDD, Refactoring, Release It!, DDIA, Code Complete, and more). Cross-cutting principles organized by concern, task-to-book mapping, per-book mini and full rule sets, and a structured code-assessment workflow.
 
+### [promise-theory](promise-theory/SKILL.md)
+
+Design and diagnose coordination in hybrid human + AI agent workforces using promise theory (Burgess/Bergstra): model agents as autonomous, coordination as voluntary offers plus acceptance, and trust as calibrated assessment. Covers delegation modeling, capability manifests and agent contracts, coordination-failure diagnosis, trust/verification calibration, and converting obligation-based designs to promise-based ones. Ships 7 references, 3 templates, a stdlib-only lint CLI, and 6 evals.
+
 ### [pydanticai](pydanticai/SKILL.md)
 
 Build production-grade AI agents and graph-based state machines with PydanticAI and PydanticGraph. Covers agent creation, function tools with RunContext dependencies, structured output validation, streaming (text/events/graph nodes), a 20+ capability plugin system with on-demand loading (Thinking, WebSearch, MCP, Hooks, etc.), 16 model providers with FallbackModel and concurrency limiting, multi-agent delegation and programmatic hand-off, comprehensive testing with TestModel/FunctionModel, and the PydanticEvals evaluation framework. Includes the full PydanticGraph API — both BaseNode (class-based) and GraphBuilder (function-based) with parallel map/broadcast operations, joins with reducers, decisions, Mermaid rendering, and step-by-step execution. Ships 8 reference files covering core agents, capabilities/hooks, graph, models/output, patterns/integrations, testing/evals, worked examples, and an API surface quick reference.
@@ -454,6 +458,10 @@ Build security into software requirements, design, implementation, review, and r
 ### [security-audit-methodology](security-audit-methodology/SKILL.md)
 
 Give authorized teams a disciplined way to identify and prioritize security risks without mistaking a checklist for a security guarantee.
+
+### [semantic-spacetime](semantic-spacetime/SKILL.md)
+
+Model and diagnose shared semantic ground between agents with Mark Burgess's Semantic Spacetime: discrete graph spacetimes where meaning evolves over time, typed gamma(3,4) edges expose semantic drift and absorbing states, and cooperative promises carry causality.
 
 ### [seo-audit](seo-audit/SKILL.md)
 

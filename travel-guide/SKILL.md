@@ -192,8 +192,12 @@ The visual default is a dark photographic cover with a route journey line, warm
 gold eyebrow, white headline, restrained red accent, generous white content
 pages, ghost section numbers, a color-coded day strip right after the brief,
 pace and budget meters, compact cards, a unified warm photo grade on anchor
-images, and readable tables. Preserve contrast and selectable text. Do not let
-decoration hide uncertainty or practical caveats.
+images, readable tables, and a bottom-of-page footer per section: a content-
+derived field note (failure mode, plan B, recheck item, or skip reason) when
+one exists, a next-section line, and a ghost route mark. Preserve contrast and
+selectable text. Do not let decoration hide uncertainty or practical caveats.
+The footer is informational, never a schedule: it repeats model content in one
+line, it does not invent new plans.
 
 ## Exit criteria
 
