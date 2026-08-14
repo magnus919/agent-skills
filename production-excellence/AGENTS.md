@@ -11,7 +11,7 @@ point; all routed skills are top-level catalog skills, not nested sub-skills.
   its frontmatter (`name: production-excellence`).
 - This bundle does not contain nested skills under a `skills/` directory. All
   specialist skills are referenced via relative markdown links
-  (`../../<skill>/SKILL.md`) and are resolved by the harness from the catalog.
+  (`../<skill>/SKILL.md`) and are resolved by the harness from the catalog.
 - When a production concern maps to a single specialist (e.g., a migration plan
   is needed), load that specialist directly. Use this bundle when cross-domain
   assembly and a gate decision are required.

@@ -588,11 +588,11 @@ Paul Graham's "Startup = Growth" framework as an operational weekly practice. Co
 
 ### `skills` CLI (cross-harness)
 
-The fastest portable route is the open [`skills` CLI](https://github.com/vercel-labs/skills). The flat top-level skill layout works without a skills.sh-specific manifest. Bundle entry points live one directory deeper under `bundles/`, so include `--full-depth` when listing or selecting them.
+The fastest portable route is the open [`skills` CLI](https://github.com/vercel-labs/skills). The flat top-level skill layout works without a skills.sh-specific manifest, so every skill — including the bundle umbrellas — is discovered at the top level.
 
 ```bash
-# Inspect every available skill name, including bundle entry points
-npx skills add magnus919/agent-skills --full-depth --list
+# Inspect every available skill name, including the bundle umbrellas
+npx skills add magnus919/agent-skills --list
 
 # Install one skill into the current project for Codex
 npx skills add magnus919/agent-skills --skill systematic-debugging --agent codex --yes
@@ -600,11 +600,11 @@ npx skills add magnus919/agent-skills --skill systematic-debugging --agent codex
 # Install one skill globally for Hermes Agent
 npx skills add magnus919/agent-skills --skill systematic-debugging --agent hermes-agent --global --yes
 
-# Bundle entry points are one directory deeper; select them with --full-depth
-npx skills add magnus919/agent-skills --skill neckbeard --full-depth --agent codex --yes
+# Bundle umbrellas are top-level skills; select them directly
+npx skills add magnus919/agent-skills --skill neckbeard --agent codex --yes
 ```
 
-`--skill` matches the `name` in a skill's `SKILL.md`; use the names returned by `--list`. Top-level skills are discovered by default. Use `--full-depth` when selecting a bundle entry point under `bundles/`.
+`--skill` matches the `name` in a skill's `SKILL.md`; use the names returned by `--list`. All skills, including the bundle umbrellas, are discovered by default at the top level.
 
 For Hermes Agent, keep `--global`: the CLI then installs directly into `$HERMES_HOME/skills/` (normally `~/.hermes/skills/`), which Hermes loads natively. The CLI's project-scoped `.hermes/skills/` target is not auto-discovered by Hermes.
 

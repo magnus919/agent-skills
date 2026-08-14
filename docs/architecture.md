@@ -47,7 +47,7 @@ graph TD
     end
 
     subgraph "Bundles"
-        BND[bundles/<br/>Multi-skill compositions]
+        BND[Bundle umbrellas<br/>Multi-skill compositions]
     end
 
     AGENTS --> VS
