@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "skill_name": "headscale-derp",
+  "evals": [
+    {
+      "id": "embedded-derp-enable",
+      "prompt": "Enable DERP relay support in our headscale server for a small tailnet (about 20 nodes) so clients can connect when direct peering fails. Use the built-in relay.",
+      "expected_output": "Scenario: enabling the embedded DERP server. The agent configures derp.server.enabled true with a region_id, region_code, region_name, and stun_listen_addr (0.0.0.0:3478) in config.yaml, restarts headscale, and confirms the embedded relay is serving. Because the embedded relay shares the headscale process, the agent notes it is suitable for the small tailnet and flags when a standalone DERP would be needed.",
+      "assertions": [
+        "derp.server.enabled and its region settings are configured",
+        "The STUN listener address is set for 0.0.0.0:3478",
+        "headscale is restarted and the embedded relay is confirmed serving",
+        "The small-tailnet suitability and standalone-DERP threshold are stated"
+      ]
+    },
+    {
+      "id": "custom-derp-map-region",
+      "prompt": "Direct peer connections keep failing across our office NAT. Add a custom DERP relay region for our region and verify clients can relay through it.",
+      "expected_output": "Scenario: custom DERP map. The agent writes a DERP map JSON with a new region (unique region_id, region_code, region_name) and a node with HostName, DERPPort, and STUNPort, then wires it into the headscale config via derp.paths or derp.urls. The config is reloaded/restarted. The agent verifies relay connectivity through the new region using tailscale netcheck or tailscale status rather than assuming the config was picked up, accounting for client DERP-map caching.",
+      "assertions": [
+        "A custom DERP map with a unique region and node is written",
+        "The map is wired into headscale via derp.paths or derp.urls",
+        "The config is reloaded/restarted",
+        "Relay connectivity through the new region is verified via netcheck/status",
+        "Client DERP-map caching behavior is accounted for"
+      ]
+    },
+    {
+      "id": "standalone-derp-deploy",
+      "prompt": "Our tailnet is now over 60 nodes and the embedded relay is struggling under active relay traffic. Deploy a dedicated standalone DERP relay node.",
+      "expected_output": "Scenario: standalone DERP deployment. The agent deploys the official tailscale/derper container with restart always, mapping ports 3478/udp and 443, mounting certs and a data dir, and passing --hostname for the relay. TLS is provisioned (Let's Encrypt auto or manual certs). The output reports the relay endpoint and how it is referenced from headscale (derp.urls or the map), and notes the performance rationale for moving off the embedded relay.",
+      "assertions": [
+        "The tailscale/derper container is deployed with ports 3478/udp and 443",
+        "TLS is provisioned for the relay (auto or manual certs)",
+        "The relay is reachable and registered for use by headscale",
+        "The performance rationale (offload from embedded relay) is stated"
+      ]
+    },
+    {
+      "id": "netcheck-diagnostics-interpret",
+      "prompt": "Clients are reporting slow connections. Run netcheck on one of them and tell me what the DERP latency results mean and whether we need another region.",
+      "expected_output": "Scenario: connectivity diagnostics and interpretation. The agent runs tailscale netcheck and interprets the report: whether UDP/STUN works, whether mapping varies by destination (NAT), the nearest DERP region and per-region latency, and hairpinning/port-mapping status. It translates the numbers into a recommendation — e.g. whether the nearest region is fast enough or whether another geographically diverse region should be added for resilience. It explains that direct connections are preferred and DERP adds latency.",
+      "assertions": [
+        "tailscale netcheck is run and its raw output captured",
+        "The report is interpreted (UDP/STUN, NAT mapping, nearest DERP, per-region latency)",
+        "A concrete recommendation on region placement is given",
+        "The latency cost of DERP vs direct is explained"
+      ]
+    },
+    {
+      "id": "stun-blocked-fallback",
+      "prompt": "On our corporate network, UDP port 3478 appears to be filtered. Clients can't direct-connect. Explain what will happen and how we should configure relays so the tailnet still works.",
+      "expected_output": "Scenario: STUN-blocked fallback behavior. The agent explains that when STUN is blocked, Tailscale cannot establish direct peer-to-peer connections and routes ALL traffic through the nearest DERP relay, so relay capacity and region placement become critical. It configures redundant DERP regions so clients have a fallback and notes that port 3478 (STUN) and 443 (DERP/TCP) must both be reachable. It recommends at least two geographically diverse relays.",
+      "assertions": [
+        "The all-traffic-through-DERP consequence of STUN being blocked is explained",
+        "Port 3478 (STUN) and 443 (DERP/TCP) reachability is emphasized",
+        "At least two geographically diverse DERP regions are configured/recommended",
+        "A fallback for clients when one relay is unreachable is established"
+      ]
+    }
+  ]
+}

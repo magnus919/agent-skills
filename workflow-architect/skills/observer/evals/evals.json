@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "skill_name": "observer",
+  "evals": [
+    {
+      "id": "dormant-until-trigger",
+      "prompt": "Let's work on refactoring the auth service. No workflow analysis needed right now.",
+      "expected_output": "Scenario: staying dormant without a trigger phrase. The observer sub-skill has been loaded in passive mode, but none of the trigger phrases (e.g. 'catalog my workflow', 'what's my workflow', 'analyze my process', 'figure out what I do', 'work it out from what I just did') appear in the user's message. The agent does nothing and does not announce the observer's presence, letting the session proceed normally.",
+      "assertions": [
+        "The observer does not act in the absence of a trigger phrase",
+        "No trigger phrase is detected in the user's message",
+        "The observer does not announce its presence",
+        "The normal session proceeds uninterrupted"
+      ]
+    },
+    {
+      "id": "insufficient-context-handling",
+      "prompt": "What's my workflow?",
+      "expected_output": "Scenario: trigger fired but context too thin. The agent detects the trigger phrase, then counts substantive user messages in the session. If fewer than 5 substantive turns exist, it responds that it does not have enough session context, states the approximate turn count, and offers active interrogation mode (/workflow-architect) instead. It does not guess a workflow from insufficient data.",
+      "assertions": [
+        "The trigger phrase is detected",
+        "The agent counts substantive user turns before inferring",
+        "With fewer than 5 substantive turns, the agent states the low count",
+        "The agent offers active interrogation mode instead of guessing"
+      ]
+    },
+    {
+      "id": "session-inference-from-transcript",
+      "prompt": "Analyze my process from this session. Here's everything we've done today.",
+      "expected_output": "Scenario: inference from an existing session transcript. With enough context, the agent runs the structured inference prompt against the session, extracting entry patterns, phases and their triggers, branching decisions, tools used, pain points (e.g. repeated corrections), and exit patterns, and returns findings as a structured workflow state model matching the workflow-architect format. It bases the model on what actually happened, not assumptions.",
+      "assertions": [
+        "The structured inference prompt is run against the session context",
+        "Entry patterns, phases, branching, tools, pain points, and exit are extracted",
+        "Findings are returned in the workflow-architect state model format",
+        "Inferences are grounded in what actually happened in the session"
+      ]
+    },
+    {
+      "id": "cross-session-pattern-detection",
+      "prompt": "Work it out from what I just did, and use my last few sessions too — a single session probably isn't enough.",
+      "expected_output": "Scenario: cross-session pattern detection. The agent pulls the 2-3 most recent related sessions (via session_search) in addition to the current one, because a single session may not reveal the full workflow. It notes the number of sessions examined and distinguishes recurring patterns from one-off behavior in its findings.",
+      "assertions": [
+        "Recent related sessions are pulled in addition to the current one",
+        "The agent uses multiple sessions to detect recurring patterns",
+        "The number of sessions examined is reported",
+        "Recurring patterns are distinguished from one-off behavior"
+      ]
+    },
+    {
+      "id": "findings-presentation-and-handoff",
+      "prompt": "Figure out what I do from this session.",
+      "expected_output": "Scenario: presenting findings and handing off to generation. After inference, the agent presents a summary of the inferred workflow to the user (similar to the interviewer's convergence summary), noting how many sessions were examined, and asks whether it looks right. If the user confirms, the agent loads bundle-builder and follows its instructions to generate the bundle.",
+      "assertions": [
+        "A summary of the inferred workflow is presented",
+        "The summary notes the number of sessions examined",
+        "The user is asked to confirm the picture",
+        "On confirmation, bundle-builder is loaded to generate the bundle"
+      ]
+    }
+  ]
+}

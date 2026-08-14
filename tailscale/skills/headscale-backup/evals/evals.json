@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "skill_name": "headscale-backup",
+  "evals": [
+    {
+      "id": "backup-complete-archive",
+      "prompt": "Back up our production Headscale server so we are ready for an in-place upgrade. Produce an archive we can use to recover if the upgrade fails.",
+      "expected_output": "Scenario: full production backup before an upgrade. The agent loads headscale-backup and runs the hs-backup.sh script to produce a timestamped tarball. The output names the archive path and confirms its contents: the SQLite database, config.yaml, policy.json (if present), and TLS certificates/keys. The backup is verified (not assumed) by listing the archive members before the upgrade proceeds. The archive is noted as the disaster-recovery artifact and is stored off the control-server host.",
+      "assertions": [
+        "The headscale-backup sub-skill is loaded",
+        "hs-backup.sh produces a timestamped backup archive",
+        "The archive contains the SQLite database, config.yaml, policy.json, and TLS certificates/keys",
+        "Archive contents are verified by listing members before upgrade",
+        "The backup archive is stored off the control-server host"
+      ]
+    },
+    {
+      "id": "live-sqlite-backup-safety",
+      "prompt": "Our headscale server is live and we can't stop it during business hours. Take a safe backup of the running SQLite database without corrupting it.",
+      "expected_output": "Scenario: live-database backup with SQLite WAL safety. The agent recognizes the live-server constraint and uses the sqlite3 .backup online-backup path (as hs-backup.sh does) rather than a raw cp of the database file, which would produce a corrupt copy while headscale is running. The output explains why the safe method is used and confirms the backup ran against the live database without stopping the service.",
+      "assertions": [
+        "The agent identifies the live-database constraint before choosing a method",
+        "The sqlite3 .backup online-backup approach is used rather than a raw cp",
+        "The output explains why cp would corrupt a running database (WAL mode)",
+        "The backup is produced without stopping the headscale service"
+      ]
+    },
+    {
+      "id": "restore-drill-verification",
+      "prompt": "We have a headscale backup tarball from last week. Prove the backup actually works by restoring it onto a fresh test host and confirming the tailnet comes back.",
+      "expected_output": "Scenario: restore drill on a fresh host. The agent stops headscale, restores the backup archive contents (SQLite, config, policy, certs) to the target paths, starts headscale, and verifies recovery with a health check and headscale nodes list showing the same nodes/state. The restore is exercised and verified rather than merely documented. The output reports the verification commands and their observed results.",
+      "assertions": [
+        "The headscale service is stopped before restore",
+        "Backup archive contents are restored to the correct paths",
+        "headscale is started and recovery is verified via health check",
+        "The tailnet state (nodes, policy) is confirmed via headscale nodes list",
+        "The restore drill is exercised and observed, not only documented"
+      ]
+    },
+    {
+      "id": "migration-version-check",
+      "prompt": "Move our headscale install from the old host to a brand-new server with the latest headscale release. Make sure nothing breaks during the move.",
+      "expected_output": "Scenario: server migration with version compatibility. The agent loads headscale-backup, takes a backup on the source host, rsync/scp's the tarball to the target, and before restoring checks that the source and target headscale versions match (headscale version). Because restoring a database from a different headscale version can fail schema migrations or corrupt state, the agent either aligns the target version or flags the mismatch instead of proceeding blindly. DNS is updated and client reconnect is verified.",
+      "assertions": [
+        "A backup is taken on the source host and transferred to the target",
+        "Source and target headscale versions are compared before restore",
+        "A version mismatch is flagged rather than ignored",
+        "DNS is updated to point at the new server",
+        "Client reconnection to the migrated server is verified"
+      ]
+    },
+    {
+      "id": "api-key-secret-gotcha",
+      "prompt": "We restored headscale from a database backup, but now our automation scripts that use an API key are failing. The old key doesn't work anymore. What happened and how do we fix it?",
+      "expected_output": "Scenario: diagnosing API-key behavior after restore. The agent recognizes that API keys are stored hashed in the database and that restoring a database backup does not recover the original key secrets. It explains the root cause (keys are hashed, so the restored DB cannot recover them) and fixes the issue by regenerating API keys with headscale apikeys create and updating the automation scripts. The output also notes that expired pre-auth keys restored with the DB will not work.",
+      "assertions": [
+        "The agent identifies that API keys are stored hashed and not recoverable from a DB restore",
+        "The root cause is explained before a fix is applied",
+        "API keys are regenerated with headscale apikeys create",
+        "Automation scripts are updated with the new key",
+        "The expired-preauth-key behavior is noted"
+      ]
+    },
+    {
+      "id": "cron-automated-backup",
+      "prompt": "Set up automated nightly backups of our headscale server so we don't have to remember to run them by hand.",
+      "expected_output": "Scenario: cron automation for regular backups. The agent configures a daily cron job invoking hs-backup.sh with the non-interactive --auto flag and an output directory (e.g. /backups/headscale/), matching the skill's documented cron pattern. The output confirms the cron entry, the rotation/retention behavior for old archives, and that backups continue to be stored off the control-server host.",
+      "assertions": [
+        "A daily cron job is configured for hs-backup.sh with the --auto flag",
+        "An explicit output directory for backups is set",
+        "The cron schedule and non-interactive mode are documented",
+        "Backup retention/rotation for old archives is addressed",
+        "Backups remain stored off the control-server host"
+      ]
+    }
+  ]
+}

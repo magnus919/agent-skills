@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "skill_name": "headscale-routing",
+  "evals": [
+    {
+      "id": "subnet-router-setup",
+      "prompt": "Expose our 192.168.10.0/24 lab network to the tailnet through the gateway node relay-1 so other tailnet devices can reach lab printers and NAS boxes.",
+      "expected_output": "Scenario: subnet router setup. The agent configures relay-1 to advertise the route with tailscale up --advertise-routes=192.168.10.0/24, approves the route on the headscale server (headscale routes approve), and reminds clients they must run with --accept-routes to use the advertised subnet. The output confirms the route is approved and that client route acceptance is enabled, and notes that if the gateway goes offline the route is unavailable.",
+      "assertions": [
+        "relay-1 advertises 192.168.10.0/24",
+        "The route is approved on the headscale server",
+        "Client nodes are instructed to enable --accept-routes",
+        "Route approval is verified via headscale routes list",
+        "The stable-gateway requirement is stated"
+      ]
+    },
+    {
+      "id": "exit-node-setup",
+      "prompt": "Route the tailnet's outbound internet traffic through our home server exit-1 so we get privacy on untrusted coffee-shop Wi-Fi.",
+      "expected_output": "Scenario: exit node setup. The agent configures exit-1 to advertise as an exit node (tailscale up --advertise-exit-node), approves the exit-node route on headscale, and instructs a client to select it with tailscale set --exit-node=exit-1. The output confirms the exit node is advertised and approved and that a client successfully selects it, distinguishing exit-node approval from subnet-router approval.",
+      "assertions": [
+        "exit-1 advertises exit-node capability",
+        "The exit-node route is approved on the headscale server",
+        "A client selects the exit node via tailscale set --exit-node",
+        "Exit-node approval is handled distinctly from subnet-router approval"
+      ]
+    },
+    {
+      "id": "auto-approvers-config",
+      "prompt": "We have many gateway nodes tagged tag:gateway that advertise routes. Stop approving each route by hand — set up auto-approval for routes and exit nodes from trusted gateway nodes.",
+      "expected_output": "Scenario: auto-approvers in ACL policy. The agent writes an autoApprovers block in the tailnet policy so routes under e.g. 192.168.0.0/16 are auto-approved from tag:gateway nodes and exit nodes are auto-approved from tag:gateway. The output explains that nodes carrying the tag will have their advertised routes/exit-node status approved without manual intervention, and reloads the policy.",
+      "assertions": [
+        "autoApprovers.routes maps the CIDR to the trusted tag",
+        "autoApprovers.exitNode includes the trusted tag",
+        "The policy is reloaded on the headscale server",
+        "The no-manual-approval behavior for the trusted tag is explained"
+      ]
+    },
+    {
+      "id": "via-filtering",
+      "prompt": "Our monitoring nodes talk to servers, but we need that traffic to be routed through a specific subnet so our gateway firewall can inspect it. Configure this.",
+      "expected_output": "Scenario: via filtering in grants. The agent writes a grants rule with a via field so monitoring-to-servers traffic (e.g. the prometheus app) is routed through the specified subnet (e.g. 192.168.10.0/24), enabling gateway firewall inspection. The output explains the via mechanism and confirms the rule is in the policy.",
+      "assertions": [
+        "A grants rule with a via field routes monitoring-to-servers traffic through the subnet",
+        "The app/port scope (e.g. prometheus) is preserved",
+        "The purpose (gateway firewall inspection) is explained",
+        "The via rule is placed in the active policy"
+      ]
+    },
+    {
+      "id": "snat-disable",
+      "prompt": "The downstream network behind our subnet router needs to see the original client IPs for logging and per-device firewalling. Configure the subnet router so client source IPs are not masked.",
+      "expected_output": "Scenario: disabling SNAT on a subnet router. The agent configures the gateway to advertise the route with --snat-subnet-routes=false so traffic originating from tailnet clients keeps the original client IP instead of the gateway's IP. The output explains that SNAT is on by default and that disabling it is required when downstream logging/ACLs need the real client IP, and notes the tradeoff.",
+      "assertions": [
+        "SNAT is disabled with --snat-subnet-routes=false on the gateway",
+        "The output explains SNAT is on by default",
+        "The reason (downstream needs original client IP) is stated",
+        "The tradeoff of disabling SNAT is acknowledged"
+      ]
+    },
+    {
+      "id": "route-list-approve-reject",
+      "prompt": "Show me all routes in the tailnet and approve the ones from our trusted gateways while rejecting a suspicious one that a random node advertised.",
+      "expected_output": "Scenario: route inventory and triage. The agent lists all routes with headscale routes list, approves the routes from the trusted gateway nodes, and rejects the suspicious route from the unknown node. The output shows the route statuses before and after, and confirms only the intended routes were approved/rejected.",
+      "assertions": [
+        "All routes are listed with their status",
+        "Routes from trusted gateways are approved",
+        "The suspicious route is rejected",
+        "Route statuses are verified after the approval/rejection actions"
+      ]
+    }
+  ]
+}

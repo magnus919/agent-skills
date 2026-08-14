@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "skill_name": "headscale-node-lifecycle",
+  "evals": [
+    {
+      "id": "preauth-key-generation",
+      "prompt": "Generate a pre-authenticated key so our CI automation can register three ephemeral runners, tagged as CI runners, that expire after 4 hours.",
+      "expected_output": "Scenario: pre-authenticated key generation with constraints. The agent uses hs-create-authkey.sh (or the headscale CLI/API) to create an auth key with a 4-hour expiration, the tag:ci-runner tag, and ephemeral=true so runners are removed on disconnect. The output confirms the key attributes (expiry, tags, ephemeral, reusable/single-use) and warns about the default 1-hour expiry being overridden, and records the key for use by the runner provisioning.",
+      "assertions": [
+        "An auth key is created with a 4-hour expiration (overriding the 1-hour default)",
+        "The tag:ci-runner tag is embedded in the key",
+        "ephemeral is set so runners are removed on disconnect",
+        "The key's attributes (expiry, tags, reusable) are reported",
+        "The key is made available for runner registration"
+      ]
+    },
+    {
+      "id": "tagged-node-registration",
+      "prompt": "Register three new infrastructure nodes as tagged nodes in the tailnet using pre-auth keys so they're auto-approved and belong to the tagged-devices user.",
+      "expected_output": "Scenario: tagged-node registration. The agent creates an auth key with --tags, runs tailscale up --auth-key on each device, and confirms the nodes are auto-approved and appear under the tagged-devices user. The output distinguishes tagged nodes from personal nodes and verifies via headscale nodes list that the nodes carry the expected tags.",
+      "assertions": [
+        "An auth key with tags is created for registration",
+        "Each device is registered with tailscale up --auth-key",
+        "Tagged nodes are auto-approved and belong to tagged-devices",
+        "Registered nodes are verified in headscale nodes list with expected tags"
+      ]
+    },
+    {
+      "id": "pending-node-approval",
+      "prompt": "Three employees just joined and their laptops are showing up as pending in headscale. Approve them so they can use the tailnet.",
+      "expected_output": "Scenario: approving pending node registrations. The agent lists pending nodes, confirms each is the expected employee device, and approves them (hs-approve-nodes.sh or headscale nodes approve). The output confirms each node moved to approved/online state and that only the intended nodes were approved, not every pending device.",
+      "assertions": [
+        "Pending node registrations are listed and identified",
+        "Only the intended employee devices are approved",
+        "Approved nodes are verified as approved/online",
+        "The approval action is scoped to the expected devices"
+      ]
+    },
+    {
+      "id": "node-tagging-update",
+      "prompt": "One of our servers, node-7, needs a monitoring tag added, but it already has a webserver tag. Add the monitoring tag without removing the existing webserver tag.",
+      "expected_output": "Scenario: additive node tagging. The agent uses hs-tag-node.sh to add tag:monitoring to node-7 while preserving the existing tag:webserver (add mode rather than replace mode, and aware that tags always carry the tag: prefix). The output confirms both tags are present afterward and explains the difference between --add and --replace behavior.",
+      "assertions": [
+        "The monitoring tag is added with the tag: prefix",
+        "The existing webserver tag is preserved (add, not replace)",
+        "The final tag set on node-7 is verified",
+        "The add-vs-replace distinction is handled correctly"
+      ]
+    },
+    {
+      "id": "node-decommission",
+      "prompt": "We're decommissioning two retired servers. Remove them from the tailnet permanently and confirm they're gone.",
+      "expected_output": "Scenario: node decommissioning. The agent identifies the two retired node IDs and deletes them via headscale nodes delete -i <id> (or the REST API DELETE /api/v1/node/<id>). Because decommissioning is irreversible, the agent confirms the target nodes before deleting, then verifies they no longer appear in headscale nodes list. The output distinguishes permanent deletion from ephemeral auto-removal.",
+      "assertions": [
+        "The target retired nodes are identified by ID",
+        "Confirmation is obtained before irreversible deletion",
+        "The nodes are deleted via the headscale CLI or REST API",
+        "The nodes are verified absent from headscale nodes list"
+      ]
+    },
+    {
+      "id": "ephemeral-ci-runner",
+      "prompt": "Set up provisioning for CI jobs that run in throwaway containers. Each container should register, do its job, and leave no trace in the tailnet afterward.",
+      "expected_output": "Scenario: ephemeral node lifecycle for CI. The agent creates an ephemeral pre-auth key and configures the CI containers to tailscale up with that key. The output explains that ephemeral nodes are automatically removed from the tailnet on disconnect (no residual record), unlike permanent nodes, and that no manual decommission is needed. It verifies ephemeral behavior is enabled.",
+      "assertions": [
+        "An ephemeral auth key is used for CI container registration",
+        "The agent explains ephemeral nodes are auto-removed on disconnect",
+        "No manual decommission step is required for ephemeral nodes",
+        "The ephemeral behavior is confirmed enabled"
+      ]
+    }
+  ]
+}
