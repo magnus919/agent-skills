@@ -40,6 +40,7 @@ Use current official documentation and source before making version-sensitive cl
 - Supavisor: https://github.com/supabase/supavisor
 - Supabase Postgres: https://github.com/supabase/postgres
 - PostgREST: https://github.com/PostgREST/postgrest
+- Agent evals harness: https://github.com/supabase/evals (Apache-2.0; concepts/commands checked 2026-08-09)
 
 Within the official Docker directory, read `README.md`, `CONFIG.md`, `CHANGELOG.md`, `versions.md`, `.env.example`, `docker-compose.yml`, `run.sh`, and the relevant `tests/` file together. `CONFIG.md` explicitly distinguishes source-derived facts from interpretive descriptions; use each service's own documentation or source when intent matters.
 

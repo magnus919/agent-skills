@@ -11,6 +11,16 @@ scripts/fireflies transcripts get transcript-id --json
 
 The detailed query includes summary, speakers, sentences, and analytics.
 
+## Fetch Recording Download URLs
+
+Use this to grab the meeting's audio and video recordings. The response's `video_url` and
+`audio_url` fields are the download links for the recording.
+
+```bash
+scripts/fireflies transcripts get transcript-id --json
+# response includes "video_url" and "audio_url" — signed download links for the recording
+```
+
 ## Extract Actions and Summary
 
 Use this for a currently live meeting or for a completed transcript.
@@ -35,6 +45,17 @@ Use a publicly retrievable HTTPS media URL and a webhook endpoint you control. P
 ```bash
 scripts/fireflies audio upload --url https://media.example/call.mp3 --webhook https://app.example/fireflies --client-reference-id import-42 --dry-run --json
 scripts/fireflies audio upload --url https://media.example/call.mp3 --webhook https://app.example/fireflies --client-reference-id import-42 --confirm --json
+```
+
+## Upload a File (Two-Phase)
+
+Use this when the media is not on a public URL and you must push the bytes yourself.
+
+```bash
+scripts/fireflies audio create-upload --content-type audio/wav --file-size 5242880 --dry-run --json
+scripts/fireflies audio create-upload --content-type audio/wav --file-size 5242880 --confirm --json
+# PUT the file to upload_url from the response, then:
+scripts/fireflies audio confirm-upload --meeting-id meeting-id --confirm --json
 ```
 
 ## AskFred Conversation

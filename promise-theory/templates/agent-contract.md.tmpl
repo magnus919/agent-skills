@@ -1,0 +1,128 @@
+# Agent Contract: <contract-title>
+
+A promise has no binding force on its own; a contract is a promise *plus* a
+mechanism that makes deviation costly or impossible (M12, "From Promises to
+Contracts," 2026). Promise theory supplies the acceptance half; this contract
+supplies the enforcement half. Fill it from a signed-off
+[promise manifest](promise-manifest.yaml.tmpl): promise ids, types, bodies,
+verifiers, severities, and withdrawals below must match the manifest so the
+two artifacts stay in sync. Severity and verifier use the manifest schema
+enums; every promise maps to a manifest `type`.
+
+- Contract version: <0.1.0>
+- Status: <DRAFTED | ACTIVE | FULFILLED | VIOLATED | EXPIRED | TERMINATED>
+- Date: <YYYY-MM-DD>
+- Manifest version this contract is drawn from: <v1>
+- Renegotiation count (resets on each accepted revision): <0>
+
+## 1. Parties
+
+| Party | Side | Role in this contract | Contact / address |
+|---|---|---|---|
+| <Human name or team> | Acceptor and evaluator | <sponsor / reviewer / supervisor> | <email / channel / calendar> |
+| <agent-id> | Promiser | <role from manifest> | <endpoint / runtime / workspace> |
+| <agent-id> | Promiser | <role from manifest> | <endpoint / runtime / workspace> |
+
+Every party keeps its autonomy: each promise below is made voluntarily and
+can be withdrawn under the stated conditions. Nothing in this contract is a
+legal instrument.
+
+## 2. Promise set
+
+For each promise in scope, record: id (from the manifest), type (manifest
+enum), promiser, target, body, acceptance criteria (the observable conditions
+that define "kept"), verifier (manifest enum), severity (manifest enum), and
+withdrawal (the condition that ends the promise).
+
+| Promise id | Type (manifest) | Promiser | Target | Body | Acceptance criteria | Verifier | Severity | Withdrawal |
+|---|---|---|---|---|---|---|---|---|
+| <promise-id> | <capability | intent | constraint | self-promise> | <agent-id> | <agent-id | human | all> | <what the promiser will do> | <observable condition(s) that must hold> | <eval | manual | monitor | audit> | <impact | standard | low> | <condition that ends the promise> |
+| <promise-id> | <...> | <...> | <...> | <...> | <...> | <...> | <...> | <...> |
+
+For every consequential promise, name the enforcement rung applied (M12
+ladder from promise to contract): 1 soft prompt, 2 self-check/reflection,
+3 output validation/constrained decoding, 4 external action guards,
+5 capability restriction/sandboxing ("won't" becomes "can't"), 6 formal
+methods/typed effects. Enforcement lives outside the model.
+
+| Promise id | Enforcement rung (1-6) | Notes |
+|---|---|---|
+| <promise-id> | <1-6> | <e.g., "action guard rejects file writes outside src/"> |
+
+Degradation tier (named before any breach): <fail-closed | best-effort |
+safe default>, with the decision rule (fail open when liveness matters;
+fail closed when safety matters).
+
+## 3. Verification schedule
+
+Who verifies which promise, how often, at what cost. Verification is a
+budget (kinetic mistrust), not a free good — budget it explicitly.
+
+| Promise id | Verifier | Frequency / trigger | Method (eval, manual, monitor, audit) | Verification budget |
+|---|---|---|---|---|
+| <promise-id> | <human | agent-id | guard> | <per-deliverable / daily / on-change / 1-in-10 random sample> | <method and tooling> | <review minutes or tokens per period> |
+
+- Starting trust level for each new promiser: <50-50, or a stated prior with
+  reasoning>
+- Promise ledger: every assessment is appended to the ledger (who assessed,
+  when, against what observation, verdict), stored as versioned data so
+  trust can accumulate.
+
+## 4. Breach handling
+
+Breach is an information event, not a moral one. On a detected breach:
+
+1. Record it in the promise ledger (evidence, verdict).
+2. Classify the cause: specification / inter-agent conflict / verification.
+3. Renegotiate first: revise the promise set (body, acceptance criteria,
+   verifier, severity, withdrawal), add verification, or change the provider.
+4. Adjust the trust estimate and the verification rate.
+5. Apply redundancy if the promise is load-bearing.
+
+Escalate only when renegotiation fails to converge. Named escalation trigger:
+**ESCALATE-2** — escalate to <human supervisor or next acceptance authority>
+after two full renegotiation cycles (one cycle = one breach -> one contract
+revision -> one verification window) without convergence. Escalation owner:
+
+| Escalation owner | Role | Contact / channel | Response SLA |
+|---|---|---|---|
+| <name> | <supervisor / owner> | <...> | <e.g., 1 business day> |
+
+## 5. Review cadence
+
+- Review frequency: <weekly / per-sprint / per-release>
+- What is reviewed: the promise set, recent assessments, verification budget
+  spent, refusal and breach rates, and the trust estimates.
+- Review output: a revised contract version and/or a
+  [promise review](promise-review.md.tmpl) for the period.
+- Next review date: <YYYY-MM-DD>
+
+## 6. Signatures / consent
+
+| Party | Consent method | Signature / acceptance record | Date |
+|---|---|---|---|
+| <Human name or team> | <e.g., typed name in chat, approval comment on the contract> | <signature / link to approval> | <YYYY-MM-DD> |
+| <agent-id> | <logged acceptance handshake> | <ledger entry id of the accept> | <YYYY-MM-DD> |
+| <agent-id> | <logged acceptance handshake> | <ledger entry id of the accept> | <YYYY-MM-DD> |
+
+Consent is two-sided and withdrawable: any party may withdraw a promise
+under the conditions in section 2; the contract is then renegotiated, not
+abandoned.
+
+## 7. Accountability — human commitments
+
+The human side of this contract makes its own promises. These are recorded
+in the manifest as `expectations` entries with `from: human` and assessed on
+the same review cadence as agent promises.
+
+| Human promise | Acceptance criteria | Verifier | Severity | Withdrawal |
+|---|---|---|---|---|
+| Provide direction: <what the human will supply, by what cadence> | <observable condition(s)> | <manual | monitor> | <impact | standard | low> | <condition that ends the commitment> |
+| Review agent output within <response SLA> | <e.g., every deliverable reviewed within 1 business day> | <manual> | <standard> | <...> |
+| Respond to escalations within <response SLA> | <e.g., ESCALATE-2 cases answered within 1 business day> | <manual> | <impact> | <...> |
+| Maintain consent: keep signatures and the manifest/contract version current | <...> | <monitor> | <low> | <...> |
+
+Human verification of agent promises: the human evaluates <promise ids from
+section 3> by <how — e.g., reading each deliverable, spot-checking citations>
+on the verification schedule in section 3, and records verdicts in the
+promise ledger.

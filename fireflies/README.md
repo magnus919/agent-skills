@@ -3,8 +3,8 @@
 ## Why Install This Skill
 
 Turn Fireflies meetings into usable data without hand-copying notes. Search transcripts, inspect
-summaries and action items, review analytics, and ask focused questions with AskFred from a single
-dependency-free command line tool.
+summaries and action items, review analytics, fetch audio and video recording links, and ask
+focused questions with AskFred from a single dependency-free command line tool.
 
 It also makes sensitive operations deliberate: every mutation requires an explicit confirmation,
 and every mutation can be previewed locally before it is sent.
@@ -42,6 +42,7 @@ python3 scripts/fireflies meetings rename transcript-id --title "Q3 roadmap" --d
 ## Triggers
 
 - Fireflies.ai transcripts, summaries, notes, contacts, channels, or analytics
+- Meeting audio/video recording download links (`transcripts get` returns `video_url`/`audio_url`)
 - AskFred questions about meeting content
 - Remote audio upload to Fireflies
 - Fireflies Webhooks V2 signature verification

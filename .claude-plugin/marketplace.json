@@ -51,6 +51,15 @@
       "description": "Use this skill when creating, reviewing, or editing Agent Skills-format skills, or when implementing skill discovery and loading in an agent client. It covers directory structure, SKILL.md metadata, progressive disclosure, evals, and repository conventions. Do not use this skill for general software work that does not involve the Agent Skills format or lifecycle."
     },
     {
+      "name": "anydoc",
+      "source": "./",
+      "skills": [
+        "./anydoc"
+      ],
+      "strict": false,
+      "description": "Convert Word (.doc/.docx/.docm), PowerPoint (.ppt/.pps/.pot/.pptx/.pptm/.ppsx/.ppsm), Excel (.xls/.xlsx/.xlsm/.xlsb), OpenDocument (.odt/.ods/.odp), RTF, EPUB, CSV, and PDF documents to clean GitHub-Flavored Markdown locally with the Any Doc CLI (npx -y @firecrawl/anydoc@0.1.6): headings, GFM tables, slide structure, and footnotes in one pass. Use when a task needs the contents of an office document, spreadsheet, presentation, ebook, or PDF you cannot read directly. Do not use for generating, editing, or validating documents (use documents), for ebook packaging (use epub), or for OCR of scanned or image-only PDFs (anydoc does not OCR; route to OCR tooling)."
+    },
+    {
       "name": "api-design-and-evolution",
       "source": "./",
       "skills": [
@@ -366,6 +375,15 @@
       "description": "Use when managing a Forgejo or Gitea server from the terminal: issues, pull requests, repositories, file contents, labels, milestones, releases, webhooks, user settings, or any /api/v1 endpoint through a safe generic API command."
     },
     {
+      "name": "forward-deployed-engineering",
+      "source": "./",
+      "skills": [
+        "./forward-deployed-engineering"
+      ],
+      "strict": false,
+      "description": "Guide embedded technical engagements from ambiguous stakeholder need through discovery, framing, hypothesis, build, evaluation, deployment, adoption, measurement, and generalization while preserving evidence, decision rights, and field learning. Use when one accountable technical lead must carry continuity across customer or stakeholder discovery, implementation, production fit, adoption, and measurable outcomes. Do not use for a bounded repository change, product investment governance, ongoing reliability or platform ownership, an isolated specialist task, or advisory work that ends before implementation and adoption."
+    },
+    {
       "name": "frontend-engineering",
       "source": "./",
       "skills": [
@@ -373,6 +391,15 @@
       ],
       "strict": false,
       "description": "Build and maintain web frontends — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation. Do not use for backend service implementation, data engineering, or platform infrastructure work."
+    },
+    {
+      "name": "genius-life",
+      "source": "./",
+      "skills": [
+        "./genius-life"
+      ],
+      "strict": false,
+      "description": "Guide a person in cultivating creativity in their own work and life: open conversational sessions on creative blocks, habits, environment, motivation, and resilience, or structured development of a concrete project or fledgling idea through a five-phase practice. Do not use for therapy or clinical support, general life coaching, product or stakeholder discovery, or as a study guide for a book."
     },
     {
       "name": "ghost-cli",
@@ -870,6 +897,15 @@
       "description": "Apply distilled coding principles from 14 classic software books to code review, refactoring, design, and implementation decisions. Do not use for language- or framework-specific tutorials, tool manuals, or tasks already governed by a project's established conventions."
     },
     {
+      "name": "promise-theory",
+      "source": "./",
+      "skills": [
+        "./promise-theory"
+      ],
+      "strict": false,
+      "description": "Design and diagnose coordination in hybrid human + AI agent workforces using promise theory (Burgess/Bergstra): model agents as autonomous, coordination as voluntary offers plus acceptance, and trust as calibrated assessment. Use for delegation modeling, capability manifests and agent contracts, coordination-failure diagnosis, trust/verification calibration, convergent self-healing systems, and converting obligation-based designs to promise-based. Do not use for enforceable centralized control, legal contract drafting (promise theory is not contract law), simple single-agent prompting, imperative push-based orchestration, or tool manuals — route those to the tool's own skill."
+    },
+    {
       "name": "pydanticai",
       "source": "./",
       "skills": [
@@ -969,6 +1005,15 @@
       "description": "Plan authorized security reviews with threat modeling, architecture and dependency audits, and vulnerability classification. Use for scoped defensive security assessment. Do not use for offensive operations, unauthorized testing, or security control implementation."
     },
     {
+      "name": "semantic-spacetime",
+      "source": "./",
+      "skills": [
+        "./semantic-spacetime"
+      ],
+      "strict": false,
+      "description": "Model and diagnose shared semantic ground between agents with Semantic Spacetime (Mark Burgess, 2014-2025): a discrete graph model of meaning over time, where local proper time replaces global clocks, causality is cooperative promises, and gamma(3,4) graphs expose semantic drift, world model divergence, and absorbing states. Use for designing convergent self-healing coordination, modeling intent and trajectories over time, mapping promises onto spacetime, diagnosing semantic drift or dead-ends, and analyzing temporal blindness in agents. Do not use for physics or relativity, pure vector embeddings or RAG without temporal-causal structure, enforceable centralized control, simple single-agent prompting, or tool manuals — route those to the appropriate skill."
+    },
+    {
       "name": "seo-audit",
       "source": "./",
       "skills": [
@@ -1038,7 +1083,7 @@
         "./supabase"
       ],
       "strict": false,
-      "description": "Use this skill when developing applications with Supabase, running the Supabase CLI, designing migrations and RLS policies, testing database behavior, generating client types, deploying the official self-hosted Docker stack, or administering its Postgres, Auth, Storage, Realtime, Functions, API gateway, backups, upgrades, and security. Use it for managed and self-hosted projects. Do not use it for generic PostgreSQL work with no Supabase services or conventions."
+      "description": "Use this skill when developing applications with Supabase, running the Supabase CLI, designing migrations and RLS policies, testing database behavior, generating client types, deploying the official self-hosted Docker stack, or administering its Postgres, Auth, Storage, Realtime, Functions, API gateway, backups, upgrades, and security. Use it for managed and self-hosted projects. Do not use for generic PostgreSQL work with no Supabase services or conventions."
     },
     {
       "name": "systematic-debugging",
@@ -1149,6 +1194,15 @@
       "description": "Manage Transistor.fm podcast hosting from the terminal: view shows, list episodes, check analytics, and get subscriber counts. Use when the user mentions Transistor, podcast hosting, podcast analytics, show management, or episode tracking."
     },
     {
+      "name": "travel-guide",
+      "source": "./",
+      "skills": [
+        "./travel-guide"
+      ],
+      "strict": false,
+      "description": "Create personalized, source-grounded travel dossiers from a destination, dates, duration, travelers, and constraints. Ask only the questions that change the plan, use explicitly permitted personal context without exposing it, research current logistics, and produce a cited, visually coherent PDF or responsive companion web page. Use when someone wants an individualized itinerary, trip brief, travel field guide, or shareable travel website. Do not use for real-time booking, ticket purchasing, visa or legal advice, or generic destination summaries without a specific traveler and trip."
+    },
+    {
       "name": "vercel-eve",
       "source": "./",
       "skills": [
@@ -1201,6 +1255,15 @@
       ],
       "strict": false,
       "description": "Discover your actual workflow through conversation or observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Use when you want to understand your own process, formalize it, or share it with collaborators. Also use when a session feels aimless — this skill gives it structure."
+    },
+    {
+      "name": "writers-helper",
+      "source": "./",
+      "skills": [
+        "./writers-helper"
+      ],
+      "strict": false,
+      "description": "Guide any writer, fiction or nonfiction, through the whole writing lifecycle: premise and planning, outlining and worldbuilding, research, drafting and finishing, editing and revision, breaking creative blocks, generating position-aware prompts and exercises, building sustainable writing habits, and the business of publishing — book proposals, query letters, synopses, agents, publishers, and book deals. Do not use for formatting deliverables into document files (see word-document, pdf-document, epub), for technical or business documentation (see technical-documentation), or for pure grammar and spelling reference."
     },
     {
       "name": "yc-default-alive-calculator",

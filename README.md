@@ -28,6 +28,10 @@ Operate an evaluated agent with tools and authority in production through a runt
 
 Reference for the Agent Skills open format itself — directory structure, frontmatter schema, naming conventions, and progressive disclosure model. Use this meta-skill when creating or reviewing any other skill in this repository.
 
+### [anydoc](anydoc/SKILL.md)
+
+Convert Word, PowerPoint, Excel, OpenDocument, RTF, EPUB, CSV, and text-based PDF documents to GitHub-Flavored Markdown locally with the Any Doc CLI. Use when a task needs the contents of an office document, spreadsheet, presentation, ebook, or PDF you cannot read directly. Do not use for generating, editing, or validating documents, for ebook packaging, or for OCR of scanned or image-only PDFs.
+
 ### [api-design-and-evolution](api-design-and-evolution/SKILL.md)
 
 Design, document, review, and evolve consumer-facing HTTP, GraphQL, RPC, event, webhook, and streaming interfaces. Covers consumer jobs, domain semantics, contracts, failure behavior, compatibility, deprecation, migration, and deployed-boundary verification.
@@ -168,9 +172,17 @@ Use a small FlareSolverr JSON CLI for browser-backed GET and POST requests, read
 
 Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, metadata, webhooks, and user settings. Includes a guarded generic `/api/v1/` route for version-specific endpoints such as Actions and admin APIs.
 
+### [forward-deployed-engineering](bundles/forward-deployed-engineering/SKILL.md)
+
+Carry an embedded technical engagement from an ambiguous need to an adopted, measurable capability and a deliberate generalization decision across discovery, build, deployment, adoption, and field learning.
+
 ### [frontend-engineering](frontend-engineering/SKILL.md)
 
 Build and maintain web frontends — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation. Do not use for backend service implementation, data engineering, or platform infrastructure work.
+
+### [genius-life](genius-life/SKILL.md)
+
+Guide a person in cultivating creativity in their own work and life: open conversational sessions on creative blocks, habits, environment, motivation, and resilience, or structured development of a concrete project or fledgling idea through a five-phase practice. Do not use for therapy or clinical support, general life coaching, product or stakeholder discovery, or as a study guide for a book.
 
 ### [ghost-cli](ghost-cli/SKILL.md)
 
@@ -399,6 +411,10 @@ Assemble cross-domain production evidence into a risk-scaled launch decision. De
 
 Distilled coding principles from 14 classic software engineering books (Clean Code, DDD, Refactoring, Release It!, DDIA, Code Complete, and more). Cross-cutting principles organized by concern, task-to-book mapping, per-book mini and full rule sets, and a structured code-assessment workflow.
 
+### [promise-theory](promise-theory/SKILL.md)
+
+Design and diagnose coordination in hybrid human + AI agent workforces using promise theory (Burgess/Bergstra): model agents as autonomous, coordination as voluntary offers plus acceptance, and trust as calibrated assessment. Covers delegation modeling, capability manifests and agent contracts, coordination-failure diagnosis, trust/verification calibration, and converting obligation-based designs to promise-based ones. Ships 7 references, 3 templates, a stdlib-only lint CLI, and 6 evals.
+
 ### [pydanticai](pydanticai/SKILL.md)
 
 Build production-grade AI agents and graph-based state machines with PydanticAI and PydanticGraph. Covers agent creation, function tools with RunContext dependencies, structured output validation, streaming (text/events/graph nodes), a 20+ capability plugin system with on-demand loading (Thinking, WebSearch, MCP, Hooks, etc.), 16 model providers with FallbackModel and concurrency limiting, multi-agent delegation and programmatic hand-off, comprehensive testing with TestModel/FunctionModel, and the PydanticEvals evaluation framework. Includes the full PydanticGraph API — both BaseNode (class-based) and GraphBuilder (function-based) with parallel map/broadcast operations, joins with reducers, decisions, Mermaid rendering, and step-by-step execution. Ships 8 reference files covering core agents, capabilities/hooks, graph, models/output, patterns/integrations, testing/evals, worked examples, and an API surface quick reference.
@@ -442,6 +458,10 @@ Build security into software requirements, design, implementation, review, and r
 ### [security-audit-methodology](security-audit-methodology/SKILL.md)
 
 Give authorized teams a disciplined way to identify and prioritize security risks without mistaking a checklist for a security guarantee.
+
+### [semantic-spacetime](semantic-spacetime/SKILL.md)
+
+Model and diagnose shared semantic ground between agents with Mark Burgess's Semantic Spacetime: discrete graph spacetimes where meaning evolves over time, typed gamma(3,4) edges expose semantic drift and absorbing states, and cooperative promises carry causality.
 
 ### [seo-audit](seo-audit/SKILL.md)
 
@@ -523,6 +543,10 @@ Trakt.tv media discovery from the terminal. Browse trending, anticipated, and po
 
 Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view subscriber analytics. API key from transistor.fm settings.
 
+### [travel-guide](travel-guide/SKILL.md)
+
+Create personalized, source-grounded travel dossiers from a destination, dates, duration, travelers, and constraints. Ask only the questions that change the plan, research current logistics, and produce a cited PDF or responsive companion web page with private/shareable output options.
+
 ### [vercel-eve](vercel-eve/SKILL.md)
 
 Build, deploy, self-host, secure, and troubleshoot durable backend AI agents with Vercel Eve. Covers the filesystem-first agent project, typed tools, skills, subagents, connections, sandboxes, durable sessions, Vercel deployment, and the operational contracts required for a Node-hosted deployment.
@@ -545,6 +569,10 @@ Operate self-hosted Woodpecker CI from installation through production troublesh
 ### [workflow-architect](bundles/workflow-architect/SKILL.md)
 
 Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Ships 3 sub-skills, 3 reference documents, 4 templates, and a worked example output bundle.
+
+### [writers-helper](writers-helper/SKILL.md)
+
+A complete writing companion for fiction and nonfiction: premise and planning, outlining and worldbuilding, research, drafting and finishing, editing and revision, creative blocks and prompts, writing habits, and the business of publishing — book proposals, query letters, synopses, agents, publishers, and book deals. Ships 10 expert references, 13 fill-in templates, and 5 Python tools (prompt generator, session planner, manuscript stats analyzer, habit journal, submission tracker). Distilled from a 44-book writing-craft and publishing library.
 
 ### [yc-default-alive-calculator](yc-default-alive-calculator/SKILL.md)
 

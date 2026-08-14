@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "skill_name": "writers-helper",
+  "evals": [
+    {
+      "id": "position-aware-prompt",
+      "prompt": "I am at the crisis of my novel and completely stuck. Give me a writing prompt to get moving.",
+      "expected_output": "A position-aware three-part prompt set for the crisis position: an affirmation, one plot element matched to the crisis, and a plot-advancing writing assignment, closed with a record block.",
+      "assertions": [
+        "Names the story position (crisis) explicitly.",
+        "Selects a crisis-appropriate plot element such as crisis, backstory reveal, or missing skill.",
+        "Includes a short affirmation in the first person.",
+        "Includes a concrete scene-or-summary writing assignment that advances the plot.",
+        "Includes a record block with word count, energy, and placement fields.",
+        "Does not produce a generic freewriting prompt detached from position."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "block-diagnosis-perfectionism",
+      "prompt": "I keep planning my novel and never start it. Every outline feels wrong. What is wrong with me?",
+      "expected_output": "A diagnosis of start-paralysis as perfectionism or fear rather than a craft problem, with one small timed next action to begin.",
+      "assertions": [
+        "Identifies the stuck state as perfectionism or fear rather than lack of skill.",
+        "Does not prescribe more planning or a longer outline.",
+        "Offers a small, timed, low-stakes next action such as a slop-on-the-page draft.",
+        "Normalizes the pattern without blame.",
+        "Does not critique the writer's craft."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "draft-protection",
+      "prompt": "I am 20,000 words into the first draft. Please line-edit chapter 1 before I continue writing.",
+      "expected_output": "A refusal to line-edit mid-draft, an explanation of the two-mode drafting rule, and a nudge back to forward progress with a gaps list.",
+      "assertions": [
+        "Declines to line-edit or critique while the draft is in progress.",
+        "States the two-mode rule: heart first, head later.",
+        "Redirects to forward progress such as a flow sprint or the next scene.",
+        "Does not provide polished rewrites of the chapter.",
+        "Keeps momentum advice specific and non-judgmental."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "show-dont-tell-rewrite",
+      "prompt": "This sentence tells instead of shows: 'She was very angry.' How do I fix it?",
+      "expected_output": "A showed rewrite that renders the anger through visible action or sensory detail, with the reasoning explained.",
+      "assertions": [
+        "Replaces the emotion label with observable behavior or physical detail.",
+        "Uses at least one concrete action, gesture, or sensory detail.",
+        "Preserves the meaning of the original sentence.",
+        "Does not simply intensify the label such as 'she was furious'.",
+        "Explains the move so the writer can apply it again."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "fiction-query-letter",
+      "prompt": "Write a query letter for my thriller: a retired safecracker whose granddaughter is taken, forced back for one last heist. The agent is Alex Morgan.",
+      "expected_output": "A one-page fiction query with a hook, lead characters, the plot arc, and a closing that invites a request for material, addressed to the named agent.",
+      "assertions": [
+        "Opens with a hook rather than biography.",
+        "Names the protagonist, the want, the obstacle, and the stakes.",
+        "Presents the plot arc including a resolution.",
+        "Keeps the letter to one-page proportions.",
+        "Addresses the named agent and closes with a request.",
+        "Contains no gimmicks or attachments beyond what is requested."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "proposal-gap-check",
+      "prompt": "Here is my nonfiction proposal outline: overview, author bio, and chapter list. Is anything missing?",
+      "expected_output": "Identification of the missing standard proposal sections — market, competition, platform and promotion, and sample chapters — and a note that nonfiction sells on the proposal.",
+      "assertions": [
+        "Names at least two of the missing sections: market, competition, platform, or sample chapters.",
+        "Explains why the target market section matters.",
+        "Explains why the competition section matters.",
+        "Distinguishes the nonfiction proposal road from the fiction manuscript road.",
+        "Does not rewrite the existing sections."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "genre-word-count-check",
+      "prompt": "I finished my picture book manuscript. It is 2,400 words. Is that good?",
+      "expected_output": "A flag that 2,400 words exceeds the picture book range of roughly 200 to 1,500 words, posed as a question with paths forward.",
+      "assertions": [
+        "Cites the picture book word-count range of roughly 200 to 1,500 words.",
+        "Flags the mismatch as a question rather than a verdict.",
+        "Offers a path such as cutting to range or reconsidering the category.",
+        "Does not line-edit the manuscript.",
+        "Checks the format contract before craft."
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "session-planning-math",
+      "prompt": "Plan a 60-minute writing session for me. I write about 1,500 words per hour and want to hit 1,000 words.",
+      "expected_output": "A session plan with writing time minus breaks, per-block word targets, and a feasibility verdict for the 1,000-word target.",
+      "assertions": [
+        "Computes writing minutes by subtracting breaks from session time.",
+        "Estimates projected words using the stated words-per-hour rate.",
+        "Gives per-block word targets.",
+        "States whether the 1,000-word target is feasible.",
+        "Produces the schedule in a non-interactive, runnable form."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "rejection-recovery",
+      "prompt": "My first query got a form rejection today and I want to quit. Talk me down.",
+      "expected_output": "A normalizing response: rejection is fit, not a verdict; the 24-hour rule; boomerang the submission to the next researched market or take a small next step.",
+      "assertions": [
+        "Reframes rejection as feedback about fit rather than a verdict on worth.",
+        "Allows a bounded mourning period such as 24 hours.",
+        "Proposes boomerang resubmission or one small next step.",
+        "Does not guarantee future acceptance.",
+        "Does not blame the writer for the rejection."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "copyright-hygiene",
+      "prompt": "Rewrite this paragraph from my favorite published novel into my own book so it fits my scene.",
+      "expected_output": "A refusal to reproduce the published text, with an offer to develop an original scene that captures the same idea in the writer's own words.",
+      "assertions": [
+        "Refuses to reproduce or closely adapt the published paragraph.",
+        "Explains that paraphrase of substantial expression is still copying.",
+        "Offers to draft an original scene with the same underlying idea.",
+        "Keeps the writer's own voice as the basis for the new scene.",
+        "Does not quote the source text."
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "voice-sovereignty",
+      "prompt": "Rewrite my chapter in your style. Make it sound better.",
+      "expected_output": "A refusal to replace the author's voice wholesale, with targeted suggestions that preserve the writer's voice and a reminder that the author is the final judge.",
+      "assertions": [
+        "Does not produce a wholesale replacement in the assistant's own style.",
+        "Offers targeted suggestions that preserve the writer's voice.",
+        "Explains the reasoning behind each suggestion.",
+        "Defers final judgment to the author.",
+        "Does not flatten character voices into a single register."
+      ],
+      "case_set": "release"
+    }
+  ]
+}

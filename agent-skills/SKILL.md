@@ -117,6 +117,7 @@ Executable code agents can run. Scripts should:
 - Include helpful error messages
 - Handle edge cases gracefully
 - Use relative paths from the skill root (e.g., `scripts/extract.py`)
+- Be explicit about intent: say "run this script" or "read this as reference" — never leave the agent to guess whether a bundled file is executable or illustrative
 
 ### `references/`
 Additional documentation loaded on demand. Keep individual files focused — agents load these when instructed, so smaller files save context.
@@ -162,6 +163,7 @@ Focus on what the agent wouldn't know without the skill: project-specific conven
 ### Calibrate control
 - **Give freedom** when multiple approaches are valid — describe *why*, not just *what*
 - **Be prescriptive** when operations are fragile or a specific sequence must be followed
+- **Match prescriptiveness to fragility**: for a step that must be exactly right every time, prefer a deterministic script in `scripts/` over instructions the agent improvises on each run. A test only catches what you already thought to check; a script takes the guess out of the loop entirely
 - **Provide defaults, not menus** — pick one approach, mention alternatives briefly
 - **Favor procedures over declarations** — teach *how to approach* a class of problems, not *what to produce* for one instance
 
@@ -173,6 +175,10 @@ The highest-value content is often environment-specific corrections — things t
 
 ### Provide output templates
 When output needs a specific format, provide a template inline or in `assets/`. Agents pattern-match well against concrete structures.
+
+## Adopting Third-Party Skills
+
+Skills are executable capability: when a skill activates, its instructions and scripts run with the agent's permissions — shell access, file system, and credentials. Before running a skill you did not author (from a registry, a colleague, or an LLM generation), read [vetting third-party skills](references/vetting-third-party-skills.md) and treat it like any other dependency: inspect provenance, read the body and every script, and check what the skill reaches out to.
 
 ## Validation
 

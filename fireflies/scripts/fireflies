@@ -15,8 +15,8 @@ DEFAULT_ENDPOINT = "https://api.fireflies.ai/graphql"
 EX_USAGE, EX_CONFIG, EX_TRANSPORT, EX_GRAPHQL, EX_CONFIRM = 2, 3, 4, 5, 6
 
 DOCS = {
-    "transcripts_list": "query Transcripts($keyword: String, $scope: TranscriptsQueryScope, $fromDate: DateTime, $toDate: DateTime, $limit: Int, $skip: Int, $hostEmail: String, $userId: String, $mine: Boolean, $organizers: [String], $participants: [String], $channelId: String) { transcripts(keyword: $keyword, scope: $scope, fromDate: $fromDate, toDate: $toDate, limit: $limit, skip: $skip, host_email: $hostEmail, user_id: $userId, mine: $mine, organizers: $organizers, participants: $participants, channel_id: $channelId) { id title date duration organizer_email participants transcript_url } }",
-    "transcript": "query Transcript($id: String!) { transcript(id: $id) { id title date duration organizer_email participants transcript_url summary { overview } speakers { id name } sentences { index text speaker_name start_time end_time } analytics { sentiments { negative_pct neutral_pct positive_pct } } } }",
+    "transcripts_list": "query Transcripts($title: String, $keyword: String, $scope: String, $fromDate: DateTime, $toDate: DateTime, $limit: Int, $skip: Int, $hostEmail: String, $userId: String, $mine: Boolean, $organizers: [String!], $participants: [String!], $channelId: String, $organizerEmail: String, $participantEmail: String) { transcripts(title: $title, keyword: $keyword, scope: $scope, fromDate: $fromDate, toDate: $toDate, limit: $limit, skip: $skip, host_email: $hostEmail, user_id: $userId, mine: $mine, organizers: $organizers, participants: $participants, channel_id: $channelId, organizer_email: $organizerEmail, participant_email: $participantEmail) { id title date duration organizer_email participants transcript_url } }",
+    "transcript": "query Transcript($id: String!) { transcript(id: $id) { id title date duration organizer_email participants transcript_url video_url audio_url summary { overview } speakers { id name } sentences { index text speaker_name start_time end_time } analytics { sentiments { negative_pct neutral_pct positive_pct } } } }",
     "users": "query Users { users { user_id email name is_admin integrations } }",
     "me": "query User { user { user_id email name is_admin integrations } }",
     "user": "query User($id: String!) { user(id: $id) { user_id email name is_admin integrations } }",
@@ -39,12 +39,19 @@ DOCS = {
     "state": "mutation UpdateMeetingState($input: UpdateMeetingStateInput!) { updateMeetingState(input: $input) { success action } }",
     "share": "mutation ShareMeeting($input: ShareMeetingInput!) { shareMeeting(input: $input) { success message } }",
     "revoke": "mutation RevokeSharedMeetingAccess($input: RevokeSharedMeetingAccessInput!) { revokeSharedMeetingAccess(input: $input) { success message } }",
-    "bite_create": "mutation CreateBite($transcriptId: ID!, $start: Float!, $end: Float!, $name: String, $type: String, $summary: String, $privacy: [String]) { createBite(transcript_id: $transcriptId, start_time: $start, end_time: $end, name: $name, media_type: $type, summary: $summary, privacies: $privacy) { id name status } }",
+    "bite_create": "mutation CreateBite($transcriptId: ID!, $start: Float!, $end: Float!, $name: String, $type: String, $summary: String, $privacy: [BitePrivacy!]) { createBite(transcript_Id: $transcriptId, start_time: $start, end_time: $end, name: $name, media_type: $type, summary: $summary, privacies: $privacy) { id name status } }",
     "live_add": "mutation CreateLiveActionItem($input: CreateLiveActionItemInput!) { createLiveActionItem(input: $input) { success } }",
     "upload": "mutation UploadAudio($input: AudioUploadInput) { uploadAudio(input: $input) { success title message } }",
     "askfred_create": "mutation CreateThread($input: CreateAskFredThreadInput!) { createAskFredThread(input: $input) { message { id thread_id query answer suggested_queries status created_at } } }",
     "askfred_continue": "mutation ContinueThread($input: ContinueAskFredThreadInput!) { continueAskFredThread(input: $input) { message { id thread_id query answer suggested_queries status created_at } } }",
     "askfred_delete": "mutation DeleteThread($id: String!) { deleteAskFredThread(id: $id) { id title transcript_id user_id created_at } }",
+    "askfred_thread": "query AskFredThread($id: String!) { askfred_thread(id: $id) { id title transcript_id user_id created_at } }",
+    "channel_update": "mutation UpdateMeetingChannel($input: UpdateMeetingChannelInput!) { updateMeetingChannel(input: $input) { id title organizer_email } }",
+    "live_add_to": "mutation AddToLiveMeeting($meetingLink: String!, $title: String, $meetingPassword: String, $duration: Int, $language: String) { addToLiveMeeting(meeting_link: $meetingLink, title: $title, meeting_password: $meetingPassword, duration: $duration, language: $language) { message success } }",
+    "live_soundbite": "mutation CreateLiveSoundbite($input: CreateLiveSoundbiteInput!) { createLiveSoundbite(input: $input) { success } }",
+    "upload_url": "mutation CreateUploadUrl($input: CreateUploadUrlInput!) { createUploadUrl(input: $input) { upload_url meeting_id expires_at } }",
+    "upload_confirm": "mutation ConfirmUpload($input: ConfirmUploadInput!) { confirmUpload(input: $input) { success meeting_id message } }",
+    "user_role": "mutation SetUserRole($userId: String!, $role: Role!) { setUserRole(user_id: $userId, role: $role) { user_id email name is_admin } }",
     "introspection": "query IntrospectionQuery { __schema { queryType { name } mutationType { name } types { name kind } } }",
 }
 
@@ -122,7 +129,7 @@ def ensure_confirm(args, options):
 def run_doc(client, options, document, variables=None, operation_name=None):
     data, code = client.run(document, variables, operation_name); emit(data, options, code)
 def transcript_vars(args):
-    values = {"keyword": args.keyword, "scope": args.scope, "fromDate": args.from_date, "toDate": args.to_date, "limit": args.limit, "skip": args.skip, "hostEmail": args.host_email, "userId": args.user_id, "mine": args.mine, "organizers": split_csv(args.organizers), "participants": split_csv(args.participants), "channelId": args.channel_id}
+    values = {"title": args.title, "keyword": args.keyword, "scope": args.scope, "fromDate": args.from_date, "toDate": args.to_date, "limit": args.limit, "skip": args.skip, "hostEmail": args.host_email, "userId": args.user_id, "mine": args.mine, "organizers": split_csv(args.organizers), "participants": split_csv(args.participants), "channelId": args.channel_id, "organizerEmail": args.organizer_email, "participantEmail": args.participant_email}
     if args.limit > 50: fail("--limit cannot exceed Fireflies' documented maximum of 50")
     return {k:v for k,v in values.items() if v is not None}
 def split_csv(value): return value.split(",") if value else None
@@ -137,15 +144,16 @@ def build_parser():
         add_example(p, f"fireflies {name} --document '{kind} {{ ... }}'" + (" --confirm" if kind == "mutation" else ""))
     t = root.add_parser("transcripts", help="Read or delete transcripts."); ts = t.add_subparsers(dest="action", required=True)
     p = ts.add_parser("list", help="List transcripts.");
-    for flag, dest in (("--keyword","keyword"),("--scope","scope"),("--from-date","from_date"),("--to-date","to_date"),("--host-email","host_email"),("--user-id","user_id"),("--organizers","organizers"),("--participants","participants"),("--channel-id","channel_id")): p.add_argument(flag, dest=dest)
+    for flag, dest in (("--title","title"),("--keyword","keyword"),("--scope","scope"),("--from-date","from_date"),("--to-date","to_date"),("--host-email","host_email"),("--user-id","user_id"),("--organizers","organizers"),("--participants","participants"),("--channel-id","channel_id"),("--organizer-email","organizer_email"),("--participant-email","participant_email")): p.add_argument(flag, dest=dest)
     p.add_argument("--limit", type=int, default=10); p.add_argument("--skip", type=int, default=0); p.add_argument("--mine", action="store_true", default=None); add_example(p, "fireflies transcripts list --keyword roadmap --limit 10")
     p=ts.add_parser("get", help="Get transcript details."); p.add_argument("id"); add_example(p,"fireflies transcripts get transcript-id")
     p=ts.add_parser("delete", help="Delete a transcript."); p.add_argument("id"); add_confirm(p); add_example(p,"fireflies transcripts delete transcript-id --confirm")
     u=root.add_parser("users", help="Read users."); us=u.add_subparsers(dest="action",required=True)
-    for action in ("me","list","get"):
+    for action in ("me","list","get","set-role"):
         p=us.add_parser(action);
         if action == "get": p.add_argument("id")
-        add_example(p,f"fireflies users {action}" + (" user-id" if action=="get" else ""))
+        if action == "set-role": p.add_argument("--user-id",required=True); p.add_argument("--role",required=True,choices=("admin","user")); add_confirm(p)
+        add_example(p,f"fireflies users {action}" + (" user-id" if action=="get" else "") + (" --user-id X --role admin" if action=="set-role" else ""))
     simple = {"contacts":"Contacts","channels":"Channels","groups":"User groups","apps":"AI app outputs"}
     for name, help_text in simple.items():
         p=root.add_parser(name, help=help_text); sub=p.add_subparsers(dest="action", required=True); q=sub.add_parser("list"); add_example(q,f"fireflies {name} list")
@@ -154,22 +162,30 @@ def build_parser():
         if name == "groups": q.add_argument("--mine",action="store_true",default=None)
     b=root.add_parser("bites",help="Read or create Bites."); bs=b.add_subparsers(dest="action",required=True); p=bs.add_parser("list"); p.add_argument("--mine",action="store_true",default=None);p.add_argument("--transcript-id");p.add_argument("--my-team",action="store_true",default=None);p.add_argument("--limit",type=int);p.add_argument("--skip",type=int);add_example(p,"fireflies bites list --mine")
     p=bs.add_parser("get");p.add_argument("id");add_example(p,"fireflies bites get bite-id")
-    p=bs.add_parser("create");p.add_argument("--transcript-id",required=True);p.add_argument("--start",type=float,required=True);p.add_argument("--end",type=float,required=True);p.add_argument("--name");p.add_argument("--type");p.add_argument("--summary");p.add_argument("--privacy",action="append");add_confirm(p);add_example(p,"fireflies bites create --transcript-id id --start 0 --end 30 --confirm")
+    p=bs.add_parser("create");p.add_argument("--transcript-id",required=True);p.add_argument("--start",type=float,required=True);p.add_argument("--end",type=float,required=True);p.add_argument("--name");p.add_argument("--type");p.add_argument("--summary");p.add_argument("--privacy",action="append",choices=("public","team","participants"));add_confirm(p);add_example(p,"fireflies bites create --transcript-id id --start 0 --end 30 --confirm")
     p=root.add_parser("analytics",help="Get team/user analytics.");p.add_argument("--start",required=True);p.add_argument("--end",required=True);add_example(p,"fireflies analytics --start 2026-01-01 --end 2026-01-31")
     m=root.add_parser("meetings",help="Manage documented meeting properties."); ms=m.add_subparsers(dest="action",required=True)
-    for action in ("active","rename","privacy","state","share","revoke-share"):
-        p=ms.add_parser(action); add_example(p,f"fireflies meetings {action} meeting-id" + (" --confirm" if action!="active" else ""))
-        if action!="active": p.add_argument("id");add_confirm(p)
+    for action in ("active","rename","privacy","state","share","revoke-share","update-channel"):
+        p=ms.add_parser(action)
+        example = f"fireflies meetings {action} meeting-id" if action != "update-channel" else "fireflies meetings update-channel --channel-id ID --transcript-ids A,B,C"
+        add_example(p, example + (" --confirm" if action not in ("active","update-channel") else ""))
+        if action not in ("active","update-channel"): p.add_argument("id");add_confirm(p)
         if action=="rename":p.add_argument("--title",required=True)
         if action=="privacy":p.add_argument("--privacy",required=True)
         if action=="state":p.add_argument("--state",required=True,choices=("pause_recording","resume_recording"))
-        if action=="share":p.add_argument("--emails",required=True)
+        if action=="share":p.add_argument("--emails",required=True);p.add_argument("--expiry-days",type=int)
         if action=="revoke-share":p.add_argument("--email",required=True)
+        if action=="update-channel":p.add_argument("--channel-id",required=True);p.add_argument("--transcript-ids",required=True);add_confirm(p)
     p=root.add_parser("live-action-items",help="List a meeting's live action items.");p.add_argument("meeting_id");add_example(p,"fireflies live-action-items meeting-id")
-    p=root.add_parser("live",help="Create action items during a live meeting.");ls=p.add_subparsers(dest="action",required=True);p=ls.add_parser("add",help="Create a live action item.");p.add_argument("--meeting-id",required=True,help="Live meeting ID.");p.add_argument("--action-item",required=True,help="Natural-language action-item prompt.");add_confirm(p);add_example(p,"fireflies live add --meeting-id meeting-id --action-item 'Follow up' --confirm")
+    p=root.add_parser("live",help="Create action items or soundbites during a live meeting, or add a live meeting.");ls=p.add_subparsers(dest="action",required=True);p=ls.add_parser("add",help="Create a live action item.");p.add_argument("--meeting-id",required=True,help="Live meeting ID.");p.add_argument("--action-item",required=True,help="Natural-language action-item prompt.");add_confirm(p);add_example(p,"fireflies live add --meeting-id meeting-id --action-item 'Follow up' --confirm")
+    p=ls.add_parser("add-to",help="Add a live meeting by link.");p.add_argument("--meeting-link",required=True);p.add_argument("--title");p.add_argument("--meeting-password");p.add_argument("--duration",type=int);p.add_argument("--language");add_confirm(p);add_example(p,"fireflies live add-to --meeting-link https://meet.google.com/xxx --confirm")
+    p=ls.add_parser("soundbite",help="Create a soundbite clip from a live meeting.");p.add_argument("--meeting-id",required=True);p.add_argument("--prompt",required=True);add_confirm(p);add_example(p,"fireflies live soundbite --meeting-id meeting-id --prompt 'Opening statement' --confirm")
     a=root.add_parser("audio",help="Upload remote audio/video.");au=a.add_subparsers(dest="action",required=True);p=au.add_parser("upload");p.add_argument("--url",required=True);p.add_argument("--title");p.add_argument("--webhook");p.add_argument("--language");p.add_argument("--save-video",action="store_true",default=None);p.add_argument("--client-reference-id");add_confirm(p);add_example(p,"fireflies audio upload --url https://example.com/call.mp3 --confirm")
+    p=au.add_parser("create-upload",help="Create a signed upload URL for a file (two-phase upload step 1).");p.add_argument("--title");p.add_argument("--content-type",required=True);p.add_argument("--file-size",type=int,required=True);p.add_argument("--custom-language");add_confirm(p);add_example(p,"fireflies audio create-upload --content-type audio/wav --file-size 5242880 --confirm")
+    p=au.add_parser("confirm-upload",help="Confirm a two-phase upload (step 3).");p.add_argument("--meeting-id",required=True);add_confirm(p);add_example(p,"fireflies audio confirm-upload --meeting-id meeting-id --confirm")
     af=root.add_parser("askfred",help="Use AskFred; requires AI credits for mutations.");afs=af.add_subparsers(dest="action",required=True);p=afs.add_parser("threads");add_example(p,"fireflies askfred threads")
     p=afs.add_parser("create");p.add_argument("--question",required=True);p.add_argument("--transcript-id");p.add_argument("--transcript-ids");p.add_argument("--language");add_confirm(p);add_example(p,"fireflies askfred create --question 'What changed?' --transcript-id id --confirm")
+    p=afs.add_parser("get");p.add_argument("thread_id");add_example(p,"fireflies askfred get thread-id")
     p=afs.add_parser("continue");p.add_argument("thread_id");p.add_argument("--question",required=True);add_confirm(p);add_example(p,"fireflies askfred continue thread-id --question 'Why?' --confirm")
     p=afs.add_parser("delete");p.add_argument("thread_id");add_confirm(p);add_example(p,"fireflies askfred delete thread-id --confirm")
     for name, title in (("audit-events","Enterprise/admin audit event query"),("rule-executions","Enterprise/admin rule execution query")):
@@ -204,7 +220,10 @@ def main(argv=None):
         if args.action == "list": run_doc(client, options, DOCS["transcripts_list"], transcript_vars(args))
         if args.action == "get": run_doc(client, options, DOCS["transcript"], {"id":args.id})
         ensure_confirm(args, options); run_doc(client, options, DOCS["delete"], {"id":args.id})
-    if args.root == "users": run_doc(client, options, DOCS["users"] if args.action=="list" else (DOCS["me"] if args.action=="me" else DOCS["user"]), {} if args.action!="get" else {"id":args.id})
+    if args.root == "users":
+        if args.action == "set-role":
+            ensure_confirm(args, options); run_doc(client, options, DOCS["user_role"], {"userId": args.user_id, "role": args.role})
+        else: run_doc(client, options, DOCS["users"] if args.action=="list" else (DOCS["me"] if args.action=="me" else DOCS["user"]), {} if args.action!="get" else {"id":args.id})
     if args.root in ("contacts","channels","groups","apps"):
         key = args.root if args.root != "channels" or args.action=="list" else "channel"; variables = {}
         if args.root=="channels" and args.action=="get":variables={"id":args.id}
@@ -224,21 +243,35 @@ def main(argv=None):
         if args.action=="rename": run_doc(client,options,DOCS["rename"],{"input":{"id":args.id,"title":args.title}})
         if args.action=="privacy": run_doc(client,options,DOCS["privacy"],{"input":{"id":args.id,"privacy":args.privacy}})
         if args.action=="state": run_doc(client,options,DOCS["state"],{"input":{"meeting_id":args.id,"action":args.state}})
-        if args.action=="share": run_doc(client,options,DOCS["share"],{"input":{"meeting_id":args.id,"emails":split_csv(args.emails)}})
-        run_doc(client,options,DOCS["revoke"],{"input":{"meeting_id":args.id,"email":args.email}})
+        if args.action=="share":
+            inp={"meeting_id":args.id,"emails":split_csv(args.emails)}
+            if args.expiry_days is not None: inp["expiry_days"]=args.expiry_days
+            run_doc(client,options,DOCS["share"],{"input":inp})
+        if args.action=="revoke-share": run_doc(client,options,DOCS["revoke"],{"input":{"meeting_id":args.id,"email":args.email}})
+        if args.action=="update-channel": run_doc(client,options,DOCS["channel_update"],{"input":{"transcript_ids":split_csv(args.transcript_ids),"channel_id":args.channel_id}})
     if args.root=="live-action-items":run_doc(client,options,DOCS["live_items"],{"id":args.meeting_id})
-    if args.root=="live": ensure_confirm(args,options);run_doc(client,options,DOCS["live_add"],{"input":{"meeting_id":args.meeting_id,"prompt":args.action_item}})
+    if args.root=="live":
+        ensure_confirm(args,options)
+        if args.action=="add": run_doc(client,options,DOCS["live_add"],{"input":{"meeting_id":args.meeting_id,"prompt":args.action_item}})
+        if args.action=="add-to": run_doc(client,options,DOCS["live_add_to"],{k:v for k,v in {"meeting_link":args.meeting_link,"title":args.title,"meeting_password":args.meeting_password,"duration":args.duration,"language":args.language}.items() if v is not None})
+        if args.action=="soundbite": run_doc(client,options,DOCS["live_soundbite"],{"input":{"meeting_id":args.meeting_id,"prompt":args.prompt}})
     if args.root=="audio":
-        ensure_confirm(args,options); inp={"url":args.url,"title":args.title,"webhook":args.webhook,"custom_language":args.language,"save_video":args.save_video,"client_reference_id":args.client_reference_id};run_doc(client,options,DOCS["upload"],{"input":{k:v for k,v in inp.items() if v is not None}})
+        ensure_confirm(args,options)
+        if args.action=="upload":
+            inp={"url":args.url,"title":args.title,"webhook":args.webhook,"custom_language":args.language,"save_video":args.save_video,"client_reference_id":args.client_reference_id};run_doc(client,options,DOCS["upload"],{"input":{k:v for k,v in inp.items() if v is not None}})
+        if args.action=="create-upload":
+            inp={"title":args.title,"content_type":args.content_type,"file_size":args.file_size,"custom_language":args.custom_language};run_doc(client,options,DOCS["upload_url"],{"input":{k:v for k,v in inp.items() if v is not None}})
+        if args.action=="confirm-upload": run_doc(client,options,DOCS["upload_confirm"],{"input":{"meeting_id":args.meeting_id}})
     if args.root=="askfred":
         if args.action=="threads":run_doc(client,options,DOCS["askfred_threads"])
+        if args.action=="get":run_doc(client,options,DOCS["askfred_thread"],{"id":args.thread_id})
         ensure_confirm(args,options)
         if args.action=="create":
             inp={"query":args.question,"transcript_id":args.transcript_id,"response_language":args.language}
             if args.transcript_ids:inp["filters"]={"transcript_ids":json_value(args.transcript_ids,"--transcript-ids")}
             run_doc(client,options,DOCS["askfred_create"],{"input":{k:v for k,v in inp.items() if v is not None}})
         if args.action=="continue":run_doc(client,options,DOCS["askfred_continue"],{"input":{"thread_id":args.thread_id,"query":args.question}})
-        run_doc(client,options,DOCS["askfred_delete"],{"id":args.thread_id})
+        if args.action=="delete":run_doc(client,options,DOCS["askfred_delete"],{"id":args.thread_id})
     if args.root in ("audit-events","rule-executions"):run_doc(client,options,DOCS["audit" if args.root=="audit-events" else "rules"],{"limit":args.limit,"cursor":args.cursor,"filters":json_value(args.filter,"--filter")})
     if args.root=="webhook":
         body=sys.stdin.buffer.read() if args.body=="-" else Path(args.body).read_bytes(); prefix="sha256="; supplied=args.signature[len(prefix):] if args.signature.startswith(prefix) else ""; expected=hmac.new(args.secret.encode(),body,hashlib.sha256).hexdigest(); result={"valid":bool(supplied) and hmac.compare_digest(expected,supplied)}

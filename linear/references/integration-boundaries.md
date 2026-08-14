@@ -36,3 +36,12 @@ belongs in the focused surface only when it has a recurring agent workflow, a cl
 and a bounded contract. Promotion is complete only when CLI help and routing, SKILL/README command
 maps, official source provenance, offline request/failure tests, schema re-verification, and the
 repository regression gates all agree. Until then, keep the verified operation behind narrow `raw`.
+
+## Intentional Exclusions
+
+These documented operations stay behind `raw` on purpose and are not promoted to first-class
+verbs: issue, project, cycle, and document deletion (irreversible by default); attachment uploads
+(multipart, outside the JSON endpoint); bulk issue create/update (`issueBatchCreate`/`issueBatchUpdate`);
+team, user, workflow-state, and organization administration; and integrations, webhooks, initiatives,
+customers, and notifications. If a workflow needs one of these repeatedly, review the promotion
+criteria above before adding a verb.

@@ -14,18 +14,38 @@ for every documented current or future operation. The CLI rejects mutations on `
 
 | Family | Documented operation |
 |---|---|
-| Meetings | `transcripts`, `transcript`, `deleteTranscript`, `updateMeetingTitle`, `updateMeetingPrivacy`, `updateMeetingState`, `shareMeeting`, `revokeSharedMeetingAccess` |
-| Workspace | `user`, `users`, `contacts`, `channels`, `channel`, `user_groups` |
+| Meetings | `transcripts`, `transcript`, `deleteTranscript`, `updateMeetingTitle`, `updateMeetingPrivacy`, `updateMeetingState`, `updateMeetingChannel`, `shareMeeting`, `revokeSharedMeetingAccess` |
+| Workspace | `user`, `users`, `contacts`, `channels`, `channel`, `user_groups`, `setUserRole` |
 | Content | `bites`, `bite`, `createBite`, `apps`, `analytics` |
-| Live | `active_meetings`, `live_action_items`, `createLiveActionItem` |
-| Automation | `auditEvents`, `rule_executions_by_meeting`, `uploadAudio` |
+| Live | `active_meetings`, `live_action_items`, `createLiveActionItem`, `addToLiveMeeting`, `createLiveSoundbite` |
+| Automation | `auditEvents`, `rule_executions_by_meeting`, `uploadAudio`, `createUploadUrl`, `confirmUpload` |
 | AskFred | `askfred_threads`, `askfred_thread`, `createAskFredThread`, `continueAskFredThread`, `deleteAskFredThread` |
 
 The ergonomic CLI documents use conservative selections. `live add` calls
-`createLiveActionItem(input: CreateLiveActionItemInput!)` with `meeting_id` and `prompt` only.
-Use the generic `mutation` escape hatch for Add to Live (`addToLiveMeeting`) or any operation not
-represented by an ergonomic command. Use introspection only through `schema introspect`; availability
+`createLiveActionItem(input: CreateLiveActionItemInput!)` with `meeting_id` and `prompt` only;
+`live add-to` calls `addToLiveMeeting` with the documented flat arguments; `live soundbite` calls
+`createLiveSoundbite`. Use the generic `mutation` escape hatch for any operation not represented
+by an ergonomic command. Use introspection only through `schema introspect`; availability
 depends on the deployment.
+
+## Live-Schema Audit (2026-08-05)
+
+CLI documents were re-validated against live GraphQL introspection on 2026-08-05. The published
+docs at docs.fireflies.ai drifted from the live schema in the following ways, which the CLI now
+follows (live schema wins):
+
+- `TranscriptsQueryScope` is documented for the `transcripts` query but absent from the live
+  schema; `scope` is a plain `String` there.
+- `transcripts` organizers/participants require non-null elements (`[String!]`), and the query
+  accepts `title`, `organizer_email`, and `participant_email` filters.
+- `createBite` names its argument `transcript_Id` (capital I) and `privacies` takes
+  `[BitePrivacy!]` (enum: `public`, `team`, `participants`).
+- `shareMeeting` input gained `expiry_days` (7, 14, or 30).
+- `transcript` selection gained `video_url` and `audio_url` (meeting recording download links),
+  verified by live introspection on 2026-08-10.
+- `updateMeetingChannel` (changelog 2.15.0), `addToLiveMeeting`, `createLiveSoundbite`,
+  `createUploadUrl`/`confirmUpload`, `setUserRole`, and `askfred_thread` were added as ergonomic
+  commands after the audit found them documented but uncovered.
 
 ## Pagination and Limits
 

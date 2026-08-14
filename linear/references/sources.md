@@ -29,6 +29,12 @@ for field availability and retain the documentation URL plus access date as prov
 official page contains internally conflicting limit values, avoid encoding either value in CLI
 behavior and inspect response headers during credentialed operation.
 
+Re-verified 2026-08-05 against the live public schema via anonymous introspection for the
+mutation surface added in the project/state change: `projectUpdate` (returns `ProjectPayload.project`),
+`issueArchive`/`issueUnarchive` (return `IssueArchivePayload.entity`), `team.labels`,
+`projectStatuses`, `users`, and the `ProjectFilter.accessibleTeams` / `CycleFilter.team` filters.
+Record the exact selection and update the offline CLI contract tests on any future change.
+
 The CLI's offline tests verify parser, safety-gate, and error-handling contracts only. They do not
 replace a credentialed workspace smoke test for permissions, workspace-specific names, or returned
 resource data.

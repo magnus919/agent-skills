@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "privacy_mode": "private",
+  "title": "Lisbon, at a human pace",
+  "cover": {
+    "eyebrow": "A personal travel dossier",
+    "subtitle": "Seven days built around late mornings, one serious cultural anchor per day, and room to wander.",
+    "image": {
+      "src": "",
+      "alt": "",
+      "credit": ""
+    }
+  },
+  "trip": {
+    "destination": "Lisbon",
+    "region": "Portugal",
+    "start_date": "2027-04-12",
+    "end_date": "2027-04-18",
+    "duration_days": 7,
+    "travelers": ["Traveler A", "Traveler B"],
+    "pace": "Slow to moderate",
+    "budget": {
+      "label": "Mid-range",
+      "currency": "EUR",
+      "amount_range": "€€"
+    },
+    "route": [
+      {"place": "Lisbon", "nights": 7}
+    ]
+  },
+  "thesis": "A week in Lisbon with enough structure to protect the good parts of the day and enough slack for the city to interrupt the plan.",
+  "profile": {
+    "known_preferences": [
+      "Walkable neighborhoods",
+      "Good food without formal ceremony every night",
+      "One substantial cultural anchor per day"
+    ],
+    "constraints": [
+      "Do not turn every day into a timed route",
+      "Keep one low-energy alternative available"
+    ],
+    "open_questions": []
+  },
+  "anchors": [
+    {
+      "title": "A quiet first look at the city",
+      "place": "Replace with a specific viewpoint, museum, or neighborhood route",
+      "image": {"src": "", "alt": "", "credit": ""},
+      "why": "It gives the travelers orientation without spending the first day on a checklist.",
+      "best_window": "Late morning",
+      "cost": "Add a sourced range",
+      "booking": "Confirm whether advance booking is required",
+      "failure_mode": "Crowds or weather may make the alternative route preferable.",
+      "source_ids": ["S1"]
+    },
+    {
+      "title": "A meal worth making the evening about",
+      "place": "Replace with a specific restaurant or market stall",
+      "image": {"src": "", "alt": "", "credit": ""},
+      "why": "The meal is the evening's anchor, so the rest of the day can stay deliberately light.",
+      "best_window": "Early dinner or the first available counter seating",
+      "cost": "Add a sourced range and currency",
+      "booking": "Add the official booking path or state that it is walk-in",
+      "failure_mode": "If the reservation is unavailable, use the named fallback rather than improvising a second destination.",
+      "source_ids": ["S2"]
+    },
+    {
+      "title": "An ordinary-life texture",
+      "place": "Replace with a specific market, shop, tram route, or neighborhood walk",
+      "image": {"src": "", "alt": "", "credit": ""},
+      "why": "It makes the trip about how the city feels between headline attractions.",
+      "best_window": "A weekday morning",
+      "cost": "Free or add a sourced estimate",
+      "booking": "No booking assumed; verify access and opening days",
+      "failure_mode": "A closure or heavy rain calls for the indoor branch in the day card.",
+      "source_ids": ["S3"]
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "label": "Arrive without proving anything",
+      "kind": "arrive",
+      "anchor": "A short orientation walk near the base",
+      "texture": "A first meal chosen for ease, not prestige",
+      "pause": "Leave the afternoon unassigned",
+      "alternative": "If arrival is late, replace the walk with a nearby café and an early night.",
+      "practical": "Add the transfer and check-in caveat.",
+      "source_ids": ["S4"]
+    },
+    {
+      "day": 2,
+      "label": "One substantial thing, then drift",
+      "kind": "city",
+      "anchor": "Use the first cultural anchor",
+      "texture": "A named street, market, or small shop nearby",
+      "pause": "Return before the second major commitment",
+      "alternative": "Use the low-energy branch if the anchor is crowded or closed.",
+      "practical": "Add the opening and reservation facts.",
+      "source_ids": ["S1", "S5"]
+    }
+  ],
+  "special": [
+    {
+      "title": "A small ritual to carry through the week",
+      "description": "Choose one repeatable observation, object, or pause that belongs to this trip rather than to a generic city guide.",
+      "when": "Once on an unhurried day",
+      "source_ids": []
+    }
+  ],
+  "skip": [
+    {
+      "title": "The famous option that does not fit the pace",
+      "reason": "State the trade-off plainly and name the better-fit alternative.",
+      "source_ids": []
+    }
+  ],
+  "practical": [
+    {
+      "label": "Transit",
+      "value": "Add the route, payment method, and source-backed caveat.",
+      "source_ids": ["S4"]
+    },
+    {
+      "label": "Reservations",
+      "value": "Add what must be booked, how early, and what remains uncertain.",
+      "source_ids": ["S2"]
+    },
+    {
+      "label": "Freshness",
+      "value": "Replace this with the latest research date and any facts that should be rechecked before departure.",
+      "source_ids": []
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Official destination or venue source",
+      "url": "https://example.org/source-1",
+      "retrieved": "2026-08-07",
+      "supports": ["opening hours", "access details"],
+      "notes": "Replace this illustrative URL with the authoritative source used."
+    },
+    {
+      "id": "S2",
+      "title": "Official booking or operator source",
+      "url": "https://example.org/source-2",
+      "retrieved": "2026-08-07",
+      "supports": ["reservation method", "price range"],
+      "notes": "Do not treat a booking link as proof of live availability."
+    },
+    {
+      "id": "S3",
+      "title": "Local context source",
+      "url": "https://example.org/source-3",
+      "retrieved": "2026-08-07",
+      "supports": ["neighborhood context"],
+      "notes": "Use a primary or specialist local source rather than a copied listicle."
+    },
+    {
+      "id": "S4",
+      "title": "Official transit source",
+      "url": "https://example.org/source-4",
+      "retrieved": "2026-08-07",
+      "supports": ["route", "ticketing"],
+      "notes": "Replace with the relevant transit authority."
+    },
+    {
+      "id": "S5",
+      "title": "Official calendar or venue source",
+      "url": "https://example.org/source-5",
+      "retrieved": "2026-08-07",
+      "supports": ["event or schedule"],
+      "notes": "Recheck time-sensitive schedules before travel."
+    }
+  ]
+}

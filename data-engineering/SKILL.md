@@ -45,6 +45,7 @@ Data engineering is the operational backbone of data-driven systems. This method
 ## Related Skills
 
 - [postgres](../postgres/SKILL.md) — operating a PostgreSQL server itself: configuration review, index and query-plan diagnosis, vacuum/bloat management, WAL archiving and point-in-time recovery, replication and failover, upgrades. This skill owns the engine-specific runbooks; data-engineering owns the engine-neutral methodology.
+- [supabase](../supabase/SKILL.md) — Supabase platform operations: migrations, RLS, Auth, Storage, Functions, and self-hosting. To measure an agent's Supabase task competence, use its [agent evals harness reference](../supabase/references/agent-evals.md).
 
 ## Core Principles
 

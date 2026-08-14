@@ -60,6 +60,10 @@ Load this skill when the task involves any of the four formats:
   documentation-site conventions, not office documents.
 - **Data pipelines** — moving or transforming raw data belongs to
   `data-engineering`; Excel here is a *deliverable format*, not a data store.
+- **Office documents to Markdown** — converting an existing office document
+  (docx, xlsx, pptx, pdf, odt, rtf, epub, csv) to GitHub-Flavored Markdown
+  belongs to the `anydoc` skill; this skill owns generation, editing, and
+  validation, not document-to-markdown extraction.
 
 ## The Shared Workflow
 

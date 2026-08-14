@@ -4,10 +4,17 @@ Endpoint: `https://api.linear.app/graphql`. Send JSON GraphQL requests with `Con
 application/json`. A personal API key is the value of the `Authorization` header. An OAuth access
 token is sent in the `Authorization` header with the `Bearer ` prefix.
 
-This CLI supports bounded reads for teams, issues, documents, projects, and cycles, plus
-issue-scoped create, update, move, and comment mutations. Use `raw` for a documented operation
-outside that surface. Issue reads accept a UUID or shorthand identifier. Document reads accept a
-UUID, slug ID, or Linear document URL; slug lookup uses the `documents` filter.
+This CLI supports bounded reads for teams, issues, documents, projects, cycles, and workflow
+states, plus issue create, update, move, archive, unarchive, and comment mutations, and project
+update. Use `raw` for a documented operation outside that surface. Issue reads accept a UUID or
+shorthand identifier. Document reads accept a UUID, slug ID, or Linear document URL; slug lookup
+uses the `documents` filter.
+
+Friendly-name resolution uses bounded queries: teams via the `teams` connection, users by exact
+name/email via the `users` connection, labels within a team via `team.labels`, project statuses via
+`projectStatuses`, and workflow states within a team via `team.states`. Each resolver requires
+exactly one match and fails with the available names on ambiguity. Resolvers query at most 100
+items; a workspace or team with more matches than the first page cannot be resolved by name.
 
 For personal scripts, a personal API key is the simplest authentication method. OAuth is intended
 for applications acting on behalf of users; access tokens are sent with the Bearer prefix. This CLI

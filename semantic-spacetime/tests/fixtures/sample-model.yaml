@@ -1,0 +1,54 @@
+# --- example ---
+schema_version: 1
+agents:
+  - id: operator              # required; unique; lowercase-hyphen
+    role: workflow operator   # required; free text
+    promises:                 # optional; scalar promises this agent makes
+      - id: deliver-report    # required; unique across the whole model
+        body: Deliver the weekly status report by Friday.   # required; free text
+        type: capability      # optional; capability | intent | constraint
+        target: reviewer      # optional; <agent-id> | <node-id> | all
+      - id: no-unverified-claims
+        body: Never assert a claim without a measured source.
+        type: constraint
+        target: all
+  - id: reviewer
+    role: semantic reviewer
+    promises:
+      - id: review-report
+        body: Review the report for semantic drift against the agreed vocabulary.
+        type: capability
+        target: operator
+nodes:                        # required; at least one semantic element
+  - id: report-event          # required; unique; lowercase-hyphen
+    type: event               # required; event | thing | concept
+  - id: report-thing
+    type: thing
+  - id: drift-concept
+    type: concept
+edges:                        # required; at least one gamma(3,4) edge
+  - from: report-event        # required; must be a declared node id
+    to: report-thing          # required; must be a declared node id
+    link: 1                   # required; integer in -3..3
+  - from: report-thing
+    to: drift-concept
+    link: 3
+  - from: drift-concept
+    to: report-thing
+    link: 2
+acceptances:                  # optional; cross-agent acceptance records
+  - promise: deliver-report   # required; must reference a declared promise id
+    from: operator            # required; must equal the agent that declares it
+    to: reviewer              # required; a declared agent id
+trajectories:                 # optional; declared paths through the graph
+  - id: report-flow           # required; unique
+    path: [report-event, report-thing, drift-concept]  # required; node ids, >= 1 entry
+    label: report moves from event to reviewed thing   # optional; free text
+observations:                 # optional; the proper-time record
+  - at: t1                    # required; tick label or timestamp, free text
+    event: report drafted     # required; what changed, free text
+    changed: report-event     # optional; a declared node id or promise id
+  - at: t2
+    event: reviewer flags drift in vocabulary
+    changed: drift-concept
+# --- end example ---

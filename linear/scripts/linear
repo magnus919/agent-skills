@@ -16,6 +16,7 @@ MAX_LIMIT = 100
 UUID_RE = re.compile(
     r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I
 )
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 ISSUE_FIELDS = "id identifier title description priority url createdAt updatedAt team { id name key } state { id name type } assignee { id name } labels { nodes { id name } }"
 ISSUE_DETAIL_FIELDS = (
@@ -76,6 +77,21 @@ def parse_document_ref(ref):
     if not ref or "/" in ref:
         fail("document reference must be a UUID, slug ID, or Linear document URL")
     return "slugId", ref
+
+
+def parse_date(value, label):
+    if not DATE_RE.match(value):
+        fail("%s must be an ISO date in YYYY-MM-DD form" % label)
+    return value
+
+
+def validate_project_description(value):
+    if len(value) > 255:
+        fail(
+            "project description must be 255 characters or fewer; "
+            "Linear's projectUpdate API rejects longer descriptions"
+        )
+    return value
 
 
 def is_mutation(query):
@@ -251,9 +267,9 @@ def resolve_issue(client, ref):
     return require_found(data.get("issue"), "issue", ref)
 
 
-def resolve_state(client, issue, state_name):
+def resolve_state(client, team, state_name):
     query = "query TeamStates($id: String!, $first: Int!) { team(id: $id) { states(first: $first) { nodes { id name type } } } }"
-    data = client.run(query, {"id": issue["team"]["id"], "first": MAX_LIMIT})
+    data = client.run(query, {"id": team["id"], "first": MAX_LIMIT})
     states = (data.get("team") or {}).get("states") or {}
     states = states.get("nodes", states) if isinstance(states, dict) else states
     matches = [state for state in states if state["name"].lower() == state_name.lower()]
@@ -261,7 +277,7 @@ def resolve_state(client, issue, state_name):
         available = ", ".join(state["name"] for state in states) or "none"
         fail(
             "state %r did not resolve in team %s; available states: %s"
-            % (state_name, issue["team"]["key"], available)
+            % (state_name, team["key"], available)
         )
     return matches[0]
 
@@ -348,6 +364,59 @@ def resolve_project(client, ref):
         fail(
             "project %r did not resolve to exactly one project; use its UUID or exact name"
             % ref
+        )
+    return matches[0]
+
+
+def resolve_user(client, ref):
+    query = "query Users($first: Int!) { users(first: $first) { nodes { id name displayName email } } }"
+    data = client.run(query, {"first": MAX_LIMIT})
+    matches = [
+        user
+        for user in nodes(data, "users")
+        if user["id"] == ref
+        or user["name"].lower() == ref.lower()
+        or (user.get("displayName") or "").lower() == ref.lower()
+        or (user.get("email") or "").lower() == ref.lower()
+    ]
+    if len(matches) != 1:
+        fail(
+            "user %r did not resolve to exactly one user; use an exact name or email"
+            % ref
+        )
+    return matches[0]
+
+
+def resolve_label(client, team, name):
+    query = "query TeamLabels($id: String!, $first: Int!) { team(id: $id) { labels(first: $first) { nodes { id name } } } }"
+    data = client.run(query, {"id": team["id"], "first": MAX_LIMIT})
+    labels = (data.get("team") or {}).get("labels") or {}
+    labels = labels.get("nodes", labels) if isinstance(labels, dict) else labels
+    matches = [label for label in labels if label["name"].lower() == name.lower()]
+    if len(matches) != 1:
+        available = ", ".join(label["name"] for label in labels) or "none"
+        fail(
+            "label %r did not resolve in team %s; available labels: %s"
+            % (name, team["key"], available)
+        )
+    return matches[0]
+
+
+def resolve_project_status(client, name):
+    query = "query ProjectStatuses($first: Int!) { projectStatuses(first: $first) { nodes { id name type } } }"
+    data = client.run(query, {"first": MAX_LIMIT})
+    statuses = nodes(data, "projectStatuses")
+    matches = [
+        status
+        for status in statuses
+        if status["name"].lower() == name.lower()
+        or status["type"].lower() == name.lower()
+    ]
+    if len(matches) != 1:
+        available = ", ".join(status["name"] for status in statuses) or "none"
+        fail(
+            "project status %r did not resolve; available statuses: %s"
+            % (name, available)
         )
     return matches[0]
 
@@ -439,6 +508,25 @@ def build_parser():
     p.add_argument("--title", required=True)
     p.add_argument("--description")
     p.add_argument("--priority", choices=("none", "urgent", "high", "medium", "low"))
+    p.add_argument(
+        "--project", metavar="PROJECT", help="Project UUID or exact name to attach."
+    )
+    p.add_argument(
+        "--parent", metavar="ISSUE", help="Parent issue identifier or UUID for a sub-issue."
+    )
+    p.add_argument(
+        "--assignee", metavar="USER", help="Assignee exact name or email."
+    )
+    p.add_argument(
+        "--label",
+        action="append",
+        metavar="LABEL",
+        help="Label name in the issue's team (repeatable).",
+    )
+    p.add_argument(
+        "--state", metavar="STATE", help="Destination workflow state name in the team."
+    )
+    p.add_argument("--due", metavar="YYYY-MM-DD", help="Due date (ISO).")
     p.add_argument("--confirm", action="store_true")
     p = actions.add_parser(
         "update",
@@ -449,6 +537,26 @@ def build_parser():
     p.add_argument("--title")
     p.add_argument("--description")
     p.add_argument("--priority", choices=("none", "urgent", "high", "medium", "low"))
+    p.add_argument(
+        "--assignee", metavar="USER", help="Assignee exact name or email."
+    )
+    p.add_argument(
+        "--label",
+        action="append",
+        metavar="LABEL",
+        help="Label name in the issue's team to add (repeatable).",
+    )
+    p.add_argument(
+        "--remove-label",
+        action="append",
+        dest="remove_label",
+        metavar="LABEL",
+        help="Label name in the issue's team to remove (repeatable).",
+    )
+    p.add_argument("--due", metavar="YYYY-MM-DD", help="Due date (ISO).")
+    p.add_argument(
+        "--project", metavar="PROJECT", help="Project UUID or exact name to attach."
+    )
     p.add_argument("--confirm", action="store_true")
     p = actions.add_parser(
         "move",
@@ -465,6 +573,20 @@ def build_parser():
     )
     p.add_argument("issue")
     p.add_argument("--body", required=True)
+    p.add_argument("--confirm", action="store_true")
+    p = actions.add_parser(
+        "archive",
+        help="Archive an issue.",
+        description="Example: linear issue archive ENG-42",
+    )
+    p.add_argument("issue")
+    p.add_argument("--confirm", action="store_true")
+    p = actions.add_parser(
+        "unarchive",
+        help="Unarchive an issue.",
+        description="Example: linear issue unarchive ENG-42",
+    )
+    p.add_argument("issue")
     p.add_argument("--confirm", action="store_true")
     document = root.add_parser("document", help="Read Linear documents.")
     actions = document.add_subparsers(dest="action", required=True)
@@ -499,6 +621,24 @@ def build_parser():
         description='Example: linear project get "Roadmap"',
     )
     p.add_argument("project")
+    p = actions.add_parser(
+        "update",
+        help="Update a project.",
+        description='Example: linear project update "Roadmap" --description "Q3 plan" --status started',
+    )
+    p.add_argument("project")
+    p.add_argument("--name")
+    p.add_argument("--description")
+    p.add_argument(
+        "--status",
+        help="Project status name or type (planned, started, paused, completed, canceled).",
+    )
+    p.add_argument("--start-date", dest="start_date", help="Start date (ISO YYYY-MM-DD).")
+    p.add_argument(
+        "--target-date", dest="target_date", help="Target date (ISO YYYY-MM-DD)."
+    )
+    p.add_argument("--priority", choices=("none", "urgent", "high", "medium", "low"))
+    p.add_argument("--confirm", action="store_true")
     cycle = root.add_parser("cycle", help="Read Linear cycles.")
     actions = cycle.add_subparsers(dest="action", required=True)
     p = actions.add_parser(
@@ -513,6 +653,16 @@ def build_parser():
         description="Example: linear cycle get 123e4567-e89b-12d3-a456-426614174000",
     )
     p.add_argument("cycle")
+    state = root.add_parser("state", help="Read workflow states.")
+    actions = state.add_subparsers(dest="action", required=True)
+    p = actions.add_parser(
+        "list",
+        help="List workflow states for a team.",
+        description="Example: linear state list --team ENG --json",
+    )
+    p.add_argument(
+        "--team", required=True, metavar="TEAM_KEY", help="Team key or exact name."
+    )
     return parser
 
 
@@ -544,7 +694,17 @@ def main(argv=None):
         args.noun == "issue"
         and args.action == "update"
         and all(
-            value is None for value in (args.title, args.description, args.priority)
+            value is None
+            for value in (
+                args.title,
+                args.description,
+                args.priority,
+                args.assignee,
+                args.label,
+                args.remove_label,
+                args.due,
+                args.project,
+            )
         )
     ):
         fail("issue update requires at least one field to change")
@@ -627,22 +787,47 @@ def main(argv=None):
         require_confirmation(args)
         if args.action == "create":
             if args.dry_run:
-                preview(
-                    args,
-                    [
-                        {"operation": "resolve team", "reference": args.team},
-                        {
-                            "operation": "issueCreate",
-                            "input": {
-                                "team": args.team,
-                                "title": args.title,
-                                "description": args.description,
-                                "priority": args.priority,
-                            },
+                operations = [
+                    {"operation": "resolve team", "reference": args.team}
+                ]
+                if args.project:
+                    operations.append(
+                        {"operation": "resolve project", "reference": args.project}
+                    )
+                if args.parent:
+                    operations.append(
+                        {"operation": "resolve parent issue", "reference": args.parent}
+                    )
+                if args.assignee:
+                    operations.append(
+                        {"operation": "resolve assignee", "reference": args.assignee}
+                    )
+                if args.label:
+                    operations.append(
+                        {"operation": "resolve labels", "names": args.label}
+                    )
+                if args.state:
+                    operations.append(
+                        {"operation": "resolve state in team", "name": args.state}
+                    )
+                operations.append(
+                    {
+                        "operation": "issueCreate",
+                        "input": {
+                            "team": args.team,
+                            "title": args.title,
+                            "description": args.description,
+                            "priority": args.priority,
+                            "project": args.project,
+                            "parent": args.parent,
+                            "assignee": args.assignee,
+                            "labels": args.label,
+                            "state": args.state,
+                            "due": args.due,
                         },
-                    ],
-                    mutation=True,
+                    }
                 )
+                preview(args, operations, mutation=True)
                 return
             team = resolve_team(client, args.team)
             inp = {
@@ -657,6 +842,20 @@ def main(argv=None):
                     "low": 4,
                 }.get(args.priority),
             }
+            if args.project:
+                inp["projectId"] = resolve_project(client, args.project)["id"]
+            if args.parent:
+                inp["parentId"] = resolve_issue(client, args.parent)["id"]
+            if args.assignee:
+                inp["assigneeId"] = resolve_user(client, args.assignee)["id"]
+            if args.label:
+                inp["labelIds"] = [
+                    resolve_label(client, team, name)["id"] for name in args.label
+                ]
+            if args.state:
+                inp["stateId"] = resolve_state(client, team, args.state)["id"]
+            if args.due:
+                inp["dueDate"] = parse_date(args.due, "--due")
             emit(
                 client.run(
                     "mutation IssueCreate($input: IssueCreateInput!) { issueCreate(input: $input) { success issue { %s } } }"
@@ -668,6 +867,28 @@ def main(argv=None):
                             if value is not None
                         }
                     },
+                ),
+                args,
+            )
+            return
+        if args.action in ("archive", "unarchive"):
+            mutation = "issueArchive" if args.action == "archive" else "issueUnarchive"
+            if args.dry_run:
+                preview(
+                    args,
+                    [
+                        {"operation": "resolve issue", "reference": args.issue},
+                        {"operation": mutation, "issue": args.issue},
+                    ],
+                    mutation=True,
+                )
+                return
+            issue = resolve_issue(client, args.issue)
+            emit(
+                client.run(
+                    "mutation IssueArchive($id: String!) { %s(id: $id) { success entity { %s } } }"
+                    % (mutation, ISSUE_FIELDS),
+                    {"id": issue["id"]},
                 ),
                 args,
             )
@@ -693,6 +914,11 @@ def main(argv=None):
                                 "title": args.title,
                                 "description": args.description,
                                 "priority": args.priority,
+                                "assignee": args.assignee,
+                                "add_labels": args.label,
+                                "remove_labels": args.remove_label,
+                                "due": args.due,
+                                "project": args.project,
                             }.items()
                             if value is not None
                         },
@@ -721,6 +947,21 @@ def main(argv=None):
                     "low": 4,
                 }.get(args.priority),
             }
+            team = issue["team"]
+            if args.assignee:
+                inp["assigneeId"] = resolve_user(client, args.assignee)["id"]
+            if args.label:
+                inp["addedLabelIds"] = [
+                    resolve_label(client, team, name)["id"] for name in args.label
+                ]
+            if args.remove_label:
+                inp["removedLabelIds"] = [
+                    resolve_label(client, team, name)["id"] for name in args.remove_label
+                ]
+            if args.due:
+                inp["dueDate"] = parse_date(args.due, "--due")
+            if args.project:
+                inp["projectId"] = resolve_project(client, args.project)["id"]
             inp = {key: value for key, value in inp.items() if value is not None}
             if not inp:
                 fail("issue update requires at least one field to change")
@@ -789,6 +1030,81 @@ def main(argv=None):
         if args.action == "list":
             project_list(client, args)
             return
+        if args.action == "update":
+            if all(
+                value is None
+                for value in (
+                    args.name,
+                    args.description,
+                    args.status,
+                    args.start_date,
+                    args.target_date,
+                    args.priority,
+                )
+            ):
+                fail("project update requires at least one field to change")
+            if args.description:
+                validate_project_description(args.description)
+            require_confirmation(args)
+            if args.dry_run:
+                operations = [
+                    {"operation": "resolve project", "reference": args.project}
+                ]
+                if args.status:
+                    operations.append(
+                        {
+                            "operation": "resolve project status",
+                            "reference": args.status,
+                        }
+                    )
+                operations.append(
+                    {
+                        "operation": "projectUpdate",
+                        "project": args.project,
+                        "input": {
+                            key: value
+                            for key, value in {
+                                "name": args.name,
+                                "description": args.description,
+                                "status": args.status,
+                                "start_date": args.start_date,
+                                "target_date": args.target_date,
+                                "priority": args.priority,
+                            }.items()
+                            if value is not None
+                        },
+                    }
+                )
+                preview(args, operations, mutation=True)
+                return
+            project = resolve_project(client, args.project)
+            inp = {
+                "name": args.name,
+                "description": args.description,
+                "priority": {
+                    "none": 0,
+                    "urgent": 1,
+                    "high": 2,
+                    "medium": 3,
+                    "low": 4,
+                }.get(args.priority),
+            }
+            if args.status:
+                inp["statusId"] = resolve_project_status(client, args.status)["id"]
+            if args.start_date:
+                inp["startDate"] = parse_date(args.start_date, "--start-date")
+            if args.target_date:
+                inp["targetDate"] = parse_date(args.target_date, "--target-date")
+            inp = {key: value for key, value in inp.items() if value is not None}
+            emit(
+                client.run(
+                    "mutation ProjectUpdate($id: String!, $input: ProjectUpdateInput!) { projectUpdate(id: $id, input: $input) { success project { %s } } }"
+                    % PROJECT_FIELDS,
+                    {"id": project["id"], "input": inp},
+                ),
+                args,
+            )
+            return
         emit(resolve_project(client, args.project), args)
         return
     if args.noun == "cycle":
@@ -813,6 +1129,25 @@ def main(argv=None):
                 ).get("cycle"),
                 "cycle",
                 args.cycle,
+            ),
+            args,
+        )
+        return
+    if args.noun == "state":
+        if args.dry_run:
+            preview(
+                args,
+                [
+                    {"operation": "resolve team", "reference": args.team},
+                    {"operation": "list team states", "team": args.team},
+                ],
+            )
+            return
+        team = resolve_team(client, args.team)
+        emit(
+            client.run(
+                "query TeamStates($id: String!, $first: Int!) { team(id: $id) { states(first: $first) { nodes { id name type description } } } }",
+                {"id": team["id"], "first": args.limit},
             ),
             args,
         )

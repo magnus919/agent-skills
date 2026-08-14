@@ -3,8 +3,9 @@
 ## Why Install This Skill
 
 Give an agent a small, predictable way to work with Linear without running an MCP server or
-installing a package. It can find teams, projects, cycles, and issues, inspect documents, and
-make carefully previewed issue changes through Linear's public API.
+installing a package. It can find teams, projects, cycles, workflow states, and issues, inspect
+documents, and make carefully previewed changes to issues, projects, and comments through Linear's
+public API.
 
 The CLI stays intentionally narrow: it favors bounded reads, JSON output (compact with `--json`,
 indented without it), and dry-run previews over a large API mirror. That makes routine
@@ -14,7 +15,7 @@ project-management work easier to audit.
 
 | Path | Provides |
 |---|---|
-| `scripts/linear` | Dependency-free Python CLI for Linear GraphQL reads and issue mutations |
+| `scripts/linear` | Dependency-free Python CLI for Linear GraphQL reads and confirmed mutations (issues, projects, workflow states, comments) |
 | `SKILL.md` | Agent workflow, safety gate, command routing, and official API links |
 | `tests/test_linear.py` | Offline tests for parsing, safety gates, GraphQL contracts, and dry-run behavior |
 | `references/` | Linear workflow, GraphQL, integration-boundary, and source guidance |

@@ -37,11 +37,16 @@ the full command reference into a response.
 |---|---|
 | Confirm current identity | `scripts/linear whoami --json` |
 | Discover teams | `scripts/linear team list --limit 20 --json` |
+| List a team's workflow states | `scripts/linear state list --team ENG --json` |
 | Narrow a known issue set | `scripts/linear issue list --team ENG --state "In Progress" --json` |
 | Find an issue by words | `scripts/linear issue search "customer import" --json` |
 | Read one known issue | `scripts/linear issue get ENG-42 --json` |
 | Read an issue with its project, cycle, hierarchy, comments, and relations | `scripts/linear issue get ENG-42 --detail --json` |
+| Create an issue with project, parent, assignee, labels, state, or due date | `scripts/linear issue create --team ENG --title "Fix login" --project "Platform" --parent ENG-1 --assignee "Ada Lovelace" --label bug --state "In Progress" --due 2026-08-31` |
+| Update an issue's assignee, labels, due date, or project | `scripts/linear issue update ENG-42 --assignee "Ada Lovelace" --label bug --remove-label p2 --due 2026-08-31 --project "Platform"` |
+| Archive or unarchive an issue | `scripts/linear issue archive ENG-42` or `scripts/linear issue unarchive ENG-42` |
 | List or read projects | `scripts/linear project list --team ENG --json` or `scripts/linear project get "Roadmap" --json` |
+| Update a project | `scripts/linear project update "Roadmap" --description "Q3 plan" --status started` |
 | List or read cycles | `scripts/linear cycle list --team ENG --json` or `scripts/linear cycle get UUID --json` |
 | Find documents by words | `scripts/linear document search roadmap --json` |
 | Read a document by UUID, slug, or URL | `scripts/linear document get REF --json` |
@@ -54,6 +59,7 @@ the full command reference into a response.
 | You know an issue identifier or UUID | `issue get` |
 | You have words but not an identifier | `issue search` or `document search` |
 | You need a bounded set with filters | `issue list`, `document list`, `project list`, or `cycle list` |
+| You need a team's workflow states | `state list --team ENG` |
 | The task needs a documented operation outside this focused CLI | `raw` with an explicit GraphQL query |
 
 `raw` is an escape hatch, not a replacement for normal commands. Keep its query narrow and use
@@ -63,26 +69,32 @@ the official GraphQL documentation to confirm field names and permissions.
 
 Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
 
-For `issue create`, `issue update`, `issue move`, `issue comment`, and raw GraphQL mutations:
+For `issue create`, `issue update`, `issue move`, `issue comment`, `issue archive`, `issue unarchive`,
+`project update`, and raw GraphQL mutations:
 
-1. Identify the issue/team/state using a read command.
+1. Identify the issue/team/project/state using a read command.
 2. State the exact intended change and recovery path to the user.
 3. Run the same command with `--dry-run --json`; this has no credentials or network requirement.
 4. After confirmation, rerun it with `--confirm --json`.
 5. Report the returned identifier and outcome without exposing credentials.
 
 The `--team` filters for issue, project, and cycle lists require an exact team key. `issue create`
-resolves a team key or exact name before creation, resolves issue identifiers before comments or
-updates, and resolves a destination workflow state only within that issue's team.
-It does not guess IDs or workflow states. Load `references/domain-and-workflows.md` for safe
-mutation recipes and Linear workflow semantics.
+resolves a team key or exact name before creation, resolves issue identifiers before comments,
+updates, or archiving, resolves a project by UUID or exact name, an assignee by exact name or
+email, labels within the issue's team, and a destination workflow state only within that issue's
+team. `project update` resolves the project by UUID or exact name and the status by name or type.
+It does not guess IDs, workflow states, labels, or project statuses. Load
+`references/domain-and-workflows.md` for safe mutation recipes and Linear workflow semantics.
 
 ## Errors And Recovery
 
 - Missing credentials: export one supported environment variable only for the command session, or use `--dry-run` to inspect the request.
 - GraphQL error: the CLI writes Linear's first useful error message to stderr and exits nonzero, including when the HTTP status is 200. Check permissions, exact identifiers, and documented field availability.
 - Team ambiguity: use `team list` to choose an exact key/name; do not retry by guessing an ID.
-- State lookup failure: the error lists the available states for the issue's team. Use that exact name, or use documented `raw` GraphQL as the explicit escape hatch when the focused CLI cannot express the operation.
+- State lookup failure: list the team's states first with `state list --team`, then use that exact name. The error also lists the available states for the issue's team.
+- Label lookup failure: the error lists the available labels in the issue's team. Use that exact name.
+- Project status lookup failure: the error lists the available statuses. Use an exact name or type (for example `planned`, `started`, `paused`, `completed`, `canceled`).
+- Project description rejection: Linear's `projectUpdate` rejects descriptions longer than 255 characters. Keep project descriptions at 255 characters or fewer.
 - Limit failure: choose a value from 1 through 100. The CLI deliberately does not paginate automatically.
 - Rate limit or transport failure: wait and retry the same bounded read. Follow Linear's [rate limiting guidance](https://linear.app/developers/rate-limiting) rather than adding a retry loop.
 

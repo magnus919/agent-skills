@@ -61,6 +61,18 @@
         "Description quality is tied to routing correctness",
         "The failure modes of eager loading and weak trigger overlap are covered"
       ]
+    },
+    {
+      "id": "third-party-vetting",
+      "prompt": "I found a skill on a public registry that looks useful: it fetches weather data and sends me a notification. Before I install it, how do I tell whether it is safe to run?",
+      "expected_output": "A dependency-style vetting procedure performed before first run: check provenance (who published it, when, license, maintainer history), read the full SKILL.md body and compare it to the description for hidden or deceptive instructions (obfuscation, ignore-previous-instructions patterns, requests to reveal credentials), read every script for network calls to unknown hosts, filesystem access outside the skill directory (dotfiles, SSH keys, credential stores), hardcoded or echoed secrets, and dynamic behavior like curl-pipe-bash or remote imports, then run the first execution sandboxed with no real credentials and read-only access. The response explains that an open format standard says nothing about safety and that skills run with the agent's own permissions (shell, filesystem, credentials), citing that audits of public skill registries have found critical issues in a substantial fraction of skills.",
+      "assertions": [
+        "The vetting procedure covers provenance, the SKILL.md body, and every script before first run",
+        "Concrete red flags are named: unknown network hosts, out-of-directory filesystem access, credential exposure, obfuscation, curl-pipe-bash",
+        "First run is sandboxed with no real credentials and read-only access",
+        "The response states that format compliance or registry publication is not a safety guarantee",
+        "Skills running with the agent's permissions (shell, filesystem, credentials) is called out"
+      ]
     }
   ]
 }
