@@ -23,6 +23,7 @@
     "./agent-evals-and-observability",
     "./agent-production-operations",
     "./agent-skills",
+    "./ai-governance",
     "./anydoc",
     "./api-design-and-evolution",
     "./artifact-pyramids",

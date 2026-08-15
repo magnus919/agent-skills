@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "skill_name": "ai-governance",
+  "evals": [
+    {
+      "id": "operating-model-design",
+      "prompt": "A 120-engineer company is scaling its use of AI and has no standing governance. Design a governance operating model for them: the decision-rights map, the review council, named stewards and accountable owners, RACI for intake and launch decisions, and whether to run federated or centralized. State when the lightweight vs. high-assurance mode applies.",
+      "expected_output": "A concrete governance operating model: a named council with charter, a decision-rights map assigning who decides/consults/informs per decision type with evidence standards, stewards and accountable owners, a federated-vs-centralized recommendation with rationale, and an explicit operating-mode choice (lightweight or high-assurance) with the trigger condition for switching.",
+      "assertions": [
+        "names a review council and a governance charter as the accountability home",
+        "assigns decision rights (who decides, consults, informs) and evidence standards per decision type",
+        "recommends a federated or centralized model and justifies it for the scale given",
+        "selects lightweight or high-assurance mode with an explicit trigger condition",
+        "assigns named stewards and an accountable owner for AI governance"
+      ]
+    },
+    {
+      "id": "use-case-risk-tiering",
+      "prompt": "Tier these three AI use cases by governance risk and prescribe the required controls for each: (1) a customer-support email summarizer with no autonomous action, (2) a loan-approval model that makes a consequential decision about an individual, and (3) an internal agent that executes code changes automatically.",
+      "expected_output": "Each use case is assigned a risk tier (low, medium, high, or critical) based on data sensitivity, autonomy, exposure, and decision impact, with the controls that tier requires (e.g., human-in-the-loop, model card, bias review, red-teaming, access restrictions) stated explicitly rather than as generic recommendations.",
+      "assertions": [
+        "assigns each of the three use cases to an explicit risk tier",
+        "derives the tier from autonomy, exposure, decision impact, and data sensitivity",
+        "prescribes tier-appropriate controls for every use case, including elevated controls for the autonomous agent",
+        "does not reduce all three to the same tier and control set"
+      ]
+    },
+    {
+      "id": "llm-app-governance-review",
+      "prompt": "Review an internal RAG copilot that retrieves company documents and answers employee questions. Identify the governance and security gaps across trust boundaries, prompt injection, data exposure, excessive agency, and system-prompt control, then recommend the controls and evidence gates needed before deployment.",
+      "expected_output": "A governance and security gap review that walks the RAG copilot through trust boundaries and threat surfaces (prompt injection, data exposure, excessive agency, system-prompt integrity), maps each gap to a concrete control, and defines the lifecycle evidence gates the system must pass before it can be deployed.",
+      "assertions": [
+        "identifies prompt injection and data-exposure risks specific to a RAG retrieval flow",
+        "addresses excessive agency and system-prompt control for the assistant",
+        "maps each gap to a concrete control and an accountable owner",
+        "defines the evidence gates that must pass before deployment"
+      ]
+    },
+    {
+      "id": "fairness-accountability-review",
+      "prompt": "Review a hiring model for fairness without reducing fairness to a single metric. Lay out the fairness metrics you would compute and their limits, the trade-offs between accuracy and parity, the bias sources to probe, and how accountability and auditability should be established in the model's documentation.",
+      "expected_output": "A fairness and accountability review that computes multiple fairness metrics (e.g., demographic parity, equalized odds, calibration), explains the limits and trade-offs of each rather than picking one number, enumerates the bias sources to probe in data and labels, and ties fairness decisions to model-card documentation and a named accountable owner.",
+      "assertions": [
+        "proposes more than one fairness metric and explains the limits of each",
+        "surfaces accuracy-vs-parity trade-offs rather than an absolute fairness override",
+        "names specific bias sources in data, labels, and evaluation to probe",
+        "connects the fairness decisions to auditable model-card documentation and an accountable owner"
+      ]
+    },
+    {
+      "id": "regulatory-compliance-mapping",
+      "prompt": "Map the EU AI Act's requirements for high-risk AI systems to a concrete compliance and control plan for a company building an AI system, covering risk management, data governance, technical documentation, transparency, human oversight, and registration. Keep it as guidance, not legal advice.",
+      "expected_output": "A compliance and control plan that maps each high-risk obligation of the EU AI Act to a specific control and evidence artifact (risk management system, data governance, technical documentation, transparency and human-oversight measures, registration), with an accountable owner per control, and a clear statement that it is guidance to be re-verified against the primary source.",
+      "assertions": [
+        "maps EU AI Act high-risk obligations to named controls and evidence artifacts",
+        "covers data governance, technical documentation, and transparency obligations",
+        "assigns an accountable owner to each control",
+        "includes human-oversight measures and the registration obligation",
+        "states the output is guidance, not legal advice, to be re-verified"
+      ]
+    },
+    {
+      "id": "board-governance-reporting",
+      "prompt": "Design the board-level AI governance reporting for a company: the metrics to report, the cadence, the risk register and exceptions to surface, the escalation path, and how to structure a board AI-governance report so directors can exercise oversight.",
+      "expected_output": "A board reporting design with a defined metric set (adoption, incidents, open high-risk use cases, material exceptions, compliance posture), a cadence, the risk-register and exception content to surface, a documented escalation path, and a report structure that lets directors exercise oversight rather than drown in detail.",
+      "assertions": [
+        "defines a concrete metric set for board reporting on AI",
+        "specifies a cadence and which risks, exceptions, and incidents get surfaced",
+        "documents the escalation path to the board or risk committee",
+        "structures the report so directors can exercise oversight and ask pointed questions"
+      ]
+    }
+  ]
+}
