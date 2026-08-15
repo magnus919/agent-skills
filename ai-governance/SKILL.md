@@ -89,7 +89,7 @@ Use these to turn the methodology into working artifacts.
 
 Executable, flag-driven, stdlib-only Python CLIs with tests. Both accept a JSON input path and emit
 deterministic output; `--json` prints one JSON object on stdout; `--dry-run` previews without
-changing anything. Exit 0 on success, 1 on findings or input errors.
+changing anything. Exit 0 on success; the maturity scorer also exits 1 on a critical posture, and both scripts exit 1 on input errors.
 
 | Use when | Script |
 |---|---|

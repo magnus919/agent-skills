@@ -32,10 +32,13 @@ decommissioned system still making decisions can each do damage independently.
 Because the failure modes differ from phase to phase, oversight has to be spread across the
 whole sequence rather than concentrated at a single approval moment. Current research on
 technical controls echoes this: the NIST AI RMF and ISO/IEC 42001 both treat governance as
-an activity that extends throughout the AI life cycle, and the EU AI Act — which took
-effect on 2 August 2026 — makes logging, technical documentation, and post-market
-surveillance explicit duties for high-risk systems precisely because obligations do not end
-at launch.
+an activity that extends throughout the AI life cycle, and the EU AI Act makes logging,
+technical documentation, and post-market surveillance explicit duties for high-risk systems
+precisely because obligations do not end at launch. The AI Omnibus deferral has pushed the
+high-risk start dates out — most high-risk systems now face those duties from 2 December
+2027, and systems embedded in regulated products from 2 August 2028 — so treat
+`regulatory-landscape.md` as the authoritative timeline rather than any single effective
+date.
 
 Three commitments hold the sequence together:
 

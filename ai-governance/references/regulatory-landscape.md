@@ -157,7 +157,7 @@ spread among bodies like the ICO (for data protection), the FCA, the CMA, and Of
 online services including AI chatbots under the 2023 Online Safety Act. A promised statutory scheme
 for the most advanced frontier models has still not been passed into law, so frontier-model
 governance in the UK today rests more on the voluntary and safety-research side, including the UK
-AI Safety Institute, than on statute.
+AI Security Institute, than on statute.
 
 The compliance angle for the UK is that obligations are *sector- and context-specific* rather than
 a single horizontal law: the same system may face data-protection duties from the ICO if it touches
