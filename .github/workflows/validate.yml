@@ -70,6 +70,15 @@ jobs:
         run: python3 scripts/validate-evals.py
       - name: Test life-coach capability validation
         run: python3 -m unittest discover -s life-coach/tests -p 'test_*.py'
+      - name: Run skill-local script tests
+        run: |
+          set -euo pipefail
+          for dir in */scripts; do
+            if compgen -G "$dir/test_*.py" > /dev/null 2>&1; then
+              echo "=== $dir ==="
+              python3 -m pytest "$dir" -o "addopts=-ra --strict-markers --tb=short" -v --durations=10
+            fi
+          done
       - name: Run core test suite with coverage
         run: python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py eval_runner/tests/ -v --durations=10 --cov=scripts --cov=eval_runner --cov-fail-under=60 --cov-report=term-missing
       - name: Run tests in parallel (isolation check)
