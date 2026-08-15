@@ -74,7 +74,7 @@ jobs:
         run: |
           set -euo pipefail
           for dir in */scripts; do
-            if compgen -G "$dir/test_*.py" > /dev/null 2>&1; then
+            if find "$dir" -name 'test_*.py' | grep -q .; then
               echo "=== $dir ==="
               python3 -m pytest "$dir" -o "addopts=-ra --strict-markers --tb=short" -v --durations=10
             fi
