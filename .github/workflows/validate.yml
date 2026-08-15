@@ -73,16 +73,18 @@ jobs:
       - name: Run skill-local script tests
         run: |
           set -euo pipefail
-          for dir in */scripts; do
-            if find "$dir" -name 'test_*.py' | grep -q .; then
-              echo "=== $dir ==="
-              python3 -m pytest "$dir" -o "addopts=-ra --strict-markers --tb=short" -v --durations=10
-            fi
-          done
+          while IFS= read -r dir; do
+            echo "=== $dir ==="
+            python3 -m pytest "$dir" -o "addopts=-ra --strict-markers --tb=short" -o "python_files=test_*.py" -v --durations=10
+          done < <(git ls-files | grep -E '/scripts/test_[^/]*\.py$' | sed 's#/[^/]*$##' | sort -u)
+      - name: Run skill-local shell test scripts
+        run: python3 scripts/check-skill-tests.py --run
+      - name: Check skill test coverage
+        run: python3 scripts/check-skill-tests.py --check
       - name: Run core test suite with coverage
-        run: python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py eval_runner/tests/ -v --durations=10 --cov=scripts --cov=eval_runner --cov-fail-under=60 --cov-report=term-missing
+        run: python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py scripts/test_check_skill_tests.py eval_runner/tests/ -v --durations=10 --cov=scripts --cov=eval_runner --cov-fail-under=60 --cov-report=term-missing
       - name: Run tests in parallel (isolation check)
-        run: python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py eval_runner/tests/ -n auto -v --durations=10
+        run: python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py scripts/test_check_skill_tests.py eval_runner/tests/ -n auto -v --durations=10
       - name: Validate AGENTS.md consistency
         run: python3 scripts/validate-agents-md.py
       - name: Run integration tests

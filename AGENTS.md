@@ -164,6 +164,10 @@ When a skill body tells you to read a reference file only under specific conditi
 
 Skills that perform diagnosis, planning, or multi-step work must state when they are complete and when to stop. A valid exit condition is an observable artifact or a bounded escalation, such as: deliver the requested file, confirm the current setup is adequate, or stop after three non-converging diagnostic passes and report the evidence.
 
+### Skill Script Tests
+
+Skills that ship executable scripts must name their script tests `scripts/test_*.py`; CI auto-discovers and runs them, so Python test files must use the exact `test_*.py` name. Shell-based tests are the exception: register them in `scripts/check-skill-tests.py` as a `run` or `manual` entry. CI enforces the naming convention via `python3 scripts/check-skill-tests.py --check`: a test-like file under a skill's `scripts/` directory that is neither a Python `test_*.py` nor registered fails the check.
+
 ## Validate Your Output
 
 When creating or modifying a skill in this repo, validate against the format:
