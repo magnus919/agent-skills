@@ -13,8 +13,8 @@ tiering and control machinery), `regulatory-landscape.md` (the legal duties that
 board exposure material), `governance-operating-model.md` (roles, councils, and the decision chain that
 reaches the board), `ai-lifecycle-governance.md` (where vendor-built assets enter and leave the
 lifecycle), and `llm-and-agent-security.md` (the supply-chain and plugin threats specific to LLM
-systems). Use the `third-party-due-diligence.md` template to run a vendor or model intake and the
-`board-ai-governance-report.md` template to structure the periodic reporting this reference describes.
+systems). Use the [third-party-due-diligence.md](../templates/third-party-due-diligence.md) template to run a vendor or model intake and the
+[board-ai-governance-report.md](../templates/board-ai-governance-report.md) template to structure the periodic reporting this reference describes.
 This is educational context, not legal advice.
 
 ## Why Procurement and Board Oversight Belong Together
@@ -257,7 +257,7 @@ not to flatter the program. Good candidates include:
 The metric set will differ by organization, but it should be **stable enough to trend over time**,
 **comparable across periods**, and **honest** — a metric that never changes or never shows a problem is
 a signal the wrong thing is being measured. This reporting structure is implemented concretely in the
-`board-ai-governance-report.md` template.
+[board-ai-governance-report.md](../templates/board-ai-governance-report.md) template.
 
 ### Cadence and escalation
 
@@ -294,7 +294,7 @@ and operational, while audit is a structured, independent examination against st
 - Completed due-diligence records and an AI BOM or equivalent component-level transparency for each
   material system.
 - Risk assessments, model cards, and monitoring evidence tied to each system (see
-  `risk-management-and-frameworks.md` and the `model-card.md` template).
+  `risk-management-and-frameworks.md` and the [model-card.md](../templates/model-card.md) template).
 - A documented accountability chain from named owners up through a council to a board committee.
 - The metric set and reporting cadence used for the board, with a track record of actual reports.
 - Incident logs and evidence that material incidents were escalated and remediated.
@@ -327,8 +327,8 @@ monitoring, and reporting, so the system improves rather than merely passing the
 - **`llm-and-agent-security.md`** — the supply-chain, plugin, and model-specific threats for LLM
   systems.
 - **`ai-lifecycle-governance.md`** — where vendor-built assets enter and leave the model lifecycle.
-- Use the **`third-party-due-diligence.md`** template to run a vendor or model intake and the
-  **`board-ai-governance-report.md`** template to structure board reporting.
+- Use the **[third-party-due-diligence.md](../templates/third-party-due-diligence.md)** template to run a vendor or model intake and the
+  **[board-ai-governance-report.md](../templates/board-ai-governance-report.md)** template to structure board reporting.
 
 ---
 
@@ -337,7 +337,7 @@ monitoring, and reporting, so the system improves rather than merely passing the
 This reference synthesizes the acquisition, supply-chain, vendor-management, reporting, and audit
 material from *The AI Product Manager's Handbook* and from *Developing Cybersecurity Programs and
 Policies* (the fourth edition, written for an AI-driven world), together with the mission research note
-on organizational and board governance (`research-org-board-governance.md`, current to August 2026). The
+on organizational and board governance (research-org-board-governance.md, current to August 2026). The
 research note supplies the current
 fiduciary, board-oversight, and third-party expectations; the two books supply the procurement,
 vendor-lifecycle, supply-chain, BOM, reporting-metric, and audit mechanics. All prose is an original

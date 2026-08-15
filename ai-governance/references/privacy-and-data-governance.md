@@ -10,8 +10,8 @@ harm. It synthesizes (never reproduces) ideas from *Designing Data Governance fr
 "current research" where the 2023–2025 books are de-staled by recent regulation. Read it with
 `foundations-and-principles.md` (which names privacy as a governing principle),
 `ai-lifecycle-governance.md` (where data and model lineage surface at stage gates), and
-`llm-and-agent-security.md` (the security half of data protection). Use the `model-card.md` and
-`model-risk-assessment.md` templates to record the data practices this reference describes. It is
+`llm-and-agent-security.md` (the security half of data protection). Use the [model-card.md](../templates/model-card.md) and
+[model-risk-assessment.md](../templates/model-risk-assessment.md) templates to record the data practices this reference describes. It is
 not legal advice; data-protection duties should be confirmed against current law at use time.
 
 ## Data Governance Is the Foundation

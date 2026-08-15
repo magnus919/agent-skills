@@ -10,7 +10,7 @@ Responsible AI*, and *Introduction to Responsible AI*. Read it with
 `foundations-and-principles.md` (which names transparency as a governing principle),
 `fairness-bias-accountability.md` (the accountability half that transparency enables), and
 `ai-lifecycle-governance.md` (where explanation and audit surface at stage gates). Use the
-`model-card.md` and `model-risk-assessment.md` templates to record the explanation and disclosure
+[model-card.md](../templates/model-card.md) and [model-risk-assessment.md](../templates/model-risk-assessment.md) templates to record the explanation and disclosure
 decisions this reference describes. It is not legal advice, and disclosure duties should be
 confirmed against current regulation at use time.
 
@@ -238,9 +238,9 @@ Transparency and explainability thread through every other governance surface:
 - **Board and third-party oversight** review the disclosure and audit findings as part of the
   aggregate risk picture (`procurement-third-party-and-board-oversight.md`).
 
-Use the `model-card.md` template to record intended use, data, the explanation method chosen and
-why, the accuracy–interpretability balance, and limitations; the `model-risk-assessment.md` template
-to weigh explainability against the other risk dimensions; and the `use-case-intake-form.md` template
+Use the [model-card.md](../templates/model-card.md) template to record intended use, data, the explanation method chosen and
+why, the accuracy–interpretability balance, and limitations; the [model-risk-assessment.md](../templates/model-risk-assessment.md) template
+to weigh explainability against the other risk dimensions; and the [use-case-intake-form.md](../templates/use-case-intake-form.md) template
 to flag high-stakes, explanation-sensitive use cases early.
 
 ## Where to Go Next

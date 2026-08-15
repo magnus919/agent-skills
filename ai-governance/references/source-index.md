@@ -38,16 +38,16 @@ canonical identifiers used consistently across the skill.
 
 | Reference file | Focus | Informing sources |
 |---|---|---|
-| `foundations-and-principles.md` | What AI governance is; the core principles (fairness, accountability, transparency, privacy, safety, human oversight); governance vs. compliance vs. risk | Responsible AI in the Enterprise; Introduction to Responsible AI; Beyond the Algorithm; Responsible AI: Best Practices; `research-standards.md`; `research-org-board-governance.md` |
-| `governance-operating-model.md` | Six-step operating model, councils, stewards, decision rights, RACI, federated vs. centralized, maturity, culture, charter | Designing Data Governance from the Ground Up; Data Governance Handbook; `research-org-board-governance.md` |
-| `risk-management-and-frameworks.md` | NIST AI RMF (govern/map/measure/manage), ISO/IEC 42001 & 23894, model-risk tiering, risk registers, inherent vs. residual | Responsible AI in the Enterprise; Platform and Model Design for Responsible AI; `research-standards.md` |
-| `ai-lifecycle-governance.md` | Stage gates across ideation, data, build, evaluate, deploy, monitor, retire; model inventory, lineage, drift, incident response | Platform and Model Design for Responsible AI; Designing Data Governance from the Ground Up; Data Governance Handbook; `research-technical-controls.md` |
-| `fairness-bias-accountability.md` | Fairness metrics and their limits, algorithmic justice, bias sources, trade-offs, accountability, model cards | AI Fairness; Introduction to Responsible AI; Responsible AI: Best Practices; `research-technical-controls.md` |
+| `foundations-and-principles.md` | What AI governance is; the core principles (fairness, accountability, transparency, privacy, safety, human oversight); governance vs. compliance vs. risk | Responsible AI in the Enterprise; Introduction to Responsible AI; Beyond the Algorithm; Responsible AI: Best Practices; research-standards.md; research-org-board-governance.md |
+| `governance-operating-model.md` | Six-step operating model, councils, stewards, decision rights, RACI, federated vs. centralized, maturity, culture, charter | Designing Data Governance from the Ground Up; Data Governance Handbook; research-org-board-governance.md |
+| `risk-management-and-frameworks.md` | NIST AI RMF (govern/map/measure/manage), ISO/IEC 42001 & 23894, model-risk tiering, risk registers, inherent vs. residual | Responsible AI in the Enterprise; Platform and Model Design for Responsible AI; research-standards.md |
+| `ai-lifecycle-governance.md` | Stage gates across ideation, data, build, evaluate, deploy, monitor, retire; model inventory, lineage, drift, incident response | Platform and Model Design for Responsible AI; Designing Data Governance from the Ground Up; Data Governance Handbook; research-technical-controls.md |
+| `fairness-bias-accountability.md` | Fairness metrics and their limits, algorithmic justice, bias sources, trade-offs, accountability, model cards | AI Fairness; Introduction to Responsible AI; Responsible AI: Best Practices; research-technical-controls.md |
 | `transparency-and-explainability.md` | Explainability (XAI) methods, when explanation is required, disclosure, human-AI interaction, auditability | Responsible AI in the Enterprise; Platform and Model Design for Responsible AI; Introduction to Responsible AI |
-| `privacy-and-data-governance.md` | Training and operational data governance, ownership, lineage, quality, consent, minimization, retention, privacy-enhancing techniques | Designing Data Governance from the Ground Up; Data Governance Handbook; Platform and Model Design for Responsible AI; `research-regulatory.md`; `research-technical-controls.md` |
-| `llm-and-agent-security.md` | Trust boundaries, prompt injection, data exposure, hallucination, excessive agency, denial of service, supply chain, red-teaming | The Developer's Playbook for LLM Security; Beyond the Algorithm; `research-llm-agent-security.md` |
-| `regulatory-landscape.md` | Current law by jurisdiction, compliance mapping, horizon scanning, enforcement | `research-regulatory.md` (authoritative); book regulatory chapters of Responsible AI in the Enterprise and Beyond the Algorithm as historical context only |
-| `procurement-third-party-and-board-oversight.md` | Vendor and model due diligence, supply chain, board reporting, metrics, audit | The AI Product Manager's Handbook; Developing Cybersecurity Programs and Policies; `research-org-board-governance.md` |
+| `privacy-and-data-governance.md` | Training and operational data governance, ownership, lineage, quality, consent, minimization, retention, privacy-enhancing techniques | Designing Data Governance from the Ground Up; Data Governance Handbook; Platform and Model Design for Responsible AI; research-regulatory.md; research-technical-controls.md |
+| `llm-and-agent-security.md` | Trust boundaries, prompt injection, data exposure, hallucination, excessive agency, denial of service, supply chain, red-teaming | The Developer's Playbook for LLM Security; Beyond the Algorithm; research-llm-agent-security.md |
+| `regulatory-landscape.md` | Current law by jurisdiction, compliance mapping, horizon scanning, enforcement | research-regulatory.md (authoritative); book regulatory chapters of Responsible AI in the Enterprise and Beyond the Algorithm as historical context only |
+| `procurement-third-party-and-board-oversight.md` | Vendor and model due diligence, supply chain, board reporting, metrics, audit | The AI Product Manager's Handbook; Developing Cybersecurity Programs and Policies; research-org-board-governance.md |
 | `source-index.md` | This file: provenance, attribution, bibliography | All twelve books; all five research notes (meta) |
 
 ## Research notes
@@ -56,18 +56,18 @@ Five research notes, produced during the research foundation milestone, de-stale
 against where AI governance stands today. They live in the mission library and are cited by
 short filename throughout the skill. All five are used:
 
-- `research-regulatory.md` — current laws and enforcement across jurisdictions (EU AI Act,
+- research-regulatory.md — current laws and enforcement across jurisdictions (EU AI Act,
   GDPR, US federal/state, UK, China, sectoral rules), the authoritative basis for
   `regulatory-landscape.md` and a de-staling input to `privacy-and-data-governance.md`.
-- `research-standards.md` — NIST AI RMF and its Generative AI Profile, ISO/IEC 42001 and
+- research-standards.md — NIST AI RMF and its Generative AI Profile, ISO/IEC 42001 and
   23894, IEEE and industry frameworks; informs `risk-management-and-frameworks.md` and
   `foundations-and-principles.md`.
-- `research-llm-agent-security.md` — OWASP LLM Top 10, agentic risk, prompt-injection
+- research-llm-agent-security.md — OWASP LLM Top 10, agentic risk, prompt-injection
   defenses, red-teaming, AI safety institutes; informs `llm-and-agent-security.md`.
-- `research-technical-controls.md` — model and data cards, model inventories, monitoring,
+- research-technical-controls.md — model and data cards, model inventories, monitoring,
   drift, audit trails, MLOps governance tooling; informs `ai-lifecycle-governance.md`,
   `fairness-bias-accountability.md`, and `privacy-and-data-governance.md`.
-- `research-org-board-governance.md` — roles, governance councils, the Chief AI Officer,
+- research-org-board-governance.md — roles, governance councils, the Chief AI Officer,
   fiduciary duty, maturity models, third-party risk; informs `foundations-and-principles.md`,
   `governance-operating-model.md`, and `procurement-third-party-and-board-oversight.md`.
 
@@ -113,7 +113,7 @@ name used across the skill.
 
 - To find where a book's ideas appear, scan the "Informing sources" column of the reference
   table for that book short name.
-- To find which research note governs the current state of a topic, scan for the `research-*.md`
+- To find which research note governs the current state of a topic, scan for the `research-*`
   filename.
 - To understand why a book is sometimes treated as context rather than authority (e.g., the
   regulatory chapter of Responsible AI in the Enterprise), see the attribution invariant above:

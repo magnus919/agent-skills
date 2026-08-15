@@ -53,7 +53,7 @@ set of core principles. Responsible AI: Best Practices catalogs the common princ
 notes that, while wording varies, the substance overlaps heavily across jurisdictions and
 organizations. The OECD principles (adopted 2019, updated 2024) and the NIST AI Risk
 Management Framework reinforce the same themes from the intergovernmental and standards
-sides — current research (see `research-standards.md`) confirms these remain the shared
+sides — current research (see research-standards.md) confirms these remain the shared
 vocabulary in 2026.
 
 For this skill the six core principles are:
@@ -187,7 +187,7 @@ Safety concerns for AI include:
 - **Fail-safes and containment.** There are ways to pause, limit, or roll back a system.
 
 Introduction to Responsible AI groups robustness and reliability with safety, and current
-research on NIST's AI RMF and its Generative AI Profile (see `research-standards.md`)
+research on NIST's AI RMF and its Generative AI Profile (see research-standards.md)
 extends these concerns to generative models — hallucination, misuse, and information
 integrity. The security-specific mechanics are in `llm-and-agent-security.md`.
 
@@ -246,7 +246,7 @@ Three consequences follow for building a program:
    than the law does (a point Beyond the Algorithm makes by observing that ethics and
    responsibility routinely exceed the legal minimum).
 2. **Anchor governance in risk, not in the rulebook.** Because the regulatory landscape is
-   still stabilizing (see `research-regulatory.md` and `research-standards.md` for the 2026
+   still stabilizing (see research-regulatory.md and research-standards.md for the 2026
    state), a risk-based approach lets you stay ahead of specific laws instead of reacting
    to each one. Current frameworks such as NIST's AI RMF and ISO/IEC 23894 are explicitly
    risk-based for exactly this reason.
@@ -261,7 +261,7 @@ a subset of obligations drawn from law and contract, and governance is the whole
 keeps the other two aligned with the organization's values and responsibilities. Responsible
 AI in the Enterprise treats AI risk governance as one component of an enterprise's broader
 risk and governance framework, and current research on board fiduciary duty (see
-`research-org-board-governance.md`) reinforces that AI governance is now a recognized
+research-org-board-governance.md) reinforces that AI governance is now a recognized
 director-level responsibility, not merely an engineering or legal task.
 
 ## Putting Principles into Practice
@@ -310,6 +310,6 @@ This reference synthesizes (never reproduces) ideas from the following sources: 
 AI in the Enterprise*; *Introduction to Responsible AI*; *Beyond the Algorithm*;
 *Responsible AI: Best Practices* (the book on trustworthy AI systems). Current context on
 standards and organizational governance is drawn from the mission research notes
-`research-standards.md` and `research-org-board-governance.md`. All prose is an original
+research-standards.md and research-org-board-governance.md. All prose is an original
 paraphrase and synthesis of the ideas in these sources; idea-level attribution is
 consolidated in `source-index.md`.

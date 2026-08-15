@@ -7,7 +7,7 @@ Management Framework (RMF) and the ISO/IEC 42001 / 23894 pair — and covers the
 concepts those frameworks rely on: inherent versus residual risk, model risk tiering,
 and the risk register. It is an original synthesis of the ideas in *Responsible AI in
 the Enterprise*, *Platform and Model Design for Responsible AI*, and current research on
-standards and frameworks (see `research-standards.md`). Read it with
+standards and frameworks (see research-standards.md). Read it with
 `foundations-and-principles.md` (which draws the governance-versus-risk-versus-compliance
 distinction) and `governance-operating-model.md` (which assigns the roles that own these
 risks). It is not legal advice, and framework details should always be confirmed against
@@ -93,7 +93,7 @@ The book stresses several principles for building a tiering scheme:
 - **It supports correlation across the portfolio**, so teams can see how risk clusters by
   business unit, entity, or model family.
 
-A concrete tiering rule set is embedded in the `model-risk-assessment.md` template, and the
+A concrete tiering rule set is embedded in the [model-risk-assessment.md](../templates/model-risk-assessment.md) template, and the
 `use-case-risk-tier.py` script automates a defensible default classification from
 structured inputs. Regardless of the exact weights, the tiering decision should be recorded
 for each model so the reasoning is auditable and consistent over time.
@@ -114,7 +114,7 @@ the status of any planned response. A register is only useful if it is:
 *Responsible AI in the Enterprise* describes risk registers, heat maps, and scoring
 models as complementary instruments for ranking risks by their likelihood and impact, so
 that mitigation effort lands where it counts. The use-case intake flow
-(`use-case-intake-form.md`) feeds new risks into the register, and the register in turn
+([use-case-intake-form.md](../templates/use-case-intake-form.md)) feeds new risks into the register, and the register in turn
 informs board reporting on the aggregate risk profile.
 
 ## The NIST AI Risk Management Framework
@@ -227,8 +227,8 @@ Structured risk management is the connective tissue of the whole skill:
 - **The board and third-party tiers** consume the aggregate risk picture for oversight
   (`procurement-third-party-and-board-oversight.md`).
 
-Use the `model-risk-assessment.md` template to run a NIST-aligned assessment and tiering on
-a single model, the `use-case-intake-form.md` template to route a new use case into the
+Use the [model-risk-assessment.md](../templates/model-risk-assessment.md) template to run a NIST-aligned assessment and tiering on
+a single model, the [use-case-intake-form.md](../templates/use-case-intake-form.md) template to route a new use case into the
 register, and the `use-case-risk-tier.py` script to compute a defensible default tier from
 structured inputs. Record the resulting inherent and residual scores in the register and
 feed the aggregate to the governance council and board.
@@ -248,7 +248,7 @@ feed the aggregate to the governance council and board.
 This reference synthesizes (never reproduces) ideas from *Responsible AI in the Enterprise*
 and *Platform and Model Design for Responsible AI*. Current context on the NIST AI RMF,
 its Generative AI Profile, ISO/IEC 42001 and 23894, and the evolving standards landscape is
-drawn from the mission research note `research-standards.md`. All prose is an original
+drawn from the mission research note research-standards.md. All prose is an original
 paraphrase and synthesis of the ideas in these sources; idea-level attribution is
 consolidated in `source-index.md`. Framework details must be verified against the
 governing bodies' current releases at use time.

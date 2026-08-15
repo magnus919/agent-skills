@@ -6,7 +6,7 @@ rights are assigned and made explicit (including RACI), how to choose between fe
 centralized structures, how to gauge maturity, and the culture that makes the whole thing
 hold together. It is an original synthesis of the ideas in *Designing Data Governance from
 the Ground Up*, the *Data Governance Handbook*, and current research on organizational and
-board governance (see `research-org-board-governance.md`). Read it alongside
+board governance (see research-org-board-governance.md). Read it alongside
 `foundations-and-principles.md`, which explains *why* governance matters; this file explains
 *how to run it*. It is not legal advice.
 
@@ -115,7 +115,7 @@ Each body should be run under a **charter** — a written terms of reference cov
 key representatives, responsibilities, reporting lines, meeting cadence, communication plan,
 and how it evaluates its own effectiveness. The *Data Governance Handbook* includes sample
 charters for the committee and council, and this skill ships a fillable
-`governance-charter.md` template to instantiate one. A recurring practical note from
+[governance-charter.md](../templates/governance-charter.md) template to instantiate one. A recurring practical note from
 *Designing Data Governance from the Ground Up* is that councils need a regular cadence (for
 example, roughly an hour every other week, plus focused work between meetings) and ground
 rules for psychological safety so that honest discussion, including disagreement, is
@@ -241,7 +241,7 @@ adjustments, and current research points to where AI-specific attention is neede
   recognized director responsibility, the operating model should include a standing board or
   board-committee view and prompt escalation of material incidents.
 
-Use the fillable `governance-charter.md` template to instantiate the council terms of
+Use the fillable [governance-charter.md](../templates/governance-charter.md) template to instantiate the council terms of
 reference, and the use-case intake and model-risk-assessment templates to exercise the
 decision rights the operating model defines.
 
@@ -259,6 +259,6 @@ decision rights the operating model defines.
 This reference synthesizes (never reproduces) ideas from *Designing Data Governance from the
 Ground Up* and the *Data Governance Handbook*. Current context on board fiduciary duty, the
 Chief AI Officer role, governance councils, maturity, and third-party risk is drawn from the
-mission research note `research-org-board-governance.md`. All prose is an original paraphrase
+mission research note research-org-board-governance.md. All prose is an original paraphrase
 and synthesis of the ideas in these sources; idea-level attribution is consolidated in
 `source-index.md`.

@@ -9,12 +9,12 @@ General Data Protection Regulation (GDPR), a fragmented United States patchwork,
 Kingdom's context-based approach, and China's binding sectoral measures — and a governance program
 must map each system to each regime by its risk tier and its geographic footprint. This reference
 is authoritative on the current state, built from the mission research note on the regulatory
-landscape (`research-regulatory.md`); the regulatory chapters of the source books are treated here
+landscape (research-regulatory.md); the regulatory chapters of the source books are treated here
 as historical context only, because the law has moved materially past their 2023–2025 publishing
 dates. Read it with `risk-management-and-frameworks.md` (the NIST/ISO machinery a compliance program
 applies), `procurement-third-party-and-board-oversight.md` (the board-level obligations that flow
 from these laws), and `llm-and-agent-security.md` (where security duties become legal duties). Use
-the `model-risk-assessment.md` and `board-ai-governance-report.md` templates to record the
+the [model-risk-assessment.md](../templates/model-risk-assessment.md) and [board-ai-governance-report.md](../templates/board-ai-governance-report.md) templates to record the
 regulatory mapping this reference describes. It is not legal advice, and the in-flux sections it
 flags must be verified against primary sources at use time.
 
@@ -203,7 +203,7 @@ matter for governance:
 The governance implication is a **mapping discipline**: for each AI system, record the horizontal
 regimes (AI Act, GDPR, and any applicable US/UK/China law) *and* the sectoral rules that the system
 inherits from the domain it operates in. `risk-management-and-frameworks.md` and the
-`model-risk-assessment.md` template provide the structure for recording this mapping.
+[model-risk-assessment.md](../templates/model-risk-assessment.md) template provide the structure for recording this mapping.
 
 ## A Practitioner's Compliance Workflow
 
@@ -219,7 +219,7 @@ inherits from the domain it operates in. `risk-management-and-frameworks.md` and
       relevant state AGs, UK ICO, CAC) and re-verify the in-flux sections flagged in this reference
       on a fixed cadence.
 - [ ] **Report:** surface material obligations and penalty exposure to the board (see
-      `board-ai-governance-report.md`).
+      [board-ai-governance-report.md](../templates/board-ai-governance-report.md)).
 
 ## Horizon Scanning: What to Watch
 
@@ -248,7 +248,7 @@ inherits from the domain it operates in. `risk-management-and-frameworks.md` and
 ### Synthesized from
 
 This reference is authoritative on the current state, built from the mission research note on the
-regulatory landscape (`research-regulatory.md`, current to August 2026). The regulatory chapters of
+regulatory landscape (research-regulatory.md, current to August 2026). The regulatory chapters of
 the source books — primarily *Responsible AI in the Enterprise* and *Beyond the Algorithm* — are
 treated as historical context only, because the obligations described there have moved materially
 past their publication dates. All prose is an original paraphrase and synthesis of the ideas in

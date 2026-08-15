@@ -14,7 +14,7 @@ for when something goes wrong despite the gates.
 The content below is an original synthesis of the ideas in *Platform and Model Design for
 Responsible AI*, *Designing Data Governance from the Ground Up*, and the *Data Governance
 Handbook*, refreshed against current research on technical governance controls (see
-`research-technical-controls.md`). Read it alongside `risk-management-and-frameworks.md`,
+research-technical-controls.md). Read it alongside `risk-management-and-frameworks.md`,
 which supplies the risk tiers and registers the gates feed into, and
 `governance-operating-model.md`, which names the owners and councils who operate the gates.
 Nothing here is legal advice.
@@ -77,8 +77,8 @@ with a one-page intake; a high-impact system warrants the full assessment, valid
 oversight chain. Calibrating gate depth to tier keeps the gate from being either a rubber
 stamp or an unusable bottleneck.
 
-The `use-case-intake-form.md` template turns the earliest gate into a fillable form, and
-`model-risk-assessment.md` records the tiering decision that sets how demanding every later
+The [use-case-intake-form.md](../templates/use-case-intake-form.md) template turns the earliest gate into a fillable form, and
+[model-risk-assessment.md](../templates/model-risk-assessment.md) records the tiering decision that sets how demanding every later
 gate must be.
 
 ## The Ideation and Procurement Stage
@@ -198,7 +198,7 @@ technical-controls research records, model cards began as a proposal to standard
 documentation — intended use, benchmarked results by subgroup, evaluation method, and
 limitations — and have since become the standard artifact attached to a registry entry. A
 finished model card is both the evidence that clears the evaluation gate and the reference
-that the monitoring and incident-response phases consult later. The fillable `model-card.md`
+that the monitoring and incident-response phases consult later. The fillable [model-card.md](../templates/model-card.md)
 template ships with this skill.
 
 ## The Deployment Stage
@@ -457,9 +457,9 @@ Lifecycle governance schedules every other control in this skill across time:
   gate and the aggregate lifecycle picture reported upward
   (`procurement-third-party-and-board-oversight.md`).
 
-Use `use-case-intake-form.md` to open the lifecycle with a governed intake,
-`model-risk-assessment.md` to set the tier that calibrates every later gate, and
-`model-card.md` to produce the documentation that carries the model through evaluation,
+Use [use-case-intake-form.md](../templates/use-case-intake-form.md) to open the lifecycle with a governed intake,
+[model-risk-assessment.md](../templates/model-risk-assessment.md) to set the tier that calibrates every later gate, and
+[model-card.md](../templates/model-card.md) to produce the documentation that carries the model through evaluation,
 monitoring, and incident response.
 
 ## Where to Go Next
@@ -479,6 +479,6 @@ This reference synthesizes (never reproduces) ideas from *Platform and Model Des
 Responsible AI*, *Designing Data Governance from the Ground Up*, and the *Data Governance
 Handbook*. Current context on model and data cards, model inventories, monitoring and drift,
 audit trails, and MLOps governance tooling is drawn from the mission research note
-`research-technical-controls.md`. All prose is an original paraphrase and synthesis of the
+research-technical-controls.md. All prose is an original paraphrase and synthesis of the
 ideas in these sources; idea-level attribution is consolidated in `source-index.md`. It is
 not legal advice.

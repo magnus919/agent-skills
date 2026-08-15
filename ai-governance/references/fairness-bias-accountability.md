@@ -9,7 +9,7 @@ Fairness*, *Introduction to Responsible AI*, and *Responsible AI: Best Practices
 `foundations-and-principles.md` (which frames fairness and accountability as governance
 principles), `transparency-and-explainability.md` (which covers the explanation and disclosure
 half of accountability), and `ai-lifecycle-governance.md` (which places fairness review at stage
-gates). Use the `model-card.md` and `model-risk-assessment.md` templates to record the decisions
+gates). Use the [model-card.md](../templates/model-card.md) and [model-risk-assessment.md](../templates/model-risk-assessment.md) templates to record the decisions
 this reference describes. It is not legal advice.
 
 ## Why Fairness Defies a Single Metric
@@ -89,7 +89,7 @@ be ruled out; it should equalize recall for qualified candidates across protecte
 should equalize selection rates unless doing so would push accuracy below the minimum standard or
 below default human practice. Whatever ordering an organization adopts, the reasoning should be
 recorded in the model's documentation, where it becomes auditable. This is the substance behind the
-fairness section of the `model-card.md` template: not a single number but an explicit statement of
+fairness section of the [model-card.md](../templates/model-card.md) template: not a single number but an explicit statement of
 which metrics were computed, what they showed, and why those metrics were the right ones.
 
 ## Algorithmic Justice and the Trade-offs of Enforcing Fairness
@@ -108,7 +108,7 @@ properties. A purely accuracy-maximizing model can be blatantly unfair, but a he
 one can be so degraded that it fails its purpose. The discipline this reference recommends is to treat fairness
 as one dimension of a risk assessment rather than an absolute override: surface the trade-offs,
 quantify what is given up, and let the governance process decide whether the residual outcome is
-acceptable. This is why fairness review belongs in the same workflow as the `model-risk-assessment.md`
+acceptable. This is why fairness review belongs in the same workflow as the [model-risk-assessment.md](../templates/model-risk-assessment.md)
 template and the tiering logic in `risk-management-and-frameworks.md`.
 
 ## Disparate Treatment Versus Disparate Impact
@@ -158,7 +158,7 @@ for.
 
 Model cards are the canonical documentation artifact that makes fairness and accountability
 verifiable after the fact. Originating in the 2019 model-cards paper (current research, see
-`research-technical-controls.md`), a model card is a short document accompanying a released model
+research-technical-controls.md), a model card is a short document accompanying a released model
 that records its intended use, the evaluation procedure, and benchmarked performance *disaggregated
 by subgroup* — so that accuracy variation across demographic and other groups is visible rather than
 hidden inside a single average. The disaggregation is the point for fairness: an overall accuracy
@@ -170,8 +170,8 @@ layer of a responsible-AI program, with the caveat that such artifacts only work
 standardized practices sit behind each check box; otherwise they become superficial compliance
 theater. For governance purposes, a completed model card records the fairness metrics that were
 chosen, why, what they showed across groups, and which decisions were made in response — turning the
-discussions in this reference into a durable, audit-ready record. The `model-card.md` template in
-this skill implements exactly that, and `research-technical-controls.md` documents the current
+discussions in this reference into a durable, audit-ready record. The [model-card.md](../templates/model-card.md) template in
+this skill implements exactly that, and research-technical-controls.md documents the current
 state of model and data cards as a widely adopted control.
 
 ## Running Fairness, Bias, and Accountability with the Rest of the Skill
@@ -191,9 +191,9 @@ Fairness work is not a standalone activity; it threads through every other gover
   picture and hold the accountable owners to account
   (`procurement-third-party-and-board-oversight.md`).
 
-Use the `model-card.md` template to record metric choice, subgroup results, and limitations; the
-`model-risk-assessment.md` template to weigh fairness against other risk dimensions; and the
-`use-case-intake-form.md` template to flag high-stakes, fairness-sensitive use cases early.
+Use the [model-card.md](../templates/model-card.md) template to record metric choice, subgroup results, and limitations; the
+[model-risk-assessment.md](../templates/model-risk-assessment.md) template to weigh fairness against other risk dimensions; and the
+[use-case-intake-form.md](../templates/use-case-intake-form.md) template to flag high-stakes, fairness-sensitive use cases early.
 
 ## Where to Go Next
 
@@ -202,7 +202,7 @@ Use the `model-card.md` template to record metric choice, subgroup results, and 
   accountability.
 - **`ai-lifecycle-governance.md`** — where fairness review and monitoring happen across the
   lifecycle.
-- **`research-technical-controls.md`** — current state of model cards, data cards, and monitoring.
+- **research-technical-controls.md** — current state of model cards, data cards, and monitoring.
 
 ---
 
@@ -210,7 +210,7 @@ Use the `model-card.md` template to record metric choice, subgroup results, and 
 
 This reference synthesizes (never reproduces) ideas from *AI Fairness*, *Introduction to
 Responsible AI*, and *Responsible AI: Best Practices*. Current context on model cards and
-monitoring is drawn from the mission research note `research-technical-controls.md`. All prose is
+monitoring is drawn from the mission research note research-technical-controls.md. All prose is
 an original paraphrase and synthesis of the ideas in these sources; idea-level attribution is
 consolidated in `source-index.md`. The legal discussion is educational context, not legal advice,
 and specific laws and enforcement should be confirmed against current sources at use time.

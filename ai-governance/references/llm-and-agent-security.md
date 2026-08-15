@@ -11,7 +11,7 @@ fast-moving 2025-era OWASP and agentic guidance de-stales the books. Read it wit
 `foundations-and-principles.md` (which names safety and human oversight as governing principles),
 `privacy-and-data-governance.md` (the data-protection half that security protects), and
 `ai-lifecycle-governance.md` (where security gates sit in the model lifecycle). Use the
-`model-risk-assessment.md` and `model-card.md` templates to record the threat model and controls
+[model-risk-assessment.md](../templates/model-risk-assessment.md) and [model-card.md](../templates/model-card.md) templates to record the threat model and controls
 this reference describes. It is not legal advice, and specific controls should be re-verified
 against current OWASP and government guidance at use time.
 
@@ -235,7 +235,7 @@ improper output handling.
 ### Synthesized from
 
 This reference synthesizes (never reproduces) ideas from *The Developer's Playbook for LLM Security* and *Beyond the Algorithm*, and it is de-staled against the current state
-by the mission research note on LLM/agent security (`research-llm-agent-security.md`) and a
+by the mission research note on LLM/agent security (research-llm-agent-security.md) and a
 verification of the OWASP GenAI LLM Top 10 2026 against the OWASP GenAI Security Project's published
 release. All prose is an original paraphrase and synthesis of the ideas in these sources;
 idea-level attribution is consolidated in `source-index.md`. Because the LLM/agent security
