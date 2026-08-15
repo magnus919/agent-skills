@@ -73,12 +73,10 @@ jobs:
       - name: Run skill-local script tests
         run: |
           set -euo pipefail
-          for dir in */scripts; do
-            if find "$dir" -name 'test_*.py' | grep -q .; then
-              echo "=== $dir ==="
-              python3 -m pytest "$dir" -o "addopts=-ra --strict-markers --tb=short" -v --durations=10
-            fi
-          done
+          while IFS= read -r dir; do
+            echo "=== $dir ==="
+            python3 -m pytest "$dir" -o "addopts=-ra --strict-markers --tb=short" -o "python_files=test_*.py" -v --durations=10
+          done < <(git ls-files | grep -E '/scripts/test_[^/]*\.py$' | sed 's#/[^/]*$##' | sort -u)
       - name: Run skill-local shell test scripts
         run: python3 scripts/check-skill-tests.py --run
       - name: Check skill test coverage
