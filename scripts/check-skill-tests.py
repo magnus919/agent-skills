@@ -36,8 +36,10 @@ RUN_TESTS: list[tuple[str, list[str]]] = [
     ("data-scientist/scripts/test_detect_compute.sh", ["--local"]),
     ("brand-designer/scripts/brand-book_test.sh", []),
     ("flaresolverr/scripts/test-flaresolverr.sh", []),
-    # Requires EbookLib (AGPL) and beautifulsoup4, installed test-only in CI
-    # before this script runs.
+    # Requires EbookLib (AGPL) and beautifulsoup4 (installed test-only in CI
+    # before this script runs); epub-edit/epub-convert additionally require
+    # epublib (Python 3.13+) and are skipped, and surfaced as skips, on the
+    # Python 3.12 CI runner.
     ("epub/scripts/test_epub_skill.sh", []),
 ]
 

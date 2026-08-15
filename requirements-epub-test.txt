@@ -1,0 +1,3 @@
+# epub-skill test-only deps (not in requirements-dev.txt); EbookLib is AGPL.
+EbookLib==0.20.0
+beautifulsoup4==4.15.0
