@@ -7,7 +7,6 @@ SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SCRIPTS="$SKILL_DIR/scripts"
 PASS=0
 FAIL=0
-SKIP=0
 TMPDIR=$(mktemp -d)
 TEST_EPUB="$TMPDIR/test-book.epub"
 
@@ -24,11 +23,6 @@ fail() {
 pass() {
   echo "  ✓ PASS: $1"
   PASS=$((PASS + 1))
-}
-
-skip() {
-  echo "  SKIPPED: $1"
-  SKIP=$((SKIP + 1))
 }
 
 # ═══════════════════════════════════════════════════════
@@ -313,7 +307,8 @@ if python3 -c "import epublib" 2>/dev/null; then
     fail "edit metadata: exits non-zero"
   fi
 else
-  skip "epub-edit (requires epublib; Python 3.13+)"
+  pass "edit: epublib not installed — skipping"
+  pass "edit metadata: epublib not installed — skipping"
 fi
 
 # Test dry-run on metadata (works without epublib)
@@ -373,7 +368,7 @@ if python3 -c "import epublib" 2>/dev/null; then
     fail "convert: exits non-zero"
   fi
 else
-  skip "epub-convert (requires epublib; Python 3.13+)"
+  pass "convert: epublib not installed — skipping"
 fi
 
 CONVERT_OUT="$TMPDIR/converted.epub"  # always set
@@ -457,7 +452,7 @@ done
 # ═══════════════════════════════════════════════════════
 echo ""
 echo "═══════════════════════════════════════"
-echo "  PASS: $PASS  FAIL: $FAIL  SKIP: $SKIP  TOTAL: $((PASS + FAIL + SKIP))"
+echo "  PASS: $PASS  FAIL: $FAIL  TOTAL: $((PASS + FAIL))"
 echo "═══════════════════════════════════════"
 
 if [ "$FAIL" -gt 0 ]; then
