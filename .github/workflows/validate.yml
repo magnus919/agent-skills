@@ -77,6 +77,8 @@ jobs:
             echo "=== $dir ==="
             python3 -m pytest "$dir" -o "addopts=-ra --strict-markers --tb=short" -o "python_files=test_*.py" -v --durations=10
           done < <(git ls-files | grep -E '/scripts/test_[^/]*\.py$' | sed 's#/[^/]*$##' | sort -u)
+      - name: Install epub skill test deps (EbookLib is AGPL; test-only)
+        run: python3 -m pip install EbookLib beautifulsoup4
       - name: Run skill-local shell test scripts
         run: python3 scripts/check-skill-tests.py --run
       - name: Check skill test coverage
