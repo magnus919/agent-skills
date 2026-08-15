@@ -106,8 +106,8 @@ confirms the same three-tier pattern for AI:
   an *enterprise data committee* (executives, meeting quarterly, accountable to the CEO and
   board) from an *enterprise data council* (senior leaders one to two levels below the
   C-suite, doing the detailed policy and monitoring work and reporting up to the committee).
-  For AI this is the AI ethics or AI risk council that brings together legal, risk,
-  compliance, privacy, security, data, product, and engineering.
+  For AI this is the AI ethics or AI risk council that convenes compliance, legal, privacy, risk,
+  security, data, product, and engineering.
 - **Stewards / operating owners.** The people who run day-to-day controls and drive
   implementation inside their domains.
 
@@ -174,7 +174,7 @@ There is no single correct answer. The books and the current research converge o
 principle that the best model is the one that drives progress and maturity for your specific
 organization, and that most organizations try several arrangements before settling on one.
 Current research adds that there is no one prescribed AI operating model either: the balance
-between a CAIO, a governance council, and a board committee varies, but authoritative
+between a CAIO, the governance council, and a board committee is not uniform, but authoritative
 guidance consistently requires documented roles, clear accountability that reaches the
 board, and periodic reporting.
 
@@ -185,10 +185,10 @@ Governance Handbook* treats maturity assessment as an annual exercise that measu
 organization across governance dimensions (using models such as DCAM), gives each dimension
 a level, surfaces gaps, and reports results up to the executive team and board in aggregate.
 Current research reinforces the idea for AI: NIST's AI RMF functions (govern, map, measure,
-manage) can be read as a maturity ladder — a nascent organization merely identifies its
+manage) function like a maturity ladder — a nascent organization merely identifies its
 systems, while a mature one governs, maps, measures, and manages AI risk continuously and
 feeds results back into improvement. ISO/IEC 42001 provides a certifiable management-system
-structure built on the Plan-Do-Check-Act cycle, which is itself a maturity mechanism. The
+structure built around a Plan-Do-Check-Act cycle, which is itself a maturity mechanism. The
 practical takeaway is that the operating model should include an explicit way to score
 itself and a roadmap to move up, not a one-time compliance checkbox. (This skill ships the
 `governance-maturity.py` script to operationalize such a self-assessment.)
@@ -233,7 +233,7 @@ adjustments, and current research points to where AI-specific attention is neede
   oversight.
 - **Make third-party risk first-class.** Much of an organization's AI footprint is procured,
   embedded, or inherited through vendors and M&A, so supply-chain diligence and vendor
-  accountability must be part of the operating model from the start (see
+  accountability must be embedded in the operating model from the start (see
   `procurement-third-party-and-board-oversight.md`).
 - **Extend stewardship to models.** Assign a named owner to every model and dataset, using
   the same business/technical steward split the books describe for data.

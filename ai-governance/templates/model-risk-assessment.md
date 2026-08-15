@@ -1,6 +1,6 @@
 # Model Risk Assessment & Tiering Worksheet
 
-> **Confidentiality:** A completed assessment records inherent and residual risk, mitigations, and a tiering decision for a specific model. Store it with access controls appropriate to governance and board-oversight information. This template implements the NIST AI Risk Management Framework (AI RMF) functions — Govern, Map, Measure, Manage — and the model risk tiering discipline described in `references/risk-management-and-frameworks.md`. It is a working worksheet, not a legal opinion; framework details should be confirmed against current NIST and ISO releases at use time.
+> **Confidentiality:** A completed assessment records inherent and residual risk, mitigations, and a tiering decision for a specific model. Store it with access controls appropriate to governance and board-oversight information. This template implements the NIST AI Risk Management Framework functions — Govern, Map, Measure, Manage — and the model risk tiering discipline described in `references/risk-management-and-frameworks.md`. It is a working worksheet, not a legal opinion; framework details should be confirmed against current NIST and ISO releases at use time.
 
 ## When To Use
 
@@ -49,7 +49,7 @@ Describe what trains and feeds the model. Sensitive, high-volume, or personal da
 
 Classify how much the model decides and how consequential its output is. This is a principal driver of the inherent risk tier.
 
-- Level of autonomy: <human-in-the-loop / human-on-the-loop / fully automated>
+- Level of autonomy: <human-in-the-loop review / human-on-the-loop review / fully automated>
 - Decision type: <advisory / recommendation / direct action / automated decision>
 - Decision impact: <informational / operational / financial / life- or liberty-affecting>
 - Opportunity for human override: <how and when a person can review or reverse the outcome>

@@ -47,7 +47,7 @@ Document what the model was trained on and what it consumes in production, so it
 
 ## Performance And Evaluation
 
-Record how the model was evaluated, on what data, and how it performed — broken out by relevant subgroups so the spread across groups is visible rather than hidden in a single average.
+Record how the model was evaluated, on what data, and how it performed — broken out by relevant subgroups so the spread across groups is visible rather than being collapsed into one average.
 
 - Evaluation procedure: <test sets, holdouts, cross-validation, or benchmark methodology>
 - Primary performance metrics and thresholds: <e.g. accuracy, precision, recall, F1, calibration, quality>

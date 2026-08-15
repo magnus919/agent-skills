@@ -56,15 +56,15 @@ uncompromised. Neither choice is safe by default; each just moves where the boun
 
 ## Prompt Injection
 
-Prompt injection is the manipulation of an LLM or agent through crafted inputs so that it ignores
-its instructions, leaks data, bypasses policy, or takes actions the operator never intended. It is
-the single most consistently ranked risk in OWASP's taxonomy and is widely described as the most
-common AI exploit. *The Developer's Playbook* distinguishes the two delivery classes:
+Prompt injection steers an LLM or agent using adversarial input — overriding developer
+guidance, exposing protected information, circumventing policy, or triggering actions the operator
+did not authorize. It ranks at or near the top of OWASP's risk lists and is commonly called the
+field's most frequent AI exploit. *The Developer's Playbook* distinguishes the two delivery classes:
 
 - **Direct injection** ("jailbreaking"): the attacker controls the input channel, crafting a prompt
   to override the system prompt or reveal hidden instructions. *Beyond the Algorithm* notes that
   this can let an attacker target backend systems the LLM can reach.
-- **Indirect injection**: malicious instructions are planted in content the model reads as part of
+- **Indirect injection**: malicious instructions are hidden inside content the model ingests as part of
   its task — a retrieved document, a web page, a tool's output. This is the more dangerous variant
   for agents, because the untrusted material often arrives through a channel the system trusts, and
   it can be invisible to humans when only the model processes the text.
@@ -126,12 +126,12 @@ than an output bug, and breaks it into three forms:
   what the application requires.
 
 The mitigations center on **least agency**, the agentic counterpart to least privilege: scope each
-agent's tools and permissions narrowly, require human approval for high-impact actions, isolate
-agents so a compromised one cannot move laterally, and log and monitor decisions and tool calls so
-misuse is detectable. "current research": the OWASP GenAI LLM Top 10 2026 ranks excessive agency
-third, and in May 2026 a Five Eyes group of national cybersecurity agencies (CISA, NSA, and allied
-cyber bodies) issued their first joint guidance on adopting agentic AI, recommending cautious
-adoption with identity, access, and monitoring controls.
+agent's tools and permissions narrowly, require human sign-off for high-impact actions, keep
+agents isolated so a takeover cannot spread across the fleet, and log tool use and decisions so
+abuse leaves a trail. "current research": the OWASP GenAI LLM Top 10 2026 ranks excessive agency
+third, and in mid-2026 the Five Eyes nations' cyber agencies (CISA, NSA, and counterparts) published
+their first joint guidance on agentic AI, urging measured rollout backed by identity, access, and
+monitoring safeguards.
 
 ## Denial of Service and Unbounded Consumption
 
@@ -172,9 +172,9 @@ configuration-file attacks that alter model behavior without touching the model 
 
 ## Red-Teaming LLM and Agentic Systems
 
-Red-teaming is a structured, adversarial evaluation that probes an AI system for failures —
-prompt injection, jailbreaks, data leaks, unsafe outputs, bias, and unintended tool use — before an
-attacker finds them. *Beyond the Algorithm* describes it as crafting prompts that trigger harmful
+A red team carries out a structured, adversarial evaluation that probes an AI system for failures —
+prompt injection, jailbreaks, data leaks, unsafe outputs, bias, and misuse of tools — before a real
+attacker exploits them. *Beyond the Algorithm* describes it as crafting prompts that trigger harmful
 or revealing behavior and notes it is creative and resource-intensive. The playbook adds that a red
 team simulates realistic attacks and drives improvements, and it is complementary to traditional
 penetration testing: a pen test is a point-in-time assessment of exploitable weaknesses, while red
@@ -182,23 +182,22 @@ teaming is an ongoing, creative effort to probe AI-specific behaviors that autom
 red team exercises areas like hallucination triggers, bias, excessive agency, and injection with an
 external, adversarial perspective that internal teams focused on functionality often lack.
 
-Practitioners caution that red-teaming is necessary but not sufficient: because it tends to find
-known vulnerability classes, it can create a false sense of security against novel attacks,
-especially as models and agent architectures change quickly. Effective programs combine red-teaming
-with layered prompt-injection defenses, least-agency design, monitoring and incident response, and
-continuous re-evaluation rather than treating a single pass as a safety certification. "current
-research": government bodies have institutionalized this practice — the U.K. AI Security Institute
-and the U.S. AI Safety Institute (now NIST's Center for AI Standards and Innovation, or CAISI) both
-perform technical adversarial evaluation of models and agents, and OWASP maintains a red-teaming
-taxonomy as a companion to its Top 10.
+Practitioners warn that red-teaming alone is not a guarantee: it mostly surfaces known classes of
+weakness, so passing a red-team round can breed overconfidence about novel attacks, especially as
+models and agents evolve. Strong programs pair red-teaming with layered injection defenses,
+least-privilege agency design, active monitoring, and continuous re-evaluation, rather than treating
+one session as proof of safety. "current research": government bodies have institutionalized this
+practice — the U.K. AI Security Institute and its U.S. counterpart, the AI Safety Institute (now
+NIST's Center for AI Standards and Innovation, or CAISI) both run technical adversarial evaluations,
+and OWASP ships a red-teaming taxonomy alongside its Top 10.
 
 ## The Current OWASP Top 10 (verified)
 
 OWASP's Top 10 for LLM Applications is the default risk checklist for the field, but its ranking is
-volatile between editions — the research note and the books both stress that treating any published
-list as a fixed checklist is unsafe. This section is "current research" verified against the OWASP
+volatile between editions — the research note and the books both stress that no published
+ranking should be treated as a frozen checklist. This section is "current research" verified against the OWASP
 GenAI Security Project's release, which moved from expert-vote-only ranking to blending expert
-judgment with thousands of documented incidents. The ordering below is the OWASP GenAI LLM Top 10
+judgment with thousands of documented incidents. The ordering below follows the OWASP GenAI LLM Top 10
 2026 and should be re-checked before it is asserted as current; earlier editions differed, and later
 ones will again.
 
@@ -226,7 +225,7 @@ improper output handling.
 - **`privacy-and-data-governance.md`** — the data-protection controls (exposure, retention,
   PETs) that security defends.
 - **`ai-lifecycle-governance.md`** — where security reviews and red-teaming sit in the stage gates.
-- **`risk-management-and-frameworks.md`** — NIST AI RMF and its Generative AI Profile, into which
+- **`risk-management-and-frameworks.md`** — NIST AI RMF, including its Generative AI Profile, into which
   the OWASP categories map.
 - **`regulatory-landscape.md`** — current law that turns some of these risks into legal duties.
 

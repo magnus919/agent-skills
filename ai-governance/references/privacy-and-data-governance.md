@@ -191,7 +191,7 @@ The core PETs the book and current practice converge on include:
 | Technique | What it does | Typical use |
 |---|---|---|
 | Differential privacy (DP) | Adds calibrated noise so that including or excluding any one record barely changes outputs, bounding what an adversary can infer | Training and query-time privacy; measured by epsilon (ε) |
-| K-anonymity | Groups records so each is indistinguishable from at least k−1 others on identifying attributes | Publishing or sharing structured data |
+| K-anonymity | Groups records so no row is alone: each is one of at least k−1 peers on identifying attributes | Publishing or sharing structured data |
 | Anonymization / pseudonymization | Removes or replaces identifiers; pseudonymization is reversible with a key, anonymization is not | Pre-processing before sharing or analysis |
 | Encryption / access control | Protects data and model weights in storage and transit; restricts who can reach them | Model storage and access privacy |
 | Federated learning | Trains on distributed data without centralizing raw records, exchanging only model updates | Keeping data local while still learning |

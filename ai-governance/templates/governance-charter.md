@@ -31,7 +31,7 @@ State, in one to three sentences, why the council exists and what outcomes it is
 
 ## Membership
 
-List the representative roles and named individuals. A cross-functional council should bring together legal, risk, compliance, privacy, security, data, product, and engineering. Note alternates so the body is never blocked by a single person's absence.
+List the representative roles and named individuals. A cross-functional council should bring together legal, compliance, risk, privacy, security, data, product, and engineering. Note alternates so the body is never blocked by a single person's absence.
 
 | Role | Representative | Alternates | Term / rotation |
 |---|---|---|---|

@@ -46,7 +46,7 @@ Describe the data that trains and feeds the system. Sensitive, high-volume, or p
 
 Classify how much the system decides and how consequential its output is. This drives the tier.
 
-- Level of autonomy: <human-in-the-loop / human-on-the-loop / fully automated>
+- Level of autonomy: <human-in-the-loop review / human-on-the-loop review / fully automated>
 - Decision type: <advisory / recommendation / direct action / automated decision>
 - Decision impact: <informational / operational / financial / life- or liberty-affecting>
 - Scale of exposure: <approximate users, transactions, or decisions affected per year>
