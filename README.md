@@ -28,6 +28,10 @@ Operate an evaluated agent with tools and authority in production through a runt
 
 Reference for the Agent Skills open format itself — directory structure, frontmatter schema, naming conventions, and progressive disclosure model. Use this meta-skill when creating or reviewing any other skill in this repository.
 
+### [ai-governance](ai-governance/SKILL.md)
+
+Design and operate an organization's AI governance system: governance principles, operating models and decision rights, risk frameworks, lifecycle gates, and fairness, transparency, privacy, security, regulatory, and board-oversight controls. Use when standing up or maturing a governance program, tiering AI use-case risk, reviewing an LLM/agent system for governance and safety gaps, mapping a regulation to a compliance plan, or preparing board reporting. Do not use for legal interpretation (route to legal-strategy), data-governance mechanics (data-architect/data-engineering), or implementing application security (secure-software-engineering).
+
 ### [anydoc](anydoc/SKILL.md)
 
 Convert Word, PowerPoint, Excel, OpenDocument, RTF, EPUB, CSV, and text-based PDF documents to GitHub-Flavored Markdown locally with the Any Doc CLI. Use when a task needs the contents of an office document, spreadsheet, presentation, ebook, or PDF you cannot read directly. Do not use for generating, editing, or validating documents, for ebook packaging, or for OCR of scanned or image-only PDFs.
