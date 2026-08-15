@@ -1,0 +1,8 @@
+{
+  "name": "broken-example",
+  "version": "0.1.0",
+  "crs": "local meters",
+  "bounds": {"min_x": 10, "min_y": 0, "max_x": 0, "max_y": 10},
+  "tiles": [],
+  "provenance": [{"name": "Example", "url": "https://example.org/data", "license": "Example", "retrieved": "not-a-date"}]
+}
