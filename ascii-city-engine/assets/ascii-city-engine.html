@@ -12,8 +12,14 @@ const COLS=96,ROWS=40,CW=12,CH=16,FOV=Math.PI/2,MAX_DISTANCE=150,STEP=2,PLAYER_R
 let world=null, camera={x:315,y:385,heading:0,eyeHeight:1.7}, keys=new Set(), last=0;
 function fail(message){statusEl.className='error';statusEl.textContent=`Cannot load ${PACK_PATH}: ${message}`;}
 function terrain(x,y){
-  if(!Number.isFinite(x)||!Number.isFinite(y))return null;   // guard malformed pack fields
-  const t=world.terrain,r=t.resolution_m,u=(x-t.origin[0])/r,v=(y-t.origin[1])/r,i=Math.floor(u),j=Math.floor(v),fu=u-i,fv=v-j,H=t.elevations;
+  const t=world&&world.terrain;
+  if(!t)return null;
+  const r=t.resolution_m;
+  if(!Number.isFinite(x)||!Number.isFinite(y)||!Number.isFinite(r)||r<=0)return null;   // guard malformed pack/metadata
+  const ox=t.origin, H=t.elevations;
+  if(!Array.isArray(ox)||ox.length<2||!Number.isFinite(ox[0])||!Number.isFinite(ox[1]))return null;
+  if(!Array.isArray(H)||H.length===0)return null;
+  const u=(x-ox[0])/r,v=(y-ox[1])/r,i=Math.floor(u),j=Math.floor(v),fu=u-i,fv=v-j;
   if(j<0||i<0||j+1>=H.length||i+1>=H[0].length)return null;
   const a=H[j][i],b=H[j][i+1],c=H[j+1][i],d=H[j+1][i+1]; if([a,b,c,d].some(q=>q===null||!Number.isFinite(q)))return null;
   return (1-fu)*(1-fv)*a+fu*(1-fv)*b+(1-fu)*fv*c+fu*fv*d;
@@ -95,10 +101,11 @@ function render(){
     let ang=Math.atan2(dy,dx)-camera.heading;
     while(ang>Math.PI)ang-=2*Math.PI; while(ang<-Math.PI)ang+=2*Math.PI;
     if(Math.abs(ang)>FOV/2)continue;                    // outside field of view
+    const dc=d*Math.cos(ang);                           // corrected perpendicular distance
     const pz=terrain(p.x,p.y); if(pz===null)continue;
-    const col=Math.round((ang+FOV/2)/FOV*COLS), row=Math.round(horizon-focal*(pz+1.2-eye)/d);
+    const col=Math.round((ang+FOV/2)/FOV*COLS), row=Math.round(horizon-focal*(pz+1.2-eye)/dc);
     if(row<0||row>=ROWS||col<0||col>=COLS)continue;
-    if(d<depth[row][col]){chars[row][col]=PROP_GLYPHS[p.kind]||'?';colors[row][col]=shade(PROP_COLORS[p.kind]||'#cccccc',d);depth[row][col]=d;}
+    if(dc<depth[row][col]){chars[row][col]=PROP_GLYPHS[p.kind]||'?';colors[row][col]=shade(PROP_COLORS[p.kind]||'#cccccc',dc);depth[row][col]=dc;}
   }
   // signs: perspective-projected text billboards, drawn as an overlay pass so they are
   // reliably visible at range. Each sign projects its world anchor to a screen column,
@@ -113,13 +120,14 @@ function render(){
     let ang=Math.atan2(dy,dx)-camera.heading;
     while(ang>Math.PI)ang-=2*Math.PI; while(ang<-Math.PI)ang+=2*Math.PI;
     if(Math.abs(ang)>FOV/2)continue;                    // outside field of view
+    const dc=d*Math.cos(ang);                           // corrected perpendicular distance
     const gz=terrain(g.x,g.y); if(gz===null)continue;
-    const colF=(ang+FOV/2)/FOV*COLS, row=Math.round(horizon-focal*(gz+3-eye)/d);
+    const colF=(ang+FOV/2)/FOV*COLS, row=Math.round(horizon-focal*(gz+3-eye)/dc);
     if(row<0||row>=ROWS)continue;
-    const maxLen=Math.max(3,Math.min(text.length,Math.round(focal*3/d)));  // shrink with distance
-    const txt=d<28?text:text.slice(0,maxLen);
+    const maxLen=Math.max(3,Math.min(text.length,Math.round(focal*3/dc)));  // shrink with distance
+    const txt=dc<28?text:text.slice(0,maxLen);
     const start=Math.round(colF-txt.length/2);
-    for(let ci=0;ci<txt.length;ci++){const c=start+ci;if(c<0||c>=COLS)continue;if(d<depth[row][c]){chars[row][c]=txt[ci];colors[row][c]=shade('#eaf6ff',d);depth[row][c]=d;}}
+    for(let ci=0;ci<txt.length;ci++){const c=start+ci;if(c<0||c>=COLS)continue;if(dc<depth[row][c]){chars[row][c]=txt[ci];colors[row][c]=shade('#eaf6ff',dc);depth[row][c]=dc;}}
   }
   ctx.fillStyle='#030609';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.font=`${CH}px ui-monospace,SFMono-Regular,Consolas,monospace`;ctx.textBaseline='top';for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){ctx.fillStyle=colors[y][x];ctx.fillText(chars[y][x],x*CW,y*CH);}
   const facing=facingBuilding();const loc=nearestStreet();

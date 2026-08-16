@@ -77,16 +77,16 @@ def valid_provenance(p, manifest=False):
 
 def inside(bounds,x,y): return bounds["min_x"] <= x <= bounds["max_x"] and bounds["min_y"] <= y <= bounds["max_y"]
 def all_points(tile):
-    for b in tile.get("buildings", []):
+    for b in (tile.get("buildings") if isinstance(tile.get("buildings"),list) else []):
         if isinstance(b, dict):
             yield from b.get("footprint", [])
-    for s in tile.get("surfaces", []):
+    for s in (tile.get("surfaces") if isinstance(tile.get("surfaces"),list) else []):
         if isinstance(s, dict):
             yield from s.get("geometry", [])
-    for p in (tile.get("props") or []):
+    for p in (tile.get("props") if isinstance(tile.get("props"),list) else []):
         if isinstance(p, dict):
             yield [p.get("x"), p.get("y")]
-    for g in (tile.get("signs") or []):
+    for g in (tile.get("signs") if isinstance(tile.get("signs"),list) else []):
         if isinstance(g, dict):
             yield [g.get("x"), g.get("y")]
 
