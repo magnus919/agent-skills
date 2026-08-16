@@ -129,6 +129,7 @@ def main(argv):
         n_g=len(tile.get("signs",[])) if isinstance(tile.get("signs"),list) else 0
         total_features=n_b+n_s+n_p+n_g
         report.rule(f"tile[{idx}].feature-count",total_features<=MAX_FEATURES_PER_TILE,f"{total_features} features")
+        if total_features>MAX_FEATURES_PER_TILE: continue  # short-circuit quadratic work below
         terrain=tile.get("terrain",{}); elev=terrain.get("elevations"); res=terrain.get("resolution_m"); origin=terrain.get("origin")
         rectangular=isinstance(elev,list) and len(elev)>=2 and all(isinstance(row,list) and len(row)>=2 for row in elev) and len({len(row) for row in elev})==1 and all(v is None or finite_number(v) for row in elev for v in row)
         cells=sum(len(row) for row in elev) if isinstance(elev,list) else 0
@@ -152,6 +153,10 @@ def main(argv):
             report.rule(f"tile[{idx}].surface[{j}]",ok,item.get("id","missing id") if isinstance(item,dict) else "not object"); s_ok &= ok
             if isinstance(item,dict) and isinstance(item.get("id"),str): surface_ids.append(item["id"])
         report.rule(f"tile[{idx}].surfaces",s_ok,f"count={len(surfaces) if isinstance(surfaces,list) else 0}")
+        road_names=set()
+        for item in (surfaces if isinstance(surfaces,list) else []):
+            if isinstance(item,dict) and isinstance(item.get("name"),str) and item.get("name"):
+                road_names.add(item["name"])
         props=tile.get("props",[])
         p_ok=isinstance(props,list)
         for j,item in enumerate(props if isinstance(props,list) else []):
@@ -165,15 +170,17 @@ def main(argv):
         signs=tile.get("signs",[])
         g_ok=isinstance(signs,list)
         for j,item in enumerate(signs if isinstance(signs,list) else []):
-            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("text"),str) and bool(item["text"]) and finite_number(item.get("x")) and finite_number(item.get("y"))
+            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("text"),str) and bool(item["text"]) and item["text"] in road_names and finite_number(item.get("x")) and finite_number(item.get("y"))
             if ok and "provenance" in item: ok = ok and valid_provenance(item.get("provenance"))
-            report.rule(f"tile[{idx}].sign[{j}]",ok,item.get("text","?") if isinstance(item,dict) else "not object"); g_ok &= ok
+            report.rule(f"tile[{idx}].sign[{j}]",ok,f"{item.get('text','?')} ({item.get('id','?')})" if isinstance(item,dict) else "not object"); g_ok &= ok
         if isinstance(signs,list) and signs: report.rule(f"tile[{idx}].signs",g_ok,f"count={len(signs)}")
         extents_ok=bool(bounds_ok) and all(point(p) and inside(b,p[0],p[1]) for p in all_points(tile))
         report.rule(f"tile[{idx}].content.bounds",extents_ok,rel)
-    duplicates=sorted({x for x in building_ids if building_ids.count(x)>1})
+    from collections import Counter
+    bc=Counter(building_ids); sc=Counter(surface_ids)
+    duplicates=sorted(x for x,n in bc.items() if n>1)
     report.rule("buildings.unique-ids",not duplicates,", ".join(duplicates))
-    surface_dupes=sorted({x for x in surface_ids if surface_ids.count(x)>1})
+    surface_dupes=sorted(x for x,n in sc.items() if n>1)
     report.rule("surfaces.unique-ids",not surface_dupes,", ".join(surface_dupes))
     if isinstance(manifest.get("spawn"),dict) and bounds_ok:
         s=manifest["spawn"]; report.rule("manifest.spawn.bounds",finite_number(s.get("x")) and finite_number(s.get("y")) and finite_number(s.get("heading_deg")) and inside(b,s["x"],s["y"]))
