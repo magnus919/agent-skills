@@ -180,7 +180,7 @@ def main(argv):
         # unknown kinds are permitted: the engine renders them with the documented
         # fallback glyph '?'. Report them (so a misspelled kind is visible) but do not
         # fail the pack on their presence.
-        if unknown: report.rule(f"tile[{idx}].props.unknown-kinds",True,f"rendered with fallback '?': {', '.join(unknown)}")
+        if unknown: report.rule(f"tile[{idx}].props.unknown-kinds",True,f"rendered with fallback '{FALLBACK_GLYPH}': {', '.join(unknown)}")
         signs=tile.get("signs",[])
         g_ok=isinstance(signs,list)
         for j,item in enumerate(signs if isinstance(signs,list) else []):

@@ -80,7 +80,7 @@ PASS tile[0].content.bounds — world/tile-0.json
 PASS buildings.unique-ids
 PASS surfaces.unique-ids
 PASS manifest.spawn.bounds
-SUMMARY rules_passed=... rules_failed=0 buildings=30 terrain_extent=[0.0, 0.0]..[630.0, 770.0] surfaces=25
+SUMMARY rules_passed=1411 rules_failed=0 buildings=159 terrain_extent=[0.0, 0.0]..[630.0, 770.0] surfaces=899
 ```
 
 The deliberately-broken fixture must fail:
