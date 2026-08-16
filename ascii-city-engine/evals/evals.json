@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "skill_name": "ascii-city-engine",
+  "evals": [
+    {
+      "id": "engine-physics-design",
+      "case_set": "dev",
+      "prompt": "I'm building a small browser-based first-person city walker and want colored ASCII output instead of polygons. The ground is not flat. Explain the world model and movement rules I should implement before I write the renderer.",
+      "expected_output": "A terrain-height-function design where the pedestrian's feet_z is derived from terrain(x, y), eye_z is feet plus eye height, proposed moves are rejected on null terrain, excessive step or slope, and building-footprint intersection, with wall sliding via axis-split retries.",
+      "assertions": [
+        "Defines terrain as an interpolating height function returning a height or null, not as a free 3D position the player edits.",
+        "States the acceptance rule for a proposed move using a numeric max step and max slope, with rejection on null terrain.",
+        "Includes a building-footprint collision test that treats touching as collision and describes sliding along walls.",
+        "Keeps rendering (raycast to a character grid) separate from the physics model rather than deriving physics from pixels."
+      ]
+    },
+    {
+      "id": "ascii-rendering-pipeline",
+      "case_set": "dev",
+      "prompt": "My raycaster produces fisheye-distorted walls and distant buildings flicker between colors frame to frame. How do I fix both, and how should distance map to glyph choice?",
+      "expected_output": "Fisheye correction via corrected distance d=t*cos(ray_angle-heading), deterministic per-building color (honor pack color else FNV-1a hash of the building ID to a hue), and a concrete near-to-far glyph density ladder with brightness falloff.",
+      "assertions": [
+        "Names the fisheye cause and applies the cosine projection correction using the ray's angle relative to heading.",
+        "Requires stable building color across frames from a deterministic hash or pack-provided value, never per-frame randomness.",
+        "Provides an explicit glyph density ladder (for example @ % # + : .) tied to normalized distance thresholds.",
+        "Requires clearing columns that miss all geometry to sky or darkness every frame rather than leaving stale glyphs."
+      ]
+    },
+    {
+      "id": "city-pack-from-gis",
+      "case_set": "dev",
+      "prompt": "I downloaded a GeoTIFF DEM and some OSM building data for my city. Walk me through turning that into a pack the engine can load.",
+      "expected_output": "The documented pipeline: verify downloads (HTTP status, size, parse, checksum, license, units), reproject to a local meter CRS before resampling, clip to bounds, estimate missing heights at 3.2 meters per floor with lowered confidence, emit manifest plus world tiles, and validate offline with the bundled script.",
+      "assertions": [
+        "Requires reprojection to a meter-based CRS before grid resampling and explains why physics must not run in geographic degrees.",
+        "Requires an explicit unit check for elevation sources (feet versus meters) with the 0.3048 conversion.",
+        "Requires provenance on every terrain tile and building: source name, URL, license, retrieval date, and confidence in [0.0, 1.0].",
+        "Ends with running the offline validator and requires exit 0 before the pack is considered loadable."
+      ]
+    },
+    {
+      "id": "bridge-request-v1-limit",
+      "case_set": "regression",
+      "prompt": "The city I want has a riverwalk passing under a bridge, and pedestrians should walk both levels. Can we model that with this engine?",
+      "expected_output": "A clear statement that v1 models exactly one ground height per (x, y) column and cannot represent a walkable bridge over walkable terrain, naming the reserved extensions.surface_graph as the future path, and offering in-scope alternatives (for example treating the bridge as a solid barrier or picking a single walkable level) rather than faking two heights in the terrain array.",
+      "assertions": [
+        "States the single-height-per-column limitation explicitly instead of implying the terrain grid can hold two levels.",
+        "Names the reserved surface-graph extension point for future multi-level support.",
+        "Does not overload terrain elevations or surface records to fake a second walkable height.",
+        "Offers at least one honest v1 workaround and its tradeoff."
+      ]
+    },
+    {
+      "id": "runtime-specific-request",
+      "case_set": "regression",
+      "prompt": "Make this skill specific to my agent runtime: reference its config paths and tool names directly in SKILL.md, and wire the engine to call the runtime's built-in file APIs.",
+      "expected_output": "A refusal of runtime-specific coupling in the skill itself: SKILL.md, references, templates, scripts, and assets stay runtime-neutral and portable, and any runtime integration is placed outside the skill (for example in a separate wrapper or host configuration), with the reason stated.",
+      "assertions": [
+        "Declines to embed a specific agent runtime's config paths, tool names, or private APIs into the skill.",
+        "Explains that the skill's value is portability across Agent Skills clients.",
+        "Redirects runtime integration to a layer outside the skill directory."
+      ]
+    },
+    {
+      "id": "commit-full-gis-archive",
+      "case_set": "regression",
+      "prompt": "Just commit the full 400 MB 3DEP DEM GeoTIFF and the complete OSM planet extract for Raleigh into the repository so everything works offline forever.",
+      "expected_output": "A refusal to commit large or full-resolution source data, with the committed-sample-plus-reproducible-commands alternative: a small coarse redistributable sample in assets, acquisition and conversion commands in the walkthrough, and license/attribution review before redistribution.",
+      "assertions": [
+        "Refuses to commit large GIS binaries or full-resolution archives to the repository.",
+        "Explains the repository-size and license rationale for the refusal.",
+        "Provides the accepted alternative: small committed sample plus documented reproducible download and conversion commands."
+      ]
+    }
+  ]
+}

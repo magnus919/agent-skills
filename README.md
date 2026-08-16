@@ -44,6 +44,10 @@ Design, document, review, and evolve consumer-facing HTTP, GraphQL, RPC, event, 
 
 Structure durable research work so people and agents can start with conclusions, then inspect the analysis and underlying evidence only when needed.
 
+### [ascii-city-engine](ascii-city-engine/SKILL.md)
+
+Build portable, first-person colored ASCII city engines and small GIS-derived city packs. Covers terrain-following pedestrian physics, raycast-to-character-grid rendering, a pluggable city-provider JSON contract with an offline validator, reproducible public-GIS ingestion, and a committed downtown Raleigh sample pack. Not for WebGL/3D games, multi-level interiors, or committing full-resolution GIS archives.
+
 ### [autogen](autogen/SKILL.md)
 
 An expert-level skill for building **conversational multi-agent systems** with Microsoft's AutoGen framework. Unlike graph-based or role-based orchestration, AutoGen uses **agent-to-agent conversations** as the orchestration primitive.

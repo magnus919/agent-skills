@@ -1,0 +1,52 @@
+<!doctype html>
+<!-- Expected pack: raleigh-downtown-sample/ (reads manifest.json for spawn, then its first world tile) -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASCII City Engine</title><style>
+html,body{margin:0;height:100%;background:#030609;color:#d7e7ef;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}body{display:grid;place-items:center;overflow:hidden}canvas{width:min(100vw,1440px);height:auto;image-rendering:pixelated;background:#030609}#status{position:fixed;left:1rem;top:.75rem;white-space:pre-wrap;color:#9fc3d4;background:#030609cc;padding:.4rem}.error{color:#ff6677}
+</style></head><body><canvas id="view" width="1152" height="640" aria-label="First-person colored ASCII city view"></canvas><div id="status">Loading city…</div><script>
+'use strict';
+const PACK_PATH='raleigh-downtown-sample';
+const MANIFEST_PATH=`${PACK_PATH}/manifest.json`;
+const canvas=document.querySelector('#view'),ctx=canvas.getContext('2d'),statusEl=document.querySelector('#status');
+const COLS=96,ROWS=40,CW=12,CH=16,FOV=Math.PI/2,MAX_DISTANCE=150,STEP=2,PLAYER_RADIUS=.30,MAX_STEP=.45,MAX_SLOPE=.35;
+let world=null, camera={x:315,y:385,heading:0,eyeHeight:1.7}, keys=new Set(), last=0;
+function fail(message){statusEl.className='error';statusEl.textContent=`Cannot load ${PACK_PATH}: ${message}`;}
+function terrain(x,y){
+  const t=world.terrain,r=t.resolution_m,u=(x-t.origin[0])/r,v=(y-t.origin[1])/r,i=Math.floor(u),j=Math.floor(v),fu=u-i,fv=v-j,H=t.elevations;
+  if(j<0||i<0||j+1>=H.length||i+1>=H[0].length)return null;
+  const a=H[j][i],b=H[j][i+1],c=H[j+1][i],d=H[j+1][i+1]; if([a,b,c,d].some(q=>q===null||!Number.isFinite(q)))return null;
+  return (1-fu)*(1-fv)*a+fu*(1-fv)*b+(1-fu)*fv*c+fu*fv*d;
+}
+function pointInPolygon(x,y,p){let inside=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if(((a[1]>y)!==(b[1]>y))&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;}
+function edgeDistance(x,y,a,b){const vx=b[0]-a[0],vy=b[1]-a[1],wx=x-a[0],wy=y-a[1],q=Math.max(0,Math.min(1,(wx*vx+wy*vy)/(vx*vx+vy*vy||1)));return Math.hypot(x-a[0]-q*vx,y-a[1]-q*vy);}
+function collides(x,y){return world.buildings.some(b=>pointInPolygon(x,y,b.footprint)||b.footprint.some((p,i)=>edgeDistance(x,y,p,b.footprint[(i+1)%b.footprint.length])<=PLAYER_RADIUS));}
+function canMove(x,y){const z0=terrain(camera.x,camera.y),z1=terrain(x,y);if(z0===null||z1===null||collides(x,y))return false;const horizontal=Math.hypot(x-camera.x,y-camera.y),delta=Math.abs(z1-z0);return delta<=MAX_STEP&&delta/Math.max(horizontal,1e-9)<=MAX_SLOPE;}
+function glyph(d){const q=d/MAX_DISTANCE;return q<.12?'@':q<.25?'%':q<.42?'#':q<.60?'+':q<.78?':':'.';}
+function shade(hex,d){const q=Math.min(1,d/MAX_DISTANCE),k=.25+.75*Math.pow(1-q,1.4),n=parseInt(hex.slice(1),16);return `rgb(${Math.round((n>>16)*k)},${Math.round(((n>>8)&255)*k)},${Math.round((n&255)*k)})`;}
+function render(){
+  const chars=Array.from({length:ROWS},()=>Array(COLS).fill(' ')),colors=Array.from({length:ROWS},()=>Array(COLS).fill('#06101a')),depth=Array.from({length:ROWS},()=>Array(COLS).fill(Infinity));
+  const feet=terrain(camera.x,camera.y);if(feet===null)return fail('camera is outside valid terrain');const eye=feet+camera.eyeHeight,focal=(COLS/2)/Math.tan(FOV/2),horizon=ROWS*.48;
+  for(let sx=0;sx<COLS;sx++){
+    const angle=camera.heading-FOV/2+(sx+.5)/COLS*FOV,ca=Math.cos(angle),sa=Math.sin(angle),correct=Math.cos(angle-camera.heading);let wallHit=false;
+    for(let t=1;t<=MAX_DISTANCE;t+=STEP){
+      const x=camera.x+ca*t,y=camera.y+sa*t,z=terrain(x,y),d=t*correct;if(z===null)continue;
+      const groundRow=Math.round(horizon-focal*(z-eye)/Math.max(d,.01));
+      if(groundRow>=0&&groundRow<ROWS&&d<depth[groundRow][sx]){chars[groundRow][sx]=glyph(d);colors[groundRow][sx]=`rgb(${Math.round(58*(1-d/MAX_DISTANCE))},${Math.round(112*(1-d/MAX_DISTANCE))},${Math.round(78*(1-d/MAX_DISTANCE))})`;depth[groundRow][sx]=d;}
+      const b=world.buildings.find(o=>pointInPolygon(x,y,o.footprint));
+      if(b){const bottom=Math.max(0,Math.round(horizon-focal*(b.base_elev_m-eye)/d)),top=Math.max(0,Math.round(horizon-focal*(b.base_elev_m+b.height_m-eye)/d));for(let sy=Math.max(0,top);sy<=Math.min(ROWS-1,bottom);sy++){if(d<depth[sy][sx]){chars[sy][sx]=glyph(d);colors[sy][sx]=shade(b.color,d);depth[sy][sx]=d;}}wallHit=true;break;}
+    }
+    if(!wallHit){for(let sy=0;sy<Math.floor(horizon);sy++)if(depth[sy][sx]===Infinity){chars[sy][sx]=' ';colors[sy][sx]='#030609';}}
+  }
+  ctx.fillStyle='#030609';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.font=`${CH}px ui-monospace,SFMono-Regular,Consolas,monospace`;ctx.textBaseline='top';for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){ctx.fillStyle=colors[y][x];ctx.fillText(chars[y][x],x*CW,y*CH);}
+  statusEl.className='';statusEl.textContent=`${world.buildings.length} buildings · ${world.surfaces.length} surfaces\nW/S move · A/D turn · (${camera.x.toFixed(1)}, ${camera.y.toFixed(1)}, ${feet.toFixed(1)}m)`;
+}
+function update(dt){const turn=(keys.has('a')||keys.has('arrowleft')?-1:0)+(keys.has('d')||keys.has('arrowright')?1:0);camera.heading+=turn*1.7*dt;const move=(keys.has('w')||keys.has('arrowup')?1:0)+(keys.has('s')||keys.has('arrowdown')?-1:0);if(move){const distance=move*4*dt,nx=camera.x+Math.cos(camera.heading)*distance,ny=camera.y+Math.sin(camera.heading)*distance;if(canMove(nx,ny)){camera.x=nx;camera.y=ny;}else if(canMove(nx,camera.y))camera.x=nx;else if(canMove(camera.x,ny))camera.y=ny;}}
+function frame(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;if(world){update(dt);render();}requestAnimationFrame(frame);}
+addEventListener('keydown',e=>{keys.add(e.key.toLowerCase());if(e.key.startsWith('Arrow'))e.preventDefault();});addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+fetch(MANIFEST_PATH).then(r=>{if(!r.ok)throw Error(`HTTP ${r.status}`);return r.json();}).then(manifest=>{
+  const s=(manifest&&manifest.spawn&&Number.isFinite(manifest.spawn.x)&&Number.isFinite(manifest.spawn.y))?manifest.spawn:null;
+  if(s){camera.x=s.x;camera.y=s.y;if(Number.isFinite(s.heading_deg))camera.heading=s.heading_deg*Math.PI/180;}
+  const tileRel=(manifest&&Array.isArray(manifest.tiles)&&manifest.tiles[0])||'world/tile-0.json';
+  return fetch(`${PACK_PATH}/${tileRel}`).then(r=>{if(!r.ok)throw Error(`HTTP ${r.status}`);return r.json();});
+}).then(data=>{if(!data.terrain||!Array.isArray(data.buildings))throw Error('invalid world structure');world=data;if(collides(camera.x,camera.y))throw Error('manifest spawn intersects a building');requestAnimationFrame(frame);}).catch(e=>fail(e.message));
+</script></body></html>
