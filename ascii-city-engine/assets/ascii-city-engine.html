@@ -12,6 +12,7 @@ const COLS=96,ROWS=40,CW=12,CH=16,FOV=Math.PI/2,MAX_DISTANCE=150,STEP=2,PLAYER_R
 let world=null, camera={x:315,y:385,heading:0,eyeHeight:1.7}, keys=new Set(), last=0;
 function fail(message){statusEl.className='error';statusEl.textContent=`Cannot load ${PACK_PATH}: ${message}`;}
 function terrain(x,y){
+  if(!Number.isFinite(x)||!Number.isFinite(y))return null;   // guard malformed pack fields
   const t=world.terrain,r=t.resolution_m,u=(x-t.origin[0])/r,v=(y-t.origin[1])/r,i=Math.floor(u),j=Math.floor(v),fu=u-i,fv=v-j,H=t.elevations;
   if(j<0||i<0||j+1>=H.length||i+1>=H[0].length)return null;
   const a=H[j][i],b=H[j][i+1],c=H[j+1][i],d=H[j+1][i+1]; if([a,b,c,d].some(q=>q===null||!Number.isFinite(q)))return null;
@@ -36,17 +37,16 @@ function buildIndices(){
   const surfs=(world.surfaces||[]).slice(0,MAX_SURFACES);
   for(const p of (world.props||[])){const k=key(p.x,p.y);(propGrid.get(k)||propGrid.set(k,[]).get(k)).push(p);}
   for(const s of surfs){
-    const g=s.geometry; let cells=0;
+    const g=s.geometry; let cells=0; const seen=new Set();
     // rasterize every polyline edge into the grid cells it crosses, so long
     // straight segments register even between widely-spaced vertices
     for(let i=0;i<g.length-1;i++){
       if(cells>=MAX_CELLS_PER_SURFACE)break;
       const [x0,y0]=g[i],[x1,y1]=g[i+1];
-      // cap steps so a degenerate resolution or a pathologically long edge cannot
-      // spin the loop for unbounded time (the shipped 10 m grid needs few steps)
+      // per-surface cell cap bounds total work, so the per-edge step cap can be
+      // generous enough to sample long edges fully at fine (2-5 m) resolution
       const seg=Math.hypot(x1-x0,y1-y0);
-      const steps=Math.max(1,Math.min(2000,Math.ceil(seg/(res>0?res:1))));
-      const seen=new Set();
+      const steps=Math.max(1,Math.min(20000,Math.ceil(seg/(res>0?res:1))));
       for(let st=0;st<=steps;st++){
         if(cells>=MAX_CELLS_PER_SURFACE)break;
         const x=x0+(x1-x0)*st/steps,y=y0+(y1-y0)*st/steps,k=key(x,y);
@@ -86,7 +86,9 @@ function render(){
   // props: perspective-projected one-cell billboards drawn once per frame as an
   // overlay pass, so each prop renders exactly once (no multi-row streak from the
   // ray march) while staying depth-tested against buildings and the ground.
-  for(const p of (world.props||[])){
+  const propsList=Array.isArray(world.props)?world.props:[];
+  for(const p of propsList){
+    if(!p||typeof p!=='object')continue;                 // guard malformed entries
     if(p.kind==='crossing')continue;                    // crossings render as ground bands only
     const dx=p.x-camera.x,dy=p.y-camera.y,d=Math.hypot(dx,dy);
     if(d<1||d>MAX_DISTANCE)continue;
@@ -101,7 +103,9 @@ function render(){
   // signs: perspective-projected text billboards, drawn as an overlay pass so they are
   // reliably visible at range. Each sign projects its world anchor to a screen column,
   // scales its text to distance, and respects the shared depth buffer.
-  for(const g of (world.signs||[])){
+  const signsList=Array.isArray(world.signs)?world.signs:[];
+  for(const g of signsList){
+    if(!g||typeof g!=='object')continue;                 // guard malformed entries
     const dx=g.x-camera.x,dy=g.y-camera.y,d=Math.hypot(dx,dy);
     if(d<2||d>MAX_DISTANCE)continue;                   // too near or beyond view range
     const text=typeof g.text==='string'?g.text:'';     // guard: missing text degrades, never crashes
@@ -119,7 +123,7 @@ function render(){
   }
   ctx.fillStyle='#030609';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.font=`${CH}px ui-monospace,SFMono-Regular,Consolas,monospace`;ctx.textBaseline='top';for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){ctx.fillStyle=colors[y][x];ctx.fillText(chars[y][x],x*CW,y*CH);}
   const facing=facingBuilding();const loc=nearestStreet();
-  statusEl.className='';statusEl.textContent=`${world.buildings.length} buildings · ${(world.props||[]).length} props · ${(world.signs||[]).length} signs${facing?`\nFacing: ${facing}`:''}${loc?`\nOn: ${loc}`:''}\nW/S move · A/D turn · (${camera.x.toFixed(1)}, ${camera.y.toFixed(1)}, ${feet.toFixed(1)}m)`;
+  statusEl.className='';statusEl.textContent=`${world.buildings.length} buildings · ${(Array.isArray(world.props)?world.props:[]).length} props · ${(Array.isArray(world.signs)?world.signs:[]).length} signs${facing?`\nFacing: ${facing}`:''}${loc?`\nOn: ${loc}`:''}\nW/S move · A/D turn · (${camera.x.toFixed(1)}, ${camera.y.toFixed(1)}, ${feet.toFixed(1)}m)`;
 }
 function pointNearPolyline(x,y,geom,tol){for(let i=0;i<geom.length-1;i++){if(edgeDistance(x,y,geom[i],geom[i+1])<=tol)return true;}return false;}
 function facingBuilding(){let best=null,bd=25;for(const b of world.buildings){if(!b.name&&!b.address)continue;const cx=b.footprint.reduce((a,p)=>a+p[0],0)/b.footprint.length,cy=b.footprint.reduce((a,p)=>a+p[1],0)/b.footprint.length;const d=Math.hypot(cx-camera.x,cy-camera.y);const ang=Math.atan2(cy-camera.y,cx-camera.x);let da=ang-camera.heading;while(da>Math.PI)da-=2*Math.PI;while(da<-Math.PI)da+=2*Math.PI;da=Math.abs(da);if(d<bd&&da<0.35){bd=d;best=b.name||b.address;}}return best;}
