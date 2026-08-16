@@ -23,6 +23,19 @@ function collides(x,y){return world.buildings.some(b=>pointInPolygon(x,y,b.footp
 function canMove(x,y){const z0=terrain(camera.x,camera.y),z1=terrain(x,y);if(z0===null||z1===null||collides(x,y))return false;const horizontal=Math.hypot(x-camera.x,y-camera.y),delta=Math.abs(z1-z0);return delta<=MAX_STEP&&delta/Math.max(horizontal,1e-9)<=MAX_SLOPE;}
 function glyph(d){const q=d/MAX_DISTANCE;return q<.12?'@':q<.25?'%':q<.42?'#':q<.60?'+':q<.78?':':'.';}
 function shade(hex,d){const q=Math.min(1,d/MAX_DISTANCE),k=.25+.75*Math.pow(1-q,1.4),n=parseInt(hex.slice(1),16);return `rgb(${Math.round((n>>16)*k)},${Math.round(((n>>8)&255)*k)},${Math.round((n&255)*k)})`;}
+const PROP_GLYPHS={traffic_signal:'T',street_lamp:'i',tree:'t',bus_stop:'B',bench:'b',bollard:'o',fire_hydrant:'f',crossing:'='};
+const PROP_COLORS={traffic_signal:'#ffd23f',street_lamp:'#fff3b0',tree:'#3fbf5f',bus_stop:'#4db8ff',bench:'#c98a4b',bollard:'#c0c6cc',fire_hydrant:'#ff5a5a',crossing:'#e8e8e8'};
+const SURFACE_GLYPHS={asphalt:'.',paved:'.',concrete:':',paving_stones:';',sett:';',cobblestone:',',gravel:',',dirt:' '};
+function buildIndices(){
+  const res=world.terrain.resolution_m,propGrid=new Map(),signGrid=new Map(),surfGrid=new Map();
+  const key=(x,y)=>`${Math.floor(x/res)},${Math.floor(y/res)}`;
+  for(const p of (world.props||[])){const k=key(p.x,p.y);(propGrid.get(k)||propGrid.set(k,[]).get(k)).push(p);}
+  for(const g of (world.signs||[])){const k=key(g.x,g.y);(signGrid.get(k)||signGrid.set(k,[]).get(k)).push(g);}
+  for(const s of (world.surfaces||[])){for(const pt of s.geometry){const k=key(pt[0],pt[1]);let m=surfGrid.get(k);if(!m){m=[];surfGrid.set(k,m);}m.push(s);}}
+  return {propGrid,signGrid,surfGrid,key};
+}
+let IX=null;
+function near(map,x,y){const res=world.terrain.resolution_m,cx=Math.floor(x/res),cy=Math.floor(y/res),out=[];for(let j=cy-1;j<=cy+1;j++)for(let i=cx-1;i<=cx+1;i++){const m=map.get(`${i},${j}`);if(m)out.push(...m);}return out;}
 function render(){
   const chars=Array.from({length:ROWS},()=>Array(COLS).fill(' ')),colors=Array.from({length:ROWS},()=>Array(COLS).fill('#06101a')),depth=Array.from({length:ROWS},()=>Array(COLS).fill(Infinity));
   const feet=terrain(camera.x,camera.y);if(feet===null)return fail('camera is outside valid terrain');const eye=feet+camera.eyeHeight,focal=(COLS/2)/Math.tan(FOV/2),horizon=ROWS*.48;
@@ -30,16 +43,44 @@ function render(){
     const angle=camera.heading-FOV/2+(sx+.5)/COLS*FOV,ca=Math.cos(angle),sa=Math.sin(angle),correct=Math.cos(angle-camera.heading);let wallHit=false;
     for(let t=1;t<=MAX_DISTANCE;t+=STEP){
       const x=camera.x+ca*t,y=camera.y+sa*t,z=terrain(x,y),d=t*correct;if(z===null)continue;
+      // ground plane styled by surface material + lighting
+      let gGlyph=glyph(d),gCol=`rgb(${Math.round(58*(1-d/MAX_DISTANCE))},${Math.round(112*(1-d/MAX_DISTANCE))},${Math.round(78*(1-d/MAX_DISTANCE))})`;
+      const surfs=near(IX.surfGrid,x,y);
+      const road=surfs.find(s=>s.kind==='road'&&pointNearPolyline(x,y,s.geometry,world.terrain.resolution_m*.6));
+      if(road){const mat=SURFACE_GLYPHS[road.surface]||'.';gGlyph=d<MAX_DISTANCE*.5?mat:glyph(d);const lit=road.lit==='yes';const b=(lit?1.15:0.85);gCol=`rgb(${Math.round(70*b*(1-d/MAX_DISTANCE))},${Math.round(118*b*(1-d/MAX_DISTANCE))},${Math.round(84*b*(1-d/MAX_DISTANCE))})`;}
       const groundRow=Math.round(horizon-focal*(z-eye)/Math.max(d,.01));
-      if(groundRow>=0&&groundRow<ROWS&&d<depth[groundRow][sx]){chars[groundRow][sx]=glyph(d);colors[groundRow][sx]=`rgb(${Math.round(58*(1-d/MAX_DISTANCE))},${Math.round(112*(1-d/MAX_DISTANCE))},${Math.round(78*(1-d/MAX_DISTANCE))})`;depth[groundRow][sx]=d;}
+      if(groundRow>=0&&groundRow<ROWS&&d<depth[groundRow][sx]){chars[groundRow][sx]=gGlyph;colors[groundRow][sx]=gCol;depth[groundRow][sx]=d;}
+      // props: point billboard at terrain, one cell
+      for(const p of near(IX.propGrid,x,y)){if(Math.hypot(p.x-x,p.y-y)>world.terrain.resolution_m*.7)continue;const pz=terrain(p.x,p.y);if(pz===null)continue;const row=Math.round(horizon-focal*(pz+1.2-eye)/d);if(row>=0&&row<ROWS&&d<depth[row][sx]){chars[row][sx]=PROP_GLYPHS[p.kind]||'?';colors[row][sx]=shade(PROP_COLORS[p.kind]||'#cccccc',d);depth[row][sx]=d;}}
       const b=world.buildings.find(o=>pointInPolygon(x,y,o.footprint));
       if(b){const bottom=Math.max(0,Math.round(horizon-focal*(b.base_elev_m-eye)/d)),top=Math.max(0,Math.round(horizon-focal*(b.base_elev_m+b.height_m-eye)/d));for(let sy=Math.max(0,top);sy<=Math.min(ROWS-1,bottom);sy++){if(d<depth[sy][sx]){chars[sy][sx]=glyph(d);colors[sy][sx]=shade(b.color,d);depth[sy][sx]=d;}}wallHit=true;break;}
     }
     if(!wallHit){for(let sy=0;sy<Math.floor(horizon);sy++)if(depth[sy][sx]===Infinity){chars[sy][sx]=' ';colors[sy][sx]='#030609';}}
   }
+  // signs: perspective-projected text billboards, drawn as an overlay pass so they are
+  // reliably visible at range. Each sign projects its world anchor to a screen column,
+  // scales its text to distance, and respects the shared depth buffer.
+  for(const g of (world.signs||[])){
+    const dx=g.x-camera.x,dy=g.y-camera.y,d=Math.hypot(dx,dy);
+    if(d<2||d>MAX_DISTANCE)continue;                       // too near or beyond view range
+    let ang=Math.atan2(dy,dx)-camera.heading;
+    while(ang>Math.PI)ang-=2*Math.PI; while(ang<-Math.PI)ang+=2*Math.PI;
+    if(Math.abs(ang)>FOV/2)continue;                        // outside field of view
+    const gz=terrain(g.x,g.y); if(gz===null)continue;
+    const colF=(ang+FOV/2)/FOV*COLS, row=Math.round(horizon-focal*(gz+3-eye)/d);
+    if(row<0||row>=ROWS)continue;
+    const maxLen=Math.max(3,Math.min(g.text.length,Math.round(focal*3/d)));  // shrink with distance
+    const txt=d<28?g.text:g.text.slice(0,maxLen);
+    const start=Math.round(colF-txt.length/2);
+    for(let ci=0;ci<txt.length;ci++){const c=start+ci;if(c<0||c>=COLS)continue;if(d<depth[row][c]){chars[row][c]=txt[ci];colors[row][c]=shade('#eaf6ff',d);depth[row][c]=d;}}
+  }
   ctx.fillStyle='#030609';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.font=`${CH}px ui-monospace,SFMono-Regular,Consolas,monospace`;ctx.textBaseline='top';for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){ctx.fillStyle=colors[y][x];ctx.fillText(chars[y][x],x*CW,y*CH);}
-  statusEl.className='';statusEl.textContent=`${world.buildings.length} buildings · ${world.surfaces.length} surfaces\nW/S move · A/D turn · (${camera.x.toFixed(1)}, ${camera.y.toFixed(1)}, ${feet.toFixed(1)}m)`;
+  const facing=facingBuilding();const loc=nearestStreet();
+  statusEl.className='';statusEl.textContent=`${world.buildings.length} buildings · ${(world.props||[]).length} props · ${(world.signs||[]).length} signs${facing?`\nFacing: ${facing}`:''}${loc?`\nOn: ${loc}`:''}\nW/S move · A/D turn · (${camera.x.toFixed(1)}, ${camera.y.toFixed(1)}, ${feet.toFixed(1)}m)`;
 }
+function pointNearPolyline(x,y,geom,tol){for(let i=0;i<geom.length-1;i++){if(edgeDistance(x,y,geom[i],geom[i+1])<=tol)return true;}return false;}
+function facingBuilding(){let best=null,bd=25;for(const b of world.buildings){if(!b.name&&!b.address)continue;const cx=b.footprint.reduce((a,p)=>a+p[0],0)/b.footprint.length,cy=b.footprint.reduce((a,p)=>a+p[1],0)/b.footprint.length;const d=Math.hypot(cx-camera.x,cy-camera.y);const ang=Math.atan2(cy-camera.y,cx-camera.x);let da=Math.abs(ang-camera.heading);da=Math.min(da,Math.PI*2-da);if(d<bd&&da<0.35){bd=d;best=b.name||b.address;}}return best;}
+function nearestStreet(){const surfs=near(IX.surfGrid,camera.x,camera.y);for(const s of surfs){if(s.name&&pointNearPolyline(camera.x,camera.y,s.geometry,world.terrain.resolution_m))return s.name;}return null;}
 function update(dt){const turn=(keys.has('a')||keys.has('arrowleft')?-1:0)+(keys.has('d')||keys.has('arrowright')?1:0);camera.heading+=turn*1.7*dt;const move=(keys.has('w')||keys.has('arrowup')?1:0)+(keys.has('s')||keys.has('arrowdown')?-1:0);if(move){const distance=move*4*dt,nx=camera.x+Math.cos(camera.heading)*distance,ny=camera.y+Math.sin(camera.heading)*distance;if(canMove(nx,ny)){camera.x=nx;camera.y=ny;}else if(canMove(nx,camera.y))camera.x=nx;else if(canMove(camera.x,ny))camera.y=ny;}}
 function frame(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;if(world){update(dt);render();}requestAnimationFrame(frame);}
 addEventListener('keydown',e=>{keys.add(e.key.toLowerCase());if(e.key.startsWith('Arrow'))e.preventDefault();});addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
@@ -48,5 +89,5 @@ fetch(MANIFEST_PATH).then(r=>{if(!r.ok)throw Error(`HTTP ${r.status}`);return r.
   if(s){camera.x=s.x;camera.y=s.y;if(Number.isFinite(s.heading_deg))camera.heading=s.heading_deg*Math.PI/180;}
   const tileRel=(manifest&&Array.isArray(manifest.tiles)&&manifest.tiles[0])||'world/tile-0.json';
   return fetch(`${PACK_PATH}/${tileRel}`).then(r=>{if(!r.ok)throw Error(`HTTP ${r.status}`);return r.json();});
-}).then(data=>{if(!data.terrain||!Array.isArray(data.buildings))throw Error('invalid world structure');world=data;if(collides(camera.x,camera.y))throw Error('manifest spawn intersects a building');requestAnimationFrame(frame);}).catch(e=>fail(e.message));
+}).then(data=>{if(!data.terrain||!Array.isArray(data.buildings))throw Error('invalid world structure');world=data;IX=buildIndices();if(collides(camera.x,camera.y))throw Error('manifest spawn intersects a building');requestAnimationFrame(frame);}).catch(e=>fail(e.message));
 </script></body></html>

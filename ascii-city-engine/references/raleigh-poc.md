@@ -94,15 +94,19 @@ python3 scripts/validate-city-pack.py assets/deliberately-broken-pack
 
 Serve the repo root (`python3 -m http.server 8000`) and open `http://localhost:8000/assets/ascii-city-engine.html`.
 
-1. **Load.** The status line reads `30 buildings · 25 surfaces` with no error text, and colored building walls appear against dark sky.
-2. **Spawn.** Camera starts at local `(315, 385)` — mid-box, on the Fayetteville Street axis. The HUD elevation reads about 99–100 m.
-3. **Walk >= 100 m with a grade.** Face north (heading 0) and hold W for ~25 seconds. At the scaffold's 4 m/s you cover ~100 m, from spawn (315, 385) to about (315, 505), and the HUD elevation climbs from ~99.9 m to ~100.9 m — a clear, continuous rise. Keep holding W to ~95 s (~380 m) to reach the north edge of the grid at y=770, where the x=315 column tops out at ~103.0 m. The steepest actual street grade in this box is the **Hillsborough Street rise west of the Capitol** — crossing it, you should see the horizon and building bases shift as `feet_z` follows terrain; movement is never rejected on this gentle grade.
-4. **Solid footprint.** Turn toward the nearest large wall (the commercial block south-west of spawn, an OSM `COMMERCIAL` footprint) and hold W into it. Forward motion stops at the wall face; strafing (A/D while holding W) slides along it. You cannot pass through or under it.
+1. **Load.** The HUD reads `159 buildings · 298 props · 29 signs` with no error text. Colored building walls rise against dark sky, and the wayfinding line reads `On: South Wilmington Street` (the spawn street).
+2. **Spawn.** Camera starts at local `(340, 390)` facing north (heading 90°), mid-corridor on the Wilmington Street axis. HUD elevation reads about 100 m.
+3. **Street-name sign.** Hold W and walk north ~120 m (about 30 s at 4 m/s) along Wilmington Street. The light-gray text `North Wilmington Street` floats ahead as an in-world sign; `East Hargett Street` appears at range near the cross-street. These names come from the road `name` tags, never invented.
+4. **Street furniture.** Along the walk, yellow `T` traffic signals cluster at intersections, white `=` crosswalk bands cross the road, green `t` trees dot the verges, and a cyan `B` marks a bus stop. All are point records from the OSM furniture layer.
+5. **Walk with a grade.** The HUD elevation climbs continuously from ~100.1 m to ~101.0 m over the ~120 m walk — `feet_z` follows terrain and movement is never rejected on this gentle grade.
+6. **Solid footprint.** Turn toward the nearest building wall and hold W into it. Forward motion stops at the wall face; strafing (A/D while holding W) slides along it. You cannot pass through or under it.
 
 Re-run the validator after every fresh acquisition; if a data update moves a footprint onto the documented spawn, pick a new walkable spawn inside bounds and update `manifest.json` before publishing the pack.
 
 ## Known limitations of the committed sample
 
 - Terrain is bilinear interpolation of four EPQS corner observations — smooth and correct in trend, but it cannot show curb-level detail. A full pack should resample the 3DEP DEM at 2–5 m.
-- Only 5 of 30 buildings (16.7%) carry an explicit OSM `height` tag (confidence 0.88); the other 25 use the `OSM building:levels × 3.2 m/floor` estimate (confidence 0.72). The 0.55/0.35 fallback tiers in `gis-ingestion.md` step 7 apply to lower-evidence cases than this sample contains. Skyline proportions are right; individual roof elevations may not be.
+- Most buildings use the `OSM building:levels × 3.2 m/floor` estimate (confidence 0.72); a minority carry an explicit OSM `height` tag (confidence 0.88). The 0.55/0.35 fallback tiers in `gis-ingestion.md` step 7 apply to lower-evidence cases than this sample contains. Skyline proportions are right; individual roof elevations may not be.
+- Buildings and surfaces crossing the bbox edge are clipped to the 630 × 770 m working extent and marked `clipped: true`; a small number that collapse below 3 vertices or self-intersect after clipping are dropped rather than weaken the validator's simple-polygon guarantee.
+- OSM does not record `highway=street_lamp` nodes for downtown Raleigh, so lamps are absent from props; road `lit` tags still drive ground brightness. Municipal furniture layers (signals, lamps, trees) on the City of Raleigh ArcGIS portal can fill this gap but were not required for the current census.
 - Raleigh municipal footprints are used as a geometry cross-check only; runtime footprints stay on ODbL-licensed OSM geometry so the sample remains redistributable with attribution.

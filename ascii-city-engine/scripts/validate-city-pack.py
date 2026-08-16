@@ -18,6 +18,11 @@ MAX_POLYGON_VERTICES = 2000      # per building footprint or surface geometry
 MAX_ELEVATION_CELLS = 4_000_000  # per terrain grid (e.g. 2000x2000)
 MAX_FEATURES_PER_TILE = 100_000  # buildings + surfaces + props combined
 
+# Documented per-kind prop glyph map (city-provider-contract.md). One glyph per kind.
+PROP_GLYPHS = {"traffic_signal": "T", "street_lamp": "i", "tree": "t", "bus_stop": "B",
+               "bench": "b", "bollard": "o", "fire_hydrant": "f", "crossing": "="}
+FALLBACK_GLYPH = "?"
+
 class Report:
     def __init__(self): self.passed = 0; self.failed = 0
     def rule(self, name, ok, detail=""):
@@ -81,6 +86,9 @@ def all_points(tile):
     for p in tile.get("props", []):
         if isinstance(p, dict):
             yield [p.get("x"), p.get("y")]
+    for g in tile.get("signs", []):
+        if isinstance(g, dict):
+            yield [g.get("x"), g.get("y")]
 
 def main(argv):
     report=Report(); pack=Path(argv[1]).resolve() if len(argv)==2 else None
@@ -139,8 +147,22 @@ def main(argv):
             if isinstance(item,dict) and isinstance(item.get("id"),str): surface_ids.append(item["id"])
         report.rule(f"tile[{idx}].surfaces",s_ok,f"count={len(surfaces) if isinstance(surfaces,list) else 0}")
         props=tile.get("props",[])
-        p_ok=isinstance(props,list) and all(isinstance(p,dict) and isinstance(p.get("id"),str) and isinstance(p.get("kind"),str) and finite_number(p.get("x")) and finite_number(p.get("y")) for p in props)
-        report.rule(f"tile[{idx}].props",p_ok,f"count={len(props) if isinstance(props,list) else 0}")
+        p_ok=isinstance(props,list)
+        for j,item in enumerate(props if isinstance(props,list) else []):
+            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("kind"),str) and bool(item["kind"]) and finite_number(item.get("x")) and finite_number(item.get("y"))
+            if ok and "provenance" in item: ok = ok and valid_provenance(item.get("provenance"))
+            report.rule(f"tile[{idx}].prop[{j}]",ok,f"{item.get('kind','?')} ({item.get('id','?')})" if isinstance(item,dict) else "not object"); p_ok &= ok
+        known=sorted({p["kind"] for p in props if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] in PROP_GLYPHS})
+        unknown=sorted({p["kind"] for p in props if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] not in PROP_GLYPHS})
+        report.rule(f"tile[{idx}].props",p_ok,f"count={len(props) if isinstance(props,list) else 0} kinds={len(known)}")
+        if unknown: report.rule(f"tile[{idx}].props.unknown-kinds",False,f"no glyph mapping: {', '.join(unknown)} (use fallback '{FALLBACK_GLYPH}' or extend PROP_GLYPHS)")
+        signs=tile.get("signs",[])
+        g_ok=isinstance(signs,list)
+        for j,item in enumerate(signs if isinstance(signs,list) else []):
+            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("text"),str) and bool(item["text"]) and finite_number(item.get("x")) and finite_number(item.get("y"))
+            if ok and "provenance" in item: ok = ok and valid_provenance(item.get("provenance"))
+            report.rule(f"tile[{idx}].sign[{j}]",ok,item.get("text","?") if isinstance(item,dict) else "not object"); g_ok &= ok
+        if isinstance(signs,list) and signs: report.rule(f"tile[{idx}].signs",g_ok,f"count={len(signs)}")
         extents_ok=bool(bounds_ok) and all(point(p) and inside(b,p[0],p[1]) for p in all_points(tile))
         report.rule(f"tile[{idx}].content.bounds",extents_ok,rel)
     duplicates=sorted({x for x in building_ids if building_ids.count(x)>1})

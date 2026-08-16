@@ -10,8 +10,24 @@ Use sources whose terms permit the intended output and record the exact layer, n
 | Building footprints/heights | OpenStreetMap contributors through Overpass API | https://overpass-api.de/api/interpreter | Footprints plus `height` or `building:levels` tags under ODbL 1.0. |
 | Municipal building footprints | City of Raleigh Building Footprints FeatureServer | https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Building_Footprints/FeatureServer | Authoritative annual aerial-derived planimetry; review the portal's custom license before redistribution. |
 | Road/path vectors | OpenStreetMap contributors through Overpass API | https://overpass-api.de/api/interpreter | `highway=*`, sidewalk, footway, path, and name tags under ODbL 1.0. |
+| Street furniture (props) | OpenStreetMap contributors through Overpass API | https://overpass.kumi.systems/api/interpreter | Point nodes: `highway=traffic_signals`, `highway=crossing`, `highway=bus_stop`, `natural=tree`, `barrier=bollard`, `amenity=bench`, `emergency=fire_hydrant`, `highway=street_lamp`. |
 
 For Raleigh, municipal footprint geometry may be cross-checked with OSM; OSM height tags can enrich municipal records. Keep both source claims when geometry and height come from different places.
+
+### Street furniture acquisition
+
+Pull point furniture in one node query over the same bbox (`out body;` to keep coordinates):
+
+```sh
+curl --fail --silent --show-error --get \
+  --data-urlencode 'data=[out:json][timeout:120];(node[highway=traffic_signals](S,W,N,E);node[highway=street_lamp](S,W,N,E);node[natural=tree](S,W,N,E);node[highway=bus_stop](S,W,N,E);node[amenity=bench](S,W,N,E);node[barrier=bollard](S,W,N,E);node[emergency=fire_hydrant](S,W,N,E);node[highway=crossing](S,W,N,E););out body;' \
+  --output /tmp/city-props.json \
+  https://overpass.kumi.systems/api/interpreter
+```
+
+The primary `overpass-api.de` endpoint can return HTTP 504 under this multi-clause load; the `overpass.kumi.systems` mirror answers the same QL. Map each node to a `kind` (and the documented glyph) by its tag, project `lon/lat` to local meters, and drop nodes that fall outside the pack bounds. Record per-prop provenance.
+
+Street-name **signs** are derived, not downloaded: take each distinct `name` on a road/path way, anchor the sign at that way's centroid (clipped into bounds), set `text` to the exact `name` string, and record `anchor_way` as the source way id so every sign traces to a real record.
 
 ## Reproducible pipeline
 

@@ -23,7 +23,8 @@ Validate each tile against `../templates/world.schema.json`.
 - `terrain`: rectangular row-major elevations, meter resolution, local origin, and provenance. The extent is `[origin_x, origin_x+(columns-1)*resolution]` by `[origin_y, origin_y+(rows-1)*resolution]`. Null denotes a DEM void.
 - `buildings`: globally unique IDs, simple closed-by-interpretation footprint polygons with at least three distinct vertices, meter base and positive height, stable color, and provenance/confidence.
 - `surfaces`: IDs, kinds such as road/sidewalk/path/park/water, polyline or polygon geometry, and an explicit `walkable` flag. Surfaces annotate and render the ground; they do not replace terrain height.
-- `props`: lightweight point objects such as trees, lights, and signs.
+- `props`: lightweight point objects such as trees, lamps, signals, and signs. Each carries `id`, `kind`, `x`, `y`, optional `label`, and provenance. The documented per-kind glyph map is: `traffic_signal=T, street_lamp=i, tree=t, bus_stop=B, bench=b, bollard=o, fire_hydrant=f, crossing==`. A kind with no mapping renders with the fallback glyph `?` and is flagged by the validator.
+- `signs` (optional): street-name text billboards anchored at a real location, each carrying `id`, `text`, `x`, `y`, optional `anchor_way` (the source road's way id), and provenance. Sign `text` must equal a `name` tag present in the source road data — never invented.
 
 A provider may split content into tiles, but duplicate building and surface IDs are forbidden. A consumer may stream or spatially index tiles without changing semantics.
 
