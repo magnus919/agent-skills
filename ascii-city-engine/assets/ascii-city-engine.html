@@ -1,15 +1,16 @@
 <!doctype html>
-<!-- Expected world JSON: raleigh-downtown-sample/world/tile-0.json -->
+<!-- Expected pack: raleigh-downtown-sample/ (reads manifest.json for spawn, then its first world tile) -->
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ASCII City Engine</title><style>
 html,body{margin:0;height:100%;background:#030609;color:#d7e7ef;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}body{display:grid;place-items:center;overflow:hidden}canvas{width:min(100vw,1440px);height:auto;image-rendering:pixelated;background:#030609}#status{position:fixed;left:1rem;top:.75rem;white-space:pre-wrap;color:#9fc3d4;background:#030609cc;padding:.4rem}.error{color:#ff6677}
 </style></head><body><canvas id="view" width="1152" height="640" aria-label="First-person colored ASCII city view"></canvas><div id="status">Loading city…</div><script>
 'use strict';
-const WORLD_PATH='raleigh-downtown-sample/world/tile-0.json';
+const PACK_PATH='raleigh-downtown-sample';
+const MANIFEST_PATH=`${PACK_PATH}/manifest.json`;
 const canvas=document.querySelector('#view'),ctx=canvas.getContext('2d'),statusEl=document.querySelector('#status');
 const COLS=96,ROWS=40,CW=12,CH=16,FOV=Math.PI/2,MAX_DISTANCE=150,STEP=2,PLAYER_RADIUS=.30,MAX_STEP=.45,MAX_SLOPE=.35;
 let world=null, camera={x:315,y:385,heading:0,eyeHeight:1.7}, keys=new Set(), last=0;
-function fail(message){statusEl.className='error';statusEl.textContent=`Cannot load ${WORLD_PATH}: ${message}`;}
+function fail(message){statusEl.className='error';statusEl.textContent=`Cannot load ${PACK_PATH}: ${message}`;}
 function terrain(x,y){
   const t=world.terrain,r=t.resolution_m,u=(x-t.origin[0])/r,v=(y-t.origin[1])/r,i=Math.floor(u),j=Math.floor(v),fu=u-i,fv=v-j,H=t.elevations;
   if(j<0||i<0||j+1>=H.length||i+1>=H[0].length)return null;
@@ -42,5 +43,10 @@ function render(){
 function update(dt){const turn=(keys.has('a')||keys.has('arrowleft')?-1:0)+(keys.has('d')||keys.has('arrowright')?1:0);camera.heading+=turn*1.7*dt;const move=(keys.has('w')||keys.has('arrowup')?1:0)+(keys.has('s')||keys.has('arrowdown')?-1:0);if(move){const distance=move*4*dt,nx=camera.x+Math.cos(camera.heading)*distance,ny=camera.y+Math.sin(camera.heading)*distance;if(canMove(nx,ny)){camera.x=nx;camera.y=ny;}else if(canMove(nx,camera.y))camera.x=nx;else if(canMove(camera.x,ny))camera.y=ny;}}
 function frame(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;if(world){update(dt);render();}requestAnimationFrame(frame);}
 addEventListener('keydown',e=>{keys.add(e.key.toLowerCase());if(e.key.startsWith('Arrow'))e.preventDefault();});addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
-fetch(WORLD_PATH).then(r=>{if(!r.ok)throw Error(`HTTP ${r.status}`);return r.json();}).then(data=>{if(!data.terrain||!Array.isArray(data.buildings))throw Error('invalid world structure');world=data;if(collides(camera.x,camera.y))throw Error('documented spawn intersects a building');requestAnimationFrame(frame);}).catch(e=>fail(e.message));
+fetch(MANIFEST_PATH).then(r=>{if(!r.ok)throw Error(`HTTP ${r.status}`);return r.json();}).then(manifest=>{
+  const s=(manifest&&manifest.spawn&&Number.isFinite(manifest.spawn.x)&&Number.isFinite(manifest.spawn.y))?manifest.spawn:null;
+  if(s){camera.x=s.x;camera.y=s.y;if(Number.isFinite(s.heading_deg))camera.heading=s.heading_deg*Math.PI/180;}
+  const tileRel=(manifest&&Array.isArray(manifest.tiles)&&manifest.tiles[0])||'world/tile-0.json';
+  return fetch(`${PACK_PATH}/${tileRel}`).then(r=>{if(!r.ok)throw Error(`HTTP ${r.status}`);return r.json();});
+}).then(data=>{if(!data.terrain||!Array.isArray(data.buildings))throw Error('invalid world structure');world=data;if(collides(camera.x,camera.y))throw Error('manifest spawn intersects a building');requestAnimationFrame(frame);}).catch(e=>fail(e.message));
 </script></body></html>

@@ -11,7 +11,7 @@ min: lon -78.6420, lat 35.7760
 max: lon -78.6350, lat 35.7830
 ```
 
-This box covers the Fayetteville Street core, the State Capitol grounds, Nash and Moore Squares' west edges, and the Hillsborough Street corridor — roughly 630 m east-west by 770 m north-south. It is deliberately compact so the committed sample stays small and every acceptance check is walkable in minutes. Expand symmetrically (for example to `-78.6520..-78.6280, 35.7680..35.7910`) for a fuller downtown pack.
+This box covers the Fayetteville Street core, the State Capitol grounds, Nash and Moore Squares' west edges, and the Hillsborough Street corridor. Through the tangent-plane conversion in `gis-ingestion.md` the box measures about 632 m east-west by 779 m north-south; the committed sample's manifest bounds and terrain grid are normalized to an exact 630 m by 770 m working extent (78 rows x 64 cols at 10 m) that sits inside it, so the documented formula and the shipped grid differ by roughly 1-2 m at the edges. It is deliberately compact so the sample stays small and every acceptance check is walkable in minutes. Expand symmetrically (for example to `-78.6520..-78.6280, 35.7680..35.7910`) for a fuller downtown pack.
 
 Local pack CRS: equirectangular tangent plane, origin `[-78.6420, 35.7760]`, x east / y north, meters (see `gis-ingestion.md` §Local tangent-plane fallback).
 
@@ -96,7 +96,7 @@ Serve the repo root (`python3 -m http.server 8000`) and open `http://localhost:8
 
 1. **Load.** The status line reads `30 buildings · 25 surfaces` with no error text, and colored building walls appear against dark sky.
 2. **Spawn.** Camera starts at local `(315, 385)` — mid-box, on the Fayetteville Street axis. The HUD elevation reads about 99–100 m.
-3. **Walk >= 100 m with a grade.** Face north (heading 0) and hold W for ~30 seconds. The HUD elevation climbs steadily toward the north edge (~104 m). The steepest actual street grade in this box is the **Hillsborough Street rise west of the Capitol** — crossing it, you should see the horizon and building bases shift as `feet_z` follows terrain; movement is never rejected on this gentle grade.
+3. **Walk >= 100 m with a grade.** Face north (heading 0) and hold W for ~25 seconds. At the scaffold's 4 m/s you cover ~100 m, from spawn (315, 385) to about (315, 505), and the HUD elevation climbs from ~99.9 m to ~100.9 m — a clear, continuous rise. Keep holding W to ~95 s (~380 m) to reach the north edge of the grid at y=770, where the x=315 column tops out at ~103.0 m. The steepest actual street grade in this box is the **Hillsborough Street rise west of the Capitol** — crossing it, you should see the horizon and building bases shift as `feet_z` follows terrain; movement is never rejected on this gentle grade.
 4. **Solid footprint.** Turn toward the nearest large wall (the commercial block south-west of spawn, an OSM `COMMERCIAL` footprint) and hold W into it. Forward motion stops at the wall face; strafing (A/D while holding W) slides along it. You cannot pass through or under it.
 
 Re-run the validator after every fresh acquisition; if a data update moves a footprint onto the documented spawn, pick a new walkable spawn inside bounds and update `manifest.json` before publishing the pack.
@@ -104,5 +104,5 @@ Re-run the validator after every fresh acquisition; if a data update moves a foo
 ## Known limitations of the committed sample
 
 - Terrain is bilinear interpolation of four EPQS corner observations — smooth and correct in trend, but it cannot show curb-level detail. A full pack should resample the 3DEP DEM at 2–5 m.
-- Only ~26% of OSM buildings carry explicit heights; the rest use the 3.2 m/floor estimate with confidence 0.55 (or class default 0.35). Skyline proportions are right; individual roof elevations may not be.
+- Only 5 of 30 buildings (16.7%) carry an explicit OSM `height` tag (confidence 0.88); the other 25 use the `OSM building:levels × 3.2 m/floor` estimate (confidence 0.72). The 0.55/0.35 fallback tiers in `gis-ingestion.md` step 7 apply to lower-evidence cases than this sample contains. Skyline proportions are right; individual roof elevations may not be.
 - Raleigh municipal footprints are used as a geometry cross-check only; runtime footprints stay on ODbL-licensed OSM geometry so the sample remains redistributable with attribution.

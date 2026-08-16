@@ -20,7 +20,7 @@ python3 scripts/validate-city-pack.py assets/raleigh-downtown-sample
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000/assets/ascii-city-engine.html`. The scaffold loads `assets/raleigh-downtown-sample/world/tile-0.json`; use W/S or arrow keys to move and A/D or left/right arrows to turn.
+Then open `http://localhost:8000/assets/ascii-city-engine.html`. The scaffold reads `assets/raleigh-downtown-sample/manifest.json` for the spawn point and first world tile; use W/S or arrow keys to move and A/D or left/right arrows to turn.
 
 ## Triggers
 

@@ -12,6 +12,12 @@ from pathlib import Path
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
 
+# Resource caps: bound CPU/memory spent on any single pack so a crafted or
+# corrupt pack cannot trigger unbounded work in the O(n^2) geometry checks.
+MAX_POLYGON_VERTICES = 2000      # per building footprint or surface geometry
+MAX_ELEVATION_CELLS = 4_000_000  # per terrain grid (e.g. 2000x2000)
+MAX_FEATURES_PER_TILE = 100_000  # buildings + surfaces + props combined
+
 class Report:
     def __init__(self): self.passed = 0; self.failed = 0
     def rule(self, name, ok, detail=""):
@@ -43,6 +49,7 @@ def intersects(a,b,c,d):
     return any(abs(o)<1e-9 and on_segment(x,y,p) for o,x,y,p in ((o1,a,b,c),(o2,a,b,d),(o3,c,d,a),(o4,c,d,b)))
 def simple_polygon(poly):
     if not isinstance(poly,list) or len(poly)<3 or not all(point(p) for p in poly): return False
+    if len(poly) > MAX_POLYGON_VERTICES: return False
     pts = poly[:-1] if poly[0] == poly[-1] else poly
     if len(pts)<3 or len({tuple(p) for p in pts})<3 or abs(sum(pts[i][0]*pts[(i+1)%len(pts)][1]-pts[(i+1)%len(pts)][0]*pts[i][1] for i in range(len(pts))))<1e-9: return False
     n=len(pts)
@@ -65,12 +72,15 @@ def valid_provenance(p, manifest=False):
 
 def inside(bounds,x,y): return bounds["min_x"] <= x <= bounds["max_x"] and bounds["min_y"] <= y <= bounds["max_y"]
 def all_points(tile):
-    for b in tile.get("buildings",[]):
-        yield from b.get("footprint",[])
-    for s in tile.get("surfaces",[]):
-        yield from s.get("geometry",[])
-    for p in tile.get("props",[]):
-        yield [p.get("x"),p.get("y")]
+    for b in tile.get("buildings", []):
+        if isinstance(b, dict):
+            yield from b.get("footprint", [])
+    for s in tile.get("surfaces", []):
+        if isinstance(s, dict):
+            yield from s.get("geometry", [])
+    for p in tile.get("props", []):
+        if isinstance(p, dict):
+            yield [p.get("x"), p.get("y")]
 
 def main(argv):
     report=Report(); pack=Path(argv[1]).resolve() if len(argv)==2 else None
@@ -107,7 +117,9 @@ def main(argv):
         report.rule(f"tile[{idx}].required",all(k in tile for k in ("terrain","buildings","surfaces","props")),rel)
         terrain=tile.get("terrain",{}); elev=terrain.get("elevations"); res=terrain.get("resolution_m"); origin=terrain.get("origin")
         rectangular=isinstance(elev,list) and len(elev)>=2 and all(isinstance(row,list) and len(row)>=2 for row in elev) and len({len(row) for row in elev})==1 and all(v is None or finite_number(v) for row in elev for v in row)
-        terrain_ok=finite_number(res) and res>0 and point(origin) and rectangular and valid_provenance(terrain.get("provenance"))
+        cells=sum(len(row) for row in elev) if isinstance(elev,list) else 0
+        report.rule(f"tile[{idx}].terrain.cells",cells<=MAX_ELEVATION_CELLS,f"{cells} cells")
+        terrain_ok=finite_number(res) and res>0 and point(origin) and rectangular and cells<=MAX_ELEVATION_CELLS and valid_provenance(terrain.get("provenance"))
         report.rule(f"tile[{idx}].terrain",terrain_ok,"rectangular grid, meter resolution, provenance")
         if terrain_ok:
             ext=(origin[0],origin[1],origin[0]+(len(elev[0])-1)*res,origin[1]+(len(elev)-1)*res); terrain_extents.append(ext)
@@ -122,7 +134,7 @@ def main(argv):
         surfaces=tile.get("surfaces",[]); surface_count += len(surfaces) if isinstance(surfaces,list) else 0
         s_ok=isinstance(surfaces,list)
         for j,item in enumerate(surfaces if isinstance(surfaces,list) else []):
-            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("kind"),str) and bool(item["kind"]) and isinstance(item.get("walkable"),bool) and isinstance(item.get("geometry"),list) and len(item["geometry"])>=2 and all(point(p) for p in item["geometry"]) and valid_provenance(item.get("provenance"))
+            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("kind"),str) and bool(item["kind"]) and isinstance(item.get("walkable"),bool) and isinstance(item.get("geometry"),list) and 2<=len(item["geometry"])<=MAX_POLYGON_VERTICES and all(point(p) for p in item["geometry"]) and valid_provenance(item.get("provenance"))
             report.rule(f"tile[{idx}].surface[{j}]",ok,item.get("id","missing id") if isinstance(item,dict) else "not object"); s_ok &= ok
             if isinstance(item,dict) and isinstance(item.get("id"),str): surface_ids.append(item["id"])
         report.rule(f"tile[{idx}].surfaces",s_ok,f"count={len(surfaces) if isinstance(surfaces,list) else 0}")

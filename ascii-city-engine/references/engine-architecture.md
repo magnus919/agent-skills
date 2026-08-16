@@ -99,4 +99,4 @@ Dynamic cars or pedestrians may be depth-tested billboard ASCII sprites anchored
 
 ## Reference scaffold
 
-`../assets/ascii-city-engine.html` is a single dependency-free file. It loads the tile path named in its header, builds terrain and footprint indices, applies the movement rules above, and renders colored characters on Canvas 2D. Serve the repository root over HTTP because browsers commonly block `fetch` from `file://` URLs.
+`../assets/ascii-city-engine.html` is a single dependency-free file. It reads the pack's `manifest.json` for the spawn coordinate and first world tile (falling back to `world/tile-0.json`), builds terrain and footprint indices, applies the movement rules above, and renders colored characters on Canvas 2D. Serve the repository root over HTTP because browsers commonly block `fetch` from `file://` URLs.
