@@ -29,12 +29,18 @@ const SURFACE_GLYPHS={asphalt:'.',paved:'.',concrete:':',paving_stones:';',sett:
 function buildIndices(){
   const res=world.terrain.resolution_m,propGrid=new Map(),surfGrid=new Map();
   const key=(x,y)=>`${Math.floor(x/res)},${Math.floor(y/res)}`;
+  // Bound total rasterization work in the browser: the validator's feature/vertex
+  // caps are not applied client-side, so cap cells per surface and the surface count
+  // here to prevent a crafted pack freezing the tab on load.
+  const MAX_SURFACES=5000, MAX_CELLS_PER_SURFACE=40000;
+  const surfs=(world.surfaces||[]).slice(0,MAX_SURFACES);
   for(const p of (world.props||[])){const k=key(p.x,p.y);(propGrid.get(k)||propGrid.set(k,[]).get(k)).push(p);}
-  for(const s of (world.surfaces||[])){
-    const g=s.geometry;
+  for(const s of surfs){
+    const g=s.geometry; let cells=0;
     // rasterize every polyline edge into the grid cells it crosses, so long
     // straight segments register even between widely-spaced vertices
     for(let i=0;i<g.length-1;i++){
+      if(cells>=MAX_CELLS_PER_SURFACE)break;
       const [x0,y0]=g[i],[x1,y1]=g[i+1];
       // cap steps so a degenerate resolution or a pathologically long edge cannot
       // spin the loop for unbounded time (the shipped 10 m grid needs few steps)
@@ -42,8 +48,9 @@ function buildIndices(){
       const steps=Math.max(1,Math.min(2000,Math.ceil(seg/(res>0?res:1))));
       const seen=new Set();
       for(let st=0;st<=steps;st++){
+        if(cells>=MAX_CELLS_PER_SURFACE)break;
         const x=x0+(x1-x0)*st/steps,y=y0+(y1-y0)*st/steps,k=key(x,y);
-        if(seen.has(k))continue; seen.add(k);
+        if(seen.has(k))continue; seen.add(k); cells++;
         let m=surfGrid.get(k);if(!m){m=[];surfGrid.set(k,m);}
         if(!m.includes(s))m.push(s);
       }
@@ -71,27 +78,42 @@ function render(){
       for(const p of near(IX.propGrid,x,y)){if(p.kind==='crossing'&&Math.hypot(p.x-x,p.y-y)<=world.terrain.resolution_m*.7){crosswalk=true;break;}}
       if(crosswalk){gGlyph='=';gCol=`rgb(${Math.round(220*(1-d/MAX_DISTANCE))},${Math.round(220*(1-d/MAX_DISTANCE))},${Math.round(225*(1-d/MAX_DISTANCE))})`;}
       if(groundRow>=0&&groundRow<ROWS&&d<depth[groundRow][sx]){chars[groundRow][sx]=gGlyph;colors[groundRow][sx]=gCol;depth[groundRow][sx]=d;}
-      // props: point billboard at terrain, one cell (crossings render as the ground band only)
-      for(const p of near(IX.propGrid,x,y)){if(p.kind==='crossing')continue;if(Math.hypot(p.x-x,p.y-y)>world.terrain.resolution_m*.7)continue;const pz=terrain(p.x,p.y);if(pz===null)continue;const row=Math.round(horizon-focal*(pz+1.2-eye)/d);if(row>=0&&row<ROWS&&d<depth[row][sx]){chars[row][sx]=PROP_GLYPHS[p.kind]||'?';colors[row][sx]=shade(PROP_COLORS[p.kind]||'#cccccc',d);depth[row][sx]=d;}}
       const b=world.buildings.find(o=>pointInPolygon(x,y,o.footprint));
       if(b){const bottom=Math.max(0,Math.round(horizon-focal*(b.base_elev_m-eye)/d)),top=Math.max(0,Math.round(horizon-focal*(b.base_elev_m+b.height_m-eye)/d));for(let sy=Math.max(0,top);sy<=Math.min(ROWS-1,bottom);sy++){if(d<depth[sy][sx]){chars[sy][sx]=glyph(d);colors[sy][sx]=shade(b.color,d);depth[sy][sx]=d;}}wallHit=true;break;}
     }
     if(!wallHit){for(let sy=0;sy<Math.floor(horizon);sy++)if(depth[sy][sx]===Infinity){chars[sy][sx]=' ';colors[sy][sx]='#030609';}}
+  }
+  // props: perspective-projected one-cell billboards drawn once per frame as an
+  // overlay pass, so each prop renders exactly once (no multi-row streak from the
+  // ray march) while staying depth-tested against buildings and the ground.
+  for(const p of (world.props||[])){
+    if(p.kind==='crossing')continue;                    // crossings render as ground bands only
+    const dx=p.x-camera.x,dy=p.y-camera.y,d=Math.hypot(dx,dy);
+    if(d<1||d>MAX_DISTANCE)continue;
+    let ang=Math.atan2(dy,dx)-camera.heading;
+    while(ang>Math.PI)ang-=2*Math.PI; while(ang<-Math.PI)ang+=2*Math.PI;
+    if(Math.abs(ang)>FOV/2)continue;                    // outside field of view
+    const pz=terrain(p.x,p.y); if(pz===null)continue;
+    const col=Math.round((ang+FOV/2)/FOV*COLS), row=Math.round(horizon-focal*(pz+1.2-eye)/d);
+    if(row<0||row>=ROWS||col<0||col>=COLS)continue;
+    if(d<depth[row][col]){chars[row][col]=PROP_GLYPHS[p.kind]||'?';colors[row][col]=shade(PROP_COLORS[p.kind]||'#cccccc',d);depth[row][col]=d;}
   }
   // signs: perspective-projected text billboards, drawn as an overlay pass so they are
   // reliably visible at range. Each sign projects its world anchor to a screen column,
   // scales its text to distance, and respects the shared depth buffer.
   for(const g of (world.signs||[])){
     const dx=g.x-camera.x,dy=g.y-camera.y,d=Math.hypot(dx,dy);
-    if(d<2||d>MAX_DISTANCE)continue;                       // too near or beyond view range
+    if(d<2||d>MAX_DISTANCE)continue;                   // too near or beyond view range
+    const text=typeof g.text==='string'?g.text:'';     // guard: missing text degrades, never crashes
+    if(!text)continue;
     let ang=Math.atan2(dy,dx)-camera.heading;
     while(ang>Math.PI)ang-=2*Math.PI; while(ang<-Math.PI)ang+=2*Math.PI;
-    if(Math.abs(ang)>FOV/2)continue;                        // outside field of view
+    if(Math.abs(ang)>FOV/2)continue;                    // outside field of view
     const gz=terrain(g.x,g.y); if(gz===null)continue;
     const colF=(ang+FOV/2)/FOV*COLS, row=Math.round(horizon-focal*(gz+3-eye)/d);
     if(row<0||row>=ROWS)continue;
-    const maxLen=Math.max(3,Math.min(g.text.length,Math.round(focal*3/d)));  // shrink with distance
-    const txt=d<28?g.text:g.text.slice(0,maxLen);
+    const maxLen=Math.max(3,Math.min(text.length,Math.round(focal*3/d)));  // shrink with distance
+    const txt=d<28?text:text.slice(0,maxLen);
     const start=Math.round(colF-txt.length/2);
     for(let ci=0;ci<txt.length;ci++){const c=start+ci;if(c<0||c>=COLS)continue;if(d<depth[row][c]){chars[row][c]=txt[ci];colors[row][c]=shade('#eaf6ff',d);depth[row][c]=d;}}
   }

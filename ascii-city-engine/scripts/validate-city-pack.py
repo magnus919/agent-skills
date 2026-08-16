@@ -136,7 +136,15 @@ def main(argv):
         n_g=len(tile.get("signs",[])) if isinstance(tile.get("signs"),list) else 0
         total_features=n_b+n_s+n_p+n_g
         report.rule(f"tile[{idx}].feature-count",total_features<=MAX_FEATURES_PER_TILE,f"{total_features} features")
-        if total_features>MAX_FEATURES_PER_TILE: continue  # short-circuit quadratic work below
+        if total_features>MAX_FEATURES_PER_TILE:
+            # still collect IDs for pack-wide uniqueness even though we skip the
+            # expensive per-feature geometry checks (so duplicates in an oversized
+            # tile are not silently accepted)
+            for _j,it in enumerate(tile.get("buildings",[]) if isinstance(tile.get("buildings"),list) else []):
+                if isinstance(it,dict) and isinstance(it.get("id"),str): building_ids.append(it["id"])
+            for _j,it in enumerate(tile.get("surfaces",[]) if isinstance(tile.get("surfaces"),list) else []):
+                if isinstance(it,dict) and isinstance(it.get("id"),str): surface_ids.append(it["id"])
+            continue  # short-circuit quadratic work below
         terrain=tile.get("terrain",{}); elev=terrain.get("elevations"); res=terrain.get("resolution_m"); origin=terrain.get("origin")
         rectangular=isinstance(elev,list) and len(elev)>=2 and all(isinstance(row,list) and len(row)>=2 for row in elev) and len({len(row) for row in elev})==1 and all(v is None or finite_number(v) for row in elev for v in row)
         cells=sum(len(row) for row in elev) if isinstance(elev,list) else 0
