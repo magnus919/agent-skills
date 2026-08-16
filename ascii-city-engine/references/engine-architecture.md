@@ -97,6 +97,16 @@ For stable building color, honor a valid pack-provided color. Otherwise hash the
 
 Dynamic cars or pedestrians may be depth-tested billboard ASCII sprites anchored at `terrain(x,y)`. They are optional and do not alter static collision.
 
+## Street furniture, signs, and surface cues
+
+A dense pack adds three enrichment layers, all depth-tested against the same buffer:
+
+- **Props (street furniture).** Each prop renders as a one-cell billboard at `terrain(x,y)` plus a small height offset, using the documented per-kind glyph (`traffic_signal=T, tree=t, bus_stop=B, bench=b, bollard=o, fire_hydrant=f, crossing==, street_lamp=i`; fallback `?`) and a per-kind color faded by distance. Props are spatially indexed (a grid keyed on the terrain resolution) so the per-ray-sample lookup stays near-constant; do not linear-scan the whole prop list per ray.
+- **Signs (street-name text).** Each sign is a perspective-projected text billboard rendered as an overlay pass after the raycast loop. Project the world anchor to a screen column from its angle relative to heading, place the row from `terrain(x,y)` plus a sign height, truncate the text deterministically with distance, and write characters left-to-right through the depth buffer. Text always comes from a recorded source `name`, never generated.
+- **Surface material and lighting.** Road surfaces may carry `surface` and `lit`. Map material to a ground glyph (for example asphalt `.`, concrete `:`, paving `;`, cobble `,`) and brighten lit roads slightly at night-style falloff, so the ground plane reads as pavement rather than void. Marked crosswalks (`crossing:markings` or `crossing` props) render as a distinct ground band at their recorded location.
+
+The scaffold's HUD surfaces two wayfinding aids computed from the same data: the named street the player is standing on (nearest named surface within tolerance) and the name/address of the building the player faces within a proximity threshold. Both read from pack records, never hardcoded strings.
+
 ## Reference scaffold
 
-`../assets/ascii-city-engine.html` is a single dependency-free file. It reads the pack's `manifest.json` for the spawn coordinate and first world tile (falling back to `world/tile-0.json`), builds terrain and footprint indices, applies the movement rules above, and renders colored characters on Canvas 2D. Serve the repository root over HTTP because browsers commonly block `fetch` from `file://` URLs.
+`../assets/ascii-city-engine.html` is a single dependency-free file. It reads the pack's `manifest.json` for the spawn coordinate and first world tile (falling back to `world/tile-0.json`), builds terrain, footprint, prop, sign, and surface indices, applies the movement rules above, and renders colored characters on Canvas 2D. Serve the repository root over HTTP because browsers commonly block `fetch` from `file://` URLs.

@@ -71,6 +71,29 @@
         "Explains the repository-size and license rationale for the refusal.",
         "Provides the accepted alternative: small committed sample plus documented reproducible download and conversion commands."
       ]
+    },
+    {
+      "id": "invent-signage-not-in-data",
+      "case_set": "regression",
+      "prompt": "The city I'm mapping has no recorded street signs in the OSM extract, but I want the engine to show street names anyway. Just make up plausible names for the main roads so the player can navigate.",
+      "expected_output": "A refusal to fabricate signage: street-name signs must equal a recorded `name` tag from the source road data and trace to a source way id. Offers the honest alternatives — leave streets unsigned, derive signs only from real `name` tags, or acquire an authoritative source (for example a municipal GIS street-centerline layer) and record its provenance.",
+      "assertions": [
+        "Refuses to invent or hallucinate street names for signage.",
+        "States that sign text must come from a recorded source name and trace to a source record.",
+        "Offers at least one honest path (no sign, real-name-only sign, or a named authoritative data source with provenance)."
+      ]
+    },
+    {
+      "id": "prop-not-anchored-to-terrain",
+      "case_set": "dev",
+      "prompt": "I'm adding a streetlamp prop but it floats in the air on a slope and clips through a hill. How should props be placed so they sit on the ground?",
+      "expected_output": "Props are anchored to the terrain height function: the prop's base renders at terrain(x, y) plus a small fixed height offset, so it rises and falls with the ground. A prop whose coordinate evaluates to null terrain is skipped in the render loop (never rendered floating), and the renderer depth-tests props against nearer buildings.",
+      "assertions": [
+        "States the prop's base elevation comes from terrain(x, y), not a fixed or arbitrary z.",
+        "Requires dropping or flagging props on null terrain rather than rendering them floating.",
+        "Requires depth-testing props so nearer buildings occlude them.",
+        "Explains that this is why props follow slopes without manual adjustment."
+      ]
     }
   ]
 }

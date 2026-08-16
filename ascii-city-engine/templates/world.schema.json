@@ -59,7 +59,18 @@
       "type": "array",
       "items": {
         "type": "object", "required": ["id", "kind", "x", "y"],
-        "properties": {"id": {"type": "string"}, "kind": {"type": "string"}, "x": {"type": "number"}, "y": {"type": "number"}},
+        "properties": {"id": {"type": "string", "minLength": 1}, "kind": {"type": "string", "minLength": 1}, "x": {"type": "number"}, "y": {"type": "number"},
+          "label": {"type": "string"}, "provenance": {"$ref": "#/$defs/provenance"}},
+        "additionalProperties": true
+      }
+    },
+    "signs": {
+      "type": "array",
+      "items": {
+        "type": "object", "required": ["id", "text", "x", "y"],
+        "properties": {"id": {"type": "string", "minLength": 1}, "text": {"type": "string", "minLength": 1},
+          "x": {"type": "number"}, "y": {"type": "number"}, "anchor_way": {"type": "string"},
+          "provenance": {"$ref": "#/$defs/provenance"}},
         "additionalProperties": true
       }
     },

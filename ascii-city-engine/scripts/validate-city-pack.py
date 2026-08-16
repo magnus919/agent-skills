@@ -16,7 +16,12 @@ COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
 # corrupt pack cannot trigger unbounded work in the O(n^2) geometry checks.
 MAX_POLYGON_VERTICES = 2000      # per building footprint or surface geometry
 MAX_ELEVATION_CELLS = 4_000_000  # per terrain grid (e.g. 2000x2000)
-MAX_FEATURES_PER_TILE = 100_000  # buildings + surfaces + props combined
+MAX_FEATURES_PER_TILE = 50_000  # buildings + surfaces + props + signs combined
+
+# Documented per-kind prop glyph map (city-provider-contract.md). One glyph per kind.
+PROP_GLYPHS = {"traffic_signal": "T", "street_lamp": "i", "tree": "t", "bus_stop": "B",
+               "bench": "b", "bollard": "o", "fire_hydrant": "f", "crossing": "="}
+FALLBACK_GLYPH = "?"
 
 class Report:
     def __init__(self): self.passed = 0; self.failed = 0
@@ -72,15 +77,18 @@ def valid_provenance(p, manifest=False):
 
 def inside(bounds,x,y): return bounds["min_x"] <= x <= bounds["max_x"] and bounds["min_y"] <= y <= bounds["max_y"]
 def all_points(tile):
-    for b in tile.get("buildings", []):
+    for b in (tile.get("buildings") if isinstance(tile.get("buildings"),list) else []):
         if isinstance(b, dict):
             yield from b.get("footprint", [])
-    for s in tile.get("surfaces", []):
+    for s in (tile.get("surfaces") if isinstance(tile.get("surfaces"),list) else []):
         if isinstance(s, dict):
             yield from s.get("geometry", [])
-    for p in tile.get("props", []):
+    for p in (tile.get("props") if isinstance(tile.get("props"),list) else []):
         if isinstance(p, dict):
             yield [p.get("x"), p.get("y")]
+    for g in (tile.get("signs") if isinstance(tile.get("signs"),list) else []):
+        if isinstance(g, dict):
+            yield [g.get("x"), g.get("y")]
 
 def main(argv):
     report=Report(); pack=Path(argv[1]).resolve() if len(argv)==2 else None
@@ -112,9 +120,31 @@ def main(argv):
         report.rule(f"tile[{idx}].path",safe and path.is_file(),str(rel))
         data=load_json(path,report,f"tile[{idx}].parse") if safe and path.is_file() else None
         if isinstance(data,dict): tile_data.append((idx,rel,data))
+    # pack-wide road-name set so a sign in one tile may reference a road whose
+    # name-carrying surface lives in another tile (the contract supports multi-tile)
+    pack_road_names=set()
+    for _idx,_rel,_tile in tile_data:
+        for _s in (_tile.get("surfaces",[]) if isinstance(_tile.get("surfaces"),list) else []):
+            if isinstance(_s,dict) and isinstance(_s.get("name"),str) and _s.get("name"):
+                pack_road_names.add(_s["name"])
     building_ids=[]; surface_ids=[]; building_count=0; surface_count=0; terrain_extents=[]
     for idx,rel,tile in tile_data:
         report.rule(f"tile[{idx}].required",all(k in tile for k in ("terrain","buildings","surfaces","props")),rel)
+        n_b=len(tile.get("buildings",[])) if isinstance(tile.get("buildings"),list) else 0
+        n_s=len(tile.get("surfaces",[])) if isinstance(tile.get("surfaces"),list) else 0
+        n_p=len(tile.get("props",[])) if isinstance(tile.get("props"),list) else 0
+        n_g=len(tile.get("signs",[])) if isinstance(tile.get("signs"),list) else 0
+        total_features=n_b+n_s+n_p+n_g
+        report.rule(f"tile[{idx}].feature-count",total_features<=MAX_FEATURES_PER_TILE,f"{total_features} features")
+        if total_features>MAX_FEATURES_PER_TILE:
+            # still collect IDs for pack-wide uniqueness even though we skip the
+            # expensive per-feature geometry checks (so duplicates in an oversized
+            # tile are not silently accepted)
+            for _j,it in enumerate(tile.get("buildings",[]) if isinstance(tile.get("buildings"),list) else []):
+                if isinstance(it,dict) and isinstance(it.get("id"),str): building_ids.append(it["id"])
+            for _j,it in enumerate(tile.get("surfaces",[]) if isinstance(tile.get("surfaces"),list) else []):
+                if isinstance(it,dict) and isinstance(it.get("id"),str): surface_ids.append(it["id"])
+            continue  # short-circuit quadratic work below
         terrain=tile.get("terrain",{}); elev=terrain.get("elevations"); res=terrain.get("resolution_m"); origin=terrain.get("origin")
         rectangular=isinstance(elev,list) and len(elev)>=2 and all(isinstance(row,list) and len(row)>=2 for row in elev) and len({len(row) for row in elev})==1 and all(v is None or finite_number(v) for row in elev for v in row)
         cells=sum(len(row) for row in elev) if isinstance(elev,list) else 0
@@ -139,13 +169,36 @@ def main(argv):
             if isinstance(item,dict) and isinstance(item.get("id"),str): surface_ids.append(item["id"])
         report.rule(f"tile[{idx}].surfaces",s_ok,f"count={len(surfaces) if isinstance(surfaces,list) else 0}")
         props=tile.get("props",[])
-        p_ok=isinstance(props,list) and all(isinstance(p,dict) and isinstance(p.get("id"),str) and isinstance(p.get("kind"),str) and finite_number(p.get("x")) and finite_number(p.get("y")) for p in props)
-        report.rule(f"tile[{idx}].props",p_ok,f"count={len(props) if isinstance(props,list) else 0}")
+        p_ok=isinstance(props,list)
+        for j,item in enumerate(props if isinstance(props,list) else []):
+            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("kind"),str) and bool(item["kind"]) and finite_number(item.get("x")) and finite_number(item.get("y"))
+            if ok and "provenance" in item: ok = ok and valid_provenance(item.get("provenance"))
+            report.rule(f"tile[{idx}].prop[{j}]",ok,f"{item.get('kind','?')} ({item.get('id','?')})" if isinstance(item,dict) else "not object"); p_ok &= ok
+        known=sorted({p["kind"] for p in (props if isinstance(props,list) else []) if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] in PROP_GLYPHS})
+        unknown=sorted({p["kind"] for p in (props if isinstance(props,list) else []) if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] not in PROP_GLYPHS})
+        report.rule(f"tile[{idx}].props",p_ok,f"count={len(props) if isinstance(props,list) else 0} kinds={len(known)}")
+        # unknown kinds are permitted: the engine renders them with the documented
+        # fallback glyph '?'. Report them (so a misspelled kind is visible) but do not
+        # fail the pack on their presence.
+        if unknown: report.rule(f"tile[{idx}].props.unknown-kinds",True,f"rendered with fallback '{FALLBACK_GLYPH}': {', '.join(unknown)}")
+        signs=tile.get("signs",[])
+        g_ok=isinstance(signs,list)
+        for j,item in enumerate(signs if isinstance(signs,list) else []):
+            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("text"),str) and bool(item["text"]) and item["text"] in pack_road_names and finite_number(item.get("x")) and finite_number(item.get("y"))
+            if ok and "provenance" in item: ok = ok and valid_provenance(item.get("provenance"))
+            report.rule(f"tile[{idx}].sign[{j}]",ok,f"{item.get('text','?')} ({item.get('id','?')})" if isinstance(item,dict) else "not object"); g_ok &= ok
+        # emit the signs rule unconditionally: a non-list/null signs value must FAIL,
+        # matching how props is reported regardless of type
+        signs_ok = isinstance(signs,list)
+        if signs_ok: signs_ok = g_ok
+        report.rule(f"tile[{idx}].signs",signs_ok,f"count={len(signs) if isinstance(signs,list) else 0}")
         extents_ok=bool(bounds_ok) and all(point(p) and inside(b,p[0],p[1]) for p in all_points(tile))
         report.rule(f"tile[{idx}].content.bounds",extents_ok,rel)
-    duplicates=sorted({x for x in building_ids if building_ids.count(x)>1})
+    from collections import Counter
+    bc=Counter(building_ids); sc=Counter(surface_ids)
+    duplicates=sorted(x for x,n in bc.items() if n>1)
     report.rule("buildings.unique-ids",not duplicates,", ".join(duplicates))
-    surface_dupes=sorted({x for x in surface_ids if surface_ids.count(x)>1})
+    surface_dupes=sorted(x for x,n in sc.items() if n>1)
     report.rule("surfaces.unique-ids",not surface_dupes,", ".join(surface_dupes))
     if isinstance(manifest.get("spawn"),dict) and bounds_ok:
         s=manifest["spawn"]; report.rule("manifest.spawn.bounds",finite_number(s.get("x")) and finite_number(s.get("y")) and finite_number(s.get("heading_deg")) and inside(b,s["x"],s["y"]))

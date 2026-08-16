@@ -1,20 +1,20 @@
 {
   "name": "raleigh-downtown-sample",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "crs": "local tangent plane; WGS84 origin [-78.6420, 35.7760]; x east/y north; units meters",
   "bounds": {
     "min_x": 0,
     "min_y": 0,
-    "max_x": 630,
-    "max_y": 770
+    "max_x": 630.0,
+    "max_y": 770.0
   },
   "tiles": [
     "world/tile-0.json"
   ],
   "spawn": {
-    "x": 315,
-    "y": 385,
-    "heading_deg": 0
+    "x": 340,
+    "y": 390,
+    "heading_deg": 90
   },
   "provenance": [
     {
@@ -31,7 +31,7 @@
       "license": "ODbL-1.0",
       "retrieved": "2026-08-15",
       "confidence": 0.86,
-      "notes": "Building footprints and tagged or floor-estimated heights."
+      "notes": "Building footprints, names, addresses, uses, and tagged or floor-estimated heights."
     },
     {
       "name": "OpenStreetMap contributors via Overpass Kumi mirror",
@@ -39,15 +39,15 @@
       "license": "ODbL-1.0",
       "retrieved": "2026-08-15",
       "confidence": 0.9,
-      "notes": "Road, pedestrian, path, and sidewalk vectors."
+      "notes": "Named road/sidewalk/path vectors with surface, lit, lanes, oneway; street furniture (signals, crossings, trees, transit stops, bollards, benches, hydrants)."
     },
     {
       "name": "City of Raleigh Building Footprints",
       "url": "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Building_Footprints/FeatureServer",
-      "license": "City of Raleigh Open Data custom terms; attribution required; verify before new redistribution",
+      "license": "City of Raleigh Open Data custom terms; attribution required",
       "retrieved": "2026-08-15",
       "confidence": 0.9,
-      "notes": "Municipal geometry cross-check; sample runtime footprints remain OSM-licensed records."
+      "notes": "Municipal geometry cross-check; runtime footprints remain OSM-licensed records."
     }
   ]
 }
