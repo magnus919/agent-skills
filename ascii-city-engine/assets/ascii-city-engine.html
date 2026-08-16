@@ -27,17 +27,19 @@ const PROP_GLYPHS={traffic_signal:'T',street_lamp:'i',tree:'t',bus_stop:'B',benc
 const PROP_COLORS={traffic_signal:'#ffd23f',street_lamp:'#fff3b0',tree:'#3fbf5f',bus_stop:'#4db8ff',bench:'#c98a4b',bollard:'#c0c6cc',fire_hydrant:'#ff5a5a',crossing:'#e8e8e8'};
 const SURFACE_GLYPHS={asphalt:'.',paved:'.',concrete:':',paving_stones:';',sett:';',cobblestone:',',gravel:',',dirt:' '};
 function buildIndices(){
-  const res=world.terrain.resolution_m,propGrid=new Map(),signGrid=new Map(),surfGrid=new Map();
+  const res=world.terrain.resolution_m,propGrid=new Map(),surfGrid=new Map();
   const key=(x,y)=>`${Math.floor(x/res)},${Math.floor(y/res)}`;
   for(const p of (world.props||[])){const k=key(p.x,p.y);(propGrid.get(k)||propGrid.set(k,[]).get(k)).push(p);}
-  for(const g of (world.signs||[])){const k=key(g.x,g.y);(signGrid.get(k)||signGrid.set(k,[]).get(k)).push(g);}
   for(const s of (world.surfaces||[])){
     const g=s.geometry;
     // rasterize every polyline edge into the grid cells it crosses, so long
     // straight segments register even between widely-spaced vertices
     for(let i=0;i<g.length-1;i++){
       const [x0,y0]=g[i],[x1,y1]=g[i+1];
-      const steps=Math.max(1,Math.ceil(Math.hypot(x1-x0,y1-y0)/res));
+      // cap steps so a degenerate resolution or a pathologically long edge cannot
+      // spin the loop for unbounded time (the shipped 10 m grid needs few steps)
+      const seg=Math.hypot(x1-x0,y1-y0);
+      const steps=Math.max(1,Math.min(2000,Math.ceil(seg/(res>0?res:1))));
       const seen=new Set();
       for(let st=0;st<=steps;st++){
         const x=x0+(x1-x0)*st/steps,y=y0+(y1-y0)*st/steps,k=key(x,y);
@@ -47,7 +49,7 @@ function buildIndices(){
       }
     }
   }
-  return {propGrid,signGrid,surfGrid,key};
+  return {propGrid,surfGrid,key};
 }
 let IX=null;
 function near(map,x,y){const res=world.terrain.resolution_m,cx=Math.floor(x/res),cy=Math.floor(y/res),out=[];for(let j=cy-1;j<=cy+1;j++)for(let i=cx-1;i<=cx+1;i++){const m=map.get(`${i},${j}`);if(m)out.push(...m);}return out;}

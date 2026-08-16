@@ -120,6 +120,13 @@ def main(argv):
         report.rule(f"tile[{idx}].path",safe and path.is_file(),str(rel))
         data=load_json(path,report,f"tile[{idx}].parse") if safe and path.is_file() else None
         if isinstance(data,dict): tile_data.append((idx,rel,data))
+    # pack-wide road-name set so a sign in one tile may reference a road whose
+    # name-carrying surface lives in another tile (the contract supports multi-tile)
+    pack_road_names=set()
+    for _idx,_rel,_tile in tile_data:
+        for _s in (_tile.get("surfaces",[]) if isinstance(_tile.get("surfaces"),list) else []):
+            if isinstance(_s,dict) and isinstance(_s.get("name"),str) and _s.get("name"):
+                pack_road_names.add(_s["name"])
     building_ids=[]; surface_ids=[]; building_count=0; surface_count=0; terrain_extents=[]
     for idx,rel,tile in tile_data:
         report.rule(f"tile[{idx}].required",all(k in tile for k in ("terrain","buildings","surfaces","props")),rel)
@@ -153,10 +160,6 @@ def main(argv):
             report.rule(f"tile[{idx}].surface[{j}]",ok,item.get("id","missing id") if isinstance(item,dict) else "not object"); s_ok &= ok
             if isinstance(item,dict) and isinstance(item.get("id"),str): surface_ids.append(item["id"])
         report.rule(f"tile[{idx}].surfaces",s_ok,f"count={len(surfaces) if isinstance(surfaces,list) else 0}")
-        road_names=set()
-        for item in (surfaces if isinstance(surfaces,list) else []):
-            if isinstance(item,dict) and isinstance(item.get("name"),str) and item.get("name"):
-                road_names.add(item["name"])
         props=tile.get("props",[])
         p_ok=isinstance(props,list)
         for j,item in enumerate(props if isinstance(props,list) else []):
@@ -166,14 +169,21 @@ def main(argv):
         known=sorted({p["kind"] for p in (props if isinstance(props,list) else []) if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] in PROP_GLYPHS})
         unknown=sorted({p["kind"] for p in (props if isinstance(props,list) else []) if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] not in PROP_GLYPHS})
         report.rule(f"tile[{idx}].props",p_ok,f"count={len(props) if isinstance(props,list) else 0} kinds={len(known)}")
-        if unknown: report.rule(f"tile[{idx}].props.unknown-kinds",False,f"no glyph mapping: {', '.join(unknown)} (use fallback '{FALLBACK_GLYPH}' or extend PROP_GLYPHS)")
+        # unknown kinds are permitted: the engine renders them with the documented
+        # fallback glyph '?'. Report them (so a misspelled kind is visible) but do not
+        # fail the pack on their presence.
+        if unknown: report.rule(f"tile[{idx}].props.unknown-kinds",True,f"rendered with fallback '?': {', '.join(unknown)}")
         signs=tile.get("signs",[])
         g_ok=isinstance(signs,list)
         for j,item in enumerate(signs if isinstance(signs,list) else []):
-            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("text"),str) and bool(item["text"]) and item["text"] in road_names and finite_number(item.get("x")) and finite_number(item.get("y"))
+            ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("text"),str) and bool(item["text"]) and item["text"] in pack_road_names and finite_number(item.get("x")) and finite_number(item.get("y"))
             if ok and "provenance" in item: ok = ok and valid_provenance(item.get("provenance"))
             report.rule(f"tile[{idx}].sign[{j}]",ok,f"{item.get('text','?')} ({item.get('id','?')})" if isinstance(item,dict) else "not object"); g_ok &= ok
-        if isinstance(signs,list) and signs: report.rule(f"tile[{idx}].signs",g_ok,f"count={len(signs)}")
+        # emit the signs rule unconditionally: a non-list/null signs value must FAIL,
+        # matching how props is reported regardless of type
+        signs_ok = isinstance(signs,list)
+        if signs_ok: signs_ok = g_ok
+        report.rule(f"tile[{idx}].signs",signs_ok,f"count={len(signs) if isinstance(signs,list) else 0}")
         extents_ok=bool(bounds_ok) and all(point(p) and inside(b,p[0],p[1]) for p in all_points(tile))
         report.rule(f"tile[{idx}].content.bounds",extents_ok,rel)
     from collections import Counter
