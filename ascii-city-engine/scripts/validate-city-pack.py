@@ -16,7 +16,7 @@ COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
 # corrupt pack cannot trigger unbounded work in the O(n^2) geometry checks.
 MAX_POLYGON_VERTICES = 2000      # per building footprint or surface geometry
 MAX_ELEVATION_CELLS = 4_000_000  # per terrain grid (e.g. 2000x2000)
-MAX_FEATURES_PER_TILE = 50_000  # buildings + surfaces + props combined
+MAX_FEATURES_PER_TILE = 50_000  # buildings + surfaces + props + signs combined
 
 # Documented per-kind prop glyph map (city-provider-contract.md). One glyph per kind.
 PROP_GLYPHS = {"traffic_signal": "T", "street_lamp": "i", "tree": "t", "bus_stop": "B",

@@ -26,9 +26,9 @@ function terrain(x,y){
   const a=row0[i],b=row0[i+1],c=row1[i],d=row1[i+1]; if([a,b,c,d].some(q=>q===null||!Number.isFinite(q)))return null;
   return (1-fu)*(1-fv)*a+fu*(1-fv)*b+(1-fu)*fv*c+fu*fv*d;
 }
-function pointInPolygon(x,y,p){let inside=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if(((a[1]>y)!==(b[1]>y))&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;}
+function pointInPolygon(x,y,p){let inside=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if(!Array.isArray(a)||!Array.isArray(b)||a.length<2||b.length<2)continue;if(((a[1]>y)!==(b[1]>y))&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;}
 function edgeDistance(x,y,a,b){const vx=b[0]-a[0],vy=b[1]-a[1],wx=x-a[0],wy=y-a[1],q=Math.max(0,Math.min(1,(wx*vx+wy*vy)/(vx*vx+vy*vy||1)));return Math.hypot(x-a[0]-q*vx,y-a[1]-q*vy);}
-function collides(x,y){return (near(IX.buildingGrid,x,y)).some(b=>pointInPolygon(x,y,b.footprint)||b.footprint.some((p,i)=>edgeDistance(x,y,p,b.footprint[(i+1)%b.footprint.length])<=PLAYER_RADIUS));}
+function collides(x,y){return (near(IX.buildingGrid,x,y)).some(b=>{const pts=(b.footprint||[]).filter(p=>Array.isArray(p)&&p.length>=2);return pointInPolygon(x,y,pts)||pts.some((p,i)=>edgeDistance(x,y,p,pts[(i+1)%pts.length])<=PLAYER_RADIUS);});}
 function canMove(x,y){const z0=terrain(camera.x,camera.y),z1=terrain(x,y);if(z0===null||z1===null||collides(x,y))return false;const horizontal=Math.hypot(x-camera.x,y-camera.y),delta=Math.abs(z1-z0);return delta<=MAX_STEP&&delta/Math.max(horizontal,1e-9)<=MAX_SLOPE;}
 function glyph(d){const q=d/MAX_DISTANCE;return q<.12?'@':q<.25?'%':q<.42?'#':q<.60?'+':q<.78?':':'.';}
 function shade(hex,d){const q=Math.min(1,d/MAX_DISTANCE),k=.25+.75*Math.pow(1-q,1.4),n=parseInt(hex.slice(1),16);return `rgb(${Math.round((n>>16)*k)},${Math.round(((n>>8)&255)*k)},${Math.round((n&255)*k)})`;}
@@ -46,12 +46,20 @@ function buildIndices(){
   // Index each building into the grid cells its footprint's bounding box covers, so
   // the render loop and collision test can find nearby buildings in O(nearby) instead
   // of scanning the whole O(buildings) list per ray sample (a P2 render-cost regression).
+  // Bound the work like the surface rasterizer: cap footprint vertices and bbox cells
+  // so a ~100-byte crafted footprint cannot drive a ~1e10-iteration synchronous loop.
+  const MAX_BUILDING_PTS=2000, MAX_BUILDING_CELLS=40000;
   for(const bd of (world.buildings||[])){
     if(!bd||!Array.isArray(bd.footprint)||bd.footprint.length===0)continue;
-    let minx=Infinity,miny=Infinity,maxx=-Infinity,maxy=-Infinity;
-    for(const pt of bd.footprint){if(!Array.isArray(pt)||pt.length<2)continue;minx=Math.min(minx,pt[0]);maxx=Math.max(maxx,pt[0]);miny=Math.min(miny,pt[1]);maxy=Math.max(maxy,pt[1]);}
-    if(!Number.isFinite(minx))continue;
+    let minx=Infinity,miny=Infinity,maxx=-Infinity,maxy=-Infinity; let valid=0;
+    for(const pt of bd.footprint){
+      if(!Array.isArray(pt)||pt.length<2||!Number.isFinite(pt[0])||!Number.isFinite(pt[1]))continue;
+      valid++;
+      minx=Math.min(minx,pt[0]);maxx=Math.max(maxx,pt[0]);miny=Math.min(miny,pt[1]);maxy=Math.max(maxy,pt[1]);
+    }
+    if(valid<3||valid>MAX_BUILDING_PTS||!Number.isFinite(minx))continue;
     const i0=Math.max(0,Math.floor(minx/res)),i1=Math.floor(maxx/res),j0=Math.max(0,Math.floor(miny/res)),j1=Math.floor(maxy/res);
+    const w=(i1-i0+1)*(j1-j0+1); if(w>MAX_BUILDING_CELLS)continue;
     for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){const k=`${i},${j}`;let m=buildingGrid.get(k);if(!m){m=[];buildingGrid.set(k,m);}m.push(bd);}
   }
   for(const p of (world.props||[])){const k=key(p.x,p.y);(propGrid.get(k)||propGrid.set(k,[]).get(k)).push(p);}
@@ -147,8 +155,8 @@ function render(){
   const facing=facingBuilding();const loc=nearestStreet();
   statusEl.className='';statusEl.textContent=`${world.buildings.length} buildings · ${(Array.isArray(world.props)?world.props:[]).length} props · ${(Array.isArray(world.signs)?world.signs:[]).length} signs${facing?`\nFacing: ${facing}`:''}${loc?`\nOn: ${loc}`:''}\nW/S move · A/D turn · (${camera.x.toFixed(1)}, ${camera.y.toFixed(1)}, ${feet.toFixed(1)}m)`;
 }
-function pointNearPolyline(x,y,geom,tol){for(let i=0;i<geom.length-1;i++){if(edgeDistance(x,y,geom[i],geom[i+1])<=tol)return true;}return false;}
-function facingBuilding(){let best=null,bd=25;for(const b of world.buildings){if(!b.name&&!b.address)continue;const cx=b.footprint.reduce((a,p)=>a+p[0],0)/b.footprint.length,cy=b.footprint.reduce((a,p)=>a+p[1],0)/b.footprint.length;const d=Math.hypot(cx-camera.x,cy-camera.y);const ang=Math.atan2(cy-camera.y,cx-camera.x);let da=ang-camera.heading;while(da>Math.PI)da-=2*Math.PI;while(da<-Math.PI)da+=2*Math.PI;da=Math.abs(da);if(d<bd&&da<0.35){bd=d;best=b.name||b.address;}}return best;}
+function pointNearPolyline(x,y,geom,tol){for(let i=0;i<geom.length-1;i++){const a=geom[i],b=geom[i+1];if(!Array.isArray(a)||!Array.isArray(b)||a.length<2||b.length<2)continue;if(edgeDistance(x,y,a,b)<=tol)return true;}return false;}
+function facingBuilding(){let best=null,bd=25;for(const b of world.buildings){if(!b.name&&!b.address)continue;if(!Array.isArray(b.footprint))continue;const pts=b.footprint.filter(p=>Array.isArray(p)&&p.length>=2&&Number.isFinite(p[0])&&Number.isFinite(p[1]));if(pts.length<3)continue;const cx=pts.reduce((a,p)=>a+p[0],0)/pts.length,cy=pts.reduce((a,p)=>a+p[1],0)/pts.length;const d=Math.hypot(cx-camera.x,cy-camera.y);const ang=Math.atan2(cy-camera.y,cx-camera.x);let da=ang-camera.heading;while(da>Math.PI)da-=2*Math.PI;while(da<-Math.PI)da+=2*Math.PI;da=Math.abs(da);if(d<bd&&da<0.35){bd=d;best=b.name||b.address;}}return best;}
 function nearestStreet(){const surfs=near(IX.surfGrid,camera.x,camera.y);for(const s of surfs){if(s.kind==='road'&&s.name&&pointNearPolyline(camera.x,camera.y,s.geometry,world.terrain.resolution_m))return s.name;}return null;}
 function update(dt){const turn=(keys.has('a')||keys.has('arrowleft')?-1:0)+(keys.has('d')||keys.has('arrowright')?1:0);camera.heading+=turn*1.7*dt;const move=(keys.has('w')||keys.has('arrowup')?1:0)+(keys.has('s')||keys.has('arrowdown')?-1:0);if(move){const distance=move*4*dt,nx=camera.x+Math.cos(camera.heading)*distance,ny=camera.y+Math.sin(camera.heading)*distance;if(canMove(nx,ny)){camera.x=nx;camera.y=ny;}else if(canMove(nx,camera.y))camera.x=nx;else if(canMove(camera.x,ny))camera.y=ny;}}
 function frame(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;if(world){update(dt);render();}requestAnimationFrame(frame);}
