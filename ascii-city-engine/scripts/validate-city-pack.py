@@ -83,10 +83,10 @@ def all_points(tile):
     for s in tile.get("surfaces", []):
         if isinstance(s, dict):
             yield from s.get("geometry", [])
-    for p in tile.get("props", []):
+    for p in (tile.get("props") or []):
         if isinstance(p, dict):
             yield [p.get("x"), p.get("y")]
-    for g in tile.get("signs", []):
+    for g in (tile.get("signs") or []):
         if isinstance(g, dict):
             yield [g.get("x"), g.get("y")]
 
@@ -123,6 +123,12 @@ def main(argv):
     building_ids=[]; surface_ids=[]; building_count=0; surface_count=0; terrain_extents=[]
     for idx,rel,tile in tile_data:
         report.rule(f"tile[{idx}].required",all(k in tile for k in ("terrain","buildings","surfaces","props")),rel)
+        n_b=len(tile.get("buildings",[])) if isinstance(tile.get("buildings"),list) else 0
+        n_s=len(tile.get("surfaces",[])) if isinstance(tile.get("surfaces"),list) else 0
+        n_p=len(tile.get("props",[])) if isinstance(tile.get("props"),list) else 0
+        n_g=len(tile.get("signs",[])) if isinstance(tile.get("signs"),list) else 0
+        total_features=n_b+n_s+n_p+n_g
+        report.rule(f"tile[{idx}].feature-count",total_features<=MAX_FEATURES_PER_TILE,f"{total_features} features")
         terrain=tile.get("terrain",{}); elev=terrain.get("elevations"); res=terrain.get("resolution_m"); origin=terrain.get("origin")
         rectangular=isinstance(elev,list) and len(elev)>=2 and all(isinstance(row,list) and len(row)>=2 for row in elev) and len({len(row) for row in elev})==1 and all(v is None or finite_number(v) for row in elev for v in row)
         cells=sum(len(row) for row in elev) if isinstance(elev,list) else 0
@@ -152,8 +158,8 @@ def main(argv):
             ok=isinstance(item,dict) and isinstance(item.get("id"),str) and bool(item["id"]) and isinstance(item.get("kind"),str) and bool(item["kind"]) and finite_number(item.get("x")) and finite_number(item.get("y"))
             if ok and "provenance" in item: ok = ok and valid_provenance(item.get("provenance"))
             report.rule(f"tile[{idx}].prop[{j}]",ok,f"{item.get('kind','?')} ({item.get('id','?')})" if isinstance(item,dict) else "not object"); p_ok &= ok
-        known=sorted({p["kind"] for p in props if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] in PROP_GLYPHS})
-        unknown=sorted({p["kind"] for p in props if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] not in PROP_GLYPHS})
+        known=sorted({p["kind"] for p in (props if isinstance(props,list) else []) if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] in PROP_GLYPHS})
+        unknown=sorted({p["kind"] for p in (props if isinstance(props,list) else []) if isinstance(p,dict) and isinstance(p.get("kind"),str) and p["kind"] not in PROP_GLYPHS})
         report.rule(f"tile[{idx}].props",p_ok,f"count={len(props) if isinstance(props,list) else 0} kinds={len(known)}")
         if unknown: report.rule(f"tile[{idx}].props.unknown-kinds",False,f"no glyph mapping: {', '.join(unknown)} (use fallback '{FALLBACK_GLYPH}' or extend PROP_GLYPHS)")
         signs=tile.get("signs",[])

@@ -87,7 +87,7 @@
       "id": "prop-not-anchored-to-terrain",
       "case_set": "dev",
       "prompt": "I'm adding a streetlamp prop but it floats in the air on a slope and clips through a hill. How should props be placed so they sit on the ground?",
-      "expected_output": "Props are anchored to the terrain height function: the prop's base renders at terrain(x, y) plus a small fixed height offset, so it rises and falls with the ground. A prop whose coordinate evaluates to null terrain is dropped at conversion time, not rendered floating, and the renderer depth-tests props against nearer buildings.",
+      "expected_output": "Props are anchored to the terrain height function: the prop's base renders at terrain(x, y) plus a small fixed height offset, so it rises and falls with the ground. A prop whose coordinate evaluates to null terrain is skipped in the render loop (never rendered floating), and the renderer depth-tests props against nearer buildings.",
       "assertions": [
         "States the prop's base elevation comes from terrain(x, y), not a fixed or arbitrary z.",
         "Requires dropping or flagging props on null terrain rather than rendering them floating.",

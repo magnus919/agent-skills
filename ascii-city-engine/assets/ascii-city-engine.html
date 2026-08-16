@@ -31,7 +31,22 @@ function buildIndices(){
   const key=(x,y)=>`${Math.floor(x/res)},${Math.floor(y/res)}`;
   for(const p of (world.props||[])){const k=key(p.x,p.y);(propGrid.get(k)||propGrid.set(k,[]).get(k)).push(p);}
   for(const g of (world.signs||[])){const k=key(g.x,g.y);(signGrid.get(k)||signGrid.set(k,[]).get(k)).push(g);}
-  for(const s of (world.surfaces||[])){for(const pt of s.geometry){const k=key(pt[0],pt[1]);let m=surfGrid.get(k);if(!m){m=[];surfGrid.set(k,m);}m.push(s);}}
+  for(const s of (world.surfaces||[])){
+    const g=s.geometry;
+    // rasterize every polyline edge into the grid cells it crosses, so long
+    // straight segments register even between widely-spaced vertices
+    for(let i=0;i<g.length-1;i++){
+      const [x0,y0]=g[i],[x1,y1]=g[i+1];
+      const steps=Math.max(1,Math.ceil(Math.hypot(x1-x0,y1-y0)/res));
+      const seen=new Set();
+      for(let st=0;st<=steps;st++){
+        const x=x0+(x1-x0)*st/steps,y=y0+(y1-y0)*st/steps,k=key(x,y);
+        if(seen.has(k))continue; seen.add(k);
+        let m=surfGrid.get(k);if(!m){m=[];surfGrid.set(k,m);}
+        if(!m.includes(s))m.push(s);
+      }
+    }
+  }
   return {propGrid,signGrid,surfGrid,key};
 }
 let IX=null;
@@ -49,6 +64,10 @@ function render(){
       const road=surfs.find(s=>s.kind==='road'&&pointNearPolyline(x,y,s.geometry,world.terrain.resolution_m*.6));
       if(road){const mat=SURFACE_GLYPHS[road.surface]||'.';gGlyph=d<MAX_DISTANCE*.5?mat:glyph(d);const lit=road.lit==='yes';const b=(lit?1.15:0.85);gCol=`rgb(${Math.round(70*b*(1-d/MAX_DISTANCE))},${Math.round(118*b*(1-d/MAX_DISTANCE))},${Math.round(84*b*(1-d/MAX_DISTANCE))})`;}
       const groundRow=Math.round(horizon-focal*(z-eye)/Math.max(d,.01));
+      // marked crosswalk: paint a distinct ground band at the prop's location
+      let crosswalk=false;
+      for(const p of near(IX.propGrid,x,y)){if(p.kind==='crossing'&&Math.hypot(p.x-x,p.y-y)<=world.terrain.resolution_m*.7){crosswalk=true;break;}}
+      if(crosswalk){gGlyph='=';gCol=`rgb(${Math.round(220*(1-d/MAX_DISTANCE))},${Math.round(220*(1-d/MAX_DISTANCE))},${Math.round(225*(1-d/MAX_DISTANCE))})`;}
       if(groundRow>=0&&groundRow<ROWS&&d<depth[groundRow][sx]){chars[groundRow][sx]=gGlyph;colors[groundRow][sx]=gCol;depth[groundRow][sx]=d;}
       // props: point billboard at terrain, one cell
       for(const p of near(IX.propGrid,x,y)){if(Math.hypot(p.x-x,p.y-y)>world.terrain.resolution_m*.7)continue;const pz=terrain(p.x,p.y);if(pz===null)continue;const row=Math.round(horizon-focal*(pz+1.2-eye)/d);if(row>=0&&row<ROWS&&d<depth[row][sx]){chars[row][sx]=PROP_GLYPHS[p.kind]||'?';colors[row][sx]=shade(PROP_COLORS[p.kind]||'#cccccc',d);depth[row][sx]=d;}}
@@ -79,7 +98,7 @@ function render(){
   statusEl.className='';statusEl.textContent=`${world.buildings.length} buildings · ${(world.props||[]).length} props · ${(world.signs||[]).length} signs${facing?`\nFacing: ${facing}`:''}${loc?`\nOn: ${loc}`:''}\nW/S move · A/D turn · (${camera.x.toFixed(1)}, ${camera.y.toFixed(1)}, ${feet.toFixed(1)}m)`;
 }
 function pointNearPolyline(x,y,geom,tol){for(let i=0;i<geom.length-1;i++){if(edgeDistance(x,y,geom[i],geom[i+1])<=tol)return true;}return false;}
-function facingBuilding(){let best=null,bd=25;for(const b of world.buildings){if(!b.name&&!b.address)continue;const cx=b.footprint.reduce((a,p)=>a+p[0],0)/b.footprint.length,cy=b.footprint.reduce((a,p)=>a+p[1],0)/b.footprint.length;const d=Math.hypot(cx-camera.x,cy-camera.y);const ang=Math.atan2(cy-camera.y,cx-camera.x);let da=Math.abs(ang-camera.heading);da=Math.min(da,Math.PI*2-da);if(d<bd&&da<0.35){bd=d;best=b.name||b.address;}}return best;}
+function facingBuilding(){let best=null,bd=25;for(const b of world.buildings){if(!b.name&&!b.address)continue;const cx=b.footprint.reduce((a,p)=>a+p[0],0)/b.footprint.length,cy=b.footprint.reduce((a,p)=>a+p[1],0)/b.footprint.length;const d=Math.hypot(cx-camera.x,cy-camera.y);const ang=Math.atan2(cy-camera.y,cx-camera.x);let da=ang-camera.heading;while(da>Math.PI)da-=2*Math.PI;while(da<-Math.PI)da+=2*Math.PI;da=Math.abs(da);if(d<bd&&da<0.35){bd=d;best=b.name||b.address;}}return best;}
 function nearestStreet(){const surfs=near(IX.surfGrid,camera.x,camera.y);for(const s of surfs){if(s.name&&pointNearPolyline(camera.x,camera.y,s.geometry,world.terrain.resolution_m))return s.name;}return null;}
 function update(dt){const turn=(keys.has('a')||keys.has('arrowleft')?-1:0)+(keys.has('d')||keys.has('arrowright')?1:0);camera.heading+=turn*1.7*dt;const move=(keys.has('w')||keys.has('arrowup')?1:0)+(keys.has('s')||keys.has('arrowdown')?-1:0);if(move){const distance=move*4*dt,nx=camera.x+Math.cos(camera.heading)*distance,ny=camera.y+Math.sin(camera.heading)*distance;if(canMove(nx,ny)){camera.x=nx;camera.y=ny;}else if(canMove(nx,camera.y))camera.x=nx;else if(canMove(camera.x,ny))camera.y=ny;}}
 function frame(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;if(world){update(dt);render();}requestAnimationFrame(frame);}
