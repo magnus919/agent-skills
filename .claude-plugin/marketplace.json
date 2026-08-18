@@ -258,6 +258,15 @@
       "description": "A virtual data architect for teams who don't have one. If your data pipelines are growing faster than your team, nobody agrees on what 'customer' means, your cloud bill is climbing without clear reason, or you're about to choose a data platform and need someone who's seen this before — load this skill. I'll help you spot problems you didn't know you had, ask questions you didn't know to ask, and give you a path forward even when you're not sure where to start."
     },
     {
+      "name": "data-cleaning",
+      "source": "./",
+      "skills": [
+        "./data-cleaning"
+      ],
+      "strict": false,
+      "description": "Clean, profile, validate, reshape, and document messy tabular, text, JSON, and relational data through an evidence-first, reproducible workflow. Use when preparing data for analysis, reporting, modeling, ingestion, migration, or matching. Do not use for statistical modeling, dashboard design, or operating a named data platform; route those tasks to data-scientist, data-engineering, or the relevant tool skill."
+    },
+    {
       "name": "data-engineering",
       "source": "./",
       "skills": [
