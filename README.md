@@ -120,6 +120,10 @@ Guide a consent-based conversation that helps people discover how an AI agent co
 
 Act as a virtual data architect. Discover data assets, assess maturity, evaluate platforms, design architectures, establish governance, and create migration plans. Covers modern data patterns (data mesh, data lakehouse, streaming, real-time analytics) with vendor evaluation frameworks and maturity models.
 
+### [data-cleaning](data-cleaning/SKILL.md)
+
+Clean, profile, validate, reshape, and document messy data through an evidence-first, reproducible workflow with reusable plans, contracts, reports, and a dependency-free profiler.
+
 ### [data-engineering](data-engineering/SKILL.md)
 
 Design and operate data infrastructure — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Do not use for statistical analysis or ML model development.

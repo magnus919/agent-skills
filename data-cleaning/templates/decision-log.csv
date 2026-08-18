@@ -1,0 +1,2 @@
+decision_id,field_or_rule,finding,observed_evidence,action,rationale,lossy,affected_count,confidence,owner,approved_at,source_or_rule_version,rollback_or_quarantine
+C-001,,,,,,,,,,,,

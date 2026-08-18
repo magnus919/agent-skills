@@ -1,0 +1,37 @@
+name: example-records
+version: 1
+owner: data-owner@example.invalid
+grain: one record per example_id
+keys:
+  primary: [example_id]
+  uniqueness: one_to_one
+columns:
+  - name: example_id
+    type: string
+    nullable: false
+  - name: status
+    type: string
+    nullable: false
+    allowed_values: [new, active, closed]
+  - name: amount
+    type: decimal
+    nullable: false
+    unit: USD
+    min: 0
+  - name: occurred_at
+    type: datetime
+    nullable: false
+    timezone: UTC
+rules:
+  - id: end-after-start
+    description: end_at is not before start_at
+    severity: error
+thresholds:
+  max_row_loss_fraction: 0.01
+  max_parse_failure_count: 0
+  max_unknown_category_count: 0
+provenance:
+  source_uri: replace-me
+  retrieved_at: replace-me
+  raw_sha256: replace-me
+  code_version: replace-me
