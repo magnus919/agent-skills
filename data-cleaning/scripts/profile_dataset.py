@@ -4,6 +4,7 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 import pathlib
 import sys
 from collections import Counter
@@ -69,7 +70,9 @@ def profile(path, delimiter=None, max_rows=None, include_values=False):
         numbers = []
         for value in nonempty:
             try:
-                numbers.append(float(str(value).strip()))
+                parsed = float(str(value).strip())
+                if math.isfinite(parsed):
+                    numbers.append(parsed)
             except (TypeError, ValueError):
                 pass
         field = {
@@ -118,11 +121,15 @@ def main():
     except (OSError, UnicodeError, ValueError) as exc:
         print(f"Error: cannot profile input: {exc}", file=sys.stderr)
         return 2
-    text = json.dumps(result, indent=2, sort_keys=True) + "\n"
-    if args.output == "-":
-        print(text, end="")
-    else:
-        pathlib.Path(args.output).write_text(text, encoding="utf-8")
+    try:
+        text = json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n"
+        if args.output == "-":
+            print(text, end="")
+        else:
+            pathlib.Path(args.output).write_text(text, encoding="utf-8")
+    except (OSError, IsADirectoryError, TypeError, ValueError) as exc:
+        print(f"Error: cannot write profile: {exc}", file=sys.stderr)
+        return 2
     return 0
 
 
