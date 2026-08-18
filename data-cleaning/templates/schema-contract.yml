@@ -18,6 +18,14 @@ columns:
     nullable: false
     unit: USD
     min: 0
+  - name: start_at
+    type: datetime
+    nullable: false
+    timezone: UTC
+  - name: end_at
+    type: datetime
+    nullable: true
+    timezone: UTC
   - name: occurred_at
     type: datetime
     nullable: false
