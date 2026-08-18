@@ -14,9 +14,10 @@ It works across CSV, JSON, text, DataFrames, SQL extracts, and pipeline boundari
 |---|---|
 | `SKILL.md` | Core workflow and completion gate |
 | `references/` | Methodology, operations, validation, tools, sources |
-| `templates/` | Cleaning plan, decision log, schema contract, quality report |
+| `templates/` | Cleaning plan, decision log, transformation log, exception register, schema contract, quality report |
 | `scripts/profile_dataset.py` | Read-only CSV/TSV/JSONL profiler |
-| `scripts/test_profile_dataset.py` | Deterministic script tests |
+| `scripts/reconcile_dataset.py` | Read-only key, row-count, and aggregate reconciliation |
+| `scripts/test_*` | Deterministic tests for bundled scripts |
 | `evals/evals.json` | Output-quality evaluation cases |
 
 ## Quick Start

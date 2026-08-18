@@ -24,11 +24,13 @@ Treat cleaning as a controlled transformation of an observed dataset, not cosmet
 |---|---|
 | End-to-end method, scope, and stopping rules | `references/methodology.md` |
 | Choose a library or platform | `references/tool-selection.md` |
-| Missingness, duplicates, types, ranges, categories, text, dates | `references/operations.md` |
+| Missingness, duplicates, types, ranges, categories, dates, joins | `references/operations.md` |
+| Text, identifiers, Unicode, and entity resolution | `references/text-and-entity.md` |
 | Schemas, contracts, validation, drift, scale | `references/validation-and-scale.md` |
+| CLI, OpenRefine, monitoring, and interactive remediation | `references/cli-and-interactive-tools.md` |
 | Source claims and version-sensitive caveats | `references/sources.md` |
-| Plan, decision log, or report | `templates/cleaning-plan.md`, `templates/decision-log.csv`, `templates/quality-report.md` |
-| Lightweight first audit | Run `python3 scripts/profile_dataset.py --help` |
+| Plan, logs, exceptions, contracts, or reports | `templates/cleaning-plan.md`, `templates/transformation-log.jsonl`, `templates/exception-register.csv`, `templates/schema-contract.yml`, `templates/quality-report.md` |
+| Lightweight profile or reconciliation | Run `python3 scripts/profile_dataset.py --help` or `python3 scripts/reconcile_dataset.py --help` |
 
 ## Default workflow
 
