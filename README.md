@@ -140,6 +140,10 @@ PhD-level expertise in data science, statistics, and machine learning. Rigorous 
 
 Analyze propaganda, spin, selective framing, deceptive marketing, and AI-generated persuasion by tracing claims to evidence and separating literal truth from implied conclusions. Produces a calibrated assessment of what is true, false, misleading, complicated, unsupported, or unknown, with an evidence ledger and a decision-safe next step.
 
+### [digital-twin](digital-twin/SKILL.md)
+
+Design and operate trustworthy digital twins and federated twin universes for software systems, engineering processes, infrastructure, agentic software factories, and cyber-physical operations. Covers architecture, synchronization, provenance, simulation, VVUQ, twin health, authority, governance, lifecycle, and decommissioning. Do not use for ordinary dashboards, static dependency graphs, or one named infrastructure tool without a twin-specific feedback loop.
+
 ### [docker-compose](docker-compose/SKILL.md)
 Define, run, debug, and harden multi-container applications with Docker Compose. Covers the Compose Specification, lifecycle and healthchecks, service networking, volumes, secrets, profiles, interpolation, overrides, Compose Watch, CI, production patterns, and troubleshooting. Ships 9 references, 5 templates, and a portable diagnostics script.
 
