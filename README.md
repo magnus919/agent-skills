@@ -12,6 +12,10 @@ Bundles are this repository's convention for organizing related skills under a s
 
 Preserve the reasoning behind consequential architecture choices so later contributors can understand, revisit, or supersede them responsibly.
 
+### [aeo](aeo/SKILL.md)
+
+Implement Answer Engine Optimization for AI answers and citations: question clusters, answer-first content, entities, evidence, structured-data parity, provider crawler policies, optional agent-readable files, and reproducible citation experiments. Narrowly scoped to AEO; routes broad SEO and CMS work to the existing skills.
+
 ### [agent-council](agent-council/SKILL.md)
 
 Multi-agent structured debate system — spawn a panel of expert agents to debate any question with convergence-aware iteration. Produces a decision landscape with confidence diagnostics, shared risks, remaining disagreements, and a principal's path narrative. Ships as a pip-installable Python package built on PydanticAI + PydanticGraph. `pip install pydantic-ai && pip install agent-council` and one API key to run your first debate.
