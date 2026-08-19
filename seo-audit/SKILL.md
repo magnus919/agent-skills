@@ -1,6 +1,6 @@
 ---
 name: seo-audit
-description: Audit websites and pages for technical SEO, on-page SEO, schema markup, content discoverability, and answer-engine readiness. Use when prioritizing search visibility improvements.
+description: Audit websites and pages for technical SEO, on-page SEO, schema markup, content discoverability, and answer-engine readiness. Use when prioritizing search visibility improvements; route AEO-specific implementation and measurement to the dedicated aeo skill.
 license: MIT
 compatibility: Requires access to the site or page being audited. Platform-specific references are optional and must be applied only when relevant.
 metadata:
@@ -60,6 +60,14 @@ Load this skill when:
 Do NOT load when:
 - Only mechanical content fixes are needed; use the host agent's copy-editing workflow.
 - Only writing is needed; use the host agent's writing workflow.
+
+## When not to use
+
+Do not use this skill alone for AEO-specific implementation, citation experiments, or provider crawler policy design; route those concerns to `aeo`. Do not use it for only mechanical copy-editing or only writing.
+
+## Routing
+
+Use the dedicated [`aeo`](../aeo/SKILL.md) skill for AEO-specific implementation, question clusters, answer architecture, citation measurement, provider crawler semantics, `llms.txt`, and AI-answer experiments. Return here for the broader technical SEO and site audit surface.
 
 ## Portability
 

@@ -15,6 +15,15 @@
       "description": "Write, review, and maintain architecture decision records with clear context, alternatives, consequences, and lifecycle governance. Use when a consequential technical decision must remain understandable."
     },
     {
+      "name": "aeo",
+      "source": "./",
+      "skills": [
+        "./aeo"
+      ],
+      "strict": false,
+      "description": "Use when designing, implementing, or measuring Answer Engine Optimization (AEO) for AI answers, citations, generative search, or agent-readable web content. Do not use this as a general SEO audit or CMS operations guide; route those parts to seo-audit or the relevant platform skill."
+    },
+    {
       "name": "agent-council",
       "source": "./",
       "skills": [
@@ -1047,7 +1056,7 @@
         "./seo-audit"
       ],
       "strict": false,
-      "description": "Audit websites and pages for technical SEO, on-page SEO, schema markup, content discoverability, and answer-engine readiness. Use when prioritizing search visibility improvements."
+      "description": "Audit websites and pages for technical SEO, on-page SEO, schema markup, content discoverability, and answer-engine readiness. Use when prioritizing search visibility improvements; route AEO-specific implementation and measurement to the dedicated aeo skill."
     },
     {
       "name": "site-reliability-engineering",

@@ -1,0 +1,23 @@
+# AEO crawler policy decision template
+# Review before turning any example into a public robots.txt.
+
+## Intended policy
+
+- Search visibility allowed for:
+- Training use allowed for:
+- User-triggered fetch allowed for:
+- Restricted paths:
+- Policy owner and review date:
+
+| Provider | Search crawler | Training crawler | User-triggered crawler | Source URL | Verified date |
+|---|---|---|---|---|---|
+| OpenAI | OAI-SearchBot | GPTBot | ChatGPT-User | https://platform.openai.com/docs/bots | |
+| Google | Googlebot | Google-Extended | provider-specific | https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers | |
+| Other | | | | | |
+
+## Verification
+
+- [ ] No accidental wildcard rule changes unrelated crawlers.
+- [ ] CDN/hosting layer matches the intended policy.
+- [ ] Public /robots.txt matches the approved file.
+- [ ] The policy does not claim to control user-triggered requests where the provider says it does not.

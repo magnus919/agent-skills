@@ -19,6 +19,7 @@
   ],
   "skills": [
     "./adr-authoring",
+    "./aeo",
     "./agent-council",
     "./agent-evals-and-observability",
     "./agent-production-operations",
