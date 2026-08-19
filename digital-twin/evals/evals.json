@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "skill_name": "digital-twin",
+  "evals": [
+    {
+      "id": "software-factory-architecture",
+      "case_set": "release",
+      "prompt": "Design a digital twin universe for an agentic software factory spanning GitHub, CI/CD, Kubernetes, production telemetry, agents, policies, and human approvals. I need an architecture that can eventually support safe autonomous deployment.",
+      "expected_output": "A purpose-first, federated architecture that separates originals, immutable evidence, temporal state, topology/provenance, models and scenarios, agent reasoning, policy/action authority, and independent evaluation. It must distinguish direct evidence from adaptation and define an incremental authority path.",
+      "assertions": [
+        "Names the represented originals and the decision/action use case before choosing storage or vendors",
+        "Separates immutable events and provenance from temporal projections and graph views",
+        "Defines identity, timestamps, freshness, validity, uncertainty, and version contracts",
+        "Separates agent recommendation from approval and execution with policy, rollback, and stop controls",
+        "Labels software-factory adaptations and does not claim industrial standards prove software-twin safety"
+      ]
+    },
+    {
+      "id": "twin-versus-emulator",
+      "case_set": "regression",
+      "prompt": "We have a Dockerized fake Slack API used by coding agents in tests. Can we call it a digital twin universe, and what evidence would we need before using that label?",
+      "expected_output": "A calibrated boundary assessment that calls the current artifact an emulator or test environment unless it has a named live original, governed synchronization, validated behavior, explicit uncertainty, and a feedback/action relationship. It should propose evidence rather than rubber-stamp the label.",
+      "assertions": [
+        "Distinguishes emulator, digital model, digital shadow, and digital twin",
+        "Does not equate API coverage or test usefulness with twin status",
+        "Lists synchronization, fidelity/validation, provenance, uncertainty, and feedback requirements",
+        "States that real execution or independently observed behavior remains necessary for consequential release decisions"
+      ]
+    },
+    {
+      "id": "twin-health-evaluation",
+      "case_set": "release",
+      "prompt": "Create an evaluation plan for a twin that predicts whether dependency updates will break build and production behavior. Include health monitoring and a go/no-go gate.",
+      "expected_output": "A risk-scaled evaluation plan separating represented-system health, synchronization/data health, model credibility, platform health, and agent/action quality, with replay, held-out validation, uncertainty/calibration, drift, SLO, chaos, and stop criteria.",
+      "assertions": [
+        "Defines an intended-use contract, truth sources, validity domain, costs, owner, and authority boundary",
+        "Includes freshness, loss/order, provenance, state disagreement, and replay metrics",
+        "Separates verification, validation, calibration/uncertainty, and observed outcome evaluation",
+        "Includes adversarial or chaos cases and explicit downgrade/abstention/stop conditions",
+        "Does not approve deployment solely from component tests, model confidence, or a blended health score"
+      ]
+    },
+    {
+      "id": "earned-agent-authority",
+      "case_set": "release",
+      "prompt": "An agent has been accurate in shadow mode for three months. Define what it must prove before it can automatically roll back low-risk deployments, and what controls remain mandatory.",
+      "expected_output": "A revocable, action-class-specific authority gate requiring independent evaluation, trajectory compliance, freshness/provenance use, hard-zero unauthorized harmful effects, rollback/reconciliation evidence, least privilege, expiry, monitoring, and emergency stop.",
+      "assertions": [
+        "Treats autonomy as a scoped capability grant rather than a global maturity badge",
+        "Requires evidence beyond accuracy, including trajectory/policy compliance and action-result reconciliation",
+        "Requires scoped credentials, idempotency, preconditions, rollback, expiry, and blast-radius limits",
+        "Preserves human or independent approval for higher-impact actions and a separate emergency stop",
+        "States that confidence is not authority and missing evidence is hold rather than pass"
+      ]
+    },
+    {
+      "id": "twin-decommissioning",
+      "case_set": "regression",
+      "prompt": "Our twin is no longer maintained, its original service was retired, and another system now provides some of its queries. Write a safe decommissioning plan.",
+      "expected_output": "A plan that revokes action authority and credentials, disables schedulers/endpoints, migrates and verifies consumers, preserves justified lineage/decisions, disposes of sensitive data under policy, marks the twin retired, checks orphan calls, and independently verifies no live dependency remains.",
+      "assertions": [
+        "Begins with ownership, reason, dependency/version inventory, retention decision, and successor or intentional absence",
+        "Revokes credentials, tokens, webhooks, schedules, and action capabilities before final retirement",
+        "Preserves required audit/provenance evidence while avoiding unjustified retention of sensitive data",
+        "Includes consumer migration verification and orphan-call detection",
+        "Requires an independent final check that no live policy, agent, workflow, or twin depends on the retired system"
+      ]
+    },
+    {
+      "id": "industrial-standard-boundary",
+      "case_set": "dev",
+      "prompt": "Which standards should we use to build a software-factory digital twin? Compare ISO 23247, DTDL, AAS, OPC UA, FMI, PROV, and SHACL without pretending they solve the same problem.",
+      "expected_output": "A layered comparison that assigns each standard a specific role and scope, identifies manufacturing/industrial boundaries, and recommends combining identity, semantic, provenance, validation, event, and simulation contracts rather than adopting one as a universal twin platform.",
+      "assertions": [
+        "Explains that ISO 23247 is manufacturing-scoped and architectural rather than proof of software-twin fidelity",
+        "Distinguishes DTDL/AAS/OPC UA modeling and interoperability roles from FMI simulation interfaces",
+        "Explains PROV and SHACL as provenance/validation building blocks rather than complete twin semantics",
+        "Calls out service-specific portability and the need for conformance tests",
+        "Separates authoritative standard claims from proposed software-factory adaptation"
+      ]
+    }
+  ]
+}

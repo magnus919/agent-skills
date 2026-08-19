@@ -303,6 +303,15 @@
       "description": "Use when someone asks what is true, false, misleading, unsupported, unknown, or genuinely complicated in a persuasive message, article, pitch, advertisement, policy claim, or viral post. Analyze propaganda, spin, selective framing, urgency, social proof, deceptive marketing, and AI-generated persuasion by tracing claims to evidence and separating literal truth from implied conclusions. Do not use to read deception from demeanor, adjudicate intent, or replace broad domain research."
     },
     {
+      "name": "digital-twin",
+      "source": "./",
+      "skills": [
+        "./digital-twin"
+      ],
+      "strict": false,
+      "description": "Design, build, evaluate, govern, monitor, evolve, and retire digital twins and federated twin universes for software systems, engineering processes, agentic software factories, infrastructure, and cyber-physical operations. Use when a task involves digital-twin architecture, digital thread, simulation, predictive maintenance, twin health, agent authority, or dark-factory design. Do not use for ordinary observability dashboards, static dependency graphs, generic AI governance, or operating one named infrastructure tool without a twin-specific representation and feedback loop."
+    },
+    {
       "name": "docker-compose",
       "source": "./",
       "skills": [
