@@ -4,7 +4,7 @@ requests==2.34.2
 ruff>=0.16.1
 pytest>=9.1.1
 pytest-cov>=7.1.0
-pytest-xdist>=3.0
+pytest-xdist>=3.8.0
 mypy>=2.3.0
 radon>=6.0
 deptry>=0.20
