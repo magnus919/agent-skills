@@ -1,11 +1,15 @@
 ---
 name: data-scientist
-description: PhD-level expertise in data science, statistics, and machine learning.
-  Use when the task requires rigorous statistical analysis, experimental design, causal
-  inference, advanced modeling, research methodology, or data science project leadership.
-  Load when the user asks about statistical methods, experimental design, model selection,
+description: >-
+  Use for PhD-level expertise in data science, statistics, and machine learning:
+  rigorous statistical analysis, experimental design, causal inference, advanced
+  modeling, research methodology, or data science project leadership. Load when
+  the user asks about statistical methods, experimental design, model selection,
   A/B testing, hypothesis testing, power analysis, regression, causality, Bayesian
-  analysis, or research methodology.
+  analysis, or research methodology. For insurance, actuarial, claims, reserving,
+  solvency, credibility, tail-risk, or financial-risk statistical modeling, use
+  `actuarial-risk-modeling`; for deterministic operating and SaaS financial models,
+  use `financial-modeling`.
 license: MIT
 compatibility: Python 3.10+ with scipy, statsmodels, scikit-learn, pandas, numpy.
   PyTorch and sklearn are the primary ML frameworks. Hardware-aware via detect-compute.py.
@@ -19,6 +23,22 @@ metadata:
 ---
 
 # PhD-Level Data Science
+
+## Routing Boundaries
+
+This skill owns general statistical and machine-learning methodology. Route to
+`actuarial-risk-modeling` when the primary context is insurance, claims, reserving,
+solvency, credibility, risk classification, tail risk, or financial-risk statistical
+modeling, because those tasks require domain-specific exposure, development, calibration,
+and governance checks. Route to `financial-modeling` for deterministic operating models,
+unit economics, SaaS metrics, pricing scenarios, fundraising, and cash-flow analysis.
+Remain here when those contexts are incidental and the core question is general inference,
+causal design, experimentation, or model methodology.
+
+## When Not to Use
+
+- Do not use this skill as the primary owner for insurance, actuarial, claims, reserving, solvency, credibility, tail-risk, or financial-risk statistical modeling; use `actuarial-risk-modeling`.
+- Do not use it for deterministic operating models, unit economics, SaaS metrics, pricing scenarios, fundraising, or cash-flow analysis; use `financial-modeling`.
 
 ## Core Competencies
 

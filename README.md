@@ -8,6 +8,10 @@ Bundles are this repository's convention for organizing related skills under a s
 
 ## Skills
 
+### [actuarial-risk-modeling](actuarial-risk-modeling/SKILL.md)
+
+Expert statistical modeling for insurance, actuarial, and financial-risk decisions, including regression, GLMs, claims, forecasting, calibration, tail risk, and model governance.
+
 ### [adr-authoring](adr-authoring/SKILL.md)
 
 Preserve the reasoning behind consequential architecture choices so later contributors can understand, revisit, or supersede them responsibly.
