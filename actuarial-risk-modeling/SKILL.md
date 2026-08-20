@@ -33,10 +33,19 @@ Load this skill when the task involves:
 
 ## When Not to Use
 
-- Use `data-scientist` for general statistical, causal, experimental, or machine-learning work without a risk/insurance/financial-outcome context.
-- Use `financial-modeling` for deterministic operating models, SaaS metrics, fundraising, or cash-flow scenarios rather than statistical inference from uncertain observations.
+- Use the Decision Entry Points table above for adjacent work. In brief: `data-scientist` owns general statistical, causal, experimental, and machine-learning methodology; `financial-modeling` owns deterministic operating, SaaS, fundraising, and cash-flow models.
 - Use a named tool skill for operating a forecasting, database, or modeling platform.
 - Do not present output as licensed actuarial, investment, legal, accounting, or regulatory advice. Escalate consequential decisions to qualified practitioners and applicable standards.
+
+## Decision Entry Points
+
+| Starting situation | First move | Load next |
+|---|---|---|
+| Policy, claim, or loss data | Define grain, exposure, target, and horizon | `references/problem-framing.md` |
+| Claims development triangle or reserve estimate | Identify accident/development/calendar structure and valuation boundary | `references/applications-and-governance.md` + `references/validation-and-calibration.md` |
+| Financial returns, volatility, or ordered observations | Define information cutoff and forecast horizon | `references/model-families.md` + `references/validation-and-calibration.md` |
+| Deterministic SaaS, cash-flow, or fundraising model | Route out of this skill | `financial-modeling` |
+| Generic causal, experimental, or ML methodology | Route out of this skill | `data-scientist` |
 
 ## Core Workflow
 
@@ -44,9 +53,13 @@ Load this skill when the task involves:
 2. **Write the data contract.** Define grain, exposure or offset, outcome support, observation and development windows, censoring/truncation, policy or account boundaries, leakage risks, missingness states, and provenance.
 3. **Profile before modeling.** Inspect distributions, zeros, negatives, skew, tail concentration, dependence, repeated entities, time ordering, category sparsity, exposure balance, and data-quality exceptions. Use `scripts/risk_preflight.py` for a read-only first pass.
 4. **Choose the simplest defensible model family.** Match the outcome and data-generating structure before comparing algorithms. Load `references/model-families.md` for the decision table.
+
+   **Model-selection quick pick:** counts with exposure → count GLM with an offset; zero plus positive loss → two-part/frequency-severity; event time with censoring → survival; ordered observations → dynamic/time-series model; tail decision → tail-aware or quantile model plus stress sensitivity. Load `references/model-families.md` before choosing a specific distribution or link.
 5. **Fit without contaminating evaluation.** Treat transformations, imputation, feature selection, calibration, resampling, and hyperparameter choices as part of the fitted procedure. Fit them only on the permitted training partition.
 6. **Diagnose and challenge.** Check residual structure, link and variance assumptions, overdispersion, zero inflation, leverage, collinearity, separation, calibration, dependence, censoring, tail fit, and sensitivity to plausible alternatives. A convergence flag is not validation.
 7. **Validate for use.** Use grouped, blocked, or rolling splits when the deployment boundary demands them. Report point accuracy, probabilistic scores, calibration, ranking, tail or aggregate-loss behavior, stability across segments, and uncertainty. Use `scripts/temporal_split_audit.py` to audit time-ordered partitions.
+
+   **Validation-design quick pick:** exchangeable observations → random holdout; repeated entities or clusters → grouped split; ordered deployment → blocked or rolling-origin split; overlapping development or labels → gap/embargo; extensive tuning or candidate comparison → nested validation. Load `references/validation-and-calibration.md` before fixing the final design.
 8. **Compare and govern.** Prefer a transparent model unless a more complex one earns its complexity on the decision-relevant metric and remains stable, interpretable enough, and monitorable. Record assumptions, overrides, limitations, approvals, and rollback or review triggers.
 9. **Communicate the decision.** Use `templates/model-report.md` and state what was observed, inferred, assumed, estimated, not identified, and not tested. Include units, intervals, scenario definitions, diagnostics, and a plain-language recommendation.
 
@@ -58,6 +71,20 @@ Load this skill when the task involves:
 - **Backtesting is not proof.** Historical success can reflect regime, selection, leakage, or unavailable information.
 - **Uncertainty is layered.** Separate sampling error, parameter uncertainty, process variance, model-form uncertainty, scenario uncertainty, and data-quality uncertainty.
 - **A reserve or risk estimate is a decision input.** It is not an objective fact independent of horizon, assumptions, and intended use.
+
+## Minimum Analysis Contract
+
+Before presenting a recommendation, state: the decision and estimand; row grain, horizon, exposure, and information cutoff; candidate model family and why its support/dependence assumptions fit; validation boundary and metrics; uncertainty and sensitivity; limitations and permitted use. If one of these is unknown, label it as an unresolved input rather than silently choosing a convention.
+
+## Failure-Mode Quick Map
+
+| Symptom | First checks | Route |
+|---|---|---|
+| Many zeros or variance above the mean | Exposure, structural zeros, overdispersion, dependence | `references/model-families.md` |
+| Strong ranking but wrong probabilities | Segment calibration, population shift, recalibration boundary | `references/validation-and-calibration.md` |
+| Random CV beats next-period performance | Feature availability, entity/time leakage, revisions, drift | `references/validation-and-calibration.md` |
+| Estimate moves with a few large losses | Provenance, tail fit, threshold, stress and scenario sensitivity | `references/applications-and-governance.md` |
+| “No event” before full development | Censoring, observation horizon, reporting lag | `references/problem-framing.md` |
 
 ## Reference Routing
 
@@ -71,6 +98,10 @@ Load this skill when the task involves:
 | [Source index](references/source-index.md) | Checking authoritative references, scope, or currency |
 
 ## Templates and Scripts
+
+Use the templates by stage: `model-brief.md` before data work; `validation-plan.md` before fitting or release; `model-report.md` for findings and decisions; `model-governance-record.md` for controlled deployment, review, monitoring, or retirement.
+
+First-pass scripts are read-only: run `python3 scripts/risk_preflight.py input.csv --output preflight.json` before fitting, and `python3 scripts/temporal_split_audit.py observations.csv --time-column observed_at --output splits.json` when ordered data or forecast leakage is possible.
 
 - `templates/model-brief.md` — decision, data contract, estimand, and acceptance criteria.
 - `templates/validation-plan.md` — split design, metrics, calibration, stress tests, and release gates.
