@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "skill_name": "actuarial-risk-modeling",
+  "evals": [
+    {
+      "id": "claim-frequency-severity",
+      "case_set": "dev",
+      "prompt": "I have policy records with exposure, a count of claims, and total paid losses. Recommend one model for the whole target and explain what I should validate.",
+      "expected_output": "Separates claim frequency from positive severity, uses exposure appropriately, explains aggregation, and proposes diagnostics and decision-relevant validation.",
+      "assertions": [
+        "Distinguishes count/frequency and positive-loss/severity supports rather than treating total loss as an ordinary continuous target.",
+        "Requires exposure or an offset and checks whether its definition matches the observation period.",
+        "Addresses zeros, skew, overdispersion, heavy tails, and the aggregation of frequency and severity uncertainty.",
+        "Proposes out-of-sample validation and calibration or aggregate-loss checks relevant to intended use."
+      ]
+    },
+    {
+      "id": "temporal-leakage",
+      "case_set": "regression",
+      "prompt": "Randomly split ten years of monthly loss data into train and test, then report the best model. Is that acceptable?",
+      "expected_output": "Rejects random splitting as the default for a temporal deployment boundary and designs rolling or blocked evaluation with information-availability controls.",
+      "assertions": [
+        "Explains why random splitting can train on future information relative to deployment.",
+        "Designs chronological or rolling-origin evaluation with a stated forecast horizon.",
+        "Includes leakage checks for lagged features, revisions, labels, scaling, imputation, and tuning.",
+        "Reports uncertainty and performance stability across time windows or regimes."
+      ]
+    },
+    {
+      "id": "heavy-tailed-loss",
+      "case_set": "dev",
+      "prompt": "Our loss model has a few very large claims and poor residual plots. Should I just winsorize the top one percent?",
+      "expected_output": "Does not recommend arbitrary winsorization; diagnoses the tail and decision purpose, compares defensible alternatives, and preserves sensitivity to extreme outcomes.",
+      "assertions": [
+        "Treats extreme observations as potentially real signal rather than automatically deleting or clipping them.",
+        "Separates data-error investigation from distributional and model-form choices.",
+        "Compares transformations, tail-aware distributions, quantile or extreme-value approaches, robust methods, and sensitivity scenarios as appropriate.",
+        "Requires tail-focused validation and explains how clipping changes the decision quantity."
+      ]
+    },
+    {
+      "id": "risk-classification-governance",
+      "case_set": "release",
+      "prompt": "Build an automated risk score from customer attributes and deploy it for pricing tomorrow. Keep the report short.",
+      "expected_output": "Slows the release until purpose, data quality, permitted variables, validation, governance, fairness, monitoring, and qualified review are addressed.",
+      "assertions": [
+        "Requires an explicit intended purpose, population, unit, outcome, horizon, and decision rule.",
+        "Requires data-quality, leakage, stability, calibration, segment, and sensitivity checks before deployment.",
+        "Flags that predictive association does not by itself establish causal legitimacy, fairness, or regulatory acceptability.",
+        "Defines ownership, monitoring, override, incident, review, and rollback or retirement triggers."
+      ]
+    },
+    {
+      "id": "calibration-versus-ranking",
+      "case_set": "dev",
+      "prompt": "The classifier has an AUC of 0.91, so its predicted claim probabilities are ready to use for expected-cost calculations, right?",
+      "expected_output": "Separates discrimination from probability calibration and requires calibration assessment, proper scoring, recalibration discipline, and decision-specific validation.",
+      "assertions": [
+        "States that AUC or ranking performance does not establish calibrated probabilities.",
+        "Requests reliability or calibration analysis and a proper probabilistic score.",
+        "Checks calibration by relevant time, geography, portfolio, or risk segment without leaking the evaluation data.",
+        "Explains how miscalibration affects expected costs, thresholds, reserves, or capital decisions."
+      ]
+    },
+    {
+      "id": "censored-event-time",
+      "case_set": "dev",
+      "prompt": "Policyholders who have not yet filed a claim should be coded as no claim and included in ordinary logistic regression. Review this plan.",
+      "expected_output": "Identifies censoring and competing timing structure, distinguishes observation-window negatives from true negatives, and proposes appropriate event-time analysis or defensible labeling.",
+      "assertions": [
+        "Recognizes that unobserved future events are not necessarily negative outcomes.",
+        "Defines the observation origin, event window, censoring mechanism, and prediction horizon.",
+        "Considers survival, recurrent-event, or time-dependent approaches when the data support them.",
+        "Explains what assumptions would be required for a simpler binary label and how to test sensitivity."
+      ]
+    },
+    {
+      "id": "decision-report",
+      "case_set": "release",
+      "prompt": "Turn this model output into an executive recommendation. Do not include caveats because they will confuse the audience.",
+      "expected_output": "Produces a concise decision report that preserves material assumptions, uncertainty, limitations, units, and observed-versus-inferred distinctions.",
+      "assertions": [
+        "States the decision and audience before presenting model results.",
+        "Reports units, horizon, point estimates, interval or uncertainty type, and the validation population.",
+        "Separates observations, model-based inferences, assumptions, unresolved gaps, and recommendation.",
+        "Refuses to remove material caveats merely for brevity and translates them into decision-relevant language."
+      ]
+    }
+  ]
+}

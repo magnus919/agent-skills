@@ -18,6 +18,7 @@
     "methodology"
   ],
   "skills": [
+    "./actuarial-risk-modeling",
     "./adr-authoring",
     "./aeo",
     "./agent-council",
