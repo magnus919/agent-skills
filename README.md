@@ -533,7 +533,7 @@ Make documentation useful at the moment someone needs to install, operate, exten
 
 ### [technology-radar](technology-radar/SKILL.md)
 
-Turn scattered technology preferences into explicit, reviewable decisions with owners, evidence, and a clear adoption posture.
+Turn technology preferences and architecture-governance choices into explicit, reviewable decisions with owners, evidence, and a proportionate adoption posture.
 
 ### [telemetry](telemetry/SKILL.md)
 
