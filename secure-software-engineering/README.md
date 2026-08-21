@@ -14,7 +14,7 @@ Instead of treating a checklist or scanner as a security guarantee, the workflow
 |---|---|
 | `SKILL.md` | A five-phase, prevention-oriented workflow and routing guide. |
 | `references/source-index.md` | Version-pinned primary sources and the decisions they inform. |
-| `references/` | Focused guidance for threat modeling, controls, review, release, incident learning, and AI systems. |
+| `references/` | Focused guidance for threat modeling, controls, review, release, incident learning, AI systems, and multi-tenant boundaries. |
 | `templates/` | Adaptable threat-model, acceptance-criteria, and review-checklist starting points. |
 
 ## Quick Start
@@ -33,7 +33,13 @@ The resulting model should name assets, boundaries, assumptions, abuse cases, mi
 - Threat-model a system, API, integration, tenant boundary, or AI capability.
 - Define security acceptance criteria or review a security-sensitive change.
 - Choose authentication, authorization, secret handling, dependency, logging, or release-evidence practices.
+- Threat-model pooled, bridge, or silo tenant isolation, support impersonation, tenant lifecycle, or shared-resource exhaustion.
 
 ## Requirements
 
 No runtime dependency, API key, or platform-specific tool is required. The included sources are decision aids; adopt the controls that apply to your organization, contract, regulator, and threat model.
+
+For end-to-end SaaS tenant semantics and placement decisions, use
+`multi-tenant-saas-architecture`. For quantitative tenant capacity and cost
+evidence, use `capacity-and-cost-engineering`; for privacy lifecycle artifacts,
+use `privacy-engineering`.

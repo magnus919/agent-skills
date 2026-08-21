@@ -61,6 +61,42 @@
         "The decision framework includes rejection and isolation options, not just acceptance",
         "Ongoing controls are prescribed: lockfiles, CI scanning, and review cadence"
       ]
+    },
+    {
+      "id": "multi-tenant-boundary",
+      "prompt": "We run a pooled SaaS API with a separate control plane. Design the security review for tenant identity propagation, support impersonation, caches, search, queues, exports, backups, and deletion. Keep the SaaS placement decision and capacity modeling with their specialist owners.",
+      "expected_output": "A security-focused review that treats control-plane to application-plane handoffs as trust boundaries; derives tenant context from verified identity; independently authorizes downstream services, workers, and support tools; defines scoped, expiring impersonation; covers cache, search, queue, export, backup, deletion, keys, logs, and restore boundaries; and names direct negative tests and provisioning/deprovisioning evidence. It explicitly routes end-to-end SaaS architecture and quantitative capacity evidence to their neighboring skills.",
+      "assertions": [
+        "Control-plane and application-plane trust boundaries, authority, freshness, and failure behavior are explicit",
+        "Tenant identity is server-derived and re-authorized across APIs, workers, callbacks, and downstream services",
+        "Privileged support and impersonation require scope, purpose, expiry, approval, and audit evidence",
+        "Caches, search, queues, keys, logs, exports, backups, restore, and deletion are addressed as tenant-bearing boundaries",
+        "The output routes SaaS architecture and capacity evidence to the named neighboring owners"
+      ]
+    },
+    {
+      "id": "tenant-resource-exhaustion",
+      "prompt": "A large customer can saturate our shared queue workers and search cluster, causing smaller tenants to time out. Threat-model the issue and define security controls and proof without inventing universal utilization targets.",
+      "expected_output": "A threat model for noisy-neighbor and resource-exhaustion abuse that identifies shared resource blast radius, tenant attribution, admission control, bounded work, per-tenant limits, fair scheduling or reserved capacity, backpressure, safe degradation, and abuse detection. It asks for tenant-distributed load or soak evidence and clearly routes sizing, utilization rationale, and cost tradeoffs to capacity-and-cost-engineering.",
+      "assertions": [
+        "The threat model identifies shared queue/search exhaustion and cross-tenant availability impact",
+        "Controls include tenant attribution, bounded work, quotas or rate limits, fair scheduling or isolation, and safe degradation",
+        "Verification requires tenant-distributed load or soak evidence and observes fairness and denial behavior",
+        "The response avoids universal utilization targets and routes quantitative capacity decisions correctly",
+        "The response distinguishes security controls from platform implementation details"
+      ]
+    },
+    {
+      "id": "tenant-lifecycle-privilege",
+      "prompt": "Review a tenant offboarding flow where deletion is asynchronous and customer support can impersonate users to troubleshoot. What security requirements and evidence are missing?",
+      "expected_output": "A review that requires authenticated, idempotent deprovisioning with revocation of sessions, tokens, jobs, callbacks, and export access; bounded handling of replicas, indexes, caches, logs, backups, and derived data; reconciliation and completion evidence; and support impersonation with named operator, purpose, target scope, approval, expiry, visible indication, least privilege, and audit trail. It routes privacy deletion artifacts to privacy-engineering rather than treating a security review as legal advice.",
+      "assertions": [
+        "Asynchronous deprovisioning includes authority, idempotency, revocation, blocking new work, retries, and reconciliation",
+        "Deletion and retention evidence covers replicas, indexes, caches, logs, backups, exports, and derived data",
+        "Support impersonation is scoped, time-limited, approved, visible, least-privileged, and auditable",
+        "Direct negative tests cover stale jobs, revoked access, wrong tenant, and expired impersonation",
+        "Privacy lifecycle ownership is routed to privacy-engineering"
+      ]
     }
   ]
 }
