@@ -1,10 +1,13 @@
 ---
 name: software-architecture-analysis
-description: Reverse-engineer a software codebase to understand architecture, data
-  flow, privacy posture, and feature surface — then produce a clean-room design document,
-  PRD, or migration plan that re-imagines the system under new constraints (local-first,
-  privacy-first, self-hosted). Use when you need to understand how a system works
-  from its source code or produce a specification without copying implementation details.
+description: Use this skill to reverse-engineer an existing software system, map its
+  architecture, data flow, privacy posture, coupling, quality characteristics, and
+  feature surface, then produce an evidence-grounded clean-room design document, PRD,
+  or migration plan under new constraints. Use for codebase archaeology, implicit
+  contract extraction, architecture health assessment, or decomposition-readiness
+  analysis. Do not use for greenfield architecture design, direct code review, bug
+  hunting, security auditing, or implementation of API, data, platform, or migration
+  changes; route those to the relevant neighboring skill.
 license: MIT
 compatibility: Requires git, a programming language runtime matching the target codebase,
   and a markdown editor for output.
@@ -22,8 +25,9 @@ metadata:
 - The output must be **clean-room**: zero source code samples copied from the reference codebase
 - You're designing a system with different architectural constraints (local-first, privacy-first, self-hosted) than the reference
 - You need to extract an **implicit contract** — the storage operations a codebase performs — to design a formal provider abstraction
+- You need to assess architecture health, coupling, modularity, data ownership, distributed workflows, or readiness for a boundary change from repository evidence
 
-**Don't use for:** Direct code review, bug hunting, or security auditing (use a dedicated debugging skill instead). Simple tool or library evaluation (use a spike instead).
+**Don't use for:** Greenfield or proactive architecture design (route to a human architecture decision owner; no current catalog skill owns that workflow), direct code review, bug hunting, or security auditing. Route API/interface semantics to `api-design-and-evolution`, data-platform strategy to `data-architect`, implementation to the relevant engineering skill, deployment substrate to `platform-engineering`, and execution of an approved cross-system migration to `migration-engineering`.
 
 ## Build Workflow
 
@@ -110,6 +114,17 @@ graph TD
 ```
 
 Use subgraphs for cloud/local boundaries. All diagram code blocks MUST use ` ```mermaid ` — never ASCII box drawing, never image files.
+
+### Architecture evidence lenses
+
+After the initial map, load only the references needed by the question:
+
+- [Architecture characteristics analysis](references/architecture-characteristics-analysis.md) when inferring quality characteristics from observed scenarios, controls, and operational evidence.
+- [Coupling, modularity, and decomposition](references/coupling-modularity-and-decomposition.md) when comparing boundaries, change propagation, modularity, deployment shape, or decomposition readiness. Assess static, dynamic, data, temporal, deployment, and organizational coupling before naming a target boundary.
+- [Data ownership and workflow analysis](references/data-ownership-and-workflow-analysis.md) when tracing data authority, distributed transactions, orchestration/choreography, failure handling, or reconciliation.
+- [Architecture health assessment template](templates/architecture-health-assessment.md) when the deliverable is a repeatable health report or a structured handoff.
+
+Treat every claim as **observed**, **inferred**, **reported**, or **unknown**. Cite the artifact, trace, configuration, test, metric, or interview evidence that supports it. Do not turn a missing observation into a defect without labeling the uncertainty.
 
 ## Phase 3b: Interface Extraction Pattern (DAO/Provider Contract Design)
 
@@ -222,6 +237,14 @@ After delivering the design document:
 3. **Check for code contamination** — scan for any inline source code snippets that look like they came from the reference. If found, rewrite at the architecture level
 4. **Cross-reference audit** — every concept introduced in one section should be connected to its implementation in another. The document should be internally consistent
 
+## Exit criteria
+
+This skill is complete when the requested architecture artifact exists, the evidence ledger distinguishes facts from inference and unknowns, clean-room checks find no copied implementation material, linked references resolve, and the output states the boundary to neighboring skills. Stop before proposing implementation or migration execution unless the user separately authorizes that work.
+
 ## References
 
 - [references/interface-extraction-pattern.md](references/interface-extraction-pattern.md) — Full worked example of the Phase 3b interface extraction pattern, using the cashew thought-graph library (MIT, public on GitHub). Read when designing a provider abstraction or DAO contract for a codebase with a swappable storage backend.
+- [references/architecture-characteristics-analysis.md](references/architecture-characteristics-analysis.md) — Evidence-derived quality characteristics and scenario analysis.
+- [references/coupling-modularity-and-decomposition.md](references/coupling-modularity-and-decomposition.md) — Six coupling lenses, modularity signals, and decomposition-readiness assessment.
+- [references/data-ownership-and-workflow-analysis.md](references/data-ownership-and-workflow-analysis.md) — Data authority, transaction/workflow topology, failure, and reconciliation analysis.
+- [templates/architecture-health-assessment.md](templates/architecture-health-assessment.md) — Reusable architecture health report template.
