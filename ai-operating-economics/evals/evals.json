@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "skill_name": "ai-operating-economics",
+  "evals": [
+    {
+      "id": "aggregate-speed-claim",
+      "prompt": "Our support pilot reduced average handle time by 18% and the vendor says this proves a 20% productivity gain. Customer satisfaction was measured for only 10% of chats, and we have no baseline comparison. Should we roll it out to every team?",
+      "expected_output": "A bounded recommendation that rejects the conclusion that lower handle time proves productivity or supports universal rollout. It identifies the missing baseline, incomplete quality measurement, and the need to measure a meaningful outcome such as resolved cases or customer outcomes alongside quality countermetrics. It proposes a scoped comparison and a constrained next step rather than a universal rollout.",
+      "assertions": [
+        "The response explicitly says reduced handle time alone does not establish business value or productivity",
+        "The response identifies both the missing baseline and the 10% customer-satisfaction coverage as material evidence gaps",
+        "The response distinguishes the vendor claim from observed or causal evidence",
+        "The response proposes a meaningful primary outcome and at least one quality countermetric",
+        "The response does not automatically convert time saved into salary savings and identifies the benefit-realization mechanism that would be needed",
+        "The recommendation is bounded to a scoped pilot, hold, or constrained rollout rather than universal rollout"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "heterogeneous-effects",
+      "prompt": "An AI assistant increased completed cases per hour by 14% overall. New employees improved by 34%, experienced employees showed no improvement, and quality audits suggest a small decline among the highest performers. What should the company do next?",
+      "expected_output": "A segmented decision that treats heterogeneous effects as central evidence. It does not recommend universal scale from the mean. It proposes differentiated deployment, further quality investigation, and separate authority or workflow treatment for affected groups, with an owner and reversal trigger.",
+      "assertions": [
+        "The response treats worker heterogeneity as a decision-changing finding rather than noise",
+        "The response does not recommend unconditional universal rollout based on the 14% average",
+        "The response addresses the possible quality decline among highest performers",
+        "The response proposes a differentiated or bounded next intervention",
+        "The response includes a review or reversal trigger tied to quality and subgroup outcomes"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "incomplete-tco",
+      "prompt": "Our agent costs $0.004 per request in model tokens. Finance wants to approve the project because that is cheaper than a $0.12 human-handled request. The agent also uses retrieval, three APIs, a vector database, observability, human exception review, and a dedicated GPU that is idle 40% of the time. Prepare the economic comparison.",
+      "expected_output": "A corrected comparison that rejects token-only cost as total cost. It defines a meaningful denominator, separates marginal from fully loaded cost, includes retrieval, tools, storage, observability, human review, and committed or idle capacity, and identifies the evidence needed to calculate each component. It does not claim savings until the workflow outcomes and quality boundary are established.",
+      "assertions": [
+        "The response explicitly rejects model-token cost as the complete economic comparison",
+        "The response separates marginal cost from fully loaded cost",
+        "The response includes retrieval, APIs/tools, vector storage, observability, human exception review, and idle dedicated capacity",
+        "The response defines or requests a meaningful denominator beyond raw requests",
+        "The response states that cost savings cannot be claimed without workflow outcome and quality evidence"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "vendor-survey-evidence",
+      "prompt": "A consulting firm's survey says 66% of organizations report AI productivity gains and 40% report cost reductions. The board wants a memo saying our AI program will produce the same results. How should the evidence be used?",
+      "expected_output": "A calibrated memo that labels the survey as vendor-reported self-report evidence, uses it only as context or hypothesis-generation, and refuses to project the percentages onto the organization without a local baseline, workflow evidence, cost boundary, and countermetrics.",
+      "assertions": [
+        "The response labels the survey as vendor-reported and self-reported rather than audited causal evidence",
+        "The response refuses to treat the survey percentages as a forecast for this organization",
+        "The response identifies a local baseline and workflow-specific evidence as needed",
+        "The response requests quality or other countermetrics alongside productivity or cost claims",
+        "The response offers a calibrated alternative for board language"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "authority-after-pilot",
+      "prompt": "Our read-only internal agent passed its pilot evaluation with a strong average score. The product team now wants to let it update customer records automatically. What does the economics review need to decide?",
+      "expected_output": "A decision that separates value evidence from authority expansion. It requires a new intervention and risk boundary, side-effect evaluation, authorization and rollback controls, cost and quality monitoring, staged expansion, and a named human owner. A positive read-only pilot is not treated as evidence for write authority.",
+      "assertions": [
+        "The response says a positive read-only pilot does not establish safety or readiness for customer-record writes",
+        "The response identifies authority expansion as a new intervention requiring separate evidence",
+        "The response requires authorization, rollback or containment, and human escalation controls",
+        "The response proposes staged or bounded authority rather than an immediate unrestricted change",
+        "The response names cost, quality, and side-effect monitoring as part of the decision"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "retirement-decision",
+      "prompt": "After six months, an AI workflow has high adoption but no measurable improvement in the intended customer outcome. Reviewers also spend significant time correcting its outputs, and the cost ledger is incomplete. The sponsor says adoption proves the system should continue. Produce the lifecycle recommendation.",
+      "expected_output": "A recommendation that does not equate adoption with value. It makes the incomplete cost ledger and correction burden visible, assesses the intended outcome and quality countermetric, and recommends hold, redesign, or retirement with a bounded evidence plan and a transition or containment path.",
+      "assertions": [
+        "The response explicitly distinguishes adoption from realized value",
+        "The response identifies correction burden and incomplete cost accounting as material",
+        "The response centers the intended customer outcome rather than usage volume",
+        "The response recommends a bounded hold, redesign, or retirement path rather than indefinite continuation",
+        "The response includes a named owner, review trigger, and transition or containment consideration"
+      ],
+      "case_set": "release"
+    }
+  ]
+}

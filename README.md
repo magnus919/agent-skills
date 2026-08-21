@@ -38,7 +38,11 @@ Reference for the Agent Skills open format itself — directory structure, front
 
 ### [ai-governance](ai-governance/SKILL.md)
 
-Design and operate an organization's AI governance system: governance principles, operating models and decision rights, risk frameworks, lifecycle gates, and fairness, transparency, privacy, security, regulatory, and board-oversight controls. Use when standing up or maturing a governance program, tiering AI use-case risk, reviewing an LLM/agent system for governance and safety gaps, mapping a regulation to a compliance plan, or preparing board reporting. Do not use for legal interpretation (route to legal-strategy), data-governance mechanics (data-architect/data-engineering), or implementing application security (secure-software-engineering).
+Design and operate an organization's AI governance system: governance principles, operating models and decision rights, risk frameworks, lifecycle gates, and fairness, transparency, privacy, security, regulatory, and board-oversight controls. Use when standing up or maturing a governance program, tiering use-case risk, reviewing an LLM or agent system for governance and safety gaps, mapping a regulation to a compliance plan, or preparing board reporting. Do not use for legal interpretation (route to legal-strategy), data-governance mechanics (data-architect/data-engineering), or implementing application security (secure-software-engineering).
+
+### [ai-operating-economics](ai-operating-economics/SKILL.md)
+
+Decide whether an AI-enabled workflow should be adopted, scaled, constrained, redesigned, or retired by connecting workflow outcomes, worker or user effects, quality guardrails, full operating cost, telemetry, uncertainty, and accountable governance. Routes detailed financial, statistical, analytics, evaluation, runtime, governance, and launch work to the owning specialist skills.
 
 ### [anydoc](anydoc/SKILL.md)
 
