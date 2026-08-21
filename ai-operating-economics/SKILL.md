@@ -29,10 +29,10 @@ The core question is not “Did the model make people faster?” It is: “What 
 
 | Starting state | Start with | Primary artifact or route |
 |---|---|---|
-| Idea or proposed AI workflow | Steps 1–2 | `ai-initiative-evidence-record.md` |
-| Existing pilot or outcome data | Steps 3–7 | `evidence-method.md` plus the evidence record |
-| Request for broader population or side-effect authority | Step 7a and Step 8 | Governance evidence packet plus the evidence record |
-| Executive, portfolio, launch, or lifecycle review | Step 8–9 | `ai-economics-review.md`; route launch/runtime details onward |
+| Idea or proposed AI workflow | Steps 1–2 | `templates/ai-initiative-evidence-record.md` |
+| Existing pilot or outcome data | Steps 3–7 | `references/evidence-method.md` plus the evidence record |
+| Request for broader population or side-effect authority | Steps 7–8; load `references/evidence-method.md` section 7a for the governance packet | Governance evidence packet plus the evidence record |
+| Executive, portfolio, launch, or lifecycle review | Steps 8–9 | `templates/ai-economics-review.md`; route launch/runtime details onward |
 | Standalone financial, statistical, telemetry, runtime, or governance implementation task | When Not to Use | Named adjacent specialist skill |
 
 ## When to Use
@@ -91,7 +91,7 @@ Use this sequence for an AI initiative review. Load the detailed method and the 
 
 | Mode | Use when | Minimum evidence | Output |
 |---|---|---|---|
-| Triage | A claim or opportunity needs a bounded first decision | Workflow, value hypothesis, one outcome, one countermetric, known gaps | Hold, route, or evidence plan |
+| Triage | A claim or opportunity needs a bounded first decision | Workflow, value hypothesis, one outcome, one countermetric, known gaps | Hold, with a routing/evidence plan |
 | Standard | A pilot or workflow decision can change population or investment | Comparison, outcome/countermetrics, slices, cost boundary, owner, reversal path | Scale, constrain, redesign, or hold |
 | High-assurance | Authority, sensitive data, material user impact, or irreversible change is involved | Standard evidence plus governance packet, human oversight, incident/revalidation, and decommissioning evidence | Scale only within an explicit authority boundary, or exception/no-go |
 

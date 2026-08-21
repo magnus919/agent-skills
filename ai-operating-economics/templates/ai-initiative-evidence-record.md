@@ -36,9 +36,9 @@
 - Quality measurement limitations:
 - Statistical or causal analysis owner:
 
-| Claim | Class | Source | Result | Caveat | Permitted interpretation |
-|---|---|---|---|---|---|
-| | observed / causal / inferred / vendor-reported / asserted / normative | | | | |
+| Claim | Evidence class | Source and scope | What it supports | What it does not support | Open challenge | Permitted interpretation |
+|---|---|---|---|---|---|---|
+| | observed / causal / inferred / vendor-reported / asserted / normative | | | | | |
 
 ## Outcome and countermetrics
 
