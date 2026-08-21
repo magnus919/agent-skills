@@ -1,19 +1,21 @@
 ---
 name: data-architect
 description: >-
-  A virtual data architect for teams who don't have one. If your data pipelines
-  are growing faster than your team, nobody agrees on what 'customer' means,
-  your cloud bill is climbing without clear reason, or you're about to choose a
-  data platform and need someone who's seen this before — load this skill. I'll
-  help you spot problems you didn't know you had, ask questions you didn't know
-  to ask, and give you a path forward even when you're not sure where to start.
+  Use this skill to assess, design, and evolve data architectures, including
+  data platforms, data products, data mesh adoption, event-driven data flows,
+  governance, modeling, and migration decisions. Load it when teams need
+  workload-grounded tradeoffs, ownership and quality agreements, or a
+  current-to-target data architecture. Do not use it for pipeline or platform
+  operations, implementation details, interface contract semantics, SQL tuning,
+  or statistical modeling; route those to data-engineering,
+  platform-engineering, api-design-and-evolution, postgres, or data-scientist.
 compatibility: >-
   Designed for agentic AI assistants (Hermes Agent, Claude Code, similar
   coding agents). No special system requirements.
 metadata:
   author: data-architect contributors
-  version: "1.0.0"
-  topics: data-architecture, data-modeling, data-warehouse, data-governance, data-platform, etl, streaming, cloud-data
+  version: "1.1.0"
+  topics: data-architecture, data-modeling, data-warehouse, data-governance, data-platform, data-products, data-mesh, event-driven-data, etl, streaming, cloud-data
 ---
 
 # Data Architect — Virtual Expert
@@ -116,6 +118,19 @@ When planning multi-quarter evolution:
 4. Flag organizational dependencies (hiring, skill building, governance maturity)
 5. Define success criteria for each phase
 
+### Data Mesh or Event-Driven Data Product Design
+
+**Applicability:** Use when the request involves domain-owned data products, mesh adoption, event-sourced inputs, or operational and analytical consumers sharing data.
+
+1. Establish the business domains, producers, consumers, decision rights, and current failure costs before naming a target pattern.
+2. Test whether domain teams can own products end to end, whether a platform team can provide self-service capabilities, and whether shared governance can be automated or made enforceable.
+3. Define each product's semantics, owner, intended consumers, access modes, quality and freshness objectives, discoverability, compatibility policy, retention, and deprecation path.
+4. Separate operational exchange from analytical serving. Decide whether a product is an event stream, a queryable snapshot, a historical table, or more than one compatible view.
+5. Design replay, ordering, late-arriving data, duplicate delivery, backfill, consumer recovery, and access failure before recommending a streaming or mesh pattern.
+6. Sequence a bounded pilot with explicit exit criteria. A centralized or hybrid design is a valid result when ownership, platform, or governance prerequisites are missing.
+
+Load `references/data-mesh-readiness-and-operating-model.md` for adoption assessment, `references/event-driven-data-products.md` for product and recovery decisions, and `templates/architecture-design-session.md` for a facilitated workshop artifact.
+
 ## Proactive Discovery — When You Don't Know Where to Start
 
 If you load this skill and say "I don't know where to start" or "just help me figure out what I need," here's what I'll do. You don't need to prepare anything.
@@ -156,12 +171,14 @@ I have deep knowledge across these domains. Each has a reference file with decis
 - **AI/ML data infrastructure** — Feature stores, RAG architecture, training data pipelines
 - **Tools ecosystem** — Modeling, warehouse, integration, governance, storage, observability tools
 - **Real-world case studies** — Lakehouse migrations, Data Vault implementations, hybrid architectures. → `references/case-studies.md`
+- **Data mesh adoption** — Readiness, domain ownership, platform boundary, federated governance, and transition choices. → `references/data-mesh-readiness-and-operating-model.md`
+- **Event-driven data products** — Product contracts, access modes, replay, compatibility, and consumer recovery. → `references/event-driven-data-products.md`
 
 ## Reference Files
 
 Load these on demand when the topic comes up:
 
-- `references/architecture-patterns.md` — Decision framework for Kimball vs Inmon vs Data Vault vs Lakehouse, including strengths, weaknesses, and when to choose each. Also covers streaming vs batch, star vs snowflake, Medallion architecture.
+- `references/architecture-patterns.md` — Decision framework for Kimball, Inmon, Data Vault, lakehouse, data fabric capabilities, data mesh, and hybrid shapes. Also covers streaming vs batch, star vs snowflake, and Medallion architecture.
 - `references/anti-patterns.md` — 13 named anti-patterns with symptoms, root causes, and remediations. Load when doing design review or incident post-mortem.
 - `references/discovery-framework.md` — Structured discovery questions and consulting session flow. Load at the start of a new architecture engagement.
 - `references/cloud-platform-comparison.md` — Snowflake vs BigQuery vs Redshift vs Databricks: architecture, pricing, scaling, lock-in vectors, and decision framework. Load when doing platform selection or migration planning.
@@ -169,6 +186,8 @@ Load these on demand when the topic comes up:
 - `references/vendor-evaluation.md` — Structured evaluation criteria for data catalogs (Atlan, Alation, Collibra, DataHub, etc.), ETL/ELT tools (Fivetran, Airbyte, dbt), and orchestration (Airflow, Dagster, Prefect). Load during vendor selection.
 - `references/compliance-by-framework.md` — What GDPR, HIPAA, CCPA, SOX, PCI DSS, and BCBS 239 require from a data architecture perspective. Design patterns for each. Load when designing for regulated environments.
 - `references/case-studies.md` — Real-world architecture transformations: Data Vault at a commercial bank, lakehouse at Avant/Insulet/7-Eleven, hybrid Snowflake+Databricks at Janus Henderson. Load when you want concrete examples to ground a recommendation.
+- `references/data-mesh-readiness-and-operating-model.md` — Readiness assessment and operating model for domain ownership, data products, self-service platform capabilities, federated governance, and transition planning. Load before recommending or rejecting mesh adoption.
+- `references/event-driven-data-products.md` — Design guide for event-driven and analytical data products, including producer ownership, access modes, schema compatibility, replay, late data, and recovery. Load when operational events feed analytical or cross-domain consumers.
 
 ## Scripts & Templates
 
@@ -176,6 +195,7 @@ The skill includes tools I can run during a session:
 
 - `scripts/governance-assessment.py` — Interactive governance maturity assessment. Asks 15 scored questions across 5 dimensions, produces a maturity level, dimension scores, and prioritized recommendations. Run when someone asks "how mature is our governance?"
 - `templates/adr-template.md` — Architecture Decision Record template. I'll fill this in when you say "capture that as an ADR" during a consulting session.
+- `templates/architecture-design-session.md` — Structured workshop worksheet for current state, workloads, candidate patterns, decisions, experiments, and owners.
 
 Usage:
 ```bash
@@ -186,13 +206,15 @@ python3 scripts/governance-assessment.py
 python3 scripts/governance-assessment.py --json
 ```
 
-## When NOT to Load This Skill
+## When not to use
 
 This skill is for data architecture strategy, design, and governance. Don't load it for:
 
 - **Real-time pipeline debugging** — If a Kafka consumer is falling behind or an Airflow DAG keeps failing, you need an SRE or data engineer, not an architect.
 - **SQL optimization** — Slow query? That's a tuning problem. I can point you to the right performance patterns, but I won't write your query plans.
 - **Specific tool configuration** — "How do I set up RBAC in Snowflake?" / "What's the dbt YAML syntax for tests?" These are implementation details, not architecture decisions.
+- **Interface contract semantics** — Event schemas, compatibility rules, and API or webhook contracts belong to `api-design-and-evolution`; this skill decides when a product needs those contracts and what consumers require.
+- **Pipeline and platform implementation** — Building ingestion, transformations, event consumers, catalogs, or operating Kafka, Airflow, warehouses, and cloud resources belongs to `data-engineering` or `platform-engineering`.
 - **Data science model development** — Feature selection, hyperparameter tuning, model evaluation — that's the data scientist's domain. I handle the infrastructure that serves the data to them, not the modeling itself.
 
 ## Common Anti-Patterns (Quick Reference)
