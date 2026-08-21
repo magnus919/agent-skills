@@ -13,11 +13,11 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
-| `references/` | Reference material: `architecture-as-code-ecosystem.md`, `c4-to-pyramid-mapping.md`, `ci-pipeline-templates.md` |
+| `references/` | Reference material for C4 levels, architecture-as-code tooling, CI, and communication review, including `technical-diagram-communication.md`. |
 
 ## Quick Start
 
-Choose the C4 level and authoring format in `SKILL.md`, then load the matching reference before drawing.
+Choose the C4 level and authoring format in `SKILL.md`, load the matching reference before drawing, and review the rendered artifact for the audience's job rather than syntax alone.
 
 Install or expose this directory using your agent's standard Agent Skills loading mechanism, then ask for work that matches the triggers below.
 
@@ -25,6 +25,7 @@ Install or expose this directory using your agent's standard Agent Skills loadin
 
 - Create C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need clear system context, container, component, or code-level views.
 - Requests involving the method, deliverables, or review process described in `SKILL.md`.
+- Requests to make a C4 diagram understandable to a particular audience or to review its hierarchy, narrative, labels, uncertainty, or accessible fallback.
 - Work where a reusable template or reference from this skill would reduce avoidable mistakes.
 
 ## Requirements
