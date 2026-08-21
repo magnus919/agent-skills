@@ -49,15 +49,17 @@ Load this skill when the user needs to:
 
 ## When Not to Use
 
-- **Standalone financial statements, pricing, CAC/LTV, runway, or SaaS metrics:** use [financial-modeling](../financial-modeling/SKILL.md).
-- **Token, infrastructure, quota, capacity, or SLO-cost modeling:** use [capacity-and-cost-engineering](../capacity-and-cost-engineering/SKILL.md).
-- **Metric trees, event schemas, instrumentation QA, or product dashboards:** use [product-analytics-and-measurement](../product-analytics-and-measurement/SKILL.md).
-- **Experimental design, causal inference, statistical testing, or power analysis:** use [data-scientist](../data-scientist/SKILL.md).
-- **Agent datasets, graders, traces, regression analysis, or telemetry implementation:** use [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md).
-- **Production rollout, runtime budgets, authority, fallback, escalation, or disablement:** use [agent-production-operations](../agent-production-operations/SKILL.md).
-- **Organization-wide AI risk, policy, compliance, or governance operating models:** use [ai-governance](../ai-governance/SKILL.md).
-- **A launch-readiness packet or production go/no-go decision:** use [production-readiness](../production-readiness/SKILL.md).
-- **General product governance cadence without an AI-specific value question:** use [product-operations-and-governance](../product-operations-and-governance/SKILL.md).
+| If the task is primarily... | Route to | This skill still contributes... |
+|---|---|---|
+| Financial statements, pricing, CAC/LTV, runway, or SaaS metrics | [financial-modeling](../financial-modeling/SKILL.md) | The AI workflow's outcome and cost evidence can feed the model |
+| Token, infrastructure, quota, capacity, or SLO-cost modeling | [capacity-and-cost-engineering](../capacity-and-cost-engineering/SKILL.md) | The economic decision can consume the resulting cost boundary |
+| Metric trees, event schemas, instrumentation QA, or product dashboards | [product-analytics-and-measurement](../product-analytics-and-measurement/SKILL.md) | The decision defines which outcome and countermetric evidence matters |
+| Experimental design, causal inference, statistical testing, or power analysis | [data-scientist](../data-scientist/SKILL.md) | The decision specifies the claim and comparison it must support |
+| Agent datasets, graders, traces, regression analysis, or telemetry implementation | [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) | The decision consumes verified evaluation and telemetry evidence |
+| Production rollout, runtime budgets, authority, fallback, escalation, or disablement | [agent-production-operations](../agent-production-operations/SKILL.md) | The decision sets the evidence and authority boundary |
+| Organization-wide AI risk, policy, compliance, or governance operating models | [ai-governance](../ai-governance/SKILL.md) | The initiative record supplies an operating case and unresolved gaps |
+| Launch-readiness packet or production go/no-go decision | [production-readiness](../production-readiness/SKILL.md) | The initiative disposition becomes one readiness input |
+| General product governance cadence without an AI-specific value question | [product-operations-and-governance](../product-operations-and-governance/SKILL.md) | Use this skill only for the AI-specific value and operating-economics question |
 
 ## Non-Negotiable Reasoning Rules
 
@@ -84,6 +86,14 @@ Use this sequence for an AI initiative review. Load the detailed method and the 
 | Build a durable record | Copy the initiative evidence record and complete the header first | `templates/ai-initiative-evidence-record.md` |
 | Investigate uncertain evidence | Freeze the claim table before drafting conclusions | `references/evidence-method.md` |
 | Prepare a review | Assemble evidence, slices, cost, gaps, and disposition | `templates/ai-economics-review.md` |
+
+### Choose Review Depth
+
+| Mode | Use when | Minimum evidence | Output |
+|---|---|---|---|
+| Triage | A claim or opportunity needs a bounded first decision | Workflow, value hypothesis, one outcome, one countermetric, known gaps | Hold, route, or evidence plan |
+| Standard | A pilot or workflow decision can change population or investment | Comparison, outcome/countermetrics, slices, cost boundary, owner, reversal path | Scale, constrain, redesign, or hold |
+| High-assurance | Authority, sensitive data, material user impact, or irreversible change is involved | Standard evidence plus governance packet, human oversight, incident/revalidation, and decommissioning evidence | Scale only within an explicit authority boundary, or exception/no-go |
 
 ### 1. Define the intervention and decision
 
@@ -165,6 +175,17 @@ Keep the source, access date, scope, version, caveat, and permitted interpretati
 ### Minimum Decision Record
 
 Every completed review must expose, in one durable artifact: the intervention and population, value hypothesis, primary outcome, countermetrics, comparison and limitations, cost boundary, relevant slices, evidence classes, missing evidence with owner, disposition, authority limit, reversal path, and review trigger.
+
+### Disposition Quick Pick
+
+| Evidence state | Default disposition | Next control |
+|---|---|---|
+| Outcome and countermetrics support a bounded expansion; cost and slices are understood | Scale | Name the next population and authority slice |
+| Value is plausible but a cost, quality, subgroup, or authority boundary remains unresolved | Constrain | Limit population, task, quota, or human review |
+| The mechanism creates avoidable failure or burden | Redesign | Change the workflow or control and rerun the comparison |
+| Required evidence is missing or conflicting | Hold | Assign the evidence owner and review trigger |
+| Value is absent or countermetrics exceed bounds | Retire | Protect affected people, migrate, and record learning |
+| A material gap is accepted temporarily by a named human | Exception | Set expiry, containment, approver, and revisit condition |
 
 ### 8. Produce a bounded decision
 
