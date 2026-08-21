@@ -1,38 +1,12 @@
-# C4 Model with Mermaid
+# Rendering a Chosen C4 View with Mermaid
 
-Mermaid does NOT have stable native C4 syntax. `C4Context` and `C4Container` are experimental and unreliable. For production C4 diagrams, use **Structurizr DSL**. For inline markdown where Structurizr isn't available, use the flowchart workaround below.
+This reference does not choose the C4 level, model elements, boundaries, or relationships. Make those decisions with `c4-diagramming`, then use this reference to render the resulting view on a Mermaid-compatible surface.
 
-## Option 1: Structurizr DSL (Recommended)
+Mermaid does not have stable native C4 syntax. `C4Context` and `C4Container` are experimental and unreliable across common renderers. For a durable C4 model and Structurizr workflow, return to `c4-diagramming`. For inline Markdown where only standard Mermaid renders, use the flowchart approximation below.
 
-Structurizr is the canonical C4 tool. The DSL compiles to Mermaid, PlantUML, or Structurizr's own diagram format.
+## Flowchart Workaround for Inline Markdown
 
-```dsl
-workspace {
-  model {
-    user = person "User" "A user of the system"
-    system = softwareSystem "Research Service" "A web-retrieval service"
-    user -> system "Uses"
-  }
-  views {
-    systemContext "SystemContext" {
-      include *
-      autoLayout
-    }
-  }
-}
-```
-
-Render with:
-```bash
-# Via Structurizr CLI
-java -jar structurizr-cli.jar render -w workspace.dsl -f mermaid -o output/
-
-# Or use the structurizr-site-generatr for full documentation site
-```
-
-## Option 2: Flowchart Workaround (For Inline Markdown)
-
-Use Mermaid flowchart subgraphs with styling to approximate C4 views. The pattern uses two boxes per element (one for the system/person, one for a description).
+Use Mermaid flowchart subgraphs and styling to represent only the elements and relationships in the already-chosen C4 view. Do not infer a level, add architecture content, or redefine a boundary while converting it.
 
 ### System Context (L1)
 
@@ -101,4 +75,4 @@ flowchart TB
 - No native C4 shapes (person, system, container, database) — must approximate with subgraphs
 - No automatic layout — manual positioning via subgraph nesting
 - No relationship descriptions on edges (can add via edge labels)
-- Structurizr DSL is the right tool for C4. Use Mermaid flowchart workarounds only when Structurizr is unavailable.
+- Use `c4-diagramming` for C4 modeling and Structurizr decisions. Use Mermaid flowchart approximations only to render an already-chosen view when the target surface requires standard Mermaid.

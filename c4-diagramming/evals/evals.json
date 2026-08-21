@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "c4-diagramming",
+  "evals": [
+    {
+      "id": "context-view-for-new-maintainer",
+      "prompt": "Create a C4 view for a new maintainer who needs to understand the system boundary and external import dependencies before changing an ingestion path. Keep the view useful in a GitHub README.",
+      "expected_output": "A C4 system-context view with a stated audience and job, consistent abstraction, a clear read order, labeled relationships, a legend or explanation where needed, and a text fallback. It uses GitHub-compatible Mermaid or explains why another format is chosen.",
+      "assertions": [
+        "The audience and reader job are stated before the diagram",
+        "The view stays at system-context abstraction and does not mix container internals",
+        "External dependencies and relationships have meaningful labels",
+        "The output includes a text-only summary or equivalent accessible fallback",
+        "GitHub Mermaid compatibility is addressed without claiming syntax validity proves communication quality"
+      ]
+    },
+    {
+      "id": "container-view-signal-to-noise",
+      "prompt": "Review a proposed container diagram with 28 nodes, several crossed edges, database icons mixed with services, and three colors that indicate criticality. The team wants to use it in an incident handoff.",
+      "expected_output": "A review that identifies the view as overloaded, proposes a smaller incident-oriented container view or split views, preserves C4 level ownership, and replaces color-only criticality with redundant meaning.",
+      "assertions": [
+        "The review names the incident handoff audience and job",
+        "Node and edge density are treated as a signal-to-noise problem rather than completeness",
+        "The proposed revision keeps container-level abstraction consistent",
+        "Criticality is encoded with labels, line or shape differences, or text in addition to color",
+        "The review distinguishes C4 communication review from incident procedure and architecture decision ownership"
+      ]
+    },
+    {
+      "id": "uncertain-target-model",
+      "prompt": "Document a target architecture that is still being validated. Some integrations are confirmed, one data store is inferred from code, and the future event path is only a proposal. Produce a C4 view and review notes.",
+      "expected_output": "A C4 view that marks confirmed, inferred, and proposed information explicitly, avoids false precision, and records evidence and open questions without turning the diagram into an architecture decision record.",
+      "assertions": [
+        "Confirmed, inferred, and proposed claims are visibly distinguished without relying on color alone",
+        "The output records the evidence source or uncertainty for the inferred store and proposed event path",
+        "The selected C4 level and scope are stated",
+        "Open questions are separated from asserted relationships",
+        "The output routes consequential architecture decisions to software-architecture or ADR ownership"
+      ]
+    },
+    {
+      "id": "related-view-consistency",
+      "prompt": "Generate system-context, container, and component views for a payments platform. Check that names, boundaries, and relationship meanings remain coherent across views while each view serves a different reader.",
+      "expected_output": "Three linked views with explicit audience/job and read order, stable identities and boundaries, deliberate scope changes, and evidence of rendered review.",
+      "assertions": [
+        "Each view has a distinct audience or question and does not try to answer every question",
+        "Element identities and relationship meanings remain consistent across levels",
+        "Scope omissions are documented instead of implying nonexistent elements",
+        "The component view does not silently redefine a container boundary",
+        "Rendered-output review evidence is recorded for each target surface"
+      ]
+    },
+    {
+      "id": "accessibility-boundary",
+      "prompt": "A product manager asks for an accessible C4 architecture diagram for a roadmap review, including a color-coded legend and a WCAG conformance statement. Explain what to produce and which work must be handed off.",
+      "expected_output": "A diagram communication plan with redundant non-color encoding, labels, reading order, text fallback, and review evidence, plus an explicit handoff to web-accessibility for full conformance and assistive-technology evaluation.",
+      "assertions": [
+        "The roadmap audience and decision job are defined",
+        "The plan requires meaning that survives color loss and zoom",
+        "A textual or tabular equivalent is specified",
+        "The output refuses to claim full WCAG conformance from diagram checks alone",
+        "C4 model decisions remain distinct from accessibility conformance ownership"
+      ]
+    }
+  ]
+}

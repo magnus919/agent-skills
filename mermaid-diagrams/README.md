@@ -13,12 +13,12 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
-| `references/` | Reference material: `c4-mermaid.md`, `c4-to-flowchart.md`, `flowchart.md`, `mmdc-spacing-config.md`, `pdf-rendering-pipeline.md`, `portrait-layout.md`, `sequence.md` |
+| `references/` | Reference material for Mermaid diagram types, C4 compatibility, rendering, layout, and communication review, including `diagram-communication.md`. |
 | `scripts/` | Scripts: `validate-mermaid.sh` |
 
 ## Quick Start
 
-Choose the diagram type in `SKILL.md`, author the smallest useful diagram, and render it with the documented verification path.
+Choose the diagram type in `SKILL.md`, state the audience's job, author the smallest useful diagram, and render and review it on the target surface.
 
 Install or expose this directory using your agent's standard Agent Skills loading mechanism, then ask for work that matches the triggers below.
 
@@ -26,6 +26,7 @@ Install or expose this directory using your agent's standard Agent Skills loadin
 
 - Author, render, and troubleshoot Mermaid diagrams for documentation, architecture, processes, and technical communication. Use when a text-based diagram needs to stay versionable.
 - Requests involving the method, deliverables, or review process described in `SKILL.md`.
+- Requests to improve diagram narrative, hierarchy, labels, legends, uncertainty, accessible fallback, or signal-to-noise after syntax is valid.
 - Work where a reusable template or reference from this skill would reduce avoidable mistakes.
 
 ## Requirements

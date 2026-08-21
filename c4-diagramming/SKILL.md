@@ -1,6 +1,6 @@
 ---
 name: c4-diagramming
-description: Create C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need clear system context, container, component, or code-level views.
+description: Create and review C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need a communication-ready system context, container, component, or code-level view, including audience, narrative, hierarchy, labels, legends, accessibility, and uncertainty. Do not use for Mermaid syntax/rendering work without C4 modeling, architecture decisions, or full accessibility conformance reviews.
 license: MIT
 compatibility: Mermaid or Structurizr tooling is optional and only needed to render or validate diagrams.
 metadata:
@@ -23,6 +23,16 @@ C4 Model for structural architecture visualization. Produces diagrams at four zo
 | Level 4: Code | L3 (Dossiers) | 03-dossiers/code-level-detail.md |
 
 C4 is the cleanest structural fit — its four-level hierarchy maps to the three pyramid layers with almost no translation, and Levels 2-3 both resolve to separate L2 analysis files.
+
+## Communication Gate
+
+Before choosing notation or polishing layout, state the audience and the job the reader must complete. Select one C4 level that answers that job; do not mix system context, container, component, and code claims merely to fill a canvas. Keep the abstraction level, element vocabulary, boundary treatment, and relationship meaning consistent within a view. A structurally valid C4 model can still be the wrong communication artifact if it asks the reader to infer the purpose, mixes levels, hides important paths, or overwhelms the intended reader.
+
+Load `references/technical-diagram-communication.md` when creating, revising, or reviewing a diagram for a real audience. Use its review record to check narrative/read order, visual hierarchy, labels and legends, signal-to-noise, color-independent meaning, accessibility handoff, uncertainty, and review evidence. Full accessibility conformance remains owned by `web-accessibility`; architecture decisions remain owned by `software-architecture`.
+
+## Review Evidence
+
+Record the intended audience and question, C4 level and scope, key claim, known uncertainty, target renderer, and an accessible text or tabular fallback. Review both the source model and the rendered artifact. A passing syntax/model validator proves structural validity only; it does not prove that the diagram communicates the intended claim.
 
 ## Authoring Formats
 
@@ -67,7 +77,7 @@ Full reference in `references/architecture-as-code-ecosystem.md` — tool compar
 ## Contents
 
 - `references/c4-to-pyramid-mapping.md` — context→L1, container/component→L2, code→L3 (Mermaid + Structurizr DSL paths)
-- `references/c4-to-flowchart.md` — (in `mermaid-diagrams` skill) C4 → standard flowchart conversion patterns for GitHub compatibility
+- [`c4-to-flowchart.md`](../mermaid-diagrams/references/c4-to-flowchart.md) — companion Mermaid conversion patterns for GitHub-compatible flowcharts
 - `references/architecture-as-code-ecosystem.md` — Structurizr DSL, C4-PlantUML, docToolChain, converged repo convention, tool comparison table
 - `references/ci-pipeline-templates.md` — GitHub Actions, GitLab CI, ForgeJo (Gitea Actions, Woodpecker) pipeline templates for Structurizr validation, export, deploy
 
@@ -84,7 +94,7 @@ GitHub's built-in Mermaid renderer does **not** bundle the C4 plugin (`@mermaid-
 - `Rel()` → `-- label -->` or `-.->`
 - Drop `UpdateLayoutConfig()` — use `flowchart LR` or `TB` directive instead
 
-For the full conversion table with worked examples, load `references/c4-to-flowchart.md` from the companion `mermaid-diagrams` skill when it is available.
+For the full conversion table with worked examples, load [`c4-to-flowchart.md`](../mermaid-diagrams/references/c4-to-flowchart.md) from the companion `mermaid-diagrams` skill when it is available.
 
 **.mmd files in a DIAGRAMS/ directory** must also use standard flowchart syntax if they need to render via `mmdc` or on GitHub. Files using C4-plugin syntax can only render in tools that bundle the plugin (e.g., Mermaid Live Editor, mmdc with C4 extension config). If you commit `.mmd` files with C4 syntax to a repo, GitHub's file preview will show them as raw text — convert them to standard syntax or render them to PNG first.
 
@@ -100,3 +110,9 @@ A GitHub Community feature request to bundle the C4 mermaid plugin was filed at 
 ## Portability
 
 This skill is intentionally host-neutral. Use your agent's normal mechanisms to load the references, templates, and scripts listed here. Do not assume a particular profile system, task orchestrator, memory service, or response-handoff format.
+
+## When not to use
+
+- Use `mermaid-diagrams` for Mermaid grammar, renderer compatibility, layout, and export troubleshooting that does not require C4 level/model decisions.
+- Use `software-architecture` for architecture drivers, tradeoffs, decisions, and fitness evidence; this skill visualizes those decisions rather than owning them.
+- Use `web-accessibility` for complete WCAG/ARIA conformance work and assistive-technology evidence; this skill contributes diagram-specific accessibility checks and fallbacks.

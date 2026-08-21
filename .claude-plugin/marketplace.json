@@ -156,7 +156,7 @@
         "./c4-diagramming"
       ],
       "strict": false,
-      "description": "Create C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need clear system context, container, component, or code-level views."
+      "description": "Create and review C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need a communication-ready system context, container, component, or code-level view, including audience, narrative, hierarchy, labels, legends, accessibility, and uncertainty. Do not use for Mermaid syntax/rendering work without C4 modeling, architecture decisions, or full accessibility conformance reviews."
     },
     {
       "name": "capacity-and-cost-engineering",
@@ -669,7 +669,7 @@
         "./mermaid-diagrams"
       ],
       "strict": false,
-      "description": "Author, render, and troubleshoot Mermaid diagrams for documentation, architecture, processes, and technical communication. Use when a text-based diagram needs to stay versionable."
+      "description": "Author, render, troubleshoot, and review Mermaid diagrams for documentation, architecture, processes, and technical communication. Use when a versionable diagram must communicate a defined audience job across a real renderer, including narrative, hierarchy, labels, legends, accessibility fallback, and uncertainty. Do not use for C4 level/model ownership, architecture decisions, or full accessibility conformance."
     },
     {
       "name": "meshcore-packet-capture",
