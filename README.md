@@ -46,7 +46,7 @@ Convert Word, PowerPoint, Excel, OpenDocument, RTF, EPUB, CSV, and text-based PD
 
 ### [api-design-and-evolution](api-design-and-evolution/SKILL.md)
 
-Design, document, review, and evolve consumer-facing HTTP, GraphQL, RPC, event, webhook, and streaming interfaces. Covers consumer jobs, domain semantics, contracts, failure behavior, compatibility, deprecation, migration, and deployed-boundary verification.
+Design, govern, document, review, and evolve consumer-facing HTTP, GraphQL, RPC, event, webhook, and streaming interfaces. Covers consumer jobs, domain semantics, API landscapes, ownership, lifecycle, topology, contracts, failure behavior, compatibility, deprecation, migration, and deployed-boundary verification. Do not use for product discovery, platform operations, full security assessment, ADR authoring, or delivery gates.
 
 ### [artifact-pyramids](artifact-pyramids/SKILL.md)
 

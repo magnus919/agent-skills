@@ -93,7 +93,7 @@
         "./api-design-and-evolution"
       ],
       "strict": false,
-      "description": "Design, document, review, and evolve consumer-facing APIs and event interfaces. Use when choosing REST/HTTP, GraphQL, RPC, events, webhooks, or streaming; writing OpenAPI or AsyncAPI contracts; defining schemas, pagination, mutations, errors, idempotency, or API compatibility; or planning API versioning, deprecation, and migration. Use secure-software-engineering for a full security lifecycle, ADR authoring for durable architecture decisions, and spec-driven-development for a delivery specification and implementation gates."
+      "description": "Design, govern, document, review, and evolve consumer-facing APIs and event interfaces. Use when choosing REST/HTTP, GraphQL, RPC, events, webhooks, or streaming; writing OpenAPI or AsyncAPI contracts; assessing an API landscape, ownership, duplication, lifecycle, discoverability, retirement, gateways, service meshes, north-south or east-west traffic, routing, policy, observability, or failure boundaries; defining schemas, pagination, mutations, errors, idempotency, or compatibility; or planning versioning, deprecation, and migration. Do not use for product discovery, platform operations, full security assessment, ADR authoring, or delivery gates; route those to the neighboring specialist skills."
     },
     {
       "name": "artifact-pyramids",

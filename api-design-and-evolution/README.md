@@ -1,6 +1,6 @@
 # API Design And Evolution
 
-Design APIs that consumers can integrate with, operate, and migrate without relying on unwritten assumptions.
+Design and govern APIs that consumers can integrate with, operate, and migrate without relying on unwritten assumptions.
 
 ## Why Install This Skill
 
@@ -12,15 +12,17 @@ route or selecting a protocol.
 It produces practical design artifacts for HTTP, GraphQL, RPC, events, webhooks, and
 streams. Your agent can document retries, errors, authorization boundaries, delivery
 semantics, compatibility risks, and a migration path instead of treating an OpenAPI
-file as the whole design.
+file as the whole design. It can also assess a portfolio for ownership, duplication,
+discoverability, lifecycle, and retirement, then separate gateway or ingress concerns
+from service-mesh responsibilities and application contracts.
 
 ## What You Get
 
 | Contents | Provides |
 |---|---|
 | `SKILL.md` | A workflow from discovery through rollout and verification |
-| `references/` | Protocol, schema, failure, event, evolution, testing, and source guidance |
-| `templates/` | Fillable briefs, contracts, taxonomies, assessments, plans, and reviews |
+| `references/` | Protocol, schema, failure, event, evolution, landscape, topology, testing, and source guidance |
+| `templates/` | Fillable briefs, contracts, taxonomies, landscape assessments, plans, and reviews |
 
 ## Quick Start
 
@@ -36,6 +38,8 @@ produce a contract reviewable by consumers and implementers.
 - Define pagination, errors, idempotency, concurrency, or rate/resource behavior
 - Assess a consumer-breaking API change, version an interface, or plan deprecation
 - Build a migration and rollback plan for an external interface
+- Assess an API portfolio, ownership model, discoverability, duplication, lifecycle, or retirement
+- Decide which gateway, ingress proxy, service mesh, routing, policy, telemetry, or failure boundary owns a concern
 
 ## Requirements
 

@@ -1,8 +1,6 @@
 # Source Index
 
-Versions, status, and URLs were checked against primary sources on 2026-07-13. Use a
-source for its stated purpose; adoption depends on the applicable organization,
-contract, and deployment. Recheck evolving specifications before relying on them.
+New topology-source rows were checked against primary sources on 2026-08-20. Other rows retain their row-specific verification dates where status is volatile. Use each source for its stated purpose; adoption depends on the applicable organization, contract, and deployment. Recheck evolving specifications before relying on them.
 
 | Source | Exact version/status | Primary URL | Decision use |
 |---|---|---|---|
@@ -21,3 +19,13 @@ contract, and deployment. Recheck evolving specifications before relying on them
 | Digest Fields | RFC 9530, Proposed Standard | https://www.rfc-editor.org/rfc/rfc9530 | Optional content-digest building block. |
 | Idempotency-Key Header Field | `draft-ietf-httpapi-idempotency-key-header-07`, expired Internet-Draft | https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/ | Convention requiring contract-specific semantics; not an RFC. |
 | RateLimit Fields | `draft-ietf-httpapi-ratelimit-headers-11`, active Internet-Draft/work in progress as checked 2026-07-13 | https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/ | Evolving rate-limit field model; do not assign an RFC number or substitute fields from an older draft. |
+| Kubernetes Gateway API | Current project documentation as checked 2026-08-20 | https://gateway-api.sigs.k8s.io/ | Gateway and routing resource concepts; confirm the deployed controller's supported feature set. |
+| Envoy architecture overview | Current project documentation as checked 2026-08-20 | https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview | Proxy data-plane capabilities and boundaries; not a substitute for a platform operating runbook. |
+| Istio architecture | Current project documentation as checked 2026-08-20 | https://istio.io/latest/docs/ops/deployment/architecture/ | Service-mesh control/data-plane concepts and traffic policy; validate version-specific behavior. |
+| OpenTelemetry concepts | Current project documentation as checked 2026-08-20 | https://opentelemetry.io/docs/concepts/observability-primer/ | Cross-boundary traces, metrics, and logs; define API-specific signal ownership separately. |
+
+The issue's private licensed research inputs, *Continuous API Management* and
+*Mastering API Architecture*, informed the gap selection only. No purchased ebook
+text, tables, diagrams, examples, taxonomy, or chapter structure is reproduced here.
+The guidance in the landscape and topology references is an original synthesis for
+this skill and should be checked against the public sources above before adoption.
