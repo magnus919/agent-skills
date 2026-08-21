@@ -3,9 +3,10 @@ name: secure-software-engineering
 description: >-
   Use when designing or implementing software securely: define security requirements,
   threat-model a feature, choose secure defaults, design authentication and authorization,
-  handle untrusted data and secrets, evaluate dependencies, or review security-sensitive
-  changes. Use for prevention during requirements, design, implementation, and review;
-  not for post-build security assessments or scanning an existing codebase.
+  handle untrusted data and secrets, evaluate dependencies, design multi-tenant trust
+  boundaries, or review security-sensitive changes. Use for prevention during
+  requirements, design, implementation, and review; not for post-build security
+  assessments or scanning an existing codebase.
 license: MIT
 compatibility: No runtime dependency. Host-neutral guidance for authorized software engineering work.
 ---
@@ -19,6 +20,10 @@ Build security into decisions before defects reach production. This is a prevent
 Use this skill to answer "How do we build this securely?" for a new feature, integration, service, API, tenant boundary, AI capability, or release. Start early and revisit affected decisions when architecture, data flows, dependencies, or threats change.
 
 Do not use it for an authorized post-build assessment: use [security-audit-methodology](../security-audit-methodology/SKILL.md). Do not use it as a vulnerability scanner for an existing codebase; use an authorized scanning tool or specialist security assessment. Use [spec-driven-development](../spec-driven-development/SKILL.md) when the task is to formalize the resulting requirements and phase gates, and [verification-methodology](../verification-methodology/SKILL.md) to make evidence-backed completion claims.
+
+## When not to use
+
+Use [multi-tenant-saas-architecture](../multi-tenant-saas-architecture/SKILL.md) for the end-to-end tenant model, control/application-plane placement, commercial lifecycle, and SaaS operating architecture; this skill owns the threat model and enforceable isolation controls. Use [capacity-and-cost-engineering](../capacity-and-cost-engineering/SKILL.md) for quantitative tenant demand, quota sizing, fairness, load/soak evidence, and unit-cost tradeoffs. Route privacy lifecycle and deletion-verification artifacts to [privacy-engineering](../privacy-engineering/SKILL.md).
 
 ## Workflow
 
@@ -41,7 +46,7 @@ Loop to the affected phase when evidence contradicts an assumption or a design c
 | Adding a key, token, credential, or signing material | [references/secrets-lifecycle.md](references/secrets-lifecycle.md) |
 | Adding, updating, building, or publishing dependencies | [references/dependency-supply-chain.md](references/dependency-supply-chain.md) |
 | Designing logs, audit events, monitoring, or forensic evidence | [references/secure-logging-audit.md](references/secure-logging-audit.md) |
-| Sharing infrastructure or data across tenants | [references/multi-tenant-isolation.md](references/multi-tenant-isolation.md) |
+| Sharing infrastructure or data across tenants, including control/application planes, tenant context, support access, or tenant lifecycle proof | [references/multi-tenant-isolation.md](references/multi-tenant-isolation.md) |
 | Reviewing a change or defining a security review gate | [references/secure-code-review.md](references/secure-code-review.md) |
 | Preparing artifacts, exceptions, rollback, or response for release | [references/release-evidence.md](references/release-evidence.md); load [release-engineering](../release-engineering/SKILL.md) to carry those controls and evidence through build, registry, promotion, and deployment gates |
 | Learning from an incident, near miss, or escaped defect | [references/incident-learning.md](references/incident-learning.md) |

@@ -1065,7 +1065,7 @@
         "./secure-software-engineering"
       ],
       "strict": false,
-      "description": "Use when designing or implementing software securely: define security requirements, threat-model a feature, choose secure defaults, design authentication and authorization, handle untrusted data and secrets, evaluate dependencies, or review security-sensitive changes. Use for prevention during requirements, design, implementation, and review; not for post-build security assessments or scanning an existing codebase."
+      "description": "Use when designing or implementing software securely: define security requirements, threat-model a feature, choose secure defaults, design authentication and authorization, handle untrusted data and secrets, evaluate dependencies, design multi-tenant trust boundaries, or review security-sensitive changes. Use for prevention during requirements, design, implementation, and review; not for post-build security assessments or scanning an existing codebase."
     },
     {
       "name": "security-audit-methodology",

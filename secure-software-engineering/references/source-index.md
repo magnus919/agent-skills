@@ -8,7 +8,7 @@ Use this manifest to select a source for a concrete decision, not to imply that 
 | NIST SSDF AI Profile | SP 800-218A Final, 2024-07 | https://doi.org/10.6028/NIST.SP.800-218A | U.S. guidance for AI development practices | Adapt lifecycle controls for AI components and suppliers. |
 | OWASP ASVS | stable 5.0.0, tag `v5.0.0_release`, 2025-05-30 | https://github.com/OWASP/ASVS/releases/tag/v5.0.0_release | Application security verification standard and control catalog | Select and test application control objectives. |
 | OWASP Top 10 | 2025 | https://owasp.org/Top10/2025/ | Awareness and risk-categorization guidance | Communicate web application risk without substituting for a threat model. |
-| OWASP API Security Top 10 | 2023 edition, verified 2026-07-13 | https://owasp.org/API-Security/editions/2023/en/0x11-t10/ | API risk-awareness guidance | Review object and function authorization, resource consumption, inventory, and third-party API use. |
+| OWASP API Security Top 10 | 2023 edition, verified 2026-07-13 | https://owasp.org/API-Security/editions/2023/en/0x11-t10/ | API risk-awareness guidance | Review object and function authorization, resource consumption, inventory, and third-party API use, including tenant context at API and event boundaries. |
 | OWASP Cheat Sheet Series | retrieved 2026-07-13 | https://cheatsheetseries.owasp.org/ | Implementation guidance | Compare framework-specific patterns after choosing a control objective. |
 | CISA Secure by Design | joint guidance, 2024 update | https://www.cisa.gov/securebydesign | Joint manufacturer guidance | Prefer secure defaults, ownership, and transparent evidence. |
 | SLSA | v1.2 | https://slsa.dev/spec/v1.2/ | Supply-chain framework | Decide what build provenance claim to seek and verify. |
@@ -16,5 +16,15 @@ Use this manifest to select a source for a concrete decision, not to imply that 
 | SPDX | 3.0.1 | https://spdx.github.io/spdx-spec/v3.0.1/ | SBOM, license, and software metadata standard | Choose interoperable component and license evidence. |
 | MITRE ATLAS | retrieved 2026-07-13 | https://atlas.mitre.org/ | AI adversary behavior taxonomy | Describe AI threat techniques; it is not exhaustive. |
 | OWASP Top 10 for Large Language Model Applications | release tag `2024`, titled `2025` | https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/releases/tag/2024 | LLM risk awareness guidance | Elicit prompt, tool, data, and model boundary risks. |
+| NIST Cybersecurity Framework | CSF 2.0, 2024-02 | https://doi.org/10.6028/NIST.CSWP.29 | Voluntary cybersecurity risk-management framework | Frame tenant-boundary ownership, protection, detection, response, and recovery evidence without treating the framework as a control checklist. |
+| NIST SP 800-57 Part 1 Rev. 5 | 2020-05 | https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final | Key-management guidance | Inform key ownership, separation, lifecycle, recovery, and destruction questions for tenant-scoped data. |
 
 When citing a control, state the decision, selected source, version, evidence, and what would falsify the claim. Do not rely on unchecked section numbers; verify them against the exact release before using them.
+
+For the multi-tenant reference, public sources are decision aids rather than a
+copied checklist. The procedure is an original synthesis organized around trust
+boundaries, resource-specific promises, abuse cases, and verification. SaaS
+architecture choices remain with `multi-tenant-saas-architecture`; quantitative
+capacity evidence remains with `capacity-and-cost-engineering`; privacy lifecycle
+artifacts remain with `privacy-engineering`; and substrate implementation remains
+with `platform-engineering`.
