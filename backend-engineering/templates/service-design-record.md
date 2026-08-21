@@ -46,6 +46,23 @@ architecture.
 |---|---|---|---|---|
 | `[fill: system]` | `[fill: sync call, webhook, queue]` | `[fill: retry/circuit breaker policy]` | `[fill: how duplicates are prevented]` | `[fill: queue limit, rate limit, load shedding]` |
 
+## Event Flow
+
+- Domain facts emitted: `[fill: meaningful completed business facts, not property changes]`
+- Unit-of-work rule: `[fill: what state and outbox records commit atomically]`
+- Outbox relay: `[fill: event identity, publish retry, crash-after-publish handling]`
+- Incoming message deduplication: `[fill: consumer identity + event identity, inbox lease/state]`
+- Handler idempotency: `[fill: repeated side effects and external-effect strategy]`
+- Retry, quarantine, and replay: `[fill: classifications, limits, operator evidence, and stop rules]`
+
+## Coexistence And Authority
+
+- Old and new paths: `[fill: adapters, selector, strangler route, or dual path]`
+- Authority by operation/data field: `[fill: exactly one authoritative writer or explain the exception]`
+- Comparison evidence: `[fill: shadow/parallel comparison, tolerance, and mismatch action]`
+- Handoff condition: `[fill: measurable evidence and owner who can transfer authority]`
+- Removal condition: `[fill: callers, queues, old writes, flags, credentials, and recovery evidence]`
+
 ## Observability
 
 - Structured logging fields: `[fill: request id, trace id, service, environment]`

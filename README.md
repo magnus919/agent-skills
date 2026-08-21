@@ -62,7 +62,7 @@ An expert-level skill for building **conversational multi-agent systems** with M
 
 ### [backend-engineering](backend-engineering/SKILL.md)
 
-Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint patterns, service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic. Do not use for frontend, data engineering, or platform infrastructure provisioning.
+Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint patterns, clean/hexagonal/layered services, event-driven handlers, outbox/inbox delivery, migration coexistence, database access, integrations, errors, and service-level testing. Language agnostic; routes API contracts, decomposition strategy, cross-system migration, data engineering, and platform provisioning to their owners.
 
 ### [binary-analysis](binary-analysis/SKILL.md)
 
