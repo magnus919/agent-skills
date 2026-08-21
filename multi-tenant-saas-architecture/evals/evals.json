@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "skill_name": "multi-tenant-saas-architecture",
+  "evals": [
+    {
+      "id": "pooled-versus-siloed-choice",
+      "prompt": "A B2B analytics SaaS wants pooled storage for most customers but promises dedicated processing to regulated enterprise tenants. Produce the architecture decision.",
+      "expected_output": "A resource-by-resource pooled, bridge, or silo comparison tied to customer promises, blast radius, operations, cost, and revisit triggers.",
+      "assertions": ["distinguishes resource classes instead of choosing one shape for the whole product", "states evidence gaps and revisit triggers", "routes isolation controls to secure-software-engineering and quantitative capacity evidence to capacity-and-cost-engineering"],
+      "files": ["references/tenancy-and-data-partitioning-models.md", "templates/tenancy-decision-record.md"],
+      "case_set": "dev"
+    },
+    {
+      "id": "control-application-planes",
+      "prompt": "Design tenant provisioning for a SaaS where an admin changes a plan and the application must enforce the new entitlement even if the provisioning worker is delayed.",
+      "expected_output": "A control/application plane design with authority, desired state, propagation freshness, stale behavior, idempotency, retries, reconciliation, and user-visible status.",
+      "assertions": ["separates lifecycle policy from application serving without requiring separate deployments", "defines stale entitlement and delayed worker behavior", "does not invent an API contract or platform implementation"],
+      "files": ["references/control-and-application-planes.md", "references/onboarding-identity-entitlements-metering-billing.md"],
+      "case_set": "dev"
+    },
+    {
+      "id": "tenant-lifecycle",
+      "prompt": "Create a lifecycle design for signup, federation, provisioning, suspension, export, deletion, and reactivation for an enterprise tenant.",
+      "expected_output": "A state-aware lifecycle with authorities, idempotency keys, failure paths, customer-visible states, evidence owners, and specialist handoffs.",
+      "assertions": ["covers onboarding through deletion and reactivation", "names retry or reconciliation behavior for asynchronous steps", "routes privacy deletion verification and identity/security controls to their owners"],
+      "files": ["references/tenant-domain-model-and-boundaries.md", "templates/tenant-lifecycle-checklist.md"],
+      "case_set": "regression"
+    },
+    {
+      "id": "entitlement-billing-handoff",
+      "prompt": "A payment provider reports a failed renewal after a tenant exceeded a usage allowance. Decide how metering, invoice authority, entitlement state, grace period, and suspension should interact.",
+      "expected_output": "An explicit usage-to-billing-to-entitlement handoff with authoritative systems, late/duplicate usage handling, disagreement policy, effective times, support override expiry, and routing of financial outcomes.",
+      "assertions": ["does not treat signup or billing as one synchronous transaction", "identifies authority when billing and entitlement disagree", "routes pricing, churn, margin, and financial outcomes to financial-modeling"],
+      "files": ["references/onboarding-identity-entitlements-metering-billing.md"],
+      "case_set": "regression"
+    },
+    {
+      "id": "partitioning-and-deletion",
+      "prompt": "Choose data partitioning for tenant records and design the architecture review for a tenant deletion request that must cover replicas, caches, search, logs, backups, and derived data.",
+      "expected_output": "A partitioning choice with tenant authority, resource boundaries, deletion dependencies, verification evidence, and explicit privacy/data/security handoffs.",
+      "assertions": ["enumerates primary and derived data boundaries beyond the main database", "requires verifiable deletion rather than policy-only claims", "routes storage design to data-architect and privacy requirements to privacy-engineering"],
+      "files": ["references/tenancy-and-data-partitioning-models.md", "references/tenant-aware-operations-capacity-and-cost.md"],
+      "case_set": "regression"
+    },
+    {
+      "id": "tenant-aware-restore",
+      "prompt": "A single tenant corrupted data in a pooled service. Compare tenant-scoped, partition-scoped, and service-wide restore options and define the reopen gate.",
+      "expected_output": "A restore decision based on authority, blast radius, ordering, derived-data reconciliation, customer impact, and a tested recovery handoff.",
+      "assertions": ["compares restore scope rather than assuming tenant-scoped restore is possible", "requires reconciliation before reopening traffic", "routes recovery execution to migration-engineering or resilience-and-recovery as appropriate"],
+      "files": ["references/tenant-aware-operations-capacity-and-cost.md", "templates/saas-architecture-brief.md"],
+      "case_set": "release"
+    },
+    {
+      "id": "hot-tenant-noisy-neighbor",
+      "prompt": "One tenant generates ten times the normal queue and storage load. Design the architecture response while preserving service promises for other tenants.",
+      "expected_output": "Tenant-aware detection, fairness boundary, mitigation choices, customer communication, tier implications, and measured evidence plan with specialist routing.",
+      "assertions": ["distinguishes hot-tenant detection from generic fleet averages", "covers queues, storage, cache, background work, or other relevant resource boundaries", "routes load evidence and unit cost to capacity-and-cost-engineering and implementation to platform-engineering"],
+      "files": ["references/tenant-aware-operations-capacity-and-cost.md", "references/tenancy-and-data-partitioning-models.md"],
+      "case_set": "release"
+    },
+    {
+      "id": "near-boundary-routing",
+      "prompt": "For a multi-tenant product, separately classify these requests: write an OpenAPI contract, threat-model tenant isolation, calculate gross margin by tier, size a load test, provision Kubernetes namespaces, implement a tenant middleware, migrate a tenant between databases, design a data retention verification plan, and choose a target architecture.",
+      "expected_output": "A concise routing table that keeps SaaS architecture as the coordinator while sending each specialist task to its named owner.",
+      "assertions": ["routes API contracts to api-design-and-evolution", "routes threat modeling to secure-software-engineering", "routes gross margin to financial-modeling and load sizing to capacity-and-cost-engineering", "routes Kubernetes provisioning to platform-engineering and middleware implementation to backend-engineering", "routes tenant migration to migration-engineering, retention verification to privacy-engineering, and general target architecture to software-architecture"],
+      "files": ["SKILL.md"],
+      "case_set": "regression"
+    }
+  ]
+}
