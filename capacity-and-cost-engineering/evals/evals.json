@@ -74,6 +74,70 @@
         "The response explicitly states that cost optimization must not justify degrading reliability, privacy, or user outcomes, and that if budget is exceeded the tradeoff is escalated",
         "The corrected calculation includes an owner and states what evidence is needed to validate it"
       ]
+    },
+    {
+      "id": "tenant-demand-distribution",
+      "prompt": "A shared document-processing SaaS serves 4,000 tenants. The average tenant submits 2 jobs per minute, but 2% of tenants generate 45% of jobs and a few tenants concentrate work on one partition. We need a six-month capacity model and guidance on what evidence is required before promising a new enterprise tier.",
+      "expected_output": "A tenant-aware capacity model that preserves the demand distribution instead of using the fleet average. It identifies hot tenants and partition skew separately, describes tenant profiles and burst shape, maps the profiles to the saturating resource, and compares ordinary and hot-tenant scenarios. It states that the enterprise promise must be translated into measurable capacity behavior, with a contextual quota/admission and fairness policy. It requires representative concurrent per-tenant load and soak evidence, including hot and skewed profiles, and labels unmeasured assumptions and owners. It routes tenant semantics and tier architecture to multi-tenant-saas-architecture, isolation controls to secure-software-engineering, SLO ownership to site-reliability-engineering, and implementation to platform-engineering.",
+      "assertions": [
+        "The output models tenant demand as a distribution and does not rely on the average tenant",
+        "Hot-tenant behavior and partition skew are analyzed as distinct capacity risks",
+        "The enterprise promise is translated into measurable capacity behavior with contextual quota or admission decisions",
+        "Representative concurrent per-tenant load and soak evidence is required before the capacity promise is accepted",
+        "Missing data is labeled as an assumption or evidence gap with an owner",
+        "Neighboring SaaS, security, SRE, and platform ownership boundaries are explicit"
+      ]
+    },
+    {
+      "id": "pooled-versus-siloed-headroom",
+      "prompt": "We are deciding whether to keep a large tenant in a pooled worker fleet, give it a dedicated silo, or use a hybrid placement. The pooled fleet has lower idle cost but shows queue spikes when the tenant bursts. The silo adds fixed capacity and another failure-domain obligation. Produce an evidence-based comparison without prescribing a universal utilization or headroom percentage.",
+      "expected_output": "A comparison of pooled, siloed, and hybrid choices across ordinary load, burst, tenant growth or movement, and failure-domain loss. It separates baseline, variable demand, shared contention, idle capacity, redundancy, and operational overhead. It explains what headroom protects, the provisioning lead time, observed saturation behavior, and the cost of unused capacity rather than using a universal percentage. It defines the load and soak scenarios needed to compare user outcomes, queueing, recovery, and cost, with a named decision owner and unresolved assumptions.",
+      "assertions": [
+        "Pooled, siloed, and hybrid options are compared across burst and failure-domain scenarios",
+        "Baseline, variable demand, idle capacity, redundancy, and operational overhead are separated",
+        "Headroom is justified by workload, saturation evidence, and provisioning lead time rather than a universal percentage",
+        "The evidence plan includes representative tenant load and soak behavior and cost inputs",
+        "The decision has an owner and explicit assumptions or gaps"
+      ]
+    },
+    {
+      "id": "tenant-admission-fairness",
+      "prompt": "One premium tenant is allowed large bursts on a shared search service. During those bursts, standard tenants see elevated P99 latency and queue depth. Define quotas, admission control, and fairness evidence while preserving the premium contract and avoiding a universal fairness ratio.",
+      "expected_output": "A contextual policy that identifies the search resource and affected tenants, translates each tier promise into steady and burst behavior, and chooses an explicit admission response such as weighted scheduling, reserved capacity, bounded queues, or throttling. It states what happens to the constrained tenant and protected tenants, how retry amplification is prevented, and how recovery is verified. It does not claim a universal fairness ratio or threshold; each limit is justified by the contract, workload, SLO impact, and observed evidence. It requires a tenant-distributed load/soak test and routes security controls and infrastructure configuration to their owners.",
+      "assertions": [
+        "The policy identifies the shared resource, affected tenants, and tier-specific steady and burst promises",
+        "Quota and admission behavior is operationally specific and includes the response for both constrained and protected tenants",
+        "Retry amplification, queue bounds, and recovery verification are addressed",
+        "Fairness is contextual and no universal fairness ratio or threshold is prescribed",
+        "Tenant-distributed load and soak evidence is required",
+        "Security-control and infrastructure-implementation boundaries are preserved"
+      ]
+    },
+    {
+      "id": "tenant-variable-unit-cost",
+      "prompt": "Our multi-tenant analytics service costs $90,000 per month. $35,000 is the minimum shared platform baseline, $25,000 is storage and transfer that can be measured by tenant, and $30,000 is pooled compute. Enterprise tenants run expensive scheduled queries while self-serve tenants mostly run small interactive queries. Design a tenant-variable unit-cost model that does not pretend every tenant consumes an equal share.",
+      "expected_output": "A unit-cost model that separates platform baseline and measured tenant-variable storage/transfer from pooled compute; defines a transparent allocation method for the pooled compute; segments interactive and scheduled query demand; and reports tenant or profile-level direct, allocated, and marginal cost with aligned periods and denominators. It explains how idle capacity, shared control-plane work, redundancy, and fixed commitments are treated. It routes pricing and margin decisions to financial-modeling and implementation of cost tags or resource policy to platform-engineering. It names evidence needed to validate attribution, including representative tenant load/soak data, and does not infer commercial profitability from technical cost alone.",
+      "assertions": [
+        "The response separates the $35,000 baseline from tenant-variable storage and transfer costs, with an explicit allocation method for the $30,000 pooled-compute pool",
+        "Pooled compute allocation is explicit and does not assume equal tenant consumption",
+        "Interactive and scheduled query units are segmented rather than averaged together",
+        "Periods and demand denominators align and direct, allocated, and marginal views are distinguished",
+        "Fixed, idle, shared, and redundancy costs are treated explicitly",
+        "Financial outcomes and infrastructure implementation are routed to their specialist owners",
+        "Evidence needed to validate tenant attribution is named"
+      ]
+    },
+    {
+      "id": "tenant-boundary-routing",
+      "prompt": "A product team asks for an end-to-end multi-tenant SaaS architecture, including tenant identity, control-plane boundaries, data partitioning, entitlements, billing, isolation, capacity, and cost. Explain which parts capacity-and-cost-engineering should own and which should be handed to neighboring skills.",
+      "expected_output": "A routing response that keeps capacity-and-cost-engineering focused on measured tenant demand distributions, hot tenants, partition skew, pooled or siloed headroom, tier-linked quotas and admission, fairness evidence, shared-cost allocation, tenant-variable unit cost, and representative load/soak evidence. It routes tenant semantics, control/application planes, partitioning architecture, lifecycle, entitlements, and billing handoffs to multi-tenant-saas-architecture; threat controls to secure-software-engineering; pricing and financial outcomes to financial-modeling; infrastructure implementation to platform-engineering; SLOs and live operations to site-reliability-engineering; demand instrumentation to product-analytics-and-measurement; and general architecture decisions to software-architecture. It does not duplicate those methods.",
+      "assertions": [
+        "Capacity-and-cost ownership is limited to tenant capacity and cost evidence rather than end-to-end SaaS architecture",
+        "The response routes tenant semantics, planes, lifecycle, entitlements, and billing to multi-tenant-saas-architecture",
+        "Security, financial, platform, SRE, analytics, and general architecture boundaries are all named",
+        "Representative per-tenant load and soak evidence remains owned by capacity-and-cost-engineering",
+        "The response avoids duplicating neighboring methodologies"
+      ]
     }
   ]
 }

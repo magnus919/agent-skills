@@ -6,21 +6,24 @@ Connect demand, performance, reliability, and spend into defensible capacity and
 
 Every service that serves users has a capacity limit and a cost. When your agent can model capacity, calculate unit cost, define budget controls, and require load-test evidence for capacity claims, it stops treating infrastructure as "someone else's problem" and starts making decisions that respect real-world constraints. This skill fills the gap between the financial team's P&L models (which don't know what a request costs in compute) and the platform team's infrastructure-as-code (which doesn't know why a specific SLO target was chosen or what it costs).
 
-After installing this skill, your agent can: project capacity from growth forecasts with utilization targets and scaling triggers; calculate what one request or one user costs to serve at the infrastructure level; define budget thresholds with operational consequences (alert, throttle, deny); design load and soak tests as mandatory capacity evidence — not optional nice-to-haves; and resolve SLO-cost tradeoffs with explicit evidence, ownership, and accountability. When a product manager asks "what would it cost to serve 2x the users?", your agent has a structured answer instead of a guess.
+After installing this skill, your agent can: project capacity from growth forecasts with utilization targets and scaling triggers; model multi-tenant demand distributions, hot tenants, partition skew, and pooled versus siloed headroom; connect tier promises to quotas, admission, and contextual fairness evidence; calculate platform baseline, tenant-variable, and allocated unit cost; define budget thresholds with operational consequences (alert, throttle, deny); design representative per-tenant load and soak tests as mandatory capacity evidence; and resolve SLO-cost tradeoffs with explicit evidence, ownership, and accountability.
 
 ## What You Get
 
 | Directory | What it provides |
 |-----------|-----------------|
-| `SKILL.md` | Core methodology: connected dimensions (demand/performance/reliability/spend), working method with five steps, four named scenarios (growth, peak, degraded, cost-constrained), routing table to adjacent skills, and guardrails against generic cloud-cost tips and universal utilization targets |
+| `SKILL.md` | Core methodology: connected dimensions (demand/performance/reliability/spend), multi-tenant loading route, working method with five steps, four named scenarios, routing table to adjacent skills, and guardrails against generic cloud-cost tips and universal thresholds |
 | `README.md` | This human-facing overview |
-| `references/discovery-brief.md` | Ownership boundary analysis comparing seven adjacent skills (financial-modeling, platform-engineering, site-reliability-engineering, product-analytics-and-measurement, production-readiness, product-roadmapping-and-portfolio, resilience-and-recovery) with explicit routing decisions |
+| `references/discovery-brief.md` | Ownership boundary analysis for financial, platform, SRE, analytics, SaaS architecture, security, software architecture, readiness, roadmap, and recovery concerns |
+| `references/multi-tenant-capacity-and-unit-cost.md` | Original method for tenant distributions, hot tenants, partition skew, pooled/siloed headroom, tier promises, admission, fairness evidence, shared-cost allocation, and tenant-variable unit cost |
+| `references/source-index.md` | Public provenance and transformation boundary |
 | `templates/capacity-model.md` | Fillable capacity model: demand assumptions, capacity-unit mapping, utilization targets with rationale, scaling triggers, evidence sources, ownership, and tradeoffs |
 | `templates/unit-economics-record.md` | Fillable unit-economics record: unit definition, cost numerator with allocation method, demand denominator, unit-cost calculation formula, cost-per-SLO comparison, and structured assumptions/evidence/ownership/tradeoffs fields |
 | `templates/load-soak-test-plan.md` | Fillable load/soak test plan: objective, target throughput, duration, environment requirements, success criteria (latency percentiles, error rate, utilization), data collection, and evidence record |
 | `templates/budget-quota-decision.md` | Fillable budget/quota decision: budget owner, period, thresholds (alert/soft/hard), quota/rate-limit configuration, enforcement mechanism, operational behavior at each threshold, cost attribution, and approval |
 | `templates/slo-cost-tradeoff-record.md` | Fillable SLO-cost tradeoff record: SLO under discussion, current and projected cost, alternative SLO comparison, degradation path, error budget impact, accountable owner, and approval |
-| `evals/evals.json` | Five output-quality evaluation cases covering growth forecast, peak event, SLO-cost conflict, quota decision, and misleading unit-cost calculation |
+| `templates/tenant-capacity-model.md` | Fillable tenant capacity and unit-cost model covering profiles, skew, pooled/siloed comparison, quotas, fairness, cost allocation, and representative per-tenant load/soak evidence |
+| `evals/evals.json` | Ten output-quality evaluation cases covering general capacity/cost decisions plus tenant distributions, pooled/siloed headroom, fairness, tenant-variable cost, and routing boundaries |
 
 ## Quick Start
 
@@ -39,6 +42,7 @@ Load this skill when the task involves:
 - Planning or reviewing a load or soak test as capacity evidence
 - Resolving an SLO-cost tradeoff or cost-constrained reliability decision
 - Reviewing a cost anomaly or attributing cost to services/teams
+- Modeling multi-tenant demand distributions, hot tenants, partition skew, quotas, fairness, pooled/siloed headroom, or tenant-variable unit cost
 
 ## Requirements
 
