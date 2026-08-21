@@ -3,7 +3,7 @@
   "owner": {
     "name": "Magnus Hedemark"
   },
-  "description": "AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems.",
+  "description": "AI agent skills \u2014 reusable workflows, protocols, and knowledge packs for agentic systems.",
   "plugins": [
     {
       "name": "actuarial-risk-modeling",
@@ -57,7 +57,7 @@
         "./agent-production-operations"
       ],
       "strict": false,
-      "description": "Operate an evaluated agent with tools and authority in production through a runtime control plane covering versioning, staged rollout, fallback, cost and latency budgets, tool health, human escalation, disablement, and trace-to-eval feedback. Do not use for building agents, designing evals, or general release, SRE, security, or platform engineering — those methods stay with their specialist skills."
+      "description": "Operate an evaluated agent with tools and authority in production through a runtime control plane covering versioning, staged rollout, fallback, cost and latency budgets, tool health, human escalation, disablement, and trace-to-eval feedback. Do not use for building agents, designing evals, or general release, SRE, security, or platform engineering \u2014 those methods stay with their specialist skills."
     },
     {
       "name": "agent-skills",
@@ -75,7 +75,7 @@
         "./ai-governance"
       ],
       "strict": false,
-      "description": "Design and operate an organization's AI governance system: define governance principles, operating models and decision rights, risk frameworks, lifecycle gates, and fairness, transparency, privacy, security, regulatory, and board-oversight controls. Use when standing up a governance program, tiering AI use-case risk, reviewing an LLM or agent system for governance and safety gaps, mapping a regulation to a compliance plan, scoring governance maturity, or preparing board reporting. Do not use for interpreting regulations as legal advice (route to legal-strategy), data-governance mechanics (data-architect/data-engineering), or implementing application security (secure-software-engineering)."
+      "description": "Design and operate an organization's AI governance system: define governance principles, operating models and decision rights, risk frameworks, lifecycle gates, and fairness, transparency, privacy, security, regulatory, and board-oversight controls. Use when standing up a governance program, tiering AI use-case risk, reviewing an LLM or agent system for governance and safety gaps, mapping a regulation to a compliance plan, scoring governance maturity, or preparing board reporting. For regulated life-sciences use cases, also cover GxP, ALCOA+, data integrity, electronic records, validation/assurance, and QMS interfaces. Do not use for interpreting regulations as legal advice (route to legal-strategy), data-governance mechanics (data-architect/data-engineering), or implementing application security (secure-software-engineering)."
     },
     {
       "name": "anydoc",
@@ -129,7 +129,7 @@
         "./backend-engineering"
       ],
       "strict": false,
-      "description": "Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint patterns, service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic. Do not use for frontend, data engineering, or platform infrastructure provisioning."
+      "description": "Design and implement backend services and APIs \u2014 REST, gRPC, GraphQL endpoint patterns, service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic. Do not use for frontend, data engineering, or platform infrastructure provisioning."
     },
     {
       "name": "binary-analysis",
@@ -138,7 +138,7 @@
         "./binary-analysis"
       ],
       "strict": false,
-      "description": "Analyze unknown binary files through a deterministic CLI that wraps Ghidra's static-analysis engine. Use when you need to inspect a PE, ELF, or Mach-O file — triage suspicious binaries, map imported APIs, decompile functions, trace call paths, or produce structured evidence reports. Do not use for runtime analysis (debugging, dynamic tracing, sandbox execution), for modifying or patching binaries, or for binaries you already know everything about. The skill owns planning, hypothesis formation, and evidence synthesis; the CLI owns all deterministic operations."
+      "description": "Analyze unknown binary files through a deterministic CLI that wraps Ghidra's static-analysis engine. Use when you need to inspect a PE, ELF, or Mach-O file \u2014 triage suspicious binaries, map imported APIs, decompile functions, trace call paths, or produce structured evidence reports. Do not use for runtime analysis (debugging, dynamic tracing, sandbox execution), for modifying or patching binaries, or for binaries you already know everything about. The skill owns planning, hypothesis formation, and evidence synthesis; the CLI owns all deterministic operations."
     },
     {
       "name": "brand-designer",
@@ -147,7 +147,7 @@
         "./brand-designer"
       ],
       "strict": false,
-      "description": "Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Use when you need to capture a brand's identity in structured, durable form — for vault storage, agency handoff, or press kit distribution."
+      "description": "Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Use when you need to capture a brand's identity in structured, durable form \u2014 for vault storage, agency handoff, or press kit distribution."
     },
     {
       "name": "c4-diagramming",
@@ -165,7 +165,7 @@
         "./capacity-and-cost-engineering"
       ],
       "strict": false,
-      "description": "Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Use when projecting capacity from growth forecasts, sizing for peak events, designing cost-aware scaling policies, defining budget thresholds or quota/rate-limit enforcement, running or planning load/soak tests as capacity evidence, or resolving SLO-cost tradeoffs. Do NOT use for financial P&L statements, fundraising scenarios, or SaaS metrics (route to financial-modeling); for infrastructure implementation or cloud-resource provisioning (route to platform-engineering); or for generic cloud-cost tips and universal utilization targets — this skill does not prescribe fixed savings rates or one-size-fits-all thresholds."
+      "description": "Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Use when projecting capacity from growth forecasts, sizing for peak events, designing cost-aware scaling policies, defining budget thresholds or quota/rate-limit enforcement, running or planning load/soak tests as capacity evidence, or resolving SLO-cost tradeoffs. Do NOT use for financial P&L statements, fundraising scenarios, or SaaS metrics (route to financial-modeling); for infrastructure implementation or cloud-resource provisioning (route to platform-engineering); or for generic cloud-cost tips and universal utilization targets \u2014 this skill does not prescribe fixed savings rates or one-size-fits-all thresholds."
     },
     {
       "name": "chief-of-staff-methodology",
@@ -210,7 +210,7 @@
         "./conditional-customer-success"
       ],
       "strict": false,
-      "description": "Guide recurring human-relationship practices — success plans, health evidence, renewal and expansion signals, QBRs, handoffs, escalation, and closed-loop Voice of Customer. Do not use this skill for products without accounts, renewals, QBRs, or a customer-success team, including some internal tools, pure transactional products without recurring relationships, and public services without account-based engagement. Load only when the product context includes a recurring human relationship; decline or route away otherwise."
+      "description": "Guide recurring human-relationship practices \u2014 success plans, health evidence, renewal and expansion signals, QBRs, handoffs, escalation, and closed-loop Voice of Customer. Do not use this skill for products without accounts, renewals, QBRs, or a customer-success team, including some internal tools, pure transactional products without recurring relationships, and public services without account-based engagement. Load only when the product context includes a recurring human relationship; decline or route away otherwise."
     },
     {
       "name": "confluence-cli",
@@ -237,7 +237,7 @@
         "./crm"
       ],
       "strict": false,
-      "description": "Operate HubSpot CRM from a terminal or agent: list and search contact records, view deal pipeline stages, and — with explicit confirmation — move deals between stages, backed by a bundled crm-cli script that is read-only by default and gates every stage change behind a --dry-run/--yes confirmation. Use when an agent needs to answer questions about contacts or deals, produce pipeline views, or apply a confirmed stage change. Do not use for building HubSpot apps or workflow automations (that is HubSpot app development), marketing/sequence automation, or other CRMs like Salesforce (that is their own tooling)."
+      "description": "Operate HubSpot CRM from a terminal or agent: list and search contact records, view deal pipeline stages, and \u2014 with explicit confirmation \u2014 move deals between stages, backed by a bundled crm-cli script that is read-only by default and gates every stage change behind a --dry-run/--yes confirmation. Use when an agent needs to answer questions about contacts or deals, produce pipeline views, or apply a confirmed stage change. Do not use for building HubSpot apps or workflow automations (that is HubSpot app development), marketing/sequence automation, or other CRMs like Salesforce (that is their own tooling)."
     },
     {
       "name": "crowdsec",
@@ -246,7 +246,7 @@
         "./crowdsec"
       ],
       "strict": false,
-      "description": "Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF. Covers Security Engine setup (Linux, Docker), cscli hub management, remediation components, AppSec WAF, profiles, notifications, blocklists, CTI, and metrics. Use when setting up or troubleshooting CrowdSec."
+      "description": "Deploy, configure, and manage CrowdSec \u2014 the open-source, collaborative IPS/IDPS/WAF. Covers Security Engine setup (Linux, Docker), cscli hub management, remediation components, AppSec WAF, profiles, notifications, blocklists, CTI, and metrics. Use when setting up or troubleshooting CrowdSec."
     },
     {
       "name": "cyberpunk",
@@ -291,7 +291,7 @@
         "./data-engineering"
       ],
       "strict": false,
-      "description": "Design and operate data infrastructure — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Do not use for statistical analysis or ML model development."
+      "description": "Design and operate data infrastructure \u2014 database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Do not use for statistical analysis or ML model development."
     },
     {
       "name": "data-scientist",
@@ -354,7 +354,7 @@
         "./dspy"
       ],
       "strict": false,
-      "description": "Expert skill for programming—not prompting—language models with Stanford's DSPy framework. Signatures, modules (Predict, ChainOfThought, ReAct), optimizer/teleprompter selection, compilation, caching, evaluation. Use when doing programmatic prompt optimization or building compiled prompt programs."
+      "description": "Expert skill for programming\u2014not prompting\u2014language models with Stanford's DSPy framework. Signatures, modules (Predict, ChainOfThought, ReAct), optimizer/teleprompter selection, compilation, caching, evaluation. Use when doing programmatic prompt optimization or building compiled prompt programs."
     },
     {
       "name": "email",
@@ -363,7 +363,7 @@
         "./email"
       ],
       "strict": false,
-      "description": "Send and diagnose transactional email through Twilio SendGrid from a terminal or agent: send messages, check deliverability (bounces and spam reports), and verify Signed Event Webhook signatures (ECDSA P-256) — with a bundled email-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to send a transactional email, triage bounces or spam complaints, or confirm an inbound SendGrid webhook is authentic. Do not use for marketing or bulk email campaigns (that is SendGrid Marketing Campaigns), building email template systems, or other email providers (that is their own tooling)."
+      "description": "Send and diagnose transactional email through Twilio SendGrid from a terminal or agent: send messages, check deliverability (bounces and spam reports), and verify Signed Event Webhook signatures (ECDSA P-256) \u2014 with a bundled email-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to send a transactional email, triage bounces or spam complaints, or confirm an inbound SendGrid webhook is authentic. Do not use for marketing or bulk email campaigns (that is SendGrid Marketing Campaigns), building email template systems, or other email providers (that is their own tooling)."
     },
     {
       "name": "epub",
@@ -372,7 +372,7 @@
         "./epub"
       ],
       "strict": false,
-      "description": "EPUB file format expert — read, write, and edit EPUB2/EPUB3 ebooks. Extract text, metadata, structure, and knowledge from EPUB files for enrichment or memory. Create valid EPUBs from scratch. Validate against the EPUB specification. Use when the user mentions epub, ebook, EPUB file, ebook format, read epub, write epub, create ebook, extract from epub, epub to text, or ebook structure."
+      "description": "EPUB file format expert \u2014 read, write, and edit EPUB2/EPUB3 ebooks. Extract text, metadata, structure, and knowledge from EPUB files for enrichment or memory. Create valid EPUBs from scratch. Validate against the EPUB specification. Use when the user mentions epub, ebook, EPUB file, ebook format, read epub, write epub, create ebook, extract from epub, epub to text, or ebook structure."
     },
     {
       "name": "esp32-development",
@@ -444,7 +444,7 @@
         "./frontend-engineering"
       ],
       "strict": false,
-      "description": "Build and maintain web frontends — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation. Do not use for backend service implementation, data engineering, or platform infrastructure work."
+      "description": "Build and maintain web frontends \u2014 component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation. Do not use for backend service implementation, data engineering, or platform infrastructure work."
     },
     {
       "name": "genius-life",
@@ -462,7 +462,7 @@
         "./ghost-cli"
       ],
       "strict": false,
-      "description": "Manage Ghost CMS content from the terminal — create and list posts, pages, and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration."
+      "description": "Manage Ghost CMS content from the terminal \u2014 create and list posts, pages, and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration."
     },
     {
       "name": "github-runner",
@@ -480,7 +480,7 @@
         "./go-to-market"
       ],
       "strict": false,
-      "description": "Plan and execute go-to-market strategy — positioning and messaging frameworks (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), and competitive response (pricing wars, feature races, brand defense). Do not use for sales execution and pipeline management, product strategy, or visual brand identity design."
+      "description": "Plan and execute go-to-market strategy \u2014 positioning and messaging frameworks (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), and competitive response (pricing wars, feature races, brand defense). Do not use for sales execution and pipeline management, product strategy, or visual brand identity design."
     },
     {
       "name": "grafana",
@@ -516,7 +516,7 @@
         "./hugo-theme"
       ],
       "strict": false,
-      "description": "Build, customize, and debug advanced Hugo CMS themes — template architecture, asset pipeline (CSS/JS/image processing), shortcodes and render hooks, page bundles, cover images, Hugo Modules, performance, SEO, and CI/CD. Use when working on a Hugo theme or site template layer."
+      "description": "Build, customize, and debug advanced Hugo CMS themes \u2014 template architecture, asset pipeline (CSS/JS/image processing), shortcodes and render hooks, page bundles, cover images, Hugo Modules, performance, SEO, and CI/CD. Use when working on a Hugo theme or site template layer."
     },
     {
       "name": "implementation-planning",
@@ -525,7 +525,7 @@
         "./implementation-planning"
       ],
       "strict": false,
-      "description": "Plan the implementation of an approved requirement or specification: produce an executable, dependency-aware delivery plan covering work breakdown, dependency mapping, critical path, ownership, parallelism and sequencing, rollout strategy, rollback and recovery paths, and verification against the original requirement. Supports cross-team, cross-repository, migration, and staged-rollout scenarios. Do not use for pre-approval discovery or needs-finding, authoring a specification from scratch, coding or implementation, the neckbeard issue-to-PR delivery flow itself, or any work whose prerequisite decision has not been approved — planning unapproved work is an explicit stop condition."
+      "description": "Plan the implementation of an approved requirement or specification: produce an executable, dependency-aware delivery plan covering work breakdown, dependency mapping, critical path, ownership, parallelism and sequencing, rollout strategy, rollback and recovery paths, and verification against the original requirement. Supports cross-team, cross-repository, migration, and staged-rollout scenarios. Do not use for pre-approval discovery or needs-finding, authoring a specification from scratch, coding or implementation, the neckbeard issue-to-PR delivery flow itself, or any work whose prerequisite decision has not been approved \u2014 planning unapproved work is an explicit stop condition."
     },
     {
       "name": "incident-learning",
@@ -534,7 +534,7 @@
         "./incident-learning"
       ],
       "strict": false,
-      "description": "Convert operational incident and near-miss evidence into durable product, engineering, test, evaluation, and governance improvements with verified closure. Separate observed facts from causal hypotheses and unresolved uncertainty; map follow-up work across code, tests, skills, operations, product, and governance; track ownership, verification, and closure for every finding. Do not use to assign blame or produce a generic postmortem template; do not close learning because tickets were created — require evidence the intended change occurred."
+      "description": "Convert operational incident and near-miss evidence into durable product, engineering, test, evaluation, and governance improvements with verified closure. Separate observed facts from causal hypotheses and unresolved uncertainty; map follow-up work across code, tests, skills, operations, product, and governance; track ownership, verification, and closure for every finding. Do not use to assign blame or produce a generic postmortem template; do not close learning because tickets were created \u2014 require evidence the intended change occurred."
     },
     {
       "name": "jellyfin-cli",
@@ -543,7 +543,7 @@
         "./jellyfin-cli"
       ],
       "strict": false,
-      "description": "Query your Jellyfin media server from the terminal — recently added media, search, item details, next-up episodes, library browsing, server info, and stats. Use when the user asks about Jellyfin, media server, movies, TV shows, next episodes, or their media library."
+      "description": "Query your Jellyfin media server from the terminal \u2014 recently added media, search, item details, next-up episodes, library browsing, server info, and stats. Use when the user asks about Jellyfin, media server, movies, TV shows, next episodes, or their media library."
     },
     {
       "name": "jira-cli",
@@ -588,7 +588,7 @@
         "./langchain"
       ],
       "strict": false,
-      "description": "Expert skill for building LLM applications with LangChain — LCEL chains, RAG pipelines, agent orchestration, LangGraph integration, LangSmith observability, and production deployment via LangServe. Use when working with LangChain or comparing LLM application frameworks."
+      "description": "Expert skill for building LLM applications with LangChain \u2014 LCEL chains, RAG pipelines, agent orchestration, LangGraph integration, LangSmith observability, and production deployment via LangServe. Use when working with LangChain or comparing LLM application frameworks."
     },
     {
       "name": "langgraph",
@@ -597,7 +597,7 @@
         "./langgraph"
       ],
       "strict": false,
-      "description": "Build multi-agent AI systems with LangGraph — the low-level orchestration framework for stateful, graph-based agent workflows. Covers supervisor, swarm, and hierarchical multi-agent patterns; subgraph composition; state management (checkpointers/stores); persistence; evals; and production debugging. Reach for this when designing agent architectures that need cycles, conditional branching, parallel execution, or human-in-the-loop patterns."
+      "description": "Build multi-agent AI systems with LangGraph \u2014 the low-level orchestration framework for stateful, graph-based agent workflows. Covers supervisor, swarm, and hierarchical multi-agent patterns; subgraph composition; state management (checkpointers/stores); persistence; evals; and production debugging. Reach for this when designing agent architectures that need cycles, conditional branching, parallel execution, or human-in-the-loop patterns."
     },
     {
       "name": "lastfm",
@@ -615,7 +615,7 @@
         "./legal-strategy"
       ],
       "strict": false,
-      "description": "CLO/General Counsel methodology — regulatory landscape analysis (GDPR, CCPA, AI Act, sector-specific), IP strategy (patent, trademark, trade secret, open source licensing), contract risk assessment (indemnification, liability caps, force majeure), data privacy frameworks (privacy-by-design, DPIAs, data mapping), corporate governance (board responsibilities, fiduciary duties, shareholder rights), employment law (classification, IP assignment, non-competes)."
+      "description": "CLO/General Counsel methodology \u2014 regulatory landscape analysis (GDPR, CCPA, AI Act, sector-specific), IP strategy (patent, trademark, trade secret, open source licensing), contract risk assessment (indemnification, liability caps, force majeure), data privacy frameworks (privacy-by-design, DPIAs, data mapping), corporate governance (board responsibilities, fiduciary duties, shareholder rights), employment law (classification, IP assignment, non-competes)."
     },
     {
       "name": "life-coach",
@@ -651,7 +651,7 @@
         "./llamaindex"
       ],
       "strict": false,
-      "description": "Expert skill for building LLM applications with the LlamaIndex framework — RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge graph construction, production deployment, and evaluation. Use when working with LlamaIndex or comparing RAG and agent orchestration frameworks."
+      "description": "Expert skill for building LLM applications with the LlamaIndex framework \u2014 RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge graph construction, production deployment, and evaluation. Use when working with LlamaIndex or comparing RAG and agent orchestration frameworks."
     },
     {
       "name": "mermaid-diagrams",
@@ -678,7 +678,7 @@
         "./migration-engineering"
       ],
       "strict": false,
-      "description": "Plan and execute safe cross-system migrations — schema, data, API, infrastructure, and service — with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Covers expand/contract, reversible and irreversible recovery paths, migration observability, correctness evidence, ownership, and customer impact. Do not use for single-technology quick fixes, tool-specific how-to guides, or migrations whose scope does not cross a system boundary; do not prescribe one migration technology or claim rollback is always possible."
+      "description": "Plan and execute safe cross-system migrations \u2014 schema, data, API, infrastructure, and service \u2014 with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Covers expand/contract, reversible and irreversible recovery paths, migration observability, correctness evidence, ownership, and customer impact. Do not use for single-technology quick fixes, tool-specific how-to guides, or migrations whose scope does not cross a system boundary; do not prescribe one migration technology or claim rollback is always possible."
     },
     {
       "name": "ml-engineering",
@@ -687,7 +687,7 @@
         "./ml-engineering"
       ],
       "strict": false,
-      "description": "Plan and execute production ML engineering work — model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
+      "description": "Plan and execute production ML engineering work \u2014 model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
     },
     {
       "name": "mobile-development",
@@ -696,7 +696,7 @@
         "./mobile-development"
       ],
       "strict": false,
-      "description": "Build, test, sign, and ship mobile apps across iOS, Android, Flutter, and React Native — project scaffolding, builds and code signing, device and emulator testing, store submission (App Store and Play Store), app lifecycle and backgrounding, offline and sync, and mobile-specific testing. Use when the task involves creating, building, testing, or shipping a mobile app for iOS or Android, or reasoning about mobile behavior such as background execution, push notifications, offline storage, and data sync. Do not use for web frontend work (that is frontend-engineering), backend services and APIs (that is backend-engineering), or desktop and web platform targets outside the iOS and Android scope."
+      "description": "Build, test, sign, and ship mobile apps across iOS, Android, Flutter, and React Native \u2014 project scaffolding, builds and code signing, device and emulator testing, store submission (App Store and Play Store), app lifecycle and backgrounding, offline and sync, and mobile-specific testing. Use when the task involves creating, building, testing, or shipping a mobile app for iOS or Android, or reasoning about mobile behavior such as background execution, push notifications, offline storage, and data sync. Do not use for web frontend work (that is frontend-engineering), backend services and APIs (that is backend-engineering), or desktop and web platform targets outside the iOS and Android scope."
     },
     {
       "name": "neckbeard",
@@ -705,7 +705,7 @@
         "./neckbeard"
       ],
       "strict": false,
-      "description": "Use when asked to fix, build, refactor, review, verify, or release software and the work is non-trivial — including delivering a change request (issue, ticket, or request) from intake through planning, gates, implementation, review, verified PR, and authorized post-merge release. neckbeard routes the change through framing, discovery, design, implementation, review, verification, delivery, and learning — choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger. For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates, delivery packet, and lifecycle integration. Composes specialist catalog skills rather than replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory."
+      "description": "Use when asked to fix, build, refactor, review, verify, or release software and the work is non-trivial \u2014 including delivering a change request (issue, ticket, or request) from intake through planning, gates, implementation, review, verified PR, and authorized post-merge release. neckbeard routes the change through framing, discovery, design, implementation, review, verification, delivery, and learning \u2014 choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger. For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates, delivery packet, and lifecycle integration. Composes specialist catalog skills rather than replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory."
     },
     {
       "name": "notion",
@@ -714,7 +714,7 @@
         "./notion"
       ],
       "strict": false,
-      "description": "Operate Notion from a terminal or agent: retrieve pages, query databases, search pages and databases, and update page properties — with a bundled notion-cli script that is read-only by default and gates every create or update behind a --dry-run/--yes confirmation. Use when an agent needs to read Notion content, answer questions from a team wiki or database, or make a confirmed edit. Do not use for building Notion integrations or block-level page composition beyond property updates (that is Notion API application development), or for other knowledge bases (that is their own tooling)."
+      "description": "Operate Notion from a terminal or agent: retrieve pages, query databases, search pages and databases, and update page properties \u2014 with a bundled notion-cli script that is read-only by default and gates every create or update behind a --dry-run/--yes confirmation. Use when an agent needs to read Notion content, answer questions from a team wiki or database, or make a confirmed edit. Do not use for building Notion integrations or block-level page composition beyond property updates (that is Notion API application development), or for other knowledge bases (that is their own tooling)."
     },
     {
       "name": "nous-branding",
@@ -732,7 +732,7 @@
         "./open-knowledge-format"
       ],
       "strict": false,
-      "description": "Google's Open Knowledge Format (OKF) v0.1 — an open, vendor-neutral spec for representing knowledge as markdown files with YAML frontmatter, designed for AI agent consumption. Use when the user mentions OKF, Open Knowledge Format, Google's knowledge format, LLM wiki bundles, agent knowledge packs, creating OKF bundles, validating OKF documents, or converting knowledge into the OKF standard."
+      "description": "Google's Open Knowledge Format (OKF) v0.1 \u2014 an open, vendor-neutral spec for representing knowledge as markdown files with YAML frontmatter, designed for AI agent consumption. Use when the user mentions OKF, Open Knowledge Format, Google's knowledge format, LLM wiki bundles, agent knowledge packs, creating OKF bundles, validating OKF documents, or converting knowledge into the OKF standard."
     },
     {
       "name": "openlibrary-cli",
@@ -750,7 +750,7 @@
         "./opensource-contributions"
       ],
       "strict": false,
-      "description": "Make good open source contributions — check CONTRIBUTING.md first, follow project norms, be a good citizen. Covers bug reports, feature requests, and pull requests with a defensible default posture when the project hasn't documented expectations."
+      "description": "Make good open source contributions \u2014 check CONTRIBUTING.md first, follow project norms, be a good citizen. Covers bug reports, feature requests, and pull requests with a defensible default posture when the project hasn't documented expectations."
     },
     {
       "name": "operational-design",
@@ -759,7 +759,7 @@
         "./operational-design"
       ],
       "strict": false,
-      "description": "Design and improve operational processes and organizational scaling — process design, operational metrics, compliance and audit, vendor management, and team topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10 to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness, RFP processes, SLA design, vendor scorecards, team topologies, Conway's Law, and Dunbar's Number. Do not use for engineering delivery, financial modeling, or technology evaluation."
+      "description": "Design and improve operational processes and organizational scaling \u2014 process design, operational metrics, compliance and audit, vendor management, and team topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10 to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness, RFP processes, SLA design, vendor scorecards, team topologies, Conway's Law, and Dunbar's Number. Do not use for engineering delivery, financial modeling, or technology evaluation."
     },
     {
       "name": "org-design",
@@ -768,7 +768,7 @@
         "./org-design"
       ],
       "strict": false,
-      "description": "CHRO methodology — organizational design (team topologies, span of control, reporting structures), talent strategy (make-vs-buy, skill taxonomies, succession planning), compensation frameworks (market benchmarking, equity design, leveling), culture architecture (values codification, rituals, psychological safety), organizational health metrics (eNPS, retention risk, engagement surveys), DEI strategy (inclusive design, equitable systems, belonging)."
+      "description": "CHRO methodology \u2014 organizational design (team topologies, span of control, reporting structures), talent strategy (make-vs-buy, skill taxonomies, succession planning), compensation frameworks (market benchmarking, equity design, leveling), culture architecture (values codification, rituals, psychological safety), organizational health metrics (eNPS, retention risk, engagement surveys), DEI strategy (inclusive design, equitable systems, belonging)."
     },
     {
       "name": "pace-plan",
@@ -822,7 +822,7 @@
         "./privacy-engineering"
       ],
       "strict": false,
-      "description": "Translate privacy principles and legal requirements into data-flow, lifecycle, acceptance, and verification artifacts. Map data classification, purpose, processing, access, retention, deletion, residency, and consent; define verifiable privacy acceptance criteria; and produce data-lifecycle records, retention/deletion verification plans, and privacy change reviews. Use when engineering privacy into a system, feature, or data flow — not for legal advice, jurisdiction-specific regulatory interpretation, or replacing security engineering or incident response."
+      "description": "Translate privacy principles and legal requirements into data-flow, lifecycle, acceptance, and verification artifacts. Map data classification, purpose, processing, access, retention, deletion, residency, and consent; define verifiable privacy acceptance criteria; and produce data-lifecycle records, retention/deletion verification plans, and privacy change reviews. Use when engineering privacy into a system, feature, or data flow \u2014 not for legal advice, jurisdiction-specific regulatory interpretation, or replacing security engineering or incident response."
     },
     {
       "name": "product-adoption",
@@ -858,7 +858,7 @@
         "./product-discovery"
       ],
       "strict": false,
-      "description": "Discover product requirements from human stakeholders — map who to talk to, ask questions that surface hidden assumptions, detect gaps in real time, resolve conflicts, and translate conversations into structured SDD specs. Phase 0 upstream of Spec-Driven Development."
+      "description": "Discover product requirements from human stakeholders \u2014 map who to talk to, ask questions that surface hidden assumptions, detect gaps in real time, resolve conflicts, and translate conversations into structured SDD specs. Phase 0 upstream of Spec-Driven Development."
     },
     {
       "name": "product-experimentation",
@@ -876,7 +876,7 @@
         "./product-lifecycle"
       ],
       "strict": false,
-      "description": "Route a product through its full lifecycle — discovery, strategy, portfolio choice, roadmap, UX and requirements, experimentation, delivery handoff, adoption, success, and lifecycle review — by composing existing specialist product skills with phase-entry evidence, handoff artifacts, and escalation rules. Use when evaluating a new product idea, managing a product through its lifecycle, or connecting product phases that currently operate in isolation. Do not use for a single product task that is already owned by a specialist skill (load that skill directly); do not use for software delivery lifecycle work (route to neckbeard); do not use to duplicate product discovery, strategy, UX, experimentation, analytics, release, or delivery methods."
+      "description": "Route a product through its full lifecycle \u2014 discovery, strategy, portfolio choice, roadmap, UX and requirements, experimentation, delivery handoff, adoption, success, and lifecycle review \u2014 by composing existing specialist product skills with phase-entry evidence, handoff artifacts, and escalation rules. Use when evaluating a new product idea, managing a product through its lifecycle, or connecting product phases that currently operate in isolation. Do not use for a single product task that is already owned by a specialist skill (load that skill directly); do not use for software delivery lifecycle work (route to neckbeard); do not use to duplicate product discovery, strategy, UX, experimentation, analytics, release, or delivery methods."
     },
     {
       "name": "product-lifecycle-learning",
@@ -885,7 +885,7 @@
         "./product-lifecycle-learning"
       ],
       "strict": false,
-      "description": "Compare intended product outcomes against observed results to close the launch-to-learning loop: collect post-launch evidence, distinguish expected from observed from uncertain from inferred claims, update assumptions, assess feature health, and choose among continue/improve/harvest/pivot/pause/retire — including retirement lifecycles with deprecation, migration, customer treatment, and retained reusable learning. Do not use for incident postmortems or root-cause analysis (routes to incident-learning or site-reliability-engineering); do not use for analytics instrumentation or metric dashboard design (routes to product-analytics-and-measurement); do not use arbitrary thresholds as universal retirement rules — decisions require human judgment and context."
+      "description": "Compare intended product outcomes against observed results to close the launch-to-learning loop: collect post-launch evidence, distinguish expected from observed from uncertain from inferred claims, update assumptions, assess feature health, and choose among continue/improve/harvest/pivot/pause/retire \u2014 including retirement lifecycles with deprecation, migration, customer treatment, and retained reusable learning. Do not use for incident postmortems or root-cause analysis (routes to incident-learning or site-reliability-engineering); do not use for analytics instrumentation or metric dashboard design (routes to product-analytics-and-measurement); do not use arbitrary thresholds as universal retirement rules \u2014 decisions require human judgment and context."
     },
     {
       "name": "product-methodology",
@@ -903,7 +903,7 @@
         "./product-operations-and-governance"
       ],
       "strict": false,
-      "description": "Define and run product governance — recurring decision rights, intake, portfolio cadences, evidence standards, and cross-functional operating contracts. Covers six review cadences (intake, portfolio, roadmap, experiment, launch, lifecycle) with named accountable owners, minimum evidence standards per decision type, and escalation paths. Supports lightweight and high-assurance operating modes with configurable governance patterns. Use when designing a product governance model, resolving contested decisions, establishing evidence standards, recording exceptions and escalations, or building cross-functional operating contracts. Do NOT use for executive governance (capital allocation, org structure — route to chief-of-staff-methodology or strategy-frameworks), for technical delivery gates (CI/CD, release approval — route to release-engineering or spec-driven-development), or to impose a universal org chart."
+      "description": "Define and run product governance \u2014 recurring decision rights, intake, portfolio cadences, evidence standards, and cross-functional operating contracts. Covers six review cadences (intake, portfolio, roadmap, experiment, launch, lifecycle) with named accountable owners, minimum evidence standards per decision type, and escalation paths. Supports lightweight and high-assurance operating modes with configurable governance patterns. Use when designing a product governance model, resolving contested decisions, establishing evidence standards, recording exceptions and escalations, or building cross-functional operating contracts. Do NOT use for executive governance (capital allocation, org structure \u2014 route to chief-of-staff-methodology or strategy-frameworks), for technical delivery gates (CI/CD, release approval \u2014 route to release-engineering or spec-driven-development), or to impose a universal org chart."
     },
     {
       "name": "product-roadmapping-and-portfolio",
@@ -912,7 +912,7 @@
         "./product-roadmapping-and-portfolio"
       ],
       "strict": false,
-      "description": "Build and maintain outcome-based product roadmaps and portfolio views that sequence strategic bets by evidence, not dates. Covers Now/Next/Later views, strategic-bet management, capacity allocation, dependency and confidence mapping, scenario planning, continue/pause/kill/revisit criteria, stakeholder narratives, and roadmap review cadences. Use when building or reviewing a product roadmap, managing a portfolio of bets, or communicating strategic sequencing to stakeholders. Do NOT use for tactical prioritization mechanics (RICE, MoSCoW, Kano, OST — route to product-methodology or product-strategy), for project scheduling or Gantt charts, or for delivery-flow management (route to kanban-guru)."
+      "description": "Build and maintain outcome-based product roadmaps and portfolio views that sequence strategic bets by evidence, not dates. Covers Now/Next/Later views, strategic-bet management, capacity allocation, dependency and confidence mapping, scenario planning, continue/pause/kill/revisit criteria, stakeholder narratives, and roadmap review cadences. Use when building or reviewing a product roadmap, managing a portfolio of bets, or communicating strategic sequencing to stakeholders. Do NOT use for tactical prioritization mechanics (RICE, MoSCoW, Kano, OST \u2014 route to product-methodology or product-strategy), for project scheduling or Gantt charts, or for delivery-flow management (route to kanban-guru)."
     },
     {
       "name": "product-strategy",
@@ -921,7 +921,7 @@
         "./product-strategy"
       ],
       "strict": false,
-      "description": "CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management."
+      "description": "CPO methodology \u2014 product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management."
     },
     {
       "name": "production-excellence",
@@ -930,7 +930,7 @@
         "./production-excellence"
       ],
       "strict": false,
-      "description": "Route cross-domain production evidence (readiness, migration, recovery, capacity/cost, incident-learning) into a launch or operational decision — go, no-go, defer, exception, or escalation — with an accountable owner and a post-launch learning path. Compose production specialists without copying their runbooks. Do not use for incident command, release-pipeline mechanics, platform architecture, threat modeling, data-pipeline design, or any task owned end-to-end by a single specialist skill; do not use as a generic checklist detached from service ownership, risk, evidence, and verification."
+      "description": "Route cross-domain production evidence (readiness, migration, recovery, capacity/cost, incident-learning) into a launch or operational decision \u2014 go, no-go, defer, exception, or escalation \u2014 with an accountable owner and a post-launch learning path. Compose production specialists without copying their runbooks. Do not use for incident command, release-pipeline mechanics, platform architecture, threat modeling, data-pipeline design, or any task owned end-to-end by a single specialist skill; do not use as a generic checklist detached from service ownership, risk, evidence, and verification."
     },
     {
       "name": "production-readiness",
@@ -939,7 +939,7 @@
         "./production-readiness"
       ],
       "strict": false,
-      "description": "Define the minimum production evidence packet by risk class and produce go/no-go/defer/exception launch decisions with accountable owners. Cover ownership, user/business outcome, dependencies, SLOs, observability, support, security, data, rollback, capacity, and cost — every category with a named source or explicit missing-evidence outcome. Route detailed checks to existing specialist skills. Do not use for release pipeline mechanics (release-engineering) or incident response and SLO operations (site-reliability-engineering)."
+      "description": "Define the minimum production evidence packet by risk class and produce go/no-go/defer/exception launch decisions with accountable owners. Cover ownership, user/business outcome, dependencies, SLOs, observability, support, security, data, rollback, capacity, and cost \u2014 every category with a named source or explicit missing-evidence outcome. Route detailed checks to existing specialist skills. Do not use for release pipeline mechanics (release-engineering) or incident response and SLO operations (site-reliability-engineering)."
     },
     {
       "name": "programming-principles",
@@ -957,7 +957,7 @@
         "./promise-theory"
       ],
       "strict": false,
-      "description": "Design and diagnose coordination in hybrid human + AI agent workforces using promise theory (Burgess/Bergstra): model agents as autonomous, coordination as voluntary offers plus acceptance, and trust as calibrated assessment. Use for delegation modeling, capability manifests and agent contracts, coordination-failure diagnosis, trust/verification calibration, convergent self-healing systems, and converting obligation-based designs to promise-based. Do not use for enforceable centralized control, legal contract drafting (promise theory is not contract law), simple single-agent prompting, imperative push-based orchestration, or tool manuals — route those to the tool's own skill."
+      "description": "Design and diagnose coordination in hybrid human + AI agent workforces using promise theory (Burgess/Bergstra): model agents as autonomous, coordination as voluntary offers plus acceptance, and trust as calibrated assessment. Use for delegation modeling, capability manifests and agent contracts, coordination-failure diagnosis, trust/verification calibration, convergent self-healing systems, and converting obligation-based designs to promise-based. Do not use for enforceable centralized control, legal contract drafting (promise theory is not contract law), simple single-agent prompting, imperative push-based orchestration, or tool manuals \u2014 route those to the tool's own skill."
     },
     {
       "name": "pydanticai",
@@ -975,7 +975,7 @@
         "./qa-methodology"
       ],
       "strict": false,
-      "description": "Design and apply QA methodology for software teams: test strategy, regression testing, CI failure triage, test automation, quality gates and metrics, risk-based testing, exploratory testing, test design techniques, AI code quality gates (independent verification, acceptance-criteria testability review for agentic Spec-Driven Development), mutation-guided test hardening and review evidence (surviving mutants, weak assertions, diff-aware mutation testing), agentic eval design (dataset test design, judge-as-system-under-test, flaky-eval discipline), QA career levels (Senior/Staff/Principal), and SDET engineering (test infrastructure, gTAA, CI/CD integration). Do not use for root-cause debugging of production incidents, security implementation or threat modeling, or evaluation framework governance and statistical analysis — route those to systematic-debugging, secure-software-engineering, and agent-evals-and-observability respectively."
+      "description": "Design and apply QA methodology for software teams: test strategy, regression testing, CI failure triage, test automation, quality gates and metrics, risk-based testing, exploratory testing, test design techniques, AI code quality gates (independent verification, acceptance-criteria testability review for agentic Spec-Driven Development), mutation-guided test hardening and review evidence (surviving mutants, weak assertions, diff-aware mutation testing), agentic eval design (dataset test design, judge-as-system-under-test, flaky-eval discipline), QA career levels (Senior/Staff/Principal), and SDET engineering (test infrastructure, gTAA, CI/CD integration). Do not use for root-cause debugging of production incidents, security implementation or threat modeling, or evaluation framework governance and statistical analysis \u2014 route those to systematic-debugging, secure-software-engineering, and agent-evals-and-observability respectively."
     },
     {
       "name": "raleigh",
@@ -1065,7 +1065,7 @@
         "./semantic-spacetime"
       ],
       "strict": false,
-      "description": "Model and diagnose shared semantic ground between agents with Semantic Spacetime (Mark Burgess, 2014-2025): a discrete graph model of meaning over time, where local proper time replaces global clocks, causality is cooperative promises, and gamma(3,4) graphs expose semantic drift, world model divergence, and absorbing states. Use for designing convergent self-healing coordination, modeling intent and trajectories over time, mapping promises onto spacetime, diagnosing semantic drift or dead-ends, and analyzing temporal blindness in agents. Do not use for physics or relativity, pure vector embeddings or RAG without temporal-causal structure, enforceable centralized control, simple single-agent prompting, or tool manuals — route those to the appropriate skill."
+      "description": "Model and diagnose shared semantic ground between agents with Semantic Spacetime (Mark Burgess, 2014-2025): a discrete graph model of meaning over time, where local proper time replaces global clocks, causality is cooperative promises, and gamma(3,4) graphs expose semantic drift, world model divergence, and absorbing states. Use for designing convergent self-healing coordination, modeling intent and trajectories over time, mapping promises onto spacetime, diagnosing semantic drift or dead-ends, and analyzing temporal blindness in agents. Do not use for physics or relativity, pure vector embeddings or RAG without temporal-causal structure, enforceable centralized control, simple single-agent prompting, or tool manuals \u2014 route those to the appropriate skill."
     },
     {
       "name": "seo-audit",
@@ -1092,7 +1092,7 @@
         "./slack"
       ],
       "strict": false,
-      "description": "Operate Slack workspaces from a terminal or agent: list channels, read messages, follow threads, search message history, list files, and verify inbound webhook signatures — with a bundled slack-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to read or post Slack data, triage incidents, or answer questions about what was said in a workspace. Do not use for building Slack apps or bots (that is application development) or workspace administration like user provisioning and org settings (that is the Slack admin console)."
+      "description": "Operate Slack workspaces from a terminal or agent: list channels, read messages, follow threads, search message history, list files, and verify inbound webhook signatures \u2014 with a bundled slack-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to read or post Slack data, triage incidents, or answer questions about what was said in a workspace. Do not use for building Slack apps or bots (that is application development) or workspace administration like user provisioning and org settings (that is the Slack admin console)."
     },
     {
       "name": "software-architecture-analysis",
@@ -1101,7 +1101,7 @@
         "./software-architecture-analysis"
       ],
       "strict": false,
-      "description": "Reverse-engineer a software codebase to understand architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan that re-imagines the system under new constraints (local-first, privacy-first, self-hosted). Use when you need to understand how a system works from its source code or produce a specification without copying implementation details."
+      "description": "Reverse-engineer a software codebase to understand architecture, data flow, privacy posture, and feature surface \u2014 then produce a clean-room design document, PRD, or migration plan that re-imagines the system under new constraints (local-first, privacy-first, self-hosted). Use when you need to understand how a system works from its source code or produce a specification without copying implementation details."
     },
     {
       "name": "spec-driven-development",
@@ -1110,7 +1110,7 @@
         "./spec-driven-development"
       ],
       "strict": false,
-      "description": "Spec-Driven Development (SDD) methodology for AI software factories — where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each pipeline phase. Use when designing a spec → review → decompose → implement → verify pipeline that any AI coding tool (Claude Code, Cursor, Hermes Agent, Devin, OpenHands) can follow."
+      "description": "Spec-Driven Development (SDD) methodology for AI software factories \u2014 where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each pipeline phase. Use when designing a spec \u2192 review \u2192 decompose \u2192 implement \u2192 verify pipeline that any AI coding tool (Claude Code, Cursor, Hermes Agent, Devin, OpenHands) can follow."
     },
     {
       "name": "strategy-frameworks",
@@ -1128,7 +1128,7 @@
         "./stripe"
       ],
       "strict": false,
-      "description": "Read Stripe account state from a terminal or agent: balance, payment intents, and subscriptions — and perform guarded mutations like canceling a subscription — backed by a bundled stripe-cli script that is read-only first and gates every state-changing command behind a --dry-run/--yes confirmation. Use when an agent needs to answer questions about account balance, recent payments, active subscriptions, or apply a confirmed subscription cancellation. Do not use for building Stripe payments into an application (that is Stripe integration development), managing Stripe dashboard settings, or other payment processors (that is their own tooling)."
+      "description": "Read Stripe account state from a terminal or agent: balance, payment intents, and subscriptions \u2014 and perform guarded mutations like canceling a subscription \u2014 backed by a bundled stripe-cli script that is read-only first and gates every state-changing command behind a --dry-run/--yes confirmation. Use when an agent needs to answer questions about account balance, recent payments, active subscriptions, or apply a confirmed subscription cancellation. Do not use for building Stripe payments into an application (that is Stripe integration development), managing Stripe dashboard settings, or other payment processors (that is their own tooling)."
     },
     {
       "name": "supabase",
@@ -1146,7 +1146,7 @@
         "./systematic-debugging"
       ],
       "strict": false,
-      "description": "4-phase root cause debugging protocol: understand bugs before fixing. Use for ANY technical issue — test failures, production bugs, unexpected behavior, performance problems, build failures, or integration issues. ESPECIALLY when under time pressure, when \"one quick fix\" seems obvious, or when previous fix attempts have failed."
+      "description": "4-phase root cause debugging protocol: understand bugs before fixing. Use for ANY technical issue \u2014 test failures, production bugs, unexpected behavior, performance problems, build failures, or integration issues. ESPECIALLY when under time pressure, when \"one quick fix\" seems obvious, or when previous fix attempts have failed."
     },
     {
       "name": "tailscale",
@@ -1182,7 +1182,7 @@
         "./telemetry"
       ],
       "strict": false,
-      "description": "Operate the observability stack that deploys as one unit: Prometheus scrape configuration, recording and alerting rules, relabeling, retention, and high availability; OpenTelemetry Collector pipelines (receivers, processors, exporters, sampling, trace/span correlation); and Loki ingest, LogQL, retention, and label design — with a bundled read-only telemetry-check script for Prometheus rule sanity and scrape-target reachability. Use when running, tuning, or troubleshooting a Prometheus, OpenTelemetry Collector, or Loki deployment, or reviewing the collection/ingest/retention layer. Do not use for observability strategy, SLI/SLO design, or paging policy (that is platform-engineering) or Grafana dashboards, panels, and Grafana-side alerting (that is grafana)."
+      "description": "Operate the observability stack that deploys as one unit: Prometheus scrape configuration, recording and alerting rules, relabeling, retention, and high availability; OpenTelemetry Collector pipelines (receivers, processors, exporters, sampling, trace/span correlation); and Loki ingest, LogQL, retention, and label design \u2014 with a bundled read-only telemetry-check script for Prometheus rule sanity and scrape-target reachability. Use when running, tuning, or troubleshooting a Prometheus, OpenTelemetry Collector, or Loki deployment, or reviewing the collection/ingest/retention layer. Do not use for observability strategy, SLI/SLO design, or paging policy (that is platform-engineering) or Grafana dashboards, panels, and Grafana-side alerting (that is grafana)."
     },
     {
       "name": "tempest-cli",
@@ -1227,7 +1227,7 @@
         "./traefik"
       ],
       "strict": false,
-      "description": "Deploy, configure, and troubleshoot Traefik v3 reverse proxy — covers all providers, routing, TLS/ACME, middlewares, and production patterns with YAML examples. Load when setting up or debugging a Traefik instance."
+      "description": "Deploy, configure, and troubleshoot Traefik v3 reverse proxy \u2014 covers all providers, routing, TLS/ACME, middlewares, and production patterns with YAML examples. Load when setting up or debugging a Traefik instance."
     },
     {
       "name": "trakt",
@@ -1308,7 +1308,7 @@
         "./workflow-architect"
       ],
       "strict": false,
-      "description": "Discover your actual workflow through conversation or observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Use when you want to understand your own process, formalize it, or share it with collaborators. Also use when a session feels aimless — this skill gives it structure."
+      "description": "Discover your actual workflow through conversation or observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Use when you want to understand your own process, formalize it, or share it with collaborators. Also use when a session feels aimless \u2014 this skill gives it structure."
     },
     {
       "name": "writers-helper",
@@ -1317,7 +1317,7 @@
         "./writers-helper"
       ],
       "strict": false,
-      "description": "Guide any writer, fiction or nonfiction, through the whole writing lifecycle: premise and planning, outlining and worldbuilding, research, drafting and finishing, editing and revision, breaking creative blocks, generating position-aware prompts and exercises, building sustainable writing habits, and the business of publishing — book proposals, query letters, synopses, agents, publishers, and book deals. Do not use for formatting deliverables into document files (see word-document, pdf-document, epub), for technical or business documentation (see technical-documentation), or for pure grammar and spelling reference."
+      "description": "Guide any writer, fiction or nonfiction, through the whole writing lifecycle: premise and planning, outlining and worldbuilding, research, drafting and finishing, editing and revision, breaking creative blocks, generating position-aware prompts and exercises, building sustainable writing habits, and the business of publishing \u2014 book proposals, query letters, synopses, agents, publishers, and book deals. Do not use for formatting deliverables into document files (see word-document, pdf-document, epub), for technical or business documentation (see technical-documentation), or for pure grammar and spelling reference."
     },
     {
       "name": "yc-default-alive-calculator",
@@ -1326,7 +1326,7 @@
         "./yc-default-alive-calculator"
       ],
       "strict": false,
-      "description": "Evaluate whether a startup is on a trajectory to profitability before running out of cash — Paul Graham's \"Default Alive / Default Dead\" framework. Takes revenue, burn rate, cash on hand, and growth rate; computes runway, burn multiple, and months to breakeven. Ships a deterministic CLI calculator. Load when founders ask about runway, burn rate, default alive, whether they need to raise money, or financial sustainability analysis."
+      "description": "Evaluate whether a startup is on a trajectory to profitability before running out of cash \u2014 Paul Graham's \"Default Alive / Default Dead\" framework. Takes revenue, burn rate, cash on hand, and growth rate; computes runway, burn multiple, and months to breakeven. Ships a deterministic CLI calculator. Load when founders ask about runway, burn rate, default alive, whether they need to raise money, or financial sustainability analysis."
     },
     {
       "name": "yc-weekly-growth-compass",
