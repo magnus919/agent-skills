@@ -69,6 +69,19 @@
         "documents the escalation path to the board or risk committee",
         "structures the report so directors can exercise oversight and ask pointed questions"
       ]
+    },
+    {
+      "id": "gxp-ai-data-integrity-overlay",
+      "prompt": "A pharmaceutical company wants to use an AI system to summarize laboratory results and flag potential out-of-specification investigations. Design the governance overlay before pilot and release. Cover GxP applicability, ALCOA+ data integrity, electronic records and audit trails, risk-based validation or assurance, AI-specific evidence, QMS interfaces, supplier controls, monitoring, change control, and retirement. Do not claim legal compliance; distinguish AI governance from QA, validation, and regulatory responsibilities.",
+      "expected_output": "A bounded GxP AI governance plan that connects the AI lifecycle to the quality system, explicitly evaluates ALCOA+ attributes and electronic-record/audit-trail controls, defines a risk-based validation or assurance evidence plan, adds AI-specific context-of-use and performance evidence, assigns QA/QMS/validation/data/system owners, and defines monitoring, change, deviation/CAPA, supplier, and retirement controls without presenting legal advice as a compliance conclusion.",
+      "assertions": [
+        "screens GxP applicability and records the system boundary, domain, intended use, and accountable owners",
+        "explicitly covers ALCOA+ rather than treating lineage and provenance as sufficient",
+        "addresses electronic records, signatures, audit trails, access, time, retention, and retrieval as applicable",
+        "defines risk-based validation or assurance evidence including context of use, acceptance criteria, traceability, failure cases, and change triggers",
+        "connects AI governance to QA/QMS processes such as release, deviation, CAPA, change control, monitoring, periodic review, and retirement",
+        "states that the plan is guidance and does not determine legal applicability or certify compliance"
+      ]
     }
   ]
 }

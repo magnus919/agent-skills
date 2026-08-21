@@ -38,6 +38,7 @@ manual and not legal or security advice.
 | Lifecycle stage gates across ideation, build, evaluate, deploy, monitor, retire | CI/CD pipeline and deployment-gate configuration |
 | Fairness, bias, transparency, explainability, and accountability controls | Product portfolio/roadmap governance cadences |
 | Privacy and data governance for training and operational data | Capital allocation, org structure, or M&A governance |
+| GxP AI governance overlay: ALCOA+, data integrity, electronic records, risk-based assurance, QMS interfaces | Legal applicability determinations, validation protocols, SOPs, or quality-system operation |
 | LLM/agent safety: prompt injection, excessive agency, red-teaming, supply chain | Host-level or application-level security scanning |
 | Regulatory landscape and compliance mapping (as guidance, not advice) | Legal drafting, regulatory filings, or attorney-client work product |
 | Third-party and model due diligence, board reporting, audit | Any authoritative statement of "your system is compliant" |
@@ -67,6 +68,7 @@ Progressive disclosure: load only the reference relevant to the current question
 | Fairness metrics and their limits, bias sources, trade-offs, algorithmic justice | [references/fairness-bias-accountability.md](references/fairness-bias-accountability.md) |
 | Explainability (XAI) methods, when explanation is required, disclosure, auditability | [references/transparency-and-explainability.md](references/transparency-and-explainability.md) |
 | Training/operational data governance, ownership, lineage, quality, consent, PETs | [references/privacy-and-data-governance.md](references/privacy-and-data-governance.md) |
+| AI used in GLP, GCP, GMP, GDP, or pharmacovigilance contexts; ALCOA+, data integrity, electronic records, audit trails, validation/assurance, and QMS interfaces | [references/gxp-and-data-integrity.md](references/gxp-and-data-integrity.md) |
 | Trust boundaries, prompt injection, excessive agency, hallucination, supply chain, red-teaming | [references/llm-and-agent-security.md](references/llm-and-agent-security.md) |
 | Current law by jurisdiction, compliance mapping, enforcement, horizon scanning | [references/regulatory-landscape.md](references/regulatory-landscape.md) |
 | Vendor/model due diligence, supply chain, board reporting, metrics, audit | [references/procurement-third-party-and-board-oversight.md](references/procurement-third-party-and-board-oversight.md) |
@@ -102,7 +104,8 @@ changing anything. Exit 0 on success; the maturity scorer also exits 1 on a crit
 
 - **Eval manifest:** [evals/evals.json](evals/evals.json) holds the output-quality cases (operating
   model design, use-case risk tiering, LLM-app governance review, fairness/accountability review,
-  regulatory compliance mapping, board governance reporting) used to grade this skill.
+  regulatory compliance mapping, board governance reporting, and GxP/data-integrity governance)
+  used to grade this skill.
 - **Configuration:** [pytest.ini](pytest.ini) overrides the repository's root coverage settings so
   the subprocess-based skill tests run cleanly; do not add a second override.
 - **Entry points:** this [SKILL.md](SKILL.md) is the router; [README.md](README.md) is the

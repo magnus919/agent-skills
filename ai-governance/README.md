@@ -17,7 +17,7 @@ After installing, your agent can stand up a governance program from scratch, tie
 risk and prescribe the controls each one requires, review an LLM or agent system for governance
 and safety gaps, map a regulation to a concrete compliance and control plan, score organizational
 governance maturity and get a prioritized gap list, and prepare board-level reporting. It ships
-dense references for each governance domain, six fillable templates, and two executable scripts,
+dense references for each governance domain, including a GxP/data-integrity overlay, six fillable templates, and two executable scripts,
 so the method turns into working artifacts instead of advice.
 
 ## What You Get
@@ -25,7 +25,7 @@ so the method turns into working artifacts instead of advice.
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | The router: triggers, what the skill owns vs. doesn't, and when to load each file |
-| `references/` (11 files) | Dense, scannable guides: principles, operating model, risk frameworks, lifecycle, fairness, transparency, privacy, LLM/agent security, regulation, procurement/board oversight, and a source index |
+| `references/` (12 files) | Dense, scannable guides: principles, operating model, risk frameworks, lifecycle, fairness, transparency, privacy, LLM/agent security, regulation, procurement/board oversight, source index, and a GxP/data-integrity overlay |
 | `templates/` (6 files) | Fillable artifacts: governance charter, use-case intake, model risk assessment, model card, third-party due diligence, board report |
 | `scripts/governance-maturity.py` | CLI that scores an organization's governance maturity from JSON answers and lists gaps |
 | `scripts/use-case-risk-tier.py` | CLI that classifies an AI use case into a risk tier and its required controls |
@@ -62,6 +62,7 @@ Load this skill when you or your agent need to:
 - Map a current regulation to a compliance and control plan.
 - Score organizational governance maturity and prioritize gaps.
 - Prepare board-level AI governance reporting or run third-party/model due diligence.
+- Govern AI used in a GxP context, including ALCOA+, data integrity, electronic records, validation/assurance, audit trails, or QMS interfaces.
 
 ## Requirements
 
