@@ -13,13 +13,13 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
-| `references/` | Reference material: `guiding-principles.md`, `incident-command-system.md`, `monitoring-alerting.md`, `oncall-best-practices.md`, `postmortem-culture.md`, `product-focused-reliability.md`, `release-engineering.md`, `senior-sre-blueprint.md`, `slo-sli-framework.md`, `sre-book-chapters.md`, `sre-communication-guide.md`, `sre-ecosystem-guide.md`, `toil-elimination.md`, `troubleshooting.md`, `twenty-years-lessons.md` |
-| `templates/` | Templates: `error-budget-policy.md`, `incident-command-checklist.md`, `incident-communication.md`, `oncall-rotation.md`, `postmortem-template.md`, `runbook-template.md`, `service-review-checklist.md`, `slo-declaration-template.md` |
+| `references/` | Reference material for SLOs, incidents, on-call, toil, troubleshooting, product engagement, adoption, reliability design, human systems, and the SRE learning ecosystem. |
+| `templates/` | Templates for SLOs, error budgets, incident response, runbooks, service reviews, reliability design reviews, and overload recovery. |
 | `scripts/` | Scripts: `slo-burn-rate.py` |
 
 ## Quick Start
 
-Start with the SLO/SLI, incident-command, or service-review template that matches the work at hand.
+Start with the SLO/SLI, incident-command, service-review, reliability-design-review, or operational-overload-recovery template that matches the work at hand.
 
 Install or expose this directory using your agent's standard Agent Skills loading mechanism, then ask for work that matches the triggers below.
 
@@ -28,6 +28,8 @@ Install or expose this directory using your agent's standard Agent Skills loadin
 - Design, operate, and improve reliable production systems with SLOs, incident command, observability, error budgets, and operational practices.
 - Requests involving the method, deliverables, or review process described in `SKILL.md`.
 - Work where a reusable template or reference from this skill would reduce avoidable mistakes.
+- Work that adopts SRE practices without assuming a dedicated SRE department.
+- Reliability design, capacity, overload, configuration, canary, dependency, durability, or operational-learning reviews.
 
 ## Requirements
 
