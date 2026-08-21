@@ -172,6 +172,10 @@ For every material claim, label it:
 
 Keep the source, access date, scope, version, caveat, and permitted interpretation with each claim. Load `references/source-index.md` for the research basis and evidence boundaries.
 
+### Minimum Claim Ledger
+
+For each material claim, record: **claim**, **evidence class**, **source and scope**, **what it supports**, **what it does not support**, **open challenge**, and **permitted language**. Keep unknown claims visible; do not let a source URL or vendor report stand in for direct workflow evidence.
+
 ### Minimum Decision Record
 
 Every completed review must expose, in one durable artifact: the intervention and population, value hypothesis, primary outcome, countermetrics, comparison and limitations, cost boundary, relevant slices, evidence classes, missing evidence with owner, disposition, authority limit, reversal path, and review trigger.
@@ -197,6 +201,15 @@ Choose exactly one primary disposition:
 - **Hold:** evidence is insufficient for the requested decision; specify the missing evidence.
 - **Retire:** observed value is absent or countermetrics exceed acceptable bounds, with a transition path.
 - **Exception:** proceed despite a named gap only with an accountable human approver, expiry or revisit trigger, and containment plan.
+
+### Closure Conditions
+
+- **Scale:** next population, authority slice, owner, and review trigger are recorded.
+- **Constrain:** the boundary, quota, human-review rule, and condition for expansion are recorded.
+- **Redesign:** the changed mechanism, rerun comparison, and new acceptance boundary are recorded.
+- **Hold:** the missing evidence, owner, method, and due trigger are recorded.
+- **Retire:** transition, affected-person protection, decommissioning, and retained learning are recorded.
+- **Exception:** named human approver, scope, expiry, containment, and revisit condition are recorded.
 
 A decision is incomplete without an owner, review date or trigger, evidence gaps, and reversal path. Route launch or runtime consequences to the appropriate specialist skill.
 
