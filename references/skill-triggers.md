@@ -4,7 +4,7 @@ Each skill's `description` field is the canonical routing contract. This conveni
 
 | User says... | Load skill |
 |---|---|
-| "API design", "design an API", "API contract", "OpenAPI", "AsyncAPI", "GraphQL schema", "REST API", "RPC API", "webhook design", "event schema", "streaming API", "API versioning", "API deprecation", "API migration", "API compatibility", "idempotency key", "pagination design", "API error taxonomy" | [api-design-and-evolution](../api-design-and-evolution/SKILL.md) |
+| "API design", "design an API", "API contract", "OpenAPI", "AsyncAPI", "GraphQL schema", "REST API", "RPC API", "webhook design", "event schema", "streaming API", "API versioning", "API deprecation", "API migration", "API compatibility", "idempotency key", "pagination design", "API error taxonomy", "API landscape", "API inventory", "API governance", "API catalog", "API duplication", "API retirement", "API gateway topology", "ingress proxy", "service mesh", "north-south traffic", "east-west traffic" | [api-design-and-evolution](../api-design-and-evolution/SKILL.md) |
 | "build a CLI", "make a CLI tool", "agent-friendly CLI", "add --json flag" | [cli-builder](../cli-builder/SKILL.md) |
 | "CNCF Landscape", "CNCF project", "cloud-native technology shortlist", "compare CNCF projects", "what projects exist for", "technology candidate discovery" | [cncf-landscape](../cncf-landscape/SKILL.md) |
 | "SDD", "spec-driven development", "specification driven", "software factory", "spec first", "spec as code", "SPEC.md template", "write a spec for AI", "AI code generation pipeline", "acceptance criteria", "quality gates", "phase gate review", "BDD for AI", "OpenAPI first", "executable specification" | [spec-driven-development](../spec-driven-development/SKILL.md) |
