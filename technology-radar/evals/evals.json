@@ -78,6 +78,7 @@
       "expected_output": "No. Enterprise capability mapping and target-state roadmaps belong to enterprise architecture; ADR structure belongs to ADR authoring; and incident response/runbooks belong to operations or SRE. Technology-radar may supply technology portfolio posture, governance-mode selection, standards, exceptions, and feedback links at the boundaries, but it should not absorb those neighboring workflows.",
       "assertions": [
         "Enterprise capability and target-state roadmap work is routed away from technology-radar",
+        "The enterprise-architecture owner is named for capability and target-state work",
         "ADR authoring is identified as a separate neighboring owner",
         "Incident response and operational runbooks are identified as separate operational ownership",
         "The response preserves technology-radar's technology portfolio and governance boundary"

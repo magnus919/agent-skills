@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "skill_name": "enterprise-architecture",
+  "evals": [
+    {
+      "id": "capability-application-duplication",
+      "prompt": "Our claims intake capability is supported by three applications with overlapping names. One serves a regulated region, one owns customer notifications, and one is a legacy batch system. Build a portfolio view and say whether we should consolidate them.",
+      "expected_output": "An evidence-labeled capability/application portfolio view that treats duplication as a hypothesis, checks authority and constraints, and recommends an investigation or bounded action rather than automatic consolidation.",
+      "assertions": [
+        "The output distinguishes capability, value-stream stage, application, and information authority",
+        "It tests duplication against scope, jurisdiction, consumers, ownership, lifecycle, and integration evidence",
+        "It does not recommend consolidation solely because application names overlap",
+        "It identifies accountable owners and evidence gaps"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "operating-model-choice",
+      "prompt": "Five domains need architecture decisions. Local teams move quickly, but incompatible customer identity and reporting choices are creating duplicated spend. Compare centralized, federated, and hybrid enterprise architecture operating models and recommend a conditional choice.",
+      "expected_output": "A comparison grounded in decision locality, coordination cost, coherence, evidence, and risk, with a conditional recommendation and explicit role/authority implications without designing reporting lines.",
+      "assertions": [
+        "All three operating-model options are compared with benefits and costs",
+        "The recommendation is tied to cross-domain duplication and shared identity/reporting constraints",
+        "Roles and decision rights are named without becoming an organization-chart or compensation exercise",
+        "The output states what evidence would cause a different choice"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "decision-rights-conflict",
+      "prompt": "The security team says it owns identity standards, the customer platform team says it owns the identity service, and regional business units need different verification rules. Define an enterprise decision-rights and conflict-resolution record.",
+      "expected_output": "A decision record that separates outcome, enterprise constraint, implementation, and regional operating responsibilities; names consultation and authority; and provides exception and escalation paths.",
+      "assertions": [
+        "The conflict is decomposed into distinct decision and responsibility types",
+        "The record names accountable authority, consultees, affected parties, and escalation",
+        "Regional variation is handled as an explicit constraint or exception rather than silently overridden",
+        "Technology standards and security implementation are handed to their specialist owners"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "transition-architecture",
+      "prompt": "We want a single customer profile platform, but four products still write different profile stores and a regulatory migration cannot happen in one release. Create a transition architecture roadmap with intermediate states, coexistence assumptions, exit evidence, and a safe execution handoff.",
+      "expected_output": "A current/target/transition roadmap that makes authority, dependencies, coexistence, reversibility limits, exit evidence, owners, and migration-engineering handoff explicit.",
+      "assertions": [
+        "Current, target, and at least two useful intermediate states are distinguished",
+        "Data authority, dual-write or coexistence assumptions, and reconciliation evidence are addressed",
+        "The roadmap includes stop/defer conditions and does not claim rollback is always possible",
+        "Approved execution is routed to migration-engineering and implementation-planning"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "org-design-near-miss",
+      "prompt": "Redesign our reporting structure, team topology, compensation bands, and succession plan so the architecture group can scale.",
+      "expected_output": "A routing response to org-design that does not invent an enterprise architecture operating model or HR methodology.",
+      "assertions": [
+        "Reporting structure, team topology, compensation, and succession are routed to org-design",
+        "The enterprise-architecture skill does not produce an organization redesign"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "product-roadmap-near-miss",
+      "prompt": "Turn these ten product ideas into a Now/Next/Later roadmap with confidence, capacity, and continue-or-kill criteria.",
+      "expected_output": "A routing response to product-roadmapping-and-portfolio, with no capability portfolio or enterprise transition method substituted.",
+      "assertions": [
+        "Product bets and outcome sequencing are routed to product-roadmapping-and-portfolio",
+        "The response does not reframe a product roadmap as an enterprise architecture roadmap"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "technology-radar-near-miss",
+      "prompt": "Evaluate whether we should adopt Kafka, compare it with two alternatives, and place the result on an Adopt/Trial/Assess/Hold technology radar.",
+      "expected_output": "A routing response to technology-radar for technology adoption posture and radar mechanics, optionally noting enterprise capability context as an input.",
+      "assertions": [
+        "Technology adoption comparison and radar placement are routed to technology-radar",
+        "The enterprise-architecture skill does not reproduce a technology radar method"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "software-architecture-near-miss",
+      "prompt": "Design the runtime architecture for a new order service, including service boundaries, synchronous versus asynchronous calls, consistency, retries, and failure recovery.",
+      "expected_output": "A routing response to software-architecture because the task is system-level runtime and failure design, not enterprise portfolio alignment.",
+      "assertions": [
+        "Runtime boundaries, consistency, retries, and failure behavior are routed to software-architecture",
+        "The response does not produce an enterprise capability map as a substitute"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "strategy-near-miss",
+      "prompt": "Choose whether to enter the healthcare market, acquire a competitor, or focus on our current segment using competitive analysis and capital allocation.",
+      "expected_output": "A routing response to strategy-frameworks for corporate direction, competitive choices, acquisition, and capital allocation.",
+      "assertions": [
+        "Corporate strategy, market entry, acquisition, and capital allocation are routed to strategy-frameworks",
+        "The enterprise-architecture skill does not answer the corporate strategy decision"
+      ],
+      "case_set": "regression"
+    }
+  ]
+}

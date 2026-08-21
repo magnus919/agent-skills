@@ -163,6 +163,10 @@ An expert-level skill for **programmatic prompt optimization** with Stanford's D
 
 Send and diagnose transactional email through Twilio SendGrid: send with `--dry-run`/`--yes` confirmation, check deliverability (bounces and spam reports), and verify Signed Event Webhook signatures with a self-contained ECDSA P-256 verifier. Ships a bounded stdlib CLI with `--json` and `--limit`.
 
+### [enterprise-architecture](enterprise-architecture/SKILL.md)
+
+Connect enterprise outcomes to capabilities, value streams, application and information portfolios, operating models, decision rights, and feasible transition architectures. Keeps system design, organization design, product roadmaps, technology posture, and corporate strategy with their neighboring owners.
+
 ### [epub](epub/SKILL.md)
 
 EPUB file format expert — read, write, edit, convert, and repair EPUB2/EPUB3 ebooks.

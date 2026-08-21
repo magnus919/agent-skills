@@ -366,6 +366,15 @@
       "description": "Send and diagnose transactional email through Twilio SendGrid from a terminal or agent: send messages, check deliverability (bounces and spam reports), and verify Signed Event Webhook signatures (ECDSA P-256) — with a bundled email-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to send a transactional email, triage bounces or spam complaints, or confirm an inbound SendGrid webhook is authentic. Do not use for marketing or bulk email campaigns (that is SendGrid Marketing Campaigns), building email template systems, or other email providers (that is their own tooling)."
     },
     {
+      "name": "enterprise-architecture",
+      "source": "./",
+      "skills": [
+        "./enterprise-architecture"
+      ],
+      "strict": false,
+      "description": "Design and evolve enterprise architectures by connecting business capabilities, value streams, applications, information, technology, operating models, and transition choices. Use when mapping an enterprise portfolio, comparing current and target states, sequencing transition architectures, or defining federated architecture decision rights and stakeholder communication. Do not use for system or solution design, API or data-platform design, organizational or talent design, product roadmaps, technology adoption, or corporate strategy; route those to the named specialist skills."
+    },
+    {
       "name": "epub",
       "source": "./",
       "skills": [
