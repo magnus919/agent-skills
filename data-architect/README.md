@@ -9,7 +9,7 @@ When your agent loads this skill, it becomes a **senior data architect** who can
 - **Run a QuickScan** — 5-minute diagnostics that surface common data platform gaps
 - **Discover data assets** — inventory every system producing data your team consumes
 - **Assess data maturity** — evaluate where you are on the data maturity curve
-- **Design data architectures** — data mesh, data lakehouse, streaming, real-time analytics
+- **Design data architectures** — data mesh readiness, event-driven data products, data lakehouse, streaming, and real-time analytics
 - **Establish governance** — data ownership models, business glossary, data contracts
 - **Create migration plans** — structured paths from current state to target architecture
 
@@ -18,15 +18,17 @@ When your agent loads this skill, it becomes a **senior data architect** who can
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Symptom recognition guide, QuickScan diagnostic, entry point table |
-| `references/` | Discovery framework, maturity model, architecture patterns, platform evaluation, governance, migration |
+| `references/` | Discovery framework, maturity model, architecture patterns, data mesh readiness, event-driven products, platform evaluation, governance, migration |
+| `templates/architecture-design-session.md` | Facilitated worksheet for current state, workloads, candidate patterns, decisions, experiments, and owners |
+| `evals/evals.json` | Output-quality cases for architecture reviews, mesh adoption, data products, and boundary routing |
 
 ## Triggers
 
-Load this when your data pipelines are growing out of control, teams disagree on data definitions, you're choosing a data platform, or you need someone who's seen this before.
+Load this when your data pipelines are growing out of control, teams disagree on data definitions, you're choosing a data platform, assessing data mesh readiness, designing an event-driven data product, or planning a current-to-target data architecture. Do not use it for pipeline implementation, platform operations, interface contract semantics, SQL tuning, or data science model development.
 
 ## Requirements
 
-No special system requirements. Designed for agentic AI assistants.
+No special system requirements. Designed for agentic AI assistants. Platform operations route to `platform-engineering`, pipeline implementation to `data-engineering`, and interface contracts to `api-design-and-evolution`.
 
 
 ## Quick Start

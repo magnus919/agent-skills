@@ -61,6 +61,78 @@
         "Ownership, triage, and governance implications are addressed",
         "The metrics showing the strategy works are named, including incident rate and delivery"
       ]
+    },
+    {
+      "id": "mesh-readiness-decision",
+      "prompt": "Our central data team is overloaded, and leadership wants us to adopt data mesh. Three product teams own useful source data, but none has a funded support rotation, our catalog is incomplete, and the platform team is already committed to a warehouse migration. Assess whether we should adopt mesh now and give us a safe next step.",
+      "expected_output": "A readiness-based recommendation that separates the central bottleneck from mesh prerequisites. It assesses domain authority, product accountability, consumer demand, self-service platform capacity, federated governance, and sponsorship; identifies missing evidence and operating load; and recommends a bounded pilot or centralized/hybrid foundation rather than treating mesh as the default. The plan has entry and exit evidence, named owners, and a stop condition.",
+      "assertions": [
+        "The recommendation assesses domain ownership, product accountability, platform capacity, governance, and team funding",
+        "Missing support rotations, incomplete catalog coverage, and platform overload are treated as readiness gaps",
+        "The response does not present data mesh as the universal or inevitable target",
+        "The next step is bounded and includes measurable exit evidence and a stop condition",
+        "The response distinguishes architecture decisions from platform implementation work"
+      ]
+    },
+    {
+      "id": "event-driven-product-recovery",
+      "prompt": "Orders are published as events for fraud analytics and a customer-facing order timeline. We want to replace our nightly export with a streaming data product. Design the architecture decisions we must make before implementation, including snapshots, replay, duplicate and late events, ordering, compatibility, and consumer recovery.",
+      "expected_output": "An architecture design that distinguishes the event stream from a current snapshot and historical analytical view, records event and publication time and ordering scope, defines producer and consumer responsibilities, and specifies duplicate, late, delayed, unavailable, poison, replay, backfill, compatibility, and recovery behavior. It routes formal event contract syntax to api-design-and-evolution and implementation to data-engineering, while still making the product's required semantics and service expectations explicit.",
+      "assertions": [
+        "The design distinguishes events, snapshots, and historical analytical data",
+        "Duplicate, late, delayed, unavailable, poison, replay, and backfill behavior is addressed",
+        "Ordering scope and event-time versus publication-time semantics are made explicit",
+        "Compatibility and deprecation decisions are included without pretending schema additivity guarantees consumer safety",
+        "Interface contract semantics and pipeline implementation are routed to the neighboring skills"
+      ]
+    },
+    {
+      "id": "pattern-landscape-choice",
+      "prompt": "We have a regulated finance workload, a growing ML team, several operational systems, and analysts who need governed SQL. One group proposes a lakehouse, another says data mesh, and a vendor is selling a data fabric. Compare centralized warehouse, lakehouse, fabric capabilities, mesh, and a hybrid design and recommend how to choose.",
+      "expected_output": "A workload- and organization-grounded comparison that explains what each pattern solves, the obligations it introduces, and where it can fail. It distinguishes fabric capabilities from the mesh ownership model, recognizes that a hybrid can be deliberate, accounts for regulation, ML, SQL serving, skills, governance, latency, portability, and operating cost, and recommends evidence or a pilot before commitment.",
+      "assertions": [
+        "All five candidate shapes are compared by workload, ownership, governance, skills, and operating obligations",
+        "Data fabric is distinguished from data mesh rather than treated as a synonym",
+        "A hybrid design is evaluated as a deliberate option with explicit boundaries",
+        "The recommendation accounts for regulated serving, ML, governed SQL, and portability",
+        "The decision includes a pilot or evidence plan instead of relying on vendor positioning"
+      ]
+    },
+    {
+      "id": "architecture-design-session",
+      "prompt": "Facilitate a design session for a company deciding whether customer behavior should be a domain-owned data product. We need current and target flows, workloads, candidate patterns, decisions, assumptions, experiments, owners, and handoffs.",
+      "expected_output": "A completed or clearly structured design-session artifact with a session brief, current source-to-consumer flow and ownership, workload table, candidate comparison, chosen scope and rationale, governance and quality expectations, explicit assumptions and evidence gaps, experiments with owners and exit evidence, transition phases, open risks, and handoffs to API, data-engineering, and platform-engineering owners.",
+      "assertions": [
+        "The artifact includes current flows, ownership, consumers, and workload freshness or latency needs",
+        "Candidate patterns include centralized, hybrid, fabric, mesh, and event-driven options where relevant",
+        "Decisions, assumptions, evidence gaps, experiments, owners, and exit criteria are separately captured",
+        "The artifact names interface, implementation, and platform-operations handoffs",
+        "The session does not skip unresolved risks by forcing premature consensus"
+      ]
+    },
+    {
+      "id": "boundary-event-contract",
+      "prompt": "Write the Avro schema and compatibility policy for our customer-events Kafka topic, including serializer settings and consumer versioning.",
+      "expected_output": "A routing response that explains this is an interface-contract and implementation task rather than a data-architecture strategy review. It routes schema, serialization, compatibility, and consumer versioning to api-design-and-evolution and Kafka or pipeline implementation to data-engineering, while optionally stating the architecture context that would be needed before making broader product or platform decisions.",
+      "assertions": [
+        "The response does not attempt to author the requested schema or serializer configuration as a data-architect output",
+        "Event contract and compatibility semantics route to api-design-and-evolution",
+        "Kafka or pipeline implementation routes to data-engineering",
+        "The boundary is explained in terms of architecture strategy versus interface and implementation ownership"
+      ]
+    },
+    {
+      "id": "federated-computational-governance",
+      "prompt": "Design an operating method for federated computational governance in a data mesh. It must distinguish enterprise interoperability and policy rules from domain-local rules, explain how rules are encoded and enforced, preserve execution evidence, handle temporary exceptions, assign remediation ownership, and turn recurring exceptions into better standards.",
+      "expected_output": "A compact original operating method that uses a two-layer rule model and an evidence feedback loop. It defines global versus domain-local rule authority, gives machine-readable rule fields and execution points, records per-run evidence, makes exceptions scoped and time-bounded with expiry handling, assigns remediation to domain, platform, or federated governance owners, and describes a recurring review that converts patterns into standards or an explicit decision not to standardize. It remains an architecture operating model rather than a vendor-specific implementation guide.",
+      "assertions": [
+        "Global rules explicitly cover shared interoperability and enterprise policy while domain rules cover local meaning and operating choices",
+        "Rules have versioned machine-readable encoding and named execution or enforcement points",
+        "Evidence records link the rule version and product or release to the evaluation result, time, and remediation reference",
+        "Exceptions are scoped, approved, compensating-control aware, and time-bounded with expiry or renewal handling",
+        "Remediation ownership is assigned across domain product, platform enforcement, and federated governance responsibilities",
+        "Recurring failures or exceptions feed a review that proposes a global rule, domain rule, platform control, or explicit non-standardization decision"
+      ]
     }
   ]
 }

@@ -273,7 +273,7 @@
         "./data-architect"
       ],
       "strict": false,
-      "description": "A virtual data architect for teams who don't have one. If your data pipelines are growing faster than your team, nobody agrees on what 'customer' means, your cloud bill is climbing without clear reason, or you're about to choose a data platform and need someone who's seen this before — load this skill. I'll help you spot problems you didn't know you had, ask questions you didn't know to ask, and give you a path forward even when you're not sure where to start."
+      "description": "Use this skill to assess, design, and evolve data architectures, including data platforms, data products, data mesh adoption, event-driven data flows, governance, modeling, and migration decisions. Load it when teams need workload-grounded tradeoffs, ownership and quality agreements, or a current-to-target data architecture. Do not use it for pipeline or platform operations, implementation details, interface contract semantics, SQL tuning, or statistical modeling; route those to data-engineering, platform-engineering, api-design-and-evolution, postgres, or data-scientist."
     },
     {
       "name": "data-cleaning",

@@ -1,6 +1,6 @@
 # Data Architecture Patterns — Decision Framework
 
-A practical guide to choosing between the major data architecture patterns. Based on research from Ryan Kirsch, TalkingSchema, LinkedIn data architecture practitioners, and industry reference architectures.
+A practical guide to choosing among warehouse, lakehouse, fabric, mesh, and hybrid shapes. Choose a pattern from workload, organization, governance, skills, latency, and portability evidence rather than from a label.
 
 ## Decision Tree — Which Pattern to Use?
 
@@ -34,6 +34,8 @@ flowchart TD
 - **Enterprise, big investment** → Inmon or hybrid
 - **ML + analytics from same data** → Lakehouse
 - **Frequent source schema changes** → Data Vault
+- **Many domains need governed, discoverable products** → Consider mesh only after the readiness checks in `data-mesh-readiness-and-operating-model.md`
+- **Many tools need shared discovery and policy across distributed systems** → Consider fabric capabilities or a hybrid, not automatically mesh
 
 ## Kimball (Dimensional / Bottom-Up)
 
@@ -141,6 +143,57 @@ s3://data-lake/
 - Team has dedicated infrastructure engineers
 - Need to avoid vendor lock-in at the storage layer
 
+## Data Fabric (Capability Pattern)
+
+**Philosophy:** Make distributed data easier to discover, govern, connect, and use through shared metadata, policy, lineage, integration, and access capabilities. Fabric is a capability-oriented description, not a mandate to buy a product or centralize every dataset.
+
+**Strengths:**
+- Improves discovery and policy consistency across heterogeneous systems
+- Can preserve local system ownership while adding shared control points
+- Useful where the main constraint is fragmented metadata, access, or integration
+
+**Weaknesses:**
+- Can become a tooling program with no improvement in product ownership or consumer outcomes
+- Central metadata and policy services add their own availability and stewardship burden
+- Vendor claims often blur catalog, integration, governance, and analytics capabilities
+
+**When to choose:**
+- The organization has distributed systems but needs common discovery, lineage, policy, or interoperability
+- Domain teams are not yet ready to own analytical products independently
+- A federated capability layer solves a measured problem without forcing a reorganization
+
+**Do not confuse with mesh:** Fabric emphasizes shared capabilities over ownership model. Mesh requires domain ownership and product accountability; the two can coexist.
+
+## Data Mesh (Operating Model and Product Shape)
+
+**Philosophy:** Organize data ownership around business domains, publish data as products with accountable quality, provide a self-service platform, and apply shared governance through enforceable rules.
+
+**Strengths:**
+- Puts context and quality decisions close to the domain that creates the data
+- Can reduce a central data team's intake bottleneck when domains have real capacity
+- Makes product ownership, consumer needs, and lifecycle decisions explicit
+
+**Weaknesses:**
+- Requires domain teams to take on durable product and operational responsibilities
+- Multiplies coordination, compatibility, discovery, and governance work
+- Fails when mesh language is applied to centrally owned tables without changing accountability
+
+**When to choose:**
+- Domain boundaries are meaningful, teams have capacity and authority, and central bottlenecks are evidenced
+- Product consumers need dependable, discoverable data with different access modes
+- A platform and federated governance investment is affordable and measurable
+
+**When not to choose:**
+- Ownership is unclear, domains cannot fund product work, or the platform team is already overloaded
+- The problem is only a missing catalog, slow pipeline, or poorly governed warehouse
+- A centralized or hybrid design meets the requirements with less coordination risk
+
+## Hybrid Patterns
+
+Hybrid is a deliberate combination, not an admission of design failure. Common forms include a central warehouse with domain-owned products, a lakehouse for engineering and ML with a governed warehouse serving BI, or a shared metadata/policy fabric over systems that retain local ownership.
+
+Choose hybrid when workloads, regulatory controls, or team boundaries genuinely differ. Name the boundary for each data set: who authors it, who transforms it, which plane serves it, where the contract lives, and who pays the operating cost. Reject hybrid when it merely duplicates data across platforms without a consumer, latency, governance, or recovery reason.
+
 ## Batch vs Streaming
 
 ### Decision Tree — When to Stream?
@@ -219,6 +272,11 @@ flowchart LR
    - Generalist data team → managed warehouse + Kimball
    - Strong engineering team with infra skills → Lakehouse or Data Vault
    - Small team, need speed → Kimball + dbt
+
+5. **Is the proposed organizational change justified?**
+   - Need shared discovery and policy but not domain product ownership → fabric capability or centralized/hybrid design
+   - Need domain-owned products and have readiness evidence → mesh may fit
+   - Unclear readiness → start with a bounded product pilot and strengthen ownership, quality, and platform foundations first
 
 ## Source References
 
