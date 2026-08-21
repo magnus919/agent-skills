@@ -29,9 +29,9 @@ are not pasted into any reference.
 Nothing in this skill is legal, financial, or security advice. Regulatory, standards, and
 security material should be re-verified against primary sources at the time of use.
 
-## The eleven reference files
+## The twelve reference files
 
-The `ai-governance` skill ships eleven reference files under `references/`. The table below
+The `ai-governance` skill ships twelve reference files under `references/`. The table below
 names all eleven and maps each to its informing sources: book short names (see the
 bibliography) and the mission research notes (see below). The book short names are the
 canonical identifiers used consistently across the skill.
@@ -48,13 +48,14 @@ canonical identifiers used consistently across the skill.
 | `llm-and-agent-security.md` | Trust boundaries, prompt injection, data exposure, hallucination, excessive agency, denial of service, supply chain, red-teaming | The Developer's Playbook for LLM Security; Beyond the Algorithm; research-llm-agent-security.md |
 | `regulatory-landscape.md` | Current law by jurisdiction, compliance mapping, horizon scanning, enforcement | research-regulatory.md (authoritative); book regulatory chapters of Responsible AI in the Enterprise and Beyond the Algorithm as historical context only |
 | `procurement-third-party-and-board-oversight.md` | Vendor and model due diligence, supply chain, board reporting, metrics, audit | The AI Product Manager's Handbook; Developing Cybersecurity Programs and Policies; research-org-board-governance.md |
-| `source-index.md` | This file: provenance, attribution, bibliography | All twelve books; all five research notes (meta) |
+| `gxp-and-data-integrity.md` | GxP AI governance, ALCOA+, data integrity, electronic records, audit trails, risk-based assurance, QMS interfaces | FDA, MHRA, PIC/S, WHO, EMA, ICH, ISPE; gxp-ai-governance-brief.md; gxp-ai-governance-log.md |
+| `source-index.md` | This file: provenance, attribution, bibliography | All twelve books; all five research notes; GxP research artifacts (meta) |
 
 ## Research notes
 
-Five research notes, produced during the research foundation milestone, de-stale the books
-against where AI governance stands today. They live in the mission library and are cited by
-short filename throughout the skill. All five are used:
+Seven research notes, produced during the research foundation milestone, de-stale the books
+against where AI governance stands today. They live in this skill's research directory and are cited by
+short filename throughout the skill. All seven are used, with the two GxP artifacts informing the GxP reference:
 
 - research-regulatory.md — current laws and enforcement across jurisdictions (EU AI Act,
   GDPR, US federal/state, UK, China, sectoral rules), the authoritative basis for
@@ -70,6 +71,8 @@ short filename throughout the skill. All five are used:
 - research-org-board-governance.md — roles, governance councils, the Chief AI Officer,
   fiduciary duty, maturity models, third-party risk; informs `foundations-and-principles.md`,
   `governance-operating-model.md`, and `procurement-third-party-and-board-oversight.md`.
+
+- gxp-ai-governance-brief.md and gxp-ai-governance-log.md — GxP, ALCOA+, data integrity, electronic records, validation/assurance, and QMS interfaces; inform `gxp-and-data-integrity.md`.
 
 ## Bibliography — the twelve source books
 
