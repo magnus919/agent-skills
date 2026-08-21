@@ -54,8 +54,8 @@ canonical identifiers used consistently across the skill.
 ## Research notes
 
 Seven research notes, produced during the research foundation milestone, de-stale the books
-against where AI governance stands today. They live in the mission library and are cited by
-short filename throughout the skill. All seven are used:
+against where AI governance stands today. They live in this skill's research directory and are cited by
+short filename throughout the skill. All seven are used, with the two GxP artifacts informing the GxP reference:
 
 - research-regulatory.md — current laws and enforcement across jurisdictions (EU AI Act,
   GDPR, US federal/state, UK, China, sectoral rules), the authoritative basis for

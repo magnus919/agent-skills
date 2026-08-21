@@ -7,7 +7,9 @@ description: >-
   board-oversight controls. Use when standing up a governance program, tiering
   AI use-case risk, reviewing an LLM or agent system for governance and safety
   gaps, mapping a regulation to a compliance plan, scoring governance maturity,
-  or preparing board reporting. Do not use for interpreting regulations as legal
+  or preparing board reporting. For regulated life-sciences use cases, also cover GxP,
+  ALCOA+, data integrity, electronic records, validation/assurance, and QMS interfaces.
+  Do not use for interpreting regulations as legal
   advice (route to legal-strategy), data-governance mechanics
   (data-architect/data-engineering), or implementing application security
   (secure-software-engineering).

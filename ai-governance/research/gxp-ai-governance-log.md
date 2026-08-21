@@ -59,6 +59,13 @@
 - **Use in synthesis:** Supports adding AI-specific performance/context evidence to GxP lifecycle gates.
 - **Limitation:** The AI reflection paper is guidance/reflection material, not a universal validation standard.
 
+### Retained: European Commission EudraLex Volume 4 Annex 11
+
+- **Authority:** Tier 1 European Commission good-manufacturing-practice guidance.
+- **Relevant claim:** Annex 11 provides the computerized-system control context relevant to regulated records, system operation, validation, and data integrity.
+- **Use in synthesis:** Supports the explicit electronic-record, audit-trail, validation/assurance, and QMS-interface prompts in the GxP overlay.
+- **Limitation:** Applicability and current interpretation depend on the system boundary, GxP domain, jurisdiction, and responsible quality/regulatory functions.
+
 ### Retained: ICH Q9(R1)
 
 - **Authority:** Tier 1 international harmonization guidance.
