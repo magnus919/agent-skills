@@ -82,7 +82,7 @@ Use this sequence for an AI initiative review. Load the detailed method and the 
 
 | Need | First action | Load next |
 |---|---|---|
-| Triage a claim | Name the workflow, decision, and evidence class | Steps 1–2 |
+| Triage a claim | Name the workflow, decision, and evidence class | Steps 1–3; evidence classes are defined in Step 7 |
 | Build a durable record | Copy the initiative evidence record and complete the header first | `templates/ai-initiative-evidence-record.md` |
 | Investigate uncertain evidence | Freeze the claim table before drafting conclusions | `references/evidence-method.md` |
 | Prepare a review | Assemble evidence, slices, cost, gaps, and disposition | `templates/ai-economics-review.md` |
