@@ -27,7 +27,7 @@ metadata:
 - You need to extract an **implicit contract** — the storage operations a codebase performs — to design a formal provider abstraction
 - You need to assess architecture health, coupling, modularity, data ownership, distributed workflows, or readiness for a boundary change from repository evidence
 
-**Don't use for:** Greenfield or proactive architecture design (route to a human architecture decision owner; no current catalog skill owns that workflow), direct code review, bug hunting, or security auditing. Route API/interface semantics to `api-design-and-evolution`, data-platform strategy to `data-architect`, implementation to the relevant engineering skill, deployment substrate to `platform-engineering`, and execution of an approved cross-system migration to `migration-engineering`.
+**Don't use for:** Greenfield or proactive architecture design (route to [`software-architecture`](../software-architecture/SKILL.md)), direct code review, bug hunting, or security auditing. Route API/interface semantics to `api-design-and-evolution`, data-platform strategy to `data-architect`, implementation to the relevant engineering skill, deployment substrate to `platform-engineering`, and execution of an approved cross-system migration to `migration-engineering`.
 
 ## Build Workflow
 

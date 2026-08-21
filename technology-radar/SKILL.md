@@ -15,7 +15,7 @@ CTO methodology for making technology decisions, governing architecture, measuri
 
 ## When Not to Use
 
-- Route enterprise capability maps, operating-model design, and current/target-state roadmaps to a human enterprise-architecture owner; no current catalog skill owns that workflow. This skill stays focused on technology portfolio posture and governance mechanics.
+- Route enterprise capability maps, operating-model design, and current/target-state roadmaps to the appropriate enterprise-architecture owner. This skill stays focused on technology portfolio posture and governance mechanics; use [`software-architecture`](../software-architecture/SKILL.md) for system-level target design.
 - Route the durable record of one consequential decision to `adr-authoring`; use this skill to choose the governance path and connect the decision to standards or radar feedback.
 - Route system design and code changes to the relevant engineering skill, security requirements and threat modeling to `secure-software-engineering`, and live operations or SLO work to `site-reliability-engineering`.
 

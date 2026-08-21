@@ -152,9 +152,9 @@ service creation and escalate rather than selecting a pattern by default.
 
 ## Specialist boundaries
 
-- Target-boundary justification and architecture decomposition belong to the
-  software-architecture decision owner; this reference sequences an approved
-  transition.
+- Target-boundary justification and architecture decomposition belong to
+  [`software-architecture`](../../software-architecture/SKILL.md); this reference
+  sequences an approved transition.
 - API contract semantics and compatibility policy belong to
   `api-design-and-evolution`.
 - CDC, backfill, schemas, and reconciliation implementation belong to

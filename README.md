@@ -499,6 +499,10 @@ Build practical reliability practices around the work teams actually perform: me
 
 Operate Slack workspaces from the terminal: list channels, read messages, follow threads, search history, list files, and verify webhook signatures. Ships a bounded stdlib CLI with `--json`, `--limit`, and a `--dry-run`/`--yes` mutation gate for sends.
 
+### [software-architecture](software-architecture/SKILL.md)
+
+Design and review software architectures from business drivers through system boundaries, tradeoffs, runtime behavior, evolution, and architecture practice. Use for greenfield or target architecture, modular-monolith decisions, distributed consistency and failure behavior, fitness evidence, and architecture reviews; route reverse engineering, interfaces, data, implementation, platform, security, and migration execution to their specialist owners.
+
 ### [software-architecture-analysis](software-architecture-analysis/SKILL.md)
 
 Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, feature surface, coupling, quality characteristics, data ownership, and workflow recovery — then produce an evidence-grounded clean-room design document, PRD, or migration plan under new constraints. Includes interface extraction, decomposition-readiness, and architecture health assessment guidance.

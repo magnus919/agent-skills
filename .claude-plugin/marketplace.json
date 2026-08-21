@@ -1095,6 +1095,15 @@
       "description": "Operate Slack workspaces from a terminal or agent: list channels, read messages, follow threads, search message history, list files, and verify inbound webhook signatures — with a bundled slack-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to read or post Slack data, triage incidents, or answer questions about what was said in a workspace. Do not use for building Slack apps or bots (that is application development) or workspace administration like user provisioning and org settings (that is the Slack admin console)."
     },
     {
+      "name": "software-architecture",
+      "source": "./",
+      "skills": [
+        "./software-architecture"
+      ],
+      "strict": false,
+      "description": "Design and review software architectures from business drivers through system boundaries, tradeoffs, runtime behavior, evolution, and architecture practice. Use when choosing a greenfield or target architecture, comparing modular-monolith and service shapes, designing distributed consistency or failure behavior, defining architecture fitness evidence, or facilitating a consequential architecture review. Do not use for reverse engineering, API contract semantics, data-platform design, implementation, infrastructure operations, security lifecycle, or migration execution; route those to the named specialist skills."
+    },
+    {
       "name": "software-architecture-analysis",
       "source": "./",
       "skills": [

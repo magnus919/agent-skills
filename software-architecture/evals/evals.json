@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "skill_name": "software-architecture",
+  "evals": [
+    {
+      "id": "greenfield-design",
+      "prompt": "Design the architecture for a new appointment platform. It has a small team, uncertain demand, strict audit needs, and a requirement to keep booking responsive when a notification provider is down. Compare a modular monolith with a distributed option and define the first evidence to collect.",
+      "expected_output": "A decision brief that starts with drivers and scenarios, compares deployment shapes, makes audit and notification failure behavior explicit, recommends a proportionate starting shape, records uncertainty, and names specialist handoffs.",
+      "assertions": [
+        "Drivers and observable scenarios are stated before technology choices",
+        "Modular monolith and distributed alternatives are compared with negative consequences",
+        "Notification-provider failure has an explicit user-visible and recovery behavior",
+        "Uncertain demand is treated as an evidence gap rather than an invented scale fact",
+        "The output names specialist handoffs without absorbing implementation or security ownership"
+      ]
+    },
+    {
+      "id": "modular-monolith-service-choice",
+      "prompt": "Should we split checkout pricing into a service? It shares a transaction with order creation, four jobs read its tables directly, traffic is low and stable, and no team owns pricing data end to end. Give an architecture recommendation and next steps.",
+      "expected_output": "A recommendation to retain or strengthen the modular monolith pending evidence, citing shared transactions, direct table consumers, unclear authority, and low independent scaling benefit. It distinguishes target architecture from migration execution.",
+      "assertions": [
+        "Shared transaction and direct table access are identified as boundary risks",
+        "Unclear data ownership is identified as a blocker or explicit evidence gap",
+        "Low stable traffic is used against a service-specific scaling justification",
+        "The recommendation does not assume service decomposition is the desired outcome",
+        "Migration sequencing is routed separately from the architecture decision"
+      ]
+    },
+    {
+      "id": "distributed-consistency-failure",
+      "prompt": "Design a payment authorization workflow across an order service, payment provider, and ledger. The provider can timeout after charging, messages can duplicate or arrive out of order, and users must not see a confirmed order without a durable payment outcome.",
+      "expected_output": "A workflow design that defines authority, acknowledgement, consistency scope, idempotency, duplicate and ordering behavior, timeout ambiguity, reconciliation, user-visible pending state, and recovery evidence.",
+      "assertions": [
+        "The design distinguishes durable payment authority from derived order state",
+        "Timeout after a possible charge has an explicit pending or reconciliation path",
+        "Duplicate and out-of-order delivery behavior is defined",
+        "The user-visible confirmation rule is tied to a durable payment outcome",
+        "Recovery and reconciliation have named owners and evidence"
+      ]
+    },
+    {
+      "id": "evolutionary-fitness",
+      "prompt": "Our architecture decision requires dependencies to point toward domain policy and forbids new cross-module database writes. Define an evolutionary fitness plan and drift response without turning the ADR skill into a full architecture governance program.",
+      "expected_output": "A plan linking the architecture decision to bounded structural checks, evidence owners, cadence, threshold rationale, exceptions, drift classification, and ADR confirmation while routing execution to project tooling.",
+      "assertions": [
+        "Each architectural claim maps to a bounded observable check",
+        "The plan names cadence, owner, threshold rationale, and missing-result behavior",
+        "Drift is classified into defect, exception, changed requirement, stale rule, or unknown",
+        "Execution remains with test, CI, telemetry, or governance systems",
+        "ADR authoring is limited to the durable decision and confirmation trace"
+      ]
+    },
+    {
+      "id": "cloud-topology",
+      "prompt": "Review a proposed multi-region cloud topology for a read-heavy public catalog. It includes regional replicas, a global entry point, asynchronous replication, and a single write region. Identify the architecture questions and tradeoffs before anyone chooses provider-specific services.",
+      "expected_output": "A provider-neutral topology review covering authority, replication lag, stale reads, regional failure, write routing, recovery, network and identity boundaries, deployment blast radius, and handoff to platform and capacity owners.",
+      "assertions": [
+        "Single write authority and replica staleness are made explicit",
+        "Regional failure and recovery behavior are analyzed",
+        "Logical architecture is separated from provider-specific provisioning",
+        "Network, identity, and deployment blast radius questions are included",
+        "Platform and capacity implementation or evidence ownership is routed explicitly"
+      ]
+    },
+    {
+      "id": "api-routing-boundary",
+      "prompt": "Write an OpenAPI contract for a new search endpoint with pagination, error semantics, and backward compatibility rules.",
+      "expected_output": "A routing response that sends the task to api-design-and-evolution rather than producing a system architecture method, while optionally noting that a broader topology decision would return to software architecture.",
+      "assertions": [
+        "The request is routed to api-design-and-evolution",
+        "Pagination, error, and compatibility semantics are identified as API ownership",
+        "The architecture skill does not duplicate an OpenAPI contract workflow"
+      ]
+    },
+    {
+      "id": "data-platform-routing",
+      "prompt": "Choose between a lakehouse and warehouse for event analytics, including data product ownership, freshness, governance, and platform migration sequencing.",
+      "expected_output": "A routing response that sends data platform, data product, governance, and modeling decisions to data-architect, with migration-engineering involved only for an approved transition.",
+      "assertions": [
+        "Data platform and data product design are routed to data-architect",
+        "Modeling and governance are not reimplemented by software-architecture",
+        "Migration execution is conditional on an approved target decision"
+      ]
+    },
+    {
+      "id": "implementation-security-migration-routing",
+      "prompt": "Implement the chosen architecture by adding OAuth authorization, Kubernetes manifests, retry logic, and a zero-downtime data migration from the old service.",
+      "expected_output": "A multi-owner routing response: security to secure-software-engineering, service code to backend-engineering, substrate to platform-engineering, and approved migration execution to migration-engineering. It does not pretend architecture design owns those implementations.",
+      "assertions": [
+        "OAuth and authorization are routed to secure-software-engineering",
+        "Retry logic and service implementation are routed to backend-engineering",
+        "Kubernetes manifests and substrate operations are routed to platform-engineering",
+        "Zero-downtime cross-system migration is routed to migration-engineering",
+        "The response preserves the architecture skill as the decision owner rather than an implementation owner"
+      ]
+    }
+  ]
+}
