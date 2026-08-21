@@ -17,10 +17,11 @@ When your agent loads this skill, it becomes a **senior data architect** who can
 
 | Directory | Purpose |
 |-----------|---------|
-| `SKILL.md` | Symptom recognition guide, QuickScan diagnostic, entry point table |
-| `references/` | Discovery framework, maturity model, architecture patterns, data mesh readiness, event-driven products, platform evaluation, governance, migration |
-| `templates/architecture-design-session.md` | Facilitated worksheet for current state, workloads, candidate patterns, decisions, experiments, and owners |
-| `evals/evals.json` | Output-quality cases for architecture reviews, mesh adoption, data products, and boundary routing |
+| `SKILL.md` | Symptom recognition guide, QuickScan diagnostic, consulting workflow, and resource routing |
+| `references/` | Discovery framework, maturity model, architecture patterns, data mesh readiness, event-driven products, platform evaluation, governance, compliance, anti-patterns, and case studies |
+| `scripts/` | Interactive governance maturity assessment |
+| `templates/` | Architecture decision record and data architecture design-session worksheets |
+| `evals/` | Output-quality cases for architecture reviews, mesh adoption, data products, governance, and boundary routing |
 
 ## Triggers
 
@@ -33,4 +34,10 @@ No special system requirements. Designed for agentic AI assistants. Platform ope
 
 ## Quick Start
 
-Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.
+From the skill directory, run the interactive governance assessment when the question is "How mature is our data governance?":
+
+```bash
+python3 scripts/governance-assessment.py
+```
+
+For architecture reviews, platform decisions, data mesh assessments, or design sessions, load `SKILL.md` and follow its task-specific reference routing.
