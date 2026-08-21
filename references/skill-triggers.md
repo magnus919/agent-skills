@@ -88,7 +88,7 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "secure software engineering", "build securely", "secure by design", "security requirements", "security acceptance criteria", "threat model this design", "secure code review", "secure defaults", "authorization design", "multi-tenant isolation", "release evidence", "SBOM", "software supply chain", "AI security", "LLM security", "prompt injection", "tool authorization", "RAG security" | [secure-software-engineering](../secure-software-engineering/SKILL.md) |
 | "security-audit-methodology", "security audit methodology" | [security-audit-methodology](../security-audit-methodology/SKILL.md) |
 | "mermaid-diagrams", "mermaid diagrams" | [mermaid-diagrams](../mermaid-diagrams/SKILL.md) |
-| "adr-authoring", "adr authoring" | [adr-authoring](../adr-authoring/SKILL.md) |
+| "adr-authoring", "adr authoring", "architecture decision record", "fitness function", "decision confirmation" | [adr-authoring](../adr-authoring/SKILL.md) |
 | "c4-diagramming", "c4 diagramming" | [c4-diagramming](../c4-diagramming/SKILL.md) |
 | "capacity engineering", "cost engineering", "capacity model", "capacity planning", "unit cost", "cost per request", "cost per user", "budget threshold", "spending alert", "spending cap", "rate limit enforcement", "quota management", "load test plan", "soak test plan", "capacity projection", "growth forecast capacity", "peak sizing", "degraded capacity", "SLO cost tradeoff", "cost attribution", "cost anomaly review", "cost-aware architecture", "cost-performance tradeoff" | [capacity-and-cost-engineering](../capacity-and-cost-engineering/SKILL.md) |
 | "technology-radar", "technology radar" | [technology-radar](../technology-radar/SKILL.md) |

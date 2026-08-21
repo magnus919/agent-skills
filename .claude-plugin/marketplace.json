@@ -21,7 +21,7 @@
         "./adr-authoring"
       ],
       "strict": false,
-      "description": "Write, review, and maintain architecture decision records with clear context, alternatives, consequences, and lifecycle governance. Use when a consequential technical decision must remain understandable."
+      "description": "Write, review, and maintain architecture decision records with clear context, alternatives, consequences, confirmation links, and lifecycle governance. Use when a consequential technical decision or its enforceable architectural constraint must remain understandable. Do not use for system-wide evolutionary architecture design, general observability, or operating a named test or CI tool."
     },
     {
       "name": "aeo",

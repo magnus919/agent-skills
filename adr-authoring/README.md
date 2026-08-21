@@ -13,17 +13,20 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
-| `references/` | Reference material: `adr-format.md`, `adr-to-pyramid-mapping.md`, `decision-sustainability.md`, `fitness-functions.md`, `project-setup-guide.md` |
+| `references/` | Reference material for ADR formats, lifecycle, sustainability, fitness-function design, and provenance. |
+| `templates/fitness-function-record.md` | Fillable record connecting an ADR decision to a check and observed evidence. |
 
 ## Quick Start
 
-Read `SKILL.md` for the decision workflow, then start from `references/adr-format.md`.
+Read `SKILL.md` for the decision workflow, then start from `references/adr-format.md`. When a decision needs ongoing confirmation, use `templates/fitness-function-record.md` with `references/fitness-functions.md`.
 
 Install or expose this directory using your agent's standard Agent Skills loading mechanism, then ask for work that matches the triggers below.
 
 ## Triggers
 
-- Write, review, and maintain architecture decision records with clear context, alternatives, consequences, and lifecycle governance. Use when a consequential technical decision must remain understandable.
+- Write, review, and maintain architecture decision records with clear context, alternatives, consequences, confirmation links, and lifecycle governance. Use when a consequential technical decision or its enforceable architectural constraint must remain understandable.
+- Define or review a fitness function's scope, cadence, evidence, threshold, ownership, exception handling, gaming resistance, review, or retirement.
+- Do not use for system-wide evolutionary architecture design, general observability, or operating a named test or CI tool.
 - Requests involving the method, deliverables, or review process described in `SKILL.md`.
 - Work where a reusable template or reference from this skill would reduce avoidable mistakes.
 
