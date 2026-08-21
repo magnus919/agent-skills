@@ -11,6 +11,20 @@ Use this template for an executive, portfolio, experiment, launch, or lifecycle 
 - Records reviewed:
 - Decision deadline or trigger:
 
+## Minimum decision record
+
+- Intervention and population:
+- Value hypothesis:
+- Primary outcome:
+- Countermetrics:
+- Comparison and limitations:
+- Cost boundary:
+- Relevant slices:
+- Evidence classes:
+- Missing evidence, owner, and next trigger:
+- Authority limit:
+- Reversal path:
+
 ## Executive decision
 
 - Disposition: scale / constrain / redesign / hold / retire / exception
