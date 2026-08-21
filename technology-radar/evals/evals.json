@@ -41,13 +41,46 @@
     {
       "id": "governance-process",
       "prompt": "Right now any team can introduce any technology and we discover the consequences later. I want architecture governance that reviews technology choices without becoming a bureaucratic approval board that blocks everything. How do I design the process?",
-      "expected_output": "A governance process designed for speed and coverage: the response defines the structure — a lightweight review board or RFC process with a stated scope (new technologies entering the org, significant new uses of existing ones, and major retirements), decision criteria aligned with the radar and the org's strategy, and a fast-track lane for low-risk choices so the board does not become the bottleneck. It explains the operating rules: the board's job is to ask the right questions and record decisions with rationale, not to redesign every proposal; proposals carry the evidence (alternatives, risks, and the evaluation plan) and the board responds within a stated time; and decisions are recorded so the radar and the decision log stay the source of truth. It covers the failure modes to avoid: a board with no criteria that votes on taste, and an approval process with no fast track that pushes teams to bypass it.",
+      "expected_output": "A proportional governance process that first assesses reversibility, scope, risk, blast radius, regulation, and cross-team impact, then selects the lightest adequate mode: automated policy, federated decision, advice process, or centralized review. It gives each mode a clear authority model and minimum evidence, uses centralized review only for genuinely consequential choices, and records exceptions, conditions, and reconsideration triggers. It also closes the loop by feeding implementation and operational evidence into standards and radar decisions, while preserving explicit boundaries with enterprise architecture, ADR authoring, implementation, security engineering, and operations.",
       "assertions": [
-        "The process has a stated scope and decision criteria aligned with the radar",
-        "A fast-track lane keeps low-risk choices from becoming board bottlenecks",
-        "Proposals carry evidence and the board responds within a stated time",
-        "Decisions are recorded with rationale in a durable decision log",
-        "Failure modes are addressed: taste-based voting and bypass-prone approval processes"
+        "The process assesses reversibility, scope, risk, blast radius, regulation, and cross-team impact",
+        "Automated policy, federated decision, advice process, and centralized review are distinguished as governance modes",
+        "The output avoids treating a standing board or fixed process timing as mandatory for every decision",
+        "Exceptions include scope, reason, owner, compensating controls, and an expiry or revisit trigger",
+        "Implementation and operational evidence feeds later standards or radar decisions"
+      ]
+    },
+    {
+      "id": "governance-mode-selection",
+      "prompt": "A team wants to change an internal library used by three services. The change is easy to revert, has no regulatory implications, but could create incompatible interfaces if other teams are surprised. Which architecture-governance path should we use and what should we record?",
+      "expected_output": "A federated decision or advice process is selected instead of mandatory centralized approval, because the change is reversible and bounded but has cross-team interface impact. The response names the local decision owner, affected consultees, compatibility checks, published scope, decision rationale, and an escalation condition if the change expands or creates an unresolved shared contract conflict.",
+      "assertions": [
+        "A local or federated path is preferred over centralized review because the change is reversible and bounded",
+        "Cross-team interface impact leads to consultation, compatibility checks, or published notice",
+        "The output names decision ownership and an escalation condition",
+        "The response does not pretend that low risk means no coordination is needed"
+      ]
+    },
+    {
+      "id": "automated-policy-and-exception",
+      "prompt": "We want a CI rule requiring approved encryption settings across all new services, but teams sometimes need a documented exception for an external integration. Design the governance approach.",
+      "expected_output": "An automated policy is used for the objective encryption requirement, with a visible failing check, rationale, owner, and a bounded exception path. The exception record includes scope, reason, risk, compensating controls, accountable owner, expiry or review trigger, and closure evidence. The response says to escalate if exceptions become frequent or the rule is masking a judgment that automation cannot safely decide.",
+      "assertions": [
+        "The objective requirement is assigned to automated policy rather than a recurring manual approval",
+        "The policy has an owner, visible failure output, and a stated rationale",
+        "The exception path records scope, reason, compensating controls, owner, and expiry or revisit trigger",
+        "Recurring or unsafe exceptions trigger policy review or stronger governance"
+      ]
+    },
+    {
+      "id": "governance-boundary",
+      "prompt": "An executive asks for an enterprise capability map and target-state roadmap, while another team asks for an ADR template and a production incident runbook. Should the technology-radar architecture-governance method own all three?",
+      "expected_output": "No. Enterprise capability mapping and target-state roadmaps belong to enterprise architecture; ADR structure belongs to ADR authoring; and incident response/runbooks belong to operations or SRE. Technology-radar may supply technology portfolio posture, governance-mode selection, standards, exceptions, and feedback links at the boundaries, but it should not absorb those neighboring workflows.",
+      "assertions": [
+        "Enterprise capability and target-state roadmap work is routed away from technology-radar",
+        "ADR authoring is identified as a separate neighboring owner",
+        "Incident response and operational runbooks are identified as separate operational ownership",
+        "The response preserves technology-radar's technology portfolio and governance boundary"
       ]
     },
     {
