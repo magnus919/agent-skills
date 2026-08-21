@@ -37,7 +37,7 @@ Build a claim table before writing the conclusion:
 
 | Claim | Evidence class | Source and scope | What it supports | What it does not support | Open challenge | Permitted interpretation |
 |---|---|---|---|---|---|---|
-| [claim] | observed / causal / inferred / vendor-reported / asserted / normative | [citation, date, version] | [permitted interpretation] | [boundary] | [test or missing evidence] | [calibrated language] |
+| [claim] | observed / causal / inferred / vendor-reported / asserted / normative | [citation, date, version] | [supported claim] | [boundary] | [test or missing evidence] | [calibrated language] |
 
 Use the strongest source appropriate to the claim:
 

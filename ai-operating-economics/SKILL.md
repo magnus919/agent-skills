@@ -93,7 +93,7 @@ Use this sequence for an AI initiative review. Load the detailed method and the 
 |---|---|---|---|
 | Triage | A claim or opportunity needs a bounded first decision | Workflow, value hypothesis, one outcome, one countermetric, known gaps | Hold, with a routing/evidence plan |
 | Standard | A pilot or workflow decision can change population or investment | Comparison, outcome/countermetrics, slices, cost boundary, owner, reversal path | Scale, constrain, redesign, or hold |
-| High-assurance | Authority, sensitive data, material user impact, or irreversible change is involved | Standard evidence plus governance packet, human oversight, incident/revalidation, and decommissioning evidence | Scale only within an explicit authority boundary, or exception/no-go |
+| High-assurance | Authority, sensitive data, material user impact, or irreversible change is involved | Standard evidence plus governance packet, human oversight, incident/revalidation, and decommissioning evidence | Scale only within an explicit authority boundary, or Hold |
 
 ### 1. Define the intervention and decision
 
