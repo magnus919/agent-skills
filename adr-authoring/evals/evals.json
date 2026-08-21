@@ -89,10 +89,10 @@
     {
       "id": "adr-fitness-boundary",
       "prompt": "Should the ADR authoring skill own a complete evolutionary-architecture program with architecture metrics, drift governance, and change sequencing, or should it define how an ADR is confirmed by a fitness function? Explain the boundary and route the work.",
-      "expected_output": "A boundary decision that keeps ADR authoring responsible for the durable decision, rationale, confirmation link, and operational record, while routing system-wide evolutionary architecture, drift governance, and change sequencing to a human architecture decision owner because no current catalog skill owns that complete workflow. It may link to test, telemetry, or governance skills for execution, but it does not absorb their tool or operational runbooks.",
+      "expected_output": "A boundary decision that keeps ADR authoring responsible for the durable decision, rationale, confirmation link, and operational record, while routing system-wide evolutionary architecture, drift governance, and change sequencing to software-architecture. It may link to test, telemetry, or governance skills for execution, but it does not absorb their tool or operational runbooks.",
       "assertions": [
         "ADR authoring is limited to durable decisions and their confirmation links",
-        "System-wide evolutionary architecture and drift governance are routed to a human architecture decision owner because no current catalog skill owns that workflow",
+        "System-wide evolutionary architecture and drift governance are routed to software-architecture",
         "Execution ownership remains with the relevant test, CI, telemetry, runtime, or governance system",
         "The response explains why the boundary prevents duplicated or ambiguous ownership",
         "The proposed output includes an ADR-to-function-to-evidence trace rather than a standalone metric program"

@@ -67,7 +67,7 @@ Do **not** load this skill when:
 - The change is an in-place refactor or code rewrite with no data or interface migration.
 - You are writing a release pipeline or deployment automation — route to release-engineering.
 - You are debugging a production incident — route to site-reliability-engineering.
-- You are deciding whether to decompose a system or designing its target architecture — route to the software-architecture decision owner.
+- You are deciding whether to decompose a system or designing its target architecture — route to [`software-architecture`](../software-architecture/SKILL.md).
 
 ## Requirements
 

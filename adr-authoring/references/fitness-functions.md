@@ -6,7 +6,7 @@ A fitness function is a repeatable check that supplies evidence about whether an
 
 The ADR owns the durable choice, rationale, consequences, and a link to confirmation. The fitness-function record owns the operational contract for the check. The project's test, CI, telemetry, runtime, or governance system owns execution and raw evidence. Do not put executable implementation in the ADR, and do not let an operational dashboard silently become the decision record.
 
-For system-wide evolutionary architecture, use a human architecture decision owner; no current catalog skill owns that complete workflow. For general SLO, telemetry, or alerting design, use the relevant reliability or telemetry skill. For operating a named tool, use that tool's skill. This reference is about making an ADR's consequential claim confirmable.
+For system-wide evolutionary architecture, use [`software-architecture`](../../software-architecture/SKILL.md). For general SLO, telemetry, or alerting design, use the relevant reliability or telemetry skill. For operating a named tool, use that tool's skill. This reference is about making an ADR's consequential claim confirmable.
 
 ## Decision-to-Evidence Trace
 

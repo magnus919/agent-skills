@@ -139,7 +139,7 @@ monolith. If the boundary still needs shared writes, frequent cross-boundary
 transactions, unobservable consumers, or has no tested recovery path, stop and
 recommend modular improvement or request more evidence rather than creating a
 distributed shape by default. Route target-boundary justification to the
-software-architecture decision owner without creating a dead catalog link; this
+[`software-architecture`](../software-architecture/SKILL.md) decision owner; this
 skill owns the safe current-to-target transition once authorized.
 
 ## Core workflow
@@ -334,7 +334,7 @@ methodology. Route implementation details to the skill that owns the subsystem.
 
 | Migration concern | Route to |
 |---|---|
-| Decomposition justification and target-boundary decision | Human architecture decision owner (no current catalog skill owns this decision; `software-architecture-analysis` covers reverse engineering only); this skill sequences an authorized transition |
+| Decomposition justification and target-boundary decision | [`software-architecture`](../software-architecture/SKILL.md); this skill sequences an authorized transition |
 | API contract design, versioning policy, deprecation mechanics | [api-design-and-evolution](../api-design-and-evolution/SKILL.md) |
 | Database schema evolution, ETL/ELT pipeline design, backfill operations | [data-engineering](../data-engineering/SKILL.md) |
 | Infrastructure provisioning, service networking, secret management during migration | [platform-engineering](../platform-engineering/SKILL.md) |
