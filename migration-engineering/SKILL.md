@@ -1,13 +1,13 @@
 ---
 name: migration-engineering
 description: >-
-  Plan and execute safe cross-system migrations — schema, data, API, infrastructure,
-  and service — with compatibility windows, dual-running, backfills, reconciliation,
-  cutover, deprecation, and cleanup. Covers expand/contract, reversible and irreversible
-  recovery paths, migration observability, correctness evidence, ownership, and
-  customer impact. Do not use for single-technology quick fixes, tool-specific
-  how-to guides, or migrations whose scope does not cross a system boundary; do not
-  prescribe one migration technology or claim rollback is always possible.
+  Plan and execute safe cross-system migrations, including service extraction
+  from monoliths. Use when moving data, schemas, interfaces, infrastructure, or
+  service ownership through compatibility windows, dual-running, reconciliation,
+  cutover, recovery, or deprecation. Do not use for deciding whether
+  decomposition is justified, designing a target architecture, or implementing
+  one named technology; route those to the relevant architecture or specialist
+  skill.
 license: MIT
 compatibility: Platform-agnostic methodology. No runtime dependencies, API keys, or external services required.
 metadata:
@@ -59,6 +59,14 @@ Load this skill when the task involves:
   Some migrations include steps that are irreversible; the method requires
   identifying those steps explicitly and planning acceptance, communication, and
   contingency rather than implying a false safety net.
+
+For service extraction, load [references/service-extraction-patterns.md](references/service-extraction-patterns.md)
+when a boundary has been proposed and the transition pattern, coexistence shape,
+or modular-monolith alternative needs assessment. Use
+[templates/service-extraction-assessment.md](templates/service-extraction-assessment.md)
+to capture the evidence before filling the general migration plan. This skill
+sequences an approved extraction; it does not decide that a monolith should be
+split or identify the target architecture.
 
 ## Migration type classification
 
@@ -115,6 +123,24 @@ verified by traffic shifting, canary deployment, and service-level objective
 topology. Lift-and-shift with the old environment preserved is reversible;
 in-place replacement without a preserved old environment may be irreversible
 or require a full redeploy (roll-forward/restore).
+
+### Service extraction
+
+A service extraction is usually a combined infrastructure/service, API, and data
+migration. Before the expand phase, record the proposed capability's boundary
+evidence, coupling, data ownership, callers, and failure behavior. Select the
+least disruptive transition pattern that creates evidence: strangler routing,
+branch by abstraction, an anti-corruption boundary, CDC, parallel run, or a
+combination with distinct roles. Keep the old path selectable until comparison,
+reconciliation, customer-impact, and operational gates pass.
+
+The extraction assessment must also record explicit reasons to retain a modular
+monolith. If the boundary still needs shared writes, frequent cross-boundary
+transactions, unobservable consumers, or has no tested recovery path, stop and
+recommend modular improvement or request more evidence rather than creating a
+distributed shape by default. Route target-boundary justification to the
+software-architecture decision owner without creating a dead catalog link; this
+skill owns the safe current-to-target transition once authorized.
 
 ## Core workflow
 
@@ -294,10 +320,12 @@ Load references and templates on demand — do not load everything at once.
 | [references/discovery-brief.md](references/discovery-brief.md) | You need to understand how migration concepts map across sibling skills and where this skill's boundaries are |
 | [references/compatibility-patterns.md](references/compatibility-patterns.md) | Designing forward/backward compatibility for a specific migration type |
 | [references/recovery-classification.md](references/recovery-classification.md) | Classifying recovery paths (rollback, roll-forward, restore, irreversible) for a concrete migration step |
+| [references/service-extraction-patterns.md](references/service-extraction-patterns.md) | Assessing extraction seams and selecting strangler routing, branch by abstraction, anti-corruption, CDC, and parallel-run patterns; includes modular-monolith retention criteria |
 | [templates/migration-plan.md](templates/migration-plan.md) | Producing a complete migration plan with all structured fields |
 | [templates/compatibility-matrix.md](templates/compatibility-matrix.md) | Building a compatibility matrix for a multi-consumer migration |
 | [templates/reconciliation-plan.md](templates/reconciliation-plan.md) | Designing a reconciliation strategy for a data migration |
 | [templates/cutover-and-recovery-record.md](templates/cutover-and-recovery-record.md) | Recording cutover procedures, recovery paths, and irreversible-step acknowledgments |
+| [templates/service-extraction-assessment.md](templates/service-extraction-assessment.md) | Capturing boundary evidence, coupling, ownership, coexistence, sequencing, operational risk, reversibility, and the decision to extract or retain a modular monolith |
 
 ## Specialist routing
 
@@ -306,6 +334,7 @@ methodology. Route implementation details to the skill that owns the subsystem.
 
 | Migration concern | Route to |
 |---|---|
+| Decomposition justification and target-boundary decision | Human architecture decision owner (no current catalog skill owns this decision; `software-architecture-analysis` covers reverse engineering only); this skill sequences an authorized transition |
 | API contract design, versioning policy, deprecation mechanics | [api-design-and-evolution](../api-design-and-evolution/SKILL.md) |
 | Database schema evolution, ETL/ELT pipeline design, backfill operations | [data-engineering](../data-engineering/SKILL.md) |
 | Infrastructure provisioning, service networking, secret management during migration | [platform-engineering](../platform-engineering/SKILL.md) |
