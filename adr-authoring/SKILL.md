@@ -1,6 +1,6 @@
 ---
 name: adr-authoring
-description: Write, review, and maintain architecture decision records with clear context, alternatives, consequences, and lifecycle governance. Use when a consequential technical decision must remain understandable.
+description: Write, review, and maintain architecture decision records with clear context, alternatives, consequences, confirmation links, and lifecycle governance. Use when a consequential technical decision or its enforceable architectural constraint must remain understandable. Do not use for system-wide evolutionary architecture design, general observability, or operating a named test or CI tool.
 license: MIT
 compatibility: No runtime dependency.
 metadata:
@@ -104,13 +104,21 @@ Status lives in the document header, not the filename — status changes shouldn
 
 See `references/adr-format.md` for the full governance model and teamwork questions.
 
+## Fitness-Function Confirmation
+
+**Applicability:** Use when an ADR makes a claim that can be checked through code, configuration, runtime telemetry, a scheduled audit, or a bounded human review.
+
+Read `references/fitness-functions.md` to select the function's scope, cadence, evidence, threshold, owner, exception path, and retirement rule. Use `templates/fitness-function-record.md` for the operational record. Keep the ADR as the owner of the durable decision and its link to confirmation; keep implementation and execution in the project's test, CI, telemetry, or governance systems.
+
 ## Contents
 
 - `references/adr-format.md` — template catalog (11 formats: Nygard, MADR, Tyree & Akerman, Business Case, Planguage, Alexandrian, ITD, arc42, EdgeX, Gareth Morgan, NHS Wales), template selection decision tree, lifecycle stages, file naming, team governance, examples reference
 - `references/adr-to-pyramid-mapping.md` — active→L2, superseded→L3, consumer routing
-- `references/fitness-functions.md` — decisions as code: ArchUnit, ArchUnitTS, AI-assisted fitness functions, pyramid mapping (fitness functions → L3)
+- `references/fitness-functions.md` — method for selecting, operating, interpreting, reviewing, and retiring checks that connect ADR claims to durable evidence
 - `references/decision-sustainability.md` — 5 sustainability criteria + 8 guidelines for evaluating ADR quality before acceptance
 - `references/project-setup-guide.md` — bootstrapping ADRs in a new project: directory setup, README index, CONTRIBUTING.md/AGENTS.md docs, issue-first PR workflow with worked example
+- `templates/fitness-function-record.md` — reusable record for selecting, operating, reviewing, and retiring a fitness function
+- `references/source-index.md` — provenance and synthesis boundary for this skill
 
 ## Canonical Reference
 
