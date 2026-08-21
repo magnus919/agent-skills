@@ -96,6 +96,7 @@
     "./migration-engineering",
     "./ml-engineering",
     "./mobile-development",
+    "./multi-tenant-saas-architecture",
     "./neckbeard",
     "./notion",
     "./nous-branding",
