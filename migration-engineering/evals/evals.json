@@ -70,6 +70,69 @@
         "States that correctness evidence (reconciliation passing) is a prerequisite for cutover.",
         "Includes observability for the reconciliation failure: mismatch rate, affected rows, error distribution."
       ]
+    },
+    {
+      "id": "service-extraction-seam",
+      "prompt": "We want to extract checkout pricing from a modular monolith into a separately deployed service. Pricing shares a transaction with order creation, five internal jobs read its tables directly, and no team owns the pricing data end to end. Assess whether to proceed and, if appropriate, outline the first migration steps.",
+      "expected_output": "An evidence-first assessment that does not assume extraction is correct. It identifies shared transaction and data-ownership gaps, hidden direct consumers, and the need for a stable boundary and failure analysis. It either recommends retaining or strengthening the modular monolith pending evidence, or states concrete conditions before extraction; it does not jump directly to service creation.",
+      "assertions": [
+        "Identifies shared transaction scope as a boundary risk.",
+        "Identifies unclear data ownership and direct table consumers as blockers or evidence gaps.",
+        "Does not assume that a separately deployed service is the right outcome.",
+        "Records explicit conditions or evidence needed before proceeding.",
+        "Keeps decomposition justification distinct from migration sequencing."
+      ]
+    },
+    {
+      "id": "service-extraction-pattern-choice",
+      "prompt": "An approved customer-notification extraction has a stable HTTP entry point, one source database, and a target service that can consume a change stream. We need no customer-visible downtime and want a reversible transition. Compare strangler routing, branch by abstraction, anti-corruption boundary, CDC, and parallel run, then select a primary and supporting sequence.",
+      "expected_output": "A role-specific pattern comparison followed by a staged choice, likely routing or abstraction for traffic control with CDC for data synchronization and shadow or parallel comparison where side effects are isolated. The plan distinguishes what each pattern does, preserves the old authority during evidence collection, and states gates and reversal points.",
+      "assertions": [
+        "Distinguishes routing, abstraction, translation, CDC, and parallel execution rather than treating them as synonyms.",
+        "Selects a primary transition pattern and names supporting patterns with reasons.",
+        "Uses a compatibility window with the old path still selectable.",
+        "Addresses CDC lag, ordering, duplicates, replay, and deletes.",
+        "Defines comparison evidence and a stop or abort condition.",
+        "Describes a reversible pre-cutover recovery path."
+      ]
+    },
+    {
+      "id": "service-extraction-data-authority",
+      "prompt": "We are moving account preferences from a monolith database to a profile service. The monolith remains the authoritative writer during a six-week coexistence period; CDC feeds the new store, updates can arrive out of order, and deletes must propagate. Write the migration evidence and cutover gates.",
+      "expected_output": "A migration record that states source authority, CDC ordering and replay behavior, duplicate and delete handling, lag monitoring, reconciliation across completeness, accuracy, timeliness, and consistency, and a cutover gate that does not transfer ownership until evidence passes. It distinguishes a read switch from a write-ownership transfer.",
+      "assertions": [
+        "States that the monolith remains authoritative during coexistence.",
+        "Addresses out-of-order changes, duplicates, replay, and delete propagation.",
+        "Includes CDC lag and error observability.",
+        "Includes reconciliation across completeness, accuracy, timeliness, and consistency.",
+        "Defines a cutover gate before changing write authority.",
+        "Does not claim that switching reads alone transfers data ownership."
+      ]
+    },
+    {
+      "id": "service-extraction-recovery",
+      "prompt": "During a service extraction, 20% of reads have moved to the new service. The old service is still writable and the old database has not been deleted. The new service shows a small semantic mismatch and elevated latency. Classify the recovery and state whether to continue shifting traffic.",
+      "expected_output": "A stop or pause decision: do not continue shifting traffic while correctness and latency evidence are outside the agreed gates. Because the old service and database remain current and selectable, classify recovery as rollback by shifting reads back, then diagnose and reconcile before retrying. The response must not call this irreversible or recommend proceeding with known mismatch.",
+      "assertions": [
+        "Stops or pauses further traffic shifting because correctness and latency gates are failing.",
+        "Classifies the available recovery as rollback while the old path remains current and selectable.",
+        "Proposes mismatch diagnosis and re-verification before retrying.",
+        "Does not classify the state as irreversible.",
+        "Does not recommend proceeding with known semantic divergence."
+      ]
+    },
+    {
+      "id": "modular-monolith-near-boundary",
+      "prompt": "A team asks to extract reporting because deployments feel slow. The candidate has no independent data owner, requires joins across four modules, has low and stable load, and would add a cross-service transaction for every report request. Produce a migration-engineering recommendation.",
+      "expected_output": "A recommendation to retain or improve the modular monolith rather than create a service. It cites the absence of independent ownership, cross-module joins and transactions, low scale pressure, and added distributed failure/latency as evidence. It proposes modular improvements and states what evidence would reopen extraction.",
+      "assertions": [
+        "Recommends retaining or strengthening a modular monolith.",
+        "Cites unclear ownership and cross-module transaction or join coupling.",
+        "Uses low stable load as evidence against a service-specific scaling benefit.",
+        "Explains the added latency or partial-failure risk of extraction.",
+        "Defines a modular improvement and a condition for reassessment.",
+        "Does not select a migration pattern merely because extraction was requested."
+      ]
     }
   ]
 }

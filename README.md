@@ -306,7 +306,7 @@ Operate MeshCore Companion radio packet capture over BLE, serial, or TCP. Covers
 
 ### [migration-engineering](migration-engineering/SKILL.md)
 
-Plan and execute safe cross-system migrations — schema, data, API, infrastructure, and service — with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Distinguishes rollback, roll-forward, restore, and irreversible recovery paths. Routes implementation to API, data, platform, release, and SRE specialists.
+Plan and execute safe cross-system migrations, including service extraction from monoliths, with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Distinguishes rollback, roll-forward, restore, and irreversible recovery paths. Routes implementation to API, data, platform, release, and SRE specialists, while leaving decomposition decisions to the architecture owner.
 
 ### [ml-engineering](ml-engineering/SKILL.md)
 

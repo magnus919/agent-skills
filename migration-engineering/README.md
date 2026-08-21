@@ -28,11 +28,13 @@ right specialist skill.
 | `references/discovery-brief.md` | Bounded survey of existing migration-adjacent material across the catalog and a clear definition of what migration-engineering owns vs. hands off. |
 | `references/compatibility-patterns.md` | Detailed patterns for forward and backward compatibility by migration type. |
 | `references/recovery-classification.md` | Deep reference on the four recovery paths — rollback, roll-forward, restore, irreversible — with decision rules and examples. |
+| `references/service-extraction-patterns.md` | Service-extraction seam evidence, coupling and data-ownership checks, transition-pattern selection, coexistence, reversibility, operational risk, and reasons to retain a modular monolith. |
 | `templates/migration-plan.md` | Fillable template for a complete migration plan covering all structured fields. |
 | `templates/compatibility-matrix.md` | Template for building a compatibility matrix across consumers and migration phases. |
 | `templates/reconciliation-plan.md` | Template for designing a reconciliation strategy with completeness, accuracy, timeliness, and consistency dimensions. |
 | `templates/cutover-and-recovery-record.md` | Template for recording cutover procedures, recovery paths per step, and irreversible-step acknowledgments. |
-| `evals/evals.json` | Five output-quality evaluation cases: additive schema change, backfill with reconciliation, API version migration, irreversible cutover, and reconciliation failure. |
+| `templates/service-extraction-assessment.md` | Fillable assessment for boundary evidence, coupling, ownership, coexistence, pattern choice, operational risk, reversibility, and modular-monolith retention. |
+| `evals/evals.json` | Ten output-quality evaluation cases covering schema, data, API, irreversible cutover, reconciliation failure, service-extraction seams, pattern choice, data authority, recovery, and modular-monolith boundaries. |
 
 ## Quick Start
 
@@ -40,7 +42,11 @@ right specialist skill.
 2. Load the skill: your agent reads `SKILL.md` and follows the core workflow.
 3. The agent produces a migration plan using the templates, starting with the
    migration plan template.
-4. Route implementation details to the specialist skills named in the routing table
+4. For an approved service extraction, load the service-extraction reference and
+   assessment template before the general migration plan. The assessment keeps
+   the modular monolith as an explicit outcome when the evidence does not support
+   an independent service.
+5. Route implementation details to the specialist skills named in the routing table
    (api-design-and-evolution, data-engineering, platform-engineering,
    release-engineering, site-reliability-engineering, implementation-planning).
 
@@ -52,6 +58,7 @@ Load this skill when:
 - An API version migration needs a compatibility window and deprecation timeline.
 - Infrastructure or services need to move between platforms or environments.
 - A cross-system change requires cutover planning, rollback design, or irreversible-step acknowledgment.
+- A monolith capability is moving toward an independently deployed service and needs seam evidence, coexistence, CDC, parallel-run, or strangler sequencing.
 - A migration's recovery strategy needs to distinguish rollback, roll-forward, restore, and irreversible paths.
 
 Do **not** load this skill when:
@@ -60,6 +67,7 @@ Do **not** load this skill when:
 - The change is an in-place refactor or code rewrite with no data or interface migration.
 - You are writing a release pipeline or deployment automation — route to release-engineering.
 - You are debugging a production incident — route to site-reliability-engineering.
+- You are deciding whether to decompose a system or designing its target architecture — route to the software-architecture decision owner.
 
 ## Requirements
 
