@@ -68,7 +68,7 @@ Use this sequence for an AI initiative review. Load the detailed method and the 
 
 ### 1. Define the intervention and decision
 
-Name the workflow, population, task boundary, intervention mode, baseline, decision sought, and decision owner. State whether the AI assists, recommends, drafts, routes, or acts. Define what remains human-controlled.
+Name the workflow, population, task boundary, intervention mode, baseline, decision sought, and decision owner. State whether the AI assists, recommends, routes, executes, or replaces/removes work. Define what remains human-controlled.
 
 Do not begin with the model name or a claimed percentage. Begin with the work that changes and the decision the evidence must support.
 

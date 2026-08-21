@@ -31,6 +31,8 @@ Record the owner, baseline, realization mechanism, timing, dependencies, and dis
 
 Benefits-realization planning can borrow from public-sector benefits-management guidance, but the local owner and accounting treatment remain authoritative. Load the source index when a board or investment claim depends on the distinction.
 
+## 2. Gather evidence by claim, not by headline
+
 Build a claim table before writing the conclusion:
 
 | Claim | Evidence class | Source and scope | What it supports | What it does not support | Open challenge |
@@ -148,6 +150,7 @@ Use calibrated verbs:
 - **Causal:** “The staggered comparison estimates an increase within this population and period.”
 - **Inferred:** “The pattern is consistent with knowledge transfer, but does not establish it.”
 - **Vendor-reported:** “The provider reports that customers experienced…”
+- **Asserted:** “The sponsor claims…” or “The proposal assumes…”; do not present it as observed.
 - **Normative:** “The framework recommends monitoring and assigned responsibility.”
 - **Unknown:** “The available evidence does not establish…”
 
