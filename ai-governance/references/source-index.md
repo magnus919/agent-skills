@@ -29,7 +29,7 @@ are not pasted into any reference.
 Nothing in this skill is legal, financial, or security advice. Regulatory, standards, and
 security material should be re-verified against primary sources at the time of use.
 
-## The eleven reference files
+## The twelve reference files
 
 The `ai-governance` skill ships twelve reference files under `references/`. The table below
 names all eleven and maps each to its informing sources: book short names (see the
@@ -53,9 +53,9 @@ canonical identifiers used consistently across the skill.
 
 ## Research notes
 
-Five research notes, produced during the research foundation milestone, de-stale the books
+Seven research notes, produced during the research foundation milestone, de-stale the books
 against where AI governance stands today. They live in the mission library and are cited by
-short filename throughout the skill. All five are used:
+short filename throughout the skill. All seven are used:
 
 - research-regulatory.md — current laws and enforcement across jurisdictions (EU AI Act,
   GDPR, US federal/state, UK, China, sectoral rules), the authoritative basis for
@@ -71,6 +71,8 @@ short filename throughout the skill. All five are used:
 - research-org-board-governance.md — roles, governance councils, the Chief AI Officer,
   fiduciary duty, maturity models, third-party risk; informs `foundations-and-principles.md`,
   `governance-operating-model.md`, and `procurement-third-party-and-board-oversight.md`.
+
+- gxp-ai-governance-brief.md and gxp-ai-governance-log.md — GxP, ALCOA+, data integrity, electronic records, validation/assurance, and QMS interfaces; inform `gxp-and-data-integrity.md`.
 
 ## Bibliography — the twelve source books
 
