@@ -6,6 +6,7 @@ compatibility: Python 3.9+ is required only for the bundled calculation and summ
 metadata:
   source_repo: https://github.com/magnus919/hermes-profiles
   source_commit: 867a555
+  enrichment_sources: "Seeking SRE; The Site Reliability Workbook"
 ---
 
 
@@ -24,6 +25,10 @@ A comprehensive methodology for designing, operating, and improving reliable pro
 | "Do a reliability review" | Architecture review against SRE principles, risk assessment |
 | "I need an incident commander" | Incident command framework, role cards, communication templates |
 | "Automate this operational task" | Toil assessment, automation decision tree, runbook pattern |
+| "Adopt SRE in this organization" | Engagement boundaries, maturity, team model, and change adoption |
+| "Review this reliability design" | User journeys, dependencies, overload, configuration, canary, durability |
+| "Our SRE team is overloaded" | Operational-load diagnosis, protected engineering time, recovery plan |
+| "Improve incident learning or sustainable on-call" | Cognitive load, psychological safety, documentation, exercises |
 ## When not to use
 
 Use [release-engineering](../release-engineering/SKILL.md) to plan releases, compose promotion and rollback gates, or coordinate a release train. Use [systematic-debugging](../systematic-debugging/SKILL.md) to find the cause of a specific failure. Operating the telemetry stack itself — Prometheus scrape configs, OpenTelemetry Collector pipelines, Loki ingest and retention, Prometheus rules files — belongs to [telemetry](../telemetry/SKILL.md); this skill owns the SLI/SLO and alert *design* those rules implement. Grafana product work — dashboards, panels, Grafana-side alert rules, contact points, notification policies — belongs to [grafana](../grafana/SKILL.md).
@@ -34,7 +39,8 @@ Use [release-engineering](../release-engineering/SKILL.md) to plan releases, com
 |---|---|---|
 | SRE Book Chapter Summaries | `references/sre-book-chapters.md` | Design engagement, first principles review |
 | SLO/SLI Framework | `references/slo-sli-framework.md` | Defining reliability targets |
-| Error Budget Governance | `references/error-budget-governance.md` | Policy design, burn rate alerts |
+| SLO Implementation Recipe | `references/slo-implementation-recipe.md` | Agent-executable SLO adoption sequence and stakeholder review |
+| Error Budget Governance | `templates/error-budget-policy.md` and `references/slo-sli-framework.md` | Policy design, burn rate alerts |
 | Incident Command System | `references/incident-command-system.md` | During/after incident, training |
 | Blameless Postmortems | `references/postmortem-culture.md` | After incident, process design |
 | Monitoring & Alerting | `references/monitoring-alerting.md` | Observability design, alert rules |
@@ -48,6 +54,11 @@ Use [release-engineering](../release-engineering/SKILL.md) to plan releases, com
 | Product-Focused Reliability | `references/product-focused-reliability.md` | Product-centric SRE, CUJ-based SLOs, JTBD model |
 | Twenty Years of Lessons | `references/twenty-years-lessons.md` | Incident-derived tactical lessons, Prodverbs |
 | SRE Ecosystem Guide | `references/sre-ecosystem-guide.md` | Curated guide to all SRE resources (Workbook, Secure Systems, Classroom, Prodcast, STPA, Video Gallery, Mobaa, fundamentals, AI ops) |
+| Adoption and Engagement | `references/sre-adoption-and-engagement.md` | Starting SRE, dedicated and non-dedicated team models, maturity, change adoption |
+| Reliability Design and Change | `references/reliability-design-and-change.md` | Capacity, overload, configuration, canaries, data durability, dependencies, design review |
+| Human Systems and Learning | `references/human-systems-and-learning.md` | Cognitive work, sustainable on-call, psychological safety, documentation, exercises |
+| Third-Party Dependency Reliability | `references/third-party-dependency-reliability.md` | Vendor boundaries, failure modes, fallbacks, and provider evidence |
+| Operational Documentation | `references/operational-documentation.md` | Functional quality, ownership, testing, and staleness lifecycle |
 
 ## Templates
 
@@ -61,13 +72,15 @@ Use [release-engineering](../release-engineering/SKILL.md) to plan releases, com
 | On-Call Rotation Template | `templates/oncall-rotation.md` | Rotation schedule and escalation |
 | Service Review Checklist | `templates/service-review-checklist.md` | Pre-launch reliability review |
 | Incident Communication Template | `templates/incident-communication.md` | Status updates during incidents |
+| Reliability Design Review | `templates/reliability-design-review.md` | Evidence-based review of user impact, failure modes, capacity, change, and operations |
+| Operational Overload Recovery | `templates/operational-overload-recovery.md` | Declare, protect, reduce, and verify recovery from unsustainable operational load |
+| Reliability Ownership Charter | `templates/reliability-ownership-charter.md` | Make service, pager, dependency, and engagement boundaries explicit |
 
 ## Scripts
 
 | Script | Purpose |
 |---|---|
 | `scripts/slo-burn-rate.py` | Calculate error budget burn rate from SLI data |
-| `scripts/postmortem-summary.py` | Generate a postmortem summary from structured data |
 
 ## Portability
 

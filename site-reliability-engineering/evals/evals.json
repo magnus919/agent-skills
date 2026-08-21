@@ -61,6 +61,42 @@
         "The dependency causing the burn gets an owner and timeline",
         "One-off exceptions with stated owners are distinguished from policy-ignoring patterns"
       ]
+    },
+    {
+      "id": "reliability-design-review",
+      "prompt": "Review this proposed event-processing service before launch. It has a REST API, a queue, a database, and two external providers. Traffic may grow 20x during campaigns. What evidence and design decisions must be explicit before approval?",
+      "expected_output": "A concrete reliability design review that starts from user journeys and SLOs, maps synchronous and asynchronous dependencies, quantifies demand and capacity, covers retries and overload, distinguishes availability from data correctness and durability, defines canary and rollback evidence, and assigns owners and verification criteria for unresolved risks.",
+      "assertions": [
+        "The review begins with user journeys and user-facing SLOs rather than infrastructure labels",
+        "Capacity, queues, retries, timeouts, and dependency failure modes are quantified or explicitly marked unknown",
+        "Overload behavior includes admission control, degradation, shedding, or bounded backlog decisions",
+        "Data correctness, durability, recovery, and privacy are treated separately from availability",
+        "Canary, rollback, ownership, and live-boundary verification criteria are explicit"
+      ]
+    },
+    {
+      "id": "sre-adoption-without-team",
+      "prompt": "We are a 30-person engineering organization with no SRE team. Engineers own services but pages are noisy and incidents depend on two people. How can we adopt SRE without creating a central gatekeeping department?",
+      "expected_output": "A bounded adoption plan that starts with one service and user-facing SLOs, measures toil and incident load, assigns service ownership, uses a hybrid or working-group model deliberately, provides context rather than opaque approvals, includes training and review cadence, and defines evidence-based exit or expansion criteria.",
+      "assertions": [
+        "The plan does not assume a dedicated SRE department is required",
+        "A bounded pilot has measurable SLO, incident, toil, and ownership evidence",
+        "The proposed operating model preserves service-team accountability and avoids central gatekeeping",
+        "Adoption includes training, change-management, review cadence, and explicit exit or expansion criteria",
+        "Noisy alerts and two-person dependency are treated as system risks with engineering remedies"
+      ]
+    },
+    {
+      "id": "operational-overload-and-human-factors",
+      "prompt": "Our SRE team is spending 80% of its time on pages and manual changes, and people are afraid to challenge risky mitigations during incidents. What should the recovery plan contain?",
+      "expected_output": "An overload recovery plan that declares the condition with evidence, protects engineering time, inventories and reduces recurring work, renegotiates scope, improves alert and configuration safety, establishes escalation and psychological safety, and verifies recovery through operational-load and reliability trends rather than asking people to work harder.",
+      "assertions": [
+        "Operational overload is declared using a measurable threshold and evidence",
+        "The plan protects engineering time and explicitly renegotiates scope or commitments",
+        "Pages and manual changes are inventoried with owners and verification criteria for reduction",
+        "Incident roles and psychological safety make it safe to challenge unsafe actions and escalate",
+        "Exit criteria include sustainable workload and verified reduction of recurring load"
+      ]
     }
   ]
 }
