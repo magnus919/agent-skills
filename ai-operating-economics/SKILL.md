@@ -25,6 +25,16 @@ This skill provides the cross-domain decision spine for evaluating an AI-enabled
 
 The core question is not “Did the model make people faster?” It is: “What changed in this workflow, for whom, at what full cost, with what outcome and countermetric evidence, and what authority should the organization grant next?”
 
+## Entry Points
+
+| Starting state | Start with | Primary artifact or route |
+|---|---|---|
+| Idea or proposed AI workflow | Steps 1–2 | `ai-initiative-evidence-record.md` |
+| Existing pilot or outcome data | Steps 3–7 | `evidence-method.md` plus the evidence record |
+| Request for broader population or side-effect authority | Step 7a and Step 8 | Governance evidence packet plus the evidence record |
+| Executive, portfolio, launch, or lifecycle review | Step 8–9 | `ai-economics-review.md`; route launch/runtime details onward |
+| Standalone financial, statistical, telemetry, runtime, or governance implementation task | When Not to Use | Named adjacent specialist skill |
+
 ## When to Use
 
 Load this skill when the user needs to:
@@ -65,6 +75,15 @@ Load this skill when the user needs to:
 ## Core Workflow
 
 Use this sequence for an AI initiative review. Load the detailed method and the evidence-record template when the task requires a durable artifact.
+
+### Quick Start by Need
+
+| Need | First action | Load next |
+|---|---|---|
+| Triage a claim | Name the workflow, decision, and evidence class | Steps 1–2 |
+| Build a durable record | Copy the initiative evidence record and complete the header first | `templates/ai-initiative-evidence-record.md` |
+| Investigate uncertain evidence | Freeze the claim table before drafting conclusions | `references/evidence-method.md` |
+| Prepare a review | Assemble evidence, slices, cost, gaps, and disposition | `templates/ai-economics-review.md` |
 
 ### 1. Define the intervention and decision
 
@@ -143,6 +162,10 @@ For every material claim, label it:
 
 Keep the source, access date, scope, version, caveat, and permitted interpretation with each claim. Load `references/source-index.md` for the research basis and evidence boundaries.
 
+### Minimum Decision Record
+
+Every completed review must expose, in one durable artifact: the intervention and population, value hypothesis, primary outcome, countermetrics, comparison and limitations, cost boundary, relevant slices, evidence classes, missing evidence with owner, disposition, authority limit, reversal path, and review trigger.
+
 ### 8. Produce a bounded decision
 
 Choose exactly one primary disposition:
@@ -162,12 +185,12 @@ At the review date, compare expected versus observed outcomes, cost, quality, wo
 
 ## Load-on-Demand References
 
-| Need | Load |
-|---|---|
-| Apply the full research and decision method, including comparison design and uncertainty | [references/evidence-method.md](references/evidence-method.md) |
-| Review the sources and their permitted interpretations | [references/source-index.md](references/source-index.md) |
-| Fill a durable initiative record before a review | [templates/ai-initiative-evidence-record.md](templates/ai-initiative-evidence-record.md) |
-| Prepare an executive or lifecycle review from one or more initiative records | [templates/ai-economics-review.md](templates/ai-economics-review.md) |
+| Need | Load when | File |
+|---|---|---|
+| Apply the full research and decision method, including comparison design and uncertainty | Evidence is incomplete, contested, or consequential | [references/evidence-method.md](references/evidence-method.md) |
+| Review sources and permitted interpretations | A claim needs provenance or a source boundary | [references/source-index.md](references/source-index.md) |
+| Fill a durable initiative record | Starting a new workflow review or pilot assessment | [templates/ai-initiative-evidence-record.md](templates/ai-initiative-evidence-record.md) |
+| Prepare an executive or lifecycle review | Combining one or more initiative records for a decision | [templates/ai-economics-review.md](templates/ai-economics-review.md) |
 
 ## Common Pitfalls
 
