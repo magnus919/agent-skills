@@ -1,6 +1,6 @@
 # Backend Engineering
 
-Backend engineering methodology — API implementation patterns (REST, gRPC, GraphQL), service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic.
+Backend engineering methodology — API implementation patterns (REST, gRPC, GraphQL), service architecture (clean/hexagonal/layered), event-driven application flows, outbox/inbox coordination, migration coexistence seams, database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic.
 
 ## Why Install This Skill
 
@@ -12,13 +12,15 @@ Your agent gains structured patterns for API design, service architecture, datab
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
 | `references/` | Deep-dive reference files loaded on demand |
-| `templates/` | Fillable records: service design record, error-handling taxonomy |
+| `templates/` | Fillable records: service design, event flow/coexistence, and error-handling taxonomy |
 | `scripts/` | `n1-query-spotter.py` — scans Python source for potential N+1 query patterns |
 | `evals/` | Output-quality eval manifest for the skill's methodology cases |
 
 ## Triggers
 
-Building or reviewing APIs, designing service layers, implementing database access patterns, adding error handling, or integrating external services.
+Building or reviewing APIs, designing service layers, implementing database access patterns, adding error handling, integrating external services, publishing or consuming domain events, implementing outbox/inbox delivery, or keeping old and new service paths safe during a migration.
+
+Do not load this skill as the owner of API/event contracts, service decomposition strategy, schema/pipeline operations, or cross-system migration lifecycle; route those decisions to the linked specialist skills.
 
 ## Requirements
 
