@@ -33,6 +33,17 @@ A comprehensive methodology for designing, operating, and improving reliable pro
 
 Use [release-engineering](../release-engineering/SKILL.md) to plan releases, compose promotion and rollback gates, or coordinate a release train. Use [systematic-debugging](../systematic-debugging/SKILL.md) to find the cause of a specific failure. Operating the telemetry stack itself — Prometheus scrape configs, OpenTelemetry Collector pipelines, Loki ingest and retention, Prometheus rules files — belongs to [telemetry](../telemetry/SKILL.md); this skill owns the SLI/SLO and alert *design* those rules implement. Grafana product work — dashboards, panels, Grafana-side alert rules, contact points, notification policies — belongs to [grafana](../grafana/SKILL.md).
 
+## Operational closure gate
+
+For any automated mitigation, rollback, recovery action, or incident closeout:
+
+1. **Bound the action before it starts.** Record the target, affected population, maximum blast radius, success criterion, abort/rollback criteria, rollback target and procedure, and who may stop or reverse it. Prefer the smallest reversible scope and staged expansion.
+2. **Verify recovery at the user boundary.** After the action, check the user-facing SLOs, critical user journey, relevant dependency health, and data/state correctness. Observe a defined stability window and check secondary effects such as backlog recovery.
+3. **Do not equate alert resolution with recovery.** A cleared alert or passing health endpoint is evidence, not a resolution verdict. If required evidence is missing, retain the `Mitigating` or `Monitoring` state, name the unverified boundary, and escalate rather than declare `Resolved`.
+4. **Record the evidence.** Capture the action, scope, thresholds, observed recovery evidence, remaining uncertainty, and rollback/follow-up trigger in the incident or change record.
+
+Automation may execute only pre-authorized bounded actions. It must stop and hand off when the blast radius, rollback path, or recovery evidence cannot be established.
+
 ## Reference Files
 
 | Topic | File | When to Load |
