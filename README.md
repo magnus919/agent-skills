@@ -78,7 +78,7 @@ Make system boundaries, responsibilities, and relationships legible at the archi
 
 ### [capacity-and-cost-engineering](capacity-and-cost-engineering/SKILL.md)
 
-Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Covers growth forecasting, peak sizing, degraded-mode capacity, budget/quota controls, load/soak test evidence standards, and SLO-cost tradeoff records. Routes financial P&L and fundraising to financial-modeling, infrastructure implementation to platform-engineering, degradation-path design to resilience-and-recovery, and feeds capacity/cost evidence to production-readiness. Ships a discovery brief comparing seven adjacent skills, five fillable templates (capacity model, unit-economics record, budget/quota decision, load/soak test plan, SLO-cost tradeoff record), and five evals.
+Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Covers growth forecasting, peak sizing, degraded-mode capacity, multi-tenant demand distributions and skew, pooled/siloed headroom, tier-linked admission and fairness evidence, tenant-variable unit cost, budget/quota controls, representative load/soak evidence, and SLO-cost tradeoff records. Routes SaaS architecture, security, financial outcomes, infrastructure implementation, SRE, analytics, and general architecture to their specialist owners. Ships focused references, six fillable templates, and ten evals.
 
 ### [chief-of-staff-methodology](chief-of-staff-methodology/SKILL.md)
 

@@ -5,18 +5,21 @@ description: >-
   demand, performance, and reliability decisions. Use when projecting capacity
   from growth forecasts, sizing for peak events, designing cost-aware scaling
   policies, defining budget thresholds or quota/rate-limit enforcement, running
-  or planning load/soak tests as capacity evidence, or resolving SLO-cost
-  tradeoffs. Do NOT use for financial P&L statements, fundraising scenarios, or
-  SaaS metrics (route to financial-modeling); for infrastructure implementation
-  or cloud-resource provisioning (route to platform-engineering); or for
-  generic cloud-cost tips and universal utilization targets — this skill does
-  not prescribe fixed savings rates or one-size-fits-all thresholds.
+  or planning load/soak tests as capacity evidence, resolving SLO-cost tradeoffs,
+  or modeling multi-tenant demand distributions, hot-tenant skew, pooled or siloed
+  headroom, fairness evidence, and tenant-variable unit cost. Do NOT use for
+  financial P&L statements, fundraising scenarios, or SaaS metrics (route to
+  financial-modeling); for infrastructure implementation or cloud-resource
+  provisioning (route to platform-engineering); or for generic cloud-cost tips
+  and universal utilization targets — this skill does not prescribe fixed savings
+  rates or one-size-fits-all thresholds.
 license: MIT
 compatibility: Platform-agnostic methodology. No runtime dependency.
 metadata:
   tags: capacity-engineering, cost-engineering, unit-economics, load-testing,
     capacity-planning, budget-controls, quota-management, rate-limiting,
-    cost-performance-tradeoffs, scaling-models, utilization-modeling
+    cost-performance-tradeoffs, scaling-models, utilization-modeling,
+    multi-tenant-capacity, tenant-unit-cost
 ---
 
 # Capacity and Cost Engineering
@@ -50,6 +53,7 @@ Load this skill when the task involves any of:
 | Plan or review a load/soak test as capacity evidence | `SKILL.md` + `templates/load-soak-test-plan.md` |
 | Resolve an SLO-cost tradeoff or cost-constrained reliability decision | `SKILL.md` + `templates/slo-cost-tradeoff-record.md` |
 | Review a cost anomaly or attribute cost to services/teams | `SKILL.md` + `templates/unit-economics-record.md` |
+| Model multi-tenant demand, skew, fairness, or tenant-variable unit cost | `SKILL.md` + `references/multi-tenant-capacity-and-unit-cost.md` + `templates/tenant-capacity-model.md` |
 | Understand ownership boundaries with adjacent skills | `SKILL.md` + `references/discovery-brief.md` |
 
 ## Working method
@@ -80,6 +84,14 @@ Both numerator and denominator must be measured over the same period, with the s
 
 The **unit-economics record template** (`templates/unit-economics-record.md`) requires: the unit definition, the cost numerator with allocation method, the demand denominator with measurement source, the resulting unit cost, a cost-per-SLO comparison (what happens to unit cost at 99.9% vs 99.99%?), and an assumptions/evidence/ownership/tradeoffs section. The template includes a structured field for the unit-cost calculation formula.
 
+For a multi-tenant service, do not use a fleet average as the only unit. Load
+`references/multi-tenant-capacity-and-unit-cost.md` and distinguish platform
+baseline cost from tenant-variable cost, then report a distribution of tenant
+costs or resource consumption. A tenant's variable unit cost may depend on
+request mix, storage, background work, burst shape, placement, and tier
+entitlements. Shared-cost allocation is an explicit modeling choice, not a
+claim that every tenant consumes an equal share.
+
 ### 3. Define budget and quota controls
 
 Budget controls are spending limits with operational consequences — spending alerts at thresholds, hard caps that prevent further spend, and the operational behavior when a cap is hit (degrade, throttle, or stop). Quota and rate-limit enforcement are the mechanisms that implement budget controls at the request or resource level.
@@ -106,6 +118,12 @@ The **budget/quota decision template** (`templates/budget-quota-decision.md`) ca
 The **load/soak test plan template** (`templates/load-soak-test-plan.md`) captures: test objective, target throughput with rationale, duration, environment (must be representative — a dev-environment test is not sufficient), success criteria (latency percentiles, error rate, resource utilization), data collection plan, and the evidence record. The template distinguishes a component-level benchmark from an end-to-end test; a capacity decision must state which boundary was exercised.
 
 Modeling without test evidence, or testing without a model, is incomplete. Both are required.
+
+For multi-tenant claims, the evidence must exercise representative tenant
+profiles together, including ordinary tenants, high-demand tenants, bursty
+tenants, and relevant tier or placement variants. A single-tenant benchmark or
+fleet-average test cannot establish protection against hot tenants, partition
+skew, or fairness behavior.
 
 ### 5. Resolve SLO-cost tradeoffs
 
@@ -182,6 +200,9 @@ This skill does **not** permit cost optimization to justify degrading reliabilit
 | Degradation-path design, recovery verification, RTO/RPO decisions, game days | [resilience-and-recovery](../resilience-and-recovery/SKILL.md) |
 | Statistical modeling of demand, time-series forecasting, causal inference on growth drivers | [data-scientist](../data-scientist/SKILL.md) |
 | Cost data pipeline implementation, spend-data ETL, cost-dashboard data models | [data-engineering](../data-engineering/SKILL.md) |
+| End-to-end tenant semantics, control/application planes, tenancy choice, lifecycle, or billing handoffs | [multi-tenant-saas-architecture](../multi-tenant-saas-architecture/SKILL.md) |
+| Tenant isolation threats, authorization, privileged support, or security controls | [secure-software-engineering](../secure-software-engineering/SKILL.md) |
+| General architecture boundaries, topology, or decomposition decisions | [software-architecture](../software-architecture/SKILL.md) |
 
 ## File map
 
@@ -193,3 +214,6 @@ This skill does **not** permit cost optimization to justify degrading reliabilit
 | [templates/budget-quota-decision.md](templates/budget-quota-decision.md) | Defining budget thresholds, quota limits, rate-limit enforcement, and operational consequences |
 | [templates/load-soak-test-plan.md](templates/load-soak-test-plan.md) | Designing or reviewing a load or soak test as capacity evidence |
 | [templates/slo-cost-tradeoff-record.md](templates/slo-cost-tradeoff-record.md) | Resolving an SLO-cost tradeoff with evidence, accountability, and approval |
+| [references/multi-tenant-capacity-and-unit-cost.md](references/multi-tenant-capacity-and-unit-cost.md) | Modeling tenant distributions, skew, pooled/siloed headroom, tier promises, admission, fairness evidence, and cost allocation |
+| [templates/tenant-capacity-model.md](templates/tenant-capacity-model.md) | Recording tenant profiles, partition behavior, headroom, quota/admission evidence, and tenant-variable unit cost |
+| [references/source-index.md](references/source-index.md) | Public provenance and original-writing boundary for this methodology |

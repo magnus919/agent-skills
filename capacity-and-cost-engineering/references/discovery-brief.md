@@ -75,3 +75,21 @@ This brief surveys adjacent skills in the agent-skills catalog to define the own
 ## Summary
 
 Capacity-and-cost-engineering fills a gap between financial modeling (which owns the business view of cost), platform engineering (which implements infrastructure), SRE (which owns reliability targets), product analytics (which owns demand signals), production-readiness (which consumes capacity/cost evidence), product roadmapping (which allocates portfolio capacity), and resilience-and-recovery (which owns degradation design). It is the method for modeling technical capacity, calculating unit cost, defining budget and quota controls, requiring load/soak evidence, and making cost-performance tradeoffs explicit — producing evidence that feeds production-readiness decisions and constrains or supports roadmap and reliability choices.
+
+## Multi-tenant ownership boundary
+
+`multi-tenant-saas-architecture` owns tenant semantics, control/application
+planes, tenancy and partitioning choices, lifecycle, entitlements, metering and
+billing handoffs, and the end-to-end SaaS architecture. This skill owns the
+measured capacity and cost consequences: tenant demand distributions, hot tenants,
+partition skew, pooled versus siloed headroom, tier-linked quotas and admission,
+fairness evidence, shared-cost allocation, and tenant-variable unit cost.
+
+`secure-software-engineering` owns isolation threats and enforceable controls;
+`financial-modeling` owns pricing, margin, and commercial outcomes;
+`platform-engineering` owns resource and telemetry implementation;
+`product-analytics-and-measurement` owns demand instrumentation and metric
+definitions; `site-reliability-engineering` owns SLOs, error budgets, and live
+operations; and `software-architecture` owns general system boundary and
+topology decisions. A multi-tenant capacity claim must hand off to each owner
+whose evidence or authority it requires, rather than absorbing those workflows.
