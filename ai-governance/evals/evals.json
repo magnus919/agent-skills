@@ -80,7 +80,9 @@
         "addresses electronic records, signatures, audit trails, access, time, retention, and retrieval as applicable",
         "defines risk-based validation or assurance evidence including context of use, acceptance criteria, traceability, failure cases, and change triggers",
         "connects AI governance to QA/QMS processes such as release, deviation, CAPA, change control, monitoring, periodic review, and retirement",
-        "states that the plan is guidance and does not determine legal applicability or certify compliance"
+        "states that the plan is guidance and does not determine legal applicability or certify compliance",
+        "includes supplier/model controls such as provider change notification, evidence access, continuity, and exit planning",
+        "includes AI-specific performance evidence such as context of use, representativeness, generalizability, uncertainty, or drift"
       ]
     }
   ]

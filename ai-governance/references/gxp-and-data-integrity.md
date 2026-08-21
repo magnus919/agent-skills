@@ -157,3 +157,8 @@ Accessed 2026-08-20 UTC. Re-verify current versions and applicability at use tim
 - FDA, [AI for Drug Development](https://www.fda.gov/about-fda/center-drug-evaluation-and-research-cder/artificial-intelligence-drug-development)
 - ICH, [Q9(R1) Quality Risk Management](https://database.ich.org/sites/default/files/ICH_Q9(R1)_Guideline_Step4_2022_1219.pdf)
 - ISPE, [GAMP 5 Guide, 2nd Edition](https://ispe.org/publications/guidance-documents/gamp-5-guide-2nd-edition)
+- European Commission, [EudraLex Volume 4, Annex 11: Computerised Systems](https://health.ec.europa.eu/system/files/2016-11/annex11_01-2011_en_0.pdf)
+
+## Synthesized from
+
+This reference synthesizes the official regulator, inspectorate, standards-body, and industry sources listed above. The durable research basis is recorded in `../research/gxp-ai-governance-brief.md` and `../research/gxp-ai-governance-log.md`. The material is an original governance synthesis, not legal advice, a validation protocol, or a certification of compliance.
