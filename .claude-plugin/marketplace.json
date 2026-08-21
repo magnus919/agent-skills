@@ -1101,7 +1101,7 @@
         "./software-architecture-analysis"
       ],
       "strict": false,
-      "description": "Reverse-engineer a software codebase to understand architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan that re-imagines the system under new constraints (local-first, privacy-first, self-hosted). Use when you need to understand how a system works from its source code or produce a specification without copying implementation details."
+      "description": "Use this skill to reverse-engineer an existing software system, map its architecture, data flow, privacy posture, coupling, quality characteristics, and feature surface, then produce an evidence-grounded clean-room design document, PRD, or migration plan under new constraints. Use for codebase archaeology, implicit contract extraction, architecture health assessment, or decomposition-readiness analysis. Do not use for greenfield architecture design, direct code review, bug hunting, security auditing, or implementation of API, data, platform, or migration changes; route those to the relevant neighboring skill."
     },
     {
       "name": "spec-driven-development",

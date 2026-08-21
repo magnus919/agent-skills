@@ -501,7 +501,7 @@ Operate Slack workspaces from the terminal: list channels, read messages, follow
 
 ### [software-architecture-analysis](software-architecture-analysis/SKILL.md)
 
-Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan under new constraints (local-first, privacy-first, self-hosted). Includes an interface extraction pattern for designing swappable storage provider abstractions.
+Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, feature surface, coupling, quality characteristics, data ownership, and workflow recovery — then produce an evidence-grounded clean-room design document, PRD, or migration plan under new constraints. Includes interface extraction, decomposition-readiness, and architecture health assessment guidance.
 
 ### [spec-driven-development](spec-driven-development/SKILL.md)
 

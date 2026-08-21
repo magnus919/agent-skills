@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "skill_name": "software-architecture-analysis",
+  "evals": [
+    {
+      "id": "quality-characteristics-from-evidence",
+      "prompt": "Review this repository's architecture for reliability, privacy, and maintainability. The README claims it is highly reliable and privacy-first, but the repository only contains request handlers, a retry helper, a hosted analytics SDK, and no dashboards or recovery tests. Produce an evidence-based assessment.",
+      "expected_output": "A reverse-engineering assessment that separates README claims from observed repository evidence, analyzes reliability, privacy, and maintainability through concrete scenarios, marks unsupported conclusions as unknown, identifies affected components and owners, and proposes the smallest probes that would reduce uncertainty.",
+      "assertions": [
+        "The output distinguishes observed repository evidence from README-reported claims",
+        "Reliability is assessed through failure behavior and recovery evidence rather than the presence of a retry helper alone",
+        "The hosted analytics SDK is identified as a privacy-relevant data-flow dependency",
+        "Unknown or unverified characteristics are explicitly labeled",
+        "Each major finding includes a concrete follow-up observation or test"
+      ]
+    },
+    {
+      "id": "six-lens-boundary-assessment",
+      "prompt": "We are considering splitting billing out of a modular monolith. Billing code has few imports from the rest of the system, but it shares customer tables, participates in a synchronous checkout request, must deploy with tax rules, and is owned by the same on-call team. Assess the boundary without assuming microservices are the answer.",
+      "expected_output": "A candidate-boundary report using static, dynamic, data, temporal, deployment, and organizational coupling, plus change coupling. It explains why low import coupling is insufficient, compares a bounded extraction with retaining or strengthening the modular monolith, and gives a readiness verdict with a reversible probe and stop condition.",
+      "assertions": [
+        "All six requested coupling lenses are addressed separately",
+        "Shared customer data and invariant ownership are treated as data coupling evidence",
+        "Synchronous checkout and deployment-together requirements are treated as dynamic, temporal, or deployment coupling",
+        "The analysis includes retaining a modular monolith as an explicit alternative",
+        "The verdict includes a reversible probe and a stop condition rather than an unconditional service recommendation"
+      ]
+    },
+    {
+      "id": "data-ownership-and-reconciliation",
+      "prompt": "Trace an order workflow that writes an order database, charges a payment provider, publishes an event, and updates a search index. The payment can succeed while event publication fails, and the index sometimes lags. Produce a data ownership and recovery analysis.",
+      "expected_output": "A timeline-based analysis that identifies authoritative data and projections, transaction boundaries, the workflow's orchestration or choreography shape, partial completion states, duplicate and delayed outcomes, detection and repair ownership, and a concrete reconciliation design with precedence, idempotency, audit evidence, and completion proof.",
+      "assertions": [
+        "The output distinguishes authoritative order or payment records from the search projection",
+        "It identifies the actual boundary of each transaction and does not call the whole workflow atomic",
+        "It names the partial state where payment succeeds but publication fails",
+        "It addresses duplicate, delayed, and unavailable outcomes with detection and recovery behavior",
+        "The reconciliation path includes comparison keys, source precedence, safe repair, audit evidence, and completion proof"
+      ]
+    },
+    {
+      "id": "clean-room-health-template",
+      "prompt": "Reverse-engineer a reference application's local-first replacement and deliver an architecture health assessment. The source repository includes a web client, hosted database, background sync, and third-party transcription service. Do not copy source code or private identifiers.",
+      "expected_output": "A clean-room health assessment with scope, evidence ledger, architecture characteristics, coupling and modularity, data ownership and workflow behavior, privacy-relevant dependencies, decomposition readiness where relevant, prioritized findings, and neighboring-skill handoffs. It contains no source code or recognizable private identifiers from the reference.",
+      "assertions": [
+        "The output contains a scope and evidence ledger with claim classification and confidence",
+        "Local versus hosted processing and the transcription dependency are mapped as privacy-relevant architecture evidence",
+        "The output includes coupling, data/workflow, and decomposition sections or clearly states why one is not applicable",
+        "The clean-room output contains no source code snippets or private identifiers",
+        "The handoff names API, data, implementation, platform, security, or migration ownership where applicable"
+      ]
+    },
+    {
+      "id": "provider-contract-extraction",
+      "prompt": "A codebase uses a relational database for graph storage, vector search, and traversal. Catalog the implicit storage contract and design a provider-agnostic abstraction that could also be implemented by a graph database. Preserve the project's documented constraint that graph edges are intentionally untyped.",
+      "expected_output": "An interface-extraction analysis that reads the project's philosophy first, catalogs storage operations, identifies substrate workarounds as boundary leaks, preserves the untyped-edge constraint, and proposes a two-provider proof without copying source code.",
+      "assertions": [
+        "The analysis starts from the project's documented philosophy or design constraints",
+        "It catalogs CRUD, vector, traversal, maintenance, lifecycle, and transaction needs",
+        "It identifies workarounds such as fallback search or hand-written traversal as provider-boundary concerns",
+        "The proposed abstraction preserves untyped graph edges",
+        "A second-provider proof is used to test for contract leaks and missing operations"
+      ]
+    },
+    {
+      "id": "greenfield-boundary-routing",
+      "prompt": "Design a new event-driven payments architecture from business requirements. Choose services, databases, message brokers, consistency rules, and deployment topology before any existing codebase has been provided.",
+      "expected_output": "A boundary response that explains this skill is for reverse-engineering an existing implementation and clean-room redesign, not unconstrained greenfield architecture. It routes the proactive architecture decision to the appropriate architecture methodology and identifies the evidence this skill would need if a reference system later becomes available.",
+      "assertions": [
+        "The response does not invent a reverse-engineering report without an existing codebase",
+        "It explicitly distinguishes clean-room analysis from greenfield architecture design",
+        "It routes interface, data, platform, security, and migration details to neighboring owners where relevant",
+        "It states the evidence needed before this skill could assess an existing system"
+      ]
+    }
+  ]
+}
