@@ -93,6 +93,50 @@
         "Zero-downtime cross-system migration is routed to migration-engineering",
         "The response preserves the architecture skill as the decision owner rather than an implementation owner"
       ]
+    },
+    {
+      "id": "multi-writer-replication-decision",
+      "prompt": "Choose a replication architecture for a multi-region document service that must accept offline edits in two regions. Define read freshness, concurrent-write conflict behavior, failover, and repair.",
+      "expected_output": "A system architecture decision that states write authority and visibility semantics, compares replication options against latency and failure constraints, defines conflict detection and resolution, and names reconciliation and recovery evidence. It loads DDIA progressively for mechanism detail while preserving specialist handoffs.",
+      "assertions": [
+        "The decision makes writable replicas, durability, visibility, staleness, and read-your-writes expectations explicit",
+        "Concurrent multi-writer conflict detection, resolution, reconciliation, and repair are defined",
+        "The response uses DDIA as mechanism guidance while software-architecture retains the system decision",
+        "Message handling, contracts, data-platform work, and recovery exercises are routed to their specialist owners"
+      ]
+    },
+    {
+      "id": "partition-skew-rebalancing-decision",
+      "prompt": "Design the partitioning approach for a tenant-aware event store where a few tenants and hot keys dominate traffic, ordinary queries sometimes cross partitions, and rebalancing must not silently violate ordering or availability promises.",
+      "expected_output": "A system architecture decision that evaluates partitioning by workload locality and consistency boundaries; covers skew, routing, secondary indexes, rebalancing, and cross-partition operations; and defines a reversible evidence plan. DDIA supplies mechanism principles while data-platform implementation remains with data-architect.",
+      "assertions": [
+        "Partitioning is evaluated by workload locality and consistency boundary rather than node count or convenience",
+        "Tenant or hot-key skew, routing metadata, secondary indexes, rebalancing cost, and cross-partition behavior are addressed",
+        "The proposed option has measurable evidence, failure behavior, and a reversible stop condition",
+        "The response preserves software-architecture, DDIA, data-architect, and implementation ownership boundaries"
+      ]
+    },
+    {
+      "id": "stale-leader-fencing-decision",
+      "prompt": "Design authority and coordination for a replicated scheduler that uses leases. During a network partition, an old leader may continue issuing work after its lease expires. Decide the fencing, quorum, timeout, duplicate-work, and recovery behavior.",
+      "expected_output": "A failure-aware architecture decision that states clock, lease, quorum, and coordination assumptions; treats stale leadership as a concrete fault; uses fencing or equivalent authority validation; and defines duplicate-effect prevention, repair, and exercised recovery evidence.",
+      "assertions": [
+        "Stale-leader authority is treated as a concrete failure rather than assuming lease expiry is sufficient",
+        "Clock, quorum, timeout, lease, coordination-service, and fencing assumptions are explicit",
+        "The design explains how conflicting or duplicate work is prevented, detected, or repaired",
+        "Backend implementation and resilience exercise ownership remain separate from the architecture decision"
+      ]
+    },
+    {
+      "id": "transaction-isolation-invariant-decision",
+      "prompt": "Choose the transaction and isolation behavior for an inventory reservation workflow where two concurrent requests can each observe the final unit under snapshot isolation. State what must remain atomic, what may be asynchronous, and how the decision will be verified.",
+      "expected_output": "An architecture decision that names the inventory invariant and transaction scope, identifies the concurrency anomaly, compares isolation or concurrency-control choices, and defines compensating and verification behavior if weaker isolation remains. DDIA supplies mechanism detail without taking ownership of the system decision.",
+      "assertions": [
+        "The inventory invariant and exact atomicity or transaction boundary are named",
+        "The concurrency anomaly is tied to the isolation choice rather than answered with a blanket default",
+        "Locks, compare-and-set, versioning, serializable behavior, or another explicit control and failure path are evaluated",
+        "The response preserves the architecture decision and API, backend, data-platform, and recovery handoffs"
+      ]
     }
   ]
 }
