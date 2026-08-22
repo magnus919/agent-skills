@@ -228,7 +228,8 @@ Timeline (Executive View):
 
 Root Cause (if known): [1-2 sentence root cause, in business-readable language — e.g. "A recent configuration change caused our payment gateway to reject valid transactions."]
 
-Current Status: [MONITORING / MITIGATING / RESOLVED — only after R-01 closure evidence and stability window]
+Current Status: [MONITORING / MITIGATING / RESOLVED]
+Resolution Gate: [For RESOLVED, R-01 closure evidence, stability window, and human confirmation are complete; otherwise retain MONITORING or MITIGATING.]
 Unverified Boundary: [none after full resolution, or what remains untested while MONITORING/MITIGATING]
 
 Key Action Items:

@@ -104,7 +104,7 @@
 
 ## On-Call Quick Reference
 
-> The commands below include read-only and mutating examples. Before any command that mutates production, apply the operational closure gate: verify current human authorization for the specific action and scope, record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. If the gate cannot be satisfied, stop and hand off or escalate.
+> The commands below include read-only and mutating examples. Before any command that mutates production, apply the operational closure gate: verify current human authorization for the specific action and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. If the gate cannot be satisfied, stop and hand off or escalate.
 
 ### How to Access
 
@@ -220,7 +220,7 @@ df -h /data
 
 > Each failure mode is self-contained through mitigation. After any mitigation or recovery action, follow R-01 before declaring the incident resolved.
 >
-> Before executing any **Resolution** command, apply the operational closure gate: verify human authorization for the specific action and scope, record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. These rows describe mitigation options, not permission to execute them. If the gate cannot be satisfied, stop and hand off or escalate.
+> Before executing any **Resolution** command, apply the operational closure gate: verify human authorization for the specific action and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. These rows describe mitigation options, not permission to execute them. If the gate cannot be satisfied, stop and hand off or escalate.
 
 ### FM-01: Service Unreachable / High Error Rate
 
@@ -334,7 +334,7 @@ df -h /data
 
 ## Detailed Troubleshooting Procedures
 
-> Before executing any command in these procedures that mutates production, apply the operational closure gate: verify current human authorization for the specific action and scope, record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. These commands are examples, not permission to execute them. If the gate cannot be satisfied, stop and hand off or escalate.
+> Before executing any command in these procedures that mutates production, apply the operational closure gate: verify current human authorization for the specific action and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. These commands are examples, not permission to execute them. If the gate cannot be satisfied, stop and hand off or escalate.
 
 ### T-01: Initial Incident Triage
 
@@ -504,16 +504,17 @@ NEXT STEPS: [What's being done]
 
 1. **Verify full recovery at the user boundary** — Confirm user-facing SLOs and critical user journeys, relevant dependency health, data/state correctness, and secondary effects such as backlog recovery. Health checks, baseline error/latency, and a cleared alert are partial evidence, not a resolution verdict.
 2. **Observe a stability window** — Monitor for the defined window and confirm that recovery holds without cascading or delayed effects. Record the evidence and the boundary actually exercised.
-3. **Keep unresolved incidents visible** — If any required evidence is missing, retain the incident in **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate rather than marking it resolved.
-4. **Update status page** — Mark the incident as resolved if used, but only after full recovery evidence is complete.
-5. **Resolve alert** — Close PagerDuty / OpsGenie alert after the resolution decision, not merely because the alert condition cleared.
-6. **Tag, annotate, and notify** — Add incident severity, team, and service tags, then send the verified summary to the team channel and affected users.
+3. **Human-confirm the evidence** — The incident commander, service owner, or another designated human operator must review and confirm the complete evidence set. An automation-authored incident record, green alert, or self-reported health check is not sufficient.
+4. **Keep unresolved incidents visible** — If any required evidence or human confirmation is missing, retain the incident in **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate rather than marking it resolved.
+5. **Update status page** — Mark the incident as resolved if used, but only after full recovery evidence and human confirmation are complete.
+6. **Resolve alert** — Close PagerDuty / OpsGenie alert after the resolution decision, not merely because the alert condition cleared.
+7. **Tag, annotate, and notify** — Add incident severity, team, and service tags, then send the verified summary to the team channel and affected users.
 
 ### R-02: Data / State Recovery
 
 > **Warning:** Data recovery procedures should only be attempted by engineers with database admin access.
 >
-> Before any production restore, verify current human authorization for the specific restore and scope, record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. Restore to staging and verify integrity first; staging evidence does not authorize the production restore.
+> Before any production restore, verify current human authorization for the specific restore and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. Restore to staging and verify integrity first; staging evidence does not authorize the production restore.
 
 ```bash
 # Step 1: Identify the recovery point (RPO)
