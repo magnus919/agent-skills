@@ -332,6 +332,8 @@ df -h /data
 
 ## Detailed Troubleshooting Procedures
 
+> Before executing any command in these procedures that mutates production, apply the operational closure gate: verify current human authorization for the specific action and scope, record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. These commands are examples, not permission to execute them. If the gate cannot be satisfied, stop and hand off or escalate.
+
 ### T-01: Initial Incident Triage
 
 ```

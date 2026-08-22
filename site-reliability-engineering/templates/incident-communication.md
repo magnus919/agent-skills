@@ -103,7 +103,7 @@ ETA to Full Resolution: [time or "TBD"]
 
 ## 4. Resolved
 
-Use only after the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. Healthy services, green dashboards, and a cleared alert are partial evidence, not a resolution verdict. If evidence is incomplete, use a Monitoring update instead and retain `Mitigating` or `Monitoring` status.
+Use only after the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. Healthy services, green dashboards, and a cleared alert are partial evidence, not a resolution verdict. If evidence is incomplete, use a `MONITORING` update instead and retain `MITIGATING` or `MONITORING` status.
 
 ```
 [SUMMARY]: [INCIDENT RESOLVED]
@@ -195,7 +195,7 @@ Post-Mortem Doc: [link to post-mortem doc]
 
 Use for C-level / VP communication during or immediately after an incident.
 
-Do not report **Resolved** or **Full resolution** until the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. If evidence is incomplete, report **Monitoring** or **Mitigating**, name the unverified boundary, and hand off or escalate.
+Do not report **RESOLVED** or **Full resolution** until the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. If evidence is incomplete, report **MONITORING** or **MITIGATING**, name the unverified boundary, and hand off or escalate.
 
 ```
 [EXECUTIVE SUMMARY — INCIDENT]
@@ -220,7 +220,7 @@ Timeline (Executive View):
 
 Root Cause (if known): [1-2 sentence root cause, in business-readable language — e.g. "A recent configuration change caused our payment gateway to reject valid transactions."]
 
-Current Status: [Monitoring / Mitigating / Resolved — only after R-01 closure evidence and stability window]
+Current Status: [MONITORING / MITIGATING / RESOLVED — only after R-01 closure evidence and stability window]
 
 Key Action Items:
   - [short-term fix deployed or planned]
