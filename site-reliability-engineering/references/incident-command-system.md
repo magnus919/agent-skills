@@ -871,14 +871,15 @@ IC should ask every 5-10 minutes:
 ```
 1. Set the stability window during response based on expected traffic, dependency recovery, backlog or secondary effects, and delayed symptoms. (IC)
 2. Run the closure evidence sequence: user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and confirm the stability window is complete. Green monitoring is partial evidence. (Ops Lead)
-3. If any evidence is missing, retain **MITIGATING** or **MONITORING**, record the unverified boundary, and hand off or escalate. (IC)
-4. "Incident is resolved." only after the evidence sequence passes. (IC)
-5. Change severity to SEV-5 only after closure evidence and the stability window pass. (IC)
-6. Update status page to "Resolved." (Comms)
-7. Final status update to stakeholders. (Comms)
-8. Save all materials. (Scribe)
-9. Schedule post-incident review. (IC)
-10. Log the incident in the tracking system. (IC)
+3. A human other than the acting automation independently confirms the complete evidence set. An agent-assigned IC role, automation-authored record, or self-reported health check is insufficient. (IC / service owner)
+4. If any evidence or human confirmation is missing, retain **MITIGATING** or **MONITORING**, record the unverified boundary, and hand off or escalate. (IC)
+5. "Incident is resolved." only after the evidence sequence and independent human confirmation pass. (IC)
+6. Change severity to SEV-5 only after closure evidence and the stability window pass. (IC)
+7. Update status page to "Resolved." (Comms)
+8. Final status update to stakeholders. (Comms)
+9. Save all materials. (Scribe)
+10. Schedule post-incident review. (IC)
+11. Log the incident in the tracking system. (IC)
 ```
 
 ---

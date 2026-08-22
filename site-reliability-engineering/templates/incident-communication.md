@@ -103,6 +103,7 @@ Closure Evidence In Progress:
   - Secondary effects and backlog recovery: [pending / observed evidence or link]
   - Stability window: [defined window and progress]
   - Unverified boundary: [what remains untested]
+  - Next check: [time or criterion]
 
 ETA to Full Resolution: [time or "TBD"]
 ```
