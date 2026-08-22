@@ -195,7 +195,7 @@ Post-Mortem Doc: [link to post-mortem doc]
 
 Use for C-level / VP communication during or immediately after an incident.
 
-Do not report **Resolved** or **Full resolution** until the R-01 closure evidence sequence and the defined stability window pass. If evidence is incomplete, report **Monitoring** or **Mitigating**, name the unverified boundary, and hand off or escalate.
+Do not report **Resolved** or **Full resolution** until the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. If evidence is incomplete, report **Monitoring** or **Mitigating**, name the unverified boundary, and hand off or escalate.
 
 ```
 [EXECUTIVE SUMMARY — INCIDENT]
