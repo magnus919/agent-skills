@@ -659,6 +659,7 @@ Even the IC has limits:
 
 | Action | Owner | Details |
 |---|---|---|
+| Determine monitoring period | IC | Set the stability window during response based on expected traffic, dependency recovery, backlog or secondary effects, and delayed symptoms. Complete it before declaring resolved. |
 | Verify mitigation | Ops Lead | Run the canonical [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps): user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and the completed stability window. Green monitoring is partial evidence. |
 | Declare resolved | IC | Announce resolution only after the closure evidence and stability window pass. Otherwise retain **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate. |
 | Change severity to SEV-5 | IC | Only after closure evidence and the stability window pass; otherwise retain the active severity and **Mitigating** or **Monitoring** state |
@@ -667,7 +668,7 @@ Even the IC has limits:
 | Send final status update | Comms | Send the resolution announcement |
 | Save all materials | Scribe / IC | Archive the scribe doc, channel history, monitoring screenshots |
 | Pause non-critical alerts | IC | Prevent alert fatigue from residual effects |
-| Determine monitoring period | IC | Set and complete the stability window before declaring resolved; do not defer this decision until after closure. |
+
 
 ### 9.2 Short-Term Follow-Up (Within 1 Business Day)
 

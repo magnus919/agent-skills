@@ -66,13 +66,13 @@ ETA: [if known, otherwise "TBD — still investigating"]
 
 ## 3. Mitigation In Progress
 
-Use when a fix or workaround is being deployed. Richer detail than the initial notification.
+Use when a fix or workaround is being deployed or monitored. Richer detail than the initial notification. Set `Status` to `MITIGATING` while the action is in progress and `MONITORING` while closure evidence or the stability window is still in progress.
 
 ```
 [SUMMARY]: [BRIEF SUMMARY]
 
 Severity: [SEV1 / SEV2 / SEV3 / SEV4]
-Status: MITIGATING
+Status: [MITIGATING / MONITORING]
 Affected Services: [service-a, service-b, service-c]
 Impact Description: [current state of impact — may be improving]
 Time Started: [YYYY-MM-DD HH:MM UTC]
