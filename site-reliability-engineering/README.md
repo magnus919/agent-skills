@@ -4,7 +4,7 @@ Build practical reliability practices around the work teams actually perform: me
 
 ## Why Install This Skill
 
-Build practical reliability practices around the work teams actually perform: measurable service objectives, useful alerts, incident response, and learning-oriented follow-up. It preserves a practical method, local reference material, and reusable templates so an agent can do more than produce a generic answer.
+Build practical reliability practices around the work teams actually perform: measurable service objectives, useful alerts, incident response, and learning-oriented follow-up. It preserves a practical method, local reference material, and reusable templates so an agent can do more than produce a generic answer, with an explicit closure gate that prevents a cleared alert from being mistaken for proven recovery.
 
 Use it when the work needs a repeatable process and an inspectable result. It is portable across Agent Skills-compatible clients and does not require a profile system or a particular task orchestrator.
 
@@ -12,7 +12,7 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 
 | Path | What it provides |
 |---|---|
-| `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
+| `SKILL.md` | Trigger conditions, workflow, operational closure gate, and guidance for loading deeper resources. |
 | `references/` | Reference material for SLOs, incidents, on-call, toil, troubleshooting, product engagement, adoption, reliability design, human systems, and the SRE learning ecosystem. |
 | `templates/` | Templates for SLOs, error budgets, incident response, runbooks, service reviews, reliability design reviews, and overload recovery. |
 | `scripts/` | Scripts: `slo-burn-rate.py` |

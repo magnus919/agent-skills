@@ -64,15 +64,15 @@ ETA: [if known, otherwise "TBD — still investigating"]
 
 ---
 
-## 3. Mitigation In Progress
+## 3. Mitigation In Progress / Monitoring
 
-Use when a fix or workaround is being deployed. Richer detail than the initial notification.
+Use when a fix or workaround is being deployed or monitored. Richer detail than the initial notification. Set `Status` to `MITIGATING` while the action is in progress and `MONITORING` while closure evidence or the stability window is still in progress.
 
 ```
 [SUMMARY]: [BRIEF SUMMARY]
 
 Severity: [SEV1 / SEV2 / SEV3 / SEV4]
-Status: MITIGATING
+Status: [MITIGATING / MONITORING]
 Affected Services: [service-a, service-b, service-c]
 Impact Description: [current state of impact — may be improving]
 Time Started: [YYYY-MM-DD HH:MM UTC]
@@ -96,6 +96,15 @@ Next Steps:
   - Prepare roll-forward fix
   - Stakeholder comms at [time of next update]
 
+Closure Evidence In Progress:
+  - User-facing SLOs and critical journeys: [pending / observed evidence or link]
+  - Dependency health: [pending / observed evidence or link]
+  - Data/state correctness: [pending / observed evidence or link]
+  - Secondary effects and backlog recovery: [pending / observed evidence or link]
+  - Stability window: [defined window and progress]
+  - Unverified boundary: [what remains untested]
+  - Next check: [time or criterion]
+
 ETA to Full Resolution: [time or "TBD"]
 ```
 
@@ -103,7 +112,7 @@ ETA to Full Resolution: [time or "TBD"]
 
 ## 4. Resolved
 
-Use when the incident is over — services are healthy and monitoring confirms steady state.
+Use only after the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. Healthy services, green dashboards, and a cleared alert are partial evidence, not a resolution verdict. If evidence is incomplete, use a `MONITORING` update instead and retain `MITIGATING` or `MONITORING` status.
 
 ```
 [SUMMARY]: [INCIDENT RESOLVED]
@@ -123,7 +132,14 @@ Resolution Actions:
   - [action that fixed the issue]
   - [follow-up action taken]
 
-Verification: [how we confirmed the fix — e.g. "error rate at 0% for 15 min, P95 latency back to baseline"]
+Closure Evidence:
+  - User-facing SLOs and critical journeys: [evidence or link]
+  - Dependency health: [evidence or link]
+  - Data/state correctness: [evidence or link]
+  - Secondary effects and backlog recovery: [evidence or link]
+  - Stability window: [defined window and observed result]
+  - Evidence boundary: [what was actually exercised]
+  - Independent human confirmation: [name/role and approval record or timestamp]
 
 Post-Incident Items Opened:
   - [link to Jira/Asana bug or task]
@@ -189,6 +205,8 @@ Post-Mortem Doc: [link to post-mortem doc]
 
 Use for C-level / VP communication during or immediately after an incident.
 
+Do not report **RESOLVED** or **Full resolution** until the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. If evidence is incomplete, report **MONITORING** or **MITIGATING**, name the unverified boundary, and hand off or escalate.
+
 ```
 [EXECUTIVE SUMMARY — INCIDENT]
 
@@ -208,11 +226,13 @@ Timeline (Executive View):
   - [HH:MM UTC] — Incident detected
   - [HH:MM UTC] — Mitigation started
   - [HH:MM UTC] — Partial recovery
-  - [HH:MM UTC] — Full resolution
+  - [HH:MM UTC] — Full resolution verified after closure evidence and stability window
 
 Root Cause (if known): [1-2 sentence root cause, in business-readable language — e.g. "A recent configuration change caused our payment gateway to reject valid transactions."]
 
-Current Status: [Resolved / Monitoring / Mitigating]
+Current Status: [MONITORING / MITIGATING / RESOLVED]
+Resolution Gate: [For RESOLVED, R-01 closure evidence, stability window, and human confirmation are complete; otherwise retain MONITORING or MITIGATING.]
+Unverified Boundary: [none after full resolution, or what remains untested while MONITORING/MITIGATING]
 
 Key Action Items:
   - [short-term fix deployed or planned]
@@ -237,6 +257,7 @@ Point of Contact for Questions: [name / title / contact info]
 | DETECTED            | Incident first confirmed                          | Severity, affected services, impact, time started |
 | INVESTIGATING       | Active diagnosis, no mitigation yet               | Findings, actions taken, ETA (or TBD)            |
 | MITIGATING          | Deploying a fix or workaround                     | Mitigation actions, expected outcome, risks      |
-| RESOLVED            | Monitored stable — incident over                  | Root cause, resolution, verification             |
+| MONITORING          | Mitigation applied; closure evidence or stability window in progress | Evidence collected, unverified boundary, next check |
+| RESOLVED            | R-01 closure evidence, stability window, and independent human confirmation complete | Root cause, resolution, closure evidence         |
 | POST-INCIDENT       | After post-mortem (24-72h later)                  | Full timeline, action items, lessons learned     |
 | EXECUTIVE SUMMARY   | C-level / VP comms during or right after incident | Business impact, SLA, revenue, clear language    |

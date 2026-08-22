@@ -104,6 +104,8 @@
 
 ## On-Call Quick Reference
 
+> The commands below include read-only and mutating examples. Before any command that mutates production, apply the operational closure gate: verify current human authorization for the specific action and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. If the gate cannot be satisfied, stop and hand off or escalate.
+
 ### How to Access
 
 ```bash
@@ -216,7 +218,9 @@ df -h /data
 
 ## Common Failure Modes
 
-> Each failure mode is self-contained. Follow the resolution steps sequentially.
+> Each failure mode is self-contained through mitigation. After any mitigation or recovery action, follow R-01 before declaring the incident resolved.
+>
+> Before executing any **Resolution** command, apply the operational closure gate: verify human authorization for the specific action and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. These rows describe mitigation options, not permission to execute them. If the gate cannot be satisfied, stop and hand off or escalate.
 
 ### FM-01: Service Unreachable / High Error Rate
 
@@ -225,7 +229,7 @@ df -h /data
 | **Symptom** | `5xx` responses > [N]%, health check failing, pager alert firing |
 | **Likely Cause** | Recent deployment, resource exhaustion, upstream dependency failure |
 | **Diagnosis** | 1. Check `/health` and `/metrics` endpoints<br>2. Review recent deployments (`kubectl rollout history` or equivalent)<br>3. Check CPU/memory on instance<br>4. Check upstream dependencies (database, cache, external APIs)<br>5. Review recent logs for panic/OOM/panic |
-| **Resolution** | 1. **If caused by recent deploy:** Rollback immediately: `kubectl rollout undo deployment/[deploy]`<br>2. **If resource exhaustion:** Scale up: `kubectl scale deployment/[deploy] --replicas=[N]`<br>3. **If upstream failure:** Check dependency runbook, pager dependency owner<br>4. **Last resort:** Restart the service<br>5. If none of the above work, [escalate](#escalation-paths) |
+| **Resolution** | 1. **If caused by recent deploy:** Rollback immediately: `kubectl rollout undo deployment/[deploy]`<br>2. **If resource exhaustion:** Scale up: `kubectl scale deployment/[deploy] --replicas=[N]`<br>3. **If upstream failure:** Check dependency runbook, pager dependency owner<br>4. **Last resort:** Restart the service<br>5. If none of the above work, [escalate](#escalation-paths)<br>6. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
@@ -236,7 +240,7 @@ df -h /data
 | **Symptom** | p99/p95 latency exceeds SLO threshold, users report slowness |
 | **Likely Cause** | Traffic spike, database query degradation, slow upstream, GC pressure |
 | **Diagnosis** | 1. Check traffic volume vs baseline (is this a spike?)<br>2. Check database slow query log — `SELECT * FROM pg_stat_activity WHERE state = 'active'`<br>3. Check GC metrics (if JVM: `jstat -gcutil`, if Go: `go_memstats_gc_cpu_fraction`)<br>4. Check upstream dependency latencies<br>5. Review tracing dashboard for slow spans |
-| **Resolution** | 1. **Traffic spike:** Auto-scale groups should handle; manually increase replicas if needed<br>2. **Slow queries:** Kill runaway queries: `SELECT pg_terminate_backend(pid) WHERE ...`; add missing index<br>3. **GC pressure:** Increase heap/memory, tune GC parameters<br>4. **Upstream slow:** Circuit-breaker should trip; verify upstream health<br>5. **Temporary fix:** Rate-limit or shed non-critical traffic |
+| **Resolution** | 1. **Traffic spike:** Auto-scale groups should handle; manually increase replicas if needed<br>2. **Slow queries:** Kill runaway queries: `SELECT pg_terminate_backend(pid) WHERE ...`; add missing index<br>3. **GC pressure:** Increase heap/memory, tune GC parameters<br>4. **Upstream slow:** Circuit-breaker should trip; verify upstream health<br>5. **Temporary fix:** Rate-limit or shed non-critical traffic<br>6. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
@@ -247,7 +251,7 @@ df -h /data
 | **Symptom** | Container/process killed, OOM in kernel logs, instance becomes unresponsive |
 | **Likely Cause** | Memory leak in code, traffic surge, insufficient resource limits |
 | **Diagnosis** | 1. Check `dmesg | grep -i oom` for kernel OOM killer messages<br>2. Check memory metrics via dashboard (heap vs non-heap if JVM)<br>3. Review recent code changes for potential memory leaks<br>4. Check if memory limit was recently reduced<br>5. Heap dump analysis (if available): `jmap -dump:live,format=b,file=heap.hprof <pid>` |
-| **Resolution** | 1. **Immediate:** Restart the service to reclaim memory<br>2. **Increase limits:** Edit resource `limits.memory` for the container/Pod<br>3. If caused by code change: rollback the release<br>4. Schedule memory leak investigation with engineering team<br>5. Consider enabling memory request-based autoscaling |
+| **Resolution** | 1. **Immediate:** Restart the service to reclaim memory<br>2. **Increase limits:** Edit resource `limits.memory` for the container/Pod<br>3. If caused by code change: rollback the release<br>4. Schedule memory leak investigation with engineering team<br>5. Consider enabling memory request-based autoscaling<br>6. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
@@ -258,7 +262,7 @@ df -h /data
 | **Symptom** | Application logs show `connection refused`, `too many connections`, or `connection timeout` |
 | **Likely Cause** | Connection leak in application, insufficient pool size, DB restart |
 | **Diagnosis** | 1. Check active connections on DB: `SELECT count(*) FROM pg_stat_activity`<br>2. Check max connections: `SHOW max_connections`<br>3. Identify connections by application: `SELECT application_name, count(*) FROM pg_stat_activity GROUP BY 1`<br>4. Check if connections are idle-in-transaction: `SELECT * FROM pg_stat_activity WHERE state = 'idle in transaction'`<br>5. Review application connection pool metrics (hikariCP, etc.) |
-| **Resolution** | 1. **Emergency:** Kill idle connections: `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = 'idle'`<br>2. **Kill idle-in-transaction:** Same as above with `state = 'idle in transaction'`<br>3. Restart the application to reset its connection pool<br>4. If leak persists, increase `max_connections` temporarily on DB<br>5. Schedule fix for connection leak (usually unclosed `Connection` / `Session` objects) |
+| **Resolution** | 1. **Emergency:** Kill idle connections: `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = 'idle'`<br>2. **Kill idle-in-transaction:** Same as above with `state = 'idle in transaction'`<br>3. Restart the application to reset its connection pool<br>4. If leak persists, increase `max_connections` temporarily on DB<br>5. Schedule fix for connection leak (usually unclosed `Connection` / `Session` objects)<br>6. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
@@ -269,7 +273,7 @@ df -h /data
 | **Symptom** | Disk usage alert firing, application unable to write logs/data, `no space left on device` |
 | **Likely Cause** | Logs not rotated, data not cleaned up, unexpected large files (core dumps, heap dumps) |
 | **Diagnosis** | 1. `df -h` to identify full partition<br>2. `du -sh /* 2>/dev/null` to find large directories<br>3. `du -sh /var/log/* | sort -rh | head -10` for log sizes<br>4. `find / -type f -size +1G -exec ls -lh {} \;` for large files<br>5. Check logrotate status: `logrotate -d /etc/logrotate.d/[app]` |
-| **Resolution** | 1. **Immediate:** `sudo journalctl --vacuum-size=500M` or `truncate -s0 /var/log/[app].log`<br>2. Clean old logs: `find /var/log -name "*.log.*" -mtime +7 -delete`<br>3. Clean temp files: `sudo rm -rf /tmp/*`<br>4. Verify logrotate is working: `sudo logrotate -f /etc/logrotate.conf`<br>5. If persistent, add disk monitoring alarm at 80% |
+| **Resolution** | 1. **Immediate:** `sudo journalctl --vacuum-size=500M` or `truncate -s0 /var/log/[app].log`<br>2. Clean old logs: `find /var/log -name "*.log.*" -mtime +7 -delete`<br>3. Clean temp files: `sudo rm -rf /tmp/*`<br>4. Verify logrotate is working: `sudo logrotate -f /etc/logrotate.conf`<br>5. If persistent, add disk monitoring alarm at 80%<br>6. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
@@ -280,7 +284,7 @@ df -h /data
 | **Symptom** | Clients receive `certificate expired` or `x509: certificate has expired` errors |
 | **Likely Cause** | Auto-renewal failed, cert-manager/ACME issues, manual cert not replaced |
 | **Diagnosis** | 1. Check cert expiry: `echo | openssl s_client -servername [domain] -connect [domain]:443 2>/dev/null | openssl x509 -noout -dates`<br>2. Check cert-manager logs (if Kubernetes): `kubectl logs -n cert-manager -l app=cert-manager`<br>3. Check certificate resource status: `kubectl get certificate -A`<br>4. Verify DNS resolution for ACME challenge domain |
-| **Resolution** | 1. **Manual renewal:** If cert-manager: `kubectl delete certificate [name]` to trigger re-issue, or fix the ACME challenge<br>2. **Manual cert replacement:** Upload new cert to LB/Ingress<br>3. Restart ingress controller / LB after cert update<br>4. If auto-renewal is broken, create a ticket for the platform team |
+| **Resolution** | 1. **Manual renewal:** If cert-manager: `kubectl delete certificate [name]` to trigger re-issue, or fix the ACME challenge<br>2. **Manual cert replacement:** Upload new cert to LB/Ingress<br>3. Restart ingress controller / LB after cert update<br>4. If auto-renewal is broken, create a ticket for the platform team<br>5. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
@@ -291,7 +295,7 @@ df -h /data
 | **Symptom** | Our service returns errors for operations that depend on [upstream], upstream latency spikes |
 | **Likely Cause** | Upstream outage, rate limiting, network partition |
 | **Diagnosis** | 1. Check upstream status page<br>2. Test upstream directly: `curl -v https://upstream.example.com/health`<br>3. Check our circuit breaker metrics<br>4. Check for recent upstream API changes<br>5. Check network connectivity: `ping`, `traceroute`, `nslookup` |
-| **Resolution** | 1. **If circuit breaker open:** Wait for half-open / reset, or manually reset if safe<br>2. **If rate limited:** Throttle requests, request quota increase<br>3. **If upstream outage:** Enable fallback/graceful degradation (serve stale data, queue requests)<br>4. Page upstream PagerDuty escalation<br>5. Consider feature flags to disable upstream-dependent features temporarily |
+| **Resolution** | 1. **If circuit breaker open:** Wait for half-open / reset, or manually reset if safe<br>2. **If rate limited:** Throttle requests, request quota increase<br>3. **If upstream outage:** Enable fallback/graceful degradation (serve stale data, queue requests)<br>4. Page upstream PagerDuty escalation<br>5. Consider feature flags to disable upstream-dependent features temporarily<br>6. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
@@ -302,7 +306,7 @@ df -h /data
 | **Symptom** | Queue depth growing, consumer lag increasing, messages not processed in time |
 | **Likely Cause** | Consumer crashed or stuck, processing logic regression, queue partition imbalance |
 | **Diagnosis** | 1. Check consumer group lag (Kafka: `kafka-consumer-groups --bootstrap-server ... --group [group] --describe`)<br>2. Check consumer process health and logs<br>3. Check if messages are stuck on poison-pill messages (deserialization errors)<br>4. Check partition assignment and rebalance events<br>5. Check downstream that the consumer writes to |
-| **Resolution** | 1. **Restart consumers:** `kubectl rollout restart deployment/[consumer]`<br>2. **Skip poison-pill messages:** Seek consumer offset past bad message<br>3. **Scale consumers:** Increase partitions + consumer replicas<br>4. **If DB is bottleneck:** Investigate and resolve DB performance first<br>5. If backlog is critical, consider replaying messages from an earlier offset after fix |
+| **Resolution** | 1. **Restart consumers:** `kubectl rollout restart deployment/[consumer]`<br>2. **Skip poison-pill messages:** Seek consumer offset past bad message<br>3. **Scale consumers:** Increase partitions + consumer replicas<br>4. **If DB is bottleneck:** Investigate and resolve DB performance first<br>5. If backlog is critical, consider replaying messages from an earlier offset after fix<br>6. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
@@ -313,7 +317,7 @@ df -h /data
 | **Symptom** | `lookup [hostname]` failures, `connection refused`, intermittent timeouts |
 | **Likely Cause** | DNS resolver outage, cached stale records, DNS propagation delay, /etc/resolv.conf misconfiguration |
 | **Diagnosis** | 1. Test resolution: `dig [hostname] @[dns-server]`<br>2. Check `/etc/resolv.conf`<br>3. Check `nslookup [hostname]` and `host [hostname]`<br>4. Check DNS server reachability: `nc -zv [dns-server] 53`<br>5. Compare results across different resolvers (e.g., `8.8.8.8`) |
-| **Resolution** | 1. **Flush DNS cache:** `sudo systemd-resolve --flush-caches` or restart `nscd`<br>2. **Update resolv.conf:** Ensure valid nameservers listed<br>3. **Restart DNS-sidecar** (if Kubernetes with CoreDNS/node-local-dns)<br>4. **Override in /etc/hosts** as temporary measure<br>5. If using Kubernetes, check CoreDNS pods and service: `kubectl -n kube-system get pods -l k8s-app=kube-dns` |
+| **Resolution** | 1. **Flush DNS cache:** `sudo systemd-resolve --flush-caches` or restart `nscd`<br>2. **Update resolv.conf:** Ensure valid nameservers listed<br>3. **Restart DNS-sidecar** (if Kubernetes with CoreDNS/node-local-dns)<br>4. **Override in /etc/hosts** as temporary measure<br>5. If using Kubernetes, check CoreDNS pods and service: `kubectl -n kube-system get pods -l k8s-app=kube-dns`<br>6. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
@@ -324,11 +328,13 @@ df -h /data
 | **Symptom** | Pod repeatedly restarting, `CrashLoopBackOff` status, zero ready replicas |
 | **Likely Cause** | Startup failure (config error, missing secret, dependency unavailable), OOM, liveness probe failing |
 | **Diagnosis** | 1. Describe pod: `kubectl describe pod [pod-name] -n [namespace]`<br>2. Check pod logs: `kubectl logs [pod-name] -n [namespace] --previous`<br>3. Check events: `kubectl get events -n [namespace] --sort-by='.lastTimestamp'`<br>4. Verify configmaps/secrets are mounted: `kubectl exec -it [pod] -- cat /path/to/config`<br>5. Check liveness/readiness probe configuration |
-| **Resolution** | 1. **Fix config/secrets:** Correct the ConfigMap or Secret and re-deploy<br>2. **Fix missing dependency:** Start the dependency or fix the connection string<br>3. **Increase resources:** If OOM-killed, increase `limits.memory`<br>4. **Fix probe:** Correct the probe endpoint/timeout/period<br>5. Rollback to last known good version if config doesn't help |
+| **Resolution** | 1. **Fix config/secrets:** Correct the ConfigMap or Secret and re-deploy<br>2. **Fix missing dependency:** Start the dependency or fix the connection string<br>3. **Increase resources:** If OOM-killed, increase `limits.memory`<br>4. **Fix probe:** Correct the probe endpoint/timeout/period<br>5. Rollback to last known good version if config doesn't help<br>6. After mitigation, follow **R-01** before declaring resolved; retain **MITIGATING** or **MONITORING** and escalate if evidence is missing. |
 
 ---
 
 ## Detailed Troubleshooting Procedures
+
+> Before executing any command in these procedures that mutates production, apply the operational closure gate: verify current human authorization for the specific action and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. These commands are examples, not permission to execute them. If the gate cannot be satisfied, stop and hand off or escalate.
 
 ### T-01: Initial Incident Triage
 
@@ -374,15 +380,14 @@ df -h /data
                               │
                    ┌──────────▼───────────┐
                    │  6. VERIFY           │
-                   │  Check dashboards    │
-                   │  confirm recovery    │
+                   │  Run R-01 closure    │
+                   │  evidence checks     │
                    └──────────┬───────────┘
                               │
                    ┌──────────▼───────────┐
                    │  7. RESOLVE          │
-                   │  Close alert, update │
-                   │  incident, post-mor- │
-                   │  tem if needed       │
+                   │  Only after R-01     │
+                   │  and stability       │
                    └──────────────────────┘
 ```
 
@@ -433,11 +438,17 @@ kubectl rollout undo deployment/[deployment] -n [namespace]
 # Step 3: Monitor rollout status
 kubectl rollout status deployment/[deployment] -n [namespace]
 
-# Step 4: Verify recovery
+# Step 4: Start R-01 closure verification
 curl -s http://[service-url]/health | jq .
+# A health endpoint is partial evidence. Complete R-01: verify user-facing SLOs
+# and critical journeys, dependencies, data/state, secondary effects, and the
+# defined stability window and independent human confirmation before declaring the incident resolved.
 
-# Step 5: Announce in incident channel
-echo "Rolled back [deployment] from v[X] to v[Y]. Health check passing."
+# Step 5: Keep the incident Mitigating or Monitoring if evidence is missing;
+# record the unverified boundary and hand off or escalate.
+
+# Step 6: After R-01 closure evidence and independent human confirmation are
+# complete, the human incident owner sends the resolution announcement.
 ```
 
 ---
@@ -491,15 +502,19 @@ NEXT STEPS: [What's being done]
 
 ### R-01: Post-Incident Steps
 
-1. **Verify full recovery** — All health checks pass, error rates and latencies returned to baseline, alerting silenced.
-2. **Update status page** — Mark incident as resolved if used.
-3. **Resolve alert** — Close PagerDuty / OpsGenie alert.
-4. **Tag and annotate** — Add incident severity, team, and service tags.
-5. **Notify stakeholders** — Send summary to team channel and affected users.
+1. **Verify full recovery at the user boundary** — Confirm user-facing SLOs and critical user journeys, relevant dependency health, data/state correctness, and secondary effects such as backlog recovery. Health checks, baseline error/latency, and a cleared alert are partial evidence, not a resolution verdict.
+2. **Observe a stability window** — Monitor for the defined window and confirm that recovery holds without cascading or delayed effects. Record the evidence and the boundary actually exercised.
+3. **Human-confirm the evidence** — A human other than the acting automation must review and confirm the complete evidence set, with the confirmation independently attributable to that person. An agent-assigned IC role, automation-authored incident record, green alert, or self-reported health check is not sufficient.
+4. **Keep unresolved incidents visible** — If any required evidence or human confirmation is missing, retain the incident in **MITIGATING** or **Monitoring**, record the unverified boundary, and hand off or escalate rather than marking it resolved.
+5. **Update status page** — Mark the incident as resolved if used, but only after full recovery evidence and human confirmation are complete.
+6. **Resolve alert** — Close PagerDuty / OpsGenie alert after the resolution decision, not merely because the alert condition cleared.
+7. **Tag, annotate, and notify** — Add incident severity, team, and service tags, then send the verified summary to the team channel and affected users.
 
 ### R-02: Data / State Recovery
 
 > **Warning:** Data recovery procedures should only be attempted by engineers with database admin access.
+>
+> Before any production restore, verify current human authorization for the specific restore and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. Restore to staging and verify integrity first; staging evidence does not authorize the production restore. If the gate cannot be satisfied, stop and hand off or escalate rather than restoring production.
 
 ```bash
 # Step 1: Identify the recovery point (RPO)

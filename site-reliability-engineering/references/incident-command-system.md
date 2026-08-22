@@ -98,7 +98,7 @@ The IC is the single person ultimately responsible for the incident response. Th
 | Decision Authority | Approve breaking-glass actions, feature flag changes, rollbacks, traffic reroutes. |
 | Communication | Provide structured updates to the scribe and liaison. Sign off on external communications. |
 | Transitions | Manage role handoffs. Transfer command when shift ends or situation escalates. |
-| Termination | Declare incident resolved. Approve the move from response to recovery. |
+| Termination | Declare incident resolved only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps), stability window, and independent human confirmation by someone other than the acting automation pass. Approve the move from response to recovery. |
 
 **What the IC should be saying:**
 - "I am now the Incident Commander."
@@ -469,18 +469,23 @@ Bridge: [link]
 Impact: [brief description of user/customer impact]
 ```
 
+For a Resolved status, first complete the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and the defined stability window.
+
 **Status update template (internal):**
 ```
 === STATUS UPDATE #[N] ===
 Time: [UTC timestamp]
 Duration so far: [X hours, Y minutes]
 Severity: SEV-[X] (unchanged/changed from SEV-[Y])
-Current status: [Investigating / Mitigating / Monitoring / Resolved]
+Current status: [INVESTIGATING / MITIGATING / MONITORING / RESOLVED — only after R-01 closure evidence and stability window]
 Summary: [brief paragraph]
 Next update: [time or milestone]
 ```
 
 **Resolution announcement:**
+
+Use this only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. If evidence is incomplete, send a **MONITORING** update instead, record the unverified boundary, retain the incident in **MITIGATING** or **MONITORING**, and hand off or escalate.
+
 ```
 ✅ INCIDENT RESOLVED
 Title: [title]
@@ -488,6 +493,7 @@ Duration: [X hours, Y minutes]
 Severity: SEV-[X]
 Root cause: [brief description]
 Action taken: [brief description]
+Closure evidence: [user-facing SLOs / critical journeys / dependencies / data-state / secondary effects / stability window / independent human confirmation]
 Monitoring: [what we're watching]
 Post-incident review: [link when available]
 ```
@@ -570,7 +576,7 @@ Use consistent event categories to make analysis easier:
 | Action | 🟢 | Rollback executed, server restarted, config changed |
 | Communication | 🟣 | Status page updated, exec notified, customer emailed |
 | Escalation | 🟠 | Manager called in, vendor contacted, legal notified |
-| Resolution | ✅ | Incident declared resolved, monitoring confirmed stable |
+| Resolution | ✅ | Incident declared resolved after closure evidence, independent human confirmation, and a completed stability window; green monitoring alone is insufficient |
 
 ---
 
@@ -594,7 +600,7 @@ Use consistent event categories to make analysis easier:
 | Communicate externally | Comms (with IC approval) | Legal (for SEV-1), PR (if customer-facing) |
 | Contact legal / compliance | IC | None |
 | Contact law enforcement (security breach) | IC + Legal | Executive team |
-| Declare incident resolved | IC | Ops Lead confirms mitigation stable |
+| Declare incident resolved | IC | The [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps), completed stability window, and independent human confirmation by someone other than the acting automation pass. If evidence is missing, retain **MITIGATING** or **MONITORING** and hand off or escalate. |
 | Authorize post-incident review | IC | None |
 | Deploy a hotfix | IC | Ops Lead, code owner, QA (if time permits) |
 | Cache invalidation / purge | Ops Lead | Net SME |
@@ -649,19 +655,20 @@ Even the IC has limits:
 
 ## 9. Post-Incident Actions
 
-### 9.1 Immediate Actions (Within 1 Hour of Resolution)
+### 9.1 Immediate Actions (Closure Evidence Gate)
 
 | Action | Owner | Details |
 |---|---|---|
-| Verify mitigation | Ops Lead | Confirm the fix is holding and monitoring is green |
-| Declare resolved | IC | Announce in incident channel: "Incident is resolved. Moving to recovery." |
-| Change severity to SEV-5 | IC | The incident is now a monitoring/recovery phase |
-| Update status page | Comms | Set status page to "Resolved" |
+| Determine monitoring period | IC | Set the stability window during response based on expected traffic, dependency recovery, backlog or secondary effects, and delayed symptoms. Complete it before declaring resolved. |
+| Verify mitigation | Ops Lead | Run the canonical [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps): user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and the completed stability window. Green monitoring is partial evidence. |
+| Declare resolved | IC | Announce resolution only after the closure evidence, stability window, and independent human confirmation by someone other than the acting automation pass. Otherwise retain **MITIGATING** or **MONITORING**, record the unverified boundary, and hand off or escalate. |
+| Change severity to SEV-5 | IC | Only after closure evidence, the stability window, and independent human confirmation pass; otherwise retain the active severity and **MITIGATING** or **MONITORING** state |
+| Update status page | Comms | Set status page to "Resolved" only after the resolution decision |
 | Stop the recording / close bridge | IC | End the voice bridge |
 | Send final status update | Comms | Send the resolution announcement |
 | Save all materials | Scribe / IC | Archive the scribe doc, channel history, monitoring screenshots |
 | Pause non-critical alerts | IC | Prevent alert fatigue from residual effects |
-| Determine monitoring period | IC | How long before we're confident the fix is stable? |
+
 
 ### 9.2 Short-Term Follow-Up (Within 1 Business Day)
 
@@ -794,7 +801,7 @@ Action items from the PIR must be tracked to completion:
 
 ### Role Card: Incident Commander (IC)
 
-The Incident Commander is the single decision-maker responsible for the entire incident response. They do not debug, do not SSH into servers, and do not chase metrics. Instead, they maintain the big picture: understanding the scope and severity of the incident, setting response strategy, managing resources and escalations, and making all key decisions. The IC approves break-glass actions, communicates the response strategy to the scribe and liaison, and ultimately decides when the incident is resolved. They are accountable for the safety of the response and for ensuring that the right people are working on the right problems. In extended incidents, the IC manages shift rotations and role handoffs to prevent responder fatigue.
+The Incident Commander is the single decision-maker responsible for the entire incident response. They do not debug, do not SSH into servers, and do not chase metrics. Instead, they maintain the big picture: understanding the scope and severity of the incident, setting response strategy, managing resources and escalations, and making all key decisions. The IC approves break-glass actions, communicates the response strategy to the scribe and liaison, and decides when the incident is resolved only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps), stability window, and independent human confirmation by someone other than the acting automation pass. They are accountable for the safety of the response and for ensuring that the right people are working on the right problems. In extended incidents, the IC manages shift rotations and role handoffs to prevent responder fatigue.
 
 ### Role Card: Deputy / Operations Lead
 
@@ -862,13 +869,17 @@ IC should ask every 5-10 minutes:
 ### At Resolution
 
 ```
-1. Verify monitoring is green. (Ops Lead)
-2. "Incident is resolved." (IC)
-3. Update status page to "Resolved." (Comms)
-4. Final status update to stakeholders. (Comms)
-5. Save all materials. (Scribe)
-6. Schedule post-incident review. (IC)
-7. Log the incident in the tracking system. (IC)
+1. Set the stability window during response based on expected traffic, dependency recovery, backlog or secondary effects, and delayed symptoms. (IC)
+2. Run the closure evidence sequence: user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and confirm the stability window is complete. Green monitoring is partial evidence. (Ops Lead)
+3. A human other than the acting automation independently confirms the complete evidence set. An agent-assigned IC role, automation-authored record, or self-reported health check is insufficient. (IC / service owner)
+4. If any evidence or human confirmation is missing, retain **MITIGATING** or **MONITORING**, record the unverified boundary, and hand off or escalate. (IC)
+5. "Incident is resolved." only after the evidence sequence and independent human confirmation pass. (IC)
+6. Change severity to SEV-5 only after closure evidence, the stability window, and independent human confirmation pass. (IC)
+7. Update status page to "Resolved." (Comms)
+8. Final status update to stakeholders. (Comms)
+9. Save all materials. (Scribe)
+10. Schedule post-incident review. (IC)
+11. Log the incident in the tracking system. (IC)
 ```
 
 ---
