@@ -113,6 +113,11 @@ Goal: Drive toward mitigation while maintaining clear communication and document
   - Risk/reward each option. _Speed is important; correctness is more important for SEV1._
   - IC makes the final call on which mitigation to pursue.
 
+- [ ] **Pass the pre-mutation gate**
+  - Confirm current human authorization for the specific action and scope, independently attributable to the human authority.
+  - Record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority.
+  - If the gate cannot be satisfied, stop and hand off or escalate rather than mutating production.
+
 - [ ] **Apply mitigation**
   - Execute the chosen action. _Scribe logs who did what and when._
   - _This is the target we want to reach: `t_mitigation_applied`._
