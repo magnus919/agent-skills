@@ -98,7 +98,7 @@ The IC is the single person ultimately responsible for the incident response. Th
 | Decision Authority | Approve breaking-glass actions, feature flag changes, rollbacks, traffic reroutes. |
 | Communication | Provide structured updates to the scribe and liaison. Sign off on external communications. |
 | Transitions | Manage role handoffs. Transfer command when shift ends or situation escalates. |
-| Termination | Declare incident resolved only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and stability window pass. Approve the move from response to recovery. |
+| Termination | Declare incident resolved only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps), stability window, and independent human confirmation by someone other than the acting automation pass. Approve the move from response to recovery. |
 
 **What the IC should be saying:**
 - "I am now the Incident Commander."
@@ -801,7 +801,7 @@ Action items from the PIR must be tracked to completion:
 
 ### Role Card: Incident Commander (IC)
 
-The Incident Commander is the single decision-maker responsible for the entire incident response. They do not debug, do not SSH into servers, and do not chase metrics. Instead, they maintain the big picture: understanding the scope and severity of the incident, setting response strategy, managing resources and escalations, and making all key decisions. The IC approves break-glass actions, communicates the response strategy to the scribe and liaison, and decides when the incident is resolved only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and stability window pass. They are accountable for the safety of the response and for ensuring that the right people are working on the right problems. In extended incidents, the IC manages shift rotations and role handoffs to prevent responder fatigue.
+The Incident Commander is the single decision-maker responsible for the entire incident response. They do not debug, do not SSH into servers, and do not chase metrics. Instead, they maintain the big picture: understanding the scope and severity of the incident, setting response strategy, managing resources and escalations, and making all key decisions. The IC approves break-glass actions, communicates the response strategy to the scribe and liaison, and decides when the incident is resolved only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps), stability window, and independent human confirmation by someone other than the acting automation pass. They are accountable for the safety of the response and for ensuring that the right people are working on the right problems. In extended incidents, the IC manages shift rotations and role handoffs to prevent responder fatigue.
 
 ### Role Card: Deputy / Operations Lead
 

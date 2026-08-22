@@ -114,7 +114,7 @@ Goal: Drive toward mitigation while maintaining clear communication and document
   - IC makes the final call on which mitigation to pursue.
 
 - [ ] **Pass the pre-mutation gate**
-  - Confirm current human authorization for the specific action and scope, independently attributable to the human authority.
+  - Confirm current human authorization for the specific action and scope, independently attributable to the human authority. The acting agent cannot self-assign the IC role or authorize its own action.
   - Record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority.
   - If the gate cannot be satisfied, stop and hand off or escalate rather than mutating production.
 

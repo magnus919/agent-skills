@@ -514,7 +514,7 @@ NEXT STEPS: [What's being done]
 
 > **Warning:** Data recovery procedures should only be attempted by engineers with database admin access.
 >
-> Before any production restore, verify current human authorization for the specific restore and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. Restore to staging and verify integrity first; staging evidence does not authorize the production restore.
+> Before any production restore, verify current human authorization for the specific restore and scope, record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. Restore to staging and verify integrity first; staging evidence does not authorize the production restore. If the gate cannot be satisfied, stop and hand off or escalate rather than restoring production.
 
 ```bash
 # Step 1: Identify the recovery point (RPO)
