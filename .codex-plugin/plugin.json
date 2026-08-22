@@ -90,6 +90,7 @@
     "./legal-strategy",
     "./life-coach",
     "./linear",
+    "./litellm",
     "./llama-cpp",
     "./llamaindex",
     "./mermaid-diagrams",

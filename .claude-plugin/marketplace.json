@@ -654,6 +654,15 @@
       "description": "Manage Linear teams, projects, cycles, issues, comments, workflow state, and documents from a terminal through Linear's public GraphQL API. Use when a user asks to list, search, inspect, create, update, move, or comment on Linear work, or to find Linear documents. Do not use to embed a live agent inside Linear or to build an MCP integration."
     },
     {
+      "name": "litellm",
+      "source": "./",
+      "skills": [
+        "./litellm"
+      ],
+      "strict": false,
+      "description": "Operate, configure, secure, and troubleshoot the LiteLLM AI gateway (proxy) and Python SDK: run the proxy (litellm --config), route to 100+ providers through one OpenAI-compatible API, configure model lists and routing/reliability, virtual keys, teams, budgets, rate limits, caching, guardrails, observability, and spend, and diagnose request failures. Use when deploying or running a LiteLLM proxy or gateway (config.yaml, ghcr.io/berriai/litellm), wiring the Python SDK or OpenAI SDK through it, or hardening a public-facing deployment. Do not use for operating a single inference engine (vllm, llama-cpp), for engine-selection methodology (ml-engineering), or for building applications on top of an LLM API (backend/frontend engineering)."
+    },
+    {
       "name": "llama-cpp",
       "source": "./",
       "skills": [

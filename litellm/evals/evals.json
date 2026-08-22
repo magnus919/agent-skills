@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "skill_name": "litellm",
+  "evals": [
+    {
+      "id": "quickstart-config",
+      "prompt": "Stand up a LiteLLM proxy that exposes one stable model alias 'gpt-4o' backed by two deployments: an OpenAI gpt-4o and an Azure deployment named gpt-4o-eu. Give me the config.yaml, the command to run it, how clients call it with the OpenAI SDK, and exactly what to check to know it actually works.",
+      "expected_output": "A config.yaml whose two entries share model_name 'gpt-4o' so they form a load-balanced group; each entry's litellm_params.model carries the provider prefix (openai/gpt-4o vs azure/gpt-4o-eu, using the Azure deployment name not the raw model name) with api_key set via os.environ/ references rather than literals, plus api_base for the Azure entry. Start with litellm --config config.yaml --port 4000 and confirm the log line 'Proxy initialized with Config, Set models:' appears — its absence means the config didn't load. Clients use any OpenAI SDK pointed at base_url http://localhost:4000 with a LiteLLM key as api_key, never a provider key; with general_settings.master_key set every route requires Authorization: Bearer. Verification at the delivery boundary: GET /health/liveliness returns 200 'I'm alive!' unauthenticated, GET /v1/models with the calling key lists gpt-4o, /model/info shows both deployments with keys redacted, and a representative chat completion returns tokens with x-litellm-model-id identifying which deployment served it. Note the proxy binds 0.0.0.0 by default, so exposure is a deliberate decision.",
+      "assertions": [
+        "Both entries share model_name so they form one load-balanced group",
+        "litellm_params.model strings carry provider prefixes and Azure uses the deployment name with api_base",
+        "API keys are os.environ/ references, never inline values",
+        "Startup success is verified by the 'Proxy initialized with Config' log line",
+        "Verification includes /health/liveliness, /v1/models with the calling key, and a representative chat request returning tokens with x-litellm-model-id",
+        "Clients point an OpenAI SDK at the proxy base_url with a LiteLLM key, not provider credentials"
+      ]
+    },
+    {
+      "id": "routing-and-reliability",
+      "prompt": "Our gateway name 'chat-main' spans three provider deployments with different capacities, and we need it to survive upstream 429 storms and single-deployment outages without returning errors to clients. Design the routing and reliability configuration and explain what happens on failure.",
+      "expected_output": "A design where all three entries share model_name chat-main forming one LB group, weighted by rpm or weight under litellm_params (simple-shuffle default is the recommended strategy — usage-based-routing is discouraged for production latency). Reliability layers: litellm_settings.num_retries (distinct from the provider SDK's max_retries, which the router pins to 0), fallbacks mapping chat-main to another model group after retries exhaust, cooldown tuning via allowed_fails/cooldown_time with per-error-class allowed_fails_policy. Failure mechanics explained: an upstream 429 immediately cools that deployment (~5s default), retries pick among remaining peers, order tiers can hold cheaper capacity first with costlier tier absorbing failures, and when everything is cooling the client sees HTTP 429 'No deployments available for selected model'. enable_pre_call_checks: true is needed before context windows are enforced pre-call. Every fallback target must be a registered model_name alias, not a raw provider string, and the failover path should be proven once by forcing a deployment failure before trusting it.",
+      "assertions": [
+        "Same model_name across entries forms the load-balanced group with weight/rpm under litellm_params",
+        "simple-shuffle is recommended and num_retries is distinguished from the provider SDK max_retries pinned to 0",
+        "Cooldown behavior on 429 is explained including the 'No deployments available' client-facing 429",
+        "Fallback targets are model_name aliases and context-window enforcement requires enable_pre_call_checks",
+        "The configuration is verified by forcing a deployment failure and observing failover"
+      ]
+    },
+    {
+      "id": "keys-budgets-spend",
+      "prompt": "We're putting our LiteLLM gateway in front of three internal teams. Each team needs its own spend ceiling, per-service virtual keys, and protection against runaway spend from a buggy job. One staging proxy currently runs without a database — does anything change there? Design the scheme.",
+      "expected_output": "A scheme built on Postgres-backed virtual keys: master key stays in a secret manager and is never shared; each service gets a key from POST /key/generate scoped to allowed models with max_budget + budget_duration and tpm/rpm limits; teams via /team/new with team budgets, noting that a key belonging to a team enforces only team (+ member) budgets, not the owner's personal budget. Runaway-job protection stacks several controls: hard budgets that reject requests when crossed, soft_budget warnings, rate limits (which do not apply to proxy admins — test with an internal-user role), upperbound_key_generate_params so self-service cannot mint oversized keys, instant block/unblock revocation, and optionally fail_closed_budget_enforcement for hard ceilings across replicas. The DB question is decisive: budgets require Postgres and fail open without one — on the DB-less staging proxy no budget will ever block a request and /key/* endpoints return 'No connected db.', so staging must connect DATABASE_URL (or accept that only upstream/provider-side limits protect it). Verification: prove enforcement once by setting a tiny test budget, exceeding it, observing the ExceededBudget/ExceededTokenBudget error, then restoring; confirm live spend via GET /key/info.",
+      "assertions":
+        ["Virtual keys are scoped per service with budgets, durations, and rpm/tpm limits while the master key stays in a secret manager",
+         "Team keys enforce team/member budgets only, not the owner's personal budget",
+         "Rate limits do not apply to proxy admins and upperbound_key_generate_params caps self-service keys",
+         "The answer states budgets require Postgres and FAIL OPEN without a DB, so the DB-less staging proxy enforces nothing",
+         "Enforcement is verified empirically with a tiny test budget exceeded on purpose and /key/info confirming spend tracking"]
+    },
+    {
+      "id": "caching-guardrails-choice",
+      "prompt": "We have two workloads on one LiteLLM gateway: (1) a high-volume RAG FAQ bot with mostly repeated identical prompts, and (2) a multi-step coding agent whose consecutive turns are near-identical. We also must mask emails and card numbers before anything reaches providers. Recommend caching and guardrail configurations, and name the trap people hit with semantic caching here.",
+      "expected_output": "Caching split by workload: exact-match caching (cache: true with type redis for multi-instance correctness, in-memory only for single process) serves workload 1 well since identical prompts produce identical cache keys, with ttl chosen deliberately and per-request controls (no-store/no-cache) available. Workload 2 should NOT use semantic caching: semantic caches embed the entire messages array and serve nearest neighbors above a similarity threshold, and consecutive agent turns are ~0.99 similar, so stale tool results get replayed as hits — the documented recommendation is excluding agentic/multi-turn traffic from semantic caching entirely (exact-match redis instead, opt-in mode, or per-request no-store). Guardrails: a Presidio guardrail in pre_call mode with pii_entities_config masking EMAIL_ADDRESS and CREDIT_CARD (MASK rewrites content; BLOCK rejects), score thresholds tuned, applied on every request via default_on or requested via the guardrails body param; violations/masking are observable through x-litellm-applied-guardrails and the logging payload. Verification: identical request twice yields a cache hit, and a prompt containing a masked entity reaches providers with plaintext absent (bounded log check).",
+      "assertions": [
+        "Exact-match redis caching is recommended for repeated identical prompts with multi-instance awareness",
+        "Semantic caching is excluded for the agent workload because near-identical consecutive turns replay stale responses",
+        "Presidio PII guardrail configured pre_call with MASK semantics for email/credit-card entities",
+        "default_on or per-request guardrails body param decides when the guardrail runs",
+        "Verification covers a demonstrated cache hit and confirmation that masked content never reached the provider"
+      ]
+    },
+    {
+      "id": "security-hardening-public-proxy",
+      "prompt": "We're about to expose our LiteLLM proxy to the internet behind an ALB. Current image is ghcr.io/berriai/litellm:1.82.5, we installed via pip without pinning, master key is sk-1234, and the UI is reachable. What must change before this goes live?",
+      "expected_output": "A hardening review that leads with the version floor: >=1.83.7 is mandatory for internet-reachable proxies because CVE-2026-42208 (pre-auth SQL injection via crafted Authorization header, CISA KEV, actively exploited), CVE-2026-42203 (SSTI in /prompts/test), and CVE-2026-42271 (command injection in MCP test endpoints) were all fixed in v1.83.7, and the Starlette host-header chain (CVE-2026-48710) additionally needs Starlette >=1.0.1 — running 1.82.5 publicly should be treated as compromised until patched, with provider keys rotated. Supply chain: unpinned pip installs are how the March 2026 backdoored wheels (1.82.7/.8) would have landed; switch to a cosign-verified pinned semver image tag or digest. Credentials: replace sk-1234 (scanner-fingerprinted placeholder) with a strong random sk- key from a secret manager; restrict or disable the Admin UI, which is equivalent to holding the master key; issue scoped virtual keys per workload instead of sharing the master key; set LITELLM_SALT_KEY once if DB-stored credentials are used. Exposure: terminate TLS at the ALB, expose only LLM routes plus health probes, deny management paths (/key/*, /user/*, /team/*, /config/*, /model/*, /spend/*, /ui, /prompts/test, /mcp-rest/*) — noting allowed_routes lockdown is Enterprise so OSS enforces at the reverse proxy. Add budgets/rate limits on every public key (budgets need Postgres and fail open without it), alerting, and verify from outside: management routes 403/404, health probes answer, revoked keys fail immediately.",
+      "assertions": [
+        "Version floor >=1.83.7 justified by CVE-2026-42208/42203/42271 plus Starlette >=1.0.1 for the host-header chain",
+        "The actively-exploited pre-auth SQLi and KEV listing make 1.82.5 public exposure treated as compromised pending patch and key rotation",
+        "Unpinned pip installs tied to the March 2026 backdoored-wheel incident; cosign-verified pinned images required",
+        "sk-1234 replaced with a strong random key, Admin UI restricted/disabled, scoped virtual keys issued",
+        "Management paths denied at the edge with allowed_routes noted as Enterprise, TLS terminated up front",
+        "Budgets/rate limits on public keys with the Postgres fail-open caveat, verified from outside the trust boundary"
+      ]
+    },
+    {
+      "id": "troubleshooting-error-batch",
+      "prompt": "Diagnose these four client reports against our LiteLLM gateway and give the evidence-led fix for each: (a) 404 'Invalid model name passed in model=gpt-4.1-mini', (b) intermittent HTTP 429 'No deployments available for selected model, Try again in 60 seconds', (c) litellm.InternalServerError: AnthropicException - Overloaded, (d) a request dies after 10 minutes with a timeout despite a healthy proxy. For each: what evidence you'd collect first and what fixes it.",
+      "expected_output": "(a) Apply the master rule — no ProviderException means the gateway rejected it: the alias isn't registered in model_list or isn't granted to this key; evidence is GET /v1/models called with the same key (grants are per-key); fix by adding the entry or correcting the model string. (b) Router-level 429: every deployment of the group was cooling down, typically after upstream 429 storms — possibly compounded by a missing provider prefix leaving no valid deployment; evidence is /health?model= per deployment, debug logs showing cooldown state, and x-litellm headers; fix the underlying provider limits, tune cooldown_time/allowed_fails_policy, add capacity or fallbacks — not disable_cooldowns. (c) The AnthropicException prefix proves the provider failed: Anthropic's HTTP 529 overload surfaces as InternalServerError (500-class), it's retryable and not a gateway bug; handle via retries/failover and provider status checks. (d) A bounded timeout: recent litellm defaults are long (request_timeout around 6000s; SDK completion timeout 600s), so a 10-minute death matches an explicit or derived limit; evidence is which layer timed out from debug logs (proxy vs provider) and stream_timeout behavior for streams; fix by setting deliberate router_settings.timeout/request_timeout/per-deployment timeouts sized to the workload. Throughout: collect error string, status code, x-litellm-call-id/model-id headers and debug logs BEFORE claiming cause, then verify the fix with a representative request.",
+      "assertions": [
+        "Provider-vs-gateway classification drives each diagnosis using the <Provider>Exception presence rule",
+        "(a) resolved via /v1/models queried with the same key and model_list/grant correction",
+        "(b) tied to deployment cooldowns after upstream 429s with disable_cooldowns explicitly rejected",
+        "(c) identified as Anthropic HTTP 529 overload surfaced as InternalServerError and handled by retry/failover",
+        "(d) connected to explicit/derived long timeout defaults (request_timeout ~6000s, completion 600s) with bounded settings recommended",
+        "Evidence collection precedes each claim and each fix is verified with a representative request"
+      ]
+    }
+  ]
+}

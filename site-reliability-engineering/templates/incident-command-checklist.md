@@ -113,6 +113,11 @@ Goal: Drive toward mitigation while maintaining clear communication and document
   - Risk/reward each option. _Speed is important; correctness is more important for SEV1._
   - IC makes the final call on which mitigation to pursue.
 
+- [ ] **Pass the pre-mutation gate**
+  - Confirm current human authorization for the specific action and scope, independently attributable to the human authority. The acting agent cannot self-assign the IC role or authorize its own action.
+  - Record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority.
+  - If the gate cannot be satisfied, stop and hand off or escalate rather than mutating production.
+
 - [ ] **Apply mitigation**
   - Execute the chosen action. _Scribe logs who did what and when._
   - _This is the target we want to reach: `t_mitigation_applied`._
@@ -128,11 +133,15 @@ Goal: Drive toward mitigation while maintaining clear communication and document
 
 Goal: Confirm the incident is truly over and stabilize the system.
 
+> Use the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) before declaring the incident resolved. Green monitoring and health checks are partial evidence; if any required evidence is missing, do not mark the incident **RESOLVED**, record the unverified boundary, and hand off or escalate while it remains in its active response state.
+
 - [ ] **Verify the fix in production**
   - SMEs confirm the mitigation resolved the symptoms:
     - Error rate returned to baseline.
     - Latency normalized.
     - All affected endpoints returning correct responses.
+    - Relevant dependency health is verified.
+    - Data/state correctness and secondary effects are checked.
   - _Scribe logs `t_verification_complete`._
 
 - [ ] **Monitor stability window**
@@ -148,7 +157,7 @@ Goal: Confirm the incident is truly over and stabilize the system.
   - Document known edge cases that might still be affected.
 
 - [ ] **Declare the incident resolved**
-  - Clear statement: "This incident is now RESOLVED. The mitigation was [summary]. Monitoring continues."
+  - Only after the R-01 closure evidence sequence, completed stability window, and independent human confirmation pass: "This incident is now RESOLVED. The mitigation was [summary]. Monitoring continues."
   - Update incident tracking system status to **RESOLVED**.
   - _This is `t_resolved`._
 
