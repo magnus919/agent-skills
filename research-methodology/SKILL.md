@@ -39,6 +39,21 @@ Before reporting, make the preservation decision explicit:
 
 The right artifact shape depends on the environment. Do not assume a particular database, note-taking application, or orchestration system. The invariant is durable, navigable, evidence-linked research that a later user or agent can discover and build on.
 
+## Interruption and Timeout Recovery
+
+A research worker timeout is an interruption, not a research result. Never close the investigation, summarize it as complete, or infer that no useful work exists because a delegated worker exceeded its execution cap. Long research jobs commonly encounter slow extraction, rate limits, or one unresponsive source after producing valuable partial work.
+
+When a worker times out:
+
+1. Read the complete delegation transcript and inspect the workspace or scratch directory before deciding what was lost.
+2. Recover and verify every partial artifact, source log, and extracted claim already written.
+3. Resume from the last durable checkpoint rather than restarting broad discovery.
+4. Narrow or replace the slow operation, especially large PDF extraction or repeated rate-limited search, and write each subsequent stage incrementally.
+5. If the worker cannot be resumed safely, continue the missing research directly or split it into smaller bounded tasks. A timeout changes the execution path, not the acceptance criteria.
+6. Do not report completion until the research question is covered, retained sources and claims are represented in the durable evidence artifacts, and unresolved gaps are explicit.
+
+The acceptance gate is evidence completeness and artifact verification, not elapsed time, worker status, or the existence of a plausible partial summary.
+
 ## Reference Files
 
 ### Tracks
