@@ -655,7 +655,7 @@ Even the IC has limits:
 
 ## 9. Post-Incident Actions
 
-### 9.1 Immediate Actions (After Resolution Evidence)
+### 9.1 Immediate Actions (Closure Evidence Gate)
 
 | Action | Owner | Details |
 |---|---|---|
@@ -869,14 +869,16 @@ IC should ask every 5-10 minutes:
 ### At Resolution
 
 ```
-1. Run the closure evidence sequence: user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and the completed stability window. Green monitoring is partial evidence. (Ops Lead)
-2. If any evidence is missing, retain **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate. (IC)
-3. "Incident is resolved." only after the evidence sequence passes. (IC)
-4. Update status page to "Resolved." (Comms)
-5. Final status update to stakeholders. (Comms)
-6. Save all materials. (Scribe)
-7. Schedule post-incident review. (IC)
-8. Log the incident in the tracking system. (IC)
+1. Set the stability window during response based on expected traffic, dependency recovery, backlog or secondary effects, and delayed symptoms. (IC)
+2. Run the closure evidence sequence: user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and confirm the stability window is complete. Green monitoring is partial evidence. (Ops Lead)
+3. If any evidence is missing, retain **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate. (IC)
+4. "Incident is resolved." only after the evidence sequence passes. (IC)
+5. Change severity to SEV-5 only after closure evidence and the stability window pass. (IC)
+6. Update status page to "Resolved." (Comms)
+7. Final status update to stakeholders. (Comms)
+8. Save all materials. (Scribe)
+9. Schedule post-incident review. (IC)
+10. Log the incident in the tracking system. (IC)
 ```
 
 ---

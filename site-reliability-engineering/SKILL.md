@@ -42,7 +42,7 @@ For any automated mitigation, rollback, recovery action, or incident closeout:
 3. **Do not equate alert resolution with recovery.** A cleared alert or passing health endpoint is evidence, not a resolution verdict. If required evidence is missing, retain the `Mitigating` or `Monitoring` state, name the unverified boundary, and escalate rather than declare `Resolved`.
 4. **Record the evidence.** Capture the action, scope, thresholds, observed recovery evidence, remaining uncertainty, and rollback/follow-up trigger in the incident or change record.
 
-"Pre-authorized" means a human service owner, incident commander, or other designated change authority has explicitly approved the specific action and scope in the current incident or change record, or an approved standing policy/runbook explicitly covers it. A request to investigate or diagnose, or the agent's own judgment, is not production-mutation authorization. Automation may execute only after that authorization is verified and the action is bounded. It must stop and hand off when authorization, blast radius, rollback path, or recovery evidence cannot be established.
+"Pre-authorized" means a human service owner, incident commander, or other designated change authority has explicitly approved the specific action and scope in the current incident or change record. A request to investigate or diagnose, an approved standing policy/runbook without current human confirmation, or the agent's own judgment is not production-mutation authorization. Automation may execute only after that authorization is verified and the action is bounded. It must stop and hand off when authorization, blast radius, rollback path, or recovery evidence cannot be established.
 
 ## Reference Files
 

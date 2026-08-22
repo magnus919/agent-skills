@@ -64,7 +64,7 @@ ETA: [if known, otherwise "TBD — still investigating"]
 
 ---
 
-## 3. Mitigation In Progress
+## 3. Mitigation In Progress / Monitoring
 
 Use when a fix or workaround is being deployed or monitored. Richer detail than the initial notification. Set `Status` to `MITIGATING` while the action is in progress and `MONITORING` while closure evidence or the stability window is still in progress.
 
