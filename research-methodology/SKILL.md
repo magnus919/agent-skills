@@ -19,6 +19,17 @@ Professional research process for a subagent. Three tracks based on the type of 
 
 All three share the same lifecycle (Scope → Gather → Evaluate → Analyze → Synthesize → Report) but differ in evidence standards, speed, and output format.
 
+## When not to use
+
+Do **not** load this skill for:
+
+- A single factual lookup or a quick answer — respond directly; a full research lifecycle adds cost without adding credibility.
+- Direct implementation work that needs no investigation — build and verify the change instead (`backend-engineering`, `frontend-engineering`).
+- Operating a specific retrieval or capture tool — load that tool's skill for runbook-level configuration and diagnostics.
+- Raw capture of web content without evaluation or synthesis — the capture tool's own skill covers fetching; this skill starts where source evaluation begins.
+- Structuring already-gathered findings into durable summaries, analysis files, and evidence dossiers — use `artifact-pyramids` for the output architecture.
+- Persisting captured sources into durable notes across a repeated research-to-note sequence — use `research-and-vault`.
+
 ## The Research Lifecycle
 
 ```
