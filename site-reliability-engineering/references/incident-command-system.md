@@ -98,7 +98,7 @@ The IC is the single person ultimately responsible for the incident response. Th
 | Decision Authority | Approve breaking-glass actions, feature flag changes, rollbacks, traffic reroutes. |
 | Communication | Provide structured updates to the scribe and liaison. Sign off on external communications. |
 | Transitions | Manage role handoffs. Transfer command when shift ends or situation escalates. |
-| Termination | Declare incident resolved only after the R-01 closure evidence sequence and stability window pass. Approve the move from response to recovery. |
+| Termination | Declare incident resolved only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and stability window pass. Approve the move from response to recovery. |
 
 **What the IC should be saying:**
 - "I am now the Incident Commander."
@@ -469,6 +469,8 @@ Bridge: [link]
 Impact: [brief description of user/customer impact]
 ```
 
+For a Resolved status, first complete the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and the defined stability window.
+
 **Status update template (internal):**
 ```
 === STATUS UPDATE #[N] ===
@@ -598,7 +600,7 @@ Use consistent event categories to make analysis easier:
 | Communicate externally | Comms (with IC approval) | Legal (for SEV-1), PR (if customer-facing) |
 | Contact legal / compliance | IC | None |
 | Contact law enforcement (security breach) | IC + Legal | Executive team |
-| Declare incident resolved | IC | R-01 closure evidence and the completed stability window pass; Ops Lead confirms the full evidence set, not only mitigation stability. If evidence is missing, retain **Mitigating** or **Monitoring** and hand off or escalate. |
+| Declare incident resolved | IC | The [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and completed stability window pass; Ops Lead confirms the full evidence set, not only mitigation stability. If evidence is missing, retain **Mitigating** or **Monitoring** and hand off or escalate. |
 | Authorize post-incident review | IC | None |
 | Deploy a hotfix | IC | Ops Lead, code owner, QA (if time permits) |
 | Cache invalidation / purge | Ops Lead | Net SME |
@@ -657,7 +659,7 @@ Even the IC has limits:
 
 | Action | Owner | Details |
 |---|---|---|
-| Verify mitigation | Ops Lead | Run the canonical R-01 closure evidence sequence: user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and the completed stability window. Green monitoring is partial evidence. |
+| Verify mitigation | Ops Lead | Run the canonical [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps): user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and the completed stability window. Green monitoring is partial evidence. |
 | Declare resolved | IC | Announce resolution only after the closure evidence and stability window pass. Otherwise retain **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate. |
 | Change severity to SEV-5 | IC | Only after closure evidence and the stability window pass; otherwise retain the active severity and **Mitigating** or **Monitoring** state |
 | Update status page | Comms | Set status page to "Resolved" only after the resolution decision |
@@ -798,7 +800,7 @@ Action items from the PIR must be tracked to completion:
 
 ### Role Card: Incident Commander (IC)
 
-The Incident Commander is the single decision-maker responsible for the entire incident response. They do not debug, do not SSH into servers, and do not chase metrics. Instead, they maintain the big picture: understanding the scope and severity of the incident, setting response strategy, managing resources and escalations, and making all key decisions. The IC approves break-glass actions, communicates the response strategy to the scribe and liaison, and decides when the incident is resolved only after the R-01 closure evidence sequence and stability window pass. They are accountable for the safety of the response and for ensuring that the right people are working on the right problems. In extended incidents, the IC manages shift rotations and role handoffs to prevent responder fatigue.
+The Incident Commander is the single decision-maker responsible for the entire incident response. They do not debug, do not SSH into servers, and do not chase metrics. Instead, they maintain the big picture: understanding the scope and severity of the incident, setting response strategy, managing resources and escalations, and making all key decisions. The IC approves break-glass actions, communicates the response strategy to the scribe and liaison, and decides when the incident is resolved only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and stability window pass. They are accountable for the safety of the response and for ensuring that the right people are working on the right problems. In extended incidents, the IC manages shift rotations and role handoffs to prevent responder fatigue.
 
 ### Role Card: Deputy / Operations Lead
 
