@@ -43,6 +43,8 @@ ordinary bug-fix reproduction requirements.
 | `references/journey.md` | Canonical 9-phase change-request journey — intake, discovery, design, spec, test plan, implementation, review, readiness, authorized release — with four delivery paths |
 | `references/lifecycle.md` | Platform mechanics for GitHub (reference mode) and enterprise contexts — intake snapshots, CI/review monitoring, terminal states, and post-merge release authority |
 | `references/delivery-packet.md` | Durable cross-phase handoff: provenance, resumability, gate verdicts, exact-head binding, lifecycle states, and an artifact ownership map |
+| `references/position-assessment.md` | Entry mode for picking up delivery work that started elsewhere: artifact inventory, phase exit-condition scoring, a position report, and packet bootstrap |
+| `references/tracker-discovery.md` | Intake sub-step that detects which tracking system holds the work item and routes tracker operations to the matching tooling skill (`linear`, `jira-cli`, `notion`) |
 | `references/evaluation.md` | Evaluation methodology: fixtures, baselines, rubrics, multi-run reporting, claims policy |
 | `templates/` | Change contract, decision record, evidence ledger, verification plan, evaluation report |
 | `templates/delivery-packet.md` | Fillable delivery packet template mirroring the nine field groups defined in the reference |
@@ -72,6 +74,8 @@ python3 eval/run_eval.py --suite eval/fixtures --report out/report.md
 - You need to evaluate whether a delivery skill actually improves outcomes.
 - You are delivering a **change request** — an issue, ticket, or tracked request — from intake through planning, gates, implementation, and review to a verified PR (or equivalent reviewable deliverable).
 - You need to carry work from an **issue to a PR to an authorized post-merge release** with resumable, exact-head-bound state across phases.
+- You are asked to **continue work someone else started** — a half-implemented branch or adopted spec with no delivery packet — and need an evidence-based answer to "what step are we on and what remains?"
+- Your product tracks work in **Linear, Jira, or Notion**, and the lifecycle should operate that system through its own tooling skill instead of assuming GitHub.
 
 Do not trigger for single factual questions, fully-specified one-line edits, or
 tasks already owned end-to-end by a more specific skill. The change-request

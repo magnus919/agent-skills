@@ -118,6 +118,22 @@ or create a second orchestrator.
 issue/ticket trajectory. That work uses the core loop and the stage references
 below without the journey's phases, packet, or gates.
 
+### Mid-flight engagement (conditional)
+
+When the request is to **continue delivery work that started elsewhere** — a
+half-implemented branch, an adopted spec, a change request another contributor
+began — and no delivery packet exists, do not restart at phase 1 and do not
+trust narrative summaries of what was done. Run position assessment first:
+inventory observable artifacts, score them against phase exit conditions, emit
+a position report (current step, satisfied gates with evidence pointers,
+remaining checklist), then bootstrap a packet and continue under the normal
+journey.
+
+Procedure: [references/position-assessment.md](references/position-assessment.md).
+Load it only for mid-flight engagement; fresh change requests start at phase 1,
+and existing packets govern resumability through
+[references/delivery-packet.md](references/delivery-packet.md).
+
 ## Path selection before ceremony
 
 Select the delivery path immediately after current-state discovery and before
@@ -215,6 +231,8 @@ metadata, never as a success proxy.
 | [references/lightweight-test-hardening.md](references/lightweight-test-hardening.md) | Test-only regression guards for already-correct production behavior: baseline-pass / mutant-fail evidence, hermeticity, finality-before-push, bounded review, and escalation triggers. |
 | [references/lifecycle.md](references/lifecycle.md) | **Change-request work only** — platform mechanics (GitHub reference mode or enterprise mode) for intake, submission, CI/review monitoring, and authorized release. **Not loaded** for a simple fix, refactor, or review without an issue/ticket trajectory. |
 | [references/delivery-packet.md](references/delivery-packet.md) | **Change-request work only** — carrying state across phases of a change-request run, or resuming after a context boundary; defines packet fields, artifact ownership, lifecycle states, and resumability. **Not loaded** for a simple fix, refactor, or review without an issue/ticket trajectory. |
+| [references/position-assessment.md](references/position-assessment.md) | **Mid-flight engagement only** — continuing delivery work that started elsewhere with no delivery packet: artifact inventory, exit-condition scoring, position report, packet bootstrap. |
+| [references/tracker-discovery.md](references/tracker-discovery.md) | **Change-request intake** — detecting which tracking system holds the work item and routing tracker operations to the matching catalog tooling skill; keeps the journey vocabulary tracker-neutral. |
 | [references/evaluation.md](references/evaluation.md) | Designing, running, or reporting an evaluation |
 | [templates/](templates/) | Change contract, decision record, evidence ledger, verification plan, eval report; plus [templates/delivery-packet.md](templates/delivery-packet.md) — the fillable packet, **for change-request work only** (not for a simple fix/refactor/review without an issue trajectory) |
 | [eval/](eval/) | Task schema, rubric, baseline protocol, fixtures, runner |
