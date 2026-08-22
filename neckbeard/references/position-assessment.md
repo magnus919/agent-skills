@@ -72,6 +72,11 @@ Inventory reads are read-only discovery; they need no confirmation. Record
 where each artifact was found (path, SHA, URL) — pointers become the evidence
 references in the report.
 
+**Re-select the delivery path here, before scoring.** Run the path-selection
+rule ([../SKILL.md](../SKILL.md) § Path selection) against the affected surface
+and risk observed in the inventory; do not inherit a path assumption from the
+prior work. The selected path determines which phases are mandatory to score.
+
 ### Step 3 — Score against phase exit conditions
 
 Compare each inventoried artifact with the exit condition and gate definition
@@ -87,9 +92,9 @@ of its phase ([journey.md](journey.md); gate semantics in
 
 Scoring constraints:
 
-- Score the selected delivery path's mandatory phases; conditional phases are
-  scored only if their artifacts exist (an absent conditional phase with a
-  legitimate skip reason is recorded as such, not penalized).
+- Score the delivery path selected in step 2; conditional phases are scored
+  only if their artifacts exist (an absent conditional phase with a legitimate
+  skip reason is recorded as such, not penalized).
 - Verified-complete work is **not** re-executed, mirroring packet-resume
   semantics. Assessment establishes position; it does not redo accepted work.
 - Never upgrade a verdict to fill a gap. A missing gate verdict is `absent`,
@@ -124,9 +129,9 @@ Create a fresh delivery packet so subsequent operation has normal resumability:
 
 - Group (a) provenance records: engaged mid-flight, artifacts assessed, with
   the inventory pointers.
-- Group (b) records the re-selected delivery path (path selection per
-  [../SKILL.md](../SKILL.md) § Path selection — re-run it here; do not inherit
-  a path assumption from the prior work).
+- Group (b) records the delivery path selected in step 2 (path selection per
+  [../SKILL.md](../SKILL.md) § Path selection was re-run during assessment; no
+  path assumption was inherited from the prior work).
 - Group (c) initializes from the position report: current phase, current gate,
   and the head SHA at assessment time.
 - Unverified assumptions go to the evidence ledger

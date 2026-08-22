@@ -14,6 +14,7 @@
 - **Repository:** _[fill: repo path or URL, e.g. `https://github.com/org/repo`]_
 - **Base ref:** _[fill: branch or ref the change is based on, e.g. `main`]_
 - **Issue/comment snapshot:** _[fill: request text, comments, and linked work captured at intake — paste inline or link to a snapshot file]_
+- **Tracking system:** _[fill: system identified per ../references/tracker-discovery.md, e.g. `Linear (requester-confirmed)` / `GitHub Issues (detected: issue URL in request)`]_
 - **Head SHA at intake:** _[fill: `git rev-parse HEAD` at intake, e.g. `a1b2c3d`]_
 
 ## (b) Granted authority + workflow mode/path
