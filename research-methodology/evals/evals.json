@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "skill_name": "research-methodology",
+  "evals": [
+    {
+      "id": "academic-lifecycle-scoping-to-report",
+      "prompt": "We're deciding whether to bet our roadmap on local LLM inference on consumer GPUs. Do comprehensive research on what architectures people actually use for this today and give me something I can defend in front of the team — not a vibe check.",
+      "expected_output": "A comprehensive-track deliverable that begins with scoping, not searching: the core question framed as a single falsifiable question, explicit inclusion/exclusion criteria set before any query (date range appropriate for a fast-moving field, acceptable source types, authority threshold, duplication rule), and the depth declared (comprehensive, not a scan). The search strategy starts broad to map the territory, then narrows using multiple query angles (keyword, tool name, problem statement) and citation chaining both backward (to sources the authors relied on) and forward (cited-by). Every retained source is recorded with title + URL, author/source, date, key claims, supporting evidence, gaps/limitations, and connection to the brief. Credibility is assessed before deep work (CRAAP dimensions; reliability tiers — peer-reviewed and official documentation rank above forum posts). Findings are synthesized thematically with confidence levels tied to triangulation: 3+ independent agreeing sources is high confidence, a lone contradicting source is investigated rather than ignored, and single-source key claims are flagged as such. The final brief has the canonical structure: executive summary, 3-5 key findings with confidence levels, an evidence table mapping sources to findings, a confidence assessment separating solid from uncertain from missing, explicit open questions, and full citations with URLs. Unresolved gaps are reported as gaps — the deliverable never implies exhaustive coverage it did not achieve.",
+      "assertions": [
+        "Scoping precedes searching: a falsifiable core question plus explicit inclusion/exclusion criteria (date range, source types, authority threshold) are defined up front",
+        "Search strategy starts broad, uses multiple query angles, and chains citations backward and forward rather than relying on one query",
+        "Each retained source is recorded with title + URL, author, date, key claims, supporting evidence, gaps, and connection to the brief",
+        "Confidence levels are tied to triangulation counts, with single-source key claims flagged rather than presented as established fact",
+        "The report follows the structured brief format and ends with explicit open questions / unresolved gaps instead of implying completeness"
+      ]
+    },
+    {
+      "id": "journalistic-prepublication-verification",
+      "prompt": "I've drafted an investigative piece saying a startup's founder misled investors about user numbers. It rests mostly on one anonymous former employee plus two articles that covered the same rumor. Editor wants it out tomorrow. What has to happen before this ships?",
+      "expected_output": "The piece does not ship on this evidence base. A damaging accusation triggers the journalistic three-source rule: three genuinely independent sources — different people, documents, or methodologies — not three accounts echoing each other; the two articles citing the same rumor count once at best. With only one person of direct knowledge, the fallback is reporting the confidence gap explicitly ('only one person with direct knowledge would speak, but their account was consistent with internal documents reviewed by ...') and corroborating specifics against tier-1 primary documents (emails, memos, filings, commit history). Anonymous-source handling follows the named-source standard: establish why anonymity is requested, record the source's identity internally even though readers cannot see it, corroborate verifiable claims, and disclose as much as possible ('a current employee, speaking anonymously because they were not authorized...'). Before publication, run the 7-step verification protocol: every quote read word-for-word against the recording or notes (not memory), every link in the draft opened and numbers matched, every surprising claim triangulated with at least two sources, statistics recency-checked, paraphrase drift audited so a hedged source statement is never upgraded in strength, remaining single-source claims flagged openly in the draft, and the 'what if I'm wrong' test applied hardest to the most damaging allegations. If independence or corroboration cannot be reached by deadline, the claim is cut or reframed — deadline pressure changes timing, not the evidence bar.",
+      "assertions": [
+        "The damaging accusation invokes the three-independent-sources rule and identifies the two echo articles as non-independent",
+        "The single-direct-source shortfall is handled by reporting the confidence gap and corroborating against primary documents",
+        "Anonymous-source discipline is followed: reason established, identity known to the researcher, claims corroborated, attribution disclosed as far as possible",
+        "Pre-publication protocol includes quotes verified word-for-word against recordings/notes and every draft link opened",
+        "Paraphrase drift is audited so source strength is never inflated (e.g., 'suggests' never becomes 'proves')",
+        "The 'what if I'm wrong' test concentrates hardest verification on the most damaging claims, with unresolved single-source claims flagged or cut"
+      ]
+    },
+    {
+      "id": "industry-signal-filter-evidence-standard",
+      "prompt": "A major cloud vendor just changed its AI pricing to usage-based. Tech Twitter is losing its mind. Does this actually matter for our enterprise spend strategy, and give me an analysis worth reading — not another news recap.",
+      "expected_output": "An industry-analysis piece, not a recap. Step one is reading the actual announcement or filing directly — not the coverage of it — then running the signal filter: does this change competitive position, cost structure, who can build what, or open a previously closed market? Noise stops there; signal proceeds through the 'so what' test asked three times until it reaches a decision-level implication (e.g., usage-based pricing shifts TCO calculations for every enterprise evaluating these tools — that is the story). Claims are grounded in corporate evidence standards: percentages about industry behavior require a named survey firm with linked methodology, trend claims need multiple consistent data points from independent sources, and executive rhetoric ('we see a path to...') is separated from committed action — evasive answers and comparison baselines are read as signals. Analysis follows the money: capital flows, talent movement, infrastructure spending, and regulatory attention reveal strategy more honestly than press releases. A competitor reaction scan asks who responded and what silence means. Conclusions obey the one-company rule: one company is an anecdote, two to three show a pattern, four or more across segments justify 'the industry shows' framing — so a single vendor's move is framed accordingly, not extrapolated into a law of nature.",
+      "assertions": [
+        "The primary announcement or filing is read directly before relying on secondary coverage",
+        "The signal filter and triple 'so what' drill land on a decision-level implication for enterprise buyers rather than restating the news",
+        "Statistical claims meet the case-study evidence standard (named survey firm, linked methodology) and executive language is distinguished from verified commitments",
+        "'Follow the money' evidence (capital, talent, infrastructure, regulatory attention) supports the strategic inference",
+        "Framing respects the one-company rule: one vendor is an anecdote, and the write-up does not generalize past the evidence",
+        "A competitor reaction scan is included, treating competitor silence as signal"
+      ]
+    },
+    {
+      "id": "durable-artifact-gate-preservation",
+      "prompt": "Your research subagent wrapped up a competitor API-pricing investigation and dropped a really solid summary right here in chat. We're about to close the ticket and start building. Is there anything left to do before we call the research done?",
+      "expected_output": "Yes — under the Durable Artifact Gate the research is not complete, because the only useful output currently lives in chat and will be unrecoverable context. Before closing: identify the durable destination (the host system's normal long-lived research surface — linked knowledge records, a tracked report package, or a project document; never a transient workspace or untracked scratch file). Extract at each source's natural granularity: every distinct reusable claim, data point, contradiction, and open question that materially changes future reasoning, with no fixed note count as a stopping rule, continuing until every retained source is accounted for in the extraction log. Preserve provenance on each artifact: source URL or citation, access date, evidence strength, and links back to the research question and any dependent synthesis. Separate extraction from synthesis: the summary may explain conclusions, but source-level evidence records must be preserved first and must survive alongside it. Record preservation decisions in the research log, including sources that were rejected, too weak, inaccessible, redundant, or out of scope, so a future researcher can tell intentional exclusions from oversights. Only when retained sources and extracted claims are verifiably represented in the destination system — and the brief and log's durable-artifact sections are complete — is the work done.",
+      "assertions": [
+        "Chat-only output fails the Durable Artifact Gate; findings move to the host's durable long-lived research surface, not scratch files",
+        "Extraction preserves provenance per artifact: source URL/citation, access date, evidence strength, and links to the question and dependent synthesis",
+        "Extraction is separated from synthesis — source-level evidence records are preserved before and alongside any compacted summary",
+        "Rejected, redundant, or out-of-scope sources are recorded in the research log as deliberate exclusions",
+        "Completion is confirmed only after verifying every retained source and extracted claim is represented in the durable destination"
+      ]
+    },
+    {
+      "id": "worker-timeout-checkpoint-recovery",
+      "prompt": "I delegated a deep literature sweep on battery recycling economics to a research subagent. It hit its execution time limit after 20 minutes and returned a half-written partial summary. Do I rerun the whole thing from scratch, assume the topic's a dead end, or what?",
+      "expected_output": "Neither rerun-from-scratch nor abandon: a timeout is an interruption, not a research result, and never grounds for closing the investigation or inferring nothing useful exists. First, read the complete delegation transcript and inspect the workspace or scratch directory to establish what was actually produced before deciding what was lost. Recover and verify every partial artifact, source log, and extracted claim already written — long jobs routinely produce valuable partial work before hitting slow extraction, rate limits, or one unresponsive source. Resume from the last durable checkpoint instead of restarting broad discovery. Fix the bottleneck rather than accepting it: narrow or replace the slow operation (large PDF extraction, repeatedly rate-limited search), and write each subsequent stage incrementally so progress survives another interruption. If the worker cannot be resumed safely, continue the missing research directly or split it into smaller bounded tasks — the timeout changes the execution path, not the acceptance criteria. Report completion only when the research question is covered, retained sources and claims are represented in the durable evidence artifacts, and unresolved gaps are explicit. Elapsed time, worker status, and the existence of a plausible partial summary are not acceptance criteria.",
+      "assertions": [
+        "Timeout is treated as an interruption — never summarized as complete or interpreted as 'no useful result'",
+        "The delegation transcript and workspace are inspected before concluding what was lost, and partial artifacts/source logs are recovered and verified",
+        "Work resumes from the last durable checkpoint rather than restarting broad discovery",
+        "Slow operations (large PDF extraction, repeated rate-limited search) are narrowed or replaced, with later stages written incrementally",
+        "Acceptance is gated on evidence completeness and artifact verification with explicit unresolved gaps — not elapsed time or worker status"
+      ]
+    },
+    {
+      "id": "technical-claim-reproduction",
+      "prompt": "A widely shared blog post claims a 30B model hits 42 tokens/sec on a 24GB consumer GPU, and I've already cited that number in a draft report. Can I trust it, and what should I do before the report goes out?",
+      "expected_output": "Do not ship the borrowed number if you have the tools to test it: when a claim rests on a measurable performance figure and reproduction is feasible, test it yourself — your own properly conducted measurement is tier-1 evidence. Follow the reproduction standard: read the claim precisely (exact numbers, versions, flags, conditions); replicate conditions as closely as possible (model and software version, hardware, configuration, measurement methodology), noting that the post likely omits driver/CUDA details, which makes the original benchmark incomplete by definition; run the benchmark at least three times, since variability across runs is itself data. Compare honestly: matching within expected variance verifies the claim; significant divergence means either the claim or your conditions are off — check conditions, then report the discrepancy; inability to reproduce makes the claim unverifiable and flagged as such. Document the reproduction (claim tested, results, conditions, min/max/mean variance, verdict: Verified / Partially supported / Contradicted / Unverifiable). If testing genuinely is not feasible, find independent reproductions, audit the vendor's methodology critically (sample size, confounds, conflicts of interest), and flag the figure in the draft as vendor-reported and not independently verified. Under the Pre-Publication Gateway, a factual performance claim in a report gets this treatment before it is reported as established.",
+      "assertions": [
+        "Self-reproduction is attempted before the cited number is trusted, with own measurement ranked as tier-1 evidence",
+        "Conditions replication covers model/software version, hardware, flags, and methodology, and the source's unstated benchmark conditions are called out",
+        "Multiple runs are performed with variance reported, and outcomes map to Verified / Partially supported / Contradicted / Unverifiable verdicts",
+        "If reproduction is infeasible, independent reproductions are sought and the vendor-only figure is explicitly flagged in the draft",
+        "The claim is withheld from the report as established fact until the reproduction protocol completes"
+      ]
+    },
+    {
+      "id": "single-lookup-answered-directly",
+      "prompt": "quick one while I'm here — what port does PostgreSQL listen on by default?",
+      "expected_output": "Answer immediately and directly: 5432 (configurable via postgresql.conf or the PGPORT environment variable). This is a single factual lookup, and the correct routing is to respond directly without engaging the research lifecycle — spinning up scoping, inclusion/exclusion criteria, source triangulation, and a research log adds cost without adding credibility for a settled, stable fact. The full Scope-Gather-Evaluate-Analyze-Synthesize-Report pipeline, durable-artifact machinery, and pre-publication protocols exist for investigations where method traceability and evidence credibility matter; they are actively wrong-sized here. At most, cite where the answer comes from (official PostgreSQL documentation); no multi-phase process, no brief, no evidence table.",
+      "assertions": [
+        "Responds directly with the correct default port (5432) instead of launching a research lifecycle",
+        "Recognizes the request sits outside the skill's trigger boundary — a single factual lookup answered without the full process",
+        "Imposes no unnecessary scoping, triangulation, logging, or artifact machinery on a trivial lookup"
+      ]
+    }
+  ]
+}
