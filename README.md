@@ -296,6 +296,10 @@ Guide bounded, user-led coaching for adult nonclinical goals, decisions, transit
 
 Work with Linear teams, projects, cycles, issues, comments, workflow transitions, and documents using a small, dependency-free GraphQL CLI with bounded reads, dry-run previews, and focused reference guidance.
 
+### [litellm](litellm/SKILL.md)
+
+Operate, configure, secure, and troubleshoot the LiteLLM AI gateway (proxy) and Python SDK: one OpenAI-compatible config routing to 100+ providers, model lists and load-balanced groups, virtual keys/teams/budgets/rate limits, caching and guardrails, observability and spend, deployment and public-facing hardening, and evidence-led failure diagnosis. Ships a read-only `litellm-health` probe (`--json`), proxy-config and deployment record templates, 9 dated references, tests, and 6 evals. Routes engine selection to ml-engineering and single-engine operation to vllm/llama-cpp.
+
 ### [llama-cpp](llama-cpp/SKILL.md)
 
 Operate llama.cpp from hardware-aware installation and GGUF selection through verified local inference, OpenAI-compatible serving, reproducible tuning, multi-GPU operation, and evidence-led troubleshooting. Uses dated upstream sources, operation and benchmark templates, and six output-quality eval cases without adding a wrapper CLI.
