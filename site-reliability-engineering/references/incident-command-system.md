@@ -493,7 +493,7 @@ Duration: [X hours, Y minutes]
 Severity: SEV-[X]
 Root cause: [brief description]
 Action taken: [brief description]
-Closure evidence: [user-facing SLOs / critical journeys / dependencies / data-state / secondary effects / stability window]
+Closure evidence: [user-facing SLOs / critical journeys / dependencies / data-state / secondary effects / stability window / independent human confirmation]
 Monitoring: [what we're watching]
 Post-incident review: [link when available]
 ```
@@ -576,7 +576,7 @@ Use consistent event categories to make analysis easier:
 | Action | 🟢 | Rollback executed, server restarted, config changed |
 | Communication | 🟣 | Status page updated, exec notified, customer emailed |
 | Escalation | 🟠 | Manager called in, vendor contacted, legal notified |
-| Resolution | ✅ | Incident declared resolved after closure evidence and a completed stability window; green monitoring alone is insufficient |
+| Resolution | ✅ | Incident declared resolved after closure evidence, independent human confirmation, and a completed stability window; green monitoring alone is insufficient |
 
 ---
 
