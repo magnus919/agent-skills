@@ -482,7 +482,7 @@ Next update: [time or milestone]
 
 **Resolution announcement:**
 
-Use this only after the canonical R-01 closure evidence sequence and the defined stability window pass. If evidence is incomplete, send a Monitoring update instead, record the unverified boundary, retain the incident in **Mitigating** or **Monitoring**, and hand off or escalate.
+Use this only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. If evidence is incomplete, send a Monitoring update instead, record the unverified boundary, retain the incident in **Mitigating** or **Monitoring**, and hand off or escalate.
 
 ```
 ✅ INCIDENT RESOLVED

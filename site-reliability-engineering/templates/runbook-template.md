@@ -374,14 +374,14 @@ df -h /data
                               │
                    ┌──────────▼───────────┐
                    │  6. VERIFY           │
-                   │  Run R-01 closure   │
-                   │  evidence checks    │
+                   │  Run R-01 closure    │
+                   │  evidence checks     │
                    └──────────┬───────────┘
                               │
                    ┌──────────▼───────────┐
                    │  7. RESOLVE          │
-                   │  Only after R-01    │
-                   │  and stability      │
+                   │  Only after R-01     │
+                   │  and stability       │
                    └──────────────────────┘
 ```
 

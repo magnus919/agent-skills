@@ -38,7 +38,7 @@ Use [release-engineering](../release-engineering/SKILL.md) to plan releases, com
 For any automated mitigation, rollback, recovery action, or incident closeout:
 
 1. **Bound the action before it starts.** Record the target, affected population, maximum blast radius, success criterion, abort/rollback criteria, rollback target and procedure, and who may stop or reverse it. Prefer the smallest reversible scope and staged expansion.
-2. **Verify recovery at the user boundary.** After the action, check the user-facing SLOs, critical user journey, relevant dependency health, and data/state correctness. Observe a defined stability window and check secondary effects such as backlog recovery.
+2. **Verify recovery at the user boundary.** After the action, follow the [R-01 closure evidence sequence](templates/runbook-template.md#r-01-post-incident-steps): check the user-facing SLOs, critical user journey, relevant dependency health, and data/state correctness. Observe a defined stability window and check secondary effects such as backlog recovery.
 3. **Do not equate alert resolution with recovery.** A cleared alert or passing health endpoint is evidence, not a resolution verdict. If required evidence is missing, retain the `Mitigating` or `Monitoring` state, name the unverified boundary, and escalate rather than declare `Resolved`.
 4. **Record the evidence.** Capture the action, scope, thresholds, observed recovery evidence, remaining uncertainty, and rollback/follow-up trigger in the incident or change record.
 

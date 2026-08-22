@@ -103,7 +103,7 @@ ETA to Full Resolution: [time or "TBD"]
 
 ## 4. Resolved
 
-Use only after the canonical R-01 closure evidence sequence and the defined stability window pass. Healthy services, green dashboards, and a cleared alert are partial evidence, not a resolution verdict. If evidence is incomplete, use a Monitoring update instead and retain `Mitigating` or `Monitoring` status.
+Use only after the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. Healthy services, green dashboards, and a cleared alert are partial evidence, not a resolution verdict. If evidence is incomplete, use a Monitoring update instead and retain `Mitigating` or `Monitoring` status.
 
 ```
 [SUMMARY]: [INCIDENT RESOLVED]
