@@ -258,6 +258,6 @@ Point of Contact for Questions: [name / title / contact info]
 | INVESTIGATING       | Active diagnosis, no mitigation yet               | Findings, actions taken, ETA (or TBD)            |
 | MITIGATING          | Deploying a fix or workaround                     | Mitigation actions, expected outcome, risks      |
 | MONITORING          | Mitigation applied; closure evidence or stability window in progress | Evidence collected, unverified boundary, next check |
-| RESOLVED            | R-01 closure evidence and stability window complete | Root cause, resolution, closure evidence         |
+| RESOLVED            | R-01 closure evidence, stability window, and independent human confirmation complete | Root cause, resolution, closure evidence         |
 | POST-INCIDENT       | After post-mortem (24-72h later)                  | Full timeline, action items, lessons learned     |
 | EXECUTIVE SUMMARY   | C-level / VP comms during or right after incident | Business impact, SLA, revenue, clear language    |

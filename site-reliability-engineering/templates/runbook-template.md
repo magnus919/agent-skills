@@ -447,8 +447,8 @@ curl -s http://[service-url]/health | jq .
 # Step 5: Keep the incident Mitigating or Monitoring if evidence is missing;
 # record the unverified boundary and hand off or escalate.
 
-# Step 6: Announce only after R-01 closure evidence and independent human confirmation are complete
-echo "Rolled back [deployment] from v[X] to v[Y]. Recovery evidence independently confirmed."
+# Step 6: After R-01 closure evidence and independent human confirmation are
+# complete, the human incident owner sends the resolution announcement.
 ```
 
 ---
