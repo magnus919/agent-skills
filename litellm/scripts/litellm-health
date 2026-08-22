@@ -1,0 +1,260 @@
+#!/usr/bin/env python3
+"""litellm-health - read-only probe for a LiteLLM AI gateway (proxy server).
+
+Answers, over HTTP(S), four operational questions about a running proxy and
+nothing else: Is it alive? Is it ready (database reachable)? Which model
+aliases does this key see? How many deployments are registered? The probe
+issues GET requests only, never writes files, never mutates proxy state, and
+never sends data anywhere except the gateway you point it at.
+
+Standard library only; --help works with no gateway running. Output is
+bounded JSON with --json or short human-readable lines otherwise.
+
+Exit codes: 0 all checks passed, 1 issues found or a fatal error,
+2 usage error, 124 timeout.
+"""
+import argparse
+import json
+import socket
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+from typing import Any, Callable, Dict, List, Optional
+
+PROBE_NAME = "litellm-health"
+DEFAULT_URL = "http://127.0.0.1:4000"
+DEFAULT_TIMEOUT = 10
+MODEL_INFO_BOUND_BYTES = 64 * 1024
+
+CHECKS = (
+    "health",
+    "readiness",
+    "models",
+    "model_info",
+)
+
+# Checks whose routes sit behind master-key/virtual-key authentication.
+KEYED_CHECKS = frozenset({"models", "model_info"})
+
+
+class ProbeTimeout(Exception):
+    """A single request exceeded its time budget."""
+
+
+def parse_args(argv: List[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog=PROBE_NAME,
+        description=(
+            "Read-only probe for a running LiteLLM AI gateway: liveliness, "
+            "readiness, visible model aliases, and bounded deployment info."
+        ),
+    )
+    parser.add_argument(
+        "--url",
+        default=DEFAULT_URL,
+        help=f"Base URL of the LiteLLM gateway (default: {DEFAULT_URL})",
+    )
+    parser.add_argument(
+        "--check",
+        action="append",
+        choices=list(CHECKS),
+        help="Run only these checks; repeat the flag for several (default: all)",
+    )
+    parser.add_argument("--json", action="store_true", help="Emit bounded JSON output")
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=DEFAULT_TIMEOUT,
+        help=f"Seconds allowed per request (default: {DEFAULT_TIMEOUT})",
+    )
+    parser.add_argument(
+        "--key",
+        default=None,
+        help="Bearer key (master or virtual) needed by models/model_info",
+    )
+    return parser.parse_args(argv)
+
+
+class Gateway:
+    """Thin GET-only view of one gateway's HTTP surface."""
+
+    def __init__(self, base_url: str, timeout: float, key: Optional[str]):
+        self.base_url = base_url.rstrip("/")
+        self.timeout = timeout
+        self.key = key
+
+    def get(self, path: str) -> tuple[int, bytes]:
+        url = urllib.parse.urljoin(self.base_url + "/", path.lstrip("/"))
+        headers = {"Authorization": f"Bearer {self.key}"} if self.key else {}
+        request = urllib.request.Request(url, method="GET", headers=headers)
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                return response.status, response.read()
+        except (socket.timeout, TimeoutError) as error:
+            raise ProbeTimeout(
+                f"request timed out after {self.timeout}s"
+            ) from error
+        except urllib.error.HTTPError as error:
+            return error.code, error.read()
+        except urllib.error.URLError as error:
+            raise RuntimeError(f"connection failed: {error.reason}") from error
+
+
+def _auth_hint(result: Dict[str, Any], status: int) -> Dict[str, Any]:
+    if status in (401, 403):
+        result["hint"] = "route requires --key <master-or-virtual-key>"
+    return result
+
+
+def check_health(gateway: Gateway) -> Dict[str, Any]:
+    status, body = gateway.get("/health/liveliness")
+    text = body.decode("utf-8", errors="replace")
+    # A live 1.97.0 gateway answers this unauthenticated route with 200 "I'm alive!".
+    ok = status == 200 and "alive" in text.lower()
+    return {"name": "health", "status_code": status, "ok": ok, "body": text[:200]}
+
+
+def check_readiness(gateway: Gateway) -> Dict[str, Any]:
+    status, body = gateway.get("/health/readiness")
+    result: Dict[str, Any] = {
+        "name": "readiness",
+        "status_code": status,
+        "ok": status == 200,
+    }
+    if status == 200:
+        try:
+            payload = json.loads(body.decode("utf-8"))
+            if isinstance(payload, dict):
+                result["status"] = payload.get("status", "")
+                result["db"] = payload.get("db", "")
+        except (ValueError, TypeError):
+            pass
+    elif status == 503:
+        result["hint"] = "503 usually means the configured database is unreachable"
+    return result
+
+
+def check_models(gateway: Gateway) -> Dict[str, Any]:
+    status, body = gateway.get("/v1/models")
+    aliases: List[str] = []
+    if status == 200:
+        try:
+            payload = json.loads(body.decode("utf-8"))
+            entries = payload.get("data", []) if isinstance(payload, dict) else []
+            aliases = [
+                str(entry["id"])
+                for entry in entries
+                if isinstance(entry, dict) and entry.get("id")
+            ]
+        except (ValueError, TypeError, KeyError):
+            aliases = []
+    result = {
+        "name": "models",
+        "status_code": status,
+        "ok": bool(aliases),
+        "model_ids": aliases[:20],
+    }
+    return _auth_hint(result, status)
+
+
+def check_model_info(gateway: Gateway) -> Dict[str, Any]:
+    status, raw = gateway.get("/model/info")
+    raw = raw[: MODEL_INFO_BOUND_BYTES + 1]
+    truncated = len(raw) > MODEL_INFO_BOUND_BYTES
+    deployments = 0
+    if status == 200:
+        try:
+            payload = json.loads(raw.decode("utf-8", errors="replace"))
+            if isinstance(payload, list):
+                deployments = len(payload)
+            elif isinstance(payload, dict) and isinstance(payload.get("data"), list):
+                deployments = len(payload["data"])
+        except (ValueError, TypeError):
+            deployments = 0
+    result = {
+        "name": "model_info",
+        "status_code": status,
+        "ok": status == 200,
+        "deployment_count": deployments,
+        "truncated": truncated,
+    }
+    return _auth_hint(result, status)
+
+
+CHECK_RUNNERS: Dict[str, Callable[[Gateway], Dict[str, Any]]] = {
+    "health": check_health,
+    "readiness": check_readiness,
+    "models": check_models,
+    "model_info": check_model_info,
+}
+
+
+def run_checks(
+    gateway: Gateway, selected: List[str], key: Optional[str]
+) -> List[Dict[str, Any]]:
+    results: List[Dict[str, Any]] = []
+    for name in selected:
+        if name in KEYED_CHECKS and not key:
+            results.append(
+                {
+                    "name": name,
+                    "ok": False,
+                    "skipped_missing_key": True,
+                    "hint": "requires --key <master-or-virtual-key>",
+                }
+            )
+            continue
+        try:
+            results.append(CHECK_RUNNERS[name](gateway))
+        except ProbeTimeout as error:
+            results.append(
+                {"name": name, "ok": False, "timed_out": True, "error": str(error)}
+            )
+        except RuntimeError as error:
+            results.append({"name": name, "ok": False, "error": str(error)})
+    return results
+
+
+def render_text(results: List[Dict[str, Any]]) -> None:
+    for result in results:
+        verdict = "OK" if result.get("ok") else "FAIL"
+        detail = result.get("error") or result.get("status_code") or ""
+        print(f"[{verdict}] {result.get('name')} {detail}")
+        for alias in result.get("model_ids", []):
+            print(f"      model: {alias}")
+        hint = result.get("hint")
+        if not result.get("ok") and hint:
+            print(f"      hint: {hint}")
+
+
+def exit_code(results: List[Dict[str, Any]]) -> int:
+    if any(result.get("timed_out") for result in results):
+        return 124
+    if any(not result.get("ok") for result in results):
+        return 1
+    return 0
+
+
+def main(argv: List[str]) -> int:
+    try:
+        args = parse_args(argv)
+    except SystemExit as error:
+        return int(error.code) if error.code is not None else 2
+
+    if args.timeout <= 0:
+        print("error: --timeout must be positive", file=sys.stderr)
+        return 2
+
+    gateway = Gateway(args.url, args.timeout, args.key)
+    results = run_checks(gateway, args.check or list(CHECKS), args.key)
+
+    if args.json:
+        print(json.dumps({"url": gateway.base_url, "checks": results}, indent=2))
+    else:
+        render_text(results)
+    return exit_code(results)
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
