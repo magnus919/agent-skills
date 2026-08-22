@@ -8,9 +8,17 @@ Bundles are this repository's convention for organizing related skills under a s
 
 ## Skills
 
+### [actuarial-risk-modeling](actuarial-risk-modeling/SKILL.md)
+
+Expert statistical modeling for insurance, actuarial, and financial-risk decisions, including regression, GLMs, claims, forecasting, calibration, tail risk, and model governance.
+
 ### [adr-authoring](adr-authoring/SKILL.md)
 
 Preserve the reasoning behind consequential architecture choices so later contributors can understand, revisit, or supersede them responsibly.
+
+### [aeo](aeo/SKILL.md)
+
+Implement Answer Engine Optimization for AI answers and citations: question clusters, answer-first content, entities, evidence, structured-data parity, provider crawler policies, optional agent-readable files, and reproducible citation experiments. Narrowly scoped to AEO; routes broad SEO and CMS work to the existing skills.
 
 ### [agent-council](agent-council/SKILL.md)
 
@@ -28,17 +36,29 @@ Operate an evaluated agent with tools and authority in production through a runt
 
 Reference for the Agent Skills open format itself — directory structure, frontmatter schema, naming conventions, and progressive disclosure model. Use this meta-skill when creating or reviewing any other skill in this repository.
 
+### [ai-governance](ai-governance/SKILL.md)
+
+Design and operate an organization's AI governance system: governance principles, operating models and decision rights, risk frameworks, lifecycle gates, and fairness, transparency, privacy, security, regulatory, and board-oversight controls. Use when standing up or maturing a governance program, tiering use-case risk, reviewing an LLM or agent system for governance and safety gaps, mapping a regulation to a compliance plan, or preparing board reporting. Do not use for legal interpretation (route to legal-strategy), data-governance mechanics (data-architect/data-engineering), or implementing application security (secure-software-engineering).
+
+### [ai-operating-economics](ai-operating-economics/SKILL.md)
+
+Decide whether an AI-enabled workflow should be adopted, scaled, constrained, redesigned, or retired by connecting workflow outcomes, worker or user effects, quality guardrails, full operating cost, telemetry, uncertainty, and accountable governance. Routes detailed financial, statistical, analytics, evaluation, runtime, governance, and launch work to the owning specialist skills.
+
 ### [anydoc](anydoc/SKILL.md)
 
 Convert Word, PowerPoint, Excel, OpenDocument, RTF, EPUB, CSV, and text-based PDF documents to GitHub-Flavored Markdown locally with the Any Doc CLI. Use when a task needs the contents of an office document, spreadsheet, presentation, ebook, or PDF you cannot read directly. Do not use for generating, editing, or validating documents, for ebook packaging, or for OCR of scanned or image-only PDFs.
 
 ### [api-design-and-evolution](api-design-and-evolution/SKILL.md)
 
-Design, document, review, and evolve consumer-facing HTTP, GraphQL, RPC, event, webhook, and streaming interfaces. Covers consumer jobs, domain semantics, contracts, failure behavior, compatibility, deprecation, migration, and deployed-boundary verification.
+Design, govern, document, review, and evolve consumer-facing HTTP, GraphQL, RPC, event, webhook, and streaming interfaces. Covers consumer jobs, domain semantics, API landscapes, ownership, lifecycle, topology, contracts, failure behavior, compatibility, deprecation, migration, and deployed-boundary verification. Do not use for product discovery, platform operations, full security assessment, ADR authoring, or delivery gates.
 
 ### [artifact-pyramids](artifact-pyramids/SKILL.md)
 
 Structure durable research work so people and agents can start with conclusions, then inspect the analysis and underlying evidence only when needed.
+
+### [ascii-city-engine](ascii-city-engine/SKILL.md)
+
+Build portable, first-person colored ASCII city engines and small GIS-derived city packs. Covers terrain-following pedestrian physics, raycast-to-character-grid rendering, a pluggable city-provider JSON contract with an offline validator, reproducible public-GIS ingestion, and a committed downtown Raleigh sample pack. Not for WebGL/3D games, multi-level interiors, or committing full-resolution GIS archives.
 
 ### [autogen](autogen/SKILL.md)
 
@@ -46,7 +66,7 @@ An expert-level skill for building **conversational multi-agent systems** with M
 
 ### [backend-engineering](backend-engineering/SKILL.md)
 
-Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint patterns, service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic. Do not use for frontend, data engineering, or platform infrastructure provisioning.
+Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint patterns, clean/hexagonal/layered services, event-driven handlers, outbox/inbox delivery, migration coexistence, database access, integrations, errors, and service-level testing. Language agnostic; routes API contracts, decomposition strategy, cross-system migration, data engineering, and platform provisioning to their owners.
 
 ### [binary-analysis](binary-analysis/SKILL.md)
 
@@ -62,7 +82,7 @@ Make system boundaries, responsibilities, and relationships legible at the archi
 
 ### [capacity-and-cost-engineering](capacity-and-cost-engineering/SKILL.md)
 
-Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Covers growth forecasting, peak sizing, degraded-mode capacity, budget/quota controls, load/soak test evidence standards, and SLO-cost tradeoff records. Routes financial P&L and fundraising to financial-modeling, infrastructure implementation to platform-engineering, degradation-path design to resilience-and-recovery, and feeds capacity/cost evidence to production-readiness. Ships a discovery brief comparing seven adjacent skills, five fillable templates (capacity model, unit-economics record, budget/quota decision, load/soak test plan, SLO-cost tradeoff record), and five evals.
+Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Covers growth forecasting, peak sizing, degraded-mode capacity, multi-tenant demand distributions and skew, pooled/siloed headroom, tier-linked admission and fairness evidence, tenant-variable unit cost, budget/quota controls, representative load/soak evidence, and SLO-cost tradeoff records. Routes SaaS architecture, security, financial outcomes, infrastructure implementation, SRE, analytics, and general architecture to their specialist owners. Ships focused references, six fillable templates, and ten evals.
 
 ### [chief-of-staff-methodology](chief-of-staff-methodology/SKILL.md)
 
@@ -112,6 +132,10 @@ Guide a consent-based conversation that helps people discover how an AI agent co
 
 Act as a virtual data architect. Discover data assets, assess maturity, evaluate platforms, design architectures, establish governance, and create migration plans. Covers modern data patterns (data mesh, data lakehouse, streaming, real-time analytics) with vendor evaluation frameworks and maturity models.
 
+### [data-cleaning](data-cleaning/SKILL.md)
+
+Clean, profile, validate, reshape, and document messy data through an evidence-first, reproducible workflow with reusable plans, contracts, reports, and a dependency-free profiler.
+
 ### [data-engineering](data-engineering/SKILL.md)
 
 Design and operate data infrastructure — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Do not use for statistical analysis or ML model development.
@@ -123,6 +147,10 @@ PhD-level expertise in data science, statistics, and machine learning. Rigorous 
 ### [de-spin](de-spin/SKILL.md)
 
 Analyze propaganda, spin, selective framing, deceptive marketing, and AI-generated persuasion by tracing claims to evidence and separating literal truth from implied conclusions. Produces a calibrated assessment of what is true, false, misleading, complicated, unsupported, or unknown, with an evidence ledger and a decision-safe next step.
+
+### [digital-twin](digital-twin/SKILL.md)
+
+Design and operate trustworthy digital twins and federated twin universes for software systems, engineering processes, infrastructure, agentic software factories, and cyber-physical operations. Covers architecture, synchronization, provenance, simulation, VVUQ, twin health, authority, governance, lifecycle, and decommissioning. Do not use for ordinary dashboards, static dependency graphs, or one named infrastructure tool without a twin-specific feedback loop.
 
 ### [docker-compose](docker-compose/SKILL.md)
 Define, run, debug, and harden multi-container applications with Docker Compose. Covers the Compose Specification, lifecycle and healthchecks, service networking, volumes, secrets, profiles, interpolation, overrides, Compose Watch, CI, production patterns, and troubleshooting. Ships 9 references, 5 templates, and a portable diagnostics script.
@@ -138,6 +166,10 @@ An expert-level skill for **programmatic prompt optimization** with Stanford's D
 ### [email](email/SKILL.md)
 
 Send and diagnose transactional email through Twilio SendGrid: send with `--dry-run`/`--yes` confirmation, check deliverability (bounces and spam reports), and verify Signed Event Webhook signatures with a self-contained ECDSA P-256 verifier. Ships a bounded stdlib CLI with `--json` and `--limit`.
+
+### [enterprise-architecture](enterprise-architecture/SKILL.md)
+
+Connect enterprise outcomes to capabilities, value streams, application and information portfolios, operating models, decision rights, and feasible transition architectures. Keeps system design, organization design, product roadmaps, technology posture, and corporate strategy with their neighboring owners.
 
 ### [epub](epub/SKILL.md)
 
@@ -264,6 +296,10 @@ Guide bounded, user-led coaching for adult nonclinical goals, decisions, transit
 
 Work with Linear teams, projects, cycles, issues, comments, workflow transitions, and documents using a small, dependency-free GraphQL CLI with bounded reads, dry-run previews, and focused reference guidance.
 
+### [litellm](litellm/SKILL.md)
+
+Operate, configure, secure, and troubleshoot the LiteLLM AI gateway (proxy) and Python SDK: one OpenAI-compatible config routing to 100+ providers, model lists and load-balanced groups, virtual keys/teams/budgets/rate limits, caching and guardrails, observability and spend, deployment and public-facing hardening, and evidence-led failure diagnosis. Ships a read-only `litellm-health` probe (`--json`), proxy-config and deployment record templates, 9 dated references, tests, and 6 evals. Routes engine selection to ml-engineering and single-engine operation to vllm/llama-cpp.
+
 ### [llama-cpp](llama-cpp/SKILL.md)
 
 Operate llama.cpp from hardware-aware installation and GGUF selection through verified local inference, OpenAI-compatible serving, reproducible tuning, multi-GPU operation, and evidence-led troubleshooting. Uses dated upstream sources, operation and benchmark templates, and six output-quality eval cases without adding a wrapper CLI.
@@ -282,7 +318,7 @@ Operate MeshCore Companion radio packet capture over BLE, serial, or TCP. Covers
 
 ### [migration-engineering](migration-engineering/SKILL.md)
 
-Plan and execute safe cross-system migrations — schema, data, API, infrastructure, and service — with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Distinguishes rollback, roll-forward, restore, and irreversible recovery paths. Routes implementation to API, data, platform, release, and SRE specialists.
+Plan and execute safe cross-system migrations, including service extraction from monoliths, with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Distinguishes rollback, roll-forward, restore, and irreversible recovery paths. Routes implementation to API, data, platform, release, and SRE specialists, while leaving decomposition decisions to the architecture owner.
 
 ### [ml-engineering](ml-engineering/SKILL.md)
 
@@ -291,6 +327,10 @@ Machine learning engineering methodology — model training, fine-tuning (LoRA/Q
 ### [mobile-development](mobile-development/SKILL.md)
 
 Build, test, sign, and ship mobile apps across iOS, Android, Flutter, and React Native as ONE family skill with per-framework references: project scaffolding, builds and code signing, device and emulator testing, store submission (App Store/TestFlight and Google Play), app lifecycle and backgrounding, offline and sync, and mobile-specific testing. Ships 4 framework references (ios, android, flutter, react-native) and 6 evals. Routes web UI work to frontend-engineering and server-side work to backend-engineering.
+
+### [multi-tenant-saas-architecture](multi-tenant-saas-architecture/SKILL.md)
+
+Design end-to-end multi-tenant SaaS architectures by connecting tenant semantics, control/application planes, tenancy and partitioning choices, onboarding, entitlements, metering, billing handoffs, lifecycle, restore, noisy-neighbor behavior, and tenant-aware operations. Routes security, capacity, finance, platform, API, implementation, data, migration, and privacy details to their specialist owners.
 
 ### [neckbeard](neckbeard/SKILL.md)
 
@@ -475,9 +515,13 @@ Build practical reliability practices around the work teams actually perform: me
 
 Operate Slack workspaces from the terminal: list channels, read messages, follow threads, search history, list files, and verify webhook signatures. Ships a bounded stdlib CLI with `--json`, `--limit`, and a `--dry-run`/`--yes` mutation gate for sends.
 
+### [software-architecture](software-architecture/SKILL.md)
+
+Design and review software architectures from business drivers through system boundaries, tradeoffs, runtime behavior, evolution, and architecture practice. Use for greenfield or target architecture, modular-monolith decisions, distributed consistency and failure behavior, fitness evidence, and architecture reviews; route reverse engineering, interfaces, data, implementation, platform, security, and migration execution to their specialist owners.
+
 ### [software-architecture-analysis](software-architecture-analysis/SKILL.md)
 
-Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan under new constraints (local-first, privacy-first, self-hosted). Includes an interface extraction pattern for designing swappable storage provider abstractions.
+Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, feature surface, coupling, quality characteristics, data ownership, and workflow recovery — then produce an evidence-grounded clean-room design document, PRD, or migration plan under new constraints. Includes interface extraction, decomposition-readiness, and architecture health assessment guidance.
 
 ### [spec-driven-development](spec-driven-development/SKILL.md)
 
@@ -509,7 +553,7 @@ Make documentation useful at the moment someone needs to install, operate, exten
 
 ### [technology-radar](technology-radar/SKILL.md)
 
-Turn scattered technology preferences into explicit, reviewable decisions with owners, evidence, and a clear adoption posture.
+Turn technology preferences and architecture-governance choices into explicit, reviewable decisions with owners, evidence, and a proportionate adoption posture.
 
 ### [telemetry](telemetry/SKILL.md)
 

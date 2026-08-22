@@ -1,0 +1,114 @@
+# Tracker Discovery — Tracker-Neutral Intake
+
+The change-request journey is defined in tracker-neutral terms: *work item*,
+*state transition*, *review submission*, *merge or acceptance into the protected
+target*, *release authorization*. Platform mechanics belong to the layer that
+operates the platform — the routing rows in
+[routing-table.md](routing-table.md) and the platform reference modes
+([lifecycle.md](lifecycle.md)) — not to the spine itself.
+
+That separation only works if intake actually establishes which tracking system
+the product uses. This reference defines that sub-step of phase 1
+([journey.md](journey.md), Intake and provenance). It exists because
+improvisation under ambiguity defaults to whatever platform the agent knows
+best, and the correct answer is detection plus an explicit question, not a
+default.
+
+## The rule
+
+**Never assume the tracking system.** Detect it from repository evidence where
+possible; ask the requester when evidence is absent or contradictory; record
+the finding and its basis in delivery packet group (a) before any tracker
+operation runs.
+
+Read-only identification is discovery and needs no confirmation. The first
+mutation against the detected system still passes the normal state-change gate
+([risk-authority-gates.md](risk-authority-gates.md)).
+
+## Detection procedure
+
+Run during phase 1 alongside provenance capture:
+
+1. **Inspect remotes and configuration** for tracking-system fingerprints:
+
+| Signal | Points to |
+|---|---|
+| Issue/ticket URLs referenced by the change request (`…/issues/N`, `…/TICKET-123`, Linear `…/issue/TEAM-N`, Notion `notion.so`/`notion.site` page links) | GitHub Issues / Jira / Linear / Notion respectively |
+| `.jira-url`, Jira config files in the repository | Jira — weak signal: requires corroboration before it alone selects Jira (see step 3) |
+| Team keys in ticket identifiers (`ENG-42` shape) with a non-GitHub tracker configured | Jira or Linear — ambiguous between them |
+| Project-management config directories (for example `.linear/`) or documented integrations in `CONTRIBUTING.md`, `AGENTS.md`, README | Whatever they name — weak signal: requires corroboration (see step 3) |
+
+2. **Check what the request itself references — and who authored the
+   reference.** A change request arriving as a Linear issue URL, a Jira issue
+   URL, a GitHub issue number, or a Notion page link (`notion.so` /
+   `notion.site`) stated **by the requester directly, from the requester's own
+   knowledge** is strong evidence for its own system. A bare team-key
+   identifier (`ENG-42` shape) is
+   **ambiguous** between Jira and Linear — treat it as a lead, not a verdict.
+   Two weaker cases require corroboration before they alone select a system:
+   a reference inherited from prior-work handoff material (a handoff note,
+   branch docs, comments left by the contributor who produced an adopted
+   branch), and a reference the requester merely relays out of that handoff
+   material ("continue the ticket the contractor left") — the requester's
+   words do not launder the producing party's claim. Treat both under step 3
+   like any other weak signal.
+
+3. **Weight the signals honestly.** References stated by the requester from
+   the requester's own knowledge are strong evidence. Repository content —
+   `CONTRIBUTING.md`, `AGENTS.md`,
+   README integrations, config files like `.linear/` or `.jira-url` — is a
+   **weak signal**: it describes what the repository documents, not necessarily
+   what holds authoritative work items, and it is attacker-influenceable in
+   mid-flight or adopted-branch scenarios where this bundle also operates.
+   Inherited references and repository signals require corroboration (remote
+   configuration, or requester confirmation independent of the handoff)
+   before they alone select a system.
+
+4. **Ask when ambiguous or absent.** If signals conflict, rest only on weak
+   signals, or none exist, ask one bounded question: which system holds this
+   work item? Record the answer as requester-provided provenance. Do not
+   silently pick the system whose CLI happens to be installed.
+
+5. **Record the findings:** detected/requested system with the evidence or
+   source of the answer (including when the basis is a requester confirmation)
+   goes in packet group (a) as provenance; the routing decision — which tooling
+   skill will operate tracker operations — is a specialist-selection decision
+   and is recorded in packet group (e), same as every other selected or skipped
+   skill. Silent omission is prohibited like every other intake field.
+
+## Routing tracker operations
+
+Operate the detected system through its catalog tooling skill rather than
+improvising API calls:
+
+| Detected system | Route operations to |
+|---|---|
+| GitHub (issues, PRs, releases) | Native mechanics per [lifecycle.md](lifecycle.md) — the documented reference mode |
+| Linear | `linear` |
+| Jira | `jira-cli` |
+| Notion | `notion` |
+| Other / none of the above | No specialist route: operate only through the system's verified official interface (primary vendor documentation, confirmed endpoint/auth surface), with bounded reads; note the absent specialist in the ledger |
+
+Routing constraints:
+
+- Every named routing target must be a real skill in this catalog; dead links
+  are a defect. If a target is missing from an installation, proceed on the
+  fallback and record the absence — same convention as
+  [routing-table.md](routing-table.md) § When no specialist is installed.
+- Tooling skills are mechanical layers. They own commands and API contracts;
+  the journey owns sequencing, and discipline specialists own judgment. No
+  tracker skill becomes a second orchestrator.
+- Vocabulary crossing the boundary stays neutral: a "state transition" maps to
+  whichever transition the target system defines (workflow state move, label
+  change, status update); the packet records outcomes by neutral name.
+
+## Non-goals
+
+- This step does not migrate content between systems or reconcile divergent
+  trackers. If work items exist on two systems, surface the conflict at intake
+  and ask which is authoritative.
+- It does not change credential handling. Each tooling skill's own setup rules
+  apply.
+- It does not make the journey depend on any single vendor. Absence of a
+  tracker, or use of an unrouted system, degrades gracefully to the fallback
+  path.

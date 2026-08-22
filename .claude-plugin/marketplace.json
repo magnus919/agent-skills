@@ -6,13 +6,31 @@
   "description": "AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems.",
   "plugins": [
     {
+      "name": "actuarial-risk-modeling",
+      "source": "./",
+      "skills": [
+        "./actuarial-risk-modeling"
+      ],
+      "strict": false,
+      "description": "Use when analyzing, selecting, validating, or communicating models for insurance, actuarial, financial-risk, or other consequential uncertain outcomes. Covers regression, generalized linear models, frequency-severity, panel and longitudinal data, survival, time series, credibility, reserving, tail risk, calibration, and model governance. Do not use for generic software forecasting, ordinary SaaS financial models, or credentialed actuarial, investment, legal, or regulatory advice without the relevant specialist review."
+    },
+    {
       "name": "adr-authoring",
       "source": "./",
       "skills": [
         "./adr-authoring"
       ],
       "strict": false,
-      "description": "Write, review, and maintain architecture decision records with clear context, alternatives, consequences, and lifecycle governance. Use when a consequential technical decision must remain understandable."
+      "description": "Write, review, and maintain architecture decision records with clear context, alternatives, consequences, confirmation links, and lifecycle governance. Use when a consequential technical decision or its enforceable architectural constraint must remain understandable. Do not use for system-wide evolutionary architecture design, general observability, or operating a named test or CI tool."
+    },
+    {
+      "name": "aeo",
+      "source": "./",
+      "skills": [
+        "./aeo"
+      ],
+      "strict": false,
+      "description": "Use when designing, implementing, or measuring Answer Engine Optimization (AEO) for AI answers, citations, generative search, or agent-readable web content. Do not use this as a general SEO audit or CMS operations guide; route those parts to seo-audit or the relevant platform skill."
     },
     {
       "name": "agent-council",
@@ -51,6 +69,24 @@
       "description": "Use this skill when creating, reviewing, or editing Agent Skills-format skills, or when implementing skill discovery and loading in an agent client. It covers directory structure, SKILL.md metadata, progressive disclosure, evals, and repository conventions. Do not use this skill for general software work that does not involve the Agent Skills format or lifecycle."
     },
     {
+      "name": "ai-governance",
+      "source": "./",
+      "skills": [
+        "./ai-governance"
+      ],
+      "strict": false,
+      "description": "Design and operate an organization's AI governance system: define governance principles, operating models and decision rights, risk frameworks, lifecycle gates, and fairness, transparency, privacy, security, regulatory, and board-oversight controls. Use when standing up a governance program, tiering AI use-case risk, reviewing an LLM or agent system for governance and safety gaps, mapping a regulation to a compliance plan, scoring governance maturity, or preparing board reporting. For regulated life-sciences use cases, also cover GxP, ALCOA+, data integrity, electronic records, validation/assurance, and QMS interfaces. Do not use for interpreting regulations as legal advice (route to legal-strategy), data-governance mechanics (data-architect/data-engineering), or implementing application security (secure-software-engineering)."
+    },
+    {
+      "name": "ai-operating-economics",
+      "source": "./",
+      "skills": [
+        "./ai-operating-economics"
+      ],
+      "strict": false,
+      "description": "Use when deciding whether an AI-enabled workflow should be adopted, scaled, constrained, redesigned, or retired, and the decision must connect business outcomes, worker or user effects, quality guardrails, full operating cost, telemetry, uncertainty, and accountable governance. Do not use for a standalone financial model, infrastructure cost calculation, agent evaluation design, runtime operations, or general AI governance; route those details to the neighboring specialist skills."
+    },
+    {
       "name": "anydoc",
       "source": "./",
       "skills": [
@@ -66,7 +102,7 @@
         "./api-design-and-evolution"
       ],
       "strict": false,
-      "description": "Design, document, review, and evolve consumer-facing APIs and event interfaces. Use when choosing REST/HTTP, GraphQL, RPC, events, webhooks, or streaming; writing OpenAPI or AsyncAPI contracts; defining schemas, pagination, mutations, errors, idempotency, or API compatibility; or planning API versioning, deprecation, and migration. Use secure-software-engineering for a full security lifecycle, ADR authoring for durable architecture decisions, and spec-driven-development for a delivery specification and implementation gates."
+      "description": "Design, govern, document, review, and evolve consumer-facing APIs and event interfaces. Use when choosing REST/HTTP, GraphQL, RPC, events, webhooks, or streaming; writing OpenAPI or AsyncAPI contracts; assessing an API landscape, ownership, duplication, lifecycle, discoverability, retirement, gateways, service meshes, north-south or east-west traffic, routing, policy, observability, or failure boundaries; defining schemas, pagination, mutations, errors, idempotency, or compatibility; or planning versioning, deprecation, and migration. Do not use for product discovery, platform operations, full security assessment, ADR authoring, or delivery gates; route those to the neighboring specialist skills."
     },
     {
       "name": "artifact-pyramids",
@@ -76,6 +112,15 @@
       ],
       "strict": false,
       "description": "Organize durable agent research outputs as summaries, analysis, and evidence dossiers. Use when producing multi-layer research artifacts or coordinating research handoffs."
+    },
+    {
+      "name": "ascii-city-engine",
+      "source": "./",
+      "skills": [
+        "./ascii-city-engine"
+      ],
+      "strict": false,
+      "description": "Build portable, first-person colored ASCII city engines and small GIS-derived city packs. Use when designing terrain-following walking, raycast character rendering, city-provider schemas, or reproducible public-GIS ingestion. Do not use for conventional 3D/WebGL games, multi-level interiors, general GIS analysis, or committing full-resolution GIS archives."
     },
     {
       "name": "autogen",
@@ -93,7 +138,7 @@
         "./backend-engineering"
       ],
       "strict": false,
-      "description": "Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint patterns, service architecture (clean/hexagonal/layered), database access patterns, integration and middleware design, error handling, and service-level testing. Language and framework agnostic. Do not use for frontend, data engineering, or platform infrastructure provisioning."
+      "description": "Design and implement backend services and APIs — REST, gRPC, GraphQL, event-driven handlers, transaction boundaries, outbox/inbox delivery, migration coexistence, database access, integration, error handling, and service-level testing. Use for application/domain/infrastructure implementation decisions. Language and framework agnostic. Do not use for frontend, data engineering, platform provisioning, API contract ownership, service decomposition strategy, or cross-system migration planning."
     },
     {
       "name": "binary-analysis",
@@ -120,7 +165,7 @@
         "./c4-diagramming"
       ],
       "strict": false,
-      "description": "Create C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need clear system context, container, component, or code-level views."
+      "description": "Create and review C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need a communication-ready system context, container, component, or code-level view, including audience, narrative, hierarchy, labels, legends, accessibility, and uncertainty. Do not use for Mermaid syntax/rendering work without C4 modeling, architecture decisions, or full accessibility conformance reviews."
     },
     {
       "name": "capacity-and-cost-engineering",
@@ -129,7 +174,7 @@
         "./capacity-and-cost-engineering"
       ],
       "strict": false,
-      "description": "Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Use when projecting capacity from growth forecasts, sizing for peak events, designing cost-aware scaling policies, defining budget thresholds or quota/rate-limit enforcement, running or planning load/soak tests as capacity evidence, or resolving SLO-cost tradeoffs. Do NOT use for financial P&L statements, fundraising scenarios, or SaaS metrics (route to financial-modeling); for infrastructure implementation or cloud-resource provisioning (route to platform-engineering); or for generic cloud-cost tips and universal utilization targets — this skill does not prescribe fixed savings rates or one-size-fits-all thresholds."
+      "description": "Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Use when projecting capacity from growth forecasts, sizing for peak events, designing cost-aware scaling policies, defining budget thresholds or quota/rate-limit enforcement, running or planning load/soak tests as capacity evidence, resolving SLO-cost tradeoffs, or modeling multi-tenant demand distributions, hot-tenant skew, pooled or siloed headroom, fairness evidence, and tenant-variable unit cost. Do NOT use for financial P&L statements, fundraising scenarios, or SaaS metrics (route to financial-modeling); for infrastructure implementation or cloud-resource provisioning (route to platform-engineering); or for generic cloud-cost tips and universal utilization targets — this skill does not prescribe fixed savings rates or one-size-fits-all thresholds."
     },
     {
       "name": "chief-of-staff-methodology",
@@ -237,7 +282,16 @@
         "./data-architect"
       ],
       "strict": false,
-      "description": "A virtual data architect for teams who don't have one. If your data pipelines are growing faster than your team, nobody agrees on what 'customer' means, your cloud bill is climbing without clear reason, or you're about to choose a data platform and need someone who's seen this before — load this skill. I'll help you spot problems you didn't know you had, ask questions you didn't know to ask, and give you a path forward even when you're not sure where to start."
+      "description": "Use this skill to assess, design, and evolve data architectures, including data platforms, data products, data mesh adoption, event-driven data flows, governance, modeling, and migration decisions. Load it when teams need workload-grounded tradeoffs, ownership and quality agreements, or a current-to-target data architecture. Do not use it for pipeline or platform operations, implementation details, interface contract semantics, SQL tuning, or statistical modeling; route those to data-engineering, platform-engineering, api-design-and-evolution, postgres, or data-scientist."
+    },
+    {
+      "name": "data-cleaning",
+      "source": "./",
+      "skills": [
+        "./data-cleaning"
+      ],
+      "strict": false,
+      "description": "Clean, profile, validate, reshape, and document messy tabular, text, JSON, and relational data through an evidence-first, reproducible workflow. Use when preparing data for analysis, reporting, modeling, ingestion, migration, or matching. Do not use for statistical modeling, dashboard design, or operating a named data platform; route those tasks to data-scientist, data-engineering, or the relevant tool skill."
     },
     {
       "name": "data-engineering",
@@ -255,7 +309,7 @@
         "./data-scientist"
       ],
       "strict": false,
-      "description": "PhD-level expertise in data science, statistics, and machine learning. Use when the task requires rigorous statistical analysis, experimental design, causal inference, advanced modeling, research methodology, or data science project leadership. Load when the user asks about statistical methods, experimental design, model selection, A/B testing, hypothesis testing, power analysis, regression, causality, Bayesian analysis, or research methodology."
+      "description": "Use for PhD-level expertise in data science, statistics, and machine learning: rigorous statistical analysis, experimental design, causal inference, advanced modeling, research methodology, or data science project leadership. Load when the user asks about statistical methods, experimental design, model selection, A/B testing, hypothesis testing, power analysis, regression, causality, Bayesian analysis, or research methodology. For insurance, actuarial, claims, reserving, solvency, credibility, tail-risk, or financial-risk statistical modeling, use `actuarial-risk-modeling`; for deterministic operating and SaaS financial models, use `financial-modeling`."
     },
     {
       "name": "de-spin",
@@ -265,6 +319,15 @@
       ],
       "strict": false,
       "description": "Use when someone asks what is true, false, misleading, unsupported, unknown, or genuinely complicated in a persuasive message, article, pitch, advertisement, policy claim, or viral post. Analyze propaganda, spin, selective framing, urgency, social proof, deceptive marketing, and AI-generated persuasion by tracing claims to evidence and separating literal truth from implied conclusions. Do not use to read deception from demeanor, adjudicate intent, or replace broad domain research."
+    },
+    {
+      "name": "digital-twin",
+      "source": "./",
+      "skills": [
+        "./digital-twin"
+      ],
+      "strict": false,
+      "description": "Design, build, evaluate, govern, monitor, evolve, and retire digital twins and federated twin universes for software systems, engineering processes, agentic software factories, infrastructure, and cyber-physical operations. Use when a task involves digital-twin architecture, digital thread, simulation, predictive maintenance, twin health, agent authority, or dark-factory design. Do not use for ordinary observability dashboards, static dependency graphs, generic AI governance, or operating one named infrastructure tool without a twin-specific representation and feedback loop."
     },
     {
       "name": "docker-compose",
@@ -310,6 +373,15 @@
       ],
       "strict": false,
       "description": "Send and diagnose transactional email through Twilio SendGrid from a terminal or agent: send messages, check deliverability (bounces and spam reports), and verify Signed Event Webhook signatures (ECDSA P-256) — with a bundled email-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to send a transactional email, triage bounces or spam complaints, or confirm an inbound SendGrid webhook is authentic. Do not use for marketing or bulk email campaigns (that is SendGrid Marketing Campaigns), building email template systems, or other email providers (that is their own tooling)."
+    },
+    {
+      "name": "enterprise-architecture",
+      "source": "./",
+      "skills": [
+        "./enterprise-architecture"
+      ],
+      "strict": false,
+      "description": "Design and evolve enterprise architectures by connecting business capabilities, value streams, applications, information, technology, operating models, and transition choices. Use when mapping an enterprise portfolio, comparing current and target states, sequencing transition architectures, or defining federated architecture decision rights and stakeholder communication. Do not use for system or solution design, API or data-platform design, organizational or talent design, product roadmaps, technology adoption, or corporate strategy; route those to the named specialist skills."
     },
     {
       "name": "epub",
@@ -582,6 +654,15 @@
       "description": "Manage Linear teams, projects, cycles, issues, comments, workflow state, and documents from a terminal through Linear's public GraphQL API. Use when a user asks to list, search, inspect, create, update, move, or comment on Linear work, or to find Linear documents. Do not use to embed a live agent inside Linear or to build an MCP integration."
     },
     {
+      "name": "litellm",
+      "source": "./",
+      "skills": [
+        "./litellm"
+      ],
+      "strict": false,
+      "description": "Operate, configure, secure, and troubleshoot the LiteLLM AI gateway (proxy) and Python SDK: run the proxy (litellm --config), route to 100+ providers through one OpenAI-compatible API, configure model lists and routing/reliability, virtual keys, teams, budgets, rate limits, caching, guardrails, observability, and spend, and diagnose request failures. Use when deploying or running a LiteLLM proxy or gateway (config.yaml, ghcr.io/berriai/litellm), wiring the Python SDK or OpenAI SDK through it, or hardening a public-facing deployment. Do not use for operating a single inference engine (vllm, llama-cpp), for engine-selection methodology (ml-engineering), or for building applications on top of an LLM API (backend/frontend engineering)."
+    },
+    {
       "name": "llama-cpp",
       "source": "./",
       "skills": [
@@ -606,7 +687,7 @@
         "./mermaid-diagrams"
       ],
       "strict": false,
-      "description": "Author, render, and troubleshoot Mermaid diagrams for documentation, architecture, processes, and technical communication. Use when a text-based diagram needs to stay versionable."
+      "description": "Author, render, troubleshoot, and review Mermaid diagrams for documentation, architecture, processes, and technical communication. Use when a versionable diagram must communicate a defined audience job across a real renderer, including narrative, hierarchy, labels, legends, accessibility fallback, and uncertainty. Do not use for C4 level/model ownership, architecture decisions, or full accessibility conformance."
     },
     {
       "name": "meshcore-packet-capture",
@@ -624,7 +705,7 @@
         "./migration-engineering"
       ],
       "strict": false,
-      "description": "Plan and execute safe cross-system migrations — schema, data, API, infrastructure, and service — with compatibility windows, dual-running, backfills, reconciliation, cutover, deprecation, and cleanup. Covers expand/contract, reversible and irreversible recovery paths, migration observability, correctness evidence, ownership, and customer impact. Do not use for single-technology quick fixes, tool-specific how-to guides, or migrations whose scope does not cross a system boundary; do not prescribe one migration technology or claim rollback is always possible."
+      "description": "Plan and execute safe cross-system migrations, including service extraction from monoliths. Use when moving data, schemas, interfaces, infrastructure, or service ownership through compatibility windows, dual-running, reconciliation, cutover, recovery, or deprecation. Do not use for deciding whether decomposition is justified, designing a target architecture, or implementing one named technology; route those to the relevant architecture or specialist skill."
     },
     {
       "name": "ml-engineering",
@@ -645,13 +726,22 @@
       "description": "Build, test, sign, and ship mobile apps across iOS, Android, Flutter, and React Native — project scaffolding, builds and code signing, device and emulator testing, store submission (App Store and Play Store), app lifecycle and backgrounding, offline and sync, and mobile-specific testing. Use when the task involves creating, building, testing, or shipping a mobile app for iOS or Android, or reasoning about mobile behavior such as background execution, push notifications, offline storage, and data sync. Do not use for web frontend work (that is frontend-engineering), backend services and APIs (that is backend-engineering), or desktop and web platform targets outside the iOS and Android scope."
     },
     {
+      "name": "multi-tenant-saas-architecture",
+      "source": "./",
+      "skills": [
+        "./multi-tenant-saas-architecture"
+      ],
+      "strict": false,
+      "description": "Design and review end-to-end multi-tenant SaaS architectures: tenant and subscription semantics, control and application planes, pooled or isolated tenancy, onboarding, entitlements, metering, billing handoffs, lifecycle, partitioning, and tenant-aware operations. Use when a subscription product needs a coherent tenant model and architecture decision across these seams. Do not use for threat modeling or isolation controls, API contract semantics, data-platform design, backend implementation, migration execution, privacy compliance artifacts, capacity evidence, financial modeling, or infrastructure operations; route those to the named specialist owners."
+    },
+    {
       "name": "neckbeard",
       "source": "./",
       "skills": [
         "./neckbeard"
       ],
       "strict": false,
-      "description": "Use when asked to fix, build, refactor, review, verify, or release software and the work is non-trivial — including delivering a change request (issue, ticket, or request) from intake through planning, gates, implementation, review, verified PR, and authorized post-merge release. neckbeard routes the change through framing, discovery, design, implementation, review, verification, delivery, and learning — choosing the smallest *safe* intervention, proving it at the real delivery boundary, and leaving an inspectable evidence ledger. For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates, delivery packet, and lifecycle integration. Composes specialist catalog skills rather than replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory."
+      "description": "Use when asked to fix, build, refactor, review, verify, or release software and the work is non-trivial — including delivering a change request through planning, gates, implementation, review, verified PR, and authorized release; continuing work started elsewhere with no packet via evidence-based position assessment; or operating tracked work items in Linear, Jira, or Notion via their tooling skills. neckbeard routes the change through framing, discovery, design, implementation, review, verification, and learning — choosing the smallest *safe* intervention, proving it at the real delivery boundary, leaving an inspectable evidence ledger. For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates, delivery packet, and lifecycle integration. Composes specialist catalog skills rather than replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory."
     },
     {
       "name": "notion",
@@ -993,7 +1083,7 @@
         "./secure-software-engineering"
       ],
       "strict": false,
-      "description": "Use when designing or implementing software securely: define security requirements, threat-model a feature, choose secure defaults, design authentication and authorization, handle untrusted data and secrets, evaluate dependencies, or review security-sensitive changes. Use for prevention during requirements, design, implementation, and review; not for post-build security assessments or scanning an existing codebase."
+      "description": "Use when designing or implementing software securely: define security requirements, threat-model a feature, choose secure defaults, design authentication and authorization, handle untrusted data and secrets, evaluate dependencies, design multi-tenant trust boundaries, or review security-sensitive changes. Use for prevention during requirements, design, implementation, and review; not for post-build security assessments or scanning an existing codebase."
     },
     {
       "name": "security-audit-methodology",
@@ -1020,7 +1110,7 @@
         "./seo-audit"
       ],
       "strict": false,
-      "description": "Audit websites and pages for technical SEO, on-page SEO, schema markup, content discoverability, and answer-engine readiness. Use when prioritizing search visibility improvements."
+      "description": "Audit websites and pages for technical SEO, on-page SEO, schema markup, content discoverability, and answer-engine readiness. Use when prioritizing search visibility improvements; route AEO-specific implementation and measurement to the dedicated aeo skill."
     },
     {
       "name": "site-reliability-engineering",
@@ -1041,13 +1131,22 @@
       "description": "Operate Slack workspaces from a terminal or agent: list channels, read messages, follow threads, search message history, list files, and verify inbound webhook signatures — with a bundled slack-cli script that is read-only by default and gates every send behind a --dry-run/--yes confirmation. Use when an agent needs to read or post Slack data, triage incidents, or answer questions about what was said in a workspace. Do not use for building Slack apps or bots (that is application development) or workspace administration like user provisioning and org settings (that is the Slack admin console)."
     },
     {
+      "name": "software-architecture",
+      "source": "./",
+      "skills": [
+        "./software-architecture"
+      ],
+      "strict": false,
+      "description": "Design and review software architectures from business drivers through system boundaries, tradeoffs, runtime behavior, evolution, and architecture practice. Use when choosing a greenfield or target architecture, comparing modular-monolith and service shapes, designing distributed consistency, replication, partitioning, coordination, ordering, transaction isolation, or failure behavior, defining architecture fitness evidence, or facilitating a consequential architecture review. Do not use for reverse engineering, API contract semantics, data-platform design, implementation, infrastructure operations, security lifecycle, or migration execution; route those to the named specialist skills."
+    },
+    {
       "name": "software-architecture-analysis",
       "source": "./",
       "skills": [
         "./software-architecture-analysis"
       ],
       "strict": false,
-      "description": "Reverse-engineer a software codebase to understand architecture, data flow, privacy posture, and feature surface — then produce a clean-room design document, PRD, or migration plan that re-imagines the system under new constraints (local-first, privacy-first, self-hosted). Use when you need to understand how a system works from its source code or produce a specification without copying implementation details."
+      "description": "Use this skill to reverse-engineer an existing software system, map its architecture, data flow, privacy posture, coupling, quality characteristics, and feature surface, then produce an evidence-grounded clean-room design document, PRD, or migration plan under new constraints. Use for codebase archaeology, implicit contract extraction, architecture health assessment, or decomposition-readiness analysis. Do not use for greenfield architecture design, direct code review, bug hunting, security auditing, or implementation of API, data, platform, or migration changes; route those to the relevant neighboring skill."
     },
     {
       "name": "spec-driven-development",
@@ -1119,7 +1218,7 @@
         "./technology-radar"
       ],
       "strict": false,
-      "description": "Build and maintain technology radars for adoption, trial, assessment, and hold decisions. Use when governing technology choices, build-versus-buy decisions, or engineering portfolio risk."
+      "description": "Build and maintain technology radars for adoption, trial, assessment, and hold decisions, and choose proportionate architecture-governance paths for technology portfolios. Use when governing technology choices, build-versus-buy decisions, architecture standards, exceptions, or engineering portfolio risk. Do not use for enterprise capability or target-state architecture, writing ADRs, implementing systems, security engineering, or operational incident/runbook work."
     },
     {
       "name": "telemetry",

@@ -1,167 +1,124 @@
-# Fitness Functions for Decisions as Code
+# Fitness Functions for Decision Confirmation
 
-Fitness functions are automated checks, written as code, that verify architectural decisions are being maintained. An ADR documents the decision; a fitness function *assures* it.
+A fitness function is a repeatable check that supplies evidence about whether an architectural decision still holds. It may be a static rule, a test, a runtime measurement, a scheduled audit, or a bounded human review. The useful unit is not the check alone: it is the trace from decision, to characteristic, to measurement, to observed evidence, and back to a reviewable owner.
 
-**Concept origin:** https://github.com/architecture-decision-record/architecture-decision-record — based on the "Fitness Functions for Decisions as Code" document in the ADR community repo.
+## Ownership Boundary
 
-## How Fitness Functions Connect to ADRs
+The ADR owns the durable choice, rationale, consequences, and a link to confirmation. The fitness-function record owns the operational contract for the check. The project's test, CI, telemetry, runtime, or governance system owns execution and raw evidence. Do not put executable implementation in the ADR, and do not let an operational dashboard silently become the decision record.
 
-```
-ADR: "We use event sourcing for audit requirements"
-    ↓
-Fitness function: CI test asserting that every state change produces an event
-    ↓
-If a commit introduces a code path that mutates state without emitting an event → test fails
-```
+For system-wide evolutionary architecture, use [`software-architecture`](../../software-architecture/SKILL.md). For general SLO, telemetry, or alerting design, use the relevant reliability or telemetry skill. For operating a named tool, use that tool's skill. This reference is about making an ADR's consequential claim confirmable.
 
-The ADR captures the *intent*. The fitness function enforces the *execution*.
+## Decision-to-Evidence Trace
 
-## Why Fitness Functions Matter
+Record the chain explicitly:
 
-| Benefit | Description |
-|---------|-------------|
-| **Objective measurement** | Pass/fail, not opinions. Work is visible and clear. |
-| **Continuous enforcement** | Run on every commit, build, and deployment. Living rules. |
-| **Confidence to refactor** | Automated catching of decision-rule violations during changes. |
-| **Scalable governance** | Assure standards across a growing codebase without creating human bottlenecks. |
-
-## Fitness Function Approaches
-
-### 1. Architecture Unit Testing (Java — ArchUnit)
-
-[ArchUnit](https://www.archunit.org/) checks architecture rules using plain Java unit test frameworks (JUnit, TestNG).
-
-```java
-// Example: Enforce that services don't directly access repositories
-@Test
-public void services_should_not_access_repositories_directly() {
-    JavaClasses classes = new ClassFileImporter().importPackages("com.myapp");
-    ArchRule rule = classes()
-        .that().resideInAPackage("..service..")
-        .should().onlyAccessClassesThat()
-        .resideInAnyPackage("..service..", "..api..");
-    rule.check(classes);
-}
+```text
+ADR-042: isolate tenant data at the repository boundary
+  -> characteristic: cross-tenant access safety
+  -> fitness function: integration test attempts reads and writes with mismatched tenant contexts
+  -> observed evidence: CI run 1842, 0 unauthorized rows across 240 cases
+  -> decision review: owner accepted evidence; next review 2026-09-30
 ```
 
-**What ADR patterns it can enforce:**
-- Layered architecture violations (UI → Service → Repository direction)
-- Dependency injection rules (no `new` for certain interfaces)
-- Package cycle detection
-- Naming conventions matching architectural roles
+An ADR link such as `Confirmed by: docs/architecture/fitness/tenant-isolation.md` is sufficient when the linked record contains the rest of the chain. A pass without a source, run identifier, sample window, or reviewer is not durable evidence.
 
-### 2. Architecture Unit Testing (TypeScript — ArchUnitTS)
+## Select the Function
 
-[ArchUnitTS](https://github.com/LukasNiessen/ArchUnitTS) provides the same pattern for TypeScript/JavaScript using Jest, Vitest, Jasmine, etc.
+Start with the decision's observable characteristic, not with a favorite tool. Ask what would convince a skeptical future reviewer that the decision is holding.
 
-```typescript
-// Example: Controllers should depend on services, not repositories
-const rule = ArchRule.of('controllers')
-    .should().onlyDependOn()
-    .packages(['services', 'dto']);
-```
+### Scope
 
-### 3. AI-Assisted Fitness Functions
+Choose the narrowest boundary that can falsify the decision without making the result meaningless:
 
-For decisions that can't be expressed as static code checks, use LLM-based fitness functions with a structured prompt template:
+- **Atomic:** one dependency, package, route, schema rule, or configuration property. Use for a crisp invariant such as forbidden imports.
+- **Structural:** a set of components or relationships. Use for layering, cycles, ownership, or deployment topology.
+- **Scenario:** a user or operational path across components. Use for authorization, recovery, ordering, or end-to-end guarantees.
+- **Holistic:** a system-wide outcome such as latency distribution, cost, or recovery time. Use only when the decision itself is system-wide and the measurement can identify meaningful change.
 
-```txt
-IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning.
-IMPORTANT: Turn on extended thinking. Turn on expert advice. Turn on search.
+State what is inside and outside the boundary, the population sampled, and the blind spots. A broad metric that cannot identify a violating path is a signal, not a compliance gate. Pair it with a narrower check when a missed violation would be costly.
 
-This is a fitness function to evaluate if our work is
-using all our decisions, and is correct and accurate.
+### Cadence and Invocation
 
-- Our decisions are here: {url to ADR index}
-- Our work to evaluate is here: {url to code/PR/design doc}
+Select cadence from failure speed and change exposure:
 
-Explain any errors, problems, gaps, weaknesses. Be direct. Be decisive.
-```
+- **Change-triggered:** run on pull requests, schema changes, or deployment configuration changes when a violation should block introduction.
+- **Continuous:** collect at runtime when drift or harm can emerge between releases, such as error rates or resource isolation.
+- **Scheduled:** sample periodically when the evidence is expensive, data-dependent, or needs a stable observation window.
+- **Event-triggered:** run after an incident, migration, exception, or material dependency change.
 
-**When to use AI-assisted fitness functions:**
-- Evaluating PRs against multiple ADRs simultaneously
-- Checking logical consistency across a set of related decisions
-- Validating architectural compliance in design documents or proposals
-- Auditing decisions that don't have a mechanical enforcement mechanism
+Name the invocation mechanism and its failure behavior: command or job, environment, required fixtures, timeout, result sink, and whether a missing result is a failure, warning, or escalation. Automated invocation is preferred for repeatable facts. A manual review is valid when judgment is intrinsic, but it needs a named reviewer, structured evidence request, and due date rather than “review occasionally.”
 
-## Mapping to the Artifact Pyramid
+### Evidence Type
 
-| Layer | What Lives There | Fitness Function Relevance |
-|-------|-----------------|---------------------------|
-| L1 (01-summary/) | ADR navigation index | — |
-| L2 (02-analysis/) | Active ADRs (decision rationale) | ADRs declare *what* should be enforced |
-| L3 (03-dossiers/) | Superseded ADRs, operational artifacts | Fitness functions live HERE |
+Classify evidence before choosing a threshold:
 
-**Fitness functions are NOT part of the ADR itself.** They are operational governance artifacts — they live in the test suite or CI pipeline, not in the decision log. The ADR should *reference* any fitness function that enforces it (via a Links section or a `Confirmed by` note), but the function code itself belongs in the project's test infrastructure.
+| Evidence | Best for | Main limitation |
+|---|---|---|
+| Static analysis | Dependencies, ownership markers, configuration shape | Can miss runtime paths and generated behavior |
+| Test result | Behavior under declared scenarios and fixtures | Only covers the scenarios and data exercised |
+| Runtime telemetry | Actual distribution, incidents, saturation, and user impact | Needs context, sampling controls, and stable instrumentation |
+| Audit sample | Data or process conditions that are expensive to check continuously | Sampling can miss rare failures |
+| Expert review | Intent, trade-offs, and evidence not mechanically expressible | Must expose reviewer, rubric, dissent, and date |
 
-## When to Write a Fitness Function
+Use at least two evidence types when the decision has both a structural condition and an outcome claim. Do not treat a proxy metric as proof of the decision; label it as leading, lagging, or diagnostic evidence.
 
-| When | Example |
-|------|---------|
-| The decision affects a measurable architectural characteristic | "All services must log structured JSON" → Test asserting log output format |
-| The decision has a clear pass/fail condition | "No circular dependencies between packages" → ArchUnit test |
-| Decision compliance would be expensive to verify manually | "Every gRPC endpoint must have a rate limit" → CI integration test |
-| Regulatory or compliance requirements demand audit trails | "All state mutations must be logged" → Middleware test |
+### Threshold Rationale
 
-When an ADR explicitly states a rule that can be mechanically verified, create a fitness function for it. If the decision is about cost or organizational trade-offs (where fitness functions don't apply), skip automated enforcement and rely on the ADR's rationale for governance.
+Every threshold needs a reason, not just a number. Record:
 
-## Relationship to Decision Governance
+1. the unit, population, aggregation, and time window;
+2. the desired value or allowed range;
+3. the baseline and measurement uncertainty;
+4. the harm or decision consequence at the boundary;
+5. why this threshold is achievable now;
+6. who can change it and what evidence is required.
 
-Fitness functions operationalize the **Governance** and **Confirmation** sections found in advanced ADR templates (NHS Wales, Gareth Morgan). If your ADR template includes a Governance section, list any fitness functions there:
+Prefer a hard gate for a safety or compatibility invariant. Prefer a warning band and trend review for noisy outcomes. Use a minimum sample size, confidence or uncertainty note, and a missing-data rule where they affect interpretation. A threshold that can be passed by reducing traffic, excluding difficult cases, or changing the denominator is not defensible until those gaming paths are addressed.
 
-```markdown
-## Governance
+## Operate Without Fooling Yourself
 
-Compliance with this decision is verified by:
-- ArchUnit test `NoServiceDirectDatabaseAccessTest` (runs on every PR)
-- AI-assisted audit every release cycle against {link to ADR index}
-```
+### Ownership
 
-## Structurizr CI Checks as Fitness Functions
+Assign three roles when the blast radius warrants it:
 
-When using Structurizr DSL for C4 model documentation, the Structurizr CLI provides two commands that serve as fitness functions for architecture documentation consistency:
+- **Decision owner:** accountable for whether the ADR still applies and for approving changes to its rationale.
+- **Function owner:** keeps the check runnable, interpretable, and linked to the current decision.
+- **Evidence consumer:** reviews results and acts on failures; this may be an on-call, service, or governance owner.
 
-### validate
+For small teams one person may hold all roles, but record the names or teams and the escalation path. The function owner cannot unilaterally weaken a threshold that protects another team's boundary.
 
-Checks that the DSL file is syntactically valid and structurally consistent:
+### False Positives and False Negatives
 
-```bash
-structurizr-cli validate -w docs/arch/model/system.dsl
-```
+Document known failure modes for the measurement:
 
-Use as a pre-merge CI gate: if the DSL doesn't parse, the architecture model is broken. This prevents commits that would produce no diagrams or corrupted diagrams.
+- A **false positive** reports violation when the decision holds. Record suppression criteria, fixture corrections, quarantine limits, and the human escalation path. Never make a permanent exception by hiding the result.
+- A **false negative** reports compliance while the decision is violated. Record untested paths, sampling gaps, instrumentation failures, and a compensating check.
 
-### inspect
+For every expected exception, identify the evidence that distinguishes it from a real violation. If a check fails because its own data or instrumentation is stale, mark the result as indeterminate rather than compliant.
 
-Checks for architectural drift against the model. Verifies that the C4 model remains consistent with the ADRs it references via `!adrs`:
+### Gaming and Proxy Risk
 
-```bash
-structurizr-cli inspect -w docs/arch/model/system.dsl
-```
+Assume that teams optimize for the visible score. Review whether the subject can improve the metric while the decision's intent worsens: narrow the sample, move work outside the measured boundary, delete failures, retry until success, or optimize an average while harming the tail. Countermeasures include immutable raw evidence, denominator and exclusion reporting, stratified or adversarial samples, paired outcome measures, independent review, and periodic spot checks. Record which countermeasure is used and what it cannot prevent.
 
-Run in CI on every PR that touches either the DSL or the ADR directory. This catches:
-- ADR files referenced but missing from the `!adrs` path
-- Elements referenced in views that are not defined in the model
-- Relationship inconsistencies between model and documentation
+### Exceptions
 
-### CI Pipeline Integration
+An exception is a visible, time-bounded deviation, not a second threshold. Each exception record should state the affected boundary, reason, risk acceptance, compensating control, approver, start date, expiry date, and exit evidence. A failed function should route to the decision owner or named escalation path. Do not auto-approve an exception merely because the check is noisy.
 
-```yaml
-# .github/workflows/architecture-checks.yml (or similar)
-steps:
-  - name: Validate Structurizr DSL
-    run: structurizr-cli validate -w docs/arch/model/system.dsl
+## Review and Retirement
 
-  - name: Inspect for drift
-    run: structurizr-cli inspect -w docs/arch/model/system.dsl
-```
+Review the function when the ADR changes, the measured system boundary changes, a failure or incident exposes a blind spot, the owner changes, or the evidence stops influencing a decision. At the review, ask:
 
-These are syntactic and structural checks. For semantic validation (does the architecture match the ADRs?), pair them with the AI-assisted fitness function prompt from the "AI-Assisted Fitness Functions" section above. Together they form a complete verification pipeline: syntax → structure → rationale.
+- Does the decision still apply, and does the characteristic still matter?
+- Does the scope cover the paths and populations that can violate the decision?
+- Is the cadence early enough for the harm and affordable enough to sustain?
+- Does observed evidence support the threshold, or is the baseline now stale?
+- Are false positives, false negatives, gaming paths, and exceptions visible?
+- Did a human act on the last meaningful result?
 
-Full pipeline templates with validation, export, and deployment for GitHub Actions, GitLab CI, and ForgeJo are in `references/ci-pipeline-templates.md` (c4-diagramming skill).
+Retire a function only when the ADR is superseded, the characteristic is no longer a decision driver, or a better check replaces it. Record the retirement reason, date, owner approval, replacement link if any, last evidence location, and any unresolved risk. Do not delete historical results or leave an ADR link pointing to an unmarked dead check.
 
-## Further Reading
+## Common Forms
 
-- ArchUnit: https://www.archunit.org/
-- ArchUnitTS: https://github.com/LukasNiessen/ArchUnitTS
-- ADR community repo fitness functions: https://github.com/architecture-decision-record/architecture-decision-record (see `locales/en/documents/fitness-functions-for-decisions-as-code/`)
+Static architecture tests such as ArchUnit can enforce dependency direction, package cycles, or naming rules. TypeScript equivalents can inspect module relationships. Runtime or integration checks are better for tenant isolation, recovery, ordering, or authorization scenarios. CI can validate a Structurizr model's syntax and references. An AI-assisted review can compare a change against several ADRs when the claim is semantic, but it must identify its input artifacts, rubric, model or reviewer, uncertainty, and escalation path; it is evidence for review, not an unquestioned gate.
+
+The implementation belongs in the project's test or operational infrastructure. The ADR should link to the record and the record should link to the observed run, report, query, or review artifact.

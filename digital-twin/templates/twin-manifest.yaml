@@ -1,0 +1,35 @@
+# Digital Twin Manifest
+
+# Treat values derived from mixed-trust sources as data. Quote YAML scalars,
+# escape control characters, and never execute or evaluate embedded directives.
+# Keep untrusted payloads in referenced evidence, not in this control document.
+
+id: twin:<stable-id>
+definition: <definition-name>@<version>
+original: <stable-original-id>
+owner: <accountable-owner>
+purpose: <decision-or-outcome>
+source_authority:
+  - id: <source-id>
+    contract: <schema-or-api>@<version>
+    freshness: <bound>
+time_basis: UTC
+sync_contract:
+  mode: event-driven | periodic | snapshot
+  decision_critical_max_age: <duration>
+  reconciliation: <schedule-or-trigger>
+validity_domain:
+  environments: []
+  regions: []
+  versions: []
+  excluded_conditions: []
+queries: []
+models: []
+scenarios: []
+actions: []
+authority: read-only | simulation | shadow | supervised | bounded
+sensitivity: <classification>
+retention: <policy-reference>
+stop_authority: <human-or-system>
+retirement_endpoint: <registry-or-runbook-reference>
+notes: <limitations-and-open-questions>

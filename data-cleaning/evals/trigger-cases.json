@@ -1,0 +1,12 @@
+{
+  "skill_name": "data-cleaning",
+  "should_trigger": [
+    "Audit this CSV before I use it for reporting.",
+    "Design a reusable pipeline to clean and validate incoming JSON records.",
+    "Why did this join multiply my rows, and how do I make the cleaning reproducible?"
+  ],
+  "should_not_trigger": [
+    "Choose a statistical test for this experiment.",
+    "Tune my XGBoost model's hyperparameters."
+  ]
+}

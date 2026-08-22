@@ -30,7 +30,8 @@ Load this skill when the task involves:
 
 ## When Not to Use
 
-- For statistical inference, experiment design, causal analysis, or model selection, use `data-scientist`.
+- For statistical inference, experiment design, causal analysis, or general model selection, use `data-scientist`.
+- For insurance, actuarial, claims, reserving, solvency, credibility, tail-risk, or financial-risk statistical models, use `actuarial-risk-modeling`.
 - For the narrow question of whether a startup reaches profitability before cash runs out, use `yc-default-alive-calculator`.
 - Do not use this skill as a substitute for licensed financial, investment, tax, accounting, or legal advice.
 - Enterprise pricing negotiations, jurisdiction-specific securities rules, and tax/accounting treatment need specialist review beyond this skill.

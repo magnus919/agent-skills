@@ -61,6 +61,42 @@
         "Key validity, uniqueness under concurrency, and key-replay-with-different-payload are addressed",
         "The timeout response shape prevents the double-submit race"
       ]
+    },
+    {
+      "id": "api-landscape-governance",
+      "prompt": "Our company has 40 APIs and several teams expose customer and order data through overlapping REST endpoints. We need a landscape assessment and a governance recommendation without creating a heavyweight central review board. What should we inventory, decide, and measure?",
+      "expected_output": "A landscape assessment that inventories surfaces, authority, owners, audiences, consumers, contracts, lifecycle state, evidence confidence, and topology. It identifies duplication by consumer job and domain authority rather than URL similarity, improves discoverability, assigns lifecycle and retirement ownership, and proposes risk-proportional standards with visible exceptions and local decision rights. It keeps product, platform, security, and architecture responsibilities distinct.",
+      "assertions": [
+        "The assessment includes inventory fields for authority, ownership, consumers, contract, lifecycle, and evidence gaps",
+        "Duplication is evaluated by domain meaning and consumer job, with intentional overlap allowed when justified",
+        "Discoverability and lifecycle include ownership, feedback, deprecation, retirement, and residual dependency evidence",
+        "Governance is proportional to exposure, blast radius, data sensitivity, and reversibility rather than a universal maturity ladder",
+        "The response preserves explicit boundaries with product, platform, security, and architecture owners"
+      ]
+    },
+    {
+      "id": "gateway-mesh-topology",
+      "prompt": "We are adding an ingress gateway and a service mesh while moving internal order traffic between clusters. Explain the north-south and east-west responsibilities, where routing and policy belong, what observability is required, and how to avoid hiding failure or multiplying retries.",
+      "expected_output": "A topology assessment that maps the request path and separates gateway or ingress responsibilities from mesh transport responsibilities and service/domain authorization. It identifies north-south versus east-west traffic, owner and unavailable-component behavior for each policy, timeout and retry ownership, telemetry across hops, and failure boundaries including ambiguous completion. It calls out contract-visible changes during migration and requires deployed-boundary verification.",
+      "assertions": [
+        "North-south and east-west traffic are distinguished with responsibilities for each",
+        "Gateway/ingress and service-mesh concerns are separated without treating either as a universal product boundary",
+        "Routing, identity, policy placement, owner, and fail-open/closed behavior are explicit",
+        "Timeouts, retries, budgets, observability, and failure attribution address retry multiplication and hidden failures",
+        "Topology migration checks contract-visible behavior and deployed-boundary evidence"
+      ]
+    },
+    {
+      "id": "landscape-retirement-boundary",
+      "prompt": "A team wants to delete an old partner API because its dashboard shows almost no traffic. Give me a safe decision process and state which parts belong to API design versus product, platform, security, and architecture owners.",
+      "expected_output": "A retirement decision process that verifies inventory completeness, undocumented and indirect consumers, owner and successor, consumer-specific migration support, telemetry limitations, communication, pause or rollback conditions, residual routes and credentials, and post-retirement monitoring. It distinguishes API contract and lifecycle evidence from product value decisions, platform route removal, security credential or abuse review, and architecture-level cross-domain decisions.",
+      "assertions": [
+        "Low observed traffic is treated as insufficient evidence without checking inventory confidence and hidden consumers",
+        "Retirement requires an owner, successor or explicit no-successor decision, migration support, criteria, communication, and pause/recovery path",
+        "Residual routes, credentials, jobs, caches, SDKs, and indirect dependencies are considered",
+        "Product, platform, security, architecture, and API ownership boundaries are explicit",
+        "The process ends with evidence-based retirement and post-retirement monitoring rather than deletion alone"
+      ]
     }
   ]
 }

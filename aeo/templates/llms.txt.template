@@ -1,0 +1,15 @@
+# [Site or organization]
+
+> [One concise, factual sentence describing the site and who it serves.]
+
+[Optional context that helps an agent understand scope and terminology.]
+
+## Core pages
+
+- [Page title](https://example.com/page/): [What a reader can reliably learn there.]
+
+## Optional
+
+- [Full documentation](https://example.com/docs/): [Only include maintained pages.]
+
+<!-- Follows the proposal at https://llmstxt.org/. It is optional and provider-dependent. It is not a substitute for HTML, internal links, a sitemap, or provider-native controls. -->

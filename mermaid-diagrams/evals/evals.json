@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "mermaid-diagrams",
+  "evals": [
+    {
+      "id": "github-flowchart-review",
+      "prompt": "Create a Mermaid architecture diagram for a GitHub README showing a user, the application, and two external services. Make it understandable to a new contributor and verify that the chosen syntax renders on GitHub.",
+      "expected_output": "A GitHub-compatible flowchart with a stated audience/job, clear entry point and read order, labeled relationships, consistent representations, and a text fallback or summary.",
+      "assertions": [
+        "The output chooses standard GitHub-compatible Mermaid syntax rather than unsupported native C4 syntax",
+        "The audience and contributor question are stated",
+        "Nodes and relationships use consistent labels and meanings",
+        "The diagram has an intentional read order and avoids unnecessary detail",
+        "A text summary or equivalent accessible fallback is provided"
+      ]
+    },
+    {
+      "id": "pdf-rendering-and-communication",
+      "prompt": "Turn a 16-node process flow into a PDF-ready Mermaid artifact. The current render is too wide, labels overlap, and the proposed status colors are the only distinction between states.",
+      "expected_output": "A plan that splits or restructures the flow, uses the PDF rendering path and portrait constraints, resolves label overlap, and adds non-color status meaning while documenting the audience and review evidence.",
+      "assertions": [
+        "The output treats width, density, and overlap as communication defects rather than only renderer defects",
+        "The PDF path pre-renders Mermaid and checks the rendered result",
+        "The diagram is split or otherwise kept within a readable portrait scope",
+        "Status meaning is redundant with labels, shapes, or line styles rather than color alone",
+        "Target surface, renderer/version, and review evidence are recorded"
+      ]
+    },
+    {
+      "id": "sequence-read-order",
+      "prompt": "Review a sequence diagram of an order flow with seven participants, retries, a timeout branch, and a reconciliation step. It is intended for support engineers diagnosing delayed orders.",
+      "expected_output": "A support-oriented sequence diagram review that preserves temporal order, makes retry/timeout/reconciliation behavior legible, and splits or scopes the diagram if seven participants create noise.",
+      "assertions": [
+        "The support audience and diagnostic job are stated",
+        "Temporal read order and timeout/reconciliation paths are explicit",
+        "Participant or message density is reduced or split when it obscures the diagnostic path",
+        "Retry and failure notation has a documented, consistent meaning",
+        "The review distinguishes communication choices from backend behavior ownership"
+      ]
+    },
+    {
+      "id": "uncertainty-and-legend",
+      "prompt": "A Mermaid flowchart documents a proposed migration. Solid arrows are confirmed, dotted arrows are inferred, and dashed arrows are future work, but the legend is incomplete and the render uses three colors with no labels.",
+      "expected_output": "A review that completes or redesigns the legend, makes uncertainty understandable without color, preserves consistent line semantics, and identifies the evidence needed for inferred relationships.",
+      "assertions": [
+        "Confirmed, inferred, and future relationships are explicitly labeled or otherwise understandable without color",
+        "The legend matches the actual line styles and does not substitute for a narrative",
+        "The output identifies evidence gaps for inferred relationships",
+        "Color is treated as supplementary rather than the sole semantic channel",
+        "The output avoids claiming that a valid render proves the migration plan is correct"
+      ]
+    },
+    {
+      "id": "c4-and-accessibility-routing",
+      "prompt": "The team asks for a Mermaid C4 container diagram, a system architecture decision, and a WCAG conformance statement for the published page. Explain the diagram work and handoffs without absorbing neighboring owners.",
+      "expected_output": "A scoped response that routes C4 model level decisions to c4-diagramming, architecture decisions to software-architecture, and complete accessibility conformance to web-accessibility while retaining Mermaid authoring/rendering and diagram communication review here.",
+      "assertions": [
+        "C4 level and model ownership are routed to c4-diagramming",
+        "Architecture drivers and decisions are routed to software-architecture",
+        "Full WCAG/ARIA and assistive-technology evidence are routed to web-accessibility",
+        "Mermaid syntax, renderer compatibility, target-surface rendering, and communication review remain in scope",
+        "The response does not store this boundary test as a trigger-only claim or pretend one validator proves all three outcomes"
+      ]
+    }
+  ]
+}

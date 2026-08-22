@@ -73,6 +73,54 @@
         "The response resolves timeout ambiguity by querying the hold status before retrying the mutation",
         "The response defines failure behavior after retries are exhausted rather than hanging"
       ]
+    },
+    {
+      "id": "event-driven-command-boundary",
+      "prompt": "An order command updates the orders table and then publishes OrderConfirmed directly to the broker before the database transaction commits. A broker timeout causes the handler to retry, and some consumers send duplicate emails. Design the implementation flow and tests.",
+      "expected_output": "A service implementation plan that separates domain, application, and infrastructure responsibilities; uses a unit of work to commit aggregate state and an outbox record atomically; publishes only after commit; assumes duplicate delivery; chooses one atomic inbox transaction design with a uniqueness constraint and acknowledges completed duplicates without claiming an unpersisted outcome; uses idempotent side-effect handling; classifies retryable versus permanent failures; and tests crash, duplicate, retry, quarantine, and replay behavior with lifecycle observability.",
+      "assertions": [
+        "The response places domain behavior, application coordination, and broker/database adapters behind explicit boundaries",
+        "The response commits state and an outbox record in one local transaction and does not publish inside the transaction",
+        "The response uses stable event identity plus consumer-scoped inbox deduplication, chooses one coherent atomic inbox transaction design, and acknowledges duplicates without claiming an unpersisted outcome",
+        "The response distinguishes retryable, permanent, poison, and replay cases and prevents duplicate email side effects",
+        "The response includes tests and metrics/logs/traces for outbox age, duplicates, retries, lag, and dead-letter handling"
+      ]
+    },
+    {
+      "id": "event-replay-and-failure",
+      "prompt": "A payment consumer has a backlog after a deployment. Some events are from an older schema version, one handler bug creates poison messages, and the relay may have published before crashing. Give an implementation and recovery checklist, but do not redesign the public event contract.",
+      "expected_output": "A bounded handler/replay checklist that treats delivery as at-least-once, deduplicates stable event identities, uses versioned translation or a repair path for old schemas, quarantines poison messages, records replay scope and handler version, retries only transient failures, and verifies side effects and observability. It uses the same consumer identity by default and warns that fresh-consumer replay defeats inbox deduplication unless the handler is side-effect-safe or the replay uses repair/compensation. It explicitly routes public contract semantics to api-design-and-evolution.",
+      "assertions": [
+        "The checklist assumes duplicate publication and requires consumer deduplication",
+        "The response handles old schema versions through a versioned translator or repair path rather than silently applying changed rules",
+        "The response quarantines poison messages and defines bounded retry and replay stop conditions",
+        "The response records replay selection, handler version, operator/evidence, verifies side effects, and warns that a fresh consumer scope defeats deduplication unless side-effect-safe or repair/compensation handling is used",
+        "The response does not redesign the event contract and routes contract semantics to api-design-and-evolution"
+      ]
+    },
+    {
+      "id": "migration-coexistence-handoff",
+      "prompt": "We are moving invoice calculation from a monolith module to an approved service boundary. For two releases both paths must exist, the monolith currently owns writes, and a legacy status vocabulary differs from the new service's model. What should the backend implementation team build and measure?",
+      "expected_output": "An implementation seam plan using an adapter and explicit anti-corruption translation, a selectable strangler handoff, one declared authority for each operation, comparison or shadow execution without duplicated irreversible side effects, and observable late-old-write detection. It proves the new path authoritative and accepting writes before disabling old writers, then names evidence-based removal conditions while routing decomposition and migration lifecycle decisions to their owners.",
+      "assertions": [
+        "The response uses an adapter and explicit translation boundary to keep legacy vocabulary out of the new domain/application model",
+        "The response makes old and new paths selectable and keeps the monolith authoritative until comparison evidence supports handoff",
+        "The response declares authority per operation/data field and addresses duplicate side effects, lag, disagreement, and late old writes",
+        "The response sequences new-path authority and verified write acceptance before disabling old writers, then names measurable handoff and removal conditions including callers, queues/writes, flags, credentials, and recovery evidence",
+        "The response routes target decomposition to software-architecture and cross-system migration lifecycle to migration-engineering"
+      ]
+    },
+    {
+      "id": "event-consumer-security-boundary",
+      "prompt": "A service consumes signed order events from a broker. The handler currently deserializes the payload with a general-purpose object loader, trusts the producer_id and event_id fields, interpolates a payload field into a SQL query, and stores rejected messages by writing the raw payload into a shared quarantine table. Design the implementation changes and tests without redesigning the public event contract.",
+      "expected_output": "An implementation plan that verifies producer authenticity and authorization before trusting event identity, uses safe data-only deserialization and treats fields as untrusted at every boundary, parameterizes database access and protects command/template/path sinks, stores quarantine material as bounded opaque or encrypted bytes with sanitized metadata and restricted access, and routes detailed threat modeling and security-control design to secure-software-engineering while keeping handler and boundary tests in backend-engineering.",
+      "assertions": [
+        "The response verifies producer authenticity and authorization before trusting producer-supplied event identity and routes the control design to secure-software-engineering",
+        "The response requires safe data-only deserialization and treats deserialized fields as untrusted before domain mapping or use in SQL, commands, templates, or paths",
+        "The response requires parameterized or otherwise safe handling at injection sinks",
+        "The response stores quarantined content as bounded opaque or encrypted data with sanitized metadata and restricted access rather than blindly reparsing raw payloads",
+        "The response includes backend boundary tests for forged identity, unsafe payloads, injection attempts, and quarantine handling without redesigning the public event contract"
+      ]
     }
   ]
 }

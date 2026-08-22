@@ -34,10 +34,7 @@ The technology radar is a structured approach to tracking, evaluating, and decid
 
 ### Radar Review Cadence
 
-- **Full radar refresh:** Quarterly (review all quadrants and rings)
-- **New technology intake:** Continuous (proposed via RFC or lightweight form)
-- **Emergency promotion:** As needed (critical security update, strategic shift)
-- **Hold review:** Annual (verify hold decisions are still valid)
+Set review timing according to change rate, risk, evidence quality, and the cost of stale guidance. A low-change internal tool portfolio may need less frequent review than a regulated or fast-moving platform portfolio. Significant adoption, hold, promotion, retirement, security, or strategy evidence should trigger an update outside the normal cadence. New technology intake may be continuous or batched, provided urgent risks and opportunities have an explicit path.
 
 ---
 
@@ -85,7 +82,7 @@ Removing technology is harder than adding it. A clear deprecation policy prevent
 
 1. **Announce intent.** "We plan to deprecate Technology X. Here's why, and here's the migration path."
 2. **Freeze new usage.** No new projects may adopt the deprecated technology.
-3. **Provide migration window.** 3-12 months depending on complexity.
+3. **Provide a migration window.** Set it from workload criticality, consumer count, migration complexity, contractual obligations, and available support; document the rationale rather than applying a universal duration.
 4. **Support during migration.** Documentation, office hours, migration tools.
 5. **Sunset date.** After this date, no support, no security patches, no guarantees.
 6. **Archive.** Final documentation archived. Technology removed from radar.

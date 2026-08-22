@@ -1,126 +1,120 @@
 # Architecture Governance
 
-Frameworks for maintaining architectural coherence, making design decisions transparent, and ensuring the technology organization operates with aligned standards.
+Architecture governance is a decision system, not a standing meeting. Its purpose is to keep consequential technology choices coherent while leaving routine, reversible choices with the people closest to the work. Select the governance path from the decision's consequences and evidence, not from an organization's preferred ceremony.
 
-## Architecture Standards
+## Establish the Decision Context
 
-Standards exist to reduce cognitive load and ensure consistency. They should be few, well-justified, and enforced through automation, not manual review.
+Before choosing a process, capture:
 
-### What Should Be Standardized
+- **Outcome:** the product, customer, operational, or organizational result sought.
+- **Scope:** one component, one team, a shared capability, a portfolio, or the wider organization.
+- **Reversibility:** how easily the choice can be changed, including data migration, contracts, training, and sunk operational work.
+- **Risk and blast radius:** plausible harm, affected users and systems, failure propagation, and recovery options.
+- **Regulation and obligations:** legal, contractual, safety, privacy, security, or audit constraints that require named controls or authority.
+- **Cross-team impact:** coupling, shared interfaces, platform dependencies, duplicated investment, and coordination cost.
+- **Evidence and uncertainty:** what is observed, what is assumed, and the smallest experiment or consultation that would reduce the important uncertainty.
 
-| Tier | Category | Example Standards | Enforcement |
-|------|----------|-------------------|-------------|
-| **Tier 1: Mandatory** | Security, compliance, legal | Data encryption, auth patterns, audit logging | Automated (CI pipeline blocks) |
-| **Tier 2: Expected** | Architecture, deployment | Service boundaries, API design, container patterns | Reviewed (RFC approval required for exceptions) |
-| **Tier 3: Recommended** | Tooling, patterns | CI/CD tool, monitoring approach, logging format | Documented (teams may deviate with justification) |
+Do not collapse these dimensions into a universal numeric threshold. A reversible decision with broad coordination cost may need advice or federation; a local decision can still require centralized authority when regulation or blast radius demands it.
 
-### Writing Architecture Standards
+## Choose a Governance Mode
 
-Each standard should contain:
+Choose the least costly mode that controls the credible downside. A decision can move to a stronger mode when new evidence changes its consequence profile.
 
-1. **Title.** What the standard governs.
-2. **Rationale.** Why this standard exists. If you can't articulate the benefit, question the standard.
-3. **Scope.** What systems/teams this applies to (and what it explicitly does not).
-4. **The standard.** The specific requirement. Measurable, testable, unambiguous.
-5. **Exception process.** How to request an exception and who can grant it.
-6. **Review date.** When this standard will be re-evaluated.
+| Mode | Best fit | Minimum controls | Escalate when |
+|---|---|---|---|
+| **Automated policy** | The requirement is objective, repeatable, and machine-checkable, such as a required configuration or compatibility rule. | A stated rationale, an executable check, an owner, visible failure output, and a bounded exception path. | The check is a proxy for a judgment, exceptions become common, or the policy creates material cross-team or regulatory consequences. |
+| **Federated decision** | A team or domain owns the outcome and the choice is local or reasonably reversible, while a shared convention prevents avoidable divergence. | Local decision authority, published decision and scope, compatibility expectations, and a route for affected peers to raise a conflict. | Shared interfaces, platform dependencies, duplicated investment, or accumulated divergence makes the choice enterprise-relevant. |
+| **Advice process** | The proposer owns the decision but needs input from people who bear consequences or hold relevant expertise. This is useful for cross-team conceptual integrity without default veto power. | Named proposer and owner, identified consultees, written advice and dissent, response to material concerns, and a recorded decision. | Advice identifies an irreversible or high-blast-radius change, a mandatory control, unresolved authority conflict, or a need for portfolio-level coordination. |
+| **Centralized review** | The choice is difficult to reverse, high impact, materially regulated, or spans teams that cannot resolve the trade-off locally. | A named decision authority, concise evidence package, alternatives and consequences, affected-team input, decision record, conditions, and an appeal or escalation route. | The authority lacks the required expertise, evidence is too weak for a responsible decision, or the review is redesigning implementation rather than governing the boundary. |
 
-### Standards Anti-Patterns
+The modes are not maturity levels. Automated policy is not automatically more decentralized than advice, and a centralized review is not automatically better. Match authority, consultation, and automation to the failure modes the decision can create.
 
-- **Too many standards.** If everything is a standard, nothing is. Limit Tier 1 and Tier 2 to 15-20 items total.
-- **Standards without automation.** If compliance requires a human reviewer, the standard will be applied inconsistently. Automate everything possible.
-- **Stale standards.** A standard that hasn't been reviewed in 2+ years is likely causing harm. Sunset or update.
-- **The "we've always done it this way" standard.** Justify every standard independently. Past practice is not a rationale.
+## Standards and Guardrails
 
----
+Create a standard only when a shared rule produces more value than local variation. Each standard should state:
 
-## Architecture Review Board (ARB)
+1. **Intent and benefit:** the problem or risk it addresses.
+2. **Scope:** the systems, teams, lifecycle stages, and explicit exclusions.
+3. **Requirement:** a testable rule, recommendation, or decision constraint.
+4. **Owner and authority:** who maintains it and who can change it.
+5. **Enforcement mode:** automated check, federated expectation, advice, or review.
+6. **Exception path:** who may grant an exception, what evidence is needed, compensating controls, expiry or revisit conditions, and how exceptions are visible.
+7. **Feedback signals:** implementation and operational evidence that may confirm, weaken, or invalidate it.
 
-An ARB provides governance for significant architecture decisions. It is not a bottleneck — it is a quality gate and knowledge-sharing mechanism.
+Avoid counting standards as a proxy for governance quality. A small organization may need several precise controls; a large regulated estate may need more. Prefer deleting, combining, automating, or narrowing a standard when it no longer earns its coordination cost.
 
-### When to Involve the ARB
+## Decision Records and Advice
 
-| Level | Decision Type | Review Process |
-|-------|--------------|----------------|
-| **L1: Team-level** | Service internal design, API endpoints, database schema | No ARB needed. Team decides. |
-| **L2: Cross-team** | New service, shared library, API contract change | ARB notified, lightweight review (1-2 reviewers) |
-| **L3: Organization-wide** | New technology, platform change, infrastructure redesign | Full ARB review (RFC + meeting) |
-| **L4: Strategic** | Architecture paradigm shift (monolith → microservices, cloud migration) | Executive + ARB joint review |
+Use a concise decision record for any choice whose rationale or consequences will outlive the current conversation. Include the context, options, chosen path, owner, affected parties, assumptions, conditions, evidence, and reconsideration triggers. Use an ADR when the decision itself needs durable architectural history; this reference governs how to select the process, not the ADR format.
 
-### ARB Composition
+For advice processes, distinguish advice from approval. The proposer must seek input from people materially affected, consider the advice, and explain unresolved disagreement. Advice does not silently create a veto. If a mandatory control or authority boundary exists, name it and escalate rather than disguising it as consultation.
 
-| Role | Responsibility | Count |
-|------|---------------|-------|
-| **Chair** | Manages agenda, drives decisions, maintains standards | 1 |
-| **Principal Architects** | Technical authority, deep domain expertise | 2-4 |
-| **Rotating Members** | Cross-functional representation, bring team context | 2-3 (rotating quarterly) |
-| **Decision Author** | Presents the proposal, answers questions | 1 per proposal |
+## Feedback From Delivery and Operations
 
-### Effective ARB Practices
+Close the loop after implementation and during operation:
 
-- **Time-boxed meetings.** One hour max. Decisions should be prepared before the meeting, not debated from scratch.
-- **Written proposals required.** No "let's whiteboard it" in the ARB. Proposals must be submitted as RFCs at least 48 hours in advance.
-- **Decisions, not discussions.** The ARB's job is to make a decision: approve, approve with conditions, or reject with feedback. Not to explore options.
-- **Rotating membership.** Fixed members create an insular culture. Rotate members quarterly to distribute knowledge and prevent groupthink.
-- **Appeals process.** Any rejected RFC can be appealed to the CTO or VP Engineering. This prevents the ARB from becoming a bottleneck.
+- Compare the intended outcome and constraints with observed behavior.
+- Record surprises, incidents, support burden, delivery friction, cost, performance, adoption, and exceptions.
+- Decide whether to keep, narrow, automate, revise, supersede, or retire the standard or radar entry.
+- Update the decision record and notify affected owners; do not silently rewrite history.
+- Promote recurring evidence into a better guardrail or experiment, and remove controls that no longer prevent a meaningful failure.
 
----
+Operational evidence does not transfer incident command or service ownership to this skill. It supplies feedback for technology posture and governance decisions; operations teams retain operational response and reliability ownership.
 
-## RFC Process
+## Exceptions and Proportional Escalation
 
-Request for Comments (RFC) is a lightweight process for making significant technical decisions transparent and documented.
+An exception is a governed deviation, not an informal bypass. Record the requested scope, reason, affected assets, risk, compensating controls, accountable owner, expiry or review trigger, and evidence of closure. Emergency exceptions may use a shorter path, but they still require retrospective recording and review when the immediate risk is controlled.
 
-### The RFC Lifecycle
+Escalate when any of these becomes true:
 
-1. **Draft.** Author writes the RFC using the template below. Collaborate with stakeholders.
-2. **Review.** RFC is open for comments for a minimum period (typically 3-5 business days).
-3. **Decision.** The decision-maker (tech lead, ARB chair, CTO) approves, conditionally approves, or rejects.
-4. **Implementation.** Approved RFCs are implemented. The RFC becomes the source of truth for the decision.
-5. **Retrospective.** After implementation, close the RFC with a summary of what changed from the original design.
+- the choice cannot be reversed without material customer, data, contract, or migration cost;
+- the blast radius or cross-team impact exceeds the local owner's authority;
+- a regulatory, legal, safety, privacy, or security obligation requires a designated control owner;
+- local decisions are creating incompatible interfaces, duplicated platforms, or portfolio-level cost;
+- evidence is insufficient to understand a material downside;
+- an exception is recurring, expanding, or compensating controls are failing.
 
-### RFC Template
+De-escalate when an experiment reduces uncertainty, automation makes the rule objective, ownership becomes local, or the change is safely reversible. Stronger governance should not persist merely because it was used once.
+
+## Neighboring Ownership
+
+- **Enterprise architecture:** capability maps, business/technology alignment, operating models, target and transition states, and enterprise roadmaps belong there. This skill governs technology portfolio posture and decision paths.
+- **ADR authoring:** durable records for consequential decisions and their fitness evidence belong there. This skill decides when and how governance is applied.
+- **Implementation skills:** code, service design, API contracts, data models, migrations, and platform changes belong to their specialist owners. Governance sets boundaries and evidence; it does not design every implementation.
+- **Secure software engineering:** threat modeling, security requirements, authentication/authorization, and secure implementation belong there. A security obligation may be an escalation input or automated guardrail here.
+- **Operations and SRE:** deployment operations, incident command, SLOs, monitoring, and recovery runbooks belong there. Their evidence feeds governance; this skill does not replace operational ownership.
+
+## Practical Output
+
+Produce an artifact that makes authority and learning inspectable:
 
 ```markdown
-# RFC: [Title]
+# Governance decision: [subject]
 
-## Status
-[Draft | Review | Approved | Rejected | Implemented]
+## Context
+- Outcome:
+- Scope and affected teams:
+- Reversibility and blast radius:
+- Risk, regulation, and cross-team impact:
+- Evidence and uncertainty:
 
-## Summary
-[2-3 sentence overview of the proposal]
+## Chosen governance mode
+[Automated policy | Federated decision | Advice process | Centralized review]
 
-## Motivation
-[Why this change is needed. What problem does it solve? What happens if we don't do it?]
+## Authority and controls
+- Decision owner:
+- Consultees or approving authority:
+- Required checks or conditions:
+- Exception path and compensating controls:
 
-## Design
-[The proposed solution. Architecture diagrams, API contracts, data models.]
+## Feedback plan
+- Implementation evidence:
+- Operational signals:
+- Reconsideration triggers:
+- Owner and next review point:
 
-## Alternatives Considered
-[Other approaches and why they were not chosen. Include the runner-up.]
-
-## Trade-offs
-[What are we giving up? Performance vs maintainability? Speed vs correctness?]
-
-## Migration Plan
-[How do we get from current state to proposed state? Phased approach, timeline, rollback plan.]
-
-## Open Questions
-[What we don't know yet. Decisions that are deferred.]
-
-## Appendix
-[Any additional context, benchmarks, or references.]
+## Boundary and links
+- Radar entry or standard:
+- ADR, if needed:
+- Specialist implementation, security, or operations owners:
 ```
-
-### RFC Principles
-
-- **Write-first, talk-second.** Discussions happen on the document. Meetings are for resolving deadlocked issues, not for initial review.
-- **Disagree and commit.** Once a decision is made, the team commits to implementing it. Continued debate after a decision undermines the process.
-- **Explicit deferral.** "Let's discuss this in the meeting" is fine. "Let's discuss this later" without a specific time is delay. Set a deadline for every deferred question.
-- **Retrospectives on rejected RFCs.** If an RFC is rejected, document why. The analysis may be valuable if conditions change later.
-
-### Common RFC Failures
-
-- **The design-by-committee RFC.** Too many authors, too many opinions, no clear vision. RFCs should have one primary author and 1-2 reviewers.
-- **RFC as a rubber stamp.** If the decision is already made and the RFC is just documentation, that's fine — but be explicit. "Decision made: we're moving to X. This RFC documents the design and migration plan."
-- **Too much detail, too late.** An RFC that describes a fully detailed implementation is harder to change than one that starts with the high-level approach. Get alignment on the approach before diving into implementation details.
-- **Death by process.** If every minor change requires an RFC, engineers will stop writing RFCs. Define the threshold clearly.

@@ -19,6 +19,20 @@ named packet field groups. Gate verdicts are recorded in packet group (h).
 Skipped phases and skills are recorded in packet group (e) with concrete reasons;
 silent omission is prohibited.
 
+This journey is tracker-neutral: it speaks of *work items*, *state
+transitions*, *review submissions*, and *merge or acceptance into the protected
+target*, never of one platform's nouns. Which tracking system holds the work
+item is established during phase 1 intake by
+[tracker-discovery.md](tracker-discovery.md), and tracker operations route to
+the matching catalog tooling skill; platform mechanics live in the platform
+mapping rows below and in [lifecycle.md](lifecycle.md).
+
+Entry normally begins at phase 1. When the work being requested **already
+started elsewhere** — no delivery packet exists because the earlier run happened
+outside this bundle — do not restart intake blindly: enter through
+[position-assessment.md](position-assessment.md) first, then continue from the
+assessed position under this journey's rules.
+
 ---
 
 ## The nine phases
@@ -29,8 +43,8 @@ silent omission is prohibited.
 |---|---|
 | **Owner** | neckbeard framing step (core loop step 1) |
 | **Input** | A change request: issue URL/number, ticket ID, email thread, or verbal request. |
-| **Output** | Packet groups (a) provenance and (b) authority/mode/path populated: change-request URL/number and source type, repository, base ref, issue/comment snapshot including **repository conventions** (`CONTRIBUTING.md`, `AGENTS.md`, or equivalent) and **linked/referenced work** (related issues, PRs, commits); granted authority class; selected workflow mode (GitHub or enterprise); selected path. A change contract ([../templates/change-contract.md](../templates/change-contract.md)) exists. |
-| **Gate** | The intake gate: provenance, authority, repository conventions, and linked work are captured. No planning phase may begin until these fields are populated. |
+| **Output** | Packet groups (a) provenance and (b) authority/mode/path populated: change-request URL/number and source type, repository, base ref, issue/comment snapshot including **repository conventions** (`CONTRIBUTING.md`, `AGENTS.md`, or equivalent) and **linked/referenced work** (related issues, PRs, commits); **tracking system** identified per [tracker-discovery.md](tracker-discovery.md) (detected from the request's own reference, repository-detected, or requester-confirmed — the specific basis recorded); granted authority class; selected workflow mode (GitHub or enterprise); selected path. A change contract ([../templates/change-contract.md](../templates/change-contract.md)) exists. |
+| **Gate** | The intake gate: provenance, authority, repository conventions, linked work, and the identified tracking system are captured. No planning phase may begin until these fields are populated. |
 | **Escalation** | Authority is ambiguous between explore and modify; or the stated goal conflicts with a hard constraint (security, data safety, policy, license); or maintainer direction conflicts with proceeding (see [risk-authority-gates.md](risk-authority-gates.md) stop rules). |
 | **Platform mapping** | **GitHub mode:** issue body + comments + labels captured via `gh`; `CONTRIBUTING.md` and `.github/` conventions discovered per repository. **Enterprise mode:** ticket-tracker snapshot (ticket ID, description, comments); internal contribution governance or change-governance docs captured. |
 

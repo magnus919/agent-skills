@@ -77,6 +77,10 @@ Each generator also runs in check mode (without `--write`) to verify freshness.
 
 If a skill includes executable scripts or a package, run its documented checks as well and include the commands and results in your pull request.
 
+### Skill script tests
+
+Every skill that ships executable scripts must name its script tests `scripts/test_*.py`; pytest auto-discovers and runs them in CI for every skill's `scripts/` directory, so Python test files must use the exact `test_*.py` name. Shell-based tests are the exception: register them in `scripts/check-skill-tests.py` as a `run` entry (executed in CI with `bash`) or a `manual` entry (documented only, when the test needs network access, credentials, or external tooling). CI enforces the naming convention: a file under any skill `scripts/` directory whose name matches the test conventions (`test_*.py`, `test*.sh`, `*_test.*`, `*-test.*`, or `.bats`) must be a Python `test_*.py` (auto-run) or be registered in `scripts/check-skill-tests.py`; `python3 scripts/check-skill-tests.py --check` fails otherwise.
+
 ## Deprecating a skill
 
 When replacing a skill, preserve its old directory as a routing stub. Prefix its description with `Deprecated: use <replacement>`, explain the migration in the stub, and remove it only after compatibility is no longer required.

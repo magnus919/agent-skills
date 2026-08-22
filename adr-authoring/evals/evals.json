@@ -61,6 +61,42 @@
         "The boundary between checkable and judgment-based decisions is stated",
         "Enforcement is part of definition of done, not a post-incident retrofit"
       ]
+    },
+    {
+      "id": "fitness-function-record",
+      "prompt": "An ADR says that asynchronous jobs must not publish customer data outside the approved region. Design the fitness-function record, including scope, cadence, evidence type, invocation, threshold rationale, owners, false-positive and false-negative controls, gaming risks, exception handling, review triggers, retirement, and the link back to the ADR.",
+      "expected_output": "A reusable operational record that traces the ADR claim to a measurable regional-boundary characteristic and an observed evidence artifact. It chooses a bounded scenario or structural scope, explains why change-triggered checks are paired with runtime or scheduled evidence, defines a defensible pass condition and denominator, names decision and function owners, handles indeterminate results and time-boxed exceptions, identifies ways the metric could be gamed, and states review and retirement criteria.",
+      "assertions": [
+        "The record links an unambiguous ADR claim to a named architectural characteristic and observed evidence location",
+        "Scope, cadence, invocation, evidence type, inputs, and missing-result behavior are explicit",
+        "The threshold rationale includes population, denominator, baseline or uncertainty, and the harm boundary",
+        "Decision owner, function owner, and evidence consumer are distinguished",
+        "False positives, false negatives, gaming risks, exceptions, review triggers, and retirement criteria are addressed"
+      ]
+    },
+    {
+      "id": "fitness-function-evidence-review",
+      "prompt": "Our architecture check has passed for six months, but it samples only successful requests and the service team can exclude slow tenants from the denominator. Review whether this is trustworthy evidence for an ADR requiring fair tenant resource isolation, and propose a safer confirmation design.",
+      "expected_output": "A critical review that identifies the sample-selection and denominator problems as false-negative and gaming risks rather than treating six months of passes as proof. The redesign uses immutable or auditable raw evidence, reports exclusions, measures relevant distributions or stratified tenant cohorts, states an appropriate cadence and threshold rationale, and preserves a link from the ADR to the check and observed evidence.",
+      "assertions": [
+        "The response identifies successful-request sampling as a false-negative risk",
+        "The response identifies denominator exclusions as a gaming or proxy-metric risk",
+        "The redesign reports exclusions and uses representative or adversarial evidence rather than only averages",
+        "The response distinguishes a passing result from trustworthy evidence and defines an escalation for indeterminate data",
+        "The redesign retains explicit ADR, function, and observed-evidence traceability"
+      ]
+    },
+    {
+      "id": "adr-fitness-boundary",
+      "prompt": "Should the ADR authoring skill own a complete evolutionary-architecture program with architecture metrics, drift governance, and change sequencing, or should it define how an ADR is confirmed by a fitness function? Explain the boundary and route the work.",
+      "expected_output": "A boundary decision that keeps ADR authoring responsible for the durable decision, rationale, confirmation link, and operational record, while routing system-wide evolutionary architecture, drift governance, and change sequencing to software-architecture. It may link to test, telemetry, or governance skills for execution, but it does not absorb their tool or operational runbooks.",
+      "assertions": [
+        "ADR authoring is limited to durable decisions and their confirmation links",
+        "System-wide evolutionary architecture and drift governance are routed to software-architecture",
+        "Execution ownership remains with the relevant test, CI, telemetry, runtime, or governance system",
+        "The response explains why the boundary prevents duplicated or ambiguous ownership",
+        "The proposed output includes an ADR-to-function-to-evidence trace rather than a standalone metric program"
+      ]
     }
   ]
 }
