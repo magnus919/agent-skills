@@ -442,13 +442,13 @@ kubectl rollout status deployment/[deployment] -n [namespace]
 curl -s http://[service-url]/health | jq .
 # A health endpoint is partial evidence. Complete R-01: verify user-facing SLOs
 # and critical journeys, dependencies, data/state, secondary effects, and the
-# defined stability window before declaring the incident resolved.
+# defined stability window and independent human confirmation before declaring the incident resolved.
 
 # Step 5: Keep the incident Mitigating or Monitoring if evidence is missing;
 # record the unverified boundary and hand off or escalate.
 
-# Step 6: Announce only after R-01 closure evidence is complete
-echo "Rolled back [deployment] from v[X] to v[Y]. Recovery evidence verified."
+# Step 6: Announce only after R-01 closure evidence and independent human confirmation are complete
+echo "Rolled back [deployment] from v[X] to v[Y]. Recovery evidence independently confirmed."
 ```
 
 ---

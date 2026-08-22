@@ -662,7 +662,7 @@ Even the IC has limits:
 | Determine monitoring period | IC | Set the stability window during response based on expected traffic, dependency recovery, backlog or secondary effects, and delayed symptoms. Complete it before declaring resolved. |
 | Verify mitigation | Ops Lead | Run the canonical [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps): user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and the completed stability window. Green monitoring is partial evidence. |
 | Declare resolved | IC | Announce resolution only after the closure evidence, stability window, and independent human confirmation by someone other than the acting automation pass. Otherwise retain **MITIGATING** or **MONITORING**, record the unverified boundary, and hand off or escalate. |
-| Change severity to SEV-5 | IC | Only after closure evidence and the stability window pass; otherwise retain the active severity and **MITIGATING** or **MONITORING** state |
+| Change severity to SEV-5 | IC | Only after closure evidence, the stability window, and independent human confirmation pass; otherwise retain the active severity and **MITIGATING** or **MONITORING** state |
 | Update status page | Comms | Set status page to "Resolved" only after the resolution decision |
 | Stop the recording / close bridge | IC | End the voice bridge |
 | Send final status update | Comms | Send the resolution announcement |
@@ -874,7 +874,7 @@ IC should ask every 5-10 minutes:
 3. A human other than the acting automation independently confirms the complete evidence set. An agent-assigned IC role, automation-authored record, or self-reported health check is insufficient. (IC / service owner)
 4. If any evidence or human confirmation is missing, retain **MITIGATING** or **MONITORING**, record the unverified boundary, and hand off or escalate. (IC)
 5. "Incident is resolved." only after the evidence sequence and independent human confirmation pass. (IC)
-6. Change severity to SEV-5 only after closure evidence and the stability window pass. (IC)
+6. Change severity to SEV-5 only after closure evidence, the stability window, and independent human confirmation pass. (IC)
 7. Update status page to "Resolved." (Comms)
 8. Final status update to stakeholders. (Comms)
 9. Save all materials. (Scribe)

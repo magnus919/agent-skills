@@ -139,6 +139,7 @@ Closure Evidence:
   - Secondary effects and backlog recovery: [evidence or link]
   - Stability window: [defined window and observed result]
   - Evidence boundary: [what was actually exercised]
+  - Independent human confirmation: [name/role and approval record or timestamp]
 
 Post-Incident Items Opened:
   - [link to Jira/Asana bug or task]
