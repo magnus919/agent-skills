@@ -29,7 +29,7 @@ into another or left to implication.
 
 | Group | Name | Fields |
 |---|---|---|
-| **(a)** | **Change-request provenance** | Change-request URL or number; source type (issue / ticket / email / verbal); repository; base ref; issue/comment snapshot (request text, comments, and linked work captured at intake); head SHA at intake. |
+| **(a)** | **Change-request provenance** | Change-request URL or number; source type (issue / ticket / email / verbal); repository; base ref; issue/comment snapshot (request text, comments, and linked work captured at intake); tracking system identified at intake per [tracker-discovery.md](tracker-discovery.md), with its evidence basis (detected from the request's own reference, repository-detected, or requester-confirmed); head SHA at intake. |
 | **(b)** | **Granted authority + workflow mode/path** | Authority class granted (Explore / Modify / Publish / Deploy / Merge — see [risk-authority-gates.md](risk-authority-gates.md)); selected workflow mode (GitHub reference mode or enterprise mode); selected path (lightweight / full / refactor / high-risk). |
 | **(c)** | **Resumable phase/gate state + current head SHA** | Current phase name; current gate name; the head SHA at which the last successful gate verdict was recorded; the current lifecycle state (see below). |
 | **(d)** | **Problem / baseline evidence / scope / non-goals / affected surfaces** | User-visible problem; baseline (pre-change) evidence with boundary labels; in-scope work; explicit non-goals; affected surfaces (paths, contracts, boundaries). |
