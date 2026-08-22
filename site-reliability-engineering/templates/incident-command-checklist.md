@@ -115,7 +115,7 @@ Goal: Drive toward mitigation while maintaining clear communication and document
 
 - [ ] **Pass the pre-mutation gate**
   - Confirm current human authorization for the specific action and scope, independently attributable to the human authority.
-  - Record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority.
+  - Record the target, affected population, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority.
   - If the gate cannot be satisfied, stop and hand off or escalate rather than mutating production.
 
 - [ ] **Apply mitigation**
@@ -157,7 +157,7 @@ Goal: Confirm the incident is truly over and stabilize the system.
   - Document known edge cases that might still be affected.
 
 - [ ] **Declare the incident resolved**
-  - Only after the R-01 closure evidence sequence and completed stability window pass: "This incident is now RESOLVED. The mitigation was [summary]. Monitoring continues."
+  - Only after the R-01 closure evidence sequence, completed stability window, and independent human confirmation pass: "This incident is now RESOLVED. The mitigation was [summary]. Monitoring continues."
   - Update incident tracking system status to **RESOLVED**.
   - _This is `t_resolved`._
 

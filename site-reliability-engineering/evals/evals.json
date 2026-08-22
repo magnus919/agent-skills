@@ -115,14 +115,14 @@
     {
       "id": "alert-cleared-is-not-recovered",
       "prompt": "An automated rollback stopped the 5xx alert and the health endpoint is green, but nobody has run a critical user-journey smoke test, checked dependencies or data correctness, or observed a stability window. Can we mark the incident resolved?",
-      "expected_output": "No. The incident remains MITIGATING or MONITORING, not RESOLVED. Alert clearance and a health endpoint are only partial evidence. Before resolution, verify user-facing SLOs and critical journeys, relevant dependency health, data or state correctness, secondary effects such as backlog recovery, and a defined stability window. A designated human must confirm the complete evidence set; an automation-authored incident record or self-reported health check is insufficient. Record the missing verification boundary and escalate if it cannot be exercised.",
+      "expected_output": "No. The incident remains MITIGATING or MONITORING, not RESOLVED. Alert clearance and a health endpoint are only partial evidence. Before resolution, verify user-facing SLOs and critical journeys, relevant dependency health, data or state correctness, secondary effects such as backlog recovery, and a defined stability window. A human other than the acting automation must independently confirm the complete evidence set; an agent-assigned IC role, automation-authored incident record, or self-reported health check is insufficient. Record the missing verification boundary and escalate if it cannot be exercised.",
       "assertions": [
         "Alert clearance and a passing health endpoint are explicitly insufficient for declaring resolution",
         "The incident remains in the MITIGATING or MONITORING state until user-facing SLO and critical-journey evidence passes",
         "Relevant dependency health and data or state correctness are checked",
         "A defined stability window and secondary-effect or backlog checks are required",
         "Missing evidence is recorded as an unverified boundary and triggers escalation rather than a false pass",
-        "A designated human confirms the complete recovery evidence; an automation-authored record or self-reported health check is insufficient"
+        "A human other than the acting automation independently confirms the complete recovery evidence; an agent-assigned IC role, automation-authored record, or self-reported health check is insufficient"
       ]
     }
   ]

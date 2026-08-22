@@ -484,7 +484,7 @@ Next update: [time or milestone]
 
 **Resolution announcement:**
 
-Use this only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. If evidence is incomplete, send a Monitoring update instead, record the unverified boundary, retain the incident in **Mitigating** or **Monitoring**, and hand off or escalate.
+Use this only after the [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and the defined stability window pass. If evidence is incomplete, send a Monitoring update instead, record the unverified boundary, retain the incident in **MITIGATING** or **MONITORING**, and hand off or escalate.
 
 ```
 ✅ INCIDENT RESOLVED
@@ -600,7 +600,7 @@ Use consistent event categories to make analysis easier:
 | Communicate externally | Comms (with IC approval) | Legal (for SEV-1), PR (if customer-facing) |
 | Contact legal / compliance | IC | None |
 | Contact law enforcement (security breach) | IC + Legal | Executive team |
-| Declare incident resolved | IC | The [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and completed stability window pass; Ops Lead confirms the full evidence set, not only mitigation stability. If evidence is missing, retain **Mitigating** or **Monitoring** and hand off or escalate. |
+| Declare incident resolved | IC | The [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps) and completed stability window pass; Ops Lead confirms the full evidence set, not only mitigation stability. If evidence is missing, retain **MITIGATING** or **MONITORING** and hand off or escalate. |
 | Authorize post-incident review | IC | None |
 | Deploy a hotfix | IC | Ops Lead, code owner, QA (if time permits) |
 | Cache invalidation / purge | Ops Lead | Net SME |
@@ -661,8 +661,8 @@ Even the IC has limits:
 |---|---|---|
 | Determine monitoring period | IC | Set the stability window during response based on expected traffic, dependency recovery, backlog or secondary effects, and delayed symptoms. Complete it before declaring resolved. |
 | Verify mitigation | Ops Lead | Run the canonical [R-01 closure evidence sequence](../templates/runbook-template.md#r-01-post-incident-steps): user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and the completed stability window. Green monitoring is partial evidence. |
-| Declare resolved | IC | Announce resolution only after the closure evidence and stability window pass. Otherwise retain **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate. |
-| Change severity to SEV-5 | IC | Only after closure evidence and the stability window pass; otherwise retain the active severity and **Mitigating** or **Monitoring** state |
+| Declare resolved | IC | Announce resolution only after the closure evidence and stability window pass. Otherwise retain **MITIGATING** or **MONITORING**, record the unverified boundary, and hand off or escalate. |
+| Change severity to SEV-5 | IC | Only after closure evidence and the stability window pass; otherwise retain the active severity and **MITIGATING** or **MONITORING** state |
 | Update status page | Comms | Set status page to "Resolved" only after the resolution decision |
 | Stop the recording / close bridge | IC | End the voice bridge |
 | Send final status update | Comms | Send the resolution announcement |
@@ -871,7 +871,7 @@ IC should ask every 5-10 minutes:
 ```
 1. Set the stability window during response based on expected traffic, dependency recovery, backlog or secondary effects, and delayed symptoms. (IC)
 2. Run the closure evidence sequence: user-facing SLOs and critical journeys, dependency health, data/state correctness, secondary effects, and confirm the stability window is complete. Green monitoring is partial evidence. (Ops Lead)
-3. If any evidence is missing, retain **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate. (IC)
+3. If any evidence is missing, retain **MITIGATING** or **MONITORING**, record the unverified boundary, and hand off or escalate. (IC)
 4. "Incident is resolved." only after the evidence sequence passes. (IC)
 5. Change severity to SEV-5 only after closure evidence and the stability window pass. (IC)
 6. Update status page to "Resolved." (Comms)

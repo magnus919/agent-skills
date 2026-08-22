@@ -504,7 +504,7 @@ NEXT STEPS: [What's being done]
 
 1. **Verify full recovery at the user boundary** — Confirm user-facing SLOs and critical user journeys, relevant dependency health, data/state correctness, and secondary effects such as backlog recovery. Health checks, baseline error/latency, and a cleared alert are partial evidence, not a resolution verdict.
 2. **Observe a stability window** — Monitor for the defined window and confirm that recovery holds without cascading or delayed effects. Record the evidence and the boundary actually exercised.
-3. **Human-confirm the evidence** — The incident commander, service owner, or another designated human operator must review and confirm the complete evidence set. An automation-authored incident record, green alert, or self-reported health check is not sufficient.
+3. **Human-confirm the evidence** — A human other than the acting automation must review and confirm the complete evidence set, with the confirmation independently attributable to that person. An agent-assigned IC role, automation-authored incident record, green alert, or self-reported health check is not sufficient.
 4. **Keep unresolved incidents visible** — If any required evidence or human confirmation is missing, retain the incident in **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate rather than marking it resolved.
 5. **Update status page** — Mark the incident as resolved if used, but only after full recovery evidence and human confirmation are complete.
 6. **Resolve alert** — Close PagerDuty / OpsGenie alert after the resolution decision, not merely because the alert condition cleared.
