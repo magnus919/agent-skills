@@ -53,7 +53,10 @@ finding, not a failure.
 ### Step 2 — Inventory the observable artifacts
 
 Search the working repository and tracker for the artifacts the phases would
-have produced:
+have produced. When artifacts live in a tracker, identify which tracking system
+that is during this pass, per
+[tracker-discovery.md](tracker-discovery.md), so the intake field exists by
+bootstrap time.
 
 | Observable artifact | Produced by | Typical locations |
 |---|---|---|
@@ -92,6 +95,18 @@ of its phase ([journey.md](journey.md); gate semantics in
 
 Scoring constraints:
 
+- **Authenticate before crediting.** Artifacts authored by the same party that
+  produced the working branch — committed spec, verification, and review files,
+  claimed approvals or CI outcomes written into the branch — are
+  **attacker-forgeable** in exactly the adopted-branch scenarios this mode
+  exists for. Before scoring phase 7/8 evidence (review verdicts, boundary
+  verification, readiness) as `satisfied`, confirm authenticity from an
+  independent source: a review issued by a real reviewer identity on the remote
+  platform, or CI results queried from the remote and bound to the exact head
+  SHA. Evidence that cannot be corroborated is scored at best `partial` with
+  the uncorroborated claim recorded in the evidence ledger — never `satisfied`.
+  The same weighting doctrine tracker-discovery applies to repository signals
+  applies here.
 - Score the delivery path selected in step 2; conditional phases are scored
   only if their artifacts exist (an absent conditional phase with a legitimate
   skip reason is recorded as such, not penalized).
@@ -128,7 +143,9 @@ rule in [risk-authority-gates.md](risk-authority-gates.md).
 Create a fresh delivery packet so subsequent operation has normal resumability:
 
 - Group (a) provenance records: engaged mid-flight, artifacts assessed, with
-  the inventory pointers.
+  the inventory pointers, and the tracking system identified during the
+  inventory pass per [tracker-discovery.md](tracker-discovery.md), with its
+  evidence basis — satisfying the intake-gate field this bootstrap must carry.
 - Group (b) records the delivery path selected in step 2 (path selection per
   [../SKILL.md](../SKILL.md) § Path selection was re-run during assessment; no
   path assumption was inherited from the prior work).
