@@ -1,5 +1,5 @@
 jsonschema[format]==4.26.0
-types-jsonschema>=4
+types-jsonschema>=4.26.0.20260518
 requests==2.34.2
 ruff>=0.16.1
 pytest>=9.1.1
