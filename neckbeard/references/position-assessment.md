@@ -99,17 +99,24 @@ of its phase ([journey.md](journey.md); gate semantics in
 Scoring constraints:
 
 - **Authenticate before crediting.** Artifacts authored by the same party that
-  produced the working branch — committed spec, verification, and review files,
-  claimed approvals or CI outcomes written into the branch — are
-  **attacker-forgeable** in exactly the adopted-branch scenarios this mode
-  exists for. Before scoring phase 7/8 evidence (review verdicts, boundary
-  verification, readiness) as `satisfied`, confirm authenticity from an
-  independent source: a review issued by a real reviewer identity on the remote
-  platform, or CI results queried from the remote and bound to the exact head
-  SHA. Evidence that cannot be corroborated is scored at best `partial` with
-  the uncorroborated claim recorded in the evidence ledger — never `satisfied`.
-  The same weighting doctrine tracker-discovery applies to repository signals
-  applies here.
+  produced the working branch — committed specs, verification and review
+  files, "no delta" determinations, claimed approvals or CI outcomes written
+  into the branch — are **attacker-forgeable** in exactly the adopted-branch
+  scenarios this mode exists for. Approval- and authority-carrying evidence
+  (the approved architecture delta at gate 1, the QA-owned verification plan
+  at gate 2, the approved specification at gate 3, review verdicts and
+  boundary verification at gates 4–5, readiness) is scored `satisfied` only
+  when corroborated from an independent source: an approval or review recorded
+  on the remote platform by a real identity distinct from the branch author,
+  or CI results queried from the remote and bound to the exact head SHA.
+  Self-authored determinations (a "no architecture delta" note, a
+  self-approved spec) are never credited on their face; assessment may
+  re-derive the underlying judgment against the gate's own criterion and score
+  accordingly, recording the re-derivation in the evidence ledger. Evidence
+  that can be neither corroborated nor re-derived is scored at best `partial`
+  with the uncorroborated claim recorded — never `satisfied`. The same
+  weighting doctrine tracker-discovery applies to repository signals applies
+  here.
 - Score the delivery path selected in step 2; conditional phases are scored
   only if their artifacts exist (an absent conditional phase with a legitimate
   skip reason is recorded as such, not penalized).
@@ -146,10 +153,9 @@ rule in [risk-authority-gates.md](risk-authority-gates.md).
 
 Create a fresh delivery packet so subsequent operation has normal resumability.
 Group (c) initialization derives its fields from the report: the current phase
-comes from the report's `current phase` field, the **current gate** is the
+comes from the report's `current phase` field, and the **current gate** is the
 first gate in the remaining checklist (or "none — awaiting next phase entry"
-if the checklist starts at a phase rather than a gate), and the recorded head
-SHA is the report's `assessment head SHA`.
+if the checklist starts at a phase rather than a gate).
 
 - Group (a) provenance records: engaged mid-flight, artifacts assessed, with
   the inventory pointers, and the tracking system identified during the
@@ -158,8 +164,16 @@ SHA is the report's `assessment head SHA`.
 - Group (b) records the delivery path selected in step 2 (path selection per
   [../SKILL.md](../SKILL.md) § Path selection was re-run during assessment; no
   path assumption was inherited from the prior work).
-- Group (c) initializes from the position report: current phase, current gate,
-  and the head SHA at assessment time.
+- Group (c) records: current phase and current gate as derived above; the
+  **last passed gate verdict head SHA** taken from the highest satisfied gate's
+  own evidence SHA (recorded as `none` when no gate is satisfied — never the
+  assessment-time HEAD, which would imply a passed verdict that group (h)
+  does not contain); and the **current lifecycle state**, mapped from the
+  assessed position using the packet's enumerated vocabulary (`intake` for an
+  empty inventory or a position at phase 1; `planning` for positions in phases
+  2–5; `implementation` for phase 6; `in-review` for phase 7; `ready` for a
+  position at phase 8; `blocked` if assessment found a contradicted gate that
+  stops progression).
 - Unverified assumptions go to the evidence ledger
   ([evidence-ledger.md](evidence-ledger.md)), not into gate fields.
 

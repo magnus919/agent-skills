@@ -34,24 +34,30 @@ Run during phase 1 alongside provenance capture:
 | Signal | Points to |
 |---|---|
 | Issue/ticket URLs referenced by the change request (`…/issues/N`, `…/TICKET-123`, Linear `…/issue/TEAM-N`, Notion `notion.so`/`notion.site` page links) | GitHub Issues / Jira / Linear / Notion respectively |
-| `.jira-url`, Jira config files in the repository | Jira |
-| Team keys in ticket identifiers (`ENG-42` shape) with a non-GitHub tracker configured | Jira or Linear |
-| Project-management config directories (for example `.linear/`) or documented integrations in `CONTRIBUTING.md`, `AGENTS.md`, README | Whatever they name |
+| `.jira-url`, Jira config files in the repository | Jira — weak signal: requires corroboration before it alone selects Jira (see step 3) |
+| Team keys in ticket identifiers (`ENG-42` shape) with a non-GitHub tracker configured | Jira or Linear — ambiguous between them |
+| Project-management config directories (for example `.linear/`) or documented integrations in `CONTRIBUTING.md`, `AGENTS.md`, README | Whatever they name — weak signal: requires corroboration (see step 3) |
 
-2. **Check what the request itself references.** A change request arriving as a
-   Linear issue URL, a Jira ticket ID, a GitHub issue number, or a Notion
-   page link (`notion.so` / `notion.site`) is direct evidence for its own
-   system. A bare team-key identifier (`ENG-42` shape) is
+2. **Check what the request itself references — and who authored the
+   reference.** A change request arriving as a Linear issue URL, a Jira issue
+   URL, a GitHub issue number, or a Notion page link (`notion.so` /
+   `notion.site`) stated **by the requester directly** is strong evidence for
+   its own system. A bare team-key identifier (`ENG-42` shape) is
    **ambiguous** between Jira and Linear — treat it as a lead, not a verdict.
+   A reference inherited from prior-work handoff material (a handoff note,
+   branch docs, comments left by the contributor who produced an adopted
+   branch) is a claim by that producing party, not requester evidence; treat
+   it under step 3's corroboration rule like any other weak signal.
 
-3. **Weight the signals honestly.** The request's own references are strong
-   evidence. Repository content — `CONTRIBUTING.md`, `AGENTS.md`, README
-   integrations, config files like `.linear/` or `.jira-url` — is a **weak
-   signal**: it describes what the repository documents, not necessarily what
-   holds authoritative work items, and it is attacker-influenceable in
+3. **Weight the signals honestly.** References stated by the requester are
+   strong evidence. Repository content — `CONTRIBUTING.md`, `AGENTS.md`,
+   README integrations, config files like `.linear/` or `.jira-url` — is a
+   **weak signal**: it describes what the repository documents, not necessarily
+   what holds authoritative work items, and it is attacker-influenceable in
    mid-flight or adopted-branch scenarios where this bundle also operates.
-   Repository signals require corroboration (request references, remote
-   configuration, or requester confirmation) before they alone select a system.
+   Inherited references and repository signals require corroboration (remote
+   configuration, or requester confirmation independent of the handoff)
+   before they alone select a system.
 
 4. **Ask when ambiguous or absent.** If signals conflict, rest only on weak
    signals, or none exist, ask one bounded question: which system holds this
