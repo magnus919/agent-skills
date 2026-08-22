@@ -33,14 +33,15 @@ Run during phase 1 alongside provenance capture:
 
 | Signal | Points to |
 |---|---|
-| Issue/ticket URLs referenced by the change request (`…/issues/N`, `…/TICKET-123`, Linear `…/issue/TEAM-N`) | GitHub Issues / Jira / Linear respectively |
+| Issue/ticket URLs referenced by the change request (`…/issues/N`, `…/TICKET-123`, Linear `…/issue/TEAM-N`, Notion `notion.so`/`notion.site` page links) | GitHub Issues / Jira / Linear / Notion respectively |
 | `.jira-url`, Jira config files in the repository | Jira |
 | Team keys in ticket identifiers (`ENG-42` shape) with a non-GitHub tracker configured | Jira or Linear |
 | Project-management config directories (for example `.linear/`) or documented integrations in `CONTRIBUTING.md`, `AGENTS.md`, README | Whatever they name |
 
 2. **Check what the request itself references.** A change request arriving as a
-   Linear issue URL, a Jira ticket ID, or a GitHub issue number is direct
-   evidence for its own system. A bare team-key identifier (`ENG-42` shape) is
+   Linear issue URL, a Jira ticket ID, a GitHub issue number, or a Notion
+   page link (`notion.so` / `notion.site`) is direct evidence for its own
+   system. A bare team-key identifier (`ENG-42` shape) is
    **ambiguous** between Jira and Linear — treat it as a lead, not a verdict.
 
 3. **Weight the signals honestly.** The request's own references are strong
@@ -57,10 +58,12 @@ Run during phase 1 alongside provenance capture:
    work item? Record the answer as requester-provided provenance. Do not
    silently pick the system whose CLI happens to be installed.
 
-5. **Record in packet group (a):** detected/requested system, the evidence or
-   source of the answer (including when the basis is a requester confirmation),
-   and the routing decision below. Silent omission is prohibited like every
-   other intake field.
+5. **Record the findings:** detected/requested system with the evidence or
+   source of the answer (including when the basis is a requester confirmation)
+   goes in packet group (a) as provenance; the routing decision — which tooling
+   skill will operate tracker operations — is a specialist-selection decision
+   and is recorded in packet group (e), same as every other selected or skipped
+   skill. Silent omission is prohibited like every other intake field.
 
 ## Routing tracker operations
 

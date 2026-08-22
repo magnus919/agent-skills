@@ -45,10 +45,13 @@ Enter this mode only when all three hold:
 | No delivery packet exists for that work | No packet artifact accompanies the work; the prior run, if any, was outside this bundle |
 | The work is non-trivial enough to warrant the journey | Same threshold [../SKILL.md](../SKILL.md) applies before loading the journey |
 
-If a packet exists, use [delivery-packet.md](delivery-packet.md) resumability
-instead. If no artifacts exist at all, the honest position is **phase 1**: say
-so plainly and let the normal journey take over. An empty inventory is a
-finding, not a failure.
+If a delivery packet exists, use [delivery-packet.md](delivery-packet.md)
+resumability instead. The empty-inventory case ("no artifacts found") can only
+be determined after running step 2's inventory; when it holds, assessment
+still completes normally — deliver a position report stating phase 1 and
+perform the step-5 bootstrap, then let the normal journey take over. An empty
+inventory is a finding, not a failure, and it does not skip the report or the
+packet.
 
 ### Step 2 — Inventory the observable artifacts
 
@@ -124,7 +127,8 @@ execution. Format:
 
 ```
 current phase:        <n>-<phase-name>
-selected path:        <lightweight|full|refactor|high-risk> (re-selected, see below)
+selected path:        <lightweight|full|refactor|high-risk>
+assessment head SHA:  <git rev-parse HEAD at assessment time>
 satisfied gates:      <gate> @ <evidence pointer>; ...
 partial:              <gate/artifact> — <what remains>
 absent:               <gates with no evidence>
@@ -140,7 +144,12 @@ rule in [risk-authority-gates.md](risk-authority-gates.md).
 
 ### Step 5 — Bootstrap the packet
 
-Create a fresh delivery packet so subsequent operation has normal resumability:
+Create a fresh delivery packet so subsequent operation has normal resumability.
+Group (c) initialization derives its fields from the report: the current phase
+comes from the report's `current phase` field, the **current gate** is the
+first gate in the remaining checklist (or "none — awaiting next phase entry"
+if the checklist starts at a phase rather than a gate), and the recorded head
+SHA is the report's `assessment head SHA`.
 
 - Group (a) provenance records: engaged mid-flight, artifacts assessed, with
   the inventory pointers, and the tracking system identified during the
