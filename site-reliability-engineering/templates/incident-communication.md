@@ -96,6 +96,14 @@ Next Steps:
   - Prepare roll-forward fix
   - Stakeholder comms at [time of next update]
 
+Closure Evidence In Progress:
+  - User-facing SLOs and critical journeys: [pending / observed evidence or link]
+  - Dependency health: [pending / observed evidence or link]
+  - Data/state correctness: [pending / observed evidence or link]
+  - Secondary effects and backlog recovery: [pending / observed evidence or link]
+  - Stability window: [defined window and progress]
+  - Unverified boundary: [what remains untested]
+
 ETA to Full Resolution: [time or "TBD"]
 ```
 

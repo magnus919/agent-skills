@@ -104,6 +104,8 @@
 
 ## On-Call Quick Reference
 
+> The commands below include read-only and mutating examples. Before any command that mutates production, apply the operational closure gate: verify current human authorization for the specific action and scope, record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. If the gate cannot be satisfied, stop and hand off or escalate.
+
 ### How to Access
 
 ```bash
@@ -218,7 +220,7 @@ df -h /data
 
 > Each failure mode is self-contained through mitigation. After any mitigation or recovery action, follow R-01 before declaring the incident resolved.
 >
-> Before executing any **Resolution** command, apply the operational closure gate: verify human authorization for the specific action and scope, record the target, maximum blast radius, success and abort/rollback criteria, and rollback path. These rows describe mitigation options, not permission to execute them. If the gate cannot be satisfied, stop and hand off or escalate.
+> Before executing any **Resolution** command, apply the operational closure gate: verify human authorization for the specific action and scope, record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. These rows describe mitigation options, not permission to execute them. If the gate cannot be satisfied, stop and hand off or escalate.
 
 ### FM-01: Service Unreachable / High Error Rate
 
@@ -510,6 +512,8 @@ NEXT STEPS: [What's being done]
 ### R-02: Data / State Recovery
 
 > **Warning:** Data recovery procedures should only be attempted by engineers with database admin access.
+>
+> Before any production restore, verify current human authorization for the specific restore and scope, record the target, maximum blast radius, success and abort/rollback criteria, rollback path, and stopping authority. Restore to staging and verify integrity first; staging evidence does not authorize the production restore.
 
 ```bash
 # Step 1: Identify the recovery point (RPO)

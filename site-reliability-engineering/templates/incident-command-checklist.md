@@ -128,11 +128,15 @@ Goal: Drive toward mitigation while maintaining clear communication and document
 
 Goal: Confirm the incident is truly over and stabilize the system.
 
+> Use the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) before declaring the incident resolved. Green monitoring and health checks are partial evidence; if any required evidence is missing, retain **Mitigating** or **Monitoring**, record the unverified boundary, and hand off or escalate.
+
 - [ ] **Verify the fix in production**
   - SMEs confirm the mitigation resolved the symptoms:
     - Error rate returned to baseline.
     - Latency normalized.
     - All affected endpoints returning correct responses.
+    - Relevant dependency health is verified.
+    - Data/state correctness and secondary effects are checked.
   - _Scribe logs `t_verification_complete`._
 
 - [ ] **Monitor stability window**
@@ -148,7 +152,7 @@ Goal: Confirm the incident is truly over and stabilize the system.
   - Document known edge cases that might still be affected.
 
 - [ ] **Declare the incident resolved**
-  - Clear statement: "This incident is now RESOLVED. The mitigation was [summary]. Monitoring continues."
+  - Only after the R-01 closure evidence sequence and completed stability window pass: "This incident is now RESOLVED. The mitigation was [summary]. Monitoring continues."
   - Update incident tracking system status to **RESOLVED**.
   - _This is `t_resolved`._
 
