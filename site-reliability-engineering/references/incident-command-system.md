@@ -477,7 +477,7 @@ For a Resolved status, first complete the [R-01 closure evidence sequence](../te
 Time: [UTC timestamp]
 Duration so far: [X hours, Y minutes]
 Severity: SEV-[X] (unchanged/changed from SEV-[Y])
-Current status: [Investigating / Mitigating / Monitoring / Resolved — only after R-01 closure evidence and stability window]
+Current status: [INVESTIGATING / MITIGATING / MONITORING / RESOLVED — only after R-01 closure evidence and stability window]
 Summary: [brief paragraph]
 Next update: [time or milestone]
 ```

@@ -133,7 +133,7 @@ Goal: Drive toward mitigation while maintaining clear communication and document
 
 Goal: Confirm the incident is truly over and stabilize the system.
 
-> Use the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) before declaring the incident resolved. Green monitoring and health checks are partial evidence; if any required evidence is missing, retain **MITIGATING** or **MONITORING**, record the unverified boundary, and hand off or escalate.
+> Use the [R-01 closure evidence sequence](runbook-template.md#r-01-post-incident-steps) before declaring the incident resolved. Green monitoring and health checks are partial evidence; if any required evidence is missing, do not mark the incident **RESOLVED**, record the unverified boundary, and hand off or escalate while it remains in its active response state.
 
 - [ ] **Verify the fix in production**
   - SMEs confirm the mitigation resolved the symptoms:
