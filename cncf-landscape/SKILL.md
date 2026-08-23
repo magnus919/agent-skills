@@ -68,6 +68,16 @@ Useful filters include `--search`, `--category`, `--subcategory`, repeated `--ma
 
 The query tool does not score or recommend projects. Keep the raw records and explain any ranking or weighting in the decision artifact.
 
+## Available Scripts
+
+This skill bundles one script; there are no others to discover.
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/landscape_query.py` | Read-only, standard-library client for the public CNCF Landscape API. Fetches one generated JSON snapshot (`--source projects`, `members`, or `end-users`), applies local filters, and writes a bounded JSON envelope to stdout (diagnostics go to stderr; failures return a non-zero exit code). Run it at the discovery step of the decision workflow whenever candidate technologies are needed; start with `--help` when unsure which filters apply. | `python3 scripts/landscape_query.py --category "Observability and Analysis" --search tracing --maturity graduated --limit 10` |
+
+Useful filters include `--search`, `--category`, `--subcategory`, repeated `--maturity`, `--license`, `--country`, `--oss-only`, `--has-license`, `--has-release`, `--min-stars`, `--min-contributors`, `--sort`, and `--limit`. The default limit is deliberately bounded; use `--limit 0` only when the complete result set is needed.
+
 ## Evidence discipline
 
 - The CNCF maturity value describes the project's CNCF lifecycle status, not its fit, security, support contract, or operational simplicity.
@@ -76,6 +86,17 @@ The query tool does not score or recommend projects. Keep the raw records and ex
 - A latest-release field does not establish release quality, compatibility, patch policy, or support duration.
 - Category and subcategory labels help find candidates; they do not establish that a project implements every part of the requested capability.
 - When the API is unavailable or returns non-JSON content, report that limitation. Do not invent a current catalog, counts, or project status from memory.
+
+## Prerequisites
+
+- Python 3.8+ with standard library only; `landscape_query.py` requires no third-party packages or API key.
+- Outbound HTTPS access to `landscape.cncf.io` for live queries; point `--base-url` at a mirror or offline test server when needed.
+
+## Limitations
+
+- Each invocation fetches one generated JSON snapshot; results reflect that snapshot's currency rather than real-time repository state, and the tool cannot read project documentation or source repositories for you.
+- It does not score, rank, or recommend projects: stars, contributors, CNCF maturity, membership, and license fields remain discovery evidence subject to the caveats above.
+- When the API is unavailable or returns non-JSON content, the tool fails loudly by design; do not substitute remembered catalog data for its output.
 
 ## Completion criteria
 

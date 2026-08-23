@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "skill_name": "agent-council",
+  "evals": [
+    {
+      "id": "postgres-sqlite-tradeoff-debate",
+      "case_set": "release",
+      "prompt": "We're split on the database for a new internal service: Postgres feels heavy for what we need but SQLite might not survive our write pattern. Debate this properly and tell me what we'd be missing either way.",
+      "expected_output": "The agent runs the agent-council CLI (bootstrapping it via scripts/bootstrap.py first if it is missing from PATH) with a medium or deep debate on the database question, then reports a structured decision landscape rather than a single flat recommendation.",
+      "assertions": [
+        "Invokes the agent-council CLI with the user's question, running python3 scripts/bootstrap.py if agent-council is not already available on PATH.",
+        "Produces or relays a structured synthesis that includes shared risks from the premortem phase and remaining disagreements, not just a winner.",
+        "Reports convergence diagnostics such as confidence dispersion and stopped_reason instead of only the final recommendation.",
+        "Treats claims about verifiable external facts (benchmarks, pricing, limits) as hypotheses to check when they appear under Claims Not Verified."
+      ]
+    },
+    {
+      "id": "read-convergence-diagnostics",
+      "case_set": "dev",
+      "prompt": "I ran agent-council on our API-versioning question and got this JSON back: stopped_reason is max_rounds, mean confidence rose from 0.61 to 0.79 while dispersion widened from 0.05 to 0.14. What does that tell me and what should I do?",
+      "expected_output": "A correct reading of the diagnostic table: rising confidence with widening dispersion indicates polarization/entrenchment, max_rounds means the debate hit its hard cap before resolving, and the response recommends concrete next steps such as rerunning with --max-rounds higher or --mode quick, or moving to an experimental path because argument alone may be irresolvable here.",
+      "assertions": [
+        "Identifies rising mean confidence combined with widening dispersion as polarization rather than genuine convergence.",
+        "Explains that stopped_reason max_rounds means the hard cap was reached and the result is inconclusive, requiring a principal decision.",
+        "Suggests at least one concrete remediation from the skill, such as raising --max-rounds, lowering to --mode quick, or designing an experiment to separate the positions.",
+        "Does not treat the debate outcome as a converged recommendation despite the non-converged stopping condition."
+      ]
+    },
+    {
+      "id": "choose-quick-mode",
+      "case_set": "dev",
+      "prompt": "Before tomorrow's standup I want a fast sanity check on whether to name our staging cluster 'staging-eu' or 'eu-staging'. I don't need a whole ceremony.",
+      "expected_output": "The agent runs the council in quick mode with the minimum agent count (agent-council --mode quick --agents 3 \"...\") since this is a low-stakes naming check, and frames expectations accordingly rather than launching a deep multi-round debate.",
+      "assertions": [
+        "Selects --mode quick with 3 agents as appropriate for a low-stakes question needing a fast answer.",
+        "Passes the actual naming question to the CLI rather than answering it unilaterally without the requested multi-perspective check.",
+        "Keeps cost and latency proportionate, avoiding deep mode or extra rounds for this decision size."
+      ]
+    },
+    {
+      "id": "verify-flagged-external-claims",
+      "case_set": "release",
+      "prompt": "Run the council on whether we should adopt this new vector database vendor. The synthesis came back positive but there's a 'Claims Not Verified' section flagging their throughput numbers. How do I use this result?",
+      "expected_output": "The agent treats the synthesis as valuable but explicitly separates flagged claims from debate-supported reasoning: throughput and pricing assertions are hypotheses to verify against primary sources before any adoption decision, while the structural arguments survive cross-examination and can inform the decision landscape.",
+      "assertions":
+        [
+          "Explains that Claims Not Verified entries must be checked against primary sources before acting, per the skill's guardrail.",
+          "Distinguishes debate-derived structural findings from unverifiable factual claims about the vendor.",
+          "Does not present the positive synthesis as an adoption green light while material claims remain unverified.",
+          "Frames next steps as verification tasks (checking the vendor's published benchmarks or running a proof of concept)."
+        ]
+    },
+    {
+      "id": "profiles-unavailable-fallback",
+      "case_set": "dev",
+      "prompt": "I installed agent-council from pip inside a container. It runs, but I read that the hermes-profiles library isn't bundled — what happens to my panel of experts and what should I do?",
+      "expected_output": "The agent explains that pip/wheel installs do not bundle the profile library, so auto-selection falls back to LLM-generated personas; it offers the two remedies from the skill — supply custom personas via --persona-file, or run from a recursive source checkout where profiles are available — and notes the diversity tradeoff.",
+      "assertions": [
+        "States that pip and wheel installs lack the hermes-profiles library and fall back to LLM-generated personas.",
+        "Offers --persona-file with a JSON file of custom personas as the control path.",
+        "Mentions that a recursive source checkout restores real professional profiles with SOUL.md methodology.",
+        "Sets expectations that generated-persona diversity varies compared with real methodological voices."
+      ]
+    },
+    {
+      "id": "no-council-for-simple-fact",
+      "case_set": "regression",
+      "prompt": "What's the default port for PostgreSQL? Quick one.",
+      "expected_output": "The agent answers the factual question directly (5432) without spawning a debate panel, recognizing that a single-fact lookup has a clear correct answer and no tradeoffs to adjudicate — this skill is not for simple factual queries or routine single-perspective work.",
+      "assertions": [
+        "Answers directly without invoking or bootstrapping the agent-council CLI.",
+        "Does not propose a multi-agent debate, premortem, or council session for a settled factual lookup.",
+        "Optionally notes when a debate would be warranted, without manufacturing artificial tradeoffs."
+      ]
+    }
+  ]
+}

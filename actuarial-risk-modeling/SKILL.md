@@ -110,9 +110,31 @@ First-pass scripts are read-only: run `python3 scripts/risk_preflight.py input.c
 - `scripts/risk_preflight.py` — dependency-free, read-only CSV/JSONL profiling with machine-readable output.
 - `scripts/temporal_split_audit.py` — dependency-free audit of chronological train/test windows and leakage boundaries.
 
+## Available Scripts
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/risk_preflight.py` | Read-only profiling pass over a CSV or JSONL input: distributions, zeros, negatives, skew, repeated entities, exposure balance, and data-quality exceptions, written as machine-readable JSON. Run it at workflow step 3, before any modeling, to profile the data before framing the model family. | `python3 scripts/risk_preflight.py input.csv --output preflight.json` |
+| `scripts/temporal_split_audit.py` | Audits chronological train/test windows and leakage boundaries in an ordered observation file (`--time-column` required; optional `--test-size`, `--step`, `--gap`, `--output`). Run it at workflow step 7 whenever observations are time-ordered or forecast leakage is possible, before trusting any validation result. | `python3 scripts/temporal_split_audit.py observations.csv --time-column observed_at --output splits.json` |
+| `scripts/test_risk_scripts.py` | Offline pytest suite covering both scripts above. Run it if you modify either script or when auditing a change to their output. | `python3 -m pytest scripts/test_risk_scripts.py` |
+
+Both analysis scripts are dependency-free and never modify their inputs.
+
 ## Completion Gate
 
 Do not call a model analysis complete until the decision and data contract are explicit,
 the evaluation design matches intended use, diagnostics and sensitivity are recorded,
 uncertainty and limitations are stated, and an independent reader could reproduce the
 reported result from the cited data, code, assumptions, and environment.
+
+## Prerequisites
+
+- Python 3 with standard library only; both analysis scripts are dependency-free and require no third-party packages.
+- A CSV or JSONL input with a documented data contract: grain, exposure or offset, outcome support, observation window, and time column (for the split audit) — the scripts profile what you point them at, not what the data means.
+- `pytest` only when running the bundled script tests.
+
+## Limitations
+
+- The scripts perform first-pass profiling and split auditing only: no model fitting, selection, calibration, or validation metrics happen here, and a clean preflight does not validate a model.
+- Neither script modifies its inputs; both write reports to stdout or an `--output` path for you to interpret under the Required Distinctions above.
+- Output is evidence about the data and partition design, not licensed actuarial, investment, legal, accounting, or regulatory advice (see When Not to Use).

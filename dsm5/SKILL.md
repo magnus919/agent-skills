@@ -293,3 +293,24 @@ need.
 part ≤ ~40,000 characters; indexes ≤ ~10,000). If a tool reports a file as truncated,
 re-read it in chunks with an offset, or use `python3 scripts/lookup.py` to find the
 specific part file instead of reading a whole chapter.
+
+## Available Scripts
+
+This skill bundles one script; there are no others to discover.
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/lookup.py` | Searches this skill's `references/` library for a keyword or phrase and recommends the file(s) to read. Run it whenever the routing table does not obviously cover the condition, when locating a topic without knowing its chapter, or to find the specific part file of a split chapter instead of reading a whole one. | `python3 scripts/lookup.py "<keyword>"` |
+
+Useful flags: `--json` (machine-readable output), `--list` (list every reference file with its H1 title), `--max N` (cap matches shown per file, default 10), `-q` (print only recommended file names).
+
+## Prerequisites
+
+- Python 3 with standard library only; `lookup.py` requires no third-party packages.
+- Read access to this skill's `references/` directory — the script searches that local library and nothing else.
+
+## Limitations
+
+- The script searches only this skill's paraphrased reference library; it cannot verify wording against the official DSM-5-TR, and a "no match" result means the topic is not covered here, not that it does not exist.
+- It performs keyword search and file recommendation only — no diagnosis, scoring, or clinical reasoning happens in the script.
+- Output from the script does not change the citation rules above: cite codes, specifiers, and prevalence only from reference files you actually read, never from memory or from script summaries alone.
