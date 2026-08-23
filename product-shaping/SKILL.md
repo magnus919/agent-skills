@@ -84,7 +84,8 @@ Load only what the current step needs:
   validated problems; it does not investigate whether the problem is real.
 - **The question is strategic** (positioning, market entry, portfolio weight across
   quarters) → `product-strategy` or `product-roadmapping-and-portfolio`. This skill
-  packages single bets; roadmapping sequences them.
+  packages a single bet — one bounded commitment with an appetite and circuit breaker;
+  roadmapping sequences many such bets across cycles with continue/pause/kill criteria.
 - **The bet is already placed and the work needs a formal spec** → `spec-driven-
   development` consumes shaped output when formal specification is warranted.
 - **Comparing unrelated feature proposals by score** → `product-methodology` (RICE/
