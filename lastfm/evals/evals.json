@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "skill_name": "lastfm",
+  "evals": [
+    {
+      "id": "user-listening-stats",
+      "prompt": "What has user 'magpie_records' been listening to this week? Give me their top artists and a few recent tracks.",
+      "expected_output": "Scenario: read-only listening statistics. The agent loads lastfm, confirms LASTFM_API_KEY is set, and uses the bundled lastfm-cli: `lastfm-cli user top-artists magpie_records --period 7day --limit 10` plus `lastfm-cli user recent-tracks magpie_records --limit 10` (optionally with --json when piping to jq). Results are presented from actual command output; no write-auth setup is triggered because these are read-only endpoints.",
+      "assertions": [
+        "The lastfm-cli user top-artists command is used with the 7day period",
+        "Recent tracks are fetched via user recent-tracks",
+        "No session-key auth flow is initiated for this read-only request",
+        "Output reflects real CLI results rather than invented listening data"
+      ]
+    },
+    {
+      "id": "similar-artist-discovery",
+      "prompt": "I love Radiohead. Find me artists I might like that I haven't heard, and check which of them are already in my recent scrobbles.",
+      "expected_output": "Scenario: music discovery pipeline. The agent follows the discovery pipeline: fetch the user's recent/top artists (`lastfm-cli user top-artists <user> --period 1month --json` or loved-tracks), get neighbors via `lastfm-cli artist similar \"Radiohead\" --limit N --json`, then cross-reference against `lastfm-cli user recent-tracks` to filter out already-heard material before recommending. The collaborative-filtering (not social) nature of similarity may be noted.",
+      "assertions": [
+        "artist similar is used for the taste-graph neighbors",
+        "Recommendations are filtered against the user's own recent scrobbles",
+        "--json output is used when structured processing is needed",
+        "Already-listened artists are excluded or flagged"
+      ]
+    },
+    {
+      "id": "scrobble-requires-auth",
+      "prompt": "Scrobble these five tracks I just listened to on vinyl, as me.",
+      "expected_output": "Scenario: write operation requiring session auth. The agent recognizes scrobble needs LASTFM_API_SECRET and LASTFM_SESSION_KEY, not just the API key. If they are missing, it walks the one-time auth flow from references/auth-flow.md (auth get-token → user visits the Last.fm authorize URL → auth get-session → export LASTFM_SESSION_KEY) before running `lastfm-cli track scrobble \"Artist\" \"Song\"`. It does not fake success without either credentials or completed setup.",
+      "assertions": [
+        "Write operations are identified as requiring session authentication",
+        "The token → session key flow from references/auth-flow.md is followed when credentials are absent",
+        "track scrobble is invoked per track once authenticated",
+        "No silent failure or fabricated confirmation"
+      ]
+    },
+    {
+      "id": "geo-chart-query",
+      "prompt": "What music is popular in Japan right now? Top artists please.",
+      "expected_output": "Scenario: geographic charts. The agent runs `lastfm-cli geo top-artists \"Japan\" --limit 20` (optionally --json | jq for structure) and presents the country chart. Global charts (`chart top-artists`) are not substituted for the requested per-country view.",
+      "assertions": [
+        "geo top-artists is used with the country name",
+        "Results come from CLI output, not general knowledge",
+        "Global charts are not silently substituted for geo charts"
+      ]
+    },
+    {
+      "id": "route-away-from-music-data",
+      "prompt": "Play some Radiohead songs for me right now.",
+      "expected_output": "Scenario: should-not-trigger. Playback is not a Last.fm data operation — the skill covers metadata, history, charts, discovery, and scrobbling, not controlling a music player. The agent does not load lastfm or invoke the CLI; it routes playback to whatever local player/streaming integration exists (e.g., jellyfin-cli or a Spotify tool) instead.",
+      "assertions": [
+        "The skill is not loaded for a playback request",
+        "No lastfm-cli command is run to fulfill playback",
+        "An appropriate playback route is suggested"
+      ]
+    },
+    {
+      "id": "period-and-gotcha-handling",
+      "prompt": "Pull my all-time top 3 tracks by playcount as clean JSON, and also last month's top artist.",
+      "expected_output": "Scenario: period values and JSON handling. The agent runs `lastfm-cli user top-tracks <user> --period overall --limit 3 --json | jq '.toptracks.track[] | {name, artist: .artist.name, playcount}'` and `lastfm-cli user top-artists <user> --period 1month --limit 1`, using only valid period values (overall/7day/1month/3month/6month/12month). Misspelling risk on artist names may prompt --autocorrect on artist commands.",
+      "assertions": [
+        "Valid period values are used (overall and 1month)",
+        "--json plus jq produces the structured playcount output",
+        "Both requests complete against the live CLI"
+      ]
+    }
+  ]
+}
