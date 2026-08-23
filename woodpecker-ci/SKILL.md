@@ -101,6 +101,24 @@ woodpecker-cli repo secret add --repository OWNER/REPO --name NAME --value @/pat
 - `assets/troubleshooting-checklist.md` — incident handoff checklist.
 - `scripts/woodpecker-doctor.py` — dependency-free connectivity/configuration probe with text or JSON output.
 
+## Available Scripts
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/woodpecker-doctor.py` | Dependency-free connectivity/configuration probe for a Woodpecker deployment: checks the server HTTP URL and the agent gRPC endpoint, with text or JSON output. Run it as step one of any "is it the CI or is it me" diagnosis, after deployment changes to verify health, and before deeper troubleshooting. | `python3 scripts/woodpecker-doctor.py --url https://ci.example.com --server agent-host:9000 --json` |
+
+## Prerequisites
+
+- Network reachability from where you run the probe to the Woodpecker server URL and, when checking agents, the agent's gRPC host:port.
+- Python 3 only — the probe uses the standard library and no third-party packages; it never mutates the Woodpecker instance.
+- For actual administration beyond probing (per `compatibility`): access to the Woodpecker instance, and Docker Compose, Kubernetes, or `woodpecker-cli` depending on the backend in use — see references/setup.md and references/cli.md.
+
+## Limitations
+
+- The doctor probe reports connectivity and configuration signals only; a green probe does not prove forge OAuth works, pipelines schedule, or steps can pull images — verify at those boundaries separately (see Common failure boundaries).
+- It reads nothing about repository-level state (webhooks, secrets, queue depth); use the server API/UI and references/troubleshooting.md for that.
+- The skill documents operating patterns, not a pinned version: always confirm version-sensitive commands and variables against the installed major version via references/source-index.md.
+
 ## Common failure boundaries
 
 - Server starts but repositories do not appear: inspect forge OAuth URL, callback URL, scopes, and server logs before changing pipeline YAML. For a push with no pipeline, inspect the Forgejo repository's **Settings → Webhooks → Recent Deliveries** first and record the delivery status.
@@ -109,6 +127,6 @@ woodpecker-cli repo secret add --repository OWNER/REPO --name NAME --value @/pat
 - A service is running but tests fail to connect: use the service hostname and container port, then add readiness handling.
 - A secret is empty: check secret scope, event filters, plugin-image filters, and expression escaping (`$${NAME}` when Woodpecker must pass the variable to the shell).
 
-## When not to use this skill
+## When not to use
 
 Use a forge-specific skill for installing or administering Forgejo/Gitea itself, a Kubernetes operations skill for cluster lifecycle, and a Docker security skill for host hardening. This skill covers Woodpecker's integration points and CI behavior.

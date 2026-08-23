@@ -157,3 +157,29 @@ lastfm-cli tag top-tracks "electronic" --limit 10 --json | jq '.tracks.track[] |
 - User wants genre exploration via tags
 - User wants to scrobble or love tracks programmatically
 - Any question about music metadata, artist info, album tracklists
+
+## Available Scripts
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/lastfm-cli` | The CLI tool this skill drives: read-only queries (user info/recent-tracks/top-artists/top-tracks/loved-tracks/friends/weekly-charts), discovery (`artist similar`, `track similar`), charts and geo charts, search, tags, and — with session auth — `scrobble`, `now-playing`, and `love`. Run it for every Last.fm data question above; see Essential Commands for the full command surface. | `scripts/lastfm-cli user top-artists <username> --period 7day --limit 10` |
+| `scripts/test-lastfm.sh` | Shell test suite covering the CLI's argument handling and output formatting without network calls. Run it after modifying `scripts/lastfm-cli` or when auditing a change to its behavior; CI runs it via `scripts/check-skill-tests.py`. | `bash scripts/test-lastfm.sh` |
+
+## Prerequisites
+
+- A free Last.fm API key exported as `LASTFM_API_KEY` (create one at https://www.last.fm/api/account/create); every request fails without it.
+- For write operations only: `LASTFM_API_SECRET` plus a session key from the one-time auth flow in `references/auth-flow.md`, exported as `LASTFM_SESSION_KEY`.
+- Python 3 on PATH — invoke the bundled tool as `python3 scripts/lastfm-cli ...` if it is not executable directly; the SKILL.md examples assume `lastfm-cli` resolves on PATH.
+- Optional: `LASTFM_USERNAME` to set the default user for user queries; `jq` when piping `--json` output for structured processing.
+
+## Limitations
+
+- Read-only endpoints need only the API key; scrobble, now-playing, and love require the full token → session-key auth flow and will fail without it.
+- Sustained call rates above ~5 req/sec risk account suspension — add small delays in loops.
+- Similarity endpoints are algorithmic collaborative filtering over aggregate listening patterns, not social or human-curated recommendations.
+- Period values are fixed to `overall`, `7day`, `1month`, `3month`, `6month`, and `12month`; arbitrary date ranges are only available via `--from`/`--to` on recent-tracks.
+- Misspelled artist names return empty or wrong results unless `--autocorrect` is used.
+
+## When not to use
+
+Do not use this skill for music playback control (local players, streaming queues), for non-Last.fm catalog data (MusicBrainz, Spotify metadata), or as a lyrics source — the API covers listening history, metadata, charts, tags, similarity, and scrobbling only.

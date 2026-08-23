@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "skill_name": "yc-weekly-growth-compass",
+  "evals": [
+    {
+      "id": "weekly-growth-checkin",
+      "prompt": "We had 1,000 weekly active users last week and 1,120 this week. How are we doing against YC benchmarks?",
+      "expected_output": "Scenario: routine founder growth check-in. The agent loads yc-weekly-growth-compass and runs the calculator: `python scripts/growth-compass.py --current-value 1120 --previous-value 1000 --period weekly` (optionally --json). It reports the computed 12% weekly rate, the YC assessment (Outstanding tier, above the 10% bar), the annualized projection (~142x), and frames the result with the compass question — keep doing what serves that rate.",
+      "assertions": [
+        "growth-compass.py is run with the two supplied values and weekly period",
+        "The YC benchmark tier is applied to the computed rate",
+        "A compound projection or annualized figure is included",
+        "Numbers come from script output rather than rough mental math"
+      ]
+    },
+    {
+      "id": "series-trend-analysis",
+      "prompt": "Here's our MRR for the last six months: 8k, 8.6k, 9.1k, 9.9k, 10.2k, 11.4k. Are we accelerating or decelerating, and when do we hit 25k MRR?",
+      "expected_output": "Scenario: series trending plus time-to-target. The agent passes the series: `python scripts/growth-compass.py --series \"8000,8600,9100,9900,10200,11400\" --period monthly --metric-name \"MRR\" --target-value 25000`. It reports period-over-period rates (accelerating/decelerating), mean/median rates, CWGR, doubling time, and the time-to-target for 25k. Deceleration in any interval is surfaced honestly rather than averaged away.",
+      "assertions": [
+        "--series is used instead of a single current/previous pair",
+        "Period-over-period trend (accelerating vs decelerating) is reported",
+        "--target-value triggers a time-to-target computation",
+        "The metric is labeled as MRR via --metric-name"
+      ]
+    },
+    {
+      "id": "decision-framing",
+      "prompt": "Should we spend next month building the enterprise SSO feature everyone keeps asking for, or double down on onboarding?",
+      "expected_output": "Scenario: compass decision framing without necessarily running numbers. The agent applies the Growth Compass Exercise: establish the target weekly growth rate, then ask 'does this initiative serve the target rate?' for each option — using evidence about which lever moves the metric, not vibes. If the user has data, the script quantifies current trajectory; the recommendation stays framed as 'the thing that serves your target growth rate wins' per the Graham methodology.",
+      "assertions": [
+        "The decision is framed through the target-growth-rate question",
+        "Both options are evaluated against measurable impact on the north-star metric",
+        "No fabricated growth numbers are introduced without data"
+      ]
+    },
+    {
+      "id": "projection-planning",
+      "prompt": "If we hold 7% weekly growth, where will we be in two years? We're at $30k MRR now.",
+      "expected_output": "Scenario: compound projection planning. The agent runs `python scripts/growth-compass.py --current-value 30000 --previous-value 28037 --period weekly --project-periods 104 --metric-name \"MRR\"` (or equivalent inputs) to project ~104 weeks of compounding at 7%, showing the projected value and doubling time, and may note the qualitative difference between 5% and 7% trajectories from the methodology section.",
+      "assertions": [
+        "Projection uses compounding at the stated 7% rate over ~104 periods",
+        "--project-periods (or an equivalent projection) covers two years",
+        "Output distinguishes projection from promise — it holds only if the rate holds"
+      ]
+    },
+    {
+      "id": "route-away-from-growth-metrics",
+      "prompt": "Can you fix this SQL bug in our billing migration? Rows are being duplicated.",
+      "expected_output": "Scenario: should-not-trigger. A database debugging task has nothing to do with startup growth analysis, YC benchmarks, or weekly metrics. The agent does not load this skill; it debugs the migration directly with appropriate data-engineering practice.",
+      "assertions": [
+        "The skill is not loaded",
+        "growth-compass.py is not invoked",
+        "The request is handled as a normal engineering task"
+      ]
+    },
+    {
+      "id": "not-a-fundraising-verdict",
+      "prompt": "Our growth rate is 3% weekly — does that mean we should shut down the company?",
+      "expected_output": "Scenario: benchmark honesty. The agent computes/places 3% in YC's tiers (below the 5% good zone, above the 1% concerning line), states plainly what the framework says — sub-target growth means founders likely aren't doing unscalable things yet — while also honoring the Limitations: these are empirical benchmarks, not a verdict on the company's existence, and the diagnosis points toward intervention (unscalable actions, market/churn check) rather than doom.",
+      "assertions": [
+        "3% is located correctly within the YC benchmark tiers",
+        "The framework's own interpretation (<5% = unscalable things not happening) is used",
+        "The response avoids treating the benchmark as a shutdown decision",
+        "Constructive next diagnostics are offered"
+      ]
+    }
+  ]
+}

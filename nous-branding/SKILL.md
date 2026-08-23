@@ -221,3 +221,24 @@ For a complete list of known failure modes and mitigations, see [`references/pit
 - [ ] Overall impression: intellectual, gritty, underground research lab
 
 Full color tables, the complete Nous Girl mascot specification with pose variants, typography roles, texture definitions, and art-style attributes live in [references/visual-system.md](references/visual-system.md); lane-specific prompt construction lives in [references/style-lanes.md](references/style-lanes.md).
+
+## Available Scripts
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/generate-with-ref.py` | Reference-image-driven generation: reads the active image provider from `~/.hermes/config.yaml`, uploads the reference via the provider's image-input endpoint (square-cropped), and saves the result as JSON with output path. Run it for any Method 4 generation where brand fidelity matters — it preserves the manga style that text-only prompts lose. Use `--dry-run` first to preview provider and parameters. | `python3 scripts/generate-with-ref.py --prompt "..." --reference assets/nous-girl-official-badge.png --aspect landscape --quality medium` |
+| `scripts/postprocess.py` | Mandatory analog post-processing: applies grain/noise/scan-line modes (`standard`, `risograph`, `nous`, `imprint`) at a calibrated intensity. Run it as the final step on every generated image — raw AI output is never the deliverable. Load `references/post-processing.md` to pick mode and intensity. | `python3 scripts/postprocess.py input.png output.png --mode imprint --intensity 0.7` |
+
+## Prerequisites
+
+- Python 3 for both scripts; `postprocess.py` additionally needs an imaging backend (Pillow) available.
+- For `generate-with-ref.py`: a configured Hermes image-generation provider in `~/.hermes/config.yaml` (or an explicit `--provider`) whose API accepts image inputs — text-only endpoints cannot do reference-driven generation.
+- The bundled reference images in `assets/`, which serve as img2img anchors; pass one via `--reference`.
+- An agent or client capable of image generation when working outside the scripts (per `compatibility`).
+
+## Limitations
+
+- This skill encodes one specific brand system — the palette, mascot rules, textures, and compliance checklist here are not general design guidance and must not be applied to other brands (see When not to use).
+- The Nous Girl is not a logo substitute; official brand representation requires the wordmark/symbol, not generated mascot art.
+- Generated imagery approximates the style even with references: always run the Brand Compliance Checklist before delivering, and consult `references/pitfalls.md` when output drifts (sad expressions, dark headphones, glossy rendering).
+- Model/provider behavior changes over time — flag-specific details like endpoint names may drift from what the scripts assume; verify against your configured provider.
