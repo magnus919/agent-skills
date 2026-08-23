@@ -436,6 +436,10 @@ Define and run product governance — recurring decision rights, intake, portfol
 
 Build and maintain outcome-based product roadmaps and portfolio views that sequence strategic bets by evidence, not dates. Covers Now/Next/Later views, strategic-bet management with continue/pause/kill/revisit criteria, capacity allocation, dependency and confidence mapping, scenario planning, stakeholder narratives, and roadmap review cadences. Routes tactical prioritization (RICE, MoSCoW, Kano, OST) to their canonical owners. Ships 5 reference files, 3 fillable templates, a discovery brief, and 5 evals.
 
+### [product-shaping](product-shaping/SKILL.md)
+
+Set appetites instead of estimates and shape raw ideas into bounded pitches before committing time: Basecamp's Shape Up method adapted for teams whose builders include AI agents. Covers appetite-setting, problem narrowing (grab-bag detection), breadboard/fat-marker solution sketching including non-UI work, five-ingredient pitches, betting with circuit breakers, discovered scopes with hill-state tracking, scope hammering, and hybrid-adaptation practices — budget currencies, batched steering, verification cost inside scope, and kill criteria for non-converging agent loops. Ships 6 reference files (including an independent-evidence anti-patterns record), 2 fillable templates (pitch, scope map), and 6 evals. Upstream of product-methodology; consumes validated problems from product-discovery.
+
 ### [product-strategy](product-strategy/SKILL.md)
 
 CPO methodology — product vision and strategy (North Star, product principles), competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST), product-market fit frameworks (Sean Ellis test, retention curves), market sizing (TAM/SAM/SOM), platform strategy, product lifecycle management.

@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "skill_name": "product-shaping",
+  "evals": [
+    {
+      "id": "grab-bag-narrowing-or-routing",
+      "prompt": "Customers keep asking us to redesign our settings section. It feels dated and messy. Plan the work for next quarter.",
+      "expected_output": "The agent should recognize 'redesign the settings section' as a grab-bag: it has no defined problem, no defined end, and no appetite. Per the skill it must not plan the redesign directly. Instead it should either (a) narrow the request by asking for the specific story behind it — what is actually going wrong, when does someone's current workflow break down — and propose re-anchoring on one concrete problem (e.g., 'changing a notification preference takes eleven steps'), then set an appetite for that narrowed problem; or (b) route to product-discovery when the problem itself is unvalidated. It should explicitly name the grab-bag pattern and explain why planning a redesign without a specific problem produces unbounded work.",
+      "assertions": [
+        "Identifies the request as a grab-bag / unshaped idea rather than a plannable project",
+        "Asks for or constructs a specific problem story (what breaks, for whom, when) instead of planning the redesign",
+        "Sets or proposes an appetite as a time budget chosen up front, not an estimate of duration",
+        "Does not produce a task list or milestone plan for the un-narrowed redesign",
+        "Mentions routing to discovery when the underlying problem is unvalidated"
+      ],
+      "files": ["references/shaping.md"],
+      "case_set": "regression"
+    },
+    {
+      "id": "pitch-authoring-five-ingredients",
+      "prompt": "We keep getting support tickets because customers can't tell which of our two billing plans they're on and what it includes. I think we should show plan status in the app. Write this up so we can decide whether to bet time on it.",
+      "expected_output": "A pitch document following the skill's five ingredients: (1) Problem told as a specific story (customer contacts support because they cannot determine their plan), (2) Appetite stated as a chosen time budget (e.g., 'worth one small-batch box') with the reasoning that appetite is not an estimate, (3) Solution sketched as elements — places, affordances, connections — rough enough to leave implementation room but solved at the macro level, (4) Rabbit holes with decisions pre-made (e.g., what happens when a plan changes mid-cycle, where legacy plans render), and (5) No-gos explicitly fenced (e.g., no plan-comparison marketing page, no self-serve plan changes). The output should use or mirror the PITCH template structure and should NOT include a task breakdown or timeline estimate.",
+      "assertions": [
+        "Contains all five pitch ingredients: problem, appetite, solution, rabbit holes, no-gos",
+        "Problem section tells a specific story rather than stating a category of complaint",
+        "Appetite is framed as a budget decision ('how much is this worth') rather than an estimate ('this will take X')",
+        "Solution stays at elements-and-connections fidelity without pixel-level or task-level detail",
+        "Names at least one rabbit hole with a decision made in advance rather than deferred to the build team",
+        "Includes explicit no-gos tied to the appetite"
+      ],
+      "files": ["templates/PITCH.md", "references/shaping.md"],
+      "case_set": "dev"
+    },
+    {
+      "id": "scope-map-and-hill-states",
+      "prompt": "We're two weeks into a six-week project to add SSO to our product. The team has finished the login page redesign, mostly done the SAML wiring, and hasn't started figuring out how session handling works. Management keeps asking for percent complete. How should we report status?",
+      "expected_output": "The agent should reject percent-complete and task-count reporting (lists grow as work is discovered; estimates hide uncertainty) and instead organize the work into scopes reported as hill states. Expected structure: scopes are integrated slices named by project language (e.g., 'SAML wiring', 'Session handling', 'Directory sync'), each placed at one of the four states (figuring out / validated / known / done). Session handling should sit at 'figuring out' — the uphill, riskiest scope — and the agent should recommend pushing it uphill first (validate the approach now) rather than finishing polished work first. It should explain that a scope parked at figuring-out is a raised hand, that 'validated' means approach proven on the hard part not finished, and that management reads motion across snapshots instead of asking the team for status. Nice-to-haves should be marked with ~ and understood as first cuts.",
+      "assertions": [
+        "Rejects percent-complete reporting with the reasoning that discovered work makes task counts and percentages misleading",
+        "Organizes remaining work into scopes as independently finishable integrated slices with project-specific names",
+        "Places each scope at one of the four hill states and treats session handling as uphill/figuring-out",
+        "Recommends sequencing the riskiest scope first (push scary work uphill early)",
+        "Explains validated as approach-proven rather than finished, and done as integrated end-to-end"
+      ],
+      "files": ["templates/SCOPE_MAP.md", "references/building.md"],
+      "case_set": "dev"
+    },
+    {
+      "id": "circuit-breaker-extension-decision",
+      "prompt": "Our six-week project has one week left and roughly two weeks of work remaining. The team says everything left is essential. They're asking for a two-week extension. What do we do?",
+      "expected_output": "The agent should apply the circuit breaker as the default: the bet was capped at six weeks, and by default an unfinshed project does not get extended — the cap is what makes it a bet rather than an open-ended commitment. It should walk the two narrow extension conditions from the skill and require BOTH: (1) every remaining task survived genuine scope hammering as a true must-have, and (2) all outstanding work is downhill with zero open questions — uphill work at the end means shaping missed something and extending buys time in the wrong place. It should prompt scope hammering first: which items could ship without? What actually happens if each is dropped? Compare down to baseline (is what exists already better than what customers have today?) rather than up to an ideal. It should note that if the breaker trips, the honest move is stop, ship what is green, and take the hole in the concept back to shaping for a possible future bet — not silently roll work over.",
+      "assertions": [
+        "States the circuit-breaker default: no extension by default when the box closes",
+        "Requires both extension conditions (all must-haves survived hammering AND all remaining work downhill) rather than either",
+        "Drives a scope-hammering interrogation of the 'essential' remaining work",
+        "Uses baseline comparison (better than today) rather than ideal comparison to judge sufficiency",
+        "Routes a tripped breaker back to shaping rather than recommending quiet rollover"
+      ],
+      "files": ["references/betting.md", "references/building.md"],
+      "case_set": "release"
+    },
+    {
+      "id": "hybrid-agent-bet-budget-and-kill-criteria",
+      "prompt": "I want to delegate building a new CLI subcommand to our coding agent. It'll touch the parser, three modules, and needs integration tests. How should I scope and run this so it doesn't turn into an endless review loop?",
+      "expected_output": "The agent should apply the hybrid-adaptation reference: define the appetite in ONE budget currency (work sessions, wall-clock, cost ceiling, or review-round allowance) stated up front in a pitch-like bound; batch steering into declared checkpoints (demo after the first integrated slice, midpoint check) instead of continuous mid-run course correction; include verification cost inside the scope (review time, expected fix rounds, mechanical checks preferred — tests/schema validation over line-by-line reading); draw scopes so each has a mechanically checkable done-state; and set kill criteria BEFORE starting: a round cap on fix/review iterations, a severity gate (stop when the worst finding class stops shrinking), a regression veto (a fix that introduces an equal-or-worse defect counts double), and fresh-context restart preference over iterating in a polluted context. It should note that a tripped loop routes back to reshaping, and that the first slice should be an integrated end-to-end demo, not parallel disconnected parts.",
+      "assertions": [
+        "Defines the appetite as an explicit budget in a single stated currency",
+        "Prescribes batched steering at declared checkpoints rather than continuous mid-run intervention",
+        "Includes verification/review cost inside the scope budget rather than treating it as free",
+        "Sets explicit kill criteria: round cap, severity gate, and regression veto (fresh-context restart preferred)",
+        "Routes a tripped loop back to shaping/reshaping rather than extending the cap mid-loop",
+        "Calls for an integrated end-to-end slice first rather than parallel disconnected parts"
+      ],
+      "files": ["references/hybrid-adaptation.md"],
+      "case_set": "release"
+    },
+    {
+      "id": "unvalidated-problem-routes-to-discovery",
+      "prompt": "Our competitors all have AI features now and our CEO wants us to build an AI assistant into the product. Nobody's actually asked for it but we don't want to fall behind. Where do we start?",
+      "expected_output": "The agent should recognize that shaping is the wrong entry point: the problem is not validated — there is no evidence anyone has this need, and 'competitors have it' is a strategic-anxiety motivation, not a problem story. It should decline to shape or pitch the feature and route to product-discovery (find the actual user problem, if one exists) and/or frame the build/no-build question as a strategy decision for product-strategy. It may note what shaping WOULD do once a real problem surfaces: set an appetite and narrow to a specific use case. It should not produce a pitch, scope plan, or feature design for the unvalidated assistant.",
+      "assertions": [
+        "Recognizes the problem as unvalidated and does not begin shaping or pitching",
+        "Explicitly routes to product-discovery for problem validation and/or product-strategy for the competitive question",
+        "Explains the boundary: shaping narrows validated problems, discovery establishes whether the problem is real",
+        "Does not produce feature designs, pitches, or build plans for the unvalidated request"
+      ],
+      "files": ["SKILL.md"],
+      "case_set": "regression"
+    }
+  ]
+}
