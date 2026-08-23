@@ -1,11 +1,16 @@
 ---
 name: agent-council
 description: >-
-  Multi-agent structured debate system. Spawn a panel of expert agents
-  to debate any question, with convergence-aware iteration and typed
-  synthesis output. Run via `agent-council` CLI. Compatible with any
-  AI agent harness that supports agentskills.io skills (Claude Code,
-  Cursor, Hermes Agent, OpenHands, etc.).
+  Run a structured multi-agent debate by spawning a panel of expert
+  agents on any question, with convergence-aware iteration and typed
+  synthesis output via the `agent-council` CLI. Use when a decision has
+  genuine tradeoffs, high stakes, or hidden assumptions worth adversarial
+  collaboration, or when confidence diagnostics matter more than a
+  single recommendation. Compatible with any AI agent harness that
+  supports agentskills.io skills (Claude Code, Cursor, Hermes Agent,
+  OpenHands, etc.). Do not use for simple factual lookups, tasks with a
+  clear correct answer, routine single-perspective work, or code
+  execution and tool orchestration beyond debate.
 license: MIT
 compatibility: Requires Python 3.10+ and pydantic-ai. CLI tool installs via pip.
 metadata:
@@ -175,6 +180,14 @@ pip install agent-council
 python3 -m pip install -e /path/to/agent-council/
 ```
 
+## Available Scripts
+
+This skill bundles one script; there are no others to discover.
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/bootstrap.py` | First-run installer: checks whether `agent-council` is already on PATH and, if not, installs the package from the skill directory using the current Python's pip, falling back to pipx. Run it whenever `agent-council` is not found on PATH (an invoking agent should run it automatically in that case); it exits 0 when the CLI is available and 1 with manual-install instructions when it could not install. If bootstrap fails, follow the manual steps above. | `python3 scripts/bootstrap.py` |
+
 ## Configuration
 
 | Env var | Required | Default | Description |
@@ -308,6 +321,19 @@ agent-council/
     ├── debate-protocol.md
     └── configuration.md
 ```
+
+## Prerequisites
+
+- Python 3.10+ with the `pydantic-ai` package; install via `pip`, `pipx`, or `python3 scripts/bootstrap.py` (the package ships inside this skill directory, so bootstrap needs no PyPI access).
+- An LLM provider API key exported as `AGENT_COUNCIL_API_KEY` (or set in a `.env` file); optionally `AGENT_COUNCIL_MODEL` and `AGENT_COUNCIL_BASE_URL`.
+- The real professional profiles from the hermes-profiles library are available only in a recursive source checkout; pip and wheel installs use generated or user-supplied personas.
+
+## Limitations
+
+- Single-model debate: all agents share one LLM configuration and therefore its knowledge cutoff and blind spots; diversity comes from persona definitions, not model instances (see Architecture Decision).
+- Debates consume many parallel LLM calls per round — expect minutes on slow models or deep mode, and check ⚠️ Claims Not Verified in every synthesis before acting on verifiable external facts.
+- Convergence diagnostics reduce fabrication and false consensus but cannot eliminate them; `max_rounds` stops mean an inconclusive debate that the principal must resolve.
+- This is not a general agent-orchestration framework: it runs debates only — for state-machine orchestration beyond the debate protocol, route to langgraph.
 
 ## Related Skills
 
