@@ -37,6 +37,27 @@ Build a portable city experience in three layers: an engine, a city-provider con
 - Read [references/raleigh-poc.md](references/raleigh-poc.md) for the reproducible Raleigh proof of concept.
 - Use [templates/city-pack-manifest.schema.json](templates/city-pack-manifest.schema.json) and [templates/world.schema.json](templates/world.schema.json) as authoritative data contracts.
 
+## Available Scripts
+
+This skill bundles one script; there are no others to discover.
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/validate-city-pack.py` | Offline validator for a city pack: checks the manifest against the schema contract and verifies world tiles. Run it at workflow step 5, after emitting the manifest and tiles and before loading anything in the engine — do not proceed to in-engine testing until it passes. | `python3 scripts/validate-city-pack.py path/to/city-pack` |
+
+## Prerequisites
+
+- Python 3 with standard library only; the validator requires no third-party packages.
+- A city pack produced through the ingestion workflow: manifest plus world tiles reprojected to local meters (see [references/gis-ingestion.md](references/gis-ingestion.md)).
+- The engine itself is a standalone HTML file (`assets/ascii-city-engine.html`) that runs in any modern browser; no build step or server is required.
+
+## Limitations
+
+- v1 supports one ground height per `(x, y)` column: no interiors, bridges with traversable space below, tunnels, or multi-level geometry (a surface graph is reserved but not implemented).
+- The engine is software-rendered CPU canvas — no WebGL/GPU rendering or mobile controls.
+- The skill does not include full-resolution GIS archives; packs are built reproducibly from public sources, committing only small redistributable samples.
+- The validator is offline and structural: passing it does not substitute for human movement testing in the engine (workflow step 6).
+
 ## Boundaries
 
 Use a different skill or implementation approach for WebGL/GPU rendering, mobile controls, combat, interiors, bridges with traversable space below, tunnels, or general-purpose geospatial analysis. If asked to specialize this skill for one agent runtime, preserve the portable core and put runtime integration outside this skill. If asked to commit large GIS binaries, refuse and provide reproducible download/conversion commands instead.
