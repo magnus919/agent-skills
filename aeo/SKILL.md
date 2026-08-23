@@ -73,11 +73,16 @@ Read `references/implementation-playbook.md` for the full workflow and completio
 - `templates/citation-observation-log.md` — reproducible answer/citation observations.
 - `templates/llms.txt.template` — optional proposal-format `llms.txt`, clearly marked non-universal.
 - `templates/robots-ai-crawlers.txt` — decision-oriented crawler policy template; do not copy without reviewing provider semantics.
-- `scripts/aeo_audit.py` — read-only HTML/URL structural audit with JSON output.
-- `scripts/build_prompt_matrix.py` — deterministic prompt matrix generator from a topic YAML/JSON file.
-- `scripts/test_aeo_scripts.py` — offline tests for the bundled scripts.
 
-Run bundled scripts non-interactively from the skill directory. They never publish, edit, submit URLs, call an LLM, or change robots policy.
+## Available Scripts
+
+Run bundled scripts non-interactively from the skill directory (`aeo/`). They never publish, edit, submit URLs, call an LLM, or change robots policy.
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/aeo_audit.py` | Read-only structural audit of a local HTML file or an HTTP(S) URL, emitting JSON findings. Run it after implementing answer-oriented markup to verify structure at the source level before making claims about a page. | `python3 scripts/aeo_audit.py <page.html-or-URL>` |
+| `scripts/build_prompt_matrix.py` | Deterministic prompt-matrix generator from a JSON topics file; writes the matrix to the path given with `--output`. Run it when starting measurement, to freeze the prompt set before collecting any citation observations. | `python3 scripts/build_prompt_matrix.py <topics.json> --output prompt-matrix.json` |
+| `scripts/test_aeo_scripts.py` | Offline pytest suite covering the two scripts above. Run it if you modify either script or when auditing a change to their output. | `python3 -m pytest scripts/test_aeo_scripts.py` |
 
 ## Routing to and from SEO
 
@@ -93,6 +98,17 @@ Use `seo-audit` for broad crawlability, indexability, on-page SEO, schema eligib
 - Confusing being mentioned, being cited, ranking, receiving a click, and producing a conversion.
 - Disallowing a crawler without separating search visibility from training or user-triggered fetch behavior.
 - Calling a script or validator “AEO complete” without checking the rendered page and an answer surface.
+
+## Prerequisites
+
+- Python 3.9+ with standard library only; the bundled scripts require no third-party packages.
+- Access to the target site or content being implemented and verified: `aeo_audit.py` accepts a local HTML file or fetches an HTTP(S) URL directly.
+
+## Limitations
+
+- The scripts inspect source HTML, not rendered pages: they do not execute JavaScript, call LLMs, publish anything, submit URLs to indexes, or change crawler directives.
+- No script can observe whether an answer engine cites a page; citation observation must be collected manually following `references/measurement-and-experimentation.md`.
+- A passing structural audit is evidence of implemented structure only — it does not establish inclusion, ranking, citation, or traffic in any AI answer surface.
 
 ## Verification checklist
 
