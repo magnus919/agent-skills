@@ -130,6 +130,18 @@ with absolute paths.
    interpretations, and locate the absorbing state or leaking boundary where
    information stops flowing.
 
+## Available Scripts
+
+This skill bundles one script; there are no others to discover. Every command
+is read-only (`--dry-run` is accepted everywhere as a no-op guard), and
+`--json` on any command produces a single JSON object on stdout.
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/semantic-spacetime.py` | Lints, maps, and analyzes SST models in the sst-model-v1 format. Subcommands: `model lint` (validate against the schema), `model map --format text\|mermaid\|json` (render the γ(3,4) graph), `model distance --from X --to Y` (weighted hop count, each hop weighs \|link\| + 1), `model trajectory --from X --to Y` (enumerate simple paths with link types), and `model drift file-a file-b` (diff two snapshots into added/removed/changed regions). Run `lint` after drafting or every edit of a model until it exits clean, then use the analysis subcommands when mapping shared semantic ground, measuring distance between interpretations, tracing intent propagation, or diagnosing drift between snapshots. | `python3 semantic-spacetime/scripts/semantic-spacetime.py model lint <model.yaml>` |
+
+Exit codes: 0 = valid/covered, 1 = named violations or missing/unreachable ids, 2 = usage or IO errors.
+
 ## Related Skills
 
 | Skill | Route when... |
@@ -172,6 +184,18 @@ with absolute paths.
    semantic-time record axis addresses (see the promise-keeping-as-data gap in
    [references/applications-infrastructure.md](references/applications-infrastructure.md)).
    Record observations as versioned data or trust cannot accumulate.
+
+## Prerequisites
+
+- Python 3 with standard library only; the CLI has nothing to install.
+- A model file to analyze: copy `templates/sst-model.yaml.tmpl` and replace the example values (a complete, valid example lives at `tests/fixtures/sample-model.yaml`).
+- The CLI resolves no files relative to its own location, so commands work from any directory — use paths relative to where you run them.
+
+## Limitations
+
+- The theory is semi-formal and unrefereed; the CLI is a reasoning aid for models you author, not a proof system (see Gotchas).
+- `distance` and `trajectory` exit 1 when an id is missing or no path connects two nodes; trajectory enumeration covers simple paths only (no repeated nodes) and terminates on any finite model.
+- The CLI reads and analyzes model files only: it does not observe running agents, measure live systems, or store observations — recording measurements as versioned data stays your responsibility.
 
 ## Exit Conditions
 
