@@ -218,6 +218,11 @@ the packet (group (f)). The gate is never silently skipped.
 Chronologically the second gate. Planning may not complete until:
 
 - `SPEC.md` exists with acceptance criteria **mapped to the change contract**;
+- at least one acceptance criterion traces to the requester's stated
+  outcome/problem restated from primary evidence in phase 2 — verification
+  proves the build matches the spec; this criterion proves it solves the
+  requester's actual problem (15288/12207 validation vs. verification
+  discipline);
 - `TASK-PLAN.md` covers **every** spec item and acceptance criterion;
 - no task is unbounded (missing effort/scope estimate) or ownerless (no
   assigned phase or specialist).

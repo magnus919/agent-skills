@@ -100,7 +100,7 @@ continuing.
      their content here. -->
 
 - **SPEC.md path:** _[fill: e.g. `SPEC.md`]_
-- **Acceptance criteria mapping:** _[fill: AC identifiers mapped to change-contract acceptance criteria]_
+- **Acceptance criteria mapping:** _[fill: AC identifiers mapped to change-contract acceptance criteria; identify which criterion traces to the requester's stated outcome (contract Problem section, restated in phase 2) — required for the gate-3 verdict]_
 - **Test strategy:** _[fill: test levels (unit / integration / end-to-end), regression coverage strategy]_
 - **TASK-PLAN.md path:** _[fill: e.g. `TASK-PLAN.md`]_
 - **QA verification plan path:** _[fill: e.g. `VERIFICATION-PLAN.md`]_
