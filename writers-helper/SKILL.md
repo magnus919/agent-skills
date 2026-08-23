@@ -92,15 +92,17 @@ All templates are fill-in worksheets with guidance built in. Read the matching r
 - `templates/synopsis.md` — one-page synopsis structure and rules
 - `templates/submission-log.md` — track submissions, responses, and follow-ups
 
-## Scripts
+## Available Scripts
 
 Python 3, standard library only, non-interactive, `--json` where noted. See `--help` on each.
 
-- `scripts/writing-prompt.py` — generate position-aware three-part prompt sets (affirmation, plot element, writing assignment) with a record block. `--position`, `--count`, `--seed`, `--json`
-- `scripts/session-planner.py` — plan a timed writing session (blocks, breaks, per-block word targets, flow-sprint pacing). `--target-words`, `--minutes`, `--json`
-- `scripts/manuscript-stats.py` — analyze a manuscript file: word count, sentence stats, passive voice, adverb density, crutch words, readability, per-chapter pacing. `--json`
-- `scripts/habit-log.py` — journal each session (words, minutes, energy) and report day/week/month progress and streaks. `--log`, `--report`, `--json`
-- `scripts/submission-tracker.py` — track queries and proposals (target, sent date, status, follow-up due) and report the pipeline. `--add`, `--update`, `--list`, `--status`, `--json`
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/writing-prompt.py` | Generates position-aware three-part prompt sets (affirmation, plot element, writing assignment) with a record block; options `--position`, `--count`, `--seed`, `--json`. Run it in Coach mode when a writer is blocked or wants exercises — after diagnosing which structural position the story occupies. | `python3 scripts/writing-prompt.py --position halfway --count 3` |
+| `scripts/session-planner.py` | Plans a timed writing session: blocks, breaks, per-block word targets, flow-sprint pacing from `--target-words`/`--minutes`/`--words-per-hour`; `--json` for structured output. Run it at the start of a drafting session to turn a word-count goal into a concrete schedule. | `python3 scripts/session-planner.py --minutes 90 --target-words 1200` |
+| `scripts/manuscript-stats.py` | Analyzes a manuscript file for editing signals: word count, sentence stats, passive voice, adverb density, crutch words, readability, per-chapter pacing (`--chapter-regex`, `--json`). Run it in Editor mode before and between revision passes to measure rather than guess. | `python3 scripts/manuscript-stats.py manuscript.txt --json` |
+| `scripts/habit-log.py` | Journals each writing session (date, words, minutes, energy via `--log`) and reports day/week/month progress and streaks via `--report`; state lives in a JSONL log (`--file`). Run it after every session when building sustainable writing habits. | `python3 scripts/habit-log.py --log 2026-08-08 850 45 4 --report week` |
+| `scripts/submission-tracker.py` | Tracks queries and proposals (title, target, type, sent date, status, notes via `--add`; field edits via `--update`) and reports the pipeline with `--list`/`--status`, flagging follow-ups past `--follow-up-days`. Run it throughout Submitting mode so no query goes stale untracked. | `python3 scripts/submission-tracker.py --add "The Glass Orchard" "Agent Name" query 2026-08-08 sent --list` |
 
 ## When not to use
 
@@ -115,3 +117,16 @@ Python 3, standard library only, non-interactive, `--json` where noted. See `--h
 - Deliver the requested artifact: an outline, a draft, a revision pass, a query letter, a proposal, a submission list, or a completed session plan.
 - Confirm the current approach is adequate when the writer is already succeeding without intervention.
 - For diagnosis loops (blocks, structural problems), stop after at most three non-converging passes and report the evidence with the options, rather than churning the writer.
+
+## Prerequisites
+
+- Python 3 with the standard library only for all five scripts — no external packages, API keys, or services.
+- A plain-text manuscript file for `manuscript-stats.py`; writable JSONL state files for `habit-log.py` and `submission-tracker.py` (both default to a file in the working directory; pass `--file` to pin one).
+- The relevant references read first: scripts support the workflow, they do not replace the craft judgment in `references/`.
+
+## Limitations
+
+- Scripts measure and structure; they do not judge. Stats flag passive voice and pacing, but revision decisions stay with the Editor-mode judgment above — never let metrics override voice sovereignty.
+- `manuscript-stats.py` analyzes what you hand it (plain text); it cannot open .docx/.epub files or see formatting.
+- `habit-log.py` and `submission-tracker.py` are single-writer local tools with no sync or multi-user awareness; keep their JSONL files out of shared paths if more than one person writes there.
+- Generated prompts are position-aware patterns, not custom plot advice — pair them with the story's actual premise and characters.
