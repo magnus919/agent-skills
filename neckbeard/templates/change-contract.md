@@ -1,7 +1,10 @@
 # Change Contract
 
 > Fill this in at Framing (Stage 1). Keep it short. A contract that needs a page
-> is hiding an ambiguity — surface it instead.
+> is hiding an ambiguity — surface it instead. One standing exception: any
+> issue or ticket body this run emits must be self-contained for a cold reader
+> (see the Issue/ticket body section). Litmus test: could someone who found the
+> body via search act on it without asking anyone anything?
 
 ## Change-request provenance
 
@@ -52,6 +55,26 @@
 <!-- If no change is warranted (decision above is "no"), record why. Same
      semantics as the delivery packet group (e) skip-reason fields: a concrete
      reason why an expected action was skipped; silent omission is prohibited. -->
+
+## Issue/ticket body (cold-reader requirement)
+
+<!-- Applies to any issue or ticket body emitted from this run — a new tracker
+     item or a substantive comment on the source request. The reader has none of
+     this session's context and no access to the agent's local artifacts. A
+     body that fails any item below is not ready to file: rewrite it before
+     submission. Litmus test: could someone who found this issue via search act
+     on it without asking anyone anything? -->
+
+- **Background section:** names the investigation — tools used with links,
+  date, scope, and a sketch of the method.
+- **Complete inline evidence:** the full affected list with `file:line`
+  references in the target repository. No samples-plus-"on request": anything
+  promised for later must instead be included now.
+- **Reproduction commands:** runnable by a stranger on a fresh checkout.
+- **Acceptance criteria** as checkable checkboxes.
+- **No agent-local paths or private-artifact references** in the public body
+  (scratch directories, local evidence ledgers, delivery packets). If evidence
+  lives only outside the repository, inline it.
 
 ## Gate verdict
 
