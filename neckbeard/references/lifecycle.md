@@ -13,7 +13,8 @@ change-request journey ([journey.md](journey.md)) and the five gates
 ([stages.md](stages.md)). It records its outcomes in the delivery packet
 ([delivery-packet.md](delivery-packet.md)), field group (i) — PR/review-submission
 number, CI status, review status, **final verified head SHA**, release status,
-and terminal-state evidence plus rollback/follow-up triggers. Stop and escalation
+and terminal-state evidence plus rollback/follow-up triggers and closeout lesson
+capture. Stop and escalation
 rules live in [risk-authority-gates.md](risk-authority-gates.md).
 
 ## Two modes, one structure
@@ -331,9 +332,11 @@ These are the same terminal states defined by the packet
 ([delivery-packet.md](delivery-packet.md), lifecycle states) and by journey
 phase 9 closeout ([journey.md](journey.md)). A terminal packet is never
 re-opened; new work starts a new packet. Closeout also records
-**rollback/follow-up triggers** — what would cause re-entry — in group (i);
-a fired trigger starts a new change request via phase 1 intake, it does not
-resurrect the terminal packet.
+**rollback/follow-up triggers** — what would cause re-entry — and **lesson
+capture** per Stage 6 "Deliver and learn" ([stages.md](stages.md)): the reusable
+lesson(s) with their durable destination, or an explicit "no reusable lesson
+identified" determination — in group (i); a fired trigger starts a new change
+request via phase 1 intake, it does not resurrect the terminal packet.
 
 ### Reduced paths still terminate with evidence
 
@@ -375,10 +378,11 @@ exists in [delivery-packet.md](delivery-packet.md).
 | Monitor review | Review status | (i) |
 | Bind verdicts per review round | **Final verified head SHA** | (i) |
 | Assess release readiness and execute release | Release status (with post-release verification evidence) | (i) |
-| Close out | Terminal lifecycle state + terminal-state evidence (merge SHA / close reason / blocker evidence / release evidence) + rollback/follow-up triggers | (i) |
+| Close out | Terminal lifecycle state + terminal-state evidence (merge SHA / close reason / blocker evidence / release evidence) + rollback/follow-up triggers + lesson capture (or "no reusable lesson identified") | (i) |
 
 Field group (i) — PR number, CI status, review status, final verified head SHA,
-release status, terminal-state evidence, and rollback/follow-up triggers — is
+release status, terminal-state evidence, rollback/follow-up triggers, and
+lesson capture — is
 the exact set this reference populates; the match is bidirectional (no field
 here that the packet lacks, and no group-(i) field the lifecycle never writes).
 
