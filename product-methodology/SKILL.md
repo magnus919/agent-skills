@@ -1,10 +1,10 @@
 ---
 name: product-methodology
 description: >-
-  Product management frameworks for translating validated evidence into
-  prioritized backlogs, decisions, specifications, and stakeholder
-  communications. Covers RICE, MoSCoW, opportunity solution trees, decision
-  logs, spec drafting, and audience-specific stakeholder communication.
+  Translate validated product evidence into prioritized backlogs, decisions,
+  specifications, and stakeholder communications. Covers RICE, MoSCoW, opportunity
+  solution trees, decision logs, spec drafting, and audience-specific stakeholder
+  communication. Use when the problem is validated and scope is being chosen.
 license: MIT
 metadata:
   source_repo: https://github.com/magnus919/hermes-profiles
@@ -60,11 +60,12 @@ Load this skill when:
 ## When Not to Use
 
 - **Stakeholder discovery and interviews** — load `product-discovery` first. This skill starts from validated evidence, not raw stakeholder conversations.
+- **Shaping an unbounded idea into a bet** (appetite, pitch, circuit breaker) — load [product-shaping](../product-shaping/SKILL.md) before prioritization frameworks apply; this skill consumes a won bet, it does not create one.
 - **Interaction design, task flows, state/recovery models, or usability-study planning** — use [product-design-and-ux](../product-design-and-ux/SKILL.md) after this skill has chosen scope. This skill decides what to build and why; design-and-ux defines user-facing behavior.
 
 ## Working Method
 
-1. Confirm you have validated evidence (interview notes, usage data, competitive analysis). If not, route to `product-discovery`.
+1. Confirm you have validated evidence (interview notes, usage data, competitive analysis). If not, route to `product-discovery`. If the validated problem has no appetite or bounded solution yet, shape it via `product-shaping` first — do not pre-shred a pitch into tasks before its bet is placed.
 2. Prioritize with RICE when comparing unrelated proposals; use MoSCoW when scoping a time-boxed delivery.
 3. Log decisions as structured records with context, options, rationale, and expected outcomes.
 4. Write specs that define the problem, success metrics, scope boundaries, open questions, and edge cases.
