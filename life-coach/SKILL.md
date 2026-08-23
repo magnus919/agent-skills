@@ -100,3 +100,25 @@ Do not trigger merely because someone mentions a goal, feeling, decision, habit,
 ## Completion criteria
 
 A coaching exchange is complete when the person has the requested clarity, decision, experiment, acknowledgment, or deliberate non-action; has chosen another mode; or has been appropriately referred. Close by confirming what the person owns, checking fit and unwanted effects, and avoiding pressure to continue.
+
+## Available Scripts
+
+This skill bundles one script; there are no others to discover.
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/validate-capabilities.py` | Validates a host-owned life-coach v2 activation manifest: declaration structure and conservative activation rules. Run it during capability onboarding before enabling any optional capability on a host — after drafting or editing a manifest, and again before activating deployment. It is also executed by CI against the bundled test suite. | `python3 scripts/validate-capabilities.py <path/to/manifest.json>` |
+
+Add `--json` for machine-readable output. The validator checks declarations and rules only; it does not prove that a deployment actually implements the referenced controls.
+
+## Prerequisites
+
+- Python 3 with standard library only; the script requires no third-party packages.
+- A host-owned activation manifest to validate; ordinary coaching requires no manifest at all (see the ordinary no-capability fallback above).
+- Host controls verified by the operator for any capability beyond adult nonclinical conversation — memory, sponsors, proactive contact, human review, safeguarding routes, and tool actions all require that verification first.
+
+## Limitations
+
+- The validator proves declaration consistency, not deployment reality: passing output does not establish that referenced controls or evidence exist in the running host.
+- The skill performs nonclinical coaching only; it never provides therapy, crisis support, diagnosis, or medical, legal, financial, addiction, domestic-violence, or other specialist advice.
+- Without a verified capability manifest, the no-capability fallback applies: no persistence of coaching notes, contact, scheduling, confidentiality promises, minors, sponsor-funded engagements, or safeguarding situations.
