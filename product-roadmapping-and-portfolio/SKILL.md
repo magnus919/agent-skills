@@ -89,6 +89,11 @@ Executive narrative, team view, external/customer view — each tailored.
 - **For project scheduling, Gantt charts, or milestone tracking:** this skill produces outcome roadmaps, not project plans.
 - **For delivery-flow management:** route to `kanban-guru`.
 - **For corporate capital allocation and M&A portfolio decisions:** route to `strategy-frameworks`.
+- **For shaping a single bet** (setting its appetite, narrowing it into a bounded
+  problem, writing its pitch): route to `product-shaping`. This skill sequences bets
+  across cycles at the portfolio level; shaping packages one bet before it enters a
+  roadmap — "strategic bet" here means a roadmap entry with sequencing criteria, not
+  the shaped single-project commitment that `product-shaping` produces.
 
 ## Evidence, Assumptions, Commitments, and Options
 
