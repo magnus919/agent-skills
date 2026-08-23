@@ -150,6 +150,7 @@ gate-1 (architecture/design delta) | pass | a1b2c3d | ARCHITECTURE-DELTA.md | no
 - **Release status:** _[fill: not-released / release-ready / released / not-applicable]_
 - **Terminal lifecycle state:** _[fill: merged / closed / blocked / released]_
 - **Terminal state evidence:** _[fill: merge commit SHA, closure reason, or blocker reference]_
+- **Rollback/follow-up triggers:** _[fill: conditions that would cause re-entry after closeout — e.g., a post-release regression requiring rollback or an operational discovery; write "none identified" if there are none. Recorded in the terminal record; any follow-up starts a new change request via phase 1 intake, never by re-opening this packet.]_
 
 **Example (populated lifecycle):**
 
@@ -161,6 +162,9 @@ Final verified head SHA:          7b40de2
 Release status:                   release-ready
 Terminal lifecycle state:         merged
 Terminal state evidence:          merge commit 8c31ef4
+Rollback/follow-up triggers:      post-release smoke check failure in the
+                                  export path; operational discovery of
+                                  multi-byte handling in adjacent endpoints
 ```
 
 ### Blocked-state record

@@ -12,8 +12,8 @@ The lifecycle does not invent phases or gates. It maps onto the nine-phase
 change-request journey ([journey.md](journey.md)) and the five gates
 ([stages.md](stages.md)). It records its outcomes in the delivery packet
 ([delivery-packet.md](delivery-packet.md)), field group (i) — PR/review-submission
-number, CI status, review status, **final verified head SHA**, and release status
-— plus the terminal-state evidence those states require. Stop and escalation
+number, CI status, review status, **final verified head SHA**, release status,
+and terminal-state evidence plus rollback/follow-up triggers. Stop and escalation
 rules live in [risk-authority-gates.md](risk-authority-gates.md).
 
 ## Two modes, one structure
@@ -330,7 +330,10 @@ recorded in packet group (i). There is no ambiguous "done" without evidence.
 These are the same terminal states defined by the packet
 ([delivery-packet.md](delivery-packet.md), lifecycle states) and by journey
 phase 9 closeout ([journey.md](journey.md)). A terminal packet is never
-re-opened; new work starts a new packet.
+re-opened; new work starts a new packet. Closeout also records
+**rollback/follow-up triggers** — what would cause re-entry — in group (i);
+a fired trigger starts a new change request via phase 1 intake, it does not
+resurrect the terminal packet.
 
 ### Reduced paths still terminate with evidence
 
@@ -372,12 +375,12 @@ exists in [delivery-packet.md](delivery-packet.md).
 | Monitor review | Review status | (i) |
 | Bind verdicts per review round | **Final verified head SHA** | (i) |
 | Assess release readiness and execute release | Release status (with post-release verification evidence) | (i) |
-| Close out | Terminal lifecycle state + terminal-state evidence (merge SHA / close reason / blocker evidence / release evidence) | (i) |
+| Close out | Terminal lifecycle state + terminal-state evidence (merge SHA / close reason / blocker evidence / release evidence) + rollback/follow-up triggers | (i) |
 
 Field group (i) — PR number, CI status, review status, final verified head SHA,
-release status, and terminal-state evidence — is the exact set this reference
-populates; the match is bidirectional (no field here that the packet lacks, and
-no group-(i) field the lifecycle never writes).
+release status, terminal-state evidence, and rollback/follow-up triggers — is
+the exact set this reference populates; the match is bidirectional (no field
+here that the packet lacks, and no group-(i) field the lifecycle never writes).
 
 ## Lifecycle-to-journey mapping
 
