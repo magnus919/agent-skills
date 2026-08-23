@@ -51,3 +51,22 @@ services:
 ```
 
 Do not expose the service publicly. Prefer a pinned image tag in production and use the vendor's documentation for browser and platform compatibility.
+
+## Available Scripts
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/flaresolverr` | Minimal JSON CLI for the FlareSolverr API: `health`, `get`, `post`, and `session` subcommands with `--server` and `--timeout` options. Run it for the one-off health check or challenge-solving GET/POST described above, and for short-lived session create/list/destroy when a site needs cookie continuity. | `python3 scripts/flaresolverr --server http://localhost:8191 get https://example.com` |
+| `scripts/test-flaresolverr.sh` | Shell smoke test: verifies `--help` output and byte-compiles the CLI. Run it after modifying `scripts/flaresolverr` or when auditing the bundled script; CI runs it via `scripts/check-skill-tests.py`. | `sh scripts/test-flaresolverr.sh` |
+
+## Prerequisites
+
+- Python 3 with the standard library only; the CLI has no third-party dependencies.
+- A reachable FlareSolverr instance (commonly via Docker, per Setup above) — the CLI is a client and starts nothing itself.
+- Network access from the FlareSolverr instance to the target site; this skill does not bypass authentication or grant access to content you are not otherwise entitled to retrieve.
+
+## Limitations
+
+- The wrapper covers only the one-off `health`, `get`, `post`, and `session` paths; named-session lifecycle management, cookie-only returns, and dry-run planning belong to `flaresolverr-cli` (see When not to use).
+- Every command emits JSON and reports what FlareSolverr returned; it does not parse, extract, or rank page content for you.
+- Solving a browser challenge is not a guarantee: sites may still block, captcha, or rate-limit the underlying browser, and `--timeout` bounds only the request, not the target's behavior.
