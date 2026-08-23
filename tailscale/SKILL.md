@@ -55,13 +55,17 @@ headscale-deploy ─────┬──> tailnet-policy ───> headscale-r
 
 ## Root Scripts (Shared Utilities)
 
-These live in `scripts/` at the bundle root and are available to all sub-skills:
+These live in `scripts/` at the bundle root and are available to all sub-skills.
 
-- `scripts/headscale-health-check.sh` — Probe Headscale server version, node count, DB integrity
-- `scripts/headscale-backup.sh` — Full backup (sqlite + config + policy + certs)
-- `scripts/headscale-restore.sh` — Restore from backup archive
-- `scripts/tailscale-status-json.sh` — Structured `tailscale status --json` wrapper
-- `scripts/test-all.sh` — Smoke test across all sub-skills
+## Available Scripts
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/headscale-health-check.sh` | Probe Headscale server health: version, node count, and DB integrity. Run it after any control-server change and as the first diagnostic when nodes or clients misbehave. | `scripts/headscale-health-check.sh --json` |
+| `scripts/headscale-backup.sh` | Full backup of the Headscale server (sqlite + config + policy + certs) to a restorable archive. Run it on a schedule for any production deployment and before upgrades or migrations; `--dry-run` previews without writing. | `scripts/headscale-backup.sh --dry-run` |
+| `scripts/headscale-restore.sh` | Restore a Headscale server from a backup archive. Run it during disaster recovery or migration onto a fresh host; always verify node list and policy afterwards. | `scripts/headscale-restore.sh --backup headscale-backup-2026-01-01.tar.gz` |
+| `scripts/tailscale-status-json.sh` | Structured wrapper around `tailscale status --json` with peer diagnostics. Run it from any client to check connectivity, peers, and relay/direct paths in machine-readable form. | `scripts/tailscale-status-json.sh` |
+| `scripts/test-all.sh` | Smoke test across all bundle scripts (`--help`, syntax, executability) without requiring a running Headscale. Run it after modifying any bundled script; CI runs it via `scripts/check-skill-tests.py`. | `bash scripts/test-all.sh` |
 
 ## Templates
 
@@ -88,6 +92,20 @@ All scripts use `--json`, `--dry-run`, and have informative `--help` output.
 Scripts relative to bundle root: `scripts/<tool>` or `skills/<sub-skill>/scripts/<tool>`.
 
 See the individual sub-skill SKILL.md for detailed usage.
+
+## Prerequisites
+
+- bash, Python 3.8+, `jq`, and `curl` on the host running the scripts (per `compatibility`).
+- A running Headscale server with `HEADSCALE_URL` and `HEADSCALE_API_KEY` set for server-side operations (API key created via `headscale apikeys create`); `TAILSCALE_AUTHKEY` for non-interactive client enrollment.
+- The `tailscale` client installed on target machines for status and routing sub-skills; the `headscale` CLI (or API access) for control-server administration.
+- For headscale-backup/restore: filesystem access to the server's sqlite DB, config, policy, and cert paths, plus storage for archives off the control-server host.
+
+## Limitations
+
+- This bundle assumes a self-hosted Headscale control plane — it does not manage Tailscale's hosted SaaS (see When not to use).
+- Scripts check environment variables at runtime and error helpfully when missing; they do not create credentials themselves.
+- Backup/restore operates on the files present on the control-server host; it cannot recover data that was never backed up, and a restore should always be followed by health verification.
+- Sub-skill scripts live under `skills/<sub-skill>/scripts/` and are documented in their own SKILL.md files, not here.
 
 ## When not to use
 
