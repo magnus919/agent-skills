@@ -73,6 +73,16 @@ Run these commands from the skill directory (`promise-theory/`); `python3 script
 3. **Add `--json` for machine-readable output.** Run `python3 scripts/promise-contract.py lint promise-manifest.yaml --json` to get a single JSON object on stdout (`valid`, `errors`, `warnings`, `coverage`, `bindings`) and nothing else.
 4. **Add `--dry-run` to confirm no writes.** Run `python3 scripts/promise-contract.py lint promise-manifest.yaml --dry-run` to repeat the same check; lint is read-only, so nothing is written or modified.
 
+## Available Scripts
+
+This skill bundles one script; there are no others to discover. Both commands are read-only (`--dry-run` is accepted everywhere as a no-op guard).
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/promise-contract.py` | Validates and renders promise-theory manifest contracts (restricted-YAML or JSON). `lint` checks a promise manifest against the promise-manifest v1 schema (exit 0 = valid with full expectation coverage; exit 1 = named lint errors or coverage gaps; exit 2 = usage/IO errors) and `render` prints a promise-graph summary of agents, promises, bindings, and uncovered expectations. Run `lint` after drafting or every edit of a manifest until it exits clean, and `render` when you need a human- or machine-readable view of the coordination model you just built. | `python3 scripts/promise-contract.py lint promise-manifest.yaml` |
+
+Append `--json` for machine-readable output (a single JSON object on stdout); `render --json` gives the same treatment to the graph summary.
+
 ## Related Skills
 
 | Skill | Route when... |
@@ -91,6 +101,17 @@ Run these commands from the skill directory (`promise-theory/`); `python3 script
 3. **Autonomy is a modeling postulate, not an ideology.** It does not claim decentralization is morally right or always better; it is chosen because it forces complete documentation of intended behaviour and exposes failure modes.
 4. **Promise-keeping must be stored as data.** CFEngine's documented gap: it reported whether a promise was kept right now, but promise-keeping was never stored as data, so the evaluation loop was incomplete. In a hybrid workforce, record assessments as versioned data (a promise ledger) or trust cannot accumulate.
 5. **Verification loads are an attention/energy budget.** The rate at which you check (kinetic mistrust) is spent attention; Burgess & Dunbar model it as a bounded budget. Budget verification cost explicitly and start unknown agents at 50-50 rather than assuming trust or distrust.
+
+## Prerequisites
+
+- Python 3 with standard library only; `promise-contract.py` requires no third-party packages.
+- A manifest to lint or render: copy `templates/promise-manifest.yaml.tmpl` and fill the placeholders (see Quick Start) before running either command.
+
+## Limitations
+
+- The CLI validates declaration structure, enum values, expectation coverage, and dangling acceptances — it cannot judge whether the promised behaviour is sensible, achievable, or actually kept; assessments live in your promise ledger, not in this tool.
+- Promise theory is not contract law: nothing the script validates creates an enforceable legal instrument (see When not to use).
+- Lint is a static check at a point in time; it does not observe agents or verify runtime promise-keeping.
 
 ## Exit Conditions
 
