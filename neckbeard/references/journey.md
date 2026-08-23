@@ -27,6 +27,15 @@ item is established during phase 1 intake by
 the matching catalog tooling skill; platform mechanics live in the platform
 mapping rows below and in [lifecycle.md](lifecycle.md).
 
+Any issue or ticket body emitted from the run — a newly filed item or a
+substantive comment on the source request — must be self-contained for a cold
+reader: a contributor with none of the session's context and no access to the
+agent's local artifacts. The requirement and its five items are owned by the
+change contract's Issue/ticket body section
+([../templates/change-contract.md](../templates/change-contract.md)); the litmus
+test: could someone who found this issue via search act on it without asking
+anyone anything?
+
 Entry normally begins at phase 1. When the work being requested **already
 started elsewhere** — no delivery packet exists because the earlier run happened
 outside this bundle — do not restart intake blindly: enter through
@@ -43,7 +52,7 @@ assessed position under this journey's rules.
 |---|---|
 | **Owner** | neckbeard framing step (core loop step 1) |
 | **Input** | A change request: issue URL/number, ticket ID, email thread, or verbal request. |
-| **Output** | Packet groups (a) provenance and (b) authority/mode/path populated: change-request URL/number and source type, repository, base ref, issue/comment snapshot including **repository conventions** (`CONTRIBUTING.md`, `AGENTS.md`, or equivalent) and **linked/referenced work** (related issues, PRs, commits); **tracking system** identified per [tracker-discovery.md](tracker-discovery.md) (detected from the request's own reference, repository-detected, or requester-confirmed — the specific basis recorded); granted authority class; selected workflow mode (GitHub or enterprise); selected path. A change contract ([../templates/change-contract.md](../templates/change-contract.md)) exists. |
+| **Output** | Packet groups (a) provenance and (b) authority/mode/path populated: change-request URL/number and source type, repository, base ref, issue/comment snapshot including **repository conventions** (`CONTRIBUTING.md`, `AGENTS.md`, or equivalent) and **linked/referenced work** (related issues, PRs, commits); **tracking system** identified per [tracker-discovery.md](tracker-discovery.md) (detected from the request's own reference, repository-detected, or requester-confirmed — the specific basis recorded); granted authority class; selected workflow mode (GitHub or enterprise); selected path. A change contract ([../templates/change-contract.md](../templates/change-contract.md)) exists. Any issue or ticket body emitted from the run — a newly filed item or a substantive comment on the source request — must be self-contained for a cold reader per the change contract's Issue/ticket body section. |
 | **Gate** | The intake gate: provenance, authority, repository conventions, linked work, and the identified tracking system are captured. No planning phase may begin until these fields are populated. |
 | **Escalation** | Authority is ambiguous between explore and modify; or the stated goal conflicts with a hard constraint (security, data safety, policy, license); or maintainer direction conflicts with proceeding (see [risk-authority-gates.md](risk-authority-gates.md) stop rules). |
 | **Platform mapping** | **GitHub mode:** issue body + comments + labels captured via `gh`; `CONTRIBUTING.md` and `.github/` conventions discovered per repository. **Enterprise mode:** ticket-tracker snapshot (ticket ID, description, comments); internal contribution governance or change-governance docs captured. |
@@ -87,7 +96,7 @@ assessed position under this journey's rules.
 |---|---|
 | **Owner** | `qa-methodology` (see [routing-table.md](routing-table.md)); QA-owned, independent from the implementer |
 | **Input** | Phase 4 output: approved `SPEC.md` and `TASK-PLAN.md` (gate 3 passed). |
-| **Output** | Packet group (g) completed: `VERIFICATION-PLAN.md` naming verification targets, test levels (unit / integration / end-to-end), regression coverage strategy, and the evidence artifacts that constitute a passing verification. |
+| **Output** | Packet group (g) completed: `VERIFICATION-PLAN.md` naming verification targets, test levels (unit / integration / end-to-end), regression coverage strategy, and the evidence artifacts that constitute a passing verification. Any issue or ticket body emitted from the run — including tracker comments recording verification findings — must be self-contained for a cold reader per the change contract's Issue/ticket body section: background with tools and links, complete inline evidence with `file:line` references, reproduction commands a stranger can run, checkable acceptance criteria, and no agent-local paths or private-artifact references. |
 | **Gate** | **Gate 2** — QA-owned test and verification plan (see [stages.md](stages.md)). No implementation work (code edits, commits, or branch work beyond the packet) may occur until this verdict is recorded. Post-hoc self-approval by the implementer is not permitted. No-new-tests path: when the change requires no new tests, that determination is documented with a reason. |
 | **Escalation** | The verification target cannot be defined because the acceptance criteria are untestable; or the QA plan reveals an unresolved design risk that blocks test design. |
 | **Platform mapping** | **GitHub mode:** verification plan committed to the working branch; CI configuration discovered per repository. **Enterprise mode:** verification plan reviewed via enterprise tooling; enterprise CI capabilities assessed. |
