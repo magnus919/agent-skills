@@ -32,6 +32,15 @@ Treat cleaning as a controlled transformation of an observed dataset, not cosmet
 | Plan, logs, exceptions, contracts, or reports | `templates/cleaning-plan.md`, `templates/transformation-log.jsonl`, `templates/exception-register.csv`, `templates/schema-contract.yml`, `templates/quality-report.md` |
 | Lightweight profile or reconciliation | Run `python3 scripts/profile_dataset.py --help` or `python3 scripts/reconcile_dataset.py --help` |
 
+## Available Scripts
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/profile_dataset.py` | Dependency-free first-pass profiling of a CSV, TSV, or JSONL input without modifying it: missingness, cardinality, type candidates, duplicates, ranges, and value anomalies. Run it at workflow step 3 (Profile before changing) as the evidence-gathering pass before designing any cleaning decision. | `python3 scripts/profile_dataset.py data.csv --output profile.json` |
+| `scripts/reconcile_dataset.py` | Reconciliation between a before and after delimited dataset: row counts, key uniqueness/overlap, and per-column sums (`--sum`), keyed by `--key`, writing a machine-readable report. Run it during Validate twice / Review to prove grain preservation and quantify exactly what a transformation changed. | `python3 scripts/reconcile_dataset.py raw.csv cleaned.csv --key id --sum amount --output reconciliation.json` |
+| `scripts/test_profile_dataset.py` | Pytest suite covering the profiler's behavior on representative inputs. Run it after modifying the profiler or when auditing its output; CI discovers it automatically. | `python3 -m pytest scripts/test_profile_dataset.py` |
+| `scripts/test_reconcile_dataset.py` | Pytest suite covering the reconciler's keying, summing, and reporting behavior. Run it after modifying the reconciler or when auditing its output; CI discovers it automatically. | `python3 -m pytest scripts/test_reconcile_dataset.py` |
+
 ## Default workflow
 
 1. **Frame:** identify the decision, owner, source, privacy constraints, unit of observation, keys, expected grain, time window, and acceptance threshold. Do not silently infer a business rule from a suspicious value.
@@ -59,3 +68,17 @@ A cleaning task is complete only when the output, transformation/decision log, v
 ## When not to use
 
 Do not use this skill for inferential statistics or model selection, which belong to `data-scientist`; for ETL orchestration, storage, or production data-quality operations, route to `data-engineering`; or for operating a named validation or database platform, route to that tool's skill. This skill supplies cleaning judgment and artifacts those workflows consume.
+
+## Prerequisites
+
+- Python 3.9+ with the standard library only for both bundled scripts (per `compatibility`); ecosystem tools (OpenRefine, pandas-backed tooling) are optional accelerators covered in `references/cli-and-interactive-tools.md`.
+- A raw input you can keep read-only plus write access to a separate output location — every script reads without modifying its input.
+- The templates above when the task warrants formal artifacts: a cleaning plan, transformation log, exception register, schema contract, or quality report.
+- `pytest` only when running the bundled test suites.
+
+## Limitations
+
+- The bundled profiler and reconciler are first-pass evidence tools: they surface anomalies and quantify deltas but do not decide preserve/repair/impute/quarantine — those classifications stay with the workflow's decision step.
+- Both scripts handle delimited text and JSONL; binary formats, relational databases, and nested document stores need other tooling.
+- Profiling output is evidence for investigation, never permission to auto-fix; an anomaly can be a real event.
+- A passing reconciliation proves structural preservation on the checked keys and sums only — semantic correctness of values still requires the review and release gate.
