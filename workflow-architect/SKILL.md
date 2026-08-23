@@ -124,3 +124,20 @@ during multi-turn interviews.
 ## When not to use
 
 Do not use this skill for one-off task help or when there is no repeatable multi-phase workflow worth capturing — a standalone skill is a better fit. If you already have a well-defined process and only need it packaged, generate the bundle directly rather than re-running an interview.
+
+## Prerequisites
+
+This skill ships no scripts; it is a resource-based protocol carried by the files bundled with this SKILL.md:
+
+- **Sub-skill protocols** — `skills/interviewer/SKILL.md` (active interrogation), `skills/observer/SKILL.md` (passive observation), and `skills/bundle-builder/SKILL.md` (bundle synthesis and registration). Load them per the Loading Protocol above.
+- **Reference patterns** — `references/workflow-archetypes.md` (convergence-detection pattern library), `references/trigger-condition-patterns.md` (trigger-condition format spec), `references/kanban-decision-criteria.md` (when to include a kanban board), and `references/example-output/` (worked example bundles: `developer-triage`, `developer-pipeline-kanban`).
+- **Generation templates** — `templates/skill-skeleton.md`, `templates/manifest.yaml.tmpl`, `templates/decision-map.md.tmpl`, `templates/kanban-board-setup.sh.tmpl`, and `templates/kanban-task-blueprints.yaml.tmpl` for the generated bundle's files.
+- **Agent capabilities** — the host agent needs skill management tools (`skill_view`, `skill_manage`, `skills_list`), a memory tool for `workflow-architect:state:` keys, session context access for observation mode, and file writing for bundle output.
+- **A writable skills directory** — generated bundles land in `~/.hermes/skills/<category>/<bundle-name>/`; that location must be creatable and registrable.
+
+## Limitations
+
+- The output targets the Hermes-style skill runtime named in `compatibility`: bundles are standard Agent Skills, but registration via `skill_manage(action='create')` and the `~/.hermes/skills` path assume that environment. On other runtimes, copy the bundle manually into the client's skill directory.
+- Passive observation reconstructs only what happened in the current session; with fewer than roughly 20 substantive turns it will under-infer and should fall back to active interrogation.
+- The generated workflow is only as good as what you say or do during discovery — phases, branching signals, and exit criteria are inferred from evidence, not invented, so thin input yields generic bundles.
+- Bundle generation writes new skill files and registers them; confirm scope before overwriting an existing bundle of the same name.
