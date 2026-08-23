@@ -930,7 +930,7 @@
         "./product-methodology"
       ],
       "strict": false,
-      "description": "Product management frameworks for translating validated evidence into prioritized backlogs, decisions, specifications, and stakeholder communications. Covers RICE, MoSCoW, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication."
+      "description": "Translate validated product evidence into prioritized backlogs, decisions, specifications, and stakeholder communications. Covers RICE, MoSCoW, opportunity solution trees, decision logs, spec drafting, and audience-specific stakeholder communication. Use when the problem is validated and scope is being chosen."
     },
     {
       "name": "product-operations-and-governance",
