@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "skill_name": "hugo-theme",
+  "evals": [
+    {
+      "id": "audit-existing-hugo-site-seo",
+      "prompt": "Our marketing site is built with Hugo and organic traffic is dropping. Audit the theme's SEO and fix what's missing: page titles, meta descriptions, canonical URLs, social sharing previews, structured data, and the sitemap.",
+      "expected_output": "A structured SEO audit plus concrete template changes grounded in the skill's guidance. It should check that baseof.html emits per-page titles and descriptions, add JSON-LD structured data via partials like layouts/partials/jsonld/article.html (Article schema with headline, datePublished/dateModified, mainEntityOfPage) plus BreadcrumbList and Organization schemas, wire up Open Graph and Twitter Cards using Hugo's built-in {{ template \"_internal/opengraph.html\" . }} and {{ template \"_internal/twitter_cards.html\" . }} partials (called with `template`, not `partial`, passing full page context), emit canonical links that honor a front-matter canonicalURL override before falling back to .Permalink, and customize or verify sitemap output via hugo.yaml sitemap config or a layouts/sitemap.xml template that respects per-page sitemap.disable front matter. Fixes should be delivered as Hugo template code with verification via a production build (hugo --minify --gc) inspecting public/ HTML output.",
+      "assertions": [
+        "Provides JSON-LD structured-data templates (at minimum an Article schema partial) placed under layouts/partials/jsonld/ and wired into the head block of baseof.html",
+        "Uses Hugo's built-in internal partials _internal/opengraph.html and _internal/twitter_cards.html invoked with {{ template ... . }} rather than `partial`, or explains overriding them in layouts/partials/",
+        "Emits a <link rel=\"canonical\"> that prefers a page's canonicalURL front-matter param and otherwise falls back to .Permalink",
+        "Addresses sitemap generation through config (sitemap: changefreq/priority/filename in hugo.yaml) or a custom layouts/sitemap.xml honoring sitemap.disable per page",
+        "Verifies results by building the site (e.g., hugo --gc, ideally --minify) and inspecting the generated public/ HTML head"
+      ]
+    },
+    {
+      "id": "lighthouse-ci-quality-gate",
+      "prompt": "We want every pull request on our Hugo theme repo to fail if Lighthouse performance, accessibility, or SEO scores drop below 0.9. Set up Lighthouse CI as a quality gate.",
+      "expected_output": "A Lighthouse CI setup matching the skill's documented pattern: an lighthouserc JSON with collect.numberOfRuns set to at least 3 and desktop preset with simulated throttling, and an assert section using the lighthouse:recommended preset with error-level assertions on categories:performance, categories:accessibility, and categories:seo each requiring minScore 0.9. It should run the gate with npx @lhci/cli@0.14.x autorun (pinned version), typically as a 'Lighthouse CI' step in a GitHub Actions workflow after npm ci and the site build, serving the built site for collection. The deliverable should include the workflow YAML wiring and note that assertions at error level make the job fail when scores drop below threshold.",
+      "assertions": [
+        "Configures lighthouserc with collect.numberOfRuns >= 3 and desktop preset with throttlingMethod simulate",
+        "Asserts on categories:performance, categories:accessibility, and categories:seo with minScore 0.9 at error level so failures break CI",
+        "Runs the gate via npx @lhci/cli@0.14.x autorun with the version pinned",
+        "Places the step in a CI pipeline (GitHub Actions) that builds the Hugo site before collection"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "accessibility-audit-and-fixes",
+      "prompt": "Run accessibility checks on our Hugo site and fix whatever they flag. We keep getting complaints that keyboard users can't navigate the menu and screen readers struggle with our article pages.",
+      "expected_output": "An automated accessibility pass using axe-core followed by targeted fixes. The skill's approach is npx @axe-core/cli@4.13.0 against the locally served site (hugo server, default port 1313), optionally with Playwright + @axe-core/playwright tests asserting zero violations for the homepage and specific components like nav[aria-label=\"Main navigation\"]. For the reported symptoms it should apply the skill's design/accessibility guidance: semantic HTML landmarks, ARIA patterns and keyboard navigation for the menu (focus indicators visible on all interactive elements, Escape/arrow-key behavior), appropriate alt attributes on images, and contrast-checked color tokens. It should also offer the skill's manual QA checklist (keyboard-only navigation, VoiceOver/NVDA, 200-400% zoom, prefers-reduced-motion, 320px reflow without horizontal scroll, touch targets >= 24x24 CSS px) to catch what automation misses, and integrate the checks into CI alongside html-validate.",
+      "assertions": [
+        "Runs automated audits with axe-core (npx @axe-core/cli@4.13.0 against http://localhost:1313/ from hugo server) and/or @axe-core/playwright tests asserting zero violations",
+        "Fixes the navigation complaints with semantic landmarks, ARIA patterns, keyboard operability, and visible focus indicators per the skill's design-accessibility guidance",
+        "Includes a manual QA checklist covering keyboard-only navigation, screen readers, zoom levels, prefers-reduced-motion, 320px reflow, and touch target sizes",
+        "Wires accessibility checks into CI so regressions are caught on future PRs"
+      ]
+    },
+    {
+      "id": "non-hugo-static-site-routes-away",
+      "prompt": "I have a static documentation site built with plain HTML, CSS, and a tiny Node build script — no static site generator. Can you help me restructure its templates and improve its SEO?",
+      "expected_output": "The agent should recognize this is outside the hugo-theme skill's scope: that skill is specifically for Hugo CMS themes and sites (template architecture, Hugo Pipes asset pipeline, shortcodes, Hugo Modules). It must not apply Hugo-specific solutions such as baseof.html blocks, layouts/_default lookup order, resources.Get/js.Build pipelines, or Hugo config in hugo.yaml. Instead it should decline or route away, noting the request involves a hand-rolled static build rather than a Hugo theme, and either help with generic HTML/CSS/Node techniques explicitly framed as outside this skill, or suggest adopting a generator like Hugo only if the user wants to migrate — without pretending Hugo template mechanics apply to a plain build-script site.",
+      "assertions": [
+        "Recognizes the project is not a Hugo site and does not prescribe Hugo-specific files such as baseof.html, layouts/, assets/ Pipes, or hugo.yaml config",
+        "Explicitly frames the request as outside the hugo-theme skill's trigger boundary (Hugo themes/site template layer)",
+        "Still responds helpfully: offers generic static-site guidance or a migration path to Hugo instead of refusing outright"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "tailwind-v4-asset-pipeline-setup",
+      "prompt": "Set up the CSS and JS pipeline for my new Hugo theme: I want Tailwind v4 for styling and a small bit of TypeScript, both minified with subresource integrity in production but untouched during development.",
+      "expected_output": "Asset-pipeline partials following the skill's documented patterns. For Tailwind v4 it should use Hugo's native css.TailwindCSS pipe on an entry file under assets/css/ (e.g., resources.Get \"css/main.css\" | css.TailwindCSS $opts with minify tied to not hugo.IsDevelopment) — NOT a PostCSS/postcss-cli setup, which the skill flags as a v3-only requirement and a common pitfall. For TypeScript/JS it should use resources.Get \"js/main.js\" | js.Build (dict \"minify\" true) noting js.Build requires ES module import/export syntax, not CommonJS require(). In production both outputs should be fingerprinted with integrity attributes (fingerprint | then .Data.Integrity on the link/script tags); in development the raw unminified output is linked. It should also respect the skill's pitfalls: resources.Get reads from assets/ not static/ (static/ is copied verbatim, unprocessed), Tailwind v4 @source directives resolve relative to the project root, and SCSS would additionally require the extended Hugo build (hugo version | grep extended).",
+      "assertions": [
+        "Uses css.TailwindCSS for Tailwind v4 and does not introduce postcss-cli or a PostCSS chain for it",
+        "Bundles JS via js.Build with ES module syntax noted, and gates minification on environment (hugo.IsDevelopment / hugo.IsProduction)",
+        "Applies fingerprint in production and emits integrity=\"{{ .Data.Integrity }}\" on the stylesheet/script tags",
+        "Loads entry files from assets/ via resources.Get and warns that static/ files bypass Hugo Pipes",
+        "Mentions the extended-edition caveat if SCSS compilation is involved, or confirms it's unnecessary for the chosen pure-CSS/Tailwind path"
+      ]
+    },
+    {
+      "id": "json-search-index-and-sitemap-formats",
+      "prompt": "For our Hugo theme I need two extra machine-readable outputs: a JSON search index at /index.json listing recent posts, and control over sitemap.xml so draft-ish pages can be excluded. How do I wire that up?",
+      "expected_output": "Custom output format work straight from the skill's seo-outputs-testing reference. Define a JSON outputFormat in hugo.yaml (mediaType application/json, baseName index, isPlainText true, notAlternative true — the last one because hugo --minify can corrupt JSON output) and select it per kind via front matter or config outputs (e.g., home: [HTML, RSS, JSON]). The template must be named with the doubled extension layouts/_default/index.json.json — first token is the output format name, second the file suffix; omitting either means Hugo won't find the template — and should range over .Site.RegularPages with jsonify'd fields. For the sitemap: either configure sitemap options in hugo.yaml or provide a layouts/sitemap.xml template whose range skips pages with sitemap.disable: true front matter, letting the user mark draft-ish pages accordingly. Pitfalls to carry over: RSS/list templates must iterate .Site.RegularPages (not .Site.Pages, which includes section/taxonomy/home pages), custom formats still require baseName, and built-in templates are invoked with {{ template ... . }} passing full page context.",
+      "assertions": [
+        "Defines the JSON output format in config with mediaType application/json, baseName index, and notAlternative true to shield it from --minify",
+        "Names the search-index template with the double extension (index.json.json) and explains the format-name/file-suffix convention",
+        "Ranges over Site.RegularPages rather than Site.Pages for content listings",
+        "Excludes pages from the sitemap via per-page sitemap.disable front matter handled by config or a custom layouts/sitemap.xml",
+        "Selects output formats per kind (outputs: home: [HTML, RSS, JSON] or equivalent front matter)"
+      ]
+    }
+  ]
+}

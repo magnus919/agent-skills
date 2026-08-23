@@ -112,11 +112,11 @@ curl -s https://example.com/paper.pdf | npx -y @firecrawl/anydoc@0.1.6 -   # URL
 ### Version pinning
 
 Always pin the version: `npx -y @firecrawl/anydoc@0.1.6`. An unpinned
-`npx -y @firecrawl/anydoc` floats to the latest published tag, so conversions
-are not reproducible across time. All behavior in this skill is documented
-against **0.1.6**. The `-y` flag answers npx's "Ok to proceed?" install prompt
-non-interactively; without it, bare `npx @firecrawl/anydoc` will prompt on a
-cold cache.
+invocation (`npx -y @firecrawl/anydoc` with no `@version` suffix) floats to the
+latest published tag, so conversions are not reproducible across time. All
+behavior in this skill is documented against **0.1.6**. The `-y` flag answers
+npx's "Ok to proceed?" install prompt non-interactively — omitting it means npx
+asks for confirmation before installing a cold-cache package.
 
 ### First run and offline behavior
 

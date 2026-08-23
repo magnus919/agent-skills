@@ -75,7 +75,7 @@ Exit codes: 0 ok, 1 analysis error, 2 usage error, 127 dependency (node/playwrig
 
 ## CI integration
 
-- Install browsers and OS deps on the runner (`npx playwright install --with-deps`), pin the Playwright version, and cache `~/.cache/ms-playwright`.
+- Install browsers and OS deps on the runner (`npx playwright@1.62.1 install --with-deps`), pin the Playwright version, and cache `~/.cache/ms-playwright`.
 - Configure `webServer`, `retries` (retry flaky tests on CI only), and `trace: 'on-first-retry'` so failures are debuggable. Report with `html`/`json`/`github` and upload artifacts on failure.
 - Triage CI failures from the JSON report with `scripts/pwrun report --json` — it summarizes stats, failing specs, and error messages without opening a browser. Full CI recipes: `references/05-ci-integration.md`.
 
@@ -94,7 +94,7 @@ Exit codes: 0 ok, 1 analysis error, 2 usage error, 127 dependency (node/playwrig
 ## Headed debugging
 
 - Run headed (`--headed`), slow the action with `--slow-mo`, or drop into the inspector with `--debug` / `PWDEBUG=1` and the `page.pause()` breakpoint.
-- Generate starter tests with `npx playwright codegen <url>`, then harden the generated selectors into user-facing locators.
+- Generate starter tests with `npx playwright@1.62.1 codegen <url>`, then harden the generated selectors into user-facing locators.
 - When a test fails: read the trace (`--trace on`), which records network, DOM snapshots, and console for the failed action. Use `scripts/pwrun report --report <json> --json` first to see the failure summary.
 - Debugging workflows live in `references/07-accessibility-and-debugging.md`.
 
@@ -124,7 +124,7 @@ Exit codes: 0 ok, 1 analysis error, 2 usage error, 127 dependency (node/playwrig
 |---|---|
 | Toolchain is present | `scripts/pwrun doctor --json` reports node, @playwright/test, and browsers available |
 | Suite is understood | `scripts/pwrun inventory --json` lists config and spec files |
-| A test passes | `npx playwright test` exit 0 on the targeted spec (or `smoke` delegation) |
+| A test passes | `npx playwright@1.62.1 test` exit 0 on the targeted spec (or `smoke` delegation) |
 | A CI failure is explained | `scripts/pwrun report --report test-results.json --json` names the failing specs and errors |
 | Accessibility is covered | An axe scan runs with zero violations of the declared severity, and aria snapshots match |
 | No regressions in the covered flows | The suite ran under the configured workers/sharding with expected/flaky/unexpected counts recorded |

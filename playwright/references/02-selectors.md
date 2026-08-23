@@ -43,7 +43,7 @@ await card.getByRole('button', { name: 'Add to cart' }).click();
 A flaky test is a bug report about your selectors, not a request for more
 `waitForTimeout`. When a test passes sometimes:
 
-1. Run the spec alone (`npx playwright test <spec> --workers=1 --repeat-each=5`)
+1. Run the spec alone (`npx playwright@1.62.1 test <spec> --workers=1 --repeat-each=5`)
    to measure flakiness deterministically.
 2. Use `--debug` or the trace to see what the failing action actually resolved.
    Common causes:

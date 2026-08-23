@@ -42,7 +42,7 @@ await expect(page).toMatchAriaSnapshot(`
 - These read like spec assertions ("the heading is X, the button is Y") and
   catch regressions in structure, labels, and semantics — not just contrast.
 - They are stable: inline text changes show up as a reviewable diff.
-- **Update deliberately.** Run `npx playwright test --update-snapshots` only
+- **Update deliberately.** Run `npx playwright@1.62.1 test --update-snapshots` only
   after inspecting what changed; never blind-update to make CI green (hard
   boundary in `SKILL.md`).
 - Requires Playwright 1.49+ (see `00-source-index.md` for version notes).
@@ -56,14 +56,14 @@ When a test fails or a locator matches nothing:
 2. **Run headed with slow-mo** to watch the actual page:
 
    ```bash
-   npx playwright test <spec> --headed --slow-mo 300
+   npx playwright@1.62.1 test <spec> --headed --slow-mo 300
    ```
 3. **The inspector** (`--debug` or `PWDEBUG=1`) pauses before each action and
    shows the current locator; `page.pause()` drops a breakpoint mid-test.
 4. **Codegen** to prototype a flow quickly:
 
    ```bash
-   npx playwright codegen https://example.com
+   npx playwright@1.62.1 codegen https://example.com
    ```
    Generate starter tests, then harden the emitted selectors into user-facing
    locators (`02-selectors.md`).
