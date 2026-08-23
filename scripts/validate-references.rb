@@ -58,6 +58,13 @@ module ReferenceFileScan
   # context; files past the cap must be split and re-indexed in SKILL.md.
   MAX_REFERENCE_CHARS = 60_000
 
+  # Character cap for the SKILL.md body (issue #382), excluding YAML
+  # frontmatter. ~20,000 characters is a proxy for the ~5,000-token skill-body
+  # budget (~4 chars/token): a line-based cap alone lets dense prose with long
+  # lines slip through. Bodies past the cap must move detail into focused
+  # references/ files loaded on demand.
+  MAX_SKILL_MD_BODY_CHARS = 20_000
+
   module_function
 
   # Returns error strings for stale prose backtick references to nonexistent
@@ -96,6 +103,29 @@ module ReferenceFileScan
 
       errors << "#{ref_rel}: #{size} characters — reference files must be <= #{MAX_REFERENCE_CHARS} characters; split the file into focused files under references/ and update SKILL.md's index (split-and-reindex remediation)"
     end
+    errors
+  end
+
+  # Returns error strings for SKILL.md bodies (frontmatter stripped) under
+  # <root>/<skill_rel>/ that exceed MAX_SKILL_MD_BODY_CHARS characters.
+  # Shares oversized_reference_errors's remediation shape: split detail into
+  # focused files and keep only the skeleton in SKILL.md.
+  def oversized_skill_md_errors(root, skill_rel)
+    errors = []
+    skill_md = File.join(root, skill_rel, "SKILL.md")
+    return errors unless File.file?(skill_md)
+
+    text = File.read(skill_md)
+    match = text.match(/\A---\n.*?\n---\n/m)
+    # Missing frontmatter is reported by validate-skills.rb's own check; the
+    # body gate has nothing meaningful to measure without it.
+    return errors unless match
+
+    body = text[match.end(0)..]
+    size = body.length
+    return errors unless size > MAX_SKILL_MD_BODY_CHARS
+
+    errors << "#{skill_rel}/SKILL.md: #{size} characters — SKILL.md body must be <= #{MAX_SKILL_MD_BODY_CHARS} characters (~5,000-token budget); move detail into focused files under references/ and leave triggers + workflow skeleton in SKILL.md"
     errors
   end
 

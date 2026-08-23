@@ -132,6 +132,9 @@ skills.each do |skill|
   # Phase 1: references/*.md files must stay within the per-file character cap
   # (oversized files are split into focused files and re-indexed in SKILL.md).
   errors.concat(ReferenceFileScan.oversized_reference_errors(ROOT, skill_dir))
+  # Issue #382: SKILL.md bodies (frontmatter excluded) must stay within the
+  # ~5,000-token character budget; dense prose moves into references/ files.
+  errors.concat(ReferenceFileScan.oversized_skill_md_errors(ROOT, skill_dir))
 end
 
 if errors.empty?

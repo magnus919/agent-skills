@@ -68,248 +68,78 @@ to capture the evidence before filling the general migration plan. This skill
 sequences an approved extraction; it does not decide that a monolith should be
 split or identify the target architecture.
 
-## Migration type classification
-
-Migrations differ materially in their compatibility, correctness, and recovery
-characteristics. Classify the migration before selecting patterns.
-
-### Schema migration
-
-A change to a database schema, message format, or serialization contract.
-**Compatibility:** forward compatibility (old readers tolerate new writers) and
-backward compatibility (new readers tolerate old writers) are the central design
-constraints. **Correctness:** verified by dual-reading or shadow-traffic
-comparison — the new schema must produce equivalent results for the same input.
-**Rollback:** possible if the schema change is purely additive (expand phase);
-destructive changes (drop column, rename, change type) require a multi-step
-expand/contract sequence with a compatibility window where both old and new
-schemas coexist before the old is removed.
-
-### Data migration
-
-Movement or transformation of data between stores, representations, or
-ownership boundaries. **Compatibility:** the old and new data representations
-must coexist during the transition; consumers may read from either or both.
-The backfill strategy (full, incremental, or streaming) determines how long
-the dual-read window lasts. **Correctness:** requires reconciliation — a
-record-level or aggregate comparison between source and target to verify
-completeness and accuracy before cutover. **Rollback:** depends on whether the
-old store remains writable and current during the transition. If the old store
-is kept in sync (dual-write), rollback is reversing the cutover. If the old
-store was dropped or made read-only, rollback requires restore from backup.
-
-### API migration
-
-A change to the contract between a provider and its consumers — versioning,
-protocol, schema, or endpoint topology. **Compatibility:** defined by the
-provider's compatibility policy (e.g., "additive changes are backward-compatible;
-removals require a deprecation window"). The compatibility window is measured
-in consumer migration time — how long consumers need to move from the old
-interface to the new one. **Correctness:** verified by consumer-side testing,
-shadow-traffic replay, and error-rate comparison between old and new interfaces.
-**Rollback:** the old interface must remain available and supported throughout
-the deprecation window; rolling back means reverting the deprecation notice
-and keeping the old interface live. Once the old interface is removed, rollback
-requires deploying it again — a restore or redeploy path, not a simple reversal.
-
-### Infrastructure and service migration
-
-Moving workloads, services, or infrastructure between environments, platforms,
-or ownership domains. **Compatibility:** network, identity, and data-plane
-continuity must be maintained. DNS, certificates, service discovery, and
-security boundaries are the primary compatibility surface. **Correctness:**
-verified by traffic shifting, canary deployment, and service-level objective
-(SLO) monitoring during the transition. **Rollback:** depends on the migration
-topology. Lift-and-shift with the old environment preserved is reversible;
-in-place replacement without a preserved old environment may be irreversible
-or require a full redeploy (roll-forward/restore).
-
-### Service extraction
-
-A service extraction is usually a combined infrastructure/service, API, and data
-migration. Before the expand phase, record the proposed capability's boundary
-evidence, coupling, data ownership, callers, and failure behavior. Select the
-least disruptive transition pattern that creates evidence: strangler routing,
-branch by abstraction, an anti-corruption boundary, CDC, parallel run, or a
-combination with distinct roles. Keep the old path selectable until comparison,
-reconciliation, customer-impact, and operational gates pass.
-
-The extraction assessment must also record explicit reasons to retain a modular
-monolith. If the boundary still needs shared writes, frequent cross-boundary
-transactions, unobservable consumers, or has no tested recovery path, stop and
-recommend modular improvement or request more evidence rather than creating a
-distributed shape by default. Route target-boundary justification to the
-[`software-architecture`](../software-architecture/SKILL.md) decision owner; this
-skill owns the safe current-to-target transition once authorized.
-
 ## Core workflow
 
 ### 1. Classify and scope the migration
 
-Determine which migration type(s) apply. A real-world migration often combines
-types — for example, a service extraction includes both a data migration and an
-API migration. Document:
-- The current state, target state, and system boundary being crossed.
-- The migration type(s) and their compatibility requirements.
-- Which systems, teams, and consumers are affected.
+Determine which migration type(s) apply — real-world migrations often combine
+types (a service extraction includes both a data migration and an API
+migration). Document the current state, target state, boundary being crossed,
+type(s) with their compatibility requirements, and affected systems, teams,
+and consumers. Load [references/migration-types.md](references/migration-types.md)
+for the classification of schema, data, API, infrastructure/service, and
+service-extraction migrations.
 
 ### 2. Design the expand/contract sequence
 
 The **expand/contract pattern** is the foundational safe-migration primitive:
 
 1. **Expand** — add the new interface, schema, or system while the old one
-   continues to serve. Both old and new coexist. This phase is
-   backward-compatible: existing consumers are unaffected.
-2. **Compatibility window** — a defined period (duration or condition) during
-   which both old and new are available. Consumers, replicas, and dependent
-   systems are migrated to the new interface during this window. The window
-   must have an explicit end condition — a date, a metric threshold (e.g.,
-   "zero traffic on old endpoint for 7 days"), or an event (e.g., "all
-   registered consumers confirmed migration").
+   continues to serve; both coexist, and existing consumers are unaffected.
+2. **Compatibility window** — a defined period during which both old and new
+   are available, with an explicit end condition (date, metric threshold, or
+   event such as all registered consumers confirmed).
 3. **Dual-running or parallel operation** — for data and service migrations,
-   both systems operate concurrently. Writes may be dual-written; reads may be
-   dual-read with comparison. The dual-running period provides the evidence
-   needed for the cutover decision.
-4. **Contract** — remove the old interface, schema, or system after the
-   compatibility window closes and verification confirms the new system is
-   correct and complete. The contract phase may include data cleanup, code
-   removal, and decommissioning.
+   both systems operate concurrently (dual writes, dual reads with comparison),
+   producing the evidence needed for the cutover decision.
+4. **Contract** — remove the old interface after the window closes and
+   verification confirms correctness and completeness.
 
-Not every migration uses all four phases. A simple additive schema change may
-use only expand (phase 1) — the old schema keeps working, the new column is
-added, and no contract phase is needed. A complex service extraction uses all
-four.
+Not every migration uses all four phases: an additive schema change may need
+only the expand phase; a complex service extraction uses all four.
 
 ### 3. Plan the backfill and reconciliation
 
-For data migrations, design the backfill strategy:
-
-- **Full backfill** — copy all existing data from source to target in a
-  single or batched operation before enabling dual-writes.
-- **Incremental backfill** — copy data in pages or segments; useful for
-  large datasets where a full backfill would exceed the available window.
-- **Streaming backfill** — capture changes from the source via change-data-
-  capture (CDC) or event log and apply them to the target continuously.
-
-**Reconciliation** — how source and target are verified to match:
-
-| Reconciliation dimension | Description |
-|---|---|
-| **Completeness** | Every record in the source exists in the target (row count, key-space coverage). |
-| **Accuracy** | For a sample or full population, field-level values match within tolerance. |
-| **Timeliness** | The target lag behind the source is within the defined threshold. |
-| **Consistency** | Related records (e.g., orders and line items) are consistent in the target. |
-
-Reconciliation runs continuously during the compatibility window and must pass
-before cutover. A reconciliation failure is a **stop condition** — the cutover
-must not proceed.
+For data migrations, choose a backfill strategy — full, incremental, or
+streaming (CDC/event log). Reconciliation verifies source and target match on
+four dimensions — completeness, accuracy, timeliness, and consistency — runs
+continuously during the compatibility window, and must pass before cutover;
+a reconciliation failure is a **stop condition**.
 
 ### 4. Design the cutover
 
-The cutover is the point where the new system becomes the source of truth.
-Design for:
-
-- **Cutover procedure** — the exact sequence of operations, automated where
-  possible, with pre-conditions and post-conditions.
-- **Cutover window** — the expected duration, the acceptable downtime (if any),
-  and the communication plan.
-- **Interruption points** — where the cutover can be paused or reversed.
-  A cutover that has no interruption points is a risk to flag explicitly.
-- **Observability during cutover** — what metrics, logs, and alerts confirm
-  the cutover is proceeding correctly, and what signals trigger abort.
+Define the exact procedure (automated where possible, with pre/post
+conditions), the window and acceptable downtime, interruption points where the
+cutover can be paused or reversed (a cutover with none is a risk to flag
+explicitly), and the observability that confirms progress and triggers abort.
 
 ### 5. Define recovery paths
 
-Every migration step has a recovery classification. Use exactly these four
-categories — never conflate them:
-
-| Recovery path | Definition | When it applies |
-|---|---|---|
-| **Rollback** | Reverse to the prior state by undoing the change. | Additive schema changes, feature-flag-controlled code paths, dual-write data migrations where the old store is still current. |
-| **Roll-forward** | Fix forward in the new state — the old state is no longer reachable, but a fix can be deployed to the new system. | Bugs discovered after cutover where the old system has been decommissioned; configuration errors in the new system that can be corrected without reverting. |
-| **Restore** | Restore the prior state from a backup or snapshot. | The old system was taken offline and cannot be simply re-enabled; a backup exists and a restore procedure is tested. |
-| **Irreversible** | Reversal is impossible — the change cannot be undone at any level. The migration plan must include acceptance criteria, explicit stakeholder communication, and a contingency plan (e.g., "if the migration fails, we will rebuild from the source of truth" or "we accept data loss within this bounded scope"). | Destructive operations with no backup, physical hardware decommissioning, cryptographic key rotation where old keys are destroyed, third-party data exports with no recall mechanism. |
-
-**Irreversible steps require explicit acknowledgment before execution.** The
-migration plan must distinguish "we have chosen not to build a reversal path"
-from "reversal is physically impossible." Both require acceptance, communication,
-and contingency — never silent assumption.
+Every migration step has exactly one of four recovery classifications — never
+conflate them: **rollback** (undo the change), **roll-forward** (fix forward in
+the new state), **restore** (recover from backup/snapshot), and **irreversible**
+(no reversal possible at any level). Irreversible steps require explicit
+acknowledgment before execution; distinguish "we chose not to build a reversal
+path" from "reversal is physically impossible." Both require acceptance,
+communication, and contingency. Load
+[references/recovery-classification.md](references/recovery-classification.md)
+when classifying concrete steps.
 
 ### 6. Plan deprecation and cleanup
 
-After cutover is complete and verified:
-
-- **Deprecation window** — how long the old system remains available in
-  read-only or degraded mode before removal.
-- **Consumer migration tracking** — which consumers still depend on the old
-  interface, and when they are expected to migrate.
-- **Cleanup** — removal of old schemas, code paths, feature flags,
-  configuration, credentials, and infrastructure.
-- **Communication** — notifications to consumers, stakeholders, and operators
-  at each stage: compatibility window opens, cutover scheduled, cutover
-  complete, deprecation window closing, old system removed.
+After verified cutover: define the deprecation window for the old system in
+read-only/degraded mode, track which consumers still depend on the old
+interface, remove old schemas/code paths/flags/configuration/credentials/
+infrastructure, and communicate at each stage (window opens, cutover scheduled,
+cutover complete, window closing, removal).
 
 ### 7. Verify and close
 
-Before declaring the migration complete:
-
-- **Correctness evidence** — reconciliation reports, consumer verification,
-  error-rate comparisons, SLO compliance data.
-- **Observability confirmation** — migration-specific dashboards and alerts
-  show the expected post-migration steady state.
-- **Recovery verification** — rollback, roll-forward, or restore procedures
-  were tested (where applicable); irreversible steps were acknowledged.
-- **Owner sign-off** — the accountable owner for each phase confirms completion.
-
-## Structured planning fields
-
-Every migration plan must address these fields. They may appear as checklist
-items, template fields, table columns, or labeled section headers — not only
-as prose.
-
-### Reconciliation
-
-| Field | Question to answer |
-|---|---|
-| Strategy | Full, incremental, or streaming reconciliation? |
-| Frequency | Continuous, hourly, daily, or pre-cutover only? |
-| Coverage | All records or a statistical sample? |
-| Tolerance | What divergence is acceptable? |
-| Failure action | Stop, alert, or automatically re-reconcile? |
-
-### Correctness evidence
-
-| Field | Question to answer |
-|---|---|
-| Comparison method | Dual-read, shadow-traffic, consumer-side test, or synthetic validation? |
-| Pass criteria | What measurements confirm correctness (e.g., "100% record match," "error rate < 0.01%," "p95 latency within 10% of baseline")? |
-| Evidence artifact | Where is the evidence recorded (dashboard link, test report, reconciliation log)? |
-
-### Observability
-
-| Field | Question to answer |
-|---|---|
-| Progress metrics | Bytes migrated, records processed, consumers cut over? |
-| Anomaly signals | Error-rate spikes, latency degradation, reconciliation drift? |
-| Dashboards and alerts | Where are migration-specific metrics visible, and who is on-call? |
-
-### Customer impact
-
-| Field | Question to answer |
-|---|---|
-| Visible change | What does the customer experience during each phase? |
-| Downtime | Is any downtime expected, and how is it communicated? |
-| Performance | Could latency, throughput, or error rates change during the migration? |
-| Support | How are customer issues triaged and escalated during the migration window? |
-
-### Ownership
-
-| Field | Question to answer |
-|---|---|
-| Migration lead | Who owns the overall migration plan and its execution? |
-| Phase owners | Who is accountable for expand, dual-running, cutover, deprecation, and cleanup? |
-| Communication owner | Who owns stakeholder and consumer notifications? |
-| Escalation path | Who is the decision-maker if the migration must be paused, rolled back, or abandoned? |
+Before declaring completion, collect correctness evidence (reconciliation
+reports, consumer verification, error-rate comparisons, SLO compliance),
+confirm observability shows the expected steady state, verify recovery
+procedures were tested and irreversible steps acknowledged, and obtain owner
+sign-off per phase.
 
 ## Loading guide
 
@@ -318,8 +148,10 @@ Load references and templates on demand — do not load everything at once.
 | File | Load when |
 |---|---|
 | [references/discovery-brief.md](references/discovery-brief.md) | You need to understand how migration concepts map across sibling skills and where this skill's boundaries are |
+| [references/migration-types.md](references/migration-types.md) | Classifying a migration (schema, data, API, infrastructure/service, service extraction) before selecting patterns |
 | [references/compatibility-patterns.md](references/compatibility-patterns.md) | Designing forward/backward compatibility for a specific migration type |
 | [references/recovery-classification.md](references/recovery-classification.md) | Classifying recovery paths (rollback, roll-forward, restore, irreversible) for a concrete migration step |
+| [references/planning-fields.md](references/planning-fields.md) | Drafting or reviewing the structured planning fields (reconciliation, evidence, observability, customer impact, ownership) a plan must address |
 | [references/service-extraction-patterns.md](references/service-extraction-patterns.md) | Assessing extraction seams and selecting strangler routing, branch by abstraction, anti-corruption, CDC, and parallel-run patterns; includes modular-monolith retention criteria |
 | [templates/migration-plan.md](templates/migration-plan.md) | Producing a complete migration plan with all structured fields |
 | [templates/compatibility-matrix.md](templates/compatibility-matrix.md) | Building a compatibility matrix for a multi-consumer migration |
