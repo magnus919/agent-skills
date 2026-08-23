@@ -47,7 +47,7 @@ When an existing package already does what you need, you can reference it direct
 
     * Bundled with Node.js — no extra install needed.
     * Downloads the package, runs it, and caches it for future use.
-    * Pin versions with `npx package@version` for reproducibility.
+    * **Pin versions for any command an agent will copy-paste** (`npx package@version`, e.g. `npx eslint@9.0.0`) so the command behaves the same over time — never leave a copy-pasteable `npx` invocation unpinned.
   </Tab>
 
   <Tab title="bunx">

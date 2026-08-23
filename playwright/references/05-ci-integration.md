@@ -19,8 +19,8 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm }
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test
+      - run: npx playwright@1.62.1 install --with-deps chromium
+      - run: npx playwright@1.62.1 test
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -31,7 +31,7 @@ jobs:
 
 ## Non-negotiables
 
-1. **Install browsers with OS deps**: `npx playwright install --with-deps` (not
+1. **Install browsers with OS deps**: `npx playwright@1.62.1 install --with-deps` (not
    bare `install`) on Linux runners; `--with-deps` installs the system
    libraries Chromium/Firefox/WebKit need.
 2. **Pin and cache**:
@@ -77,7 +77,7 @@ strategy:
   matrix:
     shard: [1/4, 2/4, 3/4, 4/4]
 steps:
-  - run: npx playwright test --shard=${{ matrix.shard }}
+  - run: npx playwright@1.62.1 test --shard=${{ matrix.shard }}
 ```
 
 Merge reports from all shards with `playwright merge-reports` (see

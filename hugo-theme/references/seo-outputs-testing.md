@@ -305,7 +305,7 @@ jobs:
 
     - name: Accessibility audit
       run: |
-        npx @axe-core/cli http://localhost:1313/ --exit --stdout || true
+        npx @axe-core/cli@4.13.0 http://localhost:1313/ --exit --stdout || true
 
 ```
 
@@ -315,7 +315,7 @@ jobs:
 |------|---------|-------------|
 | `html5validator` | HTML spec compliance | `pip install html5validator` |
 | `broken-link-checker` | Dead links | `npm install broken-link-checker` |
-| `@axe-core/cli` | Accessibility | `npx @axe-core/cli` |
+| `@axe-core/cli` | Accessibility | `npx @axe-core/cli@4.13.0` |
 | `hugo --templateMetrics` | Template performance | Built-in CLI flag |
 | `hugo --renderToMemory` | Build without writing to disk | `hugo --renderToMemory --gc` |
 | `hugo mod verify` | Module integrity | Built-in |

@@ -33,7 +33,7 @@ Mermaid code blocks (```mermaid```) do NOT render in the Pandoc → HTML → Pup
 
 **For any diagram destined for PDF output:**
 1. Create the diagram as a standalone .mmd file
-2. Pre-render to SVG: `npx @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.svg --width 800`
+2. Pre-render to SVG: `npx @mermaid-js/mermaid-cli@11.16.0 -i diagram.mmd -o diagram.svg --width 800`
 3. Choose one embedding method: use raw inline SVG by default, or base64 data URIs when the renderer corrupts raw SVG.
 4. Strip hardcoded `max-width` pixel values from the SVG tags
 5. Use `flowchart TD` (portrait) not `flowchart LR` (landscape) — see `references/portrait-layout.md`
@@ -116,9 +116,9 @@ See `references/c4-to-flowchart.md` for worked examples of all three C4 levels.
 ### CLI (mmdc) — for PDF/SVG/PNG output
 
 ```bash
-npx @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.svg
-npx @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.png
-npx @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.pdf
+npx @mermaid-js/mermaid-cli@11.16.0 -i diagram.mmd -o diagram.svg
+npx @mermaid-js/mermaid-cli@11.16.0 -i diagram.mmd -o diagram.png
+npx @mermaid-js/mermaid-cli@11.16.0 -i diagram.mmd -o diagram.pdf
 ```
 
 Requires Puppeteer + Chromium (~1.7GB). Use the Docker image for isolated rendering:

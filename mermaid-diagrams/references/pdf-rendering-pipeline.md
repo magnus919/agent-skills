@@ -8,7 +8,7 @@ This reference captures the lessons from a session where six PDF iterations were
 
 ```bash
 # Step 1: Pre-render all Mermaid diagrams to SVG
-npx @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.svg --width 800
+npx @mermaid-js/mermaid-cli@11.16.0 -i diagram.mmd -o diagram.svg --width 800
 
 # Step 2: Embed SVGs in markdown (NOT as data URI img tags)
 # Use raw <svg> tags inline in the markdown file

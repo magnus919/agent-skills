@@ -30,11 +30,11 @@ bash scripts/pwrun report --report test-results/test-results.json --json
 # Scaffold a new suite (copy the templates into your project)
 cp templates/playwright.config.ts templates/example.spec.ts templates/accessibility.spec.ts .
 npm i -D @playwright/test
-npx playwright install
-npx playwright test
+npx playwright@1.62.1 install
+npx playwright@1.62.1 test
 ```
 
-The `--help` output documents every flag and works without Node. Set `BASE_URL` to override the smoke target; `scripts/pwrun smoke --url http://localhost:3000 --json` runs a delegated pass through `npx playwright test`.
+The `--help` output documents every flag and works without Node. Set `BASE_URL` to override the smoke target; `scripts/pwrun smoke --url http://localhost:3000 --json` runs a delegated pass through `npx playwright@1.62.1 test`.
 
 ## Triggers
 
