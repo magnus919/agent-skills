@@ -1,10 +1,10 @@
 ---
 name: epub
-description: EPUB file format expert — read, write, and edit EPUB2/EPUB3 ebooks. Extract
-  text, metadata, structure, and knowledge from EPUB files for enrichment or memory.
-  Create valid EPUBs from scratch. Validate against the EPUB specification. Use when
-  the user mentions epub, ebook, EPUB file, ebook format, read epub, write epub, create
-  ebook, extract from epub, epub to text, or ebook structure.
+description: Read, write, and edit EPUB2/EPUB3 ebooks as an EPUB file format expert.
+  Extract text, metadata, structure, and knowledge from EPUB files for enrichment
+  or memory. Create valid EPUBs from scratch. Validate against the EPUB specification.
+  Use when the user mentions epub, ebook, EPUB file, ebook format, read epub, write
+  epub, create ebook, extract from epub, epub to text, or ebook structure.
 license: MIT
 compatibility: Python 3.8+ required. Core scripts use EbookLib (pip install EbookLib)
   for reading and creating EPUBs. Optional epublib (pip install epublib) for non-intrusive
@@ -22,6 +22,16 @@ metadata:
 Expert-level EPUB handling: read, write, edit, validate, and extract knowledge
 from EPUB 2 and EPUB 3 files. Ships with five Python CLI scripts and five
 detailed references covering the entire EPUB domain.
+
+## When not to use
+
+- **Non-EPUB documents** — Word, PDF, plain markdown, or web-page conversion
+  tasks do not match any script here; route them to a document-handling skill
+  instead of forcing an EPUB tool onto a non-EPUB file.
+- **DRM-locked ebooks** — these scripts read and write standard OCF/EPUB
+  containers; they do not remove or bypass digital rights management.
+- **Mobi/AZW/Kindle-native formats** — use a dedicated converter first; this
+  skill neither reads nor writes Amazon-proprietary containers.
 
 ## EPUB Format Essentials
 
@@ -138,7 +148,7 @@ Requires epublib.
 ### epub-extract-knowledge — Knowledge Extraction Pipeline
 
 ```bash
-# LLM mode — set env vars first (see below), then run without flags:
+# LLM mode — set env vars first (see references below), then run without flags:
 scripts/epub-extract-knowledge book.epub --format json
 scripts/epub-extract-knowledge book.epub --format atoms
 scripts/epub-extract-knowledge book.epub --format memory
@@ -161,49 +171,11 @@ arguments. Two modes, auto-selected:
   passed, uses pattern matching (headings, emphasis markers, definition language,
   paragraph density) to identify knowledge-bearing passages. No LLM required.
 
-Output formats:
-- `json` — raw structured JSON with types, content, and source chapters
-- `atoms` — Obsidian vault atom templates (YAML frontmatter + body)
-- `memory` — key-value memory entries suitable for agent persistence
-
-### LLM Configuration Convention
-
-Several scripts in this skill support optional LLM-powered features. Any script
-that does auto-detects LLM availability via environment variables. Set them once
-and all scripts inherit:
-
-```bash
-# Required for LLM mode:
-export EPUB_LLM_URL="https://your-provider.example.com/v1"   # OpenAI-compatible endpoint
-export EPUB_LLM_KEY="sk-..."                                  # API key
-
-# Optional:
-export EPUB_LLM_MODEL="model-name"                            # Defaults to provider default
-```
-
-**How it works:**
-- If `EPUB_LLM_URL` and `EPUB_LLM_KEY` are both set → LLM mode enabled
-- If either is missing → heuristic/deterministic mode (no LLM)
-- `--no-llm` flag forces heuristic mode even when env vars are set
-- The scripts make OpenAI-compatible `POST /chat/completions` calls — any
-  OpenAI-compatible provider works (OpenAI, OpenCode, Anthropic via proxy,
-  local llama.cpp, Ollama, vLLM, etc.)
-
-**Which scripts support this:**
-| Script | LLM Feature | Fallback |
-|--------|------------|----------|
-| `epub-extract-knowledge` | Structured knowledge extraction | Heuristic pattern matching |
-| `epub-validate` | LLM-generated repair suggestions for errors | Error codes only |
-| *(more scripts can adopt this pattern as features are added)* | | |
-
-**Agent instructions:** Before running any extraction pipeline, set these
-env vars in your environment. They are inherited by subprocesses, so every
-script in the pipeline auto-detects the same LLM configuration. If your
-harness provides an LLM natively (e.g., you *are* the LLM), you can skip
-the env vars — the heuristic mode is designed for that case. But if you
-have access to an external LLM API, wiring it through these env vars
-unlocks dramatically better extraction quality without requiring the
-agent to manually chunk, prompt, parse, and re-inject results.
+Output formats: `json` (raw structured JSON), `atoms` (Obsidian vault atom
+templates), `memory` (key-value entries suitable for agent persistence). For the
+env-var configuration convention, knowledge-type detection table, LLM prompt
+design, and sink options by platform, load
+[references/llm-config-and-extraction.md](references/llm-config-and-extraction.md).
 
 ### epub-edit — Surgical EPUB Editing (v2)
 
@@ -267,80 +239,17 @@ integrity, required metadata, and NAV document presence.
 
 ## Capability Discovery & Pipeline Construction
 
-Before executing a multi-step EPUB pipeline, **discover what tools are available**
-on your agent platform. This skill is portable — the exact pipeline shape
-depends on your harness's capabilities.
+Before executing a multi-step EPUB pipeline, discover what tools are available
+on your agent platform — this skill is portable, and the exact pipeline shape
+depends on your harness's capabilities. The protocol: enumerate your tools
+(file write, web access, subagents, cron, persistent memory, vector DB, vault,
+LLM), classify them against the pipeline stages (**Ingest → Parse → Extract →
+Format → Sink**), construct a pipeline from available pieces, and propose the
+plan to the user before executing.
 
-### Discovery Protocol
-
-1. **Enumerate:** What tools do you have? File write? Web access? Subagents?
-   Cron? Persistent memory? Vector DB? Vault? LLM?
-2. **Classify:** Map available tools to pipeline stages (Ingest → Parse →
-   Extract → Format → Sink)
-3. **Construct:** Build a specific pipeline from available pieces
-4. **Propose:** Present the plan to the user before executing
-
-### Pipeline Stages
-
-```
-EPUB file
-  ↓ INGEST   — local path, URL download, or user provides file
-  ↓ PARSE    — epub-text, epub-info, or stdlib zipfile+XML
-  ↓ EXTRACT  — epub-extract-knowledge (heuristic or LLM)
-  ↓ FORMAT   — vault atoms, memory entries, JSON, markdown
-  ↓ SINK     — file write, memory tool, vector DB, vault, terminal
-```
-
-### Example Pipelines
-
-**Full (Hermes Agent):**
-Ingest EPUB → epub-text (JSON) → epub-extract-knowledge → vault atoms →
-wiki-link-verification → LightRAG ingest
-
-**Minimal (any harness with terminal + file write):**
-Ingest EPUB → epub-text → epub-extract-knowledge --no-llm → write output.md
-
-**Batch (multi-file):**
-Find *.epub → for each: epub-text --chapters → epub-extract-knowledge --no-llm → collect
-results → summary report
-
-See `references/agent-capability-discovery.md` for the full protocol with
-worked examples for different platforms.
-
-## Knowledge Extraction Deep Dive
-
-EPUB files are dense sources of structured knowledge. The extraction process
-targets specific knowledge types:
-
-| Type | Detection | Example |
-|------|-----------|---------|
-| **Fact** | Headings, list items, named entities | "Python 3.13 added the `@override` decorator" |
-| **Definition** | Paragraphs with definition markers | "A coroutine is defined as a function that can suspend execution" |
-| **Key point** | Emphasized text (bold, italic) | Important conclusions, takeaways |
-| **Argument** | Dense paragraphs (>200 chars) | Multi-sentence reasoning chains |
-
-### Prompt Design for LLM Mode
-
-When using LLM extraction, provide a focused prompt:
-
-```
-Extract from this chapter:
-1. All technical definitions (term + definition)
-2. Key facts (concise, standalone statements)
-3. Notable quotes (exact wording)
-4. Core arguments (the main thesis and supporting points)
-
-Format as JSON with fields: type, content, context
-```
-
-### Sink Options by Platform
-
-| Sink | Platform | Format to use |
-|------|----------|---------------|
-| Vault atoms | Obsidian | `--format atoms` |
-| Agent memory | Most harnesses | `--format memory` |
-| Vector DB | LightRAG, Chroma | `--format json` → insert |
-| Plain files | Any | `--output DIR` |
+See `references/agent-capability-discovery.md` for the full protocol with the
+stage map and worked example pipelines for different platforms (full agent
+with vault + RAG, minimal terminal-only harness, and batch multi-file runs).
 
 ## Common Workflows
 
@@ -394,28 +303,21 @@ scripts/epub-convert old.epub --output old-v3.epub --validate
 
 ## Apple Books Compatibility
 
-Apple Books on macOS/iOS enforces requirements beyond the EPUB spec. These
-rules were verified by building and testing on macOS 26.
+Apple Books on macOS/iOS enforces requirements beyond the EPUB spec; these
+rules were verified by building and testing on macOS 26. The essentials: all
+content lives inside `OEBPS/`, covers are XHTML pages in the spine (raw image
+spine items render blank), body uses `margin: 0` avoidance via padding, no
+deprecated `page-break-before`, `xmlns:epub` only on the nav document, the raw
+cover image keeps `properties="cover-image"`, and `linear="no"` hides a page
+(e.g., nav) from the reading flow without hiding it from the app's TOC browser.
+Spine ordering patterns: no cover (`nav → chapters`), cover only
+(`cover-page → nav(linear="no") → chapters`), full
+(`cover-page → nav → chapters`; scaffold default).
 
-| Rule | Why |
-|------|-----|
-| All content inside `OEBPS/` directory | Files at ZIP root render as blank pages |
-| Cover must be XHTML page in spine | Raw `<itemref>` to `image/png` renders blank |
-| `margin: 0` on body, use `padding` | Apple Books applies its own margins; they stack |
-| No `page-break-before` (use `break-before: page` or omit) | Deprecated; Apple Books ignores it |
-| `xmlns:epub` only on nav document | Unused namespace declarations can trigger parser failures |
-| Cover image keeps `properties="cover-image"` | Used for library thumbnail on raw image, not on wrapper page |
-| `linear="no"` hides page from reading flow | Nav still accessible via app's built-in TOC browser |
-
-**Spine ordering patterns:**
-| Pattern | Order | Use case |
-|---------|-------|----------|
-| No cover | `nav → chapters` | Simplest |
-| Cover only | `cover-page → nav(linear="no") → chapters` | Cover visible, ToC via app browser |
-| Full | `cover-page → nav → chapters` | Most commercial ebooks (scaffold default) |
-
-See `references/apple-books-compatibility.md` for the full reference with
-CSS examples, cover XHTML template, and validation quirks.
+Do not rely on memory for these rules — load
+`references/apple-books-compatibility.md` for the rule-by-rule table, CSS
+examples, the cover XHTML template, and validation quirks whenever you build
+or repair an EPUB targeted at Apple Books.
 
 ## Gotchas
 
@@ -470,3 +372,8 @@ CSS examples, cover XHTML template, and validation quirks.
   ARIA roles, Ace integration, accessibility metadata
 - `references/media-overlays.md` — SMIL synchronization, audio-text pairing,
   skippability/escapability, detection from manifest
+- `references/apple-books-compatibility.md` — Apple Books rules beyond the spec:
+  OEBPS layout, cover XHTML wrapper, CSS conventions, spine patterns, quirks
+- `references/llm-config-and-extraction.md` — `EPUB_LLM_*` env-var convention,
+  LLM vs heuristic extraction modes, knowledge-type detection, prompt design,
+  sink options by platform

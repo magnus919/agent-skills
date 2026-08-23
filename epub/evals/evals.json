@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "skill_name": "epub",
+  "evals": [
+    {
+      "id": "script-selection-for-conversion-task",
+      "prompt": "I have a folder of 200 old EPUB2 books and I need them upgraded to EPUB3 with a proper table of contents, plus a report of any that failed to convert cleanly. How do I do this?",
+      "expected_output": "Chooses epub-convert for the EPUB2 → EPUB3 upgrade (adds the EPUB3 NAV document, updates namespaces, keeps NCX for compatibility) wrapped in epub-batch for multi-file processing across the glob, e.g. `scripts/epub-batch convert \"books/*.epub\"` or looping epub-convert per file with `--validate --json` to catch failures. Suggests running epub-validate on outputs so failures surface as JSON, and notes epub-repair (--diagnose --json, then auto-fix) as the follow-up for files that fail validation. Follows cli-builder conventions: --json for machine-readable output, errors to stderr, non-interactive.",
+      "assertions": [
+        "Selects epub-convert as the EPUB2 to EPUB3 conversion tool.",
+        "Uses epub-batch or an equivalent loop for multi-file processing across the folder.",
+        "Includes validation of outputs (epub-validate or --validate) to identify failed conversions.",
+        "Suggests epub-repair as the remediation step for broken files."
+      ]
+    },
+    {
+      "id": "fixed-layout-vs-reflowable-decision",
+      "prompt": "I'm publishing a children's picture book and a text-heavy novel. Both will be EPUBs. Should I treat them differently?",
+      "expected_output": "Yes — explains the reflowable vs fixed-layout distinction: the novel should be a standard reflowable EPUB3 (spine of XHTML content documents, user-adjustable typography); the picture book needs fixed-layout EPUB with rendition:layout properties (page-based layout, controlled orientation/spread, viewport meta), since absolute-positioned art and text do not survive reflowing. Points at references/fixed-layout-epub.md for detection and the rendition properties (rendition:layout, orientation, spread, viewport). For either path, recommends scaffolding/validating with the skill's scripts (epub-scaffold for the novel; validation via epub-validate, ideally EPUBCheck) and keeping all content inside OEBPS/ per Apple Books compatibility if that is a target platform.",
+      "assertions": [
+        "Distinguishes reflowable EPUB for the novel from fixed-layout EPUB for the picture book.",
+        "Names the fixed-layout rendition properties (layout/orientation/spread/viewport).",
+        "References the skill's fixed-layout reference material or scripts rather than improvising.",
+        "Mentions validation as part of either workflow."
+      ]
+    },
+    {
+      "id": "validate-and-repair-broken-epub",
+      "prompt": "This ebook file won't open in my reader app and I don't know what's wrong with it. Can you fix it?",
+      "expected_output": "Diagnoses before fixing: runs `scripts/epub-validate book.epub --json` (and/or `epub-repair broken.epub --diagnose --json`) to list concrete structural issues first, then applies targeted fixes — common root causes include a compressed mimetype entry (must be ZIP_STORED and first in the archive), missing manifest entries, spine idrefs pointing at nonexistent manifest IDs, malformed XHTML content documents, absent NAV document or dc:language metadata. Runs `scripts/epub-repair book.epub --output fixed.epub` for auto-fixable issues, writes to a new output file rather than modifying the original in place (EPUB editing is surgery; keep the original), and re-validates the repaired file. Notes EPUBCheck requires Java; the Python fallback catches structural issues but not XHTML schema violations or CSS validity.",
+      "assertions": [
+        "Runs diagnosis (epub-validate or epub-repair --diagnose) before attempting fixes.",
+        "Identifies at least two canonical failure causes such as mimetype compression, manifest gaps, spine idref mismatches, or invalid XHTML.",
+        "Writes the repair to a new output file instead of overwriting the original.",
+        "Re-validates after repair and states the EPUBCheck/Java fallback limitation."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "knowledge-extraction-mode-and-format-choice",
+      "prompt": "Extract all the key definitions and facts from this technical EPUB so I can import them into my Obsidian vault. I have an OpenAI-compatible API endpoint available.",
+      "expected_output": "Uses epub-extract-knowledge with LLM mode: instructs exporting EPUB_LLM_URL and EPUB_LLM_KEY (the shared env-var convention inherited by every script in the pipeline; optional EPUB_LLM_MODEL), then running `scripts/epub-extract-knowledge book.epub --format atoms` because atoms are the Obsidian vault format (YAML frontmatter + body). Explains the mode selection rules: both env vars set enables LLM mode, either missing falls back to heuristic pattern matching, and `--no-llm` forces heuristic even when configured. Mentions that extraction targets facts, definitions, key points, and arguments detected via headings, definition markers, emphasis, and paragraph density, and that a focused custom prompt (--prompt) can sharpen definition extraction. Keeps heuristic fallback available for well-structured books.",
+      "assertions": [
+        "Sets or references the EPUB_LLM_URL and EPUB_LLM_KEY environment variables for LLM mode.",
+        "Chooses --format atoms for the Obsidian vault destination.",
+        "Explains the automatic LLM/heuristic mode selection and the --no-llm override.",
+        "Ties extraction targets to facts, definitions, key points, and arguments."
+      ]
+    },
+    {
+      "id": "non-epub-request-routes-away",
+      "prompt": "Can you convert this Word document to PDF and compress it for email?",
+      "expected_output": "Recognizes the request is outside this skill's trigger boundary: epub covers the EPUB2/EPUB3 ebook format specifically, not general document conversion between Word/PDF formats. Does not run any EPUB script on the file and does not pretend epub-scaffold or epub-edit can help; suggests routing the request to the appropriate document-handling capability instead.",
+      "assertions": [
+        "Declines to treat a Word-to-PDF conversion as an epub task.",
+        "Does not invoke or misapply EPUB scripts for a non-EPUB file.",
+        "Redirects to an appropriate alternative without fabricating capabilities."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "apple-books-cover-not-rendering",
+      "prompt": "I made an EPUB and the cover image shows up as a blank page in Apple Books but works fine in Calibre. What's going on?",
+      "expected_output": "Identifies the Apple Books-specific rule: raw image spine items render as blank pages — Apple Books requires the cover to be an XHTML wrapper page in the spine, not an `<itemref>` directly to the image. Fixes it with `scripts/epub-cover wrap book.epub --image cover.png --output with-cover.epub` (requires epublib), which adds the wrapper page while the raw image keeps `properties=\"cover-image\"` for library thumbnails. Also checks Apple Books conventions beyond the spec: all content inside OEBPS/, `margin: 0` avoided on body in favor of padding, no deprecated page-break-before, `linear=\"no\"` only where hiding from reading flow is intended. Recommends consulting the Apple Books compatibility reference for the full rule table, CSS examples, and spine ordering patterns, then re-validating.",
+      "assertions": [
+        "Explains that Apple Books requires an XHTML cover page in the spine rather than a raw image reference.",
+        "Uses epub-cover wrap (or equivalent scaffold behavior) as the fix.",
+        "Preserves properties=cover-image on the raw image for library thumbnails.",
+        "Mentions at least one additional Apple Books rule beyond the EPUB spec and points at the compatibility reference."
+      ]
+    }
+  ]
+}
