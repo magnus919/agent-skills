@@ -1,10 +1,10 @@
 ---
 name: product-methodology
 description: >-
-  Product management frameworks for translating validated evidence into
-  prioritized backlogs, decisions, specifications, and stakeholder
-  communications. Covers RICE, MoSCoW, opportunity solution trees, decision
-  logs, spec drafting, and audience-specific stakeholder communication.
+  Translate validated product evidence into prioritized backlogs, decisions,
+  specifications, and stakeholder communications. Covers RICE, MoSCoW, opportunity
+  solution trees, decision logs, spec drafting, and audience-specific stakeholder
+  communication. Use when the problem is validated and scope is being chosen.
 license: MIT
 metadata:
   source_repo: https://github.com/magnus919/hermes-profiles
