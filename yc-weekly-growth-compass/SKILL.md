@@ -1,11 +1,12 @@
 ---
 name: yc-weekly-growth-compass
-description: Paul Graham's "Startup = Growth" framework as an operational tool. Computes
-  weekly growth rates, benchmarks against YC tiers (1% concerning, 5-7% good, 10%+
-  exceptional), projects compound growth over time, and frames every startup decision
-  through the question "does this serve your target growth rate?" Ships a deterministic
+description: Use Paul Graham's "Startup = Growth" framework as an operational decision
+  tool. Computes weekly growth rates, benchmarks against YC tiers (1% concerning, 5-7%
+  good, 10%+ exceptional), projects compound growth over time, and frames every startup
+  decision through the question "does this serve your target growth rate?" Ships a deterministic
   CLI calculator. Load when founders ask about growth rate, weekly growth, startup
-  traction, metrics, or whether they're moving fast enough.
+  traction, metrics, or whether they're moving fast enough; do not use for general
+  financial modeling or engineering work unrelated to growth metrics.
 license: MIT
 compatibility: Python 3.9+ with standard library only (no external dependencies).
   The growth-compass.py script uses only math, json, and sys.
@@ -94,11 +95,11 @@ python scripts/growth-compass.py \
 
 | Flag | Description | Example |
 |------|-------------|---------|
-| `--project-weeks` | Weeks to project forward (default: 52) | `104` |
-| `--target-revenue` | Target metric to reach | `100000` |
+| `--project-periods` | Periods to project forward (default: 52) | `104` |
+| `--target-value` | Target metric to reach | `100000` |
 | `--metric-name` | Label for the metric (default: "users/revenue") | `"MRR"` |
 | `--json` | Machine-readable JSON output | |
-| `--add-to-weekly` | After computation, log this week's value for next check | |
+| `--dry-run` | Validate inputs and show what would be computed without running | |
 
 #### Output fields
 
@@ -187,7 +188,7 @@ python scripts/growth-compass.py \
   --previous-value 32000 \
   --period monthly \
   --metric-name "MRR" \
-  --target-revenue 100000
+  --target-value 100000
 ```
 
 Growth rate: 9.4% monthly (~2.3% weekly)
@@ -201,3 +202,22 @@ Months to $100K MRR: ~12 months
 - `references/growth-compass-framework.md` — Full essay breakdown with quotes
 - `assets/compound-growth-table.md` — Reference table for quick lookup
 - `yc-default-alive-calculator` companion skill — For financial sustainability analysis
+
+## Available Scripts
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/growth-compass.py` | Deterministic CLI calculator: computes period growth rate, YC benchmark assessment, compound projections (1yr/2yr), doubling time, and time-to-target; accepts two values or a comma-separated series, with text or `--json` output. Run it whenever a founder asks for an actual growth number, projection, or benchmark rather than a rule-of-thumb answer. | `python scripts/growth-compass.py --current-value 1200 --previous-value 1000 --period weekly --json` |
+
+## Prerequisites
+
+- Python 3.9+ with the standard library only (per `compatibility`) — no external packages, API keys, or data files.
+- Real metric inputs: current/previous values for one period, or at least a short series of historical values. The script computes arithmetic; it cannot invent your numbers.
+- The `terminal` toolset (per frontmatter) to execute Python.
+
+## Limitations
+
+- Growth rate is computed from exactly what you pass in: garbage inputs produce confident-looking output, so confirm the metric definition (users vs revenue vs MRR) and the period alignment before trusting results.
+- Projections are pure compounding of the latest rate — they model no churn, seasonality, capacity limits, or deceleration.
+- Series statistics need 3+ points; with only two values there is no mean/median/CWGR trend, just the single interval rate.
+- The YC tier labels are benchmarks from Paul Graham's "Startup = Growth" essay, not a valuation or fundraising judgment.
