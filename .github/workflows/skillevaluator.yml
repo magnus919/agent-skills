@@ -1,0 +1,132 @@
+name: SkillEvaluator advisory gate
+
+# Advisory (non-blocking) Tier 1 quality gate from NVIDIA SkillEvaluator,
+# complementing scripts/validate-skills.rb. See issue #383.
+#
+# Version pinning and the known skew:
+#
+# - skillevaluator is pinned to the v0.1.0 git tag
+#   (commit 4975c97d49e3623eeab739248e52d83c4aa8f582). It is not published to
+#   PyPI; git+tag is the only released distribution channel. The default
+#   `main` branch already carries unreleased 0.2.0 content, so a bare
+#   `git+https://...` install would drift under every push — hence the tag.
+#
+# - SkillSpector is deliberately NOT installed. At implementation time the
+#   latest releases were skillevaluator v0.1.0 (2026-08-05) and SkillSpector
+#   v2.9.6 (2026-08-18); upstream still documents SkillSpector as "separately
+#   installed and unpinned by this distribution" with no blessed version pair
+#   (v0.1.0 CHANGELOG, Fixed section). The historical skew described in #383
+#   (LOW severity mapping to CAUTION instead of SAFE, scoring-math
+#   disagreements) made 4/153 skills produce incomplete scans in earlier local
+#   runs even when pinned to SkillSpector @v2.5.3. Rather than gamble on an
+#   unpinned scanner in CI, this workflow runs NVIDIA's documented keyless
+#   check set -- schema,pii,license,quality,unicode,lint -- which excludes the
+#   security scan by design. Security findings are therefore out of scope for
+#   this gate; scripts/validate-skills.rb plus repo-local tests remain the
+#   deterministic floor, and any future promotion of the security scan here
+#   must first pin both tools to a documented compatible pair.
+
+on:
+  pull_request:
+    paths:
+      - '*/SKILL.md'
+      - '*/references/**'
+      - '*/scripts/**'
+      - '*/evals/evals.json'
+      - '.github/workflows/skillevaluator.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - '*/SKILL.md'
+      - '*/references/**'
+      - '*/scripts/**'
+      - '*/evals/evals.json'
+      - '.github/workflows/skillevaluator.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  advisory:
+    name: Tier 1 keyless validation (advisory)
+    runs-on: ubuntu-latest
+    # Genuinely advisory: failures surface as neutral checks and never block
+    # merge. This job is intentionally NOT a required branch-protection check;
+    # promote it to blocking only after the baseline noise floor (issue #383)
+    # is reviewed and each check's signal is understood.
+    continue-on-error: true
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install pinned skillevaluator
+        # Pinned exactly: skillevaluator v0.1.0 via git tag (not on PyPI).
+        # Keyless: no SKILL_EVAL_LLM_* credentials are configured, and the
+        # selected checks below are all LLM-free.
+        run: |
+          python3 -m pip install --user \
+            "skillevaluator @ git+https://github.com/NVIDIA/SkillEvaluator.git@v0.1.0"
+          echo "$(python3 -m site --user-base)/bin" >> "$GITHUB_PATH"
+
+      - name: Detect changed skills
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          skills=$(
+            git diff --name-only "$BASE_SHA" HEAD -- \
+              '*/SKILL.md' '*/evals/evals.json' '*/scripts/**' '*/references/**' \
+              | awk -F/ 'NF > 1 { print $1 }' \
+              | sort -u \
+              | while read -r skill; do
+                  if [ -f "$skill/SKILL.md" ]; then
+                    printf '%s\n' "$skill"
+                  fi
+                done \
+              | head -10 \
+              | paste -sd' ' -
+          )
+          echo "skills=$skills" >> "$GITHUB_OUTPUT"
+          echo "Changed skills: ${skills:-<none>}"
+
+      - name: Run SkillEvaluator Tier 1 per changed skill
+        if: steps.changed.outputs.skills != ''
+        env:
+          CHANGED_SKILLS: ${{ steps.changed.outputs.skills }}
+        run: |
+          mkdir -p reports
+          for skill in $CHANGED_SKILLS; do
+            start=$(date +%s)
+            if skillevaluator validate "./$skill" \
+                --checks schema,pii,license,quality,unicode,lint \
+                --no-dedup \
+                -r json \
+                -o "reports/$skill"; then
+              verdict=PASS
+            else
+              verdict=FAIL
+            fi
+            end=$(date +%s)
+            report=$(ls -t "reports/$skill"/skillevaluator-output-*.json 2>/dev/null | head -1 || true)
+            summary_line="unknown"
+            score="n/a"
+            if [ -n "$report" ]; then
+              summary_line=$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print("errors=%s warnings=%s status=%s incomplete=%d" % (d.get("total_errors","?"), d.get("total_warnings","?"), d.get("overall_status","?"), len(d.get("incomplete_scans") or [])))' "$report")
+              score=$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); qs=d.get("quality_summary") or []; print("%s/100 (%s)" % (qs[0].get("overall_score","?"), qs[0].get("grade","?")) if qs else "n/a")' "$report")
+            fi
+            echo "::warning title=SkillEvaluator:$skill::advisory result for $skill: $verdict quality=$score $summary_line"
+            echo "$verdict  $skill  quality=$score  ($summary_line)  $((end - start))s"
+          done
+          # Advisory only: never propagate validation failures to the PR.
+          exit 0
+
+      - name: Upload SkillEvaluator JSON reports
+        if: always() && steps.changed.outputs.skills != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: skillevaluator-reports
+          path: reports/
+          retention-days: 7
