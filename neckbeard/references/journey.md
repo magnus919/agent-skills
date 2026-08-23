@@ -76,8 +76,8 @@ assessed position under this journey's rules.
 |---|---|
 | **Owner** | `spec-driven-development` (see [routing-table.md](routing-table.md)) |
 | **Input** | Phase 3 output: approved architecture delta, decisions, and risk assessment (gate 1 passed). |
-| **Output** | Packet group (g) partially: `SPEC.md` with acceptance criteria mapped to the change contract; `TASK-PLAN.md` covering every spec item and acceptance criterion. No task is unbounded or ownerless. |
-| **Gate** | **Gate 3** — specification and task-plan completeness (see [stages.md](stages.md)). `SPEC.md` and `TASK-PLAN.md` must be complete and approved before the planning phase exits. |
+| **Output** | Packet group (g) partially: `SPEC.md` with acceptance criteria mapped to the change contract, including **at least one criterion traced to the requester's stated outcome/problem restated in phase 2** (packet group (d)); `TASK-PLAN.md` covering every spec item and acceptance criterion. No task is unbounded or ownerless. |
+| **Gate** | **Gate 3** — specification and task-plan completeness (see [stages.md](stages.md)). `SPEC.md` and `TASK-PLAN.md` must be complete — including the requester-outcome traceability criterion — and approved before the planning phase exits. |
 | **Escalation** | Requirements are irreconcilably ambiguous after product-discovery engagement; or scope exceeds granted authority and requires re-negotiation. |
 | **Platform mapping** | **GitHub mode:** spec artifacts committed to the working branch; acceptance criteria may reference issue comments. **Enterprise mode:** spec artifacts stored per project conventions; requirements traced to the ticket tracker. |
 

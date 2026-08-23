@@ -35,7 +35,10 @@
 
 ## Acceptance criteria
 <!-- Observable conditions that mean "satisfied." Each should be checkable at a
-     named boundary (unit / integration / end-to-end / production). -->
+     named boundary (unit / integration / end-to-end / production).
+     At least one criterion must trace back to the Problem section above —
+     it proves the change solves the requester's actual problem, not just
+     that the build matches the spec. -->
 
 ## Declared verification target
 <!-- The boundary the contract actually cares about. This is what "done" must be
