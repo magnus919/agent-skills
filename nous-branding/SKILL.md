@@ -25,6 +25,14 @@ metadata:
 
 Generate images and brand-consistent visual content inspired by **Nous Research** ("The AI accelerator company").
 
+## When not to use
+
+- **Non-Nous design work** — this skill encodes one specific brand system; do
+  not apply its palette, textures, mascot, or compliance rules to unrelated
+  brands or generic design requests.
+- **Official brand representation** — the Nous Girl mascot is not a substitute
+  for the logo; use the Nous Research wordmark/symbol for official brand use.
+
 ## Reference Images
 
 This skill ships reference images in `assets/` that can be used as visual anchors for img2img, style transfer, image variation, or prompt construction:
@@ -58,214 +66,16 @@ Nous Research's visual identity is a **three-way fusion**:
 
 ---
 
-## Color Palette
+## Loading Guide
 
-### Hero Palette (from reference image analysis)
+Load references on demand — do not load everything at once.
 
-| Color | Hex | RGB | Usage |
-|-------|-----|-----|-------|
-| Electric Blue | `#3847FF` | (56, 71, 255) | Primary accent, mascot hair highlights, interactive elements, key brand color |
-| Soft Lavender | `#BDA6FF` | (189, 166, 255) | Secondary accent, gradient blends, soft highlights |
-| Burnt Orange | `#D6825A` | (214, 130, 90) | Geometric overlay lines, text accents, HUD elements |
-| Deep Teal | `#2E706B` | (46, 112, 107) | Secondary backgrounds, zine section fills |
-| Off-White | `#E6E6E6` | (230, 230, 230) | Text on dark backgrounds, paper backgrounds |
-| Near Black | `#00000E` | (0, 0, 14) | Primary background, heavy text, dark framing |
-
-### Extended Palette
-
-| Color | Hex | Usage |
-|-------|-----|-------|
-| Deep Navy | `#003681` | Secondary brand color, headers |
-| Medium Blue | `#0051c3` | Interactive elements, links |
-| Coral Red | `#fc574a` | Alerts, emphasis accents |
-| Gold | `#E6C666` | Constellation lines, geometric overlays |
-| Charcoal | `#1d1d1d` | Dark UI backgrounds |
-
-### Palette Principles
-
-- **High contrast is the rule** — deep near-black backgrounds against bright electric blue accents
-- **Electric blue (#3847FF) is the signature color** — use it for the most important accent elements
-- **Grunge textures over solid colors** — never use flat, clean color blocks; always overlay with grain, noise, or scan lines
-- **Color is reserved for hero/feature content** — the brand booklet is >95% grayscale
-- **Gold/orange geometric lines** (`#D6825A`, `#E6C666`) for HUD-style overlays and constellation motifs
-
----
-
-## Logo & Mascot
-
-### The Nous Girl (primary mascot)
-
-The single most recognizable brand element. Based on the official brand booklet (pages 8-9).
-
-| Element | Description |
-|---------|-------------|
-| **Style** | Retro 1970s-80s manga/anime cel-shaded, high-contrast pure black/white |
-| **Head-to-body** | Head proportionally large (manga proportions) |
-| **Pose** | Three-quarter profile, looking upward and to the left |
-| **Features** | One large detailed eye with long spiky lashes, small delicate nose, lips slightly parted |
-| **Hair** | Distinctive voluminous bob, solid black with sharp jagged edges against white background, straight bangs covering forehead |
-| **Headphones** | The white cushioned arch visible across the crown IS the headphone band — the ear cups are partially obscured by the hair in the badge portrait. **White over-ear headphones** in all canonical poses. Black headphones are incorrect. |
-| **Alternate** | 3 alternate poses showing different angles of the same headphone variant |
-| **Expression** | Neutral, calm, attentive — a quiet stillness. Not sad, not melancholic, not crying. The brand booklet describes her as "neutral, perhaps slightly surprised or attentive." |
-| **Shirt** | White structured collared shirt |
-| **Technique** | Pure black ink on white paper — no gray, no shading, no digital gradients |
-| **Facial markings** | None — clean, clear skin, no tattoo, no tear, no scar |
-
-### Official Pose Variants
-
-| Pose | Angle | Primary Use |
-|------|-------|-------------|
-| **Primary Badge** | Three-quarter profile, looking upward-left | Main logo lockup, merchandise, official branding |
-| **Headphone — ¾ Profile** | Three-quarter facing right | Hermes/Theia ecosystem, tech contexts |
-| **Headphone — Profile Left** | Full profile facing left | Social media, alternate applications |
-| **Headphone — Small Profile** | Smaller profile facing left | Secondary placement, watermarks |
-
-### Usage Rules
-
-- The mascot is **not a substitute for the logo** — use the Nous Research wordmark/symbol for official brand representation
-- **White over-ear headphones** in all poses — the ear cups are partially obscured by the voluminous hair in the badge portrait, but the white cushioned arch across the crown confirms headphones in every variant
-- Black headphones are incorrect
-- **No facial markings** — clean skin, no tattoo, no scar, no tear
-- Pure black-and-white high-contrast is the default; electric blue accents are for hero/feature content only
-
----
-
-## Typography
-
-From the Hermes-Theia brand system sheet (visible in `assets/palette-typography-reference.png`):
-
-| Role | Font | Treatment |
-|------|------|-----------|
-| **Display / Headline** | Heavy sans-serif (Druk Condensed / Impact style) | Massive, uppercase, with distressed/grunge texture |
-| **Body / Supporting** | Inter or IBM Plex Sans | Clean sans-serif, uppercase with loose tracking |
-| **Code / Technical** | JetBrains Mono | Small, compact, monospace — for version numbers, technical labels |
-
----
-
-## Texture System
-
-The brand defines five key textures that should be applied to all visuals. Reference examples available in `assets/palette-typography-reference.png`:
-
-| Texture | Description | Application |
-|---------|-------------|-------------|
-| **Risograph Grain** | Coarse, halftone-style dot grain | Background fills, image overlays |
-| **Photocopy Noise** | Speckled noise, static | Shadow areas, dark regions |
-| **CRT / Scan Lines** | Horizontal scan lines | Technical/screen elements |
-| **Paper Fiber** | Subtle paper texture | Backgrounds, zine sections |
-| **Ink Smudge** | Irregular ink spread/bleed | Edges of type, borders |
-
-**Key rule:** These textures should feel **raw, analog, and imperfect** — the opposite of polished corporate design.
-
----
-
-## Art Style
-
-### Core Attributes
-
-| Attribute | Description |
-|-----------|-------------|
-| **Primary aesthetic** | "Cyber-classical" — classical sculpture meets cyberpunk |
-| **Medium** | Digital mixed media: renders + photomontage + hand-drawn illustration |
-| **Technique** | Photomontage (classical statues with digital overlays), blueprint technical drawings, cel-shaded anime |
-| **Shading** | High-contrast chiaroscuro — deep shadows against bright highlights |
-| **Texture** | Always textured — never clean or flat |
-| **Lighting** | Dramatic spot lighting, light beams from eyes, neon edge highlights |
-| **Composition** | Multi-panel grid layouts (system sheets); dramatic offset subjects (hero images) |
-
-### What the Style is NOT
-
-- NOT flat vector illustration
-- NOT corporate minimalist
-- NOT purely photographic
-- NOT bright, saturated, or cheerful
-- NOT glossy/skeuomorphic
-
----
-
-## Style Lanes
-
-Choose the lane that matches your output's purpose. Each lane encodes a distinct composition grammar, palette discipline, and print technology.
-
-| Lane | Palette | Best For |
-|------|---------|----------|
-| **Xerox Poster** | Pale cyan paper, black/dark teal ink, optional red accent | Release announcements, stark social images |
-| **Manual / Letterpress Cover** | Aged tan paper, dark teal-black ink, red rule | Specs, manuals, technical announcements |
-| **Industrial Duotone** | Cobalt blue, acid yellow, black | Product shots, system graphics, infrastructure |
-| **Minimal Stipple Field** | Cream paper, navy stipple, turquoise border | Quiet editorial covers, abstract banners |
-| **Blue Registration Character** | Deep blue, orange registration marks | Agent identity, symbolic personas |
-| **Legacy PNW / Celestial** | Electric blue, purple, amber, off-white | Classic luminous Hermes/PNW requests |
-
-### Lane 1 — Xerox Poster
-For stark announcements and punchy social images. High-contrast xerox-style poster on colored paper stock.
-
-Prompt cues: high-contrast xerox poster, pale cyan paper stock, black/dark teal ink, dense horizontal scanlines, harsh bitmap thresholding, bold block `NOUS` wordmark near top, centered anonymous subject, worn border/crop marks.
-
-```text
-High-contrast xerox-style poster release announcement on pale cyan paper. [Subject description]. Black ink with dense horizontal scanlines, rough halftone breakup. Bold block `NOUS` wordmark near top. Centered poster composition with worn border and crop marks. --ar 16:9
-```
-
-### Lane 2 — Manual / Letterpress Cover
-For specs, manuals, and technical documentation covers. Distressed letterpress on aged stock.
-
-Prompt cues: distressed letterpress technical manual cover, aged tan paper stock, thick dark teal-black border, compact all-caps condensed typography, red horizontal rule accent, scuffed ink, worn paper corners, `NOUS` as leading stamped brand word.
-
-```text
-Distressed letterpress technical manual cover for [project]. Aged tan paper stock, thick dark teal-black border, compact all-caps condensed typography, red horizontal rule accent, scuffed ink and worn paper corners. `NOUS` as leading stamped brand word. --ar 4:5
-```
-
-### Lane 3 — Industrial Duotone Grid
-For product shots, system graphics, and infrastructure visuals. Edge-to-edge duotone with repeated artifacts.
-
-Prompt cues: edge-to-edge industrial duotone print, repeated rounded branded artifacts, saturated cobalt blue and acid yellow, blown-out ink highlights, dense halftone dots, small embedded `NOUS` marks.
-
-```text
-Edge-to-edge industrial duotone print for [product/release]. Repeated branded components in cobalt blue and acid yellow against black. Dense halftone dots, blown-out ink highlights, small embedded `NOUS` marks on artifacts. --ar 16:9
-```
-
-### Lane 4 — Minimal Stipple Field
-For quiet, refined, abstract graphics with generous negative space.
-
-Prompt cues: abstract risograph/screenprint poster, cream paper base, navy stipple field fading downward, thin turquoise double border, small centered `NOUS` capsule mark, lots of negative space.
-
-```text
-Abstract risograph poster on cream paper. Navy stipple field fading downward, thin turquoise double border, small centered `NOUS` capsule mark. Generous negative space. Restrained, editorial. --ar 4:5
-```
-
-### Lane 5 — Blue Registration Character
-For agent identity and symbolic character posters. Moody blue screenprint with technical registration marks.
-
-Prompt cues: moody blue screenprint poster, anonymous illustrated character, electric-blue posterized lighting, dark cyan-black field, orange registration marks, thin frame lines, scratches, analog grain.
-
-```text
-Moody blue screenprint poster for [project/agent]. Anonymous character subject with electric-blue posterized lighting against dark cyan-black field. Orange registration marks, thin frame lines, scratches, analog grain. --ar 4:5
-```
-
-### Legacy Lane — PNW / Celestial
-For classic Nous/Hermes luminous imagery. Used when the request explicitly asks for the misty, glowing, portal-driven aesthetic.
-
-Prompt cues: dark navy background, misty atmospheric depth, portal/orb/beam light source, electric blue and purple accents, sacred geometry, lone figure.
-
-```text
-Dark atmospheric scene with [subject description]. Misty PNW atmosphere, luminous portal/orb light source, electric blue accent, soft bloom, geometric framing. Match the classic luminous Hermes visual style. --ar 16:9
-```
-
----
-
-## Reference Catalog
-
-Each asset in `assets/` maps to specific style lanes. Use this table to find the right reference image for your generation:
-
-| Asset | Lanes | Best Used For |
-|-------|-------|---------------|
-| `assets/nous-girl-official-badge.png` | All lanes (mascot subject) | Primary Nous Girl reference — badge portrait, white headphones, 3/4 profile |
-| `assets/nous-girl-sketch-sheet.png` | All lanes (mascot subject) | Character pose reference — all 4 canonical poses |
-| `assets/nous-girl-philosophy.png` | Legacy PNW / Celestial | Brand philosophy visual context |
-| `assets/nous-girl-official.webp` | All lanes (mascot subject) | Web-resolution mascot from nousresearch.com |
-| `assets/palette-typography-reference.png` | All lanes (palette/style) | Color palette and typography specimen reference — use with any lane |
-| `assets/brand-collage-reference.png` | Legacy PNW / Celestial, Blue Registration | Cyber-classical HUD collage reference |
-| `assets/nous-girl-style-reference.png` | All lanes (headphone variant) | Stylized mascot with headphones and electric blue accents |
-
-**Rule of thumb:** Load the reference image that matches your lane's visual grammar. For Xerox Poster lanes, the palette-typography card is more useful than the mascot badge. For character-focused outputs, the sketch sheet is the primary reference.
+| File | Load when |
+|------|-----------|
+| [references/style-lanes.md](references/style-lanes.md) | Choosing a style lane or writing a lane-specific prompt — full lane grammar, prompt cues, example prompts, and the asset-to-lane Reference Catalog |
+| [references/visual-system.md](references/visual-system.md) | Constructing or reviewing an image against the visual system — hero + extended palettes, Nous Girl spec and pose variants, typography, texture system, art style |
+| [references/post-processing.md](references/post-processing.md) | Delivering any generated image — mandatory post-process modes (`imprint`/`nous`/`standard`) and intensity calibration for `scripts/postprocess.py` |
+| [`references/pitfalls.md`](references/pitfalls.md) | Output doesn't match expectations — known failure modes and mitigations |
 
 ---
 
@@ -356,44 +166,13 @@ State what to **preserve** from the reference, then what to **add**:
 
 ## Post-Processing
 
-Raw AI-generated images are too clean for the Nous aesthetic. **Post-processing is mandatory** after every generation. The `scripts/postprocess.py` script applies analog-print degradation effects locally using Pillow + numpy — no API calls needed.
-
-### Quick Start
+Raw AI-generated images are too clean for the Nous aesthetic. **Post-processing is mandatory** after every generation — the raw generated image is never the final deliverable.
 
 ```bash
 python3 scripts/postprocess.py input.png output.png --mode imprint --intensity 0.7
 ```
 
-### Modes
-
-| Mode | Effects | When |
-|------|---------|------|
-| `imprint` | All 14 effects: warm grade, CRT scanlines, film grain, Bayer dither, vignette, chromatic aberration, screen print texture, paper fiber, ink bleed, palette compression, xerox threshold, registration offset, plate wobble, print scuffs | **Default for v9/v10/v11 targets** — maximum analog print character |
-| `nous` | Base 9 effects (warm grade → ink bleed) — no xerox/registration/wobble/scuffs | Legacy luminous PNW/celestial requests |
-| `standard` | Base 6 effects (warm grade → chromatic aberration) only | When you want just a light texture touch |
-
-### Intensity Calibration
-
-| Intensity | Best for |
-|-----------|----------|
-| `0.45–0.55` | Fine manga linework, Future Halftone, Portal Minimal — keep detail visible |
-| `0.55–0.65` | Blueprint Scene, general use — avoid crushing midtones |
-| `0.65–0.8` | Xerox Poster, Acid Signal, heavy print effect — when the raw output is too clean |
-| `0.8+` | Aggressive degradation — typography may become hard to read |
-
-### Integration
-
-Run post-processing as the final step after any generation method (text-only, img2img, multi-pass, or any provider):
-
-```bash
-# After any generation method:
-python3 scripts/postprocess.py output-raw.png output-final.png --mode imprint --intensity 0.7
-
-# For legacy luminous targets:
-python3 scripts/postprocess.py output-raw.png output-final.png --mode nous --intensity 0.5
-```
-
-**The raw generated image is never the final deliverable.**
+Run it as the final step after any generation method (text-only, img2img, multi-pass, or any provider). For mode selection (`imprint` / `nous` / `standard`) and intensity calibration per output type, load [references/post-processing.md](references/post-processing.md).
 
 ---
 
@@ -440,3 +219,5 @@ For a complete list of known failure modes and mitigations, see [`references/pit
 - [ ] If text appears: heavy distressed display for titles, clean sans for labels, monospace for code
 - [ ] No flat/clean/corporate polish — finish is raw and tactile
 - [ ] Overall impression: intellectual, gritty, underground research lab
+
+Full color tables, the complete Nous Girl mascot specification with pose variants, typography roles, texture definitions, and art-style attributes live in [references/visual-system.md](references/visual-system.md); lane-specific prompt construction lives in [references/style-lanes.md](references/style-lanes.md).

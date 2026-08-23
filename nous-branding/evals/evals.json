@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "skill_name": "nous-branding",
+  "evals": [
+    {
+      "id": "mascot-prompt-construction",
+      "prompt": "Generate an image of the Nous Research mascot girl for a brand post. She keeps coming out sad and with black headphones — write me a prompt that gets her right.",
+      "expected_output": "Uses Method 2 (Nous Girl Mascot) prompt construction from the skill: high-contrast retro manga/anime portrait, 1970s-80s cel-shaded style, large anime eyes, solid black bob with blunt straight-across bangs, white over-ear headphones, three-quarter profile facing left, pure black ink on white with no grayscale. Explicitly negates the two known failure modes: states 'neutral, calm, attentive expression — not sad, not crying' (calm alone is insufficient, models default to melancholy) and specifies white headphones because black headphones are a known model failure. Does not add facial markings. For color variants, electric blue #3847FF hair highlights are optional; the default is pure black-and-white.",
+      "assertions": [
+        "Specifies white over-ear headphones explicitly as part of the prompt.",
+        "Includes explicit negation of sadness: neutral calm attentive, not sad, not crying.",
+        "Describes the retro 1970s-80s manga cel-shaded style in high-contrast black and white.",
+        "Requests three-quarter profile facing left with blunt bangs / voluminous black bob hair.",
+        "Contains no facial markings (no teardrop, tattoos, or scars)."
+      ]
+    },
+    {
+      "id": "palette-and-texture-compliance",
+      "prompt": "I need a hero image for our Nous Research landing page. Make it look clean and modern with a light background so it feels professional.",
+      "expected_output": "Pushes back on the clean/light direction because it violates the brand system: the aesthetic is cyber-classical with deep near-black (#00000E) backgrounds, electric blue (#3847FF) as the primary accent, soft lavender #BDA6FF / burnt orange #D6825A / deep teal #2E706B support, off-white #E6E6E6 text, and mandatory grunge texture (risograph grain, photocopy noise, CRT scan lines) — never flat, clean color blocks. Corporate/sterile polish is listed as an anti-pattern; the correct vibe is intellectual but gritty, an underground research lab. Offers the compliant alternative: dark background, high-contrast chiaroscuro lighting, textured finish, palette restricted to the specified hex values, verified against the Brand Compliance Checklist.",
+      "assertions": [
+        "Cites near-black #00000E background and electric blue #3847FF primary accent from the hero palette.",
+        "Explains that clean/corporate polish is off-brand and textures (grain, scan lines, photocopy noise) are mandatory.",
+        "Restricts the palette to the specified hex values rather than inventing colors.",
+        "Proposes the intellectual-gritty underground-lab mood instead of a SaaS landing-page feel."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "style-lane-selection-and-reference-image",
+      "prompt": "Announce our new open-source model release with a stark social media image in the Nous brand style. Which visual approach should I use, and should I attach any reference images?",
+      "expected_output": "Selects the Xerox Poster lane: high-contrast xerox-style poster on pale cyan paper stock, black/dark teal ink with dense horizontal scanlines and harsh bitmap thresholding, bold block NOUS wordmark near top, centered anonymous subject, worn border and crop marks — best for release announcements and stark social images. Uses the lane's example prompt template adapted to the release subject. For references, recommends the palette-typography reference card (per the rule of thumb, more useful than the mascot badge for xerox lanes); if the mascot should appear, uses assets/nous-girl-sketch-sheet.png or the official badge for pose consistency. Reminds that the raw generation must be post-processed afterward (imprint mode) before publishing.",
+      "assertions": [
+        "Recommends the Xerox Poster lane for a release announcement social image.",
+        "Describes the lane's grammar: pale cyan paper, black/dark teal ink, scanlines, NOUS wordmark, crop marks.",
+        "Adapts or provides the lane's example prompt rather than generic brand prose.",
+        "Points at the palette-typography reference image (or sketch sheet/badge if the mascot appears) per the asset-to-lane mapping.",
+        "Notes that post-processing is required after generation."
+      ]
+    },
+    {
+      "id": "post-processing-mandatory-before-delivery",
+      "prompt": "I just generated a Nous-branded image and it looks great raw. Can I ship it as-is?",
+      "expected_output": "Says no — raw AI output is too clean for the Nous aesthetic and is never the final deliverable; post-processing is mandatory after every generation. Runs scripts/postprocess.py on the raw file first, e.g. `python3 scripts/postprocess.py input.png output.png --mode imprint --intensity 0.7`. Chooses the mode deliberately: imprint (all 14 effects) as the default for current targets, nous (base 9 effects) only for legacy luminous PNW/celestial requests, standard (light touch) when minimal texture is wanted. Calibrates intensity to content — roughly 0.45-0.55 for fine manga linework to keep detail visible, up to 0.65-0.8 for xerox-poster heaviness — and warns that 0.8+ can make typography hard to read.",
+      "assertions": [
+        "States that raw generated output must not be delivered without post-processing.",
+        "Gives a concrete scripts/postprocess.py command with mode and intensity flags.",
+        "Distinguishes the imprint, nous, and standard modes and when each applies.",
+        "Calibrates intensity to the artwork type (lower for fine linework, higher for heavy print effect)."
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "reference-image-workflow-over-text-only",
+      "prompt": "What's the best way to generate consistent Nous Girl images across many generations?",
+      "expected_output": "Recommends Method 4: reference-image-driven generation using scripts/generate-with-ref.py, which reads the Hermes config, resolves the active image provider, and uploads an official assets/ reference (e.g., assets/nous-girl-official-badge.png) as contextual input via the provider's image-edit endpoint — bypassing text-only image_generate. Explains why: text-only prompts lose the precise cel-shaded ink style, proportions, and contrast balance. Shows the command shape (--prompt, --reference, --aspect, --quality) and how to phrase prompts for reference workflows: state what to preserve from the reference (white over-ear headphones, collared shirt, blunt bangs, neutral expression, high-contrast black-on-white manga style), then add scene details. Notes the API alternatives table (OpenAI edits/variations, Midjourney --sref, ComfyUI IPAdapter, SD img2img strength 0.7-0.8) when not using the script.",
+      "assertions": [
+        "Recommends reference-image-driven generation over text-only prompting for consistency.",
+        "Names scripts/generate-with-ref.py with its key flags including --reference pointing at an assets/ image.",
+        "Instructs stating what to preserve from the reference before adding new scene details.",
+        "Mentions at least one alternative API workflow for reference-based generation."
+      ]
+    },
+    {
+      "id": "non-brand-request-routes-away",
+      "prompt": "Design a minimalist pastel logo for my bakery's new packaging, something soft and friendly.",
+      "expected_output": "Recognizes this is outside the skill's scope and says so: nous-branding exists for visuals in the Nous Research / Theia / Hermes ecosystem and its brand rules (dark palettes, grunge textures, cyber-classical style, the Nous Girl) would be actively wrong for a friendly pastel bakery identity. Declines to apply Nous brand constraints and offers to help with a generic brand/logo design task instead, without invoking the Nous palette, mascot, texture system, or compliance checklist.",
+      "assertions": [
+        "Declines to apply the Nous brand system to a non-Nous design request.",
+        "Does not inject Nous palette hex values, textures, or mascot elements into the deliverable.",
+        "Offers a path forward for the user's actual (generic branding) need."
+      ],
+      "case_set": "dev"
+    }
+  ]
+}
