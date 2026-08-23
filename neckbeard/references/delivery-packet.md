@@ -37,7 +37,7 @@ into another or left to implication.
 | **(f)** | **Design: architecture delta / decisions / risks / compatibility / migration / rollback** | Architecture delta (or a documented "no delta" determination); decisions and rejected alternatives; risks; compatibility analysis; migration strategy; rollback plan. |
 | **(g)** | **Plan: spec / acceptance criteria / test strategy / task plan / verification report paths** | Path to `SPEC.md`; acceptance criteria mapping; test strategy; path to `TASK-PLAN.md`; path to the QA verification plan; verification report paths. |
 | **(h)** | **Gates: verdicts / assumptions / rejected alternatives / unresolved boundaries / evidence pointers** | A verdict per gate (identifier, pass/conditional/blocked, evidence, head SHA); assumptions; rejected alternatives; unresolved boundaries; pointers to evidence artifacts. |
-| **(i)** | **Lifecycle: PR number / CI status / review status / final verified head SHA / release status** | PR (or review-submission) number; CI status; review status; the **final verified head SHA**; release status; terminal lifecycle state and its evidence; **rollback/follow-up triggers** recorded at closeout (what would cause re-entry). |
+| **(i)** | **Lifecycle: PR number / CI status / review status / final verified head SHA / release status** | PR (or review-submission) number; CI status; review status; the **final verified head SHA**; release status; terminal lifecycle state and its evidence; **rollback/follow-up triggers** recorded at closeout (what would cause re-entry); **lesson capture** recorded at closeout per Stage 6 ([stages.md](stages.md)) — the reusable lesson(s) with their durable destination, or an explicit "no reusable lesson identified" determination. |
 
 Group (e) and group (h) carry the fields that make skip transparency and gate
 discipline auditable; see their rules below.
@@ -129,11 +129,14 @@ terminal state is **not re-opened by a later phase**. New work starts a new pack
 **ready** packet that fails a gate or CI returns to **in-review** (not terminal);
 only a blocked verdict makes it **blocked**.
 
-Rollback/follow-up triggers are recorded **in** the terminal record at closeout
-(see group (i)); they document what would cause re-entry but do not re-open the
+Rollback/follow-up triggers and closeout lesson capture (per Stage 6,
+[stages.md](stages.md)) are recorded **in** the terminal record at closeout
+(see group (i)); they document what would cause re-entry — and what was
+learned, or that no reusable lesson was identified — but do not re-open the
 packet. When a recorded trigger fires, the follow-up work starts as a new change
 request through phase 1 intake, carrying the trigger reference from the closed
-packet's record.
+packet's record. A captured lesson lands in its durable destination (skill,
+memory, or project docs) directly; it is not consumed by re-opening this packet.
 
 ## Blocked-state semantics
 
@@ -264,6 +267,9 @@ packet records "no specialist selected — no applicability signal triggered," a
 work proceeds on the neckbeard spine; this is neither a silent omission nor a
 fabricated reason. The stages reference (`references/stages.md`) and routing table
 (`references/routing-table.md`) define the signals and skip rules cited here.
+The same doctrine governs closeout lesson capture: recording an explicit
+"no reusable lesson identified" determination in group (i) is a recorded skip,
+not an omission; leaving the field blank is prohibited.
 
 ## Portability
 

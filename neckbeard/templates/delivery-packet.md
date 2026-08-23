@@ -151,6 +151,7 @@ gate-1 (architecture/design delta) | pass | a1b2c3d | ARCHITECTURE-DELTA.md | no
 - **Terminal lifecycle state:** _[fill: merged / closed / blocked / released]_
 - **Terminal state evidence:** _[fill: merge commit SHA, closure reason, or blocker reference]_
 - **Rollback/follow-up triggers:** _[fill: conditions that would cause re-entry after closeout — e.g., a post-release regression requiring rollback or an operational discovery; write "none identified" if there are none. Recorded in the terminal record; any follow-up starts a new change request via phase 1 intake, never by re-opening this packet.]_
+- **Lessons captured:** _[fill: reusable lesson(s) captured per Stage 6 "Deliver and learn" with their durable destination — skill, memory, or project docs — e.g., "multi-byte input handling lesson → project docs runbook"; or write "no reusable lesson identified". Recorded in the terminal record; silent omission is prohibited.]_
 
 **Example (populated lifecycle):**
 
@@ -165,6 +166,8 @@ Terminal state evidence:          merge commit 8c31ef4
 Rollback/follow-up triggers:      post-release smoke check failure in the
                                   export path; operational discovery of
                                   multi-byte handling in adjacent endpoints
+Lessons captured:                 multi-byte input boundary lesson →
+                                  project docs runbook (export section)
 ```
 
 ### Blocked-state record
