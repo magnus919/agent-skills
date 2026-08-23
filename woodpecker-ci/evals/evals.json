@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "skill_name": "woodpecker-ci",
+  "evals": [
+    {
+      "id": "new-compose-deployment",
+      "prompt": "Set up Woodpecker CI for our Forgejo instance using Docker Compose on a fresh host, with one agent.",
+      "expected_output": "Scenario: new server/agent deployment. The agent loads woodpecker-ci and follows references/setup.md: copies templates/docker-compose.yml as compose.yaml, fills the .env from templates/forgejo.env.example (WOODPECKER_OPEN=false, shared WOODPECKER_AGENT_SECRET, OAuth client id/secret for the forge), validates with `docker compose config --quiet`, starts the stack, then verifies server health, agent connected state, and the forge connection with `docker compose ps`, logs, and scripts/woodpecker-doctor.py. SemVer image tags are pinned rather than latest.",
+      "assertions": [
+        "references/setup.md is consulted before writing configuration",
+        "The agent secret is shared between server and agent and OPEN registration stays disabled",
+        "Configuration is linted (docker compose config) before starting services",
+        "Runtime health is verified after startup, including a woodpecker-doctor probe",
+        "Explicit image tags are used instead of :latest"
+      ]
+    },
+    {
+      "id": "pipeline-yaml-authoring",
+      "prompt": "Write a .woodpecker.yml that runs tests on pushes to main and on PRs, builds our container image only on main, and uses a Postgres service container for the test step.",
+      "expected_output": "Scenario: workflow YAML authoring. The agent loads references/pipeline-syntax.md and produces a pipeline where the when conditions encode push+main and pull_request events correctly (event/branch combination understood: when lists are OR across entries, AND within an entry), defines the postgres service with proper image and environment variables, and does not treat depends_on as a readiness check — adding a wait or health handling before tests touch the database. The file is validated with `woodpecker-cli lint .woodpecker.yml` (and optionally exec locally), noting that server-managed secrets are unavailable in local exec.",
+      "assertions": [
+        "when conditions distinguish main-branch pushes from pull_request events",
+        "A Postgres service container is defined for the test workflow",
+        "depends_on is not relied on as a readiness check for the service",
+        "The pipeline is linted before being committed"
+      ]
+    },
+    {
+      "id": "queued-pipeline-diagnosis",
+      "prompt": "Our pipelines have been stuck in queued for 20 minutes after a push. Nothing shows up. Diagnose it.",
+      "expected_output": "Scenario: incident troubleshooting. The agent runs the operating loop: probes connectivity first with scripts/woodpecker-doctor.py against the server URL, checks whether agents are connected and their labels/backend match what the repository's workflows require, inspects the forge webhook Recent Deliveries for the push event, and consults references/troubleshooting.md plus failure-signatures.md rather than randomly editing YAML. The diagnosis separates forge/webhook causes from agent-capacity or label-mismatch causes and records evidence found at each boundary.",
+      "assertions": [
+        "woodpecker-doctor.py or equivalent health verification happens before config changes",
+        "Forge webhook delivery status is inspected",
+        "Agent labels/backend matching is checked as a queue-starvation cause",
+        "Troubleshooting/failure-signatures references guide the diagnosis instead of blind YAML edits"
+      ]
+    },
+    {
+      "id": "secret-safety-untrusted-prs",
+      "prompt": "Our integration tests need the STAGING_API_TOKEN secret, but they also need to run on pull requests from forks. Make that work.",
+      "expected_output": "Scenario: secrets vs untrusted code. The agent applies references/security.md defaults: by default secrets are not exposed to untrusted pull requests. It either restricts which events can access the secret and documents the threat model, moves fork-PR runs to a path that does not need the token, or gates on approval — never blanket-enabling the secret for fork PRs. Plugin images allowed to receive secrets are restricted too, and the trust implications of the chosen backend are stated.",
+      "assertions": [
+        "Blanket exposure of the secret to untrusted fork PRs is not implemented",
+        "The security reference's default posture is cited",
+        "An explicit alternative (restriction, gating, or token-free path) is proposed",
+        "Plugin-image/event filters are part of any exposure decision"
+      ]
+    },
+    {
+      "id": "forge-admin-out-of-scope",
+      "prompt": "Install Forgejo and set up its admin account, then hook Woodpecker up to it.",
+      "expected_output": "Scenario: scope boundary. The skill explicitly covers Woodpecker's integration points, not forge administration. The agent states that installing/administering Forgejo itself is out of scope for this skill (use a forge-specific skill), and covers only the Woodpecker side: creating the OAuth app in the forge, setting WOODPECKER_* forge variables, callback URLs, and verifying the connection.",
+      "assertions": [
+        "Forge installation/administration is declared out of scope",
+        "The user is pointed to a forge-specific skill for that half",
+        "The Woodpecker-side integration steps are still provided"
+      ]
+    },
+    {
+      "id": "github-actions-not-this-skill",
+      "prompt": "Add a GitHub Actions workflow that builds and publishes our Docker image on tags.",
+      "expected_output": "Scenario: should-not-trigger. GitHub Actions is a different CI system entirely; woodpecker-ci is only for Woodpecker CI servers, agents, and their pipeline syntax. The agent does not load this skill; it writes a standard .github/workflows CI file directly.",
+      "assertions": [
+        "The skill is not loaded for a non-Woodpecker CI task",
+        "No Woodpecker-specific YAML semantics are applied",
+        "The requested workflow is handled as ordinary GitHub Actions configuration"
+      ]
+    },
+    {
+      "id": "upgrade-and-backup",
+      "prompt": "We're upgrading Woodpecker from 2.x to 3.x next weekend. What's the safe procedure?",
+      "expected_output": "Scenario: operations/upgrade planning. The agent loads references/operations.md (and source-index.md for version-sensitive notes): pin the target SemVer tag, take a full backup of the database before touching anything, read the breaking-changes section for the installed major version, upgrade the server before/alongside agents per documented ordering, verify health afterwards with woodpecker-doctor.py and logs, and keep a rollback path (previous image tag + restored DB) ready.",
+      "assertions": [
+        "A pre-upgrade database backup is mandated",
+        "Breaking changes for the specific version pair are checked via the references",
+        "Post-upgrade health verification is planned",
+        "A rollback path exists before starting"
+      ]
+    }
+  ]
+}
