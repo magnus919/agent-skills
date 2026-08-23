@@ -209,3 +209,90 @@ class ReferenceFileScanTest < Minitest::Test
     File.write(path, content)
   end
 end
+
+# Regression tests for the SKILL.md token-budget gate (#382). The gate strips
+# YAML frontmatter, measures the body in characters (~4 chars/token proxy for
+# the ~5,000-token budget), and must not fire on frontmatter size or at
+# exactly the limit.
+class OversizedSkillMdTest < Minitest::Test
+  FRONTMATTER = "---\nname: test-skill\n---\n"
+
+  def test_body_under_limit_passes
+    with_fixture do |root|
+      write_skill_md(root, FRONTMATTER + ("a" * 19_999))
+      assert_empty ReferenceFileScan.oversized_skill_md_errors(root, "test-skill")
+    end
+  end
+
+  def test_body_over_limit_fails_with_path_and_size
+    with_fixture do |root|
+      write_skill_md(root, FRONTMATTER + ("a" * 20_001))
+      errors = ReferenceFileScan.oversized_skill_md_errors(root, "test-skill")
+      assert_equal 1, errors.length
+      assert_includes errors.first, "test-skill/SKILL.md"
+      assert_includes errors.first, "20001"
+    end
+  end
+
+  def test_body_exactly_at_limit_passes
+    with_fixture do |root|
+      write_skill_md(root, FRONTMATTER + ("a" * 20_000))
+      errors = ReferenceFileScan.oversized_skill_md_errors(root, "test-skill")
+      assert_equal 20_000, ReferenceFileScan::MAX_SKILL_MD_BODY_CHARS
+      assert_empty errors
+    end
+  end
+
+  def test_gate_does_not_count_frontmatter
+    with_fixture do |root|
+      # Huge frontmatter (well past the cap) with a tiny body must pass: only
+      # the body after the closing --- counts toward the budget.
+      frontmatter = "---\nname: test-skill\ndescription: #{'y' * 30_000}\n---\n"
+      write_skill_md(root, frontmatter + ("x" * 100))
+      text = File.read(File.join(root, "test-skill/SKILL.md"))
+      match = text.match(/\A---\n.*?\n---\n/m)
+      assert_operator match.end(0), :>, 25_000
+      assert_empty ReferenceFileScan.oversized_skill_md_errors(root, "test-skill")
+    end
+  end
+
+  def test_error_mentions_references_remediation
+    with_fixture do |root|
+      write_skill_md(root, FRONTMATTER + ("a" * 20_001))
+      errors = ReferenceFileScan.oversized_skill_md_errors(root, "test-skill")
+      assert_equal 1, errors.length
+      assert_includes errors.first, "references/"
+      assert_includes errors.first, "triggers + workflow skeleton"
+    end
+  end
+
+  def test_missing_frontmatter_is_skipped_not_flagged_here
+    # validate-skills.rb reports missing YAML frontmatter itself; the body
+    # gate has nothing meaningful to measure and stays silent.
+    with_fixture do |root|
+      write_skill_md(root, "# No frontmatter\n" + ("a" * 30_000))
+      assert_empty ReferenceFileScan.oversized_skill_md_errors(root, "test-skill")
+    end
+  end
+
+  def test_missing_skill_md_is_ignored
+    with_fixture do |root|
+      FileUtils.mkdir_p(File.join(root, "empty-skill"))
+      assert_empty ReferenceFileScan.oversized_skill_md_errors(root, "empty-skill")
+    end
+  end
+
+  private
+
+  def with_fixture(&block)
+    Dir.mktmpdir do |directory|
+      block.call(directory)
+    end
+  end
+
+  def write_skill_md(root, content)
+    path = File.join(root, "test-skill", "SKILL.md")
+    FileUtils.mkdir_p(File.dirname(path))
+    File.write(path, content)
+  end
+end
