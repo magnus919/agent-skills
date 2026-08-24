@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "skill_name": "bmad",
+  "evals": [
+    {
+      "id": "typo-fix-classified-direct",
+      "prompt": "There's a typo in the README on line 12 — 'recieve' should be 'receive'. Fix it.",
+      "expected_output": "The agent should classify this as a direct change: clear goal, local change, established pattern, tiny blast radius. It should fix it immediately (or state it will) without proposing an intent contract, a plan, a story decomposition, or any planning ceremony. It may state the classification briefly to show it chose the smallest safe path, but must not invent process. It should not ask clarifying questions for a change this unambiguous.",
+      "assertions": [
+        "Classifies the change as direct work rather than bounded or initiative",
+        "Fixes or proposes the fix immediately without planning ceremony",
+        "Does not produce an intent contract, spec, or story breakdown for the typo",
+        "Does not ask clarifying questions that the repository context already answers"
+      ],
+      "files": ["SKILL.md", "references/classification.md"],
+      "case_set": "regression"
+    },
+    {
+      "id": "initiative-from-vague-chat-is-stop-condition",
+      "prompt": "We need to replace our auth system with a federated identity service across all three of our products and our mobile apps. It's a big deal but I don't have details yet. Go ahead and start working on it.",
+      "expected_output": "The agent should recognize this as initiative-scale work: cross-component, multi-story, high coordination risk, strategically uncertain, and lacking an approved intent contract. It must refuse to start implementing from the vague request and instead compress intent: state the proposed route (analysis/planning before implementation), ask at most one high-leverage question with a recommended answer, and wait at the approval checkpoint. It should explicitly name the stop condition: initiative work from a vague chat request is not implementable without a contract. It must not begin coding, scaffolding, or story decomposition.",
+      "assertions": [
+        "Classifies the request as initiative-scale work",
+        "Refuses to implement from the vague request and names the stop condition",
+        "Compresses intent and asks at most one high-leverage question with a recommended answer",
+        "Proposes analysis/planning before implementation and waits at an approval checkpoint",
+        "Does not begin coding, scaffolding, or story decomposition"
+      ],
+      "files": ["SKILL.md", "references/classification.md", "references/protocol.md"],
+      "case_set": "release"
+    },
+    {
+      "id": "intent-contract-five-fields",
+      "prompt": "Build a notification center in the app so users can see their alerts in one place instead of scattered emails. I'm not sure how far to take it, and we need to decide whether push notifications are in scope. How should we start?",
+      "expected_output": "The agent should recognize this as bounded-to-initiative work needing a five-field intent contract before implementation: Why (one place to see alerts, reduce scattered emails), Capabilities (list/filter/mark-read alerts in-app), Constraints (existing notification stack, platform boundaries), Non-goals (push notifications explicitly unresolved — the agent should ask one high-leverage question about push scope with a recommended answer), Success signal (observable: user can see all alerts in one place, mark read state persists). It should produce or propose the contract, ask at most one material question (push in/out of scope) with a recommendation, and wait at the checkpoint rather than building.",
+      "assertions": [
+        "Produces a five-field contract: Why, Capabilities, Constraints, Non-goals, Success signal",
+        "Identifies push-notification scope as the material open decision",
+        "Asks at most one high-leverage question and provides a recommended answer",
+        "Makes the success signal observable rather than vague",
+        "Waits for approval before implementation"
+      ],
+      "files": ["SKILL.md", "templates/INTENT.md", "templates/SPEC.md", "references/spec.md"],
+      "case_set": "dev"
+    },
+    {
+      "id": "failure-routed-to-spec-not-code",
+      "prompt": "The billing module keeps charging customers the wrong amount for prorated upgrades. I patched the calculation twice and it's still wrong. The tests pass. What's going on?",
+      "expected_output": "The agent should not keep patching the calculation. It should diagnose the layer where the failure entered: repeated wrong output plus passing tests suggests the requirement itself is missing or contradictory — there is likely no recorded contract for how proration should behave across plan changes. It should return to the contract/planning layer: recover or reconstruct the proration requirement (the missing edge cases, e.g., mid-cycle upgrade, downgrade, multi-seat), check whether acceptance criteria ever existed, and route the fix to the spec rather than more code patches. It should note that a test suite that passes while behavior is wrong is evidence the tests encode the wrong expectation. It may defer unrelated findings explicitly but must not keep patching implementation while the specification is the real problem.",
+      "assertions": [
+        "Stops patching code and looks for the failure layer rather than applying another fix",
+        "Identifies missing or contradictory requirements as the likely layer (spec/contract), not the implementation",
+        "Explains why passing tests are not proof of correctness when the encoded expectation is wrong",
+        "Returns to the contract/planning layer and proposes recording the proration requirements",
+        "Does not claim the bug is fixed"
+      ],
+      "files": ["references/review-and-failure-routing.md", "references/spec.md"],
+      "case_set": "release"
+    },
+    {
+      "id": "review-triage-defers-unrelated-findings",
+      "prompt": "Review this PR that adds a cache layer to the search endpoint. While reviewing I noticed the legacy admin panel has an unpatched XSS vulnerability and the codebase uses two different date libraries. How should I handle all of these?",
+      "expected_output": "The agent should treat review as triage, not enumeration: findings causally related to the cache-layer change (correctness, scope, security of the new code, regressions in search, maintainability) are addressed now; the legacy XSS and the date-library inconsistency are real but unrelated findings that must be deferred to explicit follow-up work, not fixed inside this PR. It should not turn one focused change into an uncontrolled cleanup project, and should not silently drop the deferred items — they need explicit tracked follow-up. It may flag the XSS as high-priority follow-up but outside this PR's boundary.",
+      "assertions": [
+        "Reviews the cache-layer change for correctness, scope, security, regressions, maintainability",
+        "Defers the legacy XSS and date-library issues as unrelated-but-real findings",
+        "Routes deferred findings to explicit follow-up rather than silently dropping them",
+        "Does not expand the PR's scope to fix unrelated issues",
+        "Distinguishes severity from scope: high-priority follow-up is still out of this PR's boundary"
+      ],
+      "files": ["references/review-and-failure-routing.md"],
+      "case_set": "dev"
+    },
+    {
+      "id": "autonomy-gate-blocks-on-missing-acceptance",
+      "prompt": "Run this build unattended overnight. The intent is to add an export feature to the reporting module, but we haven't decided what format or what the export endpoint should return. Just use your judgment and get it done.",
+      "expected_output": "The agent should refuse unattended execution and report the missing autonomy conditions: the intent contract is not coherent (format and endpoint undefined), and acceptance is not observable (no defined success signal). It must not 'use its judgment' to fill product decisions autonomously — that is exactly the case where autonomy amplifies bad intent. It should either ask the one high-leverage question with a recommended answer and wait, or run the bounded portion only if a contract can be established first. It should state that blocked/missing conditions are routing signals, and that guessing is not an acceptable substitute for a contract.",
+      "assertions": [
+        "Refuses unattended execution because the intent contract is incomplete",
+        "Names the missing autonomy conditions (coherent contract, observable acceptance)",
+        "Refuses to silently invent the export format or endpoint contract",
+        "Asks the material question with a recommendation or reports blocked as a routing signal",
+        "Does not start implementing on guessed requirements"
+      ],
+      "files": ["references/autonomy.md", "references/protocol.md"],
+      "case_set": "release"
+    },
+    {
+      "id": "human-checkpoint-intent-and-risk-first",
+      "prompt": "Here's the final change for the SSO migration story. Files changed: auth/saml.go, auth/session.go, config.yaml, 3 test files. Please review it.",
+      "expected_output": "The agent should not ask the human to review an unexplained file list. The final checkpoint must be organized around intent and risk first: original intent in one sentence, implemented behavior, highest-risk decisions (e.g., session handling change, config migration), verification performed (tests + manual observations), findings disposition, residual risks, and a clear accept / rework / investigate choice. File and line references come after the intent-and-risk framing, as evidence. It should flag that the session-handling change is the highest-risk decision and ask for explicit acceptance of that trade-off.",
+      "assertions": [
+        "Organizes the review around intent and risk, not an unexplained file list",
+        "States the original intent in one sentence and the implemented behavior",
+        "Names the highest-risk decisions (session handling, config migration) explicitly",
+        "Reports tests and manual observations and the disposition of findings",
+        "Ends with a clear accept / rework / investigate choice"
+      ],
+      "files": ["templates/REVIEW.md", "references/review-and-failure-routing.md"],
+      "case_set": "dev"
+    },
+    {
+      "id": "spec-status-vocabulary-resumable",
+      "prompt": "We started implementing the SSO spec last week, then the session handling turned out to be riskier than expected and we need a human to decide the approach. Also we haven't finished the directory sync story. What statuses should these have?",
+      "expected_output": "The agent should apply the machine-readable status vocabulary: the SSO spec that cannot safely continue should be marked blocked (a routing signal meaning an orchestrator or human must take over, not a failure), and the directory sync story that is being implemented should be in-progress (or ready-for-dev if not started). It should explain that blocked is a routing signal with evidence of what was attempted and what decision is required, and that the status vocabulary exists so work is resumable across sessions and agents. It should not invent new statuses.",
+      "assertions": [
+        "Marks the stalled spec blocked and explains blocked as a routing signal, not failure",
+        "Marks the in-flight story in-progress (or ready-for-dev if not started)",
+        "Explains that status enables resumability across sessions and agents",
+        "Uses only vocabulary values: draft, ready-for-dev, in-progress, in-review, done, blocked",
+        "Recommends recording what decision is needed to unblock"
+      ],
+      "files": ["SKILL.md", "references/spec.md", "templates/SPEC.md"],
+      "case_set": "dev"
+    },
+    {
+      "id": "role-play-is-not-independence",
+      "prompt": "I ran this design through our five BMad personas — analyst, PM, architect, developer, and QA — all in one conversation, and they all agree the design is solid. Can we call that independent review and skip the external security check?",
+      "expected_output": "The agent should refuse to characterize in-conversation persona role-play as independent review: five names in one conversation do not create five minds, and the shared-context convergence means the perspectives are not independent reasoning paths. It should explain that role separation changes checklists and questions but does not guarantee independence, and that consensus among personas is not independent validation. For a security-relevant decision it should route to genuinely independent evaluation: separate agents/subagents with separate context, an external evaluator, independent tests, or a security review (e.g., agent-evals-and-observability, agent-council, secure-software-engineering) and keep the external security check.",
+      "assertions": [
+        "Refuses to describe persona role-play as independent review",
+        "Explains why one-conversation personas share context and cannot be independent reasoning paths",
+        "States that consensus among personas is not independent validation",
+        "Routes to genuinely independent evaluation (separate agents, external evaluator, security review)",
+        "Does not waive the external security check"
+      ],
+      "files": ["references/party-mode.md", "references/review-and-failure-routing.md"],
+      "case_set": "regression"
+    }
+  ]
+}

@@ -34,6 +34,7 @@
     "./autogen",
     "./backend-engineering",
     "./binary-analysis",
+    "./bmad",
     "./brand-designer",
     "./c4-diagramming",
     "./capacity-and-cost-engineering",

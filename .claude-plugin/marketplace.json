@@ -150,6 +150,15 @@
       "description": "Analyze unknown binary files through a deterministic CLI that wraps Ghidra's static-analysis engine. Use when you need to inspect a PE, ELF, or Mach-O file — triage suspicious binaries, map imported APIs, decompile functions, trace call paths, or produce structured evidence reports. Do not use for runtime analysis (debugging, dynamic tracing, sandbox execution), for modifying or patching binaries, or for binaries you already know everything about. The skill owns planning, hypothesis formation, and evidence synthesis; the CLI owns all deterministic operations."
     },
     {
+      "name": "bmad",
+      "source": "./",
+      "skills": [
+        "./bmad"
+      ],
+      "strict": false,
+      "description": "Use this skill to run BMad (Breakthrough Method of Agile AI-Driven Development) as a harness-agnostic control-plane protocol that turns human intent into bounded, inspectable, resumable agent work. Compress intent into a five-field contract (Why, Capabilities, Constraints, Non-goals, Success signal); classify work as direct/bounded/initiative and route to the smallest safe path; carry decisions in durable artifacts; review as triage; route failure to the layer where ambiguity entered; and gate autonomy on observable acceptance with machine-readable status (draft/ready-for-dev/in-progress/in-review/done/blocked). Use when a change request, feature, delegated build, or multi-agent epic needs intent capture, bounded implementation, review, and resumability in any agent harness. Do not use for validating whether a problem is real (product-discovery), shaping bets before planning (product-shaping), formal spec/gate pipelines (spec-driven-development), or the issue-to-PR delivery flow (neckbeard)."
+    },
+    {
       "name": "brand-designer",
       "source": "./",
       "skills": [
@@ -1164,7 +1173,7 @@
         "./spec-driven-development"
       ],
       "strict": false,
-      "description": "Spec-Driven Development (SDD) methodology for AI software factories — where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each pipeline phase. Use when designing a spec → review → decompose → implement → verify pipeline that any AI coding tool (Claude Code, Cursor, Hermes Agent, Devin, OpenHands) can follow."
+      "description": "Design and run a Spec-Driven Development (SDD) pipeline for AI software factories — where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each phase: SPECIFY → DECOMPOSE → IMPLEMENT → VERIFY → DELIVER. Use when building or refining a spec-driven pipeline any AI coding tool (Claude Code, Cursor, Hermes Agent, Devin, OpenHands, droid) can follow, or when you need spec quality gates, phase-gate verdicts, NFR encoding, or format translation. Do not use for a single small change with a clear goal (classify first via bmad), for the control-plane protocol of intent contracts, autonomy gating, and failure routing around a pipeline (bmad), or for unvalidated problems (product-discovery)."
     },
     {
       "name": "strategy-frameworks",

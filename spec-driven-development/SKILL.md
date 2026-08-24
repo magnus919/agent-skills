@@ -1,10 +1,16 @@
 ---
 name: spec-driven-development
-description: Spec-Driven Development (SDD) methodology for AI software factories —
+description: >-
+  Design and run a Spec-Driven Development (SDD) pipeline for AI software factories —
   where structured specifications are the input, AI agents generate the code, and
-  quality gates enforce correctness at each pipeline phase. Use when designing a spec
-  → review → decompose → implement → verify pipeline that any AI coding tool (Claude
-  Code, Cursor, Hermes Agent, Devin, OpenHands) can follow.
+  quality gates enforce correctness at each phase: SPECIFY → DECOMPOSE → IMPLEMENT →
+  VERIFY → DELIVER. Use when building or refining a spec-driven pipeline any AI coding
+  tool (Claude Code, Cursor, Hermes Agent, Devin, OpenHands, droid) can follow, or when
+  you need spec quality gates, phase-gate verdicts, NFR encoding, or format
+  translation. Do not use for a single small change with a clear goal (classify first
+  via bmad), for the control-plane protocol of intent contracts, autonomy gating, and
+  failure routing around a pipeline (bmad), or for unvalidated problems
+  (product-discovery).
 license: MIT
 compatibility: Tool-agnostic — methodology applies to any AI coding agent. Templates
   use markdown and Gherkin. Scripts require bash.
@@ -181,6 +187,18 @@ After patching, the reviewer determines scope:
 | Vague NFRs ("should be fast", "should be secure") | Replace with specific threshold + verification method | Use the "can I write a test for this?" test from nfr-encoding reference |
 | Incomplete contracts (endpoint listed but no schemas) | Add full request/response schemas for every endpoint | Check Gate 5 before submitting |
 | Scope creep (ambiguous in-scope items) | Tighten scope description and expand Out of Scope | Apply the "would someone include more than intended?" test
+
+## When not to use
+
+- **A single small change with a clear goal** — skip the spec pipeline and implement
+  directly; classify the work first (see `bmad`).
+- **You need the control-plane protocol around a pipeline** — who owns intent, how
+  work is classified, when autonomy is safe, how failure routes between layers: use
+  `bmad` for intent contracts, work classification, autonomy gating, and failure
+  routing. SDD supplies the spec format and gate mechanics; bmad supplies the protocol
+  that runs the whole effort.
+- **The problem itself is unvalidated** — route to `product-discovery` before
+  authoring a spec on top of an unexamined idea.
 
 ## Tool-Agnostic Design
 

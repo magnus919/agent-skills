@@ -57,6 +57,10 @@ sequencing, risk, and verification.
   specification has not been approved, **stop**. Planning unapproved work is an
   explicit stop condition. Record the missing approval and escalate; do not
   produce a plan.
+- **The whole run needs a control-plane protocol** — intent contracts, work
+  classification, autonomy gating, review-as-triage, and failure routing around the
+  plan and its execution. Route to [bmad](../bmad/SKILL.md). This skill produces a
+  delivery plan; bmad owns the protocol that runs intent-to-delivery work end to end.
 
 ## Entry gate: prerequisite approval
 
@@ -180,6 +184,7 @@ into implementation.
 | Specification authoring or formal phase gates | [spec-driven-development](../spec-driven-development/SKILL.md) |
 | Discovery of unvalidated requirements | [product-discovery](../product-discovery/SKILL.md) |
 | QA strategy, test planning, or verification design | [qa-methodology](../qa-methodology/SKILL.md) |
+| Intent contracts, autonomy gating, or failure routing around the plan | [bmad](../bmad/SKILL.md) |
 | Release pipeline, promotion gates, or canary mechanics | [release-engineering](../release-engineering/SKILL.md) |
 | Internal developer platform or CI/CD infrastructure | [platform-engineering](../platform-engineering/SKILL.md) |
 | Security requirements, threat modeling, or secure design | [secure-software-engineering](../secure-software-engineering/SKILL.md) |

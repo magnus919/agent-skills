@@ -72,6 +72,10 @@ Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint 
 
 Analyze unknown PE, ELF, Mach-O, and firmware files through a deterministic CLI backed by Ghidra's static-analysis engine. Covers triage, imports, decompilation, call paths, and structured evidence reports without executing or modifying the binary.
 
+### [bmad](bmad/SKILL.md)
+
+Run the BMad method (Breakthrough Method of Agile AI-Driven Development) as a harness-agnostic control-plane protocol: compress human intent into a five-field contract, classify work as direct/bounded/initiative and route to the smallest safe path, carry decisions in durable artifacts, review as triage, route failure to the layer where ambiguity entered, and gate autonomy on observable acceptance with machine-readable status. Use for intent capture, bounded implementation, review, and resumability in any agent harness.
+
 ### [brand-designer](brand-designer/SKILL.md)
 
 Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Ships 7 templates, a brand-book CLI for validation/compilation, and a generate script for brand card and mockup imagery.
@@ -529,7 +533,7 @@ Reverse-engineer a software codebase to understand its architecture, data flow, 
 
 ### [spec-driven-development](spec-driven-development/SKILL.md)
 
-Spec-Driven Development (SDD) methodology for AI software factories — where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each pipeline phase. Covers the 5-phase pipeline (SPECIFY → DECOMPOSE → IMPLEMENT → VERIFY → DELIVER), 4 phase gates with APPROVED/CONDITIONS/REJECTED verdicts, 7 spec quality gates, a methodology selection matrix (BDD, OpenAPI, AsyncAPI, DbC, TLA+, ADRs, C4), NFR encoding patterns, format translation (PRD → SPEC.md → Gherkin → OpenAPI), gate recovery and revision workflows, and a worked example SPEC.md. Ships 4 templates, 9 reference files, and 2 validation scripts. Tool-agnostic — works with Claude Code, Cursor, Hermes Agent, Devin, OpenHands, and droid.
+Design and run a Spec-Driven Development (SDD) pipeline for AI software factories — where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each pipeline phase. Covers the 5-phase pipeline (SPECIFY → DECOMPOSE → IMPLEMENT → VERIFY → DELIVER), 4 phase gates with APPROVED/CONDITIONS/REJECTED verdicts, 7 spec quality gates, a methodology selection matrix (BDD, OpenAPI, AsyncAPI, DbC, TLA+, ADRs, C4), NFR encoding patterns, format translation (PRD → SPEC.md → Gherkin → OpenAPI), gate recovery and revision workflows, and a worked example SPEC.md. Ships 4 templates, 9 reference files, and 2 validation scripts. Tool-agnostic — works with Claude Code, Cursor, Hermes Agent, Devin, OpenHands, and droid. Not for single small changes, the intent-to-delivery control-plane protocol (see bmad), or unvalidated problems (product-discovery).
 
 ### [strategy-frameworks](strategy-frameworks/SKILL.md)
 
