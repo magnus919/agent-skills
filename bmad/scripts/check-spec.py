@@ -39,7 +39,8 @@ REQUIRED_SECTIONS = (
 
 HEADING_RE = re.compile(r"^#{1,6}\s+(.*?)\s*#*\s*$")
 FRONTMATTER_RE = re.compile(
-    r"\A(?:[ \t]*\r?\n)*[ \t]*---[ \t]*\r?\n(.*?)\r?\n---[ \t]*\r?\n", re.DOTALL
+    r"\A(?:[ \t]*\r?\n)*[ \t]*---[ \t]*\r?\n(.*?)(?:\r?\n)?[ \t]*---[ \t]*(?:\r?\n|$)",
+    re.DOTALL,
 )
 
 
@@ -82,7 +83,11 @@ def collect_headings(text: str) -> list[str]:
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith(("```", "~~~")):
-            fence = None if fence is not None else stripped[:3]
+            marker = stripped[:3]
+            if fence is None:
+                fence = marker
+            elif fence == marker:
+                fence = None
             continue
         if fence is not None:
             continue
@@ -99,6 +104,16 @@ def section_present(headings: list[str], required: str) -> bool:
     return any(heading.lower() == required.lower() for heading in headings)
 
 
+def looks_like_frontmatter(text: str) -> bool:
+    """True when the file opens with an apparent ``---`` frontmatter delimiter."""
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        return stripped.startswith("---")
+    return False
+
+
 def validate_spec(path: Path) -> SpecReport:
     """Validate a single spec file and return its report."""
     report = SpecReport(path=str(path))
@@ -112,6 +127,13 @@ def validate_spec(path: Path) -> SpecReport:
     frontmatter = extract_frontmatter(text)
     headings = collect_headings(text)
 
+    parse_failed = FRONTMATTER_RE.match(text) is None and looks_like_frontmatter(text)
+    if parse_failed:
+        report.valid = False
+        report.errors.append(
+            "frontmatter appears present but could not be parsed; check the --- delimiters"
+        )
+
     status = frontmatter.get("status")
     if status is not None:
         if status not in STATUS_VOCABULARY:
@@ -119,7 +141,7 @@ def validate_spec(path: Path) -> SpecReport:
             report.errors.append(
                 f"invalid status {status!r}; expected one of " + ", ".join(STATUS_VOCABULARY)
             )
-    else:
+    elif not parse_failed:
         report.warnings.append("no 'status' in frontmatter; add one when the work is resumable")
 
     missing = [name for name in REQUIRED_SECTIONS if not section_present(headings, name)]

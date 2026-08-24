@@ -18,8 +18,7 @@ This skill installs that discipline as a **harness-agnostic protocol**. You do n
 need the BMad npm installer, a specific IDE, or a particular agent brand. Any agent —
 Claude Code, Cursor, Hermes, Devin, OpenHands, or your own harness — can follow the
 protocol with plain Markdown contracts, a five-field intent contract, and a
-machine-readable status vocabulary (`draft` → `ready-for-dev` → `in-progress` →
-`in-review` → `done` / `blocked`).
+machine-readable status vocabulary (`draft` → `ready-for-dev` → `in-progress` → `in-review` → `done`, with `blocked` as a resumable routing signal and rework paths back to earlier states).
 
 After installing, an agent can take a vague change request and return a one-paragraph
 intent contract instead of guessing; take a cross-system initiative and sequence it

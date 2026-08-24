@@ -1,7 +1,7 @@
 ---
 status: ready-for-dev
 slug: story-slug
-parent-spec: ../SPEC.md
+parent-spec: SPEC.md
 owner: human
 created: YYYY-MM-DD
 ---
