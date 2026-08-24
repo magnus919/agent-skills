@@ -38,7 +38,9 @@ REQUIRED_SECTIONS = (
 )
 
 HEADING_RE = re.compile(r"^#{1,6}\s+(.*?)\s*#*\s*$")
-FRONTMATTER_RE = re.compile(r"\A---[ \t]*\r?\n(.*?)\r?\n---[ \t]*\r?\n", re.DOTALL)
+FRONTMATTER_RE = re.compile(
+    r"\A(?:[ \t]*\r?\n)*[ \t]*---[ \t]*\r?\n(.*?)\r?\n---[ \t]*\r?\n", re.DOTALL
+)
 
 
 @dataclass

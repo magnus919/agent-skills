@@ -194,3 +194,12 @@ def test_quoted_status_with_inline_comment_is_accepted(tmp_path) -> None:
         encoding="utf-8",
     )
     assert check_spec.main([str(spec)]) == 0
+
+
+def test_leading_blank_line_does_not_disable_status_check(tmp_path) -> None:
+    spec = tmp_path / "SPEC.md"
+    spec.write_text(
+        "\n\n" + VALID_SPEC.replace("status: ready-for-dev", "status: maybe"),
+        encoding="utf-8",
+    )
+    assert check_spec.main([str(spec)]) == 1
