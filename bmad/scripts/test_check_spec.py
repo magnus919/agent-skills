@@ -171,3 +171,14 @@ def test_inline_yaml_comment_in_status_is_accepted(tmp_path) -> None:
         encoding="utf-8",
     )
     assert check_spec.main([str(spec)]) == 0
+
+
+def test_delimiter_trailing_whitespace_does_not_disable_status_check(tmp_path) -> None:
+    spec = tmp_path / "SPEC.md"
+    body = VALID_SPEC.replace(
+        "status: ready-for-dev",
+        "status: maybe",
+    )
+    body = body.replace("---\n", "--- \n").replace("\n---\n# Example Change", "\n---\t\n# Example Change")
+    spec.write_text(body, encoding="utf-8")
+    assert check_spec.main([str(spec)]) == 1
