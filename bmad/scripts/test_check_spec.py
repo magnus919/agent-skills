@@ -156,3 +156,18 @@ def test_non_utf8_file_fails_gracefully(tmp_path, capsys) -> None:
     assert check_spec.main([str(spec)]) == 1
     captured = capsys.readouterr()
     assert "FAIL" in captured.out
+
+
+def test_utf8_bom_does_not_disable_status_check(tmp_path) -> None:
+    spec = tmp_path / "SPEC.md"
+    spec.write_bytes(b"\xef\xbb\xbf" + VALID_SPEC.replace("status: ready-for-dev", "status: maybe").encode("utf-8"))
+    assert check_spec.main([str(spec)]) == 1
+
+
+def test_inline_yaml_comment_in_status_is_accepted(tmp_path) -> None:
+    spec = tmp_path / "SPEC.md"
+    spec.write_text(
+        VALID_SPEC.replace("status: ready-for-dev", "status: ready-for-dev  # pending owner review"),
+        encoding="utf-8",
+    )
+    assert check_spec.main([str(spec)]) == 0

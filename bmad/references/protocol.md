@@ -59,7 +59,7 @@ and wait for the decision.
 
 ## Lifecycle
 
-For initiative work, use these phases:
+For initiative work, use four phases:
 
 1. **Analysis** — clarify the problem, research important unknowns, pressure-test
    assumptions, and establish the product brief or research record.
@@ -69,11 +69,11 @@ For initiative work, use these phases:
    data boundaries, ADRs, epics, and stories.
 4. **Implementation** — implement one bounded story at a time, verify it, review it,
    and report the result.
-5. **Learning** — after a meaningful epic, compare implementation with the original
-   intent and record evidence-based lessons.
 
-For direct work, enter implementation immediately after enough clarification to make
-the boundary safe.
+After a meaningful epic, run the **Learning closeout**: compare implementation with
+the original intent, review seams between stories, record defects that isolation hid,
+and record evidence-based lessons. For direct work, enter implementation immediately
+after enough clarification to make the boundary safe.
 
 ## Artifacts
 

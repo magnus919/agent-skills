@@ -61,8 +61,10 @@ def extract_frontmatter(text: str) -> dict[str, str]:
         stripped = line.strip()
         if not stripped or stripped.startswith("#") or ":" not in stripped:
             continue
-        key, _, value = stripped.partition(":")
-        fields[key.strip()] = value.strip().strip("'\"")
+        key, _, raw = stripped.partition(":")
+        raw = raw.strip()
+        value = raw.strip("'\"") if raw[:1] in ("'", '"') else raw.split(" #", 1)[0].strip()
+        fields[key.strip()] = value
     return fields
 
 
@@ -94,7 +96,7 @@ def validate_spec(path: Path) -> SpecReport:
     """Validate a single spec file and return its report."""
     report = SpecReport(path=str(path))
     try:
-        text = path.read_text(encoding="utf-8")
+        text = path.read_text(encoding="utf-8-sig")
     except (OSError, UnicodeDecodeError) as exc:
         report.valid = False
         report.errors.append(f"cannot read file: {exc}")
