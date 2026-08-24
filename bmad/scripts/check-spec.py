@@ -67,10 +67,19 @@ def extract_frontmatter(text: str) -> dict[str, str]:
 
 
 def collect_headings(text: str) -> list[str]:
-    """Return the text of every markdown heading, in document order."""
+    """Return the text of every markdown heading outside code blocks."""
     headings: list[str] = []
+    fence: str | None = None
     for line in text.splitlines():
-        match = HEADING_RE.match(line.strip())
+        stripped = line.strip()
+        if stripped.startswith(("```", "~~~")):
+            fence = None if fence is not None else stripped[:3]
+            continue
+        if fence is not None:
+            continue
+        if line.startswith(("    ", "\t")):
+            continue  # indented code block
+        match = HEADING_RE.match(stripped)
         if match:
             headings.append(match.group(1).strip())
     return headings
@@ -86,7 +95,7 @@ def validate_spec(path: Path) -> SpecReport:
     report = SpecReport(path=str(path))
     try:
         text = path.read_text(encoding="utf-8")
-    except OSError as exc:
+    except (OSError, UnicodeDecodeError) as exc:
         report.valid = False
         report.errors.append(f"cannot read file: {exc}")
         return report

@@ -138,3 +138,21 @@ def test_every_vocabulary_status_is_accepted(tmp_path, status: str) -> None:
         encoding="utf-8",
     )
     assert check_spec.main([str(spec)]) == 0
+
+
+def test_heading_inside_fence_does_not_count(tmp_path) -> None:
+    spec = tmp_path / "SPEC.md"
+    body = VALID_SPEC.replace(
+        "## Constraints\n\n- Technical boundary.\n",
+        "```markdown\n## Constraints\n```\n",
+    )
+    spec.write_text(body, encoding="utf-8")
+    assert check_spec.main([str(spec)]) == 1
+
+
+def test_non_utf8_file_fails_gracefully(tmp_path, capsys) -> None:
+    spec = tmp_path / "SPEC.md"
+    spec.write_bytes(VALID_SPEC.encode("utf-8") + b"\xff")
+    assert check_spec.main([str(spec)]) == 1
+    captured = capsys.readouterr()
+    assert "FAIL" in captured.out

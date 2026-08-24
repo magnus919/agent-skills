@@ -60,6 +60,7 @@ that benefits and the cost of not doing it.
 
 - `draft` — created.
 - `ready-for-dev` — passed readiness; implementation may start.
-- `in-progress` / `in-review` — implementation/review underway.
+- `in-progress` — implementation underway.
+- `in-review` — review or triage underway.
 - `done` — completed successfully.
 - `blocked` — cannot continue safely; routing signal for orchestrator or human.
