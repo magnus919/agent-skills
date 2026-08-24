@@ -182,3 +182,15 @@ def test_delimiter_trailing_whitespace_does_not_disable_status_check(tmp_path) -
     body = body.replace("---\n", "--- \n").replace("\n---\n# Example Change", "\n---\t\n# Example Change")
     spec.write_text(body, encoding="utf-8")
     assert check_spec.main([str(spec)]) == 1
+
+
+def test_quoted_status_with_inline_comment_is_accepted(tmp_path) -> None:
+    spec = tmp_path / "SPEC.md"
+    spec.write_text(
+        VALID_SPEC.replace(
+            "status: ready-for-dev",
+            'status: "draft"  # pending owner review',
+        ),
+        encoding="utf-8",
+    )
+    assert check_spec.main([str(spec)]) == 0

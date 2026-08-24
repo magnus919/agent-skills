@@ -63,7 +63,12 @@ def extract_frontmatter(text: str) -> dict[str, str]:
             continue
         key, _, raw = stripped.partition(":")
         raw = raw.strip()
-        value = raw.strip("'\"") if raw[:1] in ("'", '"') else raw.split(" #", 1)[0].strip()
+        if raw[:1] in ("'", '"'):
+            quote = raw[0]
+            end = raw.find(quote, 1)
+            value = raw[1:end].strip() if end != -1 else raw[1:].strip()
+        else:
+            value = raw.split(" #", 1)[0].strip()
         fields[key.strip()] = value
     return fields
 
