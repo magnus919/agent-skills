@@ -95,6 +95,10 @@ Load only what the current step needs:
   that is an unshaped project, and force-splitting it produces disconnected tasks.
 - **The work is small, routine, and fully understood** — skip shaping overhead; just do
   it.
+- **The bet is placed and you need intent-to-delivery control** — classification,
+  five-field intent contracts, autonomy gating, failure routing, and resumable status
+  across the run. Route to `bmad`. Shaping ends at the bet; bmad carries the placed
+  intent through bounded, inspectable, resumable agent work.
 
 ## Related skills
 
@@ -104,6 +108,9 @@ Load only what the current step needs:
 - `spec-driven-development` — optional formal specification of shaped output post-bet
 - `implementation-planning`, `subagent-driven-development` — execution after the bet;
   decompose only downhill work, never pre-shred a pitch
+- `bmad` — intent-to-delivery control-plane protocol once the bet is placed:
+  classification, five-field intent contracts, autonomy gating, failure routing,
+  resumable spec status
 - `work-tracking` — where scope/hill state lives during the build
 - `qa-methodology` — edge-case QA as late-cycle level-up, not gate
 

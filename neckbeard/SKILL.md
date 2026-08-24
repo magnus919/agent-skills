@@ -197,6 +197,7 @@ When a stage has a specialist skill, load it and follow it. The full table with
 | Mobile app implementation (iOS/Android/Flutter/React Native) | `mobile-development` |
 | Docs / README / API reference | `technical-documentation` |
 | Verification verdicts and evidence | `verification-methodology` |
+| Intent contracts, work classification, autonomy gating, failure routing across a run | `bmad` |
 | Release planning, versioning, pipeline promotion, readiness, rollout, or rollback design | `release-engineering` |
 | Reliability, incident response, or operational recovery | `site-reliability-engineering` |
 
