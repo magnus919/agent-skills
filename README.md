@@ -357,7 +357,7 @@ Google's Open Knowledge Format (OKF) v0.1 — create, validate, and consume vend
 
 ### [openlibrary](openlibrary/SKILL.md)
 
-Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required — the public Open Library API is free for everyone.
+Query the Open Library catalog from the terminal: search books and authors, look up works, editions, and ISBNs, enumerate every edition of a work, read community ratings, and resolve cover-image URLs. Fully keyless public API — no API key required.
 
 ### [opensource-contributions](opensource-contributions/SKILL.md)
 

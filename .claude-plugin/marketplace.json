@@ -777,7 +777,7 @@
         "./openlibrary"
       ],
       "strict": false,
-      "description": "Search books, authors, and works on Open Library from the terminal. Look up books by ISBN, search titles and authors, and fetch detailed work/author records via the public Open Library API. No API key required."
+      "description": "Query the Open Library catalog from the terminal: search books and authors, look up works, editions, and ISBNs, enumerate every edition of a work, read community ratings, and resolve cover-image URLs. Fully keyless public API. Includes the OL…M/W/A key-graph reference, ISBN 302-redirect resolution, search query syntax, covers-host rules, and worked pipelines. Do not use for library-IT administration (Koha/MARC/ILS migration), commercial book-data feeds, or managing your reading account on Open Library itself."
     },
     {
       "name": "opensource-contributions",
