@@ -85,7 +85,7 @@ improvising API calls:
 |---|---|
 | GitHub (issues, PRs, releases) | Native mechanics per [lifecycle.md](lifecycle.md) — the documented reference mode |
 | Linear | `linear` |
-| Jira | `jira-cli` |
+| Jira | `jira` |
 | Notion | `notion` |
 | Other / none of the above | No specialist route: operate only through the system's verified official interface (primary vendor documentation, confirmed endpoint/auth surface), with bounded reads; note the absent specialist in the ledger |
 

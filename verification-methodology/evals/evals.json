@@ -4,10 +4,10 @@
   "evals": [
     {
       "id": "configured-jellyfin-server-first",
-      "prompt": "The jellyfin-cli skill is installed, its bundled CLI and valid server configuration are available, and the user asks: ‘What’s new on Jellyfin?’ Verify the answer.",
-      "expected_output": "A source-faithful investigation that loads jellyfin-cli and uses the skill-resolved bundled CLI to query recently added items on the configured server before considering adjacent integrations or public project sources.",
+      "prompt": "The jellyfin skill is installed, its bundled CLI and valid server configuration are available, and the user asks: ‘What’s new on Jellyfin?’ Verify the answer.",
+      "expected_output": "A source-faithful investigation that loads jellyfin and uses the skill-resolved bundled CLI to query recently added items on the configured server before considering adjacent integrations or public project sources.",
       "assertions": [
-        "Loads the jellyfin-cli skill before investigating service content.",
+        "Loads the jellyfin skill before investigating service content.",
         "The first content query uses the bundled CLI's documented recent-items command through the path resolved by the skill.",
         "Does not query Home Assistant, GitHub, web search, or public Jellyfin project activity before attempting the configured server.",
         "Reports the configured server's results as server state rather than conflating them with project news."

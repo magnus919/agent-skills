@@ -54,7 +54,7 @@ Capture data shapes →  Run tests as-you-go →  Fix failures
 
 Each API or data source gets its own CLI. Do not combine disparate services into one tool.
 
-**Correct:** `tmdb-cli` (TMDb only), `ghost-cli` (Ghost CMS only)
+**Correct:** `tmdb` (TMDb only), `ghost` (Ghost CMS only)
 **Wrong:** `media-cli` (combines TMDb + Trakt + Radarr)
 
 Exception: services from the same vendor sharing auth (e.g. Radarr + Sonarr).

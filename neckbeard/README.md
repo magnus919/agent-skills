@@ -44,7 +44,7 @@ ordinary bug-fix reproduction requirements.
 | `references/lifecycle.md` | Platform mechanics for GitHub (reference mode) and enterprise contexts — intake snapshots, CI/review monitoring, terminal states, and post-merge release authority |
 | `references/delivery-packet.md` | Durable cross-phase handoff: provenance, resumability, gate verdicts, exact-head binding, lifecycle states, and an artifact ownership map |
 | `references/position-assessment.md` | Entry mode for picking up delivery work that started elsewhere: artifact inventory, phase exit-condition scoring, a position report, and packet bootstrap |
-| `references/tracker-discovery.md` | Intake sub-step that detects which tracking system holds the work item and routes tracker operations to the matching tooling skill (`linear`, `jira-cli`, `notion`) |
+| `references/tracker-discovery.md` | Intake sub-step that detects which tracking system holds the work item and routes tracker operations to the matching tooling skill (`linear`, `jira`, `notion`) |
 | `references/evaluation.md` | Evaluation methodology: fixtures, baselines, rubrics, multi-run reporting, claims policy |
 | `templates/` | Change contract, decision record, evidence ledger, verification plan, evaluation report |
 | `templates/delivery-packet.md` | Fillable delivery packet template mirroring the nine field groups defined in the reference |

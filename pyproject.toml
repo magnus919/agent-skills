@@ -111,7 +111,7 @@ extend_exclude = [
     "life-coach",
     "raleigh",
     "forgejo-cli",
-    "jellyfin-cli",
+    "jellyfin",
     "comic-chat",
     "fireflies",
     "linear",
