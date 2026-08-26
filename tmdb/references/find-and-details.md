@@ -2,7 +2,7 @@
 
 ## Start with an IMDb ID
 
-`GET /3/find/{external_id}?external_source=imdb_id` maps a foreign identifier to TMDb objects. The current `external_source` enum includes `imdb_id`, `facebook_id`, `instagram_id`, `tvdb_id`, `tiktok_id`, `twitter_id`, `wikidata_id`, and `youtube_id`; older Freebase values are obsolete. The response has `movie_results`, `person_results`, `tv_results`, `tv_episode_results`, and `tv_season_results` arrays. Unmatched categories are empty arrays. For an IMDb movie, extract `.movie_results[0].id` before calling the movie details endpoint.
+`GET /3/find/{external_id}?external_source=imdb_id` maps a foreign identifier to TMDb objects. The `external_source` value is chosen from exactly eight supported enum entries: `imdb_id`, `facebook_id`, `instagram_id`, `tvdb_id`, `tiktok_id`, `twitter_id`, `wikidata_id`, and `youtube_id`. Freebase lookups are not supported: the retired `freebase_mid` and `freebase_id` sources have been removed from the API and must not be used or documented as valid values. The response has `movie_results`, `person_results`, `tv_results`, `tv_episode_results`, and `tv_season_results` arrays. Unmatched categories are empty arrays. For an IMDb movie, extract `.movie_results[0].id` before calling the movie details endpoint.
 
 ```bash
 curl -s -H "Authorization: Bearer $TMDB_ACCESS_TOKEN" \

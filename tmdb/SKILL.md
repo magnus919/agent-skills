@@ -31,7 +31,7 @@ tmdb tv search --term "severance" --limit 5
 tmdb find tt0111161 --source imdb_id --json
 ```
 
-`find` accepts the current external sources `imdb_id`, `tvdb_id`, `wikidata_id`, `facebook_id`, `instagram_id`, `tiktok_id`, `twitter_id`, and `youtube_id`. Its response is split into `movie_results`, `tv_results`, `person_results`, `tv_season_results`, and `tv_episode_results`.
+`--source` accepts one of the official external-source values: `imdb_id`, `facebook_id`, `instagram_id`, `tvdb_id`, `tiktok_id`, `twitter_id`, `wikidata_id`, and `youtube_id`. Freebase lookups are not supported: the retired `freebase_mid` and `freebase_id` values are rejected. The response is split into `movie_results`, `tv_results`, `person_results`, `tv_season_results`, and `tv_episode_results`.
 
 ### Details and enrichment
 
@@ -49,6 +49,7 @@ tmdb movie discover --genre horror --rating 7 --limit 10
 tmdb movie discover --genre horror --certification R --from 2024-01-01 --to 2024-12-31
 tmdb trending --type all --window week --limit 20 --json
 tmdb genre list --type movie --json
+tmdb genre list --type tv --json
 tmdb certification --json
 ```
 
@@ -95,7 +96,7 @@ Put `--json` before or after the subcommand. JSON search output has `results` an
 - **Credential duality:** `api_key` and Bearer are alternatives, not values to mix. A rejected credential commonly produces HTTP 401, `status_code: 7`, and `Invalid API key: You must be granted a valid key.` Permission failures use code 3. Code 33 means an invalid request token, not this API-key message.
 - **Pagination ceiling:** pages start at 1 and max at 500; over-limit requests fail. Search/discover access is effectively capped at 10,000 results, even where totals look larger. Rate guidance is around 40 requests/second and 429 responses should honor `Retry-After`.
 - **Compound syntax:** append values are comma-separated and limited to 20 calls. `watch/providers` contains a slash, so URL-encode it in curl and use jq's `.\"watch/providers\"` notation.
-- **External-ID shape:** `/find/` does not return one generic `id`; inspect the appropriate nested array before choosing movie or TV detail.
+- **External-ID shape:** `/find/` does not return one generic `id`; inspect the appropriate nested array before choosing movie or TV detail. Only the eight documented `external_source` values are valid, and the retired Freebase sources (`freebase_mid`, `freebase_id`) are rejected.
 - **Provider filters:** `with_watch_providers` requires `watch_region`; provider data carries JustWatch attribution requirements.
 - **Localization and images:** use `language=en-US` and a market `region` when reproducibility matters. Build image URLs from `/3/configuration`'s secure base URL, a valid size, and the returned path.
 
