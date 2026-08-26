@@ -23,7 +23,7 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "Jira", "Atlassian Jira", "JQL", "ticket PROJ-123", "sprint work", "JIRA_API_TOKEN" | [jira](../jira/SKILL.md) |
 | "Open Library", "openlibrary", "book search", "ISBN lookup", "author records", "work details" | [openlibrary](../openlibrary/SKILL.md) |
 | "weather", "forecast", "temperature", "is it raining", "Tempest" | [tempest](../tempest/SKILL.md) |
-| "TMDb", "The Movie Database", "movie search", "trending movies", "upcoming TV releases", "TMDB_ACCESS_KEY" | [tmdb](../tmdb/SKILL.md) |
+| "TMDb", "The Movie Database", "movie search", "trending movies", "upcoming TV releases", "TMDB_ACCESS_TOKEN" | [tmdb](../tmdb/SKILL.md) |
 | "traefik", "reverse proxy", "load balancer", "API gateway", "Let's Encrypt", "ACME", "Docker routing", "traefik.yml", "entry point", "middleware", "TLS termination", "forward auth", "rate limit" | [traefik](../traefik/SKILL.md) |
 | "reverse-engineer", "understand this codebase", "PRD from code", "architecture document", "architecture health", "coupling analysis", "modularity", "decomposition readiness", "data ownership map", "distributed workflow analysis", "reconciliation path" | [software-architecture-analysis](../software-architecture-analysis/SKILL.md) |
 | "backend service", "service layer", "domain/application/infrastructure", "unit of work", "domain event implementation", "transactional outbox", "inbox deduplication", "idempotent handler", "event replay handler", "message consumer implementation", "service coexistence", "strangler handoff", "service adapter", "anti-corruption adapter", "dual path authority" | [backend-engineering](../backend-engineering/SKILL.md) |
