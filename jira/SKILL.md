@@ -1,9 +1,12 @@
 ---
 name: jira
-description: 'Interact with Atlassian Jira from the terminal: search issues, view
-  details, create issues, add comments, list projects, and transition status. Use
-  when the user mentions Jira, a ticket key (e.g. PROJ-123), or asks about issues,
-  bugs, tasks, projects, or sprint work.'
+description: 'Interact with Atlassian Jira from the terminal: search issues with
+  JQL, view details, create issues, add comments, list projects, and transition
+  status. Includes a full JQL language reference (functions, operators, history
+  queries, performance tuning). Use when the user mentions Jira, a ticket key
+  (e.g. PROJ-123), asks about issues, bugs, tasks, projects, or sprint work,
+  or needs to write, debug, or optimize JQL queries. Do not use for GitHub or
+  GitLab issue tracking, Jira site administration, or generic ticketing systems.'
 license: MIT
 compatibility: Requires JIRA_EMAIL and JIRA_API_TOKEN env vars (free from id.atlassian.com/manage/api-tokens),
   Python 3.8+, and the `requests` library. Also requires JIRA_SERVER (defaults to
@@ -111,6 +114,47 @@ jira --quiet list                        # suppress non-essential output
 - **Transitions are workflow-specific** — Available transitions depend on the issue's current status and the project's workflow. The CLI lists available options when an invalid transition is requested.
 - **Rate limits** — Jira Cloud has rate limits. The API returns 429 if exceeded. The CLI does not auto-retry.
 - **Project keys are case-sensitive** in some contexts, but the Jira API generally accepts uppercase or lowercase.
+
+### JQL gotchas
+
+- **`!=` excludes empty values** — `assignee != currentUser()` silently drops unassigned issues. Write `(assignee != currentUser() OR assignee IS EMPTY)` to include them.
+- **AND binds tighter than OR** — `A OR B AND C` parses as `A OR (B AND C)`. Always parenthesize OR groups.
+- **No leading wildcards** — `summary ~ "*bug"` forces a full scan and is very slow; put wildcards after the first few characters.
+- **Filter by project first** — the single biggest JQL performance lever on large instances.
+- **JQL has no aggregation** — no COUNT/SUM/AVG in the query language itself.
+- **History operators need history tracking** — `WAS`/`CHANGED` return nothing for custom fields without history enabled.
+- **Search endpoint duality** — this CLI uses the classic `/rest/api/3/search` endpoint with offset pagination (`startAt`, `maxResults`). Atlassian's enhanced `/rest/api/3/search/jql` replaces it with a `nextPageToken` model and no offset; the classic endpoint is being deprecated, so expect migration. Mixing the two pagination models is a common source of truncated or erroring result pages.
+
+## Multi-Step Pipeline Recipes
+
+### Sprint hygiene sweep
+
+Find stalled sprint work, then bulk-review each ticket:
+
+```bash
+jira list --jql 'sprint IN openSprints() AND updated < -14d AND status != Done' --json \
+  | jq -r '.issues[].key' \
+  | while read -r key; do jira view "$key"; done
+```
+
+The `--json` output shape from `list` is `{"total": N, "issues": [{"key", "summary", "status", "assignee", "issuetype", "priority"}]}` — pipe through `jq -r '.issues[].key'` to feed follow-up commands.
+
+### My-week digest
+
+```bash
+jira list --jql 'assignee = currentUser() AND updated >= startOfWeek()' --max 50 --json \
+  | jq -r '.issues[] | "\(.key)\t\(.status)\t\(.summary)"'
+```
+
+More ready-to-run queries live in [references/jql-cookbook.md](references/jql-cookbook.md), organized by role (developers, scrum masters, product owners, admins).
+
+## Reference Files
+
+| File | Topic | Read when |
+|------|-------|-----------|
+| [references/jql-functions-catalog.md](references/jql-functions-catalog.md) | Every JQL function with fields/operators — date/time, user, sprint/version, issue, custom field, plus JSM approval and SLA functions | Writing or debugging a query that uses functions; checking which operators a function supports |
+| [references/jql-best-practices.md](references/jql-best-practices.md) | Performance rules, operator precedence, the empty-value trap, common mistakes, troubleshooting flow, marketplace extensions | A query is slow, returns wrong/zero results, or mixes AND/OR |
+| [references/jql-cookbook.md](references/jql-cookbook.md) | 50 ready-to-run JQL queries organized by role (developers, scrum masters, product owners/managers, power users, admins) | Building dashboards, saved filters, automation rules, or sprint reviews |
 
 ## References
 
