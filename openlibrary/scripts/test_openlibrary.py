@@ -215,7 +215,90 @@ class MockedClientTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(req.call_count, 2)
         self.assertTrue(req.call_args_list[1].args[0].endswith(WORK_KEY + ".json"))
-        self.assertEqual(json.loads(out)["authors"], "OL118077A")
+        self.assertEqual(json.loads(out)["authors"], ["OL118077A"])
+
+    def test_work_with_explicit_null_authors_returns_empty_array(self):
+        # Real-world work records sometimes carry an explicit "authors": null;
+        # the CLI must render '?' and hand off [] instead of raising TypeError.
+        record = dict(WORK_RECORD, authors=None)
+        with mock.patch.object(requests, "get",
+                               return_value=FakeResponse(200, record)):
+            code, out, _ = run_cli("--json", "work", WORK_KEY)
+        self.assertEqual(code, 0)
+        data = json.loads(out)
+        self.assertIsInstance(data["authors"], list)
+        self.assertEqual(data["authors"], [])
+        ol_cli.GLOBAL_FLAGS.update(json=False)
+        try:
+            with mock.patch.object(requests, "get",
+                                   return_value=FakeResponse(200, record)):
+                human_code, human_out, _ = run_cli("work", WORK_KEY)
+        finally:
+            ol_cli.GLOBAL_FLAGS.update(json=True)
+        self.assertEqual(human_code, 0)
+        self.assertIn("?", human_out)
+
+    def test_isbn_and_work_emit_same_json_type_under_authors_key(self):
+        # Symmetry contract: any "authors"-keyed field across CLI commands is a
+        # JSON array of bare OL…A key strings. Downstream jq pipelines can
+        # treat .authors identically regardless of the entry command.
+        edition_authored = {
+            "type": {"key": "/type/edition"},
+            "key": EDITION_KEY,
+            "title": "Nineteen Eighty-Four",
+            "authors": [{"key": AUTHOR_KEY}],
+            "works": [{"key": WORK_KEY}],
+        }
+        edition = FakeResponse(200, edition_authored)
+        with mock.patch.object(requests, "get",
+                               return_value=FakeResponse(200, WORK_RECORD)):
+            _, work_out, _ = run_cli("--json", "work", WORK_KEY)
+            _, isbn_out, _ = run_cli("--json", "isbn", "9780451524935")
+        work_data = json.loads(work_out)
+        isbn_data = json.loads(isbn_out)
+        for data in (work_data, isbn_data):
+            self.assertIsInstance(data["authors"], list)
+            self.assertNotIsInstance(data["authors"], str)
+            self.assertTrue(all(
+                isinstance(k, str) and k.endswith("A")
+                for k in data["authors"]))
+        self.assertEqual(isbn_data["authors"], ["OL118077A"])
+        self.assertEqual(work_data["authors"], ["OL118077A"])
+
+    def test_edition_key_only_author_refs_become_bare_keys_in_json(self):
+        edition_authored = {
+            "type": {"key": "/type/edition"},
+            "key": EDITION_KEY,
+            "title": "Nineteen Eighty-Four",
+            "authors": [{"key": "/authors/" + "OL118077A"},
+                        {"key": "/authors/" + "OL7862984A"}],
+            "works": [{"key": WORK_KEY}],
+        }
+        edition = FakeResponse(200, edition_authored)
+        with mock.patch.object(requests, "get", return_value=edition) as req:
+            code, out, _ = run_cli("--json", "isbn", "9780451524935")
+        self.assertEqual(code, 0)
+        self.assertEqual(req.call_count, 1)  # no fallback read needed
+        data = json.loads(out)
+        self.assertEqual(data["authors"],
+                         sorted(["OL118077A", "OL7862984A"]))
+
+    def test_isbn_human_output_still_shows_comma_joined_labels(self):
+        # The display surface is unchanged: comma-joined names on stdout while
+        # --json carries the array shape.
+        edition = FakeResponse(200, {
+            "type": {"key": "/type/edition"}, "key": EDITION_KEY,
+            "title": "Nineteen Eighty-Four",
+            "authors": [{"name": "George Orwell"}, {"name": "Thomas Pynchon"}],
+            "works": [{"key": WORK_KEY}]})
+        ol_cli.GLOBAL_FLAGS.update(json=False)
+        try:
+            with mock.patch.object(requests, "get", return_value=edition):
+                code, out, _ = run_cli("isbn", "9780451524935")
+        finally:
+            ol_cli.GLOBAL_FLAGS.update(json=True)
+        self.assertEqual(code, 0)
+        self.assertIn("George Orwell, Thomas Pynchon", out)
 
     def test_work_json_authors_are_bare_keys_array(self):
         with mock.patch.object(requests, "get",
@@ -256,6 +339,29 @@ class MockedClientTests(unittest.TestCase):
         self.assertIsInstance(data["authors"], list)
         self.assertTrue(all(isinstance(key, str) for key in data["authors"]))
         self.assertIsInstance(data["subjects"], list)
+
+    def test_work_record_with_non_dict_author_entries_is_tolerated(self):
+        # Malformed wiki payloads can smuggle bare strings into authors[];
+        # tolerate-and-filter beats crash.
+        record = dict(WORK_RECORD,
+                      authors=[{"author": {"key": AUTHOR_KEY}}, None])
+        with mock.patch.object(requests, "get",
+                               return_value=FakeResponse(200, record)):
+            code, out, _ = run_cli("--json", "work", WORK_KEY)
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out)["authors"], ["OL118077A"])
+
+    def test_isbn_handoff_fields_have_stable_json_types(self):
+        with mock.patch.object(requests, "get",
+                               return_value=FakeResponse(
+                                   200, dict(EDITION_RECORD, authors=None),
+                                   url="https://openlibrary.org/books/x.json")):
+            _, out, _ = run_cli("--json", "isbn", "9780451524935")
+        data = json.loads(out)
+        for key in ("edition_key", "title", "description"):
+            self.assertIsInstance(data[key], str)
+        for key in ("authors", "work_keys", "publishers", "subjects"):
+            self.assertIsInstance(data[key], list)
 
     def test_merge_redirect_stub_in_http_200_is_followed_with_json_suffix(self):
         # Merged-away keys answer 200 with {type:/type/redirect, location},

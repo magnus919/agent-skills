@@ -30,8 +30,11 @@ openlibrary author "$AUTHOR" --json | jq -r '
 ```
 
 Failure modes at each hop: step 1 needs `-L` in curl or you parse an HTML 302 page;
-step 3's `.authors[0].author.key` is wrong on *edition* records (flat `.authors[0].key`
-there); step 4 crashes naive parsers when `bio` is an object.
+the edition record behind step 1 frequently ships `"authors": null` outright — the
+CLI absorbs that plus the nested-vs-flat split (works double-nest
+`.authors[].author.key`, editions stay flat `.authors[].key`) by falling back to the
+linked work, so build pipelines on its `--json` handoff instead of hand-probing
+record fields; step 4 crashes naive parsers when `bio` is an object.
 
 ## Recipe 2: search → filter to readable ebooks → fetch editions of the top hit
 

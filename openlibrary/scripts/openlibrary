@@ -241,30 +241,43 @@ def cmd_isbn(client, args):
         return
 
     title = data.get("title", "?")
-    authors_list = data.get("authors", [])
+    work_keys = [normalize_olid(w.get("key", "")) for w in data.get("works", [])]
+    edition_authors = [a for a in (data.get("authors") or []) if isinstance(a, dict)]
+
+    def _edition_author_key(a: Dict) -> str:
+        # Canonical editions nest flat ({"key": "/authors/OL…A"}); tolerate
+        # stray double-nested refs ({"author": {"key": ...}}) so one accessor
+        # survives both wiki shapes.
+        ref = a.get("key") or (a.get("author") or {}).get("key") or ""
+        return normalize_olid(ref)
 
     def _author_label(a: Dict) -> str:
         # Edition records often carry key-only author refs (no embedded name);
         # fall back to the bare OL…A so output is never just '?'.
-        label = a.get("name") or normalize_olid(a.get("key", ""))
+        label = a.get("name") or _edition_author_key(a)
         return label or "?"
 
-    author_names = ", ".join(_author_label(a) for a in authors_list) if authors_list else ""
-    work_keys = [normalize_olid(w.get("key", "")) for w in data.get("works", [])]
+    author_names = ", ".join(_author_label(a) for a in edition_authors)
+    # JSON hands off bare OL…A keys (same shape as `work --json`); display
+    # labels remain a human-surface concern only.
+    author_keys = sorted({
+        k for k in (_edition_author_key(a) for a in edition_authors) if k
+    })
 
-    if not author_names and work_keys:
+    if not author_keys and work_keys:
         # Some editions ship authors:null entirely. The authoritative author
         # links live on the work (double-nested authors[].author.key) — one
         # extra read beats reporting an unknown author.
         work_data = client._get(f"/works/{work_keys[0]}.json") or {}
-        work_authors = [
-            normalize_olid(a.get("author", {}).get("key", ""))
+        author_keys = [
+            normalize_olid((a.get("author") or {}).get("key", ""))
             for a in (work_data.get("authors") or [])
             if isinstance(a, dict)
         ]
-        author_names = ", ".join(k for k in work_authors if k)
-    if not author_names:
-        author_names = "?"
+        author_keys = [k for k in author_keys if k]
+        if not author_names:
+            author_names = ", ".join(author_keys)
+    author_names = author_names or "?"
     pages = data.get("number_of_pages", data.get("pagination", "?"))
     publishers = ", ".join(data.get("publishers", [])) or "?"
     publish_date = data.get("publish_date", "?")
@@ -283,9 +296,10 @@ def cmd_isbn(client, args):
         f"   Subjects: {subjects}"
         f"{desc_short}\n"
         f"   Edition: {edition_key}  Works: {', '.join(work_keys) or '?'}",
-        {"isbn": parsed.isbn, "title": title, "authors": author_names,
+        {"isbn": parsed.isbn, "title": title, "authors": author_keys,
          "pages": pages, "publish_date": publish_date,
-         "publishers": publishers, "subjects": data.get("subjects", []),
+         "publishers": [p for p in (data.get("publishers") or []) if p],
+         "subjects": data.get("subjects", []),
          "description": description,
          "edition_key": edition_key,
          "work_keys": work_keys,
@@ -348,11 +362,13 @@ def cmd_work(client, args):
         return
 
     title = data.get("title", "?")
-    authors = data.get("authors", [])
+    # Rare records carry an explicit "authors": null; a default-value .get
+    # alone does not protect against iterating None.
+    authors = [a for a in (data.get("authors") or []) if isinstance(a, dict)]
     author_keys = [
-        normalize_olid(a.get("author", {}).get("key", ""))
+        normalize_olid((a.get("author") or {}).get("key", ""))
         for a in authors
-        if isinstance(a, dict) and a.get("author", {}).get("key")
+        if (a.get("author") or {}).get("key")
     ]
     author_str = ", ".join(author_keys) or "?"
     desc = unwrap_text(data.get("description", ""))

@@ -149,8 +149,9 @@ openlibrary work OL1168083W --json | jq -r '.authors[0]'        # bare OL…A ke
 openlibrary author OL118077A                                    # bio, dates
 ```
 
-The CLI keeps this pipeline type-safe: in JSON, `.authors` is an array of bare
-OL…A keys; human output renders the same keys as a comma-separated label. Each hop
+The CLI keeps this pipeline type-safe: every command that emits an `authors`
+field under `--json` (`isbn`, `work`) uses the same shape — an array of bare
+OL…A keys — while human output renders comma-separated labels instead. Each hop
 uses a different key suffix (M → W → A); see Known Gotchas before hand-assembling
 these URLs yourself.
 
