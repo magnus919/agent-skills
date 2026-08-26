@@ -70,7 +70,7 @@ research-methodology
 restic
 secure-software-engineering
 security-audit-methodology
-seo-audit
+seo
 site-reliability-engineering
 software-architecture-analysis
 spec-driven-development

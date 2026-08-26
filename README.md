@@ -16,9 +16,6 @@ Expert statistical modeling for insurance, actuarial, and financial-risk decisio
 
 Preserve the reasoning behind consequential architecture choices so later contributors can understand, revisit, or supersede them responsibly.
 
-### [aeo](aeo/SKILL.md)
-
-Implement Answer Engine Optimization for AI answers and citations: question clusters, answer-first content, entities, evidence, structured-data parity, provider crawler policies, optional agent-readable files, and reproducible citation experiments. Narrowly scoped to AEO; routes broad SEO and CMS work to the existing skills.
 
 ### [agent-council](agent-council/SKILL.md)
 
@@ -511,9 +508,9 @@ Give authorized teams a disciplined way to identify and prioritize security risk
 
 Model and diagnose shared semantic ground between agents with Mark Burgess's Semantic Spacetime: discrete graph spacetimes where meaning evolves over time, typed gamma(3,4) edges expose semantic drift and absorbing states, and cooperative promises carry causality.
 
-### [seo-audit](seo-audit/SKILL.md)
+### [seo](seo/SKILL.md)
 
-Identify search-discoverability problems through evidence, prioritize the work, and distinguish technical defects from content opportunities.
+Audit and improve visibility across traditional search, answer engines, and generative search, with provider-scoped evidence and reproducible measurement.
 
 ### [site-reliability-engineering](site-reliability-engineering/SKILL.md)
 

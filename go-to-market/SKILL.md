@@ -62,5 +62,5 @@ The profile using this skill produces artifact pyramids. The response to any cal
 - [artifact-pyramids](../artifact-pyramids/SKILL.md) — output contract
 - [product-strategy](../product-strategy/SKILL.md) — CPO methodology (product vision, PMF, market sizing)
 - [brand-designer](../brand-designer/SKILL.md) — visual brand identity design
-- [seo-audit](../seo-audit/SKILL.md) — organic search audit and content strategy
+- [seo](../seo/SKILL.md) — organic search, answer-engine, and generative-search audit and content strategy
 - [crm](../crm/SKILL.md) — HubSpot CRM operations: contact lookup, deal pipeline views, and confirmed deal stage changes
