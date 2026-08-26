@@ -1290,7 +1290,7 @@
         "./trakt"
       ],
       "strict": false,
-      "description": "Discover trending, anticipated, and popular movies and TV shows via the Trakt.tv API from the terminal. No authentication required for read-only discovery. Use when the user asks about what to watch, trending movies, popular shows, or media discovery."
+      "description": "Discover and compare Trakt.tv trending, popular, and anticipated movies and shows from the terminal. Do not use this skill for TMDb catalog metadata, credits, images, or provider lookups; use the tmdb skill for those tasks."
     },
     {
       "name": "transistor",
