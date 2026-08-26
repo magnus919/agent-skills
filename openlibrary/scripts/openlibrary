@@ -349,8 +349,12 @@ def cmd_work(client, args):
 
     title = data.get("title", "?")
     authors = data.get("authors", [])
-    author_str = ", ".join([normalize_olid(a.get("author", {}).get("key", "?"))
-                            for a in authors]) if authors else "?"
+    author_keys = [
+        normalize_olid(a.get("author", {}).get("key", ""))
+        for a in authors
+        if isinstance(a, dict) and a.get("author", {}).get("key")
+    ]
+    author_str = ", ".join(author_keys) or "?"
     desc = unwrap_text(data.get("description", ""))
     desc_short = f"\n{desc[:500]}" if desc else ""
     subjects = ", ".join(data.get("subjects", [])[:5]) or "(none)"
@@ -360,7 +364,7 @@ def cmd_work(client, args):
         f"📖 {title}\n"
         f"   Author(s): {author_str}\n"
         f"   Subjects: {subjects}{desc_short}",
-        {"key": key, "title": title, "authors": author_str,
+        {"key": key, "title": title, "authors": author_keys,
          "description": desc, "subjects": data.get("subjects", []),
          "cover_url": cover_url("b/id", covers[0]) if covers else None}
     )

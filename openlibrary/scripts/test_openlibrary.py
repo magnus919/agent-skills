@@ -217,6 +217,46 @@ class MockedClientTests(unittest.TestCase):
         self.assertTrue(req.call_args_list[1].args[0].endswith(WORK_KEY + ".json"))
         self.assertEqual(json.loads(out)["authors"], "OL118077A")
 
+    def test_work_json_authors_are_bare_keys_array(self):
+        with mock.patch.object(requests, "get",
+                               return_value=FakeResponse(200, WORK_RECORD)):
+            code, out, _ = run_cli("--json", "work", WORK_KEY)
+        self.assertEqual(code, 0)
+        data = json.loads(out)
+        self.assertIsInstance(data["authors"], list)
+        self.assertEqual(data["authors"], ["OL118077A"])
+        self.assertRegex(data["authors"][0], r"^OL\d+A$")
+
+    def test_isbn_work_author_pipeline_handoff_is_executable(self):
+        """Mock the documented ISBN -> work -> author jq handoff end to end."""
+        edition = FakeResponse(200, EDITION_RECORD)
+        work = FakeResponse(200, WORK_RECORD)
+        author = FakeResponse(200, {"name": "George Orwell", "bio": "Writer"})
+        with mock.patch.object(requests, "get",
+                               side_effect=[edition, work, work, author]) as req:
+            isbn_code, isbn_out, _ = run_cli("--json", "isbn", "9780451524935")
+            isbn_data = json.loads(isbn_out)
+            work_code, work_out, _ = run_cli(
+                "--json", "work", isbn_data["work_keys"][0])
+            work_data = json.loads(work_out)
+            author_code, author_out, _ = run_cli(
+                "--json", "author", work_data["authors"][0])
+        self.assertEqual((isbn_code, work_code, author_code), (0, 0, 0))
+        self.assertEqual(req.call_count, 4)
+        self.assertEqual(work_data["authors"][0], "OL118077A")
+        self.assertEqual(json.loads(author_out)["key"], "OL118077A")
+
+    def test_work_pipeline_handoff_fields_have_stable_json_types(self):
+        with mock.patch.object(requests, "get",
+                               return_value=FakeResponse(200, WORK_RECORD)):
+            _, out, _ = run_cli("--json", "work", WORK_KEY)
+        data = json.loads(out)
+        self.assertIsInstance(data["key"], str)
+        self.assertIsInstance(data["title"], str)
+        self.assertIsInstance(data["authors"], list)
+        self.assertTrue(all(isinstance(key, str) for key in data["authors"]))
+        self.assertIsInstance(data["subjects"], list)
+
     def test_merge_redirect_stub_in_http_200_is_followed_with_json_suffix(self):
         # Merged-away keys answer 200 with {type:/type/redirect, location},
         # NOT a 3xx — the client must detect the stub and refetch. Stub

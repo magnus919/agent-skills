@@ -20,12 +20,12 @@ curl -sL "https://openlibrary.org/isbn/$ISBN.json" > edition.json
 # 2. Pull the work key out of the edition (path form /works/OL…W)
 WORK=$(jq -r '.works[0].key' edition.json)          # e.g. /works/OL166894W
 
-# 3. Fetch the work for description + subjects; note double-nested author refs
-curl -s "https://openlibrary.org${WORK}.json" > work.json
-AUTHOR=$(jq -r '.authors[0].author.key' work.json)  # /authors/OL23919A
+# 3. Fetch the work through the CLI. Its JSON handoff exposes bare OL…A keys.
+openlibrary work "${WORK##*/}" --json > work.json
+AUTHOR=$(jq -r '.authors[0]' work.json)       # OL23919A
 
-# 4. Author record; bio may be {type,value}-wrapped or a plain string
-curl -s "https://openlibrary.org${AUTHOR}.json" | jq -r '
+# 4. Author record; the CLI accepts the bare key and unwraps bio text.
+openlibrary author "$AUTHOR" --json | jq -r '
   if (.bio | type) == "object" then .bio.value else .bio end'
 ```
 
