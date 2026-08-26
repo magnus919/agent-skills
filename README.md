@@ -262,7 +262,7 @@ Jellyfin media server from the terminal. Check server info, browse recently adde
 
 ### [jira](jira/SKILL.md)
 
-Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, list projects, and transition status. API token from id.atlassian.com.
+Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, count matches, list projects, and transition status. Includes a full JQL reference (functions, history predicates, date expressions) plus REST auth/pagination guidance. API token from id.atlassian.com.
 
 ### [kanban-guru](kanban-guru/SKILL.md)
 
