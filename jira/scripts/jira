@@ -121,7 +121,7 @@ class JiraClient:
             )
         except requests.ConnectionError as e:
             die(f"Cannot connect to {self.server}: {e}\n"
-                f"  Check JIRA_SERVER or use --server")
+                f"  Check connectivity, or set JIRA_SERVER env var to change the endpoint")
 
         if resp.status_code == 401:
             die("Auth failed (401). Check your JIRA_EMAIL and JIRA_API_TOKEN.")
