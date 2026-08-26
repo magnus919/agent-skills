@@ -117,3 +117,7 @@ jira --quiet list                        # suppress non-essential output
 - [scripts/jira](scripts/jira) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
 - [Jira REST API v3 docs](https://developer.atlassian.com/cloud/jira/platform/rest/v3/) — Official API reference.
 - [API Token Management](https://id.atlassian.com/manage/api-tokens) — Generate and revoke tokens.
+
+## When not to use
+
+Do not use this skill for GitHub or GitLab issue tracking (each platform has its own tooling), for Jira site administration such as project permissions, workflow schemes, or user management, or for writing application code against the Jira REST API — see the Atlassian developer docs for integration development instead.

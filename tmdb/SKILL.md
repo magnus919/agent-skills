@@ -127,3 +127,7 @@ tmdb --verbose movie search --term "alien"         # verbose logging
 - [scripts/tmdb](scripts/tmdb) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
 - [TMDb API v3 Reference](https://developer.themoviedb.org/reference) — Official API documentation.
 - [TMDb API Settings (get a key)](https://www.themoviedb.org/settings/api) — Free API key registration.
+
+## When not to use
+
+Do not use this skill for streaming-availability lookups (TMDb delegates watch-provider data to JustWatch and may lag), for torrent or piracy search, or for tracking what you have already watched — TMDb is a metadata database, not a viewing source; pair it with trakt for personal watch history.

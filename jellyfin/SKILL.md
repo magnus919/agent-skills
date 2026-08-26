@@ -132,3 +132,7 @@ scripts/jellyfin --dry-run search --query "dune"       # preview request without
 - [scripts/jellyfin](scripts/jellyfin) — The bundled read-only CLI binary with `--json`, `--dry-run`, and lazy authentication.
 - [Jellyfin API Docs](https://jellyfin.org/docs/general/clients/api) — Official API documentation.
 - [Jellyfin Downloads](https://jellyfin.org/downloads) — Server download and setup guide.
+
+## When not to use
+
+Do not use this skill for playback control or library management (starting streams, editing item metadata, creating users) — every bundled command is read-only; route remote-control automation to Jellyfin's official clients, and Plex or Kodi servers expose their own separate APIs.

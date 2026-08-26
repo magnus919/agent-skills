@@ -155,3 +155,7 @@ tempest current --device-id 67890 --json         # flag after subcommand
 
 - [references/tempest-api-field-layouts.md](references/tempest-api-field-layouts.md) — Full field index maps for obs_st, obs_air, and obs_sky observation arrays. Read when decoding raw JSON output or building on top of the Tempest API.
 - [scripts/tempest](scripts/tempest) — The CLI binary itself. Designed following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, idempotent, dual-output via `emit()`, and structured logging.
+
+## When not to use
+
+Do not use this skill for weather questions that do not involve a personal WeatherFlow station (a public forecast service serves those better), for aviation METAR/TAF data, or for hardware from other vendors — every endpoint here requires a Tempest account token and talks to WeatherFlow's consumer API.

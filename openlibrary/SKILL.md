@@ -119,3 +119,7 @@ openlibrary --dry-run isbn 9780451524935                # see what URL would be 
 - [scripts/openlibrary](scripts/openlibrary) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, structured logging.
 - [Open Library API Docs](https://openlibrary.org/developers/api) — Official API documentation.
 - [Open Library](https://openlibrary.org) — The open, editable library catalog.
+
+## When not to use
+
+Do not use this skill for local library-catalog administration (Koha, Evergreen, MARC batch processing), for licensed commercial book data feeds (ISBNdb, Google Books), or for citation formatting — Open Library is a free public catalog API, not a bibliographic management system.

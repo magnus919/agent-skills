@@ -484,6 +484,11 @@ The default for this repo is **`scripts/` inside the skill** — it follows the 
 ## Agent-Readiness Checklist
 
 Use [the agent-readiness checklist](references/agent-readiness-checklist.md) before shipping a CLI.
+
+## When not to use
+
+Do not use this skill to design conversational agent tools or MCP servers — [references/mcp-vs-cli.md](references/mcp-vs-cli.md) carries that decision framework — and route general API design questions to [api-design-and-evolution](../api-design-and-evolution/SKILL.md). This skill also does not cover GUI, TUI, or web-app interface design.
+
 ## References
 
 - [templates/bash-cli-scaffold.sh](templates/bash-cli-scaffold.sh) — Full bash project template with pre-wired global flags, logging helpers, and subcommand dispatch. Use as a starting point for any bash CLI.

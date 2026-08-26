@@ -122,3 +122,7 @@ ghost --verbose site                     # verbose logging
 - [scripts/ghost](scripts/ghost) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
 - [Ghost Admin API Docs](https://ghost.org/docs/admin-api/) — Official Ghost Admin API documentation.
 - [Ghost Integrations](https://ghost.org/docs/integrations/) — How to create Custom Integrations and get your Admin API key.
+
+## When not to use
+
+Do not use this skill for Ghost site administration that requires the admin dashboard (themes, staff accounts, membership tiers, sending settings), for front-end theme development, or for other publishing platforms — WordPress, Hugo, and Jekyll each have their own tooling.
