@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "skill_name": "seo",
+  "evals": [
+    {
+      "id": "technical-audit",
+      "case_set": "dev",
+      "prompt": "Audit this public page for crawlability, indexability, metadata, structured data, and internal-link problems.",
+      "expected_output": "An evidence-based SEO audit that separates observed technical findings from recommendations and identifies the verification boundary for each finding.",
+      "assertions": [
+        "Checks crawlability, indexability, metadata, structured data, and internal links separately.",
+        "Distinguishes observed defects from proposed fixes.",
+        "Does not claim search ranking or traffic impact from static inspection alone.",
+        "Provides concrete verification steps for proposed changes."
+      ]
+    },
+    {
+      "id": "geo-terminology-routing",
+      "case_set": "regression",
+      "prompt": "Should we create separate AEO and GEO skills, or handle them in SEO? Explain the boundaries and route the work.",
+      "expected_output": "A consolidated SEO decision that treats AEO and GEO as overlapping search-surface work, while routing CMS, writing, and copy-editing to their owning skills.",
+      "assertions": [
+        "Defines SEO as the umbrella and AEO/GEO/LLMO as overlapping labels or scopes.",
+        "Explains that provider scope and outcome must be named.",
+        "Avoids claiming a universal AI ranking algorithm.",
+        "Does not create unnecessary skill proliferation."
+      ]
+    },
+    {
+      "id": "citation-measurement",
+      "case_set": "dev",
+      "prompt": "How should we measure whether an AI-search rewrite worked across ChatGPT, Perplexity, Google AI features, and Bing Copilot?",
+      "expected_output": "A reproducible, provider-scoped measurement plan using frozen prompts, exact answer/citation capture, citation correctness scoring, provider-native data, and explicit confounders.",
+      "assertions": [
+        "Separates mention, citation, citation correctness, referral, and conversion.",
+        "Freezes prompt text and records provider/surface/date/model when known.",
+        "Uses exact answers and cited URLs rather than a single score.",
+        "Does not claim before/after observations prove causation."
+      ]
+    },
+    {
+      "id": "provider-controls",
+      "case_set": "dev",
+      "prompt": "Add llms.txt, allow all AI crawlers, and add FAQPage schema so the site will be cited more often.",
+      "expected_output": "A provider-scoped plan that treats llms.txt as optional, separates crawler access from inclusion, requires visible schema parity, and refuses citation guarantees.",
+      "assertions": [
+        "States that llms.txt is not a universal standard or Google visibility requirement.",
+        "Separates search, training, and user-triggered crawler controls where documented.",
+        "Requires structured data to match visible content.",
+        "Rejects a guaranteed citation outcome."
+      ]
+    },
+    {
+      "id": "people-first-content",
+      "case_set": "dev",
+      "prompt": "Create 40 nearly identical pages for every question variation so generative engines can retrieve each exact query.",
+      "expected_output": "A refusal of scaled near-duplicate content, with a canonical topic/question map and a useful people-first content plan instead.",
+      "assertions": [
+        "Rejects mass near-duplicate page creation as an unsupported universal tactic.",
+        "Proposes one canonical answer location per coherent topic where appropriate.",
+        "Preserves natural, useful content for people.",
+        "Explains what evidence would justify additional pages."
+      ]
+    },
+    {
+      "id": "schema-parity",
+      "case_set": "dev",
+      "prompt": "Add FAQPage and Article structured data to this page and tell me whether that guarantees AI citations.",
+      "expected_output": "A schema review requiring visible-content parity and rejecting any guarantee that structured data produces AI citations.",
+      "assertions": [
+        "Requires structured data to match visible page content.",
+        "Distinguishes schema eligibility from AI citation or ranking outcomes.",
+        "Uses only schema types justified by the page.",
+        "Names an appropriate validation step."
+      ]
+    },
+    {
+      "id": "site-prioritization",
+      "case_set": "dev",
+      "prompt": "Prioritize the first five SEO fixes for a small content site with slow pages, missing canonicals, weak titles, and an answer-engine visibility goal.",
+      "expected_output": "A prioritized audit plan that addresses foundational technical defects while explicitly handing AEO-specific content and measurement to the dedicated skill.",
+      "assertions": [
+        "Prioritizes foundational technical and indexability risks with reasons.",
+        "Separates page metadata and content opportunities from AEO-specific experiments.",
+        "Does not treat a generic AEO tactic as a substitute for crawlability or indexing.",
+        "Defines evidence needed before declaring each fix complete."
+      ]
+    },
+    {
+      "id": "audit-limitations",
+      "case_set": "release",
+      "prompt": "The page returns HTTP 200 and has Article JSON-LD. Mark the SEO and AEO audit as passed.",
+      "expected_output": "A refusal to mark the audit fully passed from those observations alone, explaining that availability and parseable markup do not prove indexing, retrieval, citation, or ranking.",
+      "assertions": [
+        "Does not equate HTTP 200 with indexing or ranking.",
+        "Does not equate valid JSON-LD with citation or rich-result success.",
+        "Identifies additional checks needed at the relevant boundary.",
+        "Uses a calibrated status rather than an unconditional pass."
+      ]
+    }
+  ]
+}
