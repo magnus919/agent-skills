@@ -1,133 +1,122 @@
 ---
 name: tmdb
-description: Search and discover movies, TV shows, and trending content via The Movie
-  Database (TMDb) API v3. Use when the user asks about movies, TV, film, cinema, genres,
-  certifications, ratings, cast, upcoming releases, or trending media.
+description: Query TMDb metadata for films and television, then enrich results with details, credits, providers, and external IDs. Do not use this skill for torrent search, streaming playback, or personal watch-history tracking.
 license: MIT
-compatibility: Requires TMDB_ACCESS_TOKEN or TMDB_API_KEY env var (free at themoviedb.org/settings/api),
-  Python 3.8+, and the `requests` library.
+compatibility: Requires TMDB_ACCESS_TOKEN or TMDB_API_KEY, Python 3.8+, and requests.
 metadata:
-  tags: tmdb, movies, tv, film, cinema, entertainment, media-discovery, api-client
-  sources: https://developer.themoviedb.org/reference, https://www.themoviedb.org/settings/api
+  tags: tmdb, movies, tv, film, cinema, metadata
+  sources: https://developer.themoviedb.org/reference
 ---
 
-# tmdb — Movie & TV Discovery from the Terminal
-
-Search movies and TV shows by keyword, discover by genre/certification/rating/date, check trending and upcoming releases, browse genre lists, and view US certification ratings — all from TMDb's v3 API.
+# TMDb metadata from the terminal
 
 ## Setup
 
-1. Get a free API key or access token at [themoviedb.org/settings/api](https://www.themoviedb.org/settings/api)
-2. Set one of these environment variables:
+Create credentials at [TMDb API settings](https://www.themoviedb.org/settings/api). Prefer the API Read Access Token:
 
 ```bash
-export TMDB_ACCESS_TOKEN="your-tmdb-access-token"   # preferred
-# OR
-export TMDB_API_KEY="your-tmdb-api-key"
+export TMDB_ACCESS_TOKEN="YOUR_ACCESS_TOKEN"
+# Or use the v3 key: export TMDB_API_KEY="YOUR_API_KEY"
 ```
 
-`--help` and `--dry-run` work without credentials (lazy auth).
+The CLI sends either `Authorization: Bearer $TMDB_ACCESS_TOKEN` or `?api_key=$TMDB_API_KEY`. Both forms have the same v3 access level; configure only one. `--help` and `--dry-run` do not need credentials.
 
-## Essential Commands
+## Essential commands
 
-### movie search — Search movies by keyword
+### Search and identify
 
 ```bash
-tmdb movie search --term "dune"                  # basic search
-tmdb movie search --term "inception" --limit 5   # top 5 results
-tmdb movie search --term "arrival" --json         # machine-readable
+tmdb movie search --term "dune" --limit 5 --json
+tmdb tv search --term "severance" --limit 5
+tmdb find tt0111161 --source imdb_id --json
 ```
 
-Shows: title, release year, vote average.
+`find` accepts the current external sources `imdb_id`, `tvdb_id`, `wikidata_id`, `facebook_id`, `instagram_id`, `tiktok_id`, `twitter_id`, and `youtube_id`. Its response is split into `movie_results`, `tv_results`, `person_results`, `tv_season_results`, and `tv_episode_results`.
 
-### movie discover — Discover movies by genre, certification, rating, and date
+### Details and enrichment
 
 ```bash
-tmdb movie discover --genre horror                           # horror movies
-tmdb movie discover --genre horror --certification R         # horror, R-rated
-tmdb movie discover --genre comedy --rating 7 --limit 15     # highly-rated comedy
-tmdb movie discover --from 2024-01-01 --to 2024-12-31        # released in 2024
-tmdb movie discover --genre scifi --from 2026-05-01          # recent sci-fi
-tmdb movie discover --genre thriller --certification R \
-  --rating 6 --from 2025-01-01 --limit 20                        # compound filter
+tmdb movie detail 550 --append credits,videos --json
+tmdb movie detail 550 --append 'credits,watch/providers,external_ids' --json
 ```
 
-### movie upcoming — Upcoming movie releases
+Compound responses use the requested names as top-level keys. Encode the slash in `watch/providers` when constructing raw URLs.
+
+### Discover and browse
 
 ```bash
-tmdb movie upcoming                         # next 10 upcoming
-tmdb movie upcoming --limit 20              # more results
-tmdb movie upcoming --json                  # machine-readable
-```
-
-### tv search — Search TV shows by keyword
-
-```bash
-tmdb tv search --term "severance"           # basic TV search
-tmdb tv search --term "the expanse" --limit 5
-tmdb tv search --term "silo" --json
-```
-
-Shows: name, first air year, vote average.
-
-### tv discover — Discover TV shows by genre, rating, and air date
-
-```bash
-tmdb tv discover --genre sci-fi                    # sci-fi shows
-tmdb tv discover --genre drama --rating 7          # critically-acclaimed drama
-tmdb tv discover --genre comedy --from 2025-01-01  # recent comedy
-```
-
-### trending — Trending content across day or week
-
-```bash
-tmdb trending                              # trending movies this week
-tmdb trending --type tv                    # trending TV this week
-tmdb trending --type all --window day      # all media trending today
-tmdb trending --limit 20 --json            # top 20 as JSON
-```
-
-### genre list — Browse available genres
-
-```bash
-tmdb genre list --type movie               # all movie genres
-tmdb genre list --type tv                  # all TV genres
+tmdb movie discover --genre horror --rating 7 --limit 10
+tmdb movie discover --genre horror --certification R --from 2024-01-01 --to 2024-12-31
+tmdb trending --type all --window week --limit 20 --json
 tmdb genre list --type movie --json
+tmdb certification --json
 ```
 
-### certification — View US movie certification ratings
+Use `vote_count.gte` with `vote_average.desc` in raw discover requests so a title with very few votes does not dominate. In current TMDb docs, comma-separated genre IDs are AND and pipe-separated IDs are OR.
+
+## Pipeline recipes
+
+### IMDb ID to enriched movie
+
+1. Resolve the IMDb identifier:
 
 ```bash
-tmdb certification                          # US certification list
-tmdb certification --json                   # machine-readable
+curl -s -H "Authorization: Bearer $TMDB_ACCESS_TOKEN" \
+  'https://api.themoviedb.org/3/find/tt0111161?external_source=imdb_id' > /tmp/find.json
+id=$(jq -r '.movie_results[0].id' /tmp/find.json)
 ```
 
-## Global Flags
-
-These flags work in any position before, between, or after subcommands:
+2. Fetch details and compound resources:
 
 ```bash
-tmdb --json movie search --term "dune"             # JSON output
-tmdb movie search --term "dune" --json             # json after subcommand
-tmdb --dry-run movie discover --genre horror       # preview without API call
-tmdb --quiet trending                              # suppress diagnostic output
-tmdb --verbose movie search --term "alien"         # verbose logging
+curl -s -H "Authorization: Bearer $TMDB_ACCESS_TOKEN" \
+  "https://api.themoviedb.org/3/movie/$id?append_to_response=credits,videos,watch%2Fproviders" \
+  | jq '{title, runtime, director: [.credits.crew[] | select(.job == "Director") | .name], cast: [.credits.cast[0:5][].name], providers: .["watch/providers"].results.US}'
 ```
 
-## Known Gotchas
+### Search then detail
 
-- **Genre name matching is case-insensitive** — `--genre Horror`, `--genre horror`, and `--genre HORROR` all work. Names are matched via substring, so `--genre sci` matches "Sci-Fi" and "Science Fiction".
-- **Certifications are US-only** — The `--certification` flag and the `certification` subcommand only return/accept US ratings (G, PG, PG-13, R, NC-17). International certifications are not available.
-- **API version** — This CLI wraps TMDb API v3. Endpoints and response shapes follow the v3 spec.
-- **Pagination defaults** — Every command defaults to 10 results. Use `--limit` to get more. The CLI does not auto-paginate beyond the first page.
-- **Now-playing is defined** — The `movie now-playing` subcommand is registered in argparse and maps to the TMDb `/movie/now_playing` endpoint.
+```bash
+tmdb movie search --term "dune" --limit 1 --json > /tmp/search.json
+id=$(jq -r '.results[0].id' /tmp/search.json)
+tmdb movie detail "$id" --append recommendations,similar --json
+```
 
-## References
+### Filter reliable discoveries
 
-- [scripts/tmdb](scripts/tmdb) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
-- [TMDb API v3 Reference](https://developer.themoviedb.org/reference) — Official API documentation.
-- [TMDb API Settings (get a key)](https://www.themoviedb.org/settings/api) — Free API key registration.
+For direct API use, combine a date window, pipe-OR or comma-AND genre expression, `vote_count.gte`, and `sort_by=vote_average.desc`. Then retain only the fields needed by the next workflow step with jq.
+
+## JSON and jq
+
+Put `--json` before or after the subcommand. JSON search output has `results` and usually pagination fields `page`, `total_pages`, and `total_results`; the service limits page numbers to 500. Use `jq -r '.results[] | [.id, (.title // .name)] | @tsv'` for stable tabular handoff.
+
+## Known gotchas
+
+- **Credential duality:** `api_key` and Bearer are alternatives, not values to mix. A rejected credential commonly produces HTTP 401, `status_code: 7`, and `Invalid API key: You must be granted a valid key.` Permission failures use code 3. Code 33 means an invalid request token, not this API-key message.
+- **Pagination ceiling:** pages start at 1 and max at 500; over-limit requests fail. Search/discover access is effectively capped at 10,000 results, even where totals look larger. Rate guidance is around 40 requests/second and 429 responses should honor `Retry-After`.
+- **Compound syntax:** append values are comma-separated and limited to 20 calls. `watch/providers` contains a slash, so URL-encode it in curl and use jq's `.\"watch/providers\"` notation.
+- **External-ID shape:** `/find/` does not return one generic `id`; inspect the appropriate nested array before choosing movie or TV detail.
+- **Provider filters:** `with_watch_providers` requires `watch_region`; provider data carries JustWatch attribution requirements.
+- **Localization and images:** use `language=en-US` and a market `region` when reproducibility matters. Build image URLs from `/3/configuration`'s secure base URL, a valid size, and the returned path.
+
+## When to use
+
+Use this skill for read-only film and TV metadata discovery, credits, release information, certifications, images, recommendations, and provider metadata.
 
 ## When not to use
 
-Do not use this skill for streaming-availability lookups (TMDb delegates watch-provider data to JustWatch and may lag), for torrent or piracy search, or for tracking what you have already watched — TMDb is a metadata database, not a viewing source; pair it with trakt for personal watch history.
+Do not use it for torrent or piracy searches, playing or downloading a stream, or maintaining personal watched/unwatched state. Use `trakt` for watch-history workflows and a playback/catalog integration for availability actions.
+
+## Reference files
+
+| File | Use it for |
+| --- | --- |
+| [references/auth-pagination-and-errors.md](references/auth-pagination-and-errors.md) | Credentials, pagination, rate limits, errors, language, regions, and images |
+| [references/find-and-details.md](references/find-and-details.md) | IMDb/TVDB lookup, response mapping, detail fields, compound requests |
+| [references/search-discover-trending.md](references/search-discover-trending.md) | Search, discover filters, trending, genre, certification, and release lists |
+
+## Available scripts and prerequisites
+
+- `scripts/tmdb` is an executable Python CLI using only the standard library and `requests`; it preserves `--json`, `--dry-run`, `--quiet`, and `--verbose`.
+- `scripts/test_tmdb.py` is an offline unittest/pytest suite; all HTTP behavior is mocked.
+- Requires Python 3.8+ and `requests`. No service is started by this skill.

@@ -1272,7 +1272,7 @@
         "./tmdb"
       ],
       "strict": false,
-      "description": "Search and discover movies, TV shows, and trending content via The Movie Database (TMDb) API v3. Use when the user asks about movies, TV, film, cinema, genres, certifications, ratings, cast, upcoming releases, or trending media."
+      "description": "Query TMDb metadata for films and television, then enrich results with details, credits, providers, and external IDs. Do not use this skill for torrent search, streaming playback, or personal watch-history tracking."
     },
     {
       "name": "traefik",

@@ -127,11 +127,16 @@ class TMDBClient:
     def get_trending(self, media_type="movie", window="week"):
         return self._get(f"/trending/{media_type}/{window}")
 
-    def get_movie(self, movie_id):
-        return self._get(f"/movie/{movie_id}")
+    def get_movie(self, movie_id, append=None):
+        params = {"append_to_response": append} if append else None
+        return self._get(f"/movie/{movie_id}", params)
 
-    def get_tv(self, tv_id):
-        return self._get(f"/tv/{tv_id}")
+    def get_tv(self, tv_id, append=None):
+        params = {"append_to_response": append} if append else None
+        return self._get(f"/tv/{tv_id}", params)
+
+    def find_external(self, external_id, source, language="en-US"):
+        return self._get(f"/find/{external_id}", {"external_source": source, "language": language})
 
     def get_movie_genres(self, lang="en-US"):
         return self._get("/genre/movie/list", {"language": lang})
@@ -183,6 +188,31 @@ def cmd_movie_search(client, args):
     lines = [fmt_movie(r, i+1) for i, r in enumerate(results)]
     emit(f"{data.get('total_results', len(results))} result(s):\n" + "\n".join(lines),
          {"total": data.get("total_results"), "results": results})
+
+
+def cmd_movie_detail(client, args):
+    p = argparse.ArgumentParser(prog="tmdb movie detail")
+    p.add_argument("movie_id")
+    p.add_argument("--append", default=None, help="comma-separated subresources")
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run:
+        return emit("[dry-run] Get movie details", {"dry_run": True})
+    data = client.get_movie(parsed.movie_id, parsed.append) or {}
+    emit(data.get("title", "Movie details"), data)
+
+
+def cmd_find(client, args):
+    p = argparse.ArgumentParser(prog="tmdb find")
+    p.add_argument("external_id")
+    p.add_argument("--source", default="imdb_id", choices=[
+        "imdb_id", "facebook_id", "instagram_id", "tvdb_id", "tiktok_id",
+        "twitter_id", "wikidata_id", "youtube_id",
+    ])
+    parsed, _ = p.parse_known_args(args)
+    if client.dry_run:
+        return emit("[dry-run] Find external ID", {"dry_run": True})
+    data = client.find_external(parsed.external_id, parsed.source) or {}
+    emit("External ID results", data)
 
 
 def cmd_movie_discover(client, args):
@@ -349,6 +379,7 @@ def main():
     msub = mp.add_subparsers(dest="action")
     s1 = msub.add_parser("search", help="Search movies"); s1.add_argument("--term", "-t", required=True); s1.add_argument("--limit", type=int, default=10)
     s2 = msub.add_parser("discover", help="Discover movies"); s2.add_argument("--genre"); s2.add_argument("--certification"); s2.add_argument("--rating", type=float); s2.add_argument("--from", dest="release_date_gte"); s2.add_argument("--to", dest="release_date_lte"); s2.add_argument("--limit", type=int, default=10)
+    sdetail = msub.add_parser("detail", help="Get movie details"); sdetail.add_argument("movie_id"); sdetail.add_argument("--append")
     msub.add_parser("upcoming", help="Upcoming movies").add_argument("--limit", type=int, default=10)
     msub.add_parser("now-playing", help="Now playing movies").add_argument("--limit", type=int, default=10)
 
@@ -361,6 +392,7 @@ def main():
     # flat
     sub.add_parser("genre", help="List genres").add_argument("--type", required=True, choices=["movie", "tv"])
     sub.add_parser("certification", help="List certifications")
+    fp = sub.add_parser("find", help="Find by external ID"); fp.add_argument("external_id"); fp.add_argument("--source", default="imdb_id")
 
     tr = sub.add_parser("trending", help="Trending content")
     tr.add_argument("--type", default="movie", choices=["movie", "tv", "all"])
@@ -378,6 +410,7 @@ def main():
     if args.resource == "movie":
         if args.action == "search": cmd_movie_search(client, filtered_argv[filtered_argv.index("search")+1:])
         elif args.action == "discover": cmd_movie_discover(client, filtered_argv[filtered_argv.index("discover")+1:])
+        elif args.action == "detail": cmd_movie_detail(client, filtered_argv[filtered_argv.index("detail")+1:])
         elif args.action == "upcoming": cmd_upcoming(client, filtered_argv[filtered_argv.index("upcoming")+1:])
         else: parser.print_help()
     elif args.resource == "tv":
@@ -389,7 +422,9 @@ def main():
     elif args.resource == "genre":
         cmd_genre_list(client, filtered_argv[filtered_argv.index("list")+1:])
     elif args.resource == "certification":
-        cmd_cert_list(client, filtered_argv[filtered_argv.index("list")+1:])
+        cmd_cert_list(client, filtered_argv[filtered_argv.index("certification")+1:])
+    elif args.resource == "find":
+        cmd_find(client, filtered_argv[filtered_argv.index("find")+1:])
     else:
         parser.print_help()
 

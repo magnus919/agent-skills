@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "skill_name": "tmdb",
+  "evals": [
+    {
+      "id": "search-movie",
+      "prompt": "Find the top five TMDb movie results for Dune.",
+      "expected_output": "Use tmdb movie search with --term and --limit, then inspect JSON results.",
+      "assertions": ["uses movie search", "limits results"]
+    },
+    {
+      "id": "imdb-find-detail-pipeline",
+      "prompt": "Starting from IMDb tt0111161, find the TMDb movie and fetch credits and providers.",
+      "expected_output": "Call /find/{external_id} with external_source=imdb_id, extract movie_results[0].id, then request movie details with append_to_response.",
+      "assertions": ["documents IMDb entry point", "extracts movie_results id", "uses append_to_response"]
+    },
+    {
+      "id": "auth-mode-gotcha",
+      "prompt": "Explain TMDb API key versus read access token authentication and diagnose a 401.",
+      "expected_output": "Use either api_key query authentication or Authorization Bearer, not both; inspect status_code 7 and status_message.",
+      "assertions": ["distinguishes v3 key and bearer", "names 401 symptom"]
+    },
+    {
+      "id": "discover-rated-movies",
+      "prompt": "Discover highly rated horror movies released in a date window.",
+      "expected_output": "Use discover/movie with genre, vote_average.gte, vote_count.gte, and release date filters, then process JSON with jq.",
+      "assertions": ["uses discover filters", "guards vote averages with vote count"]
+    },
+    {
+      "id": "not-for-torrents",
+      "prompt": "Search torrent sites for a movie download.",
+      "expected_output": "Do not route this to TMDb; it is a piracy or torrent-search request rather than metadata discovery.",
+      "assertions": ["must not trigger tmdb", "refuses torrent search"]
+    },
+    {
+      "id": "trending-json",
+      "prompt": "Show movies trending this week as machine-readable JSON.",
+      "expected_output": "Run tmdb trending with --window week and --json.",
+      "assertions": ["uses trending endpoint", "uses json output"]
+    }
+  ]
+}
