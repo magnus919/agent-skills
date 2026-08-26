@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""openlibrary-cli — Open Library book metadata from the terminal.
+"""openlibrary — Open Library book metadata from the terminal.
 
 Search books, authors, works, and lookup by ISBN using the public
 Open Library API. No API key required.
@@ -20,7 +20,7 @@ import requests
 DEFAULT_SERVER = "https://openlibrary.org"
 ENV_SERVER = os.getenv("OL_SERVER", DEFAULT_SERVER)
 ENV_EMAIL = os.getenv("OL_EMAIL", "")
-ENV_USER_AGENT = os.getenv("OL_USER_AGENT", "openlibrary-cli/1.0 (+https://github.com)")
+ENV_USER_AGENT = os.getenv("OL_USER_AGENT", "openlibrary/1.0 (+https://github.com)")
 
 QUIET = False
 GLOBAL_FLAGS: Dict[str, Any] = {
@@ -115,7 +115,7 @@ def fmt_author(a: Dict) -> str:
 
 
 def cmd_search(client, args):
-    parser = argparse.ArgumentParser(prog="openlibrary-cli search")
+    parser = argparse.ArgumentParser(prog="openlibrary search")
     parser.add_argument("--query", "-q", required=True)
     parser.add_argument("--limit", type=int, default=20)
     parser.add_argument("--offset", type=int, default=0)
@@ -160,7 +160,7 @@ def cmd_search(client, args):
 
 
 def cmd_isbn(client, args):
-    parser = argparse.ArgumentParser(prog="openlibrary-cli isbn")
+    parser = argparse.ArgumentParser(prog="openlibrary isbn")
     parser.add_argument("isbn", help="ISBN number")
     parsed, _ = parser.parse_known_args(args)
 
@@ -194,7 +194,7 @@ def cmd_isbn(client, args):
 
 
 def cmd_author(client, args):
-    parser = argparse.ArgumentParser(prog="openlibrary-cli author")
+    parser = argparse.ArgumentParser(prog="openlibrary author")
     parser.add_argument("key", help="Author key (e.g. OL23919A)")
     parsed, _ = parser.parse_known_args(args)
 
@@ -225,7 +225,7 @@ def cmd_author(client, args):
 
 
 def cmd_work(client, args):
-    parser = argparse.ArgumentParser(prog="openlibrary-cli work")
+    parser = argparse.ArgumentParser(prog="openlibrary work")
     parser.add_argument("key", help="Work key (e.g. OL123W)")
     parsed, _ = parser.parse_known_args(args)
 
@@ -257,7 +257,7 @@ def cmd_work(client, args):
 
 
 def cmd_search_authors(client, args):
-    parser = argparse.ArgumentParser(prog="openlibrary-cli search-authors")
+    parser = argparse.ArgumentParser(prog="openlibrary search-authors")
     parser.add_argument("--query", "-q", required=True)
     parser.add_argument("--limit", type=int, default=20)
     parser.add_argument("--offset", type=int, default=0)
@@ -298,9 +298,9 @@ def main():
         warnings.simplefilter("ignore")
 
     parser = argparse.ArgumentParser(
-        prog="openlibrary-cli",
+        prog="openlibrary",
         description="Open Library book metadata from the terminal. No API key required.",
-        epilog="Global flags work anywhere: openlibrary-cli --json search --query 'dune'"
+        epilog="Global flags work anywhere: openlibrary --json search --query 'dune'"
     )
     sub = parser.add_subparsers(dest="command")
 

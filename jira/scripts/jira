@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""jira-cli — Jira issue tracker from the terminal.
+"""jira — Jira issue tracker from the terminal.
 
 Interact with Atlassian Jira Cloud via the REST API v3.
 Requires JIRA_EMAIL and JIRA_API_TOKEN env vars (token from
@@ -234,7 +234,7 @@ def cmd_me(client: JiraClient, args: List[str]) -> None:
 
 
 def cmd_list(client: JiraClient, args: List[str]) -> None:
-    parser = argparse.ArgumentParser(prog="jira-cli list")
+    parser = argparse.ArgumentParser(prog="jira list")
     parser.add_argument("--jql", default="", help="JQL query (default: recent issues)")
     parser.add_argument("--max", type=int, default=20, help="Max results (default: 20)")
     parser.add_argument("--project", help="Shortcut: filter by project key")
@@ -282,7 +282,7 @@ def cmd_list(client: JiraClient, args: List[str]) -> None:
 
 
 def cmd_view(client: JiraClient, args: List[str]) -> None:
-    parser = argparse.ArgumentParser(prog="jira-cli view")
+    parser = argparse.ArgumentParser(prog="jira view")
     parser.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
     parsed, _ = parser.parse_known_args(args)
 
@@ -377,7 +377,7 @@ def cmd_projects(client: JiraClient, args: List[str]) -> None:
 
 
 def cmd_create(client: JiraClient, args: List[str]) -> None:
-    parser = argparse.ArgumentParser(prog="jira-cli create")
+    parser = argparse.ArgumentParser(prog="jira create")
     parser.add_argument("--project", required=True, help="Project key (e.g. PROJ)")
     parser.add_argument("--summary", required=True, help="Issue summary/title")
     parser.add_argument("--type", default="Task", help="Issue type (Task, Bug, Story, etc.)")
@@ -407,7 +407,7 @@ def cmd_create(client: JiraClient, args: List[str]) -> None:
 
 
 def cmd_comment(client: JiraClient, args: List[str]) -> None:
-    parser = argparse.ArgumentParser(prog="jira-cli comment")
+    parser = argparse.ArgumentParser(prog="jira comment")
     parser.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
     parser.add_argument("--body", "-m", required=True, help="Comment body text")
     parsed, _ = parser.parse_known_args(args)
@@ -426,7 +426,7 @@ def cmd_comment(client: JiraClient, args: List[str]) -> None:
 
 
 def cmd_transition(client: JiraClient, args: List[str]) -> None:
-    parser = argparse.ArgumentParser(prog="jira-cli transition")
+    parser = argparse.ArgumentParser(prog="jira transition")
     parser.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
     parser.add_argument("--to", required=True, help="Transition by name or ID")
     parsed, _ = parser.parse_known_args(args)
@@ -474,9 +474,9 @@ def main() -> None:
         warnings.simplefilter("ignore")
 
     parser = argparse.ArgumentParser(
-        prog="jira-cli",
+        prog="jira",
         description="Jira issue tracker from the terminal.",
-        epilog="Global flags work anywhere: jira-cli --json list --jql 'project=PROJ'"
+        epilog="Global flags work anywhere: jira --json list --jql 'project=PROJ'"
     )
     sub = parser.add_subparsers(dest="command", help="Available commands")
 

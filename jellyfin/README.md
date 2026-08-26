@@ -17,12 +17,12 @@ When your agent loads this skill, it can **navigate your home media server** wit
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Complete command reference with setup and examples |
-| `scripts/jellyfin-cli` | CLI tool for Jellyfin API operations |
+| `scripts/jellyfin` | CLI tool for Jellyfin API operations |
 
 ## Quick Start
 
 ```bash
-scripts/jellyfin-cli --help
+scripts/jellyfin --help
 export JELLYFIN_URL="http://your-server:8096"
 export JELLYFIN_API_KEY="your-api-key"
 export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent, next-up, and item
@@ -31,8 +31,8 @@ export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent, next-up, a
 API key from Dashboard → API Keys in the Jellyfin admin panel.
 
 ```bash
-scripts/jellyfin-cli search --query "dune" --type Movie
-scripts/jellyfin-cli next-up --limit 5
+scripts/jellyfin search --query "dune" --type Movie
+scripts/jellyfin next-up --limit 5
 ```
 
 ## Triggers

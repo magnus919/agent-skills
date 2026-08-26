@@ -1,5 +1,5 @@
 ---
-name: jellyfin-cli
+name: jellyfin
 description: Query your Jellyfin media server from the terminal — recently added media,
   search, item details, next-up episodes, library browsing, server info, and stats. Use
   when the user asks about Jellyfin, media server, movies, TV shows, next episodes, or
@@ -14,7 +14,7 @@ metadata:
   sources: https://jellyfin.org/docs/general/clients/api, https://jellyfin.org/downloads
 ---
 
-# jellyfin-cli — Jellyfin Media Server from the Terminal
+# jellyfin — Jellyfin Media Server from the Terminal
 
 Query recently added movies and TV episodes, search and inspect media, browse libraries, see next-up episodes, check server info, and view library statistics — all from your Jellyfin server's REST API.
 
@@ -30,16 +30,16 @@ export JELLYFIN_API_KEY="your-api-key-here"
 export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent, next-up, and item
 ```
 
-Run the bundled CLI as `scripts/jellyfin-cli`. `--help` and `--dry-run` work without credentials.
+Run the bundled CLI as `scripts/jellyfin`. `--help` and `--dry-run` work without credentials.
 
 ## Essential Commands
 
 ### info — Server information
 
 ```bash
-scripts/jellyfin-cli info                           # server name, version, OS, user count
-scripts/jellyfin-cli info --json                    # machine-readable
-scripts/jellyfin-cli --dry-run info                 # preview API requests
+scripts/jellyfin info                           # server name, version, OS, user count
+scripts/jellyfin info --json                    # machine-readable
+scripts/jellyfin --dry-run info                 # preview API requests
 ```
 
 Shows: server name, version, operating system, number of users.
@@ -47,13 +47,13 @@ Shows: server name, version, operating system, number of users.
 ### recent — Recently added media
 
 ```bash
-scripts/jellyfin-cli recent                         # last 10 items added
-scripts/jellyfin-cli recent --limit 20              # more results
-scripts/jellyfin-cli recent --movies                # only recently added movies
-scripts/jellyfin-cli recent --episodes              # only recently added episodes
-scripts/jellyfin-cli recent --user-id USER_ID       # override JELLYFIN_USER_ID
-scripts/jellyfin-cli recent --movies --limit 5      # top 5 recently added movies
-scripts/jellyfin-cli recent --json                  # machine-readable
+scripts/jellyfin recent                         # last 10 items added
+scripts/jellyfin recent --limit 20              # more results
+scripts/jellyfin recent --movies                # only recently added movies
+scripts/jellyfin recent --episodes              # only recently added episodes
+scripts/jellyfin recent --user-id USER_ID       # override JELLYFIN_USER_ID
+scripts/jellyfin recent --movies --limit 5      # top 5 recently added movies
+scripts/jellyfin recent --json                  # machine-readable
 ```
 
 Uses Jellyfin's current `/Items/Latest` endpoint. `--movies` and `--episodes` send `includeItemTypes` to the server, so the requested limit applies to the selected media type. Shows: name, type (Movie/Episode), production year, series name (for episodes), date added.
@@ -61,11 +61,11 @@ Uses Jellyfin's current `/Items/Latest` endpoint. `--movies` and `--episodes` se
 ### search — Search your media library
 
 ```bash
-scripts/jellyfin-cli search --query "dune"                # search everything
-scripts/jellyfin-cli search --query "dune" --type Movie   # movies only
-scripts/jellyfin-cli search --query "star trek" --type Series,Episode
-scripts/jellyfin-cli search --query "inception" --limit 5 # top 5 results
-scripts/jellyfin-cli search --query "dune" --json         # machine-readable
+scripts/jellyfin search --query "dune"                # search everything
+scripts/jellyfin search --query "dune" --type Movie   # movies only
+scripts/jellyfin search --query "star trek" --type Series,Episode
+scripts/jellyfin search --query "inception" --limit 5 # top 5 results
+scripts/jellyfin search --query "dune" --json         # machine-readable
 ```
 
 The `--type` flag accepts a comma-separated list of item types (e.g. `Movie,Series,Episode`).
@@ -73,13 +73,13 @@ The `--type` flag accepts a comma-separated list of item types (e.g. `Movie,Seri
 ### Navigation — Inspect media and browse libraries
 
 ```bash
-scripts/jellyfin-cli search --query "dune" --type Movie    # find an item ID
-scripts/jellyfin-cli item --id ITEM_ID                      # inspect that item
-scripts/jellyfin-cli libraries                               # find a library ID
-scripts/jellyfin-cli browse --library-id LIBRARY_ID --type Movie --limit 20
-scripts/jellyfin-cli browse --library-id LIBRARY_ID --start-index 20
-scripts/jellyfin-cli next-up --limit 10                      # next episodes for JELLYFIN_USER_ID
-scripts/jellyfin-cli next-up --user-id USER_ID --json
+scripts/jellyfin search --query "dune" --type Movie    # find an item ID
+scripts/jellyfin item --id ITEM_ID                      # inspect that item
+scripts/jellyfin libraries                               # find a library ID
+scripts/jellyfin browse --library-id LIBRARY_ID --type Movie --limit 20
+scripts/jellyfin browse --library-id LIBRARY_ID --start-index 20
+scripts/jellyfin next-up --limit 10                      # next episodes for JELLYFIN_USER_ID
+scripts/jellyfin next-up --user-id USER_ID --json
 ```
 
 Use `search -> item` to look up a result's metadata, and `libraries -> browse` to page through a collection. `next-up` returns the next unwatched episodes for the selected user. `item` and `next-up` require `JELLYFIN_USER_ID` or `--user-id`; all three commands are read-only.
@@ -87,8 +87,8 @@ Use `search -> item` to look up a result's metadata, and `libraries -> browse` t
 ### libraries — List media libraries
 
 ```bash
-scripts/jellyfin-cli libraries                     # all configured libraries
-scripts/jellyfin-cli libraries --json              # machine-readable
+scripts/jellyfin libraries                     # all configured libraries
+scripts/jellyfin libraries --json              # machine-readable
 ```
 
 Shows: library name, collection type (movies, tvshows, music, etc.), library ID.
@@ -96,8 +96,8 @@ Shows: library name, collection type (movies, tvshows, music, etc.), library ID.
 ### stats — Library statistics
 
 ```bash
-scripts/jellyfin-cli stats                         # movie, series, episode, song counts
-scripts/jellyfin-cli stats --json                  # machine-readable
+scripts/jellyfin stats                         # movie, series, episode, song counts
+scripts/jellyfin stats --json                  # machine-readable
 ```
 
 Shows: total count of movies, series, episodes, and songs in the library.
@@ -107,9 +107,9 @@ Shows: total count of movies, series, episodes, and songs in the library.
 These flags work anywhere in the command — before or after the subcommand:
 
 ```bash
-scripts/jellyfin-cli --json recent --limit 5               # JSON output
-scripts/jellyfin-cli recent --limit 5 --json               # same result, after subcommand
-scripts/jellyfin-cli --dry-run search --query "dune"       # preview request without API call
+scripts/jellyfin --json recent --limit 5               # JSON output
+scripts/jellyfin recent --limit 5 --json               # same result, after subcommand
+scripts/jellyfin --dry-run search --query "dune"       # preview request without API call
 ```
 
 | Flag | Effect |
@@ -129,6 +129,6 @@ scripts/jellyfin-cli --dry-run search --query "dune"       # preview request wit
 
 ## References
 
-- [scripts/jellyfin-cli](scripts/jellyfin-cli) — The bundled read-only CLI binary with `--json`, `--dry-run`, and lazy authentication.
+- [scripts/jellyfin](scripts/jellyfin) — The bundled read-only CLI binary with `--json`, `--dry-run`, and lazy authentication.
 - [Jellyfin API Docs](https://jellyfin.org/docs/general/clients/api) — Official API documentation.
 - [Jellyfin Downloads](https://jellyfin.org/downloads) — Server download and setup guide.

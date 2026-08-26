@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ghost-cli — Ghost CMS from the terminal.
+"""ghost — Ghost CMS from the terminal.
 
 Manage content on a Ghost CMS site: create and edit posts and pages,
 manage tags, and configure metadata. Requires GHOST_URL and GHOST_ADMIN_KEY.
@@ -204,7 +204,7 @@ def fmt_post(p):
 
 
 def cmd_posts(client, args):
-    p = argparse.ArgumentParser(prog="ghost-cli posts")
+    p = argparse.ArgumentParser(prog="ghost posts")
     p.add_argument("--limit", type=int, default=20)
     p.add_argument("--status", choices=["published", "draft", "scheduled"])
     parsed, _ = p.parse_known_args(args)
@@ -224,7 +224,7 @@ def cmd_posts(client, args):
 
 
 def cmd_create_post(client, args):
-    p = argparse.ArgumentParser(prog="ghost-cli posts create")
+    p = argparse.ArgumentParser(prog="ghost posts create")
     p.add_argument("--title", required=True)
     p.add_argument("--html", default="")
     p.add_argument("--status", default="draft", choices=["draft", "published", "scheduled"])
@@ -245,7 +245,7 @@ def cmd_create_post(client, args):
 
 
 def cmd_pages(client, args):
-    p = argparse.ArgumentParser(prog="ghost-cli pages")
+    p = argparse.ArgumentParser(prog="ghost pages")
     p.add_argument("--limit", type=int, default=20)
     parsed, _ = p.parse_known_args(args)
 
@@ -262,7 +262,7 @@ def cmd_pages(client, args):
 
 
 def cmd_tags(client, args):
-    p = argparse.ArgumentParser(prog="ghost-cli tags")
+    p = argparse.ArgumentParser(prog="ghost tags")
     p.add_argument("--limit", type=int, default=50)
     parsed, _ = p.parse_known_args(args)
 
@@ -302,7 +302,7 @@ def main():
     if GLOBAL_FLAGS.get("json", False):
         warnings.simplefilter("ignore")
 
-    parser = argparse.ArgumentParser(prog="ghost-cli", description="Ghost CMS CLI.",
+    parser = argparse.ArgumentParser(prog="ghost", description="Ghost CMS CLI.",
                                      epilog="Set GHOST_URL and GHOST_ADMIN_KEY. Key format: id:secret from Integrations.")
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("site", help="Site info")

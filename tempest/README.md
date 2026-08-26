@@ -17,15 +17,15 @@ When your agent loads this skill, it can **check hyper-local weather from your o
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Complete command reference with examples |
-| `scripts/tempest-cli` | CLI tool for WeatherFlow Tempest API |
+| `scripts/tempest` | CLI tool for WeatherFlow Tempest API |
 | `references/` | API field layout reference |
 
 ## Quick Start
 
 ```bash
 export TEMPEST_TOKEN="your-token-here"
-tempest-cli current
-tempest-cli forecast
+tempest current
+tempest forecast
 ```
 
 ## Triggers

@@ -1,5 +1,5 @@
 ---
-name: tempest-cli
+name: tempest
 description: 'Query hyper-local weather from a WeatherFlow Tempest station: current
   conditions, 7-day forecast, historical observations, and real-time UDP broadcasts.
   Use when the user asks about the weather, temperature, rain, wind, humidity, forecast,
@@ -12,7 +12,7 @@ metadata:
   sources: https://weatherflow.com, https://swd.weatherflow.com/swd/rest
 ---
 
-# tempest-cli — Hyper-Local Weather from Your Tempest Station
+# tempest — Hyper-Local Weather from Your Tempest Station
 
 Query live weather data from a WeatherFlow Tempest station. Supports REST API access to current conditions, forecasts, and history via the cloud, plus local UDP broadcast reception from your hub on the same LAN.
 
@@ -32,9 +32,9 @@ The CLI reads `TEMPEST_TOKEN` from the environment. It also falls back to readin
 ### current — Current conditions
 
 ```bash
-tempest-cli current                                             # human-readable
-tempest-cli current --station-id 12345 --device-id 67890        # specific hardware
-tempest-cli current --json                                      # machine-readable
+tempest current                                             # human-readable
+tempest current --station-id 12345 --device-id 67890        # specific hardware
+tempest current --json                                      # machine-readable
 ```
 
 If you have one station, it auto-selects it and picks the best sensor (ST > SKY > AIR, skips the HB hub). Pass `--station-id` or `--device-id` to override.
@@ -42,17 +42,17 @@ If you have one station, it auto-selects it and picks the best sensor (ST > SKY 
 ### forecast — Multi-day forecast (+ current conditions + hourly)
 
 ```bash
-tempest-cli forecast                        # current + 5-day daily + 12-hour hourly
-tempest-cli forecast --days 3               # fewer days
-tempest-cli forecast --station-id 12345     # specific station
-tempest-cli forecast --json                 # machine-readable
+tempest forecast                        # current + 5-day daily + 12-hour hourly
+tempest forecast --days 3               # fewer days
+tempest forecast --station-id 12345     # specific station
+tempest forecast --json                 # machine-readable
 ```
 
 ### stations — List your stations and devices
 
 ```bash
-tempest-cli stations                    # shows station names, IDs, device types, serials
-tempest-cli stations --json             # full device inventory
+tempest stations                    # shows station names, IDs, device types, serials
+tempest stations --json             # full device inventory
 ```
 
 Use this first if you don't know your station ID or want to see what sensors are online.
@@ -60,17 +60,17 @@ Use this first if you don't know your station ID or want to see what sensors are
 ### obs — Historical observations
 
 ```bash
-tempest-cli obs --device-id 67890 --days 1       # last 24 hours
-tempest-cli obs --device-id 67890 --days 7       # last week
-tempest-cli obs --device-id 67890 --json         # machine-readable
+tempest obs --device-id 67890 --days 1       # last 24 hours
+tempest obs --device-id 67890 --days 7       # last week
+tempest obs --device-id 67890 --json         # machine-readable
 ```
 
 ### udp listen — Real-time broadcasts from the hub
 
 ```bash
-tempest-cli udp listen                          # listen indefinitely (Ctrl-C to stop)
-tempest-cli udp listen --timeout 30             # auto-stop after 30s
-tempest-cli udp listen --show-all               # include hub_status messages
+tempest udp listen                          # listen indefinitely (Ctrl-C to stop)
+tempest udp listen --timeout 30             # auto-stop after 30s
+tempest udp listen --show-all               # include hub_status messages
 ```
 
 Requires being on the same LAN as the hub (port 50222 UDP broadcast). Receives observations, rapid wind updates, lightning strike events, and precipitation start events in real time.
@@ -147,11 +147,11 @@ A station returns all devices including the hub (device_type `HB`). The hub cann
 `--json`, `--dry-run`, `--quiet`, and `--verbose` work anywhere in the command:
 
 ```bash
-tempest-cli --json current --device-id 67890        # flag before subcommand
-tempest-cli current --device-id 67890 --json         # flag after subcommand
+tempest --json current --device-id 67890        # flag before subcommand
+tempest current --device-id 67890 --json         # flag after subcommand
 ```
 
 ## References
 
 - [references/tempest-api-field-layouts.md](references/tempest-api-field-layouts.md) — Full field index maps for obs_st, obs_air, and obs_sky observation arrays. Read when decoding raw JSON output or building on top of the Tempest API.
-- [scripts/tempest-cli](scripts/tempest-cli) — The CLI binary itself. Designed following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, idempotent, dual-output via `emit()`, and structured logging.
+- [scripts/tempest](scripts/tempest) — The CLI binary itself. Designed following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, idempotent, dual-output via `emit()`, and structured logging.

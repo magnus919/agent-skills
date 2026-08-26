@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""jellyfin-cli — Jellyfin media server from the terminal.
+"""jellyfin — Jellyfin media server from the terminal.
 
 Query recently added media, search your library, browse by collection,
 and check server status. Requires JELLYFIN_URL and JELLYFIN_API_KEY.
@@ -179,7 +179,7 @@ def cmd_info(client, args):
 
 
 def cmd_recent(client, args):
-    p = argparse.ArgumentParser(prog="jellyfin-cli recent")
+    p = argparse.ArgumentParser(prog="jellyfin recent")
     p.add_argument("--limit", type=int, default=10)
     media_type = p.add_mutually_exclusive_group()
     media_type.add_argument("--movies", action="store_true")
@@ -221,7 +221,7 @@ def cmd_recent(client, args):
 
 
 def cmd_search(client, args):
-    p = argparse.ArgumentParser(prog="jellyfin-cli search")
+    p = argparse.ArgumentParser(prog="jellyfin search")
     p.add_argument("--query", "-q", required=True)
     p.add_argument("--type", help="Comma-separated types (Movie,Series,Episode)")
     p.add_argument("--limit", type=int, default=20)
@@ -254,7 +254,7 @@ def cmd_search(client, args):
 
 
 def cmd_next_up(client, args):
-    p = argparse.ArgumentParser(prog="jellyfin-cli next-up")
+    p = argparse.ArgumentParser(prog="jellyfin next-up")
     p.add_argument("--user-id", default=ENV_USER_ID)
     p.add_argument("--limit", type=int, default=10)
     parsed, _ = p.parse_known_args(args)
@@ -276,7 +276,7 @@ def cmd_next_up(client, args):
 
 
 def cmd_item(client, args):
-    p = argparse.ArgumentParser(prog="jellyfin-cli item")
+    p = argparse.ArgumentParser(prog="jellyfin item")
     p.add_argument("--id", required=True)
     p.add_argument("--user-id", default=ENV_USER_ID)
     parsed, _ = p.parse_known_args(args)
@@ -295,7 +295,7 @@ def cmd_item(client, args):
 
 
 def cmd_browse(client, args):
-    p = argparse.ArgumentParser(prog="jellyfin-cli browse")
+    p = argparse.ArgumentParser(prog="jellyfin browse")
     p.add_argument("--library-id", required=True)
     p.add_argument("--type")
     p.add_argument("--limit", type=int, default=50)
@@ -365,35 +365,35 @@ def main():
     if GLOBAL_FLAGS.get("json", False):
         warnings.simplefilter("ignore")
 
-    parser = argparse.ArgumentParser(prog="jellyfin-cli", description="Jellyfin media server CLI.",
-                                     epilog="Example: jellyfin-cli search --query dune")
+    parser = argparse.ArgumentParser(prog="jellyfin", description="Jellyfin media server CLI.",
+                                     epilog="Example: jellyfin search --query dune")
     parser.add_argument("--json", action="store_true", help="Output machine-readable JSON")
     parser.add_argument("--dry-run", action="store_true", help="Preview API requests without network access")
     sub = parser.add_subparsers(dest="command")
-    sub.add_parser("info", help="Server info", description="Show Jellyfin server details.", epilog="Example: jellyfin-cli info")
-    re = sub.add_parser("recent", help="Recently added", description="Show recently added movies or episodes.", epilog="Example: jellyfin-cli recent --movies --limit 5")
+    sub.add_parser("info", help="Server info", description="Show Jellyfin server details.", epilog="Example: jellyfin info")
+    re = sub.add_parser("recent", help="Recently added", description="Show recently added movies or episodes.", epilog="Example: jellyfin recent --movies --limit 5")
     re.add_argument("--limit", type=int, default=10, help="Maximum items to return (default: 10)")
     media_type = re.add_mutually_exclusive_group()
     media_type.add_argument("--movies", action="store_true", help="Show only movies")
     media_type.add_argument("--episodes", action="store_true", help="Show only episodes")
     re.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
-    se = sub.add_parser("search", help="Search media", description="Search the Jellyfin media library.", epilog="Example: jellyfin-cli search --query dune --type Movie")
+    se = sub.add_parser("search", help="Search media", description="Search the Jellyfin media library.", epilog="Example: jellyfin search --query dune --type Movie")
     se.add_argument("--query", "-q", required=True, help="Text to search for")
     se.add_argument("--type", help="Comma-separated item types, such as Movie,Series")
     se.add_argument("--limit", type=int, default=20, help="Maximum results to return (default: 20)")
-    nu = sub.add_parser("next-up", help="Next unwatched episodes", description="Show the next unwatched episodes for a Jellyfin user.", epilog="Example: jellyfin-cli next-up --user-id USER_ID --limit 5")
+    nu = sub.add_parser("next-up", help="Next unwatched episodes", description="Show the next unwatched episodes for a Jellyfin user.", epilog="Example: jellyfin next-up --user-id USER_ID --limit 5")
     nu.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
     nu.add_argument("--limit", type=int, default=10, help="Maximum episodes to return (default: 10)")
-    it = sub.add_parser("item", help="Show item details", description="Show metadata for one Jellyfin library item.", epilog="Example: jellyfin-cli item --id ITEM_ID --user-id USER_ID")
+    it = sub.add_parser("item", help="Show item details", description="Show metadata for one Jellyfin library item.", epilog="Example: jellyfin item --id ITEM_ID --user-id USER_ID")
     it.add_argument("--id", required=True, help="Jellyfin item ID")
     it.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
-    br = sub.add_parser("browse", help="Browse a library", description="List items in a Jellyfin media library.", epilog="Example: jellyfin-cli browse --library-id LIBRARY_ID --type Movie --limit 20")
+    br = sub.add_parser("browse", help="Browse a library", description="List items in a Jellyfin media library.", epilog="Example: jellyfin browse --library-id LIBRARY_ID --type Movie --limit 20")
     br.add_argument("--library-id", required=True, help="Jellyfin library ID")
     br.add_argument("--type", help="Comma-separated item types, such as Movie,Series")
     br.add_argument("--limit", type=int, default=50, help="Maximum items to return (default: 50)")
     br.add_argument("--start-index", type=int, default=0, help="Zero-based result offset (default: 0)")
-    sub.add_parser("libraries", help="List libraries", description="List configured media libraries.", epilog="Example: jellyfin-cli libraries")
-    sub.add_parser("stats", help="Library statistics", description="Show media library item counts.", epilog="Example: jellyfin-cli stats")
+    sub.add_parser("libraries", help="List libraries", description="List configured media libraries.", epilog="Example: jellyfin libraries")
+    sub.add_parser("stats", help="Library statistics", description="Show media library item counts.", epilog="Example: jellyfin stats")
 
     args = parser.parse_args(filtered_argv[1:])
     if not args.command:

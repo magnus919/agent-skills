@@ -17,14 +17,14 @@ When your agent loads this skill, it can **access 50M+ book records** without an
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Complete command reference with examples |
-| `scripts/openlibrary-cli` | CLI tool for the Open Library API |
+| `scripts/openlibrary` | CLI tool for the Open Library API |
 
 ## Quick Start
 
 ```bash
-openlibrary-cli search --query "dune"
-openlibrary-cli search --isbn "9780439358064"
-openlibrary-cli search-authors --query "asimov"
+openlibrary search --query "dune"
+openlibrary search --isbn "9780439358064"
+openlibrary search-authors --query "asimov"
 ```
 
 ## Triggers

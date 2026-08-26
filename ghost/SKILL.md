@@ -1,5 +1,5 @@
 ---
-name: ghost-cli
+name: ghost
 description: Manage Ghost CMS content from the terminal — create and list posts, pages,
   and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user
   asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration.
@@ -12,7 +12,7 @@ metadata:
   sources: https://ghost.org/docs/admin-api/, https://ghost.org/docs/
 ---
 
-# ghost-cli — Ghost CMS from the Terminal
+# ghost — Ghost CMS from the Terminal
 
 Manage content on a Ghost CMS site: view site info, list and create posts and pages, manage tags — all via the Ghost Admin API (v5/v6).
 
@@ -33,9 +33,9 @@ export GHOST_ADMIN_KEY="your-id:your-secret"        # from Ghost Admin → Integ
 ### site — Get site information
 
 ```bash
-ghost-cli site                               # show site title, URL, description
-ghost-cli --json site                        # machine-readable JSON
-ghost-cli --dry-run site                     # preview without API call
+ghost site                               # show site title, URL, description
+ghost --json site                        # machine-readable JSON
+ghost --dry-run site                     # preview without API call
 ```
 
 Shows: site title, URL, description.
@@ -43,12 +43,12 @@ Shows: site title, URL, description.
 ### posts — List blog posts
 
 ```bash
-ghost-cli posts                              # 20 most recent posts
-ghost-cli posts --limit 50                   # more results
-ghost-cli posts --status published           # only published posts
-ghost-cli posts --status draft               # only draft posts
-ghost-cli posts --status scheduled           # only scheduled posts
-ghost-cli posts --limit 10 --json            # 10 most recent as JSON
+ghost posts                              # 20 most recent posts
+ghost posts --limit 50                   # more results
+ghost posts --status published           # only published posts
+ghost posts --status draft               # only draft posts
+ghost posts --status scheduled           # only scheduled posts
+ghost posts --limit 10 --json            # 10 most recent as JSON
 ```
 
 Shows: title, status, slug, and last-updated date for each post.
@@ -56,12 +56,12 @@ Shows: title, status, slug, and last-updated date for each post.
 ### create-post — Create a new blog post
 
 ```bash
-ghost-cli create-post --title "My First Post"                               # draft, no HTML
-ghost-cli create-post --title "Hello World" --html "<p>Hello!</p>"          # with HTML content
-ghost-cli create-post --title "Ready" --html "<p>Published</p>" --status published  # publish immediately
-ghost-cli create-post --title "Scheduled" --html "<p>Later</p>" --status scheduled  # schedule
-ghost-cli create-post --title "Custom Slug" --slug "my-custom-url"          # custom URL slug
-ghost-cli create-post --title "Draft" --dry-run                             # preview without creating
+ghost create-post --title "My First Post"                               # draft, no HTML
+ghost create-post --title "Hello World" --html "<p>Hello!</p>"          # with HTML content
+ghost create-post --title "Ready" --html "<p>Published</p>" --status published  # publish immediately
+ghost create-post --title "Scheduled" --html "<p>Later</p>" --status scheduled  # schedule
+ghost create-post --title "Custom Slug" --slug "my-custom-url"          # custom URL slug
+ghost create-post --title "Draft" --dry-run                             # preview without creating
 ```
 
 Creates the post and returns its title, slug, and status.
@@ -69,9 +69,9 @@ Creates the post and returns its title, slug, and status.
 ### pages — List pages
 
 ```bash
-ghost-cli pages                              # 20 most recent pages
-ghost-cli pages --limit 50                   # more results
-ghost-cli pages --json                       # machine-readable JSON
+ghost pages                              # 20 most recent pages
+ghost pages --limit 50                   # more results
+ghost pages --json                       # machine-readable JSON
 ```
 
 Shows: title, status, slug, and last-updated date for each page.
@@ -79,9 +79,9 @@ Shows: title, status, slug, and last-updated date for each page.
 ### tags — List tags
 
 ```bash
-ghost-cli tags                               # 50 tags with post counts
-ghost-cli tags --limit 100                   # more results
-ghost-cli tags --json                        # machine-readable JSON
+ghost tags                               # 50 tags with post counts
+ghost tags --limit 100                   # more results
+ghost tags --json                        # machine-readable JSON
 ```
 
 Shows: tag name, slug, and number of posts using each tag.
@@ -91,11 +91,11 @@ Shows: tag name, slug, and number of posts using each tag.
 These flags work anywhere in the command — before or after the subcommand:
 
 ```bash
-ghost-cli --json posts                       # JSON output
-ghost-cli posts --json                       # same result, after subcommand
-ghost-cli --dry-run create-post --title "Test"  # preview without API call
-ghost-cli --quiet posts                      # suppress diagnostic output
-ghost-cli --verbose site                     # verbose logging
+ghost --json posts                       # JSON output
+ghost posts --json                       # same result, after subcommand
+ghost --dry-run create-post --title "Test"  # preview without API call
+ghost --quiet posts                      # suppress diagnostic output
+ghost --verbose site                     # verbose logging
 ```
 
 | Flag | Effect |
@@ -119,6 +119,6 @@ ghost-cli --verbose site                     # verbose logging
 
 ## References
 
-- [scripts/ghost-cli](scripts/ghost-cli) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
+- [scripts/ghost](scripts/ghost) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
 - [Ghost Admin API Docs](https://ghost.org/docs/admin-api/) — Official Ghost Admin API documentation.
 - [Ghost Integrations](https://ghost.org/docs/integrations/) — How to create Custom Integrations and get your Admin API key.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""tmdb-cli — The Movie Database API for agent-based media discovery.
+"""tmdb — The Movie Database API for agent-based media discovery.
 
 Discover movies and TV shows by genre, rating, certification, and date.
 Search by term, get details, check trending, upcoming, and now playing.
@@ -170,7 +170,7 @@ def fmt_tv(t, idx=None):
 
 
 def cmd_movie_search(client, args):
-    p = argparse.ArgumentParser(prog="tmdb-cli movie search")
+    p = argparse.ArgumentParser(prog="tmdb movie search")
     p.add_argument("--term", "-t", required=True)
     p.add_argument("--limit", type=int, default=10)
     parsed, _ = p.parse_known_args(args)
@@ -186,7 +186,7 @@ def cmd_movie_search(client, args):
 
 
 def cmd_movie_discover(client, args):
-    p = argparse.ArgumentParser(prog="tmdb-cli movie discover")
+    p = argparse.ArgumentParser(prog="tmdb movie discover")
     p.add_argument("--genre", help="Genre name (e.g. horror, comedy)")
     p.add_argument("--certification", help="US certification (G, PG, PG-13, R, NC-17)")
     p.add_argument("--rating", type=float, help="Min vote average (0-10)")
@@ -231,7 +231,7 @@ def _resolve_movie_genre(client, name):
 
 
 def cmd_tv_discover(client, args):
-    p = argparse.ArgumentParser(prog="tmdb-cli tv discover")
+    p = argparse.ArgumentParser(prog="tmdb tv discover")
     p.add_argument("--genre", help="Genre name")
     p.add_argument("--rating", type=float, help="Min vote average")
     p.add_argument("--from", dest="air_date_gte", help="Air date from")
@@ -268,7 +268,7 @@ def _resolve_tv_genre(client, name):
 
 
 def cmd_trending(client, args):
-    p = argparse.ArgumentParser(prog="tmdb-cli trending")
+    p = argparse.ArgumentParser(prog="tmdb trending")
     p.add_argument("--type", default="movie", choices=["movie", "tv", "all"])
     p.add_argument("--window", default="week", choices=["day", "week"])
     p.add_argument("--limit", type=int, default=10)
@@ -294,7 +294,7 @@ def cmd_trending(client, args):
 
 
 def cmd_genre_list(client, args):
-    p = argparse.ArgumentParser(prog="tmdb-cli genre list")
+    p = argparse.ArgumentParser(prog="tmdb genre list")
     p.add_argument("--type", required=True, choices=["movie", "tv"])
     parsed, _ = p.parse_known_args(args)
 
@@ -322,7 +322,7 @@ def cmd_cert_list(client, args):
 
 
 def cmd_upcoming(client, args):
-    p = argparse.ArgumentParser(prog="tmdb-cli movie upcoming")
+    p = argparse.ArgumentParser(prog="tmdb movie upcoming")
     p.add_argument("--limit", type=int, default=10)
     parsed, _ = p.parse_known_args(args)
     if client.dry_run:
@@ -341,7 +341,7 @@ def main():
     if GLOBAL_FLAGS.get("json", False):
         warnings.simplefilter("ignore")
 
-    parser = argparse.ArgumentParser(prog="tmdb-cli", description="The Movie Database API CLI.")
+    parser = argparse.ArgumentParser(prog="tmdb", description="The Movie Database API CLI.")
     sub = parser.add_subparsers(dest="resource")
 
     # movie

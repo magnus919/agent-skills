@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""tempest-cli — Hyper-local weather from your Tempest station.
+"""tempest — Hyper-local weather from your Tempest station.
 
 Two data sources:
   REST API  — stations, observations, forecast via WeatherFlow cloud
@@ -319,7 +319,7 @@ def cmd_stations(client: TempestClient, args: List[str]) -> None:
 
 def cmd_current(client: TempestClient, args: List[str]) -> None:
     """Get latest observations from your station."""
-    parser = argparse.ArgumentParser(prog="tempest-cli current")
+    parser = argparse.ArgumentParser(prog="tempest current")
     parser.add_argument("--station-id", type=int, help="Station ID (optional if only one station)")
     parser.add_argument("--device-id", type=int, help="Device ID (default: first Tempest device)")
     parsed, _ = parser.parse_known_args(args)
@@ -385,7 +385,7 @@ def cmd_current(client: TempestClient, args: List[str]) -> None:
 
 def cmd_obs(client: TempestClient, args: List[str]) -> None:
     """Get historical observations."""
-    parser = argparse.ArgumentParser(prog="tempest-cli obs")
+    parser = argparse.ArgumentParser(prog="tempest obs")
     parser.add_argument("--device-id", type=int, required=True, help="Device ID (required)")
     parser.add_argument("--days", type=int, default=1, help="Days back to fetch (default: 1)")
     parsed, _ = parser.parse_known_args(args)
@@ -416,7 +416,7 @@ def cmd_obs(client: TempestClient, args: List[str]) -> None:
 
 def cmd_forecast(client: TempestClient, args: List[str]) -> None:
     """Get forecast — current conditions + daily + hourly."""
-    parser = argparse.ArgumentParser(prog="tempest-cli forecast")
+    parser = argparse.ArgumentParser(prog="tempest forecast")
     parser.add_argument("--station-id", type=int, help="Station ID (optional if only one station)")
     parser.add_argument("--days", type=int, default=5, help="Days of daily forecast (default: 5)")
     parsed, _ = parser.parse_known_args(args)
@@ -523,7 +523,7 @@ def cmd_forecast(client: TempestClient, args: List[str]) -> None:
 
 def udp_listen(args: List[str]) -> None:
     """Listen for local UDP broadcasts from the Tempest hub."""
-    parser = argparse.ArgumentParser(prog="tempest-cli udp listen")
+    parser = argparse.ArgumentParser(prog="tempest udp listen")
     parser.add_argument("--port", type=int, default=DEFAULT_UDP_PORT, help=f"UDP port (default: {DEFAULT_UDP_PORT})")
     parser.add_argument("--timeout", type=int, default=0, help="Listen for N seconds (0 = indefinite)")
     parser.add_argument("--show-all", action="store_true", help="Show raw message type even if unknown")
@@ -623,9 +623,9 @@ def main() -> None:
         warnings.simplefilter("ignore")
 
     parser = argparse.ArgumentParser(
-        prog="tempest-cli",
+        prog="tempest",
         description="Hyper-local weather from your Tempest station.",
-        epilog="Global flags can appear anywhere: tempest-cli --json current --device-id X"
+        epilog="Global flags can appear anywhere: tempest --json current --device-id X"
     )
     sub = parser.add_subparsers(dest="command", help="Available commands")
 

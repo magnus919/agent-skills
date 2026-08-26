@@ -17,14 +17,14 @@ When your agent loads this skill, it can **access the entire TMDb catalog** with
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Complete command reference with compound filter examples |
-| `scripts/tmdb-cli` | CLI tool for TMDb v3 API |
+| `scripts/tmdb` | CLI tool for TMDb v3 API |
 
 ## Quick Start
 
 ```bash
 export TMDB_ACCESS_TOKEN="your-tmdb-access-token"
-tmdb-cli movie search --term "dune"
-tmdb-cli movie discover --genre horror --certification R
+tmdb movie search --term "dune"
+tmdb movie discover --genre horror --certification R
 ```
 
 ## Triggers

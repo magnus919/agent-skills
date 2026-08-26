@@ -1,5 +1,5 @@
 ---
-name: tmdb-cli
+name: tmdb
 description: Search and discover movies, TV shows, and trending content via The Movie
   Database (TMDb) API v3. Use when the user asks about movies, TV, film, cinema, genres,
   certifications, ratings, cast, upcoming releases, or trending media.
@@ -11,7 +11,7 @@ metadata:
   sources: https://developer.themoviedb.org/reference, https://www.themoviedb.org/settings/api
 ---
 
-# tmdb-cli — Movie & TV Discovery from the Terminal
+# tmdb — Movie & TV Discovery from the Terminal
 
 Search movies and TV shows by keyword, discover by genre/certification/rating/date, check trending and upcoming releases, browse genre lists, and view US certification ratings — all from TMDb's v3 API.
 
@@ -33,9 +33,9 @@ export TMDB_API_KEY="your-tmdb-api-key"
 ### movie search — Search movies by keyword
 
 ```bash
-tmdb-cli movie search --term "dune"                  # basic search
-tmdb-cli movie search --term "inception" --limit 5   # top 5 results
-tmdb-cli movie search --term "arrival" --json         # machine-readable
+tmdb movie search --term "dune"                  # basic search
+tmdb movie search --term "inception" --limit 5   # top 5 results
+tmdb movie search --term "arrival" --json         # machine-readable
 ```
 
 Shows: title, release year, vote average.
@@ -43,29 +43,29 @@ Shows: title, release year, vote average.
 ### movie discover — Discover movies by genre, certification, rating, and date
 
 ```bash
-tmdb-cli movie discover --genre horror                           # horror movies
-tmdb-cli movie discover --genre horror --certification R         # horror, R-rated
-tmdb-cli movie discover --genre comedy --rating 7 --limit 15     # highly-rated comedy
-tmdb-cli movie discover --from 2024-01-01 --to 2024-12-31        # released in 2024
-tmdb-cli movie discover --genre scifi --from 2026-05-01          # recent sci-fi
-tmdb-cli movie discover --genre thriller --certification R \
+tmdb movie discover --genre horror                           # horror movies
+tmdb movie discover --genre horror --certification R         # horror, R-rated
+tmdb movie discover --genre comedy --rating 7 --limit 15     # highly-rated comedy
+tmdb movie discover --from 2024-01-01 --to 2024-12-31        # released in 2024
+tmdb movie discover --genre scifi --from 2026-05-01          # recent sci-fi
+tmdb movie discover --genre thriller --certification R \
   --rating 6 --from 2025-01-01 --limit 20                        # compound filter
 ```
 
 ### movie upcoming — Upcoming movie releases
 
 ```bash
-tmdb-cli movie upcoming                         # next 10 upcoming
-tmdb-cli movie upcoming --limit 20              # more results
-tmdb-cli movie upcoming --json                  # machine-readable
+tmdb movie upcoming                         # next 10 upcoming
+tmdb movie upcoming --limit 20              # more results
+tmdb movie upcoming --json                  # machine-readable
 ```
 
 ### tv search — Search TV shows by keyword
 
 ```bash
-tmdb-cli tv search --term "severance"           # basic TV search
-tmdb-cli tv search --term "the expanse" --limit 5
-tmdb-cli tv search --term "silo" --json
+tmdb tv search --term "severance"           # basic TV search
+tmdb tv search --term "the expanse" --limit 5
+tmdb tv search --term "silo" --json
 ```
 
 Shows: name, first air year, vote average.
@@ -73,33 +73,33 @@ Shows: name, first air year, vote average.
 ### tv discover — Discover TV shows by genre, rating, and air date
 
 ```bash
-tmdb-cli tv discover --genre sci-fi                    # sci-fi shows
-tmdb-cli tv discover --genre drama --rating 7          # critically-acclaimed drama
-tmdb-cli tv discover --genre comedy --from 2025-01-01  # recent comedy
+tmdb tv discover --genre sci-fi                    # sci-fi shows
+tmdb tv discover --genre drama --rating 7          # critically-acclaimed drama
+tmdb tv discover --genre comedy --from 2025-01-01  # recent comedy
 ```
 
 ### trending — Trending content across day or week
 
 ```bash
-tmdb-cli trending                              # trending movies this week
-tmdb-cli trending --type tv                    # trending TV this week
-tmdb-cli trending --type all --window day      # all media trending today
-tmdb-cli trending --limit 20 --json            # top 20 as JSON
+tmdb trending                              # trending movies this week
+tmdb trending --type tv                    # trending TV this week
+tmdb trending --type all --window day      # all media trending today
+tmdb trending --limit 20 --json            # top 20 as JSON
 ```
 
 ### genre list — Browse available genres
 
 ```bash
-tmdb-cli genre list --type movie               # all movie genres
-tmdb-cli genre list --type tv                  # all TV genres
-tmdb-cli genre list --type movie --json
+tmdb genre list --type movie               # all movie genres
+tmdb genre list --type tv                  # all TV genres
+tmdb genre list --type movie --json
 ```
 
 ### certification — View US movie certification ratings
 
 ```bash
-tmdb-cli certification                          # US certification list
-tmdb-cli certification --json                   # machine-readable
+tmdb certification                          # US certification list
+tmdb certification --json                   # machine-readable
 ```
 
 ## Global Flags
@@ -107,11 +107,11 @@ tmdb-cli certification --json                   # machine-readable
 These flags work in any position before, between, or after subcommands:
 
 ```bash
-tmdb-cli --json movie search --term "dune"             # JSON output
-tmdb-cli movie search --term "dune" --json             # json after subcommand
-tmdb-cli --dry-run movie discover --genre horror       # preview without API call
-tmdb-cli --quiet trending                              # suppress diagnostic output
-tmdb-cli --verbose movie search --term "alien"         # verbose logging
+tmdb --json movie search --term "dune"             # JSON output
+tmdb movie search --term "dune" --json             # json after subcommand
+tmdb --dry-run movie discover --genre horror       # preview without API call
+tmdb --quiet trending                              # suppress diagnostic output
+tmdb --verbose movie search --term "alien"         # verbose logging
 ```
 
 ## Known Gotchas
@@ -124,6 +124,6 @@ tmdb-cli --verbose movie search --term "alien"         # verbose logging
 
 ## References
 
-- [scripts/tmdb-cli](scripts/tmdb-cli) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
+- [scripts/tmdb](scripts/tmdb) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
 - [TMDb API v3 Reference](https://developer.themoviedb.org/reference) — Official API documentation.
 - [TMDb API Settings (get a key)](https://www.themoviedb.org/settings/api) — Free API key registration.

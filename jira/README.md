@@ -18,7 +18,7 @@ When your agent loads this skill, it can **manage your entire Jira workflow** wi
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Complete command reference with setup and examples |
-| `scripts/jira-cli` | CLI tool for Jira REST API v3 |
+| `scripts/jira` | CLI tool for Jira REST API v3 |
 
 ## Quick Start
 

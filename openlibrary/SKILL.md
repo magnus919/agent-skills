@@ -1,5 +1,5 @@
 ---
-name: openlibrary-cli
+name: openlibrary
 description: Search books, authors, and works on Open Library from the terminal. Look
   up books by ISBN, search titles and authors, and fetch detailed work/author records
   via the public Open Library API. No API key required.
@@ -12,7 +12,7 @@ metadata:
   sources: https://openlibrary.org/developers/api, https://openlibrary.org
 ---
 
-# openlibrary-cli — Book Metadata from Open Library
+# openlibrary — Book Metadata from Open Library
 
 Search books and authors, look up works and ISBNs, and fetch detailed metadata from the public [Open Library](https://openlibrary.org) API. No API key, no registration — just works.
 
@@ -32,13 +32,13 @@ Only Python 3.8+ and the `requests` package are required. `--help` and `--dry-ru
 ### search — Search books by keyword
 
 ```bash
-openlibrary-cli search --query "dune"                       # basic search (20 results)
-openlibrary-cli search --query "dune" --limit 5             # just the top 5
-openlibrary-cli search --query "dune" --sort new            # newest first
-openlibrary-cli search --query "dune" --sort rating         # highest rated first
-openlibrary-cli search --query "dune" --sort title          # alphabetical by title
-openlibrary-cli search --query "foundation" --lang fr       # French editions
-openlibrary-cli search --query "dune" --json                # machine-readable JSON
+openlibrary search --query "dune"                       # basic search (20 results)
+openlibrary search --query "dune" --limit 5             # just the top 5
+openlibrary search --query "dune" --sort new            # newest first
+openlibrary search --query "dune" --sort rating         # highest rated first
+openlibrary search --query "dune" --sort title          # alphabetical by title
+openlibrary search --query "foundation" --lang fr       # French editions
+openlibrary search --query "dune" --json                # machine-readable JSON
 ```
 
 Shows: title, first publish year, authors, edition count. Supports `--sort` (editions, new, old, rating, title), `--lang`, `--offset`, and `--availability`.
@@ -46,9 +46,9 @@ Shows: title, first publish year, authors, edition count. Supports `--sort` (edi
 ### search-authors — Search authors by name
 
 ```bash
-openlibrary-cli search-authors --query "asimov"             # search authors
-openlibrary-cli search-authors --query "asimov" --limit 5   # top 5
-openlibrary-cli search-authors --query "asimov" --json      # machine-readable
+openlibrary search-authors --query "asimov"             # search authors
+openlibrary search-authors --query "asimov" --limit 5   # top 5
+openlibrary search-authors --query "asimov" --json      # machine-readable
 ```
 
 Shows: name, birth/death years, author key, top work.
@@ -56,9 +56,9 @@ Shows: name, birth/death years, author key, top work.
 ### author — Get author details by key
 
 ```bash
-openlibrary-cli author OL23919A                             # Isaac Asimov
-openlibrary-cli author OL34184A                             # Ursula K. Le Guin
-openlibrary-cli author OL23919A --json                      # full biography
+openlibrary author OL23919A                             # Isaac Asimov
+openlibrary author OL34184A                             # Ursula K. Le Guin
+openlibrary author OL23919A --json                      # full biography
 ```
 
 Shows: name, birth/death dates, biography (up to 500 chars), Wikipedia link, personal name. Author keys are the `OL#####A` identifiers from search results.
@@ -66,9 +66,9 @@ Shows: name, birth/death dates, biography (up to 500 chars), Wikipedia link, per
 ### work — Get work details by key
 
 ```bash
-openlibrary-cli work OL123W                                 # work by key
-openlibrary-cli work OL81699W                               # "Foundation"
-openlibrary-cli work OL81699W --json                        # full description
+openlibrary work OL123W                                 # work by key
+openlibrary work OL81699W                               # "Foundation"
+openlibrary work OL81699W --json                        # full description
 ```
 
 Shows: title, author keys, subjects, description (up to 500 chars). Work keys are the `OL#####W` identifiers found in search results.
@@ -76,9 +76,9 @@ Shows: title, author keys, subjects, description (up to 500 chars). Work keys ar
 ### isbn — Lookup a book by ISBN
 
 ```bash
-openlibrary-cli isbn 9780451524935                           # ISBN lookup
-openlibrary-cli isbn 9780553382563                           # another book
-openlibrary-cli isbn 9780451524935 --json                    # full edition metadata
+openlibrary isbn 9780451524935                           # ISBN lookup
+openlibrary isbn 9780553382563                           # another book
+openlibrary isbn 9780451524935 --json                    # full edition metadata
 ```
 
 Shows: title, author(s), page count, publish date, publisher, subjects (top 5). Accepts both ISBN-10 and ISBN-13.
@@ -88,12 +88,12 @@ Shows: title, author(s), page count, publish date, publisher, subjects (top 5). 
 These flags work anywhere in the command — before or after the subcommand:
 
 ```bash
-openlibrary-cli --json search --query "dune"                # JSON output
-openlibrary-cli search --query "dune" --json                # same result, after subcommand
-openlibrary-cli --dry-run search --query "dune"             # preview without API call
-openlibrary-cli --quiet search --query "dune"               # suppress diagnostic output
-openlibrary-cli --verbose author OL23919A                   # verbose logging
-openlibrary-cli --dry-run isbn 9780451524935                # see what URL would be used
+openlibrary --json search --query "dune"                # JSON output
+openlibrary search --query "dune" --json                # same result, after subcommand
+openlibrary --dry-run search --query "dune"             # preview without API call
+openlibrary --quiet search --query "dune"               # suppress diagnostic output
+openlibrary --verbose author OL23919A                   # verbose logging
+openlibrary --dry-run isbn 9780451524935                # see what URL would be used
 ```
 
 | Flag | Effect |
@@ -116,6 +116,6 @@ openlibrary-cli --dry-run isbn 9780451524935                # see what URL would
 
 ## References
 
-- [scripts/openlibrary-cli](scripts/openlibrary-cli) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, structured logging.
+- [scripts/openlibrary](scripts/openlibrary) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, structured logging.
 - [Open Library API Docs](https://openlibrary.org/developers/api) — Official API documentation.
 - [Open Library](https://openlibrary.org) — The open, editable library catalog.

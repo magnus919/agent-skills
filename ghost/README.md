@@ -16,7 +16,7 @@ When your agent loads this skill, it can **manage your Ghost CMS content** witho
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Complete command reference with setup and examples |
-| `scripts/ghost-cli` | CLI tool for Ghost Admin API operations |
+| `scripts/ghost` | CLI tool for Ghost Admin API operations |
 
 ## Quick Start
 

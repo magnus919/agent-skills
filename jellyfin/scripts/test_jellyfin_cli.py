@@ -8,7 +8,7 @@ import subprocess
 import unittest
 
 
-SCRIPT = pathlib.Path(__file__).parents[1] / "scripts" / "jellyfin-cli"
+SCRIPT = pathlib.Path(__file__).resolve().parent / "jellyfin"
 LOADER = importlib.machinery.SourceFileLoader("jellyfin_cli", str(SCRIPT))
 SPEC = importlib.util.spec_from_loader(LOADER.name, LOADER)
 jellyfin_cli = importlib.util.module_from_spec(SPEC)
