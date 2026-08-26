@@ -1,125 +1,258 @@
 ---
 name: openlibrary
-description: Search books, authors, and works on Open Library from the terminal. Look
-  up books by ISBN, search titles and authors, and fetch detailed work/author records
-  via the public Open Library API. No API key required.
+description: >-
+  Query the Open Library catalog from the terminal: search books and authors,
+  look up works, editions, and ISBNs, enumerate every edition of a work, read
+  community ratings, and resolve cover-image URLs. Fully keyless public API.
+  Includes the OL…M/W/A key-graph reference, ISBN 302-redirect resolution,
+  search query syntax, covers-host rules, and worked pipelines. Do not use for
+  library-IT administration (Koha/MARC/ILS migration), commercial book-data
+  feeds, or managing your reading account on Open Library itself.
 license: MIT
 compatibility: Python 3.8+ and the `requests` library. No API key or registration
-  required — the Open Library API is fully public. Optional OL_EMAIL env var sets
-  a User-Agent contact for improved rate limiting.
+  required — reads are fully public. Optional OL_EMAIL env var adds a contact to
+  the User-Agent for better rate-limit treatment.
 metadata:
   tags: open-library, books, authors, isbn, library, book-search, api-client, catalog
-  sources: https://openlibrary.org/developers/api, https://openlibrary.org
+  sources: https://openlibrary.org/developers/api, https://openlibrary.org/dev/docs/api/books
 ---
 
 # openlibrary — Book Metadata from Open Library
 
-Search books and authors, look up works and ISBNs, and fetch detailed metadata from the public [Open Library](https://openlibrary.org) API. No API key, no registration — just works.
+Query Open Library's 50M+ record catalog over its public HTTP API: search works
+and authors, walk the edition/work/author graph by ISBN or OLID, enumerate
+editions, and read community ratings. No API key exists; everything here is a
+keyless GET.
 
 ## Setup
 
-No authentication or API keys needed. The Open Library API is fully public.
+Nothing to authenticate: **the public Open Library API requires no API key** for
+reads. There is no token, no registration step, no lazy-auth dance.
 
 ```bash
-# Optional: set your email to help with rate limiting (included in User-Agent):
+# Optional etiquette: identified User-Agent gets ~3x rate budget (~3 req/s vs ~1)
 export OL_EMAIL="you@example.com"
 ```
 
-Only Python 3.8+ and the `requests` package are required. `--help` and `--dry-run` work without any setup.
+Requires Python 3.8+ and `requests` only. `--help` and `--dry-run` work with no
+environment at all. Write endpoints exist upstream but require an authenticated
+Internet Archive session and are effectively internal — treat this surface as
+read-only.
+
+Three hosts matter and they serve different things:
+
+| Host | Serves |
+|------|--------|
+| `openlibrary.org` | metadata JSON: search, records, ratings |
+| `covers.openlibrary.org` | cover images + author photos (separate service) |
+| `archive.org` | scan content / bulk dumps (redirect targets) |
 
 ## Essential Commands
 
-### search — Search books by keyword
+### find books — search
 
 ```bash
-openlibrary search --query "dune"                       # basic search (20 results)
-openlibrary search --query "dune" --limit 5             # just the top 5
+openlibrary search --query "dune"                       # relevance order
+openlibrary search --query "dune" --sort editions       # most editions first
 openlibrary search --query "dune" --sort new            # newest first
-openlibrary search --query "dune" --sort rating         # highest rated first
-openlibrary search --query "dune" --sort title          # alphabetical by title
-openlibrary search --query "foundation" --lang fr       # French editions
-openlibrary search --query "dune" --json                # machine-readable JSON
+openlibrary search --query "foundation" --lang fr       # prefer French editions
+openlibrary search --query "dune" --limit 5 --offset 10 # paginate
+openlibrary search --query "dune" --json                # machine-readable
 ```
 
-Shows: title, first publish year, authors, edition count. Supports `--sort` (editions, new, old, rating, title), `--lang`, `--offset`, and `--availability`.
+Results carry title, authors, `first_publish_year`, edition count, and the work
+key (`/works/OL…W`) that feeds the other commands. The CLI validates `--sort`
+choices client-side because an unknown sort value makes the server return a
+plain-text HTTP 500.
 
-### search-authors — Search authors by name
+### find people who write — author search
 
 ```bash
-openlibrary search-authors --query "asimov"             # search authors
-openlibrary search-authors --query "asimov" --limit 5   # top 5
-openlibrary search-authors --query "asimov" --json      # machine-readable
+openlibrary search-authors --query "asimov"             # name candidates
+openlibrary search-authors --query "le guin" --limit 5
+openlibrary search-authors --query "asimov" --json      # includes top_work, work_count
 ```
 
-Shows: name, birth/death years, author key, top work.
+Author docs arrive with bare keys (`OL23919A`), unlike book search's path keys.
 
-### author — Get author details by key
+### inspect records — author / work
 
 ```bash
-openlibrary author OL23919A                             # Isaac Asimov
-openlibrary author OL34184A                             # Ursula K. Le Guin
-openlibrary author OL23919A --json                      # full biography
+openlibrary author OL23919A                # bio, dates, photo URL
+openlibrary work OL1168083W                # description, subjects, cover URL
+openlibrary work OL1168083W --json         # full record
 ```
 
-Shows: name, birth/death dates, biography (up to 500 chars), Wikipedia link, personal name. Author keys are the `OL#####A` identifiers from search results.
+Keys may be passed bare (`OL23919A`) or as paths (`/authors/OL23919A`) — the CLI
+normalizes both.
 
-### work — Get work details by key
+### resolve an ISBN
 
 ```bash
-openlibrary work OL123W                                 # work by key
-openlibrary work OL81699W                               # "Foundation"
-openlibrary work OL81699W --json                        # full description
+openlibrary isbn 9780451524935             # ISBN-10 or ISBN-13
+openlibrary isbn 9780451524935 --json      # + resolved edition_key, work_keys, cover_url
 ```
 
-Shows: title, author keys, subjects, description (up to 500 chars). Work keys are the `OL#####W` identifiers found in search results.
+Upstream, `/isbn/<isbn>.json` answers a **302 redirect** to the canonical
+edition JSON (`/books/<OL…M>.json`). The CLI follows it and reports which
+edition matched via `edition_key`. If the edition record lacks author names
+(some ship `authors:null`), the CLI recovers them from the linked work.
 
-### isbn — Lookup a book by ISBN
+### list every edition of a work
 
 ```bash
-openlibrary isbn 9780451524935                           # ISBN lookup
-openlibrary isbn 9780553382563                           # another book
-openlibrary isbn 9780451524935 --json                    # full edition metadata
+openlibrary editions OL81699W                          # publisher/date/ISBN per edition
+openlibrary editions OL81699W --limit 50 --offset 50   # page through large sets
+openlibrary editions OL81699W --json                   # + next_offset when more exist
 ```
 
-Shows: title, author(s), page count, publish date, publisher, subjects (top 5). Accepts both ISBN-10 and ISBN-13.
+Backs onto `/works/<key>/editions.json`; `next_offset` is computed from the
+server's prebuilt next-page link.
+
+### read the room — community signals
+
+```bash
+openlibrary ratings OL45804W               # average rating + shelf counts
+openlibrary ratings OL45804W --json        # full distribution + bookshelves
+```
+
+Joins `/works/<key>/ratings.json` (`summary.average`, per-star `counts`) with
+`/works/<key>/bookshelves.json` (`want_to_read`, `currently_reading`,
+`already_read`).
 
 ## Global Flags
 
-These flags work anywhere in the command — before or after the subcommand:
+Position-independent; put them before or after the subcommand:
 
 ```bash
-openlibrary --json search --query "dune"                # JSON output
-openlibrary search --query "dune" --json                # same result, after subcommand
-openlibrary --dry-run search --query "dune"             # preview without API call
-openlibrary --quiet search --query "dune"               # suppress diagnostic output
-openlibrary --verbose author OL23919A                   # verbose logging
-openlibrary --dry-run isbn 9780451524935                # see what URL would be used
+openlibrary --json search --query "dune"     # machine output anywhere
+openlibrary --dry-run isbn 9780451524935     # preview the exact URL, no network
+openlibrary --quiet search --query "dune"    # suppress diagnostics
 ```
 
 | Flag | Effect |
 |------|--------|
-| `--json` | Output machine-readable JSON instead of human-readable text |
-| `--dry-run` | Show what API call would be made without executing it |
-| `--quiet` | Suppress non-essential diagnostic output |
-| `--verbose` | Enable verbose/debug logging |
+| `--json` | One JSON object on stdout instead of human text |
+| `--dry-run` | Print the planned request as JSON without executing it |
+| `--quiet` | Suppress non-essential output |
+| `--verbose` | Verbose logging |
+
+## Multi-Step Pipeline Recipes
+
+### ISBN → edition → work → author bio
+
+The canonical walk across all three key types:
+
+```bash
+openlibrary isbn 9780451524935 --json | jq -r '.work_keys[0]'   # OL1168083W
+openlibrary work OL1168083W --json | jq -r '.authors[0]'        # bare OL…A key
+openlibrary author OL118077A                                    # bio, dates
+```
+
+Each hop uses a different key suffix (M → W → A); see Known Gotchas before
+hand-assembling these URLs yourself.
+
+### Rank a series by community love
+
+```bash
+for w in $(openlibrary search --query 'series:dune' --limit 8 --json | jq -r '.results[].key'); do
+  openlibrary ratings "${w##*/}" --json \
+    | jq -c '{work: .key, avg: .average, rated: .ratings_count,
+              want_to_read: .bookshelves.want_to_read}'
+done
+```
+
+### Find readable ebooks, then their print editions
+
+```bash
+openlibrary search --query 'title:"moby dick"' --sort editions --json \
+  | jq '.results[] | select(.has_fulltext) | {title, key}'
+openlibrary editions OL81699W --json | jq '.editions[] | {key, isbn_13}'
+```
+
+## Using --json with jq
+
+```bash
+openlibrary search --query "voracious" --json | jq '.results[] | {title, first_publish_year}'
+openlibrary search-authors --query "butler" --json | jq '.results[0] | {name, key, top_work}'
+openlibrary isbn 9780451524935 --json | jq -r '.cover_url'          # covers host URL
+openlibrary editions OL81699W --json | jq '[.editions[].publish_date]'
+openlibrary ratings OL45804W --json | jq '.rating_distribution'
+```
 
 ## Known Gotchas
 
-- **Public API, rate-limited** — No API key is needed, but Open Library enforces rate limits on unauthenticated requests. Set `OL_EMAIL` in your environment to include a contact email in the User-Agent header for better rate limit treatment.
-- **ISBN lookup uses an edition endpoint** — The `isbn` command fetches `/isbn/{isbn}.json` which returns edition-level metadata (publisher, page count, publish date). For work-level metadata (description, subjects of the underlying work), use the `work` command with the work key from search results.
-- **Search results are not stable** — Open Library's search index can return slightly different results for the same query over time. Use `--sort` and `--limit` for reproducible result sets.
-- **Author keys from search are relative paths** — Search results return `key` as `/authors/OL23919A`. The CLI strips the prefix so you can use the bare key (e.g. `OL23919A`) directly with the `author` command.
-- **Biographies and descriptions may be nested** — The Open Library API sometimes returns bio/description as a dict with a `value` key instead of a plain string (e.g. `{"type": "/type/text", "value": "..."}`). The CLI handles this automatically.
-- **No lazy auth** — Unlike other CLI skills, no authentication setup is needed at all. The API is fully public, so `--help`, `--dry-run`, and all commands work without any env vars.
-- **Pagination** — Use `--offset` to paginate through search results. The CLI defaults to 20 results and does not auto-paginate.
-- **Work vs Edition** — A "work" is the abstract creative work (e.g. "Dune"). An "edition" is a specific published version (e.g. the 1965 hardcover). The `work` command returns work-level data; the `isbn` command returns edition-level data. The `search` command returns work-level results with edition counts.
+- **ISBN endpoints answer 302, not JSON** — `/isbn/<isbn>.json`, `/lccn/*.json`,
+  `/oclc/*.json` redirect to `/books/<OL…M>.json`. Clients must follow redirects
+  (`curl -L`; `requests` does by default) or they parse an HTML redirect page.
+  Direct `/books/<OLID>.json` calls return 200 immediately.
+- **Merged keys return redirect stubs inside HTTP 200** — Open Library is a wiki;
+  when duplicate works merge, the old key keeps answering 200 with
+  `{"type":{"key":"/type/redirect"},"location":"/works/<master>"}` instead of a
+  3xx. Detect the stub type in success responses and re-fetch. The bundled CLI
+  does this automatically (and appends `.json` to stub locations, since
+  extension-less URLs redirect to HTML pages).
+- **Key types are encoded in the suffix** — `OL…M` = edition (`/books/`),
+  `OL…W` = work (`/works/`), `OL…A` = author (`/authors/`). Works link to
+  authors double-nested (`authors[].author.key`); editions nest flat
+  (`authors[].key`) — or ship `authors:null` entirely, recovering names from the
+  linked work. Requesting a key under the wrong collection yields a 301 reroute.
+- **Search empties are not errors** — malformed queries parse loosely and come
+  back HTTP 200 with `numFound:0`; conversely a bad `sort=` enum is a plain-text
+  HTTP 500 and non-integer `limit` is a FastAPI 422. Branch on bodies, not just
+  status codes.
+- **`availability` needs `ia`** — in raw `/search.json` calls, requesting
+  `fields=availability` silently returns nothing unless `ia` is also requested.
+- **Covers live on another host** — image URLs are always
+  `covers.openlibrary.org/b/id/<cover_id>-{S,M,L}.jpg` (or `/b/isbn/...`,
+  `/a/id/...` for author photos). Missing covers return a blank placeholder with
+  HTTP 200 unless you add `?default=false`; non-ID/non-OLID lookups cap at 100
+  req/IP per 5 min then 403; cover URLs often 302 into archive.org zip shards.
+- **Rate limits are policy, not headers** — no Retry-After/X-Rate-Limit headers
+  exist. Anonymous ≈1 req/s; a `User-Agent: App (email)` (set `OL_EMAIL`)
+  raises it to ≈3 req/s. Batch with one search rather than hundreds of lookups;
+  bulk belongs in monthly dumps.
+- **Text fields nest `{type,value}` objects** — older records wrap `bio`,
+  `description`, `notes` as `{"type":"/type/text","value":"..."}` while newer
+  ones use plain strings. Handle both; the CLI unwraps centrally.
+- **OLID ≠ long-term identity** — deleted keys can be reassigned to unrelated
+  books, and merged-away keys become redirect stubs. Pair OLIDs with title/ISBN
+  in any cache.
+- **`.json` placement matters for slugged URLs** — append `.json` to the bare
+  key (`/authors/OL23919A.json`), never after a slug path.
 
-## References
+## When to use
 
-- [scripts/openlibrary](scripts/openlibrary) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, structured logging.
-- [Open Library API Docs](https://openlibrary.org/developers/api) — Official API documentation.
-- [Open Library](https://openlibrary.org) — The open, editable library catalog.
+- Any question about books, authors, or works Open Library's public catalog can answer
+- Resolving ISBNs/OLID keys to canonical records and walking edition/work/author graphs
+- Finding readable or borrowable scans, cover images, community ratings/shelf counts
 
 ## When not to use
 
-Do not use this skill for local library-catalog administration (Koha, Evergreen, MARC batch processing), for licensed commercial book data feeds (ISBNdb, Google Books), or for citation formatting — Open Library is a free public catalog API, not a bibliographic management system.
+Do not use this skill for local library-catalog administration — Koha/Evergreen
+ILS configuration, MARC batch processing, patron management — or for licensed
+commercial data feeds (ISBNdb, Google Books), citation formatting, or managing
+your own Open Library reading account/lists (that requires site login this skill
+deliberately does not handle). For movie/TV metadata use tmdb instead.
+
+## Reference Files
+
+| File | Topic | Read when |
+|------|-------|-----------|
+| [references/api-overview-and-key-graph.md](references/api-overview-and-key-graph.md) | Access model, rate-limit etiquette, OLID M/W/A key graph, cross-collection 301s, merge-stub handling, `{type,value}` text wrapping | Assembling record URLs by hand, handling merges/wrong-key errors, or planning request pacing |
+| [references/search-api-guide.md](references/search-api-guide.md) | `/search.json` parameters, sort keys, field scopes (`title:`, `isbn:`, …), `fields=` projection incl. the availability/ia interaction, `/search/authors.json`, `/subjects/<name>.json`, inside-book search, error model | Building precise queries, paginating deep result sets, or debugging empty results |
+| [references/books-isbn-and-covers.md](references/books-isbn-and-covers.md) | Identifier endpoints and their 302 resolution, raw records vs legacy `/api/books` view models, editions listing, ratings/bookshelves shapes, covers-host URL rules and limits | Working with ISBNs/LCCNs/OCLCs, enumerating editions, or fetching images |
+| [references/recipes-and-gotchas.md](references/recipes-and-gotchas.md) | End-to-end curl/jq pipelines (ISBN→work→author chain, ebook discovery, cover assembly, disambiguation) plus a symptom-indexed gotcha table | Wiring multi-step workflows or diagnosing an unexpected response |
+
+## Available Scripts
+
+| Script | Purpose | Invocation |
+|---|---|---|
+| `scripts/openlibrary` | The CLI this skill drives: `search`, `search-authors`, `author`, `work`, `isbn`, `editions`, `ratings` — all with `--json`/`--dry-run`, automatic 302 + merge-stub resolution, `{type,value}` unwrapping, covers-host URL assembly, and client-side sort validation. Run it for every book-metadata question above. | `scripts/openlibrary search --query "dune" --json` |
+| `scripts/test_openlibrary.py` | Offline pytest/unittest suite covering help, argument errors, dry-run plans, mocked-client logic (redirect stubs, author fallback, editions paging), plus two env-guarded live probes (`OPENLIBRARY_LIVE_TESTS=1`). Zero egress otherwise. | `.venv/bin/python3 -m pytest -p no:cacheprovider --strict-markers scripts/test_openlibrary.py` |
+
+## Prerequisites
+
+- Python 3.8+ with `requests` (stdlib otherwise); invoke as `python3 scripts/openlibrary ...` if not executable directly
+- No credentials of any kind; optional `OL_EMAIL` for rate-limit etiquette
+- `jq` recommended for `--json` post-processing
