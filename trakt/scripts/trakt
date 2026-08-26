@@ -16,12 +16,41 @@ USER_AGENT = "agent-skills-trakt/1.0"
 
 QUIET = False
 GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+
+# Canonical X-Pagination-* response headers mapped onto the stable JSON keys
+# surfaced as the `pagination` object beside every discovery result.
+PAGINATION_HEADERS: Tuple[Tuple[str, str], ...] = (
+    ("X-Pagination-Page", "page"),
+    ("X-Pagination-Limit", "limit"),
+    ("X-Pagination-Page-Count", "page_count"),
+    ("X-Pagination-Item-Count", "item_count"),
+)
+
 def log(m):    global QUIET; (not QUIET and not GLOBAL_FLAGS.get("json")) and print(m)
 def warn(m):   print(f"Warning: {m}", file=sys.stderr)
 def die(m, c=1): print(f"Error: {m}", file=sys.stderr); sys.exit(c)
 def emit(h, d):
     if GLOBAL_FLAGS.get("json"): print(json.dumps(d, default=str))
     else: print(h)
+
+def normalize_pagination(headers):
+    """Map X-Pagination-* headers onto the stable pagination keys.
+
+    Missing or non-numeric header values fall out of the mapping, so a
+    response without pagination metadata degrades to an empty object
+    instead of failing.
+    """
+    pagination: Dict[str, int] = {}
+    for header, key in PAGINATION_HEADERS:
+        raw = None
+        for name in (header, header.lower()):
+            if name in headers:
+                raw = headers[name]
+                break
+        if raw is None: continue
+        try: pagination[key] = int(str(raw).strip())
+        except (TypeError, ValueError): continue
+    return pagination
 
 def _preparse(argv):
     BOOLS = {"--json","--dry-run","--quiet","--verbose"}
@@ -40,8 +69,9 @@ class TraktClient:
         self.client_id = client_id or ENV_CLIENT_ID
         self.dry_run = dry_run
     def _get(self, path, params=None):
+        """Fetch one page; returns (json data, normalized pagination dict)."""
         url = f"{API_BASE}{path}"
-        if self.dry_run: return [{"dry_run":True, "url":url, "params":params}]
+        if self.dry_run: return [{"dry_run":True, "url":url, "params":params}], {}
         if not self.client_id: die("TRAKT_CLIENT_ID not set. Get one from trakt.tv/oauth/applications.")
         try:
             r = requests.get(url, params=params, headers={
@@ -53,7 +83,7 @@ class TraktClient:
             try: d = r.json()
             except: d = r.text[:200]
             die(f"API error ({r.status_code}): {d}")
-        return r.json()
+        return r.json(), normalize_pagination(dict(r.headers))
     def movie_trending(self, page=1, limit=10):
         return self._get("/movies/trending", {"page":page, "limit":limit})
     def movie_anticipated(self, page=1, limit=10):
@@ -92,27 +122,28 @@ def fmt_show(d, idx=None):
     s_out = f"  {'%d. '%idx if idx else ''}{t:35}{net_str} ({y})  tvdb={tvdb}"
     return s_out
 
-def cmd_movie(client, args, endpoint):
-    p = argparse.ArgumentParser(prog=f"trakt movie {endpoint}")
-    p.add_argument("--limit", type=int, default=10)
+def cmd_discovery(client, resource, endpoint, args):
+    fmt = fmt_movie if resource == "movie" else fmt_show
+    list_key = "movies" if resource == "movie" else "shows"
+    plural = "movies" if resource == "movie" else "TV shows"
+    label = "Movie" if resource == "movie" else "TV"
+    p = argparse.ArgumentParser(prog=f"trakt {resource} {endpoint}")
+    p.add_argument("--page", type=int, default=1,
+                   help="1-based page number to fetch (default 1)")
+    p.add_argument("--limit", type=int, default=10,
+                   help="items per page (default 10)")
     parsed, _ = p.parse_known_args(args)
-    if client.dry_run: return emit(f"[dry-run] Movie {endpoint}", {"dry_run":True})
-    fn = getattr(client, f"movie_{endpoint}")
-    data = fn(limit=parsed.limit) or []
-    if not data: return emit(f"No {endpoint} movies.", {"movies":[]})
-    lines = [fmt_movie(d, i+1) for i, d in enumerate(data[:parsed.limit])]
-    emit(f"{endpoint.title()} movies:\n"+"\n".join(lines), {"movies":data[:parsed.limit]})
-
-def cmd_tv(client, args, endpoint):
-    p = argparse.ArgumentParser(prog=f"trakt tv {endpoint}")
-    p.add_argument("--limit", type=int, default=10)
-    parsed, _ = p.parse_known_args(args)
-    if client.dry_run: return emit(f"[dry-run] TV {endpoint}", {"dry_run":True})
-    fn = getattr(client, f"tv_{endpoint}")
-    data = fn(limit=parsed.limit) or []
-    if not data: return emit(f"No {endpoint} TV shows.", {"shows":[]})
-    lines = [fmt_show(d, i+1) for i, d in enumerate(data[:parsed.limit])]
-    emit(f"{endpoint.title()} TV:\n"+"\n".join(lines), {"shows":data[:parsed.limit]})
+    if client.dry_run: return emit(f"[dry-run] {label} {endpoint}", {"dry_run":True})
+    data, pagination = getattr(client, f"{resource}_{endpoint}")(page=parsed.page, limit=parsed.limit)
+    data = data or []
+    entries = data[:parsed.limit] if isinstance(data, list) else []
+    payload: Dict[str, Any] = {list_key: entries, "pagination": pagination}
+    if not entries: return emit(f"No {endpoint} {plural}.", payload)
+    lines = [fmt(entry, i+1) for i, entry in enumerate(entries)]
+    output = f"{endpoint.title()} {'movies' if resource == 'movie' else 'TV'}:\n"+"\n".join(lines)
+    if pagination.get("page") is not None and pagination.get("page_count"):
+        output += f"\n  Page {pagination['page']} of {pagination['page_count']}"
+    emit(output, payload)
 
 def main():
     global GLOBAL_FLAGS, QUIET
@@ -125,20 +156,22 @@ def main():
     mp = sub.add_parser("movie", help="Movie discovery")
     ms = mp.add_subparsers(dest="action")
     for a in ["trending","anticipated","popular"]:
-        ms.add_parser(a, help=f"{a.title()} movies").add_argument("--limit", type=int, default=10)
+        ap = ms.add_parser(a, help=f"{a.title()} movies")
+        ap.add_argument("--page", type=int, default=1, help="page number to fetch (default 1)")
+        ap.add_argument("--limit", type=int, default=10, help="items per page (default 10)")
     tp = sub.add_parser("tv", help="TV discovery")
     ts = tp.add_subparsers(dest="action")
     for a in ["trending","anticipated","popular"]:
-        ts.add_parser(a, help=f"{a.title()} TV").add_argument("--limit", type=int, default=10)
+        ap = ts.add_parser(a, help=f"{a.title()} TV")
+        ap.add_argument("--page", type=int, default=1, help="page number to fetch (default 1)")
+        ap.add_argument("--limit", type=int, default=10, help="items per page (default 10)")
     args = parser.parse_args(filtered_argv[1:])
     if not args.resource: parser.print_help(); sys.exit(1)
     client = TraktClient(dry_run=GLOBAL_FLAGS.get("dry_run",False))
     remaining = filtered_argv[filtered_argv.index(args.resource)+1:]
-    if args.resource == "movie":
-        if args.action: cmd_movie(client, remaining, args.action)
-        else: mp.print_help()
-    elif args.resource == "tv":
-        if args.action: cmd_tv(client, remaining, args.action)
+    if args.resource in ("movie","tv"):
+        if args.action: cmd_discovery(client, args.resource, args.action, remaining)
+        elif args.resource == "movie": mp.print_help()
         else: tp.print_help()
     else: parser.print_help()
 
