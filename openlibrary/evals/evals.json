@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "skill_name": "openlibrary",
+  "evals": [
+    {
+      "id": "isbn-to-work-author-chain",
+      "prompt": "Look up the book with ISBN 9780451524935 and tell me about the underlying work and its author.",
+      "expected_output": "Scenario: read-only key graph walk. The agent runs `openlibrary isbn 9780451524935 --json`, which resolves through Open Library's 302 redirect to a canonical OL…M edition record and reports the resolved edition_key plus work_keys. It then fetches the linked work (OL…W) for description/subjects and follows the work's double-nested authors[].author.key to an OL…A author record for the bio, unwrapping any {type,value}-shaped text fields. All output comes from real CLI output; no writes are attempted.",
+      "assertions": [
+        "The ISBN lookup runs via openlibrary isbn with --json before any follow-up calls",
+        "The resolved edition key (OL…M) and work keys (OL…W) are read from the CLI output rather than invented",
+        "Author links on works are accessed as authors[].author.key (double-nested), not authors[].key",
+        "Bio/description fields wrapped as {type:/type/text,value} dicts are unwrapped to plain text"
+      ]
+    },
+    {
+      "id": "find-readable-ebooks-by-subject",
+      "prompt": "Find me some classic science fiction books I can read online right now.",
+      "expected_output": "Scenario: multi-step search pipeline. The agent searches with `openlibrary search --query 'subject:\"science fiction\"' --sort editions` (or a title/author query), then checks full-text availability via has_fulltext/ebook_access signals in the JSON output, optionally fetching each candidate's edition or cover data. It explains that /search.json's `availability` field is silently omitted unless `ia` is also requested in fields= — a gotcha it avoids by relying on the CLI's surfaced has_fulltext flag or by fetching the edition record directly. Results are presented from actual command output with titles and first-publish years.",
+      "assertions": [
+        "A search runs with openlibrary search rather than guessing at book records",
+        "Readability is judged from real fields (has_fulltext, ebook_access, or edition-level data) instead of assumed",
+        "No claim is made that availability data appears in search results without also requesting ia alongside it",
+        "Final recommendations cite titles/authors traceable to command output"
+      ]
+    },
+    {
+      "id": "isbn-302-redirect-gotcha",
+      "prompt": "I curl'd https://openlibrary.org/isbn/9780451524935.json and my script choked parsing HTML instead of the book data. What went wrong?",
+      "expected_output": "Scenario: gotcha diagnosis. The agent explains that identifier endpoints (/isbn/<isbn>.json, /lccn/<lccn>.json, /oclc/<num>.json) answer HTTP 302 with a Location header pointing at the canonical /books/<OL…M>.json URL — they never serve the record directly. A client that does not follow redirects sees only an HTML redirect page. Fix: follow redirects (curl -L; Python requests does so by default). The agent may demonstrate with `openlibrary isbn 9780451524935 --json`, which handles resolution automatically, and notes the final record's key reveals which edition matched.",
+      "assertions": [
+        "The 302-redirect behavior of /isbn/<isbn>.json is named as the root cause",
+        "The fix is to follow redirects (curl -L or requests' default behavior)",
+        "The canonical target format /books/<edition-OLID>.json is stated",
+        "The bundled CLI is offered as a path that already handles resolution"
+      ]
+    },
+    {
+      "id": "author-disambiguation-and-top-works",
+      "prompt": "There are several authors named John Herbert. Which one wrote the Foundation series, and what else did they write?",
+      "expected_output": "Scenario: author disambiguation. The agent corrects the premise gently if needed (Foundation is by Isaac Asimov) but demonstrates the workflow: run `openlibrary search-authors --query '...' --json` to list candidates with bare OL…A keys, birth/death dates, top_work, and work_count, pick the right author, then fetch details with `openlibrary author <key>`. If enumerating their books it can use the work listing endpoint described in references. Claims come from command output only.",
+      "assertions": [
+        "search-authors is used to enumerate name candidates before picking one",
+        "Candidate identity is judged from top_work/work_count/date fields in output",
+        "The chosen bare OL…A key is passed to openlibrary author for details",
+        "Any correction of the premise (Foundation's actual author) is grounded in verified lookup results"
+      ]
+    },
+    {
+      "id": "koha-catalog-migration-not-openlibrary",
+      "prompt": "Help me migrate our public library's MARC records into our Koha ILS and set up patron accounts.",
+      "expected_output": "Scenario: should-not-trigger. This request targets local library-catalog administration (Koha ILS migration, MARC batch processing, patron account management), which this skill explicitly does not cover — Open Library is a public metadata API, not an integrated library system. The agent does not load openlibrary or invoke its CLI; it routes toward Koha's own tooling/documentation instead, noting the skill covers reading Open Library's catalog data only.",
+      "assertions": [
+        "The openlibrary skill is not loaded or executed for Koha/MARC administration work",
+        "Koha-native tooling is suggested as the appropriate route",
+        "No Open Library API calls are made as part of planning the ILS migration"
+      ]
+    },
+    {
+      "id": "keyless-setup-and-rate-etiquette",
+      "prompt": "Set up whatever credentials you need to start researching books for me, and tell me what the limits are.",
+      "expected_output": "Scenario: setup expectations. The agent explains no API key or registration exists at all — reads on openlibrary.org are fully keyless, so there is nothing to configure beyond optional etiquette: setting OL_EMAIL to add a mailto contact to the User-Agent, which raises the polite rate budget from ~1 request/second to 3. Covers live on a separate host (covers.openlibrary.org) where ISBN-keyed lookups cap at 100 requests/IP per 5 minutes while cover-ID lookups are exempt. Bulk jobs belong in monthly dumps, not API loops. No secrets are requested because none exist.",
+      "assertions": [
+        "States explicitly that the public API requires no key or registration for reads",
+        "OL_EMAIL is described as optional User-Agent identification raising the rate budget (~1/s anonymous vs ~3/s identified)",
+        "Covers-host separation and its distinct 100 req/IP-per-5-min limit on non-ID lookups is mentioned",
+        "No credential, token, or secret is requested or fabricated"
+      ]
+    }
+  ]
+}
