@@ -254,7 +254,7 @@ SLA != completed() AND SLA <= remaining("-4h")
 
 ```jql
 -- 49. Requests from one customer organization (JSM triage split)
-reporter in organizationMembers("Atlassian") AND resolution = Unresolved
+reporter in organizationMembers("YOUR_ORG") AND resolution = Unresolved
 ```
 
 ```jql

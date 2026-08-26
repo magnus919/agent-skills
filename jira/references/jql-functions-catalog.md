@@ -227,7 +227,7 @@ These require Jira Service Management and operate on the Approval and SLA custom
 |----------|--------|--------|
 | `customerDetail("Field", "Value")` | Reporter, Assignee, Voter, Watcher | `reporter in customerDetail("Region", "APAC")` |
 | `organizationDetail("Field", "Value")` | Organization | `organization in organizationDetail("Support level", "Platinum")` |
-| `organizationMembers("OrgName")` | Reporter, Assignee, Voter, Watcher | `reporter in organizationMembers("Atlassian")` |
+| `organizationMembers("OrgName")` | Reporter, Assignee, Voter, Watcher | `reporter in organizationMembers("YOUR_ORG")` |
 
 `customerDetail()` and `organizationDetail()` pair with multi-select dropdown fields; chain multiple `AND` clauses for combined matches. Both return up to 32,000 records and include deleted/deactivated customers — exclude them with `AND reporter NOT IN inactiveUsers()`.
 
