@@ -379,6 +379,25 @@ class MockedClientTests(unittest.TestCase):
             "https://openlibrary.org" + WORK_KEY + ".json")
         self.assertEqual(json.loads(out)["title"], "Nineteen Eighty-Four")
 
+    def test_redirect_stub_chain_beyond_hop_budget_warns_instead_of_silence(self):
+        # A work that keeps resolving into further merge stubs exhausts the
+        # bounded walk; the CLI must say so (stderr warning) rather than emit
+        # an unexplained /type/redirect payload.
+        stub = FakeResponse(200, {"type": {"key": "/type/redirect"},
+                                  "location": WORK_KEY})
+        responses = [stub] * (ol_cli.MAX_REDIRECT_HOPS + 1)
+        with mock.patch.object(requests, "get",
+                               side_effect=responses) as req:
+            code, out, err = run_cli("--json", "work", "OL24776360W")
+        self.assertEqual(code, 0)
+        self.assertEqual(req.call_count, ol_cli.MAX_REDIRECT_HOPS + 1)
+        self.assertIn("did not resolve", err)
+        # Without the resolution the command degrades to an empty-shaped
+        # record; the stderr warning is what keeps that from being silent.
+        self.assertEqual(json.loads(out), {
+            "key": "OL24776360W", "title": "?", "authors": [],
+            "description": "", "subjects": [], "cover_url": None})
+
     def test_text_wrapper_dict_is_unwrapped(self):
         self.assertEqual(ol_cli.unwrap_text({"type": "/type/text", "value": "hi"}), "hi")
         self.assertEqual(ol_cli.unwrap_text("plain"), "plain")

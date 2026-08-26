@@ -148,6 +148,11 @@ class OpenLibraryClient:
                 params = None
                 hops += 1
                 continue
+            if is_redirect_stub(data):
+                # Bounded stub walk exhausted (>N chained merges); make that
+                # visible instead of handing back an opaque stub silently.
+                warn(f"Redirect chain did not resolve within {MAX_REDIRECT_HOPS}"
+                     f" hops (still stuck at {data.get('location', '?')})")
             self.last_url = resp.url
             return data
 
