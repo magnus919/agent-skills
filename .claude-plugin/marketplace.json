@@ -483,10 +483,10 @@
       "description": "Guide a person in cultivating creativity in their own work and life: open conversational sessions on creative blocks, habits, environment, motivation, and resilience, or structured development of a concrete project or fledgling idea through a five-phase practice. Do not use for therapy or clinical support, general life coaching, product or stakeholder discovery, or as a study guide for a book."
     },
     {
-      "name": "ghost-cli",
+      "name": "ghost",
       "source": "./",
       "skills": [
-        "./ghost-cli"
+        "./ghost"
       ],
       "strict": false,
       "description": "Manage Ghost CMS content from the terminal — create and list posts, pages, and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration."
@@ -564,31 +564,22 @@
       "description": "Convert operational incident and near-miss evidence into durable product, engineering, test, evaluation, and governance improvements with verified closure. Separate observed facts from causal hypotheses and unresolved uncertainty; map follow-up work across code, tests, skills, operations, product, and governance; track ownership, verification, and closure for every finding. Do not use to assign blame or produce a generic postmortem template; do not close learning because tickets were created — require evidence the intended change occurred."
     },
     {
-      "name": "jellyfin-cli",
+      "name": "jellyfin",
       "source": "./",
       "skills": [
-        "./jellyfin-cli"
+        "./jellyfin"
       ],
       "strict": false,
       "description": "Query your Jellyfin media server from the terminal — recently added media, search, item details, next-up episodes, library browsing, server info, and stats. Use when the user asks about Jellyfin, media server, movies, TV shows, next episodes, or their media library."
     },
     {
-      "name": "jira-cli",
+      "name": "jira",
       "source": "./",
       "skills": [
-        "./jira-cli"
+        "./jira"
       ],
       "strict": false,
-      "description": "Interact with Atlassian Jira from the terminal: search issues, view details, create issues, add comments, list projects, and transition status. Use when the user mentions Jira, a ticket key (e.g. PROJ-123), or asks about issues, bugs, tasks, projects, or sprint work."
-    },
-    {
-      "name": "jira-jql",
-      "source": "./",
-      "skills": [
-        "./jira-jql"
-      ],
-      "strict": false,
-      "description": "Expert-level skill for Jira Query Language (JQL). Use when the user asks about writing, debugging, optimizing, or understanding JQL queries; needs to filter Jira issues by complex criteria, date ranges, history, or cross-project conditions; wants to build saved filters, dashboard gadgets, or automation rules; or needs guidance on JQL performance, functions, operators, history operators (WAS/CHANGED), relative dates, role-based query patterns, or the JQL REST API."
+      "description": "Interact with Atlassian Jira from the terminal: search issues with JQL, view details, create issues, add comments, list projects, and transition status. Includes a full JQL language reference (functions, operators, history queries, performance tuning). Use when the user mentions Jira, a ticket key (e.g. PROJ-123), asks about issues, bugs, tasks, projects, or sprint work, or needs to write, debug, or optimize JQL queries. Do not use for GitHub or GitLab issue tracking, Jira site administration, or generic ticketing systems."
     },
     {
       "name": "kanban-guru",
@@ -780,10 +771,10 @@
       "description": "Google's Open Knowledge Format (OKF) v0.1 — an open, vendor-neutral spec for representing knowledge as markdown files with YAML frontmatter, designed for AI agent consumption. Use when the user mentions OKF, Open Knowledge Format, Google's knowledge format, LLM wiki bundles, agent knowledge packs, creating OKF bundles, validating OKF documents, or converting knowledge into the OKF standard."
     },
     {
-      "name": "openlibrary-cli",
+      "name": "openlibrary",
       "source": "./",
       "skills": [
-        "./openlibrary-cli"
+        "./openlibrary"
       ],
       "strict": false,
       "description": "Search books, authors, and works on Open Library from the terminal. Look up books by ISBN, search titles and authors, and fetch detailed work/author records via the public Open Library API. No API key required."
@@ -1248,10 +1239,10 @@
       "description": "Operate the observability stack that deploys as one unit: Prometheus scrape configuration, recording and alerting rules, relabeling, retention, and high availability; OpenTelemetry Collector pipelines (receivers, processors, exporters, sampling, trace/span correlation); and Loki ingest, LogQL, retention, and label design — with a bundled read-only telemetry-check script for Prometheus rule sanity and scrape-target reachability. Use when running, tuning, or troubleshooting a Prometheus, OpenTelemetry Collector, or Loki deployment, or reviewing the collection/ingest/retention layer. Do not use for observability strategy, SLI/SLO design, or paging policy (that is platform-engineering) or Grafana dashboards, panels, and Grafana-side alerting (that is grafana)."
     },
     {
-      "name": "tempest-cli",
+      "name": "tempest",
       "source": "./",
       "skills": [
-        "./tempest-cli"
+        "./tempest"
       ],
       "strict": false,
       "description": "Query hyper-local weather from a WeatherFlow Tempest station: current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. Use when the user asks about the weather, temperature, rain, wind, humidity, forecast, or wants conditions from their own station rather than a generic weather service."
@@ -1275,10 +1266,10 @@
       "description": "Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations with a small vanilla JavaScript starting point."
     },
     {
-      "name": "tmdb-cli",
+      "name": "tmdb",
       "source": "./",
       "skills": [
-        "./tmdb-cli"
+        "./tmdb"
       ],
       "strict": false,
       "description": "Search and discover movies, TV shows, and trending content via The Movie Database (TMDb) API v3. Use when the user asks about movies, TV, film, cinema, genres, certifications, ratings, cast, upcoming releases, or trending media."
