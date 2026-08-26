@@ -1,37 +1,40 @@
-# Trakt — Media Discovery from the Terminal
-
-Discover trending, anticipated, and popular movies and TV shows via the Trakt.tv API. Read-only discovery with no user authentication needed.
+# Trakt — Media Discovery Signals in the Terminal
 
 ## Why Install This Skill
 
-When your agent loads this skill, it can **surface what's worth watching** without a browser. That means:
+Give your agent a reliable way to answer "what is everyone watching?" without confusing a current Trakt discovery ranking with a metadata catalog. The skill covers movies and shows that are trending, broadly popular, or anticipated, and produces JSON that can feed media automation.
 
-- **Trending movies and TV** — what everyone's watching right now
-- **Most anticipated** — upcoming releases with buzz
-- **Popular content** — what's been hot recently
-- **No authentication** — just a Client ID, no OAuth flow
+Public discovery reads need an application Client ID, not a user login. OAuth boundaries, required headers, pagination, rate-limit behavior, and the difference between Trakt IDs and TMDb metadata are documented so workflows fail clearly instead of silently mixing services.
 
 ## What You Get
 
-| Directory | Purpose |
-|-----------|---------|
-| `SKILL.md` | Complete command reference with examples |
-| `scripts/trakt-cli` | CLI tool for Trakt.tv API v2 |
+| Path | Purpose |
+|---|---|
+| `SKILL.md` | Command guide, recipes, gotchas, and routing |
+| `scripts/trakt` | Executable CLI with JSON and dry-run modes |
+| `scripts/test_trakt.py` | Offline pytest and unittest suite, including header injection |
+| `references/auth-and-request-contract.md` | Required headers, OAuth boundary, and errors |
+| `references/discovery-endpoints.md` | Trending/popular/anticipated semantics and paging |
+| `references/recipes-and-operations.md` | jq pipelines and rate-safe operations |
+| `evals/evals.json` | Six representative usage-quality cases |
 
 ## Quick Start
 
-```bash
-export TRAKT_CLIENT_ID="your-trakt-client-id"
-trakt-cli movie trending
-trakt-cli tv trending
+```sh
+export TRAKT_CLIENT_ID="YOUR_TRAKT_CLIENT_ID"
+trakt movie trending --limit 10
+trakt --json tv anticipated | jq '.shows'
 ```
 
-Client ID from trakt.tv/oauth/applications (free, no OAuth needed).
+Create a free Client ID at [trakt.tv/oauth/applications](https://trakt.tv/oauth/applications). Preview commands with `trakt --dry-run --json movie popular` without credentials or network access.
 
 ## Triggers
 
-Load this for what to watch, trending movies, popular shows, or media discovery.
+Load this skill for Trakt API discovery, trending movies or shows, popular rankings, anticipated releases, watch-signal pipelines, or Trakt pagination and authentication questions. Do not use it for TMDb catalog metadata, credits, images, or provider lookups.
 
 ## Requirements
 
-Python 3.8+ with `requests` library. Free Client ID from trakt.tv.
+- Python 3.8 or newer
+- `requests`
+- A Trakt application Client ID in `TRAKT_CLIENT_ID` for live reads
+- No OAuth login is needed for the public discovery commands

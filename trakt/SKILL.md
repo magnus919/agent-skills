@@ -1,105 +1,110 @@
 ---
 name: trakt
-description: Discover trending, anticipated, and popular movies and TV shows via the
-  Trakt.tv API from the terminal. No authentication required for read-only discovery.
-  Use when the user asks about what to watch, trending movies, popular shows, or media
-  discovery.
+description: >-
+  Discover and compare Trakt.tv trending, popular, and anticipated movies and shows
+  from the terminal. Do not use this skill for TMDb catalog metadata, credits, images,
+  or provider lookups; use the tmdb skill for those tasks.
 license: MIT
-compatibility: Requires TRAKT_CLIENT_ID env var (free from trakt.tv/oauth/applications),
-  Python 3.8+, and the `requests` library. No OAuth or user login needed for discovery
-  endpoints.
+compatibility: Requires TRAKT_CLIENT_ID, Python 3.8+, and requests. Public discovery
+  reads use an application Client ID; OAuth is only needed for user-scoped operations.
 metadata:
   tags: trakt, media-discovery, movies, tv-shows, trending, api-client
-  sources: https://trakt.tv/, https://trakt.docs.apiary.io/
+  sources: https://docs.trakt.tv/docs/required-headers
 ---
 
-# trakt-cli — Trakt.tv Media Discovery
+# Trakt media discovery
 
-Discover trending, anticipated, and popular movies and TV shows from the terminal. Uses the Trakt.tv API v2 with a read-only Client ID — no user authentication required.
+Use this skill to inspect what is being watched, what is broadly popular, and what is anticipated. It is a read-only discovery surface, not a catalog metadata service.
 
-## Setup
+## Setup and authentication
 
-1. Register an app at [trakt.tv/oauth/applications](https://trakt.tv/oauth/applications) to get a Client ID
-2. Set the environment variable:
+Register an app at [Trakt OAuth applications](https://trakt.tv/oauth/applications) and export its Client ID:
 
-```bash
-export TRAKT_CLIENT_ID="your-trakt-client-id"
+```sh
+export TRAKT_CLIENT_ID="YOUR_TRAKT_CLIENT_ID"
 ```
 
-No OAuth token, no user login needed for any of the commands below. `--help` and `--dry-run` work without credentials.
+Every request must send `trakt-api-key: <client id>` together with the mandatory companion header `trakt-api-version: 2`, plus JSON content type and a descriptive User-Agent. Public discovery endpoints use the key header, not `Authorization: Bearer`. OAuth bearer tokens are for endpoints marked OAuth-required or for user-scoped lists, history, collection, watchlist, and mutations; a bearer token does not replace the key/version pair.
 
-## Essential Commands
+## Essential commands
 
-### movie trending — Trending movies
+### Trending: watched in the last 24 hours
 
-```bash
-trakt-cli movie trending                          # top 10 trending movies
-trakt-cli movie trending --limit 25               # more results
-trakt-cli movie trending --json                   # machine-readable with TMDb IDs
+```sh
+trakt movie trending --limit 20
+trakt tv trending --limit 20 --json
 ```
 
-### movie anticipated — Most anticipated movies
+Trending responses wrap each media object in `movie` or `show` and include a `watchers` count.
 
-```bash
-trakt-cli movie anticipated                       # top 10 anticipated
-trakt-cli movie anticipated --limit 5             # top 5
-trakt-cli movie anticipated --json                # machine-readable
+### Popular: broad popularity ranking
+
+```sh
+trakt movie popular --limit 25 --json
+trakt tv popular --limit 25
 ```
 
-### movie popular — Most popular movies
+Popular is a ranking based on rating percentage and number of ratings, not a personalized recommendation.
 
-```bash
-trakt-cli movie popular                           # top 10 popular movies
-trakt-cli movie popular --limit 25                # more results
+### Anticipated: upcoming interest
+
+```sh
+trakt movie anticipated --limit 10
+trakt tv anticipated --limit 10 --json
 ```
 
-### tv trending — Trending TV shows
+Anticipated reflects list appearances and upcoming interest. It is not the same as a release calendar.
 
-```bash
-trakt-cli tv trending                             # top 10 trending shows
-trakt-cli tv trending --limit 25                  # more results
-trakt-cli tv trending --json                      # machine-readable with TVDB IDs
+Global flags can appear before or after the resource: `--json`, `--dry-run`, `--quiet`, and `--verbose`.
+
+## Pipeline recipes
+
+### Trending handoff to another tool
+
+1. Run `trakt --json movie trending --limit 20`.
+2. Unwrap `.movie`, retaining `.watchers` as the watch signal.
+3. Pass an available `.movie.ids.tmdb` or `.movie.ids.imdb` to a downstream tool; do not assume a missing ID can be synthesized.
+
+```sh
+trakt --json movie trending --limit 20 |
+  jq '.movies[] | {title: (.movie.title // .title), year: (.movie.year // null), watchers: (.watchers // null), ids: (.movie.ids // .ids)}'
 ```
 
-### tv anticipated — Most anticipated TV shows
+### Compare discovery signals
 
-```bash
-trakt-cli tv anticipated                          # top 10 anticipated shows
-trakt-cli tv anticipated --limit 5                # top 5
-```
+Fetch matching pages of trending, popular, and anticipated, then label each dataset before combining it. Trending is recent watching, popular is broad ranking, and anticipated is upcoming interest.
 
-### tv popular — Most popular TV shows
+## JSON and pagination
 
-```bash
-trakt-cli tv popular                              # top 10 popular shows
-trakt-cli tv popular --limit 25                   # more results
-```
+`--json` emits a `movies` or `shows` object suitable for `jq`; trending entries retain their wrapper. The API accepts `page` and `limit`, with compatibility defaults of page 1 and limit 10. API responses include `X-Pagination-Page-Count`; automation should stop at that header rather than assuming a short page is the end.
 
-Each result shows: title, year, network (for TV), TMDb/TVDB ID, and tagline (for movies).
+## Known gotchas
 
-## Global Flags
+- **Header pair is mandatory:** sending `trakt-api-key` without `trakt-api-version: 2` (or vice versa) can yield an invalid-request/authentication-style failure. The bundled script injects both on every live request.
+- **401 versus 403:** 401 commonly indicates an OAuth requirement or invalid authorization; 403 indicates an invalid or unapproved application key. Do not retry either blindly.
+- **Rate limits:** on 429, honor `Retry-After` and inspect `X-Ratelimit`. Use bounded retries; transient 502/503/504 responses may be retried with backoff.
+- **OAuth refresh:** access tokens last seven days and refresh tokens are single-use. Replace the stored refresh token after a successful refresh; `invalid_grant` requires reauthorization.
+- **Trakt is not TMDb:** Trakt IDs and discovery rankings are not TMDb metadata. Use the `tmdb` skill for credits, images, provider metadata, and catalog enrichment.
+- **Trending shape:** read `.movie` or `.show` before title/IDs, while preserving `watchers`.
 
-All flags work in any position:
+## When to use
 
-```bash
-trakt-cli --json movie trending                   # flag before subcommand
-trakt-cli movie trending --json                   # flag after subcommand
-trakt-cli --dry-run movie trending                # preview (no API call)
-trakt-cli --quiet movie trending                  # suppress non-essential output
-trakt-cli --verbose movie trending                # detailed logging
-```
+Use Trakt for current watching signals, broad popularity, anticipated interest, and identifiers that feed a media workflow.
 
-## Known Gotchas
+## When not to use
 
-- **Read-only by design** — The CLI only uses the Client ID flow. No OAuth, no writing to your Trakt lists. All endpoints are public discovery endpoints.
-- **No auth needed for these commands** — The trending, anticipated, and popular endpoints are public. Skip the setup if you only want to preview with `--dry-run`.
-- **Rate limiting** — Trakt API v2 has rate limits (~1,000 calls per 5 minutes for free apps). The CLI does not auto-retry on 429 responses.
-- **TRAKT_CLIENT_ID is required at runtime** — Unlike `--dry-run` which skips the API call, running live commands without the env var will fail with a clear error message.
-- **Pagination defaults to page 1** — The CLI uses `--limit` for the results per page. Default is 10, max is typically 50.
-- **TMDb/TVDB IDs** — Use `--json` to get the full IDs object (TMDb for movies, TVDB for shows) which is useful for lookups in other tools like Radarr/Sonarr.
+Do not use Trakt for TMDb catalog metadata, credits, images, provider availability, or for writing a user's lists without an explicit OAuth-enabled workflow. Use `tmdb` for metadata and a dedicated authenticated operation for mutations.
 
-## References
+## Reference files
 
-- [scripts/trakt-cli](scripts/trakt-cli) — The CLI binary. Built following the cli-builder patterns: `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth.
-- [Trakt API Docs](https://trakt.docs.apiary.io/) — Official API reference.
-- [Trakt OAuth Applications](https://trakt.tv/oauth/applications) — Register an app to get your Client ID.
+| File | Topic |
+|---|---|
+| [references/auth-and-request-contract.md](references/auth-and-request-contract.md) | Required headers, OAuth boundary, errors, and rate limits |
+| [references/discovery-endpoints.md](references/discovery-endpoints.md) | Endpoint semantics, filters, response shapes, and pagination |
+| [references/recipes-and-operations.md](references/recipes-and-operations.md) | Pipelines, jq normalization, and operational handling |
+
+## Available script and prerequisites
+
+- `scripts/trakt` is an executable Python CLI using only stdlib and `requests`.
+- `--dry-run` works without a Client ID and never performs network I/O.
+- Live discovery requires `TRAKT_CLIENT_ID`; tests are mock-only.
