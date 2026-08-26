@@ -129,12 +129,31 @@ class JiraClient:
             die("Forbidden (403). Your account may not have access to this resource.")
         if resp.status_code == 404:
             return None
+        if resp.status_code == 429:
+            retry_after = resp.headers.get("Retry-After", "unknown")
+            reason = resp.headers.get("RateLimit-Reason", "burst or quota limit")
+            die("Rate limited (429): {}. Retry-After: {}s".format(reason, retry_after))
         if resp.status_code >= 400:
             try:
                 detail = resp.json()
             except Exception:
                 detail = resp.text[:200]
-            die(f"API error ({resp.status_code}): {detail}")
+            msg = "API error ({})".format(resp.status_code)
+            if isinstance(detail, dict):
+                parts = []
+                errs = detail.get("errors")
+                if isinstance(errs, dict) and errs:
+                    parts.extend("{}: {}".format(k, v) for k, v in errs.items())
+                msgs = detail.get("errorMessages")
+                if isinstance(msgs, list) and msgs:
+                    parts.extend(str(m) for m in msgs)
+                if parts:
+                    msg += ": " + "; ".join(parts)
+                else:
+                    msg += ": {}".format(detail)
+            else:
+                msg += ": {}".format(detail)
+            die(msg)
 
         try:
             return resp.json()
@@ -162,6 +181,42 @@ class JiraClient:
             "fields": fields,
             "maxResults": max_results
         })
+
+    def search_issues_paged(self, jql: str, fields: str = "summary,status,issuetype,assignee,priority",
+                            total_max: int = 100, page_size: int = 50) -> List[Dict]:
+        """Fetch up to total_max issues, following legacy offset pagination.
+
+        The classic /search endpoint pages via startAt/maxResults with a
+        `total` field (deprecated by Atlassian but still the endpoint this CLI
+        uses; see references/rest-auth-and-search.md for the /search/jql
+        nextPageToken replacement). `total` may change between pages, so an
+        empty page always terminates the loop.
+        """
+        collected: List[Dict] = []
+        start_at = 0
+        while len(collected) < total_max:
+            page_size_eff = min(page_size, total_max - len(collected))
+            data = self._get("/search", params={
+                "jql": jql,
+                "fields": fields,
+                "startAt": start_at,
+                "maxResults": page_size_eff,
+            })
+            if not data:
+                break
+            issues = data.get("issues", [])
+            if not issues:
+                break
+            collected.extend(issues)
+            start_at += len(issues)
+            total = data.get("total")
+            if total is None or start_at >= int(total):
+                break
+        return collected[:total_max]
+
+    def approximate_count(self, jql: str) -> Any:
+        """POST /search/approximate-count — fast match count without fetching rows."""
+        return self._post("/search/approximate-count", json_data={"jql": jql})
 
     def get_issue(self, issue_key: str) -> Any:
         return self._get(f"/issue/{issue_key}")
@@ -205,9 +260,14 @@ class JiraClient:
     def get_transitions(self, issue_key: str) -> Any:
         return self._get(f"/issue/{issue_key}/transitions")
 
-    def transition_issue(self, issue_key: str, transition_id: str) -> Any:
-        return self._post(f"/issue/{issue_key}/transitions",
-                          json_data={"transition": {"id": transition_id}})
+    def transition_issue(self, issue_key: str, transition_id: str,
+                         resolution: Optional[str] = None) -> Any:
+        payload: Dict[str, Any] = {"transition": {"id": str(transition_id)}}
+        if resolution:
+            # Done-style transitions often require a resolution on their screen;
+            # omitting it yields 400 with errors.resolution naming the field.
+            payload["fields"] = {"resolution": {"name": resolution}}
+        return self._post(f"/issue/{issue_key}/transitions", json_data=payload)
 
 
 # === Command Handlers ===
@@ -252,7 +312,12 @@ def cmd_list(client: JiraClient, args: List[str]) -> None:
               "max_results": parsed.max})
         return
 
-    data = client.search_issues(jql, max_results=parsed.max)
+    if parsed.max > 50:
+        # Multi-page fetch via offset pagination; single-page path stays identical.
+        paged = client.search_issues_paged(jql, total_max=parsed.max)
+        data = {"issues": paged, "total": len(paged)}
+    else:
+        data = client.search_issues(jql, max_results=parsed.max)
     issues = data.get("issues", []) if data else []
 
     if not issues:
@@ -429,15 +494,19 @@ def cmd_transition(client: JiraClient, args: List[str]) -> None:
     parser = argparse.ArgumentParser(prog="jira transition")
     parser.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
     parser.add_argument("--to", required=True, help="Transition by name or ID")
+    parser.add_argument("--resolution", help='Set a resolution during the '
+                        'transition (often required for Done; e.g. "Fixed")')
     parsed, _ = parser.parse_known_args(args)
 
     if client.dry_run:
         emit(f"[dry-run] Would transition {parsed.issue_key} to '{parsed.to}'",
              {"dry_run": True, "command": "transition",
-              "issue_key": parsed.issue_key, "to": parsed.to})
+              "issue_key": parsed.issue_key, "to": parsed.to,
+              "resolution": parsed.resolution})
         return
 
-    # First, get available transitions
+    # First, get available transitions — IDs are workflow- and status-specific,
+    # so names alone are ambiguous across projects.
     trans_data = client.get_transitions(parsed.issue_key)
     if not trans_data:
         die(f"No transitions available for {parsed.issue_key}")
@@ -457,10 +526,63 @@ def cmd_transition(client: JiraClient, args: List[str]) -> None:
                                for t in transitions])
         die(f"Transition '{parsed.to}' not found. Available: {available}")
 
-    result = client.transition_issue(parsed.issue_key, match)
-    emit(f"🔄 {parsed.issue_key} transitioned to '{parsed.to}'",
+    result = client.transition_issue(parsed.issue_key, match,
+                                     resolution=parsed.resolution)
+    _ = result  # 204 No Content on success
+    res_note = f" (resolution: {parsed.resolution})" if parsed.resolution else ""
+    emit(f"🔄 {parsed.issue_key} transitioned to '{parsed.to}'{res_note}",
          {"status": "transitioned", "issue_key": parsed.issue_key,
-          "transition": parsed.to})
+          "transition": parsed.to, "resolution": parsed.resolution})
+
+
+def cmd_transitions(client: JiraClient, args: List[str]) -> None:
+    """List available transitions for an issue (discovery half of the flow)."""
+    parser = argparse.ArgumentParser(prog="jira transitions")
+    parser.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would list transitions for {parsed.issue_key}",
+             {"dry_run": True, "command": "transitions",
+              "issue_key": parsed.issue_key})
+        return
+
+    data = client.get_transitions(parsed.issue_key)
+    transitions = data.get("transitions", []) if data else []
+    if not transitions:
+        emit(f"No transitions available for {parsed.issue_key}.",
+             {"transitions": []})
+        return
+
+    lines = []
+    out = []
+    for t in transitions:
+        to_status = t.get("to", {}).get("name", "?")
+        category = t.get("to", {}).get("statusCategory", {}).get("key", "?")
+        lines.append(f"  {t.get('id', '?'):>5}  {t.get('name', '?'):20} -> {to_status} [{category}]")
+        out.append({"id": t.get("id"), "name": t.get("name"),
+                    "to_status": to_status, "status_category": category})
+    emit("Available transitions:\n" + "\n".join(lines),
+         {"transitions": out})
+
+
+def cmd_count(client: JiraClient, args: List[str]) -> None:
+    """Approximate match count via /search/approximate-count."""
+    parser = argparse.ArgumentParser(prog="jira count")
+    parser.add_argument("--jql", required=True, help="JQL query to count")
+    parser.add_argument("--project", help="Shortcut: prefix with project=KEY AND")
+    parsed, _ = parser.parse_known_args(args)
+
+    jql = f"project={parsed.project} AND ({parsed.jql})" if parsed.project else parsed.jql
+
+    if client.dry_run:
+        emit(f"[dry-run] Would count issues matching: {jql}",
+             {"dry_run": True, "command": "count", "jql": jql})
+        return
+
+    result = client.approximate_count(jql)
+    count = result.get("count", 0) if isinstance(result, dict) else 0
+    emit(f"{count} issue(s) match", {"jql": jql, "count": count})
 
 
 # === Main ===
@@ -482,6 +604,12 @@ def main() -> None:
 
     sub.add_parser("me", help="Get current user profile")
     sub.add_parser("projects", help="List projects")
+
+    p_transitions = sub.add_parser("transitions", help="List available transitions for an issue")
+    p_transitions.add_argument("issue_key", help="Issue key (e.g. PROJ-123)")
+
+    p_count = sub.add_parser("count", help="Count issues matching a JQL query (fast approximate count)")
+    p_count.add_argument("--jql", required=True, help="JQL query")
 
     p_list = sub.add_parser("list", help="Search issues")
     p_list.add_argument("--jql", default="", help="JQL query")
@@ -505,6 +633,7 @@ def main() -> None:
     p_trans = sub.add_parser("transition", help="Transition an issue")
     p_trans.add_argument("issue_key", help="Issue key")
     p_trans.add_argument("--to", required=True, help="Transition name or ID")
+    p_trans.add_argument("--resolution", help='Resolution to set during transition (e.g. "Fixed")')
 
     args = parser.parse_args(filtered_argv[1:])
     if not args.command:
@@ -530,6 +659,8 @@ def main() -> None:
         "create": cmd_create,
         "comment": cmd_comment,
         "transition": cmd_transition,
+        "transitions": cmd_transitions,
+        "count": cmd_count,
     }
     handler = cmd_map.get(args.command)
     if not handler:
