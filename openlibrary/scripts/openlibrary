@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """openlibrary — Open Library book metadata from the terminal.
 
-Search books, authors, works, and lookup by ISBN using the public
-Open Library API. No API key required.
+Search books, authors, works, lookup by ISBN, enumerate editions of a work,
+and read community ratings/bookshelf counts using the public Open Library
+API. No API key required. Covers resolve on the separate covers host and
+identifier endpoints answer with 302 redirects — both are handled here.
 """
 
 import argparse
@@ -18,9 +20,13 @@ import requests
 
 # === Config ===
 DEFAULT_SERVER = "https://openlibrary.org"
+COVERS_SERVER = "https://covers.openlibrary.org"
 ENV_SERVER = os.getenv("OL_SERVER", DEFAULT_SERVER)
 ENV_EMAIL = os.getenv("OL_EMAIL", "")
 ENV_USER_AGENT = os.getenv("OL_USER_AGENT", "openlibrary/1.0 (+https://github.com)")
+
+# Merged/deleted wiki records can chain through redirect stubs; bound the walk.
+MAX_REDIRECT_HOPS = 5
 
 QUIET = False
 GLOBAL_FLAGS: Dict[str, Any] = {
@@ -70,6 +76,29 @@ def _preparse_global_flags(argv: List[str]) -> Tuple[Dict[str, Any], List[str]]:
     return flags, filtered
 
 
+def normalize_olid(key: str) -> str:
+    """Strip a path-form key (/works/OL123W) down to its bare OLID (OL123W)."""
+    return key.rstrip("/").split("/")[-1] if key else ""
+
+
+def unwrap_text(value: Any) -> str:
+    """Open Library wraps free-text fields as {'type': '/type/text', 'value': ...}
+    on some records and plain strings on others."""
+    if isinstance(value, dict):
+        return str(value.get("value", ""))
+    return str(value) if value is not None else ""
+
+
+def is_redirect_stub(payload: Any) -> bool:
+    """Merged-away keys answer HTTP 200 with a /type/redirect stub instead of 3xx."""
+    return (
+        isinstance(payload, dict)
+        and isinstance(payload.get("type"), dict)
+        and payload["type"].get("key") == "/type/redirect"
+        and bool(payload.get("location"))
+    )
+
+
 class OpenLibraryClient:
     """Client for the public Open Library API."""
 
@@ -84,30 +113,61 @@ class OpenLibraryClient:
         return h
 
     def _get(self, path: str, params: Optional[Dict] = None) -> Any:
+        """GET JSON from the metadata host, following both HTTP redirects
+        (identifier endpoints answer 302) and in-body /type/redirect stubs
+        (merged keys answer 200 with a location field)."""
         url = f"{self.server}{path}"
         if self.dry_run:
             return {"dry_run": True, "url": url, "params": params}
-        try:
-            resp = requests.get(url, params=params, headers=self._headers(), timeout=30)
-        except requests.ConnectionError as e:
-            die(f"Cannot connect to {self.server}: {e}")
-        if resp.status_code == 404:
-            return None
-        if resp.status_code >= 400:
+        hops = 0
+        while True:
             try:
-                detail = resp.json()
-            except Exception:
-                detail = resp.text[:200]
-            die(f"API error ({resp.status_code}): {detail}")
-        try:
-            return resp.json()
-        except ValueError:
-            return {"raw": resp.text[:500]}
+                resp = requests.get(url, params=params, headers=self._headers(), timeout=30)
+            except requests.ConnectionError as e:
+                die(f"Cannot connect to {self.server}: {e}")
+            if resp.status_code == 404:
+                return None
+            if resp.status_code >= 400:
+                try:
+                    detail = resp.json()
+                except Exception:
+                    detail = resp.text[:200]
+                die(f"API error ({resp.status_code}): {detail}")
+            try:
+                data = resp.json()
+            except ValueError:
+                return {"raw": resp.text[:500]}
+            if is_redirect_stub(data) and hops < MAX_REDIRECT_HOPS:
+                # Stub locations are bare keys (/works/OL…W, no .json), and
+                # extension-less URLs redirect to HTML pages — always refetch
+                # with the .json suffix.
+                target = data["location"]
+                if not target.endswith(".json"):
+                    target += ".json"
+                url = f"{self.server}{target}"
+                params = None
+                hops += 1
+                continue
+            self.last_url = resp.url
+            return data
+
+    def last_final_url(self) -> str:
+        return getattr(self, "last_url", "")
+
+
+def cover_url(kind: str, value: Any, size: str = "M") -> Optional[str]:
+    """Build a covers-host URL. Returns None for absent/negative IDs (-1 means
+    'no image'). Callers should append ?default=false when existence matters."""
+    if value is None:
+        return None
+    if isinstance(value, int) and value < 0:
+        return None
+    return f"{COVERS_SERVER}/{kind}/{value}-{size}.jpg"
 
 
 def fmt_author(a: Dict) -> str:
     name = a.get("name", a.get("title", "?"))
-    key = a.get("key", "").split("/")[-1] if a.get("key") else ""
+    key = normalize_olid(a.get("key", ""))
     birth = a.get("birth_date", "")
     death = a.get("death_date", "")
     years = f" ({birth}–{death})" if birth or death else ""
@@ -125,7 +185,8 @@ def cmd_search(client, args):
     parsed, _ = parser.parse_known_args(args)
 
     if client.dry_run:
-        emit(f"[dry-run] Would search: {parsed.query}", {"dry_run": True, "query": parsed.query})
+        emit(f"[dry-run] Would search: {parsed.query}", {"dry_run": True, "command": "search",
+             "query": parsed.query, "url": f"{client.server}/search.json"})
         return
 
     params: Dict[str, Any] = {"q": parsed.query, "limit": parsed.limit, "offset": parsed.offset}
@@ -137,7 +198,9 @@ def cmd_search(client, args):
 
     docs = data.get("docs", [])
     if not docs:
-        emit("No results.", {"results": []})
+        # Malformed queries parse loosely and come back 200-empty; that is a
+        # result, not an API failure.
+        emit("No results.", {"total": 0, "results": []})
         return
 
     lines, out = [], []
@@ -152,7 +215,8 @@ def cmd_search(client, args):
             "title": title, "authors": d.get("author_name", []),
             "first_publish_year": year, "edition_count": edition_count,
             "key": d.get("key", ""), "isbn": d.get("isbn", [])[:3],
-            "cover_edition": d.get("cover_edition_key", "")
+            "cover_edition": d.get("cover_edition_key", ""),
+            "has_fulltext": d.get("has_fulltext", False),
         })
 
     total = data.get("numFound", len(docs))
@@ -165,7 +229,10 @@ def cmd_isbn(client, args):
     parsed, _ = parser.parse_known_args(args)
 
     if client.dry_run:
-        emit(f"[dry-run] Would lookup ISBN: {parsed.isbn}", {"dry_run": True, "isbn": parsed.isbn})
+        emit(f"[dry-run] Would lookup ISBN: {parsed.isbn}",
+             {"dry_run": True, "command": "isbn", "isbn": parsed.isbn,
+              "url": f"{client.server}/isbn/{parsed.isbn}.json",
+              "note": "endpoint answers 302; request follows redirects"})
         return
 
     data = client._get(f"/isbn/{parsed.isbn}.json")
@@ -175,21 +242,55 @@ def cmd_isbn(client, args):
 
     title = data.get("title", "?")
     authors_list = data.get("authors", [])
-    author_names = ", ".join([a.get("name", a.get("key", "?")) for a in authors_list]) if authors_list else "?"
+
+    def _author_label(a: Dict) -> str:
+        # Edition records often carry key-only author refs (no embedded name);
+        # fall back to the bare OL…A so output is never just '?'.
+        label = a.get("name") or normalize_olid(a.get("key", ""))
+        return label or "?"
+
+    author_names = ", ".join(_author_label(a) for a in authors_list) if authors_list else ""
+    work_keys = [normalize_olid(w.get("key", "")) for w in data.get("works", [])]
+
+    if not author_names and work_keys:
+        # Some editions ship authors:null entirely. The authoritative author
+        # links live on the work (double-nested authors[].author.key) — one
+        # extra read beats reporting an unknown author.
+        work_data = client._get(f"/works/{work_keys[0]}.json") or {}
+        work_authors = [
+            normalize_olid(a.get("author", {}).get("key", ""))
+            for a in (work_data.get("authors") or [])
+            if isinstance(a, dict)
+        ]
+        author_names = ", ".join(k for k in work_authors if k)
+    if not author_names:
+        author_names = "?"
     pages = data.get("number_of_pages", data.get("pagination", "?"))
     publishers = ", ".join(data.get("publishers", [])) or "?"
     publish_date = data.get("publish_date", "?")
     subjects = ", ".join(data.get("subjects", [])[:5]) or "(none)"
+    description = unwrap_text(data.get("description", ""))
+    desc_short = f"\n   Description: {description[:300]}" if description else ""
+
+    edition_key = normalize_olid(data.get("key", ""))
+    covers = [c for c in data.get("covers", []) if isinstance(c, int) and c >= 0]
 
     emit(
         f"📖 {title}\n"
         f"   Author(s): {author_names}\n"
         f"   Pages: {pages}  Published: {publish_date}\n"
         f"   Publisher: {publishers}\n"
-        f"   Subjects: {subjects}",
+        f"   Subjects: {subjects}"
+        f"{desc_short}\n"
+        f"   Edition: {edition_key}  Works: {', '.join(work_keys) or '?'}",
         {"isbn": parsed.isbn, "title": title, "authors": author_names,
          "pages": pages, "publish_date": publish_date,
-         "publishers": publishers, "subjects": data.get("subjects", [])}
+         "publishers": publishers, "subjects": data.get("subjects", []),
+         "description": description,
+         "edition_key": edition_key,
+         "work_keys": work_keys,
+         "cover_id": covers[0] if covers else None,
+         "cover_url": cover_url("b/id", covers[0]) if covers else None}
     )
 
 
@@ -198,29 +299,34 @@ def cmd_author(client, args):
     parser.add_argument("key", help="Author key (e.g. OL23919A)")
     parsed, _ = parser.parse_known_args(args)
 
+    key = normalize_olid(parsed.key)
     if client.dry_run:
-        emit(f"[dry-run] Would fetch author {parsed.key}", {"dry_run": True, "key": parsed.key})
+        emit(f"[dry-run] Would fetch author {key}",
+             {"dry_run": True, "command": "author", "key": key,
+              "url": f"{client.server}/authors/{key}.json"})
         return
 
-    data = client._get(f"/authors/{parsed.key}.json")
+    data = client._get(f"/authors/{key}.json")
     if not data:
-        emit(f"Author {parsed.key} not found.", {"error": "not found"})
+        emit(f"Author {key} not found.", {"error": "not found"})
         return
 
     name = data.get("name", "?")
     birth = data.get("birth_date", "")
     death = data.get("death_date", "")
     years = f" ({birth}–{death})" if birth or death else ""
-    bio = data.get("bio", "")
-    if isinstance(bio, dict):
-        bio = bio.get("value", "")
+    bio = unwrap_text(data.get("bio", ""))
     bio_short = f"\n{bio[:500]}" if bio else ""
+    photos = [p for p in data.get("photos", []) if isinstance(p, int) and p >= 0]
+    photo = cover_url("a/id", photos[0]) if photos else None
+    photo_note = f"\n   Photo: {photo}" if photo else ""
     emit(
-        f"👤 {name}{years}{bio_short}",
-        {"key": parsed.key, "name": name, "birth_date": birth,
+        f"👤 {name}{years}{bio_short}{photo_note}",
+        {"key": key, "name": name, "birth_date": birth,
          "death_date": death, "bio": bio,
          "wikipedia": data.get("wikipedia", ""),
-         "personal_name": data.get("personal_name", "")}
+         "personal_name": data.get("personal_name", ""),
+         "photo_url": photo}
     )
 
 
@@ -229,30 +335,34 @@ def cmd_work(client, args):
     parser.add_argument("key", help="Work key (e.g. OL123W)")
     parsed, _ = parser.parse_known_args(args)
 
+    key = normalize_olid(parsed.key)
     if client.dry_run:
-        emit(f"[dry-run] Would fetch work {parsed.key}", {"dry_run": True, "key": parsed.key})
+        emit(f"[dry-run] Would fetch work {key}",
+             {"dry_run": True, "command": "work", "key": key,
+              "url": f"{client.server}/works/{key}.json"})
         return
 
-    data = client._get(f"/works/{parsed.key}.json")
+    data = client._get(f"/works/{key}.json")
     if not data:
-        emit(f"Work {parsed.key} not found.", {"error": "not found"})
+        emit(f"Work {key} not found.", {"error": "not found"})
         return
 
     title = data.get("title", "?")
     authors = data.get("authors", [])
-    author_str = ", ".join([a.get("author", {}).get("key", "?") for a in authors]) if authors else "?"
-    desc = data.get("description", "")
-    if isinstance(desc, dict):
-        desc = desc.get("value", "")
+    author_str = ", ".join([normalize_olid(a.get("author", {}).get("key", "?"))
+                            for a in authors]) if authors else "?"
+    desc = unwrap_text(data.get("description", ""))
     desc_short = f"\n{desc[:500]}" if desc else ""
     subjects = ", ".join(data.get("subjects", [])[:5]) or "(none)"
+    covers = [c for c in data.get("covers", []) if isinstance(c, int) and c >= 0]
 
     emit(
         f"📖 {title}\n"
         f"   Author(s): {author_str}\n"
         f"   Subjects: {subjects}{desc_short}",
-        {"key": parsed.key, "title": title, "authors": author_str,
-         "description": desc, "subjects": data.get("subjects", [])}
+        {"key": key, "title": title, "authors": author_str,
+         "description": desc, "subjects": data.get("subjects", []),
+         "cover_url": cover_url("b/id", covers[0]) if covers else None}
     )
 
 
@@ -264,7 +374,9 @@ def cmd_search_authors(client, args):
     parsed, _ = parser.parse_known_args(args)
 
     if client.dry_run:
-        emit(f"[dry-run] Would search authors: {parsed.query}", {"dry_run": True, "query": parsed.query})
+        emit(f"[dry-run] Would search authors: {parsed.query}",
+             {"dry_run": True, "command": "search-authors", "query": parsed.query,
+              "url": f"{client.server}/search/authors.json"})
         return
 
     data = client._get("/search/authors.json", {"q": parsed.query, "limit": parsed.limit, "offset": parsed.offset}) or {}
@@ -276,17 +388,110 @@ def cmd_search_authors(client, args):
     lines, out = [], []
     for d in docs:
         name = d.get("name", "?")
-        key = d.get("key", "").split("/")[-1] if d.get("key") else "?"
-        birth = d.get("birth_date", "")
-        death = d.get("death_date", "")
+        key = normalize_olid(d.get("key", "")) or "?"
+        birth = d.get("birth_date", "") or ""
+        death = d.get("death_date", "") or ""
         years = f" ({birth}–{death})" if birth or death else ""
         top_work = d.get("top_work", "")
         work_str = f" — {top_work}" if top_work else ""
         lines.append(f"  {name:30}{years}  [{key}]{work_str}")
-        out.append({"name": name, "key": key, "birth_date": birth, "death_date": death, "top_work": top_work})
+        out.append({"name": name, "key": key, "birth_date": birth, "death_date": death,
+                    "top_work": top_work, "work_count": d.get("work_count", 0)})
 
     total = data.get("numFound", len(docs))
     emit(f"{total} author(s):\n" + "\n".join(lines), {"total": total, "results": out})
+
+
+def cmd_editions(client, args):
+    """List every edition of a work via /works/<key>/editions.json."""
+    parser = argparse.ArgumentParser(prog="openlibrary editions")
+    parser.add_argument("key", help="Work key (e.g. OL81699W)")
+    parser.add_argument("--limit", type=int, default=50)
+    parser.add_argument("--offset", type=int, default=0)
+    parsed, _ = parser.parse_known_args(args)
+
+    key = normalize_olid(parsed.key)
+    if client.dry_run:
+        emit(f"[dry-run] Would list editions of work {key}",
+             {"dry_run": True, "command": "editions", "key": key,
+              "url": f"{client.server}/works/{key}/editions.json",
+              "params": {"limit": parsed.limit, "offset": parsed.offset}})
+        return
+
+    data = client._get(f"/works/{key}/editions.json",
+                       {"limit": parsed.limit, "offset": parsed.offset})
+    if not data:
+        emit(f"Work {key} not found.", {"error": "not found"})
+        return
+
+    entries = data.get("entries", [])
+    size = data.get("size", len(entries))
+    if not entries:
+        emit(f"No editions listed for {key}.", {"size": 0, "editions": []})
+        return
+
+    lines, out = [], []
+    for e in entries:
+        ekey = normalize_olid(e.get("key", ""))
+        title = e.get("title", "?")
+        pub = e.get("publish_date", "?")
+        publisher = ", ".join(e.get("publishers", [])[:2]) or "?"
+        isbn13 = (e.get("isbn_13") or ["?"])[0]
+        lines.append(f"  [{ekey}] {title} — {publisher}, {pub}  (ISBN-13: {isbn13})")
+        out.append({"key": ekey, "title": title, "publish_date": pub,
+                    "publishers": e.get("publishers", []),
+                    "isbn_10": e.get("isbn_10", []), "isbn_13": e.get("isbn_13", []),
+                    "pages": e.get("number_of_pages")})
+
+    links = data.get("links", {})
+    next_link = links.get("next", "")
+    more = ""
+    if next_link:
+        more = f"\n(more editions available; retry with --offset {parsed.offset + parsed.limit})"
+    emit(f"{size} edition(s) of {key}:\n" + "\n".join(lines) + more,
+         {"size": size, "editions": out, "next_offset":
+          parsed.offset + parsed.limit if next_link else None})
+
+
+def cmd_ratings(client, args):
+    """Community aggregates for a work: ratings + bookshelf counts."""
+    parser = argparse.ArgumentParser(prog="openlibrary ratings")
+    parser.add_argument("key", help="Work key (e.g. OL45804W)")
+    parsed, _ = parser.parse_known_args(args)
+
+    key = normalize_olid(parsed.key)
+    if client.dry_run:
+        emit(f"[dry-run] Would fetch ratings and shelf counts for work {key}",
+             {"dry_run": True, "command": "ratings", "key": key,
+              "urls": [f"{client.server}/works/{key}/ratings.json",
+                       f"{client.server}/works/{key}/bookshelves.json"]})
+        return
+
+    ratings = client._get(f"/works/{key}/ratings.json") or {}
+    shelves = client._get(f"/works/{key}/bookshelves.json") or {}
+
+    summary = ratings.get("summary", {})
+    counts = ratings.get("counts", {})
+    shelf_counts = shelves.get("counts", {})
+    if not summary and not shelf_counts:
+        emit(f"No community data for work {key}.",
+             {"error": "no data", "key": key})
+        return
+
+    avg = summary.get("average")
+    avg_str = f"{avg:.2f}" if isinstance(avg, (int, float)) else "n/a"
+    rated = summary.get("count", 0)
+    wtr = shelf_counts.get("want_to_read", 0)
+    emit(
+        f"⭐ Work {key}: {avg_str} avg from {rated} rating(s)\n"
+        f"   Distribution: " + ", ".join(f"{s}★={counts.get(s, 0)}" for s in ("5", "4", "3", "2", "1")) + "\n"
+        f"   Shelves: want_to_read={wtr} currently_reading={shelf_counts.get('currently_reading', 0)} "
+        f"already_read={shelf_counts.get('already_read', 0)}",
+        {"key": key,
+         "average": avg, "ratings_count": rated,
+         "rating_distribution": counts,
+         "bookshelves": shelf_counts}
+    )
 
 
 def main():
@@ -317,9 +522,16 @@ def main():
     p_sa.add_argument("--limit", type=int, default=20)
     p_sa.add_argument("--offset", type=int, default=0)
 
-    sub.add_parser("author", help="Get author details") .add_argument("key")
-    sub.add_parser("work", help="Get work details") .add_argument("key")
-    sub.add_parser("isbn", help="Lookup by ISBN") .add_argument("isbn")
+    sub.add_parser("author", help="Get author details").add_argument("key")
+    sub.add_parser("work", help="Get work details").add_argument("key")
+    sub.add_parser("isbn", help="Lookup by ISBN").add_argument("isbn")
+
+    p_ed = sub.add_parser("editions", help="List all editions of a work")
+    p_ed.add_argument("key")
+    p_ed.add_argument("--limit", type=int, default=50)
+    p_ed.add_argument("--offset", type=int, default=0)
+
+    sub.add_parser("ratings", help="Community ratings and shelf counts for a work").add_argument("key")
 
     args = parser.parse_args(filtered_argv[1:])
     if not args.command:
@@ -334,6 +546,8 @@ def main():
         "author": cmd_author,
         "work": cmd_work,
         "isbn": cmd_isbn,
+        "editions": cmd_editions,
+        "ratings": cmd_ratings,
     }
     handler = cmd_map.get(args.command)
     if not handler:
