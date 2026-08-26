@@ -17,11 +17,20 @@ Fetch the same page of `movie trending`, `movie popular`, and `movie anticipated
 
 ## Paginate anticipated releases
 
-Use `page` and `limit` in API clients, inspect `X-Pagination-Page-Count`, and stop at that count. If the response is 429, wait at least the numeric `Retry-After` value and cap retries. The CLI intentionally exposes one page per invocation; shell automation can iterate pages while retaining the response headers in a real HTTP client.
+The CLI fetches exactly one page per invocation; loop it. Drive the bound from the normalized pagination metadata: `--json` output carries `.pagination.page_count` (empty `{}` if a response lacked the headers, so fall back with jq's `// 1`).
+
+```sh
+pages=$(trakt --json movie anticipated --page 1 --limit 100 | jq -r '.pagination.page_count // 1')
+for p in $(seq 1 "$pages"); do
+  trakt --json movie anticipated --page "$p" --limit 100 > "anticipated-$p.json"
+done
+```
+
+If you call the API directly instead of through the script, inspect the raw `X-Pagination-Page-Count` header and stop at that count; do not stop merely because a page returned fewer items than `--limit`. If the response is 429, wait at least the numeric `Retry-After` value and cap retries before continuing the loop.
 
 ## JSON processing
 
-`--json` emits an object with `movies` or `shows`; trending elements retain their wrapper shape. Use `jq` for selection and `@csv` only after explicitly handling null IDs. Human output is for inspection, JSON output is for pipelines.
+`--json` emits an object with `movies` or `shows` plus a `pagination` object (`page`, `limit`, `page_count`, `item_count`); trending elements retain their wrapper shape, and human output adds a `Page N of M` footer only when the headers were present. Use `jq` for selection and `@csv` only after explicitly handling null IDs. Human output is for inspection, JSON output is for pipelines.
 
 ## Sources
 

@@ -12,7 +12,7 @@ Public discovery reads need an application Client ID, not a user login. OAuth bo
 |---|---|
 | `SKILL.md` | Command guide, recipes, gotchas, and routing |
 | `scripts/trakt` | Executable CLI with JSON and dry-run modes |
-| `scripts/test_trakt.py` | Offline pytest and unittest suite, including header injection |
+| `scripts/test_trakt.py` | Offline pytest and unittest suite, including header injection and pagination |
 | `references/auth-and-request-contract.md` | Required headers, OAuth boundary, and errors |
 | `references/discovery-endpoints.md` | Trending/popular/anticipated semantics and paging |
 | `references/recipes-and-operations.md` | jq pipelines and rate-safe operations |
@@ -23,7 +23,7 @@ Public discovery reads need an application Client ID, not a user login. OAuth bo
 ```sh
 export TRAKT_CLIENT_ID="YOUR_TRAKT_CLIENT_ID"
 trakt movie trending --limit 10
-trakt --json tv anticipated | jq '.shows'
+trakt --json tv anticipated --page 2 | jq '.pagination'
 ```
 
 Create a free Client ID at [trakt.tv/oauth/applications](https://trakt.tv/oauth/applications). Preview commands with `trakt --dry-run --json movie popular` without credentials or network access.

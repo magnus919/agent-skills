@@ -28,11 +28,13 @@ Every request must send `trakt-api-key: <client id>` together with the mandatory
 
 ## Essential commands
 
+All six discovery commands accept `--page N` alongside `--limit N`; both default to 1 and 10 respectively and are forwarded to the API's query string.
+
 ### Trending: watched in the last 24 hours
 
 ```sh
 trakt movie trending --limit 20
-trakt tv trending --limit 20 --json
+trakt tv trending --limit 20 --page 2 --json
 ```
 
 Trending responses wrap each media object in `movie` or `show` and include a `watchers` count.
@@ -41,7 +43,7 @@ Trending responses wrap each media object in `movie` or `show` and include a `wa
 
 ```sh
 trakt movie popular --limit 25 --json
-trakt tv popular --limit 25
+trakt tv popular --page 2 --limit 25
 ```
 
 Popular is a ranking based on rating percentage and number of ratings, not a personalized recommendation.
@@ -49,7 +51,7 @@ Popular is a ranking based on rating percentage and number of ratings, not a per
 ### Anticipated: upcoming interest
 
 ```sh
-trakt movie anticipated --limit 10
+trakt movie anticipated --page 3 --limit 10
 trakt tv anticipated --limit 10 --json
 ```
 
@@ -72,11 +74,25 @@ trakt --json movie trending --limit 20 |
 
 ### Compare discovery signals
 
-Fetch matching pages of trending, popular, and anticipated, then label each dataset before combining it. Trending is recent watching, popular is broad ranking, and anticipated is upcoming interest.
+Fetch matching pages of trending, popular, and anticipated (e.g. `--page 1` for each), then label each dataset before combining it. Trending is recent watching, popular is broad ranking, and anticipated is upcoming interest.
+
+### Page through anticipated until the feed ends
+
+Loop `--page`, read `pagination.page_count` from JSON output to pick the stop page, and break early if a page returns no items:
+
+```sh
+for p in $(seq 1 "$(trakt --json movie anticipated --page 1 --limit 100 | jq -r '.pagination.page_count')"); do
+  trakt --json movie anticipated --page "$p" --limit 100 |
+    jq --arg p "$p" '{page: ($p|tonumber), pagination: .pagination,
+                      movies: [.movies[] | {title: (.movie.title // .title), year: (.movie.year // null)}]}'
+done
+```
+
+Keep per-page output as labeled NDJSON; merge afterwards. On 429, wait out `Retry-After` before continuing the loop.
 
 ## JSON and pagination
 
-`--json` emits a `movies` or `shows` object suitable for `jq`; trending entries retain their wrapper. The API accepts `page` and `limit`, with compatibility defaults of page 1 and limit 10. API responses include `X-Pagination-Page-Count`; automation should stop at that header rather than assuming a short page is the end.
+`--json` emits an object with a `movies` or `shows` array (trending entries retain their wrapper) plus a `pagination` object whose keys mirror the API's `X-Pagination-*` headers: `page`, `limit`, `page_count`, `item_count`. Pagination keys are ints when the headers were present and the object is empty `{}` when they were absent, so jq like `.pagination.page_count // 1` degrades safely. Human output appends a `Page N of M` line when the headers are present and stays silent otherwise. The API defaults to page 1 with limit 10 for compatibility; set both explicitly for reproducible automation, and stop at `page_count` rather than assuming a short page is the end.
 
 ## Known gotchas
 
@@ -86,6 +102,7 @@ Fetch matching pages of trending, popular, and anticipated, then label each data
 - **OAuth refresh:** access tokens last seven days and refresh tokens are single-use. Replace the stored refresh token after a successful refresh; `invalid_grant` requires reauthorization.
 - **Trakt is not TMDb:** Trakt IDs and discovery rankings are not TMDb metadata. Use the `tmdb` skill for credits, images, provider metadata, and catalog enrichment.
 - **Trending shape:** read `.movie` or `.show` before title/IDs, while preserving `watchers`.
+- **Pagination is per invocation:** one CLI call fetches exactly one page (`--page`); loop invocations reading `pagination.page_count` rather than expecting the script to follow links itself.
 
 ## When to use
 

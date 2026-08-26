@@ -17,6 +17,8 @@ Trending is a short, current watch signal. Popular is a broad popularity ranking
 
 These feeds accept `page` and `limit`; compatibility defaults are page 1 and limit 10. Set both explicitly for reproducible automation. Responses provide `X-Pagination-Page`, `X-Pagination-Limit`, `X-Pagination-Page-Count`, and `X-Pagination-Item-Count`. Stop at the reported page count instead of assuming a short page means completion.
 
+The bundled CLI forwards `--page` and `--limit` to the query string and normalizes those four headers into a JSON `pagination` object with the keys `page`, `limit`, `page_count`, and `item_count`. Keys are integers when the headers were present; the object is `{}` when the headers are missing, so downstream jq can fall back with `.pagination.page_count // 1`.
+
 Endpoint pages also document filters such as `extended`, `watchnow`, `genres`, `years`, `ratings`, date ranges, countries, and `ignore_watched`, `ignore_collected`, and `ignore_watchlisted` where supported. Encode comma-separated values as query parameters. `watchnow=any` means any service, while `any_all` and the `free_all`/`subscriptions_all` forms have stricter all-country semantics.
 
 ## Result normalization

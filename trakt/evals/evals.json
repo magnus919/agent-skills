@@ -16,9 +16,15 @@
     },
     {
       "id": "anticipated-pagination",
-      "prompt": "Explain how to collect anticipated movies across pages without overrunning Trakt limits.",
-      "expected_output": "Use page and limit, stop at X-Pagination-Page-Count, and honor Retry-After on 429.",
-      "assertions": ["names page and limit parameters", "uses the pagination page count header", "handles Retry-After for rate limiting"]
+      "prompt": "Explain how to collect anticipated movies across pages using the Trakt CLI without overrunning limits.",
+      "expected_output": "Loop trakt movie anticipated with --page, stop at pagination.page_count from --json output (empty pagination degrades to page 1), and honor Retry-After on 429.",
+      "assertions": ["uses --page with each CLI invocation", "stops at the normalized pagination.page_count value", "handles Retry-After for rate limiting"]
+    },
+    {
+      "id": "second-page-trending",
+      "prompt": "Fetch page 2 of Trakt trending movies as JSON.",
+      "expected_output": "Run trakt --json movie trending --page 2; JSON output keeps the movies array beside a pagination object mirroring X-Pagination headers.",
+      "assertions": ["passes --page 2 to the trending command", "names the pagination object keys page limit page_count item_count", "keeps the movies array intact in JSON output"]
     },
     {
       "id": "header-pair-gotcha",
