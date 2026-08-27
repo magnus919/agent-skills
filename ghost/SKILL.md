@@ -1,128 +1,170 @@
 ---
 name: ghost
-description: Manage Ghost CMS content from the terminal — create and list posts, pages,
-  and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user
-  asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration.
+description: Manage Ghost CMS content over the Admin API — browse posts, pages,
+  and tags, draft and publish content, schedule posts, and inspect site info from
+  the terminal. Do not use this skill for Ghost server installation or site
+  administration (installing, nginx, SSL, systemd, updates); those belong to the
+  official npm ghost-cli tooling.
 license: MIT
 compatibility: Requires GHOST_URL and GHOST_ADMIN_KEY env vars. Admin key in "id:secret"
   format from Ghost Admin → Integrations. Python 3.8+ and the `requests` library.
 metadata:
   tags: ghost, cms, blog, blogging, post, page, tag, ghost-cms, content-management,
     api-client
-  sources: https://ghost.org/docs/admin-api/, https://ghost.org/docs/
+  sources: https://docs.ghost.org/admin-api/, https://docs.ghost.org/content-api/
 ---
 
-# ghost — Ghost CMS from the Terminal
+# ghost — Ghost CMS content from the terminal
 
-Manage content on a Ghost CMS site: view site info, list and create posts and pages, manage tags — all via the Ghost Admin API (v5/v6).
+Drive a Ghost CMS site's Admin API (v5/v6, `Accept-Version: v6.0`): list posts by status including drafts, create and publish pages and posts, manage tags, and check site info. Drafts, scheduled posts, and published content are all visible here because every call authenticates with a per-request Admin JWT built from your `id:secret` integration key.
 
 ## Setup
 
-1. Get your Admin API key from **Ghost Admin → Settings → Advanced → Integrations** (or **Ghost Admin → Integrations**). Create a custom integration to get a key in `id:secret` format.
-2. Set these environment variables:
-
 ```bash
-export GHOST_URL="https://your-ghost-site.com"     # your Ghost site URL
-export GHOST_ADMIN_KEY="your-id:your-secret"        # from Ghost Admin → Integrations
+export GHOST_URL="https://your-ghost-site.com"
+export GHOST_ADMIN_KEY="<RECORD_KEY>"   # id:secret from Ghost Admin → Integrations
 ```
 
-`--help` and `--dry-run` work without credentials (lazy auth).
+1. In **Ghost Admin → Settings → Integrations**, create (or open) a Custom Integration.
+2. Copy its **Admin API Key** — one string, two colon-separated hex halves (`id:secret`). The separate **Content API key** from the same screen will NOT let you see drafts; see Known Gotchas.
+3. At request time the CLI signs a short-lived JWT per call: HS256 signature keyed by the secret half **after hex-decoding it to raw bytes**, `kid` header carrying the id half, audience `/admin/`, `exp` five minutes after `iat`, sent as `Authorization: Ghost <token>`. You never handle the token yourself.
+4. `--help` and `--dry-run` work without credentials (lazy auth).
 
-## Essential Commands
+## Essential commands
 
-### site — Get site information
-
-```bash
-ghost site                               # show site title, URL, description
-ghost --json site                        # machine-readable JSON
-ghost --dry-run site                     # preview without API call
-```
-
-Shows: site title, URL, description.
-
-### posts — List blog posts
+### Inspect
 
 ```bash
-ghost posts                              # 20 most recent posts
-ghost posts --limit 50                   # more results
-ghost posts --status published           # only published posts
-ghost posts --status draft               # only draft posts
-ghost posts --status scheduled           # only scheduled posts
-ghost posts --limit 10 --json            # 10 most recent as JSON
+ghost site                       # title, url, description, version
+ghost get-post POST_ID           # full record incl. exact updated_at for edits
 ```
 
-Shows: title, status, slug, and last-updated date for each post.
-
-### create-post — Create a new blog post
+### Browse (intent: find content)
 
 ```bash
-ghost create-post --title "My First Post"                               # draft, no HTML
-ghost create-post --title "Hello World" --html "<p>Hello!</p>"          # with HTML content
-ghost create-post --title "Ready" --html "<p>Published</p>" --status published  # publish immediately
-ghost create-post --title "Scheduled" --html "<p>Later</p>" --status scheduled  # schedule
-ghost create-post --title "Custom Slug" --slug "my-custom-url"          # custom URL slug
-ghost create-post --title "Draft" --dry-run                             # preview without creating
+ghost posts                                   # latest 20
+ghost posts --status draft                    # unpublished work queue
+ghost posts --status scheduled                # what publishes next
+ghost posts --limit 100 --page 2              # paginate (max page size 100)
+ghost posts --order "updated_at desc"         # SQL-style ordering
+ghost pages                                   # static pages
+ghost tags                                    # tags with usage counts
 ```
 
-Creates the post and returns its title, slug, and status.
-
-### pages — List pages
+### Create and publish
 
 ```bash
-ghost pages                              # 20 most recent pages
-ghost pages --limit 50                   # more results
-ghost pages --json                       # machine-readable JSON
+ghost create-post --title "Notes"                              # safe default: draft
+ghost create-post --title "Hello" --html "<p>Hi</p>"
+ghost create-post --title "Launch" --status published --html "<p>We're live</p>"
+ghost create-post --title "Later" --status scheduled \
+  --published-at "2026-09-01T09:00:00.000Z"                    # future ISO-8601 required together
+ghost create-page --title "About" --html "<p>…</p>" --slug about
+ghost create-tag --name "Engineering" --description "Technical posts"
 ```
 
-Shows: title, status, slug, and last-updated date for each page.
-
-### tags — List tags
+### Edit and remove
 
 ```bash
-ghost tags                               # 50 tags with post counts
-ghost tags --limit 100                   # more results
-ghost tags --json                        # machine-readable JSON
+ghost update-post POST_ID --title "New title" \
+  --updated-at "<RECORD_UPDATED_AT>"          # REQUIRED: latest updated_at, re-read first
+ghost update-post POST_ID --status published --updated-at "<RECORD_UPDATED_AT>"
+ghost delete-post POST_ID                     # permanent, 204-style removal
 ```
 
-Shows: tag name, slug, and number of posts using each tag.
+## Pipeline recipes
 
-## Global Flags
-
-These flags work anywhere in the command — before or after the subcommand:
+### Draft now, publish after review
 
 ```bash
-ghost --json posts                       # JSON output
-ghost posts --json                       # same result, after subcommand
-ghost --dry-run create-post --title "Test"  # preview without API call
-ghost --quiet posts                      # suppress diagnostic output
-ghost --verbose site                     # verbose logging
+ghost --json create-post --title "Release notes" > /tmp/post.json
+id=$(jq -r '.post.id // .post_id // empty' /tmp/post.json)
+ghost get-post "$id"                          # read fresh updated_at
+ghost update-post "$id" --status published \
+  --updated-at "<exact string from get-post output>"
 ```
+
+Never fabricate `updated_at`; copy it verbatim from a fresh read or Ghost rejects the edit with HTTP 409 `UpdateCollisionError`.
+
+### Review queue across statuses
+
+```bash
+for s in draft scheduled; do
+  ghost posts --status "$s" --json | jq -r '.posts[] | "\(.status)\t\(.title)\t\(.slug)"'
+done
+```
+
+### Complete export
+
+Loop pages by `meta.pagination.next` (surfaced as `.page.next`) instead of trusting totals:
+
+```bash
+page=1
+while :; do
+  ghost posts --limit 100 --page "$page" --json > "/tmp/posts-$page.json"
+  jq -r '.posts[].id' "/tmp/posts-$page.json"
+  next=$(jq -r '.page.next // empty' "/tmp/posts-$page.json")
+  [ -z "$next" ] && break
+  page=$next; sleep 0.2
+done
+```
+
+## JSON output and jq
+
+`--json` works before or after the subcommand:
+
+```bash
+ghost --json posts        # same as: ghost posts --json
+```
+
+JSON shapes worth knowing:
+
+- Lists emit `{"total", "page": {pagination}, "posts": [...]}`; detail/create emit the resource under its noun (`post`, `page`, `tag`, `site`).
+- Pagination mirrors the API: `.page = {"page", "limit", "pages", "total", "next", "prev"}`; `next`/`prev` are numbers or `null`.
+- `--dry-run --json` emits the executed plan instead of results: `{"dry_run": true, "method", "url", "params"/"json"}` — preview the exact request before running it live.
+- Errors exit non-zero with the API's own message plus code on stderr; JSON mode never wraps errors in stdout JSON.
+
+## Global flags
 
 | Flag | Effect |
 |------|--------|
-| `--json` | Output machine-readable JSON instead of human-readable text |
-| `--dry-run` | Show what API call would be made without executing it |
-| `--quiet` | Suppress non-essential diagnostic output |
-| `--verbose` | Enable verbose/debug logging |
+| `--json` | Machine-readable JSON (position-independent) |
+| `--dry-run` | Print the planned API call (method, URL, payload) without executing |
+| `--quiet` | Suppress diagnostics |
+| `--verbose` | Debug logging |
 
-## Known Gotchas
+## Known gotchas
 
-- **Admin API key format** — The `GHOST_ADMIN_KEY` must be in `id:secret` format (e.g. `644a4c1a2b3c4d5e6f7g8h9i:abcd1234efgh5678ijkl9012`). This is the format Ghost generates when you create a Custom Integration. A plain token or JWT will not work.
-- **JWT token auto-generated** — The CLI generates a short-lived JWT (HS256, 5-minute expiry) internally from the Admin API key on each request. You don't need to create or manage JWT tokens yourself.
-- **5-minute JWT window** — Each JWT is valid for 300 seconds (5 minutes). If your system clock is significantly skewed, requests may fail. Ensure NTP is synced.
-- **API version v6** — The CLI sends `Accept-Version: v6.0` on all requests, targeting the Ghost Admin API v6. Response shapes follow the v6 spec. May also work against v5 sites.
-- **HTML content format** — Post and page content must be provided as raw HTML strings via `--html`. Markdown is not auto-converted. If you write in Markdown, convert it to HTML first (e.g. with a markdown-to-html tool).
-- **No update or delete commands** — The current CLI supports listing and creating posts/pages/tags, but does not include update or delete operations. Use the Ghost Admin UI or direct API calls for those.
-- **No tag creation via CLI** — Tag listing works, but `create-tag` is not exposed as a subcommand. The GhostClient class has a `create_tag` method internally but it is not wired to a CLI command.
-- **Rate limiting** — Ghost Admin API enforces rate limits. For heavy operations, stagger your requests.
-- **Error output** — API errors (4xx/5xx) include the response body in the error message for debugging. Auth errors (401/403) explicitly tell you to check `GHOST_ADMIN_KEY`.
+- **Drafts need the Admin plane.** The public Content API (that key-as-query-param API) serves published posts only and hides drafts silently — no error, just absent, even with a perfectly valid key. Its filters like `status:draft` are ignored rather than rejected. Everything this CLI does goes through the Admin API precisely so drafts and scheduled posts stay reachable.
+- **Two keys, same integration screen.** The Content key is browser-safe but read-only-public; the Admin key (`GHOST_ADMIN_KEY`) signs mutations and reaches drafts. Never point scripts at the Content key and expect draft visibility.
+- **Five-minute tokens.** Each JWT lives at most 300 seconds (`exp ≤ iat + 300`) and the verifier caps token age too, so long batch jobs must re-sign per request (the CLI does). Skewed clocks break signing windows; keep NTP healthy.
+- **HS256 only, decoded-secret keying.** Tokens signed with HS512 are refused ("invalid algorithm"); signing without first hex-decoding the secret half produces "valid-looking" garbage that 401s. The CLI handles both rules.
+- **`Authorization: Ghost`, not Bearer.** `Bearer` scheme answers 401 `INVALID_AUTH_HEADER`.
+- **Edits require collision guards.** PUTs without the post's current `updated_at` fail with 409; relation arrays (`tags`, `authors`) replace wholesale rather than merge.
+- **HTML ingestion is lossy without cards.** Send proper Lexical, or wrap fixed markup in HTML card comments when using `--html`.
+- **Pagination caps at 100** since Ghost 6 removed `limit=all`; oversized limits silently return ≤100 rows, so always loop by `next`.
+- **Deletion is permanent** and takes effect on the public site immediately.
 
-## References
+## When to use
 
-- [scripts/ghost](scripts/ghost) — The CLI binary. Built following the cli-builder patterns: non-interactive, `--json`, `--dry-run`, `--quiet`, `--verbose`, dual-output via `emit()`, lazy auth, structured logging.
-- [Ghost Admin API Docs](https://ghost.org/docs/admin-api/) — Official Ghost Admin API documentation.
-- [Ghost Integrations](https://ghost.org/docs/integrations/) — How to create Custom Integrations and get your Admin API key.
+Use this skill whenever the task is content workflow against a running Ghost site: browsing or exporting posts, drafting, publishing, scheduling, tag upkeep, page creation, or diagnosing those flows (auth errors, pagination, missing drafts).
 
 ## When not to use
 
-Do not use this skill for Ghost site administration that requires the admin dashboard (themes, staff accounts, membership tiers, sending settings), for front-end theme development, or for other publishing platforms — WordPress, Hugo, and Jekyll each have their own tooling.
+Do not use it to install, host, or operate a Ghost server (`ghost install`, nginx/SSL/systemd setup, upgrades, backups) — that is Ghost's official npm ghost-cli site-management tool, unrelated despite the shared name. Not for other publishing platforms (WordPress, Hugo have their own tooling), not for theme development, and not for site configuration better done once in the Admin dashboard (staff accounts, membership tiers).
+
+## Reference files
+
+| File | Use it for |
+| ---- | ---------- |
+| [references/admin-auth-and-basics.md](references/admin-auth-and-basics.md) | Full JWT signing walkthrough, key format, audience/expiry rules, auth error table |
+| [references/content-vs-admin-api.md](references/content-vs-admin-api.md) | Choosing between planes; the draft-visibility trap; diagnostic checklist |
+| [references/posts-pages-tags-endpoints.md](references/posts-pages-tags-endpoints.md) | Endpoint map, field semantics, pagination loop, error envelope |
+| [references/worked-recipes.md](references/worked-recipes.md) | Copy-paste workflows: draft→publish, exports, scheduling, triage |
+| [references/gotchas-field-guide.md](references/gotchas-field-guide.md) | Symptom-first incident lookup for auth, editing, volume problems |
+
+## Scripts and prerequisites
+
+- `scripts/ghost` — executable Python CLI (stdlib + requests only). Flags above; lazy auth; structured logging.
+- `scripts/test_ghost.py` — offline test suite (mocked HTTP, zero network).
+- Python 3.8+, `requests`. Nothing listens, nothing installs; scope limited to one configured site via `GHOST_URL`.

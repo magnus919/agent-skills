@@ -489,7 +489,7 @@
         "./ghost"
       ],
       "strict": false,
-      "description": "Manage Ghost CMS content from the terminal — create and list posts, pages, and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration."
+      "description": "Manage Ghost CMS content over the Admin API — browse posts, pages, and tags, draft and publish content, schedule posts, and inspect site info from the terminal. Do not use this skill for Ghost server installation or site administration (installing, nginx, SSL, systemd, updates); those belong to the official npm ghost-cli tooling."
     },
     {
       "name": "github-runner",
