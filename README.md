@@ -604,6 +604,10 @@ Build, deploy, self-host, secure, and troubleshoot durable backend AI agents wit
 
 Replace completion claims with a disciplined evidence trail that shows what was checked, what passed, and what remains uncertain.
 
+### [verified-delivery](verified-delivery/SKILL.md)
+
+Deliver an authorized change end to end — implement, verify, merge, and confirm the merged state — without losing the thread when a hard limit interrupts the work.
+
 ### [vllm](vllm/SKILL.md)
 
 Operate, configure, benchmark, and troubleshoot vLLM inference servers: Docker and Kubernetes deployment, quantization-aware model configuration (tensor parallelism, KV cache), the OpenAI-compatible API surface, throughput/latency benchmarking, continuous batching tuning, GPU operation, and upgrade/rollback. Ships a read-only `vllm-health` probe (`--json`), serving-config and benchmark-run-record templates, 7 dated references, tests, and 6 evals. Routes serving methodology to ml-engineering and the llama.cpp stack to llama-cpp.

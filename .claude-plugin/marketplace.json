@@ -1329,6 +1329,15 @@
       "description": "Verify work against explicit criteria using direct, source-faithful evidence, reproducible checks, and clear verdicts. Use before declaring an artifact, implementation, or claim complete; do not use for exploratory research without pass/fail criteria."
     },
     {
+      "name": "verified-delivery",
+      "source": "./",
+      "skills": [
+        "./verified-delivery"
+      ],
+      "strict": false,
+      "description": "Deliver an authorized change end to end — implement, verify, open the PR, merge, and confirm post-merge state — using live-state gates, durable interruption handoffs, and live-state-first resumption. Use when a user grants end-to-end delivery authority for a specific change and the work may cross tool-call limits, context exhaustion, worker loss, or session interruptions before the delivery boundary is reached. Do not use for plain fixes with no delivery directive, for granting merge or post-merge authority the user did not grant, or for designing release pipelines (use release-engineering for that)."
+    },
+    {
       "name": "vllm",
       "source": "./",
       "skills": [
