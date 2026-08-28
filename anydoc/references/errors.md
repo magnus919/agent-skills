@@ -1,7 +1,7 @@
 # Errors, exit codes, and troubleshooting
 
 Every message below is a **verbatim real stderr capture** from the pinned CLI
-(`@firecrawl/anydoc@0.1.6`) run against the committed fixtures in `fixtures/`
+(`@firecrawl/anydoc@0.2.4`) run against the committed fixtures in `fixtures/`
 (and, for resource limits, generated oversized archives). The CLI prints
 exactly one line to stderr, prefixed `anydoc: `, and never prompts.
 
@@ -53,7 +53,7 @@ without `--format csv` fails:
 anydoc: unsupported input: unrecognized file content: name the format explicitly
 ```
 
-Fix: add `--format csv` (e.g. `cat data.csv | npx -y @firecrawl/anydoc@0.1.6 - --format csv`).
+Fix: add `--format csv` (e.g. `cat data.csv | npx -y @firecrawl/anydoc@0.2.4 - --format csv`).
 
 ### malformed — structurally unusable archive
 
@@ -110,7 +110,7 @@ conversion is **not streaming**, and the whole entry is checked before use.
 anydoc: EISDIR: illegal operation on a directory, open '<path>'
 ```
 
-Verified: `npx -y @firecrawl/anydoc@0.1.6 report.rtf -o /tmp` prints
+Verified: `npx -y @firecrawl/anydoc@0.2.4 report.rtf -o /tmp` prints
 `anydoc: EISDIR: illegal operation on a directory, open '/tmp'` and exits 1.
 Fix: pass a file path (or a path in a directory that exists); anydoc **does
 not create directories**.
@@ -137,17 +137,15 @@ Notes:
 
 ## The no-OCR caveat (read before converting PDFs)
 
-- anydoc converts **text-based PDFs locally** via `pdf-inspector`; there is no
-  OCR service anywhere in the pipeline.
+- anydoc converts **text-based PDFs locally** via `pdf-inspector`; hosted OCR is
+  a separate opt-in path for OCR-required PDFs.
 - **Scanned / image-only PDFs fail as `unsupported`** with the exact message
   above (`... OCR is required`). The library's stance: "Scanned and image-only
   PDFs need OCR, which anydoc does not do."
-- **Route, don't retry.** When this message fires: report the exact error,
-  state that OCR is required, and direct the user to OCR tooling or the hosted
-  Firecrawl Parse API. Do **not** retry the same file locally, do **not**
-  claim anydoc can OCR, and do **not** fabricate the document's content.
-- There is no password option, no OCR option, and no retry-until-success
-  behavior to enable.
+- Route, don't retry unchanged. Report the exact error and choose local OCR or,
+  after explicit authorization, `--ocr hosted --allow-hosted-upload`. Hosted
+  mode sends the whole document to Firecrawl Parse and has no page selection.
+  Do not fabricate the document's content or silently upload it.
 
 ## Troubleshooting recipes
 
@@ -204,8 +202,8 @@ The wrapper mirrors the CLI's contract and adds pre-validation and hints:
   but `node` was not found on PATH ...` / `anydoc: Node.js version v18.20.0 is
   too old; anydoc requires Node.js >= 20 ...`), before any CLI invocation.
 - **npx missing (exit 1)**: stderr names `npx` and the pinned package
-  (`@firecrawl/anydoc@0.1.6`): `anydoc: `npx` was not found on PATH —
-  conversion runs via `npx -y @firecrawl/anydoc@0.1.6`. Install Node.js >= 20
+  (`@firecrawl/anydoc@0.2.4`): `anydoc: `npx` was not found on PATH —
+  conversion runs via `npx -y @firecrawl/anydoc@0.2.4`. Install Node.js >= 20
   (which ships npx), or install the CLI permanently with `npm install -g
   @firecrawl/anydoc`.`.
 - **Batch exit policy**: `batch` exits 1 when any input failed; per-file

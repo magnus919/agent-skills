@@ -1,6 +1,6 @@
 # Workflows: recipes for converting documents to markdown
 
-All recipes use the pinned CLI `npx -y @firecrawl/anydoc@0.1.6` (ground truth)
+All recipes use the pinned CLI `npx -y @firecrawl/anydoc@0.2.4` (ground truth)
 and the skill's wrapper `scripts/anydoc` where it adds value. Commands are
 shown relative to the repository root; `anydoc/fixtures/...` paths can be
 replaced with any document path. The vault-ingestion recipe (section 5) is
@@ -12,10 +12,10 @@ is no batch mode.
 
 ```bash
 # Markdown to stdout
-npx -y @firecrawl/anydoc@0.1.6 anydoc/fixtures/fixture-handmade-outline.docx
+npx -y @firecrawl/anydoc@0.2.4 anydoc/fixtures/fixture-handmade-outline.docx
 
 # Markdown to a file (stdout stays silent; existing file is overwritten)
-npx -y @firecrawl/anydoc@0.1.6 anydoc/fixtures/fixture-handmade-outline.docx -o outline.md
+npx -y @firecrawl/anydoc@0.2.4 anydoc/fixtures/fixture-handmade-outline.docx -o outline.md
 
 # Same jobs through the wrapper
 python3 anydoc/scripts/anydoc convert anydoc/fixtures/fixture-handmade-outline.docx
@@ -30,8 +30,8 @@ lines.
 
 ```bash
 # Extensionless or mislabeled file: name the format explicitly
-npx -y @firecrawl/anydoc@0.1.6 ./data --format csv
-npx -y @firecrawl/anydoc@0.1.6 ./report --format docx
+npx -y @firecrawl/anydoc@0.2.4 ./data --format csv
+npx -y @firecrawl/anydoc@0.2.4 ./report --format docx
 ```
 
 Use `--format <name>` only when detection cannot work (CSV from stdin, or a
@@ -43,10 +43,10 @@ missing/wrong extension). Aliases resolve: `--format xls`, `--format docm`,
 
 ```bash
 # CSV from stdin requires --format csv (no signature, no extension)
-printf 'name,role\nAlice,Engineer\n' | npx -y @firecrawl/anydoc@0.1.6 - --format csv
+printf 'name,role\nAlice,Engineer\n' | npx -y @firecrawl/anydoc@0.2.4 - --format csv
 
 # Any document type can come from stdin; detection reads the bytes
-curl -s https://example.com/paper.pdf | npx -y @firecrawl/anydoc@0.1.6 -
+curl -s https://example.com/paper.pdf | npx -y @firecrawl/anydoc@0.2.4 -
 ```
 
 The wrapper supports the same: `cat data.csv | python3 anydoc/scripts/anydoc convert - -f csv`.
@@ -56,7 +56,7 @@ Piping notes:
 - Markdown goes to **stdout only**; diagnostics are the single
   `anydoc: <message>` stderr line.
 - **EPIPE is handled**: if the downstream pipe closes early
-  (`... anydoc@0.1.6 big.xlsx | head -n 1`), the CLI exits 0 with no stderr
+  (`... anydoc@0.2.4 big.xlsx | head -n 1`), the CLI exits 0 with no stderr
   noise — piping into `head` is safe and is not a failure.
 
 ## 4. Batch conversion (raw CLI)
@@ -66,7 +66,7 @@ The raw CLI takes one document per invocation, so batch with a shell loop:
 ```bash
 mkdir -p out
 for f in anydoc/fixtures/*.docx; do
-  npx -y @firecrawl/anydoc@0.1.6 "$f" -o "out/$(basename "${f%.docx}").md"
+  npx -y @firecrawl/anydoc@0.2.4 "$f" -o "out/$(basename "${f%.docx}").md"
 done
 ```
 
@@ -148,9 +148,9 @@ Before treating a conversion as done:
 Use the committed fixtures to sanity-check an environment once:
 
 ```bash
-npx -y @firecrawl/anydoc@0.1.6 anydoc/fixtures/fixture-handmade-outline.docx   # headings
-npx -y @firecrawl/anydoc@0.1.6 anydoc/fixtures/sheet.xlsx                      # ## Values + table
-npx -y @firecrawl/anydoc@0.1.6 anydoc/fixtures/fixture-text.pdf                # headings, no table
+npx -y @firecrawl/anydoc@0.2.4 anydoc/fixtures/fixture-handmade-outline.docx   # headings
+npx -y @firecrawl/anydoc@0.2.4 anydoc/fixtures/sheet.xlsx                      # ## Values + table
+npx -y @firecrawl/anydoc@0.2.4 anydoc/fixtures/fixture-text.pdf                # headings, no table
 ```
 
 ## 7. Large files and resource limits
@@ -171,14 +171,29 @@ npx -y @firecrawl/anydoc@0.1.6 anydoc/fixtures/fixture-text.pdf                #
 
 ## 8. Startup cost and performance
 
-Each `npx -y @firecrawl/anydoc@0.1.6` invocation costs roughly **0.33–0.55 s
+Each `npx -y @firecrawl/anydoc@0.2.4` invocation costs roughly **0.33–0.55 s
 of warm-cache startup** (npm/npx process startup) on top of the conversion
 itself, which is a few milliseconds (measured ~5 ms for a PDF, <1 ms for a
 DOCX once the process is warm). There is no progress output; conversions are
 effectively instant. Plan for ~0.5 s per document in batch loops, and prefer a
 single `npx` process per document (you cannot batch inside one invocation).
 
-## 9. Offline / cold-cache behavior
+## 9. Hosted OCR workflow
+
+The local default is safe for sensitive documents and never uploads them. For a
+scanned PDF, obtain explicit authorization for whole-document upload, then run:
+
+```bash
+python3 anydoc/scripts/anydoc convert scan.pdf --ocr hosted --allow-hosted-upload
+```
+
+Set `FIRECRAWL_API_KEY` only in the trusted environment when higher hosted limits
+are needed. Never pass it on the command line. The hosted route uses Firecrawl
+Parse, has no page-selection option, and does not silently fall back to another
+endpoint after authentication, quota, or transport failure. Verify the output
+and report that the result came from hosted OCR.
+
+## 10. Offline / cold-cache behavior
 
 - The first `npx` run downloads the package plus the native binary (network
   required once); later runs use the npm cache. A cold-cache offline run fails
