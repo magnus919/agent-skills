@@ -33,7 +33,7 @@ MALFORMED = FIXTURES / "empty--errors.docx"
 UNSUPPORTED = FIXTURES / "unsupported.xyz"
 TABLES = FIXTURES / "fixture-handmade-tables.docx"
 
-PINNED = "@firecrawl/anydoc@0.1.6"
+PINNED = "@firecrawl/anydoc@0.2.4"
 
 cli = importlib.machinery.SourceFileLoader("anydoc_wrapper", str(SCRIPT)).load_module()
 
@@ -103,7 +103,7 @@ class WrapperCoreTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("anydoc", result.stdout)
-        self.assertIn("0.1.6", result.stdout)
+        self.assertIn("0.2.4", result.stdout)
 
     def test_help_exits_zero_with_usage_and_examples(self):
         for arguments in (
@@ -165,13 +165,13 @@ class WrapperCoreTests(unittest.TestCase):
         code, stdout, stderr = run_in_process(["info"])
         self.assertEqual(code, 0, stderr)
         self.assertIn("anydoc", stdout)
-        self.assertIn("0.1.6", stdout)
+        self.assertIn("0.2.4", stdout)
         self.assertEqual(stderr, "")
 
     def test_info_version_prints_exact_version(self):
         code, stdout, stderr = run_in_process(["info", "--version"])
         self.assertEqual(code, 0, stderr)
-        self.assertEqual(stdout.strip(), "0.1.6")
+        self.assertEqual(stdout.strip(), "0.2.4")
         self.assertEqual(stderr, "")
 
     def test_convert_missing_input_prevalidation(self):
@@ -360,7 +360,7 @@ class WrapperCoreTests(unittest.TestCase):
             (
                 "anydoc: unsupported input: PDF has no extractable text "
                 "(Scanned, 1 pages): OCR is required",
-                "no-ocr",
+                "needs-ocr",
                 ("OCR", "Firecrawl Parse", "not retry"),
             ),
             ("anydoc: document is encrypted", "encrypted", ("encrypted", "unencrypted")),
@@ -649,7 +649,7 @@ class RealCliTests(unittest.TestCase):
         doc = json.loads(result.stdout)
         self.assertFalse(doc["ok"])
         self.assertEqual(doc["exit_code"], 1)
-        self.assertEqual(doc["error_class"], "no-ocr")
+        self.assertEqual(doc["error_class"], "needs-ocr")
         self.assertIn("OCR", result.stderr)
 
     def test_batch_mixed_continues_past_failures(self):
