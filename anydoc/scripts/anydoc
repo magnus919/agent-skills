@@ -275,8 +275,9 @@ def error_class_hint(stderr):
     ):
         return (
             "needs-ocr",
-            "the local-only run stopped without uploading. Use authorized local OCR, "
-            "or obtain explicit authorization for a whole-document upload and rerun "
+            "the local-only run stopped without uploading. Do not retry unchanged. Use authorized local OCR, "
+            "or obtain explicit authorization for a whole-document upload to Firecrawl Parse "
+            "and rerun "
             "with --ocr hosted --allow-hosted-upload; page selection is unavailable.",
         )
     if "malformed document" in stderr:
