@@ -1,7 +1,7 @@
 # Formats: what anydoc converts and what GFM you get
 
 This reference documents every input format the pinned CLI (`@firecrawl/anydoc`
-v0.1.6) accepts, the GitHub-Flavored Markdown each one produces, and the
+v0.2.4) accepts, the GitHub-Flavored Markdown each one produces, and the
 fidelity caveats you must know before trusting the output. Every claim below
 was verified by running the real CLI against the committed fixtures in
 `fixtures/` (see [sources.md](sources.md) for provenance and the verification
@@ -291,7 +291,7 @@ as normal markdown links.
 
 Expected output: the file renders as **one GFM table**. The first row is
 **promoted to the header row** when it looks like labels (≥ 2 columns,
-non-empty, non-numeric, distinct fields) — this behavior ships in 0.1.6.
+non-empty, non-numeric, distinct fields) — this behavior ships in 0.2.4.
 Quoted fields with embedded commas and newlines are preserved.
 
 Real conversion of `fixtures/fixture-handmade-quoted.csv`:
@@ -366,7 +366,7 @@ Wide head End Tall B2 C2 B3 C3
 - Numbered/bulleted list structure compresses (markers inline), and some
   Unicode degrades (e.g. emoji without ZWJ).
 
-### Scanned or image-only PDFs — no OCR
+### Scanned or image-only PDFs — explicit hosted OCR
 
 A PDF with **no extractable text layer** fails as `unsupported` with this exact
 message (exit code 1):
@@ -375,11 +375,12 @@ message (exit code 1):
 anydoc: unsupported input: PDF has no extractable text (Scanned, 1 pages): OCR is required
 ```
 
-anydoc **does not perform OCR** — the library's stance is explicit, and there
-is no password, retry, or OCR option. When this message fires: report the exact
-error, state that OCR is required, and route the file to OCR tooling or the
-hosted Firecrawl Parse API. Do not retry the same file locally and do not claim
-anydoc can OCR it. See [errors.md](errors.md) for the full routing guidance.
+The local default does not perform OCR. When this message fires, report the
+exact error and either route the file to local OCR tooling or, only after explicit
+authorization, rerun with `--ocr hosted --allow-hosted-upload`. Hosted mode sends
+the whole document to Firecrawl Parse because page selection is unavailable. Do
+not select hosted mode implicitly or claim hosted accuracy from the upstream
+announcement. See [errors.md](errors.md) for routing guidance.
 
 ## Formats anydoc does NOT support
 

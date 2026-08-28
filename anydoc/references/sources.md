@@ -15,8 +15,8 @@
 
 - Research and empirical verification performed **2026-08-05** and **2026-08-06**
   on macOS (arm64) with Node v22.22.3, network access, and the pinned CLI
-  `npx -y @firecrawl/anydoc@0.1.6`.
-- The pinned release **0.1.6** was published to npm at
+  `npx -y @firecrawl/anydoc@0.2.4`.
+- The pinned release **0.2.4** was published to npm at
   **2026-08-05T18:29:40Z**; PyPI wheels for the same version were uploaded
   **2026-08-05T18:29Z**. First release was 0.1.1 (2026-08-04).
 
@@ -58,10 +58,10 @@ samples carry no upstream copyright.
 ## Verification procedure
 
 Every factual claim in this skill was confirmed against the **real pinned CLI**
-(v0.1.6), not inferred from documentation:
+(v0.2.4), not inferred from documentation:
 
 1. **Environment warm-up**: `node --version` (v22.22.3 ≥ 20), then
-   `npx -y @firecrawl/anydoc@0.1.6 --version` → prints `0.1.6`; `--help` →
+   `npx -y @firecrawl/anydoc@0.2.4 --version` → prints `0.2.4`; `--help` →
    the verbatim help block reproduced in
    [cli-reference.md](cli-reference.md).
 2. **Positive conversions**: the pinned CLI was run on every committed fixture
@@ -85,9 +85,9 @@ Every factual claim in this skill was confirmed against the **real pinned CLI**
    documented `max_entry_bytes` prefix).
 5. **First-run/offline**: a fresh empty npm cache was used to verify the
    first-run download path (`env npm_config_cache=$(mktemp -d) npx -y
-   @firecrawl/anydoc@0.1.6 --version` → `0.1.6`, exit 0).
+   @firecrawl/anydoc@0.2.4 --version` → `0.2.4`, exit 0).
 6. **Startup timing**: repeated warm invocations were timed
-   (`/usr/bin/time -p npx -y @firecrawl/anydoc@0.1.6 ...`) — ~0.32–0.35 s each,
+   (`/usr/bin/time -p npx -y @firecrawl/anydoc@0.2.4 ...`) — ~0.32–0.35 s each,
    consistent with the documented ~0.33–0.55 s warm-cache startup range.
 
 Repository checks applied after authoring: frontmatter and structure

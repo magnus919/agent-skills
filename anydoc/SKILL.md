@@ -4,19 +4,19 @@ description: >-
   Convert Word (.doc/.docx/.docm), PowerPoint (.ppt/.pps/.pot/.pptx/.pptm/.ppsx/.ppsm),
   Excel (.xls/.xlsx/.xlsm/.xlsb), OpenDocument (.odt/.ods/.odp), RTF, EPUB, CSV, and
   PDF documents to clean GitHub-Flavored Markdown locally with the Any Doc CLI
-  (npx -y @firecrawl/anydoc@0.1.6): headings, GFM tables, slide structure, and
+  (npx -y @firecrawl/anydoc@0.2.4): headings, GFM tables, slide structure, and
   footnotes in one pass. Use when a task needs the contents of an office document,
   spreadsheet, presentation, ebook, or PDF you cannot read directly. Do not use for
   generating, editing, or validating documents (use documents), for ebook packaging
-  (use epub), or for OCR of scanned or image-only PDFs (anydoc does not OCR; route
-  to OCR tooling).
+  (use epub). For scanned or image-only PDFs, use hosted OCR only when the user
+  explicitly authorizes whole-document upload; otherwise route to local OCR tooling.
 license: MIT
 compatibility: >-
-  Node.js >= 20 and npx. The pinned CLI is @firecrawl/anydoc@0.1.6; the native
+  Node.js >= 20 and npx. The pinned CLI is @firecrawl/anydoc@0.2.4; the native
   binary ships via npm optionalDependencies (no install step, no postinstall, no
-  compilation). Conversion runs entirely on your machine — no services, no API
-  keys, no uploads. The first npx run downloads the package once (network
-  required); later runs use the npm cache.
+  compilation). Local conversion needs no service or API key. Hosted OCR sends the
+  whole PDF to Firecrawl Parse and may use FIRECRAWL_API_KEY. The first npx run
+  downloads the package once (network required); later runs use the npm cache.
 metadata:
   skills: anydoc, markdown, conversion, docx, xlsx, pptx, pdf, odt, ods, odp, rtf, epub, csv, office, documents, firecrawl
   tags: conversion, markdown, office, documents
@@ -28,9 +28,9 @@ allowed-tools: Bash Read
 
 The `anydoc` skill converts office documents, spreadsheets, presentations,
 ebooks, CSV, and text-based PDFs into GitHub-Flavored Markdown using the pinned
-Any Doc CLI (`@firecrawl/anydoc` v0.1.6). One shared document model and one GFM
-serializer produce the same logical output across formats, and conversion runs
-locally in milliseconds — no service, no API key, no file upload.
+Any Doc CLI (`@firecrawl/anydoc` v0.2.4). One shared document model and one GFM
+serializer produce the same logical output across formats. Local conversion runs
+without a service, API key, or file upload; hosted OCR is a separate explicit route.
 
 ## Overview
 
@@ -51,11 +51,11 @@ Before invoking anydoc, classify the request:
 | If the user needs... | Do this |
 | --- | --- |
 | The contents of an existing supported document | Continue to [Command Map](#command-map). |
-| Generation, editing, validation, EPUB packaging, HTML scraping, OCR, or password decryption | Stop and use the route in [When not to use](#when-not-to-use). |
+| Generation, editing, validation, EPUB packaging, HTML scraping, or password decryption | Stop and use the route in [When not to use](#when-not-to-use). |
 | A format-fidelity or failure decision | Load the matching row in [Reference Routing](#reference-routing) before choosing a command. |
 | A conversion result | Choose stdout, `-o`, or batch; run it; then follow [Verification](#verification). |
 
-> **Hard boundary:** anydoc reads existing supported documents to Markdown. It does not create, edit, validate, package, OCR, decrypt, or scrape them.
+> **Hard boundary:** local anydoc conversion reads existing supported documents to Markdown without uploading them. Hosted OCR is opt-in only: it sends the whole OCR-required PDF to the configured Parse service. AnyDoc does not create, edit, validate, package, decrypt, or scrape documents.
 
 ## When to use
 
@@ -85,7 +85,7 @@ epub, xlsx, ods, odp, csv`; extension aliases map through them (`.docm`→docx,
 | Rich Text Format | `.rtf` | same document shape as DOCX/ODT | Use for text extraction, not layout preservation. |
 | EPUB | `.epub` | `#` chapter headings, GFM tables, internal anchor links | Use to read an existing EPUB; use `epub` to author or package one. |
 | CSV | `.csv` | one GFM table; label-like first row promoted to header; delimiter sniffing; UTF-16 with BOM | Use for delimited tabular content; inspect delimiter and encoding when output looks wrong. |
-| PDF | `.pdf` | headings + inline emphasis, but a lower-fidelity pipeline: tables flatten to text, footnotes and links degrade. **Scanned or image-only PDFs fail** — anydoc does not OCR | Use only for text-based PDFs; route scanned PDFs to OCR and treat tables as lower fidelity. |
+| PDF | `.pdf` | headings + inline emphasis, but a lower-fidelity pipeline: tables flatten to text, footnotes and links degrade. Text-based PDFs stay local; scanned/image-only PDFs require explicit hosted OCR or another OCR tool | Use local mode by default; hosted mode uploads the whole PDF and has no page selection. |
 
 See [references/formats.md](references/formats.md) for the full per-format
 expectations and fidelity caveats, and [references/errors.md](references/errors.md)
@@ -103,21 +103,43 @@ the document from stdin.
 | Convert one file to a markdown file | `anydoc/scripts/anydoc convert <file> -o out.md` | The output is large, must be reviewed later, or should be preserved as an artifact. |
 | Convert many files to a directory | `anydoc/scripts/anydoc batch <file1> <file2> ... --out-dir out/` | The request is a bounded batch and per-file output/status is useful. |
 | Show the tool and pinned CLI version | `anydoc/scripts/anydoc info` | You need to confirm the executable and version before troubleshooting or reporting an environment issue. |
-| Raw pinned CLI, one document | `npx -y @firecrawl/anydoc@0.1.6 <file> [-o out.md]` | The wrapper is unavailable; preserve the pinned CLI and its documented semantics. |
-| Raw pinned CLI, read stdin | `cat data.csv \| npx -y @firecrawl/anydoc@0.1.6 - --format csv` | Bytes already arrive on stdin and the format is known; keep the producer pipeline separate from the converter. |
+| Raw pinned CLI, one document | `npx -y @firecrawl/anydoc@0.2.4 <file> [-o out.md]` | The wrapper is unavailable; preserve the pinned CLI and its documented semantics. |
+| Raw pinned CLI, read stdin | `cat data.csv \| npx -y @firecrawl/anydoc@0.2.4 - --format csv` | Bytes already arrive on stdin and the format is known; keep the producer pipeline separate from the converter. |
+
+For an OCR-required PDF, first use the local default so the failure is visible:
+
+```bash
+anydoc/scripts/anydoc convert scan.pdf --ocr reject
+```
+
+If the user explicitly authorizes sending the complete PDF to Firecrawl Parse,
+use the wrapper acknowledgement and a trusted `FIRECRAWL_API_KEY` environment
+variable when needed:
+
+```bash
+anydoc/scripts/anydoc convert scan.pdf --ocr hosted --allow-hosted-upload
+```
+
+The wrapper never places the key on the command line. Hosted OCR has no page
+selection, and a hosted failure is not permission to silently switch endpoints.
 
 Notes:
 
 - `scripts/anydoc` is an executable Python 3 script (shebang `#!/usr/bin/env
   python3`); `python3 anydoc/scripts/anydoc ...` is equivalent when the
   executable bit is unavailable.
-- The raw `npx -y @firecrawl/anydoc@0.1.6` rows are the ground truth for
+- The raw `npx -y @firecrawl/anydoc@0.2.4` rows are the ground truth for
   conversion behavior; the wrapper delegates to exactly that command.
-- Always pin `@0.1.6` for reproducible conversions. `-y` answers npx's
+- Always pin `@0.2.4` for reproducible conversions. `-y` answers npx's
   "Ok to proceed?" prompt non-interactively — the CLI itself never prompts.
 - Both forms share the same contract: one document per invocation, exit code
   `0` success / `1` conversion or IO failure / `2` usage error, diagnostics as
   exactly one `anydoc: <message>` line on stderr, and no prompts.
+
+Hosted OCR is supported by the 0.2.4 library and CLI, but the wrapper requires
+both `--ocr hosted` and `--allow-hosted-upload` so an upload cannot be selected
+implicitly. The hosted route sends the complete PDF to Firecrawl Parse because
+page selection is unavailable. Do not place API keys on the command line.
 
 ## Reference Routing
 
@@ -140,7 +162,7 @@ Use this routing table before reaching for a conversion command:
 | --- | --- | --- |
 | Generate, edit, inspect rendered layout, or validate a PDF/Word/Excel/PowerPoint artifact | `documents` skill | anydoc extracts existing document contents to Markdown; it does not author, preserve rendered layout, or validate artifacts. |
 | Package or author an EPUB | `epub` skill | anydoc reads an existing EPUB to Markdown but never writes or validates an EPUB container. |
-| OCR a scanned or image-only PDF | OCR tooling or the hosted Firecrawl Parse API | anydoc has no OCR path; report the documented unsupported error and do not retry locally. |
+| OCR a scanned or image-only PDF | Local OCR tooling, or AnyDoc hosted OCR after explicit authorization | Local mode reports the OCR-required error without uploading; hosted mode sends the whole PDF to Firecrawl Parse. |
 | Scrape HTML or other web content | A web-scraping skill | HTML is not a supported anydoc input. |
 | Transcribe binary media such as images, video, or audio | A media or transcription tool | Embedded images become alt text; anydoc cannot transcribe media. |
 | Preserve pagination, fonts, templates, or rendered layout | A document/layout tool | The only output contract is GitHub-Flavored Markdown. |
@@ -164,7 +186,7 @@ Caveat/route: <documented limitation or next action>
 
 | Condition | Do not | Next |
 | --- | --- | --- |
-| Scanned or image-only PDF / OCR-required error | Retry the same file locally | Route to OCR tooling or the hosted Firecrawl Parse API. |
+| Scanned or image-only PDF / OCR-required error | Retry unchanged or upload implicitly | Use local OCR, or explicitly authorize and run `--ocr hosted --allow-hosted-upload`; page selection is unavailable. |
 | Encrypted or password-protected document | Guess a password or retry unchanged | Request an unencrypted copy or owner-authorized re-export. |
 | Unsupported, malformed, or resource-limit error | Guess a parser or claim partial success | Match the exact error in [references/errors.md](references/errors.md) and follow its bounded route. |
 | Exit 0 but expected structural markers are absent | Report success from the exit code alone | Inspect the output shape and source fidelity before reporting completion. |
