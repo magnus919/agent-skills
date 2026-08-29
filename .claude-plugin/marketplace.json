@@ -822,7 +822,7 @@
         "./peertube"
       ],
       "strict": false,
-      "description": "Browse PeerTube federated video from the terminal: view videos and channels, search across instances, check server stats, and manage your account. Uses OAuth2 authentication with token persistence. Use when the user mentions PeerTube, federated video, decentralized video platforms, or browsing/uploading to a PeerTube instance."
+      "description": "Browse PeerTube federated video from the terminal — instance stats, latest videos, video detail, comment threads, channels, accounts, instance-local search, and OAuth2 login with per-instance token persistence. Set PEERTUBE_SERVER to any instance; point it at sepiasearch.org for fediverse-wide search. Use when the user mentions PeerTube, federated video, SepiaSearch, or browsing a specific PeerTube instance. Do not use this skill for YouTube/Vimeo uploads, video editing, or installing and administering a PeerTube server."
     },
     {
       "name": "platform-engineering",

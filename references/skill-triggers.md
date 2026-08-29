@@ -22,6 +22,7 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "Jellyfin", "Jellyfin media server", "recently added movies", "recently added episodes", "media library", "JELLYFIN_API_KEY", "Jellyfin API authentication" | [jellyfin](../jellyfin/SKILL.md) |
 | "Jira", "Atlassian Jira", "JQL", "ticket PROJ-123", "sprint work", "JIRA_API_TOKEN" | [jira](../jira/SKILL.md) |
 | "Open Library", "openlibrary", "book search", "ISBN lookup", "author records", "work details", "book editions", "book ratings", "cover image" | [openlibrary](../openlibrary/SKILL.md) |
+| "PeerTube", "peertube", "federated video", "SepiaSearch", "decentralized video platform", "PEERTUBE_SERVER", "my PeerTube instance" | [peertube](../peertube/SKILL.md) |
 | "weather", "forecast", "temperature", "is it raining", "Tempest" | [tempest](../tempest/SKILL.md) |
 | "TMDb", "The Movie Database", "movie search", "trending movies", "upcoming TV releases", "TMDB_ACCESS_TOKEN" | [tmdb](../tmdb/SKILL.md) |
 | "traefik", "reverse proxy", "load balancer", "API gateway", "Let's Encrypt", "ACME", "Docker routing", "traefik.yml", "entry point", "middleware", "TLS termination", "forward auth", "rate limit" | [traefik](../traefik/SKILL.md) |

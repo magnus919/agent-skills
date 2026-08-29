@@ -377,7 +377,7 @@ Build and maintain owner-approved Primary, Alternate, Contingency, and Emergency
 
 ### [peertube](peertube/SKILL.md)
 
-PeerTube federated video platform from the terminal. Browse videos and channels, search across instances, view server info. OAuth2 login with token persistence. Set PEERTUBE_SERVER to point at any instance.
+PeerTube federated video from the terminal. Browse videos, channels, and comment threads on any instance, search instance-local or the whole fediverse via SepiaSearch, check server stats, and log in with OAuth2 — with per-instance token persistence and pagination/search-scope quirks documented.
 
 ### [platform-engineering](platform-engineering/SKILL.md)
 
