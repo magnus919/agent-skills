@@ -40,6 +40,9 @@ on later `--new-only` runs.
 
 ## Notes
 
+- Raleigh's site may present a Cloudflare browser challenge to non-browser
+  clients. The CLI does not attempt to bypass that challenge; the scheduled
+  canary records it as a visible, non-failing upstream access observation.
 - The CLI preserves canonical page URLs so users can inspect the source presentation.
 - Rendered HTML is treated as content, not executable markup.
 - Publication status is requested server-side with `filter[status]=1`; the CLI
