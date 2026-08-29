@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "skill_name": "jellyfin",
+  "evals": [
+    {
+      "id": "recent-movies-json",
+      "prompt": "Show me the five movies most recently added to my Jellyfin server, as JSON.",
+      "expected_output": "Run scripts/jellyfin recent --movies --limit 5 --json with JELLYFIN_URL, JELLYFIN_API_KEY, and JELLYFIN_USER_ID configured; the /Items/Latest response is a bare JSON array, not an {Items: [...]} wrapper.",
+      "assertions": [
+        "invokes scripts/jellyfin recent with --movies and --limit 5",
+        "uses --json for machine-readable output",
+        "does not wrap the result in an Items key because /Items/Latest returns a bare array"
+      ]
+    },
+    {
+      "id": "search-to-episodes-pipeline",
+      "prompt": "Find the series Breaking Bad on my Jellyfin server and then list its episodes.",
+      "expected_output": "Chain scripts/jellyfin search --query 'breaking bad' --type Series --json to get a result id, then scripts/jellyfin seasons --series-id <id> --user-id <user id>, then scripts/jellyfin episodes --series-id <id> --season-id <season id> --user-id <user id>, consuming each stage's id output in the next command.",
+      "assertions": [
+        "starts with a search using --type Series",
+        "extracts the id field from search results before the next stage",
+        "walks seasons then episodes with --series-id and --user-id",
+        "passes the user id explicitly on every user-scoped command"
+      ]
+    },
+    {
+      "id": "authenticatebyname-pretoken-header",
+      "prompt": "My script calls POST /Users/AuthenticateByName on Jellyfin with just the username and password JSON and gets HTTP 400 'Error processing request.' even though the credentials are correct. Why?",
+      "expected_output": "The login endpoint requires a complete Authorization header in the MediaBrowser scheme - Client=\"...\", Device=\"...\", DeviceId=\"...\", Version=\"...\" - BEFORE any access token exists; the server uses those values to create the session and rejects the request with 400 when the header is missing. The returned AccessToken is then sent as Token=\"...\" in the same Authorization header on subsequent calls (X-Emby-Token is the deprecated legacy equivalent).",
+      "assertions": [
+        "explains the pre-token MediaBrowser Client/Device/DeviceId/Version header requirement",
+        "diagnoses the 400 Error processing request. body as the missing-header signature",
+        "distinguishes wrong-credential 401 from missing-header 400",
+        "notes the AccessToken is sent via Token= or legacy X-Emby-Token afterwards"
+      ]
+    },
+    {
+      "id": "user-id-scoping-diagnosis",
+      "prompt": "Queries against my Jellyfin server work with curl on /System/Info but GET /Items returns 400 saying 'userId is required', and /Users/Me returns 400 'Token is not owned by a user.' What is wrong?",
+      "expected_output": "The token is a dashboard API key, which authenticates as an administrator but has NO user identity. User-scoped endpoints need an explicit userId query parameter, and /Users/Me intentionally rejects API keys. Find a user id via GET /Users and pass it (or use a user access token from login).",
+      "assertions": [
+        "identifies API-key authentication as the cause",
+        "explains userId must be passed explicitly on /Items and other user-scoped endpoints",
+        "resolves it by listing /Users or logging in for a user token"
+      ]
+    },
+    {
+      "id": "latest-shape-and-pagination-gotcha",
+      "prompt": "Parse Jellyfin recently-added output in a generic client: which response shapes differ across endpoints, and how should paging loop over /Items?",
+      "expected_output": "/Items, /Shows/*, and /Search/Hints return a wrapper object {Items, TotalRecordCount, StartIndex}; /Items/Latest returns a bare array of items; /Items/{id} returns a single object. Page /Items with startIndex plus limit and stop on an empty page or when startIndex reaches TotalRecordCount, since counts can go stale mid-scan.",
+      "assertions": [
+        "distinguishes wrapper-object, bare-array, and single-object response shapes",
+        "names /Items/Latest as the bare-array exception",
+        "describes startIndex/limit paging with an empty-page guard"
+      ]
+    },
+    {
+      "id": "emby-install-not-for-jellyfin",
+      "prompt": "Help me install an Emby server on my NAS and migrate my Plex library into it.",
+      "expected_output": "This must not trigger the jellyfin skill: server installation, Emby/Plex administration, and media-ripper workflows are outside its read-only Jellyfin query scope. Use OS package tooling for the install and the target server's own migration tooling.",
+      "assertions": [
+        "must not trigger jellyfin for Emby or Plex server installation",
+        "refuses server administration and library-migration work",
+        "points to OS tooling instead of the read-only Jellyfin query CLI"
+      ]
+    }
+  ]
+}

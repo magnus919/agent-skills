@@ -1,138 +1,224 @@
 ---
 name: jellyfin
 description: Query your Jellyfin media server from the terminal — recently added media,
-  search, item details, next-up episodes, library browsing, server info, and stats. Use
-  when the user asks about Jellyfin, media server, movies, TV shows, next episodes, or
-  their media library.
+  search, item details, series navigation, next-up episodes, library browsing, server
+  info, and user login. Use when the user asks about Jellyfin, media servers, movies, TV
+  shows, next episodes, or their media library. Do not use this skill for server
+  installation, library management, playback control, or Emby/Plex servers.
 license: MIT
-compatibility: Requires JELLYFIN_URL (default http://localhost:8096) and JELLYFIN_API_KEY
-  env vars; `recent`, `next-up`, and `item` also require JELLYFIN_USER_ID or --user-id.
-  Python 3.8+ and the `requests` library. Generate an API key at Dashboard → API Keys in the Jellyfin admin panel.
+compatibility: Requires Python 3.8+ and `requests`. Authenticate with JELLYFIN_API_KEY
+  (Dashboard → API Keys), a user access token from `login`, or Quick Connect; user-scoped
+  commands (`recent`, `next-up`, `item`, `seasons`, `episodes`) also need JELLYFIN_USER_ID
+  or --user-id.
 metadata:
   tags: jellyfin, media-server, movies, tv, episodes, recently-added, library, home-media,
     api-client
-  sources: https://jellyfin.org/docs/general/clients/api, https://jellyfin.org/downloads
+  sources: https://api.jellyfin.org/, https://gist.github.com/nielsvanvelzen/ea047d9028f676185832e51ffaf12a6f
 ---
 
 # jellyfin — Jellyfin Media Server from the Terminal
 
-Query recently added movies and TV episodes, search and inspect media, browse libraries, see next-up episodes, check server info, and view library statistics — all from your Jellyfin server's REST API.
+Query recently added movies and TV episodes, search and inspect media, walk series →
+seasons → episodes, browse libraries, see next-up episodes, log in as a user, and check
+server stats — all from your Jellyfin server's REST API. Every command is read-only
+except `login`.
 
 ## Setup
 
-1. Make sure your Jellyfin server is running and accessible.
-2. Generate an API key in the Jellyfin Dashboard → **API Keys** → `+` to create a new key.
+1. Make sure your Jellyfin server is running and accessible (default `http://localhost:8096`).
+2. Pick an authentication route:
+   - **API key** — Dashboard → **API Keys** → `+`. Administrator-level, no user identity:
+     every user-scoped command then needs an explicit user id.
+   - **User token** — run `scripts/jellyfin login --username NAME --prompt` once; it
+     prints the values to export.
 3. Set these environment variables:
 
 ```bash
 export JELLYFIN_URL="http://your-server:8096"   # include protocol and port
-export JELLYFIN_API_KEY="your-api-key-here"
-export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent, next-up, and item
+export JELLYFIN_API_KEY="your-api-key-here"     # or JELLYFIN_TOKEN after `login`
+export JELLYFIN_USER_ID="your-jellyfin-user-id" # required by recent, next-up, item, seasons, episodes
 ```
 
-Run the bundled CLI as `scripts/jellyfin`. `--help` and `--dry-run` work without credentials.
+Run the bundled CLI as `scripts/jellyfin`. `--help` and `--dry-run` work without
+credentials.
+
+### How authentication works
+
+Jellyfin wants a `MediaBrowser`-scheme `Authorization` header on every call. The login
+endpoint requires its `Client=..., Device=..., DeviceId=..., Version=...` quartet **before
+any token exists** — the server rejects `POST /Users/AuthenticateByName` with
+`400 Error processing request.` otherwise. Afterwards the access token (or API key) rides
+the same header as `Token="..."`; the legacy `X-Emby-Token` header means the same thing
+and is scheduled for removal from Jellyfin 12.0. The bundled CLI sends the modern form.
+See [references/auth-and-sessions.md](references/auth-and-sessions.md).
 
 ## Essential Commands
+
+### Authentication — get a session
+
+```bash
+scripts/jellyfin login --username alice --prompt          # prints JELLYFIN_* exports
+echo "pw" | scripts/jellyfin login --username alice --password-stdin
+scripts/jellyfin login --username alice --dry-run --json  # preview the pre-token header
+```
+
+`login` demonstrates the full researched sequence: complete pre-token MediaBrowser header
+→ `POST /Users/AuthenticateByName` → capture `User.Id` + `AccessToken` → print the
+post-token header for reuse. It never echoes the password.
 
 ### info — Server information
 
 ```bash
-scripts/jellyfin info                           # server name, version, OS, user count
-scripts/jellyfin info --json                    # machine-readable
-scripts/jellyfin --dry-run info                 # preview API requests
+scripts/jellyfin info              # server name, version, OS, user count
+scripts/jellyfin info --json
 ```
-
-Shows: server name, version, operating system, number of users.
 
 ### recent — Recently added media
 
 ```bash
-scripts/jellyfin recent                         # last 10 items added
-scripts/jellyfin recent --limit 20              # more results
-scripts/jellyfin recent --movies                # only recently added movies
-scripts/jellyfin recent --episodes              # only recently added episodes
-scripts/jellyfin recent --user-id USER_ID       # override JELLYFIN_USER_ID
-scripts/jellyfin recent --movies --limit 5      # top 5 recently added movies
-scripts/jellyfin recent --json                  # machine-readable
+scripts/jellyfin recent                     # last 10 items added for JELLYFIN_USER_ID
+scripts/jellyfin recent --movies --limit 5  # server-side includeItemTypes filter
+scripts/jellyfin recent --episodes --limit 20 --json
+scripts/jellyfin recent --user-id USER_ID   # override the env var
 ```
 
-Uses Jellyfin's current `/Items/Latest` endpoint. `--movies` and `--episodes` send `includeItemTypes` to the server, so the requested limit applies to the selected media type. Shows: name, type (Movie/Episode), production year, series name (for episodes), date added.
+Hits `/Items/Latest` with `userId`; the response is a **bare JSON array** (no `Items`
+wrapper), and `groupItems` merges episodes by series, so treat it as "what's new".
 
 ### search — Search your media library
 
 ```bash
-scripts/jellyfin search --query "dune"                # search everything
-scripts/jellyfin search --query "dune" --type Movie   # movies only
-scripts/jellyfin search --query "star trek" --type Series,Episode
-scripts/jellyfin search --query "inception" --limit 5 # top 5 results
-scripts/jellyfin search --query "dune" --json         # machine-readable
+scripts/jellyfin search --query "dune"                  # everything
+scripts/jellyfin search --query "dune" --type Movie     # comma-separated types
+scripts/jellyfin search --query "star trek" --type Series,Episode --limit 5 --json
 ```
 
-The `--type` flag accepts a comma-separated list of item types (e.g. `Movie,Series,Episode`).
+Search hits `/Search/Hints`; results carry `id` (with a deprecated `ItemId` twin on old
+servers — the CLI already prefers the modern field).
 
-### Navigation — Inspect media and browse libraries
+### Navigation — inspect items and walk series
 
 ```bash
-scripts/jellyfin search --query "dune" --type Movie    # find an item ID
-scripts/jellyfin item --id ITEM_ID                      # inspect that item
-scripts/jellyfin libraries                               # find a library ID
-scripts/jellyfin browse --library-id LIBRARY_ID --type Movie --limit 20
-scripts/jellyfin browse --library-id LIBRARY_ID --start-index 20
-scripts/jellyfin next-up --limit 10                      # next episodes for JELLYFIN_USER_ID
-scripts/jellyfin next-up --user-id USER_ID --json
+scripts/jellyfin search --query "dune" --type Movie --json   # find an item ID
+scripts/jellyfin item --id ITEM_ID                           # full metadata (needs user)
+scripts/jellyfin seasons --series-id SERIES_ID               # list seasons
+scripts/jellyfin episodes --series-id SERIES_ID --season-id SEASON_ID
+scripts/jellyfin next-up --limit 10                          # next unwatched episodes
+scripts/jellyfin next-up --series-id SERIES_ID --user-id USER_ID
 ```
 
-Use `search -> item` to look up a result's metadata, and `libraries -> browse` to page through a collection. `next-up` returns the next unwatched episodes for the selected user. `item` and `next-up` require `JELLYFIN_USER_ID` or `--user-id`; all three commands are read-only.
+`item`, `seasons`, `episodes`, and `next-up` are user-scoped: they require
+`JELLYFIN_USER_ID` or `--user-id` and fail before any network call without one.
 
-### libraries — List media libraries
+### libraries — browse a collection
 
 ```bash
-scripts/jellyfin libraries                     # all configured libraries
-scripts/jellyfin libraries --json              # machine-readable
+scripts/jellyfin libraries                                   # library IDs and types
+scripts/jellyfin browse --library-id LIBRARY_ID --type Movie --limit 50
+scripts/jellyfin browse --library-id LIBRARY_ID --start-index 50   # paginate
+scripts/jellyfin browse --library-id LIBRARY_ID --user-id USER_ID  # userId sent explicitly
 ```
 
-Shows: library name, collection type (movies, tvshows, music, etc.), library ID.
+`libraries` reads `/Library/MediaFolders`, which is **admin-only** — non-admin tokens get
+403 and should use `/UserViews` (see references). `browse` pages `/Items` with
+`startIndex`/`limit` and passes `userId` when provided, since servers using non-API-key
+auth reject unscoped queries with `400 userId is required`.
 
 ### stats — Library statistics
 
 ```bash
-scripts/jellyfin stats                         # movie, series, episode, song counts
-scripts/jellyfin stats --json                  # machine-readable
+scripts/jellyfin stats    # movie, series, episode, song counts (/Items/Counts)
 ```
 
-Shows: total count of movies, series, episodes, and songs in the library.
+## Pipeline recipes
 
-## Global Flags
-
-These flags work anywhere in the command — before or after the subcommand:
+### Find a series, then its next unwatched episode
 
 ```bash
-scripts/jellyfin --json recent --limit 5               # JSON output
-scripts/jellyfin recent --limit 5 --json               # same result, after subcommand
-scripts/jellyfin --dry-run search --query "dune"       # preview request without API call
+scripts/jellyfin search --query "breaking bad" --type Series --json | jq -r '.results[0].id'
+scripts/jellyfin next-up --series-id "$SERIES_ID" --user-id "$JELLYFIN_USER_ID" --json | jq -r '.items[0].name'
 ```
 
-| Flag | Effect |
-|------|--------|
-| `--json` | Output machine-readable JSON instead of human-readable text |
-| `--dry-run` | Show each request path and parameters without executing it |
+### Page through a whole library
+
+```bash
+scripts/jellyfin browse --library-id "$LIB_ID" --limit 100 --start-index 0 --json | jq -c '.items'
+# loop: advance --start-index by the returned count until .total_record_count is reached
+```
+
+### Log in and persist a session
+
+```bash
+scripts/jellyfin login --username alice --prompt --json | jq -r '"\(.user_id) \(.access_token)"'
+```
+
+## JSON and jq
+
+Put `--json` before or after the subcommand. Output keys are stable snake_case: `items`
+(with `id`, `name`, `type`, `year`, `series`, `season_number`, `episode_number`),
+`results`, `libraries`, `total_record_count`, `start_index`. `--dry-run` emits the exact
+`path` + `params` (or `authorization_header` for `login`) that would be sent, so jq can
+verify a chain before running it live. Use `jq -r '.items[] | [.name, .year] | @tsv'` for
+tabular handoff.
 
 ## Known Gotchas
 
-- **JELLYFIN_URL must include protocol and port** — Both are required, e.g. `http://192.168.1.100:8096`. A bare hostname or IP without `http://` and `:8096` will fail. The default is `http://localhost:8096`.
-- **User-scoped commands require an explicit user** — Set `JELLYFIN_USER_ID` or pass `--user-id USER_ID` to `recent`, `next-up`, or `item`. The CLI never selects an administrator automatically. A real request without either value fails before network access; dry-run previews the request with a null user ID.
-- **Recent type filtering is server-side** — `--movies` and `--episodes` become the `/Items/Latest` `includeItemTypes` parameter before `limit`; no local filtering is applied.
-- **Search type values** — The `--type` flag for `search` uses Jellyfin item type names (e.g. `Movie`, `Series`, `Episode`, `MusicArtist`, `MusicAlbum`). Multiple types are comma-separated without spaces.
-- **API key location** — Generate the key in the Jellyfin Dashboard under **Dashboard → API Keys**. The key is sent as the `X-Emby-Token` header.
-- **Lazy auth** — `--help` and `--dry-run` work even when `JELLYFIN_URL` and `JELLYFIN_API_KEY` are not set. Dry-run reports request paths and parameters but never sends credentials or makes a network call.
-- **No pagination** — Every command returns a single page of results. The CLI does not auto-paginate beyond the first response. Use `--limit` to control result size.
+- **JELLYFIN_URL must include protocol and port** — e.g. `http://192.168.1.100:8096`.
+- **User-scoped commands require an explicit user** — `recent`, `next-up`, `item`,
+  `seasons`, `episodes` refuse to run without `JELLYFIN_USER_ID`/`--user-id`. The CLI
+  never picks an administrator for you. A missing userId on user-token requests makes the
+  server answer `400 userId is required`.
+- **API keys have no user** — `/Users/Me` answers `400 Token is not owned by a user.` to
+  API keys by design; per-user queries need an explicit user id (see
+  [references/user-scoping-and-errors.md](references/user-scoping-and-errors.md)).
+- **The login 400 vs 401 trap** — missing/partial MediaBrowser header → `400` with plain
+  text `Error processing request.`; wrong credentials → `401`. Same endpoint, different
+  failures.
+- **Response shapes differ per endpoint** — `/Items` and `/Shows/*` wrap results in
+  `{Items, TotalRecordCount, StartIndex}`; `/Items/Latest` returns a bare array; search
+  uses a `SearchHints` key. Generic clients must branch (the CLI already does).
+- **Recent type filtering is server-side** — `--movies`/`--episodes` become
+  `includeItemTypes` before `limit`; no local filtering.
+- **NextUp needs userId on every server version** — omitting it crashed servers ≤10.8 and
+  silently scopes to the session user on ≥10.9. The CLI always sends it.
+- **`libraries` is admin-only** — `/Library/MediaFolders` requires an administrator token;
+  non-admin tokens get 403.
+- **Legacy auth is going away** — `X-Emby-Token`, `X-MediaBrowser-Token`, and the
+  `api_key` query parameter are deprecated; admins can already disable them (10.11+), and
+  removal targets 12.0. Prefer the modern Authorization header the CLI sends.
+- **Lazy auth** — `--help` and `--dry-run` work without credentials; dry-run never touches
+  the network.
 
-## References
+## When to use
 
-- [scripts/jellyfin](scripts/jellyfin) — The bundled read-only CLI binary with `--json`, `--dry-run`, and lazy authentication.
-- [Jellyfin API Docs](https://jellyfin.org/docs/general/clients/api) — Official API documentation.
-- [Jellyfin Downloads](https://jellyfin.org/downloads) — Server download and setup guide.
+Use this skill for read-only interaction with a running Jellyfin server: discovery of
+what's new, searching and inspecting items, walking series and seasons, next-up planning,
+library inventories, and obtaining a user session via `login` or Quick Connect.
 
 ## When not to use
 
-Do not use this skill for playback control or library management (starting streams, editing item metadata, creating users) — every bundled command is read-only; route remote-control automation to Jellyfin's official clients, and Plex or Kodi servers expose their own separate APIs.
+Do not use this skill for server installation or administration (installing Jellyfin or
+Emby, editing libraries, managing users) — every bundled command is read-only except
+`login`. It does not target Plex or Kodi (different APIs — use their own tools), and it is
+not a playback remote: route streaming or remote-control automation to Jellyfin's official
+clients.
+
+## Reference Files
+
+| File | Use it for |
+| ---- | ---------- |
+| [references/auth-and-sessions.md](references/auth-and-sessions.md) | MediaBrowser header scheme, login flow, token channels, legacy deprecation, error signatures |
+| [references/endpoint-catalog.md](references/endpoint-catalog.md) | Every read endpoint's parameters, response shapes, image URLs, pagination loop |
+| [references/user-scoping-and-errors.md](references/user-scoping-and-errors.md) | The userId requirement matrix, API-key identity quirks, 400-vs-404 diagnosis |
+| [references/gotchas-field-guide.md](references/gotchas-field-guide.md) | Wire-level failure signatures, version-drift ledger, mock shapes |
+| [references/worked-recipes.md](references/worked-recipes.md) | Multi-step curl/jq and CLI recipes: login → latest, libraries → browse, search → seasons → episodes |
+| [references/quick-connect.md](references/quick-connect.md) | Passwordless Quick Connect login flow |
+
+## Available Scripts and Prerequisites
+
+- `scripts/jellyfin` — the bundled Python CLI (`--json`, `--dry-run`, lazy auth).
+  Imports only the standard library and `requests`.
+- `scripts/test_jellyfin_cli.py` — offline test suite (pytest + unittest compatible);
+  all HTTP behavior is mocked, zero network egress.
+- Requires Python 3.8+ and `requests`. A running Jellyfin server (10.8+ assumed; tested
+  behaviors anchored to the 12.0-era OpenAPI spec). No service is started by this skill.

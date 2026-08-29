@@ -2,12 +2,18 @@
 """jellyfin — Jellyfin media server from the terminal.
 
 Query recently added media, search your library, browse by collection,
-and check server status. Requires JELLYFIN_URL and JELLYFIN_API_KEY.
+walk series seasons and episodes, and check server status. Authenticates
+with an API key (JELLYFIN_API_KEY), a user access token (JELLYFIN_TOKEN),
+or a named login (`login` subcommand). Requires JELLYFIN_URL for a
+non-default server.
 """
 
 import argparse
+import getpass
+import hashlib
 import json
 import os
+import socket
 import sys
 import warnings
 from typing import Any, Dict
@@ -17,11 +23,43 @@ warnings.simplefilter("ignore")
 import requests
 
 DEFAULT_SERVER = "http://localhost:8096"
+DEFAULT_PORT = "8096"
 ENV_URL = os.getenv("JELLYFIN_URL", DEFAULT_SERVER)
 ENV_KEY = os.getenv("JELLYFIN_API_KEY", "")
+ENV_TOKEN = os.getenv("JELLYFIN_TOKEN", "")
 ENV_USER_ID = os.getenv("JELLYFIN_USER_ID", "")
+ENV_DEVICE_ID = os.getenv("JELLYFIN_DEVICE_ID", "")
+ENV_PASSWORD = os.getenv("JELLYFIN_PASSWORD", "")
+
+CLIENT_NAME = "jellyfin-cli"
+CLIENT_VERSION = "1.0.0"
 
 GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False}
+
+
+def default_device_id() -> str:
+    """Stable per-machine device identifier (Jellyfin allows one token per device id)."""
+    seed = f"{socket.gethostname()}:{getattr(os, 'getuid', lambda: 0)()}"
+    return hashlib.sha256(seed.encode("utf-8")).hexdigest()[:16]
+
+
+def build_authorization_header(device_id, token=""):
+    """Build the Jellyfin MediaBrowser Authorization header.
+
+    The Client/Device/DeviceId/Version quartet is REQUIRED by the server on
+    POST /Users/AuthenticateByName even though no token exists yet — the login
+    call itself must be sent with this pre-token header. After login the
+    access token (or an API key) rides the same header in a Token= parameter.
+    """
+    parts = [
+        f'Client="{CLIENT_NAME}"',
+        f'Device="{socket.gethostname()}"',
+        f'DeviceId="{device_id}"',
+        f'Version="{CLIENT_VERSION}"',
+    ]
+    if token:
+        parts.append(f'Token="{token}"')
+    return "MediaBrowser " + ", ".join(parts)
 
 
 def die(msg, exit_code=1):
@@ -57,27 +95,49 @@ def _preparse_global_flags(argv):
 
 
 class JellyfinClient:
-    """Jellyfin API client (v10.8+ compatible)."""
+    """Jellyfin API client (10.8+ compatible, modern Authorization header)."""
 
-    def __init__(self, url="", key="", dry_run=False):
+    def __init__(self, url="", key="", token="", device_id="", dry_run=False):
         self.url = (url or ENV_URL).rstrip("/")
         self.key = key or ENV_KEY
+        self.token = token or ENV_TOKEN
+        self.device_id = device_id or ENV_DEVICE_ID or default_device_id()
         self.dry_run = dry_run
+        if not self.key and self.token:
+            # User access tokens are only meaningful together with their user id;
+            # user-scoped commands resolve that separately via --user-id.
+            pass
+
+    def _headers(self, with_token=True):
+        headers = {
+            "Accept": "application/json",
+            "Authorization": build_authorization_header(
+                self.device_id, token=(self.key or self.token) if with_token else "")
+        }
+        if with_token and self.key:
+            headers["X-Emby-Token"] = self.key
+        return headers
 
     def _get(self, path, params=None):
         url = f"{self.url}{path}"
         if self.dry_run:
             return {"dry_run": True, "url": url, "params": params}
-        if not self.key:
-            die("JELLYFIN_API_KEY not set. Generate one in Dashboard → API Keys.")
+        if not (self.key or self.token):
+            die("JELLYFIN_API_KEY (or JELLYFIN_TOKEN) not set. "
+                "Generate an API key in Dashboard → API Keys, or run `login`.")
         try:
-            resp = requests.get(url, params=params,
-                                headers={"X-Emby-Token": self.key, "Accept": "application/json"},
-                                timeout=30)
+            resp = requests.get(url, params=params, headers=self._headers(), timeout=30)
         except requests.ConnectionError as e:
             die(f"Cannot connect to {self.url}: {e}")
+        if resp.status_code == 503:
+            retry_after = resp.headers.get("Retry-After", "?")
+            message = resp.headers.get("Message", "server starting or unavailable")
+            die(f"Server unavailable (503): {message}. Retry after {retry_after}s.")
         if resp.status_code == 401:
-            die("Auth failed (401). Check JELLYFIN_API_KEY.")
+            die("Auth failed (401). Check JELLYFIN_API_KEY/JELLYFIN_TOKEN; on servers with "
+                "legacy auth disabled only the Authorization: MediaBrowser header works.")
+        if resp.status_code == 400 and "userId is required" in resp.text:
+            die("Server requires a userId on this request. Pass --user-id or set JELLYFIN_USER_ID.")
         if resp.status_code >= 400:
             try:
                 detail = resp.json()
@@ -86,11 +146,39 @@ class JellyfinClient:
             die(f"API error ({resp.status_code}): {detail}")
         return resp.json()
 
+    def _post(self, path, payload=None, send_auth_header=True):
+        url = f"{self.url}{path}"
+        if self.dry_run:
+            return {"dry_run": True, "url": url, "payload": payload}
+        try:
+            resp = requests.post(url, json=payload, headers=self._headers(send_auth_header),
+                                 timeout=30)
+        except requests.ConnectionError as e:
+            die(f"Cannot connect to {self.url}: {e}")
+        if resp.status_code >= 400:
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text[:200]
+            die(f"API error ({resp.status_code}): {detail}")
+        return resp.json()
+
+    def authenticate_by_name(self, username, password):
+        """POST /Users/AuthenticateByName — requires the pre-token MediaBrowser header."""
+        return self._post("/Users/AuthenticateByName",
+                          payload={"Username": username, "Pw": password})
+
+    def get_public_info(self):
+        return self._get("/System/Info/Public")
+
     def get_info(self):
         return self._get("/System/Info")
 
     def get_users(self):
         return self._get("/Users")
+
+    def get_user_views(self, user_id):
+        return self._get("/UserViews", params={"userId": user_id})
 
     def get_recent(self, user_id, limit=10, include_types=None):
         params = {"userId": user_id, "fields": "DateCreated"}
@@ -99,9 +187,11 @@ class JellyfinClient:
         params["limit"] = limit
         return self._get("/Items/Latest", params=params)
 
-    def get_next_up(self, user_id, limit=10):
-        return self._get(f"/Shows/NextUp",
-                         params={"userId": user_id, "limit": limit})
+    def get_next_up(self, user_id, limit=10, series_id=None):
+        params = {"userId": user_id, "limit": limit}
+        if series_id:
+            params["seriesId"] = series_id
+        return self._get("/Shows/NextUp", params=params)
 
     def search(self, query, limit=20, include_types=None):
         params = {"searchTerm": query, "limit": limit, "recursive": True}
@@ -113,10 +203,12 @@ class JellyfinClient:
         return self._get("/Library/MediaFolders")
 
     def get_items(self, parent_id, types=None, limit=50, sort_by="SortName",
-                  sort_order="Ascending", start_index=0):
+                  sort_order="Ascending", start_index=0, user_id=None):
         params = {"parentId": parent_id, "limit": limit,
                   "sortBy": sort_by, "sortOrder": sort_order,
                   "startIndex": start_index, "recursive": True}
+        if user_id:
+            params["userId"] = user_id
         if types:
             params["includeItemTypes"] = ",".join(types)
         return self._get("/Items", params=params)
@@ -129,7 +221,7 @@ class JellyfinClient:
 
     def get_episodes(self, series_id, season_id, user_id):
         return self._get(f"/Shows/{series_id}/Episodes",
-                         params={"seasonId": season_id, "userId": user_id})
+                         params={"userId": user_id, "seasonId": season_id})
 
     def get_stats(self):
         return self._get("/Items/Counts")
@@ -158,6 +250,153 @@ def normalize_item(item):
         "runtime_ticks": item.get("RunTimeTicks"),
     }
     return {key: value for key, value in fields.items() if value is not None and value != ""}
+
+
+def cmd_login(client, args):
+    p = argparse.ArgumentParser(prog="jellyfin login")
+    p.add_argument("--server", help="JELLYFIN_URL override, e.g. http://host:8096")
+    p.add_argument("--username", "-u", required=True)
+    password_group = p.add_mutually_exclusive_group()
+    password_group.add_argument("--password", help="Account password (prefer --password-stdin)")
+    password_group.add_argument("--password-stdin", action="store_true",
+                                help="Read the password from stdin")
+    password_group.add_argument("--prompt", action="store_true",
+                                help="Prompt for the password interactively")
+    p.add_argument("--device-id", help="Device id to bind the session to "
+                                       "(default: derived from hostname)")
+    parsed, _ = p.parse_known_args(args)
+
+    if parsed.password_stdin:
+        password = sys.stdin.readline().rstrip("\n")
+    elif parsed.prompt:
+        password = getpass.getpass(f"Jellyfin password for {parsed.username}: ")
+    else:
+        password = parsed.password or ENV_PASSWORD
+
+    target_url = (parsed.server or client.url).rstrip("/")
+    device_id = parsed.device_id or client.device_id
+    auth_header = build_authorization_header(device_id)  # pre-token: no Token segment
+    path = "/Users/AuthenticateByName"
+    payload = {"Username": parsed.username, "Pw": password}
+
+    if client.dry_run or GLOBAL_FLAGS.get("dry_run", False):
+        return emit("[dry-run] POST /Users/AuthenticateByName "
+                    f"Authorization: {auth_header} "
+                    f"payload: {json.dumps({'Username': parsed.username, 'Pw': '***'})}", {
+            "dry_run": True,
+            "path": path,
+            "server": target_url,
+            "username": parsed.username,
+            "authorization_header": auth_header,
+            "pre_token_header": True,
+            "notes": "POST /Users/AuthenticateByName requires this MediaBrowser header "
+                     "BEFORE any access token exists; the returned AccessToken is then "
+                     "sent via Token= in subsequent Authorization headers.",
+        })
+
+    if password is None:
+        die("login needs --password, --password-stdin, --prompt, or JELLYFIN_PASSWORD.")
+    if not password and not ENV_PASSWORD:
+        # Empty passwords are valid for passwordless accounts only when intentional.
+        pass
+
+    login_client = JellyfinClient(url=target_url, device_id=device_id)
+    try:
+        resp = requests.post(
+            f"{target_url}{path}",
+            json=payload,
+            headers={"Content-Type": "application/json",
+                     "Authorization": auth_header,
+                     "Accept": "application/json"},
+            timeout=30,
+        )
+    except requests.ConnectionError as e:
+        die(f"Cannot connect to {target_url}: {e}")
+    if resp.status_code == 400:
+        die("Login rejected (400). The server requires a complete "
+            'Authorization: MediaBrowser Client=..., Device=..., DeviceId=..., Version=... '
+            "header — the client sends one; a 400 with 'Error processing request.' usually "
+            "means the header did not reach the server (proxy stripping) or the username "
+            "does not exist.")
+    if resp.status_code == 401:
+        die("Login failed (401): invalid username or password.")
+    if resp.status_code == 403:
+        die("Login rejected (403): user disabled, device not allowed, or session cap reached.")
+    if resp.status_code >= 400:
+        die(f"Login failed ({resp.status_code}): {resp.text[:200]}")
+
+    result = resp.json()
+    user = result.get("User", {})
+    session = {
+        "server": target_url,
+        "user": user.get("Name"),
+        "user_id": user.get("Id"),
+        "access_token": result.get("AccessToken"),
+        "device_id": device_id,
+        "authorization_header": build_authorization_header(
+            device_id, token=result.get("AccessToken") or ""),
+    }
+    emit(
+        f"Logged in as {session['user']} (user id {session['user_id']})\n"
+        f"  export JELLYFIN_URL=\"{target_url}\"\n"
+        f"  export JELLYFIN_TOKEN=\"{session['access_token']}\"\n"
+        f"  export JELLYFIN_USER_ID=\"{session['user_id']}\"",
+        session,
+    )
+
+
+def cmd_seasons(client, args):
+    p = argparse.ArgumentParser(prog="jellyfin seasons")
+    p.add_argument("--series-id", required=True)
+    p.add_argument("--user-id", default=ENV_USER_ID)
+    parsed, _ = p.parse_known_args(args)
+
+    params = {"userId": parsed.user_id or None}
+    path = f"/Shows/{parsed.series_id}/Seasons"
+    if client.dry_run:
+        return emit(f"[dry-run] GET {path} " + json.dumps(params), {
+            "dry_run": True, "path": path, "params": params,
+        })
+    if not parsed.user_id:
+        die("seasons requires --user-id or JELLYFIN_USER_ID.")
+
+    data = client.get_seasons(parsed.series_id, parsed.user_id) or {}
+    items = [normalize_item(item) for item in data.get("Items", [])]
+    lines = [f"  {item.get('name', '?')}  (season {item.get('season_number', '?')})"
+             for item in items]
+    emit("Seasons:\n" + "\n".join(lines) if lines else "No seasons found.", {
+        "items": items, "total_record_count": data.get("TotalRecordCount", 0),
+    })
+
+
+def cmd_episodes(client, args):
+    p = argparse.ArgumentParser(prog="jellyfin episodes")
+    p.add_argument("--series-id", required=True)
+    p.add_argument("--season-id")
+    p.add_argument("--user-id", default=ENV_USER_ID)
+    p.add_argument("--limit", type=int, default=50)
+    p.add_argument("--start-index", type=int, default=0)
+    parsed, _ = p.parse_known_args(args)
+
+    params = {"userId": parsed.user_id or None, "limit": parsed.limit,
+              "startIndex": parsed.start_index}
+    if parsed.season_id:
+        params["seasonId"] = parsed.season_id
+    path = f"/Shows/{parsed.series_id}/Episodes"
+    if client.dry_run:
+        return emit(f"[dry-run] GET {path} " + json.dumps(params), {
+            "dry_run": True, "path": path, "params": params,
+        })
+    if not parsed.user_id:
+        die("episodes requires --user-id or JELLYFIN_USER_ID.")
+
+    data = client.get_episodes(parsed.series_id, parsed.season_id, parsed.user_id) or {}
+    items = [normalize_item(item) for item in data.get("Items", [])]
+    lines = [f"  E{item.get('episode_number', '?'):>3}  {item.get('name', '?')}"
+             for item in items]
+    emit("Episodes:\n" + "\n".join(lines) if lines else "No episodes found.", {
+        "items": items, "total_record_count": data.get("TotalRecordCount", 0),
+    })
 
 
 def cmd_info(client, args):
@@ -249,7 +488,8 @@ def cmd_search(client, args):
         series = h.get("Series", "")
         series_str = f" [{series}]" if series else ""
         lines.append(f"  {name:45}{series_str}  ({year})  [{itype}]")
-        out.append({"name": name, "type": itype, "year": year, "series": series, "id": h.get("ItemId")})
+        item_id = h.get("Id") or h.get("ItemId")  # ItemId is the deprecated twin on old servers
+        out.append({"name": name, "type": itype, "year": year, "series": series, "id": item_id})
     emit(f"{len(hints)} result(s):\n" + "\n".join(lines), {"results": out})
 
 
@@ -257,9 +497,12 @@ def cmd_next_up(client, args):
     p = argparse.ArgumentParser(prog="jellyfin next-up")
     p.add_argument("--user-id", default=ENV_USER_ID)
     p.add_argument("--limit", type=int, default=10)
+    p.add_argument("--series-id")
     parsed, _ = p.parse_known_args(args)
 
     params = {"userId": parsed.user_id or None, "limit": parsed.limit}
+    if parsed.series_id:
+        params["seriesId"] = parsed.series_id
     if client.dry_run:
         return emit("[dry-run] GET /Shows/NextUp " + json.dumps(params), {
             "dry_run": True, "path": "/Shows/NextUp", "params": params,
@@ -267,7 +510,8 @@ def cmd_next_up(client, args):
     if not parsed.user_id:
         die("next-up requires --user-id or JELLYFIN_USER_ID.")
 
-    data = client.get_next_up(parsed.user_id, limit=parsed.limit) or {}
+    data = client.get_next_up(parsed.user_id, limit=parsed.limit,
+                              series_id=parsed.series_id) or {}
     items = [normalize_item(item) for item in data.get("Items", [])]
     lines = [f"  {item.get('name', '?')}  [{item.get('type', '?')}]" for item in items]
     emit("Next up:\n" + "\n".join(lines) if lines else "No next-up episodes.", {
@@ -300,6 +544,8 @@ def cmd_browse(client, args):
     p.add_argument("--type")
     p.add_argument("--limit", type=int, default=50)
     p.add_argument("--start-index", type=int, default=0)
+    p.add_argument("--user-id", default=ENV_USER_ID,
+                   help="User id (sent when present; servers using non-API-key auth require it)")
     parsed, _ = p.parse_known_args(args)
 
     types = parsed.type.split(",") if parsed.type else None
@@ -307,6 +553,8 @@ def cmd_browse(client, args):
         "parentId": parsed.library_id, "limit": parsed.limit, "sortBy": "SortName",
         "sortOrder": "Ascending", "startIndex": parsed.start_index, "recursive": True,
     }
+    if parsed.user_id:
+        params["userId"] = parsed.user_id
     if types:
         params["includeItemTypes"] = ",".join(types)
     if client.dry_run:
@@ -315,7 +563,8 @@ def cmd_browse(client, args):
         })
 
     data = client.get_items(parsed.library_id, types=types, limit=parsed.limit,
-                            start_index=parsed.start_index) or {}
+                            start_index=parsed.start_index,
+                            user_id=parsed.user_id or None) or {}
     items = [normalize_item(item) for item in data.get("Items", [])]
     lines = [f"  {item.get('name', '?')}  [{item.get('type', '?')}]" for item in items]
     emit("Browse results:\n" + "\n".join(lines) if lines else "No items found.", {
@@ -370,6 +619,14 @@ def main():
     parser.add_argument("--json", action="store_true", help="Output machine-readable JSON")
     parser.add_argument("--dry-run", action="store_true", help="Preview API requests without network access")
     sub = parser.add_subparsers(dest="command")
+    lg = sub.add_parser("login", help="Authenticate a user by name", description="Log in to Jellyfin with a username and password, demonstrating the pre-token MediaBrowser Authorization header, and print the session values to export.", epilog="Example: jellyfin login --username alice --prompt")
+    lg.add_argument("--server", help="JELLYFIN_URL override, e.g. http://host:8096")
+    lg.add_argument("--username", "-u", required=True, help="Jellyfin username")
+    lg_password_group = lg.add_mutually_exclusive_group()
+    lg_password_group.add_argument("--password", help="Account password (prefer --password-stdin)")
+    lg_password_group.add_argument("--password-stdin", action="store_true", help="Read the password from stdin")
+    lg_password_group.add_argument("--prompt", action="store_true", help="Prompt for the password interactively")
+    lg.add_argument("--device-id", help="Device id to bind the session to (default: derived from hostname)")
     sub.add_parser("info", help="Server info", description="Show Jellyfin server details.", epilog="Example: jellyfin info")
     re = sub.add_parser("recent", help="Recently added", description="Show recently added movies or episodes.", epilog="Example: jellyfin recent --movies --limit 5")
     re.add_argument("--limit", type=int, default=10, help="Maximum items to return (default: 10)")
@@ -384,14 +641,25 @@ def main():
     nu = sub.add_parser("next-up", help="Next unwatched episodes", description="Show the next unwatched episodes for a Jellyfin user.", epilog="Example: jellyfin next-up --user-id USER_ID --limit 5")
     nu.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
     nu.add_argument("--limit", type=int, default=10, help="Maximum episodes to return (default: 10)")
+    nu.add_argument("--series-id", help="Limit next-up to one series")
     it = sub.add_parser("item", help="Show item details", description="Show metadata for one Jellyfin library item.", epilog="Example: jellyfin item --id ITEM_ID --user-id USER_ID")
     it.add_argument("--id", required=True, help="Jellyfin item ID")
     it.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
+    sn = sub.add_parser("seasons", help="List seasons of a series", description="List the seasons of one Jellyfin series.", epilog="Example: jellyfin seasons --series-id SERIES_ID --user-id USER_ID")
+    sn.add_argument("--series-id", required=True, help="Jellyfin series ID")
+    sn.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
+    ep = sub.add_parser("episodes", help="List episodes of a series or season", description="List episodes for a Jellyfin series, optionally scoped to one season.", epilog="Example: jellyfin episodes --series-id SERIES_ID --season-id SEASON_ID --user-id USER_ID")
+    ep.add_argument("--series-id", required=True, help="Jellyfin series ID")
+    ep.add_argument("--season-id", help="Jellyfin season ID (omit for every episode of the series)")
+    ep.add_argument("--user-id", help="Jellyfin user ID (default: JELLYFIN_USER_ID)")
+    ep.add_argument("--limit", type=int, default=50, help="Maximum episodes to return (default: 50)")
+    ep.add_argument("--start-index", type=int, default=0, help="Zero-based result offset (default: 0)")
     br = sub.add_parser("browse", help="Browse a library", description="List items in a Jellyfin media library.", epilog="Example: jellyfin browse --library-id LIBRARY_ID --type Movie --limit 20")
     br.add_argument("--library-id", required=True, help="Jellyfin library ID")
     br.add_argument("--type", help="Comma-separated item types, such as Movie,Series")
     br.add_argument("--limit", type=int, default=50, help="Maximum items to return (default: 50)")
     br.add_argument("--start-index", type=int, default=0, help="Zero-based result offset (default: 0)")
+    br.add_argument("--user-id", help="User id sent on the query (servers using non-API-key auth require it)")
     sub.add_parser("libraries", help="List libraries", description="List configured media libraries.", epilog="Example: jellyfin libraries")
     sub.add_parser("stats", help="Library statistics", description="Show media library item counts.", epilog="Example: jellyfin stats")
 
@@ -403,9 +671,10 @@ def main():
     client = JellyfinClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
 
     cmd_map = {
-        "info": cmd_info, "recent": cmd_recent, "search": cmd_search,
-        "next-up": cmd_next_up, "item": cmd_item, "browse": cmd_browse,
-        "libraries": cmd_libraries, "stats": cmd_stats,
+        "login": cmd_login, "info": cmd_info, "recent": cmd_recent, "search": cmd_search,
+        "next-up": cmd_next_up, "item": cmd_item, "seasons": cmd_seasons,
+        "episodes": cmd_episodes, "browse": cmd_browse, "libraries": cmd_libraries,
+        "stats": cmd_stats,
     }
     handler = cmd_map.get(args.command)
     if not handler:
