@@ -54,11 +54,18 @@ FAILURE_CLASSES = (
     "parser_failure",
     "empty_but_valid",
     "restricted_folder",
+    "waf_challenge",
 )
 
 
 def _classify_exception(exc: Exception) -> str:
     if isinstance(exc, urllib.error.HTTPError):
+        if (
+            exc.code == 403
+            and exc.headers
+            and exc.headers.get("cf-mitigated", "").lower() == "challenge"
+        ):
+            return "waf_challenge"
         if exc.code in (401, 403):
             return "auth_regression"
         if exc.code >= 500:
@@ -78,6 +85,13 @@ def _classify_exception(exc: Exception) -> str:
     return "parser_failure"
 
 
+def _waf_observation(source: str, target: str, err: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Keep a provider browser challenge visible without treating it as drift."""
+    if err and err.get("failure_class") == "waf_challenge":
+        return {"source": source, "target": target, "status": "pass", **err}
+    return None
+
+
 def _is_transient(failure_class: str) -> bool:
     return failure_class == "transport_outage"
 
@@ -90,9 +104,12 @@ def _probe_with_retry(fn, *args, **kwargs) -> tuple[Any, None] | tuple[None, dic
             return result, None
         except Exception as exc:
             fc = _classify_exception(exc)
+            error_text = str(exc)
+            if fc == "waf_challenge":
+                error_text = "Cloudflare managed browser challenge (cf-mitigated: challenge)"
             evidence = {
                 "failure_class": fc,
-                "error": str(exc),
+                "error": error_text,
                 "attempt": attempt,
             }
             if first_evidence is None:
@@ -278,6 +295,9 @@ def probe_civic_jsonapi() -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     index, err = _probe_with_retry(core.json_request, civic.JSONAPI_ROOT)
     if err:
+        observation = _waf_observation("civic", "jsonapi-index", err)
+        if observation:
+            return [observation]
         results.append({"source": "civic", "target": "jsonapi-index", "status": "fail", **err})
         return results
 
@@ -297,6 +317,9 @@ def probe_civic_rss() -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     data, err = _probe_with_retry(core.raw_request, civic.RSS_FEED)
     if err:
+        observation = _waf_observation("civic", "rss-feed", err)
+        if observation:
+            return [observation]
         results.append({"source": "civic", "target": "rss-feed", "status": "fail", **err})
         return results
 
@@ -481,6 +504,7 @@ def run_canary() -> dict[str, Any]:
     transient_failures = 0
     empty_valid = 0
     restricted = 0
+    waf_challenges = 0
 
     for name, probe_fn in ALL_PROBES:
         try:
@@ -505,6 +529,8 @@ def run_canary() -> dict[str, Any]:
                 empty_valid += 1
             elif r.get("failure_class") == "restricted_folder":
                 restricted += 1
+            elif r.get("failure_class") == "waf_challenge":
+                waf_challenges += 1
             continue
         fc = r.get("failure_class", "unknown")
         if _is_transient(fc):
@@ -524,6 +550,7 @@ def run_canary() -> dict[str, Any]:
             "transient_failures": transient_failures,
             "empty_but_valid": empty_valid,
             "restricted_folders": restricted,
+            "waf_challenges": waf_challenges,
         },
         "results": all_results,
     }
@@ -546,6 +573,7 @@ def write_github_summary(report: dict[str, Any]) -> None:
     lines.append(f"| Transient failures | {s['transient_failures']} |")
     lines.append(f"| Empty-but-valid | {s['empty_but_valid']} |")
     lines.append(f"| Restricted folders | {s.get('restricted_folders', 0)} |")
+    lines.append(f"| WAF challenges | {s.get('waf_challenges', 0)} |")
     lines.append("")
 
     restricted = [r for r in report["results"] if r.get("failure_class") == "restricted_folder"]
@@ -556,6 +584,19 @@ def write_github_summary(report: dict[str, Any]) -> None:
         lines.append("|--------|--------|----------|")
         for r in restricted:
             lines.append(f"| {r.get('source', '?')} | {r.get('target', '?')} | {r.get('error', '')[:120]} |")
+        lines.append("")
+
+    challenges = [r for r in report["results"] if r.get("failure_class") == "waf_challenge"]
+    if challenges:
+        lines.append("### Upstream WAF challenges (blocked machine access; non-failing)")
+        lines.append("")
+        lines.append("| Source | Target | Evidence |")
+        lines.append("|--------|--------|----------|")
+        for r in challenges:
+            lines.append(
+                f"| {r.get('source', '?')} | {r.get('target', '?')} "
+                f"| {r.get('error', '')[:120]} |"
+            )
         lines.append("")
 
     failures = [r for r in report["results"] if r.get("status") == "fail"]
@@ -592,7 +633,8 @@ def main() -> int:
         f"{s['durable_failures']} durable failures, "
         f"{s['transient_failures']} transient failures, "
         f"{s['empty_but_valid']} empty-but-valid, "
-        f"{s.get('restricted_folders', 0)} restricted folders"
+        f"{s.get('restricted_folders', 0)} restricted folders, "
+        f"{s.get('waf_challenges', 0)} WAF challenges"
     )
     print(f"Report written to {report_path}")
 

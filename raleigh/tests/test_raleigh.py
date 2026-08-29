@@ -2726,6 +2726,45 @@ class PoliceTests(unittest.TestCase):
         self.assertFalse(report["passed"])
         self.assertEqual(report["summary"]["transient_failures"], 1)
 
+    def test_canary_classifies_cloudflare_challenge_as_visible_non_failing_observation(self):
+        headers = Message()
+        headers["Server"] = "cloudflare"
+        headers["cf-mitigated"] = "challenge"
+        error = urllib.error.HTTPError(
+            "https://raleighnc.gov/jsonapi", 403, "Forbidden", headers, None
+        )
+        with patch("canary.core.json_request", side_effect=error):
+            results = canary_lib.probe_civic_jsonapi()
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["status"], "pass")
+        self.assertEqual(results[0]["failure_class"], "waf_challenge")
+        self.assertIn("Cloudflare", results[0]["error"])
+
+    def test_canary_keeps_plain_forbidden_as_auth_failure(self):
+        headers = Message()
+        error = urllib.error.HTTPError(
+            "https://raleighnc.gov/jsonapi", 403, "Forbidden", headers, None
+        )
+        with patch("canary.core.json_request", side_effect=error):
+            results = canary_lib.probe_civic_jsonapi()
+        self.assertEqual(results[0]["status"], "fail")
+        self.assertEqual(results[0]["failure_class"], "auth_regression")
+
+    def test_canary_summary_counts_waf_challenges_without_failing(self):
+        observations = [{
+            "source": "civic",
+            "target": "jsonapi-index",
+            "status": "pass",
+            "failure_class": "waf_challenge",
+            "error": "Cloudflare managed challenge",
+            "attempt": 1,
+        }]
+        with patch.object(canary_lib, "ALL_PROBES", [("civic", lambda: observations)]):
+            report = canary_lib.run_canary()
+        self.assertTrue(report["passed"])
+        self.assertEqual(report["summary"]["waf_challenges"], 1)
+        self.assertEqual(report["summary"]["durable_failures"], 0)
+
     def test_canary_imagery_probe_reports_restricted_folders_as_non_failing(self):
         with patch("canary.imagery.list_services", return_value=(
             [{"name": "Orthos2025", "type": "ImageServer"}],
