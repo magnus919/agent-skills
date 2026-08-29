@@ -2726,7 +2726,7 @@ class PoliceTests(unittest.TestCase):
         self.assertFalse(report["passed"])
         self.assertEqual(report["summary"]["transient_failures"], 1)
 
-    def test_canary_classifies_cloudflare_challenge_as_visible_non_failing_observation(self):
+    def test_canary_classifies_cloudflare_challenge_as_visible_availability_failure(self):
         headers = Message()
         headers["Server"] = "cloudflare"
         headers["cf-mitigated"] = "challenge"
@@ -2736,9 +2736,49 @@ class PoliceTests(unittest.TestCase):
         with patch("canary.core.json_request", side_effect=error):
             results = canary_lib.probe_civic_jsonapi()
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["status"], "pass")
+        self.assertEqual(results[0]["status"], "fail")
         self.assertEqual(results[0]["failure_class"], "waf_challenge")
         self.assertIn("Cloudflare", results[0]["error"])
+
+    def test_canary_classifies_rss_cloudflare_challenge_as_availability_failure(self):
+        headers = Message()
+        headers["cf-mitigated"] = "challenge"
+        error = urllib.error.HTTPError(
+            "https://raleighnc.gov/rss.xml", 403, "Forbidden", headers, None
+        )
+        with patch("canary.core.raw_request", side_effect=error):
+            results = canary_lib.probe_civic_rss()
+        self.assertEqual(results[0]["status"], "fail")
+        self.assertEqual(results[0]["failure_class"], "waf_challenge")
+
+    def test_canary_summary_renders_waf_challenges_as_failures(self):
+        report = {
+            "passed": False,
+            "summary": {
+                "total_results": 1,
+                "durable_failures": 1,
+                "transient_failures": 0,
+                "empty_but_valid": 0,
+                "restricted_folders": 0,
+                "waf_challenges": 1,
+            },
+            "results": [{
+                "source": "civic",
+                "target": "jsonapi-index",
+                "status": "fail",
+                "failure_class": "waf_challenge",
+                "error": "Cloudflare managed challenge",
+            }],
+        }
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as summary:
+            summary_path = summary.name
+        self.addCleanup(os.unlink, summary_path)
+        with patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": summary_path}):
+            canary_lib.write_github_summary(report)
+        contents = pathlib.Path(summary_path).read_text()
+        self.assertIn("WAF challenges | 1", contents)
+        self.assertIn("blocked machine access; failing", contents)
+        self.assertIn("| civic | jsonapi-index | waf_challenge |", contents)
 
     def test_canary_keeps_plain_forbidden_as_auth_failure(self):
         headers = Message()
@@ -2750,20 +2790,20 @@ class PoliceTests(unittest.TestCase):
         self.assertEqual(results[0]["status"], "fail")
         self.assertEqual(results[0]["failure_class"], "auth_regression")
 
-    def test_canary_summary_counts_waf_challenges_without_failing(self):
+    def test_canary_summary_counts_waf_challenges_as_failures(self):
         observations = [{
             "source": "civic",
             "target": "jsonapi-index",
-            "status": "pass",
+            "status": "fail",
             "failure_class": "waf_challenge",
             "error": "Cloudflare managed challenge",
             "attempt": 1,
         }]
         with patch.object(canary_lib, "ALL_PROBES", [("civic", lambda: observations)]):
             report = canary_lib.run_canary()
-        self.assertTrue(report["passed"])
+        self.assertFalse(report["passed"])
         self.assertEqual(report["summary"]["waf_challenges"], 1)
-        self.assertEqual(report["summary"]["durable_failures"], 0)
+        self.assertEqual(report["summary"]["durable_failures"], 1)
 
     def test_canary_imagery_probe_reports_restricted_folders_as_non_failing(self):
         with patch("canary.imagery.list_services", return_value=(
