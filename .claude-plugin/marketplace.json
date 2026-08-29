@@ -570,7 +570,7 @@
         "./jellyfin"
       ],
       "strict": false,
-      "description": "Query your Jellyfin media server from the terminal — recently added media, search, item details, next-up episodes, library browsing, server info, and stats. Use when the user asks about Jellyfin, media server, movies, TV shows, next episodes, or their media library."
+      "description": "Query your Jellyfin media server from the terminal — recently added media, search, item details, series navigation, next-up episodes, library browsing, server info, and user login. Use when the user asks about Jellyfin, media servers, movies, TV shows, next episodes, or their media library. Do not use this skill for server installation, library management, playback control, or Emby/Plex servers."
     },
     {
       "name": "jira",

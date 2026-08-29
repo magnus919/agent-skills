@@ -258,7 +258,7 @@ Convert operational incident and near-miss evidence into verified, owned improve
 
 ### [jellyfin](jellyfin/SKILL.md)
 
-Jellyfin media server from the terminal. Check server info, browse recently added and library contents, search and inspect media, see next-up episodes, and view statistics.
+Jellyfin media server from the terminal. Log in as a user or use an API key, check server info, browse recently added and library contents, search and inspect media, walk series/seasons/episodes, see next-up episodes, and view statistics — with MediaBrowser auth, user-id scoping, and response-shape quirks documented.
 
 ### [jira](jira/SKILL.md)
 

@@ -19,7 +19,7 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "Grafana", "Grafana dashboard", "Grafana panel", "Grafana variable", "Grafana data source", "Grafana alerting", "contact point", "notification policy", "mute timing", "Grafana provisioning", "dashboard as code", "Grafana API", "Grafana service account", "Grafana RBAC", "Grafana plugin", "Grafana troubleshooting", "duplicate dashboard UID" | [grafana](../grafana/SKILL.md) |
 | "hugo theme", "hugo cms", "accessible theme", "wcag theme", "theme design", "theme accessibility", "theme UX", "design tokens", "css theme", "theme contrast", "responsive theme", "hugo template", "hugo pipes", "hugo module", "hugo shortcode", "render hook", "tailwindcss hugo", "hugo i18n", "hugo seo", "hugo output format", "hugo site", "hugo static site" | [hugo-theme](../hugo-theme/SKILL.md) |
 | "Ghost", "Ghost CMS", "ghost blog", "create a post on my blog", "blog publishing", "GHOST_ADMIN_KEY" | [ghost](../ghost/SKILL.md) |
-| "Jellyfin", "Jellyfin media server", "recently added movies", "recently added episodes", "media library", "JELLYFIN_API_KEY" | [jellyfin](../jellyfin/SKILL.md) |
+| "Jellyfin", "Jellyfin media server", "recently added movies", "recently added episodes", "media library", "JELLYFIN_API_KEY", "Jellyfin API authentication" | [jellyfin](../jellyfin/SKILL.md) |
 | "Jira", "Atlassian Jira", "JQL", "ticket PROJ-123", "sprint work", "JIRA_API_TOKEN" | [jira](../jira/SKILL.md) |
 | "Open Library", "openlibrary", "book search", "ISBN lookup", "author records", "work details", "book editions", "book ratings", "cover image" | [openlibrary](../openlibrary/SKILL.md) |
 | "weather", "forecast", "temperature", "is it raining", "Tempest" | [tempest](../tempest/SKILL.md) |
