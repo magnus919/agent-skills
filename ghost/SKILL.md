@@ -141,7 +141,7 @@ JSON shapes worth knowing:
 - **HS256 only, decoded-secret keying.** Tokens signed with HS512 are refused ("invalid algorithm"); signing without first hex-decoding the secret half produces "valid-looking" garbage that 401s. The CLI handles both rules.
 - **`Authorization: Ghost`, not Bearer.** `Bearer` scheme answers 401 `INVALID_AUTH_HEADER`.
 - **Edits require collision guards.** PUTs without the post's current `updated_at` fail with 409; relation arrays (`tags`, `authors`) replace wholesale rather than merge.
-- **HTML ingestion is lossy without cards.** Send proper Lexical, or wrap fixed markup in HTML card comments when using `--html`.
+- **`--html` requires `source=html` and stays lossy.** Every write carrying an `html` payload (create-post, update-post, create-page) must send the `?source=html` query flag — the CLI attaches it automatically, and dry-run plans show it in `params` — or Ghost parses the body as mobiledoc/lexical. Even with the flag, conversion is lossy: send proper Lexical, or wrap fixed markup in HTML card comments.
 - **Pagination caps at 100** since Ghost 6 removed `limit=all`; oversized limits silently return ≤100 rows, so always loop by `next`.
 - **Deletion is permanent** and takes effect on the public site immediately.
 

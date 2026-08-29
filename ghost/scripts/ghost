@@ -210,11 +210,11 @@ class GhostClient:
     def _get(self, path, params=None):
         return self._request("get", path, params=params)
 
-    def _post(self, path, json_data):
-        return self._request("post", path, json_data=json_data)
+    def _post(self, path, json_data, params=None):
+        return self._request("post", path, params=params, json_data=json_data)
 
-    def _put(self, path, json_data):
-        return self._request("put", path, json_data=json_data)
+    def _put(self, path, json_data, params=None):
+        return self._request("put", path, params=params, json_data=json_data)
 
     def _delete(self, path):
         return self._request("delete", path)
@@ -241,10 +241,16 @@ class GhostClient:
             post["slug"] = slug
         if published_at:
             post["published_at"] = published_at
-        return self._post("/posts", {"posts": [post]})
+        # html payloads need the docs-required source=html flag; Ghost otherwise
+        # parses the body as mobiledoc/lexical and rejects or mangles it.
+        params = {"source": "html"} if html else None
+        return self._post("/posts", {"posts": [post]}, params=params)
 
     def update_post(self, post_id, **kwargs):
-        return self._put(f"/posts/{post_id}", {"posts": [kwargs]})
+        # html payloads need the docs-required source=html flag; Ghost otherwise
+        # parses the body as mobiledoc/lexical and rejects or mangles it.
+        params = {"source": "html"} if kwargs.get("html") else None
+        return self._put(f"/posts/{post_id}", {"posts": [kwargs]}, params=params)
 
     def delete_post(self, post_id):
         return self._delete(f"/posts/{post_id}")
@@ -261,7 +267,10 @@ class GhostClient:
             page["html"] = html
         if slug:
             page["slug"] = slug
-        return self._post("/pages", {"pages": [page]})
+        # html payloads need the docs-required source=html flag; Ghost otherwise
+        # parses the body as mobiledoc/lexical and rejects or mangles it.
+        params = {"source": "html"} if html else None
+        return self._post("/pages", {"pages": [page]}, params=params)
 
     def get_tags(self, limit=50, page=None):
         params: Dict[str, Any] = {"limit": limit, "include": "count.posts"}
@@ -339,9 +348,10 @@ def cmd_create_post(client, args):
                               slug=parsed.slug, published_at=parsed.published_at) or {}
     if data.get("dry_run"):
         # Plan and real request share one code path, so the previewed URL,
-        # method, and JSON envelope are exactly what execution would send.
+        # method, params, and JSON envelope are exactly what execution would send.
         plan = {"dry_run": True, "method": data.get("method"),
-                "url": data.get("url"), "json": data.get("json"), **vars(parsed)}
+                "url": data.get("url"), "params": data.get("params"),
+                "json": data.get("json"), **vars(parsed)}
         return emit(f"[dry-run] Create post '{parsed.title}' "
                     f"-> {data.get('method', 'POST').upper()} {data.get('url')}", plan)
     posts = data.get("posts", [])

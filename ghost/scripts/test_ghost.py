@@ -123,6 +123,59 @@ class GhostCliTests(unittest.TestCase):
         self.assertEqual(fields["updated_at"], "2026-08-26T12:00:00.000Z")
         self.assertEqual(fields["status"], "published")
 
+    def test_create_post_dry_run_sends_source_html_only_with_html_payload(self):
+        # Ghost parses html write payloads as mobiledoc/lexical unless the
+        # docs-required ?source=html query flag rides along; the plan must
+        # preview exactly that request.
+        result = self.run_cli("--dry-run", "--json", "create-post",
+                              "--title", "Doc", "--html", "<p>Hi</p>")
+        self.assertEqual(result.returncode, 0)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["params"], {"source": "html"})
+        self.assertIn("html", payload["json"]["posts"][0])
+
+        no_html = self.run_cli("--dry-run", "--json", "create-post",
+                               "--title", "Doc")
+        self.assertEqual(no_html.returncode, 0)
+        no_html_payload = json.loads(no_html.stdout)
+        self.assertNotIn("html", no_html_payload["json"]["posts"][0])
+        self.assertNotIn("source=html", no_html_payload["url"])
+        self.assertIsNone(no_html_payload["params"])
+
+    def test_update_post_dry_run_sends_source_html_only_with_html_payload(self):
+        result = self.run_cli("--dry-run", "--json", "update-post", "abc123",
+                              "--html", "<p>Edited</p>",
+                              "--updated-at", "2026-08-26T12:00:00.000Z")
+        self.assertEqual(result.returncode, 0)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["params"], {"source": "html"})
+        self.assertIn("html", payload["fields"])
+
+        no_html = self.run_cli("--dry-run", "--json", "update-post", "abc123",
+                               "--status", "draft",
+                               "--updated-at", "2026-08-26T12:00:00.000Z")
+        self.assertEqual(no_html.returncode, 0)
+        no_html_payload = json.loads(no_html.stdout)
+        self.assertNotIn("html", no_html_payload["fields"])
+        self.assertNotIn("source=html", no_html_payload["url"])
+        self.assertIsNone(no_html_payload["params"])
+
+    def test_create_page_dry_run_sends_source_html_only_with_html_payload(self):
+        result = self.run_cli("--dry-run", "--json", "create-page",
+                              "--title", "About", "--html", "<p>About us</p>")
+        self.assertEqual(result.returncode, 0)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["params"], {"source": "html"})
+        self.assertIn("html", payload["json"]["pages"][0])
+
+        no_html = self.run_cli("--dry-run", "--json", "create-page",
+                               "--title", "About")
+        self.assertEqual(no_html.returncode, 0)
+        no_html_payload = json.loads(no_html.stdout)
+        self.assertNotIn("html", no_html_payload["json"]["pages"][0])
+        self.assertNotIn("source=html", no_html_payload["url"])
+        self.assertIsNone(no_html_payload["params"])
+
     def test_scheduled_post_requires_published_at_even_in_dry_run(self):
         result = self.run_cli("--dry-run", "--json", "create-post",
                               "--title", "Later", "--status", "scheduled")
@@ -440,6 +493,67 @@ class MockedClientTests(unittest.TestCase):
         client._get("/site")
         called_url = cli.requests.get.call_args.args[0]
         self.assertEqual(called_url, "https://example.com/ghost/api/admin/site")
+
+
+class HtmlSourceFlagTests(unittest.TestCase):
+    """Regression: html write payloads must carry the docs-required
+    ?source=html query flag; mobiledoc/lexical writes must not send it."""
+
+    def setUp(self):
+        self.cli = load_cli()
+        self.cli.GLOBAL_FLAGS = {"json": True, "dry_run": False,
+                                 "quiet": False, "verbose": False}
+        ok = Mock(status_code=201)
+        ok.json = Mock(return_value={"posts": []})
+        self.cli.requests.post = Mock(return_value=ok)
+        self.client = self.cli.GhostClient(url="https://example.com", key=FIXED_KEY)
+
+    def _put_ok(self):
+        ok = Mock(status_code=200)
+        ok.json = Mock(return_value={"posts": []})
+        self.cli.requests.put = Mock(return_value=ok)
+        return self.cli.requests.put
+
+    def test_create_post_with_html_sends_source_html_query_param(self):
+        self.client.create_post("Doc", html="<p>Hi</p>")
+        call = self.cli.requests.post.call_args
+        self.assertEqual(call.kwargs["params"], {"source": "html"})
+        self.assertIn("html", call.kwargs["json"]["posts"][0])
+
+    def test_create_post_without_html_omits_source_flag(self):
+        self.client.create_post("Doc")
+        call = self.cli.requests.post.call_args
+        self.assertNotIn("source", (call.kwargs.get("params") or {}))
+        self.assertNotIn("html", call.kwargs["json"]["posts"][0])
+
+    def test_update_post_with_html_sends_source_html_query_param(self):
+        put = self._put_ok()
+        self.client.update_post("abc123", html="<p>Edited</p>",
+                                updated_at="2026-08-26T12:00:00.000Z")
+        call = put.call_args
+        self.assertEqual(call.kwargs["params"], {"source": "html"})
+        self.assertIn("html", call.kwargs["json"]["posts"][0])
+
+    def test_update_post_without_html_omits_source_flag(self):
+        put = self._put_ok()
+        self.client.update_post("abc123", status="published",
+                                updated_at="2026-08-26T12:00:00.000Z")
+        call = put.call_args
+        self.assertNotIn("source", (call.kwargs.get("params") or {}))
+        self.assertNotIn("html", call.kwargs["json"]["posts"][0])
+
+    def test_create_page_with_html_sends_source_html_query_param(self):
+        self.client.create_page("About", html="<p>About us</p>")
+        call = self.cli.requests.post.call_args
+        self.assertEqual(call.kwargs["params"], {"source": "html"})
+        self.assertEqual(call.args[0], "https://example.com/ghost/api/admin/pages")
+        self.assertIn("html", call.kwargs["json"]["pages"][0])
+
+    def test_create_page_without_html_omits_source_flag(self):
+        self.client.create_page("About")
+        call = self.cli.requests.post.call_args
+        self.assertNotIn("source", (call.kwargs.get("params") or {}))
+        self.assertNotIn("html", call.kwargs["json"]["pages"][0])
 
 
 if __name__ == "__main__":

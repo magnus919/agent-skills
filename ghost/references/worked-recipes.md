@@ -40,7 +40,7 @@ Drafts, scheduled, and published live on different filters; one call per status:
 
 ```bash
 ghost posts --status draft     --limit 50 --json | jq -r '.posts[] | "\(.title)\t\(.slug)"'
-ghost posts --status scheduled --json | jq -r '.posts[] | "\(.title)\t(.published_at // "-")"'
+ghost posts --status scheduled --json | jq -r '.posts[] | "\(.title)\t\(.published_at // "-")"'
 ```
 
 Pair it with an authoring-wide sanity check via jq types before feeding slugs onward:

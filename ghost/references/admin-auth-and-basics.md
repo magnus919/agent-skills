@@ -88,7 +88,7 @@ Ghost returns JSON errors shaped like `{"errors": [{"message", "context", "type"
 | Malformed token JSON/base64, `INVALID_JWT` | 400 | Structurally undecodable token |
 | No auth at all → `Authorization failed`, type `NoPermissionError` | 403 | Missing `Authorization` header entirely |
 
-The CLI maps each of these to exit code 2 with the server message plus a hint.
+The CLI surfaces each of these on stderr with the server message plus a hint, mapped to exit codes by failure class: `401` and `403` exit `2` (auth/permission), `404` exits `3` (missing resource), `409` exits `4` (update collision), and `429` exits `5` (rate limited).
 
 ## Request conventions
 
