@@ -13,7 +13,7 @@ the report.
 
 Exit codes:
   0  all probes passed (or only empty-but-valid / restricted observations)
-  1  one or more durable contract failures detected
+  1  one or more durable contract or availability failures detected
   2  script-level error (bad arguments, import failure, etc.)
 """
 
@@ -85,10 +85,10 @@ def _classify_exception(exc: Exception) -> str:
     return "parser_failure"
 
 
-def _waf_observation(source: str, target: str, err: dict[str, Any] | None) -> dict[str, Any] | None:
-    """Keep a provider browser challenge visible without treating it as drift."""
+def _waf_failure(source: str, target: str, err: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Keep provider browser challenges visible as availability failures."""
     if err and err.get("failure_class") == "waf_challenge":
-        return {"source": source, "target": target, "status": "pass", **err}
+        return {"source": source, "target": target, "status": "fail", **err}
     return None
 
 
@@ -295,9 +295,9 @@ def probe_civic_jsonapi() -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     index, err = _probe_with_retry(core.json_request, civic.JSONAPI_ROOT)
     if err:
-        observation = _waf_observation("civic", "jsonapi-index", err)
-        if observation:
-            return [observation]
+        failure = _waf_failure("civic", "jsonapi-index", err)
+        if failure:
+            return [failure]
         results.append({"source": "civic", "target": "jsonapi-index", "status": "fail", **err})
         return results
 
@@ -317,9 +317,9 @@ def probe_civic_rss() -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     data, err = _probe_with_retry(core.raw_request, civic.RSS_FEED)
     if err:
-        observation = _waf_observation("civic", "rss-feed", err)
-        if observation:
-            return [observation]
+        failure = _waf_failure("civic", "rss-feed", err)
+        if failure:
+            return [failure]
         results.append({"source": "civic", "target": "rss-feed", "status": "fail", **err})
         return results
 
@@ -524,13 +524,13 @@ def run_canary() -> dict[str, Any]:
     for r in all_results:
         if r.get("target") == "summary":
             continue
+        if r.get("failure_class") == "waf_challenge":
+            waf_challenges += 1
         if r.get("status") != "fail":
             if r.get("failure_class") == "empty_but_valid":
                 empty_valid += 1
             elif r.get("failure_class") == "restricted_folder":
                 restricted += 1
-            elif r.get("failure_class") == "waf_challenge":
-                waf_challenges += 1
             continue
         fc = r.get("failure_class", "unknown")
         if _is_transient(fc):
@@ -588,7 +588,7 @@ def write_github_summary(report: dict[str, Any]) -> None:
 
     challenges = [r for r in report["results"] if r.get("failure_class") == "waf_challenge"]
     if challenges:
-        lines.append("### Upstream WAF challenges (blocked machine access; non-failing)")
+        lines.append("### Upstream WAF challenges (blocked machine access; failing)")
         lines.append("")
         lines.append("| Source | Target | Evidence |")
         lines.append("|--------|--------|----------|")

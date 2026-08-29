@@ -210,16 +210,16 @@ The following public service boundaries were exercised successfully on 2026-07-2
   local request, establishing an access-policy boundary rather than a Raleigh
   schema failure.
 - Classify this exact marker as `waf_challenge`, preserve source and target in
-  the report, and keep the observation non-failing. Other 403 responses remain
-  `auth_regression` and continue to fail the canary.
+  the report, and keep it as a blocking availability failure. Other 403
+  responses remain `auth_regression` and continue to fail the canary.
 
 ### Verification target and follow-up
 
 - Deterministic tests cover the marker-specific classification and the
-  non-failing summary accounting.
+  blocking summary accounting.
 - The scheduled workflow remains the delivery-boundary check. A later green
-  run proves the canary no longer treats this known upstream challenge as a
-  durable failure; it does not prove Raleigh machine access has been restored.
+  run requires Raleigh machine access to be restored; a challenged civic
+  endpoint remains a canary failure.
 - Do not add retries, browser automation, or challenge bypasses. Reclassify only
   when the provider removes the marker or a new upstream access contract is
   verified.
