@@ -732,6 +732,17 @@ def udp_listen(args: argparse.Namespace) -> None:
     timeout = args.timeout
     show_all = args.show_all
 
+    if GLOBAL_FLAGS.get("dry_run", False):
+        # Dry-run plans the listen instead of opening it: exits 0 without
+        # creating or binding any socket, so it is safe anywhere (no hub
+        # required, no LAN needed, no hanging on a broadcast port).
+        emit("[dry-run] Would listen for Tempest UDP broadcasts on "
+             f"{UDP_BROADCAST_ADDR}:{port} — binds no socket now.",
+             {"dry_run": True, "command": "udp", "subcommand": "listen",
+              "bind_address": UDP_BROADCAST_ADDR, "port": port,
+              "timeout_seconds": timeout, "show_all": show_all})
+        return
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind((UDP_BROADCAST_ADDR, port))

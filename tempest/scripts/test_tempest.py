@@ -316,6 +316,56 @@ class DryRunTests(CliTestCase):
         self.assertEqual(code, 0)
         self.assertEqual(json.loads(out)["command"], "stations")
 
+    def test_udp_listen_dry_run_plan_shape(self):
+        # VAL-TEMP-011: udp listen honors --dry-run — a plan JSON, exit 0,
+        # and (pinned by the socket patch below) NO socket is ever created
+        # or bound, so the dry run cannot hang waiting for hub traffic.
+        code, out = run_main(["udp", "listen", "--port", "50222",
+                              "--timeout", "30", "--dry-run", "--json"])
+        self.assertEqual(code, 0)
+        plan = json.loads(out)
+        self.assertEqual(plan["dry_run"], True)
+        self.assertEqual(plan["command"], "udp")
+        self.assertEqual(plan["subcommand"], "listen")
+        self.assertEqual(plan["bind_address"], ts.UDP_BROADCAST_ADDR)
+        self.assertEqual(plan["port"], 50222)
+        self.assertEqual(plan["timeout_seconds"], 30)
+        self.assertEqual(plan["show_all"], False)
+
+    def test_udp_listen_dry_run_defaults_and_show_all(self):
+        # Defaults land in the plan; --show-all propagates.
+        code, out = run_main(["udp", "listen", "--show-all", "--dry-run", "--json"])
+        self.assertEqual(code, 0)
+        plan = json.loads(out)
+        self.assertEqual(plan["port"], ts.DEFAULT_UDP_PORT)
+        self.assertEqual(plan["timeout_seconds"], 0)
+        self.assertEqual(plan["show_all"], True)
+
+    def test_udp_listen_dry_run_creates_no_socket(self):
+        # Prove the "binds no socket" half of the contract: if udp_listen
+        # reached its listen path, socket.socket() would be constructed and
+        # this fake's bind() would blow up the test.
+        bound = []
+
+        class NoBindSock:
+            def bind(self, *a, **k):
+                bound.append(a)
+                raise AssertionError("dry-run udp listen must not bind a socket")
+
+        with patch.object(ts.socket, "socket", side_effect=AssertionError(
+                "dry-run udp listen must not create a socket")):
+            code, out = run_main(["udp", "listen", "--dry-run", "--json"])
+        self.assertEqual(code, 0)
+        self.assertEqual(bound, [])
+        self.assertEqual(json.loads(out)["dry_run"], True)
+
+    def test_udp_listen_dry_run_without_token_is_fine(self):
+        # UDP needs no token, and the dry run must not demand one either.
+        with patch_token(""):
+            code, out = run_main(["udp", "listen", "--dry-run", "--json"])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out)["command"], "udp")
+
 
 # ---------------------------------------------------------------------------
 # Class 4: mocked REST client logic (no real network anywhere)

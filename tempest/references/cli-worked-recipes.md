@@ -121,16 +121,24 @@ on `type` before indexing.
 tempest forecast --station-id 12799 --days 3 --dry-run --json
 # -> {"dry_run": true, "command": "forecast", "station_id": 12799, "days": 3}
 
-# Every documented command has a dry-run plan: current, obs, forecast, stations
+# Every documented command has a dry-run plan — current, obs, forecast,
+# stations, and udp listen (plans the bind, creates no socket, safe off-LAN)
 tempest obs --device-id 60526 --days 2 --dry-run --json
+tempest udp listen --port 50222 --timeout 30 --dry-run --json
+# -> {"dry_run": true, "command": "udp", "subcommand": "listen",
+#     "bind_address": "0.0.0.0", "port": 50222, "timeout_seconds": 30,
+#     "show_all": false}
 
 # Quiet/verbose piping: logs on stderr, data on stdout
 tempest current --json --quiet | jq .observation.air_temperature
 ```
 
 Behavior contract: `--dry-run` works without `TEMPEST_TOKEN` set (no credential
-needed to see a plan); `--help` and `--dry-run` are always offline. Without
-`--dry-run`, a missing token exits 1 with
+needed to see a plan); `--help` and `--dry-run` are always offline. For
+`udp listen`, dry-run describes the listen parameters (bind address, port,
+timeout, show-all) and exits 0 without creating or binding any socket — the
+real listener waits for hub traffic on UDP 50222 and needs the hub's LAN.
+Without `--dry-run`, a missing token exits 1 with
 `Error: TEMPEST_TOKEN not set...` before any request is attempted.
 
 ## Recipe 6: JSON error paths you'll actually see
