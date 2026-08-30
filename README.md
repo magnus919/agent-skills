@@ -589,7 +589,7 @@ Trakt.tv media discovery from the terminal. Browse trending, anticipated, and po
 
 ### [transistor](transistor/SKILL.md)
 
-Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view subscriber analytics. API key from transistor.fm settings.
+Operate Transistor.fm podcast hosting from the terminal: verify API access, browse shows and episodes with JSON:API-aware output, run the episode publish lifecycle (create draft, attach audio, publish or schedule via the dedicated publish endpoint), pull download analytics, and manage private podcast subscribers and webhooks.
 
 ### [travel-guide](travel-guide/SKILL.md)
 
