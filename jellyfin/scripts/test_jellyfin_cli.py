@@ -10,7 +10,6 @@ import tempfile
 import unittest
 from unittest.mock import Mock, patch
 
-
 SCRIPT = pathlib.Path(__file__).resolve().parent / "jellyfin"
 LOADER = importlib.machinery.SourceFileLoader("jellyfin_cli", str(SCRIPT))
 SPEC = importlib.util.spec_from_loader(LOADER.name, LOADER)
@@ -347,16 +346,15 @@ class LoginAuthSequenceTests(unittest.TestCase):
     def test_mocked_login_error_paths_do_not_crash(self):
         cli = jellyfin_cli
         cli.GLOBAL_FLAGS = {"json": False, "dry_run": False}
-        original_post = cli.requests.post
         for status, expected_fragment in ((400, "400"), (401, "401"), (403, "403")):
             with self.subTest(status=status):
-                cli.requests.post = Mock(return_value=FakeResponse(status, text="Error processing request."))
-                stderr = io.StringIO()
-                with contextlib.redirect_stderr(stderr), self.assertRaises(SystemExit):
+                response = FakeResponse(status, text="Error processing request.")
+                with patch.object(cli.requests, "post", return_value=response), \
+                        contextlib.redirect_stderr(io.StringIO()) as stderr, \
+                        self.assertRaises(SystemExit):
                     cli.cmd_login(cli.JellyfinClient(url="http://s:8096", device_id="d"),
                                   ["--username", "alice", "--password", "bad"])
                 self.assertIn(expected_fragment, stderr.getvalue())
-        cli.requests.post = original_post
         cli.GLOBAL_FLAGS = {"json": False, "dry_run": False}
 
     def test_reads_require_a_credential_before_network(self):
@@ -375,8 +373,35 @@ class LoginAuthSequenceTests(unittest.TestCase):
         headers = client._headers()
         self.assertIn('Token="k-1"', headers["Authorization"])
         self.assertTrue(headers["Authorization"].startswith("MediaBrowser "))
+        self.assertNotIn("X-Emby-Token", headers)  # one token channel per request
         token_client = cli.JellyfinClient(token="t-1", device_id="dev-1")
-        self.assertIn('Token="t-1"', token_client._headers()["Authorization"])
+        token_headers = token_client._headers()
+        self.assertIn('Token="t-1"', token_headers["Authorization"])
+        self.assertNotIn("X-Emby-Token", token_headers)
+
+    def test_captured_requests_carry_token_in_exactly_one_channel(self):
+        """VAL-JF-009: the access token (or API key) appears in exactly ONE
+        channel per request — the MediaBrowser Token= parameter — and the
+        legacy X-Emby-Token header is never sent alongside it."""
+        cli = jellyfin_cli
+        captured = []
+        response = FakeResponse(200, json_body={"Items": [], "TotalRecordCount": 0})
+        for client in (cli.JellyfinClient(key="k-capture", device_id="dev-cap"),
+                       cli.JellyfinClient(token="t-capture", device_id="dev-cap")):
+            with patch.object(cli.requests, "get",
+                              side_effect=lambda url, **kw: captured.append(kw) or response):
+                client._get("/Items")
+        self.assertEqual(len(captured), 2)
+        for kwargs in captured:
+            self.assertIn("headers", kwargs)
+            headers = kwargs["headers"]
+            self.assertIn("Token=", headers["Authorization"])
+            self.assertNotIn("X-Emby-Token", headers)
+            channel_count = sum(
+                1 for value in headers.values()
+                if "Token=" in value or value.lower() == "x-emby-token"
+            )
+            self.assertEqual(channel_count, 1)
 
 
 class TvNavigationCommandTests(unittest.TestCase):

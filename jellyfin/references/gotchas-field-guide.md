@@ -52,7 +52,10 @@ proxy, not Jellyfin.
 - One access token per `(DeviceId, user)` pair: re-logging-in the same pair revokes the
   pair's previous token. Multi-profile CLIs must vary the DeviceId per profile or they will
   keep logging each other out.
-- Never send two token channels in one request; which one wins is not contractual.
+- Never send two token channels in one request; which one wins is not contractual. The
+  bundled CLI honors this literally: the token rides only the MediaBrowser `Token=`
+  parameter and the legacy `X-Emby-Token` header is never attached (request-capture-tested
+  in the offline suite).
 
 ## User-scoping pitfalls
 

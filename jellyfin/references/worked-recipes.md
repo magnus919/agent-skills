@@ -41,10 +41,12 @@ request.`; wrong password → 401; server restarting → 503 + `Retry-After` (re
 
 With the bundled CLI, steps 2–5 collapse to env vars: export `JELLYFIN_URL`,
 `JELLYFIN_API_KEY` (or `JELLYFIN_TOKEN`), `JELLYFIN_USER_ID`; then
-`scripts/jellyfin recent --json`. The login path itself is available as
-`scripts/jellyfin login --username alice` (reads `JELLYFIN_PASSWORD` interactively or via
-`--password`/`--password-stdin`), which prints the captured `user_id`/`access_token` for
-exporting.
+`scripts/jellyfin recent --json`. Post-login requests carry the token in exactly one
+channel — the `Token=` parameter of the MediaBrowser `Authorization` header (verified by
+the suite's request-capture test); the legacy `X-Emby-Token` header is not co-sent. The
+login path itself is available as `scripts/jellyfin login --username alice` (reads
+`JELLYFIN_PASSWORD` interactively or via `--password`/`--password-stdin`), which prints the
+captured `user_id`/`access_token` for exporting.
 
 ## Recipe 2 — Libraries → paged browse of one collection
 
@@ -129,10 +131,56 @@ scripts/jellyfin next-up --limit 5 --json
 
 `RunTimeTicks` are 100-nanosecond ticks (divide by 600,000,000 for minutes).
 
+## Bundled CLI `--dry-run` and exit-code contract
+
+The CLI's dry-run plans are pinned by its offline test suite (`scripts/test_jellyfin_cli.py`),
+so jq keys match tested reality exactly. Every plan carries:
+
+```json
+{ "dry_run": true, "path": "/Items/Latest", "params": { "userId": null, "limit": 10 } }
+```
+
+- `dry_run` (bool, always true), `path` (string) and `params` (object) appear on every
+  command plan; `login` instead emits `path: "/Users/AuthenticateByName"`, `server`,
+  `username`, `authorization_header`, and `pre_token_header: true` (its
+  `authorization_header` is the complete pre-token MediaBrowser header, no `Token=`
+  segment); `info` composes a `requests` array of `{path, params}` steps instead of a
+  single `path`/`params` pair.
+- `params` mirrors the exact query the live call would send (`userId` is JSON `null`
+  when not supplied).
+
+Exit codes: `0` on success (including dry-run previews), `1` on CLI errors (missing
+credentials, unreachable server, API 4xx/5xx, missing required `--user-id`), `2` on
+argparse misuse such as `--movies --episodes` together or a missing required flag.
+
+## Bundled CLI `--dry-run` and exit-code contract
+
+The CLI's dry-run plans are pinned by its offline test suite (`scripts/test_jellyfin_cli.py`),
+so jq keys match tested reality exactly. Every plan carries:
+
+```json
+{ "dry_run": true, "path": "/Items/Latest", "params": { "userId": null, "limit": 10 } }
+```
+
+- `dry_run` (bool, always true), `path` (string) and `params` (object) appear on every
+  command plan; `login` instead emits `path: "/Users/AuthenticateByName"`,
+  `server`, `username`, `authorization_header`, and `pre_token_header: true` (its
+  `authorization_header` is the complete pre-token MediaBrowser header, no `Token=`
+  segment); `info` composes a `requests` array of `{path, params}` steps instead of a
+  single `path`/`params` pair.
+- `params` mirrors the exact query the live call would send (`userId` is JSON `null`
+  when not supplied).
+
+Exit codes: `0` on success (including dry-run previews), `1` on CLI errors (missing
+credentials, unreachable server, API 4xx/5xx, missing required `--user-id`), `2` on
+argparse misuse such as `--movies --episodes` together or a missing required flag.
+
 ## Cross-version-safe baseline (derive your own recipes from these rules)
 
-1. Speak modern auth (`Authorization: MediaBrowser ...`); treat `X-Emby-Token` as a compat
-   fallback for old servers only.
+1. Speak modern auth (`Authorization: MediaBrowser ...`) and put the token in exactly ONE
+   channel per request (its `Token=` parameter). Never co-send the legacy `X-Emby-Token`
+   header with it — precedence across channels is unspecified; if a legacy-only server
+   needs the old header, substitute it there, do not stack channels.
 2. Send a complete pre-token header everywhere — zero cost, avoids the 400-on-login trap.
 3. Always send explicit `userId` on `/Items*`, `/UserViews`, `/Shows/*`, `/Items/Latest`.
 4. Resolve identity once: `USER_ID = AuthenticationResult.User.Id` (fallback `/Users/Me`

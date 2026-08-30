@@ -49,7 +49,8 @@ endpoint requires its `Client=..., Device=..., DeviceId=..., Version=...` quarte
 any token exists** — the server rejects `POST /Users/AuthenticateByName` with
 `400 Error processing request.` otherwise. Afterwards the access token (or API key) rides
 the same header as `Token="..."`; the legacy `X-Emby-Token` header means the same thing
-and is scheduled for removal from Jellyfin 12.0. The bundled CLI sends the modern form.
+and is scheduled for removal from Jellyfin 12.0. The bundled CLI sends the modern form and
+puts the token in exactly that one channel per request (never co-sends `X-Emby-Token`).
 See [references/auth-and-sessions.md](references/auth-and-sessions.md).
 
 ## Essential Commands
@@ -156,10 +157,11 @@ scripts/jellyfin login --username alice --prompt --json | jq -r '"\(.user_id) \(
 
 Put `--json` before or after the subcommand. Output keys are stable snake_case: `items`
 (with `id`, `name`, `type`, `year`, `series`, `season_number`, `episode_number`),
-`results`, `libraries`, `total_record_count`, `start_index`. `--dry-run` emits the exact
-`path` + `params` (or `authorization_header` for `login`) that would be sent, so jq can
-verify a chain before running it live. Use `jq -r '.items[] | [.name, .year] | @tsv'` for
-tabular handoff.
+`results`, `libraries`, `total_record_count`, `start_index`. `--dry-run` emits a plan
+carrying `dry_run`, `path`, and `params` (`login` adds `authorization_header`; `info`
+composes a `requests` list), matching what would be sent, so jq can verify a chain before
+running it live. Exit codes: `0` success (including dry-run), `1` CLI/API errors, `2`
+argument errors. Use `jq -r '.items[] | [.name, .year] | @tsv'` for tabular handoff.
 
 ## Known Gotchas
 

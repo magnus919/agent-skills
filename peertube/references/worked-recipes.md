@@ -118,9 +118,11 @@ scripts/peertube comments --id "<UUID>" --json | jq '{total, total_not_deleted: 
 scripts/peertube --dry-run --json search --query "test" | jq '{path, params: (.params | keys)}'
 ```
 
-`--dry-run` output shape: `{"dry_run": true, "method": "GET", "url": "...", "path":
-"/api/v1/...", "params": {...}}` (token requests additionally carry `"form"` keys without
-values). Every handler's dry-run plan uses the same keys, so one jq pattern audits any
+`--dry-run` output shape: `{"dry_run": true, "method": "GET", "path": "/api/v1/...",
+"params": {...}}` — every plan carries exactly `dry_run`, `method`, `path`, and `params`
+(test-pinned in `scripts/test_peertube.py`); composite commands emit a `requests` array of
+those same keyed steps, and the `login` plan is a `POST /api/v1/users/token` whose
+`form_fields` lists the field NAMES only (never values). One jq pattern audits any
 command.
 
 ## Raw curl equivalents (auth chain end-to-end)

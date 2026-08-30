@@ -123,7 +123,10 @@ It is wire-equivalent to the legacy `X-Emby-Token` header on every server that s
 legacy auth, and it keeps working when legacy channels are switched off.
 
 Never send two different tokens in one request — server precedence across channels is
-unspecified at the contract level and the value used becomes uncertain.
+unspecified at the contract level and the value used becomes uncertain. The bundled CLI
+takes this literally: after login it puts the token in exactly ONE channel per request
+(the `Token=` parameter of the modern header) and never attaches `X-Emby-Token` alongside
+it; the offline suite pins that single-channel contract with a request-capture test.
 
 ### Legacy kill-switch and deprecation timeline
 
@@ -133,8 +136,9 @@ unspecified at the contract level and the value used becomes uncertain.
   `X-Emby-Authorization` stop resolving — a client that "worked yesterday" and now gets
   uniform 401s has almost certainly met this toggle.
 - Maintainers have targeted disabling the deprecated options starting with the 12.0
-  release. Speak the modern `Authorization` header natively; keep `X-Emby-Token` only as a
-  compat fallback for old servers.
+  release. Speak the modern `Authorization` header natively; if you must support a server
+  with legacy auth locked off, substitute the legacy header for the modern one on that
+  server's requests — never send both on the same request.
 
 ## Error signatures worth mocking
 

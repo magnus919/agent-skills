@@ -238,17 +238,15 @@ class JwtSigningTests(unittest.TestCase):
     def test_malformed_secret_half_is_graceful_error_not_traceback(self):
         client = self.cli.GhostClient(url="https://example.com", key="5f9d4b1c8e2a43d7b6c0a1e9:not-hex!")
         stderr = io.StringIO()
-        with self.assertRaises(SystemExit):
-            with contextlib.redirect_stderr(stderr):
-                client._jwt_token()
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(stderr):
+            client._jwt_token()
         self.assertIn("hexadecimal", stderr.getvalue())
 
     def test_key_without_colon_names_required_format(self):
         client = self.cli.GhostClient(url="https://example.com", key="justonepart")
         stderr = io.StringIO()
-        with self.assertRaises(SystemExit):
-            with contextlib.redirect_stderr(stderr):
-                client._jwt_token()
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(stderr):
+            client._jwt_token()
         self.assertIn("id:secret", stderr.getvalue())
 
 
@@ -431,10 +429,9 @@ class MockedClientTests(unittest.TestCase):
         cli.requests.put = Mock(return_value=collision)
         client = cli.GhostClient(url="https://example.com", key=FIXED_KEY)
         stderr = io.StringIO()
-        with self.assertRaises(SystemExit):
-            with contextlib.redirect_stderr(stderr):
-                client.update_post("abc123", status="published",
-                                   updated_at="2026-01-01T00:00:00.000Z")
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(stderr):
+            client.update_post("abc123", status="published",
+                               updated_at="2026-01-01T00:00:00.000Z")
         message = stderr.getvalue()
         self.assertIn("409", message)
         self.assertIn("Someone else is editing this post", message)
@@ -449,9 +446,8 @@ class MockedClientTests(unittest.TestCase):
         cli.requests.get = Mock(return_value=missing)
         client = cli.GhostClient(url="https://example.com", key=FIXED_KEY)
         stderr = io.StringIO()
-        with self.assertRaises(SystemExit):
-            with contextlib.redirect_stderr(stderr):
-                client._get("/posts/does-not-exist")
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(stderr):
+            client._get("/posts/does-not-exist")
         message = stderr.getvalue()
         self.assertIn("404", message)
         self.assertIn("Admin API", message)
@@ -468,9 +464,8 @@ class MockedClientTests(unittest.TestCase):
         cli.requests.get = Mock(return_value=bad_scheme)
         client = cli.GhostClient(url="https://example.com", key=FIXED_KEY)
         stderr = io.StringIO()
-        with self.assertRaises(SystemExit):
-            with contextlib.redirect_stderr(stderr):
-                client._get("/posts")
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(stderr):
+            client._get("/posts")
         self.assertIn("Ghost [token]", stderr.getvalue())
 
     def test_authorization_header_uses_ghost_scheme_and_version_headers(self):

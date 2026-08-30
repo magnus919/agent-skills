@@ -17,7 +17,7 @@ import os
 import sys
 import time
 import warnings
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional
 
 warnings.simplefilter("ignore")
 
@@ -366,47 +366,6 @@ class PeerTubeClient:
             die(f"Non-JSON response from {path} (status {status}); "
                 f"is {self.display_server()} a PeerTube instance?")
 
-    def get_about(self):
-        return self._get("/config/about")
-
-    def get_stats(self):
-        return self._get("/server/stats")
-
-    def list_videos(self, start=0, count=DEFAULT_COUNT, sort="-publishedAt"):
-        return self._get("/videos", {"start": start, "count": count, "sort": sort})
-
-    def get_video(self, video_id):
-        return self._get(f"/videos/{video_id}")
-
-    def search_videos(self, query, start=0, count=DEFAULT_COUNT, search_target="local", sort=None):
-        params: Dict[str, Any] = {"search": query, "searchTarget": search_target,
-                                  "start": start, "count": count}
-        if sort:
-            params["sort"] = sort
-        return self._get("/search/videos", params)
-
-    def list_comment_threads(self, video_id, start=0, count=DEFAULT_COUNT):
-        return self._get(f"/videos/{video_id}/comment-threads",
-                         {"start": start, "count": count, "sort": "-createdAt"})
-
-    def list_channels(self, start=0, count=DEFAULT_COUNT):
-        return self._get("/video-channels", {"start": start, "count": count})
-
-    def get_channel(self, handle):
-        return self._get(f"/video-channels/{handle}")
-
-    def list_channel_videos(self, handle, start=0, count=DEFAULT_COUNT):
-        return self._get(f"/video-channels/{handle}/videos", {"start": start, "count": count})
-
-    def get_account(self, name):
-        return self._get(f"/accounts/{name}")
-
-    def my_profile(self):
-        return self._get("/users/me")
-
-    def my_videos(self, start=0, count=DEFAULT_COUNT):
-        return self._get("/users/me/videos", {"start": start, "count": count})
-
 
 # ----- command handlers ------------------------------------------------
 
@@ -425,8 +384,8 @@ def cmd_server(client, args):
             {"method": "GET", "path": f"{API_BASE}/server/stats", "params": {}},
         ]}
         return emit("[dry-run] GET /config/about + /server/stats", plan)
-    about = client.get_about() or {}
-    stats = client.get_stats() or {}
+    about = client._get("/config/about") or {}
+    stats = client._get("/server/stats") or {}
     instance = about.get("instance") or {}
     name = instance.get("name", "?")
     description = instance.get("shortDescription") or ""
@@ -548,7 +507,7 @@ def cmd_channels(client, args):
     total = data.get("total", len(channels))
     if not channels:
         return emit("No channels.", {"total": total, "start": parsed.offset, "count": 0, "channels": []})
-    lines, _ = [], []
+    lines = []
     for channel in channels:
         display = channel.get("displayName") or channel.get("name") or "?"
         handle = f"{channel.get('name', '?')}@{channel.get('host', '?')}"
@@ -604,7 +563,9 @@ def cmd_me(client, args):
     data = client._get("/users/me") or {}
     if isinstance(data, list):  # docs render an array sample; live servers return one object
         data = data[0] if data else {}
-    role = data.get("role") or {}
+    role = data.get("role") if isinstance(data, dict) else {}
+    if not isinstance(role, dict):  # some instances/versions may send a scalar role id
+        role = {"id": role, "label": str(role)}
     quota = data.get("videoQuota")
     quota_text = f"{quota} bytes" if quota is not None else "?"
     emit(f"@{data.get('username', '?')}  Role: {role.get('label', '?')}  Quota: {quota_text}", data)

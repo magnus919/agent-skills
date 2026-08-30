@@ -103,20 +103,20 @@ class JellyfinClient:
         self.token = token or ENV_TOKEN
         self.device_id = device_id or ENV_DEVICE_ID or default_device_id()
         self.dry_run = dry_run
-        if not self.key and self.token:
-            # User access tokens are only meaningful together with their user id;
-            # user-scoped commands resolve that separately via --user-id.
-            pass
+        # A user access token is only meaningful together with its user id; the
+        # user-scoped commands below resolve that separately via --user-id
+        # rather than guessing a session user here.
 
     def _headers(self, with_token=True):
-        headers = {
+        # Exactly ONE token channel per request: the access token (or API key)
+        # rides the MediaBrowser Authorization header's Token= parameter. The
+        # legacy X-Emby-Token header is deliberately NOT also sent — combining
+        # channels is undefined behavior (see references/auth-and-sessions.md).
+        return {
             "Accept": "application/json",
             "Authorization": build_authorization_header(
                 self.device_id, token=(self.key or self.token) if with_token else "")
         }
-        if with_token and self.key:
-            headers["X-Emby-Token"] = self.key
-        return headers
 
     def _get(self, path, params=None):
         url = f"{self.url}{path}"

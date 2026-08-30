@@ -743,6 +743,35 @@ class HandlerOutputTests(ModuleStateTestCase):
             self.assertEqual(payload["role"]["label"], "User")
         client.clear_token()
 
+    def test_me_tolerates_scalar_role_without_attribute_error(self):
+        """VAL-PT-010: a non-dict `role` (scalar id from a version-drifted
+        server) must degrade to a readable line, never AttributeError."""
+        client = pt.PeerTubeClient(
+            server="https://inst.example", config_dir=tempfile.mkdtemp(prefix="pt-ho-")
+        )
+        profile = {"username": "bob", "role": 2, "videoQuota": None}
+        client.save_session(TOKEN_RESPONSE)
+        with patch.object(pt.requests, "get", return_value=FakeResponse(200, profile)):
+            out = io.StringIO()
+            err = io.StringIO()
+            with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+                pt.cmd_me(client, [])
+        self.assertNotIn("Traceback", err.getvalue())
+        self.assertEqual(json.loads(out.getvalue())["role"], 2)
+        client.clear_token()
+
+    def test_me_tolerates_missing_role(self):
+        client = pt.PeerTubeClient(
+            server="https://inst.example", config_dir=tempfile.mkdtemp(prefix="pt-ho-")
+        )
+        client.save_session(TOKEN_RESPONSE)
+        with patch.object(pt.requests, "get", return_value=FakeResponse(200, {"username": "carol"})):
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                pt.cmd_me(client, [])
+        self.assertEqual(json.loads(out.getvalue())["username"], "carol")
+        client.clear_token()
+
     def test_comments_output_exposes_thread_counts(self):
         client = pt.PeerTubeClient(
             server="https://inst.example", config_dir=tempfile.mkdtemp(prefix="pt-ho-")
