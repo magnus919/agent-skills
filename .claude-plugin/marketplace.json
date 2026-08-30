@@ -24,15 +24,6 @@
       "description": "Write, review, and maintain architecture decision records with clear context, alternatives, consequences, confirmation links, and lifecycle governance. Use when a consequential technical decision or its enforceable architectural constraint must remain understandable. Do not use for system-wide evolutionary architecture design, general observability, or operating a named test or CI tool."
     },
     {
-      "name": "aeo",
-      "source": "./",
-      "skills": [
-        "./aeo"
-      ],
-      "strict": false,
-      "description": "Use when designing, implementing, or measuring Answer Engine Optimization (AEO) for AI answers, citations, generative search, or agent-readable web content. Do not use this as a general SEO audit or CMS operations guide; route those parts to seo-audit or the relevant platform skill."
-    },
-    {
       "name": "agent-council",
       "source": "./",
       "skills": [
@@ -93,7 +84,7 @@
         "./anydoc"
       ],
       "strict": false,
-      "description": "Convert Word (.doc/.docx/.docm), PowerPoint (.ppt/.pps/.pot/.pptx/.pptm/.ppsx/.ppsm), Excel (.xls/.xlsx/.xlsm/.xlsb), OpenDocument (.odt/.ods/.odp), RTF, EPUB, CSV, and PDF documents to clean GitHub-Flavored Markdown locally with the Any Doc CLI (npx -y @firecrawl/anydoc@0.1.6): headings, GFM tables, slide structure, and footnotes in one pass. Use when a task needs the contents of an office document, spreadsheet, presentation, ebook, or PDF you cannot read directly. Do not use for generating, editing, or validating documents (use documents), for ebook packaging (use epub), or for OCR of scanned or image-only PDFs (anydoc does not OCR; route to OCR tooling)."
+      "description": "Convert Word (.doc/.docx/.docm), PowerPoint (.ppt/.pps/.pot/.pptx/.pptm/.ppsx/.ppsm), Excel (.xls/.xlsx/.xlsm/.xlsb), OpenDocument (.odt/.ods/.odp), RTF, EPUB, CSV, and PDF documents to clean GitHub-Flavored Markdown locally with the Any Doc CLI (npx -y @firecrawl/anydoc@0.2.4): headings, GFM tables, slide structure, and footnotes in one pass. Use when a task needs the contents of an office document, spreadsheet, presentation, ebook, or PDF you cannot read directly. Do not use for generating, editing, or validating documents (use documents), for ebook packaging (use epub). For scanned or image-only PDFs, use hosted OCR only when the user explicitly authorizes whole-document upload; otherwise route to local OCR tooling."
     },
     {
       "name": "api-design-and-evolution",
@@ -1113,13 +1104,13 @@
       "description": "Model and diagnose shared semantic ground between agents with Semantic Spacetime (Mark Burgess, 2014-2025): a discrete graph model of meaning over time, where local proper time replaces global clocks, causality is cooperative promises, and gamma(3,4) graphs expose semantic drift, world model divergence, and absorbing states. Use for designing convergent self-healing coordination, modeling intent and trajectories over time, mapping promises onto spacetime, diagnosing semantic drift or dead-ends, and analyzing temporal blindness in agents. Do not use for physics or relativity, pure vector embeddings or RAG without temporal-causal structure, enforceable centralized control, simple single-agent prompting, or tool manuals — route those to the appropriate skill."
     },
     {
-      "name": "seo-audit",
+      "name": "seo",
       "source": "./",
       "skills": [
-        "./seo-audit"
+        "./seo"
       ],
       "strict": false,
-      "description": "Audit websites and pages for technical SEO, on-page SEO, schema markup, content discoverability, and answer-engine readiness. Use when prioritizing search visibility improvements; route AEO-specific implementation and measurement to the dedicated aeo skill."
+      "description": "Audit and improve website discoverability across traditional search, answer engines, and generative search. Use for technical SEO, on-page content, structured data, question and entity architecture, AI citations, crawler controls, agent-readable content, and reproducible visibility measurement. Do not use for only copy-editing, writing, CMS operations, or generic AI marketing claims without a defined search surface and verification plan."
     },
     {
       "name": "site-reliability-engineering",

@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
-"""anydoc — convert office documents to GitHub-Flavored Markdown locally.
+"""anydoc — convert office documents to GitHub-Flavored Markdown.
 
 Python 3 standard-library wrapper around the pinned Any Doc CLI
-(`npx -y @firecrawl/anydoc@0.1.6`). Adds input pre-validation, friendly
+(`npx -y @firecrawl/anydoc@0.2.4`). Adds input pre-validation, friendly
 hints for the known failure classes, batch conversion, and `--json` /
-`--dry-run` output on top of the raw CLI.
+`--dry-run` output on top of the raw CLI. Conversion is local-only by default;
+hosted OCR requires both `--ocr hosted` and `--allow-hosted-upload`.
 
 Commands:
-  convert <file|-> [-o out.md] [-f <format>] [--json] [--dry-run]
+  convert <file|-> [-o out.md] [-f <format>]
+          [--ocr reject|hosted] [--allow-hosted-upload] [--json] [--dry-run]
   batch <inputs...> [--out-dir DIR] [--json] [--dry-run]
   info [--version]
 
-Exit codes: 0 success / 1 conversion or pre-validation failure / 2 usage error.
+Exit codes: 0 success / 1 conversion or pre-validation failure / 2 usage error /
+3 PDF pages need OCR in local-only mode.
 With `--json`, exactly one JSON document goes to stdout; all diagnostics go to
 stderr. The wrapper never prompts: npx is always invoked with `-y`.
 """
@@ -28,10 +31,16 @@ from pathlib import Path
 
 TOOL_NAME = "anydoc"
 CLI_PACKAGE = "@firecrawl/anydoc"
-CLI_VERSION = "0.1.6"
+CLI_VERSION = "0.2.4"
 PINNED = "%s@%s" % (CLI_PACKAGE, CLI_VERSION)
 NODE_MIN_MAJOR = 20
-RUN_TIMEOUT = 120
+LOCAL_RUN_TIMEOUT = 120
+# Upstream's hosted client waits up to 300 seconds. Give the child enough time
+# to emit its own classified failure instead of killing it first.
+HOSTED_RUN_TIMEOUT = 330
+# Backwards-compatible name used by older callers/tests: local remains default.
+RUN_TIMEOUT = LOCAL_RUN_TIMEOUT
+SENSITIVE_ENV_VARS = ("FIRECRAWL_API_KEY",)
 
 # The 12 canonical parsers plus the 9 extension aliases the CLI accepts for -f.
 CANONICAL_FORMATS = "doc docx odt pdf ppt pptx rtf epub xlsx ods odp csv".split()
@@ -40,9 +49,19 @@ VALID_FORMATS = frozenset(CANONICAL_FORMATS + FORMAT_ALIASES)
 FORMATS_LIST_TEXT = ", ".join(CANONICAL_FORMATS)
 
 
+def redact_sensitive(text):
+    """Redact configured credential values from diagnostics and JSON."""
+    redacted = text or ""
+    for name in SENSITIVE_ENV_VARS:
+        value = os.environ.get(name)
+        if value:
+            redacted = redacted.replace(value, "[REDACTED]")
+    return redacted
+
+
 def fail(message, code=1):
     """Print a diagnostics line to stderr and exit with `code`."""
-    print("anydoc: " + message, file=sys.stderr)
+    print("anydoc: " + redact_sensitive(message), file=sys.stderr)
     raise SystemExit(code)
 
 
@@ -52,6 +71,7 @@ def emit_json(obj):
 
 def fail_command(args, command, message, code, error_class=None):
     """Record a wrapper-level failure: diagnostics to stderr, JSON when asked."""
+    message = redact_sensitive(message)
     print("anydoc: " + message, file=sys.stderr)
     if getattr(args, "json", False):
         emit_json(
@@ -157,7 +177,7 @@ def runtime_errors():
 
 # --- CLI invocation ---------------------------------------------------------
 
-def build_cli_command(file, out, fmt):
+def build_cli_command(file, out, fmt, ocr="reject"):
     """Build the exact argv the wrapper passes to the pinned CLI.
 
     Dash-leading filenames (a path like `-weird`) need the CLI's `--`
@@ -172,6 +192,8 @@ def build_cli_command(file, out, fmt):
         options.extend(["-o", out])
     if fmt:
         options.extend(["-f", fmt])
+    if ocr == "hosted":
+        options.extend(["--ocr", "hosted"])
     argv = ["npx", "-y", PINNED]
     if file != "-" and file.startswith("-"):
         argv.extend(options)
@@ -190,7 +212,7 @@ class CliTimeoutError(Exception):
         self.message = message
 
 
-def run_cli(argv):
+def run_cli(argv, timeout=LOCAL_RUN_TIMEOUT):
     try:
         return subprocess.run(
             argv,
@@ -198,7 +220,7 @@ def run_cli(argv):
             text=True,
             encoding="utf-8",
             errors="replace",
-            timeout=RUN_TIMEOUT,
+            timeout=timeout,
             start_new_session=True,
         )
     except subprocess.TimeoutExpired as exc:
@@ -207,25 +229,56 @@ def run_cli(argv):
         except (ProcessLookupError, PermissionError):
             pass
         raise CliTimeoutError(
-            "conversion did not complete within %d seconds" % RUN_TIMEOUT
+            "conversion did not complete within %d seconds" % timeout
         ) from exc
 
 
 def error_class_hint(stderr):
     """Map a failure message (CLI stderr or a wrapper pre-validation message)
     to (error_class, hint-or-None)."""
+    if "Firecrawl Parse rejected the API key" in stderr:
+        return (
+            "hosted-auth",
+            "hosted OCR authentication failed. Check FIRECRAWL_API_KEY in the "
+            "trusted environment; never print it or pass it on the command line.",
+        )
+    if "Firecrawl Parse is out of credits" in stderr:
+        return (
+            "hosted-credits",
+            "hosted OCR has no available credits. Stop and report the provider "
+            "failure; do not fall back to another hosted endpoint silently.",
+        )
+    if "Firecrawl Parse rate limit reached" in stderr or "keyless limit reached" in stderr:
+        return (
+            "hosted-rate-limit",
+            "hosted OCR reached a service limit. Do not retry blindly; wait or "
+            "configure FIRECRAWL_API_KEY in the trusted environment without "
+            "printing it.",
+        )
+    if "Firecrawl Parse" in stderr:
+        return (
+            "hosted",
+            "hosted OCR failed. Report the provider/transport error without "
+            "exposing credentials; do not claim a local result or silently "
+            "switch endpoints.",
+        )
     if "document is encrypted" in stderr:
         return (
             "encrypted",
             "the document is encrypted or password-protected — supply an "
             "unencrypted copy; anydoc has no password or decryption option.",
         )
-    if "OCR is required" in stderr or "no extractable text" in stderr:
+    if (
+        "OCR is required" in stderr
+        or "no extractable text" in stderr
+        or re.search(r"\bpages?\b.*\bneeds? OCR\b", stderr, re.IGNORECASE)
+    ):
         return (
-            "no-ocr",
-            "scanned or image-only PDF — anydoc does not perform OCR. Route "
-            "the file to OCR tooling or the hosted Firecrawl Parse API; do "
-            "not retry it locally.",
+            "needs-ocr",
+            "the local-only run stopped without uploading. Do not retry unchanged. Use authorized local OCR, "
+            "or obtain explicit authorization for a whole-document upload to Firecrawl Parse "
+            "and rerun "
+            "with --ocr hosted --allow-hosted-upload; page selection is unavailable.",
         )
     if "malformed document" in stderr:
         return (
@@ -260,6 +313,7 @@ def error_class_hint(stderr):
 
 
 def print_cli_error(stderr):
+    stderr = redact_sensitive(stderr)
     if not stderr:
         stderr = "conversion failed"
     line = stderr if stderr.startswith("anydoc: ") else "anydoc: " + stderr
@@ -269,6 +323,33 @@ def print_cli_error(stderr):
 # --- subcommands ------------------------------------------------------------
 
 def cmd_convert(args):
+    if args.api_key_cli is not None:
+        return fail_command(
+            args,
+            "convert",
+            "do not pass API keys on the command line; set FIRECRAWL_API_KEY "
+            "in the trusted environment and do not print it",
+            2,
+            error_class="credential-on-argv",
+        )
+    if args.allow_hosted_upload and args.ocr != "hosted":
+        return fail_command(
+            args,
+            "convert",
+            "--allow-hosted-upload is only valid with --ocr hosted",
+            2,
+            error_class="hosted-authorization",
+        )
+    if args.ocr == "hosted" and not args.allow_hosted_upload:
+        return fail_command(
+            args,
+            "convert",
+            "--ocr hosted requires --allow-hosted-upload after explicit "
+            "authorization to send the whole document to the configured Parse "
+            "service; page selection is unavailable",
+            2,
+            error_class="hosted-authorization",
+        )
     error = validate_input(args.file)
     if error is not None:
         return fail_command(args, "convert", error, 1)
@@ -279,7 +360,8 @@ def cmd_convert(args):
     if error is not None:
         return fail_command(args, "convert", error, 2)
 
-    command = build_cli_command(args.file, args.output, args.format)
+    command = build_cli_command(args.file, args.output, args.format, args.ocr)
+    data_flow = "hosted-on-needs-ocr" if args.ocr == "hosted" else "local-only"
     if args.dry_run:
         plan = " ".join(command)
         if args.json:
@@ -292,18 +374,30 @@ def cmd_convert(args):
                     "dry_run": True,
                     "input": args.file,
                     "output": args.output,
+                    "ocr": args.ocr,
+                    "data_flow": data_flow,
                     "command_line": plan,
                 }
             )
         else:
             print("dry-run: would run: %s" % plan)
+            if args.ocr == "hosted":
+                print(
+                    "dry-run: whole-document upload authorized only if local "
+                    "conversion reports OCR-required pages; page selection is unavailable"
+                )
+            else:
+                print("dry-run: local-only; no document upload")
         return 0
 
     for error in runtime_errors():
         return fail_command(args, "convert", error, 1)
 
     try:
-        proc = run_cli(command)
+        timeout = (
+            HOSTED_RUN_TIMEOUT if args.ocr == "hosted" else LOCAL_RUN_TIMEOUT
+        )
+        proc = run_cli(command, timeout=timeout)
     except CliTimeoutError as err:
         return fail_command(args, "convert", err.message, 1, error_class="timeout")
     if proc.returncode == 0:
@@ -315,6 +409,8 @@ def cmd_convert(args):
                     "ok": True,
                     "exit_code": 0,
                     "output": args.output,
+                    "ocr": args.ocr,
+                    "data_flow": data_flow,
                     "markdown": None if args.output else proc.stdout,
                 }
             )
@@ -322,7 +418,7 @@ def cmd_convert(args):
             sys.stdout.write(proc.stdout)
         return 0
 
-    stderr = (proc.stderr or "").strip()
+    stderr = redact_sensitive((proc.stderr or "").strip())
     error_class, hint = error_class_hint(stderr)
     print_cli_error(stderr)
     if hint is not None:
@@ -338,6 +434,8 @@ def cmd_convert(args):
                 "hint": hint,
                 "error_class": error_class,
                 "output": args.output,
+                "ocr": args.ocr,
+                "data_flow": data_flow,
             }
         )
     return proc.returncode
@@ -591,6 +689,22 @@ def build_parser():
             % FORMATS_LIST_TEXT
         ),
     )
+    convert.add_argument(
+        "--ocr",
+        choices=["reject", "hosted"],
+        default="reject",
+        help="Handle OCR-required PDFs locally (reject) or via hosted Firecrawl Parse",
+    )
+    convert.add_argument(
+        "--allow-hosted-upload",
+        action="store_true",
+        help="Required acknowledgement that hosted mode uploads the whole document",
+    )
+    convert.add_argument(
+        "--api-key",
+        dest="api_key_cli",
+        help=argparse.SUPPRESS,
+    )
 
     batch = subparsers.add_parser(
         "batch",
@@ -630,7 +744,7 @@ def build_parser():
             "Examples:\n"
             "  anydoc info\n"
             "  anydoc info --version\n"
-            "\n--version prints exactly the pinned CLI version (0.1.6)."
+            "\n--version prints exactly the pinned CLI version (0.2.4)."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

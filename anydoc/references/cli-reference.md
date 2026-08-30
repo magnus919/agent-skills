@@ -1,7 +1,7 @@
-# CLI reference: the Any Doc CLI (pinned @firecrawl/anydoc@0.1.6)
+# CLI reference: the Any Doc CLI (pinned @firecrawl/anydoc@0.2.4)
 
 Everything here was captured by running the pinned CLI on this machine
-(`npx -y @firecrawl/anydoc@0.1.6`, version 0.1.6, Node v22). The CLI is a 4.7 KB
+(`npx -y @firecrawl/anydoc@0.2.4`, version 0.2.4, Node v22). The CLI is a 4.7 KB
 Node wrapper (`bin.anydoc = cli.js`) around a native NAPI binding that ships as
 an npm `optionalDependency` per platform.
 
@@ -24,6 +24,8 @@ Options:
                          doc, docx, odt, pdf, ppt, pptx, rtf, epub, xlsx, ods, odp, csv
                          (extension aliases like xls, docm, ppsx resolve
                          to these)
+  --ocr <mode>           `reject` (default) or `hosted` for OCR-required PDFs
+  --allow-hosted-upload  Acknowledges whole-document upload for hosted OCR
   -h, --help             Print this help and exit
   -V, --version          Print the version and exit
 
@@ -44,7 +46,7 @@ Examples:
   curl -s https://example.com/paper.pdf | anydoc -
 ```
 
-`anydoc --version` prints exactly `0.1.6` (verified; both `--help` and
+`anydoc --version` prints exactly `0.2.4` (verified; both `--help` and
 `--version` exit 0 and write to stdout).
 
 ## Invocation forms
@@ -70,7 +72,7 @@ anydoc - [options] < file      # read the document from stdin
 | `-o <path>`, `--output <path>` | Write the Markdown to `<path>` instead of stdout. **Silently overwrites** an existing file (verified). Writing to a directory fails with exit 1: `anydoc: EISDIR: illegal operation on a directory, open '<path>'`. With `-o`, stdout stays silent. |
 | `-f <fmt>`, `--format <fmt>` | Force the input format instead of detecting it. Values: `doc, docx, odt, pdf, ppt, pptx, rtf, epub, xlsx, ods, odp, csv`. Extension aliases resolve through the parser mapping (verified: `--format xls`, `--format docm` accepted). Invalid value → exit 2: `anydoc: invalid format 'bogus'; expected one of: doc, docx, odt, pdf, ppt, pptx, rtf, epub, xlsx, ods, odp, csv`. |
 | `-h`, `--help` | Print help to stdout, exit 0. Works even when the native binding is unavailable. |
-| `-V`, `--version` | Print the version (`0.1.6`) to stdout, exit 0. Binding-independent like `--help`. |
+| `-V`, `--version` | Print the version (`0.2.4`) to stdout, exit 0. Binding-independent like `--help`. |
 | `--format=x` | Inline `=` value syntax is supported for long options (verified: `--format=rtf` works). |
 | `--` | End of options: everything after `--` is treated as a positional input (a filename starting with `-`). |
 | Missing option value | `anydoc: <option> requires a value` → exit 2 (e.g. `anydoc: -o requires a value`). |
@@ -86,7 +88,7 @@ anydoc - [options] < file      # read the document from stdin
   Verified success pattern:
 
   ```bash
-  printf 'name,role\nAlice,Engineer\n' | npx -y @firecrawl/anydoc@0.1.6 - --format csv
+  printf 'name,role\nAlice,Engineer\n' | npx -y @firecrawl/anydoc@0.2.4 - --format csv
   ```
 
 - **Markdown goes to stdout only.** With `-o`, stdout stays silent.
@@ -103,18 +105,18 @@ anydoc - [options] < file      # read the document from stdin
 ## Running it: npx invocation
 
 ```bash
-npx -y @firecrawl/anydoc@0.1.6 report.docx                # markdown to stdout
-npx -y @firecrawl/anydoc@0.1.6 slides.pptx -o slides.md   # to a file
-npx -y @firecrawl/anydoc@0.1.6 - --format csv < data.csv  # stdin (CSV needs --format)
-curl -s https://example.com/paper.pdf | npx -y @firecrawl/anydoc@0.1.6 -   # URL → stdin
+npx -y @firecrawl/anydoc@0.2.4 report.docx                # markdown to stdout
+npx -y @firecrawl/anydoc@0.2.4 slides.pptx -o slides.md   # to a file
+npx -y @firecrawl/anydoc@0.2.4 - --format csv < data.csv  # stdin (CSV needs --format)
+curl -s https://example.com/paper.pdf | npx -y @firecrawl/anydoc@0.2.4 -   # URL → stdin
 ```
 
 ### Version pinning
 
-Always pin the version: `npx -y @firecrawl/anydoc@0.1.6`. An unpinned
+Always pin the version: `npx -y @firecrawl/anydoc@0.2.4`. An unpinned
 invocation (`npx -y @firecrawl/anydoc` with no `@version` suffix) floats to the
 latest published tag, so conversions are not reproducible across time. All
-behavior in this skill is documented against **0.1.6**. The `-y` flag answers
+behavior in this skill is documented against **0.2.4**. The `-y` flag answers
 npx's "Ok to proceed?" install prompt non-interactively — omitting it means npx
 asks for confirmation before installing a cold-cache package.
 
@@ -122,8 +124,8 @@ asks for confirmation before installing a cold-cache package.
 
 - The **first** `npx` invocation downloads the npm package plus the native
   platform binary (network required once). Verified with a fresh empty npm
-  cache: `env npm_config_cache=$(mktemp -d) npx -y @firecrawl/anydoc@0.1.6 --version`
-  prints `0.1.6` and exits 0.
+  cache: `env npm_config_cache=$(mktemp -d) npx -y @firecrawl/anydoc@0.2.4 --version`
+  prints `0.2.4` and exits 0.
 - Later runs reuse the npm cache; measured warm startup is ~0.33–0.55 s per
   invocation (see [workflows.md](workflows.md)).
 - **Cold-cache offline**: if the package is not cached and there is no network,
@@ -141,7 +143,7 @@ asks for confirmation before installing a cold-cache package.
   package per platform (`darwin-x64`, `darwin-arm64`, `linux-x64-gnu`,
   `linux-arm64-gnu`, `linux-x64-musl`, `linux-arm64-musl`, `win32-x64-msvc`),
   with **no postinstall script and no compilation**.
-- The npm package `@firecrawl/anydoc` 0.1.6 is ~48 KB unpacked (the binding
+- The npm package `@firecrawl/anydoc` 0.2.4 is ~48 KB unpacked (the binding
   package is a few MB per platform); published 2026-08-05T18:29:40Z.
 - The Rust crate `anydoc` (crates.io) and Python wheels `firecrawl-anydoc`
   (PyPI, imports as `anydoc`, Python >= 3.10) ship in the same release train.
@@ -173,8 +175,8 @@ delegates to the pinned CLI. It adds value beyond a thin npx alias:
   inputs from different directories collide on the same `<stem>.md` and the
   last one wins.
 - **`info [--version]`** — reports the tool name and the pinned CLI version
-  (`anydoc 0.1.6 (wraps @firecrawl/anydoc@0.1.6)`) without invoking the
-  converter; `info --version` prints exactly `0.1.6`.
+  (`anydoc 0.2.4 (wraps @firecrawl/anydoc@0.2.4)`) without invoking the
+  converter; `info --version` prints exactly `0.2.4`.
 - Global **`--json`** (exactly one JSON document on stdout; diagnostics stay
   on stderr) and **`--dry-run`** (print what would run — the exact `npx`
   command line and output paths — and execute nothing: no CLI spawn, no
@@ -183,7 +185,7 @@ delegates to the pinned CLI. It adds value beyond a thin npx alias:
 - Checks for Node >= 20 (missing `node`, or a version below 20, exits 1 with
   a clear message naming Node.js and the required version) and for `npx`
   (missing `npx` exits 1 naming `npx` and the pinned package
-  `@firecrawl/anydoc@0.1.6`); always invokes npx with `-y`; never prompts;
+  `@firecrawl/anydoc@0.2.4`); always invokes npx with `-y`; never prompts;
   exit codes 0/1/2 mirror the CLI.
 
 Run it as `anydoc/scripts/anydoc <subcommand> ...` from the repository root,

@@ -1,9 +1,11 @@
-# AEO source index
+# SEO, AEO, and GEO source index
 
-This source map supports the skill. Re-check provider documentation before relying on version-sensitive crawler names, dashboards, policies, or controls. Initial research pass: 2026-08-18.
+This source map supports the skill. Re-check provider documentation before relying on version-sensitive crawler names, dashboards, policies, or controls. Initial research pass: 2026-08-26.
 
 ## Primary and standards sources
 
+- [Aggarwal et al.: GEO: Generative Engine Optimization](https://arxiv.org/html/2311.09735v3) — KDD 2024 controlled benchmark and generative visibility metrics.
+- [Liu et al.: Evaluating Verifiability in Generative Search Engines](https://arxiv.org/abs/2304.09848) — citation support and sentence support evaluation.
 - [Google: AI features and your website](https://developers.google.com/search/docs/appearance/ai-features) — existing SEO fundamentals, no additional technical requirements or special AI markup, query fan-out, preview controls, and Search Console measurement.
 - [Google: optimizing for generative AI features](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide) — RAG, query fan-out, people-first content, technical structure, and mythbusting for `llms.txt`, chunking, exact rewrites, and inauthentic mentions.
 - [OpenAI: crawler overview](https://platform.openai.com/docs/bots) — OAI-SearchBot for search, GPTBot for training, ChatGPT-User for user-triggered access, independent robots controls, and propagation caveats.

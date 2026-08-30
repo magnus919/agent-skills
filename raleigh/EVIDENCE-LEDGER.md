@@ -191,6 +191,39 @@ The following public service boundaries were exercised successfully on 2026-07-2
 - No model-backed eval run, CI run, commit, push, pull request, deployment, release, or merge is claimed.
 - Roll back the aggregate adapter and CLI wiring if the official site removes JSON:API access or publication links cannot be validated without broadening the trust boundary.
 
+## Current Issue: Upstream Browser Challenge
+
+### Intent and authority
+
+- Keep the scheduled canary truthful when Raleigh's Cloudflare edge blocks
+  non-browser clients, without bypassing the provider's challenge or hiding
+  genuine contract failures.
+- Modify the local Raleigh skill only. No publish, deploy, merge, or provider
+  configuration authority was used.
+
+### Evidence and decision
+
+- Runs `33259202346`, `33211420732`, and `33113598834` each reported HTTP 403
+  for both civic probes, while all other probes passed.
+- Direct probes returned the Cloudflare `cf-mitigated: challenge` marker and
+  challenge HTML. The same endpoints returned valid content from a browser-like
+  local request, establishing an access-policy boundary rather than a Raleigh
+  schema failure.
+- Classify this exact marker as `waf_challenge`, preserve source and target in
+  the report, and keep it as a blocking availability failure. Other 403
+  responses remain `auth_regression` and continue to fail the canary.
+
+### Verification target and follow-up
+
+- Deterministic tests cover the marker-specific classification and the
+  blocking summary accounting.
+- The scheduled workflow remains the delivery-boundary check. A later green
+  run requires Raleigh machine access to be restored; a challenged civic
+  endpoint remains a canary failure.
+- Do not add retries, browser automation, or challenge bypasses. Reclassify only
+  when the provider removes the marker or a new upstream access contract is
+  verified.
+
 ## Issue 157 Addendum: Restore Live RPD Queries
 
 ### Intent and authority

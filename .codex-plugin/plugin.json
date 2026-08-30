@@ -20,7 +20,6 @@
   "skills": [
     "./actuarial-risk-modeling",
     "./adr-authoring",
-    "./aeo",
     "./agent-council",
     "./agent-evals-and-observability",
     "./agent-production-operations",
@@ -141,7 +140,7 @@
     "./secure-software-engineering",
     "./security-audit-methodology",
     "./semantic-spacetime",
-    "./seo-audit",
+    "./seo",
     "./site-reliability-engineering",
     "./slack",
     "./software-architecture",
