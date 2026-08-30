@@ -153,28 +153,6 @@ Exit codes: `0` on success (including dry-run previews), `1` on CLI errors (miss
 credentials, unreachable server, API 4xx/5xx, missing required `--user-id`), `2` on
 argparse misuse such as `--movies --episodes` together or a missing required flag.
 
-## Bundled CLI `--dry-run` and exit-code contract
-
-The CLI's dry-run plans are pinned by its offline test suite (`scripts/test_jellyfin_cli.py`),
-so jq keys match tested reality exactly. Every plan carries:
-
-```json
-{ "dry_run": true, "path": "/Items/Latest", "params": { "userId": null, "limit": 10 } }
-```
-
-- `dry_run` (bool, always true), `path` (string) and `params` (object) appear on every
-  command plan; `login` instead emits `path: "/Users/AuthenticateByName"`,
-  `server`, `username`, `authorization_header`, and `pre_token_header: true` (its
-  `authorization_header` is the complete pre-token MediaBrowser header, no `Token=`
-  segment); `info` composes a `requests` array of `{path, params}` steps instead of a
-  single `path`/`params` pair.
-- `params` mirrors the exact query the live call would send (`userId` is JSON `null`
-  when not supplied).
-
-Exit codes: `0` on success (including dry-run previews), `1` on CLI errors (missing
-credentials, unreachable server, API 4xx/5xx, missing required `--user-id`), `2` on
-argparse misuse such as `--movies --episodes` together or a missing required flag.
-
 ## Cross-version-safe baseline (derive your own recipes from these rules)
 
 1. Speak modern auth (`Authorization: MediaBrowser ...`) and put the token in exactly ONE

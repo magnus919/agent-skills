@@ -34,6 +34,16 @@ ENV_PASSWORD = os.getenv("JELLYFIN_PASSWORD", "")
 CLIENT_NAME = "jellyfin-cli"
 CLIENT_VERSION = "1.0.0"
 
+# Option strings of the subcommand parsers that consume a value (store_true
+# flags excluded). A flag whose VALUE names a subcommand (e.g. login's --server
+# given `search`) must not be mistaken for the command itself; keep this in
+# sync when adding subcommand flags. Flags listed here behave exactly as
+# before when they appear after the subcommand.
+VALUE_FLAGS = (
+    "--server --username -u --password --query -q --type --limit --user-id "
+    "--series-id --season-id --id --library-id --device-id --start-index"
+).split()
+
 GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False}
 
 
@@ -92,6 +102,55 @@ def _preparse_global_flags(argv):
             filtered.append(arg)
             i += 1
     return flags, filtered
+
+
+def find_subcommand_token(argv, subcommands, value_flags):
+    """Locate the first subcommand token in argv that no flag consumes as a value.
+
+    argv[0] is the program name. Returns (command_index, pair_start): the index
+    of the first subcommand token that is not a flag value, and the index where
+    the consumed flag/value pairs begin (None when no value names a subcommand).
+    A value-flag paired with a value that NAMES a subcommand (e.g. `--server
+    search`) must not hijack dispatch, so the pair is consumed and scanning
+    continues for the first unconsumed subcommand token. Any other token the
+    top-level parser would reject (unknown flags, stray positionals, `--`, a
+    dangling value-flag, or a value that is not a subcommand name) stops the
+    scan with command_index=None so argparse produces its usual error.
+    """
+    i = 1
+    pair_start = None
+    while i < len(argv):
+        token = argv[i]
+        if token in value_flags:
+            if i + 1 >= len(argv):
+                break  # flag with no value: argparse reports the misuse
+            if pair_start is None and argv[i + 1] in subcommands:
+                pair_start = i  # a value naming a subcommand must not dispatch
+            i += 2  # consume the flag and its value as a pair
+            continue
+        if token in subcommands:
+            return i, pair_start
+        break  # unknown flag, stray positional, or `--`: argparse owns this error
+    return None, pair_start
+
+
+def split_misplaced_value_pairs(argv, subcommands, value_flags):
+    """Split argv into (parse_argv, misplaced_pairs) around a hijacking flag value.
+
+    A value-flag pair whose value NAMES a subcommand while sitting before the
+    real command (e.g. `--server search browse`) would make argparse dispatch
+    the wrong subparser. Such pairs are lifted out of parse_argv and returned
+    as misplaced_pairs so main() can re-attach them to the command tail, where
+    parse_known_args handles them as it handles any unknown flag today. Any
+    other pre-command token (unknown flags, stray positionals, `--`, a
+    dangling value-flag) is left in place so argparse keeps reporting it
+    exactly as before, and argv without the mis-slice shape comes back
+    unchanged with an empty misplaced_pairs list.
+    """
+    command_index, pair_start = find_subcommand_token(argv, subcommands, value_flags)
+    if command_index is None or pair_start is None:
+        return argv, []
+    return argv[:pair_start] + argv[command_index:], argv[pair_start:command_index]
 
 
 class JellyfinClient:
@@ -663,25 +722,31 @@ def main():
     sub.add_parser("libraries", help="List libraries", description="List configured media libraries.", epilog="Example: jellyfin libraries")
     sub.add_parser("stats", help="Library statistics", description="Show media library item counts.", epilog="Example: jellyfin stats")
 
-    args = parser.parse_args(filtered_argv[1:])
-    if not args.command:
-        parser.print_help()
-        sys.exit(1)
-
-    client = JellyfinClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
-
     cmd_map = {
         "login": cmd_login, "info": cmd_info, "recent": cmd_recent, "search": cmd_search,
         "next-up": cmd_next_up, "item": cmd_item, "seasons": cmd_seasons,
         "episodes": cmd_episodes, "browse": cmd_browse, "libraries": cmd_libraries,
         "stats": cmd_stats,
     }
+
+    parse_argv, misplaced = split_misplaced_value_pairs(filtered_argv, cmd_map, VALUE_FLAGS)
+    args = parser.parse_args(parse_argv[1:])
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    client = JellyfinClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+
     handler = cmd_map.get(args.command)
     if not handler:
         parser.print_help()
         sys.exit(1)
 
-    remaining = filtered_argv[filtered_argv.index(args.command) + 1:]
+    # Misplaced flag/value pairs are re-attached ahead of the command tail so
+    # parse_known_args sees them where it tolerates unknown flags today; a
+    # properly placed occurrence of the same flag later in the tail still wins.
+    tail_start = parse_argv.index(args.command) + 1
+    remaining = misplaced + parse_argv[tail_start:]
     handler(client, remaining)
 
 

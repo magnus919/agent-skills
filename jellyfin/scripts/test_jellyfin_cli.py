@@ -612,5 +612,156 @@ class PipelineChainTests(unittest.TestCase):
                          "DateCreated")
 
 
+class DispatchHardeningTests(unittest.TestCase):
+    """main() must dispatch on the first UNCONSUMED subcommand token.
+
+    A value-flag pair whose value NAMES a subcommand while sitting before the
+    real command (e.g. `--server search browse ...`) used to make argparse
+    dispatch the wrong subparser (the token was swallowed as the flag's value
+    and the real command shifted into the value slot). The hardened dispatch
+    lifts such pairs out of the top-level argv and re-attaches them to the
+    command tail, where parse_known_args already tolerates unknown flags.
+    Every other pre-command token still reaches argparse so its errors are
+    byte-identical to the pre-hardening CLI.
+    """
+
+    def run_cli(self, *args):
+        return subprocess.run([str(SCRIPT), *args], text=True, capture_output=True,
+                              env=clean_env(), cwd=tempfile.gettempdir())
+
+    def test_flag_value_equal_to_subcommand_dispatches_browse_not_search(self):
+        # The exact mis-slice scenario: `--server search` must not dispatch
+        # the `search` sub-parser; the real command is `browse`.
+        result = self.run_cli("--server", "search", "browse",
+                              "--library-id", "lib-1", "--dry-run", "--json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["path"], "/Items")
+        self.assertEqual(payload["params"]["parentId"], "lib-1")
+
+    def test_value_hijack_variants_dispatch_the_real_command(self):
+        cases = (
+            (("recent", "--user-id", "u1", "--limit", "3"), "/Items/Latest"),
+            (("search", "--query", "dune"), "/Search/Hints"),
+            (("next-up", "--user-id", "u1"), "/Shows/NextUp"),
+            (("item", "--id", "i1", "--user-id", "u1"), "/Items/i1"),
+            (("seasons", "--series-id", "s1", "--user-id", "u1"), "/Shows/s1/Seasons"),
+            (("episodes", "--series-id", "s1", "--user-id", "u1"), "/Shows/s1/Episodes"),
+            (("libraries",), "/Library/MediaFolders"),
+            (("stats",), "/Items/Counts"),
+        )
+        for command, expected_path in cases:
+            with self.subTest(command=command):
+                result = self.run_cli("--server", "search", *command,
+                                      "--dry-run", "--json")
+                self.assertEqual(result.returncode, 0, result.stderr)
+                payload = json.loads(result.stdout)
+                self.assertEqual(payload["path"], expected_path)
+
+    def test_hijack_variants_cover_flag_command_and_no_flag_value_commands(self):
+        # info emits a `requests` array instead of a path/params pair.
+        result = self.run_cli("--server", "search", "info", "--dry-run", "--json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["requests"][0]["path"], "/System/Info")
+
+        # login keeps its plan shape; the misplaced pair rides along as the
+        # server value rather than being dropped.
+        result = self.run_cli("--server", "search", "login", "--username", "alice",
+                              "--dry-run", "--json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["path"], "/Users/AuthenticateByName")
+        self.assertEqual(payload["server"], "search")
+        self.assertTrue(payload["pre_token_header"])
+
+    def test_all_subcommands_dispatch_from_clean_argv(self):
+        cases = (
+            (("login", "--username", "alice"), "/Users/AuthenticateByName"),
+            (("info",), "/System/Info"),
+            (("recent", "--user-id", "u1"), "/Items/Latest"),
+            (("search", "--query", "dune"), "/Search/Hints"),
+            (("next-up", "--user-id", "u1"), "/Shows/NextUp"),
+            (("item", "--id", "i1", "--user-id", "u1"), "/Items/i1"),
+            (("seasons", "--series-id", "s1", "--user-id", "u1"), "/Shows/s1/Seasons"),
+            (("episodes", "--series-id", "s1", "--user-id", "u1"), "/Shows/s1/Episodes"),
+            (("browse", "--library-id", "lib-1"), "/Items"),
+            (("libraries",), "/Library/MediaFolders"),
+            (("stats",), "/Items/Counts"),
+        )
+        for command, expected_path in cases:
+            with self.subTest(command=command[0]):
+                result = self.run_cli(*command, "--dry-run", "--json")
+                self.assertEqual(result.returncode, 0, result.stderr)
+                payload = json.loads(result.stdout)
+                if "requests" in payload:  # info composes a request array
+                    self.assertEqual(payload["requests"][0]["path"], expected_path)
+                else:
+                    self.assertEqual(payload["path"], expected_path)
+
+    def test_properly_placed_flag_value_still_wins_over_misplaced_pair(self):
+        result = self.run_cli("--server", "search", "login",
+                              "--server", "http://real:8096",
+                              "--username", "alice", "--dry-run", "--json")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["server"], "http://real:8096")
+
+    def test_pre_command_tokens_argparse_owns_are_unchanged(self):
+        # Unknown flags, stray positionals, a non-subcommand --server value,
+        # a dangling value flag, and `--` all keep their pre-hardening
+        # argparse errors (exit 2, no traceback, no tolerant dispatch).
+        cases = (
+            ("--bogus", "info"),
+            ("junk", "browse", "--library-id", "lib-1"),
+            ("--server", "http://x:8096", "info"),
+            ("--server",),
+            ("--", "search", "--query", "dune"),
+        )
+        for argv in cases:
+            with self.subTest(argv=argv):
+                result = self.run_cli(*argv, "--dry-run", "--json")
+                self.assertEqual(result.returncode, 2)
+                self.assertIn("error:", result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_find_subcommand_token_returns_command_and_pair_indices(self):
+        cli = jellyfin_cli
+        subs = {"login", "info", "recent", "search", "next-up", "item", "seasons",
+                "episodes", "browse", "libraries", "stats"}
+        cases = (
+            (["jf", "--server", "search", "browse", "--library-id", "L"], (3, 1)),
+            (["jf", "browse", "--library-id", "L"], (1, None)),
+            (["jf", "--server", "http://x", "info"], (3, None)),
+            (["jf", "login", "--server", "search"], (1, None)),
+            (["jf", "--bogus", "info"], (None, None)),
+            (["jf", "--server"], (None, None)),
+            (["jf", "--"], (None, None)),
+        )
+        for argv, expected in cases:
+            with self.subTest(argv=argv):
+                self.assertEqual(
+                    cli.find_subcommand_token(argv, subs, cli.VALUE_FLAGS), expected)
+
+    def test_split_misplaced_value_pairs_lifts_only_hijacking_pair(self):
+        cli = jellyfin_cli
+        subs = {"login", "info", "recent", "search", "next-up", "item", "seasons",
+                "episodes", "browse", "libraries", "stats"}
+        parse_argv, misplaced = cli.split_misplaced_value_pairs(
+            ["jf", "--server", "search", "browse", "--library-id", "L"],
+            subs, cli.VALUE_FLAGS)
+        self.assertEqual(parse_argv, ["jf", "browse", "--library-id", "L"])
+        self.assertEqual(misplaced, ["--server", "search"])
+
+        # A value that is not a subcommand name never lifts anything, and
+        # clean argv passes through untouched.
+        parse_argv, misplaced = cli.split_misplaced_value_pairs(
+            ["jf", "--server", "http://x", "info"], subs, cli.VALUE_FLAGS)
+        self.assertEqual((parse_argv, misplaced), (["jf", "--server", "http://x", "info"], []))
+        parse_argv, misplaced = cli.split_misplaced_value_pairs(
+            ["jf", "login", "--server", "search", "--username", "a"],
+            subs, cli.VALUE_FLAGS)
+        self.assertEqual(misplaced, [])
+
+
 if __name__ == "__main__":
     unittest.main()
