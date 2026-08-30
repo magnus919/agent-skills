@@ -105,7 +105,12 @@ transistor episode-publish --id <EPISODE_ID>
 
 The bundled CLI guards step 3: if `attributes.media_url` is still empty it
 refuses to publish (an audio-less item would go out to every feed reader)
-and prints the attach-audio recipe; `--force` overrides.
+and prints the attach-audio recipe; `--force` overrides. The guard is scoped
+to `--status published` (the default) — scheduling intentionally precedes
+audio attach, so a `scheduled` publish needs no audio yet — and it performs
+one pre-publish `GET /episodes/:id`, which consumes one of the
+10-requests-per-10-seconds rate-limit slots: worth counting in bulk
+re-publish loops.
 
 ## Worked recipe: raw curl
 

@@ -24,6 +24,8 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "Open Library", "openlibrary", "book search", "ISBN lookup", "author records", "work details", "book editions", "book ratings", "cover image" | [openlibrary](../openlibrary/SKILL.md) |
 | "PeerTube", "peertube", "federated video", "SepiaSearch", "decentralized video platform", "PEERTUBE_SERVER", "my PeerTube instance" | [peertube](../peertube/SKILL.md) |
 | "weather", "forecast", "temperature", "is it raining", "Tempest", "WeatherFlow", "my station" | [tempest](../tempest/SKILL.md) |
+| "Transistor", "Transistor.fm", "podcast hosting", "podcast episodes", "episode publishing", "private podcast subscribers", "podcast download analytics" | [transistor](../transistor/SKILL.md) |
+| "Trakt", "Trakt.tv", "trending movies", "trending shows", "popular movies", "anticipated movies", "what's trending", "TRAKT_CLIENT_ID" | [trakt](../trakt/SKILL.md) |
 | "TMDb", "The Movie Database", "movie search", "trending movies", "upcoming TV releases", "TMDB_ACCESS_TOKEN" | [tmdb](../tmdb/SKILL.md) |
 | "traefik", "reverse proxy", "load balancer", "API gateway", "Let's Encrypt", "ACME", "Docker routing", "traefik.yml", "entry point", "middleware", "TLS termination", "forward auth", "rate limit" | [traefik](../traefik/SKILL.md) |
 | "reverse-engineer", "understand this codebase", "PRD from code", "architecture document", "architecture health", "coupling analysis", "modularity", "decomposition readiness", "data ownership map", "distributed workflow analysis", "reconciliation path" | [software-architecture-analysis](../software-architecture-analysis/SKILL.md) |
