@@ -565,7 +565,7 @@ Operate the Prometheus + OpenTelemetry + Loki observability stack as one unit: s
 
 ### [tempest](tempest/SKILL.md)
 
-Hyper-local weather from a WeatherFlow Tempest station. Query current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. A complete reference implementation of the cli-builder patterns in a working, testable project — including the CLI binary and full API field layout reference.
+Hyper-local weather from a WeatherFlow Tempest station over the REST API and the hub's local UDP broadcast: current conditions, forecast, historical observations, and real-time decoded datagrams (obs_st, rapid_wind, evt_precip, evt_strike, hub_status) with metric-native values and conversion guidance. Not for generic city forecasts without a station, or weather hardware from other vendors.
 
 ### [terraform](terraform/SKILL.md)
 
