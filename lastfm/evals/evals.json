@@ -48,7 +48,7 @@
     {
       "id": "route-away-from-music-data",
       "prompt": "Play some Radiohead songs for me right now.",
-      "expected_output": "Scenario: should-not-trigger. Playback is not a Last.fm data operation — the skill covers metadata, history, charts, discovery, and scrobbling, not controlling a music player. The agent does not load lastfm or invoke the CLI; it routes playback to whatever local player/streaming integration exists (e.g., jellyfin-cli or a Spotify tool) instead.",
+      "expected_output": "Scenario: should-not-trigger. Playback is not a Last.fm data operation — the skill covers metadata, history, charts, discovery, and scrobbling, not controlling a music player. The agent does not load lastfm or invoke the CLI; it routes playback to whatever local player/streaming integration exists (e.g., jellyfin or a Spotify tool) instead.",
       "assertions": [
         "The skill is not loaded for a playback request",
         "No lastfm-cli command is run to fulfill playback",

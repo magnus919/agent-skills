@@ -1,0 +1,782 @@
+#!/usr/bin/env python3
+"""peertube — browse PeerTube federated video from the terminal.
+
+Read-only client for any PeerTube instance's REST API, plus OAuth2 login.
+Commands: server, videos, video, search, comments, channels, channel,
+account, me, my-videos, login, logout. Set PEERTUBE_SERVER (or pass
+--server) to choose the instance; point it at https://sepiasearch.org
+for fediverse-wide search — the API shape is identical. `--json` emits
+machine-readable output, `--dry-run` prints the exact request plan with
+zero network activity, and `--help` works without credentials.
+"""
+
+import argparse
+import getpass
+import json
+import os
+import sys
+import time
+import warnings
+from typing import Any, Dict, Optional
+
+warnings.simplefilter("ignore")
+
+import requests
+
+ENV_SERVER = os.getenv("PEERTUBE_SERVER", "")
+ENV_CONFIG_DIR = os.getenv("PEERTUBE_CONFIG_DIR", "")
+API_BASE = "/api/v1"
+DEFAULT_CONFIG_DIR = "~/.config/peertube"
+TOKEN_FILE_NAME = "token.json"
+MAX_COUNT = 100
+DEFAULT_COUNT = 15
+
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+
+
+def die(message, exit_code=1):
+    print(f"Error: {message}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def warn(message):
+    print(f"Warning: {message}", file=sys.stderr)
+
+
+def emit(human, data):
+    if GLOBAL_FLAGS.get("json"):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+def log(message):
+    if GLOBAL_FLAGS.get("verbose") and not GLOBAL_FLAGS.get("json"):
+        print(message, file=sys.stderr)
+
+
+def _preparse_global_flags(argv):
+    """Pull global flags out so they work before or after the subcommand.
+
+    Boolean flags are recorded as True; --server consumes its value. Anything
+    else passes through to the subparsers untouched."""
+    bools = {"--json", "--dry-run", "--quiet", "--verbose"}
+    flags, filtered = {}, [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in bools:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg == "--server":
+            if i + 1 >= len(argv):
+                die("--server requires a value (the instance URL).")
+            flags["server"] = argv[i + 1]
+            i += 2
+        elif arg in ("--help", "-h"):
+            return flags, argv
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+def default_config_dir():
+    if ENV_CONFIG_DIR:
+        return os.path.expanduser(ENV_CONFIG_DIR)
+    return os.path.expanduser(DEFAULT_CONFIG_DIR)
+
+
+def fmt_duration(seconds):
+    try:
+        total = int(seconds or 0)
+    except (TypeError, ValueError):
+        return "?"
+    return f"{total // 60}:{total % 60:02d}"
+
+
+def fmt_date(value):
+    return str(value or "")[:10]
+
+
+def is_masked_secret(value):
+    """Production instances reply to oauth-clients/local with the secret
+    replaced by a run of '*' characters."""
+    return bool(value) and set(value) == {"*"}
+
+
+def request_plan(method, path, params=None, **extra):
+    plan: Dict[str, Any] = {"dry_run": True, "method": method, "path": path, "params": params or {}}
+    plan.update(extra)
+    return plan
+
+
+def channel_label(video):
+    channel = video.get("channel") or {}
+    account = video.get("account") or {}
+    display = channel.get("displayName") or account.get("displayName") or "?"
+    host = channel.get("host") or account.get("host")
+    return f"{display}@{host}" if host else display
+
+
+def video_line(video, index=None):
+    name = str(video.get("name") or "?")[:52]
+    views = video.get("views") or 0
+    when = fmt_date(video.get("publishedAt"))
+    prefix = f"{index:>3}. " if index else "  -  "
+    return f"  {prefix}{name:<52}  {fmt_duration(video.get('duration')):>6}  {views:>8} views  {channel_label(video)}  {when}"
+
+
+class PeerTubeClient:
+    """REST client for one PeerTube instance (federated: tokens are per-instance)."""
+
+    def __init__(self, server="", dry_run=False, config_dir=None):
+        self.server = (server or ENV_SERVER).rstrip("/")
+        self.dry_run = dry_run
+        self.config_dir = config_dir or default_config_dir()
+        self._token: Optional[str] = None
+        self._refresh_token: Optional[str] = None
+        self._expires_at: Optional[float] = None
+        self._load_token()
+
+    # ----- instance / URL helpers -------------------------------------
+
+    def base_url(self):
+        if not self.server:
+            die("No instance configured. Export PEERTUBE_SERVER (e.g. https://<INSTANCE_HOST>) "
+                "or pass --server.")
+        return self.server
+
+    def display_server(self):
+        return self.server or "https://<INSTANCE_HOST>"
+
+    def _url(self, path):
+        return f"{self.base_url()}{API_BASE}{path}"
+
+    def _headers(self, with_token=True):
+        headers = {"Accept": "application/json"}
+        if with_token and self._token:
+            headers["Authorization"] = f"Bearer {self._token}"
+        return headers
+
+    # ----- token file persistence (per-instance, owner-only) ----------
+
+    def token_path(self):
+        return os.path.join(self.config_dir, TOKEN_FILE_NAME)
+
+    def _load_token(self):
+        try:
+            with open(self.token_path()) as handle:
+                data = json.load(handle)
+        except (OSError, ValueError):
+            return
+        stored_server = str(data.get("server") or "").rstrip("/")
+        if self.server and stored_server and stored_server != self.server:
+            return  # token was minted by a different instance
+        self._token = data.get("access_token") or None
+        self._refresh_token = data.get("refresh_token") or None
+        expires_at = data.get("expires_at")
+        self._expires_at = float(expires_at) if expires_at else None
+
+    def save_session(self, token_response):
+        access = token_response.get("access_token")
+        if not access:
+            die("Login response carried no access_token; nothing to persist.")
+        expires_in = token_response.get("expires_in")
+        expires_at = time.time() + float(expires_in) if expires_in else None
+        record = {
+            "server": self.server,
+            "access_token": access,
+            "refresh_token": token_response.get("refresh_token"),
+            "token_type": token_response.get("token_type", "Bearer"),
+            "expires_at": expires_at,
+            "expires_in": expires_in,
+        }
+        os.makedirs(self.config_dir, mode=0o700, exist_ok=True)
+        fd = os.open(self.token_path(), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "w") as handle:
+            json.dump(record, handle, indent=2)
+        self._token = access
+        self._refresh_token = record["refresh_token"]
+        self._expires_at = expires_at
+
+    def clear_token(self):
+        try:
+            os.remove(self.token_path())
+        except OSError:
+            pass
+        self._token = None
+        self._refresh_token = None
+        self._expires_at = None
+
+    def token_is_valid(self):
+        if not self._token:
+            return False
+        return self._expires_at is None or time.time() < self._expires_at
+
+    def ensure_token(self):
+        """Authed commands need a live token; try refresh before giving up."""
+        if self.token_is_valid():
+            return
+        if self._refresh_token and not self.dry_run and self.refresh():
+            return
+        die(f"Not authenticated for {self.display_server()}. Run "
+            f"'peertube login --username <name>' first, or use --dry-run to preview.")
+
+    # ----- OAuth2 flows ------------------------------------------------
+
+    def fetch_oauth_client(self):
+        """Anonymous GET /oauth-clients/local (singular 'local')."""
+        url = self._url("/oauth-clients/local")
+        log(f"--> GET {url}")
+        try:
+            response = requests.get(url, headers={"Accept": "application/json"}, timeout=15)
+        except requests.exceptions.RequestException as exc:
+            die(f"Cannot reach {self.display_server()} ({exc.__class__.__name__}). "
+                f"Check PEERTUBE_SERVER and connectivity.")
+        if response.status_code >= 400:
+            die(f"oauth-clients/local returned {response.status_code}: {response.text[:200]}")
+        try:
+            payload = response.json()
+        except ValueError:
+            die(f"Non-JSON response from oauth-clients/local; is {self.display_server()} a PeerTube instance?")
+        client_id = payload.get("client_id")
+        if not client_id:
+            die("oauth-clients/local response missing client_id.")
+        return client_id, payload.get("client_secret") or ""
+
+    def request_token(self, client_id, client_secret, username, password, otp=None):
+        """POST /users/token with the password grant (x-www-form-urlencoded)."""
+        form = {
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "grant_type": "password",
+            "username": username,
+            "password": password,
+        }
+        headers = {"Accept": "application/json"}
+        if otp:
+            headers["x-peertube-otp"] = otp
+        url = self._url("/users/token")
+        log("--> POST /users/token (password grant, values not logged)")
+        try:
+            response = requests.post(url, data=form, headers=headers, timeout=15)
+        except requests.exceptions.RequestException as exc:
+            die(f"Cannot reach {self.display_server()} ({exc.__class__.__name__}) during token request.")
+        if response.status_code == 401:
+            die("Login failed (401): token request rejected. If the account uses two-factor "
+                "authentication, pass --otp.")
+        if response.status_code >= 400:
+            detail = ""
+            try:
+                body = response.json()
+                if isinstance(body, dict):
+                    detail = body.get("detail") or body.get("title") or body.get("error") or ""
+            except ValueError:
+                detail = (response.text or "")[:200]
+            die(f"Login failed ({response.status_code}): invalid client credentials or wrong "
+                f"username/password. {detail}".rstrip())
+        try:
+            return response.json()
+        except ValueError:
+            die("Token endpoint returned non-JSON.")
+
+    def refresh(self):
+        """grant_type=refresh_token. The official reference does not render the
+        exact refresh form fields, so this uses the community-established shape
+        and treats any failure as a signal to fall back to a password re-grant."""
+        if not self._refresh_token:
+            return False
+        try:
+            client_id, client_secret = self.fetch_oauth_client()
+        except SystemExit:
+            return False
+        if is_masked_secret(client_secret) or not client_secret:
+            return False
+        form = {
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "grant_type": "refresh_token",
+            "refresh_token": self._refresh_token,
+        }
+        url = self._url("/users/token")
+        log("--> POST /users/token (refresh grant, values not logged)")
+        try:
+            response = requests.post(url, data=form, headers={"Accept": "application/json"}, timeout=15)
+        except requests.exceptions.RequestException:
+            return False
+        if response.status_code >= 400:
+            return False
+        try:
+            data = response.json()
+        except ValueError:
+            return False
+        if not data.get("access_token"):
+            return False
+        self.save_session(data)
+        return True
+
+    def revoke_token(self):
+        """POST /users/revoke-token invalidates the access and refresh tokens."""
+        url = self._url("/users/revoke-token")
+        log(f"--> POST {url}")
+        try:
+            return requests.post(url, headers=self._headers(), timeout=15)
+        except requests.exceptions.RequestException as exc:
+            die(f"Cannot reach {self.display_server()} ({exc.__class__.__name__}) during revocation.")
+
+    # ----- read endpoints ----------------------------------------------
+
+    def _get(self, path, params=None):
+        url = self._url(path)
+        if self.dry_run:
+            return request_plan("GET", f"{API_BASE}{path}", params)
+        log(f"--> GET {url}")
+        try:
+            response = requests.get(url, params=params, headers=self._headers(), timeout=30)
+        except requests.exceptions.RequestException as exc:
+            die(f"Cannot reach {self.display_server()} ({exc.__class__.__name__}). "
+                f"Check PEERTUBE_SERVER and connectivity.")
+        return self._handle(response, f"{API_BASE}{path}")
+
+    def _handle(self, response, path):
+        status = response.status_code
+        if status >= 400:
+            detail = ""
+            try:
+                body = response.json()
+                if isinstance(body, dict):
+                    detail = body.get("detail") or body.get("title") or body.get("error") or ""
+            except ValueError:
+                detail = (response.text or "")[:200]
+            if status == 401:
+                die(f"401 Unauthorized on {path}: {detail or 'token missing, expired, or revoked'}. "
+                    f"Run 'peertube login' or check the instance.")
+            if status == 429:
+                retry = response.headers.get("Retry-After", "?")
+                die(f"429 rate limited on {path}; Retry-After: {retry}s "
+                    f"(default server limit: 50 calls per 10 seconds).")
+            die(f"API error {status} on {path}: {detail or 'no detail in body'}")
+        try:
+            return response.json()
+        except ValueError:
+            die(f"Non-JSON response from {path} (status {status}); "
+                f"is {self.display_server()} a PeerTube instance?")
+
+
+# ----- command handlers ------------------------------------------------
+
+
+def validate_page_args(count, start):
+    if count < 1 or count > MAX_COUNT:
+        die(f"--limit must be between 1 and {MAX_COUNT} (server maximum).")
+    if start < 0:
+        die("--offset must be >= 0.")
+
+
+def cmd_server(client, args):
+    if client.dry_run:
+        plan = {"dry_run": True, "requests": [
+            {"method": "GET", "path": f"{API_BASE}/config/about", "params": {}},
+            {"method": "GET", "path": f"{API_BASE}/server/stats", "params": {}},
+        ]}
+        return emit("[dry-run] GET /config/about + /server/stats", plan)
+    about = client._get("/config/about") or {}
+    stats = client._get("/server/stats") or {}
+    instance = about.get("instance") or {}
+    name = instance.get("name", "?")
+    description = instance.get("shortDescription") or ""
+    keys = ("totalUsers", "totalLocalVideos", "totalVideos",
+            "totalLocalVideoViews", "totalLocalVideoDownloads", "totalLocalVideoChannels")
+    payload = {
+        "instance": {
+            "name": name,
+            "shortDescription": instance.get("shortDescription"),
+            "description": instance.get("description"),
+        },
+        "stats": {key: stats.get(key) for key in keys},
+    }
+    stats_line = "  ".join(f"{key}={payload['stats'][key]}" for key in keys if payload['stats'][key] is not None)
+    emit(f"Instance {name}\n   {description[:100]}\n   {stats_line}", payload)
+
+
+def cmd_videos(client, args):
+    parser = argparse.ArgumentParser(prog="peertube videos")
+    parser.add_argument("--limit", type=int, default=DEFAULT_COUNT)
+    parser.add_argument("--offset", type=int, default=0)
+    parser.add_argument("--sort", default="-publishedAt")
+    parsed, _ = parser.parse_known_args(args)
+    validate_page_args(parsed.limit, parsed.offset)
+    params = {"start": parsed.offset, "count": parsed.limit, "sort": parsed.sort}
+    if client.dry_run:
+        return emit("[dry-run] GET /api/v1/videos " + json.dumps(params),
+                    request_plan("GET", f"{API_BASE}/videos", params))
+    data = client._get("/videos", params) or {}
+    videos = data.get("data", [])
+    total = data.get("total", len(videos))
+    if not videos:
+        return emit("No videos.", {"total": total, "start": parsed.offset, "count": 0, "videos": []})
+    lines = [video_line(v, i + 1) for i, v in enumerate(videos)]
+    emit(f"{total} video(s) on {client.display_server()}:\n" + "\n".join(lines),
+         {"total": total, "start": parsed.offset, "count": len(videos), "videos": videos})
+
+
+def cmd_video(client, args):
+    parser = argparse.ArgumentParser(prog="peertube video")
+    parser.add_argument("--id", required=True, help="Numeric id, UUID, or shortUUID")
+    parsed, _ = parser.parse_known_args(args)
+    if client.dry_run:
+        return emit(f"[dry-run] GET {API_BASE}/videos/{parsed.id}",
+                    request_plan("GET", f"{API_BASE}/videos/{parsed.id}", {}))
+    detail = client._get(f"/videos/{parsed.id}") or {}
+    emit(f"{detail.get('name', '?')}  [{fmt_duration(detail.get('duration'))}]  "
+         f"{detail.get('views', 0)} views  by {channel_label(detail)}", detail)
+
+
+def cmd_search(client, args):
+    parser = argparse.ArgumentParser(
+        prog="peertube search",
+        description="Search the configured instance's OWN catalog (searchTarget=local). "
+                    "For fediverse-wide search set PEERTUBE_SERVER=https://sepiasearch.org — "
+                    "same commands, wider index.")
+    parser.add_argument("--query", "-q", required=True)
+    parser.add_argument("--limit", type=int, default=DEFAULT_COUNT)
+    parser.add_argument("--offset", type=int, default=0)
+    parser.add_argument("--sort", default=None)
+    parser.add_argument("--search-target", choices=["local", "search-index"], default="local")
+    parsed, _ = parser.parse_known_args(args)
+    validate_page_args(parsed.limit, parsed.offset)
+    params: Dict[str, Any] = {"search": parsed.query, "searchTarget": parsed.search_target,
+                              "start": parsed.offset, "count": parsed.limit}
+    if parsed.sort:
+        params["sort"] = parsed.sort
+    if client.dry_run:
+        return emit(f"[dry-run] GET {API_BASE}/search/videos " + json.dumps(params),
+                    request_plan("GET", f"{API_BASE}/search/videos", params))
+    data = client._get("/search/videos", params) or {}
+    videos = data.get("data", [])
+    total = data.get("total", len(videos))
+    if not videos:
+        return emit("No results.", {"total": total, "start": parsed.offset, "count": 0, "videos": []})
+    lines = [video_line(v, i + 1) for i, v in enumerate(videos)]
+    scope = ("instance-local" if parsed.search_target == "local" else "search-index")
+    emit(f"{total} result(s) [{scope} search on {client.display_server()}]:\n" + "\n".join(lines),
+         {"total": total, "start": parsed.offset, "count": len(videos), "videos": videos})
+
+
+def cmd_comments(client, args):
+    parser = argparse.ArgumentParser(prog="peertube comments")
+    parser.add_argument("--id", required=True, help="Video id, UUID, or shortUUID")
+    parser.add_argument("--limit", type=int, default=DEFAULT_COUNT)
+    parser.add_argument("--offset", type=int, default=0)
+    parsed, _ = parser.parse_known_args(args)
+    validate_page_args(parsed.limit, parsed.offset)
+    params = {"start": parsed.offset, "count": parsed.limit, "sort": "-createdAt"}
+    if client.dry_run:
+        return emit(f"[dry-run] GET {API_BASE}/videos/{parsed.id}/comment-threads " + json.dumps(params),
+                    request_plan("GET", f"{API_BASE}/videos/{parsed.id}/comment-threads", params))
+    data = client._get(f"/videos/{parsed.id}/comment-threads", params) or {}
+    threads = data.get("data", [])
+    total = data.get("total", len(threads))
+    lines = []
+    for thread in threads:
+        comment = thread.get("comment") or {}
+        account = comment.get("account") or {}
+        text = str(comment.get("text") or "")[:70].replace("\n", " ")
+        lines.append(f"  {thread.get('totalReplies', 0):>3} replies  @{account.get('name', '?')}  {text}")
+    emit(f"{total} comment thread(s):\n" + ("\n".join(lines) if lines else "  (none)"),
+         {"total": total, "total_not_deleted": data.get("totalNotDeletedComments"),
+          "start": parsed.offset, "threads": threads})
+
+
+def cmd_channels(client, args):
+    parser = argparse.ArgumentParser(prog="peertube channels")
+    parser.add_argument("--limit", type=int, default=DEFAULT_COUNT)
+    parser.add_argument("--offset", type=int, default=0)
+    parsed, _ = parser.parse_known_args(args)
+    validate_page_args(parsed.limit, parsed.offset)
+    params = {"start": parsed.offset, "count": parsed.limit}
+    if client.dry_run:
+        return emit(f"[dry-run] GET {API_BASE}/video-channels " + json.dumps(params),
+                    request_plan("GET", f"{API_BASE}/video-channels", params))
+    data = client._get("/video-channels", params) or {}
+    channels = data.get("data", [])
+    total = data.get("total", len(channels))
+    if not channels:
+        return emit("No channels.", {"total": total, "start": parsed.offset, "count": 0, "channels": []})
+    lines = []
+    for channel in channels:
+        display = channel.get("displayName") or channel.get("name") or "?"
+        handle = f"{channel.get('name', '?')}@{channel.get('host', '?')}"
+        lines.append(f"  {display:<30}  {handle:<40}  "
+                     f"{channel.get('videosCount', '?')} videos  {channel.get('followersCount', '?')} followers")
+    emit(f"{total} channel(s) on {client.display_server()}:\n" + "\n".join(lines),
+         {"total": total, "start": parsed.offset, "count": len(channels), "channels": channels})
+
+
+def cmd_channel(client, args):
+    parser = argparse.ArgumentParser(prog="peertube channel")
+    parser.add_argument("--handle", required=True, help="Channel name or name@host")
+    parser.add_argument("--limit", type=int, default=DEFAULT_COUNT)
+    parser.add_argument("--offset", type=int, default=0)
+    parsed, _ = parser.parse_known_args(args)
+    validate_page_args(parsed.limit, parsed.offset)
+    params = {"start": parsed.offset, "count": parsed.limit}
+    if client.dry_run:
+        plan = {"dry_run": True, "requests": [
+            {"method": "GET", "path": f"{API_BASE}/video-channels/{parsed.handle}", "params": {}},
+            {"method": "GET", "path": f"{API_BASE}/video-channels/{parsed.handle}/videos", "params": params},
+        ]}
+        return emit(f"[dry-run] GET /video-channels/{parsed.handle} (+ /videos)", plan)
+    meta = client._get(f"/video-channels/{parsed.handle}") or {}
+    videos_data = client._get(f"/video-channels/{parsed.handle}/videos", params) or {}
+    videos = videos_data.get("data", [])
+    display = meta.get("displayName") or meta.get("name") or parsed.handle
+    lines = [video_line(v, i + 1) for i, v in enumerate(videos)]
+    emit(f"{display}  ({meta.get('followersCount', '?')} followers, {meta.get('videosCount', '?')} videos)\n"
+         + ("\n".join(lines) if lines else "  (no videos listed)"),
+         {"channel": meta, "total": videos_data.get("total", len(videos)),
+          "start": parsed.offset, "videos": videos})
+
+
+def cmd_account(client, args):
+    parser = argparse.ArgumentParser(prog="peertube account")
+    parser.add_argument("--name", required=True, help="Account name or name@host")
+    parsed, _ = parser.parse_known_args(args)
+    if client.dry_run:
+        return emit(f"[dry-run] GET {API_BASE}/accounts/{parsed.name}",
+                    request_plan("GET", f"{API_BASE}/accounts/{parsed.name}", {}))
+    account = client._get(f"/accounts/{parsed.name}") or {}
+    display = account.get("displayName") or account.get("name") or parsed.name
+    handle = f"{account.get('name', parsed.name)}@{account.get('host', '?')}"
+    emit(f"{display}  ({handle})  {account.get('followersCount', '?')} followers", account)
+
+
+def cmd_me(client, args):
+    if client.dry_run:
+        return emit(f"[dry-run] GET {API_BASE}/users/me (Authorization: Bearer <ACCESS_TOKEN>)",
+                    request_plan("GET", f"{API_BASE}/users/me", {}))
+    client.ensure_token()
+    data = client._get("/users/me") or {}
+    if isinstance(data, list):  # docs render an array sample; live servers return one object
+        data = data[0] if data else {}
+    role = data.get("role") if isinstance(data, dict) else {}
+    if not isinstance(role, dict):  # some instances/versions may send a scalar role id
+        role = {"id": role, "label": str(role)}
+    quota = data.get("videoQuota")
+    quota_text = f"{quota} bytes" if quota is not None else "?"
+    emit(f"@{data.get('username', '?')}  Role: {role.get('label', '?')}  Quota: {quota_text}", data)
+
+
+def cmd_my_videos(client, args):
+    parser = argparse.ArgumentParser(prog="peertube my-videos")
+    parser.add_argument("--limit", type=int, default=DEFAULT_COUNT)
+    parser.add_argument("--offset", type=int, default=0)
+    parsed, _ = parser.parse_known_args(args)
+    validate_page_args(parsed.limit, parsed.offset)
+    params = {"start": parsed.offset, "count": parsed.limit}
+    if client.dry_run:
+        return emit(f"[dry-run] GET {API_BASE}/users/me/videos " + json.dumps(params),
+                    request_plan("GET", f"{API_BASE}/users/me/videos", params))
+    client.ensure_token()
+    data = client._get("/users/me/videos", params) or {}
+    videos = data.get("data", [])
+    total = data.get("total", len(videos))
+    lines = [video_line(v, i + 1) for i, v in enumerate(videos)]
+    emit(f"{total} of your video(s):\n" + ("\n".join(lines) if lines else "  (none)"),
+         {"total": total, "start": parsed.offset, "count": len(videos), "videos": videos})
+
+
+def cmd_login(client, args):
+    parser = argparse.ArgumentParser(
+        prog="peertube login",
+        description="OAuth2 password grant: fetch the instance's client pair, exchange your "
+                    "credentials for a bearer token, and persist it (owner-only file, "
+                    "per-instance). Password is never echoed.")
+    parser.add_argument("--username", "-u", required=True)
+    parser.add_argument("--server", help="Instance URL override, e.g. https://<INSTANCE_HOST>")
+    password_group = parser.add_mutually_exclusive_group()
+    password_group.add_argument("--password", help="Account password (prefer --password-stdin or --prompt)")
+    password_group.add_argument("--password-stdin", action="store_true", help="Read password from stdin")
+    password_group.add_argument("--prompt", action="store_true", help="Prompt for the password (hidden)")
+    parser.add_argument("--otp", help="One-time password when the account has 2FA enabled")
+    parsed, _ = parser.parse_known_args(args)
+    if client.dry_run:
+        return emit("[dry-run] POST /api/v1/users/token (password grant)",
+                    request_plan("POST", f"{API_BASE}/users/token", {},
+                                 form_fields=["client_id", "client_secret", "grant_type",
+                                              "username", "password"],
+                                 note="field values suppressed; run without --dry-run to authenticate"))
+    server = (parsed.server or client.server).rstrip("/")
+    if not server:
+        die("No instance configured. Export PEERTUBE_SERVER or pass --server https://<INSTANCE_HOST>.")
+    login_client = PeerTubeClient(server=server, config_dir=client.config_dir)
+    if not parsed.password_stdin and not parsed.prompt and parsed.password is None:
+        die("No password supplied. Use --password, --password-stdin, or --prompt.")
+    if parsed.password_stdin:
+        password = sys.stdin.readline().rstrip("\n")
+    elif parsed.prompt:
+        password = getpass.getpass(f"Password for {parsed.username}@{server}: ")
+    else:
+        password = parsed.password
+    client_id, client_secret = login_client.fetch_oauth_client()
+    if is_masked_secret(client_secret):
+        die("This instance masks client_secret in oauth-clients/local ('*' characters). "
+            "Production PeerTube front ends obtain the real pair from their own served assets; "
+            "see references/auth-and-tokens.md for the workaround before retrying login.")
+    token_response = login_client.request_token(client_id, client_secret, parsed.username,
+                                                password, otp=parsed.otp)
+    login_client.save_session(token_response)
+    expires_in = token_response.get("expires_in")
+    expires_text = f", expires in {expires_in}s" if expires_in else ""
+    emit(f"Logged in to {server} as {parsed.username}{expires_text}\n"
+         f"Token file: {login_client.token_path()}",
+         {"status": "logged_in", "server": server, "username": parsed.username,
+          "token_file": login_client.token_path(), "expires_in": expires_in})
+
+
+def cmd_logout(client, args):
+    if client.dry_run:
+        return emit(f"[dry-run] POST {API_BASE}/users/revoke-token",
+                    request_plan("POST", f"{API_BASE}/users/revoke-token", {}))
+    if not client.server:
+        die("No instance configured. Export PEERTUBE_SERVER or pass --server.")
+    if not client._token and not client._refresh_token:
+        die(f"No stored token for {client.server}; nothing to revoke.")
+    response = client.revoke_token()
+    status = response.status_code
+    if status == 200:
+        client.clear_token()
+        return emit("Token revoked and local token file removed.",
+                    {"status": "logged_out", "revoked": True, "server": client.server})
+    if status == 401:
+        client.clear_token()
+        warn("Server rejected revocation (401); the token was likely already invalid. "
+             "Local token file removed.")
+        return emit("Logged out (token was already invalid server-side).",
+                    {"status": "logged_out", "revoked": False, "server": client.server})
+    die(f"Revocation failed ({status}). Local token file kept; retry or remove "
+        f"{client.token_path()} manually.")
+
+
+def build_parser():
+    parser = argparse.ArgumentParser(
+        prog="peertube",
+        description="PeerTube federated video from the terminal.",
+        epilog="Set PEERTUBE_SERVER (any instance host, e.g. https://<INSTANCE_HOST>) or pass "
+               "--server. Fediverse-wide search: PEERTUBE_SERVER=https://sepiasearch.org. "
+               "Login: peertube login --username NAME --prompt")
+    parser.add_argument("--server",
+                        help="Instance URL (default: PEERTUBE_SERVER env var)")
+    parser.add_argument("--json", action="store_true", help="Machine-readable JSON output")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Print the request plan without any network call")
+    parser.add_argument("--quiet", action="store_true",
+                        help="Accepted for compatibility; no effect")
+    parser.add_argument("--verbose", action="store_true", help="Trace requests on stderr")
+    sub = parser.add_subparsers(dest="command")
+
+    sub.add_parser("server", help="Instance name, description, and stats (anonymous)",
+                   description="Compose /config/about and /server/stats for an instance picture.",
+                   epilog="Example: peertube server --json")
+    vp = sub.add_parser("videos", help="List the instance's videos (offset pagination)",
+                        description="GET /videos with start/count pagination (there is no page parameter).",
+                        epilog="Example: peertube videos --limit 5 --json")
+    vp.add_argument("--limit", type=int, default=DEFAULT_COUNT, help="Page size, 1-100")
+    vp.add_argument("--offset", type=int, default=0, help="Zero-based result offset")
+    vp.add_argument("--sort", default="-publishedAt", help="e.g. -publishedAt, -views, -trending")
+    vi = sub.add_parser("video", help="Full detail for one video",
+                        description="GET /videos/{id}; id accepts numeric id, UUID, or shortUUID.",
+                        epilog="Example: peertube video --id <UUID>")
+    vi.add_argument("--id", required=True)
+    sp = sub.add_parser("search", help="Search this instance's own catalog",
+                        description="Instance-local search (searchTarget=local). For fediverse-wide "
+                                    "search point PEERTUBE_SERVER at https://sepiasearch.org.",
+                        epilog="Example: peertube search --query linux --limit 10")
+    sp.add_argument("--query", "-q", required=True)
+    sp.add_argument("--limit", type=int, default=DEFAULT_COUNT, help="Page size, 1-100")
+    sp.add_argument("--offset", type=int, default=0)
+    sp.add_argument("--sort", default=None, help="e.g. -views, -match, -publishedAt")
+    sp.add_argument("--search-target", choices=["local", "search-index"], default="local",
+                    help="local = this instance's catalog; search-index = external index if the "
+                         "instance has one")
+    cp = sub.add_parser("comments", help="Top-level comment threads of a video",
+                        description="GET /videos/{id}/comment-threads (hyphenated route).",
+                        epilog="Example: peertube comments --id <UUID>")
+    cp.add_argument("--id", required=True)
+    cp.add_argument("--limit", type=int, default=DEFAULT_COUNT, help="Page size, 1-100")
+    cp.add_argument("--offset", type=int, default=0)
+    hp = sub.add_parser("channels", help="List the instance's channels",
+                        description="GET /video-channels with start/count pagination.",
+                        epilog="Example: peertube channels --limit 20 --json")
+    hp.add_argument("--limit", type=int, default=DEFAULT_COUNT, help="Page size, 1-100")
+    hp.add_argument("--offset", type=int, default=0)
+    cv = sub.add_parser("channel", help="One channel's metadata and uploads",
+                        description="GET /video-channels/{handle} and its videos; handle is name or "
+                                    "name@host for remote channels.",
+                        epilog="Example: peertube channel --handle framasoft@framatube.org")
+    cv.add_argument("--handle", required=True)
+    cv.add_argument("--limit", type=int, default=DEFAULT_COUNT, help="Page size, 1-100")
+    cv.add_argument("--offset", type=int, default=0)
+    ap = sub.add_parser("account", help="One account's metadata",
+                        description="GET /accounts/{name}; name accepts name or name@host.",
+                        epilog="Example: peertube account --name chocobozzz@framatube.org")
+    ap.add_argument("--name", required=True)
+    sub.add_parser("me", help="Your profile (requires login)",
+                   description="GET /users/me with the persisted bearer token.",
+                   epilog="Example: peertube me --json | jq .role.label")
+    mv = sub.add_parser("my-videos", help="Your uploads (requires login)",
+                        description="GET /users/me/videos with start/count pagination.",
+                        epilog="Example: peertube my-videos --limit 50 --json")
+    mv.add_argument("--limit", type=int, default=DEFAULT_COUNT, help="Page size, 1-100")
+    mv.add_argument("--offset", type=int, default=0)
+    lg = sub.add_parser("login", help="Authenticate (OAuth2 password grant) and persist a token",
+                        description="Fetch the instance's OAuth client pair, run the password grant, "
+                                    "and persist the token per-instance in an owner-only file.",
+                        epilog="Example: peertube login --username NAME --prompt")
+    lg.add_argument("--username", "-u", help="PeerTube username")
+    lg_password_group = lg.add_mutually_exclusive_group()
+    lg_password_group.add_argument("--password", help="Account password (prefer --password-stdin or --prompt)")
+    lg_password_group.add_argument("--password-stdin", action="store_true", help="Read the password from stdin")
+    lg_password_group.add_argument("--prompt", action="store_true", help="Prompt for the password (hidden)")
+    lg.add_argument("--otp", help="One-time password when the account has 2FA enabled")
+    lg.add_argument("--server", help="Instance URL override, e.g. https://<INSTANCE_HOST>")
+    lo = sub.add_parser("logout", help="Revoke the token server-side and delete the local token file",
+                        description="POST /users/revoke-token, then remove the local token file.",
+                        epilog="Example: peertube logout")
+    return parser
+
+
+def main():
+    global GLOBAL_FLAGS
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("json"):
+        warnings.simplefilter("ignore")
+
+    parser = build_parser()
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    client = PeerTubeClient(server=args.server or GLOBAL_FLAGS.get("server") or "",
+                            dry_run=GLOBAL_FLAGS.get("dry_run", False))
+    handlers = {
+        "server": cmd_server, "videos": cmd_videos, "video": cmd_video,
+        "search": cmd_search, "comments": cmd_comments, "channels": cmd_channels,
+        "channel": cmd_channel, "account": cmd_account, "me": cmd_me,
+        "my-videos": cmd_my_videos, "login": cmd_login, "logout": cmd_logout,
+    }
+    handler = handlers.get(args.command)
+    if not handler:
+        parser.print_help()
+        sys.exit(1)
+    remaining = filtered_argv[filtered_argv.index(args.command) + 1:]
+    handler(client, remaining)
+
+
+if __name__ == "__main__":
+    main()

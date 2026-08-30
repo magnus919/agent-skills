@@ -1,0 +1,757 @@
+#!/usr/bin/env python3
+"""transistor — Transistor.fm podcast hosting from the terminal.
+
+Manage shows, episodes, private-podcast subscribers, webhooks, and download
+analytics on Transistor.fm. Read commands: user, shows, show, episodes,
+episode, analytics, episode-analytics, subscribers, webhooks. Write commands:
+show-update, episode-create, episode-update, episode-publish,
+authorize-upload, subscriber-create, subscriber-batch, subscriber-delete,
+webhook-create, webhook-delete. Show creation is dashboard-only (the API
+cannot create shows).
+
+The API is JSON:API on responses (data/attributes/relationships/included);
+write bodies are form-encoded with the documented bracket keys
+(episode[title]=..., show[title]=..., subscriber[email]=...). Publishing
+travels on the dedicated PATCH /v1/episodes/:id/publish endpoint with
+episode[status]=draft|scheduled|published.
+
+API key from the environment variable TRANSISTOR_API_KEY (Account page ->
+API Access: https://dashboard.transistor.fm/account). --help and --dry-run
+never need it.
+"""
+
+import argparse, json, os, re, sys, warnings
+from typing import Any, Dict
+warnings.simplefilter("ignore")
+import requests
+
+ENV_KEY = "TRANSISTOR_API_KEY"
+API_BASE = "https://api.transistor.fm/v1"
+EPISODE_STATUSES = ("draft", "scheduled", "published")
+WEBHOOK_EVENTS = ("episode_created", "episode_published", "subscriber_created", "subscriber_deleted")
+DATE_RE = re.compile(r"^\d{2}-\d{2}-\d{4}$")
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+
+def log(m):    global QUIET; (not QUIET and not GLOBAL_FLAGS.get("json")) and print(m)
+def warn(m):   print(f"Warning: {m}", file=sys.stderr)
+def die(m, c=1): print(f"Error: {m}", file=sys.stderr); sys.exit(c)
+def emit(h, d):
+    if GLOBAL_FLAGS.get("json"): print(json.dumps(d, default=str))
+    else: print(h)
+
+def _preparse(argv):
+    """Hoist global boolean flags so they work in any position."""
+    BOOLS = {"--json","--dry-run","--force","--quiet","--verbose"}
+    f, fl = {}, [argv[0]]
+    i = 1
+    while i < len(argv):
+        a = argv[i]
+        if a in BOOLS: f[a.lstrip("-").replace("-","_")] = True; i += 1
+        elif a in ("--help","-h"): return f, argv
+        elif a == "--": fl.extend(argv[i:]); break
+        else: fl.append(a); i += 1
+    return f, fl
+
+def _pagination(page, per):
+    params = {}
+    if page is not None: params["pagination[page]"] = page
+    if per is not None: params["pagination[per]"] = per
+    return params
+
+class TransistorClient:
+    def __init__(self, key="", dry_run=False):
+        self.key = key or os.getenv(ENV_KEY, ""); self.dry_run = dry_run
+    def _headers(self):
+        return {"x-api-key": self.key, "Accept": "application/json"}
+    def _error(self, r):
+        try: d = r.json()
+        except ValueError: die(f"Transistor API error ({r.status_code}): {r.text[:200]}")
+        errs = d.get("errors") if isinstance(d, dict) else None
+        if isinstance(errs, list) and errs:
+            parts = []
+            for e in errs:
+                if isinstance(e, dict):
+                    bits = [str(e[k]) for k in ("title", "detail", "code") if e.get(k)]
+                    parts.append(": ".join(bits) if bits else json.dumps(e))
+                else:
+                    parts.append(str(e))
+            die(f"Transistor API error ({r.status_code}): " + "; ".join(parts))
+        if isinstance(d, dict) and d.get("message"):
+            die(f"Transistor API error ({r.status_code}): {d['message']}")
+        die(f"Transistor API error ({r.status_code}): {json.dumps(d, default=str)[:200]}")
+    def _request(self, method, path, params=None, body=None):
+        url = f"{API_BASE}{path}"
+        if self.dry_run:
+            plan = {"dry_run": True, "method": method.upper(), "path": path, "params": params or {}}
+            if body is not None: plan["body"] = body
+            return plan
+        if not self.key:
+            die(f"{ENV_KEY} not set. Find your API key under API Access on the Account page: "
+                "https://dashboard.transistor.fm/account")
+        try:
+            r = requests.request(method, url, params=params, data=body, headers=self._headers(), timeout=30)
+        except requests.RequestException as e:
+            die(f"Cannot reach api.transistor.fm: {e.__class__.__name__}: {e}")
+        if r.status_code == 401:
+            die(f"Transistor API rejected the API key (401 Unauthorized). Check {ENV_KEY} at https://dashboard.transistor.fm/account.")
+        if r.status_code == 403:
+            die("Transistor API denied access (403 Forbidden). The key is valid but your dashboard role "
+                "(owner/admin/team member) lacks access to this resource.")
+        if r.status_code == 404:
+            die(f"Transistor API resource not found (404): {path}. Verify the id or slug — "
+                "shows accept id or slug, episode ids come from `transistor episodes --json`.")
+        if r.status_code == 429:
+            die("Transistor API rate limit reached (429). The limit is 10 requests per 10 seconds and access "
+                "blocks for 10 seconds; wait and retry, cache responses, or batch your calls.")
+        if r.status_code >= 400:
+            self._error(r)
+        return r.json()
+    # ---- reads ----
+    def get_user(self):
+        """Authorization check: GET /v1 returns the authenticated user resource."""
+        return self._request("GET", "")
+    def list_shows(self, private=None, query="", page=None, per=None):
+        params = _pagination(page, per)
+        if private is not None: params["private"] = "true" if private else "false"
+        if query: params["query"] = query
+        return self._request("GET", "/shows", params)
+    def get_show(self, show_id):
+        return self._request("GET", f"/shows/{show_id}")
+    def list_episodes(self, show_id="", query="", status="", order="", page=None, per=None, include=""):
+        params = _pagination(page, per)
+        if show_id: params["show_id"] = show_id
+        if query: params["query"] = query
+        if status: params["status"] = status
+        if order: params["order"] = order
+        if include: params["include[]"] = include
+        return self._request("GET", "/episodes", params)
+    def get_episode(self, episode_id, include=""):
+        params = {"include[]": include} if include else None
+        return self._request("GET", f"/episodes/{episode_id}", params)
+    def show_analytics(self, show_id, start_date="", end_date=""):
+        params = {}
+        if start_date: params["start_date"] = start_date
+        if end_date: params["end_date"] = end_date
+        return self._request("GET", f"/analytics/{show_id}", params)
+    def episode_analytics(self, episode_id, start_date="", end_date=""):
+        params = {}
+        if start_date: params["start_date"] = start_date
+        if end_date: params["end_date"] = end_date
+        return self._request("GET", f"/analytics/episodes/{episode_id}", params)
+    def list_subscribers(self, show_id, query="", activated=None, page=None, per=None):
+        params = _pagination(page, per)
+        params["show_id"] = show_id
+        if query: params["query"] = query
+        if activated is not None: params["activated"] = "true" if activated else "false"
+        return self._request("GET", "/subscribers", params)
+    def list_webhooks(self, show_id):
+        return self._request("GET", "/webhooks", {"show_id": show_id})
+    # ---- writes: bracket-key form bodies, exactly the documented curl shapes ----
+    def update_show(self, show_id, fields):
+        """PATCH /shows/:id with show[...] keys (id may be a show id or slug)."""
+        body = {f"show[{k}]": v for k, v in fields.items()}
+        return self._request("PATCH", f"/shows/{show_id}", body=body)
+    def create_episode(self, show_id, title, **kw):
+        body = {"episode[show_id]": show_id}
+        if title: body["episode[title]"] = title
+        for k, v in kw.items():
+            if v is not None: body[f"episode[{k}]"] = v
+        return self._request("POST", "/episodes", body=body)
+    def update_episode(self, episode_id, fields):
+        """PATCH /episodes/:id updates metadata or attaches audio. It never
+        changes publishing state; publishing has its own endpoint."""
+        body = {f"episode[{k}]": v for k, v in fields.items()}
+        return self._request("PATCH", f"/episodes/{episode_id}", body=body)
+    def publish_episode(self, episode_id, status, published_at=""):
+        """PATCH /episodes/:id/publish — publish, schedule, or revert to draft."""
+        body = {"episode[status]": status}
+        if published_at: body["episode[published_at]"] = published_at
+        return self._request("PATCH", f"/episodes/{episode_id}/publish", body=body)
+    def authorize_upload(self, filename):
+        return self._request("GET", "/episodes/authorize_upload", {"filename": filename})
+    def upload_audio(self, upload_url, content_type, path):
+        with open(path, "rb") as fh:
+            r = requests.put(upload_url, data=fh, headers={"Content-Type": content_type}, timeout=600)
+        if r.status_code >= 400:
+            die(f"Audio upload failed ({r.status_code}): {r.text[:200]}")
+        return r
+    def create_subscriber(self, show_id, email, skip_welcome=False):
+        body = {"show_id": show_id, "email": email, "skip_welcome_email": "true" if skip_welcome else "false"}
+        return self._request("POST", "/subscribers", body=body)
+    def create_subscribers_batch(self, show_id, emails, skip_welcome=False):
+        body = {"show_id": show_id, "emails[]": list(emails), "skip_welcome_email": "true" if skip_welcome else "false"}
+        return self._request("POST", "/subscribers/batch", body=body)
+    def delete_subscriber(self, subscriber_id="", show_id="", email=""):
+        if subscriber_id:
+            return self._request("DELETE", f"/subscribers/{subscriber_id}")
+        return self._request("DELETE", "/subscribers", body={"show_id": show_id, "email": email})
+    def create_webhook(self, show_id, event_name, url):
+        body = {"show_id": show_id, "event_name": event_name, "url": url}
+        return self._request("POST", "/webhooks", body=body)
+    def delete_webhook(self, webhook_id):
+        return self._request("DELETE", f"/webhooks/{webhook_id}")
+
+# ---- JSON:API unwrapping helpers (envelope: data / attributes / included) ----
+def _single(doc):
+    if not isinstance(doc, dict): return {}
+    data = doc.get("data", {})
+    return data if isinstance(data, dict) else {}
+def _items(doc):
+    if not isinstance(doc, dict): return []
+    data = doc.get("data", [])
+    return data if isinstance(data, list) else []
+def _meta(doc):
+    if not isinstance(doc, dict): return {}
+    meta = doc.get("meta", {})
+    return meta if isinstance(meta, dict) else {}
+def _included_of_type(doc, rtype):
+    if not isinstance(doc, dict): return []
+    inc = doc.get("included", [])
+    if not isinstance(inc, list): return []
+    return [i for i in inc if isinstance(i, dict) and i.get("type") == rtype]
+def _attrs(data_obj):
+    a = data_obj.get("attributes", {}) if isinstance(data_obj, dict) else {}
+    return a if isinstance(a, dict) else {}
+def _sum_downloads(analytics_attrs):
+    rows = analytics_attrs.get("downloads")
+    total, days = 0, 0
+    if isinstance(rows, list):
+        for row in rows:
+            if isinstance(row, dict):
+                days += 1
+                try: total += int(row.get("downloads", 0))
+                except (TypeError, ValueError): pass
+    return total, days
+
+# ---- single-sourced flag definitions ----
+# Handlers own their flags via these adders; main() builds the parser from the
+# same functions and each handler parses its own argv slice with a local
+# ArgumentParser (prog=<noun>) so tests can call handlers with raw argv lists.
+def _add_shows_flags(p):
+    p.add_argument("--private", action="store_true", help="Only private shows")
+    p.add_argument("--query", help="Search shows by title")
+    p.add_argument("--page", type=int, default=None)
+    p.add_argument("--per", type=int, default=None, help="Page size (API default 10)")
+
+def _add_episodes_flags(p):
+    p.add_argument("--show", help="Show ID or slug filter")
+    p.add_argument("--status", choices=list(EPISODE_STATUSES), default=None)
+    p.add_argument("--query", help="Search episodes")
+    p.add_argument("--order", choices=["asc", "desc"], default=None, help="Default: desc (newest first)")
+    p.add_argument("--page", type=int, default=None)
+    p.add_argument("--per", type=int, default=None, help="Page size (API default 10)")
+    p.add_argument("--limit", dest="per", type=int, default=None,
+                   help="Alias for --per (the old CLI's --limit)")
+    p.add_argument("--include", default=None, help="Compound document, e.g. 'show'")
+
+def _add_episode_id_flags(p, with_include=False):
+    p.add_argument("--id", required=True, help="Episode ID")
+    if with_include:
+        p.add_argument("--include", default=None, help="e.g. 'show' adds the parent show to included[]")
+
+def _add_episode_metadata_flags(p, create=False):
+    p.add_argument("--title", required=create, default=None)
+    p.add_argument("--season", type=int, default=None)
+    p.add_argument("--number", type=int, default=None)
+    p.add_argument("--summary", default=None, help="Short summary")
+    p.add_argument("--description", default=None, help="Long description (HTML allowed)")
+    p.add_argument("--audio-url", dest="audio_url", default=None,
+                   help="http(s) URL of finished audio; attaches audio at creation")
+    p.add_argument("--author", default=None)
+    if create:
+        p.add_argument("--type", dest="episode_type", choices=["full", "trailer", "bonus"], default=None)
+        p.add_argument("--increment-number", dest="increment_number", action="store_true",
+                       help="Auto-set number to the next episode of the current season")
+
+def _add_analytics_flags(p):
+    p.add_argument("--start-date", dest="start_date", default=None, help="dd-mm-yyyy (requires --end-date)")
+    p.add_argument("--end-date", dest="end_date", default=None, help="dd-mm-yyyy (requires --start-date)")
+
+def _add_subscriber_list_flags(p):
+    p.add_argument("--query", help="Search subscribers")
+    p.add_argument("--activated", dest="activated", action="store_true",
+                   help="Only subscribers who activated")
+    p.add_argument("--page", type=int, default=None)
+    p.add_argument("--per", type=int, default=None)
+    p.add_argument("--limit", dest="per", type=int, default=None,
+                   help="Alias for --per (the old CLI's --limit)")
+
+def cmd_user(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor user", description="Who am I? (GET /v1 authorization check)")
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit("[dry-run] GET /v1 (authorization check)", client.get_user())
+    d = client.get_user() or {}
+    data = _single(d)
+    u = _attrs(data)
+    emit(f"{u.get('name', '?')}  (time zone: {u.get('time_zone', '?')})",
+         {"id": data.get("id"), "type": data.get("type", "user"),
+          "name": u.get("name"), "time_zone": u.get("time_zone"), "image_url": u.get("image_url")})
+
+def cmd_shows(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor shows", description="List your shows (newest-updated first)")
+    _add_shows_flags(p)
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit("[dry-run] GET /shows", client.list_shows(
+        private=args.private, query=args.query or "", page=args.page, per=args.per))
+    d = client.list_shows(private=args.private, query=args.query or "", page=args.page, per=args.per) or {}
+    shows = _items(d)
+    if not shows: return emit("No shows.", {"shows": [], "meta": _meta(d)})
+    lines, out = [], []
+    for s in shows:
+        a = _attrs(s)
+        t = a.get("title", "?")
+        lines.append(f"  {t}  slug={a.get('slug', '?')}  id={s.get('id', '?')}"
+                     + ("  [private]" if a.get("private") else ""))
+        out.append({"id": s.get("id"), "type": s.get("type", "show"), "title": t, "slug": a.get("slug", ""),
+                    "private": a.get("private"), "show_type": a.get("show_type", ""),
+                    "feed_url": a.get("feed_url", "")})
+    emit(f"{len(shows)} show(s):\n" + "\n".join(lines), {"shows": out, "meta": _meta(d)})
+
+def cmd_show(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor show", description="One show's full attributes")
+    p.add_argument("--id", required=True, help="Show ID or slug")
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit(f"[dry-run] GET /shows/{args.id}", client.get_show(args.id))
+    d = client.get_show(args.id) or {}
+    data = _single(d)
+    a = _attrs(data)
+    emit(f"{a.get('title', '?')}  (id={data.get('id', '?')}, slug={a.get('slug', '?')})",
+         {"id": data.get("id"), "type": data.get("type", "show"), "title": a.get("title"),
+          "slug": a.get("slug", ""), "description": a.get("description", ""),
+          "show_type": a.get("show_type", ""), "private": a.get("private"),
+          "feed_url": a.get("feed_url", ""), "time_zone": a.get("time_zone", ""),
+          "author": a.get("author", ""), "website": a.get("website", "")})
+
+_SHOW_UPDATE_FIELDS = (("--title", "title", None), ("--description", "description", None),
+                       ("--author", "author", None), ("--website", "website", None),
+                       ("--keywords", "keywords", None), ("--copyright", "copyright", None),
+                       ("--owner-email", "owner_email", None), ("--time-zone", "time_zone", None),
+                       ("--show-type", "show_type", ("episodic", "serial")))
+
+def cmd_show_update(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor show-update", description="Update show metadata (PATCH /shows/:id)")
+    p.add_argument("--id", required=True, help="Show ID or slug")
+    for flag, dest, choices in _SHOW_UPDATE_FIELDS:
+        p.add_argument(flag, dest=dest, choices=choices, default=None)
+    args = p.parse_args(raw_args)
+    fields = {}
+    for flag, dest, choices in _SHOW_UPDATE_FIELDS:
+        v = getattr(args, dest, None)
+        if v is not None: fields[dest] = v
+    if not fields:
+        die("Nothing to update: pass at least one of --title, --description, --author, --website, "
+            "--keywords, --copyright, --owner-email, --time-zone, --show-type.")
+    if client.dry_run: return emit(f"[dry-run] PATCH /shows/{args.id}", client.update_show(args.id, fields))
+    d = client.update_show(args.id, fields) or {}
+    a = _attrs(_single(d))
+    emit(f"Updated show {args.id}.", {"id": args.id, "title": a.get("title"),
+                                      "updated_fields": sorted(fields.keys())})
+
+def cmd_episodes(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor episodes", description="List episodes (ordered by publish date)")
+    _add_episodes_flags(p)
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit("[dry-run] GET /episodes", client.list_episodes(
+        show_id=args.show or "", query=args.query or "", status=args.status or "",
+        order=args.order or "", page=args.page, per=args.per, include=args.include or ""))
+    d = client.list_episodes(show_id=args.show or "", query=args.query or "", status=args.status or "",
+                             order=args.order or "", page=args.page, per=args.per,
+                             include=args.include or "") or {}
+    eps = _items(d)
+    if not eps: return emit("No episodes.", {"episodes": [], "meta": _meta(d)})
+    lines, out = [], []
+    for e in eps:
+        a = _attrs(e)
+        eid = e.get("id", "?")
+        t = a.get("title", "?")
+        status = a.get("status", "?")
+        pub = a.get("published_at") or ""
+        seas = a.get("season", "")
+        num = a.get("number", "")
+        lines.append(f"  S{seas}E{num} [{status}] {t}  (id={eid})")
+        out.append({"id": eid, "type": e.get("type", "episode"), "title": t, "status": status,
+                    "season": seas, "number": num, "duration": a.get("duration"),
+                    "published_at": pub, "media_url": a.get("media_url", ""),
+                    "share_url": a.get("share_url", ""),
+                    "show_id": ((e.get("relationships", {}) or {}).get("show", {}) or {}).get("data", {}).get("id", "")})
+    emit(f"{len(eps)} episode(s):\n" + "\n".join(lines), {"episodes": out, "meta": _meta(d)})
+    if args.include and "show" in args.include:
+        for s in _included_of_type(d, "show"):
+            log(f"  included show: {_attrs(s).get('title', '?')} (id={s.get('id', '?')})")
+
+def cmd_episode(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor episode", description="One episode's full attributes")
+    _add_episode_id_flags(p, with_include=True)
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit(f"[dry-run] GET /episodes/{args.id}", client.get_episode(args.id, include=args.include or ""))
+    d = client.get_episode(args.id, include=args.include or "") or {}
+    data = _single(d)
+    a = _attrs(data)
+    media = a.get("media_url") or ""
+    emit(f"{a.get('title', '?')} [{a.get('status', '?')}]  (id={data.get('id', '?')})"
+         + (f"  media: {media}" if media else "  (no audio attached yet)"),
+         {"id": data.get("id"), "type": data.get("type", "episode"), "title": a.get("title"),
+          "status": a.get("status"), "season": a.get("season"), "number": a.get("number"),
+          "duration": a.get("duration"), "duration_in_mmss": a.get("duration_in_mmss", ""),
+          "media_url": media, "share_url": a.get("share_url", ""),
+          "published_at": a.get("published_at"), "audio_processing": a.get("audio_processing"),
+          "processing_failure": a.get("processing_failure"),
+          "show_id": ((data.get("relationships", {}) or {}).get("show", {}) or {}).get("data", {}).get("id", "")})
+    if args.include and "show" in args.include:
+        for s in _included_of_type(d, "show"):
+            log(f"  included show: {_attrs(s).get('title', '?')} (id={s.get('id', '?')})")
+
+def cmd_episode_create(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor episode-create",
+                                description="Create an episode (always created as DRAFT)")
+    p.add_argument("--show", required=True, help="Show ID or slug to attach the episode to")
+    _add_episode_metadata_flags(p, create=True)
+    args = p.parse_args(raw_args)
+    fields: Dict[str, Any] = {}
+    if args.season is not None: fields["season"] = args.season
+    if args.number is not None: fields["number"] = args.number
+    if args.summary: fields["summary"] = args.summary
+    if args.description: fields["description"] = args.description
+    if args.audio_url: fields["audio_url"] = args.audio_url
+    if args.author: fields["author"] = args.author
+    if args.episode_type: fields["type"] = args.episode_type
+    if args.increment_number: fields["increment_number"] = "true"
+    if client.dry_run:
+        plan = client.create_episode(args.show, args.title, **fields)
+        return emit("[dry-run] POST /episodes (creates a DRAFT; publishing is a separate endpoint)", plan)
+    d = client.create_episode(args.show, args.title, **fields) or {}
+    data = _single(d)
+    a = _attrs(data)
+    eid = data.get("id", "?")
+    hint = "" if a.get("status") == "published" else f"  Publish it with: transistor episode-publish --id {eid}"
+    emit(f"Created episode '{a.get('title', '?')}' (id={eid}, status={a.get('status', '?')}).{hint}",
+         {"id": eid, "title": a.get("title"), "status": a.get("status"),
+          "media_url": a.get("media_url", ""), "published_at": a.get("published_at")})
+
+def cmd_episode_update(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor episode-update",
+                                description="Update episode metadata or attach audio (never publishes)")
+    _add_episode_id_flags(p)
+    _add_episode_metadata_flags(p, create=False)
+    args = p.parse_args(raw_args)
+    fields = {}
+    if args.title is not None: fields["title"] = args.title
+    if args.summary is not None: fields["summary"] = args.summary
+    if args.description is not None: fields["description"] = args.description
+    if args.season is not None: fields["season"] = args.season
+    if args.number is not None: fields["number"] = args.number
+    if args.audio_url: fields["audio_url"] = args.audio_url
+    if args.author is not None: fields["author"] = args.author
+    if not fields:
+        die("Nothing to update: pass at least one of --title, --summary, --description, --season, "
+            "--number, --audio-url, --author. (Publishing state is changed by episode-publish, not here.)")
+    if client.dry_run: return emit(f"[dry-run] PATCH /episodes/{args.id}", client.update_episode(args.id, fields))
+    d = client.update_episode(args.id, fields) or {}
+    a = _attrs(_single(d))
+    emit(f"Updated episode {args.id} ({', '.join(sorted(fields.keys()))}).",
+         {"id": args.id, "title": a.get("title"), "status": a.get("status"),
+          "media_url": a.get("media_url", ""), "published_at": a.get("published_at")})
+
+def cmd_episode_publish(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor episode-publish",
+                                description="Publish, schedule, or unpublish (PATCH /episodes/:id/publish)")
+    _add_episode_id_flags(p)
+    p.add_argument("--status", choices=list(EPISODE_STATUSES), default="published",
+                   help="Target state (default: published; scheduled needs --published-at; draft unpublishes)")
+    p.add_argument("--published-at", dest="published_at", default=None,
+                   help="Publish datetime in the show's time zone (with --status published or scheduled)")
+    p.add_argument("--force", action="store_true", help="Publish even if no audio is attached")
+    args = p.parse_args(raw_args)
+    if not client.dry_run and args.status == "published" and not args.force:
+        current = client.get_episode(args.id)
+        a = _attrs(_single(current))
+        if not (a.get("media_url") or "").strip():
+            die(f"Episode {args.id} has no audio yet (attributes.media_url is empty). Attach audio first: "
+                f"transistor episode-update --id {args.id} --audio-url <URL> (or episode-create --audio-url). "
+                "Pass --force to publish anyway.")
+    if client.dry_run:
+        plan = client.publish_episode(args.id, args.status, args.published_at or "")
+        return emit(f"[dry-run] PATCH /episodes/{args.id}/publish (episode[status]={args.status})", plan)
+    d = client.publish_episode(args.id, args.status, args.published_at or "") or {}
+    data = _single(d)
+    a = _attrs(data)
+    verb = {"published": "published", "scheduled": "scheduled", "draft": "reverted to draft"}[args.status]
+    emit(f"Episode {data.get('id', args.id)} {verb}.",
+         {"id": data.get("id", args.id), "type": data.get("type", "episode"),
+          "status": a.get("status"), "published_at": a.get("published_at"),
+          "media_url": a.get("media_url", "")})
+
+def cmd_authorize_upload(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor authorize-upload",
+                                description="Authorize a local audio/video upload (max 5GB)")
+    p.add_argument("--filename", required=True, help="Filename of the audio file")
+    p.add_argument("--file", default=None, help="Local path to PUT now (otherwise you upload it yourself)")
+    args = p.parse_args(raw_args)
+    if client.dry_run:
+        plan = client.authorize_upload(args.filename)
+        plan["then_put"] = {"file": args.file or "(none — upload yourself)",
+                            "how": "HTTP PUT the file bytes to attributes.upload_url with "
+                                   "Content-Type: attributes.content_type; then attach attributes.audio_url"}
+        return emit("[dry-run] GET /episodes/authorize_upload", plan)
+    d = client.authorize_upload(args.filename) or {}
+    a = _attrs(_single(d))
+    if args.file:
+        client.upload_audio(a.get("upload_url", ""), a.get("content_type", ""), args.file)
+        log(f"Uploaded {args.file} to the authorized URL.")
+    emit(f"Authorized upload for {args.filename} (expires in {a.get('expires_in', '?')}s).\n"
+         f"  audio_url to attach: {a.get('audio_url', '?')}",
+         {"audio_url": a.get("audio_url"), "upload_url": a.get("upload_url"),
+          "content_type": a.get("content_type"), "expires_in": a.get("expires_in"),
+          "uploaded": bool(args.file)})
+
+def cmd_analytics(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor analytics",
+                                description="Show downloads per day (default: last 14 days)")
+    p.add_argument("--show", required=True, help="Show ID or slug")
+    _add_analytics_flags(p)
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit(f"[dry-run] GET /analytics/{args.show}", client.show_analytics(
+        args.show, args.start_date or "", args.end_date or ""))
+    d = client.show_analytics(args.show, args.start_date or "", args.end_date or "") or {}
+    a = _attrs(_single(d))
+    total, days = _sum_downloads(a)
+    emit(f"Show {args.show} — {total} downloads over {days} day(s)"
+         f" ({a.get('start_date', '?')} .. {a.get('end_date', '?')})",
+         {"show_id": args.show, "downloads_total": total, "days": days,
+          "start_date": a.get("start_date"), "end_date": a.get("end_date"),
+          "downloads": a.get("downloads", [])})
+
+def cmd_episode_analytics(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor episode-analytics",
+                                description="One episode's downloads per day (default: last 14 days)")
+    p.add_argument("--id", required=True, help="Episode ID or slug")
+    _add_analytics_flags(p)
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit(f"[dry-run] GET /analytics/episodes/{args.id}", client.episode_analytics(
+        args.id, args.start_date or "", args.end_date or ""))
+    d = client.episode_analytics(args.id, args.start_date or "", args.end_date or "") or {}
+    a = _attrs(_single(d))
+    total, days = _sum_downloads(a)
+    emit(f"Episode {args.id} — {total} downloads over {days} day(s)"
+         f" ({a.get('start_date', '?')} .. {a.get('end_date', '?')})",
+         {"episode_id": args.id, "downloads_total": total, "days": days,
+          "start_date": a.get("start_date"), "end_date": a.get("end_date"),
+          "downloads": a.get("downloads", [])})
+
+def cmd_subscribers(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor subscribers",
+                                description="List a private podcast's subscribers")
+    p.add_argument("--show", required=True, help="Show ID or slug")
+    _add_subscriber_list_flags(p)
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit(f"[dry-run] GET /subscribers?show_id={args.show}", client.list_subscribers(
+        args.show, query=args.query or "", activated=args.activated, page=args.page, per=args.per))
+    d = client.list_subscribers(args.show, query=args.query or "", activated=args.activated,
+                                page=args.page, per=args.per) or {}
+    subs = _items(d)
+    if not subs: return emit("No subscribers.", {"subscribers": [], "meta": _meta(d)})
+    lines, out = [], []
+    for s in subs:
+        a = _attrs(s)
+        email = a.get("email", "?")
+        lines.append(f"  {email}  id={s.get('id', '?')}")
+        out.append({"id": s.get("id"), "type": s.get("type", "subscriber"), "email": email,
+                    "status": a.get("status", ""), "feed_url": a.get("feed_url", ""),
+                    "subscribe_url": a.get("subscribe_url", ""), "has_downloads": a.get("has_downloads")})
+    emit(f"{len(subs)} subscriber(s):\n" + "\n".join(lines), {"subscribers": out, "meta": _meta(d)})
+
+def cmd_subscriber_create(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor subscriber-create",
+                                description="Add one private-podcast subscriber")
+    p.add_argument("--show", required=True, help="Show ID or slug")
+    p.add_argument("--email", required=True)
+    p.add_argument("--skip-welcome-email", dest="skip_welcome_email", action="store_true")
+    args = p.parse_args(raw_args)
+    if client.dry_run:
+        return emit(f"[dry-run] POST /subscribers (add {args.email} to show {args.show})",
+                    client.create_subscriber(args.show, args.email, skip_welcome=args.skip_welcome_email))
+    d = client.create_subscriber(args.show, args.email, skip_welcome=args.skip_welcome_email) or {}
+    data = _single(d)
+    a = _attrs(data)
+    emit(f"Subscribed {a.get('email', args.email)} to show {args.show}.",
+         {"id": data.get("id"), "email": a.get("email"), "status": a.get("status", ""),
+          "subscribe_url": a.get("subscribe_url", "")})
+
+def cmd_subscriber_batch(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor subscriber-batch",
+                                description="Add several subscribers (repeat --email)")
+    p.add_argument("--show", required=True, help="Show ID or slug")
+    p.add_argument("--email", action="append", required=True, help="Repeat for each address")
+    p.add_argument("--skip-welcome-email", dest="skip_welcome_email", action="store_true")
+    args = p.parse_args(raw_args)
+    if client.dry_run:
+        return emit(f"[dry-run] POST /subscribers/batch (add {len(args.email)} subscriber(s) to show {args.show})",
+                    client.create_subscribers_batch(args.show, args.email, skip_welcome=args.skip_welcome_email))
+    d = client.create_subscribers_batch(args.show, args.email, skip_welcome=args.skip_welcome_email) or {}
+    out = [{"id": s.get("id"), "email": _attrs(s).get("email")} for s in _items(d)]
+    emit(f"Added {len(out)} subscriber(s) to show {args.show}.", {"subscribers": out})
+
+def cmd_subscriber_delete(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor subscriber-delete",
+                                description="Revoke a subscriber's private-feed access")
+    p.add_argument("--id", default=None, help="Subscriber ID (or use --show + --email)")
+    p.add_argument("--show", default=None, help="Show ID or slug (with --email)")
+    p.add_argument("--email", default=None, help="Email address (with --show)")
+    args = p.parse_args(raw_args)
+    if not args.id and not (args.show and args.email):
+        die("Specify either --id, or both --show and --email (delete by email address).")
+    if client.dry_run:
+        plan = (client.delete_subscriber(subscriber_id=args.id) if args.id
+                else client.delete_subscriber(show_id=args.show, email=args.email))
+        return emit("[dry-run] DELETE subscriber (revokes private-feed access)", plan)
+    d = (client.delete_subscriber(subscriber_id=args.id) if args.id
+         else client.delete_subscriber(show_id=args.show, email=args.email)) or {}
+    a = _attrs(_single(d))
+    emit(f"Revoked private-feed access for {a.get('email', args.email or args.id)}.",
+         {"id": _single(d).get("id"), "email": a.get("email")})
+
+def cmd_webhooks(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor webhooks", description="List a show's webhooks")
+    p.add_argument("--show", required=True, help="Show ID or slug")
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit(f"[dry-run] GET /webhooks?show_id={args.show}", client.list_webhooks(args.show))
+    d = client.list_webhooks(args.show) or {}
+    hooks = _items(d)
+    if not hooks: return emit("No webhooks.", {"webhooks": []})
+    lines, out = [], []
+    for w in hooks:
+        a = _attrs(w)
+        lines.append(f"  {a.get('event_name', '?')}  ->  {a.get('url', '?')}  (id={w.get('id', '?')})")
+        out.append({"id": w.get("id"), "event_name": a.get("event_name"), "url": a.get("url")})
+    emit(f"{len(hooks)} webhook(s):\n" + "\n".join(lines), {"webhooks": out})
+
+def cmd_webhook_create(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor webhook-create",
+                                description="Subscribe a webhook (max 50 per account)")
+    p.add_argument("--show", required=True, help="Show ID or slug")
+    p.add_argument("--event", required=True, choices=list(WEBHOOK_EVENTS))
+    p.add_argument("--url", required=True, help="Delivery target URL")
+    args = p.parse_args(raw_args)
+    if client.dry_run:
+        return emit(f"[dry-run] POST /webhooks ({args.event} on show {args.show})",
+                    client.create_webhook(args.show, args.event, args.url))
+    d = client.create_webhook(args.show, args.event, args.url) or {}
+    data = _single(d)
+    a = _attrs(data)
+    emit(f"Webhook {data.get('id', '?')} created ({a.get('event_name', args.event)}).",
+         {"id": data.get("id"), "event_name": a.get("event_name"), "url": a.get("url")})
+
+def cmd_webhook_delete(client, raw_args):
+    p = argparse.ArgumentParser(prog="transistor webhook-delete", description="Unsubscribe a webhook")
+    p.add_argument("--id", required=True, help="Webhook ID")
+    args = p.parse_args(raw_args)
+    if client.dry_run: return emit(f"[dry-run] DELETE /webhooks/{args.id}", client.delete_webhook(args.id))
+    client.delete_webhook(args.id)
+    emit(f"Webhook {args.id} deleted.", {"id": args.id, "deleted": True})
+
+def _check_dates(args):
+    for v in (args.start_date, args.end_date):
+        if v and not DATE_RE.match(v):
+            die(f"Invalid date '{v}': analytics dates use dd-mm-yyyy (e.g. 01-09-2026).")
+    if bool(args.start_date) != bool(args.end_date):
+        die("start_date and end_date must be used together (or omit both for the default window).")
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse(sys.argv)
+    if GLOBAL_FLAGS.get("quiet"): QUIET = True
+    parser = argparse.ArgumentParser(
+        prog="transistor",
+        description="Transistor.fm podcast hosting from the terminal.",
+        epilog=f"Set {ENV_KEY} — find your key under API Access on the Account page "
+               "(https://dashboard.transistor.fm/account). --help and --dry-run never need it. "
+               "API docs: https://developers.transistor.fm/")
+    sub = parser.add_subparsers(dest="command")
+
+    sub.add_parser("user", help="Who am I? (GET /v1 authorization check)")
+
+    p_shows = sub.add_parser("shows", help="List your shows (newest-updated first)")
+    _add_shows_flags(p_shows)
+    p_show = sub.add_parser("show", help="One show's full attributes")
+    p_show.add_argument("--id", required=True, help="Show ID or slug")
+    p_showu = sub.add_parser("show-update", help="Update show metadata (PATCH /shows/:id)")
+    p_showu.add_argument("--id", required=True, help="Show ID or slug")
+    for flag, dest, choices in _SHOW_UPDATE_FIELDS:
+        p_showu.add_argument(flag, dest=dest, choices=choices, default=None)
+
+    p_eps = sub.add_parser("episodes", help="List episodes (ordered by publish date)")
+    _add_episodes_flags(p_eps)
+    p_ep = sub.add_parser("episode", help="One episode's full attributes")
+    _add_episode_id_flags(p_ep, with_include=True)
+    p_ec = sub.add_parser("episode-create", help="Create an episode (always created as DRAFT)")
+    p_ec.add_argument("--show", required=True, help="Show ID or slug to attach the episode to")
+    _add_episode_metadata_flags(p_ec, create=True)
+    p_eu = sub.add_parser("episode-update", help="Update episode metadata or attach audio (never publishes)")
+    _add_episode_id_flags(p_eu)
+    _add_episode_metadata_flags(p_eu, create=False)
+    p_epb = sub.add_parser("episode-publish", help="Publish, schedule, or unpublish (PATCH /episodes/:id/publish)")
+    _add_episode_id_flags(p_epb)
+    p_epb.add_argument("--status", choices=list(EPISODE_STATUSES), default="published",
+                       help="Target state (default: published; scheduled needs --published-at; draft unpublishes)")
+    p_epb.add_argument("--published-at", dest="published_at", default=None,
+                       help="Publish datetime in the show's time zone (with --status published or scheduled)")
+    p_epb.add_argument("--force", action="store_true", help="Publish even if no audio is attached")
+
+    p_au = sub.add_parser("authorize-upload", help="Authorize a local audio/video upload (max 5GB)")
+    p_au.add_argument("--filename", required=True, help="Filename of the audio file")
+    p_au.add_argument("--file", default=None, help="Local path to PUT now (otherwise you upload it yourself)")
+
+    p_ana = sub.add_parser("analytics", help="Show downloads per day (default: last 14 days)")
+    p_ana.add_argument("--show", required=True, help="Show ID or slug")
+    _add_analytics_flags(p_ana)
+    p_eana = sub.add_parser("episode-analytics", help="One episode's downloads per day (default: last 14 days)")
+    p_eana.add_argument("--id", required=True, help="Episode ID or slug")
+    _add_analytics_flags(p_eana)
+
+    p_subs = sub.add_parser("subscribers", help="List a private podcast's subscribers")
+    p_subs.add_argument("--show", required=True, help="Show ID or slug")
+    _add_subscriber_list_flags(p_subs)
+    p_subc = sub.add_parser("subscriber-create", help="Add one private-podcast subscriber")
+    p_subc.add_argument("--show", required=True, help="Show ID or slug")
+    p_subc.add_argument("--email", required=True)
+    p_subc.add_argument("--skip-welcome-email", dest="skip_welcome_email", action="store_true")
+    p_subb = sub.add_parser("subscriber-batch", help="Add several subscribers (repeat --email)")
+    p_subb.add_argument("--show", required=True, help="Show ID or slug")
+    p_subb.add_argument("--email", action="append", required=True, help="Repeat for each address")
+    p_subb.add_argument("--skip-welcome-email", dest="skip_welcome_email", action="store_true")
+    p_subd = sub.add_parser("subscriber-delete", help="Revoke a subscriber's private-feed access")
+    p_subd.add_argument("--id", default=None, help="Subscriber ID (or use --show + --email)")
+    p_subd.add_argument("--show", default=None, help="Show ID or slug (with --email)")
+    p_subd.add_argument("--email", default=None, help="Email address (with --show)")
+
+    p_wh = sub.add_parser("webhooks", help="List a show's webhooks")
+    p_wh.add_argument("--show", required=True, help="Show ID or slug")
+    p_whc = sub.add_parser("webhook-create", help="Subscribe a webhook (max 50 per account)")
+    p_whc.add_argument("--show", required=True, help="Show ID or slug")
+    p_whc.add_argument("--event", required=True, choices=list(WEBHOOK_EVENTS))
+    p_whc.add_argument("--url", required=True, help="Delivery target URL")
+    p_whd = sub.add_parser("webhook-delete", help="Unsubscribe a webhook")
+    p_whd.add_argument("--id", required=True, help="Webhook ID")
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command: parser.print_help(); sys.exit(1)
+    if getattr(args, "start_date", None) or getattr(args, "end_date", None):
+        _check_dates(args)
+    client = TransistorClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+    handlers = {"user": cmd_user, "shows": cmd_shows, "show": cmd_show, "show-update": cmd_show_update,
+                "episodes": cmd_episodes, "episode": cmd_episode, "episode-create": cmd_episode_create,
+                "episode-update": cmd_episode_update, "episode-publish": cmd_episode_publish,
+                "authorize-upload": cmd_authorize_upload, "analytics": cmd_analytics,
+                "episode-analytics": cmd_episode_analytics, "subscribers": cmd_subscribers,
+                "subscriber-create": cmd_subscriber_create, "subscriber-batch": cmd_subscriber_batch,
+                "subscriber-delete": cmd_subscriber_delete, "webhooks": cmd_webhooks,
+                "webhook-create": cmd_webhook_create, "webhook-delete": cmd_webhook_delete}
+    # Hoisted flags were removed from filtered_argv, so the first occurrence of
+    # the command token is the dispatch point; hand the rest to the handler's
+    # own parser (it re-declares the same single-sourced flags).
+    start = filtered_argv.index(args.command) + 1
+    handlers[args.command](client, filtered_argv[start:])
+
+if __name__ == "__main__": main()

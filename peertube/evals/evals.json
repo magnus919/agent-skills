@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "skill_name": "peertube",
+  "evals": [
+    {
+      "id": "browse-latest-videos-json",
+      "prompt": "Show me the ten most recent videos on my PeerTube instance (framatube.org) as JSON.",
+      "expected_output": "Set PEERTUBE_SERVER=https://framatube.org (or pass --server) and run scripts/peertube videos --limit 10 --json. No login is needed: /api/v1/videos is anonymous and returns {total, data} with offset pagination (start/count, no page parameter).",
+      "assertions": [
+        "exports PEERTUBE_SERVER or passes --server with the instance host",
+        "runs scripts/peertube videos with --limit 10 and --json",
+        "does not require login because public video listing is anonymous",
+        "pages with start/count offsets, never a page parameter"
+      ]
+    },
+    {
+      "id": "search-then-detail-pipeline",
+      "prompt": "Search my PeerTube instance for videos about linux, then show me the full details of the best result.",
+      "expected_output": "Chain scripts/peertube search --query linux --json (instance-local search, searchTarget=local) to get results, extract .videos[0].uuid with jq, then run scripts/peertube video --id <UUID> --json for full metadata. The video detail endpoint accepts the numeric id, UUID, or shortUUID.",
+      "assertions": [
+        "starts with scripts/peertube search using --query",
+        "extracts the uuid field from the search output before the next stage",
+        "feeds the extracted id into scripts/peertube video --id",
+        "does not claim the search covered the whole fediverse since the CLI performs instance-local search"
+      ]
+    },
+    {
+      "id": "fediverse-search-via-sepiasearch",
+      "prompt": "I searched my PeerTube instance for a popular video and got no results, but I know it exists on another instance. How do I search across the whole fediverse?",
+      "expected_output": "Instance search (searchTarget=local) only finds objects the instance knows. For fediverse-wide search, point the same CLI at SepiaSearch - the public search index that indexes public PeerTube instances and speaks the identical API shape: PEERTUBE_SERVER=https://sepiasearch.org scripts/peertube search --query '<query>'. Follow results back to their origin instance using the account/channel host or the video url field; an instance may also support searchTarget=search-index if its admin enabled an external index.",
+      "assertions": [
+        "explains the instance-local versus search-index/fediverse search scopes",
+        "uses SepiaSearch as the fediverse-wide search base host with the same API shape",
+        "directs following results to their origin instance via host/url fields",
+        "mentions searchTarget=local as the explicit instance-scope value"
+      ]
+    },
+    {
+      "id": "oauth-client-secret-masked-login",
+      "prompt": "I'm writing a script that logs in to a PeerTube instance. GET /api/v1/oauth-clients/local returns client_secret as '********************************' and my subsequent POST to /users/token fails with 400 invalid client. What is going on?",
+      "expected_output": "Current production instances mask the client_secret in the oauth-clients/local response (the real pair reaches the web front end via its served assets). The correct flow is still: fetch /api/v1/oauth-clients/local (singular 'local'), obtain the unmasked client pair the way the instance's own front end does, then POST /api/v1/users/token with x-www-form-urlencoded fields client_id, client_secret, grant_type=password, username, password - no response_type needed. A 400 can also mean wrong credentials; the bundled CLI detects the masked secret and stops with guidance before sending a doomed token request.",
+      "assertions": [
+        "identifies production client_secret masking as the cause of the invalid-client 400",
+        "names the oauth-clients/local (singular) endpoint as step one",
+        "lists the exact password-grant form fields including grant_type=password",
+        "does not treat the masked asterisk value as a usable secret"
+      ]
+    },
+    {
+      "id": "token-persistence-and-logout-hygiene",
+      "prompt": "How should a PeerTube CLI store the OAuth token after login, and how do I log out properly?",
+      "expected_output": "Persist the token per-instance in an owner-only file (the bundled CLI uses ~/.config/peertube/token.json, override with PEERTUBE_CONFIG_DIR) recording the server URL, access token, refresh token, and absolute expires_at from the token response - lifetimes are instance-configurable, so never hard-code one. Log out with scripts/peertube logout, which calls POST /api/v1/users/revoke-token (revoking the access and refresh tokens server-side) and then deletes the local file; deleting the file alone leaves a live session. Never commit or log tokens.",
+      "assertions": [
+        "stores the token outside the repository in an owner-only location",
+        "records expiry from expires_in instead of assuming a fixed lifetime",
+        "revokes server-side via POST /users/revoke-token before deleting the local file",
+        "keeps tokens per-instance because tokens are not valid across instances"
+      ]
+    },
+    {
+      "id": "youtube-upload-not-peertube",
+      "prompt": "Help me upload my video to YouTube and trim the intro with ffmpeg.",
+      "expected_output": "This must not trigger the peertube skill: YouTube uploading and video editing are outside its read-only PeerTube API scope, and PeerTube is a different federated platform from YouTube. Use YouTube's own upload tooling (e.g. youtube-cli or YouTube Studio) and ffmpeg directly for trimming. The PeerTube skill supports no upload operation at all - it is read-only plus login/logout.",
+      "assertions": [
+        "must not trigger peertube for YouTube uploads or video editing",
+        "routes the upload to YouTube's own tooling instead",
+        "routes the trim to ffmpeg directly",
+        "does not invent a peertube upload command since the bundled CLI is read-only"
+      ]
+    }
+  ]
+}

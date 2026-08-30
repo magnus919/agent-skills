@@ -217,7 +217,7 @@ Build and maintain web frontends — component architecture, state management, A
 
 Guide a person in cultivating creativity in their own work and life: open conversational sessions on creative blocks, habits, environment, motivation, and resilience, or structured development of a concrete project or fledgling idea through a five-phase practice. Do not use for therapy or clinical support, general life coaching, product or stakeholder discovery, or as a study guide for a book.
 
-### [ghost-cli](ghost-cli/SKILL.md)
+### [ghost](ghost/SKILL.md)
 
 Ghost CMS from the terminal. Manage posts and pages, list tags, and check site info. Admin API key from Ghost Integrations. JWT authentication handled automatically.
 
@@ -253,17 +253,13 @@ Turn an approved requirement or specification into an executable, dependency-awa
 
 Convert operational incident and near-miss evidence into verified, owned improvements across product, code, tests, evals, operations, and governance. Separates observed facts from causal hypotheses and unresolved uncertainty; maps escaped-from gaps (requirements, monitoring, authority, migration, adoption); assigns domain-specific follow-up work with owners and verification methods; and requires evidence of the implemented change — not just tickets — for closure. Routes implementation to SRE, QA, verification, agent evals, product lifecycle learning, implementation planning, resilience-and-recovery, and production-readiness. Ships 4 references (discovery brief, evidence/inference taxonomy, escaped-from analysis, follow-up domains, verification and closure), 4 templates (incident-learning record, causal/evidence ledger, follow-up work map, verification and closure record), and 5 evals.
 
-### [jellyfin-cli](jellyfin-cli/SKILL.md)
+### [jellyfin](jellyfin/SKILL.md)
 
-Jellyfin media server from the terminal. Check server info, browse recently added and library contents, search and inspect media, see next-up episodes, and view statistics.
+Jellyfin media server from the terminal. Log in as a user or use an API key, check server info, browse recently added and library contents, search and inspect media, walk series/seasons/episodes, see next-up episodes, and view statistics — with MediaBrowser auth, user-id scoping, and response-shape quirks documented.
 
-### [jira-cli](jira-cli/SKILL.md)
+### [jira](jira/SKILL.md)
 
-Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, list projects, and transition status. API token from id.atlassian.com.
-
-### [jira-jql](jira-jql/SKILL.md)
-
-Expert-level Jira Query Language reference covering all operators, functions (date/time, user, sprint/version, issue, custom field, JSM), history operators (WAS/CHANGED), relative dates, performance best practices, role-based ready queries, REST API usage, and troubleshooting. Three companion references: complete function catalog, role-specific query bank (dev, scrum master, PO, power user, admin), and gotchas/troubleshooting guide.
+Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, count matches, list projects, and transition status. Includes a full JQL reference (functions, history predicates, date expressions) plus REST auth/pagination guidance. API token from id.atlassian.com.
 
 ### [kanban-guru](kanban-guru/SKILL.md)
 
@@ -356,9 +352,9 @@ prompt templates for text-only and reference-image-driven workflows.
 
 Google's Open Knowledge Format (OKF) v0.1 — create, validate, and consume vendor-neutral AI agent knowledge bundles. Markdown files with YAML frontmatter, organized in directory hierarchies with cross-links and progressive disclosure. Ships a validation script, concept template, example bundle, and detailed references covering the spec, bundle architecture, and real-world use cases.
 
-### [openlibrary-cli](openlibrary-cli/SKILL.md)
+### [openlibrary](openlibrary/SKILL.md)
 
-Open Library book metadata from the terminal. Search books and authors, get work and edition details, lookup by ISBN. No API key required — the public Open Library API is free for everyone.
+Query the Open Library catalog from the terminal: search books and authors, look up works, editions, and ISBNs, enumerate every edition of a work, read community ratings, and resolve cover-image URLs. Fully keyless public API — no API key required.
 
 ### [opensource-contributions](opensource-contributions/SKILL.md)
 
@@ -378,7 +374,7 @@ Build and maintain owner-approved Primary, Alternate, Contingency, and Emergency
 
 ### [peertube](peertube/SKILL.md)
 
-PeerTube federated video platform from the terminal. Browse videos and channels, search across instances, view server info. OAuth2 login with token persistence. Set PEERTUBE_SERVER to point at any instance.
+PeerTube federated video from the terminal. Browse videos, channels, and comment threads on any instance, search instance-local or the whole fediverse via SepiaSearch, check server stats, and log in with OAuth2 — with per-instance token persistence and pagination/search-scope quirks documented.
 
 ### [platform-engineering](platform-engineering/SKILL.md)
 
@@ -564,9 +560,9 @@ Turn technology preferences and architecture-governance choices into explicit, r
 
 Operate the Prometheus + OpenTelemetry + Loki observability stack as one unit: scrape config, recording and alerting rules, relabeling, retention, and HA; OpenTelemetry Collector pipelines (receivers, processors, exporters, sampling, trace/span correlation); and Loki ingest, LogQL, retention, and label design. Ships the read-only `telemetry-check` script (rule sanity + scrape-target reachability, `--json`), fixtures, tests, dated references, and 6 evals. Routes strategy to platform-engineering and dashboards to grafana.
 
-### [tempest-cli](tempest-cli/SKILL.md)
+### [tempest](tempest/SKILL.md)
 
-Hyper-local weather from a WeatherFlow Tempest station. Query current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. A complete reference implementation of the cli-builder patterns in a working, testable project — including the CLI binary and full API field layout reference.
+Hyper-local weather from a WeatherFlow Tempest station over the REST API and the hub's local UDP broadcast: current conditions, forecast, historical observations, and real-time decoded datagrams (obs_st, rapid_wind, evt_precip, evt_strike, hub_status) with metric-native values and conversion guidance. Not for generic city forecasts without a station, or weather hardware from other vendors.
 
 ### [terraform](terraform/SKILL.md)
 
@@ -576,7 +572,7 @@ Operate Terraform and OpenTofu safely across the whole infrastructure lifecycle:
 
 Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations.
 
-### [tmdb-cli](tmdb-cli/SKILL.md)
+### [tmdb](tmdb/SKILL.md)
 
 The Movie Database API from the terminal. Search and discover movies and TV by genre, certification, rating, and date range. Check trending, upcoming, and now playing. Free API key from themoviedb.org.
 
@@ -590,7 +586,7 @@ Trakt.tv media discovery from the terminal. Browse trending, anticipated, and po
 
 ### [transistor](transistor/SKILL.md)
 
-Transistor.fm podcast hosting from the terminal. Manage shows and episodes, view subscriber analytics. API key from transistor.fm settings.
+Operate Transistor.fm podcast hosting from the terminal: verify API access, browse shows and episodes with JSON:API-aware output, run the episode publish lifecycle (create draft, attach audio, publish or schedule via the dedicated publish endpoint), pull download analytics, and manage private podcast subscribers and webhooks.
 
 ### [travel-guide](travel-guide/SKILL.md)
 

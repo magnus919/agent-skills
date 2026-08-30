@@ -1,0 +1,587 @@
+#!/usr/bin/env python3
+"""openlibrary — Open Library book metadata from the terminal.
+
+Search books, authors, works, lookup by ISBN, enumerate editions of a work,
+and read community ratings/bookshelf counts using the public Open Library
+API. No API key required. Covers resolve on the separate covers host and
+identifier endpoints answer with 302 redirects — both are handled here.
+"""
+
+import argparse
+import json
+import os
+import sys
+import warnings
+from typing import Any, Dict, List, Optional, Tuple
+
+warnings.simplefilter("ignore")
+
+import requests
+
+# === Config ===
+DEFAULT_SERVER = "https://openlibrary.org"
+COVERS_SERVER = "https://covers.openlibrary.org"
+ENV_SERVER = os.getenv("OL_SERVER", DEFAULT_SERVER)
+ENV_EMAIL = os.getenv("OL_EMAIL", "")
+ENV_USER_AGENT = os.getenv("OL_USER_AGENT", "openlibrary/1.0 (+https://github.com)")
+
+# Merged/deleted wiki records can chain through redirect stubs; bound the walk.
+MAX_REDIRECT_HOPS = 5
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {
+    "json": False, "dry_run": False, "quiet": False, "verbose": False
+}
+
+
+def log(msg: str) -> None:
+    if not QUIET and not GLOBAL_FLAGS.get("json", False):
+        print(msg)
+
+
+def warn(msg: str) -> None:
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg: str, exit_code: int = 1) -> None:
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def emit(human: str, data: Any) -> None:
+    if GLOBAL_FLAGS.get("json", False):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+def _preparse_global_flags(argv: List[str]) -> Tuple[Dict[str, Any], List[str]]:
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--quiet", "--verbose"}
+    flags: Dict[str, Any] = {}
+    filtered: List[str] = [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg in ("--help", "-h"):
+            return flags, argv
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+def normalize_olid(key: str) -> str:
+    """Strip a path-form key (/works/OL123W) down to its bare OLID (OL123W)."""
+    return key.rstrip("/").split("/")[-1] if key else ""
+
+
+def unwrap_text(value: Any) -> str:
+    """Open Library wraps free-text fields as {'type': '/type/text', 'value': ...}
+    on some records and plain strings on others."""
+    if isinstance(value, dict):
+        return str(value.get("value", ""))
+    return str(value) if value is not None else ""
+
+
+def is_redirect_stub(payload: Any) -> bool:
+    """Merged-away keys answer HTTP 200 with a /type/redirect stub instead of 3xx."""
+    return (
+        isinstance(payload, dict)
+        and isinstance(payload.get("type"), dict)
+        and payload["type"].get("key") == "/type/redirect"
+        and bool(payload.get("location"))
+    )
+
+
+class OpenLibraryClient:
+    """Client for the public Open Library API."""
+
+    def __init__(self, server: str = "", dry_run: bool = False):
+        self.server = (server or ENV_SERVER).rstrip("/")
+        self.dry_run = dry_run
+
+    def _headers(self) -> Dict[str, str]:
+        h = {"User-Agent": ENV_USER_AGENT}
+        if ENV_EMAIL:
+            h["User-Agent"] += f" (mailto:{ENV_EMAIL})"
+        return h
+
+    def _get(self, path: str, params: Optional[Dict] = None) -> Any:
+        """GET JSON from the metadata host, following both HTTP redirects
+        (identifier endpoints answer 302) and in-body /type/redirect stubs
+        (merged keys answer 200 with a location field)."""
+        url = f"{self.server}{path}"
+        if self.dry_run:
+            return {"dry_run": True, "url": url, "params": params}
+        hops = 0
+        while True:
+            try:
+                resp = requests.get(url, params=params, headers=self._headers(), timeout=30)
+            except requests.ConnectionError as e:
+                die(f"Cannot connect to {self.server}: {e}")
+            if resp.status_code == 404:
+                return None
+            if resp.status_code >= 400:
+                try:
+                    detail = resp.json()
+                except Exception:
+                    detail = resp.text[:200]
+                die(f"API error ({resp.status_code}): {detail}")
+            try:
+                data = resp.json()
+            except ValueError:
+                return {"raw": resp.text[:500]}
+            if is_redirect_stub(data) and hops < MAX_REDIRECT_HOPS:
+                # Stub locations are bare keys (/works/OL…W, no .json), and
+                # extension-less URLs redirect to HTML pages — always refetch
+                # with the .json suffix.
+                target = data["location"]
+                if not target.endswith(".json"):
+                    target += ".json"
+                url = f"{self.server}{target}"
+                params = None
+                hops += 1
+                continue
+            if is_redirect_stub(data):
+                # Bounded stub walk exhausted (>N chained merges); make that
+                # visible instead of handing back an opaque stub silently.
+                warn(f"Redirect chain did not resolve within {MAX_REDIRECT_HOPS}"
+                     f" hops (still stuck at {data.get('location', '?')})")
+            self.last_url = resp.url
+            return data
+
+    def last_final_url(self) -> str:
+        return getattr(self, "last_url", "")
+
+
+def cover_url(kind: str, value: Any, size: str = "M") -> Optional[str]:
+    """Build a covers-host URL. Returns None for absent/negative IDs (-1 means
+    'no image'). Callers should append ?default=false when existence matters."""
+    if value is None:
+        return None
+    if isinstance(value, int) and value < 0:
+        return None
+    return f"{COVERS_SERVER}/{kind}/{value}-{size}.jpg"
+
+
+def fmt_author(a: Dict) -> str:
+    name = a.get("name", a.get("title", "?"))
+    key = normalize_olid(a.get("key", ""))
+    birth = a.get("birth_date", "")
+    death = a.get("death_date", "")
+    years = f" ({birth}–{death})" if birth or death else ""
+    return f"  {name}{years}  [{key}]"
+
+
+def cmd_search(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary search")
+    parser.add_argument("--query", "-q", required=True)
+    parser.add_argument("--limit", type=int, default=20)
+    parser.add_argument("--offset", type=int, default=0)
+    parser.add_argument("--sort", default="", choices=["", "editions", "new", "old", "rating", "title"])
+    parser.add_argument("--lang", default="")
+    parser.add_argument("--availability", default="")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would search: {parsed.query}", {"dry_run": True, "command": "search",
+             "query": parsed.query, "url": f"{client.server}/search.json"})
+        return
+
+    params: Dict[str, Any] = {"q": parsed.query, "limit": parsed.limit, "offset": parsed.offset}
+    if parsed.sort:
+        params["sort"] = parsed.sort
+    if parsed.lang:
+        params["lang"] = parsed.lang
+    data = client._get("/search.json", params) or {}
+
+    docs = data.get("docs", [])
+    if not docs:
+        # Malformed queries parse loosely and come back 200-empty; that is a
+        # result, not an API failure.
+        emit("No results.", {"total": 0, "results": []})
+        return
+
+    lines, out = [], []
+    for d in docs:
+        title = d.get("title", "?")
+        authors = ", ".join(d.get("author_name", [])) or "?"
+        year = d.get("first_publish_year", "")
+        year_str = f" ({year})" if year else ""
+        edition_count = d.get("edition_count", 0)
+        lines.append(f"  {title:50}{year_str} — {authors}  ({edition_count} editions)")
+        out.append({
+            "title": title, "authors": d.get("author_name", []),
+            "first_publish_year": year, "edition_count": edition_count,
+            "key": d.get("key", ""), "isbn": d.get("isbn", [])[:3],
+            "cover_edition": d.get("cover_edition_key", ""),
+            "has_fulltext": d.get("has_fulltext", False),
+        })
+
+    total = data.get("numFound", len(docs))
+    emit(f"{total} result(s):\n" + "\n".join(lines), {"total": total, "results": out})
+
+
+def cmd_isbn(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary isbn")
+    parser.add_argument("isbn", help="ISBN number")
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would lookup ISBN: {parsed.isbn}",
+             {"dry_run": True, "command": "isbn", "isbn": parsed.isbn,
+              "url": f"{client.server}/isbn/{parsed.isbn}.json",
+              "note": "endpoint answers 302; request follows redirects"})
+        return
+
+    data = client._get(f"/isbn/{parsed.isbn}.json")
+    if not data:
+        emit(f"ISBN {parsed.isbn} not found.", {"error": "not found", "isbn": parsed.isbn})
+        return
+
+    title = data.get("title", "?")
+    work_keys = [normalize_olid(w.get("key", "")) for w in data.get("works", [])]
+    edition_authors = [a for a in (data.get("authors") or []) if isinstance(a, dict)]
+
+    def _edition_author_key(a: Dict) -> str:
+        # Canonical editions nest flat ({"key": "/authors/OL…A"}); tolerate
+        # stray double-nested refs ({"author": {"key": ...}}) so one accessor
+        # survives both wiki shapes.
+        ref = a.get("key") or (a.get("author") or {}).get("key") or ""
+        return normalize_olid(ref)
+
+    def _author_label(a: Dict) -> str:
+        # Edition records often carry key-only author refs (no embedded name);
+        # fall back to the bare OL…A so output is never just '?'.
+        label = a.get("name") or _edition_author_key(a)
+        return label or "?"
+
+    author_names = ", ".join(_author_label(a) for a in edition_authors)
+    # JSON hands off bare OL…A keys (same shape as `work --json`); display
+    # labels remain a human-surface concern only.
+    author_keys = sorted({
+        k for k in (_edition_author_key(a) for a in edition_authors) if k
+    })
+
+    if not author_keys and work_keys:
+        # Some editions ship authors:null entirely. The authoritative author
+        # links live on the work (double-nested authors[].author.key) — one
+        # extra read beats reporting an unknown author.
+        work_data = client._get(f"/works/{work_keys[0]}.json") or {}
+        author_keys = [
+            normalize_olid((a.get("author") or {}).get("key", ""))
+            for a in (work_data.get("authors") or [])
+            if isinstance(a, dict)
+        ]
+        author_keys = [k for k in author_keys if k]
+        if not author_names:
+            author_names = ", ".join(author_keys)
+    author_names = author_names or "?"
+    pages = data.get("number_of_pages", data.get("pagination", "?"))
+    publishers = ", ".join(data.get("publishers", [])) or "?"
+    publish_date = data.get("publish_date", "?")
+    subjects = ", ".join(data.get("subjects", [])[:5]) or "(none)"
+    description = unwrap_text(data.get("description", ""))
+    desc_short = f"\n   Description: {description[:300]}" if description else ""
+
+    edition_key = normalize_olid(data.get("key", ""))
+    covers = [c for c in data.get("covers", []) if isinstance(c, int) and c >= 0]
+
+    emit(
+        f"📖 {title}\n"
+        f"   Author(s): {author_names}\n"
+        f"   Pages: {pages}  Published: {publish_date}\n"
+        f"   Publisher: {publishers}\n"
+        f"   Subjects: {subjects}"
+        f"{desc_short}\n"
+        f"   Edition: {edition_key}  Works: {', '.join(work_keys) or '?'}",
+        {"isbn": parsed.isbn, "title": title, "authors": author_keys,
+         "pages": pages, "publish_date": publish_date,
+         "publishers": [p for p in (data.get("publishers") or []) if p],
+         "subjects": data.get("subjects", []),
+         "description": description,
+         "edition_key": edition_key,
+         "work_keys": work_keys,
+         "cover_id": covers[0] if covers else None,
+         "cover_url": cover_url("b/id", covers[0]) if covers else None}
+    )
+
+
+def cmd_author(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary author")
+    parser.add_argument("key", help="Author key (e.g. OL23919A)")
+    parsed, _ = parser.parse_known_args(args)
+
+    key = normalize_olid(parsed.key)
+    if client.dry_run:
+        emit(f"[dry-run] Would fetch author {key}",
+             {"dry_run": True, "command": "author", "key": key,
+              "url": f"{client.server}/authors/{key}.json"})
+        return
+
+    data = client._get(f"/authors/{key}.json")
+    if not data:
+        emit(f"Author {key} not found.", {"error": "not found"})
+        return
+
+    name = data.get("name", "?")
+    birth = data.get("birth_date", "")
+    death = data.get("death_date", "")
+    years = f" ({birth}–{death})" if birth or death else ""
+    bio = unwrap_text(data.get("bio", ""))
+    bio_short = f"\n{bio[:500]}" if bio else ""
+    photos = [p for p in data.get("photos", []) if isinstance(p, int) and p >= 0]
+    photo = cover_url("a/id", photos[0]) if photos else None
+    photo_note = f"\n   Photo: {photo}" if photo else ""
+    emit(
+        f"👤 {name}{years}{bio_short}{photo_note}",
+        {"key": key, "name": name, "birth_date": birth,
+         "death_date": death, "bio": bio,
+         "wikipedia": data.get("wikipedia", ""),
+         "personal_name": data.get("personal_name", ""),
+         "photo_url": photo}
+    )
+
+
+def cmd_work(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary work")
+    parser.add_argument("key", help="Work key (e.g. OL123W)")
+    parsed, _ = parser.parse_known_args(args)
+
+    key = normalize_olid(parsed.key)
+    if client.dry_run:
+        emit(f"[dry-run] Would fetch work {key}",
+             {"dry_run": True, "command": "work", "key": key,
+              "url": f"{client.server}/works/{key}.json"})
+        return
+
+    data = client._get(f"/works/{key}.json")
+    if not data:
+        emit(f"Work {key} not found.", {"error": "not found"})
+        return
+
+    title = data.get("title", "?")
+    # Rare records carry an explicit "authors": null; a default-value .get
+    # alone does not protect against iterating None.
+    authors = [a for a in (data.get("authors") or []) if isinstance(a, dict)]
+    author_keys = [
+        normalize_olid((a.get("author") or {}).get("key", ""))
+        for a in authors
+        if (a.get("author") or {}).get("key")
+    ]
+    author_str = ", ".join(author_keys) or "?"
+    desc = unwrap_text(data.get("description", ""))
+    desc_short = f"\n{desc[:500]}" if desc else ""
+    subjects = ", ".join(data.get("subjects", [])[:5]) or "(none)"
+    covers = [c for c in data.get("covers", []) if isinstance(c, int) and c >= 0]
+
+    emit(
+        f"📖 {title}\n"
+        f"   Author(s): {author_str}\n"
+        f"   Subjects: {subjects}{desc_short}",
+        {"key": key, "title": title, "authors": author_keys,
+         "description": desc, "subjects": data.get("subjects", []),
+         "cover_url": cover_url("b/id", covers[0]) if covers else None}
+    )
+
+
+def cmd_search_authors(client, args):
+    parser = argparse.ArgumentParser(prog="openlibrary search-authors")
+    parser.add_argument("--query", "-q", required=True)
+    parser.add_argument("--limit", type=int, default=20)
+    parser.add_argument("--offset", type=int, default=0)
+    parsed, _ = parser.parse_known_args(args)
+
+    if client.dry_run:
+        emit(f"[dry-run] Would search authors: {parsed.query}",
+             {"dry_run": True, "command": "search-authors", "query": parsed.query,
+              "url": f"{client.server}/search/authors.json"})
+        return
+
+    data = client._get("/search/authors.json", {"q": parsed.query, "limit": parsed.limit, "offset": parsed.offset}) or {}
+    docs = data.get("docs", [])
+    if not docs:
+        emit("No authors found.", {"results": []})
+        return
+
+    lines, out = [], []
+    for d in docs:
+        name = d.get("name", "?")
+        key = normalize_olid(d.get("key", "")) or "?"
+        birth = d.get("birth_date", "") or ""
+        death = d.get("death_date", "") or ""
+        years = f" ({birth}–{death})" if birth or death else ""
+        top_work = d.get("top_work", "")
+        work_str = f" — {top_work}" if top_work else ""
+        lines.append(f"  {name:30}{years}  [{key}]{work_str}")
+        out.append({"name": name, "key": key, "birth_date": birth, "death_date": death,
+                    "top_work": top_work, "work_count": d.get("work_count", 0)})
+
+    total = data.get("numFound", len(docs))
+    emit(f"{total} author(s):\n" + "\n".join(lines), {"total": total, "results": out})
+
+
+def cmd_editions(client, args):
+    """List every edition of a work via /works/<key>/editions.json."""
+    parser = argparse.ArgumentParser(prog="openlibrary editions")
+    parser.add_argument("key", help="Work key (e.g. OL81699W)")
+    parser.add_argument("--limit", type=int, default=50)
+    parser.add_argument("--offset", type=int, default=0)
+    parsed, _ = parser.parse_known_args(args)
+
+    key = normalize_olid(parsed.key)
+    if client.dry_run:
+        emit(f"[dry-run] Would list editions of work {key}",
+             {"dry_run": True, "command": "editions", "key": key,
+              "url": f"{client.server}/works/{key}/editions.json",
+              "params": {"limit": parsed.limit, "offset": parsed.offset}})
+        return
+
+    data = client._get(f"/works/{key}/editions.json",
+                       {"limit": parsed.limit, "offset": parsed.offset})
+    if not data:
+        emit(f"Work {key} not found.", {"error": "not found"})
+        return
+
+    entries = data.get("entries", [])
+    size = data.get("size", len(entries))
+    if not entries:
+        emit(f"No editions listed for {key}.", {"size": 0, "editions": []})
+        return
+
+    lines, out = [], []
+    for e in entries:
+        ekey = normalize_olid(e.get("key", ""))
+        title = e.get("title", "?")
+        pub = e.get("publish_date", "?")
+        publisher = ", ".join(e.get("publishers", [])[:2]) or "?"
+        isbn13 = (e.get("isbn_13") or ["?"])[0]
+        lines.append(f"  [{ekey}] {title} — {publisher}, {pub}  (ISBN-13: {isbn13})")
+        out.append({"key": ekey, "title": title, "publish_date": pub,
+                    "publishers": e.get("publishers", []),
+                    "isbn_10": e.get("isbn_10", []), "isbn_13": e.get("isbn_13", []),
+                    "pages": e.get("number_of_pages")})
+
+    links = data.get("links", {})
+    next_link = links.get("next", "")
+    more = ""
+    if next_link:
+        more = f"\n(more editions available; retry with --offset {parsed.offset + parsed.limit})"
+    emit(f"{size} edition(s) of {key}:\n" + "\n".join(lines) + more,
+         {"size": size, "editions": out, "next_offset":
+          parsed.offset + parsed.limit if next_link else None})
+
+
+def cmd_ratings(client, args):
+    """Community aggregates for a work: ratings + bookshelf counts."""
+    parser = argparse.ArgumentParser(prog="openlibrary ratings")
+    parser.add_argument("key", help="Work key (e.g. OL45804W)")
+    parsed, _ = parser.parse_known_args(args)
+
+    key = normalize_olid(parsed.key)
+    if client.dry_run:
+        emit(f"[dry-run] Would fetch ratings and shelf counts for work {key}",
+             {"dry_run": True, "command": "ratings", "key": key,
+              "urls": [f"{client.server}/works/{key}/ratings.json",
+                       f"{client.server}/works/{key}/bookshelves.json"]})
+        return
+
+    ratings = client._get(f"/works/{key}/ratings.json") or {}
+    shelves = client._get(f"/works/{key}/bookshelves.json") or {}
+
+    summary = ratings.get("summary", {})
+    counts = ratings.get("counts", {})
+    shelf_counts = shelves.get("counts", {})
+    if not summary and not shelf_counts:
+        emit(f"No community data for work {key}.",
+             {"error": "no data", "key": key})
+        return
+
+    avg = summary.get("average")
+    avg_str = f"{avg:.2f}" if isinstance(avg, (int, float)) else "n/a"
+    rated = summary.get("count", 0)
+    wtr = shelf_counts.get("want_to_read", 0)
+    emit(
+        f"⭐ Work {key}: {avg_str} avg from {rated} rating(s)\n"
+        f"   Distribution: " + ", ".join(f"{s}★={counts.get(s, 0)}" for s in ("5", "4", "3", "2", "1")) + "\n"
+        f"   Shelves: want_to_read={wtr} currently_reading={shelf_counts.get('currently_reading', 0)} "
+        f"already_read={shelf_counts.get('already_read', 0)}",
+        {"key": key,
+         "average": avg, "ratings_count": rated,
+         "rating_distribution": counts,
+         "bookshelves": shelf_counts}
+    )
+
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("quiet", False):
+        QUIET = True
+    if GLOBAL_FLAGS.get("json", False):
+        warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(
+        prog="openlibrary",
+        description="Open Library book metadata from the terminal. No API key required.",
+        epilog="Global flags work anywhere: openlibrary --json search --query 'dune'"
+    )
+    sub = parser.add_subparsers(dest="command")
+
+    p_search = sub.add_parser("search", help="Search books")
+    p_search.add_argument("--query", "-q", required=True)
+    p_search.add_argument("--limit", type=int, default=20)
+    p_search.add_argument("--offset", type=int, default=0)
+    p_search.add_argument("--sort", default="", choices=["", "editions", "new", "old", "rating", "title"])
+    p_search.add_argument("--lang")
+    p_search.add_argument("--availability")
+
+    p_sa = sub.add_parser("search-authors", help="Search authors")
+    p_sa.add_argument("--query", "-q", required=True)
+    p_sa.add_argument("--limit", type=int, default=20)
+    p_sa.add_argument("--offset", type=int, default=0)
+
+    sub.add_parser("author", help="Get author details").add_argument("key")
+    sub.add_parser("work", help="Get work details").add_argument("key")
+    sub.add_parser("isbn", help="Lookup by ISBN").add_argument("isbn")
+
+    p_ed = sub.add_parser("editions", help="List all editions of a work")
+    p_ed.add_argument("key")
+    p_ed.add_argument("--limit", type=int, default=50)
+    p_ed.add_argument("--offset", type=int, default=0)
+
+    sub.add_parser("ratings", help="Community ratings and shelf counts for a work").add_argument("key")
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    client = OpenLibraryClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+
+    cmd_map = {
+        "search": cmd_search,
+        "search-authors": cmd_search_authors,
+        "author": cmd_author,
+        "work": cmd_work,
+        "isbn": cmd_isbn,
+        "editions": cmd_editions,
+        "ratings": cmd_ratings,
+    }
+    handler = cmd_map.get(args.command)
+    if not handler:
+        parser.print_help()
+        sys.exit(1)
+
+    remaining = filtered_argv[filtered_argv.index(args.command) + 1:]
+    handler(client, remaining)
+
+
+if __name__ == "__main__":
+    main()

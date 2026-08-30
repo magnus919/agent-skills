@@ -474,13 +474,13 @@
       "description": "Guide a person in cultivating creativity in their own work and life: open conversational sessions on creative blocks, habits, environment, motivation, and resilience, or structured development of a concrete project or fledgling idea through a five-phase practice. Do not use for therapy or clinical support, general life coaching, product or stakeholder discovery, or as a study guide for a book."
     },
     {
-      "name": "ghost-cli",
+      "name": "ghost",
       "source": "./",
       "skills": [
-        "./ghost-cli"
+        "./ghost"
       ],
       "strict": false,
-      "description": "Manage Ghost CMS content from the terminal — create and list posts, pages, and tags, and fetch site info via the Ghost Admin API (v5/v6). Use when the user asks about ghost, cms, blog, blogging, posts, pages, tags, publishing, or site configuration."
+      "description": "Manage Ghost CMS content over the Admin API — browse posts, pages, and tags, draft and publish content, schedule posts, and inspect site info from the terminal. Do not use this skill for Ghost server installation or site administration (installing, nginx, SSL, systemd, updates); those belong to the official npm ghost-cli tooling."
     },
     {
       "name": "github-runner",
@@ -555,31 +555,22 @@
       "description": "Convert operational incident and near-miss evidence into durable product, engineering, test, evaluation, and governance improvements with verified closure. Separate observed facts from causal hypotheses and unresolved uncertainty; map follow-up work across code, tests, skills, operations, product, and governance; track ownership, verification, and closure for every finding. Do not use to assign blame or produce a generic postmortem template; do not close learning because tickets were created — require evidence the intended change occurred."
     },
     {
-      "name": "jellyfin-cli",
+      "name": "jellyfin",
       "source": "./",
       "skills": [
-        "./jellyfin-cli"
+        "./jellyfin"
       ],
       "strict": false,
-      "description": "Query your Jellyfin media server from the terminal — recently added media, search, item details, next-up episodes, library browsing, server info, and stats. Use when the user asks about Jellyfin, media server, movies, TV shows, next episodes, or their media library."
+      "description": "Query your Jellyfin media server from the terminal — recently added media, search, item details, series navigation, next-up episodes, library browsing, server info, and user login. Use when the user asks about Jellyfin, media servers, movies, TV shows, next episodes, or their media library. Do not use this skill for server installation, library management, playback control, or Emby/Plex servers."
     },
     {
-      "name": "jira-cli",
+      "name": "jira",
       "source": "./",
       "skills": [
-        "./jira-cli"
+        "./jira"
       ],
       "strict": false,
-      "description": "Interact with Atlassian Jira from the terminal: search issues, view details, create issues, add comments, list projects, and transition status. Use when the user mentions Jira, a ticket key (e.g. PROJ-123), or asks about issues, bugs, tasks, projects, or sprint work."
-    },
-    {
-      "name": "jira-jql",
-      "source": "./",
-      "skills": [
-        "./jira-jql"
-      ],
-      "strict": false,
-      "description": "Expert-level skill for Jira Query Language (JQL). Use when the user asks about writing, debugging, optimizing, or understanding JQL queries; needs to filter Jira issues by complex criteria, date ranges, history, or cross-project conditions; wants to build saved filters, dashboard gadgets, or automation rules; or needs guidance on JQL performance, functions, operators, history operators (WAS/CHANGED), relative dates, role-based query patterns, or the JQL REST API."
+      "description": "Interact with Atlassian Jira from the terminal: search issues with JQL, view details, create issues, add comments, count matches with fast approximate-count, list projects, discover valid transitions, and change status. Includes a full JQL language reference (functions, operators, history predicates, date expressions, saved filters, performance tuning) plus REST auth/pagination guidance. Use when the user mentions Jira, a ticket key (e.g. PROJ-123), asks about issues, bugs, tasks, projects, or sprint work, or needs to write, debug, or optimize JQL queries. Do not use for GitHub or GitLab issue tracking, Jira site administration, or generic ticketing systems."
     },
     {
       "name": "kanban-guru",
@@ -771,13 +762,13 @@
       "description": "Google's Open Knowledge Format (OKF) v0.1 — an open, vendor-neutral spec for representing knowledge as markdown files with YAML frontmatter, designed for AI agent consumption. Use when the user mentions OKF, Open Knowledge Format, Google's knowledge format, LLM wiki bundles, agent knowledge packs, creating OKF bundles, validating OKF documents, or converting knowledge into the OKF standard."
     },
     {
-      "name": "openlibrary-cli",
+      "name": "openlibrary",
       "source": "./",
       "skills": [
-        "./openlibrary-cli"
+        "./openlibrary"
       ],
       "strict": false,
-      "description": "Search books, authors, and works on Open Library from the terminal. Look up books by ISBN, search titles and authors, and fetch detailed work/author records via the public Open Library API. No API key required."
+      "description": "Query the Open Library catalog from the terminal: search books and authors, look up works, editions, and ISBNs, enumerate every edition of a work, read community ratings, and resolve cover-image URLs. Fully keyless public API. Includes the OL…M/W/A key-graph reference, ISBN 302-redirect resolution, search query syntax, covers-host rules, and worked pipelines. Do not use for library-IT administration (Koha/MARC/ILS migration), commercial book-data feeds, or managing your reading account on Open Library itself."
     },
     {
       "name": "opensource-contributions",
@@ -822,7 +813,7 @@
         "./peertube"
       ],
       "strict": false,
-      "description": "Browse PeerTube federated video from the terminal: view videos and channels, search across instances, check server stats, and manage your account. Uses OAuth2 authentication with token persistence. Use when the user mentions PeerTube, federated video, decentralized video platforms, or browsing/uploading to a PeerTube instance."
+      "description": "Browse PeerTube federated video from the terminal — instance stats, latest videos, video detail, comment threads, channels, accounts, instance-local search, and OAuth2 login with per-instance token persistence. Set PEERTUBE_SERVER to any instance; point it at sepiasearch.org for fediverse-wide search. Use when the user mentions PeerTube, federated video, SepiaSearch, or browsing a specific PeerTube instance. Do not use this skill for YouTube/Vimeo uploads, video editing, or installing and administering a PeerTube server."
     },
     {
       "name": "platform-engineering",
@@ -1239,13 +1230,13 @@
       "description": "Operate the observability stack that deploys as one unit: Prometheus scrape configuration, recording and alerting rules, relabeling, retention, and high availability; OpenTelemetry Collector pipelines (receivers, processors, exporters, sampling, trace/span correlation); and Loki ingest, LogQL, retention, and label design — with a bundled read-only telemetry-check script for Prometheus rule sanity and scrape-target reachability. Use when running, tuning, or troubleshooting a Prometheus, OpenTelemetry Collector, or Loki deployment, or reviewing the collection/ingest/retention layer. Do not use for observability strategy, SLI/SLO design, or paging policy (that is platform-engineering) or Grafana dashboards, panels, and Grafana-side alerting (that is grafana)."
     },
     {
-      "name": "tempest-cli",
+      "name": "tempest",
       "source": "./",
       "skills": [
-        "./tempest-cli"
+        "./tempest"
       ],
       "strict": false,
-      "description": "Query hyper-local weather from a WeatherFlow Tempest station: current conditions, 7-day forecast, historical observations, and real-time UDP broadcasts. Use when the user asks about the weather, temperature, rain, wind, humidity, forecast, or wants conditions from their own station rather than a generic weather service."
+      "description": "Query hyper-local weather from a WeatherFlow Tempest station over its REST API and the hub's local UDP broadcast: current conditions, forecast, historical observations, and real-time decoded datagrams (obs_st, rapid_wind, evt_precip, evt_strike, hub_status). Use when the user asks about weather, temperature, rain, wind, humidity, or forecast data from their own Tempest/WeatherFlow station, or wants to parse the hub's UDP port 50222 broadcast. Do not use this skill for generic or city forecasts without a Tempest station (public weather services serve those), for Shakespeare's play The Tempest or other literature questions, or for weather hardware from other vendors - the REST endpoints require a personal-use token and the UDP broadcast only exists on a Tempest hub's LAN."
     },
     {
       "name": "terraform",
@@ -1266,13 +1257,13 @@
       "description": "Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations with a small vanilla JavaScript starting point."
     },
     {
-      "name": "tmdb-cli",
+      "name": "tmdb",
       "source": "./",
       "skills": [
-        "./tmdb-cli"
+        "./tmdb"
       ],
       "strict": false,
-      "description": "Search and discover movies, TV shows, and trending content via The Movie Database (TMDb) API v3. Use when the user asks about movies, TV, film, cinema, genres, certifications, ratings, cast, upcoming releases, or trending media."
+      "description": "Query TMDb metadata for films and television, then enrich results with details, credits, providers, and external IDs. Do not use this skill for torrent search, streaming playback, or personal watch-history tracking."
     },
     {
       "name": "traefik",
@@ -1290,7 +1281,7 @@
         "./trakt"
       ],
       "strict": false,
-      "description": "Discover trending, anticipated, and popular movies and TV shows via the Trakt.tv API from the terminal. No authentication required for read-only discovery. Use when the user asks about what to watch, trending movies, popular shows, or media discovery."
+      "description": "Discover and compare Trakt.tv trending, popular, and anticipated movies and shows from the terminal. Do not use this skill for TMDb catalog metadata, credits, images, or provider lookups; use the tmdb skill for those tasks."
     },
     {
       "name": "transistor",
@@ -1299,7 +1290,7 @@
         "./transistor"
       ],
       "strict": false,
-      "description": "Manage Transistor.fm podcast hosting from the terminal: view shows, list episodes, check analytics, and get subscriber counts. Use when the user mentions Transistor, podcast hosting, podcast analytics, show management, or episode tracking."
+      "description": "Operate Transistor.fm podcast hosting from the terminal: verify API access, browse shows and episodes with JSON:API-aware output, run the episode publish lifecycle (create draft, attach audio, publish or schedule via the dedicated publish endpoint), pull download analytics, and manage private podcast subscribers and webhooks. Use when the user mentions Transistor, Transistor.fm, podcast hosting, episode publishing, private podcast subscribers, or podcast download analytics. Do not use this skill for other podcast hosts (Buzzsprout, Libsyn, Megaphone, Spotify for Creators), for editing or producing audio, or for feed/RSS parsing — the bundled CLI manages a Transistor account through its v1 API and cannot create new shows (dashboard-only)."
     },
     {
       "name": "travel-guide",
