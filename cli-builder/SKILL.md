@@ -54,7 +54,7 @@ Capture data shapes →  Run tests as-you-go →  Fix failures
 
 Each API or data source gets its own CLI. Do not combine disparate services into one tool.
 
-**Correct:** `tmdb-cli` (TMDb only), `ghost-cli` (Ghost CMS only)
+**Correct:** `tmdb` (TMDb only), `ghost` (Ghost CMS only)
 **Wrong:** `media-cli` (combines TMDb + Trakt + Radarr)
 
 Exception: services from the same vendor sharing auth (e.g. Radarr + Sonarr).
@@ -484,6 +484,11 @@ The default for this repo is **`scripts/` inside the skill** — it follows the 
 ## Agent-Readiness Checklist
 
 Use [the agent-readiness checklist](references/agent-readiness-checklist.md) before shipping a CLI.
+
+## When not to use
+
+Do not use this skill to design conversational agent tools or MCP servers — [references/mcp-vs-cli.md](references/mcp-vs-cli.md) carries that decision framework — and route general API design questions to [api-design-and-evolution](../api-design-and-evolution/SKILL.md). This skill also does not cover GUI, TUI, or web-app interface design.
+
 ## References
 
 - [templates/bash-cli-scaffold.sh](templates/bash-cli-scaffold.sh) — Full bash project template with pre-wired global flags, logging helpers, and subcommand dispatch. Use as a starting point for any bash CLI.

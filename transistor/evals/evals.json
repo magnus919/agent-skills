@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "skill_name": "transistor",
+  "evals": [
+    {
+      "id": "browse-shows-and-episodes-json",
+      "prompt": "List my Transistor shows and then the latest episodes of the first one, as JSON I can pipe to jq.",
+      "expected_output": "Export TRANSISTOR_API_KEY (Dashboard -> Account -> API Access), run transistor shows --json to get show ids, then transistor episodes --show <SHOW_ID> --json. Collection output is {shows|episodes: [...], meta: {currentPage, totalPages, totalCount}}; page with --page/--per (pagination[page]/pagination[per] on the wire, API default 10 per page) and loop while meta.currentPage < meta.totalPages.",
+      "assertions": [
+        "exports TRANSISTOR_API_KEY and runs transistor shows --json first",
+        "extracts the show id from the shows output before filtering episodes",
+        "runs transistor episodes with --show and --json",
+        "pages with pagination[page]/pagination[per] and meta.currentPage/totalPages, never pagination[limit] or page[number]"
+      ]
+    },
+    {
+      "id": "episode-create-then-publish-pipeline",
+      "prompt": "I have a finished MP3 at https://cdn.example.com/ep12.mp3. Publish it as episode 12 of my Transistor show, season 2, with the title 'Roasting Coffee'.",
+      "expected_output": "Create the draft: transistor episode-create --show <SHOW_ID> --title 'Roasting Coffee' --season 2 --number 12 --audio-url https://cdn.example.com/ep12.mp3 --json and take .id (creation always yields status draft, published_at null). Then publish on the dedicated endpoint: transistor episode-publish --id <EPISODE_ID>, which sends PATCH /v1/episodes/<EPISODE_ID>/publish with episode[status]=published. Confirm with transistor episode --id <EPISODE_ID> --json reading .status and .media_url. Updating episode metadata never publishes; only the /publish endpoint changes status.",
+      "assertions": [
+        "creates the episode as a draft with transistor episode-create including --show, --title, and --audio-url",
+        "publishes via transistor episode-publish on the dedicated PATCH /v1/episodes/:id/publish endpoint with episode[status]=published",
+        "does not claim episode-create or episode-update can publish the episode",
+        "reads the publish result from data.attributes.status / the JSON output .status"
+      ]
+    },
+    {
+      "id": "publish-rejected-because-stays-draft",
+      "prompt": "I keep updating my Transistor episode with PATCH /v1/episodes/:id but it stays in draft and never shows up in the RSS feed. What am I doing wrong?",
+      "expected_output": "Nothing is broken: metadata updates cannot change publishing state. POST /episodes and PATCH /episodes/:id never publish (the docs say publishing is a separate endpoint). Send PATCH /v1/episodes/<EPISODE_ID>/publish with episode[status]=published (draft/scheduled/published are the only status values; episode[published_at] in the show's time zone schedules or backdates). The bundled CLI path is transistor episode-publish --id <EPISODE_ID>.",
+      "assertions": [
+        "explains that PATCH /episodes/:id can never change publishing state",
+        "uses the dedicated /publish endpoint with episode[status]=published",
+        "mentions scheduled/draft states are set on the same publish endpoint",
+        "does not suggest re-sending episode[audio_url] or metadata fields as the fix"
+      ]
+    },
+    {
+      "id": "authorize-upload-attach-audio-workflow",
+      "prompt": "My episode audio is a local file ep12.mp3 on disk and I don't have a public URL. Walk me through getting it into Transistor and published.",
+      "expected_output": "Authorize an upload: transistor authorize-upload --filename ep12.mp3 --file ./ep12.mp3 (the CLI GETs /v1/episodes/authorize_upload?filename=..., PUTs the bytes to the signed upload_url with the returned content_type; the URL expires ~600s, max 5GB). Take .audio_url from the output, attach it: transistor episode-update --id <EPISODE_ID> --audio-url <AUDIO_URL> (or pass it at episode-create), then publish with transistor episode-publish --id <EPISODE_ID>. Accepted formats include .mp3, .m4a, .wav.",
+      "assertions": [
+        "starts with transistor authorize-upload and uses the returned audio_url",
+        "attaches audio via episode-create or episode-update with --audio-url",
+        "publishes only after attaching audio, via the publish endpoint",
+        "does not try to PUT the file to api.transistor.fm directly"
+      ]
+    },
+    {
+      "id": "rate-limit-429-webhook-guidance",
+      "prompt": "My script that checks Transistor for new published episodes every few seconds just started failing with 429 errors. Fix it.",
+      "expected_output": "Transistor rate-limits the API to 10 requests per 10 seconds; a 429 blocks access for 10 seconds and no retry headers are documented. Polling every few seconds will keep tripping it. Fix: slow the loop (sleep between calls), cache responses, and better, register a webhook so Transistor pushes events: transistor webhook-create --show <SHOW_ID> --event episode_published --url https://example.com/hooks (events: episode_created, episode_published, subscriber_created, subscriber_deleted; max 50 per account). Transistor also says the API is not meant as a website back end - parse the RSS feed for display use.",
+      "assertions": [
+        "states the 10 requests per 10 seconds limit and the 10 second 429 block",
+        "replaces tight polling with a webhook (episode_published) or cached/less frequent calls",
+        "does not invent retry-after headers or exponential backoff promises from the docs",
+        "mentions the 50-webhook per account cap or the event names"
+      ]
+    },
+    {
+      "id": "private-podcast-subscriber-batch-import",
+      "prompt": "Import a mailing list of 40 people into my private Transistor podcast without spamming each one manually.",
+      "expected_output": "Use the batch endpoint: transistor subscriber-batch --show <SHOW_ID> --email <EMAIL_1> --email <EMAIL_2> ... (POST /v1/subscribers/batch with show_id and emails[]), optionally --skip-welcome-email. Verify with transistor subscribers --show <SHOW_ID> --json reading meta.totalCount. Revoke access later with transistor subscriber-delete --show <SHOW_ID> --email <EMAIL> or --id. Each subscriber gets a personal feed_url/subscribe_url - never share one person's feed URL.",
+      "assertions": [
+        "uses subscriber-batch (POST /v1/subscribers/batch) instead of 40 single calls",
+        "lists subscribers and reads meta.totalCount to verify the import",
+        "revokes with subscriber-delete by email or id when needed",
+        "does not share or reuse one subscriber's personal feed_url"
+      ]
+    },
+    {
+      "id": "create-transistor-show-not-api",
+      "prompt": "Use the Transistor API to create a brand new podcast called 'Night Shift' on my account.",
+      "expected_output": "This must not trigger the transistor skill's CLI for creation: show creation is not available via the Transistor API at all (no POST /v1/shows exists; Transistor's support docs say new shows need to be created in the web app). Create the show in the dashboard first; afterwards the skill can manage it (show-update for metadata, episodes, subscribers, analytics).",
+      "assertions": [
+        "must not attempt to create a show through the API",
+        "states that show creation is dashboard-only because POST /v1/shows does not exist",
+        "directs the user to create the show in the Transistor dashboard first",
+        "still offers post-creation management (episode lifecycle, metadata updates) once the show exists"
+      ]
+    },
+    {
+      "id": "audio-editing-not-transistor",
+      "prompt": "Cut the first 30 seconds of silence off my podcast MP3 and normalize the loudness.",
+      "expected_output": "This must not trigger the transistor skill: audio editing/transcoding is outside a hosting-account API skill (ffmpeg or a DAW does the edit), and Transistor's API manages episodes, subscribers, and analytics - not audio files. After the edited file is hosted somewhere reachable (or via authorize-upload), the Transistor skill can attach and publish it.",
+      "assertions": [
+        "must not trigger transistor for audio editing",
+        "routes the edit to ffmpeg or a DAW",
+        "does not invent API endpoints for editing or processing audio",
+        "may mention re-attaching the edited file afterward as the follow-up step"
+      ]
+    }
+  ]
+}

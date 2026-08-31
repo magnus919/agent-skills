@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "skill_name": "ghost",
+  "evals": [
+    {
+      "id": "list-draft-posts",
+      "prompt": "Show me the draft posts on my Ghost blog so I can see what is waiting to be finished.",
+      "expected_output": "Use ghost posts --status draft, which routes to the Admin API because drafts are invisible to the Content API.",
+      "assertions": ["uses ghost posts command", "filters status draft", "mentions Admin API for drafts"]
+    },
+    {
+      "id": "draft-then-publish-pipeline",
+      "prompt": "Create a post called Release notes on my Ghost site, then publish it once the content is reviewed.",
+      "expected_output": "Create with ghost create-post --title 'Release notes', then re-read it and run ghost update-post <id> --updated-at <latest> --status published.",
+      "assertions": ["creates as draft first", "update sends latest updated_at", "publishes via status published"]
+    },
+    {
+      "id": "jwt-auth-gotcha",
+      "prompt": "My Ghost Admin API script keeps failing with 401 INVALID_JWT even though my id:secret key looks right. What is going on?",
+      "expected_output": "Explain the Admin JWT contract: HS256 signature over the hex-decoded secret half, kid header set to the ID half, aud /admin/, exp at most five minutes after iat; check clock skew and that the secret is hex-decoded before signing. HS512-signed tokens are rejected with invalid algorithm.",
+      "assertions": ["explains HS256 with hex-decoded secret", "names kid header and aud", "states five minute token window"]
+    },
+    {
+      "id": "content-vs-admin-keys",
+      "prompt": "I have a Ghost Content API key. Can I use it to list my unpublished posts?",
+      "expected_output": "No. The Content API serves published content only and ignores non-public filters, so drafts never appear no matter how valid the key is; switch to an Admin API key with ghost posts --status draft.",
+      "assertions": ["states content key cannot see drafts", "recommends admin api"]
+    },
+    {
+      "id": "not-for-ghost-cli-install",
+      "prompt": "Run ghost install to set up a new Ghost production server with nginx and ssl on this machine.",
+      "expected_output": "Do not route this here: ghost install belongs to Ghost's official npm ghost-cli site-management tooling, not this Ghost Admin API content skill.",
+      "assertions": ["must not trigger ghost skill", "routes server installs to npm ghost-cli"]
+    },
+    {
+      "id": "pagination-loop",
+      "prompt": "Export every post from my Ghost site as JSON, there are several hundred.",
+      "expected_output": "Loop with page and limit 100 following meta.pagination.next until next is null, since limit=all is gone in Ghost 6 and pages cap at 100.",
+      "assertions": ["uses pagination next loop", "caps limit at 100"]
+    }
+  ]
+}

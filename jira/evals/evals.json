@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "skill_name": "jira",
+  "evals": [
+    {
+      "id": "search-project-issues-readonly",
+      "prompt": "What's currently open in the PROJ project? Show me the newest tickets first.",
+      "expected_output": "Scenario: read-only issue search. The agent confirms JIRA_EMAIL/JIRA_API_TOKEN/JIRA_SERVER are set, then runs `jira list --project PROJ --json` (the --project shortcut builds `project=PROJ ORDER BY created DESC`). Results are presented from actual CLI output; for more than 50 matches the CLI follows offset pagination automatically. No write commands are invoked.",
+      "assertions": [
+        "jira list is used with --project PROJ for the search",
+        "--json output is requested when results feed further processing",
+        "No create, comment, or transition commands run for this read-only request",
+        "Results come from real command output rather than invented tickets"
+      ]
+    },
+    {
+      "id": "stalled-sprint-bulk-close-pipeline",
+      "prompt": "Find sprint work that hasn't been touched in two weeks and close out whatever is actually finished. Set a resolution when you close them.",
+      "expected_output": "Scenario: multi-step write pipeline. The agent runs `jira list --jql 'sprint IN openSprints() AND updated < -14d AND resolution = Unresolved' --json`, pipes keys through jq (`jq -r '.issues[].key'`), inspects candidates with `jira view KEY`, discovers valid transitions per issue with `jira transitions KEY` (transition IDs are workflow- and status-specific, so names alone are unreliable), then applies `jira transition KEY --to Done --resolution Done`. It previews writes with --dry-run first and reports per-ticket outcomes.",
+      "assertions": [
+        "The JQL uses openSprints() with an staleness bound such as updated < -14d and excludes resolved work",
+        "jira transitions is used to discover valid transition IDs before transitioning",
+        "jira transition carries --resolution so screen-required resolution fields do not fail",
+        "Each ticket's outcome is reported rather than assumed"
+      ]
+    },
+    {
+      "id": "transition-id-gotcha",
+      "prompt": "Move PROJ-412 to Done.",
+      "expected_output": "Scenario: gotcha-aware transition. The agent knows transition IDs differ per workflow/status and that Done-style transitions often require a resolution field on their screen. It runs `jira transitions PROJ-412` to list available IDs, picks the one whose target status category is completed, and runs `jira transition PROJ-412 --to <id-or-name> --resolution Done`. If the API returns 400 naming a missing field (errors.resolution), it retries including that field rather than giving up or claiming success.",
+      "assertions": [
+        "Available transitions are listed before applying one",
+        "The transition call includes --resolution to satisfy screen requirements",
+        "A 400 error naming a missing field is handled by supplying that field",
+        "Success is confirmed from command output (204-class response), not fabricated"
+      ]
+    },
+    {
+      "id": "count-before-deep-dive",
+      "prompt": "How many unresolved bugs do we have across the org right now?",
+      "expected_output": "Scenario: fast aggregate question. JQL has no COUNT aggregation, but the CLI exposes the approximate-count endpoint: the agent runs `jira count --jql 'issuetype = Bug AND resolution = Unresolved' --json` and reads `.count` from the output. It does not fetch hundreds of issues with `jira list --max 1000` just to count them, though it may mention that list would page through rows if details were needed.",
+      "assertions": [
+        "jira count is used instead of fetching all matching issues",
+        "The JQL expresses bug + unresolved constraints without aggregation syntax",
+        "The answer comes from the .count field of the JSON output",
+        "No attempt is made to use COUNT/SUM inside JQL itself"
+      ]
+    },
+    {
+      "id": "github-issue-not-jira",
+      "prompt": "Can you open a GitHub issue for this crash on our repo?",
+      "expected_output": "Scenario: should-not-trigger. The request targets GitHub issue tracking, which this skill explicitly does not cover. The agent does not load jira or invoke its CLI; it routes the request to GitHub tooling (e.g., gh issue create) instead, noting that jira handles Atlassian Jira sites only.",
+      "assertions": [
+        "The jira skill is not loaded or executed for a GitHub-issue request",
+        "A GitHub-native route such as the gh CLI is suggested",
+        "No JQL is written or JIRA_* env vars requested"
+      ]
+    },
+    {
+      "id": "auth-setup-and-token-expiry",
+      "prompt": "Set up Jira access for me so you can start triaging my tickets, and explain what credentials you need.",
+      "expected_output": "Scenario: auth setup guidance. The agent explains Jira Cloud auth: an API token created at id.atlassian.com/manage/api-tokens used over HTTP Basic auth as base64(email:token) via JIRA_EMAIL and JIRA_API_TOKEN env vars plus JIRA_SERVER; passwords are deprecated and tokens now expire after at most one year. It notes that Personal Access Tokens (Bearer) are Data Center only, not Cloud. It verifies connectivity read-only with `jira me`, and never asks for or echoes the token value itself.",
+      "assertions": [
+        "Basic auth with email + API token is described as the Cloud method",
+        "JIRA_EMAIL, JIRA_API_TOKEN, and JIRA_SERVER env vars are named",
+        "PAT bearer tokens are identified as Data Center-only, not Cloud",
+        "Verification proceeds via jira me without exposing the secret"
+      ]
+    }
+  ]
+}

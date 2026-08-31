@@ -120,7 +120,7 @@ The core flow for turning liked tracks into recommendations:
 
 4. **Cross-reference** against what they've already scrobbled (recent-tracks) to filter out already-heard material.
 
-5. **Check against the user's own collection** (via Radarr/Sonarr/jellyfin-cli or Spotify library) to see what's already in the library vs genuinely new discovery.
+5. **Check against the user's own collection** (via Radarr/Sonarr/jellyfin or Spotify library) to see what's already in the library vs genuinely new discovery.
 
 ## Using with --json for Machine Processing
 

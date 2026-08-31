@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "skill_name": "tempest",
+  "evals": [
+    {
+      "id": "current-conditions-from-station",
+      "prompt": "What's the temperature, wind, and rain at my Tempest station right now? Give it to me as JSON I can pipe to jq.",
+      "expected_output": "Export TEMPEST_TOKEN (create it in the Tempest web app: Settings -> Data Authorizations -> Create Token), then run tempest current --json. Auto-selection picks your first station and its ST device (skipping HB hubs). The .observation object carries metric-native named fields: air_temperature (C), wind_avg (m/s), rain_accumulation (mm), station_pressure (MB), relative_humidity (%). Use --station-id/--device-id only when you own several stations.",
+      "assertions": [
+        "exports TEMPEST_TOKEN and runs tempest current --json",
+        "reads metric-native fields air_temperature, wind_avg, and rain_accumulation from .observation",
+        "does not invent a local_time or hourly.local_time field anywhere",
+        "does not present imperial units as the wire values without converting"
+      ]
+    },
+    {
+      "id": "stations-to-current-pipeline",
+      "prompt": "I have two Tempest stations. Figure out their IDs and then pull the latest reading from the backyard one, chained so I can re-run it.",
+      "expected_output": "Discover first: tempest stations --json emits {\"stations\": [...]} with integer station_id and a devices[] array where each device has device_id, device_type (HB hub, ST Tempest, AR Air, SK Sky), and serial_number. Filter device_type == \"ST\" (never HB - hubs carry no observations) and feed those integers to tempest current --station-id <ID> --device-id <DID> --json. The two stages compose because stations --json device_id/station_id are the same integer types current's flags accept.",
+      "assertions": [
+        "runs tempest stations --json first and extracts station_id and device_id as integers",
+        "filters out device_type HB hubs before choosing the observation device",
+        "passes the extracted ids to tempest current --station-id/--device-id",
+        "does not call an undocumented /user/devices endpoint"
+      ]
+    },
+    {
+      "id": "forecast-units-double-conversion-gotcha",
+      "prompt": "Why does my script show 172 degrees for my Tempest forecast after I switched the station display to Fahrenheit? The high today is definitely not 172.",
+      "expected_output": "Double conversion. The /better_forecast endpoint is unit-selectable, not Celsius-locked: it honors units_temp=f (default c) and reports what it used in response.units. Your script converted an already-Fahrenheit response with C->F math (77.7 * 9/5 + 32 = 172). Fix: read .forecast.units.units_temp before converting anything, or request explicit units. With the CLI: tempest forecast --json already handles this - its human output converts only Celsius stations, and raw --json values stay in the units the response declared.",
+      "assertions": [
+        "explains the 172 value as a double conversion of an already-Fahrenheit response",
+        "states the endpoint honors units_temp=f and reports units in the response",
+        "instructs reading .forecast.units.units_temp before converting",
+        "does not claim the forecast endpoint is always Celsius regardless of parameters"
+      ]
+    },
+    {
+      "id": "udp-message-family-dispatch",
+      "prompt": "I'm parsing my Tempest hub's UDP broadcast on port 50222 in Python. I keep getting TypeError when a rapid wind message shows up, and my parser never sees rain-start events. What's wrong?",
+      "expected_output": "Message families are structurally different - dispatch on the top-level \"type\" before indexing. obs_st/obs_air/obs_sky nest report rows under \"obs\" (msg[\"obs\"][0][7] is temperature); rapid_wind carries ONE 3-element array under \"ob\" ([epoch, m/s, degrees]) - iterating it element-wise like an obs row list is exactly the TypeError you hit; evt_precip and evt_strike carry ONE array under \"evt\" ([epoch] and [epoch, km, energy]); hub_status and device_status have named fields (uptime, rssi, seq, reset_flags, sensor_status) and no payload array at all. Each UDP datagram is one complete JSON object; bind 0.0.0.0:50222 and listen only - the hub never expects a reply.",
+      "assertions": [
+        "dispatches on the type field before any positional indexing",
+        "reads rapid_wind speed from the single ob array as ob[1], not by iterating it",
+        "distinguishes obs families (list under obs) from evt families (single array under evt) and status families (named fields)",
+        "binds the listener to UDP port 50222 and treats it as listen-only broadcast"
+      ]
+    },
+    {
+      "id": "obs-st-positional-array-decode",
+      "prompt": "Decode this raw obs_st payload from my Tempest: [1588948614, 0.18, 0.22, 0.27, 144, 6, 1017.57, 22.37, 50.26, 328, 0.03, 3, 0.0, 0, 0, 0, 2.410, 1]. What's the temperature and wind?",
+      "expected_output": "obs_st is a positional array - meaning comes from the index. Index 0 epoch 1588948614 (2020-05-07 UTC); index 1-3 wind lull/avg/gust 0.18/0.22/0.27 m/s; index 4 wind direction 144 degrees (SE); index 6 station pressure 1017.57 MB (millibars, same as hPa); index 7 air temperature 22.37 C (72.3 F); index 8 humidity 50.26%; index 12 rain 0.0 mm this minute; index 16 battery 2.410 V (healthy, about 2.4 nominal); index 17 report interval 1 minute. The UDP broadcast record ends at index 17; REST adds Nearcast rain fields 18-21 for 22 positions - tolerate both lengths.",
+      "assertions": [
+        "maps index 7 to air temperature 22.37 C and index 6 to pressure in MB/hPa",
+        "maps indices 1-3 to wind lull/average/gust in m/s and index 4 to direction",
+        "notes the UDP record stops at index 17 while the REST record has 22 positions",
+        "does not misread index 6 pressure as temperature or vice versa"
+      ]
+    },
+    {
+      "id": "metric-native-units-and-conversions",
+      "prompt": "Are the values from my Tempest station in Fahrenheit and mph? I want mph wind and inches of rain in my dashboard.",
+      "expected_output": "No - the wire is metric-native everywhere: wind m/s, rain mm, temperature C, pressure MB (millibars, numerically hPa - not kPa), lightning distance km. Conversion is the caller's job: mph = m/s * 2.237, inches = mm / 25.4, F = C * 9/5 + 32, inHg = MB * 0.02953. The CLI converts only for human display; --json stays metric-native so jq can convert: tempest current --json | jq '{wind_mph: (.observation.wind_avg * 2.237), rain_in: (.observation.rain_accumulation / 25.4)}'.",
+      "assertions": [
+        "states observations are metric-native (m/s, mm, C, MB) with conversion as the caller's job",
+        "provides the m/s-to-mph and mm-to-inches conversion formulas or a jq snippet",
+        "does not claim UDP or raw JSON values arrive in imperial units",
+        "uses MB or hPa for pressure, not kPa"
+      ]
+    },
+    {
+      "id": "not-shakespeare-the-tempest",
+      "prompt": "Analyze the opening storm scene of Shakespeare's play The Tempest and explain how Prospero raises the tempest.",
+      "expected_output": "This must not trigger the tempest skill: it is a literature question about Shakespeare's play, not a request for WeatherFlow weather-station data. The tempest skill operates a personal weather station (REST token auth, UDP port 50222 broadcasts) and has nothing to say about the play. Route this to literary analysis instead.",
+      "assertions": [
+        "must not trigger the tempest skill for the Shakespeare play",
+        "recognizes the question as literary analysis of The Tempest",
+        "does not invoke station APIs, tokens, or UDP ports for this prompt"
+      ]
+    },
+    {
+      "id": "not-generic-weather-forecast",
+      "prompt": "What's the weather forecast for Paris tomorrow? I don't own any weather station.",
+      "expected_output": "This must not trigger the tempest skill: every endpoint it drives requires the user's own WeatherFlow Tempest station and a personal-use token, and UDP listening requires a hub on the LAN. A user with no station asking for a generic city forecast needs a public weather service or forecast skill, not this station tool. Only load tempest when the user owns or manages a Tempest/WeatherFlow station.",
+      "assertions": [
+        "must not trigger the tempest skill for a generic city forecast",
+        "notes the skill requires the user's own Tempest station and token",
+        "routes the request to a public forecast service instead"
+      ]
+    }
+  ]
+}

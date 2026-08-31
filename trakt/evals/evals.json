@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "skill_name": "trakt",
+  "evals": [
+    {
+      "id": "trending-movies",
+      "prompt": "Show the 20 movies most watched recently using Trakt.",
+      "expected_output": "Use trakt movie trending --limit 20 and explain that trending is a recent-watch signal.",
+      "assertions": ["selects the movie trending command", "sets an explicit limit", "describes the recent watching window"]
+    },
+    {
+      "id": "popular-shows-json",
+      "prompt": "Get popular TV shows as JSON for a jq pipeline.",
+      "expected_output": "Run trakt --json tv popular and process the shows object with jq.",
+      "assertions": ["uses the tv popular command", "enables JSON output", "mentions jq processing"]
+    },
+    {
+      "id": "anticipated-pagination",
+      "prompt": "Explain how to collect anticipated movies across pages using the Trakt CLI without overrunning limits.",
+      "expected_output": "Loop trakt movie anticipated with --page, stop at pagination.page_count from --json output (empty pagination degrades to page 1), and honor Retry-After on 429.",
+      "assertions": ["uses --page with each CLI invocation", "stops at the normalized pagination.page_count value", "handles Retry-After for rate limiting"]
+    },
+    {
+      "id": "second-page-trending",
+      "prompt": "Fetch page 2 of Trakt trending movies as JSON.",
+      "expected_output": "Run trakt --json movie trending --page 2; JSON output keeps the movies array beside a pagination object mirroring X-Pagination headers.",
+      "assertions": ["passes --page 2 to the trending command", "names the pagination object keys page limit page_count item_count", "keeps the movies array intact in JSON output"]
+    },
+    {
+      "id": "header-pair-gotcha",
+      "prompt": "Why does my Trakt request with trakt-api-key still fail?",
+      "expected_output": "Send trakt-api-version: 2 together with trakt-api-key, plus JSON content type; the version header is mandatory.",
+      "assertions": ["documents the trakt-api-key header", "documents the trakt-api-version 2 companion header", "identifies the missing-header failure cause"]
+    },
+    {
+      "id": "tmdb-metadata-not-trigger",
+      "prompt": "Do not route this request to Trakt: enrich a movie with TMDb credits, images, and provider metadata.",
+      "expected_output": "Do not use Trakt; route catalog metadata enrichment to the tmdb skill.",
+      "assertions": ["must not trigger for TMDb metadata work", "names the tmdb skill as the alternative"]
+    },
+    {
+      "id": "oauth-boundary",
+      "prompt": "Do I need OAuth to see public trending and popular feeds, and what changes for my watchlist?",
+      "expected_output": "Public discovery reads use the application key and required version header; user-scoped watchlist operations require OAuth Bearer in addition to the app headers.",
+      "assertions": ["distinguishes public reads from user-scoped operations", "requires OAuth for watchlist work", "retains the application header pair"]
+    }
+  ]
+}

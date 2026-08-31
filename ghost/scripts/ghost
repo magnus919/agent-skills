@@ -1,0 +1,604 @@
+#!/usr/bin/env python3
+"""ghost — Ghost CMS from the terminal.
+
+Manage content on a Ghost CMS site: create and edit posts and pages,
+manage tags, and configure metadata. Requires GHOST_URL and GHOST_ADMIN_KEY.
+Admin JWT authentication (HS256, kid header, 5-minute tokens) is built in
+per https://docs.ghost.org/admin-api/.
+"""
+
+import argparse
+import base64
+import hashlib
+import hmac
+import json
+import os
+import sys
+import time
+import warnings
+from typing import Any, Dict
+
+warnings.simplefilter("ignore")
+
+import requests
+
+ENV_URL = os.getenv("GHOST_URL", "")
+ENV_ADMIN_KEY = os.getenv("GHOST_ADMIN_KEY", "")
+
+QUIET = False
+GLOBAL_FLAGS: Dict[str, Any] = {"json": False, "dry_run": False, "quiet": False, "verbose": False}
+
+# Ghost rejects JWTs whose exp is more than five minutes after iat, and its
+# verifier additionally enforces a five-minute maxAge on iat itself.
+TOKEN_TTL_SECONDS = 300
+VERSION = "v6.0"
+
+
+def admin_api_audience(request_path: str = "/ghost/api/admin/") -> str:
+    """Derive the JWT audience claim from an Admin API request path.
+
+    Current unversioned routes (/ghost/api/admin/...) use audience "/admin/".
+    Legacy versioned routes (/ghost/api/v3/admin/..., accepted up to v4)
+    scope the audience to the URL version, e.g. "/v3/admin/".
+    """
+    marker = "/ghost/api"
+    idx = request_path.find(marker)
+    if idx == -1:
+        return "/admin/"
+    segments = [s for s in request_path[idx + len(marker):].split("/") if s]
+    if segments and len(segments[0]) > 1 and segments[0][0] == "v" and segments[0][1:].isdigit():
+        return f"/{segments[0]}/admin/"
+    return "/admin/"
+
+
+def log(msg):
+    if not QUIET and not GLOBAL_FLAGS.get("json", False):
+        print(msg)
+
+
+def warn(msg):
+    print(f"Warning: {msg}", file=sys.stderr)
+
+
+def die(msg, exit_code=1):
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(exit_code)
+
+
+def _error_detail(resp):
+    """Extract Ghost's {errors: [...]} envelope text when present."""
+    try:
+        body = resp.json()
+    except Exception:
+        return resp.text[:200]
+    if isinstance(body, dict) and isinstance(body.get("errors"), list):
+        parts = []
+        for err in body["errors"][:3]:
+            code = err.get("code") or err.get("ghostErrorCode") or ""
+            message = err.get("message", "")
+            parts.append(f"{message} ({code})" if code else message)
+        return "; ".join(parts)
+    return json.dumps(body)[:200]
+
+
+def _handle_response(resp):
+    """Map researched Ghost error signatures to actionable CLI messages."""
+    status = resp.status_code
+    if status == 204:
+        # DELETE succeeds with 204 No Content — an empty body is not an error.
+        return {}
+    if status < 400:
+        try:
+            return resp.json()
+        except Exception:
+            die(f"API returned non-JSON response ({status}) from {resp.url}")
+    if status == 401:
+        hint = ("A structurally invalid or expired JWT usually returns 401 INVALID_JWT; "
+                "re-check GHOST_ADMIN_KEY and system clock (NTP skew breaks the 5-minute token window).")
+        if "INVALID_AUTH_HEADER" in resp.text:
+            hint = 'Authorization header must be "Authorization: Ghost [token]", not Bearer.'
+        die(f"Auth failed ({status}): {_error_detail(resp)} {hint}", 2)
+    if status == 403:
+        detail = _error_detail(resp)
+        if "NoPermissionError" in str(detail):
+            detail += " — requests without a valid Admin JWT receive 403 Authorization failed."
+        die(f"Forbidden ({status}): {detail} Check GHOST_ADMIN_KEY and integration permissions.", 2)
+    if status == 404:
+        die(f"Not found ({status}): {_error_detail(resp)} Admin draft reads need the Admin API — "
+            f"the Content API 404s non-public posts.", 3)
+    if status == 409:
+        die(f"Conflict ({status}): {_error_detail(resp)} Re-GET the post and send its latest updated_at.", 4)
+    if status == 429:
+        die(f"Rate limited ({status}): back off and retry; stagger paginated requests.", 5)
+    die(f"API error ({status}): {_error_detail(resp)}")
+
+
+def emit(human, data):
+    if GLOBAL_FLAGS.get("json", False):
+        print(json.dumps(data, default=str))
+    else:
+        print(human)
+
+
+def _preparse_global_flags(argv):
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--quiet", "--verbose"}
+    flags, filtered = {}, [argv[0]]
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg in GLOBAL_BOOLS:
+            flags[arg.lstrip("-").replace("-", "_")] = True
+            i += 1
+        elif arg in ("--help", "-h"):
+            return flags, argv
+        elif arg == "--":
+            filtered.extend(argv[i:])
+            break
+        else:
+            filtered.append(arg)
+            i += 1
+    return flags, filtered
+
+
+class GhostClient:
+    """Ghost Admin API client (v5/v6, Accept-Version v6.0)."""
+
+    def __init__(self, url="", key="", dry_run=False):
+        self.url = (url or ENV_URL).rstrip("/")
+        self.key = key or ENV_ADMIN_KEY
+        self.dry_run = dry_run
+
+    def _jwt_token(self):
+        """Generate a short-lived JWT from the Admin API key (id:secret format).
+
+        Follows https://docs.ghost.org/admin-api/#token-generation:
+        HS256 over base64url segments, kid = key ID half,
+        aud = admin route audience, exp at most five minutes after iat.
+        The secret half is hex-decoded to raw bytes before signing; signing
+        the literal hex characters produces an INVALID signature.
+        """
+        if not self.key or ":" not in self.key:
+            die("GHOST_ADMIN_KEY must be in 'id:secret' format. Get it from Ghost Admin → Integrations.")
+        key_id, secret_hex = self.key.split(":", 1)
+        try:
+            hmac_key = bytes.fromhex(secret_hex)
+        except ValueError:
+            die("GHOST_ADMIN_KEY secret half must be hexadecimal. Copy the key verbatim from Ghost Admin → Integrations.")
+        now = int(time.time())
+        header = {
+            "alg": "HS256",
+            "typ": "JWT",
+            "kid": key_id,
+        }
+        payload = {
+            "iat": now,
+            "exp": now + TOKEN_TTL_SECONDS,
+            "aud": admin_api_audience(),
+        }
+
+        def b64url(obj):
+            raw = json.dumps(obj, separators=(",", ":")).encode()
+            return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
+
+        header_b64 = b64url(header)
+        payload_b64 = b64url(payload)
+        signing_input = f"{header_b64}.{payload_b64}".encode()
+        signature = hmac.new(hmac_key, signing_input, hashlib.sha256).digest()
+        sig_b64 = base64.urlsafe_b64encode(signature).rstrip(b"=").decode()
+        return f"{header_b64}.{payload_b64}.{sig_b64}"
+
+    def _admin_headers(self):
+        return {
+            "Authorization": f"Ghost {self._jwt_token()}",
+            "Accept-Version": VERSION,
+            "Accept": "application/json",
+        }
+
+    def _request(self, method, path, params=None, json_data=None):
+        url = f"{self.url}/ghost/api/admin{path}"
+        if self.dry_run:
+            return {"dry_run": True, "method": method, "url": url,
+                    "params": params, "json": json_data}
+        request_fn = getattr(requests, method)
+        try:
+            resp = request_fn(url, params=params, json=json_data,
+                              headers=self._admin_headers(), timeout=30)
+        except requests.ConnectionError as e:
+            die(f"Cannot connect to {self.url}: {e}")
+        return _handle_response(resp)
+
+    def _get(self, path, params=None):
+        return self._request("get", path, params=params)
+
+    def _post(self, path, json_data, params=None):
+        return self._request("post", path, params=params, json_data=json_data)
+
+    def _put(self, path, json_data, params=None):
+        return self._request("put", path, params=params, json_data=json_data)
+
+    def _delete(self, path):
+        return self._request("delete", path)
+
+    def get_posts(self, limit=20, status=None, page=None, order=None):
+        params: Dict[str, Any] = {"limit": limit}
+        if status:
+            params["filter"] = f"status:{status}"
+        if page is not None:
+            params["page"] = page
+        if order:
+            params["order"] = order
+        return self._get("/posts", params)
+
+    def get_post(self, post_id):
+        # Admin post reads default to Lexical source; request rendered HTML too.
+        return self._get(f"/posts/{post_id}", {"formats": "html,lexical"})
+
+    def create_post(self, title, html="", status="draft", slug="", published_at=None):
+        post: Dict[str, Any] = {"title": title, "status": status}
+        if html:
+            post["html"] = html
+        if slug:
+            post["slug"] = slug
+        if published_at:
+            post["published_at"] = published_at
+        # html payloads need the docs-required source=html flag; Ghost otherwise
+        # parses the body as mobiledoc/lexical and rejects or mangles it.
+        params = {"source": "html"} if html else None
+        return self._post("/posts", {"posts": [post]}, params=params)
+
+    def update_post(self, post_id, **kwargs):
+        # html payloads need the docs-required source=html flag; Ghost otherwise
+        # parses the body as mobiledoc/lexical and rejects or mangles it.
+        params = {"source": "html"} if kwargs.get("html") else None
+        return self._put(f"/posts/{post_id}", {"posts": [kwargs]}, params=params)
+
+    def delete_post(self, post_id):
+        return self._delete(f"/posts/{post_id}")
+
+    def get_pages(self, limit=20, page=None):
+        params: Dict[str, Any] = {"limit": limit}
+        if page is not None:
+            params["page"] = page
+        return self._get("/pages", params)
+
+    def create_page(self, title, html="", status="draft", slug=""):
+        page = {"title": title, "status": status}
+        if html:
+            page["html"] = html
+        if slug:
+            page["slug"] = slug
+        # html payloads need the docs-required source=html flag; Ghost otherwise
+        # parses the body as mobiledoc/lexical and rejects or mangles it.
+        params = {"source": "html"} if html else None
+        return self._post("/pages", {"pages": [page]}, params=params)
+
+    def get_tags(self, limit=50, page=None):
+        params: Dict[str, Any] = {"limit": limit, "include": "count.posts"}
+        if page is not None:
+            params["page"] = page
+        return self._get("/tags", params)
+
+    def create_tag(self, name, slug="", description=""):
+        tag = {"name": name}
+        if slug:
+            tag["slug"] = slug
+        if description:
+            tag["description"] = description
+        return self._post("/tags", {"tags": [tag]})
+
+    def get_site(self):
+        return self._get("/site")
+
+
+def fmt_post(p):
+    title = p.get("title", "?")
+    status = p.get("status", "?")
+    slug = p.get("slug", "")
+    updated = (p.get("updated_at") or "")[:10]
+    return f"  {title:45} [{status:7}] /{slug}  updated {updated}"
+
+
+def _plan_payload(data):
+    """Shape a dry-run plan from a client-level plan dict."""
+    return {"dry_run": True, "method": data.get("method"),
+            "url": data.get("url"), "params": data.get("params"),
+            "json": data.get("json")}
+
+
+def cmd_posts(client, args):
+    p = argparse.ArgumentParser(prog="ghost posts")
+    p.add_argument("--limit", type=int, default=20)
+    p.add_argument("--status", choices=["published", "draft", "scheduled"])
+    p.add_argument("--page", type=int)
+    p.add_argument("--order", default="")
+    parsed, _ = p.parse_known_args(args)
+
+    data = client.get_posts(limit=parsed.limit, status=parsed.status,
+                            page=parsed.page, order=parsed.order or None) or {}
+    if data.get("dry_run"):
+        return emit("[dry-run] List posts", _plan_payload(data))
+    posts = data.get("posts", [])
+    if not posts:
+        return emit("No posts found.", {"posts": [], "total": 0})
+
+    lines = [fmt_post(p) for p in posts]
+    pagination = data.get("meta", {}).get("pagination", {}) or {}
+    total = pagination.get("total", len(posts))
+    header = f"{total} post(s):"
+    if pagination.get("pages") and pagination["pages"] > 1:
+        header += f" page {pagination.get('page')} of {pagination['pages']} — use --page to browse"
+    emit(header + "\n" + "\n".join(lines),
+         {"total": total, "page": pagination, "posts": posts})
+
+
+def cmd_create_post(client, args):
+    p = argparse.ArgumentParser(prog="ghost create-post")
+    p.add_argument("--title", required=True)
+    p.add_argument("--html", default="")
+    p.add_argument("--status", default="draft", choices=["draft", "published", "scheduled"])
+    p.add_argument("--slug", default="")
+    p.add_argument("--published-at", dest="published_at", default="",
+                   help="ISO 8601 timestamp; required when --status scheduled")
+    parsed, _ = p.parse_known_args(args)
+
+    if parsed.status == "scheduled" and not parsed.published_at:
+        die("--status scheduled requires --published-at with a future ISO 8601 timestamp.")
+
+    data = client.create_post(parsed.title, html=parsed.html, status=parsed.status,
+                              slug=parsed.slug, published_at=parsed.published_at) or {}
+    if data.get("dry_run"):
+        # Plan and real request share one code path, so the previewed URL,
+        # method, params, and JSON envelope are exactly what execution would send.
+        plan = {"dry_run": True, "method": data.get("method"),
+                "url": data.get("url"), "params": data.get("params"),
+                "json": data.get("json"), **vars(parsed)}
+        return emit(f"[dry-run] Create post '{parsed.title}' "
+                    f"-> {data.get('method', 'POST').upper()} {data.get('url')}", plan)
+    posts = data.get("posts", [])
+    if posts:
+        post = posts[0]
+        emit(f"✅ Created: {post.get('title')} (/{post.get('slug')}) [{post.get('status')}]",
+             {"status": "created", "post": post})
+    else:
+        emit("Post created but no data returned.", {"status": "created"})
+
+
+def cmd_get_post(client, args):
+    p = argparse.ArgumentParser(prog="ghost get-post")
+    p.add_argument("id_or_slug_hint", help="Post ID (recommended). Slug lookup: use the API /posts/slug/{slug}/ route.")
+    parsed, _ = p.parse_known_args(args)
+
+    data = client.get_post(parsed.id_or_slug_hint) or {}
+    if data.get("dry_run"):
+        return emit("[dry-run] Get post detail", _plan_payload(data))
+    posts = data.get("posts", [])
+    if not posts:
+        return emit("Post not found.", {"post": None})
+    post = posts[0]
+    lines = [f"{post.get('title', '?')} [{post.get('status', '?')}] /{post.get('slug', '')}",
+             f"  id:         {post.get('id', '?')}",
+             f"  updated_at: {post.get('updated_at', '?')}",
+             f"  url:        {post.get('url', '?')}"]
+    emit("\n".join(lines), {"post": post})
+
+
+def cmd_update_post(client, args):
+    p = argparse.ArgumentParser(prog="ghost update-post")
+    p.add_argument("post_id")
+    p.add_argument("--title")
+    p.add_argument("--html")
+    p.add_argument("--status", choices=["draft", "published", "scheduled"])
+    p.add_argument("--published-at", dest="published_at", default="")
+    p.add_argument("--updated-at", required=True,
+                   help="Latest updated_at of the post (collision guard; re-GET first)")
+    parsed, _ = p.parse_known_args(args)
+
+    fields: Dict[str, Any] = {"updated_at": parsed.updated_at}
+    if parsed.title is not None:
+        fields["title"] = parsed.title
+    if parsed.html is not None:
+        fields["html"] = parsed.html
+    if parsed.status is not None:
+        fields["status"] = parsed.status
+    if parsed.published_at:
+        fields["published_at"] = parsed.published_at
+
+    data = client.update_post(parsed.post_id, **fields) or {}
+    if data.get("dry_run"):
+        plan = _plan_payload(data)
+        plan["post_id"] = parsed.post_id
+        plan["fields"] = fields
+        return emit(f"[dry-run] Update post {parsed.post_id}", plan)
+    posts = data.get("posts", [])
+    if posts:
+        post = posts[0]
+        emit(f"✅ Updated: {post.get('title')} (/{post.get('slug')}) [{post.get('status')}] "
+             f"new updated_at {post.get('updated_at')}",
+             {"status": "updated", "post": post})
+    else:
+        emit("Post updated but no data returned.", {"status": "updated"})
+
+
+def cmd_delete_post(client, args):
+    p = argparse.ArgumentParser(prog="ghost delete-post")
+    p.add_argument("post_id")
+    parsed, _ = p.parse_known_args(args)
+
+    result = client.delete_post(parsed.post_id)
+    if isinstance(result, dict) and result.get("dry_run"):
+        return emit("[dry-run] Delete post", _plan_payload(result))
+    emit(f"🗑  Deleted post {parsed.post_id}. Deletion is permanent; the Content API stops serving it immediately.",
+         {"status": "deleted", "id": parsed.post_id})
+
+
+def cmd_create_page(client, args):
+    p = argparse.ArgumentParser(prog="ghost create-page")
+    p.add_argument("--title", required=True)
+    p.add_argument("--html", default="")
+    p.add_argument("--status", default="draft", choices=["draft", "published", "scheduled"])
+    p.add_argument("--slug", default="")
+    parsed, _ = p.parse_known_args(args)
+
+    data = client.create_page(parsed.title, html=parsed.html, status=parsed.status, slug=parsed.slug) or {}
+    if data.get("dry_run"):
+        return emit(f"[dry-run] Create page '{parsed.title}'", _plan_payload(data))
+    pages = data.get("pages", [])
+    if pages:
+        page = pages[0]
+        emit(f"✅ Created page: {page.get('title')} (/{page.get('slug')}) [{page.get('status')}]",
+             {"status": "created", "page": page})
+    else:
+        emit("Page created but no data returned.", {"status": "created"})
+
+
+def cmd_create_tag(client, args):
+    p = argparse.ArgumentParser(prog="ghost create-tag")
+    p.add_argument("--name", required=True)
+    p.add_argument("--slug", default="")
+    p.add_argument("--description", default="")
+    parsed, _ = p.parse_known_args(args)
+
+    data = client.create_tag(parsed.name, slug=parsed.slug, description=parsed.description) or {}
+    if data.get("dry_run"):
+        return emit(f"[dry-run] Create tag '{parsed.name}'", _plan_payload(data))
+    tags = data.get("tags", [])
+    if tags:
+        tag = tags[0]
+        emit(f"✅ Created tag: {tag.get('name')} (/{tag.get('slug')})", {"status": "created", "tag": tag})
+    else:
+        emit("Tag created but no data returned.", {"status": "created"})
+
+
+def cmd_pages(client, args):
+    p = argparse.ArgumentParser(prog="ghost pages")
+    p.add_argument("--limit", type=int, default=20)
+    p.add_argument("--page", type=int)
+    parsed, _ = p.parse_known_args(args)
+
+    data = client.get_pages(limit=parsed.limit, page=parsed.page) or {}
+    if data.get("dry_run"):
+        return emit("[dry-run] List pages", _plan_payload(data))
+    pages = data.get("pages", [])
+    if not pages:
+        return emit("No pages found.", {"pages": []})
+
+    lines = [fmt_post(p) for p in pages]
+    emit(f"{len(pages)} page(s):\n" + "\n".join(lines), {"pages": pages})
+
+
+def cmd_tags(client, args):
+    p = argparse.ArgumentParser(prog="ghost tags")
+    p.add_argument("--limit", type=int, default=50)
+    p.add_argument("--page", type=int)
+    parsed, _ = p.parse_known_args(args)
+
+    data = client.get_tags(limit=parsed.limit, page=parsed.page) or {}
+    if data.get("dry_run"):
+        return emit("[dry-run] List tags", _plan_payload(data))
+    tags = data.get("tags", [])
+    if not tags:
+        return emit("No tags found.", {"tags": []})
+
+    lines = []
+    for t in tags:
+        name = t.get("name", "?")
+        slug = t.get("slug", "")
+        count = (t.get("count", {}) or {}).get("posts", 0)
+        lines.append(f"  {name:25} /{slug}  ({count} posts)")
+    emit(f"{len(tags)} tag(s):\n" + "\n".join(lines), {"tags": tags})
+
+
+def cmd_site(client, args):
+    data = client.get_site() or {}
+    if data.get("dry_run"):
+        return emit("[dry-run] Get site info", _plan_payload(data))
+    site = data.get("site", {})
+    title = site.get("title", "?")
+    desc = site.get("description", "")
+    url = site.get("url", "?")
+    emit(f"🌐 {title}\n   {url}\n   {desc}", {"site": site})
+
+
+def main():
+    global GLOBAL_FLAGS, QUIET
+    GLOBAL_FLAGS, filtered_argv = _preparse_global_flags(sys.argv)
+    if GLOBAL_FLAGS.get("quiet", False):
+        QUIET = True
+    if GLOBAL_FLAGS.get("json", False):
+        warnings.simplefilter("ignore")
+
+    parser = argparse.ArgumentParser(prog="ghost", description="Ghost CMS CLI.",
+                                     epilog="Set GHOST_URL and GHOST_ADMIN_KEY. Key format: id:secret from Integrations.")
+    sub = parser.add_subparsers(dest="command")
+    sub.add_parser("site", help="Site info")
+
+    pp = sub.add_parser("posts", help="List posts")
+    pp.add_argument("--limit", type=int, default=20)
+    pp.add_argument("--status", choices=["published", "draft", "scheduled"])
+    pp.add_argument("--page", type=int)
+    pp.add_argument("--order", default="")
+
+    gp = sub.add_parser("get-post", help="Show one post by ID")
+    gp.add_argument("id_or_slug_hint")
+
+    cp = sub.add_parser("create-post", help="Create a post")
+    cp.add_argument("--title", required=True)
+    cp.add_argument("--html", default="")
+    cp.add_argument("--status", default="draft", choices=["draft", "published", "scheduled"])
+    cp.add_argument("--slug", default="")
+    cp.add_argument("--published-at", dest="published_at", default="")
+
+    up = sub.add_parser("update-post", help="Update a post (send latest updated_at)")
+    up.add_argument("post_id")
+    up.add_argument("--title")
+    up.add_argument("--html")
+    up.add_argument("--status", choices=["draft", "published", "scheduled"])
+    up.add_argument("--published-at", dest="published_at", default="")
+    up.add_argument("--updated-at", required=True)
+
+    dp = sub.add_parser("delete-post", help="Delete a post permanently")
+    dp.add_argument("post_id")
+
+    cpg = sub.add_parser("create-page", help="Create a page")
+    cpg.add_argument("--title", required=True)
+    cpg.add_argument("--html", default="")
+    cpg.add_argument("--status", default="draft", choices=["draft", "published", "scheduled"])
+    cpg.add_argument("--slug", default="")
+
+    ct = sub.add_parser("create-tag", help="Create a tag")
+    ct.add_argument("--name", required=True)
+    ct.add_argument("--slug", default="")
+    ct.add_argument("--description", default="")
+
+    pages_p = sub.add_parser("pages", help="List pages")
+    pages_p.add_argument("--limit", type=int, default=20)
+    pages_p.add_argument("--page", type=int)
+
+    tags_p = sub.add_parser("tags", help="List tags")
+    tags_p.add_argument("--limit", type=int, default=50)
+    tags_p.add_argument("--page", type=int)
+
+    args = parser.parse_args(filtered_argv[1:])
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+
+    client = GhostClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
+
+    cmd_map = {
+        "site": cmd_site, "posts": cmd_posts, "get-post": cmd_get_post,
+        "create-post": cmd_create_post, "update-post": cmd_update_post,
+        "delete-post": cmd_delete_post, "create-page": cmd_create_page,
+        "create-tag": cmd_create_tag, "pages": cmd_pages, "tags": cmd_tags,
+    }
+    handler = cmd_map.get(args.command)
+    if not handler:
+        parser.print_help()
+        sys.exit(1)
+
+    remaining = filtered_argv[filtered_argv.index(args.command) + 1:]
+    handler(client, remaining)
+
+
+if __name__ == "__main__":
+    main()
