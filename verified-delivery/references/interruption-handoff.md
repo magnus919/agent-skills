@@ -10,13 +10,21 @@ A handoff is durable when the next re-entry can find and read it without user
 assistance. Choose the first available store:
 
 1. **Repository working-tree file (default).** `.verified-delivery/handoff.json`
-   in the repository root. Keep it untracked so it never becomes part of the
-   delivered change. Survives session and worker replacement on the same
-   working tree.
+   in the repository root. Before writing it, add the exact path to the
+   worktree's private Git exclusion file (`.git/info/exclude`, resolving the
+   worktree git directory when `.git` is a file). Before every commit, verify
+   with `git status --short --untracked-files=all` and `git diff --cached
+   --name-only` that the handoff is neither tracked nor staged. Do not proceed
+   while it appears in either output. This keeps the record out of broad
+   staging commands while allowing it to survive session and worker
+   replacement on the same working tree.
 2. **PR description block.** A fenced machine-readable block in the PR
    description, usable when a PR exists and working-tree state may not
-   survive (ephemeral runners, disposable containers). Survives local loss
-   because it lives on the forge.
+   survive (ephemeral runners, disposable containers). Because this publishes
+   the verbatim directive and watcher metadata to forge readers, confirm the
+   PR target, disclosed scope, and rollback path (restoring the prior
+   description) before writing it. Survives local loss because it lives on
+   the forge.
 3. **Host-provided durable storage**, when the host documents a store that
    survives session and worker replacement.
 
@@ -114,10 +122,14 @@ resumption at that boundary with the exact reason reported:
 - **Authorization current** — the recorded `authorization_boundary` still
   reflects a directive the user has not withdrawn. Otherwise: absent or
   ambiguous authorization.
-- **Live state consistent** — the PR (when recorded) exists and is open, and
-  the merge state is determinable. A PR merged or closed by someone else, or
-  a rolled-back change, makes the handoff stale: the recorded pending steps
-  no longer describe reality.
+- **Live state consistent** — the PR (when recorded) exists and its merge
+  state is determinable. If it is open, continue normal reconciliation. If it
+  was merged while `post-merge-verify` remains pending, verify that the merge
+  contains the recorded head and matches the authorized change, record the
+  merge as completed, and resume post-merge verification. A PR closed without
+  that change, a merge containing a conflicting head, or a rolled-back change
+  makes the handoff stale because the recorded pending steps no longer
+  describe reality.
 - **Head reconciliation** — if the live branch head differs from
   `head_sha`, head-bound evidence in `completed_steps` is invalid. Re-verify
   CI and review on the new head, update `head_sha` and `completed_steps`,

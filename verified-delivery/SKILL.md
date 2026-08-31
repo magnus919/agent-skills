@@ -1,7 +1,7 @@
 ---
 name: verified-delivery
 description: >-
-  Deliver an authorized change end to end — implement, verify, open the PR, merge,
+  Implement and deliver an authorized change end to end — verify, open the PR, merge,
   and confirm post-merge state — using live-state gates, durable interruption
   handoffs, and live-state-first resumption. Use when a user grants end-to-end
   delivery authority for a specific change and the work may cross tool-call
@@ -30,6 +30,15 @@ of the same directive — not a request to restate it.
 Delivery proceeds only under an explicit user directive that names the change
 and the gates it authorizes. Never infer permission from context, tone, or a
 partial handoff.
+
+> Confirm the target, scope, and rollback path before acting. Read-only
+> discovery may proceed without confirmation.
+
+Apply this confirmation before the first mutation, including on resumption.
+The target names the repository and PR when one exists, the scope names the
+next authorized gated steps, and the rollback path states how the next
+mutation can be reversed or contained. A handoff records this confirmation;
+it does not widen it.
 
 - The directive states which gated steps are authorized (for example: open a
   PR, merge when CI is green and reviews are satisfied, verify post-merge).
@@ -83,20 +92,23 @@ reported clearly. A remaining-steps report is never terminal success for an
 end-to-end directive.
 
 The handoff is machine-readable JSON stored durably: by default as a file at
-`.verified-delivery/handoff.json` in the repository working tree (kept
-untracked so it never becomes part of the delivered change); alternatively in
-a fenced machine-readable block in the PR description, or in host-provided
-durable storage when configured. The record names its own store. Durability
-means the next re-entry can find and read it without user assistance.
+`.verified-delivery/handoff.json` in the repository working tree, excluded
+locally from Git and checked as untracked before every commit; alternatively
+in a fenced machine-readable block in the PR description after confirming
+that external disclosure and its rollback path, or in host-provided durable
+storage when configured. The record names its own store. Durability means the
+next re-entry can find and read it without user assistance.
 
-Required fields — `directive` (verbatim user directive), `authorization_boundary`
-(gates authorized, and anything explicitly out of scope), `repository` (remote
-identity), `pull_request` (PR identity or null), `head_sha` (head at handoff
-time), `completed_steps` (gates done, with SHA-bound evidence), `pending_steps`
-(next authorized gated steps in order), `watchers` (active watcher, process,
-or worker identifiers, or empty), `stop_reason` (observed interruption class),
-`status` (`open` or `closed`), and `updated_at`. The full field schema,
-durability rules, and worked examples are in
+Required fields — `schema` (handoff schema version), `status` (`open` or
+`closed`), `store` (durable location), `directive` (verbatim user directive),
+`authorization_boundary` (gates authorized, and anything explicitly out of
+scope), `repository` (remote identity), `pull_request` (PR identity or null),
+`branch` (delivery branch), `head_sha` (head at handoff time),
+`completed_steps` (gates done, with SHA-bound evidence), `pending_steps` (next
+authorized gated steps in order), `watchers` (active watcher, process, or
+worker identifiers, or empty), `stop_reason` (observed interruption class),
+and `updated_at`. The full field schema, durability rules, and worked examples
+are in
 [references/interruption-handoff.md](references/interruption-handoff.md).
 
 ## Resumption on re-entry
@@ -134,9 +146,10 @@ Stop and report the exact reason, taking no further action, when:
   request, not a resume);
 - the handoff is corrupt — unparseable, missing required fields, or
   internally inconsistent;
-- the handoff is stale — the PR was merged, closed, or rolled back by
-  someone else, the repository does not match, or the recorded authorization
-  no longer applies;
+- the handoff is stale — the PR was closed without the recorded change,
+  rolled back, merged with a conflicting head, the repository does not match,
+  or the recorded authorization no longer applies; a matching completed merge
+  with authorized post-merge verification pending is reconciled and resumed;
 - authorization for the next step is absent or ambiguous;
 - live state is ambiguous — a gate result or the merge state cannot be
   determined.
