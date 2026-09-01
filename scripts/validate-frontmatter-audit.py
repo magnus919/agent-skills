@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 IMPERATIVE_VERBS = set(
     (
@@ -106,6 +106,8 @@ def audit(root: Path) -> dict[str, Any]:
             violations.append({"path": relative, "rule": "frontmatter", "message": error})
             continue
 
+        if data is None:
+            continue
         description = data.get("description")
         if not isinstance(description, str) or not description.strip():
             violations.append(

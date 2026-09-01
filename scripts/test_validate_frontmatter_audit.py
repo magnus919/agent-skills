@@ -7,8 +7,9 @@ from pathlib import Path
 _spec = importlib.util.spec_from_file_location(
     "validate_frontmatter_audit", Path(__file__).parent / "validate-frontmatter-audit.py"
 )
+if _spec is None or _spec.loader is None:
+    raise RuntimeError("unable to load audit module")
 _module = importlib.util.module_from_spec(_spec)
-assert _spec.loader is not None
 _spec.loader.exec_module(_module)
 audit = _module.audit
 
