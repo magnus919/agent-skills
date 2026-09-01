@@ -1,11 +1,6 @@
 ---
 name: legal-strategy
-description: CLO/General Counsel methodology — regulatory landscape analysis (GDPR,
-  CCPA, AI Act, sector-specific), IP strategy (patent, trademark, trade secret, open
-  source licensing), contract risk assessment (indemnification, liability caps, force
-  majeure), data privacy frameworks (privacy-by-design, DPIAs, data mapping), corporate
-  governance (board responsibilities, fiduciary duties, shareholder rights), employment
-  law (classification, IP assignment, non-competes).
+description: Analyze legal and regulatory risk, IP, contracts, privacy, governance, and employment questions as structured issue-spotting for counsel. Do not use this methodology as legal advice or for technical security implementation, CRM, or delivery execution.
 license: MIT
 metadata:
   tags: legal-strategy, clo, general-counsel, regulatory, ip-strategy, contract-risk,
@@ -47,10 +42,20 @@ skill_view('legal-strategy', file_path='references/data-privacy.md')
 | `references/ip-strategy.md` | Patent types and process, trademark clearance and registration, trade secret management, open source licensing (permissive/copyleft), IP portfolio management |
 | `references/contract-risk.md` | Indemnification clauses, liability cap tiers, force majeure (post-COVID), limitation of liability, data protection addenda, contract lifecycle management, risk scoring |
 | `references/data-privacy.md` | Privacy-by-design (7 principles), DPIA process, data mapping/RoPA, breach response checklist, vendor privacy assessment |
+| `references/decision-workflow.md` | Jurisdictional risk triage, counsel escalation, worked example, reusable memo, and owner routing matrix |
 
 ## Output Contract
 
 The profile using this skill produces artifact pyramids. The response to any caller is the absolute path to `00-index.md`. See `artifact-pyramids` skill for the specification.
+
+## Safety and Escalation
+
+This methodology supports issue spotting and questions for counsel; it is not legal advice. Do not present a jurisdiction-specific conclusion as settled law. Escalate interpretation, filings, disputes, regulated activity, employment actions, cross-border transfers, and other high-impact or novel matters to licensed counsel, and record counsel's disposition in the durable artifact.
+
+## When not to use
+
+- Do not use for legal advice, filings, or jurisdiction-specific conclusions; escalate to licensed counsel.
+- Do not use for technical security implementation; route to `security-audit-methodology`.
 
 ## Related Skills
 
