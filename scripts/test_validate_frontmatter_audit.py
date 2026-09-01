@@ -41,6 +41,15 @@ class FrontmatterAuditTests(unittest.TestCase):
             self.write_skill(root, Path("example"), "Query PromQL metrics.", "## When not to use\nUse grafana for dashboard editing.\n")
             self.assertTrue(audit(root)["ok"])
 
+    def test_discovers_nested_bundle_skills_but_excludes_profiles(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.write_skill(root, Path("bundle/skills/nested"), "Query PromQL metrics. Do not use this skill for LogQL.")
+            self.write_skill(root, Path("agent-council/profiles/skills/profile"), "Query PromQL metrics. Do not use this skill for LogQL.")
+            report = audit(root)
+            self.assertTrue(report["ok"])
+            self.assertEqual(report["files_audited"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
