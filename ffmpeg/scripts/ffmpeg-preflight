@@ -5,19 +5,20 @@ Non-mutating, dependency-free, and offline: it runs read-only inventory
 probes, never touches media files, and makes no network requests.
 
 Checks reported:
-  ffmpeg / ffprobe  availability, resolved path, return code, and the first
-                    diagnostic line of the version probe.
+  ffmpeg / ffprobe  availability, resolved path, probe status, return code,
+                    and the first diagnostic line of the version probe.
   filters / encoders / hwaccels
-                    whether each inventory probe ran, plus a conservative
-                    count of parseable entries. A count of zero means the
-                    inventory was empty or used an unexpected format; it is
-                    a warning, not a proof of absence.
+                    whether each inventory probe produced usable output, plus
+                    a conservative count of parseable entries. With no named
+                    query, a count of zero is a warning rather than proof of
+                    absence.
 
 Named capability queries:
   --filter NAME, --encoder NAME, --hwaccel NAME (each repeatable)
   Report whether each exact name appears in the corresponding inventory.
-  Matching is case-sensitive and exact; a query against an unavailable or
-  empty inventory is reported absent.
+  Matching is case-sensitive and exact. A query against an unavailable, empty,
+  or unparseable inventory is unknown (JSON null) and is a probe failure.
+  These FFmpeg-only queries do not require ffprobe.
 
 Output:
   Default: concise human-readable lines. --json: one JSON document with the
@@ -25,9 +26,9 @@ Output:
   Raw inventory text is never printed; only counts and named results are.
 
 Exit codes:
-  0  tools available, probes ran, and every requested capability is present
-  1  probe or environment failure (missing binary, failed inventory probe)
-  2  probes ran but at least one requested capability is absent
+  0  required tools and probes succeeded, and every requested capability is present
+  1  required tool or probe failure (including timeout or unparseable inventory)
+  2  usable inventories were parsed but at least one requested capability is absent
 
 Human output is evidence for people; the parsed counts and query results in
 --json output are the stable interface. Inventory text itself varies across
@@ -44,6 +45,8 @@ import subprocess
 from typing import Any
 
 FIRST_LINE_LIMIT = 200
+DEFAULT_TIMEOUT_SECONDS = 10.0
+EMPTY_INVENTORY_MESSAGE = "no parseable entries; inventory empty or unexpected format"
 NAME_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]*")
 ENCODER_FLAG_RE = re.compile(r"[VAS][A-Za-z.]{5}")
 
@@ -55,14 +58,49 @@ def first_line(text: str) -> str:
     return ""
 
 
-def probe(binary: str, *args: str) -> tuple[dict[str, Any], str]:
-    """Run one read-only probe. Returns (public report, stdout for parsing)."""
+def positive_seconds(value: str) -> float:
+    try:
+        seconds = float(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("timeout must be a number") from exc
+    if seconds <= 0:
+        raise argparse.ArgumentTypeError("timeout must be greater than zero")
+    return seconds
+
+
+def probe(
+    binary: str,
+    *args: str,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+) -> tuple[dict[str, Any], str]:
+    """Run one bounded read-only probe. Return its report and parseable stdout."""
     path = shutil.which(binary)
     if not path:
-        return {"available": False, "error": f"{binary} was not found on PATH"}, ""
-    result = subprocess.run([path, *args], capture_output=True, text=True, check=False)
+        return {
+            "available": False,
+            "status": "missing",
+            "error": f"{binary} was not found on PATH",
+        }, ""
+    try:
+        result = subprocess.run(
+            [path, *args],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return {
+            "available": False,
+            "status": "timeout",
+            "path": path,
+            "returncode": None,
+            "timeout_seconds": timeout,
+            "error": f"{binary} probe timed out after {timeout:g} seconds",
+        }, ""
     report = {
         "available": result.returncode == 0,
+        "status": "ok" if result.returncode == 0 else "failed",
         "path": path,
         "returncode": result.returncode,
         "first_line": first_line(result.stdout + result.stderr),
@@ -125,26 +163,46 @@ PARSERS = {
 }
 
 
-def summarize_inventory(report: dict[str, Any], stdout: str, kind: str) -> tuple[dict[str, Any], set[str]]:
+def summarize_inventory(
+    report: dict[str, Any],
+    stdout: str,
+    kind: str,
+    *,
+    require_entries: bool = False,
+) -> tuple[dict[str, Any], set[str]]:
     summary: dict[str, Any] = {
         "available": report.get("available", False),
+        "status": report.get("status", "failed"),
         "returncode": report.get("returncode"),
     }
     entries = PARSERS[kind](stdout) if summary["available"] and stdout else set()
     summary["entry_count"] = len(entries)
     if summary["available"] and not entries:
-        summary["warning"] = "no parseable entries; inventory empty or unexpected format"
-    for key in ("error", "first_line"):
+        if require_entries:
+            summary["available"] = False
+            summary["status"] = "unparseable"
+            summary["error"] = EMPTY_INVENTORY_MESSAGE
+        else:
+            summary["status"] = "empty"
+            summary["warning"] = EMPTY_INVENTORY_MESSAGE
+    for key in ("error", "first_line", "timeout_seconds"):
         if key in report:
             summary[key] = report[key]
     return summary, entries
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Check local FFmpeg tools and named build capabilities before automating.",
     )
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
+    parser.add_argument(
+        "--timeout",
+        type=positive_seconds,
+        default=DEFAULT_TIMEOUT_SECONDS,
+        metavar="SECONDS",
+        help=f"bound each external probe (default: {DEFAULT_TIMEOUT_SECONDS:g} seconds)",
+    )
     parser.add_argument(
         "--filter", action="append", default=[], metavar="NAME",
         help="check whether filter NAME is available (repeatable)",
@@ -157,26 +215,53 @@ def main() -> int:
         "--hwaccel", action="append", default=[], metavar="NAME",
         help="check whether hardware acceleration method NAME is available (repeatable)",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    ffmpeg_report, _ = probe("ffmpeg", "-version")
-    ffprobe_report, _ = probe("ffprobe", "-version")
+    requested = {
+        "filters": list(dict.fromkeys(args.filter)),
+        "encoders": list(dict.fromkeys(args.encoder)),
+        "hwaccels": list(dict.fromkeys(args.hwaccel)),
+    }
+    has_named_queries = any(requested.values())
+
+    ffmpeg_report, _ = probe("ffmpeg", "-version", timeout=args.timeout)
+    ffprobe_report, _ = probe("ffprobe", "-version", timeout=args.timeout)
+    ffmpeg_report["required"] = True
+    ffprobe_report["required"] = not has_named_queries
 
     inventories: dict[str, dict[str, Any]] = {}
     entries: dict[str, set[str]] = {}
     for kind in ("filters", "encoders", "hwaccels"):
         if ffmpeg_report.get("available"):
-            report, stdout = probe("ffmpeg", "-hide_banner", f"-{kind}")
+            inventory_report, stdout = probe(
+                "ffmpeg",
+                "-hide_banner",
+                f"-{kind}",
+                timeout=args.timeout,
+            )
         else:
-            report, stdout = {"available": False, "error": ffmpeg_report.get("error", "")}, ""
-        inventories[kind], entries[kind] = summarize_inventory(report, stdout, kind)
+            inventory_report, stdout = dict(ffmpeg_report), ""
+        inventories[kind], entries[kind] = summarize_inventory(
+            inventory_report,
+            stdout,
+            kind,
+            require_entries=bool(requested[kind]),
+        )
 
-    queries = {
-        "filter": {name: name in entries["filters"] for name in dict.fromkeys(args.filter)},
-        "encoder": {name: name in entries["encoders"] for name in dict.fromkeys(args.encoder)},
-        "hwaccel": {name: name in entries["hwaccels"] for name in dict.fromkeys(args.hwaccel)},
+    query_labels = {
+        "filters": "filter",
+        "encoders": "encoder",
+        "hwaccels": "hwaccel",
     }
-    queries = {kind: names for kind, names in queries.items() if names}
+    queries: dict[str, dict[str, bool | None]] = {}
+    for kind, names in requested.items():
+        if not names:
+            continue
+        inventory_is_usable = inventories[kind]["available"]
+        queries[query_labels[kind]] = {
+            name: name in entries[kind] if inventory_is_usable else None
+            for name in names
+        }
 
     report = {
         "ffmpeg": ffmpeg_report,
@@ -210,7 +295,7 @@ def main() -> int:
 
     probe_failures = (
         not ffmpeg_report["available"]
-        or not ffprobe_report["available"]
+        or (ffprobe_report["required"] and not ffprobe_report["available"])
         or any(not inventories[kind]["available"] for kind in inventories)
     )
     if probe_failures:
