@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "vite",
+  "evals": [
+    {
+      "id": "diagnose-build-failure",
+      "prompt": "A Vite production build fails with a module not found error after a dependency upgrade. Explain the investigation and safe fix.",
+      "expected_output": "An evidence-first diagnosis that identifies the package manager and lockfile, records Node/Vite/plugin versions, checks the import and workspace dependency declaration, and distinguishes config, resolution, plugin, and typecheck failures. It avoids deleting the lockfile or adding broad aliases, makes the smallest approved change, and reruns the declared build with a bounded timeout.",
+      "assertions": [
+        "The response inspects package manager, lockfile, Node, Vite, and plugin evidence",
+        "The response checks the import and workspace dependency before changing aliases",
+        "The response forbids deleting the lockfile as a first fix",
+        "The response reruns the declared production build and reports the boundary result"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "env-secret-boundary",
+      "prompt": "We need to expose a public API URL in a Vite React app, but the same .env file also contains a private API token. What should change?",
+      "expected_output": "The response explains that only intentionally prefixed variables such as VITE_API_URL are exposed to client code, while a private token must remain server-side and must not be placed in VITE_* variables, define, committed files, or logs. It verifies variable presence without printing values and restarts the dev server after env changes.",
+      "assertions": [
+        "Public VITE-prefixed configuration is distinguished from private secrets",
+        "The private token is kept server-side and excluded from define, bundles, commits, and logs",
+        "The response validates presence without printing values",
+        "The response notes that the dev server must restart after env changes"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "base-path-deployment",
+      "prompt": "The Vite build works at localhost root but fails when deployed under /docs/ and client-side deep links return 404. Give a verification and remediation plan.",
+      "expected_output": "A plan that checks the configured base against the hosting prefix, inspects generated HTML and dynamic asset URLs, confirms the exact outDir is published, and configures SPA fallback or a host-compatible routing strategy. It verifies the root and a deep route through preview or the deployed boundary, rather than treating build success as sufficient.",
+      "assertions": [
+        "The response aligns base with the /docs/ hosting prefix",
+        "The response checks generated HTML, dynamic imports, and the exact output directory",
+        "The response addresses SPA fallback for deep links",
+        "The response verifies root and deep routes at the deployed boundary"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "dev-host-exposure",
+      "prompt": "A teammate wants to run vite --host 0.0.0.0 so a phone can access the app. What should we inspect and what risks must be acknowledged?",
+      "expected_output": "The response treats binding all interfaces as a scoped exposure change: inspect host, port, strictPort, proxy, firewall/network scope, and whether development endpoints or upstream targets become reachable. It proposes the narrowest approved host and verifies access from the intended device without exposing credentials or assuming preview is production-safe.",
+      "assertions": [
+        "Binding all interfaces is identified as an exposure and network-scope change",
+        "Host, port, proxy, and network controls are inspected before changing them",
+        "The response chooses the narrowest approved access and verifies the intended device",
+        "The response does not expose credentials or call vite preview a production server"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "browser-and-accessibility-boundary",
+      "prompt": "We changed vite.config.ts and want to claim the app still works and remains accessible. Which checks belong in the Vite workflow and which skills should handle the rest?",
+      "expected_output": "The response runs config validation and a production build, inspects output paths, and uses Vite preview for production-like serving. It routes browser user-flow assertions to Playwright and WCAG or semantic accessibility review to web-accessibility, while routing UI architecture to frontend-engineering and CI or hosting topology to platform-engineering.",
+      "assertions": [
+        "The Vite workflow includes config/build and output-path verification",
+        "Browser user-flow claims are routed to Playwright",
+        "Accessibility claims are routed to web-accessibility",
+        "UI architecture and CI/hosting concerns are routed to frontend-engineering and platform-engineering"
+      ],
+      "case_set": "dev"
+    }
+  ]
+}

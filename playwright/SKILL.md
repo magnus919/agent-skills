@@ -141,7 +141,7 @@ Exit codes: 0 ok, 1 analysis error, 2 usage error, 127 dependency (node/playwrig
 ## When not to use
 
 - **Test strategy, framework selection, or QA process** — route to [qa-methodology](../qa-methodology/SKILL.md).
-- **Frontend component/state/architecture design or implementation guidance** — route to [frontend-engineering](../frontend-engineering/SKILL.md).
+- **Frontend component/state/architecture design or implementation guidance** — route to [frontend-engineering](../frontend-engineering/SKILL.md); React-specific component and hooks work routes to [react](../react/SKILL.md).
 - **Cloudflare/DDoS-GUARD challenge bypass** — route to [flaresolverr](../flaresolverr/SKILL.md).
 - **Load/performance testing at scale** (k6, Locust, Gatling, JMeter) — that methodology lives under `qa-methodology`'s performance-testing reference.
 - **Raw HTTP retrieval of static content** — use a plain HTTP client; Playwright is for JavaScript-rendered pages and browser workflows.
