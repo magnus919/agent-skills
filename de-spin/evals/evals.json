@@ -52,6 +52,16 @@
         "Does not infer the poster's motive or authenticity from the screenshot's style.",
         "Provides a proportionate, non-amplifying next step."
       ]
+    },
+    {
+      "id": "source-provenance",
+      "prompt": "Audit a viral claim with a missing source and produce a calibrated evidence ledger.",
+      "expected_output": "A calibrated audit distinguishes unknown provenance from falsity, identifies an authoritative source, and records verification steps.",
+      "assertions": [
+        "Distinguishes missing provenance from a false verdict",
+        "Names an authoritative source to consult",
+        "Records bounded verification steps"
+      ]
     }
   ]
 }

@@ -45,6 +45,16 @@
         "Explains loss of NVS, credentials, calibration, and application data.",
         "Uses a known-good image and authoritative/generated offsets for recovery."
       ]
+    },
+    {
+      "id": "serial-boot-evidence",
+      "prompt": "An ESP32 firmware upload fails intermittently. Design a diagnostic sequence before changing wiring.",
+      "expected_output": "The sequence captures serial evidence, identifies board and port deterministically, and changes one bounded variable at a time.",
+      "assertions": [
+        "Captures a complete boot or upload log first",
+        "Identifies the exact board and serial port",
+        "Changes one variable at a time and verifies the result"
+      ]
     }
   ]
 }
