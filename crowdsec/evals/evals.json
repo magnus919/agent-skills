@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "skill_name": "crowdsec",
+  "evals": [
+    {
+      "id": "docker-deployment-safe-networking",
+      "prompt": "Deploy CrowdSec with Docker Compose for an nginx reverse proxy. Include the volumes, networks, ports, collections, and post-deployment checks that avoid losing state or exposing the API.",
+      "expected_output": "A Compose-oriented deployment plan that persists /etc/crowdsec and /var/lib/crowdsec/data, mounts logs read-only, installs collections matching nginx and Linux logs, restricts LAPI/metrics/AppSec bindings and networks, pins or reviews the image, and verifies engine health, acquisition metrics, collections, and bouncer connectivity. It explains that the engine detects but does not block without a remediation component.",
+      "assertions": [
+        "The deployment persists CrowdSec configuration and data volumes",
+        "Log mounts are read-only and collections match the source logs",
+        "The plan restricts API and metrics exposure and verifies network placement",
+        "The response states that a remediation component is required for blocking",
+        "Post-deployment checks include health, acquisition, collections, and bouncer status"
+      ]
+    },
+    {
+      "id": "cscli-readonly-triage",
+      "prompt": "CrowdSec is installed but I am not seeing bans. Give me a read-only cscli triage sequence that distinguishes missing logs, parser failures, no scenario matches, stale decisions, and a broken bouncer.",
+      "expected_output": "A bounded read-only sequence using cscli version, collections, metrics -o json, alerts, decisions, and bouncers, with interpretation for each layer. It checks acquisition and unparsed counts before scenario hits, then confirms decisions and bouncer last-pull/enforcement, without deleting or adding state.",
+      "assertions": [
+        "The sequence starts with version or service health and installed collections",
+        "Metrics distinguish missing acquisition from unparsed logs and parser hits",
+        "Alerts and decisions are checked separately from bouncer status",
+        "The response identifies stale bouncer or proxy enforcement as distinct failures",
+        "All commands in the triage path are read-only"
+      ]
+    },
+    {
+      "id": "acquisition-and-appsec-waf",
+      "prompt": "Configure CrowdSec to read nginx logs and inspect HTTP requests with AppSec. Explain the acquisition labels, AppSec endpoint, collections, proxy failure mode, and how to verify safely before blocking.",
+      "expected_output": "A configuration plan with a typed nginx acquisition entry and an appsec acquisition on port 7422, relevant AppSec collections, proxy forwarding, an explicit fail-open versus fail-closed decision, and benign verification using metrics and test requests. It distinguishes in-band blocking from out-of-band event generation and warns that labels.type is required.",
+      "assertions": [
+        "The nginx acquisition includes labels.type for parser selection",
+        "The AppSec source uses the AppSec endpoint and an AppSec configuration",
+        "Relevant AppSec collections and proxy forwarding are specified",
+        "Fail-open versus fail-closed behavior is an explicit operational decision",
+        "Verification uses benign traffic and distinguishes in-band from out-of-band rules"
+      ]
+    },
+    {
+      "id": "mutation-safety-decision",
+      "prompt": "An operator wants to manually ban an IP and later remove it after testing. Give a safe CrowdSec procedure with confirmation, rollback, and verification, including what not to assume from an alert or decision.",
+      "expected_output": "A procedure that confirms host/container and scope, records the reason and rollback, uses simulation or a narrowly scoped short-duration decision where appropriate, requires explicit authorization before cscli decisions add/delete, verifies the decision and bouncer enforcement, and removes only the intended decision. It states that alerts or LAPI decisions alone do not prove traffic was blocked.",
+      "assertions": [
+        "The procedure confirms target, scope, reason, and rollback before mutation",
+        "The manual decision is narrowly scoped and explicitly authorized",
+        "The response verifies both the LAPI decision and remediation enforcement",
+        "Removal targets only the intended decision and is treated as a mutation",
+        "The response does not equate an alert or decision with confirmed blocking"
+      ]
+    },
+    {
+      "id": "crowdsec-no-data-diagnosis",
+      "prompt": "After changing an acquisition file, CrowdSec shows zero alerts. Diagnose the situation without concluding that the system is safe, and list the evidence to capture before changing profiles or collections.",
+      "expected_output": "A diagnosis that treats zero alerts as ambiguous and checks service logs, acquisition paths and permissions, labels.type, parser/unparsed metrics, scenario hits, time windows and buffered-source settings, active decisions, and bouncer pulls. It captures version, config paths, metrics, and timestamps, then recommends simulation and allowlist review before enabling enforcement changes.",
+      "assertions": [
+        "Zero alerts is explicitly treated as ambiguous rather than proof of safety",
+        "The diagnosis checks file access, labels.type, parser results, and scenario hits",
+        "Buffered logs and time-window or time-machine behavior are considered",
+        "The evidence packet includes versions, metrics, configuration context, and timestamps",
+        "The response recommends simulation or allowlist review before risky enforcement changes"
+      ]
+    }
+  ]
+}

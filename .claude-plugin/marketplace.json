@@ -192,7 +192,7 @@
         "./cli-builder"
       ],
       "strict": false,
-      "description": "Build or refactor CLI tools designed for AI agent consumption: non-interactive, flag-driven, idempotent, with --json output and --dry-run preview. Use when creating a new script the agent will call, adding agent-friendly flags to an existing tool, or debugging why an agent keeps failing to use your CLI."
+      "description": "Build or refactor agent-facing CLI tools with non-interactive commands, stable --help and --json contracts, idempotent operations, and --dry-run previews. Use for CLI design, agent-friction refactors, output/exit-code debugging, or automation safety. Do not use for GUI/TUI design, conversational tools, MCP server design, or general API architecture; use api-design-and-evolution for the latter."
     },
     {
       "name": "cncf-landscape",
@@ -255,7 +255,7 @@
         "./crowdsec"
       ],
       "strict": false,
-      "description": "Deploy, configure, and manage CrowdSec — the open-source, collaborative IPS/IDPS/WAF. Covers Security Engine setup (Linux, Docker), cscli hub management, remediation components, AppSec WAF, profiles, notifications, blocklists, CTI, and metrics. Use when setting up or troubleshooting CrowdSec."
+      "description": "Deploy, configure, and operate CrowdSec Security Engine, cscli, remediation components, acquisition pipelines, and AppSec WAF. Use for Linux or Docker installation, detection-to-blocking design, incident review, and safe changes. Do not use for generic firewall, Kubernetes, or reverse-proxy design; route those to the named platform skill and use this skill for CrowdSec integration."
     },
     {
       "name": "cyberpunk",
