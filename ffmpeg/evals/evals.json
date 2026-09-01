@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "skill_name": "ffmpeg",
+  "evals": [
+    {
+      "id": "inspect-before-remux",
+      "prompt": "I have an MKV with several tracks and need an MP4 without re-encoding. Give me a safe approach.",
+      "expected_output": "Explain that this is a remux/stream-copy operation, probe the input first, make stream selection explicit, use no-overwrite behavior during exploration, and probe the output because container compatibility is not guaranteed.",
+      "assertions": [
+        "distinguishes remuxing from transcoding",
+        "uses ffprobe before the operation",
+        "includes explicit mapping or explains why mapping is needed",
+        "mentions container and stream compatibility",
+        "includes post-run output verification"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "build-aware-filter",
+      "prompt": "This command fails with No such filter: drawtext. Replace it with something that will work everywhere.",
+      "expected_output": "Do not claim a universal replacement. Explain that filter availability is build-dependent, show how to inspect the installed filter inventory/help, and offer a conditional path: use an available equivalent, install a build containing the filter, or omit the transformation.",
+      "assertions": [
+        "does not fabricate universal filter availability",
+        "checks ffmpeg filter capabilities",
+        "treats the error as a build boundary",
+        "offers conditional next steps rather than silently substituting",
+        "preserves the need to rerun and verify the output"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "explicit-complex-mapping",
+      "prompt": "Overlay a logo image on the first video stream while keeping the first input's audio. Show the important FFmpeg structure.",
+      "expected_output": "Use a complex filtergraph with two labeled video inputs, label the overlay output, map that label exactly once, map the selected audio explicitly, and explain that filtering requires decoding and video re-encoding while audio may be copied.",
+      "assertions": [
+        "uses filter_complex with two inputs",
+        "labels and maps the filtered video output",
+        "maps the intended audio stream explicitly",
+        "explains filter and stream-copy boundaries",
+        "does not imply automatic mapping is safe here"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "timestamp-concat-diagnosis",
+      "prompt": "Two clips have matching extensions but concatenation produces a jump and audio drift. What should I inspect and which concat mechanism should I choose?",
+      "expected_output": "Treat the issue as a stream-compatibility and timestamp problem. Compare codecs, dimensions, rates, channel layouts, start times, durations, time bases, and packet/frame behavior; distinguish concat demuxer, concat filter, and concat protocol; normalize timestamps and formats when using the filter.",
+      "assertions": [
+        "does not use file extension as the compatibility test",
+        "lists relevant audio/video stream properties",
+        "distinguishes concat demuxer from concat filter and protocol",
+        "identifies timestamps as a diagnosis surface",
+        "recommends probing inputs and output"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "safe-batch-network",
+      "prompt": "Write a shell-loop recipe that converts every file in a directory and sends results to a network endpoint.",
+      "expected_output": "Before giving a recipe, set safe boundaries: use arrays or null-delimited discovery, avoid shell concatenation of untrusted filenames, refuse overwrites by default, record command/version/exit status, probe each output, and treat network protocol, timeout, authentication, and destination validation as explicit requirements.",
+      "assertions": [
+        "addresses shell quoting and untrusted filenames",
+        "uses a deliberate overwrite policy",
+        "requires per-output verification and logging",
+        "calls out network protocol and timeout assumptions",
+        "does not expose credentials in command arguments"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "hardware-pipeline-caveat",
+      "prompt": "NVENC is enabled. Does that prove hardware acceleration will make this workflow faster on my Mac?",
+      "expected_output": "No. Explain that decoding, filtering, memory transfers, and encoding are separate pipeline decisions, that NVIDIA-specific NVENC guidance does not transfer to macOS, and that the exact local build/device/pixel-format path must be inspected and benchmarked end to end.",
+      "assertions": [
+        "rejects encoder-only speed conclusions",
+        "separates decode/filter/encode and memory-transfer decisions",
+        "recognizes platform-specific hardware guidance",
+        "requires local capability inspection",
+        "requires reproducible end-to-end benchmarking"
+      ],
+      "case_set": "release"
+    }
+  ]
+}

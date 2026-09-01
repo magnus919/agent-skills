@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+"""Report local FFmpeg/ffprobe capability facts as JSON or readable text."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import shutil
+import subprocess
+from typing import Any
+
+
+def run(binary: str, *args: str) -> dict[str, Any]:
+    path = shutil.which(binary)
+    if not path:
+        return {"available": False, "error": f"{binary} was not found on PATH"}
+    result = subprocess.run(
+        [path, *args], capture_output=True, text=True, check=False
+    )
+    output = result.stdout + result.stderr
+    first_line = next((line for line in output.splitlines() if line.strip()), "")
+    return {
+        "available": result.returncode == 0,
+        "path": path,
+        "returncode": result.returncode,
+        "first_line": first_line,
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Check local FFmpeg tools before using version-sensitive recipes."
+    )
+    parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
+    args = parser.parse_args()
+
+    report = {
+        "ffmpeg": run("ffmpeg", "-version"),
+        "ffprobe": run("ffprobe", "-version"),
+        "filters": run("ffmpeg", "-filters"),
+        "encoders": run("ffmpeg", "-encoders"),
+        "hardware_acceleration": run("ffmpeg", "-hwaccels"),
+    }
+    if args.json:
+        print(json.dumps(report, indent=2, sort_keys=True))
+    else:
+        for name, result in report.items():
+            state = "available" if result["available"] else "unavailable"
+            detail = result.get("first_line") or result.get("error", "")
+            print(f"{name}: {state} - {detail}")
+    return 0 if report["ffmpeg"]["available"] and report["ffprobe"]["available"] else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

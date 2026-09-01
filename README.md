@@ -185,6 +185,10 @@ fixed-layout, accessibility, and media overlays. Portable across any AgentSkills
 
 Build, configure, flash, test, debug, and recover complete ESP32 systems across ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Covers board and pin identification, electrical safety, sensors, actuators, buses, networking, sleep, OTA, production security, native command-line tools, and evidence-first troubleshooting. Ships focused references, safe bring-up templates, a non-mutating host preflight, and safety evals.
 
+### [ffmpeg](ffmpeg/SKILL.md)
+
+Expert FFmpeg command-line guidance for inspecting, remuxing, transcoding, filtering, combining, streaming, and troubleshooting media with explicit mappings, build-aware assumptions, and post-run verification.
+
 ### [financial-modeling](financial-modeling/SKILL.md)
 
 Build and review assumptions-led financial models, unit economics, pricing, fundraising scenarios, and SaaS operating metrics.
