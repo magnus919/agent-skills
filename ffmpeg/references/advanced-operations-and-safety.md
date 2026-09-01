@@ -12,7 +12,7 @@ ffmpeg -encoders
 ffmpeg -filters | grep -E 'cuda|vaapi|qsv|videotoolbox|vulkan'
 ```
 
-The local macOS build lists `videotoolbox`. NVIDIA CUDA examples from the vendor guide do not apply to this host. Verify the exact device, pixel formats, filter path, and encoder before benchmarking.
+The recorded local macOS build (see `local-verification.md`) lists `videotoolbox`. NVIDIA CUDA examples from the vendor guide do not transfer to other platforms. Verify the exact device, pixel formats, filter path, and encoder on the target build before benchmarking.
 
 ## Timestamp and synchronization diagnosis
 
@@ -24,6 +24,16 @@ ffmpeg -loglevel verbose -i input -f null -
 ```
 
 Compare stream start times, durations, time bases, frame rates, sample rates, packet ordering, and whether a muxer is buffering sparse streams. Avoid cargo-culting timestamp flags. Options such as `-start_at_zero`, `-copyts`, `-vsync`/the modern synchronization controls, `setpts`, `asetpts`, `aresample`, and `avoid_negative_ts` solve different problems and can interact.
+
+### Audio drift: diagnose before adjusting
+
+Audio drift (gradually increasing A/V offset, or audio that ends before/after video) is a timing or rate mismatch, not a volume problem. Diagnose in this order:
+
+1. **Probe both streams.** Compare `start_time`, `duration`, `time_base`, `sample_rate`, and codec with `ffprobe`. A nonzero or mismatched `start_time` between audio and video shifts the whole track; different `sample_rate` or a rate-labeling mismatch causes progressive drift.
+2. **Check the operation history.** Concatenating sources with different sample rates or time bases, trimming without `asetpts`, or re-encoding AAC (encoder delay/priming samples) each produce characteristic offset patterns. AAC priming shifts audio by a fixed amount; rate mismatch grows over time.
+3. **Normalize deliberately.** `aresample=async=1:first_pts=0` resamples and stretches/squeezes audio onto the video clock, compensating small drift; `asetpts=PTS-STARTPTS` resets timestamps after trimming or concat; `aformat` plus an explicit `sample_rate` makes both inputs share one rate before joining. Apply these where the mismatch originates rather than at the final output only.
+
+If drift appears only in a specific player or receiver, verify the container edit lists and stream timestamps there before changing the encode; the muxer may be preserving an offset the encoder did not create.
 
 ## Reproducible experiments
 
@@ -48,6 +58,12 @@ https://ffmpeg.org/ffmpeg-protocols.html
 
 https://ffmpeg.org/ffmpeg-formats.html
  -> Probing, interleaving, timestamp shifting, and muxer/demuxer behavior.
+
+https://ffmpeg.org/ffmpeg-resampler.html
+ -> Sample-rate conversion, compensation, and the async/first_pts options used for audio drift repair.
+
+https://ffmpeg.org/ffmpeg-filters.html
+ -> setpts/asetpts, aformat, and timestamp normalization filters.
 
 https://docs.nvidia.com/video-technologies/video-codec-sdk/13.0/ffmpeg-with-nvidia-gpu/index.html
  -> NVIDIA-specific CUDA/NVENC pipeline examples and performance cautions.

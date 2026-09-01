@@ -65,5 +65,5 @@ https://ffmpeg.org/ffmpeg-resampler.html
 https://trac.ffmpeg.org/wiki/FilteringGuide
  -> Official wiki tutorial lead for filtergraphs; access was blocked by Anubis during this research and commands require verification.
 
-03-dossiers/local-verification.md
- -> Local filter inventory and verified missing-filter failure.
+references/local-verification.md
+ -> Local filter inventory counts and the verified missing-filter failure.
