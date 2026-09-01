@@ -72,7 +72,8 @@ Use `cscli -o json` for automation and capture command output, version, host,
 and time as evidence. Read-only triage commonly uses:
 
 ```bash
-cscli hub update
+cscli version
+cscli hub list
 cscli collections list
 cscli alerts list --contain "scenario:ssh-bf"
 cscli decisions list -o json
@@ -80,9 +81,13 @@ cscli metrics -o json
 cscli explain --file /path/to/sample.log
 ```
 
-Manage hub items with `collections|parsers|scenarios install/list/upgrade/inspect`.
-Manage alerts and decisions with `alerts list/inspect` and
-`decisions add/list/delete`; mutation commands require the safety gate above.
+`cscli hub update` refreshes the local hub index and can change local state. It
+is optional, not part of the read-only triage path, and requires the safety gate
+above before running it. Manage hub items with
+`collections|parsers|scenarios install/list/upgrade/inspect`; those install,
+upgrade, and delete operations also require the safety gate. Manage alerts and
+decisions with `alerts list/inspect` and `decisions add/list/delete`; mutation
+commands require the safety gate above.
 Manage bouncers and machines with `bouncers add/list/delete` and
 `machines add/list/delete`. Use `console status`, `console enroll`, and
 `lapi register` only after confirming the destination and credentials. Load the

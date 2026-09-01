@@ -20,7 +20,7 @@ Full reference for `cscli` — the CrowdSec command-line tool for managing the e
 
 | Command | Description |
 |---------|-------------|
-| `cscli hub update` | Update the local hub index |
+| `cscli hub update` | Update the local hub index (state-changing; run only after the mutation safety gate) |
 | `cscli hub list` | List hub index info |
 | `cscli collections install <name>` | Install a collection |
 | `cscli collections list` | List installed collections |
