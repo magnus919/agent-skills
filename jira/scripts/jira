@@ -49,6 +49,14 @@ def emit(human: str, data: Any) -> None:
         print(human)
 
 
+def require_mutation_authorization(client: "JiraClient", command: str) -> None:
+    """Require an explicit bypass for non-dry-run state changes."""
+    if client.dry_run or GLOBAL_FLAGS.get("force", False):
+        return
+    die(f"{command} changes Jira state. Re-run with --yes (or --force), "
+        "or use --dry-run to preview the request.")
+
+
 # === Global flags ===
 GLOBAL_FLAGS: Dict[str, Any] = {
     "json": False, "dry_run": False, "force": False,
@@ -57,14 +65,15 @@ GLOBAL_FLAGS: Dict[str, Any] = {
 
 
 def _preparse_global_flags(argv: List[str]) -> Tuple[Dict[str, Any], List[str]]:
-    GLOBAL_BOOLS = {"--json", "--dry-run", "--force", "--quiet", "--verbose"}
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--force", "--yes", "--quiet", "--verbose"}
     flags: Dict[str, Any] = {}
     filtered: List[str] = [argv[0]]
     i = 1
     while i < len(argv):
         arg = argv[i]
         if arg in GLOBAL_BOOLS:
-            flags[arg.lstrip("-").replace("-", "_")] = True
+            key = arg.lstrip("-").replace("-", "_")
+            flags["force" if key == "yes" else key] = True
             i += 1
         elif arg in ("--help", "-h"):
             return flags, argv
@@ -456,6 +465,7 @@ def cmd_create(client: JiraClient, args: List[str]) -> None:
               "project": parsed.project, "summary": parsed.summary,
               "type": parsed.type})
         return
+    require_mutation_authorization(client, "create")
 
     result = client.create_issue(
         project_key=parsed.project,
@@ -482,6 +492,7 @@ def cmd_comment(client: JiraClient, args: List[str]) -> None:
              {"dry_run": True, "command": "comment",
               "issue_key": parsed.issue_key, "body": parsed.body})
         return
+    require_mutation_authorization(client, "comment")
 
     result = client.add_comment(parsed.issue_key, parsed.body)
     cid = result.get("id", "?") if result else "?"
@@ -504,6 +515,7 @@ def cmd_transition(client: JiraClient, args: List[str]) -> None:
               "issue_key": parsed.issue_key, "to": parsed.to,
               "resolution": parsed.resolution})
         return
+    require_mutation_authorization(client, "transition")
 
     # First, get available transitions — IDs are workflow- and status-specific,
     # so names alone are ambiguous across projects.

@@ -101,11 +101,12 @@ Always run `transitions` first when unsure: IDs differ per workflow and current 
 
 ## Global Flags
 
-All flags work in any position:
+All flags work in any position. Read commands need credentials; `--help` and `--dry-run` do not. Mutating commands require an explicit `--yes`/`--force` gate:
 
 ```bash
 jira --json list --project PROJ                        # machine output anywhere
 jira --dry-run create --project PROJ --summary "Test"  # offline preview
+jira --yes create --project PROJ --summary "Test"      # explicit write authorization
 jira --quiet list                                      # suppress non-essential output
 ```
 
