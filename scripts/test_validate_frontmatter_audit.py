@@ -15,7 +15,7 @@ audit = _module.audit
 
 
 class FrontmatterAuditTests(unittest.TestCase):
-    def write_skill(self, root: Path, name: str, description: str, body: str = "") -> None:
+    def write_skill(self, root: Path, name: Path, description: str, body: str = "") -> None:
         path = root / name
         path.mkdir(parents=True)
         (path / "SKILL.md").write_text(
