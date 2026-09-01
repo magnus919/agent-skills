@@ -67,6 +67,39 @@
         "The diagnosis is kept read-only with the bundled checker and read-only API queries, and changes require confirmation with a rollback path",
         "Correlation is not presented as causation and fixes are verified by re-running the checks"
       ]
+    },
+    {
+      "id": "bounded-promql-logql-investigation",
+      "prompt": "Design a read-only PromQL and LogQL investigation for elevated API latency. Include safe selectors, a time range and step, syntax versus semantic validation, aggregation or joins, cost limits, and the evidence to record.",
+      "expected_output": "A bounded workflow that defines the service, UTC start/end, expected units, and step before querying; uses a selective PromQL matcher and a Loki stream selector before line parsing; validates syntax with promtool or the target parser separately from semantic checks for metric type, labels, aggregation, and join cardinality; starts with an instant existence query before a short range query; and records HTTP status, query scope, time window, step or limit, cardinality, latency, warnings, and interpretation. It avoids broad selectors, unbounded regex, high-cardinality grouping, and unconstrained joins, with explicit timeout, lookback, series/stream, and concurrency limits.",
+      "assertions": [
+        "PromQL and LogQL examples use selective selectors and explicitly bounded time and resolution",
+        "Syntax parsing is distinguished from semantic validation of names, labels, types, grouping, and join cardinality",
+        "The workflow records query status, exact scope and time, limits, cardinality, warnings, and interpretation",
+        "Broad selectors, expensive regex/parsing, high-cardinality grouping, and unconstrained joins are rejected"
+      ]
+    },
+    {
+      "id": "empty-and-partial-query-diagnosis",
+      "prompt": "A valid PromQL request returns an empty vector for a ratio, while a Loki range query returns a partial response with warnings. Explain how to report these results and distinguish wrong labels, retention expiry, stale producers, query errors, and incomplete evidence.",
+      "expected_output": "The response says an empty vector is unknown and never numeric zero, so a missing numerator or denominator must not be substituted with zero. It distinguishes parser or non-2xx query errors, absent labels or wrong selectors, expired retention, failed targets or dropped series, stale timestamps or stalled producers, and partial responses caused by limits or shards. It checks the exact UTC window, metric and label existence, target and ingest health, retention, response status and warnings, then narrows the query without mutation; any eventual config change requires confirmation and rollback evidence.",
+      "assertions": [
+        "No data is explicitly reported as unknown rather than zero, including for ratios",
+        "Absent labels, retention expiry, failed targets, stale data, query errors, and partial responses are separate diagnoses",
+        "Response status and warnings plus time window and backend health are checked before interpretation",
+        "The investigation remains read-only and incomplete evidence is not presented as a complete measurement"
+      ]
+    },
+    {
+      "id": "telemetry-routing-and-tracing-scope",
+      "prompt": "An engineer asks whether the telemetry skill should also teach Grafana dashboards, SLO paging policy, and Tempo trace queries. Explain the ownership boundaries and what tracing coverage is intentionally deferred.",
+      "expected_output": "The response routes SLI/SLO definitions, error budgets, alert thresholds, and paging strategy to platform-engineering; routes Grafana dashboards, panels, data sources, Grafana alert rules, contact points, and notification policies to grafana; and keeps telemetry focused on Prometheus/Loki/Collector backend query evidence. It explicitly says Tempo/tracing query operations are deferred to a future named-tool decision, without inventing Tempo commands or claiming trace-query semantics; application context propagation remains backend-engineering work.",
+      "assertions": [
+        "Platform-engineering is named for SLI/SLO, strategy, and paging ownership",
+        "Grafana is named for dashboards, panels, and Grafana-side alerting/contact policy ownership",
+        "Tempo/tracing operations are explicitly deferred without unsupported commands or behavioral claims",
+        "The response preserves a bounded telemetry backend scope instead of creating an observability mega-skill"
+      ]
     }
   ]
 }
