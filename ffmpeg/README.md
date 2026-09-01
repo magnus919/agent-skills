@@ -21,6 +21,8 @@ After installation, an agent can reason about remuxing versus transcoding, const
 | `references/source-inventory.md` | Primary and secondary sources with evidence boundaries |
 | `references/local-verification.md` | Recorded local-build experiments and their limits |
 | `references/learning-summary.md` | Learning progression and consolidated mental model |
+| `scripts/ffmpeg-preflight` | Capability preflight: tool availability, inventory counts, and named filter/encoder/hwaccel checks |
+| `scripts/test_ffmpeg_preflight.py` | Deterministic pytest suite for the preflight (fake tools, no media or network) |
 | `evals/evals.json` | Portable output-quality cases for the skill |
 
 ## Quick Start
@@ -34,6 +36,14 @@ ffprobe -v error -show_format -show_streams -of json input.mp4
 ```
 
 Ask your agent to inspect the input before selecting a command. During exploration, write to a new output path and use `-n` to refuse accidental overwrites.
+
+Before automating a version-sensitive recipe, check that the installed build actually has the required capabilities:
+
+```sh
+scripts/ffmpeg-preflight --filter scale --filter subtitles --encoder libx264 --hwaccel videotoolbox
+```
+
+Each name check is repeatable and reported `present` or `absent`. Exit codes: `0` all requested capabilities present, `1` a tool or probe failed, `2` a requested capability is absent. Add `--json` for machine-readable output.
 
 ## Triggers
 

@@ -86,5 +86,5 @@ https://ffmpeg.org/ffmpeg.html
 https://ffmpeg.org/ffprobe.html
  -> Primary inspection and machine-readable output.
 
-03-dossiers/local-verification.md
+references/local-verification.md
  -> Commands actually exercised on the local FFmpeg 8.1.2 build.

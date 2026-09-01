@@ -18,7 +18,7 @@
     {
       "id": "build-aware-filter",
       "prompt": "This command fails with No such filter: drawtext. Replace it with something that will work everywhere.",
-      "expected_output": "Do not claim a universal replacement. Explain that filter availability is build-dependent, show how to inspect the installed filter inventory/help, and offer a conditional path: use an available equivalent, install a build containing the filter, or omit the transformation.",
+      "expected_output": "Do not claim a universal replacement. Explain that filter availability is build-dependent, show how to inspect the installed filter inventory or use the skill's ffmpeg-preflight named checks (--filter NAME), and offer a conditional path: use an available equivalent, install a build containing the filter, or omit the transformation.",
       "assertions": [
         "does not fabricate universal filter availability",
         "checks ffmpeg filter capabilities",
@@ -66,6 +66,19 @@
         "does not expose credentials in command arguments"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "named-capability-check",
+      "prompt": "Before I script a transcode, check whether my local ffmpeg build can scale with libx264 and videotoolbox, and whether drawtext exists. Just tell me what is available.",
+      "expected_output": "Run bounded capability checks rather than assuming from memory: the ffmpeg-preflight script with --filter/--encoder/--hwaccel named checks or the corresponding inventory commands. Report each requested capability as present or absent separately, distinguish absence from probe failure, and state a next step for any absent capability without claiming universal availability.",
+      "assertions": [
+        "uses named capability checks or inventories instead of assumptions",
+        "reports each requested capability individually",
+        "distinguishes absent capabilities from probe or tool failures",
+        "does not claim a capability is present without local evidence",
+        "offers a conditional next step for absent capabilities"
+      ],
+      "case_set": "dev"
     },
     {
       "id": "hardware-pipeline-caveat",

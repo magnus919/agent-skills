@@ -1,54 +1,223 @@
 #!/usr/bin/env python3
-"""Report local FFmpeg/ffprobe capability facts as JSON or readable text."""
+"""Check local FFmpeg/ffprobe availability and named build capabilities.
+
+Non-mutating, dependency-free, and offline: it runs read-only inventory
+probes, never touches media files, and makes no network requests.
+
+Checks reported:
+  ffmpeg / ffprobe  availability, resolved path, return code, and the first
+                    diagnostic line of the version probe.
+  filters / encoders / hwaccels
+                    whether each inventory probe ran, plus a conservative
+                    count of parseable entries. A count of zero means the
+                    inventory was empty or used an unexpected format; it is
+                    a warning, not a proof of absence.
+
+Named capability queries:
+  --filter NAME, --encoder NAME, --hwaccel NAME (each repeatable)
+  Report whether each exact name appears in the corresponding inventory.
+  Matching is case-sensitive and exact; a query against an unavailable or
+  empty inventory is reported absent.
+
+Output:
+  Default: concise human-readable lines. --json: one JSON document with the
+  shape {"ffmpeg", "ffprobe", "filters", "encoders", "hwaccels", "queries"}.
+  Raw inventory text is never printed; only counts and named results are.
+
+Exit codes:
+  0  tools available, probes ran, and every requested capability is present
+  1  probe or environment failure (missing binary, failed inventory probe)
+  2  probes ran but at least one requested capability is absent
+
+Human output is evidence for people; the parsed counts and query results in
+--json output are the stable interface. Inventory text itself varies across
+FFmpeg versions and builds and is intentionally not treated as an API.
+"""
 
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import subprocess
 from typing import Any
 
+FIRST_LINE_LIMIT = 200
+NAME_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]*")
+ENCODER_FLAG_RE = re.compile(r"[VAS][A-Za-z.]{5}")
 
-def run(binary: str, *args: str) -> dict[str, Any]:
+
+def first_line(text: str) -> str:
+    for line in text.splitlines():
+        if line.strip():
+            return line.strip()[:FIRST_LINE_LIMIT]
+    return ""
+
+
+def probe(binary: str, *args: str) -> tuple[dict[str, Any], str]:
+    """Run one read-only probe. Returns (public report, stdout for parsing)."""
     path = shutil.which(binary)
     if not path:
-        return {"available": False, "error": f"{binary} was not found on PATH"}
-    result = subprocess.run(
-        [path, *args], capture_output=True, text=True, check=False
-    )
-    output = result.stdout + result.stderr
-    first_line = next((line for line in output.splitlines() if line.strip()), "")
-    return {
+        return {"available": False, "error": f"{binary} was not found on PATH"}, ""
+    result = subprocess.run([path, *args], capture_output=True, text=True, check=False)
+    report = {
         "available": result.returncode == 0,
         "path": path,
         "returncode": result.returncode,
-        "first_line": first_line,
+        "first_line": first_line(result.stdout + result.stderr),
     }
+    return report, result.stdout
+
+
+def parse_filters(stdout: str) -> set[str]:
+    """Parse filter names from `ffmpeg -filters` output.
+
+    Entry lines look like ` .. scale V->V Scale the input video size.`
+    (flags column, name, media spec containing '->'). Legend and separator
+    lines do not have a media spec and are skipped conservatively.
+    """
+    names: set[str] = set()
+    for line in stdout.splitlines():
+        fields = line.split()
+        if len(fields) < 3 or "->" not in fields[2]:
+            continue
+        if NAME_RE.fullmatch(fields[1]):
+            names.add(fields[1])
+    return names
+
+
+def parse_encoders(stdout: str) -> set[str]:
+    """Parse encoder names from `ffmpeg -encoders` output.
+
+    Entry lines look like ` V....D libx264 libx264 H.264 ...` (type flag,
+    name, description). Legend lines have '=' as the second field and are
+    skipped because '=' is not a valid name character.
+    """
+    names: set[str] = set()
+    for line in stdout.splitlines():
+        fields = line.split()
+        if len(fields) < 3 or not ENCODER_FLAG_RE.fullmatch(fields[0]):
+            continue
+        if NAME_RE.fullmatch(fields[1]):
+            names.add(fields[1])
+    return names
+
+
+def parse_hwaccels(stdout: str) -> set[str]:
+    """Parse hardware acceleration methods from `ffmpeg -hwaccels` output.
+
+    Each method is listed as a bare word on its own line; the header line
+    and blank lines are skipped.
+    """
+    names: set[str] = set()
+    for line in stdout.splitlines():
+        token = line.strip()
+        if NAME_RE.fullmatch(token):
+            names.add(token)
+    return names
+
+
+PARSERS = {
+    "filters": parse_filters,
+    "encoders": parse_encoders,
+    "hwaccels": parse_hwaccels,
+}
+
+
+def summarize_inventory(report: dict[str, Any], stdout: str, kind: str) -> tuple[dict[str, Any], set[str]]:
+    summary: dict[str, Any] = {
+        "available": report.get("available", False),
+        "returncode": report.get("returncode"),
+    }
+    entries = PARSERS[kind](stdout) if summary["available"] and stdout else set()
+    summary["entry_count"] = len(entries)
+    if summary["available"] and not entries:
+        summary["warning"] = "no parseable entries; inventory empty or unexpected format"
+    for key in ("error", "first_line"):
+        if key in report:
+            summary[key] = report[key]
+    return summary, entries
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Check local FFmpeg tools before using version-sensitive recipes."
+        description="Check local FFmpeg tools and named build capabilities before automating.",
     )
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
+    parser.add_argument(
+        "--filter", action="append", default=[], metavar="NAME",
+        help="check whether filter NAME is available (repeatable)",
+    )
+    parser.add_argument(
+        "--encoder", action="append", default=[], metavar="NAME",
+        help="check whether encoder NAME is available (repeatable)",
+    )
+    parser.add_argument(
+        "--hwaccel", action="append", default=[], metavar="NAME",
+        help="check whether hardware acceleration method NAME is available (repeatable)",
+    )
     args = parser.parse_args()
 
-    report = {
-        "ffmpeg": run("ffmpeg", "-version"),
-        "ffprobe": run("ffprobe", "-version"),
-        "filters": run("ffmpeg", "-filters"),
-        "encoders": run("ffmpeg", "-encoders"),
-        "hardware_acceleration": run("ffmpeg", "-hwaccels"),
+    ffmpeg_report, _ = probe("ffmpeg", "-version")
+    ffprobe_report, _ = probe("ffprobe", "-version")
+
+    inventories: dict[str, dict[str, Any]] = {}
+    entries: dict[str, set[str]] = {}
+    for kind in ("filters", "encoders", "hwaccels"):
+        if ffmpeg_report.get("available"):
+            report, stdout = probe("ffmpeg", "-hide_banner", f"-{kind}")
+        else:
+            report, stdout = {"available": False, "error": ffmpeg_report.get("error", "")}, ""
+        inventories[kind], entries[kind] = summarize_inventory(report, stdout, kind)
+
+    queries = {
+        "filter": {name: name in entries["filters"] for name in dict.fromkeys(args.filter)},
+        "encoder": {name: name in entries["encoders"] for name in dict.fromkeys(args.encoder)},
+        "hwaccel": {name: name in entries["hwaccels"] for name in dict.fromkeys(args.hwaccel)},
     }
+    queries = {kind: names for kind, names in queries.items() if names}
+
+    report = {
+        "ffmpeg": ffmpeg_report,
+        "ffprobe": ffprobe_report,
+        "filters": inventories["filters"],
+        "encoders": inventories["encoders"],
+        "hwaccels": inventories["hwaccels"],
+        "queries": queries,
+    }
+
     if args.json:
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
-        for name, result in report.items():
+        for name in ("ffmpeg", "ffprobe"):
+            result = report[name]
             state = "available" if result["available"] else "unavailable"
             detail = result.get("first_line") or result.get("error", "")
             print(f"{name}: {state} - {detail}")
-    return 0 if report["ffmpeg"]["available"] and report["ffprobe"]["available"] else 1
+        for kind in ("filters", "encoders", "hwaccels"):
+            summary = report[kind]
+            if not summary["available"]:
+                detail = summary.get("error") or f"probe exited {summary.get('returncode')}"
+                print(f"{kind}: failed - {detail}")
+            elif summary["entry_count"] == 0:
+                print(f"{kind}: 0 entries parsed ({summary.get('warning', 'empty inventory')})")
+            else:
+                print(f"{kind}: {summary['entry_count']} entries parsed")
+        for kind, names in queries.items():
+            for name, present in names.items():
+                print(f"{kind} '{name}': {'present' if present else 'absent'}")
+
+    probe_failures = (
+        not ffmpeg_report["available"]
+        or not ffprobe_report["available"]
+        or any(not inventories[kind]["available"] for kind in inventories)
+    )
+    if probe_failures:
+        return 1
+    if any(not present for names in queries.values() for present in names.values()):
+        return 2
+    return 0
 
 
 if __name__ == "__main__":

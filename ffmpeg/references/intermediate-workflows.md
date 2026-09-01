@@ -18,7 +18,12 @@ Do not call remuxing a conversion of the encoded media. It changes packaging onl
 
 ## Trim and seek
 
-`-ss` can be placed before input for fast input seeking or after input for output-side behavior with different accuracy and cost. `-t` limits duration; `-to` specifies an endpoint in the relevant command context. Test the actual cut, especially with inter-frame codecs, nonzero start timestamps, and audio.
+`-ss` before the input is input seeking: the demuxer jumps to the nearest seek point before the target, which is fast. `-ss` after the input (before the output) is output seeking: FFmpeg decodes and discards from the stream start until the target, which is slow for late cut points. `-t` limits duration; `-to` specifies an endpoint in the relevant command context. Test the actual cut, especially with inter-frame codecs, nonzero start timestamps, and audio.
+
+Decision rule:
+
+- **Re-encoding anyway:** put `-ss` before `-i`. With the default accurate seek, frames between the keyframe and the target are decoded and discarded, so the cut is frame-accurate and still fast.
+- **Stream copy (`-c copy`):** packets cannot be decoded and discarded, so output starts at the packet boundary the demuxer lands on — typically the keyframe at or before the target. Accept keyframe-aligned cuts and verify the actual start time with `ffprobe`, or re-encode for frame accuracy.
 
 ```sh
 ffmpeg -ss 00:01:00 -i input.mp4 -t 00:00:20 -c copy quick-cut.mp4
@@ -34,11 +39,24 @@ There are distinct mechanisms:
 - The concat filter operates on decoded audio/video and can join segments after normalizing dimensions, formats, and timestamps.
 - The concat protocol is physical byte/resource concatenation and is not a general-purpose media join.
 
+Decision rule:
+
+- **Streams match (same codecs, parameters, and time bases) and the target container accepts the concat demuxer:** use the demuxer with `-c copy`. It is fast and lossless. Verify the combined duration and stream count afterwards.
+- **Inputs differ in codecs, dimensions, frame rates, pixel formats, sample rates, or start times:** decode and normalize, then use the concat filter. Normalize video with `scale`/`fps` (and pixel format), audio with `aresample`/`aformat` to a common rate, and reset each segment's timestamps with `setpts=PTS-STARTPTS` and `asetpts=PTS-STARTPTS` before joining. This path re-encodes.
+- **Raw byte-concatenatable formats only (for example MPEG-TS segments):** the concat protocol. Do not use it for container files.
+
 Never choose a concat method solely because files share an extension. Inspect codecs, dimensions, frame rates, sample rates, channel layouts, time bases, and metadata.
 
 ## Metadata and subtitles
 
-Metadata can be copied, mapped, or rewritten. FFmpeg's format documentation describes the `ffmetadata` muxer/demuxer for round-tripping metadata. Subtitle streams can be copied when the target container supports them, or rendered into video with a subtitle filter when permanent pixels are intended. Those are different deliverables.
+Metadata can be copied, mapped, or rewritten. FFmpeg's format documentation describes the `ffmetadata` muxer/demuxer for round-tripping metadata.
+
+For subtitles, choose between preserving the stream and rendering pixels — they are different deliverables:
+
+- **Copy (`-c:s copy` or an explicit subtitle codec)** when the text should remain selectable, restylable, or removable and the target container supports the subtitle codec. Matroska accepts text (SRT/ASS) and bitmap (PGS/DVB) subtitles; MP4 text tracks use `mov_text`, so remuxing SRT into MP4 typically requires `-c:s mov_text`, and bitmap subtitles generally do not fit MP4. Verify with `ffprobe` that the subtitle stream survived.
+- **Burn in (`subtitles=` or `ass=` filter)** when the video must render identically in players that ignore subtitle tracks. This requires a build with libass (confirm with `ffmpeg -filters` or `scripts/ffmpeg-preflight --filter subtitles`), decodes and re-encodes the video, and fixes styling at encode time.
+
+Never assume a copied subtitle stream will survive into the target container; probe the output and confirm the intended track count.
 
 ## Batch scripting
 
@@ -64,6 +82,9 @@ https://ffmpeg.org/ffmpeg-protocols.html
 
 https://ffmpeg.org/ffmpeg-utils.html
  -> Time expressions and quoting/escaping needed for scripts.
+
+https://ffmpeg.org/ffmpeg-filters.html
+ -> Subtitle rendering filters, setpts/asetpts, and concat filter normalization requirements.
 
 https://shotstack.io/learn/how-to-use-ffmpeg/
  -> Secondary practical examples; verify all commands against current official manuals.

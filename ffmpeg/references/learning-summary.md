@@ -33,15 +33,15 @@ The local macOS Homebrew FFmpeg 8.1.2 build successfully generated and probed an
 
 FFmpeg becomes predictable when commands are treated as typed pipelines rather than incantations. Most difficult failures occur at boundaries: stream selection, option scope, timestamps, filter availability, codec/container constraints, shell escaping, or hardware/software memory transfer. Make those boundaries explicit and debugging becomes a sequence of observable checks.
 
-SOURCES (LAYER 2 NAVIGATION)
-02-analysis/core-model-and-command-anatomy.md
+SOURCES (SKILL NAVIGATION)
+references/core-model-and-command-anatomy.md
  -> Detailed model of containers, streams, codecs, option scope, mapping, and copy/transcode.
 
-02-analysis/filters-and-transformations.md
+references/filters-and-transformations.md
  -> Filtergraph construction and audio/video transformation boundaries.
 
-02-analysis/intermediate-workflows.md
+references/intermediate-workflows.md
  -> Inspection, joining, metadata, scripting, and streaming workflows.
 
-02-analysis/advanced-operations-and-safety.md
+references/advanced-operations-and-safety.md
  -> Hardware acceleration, timestamps, reproducibility, and diagnosis.
