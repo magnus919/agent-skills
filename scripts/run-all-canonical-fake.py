@@ -20,7 +20,7 @@ from eval_runner.fake_adapter import FakeAdapter  # noqa: E402
 from eval_runner.models import AdapterInput, EvalCase, ExitStatus  # noqa: E402
 
 
-def skills():
+def skills() -> list[Path]:
     output = subprocess.check_output(["git", "ls-files", "-z", "**/SKILL.md"], cwd=ROOT).decode()
     return sorted(
         Path(path).parent
@@ -29,7 +29,7 @@ def skills():
     )
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", required=True)
     args = parser.parse_args()
