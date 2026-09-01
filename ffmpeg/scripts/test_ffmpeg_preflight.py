@@ -17,6 +17,7 @@ from pathlib import Path
 import pytest
 
 SCRIPT = Path(__file__).resolve().parent / "ffmpeg-preflight"
+INVENTORY_FIXTURE = SCRIPT.parent / "fixtures" / "ffmpeg-8.1.2-inventories.json"
 
 FAKE_FFMPEG_VERSION = "ffmpeg version 8.1.2 fake"
 FAKE_FFPROBE_VERSION = "ffprobe version 8.1.2 fake"
@@ -158,6 +159,26 @@ def test_success_json_reports_availability_counts(environment):
     assert report["queries"] == {}
 
 
+def test_ffmpeg_8_1_2_fixture_parses_expected_entries(environment):
+    setup, run = environment
+    fixture = json.loads(INVENTORY_FIXTURE.read_text())
+    setup(**{
+        kind: "\n".join(fixture[kind]) + "\n"
+        for kind in ("filters", "encoders", "hwaccels")
+    })
+    result = run("--json", "--filter", "scale", "--encoder", "libx264",
+                 "--hwaccel", "videotoolbox")
+    assert result.returncode == 0, result.stderr
+    report = json.loads(result.stdout)
+    counts = [report[kind]["entry_count"] for kind in ("filters", "encoders", "hwaccels")]
+    assert counts == [4, 3, 1]
+    assert report["queries"] == {
+        "filter": {"scale": True},
+        "encoder": {"libx264": True},
+        "hwaccel": {"videotoolbox": True},
+    }
+
+
 def test_named_queries_present_exit_zero(environment):
     setup, run = environment
     result = run("--json", "--filter", "scale", "--filter", "anullsrc",
@@ -199,7 +220,7 @@ def test_missing_tools_exit_one(environment, tmp_path):
     assert report["ffmpeg"]["available"] is False
     assert report["ffprobe"]["available"] is False
     assert report["filters"]["available"] is False
-    assert report["queries"] == {"filter": {"scale": False}}
+    assert report["queries"] == {"filter": {"scale": None}}
 
 
 def test_ffprobe_missing_exit_one(environment):
@@ -210,6 +231,27 @@ def test_ffprobe_missing_exit_one(environment):
     report = json.loads(result.stdout)
     assert report["ffmpeg"]["available"] is True
     assert report["ffprobe"]["available"] is False
+
+
+def test_ffprobe_missing_allows_ffmpeg_only_named_query(environment):
+    setup, run = environment
+    setup(with_ffprobe=False)
+    result = run("--json", "--filter", "scale")
+    assert result.returncode == 0, result.stderr
+    report = json.loads(result.stdout)
+    assert report["ffprobe"]["required"] is False
+    assert report["queries"]["filter"]["scale"] is True
+
+
+def test_timeout_is_probe_failure(environment, tmp_path):
+    _, run = environment
+    ffmpeg = tmp_path / "bin" / "ffmpeg"
+    ffmpeg.write_text("#!/bin/sh\n/bin/sleep 1\n")
+    result = run("--json", "--timeout", "0.01")
+    assert result.returncode == 1
+    report = json.loads(result.stdout)
+    assert report["ffmpeg"]["status"] == "timeout"
+    assert report["ffmpeg"]["timeout_seconds"] == 0.01
 
 
 def test_inventory_command_failure_exit_one(environment):
@@ -242,22 +284,26 @@ def test_empty_inventory_warns_and_exits_zero_without_queries(environment):
     assert report["hwaccels"]["entry_count"] == 0
 
 
-def test_query_against_empty_inventory_is_absent_exit_two(environment):
+def test_query_against_empty_inventory_is_probe_failure(environment):
     setup, run = environment
     setup(filters=HEADER_ONLY_FILTERS)
-    result = run("--filter", "scale")
-    assert result.returncode == 2
+    result = run("--json", "--filter", "scale")
+    assert result.returncode == 1
+    report = json.loads(result.stdout)
+    assert report["filters"]["status"] == "unparseable"
+    assert report["queries"]["filter"]["scale"] is None
 
 
 def test_malformed_output_yields_no_entries(environment):
     setup, run = environment
     setup(filters=MALFORMED_FILTERS, encoders="garbage line\nsecond line\n")
     result = run("--json", "--filter", "scale", "--encoder", "libx264")
-    assert result.returncode == 2
+    assert result.returncode == 1
     report = json.loads(result.stdout)
     assert report["filters"]["entry_count"] == 0
     assert report["encoders"]["entry_count"] == 0
-    assert report["queries"]["filter"]["scale"] is False
+    assert report["queries"]["filter"]["scale"] is None
+    assert report["queries"]["encoder"]["libx264"] is None
 
 
 def test_repeated_flags_are_deduplicated(environment):

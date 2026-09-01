@@ -23,6 +23,7 @@ After installation, an agent can reason about remuxing versus transcoding, const
 | `references/learning-summary.md` | Learning progression and consolidated mental model |
 | `scripts/ffmpeg-preflight` | Capability preflight: tool availability, inventory counts, and named filter/encoder/hwaccel checks |
 | `scripts/test_ffmpeg_preflight.py` | Deterministic pytest suite for the preflight (fake tools, no media or network) |
+| `scripts/fixtures/ffmpeg-8.1.2-inventories.json` | Small version-labeled real-output parser fixture |
 | `evals/evals.json` | Portable output-quality cases for the skill |
 
 ## Quick Start
@@ -43,7 +44,7 @@ Before automating a version-sensitive recipe, check that the installed build act
 scripts/ffmpeg-preflight --filter scale --filter subtitles --encoder libx264 --hwaccel videotoolbox
 ```
 
-Each name check is repeatable and reported `present` or `absent`. Exit codes: `0` all requested capabilities present, `1` a tool or probe failed, `2` a requested capability is absent. Add `--json` for machine-readable output.
+Each name check is repeatable and reported `present` or `absent`. Exit codes: `0` all requested capabilities present, `1` a required tool or probe failed (including timeout or unparseable inventory), `2` a requested capability is absent after a usable inventory was parsed. Add `--json` for machine-readable output. The default probe timeout is 10 seconds; override it with `--timeout SECONDS`. Named FFmpeg-only checks do not require `ffprobe`, but media inspection and the no-query environment check do.
 
 ## Triggers
 

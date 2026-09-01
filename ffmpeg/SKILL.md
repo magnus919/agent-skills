@@ -42,7 +42,7 @@ Treat FFmpeg commands as typed media pipelines, not incantations. Start from wha
 - Read `references/learning-summary.md` for the newcomer-first progression and consolidated mental model.
 - Read `references/source-inventory.md` when assessing evidence, choosing authoritative documentation, or refreshing version-sensitive guidance.
 - Read `references/local-verification.md` when interpreting the recorded local FFmpeg 8.1.2 evidence. It is a host-specific observation, not a universal capability claim.
-- Run `scripts/ffmpeg-preflight` before automating a version-sensitive workflow. It reports whether `ffmpeg` and `ffprobe` are available, summarizes parsed filter/encoder/hwaccel inventory counts, and answers named checks: `--filter NAME`, `--encoder NAME`, `--hwaccel NAME` (each repeatable). Use `--json` for machine-readable output. Exit codes: 0 every requested capability present, 1 tool or probe failure, 2 a requested capability is absent.
+- Run `scripts/ffmpeg-preflight` before automating a version-sensitive workflow. It reports tool status, parsed filter/encoder/hwaccel counts, and repeatable named checks: `--filter NAME`, `--encoder NAME`, `--hwaccel NAME`. Use `--json` for machine-readable output and `--timeout SECONDS` to bound each probe (10 seconds by default). Named FFmpeg-only checks do not require `ffprobe`; media inspection and the no-query environment check do. Exit codes: 0 every requested capability is present, 1 a required tool/probe failed or the requested inventory was empty/unparseable, 2 a usable inventory was parsed and a requested capability is absent. Empty inventories without named queries are reported as warnings.
 
 ## Debugging Rules
 

@@ -1,0 +1,37 @@
+{
+  "version": "FFmpeg 8.1.2",
+  "description": "Representative excerpts from FFmpeg 8.1.2 inventory output.",
+  "filters": [
+    "Filters:",
+    "  T.. = Timeline support",
+    "  .S. = Slice threading",
+    "  ..C = Command support",
+    "  A = Audio input/output",
+    "  V = Video input/output",
+    "  | = Source or sink filter",
+    "  ------",
+    " .. scale             V->V       Scale the input video size.",
+    " TS aap               AA->A      Apply Affine Projection algorithm.",
+    " .. anullsrc          |->A       Null audio source, return empty audio frames.",
+    " .. abuffersink       A->|       Buffer audio frames."
+  ],
+  "encoders": [
+    "Encoders:",
+    " V..... = Video",
+    " A..... = Audio",
+    " S..... = Subtitle",
+    " .F.... = Frame-level multithreading",
+    " ..S... = Slice-level multithreading",
+    " ...X.. = Codec is experimental",
+    " ....B. = Supports draw_horiz_band",
+    " .....D = Supports direct rendering method 1",
+    " ------",
+    " V....D libx264              libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (codec h264)",
+    " A....D aac                  AAC (Advanced Audio Coding)",
+    " V....D libvpx-vp9           libvpx VP9 (codec vp9)"
+  ],
+  "hwaccels": [
+    "Hardware acceleration methods:",
+    "videotoolbox"
+  ]
+}
