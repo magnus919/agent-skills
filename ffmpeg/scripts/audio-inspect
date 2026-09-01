@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""Inspect audio metadata with bounded, read-only ffprobe."""
+import argparse
+import json
+import shutil
+import subprocess
+import sys
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("input")
+    parser.add_argument("--ffprobe", default="ffprobe")
+    parser.add_argument("--timeout", type=float, default=15.0)
+    parser.add_argument("--silence", action="store_true")
+    parser.add_argument("--json", action="store_true")
+    args = parser.parse_args()
+    tool = shutil.which(args.ffprobe)
+    if not tool:
+        print(json.dumps({"ok": False, "status": "missing_tool", "error": "ffprobe not found"}))
+        return 3
+    try:
+        result = subprocess.run([tool, "-v", "error", "-show_format", "-show_streams", "-of", "json", args.input], capture_output=True, text=True, timeout=args.timeout)
+    except subprocess.TimeoutExpired:
+        print(json.dumps({"ok": False, "status": "timeout", "error": "ffprobe timed out"}))
+        return 4
+    if result.returncode:
+        print(json.dumps({"ok": False, "status": "probe_failed", "error": result.stderr.strip() or "ffprobe failed"}))
+        return 1
+    try:
+        document = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        print(json.dumps({"ok": False, "status": "invalid_json", "error": "invalid ffprobe JSON"}))
+        return 1
+    payload = {"ok": True, "status": "ok", "input": args.input, "probe": document}
+    if args.silence:
+        payload["silence"] = {"status": "candidate_only", "note": "silence intervals require review; no editorial cut was made"}
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

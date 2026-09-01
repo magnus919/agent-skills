@@ -1,0 +1,218 @@
+#!/usr/bin/env python3
+"""Inventory files and attach bounded ffprobe JSON metadata."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
+from typing import Any, Iterator
+
+MAX_FILES_HARD = 1000
+MAX_TIMEOUT_HARD = 300.0
+MAX_OUTPUT_BYTES_HARD = 16 * 1024 * 1024
+
+
+class CLIError(Exception):
+    def __init__(self, code: str, message: str, exit_code: int = 2, **details: Any) -> None:
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.exit_code = exit_code
+        self.details = details
+
+
+class JSONArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        if "--json" in sys.argv[1:]:
+            print(json.dumps({"ok": False, "error": {"code": "invalid_arguments", "message": message}}, sort_keys=True))
+            raise SystemExit(2)
+        super().error(message)
+
+
+def emit(payload: dict[str, Any], as_json: bool, *, error: bool = False) -> None:
+    if as_json:
+        print(json.dumps(payload, sort_keys=True, separators=(",", ":")))
+    elif error:
+        err = payload.get("error", {})
+        print(f"{err.get('code', 'error')}: {err.get('message', 'unknown error')}", file=sys.stderr)
+    else:
+        print(json.dumps(payload, sort_keys=True, indent=2))
+
+
+def resolve_tool(command: str) -> str | None:
+    expanded = os.path.expanduser(command)
+    if os.path.sep in expanded or (os.path.altsep and os.path.altsep in expanded):
+        path = Path(expanded)
+        if path.is_file() and os.access(path, os.X_OK):
+            return str(path.resolve())
+        return None
+    return shutil.which(command)
+
+
+def run_bounded(argv: list[str], timeout: float, max_output_bytes: int) -> tuple[int, bytes, bytes]:
+    with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
+        try:
+            process = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=stdout_file, stderr=stderr_file)
+        except OSError as exc:
+            raise CLIError("tool_start_failed", f"could not start {argv[0]}: {exc}", 3) from exc
+        try:
+            process.wait(timeout=timeout)
+        except subprocess.TimeoutExpired as exc:
+            process.kill()
+            process.wait()
+            raise CLIError("probe_timeout", f"ffprobe exceeded {timeout:g} seconds", 4) from exc
+
+        stdout_size = stdout_file.tell()
+        stderr_size = stderr_file.tell()
+        if stdout_size > max_output_bytes or stderr_size > max_output_bytes:
+            raise CLIError(
+                "probe_output_too_large",
+                f"ffprobe output exceeded {max_output_bytes} bytes",
+                4,
+                stdout_bytes=stdout_size,
+                stderr_bytes=stderr_size,
+            )
+        stdout_file.seek(0)
+        stderr_file.seek(0)
+        return process.returncode, stdout_file.read(), stderr_file.read()
+
+
+def iter_regular_files(root: Path) -> Iterator[Path]:
+    if root.is_file():
+        yield root
+        return
+    for current, dirnames, filenames in os.walk(root, followlinks=False):
+        dirnames[:] = sorted(name for name in dirnames if not (Path(current) / name).is_symlink())
+        for filename in sorted(filenames):
+            candidate = Path(current) / filename
+            if candidate.is_file():
+                yield candidate
+
+
+def probe_file(tool: str, path: Path, timeout: float, max_output_bytes: int) -> dict[str, Any]:
+    argv = [
+        tool,
+        "-v",
+        "error",
+        "-print_format",
+        "json",
+        "-show_format",
+        "-show_streams",
+        str(path),
+    ]
+    returncode, stdout, stderr = run_bounded(argv, timeout, max_output_bytes)
+    if returncode != 0:
+        message = stderr.decode("utf-8", errors="replace").strip()
+        raise CLIError("probe_failed", message or f"ffprobe exited {returncode}", 1, returncode=returncode)
+    try:
+        document = json.loads(stdout.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise CLIError("invalid_probe_json", f"ffprobe returned invalid JSON: {exc}", 1) from exc
+    if not isinstance(document, dict):
+        raise CLIError("invalid_probe_json", "ffprobe JSON root must be an object", 1)
+    return document
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = JSONArgumentParser(description=__doc__)
+    parser.add_argument("path", help="file or directory to inventory")
+    parser.add_argument("--ffprobe", default="ffprobe", help="ffprobe executable (default: ffprobe from PATH)")
+    parser.add_argument("--max-files", type=int, default=100, help="maximum files to inventory (1-1000)")
+    parser.add_argument("--timeout", type=float, default=15.0, help="per-file ffprobe timeout in seconds")
+    parser.add_argument(
+        "--max-output-bytes",
+        type=int,
+        default=1024 * 1024,
+        help="maximum stdout or stderr bytes accepted from each ffprobe call",
+    )
+    parser.add_argument("--json", action="store_true", help="emit compact JSON")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        if not 1 <= args.max_files <= MAX_FILES_HARD:
+            raise CLIError("invalid_limit", f"--max-files must be between 1 and {MAX_FILES_HARD}")
+        if not 0 < args.timeout <= MAX_TIMEOUT_HARD:
+            raise CLIError("invalid_limit", f"--timeout must be greater than 0 and at most {MAX_TIMEOUT_HARD:g}")
+        if not 1024 <= args.max_output_bytes <= MAX_OUTPUT_BYTES_HARD:
+            raise CLIError(
+                "invalid_limit",
+                f"--max-output-bytes must be between 1024 and {MAX_OUTPUT_BYTES_HARD}",
+            )
+
+        source = Path(args.path).expanduser()
+        if not source.exists():
+            raise CLIError("input_not_found", f"input does not exist: {source}")
+        if not source.is_file() and not source.is_dir():
+            raise CLIError("invalid_input", f"input is not a regular file or directory: {source}")
+        source = source.resolve()
+
+        tool = resolve_tool(args.ffprobe)
+        if tool is None:
+            raise CLIError("tool_not_found", f"ffprobe executable not found: {args.ffprobe}", 3, tool=args.ffprobe)
+
+        selected: list[Path] = []
+        truncated = False
+        for candidate in iter_regular_files(source):
+            if len(selected) == args.max_files:
+                truncated = True
+                break
+            selected.append(candidate.resolve())
+
+        entries: list[dict[str, Any]] = []
+        failures = 0
+        for candidate in selected:
+            stat = candidate.stat()
+            entry: dict[str, Any] = {
+                "path": str(candidate),
+                "size_bytes": stat.st_size,
+                "mtime_ns": stat.st_mtime_ns,
+            }
+            try:
+                entry["ffprobe"] = probe_file(tool, candidate, args.timeout, args.max_output_bytes)
+                entry["probe_ok"] = True
+            except CLIError as exc:
+                failures += 1
+                entry["probe_ok"] = False
+                entry["probe_error"] = {"code": exc.code, "message": exc.message, **exc.details}
+            entries.append(entry)
+
+        payload = {
+            "ok": failures == 0,
+            "schema_version": 1,
+            "root": str(source),
+            "limits": {
+                "max_files": args.max_files,
+                "timeout_seconds": args.timeout,
+                "max_output_bytes": args.max_output_bytes,
+            },
+            "file_count": len(entries),
+            "probe_failures": failures,
+            "truncated": truncated,
+            "files": entries,
+        }
+        emit(payload, args.json)
+        return 0 if failures == 0 else 1
+    except CLIError as exc:
+        error = {"code": exc.code, "message": exc.message, **exc.details}
+        emit({"ok": False, "error": error}, args.json, error=True)
+        return exc.exit_code
+    except OSError as exc:
+        emit(
+            {"ok": False, "error": {"code": "io_error", "message": str(exc)}},
+            args.json,
+            error=True,
+        )
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

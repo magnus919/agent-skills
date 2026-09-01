@@ -1,0 +1,297 @@
+#!/usr/bin/env python3
+"""Extract a bounded set of explicitly requested review frames."""
+
+from __future__ import annotations
+
+import argparse
+from decimal import Decimal, InvalidOperation
+import json
+import math
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
+from typing import Any
+
+MAX_FRAMES_HARD = 100
+MAX_TIMESTAMP_HARD = Decimal("604800")
+MAX_TIMEOUT_HARD = 300.0
+MAX_DIAGNOSTIC_BYTES = 1024 * 1024
+
+
+class CLIError(Exception):
+    def __init__(self, code: str, message: str, exit_code: int = 2, **details: Any) -> None:
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.exit_code = exit_code
+        self.details = details
+
+
+class JSONArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        if "--json" in sys.argv[1:]:
+            print(json.dumps({"ok": False, "error": {"code": "invalid_arguments", "message": message}}, sort_keys=True))
+            raise SystemExit(2)
+        super().error(message)
+
+
+def emit(payload: dict[str, Any], as_json: bool, *, error: bool = False) -> None:
+    if as_json:
+        print(json.dumps(payload, sort_keys=True, separators=(",", ":")))
+    elif error:
+        err = payload.get("error", {})
+        print(f"{err.get('code', 'error')}: {err.get('message', 'unknown error')}", file=sys.stderr)
+    else:
+        print(json.dumps(payload, sort_keys=True, indent=2))
+
+
+def resolve_tool(command: str) -> str | None:
+    expanded = os.path.expanduser(command)
+    if os.path.sep in expanded or (os.path.altsep and os.path.altsep in expanded):
+        path = Path(expanded)
+        if path.is_file() and os.access(path, os.X_OK):
+            return str(path.resolve())
+        return None
+    return shutil.which(command)
+
+
+def canonical_decimal(value: Decimal) -> str:
+    rendered = format(value, "f")
+    if "." in rendered:
+        rendered = rendered.rstrip("0").rstrip(".")
+    return "0" if rendered in {"", "-0"} else rendered
+
+
+def parse_timestamp(raw: str) -> Decimal:
+    if len(raw) > 64:
+        raise CLIError("invalid_timestamp", f"timestamp is too long: {raw[:32]}…")
+    parts = raw.split(":")
+    try:
+        if len(parts) == 1:
+            value = Decimal(parts[0])
+        elif len(parts) == 2:
+            minutes = Decimal(parts[0])
+            seconds = Decimal(parts[1])
+            if minutes != minutes.to_integral_value() or minutes < 0 or not 0 <= seconds < 60:
+                raise InvalidOperation
+            value = minutes * 60 + seconds
+        elif len(parts) == 3:
+            hours = Decimal(parts[0])
+            minutes = Decimal(parts[1])
+            seconds = Decimal(parts[2])
+            if (
+                hours != hours.to_integral_value()
+                or minutes != minutes.to_integral_value()
+                or hours < 0
+                or not 0 <= minutes < 60
+                or not 0 <= seconds < 60
+            ):
+                raise InvalidOperation
+            value = hours * 3600 + minutes * 60 + seconds
+        else:
+            raise InvalidOperation
+    except (InvalidOperation, ValueError):
+        raise CLIError("invalid_timestamp", f"invalid timestamp: {raw}") from None
+    if not value.is_finite() or value < 0:
+        raise CLIError("invalid_timestamp", f"timestamp must be finite and nonnegative: {raw}")
+    return value
+
+
+def run_bounded(argv: list[str], timeout: float) -> tuple[int, str]:
+    with tempfile.TemporaryFile() as stderr_file:
+        try:
+            process = subprocess.Popen(
+                argv,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=stderr_file,
+            )
+        except OSError as exc:
+            raise CLIError("tool_start_failed", f"could not start {argv[0]}: {exc}", 3) from exc
+        try:
+            process.wait(timeout=timeout)
+        except subprocess.TimeoutExpired as exc:
+            process.kill()
+            process.wait()
+            raise CLIError("extract_timeout", f"ffmpeg exceeded {timeout:g} seconds", 4) from exc
+        size = stderr_file.tell()
+        if size > MAX_DIAGNOSTIC_BYTES:
+            raise CLIError(
+                "diagnostic_output_too_large",
+                f"ffmpeg stderr exceeded {MAX_DIAGNOSTIC_BYTES} bytes",
+                4,
+                stderr_bytes=size,
+            )
+        stderr_file.seek(0)
+        return process.returncode, stderr_file.read().decode("utf-8", errors="replace").strip()
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = JSONArgumentParser(description=__doc__)
+    parser.add_argument("input", help="source media file")
+    parser.add_argument("-o", "--output-dir", required=True, help="directory for extracted JPEG frames")
+    parser.add_argument(
+        "-t",
+        "--timestamp",
+        action="append",
+        default=[],
+        help="timestamp in seconds or [HH:]MM:SS; repeat for each frame",
+    )
+    parser.add_argument(
+        "--timestamps",
+        nargs="+",
+        default=[],
+        metavar="TIME",
+        help="additional explicit timestamps",
+    )
+    parser.add_argument("--ffmpeg", default="ffmpeg", help="ffmpeg executable (default: ffmpeg from PATH)")
+    parser.add_argument("--max-frames", type=int, default=24, help="maximum requested frames (1-100)")
+    parser.add_argument(
+        "--max-timestamp",
+        default="86400",
+        help="maximum allowed timestamp in seconds (default: 86400; hard maximum: 604800)",
+    )
+    parser.add_argument("--timeout", type=float, default=30.0, help="per-frame ffmpeg timeout in seconds")
+    parser.add_argument("--overwrite", action="store_true", help="allow replacing existing frame files")
+    parser.add_argument("--json", action="store_true", help="emit compact JSON")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        if not 1 <= args.max_frames <= MAX_FRAMES_HARD:
+            raise CLIError("invalid_limit", f"--max-frames must be between 1 and {MAX_FRAMES_HARD}")
+        if not math.isfinite(args.timeout) or not 0 < args.timeout <= MAX_TIMEOUT_HARD:
+            raise CLIError("invalid_limit", f"--timeout must be greater than 0 and at most {MAX_TIMEOUT_HARD:g}")
+        max_timestamp = parse_timestamp(args.max_timestamp)
+        if max_timestamp <= 0 or max_timestamp > MAX_TIMESTAMP_HARD:
+            raise CLIError(
+                "invalid_limit",
+                f"--max-timestamp must be greater than 0 and at most {canonical_decimal(MAX_TIMESTAMP_HARD)}",
+            )
+
+        raw_timestamps = [*args.timestamp, *args.timestamps]
+        if not raw_timestamps:
+            raise CLIError("timestamps_required", "at least one explicit --timestamp is required")
+        if len(raw_timestamps) > args.max_frames:
+            raise CLIError(
+                "frame_limit_exceeded",
+                f"requested {len(raw_timestamps)} frames; limit is {args.max_frames}",
+                requested=len(raw_timestamps),
+                limit=args.max_frames,
+            )
+        timestamps = [parse_timestamp(raw) for raw in raw_timestamps]
+        for raw, timestamp in zip(raw_timestamps, timestamps):
+            if timestamp > max_timestamp:
+                raise CLIError(
+                    "timestamp_limit_exceeded",
+                    f"timestamp {raw} exceeds limit {canonical_decimal(max_timestamp)} seconds",
+                    timestamp=raw,
+                    limit_seconds=canonical_decimal(max_timestamp),
+                )
+
+        source = Path(args.input).expanduser()
+        if not source.exists():
+            raise CLIError("input_not_found", f"input does not exist: {source}")
+        if not source.is_file():
+            raise CLIError("invalid_input", f"input is not a regular file: {source}")
+        source = source.resolve()
+
+        output_dir = Path(args.output_dir).expanduser().resolve()
+        if output_dir.exists() and not output_dir.is_dir():
+            raise CLIError("invalid_output_directory", f"output path is not a directory: {output_dir}")
+        outputs = [output_dir / f"frame-{index:04d}.jpg" for index in range(1, len(timestamps) + 1)]
+        existing = [str(path) for path in outputs if path.exists()]
+        if existing and not args.overwrite:
+            raise CLIError(
+                "output_exists",
+                "one or more output frames already exist; use --overwrite to replace them",
+                4,
+                paths=existing,
+            )
+
+        tool = resolve_tool(args.ffmpeg)
+        if tool is None:
+            raise CLIError("tool_not_found", f"ffmpeg executable not found: {args.ffmpeg}", 3, tool=args.ffmpeg)
+
+        output_dir.mkdir(parents=True, exist_ok=True)
+        results: list[dict[str, Any]] = []
+        for timestamp, output in zip(timestamps, outputs):
+            timestamp_text = canonical_decimal(timestamp)
+            command = [
+                tool,
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-nostdin",
+                "-ss",
+                timestamp_text,
+                "-i",
+                str(source),
+                "-frames:v",
+                "1",
+                "-q:v",
+                "2",
+                "-y" if args.overwrite else "-n",
+                str(output),
+            ]
+            returncode, diagnostic = run_bounded(command, args.timeout)
+            if returncode != 0:
+                raise CLIError(
+                    "extract_failed",
+                    diagnostic or f"ffmpeg exited {returncode}",
+                    1,
+                    returncode=returncode,
+                    timestamp=timestamp_text,
+                    output=str(output),
+                )
+            if not output.is_file():
+                raise CLIError(
+                    "output_missing",
+                    "ffmpeg reported success but did not create the requested frame",
+                    1,
+                    timestamp=timestamp_text,
+                    output=str(output),
+                )
+            results.append(
+                {
+                    "timestamp_seconds": timestamp_text,
+                    "output": str(output),
+                    "size_bytes": output.stat().st_size,
+                }
+            )
+
+        emit(
+            {
+                "ok": True,
+                "input": str(source),
+                "output_directory": str(output_dir),
+                "frame_count": len(results),
+                "overwrite": args.overwrite,
+                "frames": results,
+            },
+            args.json,
+        )
+        return 0
+    except CLIError as exc:
+        emit(
+            {"ok": False, "error": {"code": exc.code, "message": exc.message, **exc.details}},
+            args.json,
+            error=True,
+        )
+        return exc.exit_code
+    except OSError as exc:
+        emit(
+            {"ok": False, "error": {"code": "io_error", "message": str(exc)}},
+            args.json,
+            error=True,
+        )
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

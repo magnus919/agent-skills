@@ -1,56 +1,100 @@
 ---
 name: ffmpeg
 description: >-
-  Use this skill when an agent needs to inspect, convert, remux, transcode, filter,
-  combine, stream, or troubleshoot audio and video with the FFmpeg command-line
-  tools, especially ffmpeg and ffprobe. It teaches explicit stream selection,
-  filtergraph construction, timestamp diagnosis, build-aware commands, safe
-  scripting, and post-run verification. Do not use it for libav API programming,
-  professional color-management certification, DRM circumvention, or untested
-  platform-specific capture hardware; route those to specialized guidance.
+  Use this skill for local FFmpeg/FFprobe media inspection, remuxing, transcoding,
+  filtering, evidence-bounded video review, transcript-assisted editorial plans,
+  edit decision lists, podcast/audio cleanup, rendering, and output acceptance.
+  It emphasizes explicit stream selection, source preservation, build-aware commands,
+  bounded evidence, and verified new outputs. Do not use it for libav API programming,
+  opaque whole-video understanding, automatic publishing, rights clearance, DRM
+  circumvention, professional broadcast/color certification, or HyperFrames-authored
+  compositions; route those tasks to their owning capabilities.
 license: MIT
 compatibility: Requires ffmpeg and ffprobe for execution; exact filters, codecs, protocols, and hardware backends vary by build and version.
 ---
 
 # FFmpeg Expert
 
-Treat FFmpeg commands as typed media pipelines, not incantations. Start from what the input actually contains, choose the smallest operation that satisfies the output contract, and verify the resulting artifact at the boundary that matters.
+Treat FFmpeg as a typed media pipeline and media editing as an evidence-driven workflow. Inspect the actual source, separate measurements from interpretations, make decisions reviewable, render to a new path, and verify at the intended boundary.
 
-## When Not to Use
+## Boundaries and Routing
 
-- Do not use this skill for libav*/FFmpeg C API application development.
-- Do not use it as a complete codec encyclopedia or a professional color-management certification guide.
-- Do not use it to circumvent DRM or to document capture hardware that has not been tested on the target platform.
-- For a named hosting or media platform's API, use that platform skill and use this skill only for the local media transformation.
+- Use a YouTube/transcript capability to acquire online video or transcripts; return here only for local supplied media and transcript artifacts.
+- Use HyperFrames for HTML-authored motion graphics or composition; use this skill to inspect and preprocess its media inputs or verify rendered outputs.
+- Use the named platform skill for upload, publishing, account, or API operations.
+- FFmpeg can extract bounded frames and audio segments but does not interpret their semantic content. Route visual interpretation to a vision-capable reviewer and preserve its observations as attributed evidence.
+- Do not infer rights, consent, identity, intent, or whole-program meaning from technical metadata, sparse frames, silence intervals, or an unaligned transcript.
 
-## Operating Loop
+## Evidence Classes
 
-1. **Inspect first.** Run `ffprobe -v error -show_format -show_streams -of json INPUT` and identify streams, codecs, dimensions, rates, durations, time bases, metadata, and start timestamps.
-2. **Classify the operation.** Choose remux/stream copy, transcode, filter, combine, extract, or protocol/pipe output. Remuxing changes packaging; transcoding decodes and re-encodes.
-3. **Check capabilities.** Use `ffmpeg -formats`, `-codecs`, `-encoders`, `-filters`, and `-hwaccels`. Never assume a tutorial's filter, encoder, or hardware backend exists locally.
-4. **Make selection explicit.** Use `-map` for multiple inputs, tracks, or complex graphs. Remember that options generally apply to the next input or output, so order matters.
-5. **Protect the source.** Use `-n` while exploring, write to a new path, avoid untrusted shell concatenation, and keep credentials out of command lines and logs.
-6. **Probe and exercise the result.** Check the output with `ffprobe`, then test the actual player, editor, receiver, archive rule, or API consumer. Exit code and container validity are necessary but not sufficient.
+Label consequential claims so unlike evidence is not blended:
 
-## Choose the Right Reference
+- **Technical contract** — behavior documented by an official FFmpeg or standards source.
+- **Observed artifact** — probe output, measured signal result, extracted frame, listened segment, or downstream test from this source/output.
+- **Reproducible experiment** — exact version, input identity/generator, command, result, and limits.
+- **Editorial heuristic** — a reversible judgment that requires human review, not a fact established by FFmpeg.
+- **User requirement** — the requested output contract, preservation policy, and acceptance threshold.
+
+## Media Editing Loop
+
+1. **Intake.** Confirm authorization and privacy boundaries; identify every source; use a private workspace copy of `templates/media-intake.json` to record probe evidence, timing, the output contract, preservation policy, and unresolved assumptions.
+2. **Inspect.** Probe streams and format. Check required local capabilities with inventories or `scripts/ffmpeg-preflight`; never assume a filter, encoder, or hardware backend exists.
+3. **Collect bounded evidence.** Extract only the frames, clips, waveform/signal measurements, or transcript spans needed for the decision. Record sample timestamps, count, byte/size limits, and the statement that samples cover sampled times only.
+4. **Plan before rendering.** For editorial changes, write a reviewable EDL or podcast edit plan. Every consequential cut needs a source range, reason, evidence, confidence, treatment, mapping, and verification state. Leave ambiguous decisions unresolved rather than improvising.
+5. **Render safely.** Make stream mapping explicit; prefer `-n` and a new output path; avoid untrusted shell concatenation. Distinguish keyframe-limited stream copy from decoded/re-encoded precise cuts.
+6. **Verify in layers.** Check exit status, decodeability, output probe, stream/timing contract, bounded frame/audio evidence, editorial review, and the actual downstream consumer as applicable.
+7. **Accept or stop.** Use a private workspace copy of `templates/media-acceptance-report.md` to record pass/fail/blocked per criterion. A valid container or successful command alone is not acceptance.
+
+Start technical inspection with:
+
+```sh
+ffprobe -v error -show_format -show_streams -of json INPUT
+```
+
+## Route to the Focused Reference
+
+### Evidence-driven media work
+
+- Read `references/media-intake-and-manifest.md` before handling supplied/generated media, sensitive material, multiple sources, or a defined delivery contract.
+- Read `references/video-inspection-and-visual-evidence.md` when extracting or reviewing frames/clips, choosing samples, or making visual claims.
+- Read `references/editorial-video-editing.md` for transcript-assisted selection, sequencing, pacing, transitions, overlays, and reviewable editorial decisions.
+- Read `references/audio-and-podcast-editing.md` for podcast cuts, signal cleanup, silence/noise analysis, loudness measurement, and listening gates.
+- Read `references/ffmpeg-edit-decision-lists.md` before creating, validating, or turning an EDL into a command plan.
+- Read `references/media-verification-and-acceptance.md` before declaring an output complete or compatible.
+- Read `references/media-failure-modes.md` when evidence is contradictory, a cut drifts, a filter is missing, review samples are sparse, or a workflow repeatedly fails.
+- Read `references/media-research-source-index.md` when supporting claims, refreshing version-sensitive guidance, or recording a technical experiment.
+
+### Core FFmpeg work
 
 - Read `references/core-model-and-command-anatomy.md` for containers, streams, codecs, option scope, mapping, copy/transcode, and timestamps.
-- Read `references/filters-and-transformations.md` for simple and complex filtergraphs, labels, audio/video processing, and incremental graph debugging.
-- Read `references/intermediate-workflows.md` for seeking, trimming, concatenation, metadata, subtitles, batch scripts, pipes, and streaming.
-- Read `references/advanced-operations-and-safety.md` for hardware acceleration, synchronization diagnosis, reproducibility, network and overwrite safety, and failure boundaries.
-- Read `references/command-cookbook.md` for short examples with stated assumptions. Adapt them only after inspection and capability checks.
-- Read `references/learning-summary.md` for the newcomer-first progression and consolidated mental model.
-- Read `references/source-inventory.md` when assessing evidence, choosing authoritative documentation, or refreshing version-sensitive guidance.
-- Read `references/local-verification.md` when interpreting the recorded local FFmpeg 8.1.2 evidence. It is a host-specific observation, not a universal capability claim.
-- Run `scripts/ffmpeg-preflight` before automating a version-sensitive workflow. It reports tool status, parsed filter/encoder/hwaccel counts, and repeatable named checks: `--filter NAME`, `--encoder NAME`, `--hwaccel NAME`. Use `--json` for machine-readable output and `--timeout SECONDS` to bound each probe (10 seconds by default). Named FFmpeg-only checks do not require `ffprobe`; media inspection and the no-query environment check do. Exit codes: 0 every requested capability is present, 1 a required tool/probe failed or the requested inventory was empty/unparseable, 2 a usable inventory was parsed and a requested capability is absent. Empty inventories without named queries are reported as warnings.
+- Read `references/filters-and-transformations.md` for filtergraphs, labels, audio/video processing, and incremental graph debugging.
+- Read `references/intermediate-workflows.md` for seeking, trimming, concat, metadata, subtitles, batching, pipes, and streaming.
+- Read `references/advanced-operations-and-safety.md` for hardware acceleration, synchronization, reproducibility, network safety, and failure boundaries.
+- Read `references/command-cookbook.md` only after inspection and capability checks; every recipe is conditional.
+- Read `references/learning-summary.md` for the newcomer-first mental model.
+- Read `references/source-inventory.md` for the original FFmpeg source survey and `references/local-verification.md` only for its explicitly host-specific FFmpeg 8.1.2 observations.
 
-## Debugging Rules
+## Templates
 
-- For missing filters, encoders, or protocols, reproduce with `ffmpeg -filters`, `-encoders`, or the relevant inventory before changing the command.
-- For drift, bad cuts, concat jumps, or unexpected duration, compare timestamps and stream properties before adding flags. `-copyts`, `-start_at_zero`, synchronization controls, `setpts`, `asetpts`, `aresample`, and `avoid_negative_ts` solve different problems.
-- Build filtergraphs incrementally: baseline transcode, one filter, then labels/branches. Distinguish parser, availability, format negotiation, timestamp, encoder, and muxer failures.
-- Treat examples as conditional on input, target, build, version, and downstream consumer. State those conditions in explanations and scripts.
+- `templates/media-intake.json` — source identities, probes, contract, privacy, preservation, assumptions
+- `templates/edit-decision-list.json` — reviewable source ranges and treatments
+- `templates/video-inspection-report.md` — technical inspection and bounded evidence ledger
+- `templates/visual-review-packet.md` — attributed frame/clip observations and coverage limits
+- `templates/podcast-edit-plan.md` — mechanical, signal, and editorial audio decisions
+- `templates/media-acceptance-report.md` — layered verification and criterion verdicts
+- `templates/research-experiment-record.md` — reproducible version/command/result record
+
+Copy a template into the task workspace and replace its placeholder/example values. Do not put private paths, media, transcripts, or review evidence in the public skill repository.
+
+## Non-Negotiable Checks
+
+- Make stream selection explicit whenever multiple inputs/tracks or a complex graph are involved.
+- Treat option order as significant: options generally apply to the next input or output.
+- Do not call silence useless; `silencedetect` reports threshold crossings, not editorial value.
+- Claim loudness, clipping, timing, or keyframe status only from an available measurement method and retain its output.
+- A transcript is evidence only for its text and supplied timing quality; spot-check alignment against media before frame-accurate edits.
+- Stop for review when evidence is sparse, ambiguity could remove meaningful content, an optional tool/filter is absent, privacy/authorization is unclear, or two materially different approaches fail.
 
 ## Completion
 
-Stop when the requested artifact exists, the relevant output probe and downstream-boundary check pass, and any untested capability or compatibility gap is stated explicitly. If execution is blocked, report the exact layer and evidence rather than substituting a plausible result.
+Finish only when the requested artifact exists at a new path, required probes and bounded reviews are recorded, the output has been exercised at the relevant downstream boundary, and every acceptance criterion is passed or explicitly blocked. Report untested claims and remaining assumptions instead of filling gaps with plausible output.

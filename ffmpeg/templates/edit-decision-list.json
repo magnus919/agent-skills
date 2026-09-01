@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "timebase": "seconds",
+  "sources": [{"asset_id": "asset-001", "duration": 120.0}],
+  "events": [
+    {
+      "id": "event-001",
+      "action": "keep",
+      "asset_id": "asset-001",
+      "stream_refs": ["0:v:0", "0:a:0"],
+      "in": 10.0,
+      "out": 25.0,
+      "reason": "<editorial reason>",
+      "evidence": [{"type": "transcript", "locator": "00:10-00:25", "confidence": 0.8}],
+      "boundary_precision": "not_verified",
+      "treatment": {"transition": null, "audio_fade": true},
+      "review_status": "needs_review",
+      "verification": []
+    }
+  ],
+  "output": {"mapping": ["video", "audio"], "expected_duration": 15.0, "tolerance_seconds": 0.1}
+}
