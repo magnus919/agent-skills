@@ -49,7 +49,7 @@ def emit(human: str, data: Any) -> None:
         print(human)
 
 
-def require_mutation_authorization(client: JiraClient, command: str) -> None:
+def require_mutation_authorization(client: "JiraClient", command: str) -> None:
     """Require an explicit bypass for non-dry-run state changes."""
     if client.dry_run or GLOBAL_FLAGS.get("force", False):
         return
