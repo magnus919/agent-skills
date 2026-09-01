@@ -156,21 +156,24 @@ def evaluate_ratchet(
     without_evals: set[Path],
     coverage_pct: float,
 ) -> tuple[list[str], list[str]]:
-    """Apply warning and failure thresholds to modified current skills."""
+    """Apply thresholds using integer basis points, never rounded percentages."""
     warnings: list[str] = []
     errors: list[str] = []
+    # Round the caller's percentage to the nearest integer basis point so
+    # decimal boundary fixtures are not shifted by binary floating point.
+    coverage_bps = round(coverage_pct * 100)
     for skill_dir in sorted(modified & current & without_evals):
         name = str(skill_dir)
-        if coverage_pct >= FAIL_THRESHOLD:
+        if coverage_bps >= FAIL_THRESHOLD * 100:
             errors.append(
                 f"{name}: modified skill has no schema-valid eval manifest "
-                f"(coverage {coverage_pct:.1f}% >= {FAIL_THRESHOLD}% — "
+                f"(coverage {coverage_bps} basis points >= {FAIL_THRESHOLD * 100} — "
                 "evals required on modification)"
             )
-        elif coverage_pct >= WARN_THRESHOLD:
+        elif coverage_bps >= WARN_THRESHOLD * 100:
             warnings.append(
                 f"{name}: modified skill has no schema-valid eval manifest "
-                f"(coverage {coverage_pct:.1f}% >= {WARN_THRESHOLD}% — "
+                f"(coverage {coverage_bps} basis points >= {WARN_THRESHOLD * 100} — "
                 "evals recommended)"
             )
     return warnings, errors
