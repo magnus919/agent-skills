@@ -3,12 +3,17 @@
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
 script = Path(__file__).resolve().parent / "ffmpeg-preflight"
+
+if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
+    import pytest
+    pytest.skip("ffmpeg and ffprobe are required for this smoke test", allow_module_level=True)
 
 with tempfile.TemporaryDirectory() as directory:
     fake_bin = Path(directory)
