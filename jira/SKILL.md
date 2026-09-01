@@ -73,9 +73,9 @@ Uses `POST /search/approximate-count` — no fetching rows. JQL itself has no CO
 ### create — new issues
 
 ```bash
-jira create --project PROJ --summary "Fix login bug"            # Task (default)
-jira create --project PROJ --summary "Crash on startup" --type Bug
-jira create --project PROJ --summary "Add dark mode" --type Story --priority High
+jira --yes create --project PROJ --summary "Fix login bug"            # Task (default)
+jira --yes create --project PROJ --summary "Crash on startup" --type Bug
+jira --yes create --project PROJ --summary "Add dark mode" --type Story --priority High
 jira create --project PROJ --summary "Test" --dry-run           # preview payload
 ```
 
@@ -84,7 +84,7 @@ Descriptions are sent as ADF documents. Rich formatting beyond plain paragraphs 
 ### comment — add to threads
 
 ```bash
-jira comment PROJ-123 -m "Fixed in latest build"
+jira --yes comment PROJ-123 -m "Fixed in latest build"
 jira comment PROJ-123 -m "Looking into it" --dry-run
 ```
 
@@ -92,8 +92,8 @@ jira comment PROJ-123 -m "Looking into it" --dry-run
 
 ```bash
 jira transitions PROJ-123                     # LIST valid transition IDs first
-jira transition PROJ-123 --to "In Progress"   # then apply by name or ID
-jira transition PROJ-123 --to Done --resolution Done
+jira --yes transition PROJ-123 --to "In Progress"   # then apply by name or ID
+jira --yes transition PROJ-123 --to Done --resolution Done
 jira transition PROJ-123 --to "In Review" --dry-run
 ```
 
@@ -123,7 +123,7 @@ jira list --jql 'sprint IN openSprints() AND updated < -14d AND resolution = Unr
   | jq -r '.issues[].key' \
   | while read -r key; do jira view "$key"; jira transitions "$key"; done
 # after human review, per key:
-jira transition "$key" --to Done --resolution Done
+jira --yes transition "$key" --to Done --resolution Done
 ```
 
 The `list --json` shape is `{"total": N, "issues": [{"key", "summary", "status", "assignee", "issuetype", "priority"}]}`.
@@ -135,7 +135,7 @@ Transition IDs are workflow-specific — resolve before writing:
 ```bash
 for key in $(jira list --jql 'status = "In Progress" AND updated < -30d' --json | jq -r '.issues[].key'); do
   tid=$(jira transitions "$key" --json | jq -r '.transitions[] | select(.status_category=="completed") | .id' | head -1)
-  [ -n "$tid" ] && jira transition "$key" --to "$tid" --resolution Done
+  [ -n "$tid" ] && jira --yes transition "$key" --to "$tid" --resolution Done
 done
 ```
 
