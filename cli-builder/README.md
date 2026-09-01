@@ -16,9 +16,9 @@ When your agent loads this skill, it can **design, build, and refactor CLI tools
 
 | Directory | Purpose |
 |-----------|---------|
-| `SKILL.md` | 500+ line reference: 10 design patterns, 3-phase build workflow, agent-compatibility test suite |
-| `templates/` | Python API client scaffold and bash CLI scaffold |
-| `references/` | Agent-compatibility test suite, Python API client pattern |
+| `SKILL.md` | Concise workflow for discovery, predictable contracts, verification, and maintenance |
+| `templates/` | Bash CLI scaffold for local wrappers |
+| `references/` | Python API clients, advanced patterns, readiness checklist, wrapper example, MCP decisions, and improvement cycle |
 
 ## Triggers
 

@@ -16,8 +16,9 @@ When your agent loads this skill, it becomes a **CrowdSec security engineer** wh
 
 | Directory | Purpose |
 |-----------|---------|
-| `SKILL.md` | Architecture overview, installation guide, quick reference |
-| `references/` | 7 reference files: config deep dive, AppSec WAF, Docker deployment, Traefik integration, database backends, hub collections, troubleshooting |
+| `SKILL.md` | Safety-gated workflow for deployment, detection-to-blocking, cscli operations, AppSec, and troubleshooting |
+| `references/` | Focused guides for configuration, cscli, AppSec WAF, Docker, bouncers, operations, databases, hardening, collections, and troubleshooting |
+| `evals/` | Five representative deployment, triage, WAF, mutation-safety, and no-data cases |
 
 ## Quick Start
 
