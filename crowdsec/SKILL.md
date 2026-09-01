@@ -72,7 +72,6 @@ Use `cscli -o json` for automation and capture command output, version, host,
 and time as evidence. Read-only triage commonly uses:
 
 ```bash
-cscli hub update
 cscli collections list
 cscli alerts list --contain "scenario:ssh-bf"
 cscli decisions list -o json

@@ -7,8 +7,8 @@ A comprehensive design guide and scaffold for building CLI tools that **AI agent
 When your agent loads this skill, it can **design, build, and refactor CLI tools** that agents can discover and use without human help. That means:
 
 - **Every `--help` output becomes a contract** the agent parses to understand your tool
-- **Every command supports `--json`** for machine-readable output the agent consumes
-- **Every operation is idempotent** — `--dry-run` previews changes before they happen
+- **Design `--json` as a documented contract** for machine-readable output agents can consume
+- **Establish or review idempotency** so safe reruns are explicit rather than assumed
 - **Authentication is lazy** — help and dry-run work without credentials
 - **Errors are structured** — different exit codes for different failure modes
 
