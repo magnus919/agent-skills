@@ -32,6 +32,26 @@
         "Uses host/path/tag filters or explicit snapshot selection rather than assuming an unqualified latest snapshot is correct.",
         "Includes file-level and application-level validation where applicable."
       ]
+    },
+    {
+      "id": "repository-integrity-check",
+      "prompt": "Before a backup migration, verify repository integrity and recovery readiness without mutating the repository.",
+      "expected_output": "The plan performs read-only integrity checks, records repository and snapshot selection, and requires a separate restore drill.",
+      "assertions": [
+        "Uses read-only integrity verification before mutation",
+        "Selects and records the intended repository and snapshot",
+        "Requires a separate restore drill"
+      ]
+    },
+    {
+      "id": "retention-policy-review",
+      "prompt": "Review a proposed restic retention policy before it is applied to a repository with legal hold snapshots.",
+      "expected_output": "The review distinguishes retention selection from deletion, identifies legal-hold exclusions, previews affected snapshots, and requires an authorized dry-run review before mutation.",
+      "assertions": [
+        "Distinguishes retention selection from deletion",
+        "Preserves or explicitly checks legal-hold snapshots",
+        "Previews affected snapshots and requires authorization before mutation"
+      ]
     }
   ]
 }

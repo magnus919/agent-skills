@@ -384,6 +384,23 @@ class TestRatchetThresholds(unittest.TestCase):
         self.assertEqual([], warnings)
         self.assertEqual(1, len(errors))
 
+    def test_thresholds_use_integer_basis_point_boundaries(self) -> None:
+        for coverage, warning, error in (
+            (24.99, 0, 0),
+            (25.00, 1, 0),
+            (49.99, 1, 0),
+            (50.00, 0, 1),
+        ):
+            with self.subTest(coverage=coverage):
+                warnings, errors = eval_coverage.evaluate_ratchet(
+                    modified={Path("alpha")},
+                    current={Path("alpha")},
+                    without_evals={Path("alpha")},
+                    coverage_pct=coverage,
+                )
+                self.assertEqual(warning, len(warnings))
+                self.assertEqual(error, len(errors))
+
     def test_deleted_skill_does_not_require_new_evals(self) -> None:
         warnings, errors = eval_coverage.evaluate_ratchet(
             modified={Path("removed")},
