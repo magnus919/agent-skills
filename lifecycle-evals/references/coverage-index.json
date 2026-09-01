@@ -103,6 +103,11 @@
           "integrated_scenarios": []
         },
         {
+          "case_id": "pooled-versus-siloed-headroom",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
           "case_id": "quota-decision",
           "behavioral_categories": [],
           "integrated_scenarios": []
@@ -112,6 +117,26 @@
           "behavioral_categories": [
             "conflicting-evidence"
           ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "tenant-admission-fairness",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "tenant-boundary-routing",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "tenant-demand-distribution",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "tenant-variable-unit-cost",
+          "behavioral_categories": [],
           "integrated_scenarios": []
         }
       ]
@@ -261,10 +286,35 @@
           "integrated_scenarios": []
         },
         {
+          "case_id": "modular-monolith-near-boundary",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
           "case_id": "reconciliation-failure",
           "behavioral_categories": [
             "failure"
           ],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "service-extraction-data-authority",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "service-extraction-pattern-choice",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "service-extraction-recovery",
+          "behavioral_categories": [],
+          "integrated_scenarios": []
+        },
+        {
+          "case_id": "service-extraction-seam",
+          "behavioral_categories": [],
           "integrated_scenarios": []
         }
       ]
