@@ -30,6 +30,26 @@
         "States that ToolLoopAgent belongs to the separate AI SDK API",
         "Does not invent an Eve-specific ToolLoopAgent configuration"
       ]
+    },
+    {
+      "id": "resume-after-restart",
+      "prompt": "Verify that a scheduled Eve workflow resumes correctly after a host restart.",
+      "expected_output": "The verification uses persistent state, authenticates the session, observes schedule execution, and checks resume behavior rather than only health.",
+      "assertions": [
+        "Checks persistent workflow state after restart",
+        "Verifies authenticated session and scheduled execution",
+        "Checks resume behavior beyond a health endpoint"
+      ]
+    },
+    {
+      "id": "proxy-routing-diagnosis",
+      "prompt": "An Eve workflow UI loads but scheduled callbacks fail through the reverse proxy. Diagnose the deployment without exposing credentials.",
+      "expected_output": "The diagnosis checks both required proxy prefixes, callback routing, authentication, and logs with bounded redaction, then verifies a scheduled callback end to end.",
+      "assertions": [
+        "Checks both Eve proxy prefixes and callback routing",
+        "Keeps credentials out of logs and configuration examples",
+        "Verifies an authenticated scheduled callback end to end"
+      ]
     }
   ]
 }
