@@ -1,10 +1,11 @@
 ---
 name: systematic-debugging
-description: '4-phase root cause debugging protocol: understand bugs before fixing.
-  Use for ANY technical issue — test failures, production bugs, unexpected behavior,
-  performance problems, build failures, or integration issues. ESPECIALLY when under
-  time pressure, when "one quick fix" seems obvious, or when previous fix attempts
-  have failed.'
+description: >-
+  Diagnose root causes with a four-phase debugging protocol. Use for ANY technical issue —
+  test failures, production bugs, unexpected behavior, performance problems, build
+  failures, or integration issues. ESPECIALLY when under time pressure, when "one quick
+  fix" seems obvious, or when previous fix attempts have failed. Do not use this skill for
+  unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Platform-agnostic. Some sections cover macOS-specific sandbox debugging.
   Requires access to source code, version control (git), and testing tools appropriate

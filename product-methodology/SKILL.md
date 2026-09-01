@@ -1,10 +1,9 @@
 ---
 name: product-methodology
 description: >-
-  Translate validated product evidence into prioritized backlogs, decisions,
-  specifications, and stakeholder communications. Covers RICE, MoSCoW, opportunity
-  solution trees, decision logs, spec drafting, and audience-specific stakeholder
-  communication. Use when the problem is validated and scope is being chosen.
+  Translate validated product evidence into tactical backlog decisions, prioritization,
+  specifications, and stakeholder communications. Do not use this skill for CPO-level
+  vision, positioning, or market strategy; use `product-strategy` for strategic direction.
 license: MIT
 metadata:
   source_repo: https://github.com/magnus919/hermes-profiles

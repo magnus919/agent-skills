@@ -1,14 +1,14 @@
 ---
 name: product-adoption
 description: >-
-  Diagnose and design product adoption for onboarding, activation, behavior
-  change, feature discovery, rollout, and sustained use after launch. Covers
-  consumer, B2B, internal-tool, and public-service contexts with evidence-based
-  decision points and cohort segmentation. Does not own acquisition campaigns
-  or marketing conversion (routes to go-to-market), product-analytics
-  instrumentation (routes to product-analytics-and-measurement), or
-  customer-success account management and health scoring (routes to
-  conditional-customer-success).
+  Diagnose and design product adoption for onboarding, activation, behavior change,
+  feature discovery, rollout, and sustained use after launch. Covers consumer, B2B,
+  internal-tool, and public-service contexts with evidence-based decision points and
+  cohort segmentation. Does not own acquisition campaigns or marketing conversion (routes
+  to go-to-market), product-analytics instrumentation (routes to
+  product-analytics-and-measurement), or customer-success account management and health
+  scoring (routes to conditional-customer-success). Do not use this skill for unrelated
+  requests; route to the nearest named specialist.
 license: MIT
 metadata:
   tags: product-adoption, onboarding, activation, behavior-change, feature-discovery,

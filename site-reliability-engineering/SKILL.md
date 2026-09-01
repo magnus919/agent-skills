@@ -1,6 +1,9 @@
 ---
 name: site-reliability-engineering
-description: Design, operate, and improve reliable production systems with SLOs, incident command, observability, error budgets, and operational practices.
+description: >-
+  Design, operate, and improve reliable production systems with SLOs, incident command,
+  observability, error budgets, and operational practices. Do not use this skill for
+  unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Python 3.9+ is required only for the bundled calculation and summary scripts.
 metadata:

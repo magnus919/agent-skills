@@ -1,10 +1,9 @@
 ---
 name: langchain
 description: >-
-  Expert skill for building LLM applications with LangChain — LCEL chains, RAG
-  pipelines, agent orchestration, LangGraph integration, LangSmith observability,
-  and production deployment via LangServe. Use when working with LangChain or
-  comparing LLM application frameworks.
+  Build LLM applications with LangChain. Use when working with LangChain or comparing LLM
+  application frameworks. Do not use this skill for unrelated requests; route to the
+  nearest named specialist.
 license: MIT
 metadata:
   author: Magnus Hedemark

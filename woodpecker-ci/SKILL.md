@@ -1,11 +1,11 @@
 ---
 name: woodpecker-ci
 description: >-
-  Operate Woodpecker CI from installation through production troubleshooting:
-  configure servers and agents, connect Forgejo/Gitea or another forge, write and
-  validate pipelines, manage secrets and plugins, use Docker or Kubernetes
-  backends, run the CLI, and diagnose failed builds. Use when setting up,
-  administering, or debugging Woodpecker CI.
+  Operate Woodpecker CI from installation through production troubleshooting: configure
+  servers and agents, connect Forgejo/Gitea or another forge, write and validate
+  pipelines, manage secrets and plugins, use Docker or Kubernetes backends, run the CLI,
+  and diagnose failed builds. Use when setting up, administering, or debugging Woodpecker
+  CI. Do not use this skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Requires access to a Woodpecker instance for administration; Docker Compose, Kubernetes, or woodpecker-cli are optional depending on the backend.
 metadata:

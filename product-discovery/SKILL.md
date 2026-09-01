@@ -1,10 +1,11 @@
 ---
 name: product-discovery
 description: >-
-  Discover product requirements from human stakeholders — map who to talk to,
-  ask questions that surface hidden assumptions, detect gaps in real time,
-  resolve conflicts, and translate conversations into structured SDD specs.
-  Phase 0 upstream of Spec-Driven Development.
+  Discover product requirements from human stakeholders — map who to talk to, ask
+  questions that surface hidden assumptions, detect gaps in real time, resolve conflicts,
+  and translate conversations into structured SDD specs. Phase 0 upstream of Spec-Driven
+  Development. Do not use this skill for unrelated requests; route to the nearest named
+  specialist.
 license: MIT
 compatibility: Agent-agnostic — works with any agent supporting a spec-driven or requirements pipeline.
 ---

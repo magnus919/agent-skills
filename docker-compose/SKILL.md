@@ -1,9 +1,10 @@
 ---
 name: docker-compose
 description: >-
-  Use Docker Compose to define, run, debug, and harden multi-container applications.
-  Load for compose.yaml design, networking, volumes, secrets, profiles, overrides,
-  watch mode, lifecycle operations, or troubleshooting.
+  Use Docker Compose to define, run, debug, and harden multi-container applications. Load
+  for compose.yaml design, networking, volumes, secrets, profiles, overrides, watch mode,
+  lifecycle operations, or troubleshooting. Do not use this skill for unrelated requests;
+  route to the nearest named specialist.
 license: MIT
 compatibility: Docker Compose v2 or another implementation of the Compose Specification; commands require Docker CLI.
 metadata:

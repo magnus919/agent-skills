@@ -1,12 +1,9 @@
 ---
 name: yc-weekly-growth-compass
-description: Use Paul Graham's "Startup = Growth" framework as an operational decision
-  tool. Computes weekly growth rates, benchmarks against YC tiers (1% concerning, 5-7%
-  good, 10%+ exceptional), projects compound growth over time, and frames every startup
-  decision through the question "does this serve your target growth rate?" Ships a deterministic
-  CLI calculator. Load when founders ask about growth rate, weekly growth, startup
-  traction, metrics, or whether they're moving fast enough; do not use for general
-  financial modeling or engineering work unrelated to growth metrics.
+description: >-
+  Make weekly startup growth decisions using growth rate, user behavior, and experiment
+  evidence. Do not use this skill for runway, burn, or profitability trajectory analysis;
+  use `yc-default-alive-calculator` for financial sustainability.
 license: MIT
 compatibility: Python 3.9+ with standard library only (no external dependencies).
   The growth-compass.py script uses only math, json, and sys.

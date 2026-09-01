@@ -1,10 +1,10 @@
 ---
 name: haystack
 description: >-
-  Expert skill for production search and NLP pipelines with Haystack (deepset).
-  Pipeline DAG composition, document stores, retrievers, PromptBuilder (Jinja2),
-  generators, evaluation, Hayhooks deployment. Use when building search pipelines
-  or comparing NLP application frameworks.
+  Build production search and NLP pipelines with Haystack. Pipeline DAG composition,
+  document stores, retrievers, PromptBuilder (Jinja2), generators, evaluation, Hayhooks
+  deployment. Use when building search pipelines or comparing NLP application frameworks.
+  Do not use this skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 metadata:
   author: Magnus Hedemark

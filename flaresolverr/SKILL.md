@@ -1,6 +1,11 @@
 ---
 name: flaresolverr
-description: Use the minimal FlareSolverr wrapper for a one-off health check or browser-backed GET/POST when ordinary retrieval is blocked by Cloudflare or DDoS-GUARD. Choose flaresolverr-cli instead for named session lifecycle, cookie-only returns, dry-run planning, or the full operational command surface.
+description: >-
+  Use the minimal FlareSolverr wrapper for a one-off health check or browser-backed
+  GET/POST when ordinary retrieval is blocked by Cloudflare or DDoS-GUARD. Choose
+  flaresolverr-cli instead for named session lifecycle, cookie-only returns, dry-run
+  planning, or the full operational command surface. Do not use this skill for unrelated
+  requests; route to the nearest named specialist.
 ---
 
 # FlareSolverr

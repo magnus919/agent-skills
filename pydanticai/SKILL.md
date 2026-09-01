@@ -1,11 +1,12 @@
 ---
 name: pydanticai
 description: >-
-  Build type-safe AI agents and graph-based workflows with PydanticAI and
-  PydanticGraph. Agent creation, function tools, capabilities, dependency
-  injection, structured output, streaming, multi-agent patterns, testing,
-  evals, and graph state machines. Use whenever you are building agents,
-  tool-using LLM workflows, or graph-based state machines in Python.
+  Build type-safe AI agents and graph-based workflows with PydanticAI and PydanticGraph.
+  Agent creation, function tools, capabilities, dependency injection, structured output,
+  streaming, multi-agent patterns, testing, evals, and graph state machines. Use whenever
+  you are building agents, tool-using LLM workflows, or graph-based state machines in
+  Python. Do not use this skill for unrelated requests; route to the nearest named
+  specialist.
 license: MIT
 metadata:
   source: https://pydantic.dev/docs/ai/overview/

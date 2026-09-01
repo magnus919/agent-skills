@@ -1,17 +1,17 @@
 ---
 name: neckbeard
 description: >-
-  Use when asked to fix, build, refactor, review, verify, or release software and the work is
-  non-trivial — including delivering a change request through planning, gates, implementation,
-  review, verified PR, and authorized release; continuing work started elsewhere with no packet
-  via evidence-based position assessment; or operating tracked work items in Linear, Jira, or
-  Notion via their tooling skills. neckbeard routes the change through framing, discovery,
-  design, implementation, review, verification, and learning — choosing the smallest *safe*
-  intervention, proving it at the real delivery boundary, leaving an inspectable evidence ledger.
-  For change-request / issue-to-PR work, conditionally loads a 9-phase journey with gates,
-  delivery packet, and lifecycle integration. Composes specialist catalog skills rather than
-  replacing them. Not a persona, not a '10x developer' prompt, not a LOC-minimizer. The journey
-  is not loaded for plain fixes, refactors, or reviews that lack an issue/ticket trajectory.
+  Use when asked to fix, build, refactor, review, verify, or release software and the work
+  is non-trivial — including delivering a change request through planning, gates,
+  implementation, review, verified PR, and authorized release; continuing work started
+  elsewhere with no packet via evidence-based position assessment; or operating tracked
+  work items in Linear, Jira, or Notion via their tooling skills. neckbeard routes the
+  change through framing, discovery, design, implementation, review, verification, and
+  learning — choosing the smallest *safe* intervention, proving it at the real delivery
+  boundary, and leaving an inspectable evidence ledger. For issue-to-PR work, conditionally
+  loads a 9-phase journey with gates and lifecycle integration. Composes specialist catalog
+  skills rather than replacing them. Not a persona or LOC-minimizer. Do not use this skill
+  for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Agent harness with file read/write, terminal, and skill loading. No network or runtime dependency required by the bundle itself.
 metadata:

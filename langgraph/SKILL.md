@@ -1,11 +1,13 @@
 ---
 name: langgraph
-description: Build multi-agent AI systems with LangGraph — the low-level orchestration
-  framework for stateful, graph-based agent workflows. Covers supervisor, swarm, and
-  hierarchical multi-agent patterns; subgraph composition; state management (checkpointers/stores);
+description: >-
+  Build multi-agent AI systems with LangGraph — the low-level orchestration framework for
+  stateful, graph-based agent workflows. Covers supervisor, swarm, and hierarchical
+  multi-agent patterns; subgraph composition; state management (checkpointers/stores);
   persistence; evals; and production debugging. Reach for this when designing agent
-  architectures that need cycles, conditional branching, parallel execution, or human-in-the-loop
-  patterns.
+  architectures that need cycles, conditional branching, parallel execution, or
+  human-in-the-loop patterns. Do not use this skill for unrelated requests; route to the
+  nearest named specialist.
 license: MIT
 metadata:
   source: LangGraph by LangChain Inc — https://langchain.com/langgraph

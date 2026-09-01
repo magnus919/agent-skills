@@ -1,11 +1,8 @@
 ---
 name: org-design
-description: CHRO methodology — organizational design (team topologies, span of control,
-  reporting structures), talent strategy (make-vs-buy, skill taxonomies, succession
-  planning), compensation frameworks (market benchmarking, equity design, leveling),
-  culture architecture (values codification, rituals, psychological safety), organizational
-  health metrics (eNPS, retention risk, engagement surveys), DEI strategy (inclusive
-  design, equitable systems, belonging).
+description: >-
+  Design organizations with a CHRO methodology. Do not use this skill for unrelated
+  requests; route to the nearest named specialist.
 license: MIT
 metadata:
   tags: org-design, chro, hr, talent-strategy, compensation, culture, organizational-health,

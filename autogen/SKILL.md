@@ -1,10 +1,11 @@
 ---
 name: autogen
 description: >-
-  Expert skill for conversational multi-agent AI with Microsoft AutoGen.
-  AssistantAgent, UserProxyAgent, GroupChat, code execution, nested chats,
-  cancellation tokens, tool integration, and MCP support. Use when building
-  conversation-driven multi-agent systems or comparing agent frameworks.
+  Build conversational multi-agent systems with Microsoft AutoGen. AssistantAgent,
+  UserProxyAgent, GroupChat, code execution, nested chats, cancellation tokens, tool
+  integration, and MCP support. Use when building conversation-driven multi-agent systems
+  or comparing agent frameworks. Do not use this skill for unrelated requests; route to
+  the nearest named specialist.
 license: MIT
 metadata:
   author: Magnus Hedemark

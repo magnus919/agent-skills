@@ -1,12 +1,12 @@
 ---
 name: product-design-and-ux
 description: >-
-  Define user-facing product behavior from validated evidence and approved scope.
-  Use for information architecture, task flows, state and recovery models,
-  interface contracts, usability-study plans, interaction-pattern tradeoffs, or
-  engineering UX handoffs. Use after product discovery and product decisions;
-  route WCAG/ARIA conformance work to web-accessibility and formal software
-  specifications to spec-driven-development.
+  Define user-facing product behavior from validated evidence and approved scope. Use for
+  information architecture, task flows, state and recovery models, interface contracts,
+  usability-study plans, interaction-pattern tradeoffs, or engineering UX handoffs. Use
+  after product discovery and product decisions; route WCAG/ARIA conformance work to
+  web-accessibility and formal software specifications to spec-driven-development. Do not
+  use this skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Works with any agent framework supporting the Agent Skills format; no design tool, frontend framework, or proprietary service required.
 ---

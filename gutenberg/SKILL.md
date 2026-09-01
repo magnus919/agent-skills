@@ -1,12 +1,13 @@
 ---
 name: gutenberg
-description: Search, download, and extract public-domain books from Project Gutenberg.
-  Look up books by ID or keyword via gutendex, download plain-text and EPUB editions,
-  strip licensing boilerplate, extract clean text from EPUB for illustrated works,
-  and classify fiction vs non-fiction. Ships a portable CLI script with zero external
-  dependencies. Use when the user says "gutenberg", "public domain", "download a book",
-  "classic literature", "free ebook", "gutenberg.org", or names any public-domain
-  title or author.
+description: >-
+  Search, download, and extract public-domain books from Project Gutenberg. Look up books
+  by ID or keyword via gutendex, download plain-text and EPUB editions, strip licensing
+  boilerplate, extract clean text from EPUB for illustrated works, and classify fiction vs
+  non-fiction. Ships a portable CLI script with zero external dependencies. Use when the
+  user says "gutenberg", "public domain", "download a book", "classic literature", "free
+  ebook", "gutenberg.org", or names any public-domain title or author. Do not use this
+  skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Python 3.8+ with zero external dependencies. The CLI uses only the
   Python standard library (urllib.request, json, html.parser, zipfile, re, sys). For
