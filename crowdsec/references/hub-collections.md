@@ -81,7 +81,7 @@ sudo cscli collections list --all
 # Inspect (shows version + runtime metrics)
 sudo cscli collections inspect crowdsecurity/nginx
 
-# Upgrade
+# Refresh the hub index, then upgrade (state-changing; confirm the safety gate first)
 sudo cscli hub update
 sudo cscli collections upgrade crowdsecurity/nginx
 

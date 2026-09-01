@@ -105,7 +105,7 @@ action: ban
 
 ## Virtual Patching
 
-Virtual patching rules protect against known CVEs without modifying application code. These are maintained by CrowdSec and updated via `cscli hub update`.
+Virtual patching rules protect against known CVEs without modifying application code. These are maintained by CrowdSec; refreshing them with `cscli hub update` changes the local hub index, so treat it as an optional operation subject to the mutation safety gate.
 
 ## Gotchas
 
