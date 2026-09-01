@@ -4,7 +4,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-_spec = importlib.util.spec_from_file_location("validate_frontmatter_audit", Path(__file__).parent / "validate-frontmatter-audit.py")
+_spec = importlib.util.spec_from_file_location(
+    "validate_frontmatter_audit", Path(__file__).parent / "validate-frontmatter-audit.py"
+)
 _module = importlib.util.module_from_spec(_spec)
 assert _spec.loader is not None
 _spec.loader.exec_module(_module)
@@ -22,7 +24,9 @@ class FrontmatterAuditTests(unittest.TestCase):
     def test_accepts_imperative_positive_and_boundary_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            self.write_skill(root, Path("example"), "Query PromQL metrics. Do not use this skill for LogQL.")
+            self.write_skill(
+                root, Path("example"), "Query PromQL metrics. Do not use this skill for LogQL."
+            )
             report = audit(root)
             self.assertTrue(report["ok"])
             self.assertEqual(report["files_audited"], 1)
@@ -33,19 +37,35 @@ class FrontmatterAuditTests(unittest.TestCase):
             self.write_skill(root, Path("example"), "A metrics helper for dashboards.")
             report = audit(root)
             self.assertFalse(report["ok"])
-            self.assertEqual({item["rule"] for item in report["violations"]}, {"imperative-opener", "negative-boundary"})
+            self.assertEqual(
+                {item["rule"] for item in report["violations"]},
+                {"imperative-opener", "negative-boundary"},
+            )
 
     def test_accepts_substantive_when_not_to_use_section(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            self.write_skill(root, Path("example"), "Query PromQL metrics.", "## When not to use\nUse grafana for dashboard editing.\n")
+            self.write_skill(
+                root,
+                Path("example"),
+                "Query PromQL metrics.",
+                "## When not to use\nUse grafana for dashboard editing.\n",
+            )
             self.assertTrue(audit(root)["ok"])
 
     def test_discovers_nested_bundle_skills_but_excludes_profiles(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            self.write_skill(root, Path("bundle/skills/nested"), "Query PromQL metrics. Do not use this skill for LogQL.")
-            self.write_skill(root, Path("agent-council/profiles/skills/profile"), "Query PromQL metrics. Do not use this skill for LogQL.")
+            self.write_skill(
+                root,
+                Path("bundle/skills/nested"),
+                "Query PromQL metrics. Do not use this skill for LogQL.",
+            )
+            self.write_skill(
+                root,
+                Path("agent-council/profiles/skills/profile"),
+                "Query PromQL metrics. Do not use this skill for LogQL.",
+            )
             report = audit(root)
             self.assertTrue(report["ok"])
             self.assertEqual(report["files_audited"], 1)

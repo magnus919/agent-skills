@@ -55,8 +55,7 @@ def files(root: Path) -> list[Path]:
     return sorted(
         path
         for path in root.glob("**/SKILL.md")
-        if "agent-council/profiles/skills/"
-        not in path.relative_to(root).as_posix()
+        if "agent-council/profiles/skills/" not in path.relative_to(root).as_posix()
     )
 
 
@@ -89,8 +88,7 @@ def has_body_boundary(body: str) -> bool:
             if visible and not re.fullmatch(r"[-*_]{3,}", visible):
                 section.append(visible)
         if any(
-            len(re.findall(r"[A-Za-z0-9]+", line)) >= 3
-            and BOUNDARY_WORD.search(line)
+            len(re.findall(r"[A-Za-z0-9]+", line)) >= 3 and BOUNDARY_WORD.search(line)
             for line in section
         ):
             return True
@@ -166,10 +164,7 @@ def main() -> int:
     else:
         print(f"Audited {report['files_audited']} canonical descriptions")
         for violation in report["violations"]:
-            print(
-                f"{violation['path']}: {violation['rule']}: "
-                f"{violation['message']}"
-            )
+            print(f"{violation['path']}: {violation['rule']}: {violation['message']}")
         result = "PASS" if report["ok"] else f"FAIL ({len(report['violations'])} violations)"
         print(result)
     return 0 if report["ok"] else 1
