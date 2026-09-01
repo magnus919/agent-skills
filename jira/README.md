@@ -39,6 +39,8 @@ export JIRA_SERVER="https://your-domain.atlassian.net"
 jira me                        # verify auth works
 jira list --project PROJ       # newest tickets
 jira count --jql 'issuetype = Bug AND resolution = Unresolved'
+jira create --project PROJ --summary "Test" --dry-run  # preview writes
+jira --yes create --project PROJ --summary "Test"      # authorize a write
 ```
 
 ## Triggers

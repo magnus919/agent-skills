@@ -158,6 +158,29 @@ class DryRunTests(unittest.TestCase):
             req.assert_not_called()
 
 
+class MutationGateTests(unittest.TestCase):
+    def setUp(self):
+        self._env = (jira_cli.ENV_EMAIL, jira_cli.ENV_TOKEN)
+        jira_cli.ENV_EMAIL = "ops@example.com"
+        jira_cli.ENV_TOKEN = "test-token-123"
+
+    def tearDown(self):
+        jira_cli.ENV_EMAIL, jira_cli.ENV_TOKEN = self._env
+
+    def test_create_requires_explicit_yes_or_force(self):
+        code, _, err = run_cli("create", "--project", "PROJ", "--summary", "Test")
+        self.assertEqual(code, 1)
+        self.assertIn("--yes", err)
+
+    def test_yes_alias_allows_mutation(self):
+        with mock.patch.object(requests, "request", return_value=FakeResponse(
+                201, {"key": "PROJ-1", "self": "https://jira.example/issue/PROJ-1"})):
+            code, out, _ = run_cli("--yes", "create", "--project", "PROJ",
+                                   "--summary", "Test", "--json")
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out)["status"], "created")
+
+
 # === Class 4: mocked client logic ===
 
 
@@ -227,7 +250,7 @@ class MockedClientTests(unittest.TestCase):
         resp = FakeResponse(400, {"errorMessages": [],
                                   "errors": {"resolution": "Resolution is required"}})
         with mock.patch.object(requests, "request", return_value=resp):
-            code, _, err = run_cli("comment", "PROJ-1", "-m", "hi")
+            code, _, err = run_cli("--force", "comment", "PROJ-1", "-m", "hi")
         self.assertEqual(code, 1)
         self.assertIn("resolution: Resolution is required", err)
 
@@ -261,7 +284,7 @@ class MockedClientTests(unittest.TestCase):
         ]}
         resp = FakeResponse(200, payload)
         with mock.patch.object(requests, "request", return_value=resp):
-            code, out, _ = run_cli("transitions", "PROJ-1", "--json")
+            code, out, _ = run_cli("--force", "transitions", "PROJ-1", "--json")
         self.assertEqual(code, 0)
         data = json.loads(out)
         self.assertEqual([t["id"] for t in data["transitions"]], ["31", "11"])
@@ -281,7 +304,7 @@ class MockedClientTests(unittest.TestCase):
             return FakeResponse(204, None, text="")
 
         with mock.patch.object(requests, "request", side_effect=fake_request):
-            code, out, _ = run_cli("transition", "PROJ-1", "--to", "Done",
+            code, out, _ = run_cli("--force", "transition", "PROJ-1", "--to", "Done",
                                    "--resolution", "Fixed", "--json")
         self.assertEqual(code, 0)
         self.assertEqual(len(posted), 1)
@@ -296,7 +319,7 @@ class MockedClientTests(unittest.TestCase):
              "to": {"name": "In Progress",
                     "statusCategory": {"key": "in-flight"}}}]})
         with mock.patch.object(requests, "request", return_value=listing):
-            code, _, err = run_cli("transition", "PROJ-1", "--to", "Done")
+            code, _, err = run_cli("--force", "transition", "PROJ-1", "--to", "Done")
         self.assertEqual(code, 1)
         self.assertIn("Available: 11=Start Progress", err)
 
