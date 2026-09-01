@@ -507,7 +507,7 @@
         "./go-to-market"
       ],
       "strict": false,
-      "description": "Plan and execute go-to-market strategy — positioning and messaging frameworks (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), and competitive response (pricing wars, feature races, brand defense). Do not use for sales execution and pipeline management, product strategy, or visual brand identity design."
+      "description": "Plan and evaluate go-to-market strategy using positioning, acquisition, growth economics, market-entry, and competitive-response workflows. Do not use for CRM execution, product strategy, legal interpretation, or visual brand design. (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), and competitive response (pricing wars, feature races, brand defense). Do not use for sales execution and pipeline management, product strategy, or visual brand identity design."
     },
     {
       "name": "grafana",
@@ -633,7 +633,7 @@
         "./legal-strategy"
       ],
       "strict": false,
-      "description": "CLO/General Counsel methodology — regulatory landscape analysis (GDPR, CCPA, AI Act, sector-specific), IP strategy (patent, trademark, trade secret, open source licensing), contract risk assessment (indemnification, liability caps, force majeure), data privacy frameworks (privacy-by-design, DPIAs, data mapping), corporate governance (board responsibilities, fiduciary duties, shareholder rights), employment law (classification, IP assignment, non-competes)."
+      "description": "Analyze legal and regulatory risk, IP, contracts, privacy, governance, and employment questions as structured issue-spotting for counsel. Do not use this methodology as legal advice or for technical security implementation, CRM, or delivery execution."
     },
     {
       "name": "life-coach",
@@ -795,7 +795,7 @@
         "./operational-design"
       ],
       "strict": false,
-      "description": "Design and improve operational processes and organizational scaling — process design, operational metrics, compliance and audit, vendor management, and team topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10 to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness, RFP processes, SLA design, vendor scorecards, team topologies, Conway's Law, and Dunbar's Number. Do not use for engineering delivery, financial modeling, or technology evaluation."
+      "description": "Design and improve operational processes, controls, metrics, vendors, and scaling models through bounded pilots and evidence. Do not use for engineering delivery, financial modeling, technology evaluation, or legal advice. design, operational metrics, compliance and audit, vendor management, and team topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10 to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness, RFP processes, SLA design, vendor scorecards, team topologies, Conway's Law, and Dunbar's Number. Do not use for engineering delivery, financial modeling, or technology evaluation."
     },
     {
       "name": "org-design",
@@ -804,7 +804,7 @@
         "./org-design"
       ],
       "strict": false,
-      "description": "CHRO methodology — organizational design (team topologies, span of control, reporting structures), talent strategy (make-vs-buy, skill taxonomies, succession planning), compensation frameworks (market benchmarking, equity design, leveling), culture architecture (values codification, rituals, psychological safety), organizational health metrics (eNPS, retention risk, engagement surveys), DEI strategy (inclusive design, equitable systems, belonging)."
+      "description": "Design organizational topology, talent, rewards, culture, and health decisions with explicit decision rights and validation. Do not use for legal advice, project delivery planning, financial modeling, or technology implementation. reporting structures), talent strategy (make-vs-buy, skill taxonomies, succession planning), compensation frameworks (market benchmarking, equity design, leveling), culture architecture (values codification, rituals, psychological safety), organizational health metrics (eNPS, retention risk, engagement surveys), DEI strategy (inclusive design, equitable systems, belonging)."
     },
     {
       "name": "pace-plan",
