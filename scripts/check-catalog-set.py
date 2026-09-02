@@ -118,6 +118,11 @@ def compare(root: Path) -> dict[str, object]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Compare canonical skills and generated catalogs")
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="select JSON output (the default; retained for explicit CLI callers)",
+    )
     args = parser.parse_args()
     try:
         result = compare(args.root.resolve())

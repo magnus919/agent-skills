@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import importlib.util
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -17,6 +19,15 @@ class CatalogSetTest(unittest.TestCase):
     def test_current_catalogs_match(self) -> None:
         result = check_catalog_set.compare(Path(__file__).parent.parent)
         self.assertTrue(result["ok"], result)
+
+    def test_explicit_json_selector_preserves_default_output(self) -> None:
+        script = Path(__file__).parent / "check-catalog-set.py"
+        command = [sys.executable, str(script)]
+        default = subprocess.run(command, capture_output=True, text=True, check=False)
+        explicit = subprocess.run([*command, "--json"], capture_output=True, text=True, check=False)
+        self.assertEqual(default.returncode, 0)
+        self.assertEqual(explicit.returncode, 0)
+        self.assertEqual(json.loads(default.stdout), json.loads(explicit.stdout))
 
     def test_missing_duplicate_extra_and_retired_are_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

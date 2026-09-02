@@ -670,6 +670,27 @@ For Hermes Agent, keep `--global`: the CLI then installs directly into `$HERMES_
 
 The [skills.sh catalog page](https://skills.sh/magnus919/agent-skills) is populated from installation telemetry rather than a separately submitted registry manifest.
 
+### Repository validation
+
+Contributors need Python 3.14+ and Ruby 2.6+ (the checked-in `.venv` uses the pinned development dependencies in `requirements-dev.txt`). Run the focused checks first, then the complete repository gate:
+
+```bash
+python3 scripts/check-catalog-set.py
+python3 scripts/check-artifacts.py
+python3 scripts/validate-evals.py
+make validate
+```
+
+`check-catalog-set.py` emits JSON by default and also accepts the explicit `--json` selector. It compares canonical top-level `SKILL.md` names with the Claude, Codex, Agents, and `llms.txt` projections, rejecting missing, extra, duplicate, retired, nested, or infrastructure entries. Regenerate projections from source metadata when needed:
+
+```bash
+ruby scripts/gen-claude-marketplace.rb --write
+ruby scripts/gen-codex-plugin.rb --write
+ruby scripts/gen-llms-txt.rb --write
+```
+
+The eval manifest contract is checked with `python3 scripts/validate-evals.py`; use `python3 scripts/eval-coverage.py` for the current coverage report and `python3 scripts/test-eval-validation.py` for focused validator tests. Lifecycle matrix and fake-adapter coverage are verified with `ruby scripts/validate-lifecycle-matrix.rb` and `CORPUS_OUT_DIR=/tmp/lifecycle-evals-runs-local bash lifecycle-evals/scripts/run-corpus.sh`.
+
 ### Harness-native installation
 
 Skills don't require installation in the traditional sense. They are loaded by your AI agent when triggered. Each agent framework documents its own skill directory path and loading mechanism — follow the links below for the authoritative setup guide for your harness.
