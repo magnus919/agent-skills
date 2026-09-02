@@ -85,13 +85,60 @@ secret and restarting; the regenerate flow re-encrypts stored credentials under 
 unusable key and bricks the deployment. Symptom of salt-key trouble at startup:
 `Error decrypting value`.
 
-### D) 429 rate limits — three different sources
+### D) 429 rate limits — identify the limiter and boundary
 
-Read the wording: key/team rpm/tpm rejections come before any provider call and
-name the limit; budget exhaustion raises Budget/TokenBudget errors naming spend vs
-max (check `GET /key/info`); provider 429 carries `<Provider>Exception`, gets retried
-with backoff, then cools the deployment down (mode A). Remember budgets fail open
-without a DB and rate limits don't apply to admins.
+A 429 is not necessarily upstream. Classify the response and logs before changing
+configuration: a provider 429 includes `<Provider>Exception`; a proxy-side limit
+may name a key or team limiter; a router cooldown can report that no deployment is
+available. Budget exhaustion is a separate Budget/TokenBudget error. Budgets can
+fail open without a DB, and rate-limit checks may not apply to proxy admins, so use
+an internal-user test key when verifying enforcement.
+
+LiteLLM has multiple limiter scopes. Key-level `tpm_limit`, `rpm_limit`, and
+`max_parallel_requests` apply to that key; per-model key limits use
+`model_tpm_limit` and `model_rpm_limit`. Team limits apply to team membership,
+while `general_settings.global_max_parallel_requests` is proxy-wide. A model or
+deployment `rpm`/`tpm` value in `litellm_params` may guide weighted routing rather
+than enforce a hard ceiling unless `enforce_model_rate_limits` is enabled. Do not
+infer a global, model, or deployment limit from a key-level message, and treat any
+future limiter or version-specific implementation as unverified until checked in
+the pinned release.
+
+A bounded v1.98.0 observation from 2026-08-25 included `Limit type: tokens`, a
+`Current limit: 400000`, remaining tokens, and a reset timestamp. In that sample,
+LiteLLM's `ProxyRateLimitError` was raised by
+`proxy/hooks/parallel_request_limiter_v3.py` before the provider call, with logging
+through `common_request_processing.py _handle_llm_api_exception`. These are
+implementation details of that observation, not universal behavior, and no live
+v1.98.0 reproduction was performed for this reference.
+
+To investigate a suspected key limiter, first capture the complete response,
+request ID, key identity without logging the secret, selected model/deployment,
+and the configured key/team/model values. Verify with the same key through the
+proxy: readiness, `/v1/models`, `/health?model=<name>`, response headers, and one
+small representative request. Prefer these bounded API and gateway checks before
+any authorized database inspection. If a change is approved, confirm the exact
+key/team/deployment target, intended scope, and rollback owner; read and record
+prior `tpm_limit`, `rpm_limit`, `max_parallel_requests`, and related values before
+changing them. Preserve those values and restore them after the test. Use an
+explicit, complete payload, for example:
+
+```json
+{
+  "key": "<token>",
+  "tpm_limit": null,
+  "rpm_limit": null,
+  "max_parallel_requests": null
+}
+```
+
+Send that payload to `POST /key/update` only after the confirmation gate. Explicit
+`null` requests clearing these key fields; omitting a field leaves its prior value
+in place. Clearing key limits cannot prove that a team, global, model, deployment,
+or provider limiter is absent. Re-read the effective configuration and restore the
+recorded values through the same authorized API. Inspect Postgres directly only
+when the API/gateway evidence is insufficient and the operator has approved the
+specific read scope.
 
 ### E) ContextWindowExceededError
 
