@@ -12,6 +12,7 @@ Your agent applies COO-level frameworks — value stream mapping, scaling stages
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
 | `references/` | Process, metrics, compliance, vendor, scaling, and bounded decision workflows |
+| `evals/evals.json` | Output-quality cases for process, metrics, compliance, and vendor decisions |
 
 ## Triggers
 

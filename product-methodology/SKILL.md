@@ -70,6 +70,10 @@ Load this skill when:
 4. Write specs that define the problem, success metrics, scope boundaries, open questions, and edge cases.
 5. Communicate decisions in the format each audience needs — recommendation-first for executives, context-first for engineers, listening-first for customers.
 
+## Routing Boundary
+
+Use `product-strategy` for CPO-level vision, positioning, market strategy, and portfolio direction. Route tactical prioritization, specifications, decision logs, and backlog sequencing back here once strategic direction and validated evidence are available; do not make portfolio strategy decisions in this skill.
+
 ## Portability
 
 This skill is intentionally host-neutral. It requires no profile system, output format, scripts, or external services. Load references directly by path — use the host agent's normal file-loading mechanism.

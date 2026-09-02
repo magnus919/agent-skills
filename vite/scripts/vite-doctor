@@ -44,6 +44,29 @@ def bounded_version(command: list[str], timeout: float) -> dict[str, object]:
     return result
 
 
+def resolved_vite(project: Path, timeout: float) -> dict[str, object]:
+    """Report local package metadata and local .bin behavior without installing."""
+    package_path = project / "node_modules" / "vite" / "package.json"
+    package: dict[str, object] = {"available": package_path.is_file()}
+    if package_path.is_file():
+        try:
+            data = json.loads(package_path.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                version = data.get("version")
+                if isinstance(version, str) and version:
+                    package["version"] = version
+                package["path"] = str(package_path)
+        except (OSError, json.JSONDecodeError) as exc:
+            package["error"] = f"cannot read installed package: {exc}"
+
+    binary_path = project / "node_modules" / ".bin" / "vite"
+    binary: dict[str, object] = {"available": binary_path.is_file()}
+    if binary_path.is_file():
+        binary["path"] = str(binary_path)
+        binary.update(bounded_version([str(binary_path), "--version"], timeout))
+    return {"package": package, "executable": binary}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", default=".", help="Vite project directory")
@@ -95,7 +118,7 @@ def main() -> int:
         },
         "node": bounded_version(["node", "--version"], args.timeout),
         "vite_dependency": dependencies,
-        "vite_installed": (project / "node_modules" / "vite" / "package.json").is_file(),
+        "vite_resolved": resolved_vite(project, args.timeout),
         "config_files": configs,
         "env_file_names": sorted(
             path.name for path in project.iterdir()

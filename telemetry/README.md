@@ -15,7 +15,7 @@ The references are distilled from the official Prometheus, OpenTelemetry Collect
 | Directory | Purpose |
 |---|---|
 | `SKILL.md` | Agent-facing operating loop, mutation gates, and verification boundaries |
-| `references/` | Six dated references: source index, Prometheus operations, OpenTelemetry Collector, Loki operations, bounded PromQL/LogQL query workflows, stack integration and retention |
+| `references/` | Six focused references: source index, Prometheus operations, OpenTelemetry Collector, Loki operations, bounded PromQL/LogQL query workflows, stack integration and retention |
 | `scripts/telemetry-check` | Read-only rule sanity + scrape-target reachability checker: stdlib-only Python, `--json`, `--rules`/`--scrape`/`--targets`, `--help` with no server |
 | `fixtures/` | Valid `prometheus-rules.yml` and `scrape-config.yml` used by the tests and as starting points |
 | `tests/` | Deterministic tests against the fixture configs, including the read-only contract |
@@ -37,7 +37,7 @@ telemetry/scripts/telemetry-check --scrape telemetry/fixtures/scrape-config.yml 
 telemetry/scripts/telemetry-check --targets targets.txt --timeout 5
 ```
 
-Exit codes: 0 all checks passed, 1 issues found or a fatal error, 2 usage error. The rule checks mirror `promtool check rules` for structure (exactly one of `record`/`alert`, non-empty `expr` with balanced delimiters, valid durations, valid names and label values); use `promtool check rules` when you need full PromQL parsing.
+Exit codes: 0 all checks passed, 1 issues found or a fatal error, 2 usage error. `telemetry-check --rules` is a dependency-free structural sanity check, not a PromQL parser. Run `promtool check rules` separately when full PromQL syntax validation is required, then verify rule evaluation at the Prometheus API boundary.
 
 ## Triggers
 
