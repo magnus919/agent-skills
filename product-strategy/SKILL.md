@@ -1,8 +1,10 @@
 ---
 name: product-strategy
 description: >-
-  Set product vision and strategy with a CPO methodology. Do not use this skill for
-  unrelated requests; route to the nearest named specialist.
+  Set product vision, positioning, market strategy, and portfolio direction with a
+  CPO methodology. Route tactical prioritization, specifications, and backlog
+  decisions to `product-methodology`; do not use this skill for delivery-level
+  product decisions or unrelated requests.
 license: MIT
 metadata:
   tags: product-strategy, cpo, product-management, competitive-analysis, market-sizing,
@@ -51,6 +53,6 @@ The profile using this skill produces artifact pyramids. The response to any cal
 ## Related Skills
 
 - `artifact-pyramids` — output contract
-- `product-methodology` — tactical product management (RICE, MoSCoW, customer interviews)
+- `product-methodology` — tactical product management: route validated evidence here for prioritization, specifications, decision logs, and backlog decisions; this skill does not own those delivery-level choices.
 - `go-to-market` — CMO methodology (positioning, acquisition, brand, growth modeling)
 - `implementation-planning` — work breakdown and dependency ordering

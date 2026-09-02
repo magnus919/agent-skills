@@ -12,6 +12,7 @@ Your agent reasons about positioning, acquisition channels, and growth economics
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
 | `references/` | Deep-dive frameworks plus `decision-workflow.md` for launch decisions and routing |
+| `evals/evals.json` | Output-quality cases for positioning, acquisition, growth, and launch decisions |
 
 ## Triggers
 

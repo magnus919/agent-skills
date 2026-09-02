@@ -40,7 +40,7 @@ Use this skill to operate the **telemetry stack** — Prometheus, the OpenTeleme
 
 ## The telemetry-check script
 
-`scripts/telemetry-check` is an agent-first, read-only checker. It parses Prometheus rules files with a bundled stdlib YAML reader and runs sanity checks mirroring `promtool check rules`; it extracts static targets from scrape configs and probes TCP reachability; and it emits bounded JSON. It never writes files and never sends data anywhere.
+`scripts/telemetry-check` is an agent-first, read-only checker. It parses Prometheus rules files with a bundled stdlib YAML reader and runs dependency-free structural sanity checks; it extracts static targets from scrape configs and probes TCP reachability; and it emits bounded JSON. It never writes files and never sends data anywhere.
 
 ```bash
 scripts/telemetry-check --help                      # no server needed
@@ -49,7 +49,7 @@ scripts/telemetry-check --scrape prometheus.yml --json   # probe static targets
 scripts/telemetry-check --targets targets.txt --timeout 5
 ```
 
-Exit codes: 0 all checks passed, 1 issues found or a fatal error, 2 usage error. The rule checks mirror promtool: exactly one of `record`/`alert` per rule, a non-empty expression with balanced delimiters, valid durations, recording-rule and label names, and string-only label values. Use `promtool check rules` for full PromQL parsing.
+Exit codes: 0 all checks passed, 1 issues found or a fatal error, 2 usage error. `telemetry-check --rules` checks structure only: exactly one of `record`/`alert` per rule, a non-empty expression with balanced delimiters, valid durations, recording-rule and label names, and string-only label values. Use `promtool check rules` separately for full PromQL parsing.
 
 ## Operating loop
 
@@ -63,7 +63,7 @@ Exit codes: 0 all checks passed, 1 issues found or a fatal error, 2 usage error.
 ## Prometheus: scrape, rules, relabeling, retention, HA
 
 - **Scrape config** (`scrape_configs`): one job per scrape group with a deliberate `scrape_interval`, `scrape_timeout` below it, and `metrics_path`. Prefer `static_configs` for known endpoints and service discovery (`*_sd_configs`) for dynamic ones. Verify the running config with `/api/v1/status/config` and targets with `/api/v1/targets?state=active`.
-- **Recording and alerting rules**: rules files are `groups` of `record` or `alert` rules with a PromQL `expr`, optional `for`/`keep_firing_for` durations, and `labels`/`annotations`. Validate every change with `promtool check rules` and with the bundled `telemetry-check --rules` before reload. Rules must be small, well-named, and reviewable — a 100-line expression is a debugging liability, not a rule.
+- **Recording and alerting rules**: rules files are `groups` of `record` or `alert` rules with a PromQL `expr`, optional `for`/`keep_firing_for` durations, and `labels`/`annotations`. Validate every change with `promtool check rules` for full PromQL parsing and with the bundled `telemetry-check --rules` for dependency-free structural sanity before reload. Rules must be small, well-named, and reviewable — a 100-line expression is a debugging liability, not a rule.
 - **Relabeling**: `relabel_configs` and `metric_relabel_configs` rewrite labels before ingestion. Use them to enforce label naming, drop high-cardinality or internal labels, and attach scrape metadata. Relabeling mistakes silently change series identity — verify with a targeted `curl` of `/metrics` and the target's `scrapeUrl` in `/api/v1/targets`.
 - **Retention**: `--storage.tsdb.retention.time` and `--storage.tsdb.retention.size` bound local block retention; blocks are 2h by default. Retention is a capacity decision (see `references/04-stack-integration-and-retention.md`), not a default to leave alone. Watch `prometheus_tsdb_head_series` and `prometheus_tsdb_compaction` for cardinality and compaction pressure.
 - **High availability (HA)**: two identically configured Prometheus instances with `--query.max-concurrency` headroom and consistent external labels let you shard or deduplicate at the query layer (Thanos, Mimir, or Grafana data sources). Alerting rules must not double-fire: HA pairs need a dedup layer or consistent labeling, and rule evaluation must stay consistent across replicas. Rule evaluation state (`for` counters) is local to each instance.

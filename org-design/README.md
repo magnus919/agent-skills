@@ -12,6 +12,7 @@ Your agent reasons about team structure, compensation, and culture with real fra
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
 | `references/` | Topology, talent, compensation, culture, and decision-workflow references |
+| `evals/evals.json` | Output-quality cases for topology, talent, compensation, and culture decisions |
 
 ## Triggers
 
