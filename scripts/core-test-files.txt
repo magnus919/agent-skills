@@ -1,0 +1,5 @@
+scripts/test-eval-validation.py
+scripts/test-eval-coverage.py
+scripts/test_check_skill_tests.py
+scripts/test_core_test_selection.py
+eval_runner/tests/

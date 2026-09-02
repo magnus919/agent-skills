@@ -1,5 +1,8 @@
 .PHONY: dev lint typecheck test complexity deps coverage security dep-age runbooks docs validate
 
+# Keep local core tests aligned with the required CI coverage selection.
+CORE_TESTS := $(shell cat scripts/core-test-files.txt)
+
 # ─── Development Setup ──────────────────────────────────────────
 dev: .venv
 	@echo "Development environment ready. Run 'make validate' to run all checks."
@@ -30,16 +33,16 @@ complexity:
 
 # ─── Testing ────────────────────────────────────────────────────
 test:
-	.venv/bin/python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py eval_runner/tests/ -v --durations=10
+	.venv/bin/python3 -m pytest $(CORE_TESTS) -v --durations=10
 
 test-integration:
 	.venv/bin/python3 -m pytest tests/integration/ -v --durations=10
 
 test-cov:
-	.venv/bin/python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py eval_runner/tests/ tests/integration/ -v --durations=10 --cov=scripts --cov=eval_runner --cov-fail-under=60 --cov-report=term-missing
+	.venv/bin/python3 -m pytest $(CORE_TESTS) tests/integration/ -v --durations=10 --cov=scripts --cov=eval_runner --cov-fail-under=60 --cov-report=term-missing
 
 test-parallel:
-	.venv/bin/python3 -m pytest scripts/test-eval-validation.py scripts/test-eval-coverage.py eval_runner/tests/ tests/integration/ -n auto -v --durations=10
+	.venv/bin/python3 -m pytest $(CORE_TESTS) -n auto -v --durations=10
 
 # ─── Dependencies ───────────────────────────────────────────────
 deps:
