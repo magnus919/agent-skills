@@ -42,12 +42,12 @@ Label consequential claims so unlike evidence is not blended:
 
 ## Media Editing Loop
 
-1. **Intake.** Confirm authorization and privacy boundaries; identify every source; use a private workspace copy of `templates/media-intake.json` to record probe evidence, timing, the output contract, preservation policy, and unresolved assumptions.
+1. **Intake.** Confirm authorization and privacy boundaries; identify every source; use a private workspace copy of `templates/media-intake.json` to record probe evidence, timing, the output contract, preservation policy, and unresolved assumptions. Keep raw probe output and media in the restricted task workspace, and minimize any shareable derivative.
 2. **Inspect.** Probe streams and format. Check required local capabilities with inventories or `scripts/ffmpeg-preflight`; never assume a filter, encoder, or hardware backend exists.
 3. **Collect bounded evidence.** Extract only the frames, clips, waveform/signal measurements, or transcript spans needed for the decision. Record sample timestamps, count, byte/size limits, and the statement that samples cover sampled times only.
 4. **Plan before rendering.** For editorial changes, write a reviewable EDL or podcast edit plan. Every consequential cut needs a source range, reason, evidence, confidence, treatment, mapping, and verification state. Leave ambiguous decisions unresolved rather than improvising.
 5. **Render safely.** Make stream mapping explicit; prefer `-n` and a new output path; avoid untrusted shell concatenation. Distinguish keyframe-limited stream copy from decoded/re-encoded precise cuts.
-6. **Verify in layers.** Check exit status, decodeability, output probe, stream/timing contract, bounded frame/audio evidence, editorial review, and the actual downstream consumer as applicable.
+6. **Verify in layers.** Check exit status, decodeability, output probe, stream/timing contract, bounded frame/audio evidence, editorial review, and the actual downstream consumer as applicable. Treat probe/decode success and destination acceptance as separate gates; a local file can pass the former and fail the latter.
 7. **Accept or stop.** Use a private workspace copy of `templates/media-acceptance-report.md` to record pass/fail/blocked per criterion. A valid container or successful command alone is not acceptance.
 
 Start technical inspection with:
@@ -55,6 +55,8 @@ Start technical inspection with:
 ```sh
 ffprobe -v error -show_format -show_streams -of json INPUT
 ```
+
+For shipped helper workflows, run the helper from the skill root with explicit output paths and limits; treat its JSON result as a report to verify, not as acceptance by itself. When using `extract-review-frames`, pass timestamps as separate values (`--timestamps 0 5 9`), not one comma-separated value.
 
 ## Route to the Focused Reference
 
