@@ -1,7 +1,7 @@
 .PHONY: dev lint typecheck test complexity deps coverage security dep-age runbooks docs validate
 
 # Keep local core tests aligned with the required CI coverage selection.
-CORE_TESTS := $(shell cat scripts/core-test-files.txt)
+CORE_TESTS := $(shell grep -Ev '^[[:space:]]*\#|^[[:space:]]*$$' scripts/core-test-files.txt)
 
 # ─── Development Setup ──────────────────────────────────────────
 dev: .venv

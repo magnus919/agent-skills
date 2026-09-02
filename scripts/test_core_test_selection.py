@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Ensure local and CI core test selections use the shared manifest."""
 
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "scripts" / "core-test-files.txt"
 MAKEFILE = ROOT / "Makefile"
 WORKFLOW = ROOT / ".github" / "workflows" / "validate.yml"
+FILTER = "sed -e '/^[[:space:]]*#/d' -e '/^[[:space:]]*$/d'"
 
 
 def manifest_entries() -> list[str]:
@@ -28,6 +30,26 @@ def test_makefile_consumes_shared_core_manifest() -> None:
     makefile = MAKEFILE.read_text()
     assert "core-test-files.txt" in makefile
     assert "$(CORE_TESTS)" in makefile
+
+
+def test_makefile_filters_comments_and_blank_lines_like_ci() -> None:
+    makefile = MAKEFILE.read_text()
+    # Make doubles the dollar sign so the shell receives the same expression as CI.
+    assert "grep -Ev '^[[:space:]]*\\#|^[[:space:]]*$$'" in makefile
+
+
+def test_make_and_ci_filtering_semantics_match() -> None:
+    sample = "# comment\n  # indented comment\n\n  scripts/example.py  \n\t\n"
+    expected = ["scripts/example.py"]
+    filtered = subprocess.run(
+        ["sed", "-e", "/^[[:space:]]*#/d", "-e", "/^[[:space:]]*$/d"],
+        input=sample,
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout.splitlines()
+    assert [line.strip() for line in filtered] == expected
+    assert FILTER in WORKFLOW.read_text()
 
 
 def test_required_ci_consumes_shared_core_manifest() -> None:

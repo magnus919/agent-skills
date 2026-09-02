@@ -672,7 +672,7 @@ The [skills.sh catalog page](https://skills.sh/magnus919/agent-skills) is popula
 
 ### Repository validation
 
-Contributors need Python 3.14+ and Ruby 2.6+ (the checked-in `.venv` uses the pinned development dependencies in `requirements-dev.txt`). Run the focused checks first, then the complete repository gate:
+Contributors need Python 3.10+ and Ruby 2.6+ for local development. CI currently runs the validation workflow with Python 3.12 and Ruby 3.3; the checked-in `.venv` uses the pinned development dependencies in `requirements-dev.txt`. Run the focused checks first, then the complete repository gate:
 
 ```bash
 python3 scripts/check-catalog-set.py
