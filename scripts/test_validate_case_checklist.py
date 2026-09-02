@@ -8,15 +8,16 @@ from pathlib import Path
 SPEC = importlib.util.spec_from_file_location(
     "validator", Path(__file__).parent / "validate-case-checklist.py"
 )
+assert SPEC is not None and SPEC.loader is not None
 validator = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(validator)
 
 
 class ChecklistValidatorTest(unittest.TestCase):
-    def test_current_checklist_matches_manifests(self):
+    def test_current_checklist_matches_manifests(self) -> None:
         self.assertEqual(validator.validate(), [])
 
-    def test_missing_orphan_and_duplicate_rows_fail(self):
+    def test_missing_orphan_and_duplicate_rows_fail(self) -> None:
         source = json.loads(validator.CHECKLIST.read_text())
         source["rows"] = source["rows"][:-1]
         source["rows"].append({"skill": "not-a-skill", "case_id": "orphan"})

@@ -51,11 +51,18 @@ def projection_sets(root: Path) -> dict[str, list[str]]:
     lines = (root / "llms.txt").read_text()
     # The Agents marketplace is a wrapper for the Codex plugin, so its plugin
     # identity is checked separately rather than mistaken for a skill list.
-    agent_plugins = [x.get("name") for x in agents.get("plugins", []) if isinstance(x, dict)]
+    agent_plugins = [
+        x["name"]
+        for x in agents.get("plugins", [])
+        if isinstance(x, dict) and isinstance(x.get("name"), str)
+    ]
+    claude_names = [
+        x["name"]
+        for x in claude.get("plugins", [])
+        if isinstance(x, dict) and isinstance(x.get("name"), str)
+    ]
     return {
-        "claude_marketplace": [
-            x.get("name") for x in claude.get("plugins", []) if isinstance(x, dict)
-        ],
+        "claude_marketplace": claude_names,
         "codex_plugin": _names(codex, "skills"),
         "llms": [match.group(1) for match in LLMS_RE.finditer(lines)],
         "agents_marketplace": agent_plugins,

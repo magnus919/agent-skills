@@ -8,16 +8,17 @@ from pathlib import Path
 _spec = importlib.util.spec_from_file_location(
     "check_catalog_set", Path(__file__).parent / "check-catalog-set.py"
 )
+assert _spec is not None and _spec.loader is not None
 check_catalog_set = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(check_catalog_set)
 
 
 class CatalogSetTest(unittest.TestCase):
-    def test_current_catalogs_match(self):
+    def test_current_catalogs_match(self) -> None:
         result = check_catalog_set.compare(Path(__file__).parent.parent)
         self.assertTrue(result["ok"], result)
 
-    def test_missing_duplicate_extra_and_retired_are_reported(self):
+    def test_missing_duplicate_extra_and_retired_are_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "one").mkdir()
@@ -41,7 +42,7 @@ class CatalogSetTest(unittest.TestCase):
             self.assertEqual(result["sources"]["claude_marketplace"]["retired"], ["jira-cli"])
             self.assertEqual(result["sources"]["codex_plugin"]["extra"], ["extra"])
 
-    def test_nested_and_lifecycle_entries_are_excluded_from_canonical_set(self):
+    def test_nested_and_lifecycle_entries_are_excluded_from_canonical_set(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "lifecycle-evals").mkdir()
