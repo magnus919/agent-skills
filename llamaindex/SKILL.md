@@ -1,10 +1,9 @@
 ---
 name: llamaindex
 description: >-
-  Expert skill for building LLM applications with the LlamaIndex framework —
-  RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge
-  graph construction, production deployment, and evaluation. Use when working
-  with LlamaIndex or comparing RAG and agent orchestration frameworks.
+  Build LLM applications with the LlamaIndex framework. Use when working with LlamaIndex
+  or comparing RAG and agent orchestration frameworks. Do not use this skill for unrelated
+  requests; route to the nearest named specialist.
 license: MIT
 metadata:
   author: Magnus Hedemark

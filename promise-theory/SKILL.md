@@ -1,16 +1,9 @@
 ---
 name: promise-theory
 description: >-
-  Design and diagnose coordination in hybrid human + AI agent workforces using
-  promise theory (Burgess/Bergstra): model agents as autonomous, coordination
-  as voluntary offers plus acceptance, and trust as calibrated assessment. Use
-  for delegation modeling, capability manifests and agent contracts,
-  coordination-failure diagnosis, trust/verification calibration, convergent
-  self-healing systems, and converting obligation-based designs to
-  promise-based. Do not use for enforceable centralized control, legal contract
-  drafting (promise theory is not contract law), simple single-agent prompting,
-  imperative push-based orchestration, or tool manuals — route those to the
-  tool's own skill.
+  Teach promise vocabulary, fundamentals, and coordination diagnosis for promise-based
+  systems. Do not use this skill for Semantic Spacetime models or SST CLI tooling; use
+  `semantic-spacetime` for those model and tool workflows.
 license: MIT
 ---
 

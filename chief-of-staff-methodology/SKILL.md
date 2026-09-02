@@ -1,12 +1,13 @@
 ---
 name: chief-of-staff-methodology
 description: >-
-  Prepare accountable executive decisions, information triage, briefing, calendar
-  choices, organizational sensing, and institutional memory without assuming authority
-  or monitoring people. Use when a chief of staff or CoS, executive office,
-  gatekeeping, decision memo, executive briefing, board materials, organizational
-  sensing, team health, institutional memory, calendar triage, meeting audit,
-  strategic time, or attention allocation is requested.
+  Prepare accountable executive decisions, information triage, briefing, calendar choices,
+  organizational sensing, and institutional memory without assuming authority or
+  monitoring people. Use when a chief of staff or CoS, executive office, gatekeeping,
+  decision memo, executive briefing, board materials, organizational sensing, team health,
+  institutional memory, calendar triage, meeting audit, strategic time, or attention
+  allocation is requested. Do not use this skill for unrelated requests; route to the
+  nearest named specialist.
 license: MIT
 compatibility: No runtime dependency.
 metadata:

@@ -1,10 +1,11 @@
 ---
 name: strategy-frameworks
 description: >-
-  Structure organizational strategy work: strategic direction, competitive and
-  industry analysis, growth options, capital allocation, acquisitions, and
-  portfolio choices. Use when framing consequential choices about where to
-  compete, how to pursue an opportunity, or how to compare strategic options.
+  Structure organizational strategy work: strategic direction, competitive and industry
+  analysis, growth options, capital allocation, acquisitions, and portfolio choices. Use
+  when framing consequential choices about where to compete, how to pursue an opportunity,
+  or how to compare strategic options. Do not use this skill for unrelated requests; route
+  to the nearest named specialist.
 license: MIT
 metadata:
   source_repo: https://github.com/magnus919/hermes-profiles

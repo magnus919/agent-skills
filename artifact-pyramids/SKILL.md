@@ -1,6 +1,9 @@
 ---
 name: artifact-pyramids
-description: Organize durable agent research outputs as summaries, analysis, and evidence dossiers. Use when producing multi-layer research artifacts or coordinating research handoffs.
+description: >-
+  Organize durable agent research outputs as summaries, analysis, and evidence dossiers.
+  Use when producing multi-layer research artifacts or coordinating research handoffs. Do
+  not use this skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Python 3.9+ and a POSIX shell are required only for the bundled scripts.
 metadata:

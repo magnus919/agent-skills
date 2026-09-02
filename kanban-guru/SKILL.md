@@ -1,12 +1,10 @@
 ---
 name: kanban-guru
 description: >-
-  A virtual Kanban expert who can diagnose flow problems, design board
-  configurations, set up multi-portfolio operating models, calibrate WIP
-  limits, establish service level expectations, and guide Scrum-to-Kanban
-  transitions. Load this when your team is struggling with throughput,
-  cycle times are unpredictable, multiple stakeholders compete for the
-  same engineers, or you're wondering if Kanban is right for you.
+  Diagnose Kanban flow problems and design board operating models. Load this when your
+  team is struggling with throughput, cycle times are unpredictable, multiple stakeholders
+  compete for the same engineers, or you're wondering if Kanban is right for you. Do not
+  use this skill for unrelated requests; route to the nearest named specialist.
 compatibility: >-
   Designed for agentic AI assistants (Hermes Agent, Claude Code, OpenCode,
   GitHub Copilot, Cursor, similar coding/chat agents). No special system

@@ -1,6 +1,8 @@
 ---
 name: meshcore-packet-capture
-description: Capture MeshCore Companion packets via BLE, serial, or TCP.
+description: >-
+  Capture MeshCore Companion packets via BLE, serial, or TCP. Do not use this skill for
+  unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Requires Python 3.11+, a MeshCore Companion radio, and the project's runtime dependencies.
 ---

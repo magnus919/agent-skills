@@ -1,11 +1,11 @@
 ---
 name: color-management
 description: >-
-  Expert-level color management for ICC profiles, working spaces, gamut
-  mapping, and color science. Use when inspecting ICC profiles, converting
-  between color spaces, checking gamut clipping, validating well-behaved
-  working spaces, or troubleshooting color workflow issues with ImageMagick,
-  ArgyllCMS, Exiftool, or LittleCMS.
+  Manage color workflows with ICC profiles, working spaces, gamut mapping, and color
+  science. Use when inspecting ICC profiles, converting between color spaces, checking
+  gamut clipping, validating well-behaved working spaces, or troubleshooting color
+  workflow issues with ImageMagick, ArgyllCMS, Exiftool, or LittleCMS. Do not use this
+  skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: CLI tools used (ImageMagick, Exiftool, ArgyllCMS, LittleCMS) are platform-independent; Python scripts require Python 3.8+
 metadata:

@@ -1,15 +1,15 @@
 ---
 name: data-scientist
 description: >-
-  Use for PhD-level expertise in data science, statistics, and machine learning:
-  rigorous statistical analysis, experimental design, causal inference, advanced
-  modeling, research methodology, or data science project leadership. Load when
-  the user asks about statistical methods, experimental design, model selection,
-  A/B testing, hypothesis testing, power analysis, regression, causality, Bayesian
-  analysis, or research methodology. For insurance, actuarial, claims, reserving,
-  solvency, credibility, tail-risk, or financial-risk statistical modeling, use
-  `actuarial-risk-modeling`; for deterministic operating and SaaS financial models,
-  use `financial-modeling`.
+  Use for PhD-level expertise in data science, statistics, and machine learning: rigorous
+  statistical analysis, experimental design, causal inference, advanced modeling, research
+  methodology, or data science project leadership. Load when the user asks about
+  statistical methods, experimental design, model selection, A/B testing, hypothesis
+  testing, power analysis, regression, causality, Bayesian analysis, or research
+  methodology. For insurance, actuarial, claims, reserving, solvency, credibility,
+  tail-risk, or financial-risk statistical modeling, use `actuarial-risk-modeling`; for
+  deterministic operating and SaaS financial models, use `financial-modeling`. Do not use
+  this skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Python 3.10+ with scipy, statsmodels, scikit-learn, pandas, numpy.
   PyTorch and sklearn are the primary ML frameworks. Hardware-aware via detect-compute.py.

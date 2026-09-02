@@ -1,9 +1,8 @@
 ---
 name: product-strategy
-description: CPO methodology — product vision and strategy (North Star, product principles),
-  competitive analysis and positioning, roadmap prioritization (RICE, Kano, OST),
-  product-market fit frameworks (Sean Ellis test, retention curves), market sizing
-  (TAM/SAM/SOM), platform strategy, product lifecycle management.
+description: >-
+  Set product vision and strategy with a CPO methodology. Do not use this skill for
+  unrelated requests; route to the nearest named specialist.
 license: MIT
 metadata:
   tags: product-strategy, cpo, product-management, competitive-analysis, market-sizing,

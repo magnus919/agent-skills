@@ -1,11 +1,8 @@
 ---
 name: legal-strategy
-description: CLO/General Counsel methodology — regulatory landscape analysis (GDPR,
-  CCPA, AI Act, sector-specific), IP strategy (patent, trademark, trade secret, open
-  source licensing), contract risk assessment (indemnification, liability caps, force
-  majeure), data privacy frameworks (privacy-by-design, DPIAs, data mapping), corporate
-  governance (board responsibilities, fiduciary duties, shareholder rights), employment
-  law (classification, IP assignment, non-competes).
+description: >-
+  Assess legal and regulatory strategy with a CLO or General Counsel methodology. Do not
+  use this skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 metadata:
   tags: legal-strategy, clo, general-counsel, regulatory, ip-strategy, contract-risk,

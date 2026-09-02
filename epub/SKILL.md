@@ -1,10 +1,12 @@
 ---
 name: epub
-description: Read, write, and edit EPUB2/EPUB3 ebooks as an EPUB file format expert.
-  Extract text, metadata, structure, and knowledge from EPUB files for enrichment
-  or memory. Create valid EPUBs from scratch. Validate against the EPUB specification.
-  Use when the user mentions epub, ebook, EPUB file, ebook format, read epub, write
-  epub, create ebook, extract from epub, epub to text, or ebook structure.
+description: >-
+  Read, write, and edit EPUB2/EPUB3 ebooks as an EPUB file format expert. Extract text,
+  metadata, structure, and knowledge from EPUB files for enrichment or memory. Create
+  valid EPUBs from scratch. Validate against the EPUB specification. Use when the user
+  mentions epub, ebook, EPUB file, ebook format, read epub, write epub, create ebook,
+  extract from epub, epub to text, or ebook structure. Do not use this skill for unrelated
+  requests; route to the nearest named specialist.
 license: MIT
 compatibility: Python 3.8+ required. Core scripts use EbookLib (pip install EbookLib)
   for reading and creating EPUBs. Optional epublib (pip install epublib) for non-intrusive

@@ -1,17 +1,9 @@
 ---
 name: semantic-spacetime
 description: >-
-  Model and diagnose shared semantic ground between agents with Semantic
-  Spacetime (Mark Burgess, 2014-2025): a discrete graph model of meaning over
-  time, where local proper time replaces global clocks, causality is
-  cooperative promises, and gamma(3,4) graphs expose semantic drift, world
-  model divergence, and absorbing states. Use for designing convergent
-  self-healing coordination, modeling intent and trajectories over time,
-  mapping promises onto spacetime, diagnosing semantic drift or dead-ends,
-  and analyzing temporal blindness in agents. Do not use for physics or
-  relativity, pure vector embeddings or RAG without temporal-causal structure,
-  enforceable centralized control, simple single-agent prompting, or tool
-  manuals — route those to the appropriate skill.
+  Model and analyze Semantic Spacetime (SST) graphs, distances, trajectories, drift, and
+  model files. Do not use this skill for promise-theory vocabulary and fundamentals
+  without SST modeling; use `promise-theory` for the substrate concepts.
 license: MIT
 ---
 

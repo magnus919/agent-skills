@@ -1,11 +1,11 @@
 ---
 name: web-accessibility
 description: >-
-  Design, build, and review accessible web interfaces with native semantics,
-  keyboard and focus behavior, forms and recovery, responsive input, motion,
-  assistive-technology testing, and WCAG 2.2-informed evidence. Use for a11y,
-  WCAG, ARIA, screen-reader, keyboard, focus, dialog, form, widget, or
-  accessibility review work across frameworks.
+  Design, build, and review accessible web interfaces with native semantics, keyboard and
+  focus behavior, forms and recovery, responsive input, motion, assistive-technology
+  testing, and WCAG 2.2-informed evidence. Use for a11y, WCAG, ARIA, screen-reader,
+  keyboard, focus, dialog, form, widget, or accessibility review work across frameworks.
+  Do not use this skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Works with any agent framework supporting the Agent Skills format; no runtime dependency.
 metadata:

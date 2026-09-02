@@ -1,11 +1,11 @@
 ---
 name: hugo-theme
 description: >-
-  Build, customize, and debug advanced Hugo CMS themes — template
-  architecture, asset pipeline (CSS/JS/image processing), shortcodes and
-  render hooks, page bundles, cover images, Hugo Modules, performance,
-  SEO, and CI/CD.
-  Use when working on a Hugo theme or site template layer.
+  Build, customize, and debug advanced Hugo CMS themes — template architecture, asset
+  pipeline (CSS/JS/image processing), shortcodes and render hooks, page bundles, cover
+  images, Hugo Modules, performance, SEO, and CI/CD. Use when working on a Hugo theme or
+  site template layer. Do not use this skill for unrelated requests; route to the nearest
+  named specialist.
 license: MIT
 compatibility: Works with any agent framework supporting the Agent Skills format.
 metadata:

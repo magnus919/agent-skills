@@ -1,7 +1,13 @@
 ---
 name: kubernetes
 description: >-
-  Operate, troubleshoot, secure, upgrade, and automate Kubernetes clusters and workloads safely across upstream Kubernetes, k3s, RKE2, MicroK8s, k0s, Talos, OpenShift/OKD, kind, Minikube, Rancher-managed clusters, EKS, AKS, and GKE. Use when a task involves kubectl, Kubernetes APIs, Pods, Deployments, StatefulSets, Services, Ingress or Gateway API, CRDs, RBAC, NetworkPolicy, storage, scheduling, autoscaling, cluster lifecycle, or the bundled agent-first k8s-cli.
+  Operate, troubleshoot, secure, upgrade, and automate Kubernetes clusters and workloads
+  safely across upstream Kubernetes, k3s, RKE2, MicroK8s, k0s, Talos, OpenShift/OKD, kind,
+  Minikube, Rancher-managed clusters, EKS, AKS, and GKE. Use when a task involves kubectl,
+  Kubernetes APIs, Pods, Deployments, StatefulSets, Services, Ingress or Gateway API,
+  CRDs, RBAC, NetworkPolicy, storage, scheduling, autoscaling, cluster lifecycle, or the
+  bundled agent-first k8s-cli. Do not use this skill for unrelated requests; route to the
+  nearest named specialist.
 ---
 
 # Kubernetes

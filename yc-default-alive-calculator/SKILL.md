@@ -1,11 +1,9 @@
 ---
 name: yc-default-alive-calculator
-description: Evaluate whether a startup is on a trajectory to profitability before
-  running out of cash — Paul Graham's "Default Alive / Default Dead" framework. Takes
-  revenue, burn rate, cash on hand, and growth rate; computes runway, burn multiple,
-  and months to breakeven. Ships a deterministic CLI calculator. Load when founders
-  ask about runway, burn rate, default alive, whether they need to raise money, or
-  financial sustainability analysis.
+description: >-
+  Evaluate startup runway, burn, revenue, and profitability trajectory using the Default
+  Alive / Default Dead framework. Do not use this skill for weekly growth experiments or
+  operating growth decisions; use `yc-weekly-growth-compass` for those decisions.
 license: MIT
 compatibility: Python 3.9+ with standard library only (no external dependencies).
   The default-alive.py script uses only math, json, and sys.

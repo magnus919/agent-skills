@@ -1,8 +1,10 @@
 ---
 name: traefik
-description: Deploy, configure, and troubleshoot Traefik v3 reverse proxy — covers
-  all providers, routing, TLS/ACME, middlewares, and production patterns with YAML
-  examples. Load when setting up or debugging a Traefik instance.
+description: >-
+  Deploy, configure, and troubleshoot Traefik v3 reverse proxy — covers all providers,
+  routing, TLS/ACME, middlewares, and production patterns with YAML examples. Load when
+  setting up or debugging a Traefik instance. Do not use this skill for unrelated
+  requests; route to the nearest named specialist.
 license: MIT
 compatibility: Compatible with any agent supporting the Agent Skills format (Hermes
   Agent, Claude Code, GitHub Copilot, OpenCode, Cursor, etc.)

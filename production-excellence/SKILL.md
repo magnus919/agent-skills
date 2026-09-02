@@ -1,15 +1,10 @@
 ---
 name: production-excellence
 description: >-
-  Route cross-domain production evidence (readiness, migration, recovery,
-  capacity/cost, incident-learning) into a launch or operational decision —
-  go, no-go, defer, exception, or escalation — with an accountable owner
-  and a post-launch learning path. Compose production specialists without
-  copying their runbooks. Do not use for incident command, release-pipeline
-  mechanics, platform architecture, threat modeling, data-pipeline design,
-  or any task owned end-to-end by a single specialist skill; do not use
-  as a generic checklist detached from service ownership, risk, evidence,
-  and verification.
+  Build cross-domain production evidence from readiness, migration, recovery,
+  capacity/cost, and incident learning into launch or operational decisions. Do not use
+  this skill for a single specialist's risk packet and launch gate; use
+  `production-readiness` for that readiness review.
 license: MIT
 compatibility: Platform-agnostic methodology. No runtime dependencies, API keys, or external services required.
 metadata:

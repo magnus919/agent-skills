@@ -1,6 +1,10 @@
 ---
 name: flaresolverr-cli
-description: Use a small FlareSolverr JSON CLI for browser-backed GET and POST requests, readiness checks, and session lifecycle management when a site requires Cloudflare or DDoS-GUARD challenge handling.
+description: >-
+  Use a small FlareSolverr JSON CLI for browser-backed GET and POST requests, readiness
+  checks, and session lifecycle management when a site requires Cloudflare or DDoS-GUARD
+  challenge handling. Do not use this skill for unrelated requests; route to the nearest
+  named specialist.
 license: MIT
 compatibility: Python 3.8+ (stdlib only). Requires a running FlareSolverr instance; FLARESOLVERR_SERVER defaults to http://localhost:8191.
 metadata:
