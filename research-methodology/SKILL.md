@@ -55,7 +55,7 @@ The right artifact shape depends on the environment. Do not assume a particular 
 
 ## Interruption and Timeout Recovery
 
-A research worker timeout is an interruption, not a research result. Never close the investigation, summarize it as complete, or infer that no useful work exists because a delegated worker exceeded its execution cap. Long research jobs commonly encounter slow extraction, rate limits, or one unresponsive source after producing valuable partial work.
+A research worker timeout is an interruption, not a research result. Never close the investigation, summarize it as complete, or infer that no useful work exists because a delegated worker exceeded its execution cap. Long research jobs commonly encounter slow extraction, rate limits, or one unresponsive source after producing valuable partial work. Plan long research as bounded, resumable subtasks: use task-appropriate execution windows, write incremental checkpoints, and resume from the latest verified checkpoint instead of imposing arbitrary short caps or assuming an unbounded window is available.
 
 When a worker times out:
 
