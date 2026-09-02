@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
+import importlib.util
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
-import importlib.util
-
-_spec = importlib.util.spec_from_file_location("check_catalog_set", Path(__file__).parent / "check-catalog-set.py")
+_spec = importlib.util.spec_from_file_location(
+    "check_catalog_set", Path(__file__).parent / "check-catalog-set.py"
+)
 check_catalog_set = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(check_catalog_set)
 
@@ -24,9 +25,15 @@ class CatalogSetTest(unittest.TestCase):
             (root / ".claude-plugin").mkdir()
             (root / ".codex-plugin").mkdir()
             (root / ".agents/plugins").mkdir(parents=True)
-            (root / ".claude-plugin/marketplace.json").write_text(json.dumps({"plugins": [{"name": "one"}, {"name": "one"}, {"name": "jira-cli"}]}))
-            (root / ".codex-plugin/plugin.json").write_text(json.dumps({"skills": ["./one", "./extra"]}))
-            (root / ".agents/plugins/marketplace.json").write_text(json.dumps({"plugins": [{"name": "magnus919"}]}))
+            (root / ".claude-plugin/marketplace.json").write_text(
+                json.dumps({"plugins": [{"name": "one"}, {"name": "one"}, {"name": "jira-cli"}]})
+            )
+            (root / ".codex-plugin/plugin.json").write_text(
+                json.dumps({"skills": ["./one", "./extra"]})
+            )
+            (root / ".agents/plugins/marketplace.json").write_text(
+                json.dumps({"plugins": [{"name": "magnus919"}]})
+            )
             (root / "llms.txt").write_text("- [one](one/SKILL.md): One\n")
             result = check_catalog_set.compare(root)
             self.assertFalse(result["ok"])
@@ -38,9 +45,13 @@ class CatalogSetTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "lifecycle-evals").mkdir()
-            (root / "lifecycle-evals/SKILL.md").write_text("---\nname: lifecycle-evals\ndescription: no\n---\n")
+            (root / "lifecycle-evals/SKILL.md").write_text(
+                "---\nname: lifecycle-evals\ndescription: no\n---\n"
+            )
             (root / "bundle/skills/helper").mkdir(parents=True)
-            (root / "bundle/skills/helper/SKILL.md").write_text("---\nname: helper\ndescription: no\n---\n")
+            (root / "bundle/skills/helper/SKILL.md").write_text(
+                "---\nname: helper\ndescription: no\n---\n"
+            )
             names, excluded = check_catalog_set.canonical_names(root)
             self.assertEqual(names, [])
             self.assertIn("lifecycle-evals", excluded)

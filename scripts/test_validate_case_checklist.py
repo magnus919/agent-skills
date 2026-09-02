@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
+import importlib.util
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
-import importlib.util
-
-SPEC = importlib.util.spec_from_file_location("validator", Path(__file__).parent / "validate-case-checklist.py")
+SPEC = importlib.util.spec_from_file_location(
+    "validator", Path(__file__).parent / "validate-case-checklist.py"
+)
 validator = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(validator)
 

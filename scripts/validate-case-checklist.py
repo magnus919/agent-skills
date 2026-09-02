@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Validate that the reviewed case checklist exactly covers eval manifests."""
+
 from __future__ import annotations
 
 import json

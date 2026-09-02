@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Compare canonical skill names with every committed catalog projection."""
+
 from __future__ import annotations
 
 import argparse
@@ -52,7 +53,9 @@ def projection_sets(root: Path) -> dict[str, list[str]]:
     # identity is checked separately rather than mistaken for a skill list.
     agent_plugins = [x.get("name") for x in agents.get("plugins", []) if isinstance(x, dict)]
     return {
-        "claude_marketplace": [x.get("name") for x in claude.get("plugins", []) if isinstance(x, dict)],
+        "claude_marketplace": [
+            x.get("name") for x in claude.get("plugins", []) if isinstance(x, dict)
+        ],
         "codex_plugin": _names(codex, "skills"),
         "llms": [match.group(1) for match in LLMS_RE.finditer(lines)],
         "agents_marketplace": agent_plugins,
@@ -86,11 +89,21 @@ def compare(root: Path) -> dict[str, object]:
         "nested": sorted(name for name in all_projected if "/" in name),
         "excluded": excluded,
     }
-    diffs["agents_marketplace"]["identity"] = sorted(set(sources["agents_marketplace"]) ^ {"magnus919"})
+    diffs["agents_marketplace"]["identity"] = sorted(
+        set(sources["agents_marketplace"]) ^ {"magnus919"}
+    )
     errors = any(
         diffs[source].get(field)
         for source in diffs
-        for field in ("missing", "extra", "duplicates", "retired", "infrastructure", "nested", "identity")
+        for field in (
+            "missing",
+            "extra",
+            "duplicates",
+            "retired",
+            "infrastructure",
+            "nested",
+            "identity",
+        )
     )
     return {"ok": not errors, "canonical": sorted(canonical), "sources": diffs}
 
