@@ -472,6 +472,9 @@ QA and SDET methodology for senior-to-principal engineers — test strategy, aut
 
 Query, search, and download public datasets from the City of Raleigh Open Data portal. Wraps the ArcGIS REST API to access 170+ datasets — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, and more. No API key needed. Ships a Python CLI with catalog, search, info, query, download, and categories commands.
 
+### [react](react/SKILL.md)
+React-specific component, hooks, state-flow, rendering, accessibility boundaries, testing, diagnostics, and Vite integration workflows.
+
 ### [release-engineering](release-engineering/SKILL.md)
 
 Senior-to-principal release engineering methodology — release process models and CD pipelines, progressive delivery and feature flags, versioning and artifacts, readiness gates, rollback planning, change-governance and compliance evidence, DORA metrics, and multi-team release coordination. Ships 15 references, 6 templates, 4 assets, 5 stdlib-only Python CLIs, and 8 evals.
@@ -607,6 +610,10 @@ Replace completion claims with a disciplined evidence trail that shows what was 
 ### [verified-delivery](verified-delivery/SKILL.md)
 
 Deliver an authorized change end to end — implement, verify, merge, and confirm the merged state — without losing the thread when a hard limit interrupts the work.
+
+### [vite](vite/SKILL.md)
+
+Vite-specific configuration, plugins, modes, environment boundaries, dependency optimization, development server diagnostics, builds, previews, and deployment verification.
 
 ### [vllm](vllm/SKILL.md)
 

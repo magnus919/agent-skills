@@ -1032,6 +1032,15 @@
       "description": "Query, search, and download public datasets and civic information for the City of Raleigh. Use for live ArcGIS Hub catalog discovery, ArcGIS FeatureServer and MapServer queries, ImageServer imagery exports, official Raleigh geocoding, GoRaleigh transit feeds, guest-public development records, public RaleighNC.gov content, eSCRIBE public meetings, Raleigh fire reports and inspections, and the Raleigh-Wake ECC active incident feed. Do not use for private data, authenticated operations, payments, submissions, bulk crawling, or non-public portals."
     },
     {
+      "name": "react",
+      "source": "./",
+      "skills": [
+        "./react"
+      ],
+      "strict": false,
+      "description": "Operate React applications as a named tool: inspect and diagnose React/Vite projects, design component boundaries and state flow, implement accessible responsive UI, and verify behavior with the project's tests. Use when a task explicitly involves React, JSX/TSX, React hooks, React Router, Vite React configuration, or React build failures. Do not use for framework-agnostic frontend strategy (route to frontend-engineering), browser automation (route to playwright), accessibility policy or audits (route to web-accessibility), or non-React mobile apps (route to mobile-development)."
+    },
+    {
       "name": "release-engineering",
       "source": "./",
       "skills": [
@@ -1336,6 +1345,15 @@
       ],
       "strict": false,
       "description": "Implement and deliver an authorized change end to end — verify, open the PR, merge, and confirm post-merge state — using live-state gates, durable interruption handoffs, and live-state-first resumption. Use when a user grants end-to-end delivery authority for a specific change and the work may cross tool-call limits, context exhaustion, worker loss, or session interruptions before the delivery boundary is reached. Do not use for plain fixes with no delivery directive, for granting merge or post-merge authority the user did not grant, or for designing release pipelines (use release-engineering for that)."
+    },
+    {
+      "name": "vite",
+      "source": "./",
+      "skills": [
+        "./vite"
+      ],
+      "strict": false,
+      "description": "Operate Vite projects: inspect versions and configuration, run bounded development and production builds, diagnose dependency and asset failures, and configure environment-aware frontend delivery. Use when a task names Vite, vite.config, Vite plugins, import.meta.env, dev-server behavior, or Vite build output. Do not use for frontend architecture or visual implementation (route to frontend-engineering), CI/platform provisioning (route to platform-engineering), browser automation (route to playwright), or accessibility design (route to web-accessibility)."
     },
     {
       "name": "vllm",

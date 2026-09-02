@@ -59,4 +59,4 @@ Stop when each acceptance criterion has direct evidence or a recorded failed, bl
 
 - For Hugo template architecture, theme-wide layout, or CMS rendering concerns, use [hugo-theme](../hugo-theme/SKILL.md) and its [design/accessibility reference](../hugo-theme/references/design-accessibility.md).
 - For evidence gathering, scope decisions, or user-facing behavior outside accessibility, use [product-discovery](../product-discovery/SKILL.md), [product-methodology](../product-methodology/SKILL.md), or [product-design-and-ux](../product-design-and-ux/SKILL.md). Keep this skill responsible for accessibility interaction and conformance depth.
-- For framework or library APIs, consult the current official documentation after defining this skill's semantic and interaction contract.
+- For framework or library APIs, consult the current official documentation after defining this skill's semantic and interaction contract. React implementation details route to [react](../react/SKILL.md); Vite configuration routes to [vite](../vite/SKILL.md).

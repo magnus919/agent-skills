@@ -30,6 +30,8 @@ Frontend engineering is the craft of building the user-facing layer of applicati
 | Mobile app implementation (iOS/Android/Flutter/React Native) | Mobile platform work — scaffolding, builds and code signing, device/emulator testing, store submission, mobile lifecycle — route to [mobile-development](../mobile-development/SKILL.md); this skill owns web frontends |
 | Build tooling — bundler config, TypeScript config, linting, formatting, dev environment | CI/CD pipeline infrastructure — that's the platform-engineer |
 
+For React component and hooks work, load [react](../react/SKILL.md); for Vite config, modes, plugins, and builds, load [vite](../vite/SKILL.md). This skill remains the owner of framework-neutral architecture and frontend strategy.
+
 ## Reference Files
 
 | Reference | When to load |
