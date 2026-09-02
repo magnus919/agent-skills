@@ -11,7 +11,7 @@ Your agent reasons about positioning, acquisition channels, and growth economics
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
-| `references/` | Deep-dive reference files loaded on demand |
+| `references/` | Deep-dive frameworks plus `decision-workflow.md` for launch decisions and routing |
 
 ## Triggers
 

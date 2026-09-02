@@ -11,7 +11,7 @@ Your agent applies COO-level frameworks — value stream mapping, scaling stages
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
-| `references/` | Deep-dive reference files loaded on demand |
+| `references/` | Process, metrics, compliance, vendor, scaling, and bounded decision workflows |
 
 ## Triggers
 

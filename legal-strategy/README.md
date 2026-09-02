@@ -11,7 +11,7 @@ Your agent applies structured legal analysis — GDPR articles, liability cap ti
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
-| `references/` | Deep-dive reference files loaded on demand |
+| `references/` | Regulatory, IP, contract, privacy, and counsel-escalation decision references |
 
 ## Triggers
 

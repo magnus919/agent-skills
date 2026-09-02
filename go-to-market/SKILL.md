@@ -1,6 +1,6 @@
 ---
 name: go-to-market
-description: Plan and execute go-to-market strategy — positioning and messaging frameworks
+description: Plan and evaluate go-to-market strategy using positioning, acquisition, growth economics, market-entry, and competitive-response workflows. Do not use for CRM execution, product strategy, legal interpretation, or visual brand design.
   (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid,
   organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling
   (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand),
@@ -45,6 +45,8 @@ skill_view('go-to-market', file_path='references/growth-modeling.md')
 | `references/positioning-messaging.md` | April Dunford positioning, message hierarchy (elevator pitch → value prop → narrative), positioning diagnostic |
 | `references/acquisition-strategy.md` | Channel taxonomy, PLG vs SLG playbooks, sales funnel ratios, competitive response playbook, brand architecture |
 | `references/growth-modeling.md` | CAC/LTV deep dive, cohort analysis practical guide, NRR, market entry strategy (beachhead, land-and-expand) |
+| `references/decision-workflow.md` | Bounded launch/channel decisions, worked beachhead example, reusable memo, and owner routing matrix |
+
 
 ## Output Contract
 

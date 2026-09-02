@@ -11,7 +11,7 @@ Your agent reasons about team structure, compensation, and culture with real fra
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
-| `references/` | Deep-dive reference files loaded on demand |
+| `references/` | Topology, talent, compensation, culture, and decision-workflow references |
 
 ## Triggers
 

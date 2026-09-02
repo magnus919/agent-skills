@@ -1,6 +1,6 @@
 ---
 name: operational-design
-description: Design and improve operational processes and organizational scaling — process
+description: Design and improve operational processes, controls, metrics, vendors, and scaling models through bounded pilots and evidence. Do not use for engineering delivery, financial modeling, technology evaluation, or legal advice.
   design, operational metrics, compliance and audit, vendor management, and team
   topology. Covers value stream mapping, BPMN, bottleneck analysis, scaling from 10
   to 100 to 1000 people, KPI design, balanced scorecard, SOC 2, ISO 27001, GDPR readiness,
@@ -64,6 +64,7 @@ skill_view('operational-design', file_path='references/vendor-management.md')
 | Operational Metrics | You're designing KPIs, dashboards, or a balanced scorecard | `references/operational-metrics.md` |
 | Compliance & Audit | You're preparing for SOC 2, ISO 27001, or GDPR compliance | `references/compliance.md` |
 | Vendor Management | You're running an RFP, designing SLAs, or evaluating vendors | `references/vendor-management.md` |
+| Decision Workflow | You need a bounded operating-model choice, pilot, KPI, control, or owner handoff | `references/decision-workflow.md` |
 
 ## Design Principles
 
