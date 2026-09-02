@@ -17,6 +17,11 @@ compatibility: Requires ffmpeg and ffprobe for execution; exact filters, codecs,
 
 Treat FFmpeg as a typed media pipeline and media editing as an evidence-driven workflow. Inspect the actual source, separate measurements from interpretations, make decisions reviewable, render to a new path, and verify at the intended boundary.
 
+## When Not to Use
+
+- Do not use this skill for libav API programming, opaque whole-video semantic understanding, automatic publishing, rights clearance, DRM circumvention, professional broadcast/color certification, or HyperFrames-authored compositions.
+- Route online media or transcript acquisition to the owning source skill, semantic frame interpretation to a vision-capable reviewer, and platform upload/API work to the platform skill.
+
 ## Boundaries and Routing
 
 - Use a YouTube/transcript capability to acquire online video or transcripts; return here only for local supplied media and transcript artifacts.

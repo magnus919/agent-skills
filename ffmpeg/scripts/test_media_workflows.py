@@ -87,6 +87,52 @@ def test_render_edl_valid_plan_does_not_execute(tmp_path: Path) -> None:
     assert not output.exists()
 
 
+def test_render_edl_rejects_multi_source_plan(tmp_path: Path) -> None:
+    edl = write_json(
+        tmp_path / "multi-source-edl.json",
+        {
+            "schema_version": 1,
+            "sources": [
+                {"asset_id": "camera-a", "source": "camera-a.mp4", "duration": 2.0},
+                {"asset_id": "camera-b", "source": "camera-b.mp4", "duration": 2.0},
+            ],
+            "events": [{"asset_id": "camera-a", "in": 0.0, "out": 1.0}],
+        },
+    )
+
+    result = run_script("render-edl", str(edl))
+
+    assert result.returncode == 2
+    assert json.loads(result.stdout) == {
+        "ok": False,
+        "error": "render-edl supports exactly one source and one event",
+    }
+
+
+def test_render_edl_rejects_multi_event_plan(tmp_path: Path) -> None:
+    edl = write_json(
+        tmp_path / "multi-event-edl.json",
+        {
+            "schema_version": 1,
+            "sources": [
+                {"asset_id": "camera-a", "source": "camera-a.mp4", "duration": 3.0}
+            ],
+            "events": [
+                {"asset_id": "camera-a", "in": 0.0, "out": 1.0},
+                {"asset_id": "camera-a", "in": 1.0, "out": 2.0},
+            ],
+        },
+    )
+
+    result = run_script("render-edl", str(edl))
+
+    assert result.returncode == 2
+    assert json.loads(result.stdout) == {
+        "ok": False,
+        "error": "render-edl supports exactly one source and one event",
+    }
+
+
 def test_render_edl_rejects_invalid_interval(tmp_path: Path) -> None:
     edl = write_json(
         tmp_path / "invalid-edl.json",

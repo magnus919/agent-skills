@@ -7,8 +7,11 @@ def main():
  try: d=json.loads(Path(a.edl).read_text())
  except (OSError,json.JSONDecodeError) as e: print(json.dumps({"ok":False,"error":str(e)})); return 2
  if not isinstance(d,dict) or d.get("schema_version")!=1: print(json.dumps({"ok":False,"error":"schema_version must be 1"})); return 2
- if not isinstance(d.get("events"),list) or not d["events"]: print(json.dumps({"ok":False,"error":"events must be a non-empty array"})); return 2
- src={x.get("asset_id"):x for x in d.get("sources",[]) if isinstance(x,dict)}; events=d.get("events",[]); out=[]; last=-1
+ events=d.get("events",[])
+ if not isinstance(events,list) or not events: print(json.dumps({"ok":False,"error":"events must be a non-empty array"})); return 2
+ sources=d.get("sources")
+ if not isinstance(sources,list) or len(sources)!=1 or len(events)!=1: print(json.dumps({"ok":False,"error":"render-edl supports exactly one source and one event"})); return 2
+ src={x.get("asset_id"):x for x in sources if isinstance(x,dict)}; out=[]; last=-1
  for i,e in enumerate(events):
   if not isinstance(e,dict) or e.get("asset_id") not in src: print(json.dumps({"ok":False,"error":f"invalid source at event {i}"})); return 2
   x,y=e.get("in"),e.get("out"); dur=src[e["asset_id"]].get("duration")
