@@ -8,10 +8,12 @@ description: >-
   retention, and label design — with a bundled read-only telemetry-check script
   for Prometheus rule sanity and scrape-target reachability. Use when running,
   tuning, or troubleshooting a Prometheus, OpenTelemetry Collector, or Loki
-  deployment, or reviewing the collection/ingest/retention layer. Do not use
-  for observability strategy, SLI/SLO design, or paging policy (that is
-  platform-engineering) or Grafana dashboards, panels, and Grafana-side
-  alerting (that is grafana).
+  deployment, or reviewing the collection/ingest/retention layer, including
+  bounded PromQL and LogQL query construction, semantic review, and no-data
+  diagnosis. Do not use for observability strategy, SLI/SLO design, or paging
+  policy (that is platform-engineering), Grafana dashboards, panels, and
+  Grafana-side alerting (that is grafana), or Tempo/tracing operations, which
+  remain deferred to a future named-tool skill.
 license: MIT
 compatibility: >-
   The bundled telemetry-check script runs on Python 3.9+ and needs no
@@ -53,9 +55,10 @@ Exit codes: 0 all checks passed, 1 issues found or a fatal error, 2 usage error.
 
 1. **Identify the deployment**: which components are in scope (Prometheus, OTel Collector, Loki), how they are deployed (binary, container, operator), where configs live, and who owns them.
 2. **Collect evidence**: run `telemetry-check --rules` and `--scrape` on the configs, then check the live status endpoints (`/-/healthy`, `/api/v1/targets`, collector health, Loki ready) where access exists.
-3. **Triage against the symptom**: map the reported problem to the evidence (missing series → scrape or relabeling; alert not firing → rule or retention; logs missing → ingest or label cardinality).
-4. **Act with confirmation**: bounded, scoped mutations after a human directive, with a rollback path named first.
-5. **Verify**: re-run the relevant check and confirm the observable at the delivery boundary.
+3. **For a query investigation**, load `references/05-query-workflows.md`. Define the signal, selector, UTC time window, step/limit, and expected unit; validate syntax separately from semantics; execute read-only instant then bounded range/log queries; and capture status, scope, time, limits, warnings, and cardinality evidence.
+4. **Triage against the symptom**: map the reported problem to the evidence (missing series → scrape or relabeling; alert not firing → rule or retention; logs missing → ingest or label cardinality). Treat an empty result as unknown, never as numeric zero, and distinguish stale, partial, expired, absent-label, and query-error states.
+5. **Act with confirmation**: bounded, scoped mutations after a human directive, with a rollback path named first.
+6. **Verify**: re-run the relevant check and confirm the observable at the delivery boundary.
 
 ## Prometheus: scrape, rules, relabeling, retention, HA
 
@@ -91,6 +94,7 @@ Retention is a stack-wide decision: Prometheus blocks (raw samples), OTel Collec
 | Scrape config, recording/alerting rules, relabeling, retention, HA | `references/01-prometheus-operations.md` |
 | Collector pipelines, receivers/processors/exporters, sampling, correlation | `references/02-opentelemetry-collector.md` |
 | Ingest, LogQL, retention, label design | `references/03-loki-operations.md` |
+| PromQL/LogQL construction, semantic review, bounded cost, and no-data diagnosis | `references/05-query-workflows.md` |
 | Cross-component retention decisions and stack integration | `references/04-stack-integration-and-retention.md` |
 
 ## Included artifacts
@@ -98,7 +102,7 @@ Retention is a stack-wide decision: Prometheus blocks (raw samples), OTel Collec
 - `scripts/telemetry-check`: read-only rule sanity + scrape-target reachability checker (stdlib-only, `--json`, `--rules`/`--scrape`/`--targets`, `--help` without a server).
 - `tests/test_telemetry_check.py`: deterministic tests against fixture configs, including the read-only contract.
 - `fixtures/`: `prometheus-rules.yml` (valid rules) and `scrape-config.yml` (valid scrape config) used by the tests and as starting points.
-- `references/`: four dated, source-indexed references plus the source index.
+- `references/`: five dated, source-indexed references plus the source index, including the bounded PromQL/LogQL workflow.
 - `evals/evals.json`: six output-quality evaluation cases for agent runs.
 
 ## Verification boundary
