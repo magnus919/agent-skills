@@ -97,9 +97,28 @@ Semantics that matter:
 `POST /team/new` (with `members_with_roles`, limits), `/team/info`,
 `/team/member_add`, `/team/update`; `POST /user/new`, `GET /user/info`. Roles:
 PROXY_ADMIN, PROXY_ADMIN_VIEW_ONLY, ORG_ADMIN (EE), INTERNAL_USER,
-INTERNAL_USER_VIEW_ONLY, TEAM, CUSTOMER. Model access groups
+INTERNAL_USER_VIEW_ONLY, TEAM, CUSTOMER. API bodies use the lowercase enum
+literals, for example `user_role: "internal_user"`. An uppercase role name in
+`/user/new` returned a Pydantic `literal_error` 422 in a v1.98.0 observation on
+2026-08-25. Treat that as a version-and-date-scoped observation, not a promise
+about every release.
+
+In that same v1.98.0 observation, `POST /user/new` returned a newly minted API
+key. Decide whether the key is needed before creating the user. If it is not
+needed, revoke or delete it through the documented API after confirming the
+exact key, user, and intended scope. A key that remains in the database is a
+persisted credential record, not an "untracked credential"; record its owner and
+lifecycle state so it can be audited. Model access groups
 (`model_info.access_groups`) let keys/teams be granted a group name instead of
 enumerated models.
+
+Before an authorized update, deletion, or cleanup, confirm the target identifier,
+the intended scope (key, user, team, or deployment), and a rollback path. Read
+back the current values first, record them, and preserve them for restoration.
+Prefer block/revoke when temporary containment is sufficient; use deletion only
+when retention and recovery requirements permit it. This reference has no live
+v1.98.0 service: the enum and auto-mint statements above are source-scoped
+observations, not a reproduction performed here.
 
 ## Spend tracking
 
