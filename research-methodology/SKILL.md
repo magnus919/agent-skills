@@ -1,6 +1,9 @@
 ---
 name: research-methodology
-description: Plan, conduct, evaluate, and synthesize rigorous research. Use for journalistic, industry, or technical investigations that need credible evidence and a traceable method.
+description: >-
+  Plan, conduct, evaluate, and synthesize rigorous research investigations with credible
+  evidence and a traceable method. Do not use this skill for repeated source extraction
+  and durable note orchestration; use `research-and-vault` for that capture workflow.
 license: MIT
 compatibility: No runtime dependency. Use appropriate retrieval tools and retain source URLs and access dates in the research log.
 metadata:

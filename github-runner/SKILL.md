@@ -1,9 +1,11 @@
 ---
 name: github-runner
-description: Deploy, manage, and troubleshoot self-hosted GitHub Actions runners.
-  Covers systemd service, Docker containers, Kubernetes (Actions Runner Controller),
-  and the Scale Set Client. Use when setting up a CI runner, debugging registration
-  failures, designing autoscaling, or hardening runner security.
+description: >-
+  Deploy, manage, and troubleshoot self-hosted GitHub Actions runners. Covers systemd
+  service, Docker containers, Kubernetes (Actions Runner Controller), and the Scale Set
+  Client. Use when setting up a CI runner, debugging registration failures, designing
+  autoscaling, or hardening runner security. Do not use this skill for unrelated requests;
+  route to the nearest named specialist.
 license: MIT
 compatibility: Linux, macOS, or Windows target hosts. Docker for containerized runners.
   Kubernetes for ARC deployments.

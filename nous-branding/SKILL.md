@@ -1,12 +1,14 @@
 ---
 name: nous-branding
-description: 'Generate images and content consistent with the Nous Research brand
-  identity. Use when creating visuals in the Nous / Theia / Hermes ecosystem: a "cyber-classical"
-  style blending neo-classical statuary, cyberpunk/industrial grunge, and retro anime
+description: >-
+  Generate images and content consistent with the Nous Research brand identity. Use when
+  creating visuals in the Nous / Theia / Hermes ecosystem: a "cyber-classical" style
+  blending neo-classical statuary, cyberpunk/industrial grunge, and retro anime
   illustration. Covers official brand color palette, typography (Inter/IBM Plex Sans,
   JetBrains Mono, heavy distressed display faces), the Nous Girl mascot, texture system,
   and image prompt construction. Ships reference images for palette, mascot, and brand
-  collage that can be used as img2img inputs.'
+  collage that can be used as img2img inputs. Do not use this skill for unrelated
+  requests; route to the nearest named specialist.
 license: MIT
 compatibility: Compatible with any agent capable of image generation or brand analysis.
   Reference-image workflows (img2img, style transfer, variations) require an API endpoint

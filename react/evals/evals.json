@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "skill_name": "react",
+  "evals": [
+    {
+      "id": "component-state-boundary",
+      "prompt": "Design a React dashboard filter component that fetches results and has loading, empty, error, and success states.",
+      "expected_output": "A component/state plan that assigns ownership, avoids duplicated derived state, and describes each async UI state.",
+      "assertions": ["Identifies local, URL, and server state separately", "Includes loading, empty, error, and success behavior", "Avoids an unnecessary effect for derived values"]
+    },
+    {
+      "id": "stale-request-protection",
+      "prompt": "Fix a React search hook where a slower response for the previous query overwrites the current query results.",
+      "expected_output": "A hook implementation or patch using abort or an active-request guard, with cleanup and intentional cancellation handling.",
+      "assertions": ["Prevents stale responses from committing state", "Cleans up the obsolete request", "Does not present abort cancellation as a user error"]
+    },
+    {
+      "id": "vite-secret-boundary",
+      "prompt": "Diagnose why a Vite app exposes an API token in its browser bundle and propose a safe fix.",
+      "expected_output": "A diagnosis that treats client env values as public, removes the secret from client code, and routes privileged access through a server boundary.",
+      "assertions": ["Explains compile-time Vite env substitution", "Never recommends shipping a secret under a public prefix", "Includes a way to rotate the exposed credential"]
+    },
+    {
+      "id": "subpath-routing-build",
+      "prompt": "A React Router app works at localhost root but its JS and CSS 404 when deployed under /portal/. Debug the Vite deployment.",
+      "expected_output": "A bounded diagnostic covering Vite base, generated asset URLs, and host-side SPA history fallback, followed by a preview verification.",
+      "assertions": ["Checks the Vite base setting", "Checks SPA fallback for deep links", "Verifies the built output at the deployed subpath"]
+    },
+    {
+      "id": "accessible-react-control",
+      "prompt": "Implement an expandable React disclosure with keyboard support and a focus-safe error message.",
+      "expected_output": "A semantic button/disclosure implementation with an accessible name, aria-expanded linkage, visible focus, and an announced error path.",
+      "assertions": ["Uses native button semantics", "Keeps aria-expanded and controlled-region linkage synchronized", "Routes detailed WCAG review to web-accessibility"]
+    },
+    {
+      "id": "verification-handoff",
+      "prompt": "Add a React form feature and verify it without installing new dependencies or using browser automation unnecessarily.",
+      "expected_output": "A verification sequence using existing project scripts, then build, with Playwright reserved for browser-level flows and failures reported exactly.",
+      "assertions": ["Inspects package scripts and existing conventions first", "Runs focused checks before the production build", "Routes browser E2E work to playwright rather than inventing ad hoc automation"]
+    }
+  ]
+}

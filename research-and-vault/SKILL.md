@@ -1,6 +1,10 @@
 ---
 name: research-and-vault
-description: Chain web research, atomic extraction, and durable knowledge capture into a repeatable workflow when the same research-to-notes sequence is needed.
+description: >-
+  Chain web research, atomic extraction, and durable note capture when the same
+  research-to-notes sequence must repeat. Do not use this skill to design or evaluate an
+  investigation; use `research-methodology` for research questions, methods, and evidence
+  assessment.
 ---
 
 # Research and Vault

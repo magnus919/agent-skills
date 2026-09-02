@@ -1,11 +1,11 @@
 ---
 name: web-accessibility
 description: >-
-  Design, build, and review accessible web interfaces with native semantics,
-  keyboard and focus behavior, forms and recovery, responsive input, motion,
-  assistive-technology testing, and WCAG 2.2-informed evidence. Use for a11y,
-  WCAG, ARIA, screen-reader, keyboard, focus, dialog, form, widget, or
-  accessibility review work across frameworks.
+  Design, build, and review accessible web interfaces with native semantics, keyboard and
+  focus behavior, forms and recovery, responsive input, motion, assistive-technology
+  testing, and WCAG 2.2-informed evidence. Use for a11y, WCAG, ARIA, screen-reader,
+  keyboard, focus, dialog, form, widget, or accessibility review work across frameworks.
+  Do not use this skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Works with any agent framework supporting the Agent Skills format; no runtime dependency.
 metadata:
@@ -59,4 +59,4 @@ Stop when each acceptance criterion has direct evidence or a recorded failed, bl
 
 - For Hugo template architecture, theme-wide layout, or CMS rendering concerns, use [hugo-theme](../hugo-theme/SKILL.md) and its [design/accessibility reference](../hugo-theme/references/design-accessibility.md).
 - For evidence gathering, scope decisions, or user-facing behavior outside accessibility, use [product-discovery](../product-discovery/SKILL.md), [product-methodology](../product-methodology/SKILL.md), or [product-design-and-ux](../product-design-and-ux/SKILL.md). Keep this skill responsible for accessibility interaction and conformance depth.
-- For framework or library APIs, consult the current official documentation after defining this skill's semantic and interaction contract.
+- For framework or library APIs, consult the current official documentation after defining this skill's semantic and interaction contract. React implementation details route to [react](../react/SKILL.md); Vite configuration routes to [vite](../vite/SKILL.md).

@@ -1,9 +1,10 @@
 ---
 name: trakt
 description: >-
-  Discover and compare Trakt.tv trending, popular, and anticipated movies and shows
-  from the terminal. Do not use this skill for TMDb catalog metadata, credits, images,
-  or provider lookups; use the tmdb skill for those tasks.
+  Discover and compare Trakt.tv trending, popular, and anticipated movies and shows, and
+  manage user-scoped history and watchlists from the terminal. Do not use this skill for
+  general TMDb catalog metadata, credits, images, or provider lookups; use `tmdb` for
+  those tasks.
 license: MIT
 compatibility: Requires TRAKT_CLIENT_ID, Python 3.8+, and requests. Public discovery
   reads use an application Client ID; OAuth is only needed for user-scoped operations.

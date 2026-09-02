@@ -1,10 +1,11 @@
 ---
 name: dspy
 description: >-
-  Expert skill for programming—not prompting—language models with Stanford's
-  DSPy framework. Signatures, modules (Predict, ChainOfThought, ReAct),
-  optimizer/teleprompter selection, compilation, caching, evaluation. Use when
-  doing programmatic prompt optimization or building compiled prompt programs.
+  Optimize and build programmatic prompt systems with Stanford DSPy. Signatures, modules
+  (Predict, ChainOfThought, ReAct), optimizer/teleprompter selection, compilation,
+  caching, evaluation. Use when doing programmatic prompt optimization or building
+  compiled prompt programs. Do not use this skill for unrelated requests; route to the
+  nearest named specialist.
 license: MIT
 metadata:
   author: Magnus Hedemark

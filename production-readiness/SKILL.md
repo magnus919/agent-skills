@@ -1,14 +1,10 @@
 ---
 name: production-readiness
 description: >-
-  Define the minimum production evidence packet by risk class and produce
-  go/no-go/defer/exception launch decisions with accountable owners.
-  Cover ownership, user/business outcome, dependencies, SLOs, observability,
-  support, security, data, rollback, capacity, and cost — every category with
-  a named source or explicit missing-evidence outcome. Route detailed checks
-  to existing specialist skills. Do not use for release pipeline mechanics
-  (release-engineering) or incident response and SLO operations
-  (site-reliability-engineering).
+  Define risk-scaled evidence packets and go/no-go/defer/exception launch gates with
+  accountable owners. Do not use this skill for cross-domain production composition; use
+  `production-excellence` for assembling migration, recovery, capacity, and incident
+  evidence.
 license: MIT
 compatibility: Platform-agnostic methodology. No runtime dependency.
 metadata:

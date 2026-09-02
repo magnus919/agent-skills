@@ -1,10 +1,11 @@
 ---
 name: open-knowledge-format
-description: Google's Open Knowledge Format (OKF) v0.1 — an open, vendor-neutral spec
-  for representing knowledge as markdown files with YAML frontmatter, designed for
-  AI agent consumption. Use when the user mentions OKF, Open Knowledge Format, Google's
-  knowledge format, LLM wiki bundles, agent knowledge packs, creating OKF bundles,
-  validating OKF documents, or converting knowledge into the OKF standard.
+description: >-
+  Define knowledge bundles with Google's Open Knowledge Format (OKF) v0.1. Use when the
+  user mentions OKF, Open Knowledge Format, Google's knowledge format, LLM wiki bundles,
+  agent knowledge packs, creating OKF bundles, validating OKF documents, or converting
+  knowledge into the OKF standard. Do not use this skill for unrelated requests; route to
+  the nearest named specialist.
 license: MIT
 compatibility: Portable across any AgentSkills-compatible harness. The validation
   script requires Python 3.8+ with PyYAML (pip install PyYAML). All examples use standard

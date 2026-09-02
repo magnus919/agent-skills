@@ -1,8 +1,10 @@
 ---
 name: forgejo-cli
-description: 'Use when managing a Forgejo or Gitea server from the terminal: issues,
-  pull requests, repositories, file contents, labels, milestones, releases, webhooks,
-  user settings, or any /api/v1 endpoint through a safe generic API command.'
+description: >-
+  Use when managing a Forgejo or Gitea server from the terminal: issues, pull requests,
+  repositories, file contents, labels, milestones, releases, webhooks, user settings, or
+  any /api/v1 endpoint through a safe generic API command. Do not use this skill for
+  unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Python 3.8+; requests is required only for live API calls.
 metadata:

@@ -1,6 +1,9 @@
 ---
 name: tmdb
-description: Query TMDb metadata for films and television, then enrich results with details, credits, providers, and external IDs. Do not use this skill for torrent search, streaming playback, or personal watch-history tracking.
+description: >-
+  Query TMDb metadata for films and television, then enrich results with details, credits,
+  providers, and external IDs. Do not use this skill for personal watch history,
+  watchlists, or tracking; use `trakt` for user activity and watch-state workflows.
 license: MIT
 compatibility: Requires TMDB_ACCESS_TOKEN or TMDB_API_KEY, Python 3.8+, and requests.
 metadata:

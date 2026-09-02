@@ -1,13 +1,13 @@
 ---
 name: brand-designer
 description: >-
-  Create comprehensive brand identity documentation for any brand. Guides you
-  through documenting strategy, visual identity (logo, color, typography, imagery),
-  voice and tone, application guidelines, governance, and asset inventory.
-  Produces markdown specs, compiled brand books, and brand-compliant images via
-  reference-image-aware generation. Use when you need to capture a brand's identity
-  in structured, durable form — for vault storage, agency handoff, or press kit
-  distribution.
+  Create comprehensive brand identity documentation for any brand. Guides you through
+  documenting strategy, visual identity (logo, color, typography, imagery), voice and
+  tone, application guidelines, governance, and asset inventory. Produces markdown specs,
+  compiled brand books, and brand-compliant images via reference-image-aware generation.
+  Use when you need to capture a brand's identity in structured, durable form — for vault
+  storage, agency handoff, or press kit distribution. Do not use this skill for unrelated
+  requests; route to the nearest named specialist.
 license: MIT
 compatibility: >-
   CLI requires Python 3.8+; generate script requires an image generation backend.

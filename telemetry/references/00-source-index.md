@@ -25,6 +25,9 @@ procedure for keeping it current.
 | Loki storage and retention | https://grafana.com/docs/loki/latest/operations/storage/retention/ |
 | LogQL | https://grafana.com/docs/loki/latest/query/ |
 | Loki label design guidance | https://grafana.com/docs/loki/latest/get-started/labels/ |
+| Prometheus HTTP API and querying | https://prometheus.io/docs/prometheus/latest/querying/api/ |
+| PromQL operators and functions | https://prometheus.io/docs/prometheus/latest/querying/operators/ |
+| Loki query HTTP API | https://grafana.com/docs/loki/latest/reference/loki-http-api/ |
 
 ## Version observations (as of this refresh)
 

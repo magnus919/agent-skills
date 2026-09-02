@@ -1,9 +1,11 @@
 ---
 name: confluence-cli
-description: 'Interact with Atlassian Confluence from the terminal: list spaces, browse
-  pages, view page content, search with CQL, and create pages. Use when the user mentions
-  Confluence, a space key (e.g. DEV), or asks about documentation, wiki pages, space
-  content, or knowledge base articles.'
+description: >-
+  Interact with Atlassian Confluence from the terminal: list spaces, browse pages, view
+  page content, search with CQL, and create pages. Use when the user mentions Confluence,
+  a space key (e.g. DEV), or asks about documentation, wiki pages, space content, or
+  knowledge base articles. Do not use this skill for unrelated requests; route to the
+  nearest named specialist.
 license: MIT
 compatibility: Requires CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN env vars (free from
   id.atlassian.com/manage/api-tokens), Python 3.8+, and the `requests` library. Also

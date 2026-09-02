@@ -1,6 +1,9 @@
 ---
 name: three
-description: Build browser-based Three.js and WebGL scenes, animations, and interactive 3D visualizations with a small vanilla JavaScript starting point.
+description: >-
+  Build browser-based Three.js and WebGL scenes, animations, and interactive 3D
+  visualizations with a small vanilla JavaScript starting point. Do not use this skill for
+  unrelated requests; route to the nearest named specialist.
 ---
 
 # Three.js

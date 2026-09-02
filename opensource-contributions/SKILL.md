@@ -1,8 +1,10 @@
 ---
 name: opensource-contributions
-description: Make good open source contributions — check CONTRIBUTING.md first, follow
-  project norms, be a good citizen. Covers bug reports, feature requests, and pull
-  requests with a defensible default posture when the project hasn't documented expectations.
+description: >-
+  Make good open source contributions — check CONTRIBUTING.md first, follow project norms,
+  be a good citizen. Covers bug reports, feature requests, and pull requests with a
+  defensible default posture when the project hasn't documented expectations. Do not use
+  this skill for unrelated requests; route to the nearest named specialist.
 license: MIT
 compatibility: Compatible with any agent supporting the Agent Skills format (Hermes
   Agent, Claude Code, GitHub Copilot, OpenCode, Cursor, etc.)
