@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""Compare two ffprobe JSON documents against basic media criteria."""
+import argparse
+import json
+import sys
+from pathlib import Path
+
+
+def load(path):
+    try:
+        return json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(str(exc)) from exc
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("input_probe")
+    parser.add_argument("output_probe")
+    parser.add_argument("--duration-tolerance", type=float, default=0.1)
+    parser.add_argument("--require-subtitles", action="store_true")
+    args = parser.parse_args()
+    try:
+        before = load(args.input_probe)
+        after = load(args.output_probe)
+    except ValueError as exc:
+        print(json.dumps({"ok": False, "status": "invalid_probe", "error": str(exc)}))
+        return 2
+    before_streams = before.get("streams", [])
+    after_streams = after.get("streams", [])
+    checks = [{"criterion": "output_has_streams", "passed": bool(after_streams)}]
+    for stream_type in ("video", "audio"):
+        before_stream = next((s for s in before_streams if s.get("codec_type") == stream_type), None)
+        after_stream = next((s for s in after_streams if s.get("codec_type") == stream_type), None)
+        if before_stream:
+            checks.append({"criterion": f"{stream_type}_stream", "passed": after_stream is not None})
+            if after_stream and before_stream.get("codec_name") and after_stream.get("codec_name"):
+                checks.append({"criterion": f"{stream_type}_codec", "passed": before_stream["codec_name"] == after_stream["codec_name"], "input": before_stream["codec_name"], "output": after_stream["codec_name"]})
+    if args.require_subtitles:
+        checks.append({"criterion": "subtitle_stream", "passed": any(s.get("codec_type") == "subtitle" for s in after_streams)})
+    try:
+        input_duration = float(before.get("format", {}).get("duration"))
+        output_duration = float(after.get("format", {}).get("duration"))
+    except (TypeError, ValueError):
+        input_duration = output_duration = None
+    if input_duration is not None and output_duration is not None:
+        checks.append({"criterion": "duration", "passed": abs(input_duration - output_duration) <= args.duration_tolerance, "input": input_duration, "output": output_duration, "tolerance": args.duration_tolerance})
+    ok = all(check["passed"] for check in checks)
+    print(json.dumps({"ok": ok, "status": "pass" if ok else "fail", "checks": checks}, indent=2, sort_keys=True))
+    return 0 if ok else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

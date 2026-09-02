@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+import argparse,json,math,sys
+from pathlib import Path
+
+def main():
+ p=argparse.ArgumentParser(description=__doc__); p.add_argument("edl"); p.add_argument("--output",default="output.mp4"); a=p.parse_args()
+ try: d=json.loads(Path(a.edl).read_text())
+ except (OSError,json.JSONDecodeError) as e: print(json.dumps({"ok":False,"error":str(e)})); return 2
+ if not isinstance(d,dict) or d.get("schema_version")!=1: print(json.dumps({"ok":False,"error":"schema_version must be 1"})); return 2
+ events=d.get("events",[])
+ if not isinstance(events,list) or not events: print(json.dumps({"ok":False,"error":"events must be a non-empty array"})); return 2
+ sources=d.get("sources")
+ if not isinstance(sources,list) or len(sources)!=1 or len(events)!=1: print(json.dumps({"ok":False,"error":"render-edl supports exactly one source and one event"})); return 2
+ src={x.get("asset_id"):x for x in sources if isinstance(x,dict)}; out=[]; last=-1
+ for i,e in enumerate(events):
+  if not isinstance(e,dict) or e.get("asset_id") not in src: print(json.dumps({"ok":False,"error":f"invalid source at event {i}"})); return 2
+  x,y=e.get("in"),e.get("out"); dur=src[e["asset_id"]].get("duration")
+  if not all(isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v) for v in (x,y)) or x<0 or y<=x or x<last or isinstance(dur,(int,float)) and y>dur: print(json.dumps({"ok":False,"error":f"invalid interval at event {i}"})); return 2
+  last=y; out.append({"asset_id":e["asset_id"],"in":x,"out":y,"action":e.get("action","keep")})
+ argv=["ffmpeg","-n"]
+ for e in out: argv += ["-ss",str(e["in"]),"-to",str(e["out"]),"-i",str(src[e["asset_id"]].get("source",e["asset_id"]))]
+ argv += ["-map","0:v:0?","-map","0:a:0?","-c","copy",a.output]
+
+ print(json.dumps({"ok":True,"executed":False,"events":out,"argv":argv,"output":a.output},indent=2)); return 0
+if __name__=="__main__": sys.exit(main())

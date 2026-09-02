@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "id": "asset-001",
+      "source": "input.mp4",
+      "source_digest": "sha256:<record-after-intake>",
+      "probe": {
+        "command": "ffprobe -v error -show_format -show_streams -of json input.mp4",
+        "captured_at": "<UTC timestamp>",
+        "result_path": "<task-local path>"
+      }
+    }
+  ],
+  "output_contract": {
+    "purpose": "<editorial purpose>",
+    "container": "mp4",
+    "video_codec": "<required or null>",
+    "audio_codec": "<required or null>",
+    "downstream_consumer": "<player, editor, host, archive, or other>",
+    "acceptance_thresholds": ["<measurable condition>"]
+  },
+  "preservation": {"originals_untouched": true, "overwrite_policy": "refuse"},
+  "privacy_boundary": "<where task-local media and evidence must remain>",
+  "assumptions": ["<explicit unknown>"]
+}
