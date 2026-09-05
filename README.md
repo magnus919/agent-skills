@@ -41,6 +41,10 @@ Design and operate an organization's AI governance system: governance principles
 
 Decide whether an AI-enabled workflow should be adopted, scaled, constrained, redesigned, or retired by connecting workflow outcomes, worker or user effects, quality guardrails, full operating cost, telemetry, uncertainty, and accountable governance. Routes detailed financial, statistical, analytics, evaluation, runtime, governance, and launch work to the owning specialist skills.
 
+### [analog-occultism](analog-occultism/SKILL.md)
+
+Create subject-neutral images and videos in an analog occultism / industrial CRT noir aesthetic: near-monochrome archival technical atmosphere, severe low-key lighting, tactile signal degradation, industrial geometry, and quiet unresolved tension. Not for colorful cyberpunk, glossy advertising, conventional horror, or clean digital renders.
+
 ### [anydoc](anydoc/SKILL.md)
 
 Convert Word, PowerPoint, Excel, OpenDocument, RTF, EPUB, CSV, and text-based PDF documents to GitHub-Flavored Markdown locally with the Any Doc CLI. Use when a task needs the contents of an office document, spreadsheet, presentation, ebook, or PDF you cannot read directly. Do not use for generating, editing, or validating documents, for ebook packaging, or for OCR of scanned or image-only PDFs.

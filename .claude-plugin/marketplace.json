@@ -78,6 +78,15 @@
       "description": "Use when deciding whether an AI-enabled workflow should be adopted, scaled, constrained, redesigned, or retired, and the decision must connect business outcomes, worker or user effects, quality guardrails, full operating cost, telemetry, uncertainty, and accountable governance. Do not use for a standalone financial model, infrastructure cost calculation, agent evaluation design, runtime operations, or general AI governance; route those details to the neighboring specialist skills."
     },
     {
+      "name": "analog-occultism",
+      "source": "./",
+      "skills": [
+        "./analog-occultism"
+      ],
+      "strict": false,
+      "description": "Use this skill to create subject-neutral images and videos in an analog occultism / industrial CRT noir aesthetic: near-monochrome archival technical atmosphere, severe low-key lighting, tactile signal degradation, industrial geometry, and quiet unresolved tension. Use for portraits, products, environments, interfaces, diagrams, abstract forms, stills, and motion. Do not use for colorful cyberpunk, vaporwave, glossy advertising, conventional horror, or clean digital renders."
+    },
+    {
       "name": "anydoc",
       "source": "./",
       "skills": [
