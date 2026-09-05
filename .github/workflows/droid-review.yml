@@ -53,10 +53,6 @@ jobs:
           factory_api_key: ${{ secrets.FACTORY_API_KEY }}
           automatic_review: true
           automatic_security_review: true
-          review_model: deepseek-v4-flash
-          security_model: deepseek-v4-flash
-          # DeepSeek V4 Flash rejects the unsupported ApplyPatch tool; Edit and
-          # Create provide the equivalent review-time mutation surface.
-          droid_args: --enabled-tools "Read,Grep,Glob,LS,Execute,Edit,Create,github_comment___update_droid_comment,Task,FetchUrl,Skill"
+          review_depth: shallow
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
