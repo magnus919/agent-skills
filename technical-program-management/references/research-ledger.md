@@ -24,4 +24,4 @@ The companion project skill owns one bounded project's mandate, method, mileston
 
 ## Integrity limits
 
-The deep GroktoCrawl artifact at `/Users/magnus/technical-program-management-research-deep` consulted three sources and produced a useful synthesis, but source completeness was not achieved: the NASA PDF and some UK pages were inaccessible to the crawler. Do not describe those unverified documents as having supplied detailed requirements. Preserve uncertainty rather than filling the gap with plausible program-management doctrine.
+The deep GroktoCrawl artifact (retained as a session-side research record) consulted three sources and produced a useful synthesis, but source completeness was not achieved: the NASA PDF and some UK pages were inaccessible to the crawler. Do not describe those unverified documents as having supplied detailed requirements. Preserve uncertainty rather than filling the gap with plausible program-management doctrine.
