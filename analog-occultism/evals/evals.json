@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "skill_name": "analog-occultism",
+  "evals": [
+    {
+      "id": "archive-portrait",
+      "prompt": "Create a square portrait of a botanist examining a sealed specimen in analog occultism / industrial CRT noir.",
+      "expected_output": "A concrete still-image prompt that preserves the person and specimen while using near-monochrome low-key lighting, one practical source, industrial framing, and restrained analog degradation.",
+      "assertions": ["preserves the botanist and specimen as recognizable subjects", "specifies one dominant practical light", "uses near-monochrome crushed blacks and blown ivory highlights", "requires low-fidelity monochrome CRT defects such as soft raster, phosphor persistence, sync wobble, and dropped detail", "includes tactile analog signal treatment without excessive glitch", "avoids gore, glossy CGI, broad neon, and conventional horror"],
+      "case_set": "dev"
+    },
+    {
+      "id": "industrial-product",
+      "prompt": "Prompt an image of a weathered field radio on a metal workbench in this aesthetic, with no readable brand or logo.",
+      "expected_output": "A still prompt treating the radio as archival technical evidence with physical contact, cables, darkness, selective illumination, and original nonsemantic markings.",
+      "assertions": ["grounds the radio on a workbench with plausible cables or contact", "uses a single screen or industrial practical as the light source", "keeps markings original and non-branded", "retains strong negative space and industrial geometry", "does not turn the scene into colorful cyberpunk or a nostalgic prop collage"],
+      "case_set": "dev"
+    },
+    {
+      "id": "reference-preservation",
+      "prompt": "Use a supplied character reference to place the same person in a sealed archive chamber using analog occultism / industrial CRT noir.",
+      "expected_output": "A reference-driven prompt that explicitly preserves identity and silhouette, adds the archive chamber treatment, and tells the image tool to use the actual reference.",
+      "assertions": ["instructs the agent to pass the actual reference image to the generator", "separates PRESERVE from REINTERPRET or ADD instructions", "preserves identity and essential proportions", "adds one dominant practical source and severe contrast", "does not claim pixel-exact style transfer"],
+      "case_set": "regression"
+    },
+    {
+      "id": "slow-observer-video",
+      "prompt": "Create a 10-second video of an inactive machine waking slightly in a dark archive, with quiet tension and no dialogue.",
+      "expected_output": "A video shot prompt with one restrained mechanical action, slow automated-observer camera movement, stable practical lighting, sparse sound, and embedded CRT treatment.",
+      "assertions": ["specifies a slow deliberate camera movement", "limits action to a restrained physical change", "keeps one dominant practical source stable", "specifies ambient sound and no dialogue", "avoids frenetic editing, whip pans, bright neon, and decorative glitch"],
+      "case_set": "dev"
+    },
+    {
+      "id": "video-keyframe-continuity",
+      "prompt": "Plan an image-to-video or keyframe shot where an archival diagram slowly reveals one previously hidden node, then returns unresolved.",
+      "expected_output": "A mode-aware video plan preserving composition, subject location, light, and visual grammar while making the reveal gradual and verifiable.",
+      "assertions": ["chooses image-to-video or keyframes based on the need to preserve composition", "describes a gradual reveal and unresolved return", "preserves the dominant light and negative-space structure", "limits motion and signal effects to restrained changes", "includes bounded frame sampling and verification limitations"],
+      "case_set": "release"
+    }
+  ]
+}
