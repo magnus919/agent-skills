@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "skill_name": "technical-project-management",
+  "evals": [
+    {
+      "id": "no-pm-small-team",
+      "prompt": "We are four engineers working part-time on a customer migration. Nobody is a PM. Our launch date is only a sales wish, there is no accepted scope, and we keep forgetting decisions. Help us get organized without adding lots of meetings.",
+      "expected_output": "A lightweight initiation brief with actual authority and uncertainty, not an invented committed plan.",
+      "assertions": [
+        "Distinguishes desired date from an accepted deadline.",
+        "Identifies approval and scope gaps without refusing all diagnostic help.",
+        "Uses part-time availability rather than four full-time resources.",
+        "Proposes a small source of truth and decision cadence, without imposing a PMO."
+      ]
+    },
+    {
+      "id": "expert-tpm-vendor-slip",
+      "prompt": "I am the TPM. Skip the basics. Baseline integrated acceptance is working day 20. A vendor interface, needed by day 12, is now forecast for day 18; integration takes 10 working days after receipt. Sponsor review is tomorrow. Give me a concise decision brief with options; vendor commitment is unconfirmed.",
+      "expected_output": "An expert-paced brief stating day 28 forecast and 8-day variance under the stated sequential assumptions, with feasible options and authority.",
+      "assertions": [
+        "Computes forecast day 28 and variance of 8 working days.",
+        "Keeps vendor forecast distinct from commitment.",
+        "Provides options and a sponsor decision rather than a terminology lesson.",
+        "Does not claim adding engineers necessarily compresses integration.",
+        "Identifies the pre-existing inconsistency: receipt day 12 plus 10 days implies day 22, not baseline day 20."
+      ]
+    },
+    {
+      "id": "hybrid-device-project",
+      "prompt": "Our device supplier uses phase approvals and has an 8-week lead time. Software uses two-week sprints, and calibration is unproven. The whole device needs certification. Pick a project approach and explain how the teams coordinate.",
+      "expected_output": "A justified hybrid with explicit interface and acceptance contracts, not forced synchronization.",
+      "assertions": [
+        "Separates hardware/procurement governance from software iteration.",
+        "Defines an early calibration learning checkpoint.",
+        "Does not equate sprint completion or simulator success with certification.",
+        "Names provider/receiver acceptance and escalation needs."
+      ]
+    },
+    {
+      "id": "misleading-green-status",
+      "prompt": "My dashboard is green because 90 percent of tickets are done. End-to-end tests have not run, the remaining scope is unknown, and the sponsor wants a reassuring update. Draft it.",
+      "expected_output": "Truthful health assessment and a targeted evidence request with a next decision.",
+      "assertions": [
+        "Does not issue an unqualified green status.",
+        "Separates ticket completion from integrated acceptance.",
+        "Identifies remaining-work and test evidence gaps.",
+        "Provides recovery or evidence-gathering actions without inventing results."
+      ]
+    },
+    {
+      "id": "shared-resource-network",
+      "prompt": "Analyze templates/schedule-example.json. Is the deadline achievable? Both build and review-prep require the same exclusive specialist.",
+      "expected_output": "Correct dependency calculation and explicit resource-feasibility limitation.",
+      "assertions": [
+        "Reports unconstrained finish at day 6 and 1-day deadline gap.",
+        "Identifies overlapping specialist demand.",
+        "Does not present day 6 as a resource-feasible commitment.",
+        "Does not call the calculation Monte Carlo or critical-chain scheduling.",
+        "Resolves this simple exclusive-resource sequence to earliest day 7, two days late, under the stated assumptions."
+      ],
+      "files": [
+        "templates/schedule-example.json"
+      ]
+    },
+    {
+      "id": "change-with-fixed-constraints",
+      "prompt": "An approved project has 20 days of remaining work and 20 days available. Sales adds a mandatory 5-day feature and says scope, quality, date and cost cannot move. Draft a change decision; do not contact anyone.",
+      "expected_output": "A conflict and conditional options; preserved baseline and no unauthorized communication.",
+      "assertions": [
+        "States the capacity/constraint conflict.",
+        "Presents scope swap, date/capacity alternatives or explicit infeasibility rather than a magical compliant plan.",
+        "Keeps current baseline until authorized change.",
+        "Produces a draft and does not claim notification or agreement."
+      ]
+    },
+    {
+      "id": "research-with-no-history",
+      "prompt": "We need an AI extraction system with 99 percent accuracy in six weeks. There is no labeled dataset or delivery history. Give us a P95 completion date.",
+      "expected_output": "Declines unsupported precision and substitutes bounded learning/evaluation milestones.",
+      "assertions": [
+        "Does not invent a P95 date or historical sample.",
+        "Identifies missing evaluation data and definition of accuracy.",
+        "Proposes a bounded feasibility/evidence checkpoint with an owner.",
+        "Distinguishes learning completion from production acceptance."
+      ]
+    },
+    {
+      "id": "closure-without-owner",
+      "prompt": "The software shipped yesterday. Support has not agreed to own it, three known defects remain, and Finance has not checked supplier invoices. Close the project as successful.",
+      "expected_output": "Conditional closure decision with residual obligations and receiving acceptance.",
+      "assertions": [
+        "Does not declare unconditional closure.",
+        "Names support acceptance and financial reconciliation gaps.",
+        "Requires disposition and accepted ownership for defects.",
+        "Separates deployment from benefit realization."
+      ]
+    },
+    {
+      "id": "scrum-accountabilities",
+      "prompt": "I coordinate three Scrum teams. Can I assign every developer tasks and require sponsor signoff at every Sprint Review so our project dates are safe? Give a better coordination approach.",
+      "expected_output": "Preserves Scrum accountabilities while adding cross-team milestone/decision coordination.",
+      "assertions": [
+        "Does not give the coordinator unilateral control of Developers delivery plans.",
+        "Does not make Sprint Review a mandatory release gate.",
+        "Defines shared dependency or integration evidence.",
+        "Distinguishes any actual organizational approval obligation from Scrum events."
+      ]
+    },
+    {
+      "id": "case-transfer-limits",
+      "prompt": "GitHub upgraded more than a thousand MySQL hosts successfully. We have twelve databases; can we copy their rollback plan and promise the same SLO outcome?",
+      "expected_output": "Uses the case as coordination evidence with explicit technical and causal limitations.",
+      "assertions": [
+        "Labels GitHub outcome as self-reported.",
+        "Rejects an automatic guarantee based on fleet size.",
+        "Requires architecture-specific rollback validation.",
+        "Transfers readiness and coordination practices without copying unsupported technical assumptions."
+      ]
+    },
+    {
+      "id": "appetite-regulatory-conflict",
+      "prompt": "Our team likes Shape Up. We have a legal reporting obligation with mandatory scope in 10 weeks. Can we just stop after a six-week bet if it is unfinished?",
+      "expected_output": "Identifies mismatch between discretionary appetite and mandatory obligation; routes formal interpretation.",
+      "assertions": [
+        "Does not recommend abandoning a mandatory obligation by default.",
+        "Separates appetite from feasibility estimate.",
+        "Proposes bounded discovery or delivery slices within a governed obligation.",
+        "Routes contract/legal interpretation to the appropriate specialist rather than inventing it."
+      ]
+    },
+    {
+      "id": "stale-inherited-plan",
+      "prompt": "I inherited a project with a red forecast. The sponsor asks me to delete the old baseline and call the new date the original target. We also have no evidence for vendor percent complete. What should I do?",
+      "expected_output": "Preserves history and reconstructs evidence for an authorized recovery decision.",
+      "assertions": [
+        "Does not erase or misrepresent the original baseline.",
+        "Separates current forecast from baseline approval.",
+        "Requests vendor acceptance/remaining-work evidence.",
+        "Offers recovery options with an accountable decision path."
+      ]
+    }
+  ]
+}

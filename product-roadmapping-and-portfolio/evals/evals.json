@@ -61,6 +61,16 @@
         "Bet owner desire labeled as opinion, not evidence.",
         "Revisit criteria defined."
       ]
+    },
+    {
+      "id": "route-ongoing-project-control",
+      "prompt": "Portfolio priorities are agreed. We need weekly milestone tracking, schedule recovery and a project scope-change decision for the selected migration.",
+      "expected_output": "Routes ongoing project control to technical-project-management instead of changing the outcome roadmap.",
+      "assertions": [
+        "Routes ongoing milestone and recovery work to technical-project-management.",
+        "Does not substitute a Now/Next/Later roadmap for the requested project control.",
+        "Keeps detailed approved work breakdown with implementation-planning."
+      ]
     }
   ]
 }

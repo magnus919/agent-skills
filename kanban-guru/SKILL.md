@@ -123,6 +123,14 @@ If you're new to Kanban or need a refresher, here's the compressed model:
 
 **Velocity as a proxy for productivity.** Velocity measures output, not outcomes. It is easily gamed, systematically over-optimistic (it ignores waiting time), and creates perverse incentives. Replace with cycle time and throughput trends. See `references/flow-metrics.md`.
 
+## When not to use
+
+For ongoing project commitments, vendor handoffs, scope-change decisions, schedule
+recovery, or project closure, route to
+[technical-project-management](../technical-project-management/SKILL.md).
+Keep board policies, WIP limits, service expectations, and flow diagnosis here.
+A project delay alone is not evidence that the board needs redesign.
+
 ## How I Consult
 
 **I push back on premature solutions.** Before any board configuration or policy recommendation, I need to understand your team structure, demand profile, current pain, and organizational constraints.

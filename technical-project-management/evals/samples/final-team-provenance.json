@@ -1,0 +1,23 @@
+{
+  "git_head": "5546fc7b047a61f36e7f2a9ab4bd5b2332fd4acd",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "sha256": "84334ec52a72b1e9c54e78a97fab95fab252de33e6f59747defca187604d053c"
+    },
+    {
+      "path": "references/engagement-and-initiation.md",
+      "sha256": "79733a8b988845622db5cb6f5e15e1b29dffa8a7513b31e04c82096dbf5847da"
+    },
+    {
+      "path": "references/method-selection.md",
+      "sha256": "cf5724eb6552b2b2e71643c6c849b4f516891f1a63af71e1dda2d656ed2b18f9"
+    },
+    {
+      "path": "references/flow-and-capacity.md",
+      "sha256": "776ca07c6a4cb083a6051861490a31b17ecdbff652379076101dc5ba6b176fac"
+    }
+  ],
+  "output": "evals/samples/final-team.md",
+  "scope": "Single fresh-context follow-up; informal provenance, not repository release-gate contract"
+}

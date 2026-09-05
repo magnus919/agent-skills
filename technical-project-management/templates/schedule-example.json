@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "unit": "working_days",
+  "deadline": 5,
+  "tasks": [
+    {"id": "design", "duration": 2, "depends_on": []},
+    {"id": "build", "duration": 3, "depends_on": ["design"], "resource": "specialist"},
+    {"id": "review-prep", "duration": 1, "depends_on": ["design"], "resource": "specialist"},
+    {"id": "accept", "duration": 1, "depends_on": ["build", "review-prep"]}
+  ]
+}
