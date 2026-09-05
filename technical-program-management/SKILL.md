@@ -20,12 +20,11 @@ metadata:
 
 # Technical Program Management
 
-Coordinate related delivery efforts toward a shared technical and organizational
-outcome. A program is not a larger project: it exists because coordination, shared
-constraints, or benefits across components require decisions that no component owner
-can make alone.
+Program-level control can fail even when every component is on its own track. Use this skill to see and manage the seams, not to replace project managers or product governance.
 
 ## First move: prove the program boundary
+
+A program is not a larger project: it exists because coordination, shared constraints, or benefits across components require decisions that no component owner can make alone.
 
 Read existing strategy, business case, component plans, dependency records, benefits
 assumptions, and recent status evidence before creating ceremony. Establish:
@@ -51,9 +50,11 @@ Read only what the current decision requires:
 | Program mandate, component map, or shared constraints | [Program brief template](templates/program-brief.md) |
 | Integrated status, dependency, risk, or recovery problem | [Program control and troubleshooting](references/program-control.md) |
 | Benefits, governance, or evidence boundary | [Research ledger](references/research-ledger.md) |
+| Benefits dependency mapping, tranche decisions, or disbenefits | [Benefits dependency and tranche control](references/benefits-dependency-and-tranches.md) |
 | Adoption, operating-model change, or benefit drift | [Benefits and transformation](references/benefits-and-transformation.md) |
 | Integrated control record needs filling | [Integrated control template](templates/integrated-control.md) |
 | Audience-specific status or decision update | [Stakeholder update template](templates/stakeholder-update.md) |
+| Independent assurance or troubled-program intervention | [Assurance and intervention](references/assurance-and-intervention.md) |
 | One project needs detailed control | [technical-project-management](../technical-project-management/SKILL.md) |
 | Product portfolio or capital-allocation choice | [product-roadmapping-and-portfolio](../product-roadmapping-and-portfolio/SKILL.md) or [strategy-frameworks](../strategy-frameworks/SKILL.md) |
 
@@ -87,9 +88,11 @@ Read only what the current decision requires:
    quality, risk, adoption, and benefits. A local optimization that harms the shared
    outcome is a program issue. Preserve history when the mandate or baseline changes.
 7. **Realize and transition.** Coordinate adoption, operating-model change, capability
-   transfer, and benefits measurement. Close or reshape the program only when the
-   outcome decision, residual ownership, operational handoff, and benefits follow-up
-   are explicit.
+   transfer, and benefits measurement. Use [Benefits dependency and tranche control](references/benefits-dependency-and-tranches.md)
+   when components must produce a shared benefit in stages. Use [Assurance and intervention](references/assurance-and-intervention.md)
+   when evidence, governance, or the integrated outcome is materially disputed or off track.
+   Close or reshape the program only when the outcome decision, residual ownership,
+   operational handoff, and benefits follow-up are explicit.
 
 ## Method selection
 
@@ -165,6 +168,7 @@ quality, adoption, benefits, and risk.
 | Live outage or responder command | [site-reliability-engineering](../site-reliability-engineering/SKILL.md) |
 | Capital allocation, corporate strategy, or M&A | [strategy-frameworks](../strategy-frameworks/SKILL.md) |
 | Organizational structure and talent design | [org-design](../org-design/SKILL.md) |
+| Independent assurance or troubled-program intervention | [Assurance and intervention](references/assurance-and-intervention.md) |
 | Post-delivery adoption evidence or benefits learning | [product-adoption](../product-adoption/SKILL.md) and [product-lifecycle-learning](../product-lifecycle-learning/SKILL.md) |
 
 ## Output contract and completion
@@ -182,9 +186,14 @@ the evidence. Do not imply ongoing monitoring without an authorized mechanism.
 
 ## Research basis and limitations
 
-This synthesis is informed by PMI's *The Standard for Program Management, Fifth
-Edition* (2024), UK Government Project Delivery programme governance guidance, and
-NASA program/project management guidance. Those sources provide principles and
-jurisdiction-specific requirements, not a universal operating model or proof that any
-method guarantees delivery success. Use formal organizational or regulatory standards
-when they govern the actual program.
+This synthesis is informed by a deep, source-grounded research artifact retained
+with the development record, including PMI's *The Standard for Program Management,
+Fifth Edition* (2024), UK Government Project Delivery guidance, Local Government
+Association dependency guidance, and NASA risk management guidance. The deep run
+confirmed the value of benefits dependency mapping, tranches, disbenefits, enterprise
+risk categories, and independent assurance. It directly consulted three sources; the
+NASA handbook PDF and some UK pages remained inaccessible to the scraper, so claims
+requiring those exact documents are not presented as verified here. The sources provide
+principles and jurisdiction-specific requirements, not a universal operating model or
+proof that any method guarantees success. Use formal organizational or regulatory
+standards when they govern the actual program.
