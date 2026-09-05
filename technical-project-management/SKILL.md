@@ -30,6 +30,24 @@ matters. For teams without a PM, provide a small usable working system and expla
 unfamiliar concepts in context. For experienced TPMs, lead with the delta, options,
 recommendation, and decision needed; omit introductory lessons.
 
+### Choose the entry point
+
+| Starting condition | First action | Primary output |
+|---|---|---|
+| New or inherited project with unclear mandate | Read [Engagement and initiation](references/engagement-and-initiation.md) | Proposed brief with authority and evidence gaps |
+| Approved work with a delivery method but weak control | Read [Control and communication](references/control-and-communication.md) | Current control record and decision brief |
+| Slipping date, cost, scope, or dependency | Read [Forecasting and schedule analysis](references/forecasting.md) and [Change and recovery](references/change-and-recovery.md) | Conditional forecast and recovery options |
+| Cross-team, supplier, or mixed-method handoff | Read [Hybrid and dependencies](references/hybrid-and-dependencies.md) | Dependency agreement and acceptance evidence |
+| Delivered work, retirement, or decommissioning with unresolved ownership or benefits | Read [Closure and transition](references/closure-and-transition.md) | Conditional closure, accepted transition, or decommissioning record |
+| Technical uncertainty needs staged learning | Read [Adaptive delivery](references/adaptive-delivery.md) | Evidence-backed decision among PoC, prototype, pilot, or stop; none alone proves production readiness |
+| Forecast, deadline, or resource-feasibility question | Read [Forecasting and schedule analysis](references/forecasting.md) | Conditional forecast stating model, assumptions, capacity, and feasibility limits |
+| Material risk, issue, assumption, or decision needs control | Read [Control and communication](references/control-and-communication.md) | Record with owner, signal/trigger, response, authority, and next review |
+| A supplier or team handoff lacks readiness or acceptance evidence | Read [Hybrid and dependencies](references/hybrid-and-dependencies.md) | Agreement with provider, receiver, definition of ready, evidence, fallback, and escalation |
+
+Do not call a desired date a commitment, a forecast an acceptance, or a diagnostic brief an approved plan.
+
+> Before proposing a commitment, identify who can authorize scope, dates, capacity, acceptance, and external communication. Mark each as accepted, proposed, unknown, or disputed. Read-only diagnosis may proceed; external updates require authorization.
+
 ## Operating loop
 
 1. Establish mandate and authority; separate approved commitments, forecasts,
@@ -52,22 +70,22 @@ recommendation, and decision needed; omit introductory lessons.
 Read only what the current task requires. Each reference includes applicability,
 procedures, failure signals, and an observable exit.
 
-| Situation | Read |
-|---|---|
-| New or inherited project, no PM, expert collaboration | [Engagement and initiation](references/engagement-and-initiation.md) |
-| Choosing or questioning a methodology | [Method selection](references/method-selection.md) |
-| Predictive planning, stages, tolerances, fixed constraints | [Predictive and stage governance](references/predictive-and-stages.md) |
-| Scrum, iteration, incremental delivery, discovery uncertainty | [Adaptive delivery](references/adaptive-delivery.md) |
-| Flow, shared specialists, critical chain, appetite-based work | [Flow and constrained capacity](references/flow-and-capacity.md) |
-| Mixed methods, cross-team or vendor interfaces | [Hybrid and dependencies](references/hybrid-and-dependencies.md) |
-| Estimates, forecasts, budgets, schedule model | [Forecasting and schedule analysis](references/forecasting.md) |
-| Weekly control, stakeholder disagreement, escalations | [Control and communication](references/control-and-communication.md) |
-| Scope changes, troubled projects, recovery | [Change and recovery](references/change-and-recovery.md) |
-| Acceptance, cancellation, operational handoff | [Closure and transition](references/closure-and-transition.md) |
-| Real examples or transferability checks | [Case studies](references/case-studies.md) |
-| Research provenance, edition, evidence limits | [Source index](references/source-index.md) |
-| Skill purpose, coverage, research decisions | [Research brief](references/research-brief.md) |
-| Validation scope and behavioral evaluation protocol | [Evaluation guide](references/evaluation-guide.md) |
+| Decision phase / situation | Read | Exit artifact or evidence |
+|---|---|---|
+| New or inherited project, no PM, expert collaboration | [Engagement and initiation](references/engagement-and-initiation.md) | Proposed brief with mandate, authority, and evidence gaps |
+| Choosing or questioning a methodology | [Method selection](references/method-selection.md) | Approach decision with adaptations and revisit trigger |
+| Predictive planning, stages, tolerances, fixed constraints | [Predictive and stage governance](references/predictive-and-stages.md) | Baseline, tolerances, and gate evidence |
+| Scrum, iteration, incremental delivery, discovery uncertainty | [Adaptive delivery](references/adaptive-delivery.md) | Learning/increment evidence and inspect/adapt decision |
+| Flow, shared specialists, critical chain, appetite-based work | [Flow and constrained capacity](references/flow-and-capacity.md) | Capacity/WIP or appetite decision with owner |
+| Mixed methods, cross-team or vendor interfaces | [Hybrid and dependencies](references/hybrid-and-dependencies.md) | Dependency agreement and interface acceptance evidence |
+| Estimates, forecasts, budgets, schedule model | [Forecasting and schedule analysis](references/forecasting.md) | Conditional forecast with assumptions and feasibility limits |
+| Weekly control, stakeholder disagreement, escalations | [Control and communication](references/control-and-communication.md) | Status/update or decision brief with next checkpoint |
+| Scope changes, troubled projects, recovery | [Change and recovery](references/change-and-recovery.md) | Change/recovery record preserving the baseline |
+| Acceptance, cancellation, operational handoff | [Closure and transition](references/closure-and-transition.md) | Closure or transition record with residual owners |
+| Real examples or transferability checks | [Case studies](references/case-studies.md) | Source-limited analogy, not a guarantee |
+| Research provenance, edition, evidence limits | [Source index](references/source-index.md) | Traceable evidence ledger |
+| Skill purpose, coverage, research decisions | [Research brief](references/research-brief.md) | Coverage and limitation record |
+| Validation scope and behavioral evaluation protocol | [Evaluation guide](references/evaluation-guide.md) | Reproducible evaluation record |
 
 ## Templates and calculation
 
@@ -108,7 +126,7 @@ Run `python3 -m unittest discover -s scripts -p 'test_*.py'` for its tests.
   [chief-of-staff-methodology](../chief-of-staff-methodology/SKILL.md).
 - Release mechanics or launch approval: use
   [release-engineering](../release-engineering/SKILL.md) and
-  [production-readiness](../production-readiness/SKILL.md).
+  [production-readiness](../production-readiness/SKILL.md). This skill may track project implications after that decision, but does not approve the release.
 - Live incident command: use
   [site-reliability-engineering](../site-reliability-engineering/SKILL.md).
 - Ticket operations alone: use [jira](../jira/SKILL.md) or
