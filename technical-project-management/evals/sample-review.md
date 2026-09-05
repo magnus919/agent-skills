@@ -49,3 +49,15 @@ Further evaluation should use individually isolated cases, a blinded reviewer,
 and difficult multi-artifact project records, including contradictory status and
 changing scope across several management cycles. The initial evidence supports
 usable sample outputs and concrete refinements, not a "world-class" certification.
+
+## Isolated follow-up on the revised guidance
+
+A third, fresh context reran only no-pm-small-team against commit `5546fc7`
+without reading assertions or previous outputs. Its actual response and content
+digests are retained as `samples/final-team.md` and
+`samples/final-team-provenance.json`. The response passes the four case assertions
+and preserves the existing board without prescribing a per-person WIP limit,
+addressing the concrete issue from the first sample. No additional management
+instructions were changed after this follow-up. This is one observed regression
+check, not a paired demonstration of improvement or a substitute for the unrun
+cases.
