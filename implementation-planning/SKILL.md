@@ -65,6 +65,9 @@ sequencing, risk, and verification.
 For ongoing milestone reviews, forecast changes, sponsor decisions, and project
 closure after planning, route to
 [technical-project-management](../technical-project-management/SKILL.md).
+For coordination across multiple related projects, shared capacity, program benefits,
+or a transformation outcome, route to
+[technical-program-management](../technical-program-management/SKILL.md).
 Keep detailed work breakdown and dependency-plan maintenance here.
 
 ## Entry gate: prerequisite approval

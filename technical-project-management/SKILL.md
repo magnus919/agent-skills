@@ -6,7 +6,9 @@ description: >-
   coordinate teams and vendors; track milestones, risks, issues, dependencies,
   forecasts, scope changes, and recovery. Use when a team has no project manager,
   a TPM needs decision-ready analysis, a project is slipping, or commitments and
-  handoffs need coordination. Adapt depth to the user's expertise. Do not use for
+  handoffs need coordination. Use `technical-program-management` instead when
+  multiple related projects, teams, vendors, shared capacity, or benefits must be
+  coordinated toward one outcome. Adapt depth to the user's expertise. Do not use for
   a standalone coding task, product discovery or strategy, only writing an
   implementation plan, only diagnosing Kanban flow, operating a ticket tool,
   incident command, or a release go/no-go decision; route those to specialists.
@@ -69,6 +71,10 @@ Do not call a desired date a commitment, a forecast an acceptance, or a diagnost
 
 Read only what the current task requires. Each reference includes applicability,
 procedures, failure signals, and an observable exit.
+
+A multi-project initiative with a shared outcome, cross-project dependencies, or
+program-level benefits belongs to `technical-program-management`; a single bounded
+project remains here.
 
 | Decision phase / situation | Read | Exit artifact or evidence |
 |---|---|---|

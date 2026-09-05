@@ -181,6 +181,7 @@ Every exception and escalation gets a dated record with accountable owner and re
 | Product vision, North Star, competitive positioning | [product-strategy](../product-strategy/SKILL.md) |
 | Tactical prioritization (RICE, MoSCoW), decision logs, specs | [product-methodology](../product-methodology/SKILL.md) |
 | Outcome roadmaps, strategic bets, portfolio sequencing | [product-roadmapping-and-portfolio](../product-roadmapping-and-portfolio/SKILL.md) |
+| Multi-project technical coordination, shared capacity, program benefits, transformation delivery | [technical-program-management](../technical-program-management/SKILL.md) |
 | Experiment design, method selection, guardrails, readouts | [product-experimentation](../product-experimentation/SKILL.md) |
 | Post-launch learning, lifecycle decisions, assumption updates | product-lifecycle-learning (prose — same-wave skill) |
 | Executive decision memos, CoS methods, board materials | [chief-of-staff-methodology](../chief-of-staff-methodology/SKILL.md) |
