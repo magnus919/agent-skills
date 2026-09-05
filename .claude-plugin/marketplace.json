@@ -1239,13 +1239,22 @@
       "description": "Create and review technical documentation, including READMEs, agent-facing instructions, API references, and CLI help. Use when documentation must help someone complete real work. Do not use for marketing copy, brand messaging, or long-form editorial content."
     },
     {
+      "name": "technical-program-management",
+      "source": "./",
+      "skills": [
+        "./technical-program-management"
+      ],
+      "strict": false,
+      "description": "Manage technical programs made of multiple related projects, products, teams, or vendors: establish the program mandate and benefits, align component work, manage cross-project dependencies and shared capacity, govern risks and decisions, coordinate transformation and adoption, and communicate program health to executives, delivery teams, and partners. Use when the work is a coordinated change larger than one project or when component projects are locally green but the combined outcome is at risk. Do not use for single-project control, detailed implementation planning, product portfolio or capital-allocation decisions, enterprise architecture design, release approval, or live incident command; route those to the named specialists."
+    },
+    {
       "name": "technical-project-management",
       "source": "./",
       "skills": [
         "./technical-project-management"
       ],
       "strict": false,
-      "description": "Manage technical projects from initiation through delivery and closure: choose and tailor predictive, iterative, Scrum, flow-based, or hybrid approaches; coordinate teams and vendors; track milestones, risks, issues, dependencies, forecasts, scope changes, and recovery. Use when a team has no project manager, a TPM needs decision-ready analysis, a project is slipping, or commitments and handoffs need coordination. Adapt depth to the user's expertise. Do not use for a standalone coding task, product discovery or strategy, only writing an implementation plan, only diagnosing Kanban flow, operating a ticket tool, incident command, or a release go/no-go decision; route those to specialists."
+      "description": "Manage technical projects from initiation through delivery and closure: choose and tailor predictive, iterative, Scrum, flow-based, or hybrid approaches; coordinate teams and vendors; track milestones, risks, issues, dependencies, forecasts, scope changes, and recovery. Use when a team has no project manager, a TPM needs decision-ready analysis, a project is slipping, or commitments and handoffs need coordination. Use `technical-program-management` instead when multiple related projects, teams, vendors, shared capacity, or benefits must be coordinated toward one outcome. Adapt depth to the user's expertise. Do not use for a standalone coding task, product discovery or strategy, only writing an implementation plan, only diagnosing Kanban flow, operating a ticket tool, incident command, or a release go/no-go decision; route those to specialists."
     },
     {
       "name": "technology-radar",

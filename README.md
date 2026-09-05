@@ -563,6 +563,10 @@ Self-hosted Tailscale/Headscale VPN ecosystem. Seven sub-skills covering Headsca
 
 Make documentation useful at the moment someone needs to install, operate, extend, or troubleshoot a system.
 
+### [technical-program-management](technical-program-management/SKILL.md)
+
+Manage technical programs made of multiple related projects, products, teams, or vendors: establish the program mandate and benefits, align component work, manage cross-project dependencies and shared capacity, govern risks and decisions, coordinate transformation and adoption, and communicate program health to executives, delivery teams, and partners. Complements technical-project-management rather than replacing single-project control.
+
 ### [technical-project-management](technical-project-management/SKILL.md)
 
 Manage technical projects from initiation through closure: choose and tailor delivery approaches, coordinate teams and vendors, maintain credible forecasts, handle scope changes, recover troubled projects, and hand off operations. Adapts to teams without a PM and experienced TPMs. Ships a research source ledger, four real-world cases, focused references, seven templates, a tested read-only schedule calculator, and output-quality evals. Routes detailed planning, Kanban, product choices, and release mechanics to their specialists.

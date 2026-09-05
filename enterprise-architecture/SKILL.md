@@ -77,6 +77,9 @@ assumption, decision, or open question and have a source or named owner.
   enterprise architecture may use its findings as evidence.
 - Approved cross-system execution belongs to `implementation-planning` and
   `migration-engineering`, not this skill.
+- Cross-project program coordination, shared capacity, integrated benefits, and
+  transformation delivery belong to `technical-program-management`; this skill
+  provides the architecture evidence and decision-rights inputs.
 
 ## When Not To Use
 
