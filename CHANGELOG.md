@@ -1,5 +1,64 @@
 # Changelog
 
+## [0.8.0](https://github.com/magnus919/agent-skills/compare/v0.7.0...v0.8.0) (2026-09-05)
+
+
+### Features
+
+* add analog occultism aesthetic skill ([3d54d7b](https://github.com/magnus919/agent-skills/commit/3d54d7b68ba14534601d4bd830c023b5113e73c6)), closes [#466](https://github.com/magnus919/agent-skills/issues/466)
+* add FFmpeg expert skill ([02d6189](https://github.com/magnus919/agent-skills/commit/02d6189135fe23382e71fe6c6fce9b11d9d37aa5))
+* add research-grounded technical project management skill ([#468](https://github.com/magnus919/agent-skills/issues/468)) ([22d141d](https://github.com/magnus919/agent-skills/commit/22d141de75579e64ee474ea27772cd11a956ce0b))
+* add verified delivery interruption recovery ([516c233](https://github.com/magnus919/agent-skills/commit/516c233d3364a90277a16d2e77c30ee038928397))
+* add verified delivery interruption recovery ([d7bd095](https://github.com/magnus919/agent-skills/commit/d7bd0953df3207ea6c98ded2ded1e41c5a699b7d))
+* **agent-council:** add eval manifest for output quality ([2812a92](https://github.com/magnus919/agent-skills/commit/2812a927bb9093f1558e1820c55afa6b784c76e4))
+* **agent-council:** document bootstrap script, add Prerequisites/Limitations, fix description boundary ([6efee5c](https://github.com/magnus919/agent-skills/commit/6efee5ce2b751c3aad79fcc8ecd90b4502b96f80))
+* **anydoc:** support explicit hosted OCR ([#420](https://github.com/magnus919/agent-skills/issues/420)) ([bb57268](https://github.com/magnus919/agent-skills/commit/bb57268a68a3b598e940437532905d788cd769d2))
+* **bmad:** add BMad control-plane protocol skill ([#400](https://github.com/magnus919/agent-skills/issues/400)) ([e10508b](https://github.com/magnus919/agent-skills/commit/e10508b034c61e1ca608e6b089abe7c93d3cbf8c))
+* enrich FFmpeg with evidence-driven media editing ([3b416dd](https://github.com/magnus919/agent-skills/commit/3b416dda7e3f07636005c5a470cb2f463ff3799c))
+* **epub:** collapse SKILL.md sections and add eval manifest ([deb802f](https://github.com/magnus919/agent-skills/commit/deb802fbb665e3c3b28933e87c7f323299fcc2b0))
+* **flaresolverr:** add eval manifest for output quality ([49cdf1b](https://github.com/magnus919/agent-skills/commit/49cdf1b533a41a709af6583e430111bdb779bef2))
+* **hugo-theme:** add eval manifest for output quality ([a880fc5](https://github.com/magnus919/agent-skills/commit/a880fc5be67801c04642da61761a84720bb5bb58))
+* **jira:** extend CLI with count/transitions and pagination fixes ([9843ff7](https://github.com/magnus919/agent-skills/commit/9843ff7f4fe1edb7e773a510ae9ffe6f5c6b49eb))
+* **lastfm:** add eval manifest for output quality ([f09efcd](https://github.com/magnus919/agent-skills/commit/f09efcdb8fec1d19c21e4e192ecd5cea2480a7b8))
+* **nous-branding:** split SKILL.md into focused references ([c810378](https://github.com/magnus919/agent-skills/commit/c8103784f892ae34c6f95984627d0f98e0450f14))
+* **openlibrary:** extend CLI with editions/ratings and redirect handling ([8b84e2e](https://github.com/magnus919/agent-skills/commit/8b84e2e82437c233792444e59071a8d2bd4b26c0))
+* **product-shaping:** add Shape Up adaptation skill for bounded product work ([545f92a](https://github.com/magnus919/agent-skills/commit/545f92a76a952009a277cf7920181ec1b3897a75))
+* **product-shaping:** add Shape Up adaptation skill for bounded product work ([673335d](https://github.com/magnus919/agent-skills/commit/673335d21adba0735af988179b266a1723dd87de)), closes [#387](https://github.com/magnus919/agent-skills/issues/387)
+* **research-methodology:** add eval manifest for output quality ([7b70935](https://github.com/magnus919/agent-skills/commit/7b70935ead5d04d01827c5c41ae816fea03de5bb))
+* **seo:** consolidate answer and generative search optimization ([531ff67](https://github.com/magnus919/agent-skills/commit/531ff6753784823c878c92b988c6e55266ce09a9))
+* **skills:** add React and Vite tool expertise ([befe2e2](https://github.com/magnus919/agent-skills/commit/befe2e26fcde1dfa9fdbee50795fc54ba7f18dc7))
+* **validation:** add SKILL.md token-budget gate and split oversized skills ([ae96c47](https://github.com/magnus919/agent-skills/commit/ae96c47f81adb6d11c3d9cc50cc1586d0fbb4629))
+* **validation:** add SKILL.md token-budget gate to validate-skills.rb ([4006940](https://github.com/magnus919/agent-skills/commit/4006940e866118a5c240bd2171c9a44b40e0aecf))
+* **woodpecker-ci:** add eval manifest for output quality ([2492245](https://github.com/magnus919/agent-skills/commit/249224507c9dba515098414d32271499c5a61b82))
+* **yc-weekly-growth-compass:** add eval manifest and fix stale script flags ([c9c4fc5](https://github.com/magnus919/agent-skills/commit/c9c4fc531bd513e7f072ea31cd61d54c6ec1f21f))
+
+
+### Bug Fixes
+
+* address routing depth scrutiny findings ([#448](https://github.com/magnus919/agent-skills/issues/448)) ([a8b8ad7](https://github.com/magnus919/agent-skills/commit/a8b8ad7dbee044c0c28ceafc94fa59c1b2435842))
+* finalize FFmpeg preflight correctness ([bef51fd](https://github.com/magnus919/agent-skills/commit/bef51fda47a65ac812fbc737674c54238d2907f3))
+* **ghost:** send source=html on html writes and repair scrutiny round-1 findings ([a20b66e](https://github.com/magnus919/agent-skills/commit/a20b66e6c103f6595d8782675b9a6bf725fe85c4))
+* harden FFmpeg capability preflight and references ([f92cf52](https://github.com/magnus919/agent-skills/commit/f92cf52b253baf99abc0cf3ea03ec9380cc0f2de))
+* harden verified delivery resumption ([28d17b8](https://github.com/magnus919/agent-skills/commit/28d17b8a27caa07eab118728715b31211afdd86c))
+* improve FFmpeg workflow discoverability ([de968df](https://github.com/magnus919/agent-skills/commit/de968dfdfb5ac92336a4915dad4bb56a27fe0207))
+* **jellyfin:** harden dispatch against subcommand-named flag values ([2a9a81e](https://github.com/magnus919/agent-skills/commit/2a9a81e29b50504e40666ea8dbbd174765e041d8))
+* **jira:** correct ConnectionError hint to cite JIRA_SERVER env var ([3e0453b](https://github.com/magnus919/agent-skills/commit/3e0453b1183463f4c60f61ed2dc8f6c976d3b583))
+* **jira:** gate mutating CLI operations ([#437](https://github.com/magnus919/agent-skills/issues/437)) ([0dd8d47](https://github.com/magnus919/agent-skills/commit/0dd8d47cab50e5ac37ff84cc9c094d6e3d11c681))
+* **media-home:** repair scrutiny round-1 doc-vs-reality findings ([08689df](https://github.com/magnus919/agent-skills/commit/08689dfd8f3aa57305aa4f69cf3b2bc6f0b50945))
+* **openlibrary:** harden work/isbn JSON output shapes ([1ca147e](https://github.com/magnus919/agent-skills/commit/1ca147eecdb693280e00005a4d50b7a258449d10))
+* **openlibrary:** preserve author arrays in work JSON ([c90fade](https://github.com/magnus919/agent-skills/commit/c90fade381486a913ad43517cc3634755735583f))
+* **openlibrary:** warn when merge-stub redirect walk exhausts its budget ([3bcf476](https://github.com/magnus919/agent-skills/commit/3bcf4762022abf701997b1bfb41a6850c7aba8e0))
+* **product-methodology:** start description with imperative verb ([186e7d6](https://github.com/magnus919/agent-skills/commit/186e7d636a754fed5b434a4065457bd625f315c8))
+* **raleigh:** classify upstream WAF challenges ([#423](https://github.com/magnus919/agent-skills/issues/423)) ([5120238](https://github.com/magnus919/agent-skills/commit/5120238f2e6d0d92cc3fe9e13d2f4eca16dab6da))
+* **raleigh:** keep WAF outages blocking ([#424](https://github.com/magnus919/agent-skills/issues/424)) ([22f1d52](https://github.com/magnus919/agent-skills/commit/22f1d52456cca73edd56fccc44a9ca4dfa8645fa))
+* SkillOpt three epochs for technical project management ([276cb45](https://github.com/magnus919/agent-skills/commit/276cb4522e537370fb7e4d58dfcd998491dd2c54))
+* **tempest:** honor --dry-run on udp listen without binding a socket ([ce5f34a](https://github.com/magnus919/agent-skills/commit/ce5f34a33d3fc1300e5b52f15ead5e3e2edf5b07))
+* **tmdb:** align CLI to genre list, tv search, and find contracts ([bd92ed3](https://github.com/magnus919/agent-skills/commit/bd92ed3fcac2704f46c47813a2e77e2409722fe2))
+* **trakt:** expose --page and normalize X-Pagination headers in JSON ([eba124c](https://github.com/magnus919/agent-skills/commit/eba124cb5e2aae550271c18d08a408999f5490e3))
+* **validation:** add explicit catalog JSON selector ([#451](https://github.com/magnus919/agent-skills/issues/451)) ([6ac1d16](https://github.com/magnus919/agent-skills/commit/6ac1d166f7e20fd5e7ac77b246f236cc22cbddab))
+* **validation:** align local core tests with CI ([02927ad](https://github.com/magnus919/agent-skills/commit/02927adb6316e2c0e1ccc83d9e05e4259192bc3f))
+* **validation:** align README and core test filtering ([37acf49](https://github.com/magnus919/agent-skills/commit/37acf4968aa4a572fbc662ba06bd2dd31fc58b7b))
+
 ## [0.7.0](https://github.com/magnus919/agent-skills/compare/v0.6.0...v0.7.0) (2026-08-22)
 
 
