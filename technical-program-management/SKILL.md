@@ -52,7 +52,6 @@ Read only what the current decision requires:
 | Integrated status, dependency, risk, or recovery problem | [Program control and troubleshooting](references/program-control.md) |
 | Benefits, governance, or evidence boundary | [Research ledger](references/research-ledger.md) |
 | Adoption, operating-model change, or benefit drift | [Benefits and transformation](references/benefits-and-transformation.md) |
-| Program brief, component map, or shared constraints | [Program brief template](templates/program-brief.md) |
 | Integrated control record needs filling | [Integrated control template](templates/integrated-control.md) |
 | Audience-specific status or decision update | [Stakeholder update template](templates/stakeholder-update.md) |
 | One project needs detailed control | [technical-project-management](../technical-project-management/SKILL.md) |
