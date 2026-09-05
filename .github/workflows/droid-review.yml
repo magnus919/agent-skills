@@ -23,37 +23,10 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
-      # BYOK: register the DeepSeek V4 Flash custom model where the Droid CLI
-      # reads it (~/.factory/settings.json). The droid-action's `settings`
-      # input writes to ~/.factory/droid/settings.json, which the CLI does not
-      # read for customModels, so the model must be written here explicitly.
-      # The API key is referenced as ${DEEPSEEK_API_KEY} and expanded by the
-      # CLI from the step env at request time.
-      - name: Configure BYOK model (DeepSeek V4 Flash)
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.factory"
-          cat > "$HOME/.factory/settings.json" <<'FACTORY_JSON'
-          {
-            "customModels": [
-              {
-                "model": "deepseek-v4-flash",
-                "displayName": "DeepSeek V4 Flash (BYOK)",
-                "baseUrl": "https://api.deepseek.com/v1",
-                "apiKey": "${DEEPSEEK_API_KEY}",
-                "provider": "generic-chat-completion-api",
-                "maxOutputTokens": 16384
-              }
-            ]
-          }
-          FACTORY_JSON
       - name: Run Droid Auto Review
         uses: Factory-AI/droid-action@main
         with:
           factory_api_key: ${{ secrets.FACTORY_API_KEY }}
           automatic_review: true
           automatic_security_review: true
-          review_model: deepseek-v4-flash
-          security_model: deepseek-v4-flash
-        env:
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          review_depth: shallow
