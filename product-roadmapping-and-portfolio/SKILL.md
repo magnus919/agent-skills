@@ -86,7 +86,7 @@ Executive narrative, team view, external/customer view — each tailored.
 ## When Not to Use
 
 - **For tactical prioritization mechanics** (RICE scores, MoSCoW buckets, Kano categorization, OST trees): route to `product-methodology` or `product-strategy`. This skill references these frameworks only to describe *where* they fit, never to re-explain formulas or mechanics.
-- **For project scheduling, Gantt charts, or milestone tracking:** this skill produces outcome roadmaps, not project plans.
+- **For project scheduling, Gantt charts, or milestone tracking:** route to [technical-project-management](../technical-project-management/SKILL.md) for ongoing project control; use [implementation-planning](../implementation-planning/SKILL.md) for detailed planning of approved work. This skill owns outcome roadmaps.
 - **For delivery-flow management:** route to `kanban-guru`.
 - **For corporate capital allocation and M&A portfolio decisions:** route to `strategy-frameworks`.
 - **For shaping a single bet** (setting its appetite, narrowing it into a bounded

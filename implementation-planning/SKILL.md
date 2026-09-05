@@ -62,6 +62,11 @@ sequencing, risk, and verification.
   plan and its execution. Route to [bmad](../bmad/SKILL.md). This skill produces a
   delivery plan; bmad owns the protocol that runs intent-to-delivery work end to end.
 
+For ongoing milestone reviews, forecast changes, sponsor decisions, and project
+closure after planning, route to
+[technical-project-management](../technical-project-management/SKILL.md).
+Keep detailed work breakdown and dependency-plan maintenance here.
+
 ## Entry gate: prerequisite approval
 
 Before any planning work begins, verify that the input requirement or

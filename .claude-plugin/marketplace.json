@@ -1230,6 +1230,15 @@
       "description": "Create and review technical documentation, including READMEs, agent-facing instructions, API references, and CLI help. Use when documentation must help someone complete real work. Do not use for marketing copy, brand messaging, or long-form editorial content."
     },
     {
+      "name": "technical-project-management",
+      "source": "./",
+      "skills": [
+        "./technical-project-management"
+      ],
+      "strict": false,
+      "description": "Manage technical projects from initiation through delivery and closure: choose and tailor predictive, iterative, Scrum, flow-based, or hybrid approaches; coordinate teams and vendors; track milestones, risks, issues, dependencies, forecasts, scope changes, and recovery. Use when a team has no project manager, a TPM needs decision-ready analysis, a project is slipping, or commitments and handoffs need coordination. Adapt depth to the user's expertise. Do not use for a standalone coding task, product discovery or strategy, only writing an implementation plan, only diagnosing Kanban flow, operating a ticket tool, incident command, or a release go/no-go decision; route those to specialists."
+    },
+    {
       "name": "technology-radar",
       "source": "./",
       "skills": [

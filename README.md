@@ -559,6 +559,10 @@ Self-hosted Tailscale/Headscale VPN ecosystem. Seven sub-skills covering Headsca
 
 Make documentation useful at the moment someone needs to install, operate, extend, or troubleshoot a system.
 
+### [technical-project-management](technical-project-management/SKILL.md)
+
+Manage technical projects from initiation through closure: choose and tailor delivery approaches, coordinate teams and vendors, maintain credible forecasts, handle scope changes, recover troubled projects, and hand off operations. Adapts to teams without a PM and experienced TPMs. Ships a research source ledger, four real-world cases, focused references, seven templates, a tested read-only schedule calculator, and output-quality evals. Routes detailed planning, Kanban, product choices, and release mechanics to their specialists.
+
 ### [technology-radar](technology-radar/SKILL.md)
 
 Turn technology preferences and architecture-governance choices into explicit, reviewable decisions with owners, evidence, and a proportionate adoption posture.

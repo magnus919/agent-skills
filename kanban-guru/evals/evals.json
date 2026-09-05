@@ -51,6 +51,16 @@
         "Links concrete artifacts to validation evidence",
         "States unresolved risks and reproducible next steps"
       ]
+    },
+    {
+      "id": "route-ongoing-project-control",
+      "prompt": "Our flow policies work well. I need to manage an external vendor deadline, project scope changes, sponsor decisions and project closure. Should we redesign the board?",
+      "expected_output": "Routes project management to technical-project-management without unnecessary flow redesign.",
+      "assertions": [
+        "Routes project commitments and closure to technical-project-management.",
+        "Keeps detailed flow diagnosis within kanban-guru if needed.",
+        "Does not prescribe board changes without evidence of a flow problem."
+      ]
     }
   ]
 }

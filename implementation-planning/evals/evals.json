@@ -73,6 +73,16 @@
         "Decision owner is a role with authority to resolve the dispute.",
         "Does not assign the API contract to either team unilaterally."
       ]
+    },
+    {
+      "id": "route-ongoing-project-control",
+      "prompt": "Our approved implementation plan is finished. Help run weekly milestone reviews, handle vendor slips and scope changes, and prepare sponsor recovery decisions.",
+      "expected_output": "Routes ongoing project control to technical-project-management while preserving detailed planning ownership.",
+      "assertions": [
+        "Routes recurring milestone, change and recovery management to technical-project-management.",
+        "Does not reframe the whole request as writing another implementation plan.",
+        "Preserves prerequisite approval for detailed implementation planning."
+      ]
     }
   ]
 }
