@@ -20,8 +20,8 @@ Use only after checking that no local convention exists or when the user asks to
 
 | When | Template | Sections |
 |------|----------|----------|
-| Quick decision, single rationale | **Nygard** | Status, Context, Decision, Consequences |
-| Multi-option trade-off analysis | **MADR** (default) | Status, Deciders, Date, Context, Decision Drivers, Considered Options, Outcome, Links |
+| Quick decision, single rationale | **Nygard** (default) | Status, Context, Decision, Consequences |
+| Multi-option trade-off analysis | **MADR** | Status, Deciders, Date, Context, Decision Drivers, Considered Options, Outcome, Links |
 | High-stakes / regulatory | **Tyree & Akerman** | 12 sections (Issue, Positions, Argument, Implications, etc.) |
 | Vendor / procurement | **Business Case** | Evaluation criteria, cost/SWOT analysis |
 | QA / NFR focused | **Planguage** | Tag, Gist, Priority, Stakeholders, Risks |
