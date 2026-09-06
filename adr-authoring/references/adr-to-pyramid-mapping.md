@@ -1,5 +1,7 @@
 # ADR-to-Pyramid Mapping
 
+Apply only when artifact pyramids are already the project convention or explicitly requested. Existing ADR paths and lifecycle rules take precedence. Prefer links from pyramid indexes to canonical ADRs; this mapping does not require moving superseded records.
+
 ## Mapping Table
 
 | ADR State | Pyramid Layer | What Lives There | Consumer |
@@ -8,7 +10,7 @@
 | Active ADRs | **L2** (02-analysis/) | Full decision record: context, options, rationale, consequences | Engineers, reviewers |
 | Superseded ADRs | **L3** (03-dossiers/) | Historical decisions that have been replaced | Historians, anyone challenging a current decision |
 
-## Why ADRs Need Three Layers
+## Why Layered Navigation Can Help
 
 ADRs are modular by nature — each decision is a single document. But they still benefit from progressive disclosure:
 

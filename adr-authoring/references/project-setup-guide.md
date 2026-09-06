@@ -2,16 +2,17 @@
 
 A repeatable workflow for establishing Architecture Decision Records in a codebase that doesn't have them yet.
 
+Use only after checking that no local convention exists or when the user asks to establish one. Existing repository instructions override every fallback below, including location, template, review workflow, and amendment policy.
+
 ## Quick Checklist
 
-- [ ] Choose a template (default: MADR)
+- [ ] Choose a template (default: Nygard; MADR for multi-option analysis)
 - [ ] Decide directory location (default: `docs/adr/`)
 - [ ] Write a README index (`docs/adr/README.md`)
 - [ ] Document conventions in `CONTRIBUTING.md`
 - [ ] Document ADR location in `AGENTS.md` (AI agents need to know where to look)
-- [ ] Add `.hermes/` to `.gitignore` if it doesn't exist
 - [ ] Create initial batch of ADRs for the design decisions already made
-- [ ] File as a single PR: issue → branch → ADRs + docs → PR
+- [ ] Deliver through the repository's established review workflow
 
 ## Step-by-Step
 
@@ -72,24 +73,27 @@ and rationale behind significant design choices. Always check the ADR index at
 document constraints or rejected alternatives that inform your approach.
 ```
 
-### 6. Issue-First PR Workflow
+### 6. Example Issue-First PR Workflow
+
+Use this only if the repository requires an issue-first workflow; do not create issues, commits, or PRs solely because this example lists them.
 
 1. File an issue documenting the adapter/architecture design (L1 summary + L2 key decisions)
 2. Branch from main with a descriptive name (`feat/adapter-architecture`)
 3. Create ADR files using the MADR template
 4. Document convention in `CONTRIBUTING.md`
 5. Add agent reference in `AGENTS.md`
-6. Add `.hermes/` to `.gitignore` if missing (local dev artifacts should not be committed)
+6. Ignore generated local artifacts only when relevant to this project
 7. Commit with `Signed-off-by` (DCO) and `Refs: #NNN` in the commit body
 8. Push and open PR referencing the issue (`Closes #NNN`)
 
 ## ADR Lifecycle (for ongoing use)
 
 ```text
-proposed → accepted → [deprecated | superseded by ADR-NNNN | rejected]
+proposed → accepted | rejected
+accepted → deprecated | superseded by ADR-NNNN
 ```
 
-- **Immutable rule:** Existing ADRs are never edited after acceptance. To change a decision, write a new ADR and update the old one's status.
+- **Fallback amendment rule (local policy takes precedence):** Preserve accepted rationale. To change a decision, write a new ADR and update only the old record's status and successor link.
 - **Linking:** Every ADR's Links section should reference related ADRs with semantic link types: `Refined by`, `Supersedes`, `Defined by`, `Contradicts`.
 - **Retired numbers:** Never reuse an ADR number — if rejected, leave the number retired in the index with status `rejected`.
 

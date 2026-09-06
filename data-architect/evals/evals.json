@@ -5,7 +5,7 @@
     {
       "id": "quickscan-assessment",
       "prompt": "My team's data pipelines keep breaking, the cloud bill is climbing without explanation, and nobody agrees on what 'customer' means across our reports. I do not know where to start. Run a quick scan of our data organization and tell me what the top gaps are.",
-      "expected_output": "A quick-scan assessment that turns the symptoms into a structured gap list: the response walks the five-minute scan over the common failure areas — pipeline reliability (how data is loaded, where failures happen and whether they are detected), cost (where spend concentrates, whether compute is runaway or rightsized), definitions (whether 'customer' and other core entities are defined once or redefined per report), ownership (who owns each pipeline and what happens when it breaks), and trust (whether anyone can trace a number on a dashboard to its source). It maps each symptom to the likely root gap: breaking pipelines to missing ownership and observability, climbing bills to ungoverned compute, and the customer disagreement to a missing shared semantic layer. It ends with the prioritized gaps and the first concrete action for each.",
+      "expected_output": "A quick-scan assessment that turns the symptoms into a structured gap list: the response walks the five-minute scan over the common failure areas \u2014 pipeline reliability (how data is loaded, where failures happen and whether they are detected), cost (where spend concentrates, whether compute is runaway or rightsized), definitions (whether 'customer' and other core entities are defined once or redefined per report), ownership (who owns each pipeline and what happens when it breaks), and trust (whether anyone can trace a number on a dashboard to its source). It maps each symptom to the likely root gap: breaking pipelines to missing ownership and observability, climbing bills to ungoverned compute, and the customer disagreement to a missing shared semantic layer. It ends with the prioritized gaps and the first concrete action for each.",
       "assertions": [
         "The scan covers pipeline reliability, cost, definitions, ownership, and trust",
         "Each symptom is mapped to a likely root gap rather than a superficial fix",
@@ -17,19 +17,19 @@
     {
       "id": "pipeline-architecture-review",
       "prompt": "We ingest events from our app into a warehouse through a chain of scripts, transform them in the database, and export dashboards. The pipeline works but takes 14 hours and fails often. Review this architecture and tell me what should change.",
-      "expected_output": "An architecture review that evaluates the pipeline against the properties that matter: the response assesses the current state (script-based orchestration, in-database transforms, batch frequency) and identifies the structural weaknesses — fragile orchestration without retries and monitoring, transformations that run in the serving database and scale poorly, no incremental processing so the 14-hour runtime grows with data volume, and no data-quality checks between stages so failures surface downstream. It proposes the target shape: orchestration with retries and observability, staging and transform layers that separate raw, cleaned, and modeled data, incremental or partitioned processing to bound runtime, and quality gates at each stage. The review is prioritized: the changes that reduce failure and runtime land first, and it identifies which parts of the current architecture can stay (the serving layer, the dashboards) while the plumbing is reworked.",
+      "expected_output": "An evidence-aware review of the reported 14-hour runtime and failures. Investigate orchestration, retries, query execution, incremental processing, and quality gates without assuming these are absent or that database transforms are inherently wrong. Prioritize changes supported by observations, propose bounded checks for uncertain causes, and retain working components.",
       "assertions": [
-        "The review identifies the structural weaknesses: fragile orchestration, in-DB transforms, no incremental processing",
-        "It proposes a layered target with raw, cleaned, and modeled stages and quality gates",
-        "Incremental or partitioned processing is prescribed to bound the runtime",
-        "Changes are prioritized by failure-and-runtime reduction",
-        "Working parts such as the serving layer are retained rather than rewritten wholesale"
+        "Separates observed runtime and failures from hypothesized causes",
+        "Investigates retries, monitoring, incremental processing, and query execution without claiming missing features as facts",
+        "Makes proposed architecture changes conditional on evidence of bottlenecks",
+        "Prioritizes next checks and changes by failure and runtime impact",
+        "Retains working components when no evidence supports replacing them"
       ]
     },
     {
       "id": "platform-decision-framework",
       "prompt": "We need a data platform and are torn between using our existing Postgres for everything, adopting a cloud warehouse, and a newer lakehouse stack. The team has different opinions and the vendors are pushing hard. How do I make this decision properly?",
-      "expected_output": "A decision framework that defers the platform choice until the requirements are understood: the response identifies the decisions the platform must serve — the workloads (analytics, ML feature access, real-time versus batch), the data volumes and concurrency, the team's skills and operating capacity, and the future direction (lakehouse expansion, streaming). It frames the comparison across the named options on those requirements, including the total cost of ownership (licensing, compute, storage, and the people cost of operating each), and it exposes the vendor-pressure dynamic by grounding the choice in the workload evidence rather than platform enthusiasm. The framework produces a recommendation with the conditions under which the other options would win, and a pilot or proof-of-value step before commitment. It explicitly warns against picking the platform to avoid a later decision.",
+      "expected_output": "A decision framework that defers the platform choice until the requirements are understood: the response identifies the decisions the platform must serve \u2014 the workloads (analytics, ML feature access, real-time versus batch), the data volumes and concurrency, the team's skills and operating capacity, and the future direction (lakehouse expansion, streaming). It frames the comparison across the named options on those requirements, including the total cost of ownership (licensing, compute, storage, and the people cost of operating each), and it exposes the vendor-pressure dynamic by grounding the choice in the workload evidence rather than platform enthusiasm. The framework produces a recommendation with the conditions under which the other options would win, and a pilot or proof-of-value step before commitment. It explicitly warns against picking the platform to avoid a later decision.",
       "assertions": [
         "The framework defines the workloads, volumes, concurrency, and team capacity before comparing platforms",
         "Options are compared on total cost of ownership including operating people-cost",
@@ -41,7 +41,7 @@
     {
       "id": "semantic-layer-governance",
       "prompt": "Marketing reports revenue one way, finance reports it another, and the two numbers are different by 12%. I need to fix the definitions and stop the argument. How do I set up a governed semantic layer without freezing all data work?",
-      "expected_output": "A semantic-layer governance design that treats definitions as owned artifacts: the response establishes a single source of truth for core metrics (revenue, customer, active user) with a written definition, the calculation, and the owner for each, and it explains the governance model — definitions change through a review process with recorded rationale rather than per-report improvisation. The migration path keeps work moving: the semantic layer is introduced for the disputed metrics first, reports are migrated one at a time with a comparison period showing the old and new numbers side by side, and the legacy report is retired only when it matches. The response explains the 12% difference by identifying the likely divergence points (inclusion of refunds, definition of the reporting period, deduplication rules) and prescribes documenting those as part of the definition.",
+      "expected_output": "A semantic-layer governance design that treats definitions as owned artifacts: the response establishes a single source of truth for core metrics (revenue, customer, active user) with a written definition, the calculation, and the owner for each, and it explains the governance model \u2014 definitions change through a review process with recorded rationale rather than per-report improvisation. The migration path keeps work moving: the semantic layer is introduced for the disputed metrics first, reports are migrated one at a time with a comparison period showing the old and new numbers side by side, and the legacy report is retired only when it matches. The response explains the 12% difference by identifying the likely divergence points (inclusion of refunds, definition of the reporting period, deduplication rules) and prescribes documenting those as part of the definition.",
       "assertions": [
         "Core metrics get a written definition, calculation, and named owner",
         "Definitions change through a review process, not per-report improvisation",
@@ -53,7 +53,7 @@
     {
       "id": "strategy-roadmap",
       "prompt": "Our data team spends all its time firefighting broken pipelines and has no time to build the analytics the business is asking for. Leadership wants a data strategy. What should the strategy and roadmap contain, and how do we get out of firefighting?",
-      "expected_output": "A data strategy that addresses the firefighting trap structurally: the response frames the strategy around the outcomes the business needs and the capabilities required, then sequences a roadmap that first stabilizes the foundation — ownership for the broken pipelines, observability so failures are detected and repaired fast, and the quick wins that stop the most frequent incidents — before adding net-new analytics. The roadmap is phased with explicit criteria for moving from one phase to the next: the firefighting load must fall below a threshold, not just a calendar date. It covers the governance and staffing implications (who owns the platform, how new requests are triaged), and it names the metrics that show the strategy working: incident rate, time-to-repair, on-time analytics delivery. The response resists a roadmap that schedules the new analytics first while the foundation stays broken.",
+      "expected_output": "A data strategy that addresses the firefighting trap structurally: the response frames the strategy around the outcomes the business needs and the capabilities required, then sequences a roadmap that first stabilizes the foundation \u2014 ownership for the broken pipelines, observability so failures are detected and repaired fast, and the quick wins that stop the most frequent incidents \u2014 before adding net-new analytics. The roadmap is phased with explicit criteria for moving from one phase to the next: the firefighting load must fall below a threshold, not just a calendar date. It covers the governance and staffing implications (who owns the platform, how new requests are triaged), and it names the metrics that show the strategy working: incident rate, time-to-repair, on-time analytics delivery. The response resists a roadmap that schedules the new analytics first while the foundation stays broken.",
       "assertions": [
         "The strategy is organized around business outcomes and required capabilities",
         "The roadmap sequences foundation stabilization before net-new analytics",
@@ -132,6 +132,39 @@
         "Exceptions are scoped, approved, compensating-control aware, and time-bounded with expiry or renewal handling",
         "Remediation ownership is assigned across domain product, platform enforcement, and federated governance responsibilities",
         "Recurring failures or exceptions feed a review that proposes a global rule, domain rule, platform control, or explicit non-standardization decision"
+      ]
+    },
+    {
+      "id": "bounded-transactional-store",
+      "prompt": "Two engineers maintain a small order service on PostgreSQL. We need atomic order and inventory updates at 30 writes/sec and have no analytics consumer. Compare keeping it with adopting a lakehouse. Give a practical recommendation.",
+      "expected_output": "Recommend retaining the transactional store subject to verifying workload requirements, with concrete tradeoffs and a bounded validation plan.",
+      "assertions": [
+        "Leads with the recommendation or relevant workload tradeoffs rather than persona or a maturity questionnaire",
+        "Uses atomic updates and operational ownership as decision criteria",
+        "Does not introduce a warehouse or mesh without a consumer requirement",
+        "Names evidence needed to validate workload fit rather than asserting capacity from write rate alone"
+      ]
+    },
+    {
+      "id": "recovery-deletion-evidence",
+      "prompt": "We have nightly backups of our transactional evidence store. Records deleted after a backup must not reappear to users after restoring it. What must our architecture decision address before we claim recovery works?",
+      "expected_output": "Define deletion continuity across restoration, verification before serving, and evidence needed from a rehearsal.",
+      "assertions": [
+        "Distinguishes backup existence from tested recovery evidence",
+        "Addresses a deletion record or equivalent mechanism that survives restoring an older snapshot",
+        "Requires reapplying deletions before reopening access and checking deleted records remain absent",
+        "Routes PostgreSQL recovery implementation to postgres instead of supplying an operations runbook"
+      ]
+    },
+    {
+      "id": "conditional-choice-no-questionnaire",
+      "prompt": "We already operate Postgres for a 20 GB transactional application with two maintainers. We need a store choice this week, but peak concurrency is unknown. Help us decide without running a company-wide maturity assessment.",
+      "expected_output": "Provide a conditional workload-grounded recommendation and a focused check of concurrency.",
+      "assertions": [
+        "Uses supplied context without requesting a broad inventory or maturity score",
+        "Names peak concurrency as an uncertainty and a bounded way to measure its effect",
+        "Includes maintainability and the cost of introducing another platform",
+        "States a condition that would change the recommendation"
       ]
     }
   ]
