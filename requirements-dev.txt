@@ -10,4 +10,4 @@ radon>=6.0.1
 deptry>=0.25.1
 bandit>=1.7
 loguru>=0.7.3
-PyYAML>=6.0.1
+PyYAML>=6.0.3
