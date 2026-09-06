@@ -8,6 +8,6 @@ pytest-xdist>=3.8.0
 mypy>=2.3.0
 radon>=6.0.1
 deptry>=0.25.1
-bandit>=1.7
+bandit>=1.9.4
 loguru>=0.7.3
 PyYAML>=6.0.1
