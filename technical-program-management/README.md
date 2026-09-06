@@ -13,8 +13,8 @@ It helps establish a real program mandate, connect component projects to a share
 | Contents | What they provide |
 |---|---|
 | `SKILL.md` | Program-level operating loop, method selection, troubleshooting, communication, and routing |
-| `references/` | Research ledger, program controls, benefits, dependency networks, transformation, and failure recovery |
-| `templates/` | Program brief, integrated control record, benefits map, dependency agreement, decision brief, and stakeholder update |
+| `references/` | Research ledger, program controls, benefits dependency networks, tranches, transformation, assurance, and failure recovery |
+| `templates/` | Program brief, integrated control record, benefits dependency map, independent assurance review, and stakeholder update |
 | `evals/` | Portable output-quality cases for realistic program decisions |
 
 ## Quick Start
