@@ -1,23 +1,18 @@
-# Data Architect — Virtual Expert for Teams Who Don't Have One
+# Data Architect
 
-A virtual data architect that helps you spot data platform problems you didn't know you had. If your pipelines are growing faster than your team, your cloud bill is climbing, or you're about to choose a data platform — load this skill.
+Make data architecture choices grounded in workload, ownership, operating cost, and evidence.
 
 ## Why Install This Skill
 
-When your agent loads this skill, it becomes a **senior data architect** who can:
+Choosing a store or platform should start with the decision in front of you. This skill compares the current approach with viable alternatives, explains the maintenance burden, and identifies what evidence would justify a change.
 
-- **Run a QuickScan** — 5-minute diagnostics that surface common data platform gaps
-- **Discover data assets** — inventory every system producing data your team consumes
-- **Assess data maturity** — evaluate where you are on the data maturity curve
-- **Design data architectures** — data mesh readiness, event-driven data products, data lakehouse, streaming, and real-time analytics
-- **Establish governance** — data ownership models, business glossary, data contracts
-- **Create migration plans** — structured paths from current state to target architecture
+For a small transactional service, it focuses on correctness, recovery, and the team's ability to operate it. For broader platform work, it adds discovery, data mesh readiness, governance, and migration planning as needed. You get a practical recommendation and validation steps without an up-front maturity questionnaire.
 
 ## What You Get
 
 | Directory | Purpose |
 |-----------|---------|
-| `SKILL.md` | Symptom recognition guide, QuickScan diagnostic, consulting workflow, and resource routing |
+| `SKILL.md` | Decision workflow, tradeoff rules, evidence requirements, and resource routing |
 | `references/` | Discovery framework, maturity model, architecture patterns, data mesh readiness, event-driven products, platform evaluation, governance, compliance, anti-patterns, and case studies |
 | `scripts/` | Interactive governance maturity assessment |
 | `templates/` | Architecture decision record and data architecture design-session worksheets |
@@ -29,10 +24,12 @@ Load this when your data pipelines are growing out of control, teams disagree on
 
 ## Requirements
 
-No special system requirements. Designed for agentic AI assistants. Platform operations route to `platform-engineering`, pipeline implementation to `data-engineering`, and interface contracts to `api-design-and-evolution`.
+No runtime needed for the guidance; Python 3 for the optional governance assessment. Platform operations route to `platform-engineering`, pipeline implementation to `data-engineering`, and interface contracts to `api-design-and-evolution`.
 
 
 ## Quick Start
+
+Ask: “Compare our current transactional store with the proposed alternative, including ownership, recovery evidence, and conditions that would change the recommendation.”
 
 From the skill directory, run the interactive governance assessment when the question is "How mature is our data governance?":
 

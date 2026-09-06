@@ -13,64 +13,34 @@ metadata:
 
 Architecture Decision Records for capturing design rationale. ADRs supply the temporal dimension — decisions over time — that structure-only views (C4) miss.
 
-## ADR-to-Pyramid Mapping
+## Start with Repository Conventions
 
-| ADR State | Pyramid Layer | Path |
-|-----------|--------------|------|
-| Navigation index | L1 (Summary) | 01-summary/adr-index.md |
-| Active ADRs | L2 (Analysis) | 02-analysis/architecture-decisions/ADR-NNN.md |
-| Superseded ADRs | L3 (Dossiers) | 03-dossiers/adr-superseded.md |
+1. Read the repository's agent instructions, contributing guide, ADR index, template, and a few recent records before drafting. Reuse the established location, numbering, headings, status vocabulary, approval process, and amendment policy.
+2. Treat this skill's layouts and templates as fallbacks only. Do not move, renumber, rename, or rewrite existing ADRs to fit the skill. If local conventions conflict, preserve the existing records and identify the specific conflict before changing the convention.
+3. If no convention exists, use a flat `docs/adr/` directory, stable sequential identifiers, a small index, and a lightweight Nygard template (MADR when option analysis needs more structure). Read `references/project-setup-guide.md` only when establishing a new decision log.
+4. Read `references/adr-to-pyramid-mapping.md` only if the project already uses artifact pyramids or the user requests that organization. Index links can provide layered navigation without relocating canonical records.
 
-Without ADRs, an agent sees a snapshot of the structure but cannot reconstruct the path that led to it. Active ADRs in L2 provide the decision rationale. Superseded ADRs in L3 preserve the history of rejected alternatives.
+## Decision, Approval, and Evidence
+
+Keep these three facts distinct, using the repository's existing fields or linked records:
+
+- **Proposal:** What is recommended, why, alternatives, consequences, and unresolved questions. A draft or recommendation is not an accepted decision.
+- **Decision authority and scope:** Who approved what, when, and for which environment or stage. Approval to experiment permits the bounded experiment; it does not establish production adoption. An accepted ADR may authorize only an experiment if that scope is explicit. Do not invent a decider, date, or broader approval.
+- **Implementation evidence:** Links to changes, checks, observed results, and remaining gaps. Acceptance does not prove implementation; passing a prototype check does not prove production readiness. Label a validation plan as planned until results exist.
+
+For example, “approved an isolated database trial” supports a trial-scoped decision. A successful restore rehearsal is evidence for the tested recovery scenario; neither fact alone means “database adopted in production.”
 
 ## ADR Lifecycle
 
-ADRs progress through six stages, each with a gate criterion:
+Use the local lifecycle and amendment rules. When absent, use `proposed → accepted | rejected`, with accepted decisions later `deprecated` or `superseded` by a linked successor.
 
-```
-Initiating → Researching → Evaluating → Implementing → Maintaining → Sunsetting
-```
+Preserve accepted rationale. By default, a changed decision gets a new ADR; update the old record's status and successor link while retaining its identifier and location. If the repository uses living documents, make dated, attributable amendments under its policy. Do not impose mutability on an immutable log or replace a living-document process with an immutable one.
 
-| Stage | Status | Pyramid Layer | Consumer |
-|-------|--------|--------------|----------|
-| Initiating | `proposed` | L2 (02-analysis/) | Engineers evaluating |
-| Researching | `proposed` | L2 (02-analysis/) | Engineers evaluating |
-| Evaluating | `proposed` | L2 (02-analysis/) | Engineers deciding |
-| Implementing | `accepted` | L2 (02-analysis/) | Implementers, reviewers |
-| Maintaining | `accepted` | L2 (02-analysis/) | New team members, auditors |
-| Sunsetting | `deprecated`/`superseded` | L3 (03-dossiers/) | Historians |
-
-All live ADRs (proposed + accepted) stay in L2. Only superseded/deprecated ADRs move to L3. Proposed ADRs that are rejected should be moved to L3 with status `rejected` and a note on why.
-
-### Alternative Lifecycle: AWS ADR Process
-
-AWS Prescriptive Guidance defines a complementary lifecycle with a structured review process for teams that prefer formal immutability over living documents.
-
-**States:** `proposed → accepted | rejected | superseded`
-
-**Key difference:** AWS treats ADRs as strictly immutable once accepted. Changing a decision requires a new ADR that supersedes the old one. The community ADR repo's teamwork advice prefers mutable living documents with date-stamped updates. Choose the model that fits your team's culture.
-
-**AWS Review Process:**
-
-1. **Proposal** — any team member creates an ADR in `proposed` state. The author is the ADR owner.
-2. **Review meeting** — dedicated time slot with structured format:
-   - **10-15 minutes silent reading** — each member reads the ADR and adds comments
-   - **Comment read-out** — the owner reads each comment aloud; team discusses
-   - **Action points** — identified issues get an assignee; tracked to resolution
-3. **Decision** — three outcomes:
-   - **Accepted** → owner adds timestamp, version, stakeholder list. State → `accepted`. Immutable.
-   - **Rework** → state stays `proposed`. Owner resolves action points and re-schedules review.
-   - **Rejected** → owner documents rejection reason (prevents future re-litigation). State → `rejected`. File moves to L3.
-4. **Superseding** — new decision invalidates an accepted ADR? Create a new ADR. On acceptance, update old ADR status to `superseded` and move it to L3.
-
-```
-[Identify need] → [Draft (proposed)] → [10-15m silent read] → [Discuss]
-                      ↓                     ↓                     ↓
-                 [Rework/review] ← [Needs rework]          [Accepted] → [Immutable]
-                                                           [Rejected] → [L3]
-```
+Record rejection and supersession reasons, maintain the index, and preserve links. Review format and meeting length follow the team's process; acceptance requires evidence of the relevant decision authority, not a mandatory ceremony.
 
 ## Template Selection
+
+Use the repository template first. This table applies only when no template is established.
 
 | When | Template | Sections |
 |------|----------|----------|
@@ -84,7 +54,7 @@ Full catalog with section-by-section guidance in `references/adr-format.md`.
 
 ## File Naming Conventions
 
-Use present tense imperative verb phrases, lowercase-dashes, `.md` extension:
+Follow local naming first. For a new log, use present tense imperative verb phrases, lowercase-dashes, `.md` extension:
 
 ```
 001-choose-database.md
@@ -98,9 +68,9 @@ Status lives in the document header, not the filename — status changes shouldn
 
 - **Who can create:** Any team member who has read the ADR process docs
 - **What justifies:** Decisions affecting future "why", cross-team coordination, long-term maintainability, external interfaces
-- **What does NOT:** Limited scope/time/risk, already covered by standards, temporary workarounds/POCs
+- **What usually does NOT:** Routine changes already covered by standards. Record a bounded experiment when its authorization, constraints, or consequences need durable rationale.
 - **Roles per ADR:** Primary contact, secondary contact, accountable team
-- **Living documents preferred:** Insert new info with date stamps rather than superseding ADRs for every update. Immutability is ideal in theory; mutability works better in practice.
+- **Amendments:** Follow repository policy; preserve decision history and distinguish new evidence from a changed decision.
 
 See `references/adr-format.md` for the full governance model and teamwork questions.
 
@@ -109,6 +79,14 @@ See `references/adr-format.md` for the full governance model and teamwork questi
 **Applicability:** Use when an ADR makes a claim that can be checked through code, configuration, runtime telemetry, a scheduled audit, or a bounded human review.
 
 Read `references/fitness-functions.md` to select the function's scope, cadence, evidence, threshold, owner, exception path, and retirement rule. Use `templates/fitness-function-record.md` for the operational record. Keep the ADR as the owner of the durable decision and its link to confirmation; keep implementation and execution in the project's test, CI, telemetry, or governance systems.
+
+## Completion and Boundaries
+
+Complete when the requested ADR or review follows local conventions, identifies decision scope and authority without invention, preserves history, and distinguishes observed evidence from planned checks. If acceptance is unresolved, deliver a proposed record and name the missing decision rather than claiming acceptance.
+
+## When not to use
+
+Route system-wide architecture and change sequencing to `software-architecture`, and named-tool implementation to the relevant operational skill. This skill owns decision rationale and confirmation links, not execution of the implementation or a general observability program.
 
 ## Contents
 

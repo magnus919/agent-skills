@@ -17,7 +17,7 @@
     {
       "id": "template-selection",
       "prompt": "We are starting to write ADRs for a new project and I have seen many formats: the original Nygard format, MADR, and heavier enterprise templates. The team has different preferences. How do I choose a template, and should I even pick one?",
-      "expected_output": "A template-selection approach that prioritizes consistency and the decision's needs over format loyalty: the response explains that the template catalog exists because decision contexts differ — the original Nygard format suits a focused technical decision, MADR adds structure for incremental updates, and heavier formats carry the governance fields larger organizations need — and prescribes picking one default for the org with the selection made on criteria: the depth of governance required, how the ADRs will be consumed (read by the team, audited by a governance board), and the update pattern (append-only records versus evolving documents). It recommends starting with a lightweight default and migrating to a heavier format only if the governance need appears, and it stresses that the bigger win is a fixed convention — one template, one naming scheme, one location — over the choice of which format, because consistency is what makes ADRs searchable and reliable.",
+      "expected_output": "A template-selection approach that prioritizes consistency and the decision's needs over format loyalty: the response explains that the template catalog exists because decision contexts differ \u2014 the original Nygard format suits a focused technical decision, MADR adds structure for incremental updates, and heavier formats carry the governance fields larger organizations need \u2014 and prescribes picking one default for the org with the selection made on criteria: the depth of governance required, how the ADRs will be consumed (read by the team, audited by a governance board), and the update pattern (append-only records versus evolving documents). It recommends starting with a lightweight default and migrating to a heavier format only if the governance need appears, and it stresses that the bigger win is a fixed convention \u2014 one template, one naming scheme, one location \u2014 over the choice of which format, because consistency is what makes ADRs searchable and reliable.",
       "assertions": [
         "Template choice is tied to the decision context and governance need, not format loyalty",
         "The response compares Nygard, MADR, and heavier formats on concrete criteria",
@@ -53,7 +53,7 @@
     {
       "id": "fitness-functions",
       "prompt": "We have an accepted ADR mandating that new services must use our standard logging format, but a year later half the services violate it and nobody noticed until an incident. I want the architecture rules enforced automatically. How do I turn ADRs into checkable constraints?",
-      "expected_output": "A fitness-function approach that turns ADR decisions into automated checks: the response explains the concept — a fitness function is an automated test or check that continuously validates an architectural characteristic, and the ADR maps to one or more functions (a check that scans service code or configuration for the standard logging setup, run in CI or as a periodic audit). It prescribes the workflow: for each ADR with a mechanical consequence, define the check, implement it in the project's test or CI layer, and attach it to the ADR record so the link between decision and enforcement is explicit. The response covers the boundary: not every decision is mechanically checkable (judgment calls stay in review), but anything with a detectable pattern should be checked, and the check must be part of the definition of done for new services, not a retrofit after incidents. It includes an example check shape for the logging standard.",
+      "expected_output": "A fitness-function approach that turns ADR decisions into automated checks: the response explains the concept \u2014 a fitness function is an automated test or check that continuously validates an architectural characteristic, and the ADR maps to one or more functions (a check that scans service code or configuration for the standard logging setup, run in CI or as a periodic audit). It prescribes the workflow: for each ADR with a mechanical consequence, define the check, implement it in the project's test or CI layer, and attach it to the ADR record so the link between decision and enforcement is explicit. The response covers the boundary: not every decision is mechanically checkable (judgment calls stay in review), but anything with a detectable pattern should be checked, and the check must be part of the definition of done for new services, not a retrofit after incidents. It includes an example check shape for the logging standard.",
       "assertions": [
         "The fitness-function concept is explained as automated enforcement of architectural rules",
         "Each mechanical ADR consequence maps to a concrete check",
@@ -96,6 +96,37 @@
         "Execution ownership remains with the relevant test, CI, telemetry, runtime, or governance system",
         "The response explains why the boundary prevents duplicated or ambiguous ownership",
         "The proposed output includes an ADR-to-function-to-evidence trace rather than a standalone metric program"
+      ]
+    },
+    {
+      "id": "repository-conventions-first",
+      "prompt": "Write the next ADR. CONTRIBUTING.md requires architecture/decisions/DEC-042.md, headings Status, Problem, Choice, Effects, and immutable accepted records. DEC-041 is accepted. Your skill suggests pyramid folders and living documents.",
+      "expected_output": "Draft DEC-042 using the repository conventions without reorganizing the decision log.",
+      "assertions": [
+        "Uses architecture/decisions/DEC-042.md and the specified headings",
+        "Preserves DEC-041 and its existing path and rationale",
+        "Does not create pyramid directories or impose living-document amendments"
+      ]
+    },
+    {
+      "id": "experiment-approval-scope",
+      "prompt": "I approved an isolated PostgreSQL trial. Restore and deletion checks passed in the harness. Production adoption is still undecided. Draft an ADR using our Proposed/Accepted statuses.",
+      "expected_output": "Record the bounded trial approval and observed evidence separately from a proposed production decision.",
+      "assertions": [
+        "Does not describe production adoption as accepted",
+        "If marked Accepted, explicitly limits the decision to the trial",
+        "Distinguishes completed harness checks from production validation still needed",
+        "Does not invent an approval date or decider"
+      ]
+    },
+    {
+      "id": "living-document-local-policy",
+      "prompt": "Our ADR policy uses dated amendments to accepted records in decisions/. ADR-007 remains in force. Add new trial evidence without changing the decision; do not supersede it.",
+      "expected_output": "Add a dated evidence amendment under the local living-document policy while preserving the accepted decision.",
+      "assertions": [
+        "Keeps ADR-007 in decisions/ and retains its accepted rationale",
+        "Uses a dated amendment for the new evidence without inventing results",
+        "Does not create a replacement ADR merely to enforce immutability"
       ]
     }
   ]

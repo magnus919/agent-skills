@@ -269,7 +269,7 @@ Chosen option: "[option 1]", because [justification].
 
 **Origin:** https://arc42.org/overview — License: CC-BY-SA 4.0
 
-**When to use:** Decisions that need to be documented within the full arc42 architecture documentation framework. This is the ADR-specific template by the arc42 team, distinct from the arc42 full documentation template (used by the `arc42-context` skill for system context/constraint documentation).
+**When to use:** Decisions that need to be documented within the full arc42 architecture documentation framework. This is the ADR-specific template by the arc42 team, distinct from the arc42 full documentation template.
 
 **Sections:**
 
@@ -287,7 +287,7 @@ Chosen option: "[option 1]", because [justification].
 | **10. Quality Requirements** | Quality scenarios, quality tree |
 | **11. Risks & Technical Debt** | Known risks, debt; ordered by priority |
 
-**Relationship to arc42-context skill:** Our arc42-context skill uses the full arc42 template for documenting system constraints at the project level. This ADR template is a *lightweight version* focused on a single decision within that framework. Use this when documenting a decision inside existing arc42 documentation.
+**Relationship to system documentation:** Use this when documenting a decision inside existing arc42 documentation. Route broader system architecture work to `software-architecture`.
 
 ---
 
@@ -483,6 +483,8 @@ Green = good fit  Amber = moderate  Red = poor fit
 
 ---
 
+Use the repository template when one exists. The following tree is a fallback for a new convention.
+
 ### Template Selection Decision Tree
 
 ```
@@ -614,6 +616,8 @@ scale.
 
 ## Architecture Decision Log (ADL) Conventions
 
+Existing repository paths, identifiers, templates, and amendment rules take precedence over these fallback examples. Never relocate accepted or superseded records merely to match this guide.
+
 ### File Naming
 
 ```
@@ -621,7 +625,7 @@ NNN-short-present-tense-phrase.md
 ```
 
 Rules:
-- **Number:** Zero-padded sequence (001, 002, ... 010). Avoid gaps; renumber on conflict.
+- **Number:** Zero-padded sequence (001, 002, ... 010). Preserve published identifiers; gaps are acceptable. Resolve a collision on an unpublished draft without renumbering existing records.
 - **Phrase:** Present tense imperative verb phrase — like a good commit message.
   - Good: `012-use-postgresql-for-transaction-storage.md`
   - Bad: `012-postgresql.md` (no verb), `012-decided-to-use-postgresql.md` (past tense)
