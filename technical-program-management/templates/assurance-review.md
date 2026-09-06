@@ -12,11 +12,12 @@
 - Forecasts, actuals, contradictions, and decision latency:
 - Risk, security, safety, compliance, supplier, and operational evidence:
 - Benefits, adoption, disbenefits, and measurement ownership:
+- Escalation history and residual obligations:
 
 ## Findings
-| Finding | Evidence | Limitation | Consequence | Recommendation | Owner | Due/trigger |
-|---|---|---|---|---|---|---|
-|  |  |  |  |  |  |  |
+| Finding | Evidence | Interpretation | Limitation | Consequence | Recommendation | Owner | Due/trigger |
+|---|---|---|---|---|---|---|---|
+|  |  |  |  |  |  |  |  |
 
 ## Decision
 - Sponsor decision: continue / reshape / pause / stop / transfer / accept risk
