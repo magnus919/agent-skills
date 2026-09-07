@@ -71,6 +71,7 @@
     "./forgejo-cli",
     "./forward-deployed-engineering",
     "./frontend-engineering",
+    "./gap-analysis",
     "./genius-life",
     "./ghost",
     "./github-runner",

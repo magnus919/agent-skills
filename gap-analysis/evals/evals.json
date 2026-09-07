@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "skill_name": "gap-analysis",
+  "evals": [
+    {
+      "id": "bounded-operational-gap",
+      "prompt": "Our incident team restored a payment service in 75 and 110 minutes during two exercises. The recovery objective is 60 minutes. The runbook has no tested dependency fallback. Produce a gap analysis and next actions.",
+      "expected_output": "A bounded gap analysis that compares the measured recovery times with the stated objective, identifies the untested fallback as a capability/control gap or cause hypothesis rather than assuming training is the cause, states evidence and confidence, names an owner, and defines a closure test using representative exercises.",
+      "assertions": [
+        "compares current recovery evidence with the 60-minute target",
+        "distinguishes the observed outcome gap from a cause hypothesis",
+        "identifies the untested dependency fallback as a control or capability issue",
+        "names an owner and a measurable closure test",
+        "does not claim that training is the proven cause"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "unsupported-target",
+      "prompt": "Assess whether our support organization is mature enough. We have no agreed maturity model, baseline metrics, or target state. Give us a scored gap analysis immediately.",
+      "expected_output": "The response refuses false precision, explains that the target and evidence protocol must be defined first, proposes a bounded scoping and target-setting step, and offers an unscored discovery artifact rather than inventing a maturity score.",
+      "assertions": [
+        "does not invent a maturity scale or numeric score",
+        "states that target authority and baseline evidence are missing",
+        "proposes a scoping and target-definition step",
+        "labels any illustrative dimensions as provisional"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "readiness-evidence-boundary",
+      "prompt": "Our launch checklist says security complete because a design review was approved, but no production-boundary test has run. Decide whether we are ready and create the gap artifact.",
+      "expected_output": "A readiness assessment that marks the control as implemented but unproven or unknown at the production boundary, identifies the missing test and acceptance criteria, names the decision authority, and avoids declaring readiness or compliance from the design review alone.",
+      "assertions": [
+        "distinguishes design approval from production-boundary evidence",
+        "does not mark readiness as met solely from the design review",
+        "defines a boundary test and acceptance evidence",
+        "names an acceptance authority and residual risk",
+        "avoids a legal or certification conclusion"
+      ],
+      "case_set": "release"
+    },
+    {
+      "id": "research-gap-classification",
+      "prompt": "A review finds inconsistent estimates, and its studies exclude the population affected by our decision. Identify the research gap and propose what evidence is needed next.",
+      "expected_output": "A research-evidence gap that identifies inconsistent/unknown results and not-the-right-information as reasons, explains the decision consequence, defines the relevant population and design needed, and avoids the empty recommendation to do more research.",
+      "assertions": [
+        "classifies inconsistency as a reason the evidence falls short",
+        "classifies population mismatch as not-the-right-information",
+        "connects the gap to a decision consequence",
+        "specifies the population and evidence design needed next",
+        "does not treat more research as a sufficient action by itself"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "prioritization-tradeoff",
+      "prompt": "We have three gaps: a high-impact but low-confidence control concern, a medium-impact well-evidenced process delay, and a low-impact easy documentation fix. Prioritize them and propose a roadmap.",
+      "expected_output": "A transparent prioritization that separates impact from confidence, sends the high-impact low-confidence item through urgent validation or a precautionary control as appropriate, sequences the process fix and documentation fix with rationale, and names owners and closure tests.",
+      "assertions": [
+        "does not rank by gap size or ease alone",
+        "keeps confidence visible rather than hiding it in impact",
+        "proposes validation or precaution for the high-impact low-confidence concern",
+        "gives sequencing rationale for all three gaps",
+        "includes owners and closure tests"
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "variant-routing",
+      "prompt": "Compare an operating process to a new compliance requirement, assess team capability, and decide launch readiness in one report. What should the gap analysis contain?",
+      "expected_output": "The response splits or links process, compliance/readiness, and capability registers, preserves the distinct target and evidence fields for each, defines ownership and dependencies, and explains that one generic score should not silently combine the contexts.",
+      "assertions": [
+        "separates process, compliance/readiness, and capability contexts",
+        "preserves distinct target and evidence criteria for each context",
+        "links related gaps with stable identifiers or dependencies",
+        "does not collapse incomparable contexts into one score",
+        "includes decision authority and follow-up evidence"
+      ],
+      "case_set": "dev"
+    }
+  ]
+}

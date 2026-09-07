@@ -483,6 +483,15 @@
       "description": "Build and maintain web frontends — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation. Do not use for backend service implementation, data engineering, or platform infrastructure work."
     },
     {
+      "name": "gap-analysis",
+      "source": "./",
+      "skills": [
+        "./gap-analysis"
+      ],
+      "strict": false,
+      "description": "Conduct evidence-based gap analyses that compare a defined current state with a justified target state, characterize causes and uncertainty, prioritize actionable interventions, and produce traceable matrices, roadmaps, and decision records. Use for capability, process, compliance, readiness, maturity, operating-model, or research-evidence gaps. Do not use for a vague list of problems, a standalone root-cause analysis, a generic SWOT, or legal or audit certification advice without a governing standard and qualified owner."
+    },
+    {
       "name": "genius-life",
       "source": "./",
       "skills": [
