@@ -1,14 +1,13 @@
 ---
 name: gap-analysis
 description: >-
-  Conduct evidence-based gap analyses that compare a defined current state with
-  a justified target state, characterize causes and uncertainty, prioritize
-  actionable interventions, and produce traceable matrices, roadmaps, and
-  decision records. Use for capability, process, compliance, readiness,
-  maturity, operating-model, or research-evidence gaps. Do not use for a vague
-  list of problems, a standalone root-cause analysis, a generic SWOT, or legal
-  or audit certification advice without a governing standard and qualified
-  owner.
+  Analyze gaps by comparing a defined current state with a justified target
+  state, characterizing causes and uncertainty, prioritizing actionable
+  interventions, and producing traceable matrices, roadmaps, and decision
+  records. Use for capability, process, compliance, readiness, maturity,
+  operating-model, or research-evidence gaps. Do not use for a vague list of
+  problems, a standalone root-cause analysis, a generic SWOT, or legal or
+  audit certification advice without a governing standard and qualified owner.
 license: MIT
 compatibility: Platform-agnostic methodology. No runtime dependency; optional Python 3 script uses only the standard library.
 metadata:
