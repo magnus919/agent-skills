@@ -47,6 +47,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `templates/edit-decision-list.json` | Parseable source ranges, evidence, confidence, treatments, mapping, and verification |
 | `templates/video-inspection-report.md` | Fixed-section technical and sampled-evidence report |
 | `templates/visual-review-packet.md` | Timestamped review samples with attribution and coverage limits |
+| `templates/vision-review-observations.json` | Machine-readable reviewer attribution, evidence classes, blind spots, and EDL links |
 | `templates/podcast-edit-plan.md` | Mechanical, signal-processing, and editorial audio plan |
 | `templates/media-acceptance-report.md` | Criterion-by-criterion evidence and release verdict |
 | `templates/media-acceptance-contract.json` | Parseable stream, format, evidence, loudness, and downstream criteria |
@@ -61,6 +62,8 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `scripts/fixtures/ffmpeg-8.1.2-inventories.json` | Small version-labeled parser fixture |
 | `scripts/media-intake` | Read-only input inventory with bounded `ffprobe` metadata |
 | `scripts/extract-review-frames` | Bounded timestamp frame extraction for human or vision review |
+| `scripts/vision-review-handoff` | Privacy-safe bounded frame packet with provenance, limits, hashes, and pending-review manifest |
+| `scripts/import-vision-review` | Validate attributed observations and link them to EDL events without rendering |
 | `scripts/render-edl` | Validate single- or multi-source EDLs and emit non-executing concat-filter or concat-demuxer plans |
 | `scripts/audio-inspect` | Bounded silence, loudness, peak/clipping, transcript-candidate, and podcast-plan evidence |
 | `scripts/media-verify` | Evaluate output probe and review evidence against a declared acceptance contract |
@@ -128,6 +131,16 @@ scripts/media-verify acceptance-contract.json output-probe.json \
 ```
 
 Missing fields or review evidence remain `UNVERIFIED`; blocked reviews remain `BLOCKED`; local probe/decode success never supplies downstream compatibility evidence.
+
+Prepare visual evidence around proposed edit boundaries without exposing the source path:
+
+```sh
+ffmpeg/scripts/vision-review-handoff private.mov --asset-id asset-017 \
+  --question "Does the sampled boundary preserve title continuity?" \
+  --timestamp 12.4 --neighbor-seconds 0.25 --output-dir review-packet --json
+```
+
+The manifest covers only its listed samples. An authorized reviewer must add attributed observations before `import-vision-review` can link them to an EDL; sparse frames never prove absence throughout a video.
 
 ## Triggers
 

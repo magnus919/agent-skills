@@ -157,6 +157,19 @@
         "does not generalize local probe or decode success into destination compatibility"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "bounded-vision-review-handoff",
+      "prompt": "Prepare frames around two proposed cut boundaries for a vision reviewer, then link any reviewed findings to my EDL without exposing the private source path or treating the reviewer as an automatic editor.",
+      "expected_output": "Create a bounded packet with opaque asset and stream IDs, explicit and neighboring timestamps, extraction/build/transform provenance, hashes, byte and range limits, and a sparse-coverage warning. Require attributed observations with evidence class, confidence, blind spots, artifact references, and editorial consequences before writing a new EDL whose visual evidence remains subject to editorial approval.",
+      "assertions": [
+        "records opaque identity, stream, timestamps, build, extraction parameters, transforms, hashes, and coverage",
+        "enforces frame-count, timestamp-range, and output-size limits",
+        "does not expose the private source path in the shareable manifest",
+        "rejects missing attribution and whole-video conclusions from sparse samples",
+        "links reviewed observations to named EDL events as evidence rather than automatic truth"
+      ],
+      "case_set": "release"
     }
   ]
 }

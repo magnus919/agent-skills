@@ -73,6 +73,180 @@ def error_code(result: subprocess.CompletedProcess[str]) -> str:
     return json.loads(result.stdout)["error"]["code"]
 
 
+def make_visual_fixture(path: Path) -> None:
+    result = subprocess.run(
+        [
+            "ffmpeg",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-f",
+            "lavfi",
+            "-i",
+            "testsrc2=size=160x90:rate=10:duration=3",
+            "-c:v",
+            "mpeg4",
+            "-y",
+            str(path),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+
+
+def test_vision_handoff_orders_neighbors_and_keeps_manifest_private(tmp_path: Path) -> None:
+    if shutil.which("ffmpeg") is None:
+        import pytest
+
+        pytest.skip("ffmpeg is required for visual handoff testing")
+    source = tmp_path / "private-person-name.mov"
+    make_visual_fixture(source)
+    packet = tmp_path / "packet"
+
+    result = run_script(
+        "vision-review-handoff",
+        str(source),
+        "--asset-id",
+        "asset-opaque-7",
+        "--question",
+        "Is the sampled boundary visually continuous?",
+        "--timestamp",
+        "2",
+        "--timestamp",
+        "1",
+        "--neighbor-seconds",
+        "0.25",
+        "--max-frames",
+        "8",
+        "--max-range-seconds",
+        "2",
+        "--output-dir",
+        str(packet),
+        "--json",
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    manifest_text = (packet / "manifest.json").read_text()
+    manifest = json.loads(manifest_text)
+    assert manifest["sampling"]["timestamps_seconds"] == ["0.75", "1", "1.25", "1.75", "2", "2.25"]
+    assert manifest["asset_id"] == "asset-opaque-7"
+    assert str(source) not in manifest_text
+    assert "private-person-name" not in manifest_text
+    assert all(item["source_asset_id"] == "asset-opaque-7" for item in manifest["artifacts"])
+    assert all((packet / item["artifact"]).is_file() for item in manifest["artifacts"])
+    assert (
+        sum(item["size_bytes"] for item in manifest["artifacts"]) == manifest["total_output_bytes"]
+    )
+    assert "not established" in manifest["sampling"]["coverage_statement"]
+
+
+def test_vision_handoff_enforces_neighbor_frame_and_range_limits(tmp_path: Path) -> None:
+    source = tmp_path / "source.mov"
+    source.write_bytes(b"not decoded because validation fails first")
+    frame_limit = run_script(
+        "vision-review-handoff",
+        str(source),
+        "--asset-id",
+        "asset-a",
+        "--question",
+        "boundary",
+        "--timestamp",
+        "1",
+        "--neighbor-seconds",
+        "0.25",
+        "--max-frames",
+        "2",
+        "--output-dir",
+        str(tmp_path / "packet-a"),
+        "--json",
+    )
+    range_limit = run_script(
+        "vision-review-handoff",
+        str(source),
+        "--asset-id",
+        "asset-a",
+        "--question",
+        "range",
+        "--timestamp",
+        "1",
+        "--timestamp",
+        "5",
+        "--max-range-seconds",
+        "2",
+        "--output-dir",
+        str(tmp_path / "packet-b"),
+        "--json",
+    )
+
+    assert frame_limit.returncode == 2
+    assert error_code(frame_limit) == "frame_limit_exceeded"
+    assert range_limit.returncode == 2
+    assert error_code(range_limit) == "range_limit_exceeded"
+
+
+def test_import_vision_review_requires_reviewed_evidence(tmp_path: Path) -> None:
+    manifest = write_json(
+        tmp_path / "manifest.json", {"packet_id": "packet-1", "review": {"status": "pending"}}
+    )
+    edl = write_json(tmp_path / "edl.json", edl_document())
+
+    result = run_script(
+        "import-vision-review",
+        str(manifest),
+        str(edl),
+        "--output",
+        str(tmp_path / "out.json"),
+        "--json",
+    )
+
+    assert result.returncode == 2
+    assert error_code(result) == "review_evidence_missing"
+
+
+def test_import_vision_review_links_attributed_sample_evidence_without_paths(
+    tmp_path: Path,
+) -> None:
+    manifest = write_json(
+        tmp_path / "manifest.json",
+        {
+            "packet_id": "packet-1",
+            "asset_id": "camera-a",
+            "review": {
+                "status": "reviewed",
+                "reviewer": "reviewer-7",
+                "blind_spots": ["unsampled intervals"],
+                "observations": [
+                    {
+                        "id": "observation-1",
+                        "edl_event_id": "event-a",
+                        "artifact_refs": ["frames/frame-0001.jpg"],
+                        "observation": "The sampled title remains visible.",
+                        "evidence_class": "human_or_vision_observation",
+                        "confidence": 0.7,
+                        "coverage_scope": "sampled_artifacts_only",
+                        "editorial_consequence": "Review the proposed cut after the title.",
+                    }
+                ],
+            },
+        },
+    )
+    edl = write_json(tmp_path / "edl.json", edl_document())
+    output = tmp_path / "reviewed-edl.json"
+
+    result = run_script(
+        "import-vision-review", str(manifest), str(edl), "--output", str(output), "--json"
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    evidence = json.loads(output.read_text())["events"][0]["evidence"][0]
+    assert evidence["packet_id"] == "packet-1"
+    assert evidence["reviewer"] == "reviewer-7"
+    assert evidence["coverage_scope"] == "sampled_artifacts_only"
+    assert "source" not in evidence
+
+
 def test_render_edl_multi_source_concat_filter_plan_does_not_execute(tmp_path: Path) -> None:
     output = tmp_path / "rendered.mkv"
     edl = write_json(tmp_path / "multi-source.json", edl_document())
