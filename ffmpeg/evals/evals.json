@@ -144,6 +144,19 @@
         "records source ranges, actions, reasons, evidence, confidence, handles, fades, and output contract"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "criterion-level-media-acceptance",
+      "prompt": "Verify this rendered MP4 against the attached delivery contract. The probe is present, but the listening review and destination-player result are missing. Tell me whether it passes.",
+      "expected_output": "Evaluate each declared stream, format, timing, subtitle, metadata, decode, signal, review, and downstream criterion independently. Report missing listening and destination evidence as UNVERIFIED, keep local probe/decode evidence at its own boundary, and return an overall UNVERIFIED result rather than a pass.",
+      "assertions": [
+        "reports criterion, expected and observed values, evidence, boundary, and verdict separately",
+        "uses explicit tolerances for duration, timestamps, rates, and measured values",
+        "marks absent required evidence unverified or blocked rather than passing it",
+        "tests streams, subtitles, timing, audio, video, and downstream evidence independently",
+        "does not generalize local probe or decode success into destination compatibility"
+      ],
+      "case_set": "release"
     }
   ]
 }
