@@ -4,15 +4,15 @@
 from __future__ import annotations
 
 import argparse
-from decimal import Decimal, InvalidOperation
 import json
 import math
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import sys
 import tempfile
+from decimal import Decimal, InvalidOperation
+from pathlib import Path
 from typing import Any
 
 MAX_FRAMES_HARD = 100
@@ -33,7 +33,12 @@ class CLIError(Exception):
 class JSONArgumentParser(argparse.ArgumentParser):
     def error(self, message: str) -> None:
         if "--json" in sys.argv[1:]:
-            print(json.dumps({"ok": False, "error": {"code": "invalid_arguments", "message": message}}, sort_keys=True))
+            print(
+                json.dumps(
+                    {"ok": False, "error": {"code": "invalid_arguments", "message": message}},
+                    sort_keys=True,
+                )
+            )
             raise SystemExit(2)
         super().error(message)
 
@@ -132,7 +137,9 @@ def run_bounded(argv: list[str], timeout: float) -> tuple[int, str]:
 def build_parser() -> argparse.ArgumentParser:
     parser = JSONArgumentParser(description=__doc__)
     parser.add_argument("input", help="source media file")
-    parser.add_argument("-o", "--output-dir", required=True, help="directory for extracted JPEG frames")
+    parser.add_argument(
+        "-o", "--output-dir", required=True, help="directory for extracted JPEG frames"
+    )
     parser.add_argument(
         "-t",
         "--timestamp",
@@ -147,15 +154,27 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="TIME",
         help="additional explicit timestamps",
     )
-    parser.add_argument("--ffmpeg", default="ffmpeg", help="ffmpeg executable (default: ffmpeg from PATH)")
-    parser.add_argument("--max-frames", type=int, default=24, help="maximum requested frames (1-100)")
+    parser.add_argument(
+        "--ffmpeg", default="ffmpeg", help="ffmpeg executable (default: ffmpeg from PATH)"
+    )
+    parser.add_argument(
+        "--stream", default="0:v:0", help="explicit video stream specifier (default: 0:v:0)"
+    )
+    parser.add_argument("--video-filter", help="optional explicitly recorded video filter chain")
+    parser.add_argument(
+        "--max-frames", type=int, default=24, help="maximum requested frames (1-100)"
+    )
     parser.add_argument(
         "--max-timestamp",
         default="86400",
         help="maximum allowed timestamp in seconds (default: 86400; hard maximum: 604800)",
     )
-    parser.add_argument("--timeout", type=float, default=30.0, help="per-frame ffmpeg timeout in seconds")
-    parser.add_argument("--overwrite", action="store_true", help="allow replacing existing frame files")
+    parser.add_argument(
+        "--timeout", type=float, default=30.0, help="per-frame ffmpeg timeout in seconds"
+    )
+    parser.add_argument(
+        "--overwrite", action="store_true", help="allow replacing existing frame files"
+    )
     parser.add_argument("--json", action="store_true", help="emit compact JSON")
     return parser
 
@@ -166,7 +185,10 @@ def main(argv: list[str] | None = None) -> int:
         if not 1 <= args.max_frames <= MAX_FRAMES_HARD:
             raise CLIError("invalid_limit", f"--max-frames must be between 1 and {MAX_FRAMES_HARD}")
         if not math.isfinite(args.timeout) or not 0 < args.timeout <= MAX_TIMEOUT_HARD:
-            raise CLIError("invalid_limit", f"--timeout must be greater than 0 and at most {MAX_TIMEOUT_HARD:g}")
+            raise CLIError(
+                "invalid_limit",
+                f"--timeout must be greater than 0 and at most {MAX_TIMEOUT_HARD:g}",
+            )
         max_timestamp = parse_timestamp(args.max_timestamp)
         if max_timestamp <= 0 or max_timestamp > MAX_TIMESTAMP_HARD:
             raise CLIError(
@@ -185,7 +207,7 @@ def main(argv: list[str] | None = None) -> int:
                 limit=args.max_frames,
             )
         timestamps = [parse_timestamp(raw) for raw in raw_timestamps]
-        for raw, timestamp in zip(raw_timestamps, timestamps):
+        for raw, timestamp in zip(raw_timestamps, timestamps, strict=True):
             if timestamp > max_timestamp:
                 raise CLIError(
                     "timestamp_limit_exceeded",
@@ -203,7 +225,9 @@ def main(argv: list[str] | None = None) -> int:
 
         output_dir = Path(args.output_dir).expanduser().resolve()
         if output_dir.exists() and not output_dir.is_dir():
-            raise CLIError("invalid_output_directory", f"output path is not a directory: {output_dir}")
+            raise CLIError(
+                "invalid_output_directory", f"output path is not a directory: {output_dir}"
+            )
         outputs = [output_dir / f"frame-{index:04d}.jpg" for index in range(1, len(timestamps) + 1)]
         existing = [str(path) for path in outputs if path.exists()]
         if existing and not args.overwrite:
@@ -216,11 +240,13 @@ def main(argv: list[str] | None = None) -> int:
 
         tool = resolve_tool(args.ffmpeg)
         if tool is None:
-            raise CLIError("tool_not_found", f"ffmpeg executable not found: {args.ffmpeg}", 3, tool=args.ffmpeg)
+            raise CLIError(
+                "tool_not_found", f"ffmpeg executable not found: {args.ffmpeg}", 3, tool=args.ffmpeg
+            )
 
         output_dir.mkdir(parents=True, exist_ok=True)
         results: list[dict[str, Any]] = []
-        for timestamp, output in zip(timestamps, outputs):
+        for timestamp, output in zip(timestamps, outputs, strict=True):
             timestamp_text = canonical_decimal(timestamp)
             command = [
                 tool,
@@ -232,13 +258,14 @@ def main(argv: list[str] | None = None) -> int:
                 timestamp_text,
                 "-i",
                 str(source),
+                "-map",
+                args.stream,
                 "-frames:v",
                 "1",
-                "-q:v",
-                "2",
-                "-y" if args.overwrite else "-n",
-                str(output),
             ]
+            if args.video_filter:
+                command.extend(["-vf", args.video_filter])
+            command.extend(["-q:v", "2", "-y" if args.overwrite else "-n", str(output)])
             returncode, diagnostic = run_bounded(command, args.timeout)
             if returncode != 0:
                 raise CLIError(
@@ -271,6 +298,8 @@ def main(argv: list[str] | None = None) -> int:
                 "input": str(source),
                 "output_directory": str(output_dir),
                 "frame_count": len(results),
+                "stream": args.stream,
+                "video_filter": args.video_filter,
                 "overwrite": args.overwrite,
                 "frames": results,
             },

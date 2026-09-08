@@ -1,0 +1,19 @@
+{
+  "review": {
+    "status": "reviewed",
+    "reviewer": "human-or-vision-reviewer-id",
+    "blind_spots": ["unsampled intervals", "motion between frames"],
+    "observations": [
+      {
+        "id": "observation-001",
+        "edl_event_id": "event-001",
+        "artifact_refs": ["frames/frame-0001.jpg"],
+        "observation": "Describe only what is visible in the referenced sample.",
+        "evidence_class": "human_or_vision_observation",
+        "confidence": 0.8,
+        "coverage_scope": "sampled_artifacts_only",
+        "editorial_consequence": "Candidate consequence requiring editorial approval"
+      }
+    ]
+  }
+}

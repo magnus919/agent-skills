@@ -44,6 +44,25 @@ For each sample include:
 
 Avoid embedding private source paths, personal names, faces, transcript text, or location metadata unless required and authorized. Share the smallest packet that answers the review question.
 
+### Structured handoff workflow
+
+Use `scripts/vision-review-handoff` to turn explicit timestamps, a bounded cadence, or neighboring frames around proposed boundaries into a new review packet. The helper enforces frame-count, timestamp-span, and aggregate-byte limits; records the selected stream, local FFmpeg build, extraction parameters, transformations, hashes, and sampling blind spots; and substitutes an opaque asset ID for the private source path in the manifest. It does not perform semantic review.
+
+```sh
+scripts/vision-review-handoff private-source.mov \
+  --asset-id asset-017 --stream 0:v:0 \
+  --question "Does the sampled boundary preserve title continuity?" \
+  --timestamp 12.4 --timestamp 18.2 --neighbor-seconds 0.25 \
+  --max-frames 12 --max-range-seconds 30 --max-output-bytes 12000000 \
+  --output-dir review-packet --json
+```
+
+Give `manifest.json` and its relative frame artifacts to an authorized human or vision-capable reviewer. The reviewer must replace the pending review block with attributed observations using one of four classes: `technical_observation`, `human_or_vision_observation`, `heuristic`, or `unresolved_claim`. Each observation records confidence, blind spots, sampled-artifact scope, and a proposed editorial consequence. If the samples cannot answer the question, request more bounded samples or human review rather than inferring across the gap.
+
+After review, `scripts/import-vision-review MANIFEST EDL --output REVIEWED-EDL` validates the evidence and links it to named EDL events. The importer rejects missing attribution, missing observations, unknown events, and claims covering the whole asset or unsampled intervals. It writes a new EDL and never renders media or accepts the proposed consequence automatically.
+
+This workflow is distinct from transcript acquisition, which belongs to the source/transcription system and supplies text/timing evidence, and from HyperFrames composition, which creates visual experiences. FFmpeg only extracts declared pixels and records technical provenance here; semantic interpretation belongs to the reviewer.
+
 ## Evidence and heuristic boundary
 
 | Classification | Defensible statement |

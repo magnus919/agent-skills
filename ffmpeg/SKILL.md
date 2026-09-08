@@ -89,6 +89,7 @@ For shipped helper workflows, run the helper from the skill root with explicit o
 - `templates/edit-decision-list.json` — reviewable source ranges and treatments
 - `templates/video-inspection-report.md` — technical inspection and bounded evidence ledger
 - `templates/visual-review-packet.md` — attributed frame/clip observations and coverage limits
+- `templates/vision-review-observations.json` — parseable attributed observation block for a prepared packet
 - `templates/podcast-edit-plan.md` — mechanical, signal, and editorial audio decisions
 - `templates/media-acceptance-report.md` — layered verification and criterion verdicts
 - `templates/media-acceptance-contract.json` — machine-readable stream, format, evidence, loudness, and downstream requirements
@@ -103,6 +104,8 @@ Use `scripts/render-edl` for a non-executing single- or multi-source plan. Defau
 Use `scripts/audio-inspect` for bounded silence, EBU R128, peak/clipping, and transcript-alignment evidence. Request each measurement explicitly, preserve unavailable filters as `UNAVAILABLE`, and treat every interval or transcript range as a listening-review candidate. Its optional report output refuses overwrite.
 
 Use `scripts/media-verify` with a declared acceptance contract, output FFprobe JSON, and optional evidence JSON. It reports every criterion independently as `PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`, or `NOT_APPLICABLE`; only a report with no failed or missing required evidence is an overall pass.
+
+Use `scripts/vision-review-handoff` to prepare bounded, privacy-safe frame packets for an authorized human or vision reviewer. Import only attributed reviewed observations with `scripts/import-vision-review`; treat proposed editorial consequences as evidence for review, never automatic decisions.
 
 Copy a template into the task workspace and replace its placeholder/example values. Do not put private paths, media, transcripts, or review evidence in the public skill repository.
 

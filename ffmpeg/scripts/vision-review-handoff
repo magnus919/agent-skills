@@ -1,0 +1,298 @@
+#!/usr/bin/env python3
+"""Prepare a bounded, privacy-safe frame packet for attributed visual review."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import shutil
+import subprocess
+import sys
+from decimal import Decimal, InvalidOperation
+from pathlib import Path
+from typing import Any
+
+MAX_FRAMES_HARD = 100
+MAX_RANGE_HARD = Decimal("604800")
+MAX_OUTPUT_BYTES_HARD = 1024 * 1024 * 1024
+
+
+class CLIError(Exception):
+    def __init__(self, code: str, message: str, exit_code: int = 2, **details: Any) -> None:
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.exit_code = exit_code
+        self.details = details
+
+
+def decimal_value(raw: str, label: str) -> Decimal:
+    try:
+        value = Decimal(raw)
+    except InvalidOperation:
+        raise CLIError("invalid_number", f"{label} must be a decimal number: {raw}") from None
+    if not value.is_finite() or value < 0:
+        raise CLIError("invalid_number", f"{label} must be finite and nonnegative: {raw}")
+    return value
+
+
+def rendered(value: Decimal) -> str:
+    result = format(value, "f").rstrip("0").rstrip(".")
+    return result or "0"
+
+
+def cadence_points(raw: str) -> list[Decimal]:
+    parts = raw.split(":")
+    if len(parts) != 3:
+        raise CLIError("invalid_cadence", "cadence must be START:END:STEP in decimal seconds")
+    start, end, step = (decimal_value(value, "cadence value") for value in parts)
+    if step <= 0 or end < start:
+        raise CLIError("invalid_cadence", "cadence requires STEP > 0 and END >= START")
+    points: list[Decimal] = []
+    cursor = start
+    while cursor <= end and len(points) <= MAX_FRAMES_HARD:
+        points.append(cursor)
+        cursor += step
+    return points
+
+
+def safe_version(tool: str) -> str:
+    result = subprocess.run(
+        [tool, "-version"], capture_output=True, text=True, check=False, timeout=10
+    )
+    if result.returncode != 0 or not result.stdout.strip():
+        raise CLIError("version_probe_failed", "could not record the FFmpeg build", 3)
+    return result.stdout.splitlines()[0]
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("source")
+    parser.add_argument("--asset-id", required=True)
+    parser.add_argument("--question", required=True)
+    parser.add_argument("--stream", default="0:v:0")
+    parser.add_argument("--timestamp", action="append", default=[])
+    parser.add_argument("--cadence", action="append", default=[])
+    parser.add_argument("--neighbor-seconds", action="append", default=[])
+    parser.add_argument("--output-dir", required=True)
+    parser.add_argument("--max-frames", type=int, default=24)
+    parser.add_argument("--max-range-seconds", default="3600")
+    parser.add_argument("--max-output-bytes", type=int, default=50 * 1024 * 1024)
+    parser.add_argument("--scale", default="none")
+    parser.add_argument("--crop", default="none")
+    parser.add_argument("--color-transform", default="none")
+    parser.add_argument("--ffmpeg", default="ffmpeg")
+    parser.add_argument("--json", action="store_true")
+    args = parser.parse_args()
+    try:
+        source = Path(args.source).expanduser().resolve()
+        output = Path(args.output_dir).expanduser().resolve()
+        if not source.is_file():
+            raise CLIError("input_not_found", "source is not a regular file")
+        if output.exists():
+            raise CLIError(
+                "output_exists", "output directory already exists; choose a new task-local path", 4
+            )
+        if not 1 <= args.max_frames <= MAX_FRAMES_HARD:
+            raise CLIError("invalid_limit", f"max frames must be between 1 and {MAX_FRAMES_HARD}")
+        max_range = decimal_value(args.max_range_seconds, "max range")
+        if max_range <= 0 or max_range > MAX_RANGE_HARD:
+            raise CLIError("invalid_limit", f"max range must be in (0, {rendered(MAX_RANGE_HARD)}]")
+        if not 0 < args.max_output_bytes <= MAX_OUTPUT_BYTES_HARD:
+            raise CLIError(
+                "invalid_limit", f"max output bytes must be in (0, {MAX_OUTPUT_BYTES_HARD}]"
+            )
+
+        explicit = [decimal_value(value, "timestamp") for value in args.timestamp]
+        if not explicit and not args.cadence:
+            raise CLIError("sampling_required", "provide an explicit timestamp or bounded cadence")
+        requested: list[tuple[Decimal, str, Decimal | None]] = [
+            (point, "explicit", None) for point in explicit
+        ]
+        for specification in args.cadence:
+            requested.extend((point, "cadence", None) for point in cadence_points(specification))
+        offsets = [decimal_value(value, "neighbor seconds") for value in args.neighbor_seconds]
+        for boundary in explicit:
+            for offset in offsets:
+                if offset == 0:
+                    continue
+                requested.append((max(Decimal(0), boundary - offset), "neighbor_before", boundary))
+                requested.append((boundary + offset, "neighbor_after", boundary))
+
+        by_timestamp: dict[Decimal, dict[str, Any]] = {}
+        for point, reason, boundary in requested:
+            entry = by_timestamp.setdefault(point, {"reasons": [], "boundary_seconds": []})
+            entry["reasons"].append(reason)
+            if boundary is not None:
+                entry["boundary_seconds"].append(rendered(boundary))
+        timestamps = sorted(by_timestamp)
+        if len(timestamps) > args.max_frames:
+            raise CLIError(
+                "frame_limit_exceeded",
+                "sampling plan exceeds the declared frame limit",
+                requested=len(timestamps),
+                limit=args.max_frames,
+            )
+        span = timestamps[-1] - timestamps[0]
+        if span > max_range:
+            raise CLIError(
+                "range_limit_exceeded",
+                "sampling plan exceeds the declared timestamp range",
+                observed=rendered(span),
+                limit=rendered(max_range),
+            )
+
+        ffmpeg = shutil.which(args.ffmpeg)
+        if ffmpeg is None:
+            raise CLIError("tool_not_found", f"FFmpeg executable not found: {args.ffmpeg}", 3)
+        build = safe_version(ffmpeg)
+        extractor = Path(__file__).with_name("extract-review-frames")
+        command = [
+            sys.executable,
+            str(extractor),
+            str(source),
+            "--output-dir",
+            str(output / "frames"),
+            "--ffmpeg",
+            ffmpeg,
+            "--stream",
+            args.stream,
+            "--max-frames",
+            str(args.max_frames),
+            "--max-timestamp",
+            rendered(timestamps[-1] or Decimal("0.001")),
+            "--json",
+        ]
+        video_filters = []
+        if args.scale != "none":
+            video_filters.append(f"scale={args.scale}")
+        if args.crop != "none":
+            video_filters.append(f"crop={args.crop}")
+        if args.color_transform != "none":
+            video_filters.append(args.color_transform)
+        if video_filters:
+            command.extend(["--video-filter", ",".join(video_filters)])
+        for timestamp in timestamps:
+            command.extend(["--timestamp", rendered(timestamp)])
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+        if result.returncode != 0:
+            try:
+                detail = json.loads(result.stdout)
+            except json.JSONDecodeError:
+                detail = {"stderr": result.stderr[-2000:]}
+            raise CLIError("extraction_failed", "bounded frame extraction failed", 1, detail=detail)
+        extraction = json.loads(result.stdout)
+        total_bytes = sum(frame["size_bytes"] for frame in extraction["frames"])
+        if total_bytes > args.max_output_bytes:
+            shutil.rmtree(output)
+            raise CLIError(
+                "output_limit_exceeded",
+                "extracted packet exceeds the declared byte limit",
+                4,
+                observed=total_bytes,
+                limit=args.max_output_bytes,
+            )
+
+        artifacts = []
+        for timestamp, frame in zip(timestamps, extraction["frames"], strict=True):
+            artifact = Path(frame["output"])
+            artifacts.append(
+                {
+                    "artifact": str(Path("frames") / artifact.name),
+                    "source_asset_id": args.asset_id,
+                    "stream": args.stream,
+                    "source_timestamp_seconds": rendered(timestamp),
+                    "sampling_reasons": sorted(set(by_timestamp[timestamp]["reasons"])),
+                    "boundary_seconds": sorted(set(by_timestamp[timestamp]["boundary_seconds"])),
+                    "size_bytes": frame["size_bytes"],
+                    "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                    "extraction_command": [
+                        ffmpeg,
+                        "-ss",
+                        rendered(timestamp),
+                        "-i",
+                        f"<SOURCE:{args.asset_id}>",
+                        "-map",
+                        args.stream,
+                        "-frames:v",
+                        "1",
+                        *(["-vf", ",".join(video_filters)] if video_filters else []),
+                        f"<PACKET>/frames/{artifact.name}",
+                    ],
+                    "transforms": {
+                        "scale": args.scale,
+                        "crop": args.crop,
+                        "color": args.color_transform,
+                    },
+                }
+            )
+        manifest = {
+            "schema_version": 1,
+            "packet_id": hashlib.sha256(
+                f"{args.asset_id}:{','.join(rendered(x) for x in timestamps)}".encode()
+            ).hexdigest()[:16],
+            "asset_id": args.asset_id,
+            "stream": args.stream,
+            "question": args.question,
+            "ffmpeg_build": build,
+            "sampling": {
+                "timestamps_seconds": [rendered(value) for value in timestamps],
+                "explicit_timestamps_seconds": [rendered(value) for value in explicit],
+                "cadence_specs": args.cadence,
+                "neighbor_offsets_seconds": [rendered(value) for value in offsets],
+                "coverage_statement": "Only the listed timestamps were sampled; unsampled intervals and whole-asset absence claims are not established.",
+                "blind_spots": [
+                    "motion between samples",
+                    "unsampled intervals",
+                    "target display and color pipeline",
+                    "audio and transcript content",
+                ],
+            },
+            "limits": {
+                "max_frames": args.max_frames,
+                "max_range_seconds": rendered(max_range),
+                "max_output_bytes": args.max_output_bytes,
+            },
+            "total_output_bytes": total_bytes,
+            "artifacts": artifacts,
+            "review": {
+                "status": "pending",
+                "required_fields": [
+                    "reviewer",
+                    "observations",
+                    "blind_spots",
+                    "editorial_consequence",
+                ],
+            },
+        }
+        manifest_path = output / "manifest.json"
+        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+        payload = {"ok": True, "manifest": str(manifest_path), **manifest}
+        print(
+            json.dumps(
+                payload,
+                separators=(",", ":") if args.json else None,
+                indent=None if args.json else 2,
+            )
+        )
+        return 0
+    except (CLIError, OSError, subprocess.TimeoutExpired) as exc:
+        if isinstance(exc, CLIError):
+            payload = {
+                "ok": False,
+                "error": {"code": exc.code, "message": exc.message, **exc.details},
+            }
+            code = exc.exit_code
+        else:
+            payload = {"ok": False, "error": {"code": "io_error", "message": str(exc)}}
+            code = 2
+        print(
+            json.dumps(payload, separators=(",", ":") if args.json else None),
+            file=sys.stdout if args.json else sys.stderr,
+        )
+        return code
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
