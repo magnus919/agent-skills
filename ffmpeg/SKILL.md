@@ -93,6 +93,7 @@ For shipped helper workflows, run the helper from the skill root with explicit o
 - `templates/podcast-edit-plan.md` — mechanical, signal, and editorial audio decisions
 - `templates/media-acceptance-report.md` — layered verification and criterion verdicts
 - `templates/media-acceptance-contract.json` — machine-readable stream, format, evidence, loudness, and downstream requirements
+- `templates/target-compatibility-manifest.json` — one named target, sourced requirements, technical constraints, and downstream lane
 - `templates/research-experiment-record.md` — reproducible version/command/result record
 
 Run `scripts/editorial-workflow-example` in a new or empty task-local directory when a reproducible synthetic integration proof is required. Its `PASS_WITH_UNVERIFIED_BOUNDARIES` result is deliberately narrower than editorial or destination acceptance.
@@ -104,6 +105,8 @@ Use `scripts/render-edl` for a non-executing single- or multi-source plan. Defau
 Use `scripts/audio-inspect` for bounded silence, EBU R128, peak/clipping, and transcript-alignment evidence. Request each measurement explicitly, preserve unavailable filters as `UNAVAILABLE`, and treat every interval or transcript range as a listening-review candidate. Its optional report output refuses overwrite.
 
 Use `scripts/media-verify` with a declared acceptance contract, output FFprobe JSON, and optional evidence JSON. It reports every criterion independently as `PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`, or `NOT_APPLICABLE`; only a report with no failed or missing required evidence is an overall pass.
+
+Use `scripts/target-compatibility` when acceptance names a real player, editor, host, archive, or service. Keep sourced technical requirements and local probe results separate from evidence produced by that exact consumer; a pass applies only to the named target/version.
 
 Use `scripts/vision-review-handoff` to prepare bounded, privacy-safe frame packets for an authorized human or vision reviewer. Import only attributed reviewed observations with `scripts/import-vision-review`; treat proposed editorial consequences as evidence for review, never automatic decisions.
 

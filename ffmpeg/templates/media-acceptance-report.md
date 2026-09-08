@@ -16,6 +16,8 @@
 | Audio levels/listening | | | editorial | PASS/FAIL/BLOCKED/UNVERIFIED |
 | Downstream consumer | | | downstream | PASS/FAIL/BLOCKED/UNVERIFIED/NOT_APPLICABLE |
 
+Keep named-target evidence in a separate target-consumer record: target ID/version, exact artifact digest, method, warnings, requirements sources/access dates, and result. A local probe/decode pass is not the target result, and one target result does not establish universal compatibility.
+
 ## Unverified Boundaries
 
 -
