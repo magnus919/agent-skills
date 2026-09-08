@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -49,9 +50,7 @@ def test_render_edl_valid_plan_does_not_execute(tmp_path: Path) -> None:
                     "duration": 10.0,
                 }
             ],
-            "events": [
-                {"asset_id": "camera-a", "in": 1.25, "out": 3.5, "action": "keep"}
-            ],
+            "events": [{"asset_id": "camera-a", "in": 1.25, "out": 3.5, "action": "keep"}],
         },
     )
 
@@ -62,9 +61,7 @@ def test_render_edl_valid_plan_does_not_execute(tmp_path: Path) -> None:
     assert report == {
         "ok": True,
         "executed": False,
-        "events": [
-            {"asset_id": "camera-a", "in": 1.25, "out": 3.5, "action": "keep"}
-        ],
+        "events": [{"asset_id": "camera-a", "in": 1.25, "out": 3.5, "action": "keep"}],
         "argv": [
             "ffmpeg",
             "-n",
@@ -114,9 +111,7 @@ def test_render_edl_rejects_multi_event_plan(tmp_path: Path) -> None:
         tmp_path / "multi-event-edl.json",
         {
             "schema_version": 1,
-            "sources": [
-                {"asset_id": "camera-a", "source": "camera-a.mp4", "duration": 3.0}
-            ],
+            "sources": [{"asset_id": "camera-a", "source": "camera-a.mp4", "duration": 3.0}],
             "events": [
                 {"asset_id": "camera-a", "in": 0.0, "out": 1.0},
                 {"asset_id": "camera-a", "in": 1.0, "out": 2.0},
@@ -207,3 +202,62 @@ def test_media_verify_fails_probe_contract_mismatches(tmp_path: Path) -> None:
         "audio_stream": False,
         "duration": False,
     }
+
+
+def test_editorial_workflow_example_runs_with_real_tools(tmp_path: Path) -> None:
+    if shutil.which("ffmpeg") is None or shutil.which("ffprobe") is None:
+        import pytest
+
+        pytest.skip("ffmpeg and ffprobe are required for the integration example")
+
+    workspace = tmp_path / "workflow"
+    result = run_script(
+        "editorial-workflow-example",
+        str(workspace),
+        "--duration",
+        "1.25",
+        "--json",
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    report = json.loads(result.stdout)
+    assert report["ok"] is True
+    assert report["overall_verdict"] == "PASS_WITH_UNVERIFIED_BOUNDARIES"
+    assert report["unverified_boundaries"] == [
+        "semantic visual review",
+        "listening review",
+        "downstream consumer compatibility",
+    ]
+    assert {
+        "synthetic-source.mkv",
+        "source-probe.json",
+        "intake-manifest.json",
+        "evidence-packet.json",
+        "edit-decision-list.json",
+        "edited-output.mkv",
+        "output-probe.json",
+        "review-frame-1.png",
+        "review-frame-2.png",
+        "acceptance-report.json",
+        "command-log.json",
+    }.issubset(report["artifacts"])
+
+    intake = json.loads((workspace / "intake-manifest.json").read_text())
+    edl = json.loads((workspace / "edit-decision-list.json").read_text())
+    acceptance = json.loads((workspace / "acceptance-report.json").read_text())
+    assert intake["workflow_id"] == edl["workflow_id"] == acceptance["workflow_id"]
+    assert intake["assets"][0]["id"] == edl["sources"][0]["asset_id"]
+    assert edl["events"][0]["id"] == acceptance["event_ids"][0]
+    assert acceptance["overall_verdict"] == "PASS_WITH_UNVERIFIED_BOUNDARIES"
+
+
+def test_editorial_workflow_example_refuses_nonempty_workspace(tmp_path: Path) -> None:
+    workspace = tmp_path / "workflow"
+    workspace.mkdir()
+    (workspace / "keep.txt").write_text("do not replace")
+
+    result = run_script("editorial-workflow-example", str(workspace), "--json")
+
+    assert result.returncode == 2
+    assert "workspace must be absent or empty" in json.loads(result.stdout)["error"]
+    assert (workspace / "keep.txt").read_text() == "do not replace"

@@ -92,6 +92,19 @@
         "requires reproducible end-to-end benchmarking"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "synthetic-end-to-end-proof",
+      "prompt": "Prove that the FFmpeg media workflow composes end to end without using any personal media. I need reproducible evidence, not just a list of commands.",
+      "expected_output": "Run the bounded synthetic editorial workflow in a new task-local directory, retain the intake, source/output probes, evidence packet, EDL, exact command log, sampled frames, audio-path check, and criterion-level acceptance report, and report semantic, listening, and downstream compatibility as unverified rather than passing them.",
+      "assertions": [
+        "uses generated synthetic audio and video rather than personal media",
+        "preserves source and renders to a new output path",
+        "cross-references stable workflow, asset, and event identities",
+        "retains exact tool versions, commands, probes, and digest evidence",
+        "distinguishes integration success from semantic, listening, and downstream acceptance"
+      ],
+      "case_set": "release"
     }
   ]
 }

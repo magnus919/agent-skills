@@ -36,6 +36,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `references/media-verification-and-acceptance.md` | Layered probe, decode, content, editorial, and downstream acceptance evidence |
 | `references/media-failure-modes.md` | Diagnosis matrix, safe recovery, and stop rules |
 | `references/media-research-source-index.md` | Claim-to-source map for official docs, standards, experiments, and heuristics |
+| `references/editorial-workflow-example.md` | Reproducible synthetic intake-to-acceptance integration workflow |
 
 ### Copyable templates
 
@@ -61,6 +62,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `scripts/render-edl` | Validate an EDL and emit a non-executing FFmpeg command plan (review before multi-source rendering) |
 | `scripts/audio-inspect` | Read-only audio metadata inspection with bounded probing |
 | `scripts/media-verify` | Compare input/output probe documents against basic criteria |
+| `scripts/editorial-workflow-example` | Generate synthetic audio/video and exercise the complete workflow with durable evidence |
 | `evals/evals.json` | Output-quality cases for core FFmpeg, media evidence, video, podcast, EDL, safety, and acceptance behavior |
 
 ## Quick Start
@@ -88,6 +90,14 @@ scripts/ffmpeg-preflight --filter scale --filter loudnorm --encoder libx264 --hw
 ```
 
 Named checks report each capability as present or absent. Exit code `1` means a required tool/probe failed; `2` means a requested capability is absent from a usable inventory. Add `--json` for machine-readable output.
+
+Run the complete synthetic integration example in a new or empty task-local directory:
+
+```sh
+scripts/editorial-workflow-example /tmp/ffmpeg-editorial-example --json
+```
+
+The resulting acceptance report passes only the exercised component and integration checks; semantic, listening, and downstream-consumer boundaries remain explicitly unverified.
 
 ## Triggers
 
