@@ -1,0 +1,700 @@
+#!/usr/bin/env python3
+"""Generate a bounded synthetic FFmpeg fixture battery and evidence manifest."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+from pathlib import Path
+from typing import Any
+
+
+class FixtureError(Exception):
+    """A controlled fixture-generation failure."""
+
+
+def resolve_tool(name: str) -> str:
+    expanded = os.path.expanduser(name)
+    if os.path.sep in expanded:
+        candidate = Path(expanded)
+        if candidate.is_file() and os.access(candidate, os.X_OK):
+            return str(candidate.resolve())
+    else:
+        resolved = shutil.which(name)
+        if resolved:
+            return resolved
+    raise FixtureError(f"required executable not found: {name}")
+
+
+def execute(argv: list[str], timeout: float) -> subprocess.CompletedProcess[str]:
+    try:
+        result = subprocess.run(
+            argv,
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise FixtureError(f"command could not complete: {argv[0]}: {exc}") from exc
+    if result.returncode:
+        detail = result.stderr.strip()[-2000:] or result.stdout.strip()[-2000:]
+        raise FixtureError(f"command failed ({result.returncode}): {' '.join(argv)}\n{detail}")
+    return result
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return f"sha256:{digest.hexdigest()}"
+
+
+def probe(ffprobe: str, path: Path, timeout: float) -> dict[str, Any]:
+    result = execute(
+        [
+            ffprobe,
+            "-v",
+            "error",
+            "-show_format",
+            "-show_streams",
+            "-show_chapters",
+            "-of",
+            "json",
+            str(path),
+        ],
+        timeout,
+    )
+    try:
+        document = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise FixtureError(f"invalid ffprobe JSON for {path.name}: {exc}") from exc
+    if not isinstance(document, dict):
+        raise FixtureError(f"ffprobe JSON root for {path.name} must be an object")
+    return document
+
+
+def stream(document: dict[str, Any], kind: str) -> dict[str, Any] | None:
+    streams = document.get("streams", [])
+    if not isinstance(streams, list):
+        return None
+    return next(
+        (item for item in streams if isinstance(item, dict) and item.get("codec_type") == kind),
+        None,
+    )
+
+
+def fixture_record(
+    path: Path,
+    role: str,
+    generator: list[str] | str,
+    probe_document: dict[str, Any] | None,
+    expected: list[str],
+    limitations: list[str],
+) -> dict[str, Any]:
+    return {
+        "id": path.stem,
+        "path": path.name,
+        "role": role,
+        "sha256": sha256(path),
+        "generator": generator,
+        "probe": probe_document,
+        "expected_properties": expected,
+        "limitations": limitations,
+    }
+
+
+def add_media_fixture(
+    records: list[dict[str, Any]],
+    ffprobe: str,
+    path: Path,
+    role: str,
+    generator: list[str],
+    expected: list[str],
+    limitations: list[str],
+    timeout: float,
+) -> dict[str, Any]:
+    document = probe(ffprobe, path, timeout)
+    record = fixture_record(path, role, generator, document, expected, limitations)
+    records.append(record)
+    return document
+
+
+def create_workspace(path: Path) -> Path:
+    workspace = path.expanduser().resolve()
+    if workspace.exists() and any(workspace.iterdir()):
+        raise FixtureError(f"workspace must be absent or empty: {workspace}")
+    workspace.mkdir(parents=True, exist_ok=True)
+    return workspace
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("workspace", help="new or empty directory for fixture artifacts")
+    parser.add_argument("--ffmpeg", default="ffmpeg")
+    parser.add_argument("--ffprobe", default="ffprobe")
+    parser.add_argument("--timeout", type=float, default=30.0, help="per-command timeout (1-300)")
+    parser.add_argument("--json", action="store_true", help="emit compact summary JSON")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        if not 1 <= args.timeout <= 300:
+            raise FixtureError("--timeout must be between 1 and 300 seconds")
+        workspace = create_workspace(Path(args.workspace))
+        ffmpeg = resolve_tool(args.ffmpeg)
+        ffprobe = resolve_tool(args.ffprobe)
+        version = execute([ffmpeg, "-version"], args.timeout).stdout.splitlines()[0]
+        probe_version = execute([ffprobe, "-version"], args.timeout).stdout.splitlines()[0]
+        commands: list[list[str]] = []
+        fixtures: list[dict[str, Any]] = []
+
+        def generate(path: Path, arguments: list[str]) -> list[str]:
+            command = [ffmpeg, "-v", "error", "-n", *arguments, str(path)]
+            execute(command, args.timeout)
+            commands.append(command)
+            return command
+
+        base = workspace / "gop-source.mkv"
+        base_command = generate(
+            base,
+            [
+                "-f",
+                "lavfi",
+                "-i",
+                "testsrc2=size=320x180:rate=24:duration=3",
+                "-f",
+                "lavfi",
+                "-i",
+                "sine=frequency=440:sample_rate=48000:duration=3",
+                "-map",
+                "0:v:0",
+                "-map",
+                "1:a:0",
+                "-c:v",
+                "mpeg4",
+                "-g",
+                "48",
+                "-q:v",
+                "5",
+                "-c:a",
+                "pcm_s16le",
+                "-shortest",
+            ],
+        )
+        base_probe = add_media_fixture(
+            fixtures,
+            ffprobe,
+            base,
+            "non-keyframe-cut-source",
+            base_command,
+            ["3 second CFR source", "24 fps video", "48 kHz audio", "two-second GOP"],
+            ["MPEG-4 keyframe placement is build-specific and must be probed"],
+            args.timeout,
+        )
+
+        copy_cut = workspace / "stream-copy-cut.mkv"
+        copy_command = generate(
+            copy_cut,
+            ["-ss", "0.5", "-i", str(base), "-t", "1", "-map", "0", "-c", "copy"],
+        )
+        copy_probe = add_media_fixture(
+            fixtures,
+            ffprobe,
+            copy_cut,
+            "packet-boundary-copy-cut",
+            copy_command,
+            ["stream-copy cut requested at a non-GOP boundary"],
+            ["packet/keyframe behavior is evidence, not frame-accurate intent"],
+            args.timeout,
+        )
+
+        accurate_cut = workspace / "decoded-accurate-cut.mkv"
+        accurate_command = generate(
+            accurate_cut,
+            [
+                "-i",
+                str(base),
+                "-ss",
+                "0.5",
+                "-t",
+                "1",
+                "-map",
+                "0:v:0",
+                "-map",
+                "0:a:0",
+                "-c:v",
+                "mpeg4",
+                "-q:v",
+                "5",
+                "-c:a",
+                "pcm_s16le",
+            ],
+        )
+        accurate_probe = add_media_fixture(
+            fixtures,
+            ffprobe,
+            accurate_cut,
+            "decoded-accurate-cut",
+            accurate_command,
+            ["decoded one-second cut requested at 0.5 seconds"],
+            ["container duration remains subject to time-base rounding"],
+            args.timeout,
+        )
+
+        vfr = workspace / "vfr-video.mkv"
+        vfr_command = generate(
+            vfr,
+            [
+                "-f",
+                "lavfi",
+                "-i",
+                "testsrc2=size=160x90:rate=30:duration=2",
+                "-vf",
+                "select=not(mod(n\\,2))+not(mod(n\\,5))",
+                "-fps_mode",
+                "vfr",
+                "-c:v",
+                "mpeg4",
+                "-q:v",
+                "5",
+                "-an",
+            ],
+        )
+        add_media_fixture(
+            fixtures,
+            ffprobe,
+            vfr,
+            "variable-frame-cadence",
+            vfr_command,
+            ["irregularly selected frames with original timestamps"],
+            ["container-reported average rate is not a complete cadence proof"],
+            args.timeout,
+        )
+
+        compatible: list[Path] = []
+        for color, frequency in (("red", 550), ("blue", 660)):
+            path = workspace / f"concat-{color}.mkv"
+            command = generate(
+                path,
+                [
+                    "-f",
+                    "lavfi",
+                    "-i",
+                    f"color=c={color}:size=160x90:rate=24:duration=1",
+                    "-f",
+                    "lavfi",
+                    "-i",
+                    f"sine=frequency={frequency}:sample_rate=48000:duration=1",
+                    "-map",
+                    "0:v:0",
+                    "-map",
+                    "1:a:0",
+                    "-c:v",
+                    "mpeg4",
+                    "-q:v",
+                    "5",
+                    "-c:a",
+                    "pcm_s16le",
+                    "-shortest",
+                ],
+            )
+            add_media_fixture(
+                fixtures,
+                ffprobe,
+                path,
+                "concat-compatible-input",
+                command,
+                ["160x90 at 24 fps", "48 kHz mono PCM audio"],
+                ["compatibility applies only to the generated pair and recorded build"],
+                args.timeout,
+            )
+            compatible.append(path)
+
+        concat_list = workspace / "compatible.ffconcat"
+        concat_list.write_text(
+            "ffconcat version 1.0\n"
+            + "".join(f"file '{path.name}'\n" for path in compatible),
+            encoding="utf-8",
+        )
+        fixtures.append(
+            fixture_record(
+                concat_list,
+                "concat-demuxer-list",
+                "generated from concat-red.mkv and concat-blue.mkv",
+                None,
+                ["two explicitly ordered compatible inputs"],
+                ["relative entries assume the media files remain beside this list"],
+            )
+        )
+        concat_output = workspace / "concat-compatible-output.mkv"
+        concat_command = generate(
+            concat_output,
+            ["-f", "concat", "-safe", "0", "-i", str(concat_list), "-c", "copy"],
+        )
+        concat_probe = add_media_fixture(
+            fixtures,
+            ffprobe,
+            concat_output,
+            "concat-compatible-success",
+            concat_command,
+            ["both compatible inputs joined with concat demuxer and stream copy"],
+            ["success does not generalize to other containers or streams"],
+            args.timeout,
+        )
+
+        incompatible = workspace / "concat-incompatible.mkv"
+        incompatible_command = generate(
+            incompatible,
+            [
+                "-f",
+                "lavfi",
+                "-i",
+                "testsrc2=size=176x144:rate=25:duration=1",
+                "-f",
+                "lavfi",
+                "-i",
+                "sine=frequency=770:sample_rate=44100:duration=1",
+                "-map",
+                "0:v:0",
+                "-map",
+                "1:a:0",
+                "-c:v",
+                "mpeg4",
+                "-q:v",
+                "5",
+                "-c:a",
+                "pcm_s16le",
+                "-ac",
+                "2",
+                "-shortest",
+            ],
+        )
+        incompatible_probe = add_media_fixture(
+            fixtures,
+            ffprobe,
+            incompatible,
+            "concat-incompatible-input",
+            incompatible_command,
+            ["176x144 at 25 fps", "44.1 kHz stereo PCM audio"],
+            ["intentionally differs from the compatible pair"],
+            args.timeout,
+        )
+
+        drift = workspace / "audio-duration-drift.mkv"
+        drift_command = generate(
+            drift,
+            [
+                "-f",
+                "lavfi",
+                "-i",
+                "testsrc2=size=160x90:rate=24:duration=2",
+                "-itsoffset",
+                "0.25",
+                "-f",
+                "lavfi",
+                "-i",
+                "sine=frequency=880:sample_rate=48000:duration=2.1",
+                "-map",
+                "0:v:0",
+                "-map",
+                "1:a:0",
+                "-c:v",
+                "mpeg4",
+                "-q:v",
+                "5",
+                "-c:a",
+                "pcm_s16le",
+            ],
+        )
+        add_media_fixture(
+            fixtures,
+            ffprobe,
+            drift,
+            "audio-offset-and-duration-drift-candidate",
+            drift_command,
+            ["audio starts 0.25 seconds after video", "audio source duration exceeds video source"],
+            ["probe timestamps identify a candidate; sync requires declared-point review"],
+            args.timeout,
+        )
+
+        audio = workspace / "audio-analysis.wav"
+        audio_command = generate(
+            audio,
+            [
+                "-f",
+                "lavfi",
+                "-i",
+                "aevalsrc=if(between(t\\,1\\,2)\\,0\\,if(between(t\\,3\\,3.5)\\,1.2*sin(2*PI*440*t)\\,0.4*sin(2*PI*440*t))):s=48000:d=4",
+                "-c:a",
+                "pcm_s16le",
+            ],
+        )
+        add_media_fixture(
+            fixtures,
+            ffprobe,
+            audio,
+            "audio-silence-and-peak-candidates",
+            audio_command,
+            ["one-second digital silence", "normal and over-range generated amplitude regions"],
+            ["threshold events are candidates; listening and editorial approval remain separate"],
+            args.timeout,
+        )
+
+        faded_audio = workspace / "audio-faded.wav"
+        fade_command = generate(
+            faded_audio,
+            [
+                "-i",
+                str(audio),
+                "-af",
+                "afade=t=in:d=0.1,afade=t=out:st=3.9:d=0.1",
+                "-c:a",
+                "pcm_s16le",
+            ],
+        )
+        add_media_fixture(
+            fixtures,
+            ffprobe,
+            faded_audio,
+            "audio-fade-output",
+            fade_command,
+            ["100 ms fade-in and fade-out applied to the synthetic analysis source"],
+            ["mechanical fade presence does not establish editorial suitability"],
+            args.timeout,
+        )
+
+        subtitle_text = workspace / "captions.srt"
+        subtitle_text.write_text(
+            "1\n00:00:00,200 --> 00:00:00,800\nSynthetic caption\n",
+            encoding="utf-8",
+        )
+        fixtures.append(
+            fixture_record(
+                subtitle_text,
+                "subtitle-source-text",
+                "written by generate-media-fixtures",
+                None,
+                ["single non-personal caption cue"],
+                ["SRT timing does not prove rendered legibility"],
+            )
+        )
+        subtitle_media = workspace / "subtitle-stream.mkv"
+        subtitle_command = generate(
+            subtitle_media,
+            [
+                "-f",
+                "lavfi",
+                "-i",
+                "color=c=black:size=160x90:rate=24:duration=1",
+                "-f",
+                "lavfi",
+                "-i",
+                "sine=frequency=330:sample_rate=48000:duration=1",
+                "-f",
+                "srt",
+                "-i",
+                str(subtitle_text),
+                "-map",
+                "0:v:0",
+                "-map",
+                "1:a:0",
+                "-map",
+                "2:s:0",
+                "-c:v",
+                "mpeg4",
+                "-q:v",
+                "5",
+                "-c:a",
+                "pcm_s16le",
+                "-c:s",
+                "srt",
+                "-shortest",
+            ],
+        )
+        add_media_fixture(
+            fixtures,
+            ffprobe,
+            subtitle_media,
+            "subtitle-stream-survival",
+            subtitle_command,
+            ["video, audio, and subtitle streams are explicitly mapped"],
+            ["embedded subtitle presence does not prove player rendering"],
+            args.timeout,
+        )
+
+        filter_inventory = execute([ffmpeg, "-hide_banner", "-filters"], args.timeout).stdout
+        subtitle_filter_available = any(
+            line.split()[1:2] == ["subtitles"]
+            for line in filter_inventory.splitlines()
+            if len(line.split()) >= 2
+        )
+        subtitle_burn_in: dict[str, Any]
+        if subtitle_filter_available:
+            burned = workspace / "subtitle-burned.mkv"
+            escaped_subtitle = (
+                str(subtitle_text).replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'")
+            )
+            burned_command = generate(
+                burned,
+                [
+                    "-i",
+                    str(subtitle_media),
+                    "-vf",
+                    f"subtitles=filename='{escaped_subtitle}'",
+                    "-map",
+                    "0:v:0",
+                    "-map",
+                    "0:a:0",
+                    "-c:v",
+                    "mpeg4",
+                    "-q:v",
+                    "5",
+                    "-c:a",
+                    "copy",
+                ],
+            )
+            burned_probe = add_media_fixture(
+                fixtures,
+                ffprobe,
+                burned,
+                "subtitle-burn-in-output",
+                burned_command,
+                ["caption pixels rendered into video", "no subtitle stream mapped to output"],
+                ["visual legibility still requires frame or player review"],
+                args.timeout,
+            )
+            subtitle_burn_in = {
+                "status": "EXERCISED",
+                "output": burned.name,
+                "subtitle_stream_present": stream(burned_probe, "subtitle") is not None,
+            }
+        else:
+            subtitle_burn_in = {
+                "status": "UNAVAILABLE",
+                "reason": "local FFmpeg build does not report the subtitles filter",
+            }
+
+        frames: list[str] = []
+        for index, timestamp in enumerate((0.4, 0.5, 0.6), start=1):
+            frame = workspace / f"boundary-{index}.png"
+            command = generate(
+                frame,
+                ["-ss", str(timestamp), "-i", str(base), "-frames:v", "1"],
+            )
+            fixtures.append(
+                fixture_record(
+                    frame,
+                    "bounded-boundary-frame",
+                    command,
+                    None,
+                    [f"one frame requested at {timestamp:.1f} seconds"],
+                    ["the image establishes only its sampled timestamp"],
+                )
+            )
+            frames.append(frame.name)
+
+        base_video = stream(base_probe, "video") or {}
+        base_audio = stream(base_probe, "audio") or {}
+        incompatible_video = stream(incompatible_probe, "video") or {}
+        incompatible_audio = stream(incompatible_probe, "audio") or {}
+        concat_comparison = {
+            "compatible_pair": {
+                "verdict": "PASS",
+                "method": "concat demuxer with stream copy",
+                "output_probe": "concat-compatible-output.mkv",
+                "stream_types": [
+                    item.get("codec_type")
+                    for item in concat_probe.get("streams", [])
+                    if isinstance(item, dict)
+                ],
+            },
+            "incompatible_candidate": {
+                "verdict": "REJECTED_BEFORE_CONCAT",
+                "differences": {
+                    "video_dimensions": [
+                        [base_video.get("width"), base_video.get("height")],
+                        [incompatible_video.get("width"), incompatible_video.get("height")],
+                    ],
+                    "video_rate": [
+                        base_video.get("avg_frame_rate"),
+                        incompatible_video.get("avg_frame_rate"),
+                    ],
+                    "audio_sample_rate": [
+                        base_audio.get("sample_rate"),
+                        incompatible_audio.get("sample_rate"),
+                    ],
+                    "audio_channels": [
+                        base_audio.get("channels"),
+                        incompatible_audio.get("channels"),
+                    ],
+                },
+                "reason": "stream parameters differ; extension equality is not compatibility evidence",
+            },
+        }
+
+        manifest = {
+            "schema_version": 1,
+            "fixture_set": "ffmpeg-synthetic-media-v1",
+            "tool_context": {"ffmpeg": version, "ffprobe": probe_version},
+            "portable_assertions": [
+                "generators use lavfi or committed non-personal text",
+                "every media fixture is probed after generation",
+                "stream-copy and decoded cuts retain separate evidence",
+                "incompatible concat input is rejected from observed stream differences",
+                "visual samples cover only three declared timestamps",
+            ],
+            "environment_observations": {
+                "copy_cut_probe": copy_probe,
+                "decoded_cut_probe": accurate_probe,
+            },
+            "concat": concat_comparison,
+            "review_packet": {
+                "source": base.name,
+                "timestamps_seconds": [0.4, 0.5, 0.6],
+                "frames": frames,
+                "coverage": "three samples around one proposed boundary; no whole-video claim",
+            },
+            "subtitle_burn_in": subtitle_burn_in,
+            "fixtures": fixtures,
+            "commands": commands,
+            "known_limitations": [
+                "FFmpeg filters and codec behavior vary by recorded build",
+                "no listening or semantic visual review is automated",
+                "no downstream player or service is exercised",
+                "generated media is task-local and must not be committed",
+            ],
+        }
+        manifest_path = workspace / "fixture-manifest.json"
+        manifest_path.write_text(
+            json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        summary = {
+            "ok": True,
+            "workspace": str(workspace),
+            "fixture_set": manifest["fixture_set"],
+            "fixture_count": len(fixtures),
+            "manifest": manifest_path.name,
+            "concat_incompatible_verdict": concat_comparison["incompatible_candidate"]["verdict"],
+        }
+        print(
+            json.dumps(summary, sort_keys=True, separators=(",", ":"))
+            if args.json
+            else json.dumps(summary, indent=2, sort_keys=True)
+        )
+        return 0
+    except FixtureError as exc:
+        print(json.dumps({"ok": False, "error": str(exc)}, sort_keys=True))
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

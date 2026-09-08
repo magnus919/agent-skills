@@ -37,6 +37,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `references/media-failure-modes.md` | Diagnosis matrix, safe recovery, and stop rules |
 | `references/media-research-source-index.md` | Claim-to-source map for official docs, standards, experiments, and heuristics |
 | `references/editorial-workflow-example.md` | Reproducible synthetic intake-to-acceptance integration workflow |
+| `references/synthetic-media-fixtures.md` | Deterministic real-media fixture coverage and evidence boundaries |
 
 ### Copyable templates
 
@@ -63,6 +64,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `scripts/audio-inspect` | Read-only audio metadata inspection with bounded probing |
 | `scripts/media-verify` | Compare input/output probe documents against basic criteria |
 | `scripts/editorial-workflow-example` | Generate synthetic audio/video and exercise the complete workflow with durable evidence |
+| `scripts/generate-media-fixtures` | Generate a bounded sanitized fixture battery and versioned evidence manifest |
 | `evals/evals.json` | Output-quality cases for core FFmpeg, media evidence, video, podcast, EDL, safety, and acceptance behavior |
 
 ## Quick Start
@@ -98,6 +100,14 @@ scripts/editorial-workflow-example /tmp/ffmpeg-editorial-example --json
 ```
 
 The resulting acceptance report passes only the exercised component and integration checks; semantic, listening, and downstream-consumer boundaries remain explicitly unverified.
+
+Generate the richer real-media test battery when a change needs timestamp, concat, audio, subtitle, or bounded visual evidence:
+
+```sh
+scripts/generate-media-fixtures /tmp/ffmpeg-fixtures --json
+```
+
+Generated media remains task-local; commit the generator and test assertions, not the binary outputs.
 
 ## Triggers
 
