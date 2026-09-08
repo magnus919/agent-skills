@@ -321,8 +321,7 @@ def main(argv: list[str] | None = None) -> int:
 
         concat_list = workspace / "compatible.ffconcat"
         concat_list.write_text(
-            "ffconcat version 1.0\n"
-            + "".join(f"file '{path.name}'\n" for path in compatible),
+            "ffconcat version 1.0\n" + "".join(f"file '{path.name}'\n" for path in compatible),
             encoding="utf-8",
         )
         fixtures.append(
@@ -469,6 +468,29 @@ def main(argv: list[str] | None = None) -> int:
             fade_command,
             ["100 ms fade-in and fade-out applied to the synthetic analysis source"],
             ["mechanical fade presence does not establish editorial suitability"],
+            args.timeout,
+        )
+
+        speech_like = workspace / "speech-like-audio.wav"
+        speech_like_command = generate(
+            speech_like,
+            [
+                "-f",
+                "lavfi",
+                "-i",
+                "aevalsrc=if(between(t\\,1\\,1.7)\\,0\\,0.35*sin(2*PI*(180+40*sin(2*PI*3*t))*t)):s=48000:d=3",
+                "-c:a",
+                "pcm_s16le",
+            ],
+        )
+        add_media_fixture(
+            fixtures,
+            ffprobe,
+            speech_like,
+            "synthetic-speech-like-analysis-source",
+            speech_like_command,
+            ["frequency-modulated voiced-like tone", "declared 0.7 second silence interval"],
+            ["synthetic modulation is not human speech and cannot validate intelligibility"],
             args.timeout,
         )
 

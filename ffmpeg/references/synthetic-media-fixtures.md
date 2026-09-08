@@ -18,7 +18,7 @@ The command refuses a non-empty directory and bounds every FFmpeg/FFprobe comman
 | Irregular frame selection and offset/drift candidate | Container rates and stream durations are not a complete account of cadence or sync |
 | Compatible pair and concat output | Concat-demuxer success for the exact recorded streams and build |
 | Incompatible concat candidate | Dimensions, cadence, and sample-rate differences cause pre-concat rejection |
-| Audio analysis and faded WAVs | Declared silence/over-range regions plus a mechanical fade output for bounded measurement tests |
+| Audio analysis, speech-like, and faded WAVs | Declared silence/over-range regions, a frequency-modulated voiced-like source, and a mechanical fade output for bounded measurement tests |
 | SRT and subtitle-stream MKV | Subtitle source and explicit stream preservation; burn-in is exercised when the local filter exists and otherwise recorded unavailable |
 | Three boundary PNGs | Samples around one timestamp with an explicit no-whole-video-claim boundary |
 
