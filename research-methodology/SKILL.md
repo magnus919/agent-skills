@@ -2,8 +2,9 @@
 name: research-methodology
 description: >-
   Plan, conduct, evaluate, and synthesize rigorous research investigations with credible
-  evidence and a traceable method. Do not use this skill for repeated source extraction
-  and durable note orchestration; use `research-and-vault` for that capture workflow.
+  evidence and a traceable method, including source-to-claim closure for media evidence.
+  Do not use this skill for repeated source extraction and durable note orchestration;
+  use `research-and-vault` for that capture workflow, or `ffmpeg` for media operations.
 license: MIT
 compatibility: No runtime dependency. Use appropriate retrieval tools and retain source URLs and access dates in the research log.
 metadata:
@@ -21,6 +22,8 @@ Professional research process for a subagent. Three tracks based on the type of 
 - **Academic/Comprehensive** — deep systematic research when depth matters most
 
 All three share the same lifecycle (Scope → Gather → Evaluate → Analyze → Synthesize → Report) but differ in evidence standards, speed, and output format.
+
+Media evidence is a technical-verification extension, not a fourth operational track. This skill owns research scope, source evaluation, claim closure, sampling-completeness audits, exclusions, and durable preservation. The `ffmpeg` skill owns FFmpeg commands, media probes, extraction, editing, rendering, and target verification; human or capable reviewers own semantic/editorial observations and approval. Load `references/media-evidence-routing.md` whenever a research conclusion depends on media tooling, sampled frames/audio/transcripts, or editorial judgment.
 
 ## When not to use
 
@@ -86,6 +89,7 @@ The acceptance gate is evidence completeness and artifact verification, not elap
 | `references/structured-analytic-techniques.md` | You need to evaluate competing explanations — ACH, driving forces, pre-mortem, indicators |
 | `references/synthesis-patterns.md` | You need to combine findings from multiple sources into synthesized conclusions |
 | `references/technical-verification.md` | You need to test a technical claim by reproducing it — benchmarks, API behavior, configuration |
+| `references/media-evidence-routing.md` | Media research needs an explicit research/FFmpeg/reviewer boundary, sampling audit, or source-to-claim closure |
 
 ### Assets
 
@@ -93,6 +97,7 @@ The acceptance gate is evidence completeness and artifact verification, not elap
 |-------|-----------------|
 | `assets/research-brief.md` | Structured brief with findings, confidence assessment, evidence table, open questions |
 | `assets/research-log.md` | Traceable record of searches, sources, and decisions |
+| `assets/media-claim-ledger.md` | Media brief boundary, claim-to-source/experiment closure, sampling audit, and exclusion log |
 
 Use both assets for every substantial investigation. Before closing the work, complete their durable-artifact sections and verify that retained sources and extracted claims are represented in the destination system.
 

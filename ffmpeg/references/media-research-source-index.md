@@ -2,6 +2,8 @@
 
 Use this index to connect a media claim to the strongest available source. Prefer official documentation for FFmpeg semantics, local evidence for installed capability, controlled experiments for uncertain behavior, and attributed review for editorial judgments.
 
+Research scope, source evaluation, exclusion logging, source-to-claim closure, and sampling-completeness audits follow [`research-methodology` media-evidence routing](../../research-methodology/references/media-evidence-routing.md). This FFmpeg reference owns the media-specific source hierarchy and the operational evidence returned to that method; it does not duplicate the general research lifecycle.
+
 ## Official FFmpeg sources
 
 | Claim area | Official source | Supports | Does not establish |

@@ -85,6 +85,18 @@
         "Recognizes the request sits outside the skill's trigger boundary — a single factual lookup answered without the full process",
         "Imposes no unnecessary scoping, triangulation, logging, or artifact machinery on a trivial lookup"
       ]
+    },
+    {
+      "id": "media-claim-source-experiment-closure",
+      "prompt": "Research whether sparse FFmpeg frame samples prove that a logo never appears anywhere in a two-hour video. Keep the work reproducible and tell me which skill owns what.",
+      "expected_output": "Use research-methodology for question scope, sources/access dates, exclusions, claim closure, sampling audit, and durable artifacts; route FFmpeg commands, probes, extraction, and build-specific experiments to the ffmpeg skill; and route semantic/editorial judgment to an attributed reviewer. Reject the whole-video absence conclusion because sparse samples cover only sampled timestamps, then narrow the claim, collect sufficient bounded evidence, or leave it unresolved.",
+      "assertions": [
+        "makes the ownership boundary between research-methodology, ffmpeg, and the reviewer explicit",
+        "requires source URLs and access dates for current documented claims and exact versions/builds for reproduced claims",
+        "records asset/stream/interval, sampling method, transformations, coverage, and blind spots",
+        "rejects a whole-video or editorial conclusion from sparse technical samples",
+        "maps each claim to source, experiment, limitation, durable artifact, and exclusion or unresolved status"
+      ]
     }
   ]
 }

@@ -77,3 +77,7 @@ For technical tutorials and walkthroughs (like "Running a 35B MoE Model on a 16G
 - If a configuration didn't work, say so and explain why
 
 This standard distinguishes evidence-led technical writing from generic tutorials. The mistakes and dead ends are often the value.
+
+## Media-specific verification
+
+When a technical claim depends on media streams, sampled frames/audio/transcripts, an editorial interpretation, or a downstream consumer, load `media-evidence-routing.md`. The shared reproduction standard still applies, but the `ffmpeg` skill owns command/build/media mechanics. Preserve its probes, commands, samples, and target results in `../assets/media-claim-ledger.md`; do not infer whole-asset or editorial conclusions from sparse technical samples.
