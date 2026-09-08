@@ -1,25 +1,477 @@
 #!/usr/bin/env python3
-import argparse,json,math,sys
+"""Validate an FFmpeg EDL and emit a deterministic, non-executing command plan."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import sys
 from pathlib import Path
+from typing import Any
 
-def main():
- p=argparse.ArgumentParser(description=__doc__); p.add_argument("edl"); p.add_argument("--output",default="output.mp4"); a=p.parse_args()
- try: d=json.loads(Path(a.edl).read_text())
- except (OSError,json.JSONDecodeError) as e: print(json.dumps({"ok":False,"error":str(e)})); return 2
- if not isinstance(d,dict) or d.get("schema_version")!=1: print(json.dumps({"ok":False,"error":"schema_version must be 1"})); return 2
- events=d.get("events",[])
- if not isinstance(events,list) or not events: print(json.dumps({"ok":False,"error":"events must be a non-empty array"})); return 2
- sources=d.get("sources")
- if not isinstance(sources,list) or len(sources)!=1 or len(events)!=1: print(json.dumps({"ok":False,"error":"render-edl supports exactly one source and one event"})); return 2
- src={x.get("asset_id"):x for x in sources if isinstance(x,dict)}; out=[]; last=-1
- for i,e in enumerate(events):
-  if not isinstance(e,dict) or e.get("asset_id") not in src: print(json.dumps({"ok":False,"error":f"invalid source at event {i}"})); return 2
-  x,y=e.get("in"),e.get("out"); dur=src[e["asset_id"]].get("duration")
-  if not all(isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v) for v in (x,y)) or x<0 or y<=x or x<last or isinstance(dur,(int,float)) and y>dur: print(json.dumps({"ok":False,"error":f"invalid interval at event {i}"})); return 2
-  last=y; out.append({"asset_id":e["asset_id"],"in":x,"out":y,"action":e.get("action","keep")})
- argv=["ffmpeg","-n"]
- for e in out: argv += ["-ss",str(e["in"]),"-to",str(e["out"]),"-i",str(src[e["asset_id"]].get("source",e["asset_id"]))]
- argv += ["-map","0:v:0?","-map","0:a:0?","-c","copy",a.output]
 
- print(json.dumps({"ok":True,"executed":False,"events":out,"argv":argv,"output":a.output},indent=2)); return 0
-if __name__=="__main__": sys.exit(main())
+class EDLError(Exception):
+    def __init__(self, code: str, message: str, **details: Any) -> None:
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.details = details
+
+
+def fail(code: str, message: str, **details: Any) -> None:
+    raise EDLError(code, message, **details)
+
+
+def finite_number(value: Any) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def number_text(value: int | float) -> str:
+    return f"{value:g}"
+
+
+def load_edl(path: str) -> dict[str, Any]:
+    try:
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
+    except OSError as exc:
+        fail("edl_read_failed", f"could not read EDL: {exc}")
+    except json.JSONDecodeError as exc:
+        fail("invalid_edl_json", f"EDL is not valid JSON: {exc}")
+    if not isinstance(document, dict):
+        fail("invalid_edl", "EDL root must be an object")
+    if document.get("schema_version") != 1:
+        fail("unsupported_schema", "schema_version must be 1")
+    if document.get("timebase", "seconds") != "seconds":
+        fail("unsupported_timebase", "timebase must be explicit decimal seconds")
+    return document
+
+
+def validate_sources(
+    document: dict[str, Any],
+) -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]]:
+    raw = document.get("sources")
+    if not isinstance(raw, list) or not raw:
+        fail("invalid_sources", "sources must be a non-empty array")
+    ordered: list[dict[str, Any]] = []
+    by_id: dict[str, dict[str, Any]] = {}
+    for index, source in enumerate(raw):
+        if not isinstance(source, dict):
+            fail("invalid_source", f"source {index} must be an object", source_index=index)
+        asset_id = source.get("asset_id")
+        locator = source.get("source")
+        duration = source.get("duration")
+        if not isinstance(asset_id, str) or not asset_id:
+            fail("invalid_source", f"source {index} needs a non-empty asset_id", source_index=index)
+        if asset_id in by_id:
+            fail("duplicate_source", f"duplicate asset_id: {asset_id}", asset_id=asset_id)
+        if not isinstance(locator, str) or not locator:
+            fail("invalid_source", f"source {asset_id} needs a source locator", asset_id=asset_id)
+        if duration is not None and (not finite_number(duration) or duration <= 0):
+            fail(
+                "invalid_source", f"source {asset_id} duration must be positive", asset_id=asset_id
+            )
+        normalized = dict(source)
+        normalized["input_index"] = len(ordered)
+        ordered.append(normalized)
+        by_id[asset_id] = normalized
+    return ordered, by_id
+
+
+def validate_events(
+    document: dict[str, Any], sources: dict[str, dict[str, Any]]
+) -> list[dict[str, Any]]:
+    raw = document.get("events")
+    if not isinstance(raw, list) or not raw:
+        fail("invalid_events", "events must be a non-empty array")
+    events: list[dict[str, Any]] = []
+    previous_destination_end = 0.0
+    for index, event in enumerate(raw):
+        if not isinstance(event, dict):
+            fail("invalid_event", f"event {index} must be an object", event_index=index)
+        asset_id = event.get("asset_id")
+        if asset_id not in sources:
+            fail("missing_source", f"event {index} references an unknown source", event_index=index)
+        start, end = event.get("in"), event.get("out")
+        if not finite_number(start) or not finite_number(end) or start < 0 or end <= start:
+            fail("invalid_interval", f"invalid interval at event {index}", event_index=index)
+        source_duration = sources[asset_id].get("duration")
+        if source_duration is not None and end > source_duration:
+            fail(
+                "interval_out_of_bounds",
+                f"event {index} ends after source duration",
+                event_index=index,
+                source_duration=source_duration,
+            )
+        stream_refs = event.get("stream_refs")
+        if (
+            not isinstance(stream_refs, list)
+            or not stream_refs
+            or not all(isinstance(item, str) and item for item in stream_refs)
+        ):
+            fail(
+                "missing_stream_refs",
+                f"event {index} needs explicit stream_refs",
+                event_index=index,
+            )
+        input_index = sources[asset_id]["input_index"]
+        for stream_ref in stream_refs:
+            prefix = stream_ref.split(":", 1)[0]
+            if prefix.isdigit() and int(prefix) != input_index:
+                fail(
+                    "stream_ref_input_mismatch",
+                    f"event {index} stream reference does not match its source input index",
+                    event_index=index,
+                    stream_ref=stream_ref,
+                    expected_input_index=input_index,
+                )
+        transition = event.get("treatment", {}).get("transition")
+        if transition not in (None, "none"):
+            fail(
+                "unsupported_transition",
+                f"event {index} requests unsupported transition {transition!r}",
+                event_index=index,
+                handles=event.get("handles"),
+                requirement="use a separately validated transition design with duration and handles",
+            )
+        event_duration = float(end - start)
+        destination_start = event.get("destination_start", previous_destination_end)
+        if not finite_number(destination_start) or destination_start < 0:
+            fail(
+                "invalid_destination",
+                f"event {index} has invalid destination_start",
+                event_index=index,
+            )
+        if destination_start < previous_destination_end - 1e-9:
+            fail(
+                "destination_overlap",
+                f"event {index} overlaps the previous destination interval",
+                event_index=index,
+                previous_end=previous_destination_end,
+            )
+        destination_end = float(destination_start + event_duration)
+        normalized = dict(event)
+        normalized.update(
+            {
+                "event_index": index,
+                "input_index": input_index,
+                "duration": event_duration,
+                "destination_start": float(destination_start),
+                "destination_end": destination_end,
+            }
+        )
+        events.append(normalized)
+        previous_destination_end = destination_end
+    return events
+
+
+def expected_duration(events: list[dict[str, Any]]) -> float:
+    return sum(event["duration"] for event in events)
+
+
+def validate_declared_duration(document: dict[str, Any], derived: float) -> float:
+    output = document.get("output", {})
+    if not isinstance(output, dict):
+        fail("invalid_output", "output must be an object")
+    declared = output.get("expected_duration")
+    tolerance = output.get("tolerance_seconds", 0.1)
+    if not finite_number(tolerance) or tolerance < 0:
+        fail("invalid_tolerance", "output.tolerance_seconds must be a non-negative number")
+    if declared is not None:
+        if not finite_number(declared) or declared < 0:
+            fail("invalid_expected_duration", "output.expected_duration must be non-negative")
+        if abs(declared - derived) > tolerance:
+            fail(
+                "duration_mismatch",
+                "declared expected duration does not match event duration math",
+                declared=declared,
+                derived=derived,
+                tolerance=tolerance,
+            )
+    return float(tolerance)
+
+
+def requested_mapping(document: dict[str, Any]) -> list[str]:
+    output = document.get("output", {})
+    mapping = output.get("mapping", ["video", "audio"])
+    if (
+        not isinstance(mapping, list)
+        or not mapping
+        or any(item not in {"video", "audio"} for item in mapping)
+    ):
+        fail("invalid_mapping", "output.mapping must contain video and/or audio")
+    if len(set(mapping)) != len(mapping):
+        fail("invalid_mapping", "output.mapping cannot contain duplicate stream types")
+    return mapping
+
+
+def validate_event_mapping(events: list[dict[str, Any]], mapping: list[str]) -> None:
+    for event in events:
+        for kind in mapping:
+            marker = f":{kind[0]}:"
+            if not any(marker in stream_ref for stream_ref in event["stream_refs"]):
+                fail(
+                    "missing_mapped_stream_ref",
+                    f"event {event['event_index']} lacks an explicit {kind} stream reference",
+                    event_index=event["event_index"],
+                    stream_type=kind,
+                )
+
+
+def codec_options(document: dict[str, Any], mapping: list[str]) -> list[str]:
+    output = document.get("output", {})
+    options: list[str] = []
+    if "video" in mapping:
+        video = output.get("video", {})
+        codec = video.get("codec", "mpeg4") if isinstance(video, dict) else "mpeg4"
+        options.extend(["-c:v", str(codec)])
+    if "audio" in mapping:
+        audio = output.get("audio", {})
+        codec = audio.get("codec", "pcm_s16le") if isinstance(audio, dict) else "pcm_s16le"
+        options.extend(["-c:a", str(codec)])
+    return options
+
+
+def video_chain(label: str, output: dict[str, Any]) -> str:
+    settings = output.get("video", {})
+    if not isinstance(settings, dict):
+        fail("invalid_video_output", "output.video must be an object")
+    filters = [label]
+    width, height = settings.get("width"), settings.get("height")
+    if width is not None or height is not None:
+        if not isinstance(width, int) or not isinstance(height, int) or width <= 0 or height <= 0:
+            fail("invalid_video_output", "video width and height must be positive integers")
+        filters.append(f"scale={width}:{height}")
+    fps = settings.get("fps")
+    if fps is not None:
+        if not finite_number(fps) or fps <= 0:
+            fail("invalid_video_output", "video fps must be positive")
+        filters.append(f"fps={number_text(fps)}")
+    pixel_format = settings.get("pixel_format")
+    if pixel_format is not None:
+        if not isinstance(pixel_format, str) or not pixel_format:
+            fail("invalid_video_output", "video pixel_format must be a non-empty string")
+        filters.append(f"format={pixel_format}")
+    return ",".join(filters)
+
+
+def audio_chain(label: str, output: dict[str, Any]) -> str:
+    settings = output.get("audio", {})
+    if not isinstance(settings, dict):
+        fail("invalid_audio_output", "output.audio must be an object")
+    filters = [label]
+    sample_rate = settings.get("sample_rate")
+    if sample_rate is not None:
+        if not isinstance(sample_rate, int) or sample_rate <= 0:
+            fail("invalid_audio_output", "audio sample_rate must be a positive integer")
+        filters.append(f"aresample={sample_rate}")
+    layout = settings.get("channel_layout")
+    if layout is not None:
+        if not isinstance(layout, str) or not layout:
+            fail("invalid_audio_output", "audio channel_layout must be a non-empty string")
+        filters.append(f"aformat=channel_layouts={layout}")
+    return ",".join(filters)
+
+
+def concat_filter_plan(
+    document: dict[str, Any],
+    sources: list[dict[str, Any]],
+    events: list[dict[str, Any]],
+    output_path: str,
+) -> dict[str, Any]:
+    mapping = requested_mapping(document)
+    validate_event_mapping(events, mapping)
+    output = document.get("output", {})
+    graph: list[str] = []
+    concat_inputs: list[str] = []
+    for index, event in enumerate(events):
+        input_index = event["input_index"]
+        start = number_text(event["in"])
+        end = number_text(event["out"])
+        if "video" in mapping:
+            label = f"[{input_index}:v:0]trim=start={start}:end={end},setpts=PTS-STARTPTS"
+            graph.append(f"{video_chain(label, output)}[v{index}]")
+            concat_inputs.append(f"[v{index}]")
+        if "audio" in mapping:
+            label = f"[{input_index}:a:0]atrim=start={start}:end={end},asetpts=PTS-STARTPTS"
+            graph.append(f"{audio_chain(label, output)}[a{index}]")
+            concat_inputs.append(f"[a{index}]")
+    concat = (
+        "".join(concat_inputs)
+        + f"concat=n={len(events)}:v={int('video' in mapping)}:a={int('audio' in mapping)}"
+    )
+    output_labels: list[str] = []
+    if "video" in mapping:
+        output_labels.append("[vout]")
+    if "audio" in mapping:
+        output_labels.append("[aout]")
+    graph.append(concat + "".join(output_labels))
+    argv = ["ffmpeg", "-n"]
+    for source in sources:
+        argv.extend(["-i", source["source"]])
+    argv.extend(["-filter_complex", ";".join(graph)])
+    for label in output_labels:
+        argv.extend(["-map", label])
+    argv.extend(codec_options(document, mapping))
+    argv.append(output_path)
+    return {
+        "selected_mechanism": "concat_filter",
+        "argv": argv,
+        "filter_complex": ";".join(graph),
+        "auxiliary_files": [],
+        "mechanism_boundaries": {
+            "concat_demuxer": "not selected because decoded segment normalization is required",
+            "concat_protocol": "never selected for structured EDL assembly",
+        },
+    }
+
+
+def signature(source: dict[str, Any]) -> dict[str, Any]:
+    value = source.get("compatibility_signature")
+    if not isinstance(value, dict) or not value:
+        fail(
+            "missing_compatibility_signature",
+            f"source {source['asset_id']} needs a probed compatibility_signature for concat_demuxer",
+            asset_id=source["asset_id"],
+        )
+    return value
+
+
+def escape_ffconcat_path(path: str) -> str:
+    if "\n" in path or "\r" in path or "'" in path:
+        fail("unsafe_concat_path", "concat-demuxer source paths cannot contain quotes or newlines")
+    return path
+
+
+def concat_demuxer_plan(
+    document: dict[str, Any],
+    sources: list[dict[str, Any]],
+    events: list[dict[str, Any]],
+    output_path: str,
+) -> dict[str, Any]:
+    reference = signature(sources[0])
+    for source in sources[1:]:
+        if signature(source) != reference:
+            fail(
+                "incompatible_concat_sources",
+                "concat-demuxer sources have different probed compatibility signatures",
+                first_source=sources[0]["asset_id"],
+                incompatible_source=source["asset_id"],
+            )
+    lines = ["ffconcat version 1.0"]
+    for index, event in enumerate(events):
+        precision = event.get("boundary_precision")
+        keyframe_status = event.get("keyframe_status")
+        if precision != "packet" or keyframe_status not in {"verified", "not_applicable"}:
+            fail(
+                "unverified_stream_copy_boundary",
+                f"event {index} is not approved for packet-level stream copy",
+                event_index=index,
+                boundary_precision=precision,
+                keyframe_status=keyframe_status,
+            )
+        source = sources[event["input_index"]]
+        lines.extend(
+            [
+                f"file '{escape_ffconcat_path(source['source'])}'",
+                f"inpoint {number_text(event['in'])}",
+                f"outpoint {number_text(event['out'])}",
+                f"duration {number_text(event['duration'])}",
+            ]
+        )
+    mapping = requested_mapping(document)
+    validate_event_mapping(events, mapping)
+    argv = [
+        "ffmpeg",
+        "-n",
+        "-f",
+        "concat",
+        "-safe",
+        "0",
+        "-i",
+        "<generated:edit.ffconcat>",
+    ]
+    if "video" in mapping:
+        argv.extend(["-map", "0:v:0?"])
+    if "audio" in mapping:
+        argv.extend(["-map", "0:a:0?"])
+    argv.extend(["-c", "copy", output_path])
+    return {
+        "selected_mechanism": "concat_demuxer",
+        "argv": argv,
+        "filter_complex": None,
+        "auxiliary_files": [{"path": "edit.ffconcat", "content": "\n".join(lines) + "\n"}],
+        "mechanism_boundaries": {
+            "concat_filter": "not selected because probed signatures match and packet boundaries are approved",
+            "concat_protocol": "never selected for structured EDL assembly",
+        },
+    }
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("edl")
+    parser.add_argument("--output", default="output.mkv")
+    parser.add_argument(
+        "--strategy",
+        choices=("concat-filter", "concat-demuxer"),
+        default="concat-filter",
+        help="validated FFmpeg assembly mechanism",
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        document = load_edl(args.edl)
+        sources, by_id = validate_sources(document)
+        events = validate_events(document, by_id)
+        derived_duration = expected_duration(events)
+        tolerance = validate_declared_duration(document, derived_duration)
+        plan = (
+            concat_demuxer_plan(document, sources, events, args.output)
+            if args.strategy == "concat-demuxer"
+            else concat_filter_plan(document, sources, events, args.output)
+        )
+        payload = {
+            "ok": True,
+            "executed": False,
+            "schema_version": 1,
+            "strategy": args.strategy,
+            "sources": [
+                {"asset_id": source["asset_id"], "input_index": source["input_index"]}
+                for source in sources
+            ],
+            "events": [
+                {
+                    "id": event.get("id", f"event-{event['event_index'] + 1}"),
+                    "asset_id": event["asset_id"],
+                    "input_index": event["input_index"],
+                    "in": event["in"],
+                    "out": event["out"],
+                    "duration": event["duration"],
+                    "destination_start": event["destination_start"],
+                    "destination_end": event["destination_end"],
+                }
+                for event in events
+            ],
+            "derived_duration": derived_duration,
+            "duration_tolerance": tolerance,
+            "output": args.output,
+            **plan,
+        }
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    except EDLError as exc:
+        print(
+            json.dumps(
+                {"ok": False, "error": {"code": exc.code, "message": exc.message, **exc.details}},
+                sort_keys=True,
+            )
+        )
+        return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())

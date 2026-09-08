@@ -60,7 +60,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `scripts/fixtures/ffmpeg-8.1.2-inventories.json` | Small version-labeled parser fixture |
 | `scripts/media-intake` | Read-only input inventory with bounded `ffprobe` metadata |
 | `scripts/extract-review-frames` | Bounded timestamp frame extraction for human or vision review |
-| `scripts/render-edl` | Validate an EDL and emit a non-executing FFmpeg command plan (review before multi-source rendering) |
+| `scripts/render-edl` | Validate single- or multi-source EDLs and emit non-executing concat-filter or concat-demuxer plans |
 | `scripts/audio-inspect` | Read-only audio metadata inspection with bounded probing |
 | `scripts/media-verify` | Compare input/output probe documents against basic criteria |
 | `scripts/editorial-workflow-example` | Generate synthetic audio/video and exercise the complete workflow with durable evidence |
