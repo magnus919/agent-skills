@@ -13,12 +13,14 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
-| `references/` | Reference material: `industry-analysis.md`, `journalistic-research.md`, `research-lifecycle.md`, `source-evaluation.md`, `structured-analytic-techniques.md`, `synthesis-patterns.md`, `technical-verification.md` |
-| `assets/` | Assets: `research-brief.md`, `research-log.md`, including a durable-artifact inventory and source-to-artifact preservation ledger. |
+| `references/` | Journalistic, industry, comprehensive, technical-verification, source-evaluation, synthesis, and media-evidence routing guidance. |
+| `assets/` | Research brief/log plus a media claim ledger for source-to-experiment closure and sampling audits. |
 
 ## Quick Start
 
 Choose the research track in `SKILL.md`, then start from `assets/research-brief.md` and maintain a research log. Preserve the retained evidence and extracted claims in the long-lived research surface your agent and users normally use before delivering the synthesis.
+
+For research involving media, also copy `assets/media-claim-ledger.md`. Use this skill to audit claims and evidence; use the `ffmpeg` skill for probes, extraction, experiments, editing, and verification.
 
 Install or expose this directory using your agent's standard Agent Skills loading mechanism, then ask for work that matches the triggers below.
 
@@ -27,6 +29,7 @@ Install or expose this directory using your agent's standard Agent Skills loadin
 - Plan, conduct, evaluate, and synthesize rigorous research. Use for journalistic, industry, or technical investigations that need credible evidence and a traceable method.
 - Requests involving the method, deliverables, or review process described in `SKILL.md`.
 - Work where a reusable template or reference from this skill would reduce avoidable mistakes.
+- Media research that needs sourced technical claims, build-specific reproduction records, sampling-completeness checks, or a clean handoff between FFmpeg evidence and human editorial judgment.
 
 ## Requirements
 

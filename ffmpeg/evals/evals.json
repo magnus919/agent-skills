@@ -183,6 +183,19 @@
         "does not claim compatibility with every platform and leaves upload operations to the owning platform skill"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "media-research-routing-boundary",
+      "prompt": "Build a defensible research record for an FFmpeg behavior claim and a sparse-frame editorial claim. I need source-to-claim traceability, not another command recipe.",
+      "expected_output": "Route research scope, source/access-date evaluation, exclusions, claim closure, and durable preservation to research-methodology while retaining FFmpeg build, command, probe, fixture, sample, and target evidence in this skill. Keep documented semantics, reproduced behavior, observed artifacts, heuristics, and human review separate, and refuse editorial or whole-asset conclusions beyond sampled evidence.",
+      "assertions": [
+        "routes general research method to research-methodology and operational media evidence to ffmpeg",
+        "records official source URLs and access dates plus exact local build and experiment conditions",
+        "preserves rejected, inaccessible, redundant, and untested sources with reasons",
+        "audits sampling coverage against the scope of each claim",
+        "keeps technical findings separate from attributed editorial approval"
+      ],
+      "case_set": "release"
     }
   ]
 }
