@@ -1006,3 +1006,162 @@ def test_generate_media_fixtures_refuses_nonempty_workspace(tmp_path: Path) -> N
     assert result.returncode == 2
     assert "workspace must be absent or empty" in json.loads(result.stdout)["error"]
     assert marker.read_text() == "preserve"
+
+
+def compatibility_manifest() -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "target": {
+            "id": "reference-editor-3.2",
+            "name": "Reference Editor 3.2",
+            "requirement_basis": "mixed",
+            "sources": [
+                {
+                    "basis": "official_documentation",
+                    "locator": "https://vendor.example/3.2/media",
+                    "accessed_at": "2026-09-08",
+                    "claim": "H.264 High/AAC MP4 import requirements",
+                },
+                {
+                    "basis": "observed_behavior",
+                    "locator": "test-run:reference-editor-3.2:fixture-7",
+                    "accessed_at": "2026-09-08",
+                    "claim": "Exact fixture imported and played in the named build",
+                },
+            ],
+        },
+        "technical_requirements": {
+            "schema_version": 1,
+            "required_streams": [
+                {
+                    "type": "video",
+                    "codec_name": "h264",
+                    "profile": "High",
+                    "width": 1920,
+                    "height": 1080,
+                    "pix_fmt": "yuv420p",
+                    "avg_frame_rate": "30/1",
+                },
+                {
+                    "type": "audio",
+                    "codec_name": "aac",
+                    "sample_rate": "48000",
+                    "channels": 2,
+                    "channel_layout": "stereo",
+                },
+                {"type": "subtitle", "codec_name": "mov_text"},
+            ],
+            "stream_order": ["video", "audio", "subtitle"],
+            "forbidden_stream_types": ["data", "attachment"],
+            "format": {"format_name": "mov,mp4,m4a,3gp,3g2,mj2"},
+            "chapters": {"count": 0},
+            "metadata": {"required": {"title": "Delivery"}, "forbidden": ["comment"]},
+            "evidence": {
+                "decode": "optional",
+                "visual_review": "optional",
+                "audio_review": "optional",
+            },
+        },
+        "target_limits": {"maximum_duration_seconds": 60, "maximum_file_size_bytes": 5000000},
+        "target_lane": {"method": "import and playback", "authorization_required": True},
+    }
+
+
+def compatibility_probe() -> dict[str, object]:
+    return {
+        "streams": [
+            {
+                "index": 0,
+                "codec_type": "video",
+                "codec_name": "h264",
+                "profile": "High",
+                "width": 1920,
+                "height": 1080,
+                "pix_fmt": "yuv420p",
+                "avg_frame_rate": "30/1",
+            },
+            {
+                "index": 1,
+                "codec_type": "audio",
+                "codec_name": "aac",
+                "sample_rate": "48000",
+                "channels": 2,
+                "channel_layout": "stereo",
+            },
+            {"index": 2, "codec_type": "subtitle", "codec_name": "mov_text"},
+        ],
+        "format": {
+            "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+            "duration": "30.0",
+            "size": "4000000",
+            "tags": {"title": "Delivery"},
+        },
+        "chapters": [],
+    }
+
+
+def test_target_compatibility_separates_probe_from_named_consumer(tmp_path: Path) -> None:
+    manifest = write_json(tmp_path / "target.json", compatibility_manifest())
+    output_probe = write_json(tmp_path / "probe.json", compatibility_probe())
+    target_evidence = write_json(
+        tmp_path / "target-evidence.json",
+        {
+            "target_consumer": {
+                "status": "PASS",
+                "target_id": "reference-editor-3.2",
+                "target_version": "3.2.1",
+                "artifact": "sha256:fixture-7",
+                "method": "import, timeline playback, and subtitle toggle",
+                "warnings": [],
+            }
+        },
+    )
+
+    result = run_script(
+        "target-compatibility",
+        str(manifest),
+        str(output_probe),
+        "--target-evidence",
+        str(target_evidence),
+        "--json",
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    report = json.loads(result.stdout)
+    assert report["overall_verdict"] == "PASS"
+    assert report["technical_probe_result"]["overall_verdict"] == "PASS"
+    assert report["target_consumer_result"]["verdict"] == "PASS"
+    criteria = {item["criterion"]: item for item in report["technical_probe_result"]["criteria"]}
+    for expected in (
+        "video_0_profile",
+        "video_0_width",
+        "video_0_avg_frame_rate",
+        "stream_order",
+        "subtitle_0_codec_name",
+        "metadata_title",
+        "target_maximum_duration",
+        "target_maximum_file_size",
+    ):
+        assert criteria[expected]["verdict"] == "PASS"
+    assert "only to target reference-editor-3.2" in report["boundary_statement"]
+
+
+def test_target_compatibility_keeps_unavailable_lane_separate(tmp_path: Path) -> None:
+    manifest = compatibility_manifest()
+    manifest["target_lane"]["unavailable_reason"] = "headless CI has no authorized editor session"
+    probe_document = compatibility_probe()
+    probe_document["streams"][0]["profile"] = "Main"
+    probe_document["format"]["size"] = "6000000"
+    target_path = write_json(tmp_path / "target.json", manifest)
+    probe_path = write_json(tmp_path / "probe.json", probe_document)
+
+    result = run_script("target-compatibility", str(target_path), str(probe_path), "--json")
+
+    assert result.returncode == 1
+    report = json.loads(result.stdout)
+    assert report["technical_probe_result"]["overall_verdict"] == "FAIL"
+    assert report["target_consumer_result"]["verdict"] == "BLOCKED"
+    assert (
+        report["target_consumer_result"]["reason"] == "headless CI has no authorized editor session"
+    )
+    assert report["overall_verdict"] == "FAIL"

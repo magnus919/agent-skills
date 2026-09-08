@@ -170,6 +170,19 @@
         "links reviewed observations to named EDL events as evidence rather than automatic truth"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "named-target-compatibility",
+      "prompt": "Will this MP4 work everywhere? I have its FFprobe output and a successful local decode, and I need it accepted by a named editor whose documented limits are attached.",
+      "expected_output": "Build a versioned manifest for that one editor from official or explicitly observed requirements, evaluate probe-visible codec/profile, dimensions/rates, mapping, subtitles/metadata, duration, and size separately, and require evidence from importing or playing the exact artifact in the named editor. Report missing access or evidence as BLOCKED or UNVERIFIED and do not generalize the result.",
+      "assertions": [
+        "links each target requirement to official documentation or labeled observed behavior with an access date",
+        "checks codec profile, dimensions, rates, stream order, subtitles, metadata, duration, and size",
+        "separates local probe and decode evidence from the named target result",
+        "uses PASS, FAIL, BLOCKED, or UNVERIFIED for the exact target lane",
+        "does not claim compatibility with every platform and leaves upload operations to the owning platform skill"
+      ],
+      "case_set": "release"
     }
   ]
 }

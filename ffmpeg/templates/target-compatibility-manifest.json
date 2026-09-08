@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "target": {
+    "id": "named-target-and-version",
+    "name": "Named player, editor, host, archive, or service",
+    "requirement_basis": "official_documentation",
+    "sources": [
+      {
+        "basis": "official_documentation",
+        "locator": "https://official.example/media-requirements",
+        "accessed_at": "YYYY-MM-DD",
+        "claim": "Exact requirement supported by this source"
+      }
+    ]
+  },
+  "technical_requirements": {
+    "schema_version": 1,
+    "required_streams": [
+      {"type": "video", "codec_name": "h264", "profile": "High", "width": 1920, "height": 1080, "pix_fmt": "yuv420p", "avg_frame_rate": "30000/1001", "tolerances": {"avg_frame_rate": 0.001}},
+      {"type": "audio", "codec_name": "aac", "sample_rate": "48000", "channels": 2, "channel_layout": "stereo"}
+    ],
+    "stream_order": ["video", "audio"],
+    "forbidden_stream_types": ["data", "attachment"],
+    "format": {"format_name": "mov,mp4,m4a,3gp,3g2,mj2"},
+    "chapters": {"count": 0},
+    "metadata": {"required": {}, "forbidden": ["comment"]},
+    "evidence": {"decode": "optional", "visual_review": "optional", "audio_review": "optional"}
+  },
+  "target_limits": {"maximum_duration_seconds": 3600, "maximum_file_size_bytes": 1000000000},
+  "target_lane": {
+    "method": "Import, play, validate, or ingest the exact artifact in the named target",
+    "authorization_required": true,
+    "unavailable_reason": "Remove this field only when an authorized target environment is available"
+  }
+}

@@ -63,6 +63,19 @@ The contract can require exact stream order/counts, codecs, dimensions, pixel fo
 
 The verifier emits one record per criterion with expected and observed values, evidence locator, boundary, reason, and one of `PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`, or `NOT_APPLICABLE`. A required stream that is absent fails; a required field or review artifact that cannot be observed remains unverified. The overall verdict follows the strongest unresolved state: `FAIL`, then `BLOCKED`, then `UNVERIFIED`, otherwise `PASS`.
 
+## Named-target compatibility
+
+For a real player, editor, host, archive, or service, copy `templates/target-compatibility-manifest.json` and retain requirements provenance separately from the output probe. Every requirement source needs an official URL or an observed-behavior locator, access date, and the exact claim it supports. Run:
+
+```sh
+scripts/target-compatibility TARGET.json OUTPUT-PROBE.json \
+  --target-evidence TARGET-EVIDENCE.json --json
+```
+
+The helper evaluates codec/profile, dimensions, pixel format, rates, audio layout, stream order, subtitles, chapters, metadata, duration, and size at the technical boundary. It reports import/playback/ingest evidence for exactly one named target in a separate result. Missing target evidence is `UNVERIFIED`; an explicitly unavailable authorized environment is `BLOCKED`; neither local decoding nor a pass in one consumer is generalized to another consumer.
+
+A concrete FFplay lane may use the [official FFplay documentation](https://ffmpeg.org/ffplay.html) and record the installed version, exact artifact digest, invocation, interactive audio/video/subtitle checks, warnings, and result. The repository's automated tests are headless and do not exercise an authorized display/audio session, so that real playback lane remains explicitly unavailable in CI. Tests instead verify the contract mechanics against a recorded named-target evidence fixture. Platform upload/API actions remain in the owning platform skill.
+
 Minimize reports before sharing: remove private paths, personal names, account identifiers, unnecessary transcript excerpts, and embedded metadata.
 
 ## Evidence and heuristic boundary

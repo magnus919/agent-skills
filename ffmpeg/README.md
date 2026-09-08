@@ -51,6 +51,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `templates/podcast-edit-plan.md` | Mechanical, signal-processing, and editorial audio plan |
 | `templates/media-acceptance-report.md` | Criterion-by-criterion evidence and release verdict |
 | `templates/media-acceptance-contract.json` | Parseable stream, format, evidence, loudness, and downstream criteria |
+| `templates/target-compatibility-manifest.json` | Named consumer, sourced requirements, technical limits, and authorized target lane |
 | `templates/research-experiment-record.md` | Versioned, reproducible command experiment record |
 
 ### Existing automation and evals
@@ -67,6 +68,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `scripts/render-edl` | Validate single- or multi-source EDLs and emit non-executing concat-filter or concat-demuxer plans |
 | `scripts/audio-inspect` | Bounded silence, loudness, peak/clipping, transcript-candidate, and podcast-plan evidence |
 | `scripts/media-verify` | Evaluate output probe and review evidence against a declared acceptance contract |
+| `scripts/target-compatibility` | Separate technical probe conformance from one named player's/editor's/host's result |
 | `scripts/editorial-workflow-example` | Generate synthetic audio/video and exercise the complete workflow with durable evidence |
 | `scripts/generate-media-fixtures` | Generate a bounded sanitized fixture battery and versioned evidence manifest |
 | `evals/evals.json` | Output-quality cases for core FFmpeg, media evidence, video, podcast, EDL, safety, and acceptance behavior |
@@ -141,6 +143,15 @@ ffmpeg/scripts/vision-review-handoff private.mov --asset-id asset-017 \
 ```
 
 The manifest covers only its listed samples. An authorized reviewer must add attributed observations before `import-vision-review` can link them to an EDL; sparse frames never prove absence throughout a video.
+
+For destination-specific delivery, evaluate a sourced target contract and preserve target evidence separately:
+
+```sh
+ffmpeg/scripts/target-compatibility target.json output-probe.json \
+  --target-evidence target-result.json --json
+```
+
+The verdict applies only to the named target and version. A local FFmpeg decode pass does not substitute for import, playback, or ingest evidence from that consumer.
 
 ## Triggers
 

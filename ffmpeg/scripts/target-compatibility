@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+"""Evaluate technical conformance separately from one named target consumer."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+from typing import Any
+
+VERDICTS = {"PASS", "FAIL", "BLOCKED", "UNVERIFIED"}
+
+
+class ContractError(Exception):
+    pass
+
+
+def load(path: str, label: str) -> dict[str, Any]:
+    try:
+        value = json.loads(Path(path).read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ContractError(f"could not load {label}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise ContractError(f"{label} root must be an object")
+    return value
+
+
+def target_sources(target: dict[str, Any]) -> None:
+    basis = target.get("requirement_basis")
+    if basis not in {"official_documentation", "observed_behavior", "mixed"}:
+        raise ContractError(
+            "target requirement_basis must be official_documentation, observed_behavior, or mixed"
+        )
+    sources = target.get("sources")
+    if not isinstance(sources, list) or not sources:
+        raise ContractError("target requirements need at least one source record")
+    for source in sources:
+        if (
+            not isinstance(source, dict)
+            or not source.get("locator")
+            or not source.get("accessed_at")
+            or not source.get("claim")
+        ):
+            raise ContractError("each target source needs locator, accessed_at, and claim")
+        if source.get("basis") not in {"official_documentation", "observed_behavior"}:
+            raise ContractError("each target source needs an explicit evidence basis")
+
+
+def overall(*verdicts: str) -> str:
+    for verdict in ("FAIL", "BLOCKED", "UNVERIFIED"):
+        if verdict in verdicts:
+            return verdict
+    return "PASS"
+
+
+def run_technical(contract: dict[str, Any], probe_path: str) -> dict[str, Any]:
+    isolated = dict(contract)
+    isolated["downstream"] = {}
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json") as temporary:
+        json.dump(isolated, temporary)
+        temporary.flush()
+        command = [
+            sys.executable,
+            str(Path(__file__).with_name("media-verify")),
+            temporary.name,
+            probe_path,
+            "--json",
+        ]
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+    try:
+        report = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise ContractError("technical verifier did not return JSON") from exc
+    if result.returncode == 2:
+        raise ContractError(str(report.get("error", "invalid technical contract")))
+    report["boundary"] = "local_ffprobe_and_declared_technical_requirements"
+    return report
+
+
+def add_maximum(criteria: list[dict[str, Any]], name: str, observed: Any, maximum: Any) -> str:
+    try:
+        actual = float(observed)
+        limit = float(maximum)
+    except (TypeError, ValueError):
+        verdict = "UNVERIFIED"
+        reason = "probe value or maximum is absent or nonnumeric"
+    else:
+        verdict = "PASS" if actual <= limit else "FAIL"
+        reason = None if verdict == "PASS" else "observed value exceeds target maximum"
+    criteria.append(
+        {
+            "criterion": name,
+            "boundary": "target_technical_policy",
+            "verdict": verdict,
+            "expected": {"maximum": maximum},
+            "observed": observed,
+            "evidence": "output probe",
+            "reason": reason,
+        }
+    )
+    return verdict
+
+
+def downstream_result(
+    target: dict[str, Any], lane: dict[str, Any], evidence: dict[str, Any]
+) -> dict[str, Any]:
+    target_id = target["id"]
+    result = evidence.get("target_consumer")
+    if isinstance(result, dict):
+        verdict = result.get("status")
+        if verdict not in VERDICTS:
+            verdict = "UNVERIFIED"
+            reason = "target-consumer status is missing or invalid"
+        elif result.get("target_id") != target_id:
+            verdict = "FAIL"
+            reason = "target-consumer evidence names a different target"
+        elif not result.get("artifact") or not result.get("method"):
+            verdict = "UNVERIFIED"
+            reason = "target-consumer evidence needs artifact identity and method"
+        else:
+            reason = result.get("reason")
+        return {
+            "target_id": target_id,
+            "target_version": result.get("target_version"),
+            "verdict": verdict,
+            "method": result.get("method"),
+            "artifact": result.get("artifact"),
+            "warnings": result.get("warnings", []),
+            "reason": reason,
+            "boundary": "named_target_consumer",
+        }
+    unavailable = lane.get("unavailable_reason")
+    return {
+        "target_id": target_id,
+        "target_version": None,
+        "verdict": "BLOCKED" if unavailable else "UNVERIFIED",
+        "method": lane.get("method"),
+        "artifact": None,
+        "warnings": [],
+        "reason": unavailable or "no evidence from the named target consumer was supplied",
+        "boundary": "named_target_consumer",
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("manifest")
+    parser.add_argument("output_probe")
+    parser.add_argument("--target-evidence")
+    parser.add_argument("--json", action="store_true")
+    args = parser.parse_args()
+    try:
+        manifest = load(args.manifest, "compatibility manifest")
+        probe = load(args.output_probe, "output probe")
+        evidence = load(args.target_evidence, "target evidence") if args.target_evidence else {}
+        if manifest.get("schema_version") != 1:
+            raise ContractError("compatibility manifest schema_version must be 1")
+        target = manifest.get("target")
+        contract = manifest.get("technical_requirements")
+        lane = manifest.get("target_lane")
+        if not isinstance(target, dict) or not target.get("id") or not target.get("name"):
+            raise ContractError("target needs id and name")
+        if not isinstance(contract, dict) or not isinstance(lane, dict):
+            raise ContractError("technical_requirements and target_lane must be objects")
+        target_sources(target)
+        technical = run_technical(contract, args.output_probe)
+        limits = manifest.get("target_limits", {})
+        if not isinstance(limits, dict):
+            raise ContractError("target_limits must be an object")
+        limit_verdicts: list[str] = []
+        if "maximum_duration_seconds" in limits:
+            limit_verdicts.append(
+                add_maximum(
+                    technical["criteria"],
+                    "target_maximum_duration",
+                    probe.get("format", {}).get("duration"),
+                    limits["maximum_duration_seconds"],
+                )
+            )
+        if "maximum_file_size_bytes" in limits:
+            limit_verdicts.append(
+                add_maximum(
+                    technical["criteria"],
+                    "target_maximum_file_size",
+                    probe.get("format", {}).get("size"),
+                    limits["maximum_file_size_bytes"],
+                )
+            )
+        technical["overall_verdict"] = overall(technical["overall_verdict"], *limit_verdicts)
+        target_result = downstream_result(target, lane, evidence)
+        verdict = overall(technical["overall_verdict"], target_result["verdict"])
+        payload = {
+            "ok": verdict == "PASS",
+            "schema_version": 1,
+            "target": target,
+            "requirements_provenance": target["sources"],
+            "technical_probe_result": technical,
+            "target_consumer_result": target_result,
+            "overall_verdict": verdict,
+            "boundary_statement": f"This result applies only to target {target['id']}; local FFprobe/FFmpeg success and this target result do not establish compatibility with any other player, editor, host, archive, or service.",
+            "platform_operation": "not_performed",
+        }
+        print(
+            json.dumps(payload, sort_keys=True, separators=(",", ":"))
+            if args.json
+            else json.dumps(payload, indent=2, sort_keys=True)
+        )
+        return 0 if verdict == "PASS" else 1
+    except ContractError as exc:
+        print(
+            json.dumps({"ok": False, "status": "INVALID_INPUT", "error": str(exc)}, sort_keys=True)
+        )
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
