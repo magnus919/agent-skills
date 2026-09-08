@@ -71,6 +71,7 @@ For shipped helper workflows, run the helper from the skill root with explicit o
 - Read `references/media-failure-modes.md` when evidence is contradictory, a cut drifts, a filter is missing, review samples are sparse, or a workflow repeatedly fails.
 - Read `references/media-research-source-index.md` when supporting claims, refreshing version-sensitive guidance, or recording a technical experiment.
 - Read `references/editorial-workflow-example.md` when proving that intake, evidence, EDL, rendering, and acceptance artifacts compose end to end on a synthetic fixture.
+- Read `references/synthetic-media-fixtures.md` when a change needs bounded real-media fixtures for cuts, cadence, concat, audio, subtitles, or visual-boundary sampling.
 
 ### Core FFmpeg work
 
@@ -93,6 +94,8 @@ For shipped helper workflows, run the helper from the skill root with explicit o
 - `templates/research-experiment-record.md` — reproducible version/command/result record
 
 Run `scripts/editorial-workflow-example` in a new or empty task-local directory when a reproducible synthetic integration proof is required. Its `PASS_WITH_UNVERIFIED_BOUNDARIES` result is deliberately narrower than editorial or destination acceptance.
+
+Run `scripts/generate-media-fixtures` when tests need deterministic non-personal media. Keep its generated binaries and manifest in the task workspace; commit the generator and assertions, not the outputs.
 
 Copy a template into the task workspace and replace its placeholder/example values. Do not put private paths, media, transcripts, or review evidence in the public skill repository.
 

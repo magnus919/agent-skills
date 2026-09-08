@@ -105,6 +105,19 @@
         "distinguishes integration success from semantic, listening, and downstream acceptance"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "real-media-fixture-boundaries",
+      "prompt": "Add regression fixtures for FFmpeg cuts, concat, silence, subtitles, and visual boundary sampling without publishing any personal media.",
+      "expected_output": "Generate the bounded synthetic fixture battery in a task-local directory, retain its versioned manifest and exact generators, assert the intended success or rejection boundary for each selected fixture, and separate portable workflow assertions from build-specific observations and editorial review.",
+      "assertions": [
+        "uses deterministic synthetic generators or committed non-personal text",
+        "records exact FFmpeg and FFprobe builds, commands, probes, and limitations",
+        "distinguishes stream-copy boundaries from decoded frame-accurate cuts",
+        "tests concat compatibility from stream properties rather than extensions",
+        "does not turn silence, clipping, subtitle presence, or sparse frames into editorial truth"
+      ],
+      "case_set": "release"
     }
   ]
 }

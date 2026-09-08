@@ -261,3 +261,67 @@ def test_editorial_workflow_example_refuses_nonempty_workspace(tmp_path: Path) -
     assert result.returncode == 2
     assert "workspace must be absent or empty" in json.loads(result.stdout)["error"]
     assert (workspace / "keep.txt").read_text() == "do not replace"
+
+
+def test_generate_media_fixtures_covers_real_boundaries(tmp_path: Path) -> None:
+    if shutil.which("ffmpeg") is None or shutil.which("ffprobe") is None:
+        import pytest
+
+        pytest.skip("ffmpeg and ffprobe are required for the synthetic fixture battery")
+
+    workspace = tmp_path / "fixtures"
+    result = run_script("generate-media-fixtures", str(workspace), "--json")
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    summary = json.loads(result.stdout)
+    assert summary["ok"] is True
+    assert summary["fixture_set"] == "ffmpeg-synthetic-media-v1"
+    assert summary["fixture_count"] >= 14
+    assert summary["concat_incompatible_verdict"] == "REJECTED_BEFORE_CONCAT"
+
+    manifest = json.loads((workspace / "fixture-manifest.json").read_text())
+    roles = {fixture["role"] for fixture in manifest["fixtures"]}
+    assert {
+        "non-keyframe-cut-source",
+        "packet-boundary-copy-cut",
+        "decoded-accurate-cut",
+        "variable-frame-cadence",
+        "concat-compatible-input",
+        "concat-compatible-success",
+        "concat-incompatible-input",
+        "audio-offset-and-duration-drift-candidate",
+        "audio-silence-and-peak-candidates",
+        "audio-fade-output",
+        "subtitle-source-text",
+        "subtitle-stream-survival",
+        "bounded-boundary-frame",
+    }.issubset(roles)
+    assert manifest["concat"]["compatible_pair"]["verdict"] == "PASS"
+    assert manifest["concat"]["incompatible_candidate"]["differences"]["audio_sample_rate"] == [
+        "48000",
+        "44100",
+    ]
+    assert manifest["concat"]["incompatible_candidate"]["differences"]["audio_channels"] == [
+        1,
+        2,
+    ]
+    assert manifest["subtitle_burn_in"]["status"] in {"EXERCISED", "UNAVAILABLE"}
+    if manifest["subtitle_burn_in"]["status"] == "EXERCISED":
+        assert "subtitle-burn-in-output" in roles
+        assert manifest["subtitle_burn_in"]["subtitle_stream_present"] is False
+    assert manifest["review_packet"]["timestamps_seconds"] == [0.4, 0.5, 0.6]
+    assert "no whole-video claim" in manifest["review_packet"]["coverage"]
+    assert all(fixture["sha256"].startswith("sha256:") for fixture in manifest["fixtures"])
+
+
+def test_generate_media_fixtures_refuses_nonempty_workspace(tmp_path: Path) -> None:
+    workspace = tmp_path / "fixtures"
+    workspace.mkdir()
+    marker = workspace / "keep.txt"
+    marker.write_text("preserve")
+
+    result = run_script("generate-media-fixtures", str(workspace), "--json")
+
+    assert result.returncode == 2
+    assert "workspace must be absent or empty" in json.loads(result.stdout)["error"]
+    assert marker.read_text() == "preserve"
