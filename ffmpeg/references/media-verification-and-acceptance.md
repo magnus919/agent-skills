@@ -53,6 +53,16 @@ For every criterion, capture:
 
 The final verdict is `accepted`, `rejected`, or `blocked`. Do not convert an untested criterion into a pass. Any post-review change invalidates affected evidence and requires re-verification.
 
+For machine-readable verification, copy `templates/media-acceptance-contract.json` and evaluate it with:
+
+```sh
+scripts/media-verify CONTRACT.json OUTPUT-PROBE.json --evidence EVIDENCE.json --json
+```
+
+The contract can require exact stream order/counts, codecs, dimensions, pixel format, rational frame rate with tolerance, sample rate/channels/layout, forbidden stream types, format duration/start tolerances, chapters, and metadata. Its separate evidence requirements cover decode, visual review, audio review, measured loudness/true peak, and a named downstream target.
+
+The verifier emits one record per criterion with expected and observed values, evidence locator, boundary, reason, and one of `PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`, or `NOT_APPLICABLE`. A required stream that is absent fails; a required field or review artifact that cannot be observed remains unverified. The overall verdict follows the strongest unresolved state: `FAIL`, then `BLOCKED`, then `UNVERIFIED`, otherwise `PASS`.
+
 Minimize reports before sharing: remove private paths, personal names, account identifiers, unnecessary transcript excerpts, and embedded metadata.
 
 ## Evidence and heuristic boundary

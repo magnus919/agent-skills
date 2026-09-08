@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "required_streams": [
+    {
+      "type": "video",
+      "codec_name": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "avg_frame_rate": "30000/1001",
+      "tolerances": {"avg_frame_rate": 0.001}
+    },
+    {
+      "type": "audio",
+      "codec_name": "aac",
+      "sample_rate": "48000",
+      "channels": 2,
+      "channel_layout": "stereo"
+    }
+  ],
+  "stream_order": ["video", "audio"],
+  "forbidden_stream_types": ["data", "attachment"],
+  "format": {
+    "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+    "duration": 120.0,
+    "duration_tolerance": 0.1,
+    "start_time": 0.0,
+    "start_time_tolerance": 0.05
+  },
+  "chapters": {"count": 0},
+  "metadata": {"required": {}, "forbidden": ["comment"]},
+  "evidence": {
+    "decode": "required",
+    "visual_review": "required",
+    "audio_review": "required"
+  },
+  "loudness": {
+    "integrated_lufs": {"target": -16.0, "tolerance": 1.0},
+    "true_peak_max_dbfs": -1.0
+  },
+  "downstream": {"target": "<named player, editor, host, archive, or service>"}
+}

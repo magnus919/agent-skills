@@ -1,53 +1,472 @@
 #!/usr/bin/env python3
-"""Compare two ffprobe JSON documents against basic media criteria."""
+"""Evaluate FFprobe and review evidence against a declared media contract."""
+
+from __future__ import annotations
+
 import argparse
 import json
+import math
 import sys
+from fractions import Fraction
 from pathlib import Path
+from typing import Any
+
+VERDICTS = {"PASS", "FAIL", "BLOCKED", "UNVERIFIED", "NOT_APPLICABLE"}
 
 
-def load(path):
+class VerifyError(Exception):
+    pass
+
+
+def load_object(path: str, kind: str) -> dict[str, Any]:
     try:
-        return json.loads(Path(path).read_text(encoding="utf-8"))
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise ValueError(str(exc)) from exc
+        raise VerifyError(f"could not load {kind}: {exc}") from exc
+    if not isinstance(document, dict):
+        raise VerifyError(f"{kind} root must be an object")
+    return document
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("input_probe")
-    parser.add_argument("output_probe")
-    parser.add_argument("--duration-tolerance", type=float, default=0.1)
-    parser.add_argument("--require-subtitles", action="store_true")
-    args = parser.parse_args()
+def finite(value: Any) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def numeric(value: Any) -> float | None:
     try:
-        before = load(args.input_probe)
-        after = load(args.output_probe)
-    except ValueError as exc:
-        print(json.dumps({"ok": False, "status": "invalid_probe", "error": str(exc)}))
-        return 2
-    before_streams = before.get("streams", [])
-    after_streams = after.get("streams", [])
-    checks = [{"criterion": "output_has_streams", "passed": bool(after_streams)}]
-    for stream_type in ("video", "audio"):
-        before_stream = next((s for s in before_streams if s.get("codec_type") == stream_type), None)
-        after_stream = next((s for s in after_streams if s.get("codec_type") == stream_type), None)
-        if before_stream:
-            checks.append({"criterion": f"{stream_type}_stream", "passed": after_stream is not None})
-            if after_stream and before_stream.get("codec_name") and after_stream.get("codec_name"):
-                checks.append({"criterion": f"{stream_type}_codec", "passed": before_stream["codec_name"] == after_stream["codec_name"], "input": before_stream["codec_name"], "output": after_stream["codec_name"]})
-    if args.require_subtitles:
-        checks.append({"criterion": "subtitle_stream", "passed": any(s.get("codec_type") == "subtitle" for s in after_streams)})
-    try:
-        input_duration = float(before.get("format", {}).get("duration"))
-        output_duration = float(after.get("format", {}).get("duration"))
+        result = float(value)
     except (TypeError, ValueError):
-        input_duration = output_duration = None
-    if input_duration is not None and output_duration is not None:
-        checks.append({"criterion": "duration", "passed": abs(input_duration - output_duration) <= args.duration_tolerance, "input": input_duration, "output": output_duration, "tolerance": args.duration_tolerance})
-    ok = all(check["passed"] for check in checks)
-    print(json.dumps({"ok": ok, "status": "pass" if ok else "fail", "checks": checks}, indent=2, sort_keys=True))
-    return 0 if ok else 1
+        return None
+    return result if math.isfinite(result) else None
+
+
+def rate(value: Any) -> float | None:
+    if not isinstance(value, (str, int, float)):
+        return None
+    try:
+        result = float(Fraction(str(value)))
+    except (ValueError, ZeroDivisionError):
+        return None
+    return result if math.isfinite(result) else None
+
+
+def evidence_verdict(value: Any) -> tuple[str, str | None, Any]:
+    if not isinstance(value, dict):
+        return "UNVERIFIED", "evidence record is missing", None
+    status = value.get("status")
+    if status not in VERDICTS:
+        return "UNVERIFIED", "evidence status is missing or invalid", value
+    return status, value.get("reason"), value.get("artifact") or value.get("command")
+
+
+class Report:
+    def __init__(self) -> None:
+        self.criteria: list[dict[str, Any]] = []
+
+    def add(
+        self,
+        criterion: str,
+        boundary: str,
+        verdict: str,
+        *,
+        expected: Any = None,
+        observed: Any = None,
+        evidence: Any = None,
+        reason: str | None = None,
+    ) -> None:
+        if verdict not in VERDICTS:
+            raise VerifyError(f"invalid verdict for {criterion}: {verdict}")
+        self.criteria.append(
+            {
+                "criterion": criterion,
+                "boundary": boundary,
+                "verdict": verdict,
+                "expected": expected,
+                "observed": observed,
+                "evidence": evidence,
+                "reason": reason,
+            }
+        )
+
+    def overall(self) -> str:
+        verdicts = {item["verdict"] for item in self.criteria}
+        if "FAIL" in verdicts:
+            return "FAIL"
+        if "BLOCKED" in verdicts:
+            return "BLOCKED"
+        if "UNVERIFIED" in verdicts:
+            return "UNVERIFIED"
+        return "PASS"
+
+
+def validate_contract(contract: dict[str, Any]) -> None:
+    if contract.get("schema_version") != 1:
+        raise VerifyError("acceptance contract schema_version must be 1")
+    required = contract.get("required_streams")
+    if not isinstance(required, list) or not required:
+        raise VerifyError("acceptance contract requires a non-empty required_streams array")
+    for index, item in enumerate(required):
+        if not isinstance(item, dict) or item.get("type") not in {
+            "video",
+            "audio",
+            "subtitle",
+            "data",
+            "attachment",
+        }:
+            raise VerifyError(f"required_streams[{index}] needs a supported type")
+    order = contract.get("stream_order")
+    if order is not None and (
+        not isinstance(order, list) or not all(isinstance(item, str) for item in order)
+    ):
+        raise VerifyError("stream_order must be an array of stream type strings")
+    evidence = contract.get("evidence", {})
+    if not isinstance(evidence, dict):
+        raise VerifyError("evidence contract must be an object")
+
+
+def streams(document: dict[str, Any]) -> list[dict[str, Any]]:
+    value = document.get("streams")
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, dict)]
+
+
+def compare_field(
+    report: Report,
+    criterion: str,
+    boundary: str,
+    expected: Any,
+    observed: Any,
+    *,
+    tolerance: float | None = None,
+    rational: bool = False,
+) -> None:
+    if observed is None:
+        report.add(
+            criterion,
+            boundary,
+            "UNVERIFIED",
+            expected=expected,
+            reason="required output field is absent",
+        )
+        return
+    if tolerance is not None:
+        expected_number = rate(expected) if rational else numeric(expected)
+        observed_number = rate(observed) if rational else numeric(observed)
+        if expected_number is None or observed_number is None:
+            report.add(
+                criterion,
+                boundary,
+                "UNVERIFIED",
+                expected=expected,
+                observed=observed,
+                reason="numeric comparison could not be evaluated",
+            )
+            return
+        passed = abs(observed_number - expected_number) <= tolerance
+    else:
+        passed = str(observed) == str(expected)
+    report.add(
+        criterion,
+        boundary,
+        "PASS" if passed else "FAIL",
+        expected=expected,
+        observed=observed,
+        evidence="output probe",
+        reason=None if passed else "observed value does not satisfy the contract",
+    )
+
+
+def verify_streams(report: Report, contract: dict[str, Any], probe: dict[str, Any]) -> None:
+    output_streams = streams(probe)
+    report.add(
+        "output_has_streams",
+        "component",
+        "PASS" if output_streams else "FAIL",
+        expected="one or more streams",
+        observed=len(output_streams),
+        evidence="output probe",
+    )
+    observed_order = [item.get("codec_type") for item in output_streams]
+    expected_order = contract.get("stream_order")
+    if expected_order is not None:
+        report.add(
+            "stream_order",
+            "component",
+            "PASS" if observed_order == expected_order else "FAIL",
+            expected=expected_order,
+            observed=observed_order,
+            evidence="output probe",
+        )
+
+    by_type: dict[str, list[dict[str, Any]]] = {}
+    for item in output_streams:
+        by_type.setdefault(str(item.get("codec_type")), []).append(item)
+    required_counts: dict[str, int] = {}
+    for requirement in contract["required_streams"]:
+        kind = requirement["type"]
+        ordinal = required_counts.get(kind, 0)
+        required_counts[kind] = ordinal + 1
+        candidates = by_type.get(kind, [])
+        criterion_prefix = f"{kind}_{ordinal}"
+        if ordinal >= len(candidates):
+            report.add(
+                f"{criterion_prefix}_present",
+                "component",
+                "FAIL",
+                expected=requirement,
+                observed=None,
+                evidence="output probe",
+                reason="required stream is absent",
+            )
+            continue
+        actual = candidates[ordinal]
+        report.add(
+            f"{criterion_prefix}_present",
+            "component",
+            "PASS",
+            expected=kind,
+            observed=actual.get("index"),
+            evidence="output probe",
+        )
+        field_tolerances = requirement.get("tolerances", {})
+        if not isinstance(field_tolerances, dict):
+            raise VerifyError(f"{criterion_prefix}.tolerances must be an object")
+        for field, expected in requirement.items():
+            if field in {"type", "tolerances"}:
+                continue
+            compare_field(
+                report,
+                f"{criterion_prefix}_{field}",
+                "component",
+                expected,
+                actual.get(field),
+                tolerance=field_tolerances.get(field),
+                rational=field in {"avg_frame_rate", "r_frame_rate"},
+            )
+
+    for kind, count in required_counts.items():
+        actual_count = len(by_type.get(kind, []))
+        report.add(
+            f"{kind}_stream_count",
+            "component",
+            "PASS" if actual_count == count else "FAIL",
+            expected=count,
+            observed=actual_count,
+            evidence="output probe",
+        )
+    forbidden = contract.get("forbidden_stream_types", [])
+    if not isinstance(forbidden, list):
+        raise VerifyError("forbidden_stream_types must be an array")
+    for kind in forbidden:
+        count = len(by_type.get(str(kind), []))
+        report.add(
+            f"forbidden_{kind}_streams",
+            "component",
+            "PASS" if count == 0 else "FAIL",
+            expected=0,
+            observed=count,
+            evidence="output probe",
+        )
+
+
+def verify_format(report: Report, contract: dict[str, Any], probe: dict[str, Any]) -> None:
+    requirements = contract.get("format", {})
+    if not isinstance(requirements, dict):
+        raise VerifyError("format contract must be an object")
+    actual = probe.get("format", {})
+    if not isinstance(actual, dict):
+        actual = {}
+    for field in ("format_name", "duration", "start_time", "size", "bit_rate"):
+        if field not in requirements:
+            continue
+        tolerance = requirements.get(f"{field}_tolerance")
+        compare_field(
+            report,
+            f"format_{field}",
+            "integration" if field in {"duration", "start_time"} else "component",
+            requirements[field],
+            actual.get(field),
+            tolerance=tolerance,
+        )
+
+
+def verify_chapters_and_metadata(
+    report: Report, contract: dict[str, Any], probe: dict[str, Any]
+) -> None:
+    chapter_contract = contract.get("chapters")
+    if chapter_contract is not None:
+        if not isinstance(chapter_contract, dict):
+            raise VerifyError("chapters contract must be an object")
+        chapters = probe.get("chapters")
+        observed = len(chapters) if isinstance(chapters, list) else None
+        expected = chapter_contract.get("count")
+        compare_field(report, "chapter_count", "component", expected, observed)
+
+    metadata = contract.get("metadata")
+    if metadata is None:
+        return
+    if not isinstance(metadata, dict):
+        raise VerifyError("metadata contract must be an object")
+    tags = probe.get("format", {}).get("tags", {})
+    if not isinstance(tags, dict):
+        tags = {}
+    required = metadata.get("required", {})
+    forbidden = metadata.get("forbidden", [])
+    if not isinstance(required, dict) or not isinstance(forbidden, list):
+        raise VerifyError("metadata required/forbidden fields are invalid")
+    for key, expected in required.items():
+        compare_field(report, f"metadata_{key}", "component", expected, tags.get(key))
+    for key in forbidden:
+        report.add(
+            f"metadata_forbidden_{key}",
+            "component",
+            "PASS" if key not in tags else "FAIL",
+            expected="absent",
+            observed=tags.get(key),
+            evidence="output probe",
+        )
+
+
+def verify_recorded_evidence(
+    report: Report, contract: dict[str, Any], evidence: dict[str, Any]
+) -> None:
+    for key, boundary in (
+        ("decode", "component"),
+        ("visual_review", "editorial"),
+        ("audio_review", "editorial"),
+    ):
+        requirement = contract.get("evidence", {}).get(key, "optional")
+        if requirement == "optional":
+            report.add(
+                key, boundary, "NOT_APPLICABLE", reason="contract does not require this evidence"
+            )
+            continue
+        verdict, reason, locator = evidence_verdict(evidence.get(key))
+        report.add(key, boundary, verdict, expected=requirement, evidence=locator, reason=reason)
+
+    loudness = contract.get("loudness")
+    if loudness is not None:
+        if not isinstance(loudness, dict):
+            raise VerifyError("loudness contract must be an object")
+        measured = evidence.get("loudness")
+        if not isinstance(measured, dict):
+            for criterion in loudness:
+                report.add(
+                    f"loudness_{criterion}",
+                    "signal",
+                    "UNVERIFIED",
+                    expected=loudness[criterion],
+                    reason="loudness evidence is missing",
+                )
+        else:
+            integrated = loudness.get("integrated_lufs")
+            if isinstance(integrated, dict):
+                compare_field(
+                    report,
+                    "loudness_integrated_lufs",
+                    "signal",
+                    integrated.get("target"),
+                    measured.get("integrated_lufs"),
+                    tolerance=integrated.get("tolerance"),
+                )
+            if "true_peak_max_dbfs" in loudness:
+                observed = numeric(measured.get("true_peak_dbfs"))
+                maximum = numeric(loudness["true_peak_max_dbfs"])
+                if observed is None or maximum is None:
+                    report.add(
+                        "loudness_true_peak",
+                        "signal",
+                        "UNVERIFIED",
+                        expected=loudness["true_peak_max_dbfs"],
+                        observed=measured.get("true_peak_dbfs"),
+                        reason="true-peak comparison could not be evaluated",
+                    )
+                else:
+                    report.add(
+                        "loudness_true_peak",
+                        "signal",
+                        "PASS" if observed <= maximum else "FAIL",
+                        expected={"maximum": maximum},
+                        observed=observed,
+                        evidence=measured.get("artifact") or measured.get("command"),
+                    )
+
+    downstream = contract.get("downstream", {})
+    if not isinstance(downstream, dict):
+        raise VerifyError("downstream contract must be an object")
+    target = downstream.get("target")
+    if not target:
+        report.add(
+            "downstream_consumer",
+            "downstream",
+            "NOT_APPLICABLE",
+            reason="no downstream target is declared",
+        )
+    else:
+        verdict, reason, locator = evidence_verdict(evidence.get("downstream"))
+        downstream_evidence = evidence.get("downstream")
+        observed_target = (
+            downstream_evidence.get("target") if isinstance(downstream_evidence, dict) else None
+        )
+        if verdict == "PASS" and observed_target != target:
+            verdict = "FAIL"
+            reason = "downstream evidence target does not match the declared target"
+        report.add(
+            "downstream_consumer",
+            "downstream",
+            verdict,
+            expected=target,
+            observed=observed_target,
+            evidence=locator,
+            reason=reason,
+        )
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("contract", help="acceptance contract JSON")
+    parser.add_argument("output_probe", help="FFprobe JSON for the rendered output")
+    parser.add_argument("--evidence", help="decode, review, loudness, and downstream evidence JSON")
+    parser.add_argument("--json", action="store_true", help="emit compact JSON")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        contract = load_object(args.contract, "acceptance contract")
+        probe = load_object(args.output_probe, "output probe")
+        evidence = load_object(args.evidence, "evidence") if args.evidence else {}
+        validate_contract(contract)
+        report = Report()
+        verify_streams(report, contract, probe)
+        verify_format(report, contract, probe)
+        verify_chapters_and_metadata(report, contract, probe)
+        verify_recorded_evidence(report, contract, evidence)
+        overall = report.overall()
+        payload = {
+            "ok": overall == "PASS",
+            "schema_version": 1,
+            "overall_verdict": overall,
+            "criteria": report.criteria,
+            "summary": {
+                verdict: sum(item["verdict"] == verdict for item in report.criteria)
+                for verdict in sorted(VERDICTS)
+            },
+            "boundary_statement": "local probe or decode success is not downstream compatibility evidence",
+        }
+        print(
+            json.dumps(payload, sort_keys=True, separators=(",", ":"))
+            if args.json
+            else json.dumps(payload, indent=2, sort_keys=True)
+        )
+        return 0 if overall == "PASS" else 1
+    except VerifyError as exc:
+        print(
+            json.dumps({"ok": False, "status": "INVALID_INPUT", "error": str(exc)}, sort_keys=True)
+        )
+        return 2
 
 
 if __name__ == "__main__":

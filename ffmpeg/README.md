@@ -49,6 +49,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `templates/visual-review-packet.md` | Timestamped review samples with attribution and coverage limits |
 | `templates/podcast-edit-plan.md` | Mechanical, signal-processing, and editorial audio plan |
 | `templates/media-acceptance-report.md` | Criterion-by-criterion evidence and release verdict |
+| `templates/media-acceptance-contract.json` | Parseable stream, format, evidence, loudness, and downstream criteria |
 | `templates/research-experiment-record.md` | Versioned, reproducible command experiment record |
 
 ### Existing automation and evals
@@ -62,7 +63,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `scripts/extract-review-frames` | Bounded timestamp frame extraction for human or vision review |
 | `scripts/render-edl` | Validate single- or multi-source EDLs and emit non-executing concat-filter or concat-demuxer plans |
 | `scripts/audio-inspect` | Bounded silence, loudness, peak/clipping, transcript-candidate, and podcast-plan evidence |
-| `scripts/media-verify` | Compare input/output probe documents against basic criteria |
+| `scripts/media-verify` | Evaluate output probe and review evidence against a declared acceptance contract |
 | `scripts/editorial-workflow-example` | Generate synthetic audio/video and exercise the complete workflow with durable evidence |
 | `scripts/generate-media-fixtures` | Generate a bounded sanitized fixture battery and versioned evidence manifest |
 | `evals/evals.json` | Output-quality cases for core FFmpeg, media evidence, video, podcast, EDL, safety, and acceptance behavior |
@@ -118,6 +119,15 @@ scripts/audio-inspect input.wav \
 ```
 
 Optional timed transcript JSON must disclose alignment quality. Detector intervals and transcript ranges remain candidates until listening review approves an edit.
+
+Evaluate a rendered output against declared criteria:
+
+```sh
+scripts/media-verify acceptance-contract.json output-probe.json \
+  --evidence review-evidence.json --json
+```
+
+Missing fields or review evidence remain `UNVERIFIED`; blocked reviews remain `BLOCKED`; local probe/decode success never supplies downstream compatibility evidence.
 
 ## Triggers
 

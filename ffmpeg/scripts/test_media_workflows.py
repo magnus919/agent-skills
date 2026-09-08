@@ -470,33 +470,39 @@ def test_audio_inspect_measures_synthetic_candidates_and_builds_plan(tmp_path: P
     )
     assert render.returncode == 0, render.stderr
 
-    probe_paths: list[Path] = []
-    for name, media_path in (
-        ("source", fixture_workspace / "speech-like-audio.wav"),
-        ("treated", treated),
-    ):
-        probe_result = subprocess.run(
-            [
-                "ffprobe",
-                "-v",
-                "error",
-                "-show_format",
-                "-show_streams",
-                "-of",
-                "json",
-                str(media_path),
+    probe_result = subprocess.run(
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-show_format",
+            "-show_streams",
+            "-of",
+            "json",
+            str(treated),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert probe_result.returncode == 0, probe_result.stderr
+    treated_probe = write_json(tmp_path / "treated-probe.json", json.loads(probe_result.stdout))
+    contract = write_json(
+        tmp_path / "treated-contract.json",
+        {
+            "schema_version": 1,
+            "required_streams": [
+                {"type": "audio", "codec_name": "pcm_s16le", "sample_rate": "48000", "channels": 1}
             ],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        assert probe_result.returncode == 0, probe_result.stderr
-        probe_paths.append(
-            write_json(tmp_path / f"{name}-probe.json", json.loads(probe_result.stdout))
-        )
-    verify = run_script("media-verify", *(str(path) for path in probe_paths))
+            "stream_order": ["audio"],
+            "format": {"duration": 3.0, "duration_tolerance": 0.05},
+            "evidence": {},
+            "downstream": {},
+        },
+    )
+    verify = run_script("media-verify", str(contract), str(treated_probe))
     assert verify.returncode == 0, verify.stdout + verify.stderr
-    assert json.loads(verify.stdout)["status"] == "pass"
+    assert json.loads(verify.stdout)["overall_verdict"] == "PASS"
 
 
 def test_audio_inspect_rejects_invalid_thresholds(tmp_path: Path) -> None:
@@ -512,41 +518,196 @@ def test_audio_inspect_rejects_invalid_thresholds(tmp_path: Path) -> None:
     assert json.loads(result.stdout)["status"] == "invalid_threshold"
 
 
-def test_media_verify_passes_matching_probe_files(tmp_path: Path) -> None:
-    input_probe = write_json(tmp_path / "input-probe.json", probe("video", "audio"))
-    output_probe = write_json(tmp_path / "output-probe.json", probe("video", "audio"))
-
-    result = run_script("media-verify", str(input_probe), str(output_probe))
-
-    assert result.returncode == 0, result.stderr
-    report = json.loads(result.stdout)
-    assert report["ok"] is True
-    assert {check["criterion"]: check["passed"] for check in report["checks"]} == {
-        "output_has_streams": True,
-        "video_stream": True,
-        "audio_stream": True,
-        "duration": True,
+def acceptance_contract() -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "required_streams": [
+            {
+                "type": "video",
+                "codec_name": "h264",
+                "width": 1920,
+                "height": 1080,
+                "pix_fmt": "yuv420p",
+                "avg_frame_rate": "30000/1001",
+                "tolerances": {"avg_frame_rate": 0.001},
+            },
+            {
+                "type": "audio",
+                "codec_name": "aac",
+                "sample_rate": "48000",
+                "channels": 2,
+                "channel_layout": "stereo",
+            },
+            {"type": "subtitle", "codec_name": "subrip"},
+        ],
+        "stream_order": ["video", "audio", "subtitle"],
+        "forbidden_stream_types": ["data", "attachment"],
+        "format": {
+            "format_name": "matroska,webm",
+            "duration": 5.0,
+            "duration_tolerance": 0.1,
+            "start_time": 0.0,
+            "start_time_tolerance": 0.01,
+        },
+        "chapters": {"count": 1},
+        "metadata": {"required": {"title": "Accepted output"}, "forbidden": ["comment"]},
+        "evidence": {"decode": "required", "visual_review": "required", "audio_review": "required"},
+        "loudness": {
+            "integrated_lufs": {"target": -16.0, "tolerance": 0.5},
+            "true_peak_max_dbfs": -1.0,
+        },
+        "downstream": {"target": "Test Player 1.0"},
     }
 
 
-def test_media_verify_fails_probe_contract_mismatches(tmp_path: Path) -> None:
-    input_probe = write_json(tmp_path / "input-probe.json", probe("video", "audio"))
-    output_probe = write_json(
-        tmp_path / "output-probe.json",
-        probe("video", duration="5.5"),
+def accepted_probe() -> dict[str, object]:
+    return {
+        "streams": [
+            {
+                "index": 0,
+                "codec_type": "video",
+                "codec_name": "h264",
+                "width": 1920,
+                "height": 1080,
+                "pix_fmt": "yuv420p",
+                "avg_frame_rate": "60000/2002",
+            },
+            {
+                "index": 1,
+                "codec_type": "audio",
+                "codec_name": "aac",
+                "sample_rate": "48000",
+                "channels": 2,
+                "channel_layout": "stereo",
+            },
+            {"index": 2, "codec_type": "subtitle", "codec_name": "subrip"},
+        ],
+        "format": {
+            "format_name": "matroska,webm",
+            "duration": "5.04",
+            "start_time": "0.000000",
+            "tags": {"title": "Accepted output"},
+        },
+        "chapters": [{"id": 0}],
+    }
+
+
+def accepted_evidence() -> dict[str, object]:
+    return {
+        "decode": {"status": "PASS", "command": ["ffmpeg", "-f", "null", "-"]},
+        "visual_review": {"status": "PASS", "artifact": "visual-review.json"},
+        "audio_review": {"status": "PASS", "artifact": "listening-review.json"},
+        "loudness": {
+            "integrated_lufs": -16.2,
+            "true_peak_dbfs": -1.2,
+            "artifact": "loudness.json",
+        },
+        "downstream": {
+            "status": "PASS",
+            "target": "Test Player 1.0",
+            "artifact": "player-result.json",
+        },
+    }
+
+
+def test_media_verify_passes_complete_contract(tmp_path: Path) -> None:
+    contract = write_json(tmp_path / "contract.json", acceptance_contract())
+    output_probe = write_json(tmp_path / "probe.json", accepted_probe())
+    evidence = write_json(tmp_path / "evidence.json", accepted_evidence())
+
+    result = run_script(
+        "media-verify", str(contract), str(output_probe), "--evidence", str(evidence)
     )
 
-    result = run_script("media-verify", str(input_probe), str(output_probe))
+    assert result.returncode == 0, result.stdout + result.stderr
+    report = json.loads(result.stdout)
+    assert report["ok"] is True
+    assert report["overall_verdict"] == "PASS"
+    assert report["summary"]["FAIL"] == 0
+    assert report["summary"]["UNVERIFIED"] == 0
+    assert all(
+        {"criterion", "boundary", "verdict", "expected", "observed", "evidence", "reason"}
+        == set(item)
+        for item in report["criteria"]
+    )
+
+
+def test_media_verify_fails_independent_stream_subtitle_and_tolerance_checks(
+    tmp_path: Path,
+) -> None:
+    probe_document = accepted_probe()
+    probe_document["streams"] = [probe_document["streams"][0]]
+    probe_document["format"]["duration"] = "5.5"
+    contract = write_json(tmp_path / "contract.json", acceptance_contract())
+    output_probe = write_json(tmp_path / "probe.json", probe_document)
+    evidence = write_json(tmp_path / "evidence.json", accepted_evidence())
+
+    result = run_script(
+        "media-verify", str(contract), str(output_probe), "--evidence", str(evidence)
+    )
 
     assert result.returncode == 1
     report = json.loads(result.stdout)
-    assert report["ok"] is False
-    assert {check["criterion"]: check["passed"] for check in report["checks"]} == {
-        "output_has_streams": True,
-        "video_stream": True,
-        "audio_stream": False,
-        "duration": False,
+    verdicts = {item["criterion"]: item["verdict"] for item in report["criteria"]}
+    assert report["overall_verdict"] == "FAIL"
+    assert verdicts["audio_0_present"] == "FAIL"
+    assert verdicts["subtitle_0_present"] == "FAIL"
+    assert verdicts["stream_order"] == "FAIL"
+    assert verdicts["format_duration"] == "FAIL"
+
+
+def test_media_verify_marks_missing_fields_and_evidence_unverified(tmp_path: Path) -> None:
+    probe_document = accepted_probe()
+    del probe_document["streams"][0]["pix_fmt"]
+    contract = write_json(tmp_path / "contract.json", acceptance_contract())
+    output_probe = write_json(tmp_path / "probe.json", probe_document)
+
+    result = run_script("media-verify", str(contract), str(output_probe))
+
+    assert result.returncode == 1
+    report = json.loads(result.stdout)
+    verdicts = {item["criterion"]: item["verdict"] for item in report["criteria"]}
+    assert report["overall_verdict"] == "UNVERIFIED"
+    assert verdicts["video_0_pix_fmt"] == "UNVERIFIED"
+    assert verdicts["decode"] == "UNVERIFIED"
+    assert verdicts["loudness_integrated_lufs"] == "UNVERIFIED"
+    assert verdicts["downstream_consumer"] == "UNVERIFIED"
+
+
+def test_media_verify_preserves_blocked_review_status(tmp_path: Path) -> None:
+    evidence_document = accepted_evidence()
+    evidence_document["visual_review"] = {
+        "status": "BLOCKED",
+        "reason": "authorized reviewer unavailable",
     }
+    contract = write_json(tmp_path / "contract.json", acceptance_contract())
+    output_probe = write_json(tmp_path / "probe.json", accepted_probe())
+    evidence = write_json(tmp_path / "evidence.json", evidence_document)
+
+    result = run_script(
+        "media-verify", str(contract), str(output_probe), "--evidence", str(evidence)
+    )
+
+    assert result.returncode == 1
+    report = json.loads(result.stdout)
+    assert report["overall_verdict"] == "BLOCKED"
+    visual = next(item for item in report["criteria"] if item["criterion"] == "visual_review")
+    assert visual["reason"] == "authorized reviewer unavailable"
+
+
+def test_media_verify_rejects_malformed_contract_and_probe(tmp_path: Path) -> None:
+    bad_contract = write_json(tmp_path / "contract.json", {"schema_version": 1})
+    probe_path = write_json(tmp_path / "probe.json", accepted_probe())
+    result = run_script("media-verify", str(bad_contract), str(probe_path))
+    assert result.returncode == 2
+    assert json.loads(result.stdout)["status"] == "INVALID_INPUT"
+
+    malformed = tmp_path / "malformed.json"
+    malformed.write_text("not-json")
+    contract = write_json(tmp_path / "valid-contract.json", acceptance_contract())
+    result = run_script("media-verify", str(contract), str(malformed))
+    assert result.returncode == 2
+    assert "could not load output probe" in json.loads(result.stdout)["error"]
 
 
 def test_editorial_workflow_example_runs_with_real_tools(tmp_path: Path) -> None:
