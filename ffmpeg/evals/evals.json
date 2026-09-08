@@ -131,6 +131,19 @@
         "distinguishes concat filter, concat demuxer, and concat protocol without executing"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "podcast-audio-evidence-plan",
+      "prompt": "Analyze this supplied podcast WAV for long pauses, loudness, true peak, clipping, and transcript-aligned edit candidates. Save a plan, but do not alter the recording or make editorial cuts.",
+      "expected_output": "Probe the source, inventory required filters, run explicitly bounded silence, EBU R128, and peak measurements with recorded build/commands/thresholds, validate transcript timing quality, and create a no-overwrite plan whose ranges retain reasons, evidence, confidence, handles, fades, output contract, and needs-listening-review status.",
+      "assertions": [
+        "records exact measurement commands, build, window, thresholds, and limitations",
+        "reports missing filters or measurements as unavailable rather than inventing values",
+        "keeps silence, clipping, and transcript-derived ranges as candidates pending listening review",
+        "preserves the raw recording and refuses report overwrite",
+        "records source ranges, actions, reasons, evidence, confidence, handles, fades, and output contract"
+      ],
+      "case_set": "release"
     }
   ]
 }

@@ -1,42 +1,447 @@
 #!/usr/bin/env python3
-"""Inspect audio metadata with bounded, read-only ffprobe."""
+"""Produce bounded audio evidence and a reviewable podcast edit plan."""
+
+from __future__ import annotations
+
 import argparse
+import hashlib
 import json
+import math
+import os
+import re
 import shutil
 import subprocess
 import sys
+from pathlib import Path
+from typing import Any
 
 
-def main():
+class AudioError(Exception):
+    def __init__(self, status: str, message: str, exit_code: int = 2) -> None:
+        super().__init__(message)
+        self.status = status
+        self.message = message
+        self.exit_code = exit_code
+
+
+def resolve_tool(name: str) -> str:
+    expanded = os.path.expanduser(name)
+    if os.path.sep in expanded:
+        candidate = Path(expanded)
+        if candidate.is_file() and os.access(candidate, os.X_OK):
+            return str(candidate.resolve())
+    else:
+        resolved = shutil.which(name)
+        if resolved:
+            return resolved
+    raise AudioError("missing_tool", f"executable not found: {name}", 3)
+
+
+def run(argv: list[str], timeout: float) -> subprocess.CompletedProcess[str]:
+    try:
+        return subprocess.run(
+            argv,
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise AudioError("timeout", f"command exceeded {timeout:g} seconds", 4) from exc
+    except OSError as exc:
+        raise AudioError("tool_start_failed", str(exc), 3) from exc
+
+
+def require_success(result: subprocess.CompletedProcess[str], status: str) -> None:
+    if result.returncode:
+        detail = result.stderr.strip()[-2000:] or result.stdout.strip()[-2000:]
+        raise AudioError(status, detail or f"command exited {result.returncode}", 1)
+
+
+def finite(value: Any) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def ffmpeg_window(args: argparse.Namespace) -> list[str]:
+    values: list[str] = []
+    if args.analysis_start:
+        values.extend(["-ss", f"{args.analysis_start:g}"])
+    values.extend(["-t", f"{args.analysis_duration:g}"])
+    return values
+
+
+def inventory_filters(ffmpeg: str, timeout: float) -> set[str]:
+    result = run([ffmpeg, "-hide_banner", "-filters"], timeout)
+    require_success(result, "filter_inventory_failed")
+    names: set[str] = set()
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        if len(parts) >= 2 and set(parts[0]).issubset(set(".TSCAVN|->")):
+            names.add(parts[1])
+    return names
+
+
+def parse_probe(stdout: str) -> dict[str, Any]:
+    try:
+        document = json.loads(stdout)
+    except json.JSONDecodeError as exc:
+        raise AudioError("invalid_json", f"invalid ffprobe JSON: {exc}", 1) from exc
+    if not isinstance(document, dict):
+        raise AudioError("invalid_json", "ffprobe JSON root must be an object", 1)
+    streams = document.get("streams", [])
+    if not isinstance(streams, list) or not any(
+        isinstance(stream, dict) and stream.get("codec_type") == "audio" for stream in streams
+    ):
+        raise AudioError("audio_stream_missing", "probe did not report an audio stream", 1)
+    return document
+
+
+def probe_duration(document: dict[str, Any]) -> float | None:
+    raw = document.get("format", {}).get("duration")
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return None
+
+
+def parse_silence(log: str, analysis_end: float | None) -> list[dict[str, Any]]:
+    starts = [float(value) for value in re.findall(r"silence_start:\s*([-+0-9.eE]+)", log)]
+    ends = [
+        (float(end), float(duration))
+        for end, duration in re.findall(
+            r"silence_end:\s*([-+0-9.eE]+)\s*\|\s*silence_duration:\s*([-+0-9.eE]+)",
+            log,
+        )
+    ]
+    intervals: list[dict[str, Any]] = []
+    for index, start in enumerate(starts):
+        if index < len(ends):
+            end, measured_duration = ends[index]
+            intervals.append({"start": start, "end": end, "duration": measured_duration})
+        else:
+            intervals.append(
+                {
+                    "start": start,
+                    "end": analysis_end,
+                    "duration": None if analysis_end is None else max(0.0, analysis_end - start),
+                    "open_ended": True,
+                }
+            )
+    return intervals
+
+
+def last_measure(pattern: str, log: str) -> float | None:
+    values = re.findall(pattern, log, flags=re.MULTILINE)
+    if not values:
+        return None
+    value = values[-1]
+    if value.lower() in {"-inf", "inf", "+inf"}:
+        return None
+    return float(value)
+
+
+def measurement(
+    ffmpeg: str,
+    source: str,
+    filter_name: str,
+    filter_expression: str,
+    filters: set[str],
+    args: argparse.Namespace,
+) -> tuple[dict[str, Any], str | None]:
+    if filter_name not in filters:
+        return {
+            "status": "UNAVAILABLE",
+            "filter": filter_name,
+            "reason": f"local FFmpeg filter inventory does not contain {filter_name}",
+        }, None
+    command = [
+        ffmpeg,
+        "-nostats",
+        "-v",
+        "info",
+        *ffmpeg_window(args),
+        "-i",
+        source,
+        "-map",
+        "0:a:0",
+        "-af",
+        filter_expression,
+        "-f",
+        "null",
+        "-",
+    ]
+    result = run(command, args.timeout)
+    require_success(result, f"{filter_name}_failed")
+    return {
+        "status": "MEASURED",
+        "filter": filter_name,
+        "command": command,
+        "analysis_window": {
+            "start_seconds": args.analysis_start,
+            "duration_seconds": args.analysis_duration,
+        },
+    }, result.stderr
+
+
+def load_transcript(path: str | None, source_duration: float | None) -> dict[str, Any]:
+    if path is None:
+        return {"status": "NOT_PROVIDED", "candidates": []}
+    try:
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise AudioError("invalid_transcript", f"could not load transcript JSON: {exc}") from exc
+    if not isinstance(document, dict) or not isinstance(document.get("segments"), list):
+        raise AudioError("invalid_transcript", "transcript must contain a segments array")
+    quality = document.get("quality")
+    if not isinstance(quality, dict) or not quality:
+        raise AudioError("invalid_transcript", "transcript must disclose timing/alignment quality")
+    candidates: list[dict[str, Any]] = []
+    for index, segment in enumerate(document["segments"]):
+        if not isinstance(segment, dict):
+            raise AudioError("invalid_transcript", f"segment {index} must be an object")
+        start, end, text = segment.get("start"), segment.get("end"), segment.get("text")
+        if (
+            not finite(start)
+            or not finite(end)
+            or start < 0
+            or end <= start
+            or not isinstance(text, str)
+        ):
+            raise AudioError("invalid_transcript", f"segment {index} has invalid timing or text")
+        if source_duration is not None and end > source_duration:
+            raise AudioError("invalid_transcript", f"segment {index} exceeds source duration")
+        candidates.append(
+            {
+                "id": segment.get("id", f"transcript-{index + 1}"),
+                "source_range": {"in": start, "out": end},
+                "action": segment.get("proposed_action", "review"),
+                "reason": segment.get("reason", "transcript navigation candidate"),
+                "evidence": {
+                    "type": "transcript",
+                    "segment_index": index,
+                    "text_sha256": hashlib.sha256(text.encode()).hexdigest(),
+                    "timing_quality": quality,
+                },
+                "confidence": segment.get("confidence"),
+                "review_status": "needs_listening_review",
+            }
+        )
+    return {"status": "CANDIDATES_ONLY", "quality": quality, "candidates": candidates}
+
+
+def write_exclusive(path: str, value: object) -> None:
+    target = Path(path).expanduser()
+    try:
+        with target.open("x", encoding="utf-8") as handle:
+            json.dump(value, handle, indent=2, sort_keys=True)
+            handle.write("\n")
+    except FileExistsError as exc:
+        raise AudioError("output_exists", f"refusing to overwrite report: {target}") from exc
+    except OSError as exc:
+        raise AudioError("report_write_failed", str(exc)) from exc
+
+
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input")
+    parser.add_argument("--ffmpeg", default="ffmpeg")
     parser.add_argument("--ffprobe", default="ffprobe")
-    parser.add_argument("--timeout", type=float, default=15.0)
-    parser.add_argument("--silence", action="store_true")
+    parser.add_argument("--timeout", type=float, default=30.0)
+    parser.add_argument("--analysis-start", type=float, default=0.0)
+    parser.add_argument("--analysis-duration", type=float, default=300.0)
+    parser.add_argument("--silence", action="store_true", help="alias for --measure-silence")
+    parser.add_argument("--measure-silence", action="store_true")
+    parser.add_argument("--measure-loudness", action="store_true")
+    parser.add_argument("--measure-clipping", action="store_true")
+    parser.add_argument("--silence-threshold", default="-40dB")
+    parser.add_argument("--silence-duration", type=float, default=0.5)
+    parser.add_argument("--clipping-threshold-db", type=float, default=-0.1)
+    parser.add_argument("--transcript", help="timed transcript JSON with disclosed quality")
+    parser.add_argument("--handles", type=float, default=0.05)
+    parser.add_argument("--fade-duration", type=float, default=0.01)
+    parser.add_argument("--target-lufs", type=float)
+    parser.add_argument("--true-peak-limit", type=float)
+    parser.add_argument("--output-codec")
+    parser.add_argument("--output-sample-rate", type=int)
+    parser.add_argument("--output-channel-layout")
+    parser.add_argument("--report-output", help="write report to a new path; overwrite is refused")
     parser.add_argument("--json", action="store_true")
-    args = parser.parse_args()
-    tool = shutil.which(args.ffprobe)
-    if not tool:
-        print(json.dumps({"ok": False, "status": "missing_tool", "error": "ffprobe not found"}))
-        return 3
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
     try:
-        result = subprocess.run([tool, "-v", "error", "-show_format", "-show_streams", "-of", "json", args.input], capture_output=True, text=True, timeout=args.timeout)
-    except subprocess.TimeoutExpired:
-        print(json.dumps({"ok": False, "status": "timeout", "error": "ffprobe timed out"}))
-        return 4
-    if result.returncode:
-        print(json.dumps({"ok": False, "status": "probe_failed", "error": result.stderr.strip() or "ffprobe failed"}))
-        return 1
-    try:
-        document = json.loads(result.stdout)
-    except json.JSONDecodeError:
-        print(json.dumps({"ok": False, "status": "invalid_json", "error": "invalid ffprobe JSON"}))
-        return 1
-    payload = {"ok": True, "status": "ok", "input": args.input, "probe": document}
-    if args.silence:
-        payload["silence"] = {"status": "candidate_only", "note": "silence intervals require review; no editorial cut was made"}
-    print(json.dumps(payload, indent=2, sort_keys=True))
-    return 0
+        if not 0 < args.timeout <= 300:
+            raise AudioError("invalid_limit", "--timeout must be greater than 0 and at most 300")
+        if not args.analysis_start >= 0 or not 0 < args.analysis_duration <= 3600:
+            raise AudioError("invalid_limit", "analysis window must be within 0-3600 seconds")
+        if not 0 < args.silence_duration <= args.analysis_duration:
+            raise AudioError(
+                "invalid_threshold", "silence duration must fit inside the analysis window"
+            )
+        if not -20 <= args.clipping_threshold_db <= 0:
+            raise AudioError(
+                "invalid_threshold", "clipping threshold must be between -20 and 0 dBFS"
+            )
+        if args.handles < 0 or args.fade_duration < 0:
+            raise AudioError("invalid_plan", "handles and fade duration must be non-negative")
+
+        ffprobe = resolve_tool(args.ffprobe)
+        source = str(Path(args.input).expanduser())
+        probe_command = [
+            ffprobe,
+            "-v",
+            "error",
+            "-show_format",
+            "-show_streams",
+            "-of",
+            "json",
+            source,
+        ]
+        probe_result = run(probe_command, args.timeout)
+        require_success(probe_result, "probe_failed")
+        probe = parse_probe(probe_result.stdout)
+        source_duration = probe_duration(probe)
+
+        requested = (
+            args.silence or args.measure_silence or args.measure_loudness or args.measure_clipping
+        )
+        ffmpeg: str | None = None
+        filters: set[str] = set()
+        ffmpeg_version: str | None = None
+        if requested:
+            ffmpeg = resolve_tool(args.ffmpeg)
+            version_result = run([ffmpeg, "-version"], args.timeout)
+            require_success(version_result, "version_failed")
+            ffmpeg_version = version_result.stdout.splitlines()[0]
+            filters = inventory_filters(ffmpeg, args.timeout)
+
+        evidence: dict[str, Any] = {}
+        if args.silence or args.measure_silence:
+            result, log = measurement(
+                ffmpeg or "ffmpeg",
+                source,
+                "silencedetect",
+                f"silencedetect=noise={args.silence_threshold}:d={args.silence_duration:g}",
+                filters,
+                args,
+            )
+            result.update(
+                {
+                    "evidence_class": "threshold_candidate",
+                    "threshold": args.silence_threshold,
+                    "minimum_duration_seconds": args.silence_duration,
+                    "editorial_status": "needs_listening_review",
+                }
+            )
+            if log is not None:
+                analysis_end = args.analysis_start + min(
+                    args.analysis_duration,
+                    source_duration or args.analysis_duration,
+                )
+                result["intervals"] = parse_silence(log, analysis_end)
+            evidence["silence"] = result
+
+        if args.measure_loudness:
+            result, log = measurement(
+                ffmpeg or "ffmpeg",
+                source,
+                "ebur128",
+                "ebur128=peak=true",
+                filters,
+                args,
+            )
+            if log is not None:
+                result["integrated_lufs"] = last_measure(r"^\s*I:\s+(-?inf|[-+0-9.]+)\s+LUFS", log)
+                result["true_peak_dbfs"] = last_measure(
+                    r"^\s*Peak:\s+(-?inf|[-+0-9.]+)\s+dBFS", log
+                )
+                result["target_lufs"] = args.target_lufs
+                result["true_peak_limit_dbfs"] = args.true_peak_limit
+            evidence["loudness"] = result
+
+        if args.measure_clipping:
+            result, log = measurement(
+                ffmpeg or "ffmpeg",
+                source,
+                "astats",
+                "astats=metadata=1:reset=0",
+                filters,
+                args,
+            )
+            if log is not None:
+                peak = last_measure(r"Peak level dB:\s+(-?inf|[-+0-9.]+)", log)
+                result.update(
+                    {
+                        "peak_level_dbfs": peak,
+                        "candidate_threshold_dbfs": args.clipping_threshold_db,
+                        "clipping_candidate": peak is not None
+                        and peak >= args.clipping_threshold_db,
+                        "editorial_status": "needs_listening_review",
+                    }
+                )
+            evidence["clipping"] = result
+
+        transcript = load_transcript(args.transcript, source_duration)
+        plan = {
+            "schema_version": 1,
+            "source": source,
+            "source_preservation": "original_untouched",
+            "overwrite_policy": "refuse",
+            "output_contract": {
+                "target_lufs": args.target_lufs,
+                "true_peak_limit_dbfs": args.true_peak_limit,
+                "codec": args.output_codec,
+                "sample_rate": args.output_sample_rate,
+                "channel_layout": args.output_channel_layout,
+            },
+            "candidates": [
+                {
+                    **candidate,
+                    "handles_seconds": args.handles,
+                    "fade_seconds": args.fade_duration,
+                }
+                for candidate in transcript["candidates"]
+            ],
+            "assembly_options": {
+                "voice_music_separation": "UNPLANNED",
+                "ducking": "UNPLANNED",
+                "intro_outro": "UNPLANNED",
+                "chapters": "UNPLANNED",
+                "metadata": "UNPLANNED",
+            },
+            "approval_gate": "no candidate becomes an edit without listening review",
+        }
+        report = {
+            "ok": True,
+            "status": "MEASURED_WITH_BOUNDARIES" if evidence else "PROBED",
+            "input": source,
+            "tool_context": {"ffprobe_command": probe_command, "ffmpeg_version": ffmpeg_version},
+            "probe": probe,
+            "analysis": evidence,
+            "transcript": transcript,
+            "podcast_edit_plan": plan,
+            "unverified": [
+                "speaker identity",
+                "transcript semantic accuracy",
+                "editorial suitability of silence or clipping candidates",
+                "listening quality",
+                "downstream compatibility",
+            ],
+        }
+        if args.report_output:
+            write_exclusive(args.report_output, report)
+        print(
+            json.dumps(report, sort_keys=True, separators=(",", ":"))
+            if args.json
+            else json.dumps(report, indent=2, sort_keys=True)
+        )
+        return 0
+    except AudioError as exc:
+        print(json.dumps({"ok": False, "status": exc.status, "error": exc.message}, sort_keys=True))
+        return exc.exit_code
 
 
 if __name__ == "__main__":

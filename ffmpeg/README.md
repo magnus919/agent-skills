@@ -61,7 +61,7 @@ This skill provides a repeatable intake-to-acceptance workflow. It separates tec
 | `scripts/media-intake` | Read-only input inventory with bounded `ffprobe` metadata |
 | `scripts/extract-review-frames` | Bounded timestamp frame extraction for human or vision review |
 | `scripts/render-edl` | Validate single- or multi-source EDLs and emit non-executing concat-filter or concat-demuxer plans |
-| `scripts/audio-inspect` | Read-only audio metadata inspection with bounded probing |
+| `scripts/audio-inspect` | Bounded silence, loudness, peak/clipping, transcript-candidate, and podcast-plan evidence |
 | `scripts/media-verify` | Compare input/output probe documents against basic criteria |
 | `scripts/editorial-workflow-example` | Generate synthetic audio/video and exercise the complete workflow with durable evidence |
 | `scripts/generate-media-fixtures` | Generate a bounded sanitized fixture battery and versioned evidence manifest |
@@ -108,6 +108,16 @@ scripts/generate-media-fixtures /tmp/ffmpeg-fixtures --json
 ```
 
 Generated media remains task-local; commit the generator and test assertions, not the binary outputs.
+
+Produce measured audio evidence and a reviewable plan without changing the source:
+
+```sh
+scripts/audio-inspect input.wav \
+  --measure-silence --silence-threshold=-45dB --silence-duration 0.7 \
+  --measure-loudness --measure-clipping --json
+```
+
+Optional timed transcript JSON must disclose alignment quality. Detector intervals and transcript ranges remain candidates until listening review approves an edit.
 
 ## Triggers
 

@@ -308,8 +308,208 @@ def test_audio_inspect_reports_missing_ffprobe(tmp_path: Path) -> None:
     assert json.loads(result.stdout) == {
         "ok": False,
         "status": "missing_tool",
-        "error": "ffprobe not found",
+        "error": f"executable not found: {missing_ffprobe}",
     }
+
+
+def test_audio_inspect_rejects_malformed_probe_output(tmp_path: Path) -> None:
+    fake_probe = tmp_path / "ffprobe"
+    fake_probe.write_text("#!/bin/sh\nprintf 'not-json\\n'\n")
+    fake_probe.chmod(0o755)
+
+    result = run_script("audio-inspect", "input.wav", "--ffprobe", str(fake_probe), "--json")
+
+    assert result.returncode == 1
+    assert json.loads(result.stdout)["status"] == "invalid_json"
+
+
+def test_audio_inspect_reports_missing_measurement_filter(tmp_path: Path) -> None:
+    fake_probe = tmp_path / "ffprobe"
+    fake_probe.write_text(
+        '#!/bin/sh\nprintf \'%s\\n\' \'{"streams":[{"codec_type":"audio"}],"format":{"duration":"3"}}\'\n'
+    )
+    fake_probe.chmod(0o755)
+    fake_ffmpeg = tmp_path / "ffmpeg"
+    fake_ffmpeg.write_text(
+        "#!/bin/sh\ncase \"$*\" in *-version*) printf 'ffmpeg version fake\\n' ;; *-filters*) printf 'Filters:\\n' ;; *) exit 99 ;; esac\n"
+    )
+    fake_ffmpeg.chmod(0o755)
+
+    result = run_script(
+        "audio-inspect",
+        "input.wav",
+        "--ffprobe",
+        str(fake_probe),
+        "--ffmpeg",
+        str(fake_ffmpeg),
+        "--measure-silence",
+        "--json",
+    )
+
+    assert result.returncode == 0, result.stdout
+    silence = json.loads(result.stdout)["analysis"]["silence"]
+    assert silence["status"] == "UNAVAILABLE"
+    assert silence["filter"] == "silencedetect"
+    assert "intervals" not in silence
+
+
+def test_audio_inspect_measures_synthetic_candidates_and_builds_plan(tmp_path: Path) -> None:
+    if shutil.which("ffmpeg") is None or shutil.which("ffprobe") is None:
+        import pytest
+
+        pytest.skip("ffmpeg and ffprobe are required for measured audio evidence")
+
+    fixture_workspace = tmp_path / "fixtures"
+    fixture_result = run_script("generate-media-fixtures", str(fixture_workspace), "--json")
+    assert fixture_result.returncode == 0, fixture_result.stdout + fixture_result.stderr
+    transcript = write_json(
+        tmp_path / "transcript.json",
+        {
+            "quality": {
+                "method": "synthetic fixture timing",
+                "alignment": "declared, not speech-recognized",
+            },
+            "segments": [
+                {
+                    "id": "segment-1",
+                    "start": 0.2,
+                    "end": 0.8,
+                    "text": "synthetic phrase placeholder",
+                    "proposed_action": "keep",
+                    "reason": "exercise transcript alignment",
+                    "confidence": 1.0,
+                }
+            ],
+        },
+    )
+    report_path = tmp_path / "audio-report.json"
+    arguments = (
+        str(fixture_workspace / "speech-like-audio.wav"),
+        "--measure-silence",
+        "--measure-loudness",
+        "--measure-clipping",
+        "--silence-threshold",
+        "-50dB",
+        "--silence-duration",
+        "0.5",
+        "--transcript",
+        str(transcript),
+        "--target-lufs",
+        "-16",
+        "--true-peak-limit",
+        "-1",
+        "--output-codec",
+        "pcm_s16le",
+        "--output-sample-rate",
+        "48000",
+        "--output-channel-layout",
+        "mono",
+        "--report-output",
+        str(report_path),
+        "--json",
+    )
+
+    result = run_script("audio-inspect", *arguments)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    report = json.loads(result.stdout)
+    assert report == json.loads(report_path.read_text())
+    assert report["analysis"]["silence"]["status"] == "MEASURED"
+    assert any(
+        interval["duration"] >= 0.5 for interval in report["analysis"]["silence"]["intervals"]
+    )
+    assert report["analysis"]["loudness"]["integrated_lufs"] is not None
+    assert report["analysis"]["loudness"]["true_peak_dbfs"] is not None
+    assert report["analysis"]["clipping"]["peak_level_dbfs"] is not None
+    candidate = report["podcast_edit_plan"]["candidates"][0]
+    assert candidate["source_range"] == {"in": 0.2, "out": 0.8}
+    assert candidate["review_status"] == "needs_listening_review"
+    assert candidate["handles_seconds"] == 0.05
+    assert candidate["fade_seconds"] == 0.01
+    assert "text_sha256" in candidate["evidence"]
+    assert report["podcast_edit_plan"]["overwrite_policy"] == "refuse"
+    assert "listening quality" in report["unverified"]
+
+    repeated_arguments = (*arguments[:-3], "--json")
+    repeated = run_script("audio-inspect", *repeated_arguments)
+    assert repeated.returncode == 0, repeated.stdout + repeated.stderr
+    repeated_report = json.loads(repeated.stdout)
+    assert repeated_report == report
+
+    overwrite = run_script("audio-inspect", *arguments)
+    assert overwrite.returncode == 2
+    assert json.loads(overwrite.stdout)["status"] == "output_exists"
+
+    clipping_result = run_script(
+        "audio-inspect",
+        str(fixture_workspace / "audio-analysis.wav"),
+        "--measure-clipping",
+        "--json",
+    )
+    assert clipping_result.returncode == 0, clipping_result.stdout + clipping_result.stderr
+    assert json.loads(clipping_result.stdout)["analysis"]["clipping"]["clipping_candidate"] is True
+
+    treated = tmp_path / "treated.wav"
+    render = subprocess.run(
+        [
+            "ffmpeg",
+            "-v",
+            "error",
+            "-n",
+            "-i",
+            str(fixture_workspace / "speech-like-audio.wav"),
+            "-af",
+            "afade=t=in:d=0.05,afade=t=out:st=2.95:d=0.05",
+            "-c:a",
+            "pcm_s16le",
+            str(treated),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert render.returncode == 0, render.stderr
+
+    probe_paths: list[Path] = []
+    for name, media_path in (
+        ("source", fixture_workspace / "speech-like-audio.wav"),
+        ("treated", treated),
+    ):
+        probe_result = subprocess.run(
+            [
+                "ffprobe",
+                "-v",
+                "error",
+                "-show_format",
+                "-show_streams",
+                "-of",
+                "json",
+                str(media_path),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert probe_result.returncode == 0, probe_result.stderr
+        probe_paths.append(
+            write_json(tmp_path / f"{name}-probe.json", json.loads(probe_result.stdout))
+        )
+    verify = run_script("media-verify", *(str(path) for path in probe_paths))
+    assert verify.returncode == 0, verify.stdout + verify.stderr
+    assert json.loads(verify.stdout)["status"] == "pass"
+
+
+def test_audio_inspect_rejects_invalid_thresholds(tmp_path: Path) -> None:
+    result = run_script(
+        "audio-inspect",
+        str(tmp_path / "missing.wav"),
+        "--silence-duration",
+        "0",
+        "--json",
+    )
+
+    assert result.returncode == 2
+    assert json.loads(result.stdout)["status"] == "invalid_threshold"
 
 
 def test_media_verify_passes_matching_probe_files(tmp_path: Path) -> None:
@@ -437,6 +637,7 @@ def test_generate_media_fixtures_covers_real_boundaries(tmp_path: Path) -> None:
         "audio-offset-and-duration-drift-candidate",
         "audio-silence-and-peak-candidates",
         "audio-fade-output",
+        "synthetic-speech-like-analysis-source",
         "subtitle-source-text",
         "subtitle-stream-survival",
         "bounded-boundary-frame",

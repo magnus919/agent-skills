@@ -27,6 +27,10 @@ Relevant filters include:
 
 Record the exact interval, filter options, channel mode, FFmpeg build, and unfiltered source. Noise floors, breaths, room tone, music, cross-talk, and codec artifacts can invalidate a generic threshold.
 
+`scripts/audio-inspect` implements a bounded evidence path. Select `--measure-silence`, `--measure-loudness`, and/or `--measure-clipping`; each requested measurement records the command, analysis window, filter, thresholds, and local build. A missing filter produces `UNAVAILABLE`, not a fabricated value. Silence intervals and peak-based clipping flags are candidates with a listening-review gate.
+
+Pass `--transcript` only a timed JSON document with a non-empty `quality` object and `segments` containing `start`, `end`, and `text`. The report retains timing and a text digest rather than reproducing transcript content. A supplied `proposed_action` remains `needs_listening_review`. Output codec/rate/layout and loudness limits form a declared contract; handles and fades are plan fields, not executed edits. `--report-output` creates a new file exclusively and refuses overwrite.
+
 For loudness normalization, a measured first pass followed by a parameterized second pass is more reviewable than assuming one-pass behavior meets a delivery policy. Verify the rendered output again; a filter’s reported target is not acceptance evidence by itself.
 
 ## Editing and processing

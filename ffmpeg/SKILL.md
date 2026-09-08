@@ -99,6 +99,8 @@ Run `scripts/generate-media-fixtures` when tests need deterministic non-personal
 
 Use `scripts/render-edl` for a non-executing single- or multi-source plan. Default to decoded concat-filter assembly; select concat-demuxer stream copy only with matching probe-derived signatures and verified packet/keyframe boundaries. Unsupported transitions must remain explicit errors.
 
+Use `scripts/audio-inspect` for bounded silence, EBU R128, peak/clipping, and transcript-alignment evidence. Request each measurement explicitly, preserve unavailable filters as `UNAVAILABLE`, and treat every interval or transcript range as a listening-review candidate. Its optional report output refuses overwrite.
+
 Copy a template into the task workspace and replace its placeholder/example values. Do not put private paths, media, transcripts, or review evidence in the public skill repository.
 
 ## Non-Negotiable Checks
