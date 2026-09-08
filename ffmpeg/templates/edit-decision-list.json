@@ -1,7 +1,17 @@
 {
   "schema_version": 1,
   "timebase": "seconds",
-  "sources": [{"asset_id": "asset-001", "duration": 120.0}],
+  "sources": [
+    {
+      "asset_id": "asset-001",
+      "source": "input-a.mkv",
+      "duration": 120.0,
+      "compatibility_signature": {
+        "video": "h264:1920x1080:yuv420p:30000/1001",
+        "audio": "aac:48000:stereo"
+      }
+    }
+  ],
   "events": [
     {
       "id": "event-001",
@@ -13,10 +23,23 @@
       "reason": "<editorial reason>",
       "evidence": [{"type": "transcript", "locator": "00:10-00:25", "confidence": 0.8}],
       "boundary_precision": "not_verified",
+      "keyframe_status": "not_verified",
       "treatment": {"transition": null, "audio_fade": true},
       "review_status": "needs_review",
       "verification": []
     }
   ],
-  "output": {"mapping": ["video", "audio"], "expected_duration": 15.0, "tolerance_seconds": 0.1}
+  "output": {
+    "mapping": ["video", "audio"],
+    "video": {
+      "codec": "libx264",
+      "width": 1920,
+      "height": 1080,
+      "fps": 29.97,
+      "pixel_format": "yuv420p"
+    },
+    "audio": {"codec": "aac", "sample_rate": 48000, "channel_layout": "stereo"},
+    "expected_duration": 15.0,
+    "tolerance_seconds": 0.1
+  }
 }

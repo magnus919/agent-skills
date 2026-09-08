@@ -35,116 +35,261 @@ def probe(*stream_types: str, duration: str = "5.0") -> dict[str, object]:
     }
 
 
-def test_render_edl_valid_plan_does_not_execute(tmp_path: Path) -> None:
-    source = tmp_path / "source.mp4"
-    source.write_bytes(b"")
-    output = tmp_path / "rendered.mp4"
-    edl = write_json(
-        tmp_path / "valid-edl.json",
-        {
-            "schema_version": 1,
-            "sources": [
-                {
-                    "asset_id": "camera-a",
-                    "source": str(source),
-                    "duration": 10.0,
-                }
-            ],
-            "events": [{"asset_id": "camera-a", "in": 1.25, "out": 3.5, "action": "keep"}],
+def edl_document() -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "timebase": "seconds",
+        "sources": [
+            {"asset_id": "camera-a", "source": "camera-a.mkv", "duration": 4.0},
+            {"asset_id": "camera-b", "source": "camera-b.mkv", "duration": 4.0},
+        ],
+        "events": [
+            {
+                "id": "event-a",
+                "asset_id": "camera-a",
+                "stream_refs": ["0:v:0", "0:a:0"],
+                "in": 1.0,
+                "out": 2.0,
+            },
+            {
+                "id": "event-b",
+                "asset_id": "camera-b",
+                "stream_refs": ["1:v:0", "1:a:0"],
+                "in": 0.5,
+                "out": 2.0,
+            },
+        ],
+        "output": {
+            "mapping": ["video", "audio"],
+            "video": {"width": 320, "height": 180, "fps": 24, "pixel_format": "yuv420p"},
+            "audio": {"sample_rate": 48000, "channel_layout": "stereo"},
+            "expected_duration": 2.5,
+            "tolerance_seconds": 0.01,
         },
-    )
+    }
+
+
+def error_code(result: subprocess.CompletedProcess[str]) -> str:
+    return json.loads(result.stdout)["error"]["code"]
+
+
+def test_render_edl_multi_source_concat_filter_plan_does_not_execute(tmp_path: Path) -> None:
+    output = tmp_path / "rendered.mkv"
+    edl = write_json(tmp_path / "multi-source.json", edl_document())
 
     result = run_script("render-edl", str(edl), "--output", str(output))
 
-    assert result.returncode == 0, result.stderr
+    assert result.returncode == 0, result.stdout + result.stderr
     report = json.loads(result.stdout)
-    assert report == {
-        "ok": True,
-        "executed": False,
-        "events": [{"asset_id": "camera-a", "in": 1.25, "out": 3.5, "action": "keep"}],
-        "argv": [
-            "ffmpeg",
-            "-n",
-            "-ss",
-            "1.25",
-            "-to",
-            "3.5",
-            "-i",
-            str(source),
-            "-map",
-            "0:v:0?",
-            "-map",
-            "0:a:0?",
-            "-c",
-            "copy",
-            str(output),
-        ],
-        "output": str(output),
-    }
+    assert report["selected_mechanism"] == "concat_filter"
+    assert report["sources"] == [
+        {"asset_id": "camera-a", "input_index": 0},
+        {"asset_id": "camera-b", "input_index": 1},
+    ]
+    assert [event["input_index"] for event in report["events"]] == [0, 1]
+    assert report["derived_duration"] == 2.5
+    assert "[0:v:0]trim=start=1:end=2" in report["filter_complex"]
+    assert "[1:a:0]atrim=start=0.5:end=2" in report["filter_complex"]
+    assert "concat=n=2:v=1:a=1[vout][aout]" in report["filter_complex"]
+    assert report["argv"].count("[vout]") == 1
+    assert report["argv"].count("[aout]") == 1
+    assert report["executed"] is False
     assert not output.exists()
 
 
-def test_render_edl_rejects_multi_source_plan(tmp_path: Path) -> None:
-    edl = write_json(
-        tmp_path / "multi-source-edl.json",
-        {
-            "schema_version": 1,
-            "sources": [
-                {"asset_id": "camera-a", "source": "camera-a.mp4", "duration": 2.0},
-                {"asset_id": "camera-b", "source": "camera-b.mp4", "duration": 2.0},
-            ],
-            "events": [{"asset_id": "camera-a", "in": 0.0, "out": 1.0}],
+def test_render_edl_concat_filter_plan_executes_against_synthetic_fixtures(tmp_path: Path) -> None:
+    if shutil.which("ffmpeg") is None or shutil.which("ffprobe") is None:
+        import pytest
+
+        pytest.skip("ffmpeg and ffprobe are required for the rendered fixture check")
+
+    fixture_workspace = tmp_path / "fixtures"
+    fixture_result = run_script("generate-media-fixtures", str(fixture_workspace), "--json")
+    assert fixture_result.returncode == 0, fixture_result.stdout + fixture_result.stderr
+    output = tmp_path / "rendered.mkv"
+    document = {
+        "schema_version": 1,
+        "timebase": "seconds",
+        "sources": [
+            {
+                "asset_id": "red",
+                "source": str(fixture_workspace / "concat-red.mkv"),
+                "duration": 1.0,
+            },
+            {
+                "asset_id": "blue",
+                "source": str(fixture_workspace / "concat-blue.mkv"),
+                "duration": 1.0,
+            },
+        ],
+        "events": [
+            {"asset_id": "red", "stream_refs": ["0:v:0", "0:a:0"], "in": 0.0, "out": 0.8},
+            {"asset_id": "blue", "stream_refs": ["1:v:0", "1:a:0"], "in": 0.1, "out": 0.9},
+        ],
+        "output": {
+            "mapping": ["video", "audio"],
+            "video": {
+                "codec": "mpeg4",
+                "width": 160,
+                "height": 90,
+                "fps": 24,
+                "pixel_format": "yuv420p",
+            },
+            "audio": {"codec": "pcm_s16le", "sample_rate": 48000, "channel_layout": "mono"},
+            "expected_duration": 1.6,
+            "tolerance_seconds": 0.01,
         },
+    }
+    edl = write_json(tmp_path / "executable-plan.json", document)
+    plan_result = run_script("render-edl", str(edl), "--output", str(output))
+    assert plan_result.returncode == 0, plan_result.stdout + plan_result.stderr
+    plan = json.loads(plan_result.stdout)
+
+    rendered = subprocess.run(plan["argv"], capture_output=True, text=True, check=False)
+
+    assert rendered.returncode == 0, rendered.stderr
+    assert output.exists()
+    probe_result = subprocess.run(
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-show_entries",
+            "stream=codec_type",
+            "-of",
+            "json",
+            str(output),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
     )
-
-    result = run_script("render-edl", str(edl))
-
-    assert result.returncode == 2
-    assert json.loads(result.stdout) == {
-        "ok": False,
-        "error": "render-edl supports exactly one source and one event",
+    assert probe_result.returncode == 0, probe_result.stderr
+    assert {item["codec_type"] for item in json.loads(probe_result.stdout)["streams"]} == {
+        "video",
+        "audio",
     }
 
 
-def test_render_edl_rejects_multi_event_plan(tmp_path: Path) -> None:
-    edl = write_json(
-        tmp_path / "multi-event-edl.json",
-        {
-            "schema_version": 1,
-            "sources": [{"asset_id": "camera-a", "source": "camera-a.mp4", "duration": 3.0}],
-            "events": [
-                {"asset_id": "camera-a", "in": 0.0, "out": 1.0},
-                {"asset_id": "camera-a", "in": 1.0, "out": 2.0},
-            ],
-        },
-    )
+def test_render_edl_multi_event_same_source_reuses_input_index(tmp_path: Path) -> None:
+    document = edl_document()
+    document["sources"] = [document["sources"][0]]
+    document["events"][1]["asset_id"] = "camera-a"
+    document["events"][1]["stream_refs"] = ["0:v:0", "0:a:0"]
+    edl = write_json(tmp_path / "multi-event.json", document)
 
     result = run_script("render-edl", str(edl))
 
+    assert result.returncode == 0
+    report = json.loads(result.stdout)
+    assert [event["input_index"] for event in report["events"]] == [0, 0]
+    assert report["argv"].count("-i") == 1
+
+
+def test_render_edl_concat_demuxer_requires_matching_probed_signatures(tmp_path: Path) -> None:
+    document = edl_document()
+    signature = {"video": "mpeg4:320x180:24", "audio": "pcm_s16le:48000:stereo"}
+    for source in document["sources"]:
+        source["compatibility_signature"] = signature
+    for event in document["events"]:
+        event["boundary_precision"] = "packet"
+        event["keyframe_status"] = "verified"
+    edl = write_json(tmp_path / "copy.json", document)
+
+    result = run_script("render-edl", str(edl), "--strategy", "concat-demuxer")
+
+    assert result.returncode == 0, result.stdout
+    report = json.loads(result.stdout)
+    assert report["selected_mechanism"] == "concat_demuxer"
+    concat_text = report["auxiliary_files"][0]["content"]
+    assert "file 'camera-a.mkv'" in concat_text
+    assert "file 'camera-b.mkv'" in concat_text
+    assert "inpoint 1" in concat_text
+    assert report["argv"][-3:] == ["-c", "copy", "output.mkv"]
+
+
+def test_render_edl_rejects_incompatible_concat_signatures(tmp_path: Path) -> None:
+    document = edl_document()
+    document["sources"][0]["compatibility_signature"] = {"fps": 24}
+    document["sources"][1]["compatibility_signature"] = {"fps": 25}
+    for event in document["events"]:
+        event["boundary_precision"] = "packet"
+        event["keyframe_status"] = "verified"
+    edl = write_json(tmp_path / "incompatible.json", document)
+
+    result = run_script("render-edl", str(edl), "--strategy", "concat-demuxer")
+
     assert result.returncode == 2
-    assert json.loads(result.stdout) == {
-        "ok": False,
-        "error": "render-edl supports exactly one source and one event",
-    }
+    assert error_code(result) == "incompatible_concat_sources"
+
+
+def test_render_edl_rejects_unverified_stream_copy_boundary(tmp_path: Path) -> None:
+    document = edl_document()
+    for source in document["sources"]:
+        source["compatibility_signature"] = {"fps": 24}
+    edl = write_json(tmp_path / "unverified.json", document)
+
+    result = run_script("render-edl", str(edl), "--strategy", "concat-demuxer")
+
+    assert result.returncode == 2
+    assert error_code(result) == "unverified_stream_copy_boundary"
+
+
+def test_render_edl_rejects_transition_destination_overlap_and_bad_duration(tmp_path: Path) -> None:
+    transition = edl_document()
+    transition["events"][1]["treatment"] = {"transition": "xfade"}
+    transition_result = run_script(
+        "render-edl", str(write_json(tmp_path / "transition.json", transition))
+    )
+    assert error_code(transition_result) == "unsupported_transition"
+
+    overlap = edl_document()
+    overlap["events"][1]["destination_start"] = 0.5
+    overlap_result = run_script("render-edl", str(write_json(tmp_path / "overlap.json", overlap)))
+    assert error_code(overlap_result) == "destination_overlap"
+
+    duration = edl_document()
+    duration["output"]["expected_duration"] = 9.0
+    duration_result = run_script(
+        "render-edl", str(write_json(tmp_path / "duration.json", duration))
+    )
+    assert error_code(duration_result) == "duration_mismatch"
+
+
+def test_render_edl_rejects_missing_source_stream_and_ambiguous_timebase(tmp_path: Path) -> None:
+    missing_source = edl_document()
+    missing_source["events"][0]["asset_id"] = "missing"
+    result = run_script("render-edl", str(write_json(tmp_path / "missing.json", missing_source)))
+    assert error_code(result) == "missing_source"
+
+    missing_stream = edl_document()
+    del missing_stream["events"][0]["stream_refs"]
+    result = run_script("render-edl", str(write_json(tmp_path / "stream.json", missing_stream)))
+    assert error_code(result) == "missing_stream_refs"
+
+    missing_audio = edl_document()
+    missing_audio["events"][0]["stream_refs"] = ["0:v:0"]
+    result = run_script("render-edl", str(write_json(tmp_path / "audio.json", missing_audio)))
+    assert error_code(result) == "missing_mapped_stream_ref"
+
+    mismatched_input = edl_document()
+    mismatched_input["events"][1]["stream_refs"] = ["0:v:0", "0:a:0"]
+    result = run_script("render-edl", str(write_json(tmp_path / "mismatch.json", mismatched_input)))
+    assert error_code(result) == "stream_ref_input_mismatch"
+
+    timebase = edl_document()
+    timebase["timebase"] = "frames"
+    result = run_script("render-edl", str(write_json(tmp_path / "timebase.json", timebase)))
+    assert error_code(result) == "unsupported_timebase"
 
 
 def test_render_edl_rejects_invalid_interval(tmp_path: Path) -> None:
-    edl = write_json(
-        tmp_path / "invalid-edl.json",
-        {
-            "schema_version": 1,
-            "sources": [{"asset_id": "camera-a", "duration": 2.0}],
-            "events": [{"asset_id": "camera-a", "in": 1.0, "out": 3.0}],
-        },
-    )
-
-    result = run_script("render-edl", str(edl))
+    document = edl_document()
+    document["events"][0]["out"] = 7.0
+    result = run_script("render-edl", str(write_json(tmp_path / "invalid.json", document)))
 
     assert result.returncode == 2
-    assert json.loads(result.stdout) == {
-        "ok": False,
-        "error": "invalid interval at event 0",
-    }
+    assert error_code(result) == "interval_out_of_bounds"
 
 
 def test_audio_inspect_reports_missing_ffprobe(tmp_path: Path) -> None:

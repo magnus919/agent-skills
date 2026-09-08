@@ -118,6 +118,19 @@
         "does not turn silence, clipping, subtitle presence, or sparse frames into editorial truth"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "multi-source-edl-plan",
+      "prompt": "Plan a montage from three reviewed ranges across two local files. Two ranges need frame-accurate cuts and the inputs have different dimensions and audio rates. Do not execute FFmpeg.",
+      "expected_output": "Validate explicit sources, streams, decimal-second ranges, destination order, duration math, and output normalization, then emit a concat-filter plan with correct reused input indexes, trim/atrim timestamp resets, deliberate video/audio normalization, and exactly-once output mapping. Reject stream-copy concat because probe-derived signatures do not match and distinguish the concat protocol as inapplicable.",
+      "assertions": [
+        "uses one input index per source and maps every event to the correct input",
+        "uses trim or atrim with timestamp reset before concat",
+        "normalizes declared video and audio properties before decoded concat",
+        "derives expected duration and rejects invalid or overlapping destination intervals",
+        "distinguishes concat filter, concat demuxer, and concat protocol without executing"
+      ],
+      "case_set": "release"
     }
   ]
 }

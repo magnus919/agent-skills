@@ -97,6 +97,8 @@ Run `scripts/editorial-workflow-example` in a new or empty task-local directory 
 
 Run `scripts/generate-media-fixtures` when tests need deterministic non-personal media. Keep its generated binaries and manifest in the task workspace; commit the generator and assertions, not the outputs.
 
+Use `scripts/render-edl` for a non-executing single- or multi-source plan. Default to decoded concat-filter assembly; select concat-demuxer stream copy only with matching probe-derived signatures and verified packet/keyframe boundaries. Unsupported transitions must remain explicit errors.
+
 Copy a template into the task workspace and replace its placeholder/example values. Do not put private paths, media, transcripts, or review evidence in the public skill repository.
 
 ## Non-Negotiable Checks

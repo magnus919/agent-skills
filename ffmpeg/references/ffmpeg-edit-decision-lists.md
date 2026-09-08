@@ -43,6 +43,18 @@ For decoded segment assembly, use `trim`/`atrim`, reset segment timestamps with 
 
 For separate compatible files, the concat demuxer consumes an `ffconcat` list. Its `inpoint` and `outpoint` can include packets outside the requested interval because of inter-frame dependencies and packet boundaries; timestamps can also be adjusted globally. Review the decoded joins.
 
+`scripts/render-edl` validates schema-v1 decimal-second EDLs and emits a plan without executing FFmpeg. Its default `concat-filter` strategy:
+
+- assigns one input index per declared source and reuses that index across events;
+- trims and resets timestamps for every selected video/audio segment;
+- applies declared video/audio normalization before concat;
+- maps each generated output label exactly once;
+- derives duration from event ranges and checks the declared tolerance.
+
+Use `--strategy concat-demuxer` only when every source carries the same probe-derived `compatibility_signature` and every event declares `boundary_precision: packet` with `keyframe_status: verified` or `not_applicable`. The plan returns an `edit.ffconcat` payload; write and review that file before execution. The helper never selects the concat protocol, because a structured EDL needs explicit file/range semantics rather than URL-style concatenation.
+
+Transitions are deliberately rejected until a separately validated design supplies transition duration, handles, stream layout, and output-duration math. Source ranges may be reused or reordered; explicit destination ranges may not overlap.
+
 Fast seek and stream copy may choose seek points or packets that do not correspond to an exact visual/audio edit boundary. Label keyframe/packet status as one of `verified`, `not_verified`, or `not_applicable`; never infer it from a round timestamp.
 
 Record FFmpeg/ffprobe versions, complete generated command, mapping, codec settings, environment-sensitive capabilities, output digest, and acceptance report alongside the rendered artifact.
