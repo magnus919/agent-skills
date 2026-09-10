@@ -2,9 +2,9 @@
 
 [![skills.sh](https://skills.sh/b/magnus919/agent-skills)](https://skills.sh/magnus919/agent-skills)
 
-A collection of AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems. Skills follow the [Agent Skills open format](https://agentskills.io), making them compatible with any agent framework that supports the standard.
+A collection of AI agent skills — reusable workflows, protocols, and knowledge packs for agentic systems. Skills follow the Agent Skills open format, making them compatible with any agent framework that supports the standard.
 
-Bundles are this repository's convention for organizing related skills under a single umbrella with shared reference material; they appear in the same alphabetical catalog as standalone skills. Compatible harnesses are guaranteed to see the umbrella skill. Nested subskill auto-loading depends on the harness or on the umbrella skill's instructions.
+The project is also where I codify practical patterns for making agents more capable, governable, observable, and trustworthy in real work — from evaluations and production operations to AI governance, operating economics, and multi-agent collaboration.
 
 ## Skills
 
