@@ -46,7 +46,7 @@ possible label count.
    Adjudicate only with a stated rule and qualified authority. Feed confirmed
    guide defects back into training and re-review affected labels.
 8. Stop or continue based on marginal downstream value, coverage, quality,
-   cost, and time. A fixed item quota is not a stopping rule. Freeze the
+   cost, and time. An item quota may stop spending but cannot by itself establish sufficient quality. Freeze the
    manifest and hand off to data-engineering for storage/orchestration and
    ml-engineering for training use.
 
@@ -90,3 +90,9 @@ Do not use this skill as the primary owner for statistical inference or
 experimental design, data platforms, model training, or UI implementation.
 Those neighboring skills consume this skill's annotation manifest and quality
 evidence.
+
+## Templates
+
+- [annotation guide](templates/annotation-guide.md) — use when recording this stage of the annotation workflow.
+- [annotation plan](templates/annotation-plan.md) — use when recording this stage of the annotation workflow.
+- [quality report](templates/quality-report.md) — use when recording this stage of the annotation workflow.

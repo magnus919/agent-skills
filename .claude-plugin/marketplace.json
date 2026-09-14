@@ -1329,6 +1329,15 @@
       "description": "Deploy, configure, and troubleshoot Traefik v3 reverse proxy — covers all providers, routing, TLS/ACME, middlewares, and production patterns with YAML examples. Load when setting up or debugging a Traefik instance. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
+      "name": "training-data-annotation",
+      "source": "./",
+      "skills": [
+        "./training-data-annotation"
+      ],
+      "strict": false,
+      "description": "Design and improve human annotation programs for machine-learning training, validation, and evaluation data, including task and label schemas, active acquisition, annotator guidance, calibration, disagreement, adjudication, provenance, and cost-quality stopping. Do not use for general statistical inference, data storage pipelines, model training, or annotation-interface implementation; route those concerns to data-scientist, data-engineering, ml-engineering, or product-design-and-ux."
+    },
+    {
       "name": "trakt",
       "source": "./",
       "skills": [
