@@ -1,11 +1,16 @@
 import contextlib
+import importlib.util
 import io
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
-import spring_ai_check
+spec = importlib.util.spec_from_file_location(
+    "spring_ai_check", Path(__file__).with_name("spring_ai_check.py")
+)
+spring_ai_check = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(spring_ai_check)
 
 
 class SpringAICheckTests(unittest.TestCase):
