@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "skill_name": "electronics",
+  "evals": [
+    {
+      "id": "divider-loading-corners",
+      "prompt": "Review a DC monitor: supply 12 V \u00b15%, upper resistor 100 kohm \u00b11%, lower 33 kohm \u00b11%, ADC input modeled as 1 Mohm to ground, allowed ADC voltage 0\u20133.0 V. Ignore leakage and dynamic sampling for this first calculation. Is it acceptable? Show the worst-case result and what remains before release.",
+      "expected_output": "Loaded divider interval calculation and a rejected unsafe corner with follow-on dynamic checks.",
+      "assertions": [
+        "Uses lower resistor parallel with 1 Mohm, not an unloaded divider.",
+        "Computes upper output corner approximately 3.10 V (\u00b10.02 V) using supply high, upper resistor low, lower resistor high.",
+        "Rejects the design against 3.0 V rather than accepting nominal behavior.",
+        "Separates this static model from acquisition-time, input protection, leakage and reference checks."
+      ]
+    },
+    {
+      "id": "i2c-no-feasible-pullup",
+      "prompt": "A hypothetical open-drain bus has Vpullup=3.3 V, guaranteed VOL\u22640.4 V at 2 mA, measured total capacitance 450 pF, and required 30\u201370% rise time\u2264300 ns. Existing pull-ups are two 4.7 kohm resistors in parallel per line. Use tr=0.8473RC. Decide whether changing the resistor alone can meet both requirements and propose a verification plan.",
+      "expected_output": "Shows incompatible pull-up bounds and changes the bus design.",
+      "assertions": [
+        "Calculates effective existing resistance2350 ohm and rise time about896 ns.",
+        "Calculates lower bound1450 ohm and upper boundabout787 ohm.",
+        "States no passive resistor value meets both constraints.",
+        "Proposes reducing capacitance/segmentation or changing supported operating mode rather than arbitrarily stronger pullups.",
+        "Requires checking actual VOL/rise time at relevant endpoints and device capabilities."
+      ]
+    },
+    {
+      "id": "power-thermal-model",
+      "prompt": "A linear regulator drops 9 V to3.3 V at180 mA. Ignore quiescent current. Ambient55 C, claimed thetaJA85 C/W from a datasheet test board, maximum junction125 C. Our board copper differs. Review the thermal claim and next action.",
+      "expected_output": "Compute first-order risk without claiming exact target temperature.",
+      "assertions": [
+        "Computes loss1.026 W and estimated junctionabout142 C under the stated model.",
+        "Rejects thermal acceptance under the stated assumptions.",
+        "Explains thetaJA depends on board/environment and is not a universal device constant.",
+        "Proposes changing dissipation/thermal path and verifying target-board temperature with an appropriate model/measurement."
+      ]
+    },
+    {
+      "id": "measurement-loading",
+      "prompt": "A1.0 V ideal source feeds a node through1 Mohm. The node is measured using a10 Mohm DMM and readsabout0.91 V. A colleague calls the source defective. Write a short diagnosis, calculation and next measurement.",
+      "expected_output": "Identifies instrument loading and distinguishes observations from fault.",
+      "assertions": [
+        "Calculates1*10/(1+10)=about0.909 V.",
+        "Explains reading is consistent with loading, not evidence source defective.",
+        "Selects a measurement that isolates source behavior from the loading artifact—such as a higher-input-impedance measurement, justified buffer, or source-side measurement—and checks relevant instrument/input errors.",
+        "Records probe/meter configuration and preserves expected-versus-observed values."
+      ]
+    },
+    {
+      "id": "sensor-calibration-holdout",
+      "prompt": "A pressure sensor calibration uses five increasing-pressure points and fits a cubic with nearly zero residual. No decreasing sweep, temperature variation or independent check points were collected. Can we claim0.1% accuracy across the rated temperature range? Draft a validation plan.",
+      "expected_output": "Reject unsupported accuracy while producing a usable calibration validation plan.",
+      "assertions": [
+        "Does not equate training-fit residual with accuracy.",
+        "Separates reference uncertainty, repeatability, hysteresis, drift and temperature effects.",
+        "Requires independent validation points and both increasing/decreasing sweeps.",
+        "Defines acceptance from requirements and avoids inventing0.1% evidence or arbitrary universal sample counts."
+      ]
+    },
+    {
+      "id": "i2c-scan-and-recovery",
+      "prompt": "A shared controller bus returned an ACK at0x48 yesterday. Today SDA is low and SCL is high. A teammate wants repeated address scans and nine clock pulses while another controller remains active. Device model unknown. Give a bounded diagnostic/recovery decision.",
+      "expected_output": "Avoids scan-as-identity and uncontrolled bus recovery.",
+      "assertions": [
+        "Distinguishes ACK from exact device identity or correct register behavior.",
+        "Recognizes scanning can have side effects and is not purely passive.",
+        "Requires ownership/quiescence of all controllers before attempting recovery.",
+        "Distinguishes SDA-stuck recovery from SCL held low; conditions clock pulses on actual line release and documented device behavior.",
+        "Escalates to exact device reset/power recovery only with state/recovery implications understood."
+      ]
+    },
+    {
+      "id": "analog-settling",
+      "prompt": "An op amp described as rail-to-rail drives an ADC through a cable. DC voltage is plausible but conversions alternate and the scope shows ringing. We know neither op amp part nor ADC acquisition timing. Propose the minimum useful evidence and an ordered diagnosis; do not select component values yet.",
+      "expected_output": "Prioritizes source/load/acquisition and stability evidence.",
+      "assertions": [
+        "Requests exact amplifier and ADC specifications plus source/load/cable and sampling context.",
+        "Checks common-mode/output swing under actual load instead of assuming rail-to-rail means unlimited operation.",
+        "Distinguishes capacitive-load stability from ADC acquisition settling and aliasing.",
+        "Does not prescribe arbitrary resistor/capacitor values; proposes decisive waveform/capture observations."
+      ]
+    },
+    {
+      "id": "schematic-to-bench",
+      "prompt": "I have a battery-powered low-voltage prototype with a transistor switching an inductive load. Only a photo and a handwritten transistor label are available. Prepare a build-review artifact before power-up, including the information you need, checks, and exit criteria.",
+      "expected_output": "Concrete evidence-based build review without invented pins/ratings.",
+      "assertions": [
+        "Requests exact transistor/load/supply identity and verified pinout/schematic.",
+        "Includes driver state, load current/inrush, inductive energy/clamp path and device ratings.",
+        "Defines unpowered wiring/polarity/short checks and controlled staged power-up with stated criteria.",
+        "Does not infer safe pinout/current rating from appearance or label alone.",
+        "Produces an actionable review/measurement record, not only a list of warnings."
+      ]
+    }
+  ]
+}
