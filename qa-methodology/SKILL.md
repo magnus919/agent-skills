@@ -4,8 +4,8 @@ description: >-
   Design and apply QA methodology for software teams: test strategy, regression testing,
   CI failure triage, test automation, quality gates and metrics, risk-based testing,
   exploratory testing, test design techniques, AI code quality gates (independent
-  verification, acceptance-criteria testability review for agentic Spec-Driven
-  Development), mutation-guided test hardening and review evidence (surviving mutants,
+  verification, artifact provenance, spec-first oracles, AI-review-comment triage,
+  acceptance-criteria testability for Spec-Driven Development), mutation-guided test hardening and review evidence (surviving mutants,
   weak assertions, diff-aware mutation testing), agentic eval design (dataset test design, judge-as-system-under-test,
   flaky-eval discipline), QA career levels (Senior/Staff/Principal), and SDET
   engineering (test infrastructure, gTAA, CI/CD integration). Do not use for
@@ -77,6 +77,7 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `references/qa-career-levels.md` | QA career growth — Senior/Staff/Principal scope, leveling mechanics, archetypes, misconceptions |
 | `references/sdet-engineering.md` | SDET role and skills — gTAA/TAF architecture, POM, SOLID for tests, build-vs-buy, testability |
 | `references/ai-code-quality-gates.md` | Reviewing AI-generated code — independent verification, AC testability, agent-test quality, human-in-the-loop |
+| `references/ai-test-artifact-evidence.md` | Provenance, spec-first oracle review, generated-review triage, workflow evidence, and emergency exceptions for AI-assisted QA |
 | `references/agentic-eval-design.md` | Designing agent evals — dataset test design, judge bias, flaky-eval discipline, CI gate tiers, replay |
 | `templates/test-strategy.md` | Producing a test strategy document — fill in scope, risk tiers, level allocation, automation targets |
 | `templates/risk-register.md` | Recording risk assessment results — fill in items, P×I scores, owners, mitigations |
@@ -84,12 +85,13 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `templates/bug-report.md` | Filing a structured bug report — fill in reproduction steps, expected vs actual, severity |
 | `templates/verification-plan.md` | Planning independent verification — fill in AC-to-method traceability, verifier assignment, exit criteria |
 | `templates/mutation-review.md` | Recording bounded mutation review scope, classifications, survivor tests, and independent evidence |
+| `templates/ai-assisted-verification-note.md` | Recording AI-assisted test/review provenance, independent oracle checks, and evidence disposition |
 | `assets/risk-matrix-grid.md` | Scoring risks during a workshop — 5×5 P×I grid with zone thresholds |
 | `assets/test-design-techniques-checklist.md` | Selecting techniques for a feature — quick-reference checklist mapping scenario type to technique |
 | `assets/qa-definition-of-done.md` | Defining release readiness — QA contribution to definition of done |
 | `scripts/risk-prioritize.py` | Computing P×I rankings from a risk-items JSON file |
 | `scripts/check-ac-testability.py` | Checking acceptance criteria for vague verbs and missing observable outcomes |
-| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 10 cases) |
+| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 15 cases) |
 
 ## Scripts
 
