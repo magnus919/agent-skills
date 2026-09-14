@@ -77,6 +77,7 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `references/qa-career-levels.md` | QA career growth — Senior/Staff/Principal scope, leveling mechanics, archetypes, misconceptions |
 | `references/sdet-engineering.md` | SDET role and skills — gTAA/TAF architecture, POM, SOLID for tests, build-vs-buy, testability |
 | `references/ai-code-quality-gates.md` | Reviewing AI-generated code — independent verification, AC testability, agent-test quality, human-in-the-loop |
+| `references/ai-test-artifact-evidence.md` | Provenance, spec-first oracle review, generated-review triage, workflow evidence, and emergency exceptions for AI-assisted QA |
 | `references/agentic-eval-design.md` | Designing agent evals — dataset test design, judge bias, flaky-eval discipline, CI gate tiers, replay |
 | `templates/test-strategy.md` | Producing a test strategy document — fill in scope, risk tiers, level allocation, automation targets |
 | `templates/risk-register.md` | Recording risk assessment results — fill in items, P×I scores, owners, mitigations |
@@ -84,6 +85,7 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `templates/bug-report.md` | Filing a structured bug report — fill in reproduction steps, expected vs actual, severity |
 | `templates/verification-plan.md` | Planning independent verification — fill in AC-to-method traceability, verifier assignment, exit criteria |
 | `templates/mutation-review.md` | Recording bounded mutation review scope, classifications, survivor tests, and independent evidence |
+| `templates/ai-assisted-verification-note.md` | Recording AI-assisted test/review provenance, independent oracle checks, and evidence disposition |
 | `assets/risk-matrix-grid.md` | Scoring risks during a workshop — 5×5 P×I grid with zone thresholds |
 | `assets/test-design-techniques-checklist.md` | Selecting techniques for a feature — quick-reference checklist mapping scenario type to technique |
 | `assets/qa-definition-of-done.md` | Defining release readiness — QA contribution to definition of done |
