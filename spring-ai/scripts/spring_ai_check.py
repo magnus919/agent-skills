@@ -37,6 +37,53 @@ def strip_comments(text):
     return text
 
 
+def strip_java_comments(text):
+    """Remove Java comments while preserving string and character literals."""
+    result = []
+    index = 0
+    state = "normal"
+    while index < len(text):
+        char = text[index]
+        next_char = text[index + 1] if index + 1 < len(text) else ""
+        if state == "normal":
+            if char == '"':
+                state = "string"
+                result.append(char)
+            elif char == "'":
+                state = "char"
+                result.append(char)
+            elif char == "/" and next_char == "/":
+                state = "line"
+                result.append(" ")
+                index += 1
+            elif char == "/" and next_char == "*":
+                state = "block"
+                result.append(" ")
+                index += 1
+            else:
+                result.append(char)
+        elif state == "line":
+            if char == "\n":
+                state = "normal"
+                result.append(char)
+        elif state == "block":
+            if char == "*" and next_char == "/":
+                state = "normal"
+                result.append(" ")
+                index += 1
+            elif char == "\n":
+                result.append("\n")
+        else:
+            result.append(char)
+            if char == "\\" and next_char:
+                result.append(next_char)
+                index += 1
+            elif (state == "string" and char == '"') or (state == "char" and char == "'"):
+                state = "normal"
+        index += 1
+    return "".join(result)
+
+
 def rel(root, paths):
     return [str(path.relative_to(root)) for path in paths]
 
@@ -142,7 +189,7 @@ def check(root):
         ai_versions, boot_versions, variables = maven_versions(read(root / "pom.xml"))
     else:
         ai_versions, boot_versions, variables = gradle_versions(build_text)
-    source = [(path, strip_comments(read(path))) for path in java_files]
+    source = [(path, strip_java_comments(read(path))) for path in java_files]
     findings = []
     if not ai_versions:
         unresolved = bool(

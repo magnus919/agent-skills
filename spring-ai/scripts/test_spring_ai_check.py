@@ -146,6 +146,21 @@ class SpringAICheckTests(unittest.TestCase):
         self.assertNotIn("PROMPT_LOGGING_ENABLED", codes)
         self.assertNotIn("PROVIDER_SECRET_LITERAL", codes)
 
+    def test_java_block_comments_do_not_trigger_symbols_and_literals_survive(self):
+        comments = (
+            "/** ChatMemory, VectorStore, and @Tool are documented here. */\n"
+            "/* .stream() and a fake key are also comments. */\n"
+            "class App {}"
+        )
+        project = self.make("<project/>", comments)
+        codes = [item["code"] for item in spring_ai_check.check(project)["findings"]]
+        self.assertNotIn("MEMORY_CONVERSATION_ID_MISSING", codes)
+        self.assertNotIn("RETRIEVAL_AUTH_UNVERIFIED", codes)
+        self.assertNotIn("TOOL_AUTH_UNVERIFIED", codes)
+        self.assertNotIn("STREAMING_STACK_UNCLEAR", codes)
+        literal = 'class App { String literal = "/* ChatMemory */"; }'
+        self.assertIn("ChatMemory", spring_ai_check.strip_java_comments(literal))
+
     def test_unknown_and_secret_safe_errors(self):
         project = self.make(
             "<properties><spring-ai.version>${managed.version}</spring-ai.version></properties>",
