@@ -13,8 +13,8 @@ It also keeps observability useful without turning it into a privacy liability. 
 | Contents | Provides |
 |---|---|
 | `SKILL.md` | Framework-neutral workflow and routing |
-| `references/` | Evaluation, statistics, trajectory, privacy, OTel, and source guidance |
-| `templates/` | Fillable plans, manifests, grader specs, reviews, reports, and gates |
+| `references/` | Evaluation, evidence modes, metric mirrors, grounding, judge stability, statistics, trajectory, privacy, OTel, and source guidance |
+| `templates/` | Fillable plans, manifests, grader specs, metric mirrors, reviews, reports, and gates |
 
 ## Quick Start
 
@@ -28,6 +28,8 @@ Expected result: a risk-based plan that names the task contract, evidence, priva
 - Agent observability, traces, telemetry, trajectory review, or production monitoring
 - Regression analysis, prompt/model/tool release gate, or incident-to-eval learning
 - Privacy-aware logging, redaction, retention, or trace sampling for an agent
+- Offline versus online comparison, replay fidelity, metric mirrors, or judge stability
+- Claim-level grounding, RAG retrieval-versus-generation diagnosis, abstention, or escalation
 
 ## Requirements
 

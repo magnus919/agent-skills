@@ -56,6 +56,8 @@ AI-generated code often exhibits non-deterministic behavior (LLM outputs, random
 
 ## Agent-Generated Test Quality
 
+For provenance, specification-first oracle review, AI-review comment triage, workflow evidence, and emergency handling, load [ai-test-artifact-evidence.md](ai-test-artifact-evidence.md).
+
 ### The Mirrored-Bug Risk
 
 When an agent generates both code AND tests in the same session, both artifacts share the same misunderstanding of the spec. The test passes because it encodes the same bug, not because the code is correct. This is the test-overfitting problem (IBM, 21.8–35.9%) manifesting at the test-authoring level.

@@ -66,7 +66,7 @@
         "./ai-governance"
       ],
       "strict": false,
-      "description": "Design and operate an organization's AI governance system: define governance principles, operating models and decision rights, risk frameworks, lifecycle gates, and fairness, transparency, privacy, security, regulatory, and board-oversight controls. Use when standing up a governance program, tiering AI use-case risk, reviewing an LLM or agent system for governance and safety gaps, mapping a regulation to a compliance plan, scoring governance maturity, or preparing board reporting. For regulated life-sciences use cases, also cover GxP, ALCOA+, data integrity, electronic records, validation/assurance, and QMS interfaces. Do not use for interpreting regulations as legal advice (route to legal-strategy), data-governance mechanics (data-architect/data-engineering), or implementing application security (secure-software-engineering)."
+      "description": "Design and operate an organization's AI governance system: define governance principles, operating models and decision rights, risk frameworks, lifecycle gates, and fairness, transparency, privacy, security, regulatory, and board-oversight controls across SaaS, API, self-hosted, and agentic deployment postures. Use when standing up a governance program, tiering AI use-case risk, reviewing an LLM or agent system for governance and safety gaps, mapping a regulation to a compliance plan, scoring governance maturity, or preparing board reporting. For regulated life-sciences use cases, also cover GxP, ALCOA+, data integrity, electronic records, validation/assurance, and QMS interfaces. Do not use for interpreting regulations as legal advice (route to legal-strategy), data-governance mechanics (data-architect/data-engineering), or implementing application security (secure-software-engineering)."
     },
     {
       "name": "ai-operating-economics",
@@ -732,7 +732,7 @@
         "./ml-engineering"
       ],
       "strict": false,
-      "description": "Plan and execute production ML engineering work — model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
+      "description": "Plan and execute production ML engineering work — model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, lineage, feature parity, drift response, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
     },
     {
       "name": "mobile-development",
@@ -849,7 +849,7 @@
         "./platform-engineering"
       ],
       "strict": false,
-      "description": "Use this skill when building or operating internal developer platforms: infrastructure as code, CI/CD, container orchestration, service networking, secrets, and observability. Do not use it to define release process, promotion, rollout, or rollback policy; use release-engineering for that delivery model."
+      "description": "Use this skill when building or operating internal developer platforms: infrastructure as code, CI/CD, container orchestration, service networking, secrets, and observability, or when shaping platform products, self-service interfaces, adoption evidence, and policy guardrails. Do not use it to define release process, promotion, rollout, or rollback policy; use release-engineering for that delivery model. Route named-tool configuration and troubleshooting to the corresponding operational skill, such as kubernetes or traefik for ingress-controller configuration."
     },
     {
       "name": "playwright",
@@ -1038,7 +1038,7 @@
         "./qa-methodology"
       ],
       "strict": false,
-      "description": "Design and apply QA methodology for software teams: test strategy, regression testing, CI failure triage, test automation, quality gates and metrics, risk-based testing, exploratory testing, test design techniques, AI code quality gates (independent verification, acceptance-criteria testability review for agentic Spec-Driven Development), mutation-guided test hardening and review evidence (surviving mutants, weak assertions, diff-aware mutation testing), agentic eval design (dataset test design, judge-as-system-under-test, flaky-eval discipline), QA career levels (Senior/Staff/Principal), and SDET engineering (test infrastructure, gTAA, CI/CD integration). Do not use for root-cause debugging of production incidents, security implementation or threat modeling, or evaluation framework governance and statistical analysis — route those to systematic-debugging, secure-software-engineering, and agent-evals-and-observability respectively."
+      "description": "Design and apply QA methodology for software teams: test strategy, regression testing, CI failure triage, test automation, quality gates and metrics, risk-based testing, exploratory testing, test design techniques, AI code quality gates (independent verification, artifact provenance, spec-first oracles, AI-review-comment triage, acceptance-criteria testability for Spec-Driven Development), mutation-guided test hardening and review evidence (surviving mutants, weak assertions, diff-aware mutation testing), agentic eval design (dataset test design, judge-as-system-under-test, flaky-eval discipline), QA career levels (Senior/Staff/Principal), and SDET engineering (test infrastructure, gTAA, CI/CD integration). Do not use for root-cause debugging of production incidents, security implementation or threat modeling, or evaluation framework governance and statistical analysis — route those to systematic-debugging, secure-software-engineering, and agent-evals-and-observability respectively."
     },
     {
       "name": "raleigh",

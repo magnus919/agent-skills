@@ -6,8 +6,9 @@ single bug to patch but a set of trust-boundary decisions layered across the who
 let a model read, what you let it do, what you trust its output to be, and what it can reach when an
 input turns adversarial. The same discipline extends to agents, where autonomy multiplies every
 risk because a model that merely talks can be re-pointed to call tools, move files, and change real
-state. This reference synthesizes (never reproduces) ideas from *The Developer's Playbook for LLM Security* and *Beyond the Algorithm*, and it marks "current research" where the
-fast-moving 2025-era OWASP and agentic guidance de-stales the books. Read it with
+state. This reference synthesizes (never reproduces) ideas from *The Developer's Playbook for LLM
+Security*, *Beyond the Algorithm*, and *AI Governance*, and it marks "current research" where the
+fast-moving OWASP and agentic guidance de-stales the books. Read it with
 `foundations-and-principles.md` (which names safety and human oversight as governing principles),
 `privacy-and-data-governance.md` (the data-protection half that security protects), and
 `ai-lifecycle-governance.md` (where security gates sit in the model lifecycle). Use the
@@ -53,6 +54,28 @@ cheap, but the data crosses a boundary into an external system, raising exposure
 model privately keeps data inside your network and tightens control over the boundary, but shifts
 the burden to maintenance, patching, and verifying that an open-source model is genuine and
 uncompromised. Neither choice is safe by default; each just moves where the boundary is drawn.
+
+## The Six-Factor Exposure Ladder
+
+Use this ladder from *AI Governance* to identify which security exposures a system has before
+choosing controls. It is a dependency ladder, not a severity ranking or a numeric risk score. A
+failure at the environment layer, such as exposed credentials, can be more damaging than a
+higher-level planning failure. Assess severity and residual risk separately in the risk register.
+
+| Factor | The factor applies when the system... | Governance question |
+|---|---|---|
+| **Environment** | runs with weak logging, secrets, isolation, access control, or vendor assurance | Can an incident be reconstructed, contained, and attributed? |
+| **Model** | depends on an unvetted, externally controlled, fine-tuned, or provenance-uncertain model | What evidence supports model origin, version, behavior, and safety after updates? |
+| **Input** | accepts untrusted user, document, web, or tool content | Which content is data, which is instruction, and how is indirect injection handled? |
+| **Data access** | retrieves personal, confidential, regulated, or otherwise sensitive data at runtime | Does the model receive only the minimum authorized data for this request? |
+| **Ability to make changes** | can write records, send messages, trigger workflows, change code, or move money | What validates parameters and what approval or reversal exists before execution? |
+| **Agency** | chooses goals, tools, order, retries, or sub-agents across multiple steps | Can the system's plan expand its authority or create a new trust path? |
+
+Every LLM application has at least an environment and model exposure; most have input exposure.
+Data access, change capability, and agency increase the blast radius and the required evidence, but
+they do not make the lower layers optional. A simple chatbot on an insecure environment can be
+more dangerous than a carefully isolated agent. Record which factors apply, the controls at each
+layer, and the evidence that the controls operate at the actual boundary.
 
 ## Prompt Injection
 
@@ -132,6 +155,72 @@ abuse leaves a trail. "current research": the OWASP GenAI LLM Top 10 2026 ranks 
 third, and in mid-2026 the Five Eyes nations' cyber agencies (CISA, NSA, and counterparts) published
 their first joint guidance on agentic AI, urging measured rollout backed by identity, access, and
 monitoring safeguards.
+
+## Agentic Control Plane
+
+Agent security needs controls outside the model's reasoning. The agent may propose a legitimate
+plan while an injected document, poisoned memory, or compromised tool steers the actual call. The
+following control plane makes authority explicit and independently enforceable.
+
+### Registry and identity
+
+Maintain an approved registry of agents, tools, individual operations, data scopes, destinations,
+versions, owners, and review dates. Registering a connector is not enough when it exposes both
+read and destructive operations. Give every agent a distinct identity tied to one business
+purpose, use short-lived and scoped credentials, and record the human or service principal on
+whose behalf each call occurs. For multi-agent systems, define which agents may communicate and
+what one agent may ask another to do.
+
+### External authorization and action tiers
+
+Evaluate authorization immediately before each tool call, outside natural-language reasoning. A
+policy decision should consider agent identity, user or calling principal, purpose, tool and
+operation, resource or tenant, data classification, parameters, destination, and current
+approval. Default to deny when no rule explicitly permits the call. The policy engine makes the
+decision; a separate enforcement point must prevent the call when the result is deny or approval
+is missing.
+
+Classify operations by consequence rather than by the agent's description of its intent:
+
+- **Low-impact, reversible reads:** allow within least-privilege scope with logging and rate limits.
+- **Medium-impact or externally visible actions:** require a targeted confirmation or human review.
+- **High-impact, sensitive, or irreversible actions:** require explicit approval every time and a
+  tested reversal, escalation, or containment path.
+
+Do not interrupt a reviewer for every low-risk retrieval. Excessive approvals create fatigue and
+turn the control into rubber-stamping. Conversely, do not assume a read is harmless: a web request,
+URL, tool parameter, or downstream log can exfiltrate data without changing a record.
+
+### Isolation, memory, and containment
+
+Separate untrusted external research from sensitive internal analysis where possible. Use isolated
+sessions, sub-agents, credentials, network egress, and filesystem scopes so a component that reads
+untrusted content cannot also reach sensitive systems. Run agents in a sandbox with explicit network
+allowlists, limited filesystem access, no unnecessary process spawning, and credentials outside the
+sandbox boundary.
+
+Treat memory as an attack surface. Use short-lived working memory, bounded task or session logs,
+and reviewed or purpose-limited durable memory. Require explicit approval for durable memory writes,
+protect memory by tenant and user, and provide a way to inspect, correct, and purge it. Test whether
+poisoned memory survives a session, reaches another user, or changes a later plan.
+
+Every deployed agent needs a tested kill switch that suspends active work, revokes credentials, and
+isolates connected systems. Pair manual intervention with automated triggers for anomalous tool
+use, data volume, destination, cost, or goal drift. Prefer graceful degradation, such as fewer
+tools or more approvals, when the system can remain useful while under investigation.
+
+### Browser and tool-ecosystem boundaries
+
+An agentic browser can combine authenticated sensitive data, untrusted web content, and external
+communication in one session. Break that combination where possible: use an isolated profile,
+logged-out mode, no password-manager access, no saved credentials or corporate session cookies, and
+real-time visibility into navigation and actions. For tool ecosystems such as MCP, pin versions,
+review tool descriptions and updates, disable or hold dynamic tool discovery for review, scan both
+repositories and developer workstations, and put an enforcement gateway between agents and tools.
+Treat tool descriptions and tool outputs as untrusted input, not as policy.
+
+For a fillable record of these decisions, use
+[agentic-governance-review.md](../templates/agentic-governance-review.md).
 
 ## Denial of Service and Unbounded Consumption
 
@@ -223,7 +312,7 @@ improper output handling.
 - **`foundations-and-principles.md`** — safety and human oversight as the principles security
   operationalizes.
 - **`privacy-and-data-governance.md`** — the data-protection controls (exposure, retention,
-  PETs) that security defends.
+  PETs, purpose-aware egress, and agent memory) that security defends.
 - **`ai-lifecycle-governance.md`** — where security reviews and red-teaming sit in the stage gates.
 - **`risk-management-and-frameworks.md`** — NIST AI RMF, including its Generative AI Profile, into which
   the OWASP categories map.
@@ -233,7 +322,8 @@ improper output handling.
 
 ### Synthesized from
 
-This reference synthesizes (never reproduces) ideas from *The Developer's Playbook for LLM Security* and *Beyond the Algorithm*, and it is de-staled against the current state
+This reference synthesizes (never reproduces) ideas from *The Developer's Playbook for LLM Security*,
+*Beyond the Algorithm*, and *AI Governance*, and it is de-staled against the current state
 by the mission research note on LLM/agent security (research-llm-agent-security.md) and a
 verification of the OWASP GenAI LLM Top 10 2026 against the OWASP GenAI Security Project's published
 release. All prose is an original paraphrase and synthesis of the ideas in these sources;

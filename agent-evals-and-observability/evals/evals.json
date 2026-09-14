@@ -17,7 +17,7 @@
     {
       "id": "grader-criteria",
       "prompt": "Our eval harness has tasks and recorded agent outputs, but the scoring is a single human judgment of 'looks good.' I want objective, repeatable grading. How do I write grader criteria that multiple reviewers (or a judge model) can apply consistently?",
-      "expected_output": "Grading criteria written as discrete, checkable requirements rather than holistic impressions: each task has pass-fail or rubric-scored criteria derived from the task contract — required content must be present, required steps must be taken, forbidden behaviors must be absent, and correctness is defined against a reference answer or verifiable facts rather than style. The response explains the rubric design: a small number of criteria (not a long checklist of trivia), each stated so that a reviewer can determine pass or fail without interpretation, with explicit handling of partial credit and a rule for when a single failure fails the whole case (e.g., a safety violation or a wrong factual claim). It also covers calibration: sample-scoring a set of outputs against the rubric, reconciling disagreements, and iterating the rubric until reviewers converge.",
+      "expected_output": "Grading criteria written as discrete, checkable requirements rather than holistic impressions: each task has pass-fail or rubric-scored criteria derived from the task contract \u2014 required content must be present, required steps must be taken, forbidden behaviors must be absent, and correctness is defined against a reference answer or verifiable facts rather than style. The response explains the rubric design: a small number of criteria (not a long checklist of trivia), each stated so that a reviewer can determine pass or fail without interpretation, with explicit handling of partial credit and a rule for when a single failure fails the whole case (e.g., a safety violation or a wrong factual claim). It also covers calibration: sample-scoring a set of outputs against the rubric, reconciling disagreements, and iterating the rubric until reviewers converge.",
       "assertions": [
         "Criteria are discrete and checkable, derived from the task contract",
         "Required content, required steps, and forbidden behaviors are separated",
@@ -41,7 +41,7 @@
     {
       "id": "release-gate-design",
       "prompt": "We want to gate releases on eval results so a bad change cannot ship. How do I design the release gate so it blocks real regressions without making every release an evals fire drill?",
-      "expected_output": "A release-gate design that separates the gating decision from the raw score: the response defines the gate criteria in terms of the regression analysis rather than a single threshold — no regressions on critical-path cases, no regressions beyond a tolerance band on the overall set, and the gate uses the previously established baseline for the same version of the eval set (so set changes do not silently move the goalposts). It prescribes the operational mechanics: the gate runs in CI, produces a comparable report against the merged baseline, blocks on the blocking criteria, and routes borderline results to a human review queue with the evidence attached rather than an automatic pass or fail. It also covers the escape hatch: an explicit override process with a recorded reason and owner, so the gate stays credible.",
+      "expected_output": "A release-gate design that separates the gating decision from the raw score: the response defines the gate criteria in terms of the regression analysis rather than a single threshold \u2014 no regressions on critical-path cases, no regressions beyond a tolerance band on the overall set, and the gate uses the previously established baseline for the same version of the eval set (so set changes do not silently move the goalposts). It prescribes the operational mechanics: the gate runs in CI, produces a comparable report against the merged baseline, blocks on the blocking criteria, and routes borderline results to a human review queue with the evidence attached rather than an automatic pass or fail. It also covers the escape hatch: an explicit override process with a recorded reason and owner, so the gate stays credible.",
       "assertions": [
         "The gate uses regression-relative criteria, not a single absolute score",
         "The baseline is pinned to the same eval-set version so goalposts do not move",
@@ -53,13 +53,79 @@
     {
       "id": "incident-to-case-learning",
       "prompt": "A customer-facing incident last week traced back to an agent answer we never tested: the agent confidently gave wrong configuration advice. I want the incident to become a permanent eval case so it cannot regress. What is the incident-to-case workflow and how does trajectory review fit in?",
-      "expected_output": "An incident-to-case workflow that converts the postmortem into durable eval coverage: the response walks the process — extract the failing behavior from the incident (the wrong output, the context that produced it, the harm), turn it into a task case with the correct expected behavior and grader criteria, add it to the regression set, and verify it fails on the current release and passes on the fix. It explains where trajectory review fits: for agent failures, the answer alone may not show the flaw, so the review examines the reasoning trajectory (the steps, tool calls, and sources the agent used) to understand whether the error was a knowledge gap, a retrieval failure, or a reasoning failure, which determines the fix and the right case shape. The response also covers the loop: the new case joins the baseline, so any future release that reintroduces the behavior is blocked.",
+      "expected_output": "An incident-to-case workflow that converts the postmortem into durable eval coverage: the response walks the process \u2014 extract the failing behavior from the incident (the wrong output, the context that produced it, the harm), turn it into a task case with the correct expected behavior and grader criteria, add it to the regression set, and verify it fails on the current release and passes on the fix. It explains where trajectory review fits: for agent failures, the answer alone may not show the flaw, so the review examines the reasoning trajectory (the steps, tool calls, and sources the agent used) to understand whether the error was a knowledge gap, a retrieval failure, or a reasoning failure, which determines the fix and the right case shape. The response also covers the loop: the new case joins the baseline, so any future release that reintroduces the behavior is blocked.",
       "assertions": [
         "The workflow converts the incident into a task case with expected behavior and grader criteria",
         "The case is verified to fail on the current release and pass on the fix",
         "Trajectory review is used to classify the failure as knowledge, retrieval, or reasoning",
         "The failure classification drives both the fix and the case shape",
         "The new case joins the baseline so the regression is blocked going forward"
+      ]
+    },
+    {
+      "id": "diagnostic-performance-replay",
+      "prompt": "A candidate agent scores higher on the frozen answer set, but its replayed tool calls time out under production concurrency and one rare customer slice regresses. Design the evidence and release interpretation.",
+      "expected_output": "Separate performance, diagnostic, replay, and online evidence. Compare paired case and slice outcomes, inspect timeout and trajectory causes, validate replay fidelity and side-effect suppression, and hold or condition release because the rare slice and latency failure are not erased by the aggregate score.",
+      "assertions": [
+        "Separates performance, diagnostic, replay, and online evidence",
+        "Reports per-case and slice results rather than only an aggregate",
+        "Checks replay fidelity and side-effect suppression",
+        "Treats timeout and rare-slice regression as release-relevant evidence"
+      ]
+    },
+    {
+      "id": "offline-online-metric-mirror",
+      "prompt": "Our offline grounded-answer score improved, while online thumbs-up rate rose only for heavy users and fell for new users. Create a metric mirror and decide whether this proves a quality improvement.",
+      "expected_output": "Record the offline property, online denominator and population, assumed relationship, slices, missingness and selection effects, feedback-loop risks, and validation windows. Treat the result as exploratory or inconclusive until the relationship is checked across comparable windows; do not claim proof from the top-line thumbs-up rate.",
+      "assertions": [
+        "Names the offline and online populations and denominators",
+        "Inspects slice divergence and feedback or selection bias",
+        "Records the assumed link and validation windows",
+        "Does not treat the online top-line signal as proof"
+      ]
+    },
+    {
+      "id": "judge-abstention-stability",
+      "prompt": "A pairwise model judge prefers candidate A 80% of the time, but reversing answer order changes that to 52%, and repeated samples disagree on long answers. What should the evaluation system do?",
+      "expected_output": "Freeze the rubric and judge configuration, inspect order and length effects on held-out calibration cases, report disagreement and variance, and abstain or escalate these comparisons rather than gating on the unstable score. Revalidate after judge or rubric changes.",
+      "assertions": [
+        "Tests reversed order and length-related disagreement",
+        "Reports variance and calibration evidence",
+        "Uses abstention or escalation for unstable comparisons",
+        "Does not gate on the 80% score alone"
+      ]
+    },
+    {
+      "id": "grounding-retrieval-generation-attribution",
+      "prompt": "A RAG assistant gives a fluent answer with an unsupported claim. The retriever returned no relevant authorized document for that claim. How should the case be graded and routed?",
+      "expected_output": "Decompose the response into claims, record the evidence and authorization status, classify this claim as a retrieval or authorization/filtering failure, and grade factual support separately from fluency. Add a regression case and do not ask a judge to infer support without the source context.",
+      "assertions": [
+        "Uses claim-level grading with evidence and authorization status",
+        "Attributes absent relevant evidence to retrieval or filtering",
+        "Separates factual support from fluency",
+        "Adds durable regression coverage"
+      ]
+    },
+    {
+      "id": "grounding-generation-mixed-failure",
+      "prompt": "The retriever returns an authorized, directly relevant policy paragraph, but the final answer contradicts it. Explain the diagnosis and required evidence.",
+      "expected_output": "Verify the retrieved source and its authorization, preserve the relevant evidence span, classify the primary failure as generation or grounding, retain an interaction label if retrieval context was malformed, and test the corrected behavior with a claim-level regression case.",
+      "assertions": [
+        "Verifies source relevance and authorization",
+        "Attributes contradiction with present evidence to generation or grounding",
+        "Allows multiple labels when component failures interact",
+        "Creates a claim-level regression case"
+      ]
+    },
+    {
+      "id": "counterfactual-missing-support",
+      "prompt": "Our agent always selected retriever A in last month\u2019s logs. We have answer confidence and observed satisfaction, but no action-selection probabilities. A new policy selects retriever B for half the requests. Estimate the uplift from these logs and approve rollout if positive.",
+      "expected_output": "Decline an identifiable uplift/rollout claim from unsupported logs; distinguish confidence from propensity and specify the required evidence.",
+      "assertions": [
+        "Identifies missing action support for retriever B and does not fabricate its rewards",
+        "Distinguishes answer confidence from action-selection probability",
+        "Does not claim that a large log or doubly robust estimator repairs absent support",
+        "Proposes bounded additional evidence and routes statistical estimation to its owner without authorizing rollout"
       ]
     }
   ]
