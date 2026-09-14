@@ -547,6 +547,10 @@ Reverse-engineer a software codebase to understand its architecture, data flow, 
 
 Design and run a Spec-Driven Development (SDD) pipeline for AI software factories — where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each pipeline phase. Covers the 5-phase pipeline (SPECIFY → DECOMPOSE → IMPLEMENT → VERIFY → DELIVER), 4 phase gates with APPROVED/CONDITIONS/REJECTED verdicts, 7 spec quality gates, a methodology selection matrix (BDD, OpenAPI, AsyncAPI, DbC, TLA+, ADRs, C4), NFR encoding patterns, format translation (PRD → SPEC.md → Gherkin → OpenAPI), gate recovery and revision workflows, and a worked example SPEC.md. Ships 4 templates, 9 reference files, and 2 validation scripts. Tool-agnostic — works with Claude Code, Cursor, Hermes Agent, Devin, OpenHands, and droid. Not for single small changes, the intent-to-delivery control-plane protocol (see bmad), or unvalidated problems (product-discovery).
 
+### [spring-ai](spring-ai/SKILL.md)
+
+Build and diagnose Spring AI integrations with version-aware setup, ChatClient/advisors, retrieval, scoped memory, tool/MCP boundaries and observability. Includes a read-only Maven/Gradle diagnostic CLI with explicit static-analysis limits.
+
 ### [strategy-frameworks](strategy-frameworks/SKILL.md)
 
 Structure organizational strategy decisions about direction, industry structure, growth, capital allocation, acquisitions, and portfolios. Uses frameworks as prompts for evidence and trade-offs, not automatic recommendations.
