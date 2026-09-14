@@ -23,6 +23,7 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 - Need prioritization, scope, or why a feature is being built? Use [product-methodology](../product-methodology/SKILL.md).
 - Need WCAG, ARIA, native semantics, or accessibility testing depth? Use [web-accessibility](../web-accessibility/SKILL.md).
 - Need an approved interaction contract translated into a software specification and delivery gates? Use [spec-driven-development](../spec-driven-development/SKILL.md).
+- Need to design an AI-assisted, generated, predictive, recommendatory, or tool-using interaction? Read [AI interaction and uncertainty](references/ai-interaction-and-uncertainty.md) and use [the AI interaction contract](templates/ai-interaction-contract.md) alongside the general contract. Route model evaluation, telemetry implementation, governance, runtime authority, and accessibility conformance to the named specialists.
 
 ## Workflow
 
@@ -48,6 +49,7 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 | Pattern alternatives and decision evidence | `references/interaction-pattern-selection.md` |
 | Usability protocol, synthesis, consent, or privacy | `references/usability-testing-and-privacy.md` |
 | Handoff, acceptance criteria, or deployed verification | `references/engineering-handoff.md` |
+| AI uncertainty, grounding, human control, feedback, or model-change acceptance | `references/ai-interaction-and-uncertainty.md` |
 | Methodology self-check with synthetic fixtures | `references/scenario-probes.md` |
 | Source authority, status, and examples | `references/source-index.md` |
 
@@ -57,6 +59,7 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 - Specify behavior under relevant width, zoom/reflow, text expansion/localization, orientation, input modes, reduced motion, degraded connectivity, interruption, and re-entry. Do not use device breakpoints as the model.
 - Use synthetic fixtures such as `sample-user@example.test` and `INV-DEMO-042`; never request real credentials, payments, financial access, or secrets for an unsafe prototype.
 - A finding from usability work is bounded evidence, not accessibility conformance, population prevalence, analytics, or outcome proof.
+- AI output, confidence, explanation, citation, or user feedback is not proof of correctness by itself. Record the evidence boundary and route model-quality and statistical questions to the owning specialist.
 
 ## Completion
 
