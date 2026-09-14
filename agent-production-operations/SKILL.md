@@ -105,6 +105,7 @@ used in this bundle. Reference files are loaded on trigger:
 | [references/runtime-control-plan.md](references/runtime-control-plan.md) | Planning versioning, staged rollout, or fallback for an agent in production |
 | [references/tool-authority-health.md](references/tool-authority-health.md) | Recording or reviewing tool availability, failure, and authority usage/breach state over time |
 | [references/trace-to-eval-feedback.md](references/trace-to-eval-feedback.md) | Connecting production traces and incidents back to evaluation cases and release gates |
+| [references/service-conditions.md](references/service-conditions.md) | Defining tested concurrency envelopes, streaming completion, cache isolation, fallback quality, or task-cost budgets |
 
 ## Concrete operational parameters
 
@@ -267,5 +268,7 @@ used in this bundle. Reference files are loaded on trigger:
 | [references/runtime-control-plan.md](references/runtime-control-plan.md) | Versioning, staged rollout, and fallback plan |
 | [references/tool-authority-health.md](references/tool-authority-health.md) | Tool availability/failure and authority usage/breach record |
 | [references/trace-to-eval-feedback.md](references/trace-to-eval-feedback.md) | Production-to-evaluation feedback loop |
+| [references/service-conditions.md](references/service-conditions.md) | Tested capacity, streaming, cache, fallback, and cost conditions |
+| [templates/service-condition-record.md](templates/service-condition-record.md) | Record workload limits, acceptance thresholds, evidence, and stop conditions |
 | [evals/evals.json](evals/evals.json) | Integrated output-quality evaluation cases |
 | [manifest.yaml](manifest.yaml) | Machine-readable composition contract (schema v1): purpose, audience, stages, included skills, prerequisites, outputs, handoffs, conflicts, and eval suite; consumed by the lifecycle capability matrix |
