@@ -29,6 +29,10 @@ python3 scripts/profile_dataset.py input.csv --max-rows 10000
 
 The profiler does not edit the input. Use its report to fill `templates/cleaning-plan.md`, then validate the transformed output against `templates/schema-contract.yml` or a project-specific contract.
 
+For AI-assisted data work, the [boundary workflow](references/ai-repair-review.md) helps keep uncertain
+proposals out of trusted datasets. Use the [companion record](templates/ai-repair-ledger.csv) to retain
+validation and review evidence.
+
 ## Triggers
 
 - Clean or standardize CSV, JSON, text, spreadsheet exports, or DataFrames

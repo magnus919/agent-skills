@@ -3,7 +3,8 @@ name: product-design-and-ux
 description: >-
   Define user-facing product behavior from validated evidence and approved scope. Use for
   information architecture, task flows, state and recovery models, interface contracts,
-  usability-study plans, interaction-pattern tradeoffs, or engineering UX handoffs. Use
+  usability-study plans, interaction-pattern tradeoffs, AI recommendations and generated
+  outputs, uncertainty, human control, feedback, or engineering UX handoffs. Use
   after product discovery and product decisions; route WCAG/ARIA conformance work to
   web-accessibility and formal software specifications to spec-driven-development. Do not
   use this skill for unrelated requests; route to the nearest named specialist.
@@ -23,13 +24,14 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 - Need prioritization, scope, or why a feature is being built? Use [product-methodology](../product-methodology/SKILL.md).
 - Need WCAG, ARIA, native semantics, or accessibility testing depth? Use [web-accessibility](../web-accessibility/SKILL.md).
 - Need an approved interaction contract translated into a software specification and delivery gates? Use [spec-driven-development](../spec-driven-development/SKILL.md).
+- Need to design an AI-assisted, generated, predictive, recommendatory, or tool-using interaction? Read [AI interaction and uncertainty](references/ai-interaction-and-uncertainty.md) and use [the AI interaction contract](templates/ai-interaction-contract.md) alongside the general contract. Route model evaluation and observability design to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md), governance to [ai-governance](../ai-governance/SKILL.md), runtime authority to [agent-production-operations](../agent-production-operations/SKILL.md), product measurement to [product-analytics-and-measurement](../product-analytics-and-measurement/SKILL.md), accessibility to [web-accessibility](../web-accessibility/SKILL.md), and cost/value decisions to [ai-operating-economics](../ai-operating-economics/SKILL.md).
 
 ## Workflow
 
 1. Trace each outcome and design decision to evidence with `templates/outcomes-to-design.md`. Optional personas or jobs must change a decision and cite evidence; do not create decorative demographics.
 2. Establish information architecture from goals, content objects, terminology, permissions, findability, and service context. Read `references/information-architecture.md`.
 3. Define consequential labels, instructions, status, errors, and completion content; review the task's memory, choice, switching, interruption, and recovery demands. Use heuristics to generate testable questions, not verdicts. Read `references/content-and-cognitive-demand.md`.
-4. Model important tasks, including forces that create decisions, alternatives, interruption, re-entry, cancellation, recovery, irreversible actions, side effects, permission changes, and completion evidence. Read `references/task-flows-and-state-models.md` and use `templates/task-flow-state-model.md`.
+4. Model important tasks across every participating role, including recipient-side work after a handoff. Stop at the intended user outcome, not merely submission, delivery, or an intermediate status. Include decisions, alternatives, interruption, re-entry, cancellation, recovery, irreversible actions, side effects, permission changes, and completion evidence. Read `references/task-flows-and-state-models.md` and use `templates/task-flow-state-model.md`.
 5. Inventory only states forced by the flow, data, permissions, connectivity, and risk. Record risky omissions. Use `templates/screen-state-inventory.md`.
 6. Write framework-neutral contracts for content, controls, accessible interaction requirements, actions, transitions, persistence, permissions, responsive/reflow behavior, telemetry, and open decisions. Read `references/interface-contracts-and-responsive-behavior.md` and use `templates/interface-contract.md`.
 7. Treat patterns as hypotheses. Compare alternatives, tradeoffs, evidence, and disconfirming conditions with `references/interaction-pattern-selection.md`.
@@ -48,6 +50,7 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 | Pattern alternatives and decision evidence | `references/interaction-pattern-selection.md` |
 | Usability protocol, synthesis, consent, or privacy | `references/usability-testing-and-privacy.md` |
 | Handoff, acceptance criteria, or deployed verification | `references/engineering-handoff.md` |
+| AI uncertainty, grounding, human control, feedback, or model-change acceptance | `references/ai-interaction-and-uncertainty.md` |
 | Methodology self-check with synthetic fixtures | `references/scenario-probes.md` |
 | Source authority, status, and examples | `references/source-index.md` |
 
@@ -57,6 +60,7 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 - Specify behavior under relevant width, zoom/reflow, text expansion/localization, orientation, input modes, reduced motion, degraded connectivity, interruption, and re-entry. Do not use device breakpoints as the model.
 - Use synthetic fixtures such as `sample-user@example.test` and `INV-DEMO-042`; never request real credentials, payments, financial access, or secrets for an unsafe prototype.
 - A finding from usability work is bounded evidence, not accessibility conformance, population prevalence, analytics, or outcome proof.
+- AI output, confidence, explanation, citation, or user feedback is not proof of correctness by itself. Record the evidence boundary and route model-quality and statistical questions to the owning specialist.
 
 ## Completion
 

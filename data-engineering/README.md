@@ -11,11 +11,16 @@ Your agent gets operational patterns for production data systems — real SQL, d
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
-| `references/` | Deep-dive reference files loaded on demand |
+| `references/` | Database operations, analytical SQL, pipelines, quality, migrations, recovery, and AI transformation boundaries |
+| `templates/ai-stage-contract.md` | Pilot, version, retry, budget and publication evidence for an AI stage |
+
+For AI-assisted data work, the [boundary workflow](references/ai-transformation-boundaries.md) helps keep uncertain
+proposals out of trusted datasets. Use the [companion record](templates/ai-stage-contract.md) to retain
+validation and review evidence.
 
 ## Triggers
 
-Designing ETL/ELT pipelines, writing analytical SQL, operating vector/graph/time-series databases, planning migrations, or setting up data quality monitoring.
+Designing ETL/ELT pipelines, writing analytical SQL, operating vector/graph/time-series databases, planning migrations, setting up data quality monitoring, or defining validated model-assisted transformation boundaries.
 
 ## Requirements
 
@@ -23,4 +28,4 @@ Platform-agnostic. References cover PostgreSQL, DuckDB, ClickHouse, BigQuery, Sn
 
 ## Quick Start
 
-Load SKILL.md for the methodology overview and reference table, then load specific references as needed for the task at hand.
+Start with a concrete pipeline or dataset boundary. For an AI-assisted transformation, fill in `templates/ai-stage-contract.md` with its input keys, validation rules, retry policy and publication conditions before running a pilot.

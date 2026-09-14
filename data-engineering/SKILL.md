@@ -3,7 +3,8 @@ name: data-engineering
 description: Design and operate data infrastructure — database operations (vector,
   relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental
   loading), SQL analytical patterns, data quality monitoring, schema migration, and
-  storage infrastructure management. Do not use for statistical analysis or ML model
+  storage infrastructure management, including model-assisted transformation contracts,
+  deterministic acceptance, bounded retries, and sink reconciliation. Do not use for statistical analysis or ML model
   development.
 license: MIT
 metadata:
@@ -15,6 +16,9 @@ metadata:
 # Data Engineering Methodology
 
 Data engineering is the operational backbone of data-driven systems. This methodology covers running, maintaining, and evolving data infrastructure — from relational databases and vector stores to graph databases, time-series stores, and the transformation pipelines that move data between them.
+
+When a model proposes data transformations, load [the AI boundary workflow](references/ai-transformation-boundaries.md)
+and use [the companion record](templates/ai-stage-contract.md).
 
 ## The Data Engineer's Domain
 
@@ -41,6 +45,7 @@ Data engineering is the operational backbone of data-driven systems. This method
 | `references/vector-db-operations.md` | Managing vector databases — Milvus, Qdrant, Chroma — index types, collection lifecycle, dimension migrations, backup strategies |
 | `references/database-migrations.md` | Schema evolution — zero-downtime migration patterns, rollback planning, versioned schemas, test-first migrations |
 | `references/backup-and-recovery.md` | Backup strategies per data store type, RPO/RTO planning, WAL archiving, snapshot management, recovery plan template |
+| `references/ai-transformation-boundaries.md` | Defining acceptance, retry, cost, and publication boundaries for model-assisted transformations |
 
 ## Related Skills
 

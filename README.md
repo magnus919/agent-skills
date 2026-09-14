@@ -113,6 +113,10 @@ A conditional skill for products with recurring human relationships — success 
 
 Atlassian Confluence from the terminal. List spaces, browse pages, view content with body extraction, search with CQL, and create pages. Same API token as Jira.
 
+### [constrained-optimization](constrained-optimization/SKILL.md)
+
+Formulate and evaluate constrained allocation, routing and scheduling decisions with explicit feasibility, objective units, exact or heuristic baselines, repeatable comparisons and honest solver-status evidence.
+
 ### [crewai](crewai/SKILL.md)
 
 An expert-level skill for building **role-based multi-agent teams** with CrewAI. Agents are defined as Roles with Goals and Backstories; crews are composed with sequential or hierarchical workflows.
@@ -606,6 +610,10 @@ The Movie Database API from the terminal. Search and discover movies and TV by g
 ### [traefik](traefik/SKILL.md)
 
 Deploy, configure, secure, and maintain Traefik v3 reverse proxy — Docker provider, HTTP/TCP/UDP routing, TLS/ACME (Let's Encrypt), middlewares, observability, API, and production deployment. Covers the full static config schema, all 25+ built-in middlewares with YAML config, ACME certificate resolvers with DNS-01/HTTP-01/TLS-ALPN-01 challenges, Docker label reference for routers/services/middlewares, TCP/UDP routing with SNI matching, Prometheus/OpenTelemetry metrics and access logs, and production-ready Docker Compose deployments with security hardening. Ships 10 reference files covering every major feature area.
+
+### [training-data-annotation](training-data-annotation/SKILL.md)
+
+Design reliable training-data annotation and active-learning workflows: label definitions, acquisition policies, representative audits, annotator conditions, adjudication, provenance and cost-quality stopping.
 
 ### [trakt](trakt/SKILL.md)
 

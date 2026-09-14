@@ -240,6 +240,15 @@
       "description": "Interact with Atlassian Confluence from the terminal: list spaces, browse pages, view page content, search with CQL, and create pages. Use when the user mentions Confluence, a space key (e.g. DEV), or asks about documentation, wiki pages, space content, or knowledge base articles. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
+      "name": "constrained-optimization",
+      "source": "./",
+      "skills": [
+        "./constrained-optimization"
+      ],
+      "strict": false,
+      "description": "Define, compare, and audit constrained optimization decisions with explicit variables, units, hard and soft constraints, feasibility, Pareto tradeoffs, and honest solver evidence. Do not use for statistical modeling or ML fitting, which belong to data-scientist or ml-engineering, or for operating a named solver."
+    },
+    {
       "name": "crewai",
       "source": "./",
       "skills": [
@@ -300,7 +309,7 @@
         "./data-cleaning"
       ],
       "strict": false,
-      "description": "Clean, profile, validate, reshape, and document messy tabular, text, JSON, and relational data through an evidence-first, reproducible workflow. Use when preparing data for analysis, reporting, modeling, ingestion, migration, or matching. Do not use for statistical modeling, dashboard design, or operating a named data platform; route those tasks to data-scientist, data-engineering, or the relevant tool skill."
+      "description": "Clean, profile, validate, reshape, and document messy tabular, text, JSON, and relational data through an evidence-first, reproducible workflow. Use when preparing data for analysis, reporting, modeling, ingestion, migration, or matching, including AI-suggested repair, entity-match review, score calibration limits, and reversible repair ledgers. Do not use for statistical modeling, dashboard design, or operating a named data platform; route those tasks to data-scientist, data-engineering, or the relevant tool skill."
     },
     {
       "name": "data-engineering",
@@ -309,7 +318,7 @@
         "./data-engineering"
       ],
       "strict": false,
-      "description": "Design and operate data infrastructure — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Do not use for statistical analysis or ML model development."
+      "description": "Design and operate data infrastructure — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management, including model-assisted transformation contracts, deterministic acceptance, bounded retries, and sink reconciliation. Do not use for statistical analysis or ML model development."
     },
     {
       "name": "data-scientist",
@@ -903,7 +912,7 @@
         "./product-design-and-ux"
       ],
       "strict": false,
-      "description": "Define user-facing product behavior from validated evidence and approved scope. Use for information architecture, task flows, state and recovery models, interface contracts, usability-study plans, interaction-pattern tradeoffs, or engineering UX handoffs. Use after product discovery and product decisions; route WCAG/ARIA conformance work to web-accessibility and formal software specifications to spec-driven-development. Do not use this skill for unrelated requests; route to the nearest named specialist."
+      "description": "Define user-facing product behavior from validated evidence and approved scope. Use for information architecture, task flows, state and recovery models, interface contracts, usability-study plans, interaction-pattern tradeoffs, AI recommendations and generated outputs, uncertainty, human control, feedback, or engineering UX handoffs. Use after product discovery and product decisions; route WCAG/ARIA conformance work to web-accessibility and formal software specifications to spec-driven-development. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
       "name": "product-discovery",
@@ -1336,6 +1345,15 @@
       ],
       "strict": false,
       "description": "Deploy, configure, and troubleshoot Traefik v3 reverse proxy — covers all providers, routing, TLS/ACME, middlewares, and production patterns with YAML examples. Load when setting up or debugging a Traefik instance. Do not use this skill for unrelated requests; route to the nearest named specialist."
+    },
+    {
+      "name": "training-data-annotation",
+      "source": "./",
+      "skills": [
+        "./training-data-annotation"
+      ],
+      "strict": false,
+      "description": "Design and improve human annotation programs for machine-learning training, validation, and evaluation data, including task and label schemas, active acquisition, annotator guidance, calibration, disagreement, adjudication, provenance, and cost-quality stopping. Do not use for general statistical inference, data storage pipelines, model training, or annotation-interface implementation; route those concerns to data-scientist, data-engineering, ml-engineering, or product-design-and-ux."
     },
     {
       "name": "trakt",
