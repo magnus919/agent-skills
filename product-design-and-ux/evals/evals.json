@@ -61,6 +61,66 @@
         "The response includes navigation governance so the structure does not regrow into a maze",
         "The response sequences audit, redesign, validation, and migration with redirects"
       ]
+    },
+    {
+      "id": "ai-uncertain-output-recovery",
+      "prompt": "We are designing an AI assistant that drafts answers from an internal knowledge base. What should happen when the sources are missing, stale, or conflicting, and how should a user recover?",
+      "expected_output": "A framework-neutral interaction design that defines source ownership and freshness, distinguishes draft from verified fact, makes unsupported or conflicting context visible, preserves the user’s request, and provides clarification, correction, safe fallback, and escalation paths. It names the evidence and model-change acceptance checks without inventing confidence or claiming that a citation proves correctness.",
+      "assertions": [
+        "The response defines missing, stale, and conflicting source behavior",
+        "The draft is distinguished from a verified fact or committed action",
+        "The response provides correction, clarification, fallback, and escalation recovery",
+        "The user’s input and relevant context are preserved through recovery",
+        "The response avoids unsupported confidence or correctness claims"
+      ]
+    },
+    {
+      "id": "ai-human-control-boundary",
+      "prompt": "A product team wants an AI system to recommend account changes and sometimes execute them. Define the interaction contract before implementation.",
+      "expected_output": "An interaction contract that compares assist, recommend, and execute modes against stakes, reversibility, observability, permissions, and review burden; identifies the human approval boundary; separates preview from external commit; and specifies authorization re-checks, cancellation or undo where real, partial failure, and completion evidence.",
+      "assertions": [
+        "The response compares control modes using task risk and reversibility",
+        "A human approval and authorization boundary is explicit",
+        "Preview is distinguished from an external side effect",
+        "Partial failure, retry or deduplication, and completion evidence are specified",
+        "The response records an owner and revisit trigger for the control decision"
+      ]
+    },
+    {
+      "id": "ai-feedback-consent-loop",
+      "prompt": "We want feedback on AI suggestions in a customer workflow. Design a feedback loop that is useful without treating every thumbs-up as truth.",
+      "expected_output": "A consent-aware feedback design that uses minimal signals such as accepted, edited, rejected, corrected, escalated, or completed; explains purpose and retention; separates preference, experience, task completion, and correctness; routes signals to triage and evaluation owners; and defines the evidence required before changing the model, prompt, retrieval, or UX.",
+      "assertions": [
+        "The response proposes minimal, meaningful feedback signals",
+        "Purpose, notice or consent, minimization, retention, and ownership are addressed",
+        "Preference and experience are distinguished from correctness",
+        "Signals flow to triage, representative fixtures, independent evaluation, and a release decision",
+        "The response does not treat ratings alone as correctness evidence"
+      ]
+    },
+    {
+      "id": "ai-change-acceptance-fixtures",
+      "prompt": "A team is changing its model and retrieval index for a production recommendation experience. What acceptance evidence should the UX handoff require?",
+      "expected_output": "A change-acceptance plan with versioned model, prompt, and retrieval identifiers; authorized representative fixtures covering normal, ambiguous, unsupported, stale, permission, interruption, and fallback cases; observable behavior and recovery expectations; user and countermetric evidence; and separate recording of blocked, inconclusive, and passed results.",
+      "assertions": [
+        "The plan records the changed model, prompt, and retrieval versions",
+        "Fixtures include normal, ambiguous, unsupported, stale, permission, interruption, and fallback cases",
+        "Each fixture has observable behavior and recovery expectations",
+        "User outcomes and countermetrics are considered alongside quality evidence",
+        "Blocked and inconclusive results remain distinct from passes"
+      ]
+    },
+    {
+      "id": "ai-handoff-escalation",
+      "prompt": "A conversational assistant must hand a difficult case to a human. Define the handoff and opt-out behavior for the UX and engineering teams.",
+      "expected_output": "A handoff design that states when escalation occurs, what status and destination are shown, what context is transferred, how the user can inspect or correct the summary, what the alternate or opt-out path does, and how the human continues without re-entering known information. It distinguishes a generated summary from a verified transcript and protects unnecessary sensitive content.",
+      "assertions": [
+        "Escalation trigger, destination, and user-visible status are explicit",
+        "Transferred context is bounded and inspectable",
+        "The user can correct the handoff summary",
+        "Opt-out or alternate behavior is defined",
+        "The design distinguishes generated summary from verified transcript and minimizes sensitive data"
+      ]
     }
   ]
 }
