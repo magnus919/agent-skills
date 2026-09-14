@@ -240,6 +240,15 @@
       "description": "Interact with Atlassian Confluence from the terminal: list spaces, browse pages, view page content, search with CQL, and create pages. Use when the user mentions Confluence, a space key (e.g. DEV), or asks about documentation, wiki pages, space content, or knowledge base articles. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
+      "name": "constrained-optimization",
+      "source": "./",
+      "skills": [
+        "./constrained-optimization"
+      ],
+      "strict": false,
+      "description": "Define, compare, and audit constrained optimization decisions with explicit variables, units, hard and soft constraints, feasibility, Pareto tradeoffs, and honest solver evidence. Do not use for statistical modeling or ML fitting, which belong to data-scientist or ml-engineering, or for operating a named solver."
+    },
+    {
       "name": "crewai",
       "source": "./",
       "skills": [

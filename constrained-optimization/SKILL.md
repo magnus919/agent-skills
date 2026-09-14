@@ -1,7 +1,7 @@
 ---
 name: constrained-optimization
 description: >-
-  Formulate, compare, and audit constrained optimization decisions with explicit
+  Define, compare, and audit constrained optimization decisions with explicit
   variables, units, hard and soft constraints, feasibility, Pareto tradeoffs, and
   honest solver evidence. Do not use for statistical modeling or ML fitting, which
   belong to data-scientist or ml-engineering, or for operating a named solver.
