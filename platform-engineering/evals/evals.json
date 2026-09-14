@@ -73,6 +73,42 @@
         "The response includes an escape hatch with exception review so the golden path is a paved road, not a cage",
         "The response measures success by developer cognitive load and time-to-first-deploy and keeps scaffolded artifacts in Git"
       ]
+    },
+    {
+      "id": "platform-applicability-and-stop-decision",
+      "prompt": "A small company wants to build an internal developer platform because platform engineering is popular. It has four developers, little custom software, no measured delivery bottleneck, and a six-month budget. Assess the proposal and state what evidence would justify a small first slice or a stop decision.",
+      "expected_output": "A bounded applicability assessment that tests strategic software dependence, internal user population, observed friction, opportunity cost, and time horizon before recommending investment. It proposes a minimum valuable slice only if a measurable workflow problem exists, names a baseline and adoption/value thresholds, and preserves a stop or reshape decision if evidence does not improve.",
+      "assertions": [
+        "The response does not assume a platform is justified merely because the practice is popular",
+        "The response evaluates strategic software dependence, internal users, measured friction, and budget/time horizon",
+        "The response defines a small first slice only when a measurable workflow problem is found",
+        "The response includes baseline, adoption or value thresholds, and an explicit stop or reshape rule",
+        "The response distinguishes evidence from assumptions and does not claim success from component delivery alone"
+      ]
+    },
+    {
+      "id": "self-service-contract-and-exception",
+      "prompt": "Security requires every deployed service to have a signed image and a vulnerability scan, but application teams must retain control of their pipelines. Design the platform contract and the process for a team that needs a temporary exception for an approved legacy image.",
+      "expected_output": "A developer-owned delivery design with reusable checks or policy interfaces, a documented input/decision/evidence flow, and a narrow exception record. The exception process identifies scope, authorization, risk, compensating controls, accountable owner, approver, expiry, review, and a path to improve the product or policy when exceptions recur.",
+      "assertions": [
+        "The response keeps application teams in control of their pipelines while providing reusable compliance checks",
+        "The response defines policy inputs, versioned decision evidence, failure response, and ownership",
+        "The response makes the legacy-image exception narrow, time-bounded, and explicitly authorized",
+        "The response requires risk assessment, compensating controls, accountable owner, approver, expiry, and review",
+        "The response treats recurring exceptions as product or policy backlog evidence rather than permanent bypasses"
+      ]
+    },
+    {
+      "id": "platform-observability-response-ownership",
+      "prompt": "Our platform provides Prometheus and Grafana, but teams complain that alerts have no clear owner and dashboards are unused. Define an observability ownership and adoption workflow for a newly onboarded service.",
+      "expected_output": "A workflow that separates service-owned instrumentation and symptom response from platform-owned collection, storage, access, and platform failures. It publishes SLIs/SLOs and a response matrix with alert recipient, diagnostic action, escalation, and retained evidence, then measures adoption and user friction and iterates based on feedback.",
+      "assertions": [
+        "The response assigns instrumentation and service-symptom response to the service owner while assigning collection/storage/platform failures to the platform owner",
+        "The response requires published SLIs/SLOs and a response matrix with recipient, diagnostic action, escalation, and evidence",
+        "The response includes an adoption workflow that measures dashboard usefulness, alert friction, and coverage",
+        "The response provides a feedback loop for false positives, missing signals, and unused dashboards",
+        "The response states an observable readiness gate and stops when ownership or failure routing is unknown"
+      ]
     }
   ]
 }
