@@ -113,6 +113,10 @@ A conditional skill for products with recurring human relationships — success 
 
 Atlassian Confluence from the terminal. List spaces, browse pages, view content with body extraction, search with CQL, and create pages. Same API token as Jira.
 
+### [constrained-optimization](constrained-optimization/SKILL.md)
+
+Formulate and evaluate constrained allocation, routing and scheduling decisions with explicit feasibility, objective units, exact or heuristic baselines, repeatable comparisons and honest solver-status evidence.
+
 ### [crewai](crewai/SKILL.md)
 
 An expert-level skill for building **role-based multi-agent teams** with CrewAI. Agents are defined as Roles with Goals and Backstories; crews are composed with sequential or hierarchical workflows.

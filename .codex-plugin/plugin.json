@@ -44,6 +44,7 @@
     "./color-management",
     "./conditional-customer-success",
     "./confluence-cli",
+    "./constrained-optimization",
     "./crewai",
     "./crm",
     "./crowdsec",
