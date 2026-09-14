@@ -73,6 +73,54 @@
         "The diagnosis requires pinning the eval methodology so scores are comparable across runs",
         "The fix is a committed training-run record template that captures all of the above"
       ]
+    },
+    {
+      "id": "metric-and-stochastic-comparison",
+      "prompt": "Two model updates have nearly identical average accuracy, but one improves a rare high-harm class and has higher latency. Design the evaluation decision.",
+      "expected_output": "A decision that defines task harms and thresholds, reports per-class and per-example results, measures latency/cost, repeats stochastic comparisons under a declared protocol, and treats an aggregate tie as insufficient evidence.",
+      "assertions": [
+        "The response chooses metrics from task harms and decision thresholds",
+        "The response disaggregates rare or critical capabilities instead of relying on average accuracy",
+        "The response measures latency or cost alongside quality",
+        "The response repeats stochastic comparisons with controlled seeds or a declared sampling protocol",
+        "The response treats aggregate similarity as inconclusive when critical capability or operational constraints differ"
+      ]
+    },
+    {
+      "id": "end-to-end-model-lineage",
+      "prompt": "A production model artifact passed evaluation, but nobody can link it to the exact feature cutoff, dataset revision, training configuration, or deployed image. Decide whether it can be promoted and specify the missing record.",
+      "expected_output": "Promotion is blocked or explicitly marked non-reproducible until immutable links connect source, dataset, features and temporal cutoff, splits, code/config, run artifacts, evaluation, registry, serving configuration, and endpoint. The record names owners and timestamps.",
+      "assertions": [
+        "The response does not treat a model file or experiment URL as sufficient lineage",
+        "The response requires immutable identifiers for data, features and cutoff, code/configuration, artifacts, evaluation, registry, serving, and deployment",
+        "The response blocks or clearly marks promotion as non-reproducible when links are missing",
+        "The response assigns owners and timestamps to lineage links",
+        "The response preserves a reproducible record for later diagnosis or compliance"
+      ]
+    },
+    {
+      "id": "temporal-feature-parity",
+      "prompt": "Offline evaluation is strong, but online performance dropped after launch. The feature team says the definitions are the same. Diagnose the risk and define the validation.",
+      "expected_output": "A diagnosis that checks event time versus availability time, lookback windows, source revisions, and offline/online transformation parity using replay or shadow data. The response treats training-serving skew as a leading hypothesis before retraining.",
+      "assertions": [
+        "The response checks event time, availability time, source revision, and permitted lookback windows",
+        "The response validates semantic parity with replay or shadow samples",
+        "The response identifies training-serving skew as a plausible cause before retraining",
+        "The response checks that training and evaluation exclude information unavailable at prediction time",
+        "The response records the feature definition and cutoff version used by the deployed model"
+      ]
+    },
+    {
+      "id": "drift-response-decision",
+      "prompt": "A deployed classifier has input drift and a delayed label signal. Define the response before automatically retraining.",
+      "expected_output": "A bounded drift response that checks schema/source changes, seasonality, segment mix, label delay, and metric integrity; defines thresholds, sample windows, owners, and critical-capability impact; and chooses among observation, data repair, recalibration, retraining, human review, rollback, or retirement with candidate validation.",
+      "assertions": [
+        "The response treats drift as an investigation signal rather than automatic proof that retraining is correct",
+        "The response checks schema/source changes, seasonality or segment mix, label delay, and metric integrity",
+        "The response defines threshold, minimum window or sample, owner, and critical-capability impact",
+        "The response includes bounded options such as data repair, human review, rollback, or retirement",
+        "The response validates a candidate against a frozen regression set and recent production slice before ramping"
+      ]
     }
   ]
 }
