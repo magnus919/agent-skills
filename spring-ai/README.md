@@ -1,5 +1,7 @@
 # spring-ai — Diagnose Spring AI projects before they surprise you
 
+## Why Install This Skill
+
 Spring AI projects combine fast-moving framework APIs with model providers, retrieval stores, memory, tools, and streaming. A project can compile while leaking conversation context, logging prompts, executing an unauthorized tool, or treating partial output as complete.
 
 This skill gives your agent a read-only diagnostic workflow for actual Maven and Gradle projects. It reports build versions, configuration hazards, source-level integration clues, and actionable findings as machine-readable JSON so you can retain evidence with a commit or incident record.
@@ -14,8 +16,8 @@ This skill gives your agent a read-only diagnostic workflow for actual Maven and
 | `references/compatibility-and-setup.md` | Current setup checks and version-sensitive API notes. |
 | `references/integration-boundaries.md` | ChatClient, memory, retrieval, tools/MCP, streaming, and observability checks. |
 | `references/source-index.md` | Official Spring AI and Spring Boot URLs with verification date. |
-| `examples/minimal-project/` | Small fixture used by the tests and a safe inspection example. |
-| `evals/evals.json` | Six schema-v1 output-quality cases. |
+| `examples/minimal-project/` | Static diagnostic fixture used by the tests; not a runnable application. |
+| `evals/evals.json` | Seven schema-v1 output-quality cases. |
 
 ## Quick Start
 

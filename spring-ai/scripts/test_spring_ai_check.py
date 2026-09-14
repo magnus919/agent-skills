@@ -29,6 +29,12 @@ class SpringAICheckTests(unittest.TestCase):
             path.write_text(props)
         return directory
 
+    def test_shipped_fixture_is_parseable(self):
+        project = Path(__file__).resolve().parents[1] / "examples/minimal-project"
+        result = spring_ai_check.check(project)
+        self.assertEqual(result["facts"]["spring_ai_versions"], ["2.0.1"])
+        self.assertEqual(result["status"], "ok")
+
     def test_json_clean_fixture(self):
         project = self.make(
             '<properties><spring-ai.version>2.0.1</spring-ai.version>'
