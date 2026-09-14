@@ -172,6 +172,10 @@ Assess and explain mental health and neurocognitive questions against DSM-5-TR d
 
 An expert-level skill for **programmatic prompt optimization** with Stanford's DSPy framework. You write Python programs with typed signatures; DSPy optimizes the prompts automatically. This is the framework for prompt engineering that doesn't feel like engineering.
 
+### [electronics](electronics/SKILL.md)
+
+Design, review and troubleshoot electronic circuits with component evidence, worst-case calculations, interface contracts and staged bench verification. Includes detailed references and reusable design, calibration, measurement and fault-isolation templates.
+
 ### [email](email/SKILL.md)
 
 Send and diagnose transactional email through Twilio SendGrid: send with `--dry-run`/`--yes` confirmation, check deliverability (bounces and spam reports), and verify Signed Event Webhook signatures with a self-contained ECDSA P-256 verifier. Ships a bounded stdlib CLI with `--json` and `--limit`.
