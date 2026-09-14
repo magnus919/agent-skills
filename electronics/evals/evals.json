@@ -43,7 +43,7 @@
       "assertions": [
         "Calculates1*10/(1+10)=about0.909 V.",
         "Explains reading is consistent with loading, not evidence source defective.",
-        "Selects a higher-input-impedance measurement or justified buffer and checks its own input errors.",
+        "Selects a measurement that isolates source behavior from the loading artifact—such as a higher-input-impedance measurement, justified buffer, or source-side measurement—and checks relevant instrument/input errors.",
         "Records probe/meter configuration and preserves expected-versus-observed values."
       ]
     },
