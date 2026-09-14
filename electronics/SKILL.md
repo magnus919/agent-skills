@@ -79,7 +79,7 @@ For troubleshooting, stop after three non-converging passes and summarize the ev
 ## When not to use
 
 - For ESP32 board identification, pin restrictions, firmware frameworks, flashing, boot/recovery or OTA, use the repository's `esp32-development` skill. This skill still owns the electrical model and measurement reasoning for the attached circuit; do not duplicate framework instructions here.
-- For programmable-logic architecture, RTL, simulation, synthesis or timing closure, use an available FPGA discipline skill. Electrical compatibility remains part of this skill's scope.
+- For programmable-logic architecture, RTL, simulation, synthesis or timing closure, use the repository's `fpga-development` skill. Electrical compatibility remains part of this skill's scope.
 - For a named CAD, simulator, programmer or instrument automation system, consult its exact tool documentation or existing operational skill. Do not invent nonexistent catalog routes.
 - Mains, high energy, RF/high-speed layout, functional safety, medical or other regulated acceptance requires the appropriate specialist evidence and review. This skill can organize requirements and evidence; it cannot confer certification or replace those disciplines.
 

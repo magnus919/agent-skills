@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "skill_name": "fpga-development",
+  "evals": [
+    {
+      "id": "cdc-coherent-word",
+      "prompt": "A16-bit status word updates in a100 MHz domain and is sampled at25 MHz unrelated clock. The proposed design uses a two-flop synchronizer on every bit. Explain whether it guarantees coherent words and propose a design contract.",
+      "expected_output": "Rejects incoherent bitwise synchronization, chooses handshake or FIFO from semantics.",
+      "assertions": [
+        "Explains bitwise synchronizers do not guarantee coherent multibit words.",
+        "Chooses stable-data handshake or async FIFO based on update rate/loss/backpressure requirements.",
+        "Requires reset and clock-loss behavior and destination acceptance semantics.",
+        "Does not claim functional simulation proves metastability MTBF or CDC signoff."
+      ]
+    },
+    {
+      "id": "pulse-crossing",
+      "prompt": "A10 ns one-cycle pulse from100 MHz must reach an unrelated20 MHz clock domain. Pulses can recur every30 ns and none may be lost. A two-flop synchronizer misses events. Propose a feasible architecture or identify infeasible requirements.",
+      "expected_output": "Recognizes capture loss and sustained producer/consumer rate mismatch.",
+      "assertions": [
+        "Identifies short pulse can be missed regardless of metastability synchronizer.",
+        "Recognizes33.3 million events/s exceeds20 million one-per-cycle service.",
+        "Requires backpressure, event aggregation, wider transfer or explicit bounded burst/backlog contract; does not claim finite FIFO solves unbounded mismatch.",
+        "Accounts for handshake/CDC latency and reset rather than only stretching pulse."
+      ]
+    },
+    {
+      "id": "unconstrained-positive-slack",
+      "prompt": "Implementation reports WNS+0.25 ns, TNS0. There are42 unconstrained endpoints; external SPI input delays are absent; a generated clock was not declared. May we release? Write a timing acceptance record.",
+      "expected_output": "Positive slack is insufficient with coverage gaps.",
+      "assertions": [
+        "Rejects release based solely on WNS/TNS.",
+        "Requires identifying unconstrained paths and modeling actual external interface delays/generated clocks.",
+        "Requires setup and hold coverage with correct clocks/corners/exceptions.",
+        "Does not add blanket false paths to silence uncovered endpoints."
+      ]
+    },
+    {
+      "id": "fixed-point-overflow",
+      "prompt": "A signed8-bit input uses four fractional bits. We square it and store the result in signed8 bits with four fractional bits. Input may be-8.0 to7.9375. Define widths, scaling and overflow policy; illustrate at-8.0.",
+      "expected_output": "Explicit signed fixed-point range and rescaling with saturation/overflow decision.",
+      "assertions": [
+        "Identifies raw-128 represents-8 and square raw16384 represents64 with eight fractional bits.",
+        "Uses sufficiently wide intermediate rather than8-bit multiplication.",
+        "Right-shifts/rescales four bits with explicit rounding rule and notes raw1024 cannot fit signed8 bits.",
+        "Specifies saturation/wider-output/error policy rather than silent wrap and tests both extrema."
+      ]
+    },
+    {
+      "id": "simulation-is-not-hardware",
+      "prompt": "A testbench passes for a resettable counter, but hardware starts unpredictably. Only RTL and passing log are available, with no pin constraints, clock report or board revision. Produce an ordered investigation plan.",
+      "expected_output": "Separates initialization/testbench assumptions, reset, implementation and physical evidence.",
+      "assertions": [
+        "Requests exact board/part/clock/pin/reset constraints and implementation reports.",
+        "Inspects simulation initial state versus synthesized reset/power-up behavior.",
+        "Checks reset assertion/deassertion and clock-domain treatment without inventing board polarity.",
+        "Does not treat simulation pass as timing or hardware proof."
+      ]
+    },
+    {
+      "id": "multicycle-exception",
+      "prompt": "A pipeline has a negative setup slack. An engineer proposes set_multicycle_path4 because input data usually changes every fourth cycle. There is no enable or protocol guarantee. Review and suggest next steps.",
+      "expected_output": "Rejects unjustified exception and directs real timing fix.",
+      "assertions": [
+        "Rejects typical activity as proof of multicycle timing intent.",
+        "Requires architectural/protocol evidence that capture cannot occur on earlier edges.",
+        "Notes hold relationship must be analyzed when a legitimate multicycle exception is introduced.",
+        "Proposes path analysis, pipelining or constraints correction with functional revalidation."
+      ]
+    },
+    {
+      "id": "ready-valid-backpressure",
+      "prompt": "Design a one-entry synchronous ready/valid buffer. When output valid is high and downstream ready is low, payload and valid must remain stable. Simultaneous dequeue/enqueue should be supported. Explain equations and testbench cases, without assuming a particular FPGA.",
+      "expected_output": "Correct occupancy and handshake semantics with executable test ideas.",
+      "assertions": [
+        "Defines input ready as empty OR downstream ready for a one-entry buffer.",
+        "Updates payload only on accepted input and preserves payload during stalled valid output.",
+        "Handles simultaneous dequeue/enqueue without dropping or duplicating data.",
+        "Tests reset, long stalls, consecutive throughput, scoreboard order and reset-with-pending-data policy."
+      ]
+    },
+    {
+      "id": "release-artifact-identity",
+      "prompt": "A team has yesterday's passing test log, today's bitstream, a constraints file changed after implementation, and an unrecorded tool version. They want to ship. Draft a minimal reproducible release gate.",
+      "expected_output": "Requires consistent artifact provenance and revalidation of changed inputs.",
+      "assertions": [
+        "Requires source/constraint/tool/device/configuration identities and output hashes tied to one build.",
+        "Does not accept stale tests or edited constraints as proof for today's bitstream.",
+        "Requires simulation/synthesis/implementation timing and hardware evidence separately, labeling unavailable stages.",
+        "Requires programming target/rollback or recovery path before hardware mutation."
+      ]
+    }
+  ]
+}

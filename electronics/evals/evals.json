@@ -43,7 +43,7 @@
       "assertions": [
         "Calculates1*10/(1+10)=about0.909 V.",
         "Explains reading is consistent with loading, not evidence source defective.",
-        "Selects a measurement that isolates source behavior from the loading artifact—such as a higher-input-impedance measurement, justified buffer, or source-side measurement—and checks relevant instrument/input errors.",
+        "Selects a measurement that isolates source behavior from the loading artifact\u2014such as a higher-input-impedance measurement, justified buffer, or source-side measurement\u2014and checks relevant instrument/input errors.",
         "Records probe/meter configuration and preserves expected-versus-observed values."
       ]
     },
@@ -91,6 +91,17 @@
         "Defines unpowered wiring/polarity/short checks and controlled staged power-up with stated criteria.",
         "Does not infer safe pinout/current rating from appearance or label alone.",
         "Produces an actionable review/measurement record, not only a list of warnings."
+      ]
+    },
+    {
+      "id": "fpga-electrical-boundary",
+      "prompt": "A 5 V push-pull sensor output is wired directly to an FPGA input. The HDL simulation passes. The FPGA part, I/O-bank supply and powered-off pin limits are unknown. A teammate proposes changing the HDL input to logic to make it safe. Prepare a short electrical review and a division of the remaining verification work. Do not assume a particular FPGA family.",
+      "expected_output": "Rejects HDL typing as proof of electrical compatibility and produces a conditional electrical interface review with a separate FPGA verification handoff.",
+      "assertions": [
+        "States that HDL simulation and the logic type do not establish pin voltage tolerance or electrical compatibility.",
+        "Requires exact FPGA pin/bank supply, absolute and recommended input limits, sensor output levels and power-sequencing/back-powering evidence before accepting direct connection.",
+        "Proposes level translation or another interface only conditionally on thresholds, direction, speed, loading and powered-off behavior, without inventing safe component values.",
+        "Keeps circuit/interface and bench verification in electronics and routes RTL, CDC and timing verification to fpga-development, without treating either as proof of the other."
       ]
     }
   ]
