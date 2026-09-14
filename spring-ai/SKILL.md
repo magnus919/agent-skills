@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.8+ standard library; Maven/Gradle are optional and only needed to run a project build.
 metadata:
   tags: spring-ai, spring-boot, java, maven, gradle, chatclient, rag, mcp, diagnostics
-  verified_date: 2026-09-14
+  verified_date: "2026-09-14"
   supported_spring_ai: 2.0.1 (current stable documentation); 1.0.9 maintenance reference
 ---
 
