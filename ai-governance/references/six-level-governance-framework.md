@@ -198,7 +198,7 @@ posture before assigning control owners:
 Do not infer risk from posture alone. A hardened, narrowly scoped agent can be safer than a simple
 chatbot on an insecure foundation, and a vendor's certification does not transfer accountability
 for choices the organization controls. For a concrete posture and agent review, use
-`templates/agentic-governance-review.md`.
+`../templates/agentic-governance-review.md`.
 
 ## Deliverable package
 
@@ -222,7 +222,7 @@ silently skip a level.
 - **`risk-management-and-frameworks.md`**: translate risk and impact findings into NIST or ISO-aligned artifacts.
 - **`llm-and-agent-security.md`**: assess the exposure ladder, tool authorization, containment, and agent identity.
 - **`privacy-and-data-governance.md`**: assess the four GenAI privacy pillars, purpose-aware egress, and memory retention.
-- **`templates/agentic-governance-review.md`**: complete the posture, capability, tool, privacy, and evidence worksheet.
+- **`../templates/agentic-governance-review.md`**: complete the posture, capability, tool, privacy, and evidence worksheet.
 
 ---
 

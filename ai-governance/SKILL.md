@@ -111,8 +111,9 @@ changing anything. Exit 0 on success; the maturity scorer also exits 1 on a crit
 
 - **Eval manifest:** [evals/evals.json](evals/evals.json) holds the output-quality cases (operating
   model design, use-case risk tiering, 6L-G and deployment-posture review, agentic security and
-  privacy review, LLM-app governance review, fairness/accountability review, regulatory compliance
-  mapping, board governance reporting, and GxP/data-integrity governance)
+  privacy review, impact-assessment closure, LLM-app governance review,
+  fairness/accountability review, regulatory compliance mapping, board governance reporting, and
+  GxP/data-integrity governance)
   used to grade this skill.
 - **Configuration:** [pytest.ini](pytest.ini) overrides the repository's root coverage settings so
   the subprocess-based skill tests run cleanly; do not add a second override.
