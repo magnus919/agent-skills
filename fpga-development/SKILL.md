@@ -88,7 +88,7 @@ The checker tests are in `scripts/test_fixture.py`. Run `python3 -m pytest scrip
 ## When not to use
 
 - ESP32 firmware, pin restrictions, framework APIs, flashing and OTA belong to the repository's `esp32-development` skill.
-- Platform-neutral component selection, schematic, load/driver and bench measurement reasoning belong to an electronics discipline skill where available. Do not infer electrical compatibility from an HDL type or constraint name.
+- Platform-neutral component selection, schematic, load/driver and bench measurement reasoning belong to the repository's `electronics` skill. Do not infer electrical compatibility from an HDL type or constraint name.
 - Named vendor tool administration, installation and operational runbooks require that tool's current documentation or dedicated skill. No assumed cross-vendor constraint syntax or primitive equivalence.
 - High-speed board channels, RF, EMC, power-integrity design and regulated signoff require the relevant specialist evidence. This skill can identify dependencies and missing evidence; it does not replace those reviews.
 
