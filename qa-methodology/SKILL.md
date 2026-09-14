@@ -91,7 +91,7 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `assets/qa-definition-of-done.md` | Defining release readiness — QA contribution to definition of done |
 | `scripts/risk-prioritize.py` | Computing P×I rankings from a risk-items JSON file |
 | `scripts/check-ac-testability.py` | Checking acceptance criteria for vague verbs and missing observable outcomes |
-| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 10 cases) |
+| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 15 cases) |
 
 ## Scripts
 
