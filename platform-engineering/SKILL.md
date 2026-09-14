@@ -6,6 +6,8 @@ description: >-
   observability, or when shaping platform products, self-service interfaces,
   adoption evidence, and policy guardrails. Do not use it to define release process,
   promotion, rollout, or rollback policy; use release-engineering for that delivery model.
+  Route named-tool configuration and troubleshooting to the corresponding operational
+  skill, such as kubernetes or traefik for ingress-controller configuration.
 license: MIT
 metadata:
   tags: ''
