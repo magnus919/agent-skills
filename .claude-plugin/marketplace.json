@@ -300,7 +300,7 @@
         "./data-cleaning"
       ],
       "strict": false,
-      "description": "Clean, profile, validate, reshape, and document messy tabular, text, JSON, and relational data through an evidence-first, reproducible workflow. Use when preparing data for analysis, reporting, modeling, ingestion, migration, or matching. Do not use for statistical modeling, dashboard design, or operating a named data platform; route those tasks to data-scientist, data-engineering, or the relevant tool skill."
+      "description": "Clean, profile, validate, reshape, and document messy tabular, text, JSON, and relational data through an evidence-first, reproducible workflow. Use when preparing data for analysis, reporting, modeling, ingestion, migration, or matching, including AI-suggested repair, entity-match review, score calibration limits, and reversible repair ledgers. Do not use for statistical modeling, dashboard design, or operating a named data platform; route those tasks to data-scientist, data-engineering, or the relevant tool skill."
     },
     {
       "name": "data-engineering",
@@ -309,7 +309,7 @@
         "./data-engineering"
       ],
       "strict": false,
-      "description": "Design and operate data infrastructure — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management. Do not use for statistical analysis or ML model development."
+      "description": "Design and operate data infrastructure — database operations (vector, relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental loading), SQL analytical patterns, data quality monitoring, schema migration, and storage infrastructure management, including model-assisted transformation contracts, deterministic acceptance, bounded retries, and sink reconciliation. Do not use for statistical analysis or ML model development."
     },
     {
       "name": "data-scientist",

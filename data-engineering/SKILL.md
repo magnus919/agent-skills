@@ -3,7 +3,8 @@ name: data-engineering
 description: Design and operate data infrastructure — database operations (vector,
   relational, graph, time-series), ETL/ELT pipeline design (dbt patterns, incremental
   loading), SQL analytical patterns, data quality monitoring, schema migration, and
-  storage infrastructure management. Do not use for statistical analysis or ML model
+  storage infrastructure management, including model-assisted transformation contracts,
+  deterministic acceptance, bounded retries, and sink reconciliation. Do not use for statistical analysis or ML model
   development.
 license: MIT
 metadata:
