@@ -13,7 +13,7 @@ It produces reviewable formulation and solution-audit records. The workflow sepa
 | Directory | Purpose |
 |---|---|
 | `SKILL.md` | Decision workflow, boundaries, and routing |
-| `references/` | Formulation, solver evidence, Pareto, and robustness guidance |
+| `references/` | Formulation, solver evidence, Pareto, robustness guidance, and primary-source index |
 | `templates/` | Formulation and solution-audit records |
 | `evals/` | Quality cases for common optimization failures |
 

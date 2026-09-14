@@ -29,6 +29,8 @@ Load `references/formulation-and-evidence.md` for formulation, feasibility, solv
 
 This skill owns decision formulation and evidence. Route statistical estimation, causal questions, and uncertainty models to `data-scientist`; route ML hyperparameter/model training optimization to `ml-engineering`; route operation of a named solver or cloud service to its tool skill. Stop when variables, objective units, hard constraints, feasibility checker, or budget are undefined. Complete when the formulation and solution audit record the decision, supporting evidence, unresolved limits, and owner.
 
+For the official solver-result references and their version/applicability limits, read [the source index](references/source-index.md).
+
 ## When not to use
 
 Do not use this skill for inferential statistics, causal inference, or statistical model fitting. Do not use it for ML training/model selection methodology or for solver-specific installation and runbooks.

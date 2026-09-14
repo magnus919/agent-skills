@@ -10,7 +10,7 @@ Use a feasible incumbent whenever possible. If no feasible point is known, run a
 
 Use an exact or certifying baseline when the formulation and scale allow it. Report solver status, incumbent objective, bound, gap definition, time/memory limit, and tolerance. A feasible incumbent with a nonzero gap is evidence of a candidate and a bound, not proof of global optimality. A heuristic or metaheuristic should report initialization, seed/repeat policy, budget, best feasible value, violation summary, and comparison against the same checker and budget.
 
-Solver status is evidence, not prose. For example, SciPy’s optimization results expose `success` and a termination `message`, while its linear-programming tutorial demonstrates checking constraint residuals independently. OR-Tools CP-SAT distinguishes `OPTIMAL`, `FEASIBLE`, `INFEASIBLE`, and `UNKNOWN`; `UNKNOWN` includes stopping before infeasibility is proven. Preserve that distinction in any adapter.
+Solver status is evidence, not prose. For example, SciPy’s optimization results expose `success` and a termination `message`, while its linear-programming tutorial demonstrates checking constraint residuals independently. OR-Tools CP-SAT distinguishes `OPTIMAL`, `FEASIBLE`, `INFEASIBLE`, `MODEL_INVALID`, and `UNKNOWN`; `UNKNOWN` includes stopping before infeasibility is proven. Preserve that distinction in any adapter. See [the source index](source-index.md) for direct official references, versions, and transfer limits.
 
 ## Fair comparison and validation
 
