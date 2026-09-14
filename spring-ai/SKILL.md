@@ -28,7 +28,7 @@ Run:
 python3 spring-ai/scripts/spring_ai_check.py --root /path/to/project --json
 ```
 
-The result is stable JSON with `status`, `project`, `facts`, `findings`, and `errors`. Exit 0 means no error-severity finding; exit 1 means findings or `--strict` warnings; exit 2 means an invalid invocation or unreadable project.
+The result is stable JSON with `status`, `project`, `facts`, `findings`, and `errors`. Exit 0 means no error-severity finding; exit 1 means an error-severity finding or warnings promoted by `--strict`; exit 2 means an invalid invocation or unreadable project.
 
 ## Workflow
 
