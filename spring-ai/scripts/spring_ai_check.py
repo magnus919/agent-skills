@@ -38,7 +38,7 @@ def strip_comments(text):
 
 
 def strip_java_comments(text):
-    """Remove Java comments while preserving string and character literals."""
+    """Remove Java comments while preserving Java literals, including text blocks."""
     result = []
     index = 0
     state = "normal"
@@ -46,7 +46,11 @@ def strip_java_comments(text):
         char = text[index]
         next_char = text[index + 1] if index + 1 < len(text) else ""
         if state == "normal":
-            if char == '"':
+            if text.startswith('"""', index):
+                state = "text_block"
+                result.append('"""')
+                index += 2
+            elif char == '"':
                 state = "string"
                 result.append(char)
             elif char == "'":
@@ -73,6 +77,21 @@ def strip_java_comments(text):
                 index += 1
             elif char == "\n":
                 result.append("\n")
+        elif state == "text_block":
+            if text.startswith('"""', index):
+                backslashes = 0
+                cursor = index - 1
+                while cursor >= 0 and text[cursor] == "\\":
+                    backslashes += 1
+                    cursor -= 1
+                if backslashes % 2 == 0:
+                    state = "normal"
+                    result.append('"""')
+                    index += 2
+                else:
+                    result.append(char)
+            else:
+                result.append(char)
         else:
             result.append(char)
             if char == "\\" and next_char:

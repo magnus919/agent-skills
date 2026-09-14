@@ -161,6 +161,20 @@ class SpringAICheckTests(unittest.TestCase):
         literal = 'class App { String literal = "/* ChatMemory */"; }'
         self.assertIn("ChatMemory", spring_ai_check.strip_java_comments(literal))
 
+    def test_java_text_blocks_preserve_comment_looking_content(self):
+        java = 'class App { String text = """hello " // ChatMemory\n/* VectorStore */\n"""; }'
+        project = self.make("<project/>", java)
+        result = spring_ai_check.check(project)
+        codes = [item["code"] for item in result["findings"]]
+        self.assertIn("MEMORY_CONVERSATION_ID_MISSING", codes)
+        self.assertIn("RETRIEVAL_AUTH_UNVERIFIED", codes)
+
+    def test_java_text_block_escaped_delimiter_stays_open(self):
+        text = 'String text = """a \\\""" b // ChatMemory\nend""";'
+        cleaned = spring_ai_check.strip_java_comments(text)
+        self.assertIn("// ChatMemory", cleaned)
+        self.assertEqual(cleaned, text)
+
     def test_unknown_and_secret_safe_errors(self):
         project = self.make(
             "<properties><spring-ai.version>${managed.version}</spring-ai.version></properties>",
