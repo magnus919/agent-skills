@@ -61,6 +61,30 @@
         "The response includes robustness checks such as alternative specifications or sensitivity to outliers",
         "The response states what is measured versus assumed and what would change the conclusion"
       ]
+    },
+    {
+      "id": "interpretability-target-and-scope",
+      "prompt": "A regulator asks why a credit model declined an applicant. Design an interpretability analysis and report without confusing a debugging artifact with a customer explanation.",
+      "expected_output": "Defines the audience, decision, local explanation target, model/data versions, reference background, method assumptions, sensitive fields, and a separate bounded customer explanation. It validates stability and states causal limits.",
+      "assertions": ["Defines audience and explanation target", "Records model, data, and background versions", "Separates diagnostic from user-facing explanation", "States causal limits and sensitive-data controls"]
+    },
+    {
+      "id": "interpretability-correlation-perturbation",
+      "prompt": "A SHAP report says income is the main driver, but income and debt are highly correlated and synthetic perturbations create impossible applicants. How should this be interpreted?",
+      "expected_output": "Flags attribution sharing among correlated features and invalid perturbations, tests alternate backgrounds or conditional approaches where justified, and reports the result as model association rather than causal effect.",
+      "assertions": ["Identifies correlated-feature attribution ambiguity", "Rejects impossible perturbations as evidence", "Uses sensitivity or alternate background checks", "Avoids causal overclaiming"]
+    },
+    {
+      "id": "interpretability-stability-disagreement",
+      "prompt": "Two explanation methods disagree on a high-impact case, and randomizing labels leaves the saliency map almost unchanged. What is the decision?",
+      "expected_output": "Runs method-appropriate sanity and stability checks, treats unchanged saliency after randomization as a warning, preserves method disagreement, and refuses a confident explanation until the discrepancy is investigated.",
+      "assertions": ["Uses randomization sanity checks", "Treats unchanged saliency as a warning", "Preserves disagreement between methods", "Does not issue a confident explanation prematurely"]
+    },
+    {
+      "id": "interpretability-fairness-slice",
+      "prompt": "The model's overall fairness metric passes, but a small protected subgroup has much worse false-negative rates. How should the analysis be reported?",
+      "expected_output": "Reports subgroup counts and uncertainty, investigates measurement and data coverage, keeps the subgroup failure visible despite the aggregate result, and avoids universal fairness claims.",
+      "assertions": ["Reports subgroup counts and uncertainty", "Investigates coverage and measurement limits", "Does not average away the subgroup failure", "Avoids universal fairness claims"]
     }
   ]
 }

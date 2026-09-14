@@ -21,6 +21,7 @@ data-scientist/
 │   ├── statistical-methodology.md        # Test selection, assumptions, effect sizes
 │   ├── experimental-design.md            # Design taxonomy, power, A/B testing
 │   ├── causal-inference-framework.md     # DAGs, potential outcomes, identification
+│   ├── interpretability-workflow.md      # Explanation design, validation, and limits
 │   ├── regression-modeling.md            # Model hierarchy, diagnostics, GLMs
 │   └── bayesian-workflow.md              # Prior, MCMC, model comparison
 ├── scripts/
@@ -43,6 +44,7 @@ Load this skill when the task involves:
 - **Causal questions:** effect estimation, causality, treatment effects, identification strategies
 - **Modeling:** machine learning, prediction, model selection, cross-validation
 - **General:** "analyze this data," "what model should I use," "review this analysis"
+- **Interpretability:** feature attribution, SHAP/LIME, saliency, counterfactual explanations, model cards, or fairness diagnosis
 
 ## Usage Examples
 
