@@ -607,6 +607,10 @@ The Movie Database API from the terminal. Search and discover movies and TV by g
 
 Deploy, configure, secure, and maintain Traefik v3 reverse proxy — Docker provider, HTTP/TCP/UDP routing, TLS/ACME (Let's Encrypt), middlewares, observability, API, and production deployment. Covers the full static config schema, all 25+ built-in middlewares with YAML config, ACME certificate resolvers with DNS-01/HTTP-01/TLS-ALPN-01 challenges, Docker label reference for routers/services/middlewares, TCP/UDP routing with SNI matching, Prometheus/OpenTelemetry metrics and access logs, and production-ready Docker Compose deployments with security hardening. Ships 10 reference files covering every major feature area.
 
+### [training-data-annotation](training-data-annotation/SKILL.md)
+
+Design reliable training-data annotation and active-learning workflows: label definitions, acquisition policies, representative audits, annotator conditions, adjudication, provenance and cost-quality stopping.
+
 ### [trakt](trakt/SKILL.md)
 
 Trakt.tv media discovery from the terminal. Browse trending, anticipated, and popular movies and TV shows. Read-only — uses only a Client ID, no OAuth required.

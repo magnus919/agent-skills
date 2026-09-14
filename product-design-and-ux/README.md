@@ -13,8 +13,8 @@ This skill helps an agent turn validated evidence and a chosen scope into tracea
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Compact workflow, routing, and completion rules. |
-| `references/` | Detailed guidance for IA, content and cognitive demand, flows, contracts, patterns, usability, handoff, sources, and scenario probes. |
-| `templates/` | Fillable traceability, flow/state, inventory, contract, usability, and handoff artifacts. |
+| `references/` | Detailed guidance for IA, content and cognitive demand, AI uncertainty, flows, contracts, patterns, usability, handoff, sources, and scenario probes. |
+| `templates/` | Fillable traceability, flow/state, inventory, general and AI interaction contracts, usability, and handoff artifacts. |
 
 ## Quick Start
 
@@ -29,9 +29,11 @@ Define the task flow, recovery states, interface contract, and observable accept
 - Product design, UX design, interaction design, information architecture, or navigation model.
 - Task flows, user flows, state models, recovery paths, or interface behavior.
 - Interaction contracts, responsive/reflow behavior, usability-study plans, or UX engineering handoffs.
+- AI-generated content, recommendations, predictions, conversational flows, retrieval grounding, human review/approval, opt-out, escalation, feedback, or model/prompt/retrieval-change acceptance.
 
 ## Requirements
 
 - Validated evidence and an approved product scope; use `product-discovery` or `product-methodology` when these are absent.
 - No software dependencies, API keys, design tools, or frontend framework.
 - Use `web-accessibility` for WCAG/ARIA conformance and accessibility-testing depth.
+- Use `agent-evals-and-observability` for model-quality, statistical evaluation, and telemetry implementation; use `ai-operating-economics` for AI value, cost, and authority decisions.

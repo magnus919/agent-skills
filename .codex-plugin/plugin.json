@@ -166,6 +166,7 @@
     "./three",
     "./tmdb",
     "./traefik",
+    "./training-data-annotation",
     "./trakt",
     "./transistor",
     "./travel-guide",
