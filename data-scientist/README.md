@@ -22,6 +22,7 @@ data-scientist/
 │   ├── experimental-design.md            # Design taxonomy, power, A/B testing
 │   ├── causal-inference-framework.md     # DAGs, potential outcomes, identification
 │   ├── interpretability-workflow.md      # Explanation design, validation, and limits
+│   ├── interpretability-sources.md       # Primary papers and reporting guidance
 │   ├── regression-modeling.md            # Model hierarchy, diagnostics, GLMs
 │   └── bayesian-workflow.md              # Prior, MCMC, model comparison
 ├── scripts/
@@ -30,9 +31,11 @@ data-scientist/
 │   ├── model-comparison.py               # AIC/BIC/CV model comparison
 │   ├── effect-size-calculator.py         # Effect sizes with confidence intervals
 │   └── experimental-design.py            # Randomization schedule generator
-└── assets/
-    ├── report-template.md                # Analysis report standard format
-    └── experimental-plan-template.md     # Pre-registration-style planning
+├── assets/
+│   ├── report-template.md                # Analysis report standard format
+│   └── experimental-plan-template.md     # Pre-registration-style planning
+└── templates/
+    └── interpretability-report.md        # Explanation validity and limits record
 ```
 
 ## Triggers
