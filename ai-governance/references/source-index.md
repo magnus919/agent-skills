@@ -1,10 +1,11 @@
 # AI Governance: Source Index and Provenance
 
 This index records the provenance of every reference in the `ai-governance` skill. It
-exists so that anyone can trace any idea back to its informing sources — the twelve
-copyrighted books in the mission's ebook library and the five current research notes that
-de-stale those books — and so that readers can be confident about how the material was
-created.
+exists so that anyone can trace any idea back to its informing sources: the twelve
+copyrighted books in the original ebook library, the separately reviewed *AI Governance*
+Manning MEAP, and the seven current research notes that de-stale those books. Readers should
+also be able to see how the material was created and where current claims still require
+re-verification.
 
 ## Attribution invariant: paraphrase and synthesis at the idea level
 
@@ -29,10 +30,10 @@ are not pasted into any reference.
 Nothing in this skill is legal, financial, or security advice. Regulatory, standards, and
 security material should be re-verified against primary sources at the time of use.
 
-## The twelve reference files
+## The thirteen reference files
 
-The `ai-governance` skill ships twelve reference files under `references/`. The table below
-names all eleven and maps each to its informing sources: book short names (see the
+The `ai-governance` skill ships thirteen reference files under `references/`. The table below
+names all thirteen and maps each to its informing sources: book short names (see the
 bibliography) and the mission research notes (see below). The book short names are the
 canonical identifiers used consistently across the skill.
 
@@ -42,14 +43,15 @@ canonical identifiers used consistently across the skill.
 | `governance-operating-model.md` | Six-step operating model, councils, stewards, decision rights, RACI, federated vs. centralized, maturity, culture, charter | Designing Data Governance from the Ground Up; Data Governance Handbook; research-org-board-governance.md |
 | `risk-management-and-frameworks.md` | NIST AI RMF (govern/map/measure/manage), ISO/IEC 42001 & 23894, model-risk tiering, risk registers, inherent vs. residual | Responsible AI in the Enterprise; Platform and Model Design for Responsible AI; research-standards.md |
 | `ai-lifecycle-governance.md` | Stage gates across ideation, data, build, evaluate, deploy, monitor, retire; model inventory, lineage, drift, incident response | Platform and Model Design for Responsible AI; Designing Data Governance from the Ground Up; Data Governance Handbook; research-technical-controls.md |
+| `six-level-governance-framework.md` | Cross-cutting 6L-G levels, evidence loop, maturity, deployment postures, and proportionality | AI Governance; research-standards.md; existing lifecycle, operating-model, security, and privacy references |
 | `fairness-bias-accountability.md` | Fairness metrics and their limits, algorithmic justice, bias sources, trade-offs, accountability, model cards | AI Fairness; Introduction to Responsible AI; Responsible AI: Best Practices; research-technical-controls.md |
 | `transparency-and-explainability.md` | Explainability (XAI) methods, when explanation is required, disclosure, human-AI interaction, auditability | Responsible AI in the Enterprise; Platform and Model Design for Responsible AI; Introduction to Responsible AI |
-| `privacy-and-data-governance.md` | Training and operational data governance, ownership, lineage, quality, consent, minimization, retention, privacy-enhancing techniques | Designing Data Governance from the Ground Up; Data Governance Handbook; Platform and Model Design for Responsible AI; research-regulatory.md; research-technical-controls.md |
-| `llm-and-agent-security.md` | Trust boundaries, prompt injection, data exposure, hallucination, excessive agency, denial of service, supply chain, red-teaming | The Developer's Playbook for LLM Security; Beyond the Algorithm; research-llm-agent-security.md |
+| `privacy-and-data-governance.md` | Training and operational data governance, ownership, lineage, quality, consent, minimization, retention, privacy-enhancing techniques, agentic memory and egress | Designing Data Governance from the Ground Up; Data Governance Handbook; Platform and Model Design for Responsible AI; AI Governance; research-regulatory.md; research-technical-controls.md |
+| `llm-and-agent-security.md` | Trust boundaries, prompt injection, exposure ladder, data exposure, hallucination, excessive agency, tool authorization, containment, denial of service, supply chain, red-teaming | The Developer's Playbook for LLM Security; Beyond the Algorithm; AI Governance; research-llm-agent-security.md |
 | `regulatory-landscape.md` | Current law by jurisdiction, compliance mapping, horizon scanning, enforcement | research-regulatory.md (authoritative); book regulatory chapters of Responsible AI in the Enterprise and Beyond the Algorithm as historical context only |
 | `procurement-third-party-and-board-oversight.md` | Vendor and model due diligence, supply chain, board reporting, metrics, audit | The AI Product Manager's Handbook; Developing Cybersecurity Programs and Policies; research-org-board-governance.md |
 | `gxp-and-data-integrity.md` | GxP AI governance, ALCOA+, data integrity, electronic records, audit trails, risk-based assurance, QMS interfaces | FDA, MHRA, PIC/S, WHO, EMA, ICH, ISPE; gxp-ai-governance-brief.md; gxp-ai-governance-log.md |
-| `source-index.md` | This file: provenance, attribution, bibliography | All twelve books; all five research notes; GxP research artifacts (meta) |
+| `source-index.md` | This file: provenance, attribution, bibliography | All thirteen source books; all seven research notes; GxP research artifacts (meta) |
 
 ## Research notes
 
@@ -74,10 +76,10 @@ short filename throughout the skill. All seven are used, with the two GxP artifa
 
 - gxp-ai-governance-brief.md and gxp-ai-governance-log.md — GxP, ALCOA+, data integrity, electronic records, validation/assurance, and QMS interfaces; inform `gxp-and-data-integrity.md`.
 
-## Bibliography — the twelve source books
+## Bibliography — the twelve original source books
 
-These are the twelve titles harvested for the skill, drawn from the mission's read-only
-ebook library. All content derived from them is paraphrased and synthesized at the idea
+These are the twelve titles originally harvested for the skill, drawn from the mission's
+read-only ebook library. All content derived from them is paraphrased and synthesized at the idea
 level, as described above; no passages are reproduced. The books are listed by the short
 name used across the skill.
 
@@ -111,6 +113,17 @@ name used across the skill.
     third parties, metrics, and ethics.
 12. **Practical Cybersecurity Architecture** — the control-environment architecture that
     surrounds AI systems.
+
+### Additional source reviewed for this enrichment
+
+13. **AI Governance** — Engin Bozdag and Stefano Bennati, Manning Publications Co., MEAP,
+    ISBN 9781633436817. The attached manuscript metadata identifies dates of 2025-11-07 and
+    2026-04-15. Chapters 2 through 5 were reviewed on 2026-09-14. The book informs the
+    author-developed 6L-G framework, deployment-posture boundaries, the six-factor exposure
+    ladder, agentic tool and memory controls, purpose-aware egress, and evidence-oriented
+    maturity practices. Because this is an in-progress MEAP, its legal, regulatory, security,
+    vendor, and incident claims are not treated as current authority; re-verify those claims
+    against primary sources before use.
 
 ## How to read this index
 
