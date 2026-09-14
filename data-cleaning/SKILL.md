@@ -18,6 +18,9 @@ metadata:
 
 Treat cleaning as a controlled transformation of an observed dataset, not cosmetic editing. Preserve raw input, state the target use and grain, make every lossy decision explicit, and prove that the cleaned output satisfies a contract.
 
+When a model proposes data transformations, load [the AI boundary workflow](references/ai-repair-review.md)
+and use [the companion record](templates/ai-repair-ledger.csv).
+
 ## Route by task
 
 | Need | Read next |

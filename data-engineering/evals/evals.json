@@ -61,6 +61,9 @@
         "The response includes an evaluation harness with labeled queries measuring recall and latency",
         "The response lays out a migration path from the first step to a dedicated store if needed"
       ]
-    }
+    },
+    {"id": "ai-stage-invalid-output", "prompt": "An invoice extraction pipeline gets valid JSON from an LLM, but some quantities lack source support. Timeouts currently become null rows. Can we publish?", "expected_output": "Hold unsupported/unavailable records and require semantic evidence separate from structure.", "assertions": ["Distinguishes JSON/schema validity from factual support", "Keeps timeouts distinct from source null or absent facts", "Requires record provenance and quarantine accounting", "Uses an explicit completeness policy before publication"]},
+    {"id": "ai-stage-retry-drift", "prompt": "A queue redelivers the same record. Calling our model again changes its category; a prior attempt may already have written to the sink. Design safe recovery.", "expected_output": "Reconcile the sink and reuse versioned accepted outputs rather than silently regenerating.", "assertions": ["Uses source identity and transformation version for logical work", "Separates model retries from sink publication effects", "Reconciles prior accepted output before replay or overwrite", "Treats prompt/model changes as explicit versioned reprocessing"]},
+    {"id": "ai-sql-budget-boundary", "prompt": "AI generated a warehouse query referencing a column that does not exist and a many-to-many join. The pilot was cheap but bulk retries exceed budget. What should the pipeline do?", "expected_output": "Reject the query and pause bulk admission until schema/grain and budget evidence support execution.", "assertions": ["Checks current schema and expected join grain", "Does not modify schema merely to fit generated SQL", "Requires bounded independent query validation before production execution", "Counts retries in total cost and preserves checkpointed pending work"]}
   ]
 }

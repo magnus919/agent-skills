@@ -16,6 +16,9 @@ metadata:
 
 Data engineering is the operational backbone of data-driven systems. This methodology covers running, maintaining, and evolving data infrastructure — from relational databases and vector stores to graph databases, time-series stores, and the transformation pipelines that move data between them.
 
+When a model proposes data transformations, load [the AI boundary workflow](references/ai-transformation-boundaries.md)
+and use [the companion record](templates/ai-stage-contract.md).
+
 ## The Data Engineer's Domain
 
 | You own | You don't own |
