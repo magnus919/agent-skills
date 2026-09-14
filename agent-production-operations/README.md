@@ -42,6 +42,8 @@ results gate the next release.
 | [references/tool-authority-health.md](references/tool-authority-health.md) | Health record schema for tracking tool availability, tool failure, authority usage, authority breaches, cost, and latency over time |
 | [references/trace-to-eval-feedback.md](references/trace-to-eval-feedback.md) | Production-to-evaluation feedback loop — how traces and incidents become eval cases and gate releases |
 | [evals/evals.json](evals/evals.json) | Integrated eval cases covering read-only agents, side-effect agents, model regression, tool outages, cost breaches, and human escalation |
+| [references/service-conditions.md](references/service-conditions.md) | Decide whether batching, streaming, caching and fallback remain within the tested operating envelope |
+| [templates/service-condition-record.md](templates/service-condition-record.md) | Record task quality, latency, total cost, partial outcomes and recovery ownership together |
 | [manifest.yaml](manifest.yaml) | Machine-readable bundle manifest (schema v1): purpose, audience, stages, included skills, prerequisites, outputs, handoffs, conflicts, and eval suite |
 
 ## Quick Start

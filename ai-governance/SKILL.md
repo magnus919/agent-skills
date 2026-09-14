@@ -4,7 +4,8 @@ description: >-
   Design and operate an organization's AI governance system: define governance
   principles, operating models and decision rights, risk frameworks, lifecycle
   gates, and fairness, transparency, privacy, security, regulatory, and
-  board-oversight controls. Use when standing up a governance program, tiering
+  board-oversight controls across SaaS, API, self-hosted, and agentic
+  deployment postures. Use when standing up a governance program, tiering
   AI use-case risk, reviewing an LLM or agent system for governance and safety
   gaps, mapping a regulation to a compliance plan, scoring governance maturity,
   or preparing board reporting. For regulated life-sciences use cases, also cover GxP,
@@ -19,7 +20,8 @@ metadata:
   tags: ai-governance, responsible-ai, model-risk, ai-risk-management, governance-operating-model,
     ai-governance-principles, lifecycle-gates, fairness, transparency, privacy,
     llm-security, ai-regulation, ai-compliance, board-oversight, third-party-risk,
-    governance-maturity, use-case-risk-tiering, model-cards, ai-audit, ai-oversight
+    governance-maturity, use-case-risk-tiering, model-cards, ai-audit, ai-oversight,
+    deployment-posture, agentic-governance, tool-authorization, data-egress, memory-governance
 ---
 
 # AI Governance
@@ -38,10 +40,11 @@ manual and not legal or security advice.
 | The governance operating model: councils, stewards, decision rights, RACI, federated vs. centralized | Data-platform mechanics, pipelines, and lineage tooling internals |
 | Risk frameworks: NIST AI RMF, ISO/IEC 42001 & 23894, model-risk tiering, risk registers | Implementing authentication, authorization, or vulnerability fixes |
 | Lifecycle stage gates across ideation, build, evaluate, deploy, monitor, retire | CI/CD pipeline and deployment-gate configuration |
+| Cross-cutting 6L-G governance loop: strategy, impact, implementation, acceptance, operations, learning | Treating an author-developed framework as a regulatory or standards requirement |
 | Fairness, bias, transparency, explainability, and accountability controls | Product portfolio/roadmap governance cadences |
 | Privacy and data governance for training and operational data | Capital allocation, org structure, or M&A governance |
 | GxP AI governance overlay: ALCOA+, data integrity, electronic records, risk-based assurance, QMS interfaces | Legal applicability determinations, validation protocols, SOPs, or quality-system operation |
-| LLM/agent safety: prompt injection, excessive agency, red-teaming, supply chain | Host-level or application-level security scanning |
+| LLM/agent safety: prompt injection, exposure ladders, tool authorization, memory, egress, red-teaming, supply chain | Host-level or application-level security scanning |
 | Regulatory landscape and compliance mapping (as guidance, not advice) | Legal drafting, regulatory filings, or attorney-client work product |
 | Third-party and model due diligence, board reporting, audit | Any authoritative statement of "your system is compliant" |
 
@@ -67,11 +70,12 @@ Progressive disclosure: load only the reference relevant to the current question
 | Designing the operating model, councils, stewards, decision rights, RACI, maturity, culture | [references/governance-operating-model.md](references/governance-operating-model.md) |
 | Applying NIST AI RMF, ISO/IEC 42001 & 23894, model-risk tiering, inherent vs. residual risk | [references/risk-management-and-frameworks.md](references/risk-management-and-frameworks.md) |
 | Placing stage gates across ideation, data, build, evaluate, deploy, monitor, retire | [references/ai-lifecycle-governance.md](references/ai-lifecycle-governance.md) |
+| Applying the Six-Level Governance framework, evidence loop, maturity, and posture overlay | [references/six-level-governance-framework.md](references/six-level-governance-framework.md) |
 | Fairness metrics and their limits, bias sources, trade-offs, algorithmic justice | [references/fairness-bias-accountability.md](references/fairness-bias-accountability.md) |
 | Explainability (XAI) methods, when explanation is required, disclosure, auditability | [references/transparency-and-explainability.md](references/transparency-and-explainability.md) |
-| Training/operational data governance, ownership, lineage, quality, consent, PETs | [references/privacy-and-data-governance.md](references/privacy-and-data-governance.md) |
+| Training/operational data governance, ownership, lineage, quality, consent, PETs, agentic memory, and purpose-aware egress | [references/privacy-and-data-governance.md](references/privacy-and-data-governance.md) |
 | AI used in GLP, GCP, GMP, GDP, or pharmacovigilance contexts; ALCOA+, data integrity, electronic records, audit trails, validation/assurance, and QMS interfaces | [references/gxp-and-data-integrity.md](references/gxp-and-data-integrity.md) |
-| Trust boundaries, prompt injection, excessive agency, hallucination, supply chain, red-teaming | [references/llm-and-agent-security.md](references/llm-and-agent-security.md) |
+| Trust boundaries, prompt injection, exposure ladders, excessive agency, tool authorization, containment, supply chain, red-teaming | [references/llm-and-agent-security.md](references/llm-and-agent-security.md) |
 | Current law by jurisdiction, compliance mapping, enforcement, horizon scanning | [references/regulatory-landscape.md](references/regulatory-landscape.md) |
 | Vendor/model due diligence, supply chain, board reporting, metrics, audit | [references/procurement-third-party-and-board-oversight.md](references/procurement-third-party-and-board-oversight.md) |
 | Tracing any idea to its informing books and research notes; bibliography | [references/source-index.md](references/source-index.md) |
@@ -88,6 +92,7 @@ Use these to turn the methodology into working artifacts.
 | Documenting a released model: intended use, data, performance, fairness, limitations | [templates/model-card.md](templates/model-card.md) |
 | Conducting vendor/model supply-chain due diligence | [templates/third-party-due-diligence.md](templates/third-party-due-diligence.md) |
 | Preparing executive/board AI-governance reporting | [templates/board-ai-governance-report.md](templates/board-ai-governance-report.md) |
+| Reviewing SaaS/API/self-hosted boundaries and agentic tools, actions, egress, memory, and evidence | [templates/agentic-governance-review.md](templates/agentic-governance-review.md) |
 
 ## Scripts
 
@@ -105,8 +110,10 @@ changing anything. Exit 0 on success; the maturity scorer also exits 1 on a crit
 ## Evaluation and Configuration
 
 - **Eval manifest:** [evals/evals.json](evals/evals.json) holds the output-quality cases (operating
-  model design, use-case risk tiering, LLM-app governance review, fairness/accountability review,
-  regulatory compliance mapping, board governance reporting, and GxP/data-integrity governance)
+  model design, use-case risk tiering, 6L-G and deployment-posture review, agentic security and
+  privacy review, impact-assessment closure, LLM-app governance review,
+  fairness/accountability review, regulatory compliance mapping, board governance reporting, and
+  GxP/data-integrity governance)
   used to grade this skill.
 - **Configuration:** [pytest.ini](pytest.ini) overrides the repository's root coverage settings so
   the subprocess-based skill tests run cleanly; do not add a second override.
