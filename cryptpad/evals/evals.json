@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "skill_name": "cryptpad",
+  "evals": [
+    {
+      "id": "external-editor",
+      "prompt": "Embed CryptPad to edit our externally stored .txt files. Who saves the changes?",
+      "expected_output": "A browser integration plan with explicit host persistence and key ownership.",
+      "assertions": [
+        "Uses the browser loader and CryptPadAPI rather than invented REST CRUD endpoints.",
+        "Places durable Blob storage in the integrating application.",
+        "Acknowledges onSave only after persistence succeeds."
+      ]
+    },
+    {
+      "id": "key-race",
+      "prompt": "Alice and Bob both replace old key K0 with different keys and end up in separate editors. Fix our integration.",
+      "expected_output": "An atomic key-pair update with a shared winning key.",
+      "assertions": [
+        "Compares stored key to data.old atomically per document.",
+        "Stores matching edit and view keys together.",
+        "Returns the stored winner to both callbacks, including the losing caller."
+      ]
+    },
+    {
+      "id": "view-capability",
+      "prompt": "We set mode=view but supply the same key used by editors. Is the document protected?",
+      "expected_output": "Identifies UI-only restriction and prescribes a real view key.",
+      "assertions": [
+        "Explains that edit key holders can bypass the UI lock.",
+        "Requires actual view-key distribution and app-side authorization.",
+        "Does not grant a viewer onNewKey authority or edit keys."
+      ]
+    },
+    {
+      "id": "save-failure",
+      "prompt": "Our storage upload failed but onSave callback ran. Can we safely close the tab?",
+      "expected_output": "Keeps unsaved data visible and corrects acknowledgement timing.",
+      "assertions": [
+        "Does not claim the data was saved.",
+        "Acknowledges only after durable persistence.",
+        "Addresses retry and revision safety before closing/reopening."
+      ]
+    },
+    {
+      "id": "rest-export",
+      "prompt": "Give me a curl command to download plaintext for every document in my CryptDrive.",
+      "expected_output": "Explains the discovered API boundary and offers authorized browser export.",
+      "assertions": [
+        "Does not invent bearer-token document-list or plaintext-export endpoints.",
+        "Explains that server ciphertext is not a decrypted export.",
+        "Requires supported client access and verifies exports."
+      ]
+    },
+    {
+      "id": "revoke-live",
+      "prompt": "We removed Bob from our ACL while his CryptPad editor stayed open. Is he disconnected?",
+      "expected_output": "A bounded revocation plan accounting for key-bearing active sessions.",
+      "assertions": [
+        "Does not equate ACL deletion with session termination.",
+        "Plans new keys and migration for authorized users.",
+        "Rejects stale-session saves and acknowledges already-read content cannot be recalled."
+      ]
+    },
+    {
+      "id": "probe-limits",
+      "prompt": "Our probe says ok=true and enableEmbedding=false. Is browser collaboration working?",
+      "expected_output": "Correctly interprets limited HTTP discovery and disabled embedding.",
+      "assertions": [
+        "Does not equate recognized resources with successful editing.",
+        "Identifies embedding configuration as a separate finding.",
+        "Requests browser/WebSocket/save evidence before declaring health."
+      ]
+    },
+    {
+      "id": "retention",
+      "prompt": "Run the CryptPad eviction scripts to see if they fix our blank editor.",
+      "expected_output": "Declines speculative destructive diagnosis and follows browser/proxy evidence.",
+      "assertions": [
+        "Identifies eviction as a state-changing retention operation.",
+        "Does not run deletion as a health check.",
+        "Investigates sandbox/CSP/WebSocket evidence first."
+      ]
+    }
+  ]
+}

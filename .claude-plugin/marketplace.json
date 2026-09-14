@@ -276,6 +276,15 @@
       "description": "Deploy, configure, and operate CrowdSec Security Engine, cscli, remediation components, acquisition pipelines, and AppSec WAF. Use for Linux or Docker installation, detection-to-blocking design, incident review, and safe changes. Do not use for generic firewall, Kubernetes, or reverse-proxy design; route those to the named platform skill and use this skill for CrowdSec integration."
     },
     {
+      "name": "cryptpad",
+      "source": "./",
+      "skills": [
+        "./cryptpad"
+      ],
+      "strict": false,
+      "description": "Use CryptPad encrypted collaboration for integration, automation, and diagnosis with its browser integration API, instance discovery, document import/export, and session-key lifecycle. Use for CryptPad API feasibility, embedded editors, sharing, persistence, or self-hosted instance troubleshooting. Do not use for EncryptPad/OpenPGP, generic office-file conversion, or designing an unrelated collaboration service."
+    },
+    {
       "name": "cyberpunk",
       "source": "./",
       "skills": [

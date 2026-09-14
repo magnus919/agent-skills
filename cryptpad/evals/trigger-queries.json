@@ -1,0 +1,22 @@
+[
+  {
+    "query": "Integrate CryptPad with our own encrypted file storage.",
+    "should_trigger": true
+  },
+  {
+    "query": "Debug our CryptPad onNewKey race.",
+    "should_trigger": true
+  },
+  {
+    "query": "Export my CryptDrive spreadsheet with my authorized browser.",
+    "should_trigger": true
+  },
+  {
+    "query": "Encrypt a local file with EncryptPad OpenPGP.",
+    "should_trigger": false
+  },
+  {
+    "query": "Convert a local Word document to PDF.",
+    "should_trigger": false
+  }
+]
