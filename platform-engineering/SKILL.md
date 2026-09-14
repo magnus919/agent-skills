@@ -3,8 +3,11 @@ name: platform-engineering
 description: >-
   Use this skill when building or operating internal developer platforms: infrastructure
   as code, CI/CD, container orchestration, service networking, secrets, and
-  observability. Do not use it to define release process, promotion, rollout, or
-  rollback policy; use release-engineering for that delivery model.
+  observability, or when shaping platform products, self-service interfaces,
+  adoption evidence, and policy guardrails. Do not use it to define release process,
+  promotion, rollout, or rollback policy; use release-engineering for that delivery model.
+  Route named-tool configuration and troubleshooting to the corresponding operational
+  skill, such as kubernetes or traefik for ingress-controller configuration.
 license: MIT
 metadata:
   tags: ''
@@ -31,6 +34,9 @@ Load this skill when the task involves:
 | Secret management design | Vault, SOPS, External Secrets Operator patterns |
 | Cloud architecture assessment | Multi-cloud patterns, provider foundations, cost governance |
 | Deployment pipeline review | Delivery-platform architecture; load [release-engineering](../release-engineering/SKILL.md) when defining the release model, promotion gates, rollout, or rollback policy |
+| Platform product intake or value case | Applicability, internal-user discovery, outcome contracts, adoption/value evidence, and stop/escalation rules |
+| Self-service contract or policy exception | API/outcome contract, guardrail evidence, exception ownership, and escape-hatch review |
+| Platform observability ownership | Platform-customer adoption, SLI/SLO publication, response routing, and ownership handoffs |
 
 ## When not to use
 
@@ -51,6 +57,8 @@ Then load domain-specific references from this skill:
 
 ```
 skill_view('platform-engineering', file_path='references/ci-cd-pipelines.md')
+skill_view('platform-engineering', file_path='references/platform-product-evidence.md')
+skill_view('platform-engineering', file_path='references/policy-and-observability-ownership.md')
 skill_view('platform-engineering', file_path='references/infrastructure-as-code.md')
 # ... etc per domain
 ```
@@ -68,6 +76,8 @@ skill_view('platform-engineering', file_path='references/infrastructure-as-code.
 | `references/cloud-platforms.md` | AWS/GCP/Azure foundational services, multi-cloud design, cost governance, provider abstraction |
 | `references/automation-languages.md` | Go CLI patterns, Python SDK integration, Bash bootstrap/conventions for platform tooling |
 | `references/release-engineering.md` | Container image lifecycle, artifact versioning strategies, release gate checklists, Helm chart promotion |
+| `references/platform-product-evidence.md` | Applicability/intake, platform domain boundaries, outcome/self-service contracts, adoption and value evidence |
+| `references/policy-and-observability-ownership.md` | Developer-owned delivery with reusable policy checks, exceptions, observability ownership, and response routing |
 
 ## Templates
 
@@ -76,6 +86,8 @@ skill_view('platform-engineering', file_path='references/infrastructure-as-code.
 | `templates/golden-path-self-service-portal.md` | Designing a golden path or self-service portal for a developer workflow (scoping, journey, guardrails, escape hatch, metrics) |
 | `templates/iac-review-record.md` | Recording a structured review of Terraform/OpenTofu/Pulumi/Ansible modules before they ship |
 | `templates/observability-contract.md` | Declaring the metrics/logs/traces contract a service must meet before production traffic |
+| `templates/platform-value-record.md` | Recording the platform problem, baseline, adoption assumptions, value model, and stop/escalation decision |
+| `templates/platform-exception-record.md` | Reviewing an escape-hatch or policy exception with scope, evidence, expiry, and accountable owner |
 
 ## Output Contract
 
