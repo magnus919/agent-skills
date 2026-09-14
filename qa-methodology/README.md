@@ -14,11 +14,11 @@ Install once and your agent designs test strategies, triages CI failures by exit
 
 | Directory | Contents |
 |-----------|----------|
-| `references/` | 16 deep-dive files: test-strategy, test-automation, quality-gates-and-metrics, regression-testing, test-data-management, performance-testing, security-testing, ci-failure-triage, test-debugging, risk-based-testing, exploratory-testing, test-design-techniques, qa-career-levels, sdet-engineering, ai-code-quality-gates, agentic-eval-design |
+| `references/` | 17 deep-dive files: test-strategy, test-automation, quality-gates-and-metrics, regression-testing, test-data-management, performance-testing, security-testing, ci-failure-triage, test-debugging, risk-based-testing, exploratory-testing, test-design-techniques, qa-career-levels, sdet-engineering, ai-code-quality-gates, agentic-eval-design, ai-test-artifact-evidence |
 | `templates/` | Fillable templates for strategy, verification, mutation review, risk, exploratory work, and AI-assisted artifact evidence |
 | `assets/` | 3 quick-reference assets: risk-matrix-grid, test-design-techniques-checklist, qa-definition-of-done |
 | `scripts/` | 2 Python CLIs: risk-prioritize (P×I ranking with --json output), check-ac-testability (vague-AC scanner) |
-| `evals/` | Schema-v1 output-quality eval manifest (10 cases) |
+| `evals/` | Schema-v1 output-quality eval manifest (15 cases) |
 
 ## Quick Start
 
