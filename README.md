@@ -221,6 +221,10 @@ Safe Forgejo API v1 CLI for issues, pull requests, repositories, file contents, 
 
 Carry an embedded technical engagement from an ambiguous need to an adopted, measurable capability and a deliberate generalization decision across discovery, build, deployment, adoption, and field learning.
 
+### [fpga-development](fpga-development/SKILL.md)
+
+Design and verify FPGA logic with RTL contracts, arithmetic analysis, self-checking simulation, clock/reset and CDC review, timing constraints and reproducible release evidence. Includes dense references, engineering templates and an original executable ready/valid buffer fixture.
+
 ### [frontend-engineering](frontend-engineering/SKILL.md)
 
 Build and maintain web frontends — component architecture, state management, API integration, responsive layout, client-side performance, and frontend testing patterns. Framework agnostic, focused on web frontend implementation. Do not use for backend service implementation, data engineering, or platform infrastructure work.

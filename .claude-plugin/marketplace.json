@@ -483,6 +483,15 @@
       "description": "Guide embedded technical engagements from ambiguous stakeholder need through discovery, framing, hypothesis, build, evaluation, deployment, adoption, measurement, and generalization while preserving evidence, decision rights, and field learning. Use when one accountable technical lead must carry continuity across customer or stakeholder discovery, implementation, production fit, adoption, and measurable outcomes. Do not use for a bounded repository change, product investment governance, ongoing reliability or platform ownership, an isolated specialist task, or advisory work that ends before implementation and adoption."
     },
     {
+      "name": "fpga-development",
+      "source": "./",
+      "skills": [
+        "./fpga-development"
+      ],
+      "strict": false,
+      "description": "Design, review, simulate, and verify FPGA logic using explicit RTL contracts, clock and reset models, CDC analysis, timing constraints, and reproducible implementation evidence. Use for synthesizable HDL, fixed-point arithmetic, handshakes, testbenches, resource tradeoffs, timing closure, and FPGA release or bring-up planning. Do not use for ordinary MCU firmware, generic circuit design, a substitute vendor-tool manual, or unsupported claims of hardware or timing signoff."
+    },
+    {
       "name": "frontend-engineering",
       "source": "./",
       "skills": [
