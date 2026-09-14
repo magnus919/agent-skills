@@ -25,9 +25,9 @@ Use this methodology to turn an optimization request into a defensible decision 
 
 ## Routing and exit
 
-Load `references/formulation-and-evidence.md` for formulation, feasibility, solver status, bounds/gaps, and comparison rules. Load `references/multiobjective-and-robustness.md` for Pareto decisions and stochastic sensitivity. Use the templates for a formulation record and solution audit.
+Load `references/formulation-and-evidence.md` for formulation, feasibility, solver status, bounds/gaps, and comparison rules. Load `references/multiobjective-and-robustness.md` for Pareto decisions and stochastic sensitivity. Use [the formulation record](templates/formulation-record.md) to define the problem before solving, and [the solution audit](templates/solution-audit.md) to verify a returned candidate.
 
-This skill owns decision formulation and evidence. Route statistical estimation, causal questions, and uncertainty models to `data-scientist`; route ML hyperparameter/model training optimization to `ml-engineering`; route operation of a named solver or cloud service to its tool skill. Stop when variables, objective units, hard constraints, feasibility checker, or budget are undefined.
+This skill owns decision formulation and evidence. Route statistical estimation, causal questions, and uncertainty models to `data-scientist`; route ML hyperparameter/model training optimization to `ml-engineering`; route operation of a named solver or cloud service to its tool skill. Stop when variables, objective units, hard constraints, feasibility checker, or budget are undefined. Complete when the formulation and solution audit record the decision, supporting evidence, unresolved limits, and owner.
 
 ## When not to use
 
