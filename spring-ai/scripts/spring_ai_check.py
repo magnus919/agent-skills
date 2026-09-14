@@ -5,6 +5,7 @@ import argparse
 import json
 import re
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 VERSION = r"[0-9]+\.[0-9]+(?:\.[0-9]+)?(?:-[A-Za-z0-9.-]+)?"
@@ -41,33 +42,48 @@ def rel(root, paths):
 
 
 def maven_versions(text):
-    clean = strip_comments(text)
-    props = dict(re.findall(r"<([A-Za-z0-9_.-]+)>\s*([^<]+?)\s*</\1>", clean))
+    try:
+        root = ET.fromstring(text)
+    except ET.ParseError as exc:
+        raise ValueError("pom.xml is not well-formed XML") from exc
+    # Namespace-independent element access, scoped to the dependency or parent.
+    def child(node, name):
+        return next((x for x in node if x.tag.split("}")[-1] == name), None)
+
+    def value(node, name):
+        item = child(node, name)
+        return (item.text or "").strip() if item is not None else ""
+
+    props_node = child(root, "properties")
+    props = {
+        x.tag.split("}")[-1]: (x.text or "").strip()
+        for x in (props_node if props_node is not None else [])
+    }
     ai, boot = set(), set()
-    for match in re.finditer(r"<artifactId>\s*spring-ai-bom\s*</artifactId>", clean):
-        block = clean[match.start() : match.start() + 1200]
-        version = re.search(r"<version>\s*([^<]+?)\s*</version>", block)
-        if version:
-            value = version.group(1).strip()
-            value = props.get(value[2:-1], value) if value.startswith("${") else value
-            if re.fullmatch(VERSION, value):
-                ai.add(value)
-    for key, value in props.items():
-        if key.lower() in {"spring-ai.version", "spring-ai-version"} and re.fullmatch(
-            VERSION, value.strip()
-        ):
-            ai.add(value.strip())
-    for match in re.finditer(
-        r"<artifactId>\s*(?:spring-boot-starter-parent|spring-boot-dependencies)\s*</artifactId>",
-        clean,
-    ):
-        block = clean[match.start() : match.start() + 1000]
-        version = re.search(r"<version>\s*([^<]+?)\s*</version>", block)
-        if version:
-            value = version.group(1).strip()
-            value = props.get(value[2:-1], value) if value.startswith("${") else value
-            if re.fullmatch(VERSION, value):
-                boot.add(value)
+    for node in root.iter():
+        if node.tag.split("}")[-1] not in {"dependency", "parent"}:
+            continue
+        coordinate = (value(node, "groupId"), value(node, "artifactId"))
+        target = None
+        if coordinate == ("org.springframework.ai", "spring-ai-bom"):
+            target = ai
+        elif coordinate[0] == "org.springframework.boot" and coordinate[1] in {
+            "spring-boot-starter-parent", "spring-boot-dependencies"
+        }:
+            target = boot
+        if target is None:
+            continue
+        version = value(node, "version")
+        seen = set()
+        while version.startswith("${") and version.endswith("}") and version not in seen:
+            seen.add(version)
+            version = props.get(version[2:-1], version)
+        if re.fullmatch(VERSION, version):
+            target.add(version)
+    # A conventional property is a declared clue, not proof of dependency resolution.
+    for key in ("spring-ai.version", "spring-ai-version"):
+        if re.fullmatch(VERSION, props.get(key, "")):
+            ai.add(props[key])
     return ai, boot, props
 
 
@@ -123,14 +139,14 @@ def check(root):
     build_text = "\n".join(read(path) for path in build_files)
     clean_build = strip_comments(build_text)
     if any(path.name == "pom.xml" for path in build_files):
-        ai_versions, boot_versions, variables = maven_versions(build_text)
+        ai_versions, boot_versions, variables = maven_versions(read(root / "pom.xml"))
     else:
         ai_versions, boot_versions, variables = gradle_versions(build_text)
     source = [(path, strip_comments(read(path))) for path in java_files]
     findings = []
     if not ai_versions:
         unresolved = bool(
-            re.search(r"spring-ai-bom:[^\"')\s]+|spring-ai\.version\s*[<>=:]", clean_build, re.I)
+            re.search(r"spring-ai-bom|spring-ai\.version\s*[<>=:]", clean_build, re.I)
         )
         code = "SPRING_AI_VERSION_UNKNOWN" if unresolved else "SPRING_AI_VERSION_MISSING"
         message = (

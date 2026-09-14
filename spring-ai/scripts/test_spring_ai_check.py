@@ -16,7 +16,9 @@ class SpringAICheckTests(unittest.TestCase):
         elif kotlin is not None:
             (directory / "build.gradle.kts").write_text(kotlin)
         else:
-            (directory / "pom.xml").write_text(pom)
+            (directory / "pom.xml").write_text(
+                pom if pom.startswith("<project") else "<project>" + pom + "</project>"
+            )
         if java:
             path = directory / "src/main/java/example/App.java"
             path.parent.mkdir(parents=True)
@@ -68,6 +70,29 @@ class SpringAICheckTests(unittest.TestCase):
         facts = spring_ai_check.check(maven)["facts"]
         self.assertEqual(facts["spring_ai_versions"], ["2.0.1"])
         self.assertEqual(facts["spring_boot_versions"], ["3.5.0"])
+
+    def test_maven_version_cannot_leak_from_adjacent_dependency(self):
+        project = self.make(
+            '<dependencyManagement><dependencies>'
+            '<dependency><groupId>org.springframework.ai</groupId>'
+            '<artifactId>spring-ai-bom</artifactId></dependency>'
+            '<dependency><groupId>example</groupId><artifactId>other</artifactId>'
+            '<version>9.8.7</version></dependency>'
+            '</dependencies></dependencyManagement>'
+        )
+        result = spring_ai_check.check(project)
+        self.assertEqual(result["facts"]["spring_ai_versions"], [])
+        self.assertIn("SPRING_AI_VERSION_UNKNOWN", [x["code"] for x in result["findings"]])
+
+    def test_namespaced_maven_version_precedes_artifact(self):
+        project = self.make(
+            '<project xmlns="http://maven.apache.org/POM/4.0.0">'
+            '<dependencyManagement><dependencies><dependency>'
+            '<version>2.0.1</version><artifactId>spring-ai-bom</artifactId>'
+            '<groupId>org.springframework.ai</groupId>'
+            '</dependency></dependencies></dependencyManagement></project>'
+        )
+        self.assertEqual(spring_ai_check.check(project)["facts"]["spring_ai_versions"], ["2.0.1"])
 
     def test_memory_id_reports_isolation_unproven(self):
         project = self.make("<project/>", "class App { ChatMemory memory; }")
