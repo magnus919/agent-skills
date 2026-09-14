@@ -25,7 +25,7 @@ justification.
    sample sizes, uncertainty, missingness, and the limits of slice comparisons.
 6. Write the conclusion in predictive language unless a causal design identifies
    an intervention effect. Never turn “the model relied on X” into “X caused Y.”
-   Route causal claims to `references/causal-inference-framework.md`.
+   Route causal claims to [the causal-inference framework](causal-inference-framework.md).
 
 Explanation outputs belong in a versioned report with method, target, audience,
 background, stability results, method disagreement, slice results, and known
