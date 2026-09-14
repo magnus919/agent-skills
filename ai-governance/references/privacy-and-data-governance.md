@@ -6,7 +6,8 @@ and data governance are two halves of the same discipline: data governance suppl
 lineage, and quality that make data trustworthy and auditable, while privacy supplies the limits —
 consent, minimization, retention, and protective techniques — that keep that data from causing
 harm. It synthesizes (never reproduces) ideas from *Designing Data Governance from the Ground Up*,
-*Data Governance Handbook*, and *Platform and Model Design for Responsible AI*, and it marks
+*Data Governance Handbook*, *Platform and Model Design for Responsible AI*, and *AI Governance*, and
+it marks
 "current research" where the 2023–2025 books are de-staled by recent regulation. Read it with
 `foundations-and-principles.md` (which names privacy as a governing principle),
 `ai-lifecycle-governance.md` (where data and model lineage surface at stage gates), and
@@ -175,6 +176,89 @@ Practical controls a governance program can adopt:
 - **Reasonable, not minimal-to-zero.** Minimization does not mean stripping data until a model
   cannot function; it means the amount of data is justified by and proportionate to the purpose.
 
+## Four GenAI Privacy Surfaces
+
+Traditional privacy controls still apply, but GenAI adds failure surfaces that are easy to miss if
+the review only asks where a database row is stored. Use these four pillars as a coverage check;
+they are a conceptual model from *AI Governance*, not a legal classification.
+
+| Pillar | GenAI-specific question | Evidence and control direction |
+|---|---|---|
+| **Collection and purpose** | What enters training, fine-tuning, retrieval, prompts, feedback, or telemetry, and is each use necessary and authorized? | Purpose and data map, lawful-basis record where applicable, minimization/redaction, vendor data-use and retention terms |
+| **Storage and memorization** | Where can data persist or be inferred: logs, caches, embeddings, indexes, memory, model weights, or backups? | Source-linked inventory, retention and deletion tests, access controls, leakage and membership-inference testing where justified |
+| **Output integrity** | Can the model invent, infer, or disclose a personal fact, and could a person or downstream system act on it? | Output validation, disclosure, contestation, human review that can change the result, and tests for hallucinated or sensitive personal claims |
+| **User rights and governance** | Can people understand, access, correct, object to, or erase relevant data and derived records? | Rights workflow, data-subject request package, memory view and deletion path, vendor flow-down, and an explicit record of technical limits |
+
+The output-integrity pillar matters because privacy harm can be created by what a system says, not
+only by unauthorized access. A fabricated medical, financial, employment, or criminal fact about a
+person is not made safe by a human clicking “review” if the reviewer cannot verify or reject it.
+Treat consequential output as a decision surface: provide source or uncertainty cues, a meaningful
+contest path, and an accountable reviewer with authority to change the outcome.
+
+## Agentic Privacy: Purpose-Aware Egress and Memory
+
+Agentic systems intensify privacy risk because planning, observation, tool use, and persistent
+memory let the system expand what it reads and where it sends data during a task. The declared goal
+is not a sufficient boundary: an agent may infer a new purpose, call an unvetted tool, or pass
+context to another agent without the user seeing the intermediate step.
+
+### Purpose-aware egress gate
+
+Put an enforcement point before every outbound tool call, external API request, browser fetch, or
+agent-to-agent transfer. The gate should evaluate three attributes together:
+
+1. **Purpose:** Is the proposed use compatible with the purpose declared for this task and the
+   purpose for which the data was collected?
+2. **Necessity:** Are the exact fields proposed for transfer required, or can the payload be
+   redacted, generalized, tokenized, or replaced with a reference?
+3. **Destination:** Is this tool, recipient, region, tenant, and subprocessor permitted?
+
+Make the default fail closed. If no policy explicitly permits the combination of agent, principal,
+purpose, data class, operation, and destination, block the call or route it to review. Record the
+decision and the minimized payload, not only the agent's proposed payload. A policy engine can
+return the decision, but a separate enforcement point must prevent a blocked call from executing.
+
+Use explicit outcomes:
+
+- **Allow** when purpose, necessity, and destination are all satisfied.
+- **Allow with redaction** when the purpose is valid but some fields are unnecessary.
+- **Block** when the use or destination is prohibited.
+- **Request human approval** when the change is ambiguous or materially risky.
+- **Request just-in-time consent** when a new user-facing purpose needs a fresh choice.
+
+Keep security controls in the loop. Treat incoming documents, web pages, tool descriptions, and
+tool results as untrusted; bind model output to typed parameters; validate those parameters before
+execution; and isolate external fetches. Otherwise prompt injection can turn a privacy policy into
+an instruction the model merely describes rather than a boundary the system enforces.
+
+### Tiered memory and erasure
+
+Treat agent memory as a data store and as a persistence channel for malicious or incorrect
+instructions. Define separate tiers instead of one indefinite conversation history:
+
+| Memory tier | Default governance posture |
+|---|---|
+| **Ephemeral working memory** | Reset after the task or retain only for a short, justified TTL. |
+| **Bounded session or task log** | Retain for a documented operational, security, or accountability purpose, with restricted access and expiry. |
+| **Long-term user or organizational memory** | Require a stated purpose, appropriate authorization or consent where applicable, reviewable writes, tenant isolation, and an inspect/correct/delete path. |
+| **Derived model, embedding, or index state** | Maintain source lineage and a tested process for exclusion, rebuild, deletion, or retraining when the source must no longer be used. |
+
+Memory controls should cover both privacy and integrity. Test that poisoned or false memories do
+not cross users or sessions, that durable writes cannot silently expand purpose, and that clearing a
+source also removes its derived embeddings, caches, replicas, and downstream copies where required.
+Do not claim that deleting a source row removes its influence from model weights unless that has
+been demonstrated; record the residual technical limitation and prevent future reuse.
+
+For rights requests, maintain an inventory of prompts, outputs, logs, caches, embeddings, indexes,
+memory stores, model-update inputs, and downstream tools or agents that received the data. A
+memory dashboard or administrative search-and-purge tool is more reliable than a promise that a
+user can email support later. Retain only the audit evidence that is necessary and justified, and
+avoid storing unrestricted hidden reasoning when structured decision, source, policy, approval,
+and outcome records are sufficient.
+
+For a fillable review of posture, egress, memory, rights, and evidence, use
+[agentic-governance-review.md](../templates/agentic-governance-review.md).
+
 ## Privacy-Enhancing Techniques
 
 Privacy-enhancing techniques (PETs) are the technical tools that let organizations extract value
@@ -231,18 +315,23 @@ model card is what turns "privacy is important to us" into an enforced, verifiab
 - **`ai-lifecycle-governance.md`** — where ownership, lineage, quality, and retention are enforced
   across stage gates.
 - **`llm-and-agent-security.md`** — the security controls (access, exposure, trust boundaries) that
-  protect data in deployed systems.
+  protect data in deployed systems, including agent tools and containment.
+- **`six-level-governance-framework.md`** — the cross-cutting evidence loop and maturity model for
+  applying these controls through strategy, review, operations, and learning.
 - **`transparency-and-explainability.md`** — how disclosure of data practices supports consent and
   individual control.
 - **`regulatory-landscape.md`** — GDPR and AI Act obligations that set the legal floor for the
   practices above.
+- **`../templates/agentic-governance-review.md`** — the posture, purpose-aware egress, memory, and
+  rights worksheet.
 
 ---
 
 ### Synthesized from
 
 This reference synthesizes (never reproduces) ideas from *Designing Data Governance from the Ground
-Up*, *Data Governance Handbook*, and *Platform and Model Design for Responsible AI*, and it is
+Up*, *Data Governance Handbook*, *Platform and Model Design for Responsible AI*, and *AI Governance*,
+and it is
 de-staled against the current state by the mission research notes on the regulatory landscape
 (GDPR lawful basis, EDPB AI guidance) and technical controls (data cards, lineage, monitoring). All
 prose is an original paraphrase and synthesis of the ideas in these sources; idea-level attribution

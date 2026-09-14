@@ -21,6 +21,34 @@ Do not use this form as a substitute for a full single-model risk assessment. If
 | Business unit / domain | <unit> |
 | Status | <new / triaged / in review / approved / rejected / live / retired> |
 
+## Deployment Posture And Control Boundary
+
+Classify how the organization reaches the AI capability before assigning control owners. A posture
+changes where responsibility and evidence sit; it does not determine safety by itself. Select all
+that apply and record any hybrid boundary.
+
+- Primary posture: [ ] SaaS or application consumer  [ ] API integrator  [ ] Model hoster
+- Agentic overlay: [ ] no  [ ] tools or external actions  [ ] multi-step planning or delegation
+  [ ] persistent memory  [ ] browser or web access
+- Model / provider / hosting boundary: <who operates the model, serving stack, and updates>
+- Organization-controlled boundary: <interface, preprocessing, retrieval, guardrails, tools, logs,
+  approvals, and downstream actions the organization operates>
+- Vendor-controlled boundary: <retention, training use, model behavior, subprocessors, availability,
+  incident response, deletion, and change notification that require evidence or contract>
+
+| Control layer | Organization owner | Vendor / provider owner | Evidence or contract reference | Gap or follow-up |
+|---|---|---|---|---|
+| Identity, interface, and user access | | | | |
+| Model, updates, and serving | | | | |
+| Input, retrieval data, and permissions | | | | |
+| Output validation, tools, and actions | | | | |
+| Logs, retention, deletion, and exit | | | | |
+
+**Capability escalation indicators:** [ ] untrusted input or retrieved content  [ ] sensitive or
+regulated data access  [ ] external tool or browser calls  [ ] write or destructive actions
+[ ] cross-user or persistent memory  [ ] multi-step agency or delegation  [ ] consequential decision.
+Record the narrowest deployed scope and the evidence needed to verify each selected indicator.
+
 ## Purpose And Context
 
 Describe what the use case does, who it serves, and why it is being built or adopted.

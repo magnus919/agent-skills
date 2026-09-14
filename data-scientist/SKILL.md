@@ -244,6 +244,9 @@ This skill ships with supporting reference files and scripts:
 - `references/causal-inference-framework.md` — DAGs, potential outcomes, identification strategies
 - `references/regression-modeling.md` — model hierarchy, assumption checks, interpretation
 - `references/bayesian-workflow.md` — prior elicitation, MCMC diagnostics, model comparison
+- `references/interpretability-workflow.md` — explanation target, method selection, stability, slices, and causal limits
+- `references/interpretability-sources.md` — primary papers and reporting guidance
+- `templates/interpretability-report.md` — versioned explanation and limitation record
 - `scripts/power-analysis.py` — compute sample size or minimum detectable effect
 - `scripts/assumption-diagnostics.py` — run diagnostics on fitted models
 - `scripts/model-comparison.py` — compare models with AIC, BIC, CV, WAIC
@@ -270,5 +273,7 @@ Load this skill when the user's request contains signals from any of these categ
 **Causal:** causality, causal inference, effect of, impact, treatment effect, DAG, directed acyclic graph, instrumental variable, DID, difference-in-differences, RDD, regression discontinuity
 
 **Modeling:** machine learning, predict, classification, clustering, feature selection, overfitting, cross-validation, regularization, ensemble, gradient boosting, neural network, deep learning
+
+**Interpretability and fairness:** explainability, interpretability, feature attribution, SHAP, LIME, saliency, counterfactual explanation, model card, fairness slice, subgroup performance, bias diagnosis
 
 **General:** data analysis, statistical analysis, analyze this data, methodology, what model should I use, review my analysis
