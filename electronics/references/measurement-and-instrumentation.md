@@ -117,3 +117,13 @@ If combined uncertainty overlaps the limit, classify the result inconclusive.
 
 All probe commons on a conventional benchtop scope share earth/reference.
 Never remove protective earth to obtain a floating measurement.
+
+## Minimal diagnostic handoff
+
+Carry the evidence into the answer, not only the reasoning. A short diagnosis can use one row rather than a full worksheet:
+
+| Quantity and point | Configuration | Expected from model | Reported or measured | Interpretation | Next check |
+|---|---|---|---|---|---|
+| Output rail at load connector | DMM DC mode; input resistance and range still unknown | Nominal value from supplied design model | User-reported reading; no independent measurement performed | Compatible with more than one hypothesis | Capture under the triggering load with the configuration recorded |
+
+Replace placeholders with the actual supplied values. Preserve the distinction between evidence supplied by the user, calculations, measurements actually performed and proposed tests. If the configuration is unknown, record that explicitly instead of omitting the field. This keeps even a concise answer auditable without implying a bench test occurred.

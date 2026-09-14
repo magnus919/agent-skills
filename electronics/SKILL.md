@@ -68,6 +68,12 @@ For connected hardware, retain target identity, instrument configuration, initia
 
 Conclude with one of: accepted for the stated conditions; rejected with the controlling failure; conditionally acceptable under named assumptions; or inconclusive with the smallest decisive next test. Separate modeled, simulated and physically measured evidence. Record design/firmware revision when software affects the circuit.
 
+For a measurement diagnosis, include a compact evidence row even in a short
+answer: quantity/test point, stated instrument configuration, model prediction,
+reported observation, interpretation and next check. Mark supplied readings as
+user-reported and unperformed measurements as planned; do not turn a prediction
+into a claimed observation. Use the measurement template for larger tasks.
+
 For troubleshooting, stop after three non-converging passes and summarize the evidence, eliminated hypotheses, remaining uncertainty and next specialist or artifact needed. Do not keep swapping components or repeating scans without a new hypothesis.
 
 ## When not to use
