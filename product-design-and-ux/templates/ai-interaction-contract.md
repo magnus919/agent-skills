@@ -40,13 +40,15 @@ Use alongside `interface-contract.md`. Describe observable behavior and link eve
 
 ## Change acceptance fixtures
 
-| Fixture/scenario and provenance | Version/change under test | Expected observable behavior | Evidence/result | Limitation or follow-up |
-|---|---|---|---|---|
-| Normal input |  |  |  |  |
-| Ambiguous or unsupported input |  |  |  |  |
-| Stale/conflicting context |  |  |  |  |
-| Permission/privacy/unsafe case |  |  |  |  |
-| Interruption/partial action/re-entry |  |  |  |  |
+| Fixture/scenario and provenance | Version/change under test | Expected observable behavior | Evidence/result | Verdict | Limitation or follow-up |
+|---|---|---|---|---|---|
+| Normal input |  |  |  |  |  |
+| Ambiguous or unsupported input |  |  |  |  |  |
+| Stale/conflicting context |  |  |  |  |  |
+| Permission/privacy/unsafe case |  |  |  |  |  |
+| Interruption/partial action/re-entry |  |  |  |  |  |
+
+Use one verdict per fixture: passed, failed, blocked, inconclusive, or not-applicable. Record the reason and missing evidence; an unrun or blocked fixture cannot pass.
 
 ## Open decisions
 

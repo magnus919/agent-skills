@@ -3,7 +3,8 @@ name: product-design-and-ux
 description: >-
   Define user-facing product behavior from validated evidence and approved scope. Use for
   information architecture, task flows, state and recovery models, interface contracts,
-  usability-study plans, interaction-pattern tradeoffs, or engineering UX handoffs. Use
+  usability-study plans, interaction-pattern tradeoffs, AI recommendations and generated
+  outputs, uncertainty, human control, feedback, or engineering UX handoffs. Use
   after product discovery and product decisions; route WCAG/ARIA conformance work to
   web-accessibility and formal software specifications to spec-driven-development. Do not
   use this skill for unrelated requests; route to the nearest named specialist.
@@ -23,7 +24,7 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 - Need prioritization, scope, or why a feature is being built? Use [product-methodology](../product-methodology/SKILL.md).
 - Need WCAG, ARIA, native semantics, or accessibility testing depth? Use [web-accessibility](../web-accessibility/SKILL.md).
 - Need an approved interaction contract translated into a software specification and delivery gates? Use [spec-driven-development](../spec-driven-development/SKILL.md).
-- Need to design an AI-assisted, generated, predictive, recommendatory, or tool-using interaction? Read [AI interaction and uncertainty](references/ai-interaction-and-uncertainty.md) and use [the AI interaction contract](templates/ai-interaction-contract.md) alongside the general contract. Route model evaluation, telemetry implementation, governance, runtime authority, and accessibility conformance to the named specialists.
+- Need to design an AI-assisted, generated, predictive, recommendatory, or tool-using interaction? Read [AI interaction and uncertainty](references/ai-interaction-and-uncertainty.md) and use [the AI interaction contract](templates/ai-interaction-contract.md) alongside the general contract. Route model evaluation and observability design to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md), governance to [ai-governance](../ai-governance/SKILL.md), runtime authority to [agent-production-operations](../agent-production-operations/SKILL.md), product measurement to [product-analytics-and-measurement](../product-analytics-and-measurement/SKILL.md), accessibility to [web-accessibility](../web-accessibility/SKILL.md), and cost/value decisions to [ai-operating-economics](../ai-operating-economics/SKILL.md).
 
 ## Workflow
 
