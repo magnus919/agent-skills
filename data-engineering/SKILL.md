@@ -45,6 +45,7 @@ and use [the companion record](templates/ai-stage-contract.md).
 | `references/vector-db-operations.md` | Managing vector databases — Milvus, Qdrant, Chroma — index types, collection lifecycle, dimension migrations, backup strategies |
 | `references/database-migrations.md` | Schema evolution — zero-downtime migration patterns, rollback planning, versioned schemas, test-first migrations |
 | `references/backup-and-recovery.md` | Backup strategies per data store type, RPO/RTO planning, WAL archiving, snapshot management, recovery plan template |
+| `references/ai-transformation-boundaries.md` | Defining acceptance, retry, cost, and publication boundaries for model-assisted transformations |
 
 ## Related Skills
 

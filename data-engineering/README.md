@@ -11,7 +11,7 @@ Your agent gets operational patterns for production data systems — real SQL, d
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
-| `references/` | Pipeline design, data quality, storage and validated AI transformation boundaries |
+| `references/` | Database operations, analytical SQL, pipelines, quality, migrations, recovery, and AI transformation boundaries |
 | `templates/ai-stage-contract.md` | Pilot, version, retry, budget and publication evidence for an AI stage |
 
 For AI-assisted data work, the [boundary workflow](references/ai-transformation-boundaries.md) helps keep uncertain
@@ -20,7 +20,7 @@ validation and review evidence.
 
 ## Triggers
 
-Designing ETL/ELT pipelines, writing analytical SQL, operating vector/graph/time-series databases, planning migrations, or setting up data quality monitoring.
+Designing ETL/ELT pipelines, writing analytical SQL, operating vector/graph/time-series databases, planning migrations, setting up data quality monitoring, or defining validated model-assisted transformation boundaries.
 
 ## Requirements
 
