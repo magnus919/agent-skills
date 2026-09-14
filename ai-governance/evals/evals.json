@@ -37,6 +37,70 @@
       ]
     },
     {
+      "id": "six-level-governance-loop",
+      "prompt": "A company is moving an internal customer-support assistant from a SaaS experiment to an API-integrated pilot and may later self-host it. Apply the Six-Level Governance framework to the transition. Define the evidence, owners, metrics, maturity target, and reassessment triggers for Strategy & Policy, Risk & Impact Assessment, Implementation Review, Acceptance Testing, Operations & Monitoring, and Learning & Improvement. Explain how this overlay complements, rather than replaces, lifecycle stage gates.",
+      "expected_output": "A cross-cutting 6L-G governance plan with all six levels named, each level's accountable owner, required artifact or evidence, useful outcome metric, common failure mode, proportional maturity target, and material-change trigger. It clearly distinguishes the 6L-G governance disciplines from ordinary lifecycle stages and does not present 6L-G as a legal or standards requirement.",
+      "assertions": [
+        "covers all six 6L-G levels with a decision question, owner, artifact or evidence, and metric",
+        "distinguishes the 6L-G overlay from lifecycle timing rather than replacing lifecycle gates",
+        "sets a proportional maturity target and avoids averaging away a critical weak level",
+        "defines reassessment triggers for posture, model, data, tool, user, incident, or material behavior changes",
+        "labels 6L-G as an author-developed framework rather than a mandatory standard"
+      ]
+    },
+    {
+      "id": "deployment-posture-boundary",
+      "prompt": "Compare governance for the same confidential RAG assistant in three forms: a vendor-hosted SaaS application, an API integrator with an organization-owned UI and middleware, and a self-hosted model. For each posture, map who controls the interface, prompts, RAG data, logs, guardrails, model updates, security, deletion, incident response, and exit. Identify what must be proven internally versus obtained from the vendor, and do not rank a posture as safe by default.",
+      "expected_output": "A posture comparison that assigns control ownership at each trust boundary, identifies the evidence and contract terms needed for vendor-controlled layers, distinguishes organization-controlled pre/post-processing from provider-controlled model behavior, and explains the distinct accountability and operational burden of self-hosting without declaring any posture inherently safe.",
+      "assertions": [
+        "compares SaaS, API-integrator, and model-hoster control boundaries explicitly",
+        "assigns evidence or contract responsibilities for retention, training use, logs, model changes, deletion, and incident response",
+        "identifies organization-side controls available in the API-integrator posture",
+        "identifies supply-chain, guardrail, and full operational responsibilities introduced by self-hosting",
+        "states that posture changes where risk and accountability sit rather than determining safety by itself"
+      ]
+    },
+    {
+      "id": "agentic-control-and-egress-review",
+      "prompt": "Review an agent that can read customer records, query an external knowledge service, send email, update tickets, and retain memory across sessions. It discovers tools dynamically through an MCP-compatible connector. Design the governance controls before pilot: the six-factor exposure assessment, approved tool registry, external authorization policy, action-approval tiers, purpose-aware egress gate, memory tiers and erasure, sandbox and kill switch, runtime traces, and multi-step red-team tests.",
+      "expected_output": "An agentic governance review that inventories environment/model/input/data/change/agency exposure; allowlists individual tools and operations with identity, scope, version, owner, and destination; makes authorization external to model reasoning and deny-by-default; calibrates approvals by consequence; checks purpose, necessity, and destination before egress; governs memory and deletion; and provides tested containment, observability, and multi-step adversarial evidence.",
+      "assertions": [
+        "assesses all six exposure factors and explains that the ladder is not a severity score",
+        "requires an approved registry for individual tools or operations, scopes, versions, destinations, and owners",
+        "places runtime authorization outside model reasoning with deny-by-default enforcement",
+        "uses consequence-based approval tiers and addresses approval fatigue without allowing high-impact actions to bypass review",
+        "checks purpose, necessity, and destination for every outbound transfer and records allow/redact/block/approval outcomes",
+        "defines tiered memory retention, poisoning tests, erasure coverage, sandboxing, and a tested kill switch",
+        "requires structured run traces and multi-step tests for tool chaining, memory poisoning, and goal manipulation"
+      ]
+    },
+    {
+      "id": "genai-privacy-surfaces",
+      "prompt": "A support agent uses customer chat history for RAG, stores embeddings and long-term memory, calls an external translation API, and drafts responses that may affect a customer's claim. Review privacy using four GenAI pillars. Cover collection and purpose, storage and memorization, output integrity, user rights and governance, then specify purpose-aware egress, retention and deletion evidence, contestability, and what technical limitations must be disclosed. Keep it as governance guidance, not legal advice.",
+      "expected_output": "A four-pillar GenAI privacy review that addresses collection and secondary use, memorization and embeddings, false or inferred personal claims in outputs, and access/correction/erasure rights. It includes a fail-closed purpose/necessity/destination egress decision, tiered memory retention, source-linked deletion across derived stores and downstream recipients, meaningful human contestability, and an explicit statement of technical uncertainty and legal re-verification.",
+      "assertions": [
+        "covers collection and purpose, storage and memorization, output integrity, and user rights as distinct privacy surfaces",
+        "treats embeddings, memory, logs, caches, backups, and model-update inputs as deletion and retention surfaces",
+        "addresses hallucinated or inferred personal claims and does not treat a rubber-stamp human review as sufficient",
+        "specifies purpose, necessity, and destination checks with fail-closed egress outcomes",
+        "provides memory inspection, correction, deletion, and future-use prevention paths",
+        "states the output is guidance rather than legal advice and that current obligations require primary-source verification"
+      ]
+    },
+    {
+      "id": "impact-assessment-closure",
+      "prompt": "A company proposes a high-impact employee-benefits eligibility assistant that uses confidential HR records, an external model API, and an approval workflow. Design the AI impact assessment as a coordination record rather than a one-time checklist. Identify which privacy, fairness, security, vendor, data-governance, validation, and human-oversight follow-ups are required; assign owners and due dates; define evidence and closure or bounded-exception rules; include process-health metrics that detect bypassed or overdue reviews; and end with a go, conditional-go, or no-go decision. Keep it as governance guidance, not legal advice.",
+      "expected_output": "An operational AI impact-assessment record that states the affected people and residual risks, links each required specialist assessment to a named owner, due date, status, evidence, and closure decision, blocks approval when required work is incomplete unless a bounded exception is approved, and measures assessment coverage, bypasses, overdue actions, repeated findings, escalation, and time to decision. It distinguishes governance coordination from legal interpretation and preserves uncertainty.",
+      "assertions": [
+        "identifies the affected population, consequential impact, deployment posture, data sensitivity, and residual-risk decision",
+        "links privacy, fairness, security, vendor, data-governance, validation, and human-oversight follow-ups to named owners and due dates",
+        "requires evidence and an explicit closure status or bounded exception for each required assessment",
+        "makes incomplete required assessments block approval unless the exception has an approver, compensating control, expiration, and re-review trigger",
+        "includes process-health metrics for coverage, bypasses, overdue actions, repeated findings, escalation, and time to decision",
+        "states the output is governance guidance rather than legal advice and preserves material uncertainty"
+      ]
+    },
+    {
       "id": "fairness-accountability-review",
       "prompt": "Review a hiring model for fairness without reducing fairness to a single metric. Lay out the fairness metrics you would compute and their limits, the trade-offs between accuracy and parity, the bias sources to probe, and how accountability and auditability should be established in the model's documentation.",
       "expected_output": "A fairness and accountability review that computes multiple fairness metrics (e.g., demographic parity, equalized odds, calibration), explains the limits and trade-offs of each rather than picking one number, enumerates the bias sources to probe in data and labels, and ties fairness decisions to model-card documentation and a named accountable owner.",
