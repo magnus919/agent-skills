@@ -112,8 +112,33 @@ Link this assessment to the central risk register and to the escalation path so 
 - Review cadence: <when this assessment is revisited, e.g. annually, on drift, on material change>
 - Linked artifacts: <model card, monitoring configuration, audit logs, incident reports>
 
+## Linked Assessments And Closure
+
+The model-risk worksheet coordinates specialized assessments; it does not replace them. Decide which
+follow-ups are required from the data, affected population, deployment posture, capability inventory,
+and risk tier. Give every required assessment an owner and due date, and link evidence or the
+recorded exception.
+
+| Follow-up assessment | Required? | Owner | Due date | Status | Evidence / finding ID | Closure or exception decision |
+|---|---|---|---|---|---|---|
+| Privacy impact / data-protection review | <yes / no / conditional> | | | <not started / in progress / complete / waived> | | |
+| Fairness and affected-group review | <yes / no / conditional> | | | <not started / in progress / complete / waived> | | |
+| Security, threat, and abuse review | <yes / no / conditional> | | | <not started / in progress / complete / waived> | | |
+| Vendor / third-party due diligence | <yes / no / conditional> | | | <not started / in progress / complete / waived> | | |
+| Data governance, provenance, and licensing | <yes / no / conditional> | | | <not started / in progress / complete / waived> | | |
+| Validation / assurance or quality review | <yes / no / conditional> | | | <not started / in progress / complete / waived> | | |
+| Human oversight and contestability review | <yes / no / conditional> | | | <not started / in progress / complete / waived> | | |
+| Other specialist review | <yes / no / conditional> | | | <not started / in progress / complete / waived> | | |
+
+- Required follow-ups that remain open: <list the risk, owner, due date, and interim control>
+- Approval condition: <all required assessments complete, or bounded exception with approver,
+  compensating control, expiration, and re-review trigger>
+- Closure rule: <what evidence proves the finding was addressed and residual risk updated>
+- Process-health measures: <assessment coverage, bypassed reviews, overdue actions, repeated
+  findings, escalation rate, and time from completed assessment to decision>
+
 ## Completion
 
-To complete this assessment: fill every labeled field, score inherent risk honestly before considering controls, assign and justify the tier, list every planned or existing control with its owner and status, re-score to residual risk and check it against the organization's appetite, link the entry to the risk register, and obtain sign-off from the reviewing authority named above. Record the tiering decision as the source-of-record that every later lifecycle gate — evaluation, deployment, monitoring, and retirement — calibrates against. Revisit the worksheet whenever the model, its data, its context of use, or its controls change materially, or on the review cadence you set here.
+To complete this assessment: fill every labeled field, score inherent risk honestly before considering controls, assign and justify the tier, list every planned or existing control with its owner and status, re-score to residual risk and check it against the organization's appetite, identify and track every required linked assessment with an owner, due date, evidence, and closure or bounded exception, link the entry to the risk register, and obtain sign-off from the reviewing authority named above. Record the tiering decision as the source-of-record that every later lifecycle gate — evaluation, deployment, monitoring, and retirement — calibrates against. Revisit the worksheet whenever the model, its data, its context of use, or its controls change materially, or on the review cadence you set here.
 
 > **Synthesized from** `research-standards.md` and `research-technical-controls.md` and the ideas of *Responsible AI in the Enterprise* and *Platform and Model Design for Responsible AI* (see `references/risk-management-and-frameworks.md`). Fillable artifact of the `ai-governance` skill.
