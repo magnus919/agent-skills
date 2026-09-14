@@ -235,6 +235,10 @@ used in this bundle. Reference files are loaded on trigger:
    evaluator; plan the staged rollout and fallback path using
    [references/runtime-control-plan.md](references/runtime-control-plan.md).
 
+   Before changing serving behavior or expanding traffic, load
+   [service conditions](references/service-conditions.md) and record the tested
+   envelope in [the service-condition record](templates/service-condition-record.md).
+
 3. **Roll out**: execute staged rollout with progressive authority expansion,
    monitoring tool health and authority usage at each stage using
    [references/tool-authority-health.md](references/tool-authority-health.md).
