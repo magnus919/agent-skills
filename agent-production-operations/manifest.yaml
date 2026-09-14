@@ -70,6 +70,7 @@ outputs:
   - tool-authority-health-record
   - trace-to-eval-feedback-loop
   - disablement-record
+  - service-condition-record
 
 handoffs:
   - to: release-engineering

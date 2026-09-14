@@ -4,21 +4,21 @@ Machine learning engineering methodology — model training, fine-tuning (LoRA/Q
 
 ## Why Install This Skill
 
-Your agent makes informed decisions about fine-tuning approaches, quantization trade-offs, GPU selection, and serving architecture with real VRAM budgets and benchmarks. Fillable templates turn training runs, eval comparisons, and quantization decisions into reviewable records, and the bundled eval-overlap checker catches train/eval contamination before it invalidates a benchmark.
+Your agent makes informed decisions about fine-tuning approaches, quantization trade-offs, GPU selection, serving architecture, evaluation metrics, and production drift with measurable budgets and benchmarks. Fillable templates connect data and feature lineage to deployed models, turn training and eval comparisons into reviewable records, and catch train/eval contamination before it invalidates a benchmark.
 
 ## What You Get
 
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
-| `references/` | Deep-dive reference files loaded on demand |
-| `templates/` | Fillable records: training-run record, eval regression table, quantization decision record |
+| `references/` | Deep-dive reference files loaded on demand, including evaluation, lineage, parity, and drift response |
+| `templates/` | Fillable records for training runs, eval regressions, quantization, lineage, and drift response |
 | `scripts/` | `check-eval-overlap.py` — detects test-set leakage between train and eval corpora |
 | `evals/` | Output-quality eval manifest for the skill's methodology cases |
 
 ## Triggers
 
-Setting up fine-tuning runs, quantizing models, selecting training infrastructure, deploying inference servers, evaluating model quality, or triaging a model regression.
+Setting up fine-tuning runs, choosing evaluation metrics or repeated comparisons, tracking model lineage and feature parity, quantizing models, selecting training infrastructure, deploying inference services, responding to drift, or triaging a model regression.
 
 ## Requirements
 
