@@ -1,0 +1,1 @@
+source_snapshot,source_record_id,raw_value,proposed_value,candidate_ids,model_prompt_version,evidence_reference,reported_score,calibration_reference,decision,reviewer,decision_reason,output_record_id,undo_reference,status

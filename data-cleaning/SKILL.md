@@ -4,7 +4,8 @@ description: >-
   Clean, profile, validate, reshape, and document messy tabular, text, JSON, and
   relational data through an evidence-first, reproducible workflow. Use when
   preparing data for analysis, reporting, modeling, ingestion, migration, or
-  matching. Do not use for statistical modeling, dashboard design, or operating
+  matching, including AI-suggested repair, entity-match review, score calibration
+  limits, and reversible repair ledgers. Do not use for statistical modeling, dashboard design, or operating
   a named data platform; route those tasks to data-scientist, data-engineering,
   or the relevant tool skill.
 license: MIT
@@ -17,6 +18,9 @@ metadata:
 # Data cleaning
 
 Treat cleaning as a controlled transformation of an observed dataset, not cosmetic editing. Preserve raw input, state the target use and grain, make every lossy decision explicit, and prove that the cleaned output satisfies a contract.
+
+When a model proposes data transformations, load [the AI boundary workflow](references/ai-repair-review.md)
+and use [the companion record](templates/ai-repair-ledger.csv).
 
 ## Route by task
 

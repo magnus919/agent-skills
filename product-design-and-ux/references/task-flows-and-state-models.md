@@ -17,3 +17,7 @@ Do not require a fixed inventory. Consider a state only when a force makes it re
 | System failure | Recoverable or unrecoverable failure, support route, retained context. |
 
 Record why a likely state is not applicable when its omission would create risk. Use `templates/task-flow-state-model.md` for transitions and `templates/screen-state-inventory.md` for the resulting inventory. Diagrams are optional; readable tables are sufficient.
+
+## Completion across roles
+
+Trace a task beyond the initiating person's submission when another person must act. Name each actor, the handoff, what that actor receives, required authentication or account setup, the acceptance or rejection decision, resulting permissions/state, and recovery if the handoff expires or fails. Separate delivery evidence from outcome evidence. For example, sending an invitation is intermediate; the recipient still needs a valid acceptance path and the intended membership/access state. If that part is outside the approved scope, identify its owner and dependency explicitly instead of declaring the whole task complete.
