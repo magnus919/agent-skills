@@ -3,8 +3,9 @@ name: ml-engineering
 description: >-
   Plan and execute production ML engineering work — model training and
   fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization
-  decisions, inference deployment, and regression triage, grounded in practical
-  engineering patterns for production ML systems. Do not use for statistical
+  decisions, inference deployment, lineage, feature parity, drift response, and
+  regression triage, grounded in practical engineering patterns for production ML
+  systems. Do not use for statistical
   modeling and experimental design (that's the data scientist) or for operating
   a specific inference engine (that's a tool skill such as llama-cpp or vllm).
 license: MIT
@@ -35,6 +36,7 @@ Machine learning engineering is the bridge between model research and production
 |-----------|-------------|
 | `references/fine-tuning.md` | Setting up a LoRA/QLoRA/ full fine-tuning run — data prep, hyperparameters, validation strategy |
 | `references/evaluation.md` | Evaluating a model — benchmark selection, custom eval sets, regression tracking, comparison methodology |
+| `references/evaluation-and-lineage.md` | Metric/configuration decisions, repeated stochastic comparisons, end-to-end lineage, temporal feature parity, drift response, and adaptation/serving tradeoffs |
 | `references/quantization-inference.md` | Quantizing a model and serving it — GGUF/GPTQ/AWQ/bitsandbytes comparison, calibration data strategies, KV cache quantization, vLLM/llama.cpp/TGI/Triton architecture, production considerations |
 | `references/training-infrastructure.md` | Selecting and provisioning training infrastructure — GPU selection, VRAM budgeting, multi-GPU strategies (DDP/FSDP/DeepSpeed), cloud vs on-prem, storage, monitoring |
 
@@ -45,6 +47,8 @@ Machine learning engineering is the bridge between model research and production
 | `templates/training-run-record.md` | Recording a training or fine-tuning run — model and data versions, full config, environment, eval results — so it can be reproduced |
 | `templates/eval-regression-table.md` | Tracking model quality across runs and triaging a regression — one row per eval case or capability subset |
 | `templates/quantization-decision-record.md` | Recording a quantization decision — baseline, candidates compared, quality threshold, and rollback path |
+| `templates/model-lineage-record.md` | Linking data/features, code/configuration, runs, artifacts, evaluations, registry state, and deployed serving versions |
+| `templates/drift-response-record.md` | Recording drift signals, thresholds, diagnosis, retrain/rollback decisions, and post-action evidence |
 
 ## Scripts
 

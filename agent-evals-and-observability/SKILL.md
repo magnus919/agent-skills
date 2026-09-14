@@ -35,8 +35,11 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 | Need | Load |
 |---|---|
 | Choose evaluation evidence and contracts | [references/evaluation-design.md](references/evaluation-design.md) |
+| Separate performance, diagnostic, and replay evidence; connect offline to online measures | [references/evidence-modes-and-metric-mirrors.md](references/evidence-modes-and-metric-mirrors.md) |
 | Build immutable cases, fixtures, and provenance | [references/datasets.md](references/datasets.md) |
 | Select or calibrate graders | [references/graders.md](references/graders.md) |
+| Validate judge stability, abstention, and escalation | [references/judge-stability.md](references/judge-stability.md) |
+| Evaluate grounded claims and attribute RAG failures | [references/grounding-attribution.md](references/grounding-attribution.md) |
 | Define measures or compare runs | [references/metrics-and-statistics.md](references/metrics-and-statistics.md) |
 | Review tools, state, recovery, or side effects | [references/trajectory-review.md](references/trajectory-review.md) |
 | Triage a regression or decide release readiness | [references/regression-and-release.md](references/regression-and-release.md) |
@@ -49,7 +52,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 
 ## Templates
 
-Use [templates/eval-plan.md](templates/eval-plan.md), [templates/dataset-manifest.md](templates/dataset-manifest.md), [templates/grader-specification.md](templates/grader-specification.md), [templates/trace-review.md](templates/trace-review.md), [templates/run-report.md](templates/run-report.md), and [templates/release-gate.md](templates/release-gate.md). They are decision records, not checklists that manufacture evidence.
+Use [templates/eval-plan.md](templates/eval-plan.md), [templates/dataset-manifest.md](templates/dataset-manifest.md), [templates/grader-specification.md](templates/grader-specification.md), [templates/trace-review.md](templates/trace-review.md), [templates/run-report.md](templates/run-report.md), [templates/release-gate.md](templates/release-gate.md), and [templates/metric-mirror.md](templates/metric-mirror.md). They are decision records, not checklists that manufacture evidence.
 
 ## Guardrails
 
