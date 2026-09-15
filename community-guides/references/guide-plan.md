@@ -35,10 +35,10 @@ The checker accepts JSON with the following required fields:
 
 IDs must be unique within their list; titles and other text fields nonblank.
 Module and activity durations are positive integer minutes. The activities must
-fit the module duration. Modules cannot be empty. Worksheets and sources may be
+fit the module duration. Modules and activity lists cannot be empty. Worksheets and sources may be
 empty when unnecessary. Every worksheet reference must resolve to a worksheet ID.
 Every material/worksheet path must name an existing file inside the plan folder,
-including after symlink resolution. Absolute paths and parent traversal are invalid.
+including after symlink resolution. Absolute paths, backslashes, and parent traversal are invalid.
 Dates are real ISO calendar dates. Source status is `verified`, `supplied`, or
 `unresolved`; maintenance status is `proposed` or `confirmed`.
 

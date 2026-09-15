@@ -37,6 +37,15 @@ may need a single document; a series may need a workbook and separate host notes
 Seven sessions is an example, not a requirement. Do not collect every possible
 artifact or impose a structured plan on a short prose-only request.
 
+Scale the process to what can be decided now. When even the topic or community
+boundary is unknown, stop before module design: return a brief discovery draft
+(roughly one screen, normally under 300 words), at most three essential questions,
+and one optional next step. Do not expand that first response into a workbook,
+facilitation manual, repeated unknowns tables, or a publication approval process.
+Use a longer intake only when requested or needed to resolve known complexity.
+For bounded workshops, keep the participant handout short and put research notes
+and operational detail in a clearly separate facilitator section.
+
 ## Workflow
 
 ### 1. Establish the community brief
@@ -55,6 +64,12 @@ volunteer roles, or a local service's willingness to help.
 Read [localization and evidence](references/localization.md) when researching or
 adapting local content. Public research supports factual claims; residents' accounts
 support lived constraints and priorities. Both need attribution and appropriate limits.
+
+When the user restricts research to supplied sources, honor that boundary for
+technical advice too. If feedback exposes an unsupported safety instruction,
+remove or quarantine it and mark the replacement for qualified verification;
+do not invent a new procedure from general knowledge. A provisional draft must
+not describe proposed verification or services as work already underway.
 
 ### 2. Establish outcomes and dependencies
 
@@ -88,6 +103,9 @@ control; offline participants need the essential instructions on paper; people
 who miss meetings need a catch-up route. Do not assume purchasing power, literacy,
 transportation, home ownership, or comfort disclosing personal needs. Translation
 needs competent language review; machine translation alone is not evidence of that.
+When revising an existing multilingual guide, retain its language coverage unless
+the user changes scope. Provide labeled draft translations where needed and identify
+the review still required; a promise to translate later does not supply the missing copy.
 
 Use [the worksheet template](templates/worksheet.md),
 [facilitator template](templates/facilitator.md), and
