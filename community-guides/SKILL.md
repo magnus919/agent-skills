@@ -74,7 +74,10 @@ When the user restricts research to supplied sources, honor that boundary for
 technical advice too. If feedback exposes an unsupported safety instruction,
 remove or quarantine it and mark the replacement for qualified verification;
 do not invent a new procedure from general knowledge. A provisional draft must
-not describe proposed verification or services as work already underway.
+not describe proposed verification or services as work already underway. Keep
+unsupported safety prose out of resident-facing copy; state that the replacement
+is unresolved until an authoritative source is supplied. Any editorial placeholder
+belongs in verification notes, not in instructions residents might act on.
 
 ### 2. Establish outcomes and dependencies
 
@@ -111,6 +114,10 @@ needs competent language review; machine translation alone is not evidence of th
 When revising an existing multilingual guide, retain its language coverage unless
 the user changes scope. Provide labeled draft translations where needed and identify
 the review still required; a promise to translate later does not supply the missing copy.
+For source-only revisions, translating supported content is allowed: the source
+boundary forbids adding facts, not expressing those facts in another language.
+Check the delivered resident copy language by language before handoff. An English
+card plus a note promising Spanish later is an incomplete bilingual revision.
 
 Use [the worksheet template](templates/worksheet.md),
 [facilitator template](templates/facilitator.md), and
@@ -133,6 +140,12 @@ agreement just because both documents discuss the same activity.
 For responsibility maps, check for contradictory acceptance claims, overlapping
 assignments that exceed stated availability, and backups that rely on the same
 unavailable person. Preserve existing accepted scope; mark additional work proposed.
+
+For source-only revisions, audit each resident-facing imperative against a supplied
+source. Remove unsupported directions even when they sound prudent (for example,
+an invented interim reporting route, waiting instruction, or emergency process).
+Use a factual unresolved-status notice instead. Keep historical unsafe wording
+only in a clearly labeled retired-source record, never in the active card.
 
 For structured plans, run the read-only checker (Python 3.10+, standard library):
 
@@ -158,8 +171,13 @@ pilot design, or skill evaluation. An agent simulation must be labeled as such.
 
 ### 5. Hand off and maintain
 
-Deliver the requested guide, facilitator material where relevant, sources and
-adaptation notes, and a maintenance record. List unresolved local facts and proposed
+The entry-point scope rules take precedence over this full-program checklist.
+For discovery or a narrow card/decision-brief revision, supply only the requested
+artifact and concise verification/change notes. Add maintenance and ownership
+records only when the requested artifact or existing package calls for them.
+
+For a full program, deliver the requested guide, relevant facilitator material,
+sources and adaptation notes, and a maintenance record. List unresolved local facts and proposed
 roles where they affect use. Name an owner or mark ownership unconfirmed, a review
 date or trigger, and how feedback should produce revisions.
 

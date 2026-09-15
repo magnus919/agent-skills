@@ -88,7 +88,8 @@
         "Makes missing information, assumptions, and decisions needed before publication explicit rather than hiding them behind generic advice.",
         "Chooses a proportionate deliverable such as a discovery draft, checklist, or question set when a complete resident guide would be unsafe or misleading.",
         "Separates deterministic agent checks from a low-burden community pilot or listening activity that can validate relevance and usability.",
-        "Keeps the output concise and actionable despite uncertainty, with no arbitrary program cadence or unsupported claim of consensus."
+        "Keeps the output concise and actionable despite uncertainty, with no arbitrary program cadence or unsupported claim of consensus.",
+        "Limits this sparse discovery draft to 300 words and at most three essential questions; does not add a workbook, facilitation manual, repeated unknowns tables, or publication approval process."
       ],
       "files": [
         "evals/files/sparse-brief.json"
@@ -104,7 +105,9 @@
         "Uses the newer building update as a candidate current instruction while explaining why recency alone does not verify physical conditions.",
         "Treats the resident observation about missing signage as a material implementation gap and defines a targeted verification or publication hold.",
         "Separates agent checks for provenance, contradictions, and claim-to-source traceability from a community pilot that tests comprehension and observes the site.",
-        "Does not use internet research, invented authority, or a false consensus to resolve the conflict."
+        "Does not use internet research, invented authority, or a false consensus to resolve the conflict.",
+        "Keeps the deliverable to a decision brief with concise verification notes and the requested pilot distinction, without adding unrequested workshops, worksheets, or multiple pilots.",
+        "Does not add unsupported technical or emergency procedures to resident-facing copy; leaves any missing authoritative replacement unresolved rather than supplying general-knowledge advice."
       ],
       "files": [
         "evals/files/conflicting-sources.json"
