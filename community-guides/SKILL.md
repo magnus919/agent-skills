@@ -127,6 +127,9 @@ Perform a cold walkthrough: can a new facilitator prepare and run the session
 using only these materials? Can a participant complete each worksheet? Check that
 the guide and host notes agree, every decision has a next step, and necessary
 information is accessible in the intended medium.
+Resolve each named or numbered reference against the actual delivered worksheet:
+do its sections, checkbox counts, and field labels exist as described? Do not infer
+agreement just because both documents discuss the same activity.
 
 For structured plans, run the read-only checker (Python 3.10+, standard library):
 
