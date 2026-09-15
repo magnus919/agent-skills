@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "skill_name": "waiting-list",
+  "evals": [
+    {
+      "id": "simple-interest-list",
+      "case_set": "dev",
+      "prompt": "We are launching a small SaaS product in six weeks. We need a landing page that collects emails, sends a confirmation, and lets us export the list. We expect 2,000 signups and do not promise access order. Recommend an architecture and an implementation sequence.",
+      "expected_output": "A concise interest-list design that avoids overbuilding a queue, defines server-side validation, deduplication, email/consent states, export and retention, and gives a bounded implementation and test plan.",
+      "assertions": [
+        "Classifies this as an interest list rather than inventing a queue position or referral system.",
+        "Defines a server-side write path with uniqueness or idempotency and an asynchronous notification path.",
+        "States what joining does and does not guarantee, including no guaranteed order of access.",
+        "Includes a practical validation plan for duplicate submissions, email failure, suppression, and export."
+      ]
+    },
+    {
+      "id": "launch-day-waiting-room",
+      "case_set": "dev",
+      "prompt": "A limited-edition product will receive a very large traffic spike when sales open. Customers should wait in a browser queue, then enter checkout when admitted. Design the system and call out what the waiting room must not be trusted to do.",
+      "expected_output": "A virtual waiting-room architecture with durable queue identity, atomic admission, signed short-lived tokens, adaptive polling, an explicit fail-open/closed decision, and a separate inventory/checkout authority.",
+      "assertions": [
+        "Distinguishes a virtual waiting room from an email waitlist and places it at the edge or gateway before the protected route.",
+        "Requires cookie or session continuity, atomic admission, token expiry/replay handling, and bounded or jittered polling.",
+        "Explicitly says queue admission does not reserve inventory or serialize checkout.",
+        "Explains why fail-open may preserve availability but is unsafe as the sole control for scarce inventory."
+      ]
+    },
+    {
+      "id": "referral-fairness",
+      "case_set": "dev",
+      "prompt": "We want a Robinhood-style referral waitlist. Every verified referral should move the inviter up by five places. Specify the data model, ranking behavior, and abuse controls, and tell us how to communicate the result.",
+      "expected_output": "A referral overlay with immutable arrival ordering, durable eligible-referral events, versioned/capped ranking policy, anti-self-referral and automation controls, and honest estimated-position language.",
+      "assertions": [
+        "Does not trust a client-submitted referral count or use a mutable formula without defining eligibility, ties, caps, and negative-position behavior.",
+        "Separates referral clicks, downstream submissions, verification, and reward/priority events in durable records.",
+        "Preserves the original arrival key and names self-referral, automation, velocity, and purchased-traffic abuse controls.",
+        "Requires clear disclosure that the benefit is policy-dependent and avoids claiming a guaranteed position when outcomes can change."
+      ]
+    },
+    {
+      "id": "appointment-backfill",
+      "case_set": "dev",
+      "prompt": "A clinic wants a web portal for patients who want an earlier appointment. They have cancellations, preferred locations, language needs, and different appointment types. Design the waitlist behavior.",
+      "expected_output": "A capacity/scheduling backfill design that models preferences and released slots, uses an expiring offer/claim flow, protects sensitive data, and explains why a universal FIFO queue is insufficient.",
+      "assertions": [
+        "Classifies the problem as appointment backfill rather than a simple prelaunch email list or global FIFO queue.",
+        "Models slot matching, patient preferences, offer expiry, claim idempotency, and conflict re-check in the scheduling authority.",
+        "Minimizes sensitive data, uses opaque identifiers, and routes regulated privacy/compliance questions to qualified review.",
+        "Tests simultaneous claims, expired offers, no-shows or cancellations, accessibility, and notification failure."
+      ]
+    },
+    {
+      "id": "headless-api-security",
+      "case_set": "regression",
+      "prompt": "Our marketing site is built in Astro, but we want the waitlist backend in a separate FastAPI service. Any browser can POST to it from our partner sites. Give us a safe API contract and deployment checklist.",
+      "expected_output": "A headless API design with explicit CORS origins, server-side validation, public-versus-secret credential boundaries, rate limiting, idempotency, generic duplicate responses, and observable deployment checks.",
+      "assertions": [
+        "Uses an explicit versioned endpoint and allowlisted CORS rather than treating an arbitrary browser origin as trusted.",
+        "States that browser-held keys cannot be treated as admin secrets and separates public write capability from admin reads.",
+        "Includes schema limits, layered rate limits, CSRF or origin considerations, idempotency, and generic responses that resist email enumeration.",
+        "Includes health, outbox/email, provider failure, logs/redaction, and rollback checks."
+      ]
+    },
+    {
+      "id": "synthesis-verification",
+      "case_set": "release",
+      "prompt": "The supplied research says WaitBee, Headless-Waitlist, Waitly, and OpenLaunch are open-source options, and that double opt-in should always be used. Turn this into a technology shortlist for a production launch.",
+      "expected_output": "An evidence-calibrated response that verifies exact repositories and current documentation, includes real examples with limits, flags ambiguous or unverified project claims, and corrects the absolute double-opt-in and sub-200ms claims.",
+      "assertions": [
+        "Does not present the named projects' feature claims as verified without identifying an authoritative repository or documentation source.",
+        "Distinguishes the multiple similarly named Waitly projects and reports OpenLaunch as a verifiable self-hosted example with its stated provider scope.",
+        "Treats double opt-in as a strong conditional pattern rather than a universal legal or deliverability requirement.",
+        "Separates a performance target such as 200 ms from measured evidence and ends with a bounded current-code/provider validation plan."
+      ]
+    },
+    {
+      "id": "contact-proofs",
+      "case_set": "dev",
+      "prompt": "Our early-access portal should optionally verify email and require phone verification. Email uses a magic link; phone users should receive an SMS containing a link they click. Design the state model and security behavior, and explain exactly what verification proves.",
+      "expected_output": "An independent per-channel verification design with random scoped expiring single-use proofs, E.164 normalization, resend/attempt controls, scanner or prefetch handling, and a clear distinction between channel control, identity, consent, and reachability.",
+      "assertions": [
+        "Models email and phone verification independently with channel, method, proof ID, timestamps, expiry, and revocation rather than one overloaded verified flag.",
+        "Distinguishes an application-owned SMS magic link from provider-managed OTP verification and normalizes phone numbers to E.164.",
+        "Requires cryptographically random, scoped, expiring, single-use tokens stored safely, with atomic consumption, replay rejection, resend throttling, and brute-force/rate-limit controls.",
+        "States that a successful click proves control of the channel at that time but does not prove legal identity, consent for every message, or permanent reachability, and addresses email link prefetchers."
+      ]
+    },
+    {
+      "id": "runtime-crm-projection",
+      "case_set": "dev",
+      "prompt": "Every validated waitlist entry should eventually appear in our CRM, but the CRM provider is selected at deployment time. Design the integration so signups do not fail when the CRM is slow or unavailable, and so changes in consent or field mapping can be reconciled.",
+      "expected_output": "A provider-neutral runtime CRM adapter with an eligibility gate, allowlisted mapping, server-side credentials, durable outbox, idempotent upsert, retry/dead-letter/replay, provider record IDs, and suppression/deletion propagation.",
+      "assertions": [
+        "Treats the local waitlist as the source of truth and CRM as a downstream projection rather than writing only to the CRM.",
+        "Defines a runtime provider/credential/mapping configuration and never exposes CRM secrets or admin reads to browser code.",
+        "Uses a durable outbox with a stable idempotency key, retry and permanent-error handling, and a redacted operator replay path.",
+        "Makes the CRM eligibility gate depend on the configured proof and consent state and includes reconciliation for mapping changes, suppression, correction, and deletion."
+      ]
+    },
+    {
+      "id": "marketer-default-path",
+      "case_set": "dev",
+      "prompt": "I manage marketing for a new travel membership. I have a brand guide and logo, want an inviting single-page waitlist, and am not an engineer. Pick the technology. We have no hosting preference and will connect our CRM later. Codes for confirmation are fine.",
+      "expected_output": "A marketer-facing campaign and preview workflow using the documented simple defaults, with technical setup handled by the agent.",
+      "assertions": [
+        "Selects static HTML with Alpine.js and Vite rather than introducing an SSR app.",
+        "Selects TypeScript on Node.js at Vercel and managed Postgres.",
+        "Defaults to email verification codes with phone collection off.",
+        "Requests campaign and brand information rather than asking the marketer to choose database libraries or architecture.",
+        "Labels preview versus working collection and shows CRM as awaiting connection."
+      ]
+    },
+    {
+      "id": "video-canva-fallback",
+      "case_set": "dev",
+      "prompt": "Use my supplied logo exactly and this Canva design as a moving background on the waitlist. There is no Canva connector in this environment. The page must feel beautiful on phones, including for people who disable animation.",
+      "expected_output": "A brand-faithful asset workflow with an honest exported-media fallback and an accessible video treatment.",
+      "assertions": [
+        "Preserves the supplied logo rather than regenerating it.",
+        "Requests or accepts an exported asset without claiming to have connected to Canva.",
+        "Does not use a Canva share-page or temporary export URL as permanent video media.",
+        "Uses a poster when reduced motion is enabled and supplies a video pause control.",
+        "Requires inspection of the rendered mobile layout and readable text over the media."
+      ]
+    },
+    {
+      "id": "verification-change-race",
+      "case_set": "dev",
+      "prompt": "The SMS provider accepted a code while the user was changing their phone number in another tab. The browser then retried the old completion request. Write the behavior and tests for this race in our waitlist.",
+      "expected_output": "Destination-version-bound proof handling that never transfers verification to a newly edited contact.",
+      "assertions": [
+        "Binds the provider attempt to a stored channel and destination version.",
+        "Rechecks that version in the local transaction after the provider response.",
+        "Rejects the old proof for the new number and requires a new challenge.",
+        "Keeps retries from causing a second activation or CRM effect."
+      ]
+    },
+    {
+      "id": "crm-withdrawal-race",
+      "case_set": "dev",
+      "prompt": "A signup withdrew marketing permission while our CRM upsert was in flight. The CRM timed out, so we do not know whether the contact was written. The old upsert is still queued. What should the worker do?",
+      "expected_output": "Version-aware reconciliation and suppression that does not replay stale marketing permission or create another contact.",
+      "assertions": [
+        "Rechecks current consent before retrying and supersedes the stale upsert.",
+        "Looks up the existing remote identity before attempting another create after an uncertain result.",
+        "Schedules and verifies compensating suppression if the in-flight write succeeded.",
+        "Preserves unrelated CRM sales fields and does not turn contact storage into marketing enrollment."
+      ]
+    },
+    {
+      "id": "vercel-worker-durability",
+      "case_set": "dev",
+      "prompt": "For our commercial Vercel waitlist, can we return success and then use an unawaited promise to send the email and sync the CRM? Assume the cron cadence has not been checked and the provider sometimes returns 429.",
+      "expected_output": "A durable outbox and bounded authenticated worker design with a checked plan/cadence and retry semantics.",
+      "assertions": [
+        "Rejects reliance on unawaited work after the response.",
+        "Commits registration and outbound intent together before acknowledging.",
+        "Checks plan cadence and commercial suitability rather than promising a free deployment.",
+        "Uses recoverable leases for overlapping workers and honors provider Retry-After."
+      ]
+    },
+    {
+      "id": "honest-readiness",
+      "case_set": "dev",
+      "prompt": "Our waitlist preview looks excellent and skill JSON validation passed. We have not connected Twilio or our CRM or tested the API against Postgres. Tell the marketing owner whether it is ready to publish and what remains.",
+      "expected_output": "A concise readiness report separating visual preview, schema checks, functional evidence and provider connections.",
+      "assertions": [
+        "Does not call the portal production-ready based on appearance or eval schema validity.",
+        "Names the missing verification, CRM and real database checks.",
+        "Gives the marketer concrete connection and preview steps in plain language.",
+        "Does not claim live sends, CRM writes or runtime behavioral evaluations occurred."
+      ]
+    }
+  ]
+}
