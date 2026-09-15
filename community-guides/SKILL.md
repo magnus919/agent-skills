@@ -45,6 +45,11 @@ facilitation manual, repeated unknowns tables, or a publication approval process
 Use a longer intake only when requested or needed to resolve known complexity.
 For bounded workshops, keep the participant handout short and put research notes
 and operational detail in a clearly separate facilitator section.
+For a narrow revision or unresolved source conflict, deliver the requested edited
+card or decision brief plus concise change/verification notes. Do not add a workshop,
+new worksheets, or multiple pilots unless they advance an explicitly requested
+learning outcome. A blocked local fact needs a targeted verification step, not a
+larger program.
 
 ## Workflow
 
