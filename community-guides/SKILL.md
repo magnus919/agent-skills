@@ -50,6 +50,9 @@ card or decision brief plus concise change/verification notes. Do not add a work
 new worksheets, or multiple pilots unless they advance an explicitly requested
 learning outcome. A blocked local fact needs a targeted verification step, not a
 larger program.
+For a bounded revision, use [the revision checklist](templates/revision.md).
+Its source-to-action audit and language/version preflight are required before
+handoff; an unsupported resident imperative must be removed, not merely flagged.
 
 ## Workflow
 
