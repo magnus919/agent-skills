@@ -120,7 +120,9 @@
         "Provides change traceability from feedback to accepted, rejected, or deferred edits and preserves the original version rather than silently overwriting its provenance.",
         "Does not treat a small set of participant comments as universal consensus and records dissent, uncertainty, or reasons for deferral.",
         "Separates agent regression checks such as source fidelity, readability, translation or arithmetic checks from a community re-pilot that tests comprehension and real feasibility.",
-        "Defines a bounded release gate or next review trigger without requiring an arbitrary seven-session process."
+        "Defines a bounded release gate or next review trigger without requiring an arbitrary seven-session process.",
+        "Does not replace the problematic elevator sentence with unsupported technical procedures; identifies the missing authoritative replacement as unresolved.",
+        "Retains English and Spanish resident-facing coverage, labeling any newly drafted translation as awaiting competent review rather than omitting it."
       ],
       "files": [
         "evals/files/participant-feedback.json"
@@ -132,7 +134,7 @@
       "prompt": "Using only community-guides/evals/files/absent-residents.json, design a responsibility map and resident-facing coordination guide for fictional Oak Terrace. Several residents are absent because of work, caregiving, disability, or unreliable contact; absence is not consent. Assign coverage without exposing sensitive details, coercing people, or pretending every role is confirmed. Include primary/backup logic, opt-in and escalation paths, agent checks, and a community pilot that tests reachability and willingness. Do not mandate seven sessions.",
       "expected_output": "An ethical, operational responsibility map that distinguishes confirmed, proposed, and unfilled roles; uses opt-in primary/backup coverage and safe escalation; protects absent residents; and separates agent completeness checks from a resident pilot that verifies reachability and willingness.",
       "assertions": [
-        "Does not assign a substantive role to an absent resident as though absence were consent, and distinguishes confirmed, proposed, unavailable, and unfilled responsibilities.",
+        "Does not assign a substantive role to an absent resident as though absence were consent; distinguishes accepted commitments from proposals and uncovered work, and allows people to decline or state unavailability without demanding reasons.",
         "Provides primary and backup coverage, role boundaries, opt-in or confirmation steps, escalation for uncovered work, and a way to update the map safely.",
         "Avoids exposing sensitive reasons or contact details and offers accessible alternatives for residents affected by work, caregiving, disability, or unreliable communication.",
         "Separates agent checks for coverage, contradiction, privacy, and confirmation status from a community pilot that tests actual reachability, willingness, and workload feasibility.",

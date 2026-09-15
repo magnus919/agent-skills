@@ -130,6 +130,9 @@ information is accessible in the intended medium.
 Resolve each named or numbered reference against the actual delivered worksheet:
 do its sections, checkbox counts, and field labels exist as described? Do not infer
 agreement just because both documents discuss the same activity.
+For responsibility maps, check for contradictory acceptance claims, overlapping
+assignments that exceed stated availability, and backups that rely on the same
+unavailable person. Preserve existing accepted scope; mark additional work proposed.
 
 For structured plans, run the read-only checker (Python 3.10+, standard library):
 
