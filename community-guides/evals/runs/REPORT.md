@@ -122,6 +122,11 @@ to accommodate that environment restriction.
 Authored-file whitespace checks pass when excluding raw run evidence. The raw
 Markdown retains original hard-break spaces and trailing blank lines, so an
 unfiltered `git diff --check` reports those; evidence was not silently normalized.
+The first PR CI run caught the test's bare local-module import as an undeclared
+dependency. The test now loads the sibling checker by explicit file location,
+matching existing skill-local tests; checker behavior is unchanged. Both focused
+test runners still pass nine tests. The dependency check uses the repository
+virtual environment because the system Python does not have `deptry` installed.
 
 A fresh agent cold-walked the original apartment example and host notes: the
 three 40-minute agendas, preparation, W1/W2/W3 references, fallbacks, and catch-up

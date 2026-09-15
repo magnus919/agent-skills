@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import subprocess
@@ -11,9 +12,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import validate_guide
-
 SCRIPT = Path(__file__).with_name("validate_guide.py")
+SPEC = importlib.util.spec_from_file_location("community_guide_validator", SCRIPT)
+assert SPEC is not None and SPEC.loader is not None
+validate_guide = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(validate_guide)
 
 
 class ValidateGuideTests(unittest.TestCase):
