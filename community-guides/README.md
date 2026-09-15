@@ -24,6 +24,9 @@ and leaves a plan for keeping the guide current.
 | `scripts/` | An offline consistency checker and its tests |
 | `evals/` | Eight evaluation scenarios, input material, and separate trigger probes |
 
+See the [evaluation report](evals/runs/REPORT.md) for actual outputs, comparisons,
+failures, and limits; passing a file validator does not prove community usability.
+
 ## Quick Start
 
 Ask your agent:

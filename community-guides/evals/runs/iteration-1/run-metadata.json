@@ -1,0 +1,30 @@
+{
+  "record_type": "supplemental-agent-run-evidence",
+  "date": "2026-09-15",
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "high",
+  "fork_context": false,
+  "skill_content_revision": "e38878ce5c04aa2620f723722358846cc63fe790",
+  "token_usage": null,
+  "elapsed_execution_seconds": null,
+  "telemetry_note": "Per-run token/time metrics were not exposed in subagent completion results.",
+  "runs": [
+    {"case_id": "forty-five-minute-workshop", "variant": "baseline", "agent_id": "01a0a5e2-33cc-7d10-a1c4-7b20b1f182d1"},
+    {"case_id": "forty-five-minute-workshop", "variant": "with-skill", "agent_id": "01a0a5e2-35c7-7372-8f93-d1e25c6c512e"},
+    {"case_id": "garden-seasonal-care", "variant": "baseline", "agent_id": "01a0a5e3-ebf6-7cc0-8ee7-e5812c8a780f"},
+    {"case_id": "garden-seasonal-care", "variant": "with-skill", "agent_id": "01a0a5e3-ed35-7e02-a95b-49457ea6bde3"},
+    {"case_id": "rural-offline", "variant": "with-skill", "agent_id": "01a0a5e4-94d4-74f2-ac2a-0a2c33e30908"},
+    {"case_id": "multilingual-renters-outage", "variant": "with-skill", "agent_id": "01a0a5e4-cfd3-7b52-add0-cde39ef452fc"},
+    {"case_id": "sparse-brief", "variant": "with-skill", "agent_id": "01a0a5e5-c763-7ef1-b2f2-aaaf6e3ef338"},
+    {"case_id": "conflicting-outdated-sources", "variant": "with-skill", "agent_id": "01a0a5e6-23df-7453-b967-dd8f01cc47a0"},
+    {"case_id": "revision-from-participant-feedback", "variant": "with-skill", "agent_id": "01a0a5e6-dcae-73f0-b37b-68f083ccc9cf"},
+    {"case_id": "absent-residents-responsibilities", "variant": "with-skill", "agent_id": "01a0a5e7-b65a-73f2-bb59-e4239bcef17f"}
+  ],
+  "reviewers": [
+    {"scope": "blind workshop and garden pairs", "agent_id": "01a0a5e8-876f-7353-bacc-4c1125f973de"},
+    {"scope": "sparse and conflict", "agent_id": "01a0a5e8-c232-7e83-a0c4-25ceb9465619"},
+    {"scope": "multilingual and rural", "agent_id": "01a0a5e9-74b5-77c1-bacb-bc2fdaad0614"},
+    {"scope": "revision and absent residents", "agent_id": "01a0a5e9-760d-76f3-95ec-e4441d36176d"},
+    {"scope": "description routing only", "agent_id": "01a0a5eb-3afb-7c10-a3bb-1db67460dcf7"}
+  ]
+}
