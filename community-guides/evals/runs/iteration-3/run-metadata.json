@@ -1,0 +1,38 @@
+{
+  "record_type": "supplemental-agent-run-evidence",
+  "date": "2026-09-15",
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "high",
+  "fork_context": false,
+  "skill_content_revision": "012933ab13a9f73b1bbd1e338e7309434d286b53",
+  "token_usage": null,
+  "elapsed_execution_seconds": null,
+  "telemetry_note": "Per-run token/time telemetry not exposed by completion results.",
+  "runs": [
+    {
+      "case_id": "revision-from-participant-feedback",
+      "agent_id": "01a0a5f4-98d1-7643-b3bc-5f6d2898652c"
+    },
+    {
+      "case_id": "conflicting-outdated-sources",
+      "agent_id": "01a0a5f4-9a47-7122-84ff-944494b23035"
+    },
+    {
+      "case_id": "mending-space-transfer",
+      "agent_id": "01a0a5f6-2399-7783-a72e-d45fc471351f",
+      "supplemental": true
+    }
+  ],
+  "reviewer_agent_id": "01a0a5f7-164c-7b61-97db-4eea5891ac0f",
+  "review_file": "iteration-3/review.md",
+  "assertions_note": "Portable assertions are the iteration-2 manifest snapshot; supplemental transfer assertions were fixed before its generation and are stored beside the output.",
+  "file_sha256": {
+    "iteration-3/revision-from-participant-feedback/with-skill.md": "9503a42cd967586e25050d16871feab26f7742d3107a2b7fb62e4ce3d1aaa4f1",
+    "iteration-3/conflicting-outdated-sources/with-skill.md": "2eb2e802e7bab8122ef692cbc6b7915a2805dc7a0e4109de6d3db1b180e8f415",
+    "iteration-3/review.md": "1d4a8e9572271e755e7a07990b82d97a308b4a62dfb2ebbb3b1cf06526400734",
+    "transfer-check/fixture.json": "f04ecbc247028dfb60e36f0cab991b5be6156209a33029449ded3273ddddddf9",
+    "transfer-check/task.md": "5ba301354367277f6f54cce1f21cca5c014b9b4c7a2bb0c93b0b12fc6b79ec32",
+    "transfer-check/assertions.json": "09c7c9192c94dbc300292411d84b6d48dbd3622951f5529993d70486e03a0e98",
+    "transfer-check/guide.md": "cea237298a653845183f882c0d766f2544dbc722b555b486e80da4a58cfb1083"
+  }
+}

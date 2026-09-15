@@ -1,0 +1,32 @@
+{
+  "record_type": "supplemental-agent-run-evidence",
+  "date": "2026-09-15",
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "high",
+  "fork_context": false,
+  "skill_content_revision": "b0dd0ddb6ab1c8e64aef6fcb58c4ca1f69b746d7",
+  "token_usage": null,
+  "elapsed_execution_seconds": null,
+  "telemetry_note": "Per-run token/time telemetry not exposed in completion results.",
+  "runs": [
+    {
+      "case_id": "revision-from-participant-feedback",
+      "agent_id": "01a0a5fa-3ecf-77f0-975f-49e6436585d2",
+      "output": "final-regression/revision.md",
+      "assertions": "iteration-2/manifest.json"
+    },
+    {
+      "case_id": "mending-space-transfer",
+      "agent_id": "01a0a5fa-3ff0-7bd1-9d13-3ad09314e498",
+      "output": "final-regression/transfer.md",
+      "assertions": "transfer-check/assertions.json",
+      "note": "Now a regression check, not untouched holdout."
+    }
+  ],
+  "reviewer_agent_id": "01a0a5fc-5f55-7fc0-8f50-c2eea20c7ea4",
+  "file_sha256": {
+    "final-regression/revision.md": "8b7b059b5a5b6e9d58acff755ec62a9676d9016762a41a65c07767916834f13f",
+    "final-regression/transfer.md": "26a24d564b2c3d47173b9ab40dfd455e1cee789705b69c8d15bd7e8ea204873e",
+    "final-regression/review.md": "289b8a0dc5b40729d4b82b75981bd1c277ece07f251fee3e1b56b16e90e15f57"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "record_type": "supplemental-agent-run-evidence",
+  "date": "2026-09-15",
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "high",
+  "fork_context": false,
+  "token_usage": null,
+  "elapsed_execution_seconds": null,
+  "telemetry_note": "Per-run token usage and elapsed execution time were not exposed in subagent completion results.",
+  "evidence_status": "intermediate evidence, not final acceptance",
+  "skill_use_note": "The final-suite outputs were generated in fresh non-forked runs. The repository HEAD observed at completion is recorded for provenance only; it does not establish that current new skill changes were loaded or used.",
+  "repository_context": {
+    "final_suite_observed_head_at_completion": "5b71a61eb4910b2e4c8d389e00403bd6addb0ace",
+    "conflicting_outdated_sources_started_after": "a73860c",
+    "conflicting_outdated_sources_observed_head_at_completion": "5b71a61eb4910b2e4c8d389e00403bd6addb0ace",
+    "other_final_suite_runs_observed_head_at_completion": "5b71a61eb4910b2e4c8d389e00403bd6addb0ace",
+    "intermediate_runs": {
+      "sparse-brief": {
+        "agent_id": "01a0a5e9-2933-7670-9f5a-ee56b2a331fd",
+        "started_after": "b0a6029",
+        "content_revision_snapshot": null,
+        "uncertainty": "The intermediate content revision was not snapshotted atomically; the retained file is evidence of the observed intermediate output, but its exact skill-content revision cannot be established from the retained run record."
+      },
+      "revision-from-participant-feedback": {
+        "agent_id": "01a0a5ea-515c-79b3-9472-13185cd1ea37",
+        "started_after": "b0a6029",
+        "content_revision_snapshot": null,
+        "uncertainty": "The intermediate content revision was not snapshotted atomically; the retained file is evidence of the observed intermediate output, but its exact skill-content revision cannot be established from the retained run record."
+      }
+    }
+  },
+  "runs": [
+    {"case_id": "conflicting-outdated-sources", "variant": "with-skill", "agent_id": "01a0a5eb-bdd4-7c32-8781-6ea442b5a4d6"},
+    {"case_id": "garden-seasonal-care", "variant": "with-skill", "agent_id": "01a0a5ec-d604-7343-a115-388fdc40b0cb"},
+    {"case_id": "forty-five-minute-workshop", "variant": "with-skill", "agent_id": "01a0a5ec-d6fe-7543-a67f-dc9ca98ffb60"},
+    {"case_id": "absent-residents-responsibilities", "variant": "with-skill", "agent_id": "01a0a5ec-d874-77a3-b69f-13a3d35fdbaf"},
+    {"case_id": "multilingual-renters-outage", "variant": "with-skill", "agent_id": "01a0a5ed-3931-72b1-8fd7-039aa6fec700"},
+    {"case_id": "rural-offline", "variant": "with-skill", "agent_id": "01a0a5ed-ea14-77c3-95c0-8279a02cf103"},
+    {"case_id": "sparse-brief", "variant": "with-skill", "agent_id": "01a0a5f0-4874-7a72-945b-ef63d0f85756"},
+    {"case_id": "revision-from-participant-feedback", "variant": "with-skill", "agent_id": "01a0a5f0-4998-7fa1-b054-13b3d55b4646"}
+  ],
+  "reviewers": [
+    {"group": "A", "agent_id": "01a0a5f0-4b2c-7252-9d98-a6e0d60955cc"},
+    {"group": "B", "agent_id": "01a0a5f3-8bf5-71a1-b602-4f8c457e6914"},
+    {"group": "C", "agent_id": "01a0a5f3-8d08-72e2-9fd5-9b261fb4247b"}
+  ],
+  "file_sha256": {
+    "iteration-2/manifest.json": "073590199b4da4d8e318c9f2938b820fdfbec4d2d0f209ed69938504424aaa62",
+    "iteration-2/absent-residents-responsibilities/with-skill.md": "99a7c86ee68fe637dbeefcdacbd0824b05ad0cb1b7adfd3b5c85c3df4d9d4b1f",
+    "iteration-2/conflicting-outdated-sources/with-skill.md": "01ba338fd3521544a51ee6ca5ba0375fd62fcb51a6bda8329cf0214284672fa7",
+    "iteration-2/forty-five-minute-workshop/with-skill.md": "8e8ac24fdec6bb5b75a47f490a5f3d008e13a2a9822aaa167e28aa1485b72054",
+    "iteration-2/garden-seasonal-care/with-skill.md": "b6f235c5f02018494683334e730a19b5cad52cf7bb6d319ed9b93b71195b79fc",
+    "iteration-2/multilingual-renters-outage/with-skill.md": "f43f6710cde8979b7fc07f817b04736163bfaa2a422ff1949b0dd74e0045708f",
+    "iteration-2/revision-from-participant-feedback/with-skill.md": "b17a21968b40db6e7b05c31c1e2c3b31b2c8916c61babb12c1ddd31d4d8c69ea",
+    "iteration-2/rural-offline/with-skill.md": "92b85d45bc90c1a7ae5958331b7d3542603643040d79292fac7ed31194d35984",
+    "iteration-2/sparse-brief/with-skill.md": "8596546db7f8d48db99ffaa77fd38490e409eed82b10bff69436485f3901eb52",
+    "iteration-2/review-group-a.md": "809f3aba5aa5aff336d1ef1b9da5209e4f240ed48f32e52d2b514674d7517a71",
+    "iteration-2/review-group-b.md": "0ad9654e0c2e4e35eb30da16846fe9ede8bb8104cd32d3c1a2e8aef30f6eace1",
+    "iteration-2/review-group-c.md": "c9a7cdea1b7dfe94e6024b49ec25b9b9f852e8914301835170c7872d20b380ff",
+    "intermediate/sparse-brief.md": "51a405f92805e554e2cb7d14586927469a199766b453cac446df090c523b2946",
+    "intermediate/revision-from-participant-feedback.md": "d5a01c4d674775d51ae24d8df57e1ed7f0dd74a9b1accfbd62199485e8ba7103"
+  }
+}

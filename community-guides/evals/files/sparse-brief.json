@@ -1,0 +1,7 @@
+{
+  "fixture_notice": "Synthetic local fixture for offline evaluation. This deliberately sparse brief contains no verified local authority.",
+  "brief": "Make a guide for our neighbors about the problem. Keep it short and welcoming.",
+  "known": ["There is a group called Neighbors Together.", "The audience is described only as neighbors."],
+  "missing": ["place", "topic or hazard", "audience languages and access needs", "source material", "owner", "delivery channel", "time horizon", "success measure"],
+  "permission": "The group has not yet confirmed whether a discovery conversation or a draft is preferred."
+}

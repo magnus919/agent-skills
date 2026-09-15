@@ -1,0 +1,24 @@
+{
+  "fixture_notice": "Synthetic local fixture for offline evaluation. Guide versions, participants, and comments are fictional.",
+  "context": "A pilot of the fictional Maple Court outage card produced one draft and comments from three residents; the comments are not a representative vote.",
+  "initial_guide": {
+    "version": "0.1",
+    "content": [
+      "If service is interrupted, document the affected unit and notify the building desk during desk hours.",
+      "Use the elevator only when the outage is short.",
+      "The after-hours contact is not yet confirmed.",
+      "The card uses the phrase 'utility interruption' and has English and Spanish text."
+    ]
+  },
+  "participant_feedback": [
+    {"participant": "R1", "comment": "'Utility interruption' was hard to understand; say 'power or water outage'.", "support": "clear wording request"},
+    {"participant": "R2", "comment": "Night-shift renters need a way to report an outage when the desk is closed.", "support": "workflow gap, contact still unconfirmed"},
+    {"participant": "R3", "comment": "The elevator sentence feels unsafe; I use a mobility aid and need an accessible check-in plan.", "support": "safety and accessibility concern"},
+    {"participant": "R1", "comment": "Make the card neon green and guarantee a 30-minute repair.", "support": "preference and unsupported promise; not verified"}
+  ],
+  "revision_constraints": [
+    "Preserve version history and identify unresolved after-hours contact information.",
+    "Do not infer that three comments represent every resident.",
+    "The revision must be re-tested before being treated as validated."
+  ]
+}

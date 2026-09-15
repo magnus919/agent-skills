@@ -1,0 +1,16 @@
+{
+  "notice": "Original fictional offline evaluation fixture. No real organization, people or authority is represented.",
+  "community": "Thread Room, a shared neighborhood mending space",
+  "initial_version": "0.3",
+  "languages": ["English", "French"],
+  "card": {
+    "en": "Bring your item to the room on Saturday from 10 to 12. Ask the desk volunteer to record it. No other collection time is confirmed.",
+    "fr": "Apportez votre objet dans la salle le samedi de 10 h à 12 h. Demandez à la personne bénévole à l’accueil de l’enregistrer. Aucun autre horaire de dépôt n’est confirmé."
+  },
+  "confirmed_commitments": ["Sam has accepted recording items at the desk on Saturdays 10 to 12, not collection or delivery outside that window."],
+  "feedback": [
+    {"id": "T1", "comment": "I cannot carry my item up the stairs. Can there be a ground-floor drop-off?", "evidence": "One person's access barrier; no alternate location or helper is confirmed."},
+    {"id": "T2", "comment": "Could Sam collect everyone's items on Friday evenings?", "evidence": "Suggestion only; Sam has not agreed."},
+    {"id": "T3", "comment": "Please say whether the item has been accepted before I leave it.", "evidence": "Clarification request, not evidence of a new commitment or service guarantee."}
+  ]
+}

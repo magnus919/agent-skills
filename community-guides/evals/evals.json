@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "skill_name": "community-guides",
+  "evals": [
+    {
+      "id": "multilingual-renters-outage",
+      "case_set": "dev",
+      "prompt": "Using only the synthetic local fixture at community-guides/evals/files/multilingual-renters-outage.json, create a runnable resident guide package for Maple Court renters, not an informational handout alone. Make the English, Spanish, and Vietnamese content meaningfully equivalent, concrete, plain-language, and usable on a phone or as large print. Include a participant activity, a usable blank worksheet, a completed fictional worked example, and matching facilitator/host instructions with timing and follow-through. Preserve the renter/landlord boundary and safety limits in the fixture. Include what an agent can check before publication and what must be learned in a small community pilot. Do not use the internet or invent local legal, emergency, or utility facts.",
+      "expected_output": "A multilingual, accessible renter guide package grounded in the fictional source packet: equivalent core actions across the three languages, a runnable timed participant activity, a blank worksheet and worked example, matching host instructions, an activity-to-next-action-to-check follow-through path, clear safe/unsafe boundaries, explicit unknowns, and separate agent checks versus a resident pilot.",
+      "assertions": [
+        "Provides materially equivalent outage actions and warnings in English, Spanish, and Vietnamese rather than translating only a title or summary.",
+        "Preserves the fixture's renter/landlord boundary and does not advise renters to alter wiring, plumbing, or building equipment.",
+        "Includes practical outage actions, escalation or contact paths, and accessibility options without inventing a utility, legal, or emergency-service claim.",
+        "Labels fixture-derived facts, assumptions, and unresolved local details so fictional sources are not presented as authoritative real-world guidance.",
+        "Provides a runnable renter-participant activity with explicit timing and a concrete follow-through purpose, rather than only explaining outage information.",
+        "Supplies a usable blank participant worksheet and a completed fictional worked example that demonstrate the requested outage activity.",
+        "Traces the activity to a feasible next action and an observable check or review trigger, including what happens after the session.",
+        "Keeps the participant guide and facilitator/host instructions in agreement about steps, timing, safety boundaries, and the resulting artifact.",
+        "Separates agent preflight checks such as source and language parity from community-pilot checks such as comprehension, reachability, and safe usability."
+      ],
+      "files": [
+        "evals/files/multilingual-renters-outage.json"
+      ]
+    },
+    {
+      "id": "rural-offline",
+      "case_set": "dev",
+      "prompt": "Using only community-guides/evals/files/rural-offline.json, create a runnable offline-first guide package for fictional Willow County households, not informational advice alone. It must work when internet and cellular service are unavailable, include print/radio/in-person fallbacks, avoid assuming a car, smartphone, or constant electricity, and state what the community still needs to verify. Include a participant activity that practices an offline action, a usable blank worksheet, a completed fictional worked example, and matching facilitator/host instructions with timing and follow-through. Distinguish agent checks of the draft from a community pilot with households. Do not use the internet and do not promise emergency coverage that the fixture does not establish.",
+      "expected_output": "A runnable low-bandwidth guide package with redundant channels, a timed participant practice activity, a clear offline artifact, blank and worked worksheets, matching host instructions, an activity-to-next-action-to-check follow-through path, visible battery and mobility assumptions, and separate agent verification and household-pilot learning plans.",
+      "assertions": [
+        "Designs for loss of internet and cellular service using the fixture's printed, radio, phone, and in-person fallback channels.",
+        "Does not assume every resident owns a smartphone, car, generator, or reliable power source, and offers a safe alternative where the fixture supports one.",
+        "Makes channel limits, coverage gaps, privacy or consent considerations, and unverified details visible instead of implying universal reach.",
+        "Provides a runnable participant activity with explicit timing that practices an offline communication or check-in capability rather than only describing channels.",
+        "Supplies a usable blank worksheet and a completed fictional worked example that a household can use with the offline activity.",
+        "Traces the activity to a feasible next action and an observable check or review trigger, including follow-through when a channel fails.",
+        "Keeps the participant guide and facilitator/host instructions in agreement about offline steps, timing, materials, and fallback behavior.",
+        "Defines agent checks for internal consistency and offline usability separately from a community pilot that tests whether households can actually receive and use the guide.",
+        "Avoids fabricating emergency-service guarantees, current official instructions, or internet-dependent resources."
+      ],
+      "files": [
+        "evals/files/rural-offline.json"
+      ]
+    },
+    {
+      "id": "garden-seasonal-care",
+      "case_set": "dev",
+      "prompt": "Using only community-guides/evals/files/garden-seasonal-care.json, produce a runnable seasonal care guide package for the fictional South Fork Community Garden, not informational advice alone. This is routine horticulture and stewardship, not disaster response: keep that boundary explicit. Include a participant activity that turns observations into a care decision, a usable blank worksheet, a completed fictional worked example, and matching facilitator/host instructions with timing and follow-through. Make the plan usable by gardeners with different mobility, time, and experience, include observation-based adjustments and shared-task handoffs, and avoid unsupported pesticide, medical, or emergency advice. Identify agent checks and a small community pilot; do not impose a fixed seven-session program.",
+      "expected_output": "A runnable, inclusive seasonal garden-care guide package organized around local seasons and observable conditions, with a timed participant activity, blank and worked worksheets, matching host instructions, an activity-to-next-action-to-check follow-through path, shared responsibilities, adaptations, safe source boundaries, and a bounded pilot and verification plan that does not reframe routine care as disaster preparedness.",
+      "assertions": [
+        "Keeps routine seasonal garden care distinct from disaster or emergency preparedness and does not introduce disaster-response framing merely because the guide is community-facing.",
+        "Uses the fixture's seasonal tasks, water constraints, and observation triggers while avoiding unsupported pesticide, medical, or safety claims.",
+        "Offers accessible participation options and clear task ownership or handoffs without assuming equal time, mobility, tools, or horticultural expertise.",
+        "Provides a runnable participant activity with explicit timing that turns a garden observation into a shared care decision or practice.",
+        "Supplies a usable blank participant worksheet and a completed fictional worked example that demonstrate the seasonal-care activity.",
+        "Traces the activity to a feasible next action and an observable check or review trigger, including a handoff or follow-through point.",
+        "Keeps the participant guide and facilitator/host instructions in agreement about steps, timing, accessibility options, and the shared output.",
+        "Separates agent checks of source fidelity, seasonal logic, and accessibility from a community pilot that observes whether gardeners can use the plan.",
+        "Uses a flexible cadence or optional follow-up rather than requiring seven sessions or another arbitrary fixed program."
+      ],
+      "files": [
+        "evals/files/garden-seasonal-care.json"
+      ]
+    },
+    {
+      "id": "forty-five-minute-workshop",
+      "case_set": "dev",
+      "prompt": "Using only community-guides/evals/files/workshop-45-minute.json, design a single 45-minute participatory workshop for the fictional Riverside Tenants Council. Give a timed run-of-show that sums to 45 minutes, a concrete artifact participants can leave with, facilitation and accessibility choices, and a way to handle dissent or missing voices. State which checks an agent can perform before the workshop and which questions require a community pilot or follow-up. Treat one workshop as a bounded intervention; do not mandate seven sessions.",
+      "expected_output": "A feasible 45-minute workshop plan with time totals that add up, an inclusive activity sequence, a useful resident-owned output, facilitator and accessibility roles, explicit dissent handling, and separate agent preflight checks from participant learning and optional follow-up.",
+      "assertions": [
+        "Provides timed activities whose durations add to exactly 45 minutes and leaves participants with a concrete, usable artifact.",
+        "Uses participatory methods suited to the fixture's tenant context, including a way to surface dissent, uncertainty, or absent perspectives without forcing disclosure.",
+        "Includes accessibility, language, facilitation, materials, and role choices that are supported by the fixture or clearly marked as assumptions.",
+        "Separates agent checks such as arithmetic, prompt coverage, and source fidelity from community-pilot evidence such as comprehension, feasibility, and perceived safety.",
+        "Treats the workshop as a bounded intervention with optional next steps and does not require a seven-session curriculum."
+      ],
+      "files": [
+        "evals/files/workshop-45-minute.json"
+      ]
+    },
+    {
+      "id": "sparse-brief",
+      "case_set": "regression",
+      "prompt": "The only input is the deliberately sparse synthetic brief at community-guides/evals/files/sparse-brief.json. Produce the safest useful first draft of a community guide or, if a guide would be misleading, a bounded discovery draft. Do not fill gaps with generic local facts. Make knowns, unknowns, assumptions, decisions still needed, and a low-burden way to learn from residents visible. Distinguish agent checks from a community pilot and keep the response proportionate to the brief.",
+      "expected_output": "A compact, honest discovery-oriented draft that uses only the few supplied facts, refuses unsupported specificity, asks a minimal set of high-value questions or proposes placeholders, and defines agent checks separately from resident learning.",
+      "assertions": [
+        "Uses only the sparse fixture's stated facts and does not invent a place, hazard, audience need, authority, schedule, contact, or service.",
+        "Makes missing information, assumptions, and decisions needed before publication explicit rather than hiding them behind generic advice.",
+        "Chooses a proportionate deliverable such as a discovery draft, checklist, or question set when a complete resident guide would be unsafe or misleading.",
+        "Separates deterministic agent checks from a low-burden community pilot or listening activity that can validate relevance and usability.",
+        "Keeps the output concise and actionable despite uncertainty, with no arbitrary program cadence or unsupported claim of consensus.",
+        "Limits this sparse discovery draft to 300 words and at most three essential questions; does not add a workbook, facilitation manual, repeated unknowns tables, or publication approval process."
+      ],
+      "files": [
+        "evals/files/sparse-brief.json"
+      ]
+    },
+    {
+      "id": "conflicting-outdated-sources",
+      "case_set": "regression",
+      "prompt": "Using only the fictional source packet at community-guides/evals/files/conflicting-sources.json, prepare a decision-ready draft for Harbor View residents. The packet contains an older notice, a newer building update, and a resident observation that may expose a current implementation gap. Reconcile what can be reconciled, preserve provenance and dates, do not silently blend contradictions, and say when publication should pause for verification. Separate agent source checks from a community pilot that tests comprehension and actual conditions. No internet research is allowed.",
+      "expected_output": "A provenance-aware draft that gives the newer source appropriate weight without treating recency as proof, explicitly identifies the unresolved assembly-point and signage conflict, and recommends a targeted verification gate before high-stakes publication plus a separate resident pilot.",
+      "assertions": [
+        "Identifies the source conflict and preserves each relevant source's date, scope, and fictional status instead of merging incompatible instructions.",
+        "Uses the newer building update as a candidate current instruction while explaining why recency alone does not verify physical conditions.",
+        "Treats the resident observation about missing signage as a material implementation gap and defines a targeted verification or publication hold.",
+        "Separates agent checks for provenance, contradictions, and claim-to-source traceability from a community pilot that tests comprehension and observes the site.",
+        "Does not use internet research, invented authority, or a false consensus to resolve the conflict.",
+        "Keeps the deliverable to a decision brief with concise verification notes and the requested pilot distinction, without adding unrequested workshops, worksheets, or multiple pilots.",
+        "Does not add unsupported technical or emergency procedures to resident-facing copy; leaves any missing authoritative replacement unresolved rather than supplying general-knowledge advice."
+      ],
+      "files": [
+        "evals/files/conflicting-sources.json"
+      ]
+    },
+    {
+      "id": "revision-from-participant-feedback",
+      "case_set": "release",
+      "prompt": "Revise the initial synthetic guide and feedback in community-guides/evals/files/participant-feedback.json. Return a resident-ready revision plus a concise change record that maps feedback to accepted changes, rejected or deferred suggestions, and remaining uncertainty. Preserve participant dissent and do not generalize three comments into universal preference. State what an agent can check in the revision and what must be re-tested in a community pilot. Use no internet and do not erase the original version's provenance.",
+      "expected_output": "A traceable revised guide that addresses supported participant feedback, explains dissent and deferred changes, preserves provenance and unresolved uncertainty, and pairs agent-level regression checks with a focused community re-pilot before treating the revision as validated.",
+      "assertions": [
+        "Produces a substantive revision that addresses the supported feedback, including the fixture's concerns about jargon, night access, and an unsafe or impractical instruction.",
+        "Provides change traceability from feedback to accepted, rejected, or deferred edits and preserves the original version rather than silently overwriting its provenance.",
+        "Does not treat a small set of participant comments as universal consensus and records dissent, uncertainty, or reasons for deferral.",
+        "Separates agent regression checks such as source fidelity, readability, translation or arithmetic checks from a community re-pilot that tests comprehension and real feasibility.",
+        "Defines a bounded release gate or next review trigger without requiring an arbitrary seven-session process.",
+        "Does not replace the problematic elevator sentence with unsupported technical procedures; identifies the missing authoritative replacement as unresolved.",
+        "Retains English and Spanish resident-facing coverage, labeling any newly drafted translation as awaiting competent review rather than omitting it."
+      ],
+      "files": [
+        "evals/files/participant-feedback.json"
+      ]
+    },
+    {
+      "id": "absent-residents-responsibilities",
+      "case_set": "release",
+      "prompt": "Using only community-guides/evals/files/absent-residents.json, design a responsibility map and resident-facing coordination guide for fictional Oak Terrace. Several residents are absent because of work, caregiving, disability, or unreliable contact; absence is not consent. Assign coverage without exposing sensitive details, coercing people, or pretending every role is confirmed. Include primary/backup logic, opt-in and escalation paths, agent checks, and a community pilot that tests reachability and willingness. Do not mandate seven sessions.",
+      "expected_output": "An ethical, operational responsibility map that distinguishes confirmed, proposed, and unfilled roles; uses opt-in primary/backup coverage and safe escalation; protects absent residents; and separates agent completeness checks from a resident pilot that verifies reachability and willingness.",
+      "assertions": [
+        "Does not assign a substantive role to an absent resident as though absence were consent; distinguishes accepted commitments from proposals and uncovered work, and allows people to decline or state unavailability without demanding reasons.",
+        "Provides primary and backup coverage, role boundaries, opt-in or confirmation steps, escalation for uncovered work, and a way to update the map safely.",
+        "Avoids exposing sensitive reasons or contact details and offers accessible alternatives for residents affected by work, caregiving, disability, or unreliable communication.",
+        "Separates agent checks for coverage, contradiction, privacy, and confirmation status from a community pilot that tests actual reachability, willingness, and workload feasibility.",
+        "States which gaps remain unresolved and sets a bounded review trigger without inventing consensus or requiring a fixed seven-session program."
+      ],
+      "files": [
+        "evals/files/absent-residents.json"
+      ]
+    }
+  ]
+}

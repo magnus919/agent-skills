@@ -222,6 +222,15 @@
       "description": "Manage color workflows with ICC profiles, working spaces, gamut mapping, and color science. Use when inspecting ICC profiles, converting between color spaces, checking gamut clipping, validating well-behaved working spaces, or troubleshooting color workflow issues with ImageMagick, ArgyllCMS, Exiftool, or LittleCMS. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
+      "name": "community-guides",
+      "source": "./",
+      "skills": [
+        "./community-guides"
+      ],
+      "strict": false,
+      "description": "Create, adapt, or revise practical community guides with locally grounded activities, participant worksheets, facilitator instructions, and maintenance plans. Use for neighborhood preparedness, mutual support, shared projects, and community learning programs. Do not use for travel guides, promotional brochures, standalone policies, simple document formatting, or live incident response."
+    },
+    {
       "name": "conditional-customer-success",
       "source": "./",
       "skills": [

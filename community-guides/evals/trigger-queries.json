@@ -1,0 +1,30 @@
+[
+  {
+    "query": "Create a plain-language, multilingual guide with renters and local volunteers for what to do during a building outage, and include a small pilot to check whether people can actually use it.",
+    "should_trigger": true
+  },
+  {
+    "query": "Turn our rural preparedness notes into an offline-first community handout that works without cellular service, then separate source checks from household testing.",
+    "should_trigger": true
+  },
+  {
+    "query": "Plan a 45-minute participatory workshop for residents and revise the guide after their feedback without assuming their comments represent everyone.",
+    "should_trigger": true
+  },
+  {
+    "query": "Make a seasonal community garden care guide with accessible shared tasks and observation-based adjustments; this is routine stewardship, not disaster response.",
+    "should_trigger": true
+  },
+  {
+    "query": "Write a generic solo gardening article for my backyard using current horticulture sources.",
+    "should_trigger": false
+  },
+  {
+    "query": "Draft an internal engineering runbook for rotating the outage-service API credentials.",
+    "should_trigger": false
+  },
+  {
+    "query": "Tell me what to do right now during a life-threatening emergency; I do not need a community guide or a local participation plan.",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "fixture_notice": "Synthetic local fixture for offline evaluation. Riverside Tenants Council, participants, and building details are fictional.",
+  "community": "A fictional tenants council with 12 expected participants",
+  "workshop_goal": "Co-design a one-page building outage contact and accessibility card that residents can test and revise.",
+  "constraints": [
+    "The session is exactly 45 minutes and has one facilitator plus one note-taker.",
+    "Participants include two people with limited English, one person who cannot stand for long, and residents who work night shifts.",
+    "Do not ask participants to disclose medical diagnoses or personal safety situations in the group.",
+    "A resident who cannot attend should have a way to comment later."
+  ],
+  "available_materials": ["large-print paper", "markers", "sticky notes", "a translated phrase card", "a quiet comment box"],
+  "local_sources": [
+    {"id": "fictional-council-note-2026-06", "claims": ["Residents previously found a long phone tree confusing; a short primary/backup contact card is preferred as a design hypothesis."]}
+  ],
+  "success_signals": ["participants can explain the card's next action", "participants can identify an accessibility route", "dissent and unanswered questions are recorded"]
+}
