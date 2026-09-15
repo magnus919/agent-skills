@@ -1,0 +1,25 @@
+{
+  "fixture_notice": "Synthetic local fixture for offline evaluation. Willow County, organizations, schedules, and phone numbers are fictional.",
+  "community": "A fictional unincorporated valley of 40 households in Willow County",
+  "request": "An offline-first preparedness and communication guide for a multi-day power or communications outage.",
+  "constraints": [
+    "Internet and cellular service may be unavailable for 48 hours.",
+    "Some households have no smartphone, car, generator, or reliable indoor heating.",
+    "A few residents use mobility aids and cannot reach the ridge on foot.",
+    "Do not publish private medical details or imply that volunteers provide professional emergency care."
+  ],
+  "fictional_channels": [
+    {"channel": "printed card", "location": "Willow Library porch box", "limit": "stock is checked weekly, not continuously"},
+    {"channel": "FM radio", "station": "WLV-88.4", "schedule": "08:00 and 18:00 local announcements", "limit": "requires battery radio and may not reach the valley floor"},
+    {"channel": "phone tree", "owner": "volunteer coordinator", "limit": "works only when the phone network is operating"},
+    {"channel": "in-person check", "location": "grange hall", "limit": "not accessible to everyone and no resident should be required to travel there"}
+  ],
+  "local_sources": [
+    {"id": "fictional-valley-card-2026-05", "claims": ["Use two independent channels when possible; leave a paper status mark at a household's agreed location only with consent."]},
+    {"id": "fictional-library-note-2026-05", "claims": ["The library can print 60 large-print cards before its backup battery is exhausted."]}
+  ],
+  "unknowns": [
+    "Which households want a check-in and which accessible locations are currently usable are not confirmed.",
+    "The radio schedule and library battery capacity need a local pre-publication check."
+  ]
+}

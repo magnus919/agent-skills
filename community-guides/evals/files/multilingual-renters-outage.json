@@ -1,0 +1,39 @@
+{
+  "fixture_notice": "Synthetic local fixture for offline evaluation. Maple Court, people, notices, dates, and contact details are fictional and are not legal, utility, or emergency authority.",
+  "community": "Maple Court, a fictional 84-unit rental building",
+  "request": "A resident-facing guide for planned or unplanned electrical and water outages.",
+  "residents": [
+    {"language": "English", "needs": ["phone-friendly", "large print option"]},
+    {"language": "Spanish", "needs": ["plain language", "phone-friendly"]},
+    {"language": "Vietnamese", "needs": ["plain language", "phone-friendly"]}
+  ],
+  "constraints": [
+    "Renters must not alter wiring, plumbing, meters, elevators, or building equipment.",
+    "The building manager may be unreachable after 18:00.",
+    "Some residents cannot use stairs, read small print, or make voice calls.",
+    "The guide must not promise a restoration time that is not confirmed."
+  ],
+  "local_sources": [
+    {
+      "id": "fictional-building-card-2026-04",
+      "published": "2026-04-01",
+      "claims": [
+        "For an outage, note the unit and service affected, avoid exposed wires or standing water, and contact the building desk during posted hours.",
+        "Do not use the elevator during a power outage; ask a neighbor or the desk for an accessibility check-in."
+      ]
+    },
+    {
+      "id": "fictional-language-card-2026-04",
+      "published": "2026-04-02",
+      "approved_terms": {
+        "outage": {"es": "corte de servicio", "vi": "mất điện hoặc nước"},
+        "do_not_use_elevator": {"es": "No use el ascensor", "vi": "Không dùng thang máy"},
+        "building_desk": {"es": "recepción del edificio", "vi": "quầy hỗ trợ của tòa nhà"}
+      }
+    }
+  ],
+  "unknowns": [
+    "The fixture does not establish the utility provider, emergency number, restoration estimate, or a confirmed after-hours contact.",
+    "Resident comprehension and preferred delivery channel have not yet been piloted."
+  ]
+}

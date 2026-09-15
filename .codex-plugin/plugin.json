@@ -42,6 +42,7 @@
     "./cli-builder",
     "./cncf-landscape",
     "./color-management",
+    "./community-guides",
     "./conditional-customer-success",
     "./confluence-cli",
     "./constrained-optimization",

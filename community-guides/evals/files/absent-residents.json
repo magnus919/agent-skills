@@ -1,0 +1,25 @@
+{
+  "fixture_notice": "Synthetic local fixture for offline evaluation. Oak Terrace, names, roles, and contact states are fictional; do not publish sensitive reasons for absence.",
+  "community": "A fictional 18-household Oak Terrace block",
+  "request": "Create a responsibility map for maintaining a printed contact board and checking whether residents received a seasonal guide.",
+  "resident_states": [
+    {"label": "resident-a", "status": "confirmed", "availability": "weekday mornings", "consent": "opted into board updates"},
+    {"label": "resident-b", "status": "absent", "reason_category": "work schedule", "consent": "not confirmed"},
+    {"label": "resident-c", "status": "absent", "reason_category": "caregiving", "consent": "not confirmed"},
+    {"label": "resident-d", "status": "reachable with accommodation", "availability": "text only", "consent": "willing to review, role not chosen"},
+    {"label": "resident-e", "status": "unknown", "consent": "not confirmed"}
+  ],
+  "available_roles": [
+    "board steward: replace dated paper weekly",
+    "backup steward: cover missed weeks",
+    "delivery checker: offer a private opt-in receipt check",
+    "accessibility liaison: collect requests without diagnoses",
+    "escalation owner: call the council when a role is uncovered"
+  ],
+  "constraints": [
+    "Absence is not consent and no one should be publicly labeled by absence reason.",
+    "The map must distinguish confirmed, proposed, unfilled, and declined roles.",
+    "Workload should be small and rotatable; no household is required to disclose why it cannot help.",
+    "A pilot must test reachability and willingness before roles are treated as operational."
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "fixture_notice": "Synthetic local fixture for offline evaluation. South Fork Community Garden, its members, dates, and practices are fictional.",
+  "community": "A fictional 22-plot community garden",
+  "request": "A routine seasonal care guide for March through November, not disaster response.",
+  "garden_facts": [
+    "The west beds dry first; the rain barrel is shared and usually refilled after rain.",
+    "The accessible raised bed is reserved for shared crops and has a 30-minute watering task option.",
+    "The garden avoids synthetic pesticides; unknown pests are photographed and discussed before action.",
+    "Compost is turned on the first Saturday of each month when two people can work safely."
+  ],
+  "local_sources": [
+    {"id": "fictional-garden-log-2025", "claims": ["Tomato staking was needed by late May last year; this is an observation, not a guaranteed date."]},
+    {"id": "fictional-water-card-2026", "claims": ["Water deeply when soil is dry below the surface; coordinate with the shared barrel and do not promise water availability."]},
+    {"id": "fictional-access-card-2026", "claims": ["Offer seated, paired, short, and observation-only tasks; no gardener is required to lift compost or use a tool. "]}
+  ],
+  "unknowns": [
+    "This year's rainfall, pest pressure, and volunteer availability are not known.",
+    "No medical, pesticide, or emergency procedure is supplied by the fixture."
+  ]
+}

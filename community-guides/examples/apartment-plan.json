@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "title": "Neighbor contact planning during an outage",
+  "modules": [
+    {"id": "preferences", "title": "Decide what a useful contact means", "duration_minutes": 40,
+     "activities": [{"title": "Welcome and agreements", "minutes": 8}, {"title": "Private W1", "minutes": 10}, {"title": "Pairs", "minutes": 10}, {"title": "Debrief", "minutes": 7}, {"title": "Close", "minutes": 5}], "worksheet_ids": ["W1"]},
+    {"id": "arrangement", "title": "Make a small voluntary arrangement", "duration_minutes": 40,
+     "activities": [{"title": "Review", "minutes": 8}, {"title": "Draft W2", "minutes": 12}, {"title": "Dependency test", "minutes": 10}, {"title": "Debrief", "minutes": 5}, {"title": "Close", "minutes": 5}], "worksheet_ids": ["W2"]},
+    {"id": "rehearsal", "title": "Rehearse and revise", "duration_minutes": 40,
+     "activities": [{"title": "Welcome and scenario", "minutes": 8}, {"title": "Paper rehearsal", "minutes": 12}, {"title": "Revise", "minutes": 10}, {"title": "Debrief", "minutes": 5}, {"title": "Close", "minutes": 5}], "worksheet_ids": ["W2", "W3"]}
+  ],
+  "worksheets": [{"id": "W1", "path": "apartment-guide.md"}, {"id": "W2", "path": "apartment-guide.md"}, {"id": "W3", "path": "apartment-guide.md"}],
+  "materials": {"participant": "apartment-guide.md", "facilitator": "apartment-facilitator.md"},
+  "maintenance": {"owner": "Organizer", "status": "proposed", "review_date": "2026-10-15"},
+  "sources": [{"id": "fictional-brief", "locator": "apartment-guide.md, Community brief and limits (original fictional inputs)", "checked_on": "2026-09-15", "status": "supplied"}]
+}
