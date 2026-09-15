@@ -180,6 +180,7 @@
     "./verified-delivery",
     "./vite",
     "./vllm",
+    "./waiting-list",
     "./web-accessibility",
     "./woodpecker-ci",
     "./workflow-architect",

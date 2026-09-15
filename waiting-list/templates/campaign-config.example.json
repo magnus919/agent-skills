@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "program_id": "example-launch",
+  "mode": "preview",
+  "pattern": "interest",
+  "public_origin": "https://launch.example.com",
+  "verification": {
+    "provider": "twilio_verify",
+    "email": { "collect": true, "proof": "required", "method": "provider_otp" },
+    "phone": { "collect": false, "proof": "off", "method": "provider_otp" },
+    "resend_cooldown_seconds": 60,
+    "sends_per_destination_per_hour": 3,
+    "failed_checks_per_attempt": 5,
+    "allowed_countries": [],
+    "daily_spend_ceiling": null
+  },
+  "crm": {
+    "connection_state": "awaiting_connection",
+    "adapter": null,
+    "tenant_ref": null,
+    "mapping_version": 1,
+    "gate": "required_proofs_and_purpose_permission",
+    "marketing_enrollment": false
+  },
+  "retention": {
+    "unconfirmed_days": 7,
+    "confirmed_days": null
+  },
+  "features": { "referrals": false, "show_rank": false },
+  "media": { "video": false, "reduced_motion": "poster" }
+}

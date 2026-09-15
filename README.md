@@ -663,6 +663,10 @@ Vite-specific configuration, plugins, modes, environment boundaries, dependency 
 
 Operate, configure, benchmark, and troubleshoot vLLM inference servers: Docker and Kubernetes deployment, quantization-aware model configuration (tensor parallelism, KV cache), the OpenAI-compatible API surface, throughput/latency benchmarking, continuous batching tuning, GPU operation, and upgrade/rollback. Ships a read-only `vllm-health` probe (`--json`), serving-config and benchmark-run-record templates, 7 dated references, tests, and 6 evals. Routes serving methodology to ml-engineering and the llama.cpp stack to llama-cpp.
 
+### [waiting-list](waiting-list/SKILL.md)
+
+Design and build honest, resilient waitlist portals for anticipated goods and services, including interest lists, referral queues, virtual waiting rooms, appointment backfills, contact verification, runtime CRM delivery, and scarce-inventory allocation.
+
 ### [web-accessibility](web-accessibility/SKILL.md)
 
 Design, build, and review accessible web interfaces through native semantics, keyboard and focus contracts, error recovery, adaptive UI, assistive-technology testing, and WCAG 2.2-informed evidence without mistaking automated scans for conformance.
