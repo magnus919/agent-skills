@@ -1,0 +1,89 @@
+{
+  "case_id": "complex-progress",
+  "turns": [
+    {
+      "observation": {
+        "stage": "implementation",
+        "deliverable_state": "in_progress",
+        "dependency_state": "none",
+        "dependency_required_for_next_stage": false,
+        "semantic_state": {
+          "hypothesis": "export path re-reads the source archive per row",
+          "progress_marker": "reproduced slow export under load",
+          "unmet_criterion": "export completes within the accepted latency budget"
+        },
+        "volatile": {
+          "observed_at": "2026-09-18T00:00:00Z",
+          "request_id": "req-1"
+        }
+      },
+      "action": {
+        "kind": "work",
+        "target": "profile export path"
+      }
+    },
+    {
+      "observation": {
+        "stage": "implementation",
+        "deliverable_state": "in_progress",
+        "dependency_state": "none",
+        "dependency_required_for_next_stage": false,
+        "semantic_state": {
+          "hypothesis": "missing index forces a scan on the tenant partition",
+          "progress_marker": "identified hot loop in row materialization",
+          "unmet_criterion": "export completes within the accepted latency budget"
+        },
+        "volatile": {
+          "observed_at": "2026-09-18T00:05:00Z",
+          "request_id": "req-2"
+        }
+      },
+      "action": {
+        "kind": "work",
+        "target": "add covering index and re-measure"
+      }
+    },
+    {
+      "observation": {
+        "stage": "implementation",
+        "deliverable_state": "in_progress",
+        "dependency_state": "none",
+        "dependency_required_for_next_stage": false,
+        "semantic_state": {
+          "hypothesis": "covering index resolves the scan",
+          "progress_marker": "benchmark p95 900ms to 140ms",
+          "unmet_criterion": "export completes within the accepted latency budget"
+        },
+        "volatile": {
+          "observed_at": "2026-09-18T00:12:00Z",
+          "request_id": "req-3"
+        }
+      },
+      "action": {
+        "kind": "work",
+        "target": "verify benchmark at load"
+      }
+    },
+    {
+      "observation": {
+        "stage": "verification",
+        "deliverable_state": "accepted",
+        "dependency_state": "none",
+        "dependency_required_for_next_stage": false,
+        "semantic_state": {
+          "hypothesis": "confirmed",
+          "progress_marker": "benchmark accepted at delivery boundary",
+          "unmet_criterion": null
+        },
+        "volatile": {
+          "observed_at": "2026-09-18T00:30:00Z",
+          "request_id": "req-4"
+        }
+      },
+      "action": {
+        "kind": "deliver",
+        "target": "final_delivery"
+      }
+    }
+  ]
+}

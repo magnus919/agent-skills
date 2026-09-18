@@ -1,0 +1,47 @@
+{
+  "case_id": "stuck-work",
+  "turns": [
+    {
+      "observation": {
+        "stage": "implementation",
+        "deliverable_state": "in_progress",
+        "dependency_state": "none",
+        "dependency_required_for_next_stage": false,
+        "semantic_state": {
+          "hypothesis": "export slowness comes from per-row archive re-reads",
+          "progress_marker": "profiled export path once",
+          "unmet_criterion": "export completes within the accepted latency budget"
+        },
+        "volatile": {
+          "observed_at": "2026-09-18T00:00:00Z",
+          "request_id": "req-1"
+        }
+      },
+      "action": {
+        "kind": "work",
+        "target": "profile export path"
+      }
+    },
+    {
+      "observation": {
+        "stage": "implementation",
+        "deliverable_state": "in_progress",
+        "dependency_state": "none",
+        "dependency_required_for_next_stage": false,
+        "semantic_state": {
+          "hypothesis": "export slowness comes from per-row archive re-reads",
+          "progress_marker": "profiled export path once",
+          "unmet_criterion": "export completes within the accepted latency budget"
+        },
+        "volatile": {
+          "observed_at": "2026-09-18T00:10:00Z",
+          "request_id": "req-2"
+        }
+      },
+      "action": {
+        "kind": "work",
+        "target": "profile export path"
+      }
+    }
+  ]
+}

@@ -38,6 +38,7 @@ ordinary bug-fix reproduction requirements.
 | `references/stages.md` | Entry conditions, required evidence, exit conditions, and escalation rules for each SDLC stage |
 | `references/lightweight-test-hardening.md` | Bounded path for test-only regression guards: baseline-pass / mutant-fail evidence, hermeticity, finality-before-push, and review pacing |
 | `references/evidence-ledger.md` | The ledger schema and the rules for distinguishing a component check from a delivery-boundary check |
+| `references/progress-and-finality.md` | Semantic-progress and finality rules for asynchronous work: the dependency contract, one bounded check per state, and stop/escalate conditions |
 | `references/risk-authority-gates.md` | Stop and escalation rules; the gate before any mutation, deploy, merge, or destructive act |
 | `references/routing-table.md` | "Use existing skill instead" table so the bundle composes the catalog rather than swallowing it |
 | `references/journey.md` | Canonical 9-phase change-request journey — intake, discovery, design, spec, test plan, implementation, review, readiness, authorized release — with four delivery paths |

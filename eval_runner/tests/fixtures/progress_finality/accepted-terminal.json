@@ -1,0 +1,25 @@
+{
+  "case_id": "accepted-terminal",
+  "turns": [
+    {
+      "observation": {
+        "stage": "implementation",
+        "deliverable_state": "accepted",
+        "dependency_state": "pending",
+        "dependency_required_for_next_stage": false,
+        "semantic_state": {
+          "submission": "accepted",
+          "next_stage": "final_delivery"
+        },
+        "volatile": {
+          "observed_at": "2026-09-18T00:00:00Z",
+          "request_id": "req-1"
+        }
+      },
+      "action": {
+        "kind": "deliver",
+        "target": "final_delivery"
+      }
+    }
+  ]
+}

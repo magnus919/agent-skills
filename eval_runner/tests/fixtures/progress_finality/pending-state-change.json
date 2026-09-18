@@ -1,0 +1,46 @@
+{
+  "case_id": "pending-state-change",
+  "turns": [
+    {
+      "observation": {
+        "stage": "release",
+        "deliverable_state": "accepted",
+        "dependency_state": "pending",
+        "dependency_required_for_next_stage": true,
+        "semantic_state": {
+          "artifact": "release-2.4.0",
+          "dependency": "publish"
+        },
+        "volatile": {
+          "observed_at": "2026-09-18T00:00:00Z",
+          "request_id": "req-a"
+        }
+      },
+      "action": {
+        "kind": "check",
+        "target": "release publish job"
+      }
+    },
+    {
+      "observation": {
+        "stage": "release",
+        "deliverable_state": "accepted",
+        "dependency_state": "succeeded",
+        "dependency_required_for_next_stage": true,
+        "semantic_state": {
+          "artifact": "release-2.4.0",
+          "dependency": "processed",
+          "output_cursor": "cursor-7"
+        },
+        "volatile": {
+          "observed_at": "2026-09-18T00:02:00Z",
+          "request_id": "req-b"
+        }
+      },
+      "action": {
+        "kind": "deliver",
+        "target": "announcement"
+      }
+    }
+  ]
+}
