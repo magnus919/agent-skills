@@ -98,6 +98,11 @@ required evidence, exit conditions, and escalation rules detailed in
    destructive recovery, or unbounded workaround churn. Rules:
    [references/risk-authority-gates.md](references/risk-authority-gates.md).
 
+For asynchronous work and stage-finality decisions, use
+[references/progress-and-finality.md](references/progress-and-finality.md):
+judge semantic progress and declared dependencies, not elapsed time or
+repeated observations.
+
 ## Change-request work (conditional)
 
 When the request is a change request — an issue, ticket, or tracked request that

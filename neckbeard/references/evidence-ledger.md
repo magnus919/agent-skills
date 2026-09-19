@@ -48,6 +48,17 @@ complete enough that a reviewer can re-run any listed command and reproduce the
 observation. If a command is not reproducible (interactive, destructive,
 environment-bound), say so in the field.
 
+## Asynchronous work: active-process entries
+
+When a run depends on an asynchronous system — or an escalation is being
+considered — extend the run's record with an active-process entry covering:
+`id`, `status`, `output`, `normalized_state`, `dependency_required`,
+`next_action`, `expected_transition`, `checks_for_state`, and
+`escalation_trigger`. Judge progress by semantic state, not elapsed time or
+repeated observation, and spend at most one check per normalized state
+fingerprint. Field definitions and decision rules:
+[progress-and-finality.md](progress-and-finality.md).
+
 ## When not to write one
 
 Skip the ledger for: a single factual answer, a fully-specified one-line edit
