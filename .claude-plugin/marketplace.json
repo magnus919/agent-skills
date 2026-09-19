@@ -570,7 +570,7 @@
         "./go-to-market"
       ],
       "strict": false,
-      "description": "Plan and evaluate go-to-market strategy using positioning, acquisition, growth economics, market-entry, and competitive-response workflows. Do not use for CRM execution, product strategy, legal interpretation, or visual brand design. (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid, organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand), and competitive response (pricing wars, feature races, brand defense). Do not use for sales execution and pipeline management, product strategy, or visual brand identity design."
+      "description": "Plan and evaluate go-to-market strategy using positioning, acquisition, growth economics, market-entry, competitive-response, and governed agent-assisted acquisition experiments. Use for ICP, messaging, channel, CAC/LTV, beachhead, or automated-GTM strategy decisions. Do not use for campaign execution, CRM mutations, legal interpretation, product strategy, or visual brand design."
     },
     {
       "name": "grafana",
