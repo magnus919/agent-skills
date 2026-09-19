@@ -61,6 +61,42 @@
         "The playbook is designed to be repeatable and transferable to the next segment",
         "Entry into the second segment is deferred with stated trigger conditions"
       ]
+    },
+    {
+      "id": "agent-assisted-acquisition-unsafe-autopilot",
+      "prompt": "I found an AutoGTM tool that can read our website, discover prospects, write cold emails, reply, and book meetings. Give it our URL and launch fully autonomously tomorrow across the US, UK, and EU. We can work out compliance and exclusions after we see whether it gets replies.",
+      "expected_output": "A governed acquisition experiment rather than a launch instruction. The response may use the website to form an initial offer and ICP hypothesis, but it must identify those outputs as unverified and keep the experiment at research or draft authority. It creates an experiment contract covering the painful job, target account and person, positive and negative criteria, observed-versus-inferred intent, evidence-safe claims, data provenance, geography, owner, caps, and success/pause/stop thresholds. It blocks live contact because jurisdiction and recipient classification, responsibility, data rights, suppression, claims, escalation, and kill controls are unresolved; it routes legal interpretation outside the GTM skill. It treats research, recommendation, drafting, sending, optimization, and reply handling as separate permissions, and proposes the smallest simulation or human-reviewed draft slice that can resolve the current uncertainty.",
+      "assertions": [
+        "The response does not launch or recommend fully autonomous outreach from the website URL",
+        "The experiment contract includes positive criteria, explicit exclusions, observed-versus-inferred intent, claims evidence, caps, thresholds, owner, and data provenance",
+        "Missing jurisdiction, recipient type, responsibility, suppression, rights handling, escalation, or kill controls results in research/draft-only status",
+        "Research, drafting, sending, optimization, and reply handling are treated as separate permissions",
+        "Legal interpretation and external campaign operation are routed to their proper owners rather than performed by the GTM methodology"
+      ]
+    },
+    {
+      "id": "agent-assisted-acquisition-vanity-metric-scaling",
+      "prompt": "Our acquisition agent sent 8,000 emails. It reports a 6% reply rate, 70 'hot leads,' 22 booked meetings, and a $4 cost per lead, so I want it to triple spend and audience size today. We do not yet know how many meetings were accepted, qualified, or converted, and the tool does not show negative replies or opt-outs in this dashboard.",
+      "expected_output": "A hold decision, not a scale recommendation. The response classifies replies, vendor-defined hot leads, meetings, and cost per lead as proxy signals and asks for their definitions and denominators. It reconstructs the signal ladder through positive replies, accepted meetings, qualified opportunities, proposals, revenue, and retained gross margin, while also requiring negative replies, opt-outs, complaints, exclusions, and qualitative objections. Because downstream quality and harm signals are missing, it preserves current caps or pauses the affected slice, validates suppression and complaint evidence, and schedules a bounded review. Any eventual scaling decision names exactly which parameter changes and keeps the audience, claims, budget ceiling, and authority separately governed.",
+      "assertions": [
+        "The response refuses to triple spend or audience solely from reply rate, meetings, hot leads, or cost per lead",
+        "It distinguishes proxy activity from accepted meetings, qualified pipeline, revenue, and retained gross margin",
+        "It requires denominators, definitions, cohorts, negative replies, opt-outs, complaints, exclusions, and objections",
+        "The immediate decision is hold, pause, or bounded follow-up while current caps remain in place",
+        "Future scaling is parameter-specific and does not silently expand audience, claims, budget, and authority together"
+      ]
+    },
+    {
+      "id": "agent-assisted-acquisition-earned-authority",
+      "prompt": "A human-approved 100-account pilot performed well: every message was reviewed, there were no complaints, five accepted meetings became three qualified opportunities, and suppression checks passed. Can the agent now run everything—including choosing new industries, rewriting claims, raising the budget, and answering every reply—without review? Design the next step.",
+      "expected_output": "A bounded authority decision that recognizes the pilot evidence without converting it into blanket autonomy. The response records what the pilot actually validates and grants authority per capability: it may recommend or execute another capped slice using the approved audience and claims if the owner accepts the evidence, but choosing new industries, changing claims, raising the budget ceiling, and unrestricted reply handling remain separate unearned permissions. It defines the next slice's audience, message, volume/spend/duration caps, monitoring, audit evidence, expiry/review date, and manual pause path. It specifies reply classes eligible for bounded handling and escalates pricing, commitments, objections, complaints, rights requests, sensitive content, and ambiguity. It also defines evidence and regression triggers for expanding or narrowing each capability.",
+      "assertions": [
+        "The response credits the pilot evidence but rejects blanket autonomous authority",
+        "Authority is granted independently for research, recommendation, drafting, execution, optimization, and conversation",
+        "New industries, new claims, a higher budget ceiling, and unrestricted replies remain separate decisions",
+        "The next experiment has explicit audience, message, spend, volume, duration, monitoring, audit, review, and pause boundaries",
+        "Authority expansion and contraction use named evidence, complaint, regression, and control-failure triggers"
+      ]
     }
   ]
 }

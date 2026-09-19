@@ -1,11 +1,12 @@
 ---
 name: go-to-market
-description: Plan and evaluate go-to-market strategy using positioning, acquisition, growth economics, market-entry, and competitive-response workflows. Do not use for CRM execution, product strategy, legal interpretation, or visual brand design.
-  (April Dunford's positioning, message hierarchy), customer acquisition strategy (paid,
-  organic, PLG, SLG), brand architecture (brand house vs house of brands), growth modeling
-  (CAC/LTV by channel, cohort analysis), market entry strategy (beachhead, land-and-expand),
-  and competitive response (pricing wars, feature races, brand defense). Do not use for
-  sales execution and pipeline management, product strategy, or visual brand identity design.
+description: >-
+  Plan and evaluate go-to-market strategy using positioning, acquisition,
+  growth economics, market-entry, competitive-response, and governed
+  agent-assisted acquisition experiments. Use for ICP, messaging, channel,
+  CAC/LTV, beachhead, or automated-GTM strategy decisions. Do not use for
+  campaign execution, CRM mutations, legal interpretation, product strategy,
+  or visual brand design.
 license: MIT
 metadata:
   tags: go-to-market, cmo, marketing, positioning, messaging, acquisition, brand-architecture,
@@ -27,6 +28,7 @@ CMO-level methodology for go-to-market strategy, positioning, acquisition, brand
 | Model growth economics | `references/growth-modeling.md` — CAC/LTV, cohort analysis, market entry |
 | Develop competitive response | `references/acquisition-strategy.md` — pricing wars, feature races, brand defense |
 | Plan market entry | `references/growth-modeling.md` — beachhead, land-and-expand, channel economics |
+| Design AI-assisted or automated acquisition experiments | `references/agent-assisted-acquisition-experiments.md` — experiment contract, readiness gate, earned authority, signal quality, stop rules |
 
 ## Loading Order
 
@@ -36,6 +38,8 @@ skill_view('go-to-market')
 skill_view('go-to-market', file_path='references/positioning-messaging.md')
 skill_view('go-to-market', file_path='references/acquisition-strategy.md')
 skill_view('go-to-market', file_path='references/growth-modeling.md')
+# For AI-assisted targeting, outreach, reply handling, or optimization:
+skill_view('go-to-market', file_path='references/agent-assisted-acquisition-experiments.md')
 ```
 
 ## Reference Files
@@ -46,6 +50,7 @@ skill_view('go-to-market', file_path='references/growth-modeling.md')
 | `references/acquisition-strategy.md` | Channel taxonomy, PLG vs SLG playbooks, sales funnel ratios, competitive response playbook, brand architecture |
 | `references/growth-modeling.md` | CAC/LTV deep dive, cohort analysis practical guide, NRR, market entry strategy (beachhead, land-and-expand) |
 | `references/decision-workflow.md` | Bounded launch/channel decisions, worked beachhead example, reusable memo, and owner routing matrix |
+| `references/agent-assisted-acquisition-experiments.md` | Bounded experiment contract, readiness and responsibility gate, capability-specific earned authority, signal-quality ladder, decision loop, and stop conditions |
 
 
 ## Output Contract
@@ -58,6 +63,7 @@ The profile using this skill produces artifact pyramids. The response to any cal
 - **Product strategy and roadmap** — product vision, PMF, and prioritization belong to `product-strategy` and `product-methodology`.
 - **Visual brand identity design** — logo, palette, and brand systems belong to `brand-designer`.
 - **Marketing campaign execution** — this skill defines the channel strategy and positioning; operating the channel tools is the corresponding tool skill's job.
+- **Legal interpretation** — this skill records the jurisdiction, recipient type, and responsible owner as readiness inputs; `legal-strategy` or qualified counsel determines what law permits.
 
 ## Related Skills
 
@@ -66,3 +72,5 @@ The profile using this skill produces artifact pyramids. The response to any cal
 - [brand-designer](../brand-designer/SKILL.md) — visual brand identity design
 - [seo](../seo/SKILL.md) — organic search, answer-engine, and generative-search audit and content strategy
 - [crm](../crm/SKILL.md) — HubSpot CRM operations: contact lookup, deal pipeline views, and confirmed deal stage changes
+- [ai-governance](../ai-governance/SKILL.md) — organizational AI risk, lifecycle gates, decision rights, and agentic controls
+- [legal-strategy](../legal-strategy/SKILL.md) — legal analysis when outreach or data-use rules require interpretation
