@@ -95,6 +95,13 @@ every item in one campaign.
   product reveal, restrained premium invitation, industrial lab notebook, or
   warm studio preview. Express it with CSS variables for color, typography,
   spacing, border, radius, and motion rather than a pile of local overrides.
+- **Campaign-grade artwork.** Use approved supplied imagery or original
+  image-generated artwork for heroes, product scenes, mascots, and editorial
+  illustration. Review generated assets before publication and record their
+  source, revision, rights, and approval. Do not improvise representational
+  artwork from CSS, SVG primitives, canvas, emoji, ASCII, or icon collages.
+  Reserve programmatic graphics for informational geometry such as diagrams,
+  charts, controls, and status indicators.
 - **Hero with a real HTML promise.** Use a clear headline, short supporting
   copy, one primary action, and a visible status. Media may amplify the hero;
   it must not be the only place where the promise or action exists.
@@ -196,6 +203,10 @@ same narrative in a conventional accessible flow.
 - Do not copy Monako's logo, typeface, wording, images, videos, source bundle,
   product claims, or exact layout. Borrow interaction principles and build a
   campaign-specific system from authorized assets.
+- Do not use CSS/SVG/canvas sketches, emoji, ASCII, or icon collages as a cheap
+  substitute for campaign artwork. Use supplied or approved image-generated
+  assets unless that programmatic aesthetic was explicitly requested or the
+  graphic is informational rather than illustrative.
 - Do not use dark cinematic treatment, animation, or a “sold out” label to
   manufacture scarcity. The availability state must come from the configured
   system of record and be dated or explainable to the operator.

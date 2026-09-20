@@ -12,7 +12,8 @@ Do not turn intake into a software architecture interview.
 2. **Make it yours.** Accept a brand guide, exact logo files, reference images,
    existing website, fonts, and optional background video or Canva design.
    Inspect provided assets before choosing the visual direction. If absent,
-   create a coherent provisional direction and label it for review.
+   propose a coherent direction and generate original preview artwork for
+   review rather than drawing decorative artwork in code.
 3. **Choose how people join.** Default to email plus email confirmation. Phone
    is off until wanted. If enabled, offer a code sent by text; allow optional
    or required confirmation independently for each channel. Ask which CRM they
@@ -29,6 +30,29 @@ Do not turn intake into a software architecture interview.
 Keep questions to missing business choices. Populate
 `templates/campaign-brief.md` conversationally. Keep schema, runtime variables,
 worker settings, and test commands in the engineering handoff.
+
+## Artwork sourcing
+
+Use this order for representational campaign artwork:
+
+1. Approved supplied brand, product, or editorial imagery.
+2. Original image-generated artwork when suitable supplied imagery is absent.
+3. Licensed photography or stock art with explicit rights and provenance.
+
+Preview generated artwork for campaign-owner approval before publication.
+Record the source, revision, rights, approval owner, and any generation prompt
+or brief needed to reproduce the chosen asset. Produce intentional crops or
+renditions for the hero, social preview, mobile layout, and poster where one
+crop cannot serve them well. Supply useful alt text and media fallbacks.
+
+Do not create hero art, product imagery, mascots, or editorial illustration
+from CSS gradients or shapes, inline SVG primitives, canvas drawing, emoji,
+ASCII, icon collages, or other procedural geometry unless the user explicitly
+asks for that visual language. “Self-contained” does not waive this quality
+bar: generated raster assets can be stored with the site. Programmatic graphics
+are appropriate when geometry carries information, including charts, diagrams,
+technical schematics, controls, and status indicators. Subtle abstract texture
+may support a composition, but it must not masquerade as the principal artwork.
 
 ## Visual direction
 
