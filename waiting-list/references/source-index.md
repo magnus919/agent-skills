@@ -4,6 +4,12 @@ Research checked 2026-09-15. These are evidence sources and examples, not
 endorsements. Re-open vendor and repository documentation before making a
 current implementation claim.
 
+## Reference experience audit
+
+| Public source | Checked | Verified scope and limitation |
+| --- | --- | --- |
+| [Monako homepage](https://www.monako.ai/) and [reserve route](https://www.monako.ai/order) | 2026-09-20 | Rendered DOM, interaction states, linked styles/media, and browser-observed requests informed `references/engagement-and-visual-system.md`. This was not a proprietary source-code or security audit, and it does not authorize copying the site's identity, assets, wording, product claims, or exact layout. |
+
 ## Default-path decisions
 
 The owner approved TypeScript/Node.js on Vercel after reviewing the compiled

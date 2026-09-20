@@ -1,8 +1,10 @@
 [
   { "query": "Build a branded early-access signup page for our autumn product launch and connect confirmed emails to our CRM.", "should_trigger": true },
   { "query": "I need a waitlist with SMS codes and a beautiful video background; I only have a Canva export and a logo.", "should_trigger": true },
+  { "query": "Design a cinematic product-launch waitlist inspired by Monako, with a sold-out state, proof sections, and an accessible notification form.", "should_trigger": true },
   { "query": "People should wait before entering checkout during our limited release. How do we prevent over-admission?", "should_trigger": true },
   { "query": "Change the colors of our existing homepage to match this brand guide; there is no signup form.", "should_trigger": false },
+  { "query": "Recreate Monako's homepage visual design exactly; there is no waitlist, signup, or reservation flow.", "should_trigger": false },
   { "query": "Migrate our existing CRM sales pipeline and contacts to another vendor.", "should_trigger": false },
   { "query": "Add SMS two-factor authentication to our staff admin login.", "should_trigger": false }
 ]
