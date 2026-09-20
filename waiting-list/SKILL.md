@@ -9,10 +9,11 @@ description: >-
   release gates. Optionally validate supplied email and phone contacts with
   expiring magic links or provider-managed verification, then feed eligible,
   consented records to a runtime-configured CRM adapter. Use for prelaunch
-  signups, beta access, launches, bookings, reservations, and traffic-spike
-  queues. Do not use for generic landing-page copy, ordinary CRM or email
-  operations, or checkout and inventory systems in isolation; route those parts
-  to the appropriate specialist skill.
+  signups, beta access, launches, bookings, reservations, traffic-spike queues,
+  and premium or cinematic campaign experiences. Do not use for generic
+  landing-page copy, ordinary CRM or email operations, or checkout and
+  inventory systems in isolation; route those parts to the appropriate
+  specialist skill.
 license: MIT
 metadata:
   source-index: references/source-index.md
@@ -67,6 +68,12 @@ images, and optional video; show a branded preview before connecting production.
 Use [templates/campaign-brief.md](templates/campaign-brief.md) as the plain-language
 intake. The agent fills technical records; do not ask a marketer to select an
 ORM, framework, retry algorithm, or database schema.
+For a premium, cinematic, motion-rich, or reference-led campaign, also read
+[references/engagement-and-visual-system.md](references/engagement-and-visual-system.md)
+and record its relevant experience brief, fallback, performance, and visual-test
+decisions. Treat a reference site as a source of observable interaction
+principles, not as permission to copy its brand, assets, source, layout,
+scarcity language, or product claims.
 Use [templates/campaign-config.example.json](templates/campaign-config.example.json)
 as a server-side configuration example; its unset production choices must be
 resolved before enabling live sends.

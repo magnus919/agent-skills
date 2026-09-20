@@ -21,6 +21,17 @@ Fill this in together with your agent. Short answers and supplied files are fine
 - Permission to use these assets and any credits:
 - Styles or motion to avoid:
 
+## Your experience direction
+
+- Reference sites or experiences, and what specifically works about them:
+- One-sentence art direction for this campaign:
+- Story beats in order (hook, proof, status, join, follow-up):
+- Facts, milestones, or demonstrations we can substantiate:
+- Preferred interaction: conventional flow / gallery / stepper / sticky story:
+- Motion, sound, autoplay, and reduced-motion preferences:
+- Mobile, slow-network, and JavaScript-off fallback:
+- Asset rights, provenance, and revision owner:
+
 ## Joining and follow-up
 
 - Collect email: yes by default.

@@ -18,6 +18,7 @@ Give your agent a brand guide, logos, campaign goals, and optional background vi
 | `references/contact-verification-and-crm.md` | Optional email/phone proof flows and runtime CRM outbox/adapters |
 | `references/default-stack.md` | Chosen stack, providers, hosting, setup and alternatives |
 | `references/brand-and-marketer-workflow.md` | Brand intake, Canva/video, preview and accessible form experience |
+| `references/engagement-and-visual-system.md` | Monako-derived visual narrative, state-aware conversion, motion, media, and performance wishlist |
 | `references/implementation-contract.md` | API, database, verification and CRM behavior to implement |
 | `references/release-evidence.md` | Functional, visual and operational launch checks |
 | `references/source-index.md` | Dated primary-source index and verification notes for the supplied synthesis |
@@ -32,7 +33,7 @@ Ask: “Use waiting-list to build our launch page. Here are our logo and brand g
 
 ## Triggers
 
-Use for prelaunch signup pages, early-access or beta programs, product launches, scarce goods, appointment backfills, reservations, referral waitlists, and high-traffic waiting rooms.
+Use for prelaunch signup pages, early-access or beta programs, product launches, scarce goods, appointment backfills, reservations, referral waitlists, high-traffic waiting rooms, and premium or cinematic campaign experiences.
 
 Do not use for standalone landing-page copy, ordinary CRM/email administration, or checkout, inventory, and scheduling work without a waitlist-specific decision.
 

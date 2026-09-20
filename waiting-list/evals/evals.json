@@ -171,6 +171,19 @@
         "Gives the marketer concrete connection and preview steps in plain language.",
         "Does not claim live sends, CRM writes or runtime behavioral evaluations occurred."
       ]
+    },
+    {
+      "id": "branded-engagement-with-truthful-status",
+      "case_set": "dev",
+      "prompt": "Our partner sent us monako.ai and wants our waitlist portal to feel just as beautiful and engaging. Analyze the reference, then propose a feature wishlist and a bounded first version for our own branded launch. We need a sold-out state, an email notification form, optional product video, and a path that still works on mobile and with reduced motion.",
+      "expected_output": "An evidence-calibrated visual and interaction wishlist that extracts reusable narrative, media, typography, navigation, carousel, status, and proof patterns without copying the reference, then prioritizes a bounded first version with truthful waitlist semantics, accessible fallbacks, performance budgets, and separate preview/functional/release evidence.",
+      "assertions": [
+        "Separates observed reference behavior from inference and does not recommend copying Monako branding, assets, wording, source, exact layout, or unsupported product claims.",
+        "Defines a product-story composition with a clear promise, proof beats, an honest availability state, a join action, and follow-up/support paths instead of treating visual polish as the whole waitlist.",
+        "Keeps the notification form on the server-side waitlist contract with validation, idempotency, abuse controls, durable persistence, and explicit verification/consent semantics.",
+        "Requires usable fallbacks for reduced motion, blocked or failed media, keyboard/touch navigation, mobile/slow networks, long copy, and JavaScript-off or retry behavior.",
+        "Prioritizes an implementable first slice and names visual, functional, performance, and connected-provider evidence separately."
+      ]
     }
   ]
 }
