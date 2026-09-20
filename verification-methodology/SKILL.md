@@ -19,6 +19,9 @@ Pass/fail assessment against pre-defined criteria.
 2. **Assess criteria** — convert requirements into observable pass/fail conditions; identify what would disprove each claim.
 3. **Investigate** — collect direct, reproducible evidence from the source named by the request and record commands, source locations, or source URLs. Own this collection when the source is accessible: do not ask the user to relay evidence you can retrieve yourself. Ask only for access you genuinely lack.
 4. **Decide** — mark each criterion passed, failed, blocked, or not applicable. Do not convert missing evidence into a pass.
+   - When verification is split across lanes, no lane's PASS is the gate verdict. Wait for every required lane and reconcile conflicts before synthesis.
+   - A later source-fidelity BLOCK supersedes an earlier prose, rendering, or checklist PASS for the same artifact hash. Immediately label earlier PASS packets as superseded so downstream workers cannot mistake them for the current verdict.
+   - Pattern scans and internal consistency cannot substitute for checking factual transformations against the named primary source or source dossier.
 5. **Report** — use the verdict template to distinguish verified facts, assumptions, and remaining work.
 
 Stop when every criterion has direct evidence or an explicit blocked/not-applicable verdict. Escalate when the criterion is ambiguous, evidence conflicts, or the required access is unavailable.
