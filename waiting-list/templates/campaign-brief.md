@@ -18,6 +18,8 @@ Fill this in together with your agent. Short answers and supplied files are fine
 - Fonts/colors to preserve:
 - Product imagery:
 - Optional video or Canva design/export:
+- Artwork source: supplied / generate original / licensed stock
+- Generated-art brief and approval owner:
 - Permission to use these assets and any credits:
 - Styles or motion to avoid:
 

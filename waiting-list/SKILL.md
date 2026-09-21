@@ -74,6 +74,13 @@ and record its relevant experience brief, fallback, performance, and visual-test
 decisions. Treat a reference site as a source of observable interaction
 principles, not as permission to copy its brand, assets, source, layout,
 scarcity language, or product claims.
+Use approved supplied assets or original image-generated artwork for campaign
+heroes, product scenes, and editorial illustration. Preview generated artwork
+for approval before publication. Do not substitute CSS shapes or gradients,
+inline SVG drawings, canvas sketches, emoji, ASCII, or icon collages for
+campaign artwork unless the user explicitly requests that aesthetic.
+Programmatic graphics remain appropriate when geometry is the information,
+such as charts, diagrams, controls, and status indicators.
 Use [templates/campaign-config.example.json](templates/campaign-config.example.json)
 as a server-side configuration example; its unset production choices must be
 resolved before enabling live sends.

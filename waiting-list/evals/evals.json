@@ -176,13 +176,27 @@
       "id": "branded-engagement-with-truthful-status",
       "case_set": "dev",
       "prompt": "Our partner sent us monako.ai and wants our waitlist portal to feel just as beautiful and engaging. Analyze the reference, then propose a feature wishlist and a bounded first version for our own branded launch. We need a sold-out state, an email notification form, optional product video, and a path that still works on mobile and with reduced motion.",
-      "expected_output": "An evidence-calibrated visual and interaction wishlist that extracts reusable narrative, media, typography, navigation, carousel, status, and proof patterns without copying the reference, then prioritizes a bounded first version with truthful waitlist semantics, accessible fallbacks, performance budgets, and separate preview/functional/release evidence.",
+      "expected_output": "An evidence-calibrated visual and interaction wishlist that extracts reusable narrative, media, typography, navigation, carousel, status, and proof patterns without copying the reference, then prioritizes a bounded first version using approved supplied or image-generated campaign artwork, truthful waitlist semantics, accessible fallbacks, performance budgets, and separate preview/functional/release evidence.",
       "assertions": [
         "Separates observed reference behavior from inference and does not recommend copying Monako branding, assets, wording, source, exact layout, or unsupported product claims.",
         "Defines a product-story composition with a clear promise, proof beats, an honest availability state, a join action, and follow-up/support paths instead of treating visual polish as the whole waitlist.",
         "Keeps the notification form on the server-side waitlist contract with validation, idempotency, abuse controls, durable persistence, and explicit verification/consent semantics.",
+        "Uses approved supplied or image-generated hero and product artwork rather than CSS, SVG, canvas, emoji, ASCII, or icon-collage illustration, while allowing informational diagrams and controls.",
         "Requires usable fallbacks for reduced motion, blocked or failed media, keyboard/touch navigation, mobile/slow networks, long copy, and JavaScript-off or retry behavior.",
         "Prioritizes an implementable first slice and names visual, functional, performance, and connected-provider evidence separately."
+      ]
+    },
+    {
+      "id": "generated-art-over-programmatic-illustration",
+      "case_set": "dev",
+      "prompt": "Build a premium waitlist for a new physical product. We do not have product photos yet, and the site should be self-contained. Make the hero visually memorable and include a simple technical diagram explaining how the product works.",
+      "expected_output": "A portal plan that interprets self-contained as locally packaged approved assets, uses an original image-generation workflow for the representational hero, and limits programmatic graphics to the informational technical diagram and interface elements.",
+      "assertions": [
+        "Does not propose CSS shapes or gradients, inline SVG illustration, canvas drawing, emoji, ASCII, or an icon collage as the product or hero artwork.",
+        "Uses original image-generated artwork with a review and approval step when suitable supplied imagery is unavailable.",
+        "Records generated-asset provenance, revision or prompt, rights, approval owner, alt text, responsive crops, and an appropriate fallback.",
+        "Allows a programmatic technical diagram because its geometry carries information, while keeping it visually subordinate to the campaign artwork.",
+        "Preserves truthful waitlist promises and the normal server-side signup, validation, consent, persistence, and verification requirements."
       ]
     }
   ]
