@@ -1048,3 +1048,22 @@ added an explicit manual `small`/`full` sample profile; the full profile uses
 16 candidate/baseline pairs plus 12 high-`met` challenge items. We will run
 the previously frozen `jev-543-blind-v1` seed and report the two strata
 separately. No model weights are trained and no Jev gate is promoted.
+
+The [full-profile run](https://github.com/magnus919/agent-skills/actions/runs/35920327508)
+passed source verification, synthetic label-contract probing, artifact
+downloads, and preparation of the original 44-item packet. After roughly
+three minutes in the two-pass labeling step, the local model produced a
+non-JSON response (`JSONDecodeError`). The script failed closed; it uploaded
+no consensus or score. The earlier 10/12 small-screen result cannot be
+extrapolated to the full sample. A one-item synthetic probe also cannot
+establish structured-output reliability for longer real responses.
+
+Bounded stop for this route: do not keep rewriting the local teacher prompt
+against this same packet to obtain a green score. The local model may also
+be judging its own generated answers, so even a complete run would be
+correlated pseudo-label evidence, not independent Jev calibration. Retain
+the full profile as an explicit, manual diagnostic that fails closed; do
+not use its absent score, the small screen, or provider confidence to tune
+Jev API inputs or set a CI gate. Next meaningful evidence requires a working
+separate inference route with authorized data flow, or independently assigned
+labels from another approved source.
