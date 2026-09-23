@@ -47,11 +47,13 @@ jobs:
             exit 1
           fi
           failed=0
-          for test_case in basic low tools; do
+          for test_case in basic low tools streaming unprefixed; do
             case "$test_case" in
               basic) payload='{"model":"openai/gpt-6-luna","input":"Reply OK"}' ;;
               low) payload='{"model":"openai/gpt-6-luna","input":"Reply OK","reasoning":{"effort":"low"}}' ;;
               tools) payload='{"model":"openai/gpt-6-luna","input":"Reply OK","reasoning":{"effort":"low"},"tools":[{"type":"function","name":"noop","description":"No operation","parameters":{"type":"object","properties":{}}}]}' ;;
+              streaming) payload='{"model":"openai/gpt-6-luna","input":"Reply OK","reasoning":{"effort":"low"},"tools":[{"type":"function","name":"noop","description":"No operation","parameters":{"type":"object","properties":{}}}],"stream":true}' ;;
+              unprefixed) payload='{"model":"gpt-6-luna","input":"Reply OK","reasoning":{"effort":"low"}}' ;;
             esac
             status=$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
               -H "Authorization: Bearer $NOUS_API_KEY" \
@@ -59,7 +61,7 @@ jobs:
               --data "$payload" \
               https://inference-api.nousresearch.com/v1/responses)
             echo "$test_case Responses probe: HTTP $status"
-            if [ "$status" != 200 ]; then failed=1; fi
+            if [ "$status" != 200 ] && [ "$test_case" != unprefixed ]; then failed=1; fi
           done
           exit "$failed"
       - name: Run Droid Auto Review
