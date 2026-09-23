@@ -31,7 +31,7 @@ jobs:
             "customModels": [{
               "model": "openai/gpt-6-luna",
               "displayName": "GPT-6 Luna (Nous Portal)",
-              "baseUrl": "https://inference-api.nousresearch.com/v1",
+              "baseUrl": "http://127.0.0.1:8765/v1",
               "apiKey": "${NOUS_API_KEY}",
               "provider": "openai",
               "maxOutputTokens": 16384
@@ -64,6 +64,10 @@ jobs:
             if [ "$status" != 200 ] && [ "$test_case" != unprefixed ]; then failed=1; fi
           done
           exit "$failed"
+      - name: Start local request-shape diagnostic
+        run: |
+          python3 -u .github/scripts/droid-request-shape-probe.py > "$RUNNER_TEMP/droid-shape.log" 2>&1 &
+          sleep 1
       - name: Run Droid Auto Review
         uses: Factory-AI/droid-action@main
         with:
@@ -76,3 +80,9 @@ jobs:
           reasoning_effort: low
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+      - name: Show sanitized request shape
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/droid-shape.log" ]; then
+            rg 'DROID_REQUEST_SHAPE' "$RUNNER_TEMP/droid-shape.log" || true
+          fi
