@@ -1088,3 +1088,16 @@ slice; then test the chosen revision on untouched examples. Preserve the
 known reranking false accept as a regression challenge, not as held-out proof.
 The unqueried-label problem is a data/evidence boundary, not a reason to
 train Jev or to use a pseudo-label agreement rate as calibration.
+
+## 2026-09-23 — Request-shape provenance for input comparisons
+
+The advisory audit recorded the pinned Jev model and response hashes, but no
+fingerprint of its own trusted question instructions and Choice criteria.
+That meant two reports from different input rubrics could look comparable
+unless a reviewer reconstructed their source revisions. Add a SHA-256 of a
+canonical placeholder API request to each audit report and CI summary; it
+changes when the model, state/question shape, instructions, or criteria change,
+but contains no generated response text. The test changes one criterion and
+checks that the fingerprint changes. This improves reproducibility of the
+planned input-only experiment; it does not improve or establish grading
+accuracy, and no Jev input or required CI gate changes in this revision.

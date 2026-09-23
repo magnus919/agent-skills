@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from jev_eval_audit import (
     _read_json,
@@ -11,6 +12,7 @@ from jev_eval_audit import (
     build_request,
     collect_groups,
     expected_report_ids,
+    question_contract_sha256,
     render_summary,
 )
 from jev_eval_benchmark import metrics
@@ -66,6 +68,15 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertNotIn("A bounded answer", serialized)
         self.assertTrue(result["advisory_only"])
         self.assertEqual(result["counts"]["groups_selected"], 2)
+        self.assertEqual(result["question_contract_sha256"], question_contract_sha256())
+
+    def test_question_contract_fingerprint_tracks_input_rubric_not_response(self):
+        baseline = question_contract_sha256()
+        self.assertEqual(len(baseline), 64)
+        self.assertEqual(baseline, question_contract_sha256())
+        with patch.dict("jev_eval_audit.CRITERIA", {"met": "Changed criterion"}):
+            self.assertNotEqual(question_contract_sha256(), baseline)
+        self.assertEqual(question_contract_sha256(), baseline)
 
     def test_rejects_symlink_and_oversized_artifact(self):
         link = self.reports / "link.comparison.json"

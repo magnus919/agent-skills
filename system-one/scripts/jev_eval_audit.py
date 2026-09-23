@@ -199,6 +199,15 @@ def build_request(group: dict[str, Any]) -> dict[str, Any]:
     )
 
 
+def question_contract_sha256() -> str:
+    """Fingerprint the deployed API input shape without hashing private responses."""
+    template = build_request(
+        {"response": "<generated-response>", "assertions": ["<eval-assertion>"]}
+    )
+    encoded = json.dumps(template, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def audit(
     root: Path,
     *,
@@ -296,6 +305,7 @@ def audit(
         "schema_version": 1,
         "mode": "live" if live else "offline",
         "model_requested": MODEL if live else None,
+        "question_contract_sha256": question_contract_sha256(),
         "advisory_only": True,
         "budget_selection_policy": "skill_round_robin_stable_hash_v1",
         "selection_scope": {
@@ -354,6 +364,7 @@ def render_summary(report: dict[str, Any]) -> str:
         f"across {counts['reports_seen']} comparison reports.\n\n"
         f"- Selected case reports expected: {scope['expected_report_count'] if scope['expected_report_count'] is not None else 'unknown'}\n"
         f"- Case reports observed: {scope['observed_report_count']}\n"
+        f"- Question contract SHA-256: `{report['question_contract_sha256']}`\n"
         f"- Missing case reports: {len(scope['missing_reports'])}\n"
         f"- Unexpected case reports: {len(scope['unexpected_reports'])}\n"
         f"- Provider errors: {counts['provider_errors']}\n"
