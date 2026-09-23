@@ -20,10 +20,17 @@ class SelectionTests(unittest.TestCase):
                 manifest = root / name / "evals" / "evals.json"
                 manifest.parent.mkdir(parents=True)
                 manifest.write_text("{}", encoding="utf-8")
-            manifests = manifests_for_paths([
-                "beta/scripts/helper.py", "alpha/SKILL.md", "alpha/evals/evals.json",
-                "beta/README.md", "missing/SKILL.md", "../../escape/SKILL.md",
-            ], root)
+            manifests = manifests_for_paths(
+                [
+                    "beta/scripts/helper.py",
+                    "alpha/SKILL.md",
+                    "alpha/evals/evals.json",
+                    "beta/README.md",
+                    "missing/SKILL.md",
+                    "../../escape/SKILL.md",
+                ],
+                root,
+            )
             self.assertEqual(manifests, ["alpha/evals/evals.json", "beta/evals/evals.json"])
             selected = select(manifests, 5)
             self.assertEqual((selected["eligible_count"], selected["selected_count"]), (2, 2))

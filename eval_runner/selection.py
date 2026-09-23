@@ -34,7 +34,9 @@ def changed_paths(root: Path, base: str, head: str) -> list[str]:
         raise ValueError("base and head revisions are required")
     result = subprocess.run(
         ["git", "-C", str(root), "diff", "--name-only", base, head, "--", *PATHS],
-        capture_output=True, text=True, check=False,
+        capture_output=True,
+        text=True,
+        check=False,
     )
     if result.returncode:
         raise ValueError(f"git diff failed: {result.stderr.strip() or 'unknown Git error'}")
@@ -45,19 +47,32 @@ def select(manifests: list[str], limit: int) -> dict[str, object]:
     if limit <= 0:
         raise ValueError("--max-skills must be positive")
     if len(manifests) > limit:
-        return {"status": "over_limit", "eligible_count": len(manifests), "max_skills": limit,
-                "selected_count": 0, "manifests": [], "eligible_manifests": manifests}
-    return {"status": "selected" if manifests else "none", "eligible_count": len(manifests),
-            "max_skills": limit, "selected_count": len(manifests),
-            "manifests": manifests, "eligible_manifests": manifests}
+        return {
+            "status": "over_limit",
+            "eligible_count": len(manifests),
+            "max_skills": limit,
+            "selected_count": 0,
+            "manifests": [],
+            "eligible_manifests": manifests,
+        }
+    return {
+        "status": "selected" if manifests else "none",
+        "eligible_count": len(manifests),
+        "max_skills": limit,
+        "selected_count": len(manifests),
+        "manifests": manifests,
+        "eligible_manifests": manifests,
+    }
 
 
 def render_summary(selection: dict[str, object]) -> str:
     count = selection["eligible_count"]
     limit = selection["max_skills"]
     if selection["status"] == "over_limit":
-        lead = (f"**No paired evals started.** {count} changed skills have eval manifests, "
-                f"exceeding the {limit}-skill resource cap. Split the change or review an explicit cap increase.")
+        lead = (
+            f"**No paired evals started.** {count} changed skills have eval manifests, "
+            f"exceeding the {limit}-skill resource cap. Split the change or review an explicit cap increase."
+        )
     elif selection["status"] == "none":
         lead = "No changed skills with eval manifests were found; no paired evals started."
     else:
@@ -71,11 +86,18 @@ def main() -> int:
     parser.add_argument("--base", required=True, help="Git revision before the change")
     parser.add_argument("--head", default="HEAD", help="Git revision to evaluate")
     parser.add_argument("--max-skills", type=int, default=5)
-    parser.add_argument("--github-output", type=Path, help="append manifests/count outputs for GitHub Actions")
-    parser.add_argument("--summary-output", type=Path, help="append coverage to a GitHub job summary")
+    parser.add_argument(
+        "--github-output", type=Path, help="append manifests/count outputs for GitHub Actions"
+    )
+    parser.add_argument(
+        "--summary-output", type=Path, help="append coverage to a GitHub job summary"
+    )
     args = parser.parse_args()
     try:
-        selection = select(manifests_for_paths(changed_paths(Path.cwd(), args.base, args.head), Path.cwd()), args.max_skills)
+        selection = select(
+            manifests_for_paths(changed_paths(Path.cwd(), args.base, args.head), Path.cwd()),
+            args.max_skills,
+        )
         if args.github_output:
             with args.github_output.open("a", encoding="utf-8") as stream:
                 stream.write(f"manifests={' '.join(selection['manifests'])}\n")
@@ -89,7 +111,9 @@ def main() -> int:
         return 2
     print(json.dumps(selection))
     if selection["status"] == "over_limit":
-        print("paired-eval selection error: resource cap would omit changed skills", file=sys.stderr)
+        print(
+            "paired-eval selection error: resource cap would omit changed skills", file=sys.stderr
+        )
         return 2
     return 0
 
