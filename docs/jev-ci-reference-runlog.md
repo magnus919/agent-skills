@@ -1002,3 +1002,16 @@ nothing about label quality. We replaced the `gh` request and `jq` processing
 with Python 3.12 standard-library code, already provisioned in the job.
 This is a runner-portability lesson: test the actual target runner rather
 than assuming GitHub-hosted convenience tools are installed there.
+
+The [second local run](https://github.com/magnus919/agent-skills/actions/runs/35915518491)
+passed source validation and a simple `Reply OK.` HTTP probe, downloaded the
+frozen artifacts, and prepared the 12-item blind packet. Its first label
+request returned content that could not be decoded as JSON; the labeling
+script failed closed with `JSONDecodeError`, so no consensus or score exists.
+The simple probe tested only route availability, not the needed output
+contract. We now request JSON-object output from the local server and make
+the preflight use the exact label request/parser on synthetic data before
+downloading response artifacts. The local server's documented API supports
+`response_format: {"type": "json_object"}`, but that is a request for a
+format, not evidence that this checkpoint will honor it. A live rerun must
+prove the response shape; do not reinterpret malformed output as a label.
