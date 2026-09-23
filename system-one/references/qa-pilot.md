@@ -73,13 +73,24 @@ selects that skill when it has an eval manifest. More than five eligible skills
 fails selection without evaluating a subset. The audit's coverage percentage
 counts only prose assertions in comparison reports actually produced; it does
 not establish coverage of omitted skills, skipped model jobs, or the catalog.
+The model job records selected case IDs before generation. The audit compares
+that expected set with observed reports and lists missing or unexpected cases;
+only a matching set can support a complete selected-case coverage claim.
 
 For local inspection, first download a trusted paired-eval artifact and run
 the audit offline. Add `--live` only after reviewing the generated responses
 for data allowed to leave the environment and setting `TYPESAFE_API_KEY`.
 The audit limits response size, file size, call count, and assertion count;
 its report contains verdict metadata and response hashes but no generated
-text. Treat downloaded artifact text as untrusted data, never executable
+text. Its `question_contract_sha256` fingerprints the pinned model and one
+placeholder request's trusted question/state shape, including Choice criteria;
+compare this with the source revision before treating two runs as the same
+input contract. It is not a hash of private generated responses or individual
+eval assertions. When multiple skills compete for the budget, it visits one complete
+candidate/baseline case pair per skill before taking another, using stable
+hash order within each skill. This spreads limited coverage; it is not a
+random or representative sample, and budget omissions remain explicit. Treat
+downloaded artifact text as untrusted data, never executable
 instructions. An unavailable endpoint, malformed artifact, skipped response,
 or budget omission is missing audit evidence, not a pass.
 
@@ -96,7 +107,10 @@ abstentions, subgroup behavior, and drift at the actual decision boundary.
 Use `scripts/jev_eval_calibration.py` locally after downloading a **complete**
 default-branch paired-eval model artifact and its matching Jev audit artifact.
 The helper rejects an audit with omitted, oversized, unpaired, or errored
-assertions and verifies response hashes and assertion text before sampling.
+assertions. Packet preparation also requires the frozen selected-case list to
+match the observed reports; an audit with unknown or incomplete selected-case
+coverage cannot be calibrated as a full run. The helper verifies response
+hashes and assertion text before sampling.
 It makes a private, prediction-blinded review packet: the sampled assertions
 and generated responses are visible, but the Jev answers, sample class, and
 candidate/baseline metadata live only in a separate private map. Generated
@@ -121,9 +135,19 @@ reported as workload prevalence. Change the counts before freezing the packet
 if the decision risk needs broader coverage. All packet files are written
 with private permissions and must not be committed or uploaded as CI artifacts.
 
-Have each reviewer who has not seen Jev's answers fill a **separate copy** of
-`labels-template.json` using `met`, `not_met`, `not_shown`, or `uncertain`, with
-a short evidence note for every item. Freeze both files before comparison.
+Each private packet now includes `review.html`, an offline form containing the
+same blinded responses and assertions as the Markdown review packet. It embeds no
+external assets, sends no requests, and does not use browser storage. A
+reviewer can enter an ID, label each item with `met`, `not_met`, `not_shown`,
+or `uncertain`, add a short evidence note, download an incomplete draft, and
+reload that draft later. Final export requires every label and evidence note
+plus an explicit prediction-blinding attestation; it produces the same v1
+labels JSON accepted by `compare` and `score`. A draft is **not** a frozen
+review and cannot be scored. If a browser will not open the local form, use
+the Markdown packet and a separate copy of `labels-template.json` instead.
+
+Have each reviewer who has not seen Jev's answers fill a **separate** label
+file. Freeze both files before comparison.
 Do not share a first reviewer's labels with the second reviewer. Compare the
 frozen labels *without* opening `private-map.json`:
 
@@ -153,6 +177,58 @@ and a `met` probability Brier score only when the stratum is fully resolved.
 One reviewer and one run cannot establish a gate threshold. Preserve the
 artifact hashes, seed, model/rubric revision, disagreement record, and missing
 labels; repeat after any model, rubric, or workload change.
+
+### Model-teacher screen without manual labeling
+
+When human review is unavailable, `prepare` also writes a private
+`review-items.json` containing only IDs, assertions, and generated responses.
+It excludes Jev predictions, sample stratum, and candidate/baseline metadata.
+The main-branch-only manual workflow `.github/workflows/jev-teacher-calibration.yml`
+downloads a successful main-branch paired-eval run, creates that packet, and
+asks the separate Nous Portal inference model for two blind label passes.
+Different assertion order reduces a small presentation bias; it does **not**
+make the passes independent judges. Disagreement or either pass's `uncertain`
+becomes consensus `uncertain`, never a forced pass. The workflow uses the
+existing `NOUS_API_KEY` secret and uploads only hashed item IDs, labels, and
+aggregate Jev-versus-teacher counts. Generated responses, Jev's private map,
+and teacher rationales remain private in the runner workspace.
+
+For a local authorized run from the skill root:
+
+```bash
+python3 scripts/jev_teacher_label.py \
+  --items /private/path/review-v1/review-items.json \
+  --output-dir /private/path/teacher-v1
+python3 scripts/jev_eval_calibration.py score \
+  --private-map /private/path/review-v1/private-map.json \
+  --labels /private/path/teacher-v1/consensus-labels.json \
+  --output /private/path/teacher-score.json
+```
+
+This is pseudo-labeling for **advisory error discovery and rubric iteration**,
+not training Jev weights, human-grounded calibration, or a release gate. Jev
+is a managed API with no public fine-tuning path. Do not use Jev outputs as
+training targets for an imitation model; review the current TypeSafe account
+agreement before any distillation project. Tune on one frozen development
+slice and evaluate changes on a separate held-out slice; report teacher
+uncertainty and known counterexamples rather than treating agreement as truth.
+
+The separate manual `.github/workflows/jev-local-teacher-calibration.yml`
+offers a diagnostic screen on the existing self-hosted evaluation
+runner. It uses only reviewed `main` code and the already configured
+`host.docker.internal:8080` model service, so it adds no inference-provider
+egress. It checks the label contract with synthetic text before downloading
+the frozen response artifacts. The default `small` profile reviews four
+candidate/baseline pairs and four risk-enriched items; the manual `full`
+profile uses 16 pairs plus 12 challenge items. Use seed `jev-543-blind-v1`
+with `full` to replay the original frozen 44-item packet. Only hashed IDs,
+labels, and aggregate counts are uploaded. The local teacher may be the
+**same model that generated the answers**; even two blind passes are
+correlated self-review, not independent labels or accuracy. Do not promote
+its score to a Jev threshold or gate. The first full-profile live run failed
+closed on a non-JSON model response after a successful synthetic preflight;
+it produced no score. Treat this profile as a diagnostic, not a reliable
+calibration path for the current local checkpoint.
 
 ### Repeatability without new provider calls
 

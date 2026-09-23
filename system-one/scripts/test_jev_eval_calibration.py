@@ -1,7 +1,10 @@
 """Local calibration workflow: identity, blinding, pairing, and score tests."""
 
+import base64
+import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -9,7 +12,16 @@ import unittest
 from pathlib import Path
 
 from jev_eval_audit import collect_groups
-from jev_eval_calibration import compare_audits, compare_labels, prepare, read_audit, records_from_artifacts, score, select_records
+from jev_eval_calibration import (
+    compare_audits,
+    compare_labels,
+    prepare,
+    read_audit,
+    records_from_artifacts,
+    render_review_html,
+    score,
+    select_records,
+)
 
 
 class JevEvalCalibrationTests(unittest.TestCase):
@@ -37,7 +49,11 @@ class JevEvalCalibrationTests(unittest.TestCase):
                                          "met_probability": 0.9, "provider_confidence": 0.8}
                                         for assertion in group["assertions"]]})
         self.audit = {"schema_version": 1, "mode": "live", "advisory_only": True,
-                      "model_requested": "jev-1.13.0", "counts": {
+                      "model_requested": "jev-1.13.0",
+                      "selection_scope": {"status": "selected", "expected_report_count": 2,
+                                          "observed_report_count": 2, "missing_reports": [],
+                                          "unexpected_reports": []},
+                      "counts": {"reports_seen": 2,
                           "prose_assertions_seen": 8, "assertions_selected": 8,
                           "groups_selected": 4,
                           "skipped_response": 0, "skipped_oversized_assertion": 0,
@@ -69,10 +85,47 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.assertIn("case-a candidate response", packet)
         self.assertNotIn("suggested_verdict", packet)
         self.assertNotIn("met_probability", packet)
+        blind_items = json.loads((output / "review-items.json").read_text(encoding="utf-8"))
+        self.assertEqual(set(blind_items), {"schema_version", "items"})
+        self.assertEqual(len(blind_items["items"]), 6)
+        self.assertEqual(set(blind_items["items"][0]), {"id", "assertion", "response"})
+        self.assertNotIn("suggested_verdict", json.dumps(blind_items))
+        self.assertNotIn("sample_class", json.dumps(blind_items))
+        self.assertEqual(os.stat(output / "review-items.json").st_mode & 0o777, 0o600)
+        review_html = (output / "review.html").read_text(encoding="utf-8")
+        self.assertIn("case-a candidate response", review_html)
+        self.assertEqual(review_html.count('data-review-id="'), 6)
+        self.assertNotIn("suggested_verdict", review_html)
+        self.assertNotIn("met_probability", review_html)
+        self.assertIn("connect-src 'none'", review_html)
+        self.assertIn("Download draft", review_html)
+        self.assertIn("Download final labels", review_html)
         private_map = (output / "private-map.json").read_text(encoding="utf-8")
         self.assertNotIn("case-a candidate response", private_map)
         self.assertEqual(os.stat(output).st_mode & 0o777, 0o700)
         self.assertEqual(os.stat(output / "review-packet.md").st_mode & 0o777, 0o600)
+        self.assertEqual(os.stat(output / "review.html").st_mode & 0o777, 0o600)
+
+    def test_offline_review_html_escapes_untrusted_response_and_assertion(self):
+        item = {
+            "id": "j123", "response_sha256": "0" * 64,
+            "response": '</pre><script>alert("response")</script>',
+            "assertion": '<img src=x onerror=alert("assertion")>',
+            "suggested_verdict": "not_met", "met_probability": 0.01,
+        }
+        page = render_review_html([item])
+        self.assertNotIn('</pre><script>alert("response")</script>', page)
+        self.assertNotIn('<img src=x onerror=alert("assertion")>', page)
+        self.assertIn('&lt;script&gt;alert', page)
+        self.assertIn('&lt;img src=x onerror=', page)
+        self.assertNotIn("suggested_verdict", page)
+        self.assertNotIn("met_probability", page)
+        self.assertIn("script-src 'sha256-", page)
+        self.assertEqual(page.count("<script>"), 1)
+        script = re.search(r"<script>(.*?)</script>", page, re.DOTALL)
+        self.assertIsNotNone(script)
+        script_hash = base64.b64encode(hashlib.sha256(script.group(1).encode()).digest()).decode()
+        self.assertIn(f"script-src 'sha256-{script_hash}'", page)
 
     def test_mismatched_or_partial_audit_is_rejected(self):
         self.audit["results"][0]["response_sha256"] = "0" * 64
@@ -82,6 +135,27 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.audit_path.write_text(json.dumps(self.audit), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "coverage is incomplete"):
             read_audit(self.audit_path)
+
+    def test_prepare_requires_complete_frozen_selected_case_coverage(self):
+        for scope_change in (
+            None,
+            {"status": "unknown"},
+            {"status": "selected", "expected_report_count": 3,
+             "observed_report_count": 2, "missing_reports": [["system-one", "case-c"]],
+             "unexpected_reports": []},
+            {"status": "selected", "expected_report_count": 2,
+             "observed_report_count": 2, "missing_reports": [],
+             "unexpected_reports": [["system-one", "case-c"]]},
+        ):
+            audit = json.loads(json.dumps(self.audit))
+            if scope_change is None:
+                audit.pop("selection_scope")
+            else:
+                audit["selection_scope"] = scope_change
+            self.audit_path.write_text(json.dumps(audit), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "selected-case coverage"):
+                prepare(self.root, self.audit_path, self.root / "not-created", "run-1", "seed", 2, 2)
+            self.assertFalse((self.root / "not-created").exists())
 
     def test_score_keeps_population_and_challenge_separate(self):
         records = records_from_artifacts(self.root, self.audit)
@@ -93,9 +167,14 @@ class JevEvalCalibrationTests(unittest.TestCase):
                               "evidence": "Checked visible response against the assertion"}
                              for index, item in enumerate(selected)]}
         result = score(private_map, labels)
+        self.assertEqual(result["reviewer_kind"], "human")
         self.assertEqual(result["population"]["selected"], 4)
         self.assertEqual(result["challenge_high_met"]["selected"], 2)
         self.assertEqual(result["population"]["resolved"] + result["challenge_high_met"]["resolved"], 6)
+        labels["reviewer_kind"] = "model_teacher"
+        model_result = score(private_map, labels)
+        self.assertEqual(model_result["reviewer_kind"], "model_teacher")
+        self.assertIn("pseudo-label", model_result["limitation"])
         labels["labels"][0]["label"] = ""
         with self.assertRaisesRegex(ValueError, "every review item needs"):
             score(private_map, labels)

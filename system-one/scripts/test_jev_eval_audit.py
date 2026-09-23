@@ -4,8 +4,17 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from jev_eval_audit import _read_json, audit, build_request, collect_groups, render_summary
+from jev_eval_audit import (
+    _read_json,
+    audit,
+    build_request,
+    collect_groups,
+    expected_report_ids,
+    question_contract_sha256,
+    render_summary,
+)
 from jev_eval_benchmark import metrics
 
 
@@ -17,7 +26,12 @@ def sample_report(response="A bounded answer"):
         ],
         "manifest": {"status": "completed", "outputs": {"response": response}},
     }
-    return {"skill_name": "system-one", "case_id": "test-case", "candidate": trial, "baseline": trial}
+    return {
+        "skill_name": "system-one",
+        "case_id": "test-case",
+        "candidate": trial,
+        "baseline": trial,
+    }
 
 
 class JevEvalAuditTests(unittest.TestCase):
@@ -34,16 +48,35 @@ class JevEvalAuditTests(unittest.TestCase):
 
     def test_collects_only_prose_and_keeps_response_out_of_report(self):
         groups, counts = collect_groups(self.root, 24000)
-        self.assertEqual((len(groups), counts["prose_assertions_seen"], counts["exact_assertions_untouched"]), (2, 2, 2))
+        self.assertEqual(
+            (len(groups), counts["prose_assertions_seen"], counts["exact_assertions_untouched"]),
+            (2, 2, 2),
+        )
         self.assertEqual(groups[0]["assertions"], ["Explains the boundary"])
         request = build_request(groups[0])
         self.assertEqual(request["model"], "jev-1.13.0")
-        result = audit(self.root, live=False, key=None, max_calls=2, max_assertions=2,
-                       max_response_chars=24000, timeout=12.0)
+        result = audit(
+            self.root,
+            live=False,
+            key=None,
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+        )
         serialized = json.dumps(result)
         self.assertNotIn("A bounded answer", serialized)
         self.assertTrue(result["advisory_only"])
         self.assertEqual(result["counts"]["groups_selected"], 2)
+        self.assertEqual(result["question_contract_sha256"], question_contract_sha256())
+
+    def test_question_contract_fingerprint_tracks_input_rubric_not_response(self):
+        baseline = question_contract_sha256()
+        self.assertEqual(len(baseline), 64)
+        self.assertEqual(baseline, question_contract_sha256())
+        with patch.dict("jev_eval_audit.CRITERIA", {"met": "Changed criterion"}):
+            self.assertNotEqual(question_contract_sha256(), baseline)
+        self.assertEqual(question_contract_sha256(), baseline)
 
     def test_rejects_symlink_and_oversized_artifact(self):
         link = self.reports / "link.comparison.json"
@@ -67,11 +100,55 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertEqual(counts["skipped_response"], 2)
 
     def test_budget_never_turns_omission_into_pass(self):
-        result = audit(self.root, live=False, key=None, max_calls=1, max_assertions=1,
-                       max_response_chars=24000, timeout=12.0)
+        result = audit(
+            self.root,
+            live=False,
+            key=None,
+            max_calls=1,
+            max_assertions=1,
+            max_response_chars=24000,
+            timeout=12.0,
+        )
         self.assertEqual(result["counts"]["groups_selected"], 0)
         self.assertEqual(result["counts"]["assertions_omitted_by_budget"], 2)
         self.assertEqual(result["results"], [])
+
+    def test_budget_spreads_complete_pairs_across_skills_deterministically(self):
+        for skill in ("alpha-skill", "beta-skill"):
+            reports = self.root / skill / "reports"
+            reports.mkdir(parents=True)
+            for case_id in ("first-case", "second-case"):
+                report = sample_report()
+                report["skill_name"] = skill
+                report["case_id"] = case_id
+                (reports / f"{case_id}.comparison.json").write_text(
+                    json.dumps(report), encoding="utf-8"
+                )
+        self.path.unlink()
+
+        def run():
+            return audit(
+                self.root,
+                live=False,
+                key=None,
+                max_calls=4,
+                max_assertions=4,
+                max_response_chars=24000,
+                timeout=12.0,
+            )
+
+        result = run()
+        self.assertEqual(result, run())
+        self.assertEqual(result["budget_selection_policy"], "skill_round_robin_stable_hash_v1")
+        self.assertEqual(result["counts"]["groups_selected"], 4)
+        self.assertEqual(result["counts"]["assertions_omitted_by_budget"], 4)
+        selected = {(row["skill"], row["case_id"], row["side"]) for row in result["results"]}
+        for skill in ("alpha-skill", "beta-skill"):
+            cases = {case_id for selected_skill, case_id, _side in selected if selected_skill == skill}
+            self.assertEqual(len(cases), 1)
+            case_id = next(iter(cases))
+            self.assertIn((skill, case_id, "candidate"), selected)
+            self.assertIn((skill, case_id, "baseline"), selected)
 
     def test_large_question_text_is_skipped_not_sent(self):
         report = sample_report()
@@ -83,8 +160,10 @@ class JevEvalAuditTests(unittest.TestCase):
 
     def test_unpaired_response_is_not_a_comparison(self):
         report = sample_report()
-        report["baseline"] = {"assertions": report["baseline"]["assertions"],
-                              "manifest": {"status": "failed", "outputs": {"response": ""}}}
+        report["baseline"] = {
+            "assertions": report["baseline"]["assertions"],
+            "manifest": {"status": "failed", "outputs": {"response": ""}},
+        }
         self.path.write_text(json.dumps(report), encoding="utf-8")
         groups, counts = collect_groups(self.root, 24000)
         self.assertEqual(groups, [])
@@ -92,28 +171,147 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertEqual(counts["skipped_unpaired_assertions"], 1)
 
     def test_benchmark_metrics_keep_abstentions_distinct(self):
-        result = metrics([
-            {"prediction": "met", "label": "met", "met_probability": 0.9},
-            {"prediction": "not_shown", "label": "not_met", "met_probability": 0.0},
-        ])
+        result = metrics(
+            [
+                {"prediction": "met", "label": "met", "met_probability": 0.9},
+                {"prediction": "not_shown", "label": "not_met", "met_probability": 0.0},
+            ]
+        )
         self.assertEqual(result["accuracy"], 0.5)
         self.assertEqual(result["selective_met"][0]["accepted_met"], 1)
         self.assertEqual(result["selective_met"][0]["false_accepts"], 0)
 
     def test_summary_distinguishes_offline_complete_and_partial_coverage(self):
-        report = audit(self.root, live=False, key=None, max_calls=2, max_assertions=2,
-                       max_response_chars=24000, timeout=12.0)
+        selection = {
+            "schema_version": 1,
+            "status": "selected",
+            "manifests": ["system-one/evals/evals.json"],
+            "selected_count": 1,
+            "expected_cases": {"system-one": ["test-case"]},
+        }
+        report = audit(
+            self.root,
+            live=False,
+            key=None,
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+            selection=selection,
+        )
         self.assertIn("Offline contract check", render_summary(report))
         self.assertIn("0/2 prose assertions", render_summary(report))
         report["mode"] = "live"
         report["results"][0]["assertions"][0]["suggested_verdict"] = "met"
         report["results"][1]["assertions"][0]["suggested_verdict"] = "not_shown"
-        self.assertIn("Complete advisory coverage", render_summary(report))
+        self.assertIn("Complete selected-case advisory coverage", render_summary(report))
         report["results"][1]["assertions"] = []
         summary = render_summary(report)
         self.assertIn("Incomplete advisory coverage", summary)
         self.assertIn("1/2 prose assertions", summary)
         self.assertNotIn("A bounded answer", summary)
+
+    def test_missing_expected_case_prevents_complete_coverage(self):
+        selection = {
+            "schema_version": 1,
+            "status": "selected",
+            "manifests": ["system-one/evals/evals.json"],
+            "selected_count": 1,
+            "expected_cases": {"system-one": ["test-case", "missing-case"]},
+        }
+        report = audit(
+            self.root,
+            live=False,
+            key=None,
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+            selection=selection,
+        )
+        self.assertEqual(report["selection_scope"]["missing_reports"], ["system-one/missing-case"])
+        report["mode"] = "live"
+        for row in report["results"]:
+            row["assertions"][0]["suggested_verdict"] = "met"
+        self.assertIn("Incomplete selected-case coverage", render_summary(report))
+        self.assertIn("Missing case reports: 1", render_summary(report))
+
+    def test_missing_whole_skill_and_unexpected_report_are_visible(self):
+        selection = {
+            "schema_version": 1,
+            "status": "selected",
+            "manifests": ["another-skill/evals/evals.json"],
+            "selected_count": 1,
+            "expected_cases": {"another-skill": ["other-case"]},
+        }
+        report = audit(
+            self.root,
+            live=False,
+            key=None,
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+            selection=selection,
+        )
+        self.assertEqual(report["selection_scope"]["missing_reports"], ["another-skill/other-case"])
+        self.assertEqual(report["selection_scope"]["unexpected_reports"], ["system-one/test-case"])
+        self.assertIn(
+            "Selected-case coverage unknown",
+            render_summary(
+                {
+                    **report,
+                    "mode": "live",
+                    "selection_scope": {**report["selection_scope"], "status": "not_provided"},
+                }
+            ),
+        )
+
+    def test_selection_evidence_rejects_unsafe_and_duplicate_ids(self):
+        selection = {
+            "schema_version": 1,
+            "status": "selected",
+            "manifests": ["../evals/evals.json"],
+            "selected_count": 1,
+            "expected_cases": {"..": ["test-case"]},
+        }
+        with self.assertRaisesRegex(ValueError, "unsafe selection manifest"):
+            expected_report_ids(selection)
+        selection = {
+            "schema_version": 1,
+            "status": "selected",
+            "manifests": ["system-one/evals/evals.json"],
+            "selected_count": 1,
+            "expected_cases": {"system-one": ["test-case", "test-case"]},
+        }
+        with self.assertRaisesRegex(ValueError, "duplicate expected case ID"):
+            expected_report_ids(selection)
+
+    def test_audit_rejects_duplicate_comparison_identity(self):
+        duplicate = self.reports / "another-run.comparison.json"
+        duplicate.write_text(json.dumps(sample_report()), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "duplicate comparison report identity"):
+            audit(
+                self.root,
+                live=False,
+                key=None,
+                max_calls=4,
+                max_assertions=4,
+                max_response_chars=24000,
+                timeout=12.0,
+            )
+
+    def test_current_system_one_manifest_fits_ci_audit_budget(self):
+        skill_root = Path(__file__).resolve().parent.parent
+        workflow = (skill_root.parent / ".github" / "workflows" / "skill-eval.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("--max-calls 20", workflow)
+        self.assertIn("--max-assertions 160", workflow)
+        manifest = json.loads((skill_root / "evals" / "evals.json").read_text(encoding="utf-8"))
+        cases = manifest["evals"]
+        self.assertLessEqual(2 * len(cases), 20)
+        self.assertLessEqual(2 * sum(len(case["assertions"]) for case in cases), 160)
 
 
 if __name__ == "__main__":

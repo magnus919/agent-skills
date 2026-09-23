@@ -570,3 +570,534 @@ real outputs are still missing.
 Blog lesson: verify coverage fixes with a change that previously would have
 been invisible to the trigger, then follow that change through generation,
 audit, and artifact metadata. A green job alone is a weaker observation.
+
+## 2026-09-23 — Carry expected cases across the model/audit boundary
+
+The reference-only run above established 108/108 *observed-assertion* coverage,
+but exposed a remaining denominator gap: Jev read whatever comparison reports
+the model job uploaded. If generation stopped before writing an expected case
+report, Jev could call the observed set "complete" while omitting that case.
+
+The selector now writes a small JSON artifact containing the selected skill
+manifests and their case IDs **before** generation. The model job uploads it
+with the reports, even when a later paired-eval step fails. The auditor checks
+expected against observed `(skill, case ID)` pairs, rejects malformed or
+duplicate identities, and reports missing and unexpected cases separately
+from skipped assertions and provider errors. Without selection evidence, it
+labels selected-case coverage unknown rather than complete. This remains
+advisory; it does not alter exact grades or authorize a release.
+
+An offline replay of the existing [main run 35822037156](https://github.com/magnus919/agent-skills/actions/runs/35822037156)
+artifact found 9 expected and 9 observed case reports, with no missing or
+unexpected IDs, and 108 observed prose assertions. Synthetic missing-case,
+whole-skill omission, unexpected-report, and unsafe-selection tests exercise
+the failure lanes without another TypeSafe request. This is pipeline coverage
+evidence, **not** human-labeled Jev accuracy or calibration.
+
+Blog lesson: freeze the worklist before an expensive stage. Comparing only
+what arrives afterward can hide precisely the cases that failed to arrive.
+
+## 2026-09-23 — A new eval case outgrew the Jev assertion budget
+
+The laya.cpp enrichment in [PR #541](https://github.com/magnus919/agent-skills/pull/541)
+raised System One from nine to ten eval cases. The manifest now contains 122
+prose assertions across candidate and baseline responses, requiring 20 Jev
+calls at the current one-group-per-call design. [Main run 35823747886](https://github.com/magnus919/agent-skills/actions/runs/35823747886)
+uploaded 10 comparison reports, but its `jev-1.13.0` audit selected only 18
+groups and 104/122 assertions: an entire 18-assertion case was omitted by the
+120-assertion cap. There were zero provider errors. This is a real budget
+omission, not an inference about the missing case's quality.
+
+The CI assertion allowance is increased to 160 while retaining the 20-call
+limit. A test checks that the current System One manifest fits both bounds;
+the audit still reports omissions rather than silently treating over-budget
+work as complete. The change is bounded headroom for the present suite, not a
+general promise that every combination of up to five changed skills can fit.
+An offline replay of the same 10-report model artifact with the new allowance
+selected all 20 groups and 122/122 assertions, with no budget omissions and
+10 expected/10 observed case reports. This verifies selection arithmetic,
+not live Jev judgments under the increased allowance.
+
+Blog lesson: adding one eval case can push a paired, all-or-nothing selection
+past a budget boundary. Watch the omitted-*counts* in actual artifacts and
+version the allowance against the evolving manifest; a green advisory job is
+not a coverage guarantee.
+
+## 2026-09-23 — Live coverage after the budget repair
+
+[Main run 35824738032](https://github.com/magnus919/agent-skills/actions/runs/35824738032)
+confirmed the frozen selection list matched all ten uploaded comparison
+reports, with no missing or unexpected IDs. It still used the old
+120-assertion allowance: 18 groups and 104/122 prose assertions were selected,
+18 were omitted by budget, and there were zero provider errors.
+
+[Main run 35825585445](https://github.com/magnus919/agent-skills/actions/runs/35825585445)
+then exercised the merged 160-assertion allowance with live Jev calls. Its
+artifact has ten expected and ten observed case reports, 20 selected groups,
+122/122 selected prose assertions, zero skips, zero budget omissions, and zero
+provider errors. The tests, real-model generation, smoke job, and advisory Jev
+audit all completed successfully. This establishes selected-case and
+assertion coverage **for this run**, not judgment accuracy, calibrated
+confidence, or authority to block a release. Independent labels are still
+missing for the 44-item blind review packet.
+
+Blog lesson: verify the artifact after the repair, not just the repaired
+selection arithmetic. Preserve the failed-budget run beside the successful
+one so the change and its limits remain visible.
+
+## 2026-09-23 — Droid is not a Jev replacement, and green is not enough
+
+The separate [Droid/Nous experiment in PR #544](https://github.com/magnus919/agent-skills/pull/544)
+tested a generative code-review workload. Nous Portal accepted GPT-6 Luna at
+`low` reasoning via Responses, including ordinary function tools and streaming,
+but returned HTTP 400 for a Responses `custom` tool. Droid's normal review
+request includes custom tools, so the full review failed. A read-only
+compatibility run avoided that request error and its GitHub job turned green,
+but Droid did not write its review-candidates file; no validated review was
+produced. PR #544 remains a draft experiment, not a replacement deployment.
+
+Jev can judge bounded assertions *after* a model has generated an answer; it
+cannot replace the generative review or the tool-using agent here. Blog lesson:
+a green AI job may mean only that the process exited cleanly. Check the
+workflow's actual output artifact and downstream validator before claiming
+that useful work happened.
+
+## 2026-09-23 — Calibrating the selected worklist, not just what arrived
+
+The first private calibration helper checked that every prose assertion in
+the *observed* audit was judged, but did not require the audit's frozen
+selected-case list to match the observed reports. That left a whole missing
+case outside its definition of a complete run. Packet preparation now rejects
+missing or unknown selection evidence, missing/unexpected reports, and
+inconsistent report counts or case identities. Repeatability comparisons of
+older audit artifacts remain readable; this stricter rule applies to preparing
+a new calibration packet.
+
+The complete [main run 35825585445](https://github.com/magnus919/agent-skills/actions/runs/35825585445)
+passed the strengthened preparation path. A fresh private packet contains 44
+blinded judgments from 18 response groups: 32 population-sampled paired
+assertions and 12 risk-enriched suggested-`met` challenges. The packet is
+local-only; no labels have been assigned, so there is still no real-output
+accuracy or confidence calibration result.
+
+Blog lesson: an audit can be internally complete for the subset it saw while
+the upstream worklist is incomplete. Freeze and check the intended case list
+before asking humans to calibrate the model against the resulting sample.
+## 2026-09-23 — Spread capped audit calls across changed skills
+
+The paired-eval auditor previously consumed reports in path order. With the
+20-call CI cap, the first alphabetic skill could use all available calls while
+other changed skills received no Jev audit. This was a coverage-allocation
+problem, not a claim that the model mislabeled any assertion. The selected
+count and budget-omission count remained honest, but the allocation was biased.
+
+The auditor now visits complete candidate/baseline case pairs round-robin
+across skills, in stable hash order within each skill. A focused four-report
+fixture verifies that a four-call budget selects one complete pair from each
+of two skills, reports the other four assertions as budget omissions, and is
+deterministic across runs. This is breadth-first *allocation*, not random
+sampling or an accuracy estimate. A capped multi-skill audit remains partial;
+independently labeled calibration is still pending.
+
+Blog lesson: a truthful omission counter is necessary but insufficient for a
+useful bounded audit. Inspect which populations receive the scarce calls.
+
+## 2026-09-23 — Verify the calibration-scope repair on main
+
+The main-branch paired-eval run
+[35830055808](https://github.com/magnus919/agent-skills/actions/runs/35830055808)
+at merge commit `58886c9f015b092aaa580c058fecf0383d850876` completed its real-model
+generation and live Jev audit successfully. The downloaded `jev-eval-audit`
+artifact reports `selection_scope.status=selected`, ten expected and ten
+observed comparison reports, no missing or unexpected reports, 20 selected
+candidate/baseline groups, and 122/122 prose assertions attempted. It reports
+zero skipped responses, oversized groups/assertions, unpaired assertions,
+budget omissions, post-error omissions, or provider errors. This confirms
+complete *selected-case coverage* on that run. Its 33 `met`, six `not_met`,
+and 83 `not_shown` suggestions are observations, not independently verified
+accuracy or calibration.
+
+The subsequent balanced-selector run
+[35830774978](https://github.com/magnus919/agent-skills/actions/runs/35830774978)
+at merge commit `e8a6f99b0e09ddfb8504a75c29a357d2bcd9a084` also completed
+real-model generation and the live Jev audit successfully. Its downloaded
+artifact identifies budget policy `skill_round_robin_stable_hash_v1`, matches
+all ten expected comparison reports, and records 20/20 groups and 122/122
+prose assertions attempted, with zero skips, budget omissions, or provider
+errors. It yielded 33 `met`, seven `not_met`, and 82 `not_shown` suggestions;
+these are not accuracy estimates. This live run selects only `system-one`, so
+the policy's *cross-skill* allocation remains evidenced by the four-report
+deterministic test, not by a live multi-skill run.
+
+We also checked `ci-failure-to-issue.yml` as a possible second Jev workload.
+It contains no LLM inference to replace: a deterministic failure event creates
+or updates a tracking issue. GitHub's main-branch `Validate skills` history
+returned only two failed runs (2026-07-29, IDs `30494023779` and
+`30493470742`). That is insufficient historical failure evidence to tune or
+calibrate a probabilistic triage classifier. No Jev step was added there;
+mandatory issue creation and failure signals remain deterministic.
+
+Blog lesson: successful live coverage and a sensible allocation policy are
+different claims. Test the latter with multi-skill fixtures, and do not infer
+semantic correctness from a green provider call or a small incident history.
+
+## 2026-09-23 — Same-input Jev repeatability from two completed CI runs
+
+We compared the live audit artifacts from main runs
+[35825585445](https://github.com/magnus919/agent-skills/actions/runs/35825585445)
+and [35830055808](https://github.com/magnus919/agent-skills/actions/runs/35830055808)
+with `scripts/jev_eval_calibration.py stability`. The tool verified that the
+two commits used byte-identical `jev_eval_audit.py` implementations (SHA-256
+`a85a531d11a1d7fbf1e2e775b5d9e3c713bf4fd6809e77614a958eafefd6d2a0`),
+then matched all 20 audited response groups by skill, case, side, and response
+SHA-256. All 122 assertion texts and their order also matched. This is a
+same-input Jev repeatability comparison, not merely a comparison of two
+different model generations.
+
+Jev's suggested verdict changed on one of 122 assertions: `contract-design`
+candidate, “Keeps thresholds, human review, authorization, and side effects
+in deterministic code,” moved from `not_met` to `met`. Its `met` probability
+moved from 0.44 to 0.47 while provider confidence moved from 0.23 to 0.20.
+Across all matched assertions, mean absolute `met` probability change was
+0.0134, maximum 0.09; mean absolute provider-confidence change was 0.0222,
+maximum 0.15. The flip was near the decision boundary and had low reported
+confidence in both runs. It strengthens the case for an abstention/review lane,
+but does **not** establish any threshold, correctness, probability calibration,
+or suitability as a release gate.
+
+A proposed third local call was blocked before egress because this environment
+required explicit approval to retransmit the saved responses. We did not work
+around that restriction. The two already-completed CI artifacts supplied the
+same-input comparison without additional provider traffic.
+
+Blog lesson: compare hashes and audit implementation before calling two runs
+“repeatability.” A green rerun can still hide a low-confidence verdict flip;
+keep that uncertainty visible rather than rounding agreement up to certainty.
+
+## 2026-09-23 — Prediction-blinded provisional assertion screen
+
+The 44-item human-review packet still had zero submitted labels, so we created
+a separate 12-item *agent* pilot from the same complete run using four hashed
+candidate/baseline assertion pairs (eight population items) and four remaining
+high-`met` challenge items. The reviewer saw response text and assertion IDs,
+not Jev predictions, and froze evidence notes before opening the private map.
+This is a diagnostic screen, **not** independent human adjudication. No new
+model/provider traffic occurred.
+
+Of the 12 pilot items, 11 received a provisional `met` or `not_shown` label;
+those 11 matched Jev's suggested verdicts. One item was left `uncertain`:
+the `jev-integration` assertion “Uses bounded retries/timeouts and does not
+turn a timeout into a confident default.” The generated code limits retry
+attempts and per-request timeouts and routes failures to review, but it sleeps
+for an uncapped server-provided `Retry-After` and has no total wall-clock
+deadline. Jev suggested `met` with `met_probability=1.0` and reported
+confidence `0.99`. This is a **rubric-boundary question**, not a proven Jev
+error: the assertion does not say whether “bounded” includes the total
+backoff/deadline. Ask an independent reviewer to adjudicate it before changing
+the eval wording or scoring Jev. A high confidence field cannot resolve an
+underspecified assertion.
+
+The private pilot labels and score remain outside the public repository; the
+original 44-item prediction-blinded packet is unchanged and still needs
+independent reviewers. The pilot's high-`met` challenge selection and tiny
+size make its agreement count unsuitable for an accuracy or calibration claim.
+
+Blog lesson: write assertions so a satisfying response, contradiction, and
+missing-evidence response are distinguishable. When a real output exposes an
+ambiguous quantifier such as “bounded,” freeze the example and adjudicate the
+criterion before tuning the model or turning its confidence into policy.
+
+## 2026-09-23 — Make independent review easier without exposing predictions
+
+The full 44-item packet still had no independent labels. Hand-editing a long
+Markdown packet plus JSON template is a practical obstacle to calibration, so
+`jev_eval_calibration.py prepare` now also emits a private `review.html` form.
+It groups assertions with their generated response, offers `met`, `not_met`,
+`not_shown`, and `uncertain`, requires a brief evidence note for final export,
+and downloads schema-v1 labels JSON. Draft save/load supports a reviewer
+working across sessions without browser storage. The reviewer must attest to
+prediction blinding before final export. The HTML is self-contained; no
+network requests or external assets are needed, and untrusted response and
+assertion text is HTML-escaped under a restrictive Content Security Policy.
+
+We regenerated the original 44-item selection with its frozen seed. Its
+Markdown packet, private map, and JSON label template were byte-identical to
+the earlier packet; only the new HTML file was added, with private file mode.
+Unit tests cover blinding, private permissions, malicious HTML escaping, and
+the inline-script CSP hash. JavaScript syntax passed `node --check`. The
+computer-use browser refused a local `file://` URL under its security policy;
+we did not try another browser surface, so actual click/export behavior is
+**not browser-verified** here. The Markdown-plus-JSON path remains available.
+No new model or provider call occurred.
+
+The first PR validation also rejected backticked names of generated private
+files as stale repository references. We changed the prose to identify those
+artifacts descriptively and reran the skill validator. Contributor docs need
+to distinguish files produced locally from paths tracked in the public skill.
+
+Blog lesson: a calibration protocol can be technically sound yet remain
+unfinished because collecting blinded labels is too awkward. Improve the
+reviewer's workflow, preserve the same frozen sample and private mapping, and
+keep unverified UI behavior clearly labeled.
+
+## 2026-09-23 — Post-merge Jev audit on the review-form revision
+
+PR [#551](https://github.com/magnus919/agent-skills/pull/551) merged as
+`23bb379772ba1aa3c265647513fcdb83f11a3c9f`. The ensuing [main-branch
+run](https://github.com/magnus919/agent-skills/actions/runs/35835888717)
+completed successfully: paired-eval tests, fake-adapter smoke, real-model
+generation, and the advisory Jev audit all passed. The independent
+[validation run](https://github.com/magnus919/agent-skills/actions/runs/35835888434)
+also passed. This verifies deployment of the review-form revision through the
+normal main-branch workflow, not just PR checks.
+
+We downloaded and inspected the audit JSON rather than inferring coverage from
+the green job. It requested `jev-1.13.0` in live mode and found all 10 expected
+reports. Across 20 selected response groups it scored all 122 prose
+assertions: 35 suggested `met`, 6 `not_met`, and 81 `not_shown`. There were zero
+budget omissions, skipped responses, unattempted assertions, or provider
+errors. Mean reported provider confidence was 0.757 (range 0.13–1.00), but
+that field is **not** an empirically calibrated probability of correctness.
+The artifact records 20 response hashes, so results can be matched to their
+source outputs without publishing those outputs in this runlog.
+
+This is operational evidence for selection and serving reliability, not an
+accuracy or release-gate result. The 44-item blinded packet still needs
+independent human labels. In particular, the provisional high-confidence
+“bounded retries/timeouts” boundary case above remains unresolved; neither a
+passing audit nor the aggregate confidence figure adjudicates it.
+
+Blog lesson: verify the live post-merge path and inspect the audit artifact's
+denominators. Report coverage, omissions, and provider failures separately
+from agreement and calibration; a clean 122/122 service run answers only the
+first set of questions.
+
+## 2026-09-23 — Replace manual review toil with a model-teacher screen
+
+The owner authorized an inference model to supply labels rather than requiring
+manual review of the 44-item packet. This does **not** create ground truth:
+the separate teacher can share blind spots with Jev, and two calls to the same
+teacher are correlated. The new manual, main-branch-only workflow prepares the
+same prediction-blind sample, asks Nous Portal GPT-6 Luna for two passes with
+reversed assertion order, and leaves disagreements `uncertain`. It uploads
+only hashed item IDs, labels, and aggregate Jev-versus-teacher counts, not the
+generated responses, Jev private map, or teacher rationales. It cannot change
+required validation or release status.
+
+We reproduced the frozen `jev-543-blind-v1` selection from main run
+[35825585445](https://github.com/magnus919/agent-skills/actions/runs/35825585445):
+44 item IDs, 32 population judgments in 16 candidate/baseline pairs, 12
+risk-enriched challenge judgments, and 18 response groups. The selected ID
+sequence matched the earlier packet byte-for-byte by SHA-256. The new
+machine-readable `review-items.json` contains only `id`, `assertion`, and
+`response`; tests reject prediction-bearing fields and verify private file
+permissions. This section records preflight design and offline tests only;
+live teacher reliability and agreement are not yet established.
+
+Jev is a managed API with no public weight-training path. TypeSafe's current
+[customer agreement](https://typesafe.ai/legal/mca) restricts using its
+Services or Output for distillation or imitation-model training. Therefore
+the teacher receives no Jev predictions and the work is an evaluation of the
+existing CI policy, **not** training a competing classifier from Jev output.
+If a separately trained Laya classifier is desired, its dataset and license
+boundary need an explicit design outside this Jev audit.
+
+Blog lesson: replacing reviewer toil with model pseudo-labels can accelerate
+error discovery, but it changes the kind of evidence. Keep provenance,
+blinding, disagreement, abstention, and provider terms visible; never rename
+teacher consensus to independent accuracy.
+
+## 2026-09-23 — First teacher run exposed a wire mismatch
+
+The first [manual teacher run](https://github.com/magnus919/agent-skills/actions/runs/35909689507)
+successfully verified the trusted main source run, downloaded both artifacts,
+and reproduced the frozen blind packet. The first provider call then failed
+HTTP 404 on `POST /v1/responses`; no labels or score were produced. The
+`NOUS_API_KEY` secret was present, so this was not a missing-credential result.
+The provider's published integration describes OpenAI-compatible chat
+completions. We changed the teacher client to `POST /v1/chat/completions` with
+chat-shaped request and response validation, preserving the same sample,
+blinding, and fail-closed output policy. A second live run must verify this
+correction before claiming that the teacher screen works.
+
+Blog lesson: “OpenAI-compatible” does not imply every OpenAI API surface is
+implemented. Probe the exact wire used by the workload and record failures as
+missing evidence, not as a classifier verdict.
+
+The [second live run](https://github.com/magnus919/agent-skills/actions/runs/35910464057)
+used the provider's documented chat-completions path but again returned HTTP
+404 on its first call, before any label was generated. This means the wire
+format alone did not explain the failure; the requested `openai/gpt-6-luna`
+model identifier or account availability is now suspect. The next revision
+checks the authenticated `/v1/models` catalog *before* sending response text
+and allows an exact catalog model ID as a manual workflow input. Do not infer
+model availability from a local CLI's model list or from an unrelated provider.
+
+The catalog check in the [third run](https://github.com/magnus919/agent-skills/actions/runs/35911223591)
+found `openai/gpt-6-luna` listed, but the first chat request
+still returned HTTP 404. A [fourth run](https://github.com/magnus919/agent-skills/actions/runs/35911350771)
+found `anthropic/claude-sonnet-4.6` in the same catalog and got the same
+404. Neither run produced labels or a score. Catalog listing is therefore not
+proof that inference works. The next workflow revision sends a synthetic
+one-line probe *before* downloading private artifacts and reports only its
+status and sanitized machine-readable error type/code.
+
+The objective here is **application-level tuning of Jev API inputs**: the
+question, evidence, criteria, and abstention policy. No model weights are
+being fine-tuned. Separate inference-model judgments, if obtained, are
+pseudo-labels for finding questionable Jev request shapes, not ground truth
+or a new release gate. If the provider route remains unavailable, pause this
+screen rather than modifying Jev prompts based on absent labels.
+
+The [synthetic preflight run](https://github.com/magnus919/agent-skills/actions/runs/35912008261)
+confirmed that the catalog lists `openai/gpt-6-luna`, but
+`POST /v1/chat/completions` with only `Reply OK.` returned HTTP 404. The
+provider body had no sanitized `error.type` or `error.code` to report. The
+workflow stopped before downloading the evaluation artifacts. This isolates
+the current blocker from the frozen sample and its request size: the same
+route fails on a minimal synthetic request. No teacher labels, agreement
+estimate, Jev false-accept estimate, or calibrated Jev input revision exists
+yet. A working inference route/account entitlement is needed before resuming
+this calibration; do not infer that changing Jev prompt wording would fix it.
+
+Correction after an unauthenticated comparison: `GET /v1/models` itself
+returned HTTP 200 with no Authorization header. The catalog step never
+verified the stored key; earlier descriptions implying it did were wrong.
+We removed the secret from that public listing request, retained the listing
+only as a model-ID precheck, and made the synthetic inference request the
+actual credential/route check. The distinction matters: **catalogued** is
+not **callable**, and a public catalog cannot establish key validity.
+
+A [third catalogued model](https://github.com/magnus919/agent-skills/actions/runs/35912615122),
+`deepseek/deepseek-v4-flash-0731`, also failed the keyed synthetic request
+with HTTP 404 before any eval artifact download. Three model families now
+share that failure; this increases suspicion of credential, account, or
+gateway behavior, but does not identify which one. No blind labels exist.
+
+## 2026-09-23 — A no-new-egress diagnostic while Nous is unavailable
+
+The repository already runs its paired-eval answer generator on a
+self-hosted runner with a local OpenAI-compatible service at
+`http://host.docker.internal:8080`. We added a separate manual, main-only
+local-model teacher workflow as a *feasibility diagnostic*, not a substitute
+for independently labeled calibration. It reuses the prediction-blind packet
+and two-pass/abstention contract, restricts the endpoint to that existing
+runner service, probes with synthetic text before downloading private
+artifacts, and uploads only aggregate/hashed-ID outputs. Its first run will
+use four candidate/baseline pairs plus four challenge assertions so a JSON
+contract or runtime failure does not turn into a long, costly replay.
+
+The local model may be the very model that generated the evaluated answers;
+the original source-run manifest uses a generic model label, so exact
+identity is not provable from the public artifact. Agreement would therefore
+be correlated self-review and cannot establish Jev accuracy, probability
+calibration, or a release gate. It can still expose disagreement examples
+worth inspecting while the independent Nous route is unavailable. This is
+preflight design and tests only; no live local-teacher result is claimed yet.
+
+The [first local workflow run](https://github.com/magnus919/agent-skills/actions/runs/35914644889)
+stopped at source validation because the self-hosted runner has no `gh` CLI.
+It never probed the local model or downloaded response artifacts, so it says
+nothing about label quality. We replaced the `gh` request and `jq` processing
+with Python 3.12 standard-library code, already provisioned in the job.
+This is a runner-portability lesson: test the actual target runner rather
+than assuming GitHub-hosted convenience tools are installed there.
+
+The [second local run](https://github.com/magnus919/agent-skills/actions/runs/35915518491)
+passed source validation and a simple `Reply OK.` HTTP probe, downloaded the
+frozen artifacts, and prepared the 12-item blind packet. Its first label
+request returned content that could not be decoded as JSON; the labeling
+script failed closed with `JSONDecodeError`, so no consensus or score exists.
+The simple probe tested only route availability, not the needed output
+contract. We now request JSON-object output from the local server and make
+the preflight use the exact label request/parser on synthetic data before
+downloading response artifacts. The local server's documented API supports
+`response_format: {"type": "json_object"}`, but that is a request for a
+format, not evidence that this checkpoint will honor it. A live rerun must
+prove the response shape; do not reinterpret malformed output as a label.
+
+The [third local run](https://github.com/magnus919/agent-skills/actions/runs/35917300013)
+passed the real label-contract synthetic probe and produced parseable JSON for
+the frozen packet, but at least one item had blank or oversized evidence.
+The strict parser rejected the batch before consensus or scoring. We now
+request a 1–250-character paraphrase and convert only an item with missing
+or oversized evidence to `uncertain`; its `met`/`not_met` suggestion is never
+accepted. Invalid IDs, classes, response shape, or missing items still fail
+the entire pass. This can retain soundly formatted items while exposing the
+model's abstention rate. One bounded rerun should decide whether this local
+self-review route offers useful diagnostic coverage; do not tune Jev from
+forced labels or report a pass when every item abstains.
+
+The [fourth local run](https://github.com/magnus919/agent-skills/actions/runs/35918057015)
+completed on the same frozen source run and small-sample seed. The uploaded
+safe artifact reports 10/12 non-uncertain two-pass consensus labels: six
+`met`, two `not_met`, two `not_shown`, and two `uncertain`. In the eight-item
+population sample, six resolved and two abstained. Jev suggested `met` for
+two resolved population items, both also `met` for the local teacher; four
+risk-enriched challenge items all resolved `met` for both. The two resolved
+non-`met` subtype disagreements are `not_met` versus `not_shown`; they do not
+establish an unsafe Jev `met` acceptance. Population precision and Brier
+fields remain null because the population has abstentions. The challenge
+slice's 4/4 agreement and numeric metrics are **not** accuracy or calibration:
+the sample was selected by Jev's high-`met` scores, is tiny, and the teacher
+may be the same model that generated the answers.
+
+The local route now has a usable diagnostic contract, but it has not shown
+whether Jev's input rubric transfers to the original 44-item packet. We
+added an explicit manual `small`/`full` sample profile; the full profile uses
+16 candidate/baseline pairs plus 12 high-`met` challenge items. We will run
+the previously frozen `jev-543-blind-v1` seed and report the two strata
+separately. No model weights are trained and no Jev gate is promoted.
+
+The [full-profile run](https://github.com/magnus919/agent-skills/actions/runs/35920327508)
+passed source verification, synthetic label-contract probing, artifact
+downloads, and preparation of the original 44-item packet. After roughly
+three minutes in the two-pass labeling step, the local model produced a
+non-JSON response (`JSONDecodeError`). The script failed closed; it uploaded
+no consensus or score. The earlier 10/12 small-screen result cannot be
+extrapolated to the full sample. A one-item synthetic probe also cannot
+establish structured-output reliability for longer real responses.
+
+Bounded stop for this route: do not keep rewriting the local teacher prompt
+against this same packet to obtain a green score. The local model may also
+be judging its own generated answers, so even a complete run would be
+correlated pseudo-label evidence, not independent Jev calibration. Retain
+the full profile as an explicit, manual diagnostic that fails closed; do
+not use its absent score, the small screen, or provider confidence to tune
+Jev API inputs or set a CI gate. Next meaningful evidence requires a working
+separate inference route with authorized data flow, or independently assigned
+labels from another approved source.
+
+## 2026-09-23 — Clarifying the optimization target
+
+The user clarified that this work is **not model fine-tuning**. The adjustable
+surface is our Jev API request: assertion wording, trusted question text,
+Choice criteria, state selection, and grouping. Model weights remain fixed.
+The existing synthetic benchmark already screened one rubric revision, but
+its 17/18 held-out result did not prevent a high-confidence false `met` on a
+real generated response. Repeated local-teacher prompt repair on the same
+44-item packet would not remedy that evidence gap, and the full run produced
+no valid score. Therefore no new Jev rubric or gate is promoted here.
+
+Next input experiment, once independently assigned real-output labels are
+available: freeze the current request and labeled sample; preregister one
+specific error hypothesis and candidate input revision; replay both requests
+against byte-identical response/criterion pairs; compare false `met` accepts,
+`not_met`/`not_shown` confusion, coverage, latency, and probability quality by
+slice; then test the chosen revision on untouched examples. Preserve the
+known reranking false accept as a regression challenge, not as held-out proof.
+The unqueried-label problem is a data/evidence boundary, not a reason to
+train Jev or to use a pseudo-label agreement rate as calibration.
+
+## 2026-09-23 — Request-shape provenance for input comparisons
+
+The advisory audit recorded the pinned Jev model and response hashes, but no
+fingerprint of its own trusted question instructions and Choice criteria.
+That meant two reports from different input rubrics could look comparable
+unless a reviewer reconstructed their source revisions. Add a SHA-256 of a
+canonical placeholder API request to each audit report and CI summary; it
+changes when the model, state/question shape, instructions, or criteria change,
+but contains no generated response text. The test changes one criterion and
+checks that the fingerprint changes. This improves reproducibility of the
+planned input-only experiment; it does not improve or establish grading
+accuracy, and no Jev input or required CI gate changes in this revision.

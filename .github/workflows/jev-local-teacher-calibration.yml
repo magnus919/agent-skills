@@ -1,0 +1,174 @@
+name: Jev local-model calibration screen
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Successful main-branch paired-eval run containing model and Jev audit artifacts
+        required: true
+        type: string
+      seed:
+        description: Frozen selection seed (use jev-543-blind-v1 for the original full packet)
+        required: true
+        default: jev-543-local-v1
+        type: string
+      sample_profile:
+        description: Small feasibility screen or the original 44-item frozen review packet
+        required: true
+        default: small
+        type: choice
+        options:
+          - small
+          - full
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.source_run_id }}-${{ inputs.seed }}-${{ inputs.sample_profile }}
+  cancel-in-progress: false
+
+jobs:
+  local-screen:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, linux, agent-skills-eval]
+    timeout-minutes: 45
+    steps:
+      - name: Check out reviewed main-branch code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Verify source is a completed main-branch paired evaluation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          SEED: ${{ inputs.seed }}
+        run: |
+          if [[ ! "$SOURCE_RUN_ID" =~ ^[0-9]+$ || ! "$SEED" =~ ^[A-Za-z0-9._-]{1,80}$ ]]; then
+            echo 'Invalid source run ID or seed' >&2
+            exit 2
+          fi
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          url = (f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}"
+                 f"/actions/runs/{os.environ['SOURCE_RUN_ID']}")
+          request = urllib.request.Request(url, headers={
+              "Authorization": f"Bearer {os.environ['GH_TOKEN']}",
+              "Accept": "application/vnd.github+json",
+          })
+          with urllib.request.urlopen(request, timeout=20) as response:
+              source = json.load(response)
+          if (source.get("head_branch"), source.get("event"), source.get("conclusion"),
+                  source.get("path")) != ("main", "push", "success", ".github/workflows/skill-eval.yml"):
+              raise SystemExit("Source is not a successful main-branch paired-eval push")
+          PY
+      - name: Probe existing local model with synthetic text
+        env:
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+          EVAL_MODEL: ${{ vars.EVAL_MODEL }}
+        run: |
+          if [ "$EVAL_BASE_URL" != 'http://host.docker.internal:8080' ] || [ -z "$EVAL_MODEL" ]; then
+            echo 'Local eval endpoint is unavailable or outside the approved runner service' >&2
+            exit 2
+          fi
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+
+          sys.path.insert(0, "system-one/scripts")
+          from jev_teacher_label import call_chat, local_endpoint, parse_labels, request_payload
+
+          item = {"id": "j" + "0" * 20, "assertion": "States that the answer is blue",
+                  "response": "The answer is blue."}
+          try:
+              payload = request_payload(os.environ["EVAL_MODEL"], item["response"], [item], 1,
+                                        structured=True)
+              result = call_chat(payload, "", local_endpoint(os.environ["EVAL_BASE_URL"]))
+              parse_labels(result, {item["id"]})
+          except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+              raise SystemExit(f"Local model label-contract probe failed: {type(exc).__name__}; no eval text was downloaded") from None
+          print("Local model label-contract probe succeeded")
+          PY
+      - name: Download real-model comparisons as untrusted data
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: paired-eval-model-artifacts
+          path: private/reports
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run_id }}
+      - name: Download matching Jev audit as untrusted data
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: jev-eval-audit
+          path: private/audit
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run_id }}
+      - name: Prepare selected prediction-blind packet
+        env:
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          SEED: ${{ inputs.seed }}
+          SAMPLE_PROFILE: ${{ inputs.sample_profile }}
+        run: |
+          case "$SAMPLE_PROFILE" in
+            small) population_pairs=4; challenge_items=4 ;;
+            full) population_pairs=16; challenge_items=12 ;;
+            *) echo 'Unsupported sample profile' >&2; exit 2 ;;
+          esac
+          python3 system-one/scripts/jev_eval_calibration.py prepare \
+            --reports private/reports --audit private/audit/jev-eval-audit.json \
+            --output-dir private/review --run-id "$SOURCE_RUN_ID" --seed "$SEED" \
+            --population-pairs "$population_pairs" --challenge-items "$challenge_items"
+      - name: Obtain two blinded local-model passes
+        env:
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+          EVAL_MODEL: ${{ vars.EVAL_MODEL }}
+        run: |
+          python3 system-one/scripts/jev_teacher_label.py \
+            --items private/review/review-items.json --model "$EVAL_MODEL" \
+            --local-base-url "$EVAL_BASE_URL" --public-model-label configured-local-model \
+            --output-dir private/teacher
+      - name: Score diagnostic agreement with Jev
+        run: |
+          python3 system-one/scripts/jev_eval_calibration.py score \
+            --private-map private/review/private-map.json \
+            --labels private/teacher/consensus-labels.json \
+            --output private/score.json
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          score = json.loads(Path("private/score.json").read_text())
+          score["reviewer_id"] = "configured-local-model"
+          Path("private/score-public.json").write_text(json.dumps(score, indent=2) + "\n")
+          teacher = json.loads(Path("private/teacher/safe-summary.json").read_text())
+          lines = [
+              "## Jev local-model diagnostic (not independent accuracy)",
+              f"Two-pass agreement: {teacher['agreement_non_uncertain']}/{teacher['total']}. "
+              "The local model may be the same model that generated these responses; "
+              "this is self-review pseudo-label evidence only.",
+              f"Population: {score['population']['resolved']}/{score['population']['selected']} resolved; "
+              f"Jev suggested-met disagreements: {score['population']['false_met_accepts']}. "
+              f"Challenge: {score['challenge_high_met']['resolved']}/{score['challenge_high_met']['selected']} resolved; "
+              f"suggested-met disagreements: {score['challenge_high_met']['false_met_accepts']}.",
+          ]
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("\n".join(lines) + "\n")
+          PY
+      - name: Upload non-text diagnostic aggregates only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: jev-local-teacher-diagnostic
+          path: |
+            private/teacher/safe-summary.json
+            private/score-public.json
+          retention-days: 14

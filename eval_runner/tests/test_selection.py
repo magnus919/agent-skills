@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 import tempfile
@@ -10,7 +11,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from eval_runner.selection import changed_paths, manifests_for_paths, render_summary, select
+from eval_runner.selection import (
+    changed_paths,
+    manifests_for_paths,
+    render_summary,
+    select,
+    selection_evidence,
+)
 
 
 class SelectionTests(unittest.TestCase):
@@ -76,6 +83,24 @@ class SelectionTests(unittest.TestCase):
         selected = select([], 5)
         self.assertEqual(selected["status"], "none")
         self.assertIn("no paired evals started", render_summary(selected))
+
+    def test_selection_evidence_freezes_expected_case_ids(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest = root / "alpha" / "evals" / "evals.json"
+            manifest.parent.mkdir(parents=True)
+            case = {
+                "id": "first-case",
+                "prompt": "Test",
+                "expected_output": "Answer",
+                "assertions": ["Works"],
+            }
+            manifest.write_text(json.dumps({"evals": [case]}), encoding="utf-8")
+            evidence = selection_evidence(select(["alpha/evals/evals.json"], 5), root)
+            self.assertEqual(evidence["expected_cases"], {"alpha": ["first-case"]})
+            manifest.write_text(json.dumps({"evals": [case, case]}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "unique case IDs"):
+                selection_evidence(select(["alpha/evals/evals.json"], 5), root)
 
 
 if __name__ == "__main__":
