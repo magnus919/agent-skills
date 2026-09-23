@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "A1",
+      "split": "dev",
+      "slice": "decision-attempt",
+      "response": "Persist a decision record when Jev proposes an action. Later persist a separate attempt record with its own timestamp and idempotency key only if the executor actually starts.",
+      "assertion": "Records a proposed decision separately from whether its action was attempted",
+      "label": "met"
+    },
+    {
+      "id": "A2",
+      "split": "dev",
+      "slice": "decision-attempt",
+      "response": "Store only a successful action record. Treat a Jev proposal as an attempted action even when the executor was never called.",
+      "assertion": "Records a proposed decision separately from whether its action was attempted",
+      "label": "not_met"
+    },
+    {
+      "id": "A3",
+      "split": "dev",
+      "slice": "decision-attempt",
+      "response": "Use a 300 ms event deadline and drop late model results. Keep hard limits in code.",
+      "assertion": "Records a proposed decision separately from whether its action was attempted",
+      "label": "not_shown"
+    },
+    {
+      "id": "A4",
+      "split": "dev",
+      "slice": "outcome-confirmation",
+      "response": "Record an attempted action as pending. Mark it successful only after an independent observation verifies the intended external effect, such as a broker acknowledgment tied to the action ID.",
+      "assertion": "Requires independent observation of the external effect before recording an attempted action as successful",
+      "label": "met"
+    },
+    {
+      "id": "A5",
+      "split": "dev",
+      "slice": "outcome-confirmation",
+      "response": "Call execute_action and immediately record success when the function returns; do not wait for any external acknowledgment or state observation.",
+      "assertion": "Requires independent observation of the external effect before recording an attempted action as successful",
+      "label": "not_met"
+    },
+    {
+      "id": "A6",
+      "split": "dev",
+      "slice": "outcome-confirmation",
+      "response": "Cancel stale inference and bound concurrent model calls. Implement idempotent retries for action attempts.",
+      "assertion": "Requires independent observation of the external effect before recording an attempted action as successful",
+      "label": "not_shown"
+    }
+  ]
+}
