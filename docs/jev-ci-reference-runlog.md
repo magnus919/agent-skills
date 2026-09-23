@@ -1168,3 +1168,58 @@ review before transmission. We did not retry by another route. The main CI
 workflow's prior Jev call does not by itself authorize this separate local
 replay; explicit user approval has been requested. Synthetic-only input
 checks and offline review remain available in the meantime.
+
+## 2026-09-23 — Second blind screen: execution status is not outcome confirmation
+
+The post-merge [main run 35927793841](https://github.com/magnus919/agent-skills/actions/runs/35927793841)
+completed its real-model paired eval and advisory Jev audit. The downloaded
+audit requested `jev-1.13.0`, recorded the same question-contract SHA-256
+`645c26640eaea298e2cd10bf7e3dd72d2c8c3d702796b1c8b5bd8a39a0cb0f9e`,
+observed all 10 expected comparison reports and all 122 selected prose
+assertions across 20 groups, and reported zero skips or provider errors.
+These are workload and coverage facts, not quality labels.
+
+Using seed `jev-571-population-1`, we froze another private, prediction-blind
+single-model review of four candidate/baseline pairs (eight items) from that
+run. Its eight item IDs did not overlap the preceding 12-item packet, but
+the seed was chosen partly to achieve that non-overlap; this is not a random
+or representative draw. No high-`met` challenge items were included. The
+private label file SHA-256 is
+`46c22f399dbf643fa658438f9981f9160d213f5f194f43aaa5df18bce7f71218`;
+it explicitly records `reviewer_kind=model_teacher`. Responses and private
+labels are not published.
+
+All eight labels were resolved before Jev predictions were opened. In this
+sample the reviewer labeled two `met` and six `not_shown`; Jev agreed on the
+two `met` and four `not_shown`, but suggested `met` for two `not_shown` items.
+Both disagreements concern the assertion “Separates decision, attempted
+execution, and confirmed outcome.” The reviewed responses distinguish a
+decision from execution but do not show a separate confirmation of the
+external outcome. One uses a decision/action/observation loop; the other
+marks an action `EXECUTED` when the action call returns. The latter status
+does not, by itself, prove that the intended external effect occurred.
+Jev's `met` probabilities on these two items were 0.90 and 0.68. The scorer's
+0.50 precision among four suggested `met` labels and 0.199575 binary Brier
+score describe agreement with this one model teacher on this selected packet,
+**not** accuracy against independent truth or deployment calibration.
+
+API-input hypothesis: the existing compound assertion may let evidence of
+decision and execution overshadow the missing confirmation. A candidate
+question should ask separately whether the response records (1) decision,
+(2) attempted execution, and (3) independently confirmed external outcome,
+and should define a return from the executor as insufficient confirmation.
+This is a proposed Jev request revision, not model-weight fine-tuning and
+not yet an observed improvement. Freeze it before any permitted replay, test
+against both known failure cases and untouched cases, and keep the audit
+advisory. The earlier local replay denial still applies; do not infer
+permission from this offline analysis.
+
+For an operational baseline, the earlier complete run 35923727892 made 20
+Jev calls for 122 prose assertions. Per-call reported latency had a 365.0 ms
+median, 450.2 ms nearest-rank p95, and 526.9 ms maximum; the sum was about
+7.0 seconds. Its Jev job elapsed about 18 seconds, whereas upstream real-model
+generation took 15m17s on the single self-hosted eval runner. These two
+job durations are not interchangeable: Jev is auditing already-generated
+responses, not replacing their production. The artifact contains no cost
+figure. Blog lesson: measure the *stage* being optimized, and keep coverage,
+reviewer provenance, and semantic validity distinct.
