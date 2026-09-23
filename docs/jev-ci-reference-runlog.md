@@ -480,3 +480,28 @@ The single flip near 0.5 reinforces the need for a review/abstention lane;
 it does not determine a usable threshold. Blog lesson: opportunistic repeated
 CI runs can reveal boundary instability without paying for or authorizing a
 new provider call, but agreement with oneself is not agreement with reality.
+
+## 2026-09-23 — Three identical-input audits after PR #536
+
+[Run 35819232877](https://github.com/magnus919/agent-skills/actions/runs/35819232877)
+on merged `main` at `10eaafa` passed the calibration-helper tests, real-model
+paired eval, and Jev audit. Its uploaded `jev-1.13.0` audit again selected
+108/108 prose assertions across the same 18 byte-identical response groups,
+with zero skips, budget omissions, or provider errors. The auditor source was
+unchanged across this and the two preceding complete runs.
+
+Across all three existing audits, 106/108 matched assertions kept one verdict;
+two changed at least once. The server-side-secret assertion changed
+`not_shown → met → not_shown` with first-run provider confidence 0.27. A
+`deadline-bound-stream` baseline assertion changed `not_shown → not_shown → met`
+with first-run confidence 0.30. Grouping by **first-run** provider confidence,
+the unstable counts were 1/4 below 0.30, 1/16 from 0.30 to below 0.50, 0/15
+from 0.50 to below 0.70, and 0/73 at or above 0.70. This is a tiny,
+post-hoc repeatability screen on one System One skill, **not** a calibrated
+confidence policy, a false-accept estimate, or a claim about the wider catalog.
+Human labels and broader real-output slices remain necessary.
+
+Blog lesson: repeated identical inputs surfaced two decision-boundary flips
+that a single green CI audit could not reveal. Showing a stability/coverage
+slice is useful for deciding what humans should inspect next; setting an
+automation threshold from it would overfit the same few observations.
