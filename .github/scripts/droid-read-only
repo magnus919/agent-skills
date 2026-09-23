@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# The Factory action supplies a fixed legacy --enabled-tools set. Nous Portal
+# rejects Responses custom tools, so restrict this experiment to read/search.
+args=()
+while (($#)); do
+  if [[ "$1" == "--enabled-tools" ]]; then
+    shift
+    if (($# == 0)); then
+      echo 'Missing --enabled-tools value' >&2
+      exit 2
+    fi
+    args+=(--enabled-tools Read,Grep,Glob,LS)
+  else
+    args+=("$1")
+  fi
+  shift
+done
+
+exec "$HOME/.local/bin/droid" "${args[@]}"

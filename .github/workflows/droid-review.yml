@@ -67,6 +67,10 @@ jobs:
             if [ "$status" != 200 ] && [ "$test_case" != unprefixed ] && [ "$test_case" != customtool ]; then failed=1; fi
           done
           exit "$failed"
+      - name: Install Droid CLI for read-only compatibility test
+        run: |
+          curl --retry 5 --retry-delay 2 --retry-all-errors -fsSL https://app.factory.ai/cli | sh
+          chmod +x .github/scripts/droid-read-only
       - name: Run Droid Auto Review
         uses: Factory-AI/droid-action@main
         with:
@@ -77,6 +81,6 @@ jobs:
           review_model: openai/gpt-6-luna
           security_model: openai/gpt-6-luna
           reasoning_effort: low
-          droid_args: --only-tools Read,Grep,Glob,LS
+          path_to_droid_executable: ${{ github.workspace }}/.github/scripts/droid-read-only
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
