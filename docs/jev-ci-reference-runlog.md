@@ -1344,3 +1344,33 @@ asks for exact-question and criterion versioning as an output-quality claim.
 This adds auditability, **not** Jev accuracy, independent labels, permission
 for local replay, or a release gate. The merged main-branch run must still
 prove that these new fields appear in the live artifact.
+
+## 2026-09-23 — Exact-question fingerprints verified in the main audit
+
+The first main-branch run after [PR #577](https://github.com/magnus919/agent-skills/pull/577),
+[35933798600](https://github.com/magnus919/agent-skills/actions/runs/35933798600),
+completed real-model generation and the advisory Jev audit successfully at
+merge SHA `c0706efdbad24d583f0c517fedf0dc37f179837a`. Its downloaded
+`mode=live` audit requested `jev-1.13.0`, expected and observed 10/10
+comparison reports, selected and judged all 126 prose assertions across
+20 groups, and reported zero skips, budget omissions, or provider errors.
+The two additional judgments versus the preceding 124-assertion run reflect
+the added `calibration-review` assertion on candidate and baseline; these
+are different eval contracts, not an accuracy trend.
+
+All 20 result rows carried 64-character `question_input_sha256` values.
+There were 10 distinct exact-question hashes, one per case; each
+candidate/baseline pair shared a hash while retaining distinct response
+hashes. The private calibration helper matched the live audit to its
+downloaded comparison bundle and reconstructed all 126 review records,
+verifying each exact-question fingerprint against the source assertion text
+and the running rubric. The audit artifact SHA-256 was
+`beae26ca4fb0d1285bdc8f972630eafd93d5d123169b9d371747d50386905891`.
+No generated response text or labels were published in this runlog.
+
+This proves the new provenance field is deployed on the actual CI path and
+detectable by the calibration helper. It does not show Jev's verdicts are
+correct, that its probabilities are calibrated, or that an advisory label
+can become a required gate. The generic template hash remained constant;
+the per-group hashes are the evidence that exact questions can now be
+distinguished.
