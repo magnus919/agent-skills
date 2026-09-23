@@ -86,7 +86,16 @@ text. Its `question_contract_sha256` fingerprints the pinned model and one
 placeholder request's trusted question/state shape, including Choice criteria;
 compare this with the source revision before treating two runs as the same
 input contract. It is not a hash of private generated responses or individual
-eval assertions. When multiple skills compete for the budget, it visits one complete
+eval assertions. Each result row also records `question_input_sha256`, which
+fingerprints the exact model, question instructions, assertion text, and Choice
+criteria for that group while excluding generated response text. Use it with
+the separate `response_sha256` and case/side identity for like-for-like input
+comparisons. The private calibration helper verifies this row fingerprint
+against the matching comparison artifact when present, rejects mixed legacy
+and fingerprinted rows, and accepts wholly legacy audits without claiming
+they had exact-question provenance. A hash proves identity, not grading
+quality or consent to replay an artifact.
+When multiple skills compete for the budget, it visits one complete
 candidate/baseline case pair per skill before taking another, using stable
 hash order within each skill. This spreads limited coverage; it is not a
 random or representative sample, and budget omissions remain explicit. Treat

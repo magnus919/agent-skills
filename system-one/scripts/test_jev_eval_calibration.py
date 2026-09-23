@@ -11,7 +11,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from jev_eval_audit import collect_groups
+from jev_eval_audit import build_request, collect_groups, question_input_sha256
 from jev_eval_calibration import (
     compare_audits,
     compare_labels,
@@ -45,6 +45,7 @@ class JevEvalCalibrationTests(unittest.TestCase):
         for group in groups:
             rows.append({"skill": group["skill"], "case_id": group["case_id"],
                          "side": group["side"], "response_sha256": group["response_sha256"],
+                         "question_input_sha256": question_input_sha256(build_request(group)),
                          "assertions": [{"assertion": assertion, "suggested_verdict": "met",
                                          "met_probability": 0.9, "provider_confidence": 0.8}
                                         for assertion in group["assertions"]]})
@@ -138,6 +139,18 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.audit_path.write_text(json.dumps(self.audit), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "coverage is incomplete"):
             read_audit(self.audit_path)
+
+    def test_question_input_drift_is_rejected_but_legacy_rows_remain_readable(self):
+        self.audit["results"][0]["question_input_sha256"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "question input"):
+            records_from_artifacts(self.root, self.audit)
+        self.audit["results"][0].pop("question_input_sha256")
+        self.audit_path.write_text(json.dumps(self.audit), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "mixes question-fingerprinted"):
+            read_audit(self.audit_path)
+        for row in self.audit["results"]:
+            row.pop("question_input_sha256", None)
+        self.assertEqual(len(records_from_artifacts(self.root, self.audit)), 8)
 
     def test_prepare_requires_complete_frozen_selected_case_coverage(self):
         for scope_change in (

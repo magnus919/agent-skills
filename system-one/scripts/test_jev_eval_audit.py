@@ -13,6 +13,7 @@ from jev_eval_audit import (
     collect_groups,
     expected_report_ids,
     question_contract_sha256,
+    question_input_sha256,
     render_summary,
 )
 from jev_eval_benchmark import metrics
@@ -69,6 +70,7 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertTrue(result["advisory_only"])
         self.assertEqual(result["counts"]["groups_selected"], 2)
         self.assertEqual(result["question_contract_sha256"], question_contract_sha256())
+        self.assertEqual(result["results"][0]["question_input_sha256"], question_input_sha256(request))
 
     def test_question_contract_fingerprint_tracks_input_rubric_not_response(self):
         baseline = question_contract_sha256()
@@ -77,6 +79,17 @@ class JevEvalAuditTests(unittest.TestCase):
         with patch.dict("jev_eval_audit.CRITERIA", {"met": "Changed criterion"}):
             self.assertNotEqual(question_contract_sha256(), baseline)
         self.assertEqual(question_contract_sha256(), baseline)
+
+    def test_question_input_fingerprint_tracks_exact_assertions_without_response_text(self):
+        group = {"response": "first response", "assertions": ["Checks the outcome"]}
+        first = question_input_sha256(build_request(group))
+        self.assertEqual(len(first), 64)
+        group["response"] = "different private response"
+        self.assertEqual(question_input_sha256(build_request(group)), first)
+        group["assertions"] = ["Checks an independently confirmed outcome"]
+        self.assertNotEqual(question_input_sha256(build_request(group)), first)
+        with patch.dict("jev_eval_audit.CRITERIA", {"met": "Changed criterion"}):
+            self.assertNotEqual(question_input_sha256(build_request({"response": "x", "assertions": ["Checks the outcome"]})), first)
 
     def test_rejects_symlink_and_oversized_artifact(self):
         link = self.reports / "link.comparison.json"

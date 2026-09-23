@@ -24,7 +24,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from jev_eval_audit import collect_groups
+from jev_eval_audit import build_request, collect_groups, question_input_sha256
 
 LABELS = ("met", "not_met", "not_shown")
 MAX_AUDIT_BYTES = 2_000_000
@@ -55,6 +55,10 @@ def read_audit(path: Path) -> tuple[dict[str, Any], str]:
         raise ValueError("audit selected/prose assertion counts disagree")
     if counts.get("groups_selected") != len(audit["results"]):
         raise ValueError("audit group count does not match result rows")
+    question_hashes_present = ["question_input_sha256" in row for row in audit["results"]
+                               if isinstance(row, dict)]
+    if any(question_hashes_present) and not all(question_hashes_present):
+        raise ValueError("audit mixes question-fingerprinted and legacy result rows")
     return audit, sha256_bytes(raw)
 
 
@@ -104,6 +108,8 @@ def records_from_artifacts(root: Path, audit: dict[str, Any]) -> list[dict[str, 
         group = group_index.get(key)
         if group is None or row.get("response_sha256") != group["response_sha256"]:
             raise ValueError("audit response identity does not match comparison artifact")
+        if "question_input_sha256" in row and row["question_input_sha256"] != question_input_sha256(build_request(group)):
+            raise ValueError("audit question input does not match comparison artifact and current rubric")
         if len(row["assertions"]) != len(group["assertions"]):
             raise ValueError("audit assertion count differs from comparison artifact")
         for answer, assertion in zip(row["assertions"], group["assertions"]):

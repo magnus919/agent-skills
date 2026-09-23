@@ -208,6 +208,15 @@ def question_contract_sha256() -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def question_input_sha256(request: dict[str, Any]) -> str:
+    """Fingerprint exact model/questions without including generated response text."""
+    encoded = json.dumps(
+        {"model": request["model"], "questions": request["questions"]},
+        sort_keys=True, separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def audit(
     root: Path,
     *,
@@ -271,6 +280,7 @@ def audit(
             "case_id": group["case_id"],
             "side": group["side"],
             "response_sha256": group["response_sha256"],
+            "question_input_sha256": question_input_sha256(request),
             "assertions": [],
         }
         if live:
