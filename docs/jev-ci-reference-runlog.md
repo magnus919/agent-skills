@@ -701,3 +701,37 @@ independently labeled calibration is still pending.
 
 Blog lesson: a truthful omission counter is necessary but insufficient for a
 useful bounded audit. Inspect which populations receive the scarce calls.
+
+## 2026-09-23 — Verify the calibration-scope repair on main
+
+The main-branch paired-eval run
+[35830055808](https://github.com/magnus919/agent-skills/actions/runs/35830055808)
+at merge commit `58886c9f015b092aaa580c058fecf0383d850876` completed its real-model
+generation and live Jev audit successfully. The downloaded `jev-eval-audit`
+artifact reports `selection_scope.status=selected`, ten expected and ten
+observed comparison reports, no missing or unexpected reports, 20 selected
+candidate/baseline groups, and 122/122 prose assertions attempted. It reports
+zero skipped responses, oversized groups/assertions, unpaired assertions,
+budget omissions, post-error omissions, or provider errors. This confirms
+complete *selected-case coverage* on that run. Its 33 `met`, six `not_met`,
+and 83 `not_shown` suggestions are observations, not independently verified
+accuracy or calibration.
+
+The subsequent balanced-selector run
+[35830774978](https://github.com/magnus919/agent-skills/actions/runs/35830774978)
+was still generating responses at this entry. Its merged code's multi-skill
+allocation is covered by the four-report deterministic test, but the live
+run selects only `system-one`; it cannot demonstrate cross-skill behavior in
+production.
+
+We also checked `ci-failure-to-issue.yml` as a possible second Jev workload.
+It contains no LLM inference to replace: a deterministic failure event creates
+or updates a tracking issue. GitHub's main-branch `Validate skills` history
+returned only two failed runs (2026-07-29, IDs `30494023779` and
+`30493470742`). That is insufficient historical failure evidence to tune or
+calibrate a probabilistic triage classifier. No Jev step was added there;
+mandatory issue creation and failure signals remain deterministic.
+
+Blog lesson: successful live coverage and a sensible allocation policy are
+different claims. Test the latter with multi-skill fixtures, and do not infer
+semantic correctness from a green provider call or a small incident history.
