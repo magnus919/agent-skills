@@ -888,6 +888,15 @@
       "description": "Browse PeerTube federated video from the terminal — instance stats, latest videos, video detail, comment threads, channels, accounts, instance-local search, and OAuth2 login with per-instance token persistence. Set PEERTUBE_SERVER to any instance; point it at sepiasearch.org for fediverse-wide search. Use when the user mentions PeerTube, federated video, SepiaSearch, or browsing a specific PeerTube instance. Do not use this skill for YouTube/Vimeo uploads, video editing, or installing and administering a PeerTube server."
     },
     {
+      "name": "performance-optimization",
+      "source": "./",
+      "skills": [
+        "./performance-optimization"
+      ],
+      "strict": false,
+      "description": "Measure and improve software performance through user-journey baselines, profiling, representative benchmarks, controlled experiments, and field verification. Use when asked to make an application, service, workflow, or hot path faster or more efficient, or to build the measurement loop first. Do not use for a reliability incident, capacity forecast, generic product A/B test, or operating a named telemetry or load-testing tool without an optimization objective."
+    },
+    {
       "name": "platform-engineering",
       "source": "./",
       "skills": [

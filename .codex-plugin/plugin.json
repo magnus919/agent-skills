@@ -116,6 +116,7 @@
     "./org-design",
     "./pace-plan",
     "./peertube",
+    "./performance-optimization",
     "./platform-engineering",
     "./playwright",
     "./postgres",
