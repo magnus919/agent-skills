@@ -719,10 +719,15 @@ accuracy or calibration.
 
 The subsequent balanced-selector run
 [35830774978](https://github.com/magnus919/agent-skills/actions/runs/35830774978)
-was still generating responses at this entry. Its merged code's multi-skill
-allocation is covered by the four-report deterministic test, but the live
-run selects only `system-one`; it cannot demonstrate cross-skill behavior in
-production.
+at merge commit `e8a6f99b0e09ddfb8504a75c29a357d2bcd9a084` also completed
+real-model generation and the live Jev audit successfully. Its downloaded
+artifact identifies budget policy `skill_round_robin_stable_hash_v1`, matches
+all ten expected comparison reports, and records 20/20 groups and 122/122
+prose assertions attempted, with zero skips, budget omissions, or provider
+errors. It yielded 33 `met`, seven `not_met`, and 82 `not_shown` suggestions;
+these are not accuracy estimates. This live run selects only `system-one`, so
+the policy's *cross-skill* allocation remains evidenced by the four-report
+deterministic test, not by a live multi-skill run.
 
 We also checked `ci-failure-to-issue.yml` as a possible second Jev workload.
 It contains no LLM inference to replace: a deterministic failure event creates
