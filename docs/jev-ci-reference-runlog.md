@@ -994,3 +994,11 @@ be correlated self-review and cannot establish Jev accuracy, probability
 calibration, or a release gate. It can still expose disagreement examples
 worth inspecting while the independent Nous route is unavailable. This is
 preflight design and tests only; no live local-teacher result is claimed yet.
+
+The [first local workflow run](https://github.com/magnus919/agent-skills/actions/runs/35914644889)
+stopped at source validation because the self-hosted runner has no `gh` CLI.
+It never probed the local model or downloaded response artifacts, so it says
+nothing about label quality. We replaced the `gh` request and `jq` processing
+with Python 3.12 standard-library code, already provisioned in the job.
+This is a runner-portability lesson: test the actual target runner rather
+than assuming GitHub-hosted convenience tools are installed there.

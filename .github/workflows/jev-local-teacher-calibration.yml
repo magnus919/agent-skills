@@ -45,12 +45,23 @@ jobs:
             echo 'Invalid source run ID or seed' >&2
             exit 2
           fi
-          source_status=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" \
-            --jq '[.head_branch, .event, .conclusion, .path] | join("|")')
-          if [ "$source_status" != 'main|push|success|.github/workflows/skill-eval.yml' ]; then
-            echo 'Source is not a successful main-branch paired-eval push' >&2
-            exit 2
-          fi
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          url = (f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}"
+                 f"/actions/runs/{os.environ['SOURCE_RUN_ID']}")
+          request = urllib.request.Request(url, headers={
+              "Authorization": f"Bearer {os.environ['GH_TOKEN']}",
+              "Accept": "application/vnd.github+json",
+          })
+          with urllib.request.urlopen(request, timeout=20) as response:
+              source = json.load(response)
+          if (source.get("head_branch"), source.get("event"), source.get("conclusion"),
+                  source.get("path")) != ("main", "push", "success", ".github/workflows/skill-eval.yml"):
+              raise SystemExit("Source is not a successful main-branch paired-eval push")
+          PY
       - name: Probe existing local model with synthetic text
         env:
           EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
@@ -62,12 +73,11 @@ jobs:
           fi
           response_file=$(mktemp)
           trap 'rm -f "$response_file"' EXIT
-          request=$(jq -nc --arg model "$EVAL_MODEL" \
-            '{model: $model, messages: [{role: "user", content: "Reply OK."}], max_tokens: 16, stream: false}')
+          request=$(python3 -c 'import json,os; print(json.dumps({"model": os.environ["EVAL_MODEL"], "messages": [{"role": "user", "content": "Reply OK."}], "max_tokens": 16, "stream": False}))')
           status=$(curl --silent --show-error --max-time 60 -o "$response_file" -w '%{http_code}' \
             -H 'Content-Type: application/json' --data "$request" \
             "$EVAL_BASE_URL/v1/chat/completions")
-          if [ "$status" != 200 ] || ! jq -e '.choices[0].message.content | type == "string"' "$response_file" > /dev/null; then
+          if [ "$status" != 200 ] || ! python3 -c 'import json,sys; value=json.load(open(sys.argv[1])); assert isinstance(value["choices"][0]["message"]["content"], str)' "$response_file"; then
             echo "Local model synthetic probe failed (HTTP $status); no eval text was downloaded." >&2
             exit 2
           fi
@@ -109,10 +119,28 @@ jobs:
             --private-map private/review/private-map.json \
             --labels private/teacher/consensus-labels.json \
             --output private/score.json
-          jq '.reviewer_id = "configured-local-model"' private/score.json > private/score-public.json
-          echo '## Jev local-model diagnostic (not independent accuracy)' >> "$GITHUB_STEP_SUMMARY"
-          jq -r '"Two-pass agreement: \(.agreement_non_uncertain)/\(.total). The local model may be the same model that generated these responses; this is self-review pseudo-label evidence only."' private/teacher/safe-summary.json >> "$GITHUB_STEP_SUMMARY"
-          jq -r '"Population: \(.population.resolved)/\(.population.selected) resolved; Jev suggested-met disagreements: \(.population.false_met_accepts). Challenge: \(.challenge_high_met.resolved)/\(.challenge_high_met.selected) resolved; suggested-met disagreements: \(.challenge_high_met.false_met_accepts)."' private/score-public.json >> "$GITHUB_STEP_SUMMARY"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          score = json.loads(Path("private/score.json").read_text())
+          score["reviewer_id"] = "configured-local-model"
+          Path("private/score-public.json").write_text(json.dumps(score, indent=2) + "\n")
+          teacher = json.loads(Path("private/teacher/safe-summary.json").read_text())
+          lines = [
+              "## Jev local-model diagnostic (not independent accuracy)",
+              f"Two-pass agreement: {teacher['agreement_non_uncertain']}/{teacher['total']}. "
+              "The local model may be the same model that generated these responses; "
+              "this is self-review pseudo-label evidence only.",
+              f"Population: {score['population']['resolved']}/{score['population']['selected']} resolved; "
+              f"Jev suggested-met disagreements: {score['population']['false_met_accepts']}. "
+              f"Challenge: {score['challenge_high_met']['resolved']}/{score['challenge_high_met']['selected']} resolved; "
+              f"suggested-met disagreements: {score['challenge_high_met']['false_met_accepts']}.",
+          ]
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("\n".join(lines) + "\n")
+          PY
       - name: Upload non-text diagnostic aggregates only
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
