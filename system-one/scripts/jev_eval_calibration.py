@@ -195,31 +195,63 @@ def prepare(root: Path, audit_path: Path, output_dir: Path, run_id: str, seed: s
             "output_dir": str(output_dir)}
 
 
+def validated_labels(labels: dict[str, Any]) -> dict[str, dict[str, str]]:
+    """Validate one frozen, prediction-blind review without consulting Jev."""
+    if not isinstance(labels, dict) or labels.get("schema_version") != 1:
+        raise ValueError("labels must be a schema_version 1 JSON object")
+    if not isinstance(labels.get("reviewer_id"), str) or not labels["reviewer_id"].strip() or labels.get("blind_to_predictions") is not True:
+        raise ValueError("labels need a reviewer_id and blind_to_predictions=true attestation")
+    entries = labels.get("labels")
+    if not isinstance(entries, list) or not entries:
+        raise ValueError("labels must contain review items")
+    observed = {}
+    for entry in entries:
+        if not isinstance(entry, dict) or not isinstance(entry.get("id"), str) or not entry["id"] or entry["id"] in observed:
+            raise ValueError("review item ID is missing or duplicated")
+        if entry.get("label") not in (*LABELS, "uncertain"):
+            raise ValueError("every review item needs met, not_met, not_shown, or uncertain")
+        if not isinstance(entry.get("evidence"), str) or not entry["evidence"].strip():
+            raise ValueError("every label needs a brief evidence note")
+        observed[entry["id"]] = {"label": entry["label"], "evidence": entry["evidence"].strip()}
+    return observed
+
+
+def compare_labels(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
+    """Expose reviewer disagreement before either reviewer sees Jev's map."""
+    left, right = validated_labels(first), validated_labels(second)
+    if first["reviewer_id"].strip() == second["reviewer_id"].strip():
+        raise ValueError("independent reviews need distinct reviewer IDs")
+    if left.keys() != right.keys():
+        raise ValueError("reviewers must label exactly the same item IDs")
+    disagreements = [
+        {"id": item_id, "first": left[item_id], "second": right[item_id]}
+        for item_id in left if left[item_id]["label"] != right[item_id]["label"]
+    ]
+    uncertain = sum(left[item_id]["label"] == "uncertain" or right[item_id]["label"] == "uncertain" for item_id in left)
+    return {
+        "schema_version": 1, "reviewers": [first["reviewer_id"].strip(), second["reviewer_id"].strip()],
+        "items": len(left), "agreements": len(left) - len(disagreements),
+        "disagreements": disagreements, "items_with_uncertain_label": uncertain,
+        "blind_to_jev_predictions": True,
+        "limitation": "Agreement is not correctness; adjudicate disagreements before comparing labels with Jev.",
+    }
+
+
 def score(private_map: dict[str, Any], labels: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(private_map, dict) or not isinstance(labels, dict):
         raise ValueError("review map and labels must be JSON objects")
-    if private_map.get("schema_version") != 1 or labels.get("schema_version") != 1:
+    if private_map.get("schema_version") != 1:
         raise ValueError("review map and labels must use schema_version 1")
-    if not isinstance(labels.get("reviewer_id"), str) or not labels["reviewer_id"].strip() or labels.get("blind_to_predictions") is not True:
-        raise ValueError("labels need a reviewer_id and blind_to_predictions=true attestation")
+    reviewed = validated_labels(labels)
     items = private_map.get("items")
     if not isinstance(items, list) or not all(isinstance(item, dict) and isinstance(item.get("id"), str) for item in items):
         raise ValueError("review map has invalid items")
     expected = {item["id"]: item for item in items}
     if len(expected) != len(items):
         raise ValueError("review map has duplicate item IDs")
-    entries = labels.get("labels")
-    if not isinstance(entries, list) or len(entries) != len(expected):
+    if reviewed.keys() != expected.keys():
         raise ValueError("labels must contain exactly one entry per review item")
-    observed = {}
-    for entry in entries:
-        if not isinstance(entry, dict) or entry.get("id") not in expected or entry["id"] in observed:
-            raise ValueError("unknown or duplicate review item ID")
-        if entry.get("label") not in (*LABELS, "uncertain"):
-            raise ValueError("every review item needs met, not_met, not_shown, or uncertain")
-        if not isinstance(entry.get("evidence"), str) or not entry["evidence"].strip():
-            raise ValueError("every label needs a brief evidence note")
-        observed[entry["id"]] = entry["label"]
+    observed = {item_id: entry["label"] for item_id, entry in reviewed.items()}
     def summarize(sample_class: str) -> dict[str, Any]:
         chosen = [item for item in expected.values() if item["sample_class"] == sample_class]
         resolved = [item for item in chosen if observed[item["id"]] in LABELS]
@@ -259,6 +291,10 @@ def main() -> int:
     grade.add_argument("--private-map", type=Path, required=True)
     grade.add_argument("--labels", type=Path, required=True)
     grade.add_argument("--output", type=Path, required=True, help="new private JSON file")
+    compare = sub.add_parser("compare", help="compare two independently frozen label files before opening Jev predictions")
+    compare.add_argument("--first", type=Path, required=True)
+    compare.add_argument("--second", type=Path, required=True)
+    compare.add_argument("--output", type=Path, required=True, help="new private disagreement JSON file")
     args = parser.parse_args()
     try:
         if args.command == "prepare":
@@ -266,6 +302,11 @@ def main() -> int:
                 raise ValueError("reports must be a directory and sample counts/seed must be valid")
             result = prepare(args.reports, args.audit, args.output_dir, args.run_id, args.seed,
                              args.population_pairs, args.challenge_items)
+        elif args.command == "compare":
+            first = json.loads(args.first.read_text(encoding="utf-8"))
+            second = json.loads(args.second.read_text(encoding="utf-8"))
+            result = compare_labels(first, second)
+            write_private_new(args.output, json.dumps(result, indent=2) + "\n")
         else:
             private_map = json.loads(args.private_map.read_text(encoding="utf-8"))
             labels = json.loads(args.labels.read_text(encoding="utf-8"))

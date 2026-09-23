@@ -440,3 +440,16 @@ It and the raw response text remain local rather than in the repository or CI
 artifact. Human labels are still missing; do not infer any Jev accuracy or
 threshold from the 108/108 coverage count. The time comparison also measures
 different jobs and output contracts—Jev did not replace the generative stage.
+
+## 2026-09-23 — Keep reviewer disagreement upstream of Jev scoring
+
+The latest 44-item private review packet still has zero independently assigned
+labels. A single filled template could be scored, but that would conflate one
+reviewer's judgment with adjudicated truth. The calibration helper now supports
+two separately frozen, prediction-blind label files and reports their exact
+agreements, disagreements, and unresolved `uncertain` items without reading
+Jev's private prediction map. Reviewers can resolve rubric ambiguity before
+seeing model answers; the original reviews remain intact. This is preparation
+for independent evidence, not evidence that Jev agrees with humans. Blog
+lesson: measure and preserve disagreement in the supposed ground truth before
+optimizing a model against it.

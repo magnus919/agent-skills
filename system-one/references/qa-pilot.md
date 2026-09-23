@@ -114,16 +114,29 @@ reported as workload prevalence. Change the counts before freezing the packet
 if the decision risk needs broader coverage. All packet files are written
 with private permissions and must not be committed or uploaded as CI artifacts.
 
-Have a reviewer who has not seen Jev's answers fill `labels-template.json`
-using `met`, `not_met`, `not_shown`, or `uncertain`, with a short evidence note
-for every item. Freeze their file before opening `private-map.json`; seek a
-second independent review or adjudication for consequential disagreements.
-Then run:
+Have each reviewer who has not seen Jev's answers fill a **separate copy** of
+`labels-template.json` using `met`, `not_met`, `not_shown`, or `uncertain`, with
+a short evidence note for every item. Freeze both files before comparison.
+Do not share a first reviewer's labels with the second reviewer. Compare the
+frozen labels *without* opening `private-map.json`:
+
+```bash
+python3 scripts/jev_eval_calibration.py compare \
+  --first /private/path/reviewer-a-labels.json \
+  --second /private/path/reviewer-b-labels.json \
+  --output /private/path/reviewer-disagreements.json
+```
+
+The comparison lists disagreements and uncertain items without any Jev
+predictions. Agreement is not correctness. Adjudicate substantive disagreements
+against the visible response and rubric, retaining both original reviews and
+the adjudication record. Only after labels are frozen and disagreements are
+resolved should the private map be opened and the labels scored:
 
 ```bash
 python3 scripts/jev_eval_calibration.py score \
   --private-map /private/path/review-v1/private-map.json \
-  --labels /private/path/review-v1/labels-template.json \
+  --labels /private/path/adjudicated-labels.json \
   --output /private/path/review-v1/reviewer-a-score.json
 ```
 

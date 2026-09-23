@@ -2,12 +2,14 @@
 
 import json
 import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 from jev_eval_audit import collect_groups
-from jev_eval_calibration import prepare, read_audit, records_from_artifacts, score, select_records
+from jev_eval_calibration import compare_labels, prepare, read_audit, records_from_artifacts, score, select_records
 
 
 class JevEvalCalibrationTests(unittest.TestCase):
@@ -97,6 +99,42 @@ class JevEvalCalibrationTests(unittest.TestCase):
         labels["labels"][0]["label"] = ""
         with self.assertRaisesRegex(ValueError, "every review item needs"):
             score(private_map, labels)
+
+    def test_blind_reviewer_comparison_has_no_jev_predictions(self):
+        first = {"schema_version": 1, "reviewer_id": "a", "blind_to_predictions": True,
+                 "labels": [{"id": "j1", "label": "met", "evidence": "visible contract"},
+                            {"id": "j2", "label": "not_shown", "evidence": "missing evidence"}]}
+        second = {"schema_version": 1, "reviewer_id": "b", "blind_to_predictions": True,
+                  "labels": [{"id": "j2", "label": "not_met", "evidence": "incompatible shape"},
+                             {"id": "j1", "label": "met", "evidence": "visible contract"}]}
+        result = compare_labels(first, second)
+        self.assertEqual((result["items"], result["agreements"], len(result["disagreements"])), (2, 1, 1))
+        self.assertEqual(result["disagreements"][0]["id"], "j2")
+        self.assertNotIn("suggested_verdict", json.dumps(result))
+        second["reviewer_id"] = "a"
+        with self.assertRaisesRegex(ValueError, "distinct reviewer IDs"):
+            compare_labels(first, second)
+        second["reviewer_id"] = "b"
+        second["labels"][0]["id"] = "other"
+        with self.assertRaisesRegex(ValueError, "same item IDs"):
+            compare_labels(first, second)
+
+    def test_compare_cli_writes_private_disagreement_file(self):
+        first = {"schema_version": 1, "reviewer_id": "a", "blind_to_predictions": True,
+                 "labels": [{"id": "j1", "label": "met", "evidence": "visible"}]}
+        second = {"schema_version": 1, "reviewer_id": "b", "blind_to_predictions": True,
+                  "labels": [{"id": "j1", "label": "not_shown", "evidence": "missing"}]}
+        first_path, second_path, output = (self.root / name for name in ("first.json", "second.json", "comparison.json"))
+        first_path.write_text(json.dumps(first), encoding="utf-8")
+        second_path.write_text(json.dumps(second), encoding="utf-8")
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).with_name("jev_eval_calibration.py")), "compare",
+             "--first", str(first_path), "--second", str(second_path), "--output", str(output)],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(os.stat(output).st_mode & 0o777, 0o600)
+        self.assertEqual(json.loads(output.read_text(encoding="utf-8"))["agreements"], 0)
 
 
 if __name__ == "__main__":
