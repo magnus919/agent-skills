@@ -735,3 +735,36 @@ mandatory issue creation and failure signals remain deterministic.
 Blog lesson: successful live coverage and a sensible allocation policy are
 different claims. Test the latter with multi-skill fixtures, and do not infer
 semantic correctness from a green provider call or a small incident history.
+
+## 2026-09-23 — Same-input Jev repeatability from two completed CI runs
+
+We compared the live audit artifacts from main runs
+[35825585445](https://github.com/magnus919/agent-skills/actions/runs/35825585445)
+and [35830055808](https://github.com/magnus919/agent-skills/actions/runs/35830055808)
+with `scripts/jev_eval_calibration.py stability`. The tool verified that the
+two commits used byte-identical `jev_eval_audit.py` implementations (SHA-256
+`a85a531d11a1d7fbf1e2e775b5d9e3c713bf4fd6809e77614a958eafefd6d2a0`),
+then matched all 20 audited response groups by skill, case, side, and response
+SHA-256. All 122 assertion texts and their order also matched. This is a
+same-input Jev repeatability comparison, not merely a comparison of two
+different model generations.
+
+Jev's suggested verdict changed on one of 122 assertions: `contract-design`
+candidate, “Keeps thresholds, human review, authorization, and side effects
+in deterministic code,” moved from `not_met` to `met`. Its `met` probability
+moved from 0.44 to 0.47 while provider confidence moved from 0.23 to 0.20.
+Across all matched assertions, mean absolute `met` probability change was
+0.0134, maximum 0.09; mean absolute provider-confidence change was 0.0222,
+maximum 0.15. The flip was near the decision boundary and had low reported
+confidence in both runs. It strengthens the case for an abstention/review lane,
+but does **not** establish any threshold, correctness, probability calibration,
+or suitability as a release gate.
+
+A proposed third local call was blocked before egress because this environment
+required explicit approval to retransmit the saved responses. We did not work
+around that restriction. The two already-completed CI artifacts supplied the
+same-input comparison without additional provider traffic.
+
+Blog lesson: compare hashes and audit implementation before calling two runs
+“repeatability.” A green rerun can still hide a low-confidence verdict flip;
+keep that uncertainty visible rather than rounding agreement up to certainty.
