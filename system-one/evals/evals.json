@@ -42,6 +42,20 @@
       ]
     },
     {
+      "id": "laya-cpp-native-serving",
+      "prompt": "We have an RTX server and want to try laya.cpp as a local replacement for our Jev-shaped typed-decision client. How should we build a safe comparison and private deployment?",
+      "expected_output": "Explains laya.cpp's native Laya runtime and compatible HTTP protocol, selects and pins a checkpoint/backend, verifies model identity and answer contract, measures matching-precision parity and end-to-end latency under batching, and protects the private endpoint.",
+      "assertions": [
+        "Distinguishes the Jev-compatible HTTP schema and model alias from actual Jev weights or model quality",
+        "Selects one explicit Laya checkpoint per server process and pins runtime, model, and backend artifacts",
+        "Validates answer IDs, types, option sets, and canonical model identity before policy code",
+        "Compares matching-precision outputs and held-out domain quality under representative batch shapes",
+        "Measures queue wait and end-to-end latency rather than relying only on published warmed throughput",
+        "Configures authentication, private network access, TLS ingress, and bounded concurrency",
+        "Retains deterministic authority and a rollback path"
+      ]
+    },
+    {
       "id": "calibration-review",
       "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Review this proposal and define the evidence needed before release.",
       "expected_output": "Rejects the universal threshold, distinguishes confidence from accuracy, requires held-out target data, calibration and risk-coverage analysis, and uses stricter confirmation or human review for consequential actions.",

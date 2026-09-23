@@ -109,6 +109,10 @@ when a Node service or a non-PyTorch runtime is a real constraint; verify the
 adapter's bundle checksum and output parity against the Python reference before
 using it as a production replacement.
 
+For native C++ inference with CUDA, Vulkan, or CPU and a Jev-compatible HTTP
+endpoint, read `references/laya-cpp.md`. It is a separate community runtime;
+do not assume Python, Node, and C++ have identical latency or calibration.
+
 ## Known limits and fixes
 
 - The option list shares a fixed head token budget. Large Choice sets can make

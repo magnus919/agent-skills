@@ -22,7 +22,7 @@ on your own workload.
 | Directory | Purpose |
 |---|---|
 | `SKILL.md` | Core integration workflow, model-selection rules, guardrails, and stopping criteria |
-| `references/` | Jev and Laya guides, local/VPC service walkthrough, use-case recipes, evaluation, troubleshooting, and model survey |
+| `references/` | Jev and Laya guides, native laya.cpp option, local/VPC service walkthrough, use-case recipes, evaluation, troubleshooting, and model survey |
 | `templates/decision-contract.md` | Fillable contract for state, questions, thresholds, authority, and fallback |
 | `templates/action-control-contract.md` | Preflight for observed app actions, confirmation, freshness, and rollback |
 | `templates/benchmark-record.md` | Reproducible model/latency/calibration comparison record |
