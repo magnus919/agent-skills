@@ -20,9 +20,9 @@ def manifests_for_paths(paths: list[str], root: Path) -> list[str]:
         if len(parts) < 2 or not SKILL_NAME.fullmatch(parts[0]):
             continue
         eligible_change = (
-            len(parts) == 2 and parts[1] == "SKILL.md"
-            or len(parts) == 3 and parts[1:] == ("evals", "evals.json")
-            or len(parts) >= 3 and parts[1] == "scripts"
+            (len(parts) == 2 and parts[1] == "SKILL.md")
+            or (len(parts) == 3 and parts[1:] == ("evals", "evals.json"))
+            or (len(parts) >= 3 and parts[1] == "scripts")
         )
         if eligible_change and (root / parts[0] / "evals" / "evals.json").is_file():
             skills.add(parts[0])
