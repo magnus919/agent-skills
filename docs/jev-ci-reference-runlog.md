@@ -352,3 +352,23 @@ deployment retained rules and human authority while making the uncertain
 surface visible. Future writing should present the false positive and the
 budget defect alongside the final successful run, not edit them out of the
 story.
+
+## 2026-09-23 — Turn the pilot into contributor expectations
+
+The observed failures are now reflected in `AGENTS.md` and `CONTRIBUTING.md`
+as proposed authoring guidance for future skill evals. The guidance asks for
+stable cases, independently checkable semantic assertions, precise structural
+boundaries, and a deliberate check against satisfying, contradictory, and
+missing-evidence responses. Exact properties still belong in deterministic or
+environment checks. This is a quality standard for humans **and** model
+auditors; it is not a new field in the v1 eval schema or a requirement to
+rewrite every existing assertion automatically.
+
+The boundary matters: our one known real-output false positive demonstrates
+that assertion wording can hide a consequential API mistake, but it does not
+prove that atomic wording will make Jev reliable across the catalog. The
+docs therefore keep Jev advisory, warn that `manual_review` is not a verified
+pass, and reserve any scoring threshold or release gate for independently
+labeled real-output evidence. Blog lesson: institutionalize the authoring
+practice that the experiment actually supports without turning a promising
+pilot into an unearned correctness claim.

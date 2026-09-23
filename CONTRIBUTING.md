@@ -24,6 +24,29 @@ Each skill must:
 
 The coverage report keeps claims separate. `manifest_present` means only that a file exists. Per skill, `schema_valid` is `not_applicable` when `evals/evals.json` is missing, `false` when a present manifest fails parsing/schema/semantic validation, and `true` only when the manifest passes repository v1 validation. Aggregate schema-valid coverage counts only skills where `schema_valid` is `true`. The remaining states are named but intentionally `not_assessed` in v1: `executable_grader_bindings_present`, `recent_run_evidence_present`, and `release_gated_evidence_present`. Those require separate versioned contracts for grader bindings, provenance/freshness, and release-gate evidence.
 
+### Writing useful eval assertions
+
+Our default-branch CI can ask Jev for an **advisory** second opinion on prose assertions in paired skill evals. Design the eval to describe the behavior you want, not to flatter the model. The v1 manifest format has not changed: keep stable case IDs, realistic prompts, a case-level `expected_output`, and observable `assertions`.
+
+Avoid a broad assertion such as “Covers private hosting, authentication, readiness, and rollback.” A response can cover three of those and omit the fourth. Write separately checkable claims instead:
+
+```json
+{
+  "assertions": [
+    "Limits the service to private network access",
+    "Authenticates requests before inference",
+    "Reports readiness only after the model, tokenizer, and inference device load",
+    "Defines a rollback path for a checkpoint upgrade"
+  ]
+}
+```
+
+For structural API requirements, name the invariant. For example, a reranking eval should require a distinct Score or Noul question ID **for each candidate** and separately require sorting or fusion in code. Batching those distinct questions in one request is valid; a single question returning an array of candidate scores is not. Do not require one request per candidate or otherwise exclude a valid design just to simplify grading.
+
+Before submitting a changed manifest, try to identify a satisfying response, a plausible contradiction, and an answer that simply lacks evidence for each semantic assertion. If the three cannot be distinguished, sharpen the assertion or choose a more appropriate evidence source. Use `eval_runner/grader.py`'s existing prefixes for exact checks; a keyword check does not verify meaning. Claims about actual files, execution, or side effects need executable/environment evidence, not just a response saying they happened. Do not add Jev-specific fields to `evals/evals.json` or silently rename an eval ID.
+
+The current grader reports prose as `manual_review`, and its overall `passed=true` is **not** a verified semantic pass. Jev's `met`/`not_met`/`not_shown` suggestions help reviewers prioritize inspection; they do not change required CI or approve release. Our pilot found a high-confidence false positive on a real API-shape mistake, so do not tune wording to maximize Jev's score or set a gating probability from the synthetic fixture. See [`docs/jev-ci-reference-runlog.md`](docs/jev-ci-reference-runlog.md) for the experiments and remaining calibration work. In a PR, explain any material change to what an assertion accepts and include the relevant validation results.
+
 ## Skill catalog structure
 
 The catalog is two-layered by design. Keep your change in the layer that matches the job, and prefer beefing up an existing skill over creating a near-duplicate:
