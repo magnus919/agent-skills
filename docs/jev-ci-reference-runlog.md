@@ -546,3 +546,27 @@ workflow, but are reported as no eligible skill rather than audited work.
 Blog lesson: a complete *selection result* is only complete relative to its
 event trigger and changed-file query. Check both before interpreting audit
 coverage as a property of the contributor's whole change.
+
+## 2026-09-23 — Reference-only edit reaches real Jev audit
+
+[PR #539](https://github.com/magnus919/agent-skills/pull/539) changed the
+System One QA reference without changing its `SKILL.md`, eval manifest, or
+scripts. Its PR paired-eval smoke job passed, and the selector reported one
+eligible and selected skill: `system-one`. After merge at `2f34bcf`,
+[main run 35822037156](https://github.com/magnus919/agent-skills/actions/runs/35822037156)
+completed paired-eval tests, fake-adapter smoke, real-model paired evaluation,
+and the advisory Jev audit successfully. Both the model and audit artifacts
+were uploaded.
+
+The audit artifact requested `jev-1.13.0` and marked itself advisory. It saw
+9 comparison reports and 108 prose assertions, selected all 18 response
+groups and all 108 assertions, and recorded zero skipped responses, oversized
+items, unpaired assertions, budget omissions, or provider errors. This proves
+that a reference-only change can reach the end-to-end CI path and that this
+run's generated prose assertions were fully attempted. It does **not** prove
+Jev accuracy, calibration, or semantic correctness; independent labels for
+real outputs are still missing.
+
+Blog lesson: verify coverage fixes with a change that previously would have
+been invisible to the trigger, then follow that change through generation,
+audit, and artifact metadata. A green job alone is a weaker observation.
