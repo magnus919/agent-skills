@@ -198,7 +198,7 @@ jobs:
             --reports eval-output-model \
             --selection eval-output-model/selection.json \
             --live \
-            --max-calls 20 \
+            --max-calls 22 \
             --max-assertions 160 \
             --output jev-eval-audit.json \
             --summary-output "$GITHUB_STEP_SUMMARY"

@@ -30,7 +30,7 @@ on your own workload.
 | `scripts/` | Offline/live probe, read-only routing demo, Jev QA pilot, advisory eval audit, private review and model-teacher screening, binary evaluator, and private Laya HTTP adapter |
 | `templates/laya.Dockerfile` | Container starting point using a pinned local model artifact |
 | `tests/` and `scripts/test_*.py` | Offline checks for contracts, policy, evaluation, and service behavior |
-| `evals/evals.json` | Nine output-quality cases for model integration and operations |
+| `evals/evals.json` | Eleven output-quality cases for model integration and operations |
 
 ## Quick Start
 
@@ -41,6 +41,7 @@ references/jev.md     # hosted Jev
 references/laya.md    # self-hosted Laya
 references/laya-self-hosting.md  # local-to-private-service walkthrough
 references/use-case-patterns.md # browser, routing, ranking, guardrail recipes
+references/jev-ci-reference-deployment.md # reproduce and operate this repo's Jev CI audit
 ```
 
 Validate a request contract without calling a model:
