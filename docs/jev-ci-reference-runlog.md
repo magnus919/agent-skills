@@ -683,3 +683,21 @@ accuracy or confidence calibration result.
 Blog lesson: an audit can be internally complete for the subset it saw while
 the upstream worklist is incomplete. Freeze and check the intended case list
 before asking humans to calibrate the model against the resulting sample.
+## 2026-09-23 — Spread capped audit calls across changed skills
+
+The paired-eval auditor previously consumed reports in path order. With the
+20-call CI cap, the first alphabetic skill could use all available calls while
+other changed skills received no Jev audit. This was a coverage-allocation
+problem, not a claim that the model mislabeled any assertion. The selected
+count and budget-omission count remained honest, but the allocation was biased.
+
+The auditor now visits complete candidate/baseline case pairs round-robin
+across skills, in stable hash order within each skill. A focused four-report
+fixture verifies that a four-call budget selects one complete pair from each
+of two skills, reports the other four assertions as budget omissions, and is
+deterministic across runs. This is breadth-first *allocation*, not random
+sampling or an accuracy estimate. A capped multi-skill audit remains partial;
+independently labeled calibration is still pending.
+
+Blog lesson: a truthful omission counter is necessary but insufficient for a
+useful bounded audit. Inspect which populations receive the scarce calls.

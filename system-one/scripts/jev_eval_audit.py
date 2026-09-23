@@ -219,10 +219,28 @@ def audit(
     pairs: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for group in groups:
         pairs[(group["skill"], group["case_id"])].append(group)
+    # Spread a bounded audit across changed skills before taking a second case
+    # from any skill. Stable hashes avoid always favoring lexical-first case IDs.
+    by_skill: dict[str, list[list[dict[str, Any]]]] = defaultdict(list)
+    for (skill, _case_id), pair in pairs.items():
+        by_skill[skill].append(pair)
+    for skill, skill_pairs in by_skill.items():
+        skill_pairs.sort(
+            key=lambda pair: hashlib.sha256(
+                f"{skill}\0{pair[0]['case_id']}".encode("utf-8")
+            ).hexdigest()
+        )
+    balanced_pairs = (
+        pair
+        for index in range(max(map(len, by_skill.values()), default=0))
+        for skill in sorted(by_skill)
+        if index < len(by_skill[skill])
+        for pair in (by_skill[skill][index],)
+    )
     selected_groups: list[dict[str, Any]] = []
     selected_assertions = 0
     omitted = 0
-    for pair in pairs.values():
+    for pair in balanced_pairs:
         pair_size = sum(len(group["assertions"]) for group in pair)
         if (
             len(selected_groups) + len(pair) > max_calls
@@ -279,6 +297,7 @@ def audit(
         "mode": "live" if live else "offline",
         "model_requested": MODEL if live else None,
         "advisory_only": True,
+        "budget_selection_policy": "skill_round_robin_stable_hash_v1",
         "selection_scope": {
             "status": selection["status"] if selection is not None else "not_provided",
             "expected_report_count": len(expected_reports)
@@ -342,6 +361,7 @@ def render_summary(report: dict[str, Any]) -> str:
         f"- Oversized assertion/group skips: {counts['skipped_oversized_assertion'] + counts['skipped_oversized_group']}\n"
         f"- Unpaired assertions: {counts['skipped_unpaired_assertions']}\n"
         f"- Budget omissions: {counts['assertions_omitted_by_budget']}\n"
+        "- Budget selection: stable-hash case order, round-robin across skills; not a random or representative sample\n"
         f"- Groups not attempted after provider error: {counts['groups_not_attempted_after_error']}\n"
         f"- Not attempted after provider error: {counts['assertions_not_attempted_after_error']}\n\n"
         "These are coverage counts, **not** agreement, calibration, or permission to merge. "
