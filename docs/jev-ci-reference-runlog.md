@@ -773,3 +773,36 @@ same-input comparison without additional provider traffic.
 Blog lesson: compare hashes and audit implementation before calling two runs
 “repeatability.” A green rerun can still hide a low-confidence verdict flip;
 keep that uncertainty visible rather than rounding agreement up to certainty.
+
+## 2026-09-23 — Prediction-blinded provisional assertion screen
+
+The 44-item human-review packet still had zero submitted labels, so we created
+a separate 12-item *agent* pilot from the same complete run using four hashed
+candidate/baseline assertion pairs (eight population items) and four remaining
+high-`met` challenge items. The reviewer saw response text and assertion IDs,
+not Jev predictions, and froze evidence notes before opening the private map.
+This is a diagnostic screen, **not** independent human adjudication. No new
+model/provider traffic occurred.
+
+Of the 12 pilot items, 11 received a provisional `met` or `not_shown` label;
+those 11 matched Jev's suggested verdicts. One item was left `uncertain`:
+the `jev-integration` assertion “Uses bounded retries/timeouts and does not
+turn a timeout into a confident default.” The generated code limits retry
+attempts and per-request timeouts and routes failures to review, but it sleeps
+for an uncapped server-provided `Retry-After` and has no total wall-clock
+deadline. Jev suggested `met` with `met_probability=1.0` and reported
+confidence `0.99`. This is a **rubric-boundary question**, not a proven Jev
+error: the assertion does not say whether “bounded” includes the total
+backoff/deadline. Ask an independent reviewer to adjudicate it before changing
+the eval wording or scoring Jev. A high confidence field cannot resolve an
+underspecified assertion.
+
+The private pilot labels and score remain outside the public repository; the
+original 44-item prediction-blinded packet is unchanged and still needs
+independent reviewers. The pilot's high-`met` challenge selection and tiny
+size make its agreement count unsuitable for an accuracy or calibration claim.
+
+Blog lesson: write assertions so a satisfying response, contradiction, and
+missing-evidence response are distinguishable. When a real output exposes an
+ambiguous quantifier such as “bounded,” freeze the example and adjudicate the
+criterion before tuning the model or turning its confidence into policy.
