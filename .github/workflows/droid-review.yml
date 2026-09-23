@@ -64,7 +64,7 @@ jobs:
               --data "$payload" \
               https://inference-api.nousresearch.com/v1/responses)
             echo "$test_case Responses probe: HTTP $status"
-            if [ "$status" != 200 ] && [ "$test_case" != unprefixed ]; then failed=1; fi
+            if [ "$status" != 200 ] && [ "$test_case" != unprefixed ] && [ "$test_case" != customtool ]; then failed=1; fi
           done
           exit "$failed"
       - name: Run Droid Auto Review
@@ -77,5 +77,6 @@ jobs:
           review_model: openai/gpt-6-luna
           security_model: openai/gpt-6-luna
           reasoning_effort: low
+          droid_args: --only-tools Read,Grep,Glob,LS
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
