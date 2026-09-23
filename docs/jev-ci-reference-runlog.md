@@ -1223,3 +1223,40 @@ job durations are not interchangeable: Jev is auditing already-generated
 responses, not replacing their production. The artifact contains no cost
 figure. Blog lesson: measure the *stage* being optimized, and keep coverage,
 reviewer provenance, and semantic validity distinct.
+
+## 2026-09-23 — Input-only development screen rejected a broad evidence reminder
+
+We tested, but did not deploy, one Jev API-input revision suggested by the
+blind execution/outcome disagreements. The candidate appended a general
+instruction to seek direct evidence for each clause and not equate a plan,
+example code path, or successful action-call return with a confirmed external
+effect. Model, state, assertion, and Choice criteria remained unchanged. The
+current request fingerprint was
+`645c26640eaea298e2cd10bf7e3dd72d2c8c3d702796b1c8b5bd8a39a0cb0f9e`;
+the candidate's was
+`67901b85a17ad6b3fd735a61fcba2213a4cc008a97cd2599486291a1a90c1e76`.
+Tests verified that the default request retained its fingerprint and that
+only the candidate question instructions differed. No private generated CI
+response was sent in this experiment.
+
+On the same 18 author-constructed **development** cases, each rubric made
+18 valid calls to `jev-1.13.0`. Both returned the same 17/18 verdicts and
+made zero suggested-`met` false accepts. The candidate's binary `met` Brier
+score was worse: 0.0649 versus 0.0241 for the current request. At a 0.7
+`met`-probability screen it retained only one of the five suggested `met`
+cases retained by the current request; this is a descriptive screen, not a
+selected automation threshold. Median per-call latency was 395.65 ms versus
+378.05 ms in these sequential, unreplicated runs; that difference is too
+weak to claim a performance regression. The first unprivileged baseline
+attempt failed at DNS before any model response; the complete comparison
+used a network-enabled call path and synthetic fixture only.
+
+Because the candidate showed no verdict gain and weaker probability quality
+on development data, we did **not** open the synthetic held-out split, replay
+private real outputs, change the audit's deployed request, or retain the
+experimental code. The current Jev audit contract remains advisory and
+unchanged. The two model-teacher disagreements remain a useful failure
+hypothesis, but the next question must be more targeted and assessed with
+independently adjudicated real-output evidence before promotion. Blog lesson:
+explicitly log a failed input revision; a plausible rubric reminder can
+reduce confidence in true positives without correcting the observed errors.
