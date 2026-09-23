@@ -16,6 +16,7 @@ import json
 import math
 import os
 import re
+import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -237,6 +238,80 @@ def compare_labels(first: dict[str, Any], second: dict[str, Any]) -> dict[str, A
     }
 
 
+def audit_implementation_sha256(revision: str) -> str:
+    """Verify the audit implementation at a full source commit, not a moving ref."""
+    if not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise ValueError("audit source revision must be a full 40-character lowercase Git SHA")
+    repository = Path(__file__).resolve().parents[2]
+    result = subprocess.run(
+        ["git", "-C", str(repository), "show", f"{revision}:system-one/scripts/jev_eval_audit.py"],
+        capture_output=True, check=False,
+    )
+    if result.returncode != 0:
+        raise ValueError("audit source revision is unavailable in the local Git repository")
+    return sha256_bytes(result.stdout)
+
+
+def compare_audits(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
+    """Compare identical audited inputs; repeatability is not correctness."""
+    if first["model_requested"] != second["model_requested"]:
+        raise ValueError("audit model identities differ")
+    def index(audit: dict[str, Any]) -> dict[tuple[str, str, str, str], dict[str, Any]]:
+        rows = audit["results"]
+        if any(not isinstance(row, dict) or "error" in row for row in rows):
+            raise ValueError("audit contains an errored result")
+        indexed = {(row["skill"], row["case_id"], row["side"], row["response_sha256"]): row for row in rows}
+        if len(indexed) != len(rows):
+            raise ValueError("audit contains duplicate response groups")
+        return indexed
+    left, right = index(first), index(second)
+    if left.keys() != right.keys():
+        raise ValueError("audits do not contain identical response groups")
+    flips = []
+    probability_deltas = []
+    confidence_deltas = []
+    assertion_count = 0
+    for key, row in left.items():
+        other = right[key]
+        if [a["assertion"] for a in row["assertions"]] != [a["assertion"] for a in other["assertions"]]:
+            raise ValueError("audits do not contain identical assertion text and order")
+        for answer, repeated in zip(row["assertions"], other["assertions"]):
+            for item in (answer, repeated):
+                if item["suggested_verdict"] not in LABELS:
+                    raise ValueError("audit contains an invalid verdict")
+                if any(not isinstance(item[field], (int, float)) or isinstance(item[field], bool)
+                       or not math.isfinite(item[field]) or not 0 <= item[field] <= 1
+                       for field in ("met_probability", "provider_confidence")):
+                    raise ValueError("audit contains an invalid probability or confidence")
+            assertion_count += 1
+            probability_deltas.append(abs(answer["met_probability"] - repeated["met_probability"]))
+            confidence_deltas.append(abs(answer["provider_confidence"] - repeated["provider_confidence"]))
+            if answer["suggested_verdict"] != repeated["suggested_verdict"]:
+                flips.append({
+                    "skill": key[0], "case_id": key[1], "side": key[2],
+                    "response_sha256": key[3],
+                    "assertion_sha256": sha256_bytes(answer["assertion"].encode("utf-8")),
+                    "first_verdict": answer["suggested_verdict"],
+                    "second_verdict": repeated["suggested_verdict"],
+                    "first_met_probability": answer["met_probability"],
+                    "second_met_probability": repeated["met_probability"],
+                    "first_provider_confidence": answer["provider_confidence"],
+                    "second_provider_confidence": repeated["provider_confidence"],
+                })
+    if assertion_count != first["counts"]["assertions_selected"] or assertion_count != second["counts"]["assertions_selected"]:
+        raise ValueError("audit assertion counts disagree with result rows")
+    return {
+        "schema_version": 1, "advisory_only": True, "model": first["model_requested"],
+        "matched_groups": len(left), "matched_assertions": assertion_count,
+        "verdict_flips": flips,
+        "mean_abs_met_probability_delta": sum(probability_deltas) / assertion_count if assertion_count else None,
+        "max_abs_met_probability_delta": max(probability_deltas, default=None),
+        "mean_abs_provider_confidence_delta": sum(confidence_deltas) / assertion_count if assertion_count else None,
+        "max_abs_provider_confidence_delta": max(confidence_deltas, default=None),
+        "limitation": "Repeated agreement measures stability, not accuracy, calibration, or gate readiness.",
+    }
+
+
 def score(private_map: dict[str, Any], labels: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(private_map, dict) or not isinstance(labels, dict):
         raise ValueError("review map and labels must be JSON objects")
@@ -295,6 +370,12 @@ def main() -> int:
     compare.add_argument("--first", type=Path, required=True)
     compare.add_argument("--second", type=Path, required=True)
     compare.add_argument("--output", type=Path, required=True, help="new private disagreement JSON file")
+    stability = sub.add_parser("stability", help="compare complete audits of byte-identical inputs offline")
+    stability.add_argument("--first-audit", type=Path, required=True)
+    stability.add_argument("--second-audit", type=Path, required=True)
+    stability.add_argument("--first-revision", required=True, help="full source commit SHA for first audit")
+    stability.add_argument("--second-revision", required=True, help="full source commit SHA for second audit")
+    stability.add_argument("--output", type=Path, required=True, help="new private JSON report")
     args = parser.parse_args()
     try:
         if args.command == "prepare":
@@ -306,6 +387,18 @@ def main() -> int:
             first = json.loads(args.first.read_text(encoding="utf-8"))
             second = json.loads(args.second.read_text(encoding="utf-8"))
             result = compare_labels(first, second)
+            write_private_new(args.output, json.dumps(result, indent=2) + "\n")
+        elif args.command == "stability":
+            first_sha = audit_implementation_sha256(args.first_revision)
+            second_sha = audit_implementation_sha256(args.second_revision)
+            if first_sha != second_sha:
+                raise ValueError("audit implementations differ; replay is not a like-for-like stability comparison")
+            first, first_artifact_sha = read_audit(args.first_audit)
+            second, second_artifact_sha = read_audit(args.second_audit)
+            result = compare_audits(first, second)
+            result.update({"first_revision": args.first_revision, "second_revision": args.second_revision,
+                           "audit_implementation_sha256": first_sha,
+                           "first_audit_sha256": first_artifact_sha, "second_audit_sha256": second_artifact_sha})
             write_private_new(args.output, json.dumps(result, indent=2) + "\n")
         else:
             private_map = json.loads(args.private_map.read_text(encoding="utf-8"))

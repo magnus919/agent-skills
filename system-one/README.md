@@ -51,7 +51,7 @@ python3 scripts/decision_demo.py
 python3 scripts/evaluate_noul.py --cases examples/noul.synthetic.jsonl --threshold 0.8
 python3 scripts/jev_qa_pilot.py  # synthetic rules-only baseline; no API call
 python3 scripts/jev_eval_audit.py --reports /path/to/paired-eval-artifacts  # offline selection check
-python3 scripts/jev_eval_calibration.py --help  # private review preparation, disagreement comparison, and scoring
+python3 scripts/jev_eval_calibration.py --help  # private review, scoring, and offline repeatability
 ```
 
 For Laya, follow `references/laya-self-hosting.md` to stage a commit-pinned
