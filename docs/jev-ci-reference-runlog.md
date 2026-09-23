@@ -923,3 +923,12 @@ correction before claiming that the teacher screen works.
 Blog lesson: “OpenAI-compatible” does not imply every OpenAI API surface is
 implemented. Probe the exact wire used by the workload and record failures as
 missing evidence, not as a classifier verdict.
+
+The [second live run](https://github.com/magnus919/agent-skills/actions/runs/35910464057)
+used the provider's documented chat-completions path but again returned HTTP
+404 on its first call, before any label was generated. This means the wire
+format alone did not explain the failure; the requested `openai/gpt-6-luna`
+model identifier or account availability is now suspect. The next revision
+checks the authenticated `/v1/models` catalog *before* sending response text
+and allows an exact catalog model ID as a manual workflow input. Do not infer
+model availability from a local CLI's model list or from an unrelated provider.
