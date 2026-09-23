@@ -1,0 +1,12 @@
+{
+  "model": "synthetic-fixture-not-a-model-result",
+  "answers": {
+    "queue": {
+      "type": "choice",
+      "choice": "billing",
+      "probabilities": {"billing": 0.82, "technical": 0.08, "other": 0.10},
+      "confidence": 0.76
+    },
+    "refund_requested": {"type": "noul", "noul": 0.91}
+  }
+}

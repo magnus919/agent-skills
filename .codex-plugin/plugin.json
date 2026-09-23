@@ -159,6 +159,7 @@
     "./strategy-frameworks",
     "./stripe",
     "./supabase",
+    "./system-one",
     "./systematic-debugging",
     "./tailscale",
     "./technical-documentation",

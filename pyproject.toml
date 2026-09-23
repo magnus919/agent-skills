@@ -134,6 +134,7 @@ extend_exclude = [
     "woodpecker-ci",
     "yc-default-alive-calculator",
     "yc-weekly-growth-compass",
+    "system-one",
 ]
 [tool.deptry.per_rule_ignores]
 DEP002 = ["ruff", "pytest", "pytest-cov", "pytest-xdist", "mypy", "radon", "deptry", "bandit", "requests", "types-jsonschema"]

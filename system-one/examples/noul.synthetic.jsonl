@@ -1,0 +1,6 @@
+{"id":"a","probability":0.90,"label":1,"slice":"en"}
+{"id":"b","probability":0.75,"label":0,"slice":"en"}
+{"id":"c","probability":0.30,"label":0,"slice":"en"}
+{"id":"d","probability":0.65,"label":1,"slice":"es"}
+{"id":"e","probability":0.20,"label":0,"slice":"es"}
+{"id":"f","probability":0.85,"label":1,"slice":"es"}

@@ -1275,6 +1275,15 @@
       "description": "Use this skill when developing applications with Supabase, running the Supabase CLI, designing migrations and RLS policies, testing database behavior, generating client types, deploying the official self-hosted Docker stack, or administering its Postgres, Auth, Storage, Realtime, Functions, API gateway, backups, upgrades, and security. Use it for managed and self-hosted projects. Do not use for generic PostgreSQL work with no Supabase services or conventions."
     },
     {
+      "name": "system-one",
+      "source": "./",
+      "skills": [
+        "./system-one"
+      ],
+      "strict": false,
+      "description": "Design, integrate, evaluate, self-host, and troubleshoot typed System One decision models including TypeSafe Jev and Convai Innovations Laya. Use for Choice/Score/Noul judgments inside deterministic software, app-control loops, routing, ranking, guardrails, calibration, or private Laya inference. Do not use for open-ended generation, exact rules or authorization, or generic LLM serving without a bounded decision contract."
+    },
+    {
       "name": "systematic-debugging",
       "source": "./",
       "skills": [
