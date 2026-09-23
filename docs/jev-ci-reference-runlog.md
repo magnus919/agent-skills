@@ -1288,3 +1288,38 @@ graded the earlier private generated responses or that real-output accuracy
 improved. The fixture is a development regression screen, not independent
 ground truth or held-out proof. The CI audit remains advisory; no probability
 threshold or release gate is introduced.
+
+## 2026-09-23 — Merged atomic eval reached the live Jev audit
+
+After [PR #575](https://github.com/magnus919/agent-skills/pull/575) merged at
+`e2dfadb8ac2a55440ee565df3831468b5a0fc2b8`, the exact
+[main run 35931348911](https://github.com/magnus919/agent-skills/actions/runs/35931348911)
+completed successfully. Real-model generation and the downstream advisory
+Jev audit both ran. The downloaded audit is `mode=live`, requested
+`jev-1.13.0`, observed 10/10 selected comparison reports, and judged all
+124/124 prose assertions in 20 groups. It recorded zero skipped responses,
+oversized items, budget omissions, or provider errors. The two extra
+assertions versus earlier 122-assertion runs are the candidate/baseline
+instances created by splitting one assertion in this case.
+
+For `deadline-bound-stream`, Jev suggested `met` for the baseline and
+`not_shown` for the candidate on the decision-versus-attempt assertion.
+It suggested `not_shown` for both on the independent-outcome-confirmation
+assertion. The generated candidate design says to observe the outcome after
+acting but does not clearly specify a separate confirmed-success record.
+The baseline example sets `EXECUTED` when the action function returns, with
+no independent confirmation before that status. These observations make the
+new `not_shown` outcome judgments plausible, but this inspection happened
+**after** reading Jev's answers; it is not a prediction-blind label or an
+accuracy measurement. The distinction between an explicit contradiction
+(`not_met`) and missing confirmation evidence (`not_shown`) remains worth
+independent adjudication.
+
+The audit's generic question-contract SHA-256 stayed
+`645c26640eaea298e2cd10bf7e3dd72d2c8c3d702796b1c8b5bd8a39a0cb0f9e`.
+That fingerprint covers the template instructions and Choice criteria but
+not individual eval assertion text; the **actual API questions changed**
+despite the same template hash. Compare manifest revision and assertion
+text as well as the generic fingerprint when attributing outcomes. This
+live run verifies delivery and complete selected-case coverage, not Jev
+calibration or fitness for a required release gate.
