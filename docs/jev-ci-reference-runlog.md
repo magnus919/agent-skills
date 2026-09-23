@@ -505,3 +505,24 @@ Blog lesson: repeated identical inputs surfaced two decision-boundary flips
 that a single green CI audit could not reveal. Showing a stability/coverage
 slice is useful for deciding what humans should inspect next; setting an
 automation threshold from it would overfit the same few observations.
+
+## 2026-09-23 — Make paired-eval selection coverage explicit
+
+Inspection of both paired-eval jobs found a silent `head -5` cap on changed
+skills with eval manifests. A six-skill change could run only five paired evals
+while the downstream Jev audit still reported complete coverage of the
+*generated* reports. That percentage did not represent coverage of all
+eligible changed skills. This was a selection-denominator defect, not evidence
+of Jev misclassification.
+
+The selector now records eligible and selected counts, selects all skills up
+to the five-skill resource cap, and fails without starting a truncated subset
+when the cap is exceeded. Both the fake-adapter PR path and the real-model
+default-branch path use it. Unit tests cover duplicate paths, unrelated
+changes, empty selection, and the six-skill failure case. Contributor guidance
+now distinguishes selection completeness from assertion-level audit coverage.
+No new TypeSafe calls or human-label claims were made in this change.
+
+Blog lesson: a model audit can be internally 100% complete while the upstream
+work selector silently omitted cases. Track the denominator at each pipeline
+boundary, and fail visibly when a resource cap would hide work.

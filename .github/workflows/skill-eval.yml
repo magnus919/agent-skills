@@ -49,6 +49,8 @@ jobs:
         run: python3 system-one/scripts/test_jev_eval_audit.py
       - name: Test private real-output calibration helper
         run: python3 system-one/scripts/test_jev_eval_calibration.py
+      - name: Test complete changed-skill selection
+        run: python3 eval_runner/tests/test_selection.py
 
   paired-eval-smoke:
     runs-on: ubuntu-latest
@@ -69,20 +71,10 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
-          manifests=$(
-            git diff --name-only "$BASE_SHA" HEAD -- \
-              '*/SKILL.md' '*/evals/evals.json' '*/scripts/**' \
-              | awk -F/ 'NF > 1 { print $1 }' \
-              | sort -u \
-              | while read -r skill; do
-                  if [ -f "$skill/evals/evals.json" ]; then
-                    printf '%s\n' "$skill/evals/evals.json"
-                  fi
-                done \
-              | head -5 \
-              | paste -sd' ' -
-          )
-          echo "manifests=$manifests" >> "$GITHUB_OUTPUT"
+          python3 -m eval_runner.selection \
+            --base "$BASE_SHA" --max-skills 5 \
+            --github-output "$GITHUB_OUTPUT" \
+            --summary-output "$GITHUB_STEP_SUMMARY"
       - name: Run paired evaluation (fake adapter)
         if: steps.changed.outputs.manifests != ''
         env:
@@ -141,20 +133,10 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.before }}
         run: |
-          manifests=$(
-            git diff --name-only "$BASE_SHA" HEAD -- \
-              '*/SKILL.md' '*/evals/evals.json' '*/scripts/**' \
-              | awk -F/ 'NF > 1 { print $1 }' \
-              | sort -u \
-              | while read -r skill; do
-                  if [ -f "$skill/evals/evals.json" ]; then
-                    printf '%s\n' "$skill/evals/evals.json"
-                  fi
-                done \
-              | head -5 \
-              | paste -sd' ' -
-          )
-          echo "manifests=$manifests" >> "$GITHUB_OUTPUT"
+          python3 -m eval_runner.selection \
+            --base "$BASE_SHA" --max-skills 5 \
+            --github-output "$GITHUB_OUTPUT" \
+            --summary-output "$GITHUB_STEP_SUMMARY"
       - name: Run paired evaluation (real model)
         if: steps.endpoint.outputs.available == 'true' && steps.changed.outputs.manifests != ''
         env:
