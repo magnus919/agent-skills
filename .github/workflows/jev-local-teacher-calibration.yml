@@ -1,0 +1,123 @@
+name: Jev local-model calibration screen
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Successful main-branch paired-eval run containing model and Jev audit artifacts
+        required: true
+        type: string
+      seed:
+        description: Frozen selection seed for the small feasibility screen
+        required: true
+        default: jev-543-local-v1
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.source_run_id }}-${{ inputs.seed }}
+  cancel-in-progress: false
+
+jobs:
+  local-screen:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, linux, agent-skills-eval]
+    timeout-minutes: 45
+    steps:
+      - name: Check out reviewed main-branch code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Verify source is a completed main-branch paired evaluation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          SEED: ${{ inputs.seed }}
+        run: |
+          if [[ ! "$SOURCE_RUN_ID" =~ ^[0-9]+$ || ! "$SEED" =~ ^[A-Za-z0-9._-]{1,80}$ ]]; then
+            echo 'Invalid source run ID or seed' >&2
+            exit 2
+          fi
+          source_status=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" \
+            --jq '[.head_branch, .event, .conclusion, .path] | join("|")')
+          if [ "$source_status" != 'main|push|success|.github/workflows/skill-eval.yml' ]; then
+            echo 'Source is not a successful main-branch paired-eval push' >&2
+            exit 2
+          fi
+      - name: Probe existing local model with synthetic text
+        env:
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+          EVAL_MODEL: ${{ vars.EVAL_MODEL }}
+        run: |
+          if [ "$EVAL_BASE_URL" != 'http://host.docker.internal:8080' ] || [ -z "$EVAL_MODEL" ]; then
+            echo 'Local eval endpoint is unavailable or outside the approved runner service' >&2
+            exit 2
+          fi
+          response_file=$(mktemp)
+          trap 'rm -f "$response_file"' EXIT
+          request=$(jq -nc --arg model "$EVAL_MODEL" \
+            '{model: $model, messages: [{role: "user", content: "Reply OK."}], max_tokens: 16, stream: false}')
+          status=$(curl --silent --show-error --max-time 60 -o "$response_file" -w '%{http_code}' \
+            -H 'Content-Type: application/json' --data "$request" \
+            "$EVAL_BASE_URL/v1/chat/completions")
+          if [ "$status" != 200 ] || ! jq -e '.choices[0].message.content | type == "string"' "$response_file" > /dev/null; then
+            echo "Local model synthetic probe failed (HTTP $status); no eval text was downloaded." >&2
+            exit 2
+          fi
+      - name: Download real-model comparisons as untrusted data
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: paired-eval-model-artifacts
+          path: private/reports
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run_id }}
+      - name: Download matching Jev audit as untrusted data
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: jev-eval-audit
+          path: private/audit
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run_id }}
+      - name: Prepare small prediction-blind packet
+        env:
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          SEED: ${{ inputs.seed }}
+        run: |
+          python3 system-one/scripts/jev_eval_calibration.py prepare \
+            --reports private/reports --audit private/audit/jev-eval-audit.json \
+            --output-dir private/review --run-id "$SOURCE_RUN_ID" --seed "$SEED" \
+            --population-pairs 4 --challenge-items 4
+      - name: Obtain two blinded local-model passes
+        env:
+          EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+          EVAL_MODEL: ${{ vars.EVAL_MODEL }}
+        run: |
+          python3 system-one/scripts/jev_teacher_label.py \
+            --items private/review/review-items.json --model "$EVAL_MODEL" \
+            --local-base-url "$EVAL_BASE_URL" --public-model-label configured-local-model \
+            --output-dir private/teacher
+      - name: Score diagnostic agreement with Jev
+        run: |
+          python3 system-one/scripts/jev_eval_calibration.py score \
+            --private-map private/review/private-map.json \
+            --labels private/teacher/consensus-labels.json \
+            --output private/score.json
+          jq '.reviewer_id = "configured-local-model"' private/score.json > private/score-public.json
+          echo '## Jev local-model diagnostic (not independent accuracy)' >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"Two-pass agreement: \(.agreement_non_uncertain)/\(.total). The local model may be the same model that generated these responses; this is self-review pseudo-label evidence only."' private/teacher/safe-summary.json >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"Population: \(.population.resolved)/\(.population.selected) resolved; Jev suggested-met disagreements: \(.population.false_met_accepts). Challenge: \(.challenge_high_met.resolved)/\(.challenge_high_met.selected) resolved; suggested-met disagreements: \(.challenge_high_met.false_met_accepts)."' private/score-public.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload non-text diagnostic aggregates only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: jev-local-teacher-diagnostic
+          path: |
+            private/teacher/safe-summary.json
+            private/score-public.json
+          retention-days: 14

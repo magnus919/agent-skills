@@ -209,6 +209,17 @@ agreement before any distillation project. Tune on one frozen development
 slice and evaluate changes on a separate held-out slice; report teacher
 uncertainty and known counterexamples rather than treating agreement as truth.
 
+The separate manual `.github/workflows/jev-local-teacher-calibration.yml`
+offers a smaller feasibility screen on the existing self-hosted evaluation
+runner. It uses only reviewed `main` code and the already configured
+`host.docker.internal:8080` model service, so it adds no inference-provider
+egress. It checks the endpoint with synthetic text before downloading the
+frozen response artifacts, then reviews four candidate/baseline pairs and
+four risk-enriched items. Only hashed IDs, labels, and aggregate counts are
+uploaded. The local teacher may be the **same model that generated the
+answers**; even two blind passes are correlated self-review, not independent
+labels or accuracy. Do not promote its score to a Jev threshold or gate.
+
 ### Repeatability without new provider calls
 
 When two complete Jev audit artifacts already exist, compare them offline

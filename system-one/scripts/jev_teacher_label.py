@@ -16,6 +16,7 @@ import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections import Counter, defaultdict
 from collections.abc import Callable
@@ -93,18 +94,26 @@ def request_payload(model: str, response: str, items: list[dict[str, str]], pass
             "max_tokens": 4096, "stream": False}
 
 
-def call_nous(payload: dict[str, Any], api_key: str) -> dict[str, Any]:
+def local_endpoint(base_url: str) -> str:
+    parsed = urllib.parse.urlsplit(base_url)
+    if (parsed.scheme != "http" or parsed.hostname != "host.docker.internal" or
+            parsed.port != 8080 or parsed.path not in ("", "/") or
+            parsed.username or parsed.password or parsed.query or parsed.fragment):
+        raise ValueError("local model base URL must be http://host.docker.internal:8080")
+    return base_url.rstrip("/") + "/v1/chat/completions"
+
+
+def call_chat(payload: dict[str, Any], api_key: str, endpoint: str = ENDPOINT) -> dict[str, Any]:
     body = json.dumps(payload).encode("utf-8")
     deadline = time.monotonic() + 100
     for attempt in range(2):
         remaining = deadline - time.monotonic()
         if remaining <= 0:
             raise ValueError("teacher call exceeded its total deadline")
-        request = urllib.request.Request(
-            ENDPOINT, body,
-            {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            method="POST",
-        )
+        headers = {"Content-Type": "application/json"}
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
+        request = urllib.request.Request(endpoint, body, headers, method="POST")
         try:
             with urllib.request.urlopen(request, timeout=min(45, remaining)) as response:
                 if response.status != 200:
@@ -177,7 +186,8 @@ def label_pass(items: list[dict[str, str]], model: str, pass_number: int,
 
 def consensus(items: list[dict[str, str]], first: dict[str, dict[str, str]],
               second: dict[str, dict[str, str]], model: str, input_hash: str,
-              reported_models: list[str] | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
+              reported_models: list[str] | None = None,
+              public_model_label: str | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     if first.keys() != second.keys() or first.keys() != {item["id"] for item in items}:
         raise ValueError("teacher passes cover different items")
     labels = []
@@ -195,8 +205,9 @@ def consensus(items: list[dict[str, str]], first: dict[str, dict[str, str]],
     full = {"schema_version": 1, "reviewer_id": f"model-teacher:{model}:{PROMPT_REVISION}",
             "reviewer_kind": "model_teacher", "blind_to_predictions": True, "labels": labels}
     summary = {"schema_version": 1, "label_source": "model_teacher_pseudo_labels",
-               "model_requested": model, "prompt_revision": PROMPT_REVISION,
-               "provider_reported_models": sorted(set(reported_models or [])),
+               "model_requested": public_model_label or model, "prompt_revision": PROMPT_REVISION,
+               "provider_reported_models": sorted(set(reported_models or [])) if not public_model_label else [],
+               "provider_reported_model_hashes": sorted({digest(value.encode("utf-8")) for value in (reported_models or [])}) if public_model_label else [],
                "blind_items_sha256": input_hash, "items": public_items,
                "counts": counts, "agreement_non_uncertain": len(items) - counts.get("uncertain", 0),
                "total": len(items), "limitation": "Teacher agreement is not ground truth or probability calibration; no gate threshold follows."}
@@ -208,23 +219,27 @@ def main() -> int:
     parser.add_argument("--items", type=Path, required=True, help="private review-items.json; no Jev prediction map")
     parser.add_argument("--output-dir", type=Path, required=True, help="new private directory")
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--local-base-url", help="use the trusted self-hosted eval endpoint without a remote API key")
+    parser.add_argument("--public-model-label", help="generic model label for public summaries")
     args = parser.parse_args()
     try:
         items, input_hash = read_blind_items(args.items)
-        api_key = os.environ.get("NOUS_API_KEY", "")
-        if not api_key:
+        api_key = "" if args.local_base_url else os.environ.get("NOUS_API_KEY", "")
+        if not args.local_base_url and not api_key:
             raise ValueError("NOUS_API_KEY is unavailable")
+        endpoint = local_endpoint(args.local_base_url) if args.local_base_url else ENDPOINT
         args.output_dir.mkdir(mode=0o700, parents=False, exist_ok=False)
         reported_models: list[str] = []
         def transport(payload: dict[str, Any]) -> dict[str, Any]:
-            result = call_nous(payload, api_key)
+            result = call_chat(payload, api_key, endpoint)
             reported = result.get("model")
             if isinstance(reported, str) and reported:
                 reported_models.append(reported)
             return result
         first = label_pass(items, args.model, 1, transport)
         second = label_pass(items, args.model, 2, transport)
-        full, summary = consensus(items, first, second, args.model, input_hash, reported_models)
+        full, summary = consensus(items, first, second, args.model, input_hash, reported_models,
+                                  args.public_model_label)
         write_private_new(args.output_dir / "consensus-labels.json", json.dumps(full, indent=2) + "\n")
         write_private_new(args.output_dir / "safe-summary.json", json.dumps(summary, indent=2) + "\n")
     except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:

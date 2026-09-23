@@ -5,7 +5,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from jev_teacher_label import consensus, label_pass, parse_labels, read_blind_items, request_payload
+from jev_teacher_label import (
+    consensus,
+    label_pass,
+    local_endpoint,
+    parse_labels,
+    read_blind_items,
+    request_payload,
+)
 
 
 class JevTeacherLabelTests(unittest.TestCase):
@@ -76,6 +83,23 @@ class JevTeacherLabelTests(unittest.TestCase):
         self.assertEqual(len(seen), 2)
         self.assertEqual(len(labels), 3)
         self.assertEqual({row["label"] for row in labels.values()}, {"not_shown"})
+
+    def test_local_endpoint_is_restricted_to_existing_runner_service(self):
+        self.assertEqual(local_endpoint("http://host.docker.internal:8080"),
+                         "http://host.docker.internal:8080/v1/chat/completions")
+        for bad in ("https://host.docker.internal:8080", "http://example.com:8080",
+                    "http://host.docker.internal:8080/path", "http://host.docker.internal:8080/?x=1"):
+            with self.subTest(bad=bad), self.assertRaisesRegex(ValueError, "local model base URL"):
+                local_endpoint(bad)
+
+    def test_public_local_summary_redacts_model_id(self):
+        labels = {item["id"]: {"label": "met", "evidence": "Visible support"} for item in self.items}
+        full, summary = consensus(self.items, labels, labels, "private-model", "0" * 64,
+                                  ["private-model"], "configured-local-model")
+        self.assertIn("private-model", json.dumps(full))
+        self.assertNotIn("private-model", json.dumps(summary))
+        self.assertEqual(summary["model_requested"], "configured-local-model")
+        self.assertEqual(len(summary["provider_reported_model_hashes"][0]), 64)
 
 
 if __name__ == "__main__":

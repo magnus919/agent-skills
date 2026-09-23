@@ -973,3 +973,24 @@ A [third catalogued model](https://github.com/magnus919/agent-skills/actions/run
 with HTTP 404 before any eval artifact download. Three model families now
 share that failure; this increases suspicion of credential, account, or
 gateway behavior, but does not identify which one. No blind labels exist.
+
+## 2026-09-23 — A no-new-egress diagnostic while Nous is unavailable
+
+The repository already runs its paired-eval answer generator on a
+self-hosted runner with a local OpenAI-compatible service at
+`http://host.docker.internal:8080`. We added a separate manual, main-only
+local-model teacher workflow as a *feasibility diagnostic*, not a substitute
+for independently labeled calibration. It reuses the prediction-blind packet
+and two-pass/abstention contract, restricts the endpoint to that existing
+runner service, probes with synthetic text before downloading private
+artifacts, and uploads only aggregate/hashed-ID outputs. Its first run will
+use four candidate/baseline pairs plus four challenge assertions so a JSON
+contract or runtime failure does not turn into a long, costly replay.
+
+The local model may be the very model that generated the evaluated answers;
+the original source-run manifest uses a generic model label, so exact
+identity is not provable from the public artifact. Agreement would therefore
+be correlated self-review and cannot establish Jev accuracy, probability
+calibration, or a release gate. It can still expose disagreement examples
+worth inspecting while the independent Nous route is unavailable. This is
+preflight design and tests only; no live local-teacher result is claimed yet.
