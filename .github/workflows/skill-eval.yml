@@ -132,7 +132,8 @@ jobs:
           python3 -m eval_runner.selection \
             --base "$BASE_SHA" --max-skills 5 \
             --github-output "$GITHUB_OUTPUT" \
-            --summary-output "$GITHUB_STEP_SUMMARY"
+            --summary-output "$GITHUB_STEP_SUMMARY" \
+            --json-output eval-output-model/selection.json
       - name: Run paired evaluation (real model)
         if: steps.endpoint.outputs.available == 'true' && steps.changed.outputs.manifests != ''
         env:
@@ -195,6 +196,7 @@ jobs:
         run: |
           python3 system-one/scripts/jev_eval_audit.py \
             --reports eval-output-model \
+            --selection eval-output-model/selection.json \
             --live \
             --max-calls 20 \
             --max-assertions 120 \
