@@ -948,3 +948,14 @@ being fine-tuned. Separate inference-model judgments, if obtained, are
 pseudo-labels for finding questionable Jev request shapes, not ground truth
 or a new release gate. If the provider route remains unavailable, pause this
 screen rather than modifying Jev prompts based on absent labels.
+
+The [synthetic preflight run](https://github.com/magnus919/agent-skills/actions/runs/35912008261)
+confirmed that the catalog accepts the key and lists `openai/gpt-6-luna`, but
+`POST /v1/chat/completions` with only `Reply OK.` returned HTTP 404. The
+provider body had no sanitized `error.type` or `error.code` to report. The
+workflow stopped before downloading the evaluation artifacts. This isolates
+the current blocker from the frozen sample and its request size: the same
+route fails on a minimal synthetic request. No teacher labels, agreement
+estimate, Jev false-accept estimate, or calibrated Jev input revision exists
+yet. A working inference route/account entitlement is needed before resuming
+this calibration; do not infer that changing Jev prompt wording would fix it.
