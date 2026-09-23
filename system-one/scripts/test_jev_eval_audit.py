@@ -102,6 +102,43 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertEqual(result["counts"]["assertions_omitted_by_budget"], 2)
         self.assertEqual(result["results"], [])
 
+    def test_budget_spreads_complete_pairs_across_skills_deterministically(self):
+        for skill in ("alpha-skill", "beta-skill"):
+            reports = self.root / skill / "reports"
+            reports.mkdir(parents=True)
+            for case_id in ("first-case", "second-case"):
+                report = sample_report()
+                report["skill_name"] = skill
+                report["case_id"] = case_id
+                (reports / f"{case_id}.comparison.json").write_text(
+                    json.dumps(report), encoding="utf-8"
+                )
+        self.path.unlink()
+
+        def run():
+            return audit(
+                self.root,
+                live=False,
+                key=None,
+                max_calls=4,
+                max_assertions=4,
+                max_response_chars=24000,
+                timeout=12.0,
+            )
+
+        result = run()
+        self.assertEqual(result, run())
+        self.assertEqual(result["budget_selection_policy"], "skill_round_robin_stable_hash_v1")
+        self.assertEqual(result["counts"]["groups_selected"], 4)
+        self.assertEqual(result["counts"]["assertions_omitted_by_budget"], 4)
+        selected = {(row["skill"], row["case_id"], row["side"]) for row in result["results"]}
+        for skill in ("alpha-skill", "beta-skill"):
+            cases = {case_id for selected_skill, case_id, _side in selected if selected_skill == skill}
+            self.assertEqual(len(cases), 1)
+            case_id = next(iter(cases))
+            self.assertIn((skill, case_id, "candidate"), selected)
+            self.assertIn((skill, case_id, "baseline"), selected)
+
     def test_large_question_text_is_skipped_not_sent(self):
         report = sample_report()
         report["candidate"]["assertions"][0]["assertion"] = "x" * 2001

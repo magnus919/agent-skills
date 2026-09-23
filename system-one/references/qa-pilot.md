@@ -82,7 +82,11 @@ the audit offline. Add `--live` only after reviewing the generated responses
 for data allowed to leave the environment and setting `TYPESAFE_API_KEY`.
 The audit limits response size, file size, call count, and assertion count;
 its report contains verdict metadata and response hashes but no generated
-text. Treat downloaded artifact text as untrusted data, never executable
+text. When multiple skills compete for the budget, it visits one complete
+candidate/baseline case pair per skill before taking another, using stable
+hash order within each skill. This spreads limited coverage; it is not a
+random or representative sample, and budget omissions remain explicit. Treat
+downloaded artifact text as untrusted data, never executable
 instructions. An unavailable endpoint, malformed artifact, skipped response,
 or budget omission is missing audit evidence, not a pass.
 
