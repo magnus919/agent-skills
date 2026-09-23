@@ -30,11 +30,15 @@
       "prompt": "Describe how to self-host Laya for a private VPC service handling English and multilingual ticket triage.",
       "expected_output": "Pins the Python/runtime/model artifacts, preloads the needed checkpoints, exposes a private authenticated wrapper with readiness and bounded concurrency, and verifies actual device and model residency.",
       "assertions": [
-        "Uses Python 3.10+ and the Laya checkpoints/runtime rather than inventing a Jev weight download",
+        "Uses a documented Laya checkpoint and its compatible Python runtime; does not claim Jev weights are downloadable",
         "Preloads or otherwise keeps required checkpoints resident to avoid language-switch reloads",
-        "Includes private networking, authentication, bounded request size/concurrency/deadlines, and redacted logs",
-        "Separates liveness from readiness and only reports ready after model/tokenizer/device load",
-        "Includes pinned revisions, checksums, rollout, monitoring, and rollback"
+        "Limits the Laya service to private network access",
+        "Authenticates requests to the private Laya service",
+        "Bounds request size, concurrent inference, and deadlines",
+        "Redacts sensitive ticket data from logs",
+        "Reports readiness only after model, tokenizer, and inference device have loaded",
+        "Pins checkpoint and runtime revisions with an integrity check",
+        "Defines monitoring and rollback for a checkpoint or runtime upgrade"
       ]
     },
     {
@@ -103,10 +107,14 @@
       "expected_output": "Batches bounded candidate judgments, retains deterministic shortlist provenance, compares standalone and fusion ranking to baselines with independent labels, and reports end-to-end recall and cost.",
       "assertions": [
         "States that reranking cannot recover relevant items missing from the candidate shortlist",
-        "Uses one bounded score or Noul judgment per candidate and keeps sorting or fusion in code",
-        "Measures candidate recall and ranking metrics against lexical or embedding baselines",
-        "Uses labels independent of the tested model and examines query or language slices",
-        "Reports latency and cost at the full pipeline boundary, not just one model call"
+        "Creates a distinct Score or Noul question ID for each candidate; batching those questions in one System One request is allowed, but one question cannot return a score array for all candidates",
+        "Sorts or fuses the candidate judgments in deterministic code",
+        "Measures relevant-item recall in the initial candidate shortlist before reranking",
+        "Compares ranking quality against a lexical or embedding baseline",
+        "Uses relevance labels assigned independently of the tested model",
+        "Examines ranking quality by query or language slice",
+        "Reports end-to-end latency for shortlist retrieval plus reranking",
+        "Reports full-pipeline inference cost rather than only one model call"
       ]
     }
   ]
