@@ -661,3 +661,25 @@ cannot replace the generative review or the tool-using agent here. Blog lesson:
 a green AI job may mean only that the process exited cleanly. Check the
 workflow's actual output artifact and downstream validator before claiming
 that useful work happened.
+
+## 2026-09-23 — Calibrating the selected worklist, not just what arrived
+
+The first private calibration helper checked that every prose assertion in
+the *observed* audit was judged, but did not require the audit's frozen
+selected-case list to match the observed reports. That left a whole missing
+case outside its definition of a complete run. Packet preparation now rejects
+missing or unknown selection evidence, missing/unexpected reports, and
+inconsistent report counts or case identities. Repeatability comparisons of
+older audit artifacts remain readable; this stricter rule applies to preparing
+a new calibration packet.
+
+The complete [main run 35825585445](https://github.com/magnus919/agent-skills/actions/runs/35825585445)
+passed the strengthened preparation path. A fresh private packet contains 44
+blinded judgments from 18 response groups: 32 population-sampled paired
+assertions and 12 risk-enriched suggested-`met` challenges. The packet is
+local-only; no labels have been assigned, so there is still no real-output
+accuracy or confidence calibration result.
+
+Blog lesson: an audit can be internally complete for the subset it saw while
+the upstream worklist is incomplete. Freeze and check the intended case list
+before asking humans to calibrate the model against the resulting sample.

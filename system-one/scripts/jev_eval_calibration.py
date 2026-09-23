@@ -56,6 +56,24 @@ def read_audit(path: Path) -> tuple[dict[str, Any], str]:
     return audit, sha256_bytes(raw)
 
 
+def require_selected_case_coverage(audit: dict[str, Any]) -> None:
+    """Reject a calibration packet if the frozen selected worklist is incomplete."""
+    scope = audit.get("selection_scope")
+    if not isinstance(scope, dict) or scope.get("status") != "selected":
+        raise ValueError("selected-case coverage is unknown; cannot prepare calibration packet")
+    expected = scope.get("expected_report_count")
+    observed = scope.get("observed_report_count")
+    if (not isinstance(expected, int) or isinstance(expected, bool) or expected < 1
+            or not isinstance(observed, int) or isinstance(observed, bool)
+            or observed != expected or audit["counts"].get("reports_seen") != observed
+            or scope.get("missing_reports") != [] or scope.get("unexpected_reports") != []):
+        raise ValueError("selected-case coverage is incomplete or inconsistent")
+    cases = {(row.get("skill"), row.get("case_id")) for row in audit["results"]
+             if isinstance(row, dict)}
+    if len(cases) != expected:
+        raise ValueError("selected-case coverage does not match audited result identities")
+
+
 def bundle_sha256(root: Path) -> str:
     digest = hashlib.sha256()
     for path in sorted(root.glob("*/reports/*.comparison.json")):
@@ -174,6 +192,7 @@ def write_private_new(path: Path, content: str) -> None:
 def prepare(root: Path, audit_path: Path, output_dir: Path, run_id: str, seed: str,
             population_pairs: int, challenge_items: int) -> dict[str, Any]:
     audit, audit_hash = read_audit(audit_path)
+    require_selected_case_coverage(audit)
     records = records_from_artifacts(root, audit)
     selected = select_records(records, seed, population_pairs, challenge_items)
     packet = render_packet(selected)
