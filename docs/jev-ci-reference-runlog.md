@@ -526,3 +526,23 @@ No new TypeSafe calls or human-label claims were made in this change.
 Blog lesson: a model audit can be internally 100% complete while the upstream
 work selector silently omitted cases. Track the denominator at each pipeline
 boundary, and fail visibly when a resource cap would hide work.
+
+## 2026-09-23 — Include reference and template changes in the denominator
+
+After PR #538, the paired-eval workflow still triggered only for `SKILL.md`,
+eval manifest, and script paths. Its selector used the same narrow set. Editing
+a skill's `references/`, `templates/`, assets, or human README could change
+what the agent sees or how contributors use the skill while causing **no paired
+eval job at all**. The five-skill completeness check therefore applied only to
+a subset of skill edits.
+
+The workflow now triggers on any file under a top-level directory, and the
+selector accepts the change only when that directory is a skill with both
+`SKILL.md` and `evals/evals.json`. A local temporary-Git-repository test verifies
+that a reference-only commit is discovered; the existing duplicate, missing,
+and over-cap tests still pass. Non-skill top-level changes may start the light
+workflow, but are reported as no eligible skill rather than audited work.
+
+Blog lesson: a complete *selection result* is only complete relative to its
+event trigger and changed-file query. Check both before interpreting audit
+coverage as a property of the contributor's whole change.
