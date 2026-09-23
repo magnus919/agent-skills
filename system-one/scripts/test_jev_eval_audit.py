@@ -253,6 +253,18 @@ class JevEvalAuditTests(unittest.TestCase):
                 timeout=12.0,
             )
 
+    def test_current_system_one_manifest_fits_ci_audit_budget(self):
+        skill_root = Path(__file__).resolve().parent.parent
+        workflow = (skill_root.parent / ".github" / "workflows" / "skill-eval.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("--max-calls 20", workflow)
+        self.assertIn("--max-assertions 160", workflow)
+        manifest = json.loads((skill_root / "evals" / "evals.json").read_text(encoding="utf-8"))
+        cases = manifest["evals"]
+        self.assertLessEqual(2 * len(cases), 20)
+        self.assertLessEqual(2 * sum(len(case["assertions"]) for case in cases), 160)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -360,7 +360,7 @@ def main() -> int:
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--key-file", type=Path, help="local env-style key file; never printed")
     parser.add_argument("--max-calls", type=int, default=20)
-    parser.add_argument("--max-assertions", type=int, default=120)
+    parser.add_argument("--max-assertions", type=int, default=160)
     parser.add_argument("--max-response-chars", type=int, default=24000)
     parser.add_argument("--timeout", type=float, default=12.0)
     args = parser.parse_args()
