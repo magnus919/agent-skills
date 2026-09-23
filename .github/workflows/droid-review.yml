@@ -38,6 +38,30 @@ jobs:
             }]
           }
           FACTORY_JSON
+      - name: Check Nous Portal Responses compatibility
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+        run: |
+          if [ -z "$NOUS_API_KEY" ]; then
+            echo 'NOUS_API_KEY is unavailable to this run' >&2
+            exit 1
+          fi
+          failed=0
+          for test_case in basic low tools; do
+            case "$test_case" in
+              basic) payload='{"model":"openai/gpt-6-luna","input":"Reply OK"}' ;;
+              low) payload='{"model":"openai/gpt-6-luna","input":"Reply OK","reasoning":{"effort":"low"}}' ;;
+              tools) payload='{"model":"openai/gpt-6-luna","input":"Reply OK","reasoning":{"effort":"low"},"tools":[{"type":"function","name":"noop","description":"No operation","parameters":{"type":"object","properties":{}}}]}' ;;
+            esac
+            status=$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
+              -H "Authorization: Bearer $NOUS_API_KEY" \
+              -H 'Content-Type: application/json' \
+              --data "$payload" \
+              https://inference-api.nousresearch.com/v1/responses)
+            echo "$test_case Responses probe: HTTP $status"
+            if [ "$status" != 200 ]; then failed=1; fi
+          done
+          exit "$failed"
       - name: Run Droid Auto Review
         uses: Factory-AI/droid-action@main
         with:
