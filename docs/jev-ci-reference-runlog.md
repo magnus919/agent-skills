@@ -372,3 +372,24 @@ pass, and reserve any scoring threshold or release gate for independently
 labeled real-output evidence. Blog lesson: institutionalize the authoring
 practice that the experiment actually supports without turning a promising
 pilot into an unearned correctness claim.
+
+## 2026-09-23 — Freeze a real-output review sample before scoring
+
+The first complete live Jev audit (run 35811979212) is now the source for a
+local, prediction-blinded human-review packet. The packet samples 16 assertion
+pairs (32 candidate/baseline judgments) by a frozen hash seed without using
+Jev's answer, then adds 12 distinct high-`met`-probability items as a separate
+false-accept challenge set. It covers 44 of the run's 104 audited assertions
+and 17 generated response groups. The raw responses and source mapping stay
+in a private local directory; no response text is added to this repository or
+to a CI artifact. The sampling seed and source artifact hashes are preserved
+for replay. Local contract tests verify pairing, identity, private file modes,
+and separation of the response text from the scoring map.
+
+This is **sampling and review preparation**, not calibration results. There
+are no independently assigned labels yet, so there is no measured real-output
+false-accept rate, no accepted probability threshold, and no gate promotion.
+The prevalence-oriented paired sample and the deliberately enriched challenge
+items must be reported separately. Blog lesson: a well-instrumented audit
+does not calibrate itself; freeze the evidence and blind the reviewer before
+examining its predictions.

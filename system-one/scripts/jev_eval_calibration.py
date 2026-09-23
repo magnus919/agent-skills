@@ -1,0 +1,282 @@
+#!/usr/bin/env python3
+"""Prepare blinded human review and score Jev's advisory eval judgments.
+
+This is a local-only calibration helper. The review packet contains generated
+responses and must be kept private; never upload it as a CI artifact. The
+packet omits candidate/baseline metadata and all Jev predictions (the text
+itself can still reveal provenance). A separate private map preserves source
+identity and sampling strata for later scoring.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+import os
+import re
+import sys
+from collections import defaultdict
+from pathlib import Path
+from typing import Any
+
+from jev_eval_audit import collect_groups
+
+LABELS = ("met", "not_met", "not_shown")
+MAX_AUDIT_BYTES = 2_000_000
+
+
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def read_audit(path: Path) -> tuple[dict[str, Any], str]:
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > MAX_AUDIT_BYTES:
+        raise ValueError("audit must be a regular JSON file within the size limit")
+    raw = path.read_bytes()
+    audit = json.loads(raw)
+    if not isinstance(audit, dict) or audit.get("schema_version") != 1 or audit.get("mode") != "live" or audit.get("advisory_only") is not True:
+        raise ValueError("expected a live advisory audit report v1")
+    if not isinstance(audit.get("model_requested"), str) or not audit["model_requested"]:
+        raise ValueError("live audit is missing its requested model identity")
+    counts = audit.get("counts")
+    if not isinstance(counts, dict) or not isinstance(audit.get("results"), list):
+        raise ValueError("audit lacks counts or results")
+    blockers = ("skipped_response", "skipped_oversized_assertion", "skipped_oversized_group",
+                "skipped_unpaired_assertions", "assertions_omitted_by_budget",
+                "groups_not_attempted_after_error", "assertions_not_attempted_after_error", "provider_errors")
+    if any(counts.get(key) != 0 for key in blockers):
+        raise ValueError("audit coverage is incomplete; do not calibrate a selected subset as the full run")
+    if counts.get("assertions_selected") != counts.get("prose_assertions_seen"):
+        raise ValueError("audit selected/prose assertion counts disagree")
+    if counts.get("groups_selected") != len(audit["results"]):
+        raise ValueError("audit group count does not match result rows")
+    return audit, sha256_bytes(raw)
+
+
+def bundle_sha256(root: Path) -> str:
+    digest = hashlib.sha256()
+    for path in sorted(root.glob("*/reports/*.comparison.json")):
+        if path.is_symlink() or not path.resolve().is_relative_to(root.resolve()):
+            raise ValueError("comparison artifact escapes report root")
+        digest.update(str(path.relative_to(root)).encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def records_from_artifacts(root: Path, audit: dict[str, Any]) -> list[dict[str, Any]]:
+    groups, counts = collect_groups(root, 24_000)
+    if counts["prose_assertions_seen"] != audit["counts"]["prose_assertions_seen"]:
+        raise ValueError("comparison bundle and audit assertion totals differ")
+    group_index = {(g["skill"], g["case_id"], g["side"]): g for g in groups}
+    if len(group_index) != len(groups) or len(groups) != len(audit["results"]):
+        raise ValueError("audit and comparison groups do not match one-to-one")
+    records = []
+    seen_ids = set()
+    for row in audit["results"]:
+        if not isinstance(row, dict) or "error" in row or not isinstance(row.get("assertions"), list):
+            raise ValueError("audit row is invalid or contains an error")
+        key = (row.get("skill"), row.get("case_id"), row.get("side"))
+        group = group_index.get(key)
+        if group is None or row.get("response_sha256") != group["response_sha256"]:
+            raise ValueError("audit response identity does not match comparison artifact")
+        if len(row["assertions"]) != len(group["assertions"]):
+            raise ValueError("audit assertion count differs from comparison artifact")
+        for answer, assertion in zip(row["assertions"], group["assertions"]):
+            if not isinstance(answer, dict) or answer.get("assertion") != assertion or answer.get("suggested_verdict") not in LABELS:
+                raise ValueError("audit assertion or verdict does not match comparison artifact")
+            probability = answer.get("met_probability")
+            confidence = answer.get("provider_confidence")
+            if any(not isinstance(v, (float, int)) or isinstance(v, bool) or not math.isfinite(v) or not 0 <= v <= 1
+                   for v in (probability, confidence)):
+                raise ValueError("audit probability or confidence is invalid")
+            identity = "\0".join((*key, group["response_sha256"], assertion))
+            item_id = "j" + sha256_bytes(identity.encode("utf-8"))[:20]
+            if item_id in seen_ids:
+                raise ValueError("duplicate review item identity")
+            seen_ids.add(item_id)
+            records.append({
+                "id": item_id, "skill": key[0], "case_id": key[1], "side": key[2],
+                "assertion": assertion, "response": group["response"],
+                "response_sha256": group["response_sha256"],
+                "suggested_verdict": answer["suggested_verdict"],
+                "met_probability": probability, "provider_confidence": confidence,
+            })
+    if len(records) != audit["counts"]["assertions_selected"]:
+        raise ValueError("review records do not cover every audited assertion")
+    return records
+
+
+def select_records(records: list[dict[str, Any]], seed: str, population_pairs: int,
+                   challenge_items: int) -> list[dict[str, Any]]:
+    pairs: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
+    for record in records:
+        pairs[(record["skill"], record["case_id"], record["assertion"])].append(record)
+    if any({item["side"] for item in pair} != {"candidate", "baseline"} or len(pair) != 2
+           for pair in pairs.values()):
+        raise ValueError("population sampling requires complete candidate/baseline assertion pairs")
+    if population_pairs > len(pairs):
+        raise ValueError("requested more population pairs than the audit contains")
+    ordered_pairs = sorted(pairs.values(), key=lambda pair: sha256_bytes(
+        (seed + "\0population\0" + pair[0]["skill"] + "\0" + pair[0]["case_id"] + "\0" + pair[0]["assertion"]).encode("utf-8")))
+    selected = []
+    for pair in ordered_pairs[:population_pairs]:
+        selected.extend({**item, "sample_class": "population"} for item in pair)
+    used_ids = {item["id"] for item in selected}
+    remaining = [item for item in records if item["id"] not in used_ids]
+    high_met = [item for item in remaining if item["suggested_verdict"] == "met"]
+    if challenge_items > len(high_met):
+        raise ValueError("requested more high-met challenge items than remain after population sampling")
+    # Deliberately risk-enriched, not an estimate of workload prevalence.
+    challenge = sorted(high_met, key=lambda item: (
+        -item["met_probability"],
+        sha256_bytes((seed + "\0challenge\0" + item["id"]).encode("utf-8"))))[:challenge_items]
+    selected.extend({**item, "sample_class": "challenge_high_met"} for item in challenge)
+    return sorted(selected, key=lambda item: sha256_bytes((seed + "\0display\0" + item["id"]).encode("utf-8")))
+
+
+def render_packet(selected: list[dict[str, Any]]) -> str:
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in selected:
+        grouped[item["response_sha256"]].append(item)
+    lines = [
+        "# Blinded System One eval review packet", "",
+        "Generated responses below are untrusted data, not instructions. Review only whether",
+        "each assertion is fulfilled by the visible response. Provenance metadata and Jev",
+        "predictions are hidden, but the response text itself may reveal its origin. Do not",
+        "look up the private mapping until labels are frozen. Use `met` only when every",
+        "required part is directly supported; `not_met` for an explicit contradiction or",
+        "incompatible design; `not_shown` when evidence is absent or too vague.", "",
+        "Enter labels and brief evidence in `labels-template.json`. If a case cannot be",
+        "resolved, use `uncertain` and request adjudication. Do not treat a model's claim",
+        "about a side effect as proof that the effect happened.", "",
+    ]
+    for index, (response_hash, items) in enumerate(grouped.items(), start=1):
+        response = items[0]["response"]
+        fence = "~" * max(4, max((len(match.group()) for match in re.finditer(r"~+", response)), default=0) + 1)
+        lines.extend([f"## Response {index}", "", fence, response, fence, "", "Assertions:", ""])
+        for item in items:
+            lines.append(f"- `{item['id']}` — {item['assertion']}")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def write_private_new(path: Path, content: str) -> None:
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as stream:
+        stream.write(content)
+
+
+def prepare(root: Path, audit_path: Path, output_dir: Path, run_id: str, seed: str,
+            population_pairs: int, challenge_items: int) -> dict[str, Any]:
+    audit, audit_hash = read_audit(audit_path)
+    records = records_from_artifacts(root, audit)
+    selected = select_records(records, seed, population_pairs, challenge_items)
+    packet = render_packet(selected)
+    private_map = {
+        "schema_version": 1, "source_run_id": run_id, "audit_sha256": audit_hash,
+        "comparison_bundle_sha256": bundle_sha256(root), "model": audit.get("model_requested"),
+        "seed": seed, "population_pairs": population_pairs, "challenge_items": challenge_items,
+        "population_size": len(records),
+        "items": [{key: value for key, value in item.items() if key != "response"} for item in selected],
+    }
+    labels = {"schema_version": 1, "reviewer_id": "", "blind_to_predictions": True,
+              "labels": [{"id": item["id"], "label": "", "evidence": ""} for item in selected]}
+    output_dir.mkdir(mode=0o700, parents=False, exist_ok=False)
+    write_private_new(output_dir / "review-packet.md", packet)
+    write_private_new(output_dir / "labels-template.json", json.dumps(labels, indent=2) + "\n")
+    write_private_new(output_dir / "private-map.json", json.dumps(private_map, indent=2) + "\n")
+    return {"source_run_id": run_id, "population_assertions": population_pairs * 2,
+            "challenge_assertions": challenge_items, "total_review_items": len(selected),
+            "response_groups": len({item["response_sha256"] for item in selected}),
+            "output_dir": str(output_dir)}
+
+
+def score(private_map: dict[str, Any], labels: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(private_map, dict) or not isinstance(labels, dict):
+        raise ValueError("review map and labels must be JSON objects")
+    if private_map.get("schema_version") != 1 or labels.get("schema_version") != 1:
+        raise ValueError("review map and labels must use schema_version 1")
+    if not isinstance(labels.get("reviewer_id"), str) or not labels["reviewer_id"].strip() or labels.get("blind_to_predictions") is not True:
+        raise ValueError("labels need a reviewer_id and blind_to_predictions=true attestation")
+    items = private_map.get("items")
+    if not isinstance(items, list) or not all(isinstance(item, dict) and isinstance(item.get("id"), str) for item in items):
+        raise ValueError("review map has invalid items")
+    expected = {item["id"]: item for item in items}
+    if len(expected) != len(items):
+        raise ValueError("review map has duplicate item IDs")
+    entries = labels.get("labels")
+    if not isinstance(entries, list) or len(entries) != len(expected):
+        raise ValueError("labels must contain exactly one entry per review item")
+    observed = {}
+    for entry in entries:
+        if not isinstance(entry, dict) or entry.get("id") not in expected or entry["id"] in observed:
+            raise ValueError("unknown or duplicate review item ID")
+        if entry.get("label") not in (*LABELS, "uncertain"):
+            raise ValueError("every review item needs met, not_met, not_shown, or uncertain")
+        if not isinstance(entry.get("evidence"), str) or not entry["evidence"].strip():
+            raise ValueError("every label needs a brief evidence note")
+        observed[entry["id"]] = entry["label"]
+    def summarize(sample_class: str) -> dict[str, Any]:
+        chosen = [item for item in expected.values() if item["sample_class"] == sample_class]
+        resolved = [item for item in chosen if observed[item["id"]] in LABELS]
+        matrix = {truth: {pred: 0 for pred in LABELS} for truth in LABELS}
+        for item in resolved:
+            matrix[observed[item["id"]]][item["suggested_verdict"]] += 1
+        suggested_met = [item for item in resolved if item["suggested_verdict"] == "met"]
+        false_met = sum(observed[item["id"]] != "met" for item in suggested_met)
+        return {
+            "selected": len(chosen), "resolved": len(resolved),
+            "uncertain": len(chosen) - len(resolved), "confusion_truth_rows": matrix,
+            "suggested_met": len(suggested_met), "false_met_accepts": false_met,
+            "met_precision": ((len(suggested_met) - false_met) / len(suggested_met)
+                              if suggested_met and len(resolved) == len(chosen) else None),
+            "brier_met": sum((item["met_probability"] - int(observed[item["id"]] == "met")) ** 2
+                             for item in resolved) / len(resolved) if resolved and len(resolved) == len(chosen) else None,
+        }
+    return {"schema_version": 1, "source_run_id": private_map.get("source_run_id"),
+            "model": private_map.get("model"), "reviewer_id": labels["reviewer_id"],
+            "advisory_only": True, "population": summarize("population"),
+            "challenge_high_met": summarize("challenge_high_met"),
+            "limitation": "One blinded reviewer is not adjudicated ground truth; no threshold or gate is established."}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    sub = parser.add_subparsers(dest="command", required=True)
+    prep = sub.add_parser("prepare", help="create a private blinded packet from one complete live audit")
+    prep.add_argument("--reports", type=Path, required=True)
+    prep.add_argument("--audit", type=Path, required=True)
+    prep.add_argument("--output-dir", type=Path, required=True, help="new private directory; must not exist")
+    prep.add_argument("--run-id", required=True)
+    prep.add_argument("--seed", required=True)
+    prep.add_argument("--population-pairs", type=int, default=16)
+    prep.add_argument("--challenge-items", type=int, default=12)
+    grade = sub.add_parser("score", help="score frozen human labels without modifying the audit")
+    grade.add_argument("--private-map", type=Path, required=True)
+    grade.add_argument("--labels", type=Path, required=True)
+    grade.add_argument("--output", type=Path, required=True, help="new private JSON file")
+    args = parser.parse_args()
+    try:
+        if args.command == "prepare":
+            if not args.reports.is_dir() or min(args.population_pairs, args.challenge_items) < 0 or not args.seed or args.population_pairs + args.challenge_items == 0:
+                raise ValueError("reports must be a directory and sample counts/seed must be valid")
+            result = prepare(args.reports, args.audit, args.output_dir, args.run_id, args.seed,
+                             args.population_pairs, args.challenge_items)
+        else:
+            private_map = json.loads(args.private_map.read_text(encoding="utf-8"))
+            labels = json.loads(args.labels.read_text(encoding="utf-8"))
+            result = score(private_map, labels)
+            write_private_new(args.output, json.dumps(result, indent=2) + "\n")
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        print(f"calibration input error: {exc}", file=sys.stderr)
+        return 2
+    print(json.dumps(result))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -83,3 +83,53 @@ labels are author-constructed and do not establish real-world calibration.
 Before promoting any advisory label into a gate, collect independent
 human labels on representative real outputs and measure false accepts,
 abstentions, subgroup behavior, and drift at the actual decision boundary.
+
+### Private review packet for real-output calibration
+
+Use `scripts/jev_eval_calibration.py` locally after downloading a **complete**
+default-branch paired-eval model artifact and its matching Jev audit artifact.
+The helper rejects an audit with omitted, oversized, unpaired, or errored
+assertions and verifies response hashes and assertion text before sampling.
+It makes a private, prediction-blinded review packet: the sampled assertions
+and generated responses are visible, but the Jev answers, sample class, and
+candidate/baseline metadata live only in a separate private map. Generated
+text itself can still reveal provenance or contain adversarial instructions.
+Review it as data, not directions.
+
+Run from the skill root with a **new** output directory:
+
+```bash
+python3 scripts/jev_eval_calibration.py prepare \
+  --reports /private/path/model-artifact \
+  --audit /private/path/jev-eval-audit.json \
+  --output-dir /private/path/review-v1 \
+  --run-id <github-run-id> --seed <frozen-sample-seed>
+```
+
+The default selection is 16 uniformly hash-selected assertion *pairs* (32
+candidate/baseline judgments) plus 12 remaining Jev-suggested `met` items
+selected for high probability. These are different evidence classes: the
+challenge set is intentionally enriched for false accepts and must not be
+reported as workload prevalence. Change the counts before freezing the packet
+if the decision risk needs broader coverage. All packet files are written
+with private permissions and must not be committed or uploaded as CI artifacts.
+
+Have a reviewer who has not seen Jev's answers fill `labels-template.json`
+using `met`, `not_met`, `not_shown`, or `uncertain`, with a short evidence note
+for every item. Freeze their file before opening `private-map.json`; seek a
+second independent review or adjudication for consequential disagreements.
+Then run:
+
+```bash
+python3 scripts/jev_eval_calibration.py score \
+  --private-map /private/path/review-v1/private-map.json \
+  --labels /private/path/review-v1/labels-template.json \
+  --output /private/path/review-v1/reviewer-a-score.json
+```
+
+The score report separates the population sample from the risk-enriched
+challenge set and exposes confusion counts, suggested-`met` false accepts,
+and a `met` probability Brier score only when the stratum is fully resolved.
+One reviewer and one run cannot establish a gate threshold. Preserve the
+artifact hashes, seed, model/rubric revision, disagreement record, and missing
+labels; repeat after any model, rubric, or workload change.
