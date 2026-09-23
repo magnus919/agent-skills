@@ -622,3 +622,42 @@ Blog lesson: adding one eval case can push a paired, all-or-nothing selection
 past a budget boundary. Watch the omitted-*counts* in actual artifacts and
 version the allowance against the evolving manifest; a green advisory job is
 not a coverage guarantee.
+
+## 2026-09-23 — Live coverage after the budget repair
+
+[Main run 35824738032](https://github.com/magnus919/agent-skills/actions/runs/35824738032)
+confirmed the frozen selection list matched all ten uploaded comparison
+reports, with no missing or unexpected IDs. It still used the old
+120-assertion allowance: 18 groups and 104/122 prose assertions were selected,
+18 were omitted by budget, and there were zero provider errors.
+
+[Main run 35825585445](https://github.com/magnus919/agent-skills/actions/runs/35825585445)
+then exercised the merged 160-assertion allowance with live Jev calls. Its
+artifact has ten expected and ten observed case reports, 20 selected groups,
+122/122 selected prose assertions, zero skips, zero budget omissions, and zero
+provider errors. The tests, real-model generation, smoke job, and advisory Jev
+audit all completed successfully. This establishes selected-case and
+assertion coverage **for this run**, not judgment accuracy, calibrated
+confidence, or authority to block a release. Independent labels are still
+missing for the 44-item blind review packet.
+
+Blog lesson: verify the artifact after the repair, not just the repaired
+selection arithmetic. Preserve the failed-budget run beside the successful
+one so the change and its limits remain visible.
+
+## 2026-09-23 — Droid is not a Jev replacement, and green is not enough
+
+The separate [Droid/Nous experiment in PR #544](https://github.com/magnus919/agent-skills/pull/544)
+tested a generative code-review workload. Nous Portal accepted GPT-6 Luna at
+`low` reasoning via Responses, including ordinary function tools and streaming,
+but returned HTTP 400 for a Responses `custom` tool. Droid's normal review
+request includes custom tools, so the full review failed. A read-only
+compatibility run avoided that request error and its GitHub job turned green,
+but Droid did not write its review-candidates file; no validated review was
+produced. PR #544 remains a draft experiment, not a replacement deployment.
+
+Jev can judge bounded assertions *after* a model has generated an answer; it
+cannot replace the generative review or the tool-using agent here. Blog lesson:
+a green AI job may mean only that the process exited cleanly. Check the
+workflow's actual output artifact and downstream validator before claiming
+that useful work happened.
