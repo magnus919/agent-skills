@@ -596,3 +596,29 @@ evidence, **not** human-labeled Jev accuracy or calibration.
 
 Blog lesson: freeze the worklist before an expensive stage. Comparing only
 what arrives afterward can hide precisely the cases that failed to arrive.
+
+## 2026-09-23 — A new eval case outgrew the Jev assertion budget
+
+The laya.cpp enrichment in [PR #541](https://github.com/magnus919/agent-skills/pull/541)
+raised System One from nine to ten eval cases. The manifest now contains 122
+prose assertions across candidate and baseline responses, requiring 20 Jev
+calls at the current one-group-per-call design. [Main run 35823747886](https://github.com/magnus919/agent-skills/actions/runs/35823747886)
+uploaded 10 comparison reports, but its `jev-1.13.0` audit selected only 18
+groups and 104/122 assertions: an entire 18-assertion case was omitted by the
+120-assertion cap. There were zero provider errors. This is a real budget
+omission, not an inference about the missing case's quality.
+
+The CI assertion allowance is increased to 160 while retaining the 20-call
+limit. A test checks that the current System One manifest fits both bounds;
+the audit still reports omissions rather than silently treating over-budget
+work as complete. The change is bounded headroom for the present suite, not a
+general promise that every combination of up to five changed skills can fit.
+An offline replay of the same 10-report model artifact with the new allowance
+selected all 20 groups and 122/122 assertions, with no budget omissions and
+10 expected/10 observed case reports. This verifies selection arithmetic,
+not live Jev judgments under the increased allowance.
+
+Blog lesson: adding one eval case can push a paired, all-or-nothing selection
+past a budget boundary. Watch the omitted-*counts* in actual artifacts and
+version the allowance against the evolving manifest; a green advisory job is
+not a coverage guarantee.
