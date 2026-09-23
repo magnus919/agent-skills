@@ -1,7 +1,10 @@
 """Local calibration workflow: identity, blinding, pairing, and score tests."""
 
+import base64
+import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -9,7 +12,16 @@ import unittest
 from pathlib import Path
 
 from jev_eval_audit import collect_groups
-from jev_eval_calibration import compare_audits, compare_labels, prepare, read_audit, records_from_artifacts, score, select_records
+from jev_eval_calibration import (
+    compare_audits,
+    compare_labels,
+    prepare,
+    read_audit,
+    records_from_artifacts,
+    render_review_html,
+    score,
+    select_records,
+)
 
 
 class JevEvalCalibrationTests(unittest.TestCase):
@@ -73,10 +85,40 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.assertIn("case-a candidate response", packet)
         self.assertNotIn("suggested_verdict", packet)
         self.assertNotIn("met_probability", packet)
+        review_html = (output / "review.html").read_text(encoding="utf-8")
+        self.assertIn("case-a candidate response", review_html)
+        self.assertEqual(review_html.count('data-review-id="'), 6)
+        self.assertNotIn("suggested_verdict", review_html)
+        self.assertNotIn("met_probability", review_html)
+        self.assertIn("connect-src 'none'", review_html)
+        self.assertIn("Download draft", review_html)
+        self.assertIn("Download final labels", review_html)
         private_map = (output / "private-map.json").read_text(encoding="utf-8")
         self.assertNotIn("case-a candidate response", private_map)
         self.assertEqual(os.stat(output).st_mode & 0o777, 0o700)
         self.assertEqual(os.stat(output / "review-packet.md").st_mode & 0o777, 0o600)
+        self.assertEqual(os.stat(output / "review.html").st_mode & 0o777, 0o600)
+
+    def test_offline_review_html_escapes_untrusted_response_and_assertion(self):
+        item = {
+            "id": "j123", "response_sha256": "0" * 64,
+            "response": '</pre><script>alert("response")</script>',
+            "assertion": '<img src=x onerror=alert("assertion")>',
+            "suggested_verdict": "not_met", "met_probability": 0.01,
+        }
+        page = render_review_html([item])
+        self.assertNotIn('</pre><script>alert("response")</script>', page)
+        self.assertNotIn('<img src=x onerror=alert("assertion")>', page)
+        self.assertIn('&lt;script&gt;alert', page)
+        self.assertIn('&lt;img src=x onerror=', page)
+        self.assertNotIn("suggested_verdict", page)
+        self.assertNotIn("met_probability", page)
+        self.assertIn("script-src 'sha256-", page)
+        self.assertEqual(page.count("<script>"), 1)
+        script = re.search(r"<script>(.*?)</script>", page, re.DOTALL)
+        self.assertIsNotNone(script)
+        script_hash = base64.b64encode(hashlib.sha256(script.group(1).encode()).digest()).decode()
+        self.assertIn(f"script-src 'sha256-{script_hash}'", page)
 
     def test_mismatched_or_partial_audit_is_rejected(self):
         self.audit["results"][0]["response_sha256"] = "0" * 64

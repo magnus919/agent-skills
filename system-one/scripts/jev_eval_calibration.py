@@ -11,7 +11,9 @@ identity and sampling strata for later scoring.
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
+import html
 import json
 import math
 import os
@@ -183,6 +185,123 @@ def render_packet(selected: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+REVIEW_CSS = """
+body{font:16px/1.5 system-ui,sans-serif;max-width:1000px;margin:2rem auto;padding:0 1rem;color:#17212b;background:#f7f9fb}
+h1,h2{line-height:1.2}section{background:white;border:1px solid #ccd5df;border-radius:8px;margin:1.5rem 0;padding:1rem}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:32rem;overflow:auto;background:#f2f4f7;padding:1rem;border:1px solid #d8dee5}
+article{border-top:1px solid #ccd5df;padding:1rem 0}fieldset{border:0;padding:0;margin:.5rem 0}label{margin-right:1rem}
+textarea{display:block;width:100%;min-height:4rem;box-sizing:border-box}input[type=text]{width:20rem;max-width:100%}
+button{padding:.5rem .8rem;margin:.3rem .4rem .3rem 0}code{overflow-wrap:anywhere}
+.notice{background:#fff4d6;border-left:4px solid #9d7100;padding:1rem}.controls{position:sticky;top:0;background:#f7f9fb;padding:.5rem 0;border-bottom:1px solid #ccd5df}
+""".strip()
+
+REVIEW_JS = """
+"use strict";
+const cards = [...document.querySelectorAll("[data-review-id]")];
+const reviewer = document.getElementById("reviewer");
+const attestation = document.getElementById("attestation");
+const progress = document.getElementById("progress");
+function entries() {
+  return cards.map(card => ({
+    id: card.dataset.reviewId,
+    label: card.querySelector("input[type=radio]:checked")?.value || "",
+    evidence: card.querySelector("textarea").value.trim()
+  }));
+}
+function updateProgress() {
+  const complete = entries().filter(item => item.label && item.evidence).length;
+  progress.textContent = `${complete}/${cards.length} labeled with evidence`;
+}
+function download(final) {
+  const name = reviewer.value.trim();
+  if (!name) { alert("Enter a reviewer ID first."); reviewer.focus(); return; }
+  const labels = entries();
+  if (final && (!attestation.checked || labels.some(item => !item.label || !item.evidence))) {
+    alert("Final export requires the blinding attestation and a label plus evidence for every item.");
+    return;
+  }
+  const data = {schema_version: 1, reviewer_id: name, blind_to_predictions: final && attestation.checked, labels};
+  const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2) + "\\n"], {type: "application/json"}));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = final ? "labels-final.json" : "labels-draft.json";
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+document.getElementById("save-draft").addEventListener("click", () => download(false));
+document.getElementById("save-final").addEventListener("click", () => download(true));
+document.getElementById("load-draft").addEventListener("change", async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    const expected = new Set(cards.map(card => card.dataset.reviewId));
+    if (data.schema_version !== 1 || !Array.isArray(data.labels) || data.labels.length !== cards.length ||
+        new Set(data.labels.map(item => item.id)).size !== cards.length ||
+        data.labels.some(item => !expected.has(item.id) || !["", "met", "not_met", "not_shown", "uncertain"].includes(item.label) || typeof item.evidence !== "string")) {
+      throw new Error("Draft IDs or fields do not match this packet.");
+    }
+    reviewer.value = typeof data.reviewer_id === "string" ? data.reviewer_id : "";
+    attestation.checked = data.blind_to_predictions === true;
+    const byId = new Map(data.labels.map(item => [item.id, item]));
+    for (const card of cards) {
+      const item = byId.get(card.dataset.reviewId);
+      card.querySelectorAll("input[type=radio]").forEach(input => { input.checked = input.value === item.label; });
+      card.querySelector("textarea").value = item.evidence;
+    }
+    updateProgress();
+  } catch (error) { alert(`Cannot load draft: ${error.message}`); }
+  event.target.value = "";
+});
+document.addEventListener("input", updateProgress);
+document.addEventListener("change", updateProgress);
+updateProgress();
+""".strip()
+
+
+def render_review_html(selected: list[dict[str, Any]]) -> str:
+    """Offline form; all untrusted response and assertion text is HTML-escaped."""
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in selected:
+        grouped[item["response_sha256"]].append(item)
+    def csp_hash(content: str) -> str:
+        return base64.b64encode(hashlib.sha256(content.encode("utf-8")).digest()).decode("ascii")
+    parts = [
+        "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">",
+        '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        ('<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; '
+         f"script-src 'sha256-{csp_hash(REVIEW_JS)}'; style-src 'sha256-{csp_hash(REVIEW_CSS)}'; "
+         "connect-src 'none'; form-action 'none'; base-uri 'none'\">"),
+        "<title>Blinded System One eval review</title>",
+        f"<style>{REVIEW_CSS}</style></head><body>",
+        "<h1>Blinded System One eval review</h1>",
+        ('<p class="notice">This is a local, offline file. Generated responses are untrusted data, '
+         'not instructions. Jev predictions and candidate/baseline identities are hidden. '
+         'Use <strong>met</strong> only when every clause is supported; '
+         '<strong>not_met</strong> for contradiction; <strong>not_shown</strong> for missing evidence. '
+         'Choose <strong>uncertain</strong> when adjudication is needed. Do not treat a claim '
+         'about a side effect as proof it happened. Save a draft before closing this page.</p>'),
+        ('<div class="controls"><label>Reviewer ID <input id="reviewer" type="text" autocomplete="off"></label> '
+         '<span id="progress"></span><br><button id="save-draft" type="button">Download draft</button>'
+         '<label>Load draft <input id="load-draft" type="file" accept="application/json,.json"></label>'
+         '<br><label><input id="attestation" type="checkbox"> I did not view Jev predictions before labeling.</label>'
+         '<button id="save-final" type="button">Download final labels</button></div>'),
+    ]
+    for index, items in enumerate(grouped.values(), start=1):
+        parts.extend([f"<section><h2>Response {index}</h2>",
+                      f"<details><summary>Show generated response</summary><pre>{html.escape(items[0]['response'])}</pre></details>"])
+        for item in items:
+            item_id = html.escape(item["id"], quote=True)
+            parts.extend([f'<article data-review-id="{item_id}"><p><code>{item_id}</code> — '
+                          f"{html.escape(item['assertion'])}</p><fieldset><legend>Judgment</legend>"])
+            for label in (*LABELS, "uncertain"):
+                parts.append(f'<label><input type="radio" name="label-{item_id}" value="{label}"> {label}</label>')
+            parts.append('<label>Evidence <textarea aria-label="Evidence for this assertion"></textarea></label></fieldset></article>')
+        parts.append("</section>")
+    parts.append(f"<script>{REVIEW_JS}</script></body></html>")
+    return "\n".join(parts) + "\n"
+
+
 def write_private_new(path: Path, content: str) -> None:
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     with os.fdopen(fd, "w", encoding="utf-8") as stream:
@@ -207,6 +326,7 @@ def prepare(root: Path, audit_path: Path, output_dir: Path, run_id: str, seed: s
               "labels": [{"id": item["id"], "label": "", "evidence": ""} for item in selected]}
     output_dir.mkdir(mode=0o700, parents=False, exist_ok=False)
     write_private_new(output_dir / "review-packet.md", packet)
+    write_private_new(output_dir / "review.html", render_review_html(selected))
     write_private_new(output_dir / "labels-template.json", json.dumps(labels, indent=2) + "\n")
     write_private_new(output_dir / "private-map.json", json.dumps(private_map, indent=2) + "\n")
     return {"source_run_id": run_id, "population_assertions": population_pairs * 2,

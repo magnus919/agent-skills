@@ -806,3 +806,36 @@ Blog lesson: write assertions so a satisfying response, contradiction, and
 missing-evidence response are distinguishable. When a real output exposes an
 ambiguous quantifier such as “bounded,” freeze the example and adjudicate the
 criterion before tuning the model or turning its confidence into policy.
+
+## 2026-09-23 — Make independent review easier without exposing predictions
+
+The full 44-item packet still had no independent labels. Hand-editing a long
+Markdown packet plus JSON template is a practical obstacle to calibration, so
+`jev_eval_calibration.py prepare` now also emits a private `review.html` form.
+It groups assertions with their generated response, offers `met`, `not_met`,
+`not_shown`, and `uncertain`, requires a brief evidence note for final export,
+and downloads schema-v1 labels JSON. Draft save/load supports a reviewer
+working across sessions without browser storage. The reviewer must attest to
+prediction blinding before final export. The HTML is self-contained; no
+network requests or external assets are needed, and untrusted response and
+assertion text is HTML-escaped under a restrictive Content Security Policy.
+
+We regenerated the original 44-item selection with its frozen seed. Its
+Markdown packet, private map, and JSON label template were byte-identical to
+the earlier packet; only the new HTML file was added, with private file mode.
+Unit tests cover blinding, private permissions, malicious HTML escaping, and
+the inline-script CSP hash. JavaScript syntax passed `node --check`. The
+computer-use browser refused a local `file://` URL under its security policy;
+we did not try another browser surface, so actual click/export behavior is
+**not browser-verified** here. The Markdown-plus-JSON path remains available.
+No new model or provider call occurred.
+
+The first PR validation also rejected backticked names of generated private
+files as stale repository references. We changed the prose to identify those
+artifacts descriptively and reran the skill validator. Contributor docs need
+to distinguish files produced locally from paths tracked in the public skill.
+
+Blog lesson: a calibration protocol can be technically sound yet remain
+unfinished because collecting blinded labels is too awkward. Improve the
+reviewer's workflow, preserve the same frozen sample and private mapping, and
+keep unverified UI behavior clearly labeled.
