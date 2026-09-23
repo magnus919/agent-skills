@@ -286,3 +286,34 @@ Lesson: test the failure path of an advisory helper, not only its happy path.
 CI dependency defaults can silently remove an observer precisely when the
 upstream check fails. A green PR check for a main-only job is no evidence of
 that path; inspect the actual main workflow after merge.
+
+## 2026-09-23 — First merged deployment and a biased coverage budget
+
+PR #528 merged as `1935fc8` after the failure-path fix and green checks.
+The resulting [main paired-eval run
+35810480945](https://github.com/magnus919/agent-skills/actions/runs/35810480945)
+completed its real-model generation and Jev audit successfully. The audit
+used `jev-1.13.0` and reported 9 comparison reports, 104 prose assertions,
+17 generated responses audited, 95 assertions selected, 9 omitted by the
+100-assertion budget, and zero provider errors. Its 33 suggested `met`
+verdicts (27 candidate, 6 baseline) are **not** verified passes. The uploaded
+audit report contains assertion text, verdicts, probabilities, and response hashes,
+not the generated response text or API key.
+
+The coverage result uncovered a second integration defect: the first 17
+candidate/baseline responses fit under the assertion cap, but the final
+`reranking-pipeline` baseline did not. That makes raw candidate-versus-baseline
+counts biased by traversal order. A job-level success did not reveal this;
+the report's `assertions_omitted_by_budget` field did. We changed selection
+to admit both sides of a paired case or neither, and to skip an incomplete
+pair rather than present one side as a comparison. On the **same downloaded
+artifact**, offline replay with the old 100-assertion cap selects 16 responses
+/ 86 assertions and omits the full 18-assertion reranking pair. A 120-assertion
+cap selects all 18 responses / 104 assertions with no budget omission. Seven
+local contract tests pass. This fix has not yet had a second live GitHub run.
+
+Lesson: coverage and sampling policy are part of model evaluation quality.
+Even an advisory classifier can produce a misleading comparative headline if
+the budget clips one side of a pair. Report selected, omitted, and unpaired
+work explicitly; test those fields against a real artifact before interpreting
+candidate/baseline tallies.
