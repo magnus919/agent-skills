@@ -719,10 +719,15 @@ accuracy or calibration.
 
 The subsequent balanced-selector run
 [35830774978](https://github.com/magnus919/agent-skills/actions/runs/35830774978)
-was still generating responses at this entry. Its merged code's multi-skill
-allocation is covered by the four-report deterministic test, but the live
-run selects only `system-one`; it cannot demonstrate cross-skill behavior in
-production.
+at merge commit `e8a6f99b0e09ddfb8504a75c29a357d2bcd9a084` also completed
+real-model generation and the live Jev audit successfully. Its downloaded
+artifact identifies budget policy `skill_round_robin_stable_hash_v1`, matches
+all ten expected comparison reports, and records 20/20 groups and 122/122
+prose assertions attempted, with zero skips, budget omissions, or provider
+errors. It yielded 33 `met`, seven `not_met`, and 82 `not_shown` suggestions;
+these are not accuracy estimates. This live run selects only `system-one`, so
+the policy's *cross-skill* allocation remains evidenced by the four-report
+deterministic test, not by a live multi-skill run.
 
 We also checked `ci-failure-to-issue.yml` as a possible second Jev workload.
 It contains no LLM inference to replace: a deterministic failure event creates
@@ -735,3 +740,36 @@ mandatory issue creation and failure signals remain deterministic.
 Blog lesson: successful live coverage and a sensible allocation policy are
 different claims. Test the latter with multi-skill fixtures, and do not infer
 semantic correctness from a green provider call or a small incident history.
+
+## 2026-09-23 — Same-input Jev repeatability from two completed CI runs
+
+We compared the live audit artifacts from main runs
+[35825585445](https://github.com/magnus919/agent-skills/actions/runs/35825585445)
+and [35830055808](https://github.com/magnus919/agent-skills/actions/runs/35830055808)
+with `scripts/jev_eval_calibration.py stability`. The tool verified that the
+two commits used byte-identical `jev_eval_audit.py` implementations (SHA-256
+`a85a531d11a1d7fbf1e2e775b5d9e3c713bf4fd6809e77614a958eafefd6d2a0`),
+then matched all 20 audited response groups by skill, case, side, and response
+SHA-256. All 122 assertion texts and their order also matched. This is a
+same-input Jev repeatability comparison, not merely a comparison of two
+different model generations.
+
+Jev's suggested verdict changed on one of 122 assertions: `contract-design`
+candidate, “Keeps thresholds, human review, authorization, and side effects
+in deterministic code,” moved from `not_met` to `met`. Its `met` probability
+moved from 0.44 to 0.47 while provider confidence moved from 0.23 to 0.20.
+Across all matched assertions, mean absolute `met` probability change was
+0.0134, maximum 0.09; mean absolute provider-confidence change was 0.0222,
+maximum 0.15. The flip was near the decision boundary and had low reported
+confidence in both runs. It strengthens the case for an abstention/review lane,
+but does **not** establish any threshold, correctness, probability calibration,
+or suitability as a release gate.
+
+A proposed third local call was blocked before egress because this environment
+required explicit approval to retransmit the saved responses. We did not work
+around that restriction. The two already-completed CI artifacts supplied the
+same-input comparison without additional provider traffic.
+
+Blog lesson: compare hashes and audit implementation before calling two runs
+“repeatability.” A green rerun can still hide a low-confidence verdict flip;
+keep that uncertainty visible rather than rounding agreement up to certainty.
