@@ -419,3 +419,24 @@ Lesson for the article: a fast classifier helps only where the required output
 is a bounded judgment. Treating a model's successful API call as CI coverage
 is another way to hide missing evidence; expose denominators and failure lanes
 before celebrating latency or accuracy. Independent labels remain outstanding.
+
+## 2026-09-23 — Main-branch deployment proof after PR #533
+
+[Run 35815520138](https://github.com/magnus919/agent-skills/actions/runs/35815520138)
+completed successfully on merged `main` at `6ebe743`. The paired-eval test job
+ran both the audit and calibration-helper tests. Real-model paired generation
+took 13m25s; the downstream Jev audit job took 11s. The uploaded live audit
+artifact identifies `jev-1.13.0` and records 9 comparison reports, 18 response
+groups, and 108/108 prose assertions selected, with zero skipped responses,
+oversized assertions/groups, unpaired assertions, budget omissions, or provider
+errors. The rendered GitHub run summary was inspected: it displays complete
+advisory coverage and all omission/error lanes, explicitly distinguishing
+coverage from agreement, calibration, and merge permission.
+
+A new private, prediction-blinded packet was frozen from this exact run using
+seed `jev-ci-review-v2`: 16 assertion pairs plus 12 separate high-`met`
+challenge judgments, totaling 44 review items across 17 response groups.
+It and the raw response text remain local rather than in the repository or CI
+artifact. Human labels are still missing; do not infer any Jev accuracy or
+threshold from the 108/108 coverage count. The time comparison also measures
+different jobs and output contracts—Jev did not replace the generative stage.
