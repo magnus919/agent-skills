@@ -174,6 +174,41 @@ One reviewer and one run cannot establish a gate threshold. Preserve the
 artifact hashes, seed, model/rubric revision, disagreement record, and missing
 labels; repeat after any model, rubric, or workload change.
 
+### Model-teacher screen without manual labeling
+
+When human review is unavailable, `prepare` also writes a private
+`review-items.json` containing only IDs, assertions, and generated responses.
+It excludes Jev predictions, sample stratum, and candidate/baseline metadata.
+The main-branch-only manual workflow `.github/workflows/jev-teacher-calibration.yml`
+downloads a successful main-branch paired-eval run, creates that packet, and
+asks the separate Nous Portal inference model for two blind label passes.
+Different assertion order reduces a small presentation bias; it does **not**
+make the passes independent judges. Disagreement or either pass's `uncertain`
+becomes consensus `uncertain`, never a forced pass. The workflow uses the
+existing `NOUS_API_KEY` secret and uploads only hashed item IDs, labels, and
+aggregate Jev-versus-teacher counts. Generated responses, Jev's private map,
+and teacher rationales remain private in the runner workspace.
+
+For a local authorized run from the skill root:
+
+```bash
+python3 scripts/jev_teacher_label.py \
+  --items /private/path/review-v1/review-items.json \
+  --output-dir /private/path/teacher-v1
+python3 scripts/jev_eval_calibration.py score \
+  --private-map /private/path/review-v1/private-map.json \
+  --labels /private/path/teacher-v1/consensus-labels.json \
+  --output /private/path/teacher-score.json
+```
+
+This is pseudo-labeling for **advisory error discovery and rubric iteration**,
+not training Jev weights, human-grounded calibration, or a release gate. Jev
+is a managed API with no public fine-tuning path. Do not use Jev outputs as
+training targets for an imitation model; review the current TypeSafe account
+agreement before any distillation project. Tune on one frozen development
+slice and evaluate changes on a separate held-out slice; report teacher
+uncertainty and known counterexamples rather than treating agreement as truth.
+
 ### Repeatability without new provider calls
 
 When two complete Jev audit artifacts already exist, compare them offline

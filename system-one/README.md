@@ -27,7 +27,7 @@ on your own workload.
 | `templates/action-control-contract.md` | Preflight for observed app actions, confirmation, freshness, and rollback |
 | `templates/benchmark-record.md` | Reproducible model/latency/calibration comparison record |
 | `examples/` | Synthetic request, response, and labeled evaluation cases, including a frozen Jev semantic-audit fixture |
-| `scripts/` | Offline/live probe, read-only routing demo, Jev QA pilot, advisory eval audit and private calibration/reviewer comparison, binary evaluator, and private Laya HTTP adapter |
+| `scripts/` | Offline/live probe, read-only routing demo, Jev QA pilot, advisory eval audit, private review and model-teacher screening, binary evaluator, and private Laya HTTP adapter |
 | `templates/laya.Dockerfile` | Container starting point using a pinned local model artifact |
 | `tests/` and `scripts/test_*.py` | Offline checks for contracts, policy, evaluation, and service behavior |
 | `evals/evals.json` | Nine output-quality cases for model integration and operations |
@@ -52,6 +52,7 @@ python3 scripts/evaluate_noul.py --cases examples/noul.synthetic.jsonl --thresho
 python3 scripts/jev_qa_pilot.py  # synthetic rules-only baseline; no API call
 python3 scripts/jev_eval_audit.py --reports /path/to/paired-eval-artifacts  # offline selection check
 python3 scripts/jev_eval_calibration.py --help  # private review, scoring, and offline repeatability
+python3 scripts/jev_teacher_label.py --help  # optional blind model-teacher screening
 ```
 
 For Laya, follow `references/laya-self-hosting.md` to stage a commit-pinned
