@@ -327,6 +327,13 @@ def prepare(root: Path, audit_path: Path, output_dir: Path, run_id: str, seed: s
     output_dir.mkdir(mode=0o700, parents=False, exist_ok=False)
     write_private_new(output_dir / "review-packet.md", packet)
     write_private_new(output_dir / "review.html", render_review_html(selected))
+    # Machine-readable blind input for an external teacher. Never include the
+    # private map's Jev predictions, sample stratum, or candidate/baseline side.
+    write_private_new(output_dir / "review-items.json", json.dumps({
+        "schema_version": 1,
+        "items": [{"id": item["id"], "assertion": item["assertion"],
+                   "response": item["response"]} for item in selected],
+    }, indent=2) + "\n")
     write_private_new(output_dir / "labels-template.json", json.dumps(labels, indent=2) + "\n")
     write_private_new(output_dir / "private-map.json", json.dumps(private_map, indent=2) + "\n")
     return {"source_run_id": run_id, "population_assertions": population_pairs * 2,
@@ -483,11 +490,18 @@ def score(private_map: dict[str, Any], labels: dict[str, Any]) -> dict[str, Any]
             "brier_met": sum((item["met_probability"] - int(observed[item["id"]] == "met")) ** 2
                              for item in resolved) / len(resolved) if resolved and len(resolved) == len(chosen) else None,
         }
+    reviewer_kind = labels.get("reviewer_kind", "human")
+    if reviewer_kind not in ("human", "model_teacher"):
+        raise ValueError("reviewer_kind must be human or model_teacher")
+    limitation = ("Model-teacher agreement is pseudo-label evidence, not ground truth, probability calibration, or a release gate."
+                  if reviewer_kind == "model_teacher" else
+                  "One blinded reviewer is not adjudicated ground truth; no threshold or gate is established.")
     return {"schema_version": 1, "source_run_id": private_map.get("source_run_id"),
             "model": private_map.get("model"), "reviewer_id": labels["reviewer_id"],
+            "reviewer_kind": reviewer_kind,
             "advisory_only": True, "population": summarize("population"),
             "challenge_high_met": summarize("challenge_high_met"),
-            "limitation": "One blinded reviewer is not adjudicated ground truth; no threshold or gate is established."}
+            "limitation": limitation}
 
 
 def main() -> int:

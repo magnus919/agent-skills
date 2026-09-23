@@ -871,3 +871,38 @@ Blog lesson: verify the live post-merge path and inspect the audit artifact's
 denominators. Report coverage, omissions, and provider failures separately
 from agreement and calibration; a clean 122/122 service run answers only the
 first set of questions.
+
+## 2026-09-23 — Replace manual review toil with a model-teacher screen
+
+The owner authorized an inference model to supply labels rather than requiring
+manual review of the 44-item packet. This does **not** create ground truth:
+the separate teacher can share blind spots with Jev, and two calls to the same
+teacher are correlated. The new manual, main-branch-only workflow prepares the
+same prediction-blind sample, asks Nous Portal GPT-6 Luna for two passes with
+reversed assertion order, and leaves disagreements `uncertain`. It uploads
+only hashed item IDs, labels, and aggregate Jev-versus-teacher counts, not the
+generated responses, Jev private map, or teacher rationales. It cannot change
+required validation or release status.
+
+We reproduced the frozen `jev-543-blind-v1` selection from main run
+[35825585445](https://github.com/magnus919/agent-skills/actions/runs/35825585445):
+44 item IDs, 32 population judgments in 16 candidate/baseline pairs, 12
+risk-enriched challenge judgments, and 18 response groups. The selected ID
+sequence matched the earlier packet byte-for-byte by SHA-256. The new
+machine-readable `review-items.json` contains only `id`, `assertion`, and
+`response`; tests reject prediction-bearing fields and verify private file
+permissions. This section records preflight design and offline tests only;
+live teacher reliability and agreement are not yet established.
+
+Jev is a managed API with no public weight-training path. TypeSafe's current
+[customer agreement](https://typesafe.ai/legal/mca) restricts using its
+Services or Output for distillation or imitation-model training. Therefore
+the teacher receives no Jev predictions and the work is an evaluation of the
+existing CI policy, **not** training a competing classifier from Jev output.
+If a separately trained Laya classifier is desired, its dataset and license
+boundary need an explicit design outside this Jev audit.
+
+Blog lesson: replacing reviewer toil with model pseudo-labels can accelerate
+error discovery, but it changes the kind of evidence. Keep provenance,
+blinding, disagreement, abstention, and provider terms visible; never rename
+teacher consensus to independent accuracy.

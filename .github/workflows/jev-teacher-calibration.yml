@@ -1,0 +1,101 @@
+name: Jev model-teacher calibration
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Successful main-branch paired-eval run containing model and Jev audit artifacts
+        required: true
+        type: string
+      seed:
+        description: Frozen selection seed (use the same seed for an exact replay)
+        required: true
+        default: jev-543-blind-v1
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.source_run_id }}-${{ inputs.seed }}
+  cancel-in-progress: false
+
+jobs:
+  teacher-label:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out trusted main-branch code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Verify source is a completed main-branch paired evaluation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          SEED: ${{ inputs.seed }}
+        run: |
+          if [[ ! "$SOURCE_RUN_ID" =~ ^[0-9]+$ || ! "$SEED" =~ ^[A-Za-z0-9._-]{1,80}$ ]]; then
+            echo 'Invalid source run ID or seed' >&2
+            exit 2
+          fi
+          source_status=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" \
+            --jq '[.head_branch, .event, .conclusion, .path] | join("|")')
+          if [ "$source_status" != 'main|push|success|.github/workflows/skill-eval.yml' ]; then
+            echo 'Source is not a successful main-branch paired-eval push' >&2
+            exit 2
+          fi
+      - name: Download real-model comparison artifacts as untrusted data
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: paired-eval-model-artifacts
+          path: private/reports
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run_id }}
+      - name: Download matching Jev audit as untrusted data
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: jev-eval-audit
+          path: private/audit
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run_id }}
+      - name: Prepare prediction-blind packet
+        env:
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          SEED: ${{ inputs.seed }}
+        run: |
+          python3 system-one/scripts/jev_eval_calibration.py prepare \
+            --reports private/reports \
+            --audit private/audit/jev-eval-audit.json \
+            --output-dir private/review \
+            --run-id "$SOURCE_RUN_ID" --seed "$SEED"
+      - name: Obtain two blind inference-model passes
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+        run: |
+          python3 system-one/scripts/jev_teacher_label.py \
+            --items private/review/review-items.json \
+            --output-dir private/teacher
+      - name: Score consensus pseudo-labels against Jev
+        run: |
+          python3 system-one/scripts/jev_eval_calibration.py score \
+            --private-map private/review/private-map.json \
+            --labels private/teacher/consensus-labels.json \
+            --output private/score.json
+          echo '## Jev model-teacher screen (advisory)' >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"Teacher agreement without abstention: \(.agreement_non_uncertain)/\(.total). This is model pseudo-labeling, not ground truth or a release gate."' private/teacher/safe-summary.json >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"Population: \(.population.resolved)/\(.population.selected) resolved; suggested-met false accepts against teacher consensus: \(.population.false_met_accepts). Challenge: \(.challenge_high_met.resolved)/\(.challenge_high_met.selected) resolved; suggested-met disagreements: \(.challenge_high_met.false_met_accepts)."' private/score.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload non-text aggregate evidence only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: jev-teacher-calibration-summary
+          path: |
+            private/teacher/safe-summary.json
+            private/score.json
+          retention-days: 14

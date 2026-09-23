@@ -85,6 +85,13 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.assertIn("case-a candidate response", packet)
         self.assertNotIn("suggested_verdict", packet)
         self.assertNotIn("met_probability", packet)
+        blind_items = json.loads((output / "review-items.json").read_text(encoding="utf-8"))
+        self.assertEqual(set(blind_items), {"schema_version", "items"})
+        self.assertEqual(len(blind_items["items"]), 6)
+        self.assertEqual(set(blind_items["items"][0]), {"id", "assertion", "response"})
+        self.assertNotIn("suggested_verdict", json.dumps(blind_items))
+        self.assertNotIn("sample_class", json.dumps(blind_items))
+        self.assertEqual(os.stat(output / "review-items.json").st_mode & 0o777, 0o600)
         review_html = (output / "review.html").read_text(encoding="utf-8")
         self.assertIn("case-a candidate response", review_html)
         self.assertEqual(review_html.count('data-review-id="'), 6)
@@ -160,9 +167,14 @@ class JevEvalCalibrationTests(unittest.TestCase):
                               "evidence": "Checked visible response against the assertion"}
                              for index, item in enumerate(selected)]}
         result = score(private_map, labels)
+        self.assertEqual(result["reviewer_kind"], "human")
         self.assertEqual(result["population"]["selected"], 4)
         self.assertEqual(result["challenge_high_met"]["selected"], 2)
         self.assertEqual(result["population"]["resolved"] + result["challenge_high_met"]["resolved"], 6)
+        labels["reviewer_kind"] = "model_teacher"
+        model_result = score(private_map, labels)
+        self.assertEqual(model_result["reviewer_kind"], "model_teacher")
+        self.assertIn("pseudo-label", model_result["limitation"])
         labels["labels"][0]["label"] = ""
         with self.assertRaisesRegex(ValueError, "every review item needs"):
             score(private_map, labels)
