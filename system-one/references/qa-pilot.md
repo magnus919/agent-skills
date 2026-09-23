@@ -82,7 +82,11 @@ the audit offline. Add `--live` only after reviewing the generated responses
 for data allowed to leave the environment and setting `TYPESAFE_API_KEY`.
 The audit limits response size, file size, call count, and assertion count;
 its report contains verdict metadata and response hashes but no generated
-text. When multiple skills compete for the budget, it visits one complete
+text. Its `question_contract_sha256` fingerprints the pinned model and one
+placeholder request's trusted question/state shape, including Choice criteria;
+compare this with the source revision before treating two runs as the same
+input contract. It is not a hash of private generated responses or individual
+eval assertions. When multiple skills compete for the budget, it visits one complete
 candidate/baseline case pair per skill before taking another, using stable
 hash order within each skill. This spreads limited coverage; it is not a
 random or representative sample, and budget omissions remain explicit. Treat
