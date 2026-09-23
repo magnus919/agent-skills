@@ -3,9 +3,7 @@ name: Paired skill evaluation smoke
 on:
   pull_request:
     paths:
-      - '*/SKILL.md'
-      - '*/evals/evals.json'
-      - '*/scripts/**'
+      - '*/**'
       - 'eval_runner/**'
       - '.github/workflows/skill-eval.yml'
       - 'schemas/comparison-report-v1.schema.json'
@@ -14,9 +12,7 @@ on:
     branches:
       - main
     paths:
-      - '*/SKILL.md'
-      - '*/evals/evals.json'
-      - '*/scripts/**'
+      - '*/**'
       - 'eval_runner/**'
       - '.github/workflows/skill-eval.yml'
       - 'schemas/comparison-report-v1.schema.json'

@@ -21,7 +21,7 @@ class Selection(TypedDict):
 
 
 SKILL_NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
-PATHS = ("*/SKILL.md", "*/evals/evals.json", "*/scripts/**")
+PATHS = ("*/**",)
 
 
 def manifests_for_paths(paths: list[str], root: Path) -> list[str]:
@@ -30,12 +30,8 @@ def manifests_for_paths(paths: list[str], root: Path) -> list[str]:
         parts = Path(path).parts
         if len(parts) < 2 or not SKILL_NAME.fullmatch(parts[0]):
             continue
-        eligible_change = (
-            (len(parts) == 2 and parts[1] == "SKILL.md")
-            or (len(parts) == 3 and parts[1:] == ("evals", "evals.json"))
-            or (len(parts) >= 3 and parts[1] == "scripts")
-        )
-        if eligible_change and (root / parts[0] / "evals" / "evals.json").is_file():
+        skill_root = root / parts[0]
+        if (skill_root / "SKILL.md").is_file() and (skill_root / "evals" / "evals.json").is_file():
             skills.add(parts[0])
     return [f"{skill}/evals/evals.json" for skill in sorted(skills)]
 

@@ -67,6 +67,13 @@ only `manual_review` prose assertions, and asks Jev whether each assertion is
 untouched. `not_shown` means the generated text does not establish the claim;
 it is not interchangeable with a demonstrated contradiction.
 
+Check the paired-eval selection summary before interpreting audit coverage.
+Any changed file in a skill directory, including a reference or template,
+selects that skill when it has an eval manifest. More than five eligible skills
+fails selection without evaluating a subset. The audit's coverage percentage
+counts only prose assertions in comparison reports actually produced; it does
+not establish coverage of omitted skills, skipped model jobs, or the catalog.
+
 For local inspection, first download a trusted paired-eval artifact and run
 the audit offline. Add `--live` only after reviewing the generated responses
 for data allowed to leave the environment and setting `TYPESAFE_API_KEY`.
