@@ -8,6 +8,17 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Literal, TypedDict
+
+
+class Selection(TypedDict):
+    status: Literal["over_limit", "selected", "none"]
+    eligible_count: int
+    max_skills: int
+    selected_count: int
+    manifests: list[str]
+    eligible_manifests: list[str]
+
 
 SKILL_NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 PATHS = ("*/SKILL.md", "*/evals/evals.json", "*/scripts/**")
@@ -43,7 +54,7 @@ def changed_paths(root: Path, base: str, head: str) -> list[str]:
     return result.stdout.splitlines()
 
 
-def select(manifests: list[str], limit: int) -> dict[str, object]:
+def select(manifests: list[str], limit: int) -> Selection:
     if limit <= 0:
         raise ValueError("--max-skills must be positive")
     if len(manifests) > limit:
@@ -65,7 +76,7 @@ def select(manifests: list[str], limit: int) -> dict[str, object]:
     }
 
 
-def render_summary(selection: dict[str, object]) -> str:
+def render_summary(selection: Selection) -> str:
     count = selection["eligible_count"]
     limit = selection["max_skills"]
     if selection["status"] == "over_limit":
