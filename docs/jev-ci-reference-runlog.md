@@ -830,6 +830,11 @@ we did not try another browser surface, so actual click/export behavior is
 **not browser-verified** here. The Markdown-plus-JSON path remains available.
 No new model or provider call occurred.
 
+The first PR validation also rejected backticked names of generated private
+files as stale repository references. We changed the prose to identify those
+artifacts descriptively and reran the skill validator. Contributor docs need
+to distinguish files produced locally from paths tracked in the public skill.
+
 Blog lesson: a calibration protocol can be technically sound yet remain
 unfinished because collecting blinded labels is too awkward. Improve the
 reviewer's workflow, preserve the same frozen sample and private mapping, and
