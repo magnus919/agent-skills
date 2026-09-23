@@ -146,3 +146,29 @@ and a `met` probability Brier score only when the stratum is fully resolved.
 One reviewer and one run cannot establish a gate threshold. Preserve the
 artifact hashes, seed, model/rubric revision, disagreement record, and missing
 labels; repeat after any model, rubric, or workload change.
+
+### Repeatability without new provider calls
+
+When two complete Jev audit artifacts already exist, compare them offline
+*only if* their generated response hashes, assertion text/order, model, and
+auditor implementation match. Pass the exact full Git commit SHAs for the
+auditor source in each run; the helper reads those commits locally and rejects
+a changed implementation. Do not use branch names or abbreviated revisions.
+Run from the skill root:
+
+```bash
+python3 scripts/jev_eval_calibration.py stability \
+  --first-audit /private/path/first-jev-eval-audit.json \
+  --second-audit /private/path/second-jev-eval-audit.json \
+  --first-revision 0123456789abcdef0123456789abcdef01234567 \
+  --second-revision fedcba9876543210fedcba9876543210fedcba98 \
+  --output /private/path/stability-report.json
+```
+
+Use the *actual* commit SHAs from the two source runs. The report contains
+response/assertion hashes, verdict flips, and probability/confidence movement,
+but no generated response or assertion text. Identical inputs and stable
+verdicts still do not establish correctness or calibrated probabilities.
+Keep this output private alongside the audits. A failed network replay is
+missing evidence; do not retry by another execution route when external
+transmission has not been authorized for the specific payload and destination.

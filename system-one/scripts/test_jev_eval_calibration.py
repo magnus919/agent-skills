@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 
 from jev_eval_audit import collect_groups
-from jev_eval_calibration import compare_labels, prepare, read_audit, records_from_artifacts, score, select_records
+from jev_eval_calibration import compare_audits, compare_labels, prepare, read_audit, records_from_artifacts, score, select_records
 
 
 class JevEvalCalibrationTests(unittest.TestCase):
@@ -135,6 +135,22 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(os.stat(output).st_mode & 0o777, 0o600)
         self.assertEqual(json.loads(output.read_text(encoding="utf-8"))["agreements"], 0)
+
+    def test_stability_requires_identical_inputs_and_reports_flip(self):
+        repeated = json.loads(json.dumps(self.audit))
+        repeated["results"][0]["assertions"][0]["suggested_verdict"] = "not_shown"
+        repeated["results"][0]["assertions"][0]["met_probability"] = 0.45
+        result = compare_audits(self.audit, repeated)
+        self.assertEqual((result["matched_groups"], result["matched_assertions"]), (4, 8))
+        self.assertEqual(len(result["verdict_flips"]), 1)
+        self.assertNotIn("Describes exact authorization", json.dumps(result))
+        repeated["results"][0]["response_sha256"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "identical response groups"):
+            compare_audits(self.audit, repeated)
+        repeated["results"][0]["response_sha256"] = self.audit["results"][0]["response_sha256"]
+        repeated["results"][0]["assertions"][0]["assertion"] = "changed criterion"
+        with self.assertRaisesRegex(ValueError, "identical assertion text"):
+            compare_audits(self.audit, repeated)
 
 
 if __name__ == "__main__":

@@ -453,3 +453,30 @@ seeing model answers; the original reviews remain intact. This is preparation
 for independent evidence, not evidence that Jev agrees with humans. Blog
 lesson: measure and preserve disagreement in the supposed ground truth before
 optimizing a model against it.
+
+## 2026-09-23 — Offline replay comparison finds one boundary flip
+
+The private 44-item human review packet remained unlabeled. A proposed local
+live replay of run 35817642002 stopped on DNS resolution before any Jev answer
+was received. A request for network permission was rejected because that
+would resend CI-generated response text to the external TypeSafe API without
+specific authorization for this payload. No indirect retry was attempted.
+
+A safer comparison used two *existing* complete CI audits: runs
+[35815520138](https://github.com/magnus919/agent-skills/actions/runs/35815520138)
+and [35817642002](https://github.com/magnus919/agent-skills/actions/runs/35817642002).
+All 18 response groups had identical response hashes and assertion text/order;
+both requested `jev-1.13.0`. The auditor source file was byte-identical at
+their respective full source commits. Across 108 matched judgments, one
+verdict flipped: the `jev-integration` candidate assertion about keeping
+`TYPESAFE_API_KEY` server-side changed from `not_shown` (met probability 0.46)
+to `met` (0.51). Provider confidence was 0.27 in both. Mean absolute change
+in `met` probability was 0.0147; maximum was 0.14. The offline stability
+helper now checks identical inputs and source implementation before computing
+these statistics, without sending another request or exposing raw responses.
+
+This is repeatability evidence, **not** an accuracy or calibration estimate.
+The single flip near 0.5 reinforces the need for a review/abstention lane;
+it does not determine a usable threshold. Blog lesson: opportunistic repeated
+CI runs can reveal boundary instability without paying for or authorizing a
+new provider call, but agreement with oneself is not agreement with reality.
