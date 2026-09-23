@@ -23,6 +23,21 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
+      - name: Configure Nous Portal model
+        run: |
+          mkdir -p "$HOME/.factory"
+          cat > "$HOME/.factory/settings.json" <<'FACTORY_JSON'
+          {
+            "customModels": [{
+              "model": "openai/gpt-6-luna",
+              "displayName": "GPT-6 Luna (Nous Portal)",
+              "baseUrl": "https://inference-api.nousresearch.com/v1",
+              "apiKey": "${NOUS_API_KEY}",
+              "provider": "generic-chat-completion-api",
+              "maxOutputTokens": 16384
+            }]
+          }
+          FACTORY_JSON
       - name: Run Droid Auto Review
         uses: Factory-AI/droid-action@main
         with:
@@ -30,3 +45,8 @@ jobs:
           automatic_review: true
           automatic_security_review: true
           review_depth: shallow
+          review_model: openai/gpt-6-luna
+          security_model: openai/gpt-6-luna
+          reasoning_effort: low
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
