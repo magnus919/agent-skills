@@ -1101,3 +1101,31 @@ but contains no generated response text. The test changes one criterion and
 checks that the fingerprint changes. This improves reproducibility of the
 planned input-only experiment; it does not improve or establish grading
 accuracy, and no Jev input or required CI gate changes in this revision.
+
+## 2026-09-23 — Live provenance artifact verified
+
+The first main-branch run after the fingerprint change,
+[35923727892](https://github.com/magnus919/agent-skills/actions/runs/35923727892),
+completed successfully. Its real-model job ran on the single self-hosted
+`agent-skills-eval` runner (15m17s after two earlier runs occupied the queue),
+then the hosted Jev audit ran. The downloaded advisory JSON is `mode=live`,
+requests `jev-1.13.0`, and records question-contract SHA-256
+`645c26640eaea298e2cd10bf7e3dd72d2c8c3d702796b1c8b5bd8a39a0cb0f9e`.
+That value matches `question_contract_sha256()` from the merged source
+revision `b4861628581cae5bdb748ffcbdf6afe522c4bc9d`. Its selection evidence
+expects 10 comparison reports and observes exactly 10, with no missing or
+unexpected reports. Jev judged all 122 prose assertions in 20 groups; there
+were zero skips, budget omissions, or provider errors. This verifies live
+artifact provenance and selected-case coverage, **not** the truth of any
+`met` suggestion or calibration of its probability.
+
+A nearby main run,
+[35923184979](https://github.com/magnus919/agent-skills/actions/runs/35923184979),
+also had a green `jev-eval-audit` job, but its selection status was `none`:
+zero expected reports, zero observed reports, and zero Jev calls. The earlier
+[35922337142](https://github.com/magnus919/agent-skills/actions/runs/35922337142)
+was a true live audit with 10/10 reports and 122/122 prose assertions.
+Lesson: never cite a green Jev job as model-health or coverage evidence
+without inspecting its selection denominator, judged count, and provider
+errors. Single-run success also does not substitute for independent labels
+or a held-out input comparison.
