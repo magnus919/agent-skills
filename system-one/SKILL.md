@@ -55,6 +55,7 @@ does not imply a correct judgment; a high probability is not permission.
 | Local or private/VPC Laya service | `references/laya-self-hosting.md`, then `references/hosting-and-troubleshooting.md` |
 | Browser/desktop/voice control, agent routing, ranking, guardrails, deadlines | `references/use-case-patterns.md` |
 | Probability, threshold, calibration, model comparison | `references/evaluation-and-calibration.md` and `templates/benchmark-record.md` |
+| Synthetic QA pilot for Jev (failure triage, extra-test choice, semantic grading) | `references/qa-pilot.md`; run `scripts/jev_qa_pilot.py` offline first |
 | New open model or Jev-style replica | `references/ecosystem-radar.md` |
 | Failure, latency, device fallback, upgrade, rollback | `references/hosting-and-troubleshooting.md` |
 
