@@ -61,7 +61,8 @@ def collect_groups(root: Path, max_response_chars: int) -> tuple[list[dict[str, 
     """Extract prose assertions and generated responses without trusting paths or code."""
     groups: list[dict[str, Any]] = []
     counts = {"reports_seen": 0, "exact_assertions_untouched": 0, "prose_assertions_seen": 0,
-              "skipped_response": 0, "skipped_oversized_assertion": 0, "skipped_oversized_group": 0}
+              "skipped_response": 0, "skipped_oversized_assertion": 0, "skipped_oversized_group": 0,
+              "skipped_unpaired_assertions": 0}
     for path in sorted(root.glob("*/reports/*.comparison.json")):
         report = _read_json(path, root)
         counts["reports_seen"] += 1
@@ -69,6 +70,7 @@ def collect_groups(root: Path, max_response_chars: int) -> tuple[list[dict[str, 
         case_id = report.get("case_id")
         if report.get("skill_name") != skill or not isinstance(case_id, str) or not case_id:
             raise ValueError("artifact path and report identity disagree")
+        case_groups = []
         for side in ("candidate", "baseline"):
             trial = report.get(side)
             if not isinstance(trial, dict):
@@ -99,7 +101,7 @@ def collect_groups(root: Path, max_response_chars: int) -> tuple[list[dict[str, 
             if manifest.get("status") != "completed" or not isinstance(response, str) or not response.strip() or len(response) > max_response_chars:
                 counts["skipped_response"] += len(prose)
                 continue
-            groups.append({
+            case_groups.append({
                 "skill": skill,
                 "case_id": case_id,
                 "side": side,
@@ -107,6 +109,10 @@ def collect_groups(root: Path, max_response_chars: int) -> tuple[list[dict[str, 
                 "response_sha256": hashlib.sha256(response.encode("utf-8")).hexdigest(),
                 "assertions": prose,
             })
+        if len(case_groups) == 2:
+            groups.extend(case_groups)
+        else:
+            counts["skipped_unpaired_assertions"] += sum(len(group["assertions"]) for group in case_groups)
     return groups, counts
 
 
@@ -139,18 +145,26 @@ def audit(
 ) -> dict[str, Any]:
     groups, counts = collect_groups(root, max_response_chars)
     rows: list[dict[str, Any]] = []
-    calls = 0
+    pairs: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    for group in groups:
+        pairs[(group["skill"], group["case_id"])].append(group)
+    selected_groups: list[dict[str, Any]] = []
     selected_assertions = 0
     omitted = 0
-    errors = 0
-    for group in groups:
-        size = len(group["assertions"])
-        if calls >= max_calls or selected_assertions + size > max_assertions:
-            omitted += size
+    for pair in pairs.values():
+        pair_size = sum(len(group["assertions"]) for group in pair)
+        if len(selected_groups) + len(pair) > max_calls or selected_assertions + pair_size > max_assertions:
+            omitted += pair_size
             continue
+        selected_groups.extend(pair)
+        selected_assertions += pair_size
+    calls = 0
+    errors = 0
+    attempted_assertions = 0
+    for group in selected_groups:
         request = build_request(group)
         calls += 1
-        selected_assertions += size
+        attempted_assertions += len(group["assertions"])
         row: dict[str, Any] = {
             "skill": group["skill"],
             "case_id": group["case_id"],
@@ -186,7 +200,11 @@ def audit(
         "mode": "live" if live else "offline",
         "model_requested": MODEL if live else None,
         "advisory_only": True,
-        "counts": {**counts, "groups_selected": calls, "assertions_selected": selected_assertions, "assertions_omitted_by_budget": omitted, "provider_errors": errors},
+        "counts": {**counts, "groups_selected": calls, "assertions_selected": attempted_assertions,
+                   "assertions_omitted_by_budget": omitted,
+                   "groups_not_attempted_after_error": len(selected_groups) - calls,
+                   "assertions_not_attempted_after_error": selected_assertions - attempted_assertions,
+                   "provider_errors": errors},
         "results": rows,
     }
 
@@ -198,7 +216,7 @@ def main() -> int:
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--key-file", type=Path, help="local env-style key file; never printed")
     parser.add_argument("--max-calls", type=int, default=20)
-    parser.add_argument("--max-assertions", type=int, default=100)
+    parser.add_argument("--max-assertions", type=int, default=120)
     parser.add_argument("--max-response-chars", type=int, default=24000)
     parser.add_argument("--timeout", type=float, default=12.0)
     args = parser.parse_args()

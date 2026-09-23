@@ -69,8 +69,9 @@ class JevEvalAuditTests(unittest.TestCase):
     def test_budget_never_turns_omission_into_pass(self):
         result = audit(self.root, live=False, key=None, max_calls=1, max_assertions=1,
                        max_response_chars=24000, timeout=12.0)
-        self.assertEqual(result["counts"]["groups_selected"], 1)
-        self.assertEqual(result["counts"]["assertions_omitted_by_budget"], 1)
+        self.assertEqual(result["counts"]["groups_selected"], 0)
+        self.assertEqual(result["counts"]["assertions_omitted_by_budget"], 2)
+        self.assertEqual(result["results"], [])
 
     def test_large_question_text_is_skipped_not_sent(self):
         report = sample_report()
@@ -79,6 +80,16 @@ class JevEvalAuditTests(unittest.TestCase):
         groups, counts = collect_groups(self.root, 24000)
         self.assertEqual(groups, [])
         self.assertEqual(counts["skipped_oversized_assertion"], 2)
+
+    def test_unpaired_response_is_not_a_comparison(self):
+        report = sample_report()
+        report["baseline"] = {"assertions": report["baseline"]["assertions"],
+                              "manifest": {"status": "failed", "outputs": {"response": ""}}}
+        self.path.write_text(json.dumps(report), encoding="utf-8")
+        groups, counts = collect_groups(self.root, 24000)
+        self.assertEqual(groups, [])
+        self.assertEqual(counts["skipped_response"], 1)
+        self.assertEqual(counts["skipped_unpaired_assertions"], 1)
 
     def test_benchmark_metrics_keep_abstentions_distinct(self):
         result = metrics([

@@ -216,7 +216,7 @@ jobs:
             --reports eval-output-model \
             --live \
             --max-calls 20 \
-            --max-assertions 100 \
+            --max-assertions 120 \
             --output jev-eval-audit.json
       - name: Upload advisory audit evidence
         if: always() && steps.download.outcome == 'success'
