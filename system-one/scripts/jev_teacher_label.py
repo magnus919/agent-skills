@@ -24,7 +24,7 @@ from typing import Any
 
 from jev_eval_calibration import LABELS, write_private_new
 
-ENDPOINT = "https://inference-api.nousresearch.com/v1/responses"
+ENDPOINT = "https://inference-api.nousresearch.com/v1/chat/completions"
 DEFAULT_MODEL = "openai/gpt-6-luna"
 PROMPT_REVISION = "jev-blind-teacher-v1"
 MAX_INPUT_BYTES = 2_000_000
@@ -87,8 +87,10 @@ def request_payload(model: str, response: str, items: list[dict[str, str]], pass
         "assertions": [{"id": item["id"], "text": item["assertion"]} for item in ordered],
         "required_output_shape": {"labels": [{"id": "supplied-id", "label": "met|not_met|not_shown|uncertain", "evidence": "brief paraphrase"}]},
     }, ensure_ascii=False)
-    return {"model": model, "instructions": SYSTEM_INSTRUCTIONS, "input": prompt,
-            "reasoning": {"effort": "low"}, "max_output_tokens": 4096, "store": False}
+    return {"model": model,
+            "messages": [{"role": "system", "content": SYSTEM_INSTRUCTIONS},
+                         {"role": "user", "content": prompt}],
+            "max_tokens": 4096, "stream": False}
 
 
 def call_nous(payload: dict[str, Any], api_key: str) -> dict[str, Any]:
@@ -126,19 +128,16 @@ def call_nous(payload: dict[str, Any], api_key: str) -> dict[str, Any]:
 
 
 def response_text(value: dict[str, Any]) -> str:
-    if value.get("status") not in (None, "completed"):
-        raise ValueError("teacher response did not complete")
-    texts = []
-    for entry in value.get("output", []):
-        if isinstance(entry, dict) and entry.get("type") == "message":
-            for part in entry.get("content", []):
-                if isinstance(part, dict) and part.get("type") == "output_text" and isinstance(part.get("text"), str):
-                    texts.append(part["text"])
-    if not texts and isinstance(value.get("output_text"), str):
-        texts.append(value["output_text"])
-    if len(texts) != 1:
-        raise ValueError("teacher response must contain exactly one output text")
-    return texts[0].strip()
+    choices = value.get("choices")
+    if not isinstance(choices, list) or len(choices) != 1 or not isinstance(choices[0], dict):
+        raise ValueError("teacher response must contain exactly one choice")
+    choice = choices[0]
+    if choice.get("finish_reason") not in (None, "stop"):
+        raise ValueError("teacher response was truncated or did not stop normally")
+    message = choice.get("message")
+    if not isinstance(message, dict) or not isinstance(message.get("content"), str) or not message["content"].strip():
+        raise ValueError("teacher response has no final message text")
+    return message["content"].strip()
 
 
 def parse_labels(value: dict[str, Any], expected_ids: set[str]) -> dict[str, dict[str, str]]:

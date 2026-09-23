@@ -906,3 +906,20 @@ Blog lesson: replacing reviewer toil with model pseudo-labels can accelerate
 error discovery, but it changes the kind of evidence. Keep provenance,
 blinding, disagreement, abstention, and provider terms visible; never rename
 teacher consensus to independent accuracy.
+
+## 2026-09-23 — First teacher run exposed a wire mismatch
+
+The first [manual teacher run](https://github.com/magnus919/agent-skills/actions/runs/35909689507)
+successfully verified the trusted main source run, downloaded both artifacts,
+and reproduced the frozen blind packet. The first provider call then failed
+HTTP 404 on `POST /v1/responses`; no labels or score were produced. The
+`NOUS_API_KEY` secret was present, so this was not a missing-credential result.
+The provider's published integration describes OpenAI-compatible chat
+completions. We changed the teacher client to `POST /v1/chat/completions` with
+chat-shaped request and response validation, preserving the same sample,
+blinding, and fail-closed output policy. A second live run must verify this
+correction before claiming that the teacher screen works.
+
+Blog lesson: “OpenAI-compatible” does not imply every OpenAI API surface is
+implemented. Probe the exact wire used by the workload and record failures as
+missing evidence, not as a classifier verdict.

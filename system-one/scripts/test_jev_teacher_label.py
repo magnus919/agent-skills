@@ -34,21 +34,20 @@ class JevTeacherLabelTests(unittest.TestCase):
         second = request_payload("openai/gpt-6-luna", self.items[0]["response"], self.items[:2], 2)
         self.assertNotIn("suggested_verdict", json.dumps(first))
         self.assertNotIn("met_probability", json.dumps(first))
-        self.assertEqual([a["id"] for a in json.loads(first["input"])["assertions"]],
+        self.assertEqual([a["id"] for a in json.loads(first["messages"][1]["content"])["assertions"]],
                          [self.items[0]["id"], self.items[1]["id"]])
-        self.assertEqual([a["id"] for a in json.loads(second["input"])["assertions"]],
+        self.assertEqual([a["id"] for a in json.loads(second["messages"][1]["content"])["assertions"]],
                          [self.items[1]["id"], self.items[0]["id"]])
-        self.assertFalse(first["store"])
+        self.assertFalse(first["stream"])
 
     def test_parsing_requires_exact_ids_and_evidence(self):
         entry = {"labels": [{"id": self.items[0]["id"], "label": "not_shown", "evidence": "No deadline supplied."}]}
-        response = {"status": "completed", "output": [{"type": "message", "content": [
-            {"type": "output_text", "text": json.dumps(entry)}]}]}
+        response = {"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(entry)}}]}
         self.assertEqual(parse_labels(response, {self.items[0]["id"]})[self.items[0]["id"]]["label"], "not_shown")
         with self.assertRaisesRegex(ValueError, "omitted or added"):
             parse_labels(response, {self.items[0]["id"], self.items[1]["id"]})
         entry["labels"][0]["label"] = "pass"
-        response["output"][0]["content"][0]["text"] = json.dumps(entry)
+        response["choices"][0]["message"]["content"] = json.dumps(entry)
         with self.assertRaisesRegex(ValueError, "invalid"):
             parse_labels(response, {self.items[0]["id"]})
 
@@ -67,11 +66,11 @@ class JevTeacherLabelTests(unittest.TestCase):
         seen = []
 
         def fake_transport(payload):
-            question = json.loads(payload["input"])
+            question = json.loads(payload["messages"][1]["content"])
             seen.append(question)
             answer = {"labels": [{"id": item["id"], "label": "not_shown", "evidence": "Required detail missing"}
                                  for item in question["assertions"]]}
-            return {"status": "completed", "output_text": json.dumps(answer)}
+            return {"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(answer)}}]}
 
         labels = label_pass(self.items, "openai/gpt-6-luna", 1, fake_transport)
         self.assertEqual(len(seen), 2)
