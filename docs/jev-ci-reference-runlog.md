@@ -1067,3 +1067,24 @@ not use its absent score, the small screen, or provider confidence to tune
 Jev API inputs or set a CI gate. Next meaningful evidence requires a working
 separate inference route with authorized data flow, or independently assigned
 labels from another approved source.
+
+## 2026-09-23 — Clarifying the optimization target
+
+The user clarified that this work is **not model fine-tuning**. The adjustable
+surface is our Jev API request: assertion wording, trusted question text,
+Choice criteria, state selection, and grouping. Model weights remain fixed.
+The existing synthetic benchmark already screened one rubric revision, but
+its 17/18 held-out result did not prevent a high-confidence false `met` on a
+real generated response. Repeated local-teacher prompt repair on the same
+44-item packet would not remedy that evidence gap, and the full run produced
+no valid score. Therefore no new Jev rubric or gate is promoted here.
+
+Next input experiment, once independently assigned real-output labels are
+available: freeze the current request and labeled sample; preregister one
+specific error hypothesis and candidate input revision; replay both requests
+against byte-identical response/criterion pairs; compare false `met` accepts,
+`not_met`/`not_shown` confusion, coverage, latency, and probability quality by
+slice; then test the chosen revision on untouched examples. Preserve the
+known reranking false accept as a regression challenge, not as held-out proof.
+The unqueried-label problem is a data/evidence boundary, not a reason to
+train Jev or to use a pseudo-label agreement rate as calibration.
