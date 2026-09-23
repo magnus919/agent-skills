@@ -221,7 +221,10 @@ with `full` to replay the original frozen 44-item packet. Only hashed IDs,
 labels, and aggregate counts are uploaded. The local teacher may be the
 **same model that generated the answers**; even two blind passes are
 correlated self-review, not independent labels or accuracy. Do not promote
-its score to a Jev threshold or gate.
+its score to a Jev threshold or gate. The first full-profile live run failed
+closed on a non-JSON model response after a successful synthetic preflight;
+it produced no score. Treat this profile as a diagnostic, not a reliable
+calibration path for the current local checkpoint.
 
 ### Repeatability without new provider calls
 
