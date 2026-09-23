@@ -1129,3 +1129,42 @@ Lesson: never cite a green Jev job as model-health or coverage evidence
 without inspecting its selection denominator, judged count, and provider
 errors. Single-run success also does not substitute for independent labels
 or a held-out input comparison.
+
+## 2026-09-23 — Prediction-blind model-review screen and provenance fix
+
+From the complete live artifacts of run
+[35923727892](https://github.com/magnus919/agent-skills/actions/runs/35923727892),
+we prepared a private 12-item blind packet with seed `jev-569-blind-v1`:
+four candidate/baseline assertion pairs (eight population items) and four
+remaining high-`met` challenge items. Codex, acting as a **single inference-
+model reviewer**, assigned labels from the visible generated responses before
+opening Jev's predictions. One ambiguous assertion was marked `uncertain`.
+The final private label file has SHA-256
+`6001f9a6d471cd9a02ea285bea8b34636a17913e50315a9b16a3abbfec569575`;
+neither responses nor labels are published here. This is pseudo-label evidence,
+not independent human adjudication or a representative calibration sample.
+
+On the seven resolved population items, Jev and the blind reviewer agreed on
+one `met`, one `not_met`, and five `not_shown`; the eighth item was uncertain,
+so population precision and Brier remain null. In the four deliberately
+high-`met` challenge items, three agreed `met` and one disagreed: Jev
+suggested `met` with probability 1.0 for an answer-ID/type/probability
+validation assertion, while the blind reviewer labeled the generated
+validator `not_met` because it does not compare each **returned answer type**
+with the requested question type. This is a concrete review target and an
+API-input wording hypothesis, **not** a proven Jev error rate. No threshold
+or release gate is changed.
+
+The first score attempt omitted `reviewer_kind`; the helper silently called
+the reviewer `human`. We corrected the private file's provenance field to
+`model_teacher` without changing any item label and rescored. To prevent a
+repeat, missing provenance now reports `unknown`, while the offline human
+form/template writes `human` explicitly. Comparison outputs carry reviewer
+kinds as well. This is an evidence-integrity fix, not a Jev model change.
+
+A proposed local replay of that private generated response to the TypeSafe
+endpoint with a sharper assertion was denied by the environment's approval
+review before transmission. We did not retry by another route. The main CI
+workflow's prior Jev call does not by itself authorize this separate local
+replay; explicit user approval has been requested. Synthetic-only input
+checks and offline review remain available in the meantime.
