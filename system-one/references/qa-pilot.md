@@ -73,6 +73,9 @@ selects that skill when it has an eval manifest. More than five eligible skills
 fails selection without evaluating a subset. The audit's coverage percentage
 counts only prose assertions in comparison reports actually produced; it does
 not establish coverage of omitted skills, skipped model jobs, or the catalog.
+The model job records selected case IDs before generation. The audit compares
+that expected set with observed reports and lists missing or unexpected cases;
+only a matching set can support a complete selected-case coverage claim.
 
 For local inspection, first download a trusted paired-eval artifact and run
 the audit offline. Add `--live` only after reviewing the generated responses

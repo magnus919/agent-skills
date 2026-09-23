@@ -570,3 +570,29 @@ real outputs are still missing.
 Blog lesson: verify coverage fixes with a change that previously would have
 been invisible to the trigger, then follow that change through generation,
 audit, and artifact metadata. A green job alone is a weaker observation.
+
+## 2026-09-23 — Carry expected cases across the model/audit boundary
+
+The reference-only run above established 108/108 *observed-assertion* coverage,
+but exposed a remaining denominator gap: Jev read whatever comparison reports
+the model job uploaded. If generation stopped before writing an expected case
+report, Jev could call the observed set "complete" while omitting that case.
+
+The selector now writes a small JSON artifact containing the selected skill
+manifests and their case IDs **before** generation. The model job uploads it
+with the reports, even when a later paired-eval step fails. The auditor checks
+expected against observed `(skill, case ID)` pairs, rejects malformed or
+duplicate identities, and reports missing and unexpected cases separately
+from skipped assertions and provider errors. Without selection evidence, it
+labels selected-case coverage unknown rather than complete. This remains
+advisory; it does not alter exact grades or authorize a release.
+
+An offline replay of the existing [main run 35822037156](https://github.com/magnus919/agent-skills/actions/runs/35822037156)
+artifact found 9 expected and 9 observed case reports, with no missing or
+unexpected IDs, and 108 observed prose assertions. Synthetic missing-case,
+whole-skill omission, unexpected-report, and unsafe-selection tests exercise
+the failure lanes without another TypeSafe request. This is pipeline coverage
+evidence, **not** human-labeled Jev accuracy or calibration.
+
+Blog lesson: freeze the worklist before an expensive stage. Comparing only
+what arrives afterward can hide precisely the cases that failed to arrive.

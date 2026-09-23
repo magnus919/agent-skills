@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 from typing import Literal, TypedDict
 
+from .runner import load_cases
+
 
 class Selection(TypedDict):
     status: Literal["over_limit", "selected", "none"]
@@ -88,6 +90,19 @@ def render_summary(selection: Selection) -> str:
     return f"## Paired-eval selection\n\n{lead}\n\nEligible manifests: {names}.\n"
 
 
+def selection_evidence(selection: Selection, root: Path) -> dict[str, object]:
+    """Freeze expected case IDs before generation so downstream coverage has a denominator."""
+    expected_cases: dict[str, list[str]] = {}
+    for manifest in selection["manifests"]:
+        skill = Path(manifest).parts[0]
+        cases = load_cases(root / manifest)
+        ids = [case.id for case in cases]
+        if not ids or len(ids) != len(set(ids)):
+            raise ValueError(f"{manifest} must have nonempty, unique case IDs")
+        expected_cases[skill] = ids
+    return {"schema_version": 1, **selection, "expected_cases": expected_cases}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", required=True, help="Git revision before the change")
@@ -99,12 +114,17 @@ def main() -> int:
     parser.add_argument(
         "--summary-output", type=Path, help="append coverage to a GitHub job summary"
     )
+    parser.add_argument("--json-output", type=Path, help="write expected-case selection evidence")
     args = parser.parse_args()
     try:
         selection = select(
             manifests_for_paths(changed_paths(Path.cwd(), args.base, args.head), Path.cwd()),
             args.max_skills,
         )
+        if args.json_output:
+            evidence = selection_evidence(selection, Path.cwd())
+            args.json_output.parent.mkdir(parents=True, exist_ok=True)
+            args.json_output.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
         if args.github_output:
             with args.github_output.open("a", encoding="utf-8") as stream:
                 stream.write(f"manifests={' '.join(selection['manifests'])}\n")
