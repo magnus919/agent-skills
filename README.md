@@ -579,6 +579,10 @@ Read Stripe account state from the terminal — balance, payment intents, and su
 
 Develop, self-host, and administer Supabase across the CLI local stack, managed projects, and the official Docker deployment. Covers reproducible migrations, RLS and pgTAP testing, generated client types, Auth, REST, Realtime, Storage, Edge Functions, TLS, secrets, backups, restores, release-set upgrades, and evidence-led troubleshooting.
 
+### [system-one](system-one/SKILL.md)
+
+Design, integrate, evaluate, self-host, and troubleshoot System One decision models such as TypeSafe Jev and Convai Innovations Laya: typed probabilistic judgments inside deterministic software, local/VPC inference, calibration, operations, and failure diagnosis.
+
 ### [systematic-debugging](systematic-debugging/SKILL.md)
 
 4-phase root cause debugging protocol: understand bugs before fixing. Covers schema/environment divergence, exception type specificity in fallback chains, progressive characterization grids for API/retrieval failures, dependency source detection (editable dev forks), macOS sandboxed application debugging, and the Rule of Three for recognizing architectural problems. Adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT) with significant expansion from real-world use.

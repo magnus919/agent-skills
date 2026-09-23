@@ -1,0 +1,22 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "subject": "Duplicate charge",
+    "body": "I was charged twice and want the second charge refunded."
+  },
+  "questions": {
+    "queue": {
+      "type": "choice",
+      "instructions": "Which queue should handle this request?",
+      "criteria": {
+        "billing": "Payments, refunds, and invoices",
+        "technical": "Bugs and integration failures",
+        "other": "Unknown or anything else"
+      }
+    },
+    "refund_requested": {
+      "type": "noul",
+      "instructions": "Does the customer explicitly request a refund?"
+    }
+  }
+}

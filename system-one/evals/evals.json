@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "skill_name": "system-one",
+  "evals": [
+    {
+      "id": "contract-design",
+      "prompt": "We need to classify support tickets into billing, technical, or other; score urgency; and decide whether a human should review. Design the System One contract and deterministic policy boundary.",
+      "expected_output": "A contract that uses Choice for routing, an explicitly ordered Score for urgency, and a separate review/abstention policy; the model does not authorize side effects.",
+      "assertions": [
+        "Defines state, question IDs, types, criteria, and an other/unknown path",
+        "Keeps thresholds, human review, authorization, and side effects in deterministic code",
+        "Explains that probabilities and confidence are evidence rather than truth or permission",
+        "Includes validation and unavailable/malformed response behavior"
+      ]
+    },
+    {
+      "id": "jev-integration",
+      "prompt": "Implement a small Python integration for TypeSafe Jev that asks three independent questions about one ticket and handles provider failures safely.",
+      "expected_output": "Uses the official System One endpoint or typesafe-sdk, keeps the key server-side, fans out independent Choice/Score/Noul questions, validates the response, and distinguishes retryable failures from contract/auth failures.",
+      "assertions": [
+        "Uses TYPESAFE_API_KEY or an equivalent server-side secret path and does not expose it to a browser",
+        "Sends one state with typed Choice, Score, and Noul questions",
+        "Validates answer IDs/types and probability ranges before policy code",
+        "Uses bounded retries/timeouts and does not turn a timeout into a confident default",
+        "States that Jev is hosted/API-only and not locally self-hostable"
+      ]
+    },
+    {
+      "id": "laya-vpc-hosting",
+      "prompt": "Describe how to self-host Laya for a private VPC service handling English and multilingual ticket triage.",
+      "expected_output": "Pins the Python/runtime/model artifacts, preloads the needed checkpoints, exposes a private authenticated wrapper with readiness and bounded concurrency, and verifies actual device and model residency.",
+      "assertions": [
+        "Uses Python 3.10+ and the Laya checkpoints/runtime rather than inventing a Jev weight download",
+        "Preloads or otherwise keeps required checkpoints resident to avoid language-switch reloads",
+        "Includes private networking, authentication, bounded request size/concurrency/deadlines, and redacted logs",
+        "Separates liveness from readiness and only reports ready after model/tokenizer/device load",
+        "Includes pinned revisions, checksums, rollout, monitoring, and rollback"
+      ]
+    },
+    {
+      "id": "calibration-review",
+      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Review this proposal and define the evidence needed before release.",
+      "expected_output": "Rejects the universal threshold, distinguishes confidence from accuracy, requires held-out target data, calibration and risk-coverage analysis, and uses stricter confirmation or human review for consequential actions.",
+      "assertions": [
+        "Explains why a vendor/default confidence number is not a universal policy threshold",
+        "Requires held-out representative cases, calibration metrics, and selective accuracy/coverage",
+        "Uses risk-specific lanes such as automate, confirm/review, and abstain/fallback",
+        "Includes subgroup/language/out-of-domain slices and a deterministic baseline",
+        "Keeps account authority and exact eligibility checks outside the model"
+      ]
+    },
+    {
+      "id": "high-cardinality-diagnosis",
+      "prompt": "Laya performs badly when a Choice question has 77 labels, while a hosted Jev comparison is much better. Diagnose without declaring Jev universally superior.",
+      "expected_output": "Checks option/head token budgets and label rendering, explains shortlist/coarse-to-fine alternatives and conditional probabilities, and requests a matched frozen evaluation.",
+      "assertions": [
+        "Identifies Laya option/head token budget and truncation as a concrete hypothesis to inspect",
+        "Proposes deterministic shortlist, hierarchy, or increased budget with re-evaluation",
+        "Labels shortlist probabilities as conditional on the candidates sent",
+        "Demands byte-identical inputs, same labels/order policy, and matched workload evidence",
+        "Does not generalize from one benchmark or compare specialist and general models unfairly"
+      ]
+    },
+    {
+      "id": "incident-triage",
+      "prompt": "After a Laya upgrade, the endpoint is healthy but p99 latency doubled and some requests are now running on CPU. Give a bounded diagnostic and rollback decision path.",
+      "expected_output": "Checks actual device, startup/load logs, model revision, dependency/image changes, residency/reload behavior, queue time, and representative inference; then fixes on scratch or rolls back the recorded image/config.",
+      "assertions": [
+        "Treats health as insufficient and checks actual inference device and model residency",
+        "Investigates CUDA/MPS fallback, dependency/driver changes, lazy reloads, and queue time",
+        "Separates cold-start from warm p99 and repeats a matched benchmark",
+        "Uses a scratch fix-forward path or a pinned previous-image rollback",
+        "Does not mutate production without an explicit target and rollback path"
+      ]
+    },
+    {
+      "id": "observed-app-control",
+      "prompt": "Build a Jev-or-Laya-backed controller that can click one of the currently visible controls in a web app. The page may change while inference is running, and clicking Submit can send a real request.",
+      "expected_output": "A bounded observed-action loop that constrains target IDs to current controls, validates model output, rechecks freshness and authority before execution, and confirms consequential actions.",
+      "assertions": [
+        "Builds operation-compatible target choices only from the current observation and includes wait or abstain",
+        "Validates answer option IDs and distribution before policy or execution",
+        "Rechecks the target and page state immediately before acting and prevents duplicate execution on retry",
+        "Requires independent authorization and exact-action confirmation for Submit rather than trusting a model-destructive score",
+        "Verifies actual post-action outcome and does not treat a model DONE answer as proof"
+      ]
+    },
+    {
+      "id": "deadline-bound-stream",
+      "prompt": "An event arrives every 300 ms, but a typed model sometimes takes 600 ms. Design the decision loop for a live system with possible side effects.",
+      "expected_output": "Defines event freshness and deadline, drops or abstains on late results, bounds concurrency, separates model proposal from deterministic safety and execution, and records asynchronous outcomes.",
+      "assertions": [
+        "States what happens to a late decision instead of applying it to a newer event",
+        "Bounds in-flight work and handles duplicate events or retries",
+        "Keeps exact limits, authority, and fast safety reflexes outside the model",
+        "Separates decision, attempted execution, and confirmed outcome",
+        "Does not copy a trading-demo latency or threshold as a universal setting"
+      ]
+    },
+    {
+      "id": "reranking-pipeline",
+      "prompt": "We want to use System One scores to rerank the first 30 search results. How should we implement and evaluate it?",
+      "expected_output": "Batches bounded candidate judgments, retains deterministic shortlist provenance, compares standalone and fusion ranking to baselines with independent labels, and reports end-to-end recall and cost.",
+      "assertions": [
+        "States that reranking cannot recover relevant items missing from the candidate shortlist",
+        "Uses one bounded score or Noul judgment per candidate and keeps sorting or fusion in code",
+        "Measures candidate recall and ranking metrics against lexical or embedding baselines",
+        "Uses labels independent of the tested model and examines query or language slices",
+        "Reports latency and cost at the full pipeline boundary, not just one model call"
+      ]
+    }
+  ]
+}
