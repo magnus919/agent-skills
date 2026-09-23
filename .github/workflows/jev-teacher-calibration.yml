@@ -12,13 +12,18 @@ on:
         required: true
         default: jev-543-blind-v1
         type: string
+      teacher_model:
+        description: Exact Nous Portal model ID returned by GET /v1/models
+        required: true
+        default: openai/gpt-6-luna
+        type: string
 
 permissions:
   actions: read
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ inputs.source_run_id }}-${{ inputs.seed }}
+  group: ${{ github.workflow }}-${{ inputs.source_run_id }}-${{ inputs.seed }}-${{ inputs.teacher_model }}
   cancel-in-progress: false
 
 jobs:
@@ -51,6 +56,25 @@ jobs:
             echo 'Source is not a successful main-branch paired-eval push' >&2
             exit 2
           fi
+      - name: Verify teacher model is available before sending review data
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+          TEACHER_MODEL: ${{ inputs.teacher_model }}
+        run: |
+          set -o pipefail
+          if [ -z "$NOUS_API_KEY" ] || [[ ! "$TEACHER_MODEL" =~ ^[A-Za-z0-9._/-]{1,100}$ ]]; then
+            echo 'Missing Nous credential or invalid teacher model ID' >&2
+            exit 2
+          fi
+          model_ids=$(curl --fail --silent --show-error --max-time 20 \
+            -H "Authorization: Bearer $NOUS_API_KEY" \
+            https://inference-api.nousresearch.com/v1/models | jq -r '.data[].id')
+          if ! printf '%s\n' "$model_ids" | grep -Fxq "$TEACHER_MODEL"; then
+            echo "Requested teacher model is absent from Nous Portal's API catalog" >&2
+            echo 'Available model IDs (first 40):' >&2
+            printf '%s\n' "$model_ids" | grep -E '^[A-Za-z0-9._/-]{1,100}$' | awk 'NR <= 40' >&2
+            exit 2
+          fi
       - name: Download real-model comparison artifacts as untrusted data
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
@@ -78,9 +102,11 @@ jobs:
       - name: Obtain two blind inference-model passes
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+          TEACHER_MODEL: ${{ inputs.teacher_model }}
         run: |
           python3 system-one/scripts/jev_teacher_label.py \
             --items private/review/review-items.json \
+            --model "$TEACHER_MODEL" \
             --output-dir private/teacher
       - name: Score consensus pseudo-labels against Jev
         run: |
