@@ -148,6 +148,10 @@ the Markdown packet and a separate copy of `labels-template.json` instead.
 
 Have each reviewer who has not seen Jev's answers fill a **separate** label
 file. Freeze both files before comparison.
+The offline form and new human label template set `reviewer_kind: human`.
+For an inference-model review, set `reviewer_kind: model_teacher` explicitly;
+do not pass a model-produced label file off as human review. Older files
+without this field are scored as `unknown` provenance, never assumed human.
 Do not share a first reviewer's labels with the second reviewer. Compare the
 frozen labels *without* opening `private-map.json`:
 

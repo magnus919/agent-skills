@@ -220,7 +220,7 @@ function download(final) {
     alert("Final export requires the blinding attestation and a label plus evidence for every item.");
     return;
   }
-  const data = {schema_version: 1, reviewer_id: name, blind_to_predictions: final && attestation.checked, labels};
+  const data = {schema_version: 1, reviewer_id: name, reviewer_kind: "human", blind_to_predictions: final && attestation.checked, labels};
   const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2) + "\\n"], {type: "application/json"}));
   const link = document.createElement("a");
   link.href = url;
@@ -236,7 +236,8 @@ document.getElementById("load-draft").addEventListener("change", async event => 
   try {
     const data = JSON.parse(await file.text());
     const expected = new Set(cards.map(card => card.dataset.reviewId));
-    if (data.schema_version !== 1 || !Array.isArray(data.labels) || data.labels.length !== cards.length ||
+    if (data.schema_version !== 1 || (data.reviewer_kind && data.reviewer_kind !== "human") ||
+        !Array.isArray(data.labels) || data.labels.length !== cards.length ||
         new Set(data.labels.map(item => item.id)).size !== cards.length ||
         data.labels.some(item => !expected.has(item.id) || !["", "met", "not_met", "not_shown", "uncertain"].includes(item.label) || typeof item.evidence !== "string")) {
       throw new Error("Draft IDs or fields do not match this packet.");
@@ -322,7 +323,8 @@ def prepare(root: Path, audit_path: Path, output_dir: Path, run_id: str, seed: s
         "population_size": len(records),
         "items": [{key: value for key, value in item.items() if key != "response"} for item in selected],
     }
-    labels = {"schema_version": 1, "reviewer_id": "", "blind_to_predictions": True,
+    labels = {"schema_version": 1, "reviewer_id": "", "reviewer_kind": "human",
+              "blind_to_predictions": True,
               "labels": [{"id": item["id"], "label": "", "evidence": ""} for item in selected]}
     output_dir.mkdir(mode=0o700, parents=False, exist_ok=False)
     write_private_new(output_dir / "review-packet.md", packet)
@@ -363,6 +365,14 @@ def validated_labels(labels: dict[str, Any]) -> dict[str, dict[str, str]]:
     return observed
 
 
+def reviewer_kind(labels: dict[str, Any]) -> str:
+    """Legacy files without provenance remain unknown, never assumed human."""
+    kind = labels.get("reviewer_kind", "unknown")
+    if kind not in ("human", "model_teacher", "unknown"):
+        raise ValueError("reviewer_kind must be human, model_teacher, or unknown")
+    return kind
+
+
 def compare_labels(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
     """Expose reviewer disagreement before either reviewer sees Jev's map."""
     left, right = validated_labels(first), validated_labels(second)
@@ -377,6 +387,7 @@ def compare_labels(first: dict[str, Any], second: dict[str, Any]) -> dict[str, A
     uncertain = sum(left[item_id]["label"] == "uncertain" or right[item_id]["label"] == "uncertain" for item_id in left)
     return {
         "schema_version": 1, "reviewers": [first["reviewer_id"].strip(), second["reviewer_id"].strip()],
+        "reviewer_kinds": [reviewer_kind(first), reviewer_kind(second)],
         "items": len(left), "agreements": len(left) - len(disagreements),
         "disagreements": disagreements, "items_with_uncertain_label": uncertain,
         "blind_to_jev_predictions": True,
@@ -490,15 +501,17 @@ def score(private_map: dict[str, Any], labels: dict[str, Any]) -> dict[str, Any]
             "brier_met": sum((item["met_probability"] - int(observed[item["id"]] == "met")) ** 2
                              for item in resolved) / len(resolved) if resolved and len(resolved) == len(chosen) else None,
         }
-    reviewer_kind = labels.get("reviewer_kind", "human")
-    if reviewer_kind not in ("human", "model_teacher"):
-        raise ValueError("reviewer_kind must be human or model_teacher")
-    limitation = ("Model-teacher agreement is pseudo-label evidence, not ground truth, probability calibration, or a release gate."
-                  if reviewer_kind == "model_teacher" else
-                  "One blinded reviewer is not adjudicated ground truth; no threshold or gate is established.")
+    kind = reviewer_kind(labels)
+    limitation = (
+        "Model-teacher agreement is pseudo-label evidence, not ground truth, probability calibration, or a release gate."
+        if kind == "model_teacher" else
+        "Reviewer provenance is unknown; do not treat these labels as human adjudication, calibration, or a release gate."
+        if kind == "unknown" else
+        "One blinded human reviewer is not adjudicated ground truth; no threshold or gate is established."
+    )
     return {"schema_version": 1, "source_run_id": private_map.get("source_run_id"),
             "model": private_map.get("model"), "reviewer_id": labels["reviewer_id"],
-            "reviewer_kind": reviewer_kind,
+            "reviewer_kind": kind,
             "advisory_only": True, "population": summarize("population"),
             "challenge_high_met": summarize("challenge_high_met"),
             "limitation": limitation}

@@ -97,6 +97,7 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.assertEqual(review_html.count('data-review-id="'), 6)
         self.assertNotIn("suggested_verdict", review_html)
         self.assertNotIn("met_probability", review_html)
+        self.assertIn('reviewer_kind: "human"', review_html)
         self.assertIn("connect-src 'none'", review_html)
         self.assertIn("Download draft", review_html)
         self.assertIn("Download final labels", review_html)
@@ -105,6 +106,8 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.assertEqual(os.stat(output).st_mode & 0o777, 0o700)
         self.assertEqual(os.stat(output / "review-packet.md").st_mode & 0o777, 0o600)
         self.assertEqual(os.stat(output / "review.html").st_mode & 0o777, 0o600)
+        label_template = json.loads((output / "labels-template.json").read_text(encoding="utf-8"))
+        self.assertEqual(label_template["reviewer_kind"], "human")
 
     def test_offline_review_html_escapes_untrusted_response_and_assertion(self):
         item = {
@@ -167,14 +170,22 @@ class JevEvalCalibrationTests(unittest.TestCase):
                               "evidence": "Checked visible response against the assertion"}
                              for index, item in enumerate(selected)]}
         result = score(private_map, labels)
-        self.assertEqual(result["reviewer_kind"], "human")
+        self.assertEqual(result["reviewer_kind"], "unknown")
+        self.assertIn("provenance is unknown", result["limitation"])
         self.assertEqual(result["population"]["selected"], 4)
         self.assertEqual(result["challenge_high_met"]["selected"], 2)
         self.assertEqual(result["population"]["resolved"] + result["challenge_high_met"]["resolved"], 6)
+        labels["reviewer_kind"] = "human"
+        human_result = score(private_map, labels)
+        self.assertEqual(human_result["reviewer_kind"], "human")
         labels["reviewer_kind"] = "model_teacher"
         model_result = score(private_map, labels)
         self.assertEqual(model_result["reviewer_kind"], "model_teacher")
         self.assertIn("pseudo-label", model_result["limitation"])
+        labels["reviewer_kind"] = "mistyped"
+        with self.assertRaisesRegex(ValueError, "reviewer_kind must be"):
+            score(private_map, labels)
+        labels["reviewer_kind"] = "model_teacher"
         labels["labels"][0]["label"] = ""
         with self.assertRaisesRegex(ValueError, "every review item needs"):
             score(private_map, labels)
@@ -188,6 +199,7 @@ class JevEvalCalibrationTests(unittest.TestCase):
                              {"id": "j1", "label": "met", "evidence": "visible contract"}]}
         result = compare_labels(first, second)
         self.assertEqual((result["items"], result["agreements"], len(result["disagreements"])), (2, 1, 1))
+        self.assertEqual(result["reviewer_kinds"], ["unknown", "unknown"])
         self.assertEqual(result["disagreements"][0]["id"], "j2")
         self.assertNotIn("suggested_verdict", json.dumps(result))
         second["reviewer_id"] = "a"
