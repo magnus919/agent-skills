@@ -393,3 +393,29 @@ The prevalence-oriented paired sample and the deliberately enriched challenge
 items must be reported separately. Blog lesson: a well-instrumented audit
 does not calibrate itself; freeze the evidence and blind the reviewer before
 examining its predictions.
+
+## 2026-09-23 — CI inference inventory and visible coverage
+
+The current workflow inventory has two generative-model jobs: the paired
+evaluation's OpenAI-compatible adapter generates full candidate and baseline
+answers on a self-hosted runner, and Droid produces code/security review with
+DeepSeek V4 Flash. Jev's typed Choice/Score/Noul answers cannot replace either
+output contract. The NVIDIA SkillEvaluator job explicitly runs keyless,
+LLM-free checks; the repository's validators and fake-adapter smoke are also
+deterministic. No other CI LLM classification step was found to replace.
+
+The viable replacement opportunity is at the *grader* boundary: prose
+assertions previously stopped at `manual_review`; Jev can make an advisory
+typed judgment after generation. Its audit already ran on trusted `main`, but
+the CI check surface showed only a green/failed step while coverage and
+omissions lived in a downloaded JSON artifact. A coverage-only job summary
+now states how many prose assertions were judged, skipped, omitted by budget,
+or left after an error. Missing model artifacts or an audit that fails before
+writing a report are explicitly called missing evidence. No summary calls a
+model verdict accurate or changes release authority. The calibration helper's
+contract tests now run alongside the audit tests in the paired-eval job.
+
+Lesson for the article: a fast classifier helps only where the required output
+is a bounded judgment. Treating a model's successful API call as CI coverage
+is another way to hide missing evidence; expose denominators and failure lanes
+before celebrating latency or accuracy. Independent labels remain outstanding.

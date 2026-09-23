@@ -209,10 +209,43 @@ def audit(
     }
 
 
+def render_summary(report: dict[str, Any]) -> str:
+    """Summarize coverage, never model accuracy or a release verdict."""
+    counts = report["counts"]
+    judged = sum(
+        1 for row in report["results"] if "error" not in row
+        for answer in row["assertions"] if answer.get("suggested_verdict") in CRITERIA
+    )
+    total = counts["prose_assertions_seen"]
+    if report["mode"] != "live":
+        status = "Offline contract check; no Jev judgments"
+    elif total == 0:
+        status = "No prose assertions available"
+    elif judged == total and counts["provider_errors"] == 0:
+        status = "Complete advisory coverage"
+    else:
+        status = "Incomplete advisory coverage"
+    return (
+        "## Jev paired-eval audit (advisory)\n\n"
+        f"**{status}.** Jev judged {judged}/{total} prose assertions "
+        f"across {counts['reports_seen']} comparison reports.\n\n"
+        f"- Provider errors: {counts['provider_errors']}\n"
+        f"- Skipped response assertions: {counts['skipped_response']}\n"
+        f"- Oversized assertion/group skips: {counts['skipped_oversized_assertion'] + counts['skipped_oversized_group']}\n"
+        f"- Unpaired assertions: {counts['skipped_unpaired_assertions']}\n"
+        f"- Budget omissions: {counts['assertions_omitted_by_budget']}\n"
+        f"- Groups not attempted after provider error: {counts['groups_not_attempted_after_error']}\n"
+        f"- Not attempted after provider error: {counts['assertions_not_attempted_after_error']}\n\n"
+        "These are coverage counts, **not** agreement, calibration, or permission to merge. "
+        "Exact checks and required CI results are unchanged.\n"
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reports", required=True, type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--summary-output", type=Path, help="append a coverage-only Markdown summary")
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--key-file", type=Path, help="local env-style key file; never printed")
     parser.add_argument("--max-calls", type=int, default=20)
@@ -242,6 +275,9 @@ def main() -> int:
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(serialized, encoding="utf-8")
+    if args.summary_output:
+        with args.summary_output.open("a", encoding="utf-8") as summary_file:
+            summary_file.write(render_summary(report))
     print(json.dumps({"mode": report["mode"], "advisory_only": True, "counts": report["counts"]}))
     return 1 if report["counts"]["provider_errors"] else 0
 
