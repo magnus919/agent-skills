@@ -47,7 +47,9 @@
       "expected_output": "Rejects the universal threshold, distinguishes confidence from accuracy, requires held-out target data, calibration and risk-coverage analysis, and uses stricter confirmation or human review for consequential actions.",
       "assertions": [
         "Explains why a vendor/default confidence number is not a universal policy threshold",
-        "Requires held-out representative cases, calibration metrics, and selective accuracy/coverage",
+        "Uses held-out real-output cases with labels assigned independently of the tested model",
+        "Separates a representative workload sample from deliberately risk-enriched challenge cases",
+        "Measures probability calibration and selective accuracy as automated coverage changes",
         "Uses risk-specific lanes such as automate, confirm/review, and abstain/fallback",
         "Includes subgroup/language/out-of-domain slices and a deterministic baseline",
         "Keeps account authority and exact eligibility checks outside the model"
