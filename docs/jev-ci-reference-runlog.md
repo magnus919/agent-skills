@@ -839,3 +839,35 @@ Blog lesson: a calibration protocol can be technically sound yet remain
 unfinished because collecting blinded labels is too awkward. Improve the
 reviewer's workflow, preserve the same frozen sample and private mapping, and
 keep unverified UI behavior clearly labeled.
+
+## 2026-09-23 — Post-merge Jev audit on the review-form revision
+
+PR [#551](https://github.com/magnus919/agent-skills/pull/551) merged as
+`23bb379772ba1aa3c265647513fcdb83f11a3c9f`. The ensuing [main-branch
+run](https://github.com/magnus919/agent-skills/actions/runs/35835888717)
+completed successfully: paired-eval tests, fake-adapter smoke, real-model
+generation, and the advisory Jev audit all passed. The independent
+[validation run](https://github.com/magnus919/agent-skills/actions/runs/35835888434)
+also passed. This verifies deployment of the review-form revision through the
+normal main-branch workflow, not just PR checks.
+
+We downloaded and inspected the audit JSON rather than inferring coverage from
+the green job. It requested `jev-1.13.0` in live mode and found all 10 expected
+reports. Across 20 selected response groups it scored all 122 prose
+assertions: 35 suggested `met`, 6 `not_met`, and 81 `not_shown`. There were zero
+budget omissions, skipped responses, unattempted assertions, or provider
+errors. Mean reported provider confidence was 0.757 (range 0.13–1.00), but
+that field is **not** an empirically calibrated probability of correctness.
+The artifact records 20 response hashes, so results can be matched to their
+source outputs without publishing those outputs in this runlog.
+
+This is operational evidence for selection and serving reliability, not an
+accuracy or release-gate result. The 44-item blinded packet still needs
+independent human labels. In particular, the provisional high-confidence
+“bounded retries/timeouts” boundary case above remains unresolved; neither a
+passing audit nor the aggregate confidence figure adjudicates it.
+
+Blog lesson: verify the live post-merge path and inspect the audit artifact's
+denominators. Report coverage, omissions, and provider failures separately
+from agreement and calibration; a clean 122/122 service run answers only the
+first set of questions.
