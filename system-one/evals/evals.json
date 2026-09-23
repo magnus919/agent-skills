@@ -64,6 +64,7 @@
         "Uses held-out real-output cases with labels assigned independently of the tested model",
         "Separates a representative workload sample from deliberately risk-enriched challenge cases",
         "Measures probability calibration and selective accuracy as automated coverage changes",
+        "Versions exact question text and Choice criteria alongside evaluation results",
         "Uses risk-specific lanes such as automate, confirm/review, and abstain/fallback",
         "Includes subgroup/language/out-of-domain slices and a deterministic baseline",
         "Keeps account authority and exact eligibility checks outside the model"

@@ -1323,3 +1323,24 @@ despite the same template hash. Compare manifest revision and assertion
 text as well as the generic fingerprint when attributing outcomes. This
 live run verifies delivery and complete selected-case coverage, not Jev
 calibration or fitness for a required release gate.
+
+## 2026-09-23 — Fingerprint each exact Jev question input
+
+The atomic eval run showed a provenance gap: the generic placeholder
+`question_contract_sha256` stayed constant while the actual assertion text
+sent to Jev changed. The auditor now records a per-result
+`question_input_sha256` of the pinned model and the full trusted questions,
+including each assertion and Choice criteria, but excluding generated response
+text. The existing `response_sha256` remains separate, so an investigator can
+distinguish question drift from answer drift without publishing either text.
+Tests verify that changing an assertion or criterion changes the question
+fingerprint, while changing only the generated response does not.
+
+The private calibration helper verifies the exact-question fingerprint
+against the downloaded comparison bundle when it is present and rejects a
+mixture of fingerprinted and legacy rows. Fully legacy audits remain readable
+but cannot claim this new provenance. The `calibration-review` skill eval now
+asks for exact-question and criterion versioning as an output-quality claim.
+This adds auditability, **not** Jev accuracy, independent labels, permission
+for local replay, or a release gate. The merged main-branch run must still
+prove that these new fields appear in the live artifact.
