@@ -33,7 +33,7 @@ jobs:
               "displayName": "GPT-6 Luna (Nous Portal)",
               "baseUrl": "https://inference-api.nousresearch.com/v1",
               "apiKey": "${NOUS_API_KEY}",
-              "provider": "generic-chat-completion-api",
+              "provider": "openai",
               "maxOutputTokens": 16384
             }]
           }
