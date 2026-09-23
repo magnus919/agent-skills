@@ -58,19 +58,17 @@ jobs:
           fi
       - name: Verify teacher model is available before sending review data
         env:
-          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
           TEACHER_MODEL: ${{ inputs.teacher_model }}
         run: |
           set -o pipefail
-          if [ -z "$NOUS_API_KEY" ] || [[ ! "$TEACHER_MODEL" =~ ^[A-Za-z0-9._/-]{1,100}$ ]]; then
-            echo 'Missing Nous credential or invalid teacher model ID' >&2
+          if [[ ! "$TEACHER_MODEL" =~ ^[A-Za-z0-9._/-]{1,100}$ ]]; then
+            echo 'Invalid teacher model ID' >&2
             exit 2
           fi
           model_ids=$(curl --fail --silent --show-error --max-time 20 \
-            -H "Authorization: Bearer $NOUS_API_KEY" \
             https://inference-api.nousresearch.com/v1/models | jq -r '.data[].id')
           if ! printf '%s\n' "$model_ids" | grep -Fxq "$TEACHER_MODEL"; then
-            echo "Requested teacher model is absent from Nous Portal's API catalog" >&2
+            echo "Requested teacher model is absent from Nous Portal's public API catalog" >&2
             echo 'Available model IDs (first 40):' >&2
             printf '%s\n' "$model_ids" | grep -E '^[A-Za-z0-9._/-]{1,100}$' | awk 'NR <= 40' >&2
             exit 2
@@ -80,6 +78,10 @@ jobs:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
           TEACHER_MODEL: ${{ inputs.teacher_model }}
         run: |
+          if [ -z "$NOUS_API_KEY" ]; then
+            echo 'NOUS_API_KEY is unavailable; the public catalog does not verify credentials.' >&2
+            exit 2
+          fi
           response_file=$(mktemp)
           trap 'rm -f "$response_file"' EXIT
           request=$(jq -nc --arg model "$TEACHER_MODEL" \
