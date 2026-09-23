@@ -136,6 +136,8 @@ Write evals for the skill's intended behavior first, not to obtain a favorable J
 
 The current paired-eval grader marks unrecognized prose assertions `manual_review`; its `passed=true` value can coexist with **zero verified semantic passes**. The default-branch Jev audit of those assertions is advisory reviewer triage only. A suggested `met`, high probability, or provider confidence is not a validated pass or release approval. Do not promote Jev to a required gate or choose a confidence threshold without independently labeled representative real outputs, held-out testing, error/abstention analysis, and an explicit versioned gate contract. See `CONTRIBUTING.md` for a worked authoring example and `docs/jev-ci-reference-runlog.md` for the observed failure modes.
 
+Paired-eval CI selects every changed skill with an eval manifest, up to a five-skill resource cap. If more than five are eligible, selection fails explicitly and starts no paired evals; split the change or review an intentional cap increase. The selection summary states the eligible and selected counts. Jev's audit coverage percentage is relative to prose assertions in the generated comparison reports, **not** to every changed skill or the entire catalog. A missing report, skipped model job, or failed selection must not be reported as a complete audit.
+
 ## Catalog Structure: Methodology vs. Operational Tooling
 
 The catalog is intentionally two-layered. Keep every change in the layer that matches the work, and route between layers explicitly.
