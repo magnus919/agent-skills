@@ -934,9 +934,9 @@ and allows an exact catalog model ID as a manual workflow input. Do not infer
 model availability from a local CLI's model list or from an unrelated provider.
 
 The catalog check in the [third run](https://github.com/magnus919/agent-skills/actions/runs/35911223591)
-confirmed `openai/gpt-6-luna` for this credential, but the first chat request
+found `openai/gpt-6-luna` listed, but the first chat request
 still returned HTTP 404. A [fourth run](https://github.com/magnus919/agent-skills/actions/runs/35911350771)
-confirmed `anthropic/claude-sonnet-4.6` in the same catalog and got the same
+found `anthropic/claude-sonnet-4.6` in the same catalog and got the same
 404. Neither run produced labels or a score. Catalog listing is therefore not
 proof that inference works. The next workflow revision sends a synthetic
 one-line probe *before* downloading private artifacts and reports only its
@@ -950,7 +950,7 @@ or a new release gate. If the provider route remains unavailable, pause this
 screen rather than modifying Jev prompts based on absent labels.
 
 The [synthetic preflight run](https://github.com/magnus919/agent-skills/actions/runs/35912008261)
-confirmed that the catalog accepts the key and lists `openai/gpt-6-luna`, but
+confirmed that the catalog lists `openai/gpt-6-luna`, but
 `POST /v1/chat/completions` with only `Reply OK.` returned HTTP 404. The
 provider body had no sanitized `error.type` or `error.code` to report. The
 workflow stopped before downloading the evaluation artifacts. This isolates
@@ -959,3 +959,17 @@ route fails on a minimal synthetic request. No teacher labels, agreement
 estimate, Jev false-accept estimate, or calibrated Jev input revision exists
 yet. A working inference route/account entitlement is needed before resuming
 this calibration; do not infer that changing Jev prompt wording would fix it.
+
+Correction after an unauthenticated comparison: `GET /v1/models` itself
+returned HTTP 200 with no Authorization header. The catalog step never
+verified the stored key; earlier descriptions implying it did were wrong.
+We removed the secret from that public listing request, retained the listing
+only as a model-ID precheck, and made the synthetic inference request the
+actual credential/route check. The distinction matters: **catalogued** is
+not **callable**, and a public catalog cannot establish key validity.
+
+A [third catalogued model](https://github.com/magnus919/agent-skills/actions/runs/35912615122),
+`deepseek/deepseek-v4-flash-0731`, also failed the keyed synthetic request
+with HTTP 404 before any eval artifact download. Three model families now
+share that failure; this increases suspicion of credential, account, or
+gateway behavior, but does not identify which one. No blind labels exist.
