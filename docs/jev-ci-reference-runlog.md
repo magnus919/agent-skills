@@ -1,7 +1,8 @@
 # Jev CI reference deployment runlog
 
-Status: in progress. This is an evidence log, not a declaration that a Jev
-decision is production-calibrated or authorized to change required CI gates.
+Status: advisory CI deployment verified; semantic accuracy calibration remains
+open. This is an evidence log, not a declaration that a Jev decision is
+production-calibrated or authorized to change required CI gates.
 Times below are UTC. No API keys, unredacted logs, or personal data belong
 here.
 
@@ -317,3 +318,37 @@ Even an advisory classifier can produce a misleading comparative headline if
 the budget clips one side of a pair. Report selected, omitted, and unpaired
 work explicitly; test those fields against a real artifact before interpreting
 candidate/baseline tallies.
+
+## 2026-09-23 — Paired-coverage fix verified on main
+
+Follow-up PR [#529](https://github.com/magnus919/agent-skills/pull/529)
+merged after green validation and review with no findings. Its [main run
+35811979212](https://github.com/magnus919/agent-skills/actions/runs/35811979212)
+completed the real-model evaluation and the advisory Jev audit. The downloaded
+audit artifact reports 9 comparison reports, 18 response groups, and all 104
+prose assertions selected. Budget omissions, oversized inputs, unpaired
+skips, unattempted groups, and provider errors are all zero. Both candidate
+and baseline for `reranking-pipeline` appear. The Jev audit job itself ran
+from 03:04:31 to 03:04:49 UTC; its 18 recorded provider-call latencies ranged
+from 111.8 to 942.3 ms, averaging about 202 ms. That is call latency, not
+the duration of generating the paired responses. Provider billing cost was
+not measured.
+
+Deployment conclusion: the reference CI helper is now **working as an
+advisory semantic-audit producer** at the default-branch boundary, with
+complete paired coverage for this run and no change to deterministic grades
+or release gates. It is **not** validated as an automatic semantic pass/fail
+gate. The 18-case held-out synthetic fixture, one known real high-confidence
+false positive, and two live CI runs are useful engineering evidence but do
+not establish selective precision or calibration on independently labeled
+real outputs. That work is the next evaluation gate, not a hidden completion
+claim.
+
+Article ending to preserve: the most valuable finding was not a faster model
+call. It was that an apparently green eval hid unreviewed semantics, that
+clearer assertions changed one known verdict, and that CI success still hid
+an unfair coverage budget until the artifact was inspected. The final
+deployment retained rules and human authority while making the uncertain
+surface visible. Future writing should present the false positive and the
+budget defect alongside the final successful run, not edit them out of the
+story.
