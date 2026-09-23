@@ -47,6 +47,8 @@ jobs:
         run: python3 eval_runner/tests/test_runner.py
       - name: Test advisory Jev eval audit
         run: python3 system-one/scripts/test_jev_eval_audit.py
+      - name: Test private real-output calibration helper
+        run: python3 system-one/scripts/test_jev_eval_calibration.py
 
   paired-eval-smoke:
     runs-on: ubuntu-latest
@@ -208,6 +210,7 @@ jobs:
           name: paired-eval-model-artifacts
           path: eval-output-model
       - name: Audit prose assertions with Jev
+        id: audit
         if: steps.download.outcome == 'success'
         env:
           TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
@@ -217,7 +220,18 @@ jobs:
             --live \
             --max-calls 20 \
             --max-assertions 120 \
-            --output jev-eval-audit.json
+            --output jev-eval-audit.json \
+            --summary-output "$GITHUB_STEP_SUMMARY"
+      - name: Explain audit failure without a report
+        if: always() && steps.download.outcome == 'success' && steps.audit.outcome == 'failure' && hashFiles('jev-eval-audit.json') == ''
+        run: |
+          echo '## Jev paired-eval audit (advisory)' >> "$GITHUB_STEP_SUMMARY"
+          echo 'The audit failed before writing a report; no Jev coverage can be claimed. Check the job log for input or credential errors.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Explain missing model artifact
+        if: steps.download.outcome != 'success'
+        run: |
+          echo '## Jev paired-eval audit (advisory)' >> "$GITHUB_STEP_SUMMARY"
+          echo 'No model artifact was available; no Jev judgments were made. This is missing evidence, not a pass.' >> "$GITHUB_STEP_SUMMARY"
       - name: Upload advisory audit evidence
         if: always() && steps.download.outcome == 'success'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

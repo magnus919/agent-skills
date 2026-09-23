@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from jev_eval_audit import _read_json, audit, build_request, collect_groups
+from jev_eval_audit import _read_json, audit, build_request, collect_groups, render_summary
 from jev_eval_benchmark import metrics
 
 
@@ -99,6 +99,21 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertEqual(result["accuracy"], 0.5)
         self.assertEqual(result["selective_met"][0]["accepted_met"], 1)
         self.assertEqual(result["selective_met"][0]["false_accepts"], 0)
+
+    def test_summary_distinguishes_offline_complete_and_partial_coverage(self):
+        report = audit(self.root, live=False, key=None, max_calls=2, max_assertions=2,
+                       max_response_chars=24000, timeout=12.0)
+        self.assertIn("Offline contract check", render_summary(report))
+        self.assertIn("0/2 prose assertions", render_summary(report))
+        report["mode"] = "live"
+        report["results"][0]["assertions"][0]["suggested_verdict"] = "met"
+        report["results"][1]["assertions"][0]["suggested_verdict"] = "not_shown"
+        self.assertIn("Complete advisory coverage", render_summary(report))
+        report["results"][1]["assertions"] = []
+        summary = render_summary(report)
+        self.assertIn("Incomplete advisory coverage", summary)
+        self.assertIn("1/2 prose assertions", summary)
+        self.assertNotIn("A bounded answer", summary)
 
 
 if __name__ == "__main__":
