@@ -1027,3 +1027,24 @@ the entire pass. This can retain soundly formatted items while exposing the
 model's abstention rate. One bounded rerun should decide whether this local
 self-review route offers useful diagnostic coverage; do not tune Jev from
 forced labels or report a pass when every item abstains.
+
+The [fourth local run](https://github.com/magnus919/agent-skills/actions/runs/35918057015)
+completed on the same frozen source run and small-sample seed. The uploaded
+safe artifact reports 10/12 non-uncertain two-pass consensus labels: six
+`met`, two `not_met`, two `not_shown`, and two `uncertain`. In the eight-item
+population sample, six resolved and two abstained. Jev suggested `met` for
+two resolved population items, both also `met` for the local teacher; four
+risk-enriched challenge items all resolved `met` for both. The two resolved
+non-`met` subtype disagreements are `not_met` versus `not_shown`; they do not
+establish an unsafe Jev `met` acceptance. Population precision and Brier
+fields remain null because the population has abstentions. The challenge
+slice's 4/4 agreement and numeric metrics are **not** accuracy or calibration:
+the sample was selected by Jev's high-`met` scores, is tiny, and the teacher
+may be the same model that generated the answers.
+
+The local route now has a usable diagnostic contract, but it has not shown
+whether Jev's input rubric transfers to the original 44-item packet. We
+added an explicit manual `small`/`full` sample profile; the full profile uses
+16 candidate/baseline pairs plus 12 high-`met` challenge items. We will run
+the previously frozen `jev-543-blind-v1` seed and report the two strata
+separately. No model weights are trained and no Jev gate is promoted.
