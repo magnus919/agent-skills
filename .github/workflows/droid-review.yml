@@ -78,9 +78,8 @@ jobs:
           automatic_review: true
           automatic_security_review: true
           review_depth: shallow
-          review_model: openai/gpt-6-luna
-          security_model: openai/gpt-6-luna
+          review_model: custom:GPT-6-Luna-(Nous-Portal)-0
+          security_model: custom:GPT-6-Luna-(Nous-Portal)-0
           reasoning_effort: low
-          path_to_droid_executable: ${{ github.workspace }}/.github/scripts/droid-read-only
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
