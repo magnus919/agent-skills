@@ -8,17 +8,25 @@ on:
         required: true
         type: string
       seed:
-        description: Frozen selection seed for the small feasibility screen
+        description: Frozen selection seed (use jev-543-blind-v1 for the original full packet)
         required: true
         default: jev-543-local-v1
         type: string
+      sample_profile:
+        description: Small feasibility screen or the original 44-item frozen review packet
+        required: true
+        default: small
+        type: choice
+        options:
+          - small
+          - full
 
 permissions:
   actions: read
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ inputs.source_run_id }}-${{ inputs.seed }}
+  group: ${{ github.workflow }}-${{ inputs.source_run_id }}-${{ inputs.seed }}-${{ inputs.sample_profile }}
   cancel-in-progress: false
 
 jobs:
@@ -104,15 +112,21 @@ jobs:
           path: private/audit
           github-token: ${{ github.token }}
           run-id: ${{ inputs.source_run_id }}
-      - name: Prepare small prediction-blind packet
+      - name: Prepare selected prediction-blind packet
         env:
           SOURCE_RUN_ID: ${{ inputs.source_run_id }}
           SEED: ${{ inputs.seed }}
+          SAMPLE_PROFILE: ${{ inputs.sample_profile }}
         run: |
+          case "$SAMPLE_PROFILE" in
+            small) population_pairs=4; challenge_items=4 ;;
+            full) population_pairs=16; challenge_items=12 ;;
+            *) echo 'Unsupported sample profile' >&2; exit 2 ;;
+          esac
           python3 system-one/scripts/jev_eval_calibration.py prepare \
             --reports private/reports --audit private/audit/jev-eval-audit.json \
             --output-dir private/review --run-id "$SOURCE_RUN_ID" --seed "$SEED" \
-            --population-pairs 4 --challenge-items 4
+            --population-pairs "$population_pairs" --challenge-items "$challenge_items"
       - name: Obtain two blinded local-model passes
         env:
           EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
