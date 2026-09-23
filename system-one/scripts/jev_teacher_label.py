@@ -42,7 +42,7 @@ incompatible design; not_shown = necessary evidence is missing or too vague;
 uncertain = the rubric is ambiguous or the evidence cannot be resolved.
 Do not infer that code executed or external effects happened from a claim in
 the response. Return only one JSON object with a labels array. Every element
-must have id, label, and a short paraphrased evidence note. Do not quote the
+must have id, label, and a paraphrased evidence note of 1-250 characters. Do not quote the
 response verbatim or include secrets. Include every supplied id exactly once."""
 
 
@@ -169,8 +169,11 @@ def parse_labels(value: dict[str, Any], expected_ids: set[str]) -> dict[str, dic
         if item_id not in expected_ids or item_id in result or label not in (*LABELS, "uncertain"):
             raise ValueError("teacher label ID or class is invalid")
         if not isinstance(evidence, str) or not evidence.strip() or len(evidence) > 500:
-            raise ValueError("teacher evidence is empty or oversized")
-        result[item_id] = {"label": label, "evidence": evidence.strip()}
+            # A label without inspectable evidence is not a supported judgment.
+            # Abstain for this item while preserving other valid labels in the group.
+            result[item_id] = {"label": "uncertain", "evidence": "Model evidence was missing or oversized."}
+        else:
+            result[item_id] = {"label": label, "evidence": evidence.strip()}
     if result.keys() != expected_ids:
         raise ValueError("teacher omitted or added item IDs")
     return result

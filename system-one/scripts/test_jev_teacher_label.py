@@ -61,6 +61,21 @@ class JevTeacherLabelTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "invalid"):
             parse_labels(response, {self.items[0]["id"]})
 
+    def test_bad_evidence_abstains_per_item_without_accepting_label(self):
+        entries = [
+            {"id": self.items[0]["id"], "label": "met", "evidence": ""},
+            {"id": self.items[1]["id"], "label": "met", "evidence": "Evidence"},
+        ]
+        response = {"choices": [{"finish_reason": "stop", "message": {
+            "content": json.dumps({"labels": entries})}}]}
+        labels = parse_labels(response, {self.items[0]["id"], self.items[1]["id"]})
+        self.assertEqual(labels[self.items[0]["id"]]["label"], "uncertain")
+        self.assertEqual(labels[self.items[1]["id"]]["label"], "met")
+        entries[0]["evidence"] = "x" * 501
+        response["choices"][0]["message"]["content"] = json.dumps({"labels": entries})
+        self.assertEqual(parse_labels(response, {self.items[0]["id"], self.items[1]["id"]})
+                         [self.items[0]["id"]]["label"], "uncertain")
+
     def test_two_pass_consensus_abstains_on_disagreement(self):
         first = {item["id"]: {"label": "met", "evidence": "Visible support"} for item in self.items}
         second = {item["id"]: {"label": "met", "evidence": "Visible support"} for item in self.items}

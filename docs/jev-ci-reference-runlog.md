@@ -1015,3 +1015,15 @@ downloading response artifacts. The local server's documented API supports
 `response_format: {"type": "json_object"}`, but that is a request for a
 format, not evidence that this checkpoint will honor it. A live rerun must
 prove the response shape; do not reinterpret malformed output as a label.
+
+The [third local run](https://github.com/magnus919/agent-skills/actions/runs/35917300013)
+passed the real label-contract synthetic probe and produced parseable JSON for
+the frozen packet, but at least one item had blank or oversized evidence.
+The strict parser rejected the batch before consensus or scoring. We now
+request a 1–250-character paraphrase and convert only an item with missing
+or oversized evidence to `uncertain`; its `met`/`not_met` suggestion is never
+accepted. Invalid IDs, classes, response shape, or missing items still fail
+the entire pass. This can retain soundly formatted items while exposing the
+model's abstention rate. One bounded rerun should decide whether this local
+self-review route offers useful diagnostic coverage; do not tune Jev from
+forced labels or report a pass when every item abstains.
