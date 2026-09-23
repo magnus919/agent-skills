@@ -932,3 +932,19 @@ model identifier or account availability is now suspect. The next revision
 checks the authenticated `/v1/models` catalog *before* sending response text
 and allows an exact catalog model ID as a manual workflow input. Do not infer
 model availability from a local CLI's model list or from an unrelated provider.
+
+The catalog check in the [third run](https://github.com/magnus919/agent-skills/actions/runs/35911223591)
+confirmed `openai/gpt-6-luna` for this credential, but the first chat request
+still returned HTTP 404. A [fourth run](https://github.com/magnus919/agent-skills/actions/runs/35911350771)
+confirmed `anthropic/claude-sonnet-4.6` in the same catalog and got the same
+404. Neither run produced labels or a score. Catalog listing is therefore not
+proof that inference works. The next workflow revision sends a synthetic
+one-line probe *before* downloading private artifacts and reports only its
+status and sanitized machine-readable error type/code.
+
+The objective here is **application-level tuning of Jev API inputs**: the
+question, evidence, criteria, and abstention policy. No model weights are
+being fine-tuned. Separate inference-model judgments, if obtained, are
+pseudo-labels for finding questionable Jev request shapes, not ground truth
+or a new release gate. If the provider route remains unavailable, pause this
+screen rather than modifying Jev prompts based on absent labels.
