@@ -46,6 +46,9 @@ class JevTeacherLabelTests(unittest.TestCase):
         self.assertEqual([a["id"] for a in json.loads(second["messages"][1]["content"])["assertions"]],
                          [self.items[1]["id"], self.items[0]["id"]])
         self.assertFalse(first["stream"])
+        self.assertNotIn("response_format", first)
+        local = request_payload("local-model", self.items[0]["response"], self.items[:2], 1, structured=True)
+        self.assertEqual(local["response_format"], {"type": "json_object"})
 
     def test_parsing_requires_exact_ids_and_evidence(self):
         entry = {"labels": [{"id": self.items[0]["id"], "label": "not_shown", "evidence": "No deadline supplied."}]}

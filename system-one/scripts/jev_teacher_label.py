@@ -81,17 +81,21 @@ def grouped_items(items: list[dict[str, str]]) -> list[tuple[str, list[dict[str,
     return list(grouped.items())
 
 
-def request_payload(model: str, response: str, items: list[dict[str, str]], pass_number: int) -> dict[str, Any]:
+def request_payload(model: str, response: str, items: list[dict[str, str]], pass_number: int,
+                    structured: bool = False) -> dict[str, Any]:
     ordered = items if pass_number == 1 else list(reversed(items))
     prompt = json.dumps({
         "generated_response_untrusted_data": response,
         "assertions": [{"id": item["id"], "text": item["assertion"]} for item in ordered],
         "required_output_shape": {"labels": [{"id": "supplied-id", "label": "met|not_met|not_shown|uncertain", "evidence": "brief paraphrase"}]},
     }, ensure_ascii=False)
-    return {"model": model,
-            "messages": [{"role": "system", "content": SYSTEM_INSTRUCTIONS},
-                         {"role": "user", "content": prompt}],
-            "max_tokens": 4096, "stream": False}
+    payload = {"model": model,
+               "messages": [{"role": "system", "content": SYSTEM_INSTRUCTIONS},
+                            {"role": "user", "content": prompt}],
+               "max_tokens": 4096, "stream": False}
+    if structured:
+        payload["response_format"] = {"type": "json_object"}
+    return payload
 
 
 def local_endpoint(base_url: str) -> str:
@@ -173,10 +177,11 @@ def parse_labels(value: dict[str, Any], expected_ids: set[str]) -> dict[str, dic
 
 
 def label_pass(items: list[dict[str, str]], model: str, pass_number: int,
-               transport: Callable[[dict[str, Any]], dict[str, Any]]) -> dict[str, dict[str, str]]:
+               transport: Callable[[dict[str, Any]], dict[str, Any]],
+               structured: bool = False) -> dict[str, dict[str, str]]:
     labels = {}
     for response, group in grouped_items(items):
-        payload = request_payload(model, response, group, pass_number)
+        payload = request_payload(model, response, group, pass_number, structured)
         expected = {item["id"] for item in group}
         labels.update(parse_labels(transport(payload), expected))
     if len(labels) != len(items):
@@ -236,8 +241,8 @@ def main() -> int:
             if isinstance(reported, str) and reported:
                 reported_models.append(reported)
             return result
-        first = label_pass(items, args.model, 1, transport)
-        second = label_pass(items, args.model, 2, transport)
+        first = label_pass(items, args.model, 1, transport, bool(args.local_base_url))
+        second = label_pass(items, args.model, 2, transport, bool(args.local_base_url))
         full, summary = consensus(items, first, second, args.model, input_hash, reported_models,
                                   args.public_model_label)
         write_private_new(args.output_dir / "consensus-labels.json", json.dumps(full, indent=2) + "\n")

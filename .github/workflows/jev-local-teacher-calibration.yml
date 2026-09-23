@@ -71,16 +71,25 @@ jobs:
             echo 'Local eval endpoint is unavailable or outside the approved runner service' >&2
             exit 2
           fi
-          response_file=$(mktemp)
-          trap 'rm -f "$response_file"' EXIT
-          request=$(python3 -c 'import json,os; print(json.dumps({"model": os.environ["EVAL_MODEL"], "messages": [{"role": "user", "content": "Reply OK."}], "max_tokens": 16, "stream": False}))')
-          status=$(curl --silent --show-error --max-time 60 -o "$response_file" -w '%{http_code}' \
-            -H 'Content-Type: application/json' --data "$request" \
-            "$EVAL_BASE_URL/v1/chat/completions")
-          if [ "$status" != 200 ] || ! python3 -c 'import json,sys; value=json.load(open(sys.argv[1])); assert isinstance(value["choices"][0]["message"]["content"], str)' "$response_file"; then
-            echo "Local model synthetic probe failed (HTTP $status); no eval text was downloaded." >&2
-            exit 2
-          fi
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+
+          sys.path.insert(0, "system-one/scripts")
+          from jev_teacher_label import call_chat, local_endpoint, parse_labels, request_payload
+
+          item = {"id": "j" + "0" * 20, "assertion": "States that the answer is blue",
+                  "response": "The answer is blue."}
+          try:
+              payload = request_payload(os.environ["EVAL_MODEL"], item["response"], [item], 1,
+                                        structured=True)
+              result = call_chat(payload, "", local_endpoint(os.environ["EVAL_BASE_URL"]))
+              parse_labels(result, {item["id"]})
+          except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+              raise SystemExit(f"Local model label-contract probe failed: {type(exc).__name__}; no eval text was downloaded") from None
+          print("Local model label-contract probe succeeded")
+          PY
       - name: Download real-model comparisons as untrusted data
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
