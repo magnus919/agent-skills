@@ -99,7 +99,10 @@ abstentions, subgroup behavior, and drift at the actual decision boundary.
 Use `scripts/jev_eval_calibration.py` locally after downloading a **complete**
 default-branch paired-eval model artifact and its matching Jev audit artifact.
 The helper rejects an audit with omitted, oversized, unpaired, or errored
-assertions and verifies response hashes and assertion text before sampling.
+assertions. Packet preparation also requires the frozen selected-case list to
+match the observed reports; an audit with unknown or incomplete selected-case
+coverage cannot be calibrated as a full run. The helper verifies response
+hashes and assertion text before sampling.
 It makes a private, prediction-blinded review packet: the sampled assertions
 and generated responses are visible, but the Jev answers, sample class, and
 candidate/baseline metadata live only in a separate private map. Generated

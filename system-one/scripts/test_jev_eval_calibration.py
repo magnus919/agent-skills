@@ -37,7 +37,11 @@ class JevEvalCalibrationTests(unittest.TestCase):
                                          "met_probability": 0.9, "provider_confidence": 0.8}
                                         for assertion in group["assertions"]]})
         self.audit = {"schema_version": 1, "mode": "live", "advisory_only": True,
-                      "model_requested": "jev-1.13.0", "counts": {
+                      "model_requested": "jev-1.13.0",
+                      "selection_scope": {"status": "selected", "expected_report_count": 2,
+                                          "observed_report_count": 2, "missing_reports": [],
+                                          "unexpected_reports": []},
+                      "counts": {"reports_seen": 2,
                           "prose_assertions_seen": 8, "assertions_selected": 8,
                           "groups_selected": 4,
                           "skipped_response": 0, "skipped_oversized_assertion": 0,
@@ -82,6 +86,27 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.audit_path.write_text(json.dumps(self.audit), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "coverage is incomplete"):
             read_audit(self.audit_path)
+
+    def test_prepare_requires_complete_frozen_selected_case_coverage(self):
+        for scope_change in (
+            None,
+            {"status": "unknown"},
+            {"status": "selected", "expected_report_count": 3,
+             "observed_report_count": 2, "missing_reports": [["system-one", "case-c"]],
+             "unexpected_reports": []},
+            {"status": "selected", "expected_report_count": 2,
+             "observed_report_count": 2, "missing_reports": [],
+             "unexpected_reports": [["system-one", "case-c"]]},
+        ):
+            audit = json.loads(json.dumps(self.audit))
+            if scope_change is None:
+                audit.pop("selection_scope")
+            else:
+                audit["selection_scope"] = scope_change
+            self.audit_path.write_text(json.dumps(audit), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "selected-case coverage"):
+                prepare(self.root, self.audit_path, self.root / "not-created", "run-1", "seed", 2, 2)
+            self.assertFalse((self.root / "not-created").exists())
 
     def test_score_keeps_population_and_challenge_separate(self):
         records = records_from_artifacts(self.root, self.audit)
