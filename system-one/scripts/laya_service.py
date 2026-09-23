@@ -24,6 +24,10 @@ MAX_QUESTIONS = 16
 MAX_OPTIONS = 64
 
 
+class InferenceFailure(RuntimeError):
+    """The model failed or returned an answer outside the response contract."""
+
+
 class DecisionService:
     def __init__(self, agent: Any, model_path: str, expected_device: str):
         self.agent = agent
@@ -54,8 +58,11 @@ class DecisionService:
             raise BlockingIOError("inference worker busy")
         try:
             self.requests += 1
-            result = self.agent.predict(payload["state"], questions)
-            return validate_response(payload, result)
+            try:
+                result = self.agent.predict(payload["state"], questions)
+                return validate_response(payload, result)
+            except ValueError as exc:
+                raise InferenceFailure("invalid model response") from exc
         except Exception:
             self.failures += 1
             raise

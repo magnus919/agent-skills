@@ -3,7 +3,7 @@
 
 import unittest
 
-from laya_service import DecisionService
+from laya_service import DecisionService, InferenceFailure
 
 
 class FakeAgent:
@@ -45,6 +45,12 @@ class ServiceTests(unittest.TestCase):
         self.request["questions"]["route"]["criteria"] = {str(i): str(i) for i in range(65)}
         with self.assertRaisesRegex(ValueError, "too many options"):
             self.service.decide(self.request)
+
+    def test_invalid_model_output_is_server_failure(self):
+        self.service.agent.predict = lambda state, questions: {"answers": {}}
+        with self.assertRaisesRegex(InferenceFailure, "invalid model response"):
+            self.service.decide(self.request)
+        self.assertEqual(self.service.failures, 1)
 
 
 if __name__ == "__main__":
