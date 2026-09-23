@@ -124,6 +124,18 @@ python3 scripts/validate-evals.py
 
 Existing skills are grandfathered via `scripts/grandfathered-skills.txt`. As schema-valid manifest coverage climbs past 25%, modified skills without valid manifests receive a warning; past 50%, they fail CI. The coverage report is available via `python3 scripts/eval-coverage.py`. The ratchet is enforced in CI via `python3 scripts/eval-coverage.py --modified-from <base-sha>` on every pull request. A skill is considered modified when any tracked file under its directory changes, not only `SKILL.md`. Schema-valid manifest coverage must not decrease between the base revision and the candidate; a decrease fails CI.
 
+### Author assertions that can be reviewed reliably
+
+Write evals for the skill's intended behavior first, not to obtain a favorable Jev score. For every new or revised case:
+
+1. Make each assertion one independently checkable claim about evidence the grader can actually see. Split requirements that could pass or fail separately; do not mechanically split every sentence containing `and`. Keep `expected_output` as the case-level outcome, not a substitute for assertions.
+2. State consequential boundaries precisely (for example, a distinct Score/Noul question ID **per candidate**, while allowing multiple questions in one request). Permit valid equivalent implementations; reject a specific wrong shape without prescribing incidental wording.
+3. Use a recognized deterministic assertion prefix from `eval_runner/grader.py` for exact observable properties. A literal text match proves only that text is present, not that a design is correct or a side effect occurred. Use prose for semantic claims; do not invent new prefixes without changing and testing the grader contract.
+4. Check the assertion against at least a satisfying response, a contradictory near miss, and a response that omits the evidence. Ask whether a reviewer can distinguish **met**, **not met**, and **not shown** from the available response or artifact. If the property requires execution or external facts, add appropriate execution, source, or human/domain evidence instead of asking Jev to infer it from prose.
+5. Preserve stable case IDs and the v1 schema. Record material rubric changes and challenge examples so future comparisons can identify what changed; do not bulk-rewrite manifests merely because a word screen or model verdict flags them.
+
+The current paired-eval grader marks unrecognized prose assertions `manual_review`; its `passed=true` value can coexist with **zero verified semantic passes**. The default-branch Jev audit of those assertions is advisory reviewer triage only. A suggested `met`, high probability, or provider confidence is not a validated pass or release approval. Do not promote Jev to a required gate or choose a confidence threshold without independently labeled representative real outputs, held-out testing, error/abstention analysis, and an explicit versioned gate contract. See `CONTRIBUTING.md` for a worked authoring example and `docs/jev-ci-reference-runlog.md` for the observed failure modes.
+
 ## Catalog Structure: Methodology vs. Operational Tooling
 
 The catalog is intentionally two-layered. Keep every change in the layer that matches the work, and route between layers explicitly.
