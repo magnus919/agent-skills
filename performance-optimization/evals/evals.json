@@ -41,13 +41,13 @@
     {
       "id": "proxy-metric-validation",
       "prompt": "A frontend benchmark shows our new component creates 40% fewer DOM nodes, so I want to block any future change that exceeds today's node count. We have not compared this count with real page latency. What should I do?",
-      "expected_output": "A response that treats the node count as diagnostic evidence, not a user win or yet a justified gate. It recommends measuring representative user-visible rendering outcomes and countermetrics, then checking on at least two representative changes or cases whether the structural count moves with wall-time outcomes without hiding regressions. If the relationship does not hold, it discards the count as a ratchet; if it does, it sets a threshold supported by measurement stability and ordinary noise. It does not claim that fewer nodes necessarily make the page faster.",
+      "expected_output": "Treat the node count as diagnostic evidence, not a user win or justified gate. Measure representative user-visible rendering outcomes and countermetrics, then calibrate the count in a named workload domain across representative improvements, plausible regressions, and boundary cases; document exceptions. Before a strict gate, check unchanged-benchmark stability and false alarms, and set a threshold above ordinary noise and aligned with a practical gain. If the proxy misses consequential outcomes, retain it as diagnostic only.",
       "assertions": [
         "The response does not equate fewer DOM nodes with improved user-perceived performance",
-        "The response requires calibration on at least two representative changes or cases before treating the structural count as a CI ratchet",
+        "The response requires calibration across representative improvements, plausible regressions, and boundary cases before treating the structural count as a CI ratchet",
         "The response checks correlation with a user-relevant rendering measure and checks for countermetric regressions",
-        "The response discards the proxy as a gate if its relationship to the user outcome fails",
-        "The response says any eventual threshold must be supported by reproducibility and ordinary measurement noise"
+        "The response keeps the proxy diagnostic if it misses consequential user outcome changes or countermetric regressions",
+        "The response requires an unchanged-benchmark stability check before a strict gate and sets any threshold above ordinary noise and aligned with practical impact"
       ]
     },
     {
@@ -72,6 +72,17 @@
         "The response classifies noisy findings as inconclusive rather than converting them into performance wins",
         "The response names target attainment or gains below practical value as valid completion conditions",
         "The response routes reliability incidents, SLO policy, capacity forecasts, and named telemetry-tool operation to the relevant neighboring methodology or tool skill"
+      ]
+    },
+    {
+      "id": "failed-attempts-and-field-slices",
+      "prompt": "Our checkout benchmark got faster for completed requests, but the candidate also timed out on some attempts. The rollout serves small and large accounts on two platforms. Can we call the release faster from the successful-run median?",
+      "expected_output": "A decision that retains timeouts and failures in the denominator, reports completion rate beside successful-run latency, predefines timeout treatment, and compares matched build, platform, workload, cohort, and time-window slices. It does not call the release faster on successful-run latency alone or claim a field win without the user outcome and guardrails.",
+      "assertions": [
+        "The response reports failed and timed-out attempts and completion rates alongside successful-run latency",
+        "The response defines or requests a timeout treatment rule before analysis and does not silently omit timed-out attempts",
+        "The response compares matched build, platform, workload, cohort, and time-window field slices where available",
+        "The response checks relevant countermetrics and does not claim a field-verified win from successful-run median alone"
       ]
     }
   ]

@@ -13,12 +13,15 @@ An agent using it can add missing measurements, design a representative benchmar
 | `SKILL.md` | The seven-step optimization loop and routing to specialist skills |
 | `references/measurement-and-benchmarks.md` | Field, trace, profile, and benchmark design |
 | `references/experiment-and-rollout.md` | Comparison, decision, and rollout rules |
+| `references/diagnostic-guide.md` | Symptom-to-signal diagnostic path |
+| `references/worked-investigation.md` | Reproducible measurement and profiling walkthrough |
+| `examples/membership_workload.py` | Runnable synthetic slow-path and comparison harness |
 | `templates/optimization-record.md` | A record for one journey or bottleneck |
 | `evals/evals.json` | Representative output-quality scenarios |
 
 ## Quick Start
 
-Install or load `performance-optimization`, then ask: “Our conversation list feels slow. Find the user-visible bottleneck, establish a baseline, and propose one measurable experiment.” Give the agent access to relevant code, telemetry, and a safe benchmark environment. If measurements are missing, its first output should be an instrumentation and baseline plan.
+Install or load `performance-optimization`, then ask: “Our conversation list feels slow. Find the user-visible bottleneck, establish a baseline, and propose one measurable experiment.” Give the agent access to relevant code, telemetry, and a safe benchmark environment. If measurements are missing, its first output should be an instrumentation and baseline plan. To try the example locally, run `python3 performance-optimization/examples/membership_workload.py measure --runs 9` from the repository root; it prints correctness and baseline/candidate timing samples.
 
 ## Triggers
 
