@@ -98,6 +98,10 @@ The current synthetic semantic-audit fixture is
 `examples/jev-eval-benchmark.json`; use `scripts/jev_eval_benchmark.py` with
 `--split dev` for iteration and `--split test` once for a frozen check. The
 labels are author-constructed and do not establish real-world calibration.
+The focused `examples/jev-atomic-assertion-screen.json` has three synthetic
+evidence shapes for each of two decision/attempt/outcome assertions. Run it
+with `--split dev` as a wording regression screen only; its six obvious
+examples are neither a held-out set nor a substitute for real-output labels.
 Before promoting any advisory label into a gate, collect independent
 human labels on representative real outputs and measure false accepts,
 abstentions, subgroup behavior, and drift at the actual decision boundary.

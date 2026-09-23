@@ -1260,3 +1260,31 @@ hypothesis, but the next question must be more targeted and assessed with
 independently adjudicated real-output evidence before promotion. Blog lesson:
 explicitly log a failed input revision; a plausible rubric reminder can
 reduce confidence in true positives without correcting the observed errors.
+
+## 2026-09-23 — Split the execution/outcome eval claim at its evidence boundary
+
+The broad Jev question reminder failed its development screen, so the next
+change targets the assertion itself, which is part of the Jev API input. In
+the existing `deadline-bound-stream` eval, “Separates decision, attempted
+execution, and confirmed outcome” allowed partial evidence of a decision
+loop to obscure the distinct confirmation requirement. The case ID and user
+prompt remain stable. Its two revised assertions ask independently whether
+the response records a proposed decision separately from an attempted action,
+and whether an attempted action requires independent observation of the
+external effect before being recorded as successful. The case-level expected
+output now names independent confirmation. This changes the eval rubric and
+future generated-output distribution; do not compare old and new assertion
+counts or scores as though they share one contract.
+
+We constructed a public six-item synthetic challenge fixture with one
+`met`, one `not_met`, and one `not_shown` response for each new assertion.
+The `not_met` confirmation example explicitly records success on function
+return without external observation; the `not_shown` example discusses
+deadlines and retries but says nothing about confirmation. Pinned
+`jev-1.13.0` classified all six as labeled, with valid responses and no
+provider error. This verifies that the revised wording is interpretable on
+simple constructed cases; it does **not** show that Jev would have correctly
+graded the earlier private generated responses or that real-output accuracy
+improved. The fixture is a development regression screen, not independent
+ground truth or held-out proof. The CI audit remains advisory; no probability
+threshold or release gate is introduced.

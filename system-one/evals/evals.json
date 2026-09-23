@@ -108,12 +108,13 @@
     {
       "id": "deadline-bound-stream",
       "prompt": "An event arrives every 300 ms, but a typed model sometimes takes 600 ms. Design the decision loop for a live system with possible side effects.",
-      "expected_output": "Defines event freshness and deadline, drops or abstains on late results, bounds concurrency, separates model proposal from deterministic safety and execution, and records asynchronous outcomes.",
+      "expected_output": "Defines event freshness and deadline, drops or abstains on late results, bounds concurrency, separates model proposal and attempted action from deterministic safety, and confirms external outcomes independently.",
       "assertions": [
         "States what happens to a late decision instead of applying it to a newer event",
         "Bounds in-flight work and handles duplicate events or retries",
         "Keeps exact limits, authority, and fast safety reflexes outside the model",
-        "Separates decision, attempted execution, and confirmed outcome",
+        "Records a proposed decision separately from whether its action was attempted",
+        "Requires independent observation of the external effect before recording an attempted action as successful",
         "Does not copy a trading-demo latency or threshold as a universal setting"
       ]
     },
