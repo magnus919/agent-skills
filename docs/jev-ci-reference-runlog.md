@@ -268,3 +268,21 @@ Lesson: a useful CI integration can be deliberately weaker than a gate. The
 first deployment should make the unreviewed semantic surface legible while
 preserving the existing source-of-truth checks. Its own absence, errors, and
 coverage limits must remain visible rather than masquerading as passes.
+
+## 2026-09-23 — PR review found a failure-path skip
+
+PR [#528](https://github.com/magnus919/agent-skills/pull/528) passed the
+repository's validation and paired-eval tests, but Droid review found a
+critical workflow-condition mistake before merge. The advisory audit job
+depended on `paired-eval-model` and initially lacked an explicit `always()`
+condition. GitHub would therefore skip the audit whenever the model eval
+failed, despite that job's `always()` artifact upload. That is the case where
+reviewer triage may be most valuable. The condition was amended to run the
+audit after a failed model job on `main`, then let the download step skip it
+only when no artifact exists. This does **not** make a failed paired eval
+green: the audit job remains advisory and the original failure persists.
+
+Lesson: test the failure path of an advisory helper, not only its happy path.
+CI dependency defaults can silently remove an observer precisely when the
+upstream check fails. A green PR check for a main-only job is no evidence of
+that path; inspect the actual main workflow after merge.

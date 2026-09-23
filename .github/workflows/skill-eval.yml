@@ -186,7 +186,8 @@ jobs:
 
   jev-eval-audit:
     # Advisory only: never changes a paired-eval or required validation verdict.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Model evals upload artifacts even on failure; audit those failures too.
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: paired-eval-model
     continue-on-error: true
