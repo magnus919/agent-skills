@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill_name": "performance-optimization",
+  "evals": [
+    {
+      "id": "unmeasured-user-journey",
+      "prompt": "Customers say our dashboard feels slow, but we have no latency events and no one agrees what 'loaded' means. Help me start improving it. Do not assume a fix yet.",
+      "expected_output": "A measurement-first plan that selects a representative user journey and defines the user-visible start and completion boundaries, primary metric, population, platform and workload context, practical target, and correctness/reliability/resource countermetrics. It audits existing telemetry and instruments the smallest missing boundary with stable build-tagged events while addressing sampling, privacy, overhead, and segmentation. It establishes a baseline with counts and a distribution plus uncertainty, labels any local probe as a proxy, and defers optimization until evidence identifies a bottleneck.",
+      "assertions": [
+        "The response defines a specific user journey and observable start and completion boundaries before proposing a performance fix",
+        "The response chooses a user-relevant primary metric and names workload or population context and meaningful countermetrics",
+        "The response audits existing measurements and proposes minimal instrumentation for a missing boundary, including version context and privacy or overhead considerations",
+        "The response requires a baseline with sample count and a distribution or percentiles and states uncertainty rather than treating one value as representative",
+        "The response distinguishes temporary local proxies from field evidence and does not claim an unmeasured improvement"
+      ]
+    },
+    {
+      "id": "noisy-benchmark-comparison",
+      "prompt": "I changed a JSON parser and one local run went from 82 ms to 77 ms. The machine was busy and the fixture was a tiny synthetic payload. Can I call this a 6% performance win and add a CI threshold?",
+      "expected_output": "A calibrated response that treats the single timing as inconclusive, rejects the percentage as a supported user win, and postpones a CI threshold. It calls for a representative workload based on observed slow cases, fixed build/hardware/runtime/fixture and warmup conditions, repeated baseline and candidate runs with raw results and spread, and interleaving or randomization if drift matters. It asks for a user-relevant outcome and countermetrics, and would only propose a ratchet after a stable signal is shown to predict that outcome above ordinary noise.",
+      "assertions": [
+        "The response classifies the one-run comparison as inconclusive and does not claim a supported performance gain",
+        "The response requires a representative workload rather than relying only on the tiny synthetic payload",
+        "The response requires repeated baseline and candidate measurements under controlled, recorded conditions and reports variability",
+        "The response does not recommend a CI threshold until the benchmark is reproducible and its signal is tied to a user-relevant outcome",
+        "The response considers countermetrics and does not infer field impact from a lab-only result"
+      ]
+    },
+    {
+      "id": "profile-guided-service-optimization",
+      "prompt": "Our API's p95 latency rose for large accounts. Traces show time in the service, and a CPU profile points at repeated permission checks inside a loop. Give me a disciplined next pass; avoid guessing at a broad rewrite.",
+      "expected_output": "A focused diagnostic and experiment plan that first checks trace/profile boundaries and reproduces a representative large-account workload. It separates CPU work from waiting and partitions the critical path, ranks the candidate by affected users, attainable gain, confidence, and regression cost, then proposes one reversible intervention with a falsifiable mechanism and predicted primary, diagnostic, and countermetric changes. The baseline and candidate use the same workload and environment, include correctness checks and repeated measurements, and record absolute/relative results, run counts, variance, and environment. The decision is supported, unsupported, or inconclusive; after an accepted gain, the journey is re-profiled because the bottleneck may move.",
+      "assertions": [
+        "The response validates trace/profile boundaries and reproduces the representative large-account workload before prescribing a fix",
+        "The response distinguishes CPU work from waiting and uses the critical path to locate the bottleneck",
+        "The response proposes one focused, reversible experiment with a falsifiable mechanism and predicted primary and countermetric movement",
+        "The response compares baseline and candidate on the same workload and records run count, variability, environment, and absolute or relative change",
+        "The response preserves correctness checks, classifies the evidence as supported, unsupported, or inconclusive, and re-profiles after an accepted gain"
+      ]
+    },
+    {
+      "id": "proxy-metric-validation",
+      "prompt": "A frontend benchmark shows our new component creates 40% fewer DOM nodes, so I want to block any future change that exceeds today's node count. We have not compared this count with real page latency. What should I do?",
+      "expected_output": "A response that treats the node count as diagnostic evidence, not a user win or yet a justified gate. It recommends measuring representative user-visible rendering outcomes and countermetrics, then checking on at least two representative changes or cases whether the structural count moves with wall-time outcomes without hiding regressions. If the relationship does not hold, it discards the count as a ratchet; if it does, it sets a threshold supported by measurement stability and ordinary noise. It does not claim that fewer nodes necessarily make the page faster.",
+      "assertions": [
+        "The response does not equate fewer DOM nodes with improved user-perceived performance",
+        "The response requires calibration on at least two representative changes or cases before treating the structural count as a CI ratchet",
+        "The response checks correlation with a user-relevant rendering measure and checks for countermetric regressions",
+        "The response discards the proxy as a gate if its relationship to the user outcome fails",
+        "The response says any eventual threshold must be supported by reproducibility and ordinary measurement noise"
+      ]
+    },
+    {
+      "id": "production-rollout-and-field-read",
+      "prompt": "A database query optimization improved our staging benchmark by 18% with the same result set. Prepare the production rollout plan. This can affect several customer segments, and deployment is not yet authorized.",
+      "expected_output": "A reviewable rollout plan that reports the result as supported in lab only, preserves the correctness evidence, and names remaining uncertainty. It presents the diff and evidence to a human owner, defines a bounded rollout, observation window, matched field slices by build/platform/segment, success and abort thresholds, rollback target, and owner. It observes errors and correctness countermetrics and treats deployment as subject to the project's normal approval gates. Field verification is claimed only if the user outcome improves without unacceptable harm; otherwise it recommends disabling/reverting or investigating.",
+      "assertions": [
+        "The response labels the staging result as lab evidence and does not claim a field-verified improvement",
+        "The response preserves correctness evidence and names the remaining uncertainty before rollout",
+        "The response requires a human owner and follows normal project approval gates instead of treating the skill as deployment authority",
+        "The response defines rollout scope, an observation window, success and abort thresholds, and a rollback target",
+        "The response compares field outcomes across relevant build and customer slices and monitors errors or correctness countermetrics before calling the change field verified"
+      ]
+    },
+    {
+      "id": "bounded-stop-and-routing",
+      "prompt": "Our service is nearing its latency target, but the next three optimization hypotheses produced results too noisy to distinguish from baseline. A teammate suggests spending another week micro-optimizing. How should we decide what happens next?",
+      "expected_output": "A bounded decision that stops repeated tuning when evidence cannot distinguish a gain after a defined measurement pass. It summarizes the hypotheses, workloads, raw evidence and uncertainty, explains that noisy results are inconclusive rather than wins, and records the next owner decision or measurement gap. It proposes resuming only with a material change in evidence or hypothesis and stops when the target is met or further work is below practical value. If the actual request turns into an incident, SLO policy, capacity forecast, or named tool operation, it routes to the relevant neighboring skill.",
+      "assertions": [
+        "The response uses a bounded stop condition when repeated measurements cannot distinguish a gain from noise",
+        "The response records the hypotheses, workloads, evidence, uncertainty, and the next owner decision or measurement gap",
+        "The response classifies noisy findings as inconclusive rather than converting them into performance wins",
+        "The response names target attainment or gains below practical value as valid completion conditions",
+        "The response routes reliability incidents, SLO policy, capacity forecasts, and named telemetry-tool operation to the relevant neighboring methodology or tool skill"
+      ]
+    }
+  ]
+}

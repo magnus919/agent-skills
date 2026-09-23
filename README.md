@@ -408,6 +408,10 @@ Build and maintain owner-approved Primary, Alternate, Contingency, and Emergency
 
 PeerTube federated video from the terminal. Browse videos, channels, and comment threads on any instance, search instance-local or the whole fediverse via SepiaSearch, check server stats, and log in with OAuth2 — with per-instance token persistence and pagination/search-scope quirks documented.
 
+### [performance-optimization](performance-optimization/SKILL.md)
+
+Measure and improve software performance through user-journey baselines, profiling, representative benchmarks, controlled experiments, and field verification. Includes guidance for missing telemetry, noisy measurements, proxy validation, regression ratchets, a reusable experiment record, and six output-quality evals. Routes stack-specific implementation to existing specialist skills.
+
 ### [platform-engineering](platform-engineering/SKILL.md)
 
 Infrastructure as code, CI/CD, container orchestration, service networking — methodology and reference patterns for building and operating internal developer platforms.
