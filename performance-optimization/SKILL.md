@@ -1,7 +1,7 @@
 ---
 name: performance-optimization
 description: >-
-  Measure and improve software performance through user-journey baselines, profiling,
+  Optimize software performance through user-journey baselines, profiling,
   representative benchmarks, controlled experiments, and field verification. Use
   when asked to make an application, service, workflow, or hot path faster or more
   efficient, or to build the measurement loop first. Do not use for a reliability
