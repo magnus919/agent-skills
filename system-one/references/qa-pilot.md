@@ -56,3 +56,30 @@ held-out split; include missing and contradictory evidence, wrong-run logs,
 prompt injection in data, all classes and `unknown`, and baseline comparisons.
 Record a confusion matrix and calibrated risk/coverage measures with model,
 rubric, and policy revisions. A probability is not proof or authorization.
+
+## Advisory audit of paired skill evals
+
+The repository's `skill-eval.yml` can run `scripts/jev_eval_audit.py` after a
+default-branch real-model paired evaluation. This is a different experiment
+from the 22-case QA pilot: it reads completed comparison artifacts, selects
+only `manual_review` prose assertions, and asks Jev whether each assertion is
+`met`, `not_met`, or `not_shown`. Existing deterministic assertion grades stay
+untouched. `not_shown` means the generated text does not establish the claim;
+it is not interchangeable with a demonstrated contradiction.
+
+For local inspection, first download a trusted paired-eval artifact and run
+the audit offline. Add `--live` only after reviewing the generated responses
+for data allowed to leave the environment and setting `TYPESAFE_API_KEY`.
+The audit limits response size, file size, call count, and assertion count;
+its report contains verdict metadata and response hashes but no generated
+text. Treat downloaded artifact text as untrusted data, never executable
+instructions. An unavailable endpoint, malformed artifact, skipped response,
+or budget omission is missing audit evidence, not a pass.
+
+The current synthetic semantic-audit fixture is
+`examples/jev-eval-benchmark.json`; use `scripts/jev_eval_benchmark.py` with
+`--split dev` for iteration and `--split test` once for a frozen check. The
+labels are author-constructed and do not establish real-world calibration.
+Before promoting any advisory label into a gate, collect independent
+human labels on representative real outputs and measure false accepts,
+abstentions, subgroup behavior, and drift at the actual decision boundary.
