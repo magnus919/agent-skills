@@ -132,7 +132,7 @@ if the decision risk needs broader coverage. All packet files are written
 with private permissions and must not be committed or uploaded as CI artifacts.
 
 Each private packet now includes `review.html`, an offline form containing the
-same blinded responses and assertions as `review-packet.md`. It embeds no
+same blinded responses and assertions as the Markdown review packet. It embeds no
 external assets, sends no requests, and does not use browser storage. A
 reviewer can enter an ID, label each item with `met`, `not_met`, `not_shown`,
 or `uncertain`, add a short evidence note, download an incomplete draft, and
@@ -140,7 +140,7 @@ reload that draft later. Final export requires every label and evidence note
 plus an explicit prediction-blinding attestation; it produces the same v1
 labels JSON accepted by `compare` and `score`. A draft is **not** a frozen
 review and cannot be scored. If a browser will not open the local form, use
-`review-packet.md` and a separate copy of `labels-template.json` instead.
+the Markdown packet and a separate copy of `labels-template.json` instead.
 
 Have each reviewer who has not seen Jev's answers fill a **separate** label
 file. Freeze both files before comparison.
