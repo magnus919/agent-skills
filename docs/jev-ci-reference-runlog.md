@@ -2488,3 +2488,79 @@ should yield an honestly smaller sample, not fail on arbitrary defaults or
 silently claim the requested challenge denominator. An incomplete run should
 be diagnosed from its generation and audit artifacts, not “fixed” by treating
 missing cases as negative examples.
+
+## 2026-09-24 — Separate Jev input tuning from response generation
+
+After PR #613, the automatic main run
+[36008593676](https://github.com/magnus919/agent-skills/actions/runs/36008593676)
+selected 11 System One eval cases but produced only four comparison reports;
+seven expected case IDs were missing. The Laya C++ serving baseline received
+HTTP 429 after the bounded retry, while its candidate completed. The Jev job
+reported an incomplete audit and did not turn the missing cases into passes.
+This is a Poolside availability failure in generation, not a Jev provider
+failure.
+
+The fixed-manifest manual smoke
+[36008669961](https://github.com/magnus919/agent-skills/actions/runs/36008669961)
+completed all six expected reports with the default
+`poolside/laguna-s-2.1:free` model at 4,096 output tokens. All 12 response
+manifests completed with `finish_reason=stop`, no failures, and two rate-limit
+retries total. Jev saw six of six reports and judged 60 of 60 assertions, with
+no skips, budget omissions, generation errors, or Jev provider errors. Its
+suggestions were 11 `met`, three `not_met`, and 46 `not_shown`; mean `met`
+probability was 0.1795, and mean provider confidence was 0.843 (ranges 0.00–1.00
+and 0.29–1.00 respectively). These scores have no independent correctness
+labels and are not calibration evidence.
+
+Two blind passes from the same Nous `openai/gpt-6-luna` model were run against
+that same frozen source in workflow run
+[36011105432](https://github.com/magnus919/agent-skills/actions/runs/36011105432).
+The recreated packet matched the workflow's `blind_items_sha256`
+`de5bce626eac47e5557dcca947f6fd0412ab932a469204f97d7878dc21cd6d12`. The
+sample contained 32 population judgments (30 resolved, two uncertain) and four
+available challenge judgments (three resolved, one uncertain). Overall, 33 of
+36 labels had two-pass consensus: seven `met`, three `not_met`, 23 `not_shown`,
+and three `uncertain`. This is same-model pseudo-label self-consistency, not
+independent truth or model agreement with Jev.
+
+There were five resolved Jev/teacher-label disagreements across four case
+sides: Jev said `not_shown` while the teacher said `not_met` for both sides of
+`evals-manifest-authoring`; Jev said `met` (probability 0.57, provider
+confidence 0.36) while the teacher said `not_shown` for candidate
+`skill-review-compliance`; on the `client-discovery-loading` challenge, Jev
+said `met` (0.78 / 0.68) while the teacher said `not_met`; and on candidate
+`third-party-vetting`, Jev said `met` (0.79 / 0.68) while the teacher said
+`not_shown`. These are adjudication candidates, not proven Jev false accepts
+or teacher false negatives. A local evidence screen found plausible omissions
+in the review/vetting answers and an actual conflicting instruction in the
+discovery answer, reinforcing the need for an independent label before
+assigning fault.
+
+The bounded follow-up adds an opt-in, main-only manual replay workflow with a
+successful-source-run check, untrusted-artifact handling, an explicit
+per-run TypeSafe egress acknowledgement that defaults off, a complete
+selected-report identity requirement, and the existing 22-call cap. A new
+`all-requirements-shadow-v1` variant tests item-by-item list coverage and
+contradiction handling; the normal CI audit remains on `deployed` and does not
+change its decision path. The three evidence-driven eval splits reduce
+compound list assertions to independently reviewable claims, which raises the
+complete System One candidate-plus-baseline maximum from 164 to 168. The
+bounded CI cap and runbook were adjusted to that exact manifest size. The
+teacher workflow summary now says “consensus resolved” rather than calling
+resolved pseudo-label count “agreement.”
+
+No generated response was replayed to Jev under a shadow variant while the
+separate egress approval is pending. No raw model response or teacher rationale
+was added to this runlog.
+
+Model-ID clarification: the Portal screenshot lists StepFun Step 3.7 Flash as
+free, but the provider ID is the bare `stepfun/step-3.7-flash`. PR #598 already
+changed the repository variable to that ID and the authenticated catalog
+preflight passed in run
+[35961147079](https://github.com/magnus919/agent-skills/actions/runs/35961147079).
+The current main workflow default was later changed to Poolside following the
+matched StepFun generation tests, which produced empty/truncated responses at
+the normal token ceiling. No active configuration uses a StepFun `:free`
+suffix; its only remaining code occurrence is a deliberate negative fixture
+that proves the stale alias is rejected. Free catalog status does not prove
+usable generation or semantic quality.

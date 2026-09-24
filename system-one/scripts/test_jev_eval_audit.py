@@ -3,9 +3,12 @@
 import json
 import tempfile
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
 
+import yaml
 from jev_eval_audit import (
     _read_json,
     audit,
@@ -15,6 +18,7 @@ from jev_eval_audit import (
     question_contract_sha256,
     question_input_sha256,
     render_summary,
+    selection_is_complete,
 )
 from jev_eval_benchmark import metrics
 
@@ -70,7 +74,9 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertTrue(result["advisory_only"])
         self.assertEqual(result["counts"]["groups_selected"], 2)
         self.assertEqual(result["question_contract_sha256"], question_contract_sha256())
-        self.assertEqual(result["results"][0]["question_input_sha256"], question_input_sha256(request))
+        self.assertEqual(
+            result["results"][0]["question_input_sha256"], question_input_sha256(request)
+        )
 
     def test_question_contract_fingerprint_tracks_input_rubric_not_response(self):
         baseline = question_contract_sha256()
@@ -85,23 +91,101 @@ class JevEvalAuditTests(unittest.TestCase):
         deployed = build_request(group)
         shadow = build_request(group, "mismatch-shadow-v1")
         procedure_shadow = build_request(group, "procedure-conflict-shadow-v2")
+        coverage_shadow = build_request(group, "all-requirements-shadow-v1")
         self.assertEqual(build_request(group), deployed)
         self.assertEqual(shadow["state"], deployed["state"])
         self.assertEqual(procedure_shadow["state"], deployed["state"])
-        self.assertEqual(shadow["questions"]["a0"]["criteria"], deployed["questions"]["a0"]["criteria"])
-        self.assertEqual(procedure_shadow["questions"]["a0"]["criteria"], deployed["questions"]["a0"]["criteria"])
+        self.assertEqual(coverage_shadow["state"], deployed["state"])
+        self.assertEqual(
+            shadow["questions"]["a0"]["criteria"], deployed["questions"]["a0"]["criteria"]
+        )
+        self.assertEqual(
+            procedure_shadow["questions"]["a0"]["criteria"],
+            deployed["questions"]["a0"]["criteria"],
+        )
+        self.assertEqual(
+            coverage_shadow["questions"]["a0"]["criteria"],
+            deployed["questions"]["a0"]["criteria"],
+        )
+        self.assertIn("Check every named item", coverage_shadow["questions"]["a0"]["instructions"])
         self.assertNotEqual(question_input_sha256(shadow), question_input_sha256(deployed))
-        self.assertNotEqual(question_input_sha256(procedure_shadow), question_input_sha256(deployed))
-        self.assertNotEqual(question_contract_sha256("mismatch-shadow-v1"), question_contract_sha256())
+        self.assertNotEqual(
+            question_input_sha256(procedure_shadow), question_input_sha256(deployed)
+        )
+        self.assertNotEqual(question_input_sha256(coverage_shadow), question_input_sha256(deployed))
+        self.assertNotEqual(
+            question_contract_sha256("mismatch-shadow-v1"), question_contract_sha256()
+        )
+        self.assertNotEqual(
+            question_contract_sha256("all-requirements-shadow-v1"), question_contract_sha256()
+        )
         shadow_report = audit(
-            self.root, live=False, key=None, max_calls=2, max_assertions=2,
-            max_response_chars=24000, timeout=12.0, question_variant="mismatch-shadow-v1",
+            self.root,
+            live=False,
+            key=None,
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+            question_variant="mismatch-shadow-v1",
         )
         self.assertEqual(shadow_report["question_variant"], "mismatch-shadow-v1")
-        self.assertEqual(shadow_report["results"][0]["question_input_sha256"],
-                         question_input_sha256(build_request({"response": "A bounded answer", "assertions": ["Explains the boundary"]}, "mismatch-shadow-v1")))
+        self.assertEqual(
+            shadow_report["results"][0]["question_input_sha256"],
+            question_input_sha256(
+                build_request(
+                    {"response": "A bounded answer", "assertions": ["Explains the boundary"]},
+                    "mismatch-shadow-v1",
+                )
+            ),
+        )
         with self.assertRaisesRegex(ValueError, "unknown question variant"):
             build_request(group, "unknown")
+
+    def test_replay_workflow_is_trusted_opt_in_and_keeps_the_deployed_audit_unchanged(self):
+        repo = Path(__file__).resolve().parents[2]
+        replay = yaml.load(
+            (repo / ".github/workflows/jev-eval-replay.yml").read_text(encoding="utf-8"),
+            Loader=yaml.BaseLoader,
+        )
+        events = replay["on"]
+        self.assertEqual(set(events), {"workflow_dispatch"})
+        inputs = events["workflow_dispatch"]["inputs"]
+        self.assertEqual(inputs["authorize_jev_egress"]["default"], "false")
+        self.assertEqual(inputs["question_variant"]["type"], "choice")
+        self.assertEqual(
+            set(inputs["question_variant"]["options"]),
+            {
+                "deployed",
+                "mismatch-shadow-v1",
+                "procedure-conflict-shadow-v1",
+                "procedure-conflict-shadow-v2",
+                "all-requirements-shadow-v1",
+            },
+        )
+        self.assertEqual(replay["permissions"], {"actions": "read", "contents": "read"})
+        job = replay["jobs"]["replay"]
+        self.assertEqual(job["if"], "github.ref == 'refs/heads/main'")
+        steps = {step["name"]: step for step in job["steps"]}
+        self.assertEqual(
+            steps["Check out trusted main-branch code"]["with"]["persist-credentials"], "false"
+        )
+        self.assertNotIn(
+            "TYPESAFE_API_KEY",
+            json.dumps(steps["Verify source run and per-run egress authorization"]),
+        )
+        self.assertIn(
+            "as untrusted data", steps["Download paired model artifact as untrusted data"]["name"]
+        )
+        audit_step = steps["Replay advisory Jev audit with selected question variant"]
+        self.assertEqual(audit_step["env"]["TYPESAFE_API_KEY"], "${{ secrets.TYPESAFE_API_KEY }}")
+        self.assertIn('--question-variant "$QUESTION_VARIANT"', audit_step["run"])
+        self.assertIn("--require-complete-selection", audit_step["run"])
+        deployed = yaml.load(
+            (repo / ".github/workflows/skill-eval.yml").read_text(encoding="utf-8"),
+            Loader=yaml.BaseLoader,
+        )
+        self.assertNotIn("--question-variant", json.dumps(deployed))
 
     def test_question_input_fingerprint_tracks_exact_assertions_without_response_text(self):
         group = {"response": "first response", "assertions": ["Checks the outcome"]}
@@ -112,7 +196,12 @@ class JevEvalAuditTests(unittest.TestCase):
         group["assertions"] = ["Checks an independently confirmed outcome"]
         self.assertNotEqual(question_input_sha256(build_request(group)), first)
         with patch.dict("jev_eval_audit.CRITERIA", {"met": "Changed criterion"}):
-            self.assertNotEqual(question_input_sha256(build_request({"response": "x", "assertions": ["Checks the outcome"]})), first)
+            self.assertNotEqual(
+                question_input_sha256(
+                    build_request({"response": "x", "assertions": ["Checks the outcome"]})
+                ),
+                first,
+            )
 
     def test_rejects_symlink_and_oversized_artifact(self):
         link = self.reports / "link.comparison.json"
@@ -134,6 +223,80 @@ class JevEvalAuditTests(unittest.TestCase):
         groups, counts = collect_groups(self.root, 20)
         self.assertEqual(groups, [])
         self.assertEqual(counts["skipped_response"], 2)
+
+    def test_complete_selection_requires_nonempty_exact_report_identity_coverage(self):
+        selection = {
+            "schema_version": 1,
+            "status": "selected",
+            "manifests": ["system-one/evals/evals.json"],
+            "selected_count": 1,
+            "expected_cases": {"system-one": ["test-case"]},
+        }
+        complete = audit(
+            self.root,
+            live=False,
+            key=None,
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+            selection=selection,
+        )
+        self.assertTrue(selection_is_complete(complete))
+
+        selection["expected_cases"]["system-one"] = ["missing-case"]
+        incomplete = audit(
+            self.root,
+            live=False,
+            key=None,
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+            selection=selection,
+        )
+        self.assertFalse(selection_is_complete(incomplete))
+        unselected = audit(
+            self.root,
+            live=False,
+            key=None,
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+        )
+        self.assertFalse(selection_is_complete(unselected))
+
+    def test_replay_selection_flag_fails_closed_without_changing_default_audit_exit(self):
+        selection_path = self.root / "selection.json"
+        selection_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "status": "selected",
+                    "manifests": ["system-one/evals/evals.json"],
+                    "selected_count": 1,
+                    "expected_cases": {"system-one": ["missing-case"]},
+                }
+            ),
+            encoding="utf-8",
+        )
+        from jev_eval_audit import main
+
+        base_argv = [
+            "jev_eval_audit.py",
+            "--reports",
+            str(self.root),
+            "--selection",
+            str(selection_path),
+        ]
+        with patch("sys.argv", base_argv), redirect_stdout(StringIO()):
+            self.assertEqual(main(), 0)
+        with (
+            patch("sys.argv", [*base_argv, "--require-complete-selection"]),
+            redirect_stdout(StringIO()),
+        ):
+            self.assertEqual(main(), 1)
 
     def test_generation_errors_are_not_mislabeled_as_untouched_exact_assertions(self):
         report = sample_report()
@@ -219,7 +382,9 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertEqual(result["counts"]["assertions_omitted_by_budget"], 4)
         selected = {(row["skill"], row["case_id"], row["side"]) for row in result["results"]}
         for skill in ("alpha-skill", "beta-skill"):
-            cases = {case_id for selected_skill, case_id, _side in selected if selected_skill == skill}
+            cases = {
+                case_id for selected_skill, case_id, _side in selected if selected_skill == skill
+            }
             self.assertEqual(len(cases), 1)
             case_id = next(iter(cases))
             self.assertIn((skill, case_id, "candidate"), selected)
@@ -382,11 +547,11 @@ class JevEvalAuditTests(unittest.TestCase):
             encoding="utf-8"
         )
         self.assertIn("--max-calls 22", workflow)
-        self.assertIn("--max-assertions 164", workflow)
+        self.assertIn("--max-assertions 168", workflow)
         manifest = json.loads((skill_root / "evals" / "evals.json").read_text(encoding="utf-8"))
         cases = manifest["evals"]
         self.assertLessEqual(2 * len(cases), 22)
-        self.assertLessEqual(2 * sum(len(case["assertions"]) for case in cases), 164)
+        self.assertLessEqual(2 * sum(len(case["assertions"]) for case in cases), 168)
 
 
 if __name__ == "__main__":

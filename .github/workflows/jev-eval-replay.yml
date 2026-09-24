@@ -1,0 +1,111 @@
+name: Jev eval-input replay (advisory)
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Successful main-branch skill-eval run with paired model artifacts
+        required: true
+        type: string
+      question_variant:
+        description: Jev question-input variant; this replay sends the same generated responses again
+        required: true
+        type: choice
+        options:
+          - deployed
+          - mismatch-shadow-v1
+          - procedure-conflict-shadow-v1
+          - procedure-conflict-shadow-v2
+          - all-requirements-shadow-v1
+        default: all-requirements-shadow-v1
+      authorize_jev_egress:
+        description: I authorize sending this source run's generated response text to TypeSafe for this bounded replay
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.source_run_id }}-${{ inputs.question_variant }}
+  cancel-in-progress: false
+
+jobs:
+  replay:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out trusted main-branch code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Install audit dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Verify source run and per-run egress authorization
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          AUTHORIZE_JEV_EGRESS: ${{ inputs.authorize_jev_egress }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$SOURCE_RUN_ID" =~ ^[1-9][0-9]{0,19}$ ]]; then
+            echo 'Invalid source run ID' >&2
+            exit 2
+          fi
+          if [ "$AUTHORIZE_JEV_EGRESS" != "true" ]; then
+            echo 'This replay re-sends generated responses to TypeSafe. Explicit per-run authorization is required.' >&2
+            exit 2
+          fi
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" \
+            --jq '{id, head_branch, event, conclusion, path}' |
+            python3 system-one/scripts/jev_teacher_source.py --source-run-id "$SOURCE_RUN_ID"
+      - name: Download paired model artifact as untrusted data
+        id: download
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: paired-eval-model-artifacts
+          path: eval-output-model
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run_id }}
+      - name: Record replay scope
+        env:
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          QUESTION_VARIANT: ${{ inputs.question_variant }}
+        run: |
+          {
+            echo '## Jev eval-input replay (advisory)'
+            echo "Source skill-eval run: `$SOURCE_RUN_ID`"
+            echo "Question variant: `$QUESTION_VARIANT`"
+            echo 'This explicit replay sends the source run generated-response text to TypeSafe again. Its result is advisory and does not change deterministic CI gates.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Replay advisory Jev audit with selected question variant
+        if: steps.download.outcome == 'success'
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          QUESTION_VARIANT: ${{ inputs.question_variant }}
+        run: |
+          python3 system-one/scripts/jev_eval_audit.py \
+            --reports eval-output-model \
+            --selection eval-output-model/selection.json \
+            --live \
+            --max-calls 22 \
+            --max-assertions 168 \
+            --require-complete-selection \
+            --question-variant "$QUESTION_VARIANT" \
+            --output jev-eval-replay-audit.json \
+            --summary-output "$GITHUB_STEP_SUMMARY"
+      - name: Upload advisory replay report
+        if: always() && steps.download.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: jev-eval-replay-audit
+          path: jev-eval-replay-audit.json
+          if-no-files-found: ignore
+          retention-days: 14

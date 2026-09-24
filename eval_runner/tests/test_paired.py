@@ -992,6 +992,7 @@ def test_nous_endpoint_preflight_requires_key_and_sends_bearer_header():
             **os.environ,
             "PATH": f"{bin_dir}:{os.environ['PATH']}",
             "EVAL_BASE_URL": "https://inference-api.nousresearch.com",
+            # Deliberately invalid fixture: Nous's StepFun model ID has no :free suffix.
             "EVAL_MODEL": "stepfun/step-3.7-flash:free",
             "GITHUB_OUTPUT": str(output_path),
             "CURL_ARGS_FILE": str(args_path),

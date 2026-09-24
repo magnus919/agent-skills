@@ -304,7 +304,7 @@ jobs:
             --selection eval-output-model/selection.json \
             --live \
             --max-calls 22 \
-            --max-assertions 164 \
+            --max-assertions 168 \
             --output jev-eval-audit.json \
             --summary-output "$GITHUB_STEP_SUMMARY"
       - name: Explain audit failure without a report

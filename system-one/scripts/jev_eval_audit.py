@@ -47,6 +47,12 @@ QUESTION_VARIANTS = {
         "not_shown; if it records success on submission or acknowledgment before observation, "
         "choose not_met, even when a summary claims verification."
     ),
+    "all-requirements-shadow-v1": (
+        " Check every named item and independently stated requirement in the assertion. "
+        "Do not infer that an exhaustive list is complete from a heading or general claim. "
+        "An omitted listed item is not_shown; contradictory instructions about a required "
+        "property are not_met."
+    ),
 }
 
 
@@ -242,9 +248,28 @@ def question_input_sha256(request: dict[str, Any]) -> str:
     """Fingerprint exact model/questions without including generated response text."""
     encoded = json.dumps(
         {"model": request["model"], "questions": request["questions"]},
-        sort_keys=True, separators=(",", ":"),
+        sort_keys=True,
+        separators=(",", ":"),
     ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def selection_is_complete(report: dict[str, Any]) -> bool:
+    """Require a nonempty selected denominator and exact observed report identities."""
+    scope = report.get("selection_scope")
+    if not isinstance(scope, dict):
+        return False
+    expected = scope.get("expected_report_count")
+    observed = scope.get("observed_report_count")
+    return (
+        scope.get("status") == "selected"
+        and isinstance(expected, int)
+        and not isinstance(expected, bool)
+        and expected > 0
+        and observed == expected
+        and scope.get("missing_reports") == []
+        and scope.get("unexpected_reports") == []
+    )
 
 
 def audit(
@@ -277,9 +302,7 @@ def audit(
         by_skill[skill].append(pair)
     for skill, skill_pairs in by_skill.items():
         skill_pairs.sort(
-            key=lambda pair: hashlib.sha256(
-                f"{skill}\0{pair[0]['case_id']}".encode("utf-8")
-            ).hexdigest()
+            key=lambda pair: hashlib.sha256(f"{skill}\0{pair[0]['case_id']}".encode()).hexdigest()
         )
     balanced_pairs = (
         pair
@@ -440,10 +463,15 @@ def main() -> int:
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--key-file", type=Path, help="local env-style key file; never printed")
     parser.add_argument("--max-calls", type=int, default=20)
-    parser.add_argument("--max-assertions", type=int, default=164)
+    parser.add_argument("--max-assertions", type=int, default=168)
     parser.add_argument("--max-response-chars", type=int, default=24000)
     parser.add_argument("--timeout", type=float, default=12.0)
     parser.add_argument("--question-variant", choices=tuple(QUESTION_VARIANTS), default="deployed")
+    parser.add_argument(
+        "--require-complete-selection",
+        action="store_true",
+        help="return nonzero unless a nonempty selected report denominator matches observed IDs",
+    )
     args = parser.parse_args()
     if min(args.max_calls, args.max_assertions, args.max_response_chars) <= 0 or args.timeout <= 0:
         parser.error("all bounds must be positive")
@@ -484,10 +512,15 @@ def main() -> int:
         with args.summary_output.open("a", encoding="utf-8") as summary_file:
             summary_file.write(render_summary(report))
     print(json.dumps({"mode": report["mode"], "advisory_only": True, "counts": report["counts"]}))
-    return 1 if (
-        report["counts"]["provider_errors"]
-        or report["counts"]["generation_error_sides"]
-    ) else 0
+    return (
+        1
+        if (
+            report["counts"]["provider_errors"]
+            or report["counts"]["generation_error_sides"]
+            or (args.require_complete_selection and not selection_is_complete(report))
+        )
+        else 0
+    )
 
 
 if __name__ == "__main__":
