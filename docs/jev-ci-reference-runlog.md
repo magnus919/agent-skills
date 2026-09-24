@@ -2972,3 +2972,37 @@ further Nous/Jev inference while the user-reported credit shortage remains.
 Resume only after the user confirms credits are available, then capture the
 provider error classification and request-level retry/token provenance in a
 bounded replay. Keep the Jev audit advisory-only.
+
+## 2026-09-24 — CI inference inventory and Jev replacement boundaries
+
+Reviewed the GitHub Actions workflows and their repository-local callers for
+model-backed work. This distinguishes inference that Jev can plausibly
+replace from generative or independent-reference work that it cannot:
+
+| Workflow | Inference today | Jev fit |
+|---|---|---|
+| `skill-eval.yml` | On selected main pushes or manual smoke, Nous generates candidate/baseline responses; a follow-on Jev job audits prose assertions. | Keep generation as the model-under-test workload. Jev's separate bounded audit is already the appropriate helper; it must not be reported as an exact grader or release gate. |
+| `droid-review.yml` | Every non-draft PR runs a 96-token Nous function-call probe, then Factory Droid's generative code and security review. The configured model is `poolside/laguna-s-2.1:free`, with `maxOutputTokens=16384`, using `NOUS_API_KEY`. PR #623's Droid check took 9m58s; its recorded check result does not include total token or credit usage. | Not a drop-in replacement for broad code/security review. A future typed Jev risk/owner route could be advisory after labeled evaluation; deterministic path rules are a simpler option for known low-risk changes and must not suppress required checks. |
+| `droid.yml` | Explicit `@droid` requests run the generative Droid agent/reviewer, configured with the same Nous model and secret. | Keep the requested generative task intact. Jev might route a narrow structured request, but cannot supply the code changes or prose review. |
+| `jev-teacher-calibration.yml` | A manually dispatched Nous model supplies two blind teacher-label passes for a Jev calibration packet. | Do not substitute Jev for the teacher: that would make its own evaluation circular rather than independent. |
+| `jev-local-teacher-calibration.yml` | A manually dispatched local inference model supplies blind labels for comparison with Jev. | Do not replace this independent reference with Jev. |
+| `jev-qa-pilot.yml`, `jev-eval-replay.yml` | Bounded Jev QA pilot or explicitly authorized Jev question-input replay. | Already Jev-shaped, but exploratory/advisory; the replay gate correctly requires per-run egress authorization. |
+| `skillevaluator.yml`, `validate.yml` | Keyless static, schema, privacy, license, quality, and repository tests; the selected SkillEvaluator checks explicitly exclude LLM calls. | No inference to replace. Keep exact deterministic rules and required test results intact. |
+
+The repository-wide workflow scan found no other current CI LLM call that is
+a safe one-for-one Jev replacement. The good future expansion is a separate,
+bounded CI-failure classifier or optional-test ranker that consumes trusted
+failure/change facts and returns a small typed route plus `unknown`; no such
+inference currently exists in this repository. First create independently
+labeled representative and challenge cases, compare against a deterministic
+baseline, and require abstention/error analysis. It may annotate or route; it
+must not omit mandatory tests, authorize a merge, or turn red CI green.
+
+Resource lesson: both automatic Droid workflows and the paired-eval generation
+workflow reference the repository's `NOUS_API_KEY`. They therefore share a
+provider credential/account boundary. This inventory does not prove which
+workflow spent credits or caused the earlier 429; neither workflow's observed
+status alone provides account-level usage attribution. Avoid parallel live
+experiments while credits are unavailable, and do not tune retry/concurrency
+policy until per-workflow usage and the provider's quota-versus-rate error
+classification are available.
