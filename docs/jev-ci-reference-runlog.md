@@ -1430,3 +1430,24 @@ does **not** establish correct verdicts, calibrated probabilities, or an
 appropriate release gate. Those still require independent real-output labels
 and held-out evaluation; green jobs and complete coverage are necessary but
 not sufficient.
+
+## 2026-09-23 — Reopen the separate teacher route at a synthetic boundary
+
+The main-only Nous teacher workflow had repeatedly received HTTP 404 from
+`/v1/chat/completions`, so it never labeled the frozen real-output packet.
+The separate, unmerged Droid/Nous experiment showed that a minimal
+GPT-6 Luna request to `/v1/responses` can return HTTP 200; it did **not**
+establish a working teacher label contract or deploy Droid review. We changed
+only the remote teacher transport to request a low-reasoning, non-stored
+Responses result. The local-model diagnostic retains its chat-completions
+transport. Offline tests cover the prediction-blind request, reversed item
+order, completed-response parsing, and incomplete/multiple-output rejection.
+
+The manual workflow now probes the **actual label request and parser** on a
+synthetic example before downloading any generated response artifact. If the
+remote model does not return the required JSON labels or declines to mark the
+obvious synthetic case `met`, the workflow stops without private-data egress.
+This is a new feasibility attempt, not a calibration result. Even if a live
+run succeeds, its two-pass consensus will be pseudo-label evidence, not
+independent ground truth or a Jev release threshold. The target remains
+tuning our Jev API input contract; no model weights are changed.

@@ -12,6 +12,7 @@ from jev_teacher_label import (
     parse_labels,
     read_blind_items,
     request_payload,
+    response_text,
 )
 
 
@@ -60,6 +61,29 @@ class JevTeacherLabelTests(unittest.TestCase):
         response["choices"][0]["message"]["content"] = json.dumps(entry)
         with self.assertRaisesRegex(ValueError, "invalid"):
             parse_labels(response, {self.items[0]["id"]})
+
+    def test_remote_responses_request_and_strict_output(self):
+        payload = request_payload("openai/gpt-6-luna", self.items[0]["response"], self.items[:2], 2,
+                                  responses=True)
+        self.assertEqual(payload["reasoning"], {"effort": "low"})
+        self.assertFalse(payload["store"])
+        self.assertNotIn("messages", payload)
+        self.assertEqual([row["id"] for row in json.loads(payload["input"])["assertions"]],
+                         [self.items[1]["id"], self.items[0]["id"]])
+        self.assertNotIn("suggested_verdict", json.dumps(payload))
+        answer = json.dumps({"labels": [{"id": self.items[0]["id"], "label": "not_shown",
+                                        "evidence": "No deadline supplied."}]})
+        result = {"status": "completed", "output": [{"type": "message", "role": "assistant",
+                "content": [{"type": "output_text", "text": answer}]}]}
+        self.assertEqual(parse_labels(result, {self.items[0]["id"]})[self.items[0]["id"]]["label"],
+                         "not_shown")
+        result["status"] = "incomplete"
+        with self.assertRaisesRegex(ValueError, "incomplete"):
+            response_text(result)
+        result["status"] = "completed"
+        result["output"].append(result["output"][0])
+        with self.assertRaisesRegex(ValueError, "one final"):
+            response_text(result)
 
     def test_bad_evidence_abstains_per_item_without_accepting_label(self):
         entries = [
