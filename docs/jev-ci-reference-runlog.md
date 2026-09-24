@@ -2646,3 +2646,40 @@ Blog lesson: report completion, audit coverage, and API health as separate
 dimensions. A provider can return successful typed judgments while the overall
 audit remains incomplete because upstream generations were truncated or the
 bounded audit budget omitted work.
+
+## 2026-09-24 — The 8,192-token smoke still truncates one baseline
+
+After PR #615 merged at
+`2660ec18c127fa7463f4cdaf274d37560a056431`, manual run
+[36026794037](https://github.com/magnus919/agent-skills/actions/runs/36026794037)
+selected only `system-one` and used Poolside Laguna S 2.1 with an 8,192-token
+per-response ceiling. The paired test job and authenticated model preflight
+passed. The model job ran for ten minutes and produced nine of 11 expected
+case reports before the baseline side of `deadline-bound-stream` hit
+`finish_reason=length` at exactly 8,192 output tokens with no usable assistant
+content. Its candidate side completed normally. Fail-fast then left
+`jev-ci-operations` and `reranking-pipeline` unattempted; the model job uploaded
+its metadata artifacts and the advisory Jev job still ran.
+
+Jev saw nine of 11 expected reports, 109 prose assertions, 13 assertions
+skipped because of generation infrastructure error, 16 groups selected, and
+96 assertions judged. There were zero budget omissions and zero Jev provider
+errors. Suggestions were 14 `met`, one `not_met`, and 81 `not_shown`; mean met
+probability was 0.1425 and mean provider confidence was 0.8245. These are
+advisory judgments on incomplete evidence, not correctness or calibration
+results. The audit's incompleteness came from generation truncation and the two
+missing reports, not Jev availability or its call/assertion budget.
+
+The manual smoke now also accepts an optional exact case ID, validates that it
+exists in the selected manifest, and records only that case in the frozen
+selection denominator. Normal push CI and manual smoke defaults still run the
+full selected manifest. Next, use this narrower selector for one fresh
+`deadline-bound-stream` run at 12,288 tokens. This isolates whether a larger
+response ceiling produces usable content without repeating the other 20
+candidate/baseline generations. Do not replay the failed or successful output
+text to Jev or another model.
+
+Blog lesson: when a complete evaluation is expensive, make the diagnostic
+selection explicit and carry the same narrowed denominator into the downstream
+audit. A case-level smoke is useful for debugging a generation boundary, but it
+cannot stand in for a complete skill-level run or establish semantic quality.

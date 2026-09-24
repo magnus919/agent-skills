@@ -533,6 +533,8 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
     assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_skill"]["default"] == (
         "agent-skills"
     )
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_case"]["type"] == "string"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_case"]["default"] == ""
     assert workflow["on"]["workflow_dispatch"]["inputs"]["model_id"]["type"] == "string"
     assert workflow["on"]["workflow_dispatch"]["inputs"]["model_id"]["default"] == (
         "poolside/laguna-s-2.1:free"
@@ -553,6 +555,7 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
         step for step in model_job["steps"] if step["name"] == "Detect changed skills with evals"
     )
     assert selection_step["env"]["EVAL_SKILL"] == "${{ inputs.eval_skill || 'agent-skills' }}"
+    assert selection_step["env"]["EVAL_CASE"] == "${{ inputs.eval_case || '' }}"
     endpoint_step = next(
         step for step in model_job["steps"] if step["name"] == "Check model endpoint"
     )
@@ -563,6 +566,8 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
     assert inference_step["env"]["EVAL_MODEL"] == "${{ inputs.model_id || vars.EVAL_MODEL }}"
     assert inference_step["env"]["MAX_OUTPUT_TOKENS"] == "${{ inputs.max_output_tokens || '4096' }}"
     assert '--max-tokens "$MAX_OUTPUT_TOKENS"' in inference_step["run"]
+    assert inference_step["env"]["EVAL_CASE"] == "${{ inputs.eval_case || '' }}"
+    assert '--case "$EVAL_CASE"' in inference_step["run"]
     assert "Manual model smoke evaluation for `%s`." in selection_step["run"]
     assert "4096|8192|12288" in selection_step["run"]
     repo_root = Path(__file__).resolve().parent.parent.parent
@@ -588,6 +593,7 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
             "RUN_MODEL_SMOKE": "true",
             "BASE_SHA": "",
             "EVAL_SKILL": "agent-skills",
+            "EVAL_CASE": "",
             "EVAL_MODEL": "poolside/laguna-s-2.1:free",
             "MAX_OUTPUT_TOKENS": "4096",
             "GITHUB_OUTPUT": str(output_path),
@@ -633,6 +639,42 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
         summary_path.write_text("")
         selection_path = tmp_path / "eval-output-model" / "selection.json"
         selection_path.unlink()
+        environment["EVAL_SKILL"] = "system-one"
+        environment["EVAL_CASE"] = "deadline-bound-stream"
+        environment["MAX_OUTPUT_TOKENS"] = "12288"
+        isolated_case = subprocess.run(
+            ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", selection_step["run"]],
+            env=environment,
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+        )
+        assert isolated_case.returncode == 0, isolated_case.stderr
+        assert "manifests=system-one/evals/evals.json\n" in output_path.read_text()
+        assert "Case ID: deadline-bound-stream." in summary_path.read_text()
+        isolated_selection = json.loads(selection_path.read_text())
+        assert isolated_selection["expected_cases"]["system-one"] == ["deadline-bound-stream"]
+
+        output_path.write_text("")
+        summary_path.write_text("")
+        selection_path.unlink()
+        environment["EVAL_CASE"] = "not-a-case-in-the-manifest"
+        invalid_case = subprocess.run(
+            ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", selection_step["run"]],
+            env=environment,
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+        )
+        assert invalid_case.returncode != 0
+        assert "not present in the manifest" in invalid_case.stderr
+        assert output_path.read_text() == ""
+        assert summary_path.read_text() == ""
+        assert not selection_path.exists()
+
+        output_path.write_text("")
+        summary_path.write_text("")
+        environment["EVAL_CASE"] = ""
         environment["EVAL_SKILL"] = "../../untrusted"
         invalid_skill = subprocess.run(
             ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", selection_step["run"]],
