@@ -11,7 +11,7 @@ from typing import Any
 from .grader import GradeResult
 from .path_safety import contained_path, validate_case_id
 
-COMPARISON_SCHEMA_VERSION = 1
+COMPARISON_SCHEMA_VERSION = 2
 
 
 def build_comparison_report(
@@ -26,7 +26,9 @@ def build_comparison_report(
     candidate_passed = candidate_grade.passed
     baseline_passed = baseline_grade.passed
 
-    if candidate_passed and not baseline_passed:
+    if candidate_grade.infra_error or baseline_grade.infra_error:
+        delta = "insufficient_data"
+    elif candidate_passed and not baseline_passed:
         delta = "candidate_improvement"
     elif not candidate_passed and baseline_passed:
         delta = "candidate_regression"
@@ -97,4 +99,8 @@ def format_comparison_summary(report: dict[str, Any]) -> str:
         lines.append("  [!] Candidate had infrastructure error")
     if report["baseline"]["infra_error"]:
         lines.append("  [!] Baseline had infrastructure error")
+    if report["candidate"]["infra_error"] or report["baseline"]["infra_error"]:
+        lines.append(
+            "  [!] Paired comparison not assessed because a trial had an infrastructure error"
+        )
     return "\n".join(lines)

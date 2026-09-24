@@ -7,6 +7,7 @@ on:
       - 'eval_runner/**'
       - '.github/workflows/skill-eval.yml'
       - 'schemas/comparison-report-v1.schema.json'
+      - 'schemas/comparison-report-v2.schema.json'
       - 'schemas/release-eval-v1.schema.json'
   push:
     branches:
@@ -16,6 +17,7 @@ on:
       - 'eval_runner/**'
       - '.github/workflows/skill-eval.yml'
       - 'schemas/comparison-report-v1.schema.json'
+      - 'schemas/comparison-report-v2.schema.json'
       - 'schemas/release-eval-v1.schema.json'
   workflow_dispatch:
     inputs:

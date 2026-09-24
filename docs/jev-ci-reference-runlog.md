@@ -2098,3 +2098,29 @@ the next live run; the bounded manual smoke must confirm that a blank or
 truncated response fails the model job and that Jev receives no unusable
 response. The registered model fixture now uses the live ID
 `stepfun/step-3.7-flash` (without the obsolete `:free` suffix).
+
+The next bounded main run
+[35964665427](https://github.com/magnus919/agent-skills/actions/runs/35964665427)
+confirmed the guard against live Nous StepFun. Model catalog preflight passed
+and all 6 smoke cases were selected. In the first case,
+`skill-creation-structure`, the candidate completed; the baseline returned empty
+assistant content with `finish_reason=length` at 4096 output tokens. Its
+manifest contains `status=error`, the safe finish reason and usage counts, and
+no response text. The paired job stopped after these 2 requests, leaving the
+other 10 of 12 planned requests unspent and all 5 remaining cases unattempted.
+This confirms token-limit termination as the observed cause for that baseline
+failure, not a key or catalog mismatch.
+
+The audit observed 1 expected report, 0 complete candidate/baseline groups,
+and selected 0 assertions; 5 candidate prose assertions were unpaired, 5
+baseline assertions were skipped as infrastructure errors, and Jev provider
+errors were 0. The audit exited nonzero because generation was incomplete; it
+made no Jev calls. That is an incomplete evaluation, not a Jev API failure.
+
+The run also exposed a separate reporting flaw: despite the missing baseline,
+comparison report v1 labeled the completed candidate side
+`candidate_improvement`. The model job failed, but the case-level label still
+implied evidence that did not exist. The follow-up introduces version 2 of the
+comparison-report contract, with `insufficient_data` whenever either arm has
+an infrastructure error; the v1 schema remains unchanged. Lesson: the paired
+delta itself must fail closed, not merely the enclosing workflow.
