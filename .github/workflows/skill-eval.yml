@@ -55,7 +55,7 @@ on:
           - '16384'
           - '32768'
           - '65536'
-        default: '4096'
+        default: '65536'
       timeout_seconds:
         description: Per-response request timeout for a manual model smoke
         type: choice
@@ -64,7 +64,7 @@ on:
           - '300'
           - '600'
           - '900'
-        default: '300'
+        default: '900'
 
 permissions:
   contents: read
