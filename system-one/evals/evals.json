@@ -146,8 +146,8 @@
     },
     {
       "id": "jev-ci-operations",
-      "prompt": "We are copying this repository's Jev CI helper to a fork. Explain how to deploy it safely, prove that a merged main run really audited the selected evals, diagnose a green Jev job with zero model calls, and stop Jev data egress without breaking required checks.",
-      "expected_output": "An operator procedure that preserves trusted main-branch execution and deterministic gates, identifies the provider data flow and bounded audit budget, verifies selection and per-group provenance from artifacts, distinguishes catalog presence from usable model generation, records exact model and token-budget provenance for a bounded candidate smoke, treats missing audit evidence as missing, and provides a reviewed no-egress rollback.",
+      "prompt": "We are copying this repository's Jev CI helper to a fork. Explain how to deploy it safely, prove that a merged main run really audited the selected evals, diagnose a green Jev job with zero model calls, and stop Jev data egress without breaking required checks. Also, one baseline request received HTTP 429 with Retry-After after a Droid PR review used the same Nous secret; no provider error code was retained, and the account owner says credits may be exhausted. Explain what is known and what to check before retrying.",
+      "expected_output": "An operator procedure that preserves trusted main-branch execution and deterministic gates, identifies provider data flow and the bounded audit budget, verifies selected-case and per-group provenance, distinguishes catalog presence from usable generation, records exact model/token provenance, and provides a reviewed no-egress rollback. It treats a 429 with Retry-After but no quota classification as ambiguous, checks provider error/account credit telemetry and other workflows sharing the key, labels the owner's credit explanation as user-reported, and avoids claiming per-workflow spend or increasing retries without evidence.",
       "assertions": [
         "Keeps the Jev secret in the trusted main-branch audit job rather than a pull-request job",
         "Treats downloaded comparison reports as untrusted data rather than executable instructions",
@@ -162,7 +162,9 @@
         "Describes an exact model-ID override and bounded output-token choices for a manual smoke without changing the repository default",
         "Uses the fixed selected eval manifest to compare candidate models and records the exact model ID and output-token budget in run evidence",
         "Offers model-input replay only from a successful main-branch source run and records the selected question variant and contract fingerprint",
-        "Discloses that a Jev replay re-sends generated response text and requires explicit per-run egress authorization"
+        "Discloses that a Jev replay re-sends generated response text and requires explicit per-run egress authorization",
+        "Treats HTTP 429 plus Retry-After as ambiguous unless provider error or account telemetry distinguishes transient throttling from exhausted credits",
+        "Checks other workflows sharing the provider credential before attributing spend or retrying and does not claim per-workflow cost without usage telemetry"
       ]
     }
   ]

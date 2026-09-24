@@ -3006,3 +3006,15 @@ status alone provides account-level usage attribution. Avoid parallel live
 experiments while credits are unavailable, and do not tune retry/concurrency
 policy until per-workflow usage and the provider's quota-versus-rate error
 classification are available.
+
+Applied that finding locally to `system-one/references/jev-ci-reference-deployment.md`:
+the 429 recovery table now requires provider/account classification and shared
+credential inventory before attribution or retry changes. Extended the
+existing `jev-ci-operations` eval with two independently reviewable checks for
+that diagnosis; the manifest has 88 prose assertions, so candidate plus
+baseline remain within the existing 176-assertion budget. Offline verification
+passed: eval validation tests (27), all 181 schema/semantic manifests, Jev
+audit tests (21), canonical skill validation (181), and the eval-coverage
+ratchet. This reference/eval follow-up is committed only on the local branch;
+no PR or workflow was started while the user-reported credit shortage remains.
+No live inference was used to validate the new diagnostic assertions.

@@ -119,6 +119,7 @@ provider merely because CI previously sent them to Jev.
 |---|---|
 | Jev job green, zero selected reports | Inspect selection status; no model call or quality result is implied. |
 | Real-model job skipped | Check endpoint variables, `/v1/models` precheck, runner availability, and selection artifact before blaming Jev. |
+| Real-model job receives HTTP 429 | Treat status plus `Retry-After` as insufficient to distinguish transient throttling from exhausted credits. Inspect sanitized provider error type/code and the provider account's credit/usage state; inventory other workflows sharing `NOUS_API_KEY` (including the automatic Droid reviews) before attributing spend or retrying. If classification or usage attribution is unavailable, record the cause as unknown. Do not increase retries, output ceilings, or remove gates based on the status alone. |
 | Missing model artifact | Inspect generation/upload result; the audit cannot reconstruct missing responses. |
 | Missing Jev artifact or provider error | Check secret availability, trusted job logs, endpoint availability, and request/response contract. Preserve the incomplete result; do not retry until green and erase the first failure. |
 | Budget omissions or over-cap selection | Report partial coverage and revise an explicit resource budget or split the change; never silently call a subset complete. |
