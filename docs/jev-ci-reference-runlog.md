@@ -2838,3 +2838,11 @@ rewrite the archived run. Keep the normal automatic CI request timeout at 300
 seconds for now: the 900-second diagnostic established that waiting longer can
 expose a serving-path limit, not that routine CI should wait ten minutes or
 that 65,536 is an optimal default.
+
+Lesson: reasoning-model evaluations should not silently inherit generic 4K
+output budgets. The explicitly dispatched model-smoke workflow now defaults
+to the largest exposed output ceiling (65,536) and a 900-second per-response
+timeout; users can still choose smaller bounds. This applies only to opt-in
+inference runs. Automatic CI retains its 4,096-token/300-second fallback, and
+the observed HTTP 524 means this 900-second client setting cannot force a
+serving path to run longer than its own limit.
