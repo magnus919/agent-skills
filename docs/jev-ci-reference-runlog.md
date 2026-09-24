@@ -1500,3 +1500,29 @@ are **not directly comparable** with the 140-assertion run. The change was
 motivated by the actual operator procedure and a witnessed near miss, not by
 an attempt to raise Jev's score. A live run must still show that the expanded
 manifest fits the 22-call/160-assertion budget and preserves full coverage.
+
+## 2026-09-23 — Split coverage claims reached the live audit
+
+The merged [PR #583](https://github.com/magnus919/agent-skills/pull/583)
+produced main [run 35941490540](https://github.com/magnus919/agent-skills/actions/runs/35941490540)
+at `a8f60faa4d889737c3214f1388f78437f9bb06af`. Real-model generation
+and the advisory Jev job both completed. The downloaded `mode=live` audit
+requested `jev-1.13.0`, selected the expected 11/11 reports, and judged all
+142/142 prose assertions across 22 groups. All skip, budget-omission,
+not-attempted, and provider-error counters were zero. All 22 rows had valid
+exact-question hashes; the 11 candidate/baseline pairs shared their respective
+question hashes. The private calibration helper matched the audit to the
+downloaded comparison bundle and reconstructed all 142 records with response
+and exact-question identities verified.
+
+For `jev-ci-operations`, Jev suggested `met` for selected-report identity/count
+reconciliation and `not_shown` for full skip/omission/error-lane accounting on
+both candidate and baseline. The case's exact-question hash changed from
+`e16d1ffc3a857aedc306f3b4d4dc276a403cbc38cb5c44653af1d92044238aac`
+to `55a24a352f44b531e2f5c7e4df6196502a094d9a16a6aa08257b6d6b99512a95`.
+These verdicts illustrate the split's diagnostic resolution, **not** an
+accuracy gain. The candidate and baseline response hashes for this case
+matched the earlier run, but its question hash changed and no independent
+labels have been assigned for the new assertions. Do not combine it with the
+140-assertion teacher screen as though the questions were byte-identical.
+No generated response text was published here.
