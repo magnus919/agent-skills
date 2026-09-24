@@ -520,16 +520,28 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
     assert "github.ref == 'refs/heads/main'" in model_job["if"]
     assert "inputs.run_model_smoke" in model_job["if"]
     assert workflow["jobs"]["paired-eval-smoke"]["if"] == "github.event_name != 'workflow_dispatch'"
+    audit_job = workflow["jobs"]["jev-eval-audit"]
+    assert "github.event_name == 'push'" in audit_job["if"]
+    assert "github.event_name == 'workflow_dispatch'" in audit_job["if"]
+    assert "github.ref == 'refs/heads/main'" in audit_job["if"]
+    assert "inputs.run_model_smoke" in audit_job["if"]
 
     selection_step = next(
         step for step in model_job["steps"] if step["name"] == "Detect changed skills with evals"
     )
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    manifest_source = repo_root / "agent-skills" / "evals" / "evals.json"
+    manifest_data = json.loads(manifest_source.read_text())
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
+        manifest_path = tmp_path / "agent-skills" / "evals" / "evals.json"
+        manifest_path.parent.mkdir(parents=True)
+        manifest_path.write_text(manifest_source.read_text())
         output_path = tmp_path / "github-output"
         summary_path = tmp_path / "github-summary"
         environment = {
             **os.environ,
+            "PYTHONPATH": str(repo_root),
             "GITHUB_EVENT_NAME": "workflow_dispatch",
             "RUN_MODEL_SMOKE": "true",
             "BASE_SHA": "",
@@ -539,6 +551,7 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
         result = subprocess.run(
             ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", selection_step["run"]],
             env=environment,
+            cwd=tmp_path,
             capture_output=True,
             text=True,
         )
@@ -547,6 +560,12 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
         assert "eligible_count=1\n" in output_path.read_text()
         assert "selected_count=1\n" in output_path.read_text()
         assert "agent-skills/evals/evals.json" in summary_path.read_text()
+        selection = json.loads((tmp_path / "eval-output-model" / "selection.json").read_text())
+        assert selection["status"] == "selected"
+        assert selection["selected_count"] == 1
+        assert selection["expected_cases"]["agent-skills"] == [
+            case["id"] for case in manifest_data["evals"]
+        ]
 
 
 def test_openai_adapter_uses_scoped_eval_api_key_from_environment():

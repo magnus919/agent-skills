@@ -2028,18 +2028,25 @@ The historical failed outputs remain in Actions artifacts only as error
 metadata; no response text exists to score or replay. Blog lesson:
 provider-compatible API shape does not imply interchangeable model IDs or
 pricing semantics—validate the exact configured ID against that provider's
-catalog before inference, and retain exact model provenance. The Portal's free
-listing resolves the cost uncertainty for StepFun as presented there, but does
-not by itself prove the API slug or endpoint response; the new authenticated
-preflight checks the exact configured ID before any chat-completion call.
+catalog before inference, and retain exact model provenance.
 
-Follow-up hardening (no inference invoked): validate the configured model ID
-against the authenticated Nous `/v1/models` response before chat generation;
-record the actual model ID in the trial manifest; stop after the first
-infrastructure-failing candidate/baseline pair; and preserve only safe
-structured provider error fields (`type`, `code`, `param`), never an error body
-that might echo prompts or responses. This keeps a misspelled or
-provider-incompatible model ID from producing repeated HTTP failures and makes
-the next diagnosis more precise without exposing payload text. The slug change
-and any subsequent billable test remain subject to the user's model-usage
-choice.
+PR [#598](https://github.com/magnus919/agent-skills/pull/598) merged the
+authenticated model-catalog preflight, exact model provenance, fail-fast
+generation, and safe structured HTTP error context. The repository variable
+is now `stepfun/step-3.7-flash`, matching the Nous catalog and the user's
+Portal listing. Post-merge run
+[35961147079](https://github.com/magnus919/agent-skills/actions/runs/35961147079)
+confirmed the exact ID against the authenticated catalog. No changed skill
+evals were selected (0/0), so Nous generation made zero calls. The advisory
+Jev report recorded 0 expected reports, 0 observed reports, and 0 calls. This
+confirms catalog availability only; it is not a model-response or Jev result.
+
+The manual smoke path previously selected the fixed `agent-skills` manifest
+but did not write frozen expected-case evidence, and the Jev audit only ran on
+push events. A follow-up wires that existing bounded main-branch smoke to
+write the same case-ID denominator as normal selection and invoke the advisory
+Jev audit after its model artifact is uploaded. This lets the next smoke
+measure actual generations and Jev judgments together without replaying the
+failed HTTP-error artifacts. The Portal currently marks StepFun free, but the
+free designation is not a quality claim or a reason to relax any evaluation
+boundary.
