@@ -1451,3 +1451,36 @@ This is a new feasibility attempt, not a calibration result. Even if a live
 run succeeds, its two-pass consensus will be pseudo-label evidence, not
 independent ground truth or a Jev release threshold. The target remains
 tuning our Jev API input contract; no model weights are changed.
+
+## 2026-09-23 — First complete separate-model teacher screen
+
+After the owner approved Nous inference on this repo's private generated
+paired-eval response and assertion text, [PR #581](https://github.com/magnus919/agent-skills/pull/581)
+merged the Responses-route teacher change. The manual
+[run 35940465551](https://github.com/magnus919/agent-skills/actions/runs/35940465551)
+used the completed main Jev source run 35936520162 and frozen seed
+`jev-543-blind-v1`. It passed the synthetic label-contract probe *before*
+downloading source artifacts, completed two prediction-blind teacher passes,
+and uploaded only the safe summary and aggregate score. A private local replay
+of the 44-item selection matched the uploaded blind-item SHA-256 exactly.
+
+Two-pass teacher consensus resolved 37/44 items: 19 `met`, four `not_met`,
+14 `not_shown`, and seven `uncertain`. In the population slice, 26/32
+resolved; one of nine Jev suggested-`met` items was `not_met` by both teacher
+passes. The challenge slice resolved 11/12, all 11 agreeing on `met`; it was
+selected for high Jev `met` probability and is not a representative accuracy
+sample. The sole resolved population false-`met` disagreement concerned the
+baseline response for `jev-ci-operations` and the public assertion requiring
+expected-versus-observed selected-report coverage **and all** skip/error
+counters. Jev's `met` probability was 0.59 and provider confidence 0.38;
+both teacher passes said `not_met`. No generated response text or teacher
+rationales were published.
+
+This is a useful input-design hypothesis: a compound audit-coverage assertion
+may invite partial-credit `met` even when a required counter is absent. It is
+not independent adjudication of the case. Do not set a 0.7 gate merely because
+it would screen out this example, and do not report precision or Brier from
+the resolved subset while six population items abstained. Next, inspect the
+private response locally, split any separable eval claim on its intended
+behavior rather than for a favorable Jev score, then preregister a targeted
+input comparison and test on untouched examples. Keep Jev advisory.
