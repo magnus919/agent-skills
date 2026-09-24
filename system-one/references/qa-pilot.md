@@ -110,6 +110,15 @@ The current synthetic semantic-audit fixture is
 `examples/jev-eval-benchmark.json`; use `scripts/jev_eval_benchmark.py` with
 `--split dev` for iteration and `--split test` once for a frozen check. The
 labels are author-constructed and do not establish real-world calibration.
+The additional `examples/jev-ci-coverage.synthetic.json` probes selected-case
+identity and count reconciliation. Its `dev` and `test` splits were both opened
+in the 2026-09-23 input experiment, so neither is a fresh holdout. Use
+`--question-variant mismatch-shadow-v1` in the benchmark for the experimental
+instruction, and keep the default `deployed` variant for the existing CI
+contract. The audit script also accepts this explicit variant, but the CI
+workflow does **not** run it: a second pass would retransmit private generated
+responses to TypeSafe and requires specific data-flow approval. Do not treat
+the shadow variant as calibrated, deployed, or eligible for release gating.
 The focused `examples/jev-atomic-assertion-screen.json` has three synthetic
 evidence shapes for each of two decision/attempt/outcome assertions. Run it
 with `--split dev` as a wording regression screen only; its six obvious

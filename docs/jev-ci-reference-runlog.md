@@ -1617,3 +1617,21 @@ confidence values are not calibrated by this screen. The single wording change
 is promising for a future separately reviewed rollout, but the deployed Jev
 question remains unchanged. Do not infer a release threshold or promote the
 advisory result to a CI gate.
+
+## 2026-09-23 — Shadow CI comparison boundary
+
+The next proposed step was to compare the candidate question instruction on
+the *same* private generated paired-eval responses as the deployed Jev audit.
+That would require a second transmission of those responses to TypeSafe.
+The CI workflow edit for this extra pass was rejected by the execution
+reviewer because this specific private-payload/destination flow lacks explicit
+authorization. No shadow CI call or private local replay was made. The
+workflow and deployed Jev question remain unchanged.
+
+For reproducible **synthetic-only** development, the audit and benchmark now
+accept `mismatch-shadow-v1` as an explicit question variant; the default stays
+`deployed`. The variant is recorded in each report and changes the exact
+question fingerprint. A later CI shadow experiment needs specific approval
+for retransmitting private generated eval responses to TypeSafe, a separate
+artifact, and a comparison against independent labels before any promotion.
+No variant verdict alone is evidence of calibration or permission to gate.
