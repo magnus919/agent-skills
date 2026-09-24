@@ -24,9 +24,17 @@ from typing import Any
 from .models import AdapterInput, AdapterOutput, ExitStatus, ToolEvent
 
 _SAFE_FINISH_REASON = re.compile(r"[A-Za-z0-9_.:-]{1,80}\Z")
+_SAFE_HTTP_ERROR_FIELD_VALUE = re.compile(r"[A-Za-z0-9_.:-]{1,80}\Z")
 _UNUSABLE_FINISH_REASONS = {"length", "content_filter", "tool_calls", "function_call"}
 _RATE_LIMIT_MAX_RETRY_SECONDS = 60
 _RATE_LIMIT_FALLBACK_RETRY_SECONDS = 1
+_HARD_QUOTA_ERROR_CODES = {
+    "credit_balance_exhausted",
+    "insufficient_quota",
+    "organization_spend_limit_exceeded",
+    "organization_usage_limit_exceeded",
+    "project_spend_limit_exceeded",
+}
 
 
 @dataclass
@@ -56,6 +64,36 @@ def _retry_after_seconds(headers: Any, *, now: datetime | None = None) -> float 
     return max(0.0, delay)
 
 
+def _safe_http_error_fields(exc: urllib.error.HTTPError) -> dict[str, str]:
+    """Read and retain only allowlisted, provider-supplied error identifiers."""
+    cached = getattr(exc, "_eval_runner_safe_error_fields", None)
+    if isinstance(cached, dict):
+        return cached
+
+    fields: dict[str, str] = {}
+    try:
+        body = json.loads(exc.read())
+        error = body.get("error", body) if isinstance(body, dict) else {}
+        if isinstance(error, dict):
+            for key in ("type", "code", "param"):
+                value = error.get(key)
+                if isinstance(value, str) and _SAFE_HTTP_ERROR_FIELD_VALUE.fullmatch(value):
+                    fields[key] = value
+    except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+        pass
+    finally:
+        exc.close()
+
+    # HTTPError has a normal instance dictionary. Cache only sanitized fields so
+    # the retry decision and final diagnostic do not read or retain raw body text.
+    exc._eval_runner_safe_error_fields = fields
+    return fields
+
+
+def _is_explicit_hard_quota_error(fields: dict[str, str]) -> bool:
+    return any(fields.get(key) in _HARD_QUOTA_ERROR_CODES for key in ("type", "code"))
+
+
 def _urlopen_with_rate_limit_retry(
     url: str,
     data: bytes,
@@ -74,6 +112,10 @@ def _urlopen_with_rate_limit_retry(
         return open_once()
     except urllib.error.HTTPError as exc:
         if exc.code != 429:
+            raise
+        error_fields = _safe_http_error_fields(exc)
+        if _is_explicit_hard_quota_error(error_fields):
+            exc._eval_runner_retry_skipped_reason = "hard_quota"
             raise
         delay = _retry_after_seconds(exc.headers)
         if delay is None:
@@ -258,17 +300,13 @@ class OpenAICompatAdapter:
         except urllib.error.HTTPError as exc:
             elapsed_ms = (time.monotonic() - start) * 1000
             safe_context = []
-            try:
-                body = json.loads(exc.read())
-                error = body.get("error", body) if isinstance(body, dict) else {}
-                if isinstance(error, dict):
-                    for key in ("type", "code", "param"):
-                        value = error.get(key)
-                        if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_.:-]{1,80}", value):
-                            safe_context.append(f"{key}={value}")
-            except (OSError, json.JSONDecodeError, UnicodeDecodeError):
-                pass
+            safe_context.extend(
+                f"{key}={value}" for key, value in _safe_http_error_fields(exc).items()
+            )
             if exc.code == 429:
+                retry_skipped = getattr(exc, "_eval_runner_retry_skipped_reason", None)
+                if retry_skipped:
+                    safe_context.append(f"retry_skipped={retry_skipped}")
                 retry_after = _retry_after_seconds(exc.headers)
                 if retry_after is not None:
                     if math.isfinite(retry_after):

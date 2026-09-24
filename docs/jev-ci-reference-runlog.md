@@ -3023,3 +3023,35 @@ audit tests (21), canonical skill validation (181), and the eval-coverage
 ratchet. This reference/eval follow-up is committed only on the local branch;
 no PR or workflow was started while the user-reported credit shortage remains.
 No live inference was used to validate the new diagnostic assertions.
+
+## 2026-09-24 — Avoid retries for explicitly classified hard-quota 429s
+
+While Nous credits remain unavailable, made an offline adapter change rather
+than issuing another model request. The OpenAI-compatible adapter now reads
+only allowlisted `type`, `code`, and `param` fields from a 429 response before
+deciding whether to retry. It skips its bounded retry for explicit hard-quota
+identifiers (`insufficient_quota`, `credit_balance_exhausted`, and recognized
+organization/project usage or spend-limit codes), records
+`retry_skipped=hard_quota`, and never retains the provider's free-text error
+message. Unclassified 429s preserve the existing one-retry ceiling; this is
+important because the captured Nous 429 had no structured error code. No
+Nous-specific error-code behavior has been established, and a Retry-After
+header alone still cannot distinguish exhausted credits from transient
+throttling. The code identifiers are informed by the
+[OpenAI 429 troubleshooting guidance](https://help.openai.com/en/articles/5955604-troubleshooting-api-rate-limits-and-429-errors),
+not verified Nous documentation.
+
+Added a mocked regression test proving that an explicit hard-quota code causes
+one request, no sleep/retry, safe error metadata, and no persisted private
+message. Existing mocked tests continue to cover empty/unclassified 429 retry,
+second-429 telemetry, and deferral beyond the bounded wait. Updated the
+System One CI runbook and the existing `jev-ci-operations` eval without adding
+assertions, preserving its 176 paired-assertion resource ceiling. These are
+offline changes only; the user-reported credit shortage remains the stop
+condition for provider inference and PR creation. After the user confirms
+credits are restored, first use a bounded single-case run to learn whether
+Nous returns a recognized structured quota code; do not infer this from the
+mocked test. Offline verification passed: the exact paired-eval CI test command,
+27 eval-validation tests, all 181 eval manifests, 21 Jev audit tests, all 181
+canonical skills, the modified-skill eval-coverage ratchet, and `git diff
+--check`. No live inference was used.

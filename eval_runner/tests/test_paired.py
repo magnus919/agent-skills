@@ -1023,6 +1023,56 @@ def test_openai_adapter_retries_rate_limit_once_using_retry_after():
         assert manifest["outputs"]["rate_limit_retries"] == 1
 
 
+def test_openai_adapter_does_not_retry_explicit_hard_quota_error():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        adapter_input = AdapterInput(
+            skill_path=tmp_path / "empty-skill",
+            case=_make_case(),
+            work_dir=tmp_path / "work",
+            output_dir=tmp_path / "output",
+            model="fixture/model",
+        )
+        hard_quota = urllib.error.HTTPError(
+            "https://example.invalid/v1/chat/completions",
+            429,
+            "Too Many Requests",
+            {"Retry-After": "2"},
+            io.BytesIO(
+                json.dumps(
+                    {
+                        "error": {
+                            "type": "insufficient_quota",
+                            "code": "credit_balance_exhausted",
+                            "message": "private billing detail must not be retained",
+                        }
+                    }
+                ).encode()
+            ),
+        )
+
+        with (
+            patch(
+                "eval_runner.openai_adapter.urllib.request.urlopen",
+                side_effect=hard_quota,
+            ) as urlopen,
+            patch("eval_runner.openai_adapter.time.sleep") as sleep,
+        ):
+            result = OpenAICompatAdapter(
+                base_url="https://example.invalid", model="fixture/model"
+            ).execute(adapter_input)
+
+        assert result.exit_status == ExitStatus.ERROR
+        assert result.rate_limit_retries == 0
+        assert "type=insufficient_quota" in result.error
+        assert "code=credit_balance_exhausted" in result.error
+        assert "retry_skipped=hard_quota" in result.error
+        assert "retry_after_seconds=2" in result.error
+        assert "private billing detail" not in result.error
+        urlopen.assert_called_once()
+        sleep.assert_not_called()
+
+
 def test_openai_adapter_records_retry_when_retry_is_also_rate_limited():
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
@@ -1266,6 +1316,7 @@ if __name__ == "__main__":
     test_openai_adapter_rejects_empty_and_incomplete_completions()
     test_truncated_openai_completion_is_infra_error_in_paired_report()
     test_openai_adapter_retries_rate_limit_once_using_retry_after()
+    test_openai_adapter_does_not_retry_explicit_hard_quota_error()
     test_openai_adapter_records_retry_when_retry_is_also_rate_limited()
     test_openai_adapter_defers_rate_limit_retry_beyond_bounded_wait()
     test_retry_after_http_date_is_parsed_as_utc()
