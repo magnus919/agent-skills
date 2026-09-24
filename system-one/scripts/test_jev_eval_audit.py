@@ -80,6 +80,25 @@ class JevEvalAuditTests(unittest.TestCase):
             self.assertNotEqual(question_contract_sha256(), baseline)
         self.assertEqual(question_contract_sha256(), baseline)
 
+    def test_shadow_question_is_distinct_and_does_not_change_deployed_request(self):
+        group = {"response": "Expected 4, observed 3.", "assertions": ["Compares counts"]}
+        deployed = build_request(group)
+        shadow = build_request(group, "mismatch-shadow-v1")
+        self.assertEqual(build_request(group), deployed)
+        self.assertEqual(shadow["state"], deployed["state"])
+        self.assertEqual(shadow["questions"]["a0"]["criteria"], deployed["questions"]["a0"]["criteria"])
+        self.assertNotEqual(question_input_sha256(shadow), question_input_sha256(deployed))
+        self.assertNotEqual(question_contract_sha256("mismatch-shadow-v1"), question_contract_sha256())
+        shadow_report = audit(
+            self.root, live=False, key=None, max_calls=2, max_assertions=2,
+            max_response_chars=24000, timeout=12.0, question_variant="mismatch-shadow-v1",
+        )
+        self.assertEqual(shadow_report["question_variant"], "mismatch-shadow-v1")
+        self.assertEqual(shadow_report["results"][0]["question_input_sha256"],
+                         question_input_sha256(build_request({"response": "A bounded answer", "assertions": ["Explains the boundary"]}, "mismatch-shadow-v1")))
+        with self.assertRaisesRegex(ValueError, "unknown question variant"):
+            build_request(group, "unknown")
+
     def test_question_input_fingerprint_tracks_exact_assertions_without_response_text(self):
         group = {"response": "first response", "assertions": ["Checks the outcome"]}
         first = question_input_sha256(build_request(group))

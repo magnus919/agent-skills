@@ -10,7 +10,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from jev_eval_audit import ENDPOINT, MODEL, build_request, read_key_file
+from jev_eval_audit import ENDPOINT, MODEL, QUESTION_VARIANTS, build_request, read_key_file
 from systemone_probe import live_call, validate_response
 
 LABELS = {"met", "not_met", "not_shown"}
@@ -57,6 +57,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fixture", required=True, type=Path)
     parser.add_argument("--split", required=True, choices=["dev", "test"])
+    parser.add_argument("--question-variant", choices=tuple(QUESTION_VARIANTS), default="deployed")
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--key-file", type=Path)
     parser.add_argument("--output", type=Path)
@@ -76,7 +77,7 @@ def main() -> int:
     for case in cases[: args.max_calls]:
         row = {"id": case["id"], "split": args.split, "slice": case.get("slice"), "label": case["label"]}
         if args.live:
-            request = build_request({"response": case["response"], "assertions": [case["assertion"]]})
+            request = build_request({"response": case["response"], "assertions": [case["assertion"]]}, args.question_variant)
             try:
                 _, response, latency = live_call(ENDPOINT, request, key or "", 12.0)
                 validate_response(request, response)
@@ -91,6 +92,7 @@ def main() -> int:
                 break
         rows.append(row)
     result = {"schema_version": 1, "split": args.split, "model": MODEL if args.live else None,
+              "question_variant": args.question_variant,
               "fixture_note": "author-constructed synthetic, not independent operational ground truth",
               "metrics": metrics(rows), "cases": rows}
     if args.output:
