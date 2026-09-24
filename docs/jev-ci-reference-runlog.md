@@ -1885,3 +1885,81 @@ omissions; compare with earlier totals only for unchanged question/assertion
 fingerprints. Blog lesson: the second skill exposed the same practical value
 of atomization without justifying prompt overfitting—small independent claims
 make disagreements actionable while preserving the eval's original behavior.
+
+## 2026-09-24 — Separate environment, warmup, and evidence-order judgments
+
+After PR #594, main paired-eval run
+[35956308198](https://github.com/magnus919/agent-skills/actions/runs/35956308198)
+completed all 7 `performance-optimization` reports. Its Jev audit selected
+all 98/98 prose assertions across 14 groups, with zero skipped assertions,
+budget omissions, or provider errors. The selected report count matched the
+expected count. This is complete advisory coverage, not a semantic pass rate.
+
+With explicit Nous authorization, teacher run
+[35956827256](https://github.com/magnus919/agent-skills/actions/runs/35956827256)
+used `openai/gpt-6-luna`, prompt revision `jev-blind-teacher-v1`, and two
+prediction-blind passes over a frozen 44-item packet (seed
+`performance-optimization-atomic-claims-20260924-v1`). Nous resolved 37/44
+labels and left 7 uncertain. Jev and Nous matched on 32/37 resolved items:
+20/25 in the population sample and 12/12 in the intentionally high-Jev-`met`
+challenge stratum. The challenge stratum is not workload prevalence. These
+remain correlated model pseudo-labels, not independent ground truth or
+probability calibration.
+
+Five resolved disagreements concentrated in two cases. On the noisy benchmark
+case, Jev said `met` and Nous `not_shown` for the environment-control assertion
+on both candidate and baseline; for the combined environment-and-warmup
+assertion on the baseline, Jev said `met` and Nous `not_shown`. Local inspection
+found concrete environment controls in both answers, no warmup discussion in
+the candidate, and a generic warmup recommendation in the baseline. The old
+assertion bundled independent questions about environment details and warmup,
+so that disagreement could not identify which evidence was missing. On the
+profile-guided case, Jev said `not_shown` for workload reproduction on both
+sides; Nous said `met` for the candidate and `not_met` for the baseline. Local
+inspection found that the candidate puts representative workload replay
+before fix selection, while the baseline offers specific batching/caching
+fixes before its later staging/load-test validation. This is an ordering
+distinction, not proof that either model is always right. No response text or
+teacher rationale is retained here.
+
+Refine the existing contract, preserving every case ID, prompt, and
+`expected_output`: split environment parity from naming a concrete environment
+control and from stating a shared warmup policy; make workload replay an
+explicit prerequisite to choosing a fix. These wording changes express the
+existing case outcomes more literally; they do not adopt Nous labels as truth.
+The eval now has 50 assertions (100 candidate/baseline judgments), below the
+160-assertion audit cap.
+
+Reviewed challenge shapes before testing:
+
+- Satisfying environment evidence names a shared runner/build and controlled
+  CPU/load conditions; a near miss changes runner or build between versions;
+  an omitted-evidence response says nothing about test conditions.
+- Satisfying warmup evidence states that both versions use the same
+  pre-measurement protocol or explains why warmup is unnecessary; a near miss
+  warms only the candidate; an omitted-evidence response gives no warmup
+  guidance.
+- Satisfying workload-order evidence requires a representative large-account
+  replay before selecting a fix; a near miss picks batching/caching first and
+  validates only after implementation; an omitted-evidence response gives
+  general profiling advice without workload evidence or ordering.
+
+The fake paired-eval path still checks all 7 cases structurally; semantic
+assertions remain `manual_review`. The next successful main run must cover all
+100 assertions without omissions before the new wording is assessed. Let the
+normal Jev audit see the newly generated responses once; do not replay private
+responses to Jev. An approved Nous pass can again provide low-toil triage, but
+neither it nor CI green status authorizes a confidence threshold or release
+gate.
+
+Blog lesson: a disagreement is most useful when it exposes a missing rubric
+dimension or ordering distinction. Split the criterion, preserve uncertainty,
+and avoid turning a second model's vote into ground truth.
+
+Provenance caveat for the next screen: after this source run, main PR #595
+routed paired-response generation through Nous `stepfun/step-3.7-flash:free`.
+The frozen source outputs above predate that change. A future gpt-6-luna
+teacher pass would share Nous as a provider with the StepFun generator, making
+the pseudo-labels more correlated; record both exact model IDs and treat the
+comparison as diagnostic disagreement triage only, not independent
+validation.

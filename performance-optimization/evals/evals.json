@@ -31,8 +31,9 @@
         "The response requires a representative workload rather than relying only on the tiny synthetic payload",
         "The response calls for repeated measurements of both baseline and candidate rather than one run each",
         "The response requires baseline and candidate measurements to use the same workload and fixture",
-        "The response requires relevant build, hardware, and runtime conditions to be held constant",
-        "The response identifies the environment and warmup details to record for reproducibility",
+        "The response requires baseline and candidate measurements to use the same test environment",
+        "The response names at least one concrete environment condition to control or record, such as runner or hardware, CPU state or load, or build or runtime",
+        "The response states a common warmup policy for baseline and candidate measurements, including whether warmup is unnecessary",
         "The response requires variability or spread to be reported, not only a single timing",
         "The response does not recommend a CI threshold until the benchmark is reproducible and its signal is tied to a user-relevant outcome",
         "The response considers countermetrics and does not infer field impact from a lab-only result"
@@ -44,7 +45,7 @@
       "expected_output": "A focused diagnostic and experiment plan that first checks trace/profile boundaries and reproduces a representative large-account workload. It separates CPU work from waiting and partitions the critical path, ranks the candidate by affected users, attainable gain, confidence, and regression cost, then proposes one reversible intervention with a falsifiable mechanism and predicted primary, diagnostic, and countermetric changes. The baseline and candidate use the same workload and environment, include correctness checks and repeated measurements, and record absolute/relative results, run counts, variance, and environment. The decision is supported, unsupported, or inconclusive; after an accepted gain, the journey is re-profiled because the bottleneck may move.",
       "assertions": [
         "The response checks that trace and profile boundaries correspond to the affected service path before prescribing a fix",
-        "The response reproduces a representative large-account workload before prescribing a fix",
+        "The response makes reproducing a representative large-account workload a prerequisite to choosing a fix",
         "The response distinguishes CPU work from waiting and uses the critical path to locate the bottleneck",
         "The response proposes one focused, reversible experiment with a falsifiable mechanism and predicted primary and countermetric movement",
         "The response compares baseline and candidate on the same workload and records run count, variability, environment, and absolute or relative change",
