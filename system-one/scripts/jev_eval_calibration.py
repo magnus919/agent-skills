@@ -139,31 +139,40 @@ def records_from_artifacts(root: Path, audit: dict[str, Any]) -> list[dict[str, 
 
 
 def select_records(records: list[dict[str, Any]], seed: str, population_pairs: int,
-                   challenge_items: int) -> list[dict[str, Any]]:
+                   challenge_items: int) -> tuple[list[dict[str, Any]], dict[str, int]]:
     pairs: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
     for record in records:
         pairs[(record["skill"], record["case_id"], record["assertion"])].append(record)
     if any({item["side"] for item in pair} != {"candidate", "baseline"} or len(pair) != 2
            for pair in pairs.values()):
         raise ValueError("population sampling requires complete candidate/baseline assertion pairs")
-    if population_pairs > len(pairs):
-        raise ValueError("requested more population pairs than the audit contains")
+    population_pairs_selected = min(population_pairs, len(pairs))
     ordered_pairs = sorted(pairs.values(), key=lambda pair: sha256_bytes(
         (seed + "\0population\0" + pair[0]["skill"] + "\0" + pair[0]["case_id"] + "\0" + pair[0]["assertion"]).encode("utf-8")))
     selected = []
-    for pair in ordered_pairs[:population_pairs]:
+    for pair in ordered_pairs[:population_pairs_selected]:
         selected.extend({**item, "sample_class": "population"} for item in pair)
     used_ids = {item["id"] for item in selected}
     remaining = [item for item in records if item["id"] not in used_ids]
     high_met = [item for item in remaining if item["suggested_verdict"] == "met"]
-    if challenge_items > len(high_met):
-        raise ValueError("requested more high-met challenge items than remain after population sampling")
+    challenge_items_selected = min(challenge_items, len(high_met))
     # Deliberately risk-enriched, not an estimate of workload prevalence.
     challenge = sorted(high_met, key=lambda item: (
         -item["met_probability"],
-        sha256_bytes((seed + "\0challenge\0" + item["id"]).encode("utf-8"))))[:challenge_items]
+        sha256_bytes((seed + "\0challenge\0" + item["id"]).encode("utf-8"))))[:challenge_items_selected]
     selected.extend({**item, "sample_class": "challenge_high_met"} for item in challenge)
-    return sorted(selected, key=lambda item: sha256_bytes((seed + "\0display\0" + item["id"]).encode("utf-8")))
+    sampling = {
+        "population_pairs_requested": population_pairs,
+        "population_pairs_available": len(pairs),
+        "population_pairs_selected": population_pairs_selected,
+        "challenge_items_requested": challenge_items,
+        "challenge_items_available": len(high_met),
+        "challenge_items_selected": challenge_items_selected,
+    }
+    return (
+        sorted(selected, key=lambda item: sha256_bytes((seed + "\0display\0" + item["id"]).encode("utf-8"))),
+        sampling,
+    )
 
 
 def render_packet(selected: list[dict[str, Any]]) -> str:
@@ -321,12 +330,15 @@ def prepare(root: Path, audit_path: Path, output_dir: Path, run_id: str, seed: s
     audit, audit_hash = read_audit(audit_path)
     require_selected_case_coverage(audit)
     records = records_from_artifacts(root, audit)
-    selected = select_records(records, seed, population_pairs, challenge_items)
+    selected, sampling = select_records(records, seed, population_pairs, challenge_items)
+    if not selected:
+        raise ValueError("complete audit contains no reviewable population or challenge items")
     packet = render_packet(selected)
     private_map = {
         "schema_version": 1, "source_run_id": run_id, "audit_sha256": audit_hash,
         "comparison_bundle_sha256": bundle_sha256(root), "model": audit.get("model_requested"),
-        "seed": seed, "population_pairs": population_pairs, "challenge_items": challenge_items,
+        "seed": seed, "population_pairs": sampling["population_pairs_selected"],
+        "challenge_items": sampling["challenge_items_selected"], "sampling": sampling,
         "population_size": len(records),
         "items": [{key: value for key, value in item.items() if key != "response"} for item in selected],
     }
@@ -345,8 +357,9 @@ def prepare(root: Path, audit_path: Path, output_dir: Path, run_id: str, seed: s
     }, indent=2) + "\n")
     write_private_new(output_dir / "labels-template.json", json.dumps(labels, indent=2) + "\n")
     write_private_new(output_dir / "private-map.json", json.dumps(private_map, indent=2) + "\n")
-    return {"source_run_id": run_id, "population_assertions": population_pairs * 2,
-            "challenge_assertions": challenge_items, "total_review_items": len(selected),
+    return {"source_run_id": run_id, **sampling,
+            "population_assertions": sampling["population_pairs_selected"] * 2,
+            "challenge_assertions": sampling["challenge_items_selected"], "total_review_items": len(selected),
             "response_groups": len({item["response_sha256"] for item in selected}),
             "output_dir": str(output_dir)}
 
