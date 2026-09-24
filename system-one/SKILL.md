@@ -74,8 +74,15 @@ reference adapter, not a public Internet service.
 - Jev is managed/API-only; do not invent a self-hosted Jev weight download.
 - Laya and Jev can share a typed application interface, but not assumed
   thresholds, calibration, latency, language behavior, or model quality.
-- Prefer `other`, `unknown`, or review when labels are not exhaustive.
-  Shortlisting changes the population over which Choice probabilities apply.
+- Before enabling Laya caller traffic, keep ingress private and authenticated;
+  define finite, application-specific caps for request bytes, question count,
+  options per Choice, concurrency, queue wait, and total deadline. Readiness waits
+  for the pinned model, tokenizer, actual device, and calibration artifact.
+- For large Laya Choice sets, check tokenized labels against the head-token
+  budget, verifying coverage and truncation; an option-count transport cap does
+  not prove quality. If shortlisting, measure recall and treat probabilities as
+  conditional on exactly the retained candidate set. Prefer `other`, `unknown`,
+  or review when labels are not exhaustive. See `references/laya.md`.
 - Independent questions may share one call. Dependent questions need another
   call only when the first answer changes their state or candidate set.
 - A model cannot replace exact arithmetic, provenance, eligibility, safety
