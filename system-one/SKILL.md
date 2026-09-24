@@ -77,7 +77,9 @@ reference adapter, not a public Internet service.
 - Before enabling Laya caller traffic, keep ingress private and authenticated;
   define finite, application-specific caps for request bytes, question count,
   options per Choice, concurrency, queue wait, and total deadline. Readiness waits
-  for the pinned model, tokenizer, actual device, and calibration artifact.
+  for the pinned model, tokenizer, actual device, and any calibration artifact the
+  application uses. The bundled adapter's `/readyz` checks device residency only;
+  extend it to cover every required artifact before routing production traffic.
 - For large Laya Choice sets, check tokenized labels against the head-token
   budget, verifying coverage and truncation; an option-count transport cap does
   not prove quality. If shortlisting, measure recall and treat probabilities as

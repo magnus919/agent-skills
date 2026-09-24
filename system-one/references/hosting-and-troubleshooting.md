@@ -32,7 +32,9 @@ green test stub or a zero exit “production delivery.” Verify the boundary th
 user actually requested.
 
 For the bundled adapter, `GET /healthz` is unauthenticated process liveness;
-authenticated `GET /readyz` reports the loaded device; and a synthetic
+authenticated `GET /readyz` reports the loaded device only, not separate
+tokenizer or calibration-artifact readiness. Extend the readiness gate to cover
+every dependency the application requires before production traffic. A synthetic
 `POST /v1/systemone` exercises inference. Use
 `python3 scripts/systemone_probe.py --request examples/request.json --live --url
 http://127.0.0.1:8788/v1/systemone --api-key-env
