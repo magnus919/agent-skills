@@ -117,7 +117,7 @@ jobs:
             --labels private/teacher/consensus-labels.json \
             --output private/score.json
           echo '## Jev model-teacher screen (advisory)' >> "$GITHUB_STEP_SUMMARY"
-          jq -r '"Teacher agreement without abstention: \(.agreement_non_uncertain)/\(.total). This is model pseudo-labeling, not ground truth or a release gate."' private/teacher/safe-summary.json >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"Two-pass teacher consensus resolved: \(.agreement_non_uncertain)/\(.total); uncertain: \(.counts.uncertain // 0). These are same-model pseudo-labels, not independent ground truth or a release gate."' private/teacher/safe-summary.json >> "$GITHUB_STEP_SUMMARY"
           jq -r '"Population: \(.population.resolved)/\(.population.selected) resolved; suggested-met false accepts against teacher consensus: \(.population.false_met_accepts). Challenge: \(.challenge_high_met.resolved)/\(.challenge_high_met.selected) resolved; suggested-met disagreements: \(.challenge_high_met.false_met_accepts)."' private/score.json >> "$GITHUB_STEP_SUMMARY"
       - name: Upload non-text aggregate evidence only
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

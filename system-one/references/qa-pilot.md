@@ -115,10 +115,19 @@ identity and count reconciliation. Its `dev` and `test` splits were both opened
 in the 2026-09-23 input experiment, so neither is a fresh holdout. Use
 `--question-variant mismatch-shadow-v1` in the benchmark for the experimental
 instruction, and keep the default `deployed` variant for the existing CI
-contract. The audit script also accepts this explicit variant, but the CI
-workflow does **not** run it: a second pass would retransmit private generated
-responses to TypeSafe and requires specific data-flow approval. Do not treat
-the shadow variant as calibrated, deployed, or eligible for release gating.
+contract. The normal `skill-eval.yml` audit always uses the `deployed` variant.
+The separate, main-only manual workflow
+`.github/workflows/jev-eval-replay.yml` can replay a successful main-branch
+model artifact with an explicitly selected question variant, including
+`all-requirements-shadow-v1` for list completeness and contradictory
+instructions. It requires a per-run egress authorization input that defaults
+to false, verifies source-run provenance, and treats the downloaded artifact
+as data. A replay sends the same generated response text to TypeSafe again;
+do not dispatch it without specific data-flow authorization. The replay is
+not part of required CI and never changes the deterministic evaluation result.
+Record the source run ID, selected question variant, question-contract
+fingerprint, and completeness counts. Do not treat a shadow result as
+calibrated, deployed, or eligible for release gating.
 
 `examples/jev-procedure-conflict.synthetic.json` contains a separate screen
 for prose summaries that conflict with concrete pseudocode. Both splits have

@@ -20,7 +20,9 @@
       "expected_output": "A review checklist covering the format requirements: name matches the directory, description is 1-1024 characters starting with an imperative verb and defining a negative boundary, body under 500 lines, valid frontmatter with only allowed fields, README.md present with the required human-facing sections, file references resolve to real relative paths, and for new skills an eval manifest with at least five cases using the canonical assertions field. The response lists the most common failures: descriptions that do not start with an imperative verb, missing negative boundaries, frontmatter fields beyond the allowed set, stale or broken relative links, references to skills that do not exist in the catalog, and evals that use a non-canonical alias instead of the canonical assertions field. It prescribes running the repository's validation scripts to catch what the checklist misses.",
       "assertions": [
         "The checklist covers frontmatter, description rules, body limits, README sections, references, and evals",
-        "Common failures are enumerated: non-imperative descriptions, missing negative boundaries, bad links, dead routing",
+        "Names a description that does not start with an imperative verb as a common failure",
+        "Names a description without a negative trigger boundary as a common failure",
+        "Names broken relative references and dead routing as common failures",
         "The canonical assertions field versus the non-canonical alias is called out",
         "The review verifies relative references resolve",
         "Running the repository validators is prescribed as the final check"
@@ -44,7 +46,10 @@
       "expected_output": "An eval manifest written to the v1 contract: schema_version 1, skill_name matching the skill directory, and an evals array of at least five cases, each with a stable lowercase-hyphenated id, a realistic prompt, an expected_output describing the correct behavior, and a list of assertions that are observable claims about the output, using the canonical assertions field and never a non-canonical alias. The response explains what makes cases useful: prompts that reflect real activation scenarios for the skill, assertions that are specific enough to fail meaningfully rather than vague quality platitudes, stable IDs that durable evidence references can rely on, and coverage across the skill's main behaviors. It also notes the trigger-only probes belong in a separate harness-specific test set, not in evals.json.",
       "assertions": [
         "The manifest uses schema_version 1, matching skill_name, and at least five cases",
-        "Each case has a stable id, realistic prompt, expected_output, and observable assertions",
+        "Each case has a stable lowercase-hyphenated id",
+        "Each case has a realistic prompt",
+        "Each case has an expected_output describing correct behavior",
+        "Each case has observable assertions about the output",
         "The assertions field is canonical and non-canonical aliases are never used",
         "Cases reflect real activation scenarios and are specific enough to fail meaningfully",
         "Trigger-only probes are excluded from evals.json as harness-specific"
@@ -67,7 +72,9 @@
       "prompt": "I found a skill on a public registry that looks useful: it fetches weather data and sends me a notification. Before I install it, how do I tell whether it is safe to run?",
       "expected_output": "A dependency-style vetting procedure performed before first run: check provenance (who published it, when, license, maintainer history), read the full SKILL.md body and compare it to the description for hidden or deceptive instructions (obfuscation, ignore-previous-instructions patterns, requests to reveal credentials), read every script for network calls to unknown hosts, filesystem access outside the skill directory (dotfiles, SSH keys, credential stores), hardcoded or echoed secrets, and dynamic behavior like curl-pipe-bash or remote imports, then run the first execution sandboxed with no real credentials and read-only access. The response explains that an open format standard says nothing about safety and that skills run with the agent's own permissions (shell, filesystem, credentials), citing that audits of public skill registries have found critical issues in a substantial fraction of skills.",
       "assertions": [
-        "The vetting procedure covers provenance, the SKILL.md body, and every script before first run",
+        "Checks publisher provenance before first run",
+        "Reads the complete SKILL.md body before first run",
+        "Reviews every bundled script for side effects before first run",
         "Concrete red flags are named: unknown network hosts, out-of-directory filesystem access, credential exposure, obfuscation, curl-pipe-bash",
         "First run is sandboxed with no real credentials and read-only access",
         "The response states that format compliance or registry publication is not a safety guarantee",

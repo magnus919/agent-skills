@@ -45,7 +45,7 @@ requirements against the copied workflow:
   The selected ID must match the authenticated Nous `/v1/models` catalog. The
   override applies only to that run; normal main pushes continue to use the
   repository `EVAL_MODEL` variable and the existing 4,096-token limit. Manual
-  runs default to 8,192 tokens; the workflow enforces the listed budgets even
+  runs default to 4,096 tokens; the workflow enforces the listed budgets even
   when dispatched through the API. Each smoke evaluates the fixed
   `agent-skills/evals/evals.json` manifest.
 - Repository secret `TYPESAFE_API_KEY`, scoped to the trusted main-branch
@@ -55,7 +55,7 @@ requirements against the copied workflow:
 - A reviewed `system-one/evals/evals.json`. Changed skills are selected up to
   five per push; an over-cap selection fails explicitly. Each selected case
   produces candidate/baseline groups. The current audit budget is 22 calls
-  and 164 prose assertions; if a copied catalog exceeds either limit, the
+  and 168 prose assertions; if a copied catalog exceeds either limit, the
   audit must report omissions rather than claiming complete coverage.
 
 Before a live push, run the repository's local contract checks. From the repo
