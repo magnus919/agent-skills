@@ -491,6 +491,12 @@ def test_nous_key_is_scoped_to_trusted_model_job():
     assert "github.event_name == 'workflow_dispatch'" in model_job["if"]
     assert "github.ref == 'refs/heads/main'" in model_job["if"]
     assert "inputs.run_model_smoke" in model_job["if"]
+    assert workflow["jobs"]["paired-eval-smoke"]["if"] == "github.event_name != 'workflow_dispatch'"
+    audit_job = workflow["jobs"]["jev-eval-audit"]
+    assert "github.event_name == 'push'" in audit_job["if"]
+    assert "github.event_name == 'workflow_dispatch'" in audit_job["if"]
+    assert "github.ref == 'refs/heads/main'" in audit_job["if"]
+    assert "inputs.run_model_smoke" in audit_job["if"]
     endpoint_step = next(
         step for step in model_job["steps"] if step["name"] == "Check model endpoint"
     )
@@ -529,16 +535,11 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
         "8192",
         "12288",
     ]
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["max_output_tokens"]["default"] == "4096"
     model_job = workflow["jobs"]["paired-eval-model"]
     assert "github.event_name == 'workflow_dispatch'" in model_job["if"]
     assert "github.ref == 'refs/heads/main'" in model_job["if"]
     assert "inputs.run_model_smoke" in model_job["if"]
-    assert workflow["jobs"]["paired-eval-smoke"]["if"] == "github.event_name != 'workflow_dispatch'"
-    audit_job = workflow["jobs"]["jev-eval-audit"]
-    assert "github.event_name == 'push'" in audit_job["if"]
-    assert "github.event_name == 'workflow_dispatch'" in audit_job["if"]
-    assert "github.ref == 'refs/heads/main'" in audit_job["if"]
-    assert "inputs.run_model_smoke" in audit_job["if"]
 
     selection_step = next(
         step for step in model_job["steps"] if step["name"] == "Detect changed skills with evals"
@@ -572,7 +573,7 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
             "RUN_MODEL_SMOKE": "true",
             "BASE_SHA": "",
             "EVAL_MODEL": "poolside/laguna-s-2.1:free",
-            "MAX_OUTPUT_TOKENS": "8192",
+            "MAX_OUTPUT_TOKENS": "4096",
             "GITHUB_OUTPUT": str(output_path),
             "GITHUB_STEP_SUMMARY": str(summary_path),
         }
@@ -589,7 +590,7 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
         assert "selected_count=1\n" in output_path.read_text()
         assert "agent-skills/evals/evals.json" in summary_path.read_text()
         assert "poolside/laguna-s-2.1:free" in summary_path.read_text()
-        assert "8192" in summary_path.read_text()
+        assert "4096" in summary_path.read_text()
         selection = json.loads((tmp_path / "eval-output-model" / "selection.json").read_text())
         assert selection["status"] == "selected"
         assert selection["selected_count"] == 1
@@ -609,6 +610,32 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
         assert invalid_budget.returncode != 0
         assert "Unsupported output-token ceiling" in invalid_budget.stderr
         assert output_path.read_text() == ""
+
+
+def test_teacher_calibration_accepts_verified_manual_smokes_after_artifact_validation():
+    workflow = yaml.load(
+        (
+            Path(__file__).resolve().parent.parent.parent
+            / ".github"
+            / "workflows"
+            / "jev-teacher-calibration.yml"
+        ).read_text(),
+        Loader=yaml.BaseLoader,
+    )
+    job = workflow["jobs"]["teacher-label"]
+    assert job["if"] == "github.ref == 'refs/heads/main'"
+    steps = job["steps"]
+    names = [step["name"] for step in steps]
+    source_check = steps[names.index("Verify source is a completed main-branch paired evaluation")]
+    assert "python3 system-one/scripts/jev_teacher_source.py" in source_check["run"]
+    assert "gh api" in source_check["run"]
+    prepare_index = names.index("Prepare prediction-blind packet")
+    probe_index = names.index("Probe inference route with synthetic text only")
+    teacher_index = names.index("Obtain two blind inference-model passes")
+    assert prepare_index < probe_index < teacher_index
+    assert "NOUS_API_KEY" in steps[probe_index]["env"]
+    assert "NOUS_API_KEY" in steps[teacher_index]["env"]
+    assert "NOUS_API_KEY" not in source_check.get("env", {})
 
 
 def test_openai_adapter_uses_scoped_eval_api_key_from_environment():
@@ -1077,6 +1104,7 @@ if __name__ == "__main__":
     test_workflow_uses_variables_without_deployment_defaults_and_pins_actions()
     test_nous_key_is_scoped_to_trusted_model_job()
     test_manual_model_smoke_is_main_only_and_selects_fixed_manifest()
+    test_teacher_calibration_accepts_verified_manual_smokes_after_artifact_validation()
     test_openai_adapter_uses_scoped_eval_api_key_from_environment()
     test_openai_adapter_rejects_empty_and_incomplete_completions()
     test_truncated_openai_completion_is_infra_error_in_paired_report()

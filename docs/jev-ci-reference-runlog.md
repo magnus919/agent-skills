@@ -2407,3 +2407,41 @@ Blog lessons: inspect the selected-manifest denominator and actual step outcome
 before calling CI a model run; successful completions with a zero retry counter
 are evidence of first-attempt success, not retry recovery; and complete Jev
 coverage is still distinct from correctness or calibration.
+
+## 2026-09-24 — Admit complete manual smokes to blind calibration
+
+The successful main-branch smoke [35989698935](https://github.com/magnus919/agent-skills/actions/runs/35989698935)
+has both `paired-eval-model-artifacts` and `jev-eval-audit` artifacts, and its
+six-case selection is complete. The independent Nous teacher workflow rejected
+this run only because its source guard allowed `push` and not
+`workflow_dispatch`. That made the best fixed-manifest operational comparison
+unavailable for the existing blind calibration protocol.
+
+The source contract now permits only successful `skill-eval.yml` runs on
+`main` from `push` or `workflow_dispatch`, checks that the GitHub API response
+matches the requested run ID, and has focused tests for valid and rejected
+metadata. Artifact download and the existing calibration `prepare` validation
+still must succeed before the teacher receives any generated responses. The
+synthetic provider probe now runs after that artifact validation, avoiding a
+paid inference call for an empty or malformed source run. The teacher remains
+a distinct Nous pseudo-labeler; its agreement is not human ground truth.
+
+Manual fixed-manifest smokes now default to 4,096 output tokens, matching the
+normal main-branch paired-eval budget. This makes the next controlled smoke
+directly comparable to the production CI request path; larger ceilings remain
+explicit experiments. After this change is merged, run the default Poolside
+smoke at 4,096, then pass that run ID to the blind teacher workflow with a
+frozen seed. Compare population and challenge strata separately and retain
+manual review for disagreement; do not derive an accuracy threshold from
+teacher pseudo-labels.
+
+Open/closed issue searches for the exact "CI failure on main" phrase returned
+no incident examples. The `area/ci-cd` results surfaced model-routing and
+evaluator proposals, not adjudicated failure labels. Therefore the separate
+Jev CI-failure triage idea remains uncalibrated and is not being added to issue
+creation.
+
+Blog lessons: a run may be complete yet unusable by a downstream calibration
+workflow because the source-event contract is too narrow; validate provenance
+and artifact coverage separately. Keep the smoke budget aligned with the
+normal CI path, and do not mistake model-teacher agreement for verified truth.
