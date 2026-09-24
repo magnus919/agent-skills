@@ -29,9 +29,13 @@ def run_paired_trial(
     output_dir: Path,
     model: str,
     model_label: str | None = None,
+    request_limits: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Run one case in candidate and baseline conditions, grade, and compare."""
     candidate_sandbox, baseline_sandbox = stage_paired_sandboxes(skill_path)
+    limits = {"network_policy": "unspecified"}
+    if request_limits is not None:
+        limits.update(request_limits)
 
     try:
         candidate_output_dir = contained_path(output_dir, "candidate", case.id)
@@ -44,7 +48,7 @@ def run_paired_trial(
             output_dir=candidate_output_dir,
             model=model,
             permissions={"skill_readonly": True, "grader_visible": False},
-            limits={"timeout_seconds": 120, "network_policy": "unspecified"},
+            limits=dict(limits),
         )
 
         baseline_input = AdapterInput(
@@ -54,7 +58,7 @@ def run_paired_trial(
             output_dir=baseline_output_dir,
             model=model,
             permissions={"skill_readonly": False, "grader_visible": False},
-            limits={"timeout_seconds": 120, "network_policy": "unspecified"},
+            limits=dict(limits),
         )
 
         c_started = datetime.now(timezone.utc)
@@ -126,11 +130,20 @@ def run_paired_evaluation(
     output_dir: Path,
     model: str,
     model_label: str | None = None,
+    request_limits: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Run paired trials until complete or the first infrastructure failure."""
     reports = []
     for case in cases:
-        report = run_paired_trial(adapter, case, skill_path, output_dir, model, model_label)
+        report = run_paired_trial(
+            adapter,
+            case,
+            skill_path,
+            output_dir,
+            model,
+            model_label,
+            request_limits,
+        )
         reports.append(report)
         if report["candidate"]["infra_error"] or report["baseline"]["infra_error"]:
             break
@@ -241,6 +254,10 @@ def main() -> int:
 
     output_dir = args.output_dir.resolve()
 
+    request_limits: dict[str, Any] = {"timeout_seconds": args.timeout}
+    if args.adapter == "openai":
+        request_limits["max_output_tokens"] = args.max_tokens
+
     print(f"paired evaluation: {skill_path.name}")
     print(f"adapter: {adapter.name} v{adapter.version}")
     print(f"cases:   {len(cases)}")
@@ -254,6 +271,7 @@ def main() -> int:
         output_dir,
         args.model,
         args.model_label,
+        request_limits,
     )
 
     improvements = 0

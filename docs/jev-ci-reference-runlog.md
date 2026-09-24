@@ -2804,3 +2804,33 @@ the additional latency actually needed; then rerun the full suite before
 changing either production default. Do not mistake a generous token budget for
 a generous wall-clock deadline. No generated response text or Jev rationales
 were copied into this runlog.
+
+## 2026-09-24 — The 900-second client wait met a 600-second serving-path limit
+
+The follow-up isolated `deadline-bound-stream` run
+[36038464117](https://github.com/magnus919/agent-skills/actions/runs/36038464117)
+used `poolside/laguna-s-2.1:free`, a 65,536-token output ceiling, and the new
+900-second per-response client timeout. The candidate completed normally with
+491 output tokens in 10.15 seconds. The baseline ran for 600.05 seconds and
+returned HTTP 524, with no completion token count or finish reason. The model
+step ended after 10m10s; the configured 900-second client timeout was not the
+failure. This is consistent with a 600-second serving-path/proxy limit, though
+the evidence does not localize which upstream component enforces it.
+
+The runner wrote one of one expected comparison reports. Its candidate had 13
+manual-review assertions; the baseline was an infrastructure error, so the
+paired delta was `insufficient_data`. Jev received the report but skipped all
+13 prose assertions as infra-error/unpaired, selected none, and had zero Jev
+provider errors. This run contains no Jev judgment and no evidence about the
+baseline's semantic quality. No generated response text or Jev rationales were
+copied into this runlog.
+
+The archived trial manifests incorrectly recorded `limits.timeout_seconds` as
+120, a hard-coded legacy value in the paired harness, even though the CLI was
+configured for 900. The runner now records the configured request timeout and,
+for the OpenAI-compatible adapter, the requested output-token ceiling in both
+candidate and baseline manifests. This repairs future provenance; it does not
+rewrite the archived run. Keep the normal automatic CI request timeout at 300
+seconds for now: the 900-second diagnostic established that waiting longer can
+expose a serving-path limit, not that routine CI should wait ten minutes or
+that 65,536 is an optimal default.
