@@ -622,9 +622,7 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
             assert f"{relative_path.as_posix()}" in summary
             assert "poolside/laguna-s-2.1:free" in summary
             assert "4096" in summary
-            selection = json.loads(
-                (tmp_path / "eval-output-model" / "selection.json").read_text()
-            )
+            selection = json.loads((tmp_path / "eval-output-model" / "selection.json").read_text())
             assert selection["status"] == "selected"
             assert selection["selected_count"] == 1
             assert selection["expected_cases"][skill] == [
