@@ -382,11 +382,11 @@ class JevEvalAuditTests(unittest.TestCase):
             encoding="utf-8"
         )
         self.assertIn("--max-calls 22", workflow)
-        self.assertIn("--max-assertions 160", workflow)
+        self.assertIn("--max-assertions 164", workflow)
         manifest = json.loads((skill_root / "evals" / "evals.json").read_text(encoding="utf-8"))
         cases = manifest["evals"]
         self.assertLessEqual(2 * len(cases), 22)
-        self.assertLessEqual(2 * sum(len(case["assertions"]) for case in cases), 160)
+        self.assertLessEqual(2 * sum(len(case["assertions"]) for case in cases), 164)
 
 
 if __name__ == "__main__":

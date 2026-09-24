@@ -22,10 +22,24 @@ on:
   workflow_dispatch:
     inputs:
       run_model_smoke:
-        description: Run the bounded StepFun smoke evaluation and advisory Jev audit for agent-skills
+        description: Run the bounded model smoke evaluation and advisory Jev audit for agent-skills
         type: boolean
         required: false
         default: false
+      model_id:
+        description: Exact Nous model ID to test (must appear in the authenticated model catalog)
+        type: string
+        required: false
+        default: stepfun/step-3.7-flash
+      max_output_tokens:
+        description: Per-response output-token ceiling for a manual model smoke
+        type: choice
+        required: false
+        options:
+          - '4096'
+          - '8192'
+          - '12288'
+        default: '8192'
 
 permissions:
   contents: read
@@ -124,7 +138,7 @@ jobs:
         id: endpoint
         env:
           EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
-          EVAL_MODEL: ${{ vars.EVAL_MODEL }}
+          EVAL_MODEL: ${{ inputs.model_id || vars.EVAL_MODEL }}
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
           RUN_MODEL_SMOKE: ${{ inputs.run_model_smoke }}
         run: |
@@ -177,7 +191,13 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.before }}
           RUN_MODEL_SMOKE: ${{ inputs.run_model_smoke }}
+          EVAL_MODEL: ${{ inputs.model_id || vars.EVAL_MODEL }}
+          MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
         run: |
+          case "$MAX_OUTPUT_TOKENS" in
+            4096|8192|12288) ;;
+            *) echo "Unsupported output-token ceiling: $MAX_OUTPUT_TOKENS" >&2; exit 1 ;;
+          esac
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             if [ "$RUN_MODEL_SMOKE" != "true" ]; then
               echo "manifests=" >> "$GITHUB_OUTPUT"
@@ -202,7 +222,11 @@ jobs:
           output.parent.mkdir(parents=True, exist_ok=True)
           output.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
           PY
-            printf '## Paired-eval selection\n\nManual StepFun smoke evaluation.\n\nEligible manifests: agent-skills/evals/evals.json.\n' >> "$GITHUB_STEP_SUMMARY"
+            {
+              printf '## Paired-eval selection\n\nManual model smoke evaluation.\n\n'
+              printf '%s\n' "Model ID: \`$EVAL_MODEL\`" "Per-response output-token ceiling: \`$MAX_OUTPUT_TOKENS\`" ''
+              printf 'Eligible manifests: agent-skills/evals/evals.json.\n'
+            } >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           python3 -m eval_runner.selection \
@@ -214,9 +238,10 @@ jobs:
         if: steps.endpoint.outputs.available == 'true' && steps.changed.outputs.manifests != ''
         env:
           MANIFESTS: ${{ steps.changed.outputs.manifests }}
-          EVAL_MODEL: ${{ vars.EVAL_MODEL }}
+          EVAL_MODEL: ${{ inputs.model_id || vars.EVAL_MODEL }}
           EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
           EVAL_API_KEY: ${{ secrets.NOUS_API_KEY }}
+          MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
         run: |
           exit_code=0
           for manifest in $MANIFESTS; do
@@ -226,7 +251,7 @@ jobs:
               --adapter openai \
               --base-url "$EVAL_BASE_URL" \
               --model "$EVAL_MODEL" \
-              --max-tokens 4096 \
+              --max-tokens "$MAX_OUTPUT_TOKENS" \
               --timeout 300 \
               --output-dir "eval-output-model/$skill" \
               || exit_code=1
@@ -277,7 +302,7 @@ jobs:
             --selection eval-output-model/selection.json \
             --live \
             --max-calls 22 \
-            --max-assertions 160 \
+            --max-assertions 164 \
             --output jev-eval-audit.json \
             --summary-output "$GITHUB_STEP_SUMMARY"
       - name: Explain audit failure without a report

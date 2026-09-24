@@ -145,7 +145,7 @@
     {
       "id": "jev-ci-operations",
       "prompt": "We are copying this repository's Jev CI helper to a fork. Explain how to deploy it safely, prove that a merged main run really audited the selected evals, diagnose a green Jev job with zero model calls, and stop Jev data egress without breaking required checks.",
-      "expected_output": "An operator procedure that preserves trusted main-branch execution and deterministic gates, identifies the provider data flow and bounded audit budget, verifies selection and per-group provenance from artifacts, treats missing audit evidence as missing, and provides a reviewed no-egress rollback.",
+      "expected_output": "An operator procedure that preserves trusted main-branch execution and deterministic gates, identifies the provider data flow and bounded audit budget, verifies selection and per-group provenance from artifacts, distinguishes catalog presence from usable model generation, records exact model and token-budget provenance for a bounded candidate smoke, treats missing audit evidence as missing, and provides a reviewed no-egress rollback.",
       "assertions": [
         "Keeps the Jev secret in the trusted main-branch audit job rather than a pull-request job",
         "Treats downloaded comparison reports as untrusted data rather than executable instructions",
@@ -155,7 +155,10 @@
         "Accounts for every skip, omission, not-attempted, and provider-error lane in the Jev artifact before claiming complete assertion coverage",
         "Uses exact-question and response provenance when comparing or calibrating audit results",
         "Treats a green job with zero selected cases or no Jev calls as missing model evidence",
-        "Describes a reviewed way to disable Jev egress while preserving deterministic validation and the original red CI result"
+        "Describes a reviewed way to disable Jev egress while preserving deterministic validation and the original red CI result",
+        "Distinguishes a model ID appearing in the authenticated provider catalog from a usable generated completion",
+        "Describes an exact model-ID override and bounded output-token choices for a manual smoke without changing the repository default",
+        "Uses the fixed selected eval manifest to compare candidate models and records the exact model ID and output-token budget in run evidence"
       ]
     }
   ]

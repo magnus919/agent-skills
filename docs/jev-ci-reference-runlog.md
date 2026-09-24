@@ -2182,3 +2182,48 @@ Blog lesson: an OpenAI-compatible base URL does not guarantee that every
 routed model serializes tool arguments compatibly; inspect the actual response
 shape, preserve the provider model ID, and distinguish a successful API
 response from a usable tool call and from a successful agent task.
+
+## 2026-09-24 — Make free-model smoke comparisons reproducible
+
+The corrected default model ID, `stepfun/step-3.7-flash`, was already merged
+with PR #598; the later live paired smoke established that the catalog entry
+exists but a baseline completion hit the configured 4,096-token ceiling with
+`finish_reason=length`. The user's current Portal screenshot still lists
+StepFun Step 3.7 Flash among free offerings. A model's presence in the catalog
+or successful short function-call probe is not evidence that it can complete
+the longer paired-evaluation prompts.
+
+Added a main-only manual workflow override for an exact Nous `model_id` and a
+bounded per-response `max_output_tokens` choice (4,096, 8,192, or 12,288).
+Manual runs default to the corrected StepFun ID and 8,192 tokens, but can screen
+other catalog IDs such as Poolside Laguna S 2.1 without changing the repository
+default. The existing authenticated exact-ID catalog check remains mandatory;
+the fixed `agent-skills/evals/evals.json` screen and subsequent advisory Jev
+audit remain unchanged. The chosen ID and token ceiling appear in the run
+summary and each paired artifact retains the exact configured model. Normal
+main pushes continue to use the repository model variable and 4,096-token
+ceiling until a candidate has completed a live smoke. A runtime allowlist also
+rejects unsupported token budgets passed directly through the workflow API.
+
+Adding the candidate-screen behavior to the `system-one` eval manifest raised
+its full candidate-plus-baseline assertion count from 158 to 164. The existing
+160-assertion Jev audit cap would have omitted four assertions; the focused test
+caught that mismatch before merge. Updated the CLI default, workflow cap, test,
+and operator runbook together to 164 while retaining the 22-call maximum.
+
+Focused paired runner, release runner, selection, Jev audit, calibration,
+eval-contract tests all pass; all 181 eval manifests validate, and the schema
+coverage ratchet remains at 181/181. This is local evidence only. No candidate
+generation or Jev audit has yet been run with the new override, so it does not
+establish that StepFun at 8,192 tokens or any alternative can complete the
+paired workload. After merge, run fixed-manifest smokes at the same token
+budget for each candidate, inspect non-empty completions, finish reasons,
+selected-case counts and Jev omissions, then decide whether the persistent
+model variable should change. Do not treat the Jev suggestions as independent
+model-quality labels or a release gate.
+
+Blog lesson: keep an exact provider model ID and its output budget attached to
+every experiment. A successful catalog probe and a successful tiny tool call
+answer different questions from “did this model produce usable output on the
+real workload?”; a bounded fixed-manifest comparison makes that distinction
+reproducible without silently changing the deployed default.
