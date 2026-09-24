@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: Successful main-branch paired-eval run containing model and Jev audit artifacts
+        description: Successful main-branch skill-eval push or manual smoke with complete model and Jev artifacts
         required: true
         type: string
       seed:
@@ -46,16 +46,14 @@ jobs:
           SOURCE_RUN_ID: ${{ inputs.source_run_id }}
           SEED: ${{ inputs.seed }}
         run: |
-          if [[ ! "$SOURCE_RUN_ID" =~ ^[0-9]+$ || ! "$SEED" =~ ^[A-Za-z0-9._-]{1,80}$ ]]; then
+          set -euo pipefail
+          if [[ ! "$SOURCE_RUN_ID" =~ ^[1-9][0-9]{0,19}$ || ! "$SEED" =~ ^[A-Za-z0-9._-]{1,80}$ ]]; then
             echo 'Invalid source run ID or seed' >&2
             exit 2
           fi
-          source_status=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" \
-            --jq '[.head_branch, .event, .conclusion, .path] | join("|")')
-          if [ "$source_status" != 'main|push|success|.github/workflows/skill-eval.yml' ]; then
-            echo 'Source is not a successful main-branch paired-eval push' >&2
-            exit 2
-          fi
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" \
+            --jq '{id, head_branch, event, conclusion, path}' |
+            python3 system-one/scripts/jev_teacher_source.py --source-run-id "$SOURCE_RUN_ID"
       - name: Verify teacher model is available before sending review data
         env:
           TEACHER_MODEL: ${{ inputs.teacher_model }}
@@ -73,12 +71,6 @@ jobs:
             printf '%s\n' "$model_ids" | grep -E '^[A-Za-z0-9._/-]{1,100}$' | awk 'NR <= 40' >&2
             exit 2
           fi
-      - name: Probe inference route with synthetic text only
-        env:
-          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
-          TEACHER_MODEL: ${{ inputs.teacher_model }}
-        run: |
-          python3 system-one/scripts/jev_teacher_label.py --probe --model "$TEACHER_MODEL"
       - name: Download real-model comparison artifacts as untrusted data
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
@@ -103,6 +95,12 @@ jobs:
             --audit private/audit/jev-eval-audit.json \
             --output-dir private/review \
             --run-id "$SOURCE_RUN_ID" --seed "$SEED"
+      - name: Probe inference route with synthetic text only
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+          TEACHER_MODEL: ${{ inputs.teacher_model }}
+        run: |
+          python3 system-one/scripts/jev_teacher_label.py --probe --model "$TEACHER_MODEL"
       - name: Obtain two blind inference-model passes
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}

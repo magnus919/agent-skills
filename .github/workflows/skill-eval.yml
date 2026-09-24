@@ -39,7 +39,7 @@ on:
           - '4096'
           - '8192'
           - '12288'
-        default: '8192'
+        default: '4096'
 
 permissions:
   contents: read
@@ -68,6 +68,8 @@ jobs:
         run: python3 system-one/scripts/test_jev_eval_audit.py
       - name: Test private real-output calibration helper
         run: python3 system-one/scripts/test_jev_eval_calibration.py
+      - name: Test Jev teacher source-run provenance
+        run: python3 system-one/scripts/test_jev_teacher_source.py
       - name: Test complete changed-skill selection
         run: python3 eval_runner/tests/test_selection.py
 
