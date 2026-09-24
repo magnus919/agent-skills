@@ -307,6 +307,8 @@ def test_paired_trial_end_to_end():
         assert report["schema_version"] == 2
         assert report["case_id"] == "paired-test-01"
         assert report["candidate"]["passed"] is True
+        for side in ("candidate", "baseline"):
+            assert report[side]["manifest"]["limits"] == {"network_policy": "unspecified"}
         assert (output_dir / "manifests").is_dir()
         assert (output_dir / "reports").is_dir()
 
@@ -374,6 +376,28 @@ def test_paired_trial_uses_generic_model_label_in_artifacts():
         )
         assert report["candidate"]["manifest"]["model"]["model_id"] == "configured-model"
         assert report["baseline"]["manifest"]["model"]["model_id"] == "configured-model"
+
+
+def test_paired_evaluation_records_configured_request_limits_in_both_manifests():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        reports = run_paired_evaluation(
+            FakeAdapter(),
+            [_make_case()],
+            _make_skill_dir(tmp_path),
+            tmp_path / "output",
+            "fixture/model",
+            request_limits={"timeout_seconds": 900, "max_output_tokens": 65536},
+        )
+
+        assert len(reports) == 1
+        report = reports[0]
+        for side in ("candidate", "baseline"):
+            assert report[side]["manifest"]["limits"] == {
+                "timeout_seconds": 900,
+                "network_policy": "unspecified",
+                "max_output_tokens": 65536,
+            }
 
 
 def test_comparison_writer_rejects_unsafe_case_id():
