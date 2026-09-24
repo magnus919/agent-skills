@@ -2,7 +2,7 @@ name: Droid Auto Review
 
 on:
   pull_request:
-    types: [opened, ready_for_review, reopened]
+    types: [opened, synchronize, ready_for_review, reopened]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -23,6 +23,63 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
+      - name: Configure Nous Portal model
+        shell: bash
+        run: |
+          if [ -z "$NOUS_API_KEY" ]; then
+            echo 'NOUS_API_KEY is unavailable to this run' >&2
+            exit 1
+          fi
+          mkdir -p "$HOME/.factory"
+          cat > "$HOME/.factory/settings.json" <<'FACTORY_JSON'
+          {
+            "customModels": [{
+              "model": "poolside/laguna-s-2.1:free",
+              "displayName": "Laguna S 2.1 (Nous Portal)",
+              "baseUrl": "https://inference-api.nousresearch.com/v1",
+              "apiKey": "${NOUS_API_KEY}",
+              "provider": "generic-chat-completion-api",
+              "maxOutputTokens": 16384
+            }]
+          }
+          FACTORY_JSON
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+      - name: Probe Nous Laguna S function-call support
+        shell: bash
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+        run: |
+          set -euo pipefail
+          response_file="$(mktemp)"
+          trap 'rm -f "$response_file"' EXIT
+          payload='{"model":"poolside/laguna-s-2.1:free","messages":[{"role":"user","content":"Call the probe function with ok=true."}],"tools":[{"type":"function","function":{"name":"probe","description":"Return a fixed protocol probe result.","parameters":{"type":"object","properties":{"ok":{"type":"boolean"}},"required":["ok"],"additionalProperties":false}}}],"tool_choice":{"type":"function","function":{"name":"probe"}},"max_tokens":96,"temperature":0}'
+          http_status="$(curl --silent --show-error --max-time 45 \
+            -o "$response_file" -w '%{http_code}' \
+            -H "Authorization: Bearer $NOUS_API_KEY" \
+            -H 'Content-Type: application/json' \
+            --data "$payload" \
+            https://inference-api.nousresearch.com/v1/chat/completions)"
+          if [ "$http_status" != 200 ]; then
+            printf 'Nous Laguna S tool probe returned HTTP %s\n' "$http_status" >&2
+            jq -c '{error_type: .error.type, error_code: .error.code}' "$response_file" >&2 2>/dev/null || true
+            exit 1
+          fi
+          if ! jq -e '
+            .choices[0].message as $message |
+            ($message.tool_calls[0].function.arguments // null) as $raw |
+            ($raw | if type == "string" then (try fromjson catch null) else null end) as $arguments |
+            ($raw | type) == "string" and
+            $message.tool_calls[0].function.name == "probe" and
+            $arguments.ok == true
+          ' "$response_file" >/dev/null; then
+            echo 'Nous Laguna S did not return the expected standard JSON function call' >&2
+            jq -c '{response_model: .model, finish_reason: .choices[0].finish_reason, tool_name: .choices[0].message.tool_calls[0].function.name, arguments_type: (.choices[0].message.tool_calls[0].function.arguments | type)}' "$response_file" >&2 2>/dev/null || true
+            exit 1
+          fi
+          jq -r '"Nous response model: " + (.model // "not reported")' "$response_file"
+          jq -c '.usage // {}' "$response_file"
+          echo 'Nous Laguna S Chat Completions function-call probe passed'
       - name: Run Droid Auto Review
         uses: Factory-AI/droid-action@main
         with:
@@ -30,3 +87,7 @@ jobs:
           automatic_review: true
           automatic_security_review: true
           review_depth: shallow
+          review_model: custom:Laguna-S-2.1-(Nous-Portal)-0
+          security_model: custom:Laguna-S-2.1-(Nous-Portal)-0
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
