@@ -2372,3 +2372,38 @@ Blog lesson: behavior without telemetry is not operational evidence. Test
 functions must be wired into the command CI actually executes, and a successful
 job must retain enough privacy-safe metadata to distinguish first-attempt
 success from retry success without storing raw responses.
+
+## 2026-09-24 — Verify retry telemetry on a live Nous smoke
+
+PR [#610](https://github.com/magnus919/agent-skills/pull/610) merged as
+[`60d44b9`](https://github.com/magnus919/agent-skills/commit/60d44b9fe57a50d946ede518ce5d546368dd4aa3).
+Its merge-triggered push workflow
+[35989562000](https://github.com/magnus919/agent-skills/actions/runs/35989562000)
+passed tests, but selected no changed skill manifests, so real-model generation
+was skipped. A green push workflow alone was not live retry evidence.
+
+The manual main-branch smoke
+[35989698935](https://github.com/magnus919/agent-skills/actions/runs/35989698935)
+used `poolside/laguna-s-2.1:free` (the model ID shown as free in Nous Portal)
+with an 8,192-token response ceiling. Endpoint preflight and tests passed;
+real-model generation completed in 3m42s. All six selected cases produced six
+comparison reports, and all 12 candidate/baseline outputs completed with
+`finish_reason=stop`, no recorded failures, and
+`outputs.rate_limit_retries=0`. All six paired reports were `both_pass`.
+This verifies that the new counter is persisted as zero on normal first-attempt
+responses. No 429 occurred, so this live run does **not** verify successful
+recovery from a real rate limit; the retry-success and second-429 behavior
+remain covered by deterministic tests only.
+
+Jev 1.13's advisory audit observed exactly the six expected reports, selected
+all 12 groups and 60 prose assertions, and had no skipped assertions,
+generation errors, budget omissions, or Jev-provider errors. Its suggested
+labels were 13 `met`, 3 `not_met`, and 44 `not_shown`. Provider-confidence
+values ranged from 0.25 to 1.00; without independently adjudicated labels this
+is not calibration evidence. The Jev audit remains advisory and these counts
+do not establish semantic accuracy.
+
+Blog lessons: inspect the selected-manifest denominator and actual step outcome
+before calling CI a model run; successful completions with a zero retry counter
+are evidence of first-attempt success, not retry recovery; and complete Jev
+coverage is still distinct from correctness or calibration.
