@@ -2814,8 +2814,12 @@ used `poolside/laguna-s-2.1:free`, a 65,536-token output ceiling, and the new
 491 output tokens in 10.15 seconds. The baseline ran for 600.05 seconds and
 returned HTTP 524, with no completion token count or finish reason. The model
 step ended after 10m10s; the configured 900-second client timeout was not the
-failure. This is consistent with a 600-second serving-path/proxy limit, though
-the evidence does not localize which upstream component enforces it.
+failure. The response establishes a serving-path timeout at about 600 seconds,
+but does not localize which upstream component enforced it. Cloudflare also
+defines HTTP 524 as an origin response timeout, with 125 seconds as its default
+and longer configurable limits for Enterprise; the run did not capture enough
+headers or body to establish that Cloudflare produced this response or that its
+documented limit applies. See [Cloudflare's 524 reference](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-524/).
 
 The runner wrote one of one expected comparison reports. Its candidate had 13
 manual-review assertions; the baseline was an infrastructure error, so the
