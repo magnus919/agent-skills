@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "CID-D01",
+      "split": "dev",
+      "slice": "id-reconciliation",
+      "assertion": "Compares expected selected case IDs with observed comparison report IDs, including missing or unexpected reports, before claiming full selection coverage",
+      "response": "Expected case IDs were alpha, beta, gamma. Observed report IDs were alpha, beta, gamma. The missing and unexpected ID sets are both empty, so selected-case coverage is complete.",
+      "label": "met"
+    },
+    {
+      "id": "CID-D02",
+      "split": "dev",
+      "slice": "count-only",
+      "assertion": "Compares expected selected case IDs with observed comparison report IDs, including missing or unexpected reports, before claiming full selection coverage",
+      "response": "The expected report count is 3 and the observed report count is 3. The counts match, so coverage is complete.",
+      "label": "not_shown"
+    },
+    {
+      "id": "CID-D03",
+      "split": "dev",
+      "slice": "explicit-bypass",
+      "assertion": "Compares expected selected case IDs with observed comparison report IDs, including missing or unexpected reports, before claiming full selection coverage",
+      "response": "Skip case-ID comparison. Matching totals are sufficient even when different cases were selected and reported.",
+      "label": "not_met"
+    },
+    {
+      "id": "CID-D04",
+      "split": "dev",
+      "slice": "count-reconciliation",
+      "assertion": "Compares expected versus observed selected report counts before claiming full selection coverage",
+      "response": "The selection manifest expects 4 reports and the comparison bundle contains 4 reports. The counts agree; now inspect identities and skips separately before calling the audit complete.",
+      "label": "met"
+    },
+    {
+      "id": "CID-D05",
+      "split": "dev",
+      "slice": "id-only",
+      "assertion": "Compares expected versus observed selected report counts before claiming full selection coverage",
+      "response": "The expected and observed case-ID sets are equal. Missing and unexpected IDs are empty.",
+      "label": "not_shown"
+    },
+    {
+      "id": "CID-D06",
+      "split": "dev",
+      "slice": "false-completeness",
+      "assertion": "Compares expected versus observed selected report counts before claiming full selection coverage",
+      "response": "Expected reports: 4. Observed reports: 3. The mismatch is harmless, so report full selection coverage anyway.",
+      "label": "not_met"
+    },
+    {
+      "id": "CID-T01",
+      "split": "test",
+      "slice": "id-reconciliation",
+      "assertion": "Compares expected selected case IDs with observed comparison report IDs, including missing or unexpected reports, before claiming full selection coverage",
+      "response": "Selected cases are red and blue; reports are blue and red. Their ID sets match exactly, with no missing or extra reports. This proves selected-case identity coverage, subject to separate error checks.",
+      "label": "met"
+    },
+    {
+      "id": "CID-T02",
+      "split": "test",
+      "slice": "count-only",
+      "assertion": "Compares expected selected case IDs with observed comparison report IDs, including missing or unexpected reports, before claiming full selection coverage",
+      "response": "Two evals were selected and two reports were uploaded. Each report includes an ID, but this procedure does not compare those IDs to the selected case list.",
+      "label": "not_shown"
+    },
+    {
+      "id": "CID-T03",
+      "split": "test",
+      "slice": "explicit-bypass",
+      "assertion": "Compares expected selected case IDs with observed comparison report IDs, including missing or unexpected reports, before claiming full selection coverage",
+      "response": "Do not fail on missing or unexpected case IDs. Only the total number of reports matters for a complete-coverage claim.",
+      "label": "not_met"
+    },
+    {
+      "id": "CID-T04",
+      "split": "test",
+      "slice": "count-reconciliation",
+      "assertion": "Compares expected versus observed selected report counts before claiming full selection coverage",
+      "response": "The manifest lists 5 selected reports and the bundle has 5 comparison files. Counts match. Check IDs and Jev failure lanes too before claiming complete audit coverage.",
+      "label": "met"
+    },
+    {
+      "id": "CID-T05",
+      "split": "test",
+      "slice": "id-only",
+      "assertion": "Compares expected versus observed selected report counts before claiming full selection coverage",
+      "response": "Every selected case ID appears among report IDs and no unexpected ID appears. A count comparison is not shown.",
+      "label": "not_shown"
+    },
+    {
+      "id": "CID-T06",
+      "split": "test",
+      "slice": "false-completeness",
+      "assertion": "Compares expected versus observed selected report counts before claiming full selection coverage",
+      "response": "The selected manifest says 5 cases; only 4 comparison reports arrived. Mark the audit fully covered despite the discrepancy.",
+      "label": "not_met"
+    }
+  ]
+}
