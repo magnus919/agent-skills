@@ -22,10 +22,18 @@ on:
   workflow_dispatch:
     inputs:
       run_model_smoke:
-        description: Run the bounded model smoke evaluation and advisory Jev audit for agent-skills
+        description: Run the bounded model smoke evaluation and advisory Jev audit for the selected skill
         type: boolean
         required: false
         default: false
+      eval_skill:
+        description: Skill manifest to evaluate during a manual model smoke
+        type: choice
+        required: false
+        options:
+          - agent-skills
+          - system-one
+        default: agent-skills
       model_id:
         description: Exact Nous model ID to test (must appear in the authenticated model catalog)
         type: string
@@ -193,6 +201,7 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.before }}
           RUN_MODEL_SMOKE: ${{ inputs.run_model_smoke }}
+          EVAL_SKILL: ${{ inputs.eval_skill || 'agent-skills' }}
           EVAL_MODEL: ${{ inputs.model_id || vars.EVAL_MODEL }}
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
         run: |
@@ -205,29 +214,35 @@ jobs:
               echo "manifests=" >> "$GITHUB_OUTPUT"
               exit 0
             fi
-            if [ ! -f agent-skills/evals/evals.json ]; then
-              echo "The fixed model smoke manifest is missing." >&2
+            case "$EVAL_SKILL" in
+              agent-skills|system-one) ;;
+              *) echo "Unsupported manual eval skill: $EVAL_SKILL" >&2; exit 1 ;;
+            esac
+            manifest="$EVAL_SKILL/evals/evals.json"
+            if [ ! -f "$manifest" ]; then
+              echo "The selected model smoke manifest is missing." >&2
               exit 1
             fi
-            echo "manifests=agent-skills/evals/evals.json" >> "$GITHUB_OUTPUT"
+            echo "manifests=$manifest" >> "$GITHUB_OUTPUT"
             echo "eligible_count=1" >> "$GITHUB_OUTPUT"
             echo "selected_count=1" >> "$GITHUB_OUTPUT"
             python3 - <<'PY'
           import json
+          import os
           from pathlib import Path
 
           from eval_runner.selection import select, selection_evidence
 
-          manifest = "agent-skills/evals/evals.json"
+          manifest = f"{os.environ['EVAL_SKILL']}/evals/evals.json"
           evidence = selection_evidence(select([manifest], 1), Path.cwd())
           output = Path("eval-output-model/selection.json")
           output.parent.mkdir(parents=True, exist_ok=True)
           output.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
           PY
             {
-              printf '## Paired-eval selection\n\nManual model smoke evaluation.\n\n'
+              printf '## Paired-eval selection\n\nManual model smoke evaluation for `%s`.\n\n' "$EVAL_SKILL"
               printf '%s\n' "Model ID: \`$EVAL_MODEL\`" "Per-response output-token ceiling: \`$MAX_OUTPUT_TOKENS\`" ''
-              printf 'Eligible manifests: agent-skills/evals/evals.json.\n'
+              printf 'Eligible manifest: \`%s\`.\n' "$manifest"
             } >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi

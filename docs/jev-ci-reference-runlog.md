@@ -2603,3 +2603,46 @@ coerced from generated text when the software needs a typed decision; it cannot
 replace a job whose deliverable is the generated text itself. A separate
 teacher model can help find disagreement, but swapping in the tested model
 destroys the independence that makes the comparison informative.
+
+## 2026-09-24 — Isolate System One completion limits in a manual smoke
+
+The first automatic main run after PR #614,
+[36021921396](https://github.com/magnus919/agent-skills/actions/runs/36021921396)
+at `460e30ec9b8fd545d66055cdbf9b78b01fd1aed0`, passed the paired-eval unit
+tests and keyless fake-adapter smoke. Nous model-catalog preflight also passed.
+The model job selected both `agent-skills` (six cases) and `system-one` (11
+cases), for 17 expected case reports. It used the configured Poolside Laguna S
+2.1 model with a 4,096-token output ceiling.
+
+Generation wrote 14 of 17 comparison reports before stopping at
+`system-one/observed-app-control`: the baseline completion ended with
+`finish_reason=length`, used all 4,096 output tokens, and had no usable
+assistant content. The adapter classified this as an infrastructure failure;
+the paired runner's deliberate first-infrastructure-error stop then left
+`deadline-bound-stream`, `jev-ci-operations`, and `reranking-pipeline`
+unattempted. A generated response ending at the provider's length limit is not
+a semantic failure and must not be passed to Jev as if it were an answer.
+
+The advisory Jev job ran with no provider errors, but correctly failed
+completeness: 14 reports seen versus 17 expected, one generation-error side,
+five assertions skipped for infrastructure error, 22 groups and 140 assertions
+judged, and 20 assertions omitted by the audit budget. The 140 suggestions were
+24 `met`, four `not_met`, and 112 `not_shown`; mean met probability was 0.1622
+and mean provider confidence was 0.8318. These are opinions on an incomplete,
+budget-selected subset, not calibration or correctness evidence. The Jev API
+was not the source of this run's failure.
+
+To isolate whether the failure is a response-ceiling issue, the manual
+main-only smoke now accepts an explicit allowlisted skill manifest
+(`agent-skills` or `system-one`), while retaining `agent-skills` and 4,096
+tokens as defaults. The selector rejects any other value before creating
+selection evidence. The next diagnostic is a fresh System One-only Poolside
+smoke at 8,192 tokens, followed by a denominator and budget review; this is a
+targeted experiment, not a change to normal CI limits or release gates. Do not
+replay these generated outputs to Jev under a different question variant
+without separate per-run egress approval.
+
+Blog lesson: report completion, audit coverage, and API health as separate
+dimensions. A provider can return successful typed judgments while the overall
+audit remains incomplete because upstream generations were truncated or the
+bounded audit budget omitted work.
