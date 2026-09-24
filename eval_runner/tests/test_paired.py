@@ -600,7 +600,13 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
     )
     assert endpoint_step["env"]["EVAL_MODEL"] == "${{ inputs.model_id || vars.EVAL_MODEL }}"
     assert inference_step["env"]["EVAL_MODEL"] == "${{ inputs.model_id || vars.EVAL_MODEL }}"
-    assert inference_step["env"]["MAX_OUTPUT_TOKENS"] == "${{ inputs.max_output_tokens || '4096' }}"
+    assert (
+        selection_step["env"]["MAX_OUTPUT_TOKENS"] == "${{ inputs.max_output_tokens || '65536' }}"
+    )
+    assert selection_step["env"]["TIMEOUT_SECONDS"] == "${{ inputs.timeout_seconds || '300' }}"
+    assert (
+        inference_step["env"]["MAX_OUTPUT_TOKENS"] == "${{ inputs.max_output_tokens || '65536' }}"
+    )
     assert inference_step["env"]["TIMEOUT_SECONDS"] == "${{ inputs.timeout_seconds || '300' }}"
     assert '--max-tokens "$MAX_OUTPUT_TOKENS"' in inference_step["run"]
     assert '--timeout "$TIMEOUT_SECONDS"' in inference_step["run"]

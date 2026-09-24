@@ -41,13 +41,15 @@ requirements against the copied workflow:
   `EVAL_BASE_URL` and `EVAL_MODEL`. If the endpoint precheck fails, generation
   is skipped; this is missing evidence, not a passing model eval.
 - The manual main-branch smoke accepts an exact `model_id` override and a
-  bounded `max_output_tokens` choice (4,096, 8,192, or 12,288 per response).
-  The selected ID must match the authenticated Nous `/v1/models` catalog. The
-  override applies only to that run; normal main pushes continue to use the
-  repository `EVAL_MODEL` variable and the existing 4,096-token limit. Manual
-  runs default to 4,096 tokens; the workflow enforces the listed budgets even
-  when dispatched through the API. Each smoke evaluates the fixed
-  `agent-skills/evals/evals.json` manifest.
+  bounded `max_output_tokens` choice (4,096, 8,192, 12,288, 16,384, 32,768,
+  or 65,536 per response). It also accepts a per-response timeout of 300, 600,
+  or 900 seconds. The selected ID must match the authenticated Nous `/v1/models`
+  catalog. The override applies only to that run; normal main pushes use the
+  repository `EVAL_MODEL` variable, a 65,536-token output ceiling, and a
+  300-second timeout. Manual runs default to 65,536 tokens and 900 seconds;
+  the workflow enforces the listed choices even when dispatched through the
+  API. Each smoke evaluates the selected fixed skill manifest, with optional
+  case isolation.
 - Repository secret `TYPESAFE_API_KEY`, scoped to the trusted main-branch
   audit. Do not put it in source, a PR job, a browser, a downloaded artifact,
   or a shell command argument. GitHub's runner injects it as an environment
@@ -55,7 +57,7 @@ requirements against the copied workflow:
 - A reviewed `system-one/evals/evals.json`. Changed skills are selected up to
   five per push; an over-cap selection fails explicitly. Each selected case
   produces candidate/baseline groups. The current audit budget is 22 calls
-  and 168 prose assertions; if a copied catalog exceeds either limit, the
+  and 176 prose assertions; if a copied catalog exceeds either limit, the
   audit must report omissions rather than claiming complete coverage.
 
 Before a live push, run the repository's local contract checks. From the repo
