@@ -30,7 +30,7 @@ on:
         description: Exact Nous model ID to test (must appear in the authenticated model catalog)
         type: string
         required: false
-        default: stepfun/step-3.7-flash
+        default: poolside/laguna-s-2.1:free
       max_output_tokens:
         description: Per-response output-token ceiling for a manual model smoke
         type: choice

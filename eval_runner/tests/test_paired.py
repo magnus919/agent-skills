@@ -517,6 +517,9 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
     assert "workflow_dispatch" in workflow["on"]
     assert workflow["on"]["workflow_dispatch"]["inputs"]["run_model_smoke"]["type"] == "boolean"
     assert workflow["on"]["workflow_dispatch"]["inputs"]["model_id"]["type"] == "string"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["model_id"]["default"] == (
+        "poolside/laguna-s-2.1:free"
+    )
     assert workflow["on"]["workflow_dispatch"]["inputs"]["max_output_tokens"]["type"] == "choice"
     assert workflow["on"]["workflow_dispatch"]["inputs"]["max_output_tokens"]["options"] == [
         "4096",
