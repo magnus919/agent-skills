@@ -1551,3 +1551,26 @@ split the assertion into independently checkable selection-identity and
 selection-count claims. This changes the eval/question contract again. Test
 the expanded budget and verify a new main audit; do not compare verdict totals
 across contracts or publish the generated response text.
+
+## 2026-09-23 — Identity/count split verified in the actual Jev audit
+
+Merged [PR #585](https://github.com/magnus919/agent-skills/pull/585)
+produced main [run 35944221843](https://github.com/magnus919/agent-skills/actions/runs/35944221843)
+at `62d8c76deac80cec6b0cc7d90a3fd34111c50338`. The real-model and Jev
+jobs completed. The `mode=live`, advisory audit requested `jev-1.13.0`,
+observed the expected 11/11 selected reports, judged 144/144 prose assertions
+across 22 groups, and reported zero skips, budget omissions, unattempted
+groups/assertions, or provider errors. Its 22 rows carried 64-character
+exact-question hashes, shared by candidate/baseline pairs. The private
+comparison-bundle check reconstructed all 144 records and verified their
+response and exact-question identities.
+
+For `jev-ci-operations`, Jev suggested `not_shown` on expected-versus-observed
+selected case-ID reconciliation and `met` on selected-report count comparison
+for both candidate and baseline. It also kept complete skip/error-lane
+accounting `not_shown`. This demonstrates that the revised *questions* expose
+the witnessed count-only near miss as distinct verdicts on this run. It does
+not prove the model is generally accurate, calibrated, or ready to gate CI;
+the question contract changed, no independent labels cover the new assertions,
+and the earlier model-teacher labels were pseudo-labels. Do not interpret the
+change as a before/after accuracy improvement or publish generated responses.
