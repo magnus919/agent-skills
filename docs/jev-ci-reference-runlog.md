@@ -2968,10 +2968,14 @@ burst/concurrency limit or fully reconcile quota state over time.
 
 Lesson: classify 429s from provider error codes and account/billing telemetry
 when available; do not infer overload from status and Retry-After alone. Stop
-further Nous/Jev inference while the user-reported credit shortage remains.
-Resume only after the user confirms credits are available, then capture the
-provider error classification and request-level retry/token provenance in a
-bounded replay. Keep the Jev audit advisory-only.
+further Nous inference while the user-reported Nous credit shortage remains.
+This does not establish that the separate TypeSafe Jev credential or quota is
+affected. The Jev-only QA pilot already used the same 22 synthetic cases in
+four live runs; another identical run would add a repeatability observation,
+not independent calibration evidence. Resume Nous inference only after the
+user confirms credits are available, then capture provider error classification
+and request-level retry/token provenance in a bounded replay. Keep the Jev audit
+advisory-only.
 
 ## 2026-09-24 — CI inference inventory and Jev replacement boundaries
 
@@ -3048,10 +3052,14 @@ second-429 telemetry, and deferral beyond the bounded wait. Updated the
 System One CI runbook and the existing `jev-ci-operations` eval without adding
 assertions, preserving its 176 paired-assertion resource ceiling. These are
 offline changes only; the user-reported credit shortage remains the stop
-condition for provider inference and PR creation. After the user confirms
-credits are restored, first use a bounded single-case run to learn whether
-Nous returns a recognized structured quota code; do not infer this from the
-mocked test. Offline verification passed: the exact paired-eval CI test command,
+condition for Nous inference and PR creation, because PR creation triggers
+Droid with the same Nous credential. The separate Jev endpoint was not called
+in this step; changing the evaluation sample, rather than repeating the
+already-run fixed synthetic pilot, would be required to obtain meaningful new
+Jev quality evidence. After the user confirms Nous credits are restored, first
+use a bounded single-case run to learn whether Nous returns a recognized
+structured quota code; do not infer this from the mocked test. Offline
+verification passed: the exact paired-eval CI test command,
 27 eval-validation tests, all 181 eval manifests, 21 Jev audit tests, all 181
 canonical skills, the modified-skill eval-coverage ratchet, and `git diff
 --check`. No live inference was used.
