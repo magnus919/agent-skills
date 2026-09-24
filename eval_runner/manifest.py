@@ -61,6 +61,16 @@ def build_manifest(
     if adapter_output.error:
         failures.append({"type": "execution_error", "message": adapter_output.error})
 
+    outputs = {
+        "response": adapter_output.response,
+        "finish_reason": adapter_output.finish_reason,
+        "activation_evidence": adapter_output.activation_evidence,
+        "artifact_digests": artifact_digests,
+        "tool_event_count": len(adapter_output.tool_events),
+    }
+    if adapter_output.rate_limit_retries is not None:
+        outputs["rate_limit_retries"] = adapter_output.rate_limit_retries
+
     return {
         "schema_version": MANIFEST_SCHEMA_VERSION,
         "trial_id": str(uuid.uuid4()),
@@ -93,13 +103,7 @@ def build_manifest(
         "started_at": started_at.isoformat(),
         "finished_at": finished_at.isoformat(),
         "status": adapter_output.exit_status.value,
-        "outputs": {
-            "response": adapter_output.response,
-            "finish_reason": adapter_output.finish_reason,
-            "activation_evidence": adapter_output.activation_evidence,
-            "artifact_digests": artifact_digests,
-            "tool_event_count": len(adapter_output.tool_events),
-        },
+        "outputs": outputs,
         "duration_ms": adapter_output.duration_ms,
         "token_usage": adapter_output.token_usage,
         "failures": failures,

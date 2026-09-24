@@ -15,6 +15,7 @@ import re
 import time
 import urllib.error
 import urllib.request
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -26,6 +27,11 @@ _SAFE_FINISH_REASON = re.compile(r"[A-Za-z0-9_.:-]{1,80}\Z")
 _UNUSABLE_FINISH_REASONS = {"length", "content_filter", "tool_calls", "function_call"}
 _RATE_LIMIT_MAX_RETRY_SECONDS = 60
 _RATE_LIMIT_FALLBACK_RETRY_SECONDS = 1
+
+
+@dataclass
+class _RetryTelemetry:
+    attempts: int = 0
 
 
 def _retry_after_seconds(headers: Any, *, now: datetime | None = None) -> float | None:
@@ -51,7 +57,12 @@ def _retry_after_seconds(headers: Any, *, now: datetime | None = None) -> float 
 
 
 def _urlopen_with_rate_limit_retry(
-    url: str, data: bytes, headers: dict[str, str], timeout: int
+    url: str,
+    data: bytes,
+    headers: dict[str, str],
+    timeout: int,
+    *,
+    retry_telemetry: _RetryTelemetry | None = None,
 ) -> Any:
     """Retry one 429 once, respecting bounded Retry-After guidance."""
 
@@ -71,6 +82,8 @@ def _urlopen_with_rate_limit_retry(
             raise
         exc.close()
         time.sleep(delay)
+        if retry_telemetry is not None:
+            retry_telemetry.attempts += 1
         return open_once()
 
 
@@ -156,8 +169,15 @@ class OpenAICompatAdapter:
         input.output_dir.mkdir(parents=True, exist_ok=True)
 
         start = time.monotonic()
+        retry_telemetry = _RetryTelemetry()
         try:
-            with _urlopen_with_rate_limit_retry(url, data, headers, self._timeout_seconds) as resp:
+            with _urlopen_with_rate_limit_retry(
+                url,
+                data,
+                headers,
+                self._timeout_seconds,
+                retry_telemetry=retry_telemetry,
+            ) as resp:
                 body = json.loads(resp.read().decode("utf-8"))
             elapsed_ms = (time.monotonic() - start) * 1000
 
@@ -186,6 +206,7 @@ class OpenAICompatAdapter:
                 "model": self._model,
                 "finish_reason": finish_reason or "unknown",
                 "has_skill": skill_content is not None,
+                "rate_limit_retries": retry_telemetry.attempts,
             }
 
             completion_error = None
@@ -204,6 +225,7 @@ class OpenAICompatAdapter:
                     environment_state=environment_state,
                     duration_ms=elapsed_ms,
                     token_usage=token_usage,
+                    rate_limit_retries=retry_telemetry.attempts,
                     error=f"model completion unusable: {completion_error}{reason_detail}",
                 )
 
@@ -228,6 +250,7 @@ class OpenAICompatAdapter:
                 tool_events=tool_events,
                 duration_ms=elapsed_ms,
                 token_usage=token_usage,
+                rate_limit_retries=retry_telemetry.attempts,
                 raw_trace_path=None,
                 error=None,
             )
@@ -260,6 +283,7 @@ class OpenAICompatAdapter:
                 response=None,
                 error=f"HTTP {exc.code}: {exc.reason}{detail}",
                 duration_ms=elapsed_ms,
+                rate_limit_retries=retry_telemetry.attempts,
             )
         except urllib.error.URLError as exc:
             elapsed_ms = (time.monotonic() - start) * 1000
@@ -268,6 +292,7 @@ class OpenAICompatAdapter:
                 response=None,
                 error=f"connection error: {exc.reason}",
                 duration_ms=elapsed_ms,
+                rate_limit_retries=retry_telemetry.attempts,
             )
         except TimeoutError:
             elapsed_ms = (time.monotonic() - start) * 1000
@@ -276,6 +301,7 @@ class OpenAICompatAdapter:
                 response=None,
                 error=f"request exceeded {self._timeout_seconds}s timeout",
                 duration_ms=elapsed_ms,
+                rate_limit_retries=retry_telemetry.attempts,
             )
         except (json.JSONDecodeError, KeyError, IndexError) as exc:
             elapsed_ms = (time.monotonic() - start) * 1000
@@ -284,4 +310,5 @@ class OpenAICompatAdapter:
                 response=None,
                 error=f"malformed response: {exc}",
                 duration_ms=elapsed_ms,
+                rate_limit_retries=retry_telemetry.attempts,
             )
