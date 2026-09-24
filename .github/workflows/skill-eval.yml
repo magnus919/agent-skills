@@ -52,6 +52,9 @@ on:
           - '4096'
           - '8192'
           - '12288'
+          - '16384'
+          - '32768'
+          - '65536'
         default: '4096'
 
 permissions:
@@ -212,7 +215,7 @@ jobs:
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
         run: |
           case "$MAX_OUTPUT_TOKENS" in
-            4096|8192|12288) ;;
+            4096|8192|12288|16384|32768|65536) ;;
             *) echo "Unsupported output-token ceiling: $MAX_OUTPUT_TOKENS" >&2; exit 1 ;;
           esac
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
