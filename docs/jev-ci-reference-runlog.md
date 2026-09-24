@@ -1831,3 +1831,57 @@ unresolved. Do not infer accuracy, confidence calibration, a threshold, or a
 release gate from these runs. Blog lesson: repeatability can distinguish a
 persistent review question from a one-run disagreement, but it cannot settle
 the question without independent adjudication.
+
+## 2026-09-24 — Broaden real-output review and split compound performance claims
+
+The complete main-branch Jev audit for run
+[35929395680](https://github.com/magnus919/agent-skills/actions/runs/35929395680)
+covered all 7 `performance-optimization` reports and 68/68 prose assertions,
+with no skipped assertions, budget omissions, or provider errors. Its existing
+private model/audit artifacts supplied a second-skill screen; the responses
+were not sent to Jev again. The approved Nous workflow
+[35954790516](https://github.com/magnus919/agent-skills/actions/runs/35954790516)
+used `openai/gpt-6-luna`, prompt revision `jev-blind-teacher-v1`, and two
+prediction-blind passes over a fixed 44-item packet. Nous consensus resolved
+40/44 items and left four uncertain. In the uniform population stratum, Jev
+and Nous agreed on 22/28 resolved items; in the intentionally high-Jev-`met`
+challenge stratum they agreed on 12/12. The sample covers one additional
+skill, not the catalog, and the challenge stratum is not workload prevalence.
+
+The six resolved population disagreements were mixed, not six verified Jev
+errors. They included one Jev `met` versus Nous `not_shown` on whether the
+response required repeated, controlled baseline/candidate measurements and
+reported variability; three Jev `not_shown` versus Nous `not_met` judgments;
+one `not_shown` versus `met`; and one `not_met` versus `met` on a negatively
+worded proxy-metric assertion. Local inspection showed that several reviewed
+assertions each joined independently checkable requirements, including
+journey selection and boundaries, telemetry audit and instrumentation details,
+benchmark controls and spread, and profile validation and post-gain checks.
+Nous labels remain correlated model pseudo-labels; they do not resolve those
+disputes as ground truth.
+
+As a behavior-preserving eval-contract change, split only the compound claims
+in `unmeasured-user-journey`, `noisy-benchmark-comparison`, and
+`profile-guided-service-optimization`. The new assertions separately expose
+journey choice/start/completion; existing-signal audit, missing boundary,
+minimum instrumentation, version context, privacy, overhead, and sampling;
+repeated paired measurements, matched workload/fixture, controlled and
+recorded conditions, and variability; and trace/profile correspondence,
+representative workload, correctness, evidence classification, and
+re-profiling. Case IDs, prompts, and expected outcomes remain unchanged. The
+new 49 assertions across candidate and baseline produce 98 judgments, within
+the live 160-assertion Jev budget. A `proxy-metric-validation` negation claim
+was deliberately left unchanged: one low-confidence disagreement is not a
+reason to rewrite a valid assertion toward a teacher label.
+
+The split claims were checked against a response that supplies the evidence,
+a near miss that contradicts or omits one requirement, and an answer with no
+evidence for it. The paired fake-adapter run still executes all 7 cases; its
+`both_pass` labels are only harness structure, while every semantic assertion
+remains `manual_review`. Do not treat either Nous agreement or green fake
+smoke as proof of semantic accuracy. The next live main run must verify the
+98-judgment Jev audit has complete selected-case coverage and no budget
+omissions; compare with earlier totals only for unchanged question/assertion
+fingerprints. Blog lesson: the second skill exposed the same practical value
+of atomization without justifying prompt overfitting—small independent claims
+make disagreements actionable while preserving the eval's original behavior.
