@@ -2,7 +2,7 @@ name: Droid Auto Review
 
 on:
   pull_request:
-    types: [opened, ready_for_review, reopened]
+    types: [opened, synchronize, ready_for_review, reopened]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -23,6 +23,28 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
+      - name: Configure Nous Portal model
+        shell: bash
+        run: |
+          if [ -z "$NOUS_API_KEY" ]; then
+            echo 'NOUS_API_KEY is unavailable to this run' >&2
+            exit 1
+          fi
+          mkdir -p "$HOME/.factory"
+          cat > "$HOME/.factory/settings.json" <<'FACTORY_JSON'
+          {
+            "customModels": [{
+              "model": "stepfun/step-3.7-flash",
+              "displayName": "StepFun 3.7 Flash (Nous Portal)",
+              "baseUrl": "https://inference-api.nousresearch.com/v1",
+              "apiKey": "${NOUS_API_KEY}",
+              "provider": "generic-chat-completion-api",
+              "maxOutputTokens": 16384
+            }]
+          }
+          FACTORY_JSON
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
       - name: Run Droid Auto Review
         uses: Factory-AI/droid-action@main
         with:
@@ -30,3 +52,7 @@ jobs:
           automatic_review: true
           automatic_security_review: true
           review_depth: shallow
+          review_model: custom:StepFun-3.7-Flash-(Nous-Portal)-0
+          security_model: custom:StepFun-3.7-Flash-(Nous-Portal)-0
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
