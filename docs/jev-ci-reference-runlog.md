@@ -2165,11 +2165,20 @@ rerun [35969726932](https://github.com/magnus919/agent-skills/actions/runs/35969
 passed the exact-model Nous function-call probe again, but the Factory action
 could not check out the already-merged PR branch (`Failed to checkout PR #605
 branch for review`). Thus the provider configuration and basic function-call
-protocol are verified; actual review generation is not yet verified. This
-follow-up PR is the first live, open-PR execution opportunity. Record whether
-it produces a review before treating the Droid integration as complete. The
-repository validator and paired-eval checks passed. Blog lesson: an
-OpenAI-compatible base URL does not guarantee that every routed model
-serializes tool arguments compatibly; inspect the actual response shape,
-preserve the provider model ID, and distinguish a successful API response from
-a usable tool call and from a successful agent task.
+protocol were verified, but that rerun did not establish review behavior.
+
+The open-PR test on [PR #606](https://github.com/magnus919/agent-skills/pull/606)
+then completed in 6m20s in
+[run 35970281646](https://github.com/magnus919/agent-skills/actions/runs/35970281646).
+The exact Nous model probe passed, Droid reported success with empty prepare,
+review, and validator error fields and no fallback note, and Factory posted a
+review plus its security-review-ran badge. The generated review said “LGTM”
+and posted 0 inline comments on this documentation-only diff. This verifies
+that the automatic review path can execute with the configured Nous custom
+model; it does not validate review accuracy, security-detection quality, or
+performance on code changes. The separate interactive comment-triggered path
+remains untested. The repository validator and paired-eval checks passed.
+Blog lesson: an OpenAI-compatible base URL does not guarantee that every
+routed model serializes tool arguments compatibly; inspect the actual response
+shape, preserve the provider model ID, and distinguish a successful API
+response from a usable tool call and from a successful agent task.
