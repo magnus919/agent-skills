@@ -3,10 +3,15 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
@@ -17,7 +22,8 @@ from eval_runner.comparison import (
 )
 from eval_runner.fake_adapter import FakeAdapter
 from eval_runner.grader import AssertionVerdict, grade_output
-from eval_runner.models import AdapterOutput, EvalCase, ExitStatus, ToolEvent
+from eval_runner.models import AdapterInput, AdapterOutput, EvalCase, ExitStatus, ToolEvent
+from eval_runner.openai_adapter import OpenAICompatAdapter
 from eval_runner.paired import run_paired_trial
 from eval_runner.sandbox import cleanup_sandbox, stage_paired_sandboxes, stage_skill_sandbox
 
@@ -418,6 +424,237 @@ def test_workflow_uses_variables_without_deployment_defaults_and_pins_actions():
     assert all(re.fullmatch(r"[0-9a-f]{40}", ref) for ref in action_refs)
 
 
+def test_nous_key_is_scoped_to_trusted_model_job():
+    workflow = yaml.safe_load(
+        (
+            Path(__file__).resolve().parent.parent.parent
+            / ".github"
+            / "workflows"
+            / "skill-eval.yml"
+        ).read_text()
+    )
+    jobs = workflow["jobs"]
+    model_job = jobs["paired-eval-model"]
+
+    assert "github.event_name == 'push'" in model_job["if"]
+    assert "github.event_name == 'workflow_dispatch'" in model_job["if"]
+    assert "github.ref == 'refs/heads/main'" in model_job["if"]
+    assert "inputs.run_model_smoke" in model_job["if"]
+    endpoint_step = next(
+        step for step in model_job["steps"] if step["name"] == "Check model endpoint"
+    )
+    inference_step = next(
+        step for step in model_job["steps"] if step["name"] == "Run paired evaluation (real model)"
+    )
+    assert endpoint_step["env"]["NOUS_API_KEY"] == "${{ secrets.NOUS_API_KEY }}"
+    assert inference_step["env"]["EVAL_API_KEY"] == "${{ secrets.NOUS_API_KEY }}"
+    assert "--api-key" not in inference_step["run"]
+
+    for job_name, job in jobs.items():
+        if job_name != "paired-eval-model":
+            assert "secrets.NOUS_API_KEY" not in json.dumps(job)
+
+
+def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
+    workflow = yaml.load(
+        (
+            Path(__file__).resolve().parent.parent.parent
+            / ".github"
+            / "workflows"
+            / "skill-eval.yml"
+        ).read_text(),
+        Loader=yaml.BaseLoader,
+    )
+    assert "workflow_dispatch" in workflow["on"]
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["run_model_smoke"]["type"] == "boolean"
+    model_job = workflow["jobs"]["paired-eval-model"]
+    assert "github.event_name == 'workflow_dispatch'" in model_job["if"]
+    assert "github.ref == 'refs/heads/main'" in model_job["if"]
+    assert "inputs.run_model_smoke" in model_job["if"]
+    assert workflow["jobs"]["paired-eval-smoke"]["if"] == "github.event_name != 'workflow_dispatch'"
+
+    selection_step = next(
+        step for step in model_job["steps"] if step["name"] == "Detect changed skills with evals"
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        output_path = tmp_path / "github-output"
+        summary_path = tmp_path / "github-summary"
+        environment = {
+            **os.environ,
+            "GITHUB_EVENT_NAME": "workflow_dispatch",
+            "RUN_MODEL_SMOKE": "true",
+            "BASE_SHA": "",
+            "GITHUB_OUTPUT": str(output_path),
+            "GITHUB_STEP_SUMMARY": str(summary_path),
+        }
+        result = subprocess.run(
+            ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", selection_step["run"]],
+            env=environment,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, result.stderr
+        assert "manifests=agent-skills/evals/evals.json\n" in output_path.read_text()
+        assert "eligible_count=1\n" in output_path.read_text()
+        assert "selected_count=1\n" in output_path.read_text()
+        assert "agent-skills/evals/evals.json" in summary_path.read_text()
+
+
+def test_openai_adapter_uses_scoped_eval_api_key_from_environment():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        adapter_input = AdapterInput(
+            skill_path=tmp_path / "empty-skill",
+            case=_make_case(),
+            work_dir=tmp_path / "work",
+            output_dir=tmp_path / "output",
+            model="stepfun/step-3.7-flash:free",
+        )
+        response_body = {
+            "choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+        }
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = json.dumps(response_body).encode()
+
+        with (
+            patch.dict(os.environ, {"EVAL_API_KEY": "fixture-auth-42"}),
+            patch(
+                "eval_runner.openai_adapter.urllib.request.urlopen", return_value=response
+            ) as urlopen,
+        ):
+            result = OpenAICompatAdapter(
+                base_url="https://inference-api.nousresearch.com",
+                model="stepfun/step-3.7-flash:free",
+            ).execute(adapter_input)
+
+        assert result.exit_status == ExitStatus.COMPLETED
+        request = urlopen.call_args.args[0]
+        assert request.get_header("Authorization") == "Bearer fixture-auth-42"
+
+
+def test_nous_endpoint_preflight_requires_key_and_sends_bearer_header():
+    workflow = yaml.safe_load(
+        (
+            Path(__file__).resolve().parent.parent.parent
+            / ".github"
+            / "workflows"
+            / "skill-eval.yml"
+        ).read_text()
+    )
+    step = next(
+        item
+        for item in workflow["jobs"]["paired-eval-model"]["steps"]
+        if item["name"] == "Check model endpoint"
+    )
+    script = step["run"]
+
+    with tempfile.TemporaryDirectory() as tmp:
+        temp_path = Path(tmp)
+        bin_dir = temp_path / "bin"
+        bin_dir.mkdir()
+        curl_stub = bin_dir / "curl"
+        curl_stub.write_text(
+            '#!/bin/sh\nprintf \'%s\\n\' "$@" > "$CURL_ARGS_FILE"\n'
+            'cat > "$CURL_HEADERS_FILE"\nexit "${CURL_EXIT_CODE:-0}"\n'
+        )
+        curl_stub.chmod(0o755)
+        output_path = temp_path / "github-output"
+        args_path = temp_path / "curl-args"
+        headers_path = temp_path / "curl-headers"
+        environment = {
+            **os.environ,
+            "PATH": f"{bin_dir}:{os.environ['PATH']}",
+            "EVAL_BASE_URL": "https://inference-api.nousresearch.com",
+            "EVAL_MODEL": "stepfun/step-3.7-flash:free",
+            "GITHUB_OUTPUT": str(output_path),
+            "CURL_ARGS_FILE": str(args_path),
+            "CURL_HEADERS_FILE": str(headers_path),
+            "CURL_EXIT_CODE": "0",
+            "GITHUB_EVENT_NAME": "push",
+            "RUN_MODEL_SMOKE": "false",
+        }
+        shell = ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", script]
+
+        environment["NOUS_API_KEY"] = ""
+        missing_key = subprocess.run(shell, env=environment, capture_output=True, text=True)
+        assert missing_key.returncode == 0
+        assert output_path.read_text() == "available=false\n"
+        assert not args_path.exists()
+        assert not headers_path.exists()
+
+        environment["GITHUB_EVENT_NAME"] = "workflow_dispatch"
+        environment["RUN_MODEL_SMOKE"] = "true"
+        output_path.write_text("")
+        manual_missing_key = subprocess.run(shell, env=environment, capture_output=True, text=True)
+        assert manual_missing_key.returncode != 0
+        assert output_path.read_text() == "available=false\n"
+        assert not args_path.exists()
+        assert not headers_path.exists()
+
+        environment["NOUS_API_KEY"] = "fixture-bearer-42"
+        environment["EVAL_BASE_URL"] = "https://untrusted.example"
+        output_path.write_text("")
+        manual_untrusted_base = subprocess.run(
+            shell, env=environment, capture_output=True, text=True
+        )
+        assert manual_untrusted_base.returncode != 0
+        assert output_path.read_text() == "available=false\n"
+        assert not args_path.exists()
+        assert not headers_path.exists()
+
+        environment["GITHUB_EVENT_NAME"] = "push"
+        environment["RUN_MODEL_SMOKE"] = "false"
+        environment["NOUS_API_KEY"] = "fixture-bearer-42"
+        environment["EVAL_BASE_URL"] = "https://untrusted.example"
+        output_path.write_text("")
+        untrusted_base = subprocess.run(shell, env=environment, capture_output=True, text=True)
+        assert untrusted_base.returncode == 0
+        assert output_path.read_text() == "available=false\n"
+        assert not args_path.exists()
+        assert not headers_path.exists()
+
+        environment["EVAL_BASE_URL"] = "https://inference-api.nousresearch.com"
+        environment["EVAL_MODEL"] = "untrusted-model"
+        output_path.write_text("")
+        untrusted_model = subprocess.run(shell, env=environment, capture_output=True, text=True)
+        assert untrusted_model.returncode == 0
+        assert output_path.read_text() == "available=false\n"
+        assert not args_path.exists()
+        assert not headers_path.exists()
+
+        environment["EVAL_MODEL"] = "stepfun/step-3.7-flash:free"
+        output_path.write_text("")
+        authenticated = subprocess.run(shell, env=environment, capture_output=True, text=True)
+        assert authenticated.returncode == 0
+        assert output_path.read_text() == "available=true\n"
+        curl_args = args_path.read_text().splitlines()
+        assert "-H" in curl_args
+        assert "@-" in curl_args
+        assert "fixture-bearer-42" not in curl_args
+        assert "https://inference-api.nousresearch.com/v1/models" in curl_args
+        assert headers_path.read_text() == "Authorization: Bearer fixture-bearer-42\n"
+        assert "fixture-bearer-42" not in authenticated.stdout
+        assert "fixture-bearer-42" not in authenticated.stderr
+        assert "fixture-bearer-42" not in output_path.read_text()
+
+        output_path.write_text("")
+        environment["CURL_EXIT_CODE"] = "22"
+        unavailable = subprocess.run(shell, env=environment, capture_output=True, text=True)
+        assert unavailable.returncode == 0
+        assert output_path.read_text() == "available=false\n"
+
+        environment["GITHUB_EVENT_NAME"] = "workflow_dispatch"
+        environment["RUN_MODEL_SMOKE"] = "true"
+        output_path.write_text("")
+        manual_unavailable = subprocess.run(shell, env=environment, capture_output=True, text=True)
+        assert manual_unavailable.returncode != 0
+        assert output_path.read_text() == "available=false\n"
+        assert "fixture-bearer-42" not in manual_unavailable.stdout
+        assert "fixture-bearer-42" not in manual_unavailable.stderr
+
+
 if __name__ == "__main__":
     test_sandbox_excludes_eval_and_tests()
     test_sandbox_readonly()
@@ -439,4 +676,8 @@ if __name__ == "__main__":
     test_cleanup_does_not_follow_replaced_sandbox_symlink()
     test_cleanup_does_not_follow_replaced_nested_symlink()
     test_workflow_uses_variables_without_deployment_defaults_and_pins_actions()
+    test_nous_key_is_scoped_to_trusted_model_job()
+    test_manual_model_smoke_is_main_only_and_selects_fixed_manifest()
+    test_openai_adapter_uses_scoped_eval_api_key_from_environment()
+    test_nous_endpoint_preflight_requires_key_and_sends_bearer_header()
     print("All paired evaluation tests passed.")

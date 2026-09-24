@@ -17,6 +17,13 @@ on:
       - '.github/workflows/skill-eval.yml'
       - 'schemas/comparison-report-v1.schema.json'
       - 'schemas/release-eval-v1.schema.json'
+  workflow_dispatch:
+    inputs:
+      run_model_smoke:
+        description: Run the bounded StepFun smoke evaluation for the agent-skills skill
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -49,6 +56,7 @@ jobs:
         run: python3 eval_runner/tests/test_selection.py
 
   paired-eval-smoke:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: paired-eval-tests
     steps:
@@ -94,7 +102,9 @@ jobs:
           retention-days: 7
 
   paired-eval-model:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.run_model_smoke)
     runs-on: [self-hosted, linux, agent-skills-eval]
     needs: paired-eval-tests
     steps:
@@ -113,22 +123,53 @@ jobs:
         env:
           EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
           EVAL_MODEL: ${{ vars.EVAL_MODEL }}
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+          RUN_MODEL_SMOKE: ${{ inputs.run_model_smoke }}
         run: |
-          if [ -z "$EVAL_BASE_URL" ] || [ -z "$EVAL_MODEL" ]; then
+          if [ "$EVAL_BASE_URL" != "https://inference-api.nousresearch.com" ] || \
+            [ "$EVAL_MODEL" != "stepfun/step-3.7-flash:free" ] || \
+            [ -z "$NOUS_API_KEY" ]; then
             echo "available=false" >> "$GITHUB_OUTPUT"
+            if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] && [ "$RUN_MODEL_SMOKE" = "true" ]; then
+              echo "Configured model smoke target or credential is unavailable." >&2
+              exit 1
+            fi
             exit 0
           fi
-          if curl -sf --connect-timeout 5 "$EVAL_BASE_URL/v1/models" > /dev/null 2>&1; then
+          if printf 'Authorization: Bearer %s\n' "$NOUS_API_KEY" | \
+            curl -sf --connect-timeout 5 \
+              -H @- \
+              "$EVAL_BASE_URL/v1/models" > /dev/null 2>&1; then
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
+            if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] && [ "$RUN_MODEL_SMOKE" = "true" ]; then
+              echo "Authenticated Nous endpoint preflight failed." >&2
+              exit 1
+            fi
           fi
       - name: Detect changed skills with evals
         id: changed
         if: steps.endpoint.outputs.available == 'true'
         env:
           BASE_SHA: ${{ github.event.before }}
+          RUN_MODEL_SMOKE: ${{ inputs.run_model_smoke }}
         run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            if [ "$RUN_MODEL_SMOKE" != "true" ]; then
+              echo "manifests=" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            if [ ! -f agent-skills/evals/evals.json ]; then
+              echo "The fixed model smoke manifest is missing." >&2
+              exit 1
+            fi
+            echo "manifests=agent-skills/evals/evals.json" >> "$GITHUB_OUTPUT"
+            echo "eligible_count=1" >> "$GITHUB_OUTPUT"
+            echo "selected_count=1" >> "$GITHUB_OUTPUT"
+            printf '## Paired-eval selection\n\nManual StepFun smoke evaluation.\n\nEligible manifests: agent-skills/evals/evals.json.\n' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           python3 -m eval_runner.selection \
             --base "$BASE_SHA" --max-skills 5 \
             --github-output "$GITHUB_OUTPUT" \
@@ -140,6 +181,7 @@ jobs:
           MANIFESTS: ${{ steps.changed.outputs.manifests }}
           EVAL_MODEL: ${{ vars.EVAL_MODEL }}
           EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
+          EVAL_API_KEY: ${{ secrets.NOUS_API_KEY }}
         run: |
           exit_code=0
           for manifest in $MANIFESTS; do

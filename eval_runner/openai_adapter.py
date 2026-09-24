@@ -9,6 +9,7 @@ sends only the user prompt.
 from __future__ import annotations
 
 import json
+import os
 import time
 import urllib.error
 import urllib.request
@@ -38,7 +39,7 @@ class OpenAICompatAdapter:
         self._max_tokens = max_tokens
         self._temperature = temperature
         self._timeout_seconds = timeout_seconds
-        self._api_key = api_key
+        self._api_key = api_key if api_key is not None else os.environ.get("EVAL_API_KEY")
         self._max_skill_chars = max_skill_chars
         self._chat_template_kwargs = chat_template_kwargs or {}
 
