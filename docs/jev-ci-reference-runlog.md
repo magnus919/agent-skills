@@ -1403,3 +1403,30 @@ Jev provider failure. Update the guard to require the deliberate 22-call
 budget and prove the expanded manifest fits; keep this check so later eval
 growth cannot silently exceed the CI selection budget. Re-run the focused
 suite before relying on the PR check.
+
+## 2026-09-23 — Operator-guide workload verified on main
+
+[PR #579](https://github.com/magnus919/agent-skills/pull/579) merged at
+`e14cbbb2a29f4bed277fb8070e2ab95a03047005`. The matching main-branch
+[run 35936520162](https://github.com/magnus919/agent-skills/actions/runs/35936520162)
+completed the real-model generator and advisory Jev audit successfully. The
+downloaded audit reported `mode=live`, requested `jev-1.13.0`, selected the
+expected 11/11 comparison reports, and judged all 140/140 prose assertions
+across 22 candidate/baseline groups. It reported zero skipped responses,
+oversized assertions or groups, budget omissions, unattempted groups, and
+provider errors. The audit remained `advisory_only=true`.
+
+All 22 rows had 64-character exact-question SHA-256 fingerprints. There were
+11 distinct question hashes, one per case, and each candidate/baseline pair
+shared its question hash. Against the privately downloaded comparison bundle,
+`records_from_artifacts` reconstructed all 140 review records and verified
+the response and exact-question identities. The first artifact download hit a
+transient GitHub API connection error; retrying the same run succeeded. No
+generated response text was published here.
+
+This establishes that the operator guide's new case fits the actual CI
+budget and that complete Jev coverage is observable in this deployment. It
+does **not** establish correct verdicts, calibrated probabilities, or an
+appropriate release gate. Those still require independent real-output labels
+and held-out evaluation; green jobs and complete coverage are necessary but
+not sufficient.
