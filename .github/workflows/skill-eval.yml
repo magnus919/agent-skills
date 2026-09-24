@@ -34,6 +34,11 @@ on:
           - agent-skills
           - system-one
         default: agent-skills
+      eval_case:
+        description: Optional case ID to isolate within the selected manifest; empty runs all cases
+        type: string
+        required: false
+        default: ''
       model_id:
         description: Exact Nous model ID to test (must appear in the authenticated model catalog)
         type: string
@@ -202,6 +207,7 @@ jobs:
           BASE_SHA: ${{ github.event.before }}
           RUN_MODEL_SMOKE: ${{ inputs.run_model_smoke }}
           EVAL_SKILL: ${{ inputs.eval_skill || 'agent-skills' }}
+          EVAL_CASE: ${{ inputs.eval_case || '' }}
           EVAL_MODEL: ${{ inputs.model_id || vars.EVAL_MODEL }}
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
         run: |
@@ -223,24 +229,35 @@ jobs:
               echo "The selected model smoke manifest is missing." >&2
               exit 1
             fi
-            echo "manifests=$manifest" >> "$GITHUB_OUTPUT"
-            echo "eligible_count=1" >> "$GITHUB_OUTPUT"
-            echo "selected_count=1" >> "$GITHUB_OUTPUT"
             python3 - <<'PY'
           import json
           import os
+          import sys
           from pathlib import Path
 
           from eval_runner.selection import select, selection_evidence
 
           manifest = f"{os.environ['EVAL_SKILL']}/evals/evals.json"
           evidence = selection_evidence(select([manifest], 1), Path.cwd())
+          skill = os.environ["EVAL_SKILL"]
+          case_id = os.environ.get("EVAL_CASE", "").strip()
+          if case_id:
+              if case_id not in evidence["expected_cases"][skill]:
+                  print("The selected eval case is not present in the manifest.", file=sys.stderr)
+                  raise SystemExit(1)
+              evidence["expected_cases"][skill] = [case_id]
           output = Path("eval-output-model/selection.json")
           output.parent.mkdir(parents=True, exist_ok=True)
           output.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
           PY
+            echo "manifests=$manifest" >> "$GITHUB_OUTPUT"
+            echo "eligible_count=1" >> "$GITHUB_OUTPUT"
+            echo "selected_count=1" >> "$GITHUB_OUTPUT"
             {
               printf '## Paired-eval selection\n\nManual model smoke evaluation for `%s`.\n\n' "$EVAL_SKILL"
+              if [ -n "$EVAL_CASE" ]; then
+                printf 'Case ID: %s.\n' "$EVAL_CASE"
+              fi
               printf '%s\n' "Model ID: \`$EVAL_MODEL\`" "Per-response output-token ceiling: \`$MAX_OUTPUT_TOKENS\`" ''
               printf 'Eligible manifest: \`%s\`.\n' "$manifest"
             } >> "$GITHUB_STEP_SUMMARY"
@@ -256,6 +273,7 @@ jobs:
         env:
           MANIFESTS: ${{ steps.changed.outputs.manifests }}
           EVAL_MODEL: ${{ inputs.model_id || vars.EVAL_MODEL }}
+          EVAL_CASE: ${{ inputs.eval_case || '' }}
           EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
           EVAL_API_KEY: ${{ secrets.NOUS_API_KEY }}
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
@@ -270,6 +288,7 @@ jobs:
               --model "$EVAL_MODEL" \
               --max-tokens "$MAX_OUTPUT_TOKENS" \
               --timeout 300 \
+              --case "$EVAL_CASE" \
               --output-dir "eval-output-model/$skill" \
               || exit_code=1
           done
