@@ -50,6 +50,9 @@ publish secrets, post a PR verdict, or alter required quality gates. If the
 secret is absent, the run fails visibly rather than reporting zero model calls
 as a passing experiment.
 
+For the separate main-branch paired-eval audit's setup, verification,
+failure paths, and rollback, read `references/jev-ci-reference-deployment.md`.
+
 For an actual product decision, replace synthetic cases with approved,
 redacted, independently labeled cases from the intended workflow. Freeze a
 held-out split; include missing and contradictory evidence, wrong-run logs,

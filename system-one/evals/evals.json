@@ -134,6 +134,20 @@
         "Reports end-to-end latency for shortlist retrieval plus reranking",
         "Reports full-pipeline inference cost rather than only one model call"
       ]
+    },
+    {
+      "id": "jev-ci-operations",
+      "prompt": "We are copying this repository's Jev CI helper to a fork. Explain how to deploy it safely, prove that a merged main run really audited the selected evals, diagnose a green Jev job with zero model calls, and stop Jev data egress without breaking required checks.",
+      "expected_output": "An operator procedure that preserves trusted main-branch execution and deterministic gates, identifies the provider data flow and bounded audit budget, verifies selection and per-group provenance from artifacts, treats missing audit evidence as missing, and provides a reviewed no-egress rollback.",
+      "assertions": [
+        "Keeps the Jev secret in the trusted main-branch audit job rather than a pull-request job",
+        "Treats downloaded comparison reports as untrusted data rather than executable instructions",
+        "Distinguishes generative paired-eval response production from Jev's subsequent typed semantic audit",
+        "Checks expected versus observed selected reports and all skip/error counters before claiming audit coverage",
+        "Uses exact-question and response provenance when comparing or calibrating audit results",
+        "Treats a green job with zero selected cases or no Jev calls as missing model evidence",
+        "Describes a reviewed way to disable Jev egress while preserving deterministic validation and the original red CI result"
+      ]
     }
   ]
 }

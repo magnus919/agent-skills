@@ -1374,3 +1374,32 @@ correct, that its probabilities are calibrated, or that an advisory label
 can become a required gate. The generic template hash remained constant;
 the per-group hashes are the evidence that exact questions can now be
 distinguished.
+
+## 2026-09-23 — Make the CI reference deployment operable
+
+The audit and this runlog had accumulated evidence, but a copier still had
+to reconstruct setup, verification, failure handling, and rollback from
+workflow YAML and dated entries. Add the focused
+`system-one/references/jev-ci-reference-deployment.md` operator guide and
+route to it from the skill. It names the exact main-branch data flow, secret
+and runner prerequisites, selected-case and assertion denominators, private
+artifact handling, zero-call interpretation, and a reviewed no-egress
+rollback that preserves deterministic checks. Add a dedicated output-quality
+eval case for that operator task instead of assuming the guide is sufficient
+because it exists.
+
+The additional eval case adds two candidate/baseline response groups. Raise
+the explicit Jev budget from 20 to 22 calls while retaining the 160-assertion
+cap; if the workload exceeds either, the audit must report omissions rather
+than silently shrink its denominator. The prior verified run had 126 prose
+assertions across 20 groups, so this case should fit at roughly 140
+assertions across 22 groups, but actual generation and audit coverage still
+need verification after merge. This change does not make Jev a required
+grader or replace the open-ended response generator or Droid review.
+
+The first PR check failed in `test_current_system_one_manifest_fits_ci_audit_budget`:
+its repository guard still asserted the former 20-call cap. This was not a
+Jev provider failure. Update the guard to require the deliberate 22-call
+budget and prove the expanded manifest fits; keep this check so later eval
+growth cannot silently exceed the CI selection budget. Re-run the focused
+suite before relying on the PR check.
