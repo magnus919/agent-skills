@@ -84,10 +84,14 @@ class JevEvalAuditTests(unittest.TestCase):
         group = {"response": "Expected 4, observed 3.", "assertions": ["Compares counts"]}
         deployed = build_request(group)
         shadow = build_request(group, "mismatch-shadow-v1")
+        procedure_shadow = build_request(group, "procedure-conflict-shadow-v2")
         self.assertEqual(build_request(group), deployed)
         self.assertEqual(shadow["state"], deployed["state"])
+        self.assertEqual(procedure_shadow["state"], deployed["state"])
         self.assertEqual(shadow["questions"]["a0"]["criteria"], deployed["questions"]["a0"]["criteria"])
+        self.assertEqual(procedure_shadow["questions"]["a0"]["criteria"], deployed["questions"]["a0"]["criteria"])
         self.assertNotEqual(question_input_sha256(shadow), question_input_sha256(deployed))
+        self.assertNotEqual(question_input_sha256(procedure_shadow), question_input_sha256(deployed))
         self.assertNotEqual(question_contract_sha256("mismatch-shadow-v1"), question_contract_sha256())
         shadow_report = audit(
             self.root, live=False, key=None, max_calls=2, max_assertions=2,

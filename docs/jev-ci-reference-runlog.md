@@ -1699,3 +1699,94 @@ implementation, not a prompt tweak to inflate scores. The changed eval will
 receive a new Jev audit on its next successful main run; compare only matching
 assertion/question fingerprints. A Jev shadow re-audit of the old private
 response still requires the separately requested TypeSafe data-flow approval.
+
+## 2026-09-24 — Atomic assertion contract exercised in main CI
+
+Main run [35949075876](https://github.com/magnus919/agent-skills/actions/runs/35949075876)
+at `3dbbd18e5cb5b613a05eedbc727aae553ec7bfaf` completed all four jobs. Its
+standard live Jev audit covered 11/11 selected reports, 22 groups, and all
+158/158 prose assertions with zero skips, omissions, or provider errors. The
+model output was regenerated after the assertion contract changed, so do not
+compare its totals with the preceding 144-assertion run as an accuracy delta.
+
+The approved Nous screen [35950558246](https://github.com/magnus919/agent-skills/actions/runs/35950558246)
+resolved 39/44 labels; five were uncertain. In the 12-item high-probability
+challenge stratum, Jev had zero suggested-`met` disagreements. In the
+32-item population sample, 27 labels were resolved and Jev had one
+suggested-`met` disagreement. It was a candidate `deadline-bound-stream`
+assertion requiring independent observation before recording success: Jev
+returned `met` probability 0.58 and provider confidence 0.37; Nous consensus
+was `not_shown`. This remains one model's pseudo-label against another model,
+not a human adjudication or calibrated rate.
+
+The selected atomic rows also separated evidence shapes: for the candidate's
+stable-idempotency assertion both models said `not_shown`; for the baseline
+the same Jev verdict had a Nous `not_met` consensus. On retry-limit policy,
+candidate Jev and Nous both said `not_shown`, while baseline Jev said `met`
+with probability 0.93 and Nous was uncertain. Preserve uncertainty and do not
+average it into a forced label. These few sampled rows show why splitting the
+compound criterion is diagnostically useful, but they do not establish that
+the changed eval improved model quality.
+
+## 2026-09-24 — Preregistered prose-versus-procedure conflict screen
+
+The revised audit still found one population disagreement on
+`deadline-bound-stream`: for “Requires independent observation of the external
+effect before recording an attempted action as successful,” Jev suggested
+`met` at 0.58 probability and 0.37 provider confidence; Nous consensus was
+`not_shown`. The generated answer's summary described observation, while its
+pseudocode recorded success immediately after the submit call. This is a
+concrete prose/algorithm conflict shape. It is not proof Nous is correct or
+that Jev has calibrated confidence.
+
+Before additional Jev calls, created
+`system-one/examples/jev-procedure-conflict.synthetic.json`: 12
+author-labeled synthetic cases, split evenly into six development and six
+reserved test examples, with two `met`, two `not_met`, and two `not_shown` in
+each split. The candidate question appends this exact instruction:
+“When prose summaries conflict with a concrete algorithm, pseudocode, or code
+path, judge the concrete path. A safeguard named in prose is not established
+if the steps omit it or record success before it occurs.” No model, state,
+assertion, answer options, or criteria change.
+
+Screen deployed and candidate wording on the six development cases. Open the
+reserved test split only if the candidate does not falsely accept the explicit
+summary/code contradiction (PC-D02), does not increase false `met` accepts,
+has accuracy no worse than deployed wording, and has binary `met` Brier no
+worse than the paired baseline. If any condition fails, stop and reject the
+candidate. If they all pass, run the same six held-out cases once and report
+all results. These author-constructed synthetic cases can test input
+mechanics only; they do not justify changing live CI, confidence thresholds,
+or release behavior. No private generated response is included in this
+screen.
+
+**Observed first screen:** Deployed wording scored 5/6 development labels and
+binary `met` Brier 0.0000333. `procedure-conflict-shadow-v1` also scored 5/6,
+with Brier 0.0001000, and made no prediction changes across the six cases.
+Both versions correctly rejected PC-D02, so v1 did not fix a baseline false
+accept; both incorrectly called the underspecified PC-D03 `not_met`. The
+preregistered Brier condition failed, so v1 is rejected and the six reserved
+test cases remain unopened. The tiny Brier difference is not meaningful as a
+population estimate; it is retained because the screen's stop rule was frozen
+before calls.
+
+**Second development-only candidate (fixed before calls):** append this exact
+sentence instead: “Distinguish missing evidence from contradiction: if the
+procedure omits an independent observation without specifying an incompatible
+success rule, choose not_shown; if it records success on submission or
+acknowledgment before observation, choose not_met, even when a summary claims
+verification.” Reuse only the six development examples for this iteration.
+Proceed to the still-unopened test split only if v2 correctly labels both
+PC-D02 and PC-D03, creates no false `met`, has accuracy at least 5/6, and
+binary `met` Brier no worse than the frozen deployed baseline 0.0000333.
+Otherwise reject v2 and stop. This limited synthetic screen remains input
+development, not calibration or authority to change live CI.
+
+**Observed reserved test screen:** Deployed wording and v2 each scored 6/6
+labels with zero false `met` accepts. Their binary `met` Brier scores were
+0.0001833 and 0.0004500 respectively. V2 corrected PC-D03 on development but
+made no classification change on the reserved test cases and had worse
+probability error there. The instruction is therefore not promoted to the
+deployed contract. These 12 obvious synthetic cases do not estimate CI
+performance; the candidate remains an experiment, and the default question
+remains in use. The real-run disagreement was not replayed to Jev.

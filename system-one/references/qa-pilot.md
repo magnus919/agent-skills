@@ -119,6 +119,14 @@ contract. The audit script also accepts this explicit variant, but the CI
 workflow does **not** run it: a second pass would retransmit private generated
 responses to TypeSafe and requires specific data-flow approval. Do not treat
 the shadow variant as calibrated, deployed, or eligible for release gating.
+
+`examples/jev-procedure-conflict.synthetic.json` contains a separate screen
+for prose summaries that conflict with concrete pseudocode. Both splits have
+now been opened. Candidate v1 failed its development Brier stop rule; candidate
+v2 improved a single `not_shown` development label, but tied the deployed
+wording on all six test labels and had worse Brier. Neither candidate is
+promoted. Use these examples to reproduce that limited experiment, not as
+production calibration data.
 The focused `examples/jev-atomic-assertion-screen.json` has three synthetic
 evidence shapes for each of two decision/attempt/outcome assertions. Run it
 with `--split dev` as a wording regression screen only; its six obvious
