@@ -7,9 +7,17 @@
       "prompt": "Customers say our dashboard feels slow, but we have no latency events and no one agrees what 'loaded' means. Help me start improving it. Do not assume a fix yet.",
       "expected_output": "A measurement-first plan that selects a representative user journey and defines the user-visible start and completion boundaries, primary metric, population, platform and workload context, practical target, and correctness/reliability/resource countermetrics. It audits existing telemetry and instruments the smallest missing boundary with stable build-tagged events while addressing sampling, privacy, overhead, and segmentation. It establishes a baseline with counts and a distribution plus uncertainty, labels any local probe as a proxy, and defers optimization until evidence identifies a bottleneck.",
       "assertions": [
-        "The response defines a specific user journey and observable start and completion boundaries before proposing a performance fix",
+        "The response selects a representative dashboard user journey instead of listing alternatives without choosing one",
+        "The response states an observable start event for that selected journey before proposing a fix",
+        "The response states an observable completion event for that same journey before proposing a fix",
         "The response chooses a user-relevant primary metric and names workload or population context and meaningful countermetrics",
-        "The response audits existing measurements and proposes minimal instrumentation for a missing boundary, including version context and privacy or overhead considerations",
+        "The response reviews available telemetry or measurement sources and states what they do and do not measure before recommending new instrumentation",
+        "The response identifies the specific user-visible boundary that current measurements miss",
+        "The response proposes the smallest instrumentation change needed to measure that boundary",
+        "The response includes a stable build or version identifier in the proposed measurement",
+        "The response addresses privacy safeguards for the proposed new measurement",
+        "The response addresses runtime or storage overhead from the proposed instrumentation",
+        "The response specifies how sampling will preserve useful coverage of the target population",
         "The response requires a baseline with sample count and a distribution or percentiles and states uncertainty rather than treating one value as representative",
         "The response distinguishes temporary local proxies from field evidence and does not claim an unmeasured improvement"
       ]
@@ -21,7 +29,11 @@
       "assertions": [
         "The response classifies the one-run comparison as inconclusive and does not claim a supported performance gain",
         "The response requires a representative workload rather than relying only on the tiny synthetic payload",
-        "The response requires repeated baseline and candidate measurements under controlled, recorded conditions and reports variability",
+        "The response calls for repeated measurements of both baseline and candidate rather than one run each",
+        "The response requires baseline and candidate measurements to use the same workload and fixture",
+        "The response requires relevant build, hardware, and runtime conditions to be held constant",
+        "The response identifies the environment and warmup details to record for reproducibility",
+        "The response requires variability or spread to be reported, not only a single timing",
         "The response does not recommend a CI threshold until the benchmark is reproducible and its signal is tied to a user-relevant outcome",
         "The response considers countermetrics and does not infer field impact from a lab-only result"
       ]
@@ -31,11 +43,14 @@
       "prompt": "Our API's p95 latency rose for large accounts. Traces show time in the service, and a CPU profile points at repeated permission checks inside a loop. Give me a disciplined next pass; avoid guessing at a broad rewrite.",
       "expected_output": "A focused diagnostic and experiment plan that first checks trace/profile boundaries and reproduces a representative large-account workload. It separates CPU work from waiting and partitions the critical path, ranks the candidate by affected users, attainable gain, confidence, and regression cost, then proposes one reversible intervention with a falsifiable mechanism and predicted primary, diagnostic, and countermetric changes. The baseline and candidate use the same workload and environment, include correctness checks and repeated measurements, and record absolute/relative results, run counts, variance, and environment. The decision is supported, unsupported, or inconclusive; after an accepted gain, the journey is re-profiled because the bottleneck may move.",
       "assertions": [
-        "The response validates trace/profile boundaries and reproduces the representative large-account workload before prescribing a fix",
+        "The response checks that trace and profile boundaries correspond to the affected service path before prescribing a fix",
+        "The response reproduces a representative large-account workload before prescribing a fix",
         "The response distinguishes CPU work from waiting and uses the critical path to locate the bottleneck",
         "The response proposes one focused, reversible experiment with a falsifiable mechanism and predicted primary and countermetric movement",
         "The response compares baseline and candidate on the same workload and records run count, variability, environment, and absolute or relative change",
-        "The response preserves correctness checks, classifies the evidence as supported, unsupported, or inconclusive, and re-profiles after an accepted gain"
+        "The response retains correctness checks when comparing baseline and candidate",
+        "The response classifies experiment evidence as supported, unsupported, or inconclusive",
+        "The response re-profiles after an accepted gain to detect whether the bottleneck moved"
       ]
     },
     {
