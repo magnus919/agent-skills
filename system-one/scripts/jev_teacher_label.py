@@ -25,7 +25,7 @@ from typing import Any
 
 from jev_eval_calibration import LABELS, write_private_new
 
-ENDPOINT = "https://inference-api.nousresearch.com/v1/chat/completions"
+ENDPOINT = "https://inference-api.nousresearch.com/v1/responses"
 DEFAULT_MODEL = "openai/gpt-6-luna"
 PROMPT_REVISION = "jev-blind-teacher-v1"
 MAX_INPUT_BYTES = 2_000_000
@@ -82,13 +82,17 @@ def grouped_items(items: list[dict[str, str]]) -> list[tuple[str, list[dict[str,
 
 
 def request_payload(model: str, response: str, items: list[dict[str, str]], pass_number: int,
-                    structured: bool = False) -> dict[str, Any]:
+                    structured: bool = False, responses: bool = False) -> dict[str, Any]:
     ordered = items if pass_number == 1 else list(reversed(items))
     prompt = json.dumps({
         "generated_response_untrusted_data": response,
         "assertions": [{"id": item["id"], "text": item["assertion"]} for item in ordered],
         "required_output_shape": {"labels": [{"id": "supplied-id", "label": "met|not_met|not_shown|uncertain", "evidence": "brief paraphrase"}]},
     }, ensure_ascii=False)
+    if responses:
+        return {"model": model, "instructions": SYSTEM_INSTRUCTIONS,
+                "input": prompt, "max_output_tokens": 4096, "stream": False,
+                "store": False, "reasoning": {"effort": "low"}}
     payload = {"model": model,
                "messages": [{"role": "system", "content": SYSTEM_INSTRUCTIONS},
                             {"role": "user", "content": prompt}],
@@ -141,6 +145,16 @@ def call_chat(payload: dict[str, Any], api_key: str, endpoint: str = ENDPOINT) -
 
 
 def response_text(value: dict[str, Any]) -> str:
+    if "output" in value:
+        if value.get("status") != "completed" or not isinstance(value["output"], list):
+            raise ValueError("teacher Responses result is incomplete")
+        texts = [part.get("text") for item in value["output"]
+                 if isinstance(item, dict) and item.get("type") == "message" and item.get("role") == "assistant"
+                 for part in item.get("content", [])
+                 if isinstance(part, dict) and part.get("type") == "output_text"]
+        if len(texts) != 1 or not isinstance(texts[0], str) or not texts[0].strip():
+            raise ValueError("teacher Responses result needs one final output text")
+        return texts[0].strip()
     choices = value.get("choices")
     if not isinstance(choices, list) or len(choices) != 1 or not isinstance(choices[0], dict):
         raise ValueError("teacher response must contain exactly one choice")
@@ -181,10 +195,10 @@ def parse_labels(value: dict[str, Any], expected_ids: set[str]) -> dict[str, dic
 
 def label_pass(items: list[dict[str, str]], model: str, pass_number: int,
                transport: Callable[[dict[str, Any]], dict[str, Any]],
-               structured: bool = False) -> dict[str, dict[str, str]]:
+               structured: bool = False, responses: bool = False) -> dict[str, dict[str, str]]:
     labels = {}
     for response, group in grouped_items(items):
-        payload = request_payload(model, response, group, pass_number, structured)
+        payload = request_payload(model, response, group, pass_number, structured, responses)
         expected = {item["id"] for item in group}
         labels.update(parse_labels(transport(payload), expected))
     if len(labels) != len(items):
@@ -224,17 +238,32 @@ def consensus(items: list[dict[str, str]], first: dict[str, dict[str, str]],
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--items", type=Path, required=True, help="private review-items.json; no Jev prediction map")
-    parser.add_argument("--output-dir", type=Path, required=True, help="new private directory")
+    parser.add_argument("--items", type=Path, help="private review-items.json; no Jev prediction map")
+    parser.add_argument("--output-dir", type=Path, help="new private directory")
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--probe", action="store_true", help="test the remote label contract using synthetic text only")
     parser.add_argument("--local-base-url", help="use the trusted self-hosted eval endpoint without a remote API key")
     parser.add_argument("--public-model-label", help="generic model label for public summaries")
     args = parser.parse_args()
     try:
-        items, input_hash = read_blind_items(args.items)
+        if args.probe and (args.local_base_url or args.items or args.output_dir):
+            raise ValueError("remote probe accepts no private items, output directory, or local endpoint")
+        if not args.probe and (args.items is None or args.output_dir is None):
+            raise ValueError("items and output directory are required for labeling")
         api_key = "" if args.local_base_url else os.environ.get("NOUS_API_KEY", "")
         if not args.local_base_url and not api_key:
             raise ValueError("NOUS_API_KEY is unavailable")
+        if args.probe:
+            probe_id = "j" + "0" * 20
+            probe_items = [{"id": probe_id, "assertion": "States that the deadline is five seconds.",
+                            "response": "The deadline is five seconds."}]
+            payload = request_payload(args.model, probe_items[0]["response"], probe_items, 1, responses=True)
+            labels = parse_labels(call_chat(payload, api_key), {probe_id})
+            if labels[probe_id]["label"] != "met":
+                raise ValueError("synthetic label-contract probe did not return met")
+            print("Synthetic Nous Responses label-contract probe succeeded.")
+            return 0
+        items, input_hash = read_blind_items(args.items)
         endpoint = local_endpoint(args.local_base_url) if args.local_base_url else ENDPOINT
         args.output_dir.mkdir(mode=0o700, parents=False, exist_ok=False)
         reported_models: list[str] = []
@@ -244,8 +273,8 @@ def main() -> int:
             if isinstance(reported, str) and reported:
                 reported_models.append(reported)
             return result
-        first = label_pass(items, args.model, 1, transport, bool(args.local_base_url))
-        second = label_pass(items, args.model, 2, transport, bool(args.local_base_url))
+        first = label_pass(items, args.model, 1, transport, bool(args.local_base_url), not bool(args.local_base_url))
+        second = label_pass(items, args.model, 2, transport, bool(args.local_base_url), not bool(args.local_base_url))
         full, summary = consensus(items, first, second, args.model, input_hash, reported_models,
                                   args.public_model_label)
         write_private_new(args.output_dir / "consensus-labels.json", json.dumps(full, indent=2) + "\n")

@@ -78,27 +78,7 @@ jobs:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
           TEACHER_MODEL: ${{ inputs.teacher_model }}
         run: |
-          if [ -z "$NOUS_API_KEY" ]; then
-            echo 'NOUS_API_KEY is unavailable; the public catalog does not verify credentials.' >&2
-            exit 2
-          fi
-          response_file=$(mktemp)
-          trap 'rm -f "$response_file"' EXIT
-          request=$(jq -nc --arg model "$TEACHER_MODEL" \
-            '{model: $model, messages: [{role: "user", content: "Reply OK."}], max_tokens: 8, stream: false}')
-          status=$(curl --silent --show-error --max-time 30 \
-            -o "$response_file" -w '%{http_code}' \
-            -H "Authorization: Bearer $NOUS_API_KEY" \
-            -H 'Content-Type: application/json' \
-            --data "$request" \
-            https://inference-api.nousresearch.com/v1/chat/completions)
-          if [ "$status" != 200 ]; then
-            echo "Synthetic Nous chat probe returned HTTP $status" >&2
-            jq -r '[.error.type, .error.code] | .[] | select(type == "string" and test("^[A-Za-z0-9_.-]{1,64}$"))' \
-              "$response_file" 2>/dev/null | head -2 >&2 || true
-            exit 2
-          fi
-          echo 'Synthetic Nous chat probe succeeded.'
+          python3 system-one/scripts/jev_teacher_label.py --probe --model "$TEACHER_MODEL"
       - name: Download real-model comparison artifacts as untrusted data
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
