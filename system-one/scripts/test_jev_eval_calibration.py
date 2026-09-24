@@ -72,8 +72,10 @@ class JevEvalCalibrationTests(unittest.TestCase):
 
     def test_pair_sample_is_deterministic_and_blinded(self):
         records = records_from_artifacts(self.root, self.audit)
-        selected = select_records(records, "frozen-seed", 2, 2)
-        self.assertEqual(selected, select_records(records, "frozen-seed", 2, 2))
+        selected, sampling = select_records(records, "frozen-seed", 2, 2)
+        self.assertEqual(selected, select_records(records, "frozen-seed", 2, 2)[0])
+        self.assertEqual(sampling["population_pairs_selected"], 2)
+        self.assertEqual(sampling["challenge_items_selected"], 2)
         population = [item for item in selected if item["sample_class"] == "population"]
         self.assertEqual(len(population), 4)
         by_assertion = {}
@@ -83,6 +85,8 @@ class JevEvalCalibrationTests(unittest.TestCase):
         output = self.root / "private-review"
         summary = prepare(self.root, self.audit_path, output, "run-1", "frozen-seed", 2, 2)
         self.assertEqual(summary["total_review_items"], 6)
+        self.assertEqual(summary["population_pairs_selected"], 2)
+        self.assertEqual(summary["challenge_items_selected"], 2)
         packet = (output / "review-packet.md").read_text(encoding="utf-8")
         self.assertIn("case-a candidate response", packet)
         self.assertNotIn("suggested_verdict", packet)
@@ -105,6 +109,7 @@ class JevEvalCalibrationTests(unittest.TestCase):
         self.assertIn("Download final labels", review_html)
         private_map = (output / "private-map.json").read_text(encoding="utf-8")
         self.assertNotIn("case-a candidate response", private_map)
+        self.assertEqual(json.loads(private_map)["sampling"], sampling)
         self.assertEqual(os.stat(output).st_mode & 0o777, 0o700)
         self.assertEqual(os.stat(output / "review-packet.md").st_mode & 0o777, 0o600)
         self.assertEqual(os.stat(output / "review.html").st_mode & 0o777, 0o600)
@@ -174,9 +179,37 @@ class JevEvalCalibrationTests(unittest.TestCase):
                 prepare(self.root, self.audit_path, self.root / "not-created", "run-1", "seed", 2, 2)
             self.assertFalse((self.root / "not-created").exists())
 
+    def test_small_audit_caps_samples_and_reports_realized_strata(self):
+        records = records_from_artifacts(self.root, self.audit)
+        selected, sampling = select_records(records, "small-source", 16, 12)
+        self.assertEqual(sampling, {
+            "population_pairs_requested": 16,
+            "population_pairs_available": 4,
+            "population_pairs_selected": 4,
+            "challenge_items_requested": 12,
+            "challenge_items_available": 0,
+            "challenge_items_selected": 0,
+        })
+        self.assertEqual(len(selected), 8)
+        self.assertTrue(all(item["sample_class"] == "population" for item in selected))
+
+        selected, sampling = select_records(records, "partial-challenge", 3, 12)
+        self.assertEqual(sampling["population_pairs_selected"], 3)
+        self.assertEqual(sampling["challenge_items_available"], 2)
+        self.assertEqual(sampling["challenge_items_selected"], 2)
+        self.assertEqual(sum(item["sample_class"] == "challenge_high_met" for item in selected), 2)
+
+        output = self.root / "small-private-review"
+        summary = prepare(self.root, self.audit_path, output, "run-small", "small-source", 16, 12)
+        self.assertEqual(summary["population_pairs_requested"], 16)
+        self.assertEqual(summary["population_pairs_selected"], 4)
+        self.assertEqual(summary["challenge_items_requested"], 12)
+        self.assertEqual(summary["challenge_items_selected"], 0)
+        self.assertEqual(summary["total_review_items"], 8)
+
     def test_score_keeps_population_and_challenge_separate(self):
         records = records_from_artifacts(self.root, self.audit)
-        selected = select_records(records, "frozen-seed", 2, 2)
+        selected, _ = select_records(records, "frozen-seed", 2, 2)
         private_map = {"schema_version": 1, "source_run_id": "run-1", "model": "jev-1.13.0",
                        "items": selected}
         labels = {"schema_version": 1, "reviewer_id": "reviewer-a", "blind_to_predictions": True,

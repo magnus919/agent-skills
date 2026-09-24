@@ -2445,3 +2445,46 @@ Blog lessons: a run may be complete yet unusable by a downstream calibration
 workflow because the source-event contract is too narrow; validate provenance
 and artifact coverage separately. Keep the smoke budget aligned with the
 normal CI path, and do not mistake model-teacher agreement for verified truth.
+
+## 2026-09-24 — Size blind calibration to the evidence that exists
+
+After PR #612 merged, the automatic main run
+[36001349998](https://github.com/magnus919/agent-skills/actions/runs/36001349998)
+selected all 11 System One cases, but generated only nine comparison reports.
+The Jev artifact reported two missing reports (`jev-ci-operations` and
+`reranking-pipeline`), 96 of 109 prose assertions selected, and an incomplete
+audit. The `deadline-bound-stream` baseline ended with
+`finish_reason=length` and empty assistant content at the 4,096-token ceiling.
+The model job still uploaded its artifacts; a failed/incomplete run is not
+eligible for teacher calibration.
+
+The first teacher-workflow attempt
+[36003602688](https://github.com/magnus919/agent-skills/actions/runs/36003602688)
+validated the completed manual source and Nous model, then stopped during
+prediction-blind packet preparation before probing the API or using
+`NOUS_API_KEY`. The complete six-case source has 60 assertions, but the
+calibration helper required 16 population pairs plus 12 remaining high-met
+challenge items. The requested challenge sample exceeded what remained after
+population sampling. This was a sample-size contract error, not model
+disagreement or an inference failure. The source smoke used Poolside Laguna S
+2.1 at 8,192 tokens, so it is not a substitute for the newly aligned 4,096-token
+manual smoke when comparing against the normal CI budget.
+
+The sampler now caps requested strata at the available population and
+challenge counts, records requested/available/selected sizes, and retains the
+selected-case completeness gate. A preparation-only local replay of run
+`35989698935`, using seed `poolside-8192-local-check`, produced 16 of 30
+requested population pairs and 8 of 12 requested challenge items (40 review
+items total). This verifies only that a private packet can be prepared; it
+produced no teacher labels and made no inference call. A reduced or empty
+challenge stratum must remain visible in the summary; do not present it as a
+risk-stratified population estimate. After this fix is merged, run a fresh
+fixed-manifest Poolside smoke at 4,096 tokens and use only its complete model
+and Jev artifacts for the teacher screen.
+
+Blog lessons: distinguish source provenance, artifact completeness, sample
+feasibility, and inference success as separate gates. Small complete datasets
+should yield an honestly smaller sample, not fail on arbitrary defaults or
+silently claim the requested challenge denominator. An incomplete run should
+be diagnosed from its generation and audit artifacts, not “fixed” by treating
+missing cases as negative examples.
