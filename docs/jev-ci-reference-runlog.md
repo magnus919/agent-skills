@@ -1661,3 +1661,41 @@ defined; do not present a typed classifier as a replacement for code review.
 The additional question-wording shadow on paired-eval outputs remains pending
 specific approval for its second TypeSafe transmission. At this point the only
 deployed Jev use remains the advisory paired-eval prose audit.
+
+## 2026-09-24 — Real-output teacher screen found a compound control-loop miss
+
+Main run [35946700587](https://github.com/magnus919/agent-skills/actions/runs/35946700587)
+completed successfully at `f7819d0f2048d1b71e0c261c660476965aa26602`: 11/11
+selected comparison reports and 144/144 prose assertions across 22 groups,
+with no audit omissions or provider errors. The approved two-pass Nous Portal
+teacher run [35948040662](https://github.com/magnus919/agent-skills/actions/runs/35948040662)
+resolved 40/44 labels; four were uncertain. On the challenge stratum, Jev
+suggested `met` for all 12 high-probability items; the teacher agreed on 11
+and labeled one `not_met`. Population labels were 28/32 resolved, with four
+uncertain and no Jev-suggested `met` disagreement among resolved labels. These
+are correlated model pseudo-labels, not human truth or calibration.
+
+The disagreement was `system-one/deadline-bound-stream`, baseline side,
+assertion “Bounds in-flight work and handles duplicate events or retries”:
+Jev gave `met` probability 0.97 and provider confidence 0.96; Nous consensus
+was `not_met`. Private local inspection of the response revealed a bounded
+input queue, but the proposed downstream decision queue had no declared
+capacity and the action-failure handler was a placeholder. It also discussed
+retrying after a timeout without a demonstrated durable/downstream idempotency
+guarantee. The case output combines backpressure, queue bounds, duplicate
+suppression, retry limits, and ambiguous side-effect recovery, so the single
+verdict does not show which criterion was missing. No generated response text
+or teacher rationale is retained here.
+
+Refine the existing `deadline-bound-stream` assertion into separately
+checkable questions for inference concurrency, input-queue capacity and
+overflow, action-queue capacity and overflow, duplicate side-effect
+prevention, finite retries, terminal handling, and idempotency across
+uncertain timeouts. This replaces one claim with eight, adding 14 judgments
+across candidate and baseline and taking the observed 144-assertion audit
+shape to 158, within the current 160-assertion cap. This is contract
+refinement grounded in a concrete partial
+implementation, not a prompt tweak to inflate scores. The changed eval will
+receive a new Jev audit on its next successful main run; compare only matching
+assertion/question fingerprints. A Jev shadow re-audit of the old private
+response still requires the separately requested TypeSafe data-flow approval.
