@@ -2564,3 +2564,42 @@ the normal token ceiling. No active configuration uses a StepFun `:free`
 suffix; its only remaining code occurrence is a deliberate negative fixture
 that proves the stale alias is rejected. Free catalog status does not prove
 usable generation or semantic quality.
+
+## 2026-09-24 — Recheck which CI inference Jev can replace
+
+I re-audited the workflows in the `codex/jev-audit-replay` PR snapshot against
+TypeSafe's current [System One introduction](https://docs.typesafe.ai/introduction),
+[API reference](https://docs.typesafe.ai/api), and [model reference](https://docs.typesafe.ai/models).
+The documented contract is a `state` plus named Choice, Score, and Noul
+questions returning typed answers and probabilities. The questions are
+evaluated independently in parallel. It does not return the generated prose
+or code needed by the repository's response-generation or code-review tasks.
+These are capability boundaries from the provider contract, not evidence that
+any individual decision will be correct or calibrated.
+
+| CI surface | Inference or decision today | Jev fit / disposition |
+|---|---|---|
+| `.github/workflows/skill-eval.yml` model job | Nous-backed model generates candidate and baseline skill responses | Not replaceable: generating the responses is the workload under test. The subsequent Jev audit is the decision-shaped semantic-review addition; it remains advisory. |
+| `.github/workflows/droid-review.yml` and `droid.yml` | Factory Droid uses a chat model for open-ended code/security review or requested responses | Not a drop-in replacement: Jev cannot write findings, explanations, or code. A future bounded classifier over independently produced findings would be a separate experiment, not a substitute for review. |
+| `.github/workflows/jev-teacher-calibration.yml` and `jev-local-teacher-calibration.yml` | A separate hosted or local language model labels blinded real-output samples | Do not replace the teacher with Jev: comparing Jev with its own judgments is circular. These are model-teacher pseudo-label diagnostics, not accuracy ground truth; human adjudication remains the stronger evidence. |
+| `.github/workflows/ci-failure-to-issue.yml` | Deterministic issue creation from failed-workflow metadata | No inference to replace. Jev-based failure routing remains only a candidate: the existing 22-case pilot is synthetic, and the repository has no representative labeled CI-failure set. Do not add a live egress call or alter issue priority from that evidence. |
+| `.github/workflows/skillevaluator.yml` | Selected Tier 1 checks are keyless and deterministic | No LLM inference to replace. Preserve exact checks. |
+| `.github/workflows/jev-qa-pilot.yml` | Manually dispatched Jev calls on synthetic triage, test-priority, and evidence cases | Already exercises Jev directly; it is a capability pilot, not a replacement for an existing CI model call or a production-calibrated gate. |
+
+Decision: there is no currently identified LLM inference job whose required
+output shape is a bounded decision and whose work can safely be replaced
+outright by Jev. The existing post-generation audit is the well-matched use:
+deterministic code retains exact checks and selection/coverage authority, while
+Jev supplies advisory judgments for semantic assertions. Failure triage could
+be reconsidered only after a representative, independently labeled set and a
+privacy-safe extraction contract exist; any first deployment should annotate
+or route for a human, never change the failed workflow result or auto-assign
+issue severity. This audit changed no workflow behavior, release rule, or data
+egress scope.
+
+Blog lesson: choose replacements by the output contract, not by the fact that
+both systems are called “models.” Jev can replace a probabilistic judgment
+coerced from generated text when the software needs a typed decision; it cannot
+replace a job whose deliverable is the generated text itself. A separate
+teacher model can help find disagreement, but swapping in the tested model
+destroys the independence that makes the comparison informative.
