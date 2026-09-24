@@ -36,6 +36,17 @@ QUESTION_VARIANTS = {
         " A comparison is not itself success: if the response shows a mismatch "
         "and still recommends claiming the assertion's successful condition, choose not_met."
     ),
+    "procedure-conflict-shadow-v1": (
+        " When prose summaries conflict with a concrete algorithm, pseudocode, or code path, "
+        "judge the concrete path. A safeguard named in prose is not established if the "
+        "steps omit it or record success before it occurs."
+    ),
+    "procedure-conflict-shadow-v2": (
+        " Distinguish missing evidence from contradiction: if the procedure omits an "
+        "independent observation without specifying an incompatible success rule, choose "
+        "not_shown; if it records success on submission or acknowledgment before observation, "
+        "choose not_met, even when a summary claims verification."
+    ),
 }
 
 
