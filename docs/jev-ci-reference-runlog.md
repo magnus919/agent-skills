@@ -1484,3 +1484,19 @@ the resolved subset while six population items abstained. Next, inspect the
 private response locally, split any separable eval claim on its intended
 behavior rather than for a favorable Jev score, then preregister a targeted
 input comparison and test on untouched examples. Keep Jev advisory.
+
+## 2026-09-23 — Separate selected-report proof from counter accounting
+
+Private inspection of the flagged baseline response found a generic proposed
+fork workflow with example paths, not evidence that this repository's actual
+selected report identities, counts, and Jev skip/error lanes were reconciled.
+The former `jev-ci-operations` assertion combined those two independently
+checkable operator obligations. Keep the case ID and prompt stable, but split
+the assertion into one check for expected-versus-observed selected report
+identities and counts and another for all skip, omission, not-attempted, and
+provider-error lanes before claiming complete assertion coverage. This is an
+eval-contract change; any subsequent verdict counts or question fingerprints
+are **not directly comparable** with the 140-assertion run. The change was
+motivated by the actual operator procedure and a witnessed near miss, not by
+an attempt to raise Jev's score. A live run must still show that the expanded
+manifest fits the 22-call/160-assertion budget and preserves full coverage.
