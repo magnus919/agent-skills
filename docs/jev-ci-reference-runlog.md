@@ -1574,3 +1574,46 @@ not prove the model is generally accurate, calibrated, or ready to gate CI;
 the question contract changed, no independent labels cover the new assertions,
 and the earlier model-teacher labels were pseudo-labels. Do not interpret the
 change as a before/after accuracy improvement or publish generated responses.
+
+## 2026-09-23 — Preregistered synthetic coverage-question experiment
+
+This is an input-only experiment, not model training. The author-constructed
+`system-one/examples/jev-ci-coverage.synthetic.json` has six development and
+six reserved test cases, balanced across `met`, `not_shown`, and `not_met`.
+It tests selected-report identity and count reconciliation, including explicit
+false-completeness claims. The deployed Jev question scored 5/6 development
+labels with binary `met` Brier 0.1579. On CID-D06 it returned `met` with
+`met_probability=0.95` and provider confidence 0.93 although the response
+states expected=4 and observed=3, then calls the mismatch harmless. This is
+synthetic evidence of a consequential false accept, not an estimate of live
+accuracy or calibration.
+
+**Candidate (fixed before further calls):** append this exact sentence to the
+single-question `instructions`, leaving model, assertion, state, choice labels,
+and criteria unchanged: “A comparison is not itself success: if the response
+shows a mismatch and still recommends claiming the assertion's successful
+condition, choose not_met.” First run the six development cases. Proceed only
+if CID-D06 is no longer a false `met`, there are no new false `met` accepts,
+and binary `met` Brier is no worse than 0.1579. If that passes, compare on the
+existing 18-case development fixture with paired baseline calls; require no
+new false accepts and no worse Brier. Only then run the six reserved test cases.
+Stop at the first failed gate and report the candidate as rejected. Even a
+passing synthetic screen does not authorize a CI rollout or release gate:
+independent representative real-output labels are still required. Only
+synthetic response text may be sent to TypeSafe in this local experiment.
+
+**Observed screen:** The candidate passed the six-case development gate:
+6/6 labels versus baseline 5/6; binary `met` Brier 0.0262 versus 0.1579;
+CID-D06 changed from `met` (0.95) to `not_met` (0.01), with no new false
+accepts. On the paired existing 18-case development fixture it scored 18/18
+versus baseline 17/18, with zero false `met` accepts in both and Brier 0.0195
+versus 0.0237. The reserved six-case synthetic test scored 5/6 versus baseline
+2/6, zero versus one false `met` accept, and Brier 0.0511 versus 0.1786.
+The candidate corrected the test's explicit count-mismatch false accept
+(CID-T06), but still marked a count-only omission `not_met` rather than
+`not_shown` (CID-T02). These are small, author-constructed, balanced examples;
+they are not independently sampled operational labels, and the provider's
+confidence values are not calibrated by this screen. The single wording change
+is promising for a future separately reviewed rollout, but the deployed Jev
+question remains unchanged. Do not infer a release threshold or promote the
+advisory result to a CI gate.
