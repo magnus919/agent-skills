@@ -572,14 +572,14 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
         "32768",
         "65536",
     ]
-    assert workflow["on"]["workflow_dispatch"]["inputs"]["max_output_tokens"]["default"] == "4096"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["max_output_tokens"]["default"] == "65536"
     assert workflow["on"]["workflow_dispatch"]["inputs"]["timeout_seconds"]["type"] == "choice"
     assert workflow["on"]["workflow_dispatch"]["inputs"]["timeout_seconds"]["options"] == [
         "300",
         "600",
         "900",
     ]
-    assert workflow["on"]["workflow_dispatch"]["inputs"]["timeout_seconds"]["default"] == "300"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["timeout_seconds"]["default"] == "900"
     model_job = workflow["jobs"]["paired-eval-model"]
     assert "github.event_name == 'workflow_dispatch'" in model_job["if"]
     assert "github.ref == 'refs/heads/main'" in model_job["if"]
