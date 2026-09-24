@@ -544,6 +544,9 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
         "4096",
         "8192",
         "12288",
+        "16384",
+        "32768",
+        "65536",
     ]
     assert workflow["on"]["workflow_dispatch"]["inputs"]["max_output_tokens"]["default"] == "4096"
     model_job = workflow["jobs"]["paired-eval-model"]
@@ -556,6 +559,7 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
     )
     assert selection_step["env"]["EVAL_SKILL"] == "${{ inputs.eval_skill || 'agent-skills' }}"
     assert selection_step["env"]["EVAL_CASE"] == "${{ inputs.eval_case || '' }}"
+    assert "4096|8192|12288|16384|32768|65536)" in selection_step["run"]
     endpoint_step = next(
         step for step in model_job["steps"] if step["name"] == "Check model endpoint"
     )

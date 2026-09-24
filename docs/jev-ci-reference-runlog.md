@@ -2683,3 +2683,67 @@ Blog lesson: when a complete evaluation is expensive, make the diagnostic
 selection explicit and carry the same narrowed denominator into the downstream
 audit. A case-level smoke is useful for debugging a generation boundary, but it
 cannot stand in for a complete skill-level run or establish semantic quality.
+
+## 2026-09-24 — Compare the failing case without widening the default budget
+
+After PR #616 merged at
+`5e7f15818636cefd6a6daa84bfe8450ab27776fa`, three case-isolated runs
+distinguished the Jev path from the Poolside generation issue:
+
+| Run | Nous model and ceiling | Generation evidence | Jev evidence |
+|---|---|---|---|
+| [36029470871](https://github.com/magnus919/agent-skills/actions/runs/36029470871) | Poolside Laguna S 2.1, 12,288 | `deadline-bound-stream` candidate ended normally; baseline used all 12,288 output tokens, returned empty content with `finish_reason=length`, and had one rate-limit retry. | One expected and observed report, but all 13 assertions were skipped as unpaired; zero groups/assertions judged, zero budget omissions, zero Jev provider errors. |
+| [36030253874](https://github.com/magnus919/agent-skills/actions/runs/36030253874) | Poolside Laguna S 2.1, 4,096 | `contract-design` candidate and baseline both ended normally at 664 and 678 output tokens, with no retries or generation errors. | One of one reports, eight of eight prose assertions judged in two groups, no skips/omissions/provider errors. Suggestions were two `met` and six `not_shown`; mean met probability 0.315 and mean provider confidence 0.8613. |
+| [36030732563](https://github.com/magnus919/agent-skills/actions/runs/36030732563) | Poolside Laguna XS 2.1, 4,096 | Authenticated catalog preflight accepted `poolside/laguna-xs-2.1:free`. The `deadline-bound-stream` candidate ended normally; its baseline again used the entire 4,096-token ceiling and returned empty content with `finish_reason=length`. | One expected and observed report, but all 13 assertions were skipped as unpaired; zero judgments and zero provider errors. |
+
+The one-case selector therefore works end to end: it freezes the selected
+case ID, runs only its candidate/baseline pair, and gives the Jev audit the
+matching expected-report denominator. On `contract-design`, Jev completed its
+bounded advisory review with no API or audit-budget errors. Those eight
+suggestions have no independent gold labels; this proves pipeline operation,
+not semantic accuracy or calibration.
+
+For the long `deadline-bound-stream` baseline, Laguna S still returned no
+usable content at 8,192 and 12,288 tokens; Laguna XS did the same at 4,096.
+The earlier 4,096-token mixed run
+[36021921396](https://github.com/magnus919/agent-skills/actions/runs/36021921396)
+failed on a different System One case, `observed-app-control`, and did not
+reach `deadline-bound-stream`. The 12,288-token trial took 4m12s and did not
+increase semantic coverage. Do not raise the normal CI token budget, change the
+configured model, or infer that a model is better from one successful case.
+Keep the 4,096 default and Jev's advisory-only role. At the time, the right
+next step was a materially larger manual-only budget; changing the eval prompt
+or treating empty output as a semantic answer would have confounded that
+diagnostic. No response text was copied into this runlog or replayed.
+
+Blog lesson: an accepted model ID, successful API transport, usable assistant
+completion, complete paired report, and completed Jev audit are separate
+milestones. Increasing token ceilings can increase latency without increasing
+usable evidence; report each stage and its denominator independently.
+
+## 2026-09-24 — Reasoning models need a real output-budget probe
+
+The earlier 4,096/8,192/12,288 manual choices were inherited from the workflow,
+not justified as sufficient reasoning budgets. A run that consumes the entire
+12,288-token ceiling establishes only that the request was cut off there; it
+does not establish the model's limit, that the provider accepted enough room,
+or that the model cannot complete the task. Do not describe this as a model
+failure without testing a materially larger output ceiling.
+
+Poolside describes Laguna S 2.1 as a reasoning model and advertises a 1M-token
+context window. Context length and maximum generated output are distinct
+limits, and this does not document Nous Portal's hosted completion cap. The
+manual workflow now offers 16,384, 32,768, and 65,536 output-token ceilings
+for bounded diagnostics. Its normal 4,096 default and automatic CI path remain
+unchanged. The next probe should select only
+`system-one/deadline-bound-stream` at 65,536, then record the endpoint's actual
+acceptance, completion tokens, finish reason, elapsed time, paired-report
+status, and Jev audit coverage. If it still reaches the cap, investigate the
+provider's documented/request-reported output limit and a longer bounded
+diagnostic before drawing a quality conclusion. Never infer quality from token
+consumption alone.
+
+This corrects the earlier premature recommendation to leave the long case as a
+known generation limitation after only 4K–12K attempts. The proper conclusion
+is still open until a sufficiently roomed run produces a usable response or a
+verified provider/runtime bound explains why it cannot.
