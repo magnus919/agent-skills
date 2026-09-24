@@ -1986,13 +1986,60 @@ report generation-error sides and skipped assertions separately from exact
 checks, mark the Jev audit incomplete, and refuse to prepare calibration data
 from errored generations. The Nous request also stops sending the
 non-standard `chat_template_kwargs` extension previously added to disable
-thinking. That extension is a plausible compatibility cause for the HTTP 400,
-but the provider returned only a generic status in our artifacts; causality is
-unconfirmed until a successful fresh main run. Do not replay these failed
-outputs to Jev or a teacher model.
+thinking. A fresh main run still returned HTTP 400 after that extension was
+removed, so this change did not resolve the failure and the extension is not a
+sufficient explanation. Do not replay these failed outputs to Jev or a teacher
+model.
 
 Focused paired-runner, Jev-audit, and calibration tests pass; eval validation
 remains 181/181 schema-valid and the eval coverage ratchet is unchanged. Blog
 lesson: distinguish “artifact exists” from “model response exists,” and
 “selected reports found” from “assertions actually judged.” Preserve those
 denominators explicitly before making claims about coverage or quality.
+
+## 2026-09-24 — Nous model IDs are provider-specific
+
+After PR #597, fresh main run
+[35959596211](https://github.com/magnus919/agent-skills/actions/runs/35959596211)
+selected 11 `system-one` cases. Both generation sides failed for every case:
+22 infrastructure-error sides and 158 skipped assertion rows, all with HTTP
+400. The paired job now failed as intended. The audit reported 0 prose
+assertions, 0 groups selected, 0 assertions selected, and 0 Jev provider
+errors; therefore it made no Jev calls. The green PR checks only established
+that code and fake-eval validation worked; they did not establish a successful
+Nous inference path.
+
+Read-only inspection found the repository `EVAL_MODEL` variable set to
+`stepfun/step-3.7-flash:free`. The current Nous-maintained model catalog lists
+`stepfun/step-3.7-flash` for the Nous provider without that suffix. The user's
+Nous Portal screenshot on 2026-09-24 lists StepFun Step 3.7 Flash among the
+models currently marked free, alongside Upstage Solar Pro 4, Meituan LongCat
+2.0, Poolside Laguna S 2.1, InclusionAI Ling 3.0 Flash Fin, InclusionAI Ling
+3.0 Flash Sante (free), Poolside Laguna XS 2.1, and Space Bunny Alpha. This
+corrects the earlier hypothesis that the free offering may have disappeared:
+the leading explanation for HTTP 400 is now the stale `:free` suffix, though
+the exact request has not yet been validated against Nous's authenticated live
+catalog. Removing the non-standard thinking extension did not change the
+outcome. The generation response's recorded model label was also the generic
+string `configured-model`, which obscures the exact model in artifacts; future
+comparisons should preserve the provider's actual model ID.
+
+The historical failed outputs remain in Actions artifacts only as error
+metadata; no response text exists to score or replay. Blog lesson:
+provider-compatible API shape does not imply interchangeable model IDs or
+pricing semantics—validate the exact configured ID against that provider's
+catalog before inference, and retain exact model provenance. The Portal's free
+listing resolves the cost uncertainty for StepFun as presented there, but does
+not by itself prove the API slug or endpoint response; the new authenticated
+preflight checks the exact configured ID before any chat-completion call.
+
+Follow-up hardening (no inference invoked): validate the configured model ID
+against the authenticated Nous `/v1/models` response before chat generation;
+record the actual model ID in the trial manifest; stop after the first
+infrastructure-failing candidate/baseline pair; and preserve only safe
+structured provider error fields (`type`, `code`, `param`), never an error body
+that might echo prompts or responses. This keeps a misspelled or
+provider-incompatible model ID from producing repeated HTTP failures and makes
+the next diagnosis more precise without exposing payload text. The slug change
+and any subsequent billable test remain subject to the user's model-usage
+choice.

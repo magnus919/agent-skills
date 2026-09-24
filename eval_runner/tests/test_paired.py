@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import io
 import json
 import os
 import re
 import subprocess
 import sys
 import tempfile
+import urllib.error
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -24,7 +26,11 @@ from eval_runner.fake_adapter import FakeAdapter
 from eval_runner.grader import AssertionVerdict, grade_output
 from eval_runner.models import AdapterInput, AdapterOutput, EvalCase, ExitStatus, ToolEvent
 from eval_runner.openai_adapter import OpenAICompatAdapter
-from eval_runner.paired import infrastructure_error_count, run_paired_trial
+from eval_runner.paired import (
+    infrastructure_error_count,
+    run_paired_evaluation,
+    run_paired_trial,
+)
 from eval_runner.sandbox import cleanup_sandbox, stage_paired_sandboxes, stage_skill_sandbox
 
 
@@ -148,6 +154,39 @@ def test_paired_runner_counts_generation_errors_as_nonzero_outcome():
         {"candidate": {"infra_error": False}, "baseline": {"infra_error": False}},
     ]
     assert infrastructure_error_count(reports) == 2
+
+
+def test_paired_runner_stops_after_first_infrastructure_failure():
+    class ErrorAdapter:
+        name = "fixture-error-adapter"
+        version = "1"
+
+        def __init__(self):
+            self.calls = 0
+
+        def execute(self, _input):
+            self.calls += 1
+            return AdapterOutput(exit_status=ExitStatus.ERROR, error="fixture failure")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        skill = _make_skill_dir(tmp_path)
+        cases = [
+            _make_case(),
+            EvalCase(
+                id="paired-test-02",
+                prompt="Again",
+                expected_output="",
+                assertions=["response_contains:x"],
+            ),
+        ]
+        adapter = ErrorAdapter()
+        reports = run_paired_evaluation(
+            adapter, cases, skill, tmp_path / "output", model="fixture/model"
+        )
+        assert len(reports) == 1
+        assert adapter.calls == 2
+        assert infrastructure_error_count(reports) == 2
 
 
 def test_grader_manual_review():
@@ -426,7 +465,7 @@ def test_workflow_uses_variables_without_deployment_defaults_and_pins_actions():
     assert "vars.EVAL_MODEL ||" not in workflow
     assert "http://" not in workflow
     assert ".gguf" not in workflow
-    assert "--model-label configured-model" in workflow
+    assert "--model-label configured-model" not in workflow
     action_refs = re.findall(r"uses: actions/[^@]+@([^ #\n]+)", workflow)
     assert action_refs
     assert all(re.fullmatch(r"[0-9a-f]{40}", ref) for ref in action_refs)
@@ -543,6 +582,46 @@ def test_openai_adapter_uses_scoped_eval_api_key_from_environment():
         assert request.get_header("Authorization") == "Bearer fixture-auth-42"
 
 
+def test_openai_adapter_keeps_only_safe_http_error_fields():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        adapter_input = AdapterInput(
+            skill_path=tmp_path / "empty-skill",
+            case=_make_case(),
+            work_dir=tmp_path / "work",
+            output_dir=tmp_path / "output",
+            model="fixture/model",
+        )
+        body = json.dumps(
+            {
+                "error": {
+                    "type": "invalid_request_error",
+                    "code": "unsupported_parameter",
+                    "param": "chat_template_kwargs",
+                    "message": "private generated response must not be retained",
+                }
+            }
+        ).encode()
+        error = urllib.error.HTTPError(
+            "https://example.invalid/v1/chat/completions",
+            400,
+            "Bad Request",
+            {},
+            io.BytesIO(body),
+        )
+        with patch("eval_runner.openai_adapter.urllib.request.urlopen", side_effect=error):
+            result = OpenAICompatAdapter(
+                base_url="https://example.invalid", model="fixture/model"
+            ).execute(adapter_input)
+
+        assert result.exit_status == ExitStatus.ERROR
+        assert result.error == (
+            "HTTP 400: Bad Request (type=invalid_request_error, "
+            "code=unsupported_parameter, param=chat_template_kwargs)"
+        )
+        assert "private generated response" not in result.error
+
+
 def test_nous_endpoint_preflight_requires_key_and_sends_bearer_header():
     workflow = yaml.safe_load(
         (
@@ -566,7 +645,9 @@ def test_nous_endpoint_preflight_requires_key_and_sends_bearer_header():
         curl_stub = bin_dir / "curl"
         curl_stub.write_text(
             '#!/bin/sh\nprintf \'%s\\n\' "$@" > "$CURL_ARGS_FILE"\n'
-            'cat > "$CURL_HEADERS_FILE"\nexit "${CURL_EXIT_CODE:-0}"\n'
+            'cat > "$CURL_HEADERS_FILE"\n'
+            'if [ "${CURL_EXIT_CODE:-0}" != "0" ]; then exit "$CURL_EXIT_CODE"; fi\n'
+            'printf \'{"data":[{"id":"%s"}]}\\n\' "${CURL_MODEL_ID:-stepfun/step-3.7-flash}"\n'
         )
         curl_stub.chmod(0o755)
         output_path = temp_path / "github-output"
@@ -625,15 +706,16 @@ def test_nous_endpoint_preflight_requires_key_and_sends_bearer_header():
         assert not headers_path.exists()
 
         environment["EVAL_BASE_URL"] = "https://inference-api.nousresearch.com"
-        environment["EVAL_MODEL"] = "untrusted-model"
+        environment["CURL_MODEL_ID"] = "stepfun/step-3.7-flash"
         output_path.write_text("")
         untrusted_model = subprocess.run(shell, env=environment, capture_output=True, text=True)
-        assert untrusted_model.returncode == 0
+        assert untrusted_model.returncode != 0
         assert output_path.read_text() == "available=false\n"
-        assert not args_path.exists()
-        assert not headers_path.exists()
+        assert "not listed" in untrusted_model.stderr
+        assert "fixture-bearer-42" not in untrusted_model.stdout
+        assert "fixture-bearer-42" not in untrusted_model.stderr
 
-        environment["EVAL_MODEL"] = "stepfun/step-3.7-flash:free"
+        environment["EVAL_MODEL"] = "stepfun/step-3.7-flash"
         output_path.write_text("")
         authenticated = subprocess.run(shell, env=environment, capture_output=True, text=True)
         assert authenticated.returncode == 0

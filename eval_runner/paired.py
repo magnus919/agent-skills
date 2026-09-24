@@ -127,11 +127,13 @@ def run_paired_evaluation(
     model: str,
     model_label: str | None = None,
 ) -> list[dict[str, Any]]:
-    """Run all cases as paired trials and return comparison reports."""
+    """Run paired trials until complete or the first infrastructure failure."""
     reports = []
     for case in cases:
         report = run_paired_trial(adapter, case, skill_path, output_dir, model, model_label)
         reports.append(report)
+        if report["candidate"]["infra_error"] or report["baseline"]["infra_error"]:
+            break
     return reports
 
 
