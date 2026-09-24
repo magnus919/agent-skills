@@ -2901,3 +2901,41 @@ unchanged, and this remains an advisory audit. This change is under PR validatio
 the first post-merge automatic run must be inspected for actual output tokens,
 finish reason, latency, complete paired reports, and Jev's missing/skipped
 coverage before treating the new default as operationally successful.
+
+## 2026-09-24 — Post-merge CI exposed a provider rate limit, not a token ceiling
+
+PR [#622](https://github.com/magnus919/agent-skills/pull/622) merged as
+`fbe5e507ddb485cbc5764707c1fef144b71dd22b`. Its first automatic main-branch
+run, [36048041376](https://github.com/magnus919/agent-skills/actions/runs/36048041376),
+confirmed the real workflow passed `MAX_OUTPUT_TOKENS=65536` and
+`TIMEOUT_SECONDS=300` to inference. The endpoint/model preflight and the paired
+eval's deterministic/fake-adapter tests passed. The real model job ran for
+about 10 minutes before failing on the `reranking-pipeline` baseline with
+HTTP 429 and `retry_after_seconds=30`; its candidate completed, but the
+baseline did not. The paired runner allows one bounded retry for this
+Retry-After interval, then stops on the repeated provider error. This is a
+provider rate-limit failure, not evidence of token exhaustion, a finish-reason
+truncation, or a semantic regression. The run did not establish that 65,536 is
+optimal or that a larger client output ceiling prevents a serving/provider
+failure.
+
+The selector correctly declared 11 expected `system-one` cases. The paired
+job emitted 10 comparison reports: nine complete pairs and one unpaired
+`reranking-pipeline`; it stopped before `jev-ci-operations`. The follow-on Jev
+audit processed 126 available prose assertions, skipped nine assertions from
+the infra-error/unpaired report, omitted none for its assertion budget, and
+reported zero Jev provider errors. Nevertheless, the audit job correctly
+failed coverage reconciliation because a selected case/report was missing.
+Thus “zero Jev provider errors” describes transport on attempted audit work;
+it does not mean a complete audit, 11-case coverage, or validated semantic
+passes. No incomplete run is a quality comparison or release signal.
+
+Lesson: output headroom and provider capacity are separate controls. Keep the
+65,536-token maximum as available headroom, not a target; retain the 300-second
+automatic per-response timeout; and preserve explicit missing-report failure.
+Do not increase retries or serialize/constrain the workflow further based on
+one 429. The next reliability experiment should first capture per-request
+429/retry timing and compare a controlled single-case replay against a normal
+run, without changing the advisory-only quality boundary. The historical
+statement above that automatic CI retained 4,096 tokens describes the state
+before PR #622; the merged workflow now defaults to 65,536.
