@@ -2124,3 +2124,47 @@ implied evidence that did not exist. The follow-up introduces version 2 of the
 comparison-report contract, with `insufficient_data` whenever either arm has
 an infrastructure error; the v1 schema remains unchanged. Lesson: the paired
 delta itself must fail closed, not merely the enclosing workflow.
+
+## 2026-09-24 — Screen Nous free models for Droid tool compatibility
+
+The failed GPT-6 Luna experiment in [PR #544](https://github.com/magnus919/agent-skills/pull/544)
+showed that Nous Portal's Responses route rejected Droid's custom-tool request.
+The subsequent [PR #605](https://github.com/magnus919/agent-skills/pull/605)
+therefore tested OpenAI Chat Completions function calling against model IDs
+from the user's current free-model list. The prompt was fixed and contained no
+repository data; each probe allowed 96 output tokens and asked for one
+`probe({"ok":true})` call.
+
+The authenticated Nous catalog returned multiple IDs for several display
+models, with and without a `:free` suffix. The bounded screen on
+[run 35968966758](https://github.com/magnus919/agent-skills/actions/runs/35968966758)
+matched 12 IDs. Ten returned a `tool_calls` response whose function arguments
+were valid JSON; StepFun's unsuffixed ID returned an XML-like `<tool_call>`
+string inside `function.arguments`, and its `:free` alias returned HTTP 400.
+The model-name filter did not match an Upstage Solar Pro 4 ID, so Solar Pro 4
+was not part of this screen. These are protocol observations, not quality
+scores or comparative review results.
+
+The selected model is `poolside/laguna-s-2.1:free`: its exact free ID returned
+standard JSON function arguments in the screen, and the follow-up
+[run 35969275064](https://github.com/magnus919/agent-skills/actions/runs/35969275064)
+repeated that exact probe successfully. Nous reported the model ID exactly
+and recorded cost as 0 for the 164-token request. Poolside describes Laguna S
+2.1 as an agentic coding model with 118B parameters; that makes it a relevant
+candidate for code review, but says nothing about its review accuracy. The
+Droid workflows now use Factory's `generic-chat-completion-api` provider for
+Nous Chat Completions. Factory's custom-model docs say reasoning-effort flags
+do not apply to custom models, so the prior GPT-specific `low` override is
+omitted.
+
+The pre-merge Factory action skipped because its workflow file differs from
+the default-branch copy; that safeguard is expected and is not a successful
+review. The repository validator and paired-eval checks passed, and the fixed
+Nous tool-protocol probe passed, but full Droid action behavior still requires
+a post-merge automatic review and comment-triggered run. Do not report this as
+a complete Droid integration until those runs actually execute and produce a
+review result. Blog lesson: an OpenAI-compatible base URL does not guarantee
+that every routed model serializes tool arguments compatibly; inspect the
+actual response shape, preserve the provider model ID, and distinguish a
+successful API response from a usable tool call and from a successful agent
+task.
