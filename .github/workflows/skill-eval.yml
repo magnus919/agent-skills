@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       run_model_smoke:
-        description: Run the bounded StepFun smoke evaluation for the agent-skills skill
+        description: Run the bounded StepFun smoke evaluation and advisory Jev audit for agent-skills
         type: boolean
         required: false
         default: false
@@ -188,6 +188,18 @@ jobs:
             echo "manifests=agent-skills/evals/evals.json" >> "$GITHUB_OUTPUT"
             echo "eligible_count=1" >> "$GITHUB_OUTPUT"
             echo "selected_count=1" >> "$GITHUB_OUTPUT"
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          from eval_runner.selection import select, selection_evidence
+
+          manifest = "agent-skills/evals/evals.json"
+          evidence = selection_evidence(select([manifest], 1), Path.cwd())
+          output = Path("eval-output-model/selection.json")
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+          PY
             printf '## Paired-eval selection\n\nManual StepFun smoke evaluation.\n\nEligible manifests: agent-skills/evals/evals.json.\n' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
@@ -229,7 +241,10 @@ jobs:
   jev-eval-audit:
     # Advisory only: never changes a paired-eval or required validation verdict.
     # Model evals upload artifacts even on failure; audit those failures too.
-    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: >-
+      always() && github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' ||
+       (github.event_name == 'workflow_dispatch' && inputs.run_model_smoke))
     runs-on: ubuntu-latest
     needs: paired-eval-model
     continue-on-error: true
