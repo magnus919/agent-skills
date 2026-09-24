@@ -2227,3 +2227,52 @@ every experiment. A successful catalog probe and a successful tiny tool call
 answer different questions from “did this model produce usable output on the
 real workload?”; a bounded fixed-manifest comparison makes that distinction
 reproducible without silently changing the deployed default.
+
+## 2026-09-24 — Choose a model from the real CI workload
+
+PR [#607](https://github.com/magnus919/agent-skills/pull/607) merged as
+[`678e277`](https://github.com/magnus919/agent-skills/commit/678e27721bf0220fe10511417eb99b2dfb6cde34).
+Its automatic main run used the then-configured `stepfun/step-3.7-flash` at
+4,096 output tokens. On the 11-case `system-one` selection, the candidate
+response completed but its paired baseline ended at the token limit with
+`finish_reason=length`. Only 1 of 11 reports arrived; Jev selected zero groups
+and made zero calls, with zero Jev-provider errors. This is incomplete model
+generation, not a Jev outage.
+
+The fixed six-case `agent-skills` smoke then tested StepFun at the manual
+8,192-token ceiling in
+[run 35975430295](https://github.com/magnus919/agent-skills/actions/runs/35975430295).
+Two of six reports arrived; one side of the second case reached 8,192 tokens
+and ended with `finish_reason=length`. Jev saw two reports, selected two groups
+and ten assertions, skipped five infrastructure-error and five unpaired
+assertions, and recorded zero provider errors. The audit correctly remained
+incomplete. Raising StepFun's output ceiling again was not selected as the
+default fix.
+
+Poolside Laguna S 2.1 was screened at the same fixed manifest and the normal
+4,096-token CI ceiling. The initial 8,192-token run
+[35975844954](https://github.com/magnus919/agent-skills/actions/runs/35975844954)
+and confirmation at 4,096 tokens
+[35976488745](https://github.com/magnus919/agent-skills/actions/runs/35976488745)
+both produced all 12 candidate/baseline completions with normal `stop` finish
+reasons, all six expected comparison reports, and no missing or unexpected
+reports. At 4,096, the largest observed completion used 2,571 output tokens.
+Both Jev artifacts reported 12 groups and all 60 selected prose assertions,
+with zero budget omissions, skipped assertions, generation errors, or Jev
+provider errors. Every comparison's deterministic assertion delta was
+`both_pass`.
+
+These are bounded operational compatibility observations for the fixed smoke,
+not a representative model-quality benchmark or semantic-accuracy score.
+Jev remains advisory; a complete Jev artifact proves coverage, not that its
+suggested semantic labels are correct. After the two successful matched runs,
+the repository's `EVAL_MODEL` variable was changed from
+`stepfun/step-3.7-flash` to `poolside/laguna-s-2.1:free` and read back. The
+manual workflow input default is aligned to the same exact model ID in the
+follow-up PR; the normal 4,096-token limit is retained.
+
+Blog lesson: select the deployed model against the actual request path and
+budget, not from its display name, catalog presence, or a short tool-call
+probe. Keep failed/truncated generations as infrastructure evidence, compare
+the full selected-case denominator, and separate operational completion from
+semantic quality and calibration.
