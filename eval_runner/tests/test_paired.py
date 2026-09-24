@@ -220,7 +220,7 @@ def test_comparison_report_structure():
         baseline_manifest={"trial_id": "bbb"},
     )
 
-    assert report["schema_version"] == 1
+    assert report["schema_version"] == 2
     assert report["paired_delta"] == "candidate_improvement"
     assert report["candidate"]["passed"] is True
     assert report["baseline"]["passed"] is False
@@ -239,7 +239,7 @@ def test_comparison_report_validates_against_schema():
     schema_path = (
         Path(__file__).resolve().parent.parent.parent
         / "schemas"
-        / "comparison-report-v1.schema.json"
+        / "comparison-report-v2.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     Draft202012Validator.check_schema(schema)
@@ -254,7 +254,7 @@ def test_comparison_report_validates_against_schema():
     assertions = ["response_contains:paired-test-01"]
     c_grade = grade_output("c1", assertions, output)
     b_grade = grade_output(
-        "c1", assertions, AdapterOutput(exit_status=ExitStatus.COMPLETED, response="")
+        "c1", assertions, AdapterOutput(exit_status=ExitStatus.ERROR, error="fixture error")
     )
 
     report = build_comparison_report(
@@ -268,6 +268,7 @@ def test_comparison_report_validates_against_schema():
 
     errors = list(validator.iter_errors(report))
     assert not errors, f"Schema validation failed: {[e.message for e in errors]}"
+    assert report["paired_delta"] == "insufficient_data"
 
 
 def test_comparison_schema_matches_runtime_case_ids():
@@ -280,7 +281,7 @@ def test_comparison_schema_matches_runtime_case_ids():
     schema_path = (
         Path(__file__).resolve().parent.parent.parent
         / "schemas"
-        / "comparison-report-v1.schema.json"
+        / "comparison-report-v2.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     validator = Draft202012Validator(schema["properties"]["case_id"])
@@ -300,7 +301,7 @@ def test_paired_trial_end_to_end():
 
         report = run_paired_trial(adapter, case, skill, output_dir, "fake-model")
 
-        assert report["schema_version"] == 1
+        assert report["schema_version"] == 2
         assert report["case_id"] == "paired-test-01"
         assert report["candidate"]["passed"] is True
         assert (output_dir / "manifests").is_dir()
@@ -694,6 +695,8 @@ def test_truncated_openai_completion_is_infra_error_in_paired_report():
             assert trial["assertions"]
             assert all(item["verdict"] == "infra_error" for item in trial["assertions"])
         assert "partial answer" not in json.dumps(report)
+        assert report["paired_delta"] == "insufficient_data"
+        assert "not assessed" in format_comparison_summary(report)
 
 
 def test_openai_adapter_keeps_only_safe_http_error_fields():
