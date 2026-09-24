@@ -10,6 +10,8 @@ import subprocess
 import sys
 import tempfile
 import urllib.error
+from datetime import datetime, timedelta, timezone
+from email.utils import format_datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -25,7 +27,7 @@ from eval_runner.comparison import (
 from eval_runner.fake_adapter import FakeAdapter
 from eval_runner.grader import AssertionVerdict, grade_output
 from eval_runner.models import AdapterInput, AdapterOutput, EvalCase, ExitStatus, ToolEvent
-from eval_runner.openai_adapter import OpenAICompatAdapter
+from eval_runner.openai_adapter import OpenAICompatAdapter, _retry_after_seconds
 from eval_runner.paired import (
     infrastructure_error_count,
     run_paired_evaluation,
@@ -776,6 +778,90 @@ def test_openai_adapter_keeps_only_safe_http_error_fields():
             "code=unsupported_parameter, param=chat_template_kwargs)"
         )
         assert "private generated response" not in result.error
+
+
+def test_openai_adapter_retries_rate_limit_once_using_retry_after():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        adapter_input = AdapterInput(
+            skill_path=tmp_path / "empty-skill",
+            case=_make_case(),
+            work_dir=tmp_path / "work",
+            output_dir=tmp_path / "output",
+            model="fixture/model",
+        )
+        rate_limited = urllib.error.HTTPError(
+            "https://example.invalid/v1/chat/completions",
+            429,
+            "Too Many Requests",
+            {"Retry-After": "2"},
+            io.BytesIO(b"{}"),
+        )
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = json.dumps(
+            {"choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}]}
+        ).encode()
+
+        with (
+            patch(
+                "eval_runner.openai_adapter.urllib.request.urlopen",
+                side_effect=[rate_limited, response],
+            ) as urlopen,
+            patch("eval_runner.openai_adapter.time.sleep") as sleep,
+        ):
+            result = OpenAICompatAdapter(
+                base_url="https://example.invalid", model="fixture/model"
+            ).execute(adapter_input)
+
+        assert result.exit_status == ExitStatus.COMPLETED
+        assert result.response == "ok"
+        assert urlopen.call_count == 2
+        sleep.assert_called_once_with(2.0)
+
+
+def test_openai_adapter_defers_rate_limit_retry_beyond_bounded_wait():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        adapter_input = AdapterInput(
+            skill_path=tmp_path / "empty-skill",
+            case=_make_case(),
+            work_dir=tmp_path / "work",
+            output_dir=tmp_path / "output",
+            model="fixture/model",
+        )
+        rate_limited = urllib.error.HTTPError(
+            "https://example.invalid/v1/chat/completions",
+            429,
+            "Too Many Requests",
+            {"Retry-After": "61"},
+            io.BytesIO(b"{}"),
+        )
+
+        with (
+            patch(
+                "eval_runner.openai_adapter.urllib.request.urlopen",
+                side_effect=rate_limited,
+            ) as urlopen,
+            patch("eval_runner.openai_adapter.time.sleep") as sleep,
+        ):
+            result = OpenAICompatAdapter(
+                base_url="https://example.invalid", model="fixture/model"
+            ).execute(adapter_input)
+
+        assert result.exit_status == ExitStatus.ERROR
+        assert result.error == (
+            "HTTP 429: Too Many Requests (retry_after_seconds=61, retry_deferred=true)"
+        )
+        urlopen.assert_called_once()
+        sleep.assert_not_called()
+
+
+def test_retry_after_http_date_is_parsed_as_utc():
+    now = datetime(2026, 9, 24, 12, 0, 0, tzinfo=timezone.utc)
+    retry_at = now + timedelta(seconds=17)
+    header = format_datetime(retry_at, usegmt=True)
+
+    assert _retry_after_seconds({"Retry-After": header}, now=now) == 17
 
 
 def test_nous_endpoint_preflight_requires_key_and_sends_bearer_header():

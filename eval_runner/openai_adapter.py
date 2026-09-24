@@ -9,11 +9,14 @@ sends only the user prompt.
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 import time
 import urllib.error
 import urllib.request
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +24,54 @@ from .models import AdapterInput, AdapterOutput, ExitStatus, ToolEvent
 
 _SAFE_FINISH_REASON = re.compile(r"[A-Za-z0-9_.:-]{1,80}\Z")
 _UNUSABLE_FINISH_REASONS = {"length", "content_filter", "tool_calls", "function_call"}
+_RATE_LIMIT_MAX_RETRY_SECONDS = 60
+_RATE_LIMIT_FALLBACK_RETRY_SECONDS = 1
+
+
+def _retry_after_seconds(headers: Any, *, now: datetime | None = None) -> float | None:
+    """Parse the HTTP Retry-After delta or date form, returning a safe delay."""
+    value = headers.get("Retry-After") if headers is not None else None
+    if not isinstance(value, str) or not value.strip():
+        return None
+    value = value.strip()
+    try:
+        delay = float(value)
+    except ValueError:
+        try:
+            retry_at = parsedate_to_datetime(value)
+        except (TypeError, ValueError, OverflowError):
+            return None
+        if retry_at.tzinfo is None:
+            retry_at = retry_at.replace(tzinfo=timezone.utc)
+        current = now or datetime.now(timezone.utc)
+        delay = (retry_at - current).total_seconds()
+    if not math.isfinite(delay):
+        return math.inf
+    return max(0.0, delay)
+
+
+def _urlopen_with_rate_limit_retry(
+    url: str, data: bytes, headers: dict[str, str], timeout: int
+) -> Any:
+    """Retry one 429 once, respecting bounded Retry-After guidance."""
+
+    def open_once() -> Any:
+        request = urllib.request.Request(url, data=data, headers=headers, method="POST")
+        return urllib.request.urlopen(request, timeout=timeout)
+
+    try:
+        return open_once()
+    except urllib.error.HTTPError as exc:
+        if exc.code != 429:
+            raise
+        delay = _retry_after_seconds(exc.headers)
+        if delay is None:
+            delay = _RATE_LIMIT_FALLBACK_RETRY_SECONDS
+        if delay > _RATE_LIMIT_MAX_RETRY_SECONDS:
+            raise
+        exc.close()
+        time.sleep(delay)
+        return open_once()
 
 
 class OpenAICompatAdapter:
@@ -101,14 +152,12 @@ class OpenAICompatAdapter:
             headers["Authorization"] = f"Bearer {self._api_key}"
 
         data = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-
         input.work_dir.mkdir(parents=True, exist_ok=True)
         input.output_dir.mkdir(parents=True, exist_ok=True)
 
         start = time.monotonic()
         try:
-            with urllib.request.urlopen(req, timeout=self._timeout_seconds) as resp:
+            with _urlopen_with_rate_limit_retry(url, data, headers, self._timeout_seconds) as resp:
                 body = json.loads(resp.read().decode("utf-8"))
             elapsed_ms = (time.monotonic() - start) * 1000
 
@@ -196,6 +245,15 @@ class OpenAICompatAdapter:
                             safe_context.append(f"{key}={value}")
             except (OSError, json.JSONDecodeError, UnicodeDecodeError):
                 pass
+            if exc.code == 429:
+                retry_after = _retry_after_seconds(exc.headers)
+                if retry_after is not None:
+                    if math.isfinite(retry_after):
+                        safe_context.append(f"retry_after_seconds={math.ceil(retry_after)}")
+                    else:
+                        safe_context.append("retry_after_seconds=too_long")
+                    if retry_after > _RATE_LIMIT_MAX_RETRY_SECONDS:
+                        safe_context.append("retry_deferred=true")
             detail = f" ({', '.join(safe_context)})" if safe_context else ""
             return AdapterOutput(
                 exit_status=ExitStatus.ERROR,

@@ -1,8 +1,9 @@
 # Jev CI reference deployment runlog
 
-Status: advisory CI deployment verified; semantic accuracy calibration remains
-open. This is an evidence log, not a declaration that a Jev decision is
-production-calibrated or authorized to change required CI gates.
+Status: advisory CI deployment is active; semantic accuracy calibration and
+transient provider availability remain open. This is an evidence log, not a
+declaration that a Jev decision is production-calibrated or authorized to
+change required CI gates.
 Times below are UTC. No API keys, unredacted logs, or personal data belong
 here.
 
@@ -2276,3 +2277,60 @@ budget, not from its display name, catalog presence, or a short tool-call
 probe. Keep failed/truncated generations as infrastructure evidence, compare
 the full selected-case denominator, and separate operational completion from
 semantic quality and calibration.
+
+## 2026-09-24 — Recheck the merged default and preserve a rate-limit failure
+
+PR [#608](https://github.com/magnus919/agent-skills/pull/608) merged as
+[`4087c91`](https://github.com/magnus919/agent-skills/commit/4087c91bd94137204dcefaadb74edfc86691b37d).
+Its automatic main push passed paired-eval tests and the fake-adapter smoke,
+but selected no skill manifests. The workflow therefore performed no live
+generation on that push; a green post-merge workflow alone was not sufficient
+to verify the model path.
+
+The follow-up manual run
+[35978853974](https://github.com/magnus919/agent-skills/actions/runs/35978853974)
+left `model_id` unspecified, exercising the merged
+`poolside/laguna-s-2.1:free` workflow default, and used the normal 4,096-token
+ceiling. Unit tests and authenticated model-catalog preflight passed. The
+fixed six-case manifest selected all six cases, but generation stopped after
+one paired report: one side completed in 63.8 seconds with 918 output tokens;
+the other received HTTP 429 `Too Many Requests` from Poolside. The old adapter
+did not retain response retry headers. Comparison v2 correctly reported
+`insufficient_data`; Jev saw one report, selected zero groups and assertions,
+made zero calls, and recorded zero Jev-provider errors. The Jev job failed
+closed because the selected evaluation was incomplete. This is provider rate
+limiting, not a Jev failure or a semantic model-quality result.
+
+This run qualifies the earlier two complete Poolside smokes: the model can
+complete the fixed workload at 4,096 tokens, but free-endpoint availability is
+intermittent. Keep the exact configured model for now because the evidence does
+not establish a better tested alternative; do not hide 429s with model
+fallback or count partial outputs. A local follow-up adds exactly one retry
+for HTTP 429, honors a numeric or HTTP-date `Retry-After` up to 60 seconds,
+uses a one-second fallback only when the header is absent or invalid, and
+records a deferred retry when the provider asks for a longer wait. Other HTTP
+errors remain single-attempt. The retry implementation and tests pass locally;
+live behavior is unverified until the merged code is exercised. A retry that
+still receives 429 must remain an explicit incomplete run.
+
+The same PR's Factory Droid review
+[run 35977488831](https://github.com/magnus919/agent-skills/actions/runs/35977488831)
+eventually completed successfully after about 12 minutes, with a successful
+Nous function-call preflight and zero inline review comments. This verifies
+that the open-ended review route ran for this small configuration/documentation
+diff; it does not measure review accuracy or security-detection quality.
+
+The current full workflow audit still finds no drop-in Jev replacement for
+existing generated artifacts: `skill-eval` requires full candidate/baseline
+answers, and Droid requires full code/security review. Jev's typed judgments
+fit the post-generation semantic-audit boundary instead. The failure-to-issue
+workflow has no model call to replace; advisory failure-lane triage remains a
+separate, unvalidated addition. The Nous teacher workflow must stay separate
+from Jev because its role is to provide a non-Jev pseudo-label comparison; the
+local teacher can be the response-generating model and is diagnostic only.
+
+Blog lesson: a successful provider preflight does not promise service
+capacity, and a green validation run may not exercise an inference path at all.
+Check the selected-case denominator, separate the model endpoint's 429 from
+Jev's provider health, and keep a bounded retry observable without converting
+an incomplete evaluation into a pass.
