@@ -1526,3 +1526,28 @@ matched the earlier run, but its question hash changed and no independent
 labels have been assigned for the new assertions. Do not combine it with the
 140-assertion teacher screen as though the questions were byte-identical.
 No generated response text was published here.
+
+## 2026-09-23 — Selection identity and count are distinct evidence
+
+The approved Nous teacher screen on the new contract,
+[run 35943607782](https://github.com/magnus919/agent-skills/actions/runs/35943607782),
+passed its synthetic probe and completed two prediction-blind passes. A
+private local reproduction of the frozen 44-item packet matched its published
+blind-item SHA-256. Consensus resolved 38/44: 20 `met`, three `not_met`,
+15 `not_shown`, and six `uncertain`. In the population slice 27/32 resolved;
+one of ten Jev suggested-`met` items was `not_shown` by both teacher passes.
+The high-`met` challenge slice resolved 11/12, all agreeing on `met`; this
+enriched slice is not representative. These are correlated model pseudo-labels,
+not accuracy or calibrated probabilities.
+
+The disagreement was the `jev-ci-operations` candidate's selected-report
+assertion. Jev suggested `met` at 0.77 `met` probability and 0.64 provider
+confidence, while both teacher passes said `not_shown`. Private inspection
+found an example expected-versus-queried **count** comparison and per-eval IDs,
+but no comparison of expected selected **IDs** with observed report IDs or
+missing/unexpected reports. This is a concrete partial-evidence shape, not a
+reason to choose a probability threshold. Preserve the case ID and prompt;
+split the assertion into independently checkable selection-identity and
+selection-count claims. This changes the eval/question contract again. Test
+the expanded budget and verify a new main audit; do not compare verdict totals
+across contracts or publish the generated response text.
