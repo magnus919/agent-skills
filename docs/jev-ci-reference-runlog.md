@@ -2159,12 +2159,17 @@ omitted.
 
 The pre-merge Factory action skipped because its workflow file differs from
 the default-branch copy; that safeguard is expected and is not a successful
-review. The repository validator and paired-eval checks passed, and the fixed
-Nous tool-protocol probe passed, but full Droid action behavior still requires
-a post-merge automatic review and comment-triggered run. Do not report this as
-a complete Droid integration until those runs actually execute and produce a
-review result. Blog lesson: an OpenAI-compatible base URL does not guarantee
-that every routed model serializes tool arguments compatibly; inspect the
-actual response shape, preserve the provider model ID, and distinguish a
-successful API response from a usable tool call and from a successful agent
-task.
+review. After PR #605 merged as
+[commit `fc7c941`](https://github.com/magnus919/agent-skills/commit/fc7c941cfce5ede8dc2381984e81390009ee3d21),
+rerun [35969726932](https://github.com/magnus919/agent-skills/actions/runs/35969726932)
+passed the exact-model Nous function-call probe again, but the Factory action
+could not check out the already-merged PR branch (`Failed to checkout PR #605
+branch for review`). Thus the provider configuration and basic function-call
+protocol are verified; actual review generation is not yet verified. This
+follow-up PR is the first live, open-PR execution opportunity. Record whether
+it produces a review before treating the Droid integration as complete. The
+repository validator and paired-eval checks passed. Blog lesson: an
+OpenAI-compatible base URL does not guarantee that every routed model
+serializes tool arguments compatibly; inspect the actual response shape,
+preserve the provider model ID, and distinguish a successful API response from
+a usable tool call and from a successful agent task.
