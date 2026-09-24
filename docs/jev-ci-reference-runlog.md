@@ -2975,9 +2975,10 @@ bounded replay. Keep the Jev audit advisory-only.
 
 ## 2026-09-24 — CI inference inventory and Jev replacement boundaries
 
-Reviewed the GitHub Actions workflows and their repository-local callers for
-model-backed work. This distinguishes inference that Jev can plausibly
-replace from generative or independent-reference work that it cannot:
+Reviewed all 13 GitHub Actions workflows and their repository-local callers
+for model-backed work. This distinguishes inference that Jev can plausibly
+replace from generative, independent-reference, and deterministic work that
+it cannot:
 
 | Workflow | Inference today | Jev fit |
 |---|---|---|
@@ -2987,10 +2988,14 @@ replace from generative or independent-reference work that it cannot:
 | `jev-teacher-calibration.yml` | A manually dispatched Nous model supplies two blind teacher-label passes for a Jev calibration packet. | Do not substitute Jev for the teacher: that would make its own evaluation circular rather than independent. |
 | `jev-local-teacher-calibration.yml` | A manually dispatched local inference model supplies blind labels for comparison with Jev. | Do not replace this independent reference with Jev. |
 | `jev-qa-pilot.yml`, `jev-eval-replay.yml` | Bounded Jev QA pilot or explicitly authorized Jev question-input replay. | Already Jev-shaped, but exploratory/advisory; the replay gate correctly requires per-run egress authorization. |
-| `skillevaluator.yml`, `validate.yml` | Keyless static, schema, privacy, license, quality, and repository tests; the selected SkillEvaluator checks explicitly exclude LLM calls. | No inference to replace. Keep exact deterministic rules and required test results intact. |
+| `ci-failure-to-issue.yml` | Deterministically creates or updates a templated tracking issue after main-branch validation failure. | No current inference to replace. A future typed failure-category/owner suggestion could augment issue metadata, but must remain advisory; issue/comment mutations and severity labels stay deterministic. |
+| `skillevaluator.yml` | Keyless schema, privacy, license, quality, unicode, and lint checks; the selected checks explicitly exclude LLM calls. | No inference to replace. |
+| `raleigh-canary.yml`, `raleigh-tests.yml`, `release-please.yml`, `validate.yml` | Live endpoint/schema checks, deterministic test matrices, release automation, and repository validation. | No model calls found; keep exact checks and required results deterministic. |
 
 The repository-wide workflow scan found no other current CI LLM call that is
-a safe one-for-one Jev replacement. The good future expansion is a separate,
+a safe one-for-one Jev replacement. The failure-to-issue workflow is a
+potential host for an advisory classifier, not an existing inference
+replacement target. The good future expansion is a separate,
 bounded CI-failure classifier or optional-test ranker that consumes trusted
 failure/change facts and returns a small typed route plus `unknown`; no such
 inference currently exists in this repository. First create independently
