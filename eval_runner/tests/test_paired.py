@@ -513,7 +513,7 @@ def test_nous_key_is_scoped_to_trusted_model_job():
             assert "secrets.NOUS_API_KEY" not in json.dumps(job)
 
 
-def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
+def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
     workflow = yaml.load(
         (
             Path(__file__).resolve().parent.parent.parent
@@ -525,6 +525,14 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
     )
     assert "workflow_dispatch" in workflow["on"]
     assert workflow["on"]["workflow_dispatch"]["inputs"]["run_model_smoke"]["type"] == "boolean"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_skill"]["type"] == "choice"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_skill"]["options"] == [
+        "agent-skills",
+        "system-one",
+    ]
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_skill"]["default"] == (
+        "agent-skills"
+    )
     assert workflow["on"]["workflow_dispatch"]["inputs"]["model_id"]["type"] == "string"
     assert workflow["on"]["workflow_dispatch"]["inputs"]["model_id"]["default"] == (
         "poolside/laguna-s-2.1:free"
@@ -544,6 +552,7 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
     selection_step = next(
         step for step in model_job["steps"] if step["name"] == "Detect changed skills with evals"
     )
+    assert selection_step["env"]["EVAL_SKILL"] == "${{ inputs.eval_skill || 'agent-skills' }}"
     endpoint_step = next(
         step for step in model_job["steps"] if step["name"] == "Check model endpoint"
     )
@@ -554,16 +563,22 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
     assert inference_step["env"]["EVAL_MODEL"] == "${{ inputs.model_id || vars.EVAL_MODEL }}"
     assert inference_step["env"]["MAX_OUTPUT_TOKENS"] == "${{ inputs.max_output_tokens || '4096' }}"
     assert '--max-tokens "$MAX_OUTPUT_TOKENS"' in inference_step["run"]
-    assert "Manual model smoke evaluation." in selection_step["run"]
+    assert "Manual model smoke evaluation for `%s`." in selection_step["run"]
     assert "4096|8192|12288" in selection_step["run"]
     repo_root = Path(__file__).resolve().parent.parent.parent
-    manifest_source = repo_root / "agent-skills" / "evals" / "evals.json"
-    manifest_data = json.loads(manifest_source.read_text())
+    manifests = {
+        "agent-skills": Path("agent-skills/evals/evals.json"),
+        "system-one": Path("system-one/evals/evals.json"),
+    }
+    manifest_data = {}
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
-        manifest_path = tmp_path / "agent-skills" / "evals" / "evals.json"
-        manifest_path.parent.mkdir(parents=True)
-        manifest_path.write_text(manifest_source.read_text())
+        for skill, relative_path in manifests.items():
+            source = repo_root / relative_path
+            manifest_data[skill] = json.loads(source.read_text())
+            manifest_path = tmp_path / relative_path
+            manifest_path.parent.mkdir(parents=True)
+            manifest_path.write_text(source.read_text())
         output_path = tmp_path / "github-output"
         summary_path = tmp_path / "github-summary"
         environment = {
@@ -572,32 +587,69 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
             "GITHUB_EVENT_NAME": "workflow_dispatch",
             "RUN_MODEL_SMOKE": "true",
             "BASE_SHA": "",
+            "EVAL_SKILL": "agent-skills",
             "EVAL_MODEL": "poolside/laguna-s-2.1:free",
             "MAX_OUTPUT_TOKENS": "4096",
             "GITHUB_OUTPUT": str(output_path),
             "GITHUB_STEP_SUMMARY": str(summary_path),
         }
-        result = subprocess.run(
+        for skill, relative_path in manifests.items():
+            output_path.write_text("")
+            summary_path.write_text("")
+            environment["EVAL_SKILL"] = skill
+            result = subprocess.run(
+                [
+                    "bash",
+                    "--noprofile",
+                    "--norc",
+                    "-e",
+                    "-o",
+                    "pipefail",
+                    "-c",
+                    selection_step["run"],
+                ],
+                env=environment,
+                cwd=tmp_path,
+                capture_output=True,
+                text=True,
+            )
+            assert result.returncode == 0, result.stderr
+            outputs = output_path.read_text()
+            summary = summary_path.read_text()
+            assert f"manifests={relative_path.as_posix()}\n" in outputs
+            assert "eligible_count=1\n" in outputs
+            assert "selected_count=1\n" in outputs
+            assert f"{relative_path.as_posix()}" in summary
+            assert "poolside/laguna-s-2.1:free" in summary
+            assert "4096" in summary
+            selection = json.loads(
+                (tmp_path / "eval-output-model" / "selection.json").read_text()
+            )
+            assert selection["status"] == "selected"
+            assert selection["selected_count"] == 1
+            assert selection["expected_cases"][skill] == [
+                case["id"] for case in manifest_data[skill]["evals"]
+            ]
+
+        output_path.write_text("")
+        summary_path.write_text("")
+        selection_path = tmp_path / "eval-output-model" / "selection.json"
+        selection_path.unlink()
+        environment["EVAL_SKILL"] = "../../untrusted"
+        invalid_skill = subprocess.run(
             ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", selection_step["run"]],
             env=environment,
             cwd=tmp_path,
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 0, result.stderr
-        assert "manifests=agent-skills/evals/evals.json\n" in output_path.read_text()
-        assert "eligible_count=1\n" in output_path.read_text()
-        assert "selected_count=1\n" in output_path.read_text()
-        assert "agent-skills/evals/evals.json" in summary_path.read_text()
-        assert "poolside/laguna-s-2.1:free" in summary_path.read_text()
-        assert "4096" in summary_path.read_text()
-        selection = json.loads((tmp_path / "eval-output-model" / "selection.json").read_text())
-        assert selection["status"] == "selected"
-        assert selection["selected_count"] == 1
-        assert selection["expected_cases"]["agent-skills"] == [
-            case["id"] for case in manifest_data["evals"]
-        ]
+        assert invalid_skill.returncode != 0
+        assert "Unsupported manual eval skill" in invalid_skill.stderr
+        assert output_path.read_text() == ""
+        assert summary_path.read_text() == ""
+        assert not selection_path.exists()
 
+        environment["EVAL_SKILL"] = "system-one"
         environment["MAX_OUTPUT_TOKENS"] = "1024"
         output_path.write_text("")
         invalid_budget = subprocess.run(
@@ -1104,7 +1156,7 @@ if __name__ == "__main__":
     test_cleanup_does_not_follow_replaced_nested_symlink()
     test_workflow_uses_variables_without_deployment_defaults_and_pins_actions()
     test_nous_key_is_scoped_to_trusted_model_job()
-    test_manual_model_smoke_is_main_only_and_selects_fixed_manifest()
+    test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest()
     test_teacher_calibration_accepts_verified_manual_smokes_after_artifact_validation()
     test_openai_adapter_uses_scoped_eval_api_key_from_environment()
     test_openai_adapter_rejects_empty_and_incomplete_completions()
