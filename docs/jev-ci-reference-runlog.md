@@ -2309,9 +2309,11 @@ fallback or count partial outputs. A local follow-up adds exactly one retry
 for HTTP 429, honors a numeric or HTTP-date `Retry-After` up to 60 seconds,
 uses a one-second fallback only when the header is absent or invalid, and
 records a deferred retry when the provider asks for a longer wait. Other HTTP
-errors remain single-attempt. The retry implementation and tests pass locally;
-live behavior is unverified until the merged code is exercised. A retry that
-still receives 429 must remain an explicit incomplete run.
+errors remain single-attempt. The focused retry test functions were added, but
+a later audit found they were not called by the test file's script-style
+`__main__` runner, which is how CI executes that file. Their presence was
+mistaken for CI coverage. A retry that still receives 429 must remain an
+explicit incomplete run.
 
 The same PR's Factory Droid review
 [run 35977488831](https://github.com/magnus919/agent-skills/actions/runs/35977488831)
@@ -2334,3 +2336,39 @@ capacity, and a green validation run may not exercise an inference path at all.
 Check the selected-case denominator, separate the model endpoint's 429 from
 Jev's provider health, and keep a bounded retry observable without converting
 an incomplete evaluation into a pass.
+
+## 2026-09-24 — Verify the merged retry path and make retries observable
+
+PR [#609](https://github.com/magnus919/agent-skills/pull/609) merged as
+[`aa1d93c`](https://github.com/magnus919/agent-skills/commit/aa1d93c3d595bfcabd7ad5c47b187b48eaa9c76f).
+The post-merge bounded run
+[35982396921](https://github.com/magnus919/agent-skills/actions/runs/35982396921)
+completed on the Poolside `:free` model: all 6 selected cases produced 6/6
+comparison reports, all 12 candidate/baseline outputs completed, and Jev
+selected all 12 groups and 60 prose assertions with zero skipped assertions,
+generation errors, budget omissions, or Jev provider errors. All reports had
+`paired_delta=both_pass` and normal `stop` finish reasons. This verifies a
+complete operational path on the fixed smoke, not Jev label accuracy or
+semantic model quality.
+
+The same run overlapped the long-running Factory Droid review
+[35980792942](https://github.com/magnus919/agent-skills/actions/runs/35980792942),
+which used the same free Nous endpoint. Treat that concurrency as a capacity
+confound. More importantly, manifests contained no retry count, so the
+successful run cannot establish whether the new retry was used; the slowest
+completion time is not evidence of a retry.
+
+The follow-up adds `outputs.rate_limit_retries` to the run manifest when the
+OpenAI-compatible adapter can report it. Zero means no retry was attempted;
+one means the single bounded retry was issued, whether it completed or failed.
+It remains optional in the v1 schema so existing artifacts validate
+unchanged. Tests now cover the normal path, retry success, a second 429,
+deferred long waits, persisted counts, and legacy-manifest compatibility. They
+are explicitly called by the script-style test entrypoint used in CI. A new
+post-merge manual smoke is still required to inspect retry counts on real
+responses; until then, unit coverage is not live retry evidence.
+
+Blog lesson: behavior without telemetry is not operational evidence. Test
+functions must be wired into the command CI actually executes, and a successful
+job must retain enough privacy-safe metadata to distinguish first-attempt
+success from retry success without storing raw responses.

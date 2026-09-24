@@ -79,6 +79,8 @@ class AdapterOutput:
     token_usage: dict[str, Any] | None = None
     raw_trace_path: str | None = None
     error: str | None = None
+    # Number of rate-limit retries where the adapter can report it; None means unavailable.
+    rate_limit_retries: int | None = None
 
     def missing_evidence(self) -> list[str]:
         missing: list[str] = []

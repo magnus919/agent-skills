@@ -26,6 +26,7 @@ from eval_runner.comparison import (
 )
 from eval_runner.fake_adapter import FakeAdapter
 from eval_runner.grader import AssertionVerdict, grade_output
+from eval_runner.manifest import build_manifest
 from eval_runner.models import AdapterInput, AdapterOutput, EvalCase, ExitStatus, ToolEvent
 from eval_runner.openai_adapter import OpenAICompatAdapter, _retry_after_seconds
 from eval_runner.paired import (
@@ -640,6 +641,8 @@ def test_openai_adapter_uses_scoped_eval_api_key_from_environment():
 
         assert result.exit_status == ExitStatus.COMPLETED
         assert result.finish_reason == "stop"
+        assert result.rate_limit_retries == 0
+        assert result.environment_state["rate_limit_retries"] == 0
         request = urlopen.call_args.args[0]
         assert request.get_header("Authorization") == "Bearer fixture-auth-42"
         assert json.loads(request.data)["model"] == "stepfun/step-3.7-flash"
@@ -783,8 +786,9 @@ def test_openai_adapter_keeps_only_safe_http_error_fields():
 def test_openai_adapter_retries_rate_limit_once_using_retry_after():
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
+        skill_path = _make_skill_dir(tmp_path)
         adapter_input = AdapterInput(
-            skill_path=tmp_path / "empty-skill",
+            skill_path=skill_path,
             case=_make_case(),
             work_dir=tmp_path / "work",
             output_dir=tmp_path / "output",
@@ -815,8 +819,69 @@ def test_openai_adapter_retries_rate_limit_once_using_retry_after():
 
         assert result.exit_status == ExitStatus.COMPLETED
         assert result.response == "ok"
+        assert result.rate_limit_retries == 1
+        assert result.environment_state["rate_limit_retries"] == 1
         assert urlopen.call_count == 2
         sleep.assert_called_once_with(2.0)
+
+        now = datetime.now(timezone.utc)
+        manifest = build_manifest(
+            adapter_name="openai-compat",
+            adapter_version="0.1.0",
+            harness_name="openai-compat",
+            harness_version="0.1.0",
+            model_provider="fixture",
+            model_id="fixture/model",
+            adapter_input=adapter_input,
+            adapter_output=result,
+            started_at=now,
+            finished_at=now,
+        )
+        assert manifest["outputs"]["rate_limit_retries"] == 1
+
+
+def test_openai_adapter_records_retry_when_retry_is_also_rate_limited():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        adapter_input = AdapterInput(
+            skill_path=tmp_path / "empty-skill",
+            case=_make_case(),
+            work_dir=tmp_path / "work",
+            output_dir=tmp_path / "output",
+            model="fixture/model",
+        )
+        first_429 = urllib.error.HTTPError(
+            "https://example.invalid/v1/chat/completions",
+            429,
+            "Too Many Requests",
+            {"Retry-After": "0"},
+            io.BytesIO(b"{}"),
+        )
+        second_429 = urllib.error.HTTPError(
+            "https://example.invalid/v1/chat/completions",
+            429,
+            "Too Many Requests",
+            {"Retry-After": "10"},
+            io.BytesIO(b'{"error":{"message":"private provider detail"}}'),
+        )
+
+        with (
+            patch(
+                "eval_runner.openai_adapter.urllib.request.urlopen",
+                side_effect=[first_429, second_429],
+            ) as urlopen,
+            patch("eval_runner.openai_adapter.time.sleep") as sleep,
+        ):
+            result = OpenAICompatAdapter(
+                base_url="https://example.invalid", model="fixture/model"
+            ).execute(adapter_input)
+
+        assert result.exit_status == ExitStatus.ERROR
+        assert result.rate_limit_retries == 1
+        assert result.error == ("HTTP 429: Too Many Requests (retry_after_seconds=10)")
+        assert "private provider detail" not in result.error
+        assert urlopen.call_count == 2
+        sleep.assert_called_once_with(0.0)
 
 
 def test_openai_adapter_defers_rate_limit_retry_beyond_bounded_wait():
@@ -852,6 +917,7 @@ def test_openai_adapter_defers_rate_limit_retry_beyond_bounded_wait():
         assert result.error == (
             "HTTP 429: Too Many Requests (retry_after_seconds=61, retry_deferred=true)"
         )
+        assert result.rate_limit_retries == 0
         urlopen.assert_called_once()
         sleep.assert_not_called()
 
@@ -1014,5 +1080,9 @@ if __name__ == "__main__":
     test_openai_adapter_uses_scoped_eval_api_key_from_environment()
     test_openai_adapter_rejects_empty_and_incomplete_completions()
     test_truncated_openai_completion_is_infra_error_in_paired_report()
+    test_openai_adapter_retries_rate_limit_once_using_retry_after()
+    test_openai_adapter_records_retry_when_retry_is_also_rate_limited()
+    test_openai_adapter_defers_rate_limit_retry_beyond_bounded_wait()
+    test_retry_after_http_date_is_parsed_as_utc()
     test_nous_endpoint_preflight_requires_key_and_sends_bearer_header()
     print("All paired evaluation tests passed.")

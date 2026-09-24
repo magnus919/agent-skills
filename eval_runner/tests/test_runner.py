@@ -111,6 +111,7 @@ def test_manifest_serialization():
 
         result = adapter.execute(adapter_input)
         result.finish_reason = "stop"
+        result.rate_limit_retries = 1
         now = datetime.now(timezone.utc)
 
         manifest = build_manifest(
@@ -133,6 +134,7 @@ def test_manifest_serialization():
         assert manifest["case"]["case_id"] == "test-case-01"
         assert manifest["status"] == "completed"
         assert manifest["outputs"]["finish_reason"] == "stop"
+        assert manifest["outputs"]["rate_limit_retries"] == 1
         assert manifest["adapter"]["name"] == "fake"
         assert isinstance(manifest["missing_evidence"], list)
 
@@ -142,6 +144,7 @@ def test_manifest_serialization():
         loaded = json.loads(manifest_path.read_text())
         assert loaded["trial_id"] == manifest["trial_id"]
         assert loaded["outputs"]["finish_reason"] == "stop"
+        assert loaded["outputs"]["rate_limit_retries"] == 1
 
 
 def test_manifest_validates_against_schema():
@@ -174,6 +177,7 @@ def test_manifest_validates_against_schema():
 
         result = adapter.execute(adapter_input)
         result.finish_reason = "stop"
+        result.rate_limit_retries = 1
         now = datetime.now(timezone.utc)
 
         manifest = build_manifest(
@@ -194,7 +198,9 @@ def test_manifest_validates_against_schema():
 
         legacy_manifest = dict(manifest)
         legacy_manifest["outputs"] = {
-            key: value for key, value in manifest["outputs"].items() if key != "finish_reason"
+            key: value
+            for key, value in manifest["outputs"].items()
+            if key not in {"finish_reason", "rate_limit_retries"}
         }
         assert not list(validator.iter_errors(legacy_manifest))
 

@@ -108,6 +108,7 @@
           "maxLength": 80,
           "pattern": "^[A-Za-z0-9_.:-]{1,80}$"
         },
+        "rate_limit_retries": {"type": "integer", "minimum": 0},
         "activation_evidence": {"type": ["string", "null"]},
         "artifact_digests": {
           "type": "object",
