@@ -57,10 +57,12 @@
     },
     {
       "id": "calibration-review",
-      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Review this proposal and define the evidence needed before release.",
-      "expected_output": "Rejects the universal threshold, distinguishes confidence from accuracy, requires held-out target data, calibration and risk-coverage analysis, and uses stricter confirmation or human review for consequential actions.",
+      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Their same 22 author-written synthetic CI cases score 21/22 in two runs, with the same false negative and a Noul probability moving from 0.49 to 0.43. Review the threshold proposal and define the evidence needed before release.",
+      "expected_output": "Rejects the universal threshold, explains that reusing the same synthetic cases does not create independent holdout evidence, distinguishes confidence from accuracy, requires independently labeled target data, calibration and risk-coverage analysis, and uses stricter confirmation or human review for consequential actions.",
       "assertions": [
         "Explains why a vendor/default confidence number is not a universal policy threshold",
+        "Distinguishes repeatability on reused synthetic cases from independent held-out evidence and calibration",
+        "Does not tune a prompt or threshold against a repeated challenge case and then describe it as held out",
         "Uses held-out real-output cases with labels assigned independently of the tested model",
         "Separates a representative workload sample from deliberately risk-enriched challenge cases",
         "Measures probability calibration and selective accuracy as automated coverage changes",

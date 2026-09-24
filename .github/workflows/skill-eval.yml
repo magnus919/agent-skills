@@ -221,7 +221,7 @@ jobs:
           EVAL_SKILL: ${{ inputs.eval_skill || 'agent-skills' }}
           EVAL_CASE: ${{ inputs.eval_case || '' }}
           EVAL_MODEL: ${{ inputs.model_id || vars.EVAL_MODEL }}
-          MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
+          MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '65536' }}
           TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
         run: |
           case "$MAX_OUTPUT_TOKENS" in
@@ -293,7 +293,7 @@ jobs:
           EVAL_CASE: ${{ inputs.eval_case || '' }}
           EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
           EVAL_API_KEY: ${{ secrets.NOUS_API_KEY }}
-          MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
+          MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '65536' }}
           TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
         run: |
           exit_code=0
@@ -356,7 +356,7 @@ jobs:
             --selection eval-output-model/selection.json \
             --live \
             --max-calls 22 \
-            --max-assertions 168 \
+            --max-assertions 176 \
             --output jev-eval-audit.json \
             --summary-output "$GITHUB_STEP_SUMMARY"
       - name: Explain audit failure without a report

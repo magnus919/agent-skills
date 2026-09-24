@@ -2846,3 +2846,59 @@ timeout; users can still choose smaller bounds. This applies only to opt-in
 inference runs. Automatic CI retains its 4,096-token/300-second fallback, and
 the observed HTTP 524 means this 900-second client setting cannot force a
 serving path to run longer than its own limit.
+
+## 2026-09-24 — Repeated CI QA pilot reproduces one synthetic miss
+
+The manual synthetic QA pilot completed successfully in
+[run 36043312427](https://github.com/magnus919/agent-skills/actions/runs/36043312427):
+22 calls to `jev-1.13.0`, 22 valid typed responses, and no transport or
+contract errors. Jev matched 21/22 author labels; the simple rules-only
+baseline matched 17/22. By lane, Jev/baseline were triage 9/9 vs. 7/9,
+additional-test choice 6/6 vs. 5/6, and semantic grading 6/7 vs. 5/7. Call
+latency ranged from 202.0 to 489.2 ms, with a 252.2 ms median.
+
+The only Jev miss was G7: the labeled outcome was positive, but Jev chose
+negative; its Noul `yes` probability was 0.43. The earlier manual CI replay,
+[run 35808017339](https://github.com/magnus919/agent-skills/actions/runs/35808017339),
+also scored 21/22 and missed G7, with Noul `yes` probability 0.49. This
+reproduces a miss on the same frozen synthetic case, not an independent test:
+the same author-created fixture and labels were reused. The 0.43/0.49 movement
+also does not establish calibrated probabilities or justify tuning a cutoff
+against G7.
+
+The rules baseline is intentionally simple, the labels are not operational
+ground truth, and 22 synthetic examples do not estimate performance on real
+CI incidents or QA artifacts. Preserve the current advisory/manual-only
+boundary. Next evidence should come from an independently labeled,
+privacy-reviewed sample from the intended workflow, with a frozen holdout,
+explicit `unknown`/abstention outcomes, per-class error analysis, and a
+predeclared comparison to a credible deterministic baseline. Do not tune the
+prompt or threshold on G7 and then reuse it as a held-out result.
+
+Blog lesson: a repeated failure can be more actionable than a high aggregate
+score. Here the stable false negative points to a challenge case and an
+abstention-design question; the changing Noul score warns against mistaking a
+probability field for calibrated confidence.
+
+## 2026-09-24 — Raise the automatic reasoning-eval output ceiling
+
+The earlier `deadline-bound-stream` probe completed both sides at a 65,536
+output-token ceiling; the baseline used 6,299 output tokens in 117.7 seconds.
+That observed completion alone exceeds the old 4,096-token ceiling, showing
+that the old cap could not contain this response. The 8,192- and 12,288-token
+probes for the same case returned no usable completion, but do not isolate
+whether the cause was hidden reasoning, provider behavior, or another limit.
+This does not show that models should consume 65,536 tokens, that this is the
+optimal cap, or that more output guarantees better judgments. A maximum
+output-token setting is headroom, not a token allocation.
+
+Changed the automatic main-branch paired-eval fallback from 4,096 to 65,536
+output tokens, matching the opt-in smoke's headroom. Kept its 300-second
+per-response deadline unchanged: the later 600-second serving-path timeout
+showed that a longer client wait cannot ensure completion. Manual smoke still
+allows explicit 300/600/900-second choices. The new calibration-eval assertions
+raise the Jev prose-assertion ceiling from 168 to 176; the 22-call cap is
+unchanged, and this remains an advisory audit. This change is under PR validation;
+the first post-merge automatic run must be inspected for actual output tokens,
+finish reason, latency, complete paired reports, and Jev's missing/skipped
+coverage before treating the new default as operationally successful.
