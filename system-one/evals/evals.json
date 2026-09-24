@@ -143,7 +143,8 @@
         "Keeps the Jev secret in the trusted main-branch audit job rather than a pull-request job",
         "Treats downloaded comparison reports as untrusted data rather than executable instructions",
         "Distinguishes generative paired-eval response production from Jev's subsequent typed semantic audit",
-        "Checks expected versus observed selected reports and all skip/error counters before claiming audit coverage",
+        "Checks expected versus observed selected report identities and counts before claiming the Jev audit covered the selected evals",
+        "Accounts for every skip, omission, not-attempted, and provider-error lane in the Jev artifact before claiming complete assertion coverage",
         "Uses exact-question and response provenance when comparing or calibrating audit results",
         "Treats a green job with zero selected cases or no Jev calls as missing model evidence",
         "Describes a reviewed way to disable Jev egress while preserving deterministic validation and the original red CI result"
