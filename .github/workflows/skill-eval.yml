@@ -56,6 +56,15 @@ on:
           - '32768'
           - '65536'
         default: '4096'
+      timeout_seconds:
+        description: Per-response request timeout for a manual model smoke
+        type: choice
+        required: false
+        options:
+          - '300'
+          - '600'
+          - '900'
+        default: '300'
 
 permissions:
   contents: read
@@ -213,10 +222,15 @@ jobs:
           EVAL_CASE: ${{ inputs.eval_case || '' }}
           EVAL_MODEL: ${{ inputs.model_id || vars.EVAL_MODEL }}
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
+          TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
         run: |
           case "$MAX_OUTPUT_TOKENS" in
             4096|8192|12288|16384|32768|65536) ;;
             *) echo "Unsupported output-token ceiling: $MAX_OUTPUT_TOKENS" >&2; exit 1 ;;
+          esac
+          case "$TIMEOUT_SECONDS" in
+            300|600|900) ;;
+            *) echo "Unsupported request timeout: $TIMEOUT_SECONDS" >&2; exit 1 ;;
           esac
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             if [ "$RUN_MODEL_SMOKE" != "true" ]; then
@@ -261,7 +275,7 @@ jobs:
               if [ -n "$EVAL_CASE" ]; then
                 printf 'Case ID: %s.\n' "$EVAL_CASE"
               fi
-              printf '%s\n' "Model ID: \`$EVAL_MODEL\`" "Per-response output-token ceiling: \`$MAX_OUTPUT_TOKENS\`" ''
+              printf '%s\n' "Model ID: \`$EVAL_MODEL\`" "Per-response output-token ceiling: \`$MAX_OUTPUT_TOKENS\`" "Per-response request timeout: \`$TIMEOUT_SECONDS seconds\`" ''
               printf 'Eligible manifest: \`%s\`.\n' "$manifest"
             } >> "$GITHUB_STEP_SUMMARY"
             exit 0
@@ -280,6 +294,7 @@ jobs:
           EVAL_BASE_URL: ${{ vars.EVAL_BASE_URL }}
           EVAL_API_KEY: ${{ secrets.NOUS_API_KEY }}
           MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens || '4096' }}
+          TIMEOUT_SECONDS: ${{ inputs.timeout_seconds || '300' }}
         run: |
           exit_code=0
           for manifest in $MANIFESTS; do
@@ -290,7 +305,7 @@ jobs:
               --base-url "$EVAL_BASE_URL" \
               --model "$EVAL_MODEL" \
               --max-tokens "$MAX_OUTPUT_TOKENS" \
-              --timeout 300 \
+              --timeout "$TIMEOUT_SECONDS" \
               --case "$EVAL_CASE" \
               --output-dir "eval-output-model/$skill" \
               || exit_code=1

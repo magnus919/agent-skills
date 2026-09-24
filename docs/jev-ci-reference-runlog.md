@@ -2769,3 +2769,38 @@ This corrects the earlier premature recommendation to leave the long case as a
 known generation limitation after only 4K–12K attempts. A sufficiently roomed
 run produced usable paired responses; semantic quality and repeatability remain
 open questions.
+
+## 2026-09-24 — A larger token ceiling exposed the request-timeout boundary
+
+The full 11-case manual System One run
+[36034975016](https://github.com/magnus919/agent-skills/actions/runs/36034975016)
+used `poolside/laguna-s-2.1:free`, a 65,536-token output ceiling, and the
+workflow's existing 300-second request timeout. It produced 9 of 11 expected
+comparison reports (17 completed trial manifests plus one timed-out trial).
+The candidate for `deadline-bound-stream` completed normally with 2,077 output
+tokens in 44.0 seconds. Its baseline timed out at 300.1 seconds without a
+completion token count or finish reason. The model job stopped there, leaving
+`reranking-pipeline` and `jev-ci-operations` unattempted. This is a timeout, not
+a 65,536-token cutoff.
+
+Across the 17 completed sides, each response ended with `finish_reason=stop`;
+the largest reported output was 4,357 tokens on the `jev-integration` baseline,
+and one side used a single observed 429 retry. This directly shows that the
+4,096 normal ceiling was below at least one usable response in this run. It
+does not establish that 65,536 is the minimum needed, nor that a larger ceiling
+will solve the 300-second timeout.
+
+The Jev audit received 9/11 expected reports and reported the gap. It saw 109
+prose assertions, selected all 96 available assertions, and marked 13
+infra-error plus 13 unpaired assertions as skipped; there were no audit-budget
+omissions or Jev provider errors. Jev did not turn the missing reports into a
+pass. The 16 groups that were judged remain advisory and lack independent gold
+labels.
+
+The next diagnostic is to isolate `deadline-bound-stream` at the same 65,536
+token ceiling with a selectable 600- or 900-second request timeout. Keep the
+ordinary 300-second timeout unchanged until that single-case result establishes
+the additional latency actually needed; then rerun the full suite before
+changing either production default. Do not mistake a generous token budget for
+a generous wall-clock deadline. No generated response text or Jev rationales
+were copied into this runlog.
