@@ -34,8 +34,8 @@ jobs:
           cat > "$HOME/.factory/settings.json" <<'FACTORY_JSON'
           {
             "customModels": [{
-              "model": "stepfun/step-3.7-flash",
-              "displayName": "StepFun 3.7 Flash (Nous Portal)",
+              "model": "poolside/laguna-s-2.1:free",
+              "displayName": "Laguna S 2.1 (Nous Portal)",
               "baseUrl": "https://inference-api.nousresearch.com/v1",
               "apiKey": "${NOUS_API_KEY}",
               "provider": "generic-chat-completion-api",
@@ -45,73 +45,41 @@ jobs:
           FACTORY_JSON
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
-      - name: Screen Nous free models for standard function-call compatibility
+      - name: Probe Nous Laguna S function-call support
         shell: bash
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
         run: |
           set -euo pipefail
-          models="$(curl --silent --show-error --fail --max-time 30 \
-            -H "Authorization: Bearer $NOUS_API_KEY" \
-            https://inference-api.nousresearch.com/v1/models)"
-          mapfile -t candidates < <(jq -r '
-            .data[]?.id |
-            select(test("solar-pro-4|longcat-2\\.0|laguna-(s|xs)-2\\.1|ling-3\\.0-flash-(fin|sante)|step-3\\.7-flash|space.?bunny.*alpha"; "i"))
-          ' <<< "$models" | sort -u)
-          if ((${#candidates[@]} == 0)); then
-            echo 'Nous model catalog did not expose any IDs matching the free-model screenshot' >&2
-            exit 1
-          fi
-          printf 'Catalog model IDs matching the supplied free list (%s):\n' "${#candidates[@]}"
-          printf '  %s\n' "${candidates[@]}"
-
           response_file="$(mktemp)"
           trap 'rm -f "$response_file"' EXIT
-          compatible=0
-          for model in "${candidates[@]}"; do
-            payload="$(jq -cn --arg model "$model" '{
-              model: $model,
-              messages: [{role: "user", content: "Call the probe function with ok=true."}],
-              tools: [{type: "function", function: {
-                name: "probe",
-                description: "Return a fixed protocol probe result.",
-                parameters: {type: "object", properties: {ok: {type: "boolean"}}, required: ["ok"], additionalProperties: false}
-              }}],
-              tool_choice: {type: "function", function: {name: "probe"}},
-              max_tokens: 96,
-              temperature: 0
-            }')"
-            http_status="$(curl --silent --show-error --max-time 45 \
-              -o "$response_file" -w '%{http_code}' \
-              -H "Authorization: Bearer $NOUS_API_KEY" \
-              -H 'Content-Type: application/json' \
-              --data "$payload" \
-              https://inference-api.nousresearch.com/v1/chat/completions)"
-            if [ "$http_status" != 200 ]; then
-              printf 'FAIL %s: HTTP %s\n' "$model" "$http_status"
-              jq -c '{error_type: .error.type, error_code: .error.code}' "$response_file" 2>/dev/null || true
-              continue
-            fi
-            if jq -e '
-              .choices[0].message as $message |
-              ($message.tool_calls[0].function.arguments // null) as $raw |
-              ($raw | if type == "string" then (try fromjson catch null) else null end) as $arguments |
-              ($raw | type) == "string" and
-              $message.tool_calls[0].function.name == "probe" and
-              $arguments.ok == true
-            ' "$response_file" >/dev/null; then
-              printf 'PASS %s: standard JSON tool arguments\n' "$model"
-              compatible=$((compatible + 1))
-            else
-              printf 'FAIL %s: response did not contain standard JSON tool arguments\n' "$model"
-              jq -c '{response_model: .model, finish_reason: .choices[0].finish_reason, tool_name: .choices[0].message.tool_calls[0].function.name, arguments_type: (.choices[0].message.tool_calls[0].function.arguments | type)}' "$response_file" 2>/dev/null || true
-            fi
-          done
-          printf 'Standard function-call compatible models: %s/%s\n' "$compatible" "${#candidates[@]}"
-          if ((compatible == 0)); then
-            echo 'No listed free model passed the Droid-compatible function-call probe' >&2
+          payload='{"model":"poolside/laguna-s-2.1:free","messages":[{"role":"user","content":"Call the probe function with ok=true."}],"tools":[{"type":"function","function":{"name":"probe","description":"Return a fixed protocol probe result.","parameters":{"type":"object","properties":{"ok":{"type":"boolean"}},"required":["ok"],"additionalProperties":false}}}],"tool_choice":{"type":"function","function":{"name":"probe"}},"max_tokens":96,"temperature":0}'
+          http_status="$(curl --silent --show-error --max-time 45 \
+            -o "$response_file" -w '%{http_code}' \
+            -H "Authorization: Bearer $NOUS_API_KEY" \
+            -H 'Content-Type: application/json' \
+            --data "$payload" \
+            https://inference-api.nousresearch.com/v1/chat/completions)"
+          if [ "$http_status" != 200 ]; then
+            printf 'Nous Laguna S tool probe returned HTTP %s\n' "$http_status" >&2
+            jq -c '{error_type: .error.type, error_code: .error.code}' "$response_file" >&2 2>/dev/null || true
             exit 1
           fi
+          if ! jq -e '
+            .choices[0].message as $message |
+            ($message.tool_calls[0].function.arguments // null) as $raw |
+            ($raw | if type == "string" then (try fromjson catch null) else null end) as $arguments |
+            ($raw | type) == "string" and
+            $message.tool_calls[0].function.name == "probe" and
+            $arguments.ok == true
+          ' "$response_file" >/dev/null; then
+            echo 'Nous Laguna S did not return the expected standard JSON function call' >&2
+            jq -c '{response_model: .model, finish_reason: .choices[0].finish_reason, tool_name: .choices[0].message.tool_calls[0].function.name, arguments_type: (.choices[0].message.tool_calls[0].function.arguments | type)}' "$response_file" >&2 2>/dev/null || true
+            exit 1
+          fi
+          jq -r '"Nous response model: " + (.model // "not reported")' "$response_file"
+          jq -c '.usage // {}' "$response_file"
+          echo 'Nous Laguna S Chat Completions function-call probe passed'
       - name: Run Droid Auto Review
         uses: Factory-AI/droid-action@main
         with:
@@ -119,7 +87,7 @@ jobs:
           automatic_review: true
           automatic_security_review: true
           review_depth: shallow
-          review_model: custom:StepFun-3.7-Flash-(Nous-Portal)-0
-          security_model: custom:StepFun-3.7-Flash-(Nous-Portal)-0
+          review_model: custom:Laguna-S-2.1-(Nous-Portal)-0
+          security_model: custom:Laguna-S-2.1-(Nous-Portal)-0
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}

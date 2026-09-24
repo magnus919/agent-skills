@@ -32,13 +32,13 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
-      # BYOK: register StepFun 3.7 Flash through Nous Portal where the Droid CLI
+      # BYOK: register Poolside Laguna S 2.1 through Nous Portal where the Droid CLI
       # reads it (~/.factory/settings.json). The droid-action's `settings`
       # input writes to ~/.factory/droid/settings.json, which the CLI does not
       # read for customModels, so the model must be written here explicitly.
       # The API key is referenced as ${NOUS_API_KEY} and expanded by the
       # CLI from the step env at request time.
-      - name: Configure BYOK model (StepFun 3.7 Flash via Nous Portal)
+      - name: Configure BYOK model (Laguna S 2.1 via Nous Portal)
         shell: bash
         run: |
           if [ -z "$NOUS_API_KEY" ]; then
@@ -51,8 +51,8 @@ jobs:
           {
             "customModels": [
               {
-                "model": "stepfun/step-3.7-flash",
-                "displayName": "StepFun 3.7 Flash (Nous Portal)",
+                "model": "poolside/laguna-s-2.1:free",
+                "displayName": "Laguna S 2.1 (Nous Portal)",
                 "baseUrl": "https://inference-api.nousresearch.com/v1",
                 "apiKey": "${NOUS_API_KEY}",
                 "provider": "generic-chat-completion-api",
@@ -67,7 +67,7 @@ jobs:
         uses: Factory-AI/droid-action@main
         with:
           factory_api_key: ${{ secrets.FACTORY_API_KEY }}
-          review_model: custom:StepFun-3.7-Flash-(Nous-Portal)-0
-          security_model: custom:StepFun-3.7-Flash-(Nous-Portal)-0
+          review_model: custom:Laguna-S-2.1-(Nous-Portal)-0
+          security_model: custom:Laguna-S-2.1-(Nous-Portal)-0
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
