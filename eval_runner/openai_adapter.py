@@ -19,6 +19,9 @@ from typing import Any
 
 from .models import AdapterInput, AdapterOutput, ExitStatus, ToolEvent
 
+_SAFE_FINISH_REASON = re.compile(r"[A-Za-z0-9_.:-]{1,80}\Z")
+_UNUSABLE_FINISH_REASONS = {"length", "content_filter", "tool_calls", "function_call"}
+
 
 class OpenAICompatAdapter:
     """Adapter for OpenAI-compatible API endpoints (vLLM, llama.cpp, etc.)."""
@@ -112,7 +115,13 @@ class OpenAICompatAdapter:
             choice = body["choices"][0]
             message = choice["message"]
             content = message.get("content", "") or ""
-            reasoning = message.get("reasoning_content", "") or ""
+            raw_finish_reason = choice.get("finish_reason")
+            finish_reason = (
+                raw_finish_reason.lower()
+                if isinstance(raw_finish_reason, str)
+                and _SAFE_FINISH_REASON.fullmatch(raw_finish_reason)
+                else None
+            )
 
             usage = body.get("usage", {})
             token_usage = {
@@ -120,6 +129,36 @@ class OpenAICompatAdapter:
                 "output_tokens": usage.get("completion_tokens", 0),
             }
 
+            skill_content = self._load_skill_content(input.skill_path)
+            activation_evidence = (
+                f"skill loaded from {input.skill_path.name}/SKILL.md" if skill_content else None
+            )
+            environment_state = {
+                "model": self._model,
+                "finish_reason": finish_reason or "unknown",
+                "has_skill": skill_content is not None,
+            }
+
+            completion_error = None
+            if not isinstance(content, str) or not content.strip():
+                completion_error = "empty assistant content"
+            elif finish_reason in _UNUSABLE_FINISH_REASONS:
+                completion_error = "assistant completion did not end normally"
+
+            if completion_error:
+                reason_detail = f" (finish_reason={finish_reason})" if finish_reason else ""
+                return AdapterOutput(
+                    exit_status=ExitStatus.ERROR,
+                    response=None,
+                    finish_reason=finish_reason,
+                    activation_evidence=activation_evidence,
+                    environment_state=environment_state,
+                    duration_ms=elapsed_ms,
+                    token_usage=token_usage,
+                    error=f"model completion unusable: {completion_error}{reason_detail}",
+                )
+
+            reasoning = message.get("reasoning_content", "") or ""
             tool_events = []
             if reasoning:
                 tool_events.append(
@@ -130,21 +169,13 @@ class OpenAICompatAdapter:
                     )
                 )
 
-            skill_content = self._load_skill_content(input.skill_path)
-            activation_evidence = (
-                f"skill loaded from {input.skill_path.name}/SKILL.md" if skill_content else None
-            )
-
             return AdapterOutput(
                 exit_status=ExitStatus.COMPLETED,
-                response=content if content else None,
+                response=content,
+                finish_reason=finish_reason,
                 activation_evidence=activation_evidence,
                 artifacts=[],
-                environment_state={
-                    "model": self._model,
-                    "finish_reason": choice.get("finish_reason", ""),
-                    "has_skill": skill_content is not None,
-                },
+                environment_state=environment_state,
                 tool_events=tool_events,
                 duration_ms=elapsed_ms,
                 token_usage=token_usage,

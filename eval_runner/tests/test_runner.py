@@ -110,6 +110,7 @@ def test_manifest_serialization():
         )
 
         result = adapter.execute(adapter_input)
+        result.finish_reason = "stop"
         now = datetime.now(timezone.utc)
 
         manifest = build_manifest(
@@ -131,6 +132,7 @@ def test_manifest_serialization():
         assert not Path(manifest["candidate"]["skill_path"]).is_absolute()
         assert manifest["case"]["case_id"] == "test-case-01"
         assert manifest["status"] == "completed"
+        assert manifest["outputs"]["finish_reason"] == "stop"
         assert manifest["adapter"]["name"] == "fake"
         assert isinstance(manifest["missing_evidence"], list)
 
@@ -139,6 +141,7 @@ def test_manifest_serialization():
 
         loaded = json.loads(manifest_path.read_text())
         assert loaded["trial_id"] == manifest["trial_id"]
+        assert loaded["outputs"]["finish_reason"] == "stop"
 
 
 def test_manifest_validates_against_schema():
@@ -170,6 +173,7 @@ def test_manifest_validates_against_schema():
         )
 
         result = adapter.execute(adapter_input)
+        result.finish_reason = "stop"
         now = datetime.now(timezone.utc)
 
         manifest = build_manifest(
@@ -187,6 +191,12 @@ def test_manifest_validates_against_schema():
 
         errors = list(validator.iter_errors(manifest))
         assert not errors, f"Schema validation failed: {[e.message for e in errors]}"
+
+        legacy_manifest = dict(manifest)
+        legacy_manifest["outputs"] = {
+            key: value for key, value in manifest["outputs"].items() if key != "finish_reason"
+        }
+        assert not list(validator.iter_errors(legacy_manifest))
 
 
 def test_manifest_schema_enforces_public_identity_fields():

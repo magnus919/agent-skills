@@ -70,6 +70,7 @@ class ToolEvent:
 class AdapterOutput:
     exit_status: ExitStatus
     response: str | None = None
+    finish_reason: str | None = None
     activation_evidence: str | None = None
     artifacts: list[str] = field(default_factory=list)
     environment_state: dict[str, Any] | None = None
