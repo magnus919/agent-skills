@@ -45,6 +45,32 @@ jobs:
           FACTORY_JSON
         env:
           NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+      - name: Probe Nous StepFun function-call support
+        shell: bash
+        env:
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
+        run: |
+          set -euo pipefail
+          payload='{"model":"stepfun/step-3.7-flash","messages":[{"role":"user","content":"Call the probe function with ok=true."}],"tools":[{"type":"function","function":{"name":"probe","description":"Return a fixed protocol probe result.","parameters":{"type":"object","properties":{"ok":{"type":"boolean"}},"required":["ok"],"additionalProperties":false}}}],"tool_choice":{"type":"function","function":{"name":"probe"}},"max_tokens":96,"temperature":0}'
+          response="$(curl --silent --show-error --max-time 45 \
+            -H "Authorization: Bearer $NOUS_API_KEY" \
+            -H 'Content-Type: application/json' \
+            --data "$payload" \
+            https://inference-api.nousresearch.com/v1/chat/completions)"
+          if ! jq -e '
+            .choices[0].message as $message |
+            ($message.tool_calls[0].function.arguments |
+              if type == "string" then fromjson else . end) as $arguments |
+            $message.tool_calls[0].function.name == "probe" and
+            $arguments.ok == true
+          ' <<< "$response" >/dev/null; then
+            echo 'Nous StepFun did not return the expected function call' >&2
+            jq -c '{error_type: .error.type, error_code: .error.code, finish_reason: .choices[0].finish_reason}' <<< "$response" >&2 || true
+            exit 1
+          fi
+          jq -r '"Nous response model: " + (.model // "not reported")' <<< "$response"
+          jq -c '.usage // {}' <<< "$response"
+          echo 'Nous StepFun Chat Completions function-call probe passed'
       - name: Run Droid Auto Review
         uses: Factory-AI/droid-action@main
         with:
