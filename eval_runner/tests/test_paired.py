@@ -576,7 +576,7 @@ def test_openai_adapter_uses_scoped_eval_api_key_from_environment():
             case=_make_case(),
             work_dir=tmp_path / "work",
             output_dir=tmp_path / "output",
-            model="stepfun/step-3.7-flash:free",
+            model="stepfun/step-3.7-flash",
         )
         response_body = {
             "choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}],
@@ -593,12 +593,107 @@ def test_openai_adapter_uses_scoped_eval_api_key_from_environment():
         ):
             result = OpenAICompatAdapter(
                 base_url="https://inference-api.nousresearch.com",
-                model="stepfun/step-3.7-flash:free",
+                model="stepfun/step-3.7-flash",
             ).execute(adapter_input)
 
         assert result.exit_status == ExitStatus.COMPLETED
+        assert result.finish_reason == "stop"
         request = urlopen.call_args.args[0]
         assert request.get_header("Authorization") == "Bearer fixture-auth-42"
+        assert json.loads(request.data)["model"] == "stepfun/step-3.7-flash"
+
+
+def test_openai_adapter_rejects_empty_and_incomplete_completions():
+    cases = [
+        ("", "stop", "stop", "empty assistant content (finish_reason=stop)"),
+        ("  \n", "stop", "stop", "empty assistant content (finish_reason=stop)"),
+        (
+            "partial answer",
+            "length",
+            "length",
+            "assistant completion did not end normally (finish_reason=length)",
+        ),
+        (
+            "partial answer",
+            "content_filter",
+            "content_filter",
+            "assistant completion did not end normally (finish_reason=content_filter)",
+        ),
+        (
+            "",
+            "private\ncontent",
+            None,
+            "empty assistant content",
+        ),
+    ]
+    for index, (content, raw_finish_reason, expected_finish_reason, expected_error) in enumerate(
+        cases
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            adapter_input = AdapterInput(
+                skill_path=tmp_path / "empty-skill",
+                case=_make_case(),
+                work_dir=tmp_path / "work",
+                output_dir=tmp_path / "output",
+                model="fixture/model",
+            )
+            body = {
+                "choices": [
+                    {
+                        "message": {"content": content},
+                        "finish_reason": raw_finish_reason,
+                    }
+                ],
+                "usage": {"prompt_tokens": 11, "completion_tokens": 4096},
+            }
+            response = MagicMock()
+            response.__enter__.return_value.read.return_value = json.dumps(body).encode()
+            with patch("eval_runner.openai_adapter.urllib.request.urlopen", return_value=response):
+                result = OpenAICompatAdapter(
+                    base_url="https://example.invalid", model="fixture/model"
+                ).execute(adapter_input)
+
+            assert result.exit_status == ExitStatus.ERROR, index
+            assert result.response is None, index
+            assert result.finish_reason == expected_finish_reason, index
+            assert result.error == f"model completion unusable: {expected_error}", index
+            assert result.token_usage == {"input_tokens": 11, "output_tokens": 4096}, index
+            assert result.duration_ms >= 0, index
+            assert "private" not in (result.error or ""), index
+
+
+def test_truncated_openai_completion_is_infra_error_in_paired_report():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        skill = _make_skill_dir(tmp_path)
+        body = {
+            "choices": [
+                {
+                    "message": {"content": "partial answer must not be retained"},
+                    "finish_reason": "length",
+                }
+            ],
+            "usage": {"prompt_tokens": 11, "completion_tokens": 4096},
+        }
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = json.dumps(body).encode()
+        adapter = OpenAICompatAdapter(base_url="https://example.invalid", model="fixture/model")
+
+        with patch("eval_runner.openai_adapter.urllib.request.urlopen", return_value=response):
+            report = run_paired_trial(
+                adapter, _make_case(), skill, tmp_path / "paired-output", "fixture/model"
+            )
+
+        for side in ("candidate", "baseline"):
+            trial = report[side]
+            assert trial["infra_error"]
+            assert trial["manifest"]["status"] == "error"
+            assert trial["manifest"]["outputs"]["response"] is None
+            assert trial["manifest"]["outputs"]["finish_reason"] == "length"
+            assert trial["assertions"]
+            assert all(item["verdict"] == "infra_error" for item in trial["assertions"])
+        assert "partial answer" not in json.dumps(report)
 
 
 def test_openai_adapter_keeps_only_safe_http_error_fields():
@@ -789,5 +884,7 @@ if __name__ == "__main__":
     test_nous_key_is_scoped_to_trusted_model_job()
     test_manual_model_smoke_is_main_only_and_selects_fixed_manifest()
     test_openai_adapter_uses_scoped_eval_api_key_from_environment()
+    test_openai_adapter_rejects_empty_and_incomplete_completions()
+    test_truncated_openai_completion_is_infra_error_in_paired_report()
     test_nous_endpoint_preflight_requires_key_and_sends_bearer_header()
     print("All paired evaluation tests passed.")

@@ -95,6 +95,7 @@ def build_manifest(
         "status": adapter_output.exit_status.value,
         "outputs": {
             "response": adapter_output.response,
+            "finish_reason": adapter_output.finish_reason,
             "activation_evidence": adapter_output.activation_evidence,
             "artifact_digests": artifact_digests,
             "tool_event_count": len(adapter_output.tool_events),

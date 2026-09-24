@@ -2079,3 +2079,22 @@ lesson: a successful HTTP response and token usage do not prove a usable model
 answer. Preserve safe finish-reason metadata, classify empty content as a
 generation failure, and stop before spending calls on further pairs; keep
 transport, completion, and semantic-judgment coverage as separate counts.
+
+The follow-up now implements that boundary in the adapter: blank content and
+known non-final completion reasons (`length`, `content_filter`, `tool_calls`,
+and `function_call`) become infrastructure errors, and partial response text is
+not copied into the comparison artifact. The normalized finish reason and token
+counts remain available as safe diagnostics; the run-manifest schema accepts an
+optional `outputs.finish_reason` so older v1 artifacts remain valid. The
+OpenAI-compatible API reference defines `length` as reaching the requested
+token maximum and `content_filter` as content omitted by filtering; other
+providers may have their own reason vocabulary ([API reference](https://platform.openai.com/docs/api-reference/chat)).
+
+Mocked adapter and paired-run tests now cover blank/whitespace answers,
+token-limited and filtered completions, unsafe provider reason strings, and the
+resulting `infra_error` report with no partial text. These tests establish the
+local failure contract only. They do not establish how Nous StepFun behaves on
+the next live run; the bounded manual smoke must confirm that a blank or
+truncated response fails the model job and that Jev receives no unusable
+response. The registered model fixture now uses the live ID
+`stepfun/step-3.7-flash` (without the obsolete `:free` suffix).
