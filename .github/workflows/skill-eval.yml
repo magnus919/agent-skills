@@ -193,7 +193,6 @@ jobs:
               --model "$EVAL_MODEL" \
               --model-label configured-model \
               --max-tokens 4096 \
-              --no-thinking \
               --timeout 300 \
               --output-dir "eval-output-model/$skill" \
               || exit_code=1

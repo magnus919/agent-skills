@@ -135,6 +135,15 @@ def run_paired_evaluation(
     return reports
 
 
+def infrastructure_error_count(reports: list[dict[str, Any]]) -> int:
+    """Count candidate and baseline trials that failed before producing output."""
+    return sum(
+        bool(report.get(side, {}).get("infra_error"))
+        for report in reports
+        for side in ("candidate", "baseline")
+    )
+
+
 def main() -> int:
     import argparse
 
@@ -255,11 +264,13 @@ def main() -> int:
             improvements += 1
         elif delta == "candidate_regression":
             regressions += 1
+    infrastructure_errors = infrastructure_error_count(reports)
 
     print(
-        f"summary: {len(reports)} case(s), {improvements} improvement(s), {regressions} regression(s)"
+        f"summary: {len(reports)} case(s), {improvements} improvement(s), "
+        f"{regressions} regression(s), {infrastructure_errors} infrastructure error(s)"
     )
-    return 1 if regressions > 0 else 0
+    return 1 if regressions > 0 or infrastructure_errors > 0 else 0
 
 
 if __name__ == "__main__":

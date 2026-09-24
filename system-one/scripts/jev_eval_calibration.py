@@ -48,8 +48,9 @@ def read_audit(path: Path) -> tuple[dict[str, Any], str]:
         raise ValueError("audit lacks counts or results")
     blockers = ("skipped_response", "skipped_oversized_assertion", "skipped_oversized_group",
                 "skipped_unpaired_assertions", "assertions_omitted_by_budget",
-                "groups_not_attempted_after_error", "assertions_not_attempted_after_error", "provider_errors")
-    if any(counts.get(key) != 0 for key in blockers):
+                "groups_not_attempted_after_error", "assertions_not_attempted_after_error", "provider_errors",
+                "skipped_infra_error_assertions", "generation_error_sides")
+    if any(counts.get(key, 0) != 0 for key in blockers):
         raise ValueError("audit coverage is incomplete; do not calibrate a selected subset as the full run")
     if counts.get("assertions_selected") != counts.get("prose_assertions_seen"):
         raise ValueError("audit selected/prose assertion counts disagree")

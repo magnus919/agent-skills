@@ -127,6 +127,8 @@ def collect_groups(
         "reports_seen": 0,
         "exact_assertions_untouched": 0,
         "prose_assertions_seen": 0,
+        "skipped_infra_error_assertions": 0,
+        "generation_error_sides": 0,
         "skipped_response": 0,
         "skipped_oversized_assertion": 0,
         "skipped_oversized_group": 0,
@@ -155,6 +157,7 @@ def collect_groups(
             outputs = manifest.get("outputs") or {}
             response = outputs.get("response") if isinstance(outputs, dict) else None
             prose = []
+            side_has_infra_error = bool(trial.get("infra_error"))
             for item in assertions:
                 if not isinstance(item, dict) or not isinstance(item.get("assertion"), str):
                     raise ValueError("invalid assertion record")
@@ -164,8 +167,13 @@ def collect_groups(
                         counts["skipped_oversized_assertion"] += 1
                     else:
                         prose.append(item["assertion"])
+                elif item.get("verdict") == "infra_error":
+                    counts["skipped_infra_error_assertions"] += 1
+                    side_has_infra_error = True
                 else:
                     counts["exact_assertions_untouched"] += 1
+            if side_has_infra_error:
+                counts["generation_error_sides"] += 1
             if not prose:
                 continue
             if len(prose) > MAX_QUESTIONS_PER_CALL:
@@ -388,6 +396,8 @@ def render_summary(report: dict[str, Any]) -> str:
         status = "Selected-case coverage unknown; selection evidence missing"
     elif scope["missing_reports"] or scope["unexpected_reports"]:
         status = "Incomplete selected-case coverage"
+    elif counts["generation_error_sides"]:
+        status = "Incomplete model generation; Jev skipped infrastructure-error assertions"
     elif total == 0:
         status = "No prose assertions available"
     elif judged == total and counts["provider_errors"] == 0:
@@ -405,6 +415,8 @@ def render_summary(report: dict[str, Any]) -> str:
         f"- Missing case reports: {len(scope['missing_reports'])}\n"
         f"- Unexpected case reports: {len(scope['unexpected_reports'])}\n"
         f"- Provider errors: {counts['provider_errors']}\n"
+        f"- Generation-error sides: {counts['generation_error_sides']}\n"
+        f"- Assertions skipped after generation errors: {counts['skipped_infra_error_assertions']}\n"
         f"- Skipped response assertions: {counts['skipped_response']}\n"
         f"- Oversized assertion/group skips: {counts['skipped_oversized_assertion'] + counts['skipped_oversized_group']}\n"
         f"- Unpaired assertions: {counts['skipped_unpaired_assertions']}\n"
@@ -472,7 +484,10 @@ def main() -> int:
         with args.summary_output.open("a", encoding="utf-8") as summary_file:
             summary_file.write(render_summary(report))
     print(json.dumps({"mode": report["mode"], "advisory_only": True, "counts": report["counts"]}))
-    return 1 if report["counts"]["provider_errors"] else 0
+    return 1 if (
+        report["counts"]["provider_errors"]
+        or report["counts"]["generation_error_sides"]
+    ) else 0
 
 
 if __name__ == "__main__":
