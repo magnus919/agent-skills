@@ -2050,3 +2050,32 @@ measure actual generations and Jev judgments together without replaying the
 failed HTTP-error artifacts. The Portal currently marks StepFun free, but the
 free designation is not a quality claim or a reason to relax any evaluation
 boundary.
+
+## 2026-09-24 — Transport success is not a usable completion
+
+After PR #601, bounded main-branch run
+[35962104493](https://github.com/magnus919/agent-skills/actions/runs/35962104493)
+used the authenticated Nous catalog ID `stepfun/step-3.7-flash` and selected
+all 6 cases in the fixed `agent-skills` smoke manifest. All 12 candidate and
+baseline requests were recorded as completed with no infrastructure errors,
+but only 6 of 12 contained non-empty assistant text. Five baseline outputs
+had exactly 4096 output tokens and empty text; a candidate output was also
+empty despite reporting 76 output tokens. The exact provider finish reason
+was not retained, so reaching the configured token limit is a plausible
+explanation, not a confirmed cause.
+
+Jev saw all 6 expected case reports and no provider errors, but could form a
+complete candidate/baseline pair for only `third-party-vetting`. It judged 10
+of 60 prose assertions; 30 were skipped because responses were empty and 20
+because the remaining responses were unpaired. Its 10 suggestions were 4
+`met` and 6 `not_shown`, with met probabilities from 0.00 to 1.00 and provider
+confidence from 0.38 to 1.00. There are no human labels for this sample, so
+these numbers are neither correctness nor calibration evidence.
+
+The model job's green status therefore overstated usable generation: the
+adapter currently treats an empty assistant content field as `completed`,
+while the Jev audit correctly skips it and exposes the lost denominator. Blog
+lesson: a successful HTTP response and token usage do not prove a usable model
+answer. Preserve safe finish-reason metadata, classify empty content as a
+generation failure, and stop before spending calls on further pairs; keep
+transport, completion, and semantic-judgment coverage as separate counts.
