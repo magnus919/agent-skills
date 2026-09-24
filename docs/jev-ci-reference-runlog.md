@@ -2730,20 +2730,42 @@ does not establish the model's limit, that the provider accepted enough room,
 or that the model cannot complete the task. Do not describe this as a model
 failure without testing a materially larger output ceiling.
 
-Poolside describes Laguna S 2.1 as a reasoning model and advertises a 1M-token
-context window. Context length and maximum generated output are distinct
-limits, and this does not document Nous Portal's hosted completion cap. The
+Poolside's [models page](https://poolside.ai/models) describes Laguna S 2.1 as
+a reasoning model and advertises a 1M-token context window. Context length and
+maximum generated output are distinct limits, and this does not document Nous
+Portal's hosted completion cap. The
 manual workflow now offers 16,384, 32,768, and 65,536 output-token ceilings
 for bounded diagnostics. Its normal 4,096 default and automatic CI path remain
-unchanged. The next probe should select only
-`system-one/deadline-bound-stream` at 65,536, then record the endpoint's actual
-acceptance, completion tokens, finish reason, elapsed time, paired-report
-status, and Jev audit coverage. If it still reaches the cap, investigate the
-provider's documented/request-reported output limit and a longer bounded
-diagnostic before drawing a quality conclusion. Never infer quality from token
-consumption alone.
+unchanged. The diagnostic selected only `system-one/deadline-bound-stream` at
+65,536.
+
+That probe completed on main in [run 36032855135](https://github.com/magnus919/agent-skills/actions/runs/36032855135)
+using the authenticated Nous model ID `poolside/laguna-s-2.1:free`. The endpoint
+accepted the budget. Candidate and baseline both completed with `finish_reason`
+`stop`, zero retries, and one of one expected comparison reports:
+
+| Side | Output tokens | Generation duration | Harness assertion counts |
+|---|---:|---:|---|
+| Candidate | 721 | 13.0 s | 0 exact passes, 0 exact failures, 13 manual-review prose assertions |
+| Baseline | 6,299 | 117.7 s | 0 exact passes, 0 exact failures, 13 manual-review prose assertions |
+
+Neither side reached the 65,536 ceiling. The Jev audit selected and reviewed
+all 26 prose assertions in two groups: eight suggested `met`, 18 `not_shown`,
+zero skipped/omitted assertions, and zero provider errors. These are advisory
+suggestions without independent gold labels. In particular, the harness's
+`passed=true` field does not turn 13 manual-review assertions into verified
+semantic passes.
+
+This successful, fully paired run changes the working diagnosis: a materially
+higher ceiling allowed a complete response here, whereas prior 4K–12K attempts
+cut off. It is consistent with needing more generation headroom for reasoning,
+but one stochastic run does not identify the precise cause, prove hidden-token
+accounting, establish a minimum useful ceiling, or measure answer quality. The
+manual diagnostic options now include 16,384, 32,768, and 65,536, while the
+normal 4,096 default and automatic CI path remain unchanged. Never infer
+quality from token consumption alone.
 
 This corrects the earlier premature recommendation to leave the long case as a
-known generation limitation after only 4K–12K attempts. The proper conclusion
-is still open until a sufficiently roomed run produces a usable response or a
-verified provider/runtime bound explains why it cannot.
+known generation limitation after only 4K–12K attempts. A sufficiently roomed
+run produced usable paired responses; semantic quality and repeatability remain
+open questions.
