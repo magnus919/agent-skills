@@ -1963,3 +1963,36 @@ teacher pass would share Nous as a provider with the StepFun generator, making
 the pseudo-labels more correlated; record both exact model IDs and treat the
 comparison as diagnostic disagreement triage only, not independent
 validation.
+
+## 2026-09-24 — Keep generation failures out of Jev coverage
+
+The post-merge run
+[35958317434](https://github.com/magnus919/agent-skills/actions/runs/35958317434)
+selected all 7 `performance-optimization` cases, but both candidate and
+baseline generation failed with HTTP 400 for every case (14 failed sides).
+The paired runner nevertheless exited successfully because its exit status
+only considered candidate regressions. The Jev artifact reader then treated
+all 100 `infra_error` assertion rows as untouched exact checks, counted zero
+prose assertions, and made no Jev calls. This was not a Jev result, not complete
+semantic coverage, and not evidence about model quality.
+
+The approved Nous teacher workflow rejected the same source run before making
+either teacher pass: the audited result identities did not cover the selected
+case identities. No generated response text was sent to Nous in that failed
+attempt. This fail-closed behavior is correct and should remain.
+
+The follow-up changes make infrastructure errors fail the paired-model job,
+report generation-error sides and skipped assertions separately from exact
+checks, mark the Jev audit incomplete, and refuse to prepare calibration data
+from errored generations. The Nous request also stops sending the
+non-standard `chat_template_kwargs` extension previously added to disable
+thinking. That extension is a plausible compatibility cause for the HTTP 400,
+but the provider returned only a generic status in our artifacts; causality is
+unconfirmed until a successful fresh main run. Do not replay these failed
+outputs to Jev or a teacher model.
+
+Focused paired-runner, Jev-audit, and calibration tests pass; eval validation
+remains 181/181 schema-valid and the eval coverage ratchet is unchanged. Blog
+lesson: distinguish “artifact exists” from “model response exists,” and
+“selected reports found” from “assertions actually judged.” Preserve those
+denominators explicitly before making claims about coverage or quality.

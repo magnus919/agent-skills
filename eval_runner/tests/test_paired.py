@@ -24,7 +24,7 @@ from eval_runner.fake_adapter import FakeAdapter
 from eval_runner.grader import AssertionVerdict, grade_output
 from eval_runner.models import AdapterInput, AdapterOutput, EvalCase, ExitStatus, ToolEvent
 from eval_runner.openai_adapter import OpenAICompatAdapter
-from eval_runner.paired import run_paired_trial
+from eval_runner.paired import infrastructure_error_count, run_paired_trial
 from eval_runner.sandbox import cleanup_sandbox, stage_paired_sandboxes, stage_skill_sandbox
 
 
@@ -140,6 +140,14 @@ def test_grader_infra_error():
     assert not result.passed
     assert result.infra_error
     assert all(r.verdict == AssertionVerdict.INFRA_ERROR for r in result.results)
+
+
+def test_paired_runner_counts_generation_errors_as_nonzero_outcome():
+    reports = [
+        {"candidate": {"infra_error": True}, "baseline": {"infra_error": True}},
+        {"candidate": {"infra_error": False}, "baseline": {"infra_error": False}},
+    ]
+    assert infrastructure_error_count(reports) == 2
 
 
 def test_grader_manual_review():
@@ -449,6 +457,7 @@ def test_nous_key_is_scoped_to_trusted_model_job():
     assert endpoint_step["env"]["NOUS_API_KEY"] == "${{ secrets.NOUS_API_KEY }}"
     assert inference_step["env"]["EVAL_API_KEY"] == "${{ secrets.NOUS_API_KEY }}"
     assert "--api-key" not in inference_step["run"]
+    assert "--no-thinking" not in inference_step["run"]
 
     for job_name, job in jobs.items():
         if job_name != "paired-eval-model":

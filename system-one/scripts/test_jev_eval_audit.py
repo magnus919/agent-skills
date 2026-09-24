@@ -135,6 +135,45 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertEqual(groups, [])
         self.assertEqual(counts["skipped_response"], 2)
 
+    def test_generation_errors_are_not_mislabeled_as_untouched_exact_assertions(self):
+        report = sample_report()
+        for side in ("candidate", "baseline"):
+            report[side]["infra_error"] = True
+            report[side]["assertions"] = [
+                {"assertion": "Explains the boundary", "verdict": "infra_error"},
+                {"assertion": "exit_code == 0", "verdict": "infra_error"},
+            ]
+            report[side]["manifest"] = {"status": "error", "outputs": {}}
+        self.path.write_text(json.dumps(report), encoding="utf-8")
+
+        groups, counts = collect_groups(self.root, 24000)
+        self.assertEqual(groups, [])
+        self.assertEqual(counts["prose_assertions_seen"], 0)
+        self.assertEqual(counts["exact_assertions_untouched"], 0)
+        self.assertEqual(counts["skipped_infra_error_assertions"], 4)
+        self.assertEqual(counts["generation_error_sides"], 2)
+
+        audit_report = audit(
+            self.root,
+            live=True,
+            key="fixture-key",
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+            selection={
+                "schema_version": 1,
+                "status": "selected",
+                "manifests": ["system-one/evals/evals.json"],
+                "selected_count": 1,
+                "expected_cases": {"system-one": ["test-case"]},
+            },
+        )
+        summary = render_summary(audit_report)
+        self.assertIn("Incomplete model generation", summary)
+        self.assertIn("Generation-error sides: 2", summary)
+        self.assertIn("Assertions skipped after generation errors: 4", summary)
+
     def test_budget_never_turns_omission_into_pass(self):
         result = audit(
             self.root,

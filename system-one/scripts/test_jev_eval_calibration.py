@@ -57,6 +57,7 @@ class JevEvalCalibrationTests(unittest.TestCase):
                       "counts": {"reports_seen": 2,
                           "prose_assertions_seen": 8, "assertions_selected": 8,
                           "groups_selected": 4,
+                          "skipped_infra_error_assertions": 0, "generation_error_sides": 0,
                           "skipped_response": 0, "skipped_oversized_assertion": 0,
                           "skipped_oversized_group": 0, "skipped_unpaired_assertions": 0,
                           "assertions_omitted_by_budget": 0,
