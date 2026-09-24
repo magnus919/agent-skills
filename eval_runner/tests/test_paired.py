@@ -549,6 +549,13 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
         "65536",
     ]
     assert workflow["on"]["workflow_dispatch"]["inputs"]["max_output_tokens"]["default"] == "4096"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["timeout_seconds"]["type"] == "choice"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["timeout_seconds"]["options"] == [
+        "300",
+        "600",
+        "900",
+    ]
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["timeout_seconds"]["default"] == "300"
     model_job = workflow["jobs"]["paired-eval-model"]
     assert "github.event_name == 'workflow_dispatch'" in model_job["if"]
     assert "github.ref == 'refs/heads/main'" in model_job["if"]
@@ -560,6 +567,7 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
     assert selection_step["env"]["EVAL_SKILL"] == "${{ inputs.eval_skill || 'agent-skills' }}"
     assert selection_step["env"]["EVAL_CASE"] == "${{ inputs.eval_case || '' }}"
     assert "4096|8192|12288|16384|32768|65536)" in selection_step["run"]
+    assert "300|600|900)" in selection_step["run"]
     endpoint_step = next(
         step for step in model_job["steps"] if step["name"] == "Check model endpoint"
     )
@@ -569,7 +577,9 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
     assert endpoint_step["env"]["EVAL_MODEL"] == "${{ inputs.model_id || vars.EVAL_MODEL }}"
     assert inference_step["env"]["EVAL_MODEL"] == "${{ inputs.model_id || vars.EVAL_MODEL }}"
     assert inference_step["env"]["MAX_OUTPUT_TOKENS"] == "${{ inputs.max_output_tokens || '4096' }}"
+    assert inference_step["env"]["TIMEOUT_SECONDS"] == "${{ inputs.timeout_seconds || '300' }}"
     assert '--max-tokens "$MAX_OUTPUT_TOKENS"' in inference_step["run"]
+    assert '--timeout "$TIMEOUT_SECONDS"' in inference_step["run"]
     assert inference_step["env"]["EVAL_CASE"] == "${{ inputs.eval_case || '' }}"
     assert '--case "$EVAL_CASE"' in inference_step["run"]
     assert "Manual model smoke evaluation for `%s`." in selection_step["run"]
@@ -600,6 +610,7 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
             "EVAL_CASE": "",
             "EVAL_MODEL": "poolside/laguna-s-2.1:free",
             "MAX_OUTPUT_TOKENS": "4096",
+            "TIMEOUT_SECONDS": "300",
             "GITHUB_OUTPUT": str(output_path),
             "GITHUB_STEP_SUMMARY": str(summary_path),
         }
@@ -632,6 +643,7 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
             assert f"{relative_path.as_posix()}" in summary
             assert "poolside/laguna-s-2.1:free" in summary
             assert "4096" in summary
+            assert "Per-response request timeout: `300 seconds`" in summary
             selection = json.loads((tmp_path / "eval-output-model" / "selection.json").read_text())
             assert selection["status"] == "selected"
             assert selection["selected_count"] == 1
@@ -678,6 +690,24 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
 
         output_path.write_text("")
         summary_path.write_text("")
+        environment["EVAL_CASE"] = "deadline-bound-stream"
+        environment["TIMEOUT_SECONDS"] = "901"
+        invalid_timeout = subprocess.run(
+            ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", selection_step["run"]],
+            env=environment,
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+        )
+        assert invalid_timeout.returncode != 0
+        assert "Unsupported request timeout" in invalid_timeout.stderr
+        assert output_path.read_text() == ""
+        assert summary_path.read_text() == ""
+        assert not selection_path.exists()
+
+        output_path.write_text("")
+        summary_path.write_text("")
+        environment["TIMEOUT_SECONDS"] = "300"
         environment["EVAL_CASE"] = ""
         environment["EVAL_SKILL"] = "../../untrusted"
         invalid_skill = subprocess.run(
