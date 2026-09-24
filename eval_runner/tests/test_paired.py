@@ -516,6 +516,13 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
     )
     assert "workflow_dispatch" in workflow["on"]
     assert workflow["on"]["workflow_dispatch"]["inputs"]["run_model_smoke"]["type"] == "boolean"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["model_id"]["type"] == "string"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["max_output_tokens"]["type"] == "choice"
+    assert workflow["on"]["workflow_dispatch"]["inputs"]["max_output_tokens"]["options"] == [
+        "4096",
+        "8192",
+        "12288",
+    ]
     model_job = workflow["jobs"]["paired-eval-model"]
     assert "github.event_name == 'workflow_dispatch'" in model_job["if"]
     assert "github.ref == 'refs/heads/main'" in model_job["if"]
@@ -530,6 +537,18 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
     selection_step = next(
         step for step in model_job["steps"] if step["name"] == "Detect changed skills with evals"
     )
+    endpoint_step = next(
+        step for step in model_job["steps"] if step["name"] == "Check model endpoint"
+    )
+    inference_step = next(
+        step for step in model_job["steps"] if step["name"] == "Run paired evaluation (real model)"
+    )
+    assert endpoint_step["env"]["EVAL_MODEL"] == "${{ inputs.model_id || vars.EVAL_MODEL }}"
+    assert inference_step["env"]["EVAL_MODEL"] == "${{ inputs.model_id || vars.EVAL_MODEL }}"
+    assert inference_step["env"]["MAX_OUTPUT_TOKENS"] == "${{ inputs.max_output_tokens || '4096' }}"
+    assert '--max-tokens "$MAX_OUTPUT_TOKENS"' in inference_step["run"]
+    assert "Manual model smoke evaluation." in selection_step["run"]
+    assert "4096|8192|12288" in selection_step["run"]
     repo_root = Path(__file__).resolve().parent.parent.parent
     manifest_source = repo_root / "agent-skills" / "evals" / "evals.json"
     manifest_data = json.loads(manifest_source.read_text())
@@ -546,6 +565,8 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
             "GITHUB_EVENT_NAME": "workflow_dispatch",
             "RUN_MODEL_SMOKE": "true",
             "BASE_SHA": "",
+            "EVAL_MODEL": "poolside/laguna-s-2.1:free",
+            "MAX_OUTPUT_TOKENS": "8192",
             "GITHUB_OUTPUT": str(output_path),
             "GITHUB_STEP_SUMMARY": str(summary_path),
         }
@@ -561,12 +582,27 @@ def test_manual_model_smoke_is_main_only_and_selects_fixed_manifest():
         assert "eligible_count=1\n" in output_path.read_text()
         assert "selected_count=1\n" in output_path.read_text()
         assert "agent-skills/evals/evals.json" in summary_path.read_text()
+        assert "poolside/laguna-s-2.1:free" in summary_path.read_text()
+        assert "8192" in summary_path.read_text()
         selection = json.loads((tmp_path / "eval-output-model" / "selection.json").read_text())
         assert selection["status"] == "selected"
         assert selection["selected_count"] == 1
         assert selection["expected_cases"]["agent-skills"] == [
             case["id"] for case in manifest_data["evals"]
         ]
+
+        environment["MAX_OUTPUT_TOKENS"] = "1024"
+        output_path.write_text("")
+        invalid_budget = subprocess.run(
+            ["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", selection_step["run"]],
+            env=environment,
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+        )
+        assert invalid_budget.returncode != 0
+        assert "Unsupported output-token ceiling" in invalid_budget.stderr
+        assert output_path.read_text() == ""
 
 
 def test_openai_adapter_uses_scoped_eval_api_key_from_environment():
