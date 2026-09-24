@@ -1635,3 +1635,29 @@ question fingerprint. A later CI shadow experiment needs specific approval
 for retransmitting private generated eval responses to TypeSafe, a separate
 artifact, and a comparison against independent labels before any promotion.
 No variant verdict alone is evidence of calibration or permission to gate.
+
+## 2026-09-23 — CI inference replacement inventory
+
+Reviewed `.github/workflows/skill-eval.yml`, `droid-review.yml`,
+`skillevaluator.yml`, and `ci-failure-to-issue.yml` for inference that could
+move to Jev. The paired-eval generator needs open-ended skill responses;
+replacing it with a typed decision would remove the behavior under evaluation.
+The existing Jev prose-assertion audit is already the natural bounded
+decision-helper insertion point. The Droid workflow performs broad code and
+security review; its main output is explanatory findings and suggested fixes,
+which Jev's typed judgments cannot produce. A separate Jev risk/severity
+classifier could be evaluated as a routing aid, but no CI contract or labeled
+review set currently supports that addition. SkillEvaluator explicitly runs
+the keyless Tier 1 checks `schema,pii,license,quality,unicode,lint`; its
+workflow comments say these checks exclude security scanning, and its optional
+LLM scan is not configured. The failure-to-issue workflow maps a failed main
+validation run to a fixed issue template and deduplicates by labels/title;
+there is no model inference to replace there.
+
+Current decision: keep the paired-eval generator and Droid review as text
+generation/review stages. Evaluate a Jev classifier beside Droid only if a
+bounded routing question, ground-truth outcomes, and a safe fallback are
+defined; do not present a typed classifier as a replacement for code review.
+The additional question-wording shadow on paired-eval outputs remains pending
+specific approval for its second TypeSafe transmission. At this point the only
+deployed Jev use remains the advisory paired-eval prose audit.
