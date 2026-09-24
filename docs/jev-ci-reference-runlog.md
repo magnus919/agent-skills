@@ -2846,7 +2846,6 @@ timeout; users can still choose smaller bounds. This applies only to opt-in
 inference runs. Automatic CI retains its 4,096-token/300-second fallback, and
 the observed HTTP 524 means this 900-second client setting cannot force a
 serving path to run longer than its own limit.
-
 ## 2026-09-24 — Repeated CI QA pilot reproduces one synthetic miss
 
 The manual synthetic QA pilot completed successfully in
