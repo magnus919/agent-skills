@@ -2939,3 +2939,36 @@ one 429. The next reliability experiment should first capture per-request
 run, without changing the advisory-only quality boundary. The historical
 statement above that automatic CI retained 4,096 tokens describes the state
 before PR #622; the merged workflow now defaults to 65,536.
+
+## 2026-09-24 — Isolated rerun passes; user identifies credit exhaustion as 429 cause
+
+After the full-run failure, a manual replay isolated only
+`reranking-pipeline` in [run 36050654448](https://github.com/magnus919/agent-skills/actions/runs/36050654448),
+using the same `poolside/laguna-s-2.1:free` model, a 65,536-token output
+ceiling, and a 300-second timeout. Both generations completed normally with
+`finish_reason=stop` and no rate-limit retries: the candidate used 2,385 output
+tokens in 43.3 seconds; the baseline used 1,365 in 23.1 seconds. This
+confirms the generous ceiling is headroom rather than a requested allocation.
+The comparison's `both_pass` is harness status, not a semantic-quality result.
+
+The selected-case Jev audit saw one report and all 18 prose assertions across
+the two sides; it selected all 18, omitted none, skipped none, and had zero
+provider errors. That is complete advisory coverage for this one case, not
+18 independently verified semantic passes or evidence of Jev accuracy.
+
+After this replay, the user reported that Nous credits were exhausted and
+identified credit exhaustion as the cause of the earlier HTTP 429. The
+captured failed request says `Too Many Requests` with a 30-second retry hint,
+but does not expose account balance or a provider error code distinguishing
+quota exhaustion from a rate window. Record the quota explanation as
+user-reported, not independently verified from the run artifact. The later
+single-case success occurred after the failed full run, so without
+time-aligned account-balance evidence these observations cannot establish a
+burst/concurrency limit or fully reconcile quota state over time.
+
+Lesson: classify 429s from provider error codes and account/billing telemetry
+when available; do not infer overload from status and Retry-After alone. Stop
+further Nous/Jev inference while the user-reported credit shortage remains.
+Resume only after the user confirms credits are available, then capture the
+provider error classification and request-level retry/token provenance in a
+bounded replay. Keep the Jev audit advisory-only.
