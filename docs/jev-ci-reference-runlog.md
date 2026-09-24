@@ -1790,3 +1790,44 @@ probability error there. The instruction is therefore not promoted to the
 deployed contract. These 12 obvious synthetic cases do not estimate CI
 performance; the candidate remains an experiment, and the default question
 remains in use. The real-run disagreement was not replayed to Jev.
+
+## 2026-09-24 — Repeated Nous labels separate stable disagreement from noise
+
+Compared the approved two-pass Nous Portal screens for Jev audits
+[35950558246](https://github.com/magnus919/agent-skills/actions/runs/35950558246)
+and [35953231307](https://github.com/magnus919/agent-skills/actions/runs/35953231307)
+entirely from already-downloaded local artifacts. No model call was made for
+this comparison, and no generated answer text is retained here. The screens
+used the same Nous model and prompt revision; each resolved 39/44 items and
+left five uncertain.
+
+Of the 44 hashed item IDs in each screen, 43 overlapped and all 43 had
+identical generated-response hashes. Nous gave the same resolved consensus on
+all 36 overlapping items resolved in both runs. The other seven had at least
+one `uncertain` consensus and are not counted as agreement. Jev kept the same
+suggested verdict on 42/43 shared items; mean absolute change in its `met`
+probability was 0.0058 (maximum 0.05). The single verdict flip was
+`system-one/jev-ci-operations`, candidate side: “Describes a reviewed way to
+disable Jev egress while preserving deterministic validation and the original
+red CI result.” Jev changed `not_shown` to `not_met` while its `met`
+probability stayed 0.11 (provider confidence 0.20 to 0.17). This is a small
+decision-boundary stability observation, not evidence that either verdict is
+correct.
+
+One disagreement did persist on identical bytes: for the candidate
+`deadline-bound-stream` assertion requiring independent observation before
+recording success, Jev suggested `met` in both runs (probabilities 0.58 and
+0.57; provider confidence 0.37 and 0.34), while Nous consensus was
+`not_shown` both times. The second run also had a Jev `met` / Nous
+`not_shown` disagreement on the baseline finite-retry-limit assertion (Jev
+probability 0.93, provider confidence 0.89); the first run's Nous label for
+that item was `uncertain`, so this is not a repeated disagreement.
+
+This repeated-output screen helps prioritize what to inspect: the
+independent-observation claim is a reproducible Jev/Nous disagreement, while
+most other labels and verdicts were stable. The same-model Nous consensus is
+correlated pseudo-label evidence, not ground truth; uncertain items stay
+unresolved. Do not infer accuracy, confidence calibration, a threshold, or a
+release gate from these runs. Blog lesson: repeatability can distinguish a
+persistent review question from a one-run disagreement, but it cannot settle
+the question without independent adjudication.
