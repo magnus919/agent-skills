@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 import urllib.error
 import urllib.request
@@ -153,10 +154,22 @@ class OpenAICompatAdapter:
 
         except urllib.error.HTTPError as exc:
             elapsed_ms = (time.monotonic() - start) * 1000
+            safe_context = []
+            try:
+                body = json.loads(exc.read())
+                error = body.get("error", body) if isinstance(body, dict) else {}
+                if isinstance(error, dict):
+                    for key in ("type", "code", "param"):
+                        value = error.get(key)
+                        if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_.:-]{1,80}", value):
+                            safe_context.append(f"{key}={value}")
+            except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+                pass
+            detail = f" ({', '.join(safe_context)})" if safe_context else ""
             return AdapterOutput(
                 exit_status=ExitStatus.ERROR,
                 response=None,
-                error=f"HTTP {exc.code}: {exc.reason}",
+                error=f"HTTP {exc.code}: {exc.reason}{detail}",
                 duration_ms=elapsed_ms,
             )
         except urllib.error.URLError as exc:

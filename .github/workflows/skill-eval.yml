@@ -127,7 +127,7 @@ jobs:
           RUN_MODEL_SMOKE: ${{ inputs.run_model_smoke }}
         run: |
           if [ "$EVAL_BASE_URL" != "https://inference-api.nousresearch.com" ] || \
-            [ "$EVAL_MODEL" != "stepfun/step-3.7-flash:free" ] || \
+            [ -z "$EVAL_MODEL" ] || \
             [ -z "$NOUS_API_KEY" ]; then
             echo "available=false" >> "$GITHUB_OUTPUT"
             if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] && [ "$RUN_MODEL_SMOKE" = "true" ]; then
@@ -136,18 +136,39 @@ jobs:
             fi
             exit 0
           fi
-          if printf 'Authorization: Bearer %s\n' "$NOUS_API_KEY" | \
+          models_json=$(printf 'Authorization: Bearer %s\n' "$NOUS_API_KEY" | \
             curl -sf --connect-timeout 5 \
               -H @- \
-              "$EVAL_BASE_URL/v1/models" > /dev/null 2>&1; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-          else
+              "$EVAL_BASE_URL/v1/models" 2>/dev/null) || models_json=""
+          if [ -z "$models_json" ]; then
             echo "available=false" >> "$GITHUB_OUTPUT"
             if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] && [ "$RUN_MODEL_SMOKE" = "true" ]; then
               echo "Authenticated Nous endpoint preflight failed." >&2
               exit 1
             fi
+            exit 0
           fi
+          if ! printf '%s' "$models_json" | python3 -c '
+          import json
+          import sys
+
+          expected = sys.argv[1]
+          try:
+              models = json.load(sys.stdin).get("data")
+          except (json.JSONDecodeError, AttributeError):
+              raise SystemExit(2)
+          if not isinstance(models, list):
+              raise SystemExit(2)
+          raise SystemExit(0 if any(
+              isinstance(model, dict) and model.get("id") == expected
+              for model in models
+          ) else 1)
+          ' "$EVAL_MODEL" 2>/dev/null; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "Configured model is not listed by the authenticated Nous endpoint." >&2
+            exit 1
+          fi
+          echo "available=true" >> "$GITHUB_OUTPUT"
       - name: Detect changed skills with evals
         id: changed
         if: steps.endpoint.outputs.available == 'true'
@@ -191,7 +212,6 @@ jobs:
               --adapter openai \
               --base-url "$EVAL_BASE_URL" \
               --model "$EVAL_MODEL" \
-              --model-label configured-model \
               --max-tokens 4096 \
               --timeout 300 \
               --output-dir "eval-output-model/$skill" \
