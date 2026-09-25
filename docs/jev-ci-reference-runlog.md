@@ -3063,3 +3063,26 @@ verification passed: the exact paired-eval CI test command,
 27 eval-validation tests, all 181 eval manifests, 21 Jev audit tests, all 181
 canonical skills, the modified-skill eval-coverage ratchet, and `git diff
 --check`. No live inference was used.
+
+## 2026-09-24 — Jev-only local wording screen, no Nous dependency
+
+At the user's direction, ran Jev directly on the six-case development split
+of `system-one/examples/jev-atomic-assertion-screen.json`, comparing the
+deployed question with `all-requirements-shadow-v1`. These were 12 live Jev
+requests against author-constructed synthetic examples only. No Nous request,
+real generated response, or test-split case was sent.
+
+Both variants returned the same six labels (6/6 on this small screen). The
+deployed question's binary `met` Brier score was 0.00045; the candidate's was
+0.00225. Median response latency was approximately 321 ms versus 333 ms. The
+candidate therefore shows no accuracy gain here, has slightly worse Brier,
+and no demonstrated operational benefit. Keep the deployed wording unchanged;
+do not infer production accuracy, calibration, or a confidence threshold from
+this dev-only synthetic result. A fresh representative held-out set is still
+needed for any semantic-quality claim.
+
+Local-only verification also passed the paired-evaluation test script, all 21
+Jev audit tests, all 10 calibration-helper tests, and validation of all 181
+eval manifests. These establish mechanics, not Jev correctness. The separate
+hard-quota retry change remains local and mock-tested; no Nous inference or
+provider spend was used for it.

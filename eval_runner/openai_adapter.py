@@ -34,6 +34,7 @@ _HARD_QUOTA_ERROR_CODES = {
     "organization_spend_limit_exceeded",
     "organization_usage_limit_exceeded",
     "project_spend_limit_exceeded",
+    "project_usage_limit_exceeded",
 }
 
 
