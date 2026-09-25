@@ -1,0 +1,23 @@
+# Fine-tuning English Laya on typed decisions
+
+Checked 2026-09-25 against Laya's [fine-tuning section](https://github.com/NandhaKishorM/laya/blob/main/README.md#fine-tuning), [typed-decisions notebook](https://github.com/NandhaKishorM/laya/blob/main/notebooks/laya_finetune_typed_decisions_2xT4_kaggle.ipynb), [English checkpoint card](https://huggingface.co/convaiinnovations/laya), and [worked browser-agent example](https://github.com/NandhaKishorM/laya/blob/main/docs/finetune_browser_agent.md). This reference targets `convaiinnovations/laya`; verify the package, source, checkpoint, and license revisions before running it.
+
+## Upstream method and tools
+
+The published notebook builds typed-decision data, trains with RLCD, fits temperature values, evaluates, and exports a checkpoint. Laya describes RLCD as a proper-scoring-rule reward over reported distributions with noisy-logit exploration and a group-mean policy-gradient baseline. Use the notebook as the executable starting point; its Kaggle 2xT4 setup is an example, not a hardware requirement. The [browser-agent case study](https://github.com/NandhaKishorM/laya/blob/main/docs/finetune_browser_agent.md#pipeline) documents a separate single-16-GB-GPU pipeline, including data preparation, training, calibration, and held-out website evaluation.
+
+Do not convert a GLiNER classification row into a Laya training row by renaming fields. Laya consumes a state plus typed `choice`, `score`, or `noul` questions. Preserve each question's instructions, criteria, allowed outcomes, and option order in the training record and deployed contract. Include explicit unknown/review coverage where the decision is underdetermined. The browser-agent study shows that moving candidates from state text into the option list and budgeting head tokens changed performance substantially; test the actual serialized input and truncation before adding more data.
+
+## Build an independently labeled data set
+
+Collect states and ground-truth decisions from the target workflow, with provenance, permitted use, reviewer disagreements, and an explicit treatment of ambiguous cases. Include ordinary, rare, adversarial, no-evidence, and out-of-domain states. Split by source unit (customer, document, page, workflow, or time) before generation or augmentation so near-duplicates cannot cross splits. Keep the System One decision battery and final comparison corpus sealed as a test set. Do not use Jev outputs for training, imitation, or distillation without a separate agreement review.
+
+Freeze a question schema and a small training pilot first. Run a baseline on the held-out set using the same serialized requests the production adapter will send. Validate parsing, option budgets, context truncation, and device placement. Then adapt the notebook's data builder to the domain and train a small run before scaling.
+
+The upstream notebook enables gradient checkpointing for both encoder and decision head. In custom loops, set `model.head_checkpointing = True` for the head and enable encoder checkpointing separately; this trades additional computation for lower activation memory. Record effective batch size, optimizer/settings, epochs, seed, GPU memory, wall time, checkpoint hash, and data revision. Treat the published time and accuracy figures as upstream examples, not capacity or quality predictions for this workload.
+
+## Calibrate and verify the exported checkpoint
+
+Fit temperature parameters on a calibration split separate from training, and reserve a final untouched test split. The upstream README explicitly says its notebook currently derives calibration samples from training items, so that notebook fit alone does not establish held-out calibration. It also notes that `temperature_by_options` can override freshly fitted per-type `temperature` values; inspect the exported config and test reload behavior. Evaluate Choice, Noul, and Score separately with accuracy or error, proper scoring and calibration metrics, abstention/review coverage, and per-domain slices. Choose policy thresholds from error at coverage on the target data.
+
+Reload the checkpoint through the deployed Laya runtime and repeat representative requests. Compare against the pinned baseline on identical held-out cases and identical hardware/request shapes, with p50/p95 latency and throughput. Check rare classes, option-count changes, long inputs, missing evidence, and threshold sensitivity. Ship the model, tokenizer, question contract, calibration config, and runtime revisions as one rollback unit. Do not promote based only on training loss, the notebook's calibration fit, or a favorable vendor benchmark.

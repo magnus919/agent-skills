@@ -8,6 +8,8 @@ and the Node/ONNX adapter. Re-check revisions and licenses before deployment.
 The upstream Python package is `laya` and requires Python 3.10+. The repository
 currently documents three checkpoints:
 
+For domain adaptation of the English checkpoint, read `references/laya-fine-tuning.md`.
+
 | Checkpoint | Backbone/size | Context | Intended use |
 |---|---|---:|---|
 | `convaiinnovations/laya` | ModernBERT-large, 421M | 512 | English |

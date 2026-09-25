@@ -2,6 +2,9 @@
 
 Source checked 2026-09-24: [Fastino model card](https://huggingface.co/fastino/GLiNER2.5-Decide), [GLiNER2 code](https://github.com/fastino-ai/GLiNER2), and [fast-decisions dataset card](https://huggingface.co/datasets/fastino/fast-decisions). Recheck the card, code, license, and revisions before deployment.
 
+For upstream classification training options and checkpoint-compatibility checks,
+read `references/gliner25-decide-fine-tuning.md`.
+
 ## Fit and contract boundary
 
 Fastino describes `GLiNER2.5-Decide` as an English, Apache-2.0, local classifier for operational labels. It accepts label sets at call time and can score several independent heads over one text in a single call. Single-label heads return one label string; multi-label heads return a list above a configured `cls_threshold`. Its card describes a 340M-parameter DeBERTa-v3-large encoder and CPU/GPU operation through `gliner2`. Verify the downloaded artifact size and tensor count for the selected revision before capacity planning.

@@ -60,6 +60,7 @@ tracked corpus unless publication is explicitly requested.
 |---|---|
 | Hosted Jev API or SDK integration | `references/jev.md`; run `scripts/decision_demo.py` offline first |
 | Laya checkpoints, routing, language, CPU/GPU/MPS | `references/laya.md` |
+| Fine-tune the English Laya checkpoint on labeled typed decisions | `references/laya-fine-tuning.md` |
 | Native C++ Laya inference, CUDA/Vulkan, or Jev-compatible HTTP | `references/laya-cpp.md` |
 | Local or private/VPC Laya service | `references/laya-self-hosting.md`, then `references/hosting-and-troubleshooting.md` |
 | Browser/desktop/voice control, agent routing, ranking, guardrails, deadlines | `references/use-case-patterns.md` |
@@ -71,6 +72,7 @@ tracked corpus unless publication is explicitly requested.
 | Screen Jev's advisory eval judgments against real outputs | `references/qa-pilot.md` and `references/evaluation-and-calibration.md`; use `scripts/jev_eval_calibration.py` for a blind packet, then independent labels or `scripts/jev_teacher_label.py` for model-teacher pseudo-labels |
 | New open model or Jev-style replica | `references/ecosystem-radar.md` |
 | Fastino GLiNER2.5-Decide local classification | `references/gliner25-decide.md` |
+| Fine-tune GLiNER2 for Decide-style classification | `references/gliner25-decide-fine-tuning.md` |
 | Failure, latency, device fallback, upgrade, rollback | `references/hosting-and-troubleshooting.md` |
 
 Run `python3 scripts/systemone_probe.py --request examples/request.json` for an offline
