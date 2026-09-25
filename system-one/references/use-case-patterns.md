@@ -6,6 +6,42 @@ The examples below were inspected as design evidence on 2026-09-22; their
 published accuracy, latency, and economic results are not independently
 reproduced here. The [awesome-jev list](https://github.com/yibie/awesome-jev)
 is a discovery index, not a security or maturity endorsement.
+For the cross-category survey of 1,305 Jev index records, including source
+coverage and counterexamples, read `field-patterns-and-antipatterns.md`.
+
+## Find the right decision
+
+The 2026-09-19 AY Automate use-case survey groups Jev examples into routing,
+guardrails, reranking, scoring, bulk classification, semantic linting, and
+live control. The portable lesson is to look for a **frequent, bounded
+judgment** inside a larger workflow. Before selecting a model, write down:
+
+1. The actual state available at decision time and one question whose answers
+   are fixed in advance. Use Choice for a label, Score for an ordered rubric,
+   or Noul for one proposition.
+2. The deterministic action for each answer, including `unknown`, malformed,
+   low-evidence, and unavailable results. An LLM or person can be a fallback,
+   but is not automatically the correct fallback for every risk tier.
+3. The cost of a false accept versus a false reject. Set thresholds from
+   held-out local evidence per action; article examples are illustrations,
+   not deployment defaults.
+4. A current exact-rule or production baseline and an independently labeled
+   shadow sample. Start with one high-volume decision before replacing a
+   whole workflow.
+
+Examples: route a support ticket with Choice plus a separate complexity Score;
+decide whether a request needs a stronger LLM with Noul or Score; rate each
+retrieved passage for relevance; flag whether a tool call is inconsistent with
+the user's request. These return evidence to policy code. They do not write
+the support reply, prove a citation, or authorize the tool call.
+
+Prefer ordinary code for exact checks. For citation review, first test whether
+a quote literally appears in the cited source; only then ask a bounded
+semantic question about whether the surrounding passage supports the claim.
+Keep `supported`, `contradicted`, `unrelated`, and `not_shown` distinct so a
+missing source does not become a model-certified citation. A provider demo on
+planted citation errors is an example of mechanics, not a validated accuracy
+estimate for new documents.
 
 ## The shared loop
 
@@ -152,6 +188,32 @@ tests wording and option-order changes;
 [jevcal](https://github.com/abhixhek/jevcal) separates threshold/calibrator
 fitting from held-out assessment. See `references/evaluation-and-calibration.md`
 for the release gate.
+
+## 7. Classify a large corpus
+
+**When:** tagging archived support messages, agent traces, listings, or notes
+with a bounded semantic property that an exact filter misses.
+
+Ask a distinct Noul or Choice question per record, preserve record IDs, and
+bound concurrency, retries, rate, cost, and duplicate writes. For example,
+"Does this message request a refund?" can feed a tag queue. If aggregate
+counts matter, sample and independently label accepted, rejected, and
+uncertain records; estimate false accepts and misses before trusting a total.
+Keep exact counts in code and distinguish model-produced tags from verified
+facts. If these tags feed a forecast or another model, version the feature
+definition and test whether it adds value beyond the existing features.
+
+## 8. Lint meaning in CI
+
+**When:** a guideline needs semantic judgment, such as whether an error
+message tells a user what to do next.
+
+Express one rubric-backed Noul or Choice question per check and attach the
+rule ID, evidence span, and model revision to the result. Run exact syntax,
+schema, and policy checks first. Start the semantic check as advisory; promote
+it to a blocking gate only after independently labeled real changes establish
+false-block, false-pass, abstention, and drift behavior at the proposed
+threshold. Missing model evidence must not appear as a passing lint result.
 
 ## Porting Jev-shaped code to Laya
 

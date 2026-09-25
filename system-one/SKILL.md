@@ -35,7 +35,9 @@ does not imply a correct judgment; a high probability is not permission.
 2. Fill `templates/decision-contract.md`: trusted state, question IDs/types,
    allowed answers, unknown/review lane, side effects, owner, deadlines, and
    rollback. For tool control, also use `templates/action-control-contract.md`.
-   Use `references/concepts-and-patterns.md` for primitive semantics and composition.
+   New to this model class? Start with `references/worked-decision-pilot.md`
+   to choose one bounded decision, then use `references/concepts-and-patterns.md`
+   for primitive semantics and composition.
 3. Open **only the matching reference** below. Keep exact question text and
    criteria in trusted configuration, not user-supplied state.
 4. Validate response IDs, types, option sets, distributions, score rubric,
@@ -64,7 +66,13 @@ tracked corpus unless publication is explicitly requested.
 | Native C++ Laya inference, CUDA/Vulkan, or Jev-compatible HTTP | `references/laya-cpp.md` |
 | Local or private/VPC Laya service | `references/laya-self-hosting.md`, then `references/hosting-and-troubleshooting.md` |
 | Browser/desktop/voice control, agent routing, ranking, guardrails, deadlines | `references/use-case-patterns.md` |
+| First System One pilot or worked evaluation of a decision, QA runner, or semantic CI gate | `references/worked-decision-pilot.md` |
+| Learn from the 1,305-build field survey; identify implementation patterns and anti-patterns | `references/field-patterns-and-antipatterns.md` |
+| Audit original browser, skill-router, supervisory, or moderation implementations | `references/implementation-audit.md` |
+| Production QA step routing, cached replay, selector repair, or model substitution | `references/qa-automation-pattern.md`, then `references/evaluation-and-calibration.md` |
 | Probability, threshold, calibration, model comparison | `references/evaluation-and-calibration.md` and `templates/benchmark-record.md` |
+| Compare singleton and batched request quality or calibration | `references/request-shape-evaluation.md` and `templates/benchmark-record.md` |
+| Measure router ablations and full fallback economics | `references/cascade-economics.md` and `templates/benchmark-record.md` |
 | Determine whether a decision model improves an agent harness | [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) for paired end-to-end tasks, trajectories, side effects, and cost/latency; keep this skill's model-level contract and calibration checks |
 | Design or run a portable v1 label battery or provisional v2 cross-domain Choice/Noul/Score battery | `references/decision-battery.md` and `templates/decision-battery-design-review.md`; run `scripts/decision_battery.py` only after the pilot review |
 | Synthetic QA pilot for Jev (failure triage, extra-test choice, semantic grading) | `references/qa-pilot.md`; run `scripts/jev_qa_pilot.py` offline first |
@@ -98,8 +106,9 @@ reference adapter, not a public Internet service.
   not prove quality. If shortlisting, measure recall and treat probabilities as
   conditional on exactly the retained candidate set. Prefer `other`, `unknown`,
   or review when labels are not exhaustive. See `references/laya.md`.
-- Independent questions may share one call. Dependent questions need another
-  call only when the first answer changes their state or candidate set.
+- Independent questions may share one call, but test the exact batched request
+  shape on frozen cases. Dependent questions need another call when the first
+  answer changes their state or candidate set.
 - A model cannot replace exact arithmetic, provenance, eligibility, safety
   reflexes, or irreversible approval. A text-generating model may be a separate
   bounded stage after a typed route, not an implicit source of authority.

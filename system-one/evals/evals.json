@@ -166,6 +166,76 @@
         "Does not retry an explicit hard-quota error code; treats HTTP 429 plus Retry-After without quota classification as ambiguous unless provider error or account telemetry distinguishes transient throttling from exhausted credits",
         "Checks other workflows sharing the provider credential before attributing spend or retrying and does not claim per-workflow cost without usage telemetry"
       ]
+    },
+    {
+      "id": "qa-step-routing",
+      "prompt": "Our regression runner calls an LLM for every web test step. We have verified selectors for stable pages, but some pages change and some controls are canvas-only. Design a System One integration and a fair way to evaluate it.",
+      "expected_output": "Replays validated selectors, sends unresolved bounded decisions to a typed model, routes visual evidence separately, retains exact assertions in code, and evaluates end-to-end stability with a frozen labeled set.",
+      "assertions": [
+        "Reuses a verified selector only while its page and target invariants hold, and records invalidation",
+        "Uses a typed model for unresolved bounded decisions with an unknown or review lane",
+        "Routes canvas-only evidence to a visual stage rather than assuming a text-only model can inspect it",
+        "Keeps exact arithmetic, dates, mandatory tests, and release gates in deterministic code",
+        "Records proposed selector repairs for review and rollback rather than silently rewriting the suite",
+        "Compares the current runner and candidate on frozen labeled cases and end-to-end run stability",
+        "Measures repeated-input variance separately from correctness and calibration",
+        "Pins model and question revisions before tuning thresholds or comparing runs"
+      ]
+    },
+    {
+      "id": "beginner-use-case-selection",
+      "prompt": "We are new to System One models. We handle 80,000 support messages monthly, generate replies, count refunds, choose ticket queues, and run a semantic error-message guideline in CI. Which one decision should we pilot first, and how?",
+      "expected_output": "Chooses one frequent bounded judgment such as queue routing, defines its typed question and fallback, shadows the current workflow with independent labels, and separates generation, exact counts, and semantic CI gate promotion.",
+      "assertions": [
+        "Selects one bounded high-volume decision and gives its state, primitive, allowed answers, and unknown path",
+        "Keeps reply generation outside the typed classifier",
+        "Keeps exact refund counting in code, with model-produced refund tags treated as unverified until evaluated",
+        "Compares the pilot in shadow mode with current routing on independently labeled real cases",
+        "Defines action-specific costs and tunes thresholds on held-out data rather than copying an article number",
+        "Starts semantic CI checks as advisory and requires false-block and false-pass evidence before a required gate"
+      ]
+    },
+    {
+      "id": "worked-pilot-evidence",
+      "prompt": "We want to pilot System One queue routing, use it for changed-page QA selectors, and eventually make a semantic error-message check required in CI. What evidence would justify each step?",
+      "expected_output": "Defines one bounded queue contract and baseline, evaluates it in shadow mode with frozen independent labels, measures the entire QA path mix and regression detection, and requires false-block and false-pass evidence before semantic CI becomes required.",
+      "assertions": [
+        "Defines queue state, Choice options including other, validation, and a safe fallback",
+        "Uses independently labeled representative cases and a separate frozen test split for queue routing",
+        "Compares routing against the current process using wrong assignments and accepted coverage",
+        "Measures QA replay, typed resolution, and visual or generative path shares plus total journey outcomes",
+        "Tests QA stability on an unchanged build separately from detection on builds with known defects",
+        "Keeps proposed selector repairs reviewable and reversible",
+        "Starts semantic CI as advisory, then requires independently measured false blocks and false passes before a blocking gate",
+        "Treats missing semantic evidence as unresolved rather than a passing result"
+      ]
+    },
+    {
+      "id": "request-shape-and-cascade-evidence",
+      "prompt": "A team reports that Jev's singleton ticket decisions are accurate and its router is cheap. They want to batch eight questions per call, swap in Laya, and make the router automatic. Design the minimum fair experiment and say what each result would prove.",
+      "expected_output": "A frozen paired evaluation compares singleton and exact production batches per model, then compares the complete router and fallback path with deterministic, retrieval-only, and best-single-model baselines on independently labeled held-out cases.",
+      "assertions": [
+        "Compares each decision alone and in the intended batch shapes with the same state, question meaning, option policy, and case identity",
+        "Measures answer validity, correctness, calibration, and abstention by model and request shape rather than assuming singleton behavior transfers",
+        "Treats Laya as a separately pinned model needing its own matched quality and threshold evaluation",
+        "Includes deterministic or retrieval-only, best single-model, router-without-decision-signal, and full-cascade baselines on the same held-out cases",
+        "Counts retrieval, model calls, retries, fallback, review, and end-to-end latency while keeping unresolved cases visible"
+      ]
+    },
+    {
+      "id": "field-evidence-triage",
+      "prompt": "A Jev build index lists a popular browser agent, a trading bot, a router benchmark, and a claim that batching is always safe and 0.9 confidence means 90% correct. What should we reuse for another System One model?",
+      "expected_output": "Extracts bounded decision and deterministic-control patterns while grading the evidence behind each claim, rejecting transferable numeric thresholds and unverified live outcomes, and requiring target-model evaluation.",
+      "assertions": [
+        "Distinguishes index popularity, original post or README claims, inspected implementation, and reproduced outcomes as different evidence tiers",
+        "Constrains browser actions to fresh observed candidates and checks postconditions rather than trusting DONE",
+        "Distinguishes trading dry-run or mock behavior from confirmed live fills and profitability",
+        "Tests a router against a best simple baseline and a no-model ablation before crediting the model",
+        "Requires exact request-shape tests for batching and does not assume standalone accuracy transfers",
+        "Requires held-out calibration per task and model rather than treating 0.9 as a universal correctness rate",
+        "Keeps exact policy, side effects, math, and authority in code or accountable human control",
+        "Does not transfer Jev-specific quality, limits, or thresholds to another System One model without new evidence"
+      ]
     }
   ]
 }

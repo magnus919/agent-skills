@@ -61,7 +61,8 @@ Record these before implementing:
 ## Reliable composition
 
 - Ask independent questions about the same state together. This reduces
-  round trips and keeps the policy in code.
+  round trips and keeps the policy in code. Test the exact batched request
+  shape on frozen cases; a fast batch is not evidence of unchanged accuracy.
 - Split a dependent question only when its state or candidate set is created by
   the earlier answer. Otherwise fan it out and ignore irrelevant answers.
 - For composite judgments, score independent dimensions, normalize explicitly,
@@ -78,6 +79,12 @@ Probability is meaningful only relative to the proposition, label set,
 population, and calibration data. Confidence is usually a summary of how
 concentrated a Choice/Score distribution is. Neither proves factual support,
 source authority, fairness, legal compliance, or authorization.
+
+Question form is part of that contract. A Noul probability, a Choice option
+probability, and the complement of a separately worded Noul need not agree,
+even when their English descriptions seem equivalent. Do not impose arithmetic
+identities across separately evaluated questions or reuse a calibrated
+threshold when changing primitive, criteria, negation, or candidate set.
 
 Use held-out target data to set action thresholds. Report risk-coverage curves
 and calibration, not only argmax accuracy. A high-confidence wrong answer on an
