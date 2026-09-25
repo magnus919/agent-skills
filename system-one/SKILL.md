@@ -10,7 +10,7 @@ description: >-
 license: MIT
 compatibility: Current provider/model documentation needs network access; local Laya operation needs Python 3.10+, PyTorch, Transformers, and model-weight storage.
 metadata:
-  author: username
+  author: system-one contributors
   version: "1.1"
 ---
 
