@@ -88,8 +88,8 @@ HTTP service. A safe VPC pattern is:
    body size, question count, option count, concurrency, queue time, and total
    request deadline.
 3. Expose `/healthz` for process liveness and `/readyz` only after the model,
-   tokenizer, device, and calibration artifact load successfully. Do not call
-   inference from a liveness probe.
+   tokenizer, device, and any calibration artifact used by the application are
+   ready. Do not call inference from a liveness probe.
 4. Bind the model service to a private interface; put TLS/auth/rate limiting at
    the intended ingress; restrict egress to the artifact source during build
    and to required telemetry at runtime.
@@ -98,6 +98,12 @@ HTTP service. A safe VPC pattern is:
    sensitive state.
 6. Roll out shadow traffic first, then a bounded percentage, and keep the
    previous image plus model/config hashes as the rollback unit.
+
+The bundled minimal adapter in `laya-self-hosting.md` is narrower: it waits for
+`laya.load()` to return, and its explicit readiness predicate checks only that
+the actual device matches the requested device. It does not separately attest
+tokenizer or calibration-artifact readiness. Extend the predicate to cover every
+required initialization dependency before routing production traffic.
 
 An OpenAI-shaped or Jev-shaped endpoint is a convenience, not proof of semantic
 compatibility. Keep a provider-neutral internal contract and test each adapter.

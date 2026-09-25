@@ -28,15 +28,15 @@
     {
       "id": "laya-vpc-hosting",
       "prompt": "Describe how to self-host Laya for a private VPC service handling English and multilingual ticket triage.",
-      "expected_output": "Pins the Python/runtime/model artifacts, preloads the needed checkpoints, exposes a private authenticated wrapper with readiness and bounded concurrency, and verifies actual device and model residency.",
+      "expected_output": "Pins the Python/runtime/model artifacts, preloads the needed checkpoints, exposes a private authenticated wrapper with finite application-specific bounds for request size, question and option counts, concurrency, queue wait, and total deadline, and distinguishes the application's production readiness gate for required model, tokenizer, device, and calibration artifacts from the bundled adapter's device-only /readyz check.",
       "assertions": [
         "Uses a documented Laya checkpoint and its compatible Python runtime; does not claim Jev weights are downloadable",
         "Preloads or otherwise keeps required checkpoints resident to avoid language-switch reloads",
         "Limits the Laya service to private network access",
         "Authenticates requests to the private Laya service",
-        "Bounds request size, concurrent inference, and deadlines",
+        "Bounds request size, question count, options per Choice, concurrent inference, queue wait, and total request deadline with finite application-specific limits",
         "Redacts sensitive ticket data from logs",
-        "Reports readiness only after model, tokenizer, and inference device have loaded",
+        "Distinguishes production readiness requirements for the pinned model, tokenizer, actual device, and application calibration artifact, as applicable, from the bundled adapter's device-only /readyz predicate and says to extend it before production traffic",
         "Pins checkpoint and runtime revisions with an integrity check",
         "Defines monitoring and rollback for a checkpoint or runtime upgrade"
       ]
