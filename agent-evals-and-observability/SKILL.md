@@ -41,6 +41,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 | Validate judge stability, abstention, and escalation | [references/judge-stability.md](references/judge-stability.md) |
 | Evaluate grounded claims and attribute RAG failures | [references/grounding-attribution.md](references/grounding-attribution.md) |
 | Define measures or compare runs | [references/metrics-and-statistics.md](references/metrics-and-statistics.md) |
+| Evaluate a bounded Choice/Score/Noul decision model or GLiNER classifier inside an agent | [system-one](../system-one/SKILL.md) for its question contract, held-out labels, calibration where probabilities exist, and model-level latency; use this skill for the agent's end-to-end task and trajectory evidence |
 | Review tools, state, recovery, or side effects | [references/trajectory-review.md](references/trajectory-review.md) |
 | Triage a regression or decide release readiness | [references/regression-and-release.md](references/regression-and-release.md) |
 | Design traces, logs, metrics, or privacy controls | [references/production-observability.md](references/production-observability.md) |

@@ -65,6 +65,7 @@ tracked corpus unless publication is explicitly requested.
 | Local or private/VPC Laya service | `references/laya-self-hosting.md`, then `references/hosting-and-troubleshooting.md` |
 | Browser/desktop/voice control, agent routing, ranking, guardrails, deadlines | `references/use-case-patterns.md` |
 | Probability, threshold, calibration, model comparison | `references/evaluation-and-calibration.md` and `templates/benchmark-record.md` |
+| Determine whether a decision model improves an agent harness | [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) for paired end-to-end tasks, trajectories, side effects, and cost/latency; keep this skill's model-level contract and calibration checks |
 | Design or run a portable v1 label battery or provisional v2 cross-domain Choice/Noul/Score battery | `references/decision-battery.md` and `templates/decision-battery-design-review.md`; run `scripts/decision_battery.py` only after the pilot review |
 | Synthetic QA pilot for Jev (failure triage, extra-test choice, semantic grading) | `references/qa-pilot.md`; run `scripts/jev_qa_pilot.py` offline first |
 | Paired-eval semantic assertion audit in CI | `references/qa-pilot.md`, then `scripts/jev_eval_audit.py`; treat its verdicts as advisory and preserve exact grader results |
