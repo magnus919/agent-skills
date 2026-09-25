@@ -1,6 +1,6 @@
 # System One ecosystem radar
 
-Snapshot checked 2026-09-22. This is a discovery aid, not a quality ranking.
+Snapshot checked 2026-09-24. This is a discovery aid, not a quality ranking.
 Download counts, stars, and community benchmark claims move quickly. Confirm
 model card, code, license, revision, and target-data evaluation before adoption.
 
@@ -30,6 +30,10 @@ their own cards say otherwise:
 - Vision/edge variants such as Laya Vision or AXERA Laya packages: useful only
   when the input modality or accelerator is in scope; verify license and the
   fixed option/sequence limits.
+- `fastino/GLiNER2.5-Decide`: local English classifier with call-time labels,
+  multiple heads, and optional multi-label output. Its `classify_text` result
+  is a label or labels, not a Jev-compatible probability response. See
+  [operational guidance](gliner25-decide.md) before adapting a decision client.
 
 ## Screening procedure
 
@@ -59,3 +63,4 @@ For each candidate, capture:
 - Jeff-1 card: https://huggingface.co/GestaltLabs/Jeff-1
 - Tiny-Jev card: https://huggingface.co/lostargon/Tiny-Jev
 - Zico card: https://huggingface.co/AmeenAhmed2/zico
+- GLiNER2.5-Decide card: https://huggingface.co/fastino/GLiNER2.5-Decide

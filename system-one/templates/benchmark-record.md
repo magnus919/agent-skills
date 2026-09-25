@@ -8,6 +8,7 @@
 - Runtime/image digest:
 - Device/driver/precision:
 - Dataset and split/checksum:
+- Distinct scenarios / question judgments / network requests:
 - Question-contract/policy hash:
 
 ## Matched conditions
@@ -18,6 +19,8 @@
 - Warmup and cache state:
 - Network region/endpoint:
 - Request timeout/retry policy:
+- Pilot review and answer-rubric revision:
+- Result storage outside the repository:
 
 ## Quality
 
