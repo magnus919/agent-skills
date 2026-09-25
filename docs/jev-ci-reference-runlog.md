@@ -2939,3 +2939,150 @@ one 429. The next reliability experiment should first capture per-request
 run, without changing the advisory-only quality boundary. The historical
 statement above that automatic CI retained 4,096 tokens describes the state
 before PR #622; the merged workflow now defaults to 65,536.
+
+## 2026-09-24 — Isolated rerun passes; user identifies credit exhaustion as 429 cause
+
+After the full-run failure, a manual replay isolated only
+`reranking-pipeline` in [run 36050654448](https://github.com/magnus919/agent-skills/actions/runs/36050654448),
+using the same `poolside/laguna-s-2.1:free` model, a 65,536-token output
+ceiling, and a 300-second timeout. Both generations completed normally with
+`finish_reason=stop` and no rate-limit retries: the candidate used 2,385 output
+tokens in 43.3 seconds; the baseline used 1,365 in 23.1 seconds. This
+confirms the generous ceiling is headroom rather than a requested allocation.
+The comparison's `both_pass` is harness status, not a semantic-quality result.
+
+The selected-case Jev audit saw one report and all 18 prose assertions across
+the two sides; it selected all 18, omitted none, skipped none, and had zero
+provider errors. That is complete advisory coverage for this one case, not
+18 independently verified semantic passes or evidence of Jev accuracy.
+
+After this replay, the user reported that Nous credits were exhausted and
+identified credit exhaustion as the cause of the earlier HTTP 429. The
+captured failed request says `Too Many Requests` with a 30-second retry hint,
+but does not expose account balance or a provider error code distinguishing
+quota exhaustion from a rate window. Record the quota explanation as
+user-reported, not independently verified from the run artifact. The later
+single-case success occurred after the failed full run, so without
+time-aligned account-balance evidence these observations cannot establish a
+burst/concurrency limit or fully reconcile quota state over time.
+
+Lesson: classify 429s from provider error codes and account/billing telemetry
+when available; do not infer overload from status and Retry-After alone. Stop
+further Nous inference while the user-reported Nous credit shortage remains.
+This does not establish that the separate TypeSafe Jev credential or quota is
+affected. The Jev-only QA pilot already used the same 22 synthetic cases in
+four live runs; another identical run would add a repeatability observation,
+not independent calibration evidence. Resume Nous inference only after the
+user confirms credits are available, then capture provider error classification
+and request-level retry/token provenance in a bounded replay. Keep the Jev audit
+advisory-only.
+
+## 2026-09-24 — CI inference inventory and Jev replacement boundaries
+
+Reviewed all 13 GitHub Actions workflows and their repository-local callers
+for model-backed work. This distinguishes inference that Jev can plausibly
+replace from generative, independent-reference, and deterministic work that
+it cannot:
+
+| Workflow | Inference today | Jev fit |
+|---|---|---|
+| `skill-eval.yml` | On selected main pushes or manual smoke, Nous generates candidate/baseline responses; a follow-on Jev job audits prose assertions. | Keep generation as the model-under-test workload. Jev's separate bounded audit is already the appropriate helper; it must not be reported as an exact grader or release gate. |
+| `droid-review.yml` | Every non-draft PR runs a 96-token Nous function-call probe, then Factory Droid's generative code and security review. The configured model is `poolside/laguna-s-2.1:free`, with `maxOutputTokens=16384`, using `NOUS_API_KEY`. PR #623's Droid check took 9m58s; its recorded check result does not include total token or credit usage. | Not a drop-in replacement for broad code/security review. A future typed Jev risk/owner route could be advisory after labeled evaluation; deterministic path rules are a simpler option for known low-risk changes and must not suppress required checks. |
+| `droid.yml` | Explicit `@droid` requests run the generative Droid agent/reviewer, configured with the same Nous model and secret. | Keep the requested generative task intact. Jev might route a narrow structured request, but cannot supply the code changes or prose review. |
+| `jev-teacher-calibration.yml` | A manually dispatched Nous model supplies two blind teacher-label passes for a Jev calibration packet. | Do not substitute Jev for the teacher: that would make its own evaluation circular rather than independent. |
+| `jev-local-teacher-calibration.yml` | A manually dispatched local inference model supplies blind labels for comparison with Jev. | Do not replace this independent reference with Jev. |
+| `jev-qa-pilot.yml`, `jev-eval-replay.yml` | Bounded Jev QA pilot or explicitly authorized Jev question-input replay. | Already Jev-shaped, but exploratory/advisory; the replay gate correctly requires per-run egress authorization. |
+| `ci-failure-to-issue.yml` | Deterministically creates or updates a templated tracking issue after main-branch validation failure. | No current inference to replace. A future typed failure-category/owner suggestion could augment issue metadata, but must remain advisory; issue/comment mutations and severity labels stay deterministic. |
+| `skillevaluator.yml` | Keyless schema, privacy, license, quality, unicode, and lint checks; the selected checks explicitly exclude LLM calls. | No inference to replace. |
+| `raleigh-canary.yml`, `raleigh-tests.yml`, `release-please.yml`, `validate.yml` | Live endpoint/schema checks, deterministic test matrices, release automation, and repository validation. | No model calls found; keep exact checks and required results deterministic. |
+
+The repository-wide workflow scan found no other current CI LLM call that is
+a safe one-for-one Jev replacement. The failure-to-issue workflow is a
+potential host for an advisory classifier, not an existing inference
+replacement target. The good future expansion is a separate,
+bounded CI-failure classifier or optional-test ranker that consumes trusted
+failure/change facts and returns a small typed route plus `unknown`; no such
+inference currently exists in this repository. First create independently
+labeled representative and challenge cases, compare against a deterministic
+baseline, and require abstention/error analysis. It may annotate or route; it
+must not omit mandatory tests, authorize a merge, or turn red CI green.
+
+Resource lesson: both automatic Droid workflows and the paired-eval generation
+workflow reference the repository's `NOUS_API_KEY`. They therefore share a
+provider credential/account boundary. This inventory does not prove which
+workflow spent credits or caused the earlier 429; neither workflow's observed
+status alone provides account-level usage attribution. Avoid parallel live
+experiments while credits are unavailable, and do not tune retry/concurrency
+policy until per-workflow usage and the provider's quota-versus-rate error
+classification are available.
+
+Applied that finding locally to `system-one/references/jev-ci-reference-deployment.md`:
+the 429 recovery table now requires provider/account classification and shared
+credential inventory before attribution or retry changes. Extended the
+existing `jev-ci-operations` eval with two independently reviewable checks for
+that diagnosis; the manifest has 88 prose assertions, so candidate plus
+baseline remain within the existing 176-assertion budget. Offline verification
+passed: eval validation tests (27), all 181 schema/semantic manifests, Jev
+audit tests (21), canonical skill validation (181), and the eval-coverage
+ratchet. This reference/eval follow-up is committed only on the local branch;
+no PR or workflow was started while the user-reported credit shortage remains.
+No live inference was used to validate the new diagnostic assertions.
+
+## 2026-09-24 — Avoid retries for explicitly classified hard-quota 429s
+
+While Nous credits remain unavailable, made an offline adapter change rather
+than issuing another model request. The OpenAI-compatible adapter now reads
+only allowlisted `type`, `code`, and `param` fields from a 429 response before
+deciding whether to retry. It skips its bounded retry for explicit hard-quota
+identifiers (`insufficient_quota`, `credit_balance_exhausted`, and recognized
+organization/project usage or spend-limit codes), records
+`retry_skipped=hard_quota`, and never retains the provider's free-text error
+message. Unclassified 429s preserve the existing one-retry ceiling; this is
+important because the captured Nous 429 had no structured error code. No
+Nous-specific error-code behavior has been established, and a Retry-After
+header alone still cannot distinguish exhausted credits from transient
+throttling. The code identifiers are informed by the
+[OpenAI 429 troubleshooting guidance](https://help.openai.com/en/articles/5955604-troubleshooting-api-rate-limits-and-429-errors),
+not verified Nous documentation.
+
+Added a mocked regression test proving that an explicit hard-quota code causes
+one request, no sleep/retry, safe error metadata, and no persisted private
+message. Existing mocked tests continue to cover empty/unclassified 429 retry,
+second-429 telemetry, and deferral beyond the bounded wait. Updated the
+System One CI runbook and the existing `jev-ci-operations` eval without adding
+assertions, preserving its 176 paired-assertion resource ceiling. These are
+offline changes only; the user-reported credit shortage remains the stop
+condition for Nous inference and PR creation, because PR creation triggers
+Droid with the same Nous credential. The separate Jev endpoint was not called
+in this step; changing the evaluation sample, rather than repeating the
+already-run fixed synthetic pilot, would be required to obtain meaningful new
+Jev quality evidence. After the user confirms Nous credits are restored, first
+use a bounded single-case run to learn whether Nous returns a recognized
+structured quota code; do not infer this from the mocked test. Offline
+verification passed: the exact paired-eval CI test command,
+27 eval-validation tests, all 181 eval manifests, 21 Jev audit tests, all 181
+canonical skills, the modified-skill eval-coverage ratchet, and `git diff
+--check`. No live inference was used.
+
+## 2026-09-24 — Jev-only local wording screen, no Nous dependency
+
+At the user's direction, ran Jev directly on the six-case development split
+of `system-one/examples/jev-atomic-assertion-screen.json`, comparing the
+deployed question with `all-requirements-shadow-v1`. These were 12 live Jev
+requests against author-constructed synthetic examples only. No Nous request,
+real generated response, or test-split case was sent.
+
+Both variants returned the same six labels (6/6 on this small screen). The
+deployed question's binary `met` Brier score was 0.00045; the candidate's was
+0.00225. Median response latency was approximately 321 ms versus 333 ms. The
+candidate therefore shows no accuracy gain here, has slightly worse Brier,
+and no demonstrated operational benefit. Keep the deployed wording unchanged;
+do not infer production accuracy, calibration, or a confidence threshold from
+this dev-only synthetic result. A fresh representative held-out set is still
+needed for any semantic-quality claim.
+
+Local-only verification also passed the paired-evaluation test script, all 21
+Jev audit tests, all 10 calibration-helper tests, and validation of all 181
+eval manifests. These establish mechanics, not Jev correctness. The separate
+hard-quota retry change remains local and mock-tested; no Nous inference or
+provider spend was used for it.
