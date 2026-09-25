@@ -73,11 +73,15 @@ python scripts/laya_service.py --model-path model --device cpu
 
 Expected startup line includes `"ready": true` and `"device": "cpu"`.
 `GET /healthz` means the process is alive. Authenticated `GET /readyz` means
-the model loaded on the requested device. `POST /v1/systemone` accepts the
-same `{state, questions}` contract as the bundled probe. It rejects bodies
-over 64 KiB, more than 16 questions, or more than 64 options per question;
-it allows one inference in flight and returns 503 when busy. These are example
-limits, not evidence that 64 options fit Laya's head-token budget.
+`laya.load()` returned and the model agent reports the requested device; the
+adapter's explicit readiness predicate checks only device residency. It does
+not separately attest tokenizer or calibration-artifact readiness. Extend the
+readiness check to cover every required initialization dependency before routing
+production traffic. `POST /v1/systemone` accepts the same `{state, questions}`
+contract as the bundled probe. It rejects bodies over 64 KiB, more than 16
+questions, or more than 64 options per question; it allows one inference in
+flight and returns 503 when busy. These are example limits, not evidence that
+64 options fit Laya's head-token budget.
 
 In a second shell, from the skill root:
 

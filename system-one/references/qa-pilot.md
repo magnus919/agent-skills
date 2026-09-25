@@ -44,13 +44,12 @@ cases have too few outcomes to calibrate a probability scale; a high cutoff
 would abstain on all three correctly graded positive cases in the second run.
 
 Two later manual GitHub runs of the same 22-case fixture also matched 21/22
-labels and repeated the G7 false negative: Jev returned Noul `yes` probability
-0.49 in [run 35808017339](https://github.com/magnus919/agent-skills/actions/runs/35808017339)
-and 0.43 in [run 36043312427](https://github.com/magnus919/agent-skills/actions/runs/36043312427).
-These are repeatability observations on reused synthetic cases, not an
-independent holdout or probability calibration. The simple rules matched 17/22
-on both runs. Keep G7 as a challenge case; do not tune its prompt or a decision
-threshold against it and then report it as held out.
+labels and repeated the G7 false negative. In recorded runs 35808017339 and
+36043312427, respectively, Jev returned Noul `yes` probabilities of 0.49 and
+0.43. These are repeatability observations on reused synthetic cases, not an
+independent holdout or probability calibration.
+The simple rules matched 17/22 on both runs. Keep G7 as a challenge case; do not
+tune its prompt or a decision threshold against it and then report it as held out.
 
 For repository CI, `.github/workflows/jev-qa-pilot.yml` is manual-only and
 uses the `TYPESAFE_API_KEY` repository secret on a GitHub-hosted runner. Review
