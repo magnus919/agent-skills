@@ -8,8 +8,10 @@
 - Runtime/image digest:
 - Device/driver/precision:
 - Dataset and split/checksum:
+- Label source, disagreement, and approval for provider transmission:
 - Distinct scenarios / question judgments / network requests:
 - Question-contract/policy hash:
+- Raw response artifact location/checksum (redacted or access-controlled):
 
 ## Matched conditions
 
@@ -19,6 +21,7 @@
 - Warmup and cache state:
 - Network region/endpoint:
 - Request timeout/retry policy:
+- Response ID/type/option validation and missing-answer count:
 - Pilot review and answer-rubric revision:
 - Result storage outside the repository:
 
@@ -40,6 +43,8 @@
 - Peak memory:
 - Provider cost or local resource cost:
 - Error/fallback/abstention rate:
+- Cost boundary (retrieval, classifier, retries, fallback, review, final action):
+- Paired baseline and uncertainty method:
 - Actual device/checkpoint residency:
 
 ## Decision
