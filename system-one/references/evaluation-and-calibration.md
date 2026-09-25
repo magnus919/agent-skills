@@ -3,6 +3,13 @@
 Use this reference before enabling automatic action or comparing Jev with Laya
 or another open candidate.
 
+For an initial cross-model label-selection screen, use the portable synthetic
+[decision battery](decision-battery.md) after completing its
+[design review](../templates/decision-battery-design-review.md) on a small pilot.
+Confirm whether the target count means distinct scenarios, question judgments,
+or requests before expansion. Its author-assigned labels do not replace the
+independently labeled target-data evaluation described below.
+
 ## Worked offline binary evaluation
 
 `scripts/evaluate_noul.py` consumes frozen Noul probabilities and independently

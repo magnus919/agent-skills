@@ -46,21 +46,33 @@ does not imply a correct judgment; a high probability is not permission.
    record provider/model, question/policy revision, outcome, and failure lane
    without raw secrets or unnecessary personal data.
 
+Before expanding a cross-model battery, complete
+`templates/decision-battery-design-review.md` and review a small varied pilot.
+Define whether a test counts a distinct scenario, a question, or a request;
+freeze the answer rubric, comparison contract, and timing conditions before
+generating more cases. If those definitions or reviewer labels disagree, stop
+expansion and revise the design. Keep benchmark outputs outside this skill's
+tracked corpus unless publication is explicitly requested.
+
 ## Route by task
 
 | Task | Read next |
 |---|---|
 | Hosted Jev API or SDK integration | `references/jev.md`; run `scripts/decision_demo.py` offline first |
 | Laya checkpoints, routing, language, CPU/GPU/MPS | `references/laya.md` |
+| Fine-tune the English Laya checkpoint on labeled typed decisions | `references/laya-fine-tuning.md` |
 | Native C++ Laya inference, CUDA/Vulkan, or Jev-compatible HTTP | `references/laya-cpp.md` |
 | Local or private/VPC Laya service | `references/laya-self-hosting.md`, then `references/hosting-and-troubleshooting.md` |
 | Browser/desktop/voice control, agent routing, ranking, guardrails, deadlines | `references/use-case-patterns.md` |
 | Probability, threshold, calibration, model comparison | `references/evaluation-and-calibration.md` and `templates/benchmark-record.md` |
+| Design or run a portable v1 label battery or provisional v2 cross-domain Choice/Noul/Score battery | `references/decision-battery.md` and `templates/decision-battery-design-review.md`; run `scripts/decision_battery.py` only after the pilot review |
 | Synthetic QA pilot for Jev (failure triage, extra-test choice, semantic grading) | `references/qa-pilot.md`; run `scripts/jev_qa_pilot.py` offline first |
 | Paired-eval semantic assertion audit in CI | `references/qa-pilot.md`, then `scripts/jev_eval_audit.py`; treat its verdicts as advisory and preserve exact grader results |
 | Reproduce, operate, diagnose, or roll back this repository's Jev CI deployment | `references/jev-ci-reference-deployment.md`; inspect the current workflow before changing secrets or jobs |
 | Screen Jev's advisory eval judgments against real outputs | `references/qa-pilot.md` and `references/evaluation-and-calibration.md`; use `scripts/jev_eval_calibration.py` for a blind packet, then independent labels or `scripts/jev_teacher_label.py` for model-teacher pseudo-labels |
 | New open model or Jev-style replica | `references/ecosystem-radar.md` |
+| Fastino GLiNER2.5-Decide local classification | `references/gliner25-decide.md` |
+| Fine-tune GLiNER2 for Decide-style classification | `references/gliner25-decide-fine-tuning.md` |
 | Failure, latency, device fallback, upgrade, rollback | `references/hosting-and-troubleshooting.md` |
 
 Run `python3 scripts/systemone_probe.py --request examples/request.json` for an offline
