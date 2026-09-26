@@ -140,3 +140,11 @@ requires a separate versioned gate contract, independently adjudicated
 representative real-output labels, held-out and challenge slices, error and
 abstention analysis, and an explicit owner decision. Model-teacher agreement
 or a synthetic fixture does not meet that bar.
+
+### Advisory audit resource budget
+
+The workflow caps Jev audit work at 40 calls and 300 assertions. The 19-case
+System One manifest needs 38 calls and 282 assertions across both paired
+variants, including the rubric-judge research cases. These explicit caps bound
+resource use; they do not establish semantic quality or a release gate. The
+manifest-budget test checks that future additions fit before live auditing.

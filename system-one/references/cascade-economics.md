@@ -128,3 +128,6 @@ its case bootstrap cannot validate labels, confirm that the trace reflects
 runtime behavior, or establish production economics. Use a
 frozen, privacy-safe held-out set and inspect consequential disagreements
 before deciding whether to adopt, shadow, investigate, or reject a route.
+
+For rubric judging, read [rubric-judge research](rubric-judge-research.md)
+when testing scale placement or whether a fallback corrects shared errors.

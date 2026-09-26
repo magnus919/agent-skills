@@ -125,3 +125,6 @@ Require:
 6. Monitored rollout with a kill switch and reassessment trigger.
 
 Use `templates/benchmark-record.md` to keep comparisons reproducible.
+
+For rubric judging, read [rubric-judge research](rubric-judge-research.md)
+when testing scale placement or whether a fallback corrects shared errors.
