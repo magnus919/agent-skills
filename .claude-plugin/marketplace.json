@@ -597,7 +597,7 @@
         "./harness-engineering"
       ],
       "strict": false,
-      "description": "Design, build, diagnose, and evolve agent harnesses: instructions, tools, execution environments, durable state, context management, verification, recovery, and bounded autonomous loops. Use for unreliable coding agents, cross-session drift, premature completion, harness audits, or changes to the runtime around a model. Do not use for prompt rewriting alone, model training, general application architecture, or operating an already evaluated agent in production; route those concerns to their specialist skills."
+      "description": "Design, build, diagnose, and evolve agent harnesses: instructions, tools, execution environments, durable state, context management, verification, recovery, and bounded autonomous loops. Use for unreliable coding agents, cross-session drift, premature completion, harness audits, or changes to the runtime around a model, including bounded typed-decision routing. Do not use for prompt rewriting alone, model training, general application architecture, or operating an already evaluated agent in production; route those concerns to their specialist skills."
     },
     {
       "name": "haystack",

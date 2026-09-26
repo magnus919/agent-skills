@@ -61,6 +61,17 @@
         "Failure classes are separated: missing writes, reducer overwrites, wrong routing field",
         "A regression test pins the routing decision"
       ]
+    },
+    {
+      "id": "system-one-decision-routing",
+      "prompt": "A LangGraph workflow needs a typed System One classifier to choose billing, technical, or human review. Sketch the graph boundary and explain what checkpointing does and does not establish.",
+      "expected_output": "Places the typed service call in a node, stores validated results, uses an explicit unknown route in conditional routing, and distinguishes checkpoint-based workflow recovery from model correctness or freshness. Routes model contract and calibration to System One and whole-workflow placement and evidence to harness engineering.",
+      "assertions": [
+        "Places the bounded typed decision behind a graph node or injectable service rather than converting it into generative chat output",
+        "Uses conditional routing with a distinct unknown or review destination",
+        "Explains that checkpoints support workflow persistence or recovery but do not establish decision correctness or freshness",
+        "Keeps authorization and side effects in deterministic application nodes and names the System One and harness-engineering ownership boundaries"
+      ]
     }
   ]
 }

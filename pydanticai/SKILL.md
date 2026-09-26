@@ -49,6 +49,7 @@ print(result.output)
 | **Testing & evaluation** | You need TestModel, FunctionModel, pytest patterns, overrides, or Pydantic Evals for systematic eval | `references/testing-evals.md` |
 | **Full worked examples** | You want complete runnable examples — bank support agent, email feedback graph, multi-agent flight booking | `references/examples.md` |
 | **Framework boundaries** | You need to compare PydanticAI vs LangGraph for a project, or want to combine them | `references/hybrid-pydanticai-langgraph.md` — also load `skill_view(name='langgraph')` |
+| **Typed System One decision in an agent** | You need to inject a typed decision service, validate its response shape, or keep a decision separate from generative output | `references/core-agents.md` and [System One](../system-one/SKILL.md); use [harness-engineering](../harness-engineering/SKILL.md) for placement, authority, recovery, and whole-task evidence |
 | **API surface reference** | You need to find the right import path, class name, or method signature quickly | `references/api-reference.md` |
 
 ## Common Patterns at a Glance
