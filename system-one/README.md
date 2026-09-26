@@ -5,7 +5,7 @@
 System One models are useful when an application needs a fast judgment—route a
 ticket, score urgency, flag a risk, choose a tool—but the rest of the workflow
 should remain ordinary, inspectable code. This skill teaches an agent how to
-use TypeSafe Jev, self-host Convai Innovations Laya, and compare newer open
+use TypeSafe Jev, self-host Convai Innovations Laya or CLM, and compare newer open
 decision-model candidates without mistaking a probability for permission or
 truth.
 
@@ -33,7 +33,7 @@ corpus or benchmark run. Keep run outputs outside the skill repository.
 | Directory | Purpose |
 |---|---|
 | `SKILL.md` | Core integration workflow, model-selection rules, guardrails, and stopping criteria |
-| `references/` | First-pilot guide, field and implementation patterns, request-shape and cascade methods, QA automation, Jev and Laya guides, GLiNER2.5-Decide, hosting, evaluation, and troubleshooting |
+| `references/` | First-pilot guide, field and implementation patterns, request-shape and cascade methods, QA automation, Jev, Laya, CLM, and GLiNER2.5-Decide guides, hosting, evaluation, and troubleshooting |
 | `templates/decision-contract.md` | Fillable contract for state, questions, thresholds, authority, and fallback |
 | `templates/action-control-contract.md` | Preflight for observed app actions, confirmation, freshness, and rollback |
 | `templates/benchmark-record.md` | Reproducible model/latency/calibration comparison record |
@@ -51,6 +51,7 @@ Read the guide for your task:
 ```text
 references/jev.md     # hosted Jev
 references/laya.md    # self-hosted Laya
+references/clm.md     # CLM ranking, typed decisions, fine-tuning, and private serving
 references/laya-self-hosting.md  # local-to-private-service walkthrough
 references/use-case-patterns.md # browser, routing, ranking, guardrail recipes
 references/worked-decision-pilot.md # choose and evaluate a first bounded decision
@@ -86,7 +87,7 @@ in an environment variable. Do not put credentials in source or browser code.
 
 ## Triggers
 
-Load this skill when the task mentions System One, Jev, Laya, typed decisions,
+Load this skill when the task mentions System One, Jev, Laya, CLM, typed decisions,
 Choice/Score/Noul, calibrated probabilities, deterministic routing from model
 judgment, Laya self-hosting, or a Jev-compatible decision API. Do not load it
 for ordinary chat completion, generic LLM serving, exact policy evaluation, or
@@ -98,6 +99,8 @@ open-ended reasoning without a typed decision contract.
 - Jev: a TypeSafe or supported gateway credential and outbound HTTPS.
 - Laya: Python 3.10+, PyTorch/Transformers, Hugging Face access or a pinned
   local model bundle, and enough CPU/GPU/MPS memory for the selected checkpoint.
+- CLM: a pinned Qwen3-8B pooling encoder and matching projection head; local
+  serving uses vLLM, PyTorch, and enough accelerator memory for the encoder.
 - The probe, routing demo, evaluator, and HTTP adapter use Python's standard
   library; actual Laya inference requires the upstream package and weights.
 - Docker is optional for the private-service container example; TLS ingress,

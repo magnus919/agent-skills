@@ -1,6 +1,6 @@
 # System One ecosystem radar
 
-Snapshot checked 2026-09-24. This is a discovery aid, not a quality ranking.
+Snapshot checked 2026-09-25. This is a discovery aid, not a quality ranking.
 Download counts, stars, and community benchmark claims move quickly. Confirm
 model card, code, license, revision, and target-data evaluation before adoption.
 
@@ -11,6 +11,22 @@ model card, code, license, revision, and target-data evaluation before adoption.
 | TypeSafe Jev | Managed System One API; Choice/Score/Noul; parallel questions; official docs and SDK | Hosted only; no public weight download |
 | Convai Innovations Laya | Open Apache-2.0 family; Python runtime; English, multilingual, and specialist checkpoints; router | Self-host Python; community ONNX/Node adapter also exists |
 | Laya typed-decisions | Laya specialist checkpoint for four documented workflows | Explicit opt-in specialist; not a general silent default |
+| Contrastive-LM CLM-v0.1-8B | Open Apache-2.0 head over frozen Qwen3-8B; Choice/Score/Noul wire API plus candidate ranking | Self-host Qwen3-8B pooling encoder and CLM head; see [CLM guidance](clm.md) |
+
+## Select a model for the actual decision
+
+Start with the cheapest deterministic rule or existing workflow that can meet the decision contract. If learned judgment is needed, use these as **shortlist rules**, then run a matched held-out comparison before selecting a winner:
+
+| Need or constraint | Candidate to investigate first | Decision boundary |
+|---|---|---|
+| Managed typed API with no model-hosting capacity | Jev | Keep provider egress, cost, and availability in the contract; no self-hosted Jev weights |
+| Private typed Choice/Score/Noul service with smaller or multilingual checkpoint choices | Laya family | Select the exact checkpoint and validate language, option budget, calibration, and runtime |
+| Closed candidate ranking, repeated action pool, or best-of-N verifier with 8B encoder capacity | CLM | Candidate-set probabilities are relative; published verifier wins require task fine-tuning and do not transfer automatically |
+| Local English label classification without a probability-distribution requirement | GLiNER2.5-Decide | Its labels are not Jev-shaped Choice/Score/Noul probabilities; use an explicit adapter |
+| Exact eligibility, arithmetic, permissions, or irreversible approval | Deterministic code or accountable human | No model probability authorizes the action |
+| Open-ended text or image understanding | Appropriate generative or multimodal model | A closed text-candidate model cannot generate or inspect unseen modalities |
+
+For Jev, Laya, and CLM on the same contract, preserve state, question wording, candidate descriptions, option order policy, and independently assigned labels. Measure quality and calibration by primitive, unknown/review coverage, cold and warm latency at the same client boundary, resource cost, and end-to-end outcomes. CLM's `clm-raw` is an ablation of its encoder; it is not an independent model choice. A task-fine-tuned CLM head should be compared separately from the zero-shot reference and from any specialist Laya checkpoint.
 
 ## Open/community candidates worth screening
 
@@ -57,6 +73,7 @@ For each candidate, capture:
 
 - Jev official: https://typesafe.ai/blog/introducing-system-one-models-and-jev
 - Laya official repository: https://github.com/NandhaKishorM/laya
+- CLM repository and model card: https://github.com/Contrastive-LM/CLM and https://huggingface.co/Contrastive-LM/CLM-v0.1-8B
 - Open model catalog (discovery only): https://decisioneval.dev/compare/
 - JEV-CPU card: https://huggingface.co/Meanblock/JEV-CPU
 - Decider card: https://huggingface.co/Mapika/decider-0.8b
