@@ -336,3 +336,41 @@ agent = Agent.from_spec({
 Full `AgentSpec` fields: `model`, `name`, `description`, `instructions`, `model_settings`, `capabilities`, `deps_schema`, `output_schema`, `retries`, `end_strategy`, `tool_timeout`, `instrument`, `metadata`.
 
 Template strings (`{{variable}}`) render against deps at runtime. When `deps_type` is provided, template variables are validated at construction time.
+
+
+## Keep typed decisions outside the generative model
+
+When a PydanticAI workflow uses a System One model for a bounded judgment, inject a small decision-service adapter through `deps_type`. Keep the adapter's typed request/response contract and provider-specific call outside the generative `Agent`; use Pydantic to validate the returned shape, then let deterministic policy handle `unknown`, thresholds, authorization, and actions. A Pydantic-valid object is shape-valid, not proof that the judgment is correct. Do not use an `output_validator` retry to imply independent verification or calibration.
+
+**Implementation sketch — not executed against either SDK or provider:**
+
+```python
+from dataclasses import dataclass
+from typing import Protocol
+from pydantic_ai import Agent, RunContext
+
+# TicketDecision and the adapter implementation are application-defined.
+class DecisionService(Protocol):
+    async def classify(self, state: dict) -> "TicketDecision": ...
+
+@dataclass
+class Deps:
+    decisions: DecisionService
+
+agent = Agent("openai:...", deps_type=Deps)
+
+@agent.tool
+async def inspect_ticket(ctx: RunContext[Deps], ticket: dict) -> dict:
+    decision = await ctx.deps.decisions.classify(ticket)
+    # Validate provider response in the adapter; apply exact policy in app code.
+    return {"decision": decision.model_dump()}
+```
+
+In production, prefer an application orchestration step that obtains and validates the typed decision before invoking generative work; never give the agent's tool call authority to execute solely because the classifier chose a label. For the model-specific question schema, validation, calibration, abstention, or substitution, read [System One](../../system-one/SKILL.md). For workflow placement, authorized state, recovery, and end-to-end evidence, read [harness-engineering](../../harness-engineering/SKILL.md) and its [System One placement guide](../../harness-engineering/references/system-one-decisions.md).
+
+The dependency-injection seam follows the [official Pydantic AI dependencies guide](https://pydantic.dev/docs/ai/core-concepts/dependencies/); output validation is described in the [official output guide](https://pydantic.dev/docs/ai/core-concepts/output/). The code above is a design sketch, not an SDK-tested integration.
+
+
+### Handoff contract
+
+The harness supplies authorized, versioned state plus the task goal and a finite allowed route set. The System One adapter consumes that state with its pinned question/rubric/model revisions and returns validated typed answers, model identity, and an explicit unknown/error lane. PydanticAI carries the adapter result into the workflow; application policy consumes it and emits the deterministic next route. Return question/model-level errors to System One; return stale-state, action, recovery, and accepted-task outcomes to harness engineering so its end-to-end record can include both decision and observed effect.

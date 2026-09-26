@@ -213,6 +213,72 @@
         "Separates acknowledgement from proof that the consumer can recover the result.",
         "Defines retention or eviction ownership rather than automatic irreversible cleanup."
       ]
+    },
+    {
+      "id": "typed-candidate-applicability",
+      "prompt": "Build a LangChain skill router using System One. The agent sends the inventory revision and goal with the request, but the skill list can change before the result is used. Some tasks match none of the installed skills. Design the decision boundary and catalog handoff.",
+      "expected_output": "A current finite candidate offer with a distinct applicability decision, stale-result rejection, clear catalog ownership, and end-to-end outcome evidence.",
+      "assertions": [
+        "Builds the offered skill candidates from the current installed inventory and preserves their identifiers.",
+        "Separates whether any candidate applies from which eligible candidate ranks highest, including a no-applicable-candidate lane.",
+        "Binds the decision to the goal and inventory revision and discards it when either changes before use.",
+        "Routes typed question semantics and calibration to System One, adapter wiring to LangChain, and actual task acceptance back to Harness Engineering."
+      ]
+    },
+    {
+      "id": "routing-evidence-alignment",
+      "prompt": "Our prototype chooses a cheap or expensive model from one prompt-only difficulty question and blames the last tool step when a task later fails. A published lab shows near-majority difficulty routing and weak isolated-step attribution. Should we make these standard harness patterns?",
+      "expected_output": "Treat both results as scoped negative evidence for the tested formulations, align any proposed question to the deployment choice and available trajectory, then evaluate on held-out target tasks.",
+      "assertions": [
+        "Does not present prompt-only generic model-difficulty routing as an established recommendation based on the reported near-majority result.",
+        "Explains that the reported routing target and benchmark label may not represent the deployment choice without treating that caveat as proof of universal failure.",
+        "Recognizes that isolated-step attribution lacks later correction or final-outcome evidence when the question depends on the full trajectory.",
+        "Labels richer-state routing or diagnosis as a proposal that still requires target-aligned held-out evaluation."
+      ]
+    },
+    {
+      "id": "typed-selection-effect-verification",
+      "prompt": "A desktop agent uses a typed model to choose one of the visible buttons. The highest-ranked button exists, but sometimes it is irrelevant or its click has no effect. What should the harness record and verify before it reports success?",
+      "expected_output": "Check applicability separately from ranking, execute only a permitted current action, observe its effect, and verify the requested outcome independently.",
+      "assertions": [
+        "Does not treat the highest-ranked listed action as proof that an applicable action exists.",
+        "Binds the selected action to the current observed controls and rechecks policy before execution.",
+        "Records relevant before-and-after evidence for the attempted action.",
+        "Requires an independent observable check of the requested outcome and leaves unknown effects incomplete."
+      ]
+    },
+    {
+      "id": "langchain-system-one-round-trip",
+      "prompt": "In a LangChain graph, an agent calls System One for a typed decision, then a deterministic node performs the selected action. A valid model response is currently recorded as task success. Define which catalog skills own each part and how evidence returns to the harness decision.",
+      "expected_output": "Preserve System One decision semantics through the LangChain adapter, then have Harness Engineering verify freshness, action effects, and task acceptance before completion.",
+      "assertions": [
+        "Assigns typed question and model calibration ownership to System One.",
+        "Assigns LangChain graph and adapter implementation to the LangChain skill while preserving the typed contract.",
+        "Does not treat a valid typed response or successful graph node as proof of user-visible task completion.",
+        "Returns independent task outcome, side-effect, and failure-lane evidence to the Harness Engineering completion decision."
+      ]
+    },
+    {
+      "id": "candidate-omission-false-stop",
+      "prompt": "A skill router ranks only the first 20 entries of a large registry. It often returns no match, but we later discover a useful skill was entry 21. What evidence and failure policy should the harness add?",
+      "expected_output": "Measure candidate-generation recall against the authoritative eligible inventory, distinguish a genuine no-match from incomplete or failed inventory, and track valid work suppressed by selection.",
+      "assertions": [
+        "Measures whether the candidate-generation stage includes relevant eligible skills before measuring the ranker's choice among offered candidates.",
+        "Distinguishes a complete inventory with no applicable candidate from truncated, stale, or unavailable inventory evidence.",
+        "Tracks valid task outcomes suppressed or delayed because a needed candidate was omitted or rejected.",
+        "Routes incomplete candidate evidence to a named recovery or review path rather than treating it as a verified no-match."
+      ]
+    },
+    {
+      "id": "correlated-fallback-and-outage",
+      "prompt": "Our primary rubric judge can time out, so we ask a more expensive judge and accept when the two agree. We have seen no labeled task-level comparison yet. Define a safe evaluation and failure policy.",
+      "expected_output": "Treat agreement as potentially correlated, evaluate rescue and regression against independent labels, and route unavailable or unresolved judgments to an explicit incomplete/review state.",
+      "assertions": [
+        "Does not treat primary/fallback agreement as independent correctness evidence without a measured error-correlation study.",
+        "Requires independently labeled representative held-out task outputs to measure fallback rescue, regression, and abstention before claiming cascade benefit.",
+        "Defines explicit handling for timeout, malformed output, stale evidence, and fallback unavailability.",
+        "Keeps unresolved or unavailable judge outcomes incomplete or routes them to review instead of converting them to approval."
+      ]
     }
   ]
 }

@@ -75,6 +75,8 @@ tracked corpus unless publication is explicitly requested.
 | Compare singleton and batched request quality or calibration | `references/request-shape-evaluation.md` and `templates/benchmark-record.md` |
 | Replace an LLM rubric judge, diagnose graded scale offsets, or test correlated judge errors | `references/rubric-judge-research.md`, then `references/evaluation-and-calibration.md` |
 | Measure router ablations and full fallback economics | `references/cascade-economics.md` and `templates/benchmark-record.md` |
+| Place a typed decision in a harness, define state/authority/recovery, or measure whole-task effects | [harness-engineering](../harness-engineering/SKILL.md) and its [System One placement guide](../harness-engineering/references/system-one-decisions.md) and its [offline round-trip examples](../harness-engineering/references/system-one-examples.md); harness engineering owns the workflow boundary, while this skill owns typed questions, response validation, calibration, abstention, and model substitution |
+| Implement the contract in PydanticAI, LangGraph, or LangChain | Use the matching framework skill for its integration seam; keep this skill's typed model contract and calibration rules authoritative |
 | Determine whether a decision model improves an agent harness | [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) for paired end-to-end tasks, trajectories, side effects, and cost/latency; keep this skill's model-level contract and calibration checks |
 | Design or run a portable v1 label battery or provisional v2 cross-domain Choice/Noul/Score battery | `references/decision-battery.md` and `templates/decision-battery-design-review.md`; run `scripts/decision_battery.py` only after the pilot review |
 | Synthetic QA pilot for Jev (failure triage, extra-test choice, semantic grading) | `references/qa-pilot.md`; run `scripts/jev_qa_pilot.py` offline first |
@@ -130,3 +132,8 @@ Use `ml-engineering` for general training strategy; `docker-compose` or
 `kubernetes` for their serving infrastructure; `ai-governance` for
 organization-wide authority design. Use a generative-model skill for prose,
 open-ended planning, or long reasoning without a typed-decision contract.
+
+
+## Framework handoff
+
+The harness provides authorized, versioned state, candidate/route bounds, task goal, deadline, and the outcome to verify. This skill consumes that evidence under a pinned question/rubric/model contract and returns validated typed answers, model identity/revision, and an explicit unknown or failure lane. PydanticAI, LangGraph, and LangChain carry and route the result through their own documented seams; deterministic policy decides the next workflow step. The harness returns observed effects and accepted-task outcomes for end-to-end evaluation. Keep question/model calibration evidence inside this skill, and use [harness-engineering](../harness-engineering/references/system-one-decisions.md) for placement, authority, recovery, and whole-task evidence.

@@ -313,6 +313,17 @@
         "Requires a representative typed inference and model-identity check before routing traffic",
         "Records cache and resource use, failure fallback, and rollback of the encoder/head pair"
       ]
+    },
+    {
+      "id": "harness-framework-boundary",
+      "prompt": "We want to add a typed System One ticket route to an existing Python agent built with LangGraph and PydanticAI. Explain who owns the decision contract versus graph placement, and sketch the integration boundary.",
+      "expected_output": "Separates harness workflow ownership from System One model ownership and framework implementation: the graph/application supplies authorized state, recovery, and deterministic action policy; a typed decision service owns question/model validation, calibration, unknown handling, and measured substitution. Framework-specific wiring is an implementation seam, not a replacement for the decision contract.",
+      "assertions": [
+        "Routes workflow placement, state, authority, recovery, and whole-task evidence to harness engineering",
+        "Keeps typed question design, model response validation, calibration, abstention, and substitution in System One guidance",
+        "Treats PydanticAI or LangGraph as an implementation layer around an injectable typed decision service rather than assuming the decision model is a generative chat model",
+        "Keeps deterministic authorization and side effects outside model output and routes unknown or unavailable results explicitly"
+      ]
     }
   ]
 }

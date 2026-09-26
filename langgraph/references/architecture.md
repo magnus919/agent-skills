@@ -173,3 +173,50 @@ for chunk in graph.stream(inputs, stream_mode="messages"):
 4. **Start simple, add complexity only when needed** — a single agent with good prompts beats a multi-agent system with bad routing. Add agents only when a single prompt or toolset becomes unwieldy.
 5. **Use `Send()` for dynamic fan-out** — when you don't know how many workers you'll need at compile time, use `Send()` to spawn workers dynamically from the orchestrator node.
 6. **Subgraph state isolation** — subgraphs with different state schemas need a wrapper function to transform state at the boundary. Shared-schema subgraphs can be added directly as nodes.
+
+
+## Route a typed System One decision
+
+Treat a bounded System One judgment as a typed service call in a graph node. Store the validated result and decision metadata needed for review in graph state; use a conditional edge for deterministic routing, including an explicit `unknown`/review lane. A checkpointer can preserve workflow state for recovery, but a checkpoint does not make an old decision fresh: bind it to the state fingerprint and re-decide when the relevant state changes. Keep action authorization and execution in their own deterministic nodes.
+
+**Implementation sketch — based on documented `StateGraph` node, conditional-edge, and checkpoint seams; not executed against the LangGraph SDK:**
+
+```python
+from typing import Literal, TypedDict
+from langgraph.graph import StateGraph, START, END
+
+class State(TypedDict, total=False):
+    ticket: dict
+    decision: dict  # adapter returns a validated typed response
+    route: Literal["billing", "technical", "unknown"]
+
+async def decide(state: State) -> dict:
+    try:
+        result = await decision_service.classify(state["ticket"])
+    except DecisionUnavailable:
+        return {"decision": {"status": "unavailable"}, "route": "unknown"}
+    return {"decision": result.model_dump(), "route": policy_route(result)}
+
+def route(state: State) -> str:
+    return state.get("route", "unknown")
+
+builder = StateGraph(State)
+builder.add_node("decide", decide)
+builder.add_node("billing", billing_handler)
+builder.add_node("technical", technical_handler)
+builder.add_node("review", request_review)
+builder.add_edge(START, "decide")
+builder.add_conditional_edges("decide", route, {
+    "billing": "billing", "technical": "technical", "unknown": "review"
+})
+builder.add_edge("billing", END)
+builder.add_edge("technical", END)
+builder.add_edge("review", END)
+```
+
+The `decision_service`, `policy_route`, handlers, and `DecisionUnavailable` are application-owned placeholders. Configure a checkpointer appropriate to the recovery requirement; an in-memory checkpointer is process-local, while durable recovery needs a persistent backend. The sample omits that backend configuration. System One guidance owns the question/model contract, response validation, calibration, abstention, and substitution; [harness-engineering](../../harness-engineering/SKILL.md) owns authorized state, recovery, side-effect boundaries, and whole-task evidence. See the [official Graph API guide](https://docs.langchain.com/oss/python/langgraph/graph-api) and [persistence guide](https://docs.langchain.com/oss/python/langgraph/persistence) for the framework seams.
+
+
+### Handoff contract
+
+The harness node receives authorized, versioned state and a finite route set. It calls a System One adapter that consumes the pinned question/rubric/model contract and returns validated typed answers, model identity, and explicit unknown/error status. The node stores that result with state and policy revision; deterministic graph policy emits the next route. Include the decision and state fingerprints in checkpointed records, but re-evaluate after relevant state changes. Send model-level failures to System One and graph/recovery/action/outcome evidence to harness engineering.
