@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.9.0](https://github.com/magnus919/agent-skills/compare/v0.8.0...v0.9.0) (2026-09-26)
+
+
+### Features
+
+* **go-to-market:** govern agent-assisted acquisition ([#521](https://github.com/magnus919/agent-skills/issues/521)) ([058882f](https://github.com/magnus919/agent-skills/commit/058882f6cad1186972211382496c7650e9e24f81))
+* **waiting-list:** add premium engagement guidance ([a9bac28](https://github.com/magnus919/agent-skills/commit/a9bac28b86888fa22527fa031be9b20c06461fe3))
+* **waiting-list:** add premium engagement guidance ([1607c3a](https://github.com/magnus919/agent-skills/commit/1607c3a1970738d3b48d82d159fc35e91c6ecf28))
+
+
+### Bug Fixes
+
+* **ci:** fail closed on paired generation errors ([#597](https://github.com/magnus919/agent-skills/issues/597)) ([862ce59](https://github.com/magnus919/agent-skills/commit/862ce596d6114c7d457251de3b6b2ba1dd06de80))
+* **ci:** fail closed on unusable completions ([#603](https://github.com/magnus919/agent-skills/issues/603)) ([2caa2b7](https://github.com/magnus919/agent-skills/commit/2caa2b7a71215009c0c0e240e00321f9e84a09d2))
+* **ci:** route paired evals through Nous StepFun ([#595](https://github.com/magnus919/agent-skills/issues/595)) ([99332bf](https://github.com/magnus919/agent-skills/commit/99332bfdc3386c4c79d5e97871223f931ccbc75e)), closes [#591](https://github.com/magnus919/agent-skills/issues/591)
+* **ci:** validate Nous model catalog before inference ([#598](https://github.com/magnus919/agent-skills/issues/598)) ([735dcaf](https://github.com/magnus919/agent-skills/commit/735dcafe60a996c7288775e0fb5a8202462da083))
+* **eval:** mark incomplete pairs as insufficient data ([#604](https://github.com/magnus919/agent-skills/issues/604)) ([61e411c](https://github.com/magnus919/agent-skills/commit/61e411ca4fb128c38350367173a29f67528a788b))
+* **eval:** record paired request limits accurately ([#620](https://github.com/magnus919/agent-skills/issues/620)) ([b328db2](https://github.com/magnus919/agent-skills/commit/b328db2b7ea219d258f55b07b5b17881c9455529))
+* **eval:** record rate limit retry counts ([#610](https://github.com/magnus919/agent-skills/issues/610)) ([60d44b9](https://github.com/magnus919/agent-skills/commit/60d44b9fe57a50d946ede518ce5d546368dd4aa3))
+* **eval:** retry one rate-limited completion ([#609](https://github.com/magnus919/agent-skills/issues/609)) ([aa1d93c](https://github.com/magnus919/agent-skills/commit/aa1d93c3d595bfcabd7ad5c47b187b48eaa9c76f))
+* **jev:** cap calibration samples to available evidence ([#613](https://github.com/magnus919/agent-skills/issues/613)) ([92d0f0f](https://github.com/magnus919/agent-skills/commit/92d0f0f573c1378255727aa77dd1abfb1aeade44))
+* **system-one:** surface Laya operational boundaries ([#624](https://github.com/magnus919/agent-skills/issues/624)) ([6aa435f](https://github.com/magnus919/agent-skills/commit/6aa435f9aab739618ebe26dcdbc828f54d9a8128))
+* **verification:** reconcile multi-lane gate verdicts ([1b753bb](https://github.com/magnus919/agent-skills/commit/1b753bb0f025c97e9edf6e49fa2fdfd2dd9d6435))
+* **verification:** reconcile multi-lane gate verdicts ([b3b844f](https://github.com/magnus919/agent-skills/commit/b3b844f35788926629d494bca22f93117da75fe5))
+* **waiting-list:** require campaign-grade artwork ([b6d292e](https://github.com/magnus919/agent-skills/commit/b6d292ecea8f95170736bfb99a601ec6ba979aac))
+
 ## [0.8.0](https://github.com/magnus919/agent-skills/compare/v0.7.0...v0.8.0) (2026-09-19)
 
 
