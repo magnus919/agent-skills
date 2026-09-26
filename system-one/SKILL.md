@@ -2,13 +2,13 @@
 name: system-one
 description: >-
   Design, integrate, evaluate, self-host, and troubleshoot typed System One
-  decision models including TypeSafe Jev and Convai Innovations Laya. Use for
+  decision models including TypeSafe Jev, Convai Innovations Laya, and CLM. Use for
   Choice/Score/Noul judgments inside deterministic software, app-control loops,
-  routing, ranking, guardrails, calibration, or private Laya inference. Do not
+  routing, ranking, guardrails, calibration, or private open-model inference. Do not
   use for open-ended generation, exact rules or authorization, or generic LLM
   serving without a bounded decision contract.
 license: MIT
-compatibility: Current provider/model documentation needs network access; local Laya operation needs Python 3.10+, PyTorch, Transformers, and model-weight storage.
+compatibility: Current provider/model documentation needs network access; local open-model operation needs a compatible runtime and model-weight storage.
 metadata:
   author: system-one contributors
   version: "1.1"
@@ -61,6 +61,7 @@ tracked corpus unless publication is explicitly requested.
 | Task | Read next |
 |---|---|
 | Hosted Jev API or SDK integration | `references/jev.md`; run `scripts/decision_demo.py` offline first |
+| CLM typed decisions, candidate ranking, Qwen3 encoder, fine-tuning, or private serving | `references/clm.md` |
 | Laya checkpoints, routing, language, CPU/GPU/MPS | `references/laya.md` |
 | Fine-tune the English Laya checkpoint on labeled typed decisions | `references/laya-fine-tuning.md` |
 | Native C++ Laya inference, CUDA/Vulkan, or Jev-compatible HTTP | `references/laya-cpp.md` |
@@ -80,7 +81,7 @@ tracked corpus unless publication is explicitly requested.
 | Paired-eval semantic assertion audit in CI | `references/qa-pilot.md`, then `scripts/jev_eval_audit.py`; treat its verdicts as advisory and preserve exact grader results |
 | Reproduce, operate, diagnose, or roll back this repository's Jev CI deployment | `references/jev-ci-reference-deployment.md`; inspect the current workflow before changing secrets or jobs |
 | Screen Jev's advisory eval judgments against real outputs | `references/qa-pilot.md` and `references/evaluation-and-calibration.md`; use `scripts/jev_eval_calibration.py` for a blind packet, then independent labels or `scripts/jev_teacher_label.py` for model-teacher pseudo-labels |
-| New open model or Jev-style replica | `references/ecosystem-radar.md` |
+| Select among Jev, Laya, CLM, GLiNER2.5-Decide, or another candidate | `references/ecosystem-radar.md`; then the selected model reference |
 | Fastino GLiNER2.5-Decide local classification | `references/gliner25-decide.md` |
 | Fine-tune GLiNER2 for Decide-style classification | `references/gliner25-decide-fine-tuning.md` |
 | Failure, latency, device fallback, upgrade, rollback | `references/hosting-and-troubleshooting.md` |
@@ -94,7 +95,7 @@ reference adapter, not a public Internet service.
 ## Cross-cutting limits
 
 - Jev is managed/API-only; do not invent a self-hosted Jev weight download.
-- Laya and Jev can share a typed application interface, but not assumed
+- Laya, CLM, and Jev can share a typed application interface, but not assumed
   thresholds, calibration, latency, language behavior, or model quality.
 - Before enabling Laya caller traffic, keep ingress private and authenticated;
   define finite, application-specific caps for request bytes, question count,
