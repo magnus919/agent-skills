@@ -143,8 +143,8 @@ or a synthetic fixture does not meet that bar.
 
 ### Advisory audit resource budget
 
-The workflow caps Jev audit work at 40 calls and 300 assertions. The 19-case
-System One manifest needs 38 calls and 282 assertions across both paired
-variants, including the rubric-judge research cases. These explicit caps bound
+The workflow caps Jev audit work at 48 calls and 340 assertions. The 22-case
+System One manifest needs 44 calls and 316 assertions across both paired
+variants, including the rubric-judge research and CLM cases. These explicit caps bound
 resource use; they do not establish semantic quality or a release gate. The
 manifest-budget test checks that future additions fit before live auditing.

@@ -275,6 +275,44 @@
         "Notes that the study tests one typed classifier rather than every System One model",
         "Requires recording actual model identity rather than relying solely on an undated alias"
       ]
+    },
+    {
+      "id": "clm-model-selection",
+      "prompt": "We need to score 200 reusable candidate tool actions against changing text states. We can host an 8B encoder, already use Jev, and have a smaller Laya option. Should we choose CLM, and what would establish that choice?",
+      "expected_output": "Shortlists CLM for its state/action separation and candidate reuse, compares it with the incumbent and Laya on a frozen target set, and recommends adoption only after measured decision quality, calibration, total latency, resource cost, and workflow outcomes meet the contract.",
+      "assertions": [
+        "Identifies repeated candidate actions and adequate Qwen3-8B encoder capacity as reasons to shortlist CLM",
+        "States that CLM probabilities depend on the supplied candidate set and are not transferable thresholds",
+        "Compares zero-shot CLM, the current Jev path, Laya, and a simple baseline on the same independently labeled cases",
+        "Measures end-to-end latency with cold and warm cache conditions and encoder resource cost",
+        "Does not treat project-reported speed or verifier benchmark results as target-workload proof"
+      ]
+    },
+    {
+      "id": "clm-finetune-boundaries",
+      "prompt": "We want to fine-tune CLM for ticket routing and later use it to pick the best of four coding-agent solutions. Explain the two training paths and how to avoid a misleading result.",
+      "expected_output": "Separates typed Choice head training from trajectory verifier head training, preserves a matching frozen Qwen3-8B encoder and text recipe, and defines grouped validation, task-disjoint verifier holdout, baselines, and an untouched final test.",
+      "assertions": [
+        "Distinguishes the upstream choice task with typed-decision rows from the clm task with state/action transitions or embeddings",
+        "Explains that fine-tuning trains projection heads over a frozen matching Qwen3-8B encoder",
+        "Keeps related ticket rows together across training and evaluation splits",
+        "Requires whole-task holdout for coding-agent verifier evaluation instead of splitting steps from one task",
+        "Separately compares the reference head, fine-tuned head, incumbent, and simple baselines on the intended output metric",
+        "Does not attribute the published fine-tuned verifier scores to the zero-shot reference head"
+      ]
+    },
+    {
+      "id": "clm-private-operations",
+      "prompt": "Design a private CLM System One service. The API health endpoint says ok=true but the embedding server has failed, and we need safe promotion and rollback.",
+      "expected_output": "Pins the encoder/head pair and serving recipe, keeps the endpoint private and authenticated, adds application admission limits, requires embedder-aware readiness and a representative inference, and defines a matched rollback.",
+      "assertions": [
+        "Pins Qwen3-8B encoder and tokenizer, pooling recipe, projection checkpoint, runtime, and token limits together",
+        "Recognizes that ok=true in CLM health is insufficient when the embedder field is unhealthy",
+        "Keeps CLM and embedding ingress private and configures bearer authentication rather than relying on the server's defaults",
+        "Adds finite request, candidate, concurrency, queue, and deadline limits outside the basic upstream validation",
+        "Requires a representative typed inference and model-identity check before routing traffic",
+        "Records cache and resource use, failure fallback, and rollback of the encoder/head pair"
+      ]
     }
   ]
 }
