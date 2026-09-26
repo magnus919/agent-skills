@@ -72,6 +72,7 @@ tracked corpus unless publication is explicitly requested.
 | Production QA step routing, cached replay, selector repair, or model substitution | `references/qa-automation-pattern.md`, then `references/evaluation-and-calibration.md` |
 | Probability, threshold, calibration, model comparison | `references/evaluation-and-calibration.md` and `templates/benchmark-record.md` |
 | Compare singleton and batched request quality or calibration | `references/request-shape-evaluation.md` and `templates/benchmark-record.md` |
+| Replace an LLM rubric judge, diagnose graded scale offsets, or test correlated judge errors | `references/rubric-judge-research.md`, then `references/evaluation-and-calibration.md` |
 | Measure router ablations and full fallback economics | `references/cascade-economics.md` and `templates/benchmark-record.md` |
 | Determine whether a decision model improves an agent harness | [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) for paired end-to-end tasks, trajectories, side effects, and cost/latency; keep this skill's model-level contract and calibration checks |
 | Design or run a portable v1 label battery or provisional v2 cross-domain Choice/Noul/Score battery | `references/decision-battery.md` and `templates/decision-battery-design-review.md`; run `scripts/decision_battery.py` only after the pilot review |
@@ -109,6 +110,9 @@ reference adapter, not a public Internet service.
 - Independent questions may share one call, but test the exact batched request
   shape on frozen cases. Dependent questions need another call when the first
   answer changes their state or candidate set.
+- A fallback judge or multi-provider agreement is not independent correctness
+  evidence. Measure shared errors and held-out rescue/regression before claiming
+  cascade quality gains; see `references/rubric-judge-research.md`.
 - A model cannot replace exact arithmetic, provenance, eligibility, safety
   reflexes, or irreversible approval. A text-generating model may be a separate
   bounded stage after a typed route, not an implicit source of authority.
