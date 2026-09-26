@@ -236,6 +236,45 @@
         "Keeps exact policy, side effects, math, and authority in code or accountable human control",
         "Does not transfer Jev-specific quality, limits, or thresholds to another System One model without new evidence"
       ]
+    },
+    {
+      "id": "rubric-cascade-correlated-errors",
+      "prompt": "Jev is uncertain on 20% of our rubric judgments. We will defer these to a different-provider LLM and call their agreement independent verification. Does arXiv:2609.29769 establish that this improves quality? Design the adoption comparison.",
+      "expected_output": "Separates observed cost savings from unproven target-workload quality gains and proposes a held-out paired error comparison.",
+      "assertions": [
+        "Rejects cross-provider agreement as independent correctness evidence",
+        "Requires independently labeled paired outputs to measure shared wrong answers",
+        "Measures fallback rescue and regression within the proposed deferral band",
+        "Inspects confident errors retained by the cascade",
+        "Separates counterfactual replay from measured live cascade latency",
+        "Selects thresholds on units separate from the final test units"
+      ]
+    },
+    {
+      "id": "rubric-ordinal-scale-mismatch",
+      "prompt": "All four judges rank essays similarly to raters but grade about a level lower. Can we add one to every score and ship? Use the rubric-judge paper to propose a bounded investigation.",
+      "expected_output": "Treats missing scale conventions as a hypothesis, inspects criterion-specific offsets and validates input revisions separately from final testing.",
+      "assertions": [
+        "Explains that ranking agreement can coexist with incorrect level placement",
+        "Requests original rater instructions or label provenance",
+        "Reports per-criterion signed level offsets",
+        "Treats missing rubric conventions as an observational hypothesis rather than experimentally proven cause",
+        "Rejects a global offset fitted and evaluated on the same cases as release evidence",
+        "Proposes a versioned input comparison on untouched labeled units"
+      ]
+    },
+    {
+      "id": "rubric-study-comparison-boundaries",
+      "prompt": "The paper finds only 8 significant differences in 27 comparisons. So Jev is equivalent to every LLM and Score can replace Choice with the same abstention and rounding. Is this a sound benchmark conclusion?",
+      "expected_output": "Rejects equivalence from inconclusive differences and preserves primitive, decoding, abstention, batching and model-identity boundaries.",
+      "assertions": [
+        "Distinguishes an inconclusive difference from demonstrated equivalence",
+        "States that the studied Score framing lacks the Choice NA abstention option",
+        "Requires explicit decoding and tie-rounding rules",
+        "Limits cost and time claims to the studied batching and call protocol",
+        "Notes that the study tests one typed classifier rather than every System One model",
+        "Requires recording actual model identity rather than relying solely on an undated alias"
+      ]
     }
   ]
 }
