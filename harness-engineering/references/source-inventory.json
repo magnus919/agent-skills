@@ -1,0 +1,757 @@
+{
+  "schema_version": 1,
+  "source_commit": "77e7a3e21469dcbece2558086c8d91657abeaa40",
+  "limits": "Hashes inventory content; review_scope is the actual review boundary, not an execution or fidelity verdict.",
+  "files": [
+    {
+      "path": "docs/en/harness-designs/claude-code/index.md",
+      "sha256": "4935296240dad038775cecc79f6b39ff04b701007be65cd7afc87443f26333df",
+      "review_scope": "design_breakdown_reviewed"
+    },
+    {
+      "path": "docs/en/harness-designs/codex/index.md",
+      "sha256": "cd2c46590a2ce418095c98f47bd6229cb50923b7e831a3c9e25e09c15733855c",
+      "review_scope": "design_breakdown_reviewed"
+    },
+    {
+      "path": "docs/en/harness-designs/deepseek/index.md",
+      "sha256": "bc438c78bb100e820969f3b79b128adefa1759c35dbb15b50a037a1b5f629980",
+      "review_scope": "design_breakdown_reviewed"
+    },
+    {
+      "path": "docs/en/harness-designs/index.md",
+      "sha256": "5287924b00010d7c315cb2282fe6ce3ff4c2612fac3ea5214fe3d5e264648d40",
+      "review_scope": "design_breakdown_reviewed"
+    },
+    {
+      "path": "docs/en/harness-designs/pi/index.md",
+      "sha256": "d2892f1dc7fa532e3773d72ef05ba9ee53dd92784135c3776c2ef511480dfc7c",
+      "review_scope": "design_breakdown_reviewed"
+    },
+    {
+      "path": "docs/en/index.md",
+      "sha256": "7e78f707bc9f35e5169dfed0d485c3a3892e27184d9d7200524acb4779751065",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-01-why-capable-agents-still-fail/code/failure-pattern-demo.ts",
+      "sha256": "c10a5a3cd9d9228eb7fe87db2406e87ab2d4a9105fe03cc8dee34de0b2d6c404",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-01-why-capable-agents-still-fail/code/failure-signals-checklist.md",
+      "sha256": "6ef025024313ab8ec03989cd455992bfb04a0761045b733a9c74b55d9444e1ba",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-01-why-capable-agents-still-fail/code/index.md",
+      "sha256": "bede178aec78104e8b39903759e0dcc2d373484498ce7bdb0447a1b1285da956",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-01-why-capable-agents-still-fail/code/underspecified-task.md",
+      "sha256": "bf5c3e1fed245a97f95a0d4cb29ed105656ddd8c8307828388e6c7b4b378ddb5",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-01-why-capable-agents-still-fail/index.md",
+      "sha256": "031f44bcff336d09d9db7e75a3883853807aff3e9d2364d76a4ed8a5cbddfc19",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-02-what-a-harness-actually-is/code/harness-components.md",
+      "sha256": "0ac845af9f0387227a707dfac5dd60d5839b9a28d093f0bb4587c51dc2e01883",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-02-what-a-harness-actually-is/code/harness-vs-no-harness.ts",
+      "sha256": "caf46b9f4e3d4aa9e458b98859fd8879ef78361f10546c1ac8da0b776ddef698",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-02-what-a-harness-actually-is/code/index.md",
+      "sha256": "532ca05ed4b61faa25a621d116418c23051e63bc5777ec84802d65f7c40b0552",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-02-what-a-harness-actually-is/code/minimal-harness-loop.ts",
+      "sha256": "a533d981f11ce637d2eeb2e31868cbee8e1a6436351d39d52908cd0ce502a20e",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-02-what-a-harness-actually-is/index.md",
+      "sha256": "2432c3029c3aa829deddcb5c8a5379c62cdea547d955bfcf61f119b6cbf6b2d5",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-03-why-the-repository-must-become-the-system-of-record/code/index.md",
+      "sha256": "7ec61c4c7f12323ef494bb6ba4da07e56e4eaedca2464810808eeaa20ab19acd",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-03-why-the-repository-must-become-the-system-of-record/code/repo-knowledge-layout.txt",
+      "sha256": "bb646bdd4eb29703e154505d7c69d40f2d51c165f9e50967d4028a154451fe9d",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-03-why-the-repository-must-become-the-system-of-record/code/repo-reader.ts",
+      "sha256": "1b48f304b5f849be3ba6d8172e032d96633000b6dbca21e8dbbae1c4b40676aa",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-03-why-the-repository-must-become-the-system-of-record/code/system-of-record-checklist.md",
+      "sha256": "d43607f7eeaf66b21ecbdb4f73ede26c39fbec0a150c47cfa2cfece1a31cefbd",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-03-why-the-repository-must-become-the-system-of-record/index.md",
+      "sha256": "ec1670f90587d852d2d55745f559faacca58553479ef35478ed0af461fe0f10b",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-04-why-one-giant-instruction-file-fails/code/AGENTS-short.md",
+      "sha256": "20754e5d519fab2e813fd9d2459f54189836ae91d06991235ca7c495f6c2b726",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-04-why-one-giant-instruction-file-fails/code/anti-patterns.md",
+      "sha256": "3d6a5fe07ec5d4f0b6f85b57a302adfe090cf1f875130a16c452665aa925d12a",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-04-why-one-giant-instruction-file-fails/code/index.md",
+      "sha256": "905ea2961c654b2fcda29b3cf8ca2b2ad9091aec0ea0f6fb1c6fa5272ad6813f",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-04-why-one-giant-instruction-file-fails/code/split-vs-monolithic.ts",
+      "sha256": "50de58ca37fda27a414d9f3a87a083afcff079be3e6bc71f870d7804de8f3c99",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-04-why-one-giant-instruction-file-fails/index.md",
+      "sha256": "dba07cdc9c12578c119e977d43699db31a431afcba138b536fe7cb7d82657579",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-05-why-long-running-tasks-lose-continuity/code/continuity-checklist.md",
+      "sha256": "6411362da94e2320f19d4f47972e07baefca091e53b1c310176e4e7a37795707",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-05-why-long-running-tasks-lose-continuity/code/index.md",
+      "sha256": "b7ef2e16d477838c80249efcec4571e50c6e6ae47ba331f623f06cdbb150a4c5",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-05-why-long-running-tasks-lose-continuity/code/session-handoff.md",
+      "sha256": "c82c1eb639b5eef35d82ab4e61c0b0d543439715fb016f0c8f4e2f8b171ec69d",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-05-why-long-running-tasks-lose-continuity/code/session-simulator.ts",
+      "sha256": "33f9df3b70d4340cb65642ac662603e41ca71779eac7455a7219941220641bdc",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-05-why-long-running-tasks-lose-continuity/index.md",
+      "sha256": "fdf99b6a9a9f291496338617fba9fde8d010d924d0fbddea5b1297e86fd1ab25",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-06-why-initialization-needs-its-own-phase/code/index.md",
+      "sha256": "99a396cc64d7c745d4713d4448a5332498399207aad0fa9f13e7a74c0ac9e9e4",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-06-why-initialization-needs-its-own-phase/code/init-check.ts",
+      "sha256": "a310d1b4f644b9c44178a51f7bbf2ed5ffdfe34590fe914ff647a83b562c3d68",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-06-why-initialization-needs-its-own-phase/code/init.sh",
+      "sha256": "e7a2a744d9952751fb823c035eb63c135327c4469624e6b7f83df1d7562586c7",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-06-why-initialization-needs-its-own-phase/code/initializer-output-checklist.md",
+      "sha256": "7fe515d765a0473ad5558b563c990edfcb7777f23f22c2a944b1c81f235898a8",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-06-why-initialization-needs-its-own-phase/index.md",
+      "sha256": "8ed51f81cd03b89fb6d4f1566f5cb324f895022549fab0382f4035315dc65c85",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-07-why-agents-overreach-and-under-finish/code/index.md",
+      "sha256": "8382a2604ae8f3692842c5ae6fc79e07b5284d703253455a18d3d61506076a5c",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-07-why-agents-overreach-and-under-finish/code/next-task-template.md",
+      "sha256": "a4687b0d57e49cc338116be5800338ad73e8976c99865e37cf156efda96c792c",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-07-why-agents-overreach-and-under-finish/code/scope-surface-example.md",
+      "sha256": "fac4900a15a704abb9ff717213d6139f32036fa4a014bc2f737a7f453c0e1b08",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-07-why-agents-overreach-and-under-finish/code/scope-tracker.ts",
+      "sha256": "7a1cc3a815942a607adeebdb0d576d01922978eb9511675b7ed9b12a8ca936ad",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-07-why-agents-overreach-and-under-finish/index.md",
+      "sha256": "c663d12773c82c133d11e74eeca07441494d735784079f4e7980a27b6cc997e9",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-08-why-feature-lists-are-harness-primitives/code/feature-list-validator.ts",
+      "sha256": "eea3dc0fe952534e5679278320baa18ad23f110ddcf84e069be7cc3abbde102e",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-08-why-feature-lists-are-harness-primitives/code/feature_list.json",
+      "sha256": "c406da572ee964b4e8933ae4ad73c7bec7df9249677b89cc55f85938a56b4558",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-08-why-feature-lists-are-harness-primitives/code/index.md",
+      "sha256": "a43800bfbac410c4fe1d3e42fcd66af441152601dd5ef716bf9af76441a5cd22",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-08-why-feature-lists-are-harness-primitives/code/pass-gate-policy.md",
+      "sha256": "992e0babb5e72166a3b1422875c493425eb93a6cb60ab454f08632fc1931cf26",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-08-why-feature-lists-are-harness-primitives/index.md",
+      "sha256": "352083daae12f18d81d2c88913477c5ca8a84258b83ab7cd87413ee05ad662c2",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-09-why-agents-declare-victory-too-early/code/clean-state-checklist.md",
+      "sha256": "928c3fa5271148cb450f6185e4ffc5a95f004cc9442a280639c421ab6e42d828",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-09-why-agents-declare-victory-too-early/code/index.md",
+      "sha256": "09c60b2fc549376b12560ed373412c6610b583f6f17409ac64728e579d598eb3",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-09-why-agents-declare-victory-too-early/code/victory-detector.ts",
+      "sha256": "0c42abc697fc7e72263f8ce97b5a818076a82577fdc3b25e531e9723c72eacf0",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-09-why-agents-declare-victory-too-early/index.md",
+      "sha256": "e9a9c8a03daf1cfb5b6bf8d765f030ce0540123426aaa8909d8c5df4072be404",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-10-why-end-to-end-testing-changes-results/code/architecture-rules.md",
+      "sha256": "89730429eccefe181d95d39cede5d113635894290f92908253927c923a0ca442",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-10-why-end-to-end-testing-changes-results/code/e2e-runner.ts",
+      "sha256": "15b60124226c754ba21ae8e161faff48fa7fe4445553fe45c07d18398f847187",
+      "review_scope": "selected_code_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-10-why-end-to-end-testing-changes-results/code/index.md",
+      "sha256": "5f48e76741f48d52700994e4830662e67daae1aef8f72f7280d38dc70522f632",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-10-why-end-to-end-testing-changes-results/code/review-feedback-to-rule.md",
+      "sha256": "a60b71cea8cc580ca8a72d8e98705a7f2e86bb2527f54af6a1f02555f8e78083",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-10-why-end-to-end-testing-changes-results/index.md",
+      "sha256": "5d3eed82179bfc2ecb1c5b726851a8fc26f77d9a856f02f42ee4724cd5199476",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-11-why-observability-belongs-inside-the-harness/code/evaluator-rubric.md",
+      "sha256": "d5767918b16064121ef24b94878e64f1d37e56eb445532965112405e47214764",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-11-why-observability-belongs-inside-the-harness/code/index.md",
+      "sha256": "db3801dcb2e11108edd6da93bf0757d84c83ed2a5c84959572c9701ca7d6245c",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-11-why-observability-belongs-inside-the-harness/code/runtime-logger.ts",
+      "sha256": "a4649e8fc3a26905c4085915c68d087cc50feda3c2d89af76a39514427f0092c",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-11-why-observability-belongs-inside-the-harness/code/sprint-contract.md",
+      "sha256": "48694b91770239eef59619bcc4add3463a776cc5e1ad0730a189652d00526616",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-11-why-observability-belongs-inside-the-harness/index.md",
+      "sha256": "7259f530f43b74998c45083f7de50f4c5723ee79a4d94c543c23a9c05e4b93ef",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-12-why-every-session-must-leave-a-clean-state/code/benchmark-comparison-template.md",
+      "sha256": "6a00a3de80fc8ee4cb32e801f1f2b0c8f0be28a5224e5c3a3018686a843abe8c",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-12-why-every-session-must-leave-a-clean-state/code/benchmark-runner.ts",
+      "sha256": "724c5e9e33129ac177b3e1f90ed8c6c37cc887eea95d3c87b60f131cd1fa76ff",
+      "review_scope": "selected_code_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-12-why-every-session-must-leave-a-clean-state/code/cleanup-loop.md",
+      "sha256": "978d44529ad2f20db5e43d7e2483779fd56f8b95567688a69aa931785fa12cc7",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-12-why-every-session-must-leave-a-clean-state/code/cleanup-scanner.ts",
+      "sha256": "5b60242bf2f2f600a49b0178bba793463c96c566d8b828fb12e9248eabff32dc",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-12-why-every-session-must-leave-a-clean-state/code/index.md",
+      "sha256": "d08e26e6f3f5b6ed50876dcb055ce953cd8e27c0fe366e7934ff360114fa5185",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-12-why-every-session-must-leave-a-clean-state/index.md",
+      "sha256": "49d150a34380a520c3b921293d93c90158994d2b434e870b1f58813da2bf1a93",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-13-loop-engineering/code/checker-prompt.md",
+      "sha256": "326ed49f112a26d37858d3b5155f44c123732156347b654d7cbb7b67f99735c5",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-13-loop-engineering/code/goal-template.md",
+      "sha256": "874f3cccdb57bd69ec0bad301971c0b9600c932658dbac5288121649b7ddd7bd",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-13-loop-engineering/code/index.md",
+      "sha256": "93a6e0919c1f2ce4042f143d0e50168d649e229937c4a5da8dd90648d3bf8ae2",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-13-loop-engineering/code/loop-state-template.md",
+      "sha256": "f66ffe6ee09c33373981649a6db1bc05ee61e008638962f7e0cc5e26bdfa8f5c",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-13-loop-engineering/code/maker-prompt.md",
+      "sha256": "25207d49c3bf134a4bbe0c43165e12e34ff874ba87733f8b8f4684090dd6be25",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-13-loop-engineering/index.md",
+      "sha256": "be83ebf169aae8281340491cae730c650676cb5d436ef1139b09769d3454e0a3",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-14-graph-engineering/code/index.md",
+      "sha256": "0fb53a28b973e1e96c4f43eeec39eb4a2bf7fc413599a56a653f85702174655b",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/lectures/lecture-14-graph-engineering/code/maker_checker_graph.py",
+      "sha256": "2bd3cf6e9241c8062060953b8e3b9985619bd6744ee6e96e4a17784921310b7b",
+      "review_scope": "selected_code_reviewed"
+    },
+    {
+      "path": "docs/en/lectures/lecture-14-graph-engineering/index.md",
+      "sha256": "e06a791065bc690636e92fec340a715ef1b2a5558e64f9fc325e1e35f3511cda",
+      "review_scope": "curriculum_sections_reviewed"
+    },
+    {
+      "path": "docs/en/projects/index.md",
+      "sha256": "f1009aa4d1cfd5229515bf4ef20439711a9bc7a1b53fc5ff7574f83852c2acf2",
+      "review_scope": "project_contract_reviewed"
+    },
+    {
+      "path": "docs/en/projects/project-01-baseline-vs-minimal-harness/index.md",
+      "sha256": "1f2395b04d69966f232d4c278ce1a3d5ce159931fb32d10cd119803d42600d4e",
+      "review_scope": "project_contract_reviewed"
+    },
+    {
+      "path": "docs/en/projects/project-02-agent-readable-workspace/index.md",
+      "sha256": "f070e3e0050a09e5e4e0d78fd065cd1c5826217e94dfde6ab1090e4d9200f1cd",
+      "review_scope": "project_contract_reviewed"
+    },
+    {
+      "path": "docs/en/projects/project-03-multi-session-continuity/index.md",
+      "sha256": "20972f0f06a15a37e5542ddb6950450ead83b9ee1f9de6163b20a43915cec731",
+      "review_scope": "project_contract_reviewed"
+    },
+    {
+      "path": "docs/en/projects/project-04-incremental-indexing/index.md",
+      "sha256": "8cd8820ae0b991715d168285d9bd7cb4bc7c68875e172d558e50b624acc280f1",
+      "review_scope": "project_contract_reviewed"
+    },
+    {
+      "path": "docs/en/projects/project-05-grounded-qa-verification/index.md",
+      "sha256": "48d6f27cd97f20af03e0962d486145fbb96e3fa1c9103ca4d96fbbff2a3e0ecd",
+      "review_scope": "project_contract_reviewed"
+    },
+    {
+      "path": "docs/en/projects/project-06-runtime-observability-and-debugging/index.md",
+      "sha256": "1df176a5cede3093e61fc265c180bb5b5de75621929376c221964f9577810066",
+      "review_scope": "project_contract_reviewed"
+    },
+    {
+      "path": "docs/en/projects/project-07-loop-engineering-first-loop/index.md",
+      "sha256": "9552cf6833e95f0f7d7ae979e6d71ef6486057759d26e550dc08ce5731064706",
+      "review_scope": "project_contract_reviewed"
+    },
+    {
+      "path": "docs/en/projects/project-08-graph-engineering-first-graph/index.md",
+      "sha256": "c20961ecfce2a24060030b026043486ce13d871b8ea11f854a27cd101b4bfe6b",
+      "review_scope": "project_contract_reviewed"
+    },
+    {
+      "path": "docs/en/resources/index.md",
+      "sha256": "6630dec879bf0dfa8339d48f6db79a17749328d99f133be34690c11b46b428e5",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/index.md",
+      "sha256": "3b074bd7a99ba4495216fa8ef9a568186a364eeafc4cba2746f818afcefe9770",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/AGENTS.md",
+      "sha256": "5ab6ad4b68739add5ba14582fe20df8349449b8c6aac1a0876cecfdadc5a674c",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/ARCHITECTURE.md",
+      "sha256": "cc9fff8f5d7940b7dce4ee3dc87f1e34e6c7367b54664ca1b6efdc9984896ff8",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/DESIGN.md",
+      "sha256": "b34cdf4d3c84d4e0d91e6dfa4c0adeb07c1cebfe1be4cd9625a30eb3852acff6",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/FRONTEND.md",
+      "sha256": "ff09d7c8aaefaa23b995d4ad573cbf442b3e30af24388b0e206155f54b3cddae",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/PLANS.md",
+      "sha256": "00eb14bb1c0aa16a776cc014d3f55f0c7387d8dd1b571bd31a472fbc3f38abab",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/PRODUCT_SENSE.md",
+      "sha256": "a81bfd74801dec61f78e1c37db3e67b1125c25e4e85316eaf280358114d279e3",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/QUALITY_SCORE.md",
+      "sha256": "583225a356e5c83b81601251852b132116424e1a2379eb4a4062487ad2e2a759",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/RELIABILITY.md",
+      "sha256": "5d5141d9f5484126a7f8ebea30c1a1d9d5779f8b2f48fd4261d7302fcaa4fe7a",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/SECURITY.md",
+      "sha256": "d09c3189b880dc3c4eb72a071da487551eb2eab24f156eb6b266068288bee629",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/design-docs/core-beliefs.md",
+      "sha256": "11dfa2114b21fad2153ca9b1fb8e5aa12d6b949dd53780292dba465edf6e2d11",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/design-docs/index.md",
+      "sha256": "1ecdb7aefe35aea960da1eb3c98a8cff319aaeddbf783da16df766e889eb9017",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/exec-plans/active/index.md",
+      "sha256": "0d60f0263c1c90d34397ce2f84ea3fa9f307b0abecd47639327d8b1f593eedb1",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/exec-plans/completed/index.md",
+      "sha256": "30c7614b7a1bcfa3e14269636d5e6b06a492545bdc298bdfa7b15f9715c9dbd2",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/exec-plans/tech-debt-tracker.md",
+      "sha256": "07d55fcfd97b6ba119f26198bee12be4fc59b258092c22734fd0733ec7d18c78",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/generated/db-schema.md",
+      "sha256": "909c170d9ad571792cb95122a124c78d89b385de99be0547ed91020e72b43d1d",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/product-specs/index.md",
+      "sha256": "38db802396fa5c227f3f652ff12f619bfc4a06f2aa621bf37c14fe9c74ed2924",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/product-specs/new-user-onboarding.md",
+      "sha256": "8fb3594b2f29f47b3a7f5c89dbbbbc4c33c023e53bc227f5269d9590d10f596d",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/references/design-system-reference-llms.txt",
+      "sha256": "f189f24b8845de1b4a8720319c8c6d96171007ccb1461394a698cbc3a4b48b6e",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/references/nixpacks-llms.txt",
+      "sha256": "75ae8fb5e121b3d6db0cc1dea4a705997c63c1ec34a53b635da5766567bd7371",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/docs/references/uv-llms.txt",
+      "sha256": "720640eb48cad56b55fc2ce091614d93d3017ddfcfa092710677d132b202551b",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/repo-template/index.md",
+      "sha256": "a1daccf467816d6bd8e6301f88e00b20ee68aa8545ef2607ebecd692ae2b3b22",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/sops/chrome-devtools-validation-loop.md",
+      "sha256": "608f63ca7d7fbb0e49aebbb8b9bce3fe9cb477489017b96be261ee353fde8808",
+      "review_scope": "SOP_reviewed"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/sops/encode-knowledge-into-repo.md",
+      "sha256": "49f0ff3f88392ba0edf70d16fac4af9273c80bb92321e5a5ee06475300005565",
+      "review_scope": "SOP_reviewed"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/sops/index.md",
+      "sha256": "2e9dea71667c9f22108e5a7f73e7f547e28937ae1fdce8dac28dd70cf8d5fc17",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/sops/layered-domain-architecture.md",
+      "sha256": "f706d4b71b82084ba4e1f77dd43a47e6932c456dca45799bcd490347b0916465",
+      "review_scope": "SOP_reviewed"
+    },
+    {
+      "path": "docs/en/resources/openai-advanced/sops/observability-feedback-loop.md",
+      "sha256": "0edcf7824771052bca7d97c4996bc56f72f479f1cc984fac660185db180908e0",
+      "review_scope": "SOP_reviewed"
+    },
+    {
+      "path": "docs/en/resources/reference/coding-agent-startup-flow.md",
+      "sha256": "d83fc198a0eb31029cb2404f6a253a2625151d251eec59128369afaa9bbfebf3",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/reference/index.md",
+      "sha256": "bcb1ef62429b21937d2a313f9626d2473a5a2c94098ed924da39ea5d44f37747",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/reference/initializer-agent-playbook.md",
+      "sha256": "e3acabf91e9a1ee4e982a33a299049e4e2023e251e80bfdbaf66428f2c6e384c",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/reference/method-map.md",
+      "sha256": "dfc872e667479106cc3ba54f5b4dc082f5aede6ac957d98fb888ae0fb2546b11",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/reference/prompt-calibration.md",
+      "sha256": "3381ffb62adff4110cd35c08defb4b235f269515c164891b3c0c99da1d57c2b7",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/AGENTS.md",
+      "sha256": "42d2ed896cc6db9e459d9f59e2e39af2ceba664a40f092544f1b34678a90aa58",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/CLAUDE.md",
+      "sha256": "d1730a3ba184aa9f0b12c25aebdba89712dac5009bc0b1b44b4d355dff40355a",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/claude-progress.md",
+      "sha256": "0294a00887d936dd7cc0a782ccd574098745f7dad37e280fc79230768e2f5fbf",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/clean-state-checklist.md",
+      "sha256": "46c2e255576e62dd0bd5123a3dc4ca5859cf48c0caaaa143836ba509604c81d0",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/evaluator-rubric.md",
+      "sha256": "07d34d118cdcbe18ba5e95254ef34d388d78853fc365666f030d0ab4d73f464b",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/feature_list.json",
+      "sha256": "a4e429ab96cdac28dfdf650b9422be748f8c2a615e53de6f09f6c466479a14ab",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/index.md",
+      "sha256": "d22cb473a02cb1f4056cf59f6dbc8871901020512a17b4757a0c7274211f7f5e",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/init.sh",
+      "sha256": "4f751620a48e502578d65a7f855d8f9a16de792b595b7d8ade8ec77959e90a61",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/quality-document.md",
+      "sha256": "11b92562e033d331510868623e2152c8b2bc553e07a9154a2c0e4edf93c3d46c",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/resources/templates/session-handoff.md",
+      "sha256": "8a66c712d055470b89c6dc58fb195ef40f2d5fefdae27a45070d9999ce5a26b2",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "docs/en/skills/index.md",
+      "sha256": "63bb6592fb34dc99be7c3075209e11fff188ecbc29f825286571626b96812241",
+      "review_scope": "inventory_only"
+    },
+    {
+      "path": "skills/harness-creator/README-UK.md",
+      "sha256": "075c752ef5ae76d80304cf7c8f016ebab5027ff8aa3c40a98ea4960bf192c7c4",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/README.md",
+      "sha256": "f388d7869cf5e383c811726ee694a686b115dfe2b940df4edb048a9be8e3f498",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/SKILL.md",
+      "sha256": "6b152a8c5191fb3092f8371046e43846b8f42c60509c7c6eec282658beee81df",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/evals/evals.json",
+      "sha256": "bbccf589cf15bf9f8ab53b146ad61d80b05781d968d151572a29927437965b07",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/metadata.json",
+      "sha256": "feb4ce4c9654a4d92d782b0484f2187e94ed3a0ee904efbfc721308856064029",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/references/context-engineering-pattern.md",
+      "sha256": "13008d846e539f351c4708296780aca103267249f5e625db6c3594308ede3271",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/references/gotchas.md",
+      "sha256": "6c90a161cd2f928df5109ad12bf5d849d838256de61e76fc1c8868d0d5d154e6",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/references/lifecycle-bootstrap-pattern.md",
+      "sha256": "183bb9138a9a434d51a126c2dd72bb6ca580477af61bda3d46a60f3abc85329c",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/references/memory-persistence-pattern.md",
+      "sha256": "45b9e1950b4c9e0738214b3cc5329d9e1e17621a02d9d09e2a3fb0a6a2704d94",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/references/multi-agent-pattern.md",
+      "sha256": "b307660cd1043408e6dec50e4dd9a18e61b460a41bd66bd59c59d12adb5b0ed9",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/references/skill-runtime-pattern.md",
+      "sha256": "642164a949e91c5e73ffbd5f4f049573a3aeacf1ef2c41af61e113198da8468d",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/references/tool-registry-pattern.md",
+      "sha256": "5b4ea1447dca0baf3745daa5e8fb1dc94ab6a7a81dbcdb2d40fd66e7615adf98",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/scripts/create-harness.mjs",
+      "sha256": "df82ef49c6ff1395bf3365d80f3df1e6a620eba6563b7599f85ca2fa2b27324b",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/scripts/lib/harness-utils.mjs",
+      "sha256": "5aeb3516ae055a23d8129b61a3997f3be91db1efc746f6d81c89cf4d837af3fa",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/scripts/render-assessment-html.mjs",
+      "sha256": "f656d7010a45e3a160e984c59666d57bc0816c47e438bd077faaa17b63b56095",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/scripts/run-benchmark.mjs",
+      "sha256": "b7d71aa1b8bf3c3df1c4f9bb040202e07a6140f3c174d790f1678de5c939f379",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/scripts/validate-harness.mjs",
+      "sha256": "ac060dfd2fe7f49e7fb010ea013ab0b2b16f3da075244a90e5c1f8ce2bbe484d",
+      "review_scope": "content_reviewed; not_execution"
+    },
+    {
+      "path": "skills/harness-creator/templates/agents.md",
+      "sha256": "6cf46f72a3d1fcc950e423703392d3cd73e8e2f809137b9e5fb638f6b5a77cb5",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/templates/feature-list.json",
+      "sha256": "53864068deec1260751391fd107654442f6c937ee712ecde6669415e546d6c5e",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/templates/feature-list.schema.json",
+      "sha256": "535150b9e613cd289ab9016f44a1e7cf0e14cbeabf1f85fb2533e8503710098e",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/templates/progress.md",
+      "sha256": "dc8ed5780eb7daa861597a59e0d0ae096e7e23e7dcd7ae4bde7eeed691ee4433",
+      "review_scope": "inventory_or_routing_only"
+    },
+    {
+      "path": "skills/harness-creator/templates/session-handoff.md",
+      "sha256": "a71e92389c56f9a84e7afd2ee0578377f08e40afcb7a8efe15105553d234fc49",
+      "review_scope": "inventory_or_routing_only"
+    }
+  ]
+}

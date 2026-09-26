@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "start": "make",
+  "checkpoint_store": "REPLACE with durable database/file store",
+  "terminal_nodes": [
+    "complete",
+    "escalate"
+  ],
+  "limits": {
+    "max_attempts": 3,
+    "max_elapsed_seconds": 600,
+    "max_no_progress_cycles": 2
+  },
+  "nodes": [
+    {
+      "id": "make",
+      "kind": "maker",
+      "owner": "implementer",
+      "routes": {
+        "artifact_ready": "check",
+        "blocked": "escalate"
+      }
+    },
+    {
+      "id": "check",
+      "kind": "verifier",
+      "owner": "checker",
+      "criteria_reference": "REPLACE with protected acceptance contract",
+      "routes": {
+        "pass": "complete",
+        "fail": "make",
+        "unknown": "escalate"
+      }
+    },
+    {
+      "id": "complete",
+      "kind": "terminal",
+      "owner": "coordinator",
+      "routes": {}
+    },
+    {
+      "id": "escalate",
+      "kind": "terminal",
+      "owner": "human-owner",
+      "routes": {}
+    }
+  ]
+}

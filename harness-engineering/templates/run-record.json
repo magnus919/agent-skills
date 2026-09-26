@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "harness_revision": "REPLACE with baseline/candidate identity",
+  "fingerprints": {
+    "model_config": "cf43bc12fa379cd7590171bb23bb3900174a8755547473a0b8e9ec9f54897625",
+    "environment": "c7c9d417a8c260ea3cc40dc0b29b8dc8b57c653f2093463ee39145219ca9502f",
+    "taskset": "31e5707d69b3e2f94e369fd132d2567e1cb6bf558b6e24943b49bf6c2c6a634f",
+    "authority": "6a39ed1492f7228171704306144d142e3a6ea76695ccf8c089a9800ef53d8933",
+    "verifier": "e1010edbd0673880fe63f4e3eda62140df8e5e46efb687ef2d8c38c8b0318d30"
+  },
+  "cases": [
+    {
+      "id": "task-1",
+      "input_sha256": "c07f8231f7c28f70eeaebb66c483b68b4035130167c68d00c4238793f49cdc71",
+      "outcome": "unknown",
+      "elapsed_seconds": 0,
+      "cost": 0,
+      "human_interventions": 0,
+      "evidence_reference": "EXAMPLE ONLY: replace with actual execution/acceptance evidence"
+    }
+  ]
+}

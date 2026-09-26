@@ -591,6 +591,15 @@
       "description": "Search, download, and extract public-domain books from Project Gutenberg. Look up books by ID or keyword via gutendex, download plain-text and EPUB editions, strip licensing boilerplate, extract clean text from EPUB for illustrated works, and classify fiction vs non-fiction. Ships a portable CLI script with zero external dependencies. Use when the user says \"gutenberg\", \"public domain\", \"download a book\", \"classic literature\", \"free ebook\", \"gutenberg.org\", or names any public-domain title or author. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
+      "name": "harness-engineering",
+      "source": "./",
+      "skills": [
+        "./harness-engineering"
+      ],
+      "strict": false,
+      "description": "Design, build, diagnose, and evolve agent harnesses: instructions, tools, execution environments, durable state, context management, verification, recovery, and bounded autonomous loops. Use for unreliable coding agents, cross-session drift, premature completion, harness audits, or changes to the runtime around a model. Do not use for prompt rewriting alone, model training, general application architecture, or operating an already evaluated agent in production; route those concerns to their specialist skills."
+    },
+    {
       "name": "haystack",
       "source": "./",
       "skills": [

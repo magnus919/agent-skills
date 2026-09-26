@@ -269,6 +269,10 @@ Operate Grafana OSS, Enterprise, and Cloud with version-aware discovery, decisio
 
 Search, download, and extract public-domain books from Project Gutenberg. Look up books by ID or keyword via gutendex, download plain-text and EPUB editions, strip licensing boilerplate, and classify fiction vs non-fiction. Ships a portable Python CLI with zero external dependencies.
 
+### [harness-engineering](harness-engineering/SKILL.md)
+
+Design, build, diagnose, and evolve agent harnesses across instructions, tools, environments, durable state, context, verification, recovery, and bounded loops. Ships safe scaffolding, structural audits, explicit check execution, and evidence-based improvement patterns.
+
 ### [haystack](haystack/SKILL.md)
 
 An expert-level skill for building **production search and NLP pipelines** with Haystack. Pipelines are validated DAGs with typed components and explicit connections.
