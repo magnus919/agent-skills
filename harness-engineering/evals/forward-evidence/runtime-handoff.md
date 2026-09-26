@@ -1,0 +1,9 @@
+# Delivery and verification
+
+Delivered runtime-contract.md, tool-contract.json, state.json, graph.json and recovery-drill.md. These are concrete proposed contracts, not deployed runtime code. The design maps the supplied req-7/T-731 effect-before-checkpoint trace to reconciliation, keeps its task blocked pending authoritative evidence, fixes checker unknown routing, and binds authorization after hooks.
+
+Actually ran Python bundled contracts.py validation for state and graph. Both exited zero and reported contract_valid=true, behavior=not_assessed. Saved exact reports in state-validation.json and graph-validation.json. No live calls, external tickets, recovery simulation, baseline/candidate experiment, or runtime implementation was performed. No run-record was fabricated.
+
+Usability observations: reference routing covered the requested issues clearly; the state and graph templates and validators were usable without dependencies. The bundled validator supports state/graph/run, but not tool/event/hook contracts, so those declarations received design review only. This is a coverage limitation, not a claimed validator bug. Graph validation does not prove runtime budget enforcement, authorization or persistence; the supplied documentation correctly states this. No blocking skill/tool defects were encountered. The graph schema is intentionally coarse (maker/verifier/action/terminal), requiring precise transitions and ownership to be carried in the runtime design rather than encoded as executable enforcement.
+
+Next owner action: establish the adapter's idempotency and authoritative lookup contracts, implement transactional ledger/fencing/completion checks in isolated staging, and execute the recovery exercise with actual evidence. Rollback this design by discarding only this output directory; deployment rollback and remediation of real side effects require service-specific ownership and authorization.

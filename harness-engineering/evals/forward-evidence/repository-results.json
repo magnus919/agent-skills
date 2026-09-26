@@ -1,0 +1,49 @@
+{
+  "runs": [
+    {
+      "probe": "candidate",
+      "argv": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "scripts/verify.py"
+      ],
+      "exit_code": 1,
+      "evidence": "candidate.log"
+    },
+    {
+      "probe": "restart",
+      "argv": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "scripts/verify.py"
+      ],
+      "exit_code": 1,
+      "evidence": "restart.log"
+    },
+    {
+      "probe": "valid-oracle-challenge",
+      "argv": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "-c",
+        "import sys,types,runpy\nm=types.ModuleType(\"app\")\nm.search=lambda items,page=1,page_size=2: {\"items\":items[(page-1)*page_size:page*page_size],\"page\":page}\nsys.modules[\"app\"]=m\nrunpy.run_path(\"scripts/verify.py\",run_name=\"__main__\")"
+      ],
+      "exit_code": 0,
+      "evidence": "valid-oracle-challenge.log"
+    },
+    {
+      "probe": "empty-discovery-challenge",
+      "argv": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "-c",
+        "import runpy,unittest\nfrom unittest.mock import patch\nwith patch.object(unittest.defaultTestLoader,\"discover\",return_value=unittest.TestSuite()):\n runpy.run_path(\"scripts/verify.py\",run_name=\"__main__\")"
+      ],
+      "exit_code": 2,
+      "evidence": "empty-discovery-challenge.log"
+    }
+  ],
+  "original_files_preserved": {
+    "app.py": true,
+    "scratch.txt": true,
+    "docs/product.md": true,
+    "tests/test_search.py": true
+  },
+  "python": "3.13.6 (v3.13.6:4e665351082, Aug  6 2025, 11:22:35) [Clang 16.0.0 (clang-1600.0.26.6)]"
+}
