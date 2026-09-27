@@ -339,6 +339,79 @@
         "Tests option-boundary behavior and verifies that overflow is rejected or handled by a documented, evaluated policy rather than silently truncating candidates",
         "Aborts model scoring when adapter qualification fails"
       ]
+    },
+    {
+      "id": "semantic-lint-local-vs-scan",
+      "prompt": "Perch `scan` flags an authorization issue in `load_record`, then I edit that method but leave the change unstaged. I want a quick post-edit check and a defensible statement about whether the wider repository is clear. Which commands and evidence do I need?",
+      "expected_output": "Uses a targeted `perch check` to inspect the current on-disk edit and a separately scoped graph scan for repository/caller coverage; explains that a local pass neither closes the stored finding nor establishes a clean full-scope scan.",
+      "assertions": [
+        "Distinguishes `perch check` on current disk state from `perch scan` at its declared commit or scope",
+        "Does not treat a passing local check as proof that other callers or the whole repository are clear",
+        "States that a passing check does not close the stored scan issue and requires an appropriately scoped later scan for repository status"
+      ]
+    },
+    {
+      "id": "semantic-lint-rule-contract",
+      "prompt": "We want a semantic rule that each request handler checks the authenticated tenant before reading a record. The codebase has `src/api/`, test helpers, and one shared repository helper whose implementation is sometimes omitted from the scan context. Draft the rule contract and define how to handle the incomplete case.",
+      "expected_output": "Defines a narrow handler-level scope and context, a concrete source-backed invariant and counterexample, and an explicit unknown/review lane; leaves the new rule advisory while its labels and threshold are evaluated.",
+      "assertions": [
+        "Defines a narrow target selector and unit appropriate to individual request handlers, with the helper/caller context needed to judge the invariant",
+        "Rejects a handler that only checks tenant-ID presence but reads the record by an unscoped record ID",
+        "Routes an omitted helper or otherwise insufficient evidence to unknown/review instead of met or an inferred violation, and starts the rule advisory"
+      ]
+    },
+    {
+      "id": "semantic-lint-repair-loop",
+      "prompt": "A semantic review says `load_record` may skip a tenant check. I applied a local patch and want the shortest safe feedback loop. The finding came from a repository scan; tests cover same-tenant success and cross-tenant denial. What should the agent do next and when should it stop?",
+      "expected_output": "Reviews the scoped patch, runs the relevant deterministic tests, and performs a fresh targeted check against the current working-tree state; declares a finite repair-attempt limit (default two) and escalates when the limit is reached or evidence is unresolved.",
+      "assertions": [
+        "Declares a finite repair-attempt limit before further repair and states that reaching it stops or escalates the loop",
+        "Runs a fresh targeted check against current disk state after the applied patch",
+        "Runs deterministic same-tenant success and cross-tenant denial regression tests after the patch",
+        "Stops and escalates on a regression, no progress, unresolved evidence, or oscillating repairs instead of treating a passing model check as task completion"
+      ]
+    },
+    {
+      "id": "semantic-lint-cache-freshness",
+      "prompt": "Our semantic scan cached a pass. We then changed the method's caller, the exact rule wording, and a policy threshold, while the provider's mutable model alias still has the same text. Explain what can be reused and what must be re-evaluated before publishing a fresh result.",
+      "expected_output": "Invalidates readings when request-defining source/context/rule/model inputs change, records provider-returned model identity rather than treating an alias as immutable, and recomputes a changed deterministic threshold policy from eligible unchanged raw scores without claiming a new inference.",
+      "assertions": [
+        "Invalidates cached readings when source, graph-neighbor context, exact rule/question, endpoint, adapter, or model revision changes",
+        "Records provider-returned model identity or marks it unknown; a mutable alias alone is not immutable revision evidence",
+        "Recomputes a changed policy threshold from eligible unchanged raw scores and identifies the result as cache reuse rather than a fresh model call"
+      ]
+    },
+    {
+      "id": "semantic-lint-coverage",
+      "prompt": "A codebase-level `ensure_present` search selected 620 candidate units, queried 400 before its rule-search cap, partially read 12 long units, and had 3 provider failures; a path filter excluded other files. The report shows zero listed violations. What may we claim, and what must the report retain?",
+      "expected_output": "Reports selection separately from queried/completed/partial/failed/skipped and out-of-scope units, discloses caps and exclusions, and refuses to call zero listed findings a clean complete scan.",
+      "assertions": [
+        "Keeps selected, actually queried, completed, partial, failed, skipped, and out-of-scope unit counts distinct",
+        "Does not count capped, partial, failed, skipped, or unexamined units as clean passes",
+        "Limits the zero-violation claim to successfully examined scope and reports parser/graph/search limits that affect coverage"
+      ]
+    },
+    {
+      "id": "semantic-lint-chunk-aggregation",
+      "prompt": "A semantic rule multiplies marginal scores of .92 and .91, then takes the maximum across six chunks and reports .837 as calibrated document-level risk. What needs to be established before using that number as a gate?",
+      "expected_output": "Explains the assumptions needed for score multiplication, rejects an unvalidated maximum as document-level probability, and requires pass/chunk provenance plus independent document-level validation across varying chunk counts before calibrating or gating.",
+      "assertions": [
+        "Does not treat a product of marginal probabilities as a joint probability without conditional semantics or independent empirical validation",
+        "Explains that a maximum across chunks can change with the number of opportunities and is not document-level calibrated risk without validation",
+        "Retains pass/chunk metadata and validates document-level outcomes across varying chunk counts on independently labeled units"
+      ]
+    },
+    {
+      "id": "semantic-lint-heldout-task-cost",
+      "prompt": "We have 240 labeled code changes across 12 repositories, many near-duplicate fixes, and want to evaluate a semantic rule plus an agent that repairs findings. The rule's medium-confidence second-check tier is claimed to catch more bugs cheaply. Design a study that could justify or reject that claim without confusing finding accuracy with repair success.",
+      "expected_output": "Groups related changes by repository/change family before splitting, uses independent labels and an untouched grouped holdout, evaluates detection separately from patch correctness/regressions and end-task completion, measures full task latency/cost, and treats the medium tier as an unverified hypothesis until measured at an action-specific operating point.",
+      "assertions": [
+        "Keeps related repositories, changes, and near-duplicate fixes within grouped partitions and reserves untouched units for final evaluation",
+        "Measures detection errors and coverage on independently labeled held-out changes separately from repair success",
+        "Verifies repaired patches with deterministic tests, regression cases, and independent review rather than using the model's own feedback as truth",
+        "Measures end-task completion with declared end-to-end latency and total cost including retries, tests, and human review",
+        "Keeps a medium-confidence second-look lane advisory until representative held-out false-pass, false-block, abstention, and review-cost evidence supports an action-specific policy"
+      ]
     }
   ]
 }

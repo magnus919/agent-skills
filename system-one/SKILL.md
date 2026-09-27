@@ -4,9 +4,11 @@ description: >-
   Design, integrate, evaluate, self-host, and troubleshoot typed System One
   decision models including TypeSafe Jev, Convai Innovations Laya, and CLM. Use for
   Choice/Score/Noul judgments inside deterministic software, app-control loops,
-  routing, ranking, guardrails, calibration, or private open-model inference. Do not
-  use for open-ended generation, exact rules or authorization, or generic LLM
-  serving without a bounded decision contract.
+  routing, ranking, guardrails, calibration, semantic code linting and
+  post-edit feedback, or
+  private open-model inference. Do not use for syntactic/style linting, exact
+  policy or authorization, open-ended generation, or generic LLM serving without
+  a bounded decision contract.
 license: MIT
 compatibility: Current provider/model documentation needs network access; local open-model operation needs a compatible runtime and model-weight storage.
 metadata:
@@ -67,6 +69,7 @@ tracked corpus unless publication is explicitly requested.
 | Native C++ Laya inference, CUDA/Vulkan, or Jev-compatible HTTP | `references/laya-cpp.md` |
 | Local or private/VPC Laya service | `references/laya-self-hosting.md`, then `references/hosting-and-troubleshooting.md` |
 | Browser/desktop/voice control, agent routing, ranking, guardrails, deadlines | `references/use-case-patterns.md` |
+| Semantic code-lint rule design, local post-edit checks, graph scans, or feedback evaluation | `references/semantic-lint-feedback.md`; fill `templates/semantic-lint-rule.md` and `templates/feedback-evaluation.md` before a pilot |
 | First System One pilot or worked evaluation of a decision, QA runner, or semantic CI gate | `references/worked-decision-pilot.md` |
 | Learn from the 1,305-build field survey; identify implementation patterns and anti-patterns | `references/field-patterns-and-antipatterns.md` |
 | Audit original browser, skill-router, supervisory, or moderation implementations | `references/implementation-audit.md` |
@@ -121,6 +124,10 @@ reference adapter, not a public Internet service.
 - A fallback judge or multi-provider agreement is not independent correctness
   evidence. Measure shared errors and held-out rescue/regression before claiming
   cascade quality gains; see `references/rubric-judge-research.md`.
+- A semantic lint result is a model judgment, not proof that a code rule is
+  satisfied. Keep syntax/schema checks deterministic, semantic findings
+  reviewable, and gates advisory until independent grouped holdouts measure
+  false passes, false blocks, abstention, drift, and complete task cost.
 - A model cannot replace exact arithmetic, provenance, eligibility, safety
   reflexes, or irreversible approval. A text-generating model may be a separate
   bounded stage after a typed route, not an implicit source of authority.
