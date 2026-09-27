@@ -28,6 +28,14 @@ For model comparisons, start with the battery design review. It makes the
 test count, expected answers, and pilot case review explicit before a large
 corpus or benchmark run. Keep run outputs outside the skill repository.
 
+The comparison-design guide separates a fixed-contract model substitution from
+a model-adapted system comparison, and requires adapter qualification before
+quality claims. Its expanded benchmark record captures label provenance, split
+overlap, paired uncertainty, repeated-run stability, and the actual latency
+boundary. A separate candidate guide screens newer projects from primary
+evidence; directory listings and vendor comparisons are leads, not proof of
+target-task quality.
+
 ## What You Get
 
 | Directory | Purpose |
@@ -37,6 +45,8 @@ corpus or benchmark run. Keep run outputs outside the skill repository.
 | `templates/decision-contract.md` | Fillable contract for state, questions, thresholds, authority, and fallback |
 | `templates/action-control-contract.md` | Preflight for observed app actions, confirmation, freshness, and rollback |
 | `templates/benchmark-record.md` | Reproducible model/latency/calibration comparison record |
+| `references/comparison-design.md` | Fixed-contract and model-adapted tracks, adapter qualification, dataset leakage and blind-label controls, paired inference, and timing boundaries |
+| `references/open-decision-candidates.md` | Primary-source screening of newer open typed-decision projects with evidence-bounded comparison guidance |
 | `templates/decision-battery-design-review.md` | Pilot review of the test unit, answer rules, case mix, and comparison conditions before expansion |
 | `examples/` | Synthetic request, response, provisional labeled decision corpora, and a frozen Jev semantic-audit fixture |
 | `scripts/` | Offline/live probe, request-shape and cascade analyzers, decision-battery runner, routing demo, Jev QA pilot, advisory eval audit, private review and model-teacher screening, binary evaluator, and private Laya HTTP adapter |
@@ -60,6 +70,8 @@ references/implementation-audit.md # four original implementation patterns
 references/request-shape-evaluation.md # singleton-vs-batch comparison
 references/cascade-economics.md # router ablations and whole-pipeline accounting
 references/jev-ci-reference-deployment.md # reproduce and operate this repo's Jev CI audit
+references/comparison-design.md # fixed-contract and model-adapted comparison design
+references/open-decision-candidates.md # primary-source candidate screening
 ```
 
 Validate a request contract without calling a model:

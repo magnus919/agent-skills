@@ -219,7 +219,11 @@
         "Measures answer validity, correctness, calibration, and abstention by model and request shape rather than assuming singleton behavior transfers",
         "Treats Laya as a separately pinned model needing its own matched quality and threshold evaluation",
         "Includes deterministic or retrieval-only, best single-model, router-without-decision-signal, and full-cascade baselines on the same held-out cases",
-        "Counts retrieval, model calls, retries, fallback, review, and end-to-end latency while keeping unresolved cases visible"
+        "Counts retrieval, model calls, retries, fallback, review, and end-to-end latency while keeping unresolved cases visible",
+        "Separates a fixed-contract comparison from a model-adapted comparison and does not combine their rankings",
+        "Gives each adapted candidate the same bounded development opportunity and evaluates on a common untouched test set",
+        "Qualifies adapter semantics, polarity, and overflow behavior before comparing model quality",
+        "Pairs candidates on the same independently labeled units and reports uncertainty without treating repeated calls as independent cases"
       ]
     },
     {
@@ -228,6 +232,7 @@
       "expected_output": "Extracts bounded decision and deterministic-control patterns while grading the evidence behind each claim, rejecting transferable numeric thresholds and unverified live outcomes, and requiring target-model evaluation.",
       "assertions": [
         "Distinguishes index popularity, original post or README claims, inspected implementation, and reproduced outcomes as different evidence tiers",
+        "Verifies material capability claims from primary model cards, source code, or project documentation rather than relying on a comparison directory or vendor claim",
         "Constrains browser actions to fresh observed candidates and checks postconditions rather than trusting DONE",
         "Distinguishes trading dry-run or mock behavior from confirmed live fills and profitability",
         "Tests a router against a best simple baseline and a no-model ablation before crediting the model",
@@ -247,7 +252,8 @@
         "Measures fallback rescue and regression within the proposed deferral band",
         "Inspects confident errors retained by the cascade",
         "Separates counterfactual replay from measured live cascade latency",
-        "Selects thresholds on units separate from the final test units"
+        "Selects thresholds on units separate from the final test units",
+        "Keeps model/checkpoint selection, adapter or question selection, threshold tuning, calibration, and final testing distinct or discloses overlap"
       ]
     },
     {
@@ -312,6 +318,57 @@
         "Adds finite request, candidate, concurrency, queue, and deadline limits outside the basic upstream validation",
         "Requires a representative typed inference and model-identity check before routing traffic",
         "Records cache and resource use, failure fallback, and rollback of the encoder/head pair"
+      ]
+    },
+    {
+      "id": "comparison-track-separation",
+      "prompt": "Compare three typed-decision candidates. One accepts the same question unchanged, one needs a different prompt and answer mapping, and one cannot represent the required abstention. The team wants a single leaderboard. Design the comparison tracks and state what the result can establish.",
+      "expected_output": "Defines a fixed-contract track for the shared semantics and a separate model-adapted track with versioned per-candidate changes, equal development budgets, and an untouched common test; reports unsupported semantics explicitly and does not merge the rankings.",
+      "assertions": [
+        "Defines a fixed-contract track that holds the decision semantics, state, labels, and task constant while recording model-native serialization",
+        "Defines a separate model-adapted track and identifies its estimand as model plus adapter/question mapping",
+        "Bounds candidate-specific adapter/question development effort comparably and confines selection or tuning to development data",
+        "Evaluates all candidates on a common untouched test set",
+        "Reports unsupported abstention or other contract semantics as compatibility limits rather than silently substituting behavior",
+        "Does not combine fixed-contract and model-adapted results into one leaderboard"
+      ]
+    },
+    {
+      "id": "adapter-polarity-and-overflow",
+      "prompt": "A new adapter returns valid JSON and all required IDs. A paired example shows it maps 'urgent' to the low-priority label, and a 65-option request silently loses the final candidates. What should happen before a model quality comparison?",
+      "expected_output": "Rejects adapter qualification, tests label polarity using counterbalanced evidence, verifies supported and rejected overflow behavior, and fixes or explicitly bounds the adapter before scoring model quality.",
+      "assertions": [
+        "Treats schema-valid output as insufficient evidence that adapter semantics are correct",
+        "Requires polarity tests where decisive evidence reverses while irrelevant lexical cues are counterbalanced",
+        "Tests option-boundary behavior and verifies that overflow is rejected or handled by a documented, evaluated policy rather than silently truncating candidates",
+        "Aborts scoring before comparison when the adapter fails semantic qualification",
+        "Retains operational failures from already qualified adapters in the predeclared evaluation denominator"
+      ]
+    },
+    {
+      "id": "dataset-shortcuts-and-overlap",
+      "prompt": "A routing dataset has duplicate conversations split across train and test; the answer is encoded in a source-system ID; the team also tuned the adapter, confidence threshold, and calibration on the test labels. Explain what the resulting score means and how to repair the study.",
+      "expected_output": "Treats the score as contaminated, groups related records before splitting, probes answer shortcuts, separates model/provider training provenance from this study's split membership, and reserves a fresh untouched test after selection and calibration.",
+      "assertions": [
+        "Groups duplicate or related conversations before assigning dataset partitions",
+        "Identifies source-system IDs as a possible target shortcut and proposes a counterfactual, masking, or ablation check",
+        "Separately records provider training-data provenance and this experiment's train, selection, calibration, and test membership",
+        "Does not present a test set used for adapter, threshold, or calibration selection as an untouched confirmatory test",
+        "Requires a fresh final test whose labels and outputs remain hidden until the analysis protocol is frozen"
+      ]
+    },
+    {
+      "id": "paired-uncertainty-and-equivalence",
+      "prompt": "Three models have close accuracy on repeated calls to the same 80 customer accounts, and pairwise tests are not significant. Leadership says they are equivalent and wants the fastest model. What evidence and analysis support that decision?",
+      "expected_output": "Pairs results by independent account/task cluster, reports uncertainty and repeated-input stability separately, predeclares multiplicity and a meaningful equivalence margin, compares a simple baseline, and measures latency at the production boundary.",
+      "assertions": [
+        "Uses the independent account or task cluster as the pairing or resampling unit rather than counting repeated calls as new independent cases",
+        "States that failure to find a significant difference does not establish equivalence",
+        "Requires a predeclared equivalence margin and an appropriate equivalence procedure whose uncertainty interval lies wholly within the margin; a non-significant difference alone is insufficient",
+        "Specifies how multiple candidate and metric comparisons are handled",
+        "Reports repeated-input stability separately from correctness and between-model uncertainty",
+        "Includes a deterministic or current-process baseline with baseline tuning confined to development data",
+        "Measures latency at an explicitly stated production boundary and separates cold-start from warm operation"
       ]
     }
   ]
