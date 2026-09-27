@@ -412,6 +412,123 @@
         "Measures end-task completion with declared end-to-end latency and total cost including retries, tests, and human review",
         "Keeps a medium-confidence second-look lane advisory until representative held-out false-pass, false-block, abstention, and review-cost evidence supports an action-specific policy"
       ]
+    },
+    {
+      "id": "devops-telemetry-economics",
+      "prompt": "We want to replace our log archive with a model filter. Its anomaly recall is 99.3%, but it skips only 0.84% of downstream analysis. Classification costs extra and the archive exporter only acknowledges HTTP receipt. Design a provider-neutral rollout and assess the savings claim.",
+      "expected_output": "Preserves a separate original archive, starts annotation/shadow routing, distinguishes delivery from durability, and evaluates complete economics and misses against exact severity rules.",
+      "assertions": [
+        "Preserves the original archive independently of filtering the expensive analysis branch",
+        "Routes missing, invalid, uncertain, and unavailable judgments conservatively to analysis",
+        "Distinguishes exporter acknowledgment from durable archive storage",
+        "Rejects anomaly recall alone as evidence of net savings",
+        "Includes classification and downstream analysis costs in the whole-policy comparison",
+        "Compares the proposed routing with an exact severity or existing deterministic baseline"
+      ]
+    },
+    {
+      "id": "devops-hypothesis-coverage",
+      "prompt": "Our incident agent proposes MongoDB and tracing faults, each with a test. The actual Service selector fault is absent. A System One model ranks the proposed tests with high confidence. Design the diagnostic loop and explain what this result proves.",
+      "expected_output": "Uses bounded read-only discriminating tests, recognizes missing candidate coverage, and refreshes hypotheses and evidence rather than claiming ranking discovers the omitted cause.",
+      "assertions": [
+        "Explains that ranking cannot recover a correct hypothesis absent from the candidate set",
+        "Associates proposed tests with competing hypotheses and distinguishing observations",
+        "Keeps probe authorization and read-only eligibility in deterministic control",
+        "Assigns test execution and interpretation to the executor rather than the ranking verdict",
+        "Includes a lane to expand hypotheses or gather missing evidence",
+        "Bounds investigation and refreshes observations before renewed judgment"
+      ]
+    },
+    {
+      "id": "devops-repair-invariants",
+      "prompt": "The agent restored three Ready replicas but left maxUnavailable at 100% and maxSurge at 0. A judge approves recovery. Separately, restoring an old database credential fixes requests after rotation. Design diagnosis and mitigation review before declaring either incident resolved.",
+      "expected_output": "Separates causal diagnosis, current functionality, and durable invariant verification with executable checks; does not accept current health or a model verdict as closure.",
+      "assertions": [
+        "Requires evidence of both a current observed failure and its causal mechanism for diagnosis",
+        "Distinguishes restored service from removal of the cause and durable repair correctness",
+        "Requires checking future rollout availability against the governing invariant",
+        "Requires verifying that old rotated credentials remain invalid",
+        "Assigns execution of postcondition checks to software or operators rather than inferring their success from judge prose",
+        "Retains unknown checks and a declared stability window in closure evidence"
+      ]
+    },
+    {
+      "id": "devops-selective-ci",
+      "prompt": "A model says only unit tests are relevant to a change. Security scans are mandatory and integration tests require a setup job. We want optional job selection that works with any qualified decision model. What controls and evidence are required?",
+      "expected_output": "Restricts judgment to optional allowlisted jobs, keeps required jobs and dependency closure deterministic, and evaluates omissions against full-suite evidence.",
+      "assertions": [
+        "Retains mandatory security and other required jobs regardless of model judgment",
+        "Restricts model-based selection to optional allowlisted jobs",
+        "Resolves prerequisite dependency closure in deterministic code",
+        "Runs the conservative full eligible set for invalid or unavailable judgments",
+        "Allows more than one optional job to be relevant instead of assuming an exclusive choice",
+        "Requires full-suite shadow or replay evidence of missed regressions before enforcement"
+      ]
+    },
+    {
+      "id": "devops-durable-response-loss",
+      "prompt": "Temporal stored an approved rollback decision. The approval waited 30 minutes and the deployment changed. An executor timed out after possibly completing the rollback. Can we replay the same command without another judgment? Give a reusable decision and execution record.",
+      "expected_output": "Separates judgment and effect attempts, binds authority to fresh state, reconciles unknown completion by operation ID, and does not infer exactly-once effects from durable history.",
+      "assertions": [
+        "Binds the decision to observation time or state version and an expiry rule",
+        "Rechecks current preconditions and authorization after the approval wait",
+        "Records a stable operation ID and execution attempts separately from judgment requests",
+        "Reconciles whether the rollback took effect before repeating an ambiguous command",
+        "Requires renewed observations and decision when state or action parameters change",
+        "States that durable workflow history alone does not establish exactly-once external effects"
+      ]
+    },
+    {
+      "id": "selective-judge-frozen-policy",
+      "prompt": "A paper reports a frozen Jev cascade accepting 53.7% of 510 pairs, accuracy 92.5% versus fallback 93.1%, and fee ratio 0.568. Someone calls this 99% correct and wants its 0.9 threshold for Laya incident review. Assess the claim and design qualification.",
+      "expected_output": "Distinguishes relative retention from absolute correctness, rejects threshold transfer, and requires separate selection and held-out tests plus absolute risk and live failure evidence.",
+      "assertions": [
+        "Explains that relative accuracy retention is not 99 percent absolute correctness",
+        "Rejects copying the paper threshold to another model or workload without local qualification",
+        "Fits threshold or calibration changes only on a selection split and freezes the policy before an untouched test",
+        "Preserves related source-question variants or incident cases within one independent split group",
+        "Requires an absolute accepted-case error limit alongside relative loss and coverage",
+        "Distinguishes offline cascade simulation from measured live cascade latency"
+      ]
+    },
+    {
+      "id": "selective-judge-confident-unsupported",
+      "prompt": "A reference-free prose judge has 52.5% accuracy, mean maximum probability 0.90, and error-detection AUROC 0.518. The team proposes a 0.9 acceptance gate and repeated voting for deployment review. Explain what evidence is missing and how to route these cases.",
+      "expected_output": "Recognizes weak error discrimination and confident unsupported judgments; obtains required evidence or reviews, and treats repeated voting as a separately evaluated policy.",
+      "assertions": [
+        "Explains why high mean confidence does not justify acceptance on the stated workload",
+        "Distinguishes probability calibration from error discrimination",
+        "Requires obtaining missing task evidence or routing to review regardless of confidence",
+        "Calls for risk-coverage and accepted-error evaluation against independent labels",
+        "Includes elaborate wrong answers or other confident-error challenges",
+        "Treats repeated voting as a separate policy requiring correlated-error and complete-cost evaluation"
+      ]
+    },
+    {
+      "id": "selective-judge-fallback-complementarity",
+      "prompt": "Our fallback has better pooled accuracy and agrees with the primary on 96% of its confident mistakes. We tuned the gate on the same cases used in the report; invalid calls were excluded and unpriced retries cost zero. Review the cascade and propose a valid comparison.",
+      "expected_output": "Rejects agreement as correctness and test-fitted claims, preserves invalid cases and unknown costs, and measures actual deferral-band rescue, regression, and shared errors.",
+      "assertions": [
+        "Rejects provider agreement as independent evidence of correctness",
+        "Measures fallback rescues, regressions, and shared errors within the actual deferral band",
+        "Requires a new untouched test after fitting the gate on the reported cases",
+        "Keeps invalid or unresolved final results in the all-attempted quality denominator",
+        "Records unpriced retries as unknown cost rather than zero",
+        "Compares with fallback alone and a matched-budget no-confidence control"
+      ]
+    },
+    {
+      "id": "selective-judge-order-and-evidence",
+      "prompt": "We averaged first-position probabilities from A/B and B/A to route a pairwise judge, then added a tie and unknown class. Our audit is one blinded author on disagreements, and the relative accuracy point estimate is inside tolerance but its confidence interval is not. Is this equivalent to a validated noninferior production gate?",
+      "expected_output": "Aligns distributions to response identity, preserves tie/unknown semantics, qualifies selected adjudication, and rejects unsupported noninferiority or production claims.",
+      "assertions": [
+        "Maps probabilities from both candidate orders to semantic response identity before aggregation",
+        "Preserves tie and unknown classes instead of applying a binary complement formula to the expanded option set",
+        "Counts both order requests in cascade cost",
+        "Distinguishes selected single-author disagreement adjudication from representative independent audit evidence",
+        "Requires the paired interval to satisfy the preregistered noninferiority margin rather than relying only on the point estimate",
+        "Rejects a production gate claim without qualified held-out and live failure-boundary evidence"
+      ]
     }
   ]
 }

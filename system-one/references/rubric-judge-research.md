@@ -75,3 +75,8 @@ answer naming only a rank metric omits evidence of level placement. For
 comparability, a satisfying answer records decoding and abstention differences;
 a near miss calls Score and Choice interchangeable; naming models alone leaves
 the comparison contract not shown.
+
+For another workload-specific study with frozen confidence policies, read
+[selective judgment](selective-judgment.md). Compare task, labels, decoding,
+selection/test boundaries, and fallback errors before reconciling results;
+favorable preference cascades do not establish gains on graded rubric panels.

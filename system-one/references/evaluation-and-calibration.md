@@ -136,3 +136,8 @@ Use `templates/benchmark-record.md` to keep comparisons reproducible.
 
 For rubric judging, read [rubric-judge research](rubric-judge-research.md)
 when testing scale placement or whether a fallback corrects shared errors.
+
+For confidence-based acceptance/escalation, read
+[selective judgment](selective-judgment.md) and fill
+`templates/cascade-qualification.md`. Qualify error discrimination independently
+of probability calibration and test the frozen full route on untouched units.
