@@ -57,14 +57,16 @@
     },
     {
       "id": "calibration-review",
-      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Their same 22 author-written synthetic CI cases score 21/22 in two runs, with the same false negative and a Noul probability moving from 0.49 to 0.43. Review the threshold proposal and define the evidence needed before release.",
-      "expected_output": "Rejects the universal threshold, explains that reusing the same synthetic cases does not create independent holdout evidence, distinguishes confidence from accuracy, requires independently labeled target data, calibration and risk-coverage analysis, and uses stricter confirmation or human review for consequential actions.",
+      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Their same 22 author-written synthetic CI cases score 21/22 in two runs, with the same false negative and a Noul probability moving from 0.49 to 0.43. Their real routing data also has duplicate conversations split across train and test, source-system IDs that encode the answer, and thresholds and calibration tuned on test labels. Review the evidence and define what is needed before release.",
+      "expected_output": "Rejects the universal threshold and contaminated test claim, distinguishes repeated synthetic results from independent evidence and confidence from accuracy, requires grouped splits and shortcut checks, independently labeled target data and separate calibration, and uses stricter confirmation or human review for consequential actions.",
       "assertions": [
         "Explains why a vendor/default confidence number is not a universal policy threshold",
         "Distinguishes repeatability on reused synthetic cases from independent held-out evidence and calibration",
-        "Does not tune a prompt or threshold against a repeated challenge case and then describe it as held out",
+        "Does not tune a prompt, adapter, threshold, or calibration on a repeated challenge case and then describe it as held out",
         "Uses held-out real-output cases with labels assigned independently of the tested model",
         "Separates a representative workload sample from deliberately risk-enriched challenge cases",
+        "Keeps related conversations from the same source group in a single partition",
+        "Tests whether source-system IDs reveal the target through a counterfactual, masking, or ablation check",
         "Measures probability calibration and selective accuracy as automated coverage changes",
         "Versions exact question text and Choice criteria alongside evaluation results",
         "Uses risk-specific lanes such as automate, confirm/review, and abstain/fallback",
@@ -265,15 +267,18 @@
     },
     {
       "id": "rubric-study-comparison-boundaries",
-      "prompt": "The paper finds only 8 significant differences in 27 comparisons. So Jev is equivalent to every LLM and Score can replace Choice with the same abstention and rounding. Is this a sound benchmark conclusion?",
-      "expected_output": "Rejects equivalence from inconclusive differences and preserves primitive, decoding, abstention, batching and model-identity boundaries.",
+      "prompt": "The paper finds only 8 significant differences in 27 comparisons. Three models also have close scores on repeated calls to the same 80 customer accounts, but pairwise tests are not significant. Leadership says the models are equivalent and wants the fastest one. Score should also replace Choice with the same abstention and rounding. Is this a sound benchmark conclusion, and what analysis is needed?",
+      "expected_output": "Rejects equivalence from inconclusive differences, requires cluster-paired uncertainty and a predeclared equivalence margin/procedure, separates repeated-call stability from independent sample size, and preserves primitive, decoding, abstention, batching and model-identity boundaries.",
       "assertions": [
-        "Distinguishes an inconclusive difference from demonstrated equivalence",
+        "Requires a predeclared equivalence margin and an appropriate procedure whose uncertainty interval lies wholly within it; a non-significant difference alone does not establish equivalence",
         "States that the studied Score framing lacks the Choice NA abstention option",
         "Requires explicit decoding and tie-rounding rules",
-        "Limits cost and time claims to the studied batching and call protocol",
+        "Limits cost and time claims to the studied batching and call protocol, and states the production timing boundary with cold and warm operation separated",
         "Notes that the study tests one typed classifier rather than every System One model",
-        "Requires recording actual model identity rather than relying solely on an undated alias"
+        "Requires recording actual model identity rather than relying solely on an undated alias",
+        "Uses the customer account or task as the paired/resampling unit rather than treating repeated calls as independent cases",
+        "Reports repeated-input stability separately from correctness and between-model uncertainty",
+        "Predeclares how comparisons across multiple models, metrics, and slices are handled"
       ]
     },
     {
@@ -312,6 +317,27 @@
         "Adds finite request, candidate, concurrency, queue, and deadline limits outside the basic upstream validation",
         "Requires a representative typed inference and model-identity check before routing traffic",
         "Records cache and resource use, failure fallback, and rollback of the encoder/head pair"
+      ]
+    },
+    {
+      "id": "comparison-track-separation",
+      "prompt": "Compare three typed-decision candidates. One accepts the same question unchanged, one needs a different prompt and answer mapping, and one cannot represent the required abstention. The team wants a single leaderboard. Design the comparison tracks and state what the result can establish.",
+      "expected_output": "Defines a fixed-contract track for the shared semantics and a separate model-adapted track with versioned per-candidate changes, equal development budgets, and an untouched common test; reports unsupported semantics explicitly and does not merge the rankings.",
+      "assertions": [
+        "Defines a fixed-contract track that holds decision semantics constant while recording model-native serialization",
+        "Defines a separate model-adapted track and identifies its estimand as model plus adapter/question mapping",
+        "Gives candidates the same bounded adaptation budget, limits selection to development/calibration data, and compares them on a common untouched test",
+        "Surfaces unsupported semantics as compatibility limits and keeps fixed-contract and model-adapted rankings separate"
+      ]
+    },
+    {
+      "id": "adapter-polarity-and-overflow",
+      "prompt": "A new adapter returns valid JSON and all required IDs. A paired example shows it maps 'urgent' to the low-priority label, and a 65-option request silently loses the final candidates. What should happen before a model quality comparison?",
+      "expected_output": "Rejects adapter qualification, tests label polarity using counterbalanced evidence, verifies supported and rejected overflow behavior, and fixes or explicitly bounds the adapter before scoring model quality.",
+      "assertions": [
+        "Requires polarity tests where decisive evidence reverses while irrelevant lexical cues are counterbalanced",
+        "Tests option-boundary behavior and verifies that overflow is rejected or handled by a documented, evaluated policy rather than silently truncating candidates",
+        "Aborts model scoring when adapter qualification fails"
       ]
     }
   ]

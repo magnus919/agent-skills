@@ -72,6 +72,7 @@ tracked corpus unless publication is explicitly requested.
 | Audit original browser, skill-router, supervisory, or moderation implementations | `references/implementation-audit.md` |
 | Production QA step routing, cached replay, selector repair, or model substitution | `references/qa-automation-pattern.md`, then `references/evaluation-and-calibration.md` |
 | Probability, threshold, calibration, model comparison | `references/evaluation-and-calibration.md` and `templates/benchmark-record.md` |
+| Design a matched comparison, qualify adapters, separate fixed-contract from model-adapted tracks, or assess equivalence | `references/comparison-design.md` and `templates/benchmark-record.md` |
 | Compare singleton and batched request quality or calibration | `references/request-shape-evaluation.md` and `templates/benchmark-record.md` |
 | Replace an LLM rubric judge, diagnose graded scale offsets, or test correlated judge errors | `references/rubric-judge-research.md`, then `references/evaluation-and-calibration.md` |
 | Measure router ablations and full fallback economics | `references/cascade-economics.md` and `templates/benchmark-record.md` |
@@ -82,6 +83,7 @@ tracked corpus unless publication is explicitly requested.
 | Reproduce, operate, diagnose, or roll back this repository's Jev CI deployment | `references/jev-ci-reference-deployment.md`; inspect the current workflow before changing secrets or jobs |
 | Screen Jev's advisory eval judgments against real outputs | `references/qa-pilot.md` and `references/evaluation-and-calibration.md`; use `scripts/jev_eval_calibration.py` for a blind packet, then independent labels or `scripts/jev_teacher_label.py` for model-teacher pseudo-labels |
 | Select among Jev, Laya, CLM, GLiNER2.5-Decide, or another candidate | `references/ecosystem-radar.md`; then the selected model reference |
+| Screen newer open typed-decision candidates from primary evidence | `references/open-decision-candidates.md`; then use `references/comparison-design.md` before benchmarking |
 | Fastino GLiNER2.5-Decide local classification | `references/gliner25-decide.md` |
 | Fine-tune GLiNER2 for Decide-style classification | `references/gliner25-decide-fine-tuning.md` |
 | Failure, latency, device fallback, upgrade, rollback | `references/hosting-and-troubleshooting.md` |
@@ -111,6 +113,11 @@ reference adapter, not a public Internet service.
 - Independent questions may share one call, but test the exact batched request
   shape on frozen cases. Dependent questions need another call when the first
   answer changes their state or candidate set.
+- Predeclare whether a comparison holds decision semantics fixed or compares
+  separately adapted model-plus-adapter systems. Qualify adapter polarity,
+  schema, and overflow behavior before scoring; a compatible response shape is
+  not evidence of semantic parity. Record the protocol in
+  `templates/benchmark-record.md`.
 - A fallback judge or multi-provider agreement is not independent correctness
   evidence. Measure shared errors and held-out rescue/regression before claiming
   cascade quality gains; see `references/rubric-judge-research.md`.
