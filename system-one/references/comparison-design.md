@@ -207,3 +207,18 @@ record. A synthetic fixture can test the harness and adapter contract, but it
 cannot establish target-workload quality. Vendor and secondary-source results
 can nominate candidates and hypotheses; verify capabilities from primary
 artifacts and evaluate them on the intended task before adoption.
+
+## Eval challenge mapping
+
+The skill's v1 evals include focused cases that exercise the review boundaries
+above. For semantic assertions, reviewers should distinguish a response that
+shows the required evidence, a contradiction that chooses the wrong behavior,
+and an answer that omits the evidence; these cases are manual-review contracts,
+not validated model passes.
+
+| Case ID | Revision focus | Satisfying evidence | Contradictory near miss | Missing-evidence result |
+|---|---|---|---|---|
+| `calibration-review` | Existing rubric extended for grouped source splits and shortcut probes | Related conversations stay in one partition; source IDs are tested as possible label leakage | Duplicate source groups cross the split or the ID shortcut remains after claiming target quality | Report contamination and require a fresh holdout rather than claim independent calibration |
+| `rubric-study-comparison-boundaries` | Existing rubric extended for paired uncertainty, stability, multiplicity, and timing | Uses account/task clusters, an explicit equivalence procedure, repeated-run stability, and the stated timing boundary | Treats repeated calls as new independent cases or calls a non-significant result equivalent | Leave parity and fastest-model claims unresolved without a margin, uncertainty, or timing boundary |
+| `comparison-track-separation` | New fixed-contract versus adapted-system comparison | Keeps the fixed semantic contract separate from an equally developed adapter comparison on common held-out cases | Pools tailored prompts with the fixed-contract ranking or tunes on final labels | State that attribution or ranking is unsupported until track and test split are specified |
+| `adapter-polarity-and-overflow` | New adapter qualification boundary | Reverses the decision under counterbalanced evidence and handles the exact option boundary explicitly | Returns valid JSON while flipping labels or silently truncating options | Reject model scoring until adapter qualification evidence exists |
