@@ -9,7 +9,9 @@ it helps teams evaluate outputs without treating confidence as permission or
 ground truth.
 
 You'll find decision contracts, integration patterns, calibration and
-comparison methods, and private-model operations. Use them to compare actual
+comparison methods, and private-model operations. DevOps examples cover
+diagnostic tests, repair invariants, telemetry routing, and durable decisions. Cascade guidance shows how
+to validate confidence-based escalation. Use these to compare actual
 workloads, establish fallback and readiness behavior, and avoid copying a demo
 threshold into production.
 
@@ -24,8 +26,8 @@ blocking CI gate.
 | Directory | Purpose |
 |---|---|
 | `SKILL.md` | Decision contracts, integrations, evaluation boundaries, and task routing |
-| `references/` | Pilot design, model/provider guides, comparisons, semantic linting, hosting, and troubleshooting |
-| `templates/` | Decision/action contracts, benchmark records, lint rules, and feedback evaluation |
+| `references/` | Pilot design, model/provider guides, comparisons, DevOps decisions, validated escalation, semantic linting, hosting, and troubleshooting |
+| `templates/` | Decision/action contracts, cascade qualification, execution records, benchmarks, lint rules, and feedback evaluation |
 | `scripts/` | Offline probes and demos, analyzers, private adapters, and optional evaluation tools |
 | `examples/`, `tests/`, `evals/` | Synthetic fixtures, offline tests, and versioned output-quality cases |
 
@@ -40,15 +42,16 @@ python3 scripts/decision_demo.py
 
 Then open `references/worked-decision-pilot.md` for a first evaluation, or
 `references/semantic-lint-feedback.md` for post-edit and repository-wide lint
-feedback. Other guides cover Jev, Laya, CLM, local hosting, and comparisons.
+feedback. For incident workflows use `references/devops-decision-patterns.md`;
+for confidence-based escalation use `references/selective-judgment.md`.
 Live Jev probes require `--live` and a provider credential in an environment
 variable; never place credentials in source or browser code.
 
 ## Triggers
 
 Use this skill for Jev, Laya, or CLM; typed Choice/Score/Noul decisions; routing
-or calibration based on model judgment; private model hosting; and semantic code
-linting or post-edit feedback. It is not for style-only linting, exact policy
+or calibration based on model judgment; DevOps decision support; validated
+escalation; private model hosting; and semantic code linting or post-edit feedback. It is not for style-only linting, exact policy
 checks, ordinary open-ended generation, or generic model serving.
 
 ## Requirements

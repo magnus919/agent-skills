@@ -5,7 +5,7 @@ description: >-
   decision models including TypeSafe Jev, Convai Innovations Laya, and CLM. Use for
   Choice/Score/Noul judgments inside deterministic software, app-control loops,
   routing, ranking, guardrails, calibration, semantic code linting and
-  post-edit feedback, or
+  post-edit feedback, DevOps decision support, confidence-based escalation, or
   private open-model inference. Do not use for syntactic/style linting, exact
   policy or authorization, open-ended generation, or generic LLM serving without
   a bounded decision contract.
@@ -74,6 +74,9 @@ tracked corpus unless publication is explicitly requested.
 | Learn from the 1,305-build field survey; identify implementation patterns and anti-patterns | `references/field-patterns-and-antipatterns.md` |
 | Audit original browser, skill-router, supervisory, or moderation implementations | `references/implementation-audit.md` |
 | Production QA step routing, cached replay, selector repair, or model substitution | `references/qa-automation-pattern.md`, then `references/evaluation-and-calibration.md` |
+| DevOps telemetry routing, diagnostic test ranking, repair evidence, optional CI jobs, deployment transitions, or durable incident decisions | `references/devops-decision-patterns.md` and `templates/decision-execution-record.md`; operational procedures remain in SRE/QA/release and tool skills |
+| Review the DevOps/escalation eval assertions and their satisfying, contradictory, or missing-evidence challenges | `references/devops-escalation-eval-review.md` |
+| Confidence-based acceptance and escalation to a stronger judge | `references/selective-judgment.md` and `templates/cascade-qualification.md` |
 | Probability, threshold, calibration, model comparison | `references/evaluation-and-calibration.md` and `templates/benchmark-record.md` |
 | Design a matched comparison, qualify adapters, separate fixed-contract from model-adapted tracks, or assess equivalence | `references/comparison-design.md` and `templates/benchmark-record.md` |
 | Compare singleton and batched request quality or calibration | `references/request-shape-evaluation.md` and `templates/benchmark-record.md` |
@@ -121,6 +124,10 @@ reference adapter, not a public Internet service.
   schema, and overflow behavior before scoring; a compatible response shape is
   not evidence of semantic parity. Record the protocol in
   `templates/benchmark-record.md`.
+- Validate error discrimination separately from probability calibration before
+  confidence-based escalation. Freeze the route on selection data, then test
+  absolute accepted risk and fallback rescue/regression on untouched units.
+  Unsupported evidence or expired state cannot be overridden by confidence.
 - A fallback judge or multi-provider agreement is not independent correctness
   evidence. Measure shared errors and held-out rescue/regression before claiming
   cascade quality gains; see `references/rubric-judge-research.md`.
