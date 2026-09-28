@@ -6,6 +6,8 @@ A collection of AI agent skills — reusable workflows, protocols, and knowledge
 
 The project is also where I codify practical patterns for making agents more capable, governable, observable, and trustworthy in real work — from evaluations and production operations to AI governance, operating economics, and multi-agent collaboration.
 
+[Install the full catalog](#installation) · [Keep skills up to date](#updating-and-refreshing)
+
 ## Skills
 
 ### [actuarial-risk-modeling](actuarial-risk-modeling/SKILL.md)
@@ -708,25 +710,46 @@ Paul Graham's "Startup = Growth" framework as an operational weekly practice. Co
 
 ### `skills` CLI (cross-harness)
 
-The fastest portable route is the open [`skills` CLI](https://github.com/vercel-labs/skills). The flat top-level skill layout works without a skills.sh-specific manifest, so every skill — including the bundle umbrellas — is discovered at the top level.
+Install the **full catalog** for your harness with the open [`skills` CLI](https://github.com/vercel-labs/skills) (requires Node.js/npm and Git). Choose your harness's command below; these install globally for use across projects.
+
+| Harness | Install the full catalog |
+|---------|-------------------------|
+| OpenAI Codex | `npx skills add magnus919/agent-skills --skill '*' --agent codex --global --yes` |
+| Claude Code | `npx skills add magnus919/agent-skills --skill '*' --agent claude-code --global --yes` |
+| OpenCode | `npx skills add magnus919/agent-skills --skill '*' --agent opencode --global --yes` |
+| GitHub Copilot | `npx skills add magnus919/agent-skills --skill '*' --agent github-copilot --global --yes` |
+| Cursor | `npx skills add magnus919/agent-skills --skill '*' --agent cursor --global --yes` |
+| Gemini CLI | `npx skills add magnus919/agent-skills --skill '*' --agent gemini-cli --global --yes` |
+| Hermes Agent | `npx skills add magnus919/agent-skills --skill '*' --agent hermes-agent --global --yes` |
+
+Keep the quotes around `'*'` so your shell passes the wildcard to the CLI. For a project-only install, omit `--global` and run from the project directory. For Hermes, keep `--global`: its project-scoped `.hermes/skills/` target is not auto-discovered by Hermes.
+
+To inspect the catalog or install a smaller selection instead:
 
 ```bash
-# Inspect every available skill name, including the bundle umbrellas
 npx skills add magnus919/agent-skills --list
-
-# Install one skill into the current project for Codex
-npx skills add magnus919/agent-skills --skill systematic-debugging --agent codex --yes
-
-# Install one skill globally for Hermes Agent
-npx skills add magnus919/agent-skills --skill systematic-debugging --agent hermes-agent --global --yes
-
-# Bundle umbrellas are top-level skills; select them directly
-npx skills add magnus919/agent-skills --skill neckbeard --agent codex --yes
+npx skills add magnus919/agent-skills --skill systematic-debugging --agent codex --global --yes
 ```
 
-`--skill` matches the `name` in a skill's `SKILL.md`; use the names returned by `--list`. All skills, including the bundle umbrellas, are discovered by default at the top level.
+`--skill` matches the name in `SKILL.md`. Top-level bundle umbrellas such as `neckbeard` are included.
 
-For Hermes Agent, keep `--global`: the CLI then installs directly into `$HERMES_HOME/skills/` (normally `~/.hermes/skills/`), which Hermes loads natively. The CLI's project-scoped `.hermes/skills/` target is not auto-discovered by Hermes.
+### Updating and refreshing
+
+**Once a week, or whenever you want the latest catalog, rerun your harness's full-catalog install command above.** This refreshes the selection from this repository and includes newly added skills. Keep the same harness and global/project scope as your original install. Start a new agent session afterward to load the refreshed skills.
+
+To update only skills you have already installed through the CLI, including those from other repositories:
+
+```bash
+# Update globally installed skills
+npx skills update --global
+
+# Update project skills; run from that project's directory
+npx skills update --project
+```
+
+The [CLI update command](https://github.com/vercel-labs/skills#skills-update) updates installed skills; rerun the full-catalog `add` command to pick up new catalog entries. Refreshes can replace installed files, so keep personal edits in a separate skill or fork.
+
+For native plugin installs or a mounted checkout, use the matching refresh instructions below. Choose one installation method per harness to avoid duplicate skills.
 
 The [skills.sh catalog page](https://skills.sh/magnus919/agent-skills) is populated from installation telemetry rather than a separately submitted registry manifest.
 
@@ -767,28 +790,54 @@ Skills don't require installation in the traditional sense. They are loaded by y
 
 ### Claude Code
 
-This repository ships a Claude Code plugin marketplace. Add it once, then install any skill as a plugin:
+**Install the full catalog:**
+
+```bash
+npx skills add magnus919/agent-skills --skill '*' --agent claude-code --global --yes
+```
+
+Rerun that command periodically to refresh the catalog, including new skills.
+
+**Optional individual plugins:** this repository also ships a Claude Code plugin marketplace. Add it once, then install selected skills as plugins:
 
 ```
 /plugin marketplace add magnus919/agent-skills
 /plugin install cli-builder@magnus-agent-skills
 ```
 
-Every top-level skill and bundle is listed in `.claude-plugin/marketplace.json`. Installed skills are namespaced by plugin name (for example, `/cli-builder:cli-builder`). To update after the repository changes, run `/plugin marketplace update magnus-agent-skills`.
+Every top-level skill and bundle is listed in `.claude-plugin/marketplace.json`. Installed skills are namespaced by plugin name (for example, `/cli-builder:cli-builder`). To refresh the marketplace listing, run `/plugin marketplace update magnus-agent-skills` inside Claude Code. To update an installed plugin, run this in your shell:
+
+```bash
+claude plugin update cli-builder@magnus-agent-skills
+```
+
+Repeat for each installed plugin, or enable auto-update for this marketplace in `/plugin` → Marketplaces. Marketplace updates do not install newly added plugins; use the full-catalog CLI route above to keep the whole set installed. See [Claude Code plugin updates](https://code.claude.com/docs/en/discover-plugins#update-one-plugin-now).
 
 ### Hermes Agent
 
 Two options depending on whether you want the whole catalog or individual skills.
 
-**Mount the entire repository** — point Hermes at your local checkout in `~/.hermes/config.yaml`:
+**Mount the entire repository** — clone it first:
+
+```bash
+git clone https://github.com/magnus919/agent-skills.git "$HOME/agent-skills"
+```
+
+Then point Hermes at the checkout in `~/.hermes/config.yaml`:
 
 ```yaml
 skills:
   external_dirs:
-    - /path/to/agent-skills
+    - ~/agent-skills
 ```
 
-Every skill in the repository becomes available immediately (next session). Edits in the checkout are picked up without reinstalling. Paths support `~` and `${VAR}` expansion.
+Every skill in the repository becomes available immediately (next session). Paths support `~` and `${VAR}` expansion. Refresh weekly to receive improvements and new skills, then start a new session:
+
+```bash
+git -C "$HOME/agent-skills" pull --ff-only
+```
+
+If you used the `skills` CLI instead, rerun its Hermes full-catalog command above.
 
 **Install individual skills** — add the repository as a tap, then cherry-pick:
 
@@ -798,18 +847,32 @@ hermes skills search <query>
 hermes skills install <skill-name>
 ```
 
-Tap skills install into `~/.hermes/skills/` like any other hub skill. Use `hermes skills check` to see when updates are available.
+Tap skills install into `~/.hermes/skills/` like any other hub skill. Use `hermes skills check` to see when updates are available and `hermes skills update` to refresh installed hub skills. This does not subscribe you to new catalog entries; use the mounted checkout or full-catalog CLI command for those. See the [Hermes skills CLI reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands/).
 
 ### OpenAI Codex
 
-This repository ships a Codex plugin. Add the marketplace and install:
+**Install the full catalog:**
+
+```bash
+npx skills add magnus919/agent-skills --skill '*' --agent codex --global --yes
+```
+
+Rerun that command periodically to refresh existing skills and include new ones.
+
+**Native plugin alternative:** this repository also bundles all public skills in one Codex plugin. With a Codex CLI that supports `plugin add`:
 
 ```bash
 codex plugin marketplace add magnus919/agent-skills
-codex plugin install magnus919
+codex plugin add magnus919@magnus919
 ```
 
-All public skills are bundled in a single plugin. Codex discovers them from the `skills` array in `.codex-plugin/plugin.json`.
+All public skills are bundled in a single plugin. Codex discovers them from the `skills` array in `.codex-plugin/plugin.json`. Refresh the marketplace snapshot with:
+
+```bash
+codex plugin marketplace upgrade magnus919
+```
+
+Use Codex's plugin management UI to apply available plugin updates, then start a new session. Plugin commands vary by Codex version; check `codex plugin --help` if yours differs, or use the cross-harness CLI route above.
 
 **Local/repo-scoped install** (for contributors or single-skill use):
 
@@ -824,7 +887,9 @@ Codex scans `.agents/skills/` in every directory from cwd up to the repo root.
 
 The [agentskills.io clients page](https://agentskills.io/clients) maintains an up-to-date list of every agent framework that supports the Agent Skills format, with links to each one's setup instructions. Any framework listed there can load these skills — follow that framework's specific documentation for the correct directory path and loading mechanism.
 
-For frameworks without built-in skill loading, the format is intentionally simple:
+For another harness supported by the `skills` CLI, use its [agent identifier](https://github.com/vercel-labs/skills#supported-agents) in the full-catalog command above and rerun it periodically.
+
+For frameworks without built-in skill loading, clone the full repository with `git clone https://github.com/magnus919/agent-skills.git` and refresh it with `git -C agent-skills pull --ff-only`. The format is intentionally simple:
 
 1. Place the skill directory in your agent's accessible file path
 2. The agent reads `SKILL.md` when triggered by keywords in the task
