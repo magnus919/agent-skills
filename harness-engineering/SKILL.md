@@ -5,7 +5,8 @@ description: >-
   execution environments, durable state, context management, verification,
   recovery, and bounded autonomous loops. Use for unreliable coding agents,
   cross-session drift, premature completion, harness audits, or changes to the
-  runtime around a model. Do not use for prompt rewriting alone, model training,
+  runtime around a model, including bounded typed-decision routing. Do not use
+  for prompt rewriting alone, model training,
   general application architecture, or operating an already evaluated agent in
   production; route those concerns to their specialist skills.
 license: MIT
@@ -110,6 +111,7 @@ for six worked examples and mode-specific exit artifacts.
 | Actual runtime journey and trace-to-action loop | [Observability feedback](references/observability-and-feedback.md) | [Observability plan](templates/observability-plan.md) |
 | Premature completion, verifier, experiment | [Verification/improvement](references/verification-and-improvement.md) | [Acceptance](templates/acceptance-contract.md), [experiment](templates/experiment.md), [run record](templates/run-record.json) |
 | Repeated work, graphs, concurrent ownership | [Loops/coordination](references/loops-and-coordination.md) | [Loop contract](templates/loop-contract.md), [graph](templates/graph.json) |
+| Typed model choice inside a harness | [System One decisions](references/system-one-decisions.md) | [Decision placement](templates/decision-placement.md) |
 | Need specialist input then return to this workflow | [Catalog handoffs](references/catalog-composition.md) | Supply and consume the named contract |
 | Source provenance and extraction coverage | [Source assessment](references/source-assessment.md), [coverage map](references/source-coverage.md), [primary-source index](references/primary-sources.md), [source inventory](references/source-inventory.json) | Scope observations to their evidence |
 | Create a minimal repository harness | Use existing state owner first | [Instructions](templates/AGENTS.md), [handoff](templates/handoff.md) |
@@ -180,3 +182,12 @@ improvement without comparable real agent runs.
 Read [forward-test report](evals/forward-test-report.md) when assessing tested
 coverage and remaining evidence gaps. Independent fixture reviews complement
 the declarative cases; they do not establish field efficacy.
+
+For bounded selection or routing with a typed decision model, read
+[System One decisions](references/system-one-decisions.md) before proposing an
+integration. It distinguishes evidence-backed harness controls from local
+implementation reports and untested design proposals. System One owns question
+semantics, model-specific limits, calibration, and model-level latency;
+Harness Engineering owns the candidate space, current state, execution gates,
+observed effects, task outcome, and end-to-end cost. Return the measured task
+outcomes to the harness decision after the model-level contract is reviewed.

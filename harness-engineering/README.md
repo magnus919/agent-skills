@@ -19,10 +19,11 @@ are still needed to establish improvement.
 | Contents | Provides |
 |---|---|
 | `SKILL.md` | Design, diagnosis, implementation, and improvement workflow |
-| `references/` | Design procedures, worked use cases, catalog handoffs, source coverage |
-| `templates/` | Project instructions, state, handoff, contract, experiment |
+| `references/` | Design procedures, worked use cases, catalog handoffs, source coverage, and conditional System One integration evidence |
+| `templates/` | Project instructions, state, handoff, decision placement, contract, experiment |
 | `scripts/harness.py` | Audit with optional HTML, preview-first scaffold, explicit check runner |
 | `scripts/contracts.py` | State/graph/run declaration checks and compatible-run comparison |
+| `scripts/decision_examples.py` | Offline synthetic typed-decision examples for selection, action, and review boundaries |
 | `scripts/test_*.py` | Safety, near-miss, and evidence-boundary regression tests |
 | `evals/` | Representative output-quality cases and rubric challenge examples |
 
@@ -38,6 +39,12 @@ python3 scripts/harness.py scaffold --target /path/to/project
 The first command prints JSON findings with behavior marked `not_assessed`.
 The second previews files to create or skip. Add `--apply` to create missing files;
 existing files are preserved. No API key is required.
+
+To view offline synthetic typed-decision examples:
+
+```sh
+python3 scripts/decision_examples.py selection --json
+```
 
 Ask your agent: "Diagnose why this agent declares completion too soon," "Design
 a durable runtime around these tools," or "Compare this harness change on the

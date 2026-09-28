@@ -51,6 +51,17 @@
         "Links concrete artifacts to validation evidence",
         "States unresolved risks and reproducible next steps"
       ]
+    },
+    {
+      "id": "langchain-system-one-middleware-boundary",
+      "prompt": "A LangChain agent needs a typed System One ticket route before it can choose which support workflow to run. Show an appropriate middleware or orchestration boundary and its limits.",
+      "expected_output": "Uses middleware or outer conditional orchestration to call an injectable typed decision service and route its validated result. It leaves model contract, calibration, abstention, authorization, side effects, and whole-task evidence with the appropriate System One and harness layers, and labels any code as a sketch unless executed.",
+      "assertions": [
+        "Places the System One call in middleware or deterministic outer orchestration as an injected typed service, not as a generative chat model adapter",
+        "Routes unknown or unavailable decisions to an explicit review or fallback lane",
+        "Does not treat middleware execution or typed output shape as authorization or correctness evidence",
+        "Separates framework wiring, System One calibration, and harness workflow evidence and labels unexecuted code as a sketch"
+      ]
     }
   ]
 }

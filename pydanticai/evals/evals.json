@@ -51,6 +51,17 @@
         "Links concrete artifacts to validation evidence",
         "States unresolved risks and reproducible next steps"
       ]
+    },
+    {
+      "id": "pydanticai-system-one-seam",
+      "prompt": "Add a typed System One ticket classifier to a PydanticAI support agent. Show where the provider call belongs and how the result affects later actions.",
+      "expected_output": "Uses a typed injected decision-service dependency or application orchestration seam, validates the response shape without treating shape as correctness, preserves deterministic policy and explicit unknown/failure handling, and routes framework-specific wiring to PydanticAI while routing decision-model calibration to System One and workflow authority to harness engineering.",
+      "assertions": [
+        "Keeps the System One call behind an injected decision-service dependency or a deterministic orchestration step, separate from the generative Agent model",
+        "Uses Pydantic validation to check the response representation without claiming that valid shape proves a correct judgment",
+        "Keeps thresholds, authorization, side effects, and unknown/unavailable behavior in deterministic application policy",
+        "Separates System One contract and calibration ownership from harness placement and whole-task evaluation"
+      ]
     }
   ]
 }

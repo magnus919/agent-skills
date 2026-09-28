@@ -39,3 +39,28 @@ The script suites provide reproducible deterministic regression checks; these
 forward reviews are a bounded advisory screen. Nineteen declarative eval cases
 remain a contract, not nineteen verified semantic passes. No broad effectiveness,
 release approval, calibrated grader quality, or world-class status is established.
+
+## System One integration forward exercise
+
+Reviewer provenance: `reviewer_kind: model_teacher`; requested model `gpt-6-luna`,
+high effort, fresh context. The reviewer received the supplied application packet,
+router summary, and updated Harness Engineering skill/resources without an intended
+solution. The private generated response is not published here and is not human
+ground truth.
+
+Five deterministic offline checks passed: arithmetic on the rounded supplied router
+rates only (~3/825, with no raw examples); evidence-derived model preflight returned
+`defer_for_evidence`, with a satisfying fixture and one-missing-field near miss;
+decision snapshot `s10` was rejected against current snapshot `s12`; replay of
+request `r9` and prior ticket `T77` was held for reconciliation because exact
+arguments were unavailable; and completion stayed incomplete because row-count
+and duplicate-ticket evidence was missing. Parent review corrected current-snapshot
+extraction and the hardcoded preflight before rerun; these were exercise defects,
+not catalog defects. The 5/5 result checks deterministic contract behavior only.
+
+Input SHA-256: application packet
+`8ba1cb084a32bd921b167e4dab59e81bad2dbff132e0ff2cead28582f7d95ba2`; router summary
+`1c4cb7d9f9322bbc4776ec4a9505ae18b1dcae920fb51faad185bbea1bdb5935`. The current
+Harness manifest has 25 cases: a structural output-quality contract, not 25
+semantic passes. No provider/model/SDK call, LangGraph application execution,
+calibration, live behavior, or field efficacy was established.
