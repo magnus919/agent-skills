@@ -1,6 +1,7 @@
 # System One ecosystem radar
 
-Snapshot checked 2026-09-25. This is a discovery aid, not a quality ranking.
+Original Jev/Laya/CLM snapshot checked 2026-09-25; the linked open-candidate
+screening was checked 2026-09-27. This is a discovery aid, not a quality ranking.
 Download counts, stars, and community benchmark claims move quickly. Confirm
 model card, code, license, revision, and target-data evaluation before adoption.
 
@@ -29,6 +30,11 @@ Start with the cheapest deterministic rule or existing workflow that can meet th
 For Jev, Laya, and CLM on the same contract, preserve state, question wording, candidate descriptions, option order policy, and independently assigned labels. Measure quality and calibration by primitive, unknown/review coverage, cold and warm latency at the same client boundary, resource cost, and end-to-end outcomes. CLM's `clm-raw` is an ablation of its encoder; it is not an independent model choice. A task-fine-tuned CLM head should be compared separately from the zero-shot reference and from any specialist Laya checkpoint.
 
 ## Open/community candidates worth screening
+
+For source-pinned screening notes on Eikos, Shisa DE-1, AutoJev, Kev, SemIf,
+and OpenJev Verdict—including their distinct readouts, licenses, limits, and
+16 GB weights-only estimates—see [open decision-model candidates](open-decision-candidates.md).
+Those notes do not rank the candidates or establish Jev parity.
 
 These projects use a similar typed-decision contract but are independent unless
 their own cards say otherwise:

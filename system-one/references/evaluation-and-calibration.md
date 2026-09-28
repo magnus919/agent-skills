@@ -3,6 +3,14 @@
 Use this reference before enabling automatic action or comparing Jev with Laya
 or another open candidate.
 
+For cross-model comparison design, first choose whether the question is fixed-
+contract substitution or model-adapted development; these support different
+claims. Qualify serialization and response adapters before scoring quality,
+then use [comparison design](comparison-design.md) for blinded rubric review,
+data provenance, paired uncertainty, and latency boundaries. Keep test-fitted
+artifact baselines diagnostic only; a nonsignificant comparison is not evidence
+of equivalence.
+
 For an initial cross-model label-selection screen, use the portable synthetic
 [decision battery](decision-battery.md) after completing its
 [design review](../templates/decision-battery-design-review.md) on a small pilot.
@@ -128,3 +136,8 @@ Use `templates/benchmark-record.md` to keep comparisons reproducible.
 
 For rubric judging, read [rubric-judge research](rubric-judge-research.md)
 when testing scale placement or whether a fallback corrects shared errors.
+
+For confidence-based acceptance/escalation, read
+[selective judgment](selective-judgment.md) and fill
+`templates/cascade-qualification.md`. Qualify error discrimination independently
+of probability calibration and test the frozen full route on untouched units.

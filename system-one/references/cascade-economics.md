@@ -131,3 +131,7 @@ before deciding whether to adopt, shadow, investigate, or reject a route.
 
 For rubric judging, read [rubric-judge research](rubric-judge-research.md)
 when testing scale placement or whether a fallback corrects shared errors.
+
+For selecting and validating a confidence route before economic comparison,
+read [selective judgment](selective-judgment.md). An offline trace cannot
+establish live sequential latency or transfer a threshold across workloads.
