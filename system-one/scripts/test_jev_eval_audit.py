@@ -546,12 +546,12 @@ class JevEvalAuditTests(unittest.TestCase):
         workflow = (skill_root.parent / ".github" / "workflows" / "skill-eval.yml").read_text(
             encoding="utf-8"
         )
-        self.assertIn("--max-calls 80", workflow)
-        self.assertIn("--max-assertions 496", workflow)
+        self.assertIn("--max-calls 96", workflow)
+        self.assertIn("--max-assertions 576", workflow)
         manifest = json.loads((skill_root / "evals" / "evals.json").read_text(encoding="utf-8"))
         cases = manifest["evals"]
-        self.assertLessEqual(2 * len(cases), 80)
-        self.assertLessEqual(2 * sum(len(case["assertions"]) for case in cases), 496)
+        self.assertLessEqual(2 * len(cases), 96)
+        self.assertLessEqual(2 * sum(len(case["assertions"]) for case in cases), 576)
 
 
 if __name__ == "__main__":

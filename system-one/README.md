@@ -10,10 +10,15 @@ ground truth.
 
 You'll find decision contracts, integration patterns, calibration and
 comparison methods, and private-model operations. DevOps examples cover
-diagnostic tests, repair invariants, telemetry routing, and durable decisions. Cascade guidance shows how
-to validate confidence-based escalation. Use these to compare actual
-workloads, establish fallback and readiness behavior, and avoid copying a demo
-threshold into production.
+diagnostic tests, repair invariants, telemetry routing, and durable decisions.
+Cascade guidance shows how to validate confidence-based escalation. Use these to
+compare actual workloads, establish fallback and readiness behavior, and avoid
+copying a demo threshold into production.
+
+The question-design guide shows how to make instructions self-contained, select
+exact values from source candidates, and handle uncertainty and speculative
+branches. It also routes hosted integrations to current provider docs so the
+dated Jev snapshot is not mistaken for a live contract.
 
 For semantic code linting, the skill shows how to turn a maintained rule into a
 typed check, distinguish local post-edit feedback from a repository scan, and
@@ -27,6 +32,7 @@ blocking CI gate.
 |---|---|
 | `SKILL.md` | Decision contracts, integrations, evaluation boundaries, and task routing |
 | `references/` | Pilot design, model/provider guides, comparisons, DevOps decisions, validated escalation, semantic linting, hosting, and troubleshooting |
+| `references/question-design.md` | Self-contained questions, source-candidate extraction, uncertainty, speculative branches, and preference versus veto semantics |
 | `templates/` | Decision/action contracts, cascade qualification, execution records, benchmarks, lint rules, and feedback evaluation |
 | `scripts/` | Offline probes and demos, analyzers, private adapters, and optional evaluation tools |
 | `examples/`, `tests/`, `evals/` | Synthetic fixtures, offline tests, and versioned output-quality cases |
@@ -40,10 +46,14 @@ python3 scripts/systemone_probe.py --request examples/request.json
 python3 scripts/decision_demo.py
 ```
 
-Then open `references/worked-decision-pilot.md` for a first evaluation, or
-`references/semantic-lint-feedback.md` for post-edit and repository-wide lint
-feedback. For incident workflows use `references/devops-decision-patterns.md`;
-for confidence-based escalation use `references/selective-judgment.md`.
+Then open `references/question-design.md` for question wording and candidate
+selection, or `references/worked-decision-pilot.md` for a first evaluation. For
+semantic lint feedback, open `references/semantic-lint-feedback.md`; for
+incident workflows use `references/devops-decision-patterns.md`; for
+confidence-based escalation use `references/selective-judgment.md`. Hosted Jev
+integration steps are in `references/jev.md`, which directs readers to refresh
+against live provider documentation.
+
 Live Jev probes require `--live` and a provider credential in an environment
 variable; never place credentials in source or browser code.
 
@@ -51,8 +61,9 @@ variable; never place credentials in source or browser code.
 
 Use this skill for Jev, Laya, or CLM; typed Choice/Score/Noul decisions; routing
 or calibration based on model judgment; DevOps decision support; validated
-escalation; private model hosting; and semantic code linting or post-edit feedback. It is not for style-only linting, exact policy
-checks, ordinary open-ended generation, or generic model serving.
+escalation; private model hosting; and semantic code linting or post-edit
+feedback. It is not for style-only linting, exact policy checks, ordinary
+open-ended generation, or generic model serving.
 
 ## Requirements
 

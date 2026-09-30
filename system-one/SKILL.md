@@ -40,8 +40,13 @@ does not imply a correct judgment; a high probability is not permission.
    New to this model class? Start with `references/worked-decision-pilot.md`
    to choose one bounded decision, then use `references/concepts-and-patterns.md`
    for primitive semantics and composition.
-3. Open **only the matching reference** below. Keep exact question text and
-   criteria in trusted configuration, not user-supplied state.
+3. Open **only the matching reference** below. Keep exact question instructions,
+   criteria, state paths, and thresholds in trusted configuration, not
+   user-supplied state. IDs are for application code; TypeSafe documents that
+   Jev does not send question IDs to the model, so put complete judgment
+   meaning in each instruction. Other providers may have different contracts.
+   For question wording or candidate extraction, read
+   `references/question-design.md`.
 4. Validate response IDs, types, option sets, distributions, score rubric,
    and finite values before policy code; record returned model/version and
    enforce the pinned deployment identity. Treat malformed,
@@ -62,6 +67,7 @@ tracked corpus unless publication is explicitly requested.
 
 | Task | Read next |
 |---|---|
+| Design questions, choose candidates, or extract values from source text | `references/question-design.md`; for broader application compositions, `references/use-case-patterns.md` |
 | Hosted Jev API or SDK integration | `references/jev.md`; run `scripts/decision_demo.py` offline first |
 | CLM typed decisions, candidate ranking, Qwen3 encoder, fine-tuning, or private serving | `references/clm.md` |
 | Laya checkpoints, routing, language, CPU/GPU/MPS | `references/laya.md` |
@@ -93,6 +99,11 @@ tracked corpus unless publication is explicitly requested.
 | Fastino GLiNER2.5-Decide local classification | `references/gliner25-decide.md` |
 | Fine-tune GLiNER2 for Decide-style classification | `references/gliner25-decide-fine-tuning.md` |
 | Failure, latency, device fallback, upgrade, rollback | `references/hosting-and-troubleshooting.md` |
+
+For a hosted provider integration, refresh the provider's live documentation
+index, then read the current API or selected SDK reference and the nearest
+cookbook before coding. `references/jev.md` contains the Jev-specific route and
+fallback procedure; its endpoint and contract details are a dated snapshot.
 
 Run `python3 scripts/systemone_probe.py --request examples/request.json` for an offline
 contract check. Add `--live` only when the user has authorized transmitting

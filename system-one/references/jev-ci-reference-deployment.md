@@ -56,9 +56,12 @@ requirements against the copied workflow:
   variable only for the audit step.
 - A reviewed `system-one/evals/evals.json`. Changed skills are selected up to
   five per push; an over-cap selection fails explicitly. Each selected case
-  produces candidate/baseline groups. The current audit budget is 22 calls
-  and 176 prose assertions; if a copied catalog exceeds either limit, the
-  audit must report omissions rather than claiming complete coverage.
+  produces one candidate/baseline pair (two report groups). The current
+  47-case System One manifest requires 94 groups and 562 prose-assertion
+  judgments in the worst case. CI caps the audit at 96 groups and 576
+  assertions, retaining pair-atomic selection and response-size limits. A
+  copied catalog that exceeds either cap must report omissions rather than
+  claim complete coverage.
 
 Before a live push, run the repository's local contract checks. From the repo
 root:
