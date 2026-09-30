@@ -131,6 +131,20 @@ part of the result, not a footnote. [jev-assist](https://github.com/glud123/jev-
 uses historical file changes to test whether a relevance shortlist covers
 files developers actually touched.
 
+## 3a. Extract by selecting source candidates
+
+**When:** the application needs an exact value or span from natural-language
+input, such as an account identifier, date expression, or quoted passage.
+
+Have deterministic code enumerate the values or spans present in the source,
+then ask a typed question to select one candidate or `none`. Map the selected
+candidate ID back to its original text and normalize it in code. Measure
+candidate coverage separately from selection accuracy: an omitted correct
+candidate is a discovery miss, and the model cannot recover it. When a
+shortlist is used, evaluate its recall; probabilities describe selection among
+the supplied candidates. See `question-design.md` for a worked request and
+question-writing guidance.
+
 ## 4. Gate a consequential action
 
 **When:** agent tool permissions, moderation, external sends, deletion,

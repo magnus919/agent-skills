@@ -17,6 +17,11 @@ deadline-bound applications. The bundled service is a starting adapter—not a
 prebuilt production VPC deployment—and live model quality must be evaluated
 on your own workload.
 
+The question-design guide shows how to make instructions self-contained, select
+exact values from source candidates, and handle uncertainty and speculative
+branches. It also routes hosted integrations to current provider docs so the
+dated Jev snapshot is not mistaken for a live contract.
+
 The field and implementation references distill bounded use cases, failure
 patterns, and safeguards from Jev projects. The request-shape and cascade
 guides show how to test batching and whole-workflow economics without copying
@@ -34,6 +39,7 @@ corpus or benchmark run. Keep run outputs outside the skill repository.
 |---|---|
 | `SKILL.md` | Core integration workflow, model-selection rules, guardrails, and stopping criteria |
 | `references/` | First-pilot guide, field and implementation patterns, request-shape and cascade methods, QA automation, Jev, Laya, CLM, and GLiNER2.5-Decide guides, hosting, evaluation, and troubleshooting |
+| `references/question-design.md` | Self-contained questions, source-candidate extraction, uncertainty, speculative branches, and preference versus veto semantics |
 | `templates/decision-contract.md` | Fillable contract for state, questions, thresholds, authority, and fallback |
 | `templates/action-control-contract.md` | Preflight for observed app actions, confirmation, freshness, and rollback |
 | `templates/benchmark-record.md` | Reproducible model/latency/calibration comparison record |
@@ -49,6 +55,7 @@ corpus or benchmark run. Keep run outputs outside the skill repository.
 Read the guide for your task:
 
 ```text
+references/question-design.md # instructions, candidate selection, and branches
 references/jev.md     # hosted Jev
 references/laya.md    # self-hosted Laya
 references/clm.md     # CLM ranking, typed decisions, fine-tuning, and private serving

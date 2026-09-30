@@ -313,6 +313,87 @@
         "Requires a representative typed inference and model-identity check before routing traffic",
         "Records cache and resource use, failure fallback, and rollback of the encoder/head pair"
       ]
+    },
+    {
+      "id": "question-id-semantics",
+      "prompt": "Our System One request uses IDs like `route` and `urgent`. The provider only sees instructions and criteria. Is it enough to make those IDs descriptive, and how should we keep the questions safe to reuse?",
+      "expected_output": "Explains that IDs correlate answers in application code but do not define the judgment. Each question carries its full trusted meaning, relevant evidence boundary, and answer criteria; ambiguous or unsafe cases have an explicit fallback.",
+      "assertions": [
+        "States that a question ID is an application correlation key and does not itself tell the model what judgment to make",
+        "Requires each question instruction to contain the judgment meaning needed for that question",
+        "Keeps trusted instructions and criteria outside user-controlled state",
+        "Defines how the application handles an answer that is ambiguous or unsupported by the supplied evidence"
+      ]
+    },
+    {
+      "id": "candidate-extraction-boundaries",
+      "prompt": "A message says “Book the Portland venue if the date works,” but our extractor returns only Seattle and Tacoma. We ask Choice to select one of those candidates and it chooses Seattle. Design the pipeline so we can tell whether extraction omitted the desired value or the selector chose poorly, handle a source with no candidate, and produce an output safely.",
+      "expected_output": "Evaluates candidate coverage against source-supported values separately from selection accuracy over the extracted set. It catches that Portland appears in the source but is missing from the extracted candidates, preserves source spans/provenance, distinguishes empty extraction from invalid selection, and has application code copy or normalize the selected source value rather than generate a new value.",
+      "assertions": [
+        "Measures candidate coverage against all source-supported values separately from selection accuracy over the extracted candidate set",
+        "Identifies Portland as a source-supported value omitted by extraction, even though the selector can only choose Seattle or Tacoma",
+        "Preserves source traceability for each extracted candidate",
+        "Does not treat a model-generated candidate as source-backed evidence",
+        "Distinguishes an empty candidate set from an invalid selection in a nonempty set and defines a safe outcome when the source supports no candidates",
+        "Has application code copy or normalize the selected source-backed value instead of asking a model to generate the final value"
+      ]
+    },
+    {
+      "id": "noul-uncertainty-vs-intensity",
+      "prompt": "We use Noul for the proposition “the message contains a threat.” Explain what its returned number means, what a value near 0.5 means, and whether we should also treat it as a confidence or emotional-intensity score. How should a consequential action handle an uncertain result?",
+      "expected_output": "Defines the Noul value as the probability of “yes” for the explicit proposition. A value near 0.5 reflects uncertainty between yes and no, not medium threat intensity, and does not provide a separate confidence measure. A consequential action uses a validated threshold or review/fallback policy; harmless emotional emphasis does not itself support the proposition.",
+      "assertions": [
+        "Defines Noul output as the probability of yes for the explicit binary proposition “the message contains a threat”",
+        "Explains that a value near 0.5 represents uncertainty between yes and no",
+        "Does not interpret a value near 0.5 as medium intensity of the proposition",
+        "Does not claim Noul supplies a separate confidence value",
+        "Routes uncertain Noul results away from consequential automated action using an explicit threshold, review, or fallback policy",
+        "Does not treat harmless emphatic language as positive evidence for the threat proposition solely because it is intense"
+      ]
+    },
+    {
+      "id": "applicable-branch-evidence",
+      "prompt": "A policy has two branches: if the customer asks for a refund, check refund eligibility; if they ask for store hours, answer from the published schedule. The message is clearly about store hours. The refund branch cannot be evaluated because the order ID is absent. Should the whole decision be rejected as uncertain?",
+      "expected_output": "Applies the branch supported by the observed request and evaluates only its required evidence. The missing order ID makes the unused refund branch unresolved but does not invalidate the applicable store-hours branch; the schedule itself still must be verified.",
+      "assertions": [
+        "Selects the branch applicable to the observed store-hours request",
+        "Does not let missing evidence for an unused refund branch veto the applicable store-hours decision",
+        "Requires the schedule evidence needed by the applicable branch before answering with hours",
+        "Treats branch selection as grounded in the request rather than assuming every branch must be fully evaluated"
+      ]
+    },
+    {
+      "id": "hard-violation-not-averaged",
+      "prompt": "A release rubric scores privacy, correctness, and usability from 0 to 1. The candidate averages 0.9 overall, but the privacy criterion finds that it exposes a secret. Can the high average pass the release? Design the decision rule.",
+      "expected_output": "Keeps the hard privacy violation as an independent veto or deterministic release condition, reports the other scores separately, and does not allow a weighted or mean score to erase the violation.",
+      "assertions": [
+        "Identifies secret exposure as a hard release violation with an independent blocking condition",
+        "Does not allow a weighted or arithmetic average of other criteria to override the hard violation",
+        "Reports criterion-level evidence separately from any aggregate score",
+        "Defines a review or remediation path for the blocked release"
+      ]
+    },
+    {
+      "id": "live-docs-contract-fallback",
+      "prompt": "We need to update a System One integration, but the provider documentation site is unavailable and our local Jev reference is dated. What should the implementation agent do before changing the request contract?",
+      "expected_output": "Treats the local reference as a dated snapshot, avoids inventing current provider behavior, uses accessible authoritative package/API artifacts only for claims they support, and defers contract-dependent changes until current documentation can be checked or clearly labels a bounded, reversible proposal for review.",
+      "assertions": [
+        "Identifies the bundled Jev documentation as a dated snapshot rather than proof of the current contract",
+        "Does not invent or assert undocumented current endpoint, field, or response behavior",
+        "Uses an accessible authoritative source only for the specific behavior it documents",
+        "Defers contract-dependent implementation or clearly labels a reversible proposal and the evidence still needed"
+      ]
+    },
+    {
+      "id": "harmless-choice-spread",
+      "prompt": "A user asks which of three notification sounds to use: chime, bell, or soft click. All are safe and easy to change. The Choice probabilities are close, with chime slightly highest. Should we send the choice to review because the model is uncertain? Contrast this with a consequential decision such as which bank account receives a transfer.",
+      "expected_output": "Separates the Choice ranking from action policy. For a harmless, reversible preference among acceptable options, the application may use the top choice without treating a narrow probability spread as a reason for review. For a consequential transfer, it defines an independently justified confidence/threshold and fallback appropriate to the cost of error; the preference policy does not transfer.",
+      "assertions": [
+        "Recognizes chime as the top Choice option while acknowledging the close probabilities",
+        "Allows the application to use the top acceptable option for this harmless and reversible preference without mandatory review solely due to a narrow probability spread",
+        "Defines a more conservative threshold or review path for the consequential transfer decision",
+        "Explains that the preferred action policy depends on the consequence and reversibility rather than transferring one threshold across both decisions"
+      ]
     }
   ]
 }
