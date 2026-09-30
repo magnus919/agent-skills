@@ -70,6 +70,8 @@ jobs:
         run: python3 scripts/validate-evals.py
       - name: Test life-coach capability validation
         run: python3 -m unittest discover -s life-coach/tests -p 'test_*.py'
+      - name: Install YouTube thumbnail test dependency
+        run: python3 -m pip install -r youtube-thumbnail/requirements.txt
       - name: Run skill-local script tests
         run: |
           set -euo pipefail
