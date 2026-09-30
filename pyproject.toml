@@ -96,6 +96,7 @@ cc_min = "B"
 [tool.deptry]
 requirements_files = ["requirements-dev.txt", "youtube-thumbnail/requirements.txt"]
 known_first_party = ["thumbnail_preflight"]
+package_module_name_map = { Pillow = ["PIL"] }
 extend_exclude = [
     "agent-council",
     "agent-production-operations",
