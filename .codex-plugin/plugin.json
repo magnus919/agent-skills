@@ -189,6 +189,7 @@
     "./workflow-architect",
     "./writers-helper",
     "./yc-default-alive-calculator",
-    "./yc-weekly-growth-compass"
+    "./yc-weekly-growth-compass",
+    "./youtube-thumbnail"
   ]
 }
