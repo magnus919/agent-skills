@@ -550,7 +550,8 @@
         "Identifies Portland as a source-supported value omitted by extraction, even though the selector can only choose Seattle or Tacoma",
         "Preserves source traceability for each extracted candidate",
         "Does not treat a model-generated candidate as source-backed evidence",
-        "Distinguishes an empty candidate set from an invalid selection in a nonempty set and defines a safe outcome when the source supports no candidates",
+        "Distinguishes an empty candidate set from an invalid selection in a nonempty set",
+        "Defines a safe outcome when the source supports no candidates",
         "Has application code copy or normalize the selected source-backed value instead of asking a model to generate the final value"
       ]
     },

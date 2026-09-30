@@ -26,17 +26,6 @@ evaluate detection separately from verified repairs and completed tasks. It
 starts semantic checks as advisory and requires independent evidence before a
 blocking CI gate.
 
-The field and implementation references distill bounded use cases, failure
-patterns, and safeguards from Jev projects. The request-shape and cascade guides
-show how to test batching and whole-workflow economics without copying a demo
-threshold or treating model confidence as authority. The rubric-judge research
-guide helps you test shared judge mistakes and graded-scale mismatch before
-paying for a second judge.
-
-For model comparisons, start with the battery design review. It makes the test
-count, expected answers, and pilot case review explicit before a large corpus or
-benchmark run. Keep run outputs outside the skill repository.
-
 ## What You Get
 
 | Directory | Purpose |
