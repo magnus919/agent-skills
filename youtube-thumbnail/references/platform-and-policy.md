@@ -34,7 +34,7 @@ python3 scripts/thumbnail_preflight.py candidate.jpg \
   --profile video --upload-device desktop --proof-dir proofs/
 ```
 
-Profiles are `video` and `shorts`; upload-device choices are `desktop`, `mobile`, and `both`. The command emits a JSON report and exits non-zero when the chosen production profile fails. It may also report warnings or notes (for example, an image format not listed in YouTube's documentation, transparency, a small export, or a file-size limit for the other upload route). A warning is not an upload prohibition.
+Profiles are `video` and `shorts`; upload-device choices are `desktop`, `mobile`, and `both`. The command emits a JSON report and exits non-zero when the chosen production profile fails. It may also report warnings or notes (for example, an image format not listed in YouTube's documentation, transparency, or an export below YouTube's preferred resolution). It checks file-size limits only for the upload route(s) selected. A warning is not an upload prohibition.
 
 With `--proof-dir`, it writes three PNGs without editing the source file:
 

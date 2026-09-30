@@ -94,7 +94,8 @@ ignore_errors = true
 cc_min = "B"
 
 [tool.deptry]
-requirements_files = ["requirements-dev.txt"]
+requirements_files = ["requirements-dev.txt", "youtube-thumbnail/requirements.txt"]
+known_first_party = ["thumbnail_preflight"]
 extend_exclude = [
     "agent-council",
     "agent-production-operations",
