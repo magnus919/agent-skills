@@ -1,0 +1,12 @@
+{
+  "should_trigger": [
+    "Design the runtime around my coding agent.",
+    "My agent forgets work across restarts; fix its harness.",
+    "Audit and improve our agent tools and verification."
+  ],
+  "should_not_trigger": [
+    "Rewrite this prompt in plain English.",
+    "Fine-tune model weights on our corpus.",
+    "Set production SLOs for an evaluated support agent."
+  ]
+}

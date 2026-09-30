@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "objective": "REPLACE with intended user outcome",
+  "tasks": [
+    {
+      "id": "task-1",
+      "behavior": "REPLACE with observable acceptance",
+      "status": "pending",
+      "owner": null,
+      "dependencies": [],
+      "verification": [],
+      "evidence": [],
+      "revision": null
+    }
+  ],
+  "next_action": "Define acceptance and real verification commands",
+  "candidate_revision": null,
+  "max_active_tasks": 1
+}

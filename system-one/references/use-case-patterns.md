@@ -229,6 +229,14 @@ it to a blocking gate only after independently labeled real changes establish
 false-block, false-pass, abstention, and drift behavior at the proposed
 threshold. Missing model evidence must not appear as a passing lint result.
 
+For local post-edit checks versus graph scans, rule evidence and unknown lanes,
+bounded repair/recheck, cache freshness, coverage accounting, or a full
+detection/repair study, read [semantic lint feedback](semantic-lint-feedback.md)
+and fill the [rule contract](../templates/semantic-lint-rule.md) and
+[feedback evaluation](../templates/feedback-evaluation.md). The Perch example
+is source-audited workflow evidence, not proof of semantic accuracy or a
+validated CI threshold.
+
 ## Porting Jev-shaped code to Laya
 
 The [Laya-vs-Jev arena](https://github.com/PromptEngineer48/laya-vs-jev-arena)
@@ -238,3 +246,12 @@ Before a swap, run the same frozen cases through both; compare option-set
 integrity, class errors, calibration, abstention coverage, language slices,
 head/context truncation, cold/warm latency, and real action outcomes. Refit
 thresholds only on a calibration split and retain independent final tests.
+
+## Operational decision loops
+
+For archive-preserving telemetry routing, diagnostic hypothesis/test selection,
+separate diagnosis and durable-repair checks, optional CI dependency closure,
+deployment branches, or resumable incident decisions, read
+[DevOps decision patterns](devops-decision-patterns.md) and fill
+`templates/decision-execution-record.md`. Reuse the authorization contract here;
+model judgment cannot widen permissions or replace independent recovery checks.

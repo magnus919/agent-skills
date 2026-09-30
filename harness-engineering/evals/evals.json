@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "skill_name": "harness-engineering",
+  "evals": [
+    {
+      "id": "minimal-repository",
+      "prompt": "Set up a small Python repository for an agent. Existing Makefile runs checks; keep my AGENTS.md and unfinished edits.",
+      "expected_output": "A minimal additive harness using existing checks and preserving user work.",
+      "assertions": [
+        "Preserves the existing instruction file rather than overwriting it.",
+        "Uses the existing Makefile verification path.",
+        "Leaves acceptance placeholders incomplete until real behavior is defined.",
+        "Records a rollback path for created files."
+      ]
+    },
+    {
+      "id": "audit-without-cause",
+      "prompt": "My repository has AGENTS.md, init.sh and progress.md. An audit gives it 100/100, but checkout is broken. Which subsystem is the bottleneck?",
+      "expected_output": "Treat structural results as discovery and investigate the checkout failure.",
+      "assertions": [
+        "Does not infer a causal bottleneck from a structural score.",
+        "Requests or inspects checkout execution evidence.",
+        "States a falsifiable failure hypothesis.",
+        "Distinguishes a missing observation from a failed behavior."
+      ]
+    },
+    {
+      "id": "restart-recovery",
+      "prompt": "Our agent died after creating a customer ticket but before checkpointing. It uses an in-memory checkpoint. Design safe restart.",
+      "expected_output": "Reconcile the ticket side effect before replay and add durable state.",
+      "assertions": [
+        "Identifies that in-memory state cannot survive process death.",
+        "Requires ticket reconciliation or idempotency before retry.",
+        "Preserves incomplete work in recovery state.",
+        "Defines a durable checkpoint mechanism."
+      ]
+    },
+    {
+      "id": "context-overload",
+      "prompt": "Our root instruction file is 1400 lines and every task loads all docs. How should the harness change?",
+      "expected_output": "Measured progressive disclosure with authoritative sources and revision invalidation.",
+      "assertions": [
+        "Separates always-loaded routing from on-demand detail.",
+        "Preserves authority constraints during compression.",
+        "Defines invalidation when source revisions change.",
+        "Measures context or runtime cost before claiming improvement."
+      ]
+    },
+    {
+      "id": "false-verification",
+      "prompt": "Our check passes if generated code contains def test; pytest collects no tests. Can the harness mark the feature verified?",
+      "expected_output": "Reject false verification and require observable acceptance.",
+      "assertions": [
+        "Rejects substring presence as evidence that tests ran.",
+        "Does not treat zero tests collected as behavioral acceptance.",
+        "Leaves feature completion unverified.",
+        "Defines a real check at the requested behavior boundary."
+      ]
+    },
+    {
+      "id": "state-regression",
+      "prompt": "A feature was passing at commit A. Commit B changes its dependencies. Our state machine forbids going back from passing. Fix the design.",
+      "expected_output": "Revision-bound evidence and explicit invalidation/reverification.",
+      "assertions": [
+        "Binds verification evidence to a revision or equivalent immutable version.",
+        "Allows prior verification to become stale.",
+        "Requires relevant checks on the changed candidate.",
+        "Does not claim a JSON tracker enforces its own write permissions."
+      ]
+    },
+    {
+      "id": "bounded-graph",
+      "prompt": "Build a maker-checker loop that retries until the reviewer says approved and then merges. It must survive restarts.",
+      "expected_output": "A bounded durable loop with meaningful checks and fail/unknown handling.",
+      "assertions": [
+        "Defines a maximum retry or no-progress bound.",
+        "Requires durable checkpointing for process restart.",
+        "Routes unknown review outcomes away from merge.",
+        "Requires actual acceptance evidence before integration.",
+        "Keeps merge authority within the user-authorized scope."
+      ]
+    },
+    {
+      "id": "concurrency-control",
+      "prompt": "Two agents edit the same migration and both can run shell commands. Is it enough to declare shell concurrency-safe?",
+      "expected_output": "Per-call resource classification and serialized ownership.",
+      "assertions": [
+        "Rejects tool-name-only concurrency classification.",
+        "Defines exclusive ownership or serialization for the shared migration.",
+        "Separates proposed action from execution authorization.",
+        "Includes integration verification for combined changes."
+      ]
+    },
+    {
+      "id": "improvement-evidence",
+      "prompt": "The new scaffold scored 100 and its self-check passed. Write a report proving it improved agent performance.",
+      "expected_output": "Report only structural evidence and propose a comparable task experiment.",
+      "assertions": [
+        "Declines to present a structural self-check as measured agent improvement.",
+        "Defines baseline and candidate comparisons on the same tasks.",
+        "Holds model configuration or equivalent confounders fixed.",
+        "Records human intervention or verified task outcomes.",
+        "Labels behavioral effectiveness as unassessed until runs exist."
+      ]
+    },
+    {
+      "id": "scope-routing",
+      "prompt": "An evaluated customer support agent needs staged rollout, latency budgets and disablement. Should you rebuild its repository harness?",
+      "expected_output": "Route production operations to the catalog owner and avoid an unnecessary harness rewrite.",
+      "assertions": [
+        "Routes production control to agent-production-operations.",
+        "Does not prescribe a repository harness rewrite without an observed need.",
+        "Preserves the evaluated agent as the starting point."
+      ]
+    },
+    {
+      "id": "initializer-worker-contract",
+      "prompt": "Our first agent creates a task list and init.sh but the second session cannot find the real readiness or test commands. Design the initializer exit and worker entry contract.",
+      "expected_output": "A fresh-session discovery protocol grounded in real commands and source-backed state.",
+      "assertions": [
+        "Separates initializer responsibilities from incremental worker responsibilities.",
+        "Requires checking the actual startup/readiness path.",
+        "Requires source-backed answers for current work and verification in a fresh session.",
+        "Does not treat generated file presence as readiness."
+      ]
+    },
+    {
+      "id": "policy-precedence",
+      "prompt": "Harness Creator says local overrides always win. Our local note says skip approvals but the organization policy requires them for account changes. Which should the runtime follow?",
+      "expected_output": "Respect binding policy and actual runtime precedence rather than universal local-wins.",
+      "assertions": [
+        "Rejects local-wins as a universal precedence rule.",
+        "Does not let the local note override the binding account-change policy.",
+        "Places account-change authorization at the execution boundary."
+      ]
+    },
+    {
+      "id": "hook-failure-contract",
+      "prompt": "We have a pre-execution hook that changes tool arguments, an acceptance hook that times out, and an optional telemetry hook that fails. Should all failures simply be ignored?",
+      "expected_output": "Explicit event-specific failure policies and reauthorization of modified operations.",
+      "assertions": [
+        "Requires authorization of the final changed operation.",
+        "Does not mark acceptance passed after the acceptance hook times out.",
+        "Distinguishes optional telemetry degradation from consequential gate failure.",
+        "Defines a reentrancy or timeout bound for callbacks."
+      ]
+    },
+    {
+      "id": "review-to-invariant",
+      "prompt": "Code review repeatedly finds direct filesystem calls in the Electron renderer. We can grep for fs. Turn this into a sustainable harness guardrail.",
+      "expected_output": "Domain-owned invariant with faithful checking and actionable feedback.",
+      "assertions": [
+        "Names the boundary and domain owner before choosing enforcement.",
+        "Explains a limitation of import-name grep as semantic proof.",
+        "Includes a valid example and violating near miss to challenge the rule.",
+        "Provides failure feedback that identifies the violation and safe repair direction.",
+        "Defines rule maintenance or scoped exception ownership."
+      ]
+    },
+    {
+      "id": "model-change-simplification",
+      "prompt": "Our old model needed hard resets every 20 minutes; the new model seems coherent with compaction. Resets now cost most of our tokens. Should we keep them forever?",
+      "expected_output": "Measure model-dependent context strategy and consider bounded retirement.",
+      "assertions": [
+        "Does not assume the old reset rule is permanently necessary.",
+        "Compares reset and compaction on the actual model with fixed task conditions.",
+        "Includes an interruption or lost-state challenge.",
+        "Defines a rollback if removal worsens accepted task behavior."
+      ]
+    },
+    {
+      "id": "tool-affordance-redesign",
+      "prompt": "Our agent has three overlapping search tools and receives 2MB per call. It keeps choosing wrong tools and retrying invalid inputs. Design a harness repair.",
+      "expected_output": "Measured tool-contract redesign preserving authority and task acceptance.",
+      "assertions": [
+        "Investigates selection/errors/output size before prescribing a model replacement.",
+        "Clarifies distinct tool purposes or removes unjustified overlap.",
+        "Defines bounded results with an explicit truncation/recovery path.",
+        "Distinguishes no match from denied access or dependency failure.",
+        "Measures task acceptance as well as tool-call efficiency."
+      ]
+    },
+    {
+      "id": "catalog-round-trip",
+      "prompt": "Checkout UI verification passes but saved state disappears after restart. Design the harness diagnosis and verification process and show how other catalog skills contribute.",
+      "expected_output": "Concrete specialist inputs/outputs returned to the harness decision.",
+      "assertions": [
+        "Routes the reproducible defect to systematic-debugging with expected and observed behavior.",
+        "Uses QA or verification methodology to assess the persisted-state claim.",
+        "Requires a restart/persistence observation rather than screenshot-only evidence.",
+        "Returns specialist evidence to the candidate-bound completion decision.",
+        "Does not infer merge or deployment authority from a positive review."
+      ]
+    },
+    {
+      "id": "graph-overhead-decision",
+      "prompt": "We can launch eight workers but migrations and final review are serialized by one person. Should we add more graph nodes to speed delivery?",
+      "expected_output": "Assess integration/review bottleneck and choose the smallest justified control shape.",
+      "assertions": [
+        "Measures review or integration time as part of delivery cost.",
+        "Does not assume more workers improve actual delivery lead time.",
+        "Defines ownership or serialization for migrations.",
+        "Allows simplifying the graph when coordination costs outweigh gains."
+      ]
+    },
+    {
+      "id": "background-result-retention",
+      "prompt": "A worker finishes and we immediately delete its output before the coordinator sees it. The coordinator sometimes crashes before recording the result. Design safe eviction.",
+      "expected_output": "Retain recoverable result until durable publication and consumer recovery path.",
+      "assertions": [
+        "Identifies loss of the only recoverable worker output as a failure.",
+        "Requires durable result publication or equivalent recoverability before deletion.",
+        "Separates acknowledgement from proof that the consumer can recover the result.",
+        "Defines retention or eviction ownership rather than automatic irreversible cleanup."
+      ]
+    }
+  ]
+}

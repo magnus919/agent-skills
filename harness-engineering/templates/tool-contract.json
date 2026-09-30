@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "id": "search-project",
+  "purpose": "Find task-relevant project excerpts",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "query",
+      "source_revision"
+    ],
+    "properties": {
+      "query": {
+        "type": "string",
+        "minLength": 1
+      },
+      "source_revision": {
+        "type": "string",
+        "minLength": 1
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20,
+        "default": 10
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "status",
+      "results",
+      "truncated",
+      "recovery_pointer",
+      "error"
+    ],
+    "properties": {
+      "status": {
+        "type": "string",
+        "enum": [
+          "success",
+          "invalid_input",
+          "denied",
+          "dependency_unavailable",
+          "timeout",
+          "cancelled",
+          "execution_failed",
+          "partial_effect"
+        ]
+      },
+      "results": {
+        "type": "array",
+        "maxItems": 20,
+        "items": {
+          "type": "object",
+          "required": [
+            "source_id",
+            "revision",
+            "excerpt"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "excerpt": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "recovery_pointer": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "error": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "retryable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "retryable"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "authority": "read approved project scope only",
+  "resources": [
+    "project-source-index"
+  ],
+  "concurrency": "read-compatible unless source mutation invalidates snapshot",
+  "timeout_seconds": 10,
+  "max_output_bytes": 16000,
+  "error_statuses": [
+    "invalid_input",
+    "denied",
+    "dependency_unavailable",
+    "timeout",
+    "cancelled",
+    "execution_failed",
+    "partial_effect"
+  ],
+  "side_effects": false,
+  "replay_policy": "requery at same source revision; invalidate on change",
+  "acceptance": [
+    "Returns bounded source excerpts with source identity and revision",
+    "Distinguishes no match from denied access"
+  ],
+  "implementation_status": "template; requires project-specific adapter and tests",
+  "examples": {
+    "no_match": {
+      "status": "success",
+      "results": [],
+      "truncated": false,
+      "recovery_pointer": null,
+      "error": null
+    },
+    "denied": {
+      "status": "denied",
+      "results": [],
+      "truncated": false,
+      "recovery_pointer": null,
+      "error": {
+        "code": "scope_denied",
+        "message": "Source is outside approved scope",
+        "retryable": false
+      }
+    }
+  }
+}

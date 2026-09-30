@@ -57,14 +57,16 @@
     },
     {
       "id": "calibration-review",
-      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Their same 22 author-written synthetic CI cases score 21/22 in two runs, with the same false negative and a Noul probability moving from 0.49 to 0.43. Review the threshold proposal and define the evidence needed before release.",
-      "expected_output": "Rejects the universal threshold, explains that reusing the same synthetic cases does not create independent holdout evidence, distinguishes confidence from accuracy, requires independently labeled target data, calibration and risk-coverage analysis, and uses stricter confirmation or human review for consequential actions.",
+      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Their same 22 author-written synthetic CI cases score 21/22 in two runs, with the same false negative and a Noul probability moving from 0.49 to 0.43. Their real routing data also has duplicate conversations split across train and test, source-system IDs that encode the answer, and thresholds and calibration tuned on test labels. Review the evidence and define what is needed before release.",
+      "expected_output": "Rejects the universal threshold and contaminated test claim, distinguishes repeated synthetic results from independent evidence and confidence from accuracy, requires grouped splits and shortcut checks, independently labeled target data and separate calibration, and uses stricter confirmation or human review for consequential actions.",
       "assertions": [
         "Explains why a vendor/default confidence number is not a universal policy threshold",
         "Distinguishes repeatability on reused synthetic cases from independent held-out evidence and calibration",
-        "Does not tune a prompt or threshold against a repeated challenge case and then describe it as held out",
+        "Does not tune a prompt, adapter, threshold, or calibration on a repeated challenge case and then describe it as held out",
         "Uses held-out real-output cases with labels assigned independently of the tested model",
         "Separates a representative workload sample from deliberately risk-enriched challenge cases",
+        "Keeps related conversations from the same source group in a single partition",
+        "Tests whether source-system IDs reveal the target through a counterfactual, masking, or ablation check",
         "Measures probability calibration and selective accuracy as automated coverage changes",
         "Versions exact question text and Choice criteria alongside evaluation results",
         "Uses risk-specific lanes such as automate, confirm/review, and abstain/fallback",
@@ -265,15 +267,18 @@
     },
     {
       "id": "rubric-study-comparison-boundaries",
-      "prompt": "The paper finds only 8 significant differences in 27 comparisons. So Jev is equivalent to every LLM and Score can replace Choice with the same abstention and rounding. Is this a sound benchmark conclusion?",
-      "expected_output": "Rejects equivalence from inconclusive differences and preserves primitive, decoding, abstention, batching and model-identity boundaries.",
+      "prompt": "The paper finds only 8 significant differences in 27 comparisons. Three models also have close scores on repeated calls to the same 80 customer accounts, but pairwise tests are not significant. Leadership says the models are equivalent and wants the fastest one. Score should also replace Choice with the same abstention and rounding. Is this a sound benchmark conclusion, and what analysis is needed?",
+      "expected_output": "Rejects equivalence from inconclusive differences, requires cluster-paired uncertainty and a predeclared equivalence margin/procedure, separates repeated-call stability from independent sample size, and preserves primitive, decoding, abstention, batching and model-identity boundaries.",
       "assertions": [
-        "Distinguishes an inconclusive difference from demonstrated equivalence",
+        "Requires a predeclared equivalence margin and an appropriate procedure whose uncertainty interval lies wholly within it; a non-significant difference alone does not establish equivalence",
         "States that the studied Score framing lacks the Choice NA abstention option",
         "Requires explicit decoding and tie-rounding rules",
-        "Limits cost and time claims to the studied batching and call protocol",
+        "Limits cost and time claims to the studied batching and call protocol, and states the production timing boundary with cold and warm operation separated",
         "Notes that the study tests one typed classifier rather than every System One model",
-        "Requires recording actual model identity rather than relying solely on an undated alias"
+        "Requires recording actual model identity rather than relying solely on an undated alias",
+        "Uses the customer account or task as the paired/resampling unit rather than treating repeated calls as independent cases",
+        "Reports repeated-input stability separately from correctness and between-model uncertainty",
+        "Predeclares how comparisons across multiple models, metrics, and slices are handled"
       ]
     },
     {
@@ -312,6 +317,217 @@
         "Adds finite request, candidate, concurrency, queue, and deadline limits outside the basic upstream validation",
         "Requires a representative typed inference and model-identity check before routing traffic",
         "Records cache and resource use, failure fallback, and rollback of the encoder/head pair"
+      ]
+    },
+    {
+      "id": "comparison-track-separation",
+      "prompt": "Compare three typed-decision candidates. One accepts the same question unchanged, one needs a different prompt and answer mapping, and one cannot represent the required abstention. The team wants a single leaderboard. Design the comparison tracks and state what the result can establish.",
+      "expected_output": "Defines a fixed-contract track for the shared semantics and a separate model-adapted track with versioned per-candidate changes, equal development budgets, and an untouched common test; reports unsupported semantics explicitly and does not merge the rankings.",
+      "assertions": [
+        "Defines a fixed-contract track that holds decision semantics constant while recording model-native serialization",
+        "Defines a separate model-adapted track and identifies its estimand as model plus adapter/question mapping",
+        "Gives candidates the same bounded adaptation budget, limits selection to development/calibration data, and compares them on a common untouched test",
+        "Surfaces unsupported semantics as compatibility limits and keeps fixed-contract and model-adapted rankings separate"
+      ]
+    },
+    {
+      "id": "adapter-polarity-and-overflow",
+      "prompt": "A new adapter returns valid JSON and all required IDs. A paired example shows it maps 'urgent' to the low-priority label, and a 65-option request silently loses the final candidates. What should happen before a model quality comparison?",
+      "expected_output": "Rejects adapter qualification, tests label polarity using counterbalanced evidence, verifies supported and rejected overflow behavior, and fixes or explicitly bounds the adapter before scoring model quality.",
+      "assertions": [
+        "Requires polarity tests where decisive evidence reverses while irrelevant lexical cues are counterbalanced",
+        "Tests option-boundary behavior and verifies that overflow is rejected or handled by a documented, evaluated policy rather than silently truncating candidates",
+        "Aborts model scoring when adapter qualification fails"
+      ]
+    },
+    {
+      "id": "semantic-lint-local-vs-scan",
+      "prompt": "Perch `scan` flags an authorization issue in `load_record`, then I edit that method but leave the change unstaged. I want a quick post-edit check and a defensible statement about whether the wider repository is clear. Which commands and evidence do I need?",
+      "expected_output": "Uses a targeted `perch check` to inspect the current on-disk edit and a separately scoped graph scan for repository/caller coverage; explains that a local pass neither closes the stored finding nor establishes a clean full-scope scan.",
+      "assertions": [
+        "Distinguishes `perch check` on current disk state from `perch scan` at its declared commit or scope",
+        "Does not treat a passing local check as proof that other callers or the whole repository are clear",
+        "States that a passing check does not close the stored scan issue and requires an appropriately scoped later scan for repository status"
+      ]
+    },
+    {
+      "id": "semantic-lint-rule-contract",
+      "prompt": "We want a semantic rule that each request handler checks the authenticated tenant before reading a record. The codebase has `src/api/`, test helpers, and one shared repository helper whose implementation is sometimes omitted from the scan context. Draft the rule contract and define how to handle the incomplete case.",
+      "expected_output": "Defines a narrow handler-level scope and context, a concrete source-backed invariant and counterexample, and an explicit unknown/review lane; leaves the new rule advisory while its labels and threshold are evaluated.",
+      "assertions": [
+        "Defines a narrow target selector and unit appropriate to individual request handlers, with the helper/caller context needed to judge the invariant",
+        "Rejects a handler that only checks tenant-ID presence but reads the record by an unscoped record ID",
+        "Routes an omitted helper or otherwise insufficient evidence to unknown/review instead of met or an inferred violation, and starts the rule advisory"
+      ]
+    },
+    {
+      "id": "semantic-lint-repair-loop",
+      "prompt": "A semantic review says `load_record` may skip a tenant check. I applied a local patch and want the shortest safe feedback loop. The finding came from a repository scan; tests cover same-tenant success and cross-tenant denial. What should the agent do next and when should it stop?",
+      "expected_output": "Reviews the scoped patch, runs the relevant deterministic tests, and performs a fresh targeted check against the current working-tree state; declares a finite repair-attempt limit (default two) and escalates when the limit is reached or evidence is unresolved.",
+      "assertions": [
+        "Declares a finite repair-attempt limit before further repair and states that reaching it stops or escalates the loop",
+        "Runs a fresh targeted check against current disk state after the applied patch",
+        "Runs deterministic same-tenant success and cross-tenant denial regression tests after the patch",
+        "Stops and escalates on a regression, no progress, unresolved evidence, or oscillating repairs instead of treating a passing model check as task completion"
+      ]
+    },
+    {
+      "id": "semantic-lint-cache-freshness",
+      "prompt": "Our semantic scan cached a pass. We then changed the method's caller, the exact rule wording, and a policy threshold, while the provider's mutable model alias still has the same text. Explain what can be reused and what must be re-evaluated before publishing a fresh result.",
+      "expected_output": "Invalidates readings when request-defining source/context/rule/model inputs change, records provider-returned model identity rather than treating an alias as immutable, and recomputes a changed deterministic threshold policy from eligible unchanged raw scores without claiming a new inference.",
+      "assertions": [
+        "Invalidates cached readings when source, graph-neighbor context, exact rule/question, endpoint, adapter, or model revision changes",
+        "Records provider-returned model identity or marks it unknown; a mutable alias alone is not immutable revision evidence",
+        "Recomputes a changed policy threshold from eligible unchanged raw scores and identifies the result as cache reuse rather than a fresh model call"
+      ]
+    },
+    {
+      "id": "semantic-lint-coverage",
+      "prompt": "A codebase-level `ensure_present` search selected 620 candidate units, queried 400 before its rule-search cap, partially read 12 long units, and had 3 provider failures; a path filter excluded other files. The report shows zero listed violations. What may we claim, and what must the report retain?",
+      "expected_output": "Reports selection separately from queried/completed/partial/failed/skipped and out-of-scope units, discloses caps and exclusions, and refuses to call zero listed findings a clean complete scan.",
+      "assertions": [
+        "Keeps selected, actually queried, completed, partial, failed, skipped, and out-of-scope unit counts distinct",
+        "Does not count capped, partial, failed, skipped, or unexamined units as clean passes",
+        "Limits the zero-violation claim to successfully examined scope and reports parser/graph/search limits that affect coverage"
+      ]
+    },
+    {
+      "id": "semantic-lint-chunk-aggregation",
+      "prompt": "A semantic rule multiplies marginal scores of .92 and .91, then takes the maximum across six chunks and reports .837 as calibrated document-level risk. What needs to be established before using that number as a gate?",
+      "expected_output": "Explains the assumptions needed for score multiplication, rejects an unvalidated maximum as document-level probability, and requires pass/chunk provenance plus independent document-level validation across varying chunk counts before calibrating or gating.",
+      "assertions": [
+        "Does not treat a product of marginal probabilities as a joint probability without conditional semantics or independent empirical validation",
+        "Explains that a maximum across chunks can change with the number of opportunities and is not document-level calibrated risk without validation",
+        "Retains pass/chunk metadata and validates document-level outcomes across varying chunk counts on independently labeled units"
+      ]
+    },
+    {
+      "id": "semantic-lint-heldout-task-cost",
+      "prompt": "We have 240 labeled code changes across 12 repositories, many near-duplicate fixes, and want to evaluate a semantic rule plus an agent that repairs findings. The rule's medium-confidence second-check tier is claimed to catch more bugs cheaply. Design a study that could justify or reject that claim without confusing finding accuracy with repair success.",
+      "expected_output": "Groups related changes by repository/change family before splitting, uses independent labels and an untouched grouped holdout, evaluates detection separately from patch correctness/regressions and end-task completion, measures full task latency/cost, and treats the medium tier as an unverified hypothesis until measured at an action-specific operating point.",
+      "assertions": [
+        "Keeps related repositories, changes, and near-duplicate fixes within grouped partitions and reserves untouched units for final evaluation",
+        "Measures detection errors and coverage on independently labeled held-out changes separately from repair success",
+        "Verifies repaired patches with deterministic tests, regression cases, and independent review rather than using the model's own feedback as truth",
+        "Measures end-task completion with declared end-to-end latency and total cost including retries, tests, and human review",
+        "Keeps a medium-confidence second-look lane advisory until representative held-out false-pass, false-block, abstention, and review-cost evidence supports an action-specific policy"
+      ]
+    },
+    {
+      "id": "devops-telemetry-economics",
+      "prompt": "We want to replace our log archive with a model filter. Its anomaly recall is 99.3%, but it skips only 0.84% of downstream analysis. Classification costs extra and the archive exporter only acknowledges HTTP receipt. Design a provider-neutral rollout and assess the savings claim.",
+      "expected_output": "Preserves a separate original archive, starts annotation/shadow routing, distinguishes delivery from durability, and evaluates complete economics and misses against exact severity rules.",
+      "assertions": [
+        "Preserves the original archive independently of filtering the expensive analysis branch",
+        "Routes missing, invalid, uncertain, and unavailable judgments conservatively to analysis",
+        "Distinguishes exporter acknowledgment from durable archive storage",
+        "Rejects anomaly recall alone as evidence of net savings",
+        "Includes classification and downstream analysis costs in the whole-policy comparison",
+        "Compares the proposed routing with an exact severity or existing deterministic baseline"
+      ]
+    },
+    {
+      "id": "devops-hypothesis-coverage",
+      "prompt": "Our incident agent proposes MongoDB and tracing faults, each with a test. The actual Service selector fault is absent. A System One model ranks the proposed tests with high confidence. Design the diagnostic loop and explain what this result proves.",
+      "expected_output": "Uses bounded read-only discriminating tests, recognizes missing candidate coverage, and refreshes hypotheses and evidence rather than claiming ranking discovers the omitted cause.",
+      "assertions": [
+        "Explains that ranking cannot recover a correct hypothesis absent from the candidate set",
+        "Associates proposed tests with competing hypotheses and distinguishing observations",
+        "Keeps probe authorization and read-only eligibility in deterministic control",
+        "Assigns test execution and interpretation to the executor rather than the ranking verdict",
+        "Includes a lane to expand hypotheses or gather missing evidence",
+        "Bounds investigation and refreshes observations before renewed judgment"
+      ]
+    },
+    {
+      "id": "devops-repair-invariants",
+      "prompt": "The agent restored three Ready replicas but left maxUnavailable at 100% and maxSurge at 0. A judge approves recovery. Separately, restoring an old database credential fixes requests after rotation. Design diagnosis and mitigation review before declaring either incident resolved.",
+      "expected_output": "Separates causal diagnosis, current functionality, and durable invariant verification with executable checks; does not accept current health or a model verdict as closure.",
+      "assertions": [
+        "Requires evidence of both a current observed failure and its causal mechanism for diagnosis",
+        "Distinguishes restored service from removal of the cause and durable repair correctness",
+        "Requires checking future rollout availability against the governing invariant",
+        "Requires verifying that old rotated credentials remain invalid",
+        "Assigns execution of postcondition checks to software or operators rather than inferring their success from judge prose",
+        "Retains unknown checks and a declared stability window in closure evidence"
+      ]
+    },
+    {
+      "id": "devops-selective-ci",
+      "prompt": "A model says only unit tests are relevant to a change. Security scans are mandatory and integration tests require a setup job. We want optional job selection that works with any qualified decision model. What controls and evidence are required?",
+      "expected_output": "Restricts judgment to optional allowlisted jobs, keeps required jobs and dependency closure deterministic, and evaluates omissions against full-suite evidence.",
+      "assertions": [
+        "Retains mandatory security and other required jobs regardless of model judgment",
+        "Restricts model-based selection to optional allowlisted jobs",
+        "Resolves prerequisite dependency closure in deterministic code",
+        "Runs the conservative full eligible set for invalid or unavailable judgments",
+        "Allows more than one optional job to be relevant instead of assuming an exclusive choice",
+        "Requires full-suite shadow or replay evidence of missed regressions before enforcement"
+      ]
+    },
+    {
+      "id": "devops-durable-response-loss",
+      "prompt": "Temporal stored an approved rollback decision. The approval waited 30 minutes and the deployment changed. An executor timed out after possibly completing the rollback. Can we replay the same command without another judgment? Give a reusable decision and execution record.",
+      "expected_output": "Separates judgment and effect attempts, binds authority to fresh state, reconciles unknown completion by operation ID, and does not infer exactly-once effects from durable history.",
+      "assertions": [
+        "Binds the decision to observation time or state version and an expiry rule",
+        "Rechecks current preconditions and authorization after the approval wait",
+        "Records a stable operation ID and execution attempts separately from judgment requests",
+        "Reconciles whether the rollback took effect before repeating an ambiguous command",
+        "Requires renewed observations and decision when state or action parameters change",
+        "States that durable workflow history alone does not establish exactly-once external effects"
+      ]
+    },
+    {
+      "id": "selective-judge-frozen-policy",
+      "prompt": "A paper reports a frozen Jev cascade accepting 53.7% of 510 pairs, accuracy 92.5% versus fallback 93.1%, and fee ratio 0.568. Someone calls this 99% correct and wants its 0.9 threshold for Laya incident review. Assess the claim and design qualification.",
+      "expected_output": "Distinguishes relative retention from absolute correctness, rejects threshold transfer, and requires separate selection and held-out tests plus absolute risk and live failure evidence.",
+      "assertions": [
+        "Explains that relative accuracy retention is not 99 percent absolute correctness",
+        "Rejects copying the paper threshold to another model or workload without local qualification",
+        "Fits threshold or calibration changes only on a selection split and freezes the policy before an untouched test",
+        "Preserves related source-question variants or incident cases within one independent split group",
+        "Requires an absolute accepted-case error limit alongside relative loss and coverage",
+        "Distinguishes offline cascade simulation from measured live cascade latency"
+      ]
+    },
+    {
+      "id": "selective-judge-confident-unsupported",
+      "prompt": "A reference-free prose judge has 52.5% accuracy, mean maximum probability 0.90, and error-detection AUROC 0.518. The team proposes a 0.9 acceptance gate and repeated voting for deployment review. Explain what evidence is missing and how to route these cases.",
+      "expected_output": "Recognizes weak error discrimination and confident unsupported judgments; obtains required evidence or reviews, and treats repeated voting as a separately evaluated policy.",
+      "assertions": [
+        "Explains why high mean confidence does not justify acceptance on the stated workload",
+        "Distinguishes probability calibration from error discrimination",
+        "Requires obtaining missing task evidence or routing to review regardless of confidence",
+        "Calls for risk-coverage and accepted-error evaluation against independent labels",
+        "Includes elaborate wrong answers or other confident-error challenges",
+        "Treats repeated voting as a separate policy requiring correlated-error and complete-cost evaluation"
+      ]
+    },
+    {
+      "id": "selective-judge-fallback-complementarity",
+      "prompt": "Our fallback has better pooled accuracy and agrees with the primary on 96% of its confident mistakes. We tuned the gate on the same cases used in the report; invalid calls were excluded and unpriced retries cost zero. Review the cascade and propose a valid comparison.",
+      "expected_output": "Rejects agreement as correctness and test-fitted claims, preserves invalid cases and unknown costs, and measures actual deferral-band rescue, regression, and shared errors.",
+      "assertions": [
+        "Rejects provider agreement as independent evidence of correctness",
+        "Measures fallback rescues, regressions, and shared errors within the actual deferral band",
+        "Requires a new untouched test after fitting the gate on the reported cases",
+        "Keeps invalid or unresolved final results in the all-attempted quality denominator",
+        "Records unpriced retries as unknown cost rather than zero",
+        "Compares with fallback alone and a matched-budget no-confidence control"
+      ]
+    },
+    {
+      "id": "selective-judge-order-and-evidence",
+      "prompt": "We averaged first-position probabilities from A/B and B/A to route a pairwise judge, then added a tie and unknown class. Our audit is one blinded author on disagreements, and the relative accuracy point estimate is inside tolerance but its confidence interval is not. Is this equivalent to a validated noninferior production gate?",
+      "expected_output": "Aligns distributions to response identity, preserves tie/unknown semantics, qualifies selected adjudication, and rejects unsupported noninferiority or production claims.",
+      "assertions": [
+        "Maps probabilities from both candidate orders to semantic response identity before aggregation",
+        "Preserves tie and unknown classes instead of applying a binary complement formula to the expanded option set",
+        "Counts both order requests in cascade cost",
+        "Distinguishes selected single-author disagreement adjudication from representative independent audit evidence",
+        "Requires the paired interval to satisfy the preregistered noninferiority margin rather than relying only on the point estimate",
+        "Rejects a production gate claim without qualified held-out and live failure-boundary evidence"
       ]
     },
     {
