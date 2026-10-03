@@ -148,6 +148,19 @@
         "includes supplier/model controls such as provider change notification, evidence access, continuity, and exit planning",
         "includes AI-specific performance evidence such as context of use, representativeness, generalizability, uncertainty, or drift"
       ]
+    },
+    {
+      "id": "earned-autonomy-decision",
+      "prompt": "Our SRE bot wants L5 for every tool after seven clean days. Set promotion/demotion policy and decide who can grant it.",
+      "expected_output": "Accountable humans set locally evidenced criteria per capability/environment/action class with policy ceilings and explicit maintain/expand/reduce/suspend/revoke outcomes; L5 optional.",
+      "assertions": [
+        "The response treats L5 as optional",
+        "The response scopes autonomy per capability environment and action class",
+        "The response rejects automatic promotion from seven clean days",
+        "The response assigns authority decisions to accountable humans",
+        "The response includes maintain expand reduce suspend and revoke decision options",
+        "The response requires external enforcement before expanded authority activates"
+      ]
     }
   ]
 }
