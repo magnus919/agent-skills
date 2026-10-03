@@ -60,6 +60,10 @@ governance program, tiering use-case risk, designing the operating model and dec
 reviewing an LLM/agent system for governance and safety gaps, mapping a regulation to a
 compliance/control plan, scoring governance maturity, or preparing board-level reporting.
 
+## Earned autonomy decisions
+
+When setting agent promotion/demotion thresholds or reviewing earned autonomy, read `references/earned-autonomy.md` and use `templates/earned-autonomy-decision.md`. Support accountable humans making capability/environment/action-class decisions; the agent cannot grant itself authority. [site-reliability-engineering](../site-reliability-engineering/SKILL.md) supplies operational evidence and [agent-production-operations](../agent-production-operations/SKILL.md) implements the approved control plan. This five-level autonomy ladder is separate from the Six-Level Governance framework.
+
 ## Reference Files (load on demand, one per task)
 
 Progressive disclosure: load only the reference relevant to the current question.

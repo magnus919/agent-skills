@@ -86,7 +86,7 @@ incident and routed through incident-learning.
 ## 2. Staged rollout
 
 Rollout proceeds through four stages. Authority expands at each stage only when
-the stage's exit criteria are satisfied.
+the stage's exit criteria are satisfied and accountable humans independently grant the scoped authority through AI governance. Passing a rollout stage never grants permissions. Numeric values below are illustrative planning defaults requiring local evidence and governance approval, not universal safety thresholds. Appropriate escalation is a safe outcome, not inherently a regression.
 
 ### Stage 1 — Shadow / dry-run (0% traffic, read-only)
 
@@ -123,7 +123,7 @@ the stage's exit criteria are satisfied.
 | Parameter | Value |
 |---|---|
 | Traffic | 25% to 100% in 25% increments each 24 hours |
-| Authority | Full per the authority contract; `side_effect_approval` may move from `gate` to `auto` after 7 days of clean audit |
+| Authority | Only the currently effective authority contract; changing `side_effect_approval` from `gate` to `auto` requires an independently attributable human governance decision and verified external enforcement. Seven clean days alone never authorizes expansion |
 | Duration | Continuous monitoring |
 | Monitoring | All stage-3 metrics plus: cost-budget tracking, trace-to-eval feedback sampling, production-readiness re-review trigger |
 | Exit criteria | N/A — continuous operation; triggers for fallback or disablement remain active |
