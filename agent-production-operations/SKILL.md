@@ -78,6 +78,8 @@ this bundle is parameterized by the agent's autonomy profile. A read-only agent
 and a side-effect-capable agent operating on customer data receive different
 thresholds and different escalation paths.
 
+Authority thresholds and maintain/expand/reduce/suspend/revoke decisions belong to accountable humans supported by [ai-governance](../ai-governance/SKILL.md). Operational evidence and readiness are inputs, never permission grants. Applicable policy ceilings, current grant expiry/revocation, and external enforcement constrain every execution.
+
 ## Runtime control plane routing
 
 The bundle composes the following specialist skills. Load them when their
