@@ -47,6 +47,15 @@ Start with the cheapest deterministic rule or existing workflow that can meet th
 
 For Jev, Laya, and CLM on the same contract, preserve state, question wording, candidate descriptions, option order policy, and independently assigned labels. Measure quality and calibration by primitive, unknown/review coverage, cold and warm latency at the same client boundary, resource cost, and end-to-end outcomes. CLM's `clm-raw` is an ablation of its encoder; it is not an independent model choice. A task-fine-tuned CLM head should be compared separately from the zero-shot reference and from any specialist Laya checkpoint.
 
+## Experimental Strands Decider
+
+Checked 2026-10-04. Strands Labs' `StrandsAgents/strands-decider-2B-hobson-v19`
+is a separate project from Mapika Decider: a Qwen3.5-2B base with LoRA and a
+pointer head for Choice/Noul/Score. Read [the pinned experimental profile](strands-decider.md)
+for native confidence, question-sensitivity failures, context rejection,
+source-only vision, training and scoped local smoke evidence. It is a candidate
+for qualification, not a Jev replacement or a benchmark winner.
+
 ## Open/community candidates worth screening
 
 For source-pinned screening notes on Eikos, Shisa DE-1, AutoJev, Kev, SemIf,

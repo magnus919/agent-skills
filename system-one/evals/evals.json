@@ -57,11 +57,11 @@
     },
     {
       "id": "calibration-review",
-      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Their same 22 author-written synthetic CI cases score 21/22 in two runs, with the same false negative and a Noul probability moving from 0.49 to 0.43. Their real routing data also has duplicate conversations split across train and test, source-system IDs that encode the answer, and thresholds and calibration tuned on test labels. Review the evidence and define what is needed before release.",
-      "expected_output": "Rejects the universal threshold and contaminated test claim, distinguishes repeated synthetic results from independent evidence and confidence from accuracy, requires grouped splits and shortcut checks, independently labeled target data and separate calibration, and uses stricter confirmation or human review for consequential actions.",
+      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Their same 22 author-written synthetic CI cases score 21/22 in two runs, with the same false negative and a Noul probability moving from 0.49 to 0.43. Their real routing data also has duplicate conversations split across train and test, source-system IDs that encode the answer, and thresholds and calibration tuned on test labels. Review the evidence and define what is needed before release. They also cite Strands Decider passing 24 repeated short routing/availability calls and 12 repeated literal-NOT calls, despite upstream reporting weak arbitrary-question sensitivity. Does this establish that limitation is fixed or justify the same threshold?",
+      "expected_output": "Rejects the universal threshold and contaminated test claim, distinguishes repeated synthetic results from independent evidence and confidence from accuracy, requires grouped splits and shortcut checks, independently labeled target data and separate calibration, and uses stricter confirmation or human review for consequential actions. Keeps the Strands smoke scoped to authored diagnostics and retains the upstream question-sensitivity caveat.",
       "assertions": [
         "Explains why a vendor/default confidence number is not a universal policy threshold",
-        "Distinguishes repeatability on reused synthetic cases from independent held-out evidence and calibration",
+        "Does not treat repeated authored diagnostic passes, including the Strands smoke, as independent held-out evidence or calibration",
         "Does not tune a prompt, adapter, threshold, or calibration on a repeated challenge case and then describe it as held out",
         "Uses held-out real-output cases with labels assigned independently of the tested model",
         "Separates a representative workload sample from deliberately risk-enriched challenge cases",
@@ -334,10 +334,10 @@
     },
     {
       "id": "adapter-polarity-and-overflow",
-      "prompt": "A new adapter returns valid JSON and all required IDs. A paired example shows it maps 'urgent' to the low-priority label, and a 65-option request silently loses the final candidates. What should happen before a model quality comparison? Also address this extension: The DevDay recap says OpenAI Decisions API uses text or images and finite answers, in limited preview. Can we replace our Jev client now using the same endpoint schema and confidence threshold? Explain a scoped investigation.",
-      "expected_output": "Rejects adapter qualification, tests label polarity using counterbalanced evidence, verifies supported and rejected overflow behavior, and fixes or explicitly bounds the adapter before scoring model quality. Recognizes the preview candidate but requires current access and documentation, qualifies the actual adapter contract, and separates image evaluation from Jev text decisions.",
+      "prompt": "A new adapter returns valid JSON and all required IDs. A paired example shows it maps 'urgent' to the low-priority label, and a 65-option request silently loses the final candidates. What should happen before a model quality comparison? Also address this extension: The DevDay recap says OpenAI Decisions API uses text or images and finite answers, in limited preview. Can we replace our Jev client now using the same endpoint schema and confidence threshold? Explain a scoped investigation. For experimental Strands Decider, qualify question-only negation counterfactuals and its default non-strict context truncation before scoring; a 255-option schema cap alone is not a token-budget guarantee.",
+      "expected_output": "Rejects adapter qualification, tests label polarity using counterbalanced evidence, verifies supported and rejected overflow behavior, and fixes or explicitly bounds the adapter before scoring model quality. Recognizes the preview candidate but requires current access and documentation, qualifies the actual adapter contract, and separates image evaluation from Jev text decisions. Tests native Strands question polarity and strict-window overflow rejection rather than assuming valid JSON or the schema option cap establishes preserved decision semantics.",
       "assertions": [
-        "Requires polarity tests where decisive evidence reverses while irrelevant lexical cues are counterbalanced",
+        "Requires polarity tests with expected answer reversals under counterbalanced decisive evidence and irrelevant lexical cues, including fixed-state question-only counterfactuals",
         "Tests option-boundary behavior and verifies that overflow is rejected or handled by a documented, evaluated policy rather than silently truncating candidates",
         "Aborts model scoring when adapter qualification fails",
         "Does not treat the Decisions API preview announcement as evidence of general availability",
@@ -547,7 +547,7 @@
     },
     {
       "id": "candidate-extraction-boundaries",
-      "prompt": "A message says “Book the Portland venue if the date works,” but our extractor returns only Seattle and Tacoma. We ask Choice to select one of those candidates and it chooses Seattle. Design the pipeline so we can tell whether extraction omitted the desired value or the selector chose poorly, handle a source with no candidate, and produce an output safely.",
+      "prompt": "A message says \u201cBook the Portland venue if the date works,\u201d but our extractor returns only Seattle and Tacoma. We ask Choice to select one of those candidates and it chooses Seattle. Design the pipeline so we can tell whether extraction omitted the desired value or the selector chose poorly, handle a source with no candidate, and produce an output safely.",
       "expected_output": "Evaluates candidate coverage against source-supported values separately from selection accuracy over the extracted set. It catches that Portland appears in the source but is missing from the extracted candidates, preserves source spans/provenance, distinguishes empty extraction from invalid selection, and has application code copy or normalize the selected source value rather than generate a new value.",
       "assertions": [
         "Measures candidate coverage against all source-supported values separately from selection accuracy over the extracted candidate set",
@@ -561,10 +561,10 @@
     },
     {
       "id": "noul-uncertainty-vs-intensity",
-      "prompt": "We use Noul for the proposition “the message contains a threat.” Explain what its returned number means, what a value near 0.5 means, and whether we should also treat it as a confidence or emotional-intensity score. How should a consequential action handle an uncertain result?",
-      "expected_output": "Defines the Noul value as the probability of “yes” for the explicit proposition. A value near 0.5 reflects uncertainty between yes and no, not medium threat intensity, and does not provide a separate confidence measure. A consequential action uses a validated threshold or review/fallback policy; harmless emotional emphasis does not itself support the proposition.",
+      "prompt": "We use Noul for the proposition \u201cthe message contains a threat.\u201d Explain what its returned number means, what a value near 0.5 means, and whether we should also treat it as a confidence or emotional-intensity score. How should a consequential action handle an uncertain result?",
+      "expected_output": "Defines the Noul value as the probability of \u201cyes\u201d for the explicit proposition. A value near 0.5 reflects uncertainty between yes and no, not medium threat intensity, and does not provide a separate confidence measure. A consequential action uses a validated threshold or review/fallback policy; harmless emotional emphasis does not itself support the proposition.",
       "assertions": [
-        "Defines Noul output as the probability of yes for the explicit binary proposition “the message contains a threat”",
+        "Defines Noul output as the probability of yes for the explicit binary proposition \u201cthe message contains a threat\u201d",
         "Explains that a value near 0.5 represents uncertainty between yes and no",
         "Does not interpret a value near 0.5 as medium intensity of the proposition",
         "Does not claim Noul supplies a separate confidence value",

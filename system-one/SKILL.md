@@ -2,7 +2,7 @@
 name: system-one
 description: >-
   Design, integrate, evaluate, self-host, and troubleshoot typed System One
-  decision models including TypeSafe Jev, Convai Innovations Laya, and CLM. Use for
+  decision models including TypeSafe Jev, Convai Innovations Laya, CLM, and experimental Strands Decider. Use for
   Choice/Score/Noul judgments inside deterministic software, app-control loops,
   routing, ranking, guardrails, calibration, semantic code linting and
   post-edit feedback, DevOps decision support, confidence-based escalation, or
@@ -98,6 +98,7 @@ tracked corpus unless publication is explicitly requested.
 | Screen Jev's advisory eval judgments against real outputs | `references/qa-pilot.md` and `references/evaluation-and-calibration.md`; use `scripts/jev_eval_calibration.py` for a blind packet, then independent labels or `scripts/jev_teacher_label.py` for model-teacher pseudo-labels |
 | Select among Jev, Laya, CLM, GLiNER2.5-Decide, or another candidate | `references/ecosystem-radar.md`; then the selected model reference |
 | Screen newer open typed-decision candidates from primary evidence | `references/open-decision-candidates.md`; then use `references/comparison-design.md` before benchmarking |
+| Experimental Strands Decider local inference, pointer-head semantics, context limits, or source-only vision | `references/strands-decider.md`; qualify the native adapter before comparison; eval changes in `references/strands-eval-review.md` |
 | Fastino GLiNER2.5-Decide local classification | `references/gliner25-decide.md` |
 | Fine-tune GLiNER2 for Decide-style classification | `references/gliner25-decide-fine-tuning.md` |
 | Failure, latency, device fallback, upgrade, rollback | `references/hosting-and-troubleshooting.md` |
