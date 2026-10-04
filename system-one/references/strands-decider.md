@@ -145,6 +145,33 @@ client-boundary cold/warm latency, request shape and measured resources.
 Use [decision-battery design](decision-battery.md) only after adapter and pilot
 review; the bundled battery does not supply a qualified Strands adapter.
 
+## Follow-up qualification lessons
+
+An expanded exploratory text run on the same pinned Strands implementation
+found repeatable errors in inventory arithmetic, fixed-time evidence freshness
+and a shared-dependency judgment, including under option reversal and question
+paraphrasing. One wrong freshness decision had high native derived confidence.
+Simple availability and cancellation-negation probes passed; this limited
+success does not resolve the upstream arbitrary-question caveat. Keep exact
+arithmetic/time/eligibility in deterministic code and verify relational tasks
+on independently reviewed target cases.
+
+In a separate exploratory relevance task, Strands accepted more candidates
+than the hosted incumbent, including more weak candidates. Richer evidence
+increased useful coverage and weak acceptance together. This is a scoped
+selection tradeoff, not a portable model ranking. The packet was correlated
+and preselected; automated judges disagreed, so their labels were pseudo-labels
+rather than human ground truth. Neither repeatability nor richer input
+qualified calibration or a replacement decision.
+
+Use [portable qualification probes](decision-qualification-probes.md) and its
+self-contained synthetic fixtures to test these failure classes. They include
+paired arithmetic, freshness and dependency cases, plus task usefulness versus
+superficial topical overlap. The fixtures are illustrative qualification
+inputs, not reproductions of the exploratory packet or claims of model passes.
+Measure false-positive acceptance together with useful-candidate coverage,
+verify judge identity, and qualify the actual context and timing boundary.
+
 ## Training is a separate qualification task
 
 The [official recipe](https://github.com/strands-labs/strands-decider/blob/75c9fd32e664954cdc18481434018aa507eee8fb/training/README.md)

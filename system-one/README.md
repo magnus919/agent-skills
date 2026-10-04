@@ -55,7 +55,8 @@ semantic lint feedback, open `references/semantic-lint-feedback.md`; for
 incident workflows use `references/devops-decision-patterns.md`; for
 confidence-based escalation use `references/selective-judgment.md`. Hosted Jev
 integration steps are in `references/jev.md`, which directs readers to refresh
-against live provider documentation.
+against live provider documentation. Self-contained qualification probes cover
+arithmetic, freshness, dependencies, and useful relevance versus topical overlap.
 
 Live Jev probes require `--live` and a provider credential in an environment
 variable; never place credentials in source or browser code.
