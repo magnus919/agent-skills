@@ -13,6 +13,11 @@ only when replay is safe; success means the documented postcondition, not merely
 HTTP 200. Return enough evidence to distinguish empty results from inaccessible
 results. Bounded responses need an explicit truncation/retrieval path.
 
+For task-to-tool matching and outputs too large for the model context, follow
+[tool discovery and bulk results](tool-discovery-and-bulk-results.md). A valid
+input schema alone does not establish that a tool is ready to call or that its
+result can be safely resumed.
+
 ## Authorization at the execution boundary
 
 Policy evaluates identity, scope, exact normalized operation, target resources,

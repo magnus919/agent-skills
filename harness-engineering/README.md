@@ -20,7 +20,7 @@ are still needed to establish improvement.
 |---|---|
 | `SKILL.md` | Design, diagnosis, implementation, and improvement workflow |
 | `references/` | Design procedures, worked use cases, catalog handoffs, source coverage |
-| `templates/` | Project instructions, state, handoff, contract, experiment |
+| `templates/` | Project instructions, state, handoff, tool, bulk-result and experiment contracts |
 | `scripts/harness.py` | Audit with optional HTML, preview-first scaffold, explicit check runner |
 | `scripts/contracts.py` | State/graph/run declaration checks and compatible-run comparison |
 | `scripts/test_*.py` | Safety, near-miss, and evidence-boundary regression tests |
@@ -41,7 +41,10 @@ existing files are preserved. No API key is required.
 
 Ask your agent: "Diagnose why this agent declares completion too soon," "Design
 a durable runtime around these tools," or "Compare this harness change on the
-same tasks." It selects the relevant procedure and supporting templates.
+same tasks." For a large integration catalog, ask it to expose tool prerequisites
+and dependency order; for oversized outputs, ask for an authorized artifact handle
+with provenance, completeness and recovery terms. It selects the relevant
+procedure and supporting templates. Small stable catalogs may use a static index.
 
 ## Triggers
 
