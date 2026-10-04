@@ -25,6 +25,7 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 - Need WCAG, ARIA, native semantics, or accessibility testing depth? Use [web-accessibility](../web-accessibility/SKILL.md).
 - Need an approved interaction contract translated into a software specification and delivery gates? Use [spec-driven-development](../spec-driven-development/SKILL.md).
 - Need to design an AI-assisted, generated, predictive, recommendatory, or tool-using interaction? Read [AI interaction and uncertainty](references/ai-interaction-and-uncertainty.md) and use [the AI interaction contract](templates/ai-interaction-contract.md) alongside the general contract. Route model evaluation and observability design to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md), governance to [ai-governance](../ai-governance/SKILL.md), runtime authority to [agent-production-operations](../agent-production-operations/SKILL.md), product measurement to [product-analytics-and-measurement](../product-analytics-and-measurement/SKILL.md), accessibility to [web-accessibility](../web-accessibility/SKILL.md), and cost/value decisions to [ai-operating-economics](../ai-operating-economics/SKILL.md).
+- Need a person to delegate to an agent they use outside the product, then inspect or resume the work across apps? Read [external agent interactions](references/external-agent-interactions.md) and fill [the external agent handoff](templates/external-agent-handoff.md) alongside the AI interaction and task-flow contracts. Do not assume the product hosts that agent or can see its private conversation.
 
 ## Workflow
 
@@ -51,6 +52,7 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 | Usability protocol, synthesis, consent, or privacy | `references/usability-testing-and-privacy.md` |
 | Handoff, acceptance criteria, or deployed verification | `references/engineering-handoff.md` |
 | AI uncertainty, grounding, human control, feedback, or model-change acceptance | `references/ai-interaction-and-uncertainty.md` |
+| A person delegates work to their own agent outside the product and returns across app boundaries | `references/external-agent-interactions.md`; `templates/external-agent-handoff.md` |
 | Methodology self-check with synthetic fixtures | `references/scenario-probes.md` |
 | Source authority, status, and examples | `references/source-index.md` |
 
