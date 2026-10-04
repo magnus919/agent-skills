@@ -29,4 +29,3 @@ Build paired cases that include:
 - artifact failures include missing, expired, partial, duplicate, inaccessible, or permission-changed data, and the agent does not claim complete success;
 - a later fresh session repeats a task and locates the correct result using explicit durable identifiers, while ambiguous or stale matches are rejected;
 - delegated work returns a verifiable result and provenance to the requester, while denial or partial failure is surfaced instead of silently lost.
-

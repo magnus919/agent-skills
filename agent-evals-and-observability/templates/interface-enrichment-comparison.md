@@ -71,4 +71,3 @@ Keep all attempted runs in the denominator, including failures, denials, timeout
 - Synthetic, vendor-reported, mocked, or prose-only evidence (label explicitly):
 - Residual risks and required live integration or user evidence:
 - Decision and owner:
-

@@ -1,6 +1,6 @@
 # Agent Interface Enrichment Evaluation Design
 
-**Prepared:** 2026-10-04  
+**Prepared:** 2026-10-04
 **Purpose:** Focused evaluation design for changes to tool discovery, bulk-result delivery, cross-service consumption, delegation, and recurrence across fresh sessions.
 
 ## Evidence and source-to-claim map
