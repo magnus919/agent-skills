@@ -145,6 +145,47 @@ shortlist is used, evaluate its recall; probabilities describe selection among
 the supplied candidates. See `question-design.md` for a worked request and
 question-writing guidance.
 
+## 3b. Retrieve approved media through textual metadata
+
+**When:** matching narration segments to a reusable catalog of approved clips.
+This recipe adapts the caption-then-selection example in
+[Jay E / RoboNuggets](https://youtu.be/3iDiWTt8lok). It is a design example,
+not a reproduced benchmark or a claim that Jev accepts images. A separate vision/caption stage prepares text once per asset
+revision; Jev judges the supplied captions and metadata.
+
+1. Inventory clips with stable asset IDs, source/content hashes, approved-use
+   status, caption provenance (model/revision or human), and time spans. Generate
+   descriptions only through an authorized vision tool; cache them by asset and
+   captioner revision. Re-caption changed assets rather than reusing stale text.
+2. Filter license/approval, format, and duration constraints in code, then
+   retrieve a bounded shortlist. For a narration about someone watering a plant,
+   candidates might be `clip-17` (hands watering a pot) and `clip-23` (rain on a
+   window). Keep unknown or insufficient descriptions visible.
+3. Give the narration segment and each candidate's text to the decision model.
+   Ask a distinct Score or Noul question per candidate, with a rubric for visual
+   relevance; independent candidate questions may share one request. Sort in
+   code. If choosing one clip, use Choice over retained IDs plus `none` and map
+   the selected ID to the original approved asset in code.
+4. Preserve a no-match/review lane when no candidate fits or caption evidence is
+   insufficient. Check the asset hash and approval again before downstream use.
+   A relevant description does not prove that the actual pixels match it or that
+   the asset is licensed. Keep editing/rendering in the authorized executor.
+
+Record narration revision, caption provenance, candidate IDs, retrieval and
+question revisions, model revision, and selected source span. Independently
+review actual clips as well as descriptions: measure caption errors, shortlist
+recall, ranking/selection quality, no-match false accepts, and completed edit
+quality. Include absent scenes, misleading captions, changed assets, and revoked
+approval. Compare metadata retrieval alone with the added semantic stage; count
+caption creation/cache misses, retrieval, decisions, review, and rendering in
+the relevant cost/latency boundary. Do not borrow a demo confidence threshold.
+
+The same ID-to-source boundary applies to selecting a prewritten catalog answer
+or a prebuilt UI component: code supplies approved candidates and resolves the
+selected ID. These are selection tasks; they do not generate a new answer,
+component implementation, or permission to publish it. Use the source-selection
+rules in [question design](question-design.md).
+
 ## 4. Gate a consequential action
 
 **When:** agent tool permissions, moderation, external sends, deletion,

@@ -18,7 +18,10 @@ copying a demo threshold into production.
 The question-design guide shows how to make instructions self-contained, select
 exact values from source candidates, and handle uncertainty and speculative
 branches. It also routes hosted integrations to current provider docs so the
-dated Jev snapshot is not mistaken for a live contract.
+dated Jev snapshot is not mistaken for a live contract. Worked patterns cover
+progressive-disclosure skill suggestions and narration-to-media matching through
+textual captions; the ecosystem radar tracks OpenAI Decisions API as a dated
+preview candidate.
 
 For semantic code linting, the skill shows how to turn a maintained rule into a
 typed check, distinguish local post-edit feedback from a repository scan, and
