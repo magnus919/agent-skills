@@ -19,7 +19,7 @@ Use with [Agent Interface Enrichment Comparisons](../references/agent-interface-
 | Candidate | | | | | |
 | Ablation (if needed) | | | | | |
 
-Hold task, initial state, authorization, resource limits, and result handling constant within pairs. If discovery and artifact transport both change, specify the ablation or limit interpretation to the bundled change.
+Hold task, initial state, authorization, resource policy, result semantics/completeness, and grading constant within pairs. Declare discovery or inline/artifact transport as the treatment; its realized latency and resource usage may differ. If discovery and artifact transport both change, specify the ablation or limit interpretation to the bundled change.
 
 ## Task and trajectory contract
 
