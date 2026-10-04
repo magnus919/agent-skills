@@ -213,6 +213,53 @@
         "Separates acknowledgement from proof that the consumer can recover the result.",
         "Defines retention or eviction ownership rather than automatic irreversible cleanup."
       ]
+    },
+    {
+      "id": "tool-discovery-dependency-order",
+      "prompt": "Our support agent has 420 integrations. Each tool list shows names and JSON schemas, but agents still choose a search tool that cannot run until a workspace is connected, then call export before creating a snapshot. Some workspaces deny export. Design the discovery and call path. One small internal task uses only three fixed tools.",
+      "expected_output": "Task-relevant discovery exposes readiness, dependency order, and distinct recovery outcomes, with static routing retained for the small fixed task.",
+      "assertions": [
+        "Matches the requested task and outcome to relevant capabilities, rather than relying on input schemas alone.",
+        "Considers the user's authority when surfacing candidate tools.",
+        "Surfaces connection prerequisites before the dependent operation is called.",
+        "Surfaces permission prerequisites before the dependent operation is called.",
+        "States the dependency order or identifier handoff required before export.",
+        "Distinguishes no matching capability from denied access.",
+        "Distinguishes denied access from a missing connection or other unavailable prerequisite.",
+        "Allows the three-tool stable task to use a simple static index instead of requiring runtime search.",
+        "Places authorization at execution of the final operation and does not treat discovery as permission.",
+        "Refreshes stale or empty discovery against the authoritative catalog within a bounded policy.",
+        "Reports or escalates when the required capability remains unavailable after refresh."
+      ]
+    },
+    {
+      "id": "bulk-result-artifact-contract",
+      "prompt": "An agent must compare 90,000 product records from two sources. Returning every row overruns context; a temp CSV currently has no stable handle and expires unpredictably. Names match across systems even when they refer to different entities, while source snapshots cover different time windows. Specify the result interface and recovery behavior.",
+      "expected_output": "A bounded model-facing summary points to an authorized, recoverable external artifact with explicit provenance, completeness, identity and retention semantics.",
+      "assertions": [
+        "Returns a stable or explicitly expiring artifact handle.",
+        "Keeps the full bulk result outside model context.",
+        "Reports the artifact schema and version.",
+        "Reports the item count and whether it is exact or estimated.",
+        "Reports how the sample was selected.",
+        "Records the source identity.",
+        "Records the source revision or snapshot.",
+        "Records the operation or query identity that produced the artifact.",
+        "States whether the result is complete, partial, or unknown.",
+        "Defines source-qualified identity keys and version semantics.",
+        "Accounts for unmatched source records without silently merging them.",
+        "Accounts for duplicate source records without silently merging them.",
+        "Records snapshot or time-window differences that affect cross-source comparison.",
+        "Defines who can read or share the artifact.",
+        "Defines artifact expiry.",
+        "Defines the retention owner.",
+        "Provides bounded continuation for partial results.",
+        "Defines recovery after artifact expiry or unavailability.",
+        "Identifies when recomputation can create a different cohort.",
+        "Distinguishes a complete empty result from denied access.",
+        "Distinguishes a complete empty result from a failed prerequisite.",
+        "Does not treat the returned sample as validation of every artifact row or identity match."
+      ]
     }
   ]
 }

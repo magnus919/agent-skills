@@ -48,6 +48,9 @@ assessment, or an implementation test plan. Hand those concerns to
    authoritative data and schema owners, actors, object/action authority boundaries,
    data sensitivity, and failure modes. Record unanswered questions rather than
    inventing policy. Start [templates/api-design-brief.md](templates/api-design-brief.md).
+   When an agent or automation is a direct consumer, also read
+   [references/agent-consumer-interfaces.md](references/agent-consumer-interfaces.md)
+   and complete [templates/agent-consumer-interface-review.md](templates/agent-consumer-interface-review.md).
 3. **Choose the interface shape.** Compare interaction direction, coupling,
    delivery needs, query flexibility, mutation semantics, caching, observability,
    and evolution surface. Read [references/interface-selection.md](references/interface-selection.md).
@@ -95,6 +98,7 @@ assessment, or an implementation test plan. Hand those concerns to
 | Reviewing compatibility, versions, deprecation, migration, or rollback | [references/evolution-and-deprecation.md](references/evolution-and-deprecation.md) |
 | Preparing contract/provider/consumer/deployment verification | [references/contract-verification.md](references/contract-verification.md) |
 | Checking exact sources, versions, status, and intended use | [references/source-index.md](references/source-index.md) |
+| Reviewing APIs or tools used directly by agents and automations | [references/agent-consumer-interfaces.md](references/agent-consumer-interfaces.md) and [templates/agent-consumer-interface-review.md](templates/agent-consumer-interface-review.md) |
 | Exercising required edge cases before claiming readiness | [references/scenario-probes.md](references/scenario-probes.md) |
 
 ## Security Boundary

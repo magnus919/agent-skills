@@ -1,0 +1,22 @@
+{
+  "discovery": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "artifacts": {
+    "A": "candidate",
+    "B": "baseline"
+  },
+  "api-consumer": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "delegation": {
+    "A": "candidate",
+    "B": "baseline"
+  },
+  "eval-design": {
+    "A": "baseline",
+    "B": "candidate"
+  }
+}

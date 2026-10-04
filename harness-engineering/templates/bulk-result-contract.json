@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "artifact": {
+    "handle": "artifact://opaque-runtime-handle",
+    "kind": "records",
+    "schema_id": "example-records-v1",
+    "schema_version": "1",
+    "count": {
+      "value": 12500,
+      "certainty": "exact"
+    },
+    "sample": {
+      "method": "first_page",
+      "items": [
+        {
+          "source": "crm-west",
+          "record_id": "customer-184",
+          "record_version": "v7",
+          "display_name": "Example Co"
+        }
+      ]
+    },
+    "provenance": {
+      "sources": [
+        {
+          "source": "crm-west",
+          "source_revision": "snapshot-2026-10-04T12:00:00Z",
+          "time_window": "2026-10-01T00:00:00Z/2026-10-04T00:00:00Z"
+        }
+      ],
+      "operation_id": "query-7d9e",
+      "query_fingerprint": "sha256:replace-with-real-digest",
+      "created_at": "2026-10-04T12:00:00Z"
+    },
+    "completeness": {
+      "state": "complete",
+      "reason": null,
+      "next_cursor": null
+    },
+    "identity": {
+      "key_fields": ["source", "record_id"],
+      "version_field": "record_version",
+      "cross_source_match_semantics": "unresolved_unless_verified",
+      "duplicate_policy": "preserve_separate_records_until_resolved",
+      "unmatched_policy": "report_unmatched_by_source",
+      "snapshot_alignment": "record_each_source_snapshot_and_time_window"
+    },
+    "access": {
+      "principal_scope": "requesting_user_and_authorized_runtime",
+      "sensitivity": "project-defined",
+      "sharing": "not_public"
+    },
+    "retention": {
+      "expires_at": "2026-10-05T12:00:00Z",
+      "owner": "runtime-storage-policy",
+      "eviction_recovery": "reauthorize and reuse the same immutable source snapshot when supported; otherwise recompute into a new version and report that cohort may differ"
+    }
+  },
+  "follow_up": {
+    "operation": "page",
+    "max_items": 100,
+    "cursor": null
+  },
+  "error": null,
+  "status_examples": {
+    "complete_empty": {
+      "status": "complete",
+      "artifact": null,
+      "count": 0,
+      "completeness": "complete",
+      "error": null
+    },
+    "denied": {
+      "status": "denied",
+      "artifact": null,
+      "error": {
+        "code": "scope_denied",
+        "retryable": false
+      }
+    },
+    "prerequisite_unavailable": {
+      "status": "dependency_unavailable",
+      "artifact": null,
+      "error": {
+        "code": "source_connection_missing",
+        "retryable": true,
+        "recovery": "Connect an authorized source, then repeat discovery."
+      }
+    },
+    "partial": {
+      "status": "partial",
+      "artifact": {
+        "handle": "artifact://opaque-runtime-handle",
+        "completeness": {
+          "state": "partial",
+          "reason": "page_limit_reached",
+          "next_cursor": "cursor-2"
+        }
+      },
+      "error": {
+        "code": "page_limit_reached",
+        "retryable": false,
+        "recovery": "Continue from artifact.completeness.next_cursor while the handle and source snapshot remain available."
+      }
+    }
+  },
+  "implementation_status": "illustrative_contract; replace handles, identities, guarantees and policy with verified target-system behavior"
+}
