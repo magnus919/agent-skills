@@ -45,6 +45,36 @@ loaded and used.
 silently forcing the nearest available skill; ignoring added calls, latency,
 or chunk-boundary effects.
 
+### TypeSafe's progressive-disclosure skill suggestion
+
+The [official cookbook](https://docs.typesafe.ai/cookbooks/skill_suggestion),
+checked 2026-10-04, adds a concrete recipe to the pattern above:
+
+1. Rank the full roster with Choice while separate Noul questions assess
+   whether the request needs a skill. Ranking alone always has a nearest option.
+2. Recheck the top three using full descriptions and opening instruction
+   excerpts; per-candidate fit questions allow rejecting the entire shortlist.
+3. Return at most one advisory suggestion. Keep the roster unchanged and append
+   the hint after it to preserve prefix caching; the agent still decides what
+   to load.
+
+The published Jev 1.12 / Claude Haiku 4.5 run uses 488 synthetic requests:
+315 covered and 173 uncovered. Wrong first loads fell from 16.8% to 7.3%;
+needless loads from 9.8% to 4.0%. Wrong-load accounting includes covered turns
+that load nothing. These are first-response skill-load outcomes, not downstream
+task success; covered requests were model-written from the skills themselves.
+The cookbook's thresholds and shortlist size are example settings, not portable
+calibration or universal defaults.
+
+For an adoption study, separate shortlist misses, no-fit rejection, final hints,
+actual loads, and successful skill use. Compare the unchanged agent with the
+hinted agent on independently labeled real-shaped turns, including near-neighbor
+skills and requests no installed skill serves. Preserve mandatory skill routing;
+a semantic hint cannot suppress an explicit skill request or widen permissions.
+Count both decision calls and final agent overhead in cost and latency. Keep
+no-hint behavior for invalid or unavailable decisions. See
+[selective judgment](selective-judgment.md) before deploying confidence gates.
+
 ### Supervisory action judge
 
 In `DevMortimer/pi-warden` (commit

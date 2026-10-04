@@ -132,8 +132,8 @@
     },
     {
       "id": "reranking-pipeline",
-      "prompt": "We want to use System One scores to rerank the first 30 search results. How should we implement and evaluate it?",
-      "expected_output": "Batches bounded candidate judgments, retains deterministic shortlist provenance, compares standalone and fusion ranking to baselines with independent labels, and reports end-to-end recall and cost.",
+      "prompt": "We want to use System One scores to rerank the first 30 search results. How should we implement and evaluate it? Also address this extension: We have approved clips and want B-roll for narration about watering a plant. One caption says watering but its clip hash changed; another depicts rain. Can Jev pick pixels directly and can we auto-use anything above 60%? Design a reusable matching pilot.",
+      "expected_output": "Batches bounded candidate judgments, retains deterministic shortlist provenance, compares standalone and fusion ranking to baselines with independent labels, and reports end-to-end recall and cost. Uses a separate caption stage with provenance, textual decision scoring, deterministic asset resolution and eligibility, explicit no-match, and evaluation against actual clips.",
       "assertions": [
         "States that reranking cannot recover relevant items missing from the candidate shortlist",
         "Creates a distinct Score or Noul question ID for each candidate; batching those questions in one System One request is allowed, but one question cannot return a score array for all candidates",
@@ -143,7 +143,9 @@
         "Uses relevance labels assigned independently of the tested model",
         "Examines ranking quality by query or language slice",
         "Reports end-to-end latency for shortlist retrieval plus reranking",
-        "Reports full-pipeline inference cost rather than only one model call"
+        "Reports full-pipeline inference cost rather than only one model call",
+        "Separates Jev judgment over textual captions from direct inspection of clip pixels",
+        "Requires reviewing actual clips independently to detect caption errors"
       ]
     },
     {
@@ -332,12 +334,14 @@
     },
     {
       "id": "adapter-polarity-and-overflow",
-      "prompt": "A new adapter returns valid JSON and all required IDs. A paired example shows it maps 'urgent' to the low-priority label, and a 65-option request silently loses the final candidates. What should happen before a model quality comparison?",
-      "expected_output": "Rejects adapter qualification, tests label polarity using counterbalanced evidence, verifies supported and rejected overflow behavior, and fixes or explicitly bounds the adapter before scoring model quality.",
+      "prompt": "A new adapter returns valid JSON and all required IDs. A paired example shows it maps 'urgent' to the low-priority label, and a 65-option request silently loses the final candidates. What should happen before a model quality comparison? Also address this extension: The DevDay recap says OpenAI Decisions API uses text or images and finite answers, in limited preview. Can we replace our Jev client now using the same endpoint schema and confidence threshold? Explain a scoped investigation.",
+      "expected_output": "Rejects adapter qualification, tests label polarity using counterbalanced evidence, verifies supported and rejected overflow behavior, and fixes or explicitly bounds the adapter before scoring model quality. Recognizes the preview candidate but requires current access and documentation, qualifies the actual adapter contract, and separates image evaluation from Jev text decisions.",
       "assertions": [
         "Requires polarity tests where decisive evidence reverses while irrelevant lexical cues are counterbalanced",
         "Tests option-boundary behavior and verifies that overflow is rejected or handled by a documented, evaluated policy rather than silently truncating candidates",
-        "Aborts model scoring when adapter qualification fails"
+        "Aborts model scoring when adapter qualification fails",
+        "Does not treat the Decisions API preview announcement as evidence of general availability",
+        "Requires the actual Decisions API contract before assuming Jev adapter compatibility"
       ]
     },
     {
@@ -610,6 +614,16 @@
         "Allows the application to use the top acceptable option for this harmless and reversible preference without mandatory review solely due to a narrow probability spread",
         "Defines a more conservative threshold or review path for the consequential transfer decision",
         "Explains that the preferred action policy depends on the consequence and reversibility rather than transferring one threshold across both decisions"
+      ]
+    },
+    {
+      "id": "skill-suggestion-no-fit-and-evidence",
+      "prompt": "Our roster has two similar deck skills and a posting-to-X skill, but no Mastodon support. We want TypeSafe cookbook-style suggestions for deck creation, posting to Mastodon, and explaining a monad. Design the route and interpret its 488-request results.",
+      "expected_output": "Uses separate need and candidate-fit checks, richer shortlisted evidence, rejection and advisory suggestions, and scopes the synthetic first-load results correctly.",
+      "assertions": [
+        "Separates whether any skill is needed from ranking the roster",
+        "Allows rejecting the entire richly described shortlist when none fits",
+        "Scopes the 488-request figures to synthetic first-response skill-load outcomes rather than completed-task success"
       ]
     }
   ]
