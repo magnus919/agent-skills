@@ -228,8 +228,8 @@
     },
     {
       "id": "field-evidence-triage",
-      "prompt": "A Jev build index lists a popular browser agent, a trading bot, a router benchmark, and a claim that batching is always safe and 0.9 confidence means 90% correct. What should we reuse for another System One model?",
-      "expected_output": "Extracts bounded decision and deterministic-control patterns while grading the evidence behind each claim, rejecting transferable numeric thresholds and unverified live outcomes, and requiring target-model evaluation.",
+      "prompt": "A Jev build index lists a popular browser agent, a trading bot, a router benchmark, and a claim that batching is always safe and 0.9 confidence means 90% correct. What should we reuse for another System One model? An exploratory comparison also reports a local candidate accepting more useful and weak relevance candidates, and stable arithmetic/freshness errors despite option reversal. Its labels come from a prediction-blind model judge reached through a gateway alias. Explain what transfers to a new domain and what provenance to verify.",
+      "expected_output": "Extracts bounded decision and deterministic-control patterns while grading the evidence behind each claim, rejecting transferable numeric thresholds and unverified live outcomes, and requiring target-model evaluation. Treats relevance results as a scoped precision/coverage tradeoff, repeated errors as failure hypotheses, and automated labels as pseudo-labels; verifies returned judge identity rather than trusting a gateway alias.",
       "assertions": [
         "Distinguishes index popularity, original post or README claims, inspected implementation, and reproduced outcomes as different evidence tiers",
         "Constrains browser actions to fresh observed candidates and checks postconditions rather than trusting DONE",

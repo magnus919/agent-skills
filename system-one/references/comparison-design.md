@@ -62,6 +62,10 @@ rubric. Check their serialized requests and parsed responses by hand. A
 protocol-shaped response proves compatibility only; it does not prove semantic
 parity or model quality.
 
+For self-contained semantic boundary examples and judge-identity checks, use
+[portable qualification probes](decision-qualification-probes.md). They are
+illustrative fixtures, not a calibration set or production benchmark.
+
 ## Build a dataset that can answer the intended question
 
 Define the sampling frame, target period, inclusion rules, unit, deduplication,

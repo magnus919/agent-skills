@@ -16,3 +16,19 @@ polarity probes; valid JSON alone satisfies neither. Its overflow assertions
 are unchanged. The calibration case still
 requires real independently assigned labels, grouped splits, leakage checks,
 separate calibration and deterministic authority boundaries.
+
+## Generalized follow-up evidence
+
+`field-evidence-triage` keeps its eight assertions and stable ID. Its prompt and
+expected outcome now include a relevance acceptance tradeoff, repeated exact-task
+errors, and gateway judge attribution. This extends the evidence-tier and
+non-transfer rubric; it does not establish an executable pass for judge identity.
+
+| Response to the extension | Review treatment |
+|---|---|
+| Calls the exploratory results scoped, treats automated labels as pseudo-labels, and verifies the returned judge ID | Satisfies the extended expected outcome |
+| Calls repeatable predictions proof of correctness, or transfers the selection result to an unrelated domain | Contradicts the existing evidence and transfer assertions |
+| Omits how judge identity was verified | Judge provenance is not shown; it must be reviewed separately rather than inferred from a structural pass |
+
+The bundled synthetic qualification fixtures are newly authored illustrations;
+no model accuracy or calibration result is attached to them.
