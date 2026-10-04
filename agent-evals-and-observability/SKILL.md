@@ -34,6 +34,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 
 | Need | Load |
 |---|---|
+| Compare task-relevant discovery, external artifacts, delegated consumption, or fresh-session recurrence | [references/agent-interface-enrichment.md](references/agent-interface-enrichment.md) |
 | Choose evaluation evidence and contracts | [references/evaluation-design.md](references/evaluation-design.md) |
 | Separate performance, diagnostic, and replay evidence; connect offline to online measures | [references/evidence-modes-and-metric-mirrors.md](references/evidence-modes-and-metric-mirrors.md) |
 | Build immutable cases, fixtures, and provenance | [references/datasets.md](references/datasets.md) |
@@ -53,7 +54,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 
 ## Templates
 
-Use [templates/eval-plan.md](templates/eval-plan.md), [templates/dataset-manifest.md](templates/dataset-manifest.md), [templates/grader-specification.md](templates/grader-specification.md), [templates/trace-review.md](templates/trace-review.md), [templates/run-report.md](templates/run-report.md), [templates/release-gate.md](templates/release-gate.md), and [templates/metric-mirror.md](templates/metric-mirror.md). They are decision records, not checklists that manufacture evidence.
+Use [templates/eval-plan.md](templates/eval-plan.md), [templates/interface-enrichment-comparison.md](templates/interface-enrichment-comparison.md), [templates/dataset-manifest.md](templates/dataset-manifest.md), [templates/grader-specification.md](templates/grader-specification.md), [templates/trace-review.md](templates/trace-review.md), [templates/run-report.md](templates/run-report.md), [templates/release-gate.md](templates/release-gate.md), and [templates/metric-mirror.md](templates/metric-mirror.md). They are decision records, not checklists that manufacture evidence.
 
 ## Guardrails
 
