@@ -32,6 +32,50 @@ Use separate evidence for (1) task completion and end state, (2) discovery and p
 
 For each semantic assertion, review a satisfying output, a contradictory near miss, and an output that omits evidence. Prose assertions remain `manual_review` under the current paired-eval grader; do not interpret `passed=true` or a Jev `met` suggestion as a semantic pass. A deterministic check can validate fixture structure, while service-level execution or human review is required to establish actual cross-service access and side effects.
 
+## Assertion challenge examples
+
+These snippets are challenge fixtures for the two new output-quality cases. “Met” means the proposed response contains the evidence criterion; “not met” gives a contradictory response; “not shown” omits the evidence. They test whether a reviewer can classify the design advice. They do not prove that any described execution occurred. Assertion text is abbreviated by stable case ID and leading phrase so the examples stay scannable.
+
+| Case / assertion focus | Met example | Not met example | Not shown example |
+|---|---|---|---|
+| `agent-interface-discovery-ablation` — mechanism hypothesis / separation | “Hypothesis: JIT discovery reduces irrelevant definitions. Test artifact transport separately; if inseparable, use a 2×2 ablation.” | “Enable both together; any improvement proves both helped.” | “Compare before and after.” |
+| Same — same tasks | “Replay each frozen task in baseline and candidate.” | “Run different tasks for each arm.” | “Use a task set.” |
+| Same — model/runtime | “Pin the same model and runtime settings in both arms.” | “Use the newest model in candidate only.” | “Record the model.” |
+| Same — tool/service versions | “Pin the same tool schemas and service builds in each pair.” | “Upgrade service schemas only in candidate.” | “Record versions.” |
+| Same — identity/permissions | “Use the same principal and permission snapshot for both runs.” | “Give candidate broader access.” | “Record the account.” |
+| Same — state/output handling | “Reset both arms to the same state and grade results through the same output path.” | “Candidate starts with cached artifacts and gets a different grader.” | “Keep setup similar.” |
+| Same — task outcome/prerequisite evidence | “Check end state and trace that the required ID lookup preceded the dependent call.” | “Accept a final answer that names the right customer even though no ID was resolved.” | “Check success and prerequisites.” |
+| Same — authorized cross-service consumer | “Require the receiving service's access log and verified output state under the authorized principal.” | “Treat the agent's statement ‘the other service used it’ as proof.” | “Check the artifact.” |
+| Same — missing artifact | “A missing handle must produce an explicit incomplete result and recovery/escalation.” | “If the handle is missing, report the expected distribution anyway.” | “Consider artifact errors.” |
+| Same — expired artifact | “Expire the handle mid-resume; require refresh/recovery or explicit failure.” | “Assume handles never expire.” | “Test resume.” |
+| Same — partial result | “Drop a later page; require completeness detection before reporting totals.” | “Report page-one totals as the cohort total.” | “Check pagination.” |
+| Same — duplicate delivery | “Duplicate one page; require deduplication or surfaced duplicate accounting.” | “Count repeated IDs twice without disclosure.” | “Check duplicates.” |
+| Same — inaccessible artifact | “Deny the consumer; require no data claim and a surfaced access failure.” | “Use a different user's handle to bypass denial.” | “Test access.” |
+| Same — permission change | “Revoke permission before retrieval; require denial to stop use and be reported.” | “Continue with cached authorization after revocation.” | “Check permissions.” |
+| Same — context measurement | “Record measured input/context tokens per task; otherwise mark unavailable.” | “Infer token savings from shorter answers.” | “Discuss context.” |
+| Same — latency measurement | “Report measured end-to-end latency distribution; otherwise mark unavailable.” | “Call it faster because fewer tools were loaded.” | “Mention speed.” |
+| Same — monetary cost | “Use billing/usage records for cost; mark cost unavailable without them.” | “Convert token count directly into total cost without rates or services.” | “Mention cost.” |
+| Same — orchestration/storage overhead | “Measure search, transfer, storage, and cleanup charges/usage where instrumented; mark gaps.” | “Ignore artifact storage and orchestration overhead.” | “Mention overhead.” |
+| Same — evidence limits | “Treat vendor results as a hypothesis and synthetic plans as design evidence only.” | “Anthropic's benchmark proves this system will improve.” | “Cite a benchmark.” |
+| `agent-interface-fresh-session-recurrence` — fresh session | “Start a new session with no prior transcript or hidden memory.” | “Resume in the original session with the handle already in context.” | “Repeat the task later.” |
+| Same — intended identity | “Compare artifact owner, tenant, and requested task key before use.” | “Use the first artifact with a similar title.” | “Check artifact identity.” |
+| Same — current authorization | “Verify access under the current principal immediately before retrieval.” | “Reuse the creator's permission after it was revoked.” | “Check access.” |
+| Same — freshness | “Check artifact timestamp/version against the task's freshness requirement.” | “Use a stale export as current.” | “Check whether it is recent.” |
+| Same — completeness | “Verify all expected pages/IDs are present before continuing.” | “Treat page one as a complete export.” | “Check completeness.” |
+| Same — provenance | “Verify source service, query/run ID, and transformation lineage.” | “Accept an artifact with no source or run metadata.” | “Check provenance.” |
+| Same — ambiguous recurrence | “Two matching artifacts trigger clarification or disambiguation by stable ID.” | “Select either matching artifact silently.” | “Test ambiguity.” |
+| Same — stale recurrence | “A stale artifact is rejected or refreshed before use.” | “Use the stale artifact without noting age.” | “Test staleness.” |
+| Same — duplicate result | “Duplicate delivery is detected and does not double-count.” | “Count a repeated result twice.” | “Test repeats.” |
+| Same — partial recurrence | “A partial result is labeled incomplete and the missing portion is recovered or escalated.” | “Present the partial result as complete.” | “Test partial results.” |
+| Same — inaccessible recurrence | “A permission denial is surfaced; no alternate identity is used to bypass it.” | “Fetch using another tenant's credentials.” | “Test accessibility.” |
+| Same — identity mismatch | “A tenant/owner mismatch blocks retrieval and is recorded.” | “Continue across the identity mismatch.” | “Check identity.” |
+| Same — observable downstream consumption | “Require downstream service audit evidence and a verified resulting state.” | “The agent says it was consumed, so count success.” | “Verify consumption.” |
+| Same — incomplete/denied recovery | “Surface denial or incompleteness, retry only within policy, then escalate if unresolved.” | “Claim completion after a denied or partial read.” | “Describe recovery.” |
+| Same — equivalent paired trials | “Pair fresh-session cases with the same task, config, identity, and permissions.” | “Change task and access level between arms.” | “Compare both versions.” |
+| Same — evidence-bounded conclusion | “Conclude only that the synthetic design response specifies checks; live behavior remains untested.” | “The written plan proves production recurrence works.” | “State a conclusion.” |
+
+Use each row as three candidate response fragments: a complete response that includes the met fragment, one containing the contradictory fragment, and one that omits the criterion. If a generated answer mixes evidence, contradiction, and omission, label that assertion unresolved for human review rather than force-fitting a verdict. A response fragment cannot stand in for the service/environment artifact named by its own proposed evidence criterion.
+
 ## Interpretation limits
 
 The two added v1 eval cases are output-quality prompts for design advice. They do not run adapters, exercise external services, establish behavior on a production task distribution, or prove a performance uplift. The separately frozen five-prompt Luna screen gives old and candidate skills identical design tasks, output budget, and available skill resources, with no internet or external mutation. It captures responses and available run data for advisory model review. This is a synthetic test of whether guidance changes task responses; it does not test live tools or the downstream artifact lifecycle. Its findings cannot establish integration success, real-user benefit, or a release gate. Model verdicts are not human labels or calibrated accuracy. Synthetic fixtures, a model-generated plan, and vendor benchmarks can screen hypotheses only.
