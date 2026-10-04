@@ -21,8 +21,8 @@ from service-mesh responsibilities and application contracts.
 | Contents | Provides |
 |---|---|
 | `SKILL.md` | A workflow from discovery through rollout and verification |
-| `references/` | Protocol, schema, failure, event, evolution, landscape, topology, testing, and source guidance |
-| `templates/` | Fillable briefs, contracts, taxonomies, landscape assessments, plans, and reviews |
+| `references/` | Protocol, schema, failure, event, evolution, landscape, topology, agent-consumer, testing, and source guidance |
+| `templates/` | Fillable briefs, contracts, taxonomies, landscape assessments, agent-consumer reviews, plans, and reviews |
 
 ## Quick Start
 
@@ -39,6 +39,7 @@ produce a contract reviewable by consumers and implementers.
 - Assess a consumer-breaking API change, version an interface, or plan deprecation
 - Build a migration and rollback plan for an external interface
 - Assess an API portfolio, ownership model, discoverability, duplication, lifecycle, or retirement
+- Review an API or tool surface used directly by an agent or automation, including task discovery, cross-service identifiers, bounded outputs, errors, and safe composition
 - Decide which gateway, ingress proxy, service mesh, routing, policy, telemetry, or failure boundary owns a concern
 
 ## Requirements
