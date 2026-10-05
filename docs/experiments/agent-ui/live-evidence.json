@@ -60,5 +60,10 @@
     "No per-attempt timestamp or frozen manifest artifact retained",
     "Aggregate store query cannot prove browser action ordering",
     "Do not use this packet for a live false-green rate, flake estimate, model accuracy or release gate"
-  ]
+  ],
+  "retained_trial_clicks": 6,
+  "session_clicks_including_discarded_clean_attempt": 7,
+  "automated_replay_executor_run": false,
+  "automated_handoff_run": false,
+  "renamed_control_note": "Agent selected Apply order from fresh accessibility state; no failed cached action or replay engine was run"
 }

@@ -37,9 +37,12 @@ than an asserted zero. Cache preparation and repair economics are unmeasured.
 
 The current conversational agent used fresh accessibility observations to choose
 controls on `live_fixture.py`, a loopback HTML/SQLite app. Seven single trials:
-clean plus six fault labels. Six clicks total; wrong account was blocked before
-a click. The renamed control took one live repair proposal/action, which wrote
-one correct effect. Persistence loss, duplicate effects and quantity corruption
+clean plus six fault labels. The retained trials contain six clicks; an earlier
+clean attempt was discarded after discovering the favicon-reset bug, then
+rerun, so seven clicks occurred across the whole session. Account B was observed
+and the agent chose not to click. For the renamed control, the agent selected
+Apply order from fresh state and wrote one correct effect. No automated replay,
+cache invalidation or executor handoff was run on this live fixture. Persistence loss, duplicate effects and quantity corruption
 all showed Saved but failed the independent store oracle. Required-skip injection
 was in the offline coverage harness, not the live UI. `live-evidence.json`
 retains author-recorded presentation summaries and the separate final store read.
@@ -68,8 +71,15 @@ control independently rerun before retaining results.
 The live slice uses actual current-agent inference for control selection, but
 has no isolated model billing/tokens/latency telemetry and only one trial per
 condition. Browser tool calls include observation/transport overhead. No live
-Jev call or third-party cached-replay executor was tested; repository CI model
-and advisory Jev jobs are separate evidence, not substitutes for this slice.
+Jev call or third-party cached-replay executor was tested on this fixture. The
+PR workflow intentionally skips model/Jev jobs: they are restricted to main
+pushes or explicit main-branch dispatch. The merge triggers the configured live
+skill-output evaluation and advisory Jev audit with existing CI credentials.
+Those jobs evaluate generated responses, not browser navigation, state
+persistence or cached execution. Check the linked workflow run before claiming
+execution or coverage: an enabled job is not a completed evaluation. See the
+[workflow conditions](../../../.github/workflows/skill-eval.yml) and
+[post-merge run](https://github.com/magnus919/agent-skills/actions/runs/37386915894).
 No new credentials or provider recommendation are needed for these deliverables.
 
 ## Review and evidence boundaries
