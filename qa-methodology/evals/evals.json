@@ -5,10 +5,10 @@
     {
       "id": "risk-prioritization-workshop",
       "prompt": "We have a release coming up with limited QA capacity and need to decide which areas deserve the most testing effort based on risk. Can you help me prioritize?",
-      "expected_output": "A risk assessment using the P×I formula (Probability 1-5 × Impact 1-5) on a 5×5 matrix, mapping each risk item to priority tiers P0-P3, with a risk register containing scored items, owners, mitigations, and reassessment triggers. Test allocation is proportional to risk scores.",
+      "expected_output": "A risk assessment using the P\u00d7I formula (Probability 1-5 \u00d7 Impact 1-5) on a 5\u00d75 matrix, mapping each risk item to priority tiers P0-P3, with a risk register containing scored items, owners, mitigations, and reassessment triggers. Test allocation is proportional to risk scores.",
       "assertions": [
-        "The response applies the P×I scoring formula with probability and impact rated on a 1-5 scale",
-        "The response maps risk scores to priority tiers P0 through P3 using the 5×5 risk matrix",
+        "The response applies the P\u00d7I scoring formula with probability and impact rated on a 1-5 scale",
+        "The response maps risk scores to priority tiers P0 through P3 using the 5\u00d75 risk matrix",
         "The response includes a risk register structure with scored items, owners, and mitigations",
         "The response defines reassessment triggers for updating risk scores over time",
         "The response recommends test allocation proportional to each risk tier score"
@@ -176,6 +176,68 @@
         "The response defines compensating monitoring",
         "The response requires post-incident review and follow-up tests or decomposition",
         "The response does not turn an emergency exception into a permanent bypass"
+      ]
+    },
+    {
+      "id": "ui-toast-persistence",
+      "prompt": "An agent clicks Save and sees Saved, but reload loses the value. Can we pass?",
+      "expected_output": "Reject toast-only evidence and independently check persisted state.",
+      "assertions": [
+        "Requires persistence read-back through a fresh or independent boundary",
+        "Treats a lost persisted value as failure despite the toast",
+        "Keeps the oracle outside navigator control"
+      ]
+    },
+    {
+      "id": "ui-wrong-account-replay",
+      "prompt": "A replay reaches the same route and success banner under account B; the test requires account A. What should happen?",
+      "expected_output": "Block replay before mutation on identity mismatch and check account isolation.",
+      "assertions": [
+        "Requires exact account identity before replay mutation",
+        "Rejects route or banner match as sufficient account evidence",
+        "Checks that the unintended account is unchanged"
+      ]
+    },
+    {
+      "id": "ui-uncertain-duplicate-effect",
+      "prompt": "A replay click times out after the backend may have committed. The agent wants to click again. Design repair.",
+      "expected_output": "Reconcile operation identity before bounded repair and assert exact effect count.",
+      "assertions": [
+        "Requires read-only reconciliation before retrying an uncertain commit",
+        "Requires an exact effect-count oracle",
+        "Declares a finite repair budget",
+        "Preserves the first failing attempt"
+      ]
+    },
+    {
+      "id": "ui-stale-replay-oracle-change",
+      "prompt": "The build and oracle changed but a cached test passed last week. Can the runner reuse the pass?",
+      "expected_output": "Invalidate changed replay inputs and rerun independent assertions.",
+      "assertions": [
+        "Invalidates replay on changed build or oracle revision",
+        "Requires independent assertions on the current run",
+        "Rejects a cached prior pass as a current verdict"
+      ]
+    },
+    {
+      "id": "ui-required-skips",
+      "prompt": "A healer removes a failing required case and every received report is green. Is coverage complete?",
+      "expected_output": "Reject completeness by comparing frozen required IDs with observed reports.",
+      "assertions": [
+        "Reconciles frozen required IDs against observed IDs",
+        "Treats required skipped or missing reports as incomplete",
+        "Rejects navigator edits to mandatory coverage"
+      ]
+    },
+    {
+      "id": "ui-bounded-text-judge",
+      "prompt": "Where does an optional typed text judge fit in UI QA, and how do we compare it to simulated replay?",
+      "expected_output": "Use advisory bounded semantic decisions; keep exact oracles deterministic and distinguish measured inference.",
+      "assertions": [
+        "Keeps exact identity, counts and persistence checks outside model judgment",
+        "Requires unknown or review for unsupported or missing evidence",
+        "Separates simulation results from actual live inference measurements",
+        "Routes typed-model qualification to system-one"
       ]
     }
   ]
