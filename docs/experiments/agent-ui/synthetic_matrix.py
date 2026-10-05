@@ -43,6 +43,8 @@ def trial(fault, mode):
     exact = after == [('A', 'op-1', 1)]
     coverage = observed == required
     if reason:
+        observed = []  # Precondition block produces no completed case reports.
+        coverage = False
         verdict = 'blocked'
     elif mode == 'banner_only':
         verdict = 'passed'  # Deliberately weak comparator.

@@ -20,6 +20,8 @@ def test_replay_identity_check_precedes_mutation():
     assert result['actions'] == 0
     assert result['after'] == []
     assert result['invalidation'] == 'identity_mismatch'
+    assert result['observed_ids'] == []
+    assert not result['coverage_oracle']
 
 
 def test_duplicate_and_weakened_oracle_have_distinct_store_evidence():
