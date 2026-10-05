@@ -78,6 +78,8 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `references/sdet-engineering.md` | SDET role and skills — gTAA/TAF architecture, POM, SOLID for tests, build-vs-buy, testability |
 | `references/ai-code-quality-gates.md` | Reviewing AI-generated code — independent verification, AC testability, agent-test quality, human-in-the-loop |
 | `references/ai-test-artifact-evidence.md` | Provenance, spec-first oracle review, generated-review triage, workflow evidence, and emergency exceptions for AI-assisted QA |
+| `references/agent-ui-navigation.md` | Agent navigation/replay strategy, independent oracles, bounded repairs and complete coverage |
+| `templates/agent-ui-run-record.md` | Recording navigation, replay, independent checks and missing evidence |
 | `references/agentic-eval-design.md` | Designing agent evals — dataset test design, judge bias, flaky-eval discipline, CI gate tiers, replay |
 | `templates/test-strategy.md` | Producing a test strategy document — fill in scope, risk tiers, level allocation, automation targets |
 | `templates/risk-register.md` | Recording risk assessment results — fill in items, P×I scores, owners, mitigations |
@@ -91,7 +93,16 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `assets/qa-definition-of-done.md` | Defining release readiness — QA contribution to definition of done |
 | `scripts/risk-prioritize.py` | Computing P×I rankings from a risk-items JSON file |
 | `scripts/check-ac-testability.py` | Checking acceptance criteria for vague verbs and missing observable outcomes |
-| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 15 cases) |
+| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 21 cases) |
+
+## Agent-driven UI navigation
+
+For live navigation, replay or locator repair, read `references/agent-ui-navigation.md`
+and fill `templates/agent-ui-run-record.md`. Freeze independent exact oracles and
+required case IDs before execution; never let the navigator weaken assertions or
+skip required coverage. Recheck persistence, account identity and effect count on
+every path. Reuse System One for optional bounded text decisions; tool skills own
+operation and verification-methodology owns evidence verdicts.
 
 ## Scripts
 
