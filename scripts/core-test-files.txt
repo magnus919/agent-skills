@@ -5,3 +5,4 @@ scripts/test_core_test_selection.py
 scripts/test_check_catalog_set.py
 eval_runner/tests/
 docs/experiments/agent-ui/test_synthetic_matrix.py
+docs/experiments/agent-ui/test_live_fixture.py

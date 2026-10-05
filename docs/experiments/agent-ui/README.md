@@ -8,7 +8,7 @@ production systems were used. Research and implementation were AI-assisted.
 
 ```sh
 python3 docs/experiments/agent-ui/synthetic_matrix.py --output /tmp/ui-results.json
-python3 -m pytest docs/experiments/agent-ui/test_synthetic_matrix.py -q -o addopts=''
+python3 -m pytest docs/experiments/agent-ui/test_synthetic_matrix.py docs/experiments/agent-ui/test_live_fixture.py -q -o addopts=''
 ```
 
 `results.json` retains 280 trial records (7 conditions × 4 policies × 10
@@ -81,6 +81,22 @@ execution or coverage: an enabled job is not a completed evaluation. See the
 [workflow conditions](../../../.github/workflows/skill-eval.yml) and
 [post-merge run](https://github.com/magnus919/agent-skills/actions/runs/37386915894).
 No new credentials or provider recommendation are needed for these deliverables.
+
+## Fixture hardening after the initial observations
+
+The current fixture rejects `required_skip` with HTTP 400; required skips are
+injected only in the offline report harness. The archived observation packet
+records a legacy visit to that label, which behaved like clean and did not
+exercise live coverage loss. Its fixture hash and source commit refer to the
+historical version, not the hardened server.
+
+The server and SQLite connection now close on Ctrl-C or server-loop exceptions.
+Request-time SQLite errors return HTTP 500 with a sanitized diagnostic category,
+and a failed transaction rolls back. The UI shows Storage error for a failed
+HTTP response and Request failed for a transport rejection. Optimistic Saved
+remains intentional for the injected persistence/count/quantity faults, so it
+still cannot replace the independent store oracle. Focused tests exercise HTTP
+parsing, real SQLite effects, rollback, unsupported cases and shutdown ownership.
 
 ## Review and evidence boundaries
 
