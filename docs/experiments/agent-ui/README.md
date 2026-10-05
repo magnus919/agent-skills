@@ -33,7 +33,7 @@ agent accuracy. Timings in the JSON are measured local policy time, not browser
 or inference latency. Model calls are zero; billed model cost is unknown rather
 than an asserted zero. Cache preparation and repair economics are unmeasured.
 
-## Live browser slice (2026-10-05)
+## Illustrative live observations (2026-10-05)
 
 The current conversational agent used fresh accessibility observations to choose
 controls on `live_fixture.py`, a loopback HTML/SQLite app. Seven single trials:
@@ -42,7 +42,14 @@ a click. The renamed control took one live repair proposal/action, which wrote
 one correct effect. Persistence loss, duplicate effects and quantity corruption
 all showed Saved but failed the independent store oracle. Required-skip injection
 was in the offline coverage harness, not the live UI. `live-evidence.json`
-retains observed presentation and the separate final store read.
+retains author-recorded presentation summaries and the separate final store read.
+It is an illustrative observation packet, **not independently verified live
+performance evidence**: raw browser traces, per-attempt timestamps and a frozen
+coverage manifest were not retained. Fixture/query hashes and a record ID
+identify what was recorded; they cannot establish the missing action provenance.
+The implementing agent recorded the observations; no separate UI verifier
+reproduced them. Quantitative detections and false-green rates above apply only
+to the reproducible offline matrix.
 
 Start with an unused disposable store:
 

@@ -44,5 +44,21 @@
     "weakened_assertion": "Saved",
     "required_skip": "Saved"
   },
-  "limits": "One trial per case; no measured model tokens, billing, or isolated inference latency; no production replay engine"
+  "limits": "One trial per case; no measured model tokens, billing, or isolated inference latency; no production replay engine",
+  "record_id": "illustrative-ui-observation-2026-10-05",
+  "capture_date": "2026-10-05",
+  "packet_created_utc": "2026-10-05T23:05:01.047963+00:00",
+  "fixture_sha256": "9cd4369fc5705066d1451381a783b471407efaf294a9f4b16283df127cbe908a",
+  "oracle_query": "SELECT * FROM effects ORDER BY fault",
+  "oracle_query_sha256": "8f180b345308182e3c1e42133019f09a8d1afb5e494e807c27443266eb5b0ece",
+  "reviewer_kind": "implementing_agent_observation",
+  "evidence_status": "Illustrative author-recorded observation; not an independently verified live benchmark",
+  "raw_browser_trace_retained": false,
+  "independent_ui_verifier": false,
+  "limitations": [
+    "Browser observations are transcribed summaries of tool outputs, not raw traces",
+    "No per-attempt timestamp or frozen manifest artifact retained",
+    "Aggregate store query cannot prove browser action ordering",
+    "Do not use this packet for a live false-green rate, flake estimate, model accuracy or release gate"
+  ]
 }
