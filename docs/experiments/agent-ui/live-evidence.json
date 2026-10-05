@@ -1,0 +1,48 @@
+{
+  "kind": "live_agent_ui_single_trial",
+  "inference": "Current conversational agent selected actions from fresh accessibility state; no separate model endpoint invoked",
+  "store_read": "Independent SQLite SELECT after navigation",
+  "observed_effects": [
+    [
+      "clean",
+      "A",
+      1
+    ],
+    [
+      "duplicate_effect",
+      "A",
+      1
+    ],
+    [
+      "duplicate_effect",
+      "A",
+      1
+    ],
+    [
+      "required_skip",
+      "A",
+      1
+    ],
+    [
+      "stale_replay",
+      "A",
+      1
+    ],
+    [
+      "weakened_assertion",
+      "A",
+      2
+    ]
+  ],
+  "required_skip": "Coverage fault injected in offline report harness only; live UI store is correct",
+  "browser_observations": {
+    "clean": "Saved",
+    "persistence_loss": "Saved",
+    "wrong_account": "Account B; no click",
+    "stale_replay": "Apply order; one proposal/click then Saved",
+    "duplicate_effect": "Saved",
+    "weakened_assertion": "Saved",
+    "required_skip": "Saved"
+  },
+  "limits": "One trial per case; no measured model tokens, billing, or isolated inference latency; no production replay engine"
+}

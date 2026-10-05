@@ -33,7 +33,7 @@ def trial(fault, mode):
         actions = 1
         # The visible Save result is optimistic even if storage loses the write.
         if fault != 'persistence_loss':
-            quantity = 2 if fault == 'weakened_assertion' else 1
+            quantity = 2 if fault in ('weakened_assertion', 'stale_replay') else 1
             db.execute('INSERT INTO effects VALUES (?, ?, ?)', (actual_account, 'op-1', quantity))
             if fault == 'duplicate_effect':
                 db.execute('INSERT INTO effects VALUES (?, ?, ?)', (actual_account, 'op-1', quantity))
