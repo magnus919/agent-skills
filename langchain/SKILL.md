@@ -83,6 +83,7 @@ This skill is part of a portfolio of framework skills. When deciding which fits:
 | I have a tool to wrap as an agent | **PydanticAI** | Type-safe agent definitions with dependency injection |
 | I have search pipelines | **Haystack** | Pipeline model is more mature for search workloads |
 | Fast prototype of any kind | **LangChain** | Fastest path from zero to working chain |
+| A typed, bounded decision inside an agent workflow | **System One** | System One owns question/model behavior and calibration; use LangChain middleware or outer conditional orchestration as the implementation seam, and [harness-engineering](../harness-engineering/SKILL.md) for placement and whole-task outcomes |
 
 ## Reference Files
 
@@ -92,6 +93,7 @@ This skill is part of a portfolio of framework skills. When deciding which fits:
 | Architecture | Understanding package structure, Runnable, v1.0 | `references/architecture.md` |
 | RAG Strategies | Building RAG pipelines | `references/rag-strategies.md` |
 | Agent Patterns | Creating agents with tools and multi-agent | `references/agent-patterns.md` |
+| Typed System One decision in an agent | Route the adapter seam, unknown lane, and handoff between model semantics and harness outcomes | `references/agent-patterns.md` — see “Keep typed decisions outside the chat model”; continue to [harness-engineering](../harness-engineering/SKILL.md) for placement and whole-task evidence |
 | Production & Deployment | LangServe, LangSmith, deployment | `references/production-deployment.md` |
 | Integration Ecosystem | Model providers, vector stores, tools | `references/integration-ecosystem.md` |
 | FAQ & Troubleshooting | Common errors and fixes | `references/faq-and-troubleshooting.md` |

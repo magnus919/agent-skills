@@ -70,6 +70,7 @@ graph.invoke({"messages": [{"role": "user", "content": "hi!"}]})
 | Deploying to production or debugging failures | `references/production.md` — deployment, observability, failure modes |
 | Setting up eval pipelines for routing accuracy | `references/evals.md` — evaluation methodology |
 | Diagnosing a specific failure (loop, context loss, crash) | `references/troubleshooting.md` — known failure modes |
+| Placing a typed System One judgment in a graph | `references/architecture.md`; decision contract and calibration in [System One](../system-one/SKILL.md), workflow authority and whole-task evidence in [harness-engineering](../harness-engineering/SKILL.md) |
 
 ## Pattern Selection Guide
 
