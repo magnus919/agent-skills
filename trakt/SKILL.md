@@ -1,13 +1,13 @@
 ---
 name: trakt
 description: >-
-  Discover and compare Trakt.tv trending, popular, and anticipated movies and shows, and
-  manage user-scoped history and watchlists from the terminal. Do not use this skill for
-  general TMDb catalog metadata, credits, images, or provider lookups; use `tmdb` for
-  those tasks.
+  Discover and compare public Trakt.tv trending, popular, and anticipated movies
+  and shows from the terminal. Do not use this skill for personal history, watchlist,
+  collection, or list management; the bundled CLI has no user-scoped operations.
+  Use `tmdb` for catalog metadata, credits, images, and provider lookups.
 license: MIT
 compatibility: Requires TRAKT_CLIENT_ID, Python 3.8+, and requests. Public discovery
-  reads use an application Client ID; OAuth is only needed for user-scoped operations.
+  reads use an application Client ID; the CLI does not implement OAuth.
 metadata:
   tags: trakt, media-discovery, movies, tv-shows, trending, api-client
   sources: https://docs.trakt.tv/docs/required-headers
@@ -111,7 +111,7 @@ Use Trakt for current watching signals, broad popularity, anticipated interest, 
 
 ## When not to use
 
-Do not use Trakt for TMDb catalog metadata, credits, images, provider availability, or for writing a user's lists without an explicit OAuth-enabled workflow. Use `tmdb` for metadata and a dedicated authenticated operation for mutations.
+Do not use this CLI to read or update personal history, watchlists, collections, or lists. It implements neither those commands nor OAuth; supplying a token does not enable them. Explain the limitation and use the Trakt website or a separately implemented, authenticated client for personal operations. Do not invent CLI commands or claim a requested update succeeded. Use `tmdb` for catalog metadata, credits, images, and provider availability.
 
 ## Reference files
 
