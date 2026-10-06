@@ -260,6 +260,35 @@
         "Distinguishes a complete empty result from a failed prerequisite.",
         "Does not treat the returned sample as validation of every artifact row or identity match."
       ]
+    },
+    {
+      "id": "optional-intervention-events",
+      "prompt": "Use the bundled harness-engineering v1 run-record contract. Our run records already have a required human_interventions integer. A study needs to distinguish human changes to goals, constraints, and authority from orchestrator resume events, but must not store messages or reasoning. Propose an optional event contract and explain how to interpret missing detail.",
+      "expected_output": "Preserve the existing aggregate count and add event detail only when the study needs it, with explicit coverage and privacy-bounded typed events. Missing detail is not zero, automated events are not human interventions, and counts alone do not establish productivity.",
+      "assertions": [
+        "Keeps human_interventions as the existing required nonnegative aggregate and does not fabricate zero when the count is unknown.",
+        "Makes intervention_detail optional and interprets absent detail as not collected rather than a zero count.",
+        "Requires coverage and events when intervention_detail is present; not_collected has an empty events list.",
+        "Requires complete coverage to match the scalar to human event count and partial coverage not to exceed it.",
+        "Counts an input event once even if it carries multiple kinds, and counts only actor human toward the scalar.",
+        "Uses event objects limited to id, actor, kinds, target, boundary_reference, changes, outcome, and evidence_reference.",
+        "Uses unique nonempty kind codes, allowed actors, and the specified target and changes fields with null for unknown changes.",
+        "Bounds IDs, codes, and opaque references and avoids duplicating a parent event across child cases.",
+        "Uses bounded typed fields and excludes raw messages, prompts, hidden reasoning, and free-text justifications by default.",
+        "Avoids treating a lower intervention count as proof of task success or productivity."
+      ]
+    },
+    {
+      "id": "intervention-detail-not-needed",
+      "prompt": "A user asks for a one-off unit conversion, and the evaluation is only whether the numeric answer is correct. No intervention-count or recovery question is in scope. Our logger has no measured intervention count for this run. Should we add typed intervention events to its record?",
+      "expected_output": "Do not add intervention_detail when the question does not need it. Do not invent a zero aggregate to fill the required v1 run-record field; retain the correctness evidence and mark that record unavailable or incomplete under the current contract. Do not retain raw prompts or reasoning for this unrelated metric.",
+      "assertions": [
+        "Declines typed intervention detail when the stated task and evaluation need only answer correctness.",
+        "Does not invent human_interventions: 0 when the aggregate was not measured.",
+        "Explains that the current v1 run record requiring the aggregate cannot represent an unknown count as a measured value.",
+        "Preserves the numeric correctness evidence separately from the unavailable or incomplete intervention record.",
+        "Does not recommend capturing raw prompt text or hidden reasoning for this question."
+      ]
     }
   ]
 }

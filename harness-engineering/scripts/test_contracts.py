@@ -208,5 +208,145 @@ class ContractTests(unittest.TestCase):
             self.assertFalse(json.loads(r.stdout)["contract_valid"])
 
 
+class InterventionDetailTests(unittest.TestCase):
+    def record(self):
+        return template("run-record-with-interventions.json")
+
+    def test_default_and_legacy_comparison_remain_unchanged(self):
+        record = template("run-record.json")
+        self.assertNotIn("intervention_detail", record["cases"][0])
+        self.assertTrue(contracts.validate("run", record)["contract_valid"])
+        before = contracts.compare(record, record)
+        with_detail = copy.deepcopy(record)
+        with_detail["cases"][0]["intervention_detail"] = {
+            "coverage": "not_collected", "events": []
+        }
+        self.assertEqual(before, contracts.compare(record, with_detail))
+
+    def test_example_counts_mixed_purposes_once_and_excludes_automation(self):
+        record = self.record()
+        self.assertTrue(contracts.validate("run", record)["contract_valid"])
+        case = record["cases"][0]
+        self.assertEqual(case["human_interventions"], 1)
+        self.assertEqual(len(case["intervention_detail"]["events"]), 2)
+        for count in (0, 2, 3):
+            with self.subTest(count=count), self.assertRaises(ValueError):
+                case["human_interventions"] = count
+                contracts.validate("run", record)
+
+    def test_partial_detail_requires_independently_known_total(self):
+        record = self.record()
+        case = record["cases"][0]
+        case["human_interventions"] = 5
+        case["intervention_detail"]["coverage"] = "partial"
+        contracts.validate("run", record)
+        case["human_interventions"] = 0
+        with self.assertRaisesRegex(ValueError, "exceed"):
+            contracts.validate("run", record)
+        del case["human_interventions"]
+        with self.assertRaises(ValueError):
+            contracts.validate("run", record)
+
+    def test_empty_detail_states_do_not_imply_zero_total(self):
+        for coverage in ("not_collected", "partial"):
+            record = self.record()
+            case = record["cases"][0]
+            case["human_interventions"] = 4
+            case["intervention_detail"] = {"coverage": coverage, "events": []}
+            contracts.validate("run", record)
+        case["intervention_detail"]["coverage"] = "complete"
+        with self.assertRaisesRegex(ValueError, "match"):
+            contracts.validate("run", record)
+        case["human_interventions"] = 0
+        contracts.validate("run", record)
+
+    def test_not_collected_rejects_events(self):
+        record = self.record()
+        record["cases"][0]["intervention_detail"]["coverage"] = "not_collected"
+        with self.assertRaises(ValueError):
+            contracts.validate("run", record)
+
+    def test_extensible_kinds_and_unknown_changes_are_valid(self):
+        record = self.record()
+        event = record["cases"][0]["intervention_detail"]["events"][0]
+        event["kinds"] = ["local:clarification"]
+        event["changes"] = {"goal": None, "constraints": None, "authority": None}
+        del event["target"]["workstream_id"]
+        contracts.validate("run", record)
+
+    def test_orchestrator_step_in_does_not_count_as_human(self):
+        record = self.record()
+        case = record["cases"][0]
+        case["intervention_detail"]["events"][0]["actor"] = "orchestrator"
+        case["human_interventions"] = 0
+        contracts.validate("run", record)
+
+    def test_duplicate_event_within_run_is_rejected_across_cases(self):
+        record = self.record()
+        second = copy.deepcopy(record["cases"][0])
+        second["id"] = "other-case"
+        record["cases"].append(second)
+        with self.assertRaisesRegex(ValueError, "duplicate event"):
+            contracts.validate("run", record)
+        for event in second["intervention_detail"]["events"]:
+            event["target"]["run_id"] = "different-run"
+        contracts.validate("run", record)
+
+    def test_malformed_event_fields_fail_without_echoing_payloads(self):
+        bad_fields = {
+            "id": [None, "", "x" * 65, "raw human message"],
+            "actor": [None, {}, "unknown"],
+            "kinds": [[], "steering", [None], ["steering", "steering"]],
+            "target": [None, {}, {"run_id": "r"}, {"run_id": "r", "task_id": " "}],
+            "boundary_reference": [None, "", "x" * 257, "raw human message"],
+            "changes": [None, {}, {"goal": 1, "constraints": False, "authority": False}],
+            "outcome": [None, {}, "free form outcome"],
+            "evidence_reference": [None, "", "line\nbreak", "control\x00character"],
+        }
+        for field, values in bad_fields.items():
+            for value in values:
+                with self.subTest(field=field, value=value):
+                    record = self.record()
+                    record["cases"][0]["intervention_detail"]["events"][0][field] = value
+                    with self.assertRaises(ValueError) as error:
+                        contracts.validate("run", record)
+                    self.assertNotIn("raw human message", str(error.exception))
+
+    def test_raw_payload_and_undeclared_fields_are_rejected(self):
+        for field in ("raw_message", "prompt", "hidden_reasoning", "comment"):
+            record = self.record()
+            detail = record["cases"][0]["intervention_detail"]
+            for container in (detail, detail["events"][0], detail["events"][0]["target"], detail["events"][0]["changes"]):
+                with self.subTest(field=field, container=list(container)):
+                    container[field] = "sensitive message"
+                    with self.assertRaises(ValueError):
+                        contracts.validate("run", record)
+                    del container[field]
+
+    def test_invalid_detail_shapes_are_refused(self):
+        for value in (None, [], {}, {"coverage": {}, "events": []},
+                      {"coverage": "complete", "events": [None]},
+                      {"coverage": "partial", "events": "text"}):
+            with self.subTest(value=value):
+                record = self.record()
+                record["cases"][0]["intervention_detail"] = value
+                with self.assertRaises(ValueError):
+                    contracts.validate("run", record)
+
+    def test_cli_validates_opt_in_example_and_refuses_inconsistent_count(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "run.json"
+            record = self.record()
+            for count, exit_code in ((1, 0), (2, 2)):
+                record["cases"][0]["human_interventions"] = count
+                path.write_text(json.dumps(record))
+                result = subprocess.run(
+                    [sys.executable, str(SCRIPT), "validate", "--kind", "run", "--file", str(path)],
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, exit_code, result.stdout + result.stderr)
+                self.assertEqual(json.loads(result.stdout)["contract_valid"], exit_code == 0)
+
+
 if __name__ == "__main__":
     unittest.main()

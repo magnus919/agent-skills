@@ -26,6 +26,11 @@ are still needed to establish improvement.
 | `scripts/test_*.py` | Safety, near-miss, and evidence-boundary regression tests |
 | `evals/` | Representative output-quality cases and rubric challenge examples |
 
+Run records keep an aggregate human-intervention count by default. When an
+evaluation question needs more detail, the guidance defines an optional typed,
+privacy-bounded event record; it does not capture message text or infer success
+from a lower count.
+
 ## Quick Start
 
 From the installed skill directory, audit a project:

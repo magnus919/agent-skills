@@ -176,6 +176,34 @@
         "Pairs recurrence trials on equivalent tasks and configurations",
         "Limits conclusions to what the evidence source directly establishes"
       ]
+    },
+    {
+      "id": "privacy-bounded-intervention-detail",
+      "prompt": "Use the bundled harness-engineering v1 run-record contract. An evaluation team wants to explain why human_interventions changed between two runs. The required aggregate integer exists in both records, but detailed events were collected only for the candidate because the question now calls for attribution. Define a sound interpretation and optional event shape without overclaiming comparability.",
+      "expected_output": "Keep the aggregate distinct from event detail, identify the baseline's absent detail as uncollected, and use privacy-bounded events with explicit coverage and actor attribution. Do not claim a causal productivity effect or compare event-level rates where detail is missing.",
+      "assertions": [
+        "Treats absent event detail as not collected rather than zero while preserving an independently known aggregate count.",
+        "Uses explicit complete, partial, or not_collected coverage for optional event detail, with an empty event list for not_collected.",
+        "Requires complete detail's human event count to equal the scalar and partial detail's count not to exceed it.",
+        "Counts only human-actor events toward the scalar and counts a mixed-kind event once.",
+        "Uses only the allowed event fields and identifies event, actor, unique kinds, run/task targets, and typed goal/constraint/authority changes.",
+        "Uses bounded code and reference formats and does not duplicate one event across child cases.",
+        "Excludes raw messages, prompts, and hidden reasoning by default.",
+        "Does not claim a lower aggregate count proves productivity or causal improvement.",
+        "Marks event-level baseline/candidate comparison unavailable when one side did not collect detail."
+      ]
+    },
+    {
+      "id": "skip-unneeded-intervention-telemetry",
+      "prompt": "We are evaluating a one-off unit-conversion answer for numeric correctness. The task has no autonomy, recovery, or intervention-attribution question, and no intervention count was measured. A reviewer suggests adding a typed event record anyway so future analysts have more data. What should the evaluation record contain?",
+      "expected_output": "Keep evidence scoped to numeric correctness and omit optional intervention detail because the question does not need it. Do not manufacture a zero aggregate or collect raw interaction text; the v1 run-record contract cannot claim an unknown scalar as measured.",
+      "assertions": [
+        "Keeps the one-off correctness evaluation free of optional intervention events when they do not answer the question.",
+        "Does not add instrumentation or event retention merely for unspecified future analysis.",
+        "Does not convert an unmeasured aggregate to zero and states that v1 requires the aggregate integer.",
+        "Retains only evidence relevant to checking the numeric answer rather than raw user content or hidden reasoning.",
+        "Does not claim that no recorded detail proves no human intervention occurred."
+      ]
     }
   ]
 }

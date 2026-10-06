@@ -10,6 +10,8 @@ from pathlib import Path
 
 HEX = re.compile(r"^[a-f0-9]{64}$")
 STATUSES = {"pending", "active", "blocked", "verified", "stale"}
+EVENT_CODE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}\Z")
+EVENT_REFERENCE = re.compile(r"[^\s]{1,256}\Z")
 
 
 def require(condition, message):
@@ -214,6 +216,95 @@ def graph(data):
     }
 
 
+def event_code(value):
+    return isinstance(value, str) and EVENT_CODE.fullmatch(value) is not None
+
+
+def event_reference(value):
+    return (
+        isinstance(value, str)
+        and value.isprintable()
+        and EVENT_REFERENCE.fullmatch(value) is not None
+    )
+
+
+def intervention_detail(case, seen_events):
+    """Validate opt-in declarations, not event truth, authority, or privacy."""
+    if "intervention_detail" not in case:
+        return
+    detail = case["intervention_detail"]
+    require(isinstance(detail, dict), "intervention_detail must be an object")
+    require(set(detail) == {"coverage", "events"}, "intervention_detail requires only coverage and events")
+    coverage = detail["coverage"]
+    require(
+        isinstance(coverage, str) and coverage in {"complete", "partial", "not_collected"},
+        "invalid intervention detail coverage",
+    )
+    events = detail["events"]
+    require(isinstance(events, list), "intervention events must be a list")
+    require(coverage != "not_collected" or not events, "not_collected detail must have no events")
+    human_count = 0
+    fields = {
+        "id", "actor", "kinds", "target", "boundary_reference", "changes",
+        "outcome", "evidence_reference",
+    }
+    for event in events:
+        require(
+            isinstance(event, dict) and set(event) == fields,
+            "event requires only the documented fields; raw payloads are not allowed",
+        )
+        require(event_code(event["id"]), "event id must be a code of at most 64 characters")
+        actor = event["actor"]
+        require(
+            isinstance(actor, str) and actor in {"human", "orchestrator", "system"},
+            "invalid event actor",
+        )
+        kinds = event["kinds"]
+        require(
+            isinstance(kinds, list) and bool(kinds) and all(event_code(kind) for kind in kinds),
+            "event kinds must be nonempty codes",
+        )
+        require(len(kinds) == len(set(kinds)), "event kinds must be unique")
+        target = event["target"]
+        require(isinstance(target, dict), "event target must be an object")
+        require(
+            {"run_id", "task_id"} <= set(target) <= {"run_id", "task_id", "workstream_id"},
+            "event target requires run_id and task_id, with optional workstream_id",
+        )
+        require(
+            all(event_reference(value) for value in target.values()),
+            "event target IDs must be bounded references",
+        )
+        identity = (target["run_id"], event["id"])
+        require(
+            identity not in seen_events,
+            "duplicate event id within run; record an input once at its owning task",
+        )
+        seen_events.add(identity)
+        for key in ("boundary_reference", "evidence_reference"):
+            require(
+                event_reference(event[key]),
+                f"event {key} must be a reference of at most 256 printable non-whitespace characters",
+            )
+        changes = event["changes"]
+        require(
+            isinstance(changes, dict) and set(changes) == {"goal", "constraints", "authority"},
+            "event changes requires goal, constraints, and authority",
+        )
+        require(
+            all(value is None or type(value) is bool for value in changes.values()),
+            "event changes must be booleans or null for unknown",
+        )
+        require(event_code(event["outcome"]), "event outcome must be a bounded code")
+        human_count += actor == "human"
+    total = case["human_interventions"]
+    require(human_count <= total, "detailed human events exceed the aggregate count")
+    require(
+        coverage != "complete" or human_count == total,
+        "complete detail must match the aggregate human count",
+    )
+
+
 def run(data):
     require(text(data.get("harness_revision")), "harness_revision required")
     fingerprints = data.get("fingerprints")
@@ -224,6 +315,7 @@ def run(data):
             f"{key} requires SHA256 fingerprint",
         )
     cases = object_list(data, "cases")
+    seen_events = set()
     for case in cases:
         require(
             isinstance(case.get("input_sha256"), str) and HEX.fullmatch(case["input_sha256"]),
@@ -233,6 +325,7 @@ def run(data):
         for key in ["elapsed_seconds", "cost", "human_interventions"]:
             require(nonnegative(case.get(key)), f"case {key} must be finite nonnegative number")
         require(isinstance(case["human_interventions"], int), "human_interventions must be integer")
+        intervention_detail(case, seen_events)
         require(
             text(case.get("evidence_reference")),
             "case evidence reference required even for failed/unknown runs",
