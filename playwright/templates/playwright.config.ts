@@ -1,5 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// pwrun --url overrides inherited PW_SMOKE_URL. Direct Playwright runs can set
+// PW_SMOKE_URL, then BASE_URL; the scaffold default is used otherwise.
+const baseURL = process.env.PW_SMOKE_URL ?? process.env.BASE_URL ?? 'http://localhost:3000';
+const parsedBaseURL = new URL(baseURL);
+const host = parsedBaseURL.hostname;
+const isLoopback = host === 'localhost' || host === '::1' || /^127(?:\.\d{1,3}){3}$/.test(host);
+
 /**
  * Test-suite scaffold for Playwright.
  *
@@ -22,7 +29,7 @@ export default defineConfig({
     ['json', { outputFile: 'test-results/test-results.json' }], // triage with scripts/pwrun report
   ],
   use: {
-    baseURL: process.env.BASE_URL ?? 'http://localhost:3000', // [fill: app URL]
+    baseURL, // --url via pwrun > PW_SMOKE_URL > BASE_URL > scaffold default
     trace: 'on-first-retry', // capture a trace when a test fails on retry
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -31,10 +38,12 @@ export default defineConfig({
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile-chromium', use: { ...devices['Pixel 7'] } }, // [fill: devices you support]
   ],
-  webServer: {
+  // Start the scaffold app only for local targets. Remote targets are visited
+  // directly and should not start an unrelated local dev server.
+  webServer: isLoopback ? {
     command: 'npm run dev', // [fill: your app's dev/preview command]
-    url: 'http://localhost:3000', // [fill: readiness URL the server must answer]
+    url: parsedBaseURL.origin, // [fill: local readiness origin]
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
-  },
+  } : undefined,
 });
