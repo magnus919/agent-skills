@@ -94,6 +94,10 @@ class WorkerServer:
         Creates the PID file, socket, and starts accepting connections.
         Blocks until shutdown is requested.
         """
+        # Initialize the backend before creating worker state. A backend refusal
+        # must leave no PID or start-time files that make this worker look live.
+        _ = self.adapter
+
         _ensure_worker_dir()
 
         # Remove any stale socket
@@ -101,41 +105,38 @@ class WorkerServer:
         if os.path.exists(sock_path):
             os.unlink(sock_path)
 
-        # Write PID file
-        pid = os.getpid()
-        with open(_pid_path(), "w") as f:
-            f.write(str(pid))
+        try:
+            # Write process metadata only after the backend is available.
+            pid = os.getpid()
+            with open(_pid_path(), "w") as f:
+                f.write(str(pid))
 
-        # Write started_at timestamp
-        self._started_at = time.monotonic()
-        with open(_started_at_path(), "w") as f:
-            f.write(str(self._started_at))
+            self._started_at = time.monotonic()
+            with open(_started_at_path(), "w") as f:
+                f.write(str(self._started_at))
 
-        # Pre-warm the adapter
-        _ = self.adapter
+            # Create and bind socket
+            server_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            self._socket = server_sock
+            server_sock.bind(sock_path)
+            server_sock.listen(5)
+            self._running = True
 
-        # Create and bind socket
-        server_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        server_sock.bind(sock_path)
-        server_sock.listen(5)
-        self._socket = server_sock
-        self._running = True
+            # Set up signal handlers for graceful shutdown
+            signal.signal(signal.SIGTERM, self._handle_signal)
+            signal.signal(signal.SIGINT, self._handle_signal)
 
-        # Set up signal handlers for graceful shutdown
-        signal.signal(signal.SIGTERM, self._handle_signal)
-        signal.signal(signal.SIGINT, self._handle_signal)
-
-        while self._running:
-            try:
-                server_sock.settimeout(1.0)
-                conn, _addr = server_sock.accept()
-                self._handle_connection(conn)
-            except TimeoutError:
-                continue
-            except OSError:
-                break
-
-        self._cleanup()
+            while self._running:
+                try:
+                    server_sock.settimeout(1.0)
+                    conn, _addr = server_sock.accept()
+                    self._handle_connection(conn)
+                except TimeoutError:
+                    continue
+                except OSError:
+                    break
+        finally:
+            self._cleanup()
 
     def stop(self) -> None:
         """Signal the server to stop."""
@@ -254,17 +255,12 @@ class WorkerServer:
 
     def _cleanup(self) -> None:
         """Clean up PID file, socket, and other resources."""
-        # Remove PID file
-        pid_path = _pid_path()
-        if os.path.exists(pid_path):
+        # Remove PID, start time, and socket files.
+        for path in (_pid_path(), _started_at_path(), _socket_path()):
+            if not os.path.exists(path):
+                continue
             with contextlib.suppress(OSError):
-                os.unlink(pid_path)
-
-        # Remove socket
-        sock_path = _socket_path()
-        if os.path.exists(sock_path):
-            with contextlib.suppress(OSError):
-                os.unlink(sock_path)
+                os.unlink(path)
 
         # Close socket
         if self._socket:

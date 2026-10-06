@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from uuid import uuid4
 
 SCRIPTS = Path(__file__).resolve().parent
@@ -22,6 +23,19 @@ class RuntimeBackendTests(unittest.TestCase):
                     if isinstance(node, ast.ImportFrom):
                         self.assertNotEqual(node.module, 'binary_analysis.adapters.fake', path)
 
+    def test_importing_runtime_backend_does_not_load_fake_adapter(self):
+        check = subprocess.run(
+            [sys.executable, '-c',
+             "import sys; "
+             f"sys.path.insert(0, {str(SCRIPTS)!r}); "
+             "import binary_analysis.adapters.runtime; "
+             "assert 'binary_analysis.adapters.fake' not in sys.modules; "
+             "from binary_analysis.adapters import FakeAdapter; "
+             "assert FakeAdapter.__name__ == 'FakeAdapter'"],
+            capture_output=True, text=True, timeout=10,
+        )
+        self.assertEqual(check.returncode, 0, check.stderr)
+
     def test_factory_and_worker_fail_without_fixture_fallback(self):
         from binary_analysis.adapters.runtime import get_adapter
         from binary_analysis.domain.errors import BackendFailureError
@@ -31,6 +45,112 @@ class RuntimeBackendTests(unittest.TestCase):
             with self.subTest(operation=operation):
                 with self.assertRaisesRegex(BackendFailureError, 'not implemented'):
                     operation()
+
+    def test_worker_start_refuses_backend_without_stale_status_or_false_success(self):
+        from argparse import Namespace
+
+        from binary_analysis.cli.worker import execute_start
+        from binary_analysis.domain.errors import BackendFailureError
+        from binary_analysis.worker import client, server
+
+        with tempfile.TemporaryDirectory() as tmp:
+            worker_dir = Path(tmp) / 'worker-state'
+            pid_path = worker_dir / 'worker.pid'
+            started_path = worker_dir / 'worker.started_at'
+            socket_path = worker_dir / 'worker.sock'
+
+            with (
+                mock.patch.object(server, 'WORKER_DIR', str(worker_dir)),
+                mock.patch.object(client, 'WORKER_DIR', str(worker_dir)),
+                mock.patch.object(server, '_pid_path', lambda: str(pid_path)),
+                mock.patch.object(server, '_started_at_path', lambda: str(started_path)),
+                mock.patch.object(server, '_socket_path', lambda: str(socket_path)),
+                mock.patch.object(client, '_pid_path', lambda: str(pid_path)),
+                mock.patch.object(client, '_started_at_path', lambda: str(started_path)),
+                mock.patch.object(client, '_socket_path', lambda: str(socket_path)),
+            ):
+                with self.assertRaisesRegex(BackendFailureError, 'not implemented'):
+                    server.WorkerServer().start()
+
+                self.assertFalse(worker_dir.exists())
+                self.assertFalse(pid_path.exists())
+                self.assertFalse(started_path.exists())
+                self.assertFalse(socket_path.exists())
+
+                class FailedProcess:
+                    returncode = 13
+
+                    def poll(self):
+                        return self.returncode
+
+                def run_child_start(*_args, **_kwargs):
+                    try:
+                        server.WorkerServer().start()
+                    except BackendFailureError:
+                        return FailedProcess()
+                    self.fail('worker unexpectedly started without a backend')
+
+                with mock.patch('subprocess.Popen', side_effect=run_child_start) as popen:
+                    result = execute_start(Namespace())
+
+                self.assertEqual(popen.call_count, 1)
+                self.assertFalse(result['success'])
+                self.assertEqual(result['data']['status'], 'failed')
+                self.assertEqual(client.get_worker_status()['state'], 'stopped')
+                self.assertFalse(pid_path.exists())
+                self.assertFalse(started_path.exists())
+                self.assertFalse(socket_path.exists())
+
+    def test_worker_server_cleans_state_after_socket_bind_failure(self):
+        from binary_analysis.worker import client, server
+
+        with tempfile.TemporaryDirectory() as tmp:
+            worker_dir = Path(tmp) / 'worker-state'
+            pid_path = worker_dir / 'worker.pid'
+            started_path = worker_dir / 'worker.started_at'
+            socket_path = worker_dir / 'worker.sock'
+
+            class BrokenSocket:
+                closed = False
+
+                def bind(self, _path):
+                    raise OSError('bind failed')
+
+                def close(self):
+                    self.closed = True
+
+            broken_socket = BrokenSocket()
+            with (
+                mock.patch.object(server, 'WORKER_DIR', str(worker_dir)),
+                mock.patch.object(server, '_pid_path', lambda: str(pid_path)),
+                mock.patch.object(server, '_started_at_path', lambda: str(started_path)),
+                mock.patch.object(server, '_socket_path', lambda: str(socket_path)),
+                mock.patch.object(server.runtime, 'get_adapter', return_value=object()),
+                mock.patch.object(server.socket, 'socket', return_value=broken_socket),
+            ):
+                with self.assertRaisesRegex(OSError, 'bind failed'):
+                    server.WorkerServer().start()
+
+            self.assertTrue(broken_socket.closed)
+            self.assertFalse(pid_path.exists())
+            self.assertFalse(started_path.exists())
+            self.assertFalse(socket_path.exists())
+
+    def test_worker_status_rejects_live_pid_without_reachable_socket(self):
+        from binary_analysis.worker import client
+
+        with tempfile.TemporaryDirectory() as tmp:
+            worker_dir = Path(tmp) / 'worker-state'
+            worker_dir.mkdir()
+            pid_path = worker_dir / 'worker.pid'
+            pid_path.write_text(str(os.getpid()))
+            with (
+                mock.patch.object(client, 'WORKER_DIR', str(worker_dir)),
+                mock.patch.object(client, '_pid_path', lambda: str(pid_path)),
+                mock.patch.object(client, '_started_at_path', lambda: str(worker_dir / 'worker.started_at')),
+                mock.patch.object(client, '_socket_path', lambda: str(worker_dir / 'worker.sock')),
+            ):
+                self.assertEqual(client.get_worker_status()['state'], 'stopped')
 
     def test_commands_reject_legacy_projects_for_distinct_binaries(self):
         from binary_analysis.projects.manifest import create_manifest, save_manifest

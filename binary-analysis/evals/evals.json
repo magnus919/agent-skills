@@ -76,6 +76,7 @@
       "expected_output": "Reject fixture-derived claims as evidence about the supplied sample. Explain that this release fails closed because live backend operations are unimplemented, so neither READY nor installing Ghidra verifies these findings.",
       "assertions": [
         "Identifies FakeAdapter results as fixture data rather than observations of the supplied sample.",
+        "States that production CLI commands do not select fixture data for user binaries.",
         "Does not treat READY as proof of live analysis.",
         "States that this release cannot rerun live analysis because backend operations are unimplemented.",
         "Does not claim that installing Ghidra alone enables the missing implementation."

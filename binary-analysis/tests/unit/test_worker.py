@@ -146,6 +146,20 @@ run_worker()
         assert status["state"] == "stopped"
         assert status["pid"] is None
 
+    def test_status_requires_a_reachable_worker_socket(
+        self, clean_worker_state: None, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """A live PID alone must not make a half-started worker look available."""
+        monkeypatch.setattr("binary_analysis.worker.client.read_pid", lambda: 12345)
+        monkeypatch.setattr("binary_analysis.worker.client._is_pid_alive", lambda: True)
+        monkeypatch.setattr("binary_analysis.worker.client.WorkerClient.is_available", lambda self: False)
+
+        status = get_worker_status()
+
+        assert status["state"] == "stopped"
+        assert status["pid"] is None
+        assert status["uptime_seconds"] is None
+
     def test_status_pid_matches_os_when_running(
         self, clean_worker_state: None, monkeypatch: pytest.MonkeyPatch
     ) -> None:
@@ -153,6 +167,7 @@ run_worker()
         real_pid = 12345
         monkeypatch.setattr("binary_analysis.worker.client.read_pid", lambda: real_pid)
         monkeypatch.setattr("binary_analysis.worker.client._is_pid_alive", lambda: True)
+        monkeypatch.setattr("binary_analysis.worker.client.WorkerClient.is_available", lambda self: True)
         monkeypatch.setattr(
             "binary_analysis.worker.client.read_started_at", lambda: time.monotonic() - 42.5
         )
@@ -169,6 +184,7 @@ run_worker()
         """When running, uptime_seconds must be a positive number."""
         monkeypatch.setattr("binary_analysis.worker.client.read_pid", lambda: 12345)
         monkeypatch.setattr("binary_analysis.worker.client._is_pid_alive", lambda: True)
+        monkeypatch.setattr("binary_analysis.worker.client.WorkerClient.is_available", lambda self: True)
         monkeypatch.setattr(
             "binary_analysis.worker.client.read_started_at", lambda: time.monotonic() - 10.0
         )

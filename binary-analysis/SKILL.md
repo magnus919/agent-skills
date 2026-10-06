@@ -33,8 +33,9 @@ This release does **not** provide live Ghidra analysis. Import, analyze, metadat
 structural/function queries, search, triage, and report generation stop with an
 explicit backend error. Installing dependencies cannot make the unfinished
 adapter operational. Project administration and dependency diagnostics remain
-available. `FakeAdapter` is confined to test injection; there is no fixture/demo
-CLI switch or environment override.
+available. The production CLI does not load or select `FakeAdapter`; tests
+inject it explicitly. There is no fixture/demo CLI switch or environment
+override.
 
 The workflow below describes the intended interface, not runnable analysis in
 this release. Stop at the backend error and explain the limitation. Do not cite
