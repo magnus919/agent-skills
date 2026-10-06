@@ -42,6 +42,26 @@ challenges, not independent labels or executed model responses.
 | graph-overhead-decision | Review/merge cost measured, serialized migration ownership, graph simplification allowed | Eight workers assumed eightfold delivery speed | No integration bottleneck evidence |
 | background-result-retention | Recoverable durable result precedes owned eviction; ack alone insufficient | Deletes sole output at terminal state | No retention/recovery mechanism |
 
+## Optional intervention detail
+
+These authored cases challenge the optionality, attribution, and privacy boundary
+for intervention events. They are not model runs or independent labels.
+
+| Case | Satisfying response | Contradictory near miss | Not shown |
+|---|---|---|---|
+| optional-intervention-events | Keeps the required aggregate; absent detail is uncollected; typed events use explicit coverage, actor, one-count-per-input semantics, bounded allowlisted fields and parent ownership; no text/reasoning or productivity claim | Converts missing detail to zero, counts an orchestrator resume as human, duplicates one mixed-kind parent event into child cases, or logs raw messages | Says “add intervention logging” without schema, attribution, missingness, or privacy semantics |
+| privacy-bounded-intervention-detail | Preserves known aggregates, marks the baseline's event detail missing, gives only question-needed typed events with coverage and bounded references, and withholds an event-level comparison | Treats the baseline's absent detail as no events and claims the candidate's lower count caused better productivity | Says the data is “privacy safe” without fields, coverage, or comparison limits |
+
+For `optional-intervention-events`, verify `complete` equals the scalar human
+event count, `partial` does not exceed it, and `not_collected` has no events.
+Check that event IDs are unique within a run, kind codes are unique within an
+event, and shared parent events are referenced rather than copied. A valid
+response with no event details can still satisfy a task whose question does not
+need attribution; missingness is not evidence of zero. Do not infer runtime
+collection, authority, behavioral improvement, or causal productivity from the
+schema or a scalar count. These prose assertions remain advisory/manual-review
+and require the corresponding artifact or run evidence for execution claims.
+
 For each row, judge individual manifest assertions independently. Strong prose
 about one property cannot compensate for missing evidence on another. Execution
 claims need the corresponding artifacts or runs; no generated answer authenticates

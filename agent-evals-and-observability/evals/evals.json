@@ -176,6 +176,22 @@
         "Pairs recurrence trials on equivalent tasks and configurations",
         "Limits conclusions to what the evidence source directly establishes"
       ]
+    },
+    {
+      "id": "privacy-bounded-intervention-detail",
+      "prompt": "An evaluation team wants to explain why human_interventions changed between two runs. The required aggregate integer exists in both records, but detailed events were collected only for the candidate because the question now calls for attribution. Define a sound interpretation and optional event shape without overclaiming comparability.",
+      "expected_output": "Keep the aggregate distinct from event detail, identify the baseline's absent detail as uncollected, and use privacy-bounded events with explicit coverage and actor attribution. Do not claim a causal productivity effect or compare event-level rates where detail is missing.",
+      "assertions": [
+        "Treats absent event detail as not collected rather than zero while preserving an independently known aggregate count.",
+        "Uses explicit complete, partial, or not_collected coverage for optional event detail, with an empty event list for not_collected.",
+        "Requires complete detail's human event count to equal the scalar and partial detail's count not to exceed it.",
+        "Counts only human-actor events toward the scalar and counts a mixed-kind event once.",
+        "Uses only the allowed event fields and identifies event, actor, unique kinds, run/task targets, and typed goal/constraint/authority changes.",
+        "Uses bounded code and reference formats and does not duplicate one event across child cases.",
+        "Excludes raw messages, prompts, and hidden reasoning by default.",
+        "Does not claim a lower aggregate count proves productivity or causal improvement.",
+        "Marks event-level baseline/candidate comparison unavailable when one side did not collect detail."
+      ]
     }
   ]
 }

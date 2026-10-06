@@ -25,6 +25,32 @@ Keep a backend-neutral internal record even when exporting to a tracing system:
 
 Do not manufacture a conversation ID from content, expose chain-of-thought, or copy raw inputs merely to make a trace look complete. Record when sampling or access removed evidence.
 
+### Optional intervention events
+
+Intervention data is opt-in and question-scoped. A case retains the required
+`human_interventions` nonnegative integer as its aggregate count; unknown is not
+zero. The optional `intervention_detail` object has `coverage` (`complete`,
+`partial`, or `not_collected`) and `events`. If absent, event detail was not
+collected. If present, event objects allow only `id`, `actor`, `kinds`, `target`,
+`boundary_reference`, `changes`, `outcome`, and `evidence_reference`. Actors are
+`human`, `orchestrator`, or `system`; only human events contribute to the scalar.
+Each input event counts once even if it has multiple unique kind codes.
+
+Use bounded codes for event IDs, kinds, and outcomes (up to 64 characters,
+`[A-Za-z0-9][A-Za-z0-9_.:-]*`) and bounded opaque, single-line references (up to
+256 characters, no spaces). The target identifies `run_id` and `task_id`, with
+optional `workstream_id`. The `changes` map records `goal`, `constraints`, and
+`authority` as booleans or `null` when unknown. `complete` coverage requires the
+scalar to equal the number of human events; `partial` coverage lists no more
+human events than the scalar; `not_collected` requires an empty event list.
+Store a shared event once at the owning/common parent task and link to it rather
+than duplicating it across child cases; `(run_id, event.id)` is unique.
+
+Do not capture raw human messages, prompts, hidden reasoning, or free-text
+justifications by default. Typed change flags and opaque evidence references do
+not grant authority or establish causation. Do not infer success or productivity
+from a lower intervention count alone.
+
 ## Review Protocol
 
 1. Reconstruct the intended task and trajectory contracts without looking at the final score.

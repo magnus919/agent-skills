@@ -87,6 +87,21 @@ with acceptance regressions, latency/cost/intervention deltas, and no significan
 or release verdict. Provider/model/task changes require a differently framed
 experiment; this helper intentionally refuses that comparison.
 
+`human_interventions` remains a required, nonnegative integer per case. It is an
+aggregate human-event count, not an event log and not a productivity score. The
+optional `intervention_detail` object is question-scoped: when present, it has
+`coverage` (`complete`, `partial`, or `not_collected`) and `events`; the default
+run-record template remains aggregate-only. Absence means event detail was not
+collected, not zero. Do not fabricate an unknown aggregate as zero. See the
+[intervention event guidance](observability-and-feedback.md#optional-typed-intervention-detail)
+for the bounded event fields, actor attribution, uniqueness, and privacy rules.
+
+The detailed record is a typed observation, not automatic instrumentation,
+telemetry export, an authority grant, or evidence that fewer interventions mean
+better performance. Only include event detail when it is needed for the stated
+question; preserve an independently known aggregate when the detail is absent or
+partial.
+
 Validate templates before customization:
 
 ```sh

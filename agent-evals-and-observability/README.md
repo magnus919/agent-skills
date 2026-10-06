@@ -8,6 +8,10 @@ Agent behavior can look good in a demo yet fail through an unsafe tool call, a b
 
 It also keeps observability useful without turning it into a privacy liability. Your agent can design minimized traces and metrics, analyze a regression fairly, and make a release decision that keeps hard safety and privacy invariants separate from ordinary quality indicators.
 
+Intervention counts remain distinct from optional event detail. When a question
+requires that detail, the guidance uses typed bounded events, treats missing
+detail as uncollected, and excludes raw messages and hidden reasoning by default.
+
 ## What You Get
 
 | Contents | Provides |
