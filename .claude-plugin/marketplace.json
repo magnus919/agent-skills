@@ -1425,7 +1425,7 @@
         "./trakt"
       ],
       "strict": false,
-      "description": "Discover and compare Trakt.tv trending, popular, and anticipated movies and shows, and manage user-scoped history and watchlists from the terminal. Do not use this skill for general TMDb catalog metadata, credits, images, or provider lookups; use `tmdb` for those tasks."
+      "description": "Discover and compare public Trakt.tv trending, popular, and anticipated movies and shows from the terminal. Do not use this skill for personal history, watchlist, collection, or list management; the bundled CLI has no user-scoped operations. Use `tmdb` for catalog metadata, credits, images, and provider lookups."
     },
     {
       "name": "transistor",
