@@ -86,6 +86,7 @@ def resolve_assets(config_file: Path, data_dir: Path, certs_dir: Path) -> tuple[
     cert_value = cfg.get("tls_cert_path")
     key_value = cfg.get("tls_key_path")
     node_key_value = cfg.get("noise.private_key_path") or cfg.get("private_key_path")
+    derp_key_value = cfg.get("derp.server.private_key_path")
     if bool(cert_value) != bool(key_value):
         fail("config must set both tls_cert_path and tls_key_path, or neither")
 
@@ -108,6 +109,7 @@ def resolve_assets(config_file: Path, data_dir: Path, certs_dir: Path) -> tuple[
         ("tls_cert", cert_value, certs_dir / "server.crt"),
         ("tls_key", key_value, certs_dir / "server.key"),
         ("node_key", node_key_value, data_dir / "private.key"),
+        ("derp_key", derp_key_value, data_dir / "derp_server.key"),
     ):
         if value:
             source = resolve_config_path(value, config_file)
@@ -137,7 +139,7 @@ def archive_name(role: str, source: Path) -> str:
         return "database/database.sqlite"
     if role == "policy":
         return "policy/policy.json"
-    if role in {"tls_cert", "tls_key", "node_key"}:
+    if role in {"tls_cert", "tls_key", "node_key", "derp_key"}:
         return f"keys/{role}-{source.name}"
     if role == "derp":
         return "derp/derp.yaml"
@@ -208,7 +210,7 @@ def backup(args: argparse.Namespace) -> int:
     config_dir = config_file.parent
     certs_dir = absolute(args.certs_dir)
     sources, destinations, required = resolve_assets(config_file, data_dir, certs_dir)
-    missing = [str(sources[role]) for role in sources if required[role] and not sources[role].is_file()]
+    missing = [f"{role}: {sources[role]}" for role in sources if required[role] and not sources[role].is_file()]
     if missing:
         fail("required recovery asset(s) missing: " + ", ".join(missing))
     if args.dry_run:
@@ -283,7 +285,7 @@ def read_archive(backup_path: Path) -> tuple[str, dict[str, Any], dict[str, tarf
         fail("backup manifest contains malformed root mappings")
     asset_roles: set[str] = set()
     expected_members = {manifest_name}
-    known_roles = {"config", "database", "policy", "tls_cert", "tls_key", "node_key", "derp"}
+    known_roles = {"config", "database", "policy", "tls_cert", "tls_key", "node_key", "derp_key", "derp"}
     for asset in manifest["assets"]:
         if not isinstance(asset, dict) or not all(isinstance(asset.get(key), str) for key in ("role", "archive_path", "restore_path", "sha256")):
             fail("backup manifest contains malformed asset mapping")
@@ -426,7 +428,7 @@ def restore(args: argparse.Namespace) -> int:
                 try:
                     with os.fdopen(descriptor, "wb") as output:
                         shutil.copyfileobj(stream, output)
-                    mode = 0o600 if asset["role"] in {"database", "tls_key", "node_key"} else item["mode"]
+                    mode = 0o600 if asset["role"] in {"database", "tls_key", "node_key", "derp_key"} else item["mode"]
                     apply_owner(temporary, target)
                     os.chmod(temporary, mode)
                     os.replace(temporary, target)

@@ -5,11 +5,13 @@
     {
       "id": "backup-complete-archive",
       "prompt": "Back up our production Headscale server so we are ready for an in-place upgrade. Produce an archive we can use to recover if the upgrade fails.",
-      "expected_output": "Scenario: full production backup before an upgrade. The agent loads headscale-backup, previews the source paths and confirms the backup target and recovery scope, then runs hs-backup.sh to produce a timestamped tarball. The manifest records the SQLite database, config.yaml, optional policy, and explicitly configured TLS certificates and keys with checksums and restore paths. The agent verifies the archive before the upgrade and stores the artifact off the control-server host.",
+      "expected_output": "Scenario: full production backup before an upgrade. The agent loads headscale-backup, previews the source paths and confirms the backup target and recovery scope, then runs hs-backup.sh to produce a timestamped tarball. The manifest records the SQLite database, config.yaml, optional policy, explicitly configured TLS certificates and keys, and configured DERP private key with checksums and restore paths. A configured but missing key makes the backup fail. The agent verifies the archive before the upgrade and stores the artifact off the control-server host.",
       "assertions": [
         "The headscale-backup sub-skill is loaded",
         "hs-backup.sh produces a timestamped backup archive",
         "The archive includes the configured SQLite database and config.yaml plus present optional policy and explicitly configured TLS assets",
+        "A configured DERP server private key appears as a checksummed recovery asset",
+        "A missing configured DERP server private key makes backup fail instead of silently omitting it",
         "Archive assets are validated against manifest checksums before the upgrade",
         "The backup target and recovery scope are confirmed before creating the archive",
         "The backup archive is stored off the control-server host"

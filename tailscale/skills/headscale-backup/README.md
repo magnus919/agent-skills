@@ -4,7 +4,7 @@ Create a verified backup of Headscale state and restore it to the right paths du
 
 ## Why Install This Skill
 
-Headscale keeps its node and user state in a SQLite database, alongside configuration and key files. Copying a live database can miss transactions stored in its WAL files. This skill takes an online SQLite snapshot and records checksums and restore paths for every included asset.
+Headscale keeps its node and user state in a SQLite database, alongside configuration and key files. Copying a live database can miss transactions stored in its WAL files. This skill takes an online SQLite snapshot and records checksums and restore paths for every included asset, including a configured DERP server private key.
 
 After installing it, your agent can preview backup and restore actions, create a portable archive, verify its contents, and restore files to the paths recorded in the archive. The restore helper validates the archive before it writes files and manages an active Headscale service during the restore. Existing destination ownership is preserved; for new files, ownership comes from the destination directory, so prepare target directories for the Headscale service before a cross-host restore.
 

@@ -35,12 +35,16 @@ class HeadscaleArchiveTests(unittest.TestCase):
         self.data_dir.mkdir(parents=True)
         self.certs_dir.mkdir()
         self.db = self.data_dir / "db.sqlite3"
+        self.derp_key = self.data_dir / "derp_server.key"
+        self.derp_key.write_text("fixture-derp-private-key\n", encoding="utf-8")
+        self.derp_key.chmod(0o644)
         with sqlite3.connect(self.db) as connection:
             connection.execute("CREATE TABLE nodes (id INTEGER PRIMARY KEY, name TEXT)")
             connection.execute("INSERT INTO nodes(name) VALUES ('fixture-node')")
         (self.config_dir / "config.yaml").write_text(
             f"database:\n  type: sqlite\n  path: {self.db}\n"
-            "tls_cert_path: certs/server.crt\ntls_key_path: certs/server.key\n",
+            "tls_cert_path: certs/server.crt\ntls_key_path: certs/server.key\n"
+            f"derp:\n  server:\n    private_key_path: {self.derp_key}\n",
             encoding="utf-8",
         )
         (self.config_dir / "policy.json").write_text('{"acls": []}\n', encoding="utf-8")
@@ -98,7 +102,7 @@ class HeadscaleArchiveTests(unittest.TestCase):
             base = manifest_name.rsplit("/", 1)[0]
             manifest = json.load(archive.extractfile(manifest_name))
             by_role = {asset["role"]: asset for asset in manifest["assets"]}
-            self.assertTrue({"config", "database", "policy", "tls_cert", "tls_key"}.issubset(by_role))
+            self.assertTrue({"config", "database", "policy", "tls_cert", "tls_key", "derp_key"}.issubset(by_role))
             db_bytes = archive.extractfile(f"{base}/{by_role['database']['archive_path']}").read()
             self.assertEqual(hashlib.sha256(db_bytes).hexdigest(), by_role["database"]["sha256"])
             with tempfile.NamedTemporaryFile() as snapshot:
@@ -244,6 +248,7 @@ class HeadscaleArchiveTests(unittest.TestCase):
             connection.execute("DELETE FROM nodes")
         self.db.unlink()
         (self.certs_dir / "server.key").unlink()
+        self.derp_key.unlink()
         result = self.run_script(
             RESTORE, "--backup", str(path), "--force", "--json",
             env={**self.env(), "HEADSCALE_SKIP_SERVICE_CONTROL": "1"},
@@ -254,9 +259,20 @@ class HeadscaleArchiveTests(unittest.TestCase):
         self.assertIn(str(self.db), (self.config_dir / "config.yaml").read_text(encoding="utf-8"))
         self.assertEqual((self.certs_dir / "server.key").stat().st_mode & 0o777, 0o600)
         self.assertEqual((self.certs_dir / "server.key").stat().st_uid, self.certs_dir.stat().st_uid)
+        self.assertEqual(self.derp_key.read_text(encoding="utf-8"), "fixture-derp-private-key\n")
+        self.assertEqual(self.derp_key.stat().st_mode & 0o777, 0o600)
         with sqlite3.connect(self.db) as connection:
             self.assertEqual(connection.execute("SELECT name FROM nodes").fetchone()[0], "fixture-node")
         self.assertEqual(self.db.stat().st_uid, self.data_dir.stat().st_uid)
+
+    def test_configured_derp_private_key_is_required_for_backup(self) -> None:
+        self.derp_key.unlink()
+        result = self.run_script(
+            BACKUP, "--auto", "--json", "--config", str(self.config_dir / "config.yaml"),
+            "--data-dir", str(self.data_dir), "--certs-dir", str(self.certs_dir), "--output-dir", str(self.backups),
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("derp_key", result.stdout)
 
     def test_database_root_remapping_is_rejected_before_any_write(self) -> None:
         path = self.backup()

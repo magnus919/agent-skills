@@ -23,7 +23,7 @@ A complete backup tarball includes:
 - **SQLite DB** — Full node state, users, routes, pre-auth keys, API keys
 - **`config.yaml`** — Headscale server configuration
 - **`policy.json`** — ACL policy file (if present)
-- **Certs and keys** — TLS certificate, private key, and node private key (`/var/lib/headscale/`)
+- **Certs and keys** — TLS certificate and key, Headscale node private key, and configured DERP server private key
 - **DERP map** — DERP configuration file (if customized)
 
 ## Backup Methods
@@ -31,7 +31,7 @@ A complete backup tarball includes:
 - **`sqlite3 .backup`** (recommended) — Safe for live databases; uses SQLite online backup API. This is what `hs-backup.sh` uses.
 - **File copy (`cp`)** — Requires stopping headscale first to avoid WAL corruption.
 
-`hs-backup.sh` reads the database path and optional policy, TLS, node-key, and DERP paths
+`hs-backup.sh` reads the database path and optional policy, TLS, node-key, DERP key, and DERP map paths
 from `config.yaml`. It supports `database.sqlite.path`, `database.path`, and the legacy
 `database_path` setting. PostgreSQL configurations are rejected. TLS certificates and keys
 are included only when configured explicitly (or found in the configured standard
