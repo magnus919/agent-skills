@@ -14,24 +14,26 @@ The references are distilled from the official Terraform and OpenTofu documentat
 |---|---|
 | `SKILL.md` | Agent-facing operating loop, mutation gates, and verification boundaries |
 | `references/` | Eight dated references: modules, state/backends, plan/apply, drift, remote state, upgrades/refactors, diagnostics, source index |
-| `scripts/tfops` | Agent-first wrapper: `--json` output, direct state-file analysis, and a `--dry-run`/`--yes`/`--force` mutation gate |
+| `scripts/tfops` | Agent-first wrapper: `--json` output, direct state-file analysis, and an apply gate that checks and applies the same saved plan |
 | `tests/` | Deterministic tests plus a bundled fixture state file |
 
 ## Quick Start
 
 ```bash
 # Inventory a state file without any terraform binary installed
-bash scripts/tfops doctor --json
-bash scripts/tfops plan --state tests/fixtures/fixture-state.json --json
+python3 scripts/tfops doctor --json
+python3 scripts/tfops plan --state tests/fixtures/fixture-state.json --json
 
 # With terraform (or OpenTofu) installed, in a config directory
 terraform init
-bash scripts/tfops plan --json
-bash scripts/tfops apply --dry-run --json
-bash scripts/tfops apply --yes --json   # mutation gate: never runs without --yes
+python3 scripts/tfops plan --json
+python3 scripts/tfops apply --dry-run --json
+python3 scripts/tfops plan --save-plan reviewed.tfplan --json
+# Review the saved plan before applying
+python3 scripts/tfops apply --yes --plan reviewed.tfplan --json
 ```
 
-The `--help` output documents every flag and works without the terraform binary. Set the `TERRAFORM` environment variable to a specific binary (e.g., `tofu`) when both are installed.
+The `--help` output documents every flag and works without the terraform binary. Create plans for guarded apply with `tfops plan --save-plan FILE`; this explicitly enables refresh and writes a SHA-256 sidecar. Apply checks the sidecar, snapshots the plan, checks taint/drift from `terraform show -json`, and passes that same snapshot to Terraform. `--force` bypasses detected findings only after valid plan evidence is available. The sidecar is local provenance against accidental plan mix-ups, not a cryptographic signature. Set the `TERRAFORM` environment variable to a specific binary (e.g., `tofu`) when both are installed.
 
 ## Triggers
 
