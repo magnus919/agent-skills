@@ -25,6 +25,7 @@ import argparse
 import json
 import os
 import sys
+import urllib.parse
 import urllib.error
 import urllib.request
 from typing import Any, Dict, List, Optional
@@ -97,11 +98,98 @@ def page_title(page: Dict[str, Any]) -> str:
         if prop.get("type") == "title":
             parts = prop.get("title", [])
             if parts:
-                return truncate(parts[0].get("plain_text", ""))
+                return truncate("".join(part.get("plain_text", "") for part in parts))
     return page.get("id", "")
 
 
-def summarize_page(page: Dict[str, Any]) -> Dict[str, Any]:
+PAGINATED_PROPERTY_TYPES = {"title", "rich_text", "people", "relation", "rollup"}
+
+
+def summarize_property(property_value: Dict[str, Any], complete: Optional[bool] = None) -> Dict[str, Any]:
+    """Return a compact, typed value that can be compared after a mutation."""
+    kind = property_value.get("type", "unknown")
+    result: Dict[str, Any] = {"present": True, "type": kind}
+    values = property_value.get(kind, [])
+    has_more = property_value.get("has_more", False)
+    if complete is None and kind in PAGINATED_PROPERTY_TYPES and isinstance(values, list) and len(values) >= 25:
+        has_more = True
+
+    if kind in ("title", "rich_text"):
+        text = "".join(part.get("plain_text", "") for part in property_value.get(kind, []))
+        result["value"] = truncate(text)
+        if len(text) > TEXT_TRUNCATE:
+            result.update({"truncated": True, "character_count": len(text)})
+    elif kind in ("select", "status"):
+        choice = property_value.get(kind)
+        result["value"] = ({"id": choice.get("id"), "name": choice.get("name")}
+                           if choice else None)
+    elif kind == "multi_select":
+        result["value"] = [
+            {"id": choice.get("id"), "name": choice.get("name")}
+            for choice in property_value.get(kind, [])
+        ]
+    elif kind == "number":
+        result["value"] = property_value.get(kind)
+    elif kind == "checkbox":
+        result["value"] = property_value.get(kind, False)
+    elif kind == "date":
+        result["value"] = property_value.get(kind)
+    elif kind in ("url", "email", "phone_number", "created_time", "last_edited_time"):
+        result["value"] = property_value.get(kind)
+    elif kind in ("people", "created_by", "last_edited_by"):
+        users = property_value.get(kind) or []
+        if isinstance(users, dict):
+            users = [users]
+        result["value"] = [{key: user.get(key) for key in ("id", "name") if key in user}
+                           for user in users]
+    elif kind == "relation":
+        result["value"] = [relation.get("id") for relation in property_value.get(kind, [])]
+        result["has_more"] = has_more
+    elif kind == "files":
+        result["value"] = [
+            {key: file.get(key) for key in ("name", "type") if key in file}
+            for file in property_value.get(kind, [])
+        ]
+    elif kind == "unique_id":
+        result["value"] = property_value.get(kind)
+    elif kind == "formula":
+        formula = property_value.get(kind) or {}
+        formula_type = formula.get("type")
+        result["value"] = {"type": formula_type, "value": formula.get(formula_type)}
+    elif kind == "rollup":
+        rollup = property_value.get(kind) or {}
+        rollup_type = rollup.get("type")
+        result["value"] = {"type": rollup_type, "function": rollup.get("function"),
+                            "value": rollup.get(rollup_type)}
+    elif kind == "verification":
+        result["value"] = property_value.get(kind)
+    else:
+        # Keep unfamiliar property types inspectable instead of silently
+        # presenting a successful page read with the value omitted.
+        result["value"] = {key: value for key, value in property_value.items() if key != "id"}
+        result["raw"] = True
+    if complete is None:
+        complete = not has_more
+    result["complete"] = bool(complete)
+    if has_more:
+        result["has_more"] = True
+        result["incomplete_reason"] = "additional_property_items_available"
+    if result.get("truncated"):
+        result["complete"] = False
+        result["incomplete_reason"] = "display_text_truncated"
+    if kind in ("formula", "rollup") and (result.get("value") or {}).get("type") in ("unsupported", "incomplete"):
+        result["complete"] = False
+        result["incomplete_reason"] = "calculation_unavailable_or_incomplete"
+    return result
+
+
+def summarize_page(page: Dict[str, Any], requested_properties: Optional[List[str]] = None) -> Dict[str, Any]:
+    available = page.get("properties", {})
+    names = requested_properties if requested_properties is not None else list(available)
+    properties = {
+        name: summarize_property(available[name]) if name in available else {"present": False}
+        for name in names
+    }
     return {
         "id": page.get("id", ""),
         "title": page_title(page),
@@ -109,6 +197,9 @@ def summarize_page(page: Dict[str, Any]) -> Dict[str, Any]:
         "object": page.get("object", "page"),
         "last_edited_time": page.get("last_edited_time", ""),
         "created_time": page.get("created_time", ""),
+        "properties": properties,
+        **({"properties_requested": requested_properties}
+           if requested_properties is not None else {}),
     }
 
 
@@ -130,7 +221,99 @@ def summarize_database(database: Dict[str, Any]) -> Dict[str, Any]:
 
 def cmd_pages_get(args: argparse.Namespace, token: str) -> Dict[str, Any]:
     page = api_request("GET", f"pages/{args.page_id}", token)
-    return {"ok": True, "page": summarize_page(page)}
+    summary = summarize_page(page, args.property)
+    if args.property is not None:
+        page_properties = page.get("properties", {})
+        detailed_properties = {}
+        for name in args.property:
+            if name not in page_properties:
+                detailed_properties[name] = {"present": False}
+                continue
+            metadata = page_properties[name]
+            property_id = metadata.get("id") or urllib.parse.quote(name, safe="")
+            detailed_properties[name] = retrieve_property_value(
+                args.page_id, property_id, token, args.limit
+            )
+        summary["properties"] = detailed_properties
+    return {"ok": True, "page": summary}
+
+
+def retrieve_property_value(page_id: str, property_id: str, token: str, limit: int) -> Dict[str, Any]:
+    """Read a selected property item, following pagination up to --limit."""
+    # Notion returns property IDs URL-encoded; preserve them verbatim instead
+    # of encoding a percent sign a second time.
+    path = f"pages/{urllib.parse.quote(page_id, safe='')}/properties/{property_id}"
+    collected: List[Dict[str, Any]] = []
+    page_size = min(limit, MAX_LIMIT)
+    cursor: Optional[str] = None
+    raw = api_request("GET", f"{path}?page_size={page_size}", token)
+    if raw.get("object") == "property_item":
+        if not isinstance(raw.get("type"), str) or raw["type"] not in raw:
+            return {"present": True, "type": raw.get("type", "unknown"), "complete": False,
+                    "incomplete_reason": "invalid_property_item_response", "raw": raw}
+        return summarize_property(raw, complete=True)
+    if _property_list_error(raw):
+        return {"present": True, "type": raw.get("type", "unknown"), "complete": False,
+                "incomplete_reason": "invalid_property_pagination_response", "raw": raw}
+
+    response = raw
+    incomplete_reason: Optional[str] = None
+    while True:
+        response_error = _property_list_error(response)
+        if response_error:
+            incomplete_reason = response_error
+            break
+        items = response.get("results", [])
+        remaining = limit - len(collected)
+        collected.extend(items[:remaining])
+        if not response.get("has_more"):
+            break
+        if len(collected) >= limit:
+            incomplete_reason = "property_item_limit_reached"
+            break
+        cursor = response.get("next_cursor")
+        page_size = min(limit - len(collected), MAX_LIMIT)
+        query = urllib.parse.urlencode({"page_size": page_size, "start_cursor": cursor})
+        response = api_request("GET", f"{path}?{query}", token)
+
+    metadata = raw.get("property_item", {})
+    kind = metadata.get("type", raw.get("type", "unknown"))
+    if kind in ("title", "rich_text", "people", "relation"):
+        value = {"type": kind, kind: [item.get(kind, {}) for item in collected],
+                 "has_more": response.get("has_more", False)}
+    elif kind == "rollup":
+        rollup = response.get("property_item", {}).get("rollup", metadata.get("rollup", {}))
+        value = {"type": kind, kind: {"type": rollup.get("type"),
+                                       "function": rollup.get("function"),
+                                       rollup.get("type"): rollup.get(rollup.get("type"))},
+                 "has_more": response.get("has_more", False)}
+    else:
+        value = {"type": kind, kind: collected, "has_more": response.get("has_more", False)}
+    is_complete = incomplete_reason is None and not response.get("has_more", False)
+    property_summary = summarize_property(value, complete=is_complete)
+    if response.get("has_more"):
+        property_summary["has_more"] = True
+    if incomplete_reason:
+        property_summary["incomplete_reason"] = incomplete_reason
+    return property_summary
+
+
+def _property_list_error(response: Dict[str, Any]) -> Optional[str]:
+    """Return a reason when a property pagination response is malformed."""
+    if (response.get("object") != "list"
+            or not isinstance(response.get("results"), list)
+            or not isinstance(response.get("has_more"), bool)
+            or not isinstance(response.get("property_item"), dict)
+            or not isinstance(response["property_item"].get("type"), str)):
+        return "invalid_property_pagination_response"
+    if any(not isinstance(item, dict) or item.get("object") != "property_item"
+           for item in response["results"]):
+        return "invalid_property_pagination_response"
+    if response["has_more"] and not isinstance(response.get("next_cursor"), str):
+        return "invalid_property_pagination_response"
+    if response["has_more"] and not response["next_cursor"]:
+        return "invalid_property_pagination_response"
+    return None
 
 
 def cmd_pages_create(args: argparse.Namespace, token: str) -> Dict[str, Any]:
@@ -217,6 +400,18 @@ def _emit_human(data: Dict[str, Any]) -> None:
     if "page" in data and "dry_run" not in data:
         page = data["page"]
         print(f"{page['title']}  <{page['id']}>  {page['url']}")
+        for name, prop in page.get("properties", {}).items():
+            if not prop.get("present"):
+                value = "<absent>"
+            elif prop.get("truncated"):
+                value = f"{prop['value']} <truncated; {prop['character_count']} characters>"
+            else:
+                value = json.dumps(prop.get("value"), ensure_ascii=False, sort_keys=True)
+            if prop.get("present") and prop.get("complete") is False:
+                reason = prop.get("incomplete_reason")
+                marker = f"incomplete: {reason}" if reason else "incomplete"
+                value = f"{value} <{marker}>"
+            print(f"  {name} ({prop.get('type', 'unknown')}): {value}")
     elif "pages" in data:
         print(f"database <{data['database_id']}> (has_more={data['has_more']}):")
         for page in data["pages"]:
@@ -260,6 +455,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     page_get = page_sub.add_parser("get", help="retrieve a page (read-only)")
     page_get.add_argument("--page-id", required=True, help="page ID (32-hex or UUID form)")
+    page_get.add_argument("--property", action="append", metavar="NAME",
+                          help="include only this property (repeatable); absent values are explicit")
 
     page_create = page_sub.add_parser("create", help="create a page (guarded mutation)")
     page_create.add_argument("--parent-page", help="parent page ID for the new page")

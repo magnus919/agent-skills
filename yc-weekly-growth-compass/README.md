@@ -7,7 +7,7 @@ Paul Graham's "Startup = Growth" framework as an operational weekly practice. Co
 When your agent loads this skill, it can **make growth the compass for every startup decision**. That means:
 
 - **Compute weekly growth rates** — single period or time-series data
-- **Benchmark against YC tiers** — 1% concerning, 5-7% good, 10%+ exceptional
+- **Benchmark against YC weekly tiers** — inputs reported monthly or quarterly are converted to an annualization-equivalent weekly rate before classification
 - **Project compound growth** — see where you'll be in a year at current trajectory
 - **Frame decisions** — "does this serve your target growth rate?" for every initiative
 - **Estimate doubling time** — how long to 2x, 10x, 100x at current growth
@@ -22,8 +22,8 @@ When your agent loads this skill, it can **make growth the compass for every sta
 ## Quick Start
 
 ```bash
-python3 scripts/growth-compass.py --current 1000 --prior 950
-python3 scripts/growth-compass.py --series "1000,1050,1100,1150,1200"
+python3 scripts/growth-compass.py --current-value 1000 --previous-value 950 --period weekly
+python3 scripts/growth-compass.py --series "1000,1050,1100,1150,1200" --period weekly
 ```
 
 ## Triggers

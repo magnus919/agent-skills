@@ -8,6 +8,8 @@ Teams run their operational memory in Notion — runbooks, on-call docs, product
 
 It ships `notion-cli`, a small Python script that speaks the Notion API with no third-party dependencies. Reads are capped (`--limit`), output is clean JSON for the agent or readable text for you, and `--help` works with no token and no network. The script sends the standard `Notion-Version` header and summarizes pages as title + ID + URL instead of dumping raw block trees.
 
+Page reads also include compact, typed property values so you can check a status, checkbox, number, or text before and after an update. Use repeatable `--property` flags to read only the fields you need; missing, truncated, and paginated incomplete values are visibly marked, including in human-readable output.
+
 ## What You Get
 
 | Directory | Purpose |
@@ -15,7 +17,7 @@ It ships `notion-cli`, a small Python script that speaks the Notion API with no 
 | `SKILL.md` | Agent-facing operating contract, mutation gates, and verification boundaries |
 | `references/` | Dated source index and an API operations reference (endpoints, pagination, property types, filters, errors) |
 | `scripts/notion-cli` | Bounded, stdlib-only CLI: pages get/create/update, databases query, search; `--json`, `--limit`, mutations gated by `--dry-run`/`--yes` |
-| `tests/` | 13 deterministic tests against a stub Notion API, covering the mutation gate and read-only contract |
+| `tests/` | 21 deterministic tests against a stub Notion API, including typed property read-back and the mutation gate |
 | `evals/evals.json` | Six output-quality evaluation cases for agent runs |
 
 ## Quick Start
@@ -29,6 +31,9 @@ NOTION_TOKEN=secret_... notion/scripts/notion-cli --json search query --query "o
 
 # Retrieve one page
 NOTION_TOKEN=secret_... notion/scripts/notion-cli --json pages get --page-id <page-id>
+
+# Read back selected properties after an update
+NOTION_TOKEN=secret_... notion/scripts/notion-cli --json pages get --page-id <page-id> --property Status --property Reviewer
 
 # Query a database, capped at 10 rows
 NOTION_TOKEN=secret_... notion/scripts/notion-cli --json --limit 10 databases query --database-id <db-id>
