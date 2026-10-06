@@ -16,7 +16,7 @@ Public discovery reads need an application Client ID, not a user login. OAuth bo
 | `references/auth-and-request-contract.md` | Required headers, OAuth boundary, and errors |
 | `references/discovery-endpoints.md` | Trending/popular/anticipated semantics and paging |
 | `references/recipes-and-operations.md` | jq pipelines and rate-safe operations |
-| `evals/evals.json` | Six representative usage-quality cases |
+| `evals/evals.json` | Representative usage-quality cases |
 
 ## Quick Start
 
@@ -30,7 +30,7 @@ Create a free Client ID at [trakt.tv/oauth/applications](https://trakt.tv/oauth/
 
 ## Triggers
 
-Load this skill for Trakt API discovery, trending movies or shows, popular rankings, anticipated releases, watch-signal pipelines, or Trakt pagination and authentication questions. Do not use it for TMDb catalog metadata, credits, images, or provider lookups.
+Load this skill for Trakt API discovery, trending movies or shows, popular rankings, anticipated releases, watch-signal pipelines, or Trakt pagination and authentication questions. Personal history, watchlist, collection, and list operations are not supported. Do not use it for TMDb catalog metadata, credits, images, or provider lookups.
 
 ## Requirements
 
