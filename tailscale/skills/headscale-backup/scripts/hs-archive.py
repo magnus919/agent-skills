@@ -67,7 +67,17 @@ def absolute(path: str | Path) -> Path:
 
 def resolve_assets(config_file: Path, data_dir: Path, certs_dir: Path) -> tuple[dict[str, Path], dict[str, Path], dict[str, bool]]:
     cfg = read_config(config_file)
-    db_value = cfg.get("database.path", str(data_dir / "db.sqlite"))
+    if any(key.startswith("database.postgres") for key in cfg) or cfg.get("database", "").lower() in {"postgres", "postgresql"}:
+        fail("PostgreSQL-backed Headscale is not supported by this SQLite backup helper")
+    database_type = cfg.get("database.type", "").lower()
+    if database_type and database_type not in {"sqlite", "sqlite3"}:
+        fail(f"unsupported Headscale database type: {database_type}")
+    db_value = cfg.get("database.sqlite.path") or cfg.get("database.path") or cfg.get("database_path")
+    if db_value is None:
+        configured_database = any(key == "database" or key.startswith("database.") for key in cfg)
+        if configured_database:
+            fail("Headscale database is configured without a supported SQLite path")
+        db_value = str(data_dir / "db.sqlite")
     db_path = resolve_config_path(db_value, config_file)
     policy_value = cfg.get("acl_policy_path") or cfg.get("policy_path") or cfg.get("policy.path")
     cert_value = cfg.get("tls_cert_path")
@@ -105,6 +115,8 @@ def resolve_assets(config_file: Path, data_dir: Path, certs_dir: Path) -> tuple[
             sources[role] = fallback.resolve()
             destinations[role] = fallback.resolve()
             required[role] = False
+    if not cert_value and not key_value and (certs_dir / "server.crt").is_file() != (certs_dir / "server.key").is_file():
+        fail("standard TLS recovery assets are incomplete; provide both server.crt and server.key or neither")
 
     derp_path = config_file.parent / "derp.yaml"
     if derp_path.is_file():
@@ -112,13 +124,6 @@ def resolve_assets(config_file: Path, data_dir: Path, certs_dir: Path) -> tuple[
         destinations["derp"] = derp_path.resolve()
         required["derp"] = False
 
-    # Preserve the umbrella helper's discovery of Let's Encrypt certificate assets.
-    for cert in Path("/etc/letsencrypt/live").glob("*/fullchain.pem"):
-        if cert.is_file() and cert.resolve() not in sources.values():
-            role = f"extra_tls_{len([key for key in sources if key.startswith('extra_tls_')]) + 1}"
-            sources[role] = cert.resolve()
-            destinations[role] = cert.resolve()
-            required[role] = False
     return sources, destinations, required
 
 
@@ -227,8 +232,10 @@ def backup(args: argparse.Namespace) -> int:
         manifest = make_manifest(sources, destinations, required,
                                  {"config": config_dir, "data": data_dir, "certs": certs_dir}, package)
         (package / MANIFEST_NAME).write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        with tarfile.open(destination, "w:gz") as archive:
+        staged_archive = root / f"{base}.tar.gz"
+        with tarfile.open(staged_archive, "w:gz") as archive:
             archive.add(package, arcname=base)
+        os.replace(staged_archive, destination)
     checksum = sha256_file(destination)
     payload = {"action": "backup", "dry_run": False, "backup_path": str(destination),
                "checksum_sha256": checksum, "asset_count": len(manifest["assets"]),
@@ -268,20 +275,34 @@ def read_archive(backup_path: Path) -> tuple[str, dict[str, Any], dict[str, tarf
         manifest = json.load(stream)
     if not isinstance(manifest, dict) or manifest.get("schema_version") != MANIFEST_VERSION or not isinstance(manifest.get("assets"), list):
         fail("unsupported or malformed backup manifest")
+    roots = manifest.get("roots")
+    if not isinstance(roots, dict) or any(not isinstance(value, str) or not Path(value).is_absolute() for value in roots.values()):
+        fail("backup manifest contains malformed root mappings")
     asset_roles: set[str] = set()
+    expected_members = {manifest_name}
     for asset in manifest["assets"]:
         if not isinstance(asset, dict) or not all(isinstance(asset.get(key), str) for key in ("role", "archive_path", "restore_path", "sha256")):
             fail("backup manifest contains malformed asset mapping")
+        if (not isinstance(asset.get("mode"), int) or not 0 <= asset["mode"] <= 0o777
+                or not isinstance(asset.get("size_bytes"), int) or asset["size_bytes"] < 0
+                or not isinstance(asset.get("required"), bool)
+                or len(asset["sha256"]) != 64 or any(char not in "0123456789abcdef" for char in asset["sha256"])):
+            fail(f"backup manifest contains invalid metadata for {asset['role']}")
         if asset["role"] in asset_roles:
             fail(f"backup manifest repeats asset role: {asset['role']}")
         asset_roles.add(asset["role"])
         relative = safe_member(asset["archive_path"])
         member_name = f"{base}/{relative.as_posix()}"
+        if member_name in expected_members:
+            fail(f"backup manifest repeats archive path: {asset['archive_path']}")
+        expected_members.add(member_name)
         info = member_map.get(member_name)
         if info is None:
             fail(f"backup is missing manifested asset: {asset['archive_path']}")
         if not Path(asset["restore_path"]).is_absolute() or ".." in Path(asset["restore_path"]).parts:
             fail(f"manifest contains unsafe restore path for {asset['role']}")
+        if info.size != asset["size_bytes"]:
+            fail(f"backup asset size mismatch: {asset['archive_path']}")
         with tarfile.open(backup_path, "r:gz") as archive:
             stream = archive.extractfile(info)
             if stream is None:
@@ -294,6 +315,9 @@ def read_archive(backup_path: Path) -> tuple[str, dict[str, Any], dict[str, tarf
             fail(f"backup asset checksum mismatch: {asset['archive_path']}")
     if not {"config", "database"}.issubset(asset_roles):
         fail("backup manifest omits mandatory config or database recovery asset")
+    extras = set(member_map) - expected_members
+    if extras:
+        fail(f"archive contains files not declared in its manifest: {', '.join(sorted(extras))}")
     return base, manifest, member_map
 
 
@@ -307,7 +331,14 @@ def target_path(asset: dict[str, Any], roots: dict[str, str], overrides: dict[st
             except ValueError:
                 continue
             return (override / relative).resolve()
-    return original
+    return original.resolve()
+
+
+def apply_owner(path: Path, target: Path) -> None:
+    """Keep an existing target's ownership; use its parent owner for a new file."""
+    source = target if target.exists() else target.parent
+    metadata = source.stat()
+    os.chown(path, metadata.st_uid, metadata.st_gid)
 
 
 def confirm(prompt: str) -> bool:
@@ -339,11 +370,21 @@ def restore(args: argparse.Namespace) -> int:
         fail(f"backup not found: {backup_path}")
     base, manifest, member_map = read_archive(backup_path)
     roots = manifest.get("roots", {})
-    overrides = {"config": absolute(args.config_dir), "data": absolute(args.data_dir), "certs": absolute(args.certs_dir)}
+    overrides = {
+        name: absolute(value)
+        for name, value in (("config", args.config_dir), ("data", args.data_dir), ("certs", args.certs_dir))
+        if value
+    }
     items = []
+    targets: set[Path] = set()
     with tarfile.open(backup_path, "r:gz") as archive:
         for asset in manifest["assets"]:
             target = target_path(asset, roots, overrides)
+            if target in targets:
+                fail(f"two archive assets resolve to the same restore path: {target}")
+            targets.add(target)
+            if asset["role"] == "database" and target != Path(asset["restore_path"]).resolve():
+                fail("database path remapping is not safe because config.yaml would still reference the archived path; restore to the configured path or update Headscale config separately")
             member_name = f"{base}/{asset['archive_path']}"
             items.append({"role": asset["role"], "archive_path": member_name,
                           "target": str(target), "required": asset.get("required", False),
@@ -358,6 +399,7 @@ def restore(args: argparse.Namespace) -> int:
             print("Aborted.")
             return 0
         stopped = False
+        restore_complete = False
         if not args.skip_service_control:
             stop_cmd, active = service_command("stop", args.service)
             if active and stop_cmd:
@@ -372,15 +414,25 @@ def restore(args: argparse.Namespace) -> int:
                 stream = archive.extractfile(info)
                 if stream is None:
                     fail(f"could not read archived file: {item['archive_path']}")
-                temporary = target.with_name(f".{target.name}.restore-{os.getpid()}")
-                with temporary.open("wb") as output:
-                    shutil.copyfileobj(stream, output)
-                mode = 0o600 if asset["role"] in {"database", "tls_key", "node_key"} else item["mode"]
-                os.chmod(temporary, mode)
-                os.replace(temporary, target)
+                descriptor, temporary_name = tempfile.mkstemp(prefix=f".{target.name}.restore-", dir=target.parent)
+                temporary = Path(temporary_name)
+                try:
+                    with os.fdopen(descriptor, "wb") as output:
+                        shutil.copyfileobj(stream, output)
+                    mode = 0o600 if asset["role"] in {"database", "tls_key", "node_key"} else item["mode"]
+                    apply_owner(temporary, target)
+                    os.chmod(temporary, mode)
+                    os.replace(temporary, target)
+                finally:
+                    temporary.unlink(missing_ok=True)
                 restored.append(asset["role"])
-        finally:
+            restore_complete = True
+        except Exception as error:
             if stopped:
+                fail(f"restore failed after stopping {args.service}; the service was left stopped to avoid running against partially restored state: {error}")
+            raise
+        finally:
+            if stopped and restore_complete:
                 start_cmd, active = service_command("start", args.service)
                 if active and start_cmd:
                     subprocess.run(start_cmd, check=True)
@@ -404,9 +456,9 @@ def parser() -> argparse.ArgumentParser:
     backup_parser.set_defaults(handler=backup)
     restore_parser = sub.add_parser("restore")
     restore_parser.add_argument("--backup", required=True)
-    restore_parser.add_argument("--config-dir", default=os.environ.get("HEADSCALE_CONFIG_DIR", "/etc/headscale"))
-    restore_parser.add_argument("--data-dir", default=os.environ.get("HEADSCALE_DATA_DIR", "/var/lib/headscale"))
-    restore_parser.add_argument("--certs-dir", default=os.environ.get("HEADSCALE_CERTS_DIR", "/etc/headscale"))
+    restore_parser.add_argument("--config-dir", default=os.environ.get("HEADSCALE_CONFIG_DIR"), help="Override the archived config root; default preserves archived paths")
+    restore_parser.add_argument("--data-dir", default=os.environ.get("HEADSCALE_DATA_DIR"), help="Override the archived data root; database moves are rejected unless config is updated separately")
+    restore_parser.add_argument("--certs-dir", default=os.environ.get("HEADSCALE_CERTS_DIR"), help="Override the archived certs root; default preserves archived paths")
     restore_parser.add_argument("--service", default=os.environ.get("HEADSCALE_SERVICE", "headscale"))
     restore_parser.add_argument("--dry-run", action="store_true")
     restore_parser.add_argument("--json", action="store_true")
