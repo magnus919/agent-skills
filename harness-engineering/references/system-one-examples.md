@@ -1,12 +1,12 @@
 # System One decision examples for harnesses
 
-Run `python3 scripts/decision_examples.py` from the installed `harness-engineering/` skill directory to print all three offline examples. Select one with `selection`, `action`, or `review`; add `--json` for structured output. The script exits `0` when the examples render and `2` for an invalid contract. Run regression checks with `python3 scripts/test_decision_examples.py`.
+Run `python3 scripts/decision_examples.py` from the installed `harness-engineering/` skill directory to print all three offline examples. Select one with `selection`, `action`, or `review`; add `--json` for structured output. The script renders fixed internal fixtures and accepts no external contract input. It exits `0` when examples render and `2` for invalid CLI usage or an internal fixture contract error. Run regression checks with `python3 scripts/test_decision_examples.py`.
 
 Every answer is labeled **SYNTHETIC OFFLINE FIXTURE**. No model is called, no calibration is performed, and the action executor is represented by injected observations. The `0.70` selection cutoff is an explicit fixture setting, not a recommended or calibrated threshold. These examples teach decision boundaries; they do not replace a runtime framework.
 
 ## Select an applicable skill or tool
 
-The finite candidate list is supplied by the harness, and the decision names only one listed ID. `no_match` is a valid result when no candidate applies; `unavailable` routes to escalation instead of pretending that missing evidence proves no match. The example validates candidate identity and finite probability shape, while the example cutoff remains policy configuration. Relative ranking alone cannot establish applicability. Real deployments need representative labels for candidate recall, wrong selection, no-match, and abstention under their own candidate set and task distribution.
+The finite candidate list is supplied by the harness, and the decision names only one listed ID. `no_match` is a valid result when no candidate applies; `unavailable` routes to escalation instead of pretending that missing evidence proves no match. The example validates candidate identity and finite probability shape, while the example cutoff remains policy configuration. A candidate below that cutoff goes to `review`; low confidence does not establish `no_match`. Relative ranking alone cannot establish applicability. Real deployments need representative labels for candidate recall, wrong selection, no-match, and abstention under their own candidate set and task distribution.
 
 ```sh
 python3 scripts/decision_examples.py selection --json
@@ -14,7 +14,7 @@ python3 scripts/decision_examples.py selection --json
 
 ## Choose a concrete action and verify it
 
-The action proposal selects from an allowlist and binds its evidence revision to current state. A stale binding is rejected before execution. After a fresh proposal, the deterministic harness checks the observed effect and an independent outcome; a launch error is `unknown`, no effect is `failed`, and an unverified outcome stays `incomplete`. The included observations are fixtures only. Real execution needs the actual authority boundary, reconciliation path, and verifier appropriate to the action.
+The action proposal selects from a host-owned allowlist and binds its evidence revision to current state. The host action contract supplies the expected effect; a proposal cannot redefine it, even if its injected observation agrees with the redefinition. A stale binding is rejected before execution. After a fresh proposal, the deterministic harness checks the observed effect and an independent outcome; a launch error is `unknown`, no effect is `failed`, and an unverified outcome stays `incomplete`. The included observations are fixtures only. Real execution needs the actual authority boundary, reconciliation path, and verifier appropriate to the action.
 
 ```sh
 python3 scripts/decision_examples.py action --json

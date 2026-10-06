@@ -28,12 +28,19 @@ Evaluation asks whether behavior meets a defined criterion on a declared dataset
 6. Apply a risk-tiered release gate: hard safety, privacy, authorization, and side-effect invariants cannot be averaged away. Record authority, insufficient-evidence outcomes, rollback, and follow-up. Load [release-engineering](../release-engineering/SKILL.md) when this evidence must be incorporated into artifact promotion, deployment, rollback, or a broader release train.
 7. Instrument production with minimized, redacted telemetry. Feed verified incidents and near misses into cases after consent, transformation, and contamination review.
 
+When an evaluation needs intervention detail, keep the existing aggregate count
+separate from optional typed events. Absence of event detail means it was not
+collected; it does not mean zero. Collect only fields needed for the question,
+exclude raw messages and hidden reasoning by default, and do not treat lower
+counts alone as success. See [trajectory review](references/trajectory-review.md#optional-intervention-events).
+
 Stop when the supported decision, evidence gaps, residual risks, and responsible owner are recorded. Escalate rather than infer a pass when required evidence is unavailable or conflicts.
 
 ## Load By Need
 
 | Need | Load |
 |---|---|
+| Compare task-relevant discovery, external artifacts, delegated consumption, or fresh-session recurrence | [references/agent-interface-enrichment.md](references/agent-interface-enrichment.md) |
 | Choose evaluation evidence and contracts | [references/evaluation-design.md](references/evaluation-design.md) |
 | Separate performance, diagnostic, and replay evidence; connect offline to online measures | [references/evidence-modes-and-metric-mirrors.md](references/evidence-modes-and-metric-mirrors.md) |
 | Build immutable cases, fixtures, and provenance | [references/datasets.md](references/datasets.md) |
@@ -43,6 +50,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 | Define measures or compare runs | [references/metrics-and-statistics.md](references/metrics-and-statistics.md) |
 | Evaluate a bounded Choice/Score/Noul decision model or GLiNER classifier inside an agent | [system-one](../system-one/SKILL.md) for its question contract, held-out labels, calibration where probabilities exist, and model-level latency; use this skill for the agent's end-to-end task and trajectory evidence |
 | Review tools, state, recovery, or side effects | [references/trajectory-review.md](references/trajectory-review.md) |
+| Record optional, privacy-bounded human intervention detail | [references/trajectory-review.md#optional-intervention-events](references/trajectory-review.md#optional-intervention-events) |
 | Triage a regression or decide release readiness | [references/regression-and-release.md](references/regression-and-release.md) |
 | Design traces, logs, metrics, or privacy controls | [references/production-observability.md](references/production-observability.md) |
 | Interoperate with OpenTelemetry | [references/opentelemetry-genai.md](references/opentelemetry-genai.md) |
@@ -53,7 +61,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 
 ## Templates
 
-Use [templates/eval-plan.md](templates/eval-plan.md), [templates/dataset-manifest.md](templates/dataset-manifest.md), [templates/grader-specification.md](templates/grader-specification.md), [templates/trace-review.md](templates/trace-review.md), [templates/run-report.md](templates/run-report.md), [templates/release-gate.md](templates/release-gate.md), and [templates/metric-mirror.md](templates/metric-mirror.md). They are decision records, not checklists that manufacture evidence.
+Use [templates/eval-plan.md](templates/eval-plan.md), [templates/interface-enrichment-comparison.md](templates/interface-enrichment-comparison.md), [templates/dataset-manifest.md](templates/dataset-manifest.md), [templates/grader-specification.md](templates/grader-specification.md), [templates/trace-review.md](templates/trace-review.md), [templates/run-report.md](templates/run-report.md), [templates/release-gate.md](templates/release-gate.md), and [templates/metric-mirror.md](templates/metric-mirror.md). They are decision records, not checklists that manufacture evidence.
 
 ## Guardrails
 

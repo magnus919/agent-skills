@@ -1,56 +1,69 @@
 # AutoGen Conversation Patterns
 
-## Two-Agent Chat
+Examples target AgentChat 0.7.5 and Python 3.10+. They use asynchronous `run()` and `run_stream()`; old `initiate_chat()` and `summary` examples apply to `pyautogen` 0.2 only.
+
+## Assistant and human participant
+
+`UserProxyAgent` is the human side of a team. Its `input_func` receives the prompt and returns the user's reply.
 
 ```python
 from autogen_agentchat.agents import AssistantAgent, UserProxyAgent
+from autogen_agentchat.conditions import MaxMessageTermination
+from autogen_agentchat.teams import RoundRobinGroupChat
 
 assistant = AssistantAgent(name="assistant", model_client=model_client)
-proxy = UserProxyAgent(name="proxy", human_input_mode="NEVER")
-
-result = proxy.initiate_chat(assistant, message="What is AutoGen?", max_turns=2)
-print(result.summary)
+human = UserProxyAgent(name="human", input_func=lambda prompt: input(prompt))
+team = RoundRobinGroupChat(
+    [assistant, human],
+    termination_condition=MaxMessageTermination(max_messages=4),
+)
+result = await team.run(task="Explain AutoGen and ask me a follow-up question.")
+for message in result.messages:
+    print(f"{message.source}: {message.content}")
 ```
 
-## Termination Conditions
+## Termination conditions
 
-Prevent infinite loops:
+Bound a team explicitly. `MaxMessageTermination` is useful when the exact final response is not known in advance; `TextMentionTermination` is useful when a model is instructed to emit a marker.
 
 ```python
-proxy = UserProxyAgent(
-    name="proxy",
-    human_input_mode="NEVER",
-    is_termination_msg=lambda msg: "TERMINATE" in (msg.get("content", "") or ""),
-    max_consecutive_auto_reply=5,
-)
+from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
 
-# Or limit turns at chat level
-result = proxy.initiate_chat(assistant, message="Hello", max_turns=10)
+bounded = MaxMessageTermination(max_messages=10)
+marked = TextMentionTermination("TERMINATE")
+team = RoundRobinGroupChat([assistant, executor], termination_condition=bounded | marked)
+result = await team.run(task="Perform the bounded task.")
+print(result.messages[-1].content)
 ```
 
-## Cancellation Tokens
+## Cancellation
+
+Pass a `CancellationToken` to interrupt a long-running agent or team run.
 
 ```python
 from autogen_core import CancellationToken
 
 token = CancellationToken()
-# Token can be used to cancel long-running operations
+result = await assistant.run(task="Summarize the input.", cancellation_token=token)
+# Call token.cancel() from the controlling task to stop a run.
 ```
 
-## Nested Chats
+## Agent as a tool
 
-Agent delegates work to a sub-conversation:
+For a nested task that should remain inside a model-backed agent, wrap the specialist in `AgentTool` rather than calling the legacy `initiate_chat()` method.
 
 ```python
-async def research_topic(query: str) -> str:
-    researcher = AssistantAgent(name="researcher", model_client=model_client)
-    fact_checker = AssistantAgent(name="fact_checker", model_client=model_client)
-    proxy = UserProxyAgent(name="proxy", human_input_mode="NEVER")
-    result = await proxy.initiate_chat(
-        researcher, message=f"Research: {query}", max_turns=5
-    )
-    return result.summary
+from autogen_agentchat.agents import AssistantAgent
+from autogen_agentchat.tools import AgentTool
 
-# Register as a function the main agent can call
-assistant.register_function(function_map={"research": research_topic})
+researcher = AssistantAgent(name="researcher", model_client=model_client)
+research_tool = AgentTool(agent=researcher, return_value_as_last_message=True)
+coordinator = AssistantAgent(
+    name="coordinator",
+    model_client=model_client,
+    tools=[research_tool],
+)
+result = await coordinator.run(task="Research the question and summarize the findings.")
 ```
+
+Use `RoundRobinGroupChat` when agents should exchange visible messages in a fixed order. Use `SelectorGroupChat` when a model should choose the next speaker. See `group-chat.md` for team patterns.

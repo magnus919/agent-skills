@@ -1,0 +1,37 @@
+{
+  "discovery": [
+    "Task-relevant selection with a valid small/static alternative",
+    "Identifier prerequisite ordering",
+    "Distinguishes stale/no-match/denied",
+    "Explicit safe recovery",
+    "Comparison using accepted outcomes"
+  ],
+  "artifacts": [
+    "Completeness before claims",
+    "Identity mapping and unmatched/duplicate accounting",
+    "External computation with bounded inspection",
+    "Provenance and protected retrievable handle",
+    "Expiry/resume recovery"
+  ],
+  "api-consumer": [
+    "Explicit identifier/ambiguity prerequisite",
+    "Bounded read completeness",
+    "Actionable failure outcomes",
+    "Idempotency/reconciliation after timeout",
+    "Scope checks and verified task postconditions"
+  ],
+  "delegation": [
+    "Human outcome/accountability",
+    "External actor/authority/scope",
+    "Revocation stops remaining work",
+    "Partial effects visible with reconciliation",
+    "Human review/intervention and observable completion"
+  ],
+  "eval-design": [
+    "Separate hypotheses/ablations",
+    "Matched old/new tasks and configuration",
+    "Correct completion plus resource measures",
+    "Discovery miss/denial/partial artifact/repeat failure slices",
+    "Explicit evidence limits and safety decision"
+  ]
+}

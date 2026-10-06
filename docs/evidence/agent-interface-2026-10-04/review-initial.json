@@ -1,0 +1,103 @@
+{
+  "reviewer_kind": "model_teacher",
+  "model": "gpt-6-luna",
+  "review_scope": "Version-blinded grading of the supplied A/B synthetic task responses against rubric.json. One response per condition; these judgments are advisory and are not human adjudication, calibrated accuracy, behavioral improvement, or production evidence.",
+  "cases": [
+    {
+      "case_id": "discovery",
+      "labels": {
+        "A": [
+          {"criterion": "Task-relevant selection with a valid small/static alternative", "status": "not_shown", "excerpt": "The smallest plausible repair is to improve discovery and call contracts at the point where the agent chooses tools", "explanation": "This advocates a narrower discovery repair but does not establish when a small stable catalog should remain statically visible as a valid alternative."},
+          {"criterion": "Identifier prerequisite ordering", "status": "met", "excerpt": "then require the search operation to take the ID", "explanation": "It makes name resolution or an existing resolver precede the search that requires the canonical ID."},
+          {"criterion": "Distinguishes stale/no-match/denied", "status": "met", "excerpt": "distinguish ‘no matches in current index’ from ‘search failed’ and from ‘access denied.’", "explanation": "The three outcomes are explicitly separate."},
+          {"criterion": "Explicit safe recovery", "status": "met", "excerpt": "a bounded fallback to the authoritative source when the index is stale", "explanation": "It bounds stale-index recovery, preserves permission scope, and separately says denied operations must stop without alternate-tool retries."},
+          {"criterion": "Comparison using accepted outcomes", "status": "met", "excerpt": "Compare with the baseline and candidate with comparable conditions", "explanation": "The response also defines acceptance through correct selection/arguments, distinct statuses, no false completion, and trace/task outcomes."}
+        ],
+        "B": [
+          {"criterion": "Task-relevant selection with a valid small/static alternative", "status": "not_shown", "excerpt": "The catalog should expose a short task-oriented index, then load only relevant operations", "explanation": "This proposes staged discovery, but does not state that a small stable catalog can use a static list/index with complete contracts instead."},
+          {"criterion": "Identifier prerequisite ordering", "status": "met", "excerpt": "offer a separate explicit resolution operation only if the service supports that capability and the actor is authorized to use it", "explanation": "It prevents the wrong name value from being passed directly and requires supported, authorized ID resolution or a request for the ID."},
+          {"criterion": "Distinguishes stale/no-match/denied", "status": "met", "excerpt": "distinguish ‘no capability exists’ from ‘index unavailable’", "explanation": "It combines that distinction with explicit stale-version handling and a denial that remains denied; the relevant outcomes are not collapsed."},
+          {"criterion": "Explicit safe recovery", "status": "met", "excerpt": "permit one bounded refresh against the authoritative catalog, then search once more", "explanation": "It limits retry, stops/escalates after continued no-match, and forbids weaker-route recovery after denial."},
+          {"criterion": "Comparison using accepted outcomes", "status": "met", "excerpt": "The task oracle should check the intended message set and source scope", "explanation": "It proposes matched conditions and checks traces, final state, authorization, errors, and the task oracle rather than relying on response text."}
+        ]
+      }
+    },
+    {
+      "case_id": "artifacts",
+      "labels": {
+        "A": [
+          {"criterion": "Completeness before claims", "status": "met", "excerpt": "page one is never labeled complete merely because it returned successfully", "explanation": "Completion depends on all pages and an explicit artifact completeness state."},
+          {"criterion": "Identity mapping and unmatched/duplicate accounting", "status": "met", "excerpt": "Record mapping version, match basis ... and each outcome: matched, unmatched, duplicate, conflicting, or unresolved.", "explanation": "It requires an authorized explicit mapping, source-qualified keys, and accounting for unmatched and duplicate records."},
+          {"criterion": "External computation with bounded inspection", "status": "met", "excerpt": "expose bounded page, projection, filter, and aggregate operations", "explanation": "It keeps bulk records outside context and describes bounded inspection/aggregation through the authorized downstream app."},
+          {"criterion": "Provenance and protected retrievable handle", "status": "met", "excerpt": "A stored opaque handle is a retrieval reference, not a portable customer ID or proof that another application can access it.", "explanation": "It records source/query/snapshot provenance and requires separately authorized access or transfer, avoiding an implied cross-app guarantee."},
+          {"criterion": "Expiry/resume recovery", "status": "met", "excerpt": "If it is expired, do not silently rerun the original query and imply the same cohort.", "explanation": "It reauthorizes on resume and distinguishes regeneration from a newly queried cohort whose membership may differ."}
+        ],
+        "B": [
+          {"criterion": "Completeness before claims", "status": "met", "excerpt": "Continue until the provider’s explicit terminal cursor; do not infer completion from a short page or expected count.", "explanation": "It requires terminal-cursor evidence, page reconciliation, and explicit incomplete status if evidence is missing."},
+          {"criterion": "Identity mapping and unmatched/duplicate accounting", "status": "met", "excerpt": "Validate unmatched, duplicated, and ambiguous identities before computing a distribution", "explanation": "It requires an approved, owned mapping contract and reports join coverage, exclusions, and denominator."},
+          {"criterion": "External computation with bounded inspection", "status": "met", "excerpt": "return only the minimum aggregate output", "explanation": "It describes computation on retained authorized artifacts, bounded/minimized output, durable checkpoints, and reproducibility evidence."},
+          {"criterion": "Provenance and protected retrievable handle", "status": "met", "excerpt": "Durable state containing task ID, cohort query and source revision, identity-map revision, authority ... artifact handle and expiry", "explanation": "It binds retrieval to task/source/map provenance and authority and limits raw-ID access/retention."},
+          {"criterion": "Expiry/resume recovery", "status": "met", "excerpt": "A handle expiring during resume should transition the task to ‘artifact unavailable/needs re-fetch’", "explanation": "It makes expiry explicit and conditions re-fetch on reproducibility and continued authorization."}
+        ]
+      }
+    },
+    {
+      "case_id": "api-consumer",
+      "labels": {
+        "A": [
+          {"criterion": "Explicit identifier/ambiguity prerequisite", "status": "met", "excerpt": "Require the consumer or user to select an ID when more than one candidate exists.", "explanation": "It uses stable customer IDs and makes ambiguity an explicit selection prerequisite."},
+          {"criterion": "Bounded read completeness", "status": "met", "excerpt": "The response needs an explicit next token or terminal indication", "explanation": "It binds pagination to query/snapshot semantics and requires following continuation tokens through terminal completion."},
+          {"criterion": "Actionable failure outcomes", "status": "met", "excerpt": "Errors include stable codes, retryability, and whether a side effect may have occurred.", "explanation": "It distinguishes not-found/denied, token and traversal failures, and operation failures with recovery semantics."},
+          {"criterion": "Idempotency/reconciliation after timeout", "status": "met", "excerpt": "The consumer first queries by operation or idempotency key, reconciles status, and only submits again if the API contract proves the original operation was not accepted.", "explanation": "It treats post-submit timeout as unknown effect and avoids blind replay."},
+          {"criterion": "Scope checks and verified task postconditions", "status": "met", "excerpt": "Review server-side object/action authorization on resolution, event retrieval, operation status, and artifact download.", "explanation": "It checks principal/object scope and requires terminal success plus a retrievable export matching the requested customer."}
+        ],
+        "B": [
+          {"criterion": "Explicit identifier/ambiguity prerequisite", "status": "met", "excerpt": "If multiple plausible candidates remain, return ‘ambiguous’ ... and require a human or caller decision.", "explanation": "It makes a service-scoped customer ID the prerequisite for event reads and rejects silent first-match selection."},
+          {"criterion": "Bounded read completeness", "status": "met", "excerpt": "The response reports whether it is complete, has a next cursor, and whether the cursor is snapshot-stable.", "explanation": "It specifies page-size bounds, continuation, snapshot behavior, and a rule against inferring completion from short pages."},
+          {"criterion": "Actionable failure outcomes", "status": "met", "excerpt": "No match, denied access, missing connection, and transient failure need distinct outcomes.", "explanation": "It distinguishes customer lookup and event/export failures and associates timeout, pending, failed, and partial states with next steps."},
+          {"criterion": "Idempotency/reconciliation after timeout", "status": "met", "excerpt": "The client first queries by operation/idempotency identity and reconciles the server-side state before retry.", "explanation": "It makes timeout an unknown outcome and requires reconciliation before retrying."},
+          {"criterion": "Scope checks and verified task postconditions", "status": "met", "excerpt": "Verify calls, arguments, authorization, event counts, final operation state, and actual retrievability.", "explanation": "It scopes request and artifact access to the authorized principal and requires verified export state/retrieval."}
+        ]
+      }
+    },
+    {
+      "case_id": "delegation",
+      "labels": {
+        "A": [
+          {"criterion": "Human outcome/accountability", "status": "met", "excerpt": "The customer owns the desired outcome and remains the decision-maker.", "explanation": "It identifies customer decision ownership and assigns product/service decisions to their respective owners."},
+          {"criterion": "External actor/authority/scope", "status": "met", "excerpt": "Identify the verified customer principal, external agent host/client, authenticated agent or integration principal", "explanation": "It distinguishes human and integration identities and ties authorization to exact account, operation, and payload."},
+          {"criterion": "Revocation stops remaining work", "status": "met", "excerpt": "stop initiating new actions immediately and send cancellation to in-flight work where supported", "explanation": "It blocks new work on revocation while honestly qualifying in-flight cancellation and reconciliation."},
+          {"criterion": "Partial effects visible with reconciliation", "status": "met", "excerpt": "present ‘partially applied’ and identify the confirmed correction, unresolved action", "explanation": "It exposes confirmed, failed, pending, and unknown states and reconciles before retry or compensation."},
+          {"criterion": "Human review/intervention and observable completion", "status": "met", "excerpt": "The customer can correct the amount/reason, narrow scope, approve the exact proposed action, reject, or leave the work pending.", "explanation": "It provides intervention options and makes service state/audit evidence, rather than agent claims, the basis for confirmation."}
+        ],
+        "B": [
+          {"criterion": "Human outcome/accountability", "status": "met", "excerpt": "Design the flow around the customer’s intended outcome and the authority they granted", "explanation": "It keeps the customer as decision-maker and makes unresolved product/service decisions owner-assigned."},
+          {"criterion": "External actor/authority/scope", "status": "met", "excerpt": "whether the customer authorizes each service to commit independently", "explanation": "It sets scoped, per-service authority and binds approval to target accounts, amounts, versions, and expiry."},
+          {"criterion": "Revocation stops remaining work", "status": "met", "excerpt": "immediately block new work on B, cancel it if cancellation is supported, and reconcile whether it raced to commit", "explanation": "It stops initiating new work while accounting for the pending action's possible race and refusing continued work absent fresh scoped authorization."},
+          {"criterion": "Partial effects visible with reconciliation", "status": "met", "excerpt": "Tell the customer plainly that the correction is partial: service A applied it, service B is stopped or still being reconciled", "explanation": "It distinguishes observed effects from pending/unknown status and offers reconcile/compensate/resume decisions."},
+          {"criterion": "Human review/intervention and observable completion", "status": "met", "excerpt": "The customer should be able to reject, edit within permitted bounds, or escalate to a person.", "explanation": "It provides review and intervention and requires verified service outcomes, allowing an explicitly accepted partial resolution."}
+        ]
+      }
+    },
+    {
+      "case_id": "eval-design",
+      "labels": {
+        "A": [
+          {"criterion": "Separate hypotheses/ablations", "status": "met", "excerpt": "The claim combines two changes: better tool discovery and reusable external result handles.", "explanation": "It treats mechanisms separately in the evaluation design and requires ablations when both change."},
+          {"criterion": "Matched old/new tasks and configuration", "status": "met", "excerpt": "Run baseline and candidate on identical cases under comparable conditions.", "explanation": "It freezes configuration and fixtures, pairs identical cases, and requires fresh-session repetitions."},
+          {"criterion": "Correct completion plus resource measures", "status": "met", "excerpt": "Compare paired task outcomes ... latency distributions, and actual cost", "explanation": "It combines environment-verified end state and side effects with token/context, latency, and metered cost as separate measures."},
+          {"criterion": "Discovery miss/denial/partial artifact/repeat failure slices", "status": "met", "excerpt": "stale search indexes, paginated external results, handle reuse across sessions, expiry ... and permission denial", "explanation": "It explicitly covers discovery misses/staleness, denied access, partial/paginated artifacts, and fresh-session recurrence failures."},
+          {"criterion": "Explicit evidence limits and safety decision", "status": "met", "excerpt": "A demo or metric improvement alone supports no release decision.", "explanation": "It proposes hard authorization/privacy/side-effect blockers and holds when evidence is insufficient."}
+        ],
+        "B": [
+          {"criterion": "Separate hypotheses/ablations", "status": "met", "excerpt": "Treat these as two mechanisms with separate hypotheses.", "explanation": "It requires separate arms/ablations or limits interpretation to the bundle."},
+          {"criterion": "Matched old/new tasks and configuration", "status": "met", "excerpt": "Use paired realistic tasks under comparable initial state.", "explanation": "It freezes configurations and requires repeats, comparable conditions, and fresh-session recurrence."},
+          {"criterion": "Correct completion plus resource measures", "status": "met", "excerpt": "Grade end state and side effects from environment state; inspect traces", "explanation": "It measures task outcomes and verified side effects separately from token use, latency, and cost."},
+          {"criterion": "Discovery miss/denial/partial artifact/repeat failure slices", "status": "met", "excerpt": "Include task-relevant search, irrelevant/ambiguous requests, near-duplicate tools, stale/no-match index, missing prerequisites, paginated results, partial pagination, and a fresh session repeating a task.", "explanation": "The design explicitly includes denied calls and incomplete/expired/access-failed handles, plus recurrence and discovery failure slices."},
+          {"criterion": "Explicit evidence limits and safety decision", "status": "met", "excerpt": "Hard release blockers include unauthorized actions or disclosure, evasion after denial, silent partial results", "explanation": "It states evidence limits and hard blockers, and withholds approval absent representative outcomes, fresh-session evidence, denial behavior, or consumption proof."}
+        ]
+      }
+    }
+  ],
+  "qualitative_comparison": "Across these synthetic design responses, both A and B provide substantial safeguards and acceptance evidence. Both discovery responses leave the rubric's explicit small/static alternative unshown; neither answer says that a small stable catalog may be served with a static list and complete contracts. The artifact responses clearly bound inspection and qualify cross-app use: handles are not portable identity or authorization, and downstream consumption requires actual authorized access. These comparisons concern response content only and do not establish that either guidance version caused the differences or improves real-world outcomes."
+}

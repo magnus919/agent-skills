@@ -20,12 +20,17 @@ are still needed to establish improvement.
 |---|---|
 | `SKILL.md` | Design, diagnosis, implementation, and improvement workflow |
 | `references/` | Design procedures, worked use cases, catalog handoffs, source coverage, and conditional System One integration evidence |
-| `templates/` | Project instructions, state, handoff, decision placement, contract, experiment |
+| `templates/` | Project instructions, state, handoff, decision placement, tool, bulk-result and experiment contracts |
 | `scripts/harness.py` | Audit with optional HTML, preview-first scaffold, explicit check runner |
 | `scripts/contracts.py` | State/graph/run declaration checks and compatible-run comparison |
 | `scripts/decision_examples.py` | Offline synthetic typed-decision examples for selection, action, and review boundaries |
 | `scripts/test_*.py` | Safety, near-miss, and evidence-boundary regression tests |
 | `evals/` | Representative output-quality cases and rubric challenge examples |
+
+Run records keep an aggregate human-intervention count by default. When an
+evaluation question needs more detail, the guidance defines an optional typed,
+privacy-bounded event record; it does not capture message text or infer success
+from a lower count.
 
 ## Quick Start
 
@@ -48,7 +53,10 @@ python3 scripts/decision_examples.py selection --json
 
 Ask your agent: "Diagnose why this agent declares completion too soon," "Design
 a durable runtime around these tools," or "Compare this harness change on the
-same tasks." It selects the relevant procedure and supporting templates.
+same tasks." For a large integration catalog, ask it to expose tool prerequisites
+and dependency order; for oversized outputs, ask for an authorized artifact handle
+with provenance, completeness and recovery terms. It selects the relevant
+procedure and supporting templates. Small stable catalogs may use a static index.
 
 ## Triggers
 

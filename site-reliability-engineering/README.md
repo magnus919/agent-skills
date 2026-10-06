@@ -8,6 +8,8 @@ Build practical reliability practices around the work teams actually perform: me
 
 Use it when the work needs a repeatable process and an inspectable result. It is portable across Agent Skills-compatible clients and does not require a profile system or a particular task orchestrator.
 
+Agentic operations now include scoped action contracts, independent recovery evidence, replay challenges and operational evidence for human governance decisions about earned autonomy. These materials do not install runtime controls or grant production permissions.
+
 ## What You Get
 
 | Path | What it provides |

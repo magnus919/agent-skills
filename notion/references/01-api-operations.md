@@ -13,7 +13,7 @@ Operational detail for the Notion API surface the skill owns: endpoints, the ver
 
 | Operation | Endpoint | Method | Notes |
 |---|---|---|---|
-| Retrieve a page | `/pages/{id}` | GET | Summarized as id, title, url, timestamps |
+| Retrieve a page | `/pages/{id}` | GET | Summarized as id, title, url, timestamps, and typed property values |
 | Create a page | `/pages` | POST | Guarded mutation; `parent` is `page_id` or `database_id` |
 | Update page properties | `/pages/{id}` | PATCH | Guarded mutation; overwrites the given property values |
 | Query a database | `/databases/{id}/query` | POST | `page_size` cap + optional `filter` object |
@@ -28,6 +28,9 @@ Operational detail for the Notion API surface the skill owns: endpoints, the ver
 ## Property values
 
 - A page's `properties` is a map of property names to value objects. Title extraction: `notion-cli` looks for a property typed `title` (commonly named `title` or `Name`).
+- Page summaries retain each property's type, concise value, and completeness in JSON. `pages get --property NAME` can be repeated to select fields; a requested name absent from the page returns `{"present": false}`. If a property cannot be fully retrieved because of a page cap or API response problem, output records `complete: false` and an `incomplete_reason`; human-readable output also appends `<incomplete: reason>`. Long title/rich text values are capped at 500 characters and include `truncated: true` and `character_count`, so the shortened text is not treated as a full read-back verification.
+- Supported summaries preserve status/select names and IDs, checkbox booleans, numeric values, rich text, date values, URLs/contact fields, user IDs/names, relation IDs and `has_more`, file names/types, formula/rollup values, timestamps, and unique IDs. Unrecognized property types remain available as raw JSON with `raw: true`.
+- For read-back verification, request each changed property by name and compare its typed value with the intended value. A successful API response alone proves retrieval, not that the desired value landed.
 - Common value objects for updates: `{"select": {"name": "..."}}`, `{"status": {"name": "..."}}`, `{"checkbox": true|false}`, `{"rich_text": [{"text": {"content": "..."}}]}`, `{"number": 42}`, `{"date": {"start": "2026-08-03"}}`.
 - An update `PATCH` sends only the properties you include; properties you omit are left unchanged. Omitted properties are safe; *wrong* values for included properties are the risk, so preview the exact payload with `--dry-run`.
 

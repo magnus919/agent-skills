@@ -77,6 +77,11 @@ explicit without presenting a second, incompatible five-subsystem taxonomy.
    outcomes, interventions, latency/cost, regressions, and uncertainty. Component
    ablation measures marginal value under that task; it does not identify cause
    by itself. Use [templates/experiment.md](templates/experiment.md).
+   Keep the required per-case `human_interventions` aggregate intact. Add the
+   optional typed `intervention_detail` only when the question needs event-level
+   attribution; absence means detail was not collected, not zero. Do not use a
+   lower count alone as a productivity or success claim. See
+   [observability and feedback](references/observability-and-feedback.md#optional-typed-intervention-detail).
 7. **Leave a restartable handoff.** State what changed, checks actually run,
    unverified boundaries, blockers, next action, and rollback. Avoid automatic
    commits, resets, deletion, or mutation of unrelated work to achieve cleanliness.
@@ -108,7 +113,9 @@ for six worked examples and mode-specific exit artifacts.
 | Persistence, state transitions, partial effects | [State and recovery](references/context-and-state.md) | [State](templates/state.json), [recovery drill](templates/recovery-drill.md) |
 | Environment and custom runtime boundaries | [Runtime design](references/runtime-design.md) | [Runtime decision](templates/runtime-design.md) |
 | Tool contracts, events, authorization, hooks | [Tools and events](references/tool-and-event-contracts.md) | [Tool contract](templates/tool-contract.json), [event contract](templates/event-contract.md) |
+| Find task-relevant tools and operate on large result sets | [Tool discovery and bulk results](references/tool-discovery-and-bulk-results.md) | [Bulk result contract](templates/bulk-result-contract.json), [tool contract](templates/tool-contract.json) |
 | Actual runtime journey and trace-to-action loop | [Observability feedback](references/observability-and-feedback.md) | [Observability plan](templates/observability-plan.md) |
+| Optional, privacy-bounded intervention event detail | [Observability and feedback](references/observability-and-feedback.md#optional-typed-intervention-detail), [script contract](references/script-contract.md) | Aggregate-only run record by default; add detail only for the stated question |
 | Premature completion, verifier, experiment | [Verification/improvement](references/verification-and-improvement.md) | [Acceptance](templates/acceptance-contract.md), [experiment](templates/experiment.md), [run record](templates/run-record.json) |
 | Repeated work, graphs, concurrent ownership | [Loops/coordination](references/loops-and-coordination.md) | [Loop contract](templates/loop-contract.md), [graph](templates/graph.json) |
 | Typed model choice inside a harness | [System One decisions](references/system-one-decisions.md) | [Decision placement](templates/decision-placement.md) |

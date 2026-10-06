@@ -57,11 +57,11 @@
     },
     {
       "id": "calibration-review",
-      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Their same 22 author-written synthetic CI cases score 21/22 in two runs, with the same false negative and a Noul probability moving from 0.49 to 0.43. Their real routing data also has duplicate conversations split across train and test, source-system IDs that encode the answer, and thresholds and calibration tuned on test labels. Review the evidence and define what is needed before release.",
-      "expected_output": "Rejects the universal threshold and contaminated test claim, distinguishes repeated synthetic results from independent evidence and confidence from accuracy, requires grouped splits and shortcut checks, independently labeled target data and separate calibration, and uses stricter confirmation or human review for consequential actions.",
+      "prompt": "A team wants to auto-approve account changes whenever a System One Choice confidence exceeds 0.85. Their same 22 author-written synthetic CI cases score 21/22 in two runs, with the same false negative and a Noul probability moving from 0.49 to 0.43. Their real routing data also has duplicate conversations split across train and test, source-system IDs that encode the answer, and thresholds and calibration tuned on test labels. Review the evidence and define what is needed before release. They also cite Strands Decider passing 24 repeated short routing/availability calls and 12 repeated literal-NOT calls, despite upstream reporting weak arbitrary-question sensitivity. Does this establish that limitation is fixed or justify the same threshold?",
+      "expected_output": "Rejects the universal threshold and contaminated test claim, distinguishes repeated synthetic results from independent evidence and confidence from accuracy, requires grouped splits and shortcut checks, independently labeled target data and separate calibration, and uses stricter confirmation or human review for consequential actions. Keeps the Strands smoke scoped to authored diagnostics and retains the upstream question-sensitivity caveat.",
       "assertions": [
         "Explains why a vendor/default confidence number is not a universal policy threshold",
-        "Distinguishes repeatability on reused synthetic cases from independent held-out evidence and calibration",
+        "Does not treat repeated authored diagnostic passes, including the Strands smoke, as independent held-out evidence or calibration",
         "Does not tune a prompt, adapter, threshold, or calibration on a repeated challenge case and then describe it as held out",
         "Uses held-out real-output cases with labels assigned independently of the tested model",
         "Separates a representative workload sample from deliberately risk-enriched challenge cases",
@@ -132,8 +132,8 @@
     },
     {
       "id": "reranking-pipeline",
-      "prompt": "We want to use System One scores to rerank the first 30 search results. How should we implement and evaluate it?",
-      "expected_output": "Batches bounded candidate judgments, retains deterministic shortlist provenance, compares standalone and fusion ranking to baselines with independent labels, and reports end-to-end recall and cost.",
+      "prompt": "We want to use System One scores to rerank the first 30 search results. How should we implement and evaluate it? Also address this extension: We have approved clips and want B-roll for narration about watering a plant. One caption says watering but its clip hash changed; another depicts rain. Can Jev pick pixels directly and can we auto-use anything above 60%? Design a reusable matching pilot.",
+      "expected_output": "Batches bounded candidate judgments, retains deterministic shortlist provenance, compares standalone and fusion ranking to baselines with independent labels, and reports end-to-end recall and cost. Uses a separate caption stage with provenance, textual decision scoring, deterministic asset resolution and eligibility, explicit no-match, and evaluation against actual clips.",
       "assertions": [
         "States that reranking cannot recover relevant items missing from the candidate shortlist",
         "Creates a distinct Score or Noul question ID for each candidate; batching those questions in one System One request is allowed, but one question cannot return a score array for all candidates",
@@ -143,7 +143,9 @@
         "Uses relevance labels assigned independently of the tested model",
         "Examines ranking quality by query or language slice",
         "Reports end-to-end latency for shortlist retrieval plus reranking",
-        "Reports full-pipeline inference cost rather than only one model call"
+        "Reports full-pipeline inference cost rather than only one model call",
+        "Separates Jev judgment over textual captions from direct inspection of clip pixels",
+        "Requires reviewing actual clips independently to detect caption errors"
       ]
     },
     {
@@ -226,8 +228,8 @@
     },
     {
       "id": "field-evidence-triage",
-      "prompt": "A Jev build index lists a popular browser agent, a trading bot, a router benchmark, and a claim that batching is always safe and 0.9 confidence means 90% correct. What should we reuse for another System One model?",
-      "expected_output": "Extracts bounded decision and deterministic-control patterns while grading the evidence behind each claim, rejecting transferable numeric thresholds and unverified live outcomes, and requiring target-model evaluation.",
+      "prompt": "A Jev build index lists a popular browser agent, a trading bot, a router benchmark, and a claim that batching is always safe and 0.9 confidence means 90% correct. What should we reuse for another System One model? An exploratory comparison also reports a local candidate accepting more useful and weak relevance candidates, and stable arithmetic/freshness errors despite option reversal. Its labels come from a prediction-blind model judge reached through a gateway alias. Explain what transfers to a new domain and what provenance to verify.",
+      "expected_output": "Extracts bounded decision and deterministic-control patterns while grading the evidence behind each claim, rejecting transferable numeric thresholds and unverified live outcomes, and requiring target-model evaluation. Treats relevance results as a scoped precision/coverage tradeoff, repeated errors as failure hypotheses, and automated labels as pseudo-labels; verifies returned judge identity rather than trusting a gateway alias.",
       "assertions": [
         "Distinguishes index popularity, original post or README claims, inspected implementation, and reproduced outcomes as different evidence tiers",
         "Constrains browser actions to fresh observed candidates and checks postconditions rather than trusting DONE",
@@ -332,12 +334,14 @@
     },
     {
       "id": "adapter-polarity-and-overflow",
-      "prompt": "A new adapter returns valid JSON and all required IDs. A paired example shows it maps 'urgent' to the low-priority label, and a 65-option request silently loses the final candidates. What should happen before a model quality comparison?",
-      "expected_output": "Rejects adapter qualification, tests label polarity using counterbalanced evidence, verifies supported and rejected overflow behavior, and fixes or explicitly bounds the adapter before scoring model quality.",
+      "prompt": "A new adapter returns valid JSON and all required IDs. A paired example shows it maps 'urgent' to the low-priority label, and a 65-option request silently loses the final candidates. What should happen before a model quality comparison? Also address this extension: The DevDay recap says OpenAI Decisions API uses text or images and finite answers, in limited preview. Can we replace our Jev client now using the same endpoint schema and confidence threshold? Explain a scoped investigation. For experimental Strands Decider, qualify question-only negation counterfactuals and its default non-strict context truncation before scoring; a 255-option schema cap alone is not a token-budget guarantee.",
+      "expected_output": "Rejects adapter qualification, tests label polarity using counterbalanced evidence, verifies supported and rejected overflow behavior, and fixes or explicitly bounds the adapter before scoring model quality. Recognizes the preview candidate but requires current access and documentation, qualifies the actual adapter contract, and separates image evaluation from Jev text decisions. Tests native Strands question polarity and strict-window overflow rejection rather than assuming valid JSON or the schema option cap establishes preserved decision semantics.",
       "assertions": [
-        "Requires polarity tests where decisive evidence reverses while irrelevant lexical cues are counterbalanced",
+        "Requires polarity tests with expected answer reversals under counterbalanced decisive evidence and irrelevant lexical cues, including fixed-state question-only counterfactuals",
         "Tests option-boundary behavior and verifies that overflow is rejected or handled by a documented, evaluated policy rather than silently truncating candidates",
-        "Aborts model scoring when adapter qualification fails"
+        "Aborts model scoring when adapter qualification fails",
+        "Does not treat the Decisions API preview announcement as evidence of general availability",
+        "Requires the actual Decisions API contract before assuming Jev adapter compatibility"
       ]
     },
     {
@@ -528,6 +532,98 @@
         "Distinguishes selected single-author disagreement adjudication from representative independent audit evidence",
         "Requires the paired interval to satisfy the preregistered noninferiority margin rather than relying only on the point estimate",
         "Rejects a production gate claim without qualified held-out and live failure-boundary evidence"
+      ]
+    },
+    {
+      "id": "question-id-semantics",
+      "prompt": "Our System One request uses IDs like `route` and `urgent`. The provider only sees instructions and criteria. Is it enough to make those IDs descriptive, and how should we keep the questions safe to reuse?",
+      "expected_output": "Explains that IDs correlate answers in application code but do not define the judgment. Each question carries its full trusted meaning, relevant evidence boundary, and answer criteria; ambiguous or unsafe cases have an explicit fallback.",
+      "assertions": [
+        "States that a question ID is an application correlation key and does not itself tell the model what judgment to make",
+        "Requires each question instruction to contain the judgment meaning needed for that question",
+        "Keeps trusted instructions and criteria outside user-controlled state",
+        "Defines how the application handles an answer that is ambiguous or unsupported by the supplied evidence"
+      ]
+    },
+    {
+      "id": "candidate-extraction-boundaries",
+      "prompt": "A message says \u201cBook the Portland venue if the date works,\u201d but our extractor returns only Seattle and Tacoma. We ask Choice to select one of those candidates and it chooses Seattle. Design the pipeline so we can tell whether extraction omitted the desired value or the selector chose poorly, handle a source with no candidate, and produce an output safely.",
+      "expected_output": "Evaluates candidate coverage against source-supported values separately from selection accuracy over the extracted set. It catches that Portland appears in the source but is missing from the extracted candidates, preserves source spans/provenance, distinguishes empty extraction from invalid selection, and has application code copy or normalize the selected source value rather than generate a new value.",
+      "assertions": [
+        "Measures candidate coverage against all source-supported values separately from selection accuracy over the extracted candidate set",
+        "Identifies Portland as a source-supported value omitted by extraction, even though the selector can only choose Seattle or Tacoma",
+        "Preserves source traceability for each extracted candidate",
+        "Does not treat a model-generated candidate as source-backed evidence",
+        "Distinguishes an empty candidate set from an invalid selection in a nonempty set",
+        "Defines a safe outcome when the source supports no candidates",
+        "Has application code copy or normalize the selected source-backed value instead of asking a model to generate the final value"
+      ]
+    },
+    {
+      "id": "noul-uncertainty-vs-intensity",
+      "prompt": "We use Noul for the proposition \u201cthe message contains a threat.\u201d Explain what its returned number means, what a value near 0.5 means, and whether we should also treat it as a confidence or emotional-intensity score. How should a consequential action handle an uncertain result?",
+      "expected_output": "Defines the Noul value as the probability of \u201cyes\u201d for the explicit proposition. A value near 0.5 reflects uncertainty between yes and no, not medium threat intensity, and does not provide a separate confidence measure. A consequential action uses a validated threshold or review/fallback policy; harmless emotional emphasis does not itself support the proposition.",
+      "assertions": [
+        "Defines Noul output as the probability of yes for the explicit binary proposition \u201cthe message contains a threat\u201d",
+        "Explains that a value near 0.5 represents uncertainty between yes and no",
+        "Does not interpret a value near 0.5 as medium intensity of the proposition",
+        "Does not claim Noul supplies a separate confidence value",
+        "Routes uncertain Noul results away from consequential automated action using an explicit threshold, review, or fallback policy",
+        "Does not treat harmless emphatic language as positive evidence for the threat proposition solely because it is intense"
+      ]
+    },
+    {
+      "id": "applicable-branch-evidence",
+      "prompt": "A policy has two branches: if the customer asks for a refund, check refund eligibility; if they ask for store hours, answer from the published schedule. The message is clearly about store hours. The refund branch cannot be evaluated because the order ID is absent. Should the whole decision be rejected as uncertain?",
+      "expected_output": "Applies the branch supported by the observed request and evaluates only its required evidence. The missing order ID makes the unused refund branch unresolved but does not invalidate the applicable store-hours branch; the schedule itself still must be verified.",
+      "assertions": [
+        "Selects the branch applicable to the observed store-hours request",
+        "Does not let missing evidence for an unused refund branch veto the applicable store-hours decision",
+        "Requires the schedule evidence needed by the applicable branch before answering with hours",
+        "Treats branch selection as grounded in the request rather than assuming every branch must be fully evaluated"
+      ]
+    },
+    {
+      "id": "hard-violation-not-averaged",
+      "prompt": "A release rubric scores privacy, correctness, and usability from 0 to 1. The candidate averages 0.9 overall, but the privacy criterion finds that it exposes a secret. Can the high average pass the release? Design the decision rule.",
+      "expected_output": "Keeps the hard privacy violation as an independent veto or deterministic release condition, reports the other scores separately, and does not allow a weighted or mean score to erase the violation.",
+      "assertions": [
+        "Identifies secret exposure as a hard release violation with an independent blocking condition",
+        "Does not allow a weighted or arithmetic average of other criteria to override the hard violation",
+        "Reports criterion-level evidence separately from any aggregate score",
+        "Defines a review or remediation path for the blocked release"
+      ]
+    },
+    {
+      "id": "live-docs-contract-fallback",
+      "prompt": "We need to update a System One integration, but the provider documentation site is unavailable and our local Jev reference is dated. What should the implementation agent do before changing the request contract?",
+      "expected_output": "Treats the local reference as a dated snapshot, avoids inventing current provider behavior, uses accessible authoritative package/API artifacts only for claims they support, and defers contract-dependent changes until current documentation can be checked or clearly labels a bounded, reversible proposal for review.",
+      "assertions": [
+        "Identifies the bundled Jev documentation as a dated snapshot rather than proof of the current contract",
+        "Does not invent or assert undocumented current endpoint, field, or response behavior",
+        "Uses an accessible authoritative source only for the specific behavior it documents",
+        "Defers contract-dependent implementation or clearly labels a reversible proposal and the evidence still needed"
+      ]
+    },
+    {
+      "id": "harmless-choice-spread",
+      "prompt": "A user asks which of three notification sounds to use: chime, bell, or soft click. All are safe and easy to change. The Choice probabilities are close, with chime slightly highest. Should we send the choice to review because the model is uncertain? Contrast this with a consequential decision such as which bank account receives a transfer.",
+      "expected_output": "Separates the Choice ranking from action policy. For a harmless, reversible preference among acceptable options, the application may use the top choice without treating a narrow probability spread as a reason for review. For a consequential transfer, it defines an independently justified confidence/threshold and fallback appropriate to the cost of error; the preference policy does not transfer.",
+      "assertions": [
+        "Recognizes chime as the top Choice option while acknowledging the close probabilities",
+        "Allows the application to use the top acceptable option for this harmless and reversible preference without mandatory review solely due to a narrow probability spread",
+        "Defines a more conservative threshold or review path for the consequential transfer decision",
+        "Explains that the preferred action policy depends on the consequence and reversibility rather than transferring one threshold across both decisions"
+      ]
+    },
+    {
+      "id": "skill-suggestion-no-fit-and-evidence",
+      "prompt": "Our roster has two similar deck skills and a posting-to-X skill, but no Mastodon support. We want TypeSafe cookbook-style suggestions for deck creation, posting to Mastodon, and explaining a monad. Design the route and interpret its 488-request results.",
+      "expected_output": "Uses separate need and candidate-fit checks, richer shortlisted evidence, rejection and advisory suggestions, and scopes the synthetic first-load results correctly.",
+      "assertions": [
+        "Separates whether any skill is needed from ranking the roster",
+        "Allows rejecting the entire richly described shortlist when none fits",
+        "Scopes the 488-request figures to synthetic first-response skill-load outcomes rather than completed-task success"
       ]
     },
     {

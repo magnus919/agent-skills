@@ -127,6 +127,83 @@
         "Does not claim that a large log or doubly robust estimator repairs absent support",
         "Proposes bounded additional evidence and routes statistical estimation to its owner without authorizing rollout"
       ]
+    },
+    {
+      "id": "agent-interface-discovery-ablation",
+      "prompt": "We are adding on-demand tool discovery and sending large results as artifacts instead of inline. Design an evaluation to show whether either change helps our multi-service agent.",
+      "expected_output": "The plan states separate failure hypotheses and evaluates discovery separately from artifact delivery, or uses explicit ablations if shipped together. It pairs realistic tasks under identical system, tool-version, identity, permission, starting-state, and output-handling conditions. Grading observes task outcomes and traces, including required prerequisites, authorization, cross-service consumption, and fresh-session recurrence. It includes relevant and ambiguous discovery requests, artifact incompleteness/access failures, and records context, latency, cost, orchestration, and storage only when measurable. It treats vendor benchmarks and synthetic or prose-only results as hypothesis evidence, not production uplift.",
+      "assertions": [
+        "States a mechanism-specific failure hypothesis and separates discovery from artifact effects or explicitly evaluates them as a bundle",
+        "Pairs baseline and candidate on the same tasks",
+        "Keeps model and runtime configuration comparable between the paired runs",
+        "Keeps tool and service versions comparable between the paired runs",
+        "Keeps identity and permissions comparable between the paired runs",
+        "Keeps starting state and output handling comparable between the paired runs",
+        "Verifies task outcome and required prerequisite correctness with observable state or trace evidence",
+        "Tests that a separate authorized service or delegated consumer can retrieve and use the bulk artifact",
+        "Includes a missing-artifact case and checks for false completion claims",
+        "Includes an expired-artifact case and checks for false completion claims",
+        "Includes a partial-result case and checks for false completion claims",
+        "Includes a duplicate-delivery case and checks for false completion claims",
+        "Includes an inaccessible-artifact case and checks for false completion claims",
+        "Includes a permission-change case and checks for false completion claims",
+        "Reports context use only when measured and marks unavailable data explicitly",
+        "Reports latency only when measured and marks unavailable data explicitly",
+        "Reports monetary cost only from an appropriate measurement source and marks unavailable data explicitly",
+        "Reports orchestration or storage overhead only when measured and marks unavailable data explicitly",
+        "Does not treat vendor benchmarks, synthetic fixtures, or prose claims as evidence of production uplift"
+      ]
+    },
+    {
+      "id": "agent-interface-fresh-session-recurrence",
+      "prompt": "An agent creates useful external artifacts and occasionally delegates work, but users return in a new session and ask it to resume. Create paired eval cases for recurrence and report what would count as evidence of success.",
+      "expected_output": "Cases start in a genuinely fresh session and require the agent to locate the intended artifact or delegated result using durable identifiers and verify owner, permissions, freshness, completeness, and provenance. Near misses include stale or ambiguous artifacts, identity mismatch, revoked access, duplicate delivery, and partial delegation. Environment or service evidence verifies consumption and state; responses that merely claim retrieval do not pass. Failures are surfaced and recovered or escalated. Results are paired on unchanged tasks and configurations and reported as measured integration behavior, not inferred from synthetic prose.",
+      "assertions": [
+        "Starts recurrence trials with a fresh session without hidden conversational state",
+        "Verifies the artifact or delegated result has the intended identity before use",
+        "Verifies current authorization to access the artifact or delegated result before use",
+        "Verifies the artifact or delegated result is fresh enough for the task before use",
+        "Verifies the artifact or delegated result is complete enough for the task before use",
+        "Verifies the artifact or delegated result's provenance before use",
+        "Includes an ambiguous-artifact recurrence case",
+        "Includes a stale-artifact recurrence case",
+        "Includes a duplicate-result recurrence case",
+        "Includes a partial-result recurrence case",
+        "Includes an inaccessible-artifact recurrence case",
+        "Includes an identity-mismatch recurrence case",
+        "Uses observable service or environment evidence to verify cross-service consumption rather than a response claim",
+        "Requires incomplete or denied retrieval to be reported and recovered or escalated without false success",
+        "Pairs recurrence trials on equivalent tasks and configurations",
+        "Limits conclusions to what the evidence source directly establishes"
+      ]
+    },
+    {
+      "id": "privacy-bounded-intervention-detail",
+      "prompt": "Use the bundled harness-engineering v1 run-record contract. An evaluation team wants to explain why human_interventions changed between two runs. The required aggregate integer exists in both records, but detailed events were collected only for the candidate because the question now calls for attribution. Define a sound interpretation and optional event shape without overclaiming comparability.",
+      "expected_output": "Keep the aggregate distinct from event detail, identify the baseline's absent detail as uncollected, and use privacy-bounded events with explicit coverage and actor attribution. Do not claim a causal productivity effect or compare event-level rates where detail is missing.",
+      "assertions": [
+        "Treats absent event detail as not collected rather than zero while preserving an independently known aggregate count.",
+        "Uses explicit complete, partial, or not_collected coverage for optional event detail, with an empty event list for not_collected.",
+        "Requires complete detail's human event count to equal the scalar and partial detail's count not to exceed it.",
+        "Counts only human-actor events toward the scalar and counts a mixed-kind event once.",
+        "Uses only the allowed event fields and identifies event, actor, unique kinds, run/task targets, and typed goal/constraint/authority changes.",
+        "Uses bounded code and reference formats and does not duplicate one event across child cases.",
+        "Excludes raw messages, prompts, and hidden reasoning by default.",
+        "Does not claim a lower aggregate count proves productivity or causal improvement.",
+        "Marks event-level baseline/candidate comparison unavailable when one side did not collect detail."
+      ]
+    },
+    {
+      "id": "skip-unneeded-intervention-telemetry",
+      "prompt": "We are evaluating a one-off unit-conversion answer for numeric correctness. The task has no autonomy, recovery, or intervention-attribution question, and no intervention count was measured. A reviewer suggests adding a typed event record anyway so future analysts have more data. What should the evaluation record contain?",
+      "expected_output": "Keep evidence scoped to numeric correctness and omit optional intervention detail because the question does not need it. Do not manufacture a zero aggregate or collect raw interaction text; the v1 run-record contract cannot claim an unknown scalar as measured.",
+      "assertions": [
+        "Keeps the one-off correctness evaluation free of optional intervention events when they do not answer the question.",
+        "Does not add instrumentation or event retention merely for unspecified future analysis.",
+        "Does not convert an unmeasured aggregate to zero and states that v1 requires the aggregate integer.",
+        "Retains only evidence relevant to checking the numeric answer rather than raw user content or hidden reasoning.",
+        "Does not claim that no recorded detail proves no human intervention occurred."
+      ]
     }
   ]
 }

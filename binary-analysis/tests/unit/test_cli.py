@@ -241,8 +241,9 @@ class TestJsonEnvelopeOutput:
         parsed = json.loads(captured.out)
         assert parsed["command"] == "doctor"
 
-    def test_project_command_includes_subcommand_name(self, capsys: pytest.CaptureFixture) -> None:
+    def test_project_command_includes_subcommand_name(self, capsys: pytest.CaptureFixture, tmp_path, monkeypatch) -> None:
         """project create --json should report 'project create' as command."""
+        monkeypatch.setenv("BINARY_WORKSPACE_ROOT", str(tmp_path))
         main(["--json", "project", "create", "my-proj"])
         captured = capsys.readouterr()
         parsed = json.loads(captured.out)

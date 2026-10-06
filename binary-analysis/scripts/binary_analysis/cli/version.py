@@ -30,6 +30,8 @@ def execute(args: argparse.Namespace) -> dict[str, Any]:
         "diagnostics": [],
         "data": {
             "cli_version": __version__,
+            "live_analysis_available": False,
+            "implementation_status": "Ghidra operations are not implemented; analysis fails closed.",
             "schema_version": "1.0.0",
             "workspace_version": "1",
             "adapter": {

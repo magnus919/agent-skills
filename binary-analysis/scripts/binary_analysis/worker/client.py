@@ -196,7 +196,7 @@ def get_worker_status() -> dict[str, Any]:
       - uptime_seconds: float when running, null when stopped
     """
     pid = read_pid()
-    if pid is not None and _is_pid_alive():
+    if pid is not None and _is_pid_alive() and WorkerClient(timeout=1.0).is_available():
         started_at = read_started_at()
         import time
 

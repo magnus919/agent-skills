@@ -1,0 +1,12 @@
+{
+  "should_trigger": [
+    "I have a new YouTube video and need a thumbnail that earns the right viewers' clicks. Here's the outline and working title.",
+    "Give me three distinct thumbnail concepts for this long-form video, then help me set up YouTube Studio Test & Compare.",
+    "Can you check this YouTube thumbnail at small size, make sure the export fits the current upload constraints, and diagnose why people aren't clicking?"
+  ],
+  "should_not_trigger": [
+    "Design a vertical Instagram Reels cover that matches my brand colors.",
+    "Help me choose a camera and edit my YouTube video with captions and music.",
+    "Build a channel growth strategy and keyword plan for my YouTube channel."
+  ]
+}

@@ -14,6 +14,7 @@ SCRIPT_NAME="$(basename "$0")"
 HEADSCALE_CONFIG="${HEADSCALE_CONFIG:-/etc/headscale/config.yaml}"
 BACKUP_SCRIPT="$(dirname "$0")/hs-backup.sh"
 RESTORE_SCRIPT="$(dirname "$0")/hs-restore.sh"
+RESTORE_SCRIPT="${HEADSCALE_REMOTE_RESTORE_SCRIPT:-$RESTORE_SCRIPT}"
 
 # --- Parse arguments ---
 TARGET_HOST=""
@@ -80,6 +81,7 @@ die() {
 
 # --- Step 1: Create backup (or use existing) ---
 BACKUP_CREATED=false
+RESTORE_COMPLETED=false
 if [[ -z "$BACKUP_PATH" ]]; then
     log "Creating fresh backup..."
     if [[ ! -x "$BACKUP_SCRIPT" ]]; then
@@ -91,7 +93,7 @@ if [[ -z "$BACKUP_PATH" ]]; then
         log "[DRY-RUN] Would run: ${BACKUP_SCRIPT} --auto --json"
     else
         BACKUP_OUTPUT=$("$BACKUP_SCRIPT" --auto --json 2>&1)
-        BACKUP_PATH=$(echo "$BACKUP_OUTPUT" | grep -o '"backup_path":"[^"]*"' | cut -d'"' -f4)
+        BACKUP_PATH=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["backup_path"])' <<< "$BACKUP_OUTPUT")
         if [[ -z "$BACKUP_PATH" || ! -f "$BACKUP_PATH" ]]; then
             die "Backup failed. Output: ${BACKUP_OUTPUT}"
         fi
@@ -144,6 +146,7 @@ fi
 # --- Step 3: Rsync backup to target ---
 REMOTE_BACKUP_DIR="~/backups/headscale/"
 REMOTE_PATH="${REMOTE_BACKUP_DIR}$(basename "$BACKUP_PATH")"
+RESTORE_REMOTE_PATH="\${HOME}/backups/headscale/$(basename "$BACKUP_PATH")"
 
 if [[ "$DRY_RUN" == "true" ]]; then
     log "[DRY-RUN] Would rsync ${BACKUP_PATH} to ${TARGET_HOST}:${REMOTE_PATH}"
@@ -164,35 +167,13 @@ if [[ "$DRY_RUN" == "true" ]]; then
 else
     log "Restoring on target host..."
 
-    # Check if restore script exists on target, or use inline restore commands
-    RESTORE_CMD="${RESTORE_SCRIPT} --backup ${REMOTE_PATH} --force --json 2>&1"
-    RESTORE_RESULT=$(ssh "$TARGET_HOST" "$RESTORE_CMD" 2>/dev/null || true)
-
-    if echo "$RESTORE_RESULT" | grep -q '"action":"restore"'; then
-        log "Restore completed successfully on target."
-    else
-        log "Restore script may not be present on target. Attempting inline restore..."
-        # Fallback: provide instructions rather than failing silently
-        INLINE_RESTORE=$(cat <<-INNER
-set -e
-echo "Extracting backup..."
-sudo tar -xzf ${REMOTE_PATH} -C /tmp/restore/
-RESTORE_DIR=\$(ls /tmp/restore/ | head -1)
-echo "Stopping headscale..."
-sudo systemctl stop headscale 2>/dev/null || true
-echo "Restoring files..."
-sudo cp /tmp/restore/\${RESTORE_DIR}/config.yaml /etc/headscale/config.yaml
-sudo cp /tmp/restore/\${RESTORE_DIR}/db.sqlite /var/lib/headscale/db.sqlite
-[ -f /tmp/restore/\${RESTORE_DIR}/policy.json ] && sudo cp /tmp/restore/\${RESTORE_DIR}/policy.json /etc/headscale/policy.json
-[ -d /tmp/restore/\${RESTORE_DIR}/certs ] && sudo cp /tmp/restore/\${RESTORE_DIR}/certs/* /etc/headscale/ 2>/dev/null || true
-echo "Starting headscale..."
-sudo systemctl start headscale
-echo "Restore complete."
-INNER
-)
-        ssh "$TARGET_HOST" "bash -s" <<< "$INLINE_RESTORE" || die "Inline restore on target failed"
-        log "Inline restore completed on target."
-    fi
+    # Run the verified helper on the target; never fall back to unverified extraction.
+    RESTORE_CMD="${RESTORE_SCRIPT} --backup \"${RESTORE_REMOTE_PATH}\" --force --json"
+    RESTORE_RESULT=$(ssh "$TARGET_HOST" "$RESTORE_CMD" 2>&1) || die "Verified restore helper failed on target. Install the headscale-backup helper there and retry. Output: ${RESTORE_RESULT}"
+    RESTORE_OK=$(python3 -c 'import json,sys; d=json.load(sys.stdin); print("yes" if d.get("action") == "restore" and d.get("restored") is True else "no")' <<< "$RESTORE_RESULT") || die "Target restore did not return a valid verified-restore result: ${RESTORE_RESULT}"
+    [[ "$RESTORE_OK" == "yes" ]] || die "Target restore helper did not confirm a completed restore: ${RESTORE_RESULT}"
+    RESTORE_COMPLETED=true
+    log "Restore completed successfully on target."
 fi
 
 # --- Step 5: Health check on target ---
@@ -230,7 +211,7 @@ if [[ "$JSON_OUTPUT" == "true" ]]; then
   "backup_created": ${BACKUP_CREATED},
   "remote_backup_path": "${REMOTE_PATH}",
   "version_checked": ${VERSION_CHECK},
-  "restore_completed": true,
+  "restore_completed": ${RESTORE_COMPLETED},
   "dns_updated": false,
   "dns_advice": "${DNS_ADVICE}",
   "post_migration": "Update DNS to point to ${TARGET_HOSTNAME}, then verify clients reconnect"

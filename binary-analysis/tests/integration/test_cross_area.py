@@ -659,8 +659,12 @@ class TestAnalyzeInterruption:
             proc = _subprocess.Popen(
                 [
                     "python3",
-                    "-m",
-                    "binary_analysis.cli.main",
+                    "-c",
+                    "from binary_analysis.adapters import runtime; "
+                    "from binary_analysis.adapters.fake import FakeAdapter; "
+                    "runtime.get_adapter = FakeAdapter; "
+                    "from binary_analysis.cli.main import main; "
+                    "raise SystemExit(main())",
                     "--json",
                     "analyze",
                     "--project",

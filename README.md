@@ -73,7 +73,7 @@ Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint 
 
 ### [binary-analysis](binary-analysis/SKILL.md)
 
-Analyze unknown PE, ELF, Mach-O, and firmware files through a deterministic CLI backed by Ghidra's static-analysis engine. Covers triage, imports, decompilation, call paths, and structured evidence reports without executing or modifying the binary.
+Plan static PE, ELF, Mach-O, and firmware investigations with a deterministic CLI. Live Ghidra operations are currently unimplemented and fail explicitly; project administration and dependency diagnostics are available. Fixture-derived results are not evidence about a supplied binary.
 
 ### [bmad](bmad/SKILL.md)
 
@@ -703,6 +703,10 @@ Paul Graham's "Default Alive / Default Dead" framework as a deterministic CLI to
 ### [yc-weekly-growth-compass](yc-weekly-growth-compass/SKILL.md)
 
 Paul Graham's "Startup = Growth" framework as an operational weekly practice. Computes growth rates from single-period or time-series data, benchmarks against YC tiers (1% concerning → 10%+ outstanding), projects compound growth, and frames every decision through the compass question: "Does this serve your target growth rate?" Python 3.9+ with zero external dependencies.
+
+### [youtube-thumbnail](youtube-thumbnail/SKILL.md)
+
+Design truthful, compelling YouTube thumbnails with video-grounded concepts, title pairing, small-screen visual checks, current platform requirements, reusable briefs, and evidence-aware testing guidance.
 
 ---
 

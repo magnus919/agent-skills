@@ -1,8 +1,8 @@
 ---
 name: binary-analysis
 description: >-
-  Analyze unknown binary files through a deterministic CLI that wraps Ghidra's
-  static-analysis engine. Use when you need to inspect a PE, ELF, or Mach-O
+  Plan static inspection of unknown binary files with a deterministic CLI whose
+  Ghidra operations are currently unimplemented and fail closed. Use when you need to inspect a PE, ELF, or Mach-O
   file — triage suspicious binaries, map imported APIs, decompile functions,
   trace call paths, or produce structured evidence reports. Do not use for
   runtime analysis (debugging, dynamic tracing, sandbox execution), for
@@ -21,11 +21,27 @@ metadata:
 
 # Binary Analysis — Agent Skill
 
-Analyze unknown binary files with a deterministic, non-interactive CLI backed by
-Ghidra's static-analysis engine. The skill teaches you how to reason about
+Plan analysis of unknown binary files through a deterministic, non-interactive
+CLI intended for Ghidra; see the implementation limitation below. The skill teaches you how to reason about
 binaries: when to triage versus deep-dive, how to interpret canonical evidence,
 and how to produce auditable reports. All observable operations happen through
 the `binary` CLI — you never call Ghidra APIs directly.
+
+## Implementation status
+
+This release does **not** provide live Ghidra analysis. Import, analyze, metadata,
+structural/function queries, search, triage, and report generation stop with an
+explicit backend error. Installing dependencies cannot make the unfinished
+adapter operational. Project administration and dependency diagnostics remain
+available. The production CLI does not load or select `FakeAdapter`; tests
+inject it explicitly. There is no fixture/demo CLI switch or environment
+override.
+
+The workflow below describes the intended interface, not runnable analysis in
+this release. Stop at the backend error and explain the limitation. Do not cite
+old fixture-derived reports as evidence about a user's binary, even if an old
+project is marked READY. A future live backend needs verification on distinct
+known binaries before results can be treated as observations.
 
 ## When to Use
 
@@ -70,8 +86,8 @@ unreliable evidence, wasted context, or both.
 | **Agent (you)** | Form hypotheses about binary behavior. Choose which analyses to run and in what order. Synthesize CLI evidence into conclusions. Explain findings to the user in plain language. Write evidence-backed reports. | Invent facts not present in CLI output. Claim certainty where the CLI reports partial results or low confidence. Skip diagnostic warnings. |
 | **CLI** | Parse arguments, manage project lifecycle, run Ghidra analysis, serialize canonical entities, emit JSON envelopes, enforce safety limits. | Interpret results, draw conclusions, or produce narrative prose. |
 
-**Rule of thumb:** If a fact appears in a CLI JSON response under `data`, it is
-deterministic evidence you can cite. If you are tempted to infer something not
+**Rule of thumb:** A JSON `data` field alone does not establish evidence.
+Verify that results came from an implemented live backend for the supplied binary. If you are tempted to infer something not
 directly supported by that evidence, flag it as an agent inference and note the
 confidence gap.
 

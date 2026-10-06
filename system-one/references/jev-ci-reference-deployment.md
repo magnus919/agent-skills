@@ -56,9 +56,12 @@ requirements against the copied workflow:
   variable only for the audit step.
 - A reviewed `system-one/evals/evals.json`. Changed skills are selected up to
   five per push; an over-cap selection fails explicitly. Each selected case
-  produces candidate/baseline groups. The current audit budget is 22 calls
-  and 176 prose assertions; if a copied catalog exceeds either limit, the
-  audit must report omissions rather than claiming complete coverage.
+  produces one candidate/baseline pair (two report groups). The current
+  49-case System One manifest requires 98 groups and 584 prose-assertion
+  judgments in the worst case. CI caps the audit at 98 groups and 584
+  assertions, retaining pair-atomic selection and response-size limits. A
+  copied catalog that exceeds either cap must report omissions rather than
+  claim complete coverage.
 
 Before a live push, run the repository's local contract checks. From the repo
 root:
@@ -143,8 +146,11 @@ or a synthetic fixture does not meet that bar.
 
 ### Advisory audit resource budget
 
-The workflow caps Jev audit work at 48 calls and 340 assertions. The 22-case
-System One manifest needs 44 calls and 316 assertions across both paired
-variants, including the rubric-judge research and CLM cases. These explicit caps bound
-resource use; they do not establish semantic quality or a release gate. The
-manifest-budget test checks that future additions fit before live auditing.
+The workflow caps Jev audit work at 98 calls and 584 assertions. The 49-case
+System One manifest fits those caps across both paired variants. The harness
+integration case adds two calls and eight assertion slots over the previous
+96-call / 576-assertion budget. These explicit caps bound resource use; they do
+not establish semantic quality or a release gate. The manifest-budget test
+checks that future System One additions fit before live auditing. When other
+skills are selected as well, the combined workload can exceed these caps;
+pair-atomic sampling must report omissions as incomplete advisory coverage.

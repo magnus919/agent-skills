@@ -18,6 +18,10 @@
 
 ## Questions
 
+- Trusted configuration location for question IDs, exact instructions, criteria, and thresholds:
+- Configuration version/hash and owner:
+- Provider behavior verified against documentation version/date:
+
 | ID | Type | Exact instruction | Criteria/levels | Abstain/unknown |
 |---|---|---|---|---|
 | | `choice` / `score` / `noul` | | | |

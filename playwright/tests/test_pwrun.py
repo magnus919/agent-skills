@@ -140,6 +140,129 @@ class DoctorTests(unittest.TestCase):
 
 
 class SmokeTests(unittest.TestCase):
+    def _install_fake_npx(self, tmp: str, report: dict) -> tuple[dict[str, str], Path]:
+        root = Path(tmp)
+        fake_bin = root / "bin"
+        fake_bin.mkdir()
+        capture = root / "delegate.json"
+        fake_npx = fake_bin / "npx"
+        fake_npx.write_text(
+            "#!/usr/bin/env python3\n"
+            "import json, os, sys\n"
+            "with open(os.environ['PW_CAPTURE_FILE'], 'w', encoding='utf-8') as f:\n"
+            "    json.dump({'args': sys.argv[1:], 'target': os.environ.get('PW_SMOKE_URL')}, f)\n"
+            f"print({json.dumps(json.dumps(report))})\n",
+            encoding="utf-8",
+        )
+        fake_npx.chmod(0o755)
+        env = os.environ.copy()
+        env["PATH"] = f"{fake_bin}{os.pathsep}{env.get('PATH', '')}"
+        env["PW_CAPTURE_FILE"] = str(capture)
+        return env, capture
+
+    def test_smoke_forwards_config_spec_and_cli_url_over_environment(self):
+        report = {
+            "stats": {"expected": 1, "unexpected": 0, "flaky": 0, "skipped": 0},
+            "suites": [{"specs": [{
+                "title": "visit page",
+                "file": "e2e/home.spec.ts",
+                "tests": [{
+                    "title": "loads the target",
+                    "status": "expected",
+                    "annotations": [{"type": "pwrun-navigation", "description": "http://127.0.0.1:34567/"}],
+                    "results": [{"status": "passed"}],
+                }],
+            }]}],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            env, capture = self._install_fake_npx(tmp, report)
+            env["PW_SMOKE_URL"] = "https://inherited.example"
+            env["BASE_URL"] = "https://base.example"
+            proc = subprocess.run(
+                [sys.executable, str(SCRIPT), "smoke", "--json", "--config", "custom.config.ts",
+                 "--spec", "e2e/home.spec.ts", "--url", "http://127.0.0.1:34567"],
+                capture_output=True,
+                text=True,
+                cwd=tmp,
+                env=env,
+                timeout=30,
+            )
+            delegated = json.loads(capture.read_text(encoding="utf-8"))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("--config", delegated["args"])
+        config_index = delegated["args"].index("--config")
+        self.assertEqual(delegated["args"][config_index + 1], "custom.config.ts")
+        self.assertIn("e2e/home.spec.ts", delegated["args"])
+        self.assertEqual(delegated["target"], "http://127.0.0.1:34567")
+        payload = json.loads(proc.stdout)
+        self.assertEqual(payload["requested_url"], "http://127.0.0.1:34567")
+        self.assertEqual(payload["url_source"], "--url")
+        evidence = payload["navigation_evidence"]
+        self.assertTrue(evidence["verified"])
+        self.assertTrue(evidence["requested_target_origin_observed"])
+        self.assertEqual(evidence["observed"][0]["url"], "http://127.0.0.1:34567/")
+
+    def test_smoke_environment_precedence_and_unverified_output(self):
+        report = {"stats": {}, "suites": []}
+        with tempfile.TemporaryDirectory() as tmp:
+            env, capture = self._install_fake_npx(tmp, report)
+            env["PW_SMOKE_URL"] = "https://smoke.example/path"
+            env["BASE_URL"] = "https://base.example"
+            for key, expected_url, expected_source in (
+                (None, "https://smoke.example/path", "PW_SMOKE_URL environment"),
+                ("PW_SMOKE_URL", "https://base.example", "BASE_URL environment"),
+                ("BASE_URL", "http://localhost:3000", "pwrun default"),
+            ):
+                if key:
+                    env.pop(key)
+                proc = subprocess.run(
+                    [sys.executable, str(SCRIPT), "smoke", "--json"],
+                    capture_output=True,
+                    text=True,
+                    cwd=tmp,
+                    env=env,
+                    timeout=30,
+                )
+                delegated = json.loads(capture.read_text(encoding="utf-8"))
+                self.assertEqual(proc.returncode, 0, proc.stderr)
+                self.assertEqual(delegated["target"], expected_url)
+                payload = json.loads(proc.stdout)
+                self.assertEqual(payload["requested_url"], expected_url)
+                self.assertEqual(payload["url_source"], expected_source)
+                self.assertFalse(payload["navigation_evidence"]["verified"])
+                self.assertIsNone(payload["navigation_evidence"]["requested_target_origin_observed"])
+
+    def test_smoke_reports_runtime_target_mismatch(self):
+        report = {
+            "stats": {"expected": 1, "unexpected": 0, "flaky": 0, "skipped": 0},
+            "suites": [{"specs": [{
+                "title": "visit another host",
+                "file": "e2e/other.spec.ts",
+                "tests": [{
+                    "title": "loads an unrelated page",
+                    "status": "expected",
+                    "annotations": [{"type": "pwrun-navigation", "description": "https://elsewhere.example/"}],
+                    "results": [{"status": "passed"}],
+                }],
+            }]}],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            env, _ = self._install_fake_npx(tmp, report)
+            proc = subprocess.run(
+                [sys.executable, str(SCRIPT), "smoke", "--json", "--url", "https://target.example"],
+                capture_output=True,
+                text=True,
+                cwd=tmp,
+                env=env,
+                timeout=30,
+            )
+        payload = json.loads(proc.stdout)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(payload["requested_url"], "https://target.example")
+        self.assertTrue(payload["navigation_evidence"]["verified"])
+        self.assertFalse(payload["navigation_evidence"]["requested_target_origin_observed"])
+        self.assertEqual(payload["navigation_evidence"]["observed"][0]["url"], "https://elsewhere.example/")
+
     @unittest.skipUnless(shutil.which("node") is None, "node present; missing-toolchain path not exercised")
     def test_smoke_without_node_reports_missing_dependency(self):
         proc = run_script("smoke", "--json")
@@ -147,8 +270,8 @@ class SmokeTests(unittest.TestCase):
         payload = json.loads(proc.stdout)
         self.assertFalse(payload["ok"])
         self.assertIn("node", payload["error"])
-        # The command parses without any extra flags; defaults are applied.
-        self.assertIn("url", payload)
+        self.assertEqual(payload["requested_url"], "http://localhost:3000")
+        self.assertFalse(payload["navigation_evidence"]["verified"])
 
     @unittest.skipIf(shutil.which("node") is None, "node absent; delegate path not exercised")
     def test_smoke_with_node_emits_json_envelope(self):

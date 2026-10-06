@@ -7,7 +7,7 @@ description: >-
   VPN, WireGuard mesh, or self-hosted VPN infrastructure. Do not use this skill for
   unrelated requests; route to the nearest named specialist.
 license: MIT
-compatibility: Requires bash, Python 3.8+, jq, curl, and access to a Headscale server
+compatibility: Requires bash, Python 3.10+, jq, curl, and access to a Headscale server
   or the `headscale` CLI. Tailscale client (`tailscale`) must be installed on target
   machines.
 metadata:
@@ -64,8 +64,8 @@ These live in `scripts/` at the bundle root and are available to all sub-skills.
 | Script | Purpose | Invocation |
 |---|---|---|
 | `scripts/headscale-health-check.sh` | Probe Headscale server health: version, node count, and DB integrity. Run it after any control-server change and as the first diagnostic when nodes or clients misbehave. | `scripts/headscale-health-check.sh --json` |
-| `scripts/headscale-backup.sh` | Full backup of the Headscale server (sqlite + config + policy + certs) to a restorable archive. Run it on a schedule for any production deployment and before upgrades or migrations; `--dry-run` previews without writing. | `scripts/headscale-backup.sh --dry-run` |
-| `scripts/headscale-restore.sh` | Restore a Headscale server from a backup archive. Run it during disaster recovery or migration onto a fresh host; always verify node list and policy afterwards. | `scripts/headscale-restore.sh --backup headscale-backup-2026-01-01.tar.gz` |
+| `scripts/headscale-backup.sh` | Create a checksummed manifest-backed Headscale archive from configured SQLite and recovery paths. Run before upgrades or migrations; `--dry-run` previews without writing. | `scripts/headscale-backup.sh --dry-run --json` |
+| `scripts/headscale-restore.sh` | Validate and restore a supported manifest-backed archive to its recorded destinations. Run it during recovery; always verify node list and policy afterwards. | `scripts/headscale-restore.sh --backup headscale-backup-2026-01-01.tar.gz --dry-run --json` |
 | `scripts/tailscale-status-json.sh` | Structured wrapper around `tailscale status --json` with peer diagnostics. Run it from any client to check connectivity, peers, and relay/direct paths in machine-readable form. | `scripts/tailscale-status-json.sh` |
 | `scripts/test-all.sh` | Smoke test across all bundle scripts (`--help`, syntax, executability) without requiring a running Headscale. Run it after modifying any bundled script; CI runs it via `scripts/check-skill-tests.py`. | `bash scripts/test-all.sh` |
 
@@ -97,16 +97,18 @@ See the individual sub-skill SKILL.md for detailed usage.
 
 ## Prerequisites
 
-- bash, Python 3.8+, `jq`, and `curl` on the host running the scripts (per `compatibility`).
+- bash, Python 3.10+, `jq`, and `curl` on the host running the scripts (per `compatibility`).
 - A running Headscale server with `HEADSCALE_URL` and `HEADSCALE_API_KEY` set for server-side operations (API key created via `headscale apikeys create`); `TAILSCALE_AUTHKEY` for non-interactive client enrollment.
 - The `tailscale` client installed on target machines for status and routing sub-skills; the `headscale` CLI (or API access) for control-server administration.
 - For headscale-backup/restore: filesystem access to the server's sqlite DB, config, policy, and cert paths, plus storage for archives off the control-server host.
+- For migration: install the verified restore helper on the destination at the same path as the source helper, or set `HEADSCALE_REMOTE_RESTORE_SCRIPT` to the destination path; prepare the recorded archive paths and directory ownership before restoring.
 
 ## Limitations
 
 - This bundle assumes a self-hosted Headscale control plane — it does not manage Tailscale's hosted SaaS (see When not to use).
 - Scripts check environment variables at runtime and error helpfully when missing; they do not create credentials themselves.
 - Backup/restore operates on the files present on the control-server host; it cannot recover data that was never backed up, and a restore should always be followed by health verification.
+- Restore accepts manifest version 1 archives and refuses older unmanifested tarballs. Migration requires the verified restore helper to be installed on the destination and does not fall back to raw extraction or report success without a verified restore result. Prepare the archived paths and target directory ownership before migration; root overrides that move files are rejected until config and service paths are separately updated and validated.
 - Sub-skill scripts live under `skills/<sub-skill>/scripts/` and are documented in their own SKILL.md files, not here.
 
 ## When not to use

@@ -16,6 +16,8 @@ The bundled CLI uses this application-key mode. It does not put the Client ID in
 
 ## OAuth boundary
 
+The bundled CLI has no OAuth flow or personal history, watchlist, collection, or list commands. The API context below does not add those capabilities. Use the Trakt website or a separate authenticated client for them.
+
 Public trending, popular, and anticipated reads do not require a user login. OAuth is needed by endpoints marked as required and is appropriate for user-scoped list, history, collection, watchlist, or mutation operations. A bearer token does not replace the application key and version header when calling the API.
 
 Trakt supports authorization-code and device-code flows. Access tokens last seven days. Refresh tokens are single-use: persist the replacement returned by a successful refresh and discard the old token. A 400/401 response containing `invalid_grant` means the session is no longer usable and requires reauthorization. Never log client secrets, access tokens, or refresh tokens.

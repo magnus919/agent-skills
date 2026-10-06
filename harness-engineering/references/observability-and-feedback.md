@@ -16,6 +16,57 @@ action result/partial effect, checkpoint written, check outcome, termination
 reason, handoff, and human intervention. Do not record hidden reasoning to get
 observability; explicit actions and decisions usually provide the needed evidence.
 
+### Optional typed intervention detail
+
+The run record keeps `human_interventions` as its required, nonnegative integer
+aggregate. It remains the count of human intervention events for that case; do
+not replace it with a count of all actors. Record a count only when it is known:
+never fill an unknown count with `0`. The optional `intervention_detail` object
+adds bounded typed events when a question or evaluation needs to distinguish
+what happened. The default run record remains aggregate-only; collecting event
+detail is an explicit, question-scoped choice, not automatic instrumentation or
+an export policy.
+
+When included, `intervention_detail` has `coverage` (`complete`, `partial`, or
+`not_collected`) and `events`. Each event has only these fields: `id`, `actor`,
+`kinds`, `target`, `boundary_reference`, `changes`, `outcome`, and
+`evidence_reference`. Actor is `human`, `orchestrator`, or `system`. `kinds` is
+a nonempty list of unique, extensible short codes. Actor describes the input
+origin: a person coordinating work is still `human`; `orchestrator` means an
+automated coordinator. The target contains
+`run_id`, `task_id`, and optionally `workstream_id`; `changes` contains
+`goal`, `constraints`, and `authority`, each `true`, `false`, or `null` when
+unknown. Outcomes and kinds are bounded codes, not prose. Example kind codes
+include `information_decision`, `authorization_gate`, and `resume_recovery`;
+they illustrate an extensible vocabulary, not a required taxonomy. References
+are opaque, bounded printable IDs without whitespace. Event IDs and codes use at
+most 64 characters matching `[A-Za-z0-9][A-Za-z0-9_.:-]*`; reference IDs use at
+most 256 characters.
+
+Count each input event once even when its `kinds` contains multiple codes. Only
+events with `actor: human` contribute to `human_interventions`; orchestrator and
+system resumption events do not. With `complete` coverage, the scalar equals the
+number of human events. With `partial` coverage, the listed human events are a
+subset and their count cannot exceed the scalar. With `not_collected`, `events`
+is empty; absence of the detail object likewise means detail was not collected,
+not that the count is zero. Keep an independently known aggregate when detail is
+absent or partial. If the aggregate itself is unknown, do not fabricate zero or
+present the record as a measured intervention count.
+
+Allow only the listed event fields. Do not include raw human messages, prompts,
+hidden reasoning, or unbounded free text. Use an event once at its owning/common
+parent task; when it applies to several child cases, reference that event rather
+than duplicating it. The uniqueness boundary is `(run_id, event.id)`. Typed
+events describe observed changes; they do not grant authority, authorize an
+action, or establish that an intervention improved productivity. A lower
+intervention count alone is not a success claim.
+
+Bounded opaque identifiers and codes can still contain sensitive or identifying
+information; inspect their values under the same privacy policy as other
+telemetry. Schema validation checks structure and bounds, not whether an ID or
+code leaks sensitive data. If the task only needs correctness evidence and does
+not ask about interventions or recovery, keep event detail out of the record.
+
 ## Golden journey debugging
 
 1. Choose a real user journey with observable acceptance and a candidate revision.

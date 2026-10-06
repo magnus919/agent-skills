@@ -97,6 +97,22 @@
         "Product, platform, security, architecture, and API ownership boundaries are explicit",
         "The process ends with evidence-based retirement and post-retirement monitoring rather than deletion alone"
       ]
+    },
+    {
+      "id": "agent-consumer-interface-review",
+      "prompt": "Before release, review the interfaces our close assistant will use. It needs to find overdue invoices in Billing, match them to ERP payment records, fetch the receipt PDF for exceptions, and prepare a close summary for a finance user to approve. Billing has about 30 search operations and ERP has 8. The current tools return full collections by default; Billing invoice IDs are tenant-scoped and the ERP accepts a separate payment ID. A bad date filter returns 'E_INPUT'; a forbidden payment lookup returns 'not found'. Receipt search sometimes returns only a signed URL with no stated expiry. The close operation returns 202, but the client treats that as complete. What should the API review capture and prioritize?",
+      "expected_output": "A task-centered consumer interface review that traces discovery and dependencies across Billing and ERP, distinguishes authority and service-local identifiers, recommends discovery proportional to this modest catalog and tested client behavior, makes errors safely actionable, bounds collections and documents continuation, specifies reliable receipt retrieval semantics, and distinguishes accepted from completed close work while preserving finance approval. It records evidence needed from the deployed client and actual multi-step traces rather than declaring the design reliable from schemas or a mock.",
+      "assertions": [
+        "The review traces the close task across Billing and ERP operations and names the owner and authority boundary for each",
+        "The review identifies prerequisite dependencies between operations in the close task",
+        "The discovery approach is justified against the catalog size and target client's actual capability without requiring dynamic tool search as a universal pattern",
+        "The review distinguishes tenant-scoped Billing invoice identifiers from ERP payment identifiers and requires an explicit supported mapping before cross-service use",
+        "The error contract distinguishes invalid date input from denied payment access and gives a safe, corrective next step without exposing sensitive details",
+        "The collection contract bounds default and maximum results and defines continuation and a signal that results are incomplete",
+        "The receipt result defines an authorized retrieval path and usable artifact metadata or lifecycle",
+        "The close flow distinguishes acceptance from terminal completion",
+        "The close flow preserves finance user approval before finalizing"
+      ]
     }
   ]
 }

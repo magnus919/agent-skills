@@ -2,7 +2,7 @@
 name: system-one
 description: >-
   Design, integrate, evaluate, self-host, and troubleshoot typed System One
-  decision models including TypeSafe Jev, Convai Innovations Laya, and CLM. Use for
+  decision models including TypeSafe Jev, Convai Innovations Laya, CLM, and experimental Strands Decider. Use for
   Choice/Score/Noul judgments inside deterministic software, app-control loops,
   routing, ranking, guardrails, calibration, semantic code linting and
   post-edit feedback, DevOps decision support, confidence-based escalation, or
@@ -40,8 +40,13 @@ does not imply a correct judgment; a high probability is not permission.
    New to this model class? Start with `references/worked-decision-pilot.md`
    to choose one bounded decision, then use `references/concepts-and-patterns.md`
    for primitive semantics and composition.
-3. Open **only the matching reference** below. Keep exact question text and
-   criteria in trusted configuration, not user-supplied state.
+3. Open **only the matching reference** below. Keep exact question instructions,
+   criteria, state paths, and thresholds in trusted configuration, not
+   user-supplied state. IDs are for application code; TypeSafe documents that
+   Jev does not send question IDs to the model, so put complete judgment
+   meaning in each instruction. Other providers may have different contracts.
+   For question wording or candidate extraction, read
+   `references/question-design.md`.
 4. Validate response IDs, types, option sets, distributions, score rubric,
    and finite values before policy code; record returned model/version and
    enforce the pinned deployment identity. Treat malformed,
@@ -62,12 +67,15 @@ tracked corpus unless publication is explicitly requested.
 
 | Task | Read next |
 |---|---|
+| Design questions, choose candidates, or extract values from source text | `references/question-design.md`; for broader application compositions, `references/use-case-patterns.md` |
 | Hosted Jev API or SDK integration | `references/jev.md`; run `scripts/decision_demo.py` offline first |
 | CLM typed decisions, candidate ranking, Qwen3 encoder, fine-tuning, or private serving | `references/clm.md` |
 | Laya checkpoints, routing, language, CPU/GPU/MPS | `references/laya.md` |
 | Fine-tune the English Laya checkpoint on labeled typed decisions | `references/laya-fine-tuning.md` |
 | Native C++ Laya inference, CUDA/Vulkan, or Jev-compatible HTTP | `references/laya-cpp.md` |
 | Local or private/VPC Laya service | `references/laya-self-hosting.md`, then `references/hosting-and-troubleshooting.md` |
+| Skill suggestions with progressive disclosure and no-fit rejection | `references/implementation-audit.md` |
+| Narration-to-media matching through captions or metadata; catalog answer/component selection | `references/use-case-patterns.md` |
 | Browser/desktop/voice control, agent routing, ranking, guardrails, deadlines | `references/use-case-patterns.md` |
 | Semantic code-lint rule design, local post-edit checks, graph scans, or feedback evaluation | `references/semantic-lint-feedback.md`; fill `templates/semantic-lint-rule.md` and `templates/feedback-evaluation.md` before a pilot |
 | First System One pilot or worked evaluation of a decision, QA runner, or semantic CI gate | `references/worked-decision-pilot.md` |
@@ -92,9 +100,15 @@ tracked corpus unless publication is explicitly requested.
 | Screen Jev's advisory eval judgments against real outputs | `references/qa-pilot.md` and `references/evaluation-and-calibration.md`; use `scripts/jev_eval_calibration.py` for a blind packet, then independent labels or `scripts/jev_teacher_label.py` for model-teacher pseudo-labels |
 | Select among Jev, Laya, CLM, GLiNER2.5-Decide, or another candidate | `references/ecosystem-radar.md`; then the selected model reference |
 | Screen newer open typed-decision candidates from primary evidence | `references/open-decision-candidates.md`; then use `references/comparison-design.md` before benchmarking |
+| Experimental Strands Decider local inference, pointer-head semantics, context limits, or source-only vision | `references/strands-decider.md`; qualify the native adapter before comparison; eval changes in `references/strands-eval-review.md` |
 | Fastino GLiNER2.5-Decide local classification | `references/gliner25-decide.md` |
 | Fine-tune GLiNER2 for Decide-style classification | `references/gliner25-decide-fine-tuning.md` |
 | Failure, latency, device fallback, upgrade, rollback | `references/hosting-and-troubleshooting.md` |
+
+For a hosted provider integration, refresh the provider's live documentation
+index, then read the current API or selected SDK reference and the nearest
+cookbook before coding. `references/jev.md` contains the Jev-specific route and
+fallback procedure; its endpoint and contract details are a dated snapshot.
 
 Run `python3 scripts/systemone_probe.py --request examples/request.json` for an offline
 contract check. Add `--live` only when the user has authorized transmitting

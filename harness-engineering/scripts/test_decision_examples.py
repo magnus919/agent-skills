@@ -23,6 +23,27 @@ class DecisionExampleTests(unittest.TestCase):
         self.assertEqual(output["action"]["cases"]["no_effect"]["status"], "failed")
         self.assertTrue(all("SYNTHETIC OFFLINE FIXTURE" in x["provenance"] for x in output.values()))
 
+    def test_low_confidence_defers_without_claiming_no_match(self):
+        candidates = [{"id": "a"}]
+        answer = {"outcome": "candidate", "candidate_id": "a", "p_applicable": 0.69}
+        result = examples_module.select_candidate(candidates, answer, 0.70)
+        self.assertEqual(result["route"], "review")
+        self.assertEqual(result["permission"], "not_granted")
+        self.assertEqual(examples_module.select_candidate(candidates, {**answer, "p_applicable": 0.70}, 0.70)["route"], "select")
+        self.assertEqual(examples_module.select_candidate(candidates, {"outcome": "no_match"}, 0.70)["route"], "no_match")
+
+    def test_proposal_cannot_redefine_the_host_expected_effect(self):
+        allowed = [{"id": "refresh", "expected_effect": "index_updated"}]
+        proposal = {"action_id": "refresh", "evidence_revision": "r1", "expected_effect": "unchanged"}
+        result = examples_module.select_and_check_action(proposal, allowed, {"revision": "r1"}, "r1", {"effect": "unchanged", "outcome": "pass"})
+        self.assertEqual(result["status"], "rejected")
+        self.assertEqual(result["reason"], "effect_contract_mismatch")
+        self.assertFalse(result["simulated_executor_fixture_used"])
+        del proposal["expected_effect"]
+        self.assertEqual(examples_module.select_and_check_action(proposal, allowed, {"revision": "r1"}, "r1", {"effect": "index_updated", "outcome": "pass"})["status"], "verified")
+        with self.assertRaisesRegex(examples_module.ContractError, "expected_effect"):
+            examples_module.select_and_check_action(proposal, [{"id": "refresh"}], {"revision": "r1"}, "r1", {"effect": "index_updated", "outcome": "pass"})
+
     def test_invalid_finite_probabilities_rejected(self):
         candidates = [{"id": "a"}]
         for value in (float("nan"), float("inf"), float("-inf"), -0.01, 1.01, True, "0.9"):
@@ -43,7 +64,7 @@ class DecisionExampleTests(unittest.TestCase):
 
     def test_action_must_be_allowlisted_and_bound_to_current_revision(self):
         proposal = {"action_id": "write", "evidence_revision": "r1", "expected_effect": "done"}
-        allowed = [{"id": "write"}]
+        allowed = [{"id": "write", "expected_effect": "done"}]
         result = examples_module.select_and_check_action(proposal, allowed, {"revision": "r1"}, "r2", {"effect": "done", "outcome": "pass"})
         self.assertEqual(result["reason"], "stale_evidence")
         self.assertFalse(result["simulated_executor_fixture_used"])
@@ -55,14 +76,14 @@ class DecisionExampleTests(unittest.TestCase):
                 examples_module.select_and_check_action({**proposal, "action_id": "write"}, invalid, {"revision": "r1"}, "r1", {"effect": "done", "outcome": "pass"})
 
     def test_action_error_unknown_outcome_and_no_effect_are_not_success(self):
-        allowed = [{"id": "refresh"}]
+        allowed = [{"id": "refresh", "expected_effect": "changed"}]
         proposal = {"action_id": "refresh", "evidence_revision": "r1", "expected_effect": "changed"}
         self.assertEqual(examples_module.select_and_check_action(proposal, allowed, {"revision": "r1"}, "r1", {"error": "timeout"})["status"], "unknown")
         self.assertEqual(examples_module.select_and_check_action(proposal, allowed, {"revision": "r1"}, "r1", {"effect": "changed", "outcome": "unknown"})["status"], "incomplete")
         self.assertEqual(examples_module.select_and_check_action(proposal, allowed, {"revision": "r1"}, "r1", {"effect": None, "outcome": "fail"})["status"], "failed")
         self.assertNotEqual(examples_module.select_and_check_action(proposal, allowed, {"revision": "r1"}, "r1", {"outcome": "pass"})["status"], "verified")
         with self.assertRaisesRegex(examples_module.ContractError, "expected_effect"):
-            examples_module.select_and_check_action({"action_id": "refresh", "evidence_revision": "r1"}, allowed, {"revision": "r1"}, "r1", {"outcome": "pass"})
+            examples_module.select_and_check_action({"action_id": "refresh", "evidence_revision": "r1"}, [{"id": "refresh"}], {"revision": "r1"}, "r1", {"outcome": "pass"})
 
     def test_review_requires_current_known_evidence_and_does_not_grant_authority(self):
         evidence = {"e1": "matching host record"}

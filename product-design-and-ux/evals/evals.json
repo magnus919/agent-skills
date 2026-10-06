@@ -121,6 +121,20 @@
         "Opt-out or alternate behavior is defined",
         "The design distinguishes generated summary from verified transcript and minimizes sensitive data"
       ]
+    },
+    {
+      "id": "external-agent-cross-app-delegation",
+      "prompt": "A customer asks their own AI agent, in a separate agent app, to update three records in our project-management product. The agent can connect through an integration, but the product team has not yet specified how the agent identity maps to the customer's account or how cancellation works. Design the user journey and engineering handoff questions. Cover authority, evidence, switching between apps, human intervention, interruption, partial completion, and recovery without assuming the agent app is part of our product.",
+      "expected_output": "An evidence-grounded cross-app task and interaction contract that treats the person as the goal owner and decision-maker; distinguishes the human account from the authenticated agent or integration principal; identifies unresolved authority and integration facts; scopes requested product targets and operations; preserves an inspectable return path and product-side completion evidence; and defines honest cancellation, partial-result, retry, and re-entry behavior. The response does not assume the product can inspect the agent's private conversation or that sending a cancellation request stops already completed work.",
+      "assertions": [
+        "The flow keeps the human as goal owner and distinguishes their product identity from the authenticated agent or integration principal",
+        "The response flags unknown identity mapping and cancellation semantics for verification instead of inventing supported behavior",
+        "Delegated authority names the target records and allowed operations, and identifies the product-side authorization or fresh-decision boundary",
+        "The response includes an inspectable return path and product-side evidence of the intended record state rather than relying only on the agent's completion claim",
+        "The response specifies human intervention across the available surfaces, including a manual path or an explicit limitation when no control is supported",
+        "Cancellation is represented as a request whose effects may be unconfirmed, and already completed side effects are distinguished from stoppable work",
+        "Partial completion, safe retry or duplicate-effect risk, and re-entry after app switching or connection loss are addressed"
+      ]
     }
   ]
 }

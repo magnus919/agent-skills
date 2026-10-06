@@ -1,5 +1,10 @@
 # CLI Command Reference
 
+> Implementation status: live Ghidra operations are unimplemented. Import,
+> analysis, queries, and report generation fail closed; the examples below
+> describe the intended interface. Installing dependencies does not enable it.
+> Fixture-backed historical output must not be cited as evidence about a file.
+
 Complete reference for the `binary` CLI — every command, its flags, output
 format, and exit codes. Load this when you need exact flag syntax, want to
 understand what a command returns, or need to look up an exit code.

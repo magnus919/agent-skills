@@ -67,6 +67,18 @@ pass/fail/unknown routes, reachability, terminal paths, bounded limits, and a
 non-memory checkpoint declaration. It does not prove the store persists or the
 executor obeys its declared limits.
 
+### Intervention ownership and attribution
+
+When a task needs intervention detail, record the event once under its owning
+parent task/run and refer to it from child work rather than copying it into each
+case. Use a unique `(run_id, event.id)` pair so one human action is not counted
+again when several workstreams inherit its effects. Attribute a direct human
+input to `human`; resumptions or routing performed by an orchestrator or system
+are separate event actors and do not increment the human-intervention count.
+Capture only bounded typed changes to goal, constraints, or authority; do not
+capture message text or hidden reasoning by default. A recorded intervention is
+observational data, never a grant of authority to the coordinator or a worker.
+
 ## Parallel work and integration
 
 Assign disjoint ownership or serialize the overlap; use isolated checkouts where

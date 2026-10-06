@@ -13,8 +13,8 @@ This skill helps an agent turn validated evidence and a chosen scope into tracea
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Compact workflow, routing, and completion rules. |
-| `references/` | Detailed guidance for IA, content and cognitive demand, AI uncertainty, flows, contracts, patterns, usability, handoff, sources, and scenario probes. |
-| `templates/` | Fillable traceability, flow/state, inventory, general and AI interaction contracts, usability, and handoff artifacts. |
+| `references/` | Detailed guidance for IA, content and cognitive demand, AI uncertainty, external-agent interactions, flows, contracts, patterns, usability, handoff, sources, and scenario probes. |
+| `templates/` | Fillable traceability, flow/state, inventory, general and AI interaction contracts, external-agent handoff, usability, and handoff artifacts. |
 
 ## Quick Start
 
@@ -30,6 +30,7 @@ Define the task flow, recovery states, interface contract, and observable accept
 - Task flows, user flows, state models, recovery paths, or interface behavior.
 - Interaction contracts, responsive/reflow behavior, usability-study plans, or UX engineering handoffs.
 - AI-generated content, recommendations, predictions, conversational flows, retrieval grounding, human review/approval, opt-out, escalation, feedback, or model/prompt/retrieval-change acceptance.
+- A person delegates to their own agent outside the product and must inspect, intervene in, or resume product work across apps.
 
 ## Requirements
 

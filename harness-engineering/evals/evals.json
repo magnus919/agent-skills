@@ -215,6 +215,82 @@
       ]
     },
     {
+      "id": "tool-discovery-dependency-order",
+      "prompt": "Our support agent has 420 integrations. Each tool list shows names and JSON schemas, but agents still choose a search tool that cannot run until a workspace is connected, then call export before creating a snapshot. Some workspaces deny export. Design the discovery and call path. One small internal task uses only three fixed tools.",
+      "expected_output": "Task-relevant discovery exposes readiness, dependency order, and distinct recovery outcomes, with static routing retained for the small fixed task.",
+      "assertions": [
+        "Matches the requested task and outcome to relevant capabilities, rather than relying on input schemas alone.",
+        "Considers the user's authority when surfacing candidate tools.",
+        "Surfaces connection prerequisites before the dependent operation is called.",
+        "Surfaces permission prerequisites before the dependent operation is called.",
+        "States the dependency order or identifier handoff required before export.",
+        "Distinguishes no matching capability from denied access.",
+        "Distinguishes denied access from a missing connection or other unavailable prerequisite.",
+        "Allows the three-tool stable task to use a simple static index instead of requiring runtime search.",
+        "Places authorization at execution of the final operation and does not treat discovery as permission.",
+        "Refreshes stale or empty discovery against the authoritative catalog within a bounded policy.",
+        "Reports or escalates when the required capability remains unavailable after refresh."
+      ]
+    },
+    {
+      "id": "bulk-result-artifact-contract",
+      "prompt": "An agent must compare 90,000 product records from two sources. Returning every row overruns context; a temp CSV currently has no stable handle and expires unpredictably. Names match across systems even when they refer to different entities, while source snapshots cover different time windows. Specify the result interface and recovery behavior.",
+      "expected_output": "A bounded model-facing summary points to an authorized, recoverable external artifact with explicit provenance, completeness, identity and retention semantics.",
+      "assertions": [
+        "Returns a stable or explicitly expiring artifact handle.",
+        "Keeps the full bulk result outside model context.",
+        "Reports the artifact schema and version.",
+        "Reports the item count and whether it is exact or estimated.",
+        "Reports how the sample was selected.",
+        "Records the source identity.",
+        "Records the source revision or snapshot.",
+        "Records the operation or query identity that produced the artifact.",
+        "States whether the result is complete, partial, or unknown.",
+        "Defines source-qualified identity keys and version semantics.",
+        "Accounts for unmatched source records without silently merging them.",
+        "Accounts for duplicate source records without silently merging them.",
+        "Records snapshot or time-window differences that affect cross-source comparison.",
+        "Defines who can read or share the artifact.",
+        "Defines artifact expiry.",
+        "Defines the retention owner.",
+        "Provides bounded continuation for partial results.",
+        "Defines recovery after artifact expiry or unavailability.",
+        "Identifies when recomputation can create a different cohort.",
+        "Distinguishes a complete empty result from denied access.",
+        "Distinguishes a complete empty result from a failed prerequisite.",
+        "Does not treat the returned sample as validation of every artifact row or identity match."
+      ]
+    },
+    {
+      "id": "optional-intervention-events",
+      "prompt": "Use the bundled harness-engineering v1 run-record contract. Our run records already have a required human_interventions integer. A study needs to distinguish human changes to goals, constraints, and authority from orchestrator resume events, but must not store messages or reasoning. Propose an optional event contract and explain how to interpret missing detail.",
+      "expected_output": "Preserve the existing aggregate count and add event detail only when the study needs it, with explicit coverage and privacy-bounded typed events. Missing detail is not zero, automated events are not human interventions, and counts alone do not establish productivity.",
+      "assertions": [
+        "Keeps human_interventions as the existing required nonnegative aggregate and does not fabricate zero when the count is unknown.",
+        "Makes intervention_detail optional and interprets absent detail as not collected rather than a zero count.",
+        "Requires coverage and events when intervention_detail is present; not_collected has an empty events list.",
+        "Requires complete coverage to match the scalar to human event count and partial coverage not to exceed it.",
+        "Counts an input event once even if it carries multiple kinds, and counts only actor human toward the scalar.",
+        "Uses event objects limited to id, actor, kinds, target, boundary_reference, changes, outcome, and evidence_reference.",
+        "Uses unique nonempty kind codes, allowed actors, and the specified target and changes fields with null for unknown changes.",
+        "Bounds IDs, codes, and opaque references and avoids duplicating a parent event across child cases.",
+        "Uses bounded typed fields and excludes raw messages, prompts, hidden reasoning, and free-text justifications by default.",
+        "Avoids treating a lower intervention count as proof of task success or productivity."
+      ]
+    },
+    {
+      "id": "intervention-detail-not-needed",
+      "prompt": "A user asks for a one-off unit conversion, and the evaluation is only whether the numeric answer is correct. No intervention-count or recovery question is in scope. Our logger has no measured intervention count for this run. Should we add typed intervention events to its record?",
+      "expected_output": "Do not add intervention_detail when the question does not need it. Do not invent a zero aggregate to fill the required v1 run-record field; retain the correctness evidence and mark that record unavailable or incomplete under the current contract. Do not retain raw prompts or reasoning for this unrelated metric.",
+      "assertions": [
+        "Declines typed intervention detail when the stated task and evaluation need only answer correctness.",
+        "Does not invent human_interventions: 0 when the aggregate was not measured.",
+        "Explains that the current v1 run record requiring the aggregate cannot represent an unknown count as a measured value.",
+        "Preserves the numeric correctness evidence separately from the unavailable or incomplete intervention record.",
+        "Does not recommend capturing raw prompt text or hidden reasoning for this question."
+      ]
+    },
+    {
       "id": "typed-candidate-applicability",
       "prompt": "Build a LangChain skill router using System One. The agent sends the inventory revision and goal with the request, but the skill list can change before the result is used. Some tasks match none of the installed skills. Design the decision boundary and catalog handoff.",
       "expected_output": "A current finite candidate offer with a distinct applicability decision, stale-result rejection, clear catalog ownership, and end-to-end outcome evidence.",

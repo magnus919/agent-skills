@@ -1,3 +1,5 @@
+> Authorization interpretation: the human-approved mutation default applies unless the governed exception in `SKILL.md` is independently granted and externally proven for this exact action. A standing runbook alone is insufficient. Paging, rollback and expansion need separate authority; R-01 human closure is mandatory under either path.
+
 # Runbook: [Service Name]
 
 > **Version:** [1.0.0]

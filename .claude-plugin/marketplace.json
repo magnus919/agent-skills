@@ -147,7 +147,7 @@
         "./binary-analysis"
       ],
       "strict": false,
-      "description": "Analyze unknown binary files through a deterministic CLI that wraps Ghidra's static-analysis engine. Use when you need to inspect a PE, ELF, or Mach-O file — triage suspicious binaries, map imported APIs, decompile functions, trace call paths, or produce structured evidence reports. Do not use for runtime analysis (debugging, dynamic tracing, sandbox execution), for modifying or patching binaries, or for binaries you already know everything about. The skill owns planning, hypothesis formation, and evidence synthesis; the CLI owns all deterministic operations."
+      "description": "Plan static inspection of unknown binary files with a deterministic CLI whose Ghidra operations are currently unimplemented and fail closed. Use when you need to inspect a PE, ELF, or Mach-O file — triage suspicious binaries, map imported APIs, decompile functions, trace call paths, or produce structured evidence reports. Do not use for runtime analysis (debugging, dynamic tracing, sandbox execution), for modifying or patching binaries, or for binaries you already know everything about. The skill owns planning, hypothesis formation, and evidence synthesis; the CLI owns all deterministic operations."
     },
     {
       "name": "bmad",
@@ -1299,7 +1299,7 @@
         "./system-one"
       ],
       "strict": false,
-      "description": "Design, integrate, evaluate, self-host, and troubleshoot typed System One decision models including TypeSafe Jev, Convai Innovations Laya, and CLM. Use for Choice/Score/Noul judgments inside deterministic software, app-control loops, routing, ranking, guardrails, calibration, semantic code linting and post-edit feedback, DevOps decision support, confidence-based escalation, or private open-model inference. Do not use for syntactic/style linting, exact policy or authorization, open-ended generation, or generic LLM serving without a bounded decision contract."
+      "description": "Design, integrate, evaluate, self-host, and troubleshoot typed System One decision models including TypeSafe Jev, Convai Innovations Laya, CLM, and experimental Strands Decider. Use for Choice/Score/Noul judgments inside deterministic software, app-control loops, routing, ranking, guardrails, calibration, semantic code linting and post-edit feedback, DevOps decision support, confidence-based escalation, or private open-model inference. Do not use for syntactic/style linting, exact policy or authorization, open-ended generation, or generic LLM serving without a bounded decision contract."
     },
     {
       "name": "systematic-debugging",
@@ -1425,7 +1425,7 @@
         "./trakt"
       ],
       "strict": false,
-      "description": "Discover and compare Trakt.tv trending, popular, and anticipated movies and shows, and manage user-scoped history and watchlists from the terminal. Do not use this skill for general TMDb catalog metadata, credits, images, or provider lookups; use `tmdb` for those tasks."
+      "description": "Discover and compare public Trakt.tv trending, popular, and anticipated movies and shows from the terminal. Do not use this skill for personal history, watchlist, collection, or list management; the bundled CLI has no user-scoped operations. Use `tmdb` for catalog metadata, credits, images, and provider lookups."
     },
     {
       "name": "transistor",
@@ -1552,6 +1552,15 @@
       ],
       "strict": false,
       "description": "Make weekly startup growth decisions using growth rate, user behavior, and experiment evidence. Do not use this skill for runway, burn, or profitability trajectory analysis; use `yc-default-alive-calculator` for financial sustainability."
+    },
+    {
+      "name": "youtube-thumbnail",
+      "source": "./",
+      "skills": [
+        "./youtube-thumbnail"
+      ],
+      "strict": false,
+      "description": "Design, critique, and test YouTube video thumbnails and preview cards for stronger, better-qualified clicks. Use when developing thumbnail concepts, pairing a thumbnail with a title, directing image creation, checking small-screen legibility, preparing a YouTube experiment, or diagnosing thumbnail performance. Do not use for general video editing, channel strategy, or artwork for another platform."
     }
   ]
 }

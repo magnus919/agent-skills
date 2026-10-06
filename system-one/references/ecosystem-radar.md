@@ -14,6 +14,24 @@ model card, code, license, revision, and target-data evaluation before adoption.
 | Laya typed-decisions | Laya specialist checkpoint for four documented workflows | Explicit opt-in specialist; not a general silent default |
 | Contrastive-LM CLM-v0.1-8B | Open Apache-2.0 head over frozen Qwen3-8B; Choice/Score/Noul wire API plus candidate ranking | Self-host Qwen3-8B pooling encoder and CLM head; see [CLM guidance](clm.md) |
 
+## OpenAI Decisions API: preview watch
+
+Checked 2026-10-04 against the [official DevDay 2026 recap](https://openai.com/index/devday-2026-recap/).
+OpenAI describes Luna answering user-defined questions with finite predefined
+answers from text or image context, for classification, routing, and next-action
+selection. The announcement says limited preview, with a broader release planned;
+that plan is not evidence of general availability.
+
+Treat this as a candidate to investigate when preview access and current API
+documentation are available. The announcement does not establish a public
+endpoint, SDK request schema, Choice/Score/Noul compatibility, probability or
+confidence semantics, calibration, limits, or performance parity with Jev.
+Do not invent an integration or silently substitute it behind a Jev adapter.
+Refresh the release status and actual API contract before implementation, then
+qualify the adapter and evaluate text and image workloads separately using
+[comparison design](comparison-design.md). Image support here does not imply
+that another decision model can inspect pixels.
+
 ## Select a model for the actual decision
 
 Start with the cheapest deterministic rule or existing workflow that can meet the decision contract. If learned judgment is needed, use these as **shortlist rules**, then run a matched held-out comparison before selecting a winner:
@@ -28,6 +46,15 @@ Start with the cheapest deterministic rule or existing workflow that can meet th
 | Open-ended text or image understanding | Appropriate generative or multimodal model | A closed text-candidate model cannot generate or inspect unseen modalities |
 
 For Jev, Laya, and CLM on the same contract, preserve state, question wording, candidate descriptions, option order policy, and independently assigned labels. Measure quality and calibration by primitive, unknown/review coverage, cold and warm latency at the same client boundary, resource cost, and end-to-end outcomes. CLM's `clm-raw` is an ablation of its encoder; it is not an independent model choice. A task-fine-tuned CLM head should be compared separately from the zero-shot reference and from any specialist Laya checkpoint.
+
+## Experimental Strands Decider
+
+Checked 2026-10-04. Strands Labs' `StrandsAgents/strands-decider-2B-hobson-v19`
+is a separate project from Mapika Decider: a Qwen3.5-2B base with LoRA and a
+pointer head for Choice/Noul/Score. Read [the pinned experimental profile](strands-decider.md)
+for native confidence, question-sensitivity failures, context rejection,
+source-only vision, training and scoped local smoke evidence. It is a candidate
+for qualification, not a Jev replacement or a benchmark winner.
 
 ## Open/community candidates worth screening
 

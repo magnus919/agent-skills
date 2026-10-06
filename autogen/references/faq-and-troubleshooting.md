@@ -3,7 +3,7 @@
 ## Installation
 
 **Q: Which version should I install?**
-A: `pip install autogen-agentchat` for the current v0.4+ API. The older `pip install pyautogen` installs v0.2 (deprecated).
+A: The examples in this skill target AgentChat 0.7.5 on Python 3.10+. From this skill directory run `python -m pip install -r requirements.txt`. `pyautogen` 0.2 is a separate legacy API and its examples are labeled as such.
 
 **Q: Docker not available?**
 A: Use `LocalCommandLineCodeExecutor` for development, but understand the security risks.
@@ -15,11 +15,11 @@ A: v0.4 has breaking API changes. See the migration guide at https://microsoft.g
 
 ## Common Errors
 
-**Q: Agent loops forever?**
-A: Set `is_termination_msg` or `max_turns`. The agent needs a termination condition.
+**Q: A team keeps running?**
+A: Give the team a termination condition such as `MaxMessageTermination` or `TextMentionTermination`; `is_termination_msg` is a legacy `pyautogen` 0.2 parameter.
 
-**Q: UserProxyAgent keeps asking for input?**
-A: `human_input_mode` defaults differently. Set to "NEVER" for automated execution.
+**Q: UserProxyAgent waits for input?**
+A: That is its purpose in AgentChat: it represents a human and calls `input_func`. Supply the right input function or use an automated agent when there is no human participant.
 
 **Q: Nested chat never returns?**
 A: Ensure `CancellationToken` is passed and not already cancelled.

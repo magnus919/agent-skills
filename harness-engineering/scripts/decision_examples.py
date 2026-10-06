@@ -57,7 +57,7 @@ def select_candidate(candidates: list[dict[str, str]], answer: dict[str, Any], c
         raise ContractError("candidate_id must identify a supplied candidate")
     p_applicable = _probability(answer.get("p_applicable"), "p_applicable")
     if p_applicable < cutoff:
-        return {"route": "no_match", "reason": "below_example_cutoff", "permission": "not_granted"}
+        return {"route": "review", "reason": "below_example_cutoff", "permission": "not_granted"}
     return {"route": "select", "candidate_id": candidate_id, "p_applicable": p_applicable, "permission": "not_granted"}
 
 
@@ -78,11 +78,14 @@ def select_and_check_action(proposal: dict[str, Any], allowed_actions: list[dict
         raise ContractError("action_id must identify a supplied allowed action")
     if not isinstance(evidence, dict) or not isinstance(current_revision, str) or not current_revision:
         raise ContractError("current evidence and revision are required")
-    expected_effect = proposal.get("expected_effect")
+    host_action = next(action for action in allowed_actions if action["id"] == action_id)
+    expected_effect = host_action.get("expected_effect")
     if not isinstance(expected_effect, str) or not expected_effect:
-        raise ContractError("expected_effect must be a non-empty string")
+        raise ContractError("host action expected_effect must be a non-empty string")
     if evidence.get("revision") != current_revision or proposal.get("evidence_revision") != current_revision:
         return {"status": "rejected", "reason": "stale_evidence", "simulated_executor_fixture_used": False, "permission": "not_granted"}
+    if "expected_effect" in proposal and proposal["expected_effect"] != expected_effect:
+        return {"status": "rejected", "reason": "effect_contract_mismatch", "simulated_executor_fixture_used": False, "permission": "not_granted"}
     if not isinstance(observed, dict):
         raise ContractError("observed result must be an object")
     if observed.get("error"):
@@ -137,18 +140,20 @@ def examples() -> dict[str, Any]:
         "provenance": provenance,
         "cases": {
             "satisfying": select_candidate(candidates, {"outcome": "candidate", "candidate_id": "browser", "p_applicable": 0.91}, 0.70),
+            "low_confidence": select_candidate(candidates, {"outcome": "candidate", "candidate_id": "browser", "p_applicable": 0.60}, 0.70),
             "near_miss_no_match": select_candidate(candidates, {"outcome": "no_match", "candidate_id": None}, 0.70),
             "unavailable": select_candidate(candidates, {"outcome": "unavailable", "candidate_id": None}, 0.70),
         },
         "cutoff_note": "0.70 is only a declared fixture policy value; it is not a recommended or calibrated threshold.",
     }
-    allowed = [{"id": "refresh-index"}]
+    allowed = [{"id": "refresh-index", "expected_effect": "index_revision=rev-12"}]
     proposal = {"action_id": "refresh-index", "evidence_revision": "rev-12", "expected_effect": "index_revision=rev-12"}
     action = {
         "provenance": provenance,
         "cases": {
             "satisfying": select_and_check_action(proposal, allowed, {"revision": "rev-12"}, "rev-12", {"effect": "index_revision=rev-12", "outcome": "pass"}),
             "stale_evidence": select_and_check_action({**proposal, "evidence_revision": "rev-11"}, allowed, {"revision": "rev-11"}, "rev-12", {"effect": "index_revision=rev-12", "outcome": "pass"}),
+            "redefined_effect": select_and_check_action({**proposal, "expected_effect": "unchanged"}, allowed, {"revision": "rev-12"}, "rev-12", {"effect": "unchanged", "outcome": "pass"}),
             "no_effect": select_and_check_action(proposal, allowed, {"revision": "rev-12"}, "rev-12", {"effect": None, "outcome": "fail"}),
             "execution_error": select_and_check_action(proposal, allowed, {"revision": "rev-12"}, "rev-12", {"error": "simulated timeout"}),
         },

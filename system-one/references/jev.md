@@ -3,6 +3,21 @@
 Checked 2026-09-22. Verify the endpoint, model IDs, pricing, limits, gateway
 availability, and SDK version again before a production cutover.
 
+## Refresh provider documentation before implementation
+
+This file is a dated integration snapshot. At the start of new Jev integration
+work, fetch the [live documentation index](https://docs.typesafe.ai/llms.txt)
+and use it to locate current pages. Read the current [HTTP API](https://docs.typesafe.ai/api.md)
+or the selected SDK reference, then the question guidance and closest cookbook
+for the workflow. Follow linked pages rather than treating this snapshot's
+endpoint, model alias, request shape, or SDK examples as current guarantees.
+
+If the index is unavailable, try its direct page links and the site's normal
+HTML pages. If live access remains unavailable, inspect local documentation or
+installed SDK types, mark version-dependent details unverified, and avoid
+inventing current behavior. Preserve a deterministic fallback and do not
+silently turn provider errors into a confident answer.
+
 ## Current boundary
 
 Jev is TypeSafe's first System One model. The official documentation describes
