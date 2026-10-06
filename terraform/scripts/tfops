@@ -29,7 +29,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from typing import Any, Optional
+from pathlib import Path
+from typing import Any, Callable, Optional
 
 STATE_FORMAT_VERSIONS = {"1.0", "1.1", "1.2", "1.3"}
 MUTATING_COMMANDS = {"apply", "import"}
@@ -74,7 +75,13 @@ def find_binary() -> Optional[str]:
     return None
 
 
-def run_delegate(binary: str, parts: list[str], args: argparse.Namespace, extra: Optional[dict[str, Any]] = None) -> int:
+def run_delegate(
+    binary: str,
+    parts: list[str],
+    args: argparse.Namespace,
+    extra: Optional[dict[str, Any]] = None,
+    finalize: Optional[Callable[[dict[str, Any], int], int]] = None,
+) -> int:
     """Run a terraform/tofu command and wrap its output in the JSON envelope."""
     command = [binary] + parts
     try:
@@ -101,8 +108,11 @@ def run_delegate(binary: str, parts: list[str], args: argparse.Namespace, extra:
         payload["stdout"] = proc.stdout
     if proc.stderr:
         payload["stderr"] = proc.stderr
+    returncode = proc.returncode
+    if finalize:
+        returncode = finalize(payload, proc.returncode)
     emit(payload, args.json)
-    return proc.returncode
+    return returncode
 
 
 def resource_address(resource: dict[str, Any]) -> str:
@@ -275,26 +285,48 @@ def cmd_plan(args: argparse.Namespace) -> int:
         )
         return 127
     if args.save_plan:
-        result = run_delegate(
-            binary,
-            ["plan", "-json", "-input=false", "-no-color", "-refresh=true", f"-out={args.save_plan}"],
-            args,
-            {"saved_plan": args.save_plan, "guard_provenance": "tfops-refresh-enabled-sidecar"},
-        )
-        if result == 0:
+        metadata_path = args.save_plan + ".tfops.json"
+        try:
+            os.unlink(metadata_path)
+        except FileNotFoundError:
+            pass
+        except OSError as error:
+            emit({"ok": False, "error": f"could not invalidate prior saved-plan evidence: {error}", "guard": "unchecked", "command": "plan"}, args.json)
+            return 1
+
+        def bind_saved_plan(payload: dict[str, Any], returncode: int) -> int:
+            if returncode != 0:
+                return returncode
+            payload.update({"saved_plan": args.save_plan, "guard_provenance": "tfops-refresh-enabled-sidecar"})
+            temporary: Optional[str] = None
             try:
-                digest = hashlib.sha256(open(args.save_plan, "rb").read()).hexdigest()
+                digest = hashlib.sha256(Path(args.save_plan).read_bytes()).hexdigest()
                 metadata = {"schema_version": 1, "sha256": digest, "refresh_enabled": True}
-                metadata_path = args.save_plan + ".tfops.json"
-                temporary = metadata_path + ".tmp"
-                with open(temporary, "w", encoding="utf-8") as handle:
+                with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=str(Path(metadata_path).parent), prefix=".tfops-sidecar-", delete=False) as handle:
+                    temporary = handle.name
                     json.dump(metadata, handle, indent=2, sort_keys=True)
                     handle.write("\n")
                 os.replace(temporary, metadata_path)
+                payload["guard"] = "checked"
             except OSError as error:
-                emit({"ok": False, "error": f"could not bind saved plan to refresh evidence: {error}", "guard": "unchecked"}, args.json)
+                if temporary:
+                    try:
+                        os.unlink(temporary)
+                    except OSError:
+                        pass
+                payload["ok"] = False
+                payload["exit_code"] = 1
+                payload["error"] = f"could not bind saved plan to refresh evidence: {error}"
+                payload["guard"] = "unchecked"
                 return 1
-        return result
+            return returncode
+
+        return run_delegate(
+            binary,
+            ["plan", "-json", "-input=false", "-no-color", "-refresh=true", f"-out={args.save_plan}"],
+            args,
+            finalize=bind_saved_plan,
+        )
     return run_delegate(binary, ["plan", "-json", "-input=false", "-no-color"], args)
 
 
@@ -403,7 +435,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
                 "ok": False,
                 "error": "apply requires --plan FILE so the exact reviewed plan can be checked and applied",
                 "guard": "unchecked",
-                "hint": "Run plan with -out=FILE, review it, then pass that saved plan to apply.",
+                "hint": "Run tfops plan --save-plan FILE, review that saved plan, then pass it to apply.",
             },
             args.json,
         )
@@ -418,50 +450,42 @@ def cmd_apply(args: argparse.Namespace) -> int:
             metadata = json.load(handle)
         if not isinstance(metadata, dict) or metadata.get("schema_version") != 1 or metadata.get("refresh_enabled") is not True:
             raise ValueError("saved plan lacks tfops refresh-enabled provenance")
-        actual_digest = hashlib.sha256(open(args.plan, "rb").read()).hexdigest()
+        actual_digest = hashlib.sha256(Path(args.plan).read_bytes()).hexdigest()
         if metadata.get("sha256") != actual_digest:
             raise ValueError("saved plan does not match its tfops provenance checksum")
-        snapshot_fd, snapshot_path = tempfile.mkstemp(prefix="tfops-reviewed-plan-")
-        os.close(snapshot_fd)
-        shutil.copyfile(args.plan, snapshot_path)
-        if hashlib.sha256(open(snapshot_path, "rb").read()).hexdigest() != actual_digest:
-            raise ValueError("could not create a stable snapshot of the reviewed plan")
+        with tempfile.TemporaryDirectory(prefix="tfops-reviewed-plan-") as snapshot_dir:
+            snapshot_path = os.path.join(snapshot_dir, "reviewed.tfplan")
+            shutil.copyfile(args.plan, snapshot_path)
+            if hashlib.sha256(Path(snapshot_path).read_bytes()).hexdigest() != actual_digest:
+                raise ValueError("could not create a stable snapshot of the reviewed plan")
+            evidence, error = inspect_plan_guard(binary, snapshot_path, args)
+            if error:
+                emit({"ok": False, "error": error, "guard": "unchecked", "command": "apply"}, args.json)
+                return 2
+            assert evidence is not None
+            if (evidence["tainted"] or evidence["drifted"]) and not args.force:
+                emit(
+                    {
+                        "ok": False,
+                        "error": "saved plan contains tainted resources or detected drift; refusing without --force",
+                        "guard": "checked",
+                        "tainted": evidence["tainted"],
+                        "drifted": evidence["drifted"],
+                        "hint": "Review the saved plan and pass --force only if these findings are intentional.",
+                    },
+                    args.json,
+                )
+                return 2
+            guard_status = "bypassed" if args.force and (evidence["tainted"] or evidence["drifted"]) else "checked"
+            return run_delegate(
+                binary,
+                ["apply", "-json", "-input=false", "-no-color", snapshot_path],
+                args,
+                {"guard": guard_status, "tainted": evidence["tainted"], "drifted": evidence["drifted"]},
+            )
     except (OSError, json.JSONDecodeError, ValueError, TypeError) as error:
         emit({"ok": False, "error": f"invalid or missing saved-plan guard evidence: {error}", "guard": "unchecked", "command": "apply"}, args.json)
         return 2
-    evidence, error = inspect_plan_guard(binary, snapshot_path, args)
-    if error:
-        os.unlink(snapshot_path)
-        emit({"ok": False, "error": error, "guard": "unchecked", "command": "apply"}, args.json)
-        return 2
-    assert evidence is not None
-    if (evidence["tainted"] or evidence["drifted"]) and not args.force:
-        os.unlink(snapshot_path)
-        emit(
-            {
-                "ok": False,
-                "error": "saved plan contains tainted resources or detected drift; refusing without --force",
-                "guard": "checked",
-                "tainted": evidence["tainted"],
-                "drifted": evidence["drifted"],
-                "hint": "Review the saved plan and pass --force only if these findings are intentional.",
-            },
-            args.json,
-        )
-        return 2
-    guard_status = "bypassed" if args.force and (evidence["tainted"] or evidence["drifted"]) else "checked"
-    try:
-        return run_delegate(
-            binary,
-            ["apply", "-json", "-input=false", "-no-color", snapshot_path],
-            args,
-            {"guard": guard_status, "tainted": evidence["tainted"], "drifted": evidence["drifted"]},
-        )
-    finally:
-        try:
-            os.unlink(snapshot_path)
-        except OSError:
-            pass
 
 
 def cmd_import(args: argparse.Namespace) -> int:

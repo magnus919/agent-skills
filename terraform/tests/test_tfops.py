@@ -9,6 +9,7 @@ delegate-path coverage.
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -223,6 +224,40 @@ class MutationGateTests(unittest.TestCase):
         self.assertEqual(inspected, applied)
         self.assertNotEqual(applied, output_plan)
 
+    def test_failed_plan_regeneration_invalidates_old_sidecar(self):
+        fake = FakeTerraformBinary()
+        try:
+            proc = run_script(
+                "plan", "--save-plan", fake.plan_path, "--json",
+                env_extra={"TERRAFORM": fake.path, "FAKE_PLAN_EXIT": "1"},
+            )
+            self.assertEqual(proc.returncode, 1)
+            json.loads(proc.stdout)
+            self.assertFalse(Path(fake.plan_path + ".tfops.json").exists())
+            proc = run_script(
+                "apply", "--plan", fake.plan_path, "--yes", "--json",
+                env_extra={"TERRAFORM": fake.path},
+            )
+        finally:
+            fake.cleanup()
+        self.assertEqual(proc.returncode, 2)
+        self.assertEqual(json.loads(proc.stdout)["guard"], "unchecked")
+
+    def test_plan_sidecar_write_failure_emits_one_final_json_result(self):
+        fake = FakeTerraformBinary()
+        try:
+            proc = run_script(
+                "plan", "--save-plan", fake.plan_path, "--json",
+                env_extra={"TERRAFORM": fake.path, "FAKE_SIDECAR_DIR": "1"},
+            )
+        finally:
+            fake.cleanup()
+        self.assertEqual(proc.returncode, 1)
+        payload = json.loads(proc.stdout)
+        self.assertFalse(payload["ok"])
+        self.assertEqual(payload["guard"], "unchecked")
+        self.assertIn("could not bind saved plan", payload["error"])
+
     def test_apply_rejects_plan_hash_mismatch_and_missing_metadata(self):
         fake = FakeTerraformBinary()
         try:
@@ -292,15 +327,13 @@ class FakeTerraformBinary:
                 'if [ "$1" = "validate" ]; then exit 0; fi\n'
                 'if [ "$1" = "show" ]; then printf "show:%s\\n" "$3" >> "$FAKE_COMMAND_LOG"; printf "%s" "$FAKE_PLAN_JSON"; exit 0; fi\n'
                 'if [ "$1" = "apply" ]; then for arg in "$@"; do last=$arg; done; printf "apply:%s\\n" "$last" >> "$FAKE_COMMAND_LOG"; exit 0; fi\n'
-                'if [ "$1" = "plan" ]; then for arg in "$@"; do case "$arg" in -out=*) printf "fake plan" > "${arg#-out=}";; esac; done; printf "no changes\\n"; exit 0; fi\n'
+                'if [ "$1" = "plan" ]; then for arg in "$@"; do case "$arg" in -out=*) out="${arg#-out=}"; printf "fake plan" > "$out";; esac; done; if [ "${FAKE_SIDECAR_DIR:-}" = "1" ]; then mkdir "$out.tfops.json"; fi; printf "no changes\\n"; exit "${FAKE_PLAN_EXIT:-0}"; fi\n'
                 'if [ "$1" = "import" ]; then exit 0; fi\n'
             )
         os.chmod(self.path, 0o755)
 
     def cleanup(self) -> None:
-        for entry in os.listdir(self._dir):
-            os.unlink(os.path.join(self._dir, entry))
-        os.rmdir(self._dir)
+        shutil.rmtree(self._dir)
 
 
 if __name__ == "__main__":
