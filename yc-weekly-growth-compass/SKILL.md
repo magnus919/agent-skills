@@ -102,8 +102,9 @@ python scripts/growth-compass.py \
 
 | Field | Meaning |
 |-------|---------|
-| `growth_rate_pct` | Calculated growth rate for the period |
-| `yc_assessment` | Benchmark label (Concerning/Below Average/Good/Very Good/Outstanding) |
+| `growth_rate.period_rate_pct` | Calculated growth rate for the input period |
+| `growth_rate.weekly_equivalent_pct` | Weekly rate with the same annual compound multiplier |
+| `benchmark.label` | YC tier classified from the weekly equivalent; YC thresholds are weekly-only |
 | `projected_1yr` | Value after 52 weeks at current rate |
 | `projected_2yr` | Value after 104 weeks at current rate |
 | `doubling_time` | Periods to double at current rate |
@@ -123,6 +124,16 @@ For series with 3+ data points, the script computes:
 - **Mean growth rate** (arithmetic average)
 - **Median growth rate** (robust to outliers)
 - **Compound weekly growth rate (CWGR)** — fitted from first to last value
+
+### Period Conversion and YC Tiers
+
+The YC tier thresholds (2%, 5%, 7%, and 10%) describe weekly growth. Monthly and quarterly inputs are converted without changing their annual compound multiplier:
+
+```
+weekly_rate = (1 + period_rate)^(periods_per_year / 52) - 1
+```
+
+The main benchmark and assessment always use that weekly equivalent. Period growth remains separately reported and is used for period-based projections and doubling time. The comparison table labels its rows as weekly benchmark rates and shows the equivalent rate for the selected input period; it does not classify a monthly or quarterly rate with weekly thresholds.
 
 ### The Compass Principle
 
@@ -188,8 +199,8 @@ python scripts/growth-compass.py \
   --target-value 100000
 ```
 
-Growth rate: 9.4% monthly (~2.3% weekly)
-YC assessment: Below average weekly, solid monthly
+Growth rate: 9.4% monthly (~2.09% weekly equivalent)
+YC assessment: Below Average (based on the weekly equivalent)
 1-year projection: ~$107K MRR
 Doubling time: ~7.7 months
 Months to $100K MRR: ~12 months
@@ -205,6 +216,7 @@ Months to $100K MRR: ~12 months
 | Script | Purpose | Invocation |
 |---|---|---|
 | `scripts/growth-compass.py` | Deterministic CLI calculator: computes period growth rate, YC benchmark assessment, compound projections (1yr/2yr), doubling time, and time-to-target; accepts two values or a comma-separated series, with text or `--json` output. Run it whenever a founder asks for an actual growth number, projection, or benchmark rather than a rule-of-thumb answer. | `python scripts/growth-compass.py --current-value 1200 --previous-value 1000 --period weekly --json` |
+| `scripts/test_growth_compass.py` | Offline regression checks for weekly identity, monthly/quarterly conversion, annual compounding invariance, negative/zero rates, and JSON/text benchmark consistency. | `python -m unittest scripts/test_growth_compass.py` |
 
 ## Prerequisites
 

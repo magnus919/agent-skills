@@ -20,7 +20,7 @@ compatibility: >-
 metadata:
   source: https://docs.stripe.com/api
   source_index: references/00-source-index.md
-  research_checked: "2026-08-03"
+  research_checked: "2026-10-06"
 ---
 
 # Stripe Operations
@@ -32,7 +32,7 @@ Use this skill to read Stripe account state and, with explicit confirmation, per
 1. **Read-only first.** Balance, payment, and subscription queries run freely and never change anything. The bundled `stripe-cli` script's primary surface is these reads.
 2. **Guard every mutation.** State-changing operations — canceling a subscription — require an explicit human directive plus `--dry-run` preview and `--yes` confirmation through `stripe-cli`. Cancellations are financial actions with billing consequences: confirm the subscription, the timing, and the impact before acting.
 3. **Respect bounded reads.** Stripe paginates with `limit` and `has_more`; never page past what the task needs. `stripe-cli --limit` caps every listing.
-4. **Keep evidence bounded.** Quote short IDs, amounts, and statuses; never dump full API keys, customer data, or raw payloads into chat.
+4. **Keep evidence bounded.** Quote short IDs, amounts, and statuses; never dump full API keys, customer data, or raw payloads into chat. Amounts are formatted by currency and JSON retains the raw integer and currency for audit.
 5. **Treat money data as sensitive.** Balances, payments, and subscription details are financial records; quote only what the question needs and never expose full card or customer data.
 
 ## The stripe-cli script
@@ -65,6 +65,8 @@ Exit codes: 0 success, 1 API error or failed check, 2 usage error. Cancellations
 - **Payments** (`GET /payment_intents`): recent payment intents with amount, currency, status (`succeeded`, `requires_action`, etc.), and customer. Bounded by `--limit`; `has_more` tells you whether the cap hid further records.
 - **Subscriptions** (`GET /subscriptions`, `GET /subscriptions/{id}`): active subscriptions with status, customer, period end, and items (price, amount, interval). A read before any cancellation.
 
+Stripe amounts use minor units: ordinary zero-decimal currencies such as JPY display as whole units, while other currencies display two decimals. UGX and ISK retain two-decimal API values for backward compatibility, so an amount of `500` displays as `5.00 UGX` or `5.00 ISK`. JSON preserves the original integer (`amount_minor`, or `unit_amount_minor` for subscription prices) and currency next to the formatted display value. HUF and TWD use two decimals for charge/price records (their whole-unit rule applies to manual payouts). Three-decimal currencies that Stripe does not support for presentment are rejected. See `references/01-stripe-read-operations.md` for sources and details.
+
 ## Guarded mutation: subscription cancellation
 
 - `subscriptions cancel --id sub_... --dry-run` previews the cancellation; `--yes` confirms and posts `cancel_at_period_end=true` — the safe default that **schedules cancellation at the period end** (customer keeps service until then) rather than canceling immediately.
@@ -87,9 +89,9 @@ Exit codes: 0 success, 1 API error or failed check, 2 usage error. Cancellations
 ## Included artifacts
 
 - `scripts/stripe-cli`: bounded, stdlib-only CLI (balance, payments list, subscriptions list/get, guarded cancel; `--json`; `--limit`; mutation gated by `--dry-run`/`--yes`).
-- `tests/test_stripe_cli.py`: 12 deterministic tests against a stub Stripe API, including the read-only-first contract and the mutation gate.
+- `tests/test_stripe_cli.py`: 14 deterministic tests against a stub Stripe API, including USD/JPY formatting, special currency rules, raw-unit preservation, and the mutation gate.
 - `references/`: dated source index + Stripe read-operations reference.
-- `evals/evals.json`: six output-quality evaluation cases for agent runs.
+- `evals/evals.json`: seven output-quality evaluation cases for agent runs.
 
 ## Verification boundary
 

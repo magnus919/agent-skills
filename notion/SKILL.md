@@ -41,6 +41,8 @@ Use this skill to read and, with explicit confirmation, write Notion content thr
 ```bash
 notion/scripts/notion-cli --help                           # no token or network needed
 notion/scripts/notion-cli --json pages get --page-id <page>
+# Read only properties you plan to change; absent names are marked explicitly
+notion/scripts/notion-cli --json pages get --page-id <page> --property Status --property Reviewer
 notion/scripts/notion-cli --json --limit 10 databases query --database-id <db>
 notion/scripts/notion-cli --json search query --query "on-call runbook"
 notion/scripts/notion-cli pages update --page-id <page> --properties props.json --dry-run
@@ -60,7 +62,7 @@ Exit codes: 0 success, 1 API error or failed check, 2 usage error. Creates and u
 
 ## Pages, databases, search
 
-- **Pages** (`GET /pages/{id}`): a page is an ID, a title (extracted from the `title` or `Name` property), a URL, and timestamps. Property values live under `properties`; the CLI summarizes them rather than dumping the full block tree.
+- **Pages** (`GET /pages/{id}`): a page is an ID, a title (extracted from the `title` or `Name` property), a URL, timestamps, and typed property summaries. JSON output includes each property's type, value, and completeness; `--property NAME` may be repeated to select properties and marks a requested absent property as `present: false`. Human output marks incomplete properties as `<incomplete: reason>`. Long text also includes a truncation marker and original character count, so it cannot be mistaken for a verified full value.
 - **Databases** (`POST /databases/{id}/query`): query rows as pages with a `page_size` cap and an optional structured `--filter` JSON file (e.g. `{"property": "Status", "select": {"equals": "Done"}}`). `has_more` tells you whether the cap hid further rows.
 - **Search** (`POST /search`): finds pages and databases by text across the integration's accessible workspace; results are bounded by `--limit`.
 - **Updates** (`PATCH /pages/{id}`): property updates overwrite values (select, status, checkbox, rich text, etc.). Preview the exact properties payload with `--dry-run` and confirm with `--yes`; verify with a follow-up `pages get`.
@@ -81,7 +83,7 @@ Exit codes: 0 success, 1 API error or failed check, 2 usage error. Creates and u
 ## Included artifacts
 
 - `scripts/notion-cli`: bounded, stdlib-only CLI (pages get/create/update, databases query, search; `--json`; `--limit`; mutations gated by `--dry-run`/`--yes`).
-- `tests/test_notion_cli.py`: 13 deterministic tests against a stub Notion API, including the mutation gate and the read-only contract.
+- `tests/test_notion_cli.py`: 21 deterministic tests against a stub Notion API, including typed property read-back, explicit absent/truncated states, pagination failures, the mutation gate, and the read-only contract.
 - `references/`: dated source index + API operations reference.
 - `evals/evals.json`: six output-quality evaluation cases for agent runs.
 
@@ -92,7 +94,7 @@ Exit codes: 0 success, 1 API error or failed check, 2 usage error. Creates and u
 | A page exists and its title | `notion-cli pages get --page-id ... --json` returns the title and ID |
 | A database query answered the question | `notion-cli databases query --json` returns bounded rows with `has_more` state |
 | Search found the content | `notion-cli search query --json` returns the matching page/database with ID and title |
-| An update landed | `notion-cli pages update --yes` exits 0 and a follow-up `pages get` shows the new property values |
+| An update landed | `notion-cli pages update --yes` exits 0 and a follow-up `pages get --property NAME` shows each changed property's typed value; compare it with the requested value |
 | A mutation is safe to run | `notion-cli ... --dry-run` prints the exact payload that would be sent |
 
 ## Hard boundaries
