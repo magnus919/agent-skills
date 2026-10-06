@@ -31,13 +31,15 @@ When included, `intervention_detail` has `coverage` (`complete`, `partial`, or
 `not_collected`) and `events`. Each event has only these fields: `id`, `actor`,
 `kinds`, `target`, `boundary_reference`, `changes`, `outcome`, and
 `evidence_reference`. Actor is `human`, `orchestrator`, or `system`. `kinds` is
-a nonempty list of unique, extensible short codes. The target contains
+a nonempty list of unique, extensible short codes. Actor describes the input
+origin: a person coordinating work is still `human`; `orchestrator` means an
+automated coordinator. The target contains
 `run_id`, `task_id`, and optionally `workstream_id`; `changes` contains
 `goal`, `constraints`, and `authority`, each `true`, `false`, or `null` when
 unknown. Outcomes and kinds are bounded codes, not prose. Example kind codes
 include `information_decision`, `authorization_gate`, and `resume_recovery`;
 they illustrate an extensible vocabulary, not a required taxonomy. References
-are opaque, bounded single-line IDs without spaces. Event IDs and codes use at
+are opaque, bounded printable IDs without whitespace. Event IDs and codes use at
 most 64 characters matching `[A-Za-z0-9][A-Za-z0-9_.:-]*`; reference IDs use at
 most 256 characters.
 

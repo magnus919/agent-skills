@@ -179,7 +179,7 @@
     },
     {
       "id": "privacy-bounded-intervention-detail",
-      "prompt": "An evaluation team wants to explain why human_interventions changed between two runs. The required aggregate integer exists in both records, but detailed events were collected only for the candidate because the question now calls for attribution. Define a sound interpretation and optional event shape without overclaiming comparability.",
+      "prompt": "Use the bundled harness-engineering v1 run-record contract. An evaluation team wants to explain why human_interventions changed between two runs. The required aggregate integer exists in both records, but detailed events were collected only for the candidate because the question now calls for attribution. Define a sound interpretation and optional event shape without overclaiming comparability.",
       "expected_output": "Keep the aggregate distinct from event detail, identify the baseline's absent detail as uncollected, and use privacy-bounded events with explicit coverage and actor attribution. Do not claim a causal productivity effect or compare event-level rates where detail is missing.",
       "assertions": [
         "Treats absent event detail as not collected rather than zero while preserving an independently known aggregate count.",
