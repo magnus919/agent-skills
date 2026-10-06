@@ -1,10 +1,10 @@
 # AutoGen v0.4 Migration and Advanced Patterns
 
-AutoGen v0.4 introduced significant API changes from v0.2. This reference covers migration and patterns not found in the v0.2 API.
+AutoGen AgentChat 0.7.5 continues the API generation introduced in v0.4. This reference covers migration from the separate legacy `pyautogen` 0.2 package and current patterns. The runnable modern examples use Python 3.10+ and `../requirements.txt`.
 
 ## v0.2 → v0.4 Migration
 
-### v0.2 Pattern (Deprecated)
+### Legacy `pyautogen` 0.2 Pattern
 
 ```python
 # v0.2: UserProxyAgent bundled code execution + human input
@@ -16,25 +16,28 @@ proxy = UserProxyAgent(name="proxy", human_input_mode="NEVER",
 proxy.initiate_chat(assistant, message="Write Python code")
 ```
 
-### v0.4 Pattern
+### AgentChat 0.7.5 Pattern
 
 ```python
 # v0.4: Code execution is a separate agent
 from autogen_agentchat.agents import AssistantAgent, CodeExecutorAgent
+from autogen_agentchat.conditions import MaxMessageTermination
 from autogen_agentchat.teams import RoundRobinGroupChat
-from autogen_ext.code_executors.local import LocalCommandLineCodeExecutor
+from autogen_ext.code_executors.docker import DockerCommandLineCodeExecutor
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 
 model_client = OpenAIChatCompletionClient(model="gpt-4o-mini")
-assistant = AssistantAgent(name="assistant", model_client=model_client,
-                           system_message="You are a helpful assistant.")
-executor = CodeExecutorAgent(
-    name="executor",
-    code_executor=LocalCommandLineCodeExecutor(work_dir="coding"),
-)
-
-team = RoundRobinGroupChat([assistant, executor])
-result = await team.run(task="Write Python code to calculate pi")
+async with DockerCommandLineCodeExecutor(work_dir="coding") as executor:
+    assistant = AssistantAgent(name="assistant", model_client=model_client,
+                               system_message="Write a Python code block when calculation is useful.")
+    code_agent = CodeExecutorAgent(name="executor", code_executor=executor)
+    team = RoundRobinGroupChat(
+        [assistant, code_agent],
+        termination_condition=MaxMessageTermination(max_messages=4),
+    )
+    result = await team.run(task="Write Python code to calculate pi")
+    print(result.messages[-1].content)
+await model_client.close()
 ```
 
 ## AgentTool — Agent as Tool
@@ -62,13 +65,9 @@ async for message in stream:
     print(message)  # Each message as it's generated
 ```
 
-## Three human_input_mode Behaviors
+## Human input in AgentChat
 
-| Mode | Behavior | Use case |
-|------|----------|----------|
-| `"NEVER"` | No human input requested. Agent runs fully autonomously. | Automated pipelines, batch processing |
-| `"ALWAYS"` | Agent asks for human input before every reply. Blocks until input received. | Human-in-the-loop approval gates |
-| `"TERMINATE"` | Agent asks for human input only when it's about to terminate (send TERMINATE). | Review final output before closing |
+AgentChat's `UserProxyAgent` represents a human and accepts `input_func`; it does not implement the legacy `human_input_mode` values. Code execution is a distinct `CodeExecutorAgent` role. See `agent-types.md` for the current constructors.
 
 ## Termination Conditions
 

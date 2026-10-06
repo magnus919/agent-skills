@@ -9,13 +9,13 @@ description: >-
 license: MIT
 metadata:
   author: Magnus Hedemark
-  version: 1.1.0
+  version: 1.2.0
   source: https://microsoft.github.io/autogen
 ---
 
 # AutoGen Expert Skill
 
-AutoGen (by Microsoft Research) is a framework for **conversational multi-agent AI**. Unlike LangGraph's explicit graph topology or CrewAI's role-based crews, AutoGen uses **agent-to-agent conversations as the orchestration primitive**. Agents communicate through structured chat, with built-in patterns for nested conversations, group chat with routing, and code execution.
+This skill targets the AutoGen AgentChat 0.7.5 API on Python 3.10+. AutoGen (by Microsoft Research) is a framework for **conversational multi-agent AI**. Unlike LangGraph's explicit graph topology or CrewAI's role-based crews, AutoGen uses **agent-to-agent conversations as the orchestration primitive**. Agents communicate through structured chat, with built-in patterns for group chat routing, human input, and code execution.
 
 ## Core Paradigm
 
@@ -33,12 +33,12 @@ assistant = AssistantAgent(
 )
 ```
 
-> **⚠️ UserProxyAgent is NOT a human user.** It is an automated proxy that can execute code. Despite the name, it runs autonomously unless `human_input_mode` is set to `ALWAYS`.
+> **Role split in AgentChat 0.7.5:** `UserProxyAgent` represents a human and obtains replies through `input_func`. `CodeExecutorAgent` executes code blocks using a `CodeExecutor`. They are separate agents; neither accepts the legacy `human_input_mode` option.
 
 ## Core Principles
 
 1. **Conversations are the orchestration primitive.** Agents send messages, receive replies, and the conversation structure determines the workflow.
-2. **UserProxyAgent is a code executor, not a human.** Despite the name, it runs autonomously by default. Set `human_input_mode="ALWAYS"` for actual human-in-the-loop.
+2. **Keep human input and code execution separate.** Use `UserProxyAgent` for a human participant; use `CodeExecutorAgent` with a `CodeExecutor` for code.
 3. **GroupChat routes between agents.** RoundRobinGroupChat cycles fixed-order. SelectorGroupChat uses an LLM to pick the next speaker.
 4. **Nested chats delegate work.** An agent can spawn a sub-conversation between specialist agents and return the result.
 5. **Docker is the safe code execution mode.** Local code execution (`LocalCommandLineCodeExecutor`) runs LLM-generated code on your machine — use Docker in production.
@@ -48,7 +48,7 @@ assistant = AssistantAgent(
 
 | You already have... | Start here |
 |---|---|
-| Nothing — exploring AutoGen | Create a two-agent chat (Assistant + UserProxy) |
+| Nothing — exploring AutoGen | Create an assistant chat or a team with a human `UserProxyAgent` |
 | Agents that need to coordinate | Build a GroupChat with multiple agents |
 | Agents that need code execution | Configure Docker code executor |
 | A complex multi-step task | Use nested chats for sub-tasks |
@@ -57,11 +57,11 @@ assistant = AssistantAgent(
 
 | Task | Approach | Reference |
 |------|----------|-----------|
-| Two-agent chat | AssistantAgent + UserProxyAgent | `references/agent-types.md` |
+| Human-in-the-loop chat | AssistantAgent + UserProxyAgent | `references/agent-types.md` |
 | Multi-agent group | GroupChat with RoundRobinGroupChat | `references/group-chat.md` |
 | Code execution | DockerCommandLineCodeExecutor | `references/code-execution.md` |
 | Tool integration | `register_function()` or @tool | `references/tool-integration.md` |
-| Nested chat | `initiate_chat()` from within a tool | `references/conversation-patterns.md` |
+| Nested chat | `AgentTool` or a team run from a tool | `references/conversation-patterns.md` |
 | Cancellation | `CancellationToken` | `references/conversation-patterns.md` |
 | MCP tools | `McpWorkbench` | `references/tool-integration.md` |
 
@@ -87,24 +87,26 @@ assistant = AssistantAgent(
 | Validation Audit | Research validation of all API claims | `references/validation-audit.md` |
 | FAQ & Troubleshooting | Common errors and fixes | `references/faq-and-troubleshooting.md` |
 
+Install the exact package versions used by the templates with `python -m pip install -r requirements.txt` from this skill directory. The code-execution example uses Docker and requires a working Docker daemon.
+
 ## Templates
 
 | Template | When to use | File |
 |----------|-------------|------|
-| Two-Agent Chat | Simple assistant + code executor | `templates/two-agent-chat.py` |
+| Two-Agent Chat | Assistant + human input | `templates/two-agent-chat.py` |
 | Group Chat | Multi-agent team with speaker routing | `templates/group-chat.py` |
-| Code Execution Agent | Agent with Docker code execution | `templates/code-execution.py` |
+| Code Execution Agent | Assistant + Docker-backed code executor | `templates/code-execution.py` |
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix | Reference |
 |---------|-------------|-----|-----------|
-| Agent loops forever | No termination condition | Add `is_termination_msg` or `max_turns` | `references/conversation-patterns.md` |
+| Agent loops forever | No team termination condition | Add a `TerminationCondition` such as `MaxMessageTermination` | `references/conversation-patterns.md` |
 | Code execution fails | Docker not running | Start Docker or use LocalCommandLineCodeExecutor | `references/code-execution.md` |
 | Nested chat never returns | Cancellation token not passed | Pass `CancellationToken` with timeout | `references/conversation-patterns.md` |
 | v0.2 code doesn't work | v0.4 API changed | Follow migration guide | `references/faq-and-troubleshooting.md` |
 | GroupChat speaker selection loops | SelectorGroupChat with no clear next | Use RoundRobinGroupChat for fixed order | `references/group-chat.md` |
-| UserProxyAgent asking for input | `human_input_mode="ALWAYS"` | Set to `"NEVER"` for automated execution | `references/agent-types.md` |
+| UserProxyAgent waits for input | It is a human participant and its `input_func` is waiting | Supply an appropriate input function or use an automated agent | `references/agent-types.md` |
 
 ## When NOT to Use AutoGen
 

@@ -73,6 +73,18 @@
         "CI wiring (webServer, retries, JSON reporter) is included",
         "Component-versus-E2E routing guidance points to frontend-engineering for design and this skill for browser execution"
       ]
+    },
+    {
+      "id": "pwrun-smoke-target-evidence",
+      "prompt": "I run the bundled pwrun smoke command with --url https://preview.example and --config ./e2e.config.ts, while BASE_URL points to localhost. What should the wrapper run and what can its JSON output prove about the page it tested?",
+      "expected_output": "Explain that pwrun forwards the selected config to Playwright, resolves target precedence as --url over PW_SMOKE_URL over BASE_URL over the scaffold default, and supplies the resolved URL as PW_SMOKE_URL. The JSON result distinguishes requested_url from runtime navigation evidence; the bundled example spec records the reached URL, and custom specs need a pwrun-navigation annotation. The output reports whether the requested origin was observed rather than treating the requested URL echo as proof.",
+      "assertions": [
+        "The supplied --config path is forwarded to the Playwright test command",
+        "The URL precedence places --url before PW_SMOKE_URL and BASE_URL",
+        "The resolved URL is passed to the scaffold through PW_SMOKE_URL",
+        "The output distinguishes the requested URL from a URL observed after navigation",
+        "The answer explains that custom specs need a pwrun-navigation annotation for runtime evidence"
+      ]
     }
   ]
 }
