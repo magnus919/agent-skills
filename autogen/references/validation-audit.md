@@ -1,33 +1,28 @@
-# AutoGen Skill — Research Validation Audit
+# AutoGen Skill — API Validation Audit
 
-**Date:** 2026-07-09
-**Sources:** microsoft.github.io/autogen/stable
+**Checked:** 2026-10-06
 
-## Claims Verified Correct
+**Pinned API:** `autogen-agentchat==0.7.5`, `autogen-ext==0.7.5`
 
-| Claim | Source | Status |
-|-------|--------|--------|
-| `AssistantAgent` with `name`, `system_message`, `model_client` | autogen docs | ✓ |
-| `UserProxyAgent` with `human_input_mode`, `code_executor` | autogen docs | ✓ |
-| `RoundRobinGroupChat` for fixed-order conversation | autogen docs | ✓ |
-| `SelectorGroupChat` with `model_client` for speaker selection | autogen docs | ✓ |
-| Docker execution via `DockerCommandLineCodeExecutor` | autogen docs | ✓ |
-| Local execution via `LocalCommandLineCodeExecutor` | autogen docs | ✓ |
-| Cancellation via `CancellationToken` | autogen docs | ✓ |
-| MCP tool integration via `McpWorkbench` | autogen docs | ✓ |
+**Python:** 3.10 or later
+**Sources:** Microsoft's current AgentChat and package documentation; PyPI package metadata.
 
-## Claims Updated by Source Audit
+## Verified current API
 
-- **AssistantAgent** is explicitly documented as a "kitchen sink agent for prototyping" — the skill should note its prototyping nature
-- **CodeExecutorAgent** is the v0.4 separate agent for code execution, splitting the role that UserProxyAgent filled in v0.2
-- **AgentTool** wraps an entire agent as a tool callable by another agent — important pattern for agent composition
-- **Streaming** uses `.run_stream()` with `async for message in stream`, not the older callback approach
-- **v0.2->v0.4 migration**: UserProxyAgent in v0.2 becomes `AssistantAgent` + `CodeExecutorAgent` + `RoundRobinGroupChat` in v0.4
+| Claim | Evidence |
+|---|---|
+| `AssistantAgent` accepts a name, model client, and optional system message; use async `run()` or `run_stream()` | [Agent reference](https://microsoft.github.io/autogen/stable/reference/python/autogen_agentchat.agents.html) |
+| `UserProxyAgent` represents a human and accepts `name`, `description`, and `input_func` | [Agent reference](https://microsoft.github.io/autogen/stable/reference/python/autogen_agentchat.agents.html#autogen_agentchat.agents.UserProxyAgent) |
+| `UserProxyAgent` is not the code executor and has no `human_input_mode` or `is_termination_msg` parameter | [Agent reference](https://microsoft.github.io/autogen/stable/reference/python/autogen_agentchat.agents.html#autogen_agentchat.agents.UserProxyAgent) |
+| `CodeExecutorAgent` accepts a `code_executor`; Docker and local executors are supplied by `autogen-ext` | [Agent reference](https://microsoft.github.io/autogen/stable/reference/python/autogen_agentchat.agents.html#autogen_agentchat.agents.CodeExecutorAgent), [executor guide](https://microsoft.github.io/autogen/stable/user-guide/core-user-guide/components/command-line-code-executors.html) |
+| Teams use `run()` / `run_stream()` and termination conditions | [Teams and agents guide](https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/tutorial/agents.html), [base API](https://microsoft.github.io/autogen/stable/reference/python/autogen_agentchat.base.html) |
+| Docker executor is installed with the `docker` extra; OpenAI model client with the `openai` extra | [Installation guide](https://microsoft.github.io/autogen/stable/user-guide/core-user-guide/installation.html), [executor guide](https://microsoft.github.io/autogen/stable/user-guide/core-user-guide/components/command-line-code-executors.html) |
+| AgentChat requires Python 3.10 or newer; package version 0.7.5 is available | [PyPI metadata](https://pypi.org/project/autogen-agentchat/0.7.5/) |
 
-## Missing from Skill (Addressed in This Enrichment)
+## Legacy API boundary
 
-- v0.2 to v0.4 migration patterns
-- AgentTool for agent-as-tool composition
-- v0.4 streaming via `run_stream()`
-- Three human_input_mode behaviors documented with examples
-- Validation audit file
+`human_input_mode`, `is_termination_msg`, `code_executor` on `UserProxyAgent`, `initiate_chat()`, and `result.summary` belong to the separate `pyautogen` 0.2 API. They must not appear in examples importing `autogen_agentchat`. The current human participant is `UserProxyAgent(input_func=...)`; code execution belongs to `CodeExecutorAgent(code_executor=...)`.
+
+## Offline runtime validation
+
+`scripts/test_templates.py` runs against the pinned 0.7.5 packages with `ReplayChatCompletionClient`, a deterministic model client, and a safe executor double. It instantiates the documented modern agents, checks the `TaskResult` message shape, passes a response through the human input function, and exercises code-block dispatch and executor output. It uses no API key, network model, or Docker daemon. This verifies local package/API compatibility; it is not a live model or Docker execution test.
