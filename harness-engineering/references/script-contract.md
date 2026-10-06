@@ -91,8 +91,14 @@ experiment; this helper intentionally refuses that comparison.
 aggregate human-event count, not an event log and not a productivity score. The
 optional `intervention_detail` object is question-scoped: when present, it has
 `coverage` (`complete`, `partial`, or `not_collected`) and `events`; the default
-run-record template remains aggregate-only. Absence means event detail was not
-collected, not zero. Do not fabricate an unknown aggregate as zero. See the
+run-record template remains aggregate-only. This additive v1 extension leaves
+the required scalar unchanged, and `contracts.py compare` still reports only the
+aggregate intervention-count delta; it does not compare typed event
+distributions. Absence means event detail was not collected, not zero. Do not
+fabricate an unknown aggregate as zero. The current v1 run-record requires the
+scalar and cannot represent an unknown measured count; preserve other task
+evidence and mark the record unavailable/incomplete rather than inventing zero.
+See the
 [intervention event guidance](observability-and-feedback.md#optional-typed-intervention-detail)
 for the bounded event fields, actor attribution, uniqueness, and privacy rules.
 
@@ -100,7 +106,23 @@ The detailed record is a typed observation, not automatic instrumentation,
 telemetry export, an authority grant, or evidence that fewer interventions mean
 better performance. Only include event detail when it is needed for the stated
 question; preserve an independently known aggregate when the detail is absent or
-partial.
+partial. Example kinds such as `information_decision`, `authorization_gate`, and
+`resume_recovery` are illustrative, not an exhaustive or mandatory taxonomy.
+Opaque identifiers and bounded codes may still carry sensitive information;
+contract validation checks structure, not privacy. Review actual values before
+retaining or exporting them.
+
+To inspect the additive shape, see
+[`templates/run-record-with-interventions.json`](../templates/run-record-with-interventions.json).
+Validate the example declaration with:
+
+```sh
+python3 scripts/contracts.py validate --kind run --file templates/run-record-with-interventions.json
+```
+
+Validation confirms structural consistency only. It does not establish that
+runtime collection occurred or that the example's identifiers are safe to
+retain.
 
 Validate templates before customization:
 

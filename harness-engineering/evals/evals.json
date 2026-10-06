@@ -277,6 +277,18 @@
         "Uses bounded typed fields and excludes raw messages, prompts, hidden reasoning, and free-text justifications by default.",
         "Avoids treating a lower intervention count as proof of task success or productivity."
       ]
+    },
+    {
+      "id": "intervention-detail-not-needed",
+      "prompt": "A user asks for a one-off unit conversion, and the evaluation is only whether the numeric answer is correct. No intervention-count or recovery question is in scope. Our logger has no measured intervention count for this run. Should we add typed intervention events to its record?",
+      "expected_output": "Do not add intervention_detail when the question does not need it. Do not invent a zero aggregate to fill the required v1 run-record field; retain the correctness evidence and mark that record unavailable or incomplete under the current contract. Do not retain raw prompts or reasoning for this unrelated metric.",
+      "assertions": [
+        "Declines typed intervention detail when the stated task and evaluation need only answer correctness.",
+        "Does not invent human_interventions: 0 when the aggregate was not measured.",
+        "Explains that the current v1 run record requiring the aggregate cannot represent an unknown count as a measured value.",
+        "Preserves the numeric correctness evidence separately from the unavailable or incomplete intervention record.",
+        "Does not recommend capturing raw prompt text or hidden reasoning for this question."
+      ]
     }
   ]
 }

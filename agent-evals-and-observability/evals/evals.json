@@ -192,6 +192,18 @@
         "Does not claim a lower aggregate count proves productivity or causal improvement.",
         "Marks event-level baseline/candidate comparison unavailable when one side did not collect detail."
       ]
+    },
+    {
+      "id": "skip-unneeded-intervention-telemetry",
+      "prompt": "We are evaluating a one-off unit-conversion answer for numeric correctness. The task has no autonomy, recovery, or intervention-attribution question, and no intervention count was measured. A reviewer suggests adding a typed event record anyway so future analysts have more data. What should the evaluation record contain?",
+      "expected_output": "Keep evidence scoped to numeric correctness and omit optional intervention detail because the question does not need it. Do not manufacture a zero aggregate or collect raw interaction text; the v1 run-record contract cannot claim an unknown scalar as measured.",
+      "assertions": [
+        "Keeps the one-off correctness evaluation free of optional intervention events when they do not answer the question.",
+        "Does not add instrumentation or event retention merely for unspecified future analysis.",
+        "Does not convert an unmeasured aggregate to zero and states that v1 requires the aggregate integer.",
+        "Retains only evidence relevant to checking the numeric answer rather than raw user content or hidden reasoning.",
+        "Does not claim that no recorded detail proves no human intervention occurred."
+      ]
     }
   ]
 }

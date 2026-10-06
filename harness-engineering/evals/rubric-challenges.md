@@ -50,7 +50,9 @@ for intervention events. They are not model runs or independent labels.
 | Case | Satisfying response | Contradictory near miss | Not shown |
 |---|---|---|---|
 | optional-intervention-events | Keeps the required aggregate; absent detail is uncollected; typed events use explicit coverage, actor, one-count-per-input semantics, bounded allowlisted fields and parent ownership; no text/reasoning or productivity claim | Converts missing detail to zero, counts an orchestrator resume as human, duplicates one mixed-kind parent event into child cases, or logs raw messages | Says “add intervention logging” without schema, attribution, missingness, or privacy semantics |
+| intervention-detail-not-needed | Keeps the numeric correctness evidence, omits optional detail for an unrelated one-off task, and refuses to invent an unknown aggregate | Adds event tracking for unspecified future use and writes zero despite no measured count | Says “keep the record lean” without addressing optionality or the required scalar |
 | privacy-bounded-intervention-detail | Preserves known aggregates, marks the baseline's event detail missing, gives only question-needed typed events with coverage and bounded references, and withholds an event-level comparison | Treats the baseline's absent detail as no events and claims the candidate's lower count caused better productivity | Says the data is “privacy safe” without fields, coverage, or comparison limits |
+| skip-unneeded-intervention-telemetry | Limits the record to correctness evidence and omits unnecessary events and raw interaction content | Adds instrumentation for unspecified future analysis and treats an unmeasured count as zero | Says “not needed” without distinguishing unknown from zero or preserving correctness evidence |
 
 For `optional-intervention-events`, verify `complete` equals the scalar human
 event count, `partial` does not exceed it, and `not_collected` has no events.

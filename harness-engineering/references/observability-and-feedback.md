@@ -34,10 +34,12 @@ When included, `intervention_detail` has `coverage` (`complete`, `partial`, or
 a nonempty list of unique, extensible short codes. The target contains
 `run_id`, `task_id`, and optionally `workstream_id`; `changes` contains
 `goal`, `constraints`, and `authority`, each `true`, `false`, or `null` when
-unknown. Outcomes and kinds are bounded codes, not prose. References are opaque,
-bounded single-line IDs without spaces. Event IDs and codes use at most 64
-characters matching `[A-Za-z0-9][A-Za-z0-9_.:-]*`; reference IDs use at most 256
-characters.
+unknown. Outcomes and kinds are bounded codes, not prose. Example kind codes
+include `information_decision`, `authorization_gate`, and `resume_recovery`;
+they illustrate an extensible vocabulary, not a required taxonomy. References
+are opaque, bounded single-line IDs without spaces. Event IDs and codes use at
+most 64 characters matching `[A-Za-z0-9][A-Za-z0-9_.:-]*`; reference IDs use at
+most 256 characters.
 
 Count each input event once even when its `kinds` contains multiple codes. Only
 events with `actor: human` contribute to `human_interventions`; orchestrator and
@@ -56,6 +58,12 @@ than duplicating it. The uniqueness boundary is `(run_id, event.id)`. Typed
 events describe observed changes; they do not grant authority, authorize an
 action, or establish that an intervention improved productivity. A lower
 intervention count alone is not a success claim.
+
+Bounded opaque identifiers and codes can still contain sensitive or identifying
+information; inspect their values under the same privacy policy as other
+telemetry. Schema validation checks structure and bounds, not whether an ID or
+code leaks sensitive data. If the task only needs correctness evidence and does
+not ask about interventions or recovery, keep event detail out of the record.
 
 ## Golden journey debugging
 

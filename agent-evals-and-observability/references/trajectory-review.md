@@ -46,6 +46,14 @@ human events than the scalar; `not_collected` requires an empty event list.
 Store a shared event once at the owning/common parent task and link to it rather
 than duplicating it across child cases; `(run_id, event.id)` is unique.
 
+The code vocabulary is extensible; illustrative kinds include
+`information_decision`, `authorization_gate`, and `resume_recovery`. These are
+examples, not a required taxonomy. Opaque-looking references and short codes can
+still encode sensitive information, and schema validation cannot certify their
+privacy. Review actual values under the applicable privacy policy. If the task
+asks only for answer correctness and does not require intervention attribution,
+do not collect typed intervention detail.
+
 Do not capture raw human messages, prompts, hidden reasoning, or free-text
 justifications by default. Typed change flags and opaque evidence references do
 not grant authority or establish causation. Do not infer success or productivity
