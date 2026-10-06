@@ -73,7 +73,7 @@ Design and implement backend services and APIs — REST, gRPC, GraphQL endpoint 
 
 ### [binary-analysis](binary-analysis/SKILL.md)
 
-Analyze unknown PE, ELF, Mach-O, and firmware files through a deterministic CLI backed by Ghidra's static-analysis engine. Covers triage, imports, decompilation, call paths, and structured evidence reports without executing or modifying the binary.
+Plan static PE, ELF, Mach-O, and firmware investigations with a deterministic CLI. Live Ghidra operations are currently unimplemented and fail explicitly; project administration and dependency diagnostics are available. Fixture-derived results are not evidence about a supplied binary.
 
 ### [bmad](bmad/SKILL.md)
 

@@ -18,7 +18,7 @@ import argparse
 import time
 from typing import Any
 
-from binary_analysis.adapters.fake import FakeAdapter
+from binary_analysis.adapters import runtime
 from binary_analysis.cli.helpers import make_diagnostic, make_warning
 from binary_analysis.domain.enums import AuditResult, ExitCode, ReportType
 from binary_analysis.domain.errors import (
@@ -236,12 +236,17 @@ def execute_export_report(args: argparse.Namespace) -> dict[str, Any]:
     _prov_binary_sha256 = binary_sha256
     _prov_project_state = manifest.get("state")
 
+    # Resolve the backend before constructing any report evidence.
+    adapter = runtime.get_adapter()
+    adapter.initialize()
+    capabilities = adapter.capabilities()
+
     # Build methodology
     methodology = build_methodology(
         profile=profile_name,
         rules_version="1.0.0",
-        backend="FakeAdapter",
-        adapter="fake",
+        backend=capabilities.get("backend", "unknown"),
+        adapter=capabilities.get("adapter", "unknown"),
         parameters={},
     )
 
@@ -251,20 +256,6 @@ def execute_export_report(args: argparse.Namespace) -> dict[str, Any]:
         binary_id=_prov_binary_id,
         binary_sha256=_prov_binary_sha256,
     )
-
-    # Create adapter and load binary
-    adapter = FakeAdapter()
-    adapter.initialize()
-
-    if binary_format == "ELF":
-        fixture_name = "test-bin"
-        adapter.set_fixture(fixture_name, FakeAdapter.elf_fixture())
-    elif binary_format == "Mach-O":
-        fixture_name = "test-bin"
-        adapter.set_fixture(fixture_name, FakeAdapter.macho_fixture())
-    else:
-        fixture_name = "test-bin"
-        adapter.set_fixture(fixture_name, FakeAdapter.pe_fixture())
 
     from uuid import UUID
 
@@ -279,7 +270,6 @@ def execute_export_report(args: argparse.Namespace) -> dict[str, Any]:
         size_bytes=current_binary.get("size_bytes", 0),
         analysis_profile=profile_name,
     )
-    adapter.register_binary(binary, fixture_name)
 
     # Collect report data based on type
     report_data: dict[str, Any] = {}

@@ -5,13 +5,11 @@
     {
       "id": "trigger-recognition",
       "prompt": "I found a suspicious .exe file in my Downloads folder. Can you help me figure out what it does? I don't know anything about it.",
-      "expected_output": "The agent loads the binary-analysis skill, recognizes this as a binary triage scenario, and begins the core workflow with environment check and project setup rather than jumping to conclusions or using source-code tools.",
+      "expected_output": "Explain the current unimplemented live backend and fail-closed behavior. Any command sequence must be labeled as the intended interface, stopping at the backend error without fabricating analysis.",
       "assertions": [
-        "Agent identifies this as a binary-analysis scenario and does not suggest source-code analysis or runtime debugging tools.",
-        "Agent begins with environment verification (binary doctor) before touching the binary.",
-        "Agent creates an isolated project (binary project create) rather than analyzing in-place.",
-        "Agent follows the phased workflow: environment check, project setup, import, analyze, evidence collection.",
-        "Agent does not claim to know what the binary does before running any CLI commands."
+        "States that live Ghidra backend operations are not implemented in this release.",
+        "Does not claim a successful analysis of the supplied binary.",
+        "Labels any analysis command walkthrough as the intended interface rather than currently functioning analysis."
       ]
     },
     {
@@ -29,13 +27,11 @@
     {
       "id": "workflow-guidance",
       "prompt": "I need to analyze a PE binary at /tmp/sample.dll. Walk me through exactly what commands to run, in order.",
-      "expected_output": "The agent provides a sequential command walkthrough following the Core Workflow phases: binary doctor for environment check, binary project create for workspace isolation, binary import in copy mode, binary analyze with the standard profile, and then appropriate evidence-collection commands based on what the user wants to learn.",
+      "expected_output": "Explain the current unimplemented live backend and fail-closed behavior. Any command sequence must be labeled as the intended interface, stopping at the backend error without fabricating analysis.",
       "assertions": [
-        "Agent starts with 'binary doctor --json' for environment verification before any analysis commands.",
-        "Agent creates a project with 'binary project create' and imports with 'binary import' in copy mode (default).",
-        "Agent runs 'binary analyze --project <proj> --json' and describes how to interpret the success/partial/failure response.",
-        "Agent follows the phase ordering: environment check → project setup → import → analyze → evidence collection.",
-        "Agent does not skip project creation and run analysis commands directly against a file path."
+        "States that live Ghidra backend operations are not implemented in this release.",
+        "Does not claim a successful analysis of the supplied binary.",
+        "Labels any analysis command walkthrough as the intended interface rather than currently functioning analysis."
       ]
     },
     {
@@ -72,6 +68,18 @@
         "Agent references the packed-and-obfuscated reference material or its key concepts.",
         "Agent describes what analysis IS still possible: format identification, entropy profiling, packer signature detection, and import table inspection for the small set of resolved APIs.",
         "Agent does not attempt to decompile functions or trace call paths without first addressing the packing concern."
+      ]
+    },
+    {
+      "id": "reject-fixture-evidence",
+      "prompt": "An older binary CLI report says my sample imports VirtualAlloc and has check_password. Its backend is FakeAdapter and the project is READY. Can we call those verified findings? If not, rerun analysis with this release.",
+      "expected_output": "Reject fixture-derived claims as evidence about the supplied sample. Explain that this release fails closed because live backend operations are unimplemented, so neither READY nor installing Ghidra verifies these findings.",
+      "assertions": [
+        "Identifies FakeAdapter results as fixture data rather than observations of the supplied sample.",
+        "States that production CLI commands do not select fixture data for user binaries.",
+        "Does not treat READY as proof of live analysis.",
+        "States that this release cannot rerun live analysis because backend operations are unimplemented.",
+        "Does not claim that installing Ghidra alone enables the missing implementation."
       ]
     }
   ]

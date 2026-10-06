@@ -1,5 +1,10 @@
 # Reports: Generation & Interpretation
 
+> Implementation status: live Ghidra operations are unimplemented. Import,
+> analysis, queries, and report generation fail closed; the examples below
+> describe the intended interface. Installing dependencies does not enable it.
+> Fixture-backed historical output must not be cited as evidence about a file.
+
 How to generate and interpret analysis reports with `binary export-report`.
 Load this when the user asks to "generate a report," when presenting final
 findings, or when you need to understand report structure and content.

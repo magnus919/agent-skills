@@ -498,13 +498,14 @@ class TestAnalyzeProfiles:
         assert result["provenance"].get("analysis_profile") == "quick"
 
     def test_analyze_deep_profile(self, test_binary: str, capsys: pytest.CaptureFixture) -> None:
-        """Analyze with deep profile succeeds."""
+        """Deep fixture analysis reports unavailable decompiler/graph evidence."""
         _make_imported_project("deep-profile", test_binary)
         exit_code, result = _capture_json(
             ["analyze", "--project", "deep-profile", "--profile", "deep"], capsys
         )
-        assert exit_code == ExitCode.SUCCESS
-        assert result["provenance"].get("analysis_profile") == "deep"
+        assert exit_code == ExitCode.OPERATION_TIMEOUT
+        assert result["partial"] is True
+        assert "decompiler" in result["data"]["results"]["failed_analysers"]
 
     def test_analyze_unknown_profile(self, test_binary: str, capsys: pytest.CaptureFixture) -> None:
         """VAL-IMP-011: Unknown profile rejected with list of available profiles."""

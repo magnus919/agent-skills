@@ -26,7 +26,7 @@ import base64
 import json
 from typing import Any
 
-from binary_analysis.adapters.fake import FakeAdapter
+from binary_analysis.adapters import runtime
 from binary_analysis.cli.helpers import (
     clamp_page_size,
     make_diagnostic,
@@ -196,17 +196,8 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
     _prov_project_state = manifest.get("state")
 
     # Create adapter and run triage
-    adapter = FakeAdapter()
+    adapter = runtime.get_adapter()
     adapter.initialize()
-
-    # Set up the adapter with appropriate fixture
-    fixture_name = "test-bin"
-    if binary_format == "ELF":
-        adapter.set_fixture(fixture_name, FakeAdapter.elf_fixture())
-    elif binary_format == "Mach-O":
-        adapter.set_fixture(fixture_name, FakeAdapter.macho_fixture())
-    else:
-        adapter.set_fixture(fixture_name, FakeAdapter.pe_fixture())
 
     from uuid import UUID
 
@@ -221,8 +212,6 @@ def execute_triage(args: argparse.Namespace) -> dict[str, Any]:
         size_bytes=current_binary.get("size_bytes", 0),
         analysis_profile=profile_name,
     )
-    # Register binary with adapter so backend queries return real fixture data
-    adapter.register_binary(binary, fixture_name)
 
     # Run the triage
     try:
@@ -633,18 +622,8 @@ def execute_suspicious_apis(args: argparse.Namespace) -> dict[str, Any]:
     _prov_project_state = manifest.get("state")
 
     # Create adapter and load binary
-    adapter = FakeAdapter()
+    adapter = runtime.get_adapter()
     adapter.initialize()
-
-    if binary_format == "ELF":
-        fixture_name = "test-bin"
-        adapter.set_fixture(fixture_name, FakeAdapter.elf_fixture())
-    elif binary_format == "Mach-O":
-        fixture_name = "test-bin"
-        adapter.set_fixture(fixture_name, FakeAdapter.macho_fixture())
-    else:
-        fixture_name = "test-bin"
-        adapter.set_fixture(fixture_name, FakeAdapter.pe_fixture())
 
     from uuid import UUID
 
@@ -658,8 +637,6 @@ def execute_suspicious_apis(args: argparse.Namespace) -> dict[str, Any]:
         architecture=binary_arch,
         size_bytes=current_binary.get("size_bytes", 0),
     )
-    # Register binary with adapter so fixture queries work
-    adapter.register_binary(binary, fixture_name)
 
     # Run the suspicious APIs engine
     try:
@@ -784,18 +761,8 @@ def execute_capability_map(args: argparse.Namespace) -> dict[str, Any]:
     _prov_project_state = manifest.get("state")
 
     # Create adapter and load binary
-    adapter = FakeAdapter()
+    adapter = runtime.get_adapter()
     adapter.initialize()
-
-    if binary_format == "ELF":
-        fixture_name = "test-bin"
-        adapter.set_fixture(fixture_name, FakeAdapter.elf_fixture())
-    elif binary_format == "Mach-O":
-        fixture_name = "test-bin"
-        adapter.set_fixture(fixture_name, FakeAdapter.macho_fixture())
-    else:
-        fixture_name = "test-bin"
-        adapter.set_fixture(fixture_name, FakeAdapter.pe_fixture())
 
     from uuid import UUID
 
@@ -809,8 +776,6 @@ def execute_capability_map(args: argparse.Namespace) -> dict[str, Any]:
         architecture=binary_arch,
         size_bytes=current_binary.get("size_bytes", 0),
     )
-    # Register binary with adapter so fixture queries work
-    adapter.register_binary(binary, fixture_name)
 
     # Run the capability map engine
     try:

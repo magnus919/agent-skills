@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any
+
 from binary_analysis.adapters.base import (
     AnalysisProfile,
     AnalysisResult,
@@ -11,8 +13,10 @@ from binary_analysis.adapters.base import (
     ConcurrencyMode,
     DecompilationResult,
 )
-from binary_analysis.adapters.fake import FakeAdapter
 from binary_analysis.adapters.ghidra import GhidraAdapter
+
+if TYPE_CHECKING:
+    from binary_analysis.adapters.fake import FakeAdapter
 
 __all__ = [
     "AnalysisProfile",
@@ -25,3 +29,12 @@ __all__ = [
     "FakeAdapter",
     "GhidraAdapter",
 ]
+
+
+def __getattr__(name: str) -> Any:
+    """Load the test fake only when a caller explicitly requests it."""
+    if name == "FakeAdapter":
+        from binary_analysis.adapters.fake import FakeAdapter
+
+        return FakeAdapter
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
