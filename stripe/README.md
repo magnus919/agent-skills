@@ -8,6 +8,8 @@ Financial questions are the ones agents get wrong when they guess: "what is our 
 
 It ships `stripe-cli`, a small Python script that speaks the Stripe API with no third-party dependencies. The read surface is primary — balance, payment intents, subscriptions — and every listing is capped (`--limit`). Output is clean JSON for the agent or readable text for you, and `--help` works with no key and no network. The script verifies Stripe actually confirmed a cancellation before reporting success, so a failed request is never mistaken for a done deal.
 
+Amounts are displayed using Stripe's API precision: JPY and other zero-decimal currencies stay whole, while USD and other two-decimal currencies retain cents. UGX and ISK use backward-compatible two-decimal API values, so `500` displays as `5.00 UGX` or `5.00 ISK`. Three-decimal currencies that Stripe does not support for presentment are rejected. JSON also includes the original integer amount and currency so you can audit every conversion.
+
 ## What You Get
 
 | Directory | Purpose |
@@ -15,8 +17,8 @@ It ships `stripe-cli`, a small Python script that speaks the Stripe API with no 
 | `SKILL.md` | Agent-facing operating contract, mutation gates, and verification boundaries |
 | `references/` | Dated source index and a Stripe read-operations reference (endpoints, pagination, cancellation semantics, errors) |
 | `scripts/stripe-cli` | Bounded, stdlib-only CLI: balance, payments list, subscriptions list/get, guarded cancel; `--json`, `--limit`, mutation gated by `--dry-run`/`--yes` |
-| `tests/` | 12 deterministic tests against a stub Stripe API, covering the read-only-first contract and mutation gate |
-| `evals/evals.json` | Six output-quality evaluation cases for agent runs |
+| `tests/` | Deterministic tests against a stub Stripe API, covering USD/JPY/UGX values across balances, payments, and subscriptions, raw-unit preservation, special currency rules, and the mutation gate |
+| `evals/evals.json` | Output-quality evaluation cases for agent runs |
 
 ## Quick Start
 

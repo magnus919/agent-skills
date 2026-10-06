@@ -92,25 +92,60 @@ def api_request(method: str, path: str, api_key: str,
         raise StripeError(f"Stripe API returned non-JSON: {error}") from error
 
 
-def usd_cents_to_display(cents: Optional[int]) -> str:
-    if cents is None:
+ZERO_DECIMAL_CURRENCIES = {
+    "bif", "clp", "djf", "gnf", "jpy", "kmf", "krw", "mga", "pyg",
+    "rwf", "vnd", "vuv", "xaf", "xof", "xpf",
+}
+THREE_DECIMAL_CURRENCIES_NOT_SUPPORTED_FOR_PRESENTMENT = {"bhd", "jod", "kwd", "omr", "tnd"}
+
+
+def format_stripe_amount(amount_minor: Optional[int], currency: str) -> str:
+    """Format a Stripe integer amount using that currency's charge precision.
+
+    Stripe uses two decimal places by default. The currency guide lists the
+    zero-decimal charge currencies; ISK and UGX retain two-decimal API values
+    for backward compatibility. HUF and TWD also remain two-decimal here:
+    their zero-decimal rule applies to manual payouts, not charges/prices.
+    """
+    if amount_minor is None:
         return ""
-    return f"{cents / 100:.2f}"
+    if isinstance(amount_minor, bool) or not isinstance(amount_minor, int):
+        raise StripeError(f"Stripe amount must be an integer minor-unit value, got {amount_minor!r}")
+    if not isinstance(currency, str) or len(currency) != 3 or not currency.isalpha():
+        raise StripeError(f"Stripe amount has an invalid currency code: {currency!r}")
+    currency_code = currency.lower()
+    if currency_code in THREE_DECIMAL_CURRENCIES_NOT_SUPPORTED_FOR_PRESENTMENT:
+        raise StripeError(
+            f"Stripe presentment amounts do not support {currency_code.upper()} three-decimal units"
+        )
+    sign = "-" if amount_minor < 0 else ""
+    whole_minor = abs(amount_minor)
+    if currency_code in ZERO_DECIMAL_CURRENCIES:
+        return f"{sign}{whole_minor:d}"
+    whole, fractional = divmod(whole_minor, 100)
+    return f"{sign}{whole:d}.{fractional:02d}"
 
 
 def summarize_balance(balance: Dict[str, Any]) -> Dict[str, Any]:
-    available = [{"amount": usd_cents_to_display(b.get("amount")), "currency": b.get("currency", "").upper()}
-                 for b in balance.get("available", [])]
-    pending = [{"amount": usd_cents_to_display(b.get("amount")), "currency": b.get("currency", "").upper()}
-               for b in balance.get("pending", [])]
+    def summarize(entries: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        return [{"amount": format_stripe_amount(b.get("amount"), b.get("currency", "")),
+                 "amount_minor": b.get("amount"),
+                 "currency": (b.get("currency") or "").upper()}
+                for b in entries]
+
+    available = summarize(balance.get("available", []))
+    pending = summarize(balance.get("pending", []))
     return {"available": available, "pending": pending}
 
 
 def summarize_payment(payment: Dict[str, Any]) -> Dict[str, Any]:
+    currency = payment.get("currency") or ""
+    amount = payment.get("amount")
     return {
         "id": payment.get("id", ""),
-        "amount": usd_cents_to_display(payment.get("amount")),
-        "currency": (payment.get("currency") or "").upper(),
+        "amount": format_stripe_amount(amount, currency),
+        "amount_minor": amount,
+        "currency": currency.upper(),
         "status": payment.get("status", ""),
         "customer": payment.get("customer", ""),
         "created": payment.get("created"),
@@ -121,11 +156,14 @@ def summarize_subscription(subscription: Dict[str, Any]) -> Dict[str, Any]:
     items = []
     for item in subscription.get("items", {}).get("data", []):
         price = item.get("price", {})
+        currency = price.get("currency") or ""
+        amount = price.get("unit_amount")
         items.append({
             "id": item.get("id", ""),
             "price_id": price.get("id", ""),
-            "amount": usd_cents_to_display(price.get("unit_amount")),
-            "currency": (price.get("currency") or "").upper(),
+            "amount": format_stripe_amount(amount, currency),
+            "unit_amount_minor": amount,
+            "currency": currency.upper(),
             "interval": (price.get("recurring") or {}).get("interval", ""),
         })
     return {

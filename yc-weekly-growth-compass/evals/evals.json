@@ -5,7 +5,7 @@
     {
       "id": "weekly-growth-checkin",
       "prompt": "We had 1,000 weekly active users last week and 1,120 this week. How are we doing against YC benchmarks?",
-      "expected_output": "Scenario: routine founder growth check-in. The agent loads yc-weekly-growth-compass and runs the calculator: `python scripts/growth-compass.py --current-value 1120 --previous-value 1000 --period weekly` (optionally --json). It reports the computed 12% weekly rate, the YC assessment (Outstanding tier, above the 10% bar), the annualized projection (~142x), and frames the result with the compass question — keep doing what serves that rate.",
+      "expected_output": "Scenario: routine founder growth check-in. The agent loads yc-weekly-growth-compass and runs the calculator: `python scripts/growth-compass.py --current-value 1120 --previous-value 1000 --period weekly` (optionally --json). It reports the computed 12% weekly rate, the YC weekly assessment (Outstanding tier, above the 10% weekly bar), the annualized projection (~142x), and frames the result with the compass question \u2014 keep doing what serves that rate.",
       "assertions": [
         "growth-compass.py is run with the two supplied values and weekly period",
         "The YC benchmark tier is applied to the computed rate",
@@ -27,7 +27,7 @@
     {
       "id": "decision-framing",
       "prompt": "Should we spend next month building the enterprise SSO feature everyone keeps asking for, or double down on onboarding?",
-      "expected_output": "Scenario: compass decision framing without necessarily running numbers. The agent applies the Growth Compass Exercise: establish the target weekly growth rate, then ask 'does this initiative serve the target rate?' for each option — using evidence about which lever moves the metric, not vibes. If the user has data, the script quantifies current trajectory; the recommendation stays framed as 'the thing that serves your target growth rate wins' per the Graham methodology.",
+      "expected_output": "Scenario: compass decision framing without necessarily running numbers. The agent applies the Growth Compass Exercise: establish the target weekly growth rate, then ask 'does this initiative serve the target rate?' for each option \u2014 using evidence about which lever moves the metric, not vibes. If the user has data, the script quantifies current trajectory; the recommendation stays framed as 'the thing that serves your target growth rate wins' per the Graham methodology.",
       "assertions": [
         "The decision is framed through the target-growth-rate question",
         "Both options are evaluated against measurable impact on the north-star metric",
@@ -41,7 +41,7 @@
       "assertions": [
         "Projection uses compounding at the stated 7% rate over ~104 periods",
         "--project-periods (or an equivalent projection) covers two years",
-        "Output distinguishes projection from promise — it holds only if the rate holds"
+        "Output distinguishes projection from promise \u2014 it holds only if the rate holds"
       ]
     },
     {
@@ -56,13 +56,24 @@
     },
     {
       "id": "not-a-fundraising-verdict",
-      "prompt": "Our growth rate is 3% weekly — does that mean we should shut down the company?",
-      "expected_output": "Scenario: benchmark honesty. The agent computes/places 3% in YC's tiers (below the 5% good zone, above the 1% concerning line), states plainly what the framework says — sub-target growth means founders likely aren't doing unscalable things yet — while also honoring the Limitations: these are empirical benchmarks, not a verdict on the company's existence, and the diagnosis points toward intervention (unscalable actions, market/churn check) rather than doom.",
+      "prompt": "Our growth rate is 3% weekly \u2014 does that mean we should shut down the company?",
+      "expected_output": "Scenario: benchmark honesty. The agent computes/places 3% in YC's tiers (below the 5% good zone, above the 1% concerning line), states plainly what the framework says \u2014 sub-target growth means founders likely aren't doing unscalable things yet \u2014 while also honoring the Limitations: these are empirical benchmarks, not a verdict on the company's existence, and the diagnosis points toward intervention (unscalable actions, market/churn check) rather than doom.",
       "assertions": [
         "3% is located correctly within the YC benchmark tiers",
         "The framework's own interpretation (<5% = unscalable things not happening) is used",
         "The response avoids treating the benchmark as a shutdown decision",
         "Constructive next diagnostics are offered"
+      ]
+    },
+    {
+      "id": "nonweekly-rate-conversion",
+      "prompt": "This month, MRR grew from 32,000 to 35,000. What is the weekly equivalent and how does it compare with YC benchmarks?",
+      "expected_output": "Run growth-compass.py with the supplied values and --period monthly, then report 9.375% monthly growth and its annualization-equivalent weekly rate of about 2.09%. Classify the YC tier using the weekly rate, which is Below Average. Make clear there is no separately defined monthly YC tier, and show the JSON and human result consistently if both are requested.",
+      "assertions": [
+        "The monthly growth rate is reported as 9.375% (about 9.38%)",
+        "The weekly equivalent is about 2.09%, computed with the periods-per-year divided by 52 exponent",
+        "The YC label is Below Average based on the weekly equivalent",
+        "The 9.375% monthly rate is not compared directly with weekly YC thresholds"
       ]
     }
   ]
