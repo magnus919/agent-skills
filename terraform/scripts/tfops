@@ -442,7 +442,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
         return 2
     binary = find_binary()
     if not binary:
-        emit({"ok": False, "error": "terraform/tofu not found", "hint": "Install terraform or OpenTofu, or set TERRAFORM."}, args.json)
+        emit({"ok": False, "guard": "unchecked", "error": "terraform/tofu not found", "hint": "Install terraform or OpenTofu, or set TERRAFORM."}, args.json)
         return 127
     metadata_path = args.plan + ".tfops.json"
     try:

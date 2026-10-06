@@ -93,6 +93,12 @@ class StateAnalysisTests(unittest.TestCase):
 
 
 class MutationGateTests(unittest.TestCase):
+    def test_missing_binary_reports_unchecked_guard(self):
+        proc = run_script("apply", "--yes", "--plan", "unused.tfplan", "--json",
+                          env_extra={"TERRAFORM": "/nonexistent/tfops-test-binary"})
+        self.assertEqual(proc.returncode, 127)
+        self.assertEqual(json.loads(proc.stdout)["guard"], "unchecked")
+
     def test_real_first_provisioning_plan_without_prior_state(self):
         fixture = ROOT / "tests/fixtures/terraform-1.13.3-first-plan.json"
         fake = FakeTerraformBinary()
