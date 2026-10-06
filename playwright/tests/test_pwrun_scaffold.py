@@ -7,13 +7,16 @@ browser request as well as that the JSON report recorded the reached URL.
 
 import json
 import os
+import signal
 import shutil
 import socket
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
+from typing import Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
 PWRUN = ROOT / "scripts" / "pwrun"
@@ -38,13 +41,52 @@ def playwright_ready() -> bool:
     return result.returncode == 0 and chromium_installed
 
 
+def stop_process_group(process: subprocess.Popen) -> Tuple[str, str]:
+    """Stop the smoke command and any webServer/browser children it started."""
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        pass
+    try:
+        return process.communicate(timeout=5)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        return process.communicate(timeout=5)
+
+
+def wait_for_port_release(host: str, port: int, timeout: float = 5.0) -> bool:
+    """Wait for the temporary webServer port to stop accepting connections."""
+    deadline = time.monotonic() + timeout
+    family = socket.AF_INET6 if ":" in host else socket.AF_INET
+    while time.monotonic() < deadline:
+        with socket.socket(family) as sock:
+            sock.settimeout(0.2)
+            if sock.connect_ex((host, port)) != 0:
+                return True
+        time.sleep(0.1)
+    return False
+
+
 @unittest.skipUnless(playwright_ready(), "requires local @playwright/test and an installed Chromium browser")
 class ScaffoldNavigationIntegrationTests(unittest.TestCase):
     def test_pwrun_visits_requested_scaffold_target_and_reports_runtime_url(self):
-        with socket.socket() as sock:
-            sock.bind(("127.0.0.1", 0))
+        host = "::1"
+        family = socket.AF_INET6
+        try:
+            sock = socket.socket(family)
+            sock.bind((host, 0))
+        except OSError:
+            host = "127.0.0.1"
+            family = socket.AF_INET
+            sock = socket.socket(family)
+            sock.bind((host, 0))
+        with sock:
             port = sock.getsockname()[1]
-        requested_url = f"http://127.0.0.1:{port}"
+        url_host = f"[{host}]" if ":" in host else host
+        requested_url = f"http://{url_host}:{port}"
 
         with tempfile.TemporaryDirectory(prefix="pwrun-scaffold-", dir=ROOT) as tmp:
             project = Path(tmp)
@@ -62,7 +104,7 @@ http.createServer((request, response) => {
   fs.appendFileSync('server-requests.log', `${request.method} ${request.url}\\n`);
   response.writeHead(200, {'content-type': 'text/html'});
   response.end('<main><h1>Scaffold integration</h1></main>');
-}).listen(Number(process.env.PORT), '127.0.0.1');
+}).listen(Number(process.env.PORT), process.env.HOST);
 """,
                 encoding="utf-8",
             )
@@ -78,7 +120,8 @@ test('visits configured target and records the reached URL', async ({ page }) =>
             )
             env = os.environ.copy()
             env["PORT"] = str(port)
-            result = subprocess.run(
+            env["HOST"] = host
+            process = subprocess.Popen(
                 [
                     sys.executable,
                     str(PWRUN),
@@ -95,10 +138,30 @@ test('visits configured target and records the reached URL', async ({ page }) =>
                 ],
                 cwd=project,
                 env=env,
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
-                timeout=45,
+                start_new_session=True,
             )
+            timed_out = False
+            stdout = ""
+            stderr = ""
+            try:
+                try:
+                    stdout, stderr = process.communicate(timeout=45)
+                except subprocess.TimeoutExpired:
+                    timed_out = True
+            finally:
+                cleanup_stdout, cleanup_stderr = stop_process_group(process)
+                stdout = stdout or cleanup_stdout
+                stderr = stderr or cleanup_stderr
+                self.assertTrue(
+                    wait_for_port_release(host, port),
+                    f"temporary webServer still owns port {port}; stdout:\n{stdout}\nstderr:\n{stderr}",
+                )
+            if timed_out:
+                self.fail(f"pwrun exceeded its 45 second bound; stdout:\n{stdout}\nstderr:\n{stderr}")
+            result = subprocess.CompletedProcess(process.args, process.returncode, stdout, stderr)
             payload = json.loads(result.stdout)
             requests = (project / "server-requests.log").read_text(encoding="utf-8")
 

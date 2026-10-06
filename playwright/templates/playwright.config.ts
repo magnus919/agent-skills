@@ -5,7 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
 const baseURL = process.env.PW_SMOKE_URL ?? process.env.BASE_URL ?? 'http://localhost:3000';
 const parsedBaseURL = new URL(baseURL);
 const host = parsedBaseURL.hostname;
-const isLoopback = host === 'localhost' || host === '::1' || /^127(?:\.\d{1,3}){3}$/.test(host);
+const isLoopback = host === 'localhost' || host === '[::1]' || /^127(?:\.\d{1,3}){3}$/.test(host);
 
 /**
  * Test-suite scaffold for Playwright.
