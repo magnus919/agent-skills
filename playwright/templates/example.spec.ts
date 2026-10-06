@@ -8,6 +8,10 @@ import { test, expect } from '@playwright/test';
 test.describe('[fill: feature under test]', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/'); // [fill: app entry route, relative to baseURL]
+    test.info().annotations.push({
+      type: 'pwrun-navigation',
+      description: page.url(), // Runtime evidence of the URL reached after navigation.
+    });
   });
 
   test('[fill: the behavior in one sentence]', async ({ page }) => {

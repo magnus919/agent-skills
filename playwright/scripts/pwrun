@@ -26,6 +26,7 @@ import shutil
 import subprocess
 import sys
 from typing import Any, Optional
+from urllib.parse import urlsplit
 
 CONFIG_NAMES = (
     "playwright.config.ts",
@@ -41,9 +42,10 @@ COMMON_DEFAULTS = {
     "timeout": 120,
     "config": None,
     "report": None,
-    "url": "http://localhost:3000",
+    "url": None,
     "spec": None,
 }
+DEFAULT_BASE_URL = "http://localhost:3000"
 
 HELP_JSON = {
     "name": "pwrun",
@@ -59,7 +61,7 @@ HELP_JSON = {
         {"name": "--json", "help": "Emit a structured JSON result on stdout"},
         {"name": "--config", "help": "Path to the Playwright config file (auto-detected)"},
         {"name": "--report", "help": "Path to a Playwright JSON test report (report command)"},
-        {"name": "--url", "help": "Target URL for the smoke command (default http://localhost:3000)"},
+        {"name": "--url", "help": "Target URL; overrides PW_SMOKE_URL and BASE_URL"},
         {"name": "--spec", "help": "Spec file filter for the smoke command"},
         {"name": "--timeout", "help": "Delegate command timeout in seconds (default 120)"},
     ],
@@ -276,6 +278,50 @@ def summarize_report(path: str) -> dict[str, Any]:
     return summarize_report_data(data, path)
 
 
+def navigation_evidence(data: Any) -> list[dict[str, str]]:
+    """Read runtime navigation annotations emitted by the bundled spec scaffold."""
+    if not isinstance(data, dict):
+        return []
+    evidence: list[dict[str, str]] = []
+    for suite in data.get("suites", []) or []:
+        for spec, test in walk_suites(suite):
+            for annotation in test.get("annotations", []) or []:
+                if annotation.get("type") != "pwrun-navigation":
+                    continue
+                observed_url = annotation.get("description")
+                if isinstance(observed_url, str) and urlsplit(observed_url).scheme and urlsplit(observed_url).netloc:
+                    evidence.append(
+                        {
+                            "url": observed_url,
+                            "file": spec.get("file") or test.get("file") or "",
+                            "title": spec.get("title") or test.get("title") or "(untitled)",
+                        }
+                    )
+    return evidence
+
+
+def origin_of(url: Optional[str]) -> Optional[str]:
+    """Return the URL origin when it is an absolute HTTP(S) URL."""
+    if not isinstance(url, str):
+        return None
+    parts = urlsplit(url)
+    if parts.scheme not in ("http", "https") or not parts.netloc:
+        return None
+    return f"{parts.scheme}://{parts.netloc}"
+
+
+def resolve_smoke_url(args: argparse.Namespace, inherited_env: dict[str, str]) -> tuple[str, str]:
+    """Apply CLI > PW_SMOKE_URL > BASE_URL > scaffold default precedence."""
+    cli_url = getattr(args, "url", None)
+    if cli_url:
+        return cli_url, "--url"
+    if inherited_env.get("PW_SMOKE_URL"):
+        return inherited_env["PW_SMOKE_URL"], "PW_SMOKE_URL environment"
+    if inherited_env.get("BASE_URL"):
+        return inherited_env["BASE_URL"], "BASE_URL environment"
+    return DEFAULT_BASE_URL, "pwrun default"
+
+
 def cmd_report(args: argparse.Namespace) -> int:
     """Summarize a Playwright JSON report."""
     path = getattr(args, "report", None)
@@ -303,6 +349,7 @@ def cmd_report(args: argparse.Namespace) -> int:
 
 def cmd_smoke(args: argparse.Namespace) -> int:
     """Run a quick smoke pass by delegating to npx playwright test."""
+    requested_url, url_source = resolve_smoke_url(args, os.environ)
     node = find_tool("node")
     npx = find_tool("npx")
     if not node or not npx:
@@ -311,17 +358,21 @@ def cmd_smoke(args: argparse.Namespace) -> int:
                 "ok": False,
                 "error": "node/npx not found; smoke requires a Node toolchain",
                 "hint": "Install Node.js, run `npm i -D @playwright/test`, then `npx playwright install`.",
+                "requested_url": requested_url,
+                "url_source": url_source,
+                "navigation_evidence": {"verified": False, "observed": [], "reason": "Playwright did not run"},
             },
             args.json,
         )
         return 127
     parts = ["playwright", "test"]
+    if getattr(args, "config", None):
+        parts.extend(["--config", args.config])
     if getattr(args, "spec", None):
         parts.append(args.spec)
     parts.extend(["--reporter=json"])
     env = os.environ.copy()
-    if getattr(args, "url", None):
-        env["PW_SMOKE_URL"] = args.url
+    env["PW_SMOKE_URL"] = requested_url
     try:
         proc = subprocess.run([npx, "--no-install"] + parts, capture_output=True, text=True, timeout=args.timeout, env=env)
     except subprocess.TimeoutExpired:
@@ -331,6 +382,9 @@ def cmd_smoke(args: argparse.Namespace) -> int:
                 "error": "playwright test delegate timed out",
                 "timeout_seconds": args.timeout,
                 "command": parts,
+                "requested_url": requested_url,
+                "url_source": url_source,
+                "navigation_evidence": {"verified": False, "observed": [], "reason": "Playwright did not complete"},
             },
             args.json,
         )
@@ -339,7 +393,9 @@ def cmd_smoke(args: argparse.Namespace) -> int:
         "ok": proc.returncode == 0,
         "exit_code": proc.returncode,
         "command": parts,
-        "url": getattr(args, "url", None),
+        "requested_url": requested_url,
+        "url_source": url_source,
+        "navigation_evidence": {"verified": False, "observed": [], "reason": "No pwrun-navigation annotation was found in the Playwright JSON report"},
     }
     stdout = proc.stdout or ""
     try:
@@ -347,6 +403,16 @@ def cmd_smoke(args: argparse.Namespace) -> int:
     except (ValueError, json.JSONDecodeError):
         report = None
     if report is not None:
+        observed = navigation_evidence(report)
+        requested_origin = origin_of(requested_url)
+        matched = bool(requested_origin and any(origin_of(item["url"]) == requested_origin for item in observed))
+        payload["navigation_evidence"] = {
+            "verified": bool(observed),
+            "observed": observed,
+            "requested_target_origin_observed": matched if observed else None,
+            "source": "pwrun-navigation annotations in the Playwright JSON report",
+            **({} if observed else {"reason": "No pwrun-navigation annotation was found in the Playwright JSON report"}),
+        }
         try:
             payload["report_summary"] = summarize_report_data(report, path="(smoke run)")
         except ValueError as error:
@@ -364,7 +430,7 @@ def add_common(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="Emit a structured JSON result on stdout")
     parser.add_argument("--config", default=argparse.SUPPRESS, help="Path to the Playwright config file (auto-detected)")
     parser.add_argument("--report", default=argparse.SUPPRESS, help="Path to a Playwright JSON test report (report command)")
-    parser.add_argument("--url", default=argparse.SUPPRESS, help="Target URL for the smoke command (default http://localhost:3000)")
+    parser.add_argument("--url", default=argparse.SUPPRESS, help="Target URL for the smoke command (overrides PW_SMOKE_URL, then BASE_URL)")
     parser.add_argument("--spec", default=argparse.SUPPRESS, help="Spec file filter for the smoke command")
     parser.add_argument("--timeout", type=int, default=argparse.SUPPRESS, help="Delegate command timeout in seconds")
 

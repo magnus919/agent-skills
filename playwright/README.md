@@ -15,9 +15,9 @@ The bundled `pwrun` script makes the toolchain legible without any Node setup: i
 | `SKILL.md` | Agent-facing operating loop: authoring, selectors, network mocking, parallel workers, CI, scraping, accessibility snapshots, headed debugging |
 | `references/` | Eight dated references: e2e authoring, selectors, network interception/mocking, parallel/sharding, CI, scraping/headless, accessibility + debugging, source index |
 | `scripts/pwrun` | Smoke harness with `--json`: `doctor` (toolchain), `inventory` (suite shape), `report` (JSON-report triage), `smoke` (delegated run) |
-| `tests/` | Deterministic tests plus a sample Playwright JSON report fixture |
+| `tests/` | Deterministic harness tests, a sample Playwright JSON report fixture, and an optional local-server browser integration test |
 | `templates/` | Copy-in test-suite scaffold: `playwright.config.ts`, `example.spec.ts`, `accessibility.spec.ts` |
-| `evals/evals.json` | Output-quality evals (schema v1, 6 cases) spanning authoring, scraping, debugging, and frontend test implementation |
+| `evals/evals.json` | Output-quality evals (schema v1, 7 cases) spanning authoring, scraping, smoke targeting, debugging, and frontend test implementation |
 
 ## Quick Start
 
@@ -32,9 +32,12 @@ cp templates/playwright.config.ts templates/example.spec.ts templates/accessibil
 npm i -D @playwright/test
 npx playwright@1.62.1 install
 npx playwright@1.62.1 test
+
+# Smoke a specific suite and target
+bash scripts/pwrun smoke --config playwright.config.ts --url http://localhost:3000 --json
 ```
 
-The `--help` output documents every flag and works without Node. Set `BASE_URL` to override the smoke target; `scripts/pwrun smoke --url http://localhost:3000 --json` runs a delegated pass through `npx playwright@1.62.1 test`.
+The `--help` output documents every flag and works without Node. Smoke target precedence is `--url`, `PW_SMOKE_URL`, `BASE_URL`, then `http://localhost:3000`. The JSON result reports the requested target separately from runtime navigation evidence recorded by the bundled example spec.
 
 ## Triggers
 
