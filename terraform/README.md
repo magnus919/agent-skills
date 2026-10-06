@@ -14,7 +14,7 @@ The references are distilled from the official Terraform and OpenTofu documentat
 |---|---|
 | `SKILL.md` | Agent-facing operating loop, mutation gates, and verification boundaries |
 | `references/` | Eight dated references: modules, state/backends, plan/apply, drift, remote state, upgrades/refactors, diagnostics, source index |
-| `scripts/tfops` | Agent-first wrapper: `--json` output, direct state-file analysis, and a `--dry-run`/`--yes`/`--force` mutation gate |
+| `scripts/tfops` | Agent-first wrapper: `--json` output, direct state-file analysis, and an apply gate that checks and applies the same saved plan |
 | `tests/` | Deterministic tests plus a bundled fixture state file |
 
 ## Quick Start
@@ -31,7 +31,7 @@ bash scripts/tfops apply --dry-run --json
 bash scripts/tfops apply --yes --json   # mutation gate: never runs without --yes
 ```
 
-The `--help` output documents every flag and works without the terraform binary. Set the `TERRAFORM` environment variable to a specific binary (e.g., `tofu`) when both are installed.
+The `--help` output documents every flag and works without the terraform binary. Create plans for guarded apply with `tfops plan --save-plan FILE`; this explicitly enables refresh and writes a SHA-256 sidecar. Apply checks the sidecar, snapshots the plan, checks taint/drift from `terraform show -json`, and passes that same snapshot to Terraform. `--force` bypasses detected findings only after valid plan evidence is available. The sidecar is local provenance against accidental plan mix-ups, not a cryptographic signature. Set the `TERRAFORM` environment variable to a specific binary (e.g., `tofu`) when both are installed.
 
 ## Triggers
 

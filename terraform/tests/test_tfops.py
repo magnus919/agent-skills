@@ -6,6 +6,7 @@ Runs the script as a subprocess so the tests exercise the real CLI surface
 required; the TERRAFORM environment variable can point at a fake binary for
 delegate-path coverage.
 """
+import hashlib
 import json
 import os
 import subprocess
@@ -17,6 +18,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = ROOT / "scripts" / "tfops"
 FIXTURE = ROOT / "tests" / "fixtures" / "fixture-state.json"
+
+
+def plan_json(*, resource_changes=None, resource_drift=None, **extra) -> str:
+    payload = {"format_version": "1.0", "prior_state": {}, "errored": False}
+    if resource_changes is not None:
+        payload["resource_changes"] = resource_changes
+    if resource_drift is not None:
+        payload["resource_drift"] = resource_drift
+    payload.update(extra)
+    return json.dumps(payload)
 
 
 def run_script(*args: str, env_extra: dict | None = None) -> subprocess.CompletedProcess:
@@ -95,26 +106,132 @@ class MutationGateTests(unittest.TestCase):
         self.assertTrue(payload["ok"])
         self.assertTrue(payload["dry_run"])
 
-    def test_apply_taint_guard_refuses_without_force(self):
+    def test_apply_requires_saved_plan_even_with_state_file(self):
         proc = run_script("apply", "--state", str(FIXTURE), "--yes", "--json")
         self.assertEqual(proc.returncode, 2)
         payload = json.loads(proc.stdout)
-        self.assertIn("tainted", payload["error"])
-        self.assertEqual(payload["tainted"], ["aws_instance.db"])
+        self.assertEqual(payload["guard"], "unchecked")
+        self.assertIn("--plan", payload["error"])
 
-    def test_apply_taint_guard_skipped_with_force(self):
+    def test_apply_rejects_missing_or_invalid_guard_evidence(self):
+        fake = FakeTerraformBinary()
+        try:
+            for value in ('{"format_version":"1.0","resource_changes":[]}', 'not json'):
+                proc = run_script(
+                    "apply", "--plan", fake.plan_path, "--yes", "--json",
+                    env_extra={"TERRAFORM": fake.path, "FAKE_PLAN_JSON": value},
+                )
+                self.assertEqual(proc.returncode, 2)
+                self.assertEqual(json.loads(proc.stdout)["guard"], "unchecked")
+        finally:
+            fake.cleanup()
+
+    def test_apply_blocks_detected_drift_and_taint_by_default(self):
+        fake = FakeTerraformBinary()
+        plans = [
+            plan_json(resource_changes=[], resource_drift=[{"address": "aws_instance.db"}]),
+            plan_json(resource_changes=[{"address": "aws_instance.db", "action_reason": "replace_because_tainted"}], resource_drift=[]),
+        ]
+        try:
+            for plan in plans:
+                proc = run_script(
+                    "apply", "--plan", fake.plan_path, "--yes", "--json",
+                    env_extra={"TERRAFORM": fake.path, "FAKE_PLAN_JSON": plan, "FAKE_COMMAND_LOG": fake.command_log},
+                )
+                self.assertEqual(proc.returncode, 2)
+                payload = json.loads(proc.stdout)
+                self.assertEqual(payload["guard"], "checked")
+                self.assertFalse(payload["ok"])
+        finally:
+            fake.cleanup()
+
+    def test_apply_uses_exact_saved_plan_after_clean_guard(self):
         fake = FakeTerraformBinary()
         try:
             proc = run_script(
-                "apply", "--state", str(FIXTURE), "--yes", "--force", "--json",
-                env_extra={"TERRAFORM": fake.path},
+                "apply", "--plan", fake.plan_path, "--yes", "--json",
+                env_extra={"TERRAFORM": fake.path, "FAKE_PLAN_JSON": plan_json(), "FAKE_COMMAND_LOG": fake.command_log},
             )
         finally:
             fake.cleanup()
         self.assertEqual(proc.returncode, 0, proc.stderr)
         payload = json.loads(proc.stdout)
         self.assertTrue(payload["ok"])
-        self.assertIn("apply", payload["command"])
+        self.assertEqual(payload["guard"], "checked")
+        commands = Path(fake.command_log).read_text().splitlines()
+        inspected = next(line.removeprefix("show:") for line in commands if line.startswith("show:"))
+        applied = next(line.removeprefix("apply:") for line in commands if line.startswith("apply:"))
+        self.assertEqual(inspected, applied)
+        self.assertNotEqual(applied, fake.plan_path)
+        self.assertNotIn("-auto-approve", payload["command"])
+
+    def test_force_bypasses_findings_only_after_valid_plan_check(self):
+        fake = FakeTerraformBinary()
+        tainted = plan_json(resource_changes=[{"address": "aws_instance.db", "action_reason": "replace_because_tainted"}], resource_drift=[])
+        try:
+            proc = run_script(
+                "apply", "--plan", fake.plan_path, "--yes", "--force", "--json",
+                env_extra={"TERRAFORM": fake.path, "FAKE_PLAN_JSON": tainted, "FAKE_COMMAND_LOG": fake.command_log},
+            )
+        finally:
+            fake.cleanup()
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        payload = json.loads(proc.stdout)
+        self.assertEqual(payload["guard"], "bypassed")
+        self.assertEqual(payload["tainted"], ["aws_instance.db"])
+
+    def test_clean_plan_with_omitted_empty_change_collections_is_valid(self):
+        fake = FakeTerraformBinary()
+        try:
+            proc = run_script(
+                "apply", "--plan", fake.plan_path, "--yes", "--json",
+                env_extra={"TERRAFORM": fake.path, "FAKE_PLAN_JSON": plan_json(), "FAKE_COMMAND_LOG": fake.command_log},
+            )
+        finally:
+            fake.cleanup()
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        payload = json.loads(proc.stdout)
+        self.assertEqual(payload["guard"], "checked")
+        self.assertEqual(payload["drifted"], [])
+
+    def test_plan_save_binds_refresh_and_apply_checks_exact_plan(self):
+        fake = FakeTerraformBinary()
+        output_plan = os.path.join(fake._dir, "reviewed.tfplan")
+        try:
+            proc = run_script(
+                "plan", "--save-plan", output_plan, "--json",
+                env_extra={"TERRAFORM": fake.path},
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            plan_payload = json.loads(proc.stdout)
+            self.assertIn("-refresh=true", plan_payload["command"])
+            metadata = json.loads(Path(output_plan + ".tfops.json").read_text())
+            self.assertTrue(metadata["refresh_enabled"])
+            self.assertEqual(metadata["sha256"], hashlib.sha256(Path(output_plan).read_bytes()).hexdigest())
+            proc = run_script(
+                "apply", "--plan", output_plan, "--yes", "--json",
+                env_extra={"TERRAFORM": fake.path, "FAKE_PLAN_JSON": plan_json(), "FAKE_COMMAND_LOG": fake.command_log},
+            )
+        finally:
+            fake.cleanup()
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        payload = json.loads(proc.stdout)
+        self.assertEqual(payload["guard"], "checked")
+        commands = Path(fake.command_log).read_text().splitlines()
+        inspected = next(line.removeprefix("show:") for line in commands if line.startswith("show:"))
+        applied = next(line.removeprefix("apply:") for line in commands if line.startswith("apply:"))
+        self.assertEqual(inspected, applied)
+        self.assertNotEqual(applied, output_plan)
+
+    def test_apply_rejects_plan_hash_mismatch_and_missing_metadata(self):
+        fake = FakeTerraformBinary()
+        try:
+            Path(fake.plan_path).write_text("modified")
+            proc = run_script("apply", "--plan", fake.plan_path, "--yes", "--json", env_extra={"TERRAFORM": fake.path})
+            self.assertEqual(proc.returncode, 2)
+            self.assertEqual(json.loads(proc.stdout)["guard"], "unchecked")
+        finally:
+            fake.cleanup()
 
     def test_import_requires_yes(self):
         proc = run_script("import", "aws_instance.web", "i-0abc123def456", "--json")
@@ -161,14 +278,21 @@ class FakeTerraformBinary:
     def __init__(self) -> None:
         self._dir = tempfile.mkdtemp(prefix="tfops-fake-")
         self.path = os.path.join(self._dir, "terraform")
+        self.plan_path = os.path.join(self._dir, "reviewed.tfplan")
+        self.command_log = tempfile.mktemp(prefix="tfops-fake-commands-")
+        with open(self.plan_path, "w", encoding="utf-8") as handle:
+            handle.write("fake plan")
+        with open(self.plan_path + ".tfops.json", "w", encoding="utf-8") as handle:
+            json.dump({"schema_version": 1, "sha256": hashlib.sha256(b"fake plan").hexdigest(), "refresh_enabled": True}, handle)
         with open(self.path, "w", encoding="utf-8") as handle:
             handle.write(
                 "#!/usr/bin/env bash\n"
                 "set -e\n"
-                'printf "Terraform v1.15.8 (fake)\\n"\n'
+                'if [ "$1" = "version" ]; then printf "Terraform v1.15.8 (fake)\\n"; exit 0; fi\n'
                 'if [ "$1" = "validate" ]; then exit 0; fi\n'
-                'if [ "$1" = "apply" ]; then exit 0; fi\n'
-                'if [ "$1" = "plan" ]; then printf "no changes\\n"; exit 0; fi\n'
+                'if [ "$1" = "show" ]; then printf "show:%s\\n" "$3" >> "$FAKE_COMMAND_LOG"; printf "%s" "$FAKE_PLAN_JSON"; exit 0; fi\n'
+                'if [ "$1" = "apply" ]; then for arg in "$@"; do last=$arg; done; printf "apply:%s\\n" "$last" >> "$FAKE_COMMAND_LOG"; exit 0; fi\n'
+                'if [ "$1" = "plan" ]; then for arg in "$@"; do case "$arg" in -out=*) printf "fake plan" > "${arg#-out=}";; esac; done; printf "no changes\\n"; exit 0; fi\n'
                 'if [ "$1" = "import" ]; then exit 0; fi\n'
             )
         os.chmod(self.path, 0o755)
