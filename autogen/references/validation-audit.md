@@ -25,4 +25,4 @@
 
 ## Offline runtime validation
 
-`scripts/test_templates.py` runs against the pinned 0.7.5 packages with `ReplayChatCompletionClient`, a deterministic model client, and a safe executor double. It instantiates the documented modern agents, checks the `TaskResult` message shape, passes a response through the human input function, and exercises code-block dispatch and executor output. It uses no API key, network model, or Docker daemon. This verifies local package/API compatibility; it is not a live model or Docker execution test.
+`scripts/test_templates.py` runs against the pinned 0.7.5 packages with `ReplayChatCompletionClient`, a deterministic model client, a human-input double, and a safe executor double. It imports and runs each shipped template's `main()` function, checks conversation output and code-block dispatch, and exercises team result handling. It uses no API key, network model, or Docker daemon. This verifies local package/API compatibility; it is not a live model or Docker execution test.

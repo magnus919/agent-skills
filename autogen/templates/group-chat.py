@@ -27,4 +27,5 @@ async def main():
     finally:
         await model_client.close()
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
