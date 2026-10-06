@@ -5,12 +5,15 @@
     {
       "id": "backup-complete-archive",
       "prompt": "Back up our production Headscale server so we are ready for an in-place upgrade. Produce an archive we can use to recover if the upgrade fails.",
-      "expected_output": "Scenario: full production backup before an upgrade. The agent loads headscale-backup and runs the hs-backup.sh script to produce a timestamped tarball. The output names the archive path and confirms its contents: the SQLite database, config.yaml, policy.json (if present), and TLS certificates/keys. The backup is verified (not assumed) by listing the archive members before the upgrade proceeds. The archive is noted as the disaster-recovery artifact and is stored off the control-server host.",
+      "expected_output": "Scenario: full production backup before an upgrade. The agent loads headscale-backup, previews the source paths and confirms the backup target and recovery scope, then runs hs-backup.sh to produce a timestamped tarball. The manifest records the SQLite database, config.yaml, optional policy, explicitly configured TLS certificates and keys, and configured DERP private key with checksums and restore paths. A configured but missing key makes the backup fail. The agent verifies the archive before the upgrade and stores the artifact off the control-server host.",
       "assertions": [
         "The headscale-backup sub-skill is loaded",
         "hs-backup.sh produces a timestamped backup archive",
-        "The archive contains the SQLite database, config.yaml, policy.json, and TLS certificates/keys",
-        "Archive contents are verified by listing members before upgrade",
+        "The archive includes the configured SQLite database and config.yaml plus present optional policy and explicitly configured TLS assets",
+        "A configured DERP server private key appears as a checksummed recovery asset",
+        "A missing configured DERP server private key makes backup fail instead of silently omitting it",
+        "Archive assets are validated against manifest checksums before the upgrade",
+        "The backup target and recovery scope are confirmed before creating the archive",
         "The backup archive is stored off the control-server host"
       ]
     },
@@ -28,10 +31,13 @@
     {
       "id": "restore-drill-verification",
       "prompt": "We have a headscale backup tarball from last week. Prove the backup actually works by restoring it onto a fresh test host and confirming the tailnet comes back.",
-      "expected_output": "Scenario: restore drill on a fresh host. The agent stops headscale, restores the backup archive contents (SQLite, config, policy, certs) to the target paths, starts headscale, and verifies recovery with a health check and headscale nodes list showing the same nodes/state. The restore is exercised and verified rather than merely documented. The output reports the verification commands and their observed results.",
+      "expected_output": "Scenario: restore drill on a fresh host. The agent previews the restore mappings, confirms the target, file scope, and rollback path, restores checksum-verified assets to their archived destinations while controlling the Headscale service, and verifies recovery with a health check and headscale nodes list. It rejects any root override that would move assets until the config and service paths have been separately updated and validated. The output distinguishes the proposed checks from observed results.",
       "assertions": [
-        "The headscale service is stopped before restore",
-        "Backup archive contents are restored to the correct paths",
+        "The restore target, write scope, and rollback path are confirmed before writes",
+        "Archive assets pass manifest checksum verification before any restore write",
+        "The headscale service is stopped before restore writes and restarted afterward",
+        "Backup archive contents are restored to the recorded paths unless an explicit supported root override is supplied",
+        "A root override that would move any asset is rejected before writes because config or service paths may still reference the archived location",
         "headscale is started and recovery is verified via health check",
         "The tailnet state (nodes, policy) is confirmed via headscale nodes list",
         "The restore drill is exercised and observed, not only documented"
@@ -59,6 +65,17 @@
         "API keys are regenerated with headscale apikeys create",
         "Automation scripts are updated with the new key",
         "The expired-preauth-key behavior is noted"
+      ]
+    },
+    {
+      "id": "postgres-backup-rejected",
+      "prompt": "Our Headscale config uses PostgreSQL. Run the normal backup script and make sure it protects the database.",
+      "expected_output": "Scenario: unsupported database backend. The agent identifies that this backup helper only creates SQLite online snapshots, detects the PostgreSQL configuration, and stops with a clear explanation instead of silently backing up an unrelated default SQLite file or claiming the PostgreSQL database was protected. It points to a PostgreSQL-aware backup process as the next step.",
+      "assertions": [
+        "The agent recognizes that the configured backend is PostgreSQL",
+        "The SQLite backup helper rejects the unsupported PostgreSQL backend before producing an archive",
+        "The agent does not claim that the PostgreSQL database was backed up",
+        "The agent directs the user to a PostgreSQL-aware backup process"
       ]
     },
     {

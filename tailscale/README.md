@@ -12,7 +12,7 @@ When your agent loads this bundle, it becomes a **Tailscale/Headscale infrastruc
 - **Configure clients** — install and connect Tailscale to your Headscale server
 - **Set up routing** — subnet routers and exit nodes
 - **Deploy DERP relays** — reliable peer-to-peer connectivity across NATs
-- **Backup and migrate** — regular backup and restoration of the control server
+- **Backup and migrate** — create checksummed, manifest-backed archives and restore them through the verified recovery helper
 
 ## What You Get
 
@@ -37,7 +37,9 @@ Load this when you hear "Tailscale," "Headscale," "tailnet," "mesh VPN," "WireGu
 
 ## Requirements
 
-Bash, Python 3.8+, jq, curl. Access to a Headscale server or the `headscale` CLI. Tailscale client on target machines.
+Bash, Python 3.10+, jq, curl, and the `sqlite3` CLI for backups. Access to a Headscale server or the `headscale` CLI. Tailscale client on target machines. For host migration, install the backup helper on the destination before restoring.
+
+Restores accept manifest version 1 archives and refuse older unmanifested tarballs. The migration helper does not fall back to raw extraction or report success without a verified restore response. Install the restore helper on the destination at the same path as the source or set `HEADSCALE_REMOTE_RESTORE_SCRIPT`; prepare archived paths and directory ownership before migration.
 
 
 ## Why Install This Skill
