@@ -31,6 +31,14 @@ Operational detail for the Stripe API surface the skill owns: the read-only-firs
 - **Payment intents**: statuses include `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `succeeded`, `canceled`. `succeeded` means captured; `requires_action` means the customer must complete authentication. A "charged twice" report must be checked against distinct intent IDs before any refund discussion — and refunds are outside this skill's mutation surface.
 - **Subscriptions**: `status` (`active`, `past_due`, `canceled`, `unpaid`, `trialing`) plus `current_period_end` (Unix) and `cancel_at_period_end` (bool). Items carry price, amount, and interval.
 
+## Amounts and currency units
+
+Stripe returns these amounts as integer minor units. The CLI keeps that original integer alongside a formatted `amount` (`amount_minor` on balance/payment records and `unit_amount_minor` on subscription items), plus the uppercase currency code. Formatting uses integer arithmetic: Stripe's documented zero-decimal currencies display as whole units, while other currencies use two decimal places. This avoids floating-point rounding and lets JSON consumers verify the conversion.
+
+The zero-decimal currency set follows Stripe's currency guide. ISK keeps two-decimal API values for backward compatibility; UGX is zero-decimal. HUF and TWD are two-decimal for charges and prices; Stripe's whole-unit exception for those currencies applies to manual payouts. The formatter rejects BHD, JOD, KWD, OMR, and TND because Stripe's supported presentment currency guide does not list those three-decimal currencies. The balance, PaymentIntent, and Price read endpoints do not create payouts, so use their charge/ledger unit precision for display.
+
+See [Stripe's supported currency guide](https://docs.stripe.com/currencies), [Balance object](https://docs.stripe.com/api/balance/balance_object), [PaymentIntent object](https://docs.stripe.com/api/payment_intents/object), and [Price object](https://docs.stripe.com/api/prices/object).
+
 ## Guarded mutation: cancellation at period end
 
 - `POST /subscriptions/{id}` with `cancel_at_period_end=true` schedules cancellation at the end of the current billing period — the customer keeps service until then and the change is reversible (set it back to `false` before the period ends).

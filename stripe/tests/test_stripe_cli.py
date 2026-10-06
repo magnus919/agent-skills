@@ -20,16 +20,24 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = ROOT / "scripts" / "stripe-cli"
 
-BALANCE = {"available": [{"amount": 250000, "currency": "usd"}],
-           "pending": [{"amount": 5000, "currency": "usd"}]}
+BALANCE = {"available": [{"amount": 250000, "currency": "usd"},
+                          {"amount": 500, "currency": "jpy"}],
+           "pending": [{"amount": 5000, "currency": "usd"},
+                       {"amount": 1200, "currency": "jpy"}]}
 PAYMENT = {"id": "pi_123", "amount": 4200, "currency": "usd", "status": "succeeded",
            "customer": "cus_1", "created": 1712345678}
+PAYMENT_JPY = {"id": "pi_jpy", "amount": 500, "currency": "jpy", "status": "succeeded",
+               "customer": "cus_2", "created": 1712345679}
 SUBSCRIPTION = {"id": "sub_1", "status": "active", "customer": "cus_1",
                 "current_period_end": 1712500000, "cancel_at_period_end": False,
                 "items": {"data": [{"id": "si_1",
                                     "price": {"id": "price_1", "unit_amount": 9900,
                                               "currency": "usd",
-                                              "recurring": {"interval": "month"}}}]}}
+                                              "recurring": {"interval": "month"}}},
+                                    {"id": "si_jpy",
+                                     "price": {"id": "price_jpy", "unit_amount": 500,
+                                               "currency": "jpy",
+                                               "recurring": {"interval": "month"}}}]}}
 
 
 class StubStripeServer:
@@ -63,7 +71,7 @@ class StubStripeServer:
                 if self.path == "/balance" or self.path.startswith("/balance?"):
                     self._json(BALANCE)
                 elif "/payment_intents" in self.path:
-                    self._json({"data": [PAYMENT], "has_more": False})
+                    self._json({"data": [PAYMENT, PAYMENT_JPY], "has_more": False})
                 elif "/subscriptions" in self.path:
                     if self.path.rstrip("/") == "/subscriptions" or "?" in self.path:
                         self._json({"data": [SUBSCRIPTION], "has_more": False})
@@ -137,7 +145,11 @@ class StripeCliTests(unittest.TestCase):
             proc = run_script(base_env(stub), "--json", "balance", "show")
         self.assertEqual(proc.returncode, 0, proc.stderr)
         data = load_json(proc)
-        self.assertEqual(data["balance"]["available"][0]["amount"], "2500.00")
+        usd, jpy = data["balance"]["available"]
+        self.assertEqual((usd["amount"], usd["amount_minor"], usd["currency"]),
+                         ("2500.00", 250000, "USD"))
+        self.assertEqual((jpy["amount"], jpy["amount_minor"], jpy["currency"]),
+                         ("500", 500, "JPY"))
 
     def test_payments_list(self):
         with StubStripeServer() as stub:
@@ -145,7 +157,11 @@ class StripeCliTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
         data = load_json(proc)
         self.assertEqual(data["payments"][0]["id"], "pi_123")
-        self.assertEqual(data["payments"][0]["amount"], "42.00")
+        usd, jpy = data["payments"]
+        self.assertEqual((usd["amount"], usd["amount_minor"], usd["currency"]),
+                         ("42.00", 4200, "USD"))
+        self.assertEqual((jpy["amount"], jpy["amount_minor"], jpy["currency"]),
+                         ("500", 500, "JPY"))
 
     def test_payments_limit_is_bounded_in_request(self):
         with StubStripeServer() as stub:
@@ -167,6 +183,30 @@ class StripeCliTests(unittest.TestCase):
         data = load_json(proc)
         self.assertEqual(data["subscription"]["id"], "sub_1")
         self.assertEqual(data["subscription"]["items"][0]["interval"], "month")
+        usd, jpy = data["subscription"]["items"]
+        self.assertEqual((usd["amount"], usd["unit_amount_minor"]), ("99.00", 9900))
+        self.assertEqual((jpy["amount"], jpy["unit_amount_minor"], jpy["currency"]),
+                         ("500", 500, "JPY"))
+
+    def test_currency_special_cases_and_integer_formatting(self):
+        import runpy
+        formatter = runpy.run_path(str(SCRIPT))["format_stripe_amount"]
+        self.assertEqual(formatter(123, "jpy"), "123")
+        self.assertEqual(formatter(123, "usd"), "1.23")
+        self.assertEqual(formatter(500, "ugx"), "500")
+        self.assertEqual(formatter(500, "isk"), "5.00")
+        self.assertEqual(formatter(500, "huf"), "5.00")
+        self.assertEqual(formatter(500, "twd"), "5.00")
+        self.assertEqual(formatter(-5, "usd"), "-0.05")
+
+    def test_unsupported_three_decimal_presentment_currencies_are_rejected(self):
+        import runpy
+        namespace = runpy.run_path(str(SCRIPT))
+        formatter = namespace["format_stripe_amount"]
+        stripe_error = namespace["StripeError"]
+        for currency in ("bhd", "jod", "kwd", "omr", "tnd"):
+            with self.subTest(currency=currency), self.assertRaisesRegex(stripe_error, currency.upper()):
+                formatter(1234, currency)
 
     def test_cancel_requires_confirmation(self):
         with StubStripeServer() as stub:

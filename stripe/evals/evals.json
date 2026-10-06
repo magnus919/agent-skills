@@ -5,7 +5,7 @@
     {
       "id": "balance-read",
       "prompt": "A user asks: 'What is our Stripe account balance right now?'",
-      "expected_output": "Run stripe-cli balance show and report the available and pending balances per currency. The response states that this is a read-only snapshot and that pending funds are not yet settled. It does not mutate anything and does not page — the balance endpoint has no pagination.",
+      "expected_output": "Run stripe-cli balance show and report the available and pending balances per currency. The response states that this is a read-only snapshot and that pending funds are not yet settled. It does not mutate anything and does not page \u2014 the balance endpoint has no pagination.",
       "assertions": [
         "The balance is read via stripe-cli balance show",
         "Available and pending balances are reported per currency",
@@ -27,7 +27,7 @@
     {
       "id": "subscription-listing",
       "prompt": "A user asks: 'Which subscriptions are currently active, and what do they cost per month?'",
-      "expected_output": "Run stripe-cli subscriptions list (bounded) and report each active subscription with its ID, status, customer, and per-item prices with intervals. The response notes has_more if additional subscriptions exist beyond the cap. Reads only — no subscription is modified.",
+      "expected_output": "Run stripe-cli subscriptions list (bounded) and report each active subscription with its ID, status, customer, and per-item prices with intervals. The response notes has_more if additional subscriptions exist beyond the cap. Reads only \u2014 no subscription is modified.",
       "assertions": [
         "Subscriptions are read via stripe-cli subscriptions list with a bounded --limit",
         "Each subscription reports ID, status, customer, and item prices with intervals",
@@ -60,12 +60,24 @@
     {
       "id": "key-and-environment-hygiene",
       "prompt": "A user asks: 'I want to check our production balance. Which key should I use, and what happens if STRIPE_API_KEY is not set?'",
-      "expected_output": "The response explains key types: sk_test_ keys hit test data, sk_live_ keys hit real production data — never mix them, and prefer a restricted read-only key (balance:read, payment_intents:read, subscriptions:read) for balance queries. It states that stripe-cli exits 1 with a clear error naming STRIPE_API_KEY when unset, while --help works without it. No key material is hardcoded or logged.",
+      "expected_output": "The response explains key types: sk_test_ keys hit test data, sk_live_ keys hit real production data \u2014 never mix them, and prefer a restricted read-only key (balance:read, payment_intents:read, subscriptions:read) for balance queries. It states that stripe-cli exits 1 with a clear error naming STRIPE_API_KEY when unset, while --help works without it. No key material is hardcoded or logged.",
       "assertions": [
         "Test versus live key behavior is explained and mixing is warned against",
         "A restricted read-only key is recommended for balance queries",
         "The missing-key error and --help behavior are described accurately",
         "No key material is hardcoded or logged"
+      ]
+    },
+    {
+      "id": "currency-aware-amounts",
+      "prompt": "A user asks: \u201cShow the amount and currency for our JPY payment intent and one USD payment. Explain how the displayed values relate to Stripe API integers.\u201d",
+      "expected_output": "Use stripe-cli payments list and report each payment with its currency-aware formatted amount and status. Explain that Stripe API amounts are integer minor units: a JPY amount of 500 displays as 500 JPY, while a USD amount of 500 displays as 5.00 USD. In JSON, retain the original amount_minor and currency beside the formatted amount. Do not assume all currencies have two decimal places; preserve ISK compatibility, display UGX as zero-decimal, reject unsupported three-decimal presentment currencies, and distinguish HUF/TWD charge precision from payout rules.",
+      "assertions": [
+        "JPY amount 500 is displayed as 500 JPY rather than 5.00 JPY",
+        "USD amount 500 is displayed as 5.00 USD",
+        "Machine output retains the original integer amount and currency alongside the formatted display value",
+        "UGX displays as a zero-decimal currency and unsupported three-decimal presentment currencies are rejected",
+        "HUF and TWD charge or price precision is distinguished from their manual payout rule"
       ]
     }
   ]

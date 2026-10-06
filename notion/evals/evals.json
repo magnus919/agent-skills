@@ -5,18 +5,19 @@
     {
       "id": "page-retrieval",
       "prompt": "A user asks: 'Show me what the on-call runbook page says. I have the page ID page-9f8e7d6c5b4a3210.'",
-      "expected_output": "Run notion-cli pages get --page-id page-9f8e7d6c5b4a3210 and report the page title, URL, last-edited time, and a summary of the meaningful property values. The response quotes short values with the page ID for verification and does not dump the raw block tree or full property payload. If the page is not accessible, it checks whether the page is shared with the integration before concluding it is missing.",
+      "expected_output": "Run notion-cli pages get --page-id page-9f8e7d6c5b4a3210 and report the page title, URL, last-edited time, and a typed values for the meaningful properties. The response quotes short values with the page ID for verification and does not dump the raw block tree or full property payload. If the page is not accessible, it checks whether the page is shared with the integration before concluding it is missing. For a targeted read, repeat --property NAME; requested absent values are marked present=false, and truncated text is labeled with its original length.",
       "assertions": [
         "The page is retrieved via notion-cli pages get with the exact page ID",
         "The response summarizes the title, URL, and property values without dumping raw payloads",
         "Quotes are short and include the page ID for verification",
-        "An inaccessible page is checked against the integration sharing model before being called missing"
+        "An inaccessible page is checked against the integration sharing model before being called missing",
+        "Selected property reads distinguish present typed values, absent properties, and truncated text"
       ]
     },
     {
       "id": "database-query",
       "prompt": "A user asks: 'How many open bugs are tracked in our issues database (db-1234), and what are the five oldest? Show me their titles and statuses.'",
-      "expected_output": "Run notion-cli databases query --database-id db-1234 with a bounded --limit (at least 20) and optionally a JSON filter on the Status property equals 'Open' to narrow the answer. Report the row count visible under the cap, then the five oldest rows by created time with title and status. The response notes whether has_more indicates further rows beyond the cap and offers to page with a higher limit. Reads only — nothing is updated.",
+      "expected_output": "Run notion-cli databases query --database-id db-1234 with a bounded --limit (at least 20) and optionally a JSON filter on the Status property equals 'Open' to narrow the answer. Report the row count visible under the cap, then the five oldest rows by created time with title and status. The response notes whether has_more indicates further rows beyond the cap and offers to page with a higher limit. Reads only \u2014 nothing is updated.",
       "assertions": [
         "The database is queried via notion-cli databases query with the database ID",
         "The query uses a bounded --limit and reports has_more state",
@@ -38,12 +39,13 @@
     {
       "id": "guarded-property-update",
       "prompt": "A user asks: 'Mark the runbook page page-9f8e7d6c5b4a3210 as Reviewed and set the reviewer to me. The current status is Draft.'",
-      "expected_output": "The agent builds the properties payload ({'Status': {'select': {'name': 'Reviewed'}}, 'Reviewer': {'rich_text': [{'text': {'content': '<user>'}}]}}), states the current value (Draft) and the replacement, then previews via notion-cli pages update --dry-run and asks for explicit confirmation. Only after the user confirms does it run pages update --yes, then verifies with pages get that the properties changed. If the user only asked to draft the change, nothing is written.",
+      "expected_output": "The agent builds the properties payload ({'Status': {'select': {'name': 'Reviewed'}}, 'Reviewer': {'rich_text': [{'text': {'content': '<user>'}}]}}), states the current value (Draft) and the replacement, then previews via notion-cli pages update --dry-run and asks for explicit confirmation. Only after the user confirms does it run pages update --yes, then verifies with pages get --property Status --property Reviewer that both typed property values match the requested replacements. If the user only asked to draft the change, nothing is written.",
       "assertions": [
         "The exact properties payload is previewed with --dry-run before any update",
         "The current value and replacement are stated before confirmation",
         "The update runs only after explicit user confirmation, via --yes",
-        "The result is verified with a follow-up pages get"
+        "The result is verified with a follow-up pages get",
+        "Each updated property is re-read with its type and value and compared with the requested replacement"
       ]
     },
     {
