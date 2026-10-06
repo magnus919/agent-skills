@@ -3,6 +3,18 @@
   "skill_name": "autogen",
   "evals": [
     {
+      "id": "autogen-agentchat-api-roles",
+      "prompt": "Update these starter examples for Microsoft's current AutoGen AgentChat package version 0.7.5: they import UserProxyAgent from autogen_agentchat but pass human_input_mode and code_executor, call initiate_chat(), and print result.summary. Keep a human-input example and a code-execution example, and explain how each conversation result is handled.",
+      "expected_output": "The response aligns both runnable examples and their guidance with AgentChat 0.7.5, separates the human input and code execution roles, and uses supported async APIs and result objects.",
+      "assertions": [
+        "Uses UserProxyAgent as a human participant with input_func rather than as an automated code executor",
+        "Uses CodeExecutorAgent with a CodeExecutor for code execution",
+        "Uses supported asynchronous run or team APIs instead of initiate_chat",
+        "Reads the returned TaskResult or Response messages instead of assuming a summary field",
+        "Separates legacy pyautogen 0.2 constructor and conversation APIs from autogen_agentchat examples"
+      ]
+    },
+    {
       "id": "autogen-core-workflow",
       "prompt": "Use autogen to handle a realistic primary task. Explain the inputs, ordered workflow, and concrete output.",
       "expected_output": "A autogen response defines the task boundary, identifies required inputs, applies the documented workflow, and produces a concrete output with verification.",
