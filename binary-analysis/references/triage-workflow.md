@@ -1,5 +1,10 @@
 # Triage Workflow
 
+> Implementation status: live Ghidra operations are unimplemented. Import,
+> analysis, queries, and report generation fail closed; the examples below
+> describe the intended interface. Installing dependencies does not enable it.
+> Fixture-backed historical output must not be cited as evidence about a file.
+
 Step-by-step methodology for triaging unknown binaries. Load this when the user
 provides a binary and asks "what does this do?", "is this suspicious?", or
 "analyze this." The triage workflow produces structured evidence — observations,

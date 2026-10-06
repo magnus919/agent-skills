@@ -9,21 +9,23 @@ Usage::
     from binary_analysis.worker.resolver import resolve_adapter
 
     adapter, source = resolve_adapter()
-    # adapter is a FakeAdapter (or other BackendAdapter)
+    # adapter must be a production BackendAdapter
     # source is "worker" or "one-shot"
 """
 
 from __future__ import annotations
 
-from binary_analysis.adapters.fake import FakeAdapter
+from typing import Any
+
+from binary_analysis.adapters import runtime
 
 
-def resolve_adapter() -> tuple[FakeAdapter, str]:
+def resolve_adapter() -> tuple[Any, str]:
     """Resolve a backend adapter, preferring worker when available.
 
     Returns:
         A tuple of (adapter, source) where:
-          - adapter: A configured FakeAdapter instance
+          - adapter: A production backend adapter
           - source: "worker" if served by the worker, "one-shot" otherwise
 
     When the worker is running, the adapter returned is a one-shot
@@ -43,10 +45,7 @@ def resolve_adapter() -> tuple[FakeAdapter, str]:
 
     # Always use one-shot mode for now. Commands work identically
     # whether the worker is running or not.
-    adapter = FakeAdapter()
-    adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
-    adapter.set_fixture("elf-default", FakeAdapter.elf_fixture())
-    adapter.set_fixture("macho-default", FakeAdapter.macho_fixture())
+    adapter = runtime.get_adapter()
 
     return adapter, "one-shot"
 

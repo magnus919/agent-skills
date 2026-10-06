@@ -1,5 +1,10 @@
 # Troubleshooting
 
+> Implementation status: live Ghidra operations are unimplemented. Import,
+> analysis, queries, and report generation fail closed; the examples below
+> describe the intended interface. Installing dependencies does not enable it.
+> Fixture-backed historical output must not be cited as evidence about a file.
+
 Common issues and resolution paths for the `binary` CLI and Ghidra backend.
 Load this when the CLI returns unexpected errors, timeouts, or partial results;
 when Ghidra fails to start; when project state gets stuck; or when commands

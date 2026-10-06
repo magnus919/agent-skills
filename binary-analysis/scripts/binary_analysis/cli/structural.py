@@ -242,7 +242,7 @@ def _get_adapter_and_binary(
     Returns:
         Tuple of (adapter, Binary entity, project_info dict with id/name/state).
     """
-    from binary_analysis.adapters.fake import FakeAdapter
+    from binary_analysis.adapters import runtime
     from binary_analysis.domain.entities import Binary as BinaryEntity
 
     current_binary = manifest.get("current_binary")
@@ -252,10 +252,7 @@ def _get_adapter_and_binary(
             "Use 'binary import' to add a binary before querying."
         )
 
-    adapter = FakeAdapter()
-    adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
-    adapter.set_fixture("elf-default", FakeAdapter.elf_fixture())
-    adapter.set_fixture("macho-default", FakeAdapter.macho_fixture())
+    adapter = runtime.get_adapter()
 
     binary_id = current_binary.get("id", str(uuid4()))
     binary_entity = BinaryEntity(
@@ -266,17 +263,6 @@ def _get_adapter_and_binary(
         size_bytes=current_binary.get("size_bytes", 0),
         architecture=current_binary.get("architecture"),
     )
-
-    # Map the binary to the appropriate fixture based on its format.
-    # This is needed so the adapter knows which fixture to use for this binary.
-    binary_fmt = current_binary.get("format", "").lower()
-    fixture_name = "pe-default"
-    if "elf" in binary_fmt:
-        fixture_name = "elf-default"
-    elif "mach" in binary_fmt:
-        fixture_name = "macho-default"
-
-    adapter.register_binary(binary_entity, fixture_name)
 
     project_info = {
         "id": manifest.get("id", ""),

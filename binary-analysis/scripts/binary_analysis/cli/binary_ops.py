@@ -385,6 +385,11 @@ def execute_import(args: argparse.Namespace) -> dict[str, Any]:
     file_size = os.path.getsize(binary_path)
     import_mode = "reference" if reference_mode else "copy"
 
+    # Refuse unsupported imports before reusing legacy records or copying samples.
+    from binary_analysis.adapters import runtime
+
+    adapter = runtime.get_adapter()
+
     # 6a. Check for duplicate binary (same SHA-256 already imported)
     binaries_dir = os.path.join(project_path, "binaries")
     if os.path.isdir(binaries_dir):
@@ -459,13 +464,7 @@ def execute_import(args: argparse.Namespace) -> dict[str, Any]:
     backend_architecture: str | None = None
 
     try:
-        from binary_analysis.adapters.fake import FakeAdapter
         from binary_analysis.domain.entities import Project as ProjectEntity
-
-        adapter = FakeAdapter()
-        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
-        adapter.set_fixture("elf-default", FakeAdapter.elf_fixture())
-        adapter.set_fixture("macho-default", FakeAdapter.macho_fixture())
 
         _proj_entity = ProjectEntity(
             id=UUID(manifest["id"]),
@@ -731,6 +730,11 @@ def execute_analyze(args: argparse.Namespace) -> dict[str, Any]:
             "_provenance_project_state": current_state.value,
         }
 
+    # Refuse unavailable analysis before changing state or acquiring a lock.
+    from binary_analysis.adapters import runtime
+
+    adapter = runtime.get_adapter()
+
     # 5. Acquire lock
     try:
         _lock_info = acquire_lock(
@@ -800,18 +804,12 @@ def execute_analyze(args: argparse.Namespace) -> dict[str, Any]:
     analysers = profile_analysers.get(profile_name, [])
 
     try:
-        from binary_analysis.adapters.fake import FakeAdapter
         from binary_analysis.domain.entities import (
             Binary as BinaryEntity,
         )
         from binary_analysis.domain.entities import (
             Project as ProjectEntity,
         )
-
-        adapter = FakeAdapter()
-        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
-        adapter.set_fixture("elf-default", FakeAdapter.elf_fixture())
-        adapter.set_fixture("macho-default", FakeAdapter.macho_fixture())
 
         _proj_entity = ProjectEntity(
             id=UUID(manifest["id"]),
@@ -1027,15 +1025,12 @@ def execute_metadata(args: argparse.Namespace) -> dict[str, Any]:
     current_state = manifest.get("state", "")
 
     try:
-        from binary_analysis.adapters.fake import FakeAdapter
+        from binary_analysis.adapters import runtime
         from binary_analysis.domain.entities import (
             Binary as BinaryEntity,
         )
 
-        adapter = FakeAdapter()
-        adapter.set_fixture("pe-default", FakeAdapter.pe_fixture())
-        adapter.set_fixture("elf-default", FakeAdapter.elf_fixture())
-        adapter.set_fixture("macho-default", FakeAdapter.macho_fixture())
+        adapter = runtime.get_adapter()
 
         binary_entity = BinaryEntity(
             id=UUID(current_binary.get("id", str(uuid4()))),

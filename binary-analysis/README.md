@@ -1,6 +1,6 @@
 # Binary Analysis — Agent Skill
 
-Give your AI agent the ability to analyze unknown binary files through a deterministic, read-only CLI backed by Ghidra's static-analysis engine.
+Plan static binary investigations and inspect toolchain readiness; live backend operations are not yet implemented.
 
 ## Why Install This Skill
 
@@ -16,17 +16,12 @@ agent learns when to run a fast triage versus a deep function-level dive, how to
 separate deterministic evidence from interpretation, and how to produce
 structured, auditable reports.
 
-After installing this skill, your agent can:
-- **Triage unknown binaries** — identify suspicious API imports, assess
-  capabilities, and produce evidence-backed reports in under a minute.
-- **Decompile and disassemble** specific functions to understand logic without
-  source code.
-- **Map call graphs and cross-references** to trace how functions relate to each
-  other.
-- **Extract structural data** — sections, entry points, imports, exports,
-  symbols, and strings — with cursor-based pagination.
-- **Generate auditable reports** in Markdown, JSON, HTML, or PDF with full
-  provenance (binary SHA-256, adapter version, analysis profile).
+**Current limitation:** live Ghidra import, analysis, queries, and reports are
+not implemented. These commands fail explicitly instead of returning canned
+fixtures. Project administration and dependency diagnostics work. The workflow
+and reference material describe the intended analysis interface; installation
+alone does not enable it. Existing fixture-derived reports are not evidence
+about your file.
 
 ## What You Get
 
@@ -67,7 +62,7 @@ scripts/binary version --json
 
 Expected output includes `cli_version`, `adapter`, `backend`, and `platform`.
 
-### 3. Run your first triage
+### 3. Understand the current limit
 
 ```bash
 scripts/binary project create my-first-triage --json
@@ -76,8 +71,9 @@ scripts/binary analyze --project my-first-triage --json
 scripts/binary triage --project my-first-triage --json
 ```
 
-The triage output separates observations (deterministic facts), heuristics
-(rule-derived with confidence scores), and unknowns (unresolved questions).
+The import command currently exits nonzero with “Ghidra backend operations are
+not implemented in this release.” Stop there; the subsequent commands show the
+intended interface and do not produce live analysis. No fixture mode is exposed.
 
 ## Triggers
 

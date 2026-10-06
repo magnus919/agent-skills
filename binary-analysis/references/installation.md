@@ -1,5 +1,10 @@
 # Installation & Setup
 
+> Implementation status: live Ghidra operations are unimplemented. Import,
+> analysis, queries, and report generation fail closed; the examples below
+> describe the intended interface. Installing dependencies does not enable it.
+> Fixture-backed historical output must not be cited as evidence about a file.
+
 This reference covers setting up the Ghidra analysis backend: Java JDK, Ghidra
 itself, and the PyGhidra Python bridge. Load this when running `binary doctor`
 or `binary bootstrap`, when a dependency diagnostic appears as `ERROR`, or when
