@@ -93,6 +93,18 @@ class StateAnalysisTests(unittest.TestCase):
 
 
 class MutationGateTests(unittest.TestCase):
+    def test_real_first_provisioning_plan_without_prior_state(self):
+        fixture = ROOT / "tests/fixtures/terraform-1.13.3-first-plan.json"
+        fake = FakeTerraformBinary()
+        try:
+            proc = run_script("apply", "--plan", fake.plan_path, "--yes", "--json",
+                              env_extra={"TERRAFORM": fake.path,
+                                         "FAKE_PLAN_JSON": fixture.read_text(),
+                                         "FAKE_COMMAND_LOG": fake.command_log})
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        finally:
+            fake.cleanup()
+
     def test_apply_requires_yes(self):
         proc = run_script("apply", "--state", str(FIXTURE), "--json")
         self.assertEqual(proc.returncode, 2)

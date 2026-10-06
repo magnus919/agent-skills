@@ -369,7 +369,7 @@ def inspect_plan_guard(binary: str, plan_path: str, args: argparse.Namespace) ->
     version = plan.get("format_version")
     if not isinstance(version, str) or version.split(".", 1)[0] != "1":
         return None, f"unsupported or missing saved plan format_version: {version!r}"
-    if not isinstance(plan.get("prior_state"), dict) or plan.get("errored") is not False:
+    if ("prior_state" in plan and not isinstance(plan["prior_state"], dict)) or plan.get("errored") is not False:
         return None, "saved plan JSON lacks valid prior_state or successful-plan evidence"
     if plan.get("applyable") is False or plan.get("complete") is False:
         return None, "saved plan is not applyable or complete"
