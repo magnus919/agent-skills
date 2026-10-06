@@ -73,13 +73,21 @@ def period_normalizer(period: str) -> Tuple[str, int]:
 
 def weekly_equivalent(rate_pct: float, from_period: str) -> float:
     """Convert a growth rate from any period to its weekly equivalent."""
+    periods_per_year = {"weekly": 52, "monthly": 12, "quarterly": 4}
+    if from_period not in periods_per_year:
+        raise ValueError(f"Unknown period: {from_period}. Must be one of: weekly, monthly, quarterly")
     if from_period == "weekly":
         return rate_pct
-    periods_per_year = {"weekly": 52, "monthly": 12, "quarterly": 4}
-    n = periods_per_year[from_period]
-    # Convert: (1 + r_monthly)^(1/4.33) - 1  ≈ weekly rate
-    weekly_rate = (1 + rate_pct / 100) ** (1 / (n / 52)) - 1
+    # Match annual compounding: (1 + period_rate)^periods_per_year
+    # equals (1 + weekly_rate)^52.
+    weekly_rate = (1 + rate_pct / 100) ** (periods_per_year[from_period] / 52) - 1
     return weekly_rate * 100
+
+
+def period_equivalent(weekly_rate_pct: float, period: str) -> float:
+    """Convert a weekly benchmark rate to an equivalent input-period rate."""
+    _period_name, periods_per_year = period_normalizer(period)
+    return ((1 + weekly_rate_pct / 100) ** (52 / periods_per_year) - 1) * 100
 
 
 # ---------------------------------------------------------------------------
@@ -216,10 +224,10 @@ def analyze_growth(
     else:
         return {"error": "Either --previous-value or --series is required."}
 
-    # Classify
-    benchmark = classify_growth(growth_rate)
+    # YC's thresholds are weekly benchmarks, so classify the weekly equivalent
+    # regardless of the cadence used for the supplied measurements.
     weekly_rate = weekly_equivalent(growth_rate, period)
-    weekly_benchmark = classify_growth(weekly_rate)
+    benchmark = classify_growth(weekly_rate)
 
     # Projections
     projected_1yr = project_value(current_value, growth_rate, periods_per_year)
@@ -233,29 +241,35 @@ def analyze_growth(
 
     # Growth rate tier table (what other rates would do)
     tier_projections = {}
-    for rate_pct in [1, 2, 5, 7, 10]:
-        tier_projections[str(rate_pct)] = {
-            "label": COMPOUND_MULTIPLIERS.get(rate_pct, {}).get("label", ""),
-            "yearly_multiple": round((1 + rate_pct / 100) ** periods_per_year, 2),
-            "projected_1yr": round(project_value(current_value, rate_pct, periods_per_year), 2),
-            "doubling_periods": round(doubling_time(rate_pct), 1),
+    for weekly_tier_pct in [1, 2, 5, 7, 10]:
+        period_tier_pct = period_equivalent(weekly_tier_pct, period)
+        tier_projections[str(weekly_tier_pct)] = {
+            "label": COMPOUND_MULTIPLIERS[weekly_tier_pct]["label"],
+            "weekly_rate_pct": weekly_tier_pct,
+            "period_rate_pct": round(period_tier_pct, 2),
+            "yearly_multiple": round((1 + weekly_tier_pct / 100) ** 52, 2),
+            "projected_1yr": round(project_value(current_value, weekly_tier_pct, 52), 2),
+            "doubling_weeks": round(doubling_time(weekly_tier_pct), 1),
         }
 
     # Assessment text
-    if growth_rate >= 5:
+    if weekly_rate >= 5:
         assessment_text = (
-            f"At {growth_rate:.1f}% {period_name} growth, you're in YC's good-to-outstanding range. "
+            f"At {growth_rate:.1f}% {period_name} growth ({weekly_rate:.2f}% weekly equivalent), "
+            f"YC's weekly benchmark is {benchmark['label']}. "
             f"Keep pushing — compound growth at this rate transforms the business."
         )
-    elif growth_rate >= 2:
+    elif weekly_rate >= 2:
         assessment_text = (
-            f"At {growth_rate:.1f}% {period_name} growth, you're below YC's target zone. "
+            f"At {growth_rate:.1f}% {period_name} growth ({weekly_rate:.2f}% weekly equivalent), "
+            f"YC's weekly benchmark is {benchmark['label']}, below the 5% target zone. "
             f"Paul Graham's advice: start doing things that don't scale. Recruit users manually, "
             f"delight early customers, measure what works, and compound from there."
         )
     else:
         assessment_text = (
-            f"At {growth_rate:.1f}% {period_name} growth, this is concerning. "
+            f"At {growth_rate:.1f}% {period_name} growth ({weekly_rate:.2f}% weekly equivalent), "
+            f"YC's weekly benchmark is {benchmark['label']}. "
             f"You haven't yet figured out what you're doing. Focus on finding something "
             f"that a small number of users genuinely love — then grow from there."
         )
@@ -279,7 +293,8 @@ def analyze_growth(
             "label": benchmark["label"],
             "icon": benchmark["color"],
             "assessment": benchmark["assessment"],
-            "weekly_benchmark_label": weekly_benchmark["label"],
+            "rate_basis": "weekly_equivalent",
+            "weekly_benchmark_label": benchmark["label"],
         },
         "projections": {
             f"projected_{project_periods}_periods": round(projected_N, 2),
@@ -315,7 +330,7 @@ def format_output(result: dict) -> str:
 
     # Header
     lines.append("=" * 60)
-    lines.append(f"  WEEKLY GROWTH COMPASS — {bench['icon']} {bench['label']}")
+    lines.append(f"  WEEKLY GROWTH COMPASS — {bench['icon']} {bench['label']} (weekly benchmark)")
     lines.append("=" * 60)
     lines.append("")
 
@@ -333,7 +348,7 @@ def format_output(result: dict) -> str:
     lines.append("── Growth Rate ──────────────────────────────────────────")
     lines.append(f"  Period growth:  {rate['period_rate_pct']:>7.2f}% ({rate['period_name']})")
     lines.append(f"  Weekly equiv:   {rate['weekly_equivalent_pct']:>7.2f}%")
-    lines.append(f"  YC Benchmark:   {bench['icon']} {bench['label']}")
+    lines.append(f"  YC Weekly Tier: {bench['icon']} {bench['label']}")
     lines.append("")
 
     if series.get("rates"):
@@ -364,16 +379,16 @@ def format_output(result: dict) -> str:
 
     # Tier comparison
     lines.append("── Growth Rate Comparison ──────────────────────────────")
-    lines.append(f"  {'Rate':>6} {'Label':>18} {'1-Year Multiple':>18} {'1-Year Value':>16} {'Double In':>12}")
-    lines.append(f"  {'-'*6} {'-'*18} {'-'*18} {'-'*16} {'-'*12}")
+    lines.append(f"  {'Weekly':>7} {'Equivalent ' + rate['period_name']:>15} {'Label':>18} {'1-Year Multiple':>18} {'1-Year Value':>16} {'Double In':>12}")
+    lines.append(f"  {'-'*7} {'-'*15} {'-'*18} {'-'*18} {'-'*16} {'-'*12}")
     for rate_pct_str, tier in result["tier_comparison"].items():
         rate_pct = int(rate_pct_str)
-        marker = "◀" if rate_pct == round(rate["period_rate_pct"]) else ""
+        marker = "◀" if rate_pct == round(rate["weekly_equivalent_pct"]) else ""
         lines.append(
-            f"  {rate_pct:>5}% {tier['label']:>18} "
+            f"  {rate_pct:>6}% {tier['period_rate_pct']:>14.2f}% {tier['label']:>18} "
             f"{tier['yearly_multiple']:>17.1f}x "
             f"{tier['projected_1yr']:>14,.0f} "
-            f"{tier['doubling_periods']:>7.1f}p  {marker}"
+            f"{tier['doubling_weeks']:>7.1f}w  {marker}"
         )
     lines.append("")
 
