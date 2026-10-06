@@ -47,6 +47,8 @@ scripts/pwrun smoke --url http://localhost:3000 --json   # delegate a smoke run 
 
 Exit codes: 0 ok, 1 analysis error, 2 usage error, 127 dependency (node/playwright) missing, 124 delegate timeout. `--json` on every command; `--help` works without any toolchain.
 
+For `smoke`, `--config` is forwarded to Playwright. The target URL precedence is `--url`, inherited `PW_SMOKE_URL`, inherited `BASE_URL`, then `http://localhost:3000`; the chosen target is passed to the supplied scaffold as `PW_SMOKE_URL`. The JSON result separates `requested_url` from `navigation_evidence`. The bundled example spec records the URL reached after `page.goto()`; custom specs need a `pwrun-navigation` annotation to provide the same runtime evidence. `requested_target_origin_observed` shows whether any recorded navigation reached the requested origin.
+
 ## E2E test authoring
 
 - Structure suites with `test.describe` blocks, `test.beforeEach` setup, and per-feature fixture files. Keep specs short, focused on one user journey, and readable as prose.
@@ -115,6 +117,7 @@ Exit codes: 0 ok, 1 analysis error, 2 usage error, 127 dependency (node/playwrig
 
 - `scripts/pwrun`: smoke harness — `doctor`, `inventory`, `report`, `smoke`, all with `--json`.
 - `tests/test_pwrun.py` + `tests/fixtures/sample-report.json`: deterministic tests for the harness (no node/browser required).
+- `tests/test_pwrun_scaffold.py`: bounded local-server/browser integration check; runs when `@playwright/test` and Chromium are installed.
 - `templates/playwright.config.ts`, `templates/example.spec.ts`, `templates/accessibility.spec.ts`: copy-in test-suite scaffold.
 - `references/`: eight dated, source-indexed references covering the operational topics above.
 
