@@ -2,9 +2,9 @@
 set -euo pipefail
 SCRIPT_NAME="$(basename "$0")"
 BACKUP_FILE=""
-CONFIG_DIR="${HEADSCALE_CONFIG_DIR:-/etc/headscale}"
-DATA_DIR="${HEADSCALE_DATA_DIR:-/var/lib/headscale}"
-CERTS_DIR="${HEADSCALE_CERTS_DIR:-/etc/headscale}"
+CONFIG_DIR="${HEADSCALE_CONFIG_DIR:-}"
+DATA_DIR="${HEADSCALE_DATA_DIR:-}"
+CERTS_DIR="${HEADSCALE_CERTS_DIR:-}"
 FORCE=false
 DRY_RUN=false
 JSON_OUTPUT=false
@@ -16,9 +16,9 @@ Restore verified Headscale assets to their manifest destinations. The service is
 
 Options:
   --backup FILE      Recovery archive (required)
-  --config-dir DIR   Restore config-rooted paths here
-  --data-dir DIR     Restore data-rooted paths here
-  --certs-dir DIR    Restore certificate-rooted paths here
+  --config-dir DIR   Request a config-root override (rejected if it moves files)
+  --data-dir DIR     Request a data-root override (rejected if it moves files)
+  --certs-dir DIR    Request a certs-root override (rejected if it moves files)
   --force            Skip confirmation prompt
   --dry-run          Validate and preview without changes
   --json             Output as JSON
@@ -40,7 +40,10 @@ while [[ $# -gt 0 ]]; do
 done
 [[ -n "$BACKUP_FILE" ]] || { echo "Error: --backup FILE is required" >&2; exit 1; }
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../skills/headscale-backup/scripts" && pwd)"
-ARGS=(restore --backup "$BACKUP_FILE" --config-dir "$CONFIG_DIR" --data-dir "$DATA_DIR" --certs-dir "$CERTS_DIR" --service "${HEADSCALE_SERVICE:-headscale}")
+ARGS=(restore --backup "$BACKUP_FILE" --service "${HEADSCALE_SERVICE:-headscale}")
+[[ -n "$CONFIG_DIR" ]] && ARGS+=(--config-dir "$CONFIG_DIR")
+[[ -n "$DATA_DIR" ]] && ARGS+=(--data-dir "$DATA_DIR")
+[[ -n "$CERTS_DIR" ]] && ARGS+=(--certs-dir "$CERTS_DIR")
 [[ "$FORCE" == true ]] && ARGS+=(--force)
 [[ "$DRY_RUN" == true ]] && ARGS+=(--dry-run)
 [[ "$JSON_OUTPUT" == true ]] && ARGS+=(--json)

@@ -53,4 +53,4 @@ scripts/hs-backup.sh --auto --output-dir /backups/headscale
 - Read access to Headscale configuration, SQLite database, policy, and configured key files
 - Write access to the backup directory; restore also needs write access to target paths and permission to control the Headscale service
 - SQLite-backed Headscale; PostgreSQL configurations are rejected
-- A changed data root requires a separate config migration; the restore helper rejects data-root remapping because the archived config would still point to the original database path
+- Restore uses the absolute destinations in the archive. Root overrides that would move files are rejected until the Headscale config and service paths have been separately updated and validated.

@@ -64,12 +64,14 @@
     {
       "id": "backup-and-restore",
       "prompt": "Back up our production headscale server (sqlite + config + policy + certs), then simulate a restore onto a fresh host to prove the backup works.",
-      "expected_output": "Scenario: backup and restore drill. The agent loads headscale-backup, runs the backup script to produce an archive, inspects its contents (sqlite, config, policy, certs present), then restores the archive onto a fresh host and verifies the server starts with the same tailnet state (nodes, policy). The restore is exercised, not just documented. The backup archive is noted as the disaster-recovery artifact kept off the control-server host.",
+      "expected_output": "Scenario: backup and restore drill. The agent loads headscale-backup, previews the target and assets, creates a checksummed manifest version 1 archive, confirms the recovery target and rollback path, then restores through the verified helper on the destination to the recorded paths and verifies the server starts with the same tailnet state. Older unmanifested archives are rejected, the migration helper does not use raw extraction as a fallback, and it reports restore completion only after a successful verified restore response. The backup archive is stored off the control-server host.",
       "assertions": [
         "The headscale-backup sub-skill is loaded",
-        "A backup archive is produced containing sqlite, config, policy, and certs",
-        "The archive is restored onto a fresh host",
+        "A backup archive is produced with a versioned manifest and checksums for configured SQLite, config, optional policy, and explicit TLS assets",
+        "The destination runs the verified restore helper and restores assets to the destinations recorded in the manifest",
         "The restored server verifiably starts with the same tailnet state",
+        "The migration helper does not extract an unmanifested archive as a fallback",
+        "The migration helper reports restore completion only after a verified restore result",
         "The backup archive is stored off the control-server host"
       ]
     }

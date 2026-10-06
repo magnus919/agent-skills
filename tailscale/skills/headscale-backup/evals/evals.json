@@ -29,13 +29,13 @@
     {
       "id": "restore-drill-verification",
       "prompt": "We have a headscale backup tarball from last week. Prove the backup actually works by restoring it onto a fresh test host and confirming the tailnet comes back.",
-      "expected_output": "Scenario: restore drill on a fresh host. The agent previews the restore mappings, confirms the target, file scope, and rollback path, restores checksum-verified assets to their archived destinations while controlling the Headscale service, and verifies recovery with a health check and headscale nodes list. For a changed data root, it stops before writing because the archived config still references the old database path. The output distinguishes the proposed checks from observed results.",
+      "expected_output": "Scenario: restore drill on a fresh host. The agent previews the restore mappings, confirms the target, file scope, and rollback path, restores checksum-verified assets to their archived destinations while controlling the Headscale service, and verifies recovery with a health check and headscale nodes list. It rejects any root override that would move assets until the config and service paths have been separately updated and validated. The output distinguishes the proposed checks from observed results.",
       "assertions": [
         "The restore target, write scope, and rollback path are confirmed before writes",
         "Archive assets pass manifest checksum verification before any restore write",
         "The headscale service is stopped before restore writes and restarted afterward",
         "Backup archive contents are restored to the recorded paths unless an explicit supported root override is supplied",
-        "A database root override is rejected before writes when it would leave config.yaml pointing at the archived database path",
+        "A root override that would move any asset is rejected before writes because config or service paths may still reference the archived location",
         "headscale is started and recovery is verified via health check",
         "The tailnet state (nodes, policy) is confirmed via headscale nodes list",
         "The restore drill is exercised and observed, not only documented"

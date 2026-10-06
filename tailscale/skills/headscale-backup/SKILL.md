@@ -37,12 +37,10 @@ from `config.yaml`. It supports `database.sqlite.path`, `database.path`, and the
 are included only when configured explicitly (or found in the configured standard
 `/etc/headscale` locations); the helper does not scan unrelated Let's Encrypt certificates.
 The resulting archive contains a manifest with SHA-256 checksums, file modes, and restore
-destinations. Restore verifies every declared asset before it asks to overwrite files. By
-default it preserves those recorded destinations; `--config-dir` and `--certs-dir` remap
-only paths under their recorded roots. Do not remap the data root because Headscale's
-restored config would still point at the original database path; the helper rejects that
-case before writing. To move the database, update and validate the Headscale config as a
-separate planned migration step.
+destinations. Restore verifies every declared asset before it asks to overwrite files. It
+preserves the recorded destinations by default. Root overrides that would move any asset
+are rejected because the config or service may still point at archived paths. A migration
+to different paths requires a separate planned config update and validation before restore.
 
 ## Restore
 
@@ -100,6 +98,8 @@ Set up a daily cron job:
 
 `HEADSCALE_CONFIG`, `HEADSCALE_DATA_DIR`, `HEADSCALE_CERTS_DIR`,
 `HEADSCALE_CONFIG_DIR`, and `HEADSCALE_SERVICE` override the corresponding script defaults.
+For migration, `HEADSCALE_REMOTE_RESTORE_SCRIPT` names the verified restore helper path
+installed on the destination host; the default uses the same path as the local script.
 
 ## Trigger Conditions
 

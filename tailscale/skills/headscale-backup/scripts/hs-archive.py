@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -67,9 +68,11 @@ def absolute(path: str | Path) -> Path:
 
 def resolve_assets(config_file: Path, data_dir: Path, certs_dir: Path) -> tuple[dict[str, Path], dict[str, Path], dict[str, bool]]:
     cfg = read_config(config_file)
-    if any(key.startswith("database.postgres") for key in cfg) or cfg.get("database", "").lower() in {"postgres", "postgresql"}:
-        fail("PostgreSQL-backed Headscale is not supported by this SQLite backup helper")
     database_type = cfg.get("database.type", "").lower()
+    postgres_configured = any(key.startswith("database.postgres") for key in cfg) or cfg.get("database", "").lower() in {"postgres", "postgresql"}
+    sqlite_path_configured = any(key in cfg for key in ("database.sqlite.path", "database.path", "database_path"))
+    if database_type in {"postgres", "postgresql"} or (not database_type and postgres_configured and not sqlite_path_configured):
+        fail("PostgreSQL-backed Headscale is not supported by this SQLite backup helper")
     if database_type and database_type not in {"sqlite", "sqlite3"}:
         fail(f"unsupported Headscale database type: {database_type}")
     db_value = cfg.get("database.sqlite.path") or cfg.get("database.path") or cfg.get("database_path")
@@ -280,6 +283,7 @@ def read_archive(backup_path: Path) -> tuple[str, dict[str, Any], dict[str, tarf
         fail("backup manifest contains malformed root mappings")
     asset_roles: set[str] = set()
     expected_members = {manifest_name}
+    known_roles = {"config", "database", "policy", "tls_cert", "tls_key", "node_key", "derp"}
     for asset in manifest["assets"]:
         if not isinstance(asset, dict) or not all(isinstance(asset.get(key), str) for key in ("role", "archive_path", "restore_path", "sha256")):
             fail("backup manifest contains malformed asset mapping")
@@ -288,6 +292,8 @@ def read_archive(backup_path: Path) -> tuple[str, dict[str, Any], dict[str, tarf
                 or not isinstance(asset.get("required"), bool)
                 or len(asset["sha256"]) != 64 or any(char not in "0123456789abcdef" for char in asset["sha256"])):
             fail(f"backup manifest contains invalid metadata for {asset['role']}")
+        if asset["role"] not in known_roles and not re.fullmatch(r"extra_tls_[1-9][0-9]*", asset["role"]):
+            fail(f"backup manifest contains unsupported asset role: {asset['role']}")
         if asset["role"] in asset_roles:
             fail(f"backup manifest repeats asset role: {asset['role']}")
         asset_roles.add(asset["role"])
@@ -383,8 +389,9 @@ def restore(args: argparse.Namespace) -> int:
             if target in targets:
                 fail(f"two archive assets resolve to the same restore path: {target}")
             targets.add(target)
-            if asset["role"] == "database" and target != Path(asset["restore_path"]).resolve():
-                fail("database path remapping is not safe because config.yaml would still reference the archived path; restore to the configured path or update Headscale config separately")
+            original_target = Path(asset["restore_path"]).resolve()
+            if target != original_target:
+                fail(f"root remapping for {asset['role']} is not safe because config.yaml and the service may still reference archived paths; restore to recorded destinations")
             member_name = f"{base}/{asset['archive_path']}"
             items.append({"role": asset["role"], "archive_path": member_name,
                           "target": str(target), "required": asset.get("required", False),
@@ -423,6 +430,9 @@ def restore(args: argparse.Namespace) -> int:
                     apply_owner(temporary, target)
                     os.chmod(temporary, mode)
                     os.replace(temporary, target)
+                    if asset["role"] == "database":
+                        for suffix in ("-wal", "-shm"):
+                            Path(f"{target}{suffix}").unlink(missing_ok=True)
                 finally:
                     temporary.unlink(missing_ok=True)
                 restored.append(asset["role"])
@@ -456,9 +466,9 @@ def parser() -> argparse.ArgumentParser:
     backup_parser.set_defaults(handler=backup)
     restore_parser = sub.add_parser("restore")
     restore_parser.add_argument("--backup", required=True)
-    restore_parser.add_argument("--config-dir", default=os.environ.get("HEADSCALE_CONFIG_DIR"), help="Override the archived config root; default preserves archived paths")
-    restore_parser.add_argument("--data-dir", default=os.environ.get("HEADSCALE_DATA_DIR"), help="Override the archived data root; database moves are rejected unless config is updated separately")
-    restore_parser.add_argument("--certs-dir", default=os.environ.get("HEADSCALE_CERTS_DIR"), help="Override the archived certs root; default preserves archived paths")
+    restore_parser.add_argument("--config-dir", default=os.environ.get("HEADSCALE_CONFIG_DIR"), help="Request a config-root override; rejected if it changes any recorded destination")
+    restore_parser.add_argument("--data-dir", default=os.environ.get("HEADSCALE_DATA_DIR"), help="Request a data-root override; rejected if it changes any recorded destination")
+    restore_parser.add_argument("--certs-dir", default=os.environ.get("HEADSCALE_CERTS_DIR"), help="Request a certs-root override; rejected if it changes any recorded destination")
     restore_parser.add_argument("--service", default=os.environ.get("HEADSCALE_SERVICE", "headscale"))
     restore_parser.add_argument("--dry-run", action="store_true")
     restore_parser.add_argument("--json", action="store_true")
