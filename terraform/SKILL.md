@@ -40,12 +40,14 @@ scripts/tfops state --state state.json --json   # inspect a local state file dir
 scripts/tfops plan --state state.json --json    # state-level plan summary (no binary needed)
 scripts/tfops plan --json                   # full plan via terraform plan -json
 scripts/tfops apply --dry-run --json        # preview only, never mutates
-scripts/tfops apply --yes --json            # mutation: requires --yes
-scripts/tfops apply --yes --force --json    # bypass the taint/drift guard after review
+scripts/tfops plan --save-plan reviewed.tfplan --json
+# Review reviewed.tfplan, then apply that same file
+scripts/tfops apply --yes --plan reviewed.tfplan --json
+scripts/tfops apply --yes --plan reviewed.tfplan --force --json  # bypass findings only after review
 scripts/tfops import aws_instance.web i-0abc --dry-run
 ```
 
-Mutation gate: `apply` and `import` refuse to run without `--yes` (exit 2); `--dry-run` previews without mutating; `--force` skips the taint/drift guard after the plan is reviewed. `TERRAFORM` env var overrides binary selection (`terraform` then `tofu` are auto-detected otherwise). Exit codes: 0 ok, 1 analysis/runtime error, 2 gate refusal, 127 binary missing, 124 timeout.
+Mutation gate: `apply` and `import` refuse to run without `--yes` (exit 2). `apply` also requires a plan created through `tfops plan --save-plan FILE`, which explicitly enables provider refresh and writes a SHA-256 sidecar. `tfops` verifies the sidecar, copies the reviewed plan to a private temporary snapshot, runs `terraform show -json` on that snapshot, checks format/success evidence and validates prior state when present, blocks tainted resources and detected drift by default, and applies the same snapshot. Empty change collections may be omitted by supported plan JSON formats; `errored` must be false, and `applyable`/`complete` must be true when the engine reports them. `--force` bypasses only findings from valid plan evidence; it cannot bypass missing or invalid evidence, an absent sidecar, a hash mismatch, or a plan created without the wrapper's explicit refresh. The sidecar is local provenance for accidental mix-ups, not a cryptographic signature. `--dry-run` previews without mutating. A `--state` summary is not evidence of live drift and cannot satisfy the apply guard. `TERRAFORM` env var overrides binary selection (`terraform` then `tofu` are auto-detected otherwise). Exit codes: 0 ok, 1 analysis/runtime error, 2 gate refusal, 127 binary missing, 124 timeout.
 
 ## Operating loop
 
@@ -81,7 +83,7 @@ Mutation gate: `apply` and `import` refuse to run without `--yes` (exit 2); `--d
 - Drift is the difference between declared config and actual infrastructure. A clean plan is the drift probe: schedule periodic plans and treat unexpected diffs as incidents.
 - Distinguish intended drift (out-of-band manual change, external mutation) from unintended (config/state desync, provider bug).
 - Remediation is `plan` + reviewed `apply` (reconcile), or `import` when the resource was never managed; never delete-and-recreate as a default reflex.
-- `tfops` flags tainted resources in state analysis — those force replacement and should never be applied blind. Methods and cadence: `references/04-drift-detection.md`.
+- `tfops` inspects the reviewed saved plan for tainted resources and provider-detected drift, refuses when findings exist unless `--force` is deliberate, and applies that exact plan. Direct state analysis can flag taint but cannot establish live drift. Methods and cadence: `references/04-drift-detection.md`.
 
 ## Remote state
 
