@@ -1,23 +1,47 @@
 #!/usr/bin/env python3
-"""Agent with Docker code execution."""
+"""Run an assistant and Docker-backed CodeExecutorAgent as a bounded team."""
 
 import asyncio
-from autogen_agentchat.agents import AssistantAgent, UserProxyAgent
+
+from autogen_agentchat.agents import ApprovalRequest, ApprovalResponse, AssistantAgent, CodeExecutorAgent
+from autogen_agentchat.conditions import MaxMessageTermination
 from autogen_agentchat.teams import RoundRobinGroupChat
-from autogen_ext.models.openai import OpenAIChatCompletionClient
 from autogen_ext.code_executors.docker import DockerCommandLineCodeExecutor
+from autogen_ext.models.openai import OpenAIChatCompletionClient
 
-async def main():
+
+def approve_code(request: ApprovalRequest) -> ApprovalResponse:
+    print("Code proposed for Docker execution:\n")
+    print(request.code)
+    answer = input("Run this code? [y/N] ").strip().lower()
+    approved = answer in {"y", "yes"}
+    return ApprovalResponse(approved=approved, reason="Approved by the operator" if approved else "Declined")
+
+
+async def main() -> None:
     model_client = OpenAIChatCompletionClient(model="gpt-4o-mini")
+    try:
+        async with DockerCommandLineCodeExecutor(work_dir="coding") as executor:
+            assistant = AssistantAgent(
+                name="assistant",
+                model_client=model_client,
+                system_message="Solve the task with a short Python code block when calculation is useful.",
+            )
+            code_executor = CodeExecutorAgent(
+                name="code_executor",
+                code_executor=executor,
+                approval_func=approve_code,
+            )
+            team = RoundRobinGroupChat(
+                [assistant, code_executor],
+                termination_condition=MaxMessageTermination(max_messages=4),
+            )
+            result = await team.run(task="Calculate pi to 10 decimal places using Python.")
+            for message in result.messages:
+                print(f"{message.source}: {message.content}")
+    finally:
+        await model_client.close()
 
-    async with DockerCommandLineCodeExecutor(work_dir="coding") as executor:
-        assistant = AssistantAgent(name="assistant", model_client=model_client,
-                                   system_message="Write Python code to solve problems.")
-        proxy = UserProxyAgent(name="proxy", code_executor=executor,
-                               human_input_mode="NEVER")
 
-        team = RoundRobinGroupChat([assistant, proxy])
-        result = await team.run(task="Calculate pi to 10 decimal places using Python")
-        print(result.messages[-1].content)
-
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
