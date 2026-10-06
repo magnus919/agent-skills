@@ -111,7 +111,7 @@ def summarize_property(property_value: Dict[str, Any], complete: Optional[bool] 
     result: Dict[str, Any] = {"present": True, "type": kind}
     values = property_value.get(kind, [])
     has_more = property_value.get("has_more", False)
-    if kind in PAGINATED_PROPERTY_TYPES and isinstance(values, list) and len(values) >= 25:
+    if complete is None and kind in PAGINATED_PROPERTY_TYPES and isinstance(values, list) and len(values) >= 25:
         has_more = True
 
     if kind in ("title", "rich_text"):

@@ -76,6 +76,19 @@ class StubNotionServer:
                                                 "rich_text": {"plain_text": "first"}},
                                                {"object": "property_item", "id": "rich%3Aid", "type": "rich_text",
                                                 "rich_text": {"plain_text": "second"}}]})
+                elif "/properties/many-items" in self.path:
+                    query = self.path.split("?", 1)[1] if "?" in self.path else ""
+                    if "start_cursor=remaining" in query:
+                        start, end, has_more, cursor = 25, 30, False, None
+                    else:
+                        start, end, has_more, cursor = 0, 25, True, "remaining"
+                    results = [{"object": "property_item", "id": "many-items", "type": "rich_text",
+                                "rich_text": {"plain_text": f"item-{index}"}}
+                               for index in range(start, end)]
+                    self._respond({"object": "list", "type": "property_item", "has_more": has_more,
+                                   "next_cursor": cursor,
+                                   "property_item": {"id": "many-items", "type": "rich_text"},
+                                   "results": results})
                 elif "/properties/rich-id" in self.path:
                     query = self.path.split("?", 1)[1] if "?" in self.path else ""
                     if "start_cursor=next" in query:
@@ -227,6 +240,22 @@ class NotionCliTests(unittest.TestCase):
         self.assertEqual(prop["value"], "firstsecond")
         self.assertTrue(prop["complete"])
         self.assertTrue(any("start_cursor=next" in path for method, path, _ in stub.requests if method == "GET"))
+
+    def test_exhausted_30_item_property_is_complete_without_has_more(self):
+        page = dict(SAMPLE_PAGE)
+        page["properties"] = {"Notes": {"id": "many-items", "type": "rich_text", "rich_text": []}}
+        with StubNotionServer() as stub:
+            stub.page = page
+            proc = run_script(base_env(stub), "--json", "--limit", "40", "pages", "get", "--page-id", "page-1234",
+                              "--property", "Notes")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        prop = load_json(proc)["page"]["properties"]["Notes"]
+        self.assertEqual(prop["value"], "".join(f"item-{index}" for index in range(30)))
+        self.assertTrue(prop["complete"])
+        self.assertNotIn("has_more", prop)
+        self.assertNotIn("incomplete_reason", prop)
+        requests = [path for method, path, _ in stub.requests if method == "GET" and "/properties/many-items" in path]
+        self.assertEqual(len(requests), 2)
 
     def test_selected_property_id_is_not_double_encoded(self):
         page = dict(SAMPLE_PAGE)
