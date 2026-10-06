@@ -243,11 +243,15 @@ class NotionCliTests(unittest.TestCase):
         with StubNotionServer() as stub:
             proc = run_script(base_env(stub), "--json", "--limit", "1", "pages", "get", "--page-id", "page-1234",
                               "--property", "Notes")
+            human_proc = run_script(base_env(stub), "--limit", "1", "pages", "get", "--page-id", "page-1234",
+                                    "--property", "Notes")
         self.assertEqual(proc.returncode, 0, proc.stderr)
         prop = load_json(proc)["page"]["properties"]["Notes"]
         self.assertEqual(prop["value"], "first")
         self.assertFalse(prop["complete"])
         self.assertTrue(prop["has_more"])
+        self.assertEqual(human_proc.returncode, 0, human_proc.stderr)
+        self.assertIn("<incomplete: property_item_limit_reached>", human_proc.stdout)
 
     def test_malformed_property_pagination_never_reports_complete(self):
         cases = (("missing-has-more", "invalid_property_pagination_response"),

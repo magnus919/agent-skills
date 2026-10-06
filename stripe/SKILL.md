@@ -20,7 +20,7 @@ compatibility: >-
 metadata:
   source: https://docs.stripe.com/api
   source_index: references/00-source-index.md
-  research_checked: "2026-08-03"
+  research_checked: "2026-10-06"
 ---
 
 # Stripe Operations
@@ -65,7 +65,7 @@ Exit codes: 0 success, 1 API error or failed check, 2 usage error. Cancellations
 - **Payments** (`GET /payment_intents`): recent payment intents with amount, currency, status (`succeeded`, `requires_action`, etc.), and customer. Bounded by `--limit`; `has_more` tells you whether the cap hid further records.
 - **Subscriptions** (`GET /subscriptions`, `GET /subscriptions/{id}`): active subscriptions with status, customer, period end, and items (price, amount, interval). A read before any cancellation.
 
-Stripe amounts use minor units: zero-decimal currencies such as JPY and UGX display as whole units, while other currencies display two decimals. JSON preserves the original integer (`amount_minor`, or `unit_amount_minor` for subscription prices) and currency next to the formatted display value. ISK retains Stripe's two-decimal API representation; HUF and TWD use two decimals for charge/price records (their whole-unit rule applies to manual payouts). Three-decimal currencies that Stripe does not support for presentment are rejected. See `references/01-stripe-read-operations.md` for sources and details.
+Stripe amounts use minor units: ordinary zero-decimal currencies such as JPY display as whole units, while other currencies display two decimals. UGX and ISK retain two-decimal API values for backward compatibility, so an amount of `500` displays as `5.00 UGX` or `5.00 ISK`. JSON preserves the original integer (`amount_minor`, or `unit_amount_minor` for subscription prices) and currency next to the formatted display value. HUF and TWD use two decimals for charge/price records (their whole-unit rule applies to manual payouts). Three-decimal currencies that Stripe does not support for presentment are rejected. See `references/01-stripe-read-operations.md` for sources and details.
 
 ## Guarded mutation: subscription cancellation
 

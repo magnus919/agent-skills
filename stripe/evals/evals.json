@@ -71,12 +71,13 @@
     {
       "id": "currency-aware-amounts",
       "prompt": "A user asks: \u201cShow the amount and currency for our JPY payment intent and one USD payment. Explain how the displayed values relate to Stripe API integers.\u201d",
-      "expected_output": "Use stripe-cli payments list and report each payment with its currency-aware formatted amount and status. Explain that Stripe API amounts are integer minor units: a JPY amount of 500 displays as 500 JPY, while a USD amount of 500 displays as 5.00 USD. In JSON, retain the original amount_minor and currency beside the formatted amount. Do not assume all currencies have two decimal places; preserve ISK compatibility, display UGX as zero-decimal, reject unsupported three-decimal presentment currencies, and distinguish HUF/TWD charge precision from payout rules.",
+      "expected_output": "Use stripe-cli payments list and report each payment with its currency-aware formatted amount and status. Explain that Stripe API amounts are integer minor units: a JPY amount of 500 displays as 500 JPY, while a USD amount of 500 displays as 5.00 USD. In JSON, retain the original amount_minor and currency beside the formatted amount. Do not assume all currencies have two decimal places; preserve two-decimal API compatibility for ISK and UGX (500 means 5.00 of either currency), reject unsupported three-decimal presentment currencies, and distinguish HUF/TWD charge precision from payout rules.",
       "assertions": [
         "JPY amount 500 is displayed as 500 JPY rather than 5.00 JPY",
         "USD amount 500 is displayed as 5.00 USD",
         "Machine output retains the original integer amount and currency alongside the formatted display value",
-        "UGX displays as a zero-decimal currency and unsupported three-decimal presentment currencies are rejected",
+        "UGX amount 500 displays as 5.00 with its original minor-unit value preserved",
+        "Unsupported three-decimal presentment currencies are rejected",
         "HUF and TWD charge or price precision is distinguished from their manual payout rule"
       ]
     }

@@ -8,7 +8,7 @@ Teams run their operational memory in Notion — runbooks, on-call docs, product
 
 It ships `notion-cli`, a small Python script that speaks the Notion API with no third-party dependencies. Reads are capped (`--limit`), output is clean JSON for the agent or readable text for you, and `--help` works with no token and no network. The script sends the standard `Notion-Version` header and summarizes pages as title + ID + URL instead of dumping raw block trees.
 
-Page reads also include compact, typed property values so you can check a status, checkbox, number, or text before and after an update. Use repeatable `--property` flags to read only the fields you need; missing and truncated values are explicitly marked.
+Page reads also include compact, typed property values so you can check a status, checkbox, number, or text before and after an update. Use repeatable `--property` flags to read only the fields you need; missing, truncated, and paginated incomplete values are visibly marked, including in human-readable output.
 
 ## What You Get
 

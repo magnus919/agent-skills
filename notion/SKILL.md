@@ -62,7 +62,7 @@ Exit codes: 0 success, 1 API error or failed check, 2 usage error. Creates and u
 
 ## Pages, databases, search
 
-- **Pages** (`GET /pages/{id}`): a page is an ID, a title (extracted from the `title` or `Name` property), a URL, timestamps, and typed property summaries. JSON output includes each property's type and value; `--property NAME` may be repeated to select properties and marks a requested absent property as `present: false`. Long text includes a truncation marker and original character count, so it cannot be mistaken for a verified full value.
+- **Pages** (`GET /pages/{id}`): a page is an ID, a title (extracted from the `title` or `Name` property), a URL, timestamps, and typed property summaries. JSON output includes each property's type, value, and completeness; `--property NAME` may be repeated to select properties and marks a requested absent property as `present: false`. Human output marks incomplete properties as `<incomplete: reason>`. Long text also includes a truncation marker and original character count, so it cannot be mistaken for a verified full value.
 - **Databases** (`POST /databases/{id}/query`): query rows as pages with a `page_size` cap and an optional structured `--filter` JSON file (e.g. `{"property": "Status", "select": {"equals": "Done"}}`). `has_more` tells you whether the cap hid further rows.
 - **Search** (`POST /search`): finds pages and databases by text across the integration's accessible workspace; results are bounded by `--limit`.
 - **Updates** (`PATCH /pages/{id}`): property updates overwrite values (select, status, checkbox, rich text, etc.). Preview the exact properties payload with `--dry-run` and confirm with `--yes`; verify with a follow-up `pages get`.

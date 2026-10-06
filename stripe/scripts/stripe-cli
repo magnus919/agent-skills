@@ -94,7 +94,7 @@ def api_request(method: str, path: str, api_key: str,
 
 ZERO_DECIMAL_CURRENCIES = {
     "bif", "clp", "djf", "gnf", "jpy", "kmf", "krw", "mga", "pyg",
-    "rwf", "ugx", "vnd", "vuv", "xaf", "xof", "xpf",
+    "rwf", "vnd", "vuv", "xaf", "xof", "xpf",
 }
 THREE_DECIMAL_CURRENCIES_NOT_SUPPORTED_FOR_PRESENTMENT = {"bhd", "jod", "kwd", "omr", "tnd"}
 
@@ -103,8 +103,8 @@ def format_stripe_amount(amount_minor: Optional[int], currency: str) -> str:
     """Format a Stripe integer amount using that currency's charge precision.
 
     Stripe uses two decimal places by default. The currency guide lists the
-    zero-decimal charge currencies; ISK retains two-decimal API values for
-    backward compatibility. HUF and TWD also remain two-decimal here:
+    zero-decimal charge currencies; ISK and UGX retain two-decimal API values
+    for backward compatibility. HUF and TWD also remain two-decimal here:
     their zero-decimal rule applies to manual payouts, not charges/prices.
     """
     if amount_minor is None:

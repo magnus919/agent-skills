@@ -407,6 +407,10 @@ def _emit_human(data: Dict[str, Any]) -> None:
                 value = f"{prop['value']} <truncated; {prop['character_count']} characters>"
             else:
                 value = json.dumps(prop.get("value"), ensure_ascii=False, sort_keys=True)
+            if prop.get("present") and prop.get("complete") is False:
+                reason = prop.get("incomplete_reason")
+                marker = f"incomplete: {reason}" if reason else "incomplete"
+                value = f"{value} <{marker}>"
             print(f"  {name} ({prop.get('type', 'unknown')}): {value}")
     elif "pages" in data:
         print(f"database <{data['database_id']}> (has_more={data['has_more']}):")

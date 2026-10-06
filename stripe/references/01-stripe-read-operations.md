@@ -1,6 +1,6 @@
 # Stripe Read Operations
 
-> **Last Updated:** 2026-08-03
+> **Last Updated:** 2026-10-06
 
 Operational detail for the Stripe API surface the skill owns: the read-only-first surface (balance, payment intents, subscriptions) and the one guarded mutation (scheduling a subscription cancellation at period end). The bundled `stripe-cli` implements this reference; use this document when a call behaves unexpectedly.
 
@@ -35,7 +35,7 @@ Operational detail for the Stripe API surface the skill owns: the read-only-firs
 
 Stripe returns these amounts as integer minor units. The CLI keeps that original integer alongside a formatted `amount` (`amount_minor` on balance/payment records and `unit_amount_minor` on subscription items), plus the uppercase currency code. Formatting uses integer arithmetic: Stripe's documented zero-decimal currencies display as whole units, while other currencies use two decimal places. This avoids floating-point rounding and lets JSON consumers verify the conversion.
 
-The zero-decimal currency set follows Stripe's currency guide. ISK keeps two-decimal API values for backward compatibility; UGX is zero-decimal. HUF and TWD are two-decimal for charges and prices; Stripe's whole-unit exception for those currencies applies to manual payouts. The formatter rejects BHD, JOD, KWD, OMR, and TND because Stripe's supported presentment currency guide does not list those three-decimal currencies. The balance, PaymentIntent, and Price read endpoints do not create payouts, so use their charge/ledger unit precision for display.
+The ordinary zero-decimal currency set follows Stripe's currency guide, with backward-compatibility exceptions. ISK and UGX use two-decimal API values even though they transitioned to zero-decimal currencies: for either, an API amount of `500` represents `5` whole currency units and displays as `5.00`. HUF and TWD are two-decimal for charges and prices; Stripe's whole-unit exception for those currencies applies to manual payouts. The formatter rejects BHD, JOD, KWD, OMR, and TND because Stripe's supported presentment currency guide does not list those three-decimal currencies. The balance, PaymentIntent, and Price read endpoints do not create payouts, so use their charge/ledger unit precision for display.
 
 See [Stripe's supported currency guide](https://docs.stripe.com/currencies), [Balance object](https://docs.stripe.com/api/balance/balance_object), [PaymentIntent object](https://docs.stripe.com/api/payment_intents/object), and [Price object](https://docs.stripe.com/api/prices/object).
 

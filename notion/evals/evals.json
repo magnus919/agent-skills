@@ -5,13 +5,14 @@
     {
       "id": "page-retrieval",
       "prompt": "A user asks: 'Show me what the on-call runbook page says. I have the page ID page-9f8e7d6c5b4a3210.'",
-      "expected_output": "Run notion-cli pages get --page-id page-9f8e7d6c5b4a3210 and report the page title, URL, last-edited time, and a typed values for the meaningful properties. The response quotes short values with the page ID for verification and does not dump the raw block tree or full property payload. If the page is not accessible, it checks whether the page is shared with the integration before concluding it is missing. For a targeted read, repeat --property NAME; requested absent values are marked present=false, and truncated text is labeled with its original length.",
+      "expected_output": "Run notion-cli pages get --page-id page-9f8e7d6c5b4a3210 and report the page title, URL, last-edited time, and typed values for meaningful properties. The response quotes short values with the page ID for verification and does not dump the raw block tree or full property payload. If the page is not accessible, it checks whether the page is shared with the integration before concluding it is missing. For a targeted read, repeat --property NAME; requested absent values are marked present=false, truncated text is labeled with its original length, and incomplete paginated properties are visibly marked in human output with their reason.",
       "assertions": [
         "The page is retrieved via notion-cli pages get with the exact page ID",
         "The response summarizes the title, URL, and property values without dumping raw payloads",
         "Quotes are short and include the page ID for verification",
         "An inaccessible page is checked against the integration sharing model before being called missing",
-        "Selected property reads distinguish present typed values, absent properties, and truncated text"
+        "Selected property reads distinguish present typed values, absent properties, and truncated text",
+        "Human output visibly marks incomplete paginated properties with their reason"
       ]
     },
     {
