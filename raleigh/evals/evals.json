@@ -386,6 +386,18 @@
         "exit_status:completed"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "fire-group-warning-cutoff",
+      "prompt": "Explain the coverage caveat for two Raleigh fire queries with --group Fire. Their computed --since cutoffs are 2025-12-31T23:59:59.999Z and 2026-01-01T00:00:00Z. incident_group_name is populated only for 2026+ records. No queries have been executed. Which query crosses the classification transition, and does the other provide complete fire-response coverage?",
+      "expected_output": "Distinguish the pretransition window from the exact cutoff; warn that a group filter excludes older records only in the former, while retaining general public-feed exclusions for both and making no execution claim.",
+      "assertions": [
+        "The response identifies only the first cutoff as preceding the classification transition.",
+        "The response explains that older records are excluded by the group filter in the first query.",
+        "The response does not infer complete fire-response coverage for the second query.",
+        "The response does not claim to have executed either query."
+      ],
+      "case_set": "regression"
     }
   ]
 }
