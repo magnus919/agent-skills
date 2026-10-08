@@ -1,0 +1,170 @@
+{
+  "format_version": 1,
+  "record_id": "synthetic-support-pilot-review-v1",
+  "recorded_at": "2026-10-08T00:00:00Z",
+  "evidence_kind": "synthetic_example",
+  "objective": "Decide whether a support-agent pilot justifies broad unattended deployment.",
+  "system": {
+    "id": "support-agent",
+    "version": "candidate-1",
+    "configuration_ref": "fixture-config-1"
+  },
+  "context": {
+    "task": "Resolve support cases",
+    "environment": "supervised pilot; eight trained staff"
+  },
+  "artifacts": {
+    "eval_plan": {
+      "id": "plan-1",
+      "version": "fixture-v1",
+      "access": "Synthetic placeholder; replace with an authorized resolvable artifact before use."
+    },
+    "run_report": {
+      "id": "run-1",
+      "version": "fixture-v1",
+      "access": "Synthetic placeholder; replace with an authorized resolvable artifact before use."
+    },
+    "trajectory": {
+      "id": "trace-1",
+      "version": "fixture-v1",
+      "access": "Synthetic placeholder; replace with an authorized resolvable artifact before use."
+    },
+    "decision": {
+      "id": "gate-1",
+      "version": "fixture-v1",
+      "access": "Synthetic placeholder; replace with an authorized resolvable artifact before use."
+    }
+  },
+  "evidence": [
+    {
+      "id": "pilot-1",
+      "version": "fixture-v1",
+      "consulted": true,
+      "omission_reason": null,
+      "summary": "Handling time fell 20%; reopened cases doubled. Eight trained staff; supervision required.",
+      "as_of": "2026-10-01",
+      "access": "Synthetic source stated here; no real study."
+    },
+    {
+      "id": "unattended-outcomes",
+      "version": null,
+      "consulted": false,
+      "omission_reason": "No unattended production study supplied.",
+      "summary": null,
+      "as_of": null,
+      "access": "Unavailable"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-1",
+      "version": "1",
+      "summary": "The pilot reduced handling time 20%."
+    },
+    {
+      "id": "recommendation-1",
+      "version": "1",
+      "summary": "Deploy unattended to every team."
+    }
+  ],
+  "probes": [
+    {
+      "attempt_id": "example-faithfulness",
+      "supersedes": null,
+      "claim_id": "claim-1",
+      "dimension": "faithfulness",
+      "result": "supported",
+      "execution_status": "illustrative_not_executed",
+      "rubric_version": "grounding-example-v1",
+      "evaluator": {
+        "kind": "authored_example",
+        "id": "example-author",
+        "version": "1"
+      },
+      "evaluated_at": null,
+      "evidence_ids": [
+        "pilot-1"
+      ],
+      "rationale": "The quoted speedup matches the pilot fixture."
+    },
+    {
+      "attempt_id": "example-completeness",
+      "supersedes": null,
+      "claim_id": "recommendation-1",
+      "dimension": "completeness",
+      "result": "contradicted",
+      "execution_status": "illustrative_not_executed",
+      "rubric_version": "grounding-example-v1",
+      "evaluator": {
+        "kind": "authored_example",
+        "id": "example-author",
+        "version": "1"
+      },
+      "evaluated_at": null,
+      "evidence_ids": [
+        "pilot-1"
+      ],
+      "rationale": "The recommendation omits doubled reopened cases."
+    },
+    {
+      "attempt_id": "example-sufficiency",
+      "supersedes": null,
+      "claim_id": "recommendation-1",
+      "dimension": "sufficiency",
+      "result": "insufficient_evidence",
+      "execution_status": "illustrative_not_executed",
+      "rubric_version": "grounding-example-v1",
+      "evaluator": {
+        "kind": "authored_example",
+        "id": "example-author",
+        "version": "1"
+      },
+      "evaluated_at": null,
+      "evidence_ids": [
+        "pilot-1"
+      ],
+      "rationale": "A supervised eight-person pilot does not establish unattended performance across all teams."
+    }
+  ],
+  "human_labels": [],
+  "calibration": {
+    "status": "not_assessed",
+    "note": "Illustrative findings authored as examples, not executed probes or calibrated judgments."
+  },
+  "outcomes": {
+    "task": {
+      "status": "observed_in_fixture",
+      "summary": "Handling time fell 20%.",
+      "evidence_ids": [
+        "pilot-1"
+      ]
+    },
+    "downstream": {
+      "status": "observed_in_fixture",
+      "summary": "Reopened cases doubled in the supervised pilot; unattended impact is unknown.",
+      "evidence_ids": [
+        "pilot-1"
+      ]
+    }
+  },
+  "blind_spots": [
+    "No real execution or human review.",
+    "No unattended production outcomes.",
+    "Evidence coverage beyond the supplied fixture is unknown."
+  ],
+  "decision": {
+    "disposition": "hold",
+    "owner": null,
+    "rationale": "Omitted rework undermines the recommendation; supervised pilot evidence cannot justify unattended rollout. Accountable owner is unassigned.",
+    "probe_attempt_ids": [
+      "example-faithfulness",
+      "example-completeness",
+      "example-sufficiency"
+    ],
+    "next_evidence": [
+      "Name an accountable decision owner.",
+      "Investigate net resolution and gather appropriately authorized evidence about unattended operation."
+    ],
+    "review_date": null
+  }
+}

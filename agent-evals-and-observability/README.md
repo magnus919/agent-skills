@@ -8,6 +8,8 @@ Agent behavior can look good in a demo yet fail through an unsafe tool call, a b
 
 It also keeps observability useful without turning it into a privacy liability. Your agent can design minimized traces and metrics, analyze a regression fairly, and make a release decision that keeps hard safety and privacy invariants separate from ordinary quality indicators.
 
+For evidence-backed recommendations, it also checks whether accurate citations omit decisive qualifications or overreach a narrow study. A linked decision record helps a reviewer follow the evidence and see what remains unknown.
+
 Intervention counts remain distinct from optional event detail. When a question
 requires that detail, the guidance uses typed bounded events, treats missing
 detail as uncollected, and excludes raw messages and hidden reasoning by default.
@@ -18,7 +20,7 @@ detail as uncollected, and excludes raw messages and hidden reasoning by default
 |---|---|
 | `SKILL.md` | Framework-neutral workflow and routing |
 | `references/` | Evaluation, evidence modes, metric mirrors, grounding, judge stability, statistics, trajectory, privacy, OTel, and source guidance |
-| `templates/` | Fillable plans, manifests, grader specs, metric mirrors, reviews, reports, and gates |
+| `templates/` | Fillable plans, manifests, grader specs, metric mirrors, reviews, reports, gates, and a linked decision record |
 
 ## Quick Start
 
@@ -33,6 +35,7 @@ Expected result: a risk-based plan that names the task contract, evidence, priva
 - Regression analysis, prompt/model/tool release gate, or incident-to-eval learning
 - Privacy-aware logging, redaction, retention, or trace sampling for an agent
 - Offline versus online comparison, replay fidelity, metric mirrors, or judge stability
+- Evidence cherry-picking, recommendation overreach, or auditable grounding checks
 - Claim-level grounding, RAG retrieval-versus-generation diagnosis, abstention, or escalation
 
 ## Requirements

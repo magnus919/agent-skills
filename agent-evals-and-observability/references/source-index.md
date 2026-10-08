@@ -16,3 +16,12 @@ Sources inform decisions; they become binding only when adopted by applicable po
 | “SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection for Generative Large Language Models” | Manakul et al., EMNLP 2023 | https://aclanthology.org/2023.emnlp-main.557/ | Consistency-based hallucination signal and its limits; not a factuality oracle. |
 | “FActScore: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation” | Min et al., EMNLP 2023 | https://aclanthology.org/2023.emnlp-main.741/ | Claim-level factual precision framing; source attribution and domain limits remain decision-specific. |
 | Ragas documentation | Rolling documentation; verify API and metric definitions before use | https://docs.ragas.io/ | Named implementation example for RAG evaluation; metric names do not establish a release threshold. |
+
+## Focused grounding and audit additions — checked 2026-10-08
+
+| Source | Status/version | Primary URL | Decision use |
+|---|---|---|---|
+| Building Evaluation Probes into Agentic AI | NIST research project; page updated May 5, 2026; accessed 2026-10-08 | https://www.nist.gov/programs-projects/building-evaluation-probes-agentic-ai | Separate citation faithfulness, completeness, and sufficiency; research findings do not establish validated judge accuracy. |
+| The TEVV-Athlon Framework for Evaluating AI Systems | NIST AI 200-2 initial public draft, announced August 7, 2026; accessed 2026-10-08 | https://doi.org/10.6028/NIST.AI.200-2.ipd | Relate objectives and real-world outcomes to existing contracts; not a compliance or release threshold. |
+
+These additions do not revalidate the rolling sources checked above.

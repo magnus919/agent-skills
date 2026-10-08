@@ -19,3 +19,7 @@ Retrieval precision/recall, answer relevance, faithfulness, and claim factuality
 ## Required cases
 
 Include at least one supported claim, an unsupported fluent claim, a retrieval miss, an answer that ignores retrieved evidence, an unauthorized document that must not be used, and a stale/conflicting source. Grade source authorization and side effects separately from answer quality.
+
+## Accurate citations can still mislead
+
+A supported sentence does not establish a supported recommendation. Check whether the answer drops material qualifications or contrary evidence (completeness), and whether the available evidence is strong and applicable enough for the recommended action (sufficiency). A narrow pilot may support a pilot result while failing to justify population-wide rollout. Keep these findings separate from faithfulness and from retrieval/generation attribution. Use the grounding-probe reference routed from SKILL.md when checks must run during a workflow or feed a linked decision record.

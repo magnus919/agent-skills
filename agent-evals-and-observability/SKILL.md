@@ -46,6 +46,8 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 | Build immutable cases, fixtures, and provenance | [references/datasets.md](references/datasets.md) |
 | Select or calibrate graders | [references/graders.md](references/graders.md) |
 | Validate judge stability, abstention, and escalation | [references/judge-stability.md](references/judge-stability.md) |
+| Check evidence cherry-picking, overreach, or bounded in-workflow probes | [references/grounding-probes.md](references/grounding-probes.md) |
+| Provide requested machine-readable evidence or join multiple evaluation artifacts | [references/decision-audit-record.md](references/decision-audit-record.md) and [templates/decision-audit-record.json](templates/decision-audit-record.json) |
 | Evaluate grounded claims and attribute RAG failures | [references/grounding-attribution.md](references/grounding-attribution.md) |
 | Define measures or compare runs | [references/metrics-and-statistics.md](references/metrics-and-statistics.md) |
 | Evaluate a bounded Choice/Score/Noul decision model or GLiNER classifier inside an agent | [system-one](../system-one/SKILL.md) for its question contract, held-out labels, calibration where probabilities exist, and model-level latency; use this skill for the agent's end-to-end task and trajectory evidence |
@@ -62,6 +64,8 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 ## Templates
 
 Use [templates/eval-plan.md](templates/eval-plan.md), [templates/interface-enrichment-comparison.md](templates/interface-enrichment-comparison.md), [templates/dataset-manifest.md](templates/dataset-manifest.md), [templates/grader-specification.md](templates/grader-specification.md), [templates/trace-review.md](templates/trace-review.md), [templates/run-report.md](templates/run-report.md), [templates/release-gate.md](templates/release-gate.md), and [templates/metric-mirror.md](templates/metric-mirror.md). They are decision records, not checklists that manufacture evidence.
+
+Use grounding probes only when the decision depends on evidence-backed claims. Check material qualifications and whether evidence supports the proposed action, not just the quoted sentence. Preserve separate findings, probe errors, and unknown outcomes; a probe score cannot authorize action.
 
 ## Guardrails
 
