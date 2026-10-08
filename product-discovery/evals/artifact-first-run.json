@@ -1,0 +1,189 @@
+{
+  "date": "2026-10-08",
+  "baseline_commit": "96fbe0780a2fc2b7d063b613bfc1a5767e11b5d7",
+  "runner": "Codex isolated subagents, fork_turns=none; inherited parent model configuration; exact provider model revision and token usage not exposed by runner",
+  "reviewer_kind": "model_teacher",
+  "reviewer": "Codex parent assistant; unblinded qualitative inspection",
+  "prompt_revision": "skill-review-v1",
+  "evidence_kind": "synthetic_screen",
+  "baseline_files_sha256": {
+    "README.md": "71b1a623f92a1e149f42f1f00b3a109952cce05d639c638fad3915c75dc52085",
+    "SKILL.md": "e7a272e47a6bff2d232865a7ccd2c0cfde5515f553d85e973f4f1859ab6a283d",
+    "references/ai-conducted-discovery.md": "01f9f5908a39a4e3a0ea36833e673eb0dca2ecfd557eb875183c780685318381",
+    "references/conflict-resolution.md": "62f4e9b531abc9fe20b85c7b363cb3c354fa4e9916635a3f487d0386c51d190d",
+    "references/gap-detection.md": "4c380159a13ffbf4db87a8997e6a2f9a4232c02e847649d06c77ddec1473d98b",
+    "references/power-dynamics.md": "acb0f6cd87decf412de04fde7c3ab2b035fa091c5e0b1a52f5f509860652f8c5",
+    "references/question-patterns.md": "04c39ffe7554951cdb6f28b1ffdb468e3044d1aacd4b4829d614f3e24988a0c5",
+    "references/stakeholder-mapping.md": "acb3879ad1a72295d2f4adab66568c3da4dcdd1975e4eb7eb31a0d8e88f82371",
+    "references/time-constrained-discovery.md": "dcbdad8186ea958e44d097d7642243c0aa85fcc913e223316c8c68bbb071df20",
+    "references/transcript-to-spec.md": "d9fff927ae7997f7593fae44177ceaf48286b99ec79d9e30286541372a9bc6ff",
+    "templates/discovery-plan.md": "47ae5bcf53fccae7f228b54189fa7b6c360c88d3753940996222c3c2628a991d",
+    "templates/distillation-worksheet.md": "432dea6bfbb0c78885edcb4235e6b7ca9879b4c02a54b22309e7b1e0500f5a1f",
+    "templates/gap-register.md": "bd97b5a7386bf7d0059804ca46d2ffa97f0278b6d2b7d19c0d6fbf5b14dd9ebc",
+    "templates/interpretation-log.md": "41d9c7b40b87be95da9532cad561770611fd973db38b4af55d89d5db737deb62",
+    "templates/interview-guide.md": "d5a20409d47810f7098a18e84480933e55a9514bc63fca3535b95d36d9008150"
+  },
+  "candidate_files_sha256": {
+    "README.md": "9ea46a5308545cd435cecf92cdc6d108adf545e32f83dae6a11345162847740e",
+    "SKILL.md": "0aae7c307efeddb333806624c022e1e3d3bbaa8273099b0db51c45fde900ad18",
+    "references/ai-conducted-discovery.md": "01f9f5908a39a4e3a0ea36833e673eb0dca2ecfd557eb875183c780685318381",
+    "references/artifact-first-interview.md": "5c1fa202bf0c7586053c6bb1b00c3fae530fa6cc98675d516b85ee0ea458352a",
+    "references/conflict-resolution.md": "62f4e9b531abc9fe20b85c7b363cb3c354fa4e9916635a3f487d0386c51d190d",
+    "references/gap-detection.md": "4c380159a13ffbf4db87a8997e6a2f9a4232c02e847649d06c77ddec1473d98b",
+    "references/power-dynamics.md": "acb0f6cd87decf412de04fde7c3ab2b035fa091c5e0b1a52f5f509860652f8c5",
+    "references/question-patterns.md": "04c39ffe7554951cdb6f28b1ffdb468e3044d1aacd4b4829d614f3e24988a0c5",
+    "references/stakeholder-mapping.md": "acb3879ad1a72295d2f4adab66568c3da4dcdd1975e4eb7eb31a0d8e88f82371",
+    "references/time-constrained-discovery.md": "dcbdad8186ea958e44d097d7642243c0aa85fcc913e223316c8c68bbb071df20",
+    "references/transcript-to-spec.md": "d9fff927ae7997f7593fae44177ceaf48286b99ec79d9e30286541372a9bc6ff",
+    "templates/discovery-plan.md": "47ae5bcf53fccae7f228b54189fa7b6c360c88d3753940996222c3c2628a991d",
+    "templates/distillation-worksheet.md": "432dea6bfbb0c78885edcb4235e6b7ca9879b4c02a54b22309e7b1e0500f5a1f",
+    "templates/gap-register.md": "a393d0b2ee2db365b6f9fe5e230f1081bc913f60f7d74b0808a34cb8c7f631d0",
+    "templates/interpretation-log.md": "25431dfb1a08bb252695300d22aaed6a8d1ccdc81c9a472083103904cfef9a45",
+    "templates/interview-guide.md": "d5a20409d47810f7098a18e84480933e55a9514bc63fca3535b95d36d9008150"
+  },
+  "limitations": [
+    "One run per condition/case; no independent human adjudication or statistical inference.",
+    "Candidate hashes captured after runs. Product-discovery checklist introduction received a grammar-only correction during its runs.",
+    "Responses generated in separate contexts, but model-config identity is inherited, not independently pinned."
+  ],
+  "protocol": "Each condition reads only its skill snapshot and references. Parent supplies identical scripted answer facts after turn one, then identical stop directives after turn two. No simulated answer is evidence of a real customer. Agents save exact user-facing responses; no self-grading requested.",
+  "cases": [
+    {
+      "id": "draft-a",
+      "initial_user_prompt": "Grill this PRD with me. Draft v1: Team workspaces get an Archive button. Archived projects disappear from the sidebar. Anyone in the workspace can restore them. Keep the rest of the navigation unchanged.",
+      "scripted_answers": [
+        "It hides the project for everyone. People would find it through search. Actually, archived projects must be removed from search because some contain a former client's confidential material. I own the product decision.",
+        "Stop here. Keep discovery of archived projects unresolved. For now assume only workspace admins may restore, but mark that assumption unvalidated. Propose only the justified edits to v1 and show what remains unresolved."
+      ],
+      "baseline": {
+        "agent_task": "baseline_draft_a",
+        "responses": [
+          "I’m using the product-discovery skill to challenge the assumptions in this draft.\n\nThe biggest gap is the recovery path: archived projects disappear from the sidebar, but the draft doesn’t say how someone finds one to restore it while keeping navigation unchanged.\n\nWalk me through a concrete case: a teammate archives a project today, and a different teammate needs it next week. Where does that person start, how do they find the project, and what happens when they restore it?\n\nThat walkthrough should also clarify whether archiving hides the project for everyone or only for the person who clicked Archive. I’m treating both as open decisions; the draft doesn’t establish either behavior yet.\n",
+          "That leaves a direct conflict: search was the recovery path, and removing archived projects from search closes that path. We have confirmed that archiving hides a project for everyone and that you own the product decision; how people find projects to restore remains unresolved.\n\nThe confidentiality reason also needs unpacking before we choose another entry point. Hiding a project from search does not establish who can access it through an existing link or restore it.\n\nFor a project containing a former client’s confidential material, who should still be able to view it, and who should be able to restore it? In particular, what should happen when a workspace member who shouldn’t see that material opens an old project link?\n",
+          "Proposed v1 wording:\n\n> Team workspaces get an Archive button. Archived projects disappear from the sidebar for everyone and are excluded from search. **Unvalidated assumption:** only workspace admins may restore archived projects. Keep the rest of the navigation unchanged. How users discover archived projects to restore them remains unresolved.\n\nThis replaces “Anyone in the workspace can restore them” with your explicitly unvalidated assumption; it does not establish an approved permission rule.\n\nStill unresolved:\n\n- **Discovery and recovery:** where admins find archived projects without sidebar or search visibility, within the navigation constraint.\n- **Confidentiality and access:** who may view archived projects, including through existing links. Hiding them from search does not define access restrictions.\n- **Restore permissions:** whether the admins-only assumption should become a confirmed requirement.\n- **Archive and restore behavior:** who may archive a project and what restoring it changes, including visibility and access.\n\nYou own these product decisions. Discovery stops here with those gaps open.\n"
+        ]
+      },
+      "candidate": {
+        "agent_task": "candidate_draft_a",
+        "responses": [
+          "I’m using the product-discovery skill to review v1 one consequential question at a time.\n\n**Q1:** When someone archives a project, should it disappear from the sidebar for everyone in the workspace, or only for that person?\n\nThat decides whether Archive is personal navigation cleanup or a shared change that can interrupt teammates’ work.\n",
+          "Recorded from A1: archiving hides a project for everyone, and you own the product decision.\n\n**Q2:** You first said people would find archived projects through search, then said they must be removed from search because of confidential material. Which should govern v1: search remains the restoration entry point, or archived projects are excluded from search?\n\nExcluding them leaves the route to restoration unresolved in the current draft.\n",
+          "Stopping here. This review records your decisions; it does not validate the feature with users.\n\n- **F1 — Decision:** Archiving hides a project from everyone’s sidebar (A1). You identified yourself as the product decision owner.\n- **F2 — Unvalidated assumption:** Only workspace admins may restore (A2). This supersedes v1’s “anyone” permission provisionally.\n- **F3 — Unresolved conflict:** A1 names search as the discovery route and also requires removing archived projects from search because some contain confidential material. A2 defers discovery; neither statement is selected as governing.\n\nProposed edits to v1:\n\n```diff\n Team workspaces get an Archive button.\n-Archived projects disappear from the sidebar.\n-Anyone in the workspace can restore them.\n+Archived projects disappear from the sidebar for everyone in the workspace.\n+Assumption — unvalidated: only workspace admins may restore archived projects.\n Keep the rest of the navigation unchanged.\n```\n\nThe sidebar edit follows F1/Q1–A1. The restore edit follows F2/A2. No discovery or navigation change is justified yet.\n\nRemaining gaps:\n\n| Gap | Consequence | Smallest next evidence step |\n|---|---|---|\n| Archived-project discovery and conflicting search requirements (F3) | The restoration entry point remains undefined. | When resumed, you choose the governing search requirement and identify an acceptable discovery route. |\n| Admin-only restoration (F2) | The assumed restriction may prevent legitimate recovery. | Check one representative restoration scenario with a workspace admin and an affected member. Validation owner unassigned. |\n| Confidentiality behavior | Removing search results alone does not establish who can access archived material through other routes. | Clarify the intended access rule for a confidential archived project. Decision owner: you. |\n\nNo changes have been applied to the PRD.\n"
+        ]
+      }
+    },
+    {
+      "id": "draft-b",
+      "initial_user_prompt": "Interview me about this feature draft. PRD v1: Add a dashboard with daily activity totals and a weekly email. This will improve retention. We already know dashboards work. Keep email opt-out behavior unchanged.",
+      "scripted_answers": [
+        "We haven't measured retention. Two enterprise managers asked for slides for their Monday staffing meeting; they currently export CSVs Friday. Their team members don't use the product on weekends. The dashboard idea was mine. I own the product decision.",
+        "Stop here. Defer choosing the delivery format. Treat reducing Friday preparation time as an unvalidated success hypothesis. Propose only justified edits to v1 and show unresolved questions."
+      ],
+      "baseline": {
+        "agent_task": "baseline_draft_b",
+        "responses": [
+          "I’m using the product-discovery skill to interview you about PRD v1. I’ll probe the retention assumption and keep unchanged email opt-out behavior as a firm constraint.\n\nLet’s start with the problem behind the draft:\n\n1. Who is this for? Walk me through the most recent example of someone stopping use of the product—what were they trying to accomplish, and what happened?\n2. What evidence is behind “we already know dashboards work”? What outcome improved, for which users, and how closely does that situation match this one?\n3. When you say “improve retention,” what returning behavior are you measuring, over what period, and what is the current baseline?\n\nYour answers will guide the next questions about daily totals, the weekly email, and the existing opt-out behavior we need to preserve.\n",
+          "The concrete need so far is helping two enterprise managers prepare for Monday staffing meetings. Retention remains an untested hypothesis, and the dashboard is your proposed solution. Weekend inactivity may simply reflect when team members work; it doesn’t yet establish a retention problem. You own the product decision, and unchanged email opt-out behavior remains a constraint.\n\n1. Walk me through one manager’s most recent Friday-to-Monday process: what did they export, how did they turn it into slides, and what staffing decision did those slides support?\n2. Where did that process cause trouble—time spent, missing information, errors, or a decision they couldn’t make? What did the manager actually report?\n3. What did each manager ask to receive, and by when? I’d like to understand whether their needs match before choosing between a dashboard, an email, or another way of producing the meeting material.\n",
+          "Proposed edits to PRD v1:\n\n| Current statement | Proposed replacement |\n|---|---|\n| “Add a dashboard with daily activity totals and a weekly email.” | “Two enterprise managers requested slides for Monday staffing meetings and currently export CSVs on Fridays. Defer choosing the delivery format; the required content and reporting period remain unresolved.” |\n| “This will improve retention.” | “Reducing Friday preparation time is an unvalidated success hypothesis. Retention has not been measured.” |\n| “We already know dashboards work.” | “The dashboard was proposed by the product decision owner. Its suitability for this workflow has not been validated.” |\n| “Keep email opt-out behavior unchanged.” | Keep unchanged. |\n\nAdd that you own the product decision. Record that team members do not use the product on weekends as workflow context, without treating it as evidence of churn.\n\nUnresolved questions:\n\n- What steps do managers take between exporting Friday’s CSVs and presenting Monday’s slides, and how long does preparation currently take?\n- What difficulties have the managers actually reported?\n- What staffing decisions do the slides support, and what information, reporting period, and freshness do those decisions require?\n- Do the two managers have the same needs, and how representative are they of other users?\n- What reduction in preparation time would be meaningful, and how would it be measured?\n- What is the existing email opt-out behavior that must be preserved if email is later selected?\n\nDelivery format remains deferred. Discovery stops here with these questions open; no implementation scope or validated success claim is established.\n"
+        ]
+      },
+      "candidate": {
+        "agent_task": "candidate_draft_b",
+        "responses": [
+          "I’m using the product-discovery skill to interview you about PRD v1, one question at a time. I’ll treat the retention benefit as an unverified assumption for now and preserve the existing email opt-out behavior.\n\n**Q1:** What evidence from your users supports the claim that showing daily activity totals will improve retention?\n\nThis determines whether the dashboard is ready to commit to or needs a smaller validation step first.\n",
+          "Your answer gives us a concrete request to investigate: two enterprise managers need slides for Monday staffing meetings and currently export CSVs on Friday. The dashboard is your proposed solution; its retention benefit remains unverified. I’ve recorded you as the product decision owner.\n\n**Q2:** What staffing decision do those managers need the slides to help them make on Monday?\n",
+          "Stopped after two questions; Q2 remains unanswered. No artifact has been changed.\n\nThe review established:\n\n- **F1 — Reported facts (A1):** Two enterprise managers requested slides for Monday staffing meetings and currently export CSVs on Friday. Their team members do not use the product on weekends. These are your reports, not independently verified findings.\n- **F2 — Assumptions (v1, A1–A2):** Retention has not been measured; the dashboard was your idea. Reducing Friday preparation time is now the explicit, unvalidated success hypothesis.\n- **F3 — Decisions (A1–A2):** You own the product decision. Delivery format is deferred. Existing email opt-out behavior remains unchanged per v1.\n- **Conflicts:** None established. The retention claim lacks support; that does not establish that it is false.\n\nProposed patch to v1’s sole paragraph:\n\n```diff\n- Add a dashboard with daily activity totals and a weekly email.\n- This will improve retention.\n- We already know dashboards work.\n+ Support preparation for enterprise managers’ Monday staffing meetings; delivery format is deferred.\n+ Hypothesis, not yet validated: reduce Friday preparation time.\n+ Two enterprise managers reportedly requested slides and currently export CSVs on Friday; the dashboard was the product owner’s proposed solution.\n  Keep email opt-out behavior unchanged.\n```\n\nThe first edit follows F1 and your explicit deferral in F3. The second follows F2 and A2. The third replaces unsupported certainty with attributed evidence from F1–F2 and A1. The opt-out requirement is preserved verbatim.\n\nUnresolved questions:\n\n| Gap | Why it matters | Smallest next evidence step |\n|---|---|---|\n| What staffing decision must the slides support? (Q2) | Determines the information the feature must provide. | Ask one requesting manager to walk through a recent Monday meeting. |\n| Are daily totals useful for that decision? | The proposed data content is still unvalidated. | Review one existing slide and its source CSV with that manager. |\n| How much Friday preparation time could be saved? | The success hypothesis has no baseline or target. | Observe and time one Friday preparation session. |\n| Which delivery format fits the workflow? | Dashboard, slides, and email imply different scope; selection is deferred. | Revisit after reviewing the current preparation workflow. |\n| Does this affect retention? | v1’s original benefit remains unsupported. | Define the relevant retention measure before evaluating any effect. |\n\nEvidence-gathering owners are unassigned. You remain the product decision owner. This bounded author interview does not validate the product or the success hypothesis.\n"
+        ]
+      }
+    },
+    {
+      "id": "draft-c",
+      "initial_user_prompt": "Poke holes in this spec with me. Spec v1: Build a chatbot that automatically resolves account-access tickets. Measure success by tickets closed per day. Keep the existing ticket history page.",
+      "scripted_answers": [
+        "The last five tickets were people locked out after changing phones. Today support verifies ownership manually and resets MFA. The bot would reset MFA automatically. We have no automated ownership-verification method. I own the product decision.",
+        "Stop here. I decide that MFA resets stay human-approved. Do not choose the interface yet. Treat fewer repeat contacts as an unvalidated outcome hypothesis. Propose only justified edits to v1 and show the open decisions."
+      ],
+      "baseline": {
+        "agent_task": "baseline_draft_c",
+        "responses": [
+          "The biggest hole is that **“tickets closed” can improve while account access gets worse**. The bot could close unresolved cases, discourage users from reopening them, or restore access to the wrong person. We need to define successful resolution before optimizing closure volume.\n\nI’m using the product-discovery skill to challenge the assumptions in this draft. Three questions to start:\n\n1. **What problem made you choose a chatbot?** Walk me through a recent account-access ticket, from the user getting stuck to the eventual outcome. Where did the current process fail them?\n2. **What would prove that a ticket was resolved?** For example, how would we distinguish restored access for the rightful user from a closed ticket followed by another support request? What evidence do you have today?\n3. **What does “automatically resolves” allow the bot to do?** Describe a case it should handle independently and a case that should go to a person, including what happens when account ownership cannot be established.\n\nI’ll treat keeping the existing ticket history page as an explicit constraint. “Keep” still needs clarification later: retaining the page could mean preserving its appearance, its existing behavior, or its usefulness for understanding everything the bot and support team did.\n",
+          "That exposes a blocker in the proposed scope: **the bot would reset MFA without an established way to verify account ownership**. Your product decision authority tells us who can decide scope; it does not supply the missing verification evidence. I would keep automatic MFA resets out of the proposed first version until that gap is resolved.\n\nThe five tickets also narrow the problem: recovery after a phone change. They support investigating that workflow, but they do not yet establish that a chatbot is the best solution.\n\nTwo questions will help us choose a defensible next step:\n\n1. Walk me through how support verified ownership for one of those five tickets. What evidence did they request, what did they check, and what would have made them refuse or escalate the reset?\n2. Where did the time go in those cases—waiting for support, collecting evidence, judging ownership, or performing the reset? Rough estimates are enough.\n\nOne possible first version is a bot that gathers information and hands the case to support for verification and reset. That is a scope option to assess, not an agreed requirement. Your answers will help show whether it would actually improve recovery.\n",
+          "Proposed v1 edits, based on your decisions:\n\n> Address account-access recovery after a phone change. The last five observed tickets involved this situation; broader coverage remains undecided.\n>\n> MFA resets must remain human-approved. Support currently verifies ownership manually, and no automated ownership-verification method exists.\n>\n> Leave the interface undecided; remove the commitment to a chatbot.\n>\n> Treat fewer repeat contacts as an **unvalidated outcome hypothesis**. Tickets closed per day is not sufficient evidence of successful recovery; the success measure remains undecided.\n>\n> Keep the existing ticket history page.\n\nOpen decisions:\n\n- **Scope:** Is v1 limited to phone-change recovery, or does it cover other access problems?\n- **Workflow:** Which steps, if any, should be automated? Human approval does not yet specify who performs the reset or how approval is recorded.\n- **Ownership verification:** What evidence does support require, and when must a request be refused or escalated?\n- **Interface:** What user and support experience best fits the workflow? No interface has been selected.\n- **Measurement:** How will successful recovery and repeat contacts be defined, measured, and evaluated? No baseline, target, or validation evidence has been established.\n- **Ticket history:** What must “keep” preserve, and what new activity, if any, should appear there?\n\nYou remain the product decision owner. These are proposed edits only; no spec file has been changed.\n"
+        ]
+      },
+      "candidate": {
+        "agent_task": "candidate_draft_c",
+        "responses": [
+          "I’m using the product-discovery skill to review Spec v1 one consequential question at a time.\n\n“Tickets closed per day” could improve while people remain locked out, so the definition of resolution will determine both the chatbot’s behavior and whether the metric means anything.\n\n**Q1:** What observable evidence should be required before the chatbot can count an account-access ticket as successfully resolved?\n",
+          "Your answer exposes a consequential gap: the bot would reset MFA, but there is no automated way to establish that the requester owns the account. Automating the current reset would therefore remove the ownership check support performs today.\n\n**Q2:** Given that gap, what boundary do you want v1 to place on the bot’s authority to reset MFA?\n",
+          "The product decision is that MFA resets remain human-approved. The interface is undecided, and fewer repeat contacts is an unvalidated outcome hypothesis.\n\nProposed edits to Spec v1:\n\n```diff\n- Build a chatbot that automatically resolves account-access tickets.\n+ Build an account-access support solution; the interface remains undecided. MFA resets must remain human-approved.\n- Measure success by tickets closed per day.\n+ Treat fewer repeat contacts as an unvalidated outcome hypothesis. The success measure remains undecided.\n  Keep the existing ticket history page.\n```\n\nThese edits are grounded in your decisions, not a validated product outcome:\n\n| Finding | Evidence and status | Edit supported |\n|---|---|---|\n| F1: Automated ownership verification is missing. | Your Q1 answer: support currently verifies ownership manually; no automated method exists. Attributed testimony, not independently verified. | Explains why automatic MFA resets need an explicit boundary. |\n| F2: MFA resets remain human-approved. | Your Q2 answer, as product decision owner. | Replaces the promise of automatic resolution with the approved reset boundary. |\n| F3: Interface choice is deferred. | Your Q2 answer: do not choose the interface yet. | Removes the chatbot commitment. |\n| F4: Fewer repeat contacts is a hypothesis; the success measure is unresolved. | Your Q2 answer establishes the hypothesis. Q1 did not establish evidence of successful resolution. | Removes ticket throughput as the settled success measure without treating repeat contacts as validated. |\n\nYour reported five recent tickets concerned phone changes and MFA lockouts; that sample does not establish the full ticket mix. The original automation promise conflicts with your latest reset decision; the proposed patch follows your explicit decision. No unresolved contradiction was observed.\n\nOpen decisions:\n\n| Decision | Consequence | Smallest next evidence step |\n|---|---|---|\n| What evidence establishes successful resolution? | Closing a ticket could still leave someone locked out. | Review a completed reset with support and identify evidence that access was restored. |\n| What may be automated around human approval? | Approval alone does not define ownership verification, handoff, or who executes the reset. | Walk through one current MFA recovery with support and mark each responsibility. |\n| Which account-access cases belong in v1? | Five phone-change cases may omit other needs. | Review a broader recent ticket sample. |\n| Which interface fits the workflow? | Choosing now could commit to an unsuitable interaction. | Observe the current request and support handoff before comparing interfaces. |\n| Does reducing repeat contacts reflect better outcomes? | Fewer contacts could reflect abandonment rather than restored access. | Link repeat contacts in a small ticket sample to verified access outcomes. |\n\nYou own the product decisions; owners for these evidence steps remain unassigned. The ticket history requirement is preserved. This bounded review does not validate the product, and no specification file has been changed.\n"
+        ]
+      }
+    }
+  ],
+  "routing_screen": {
+    "evidence_kind": "model_routing_screen",
+    "reviewer_kind": "model_teacher",
+    "prediction_blind": true,
+    "inputs_read": "YAML frontmatter only from the four candidate SKILL.md files",
+    "limitation": "Model routing evidence, not actual harness activation proof. Query 4 lacks product context and is consequently ambiguous outside this candidate set.",
+    "selections": [
+      {
+        "id": 1,
+        "query": "Grill this PRD with me.",
+        "primary_skill": "product-discovery",
+        "product_discovery_mode": "artifact-first",
+        "rationale": "PRD review is explicitly included in the product-discovery description."
+      },
+      {
+        "id": 2,
+        "query": "Poke holes in this feature spec.",
+        "primary_skill": "product-discovery",
+        "product_discovery_mode": "artifact-first",
+        "rationale": "An existing feature specification is the object of assumption and gap discovery."
+      },
+      {
+        "id": 3,
+        "query": "Interrogate this proposal before we commit to building it.",
+        "primary_skill": "product-discovery",
+        "product_discovery_mode": "artifact-first",
+        "rationale": "Proposal interrogation before commitment is explicitly included; approval has not occurred so implementation-planning is excluded."
+      },
+      {
+        "id": 4,
+        "query": "Interview me about this draft.",
+        "primary_skill": "product-discovery",
+        "product_discovery_mode": "artifact-first",
+        "rationale": "Interviewing an author about an existing draft matches the explicit description among these candidates; the query alone does not establish that the draft concerns a product."
+      },
+      {
+        "id": 5,
+        "query": "Help me discover better routines in my daily life.",
+        "primary_skill": "daily-life-discovery",
+        "product_discovery_mode": "not-applicable",
+        "rationale": "Personal routines and day-to-day improvements belong to daily-life-discovery and are an explicit product-discovery exclusion."
+      },
+      {
+        "id": 6,
+        "query": "Design a general interview study of local history.",
+        "primary_skill": "research-methodology",
+        "product_discovery_mode": "not-applicable",
+        "rationale": "A general historical interview study seeks research evidence without product requirements."
+      },
+      {
+        "id": 7,
+        "query": "Map stakeholders for a new billing product; there is no draft yet.",
+        "primary_skill": "product-discovery",
+        "product_discovery_mode": "ordinary-stakeholder-mapping",
+        "rationale": "Product stakeholder mapping is explicitly included and there is no existing artifact to interrogate."
+      },
+      {
+        "id": 8,
+        "query": "Plan implementation of these already agreed requirements.",
+        "primary_skill": "implementation-planning",
+        "product_discovery_mode": "not-applicable",
+        "rationale": "Delivery planning for approved requirements directly matches implementation-planning."
+      }
+    ]
+  }
+}

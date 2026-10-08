@@ -1,0 +1,45 @@
+{
+  "description": "Manual or harness-specific routing probes; separate from portable output-quality evals. Expected mode is checked in addition to skill selection.",
+  "cases": [
+    {
+      "prompt": "Grill this PRD with me.",
+      "expected_skill": "product-discovery",
+      "expected_mode": "artifact-first"
+    },
+    {
+      "prompt": "Poke holes in this feature spec.",
+      "expected_skill": "product-discovery",
+      "expected_mode": "artifact-first"
+    },
+    {
+      "prompt": "Interrogate this proposal before we commit to building it.",
+      "expected_skill": "product-discovery",
+      "expected_mode": "artifact-first"
+    },
+    {
+      "prompt": "Interview me about this draft.",
+      "expected_skill": "product-discovery",
+      "expected_mode": "artifact-first"
+    },
+    {
+      "prompt": "Help me discover better routines in my daily life.",
+      "expected_skill": "daily-life-discovery",
+      "expected_mode": "not-artifact-first"
+    },
+    {
+      "prompt": "Design a general interview study of local history.",
+      "expected_skill": "research-methodology",
+      "expected_mode": "not-artifact-first"
+    },
+    {
+      "prompt": "Map stakeholders for a new billing product; there is no draft yet.",
+      "expected_skill": "product-discovery",
+      "expected_mode": "stakeholder-mapping"
+    },
+    {
+      "prompt": "Plan implementation of these already agreed requirements.",
+      "expected_skill": "implementation-planning",
+      "expected_mode": "not-artifact-first"
+    }
+  ]
+}

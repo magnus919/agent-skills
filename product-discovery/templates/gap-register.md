@@ -29,3 +29,11 @@
 | Assumption | Source | What Would Disprove It | Status |
 |-----------|--------|----------------------|--------|
 | | | | Untested / Validated / False |
+
+## Optional Artifact Review Conflicts
+
+| Finding ID | Conflicting statements and exchange IDs | Consequence | Decision needed | Owner / status |
+|------------|-----------------------------------------|-------------|-----------------|----------------|
+| | | | | Unassigned / unresolved |
+
+For artifact review, attach finding IDs and exchange references to assumptions and deferred decisions above. Separate author testimony from independently supported facts; mark an accepted assumption as assumed, not validated.

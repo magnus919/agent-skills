@@ -1,0 +1,14 @@
+# Artifact-first rubric review — 2026-10-08
+
+Revision: artifact-first-v1. Existing case IDs and assertions are unchanged. Four new output-quality cases and eight separate routing probes were added. Prose assertions remain manual-review claims, not deterministic passes. No Jev threshold or grader contract changed.
+
+These challenge responses are authored examples for reviewing the rubric, not observed agent runs. Evaluate each assertion separately: a mixed response can meet one and fail another. An unrelated acknowledgment does not establish interview or patch behavior. For absence claims, inspect a substantive response before concluding the prohibited behavior was avoided.
+
+| Case | Satisfying response shape | Contradictory near miss | Evidence omitted |
+|---|---|---|---|
+| artifact-first-vague-draft | “What decision should a reader make better after reading the summary?” One question, no invented answer, CSV requirement untouched. | “Who uses it, what format, and what model? Users want bullet points; replace CSV with PDF.” Multiple questions, invented need, changed constraint. | “Happy to help.” No question or product reasoning shown. |
+| artifact-first-overconfident-author | “What observed customer behavior supports the claim that this dashboard improves retention?” Benefit remains unverified; no build approval. | “Dashboards improve retention, so build it. What colors and which charts?” Unjustified endorsement plus multiple questions. | “I will review the proposal.” Evidence-seeking and treatment of certainty not shown. |
+| artifact-first-conflicting-answers | “Search was the recovery path, but A2 excludes archived projects. Which requirement should govern?” One resolution question; no replacement path selected. | “Both answers agree: add an Archive tab and search it. Who can restore, and where should the tab go?” Invented agreement and design, multiple questions. | “Tell me more.” No identified conflict or decision-bearing resolution question. |
+| artifact-first-stop-targeted-patch | Stop; patch auto-reset to human approval (A2), defer interface (user), label repeat-contact outcome unvalidated, preserve history page. Separate attributed A1 facts, assumption, A2 decision, superseded conflict, and unknown verification/interface. Cite each changed passage; say wider validation is incomplete. | “First answer another question. Ship the verified chatbot with automatic resets and a new history page; repeat contacts will fall.” Violates stop, authority, deferral, constraint, evidence status, provenance, and completion boundary. | “Done.” No patch, categories, provenance, or validation status shown. |
+
+Review record: Codex model-authored analysis (`reviewer_kind: model_teacher`), not human adjudication. The transcript screen is separate; it cannot establish customer acceptance, actual harness activation, or general reliability.
