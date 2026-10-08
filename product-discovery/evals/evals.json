@@ -61,6 +61,54 @@
         "Unresolved questions are listed with owners rather than silently resolved",
         "The response flags incomplete discovery areas instead of papering over them"
       ]
+    },
+    {
+      "id": "artifact-first-vague-draft",
+      "prompt": "Grill this PRD with me: Add AI summaries to make reports better. Keep CSV exports unchanged. Start the interview.",
+      "expected_output": "Ask one consequential question about the user decision or problem before choosing a summary implementation.",
+      "assertions": [
+        "The response asks exactly one independently answerable question.",
+        "The question seeks a user problem, decision, or observable outcome hidden by the word better.",
+        "The response does not invent an author answer or a customer finding.",
+        "The response does not propose changing CSV exports."
+      ]
+    },
+    {
+      "id": "artifact-first-overconfident-author",
+      "prompt": "Interview me about this draft: Add a dashboard and weekly email to improve retention. Keep opt-out unchanged. Everyone knows dashboards work, so just confirm we should build it.",
+      "expected_output": "Probe the unsupported retention assumption with one question; do not endorse the solution based on author confidence.",
+      "assertions": [
+        "The response asks exactly one independently answerable question.",
+        "The question requests evidence or a concrete user behavior bearing on the retention claim.",
+        "The response treats the dashboard benefit as unverified rather than established.",
+        "The response does not declare the feature ready to build."
+      ]
+    },
+    {
+      "id": "artifact-first-conflicting-answers",
+      "prompt": "Continue our draft review. Draft v1: Anyone can restore archived projects. Q1 asked how to find them; A1: search. Q2 asked whether search includes archived projects; A2: No, archived projects must be excluded from search. Ask the next question.",
+      "expected_output": "Expose the recovery-path contradiction, ask one resolution question, and leave the decision open.",
+      "assertions": [
+        "The response identifies that excluding archived projects from search removes the stated recovery path.",
+        "The response asks exactly one independently answerable question to resolve a consequential open decision.",
+        "The response does not silently choose a new discovery mechanism.",
+        "The response does not present the incompatible answers as an agreed design."
+      ]
+    },
+    {
+      "id": "artifact-first-stop-targeted-patch",
+      "prompt": "Stop our review and patch only justified passages. Draft v1: Build a chatbot that automatically resolves account-access tickets. Measure success by tickets closed per day. Keep the existing ticket history page. Q1 asked what happened in recent tickets; A1: five phone changes required manual ownership checks and MFA resets; we have no automated verification. Q2 asked what authority is acceptable; A2: I own this decision; MFA resets stay human-approved. Defer choosing the interface. Mark fewer repeat contacts as an unvalidated outcome hypothesis.",
+      "expected_output": "Stop questioning and return a small patch plus categorized ledger with exchange provenance; leave interface and outcome validation open.",
+      "assertions": [
+        "The response stops the interview rather than requiring another answer.",
+        "The proposed patch preserves human approval for MFA resets based on A2.",
+        "The proposed patch leaves the interface choice unresolved.",
+        "The response marks fewer repeat contacts as an unvalidated hypothesis.",
+        "The response preserves the ticket history page constraint.",
+        "The response distinguishes attributed facts, assumptions, decisions, conflicts, and unknowns; empty categories may be marked empty.",
+        "The proposed changes cite the supplied exchanges or original artifact.",
+        "The response does not claim that the author interview completes stakeholder validation."
+      ]
     }
   ]
 }

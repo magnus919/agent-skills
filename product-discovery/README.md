@@ -1,35 +1,35 @@
-# Product Discovery — Discover Requirements from Stakeholders
+# Product Discovery — Turn Conversations and Drafts into Clear Requirements
 
-Discover product requirements from human stakeholders — map who to talk to, ask questions that surface hidden assumptions, detect gaps in real time, resolve conflicts, and translate conversations into structured specs.
+Find hidden assumptions, resolve conflicting requirements, and improve a product draft before committing to a build.
 
 ## Why Install This Skill
 
-When your agent loads this skill, it becomes a **product discovery specialist** — Phase 0 upstream of any spec-driven development pipeline. That means:
+A feature request can sound clear while hiding different expectations about who it serves, what success means, and what happens when things go wrong. This skill helps your agent ask useful questions and turn the answers into requirements you can review.
 
-- **Map stakeholders** — identify who to interview and in what order
-- **Design question stacks** — open questions that discover, not closed questions that validate
-- **Detect hidden gaps** — recognize what stakeholders aren't saying
-- **Resolve conflicts** — surface unstated differences in assumptions, risk tolerance, or incentives
-- **Distill into specs** — convert raw interview notes into structured spec input
-- **Handle AI-conducted discovery** — account for sycophancy and trust dynamics
+Already have a PRD or spec? Ask your agent to grill it. It asks one consequential question at a time, follows your answers, and proposes small edits tied to what you actually decided. You can stop, defer a question, or keep an assumption explicit without rewriting the whole document.
 
 ## What You Get
 
-| Directory | Purpose |
-|-----------|---------|
-| `SKILL.md` | Pipeline overview, entry point table, core principles |
-| `references/` | 8 reference files: stakeholder mapping, question patterns, gap detection, conflict resolution, transcript-to-spec, AI-conducted discovery, power dynamics, time-constrained discovery |
-| `templates/` | 5 templates: discovery plan, interview guide, distillation worksheet, gap register, interpretation log |
-
-## Triggers
-
-Load this when starting product discovery, needing to interview stakeholders, or preparing for the SDD SPECIFY phase.
-
-## Requirements
-
-None. Agent-agnostic — works with any spec-driven or requirements pipeline.
-
+| Contents | Provides |
+|----------|----------|
+| `SKILL.md` | Entry points for stakeholder discovery and draft review |
+| `references/` | Interviewing, artifact review, gap detection, conflict resolution, synthesis, and time-limited discovery |
+| `templates/` | Discovery plans, interview guides, gap registers, and interpretation and patch records |
+| `evals/` | Scenarios for requirements work and bounded draft interviews |
 
 ## Quick Start
 
-Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.
+Attach a draft and ask: “Poke holes in this PRD. Interview me one question at a time, then suggest only the edits we need.”
+
+Expect a focused first question, followed by a small proposed patch and clearly identified assumptions and unresolved questions when you stop.
+
+## Triggers
+
+- A vague product idea needs concrete requirements.
+- Stakeholders disagree or interview notes need synthesis.
+- A draft PRD, proposal, or spec needs probing before implementation.
+- You want to check whether enough discovery has been done.
+
+## Requirements
+
+No tools or accounts required. Bring a draft for artifact review, or stakeholder context for broader discovery.

@@ -4,15 +4,17 @@ description: >-
   Discover product requirements from human stakeholders — map who to talk to, ask
   questions that surface hidden assumptions, detect gaps in real time, resolve conflicts,
   and translate conversations into structured SDD specs. Phase 0 upstream of Spec-Driven
-  Development. Do not use this skill for unrelated requests; route to the nearest named
-  specialist.
+  Development. Also grill a PRD, interrogate a proposal, poke holes in a spec, or
+  interview its author about an existing draft, one consequential question at a time.
+  Do not use for personal-life discovery (daily-life-discovery), general research
+  without product requirements (research-methodology), or implementation planning.
 license: MIT
 compatibility: Agent-agnostic — works with any agent supporting a spec-driven or requirements pipeline.
 ---
 
 # Product Discovery — Stakeholder Map
 
-Pre-discovery work begins before any conversation. Load this reference first when planning discovery:
+For an existing draft, use the artifact-first entry below. For a new discovery effort, begin with stakeholder mapping:
 
 | Reference | Load when | File |
 |-----------|-----------|------|
@@ -41,6 +43,7 @@ Load the reference for the phase you're entering.
 
 | You have this | Start here |
 |-------------|-----------|
+| A PRD, brief, or spec to grill with its author | Load `references/artifact-first-interview.md` — ask one consequential question at a time, then patch only affected passages |
 | A vague idea or problem space | Load `references/stakeholder-mapping.md` — identify who to interview |
 | An interview scheduled with no protocol | Load `references/question-patterns.md` and `references/gap-detection.md` — design your question stack |
 | Raw interview notes from one or more sessions | Load `references/transcript-to-spec.md` — distill into structured spec components |
@@ -51,9 +54,18 @@ Load the reference for the phase you're entering.
 
 **Done with discovery?** Use [product-methodology](../product-methodology/SKILL.md) to choose scope, then [product-design-and-ux](../product-design-and-ux/SKILL.md) to define user-facing behavior. Jump to the [Is Discovery Complete?](#quick-reference-is-discovery-complete) checklist at the bottom.
 
+## Artifact-first review
+
+When the user brings a draft to interrogate, load [artifact-first interviewing](references/artifact-first-interview.md). Read the artifact before asking; choose one decision-bearing question, wait for the answer, then adapt. Reuse the gap register for assumptions and unresolved conflicts, and the interpretation log for decisions and patch provenance. Stop when the user stops, the agreed question budget expires, or no consequential unresolved decision remains. Return a targeted proposed patch and explicitly unverified gaps. This bounded review does **not** satisfy the full-discovery checklist below.
+
+## When not to use
+
+Route personal routines and life priorities to [daily-life-discovery](../daily-life-discovery/SKILL.md), general research plans to [research-methodology](../research-methodology/SKILL.md), and execution sequencing for settled requirements to [implementation-planning](../implementation-planning/SKILL.md). General stakeholder research for a product still uses this skill’s existing MAP/INTERVIEW workflow; do not force it into draft review.
+
 ## Trigger Conditions
 
 Load this skill when:
+- You want to grill a PRD, poke holes in a proposal, or be interviewed about a draft
 - You're starting product discovery for a new feature or project
 - You have a vague idea that needs to become a structured specification
 - You need to interview stakeholders but don't have a protocol
@@ -93,7 +105,7 @@ These dimensions apply across all phases. Load when relevant:
 
 ## Quick Reference: Is Discovery Complete?
 
-Before handing off to SDD Phase 1 (SPECIFY), check:
+For full stakeholder discovery before handing off to SDD Phase 1 (SPECIFY), use this checklist. A stopped artifact-first review reports remaining gaps instead of declaring these complete:
 
 - [ ] All stakeholder types interviewed (knowledge holders, authority holders, affected parties, implementation knowers)?
 - [ ] At least 3 independent sources for every requirement?
