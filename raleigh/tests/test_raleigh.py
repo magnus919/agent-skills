@@ -19,7 +19,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 from contextlib import redirect_stderr, redirect_stdout
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from email.message import Message
 from unittest.mock import MagicMock, patch
 
@@ -3205,13 +3205,22 @@ class FireTests(unittest.TestCase):
         self.assertIn("661", err.getvalue())
 
     def test_cli_fire_group_filter_notes_pretransition_exclusion(self):
-        p1, p2 = self._mock_resolution()
-        with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]):
-            err = io.StringIO()
-            with redirect_stdout(io.StringIO()), redirect_stderr(err):
-                code = cli.main(["fire", "incidents", "--since", "40w", "--group", "Fire"])
-        self.assertEqual(code, 0)
-        self.assertIn("2026+", err.getvalue())
+        transition = datetime.fromtimestamp(fire.SCHEMA_TRANSITION_EPOCH_MS / 1000, timezone.utc)
+        for offset_ms in (-1, 0, 1):
+            with self.subTest(since_offset_ms=offset_ms):
+                # Exercise the real relative-window calculation on both sides of
+                # the fixed schema cutoff, independent of the machine's date.
+                now = transition + timedelta(weeks=40, milliseconds=offset_ms)
+                p1, p2 = self._mock_resolution()
+                with p1, p2, patch("raleighlib.arcgis.query_all_pages", return_value=[]), patch.object(
+                    cli_lib, "datetime", wraps=datetime
+                ) as clock:
+                    clock.now.return_value = now
+                    err = io.StringIO()
+                    with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                        code = cli.main(["fire", "incidents", "--since", "40w", "--group", "Fire"])
+                self.assertEqual(code, 0)
+                self.assertEqual("2026+" in err.getvalue(), offset_ms < 0)
 
     def test_cli_fire_station_full_history_notes_sparse_station(self):
         p1, p2 = self._mock_resolution()
