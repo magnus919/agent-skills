@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -70,8 +71,9 @@ def run_trial(
     output_dir: Path,
     model: str,
 ) -> Path:
-    work_dir = contained_path(output_dir, "work", case.id)
-    case_output_dir = contained_path(output_dir, "trials", case.id)
+    trial_root = contained_path(output_dir, "runs", uuid.uuid4().hex)
+    work_dir = contained_path(trial_root, "work", case.id)
+    case_output_dir = contained_path(trial_root, "outputs", case.id)
 
     adapter_input = AdapterInput(
         skill_path=skill_path,

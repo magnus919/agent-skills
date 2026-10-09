@@ -9,6 +9,7 @@ Mutable state is reset for every trial.
 from __future__ import annotations
 
 import sys
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -38,13 +39,14 @@ def run_paired_trial(
         limits.update(request_limits)
 
     try:
-        candidate_output_dir = contained_path(output_dir, "candidate", case.id)
-        baseline_output_dir = contained_path(output_dir, "baseline", case.id)
+        trial_root = contained_path(output_dir, "runs", uuid.uuid4().hex)
+        candidate_output_dir = contained_path(trial_root, "outputs", "candidate", case.id)
+        baseline_output_dir = contained_path(trial_root, "outputs", "baseline", case.id)
 
         candidate_input = AdapterInput(
             skill_path=candidate_sandbox,
             case=case,
-            work_dir=contained_path(output_dir, "work", "candidate", case.id),
+            work_dir=contained_path(trial_root, "work", "candidate", case.id),
             output_dir=candidate_output_dir,
             model=model,
             permissions={"skill_readonly": True, "grader_visible": False},
@@ -54,7 +56,7 @@ def run_paired_trial(
         baseline_input = AdapterInput(
             skill_path=baseline_sandbox,
             case=case,
-            work_dir=contained_path(output_dir, "work", "baseline", case.id),
+            work_dir=contained_path(trial_root, "work", "baseline", case.id),
             output_dir=baseline_output_dir,
             model=model,
             permissions={"skill_readonly": False, "grader_visible": False},

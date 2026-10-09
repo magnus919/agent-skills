@@ -19,6 +19,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
+from eval_runner.cli_adapter import CliSubprocessAdapter
 from eval_runner.comparison import (
     build_comparison_report,
     format_comparison_summary,
@@ -279,6 +280,27 @@ def test_incomplete_artifact_inventory_is_unassessed():
     assert result.semantic_verdict == "not_assessed"
     assert result.manual_count == 1
     assert not result.evidence_complete
+
+
+def test_missing_environment_state_is_unassessed_but_observed_missing_key_fails():
+    assertion = "environment_state:reservation=confirmed"
+    missing = grade_output(
+        "c1",
+        [assertion],
+        AdapterOutput(exit_status=ExitStatus.COMPLETED, response="done", environment_state=None),
+    )
+    assert missing.semantic_verdict == "not_assessed"
+    assert missing.manual_count == 1
+    assert not missing.evidence_complete
+
+    observed_without_key = grade_output(
+        "c1",
+        [assertion],
+        AdapterOutput(exit_status=ExitStatus.COMPLETED, response="done", environment_state={}),
+    )
+    assert observed_without_key.semantic_verdict == "fail"
+    assert observed_without_key.fail_count == 1
+    assert observed_without_key.evidence_complete
 
 
 def test_malformed_or_unknown_assertions_remain_unassessed():
@@ -597,6 +619,37 @@ def test_paired_trial_end_to_end():
         assert len(reports) == 1
 
 
+def test_cli_paired_rerun_does_not_reuse_prior_artifacts():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        skill = _make_skill_dir(tmp_path)
+        counter = tmp_path / "invocations.txt"
+        script = (
+            "import os; from pathlib import Path; "
+            "p=Path(os.environ['EVAL_RUN_COUNTER']); "
+            "n=int(p.read_text()) if p.exists() else 0; n+=1; p.write_text(str(n)); "
+            "out=Path(os.environ['EVAL_OUTPUT_DIR']); "
+            "(out/'result.txt').write_text('new artifact') if n <= 2 else None; "
+            "print('completed')"
+        )
+        adapter = CliSubprocessAdapter([sys.executable, "-c", script])
+        case = _make_case(["artifact_exists:result.txt", "exit_status:completed"])
+        output_dir = tmp_path / "paired-output"
+
+        with patch.dict(os.environ, {"EVAL_RUN_COUNTER": str(counter)}):
+            first = run_paired_trial(adapter, case, skill, output_dir, "fixture-cli")
+            second = run_paired_trial(adapter, case, skill, output_dir, "fixture-cli")
+
+        assert first["candidate"]["semantic_verdict"] == "pass"
+        first_digests = first["candidate"]["manifest"]["outputs"]["artifact_digests"]
+        assert list(first_digests) == ["result.txt"]
+        assert len(first_digests["result.txt"]) == 16
+        assert second["candidate"]["semantic_verdict"] == "fail"
+        assert second["candidate"]["manifest"]["outputs"]["artifact_digests"] == {}
+        assert second["candidate"]["fail_count"] == 1
+        assert len(list((output_dir / "runs").iterdir())) == 2
+
+
 def test_paired_trial_candidate_cannot_read_evals():
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
@@ -698,7 +751,7 @@ def test_paired_trial_rejects_symlinked_output_subdirectory():
         output_dir.mkdir()
         outside = tmp_path / "outside"
         outside.mkdir()
-        (output_dir / "candidate").symlink_to(outside, target_is_directory=True)
+        (output_dir / "runs").symlink_to(outside, target_is_directory=True)
 
         try:
             run_paired_trial(
@@ -1586,10 +1639,12 @@ if __name__ == "__main__":
     test_grader_fail()
     test_grader_infra_error()
     test_grader_manual_review()
+    test_missing_environment_state_is_unassessed_but_observed_missing_key_fails()
     test_comparison_report_structure()
     test_comparison_report_validates_against_schema()
     test_comparison_schema_matches_runtime_case_ids()
     test_paired_trial_end_to_end()
+    test_cli_paired_rerun_does_not_reuse_prior_artifacts()
     test_paired_trial_candidate_cannot_read_evals()
     test_sandbox_rejects_top_level_symlink()
     test_sandbox_rejects_nested_symlink()

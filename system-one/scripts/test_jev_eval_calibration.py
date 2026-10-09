@@ -32,7 +32,7 @@ class JevEvalCalibrationTests(unittest.TestCase):
         reports.mkdir(parents=True)
         for case_id in ("case-a", "case-b"):
             assertions = ["Describes exact authorization", "Includes an unknown path"]
-            def trial(side):
+            def trial(side, case_id=case_id, assertions=assertions):
                 return {
                     "assertions": [{"assertion": assertion, "verdict": "manual_review"} for assertion in assertions],
                     "manifest": {"status": "completed", "outputs": {"response": f"{case_id} {side} response"}},
@@ -58,6 +58,7 @@ class JevEvalCalibrationTests(unittest.TestCase):
                           "prose_assertions_seen": 8, "assertions_selected": 8,
                           "groups_selected": 4,
                           "skipped_infra_error_assertions": 0, "generation_error_sides": 0,
+                          "skipped_non_prose_manual_assertions": 0,
                           "skipped_response": 0, "skipped_oversized_assertion": 0,
                           "skipped_oversized_group": 0, "skipped_unpaired_assertions": 0,
                           "assertions_omitted_by_budget": 0,
@@ -142,6 +143,11 @@ class JevEvalCalibrationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "response identity"):
             records_from_artifacts(self.root, self.audit)
         self.audit["counts"]["provider_errors"] = 1
+        self.audit_path.write_text(json.dumps(self.audit), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "coverage is incomplete"):
+            read_audit(self.audit_path)
+        self.audit["counts"]["provider_errors"] = 0
+        self.audit["counts"]["skipped_non_prose_manual_assertions"] = 1
         self.audit_path.write_text(json.dumps(self.audit), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "coverage is incomplete"):
             read_audit(self.audit_path)

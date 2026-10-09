@@ -83,6 +83,38 @@ def _read_json(path: Path, root: Path) -> dict[str, Any]:
 
 
 SAFE_ID = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+EXACT_ASSERTION_KINDS = frozenset(
+    {
+        "response_contains",
+        "response_not_contains",
+        "exit_status",
+        "artifact_exists",
+        "environment_state",
+        "activation_evidence_contains",
+        "tool_event_count_gte",
+    }
+)
+
+
+def _is_prose_manual_assertion(item: dict[str, Any]) -> bool:
+    """Select only human-readable rubric assertions, not unresolved exact checks."""
+    assertion = item.get("assertion")
+    if not isinstance(assertion, str) or not assertion.strip():
+        return False
+
+    normalized = assertion.strip().lower()
+    if ":" in normalized:
+        # A colon-bearing manual assertion is either an exact binding or an
+        # unknown/malformed binding. Neither belongs in the prose judge batch.
+        return False
+    if any(
+        normalized == kind or normalized.startswith(f"{kind} ") or normalized.startswith(f"{kind}=")
+        for kind in EXACT_ASSERTION_KINDS
+    ):
+        return False
+
+    detail = item.get("detail")
+    return detail in (None, "", "no recognized pattern")
 
 
 def expected_report_ids(selection: dict[str, Any]) -> set[tuple[str, str]]:
@@ -133,6 +165,7 @@ def collect_groups(
         "reports_seen": 0,
         "exact_assertions_untouched": 0,
         "prose_assertions_seen": 0,
+        "skipped_non_prose_manual_assertions": 0,
         "skipped_infra_error_assertions": 0,
         "generation_error_sides": 0,
         "skipped_response": 0,
@@ -168,6 +201,9 @@ def collect_groups(
                 if not isinstance(item, dict) or not isinstance(item.get("assertion"), str):
                     raise ValueError("invalid assertion record")
                 if item.get("verdict") == "manual_review":
+                    if not _is_prose_manual_assertion(item):
+                        counts["skipped_non_prose_manual_assertions"] += 1
+                        continue
                     counts["prose_assertions_seen"] += 1
                     if len(item["assertion"]) > MAX_ASSERTION_CHARS:
                         counts["skipped_oversized_assertion"] += 1
@@ -440,6 +476,7 @@ def render_summary(report: dict[str, Any]) -> str:
         f"- Provider errors: {counts['provider_errors']}\n"
         f"- Generation-error sides: {counts['generation_error_sides']}\n"
         f"- Assertions skipped after generation errors: {counts['skipped_infra_error_assertions']}\n"
+        f"- Unresolved non-prose assertions skipped: {counts['skipped_non_prose_manual_assertions']}\n"
         f"- Skipped response assertions: {counts['skipped_response']}\n"
         f"- Oversized assertion/group skips: {counts['skipped_oversized_assertion'] + counts['skipped_oversized_group']}\n"
         f"- Unpaired assertions: {counts['skipped_unpaired_assertions']}\n"

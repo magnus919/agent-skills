@@ -37,6 +37,7 @@ class FreezeSnapshot:
     randomization_seed: int
     exclusions: tuple[str, ...] = ()
     frozen_at: str = ""
+    required_case_sets: dict[str, str] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -45,6 +46,7 @@ class FreezeSnapshot:
             "dataset_hash": self.dataset_hash,
             "grader_versions": dict(self.grader_versions),
             "randomization_seed": self.randomization_seed,
+            "required_case_sets": dict(self.required_case_sets),
             "exclusions": list(self.exclusions),
             "frozen_at": self.frozen_at or datetime.now(timezone.utc).isoformat(),
         }
@@ -56,6 +58,12 @@ class FreezeSnapshot:
             and self.baseline_tree_hash
             and self.dataset_hash
             and self.grader_versions
+            and self.required_case_sets
+            and all(
+                isinstance(case_id, str) and case_id and case_set in CASE_SETS
+                for case_id, case_set in self.required_case_sets.items()
+            )
+            and any(case_set == "release" for case_set in self.required_case_sets.values())
         )
 
 
@@ -412,6 +420,7 @@ def compute_release_decision(
     rubric_results: list[dict[str, Any]],
     calibration: CalibrationRecord,
     hard_gate_violations: list[str] | None = None,
+    freeze: FreezeSnapshot | None = None,
 ) -> dict[str, Any]:
     """Compute PASS, CONDITIONAL, HOLD, or BLOCK from the release matrix."""
     violations = hard_gate_violations or []
@@ -424,10 +433,56 @@ def compute_release_decision(
             "hard_gate_violations": violations,
         }
 
-    if not case_results:
+    if freeze is None or not freeze.complete:
         return {
             "outcome": "HOLD",
-            "reasons": ["no evaluated cases; semantic release evidence is absent"],
+            "reasons": ["freeze snapshot is incomplete or lacks a required case roster"],
+            "hard_gate_violations": [],
+        }
+
+    required = freeze.required_case_sets
+    results_by_id: dict[str, dict[str, Any]] = {}
+    duplicate_ids: set[str] = set()
+    for result in case_results:
+        case_id = result.get("case_id")
+        if not isinstance(case_id, str) or not case_id:
+            return {
+                "outcome": "HOLD",
+                "reasons": ["case results contain a missing or invalid case ID"],
+                "hard_gate_violations": [],
+            }
+        if case_id in results_by_id:
+            duplicate_ids.add(case_id)
+        results_by_id[case_id] = result
+
+    missing_ids = sorted(set(required) - set(results_by_id))
+    misclassified_ids = sorted(
+        case_id
+        for case_id, case_set in required.items()
+        if case_id in results_by_id and results_by_id[case_id].get("case_set") != case_set
+    )
+    unplanned_gate_ids = sorted(
+        case_id
+        for case_id, result in results_by_id.items()
+        if result.get("case_set") in ("release", "regression") and case_id not in required
+    )
+    if missing_ids or misclassified_ids or unplanned_gate_ids or duplicate_ids:
+        coverage_reasons = []
+        if missing_ids:
+            coverage_reasons.append(f"missing required cases: {', '.join(missing_ids)}")
+        if misclassified_ids:
+            coverage_reasons.append(f"case-set mismatch: {', '.join(misclassified_ids)}")
+        if unplanned_gate_ids:
+            coverage_reasons.append(
+                f"unplanned release/regression cases: {', '.join(unplanned_gate_ids)}"
+            )
+        if duplicate_ids:
+            coverage_reasons.append(f"duplicate case results: {', '.join(sorted(duplicate_ids))}")
+        return {
+            "outcome": "HOLD",
+            "reasons": [
+                "frozen case roster coverage is incomplete: " + "; ".join(coverage_reasons)
+            ],
             "hard_gate_violations": [],
         }
 
@@ -533,7 +588,7 @@ def build_release_report(
     hard_gate_violations: list[str] | None = None,
 ) -> dict[str, Any]:
     decision = compute_release_decision(
-        case_results, rubric_results, calibration, hard_gate_violations
+        case_results, rubric_results, calibration, hard_gate_violations, freeze=freeze
     )
     return {
         "schema_version": RELEASE_SCHEMA_VERSION,

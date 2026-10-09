@@ -48,6 +48,7 @@
         "dataset_hash",
         "grader_versions",
         "randomization_seed",
+        "required_case_sets",
         "exclusions",
         "frozen_at"
       ],
@@ -60,6 +61,16 @@
           "additionalProperties": {"type": "string"}
         },
         "randomization_seed": {"type": "integer"},
+        "required_case_sets": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "additionalProperties": {"type": "string", "enum": ["dev", "regression", "release"]}
+        },
         "exclusions": {
           "type": "array",
           "items": {"type": "string"}

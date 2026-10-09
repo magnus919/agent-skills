@@ -78,6 +78,56 @@ class JevEvalAuditTests(unittest.TestCase):
             result["results"][0]["question_input_sha256"], question_input_sha256(request)
         )
 
+    def test_unresolved_exact_checks_are_not_sent_as_prose(self):
+        report = sample_report()
+        for side in ("candidate", "baseline"):
+            report[side]["assertions"] = [
+                {
+                    "assertion": "Explains the boundary",
+                    "verdict": "manual_review",
+                    "detail": "no recognized pattern",
+                },
+                {
+                    "assertion": "response_contains:approved",
+                    "verdict": "manual_review",
+                    "detail": "response missing",
+                },
+                {
+                    "assertion": "artifact_exists:result.json",
+                    "verdict": "manual_review",
+                    "detail": "artifact inventory incomplete",
+                },
+                {
+                    "assertion": "response_contains:",
+                    "verdict": "manual_review",
+                    "detail": "empty expected value",
+                },
+                {
+                    "assertion": "environment_state=reservation=confirmed",
+                    "verdict": "manual_review",
+                    "detail": "no recognized pattern",
+                },
+            ]
+        self.path.write_text(json.dumps(report), encoding="utf-8")
+
+        groups, counts = collect_groups(self.root, 24000)
+        self.assertEqual(len(groups), 2)
+        self.assertEqual(groups[0]["assertions"], ["Explains the boundary"])
+        self.assertEqual(counts["prose_assertions_seen"], 2)
+        self.assertEqual(counts["skipped_non_prose_manual_assertions"], 8)
+
+        offline = audit(
+            self.root,
+            live=False,
+            key=None,
+            max_calls=2,
+            max_assertions=2,
+            max_response_chars=24000,
+            timeout=12.0,
+        )
+        self.assertEqual(offline["counts"]["groups_selected"], 2)
+        self.assertEqual(offline["counts"]["skipped_non_prose_manual_assertions"], 8)
+
     def test_question_contract_fingerprint_tracks_input_rubric_not_response(self):
         baseline = question_contract_sha256()
         self.assertEqual(len(baseline), 64)

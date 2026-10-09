@@ -88,6 +88,8 @@ jobs:
         run: python3 -m pip install -r requirements-dev.txt
       - name: Run paired evaluation unit tests
         run: python3 eval_runner/tests/test_paired.py
+      - name: Run explicit offline paired-status smoke
+        run: python3 eval_runner/tests/test_paired_status_smoke.py
       - name: Run release evaluation unit tests
         run: python3 eval_runner/tests/test_release.py
       - name: Run existing eval runner tests

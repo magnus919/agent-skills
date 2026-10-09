@@ -70,6 +70,24 @@ def _qualified_case_results(cases: list[dict]) -> list[dict]:
     return qualified
 
 
+def _freeze_for_cases(cases: list[dict]) -> FreezeSnapshot:
+    required_case_sets = {
+        case["case_id"]: case["case_set"]
+        for case in cases
+        if case.get("case_set") in ("regression", "release")
+    }
+    if not any(case_set == "release" for case_set in required_case_sets.values()):
+        required_case_sets["required-release-case"] = "release"
+    return FreezeSnapshot(
+        candidate_tree_hash="candidate",
+        baseline_tree_hash="baseline",
+        dataset_hash="dataset",
+        grader_versions={"default": "1"},
+        randomization_seed=42,
+        required_case_sets=required_case_sets,
+    )
+
+
 def test_aggregate_trials_groups_by_case():
     manifests = [
         _trial("case-a", passed=True),
@@ -172,7 +190,9 @@ def test_raw_completed_manifest_without_semantic_grade_is_unassessed_and_holds()
     assert aggregation.unassessed_count == 1
     assert result["semantic_verdict"] == "not_assessed"
     assert "semantic_grading" in result["missing_evidence"]
-    decision = compute_release_decision([result], [], CalibrationRecord(), [])
+    decision = compute_release_decision(
+        [result], [], CalibrationRecord(), [], _freeze_for_cases([result])
+    )
     assert decision["outcome"] == "HOLD"
 
 
@@ -190,7 +210,9 @@ def test_known_semantic_failure_is_preserved_when_other_evidence_is_incomplete()
     assert aggregation.unassessed_count == 1
     assert result["semantic_verdict"] == "fail"
     assert "semantic_grading" in result["missing_evidence"]
-    decision = compute_release_decision([result], [], CalibrationRecord())
+    decision = compute_release_decision(
+        [result], [], CalibrationRecord(), freeze=_freeze_for_cases([result])
+    )
     assert decision["outcome"] == "HOLD"
 
 
@@ -208,10 +230,61 @@ def test_release_decision_holds_without_release_set_coverage():
         ]
     )
     decision = compute_release_decision(
-        cases, [], CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
+        cases,
+        [],
+        CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9),
+        freeze=_freeze_for_cases(cases),
     )
     assert decision["outcome"] == "HOLD"
-    assert "no release-set cases" in decision["reasons"][0]
+    assert "missing required cases: required-release-case" in decision["reasons"][0]
+
+
+def test_release_decision_holds_without_freeze_or_required_roster():
+    cases = _qualified_case_results(
+        [
+            {
+                "case_id": "release-case",
+                "case_set": "release",
+                "success_frequency": 1.0,
+                "consistent": True,
+                "missing_evidence": [],
+                "paired_delta": "both_pass",
+            }
+        ]
+    )
+    calibration = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
+
+    assert compute_release_decision(cases, [], calibration)["outcome"] == "HOLD"
+    incomplete_freeze = FreezeSnapshot("candidate", "baseline", "dataset", {"g": "1"}, 42)
+    assert (
+        compute_release_decision(cases, [], calibration, freeze=incomplete_freeze)["outcome"]
+        == "HOLD"
+    )
+
+
+def test_release_decision_holds_when_any_frozen_case_is_omitted():
+    cases = _qualified_case_results(
+        [
+            {
+                "case_id": "release-one",
+                "case_set": "release",
+                "success_frequency": 1.0,
+                "consistent": True,
+                "missing_evidence": [],
+                "paired_delta": "both_pass",
+            }
+        ]
+    )
+    freeze = _freeze_for_cases(cases)
+    freeze.required_case_sets["release-two"] = "release"
+    decision = compute_release_decision(
+        cases,
+        [],
+        CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9),
+        freeze=freeze,
+    )
+    assert decision["outcome"] == "HOLD"
+    assert "missing required cases: release-two" in decision["reasons"][0]
 
 
 def test_rubric_grader_pass():
@@ -325,7 +398,9 @@ def test_release_decision_pass():
         },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(_qualified_case_results(cases), [], cal)
+    decision = compute_release_decision(
+        _qualified_case_results(cases), [], cal, freeze=_freeze_for_cases(cases)
+    )
     assert decision["outcome"] == "PASS"
 
 
@@ -348,7 +423,9 @@ def test_release_decision_hold_on_missing_evidence():
             "paired_delta": "both_pass",
         },
     ]
-    decision = compute_release_decision(_qualified_case_results(cases), [], CalibrationRecord())
+    decision = compute_release_decision(
+        _qualified_case_results(cases), [], CalibrationRecord(), freeze=_freeze_for_cases(cases)
+    )
     assert decision["outcome"] == "HOLD"
 
 
@@ -364,12 +441,22 @@ def test_release_decision_block_on_low_frequency():
         },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(_qualified_case_results(cases), [], cal)
+    decision = compute_release_decision(
+        _qualified_case_results(cases), [], cal, freeze=_freeze_for_cases(cases)
+    )
     assert decision["outcome"] == "BLOCK"
 
 
 def test_release_decision_block_on_regression():
     cases = [
+        {
+            "case_id": "release-control",
+            "case_set": "release",
+            "success_frequency": 1.0,
+            "consistent": True,
+            "missing_evidence": [],
+            "paired_delta": "both_pass",
+        },
         {
             "case_id": "c1",
             "case_set": "regression",
@@ -380,7 +467,9 @@ def test_release_decision_block_on_regression():
         },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(_qualified_case_results(cases), [], cal)
+    decision = compute_release_decision(
+        _qualified_case_results(cases), [], cal, freeze=_freeze_for_cases(cases)
+    )
     assert decision["outcome"] == "BLOCK"
 
 
@@ -396,7 +485,9 @@ def test_release_decision_conditional_on_inconsistency():
         },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(_qualified_case_results(cases), [], cal)
+    decision = compute_release_decision(
+        _qualified_case_results(cases), [], cal, freeze=_freeze_for_cases(cases)
+    )
     assert decision["outcome"] == "CONDITIONAL"
 
 
@@ -413,7 +504,9 @@ def test_release_decision_conditional_on_uncalibrated_judge():
     ]
     rubric = [{"case_id": "c1", "verdict": "pass"}]
     cal = CalibrationRecord()
-    decision = compute_release_decision(_qualified_case_results(cases), rubric, cal)
+    decision = compute_release_decision(
+        _qualified_case_results(cases), rubric, cal, freeze=_freeze_for_cases(cases)
+    )
     assert decision["outcome"] == "CONDITIONAL"
     assert any("advisory" in r for r in decision["reasons"])
 
@@ -431,7 +524,9 @@ def test_release_decision_conditional_on_rubric_abstain():
     ]
     rubric = [{"case_id": "c1", "verdict": "abstain"}]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(_qualified_case_results(cases), rubric, cal)
+    decision = compute_release_decision(
+        _qualified_case_results(cases), rubric, cal, freeze=_freeze_for_cases(cases)
+    )
     assert decision["outcome"] == "CONDITIONAL"
 
 
@@ -442,6 +537,7 @@ def test_freeze_snapshot_completeness():
         dataset_hash="ghi789",
         grader_versions={"default": "1.0"},
         randomization_seed=42,
+        required_case_sets={"release-case": "release", "regression-case": "regression"},
     )
     assert freeze.complete
     d = freeze.to_dict()
@@ -463,10 +559,22 @@ def test_freeze_snapshot_incomplete():
 def test_build_release_report_structure():
     freeze = FreezeSnapshot("a", "b", "c", {"g": "1"}, 42)
     cal = CalibrationRecord(human_sample_count=10, judge_agreement_rate=0.8)
+    case_results = _qualified_case_results(
+        [
+            {
+                "case_id": "release-case",
+                "case_set": "release",
+                "success_frequency": 1.0,
+                "consistent": True,
+                "missing_evidence": [],
+                "paired_delta": "both_pass",
+            }
+        ]
+    )
     report = build_release_report(
         skill_name="test-skill",
         freeze=freeze,
-        case_results=[],
+        case_results=case_results,
         rubric_results=[],
         pairwise_results=[],
         calibration=cal,
@@ -475,7 +583,41 @@ def test_build_release_report_structure():
     assert report["skill_name"] == "test-skill"
     assert "report_id" in report
     assert "generated_at" in report
-    assert report["release_decision"]["outcome"] in ("PASS", "CONDITIONAL", "HOLD", "BLOCK")
+    assert report["release_decision"]["outcome"] == "HOLD"
+    assert "freeze snapshot is incomplete" in report["release_decision"]["reasons"][0]
+
+
+def test_build_release_report_holds_when_required_roster_case_is_omitted():
+    freeze = FreezeSnapshot(
+        "candidate",
+        "baseline",
+        "dataset",
+        {"default": "1"},
+        42,
+        required_case_sets={"release-one": "release", "release-two": "release"},
+    )
+    case_results = _qualified_case_results(
+        [
+            {
+                "case_id": "release-one",
+                "case_set": "release",
+                "success_frequency": 1.0,
+                "consistent": True,
+                "missing_evidence": [],
+                "paired_delta": "both_pass",
+            }
+        ]
+    )
+    report = build_release_report(
+        skill_name="test-skill",
+        freeze=freeze,
+        case_results=case_results,
+        rubric_results=[],
+        pairwise_results=[],
+        calibration=CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9),
+    )
+    assert report["release_decision"]["outcome"] == "HOLD"
+    assert "missing required cases: release-two" in report["release_decision"]["reasons"][0]
 
 
 def test_build_release_report_validates_against_schema():
@@ -492,7 +634,14 @@ def test_build_release_report_validates_against_schema():
     Draft202012Validator.check_schema(schema)
     validator = Draft202012Validator(schema)
 
-    freeze = FreezeSnapshot("abc", "def", "ghi", {"default-pairwise": "1"}, 42)
+    freeze = FreezeSnapshot(
+        "abc",
+        "def",
+        "ghi",
+        {"default-pairwise": "1"},
+        42,
+        required_case_sets={"c1": "release"},
+    )
     cal = CalibrationRecord(human_sample_count=10, judge_agreement_rate=0.8)
     case_results = [
         {

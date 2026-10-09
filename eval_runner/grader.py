@@ -138,7 +138,11 @@ def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
             return AssertionResult(
                 assertion, AssertionVerdict.MANUAL_REVIEW, "empty environment key"
             )
-        if output.environment_state and key in output.environment_state:
+        if output.environment_state is None:
+            return AssertionResult(
+                assertion, AssertionVerdict.MANUAL_REVIEW, "environment state missing"
+            )
+        if key in output.environment_state:
             actual_val = str(output.environment_state[key])
             if actual_val == expected_val:
                 return AssertionResult(assertion, AssertionVerdict.PASS)
