@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from eval_runner.models import AdapterInput
+from eval_runner.models import AdapterInput, EvalCase
 from eval_runner.openai_adapter import OpenAICompatAdapter
 from eval_runner.reference_inputs import build_context, load_reference_inputs, read_source
 from eval_runner.runner import load_cases
