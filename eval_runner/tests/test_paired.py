@@ -557,6 +557,9 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
     assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_skill"]["options"] == [
         "agent-skills",
         "system-one",
+        "product-design-and-ux",
+        "pydanticai",
+        "spec-driven-development",
     ]
     assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_skill"]["default"] == (
         "agent-skills"

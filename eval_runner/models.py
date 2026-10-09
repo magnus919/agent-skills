@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .path_safety import hash_contained_file, validate_case_id, validate_relative_path
+from .reference_inputs import validate_references
 
 
 class ExitStatus(str, Enum):
@@ -26,9 +27,11 @@ class EvalCase:
     assertions: list[str]
     files: list[str] = field(default_factory=list)
     case_set: str = "dev"
+    skill_references: dict[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         validate_case_id(self.id)
+        validate_references(self.skill_references)
         if len(self.files) != len(set(self.files)):
             raise ValueError("eval case fixture paths must be unique")
         for relative_path in self.files:
@@ -81,6 +84,7 @@ class AdapterOutput:
     error: str | None = None
     # Number of rate-limit retries where the adapter can report it; None means unavailable.
     rate_limit_retries: int | None = None
+    input_provenance: dict[str, Any] | None = None
 
     def missing_evidence(self) -> list[str]:
         missing: list[str] = []

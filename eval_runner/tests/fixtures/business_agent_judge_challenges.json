@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "advisory_only": true,
+  "purpose": "Verified artifact-review false positives. Preserve original assertions; no calibrated judge accuracy or automated semantic gate is claimed.",
+  "challenges": [
+    {
+      "id": "embedded-loan-recovery-false-positive",
+      "skill": "product-design-and-ux",
+      "case_id": "embedded-loan-recovery",
+      "assertion": "Queries command status after a timeout rather than blindly reserving again",
+      "source": {
+        "run": "https://github.com/magnus919/agent-skills/actions/runs/37955122624",
+        "side": "baseline",
+        "response_sha256": "39b0088a7053cc534c4cc1a8d3d181c2c4540ef72d8208e56b89ed28abdbc251",
+        "reviewer_kind": "model_teacher",
+        "advisory_verdict": "met"
+      },
+      "negative": {
+        "verdict": "not_met",
+        "reason": "Timeout recovery directly creates a new reservation attempt with a fresh UUID; it never queries the original command status.",
+        "verbatim_fragments": [
+          {
+            "symbol": "_attempt_reservation",
+            "text": "def _attempt_reservation(self, form: LoanForm):\n        \"\"\"Attempt to reserve equipment for approved loan\"\"\"\n        reservation_id = str(uuid.uuid4())\n        attempt = ReservationAttempt(\n            id=reservation_id,\n            status=ReservationStatus.PENDING,\n            timestamp=datetime.now(),\n            timeout_at=datetime.now() + timedelta(minutes=5)  # 5 minute timeout\n        )\n        form.reservation_attempts.append(attempt)\n        \n        # Simulate reservation process\n        try:\n            # In a real system, this would call an external reservation service\n            success = self._simulate_reservation_service(form)\n            \n            if success:\n                attempt.status = ReservationStatus.CONFIRMED\n                form.status = LoanStatus.ACTIVE\n                # Send confirmation notification\n                self._send_notification(form, \"reservation_confirmed\")\n            else:\n                attempt.status = ReservationStatus.FAILED\n                attempt.error_message = \"Reservation service returned failure\"\n                # Try to send failure notification\n                self._send_notification(form, \"reservation_failed\")\n                \n        except Exception as e:\n            attempt.status = ReservationStatus.FAILED\n            attempt.error_message = str(e)\n            self._send_notification(form, \"reservation_error\")",
+            "sha256": "9028459da9d4d0d35e9f4780e96c6032da5888a1d0d09029ccc48d732c75023d"
+          },
+          {
+            "symbol": "recover_from_reservation_timeout",
+            "text": "def recover_from_reservation_timeout(self, form_id: str) -> LoanForm:\n        \"\"\"Recover from a reservation timeout by retrying\"\"\"\n        form = self.loan_forms.get(form_id)\n        if not form:\n            raise ValueError(\"Form not found\")\n            \n        # Find the timed-out attempt\n        timeout_attempt = None\n        for attempt in form.reservation_attempts:\n            if attempt.status == ReservationStatus.TIMEOUT:\n                timeout_attempt = attempt\n                break\n                \n        if not timeout_attempt:\n            raise ValueError(\"No timed-out reservation found\")\n            \n        # Create a new reservation attempt\n        self._attempt_reservation(form)\n        return form",
+            "sha256": "4a7573a529c24df92caf35cf6d190d4c4f839ec8e17a7277baf90a340264367d"
+          }
+        ]
+      },
+      "corrected": {
+        "verdict": "met",
+        "text": "def recover_from_reservation_timeout(command_id, commands):\n    status = commands.lookup(command_id)\n    if status.state == \"confirmed\":\n        return status.receipt\n    if status.state == \"unknown\":\n        return \"checking original command\"\n    return \"show original command failure for review\"\n",
+        "status": "synthetic illustrative correction; not execution evidence"
+      },
+      "missing": {
+        "verdict": "not_shown",
+        "text": "The workflow has safe recovery and authority controls."
+      }
+    },
+    {
+      "id": "non-chat-proposal-false-positive",
+      "skill": "pydanticai",
+      "case_id": "non-chat-proposal",
+      "assertion": "Requires current permission and record revision checks before command execution",
+      "source": {
+        "run": "https://github.com/magnus919/agent-skills/actions/runs/37955122624",
+        "side": "baseline",
+        "response_sha256": "5384924deccb140c3849fb00419b26e0a8cd5121d5b19b7a12acd022a99e276c",
+        "reviewer_kind": "model_teacher",
+        "advisory_verdict": "met"
+      },
+      "negative": {
+        "verdict": "not_met",
+        "reason": "Approval checks approver role, but reserve_equipment only checks stored APPROVED state and inventory; it never rechecks current permission or revision.",
+        "verbatim_fragments": [
+          {
+            "symbol": "check_user_authority",
+            "text": "def check_user_authority(self, user_id: str, required_role: UserRole) -> bool:\n        user_role = self.user_permissions.get(user_id)\n        role_hierarchy = {\n            UserRole.REQUESTER: 1,\n            UserRole.APPROVER: 2,\n            UserRole.ADMIN: 3\n        }\n        return role_hierarchy.get(user_role, 0) >= role_hierarchy[required_role]",
+            "sha256": "fafe26131363a329541cb5792e057c96bcc52ea487d5b8ed117f696d8fc6a70b"
+          },
+          {
+            "symbol": "approve_recommendation",
+            "text": "async def approve_recommendation(self, application_id: str, approver_id: str) -> bool:\n        \"\"\"Approve the recommended equipment (authority boundary check)\"\"\"\n        application = self.state.get_application(application_id)\n        if not application:\n            raise ValueError(f\"Application {application_id} not found\")\n        \n        # Authority boundary check\n        if not self.state.check_user_authority(approver_id, UserRole.APPROVER):\n            raise PermissionError(\"Insufficient authority to approve loan\")\n        \n        if application.status != LoanStatus.RECOMMENDATION_RECEIVED:\n            raise ValueError(\"Application must have a recommendation before approval\")\n        \n        application.approved_by = approver_id\n        application.status = LoanStatus.APPROVED\n        self.state.update_application(application_id, application)\n        \n        return True",
+            "sha256": "755a0fedd9a929ef9fe771b06174459be73b715b963fdcda0e570d4e614a0590"
+          },
+          {
+            "symbol": "reserve_equipment",
+            "text": "async def reserve_equipment(self, application_id: str) -> bool:\n        \"\"\"Reserve the approved equipment (final step)\"\"\"\n        application = self.state.get_application(application_id)\n        if not application:\n            raise ValueError(f\"Application {application_id} not found\")\n        \n        if application.status != LoanStatus.APPROVED:\n            raise ValueError(\"Application must be approved before reservation\")\n        \n        if not application.recommendation:\n            raise ValueError(\"No recommendation to reserve\")\n        \n        # Check if equipment is still available (stale state handling)\n        equipment_item = self.state.equipment_inventory.get(application.recommendation.item_id)\n        if not equipment_item or not equipment_item.is_available:\n            raise ValueError(\"Recommended equipment is no longer available\")\n        \n        # Reserve the equipment\n        equipment_item.is_available = False\n        application.reserved_at = datetime.now()\n        application.status = LoanStatus.RESERVED\n        self.state.update_application(application_id, application)\n        \n        return True",
+            "sha256": "7fcfe203a9af6c69672661a2d377788195c1151657e8bdf594e4788faf1f66e9"
+          }
+        ]
+      },
+      "corrected": {
+        "verdict": "met",
+        "text": "async def reserve_equipment(state, command, session):\n    with state.transaction():\n        current = state.get_application(command.application_id)\n        if not state.can_reserve(session.user_id, current):\n            raise PermissionError(\"current permission denied\")\n        if current.revision != command.expected_revision:\n            raise ValueError(\"refresh review for changed revision\")\n        if current.approved_digest != command.action_digest:\n            raise ValueError(\"exact action approval required\")\n        return state.reserve_once(command.idempotency_key, current)\n",
+        "status": "synthetic illustrative correction; not execution evidence"
+      },
+      "missing": {
+        "verdict": "not_shown",
+        "text": "The workflow has safe recovery and authority controls."
+      }
+    }
+  ],
+  "generated_output_flaws": [
+    {
+      "skill": "spec-driven-development",
+      "case_id": "policy-translation-fidelity",
+      "source": {
+        "run": "https://github.com/magnus919/agent-skills/actions/runs/37955122624",
+        "side": "candidate",
+        "response_sha256": "3759e52c9bce7df6e5b17777a105bdb9e619197a57ce1c9c0962039d7ebf91c8",
+        "reviewer_kind": "model_teacher"
+      },
+      "verbatim_fragments": [
+        {
+          "marker": "test_zero_days_valid",
+          "text": "    def test_zero_days_valid(self):\n        assert PolicyEngine.is_duration_valid(0, PolicyVersion.V1) == True\n    \n    def test_negative_days_invalid(self):\n        assert PolicyEngine.is_duration_valid(-1, PolicyVersion.V1) == False\n\nclass TestExceptionHandling:",
+          "sha256": "a9f5871f16fd1c072bb290e0164caf302618f8cfc95112811d92dd2437186c57"
+        },
+        {
+          "marker": "Explicit policy version override",
+          "text": "3. Explicit policy version override in LoanRequest\n",
+          "sha256": "aa99d3ddded48617f369e963e7a169e4200ca6d2373fdb49b52cdb6fb57945a1"
+        },
+        {
+          "marker": "Compliance Score: 100%",
+          "text": "## Compliance Score: 100% (5/5 ACs passing)\n",
+          "sha256": "38e6c606f76be7ae0f927c15631d7732f5e5594346a7ab9f84512c2d7af69749"
+        }
+      ],
+      "review": "Reject zero-day acceptance and unauthoritative version override; claimed 100% compliance/test execution is unsupported. These are output flaws, not defects in the checked-in policy recipe."
+    }
+  ]
+}

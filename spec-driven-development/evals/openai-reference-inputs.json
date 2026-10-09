@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "policy-translation-fidelity": {
+      "references/executable-business-policy.md": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77"
+    }
+  }
+}

@@ -73,7 +73,8 @@
         "Keeps approval identity and command execution outside model output",
         "Requires current permission and record revision checks before command execution",
         "Routes architecture, evaluation, and production operations to existing owning skills"
-      ]
+      ],
+      "case_set": "regression"
     }
   ]
 }

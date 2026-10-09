@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "embedded-loan-recovery": {
+      "references/embedded-business-agent.md": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb"
+    }
+  }
+}

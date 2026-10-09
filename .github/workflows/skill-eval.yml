@@ -33,6 +33,9 @@ on:
         options:
           - agent-skills
           - system-one
+          - product-design-and-ux
+          - pydanticai
+          - spec-driven-development
         default: agent-skills
       eval_case:
         description: Optional case ID to isolate within the selected manifest; empty runs all cases
@@ -238,7 +241,7 @@ jobs:
               exit 0
             fi
             case "$EVAL_SKILL" in
-              agent-skills|system-one) ;;
+              agent-skills|system-one|product-design-and-ux|pydanticai|spec-driven-development) ;;
               *) echo "Unsupported manual eval skill: $EVAL_SKILL" >&2; exit 1 ;;
             esac
             manifest="$EVAL_SKILL/evals/evals.json"

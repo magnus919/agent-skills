@@ -14,10 +14,14 @@ from .fake_adapter import FakeAdapter
 from .manifest import build_manifest, write_manifest
 from .models import AdapterInput, EvalCase
 from .path_safety import contained_path
+from .reference_inputs import load_reference_inputs
 
 
 def load_cases(manifest_path: Path) -> list[EvalCase]:
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    references = load_reference_inputs(
+        manifest_path.parent.parent, {c["id"] for c in data.get("evals", [])}
+    )
     cases: list[EvalCase] = []
     for entry in data.get("evals", []):
         cases.append(
@@ -28,6 +32,7 @@ def load_cases(manifest_path: Path) -> list[EvalCase]:
                 assertions=entry.get("assertions", []),
                 files=entry.get("files", []),
                 case_set=entry.get("case_set", "dev"),
+                skill_references=references.get(entry["id"], {}),
             )
         )
     return cases

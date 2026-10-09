@@ -10,6 +10,8 @@ This skill helps an agent turn validated evidence and a chosen scope into tracea
 
 ## What You Get
 
+Regression cases include the relevant worked example with recorded source hashes.
+
 A worked equipment-loan form covering editable recommendations, approval, confirmed results, and recovery.
 
 | Path | What it provides |
