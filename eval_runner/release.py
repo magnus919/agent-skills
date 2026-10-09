@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-RELEASE_SCHEMA_VERSION = 1
+RELEASE_SCHEMA_VERSION = 2
 
 CASE_SETS = ("dev", "regression", "release")
 
@@ -66,6 +66,8 @@ class TrialRecord:
     status: str
     passed: bool
     missing_evidence: list[str] = field(default_factory=list)
+    semantic_verdict: str = "not_assessed"
+    evidence_complete: bool = False
 
 
 @dataclass
@@ -80,11 +82,23 @@ class CaseAggregation:
 
     @property
     def success_count(self) -> int:
-        return sum(1 for t in self.trials if t.status == "completed" and t.passed)
+        return sum(
+            1 for t in self.trials if t.status == "completed" and t.semantic_verdict == "pass"
+        )
 
     @property
     def failure_count(self) -> int:
-        return sum(1 for t in self.trials if t.status == "completed" and not t.passed)
+        return sum(
+            1 for t in self.trials if t.status == "completed" and t.semantic_verdict == "fail"
+        )
+
+    @property
+    def unassessed_count(self) -> int:
+        return sum(
+            1
+            for t in self.trials
+            if t.semantic_verdict == "not_assessed" or not t.evidence_complete
+        )
 
     @property
     def error_count(self) -> int:
@@ -103,10 +117,16 @@ class CaseAggregation:
     @property
     def consistent(self) -> bool:
         completed = [t for t in self.trials if t.status == "completed"]
-        if not completed:
+        if (
+            not completed
+            or len(completed) != len(self.trials)
+            or any(
+                t.semantic_verdict == "not_assessed" or not t.evidence_complete for t in completed
+            )
+        ):
             return False
-        first = completed[0].passed
-        return all(t.passed == first for t in completed)
+        first = completed[0].semantic_verdict
+        return all(t.semantic_verdict == first for t in completed)
 
     @property
     def all_missing_evidence(self) -> list[str]:
@@ -117,19 +137,34 @@ class CaseAggregation:
                 if m not in seen:
                     seen.add(m)
                     result.append(m)
+            if (
+                t.semantic_verdict == "not_assessed" or not t.evidence_complete
+            ) and "semantic_grading" not in seen:
+                seen.add("semantic_grading")
+                result.append("semantic_grading")
         return result
 
     def to_dict(self, paired_delta: str = "insufficient_data") -> dict[str, Any]:
+        if self.failure_count:
+            semantic_verdict = "fail"
+        elif self.unassessed_count:
+            semantic_verdict = "not_assessed"
+        elif self.success_count:
+            semantic_verdict = "pass"
+        else:
+            semantic_verdict = "not_assessed"
         return {
             "case_id": self.case_id,
             "case_set": self.case_set,
             "trial_count": self.trial_count,
             "success_count": self.success_count,
             "failure_count": self.failure_count,
+            "unassessed_count": self.unassessed_count,
             "error_count": self.error_count,
             "timeout_count": self.timeout_count,
             "success_frequency": round(self.success_frequency, 4),
             "consistent": self.consistent,
+            "semantic_verdict": semantic_verdict,
             "missing_evidence": self.all_missing_evidence,
             "paired_delta": paired_delta,
         }
@@ -138,19 +173,32 @@ class CaseAggregation:
 def aggregate_trials(
     manifests: list[dict[str, Any]],
     case_sets: dict[str, str] | None = None,
+    semantic_results: dict[str, dict[str, Any]] | None = None,
 ) -> list[CaseAggregation]:
-    """Group run manifests by case_id and aggregate trial outcomes."""
+    """Aggregate trials only when separate semantic grading evidence is supplied.
+
+    Raw execution manifests establish execution status, not semantic correctness.
+    ``semantic_results`` is keyed by trial ID and must contain an explicit
+    ``semantic_verdict`` and ``evidence_complete`` for each assessed trial.
+    """
     by_case: dict[str, list[TrialRecord]] = {}
     for m in manifests:
         case_id = m.get("case", {}).get("case_id", "")
         if not case_id:
             continue
+        grade = (semantic_results or {}).get(m.get("trial_id", ""), {})
+        verdict = grade.get("semantic_verdict", "not_assessed")
+        complete = grade.get("evidence_complete") is True
+        if verdict not in {"pass", "fail", "not_assessed"} or (verdict == "pass" and not complete):
+            verdict = "not_assessed"
         trial = TrialRecord(
             trial_id=m.get("trial_id", ""),
             case_id=case_id,
             status=m.get("status", "error"),
-            passed=_manifest_passed(m),
+            passed=verdict == "pass",
             missing_evidence=m.get("missing_evidence", []),
+            semantic_verdict=verdict,
+            evidence_complete=complete,
         )
         by_case.setdefault(case_id, []).append(trial)
 
@@ -161,13 +209,6 @@ def aggregate_trials(
             case_set = case_sets[case_id]
         results.append(CaseAggregation(case_id=case_id, case_set=case_set, trials=trials))
     return results
-
-
-def _manifest_passed(m: dict[str, Any]) -> bool:
-    if m.get("status") != "completed":
-        return False
-    failures = m.get("failures", [])
-    return len(failures) == 0
 
 
 @dataclass(frozen=True)
@@ -383,6 +424,13 @@ def compute_release_decision(
             "hard_gate_violations": violations,
         }
 
+    if not case_results:
+        return {
+            "outcome": "HOLD",
+            "reasons": ["no evaluated cases; semantic release evidence is absent"],
+            "hard_gate_violations": [],
+        }
+
     release_cases = [c for c in case_results if c["case_set"] == "release"]
     regression_cases = [c for c in case_results if c["case_set"] == "regression"]
 
@@ -392,6 +440,22 @@ def compute_release_decision(
         return {
             "outcome": "HOLD",
             "reasons": reasons,
+            "hard_gate_violations": [],
+        }
+
+    unassessed_cases = [
+        c["case_id"]
+        for c in case_results
+        if c.get("semantic_verdict", "not_assessed") == "not_assessed"
+        or c.get("success_count", 0) + c.get("failure_count", 0) < c.get("trial_count", 1)
+        or c.get("unassessed_count", 0)
+    ]
+    if unassessed_cases:
+        return {
+            "outcome": "HOLD",
+            "reasons": [
+                f"semantic grading evidence not assessed for cases: {', '.join(unassessed_cases)}"
+            ],
             "hard_gate_violations": [],
         }
 
@@ -420,6 +484,13 @@ def compute_release_decision(
         return {
             "outcome": "BLOCK",
             "reasons": reasons,
+            "hard_gate_violations": [],
+        }
+
+    if not release_cases:
+        return {
+            "outcome": "HOLD",
+            "reasons": ["no release-set cases were evaluated"],
             "hard_gate_violations": [],
         }
 

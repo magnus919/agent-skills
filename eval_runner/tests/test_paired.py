@@ -199,8 +199,282 @@ def test_paired_runner_stops_after_first_infrastructure_failure():
 def test_grader_manual_review():
     output = AdapterOutput(exit_status=ExitStatus.COMPLETED, response="ok")
     result = grade_output("c1", ["some human-readable assertion"], output)
-    assert result.passed
+    assert not result.passed
     assert result.manual_count == 1
+    assert result.semantic_verdict == "not_assessed"
+    assert not result.evidence_complete
+
+
+def test_all_manual_assertions_are_not_a_semantic_pass():
+    output = AdapterOutput(exit_status=ExitStatus.COMPLETED, response="irrelevant answer")
+    result = grade_output("c1", ["The answer follows policy", "Explains the decision"], output)
+    assert result.semantic_verdict == "not_assessed"
+    assert result.passed is False
+    assert result.pass_count == result.fail_count == 0
+    assert result.manual_count == 2
+    assert result.execution_status == "completed"
+    assert not result.evidence_complete
+
+
+def test_mixed_manual_and_resolved_assertions_are_not_a_semantic_pass():
+    output = AdapterOutput(exit_status=ExitStatus.COMPLETED, response="expected answer")
+    result = grade_output(
+        "c1",
+        ["response_contains:expected", "The answer follows policy"],
+        output,
+    )
+    assert result.semantic_verdict == "not_assessed"
+    assert not result.passed
+    assert result.pass_count == 1
+    assert result.manual_count == 1
+    assert result.resolved_count == 1
+
+
+def test_irrelevant_or_empty_response_fails_positive_exact_assertion():
+    for response in ("unrelated text", ""):
+        result = grade_output(
+            "c1",
+            ["response_contains:required fact"],
+            AdapterOutput(exit_status=ExitStatus.COMPLETED, response=response),
+        )
+        assert result.semantic_verdict == "fail"
+        assert not result.passed
+        assert result.fail_count == 1
+        assert result.evidence_complete
+
+
+def test_missing_response_is_unassessed_not_a_pass_or_semantic_failure():
+    result = grade_output(
+        "c1",
+        ["response_not_contains:forbidden"],
+        AdapterOutput(exit_status=ExitStatus.COMPLETED, response=None),
+    )
+    assert result.semantic_verdict == "not_assessed"
+    assert result.manual_count == 1
+    assert not result.evidence_complete
+
+
+def test_missing_artifact_is_a_deterministic_failure():
+    result = grade_output(
+        "c1",
+        ["artifact_exists:result.json"],
+        AdapterOutput(exit_status=ExitStatus.COMPLETED, response="done", artifacts=[]),
+    )
+    assert result.semantic_verdict == "fail"
+    assert result.fail_count == 1
+    assert result.evidence_complete
+
+
+def test_incomplete_artifact_inventory_is_unassessed():
+    result = grade_output(
+        "c1",
+        ["artifact_exists:result.json"],
+        AdapterOutput(
+            exit_status=ExitStatus.COMPLETED,
+            response="done",
+            artifacts=[],
+            artifact_inventory_complete=False,
+        ),
+    )
+    assert result.semantic_verdict == "not_assessed"
+    assert result.manual_count == 1
+    assert not result.evidence_complete
+
+
+def test_malformed_or_unknown_assertions_remain_unassessed():
+    result = grade_output(
+        "c1",
+        ["response_contains:", "tool_event_count_gte:-1", "unknown:value"],
+        AdapterOutput(exit_status=ExitStatus.COMPLETED, response="anything"),
+    )
+    assert result.semantic_verdict == "not_assessed"
+    assert result.manual_count == 3
+    assert not result.evidence_complete
+
+
+def test_empty_assertion_list_is_not_a_vacuous_pass():
+    result = grade_output(
+        "c1", [], AdapterOutput(exit_status=ExitStatus.COMPLETED, response="anything")
+    )
+    assert result.semantic_verdict == "not_assessed"
+    assert not result.passed
+    assert result.assertion_count == 0
+    assert not result.evidence_complete
+
+
+def test_infrastructure_failure_is_separate_from_semantic_verdict():
+    result = grade_output(
+        "c1", ["response_contains:expected"], AdapterOutput(ExitStatus.TIMEOUT, error="timed out")
+    )
+    assert result.execution_status == "timeout"
+    assert not result.execution_success
+    assert result.semantic_verdict == "not_assessed"
+    assert result.infra_error
+    assert not result.evidence_complete
+
+
+def test_paired_report_does_not_compare_unassessed_results_as_pass_or_fail():
+    manual = grade_output(
+        "c1", ["The result is correct"], AdapterOutput(ExitStatus.COMPLETED, response="ok")
+    )
+    deterministic_pass = grade_output(
+        "c1", ["response_contains:ok"], AdapterOutput(ExitStatus.COMPLETED, response="ok")
+    )
+    report = build_comparison_report(
+        skill_name="test-skill",
+        case_id="c1",
+        candidate_grade=manual,
+        baseline_grade=deterministic_pass,
+        candidate_manifest={},
+        baseline_manifest={},
+    )
+    assert report["paired_delta"] == "insufficient_evidence"
+    assert report["candidate"]["semantic_verdict"] == "not_assessed"
+    assert report["candidate"]["passed"] is False
+    assert report["candidate"]["evidence_complete"] is False
+    assert "NOT ASSESSED" in format_comparison_summary(report)
+
+
+def test_paired_delta_is_inconclusive_if_a_definite_failure_has_unresolved_assertions():
+    candidate = grade_output(
+        "c1",
+        ["response_contains:required", "The answer follows policy"],
+        AdapterOutput(ExitStatus.COMPLETED, response="wrong"),
+    )
+    baseline = grade_output(
+        "c1",
+        ["response_contains:required"],
+        AdapterOutput(ExitStatus.COMPLETED, response="required"),
+    )
+    report = build_comparison_report(
+        skill_name="test-skill",
+        case_id="c1",
+        candidate_grade=candidate,
+        baseline_grade=baseline,
+        candidate_manifest={},
+        baseline_manifest={},
+    )
+    assert candidate.semantic_verdict == "fail"
+    assert not candidate.evidence_complete
+    assert report["paired_delta"] == "insufficient_evidence"
+
+
+def test_v2_reports_remain_valid_and_legacy_manual_counts_render_unassessed():
+    from jsonschema import Draft202012Validator
+
+    from eval_runner.comparison import format_comparison_summary
+
+    schema = json.loads(
+        (
+            Path(__file__).resolve().parents[2] / "schemas/comparison-report-v2.schema.json"
+        ).read_text()
+    )
+    assert schema["properties"]["schema_version"]["const"] == 2
+    Draft202012Validator.check_schema(schema)
+    legacy_trial = {
+        "trial_id": "legacy-trial",
+        "passed": True,
+        "infra_error": False,
+        "pass_count": 0,
+        "fail_count": 0,
+        "manual_count": 3,
+        "assertions": [
+            {"assertion": "policy is followed", "verdict": "manual_review", "detail": ""}
+            for _ in range(3)
+        ],
+        "manifest": {},
+    }
+    report = {
+        "schema_version": 2,
+        "report_id": "00000000-0000-4000-8000-000000000001",
+        "generated_at": "2026-10-09T00:00:00Z",
+        "skill_name": "test-skill",
+        "case_id": "c1",
+        "paired_delta": "both_pass",
+        "candidate": legacy_trial,
+        "baseline": legacy_trial,
+    }
+    Draft202012Validator(schema, format_checker=Draft202012Validator.FORMAT_CHECKER).validate(
+        report
+    )
+    summary = format_comparison_summary(report)
+    assert "NOT ASSESSED (legacy report)" in summary
+    assert "Delta: not assessed (legacy report)" in summary
+    assert "Candidate: PASS" not in summary
+
+
+def test_run_coverage_reports_skipped_cases_separately():
+    from eval_runner.paired import summarize_run
+
+    summary = summarize_run([], selected_case_count=3)
+    assert summary["selected_case_count"] == 3
+    assert summary["reported_case_count"] == 0
+    assert summary["skipped_case_count"] == 3
+    assert summary["triage_complete"] is False
+    assert summary["strict_gate_status"] == "HOLD"
+    assert summary["paired_comparison_complete"] is False
+
+
+def test_run_summary_separates_completed_triage_from_semantic_gate():
+    from eval_runner.paired import summarize_run
+
+    manual = grade_output(
+        "c1", ["The answer follows policy"], AdapterOutput(ExitStatus.COMPLETED, response="ok")
+    )
+    report = build_comparison_report(
+        skill_name="test-skill",
+        case_id="c1",
+        candidate_grade=manual,
+        baseline_grade=manual,
+        candidate_manifest={},
+        baseline_manifest={},
+    )
+    summary = summarize_run([report], selected_case_count=1, selected_assertion_count=1)
+    assert summary["triage_complete"] is True
+    assert summary["strict_gate_status"] == "HOLD"
+    assert summary["paired_comparison_complete"] is False
+
+
+def test_run_summary_reports_candidate_gate_separately_from_comparison_evidence():
+    from eval_runner.paired import summarize_run
+
+    passed = grade_output(
+        "c1", ["response_contains:ok"], AdapterOutput(ExitStatus.COMPLETED, response="ok")
+    )
+    unassessed = grade_output(
+        "c1", ["Policy is followed"], AdapterOutput(ExitStatus.COMPLETED, response="ok")
+    )
+    report = build_comparison_report(
+        skill_name="test-skill",
+        case_id="c1",
+        candidate_grade=passed,
+        baseline_grade=unassessed,
+        candidate_manifest={},
+        baseline_manifest={},
+    )
+    summary = summarize_run([report], selected_case_count=1, selected_assertion_count=1)
+    assert summary["strict_gate_status"] == "PASS"
+    assert summary["paired_comparison_complete"] is False
+
+
+def test_run_summary_passes_only_fully_assessed_candidate_and_comparison():
+    from eval_runner.paired import summarize_run
+
+    passed = grade_output(
+        "c1", ["response_contains:ok"], AdapterOutput(ExitStatus.COMPLETED, response="ok")
+    )
+    report = build_comparison_report(
+        skill_name="test-skill",
+        case_id="c1",
+        candidate_grade=passed,
+        baseline_grade=passed,
+        candidate_manifest={},
+        baseline_manifest={},
+    )
+    summary = summarize_run([report], selected_case_count=1, selected_assertion_count=1)
+    assert summary["triage_complete"] is True
+    assert summary["strict_gate_status"] == "PASS"
+    assert summary["paired_comparison_complete"] is True
 
 
 def test_comparison_report_structure():
@@ -227,7 +501,7 @@ def test_comparison_report_structure():
         baseline_manifest={"trial_id": "bbb"},
     )
 
-    assert report["schema_version"] == 2
+    assert report["schema_version"] == 3
     assert report["paired_delta"] == "candidate_improvement"
     assert report["candidate"]["passed"] is True
     assert report["baseline"]["passed"] is False
@@ -246,7 +520,7 @@ def test_comparison_report_validates_against_schema():
     schema_path = (
         Path(__file__).resolve().parent.parent.parent
         / "schemas"
-        / "comparison-report-v2.schema.json"
+        / "comparison-report-v3.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     Draft202012Validator.check_schema(schema)
@@ -288,7 +562,7 @@ def test_comparison_schema_matches_runtime_case_ids():
     schema_path = (
         Path(__file__).resolve().parent.parent.parent
         / "schemas"
-        / "comparison-report-v2.schema.json"
+        / "comparison-report-v3.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     validator = Draft202012Validator(schema["properties"]["case_id"])
@@ -308,7 +582,7 @@ def test_paired_trial_end_to_end():
 
         report = run_paired_trial(adapter, case, skill, output_dir, "fake-model")
 
-        assert report["schema_version"] == 2
+        assert report["schema_version"] == 3
         assert report["case_id"] == "paired-test-01"
         assert report["candidate"]["passed"] is True
         for side in ("candidate", "baseline"):
@@ -831,6 +1105,7 @@ def test_openai_adapter_uses_scoped_eval_api_key_from_environment():
 
         assert result.exit_status == ExitStatus.COMPLETED
         assert result.finish_reason == "stop"
+        assert result.artifact_inventory_complete is False
         assert result.rate_limit_retries == 0
         assert result.environment_state["rate_limit_retries"] == 0
         request = urlopen.call_args.args[0]

@@ -85,6 +85,9 @@ class AdapterOutput:
     # Number of rate-limit retries where the adapter can report it; None means unavailable.
     rate_limit_retries: int | None = None
     input_provenance: dict[str, Any] | None = None
+    # Adapters should set this false when they cannot enumerate artifacts
+    # completely; absence from an incomplete inventory is not evidence of absence.
+    artifact_inventory_complete: bool = True
 
     def missing_evidence(self) -> list[str]:
         missing: list[str] = []
@@ -98,4 +101,6 @@ class AdapterOutput:
             missing.append("token_usage")
         if not self.tool_events:
             missing.append("tool_events")
+        if not self.artifact_inventory_complete:
+            missing.append("artifact_inventory")
         return missing

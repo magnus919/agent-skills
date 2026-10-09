@@ -29,7 +29,7 @@ def _trial(
     case_id: str, status: str = "completed", passed: bool = True, missing: list[str] | None = None
 ) -> dict:
     return {
-        "trial_id": f"t-{case_id}-{status}",
+        "trial_id": f"t-{case_id}-{status}-{'pass' if passed else 'fail'}",
         "case": {"case_id": case_id, "prompt_hash": "abc", "fixture_hashes": {}},
         "status": status,
         "failures": []
@@ -39,13 +39,44 @@ def _trial(
     }
 
 
+def _fixture_semantic_results(manifests: list[dict]) -> dict[str, dict]:
+    """Independent synthetic grade fixture used only by aggregation unit tests."""
+    return {
+        manifest["trial_id"]: {
+            "semantic_verdict": (
+                "not_assessed"
+                if manifest["status"] != "completed"
+                else "fail"
+                if manifest["failures"]
+                else "pass"
+            ),
+            "evidence_complete": manifest["status"] == "completed",
+        }
+        for manifest in manifests
+    }
+
+
+def _qualified_case_results(cases: list[dict]) -> list[dict]:
+    """Mark decision fixtures as fully assessed; raw manifests lack this evidence."""
+    qualified = []
+    for case in cases:
+        item = dict(case)
+        item.setdefault("trial_count", 1)
+        item.setdefault("success_count", 1)
+        item.setdefault("failure_count", 0)
+        item.setdefault("unassessed_count", 0)
+        item.setdefault("semantic_verdict", "pass")
+        qualified.append(item)
+    return qualified
+
+
 def test_aggregate_trials_groups_by_case():
     manifests = [
         _trial("case-a", passed=True),
         _trial("case-a", passed=False),
         _trial("case-b", passed=True),
     ]
-    results = aggregate_trials(manifests)
+    results = aggregate_trials(manifests, semantic_results=_fixture_semantic_results(manifests))
     assert len(results) == 2
     case_a = next(r for r in results if r.case_id == "case-a")
     assert case_a.trial_count == 2
@@ -57,7 +88,7 @@ def test_aggregate_trials_groups_by_case():
 
 def test_aggregate_trials_consistency():
     manifests = [_trial("c1", passed=True), _trial("c1", passed=True), _trial("c1", passed=True)]
-    results = aggregate_trials(manifests)
+    results = aggregate_trials(manifests, semantic_results=_fixture_semantic_results(manifests))
     assert results[0].consistent
     assert results[0].success_frequency == 1.0
 
@@ -68,7 +99,7 @@ def test_aggregate_trials_counts_errors_and_timeouts():
         _trial("c1", status="error", passed=False),
         _trial("c1", status="timeout", passed=False),
     ]
-    results = aggregate_trials(manifests)
+    results = aggregate_trials(manifests, semantic_results=_fixture_semantic_results(manifests))
     agg = results[0]
     assert agg.success_count == 1
     assert agg.error_count == 1
@@ -82,7 +113,7 @@ def test_aggregate_trials_preserves_all_failures():
         _trial("c1", passed=False),
         _trial("c1", status="error", passed=False),
     ]
-    results = aggregate_trials(manifests)
+    results = aggregate_trials(manifests, semantic_results=_fixture_semantic_results(manifests))
     agg = results[0]
     assert agg.failure_count == 2
     assert agg.error_count == 1
@@ -94,13 +125,17 @@ def test_aggregate_trials_missing_evidence():
         _trial("c1", passed=True, missing=["response"]),
         _trial("c1", passed=True, missing=["token_usage"]),
     ]
-    results = aggregate_trials(manifests)
+    results = aggregate_trials(manifests, semantic_results=_fixture_semantic_results(manifests))
     assert set(results[0].all_missing_evidence) == {"response", "token_usage"}
 
 
 def test_aggregate_trials_case_sets():
     manifests = [_trial("c1"), _trial("c2")]
-    results = aggregate_trials(manifests, case_sets={"c1": "release", "c2": "regression"})
+    results = aggregate_trials(
+        manifests,
+        case_sets={"c1": "release", "c2": "regression"},
+        semantic_results=_fixture_semantic_results(manifests),
+    )
     assert results[0].case_set == "release"
     assert results[1].case_set == "regression"
 
@@ -110,8 +145,12 @@ def test_case_aggregation_to_dict():
         case_id="c1",
         case_set="release",
         trials=[
-            TrialRecord("t1", "c1", "completed", True),
-            TrialRecord("t2", "c1", "completed", True),
+            TrialRecord(
+                "t1", "c1", "completed", True, semantic_verdict="pass", evidence_complete=True
+            ),
+            TrialRecord(
+                "t2", "c1", "completed", True, semantic_verdict="pass", evidence_complete=True
+            ),
         ],
     )
     d = agg.to_dict(paired_delta="both_pass")
@@ -119,8 +158,60 @@ def test_case_aggregation_to_dict():
     assert d["case_set"] == "release"
     assert d["trial_count"] == 2
     assert d["success_frequency"] == 1.0
+    assert d["semantic_verdict"] == "pass"
+    assert d["unassessed_count"] == 0
     assert d["consistent"] is True
     assert d["paired_delta"] == "both_pass"
+
+
+def test_raw_completed_manifest_without_semantic_grade_is_unassessed_and_holds():
+    manifest = _trial("release-case")
+    aggregation = aggregate_trials([manifest])[0]
+    result = aggregation.to_dict(paired_delta="both_pass")
+    assert aggregation.success_count == 0
+    assert aggregation.unassessed_count == 1
+    assert result["semantic_verdict"] == "not_assessed"
+    assert "semantic_grading" in result["missing_evidence"]
+    decision = compute_release_decision([result], [], CalibrationRecord(), [])
+    assert decision["outcome"] == "HOLD"
+
+
+def test_known_semantic_failure_is_preserved_when_other_evidence_is_incomplete():
+    manifest = _trial("release-case")
+    aggregation = aggregate_trials(
+        [manifest],
+        case_sets={"release-case": "release"},
+        semantic_results={
+            manifest["trial_id"]: {"semantic_verdict": "fail", "evidence_complete": False}
+        },
+    )[0]
+    result = aggregation.to_dict()
+    assert aggregation.failure_count == 1
+    assert aggregation.unassessed_count == 1
+    assert result["semantic_verdict"] == "fail"
+    assert "semantic_grading" in result["missing_evidence"]
+    decision = compute_release_decision([result], [], CalibrationRecord())
+    assert decision["outcome"] == "HOLD"
+
+
+def test_release_decision_holds_without_release_set_coverage():
+    cases = _qualified_case_results(
+        [
+            {
+                "case_id": "dev-only",
+                "case_set": "dev",
+                "success_frequency": 1.0,
+                "consistent": True,
+                "missing_evidence": [],
+                "paired_delta": "both_pass",
+            }
+        ]
+    )
+    decision = compute_release_decision(
+        cases, [], CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
+    )
+    assert decision["outcome"] == "HOLD"
+    assert "no release-set cases" in decision["reasons"][0]
 
 
 def test_rubric_grader_pass():
@@ -234,7 +325,7 @@ def test_release_decision_pass():
         },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(cases, [], cal)
+    decision = compute_release_decision(_qualified_case_results(cases), [], cal)
     assert decision["outcome"] == "PASS"
 
 
@@ -257,7 +348,7 @@ def test_release_decision_hold_on_missing_evidence():
             "paired_delta": "both_pass",
         },
     ]
-    decision = compute_release_decision(cases, [], CalibrationRecord())
+    decision = compute_release_decision(_qualified_case_results(cases), [], CalibrationRecord())
     assert decision["outcome"] == "HOLD"
 
 
@@ -273,7 +364,7 @@ def test_release_decision_block_on_low_frequency():
         },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(cases, [], cal)
+    decision = compute_release_decision(_qualified_case_results(cases), [], cal)
     assert decision["outcome"] == "BLOCK"
 
 
@@ -289,7 +380,7 @@ def test_release_decision_block_on_regression():
         },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(cases, [], cal)
+    decision = compute_release_decision(_qualified_case_results(cases), [], cal)
     assert decision["outcome"] == "BLOCK"
 
 
@@ -305,7 +396,7 @@ def test_release_decision_conditional_on_inconsistency():
         },
     ]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(cases, [], cal)
+    decision = compute_release_decision(_qualified_case_results(cases), [], cal)
     assert decision["outcome"] == "CONDITIONAL"
 
 
@@ -322,7 +413,7 @@ def test_release_decision_conditional_on_uncalibrated_judge():
     ]
     rubric = [{"case_id": "c1", "verdict": "pass"}]
     cal = CalibrationRecord()
-    decision = compute_release_decision(cases, rubric, cal)
+    decision = compute_release_decision(_qualified_case_results(cases), rubric, cal)
     assert decision["outcome"] == "CONDITIONAL"
     assert any("advisory" in r for r in decision["reasons"])
 
@@ -340,7 +431,7 @@ def test_release_decision_conditional_on_rubric_abstain():
     ]
     rubric = [{"case_id": "c1", "verdict": "abstain"}]
     cal = CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9)
-    decision = compute_release_decision(cases, rubric, cal)
+    decision = compute_release_decision(_qualified_case_results(cases), rubric, cal)
     assert decision["outcome"] == "CONDITIONAL"
 
 
@@ -380,7 +471,7 @@ def test_build_release_report_structure():
         pairwise_results=[],
         calibration=cal,
     )
-    assert report["schema_version"] == 1
+    assert report["schema_version"] == 2
     assert report["skill_name"] == "test-skill"
     assert "report_id" in report
     assert "generated_at" in report
@@ -395,7 +486,7 @@ def test_build_release_report_validates_against_schema():
         return
 
     schema_path = (
-        Path(__file__).resolve().parent.parent.parent / "schemas" / "release-eval-v1.schema.json"
+        Path(__file__).resolve().parent.parent.parent / "schemas" / "release-eval-v2.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     Draft202012Validator.check_schema(schema)
@@ -410,10 +501,12 @@ def test_build_release_report_validates_against_schema():
             "trial_count": 3,
             "success_count": 3,
             "failure_count": 0,
+            "unassessed_count": 0,
             "error_count": 0,
             "timeout_count": 0,
             "success_frequency": 1.0,
             "consistent": True,
+            "semantic_verdict": "pass",
             "missing_evidence": [],
             "paired_delta": "both_pass",
         }
@@ -461,7 +554,7 @@ def test_release_schema_matches_runtime_case_ids():
         return
 
     schema_path = (
-        Path(__file__).resolve().parent.parent.parent / "schemas" / "release-eval-v1.schema.json"
+        Path(__file__).resolve().parent.parent.parent / "schemas" / "release-eval-v2.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     for definition in ["case_result", "rubric_result", "pairwise_result"]:
@@ -493,7 +586,7 @@ def test_write_release_report():
         assert path.is_file()
         assert "my-skill" in path.name
         loaded = json.loads(path.read_text())
-        assert loaded["schema_version"] == 1
+        assert loaded["schema_version"] == 2
 
 
 def test_dataset_hash_deterministic():

@@ -106,6 +106,7 @@ class CliSubprocessAdapter:
                 token_usage=None,
                 raw_trace_path=None,
                 error=proc.stderr[:1000] if proc.returncode != 0 else None,
+                artifact_inventory_complete=True,
             )
 
         except subprocess.TimeoutExpired:

@@ -295,6 +295,7 @@ class OpenAICompatAdapter:
                 input_provenance=provenance,
                 raw_trace_path=None,
                 error=None,
+                artifact_inventory_complete=False,
             )
 
         except urllib.error.HTTPError as exc:

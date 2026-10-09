@@ -159,6 +159,67 @@ def infrastructure_error_count(reports: list[dict[str, Any]]) -> int:
     )
 
 
+def summarize_run(
+    reports: list[dict[str, Any]],
+    selected_case_count: int,
+    selected_assertion_count: int | None = None,
+) -> dict[str, Any]:
+    """Summarize process completion and assertion coverage independently of verdicts."""
+    reported = len(reports)
+    candidate_assertions = sum(len(r.get("candidate", {}).get("assertions", [])) for r in reports)
+    baseline_assertions = sum(len(r.get("baseline", {}).get("assertions", [])) for r in reports)
+    candidate_resolved = sum(
+        sum(
+            a.get("verdict") in {"pass", "fail"}
+            for a in r.get("candidate", {}).get("assertions", [])
+        )
+        for r in reports
+    )
+    baseline_resolved = sum(
+        sum(
+            a.get("verdict") in {"pass", "fail"}
+            for a in r.get("baseline", {}).get("assertions", [])
+        )
+        for r in reports
+    )
+    if selected_assertion_count is None:
+        selected_assertion_count = max(candidate_assertions, baseline_assertions)
+    triage_complete = (
+        selected_case_count > 0
+        and reported == selected_case_count
+        and infrastructure_error_count(reports) == 0
+    )
+    candidate_verdicts = [
+        r.get("candidate", {}).get("semantic_verdict", "not_assessed") for r in reports
+    ]
+    both_sides_assessed = all(
+        r.get(side, {}).get("evidence_complete") is True
+        and r.get(side, {}).get("semantic_verdict") in {"pass", "fail"}
+        for r in reports
+        for side in ("candidate", "baseline")
+    )
+    strict_gate_status = (
+        "HOLD"
+        if not triage_complete or any(v == "not_assessed" for v in candidate_verdicts)
+        else "FAIL"
+        if any(v == "fail" for v in candidate_verdicts)
+        else "PASS"
+    )
+    return {
+        "selected_case_count": selected_case_count,
+        "reported_case_count": reported,
+        "skipped_case_count": max(0, selected_case_count - reported),
+        "candidate_assertion_count": candidate_assertions,
+        "candidate_resolved_assertion_count": candidate_resolved,
+        "baseline_assertion_count": baseline_assertions,
+        "baseline_resolved_assertion_count": baseline_resolved,
+        "selected_assertion_count": selected_assertion_count,
+        "triage_complete": triage_complete,
+        "strict_gate_status": strict_gate_status,
+        "paired_comparison_complete": triage_complete and both_sides_assessed,
+    }
+
+
 def main() -> int:
     import argparse
 
@@ -264,6 +325,7 @@ def main() -> int:
     print(f"output:  {output_dir}")
     print()
 
+    selected_case_count = len(cases)
     reports = run_paired_evaluation(
         adapter,
         cases,
@@ -285,10 +347,29 @@ def main() -> int:
         elif delta == "candidate_regression":
             regressions += 1
     infrastructure_errors = infrastructure_error_count(reports)
+    selected_assertion_count = sum(len(case.assertions) for case in cases)
+    run_summary = summarize_run(reports, selected_case_count, selected_assertion_count)
 
     print(
-        f"summary: {len(reports)} case(s), {improvements} improvement(s), "
+        f"summary: {run_summary['reported_case_count']}/{run_summary['selected_case_count']} "
+        f"case(s) reported, {run_summary['skipped_case_count']} skipped, "
+        f"{improvements} improvement(s), "
         f"{regressions} regression(s), {infrastructure_errors} infrastructure error(s)"
+    )
+    print(
+        "assertion coverage: "
+        f"candidate {run_summary['candidate_resolved_assertion_count']}/"
+        f"{run_summary['selected_assertion_count']} resolved "
+        f"({run_summary['candidate_assertion_count']} observed); "
+        f"baseline {run_summary['baseline_resolved_assertion_count']}/"
+        f"{run_summary['selected_assertion_count']} resolved "
+        f"({run_summary['baseline_assertion_count']} observed)"
+    )
+    print(f"triage status: {'complete' if run_summary['triage_complete'] else 'incomplete'}")
+    print(f"strict candidate semantic gate: {run_summary['strict_gate_status']}")
+    print(
+        "paired comparison evidence: "
+        f"{'complete' if run_summary['paired_comparison_complete'] else 'HOLD'}"
     )
     return 1 if regressions > 0 or infrastructure_errors > 0 else 0
 
