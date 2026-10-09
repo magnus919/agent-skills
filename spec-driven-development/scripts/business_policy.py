@@ -1,9 +1,9 @@
 """Read-only synthetic equipment-loan policy. Python 3.10+, no dependencies."""
 
-from dataclasses import asdict, dataclass
-from datetime import date
 import argparse
 import json
+from dataclasses import asdict, dataclass
+from datetime import date
 from typing import Literal
 
 

@@ -2,8 +2,9 @@
 
 import importlib.util
 import sys
-from pathlib import Path
 from datetime import date
+from pathlib import Path
+
 import pytest
 
 spec = importlib.util.spec_from_file_location(

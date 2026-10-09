@@ -16,11 +16,11 @@ exec(compile(code, str(reference), "exec"), namespace)
 
 async def main():
     evidence = namespace["Evidence"]("REQ-DEMO-042", 12, ("ITEM-DEMO-7",), ("inventory-12",), "{}")
-    good = dict(
-        item_id="ITEM-DEMO-7",
-        rationale="Available in the supplied inventory.",
-        evidence_ids=["inventory-12"],
-    )
+    good = {
+        "item_id": "ITEM-DEMO-7",
+        "rationale": "Available in the supplied inventory.",
+        "evidence_ids": ["inventory-12"],
+    }
     model = TestModel(custom_output_args=good)
     proposal = await namespace["propose"](evidence, model)
     assert proposal.item_id == "ITEM-DEMO-7"
