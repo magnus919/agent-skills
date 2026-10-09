@@ -634,10 +634,7 @@
         "Routes workflow placement, state, authority, recovery, and whole-task evidence to harness engineering",
         "Keeps typed question design, model response validation, calibration, abstention, and substitution in System One guidance",
         "Treats PydanticAI or LangGraph as an implementation layer around an injectable typed decision service rather than assuming the decision model is a generative chat model",
-        "Keeps deterministic authorization and side effects outside model output and routes unknown or unavailable results explicitly",
-        "Keeps the approved deterministic eligibility rule authoritative over the model judgment",
-        "Separates eligibility from command execution authorization",
-        "Routes policy translation and owner-reviewed fixtures to spec-driven-development"
+        "Keeps deterministic authorization and side effects outside model output and routes unknown or unavailable results explicitly"
       ]
     }
   ]

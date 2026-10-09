@@ -1,8 +1,8 @@
 # Added-case rubric challenges
 
-Extended case: `harness-framework-boundary`. Its stable ID and original assertions are preserved; the prompt now adds an authoritative business-rule boundary and three corresponding assertions. This keeps the existing 49-case audit budget. Author review fixtures, not model-run or human-usefulness evidence.
+Extended case: `harness-framework-boundary`. Its stable ID and original assertions are preserved; the prompt now adds an authoritative business-rule boundary without adding grader assertions. The table below supplies supplemental manual-review probes for the expanded expected outcome; the original four assertions still apply. This keeps the existing 49-case/292-assertion audit budget. Author review fixtures, not model-run or human-usefulness evidence.
 
-| Assertion | Satisfying evidence | Contradictory near miss | Missing evidence |
+| Manual-review probe | Satisfying evidence | Contradictory near miss | Missing evidence |
 |---|---|---|---|
 | Keeps the approved deterministic eligibility rule authoritative over the model judgment | Six-day loan stays ineligible under approved five-day rule | High-confidence model output overrides five-day limit | Response omits this boundary |
 | Separates eligibility from command execution authorization | Eligible result still requires current reserve permission | Eligibility directly triggers reservation without authority check | Response omits this boundary |
