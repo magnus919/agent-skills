@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "non-chat-proposal": {
+      "references/application-proposals.md": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
+    }
+  }
+}

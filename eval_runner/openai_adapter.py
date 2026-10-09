@@ -8,6 +8,7 @@ sends only the user prompt.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import os
@@ -18,10 +19,10 @@ import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from pathlib import Path
 from typing import Any
 
 from .models import AdapterInput, AdapterOutput, ExitStatus, ToolEvent
+from .reference_inputs import build_context
 
 _SAFE_FINISH_REASON = re.compile(r"[A-Za-z0-9_.:-]{1,80}\Z")
 _SAFE_HTTP_ERROR_FIELD_VALUE = re.compile(r"[A-Za-z0-9_.:-]{1,80}\Z")
@@ -160,20 +161,13 @@ class OpenAICompatAdapter:
 
     @property
     def version(self) -> str:
-        return "0.1.0"
+        return "0.2.0"
 
-    def _load_skill_content(self, skill_path: Path) -> str | None:
-        skill_md = skill_path / "SKILL.md"
-        if skill_md.is_file():
-            content = skill_md.read_text(encoding="utf-8")
-            if self._max_skill_chars and len(content) > self._max_skill_chars:
-                content = content[: self._max_skill_chars] + "\n[truncated]"
-            return content
-        return None
-
-    def _build_messages(self, input: AdapterInput) -> list[dict[str, str]]:
+    def _build_input(self, input: AdapterInput) -> tuple[list[dict[str, str]], dict[str, Any]]:
         messages: list[dict[str, str]] = []
-        skill_content = self._load_skill_content(input.skill_path)
+        skill_content, provenance = build_context(
+            input.skill_path, input.case.skill_references, self._max_skill_chars
+        )
         if skill_content:
             messages.append(
                 {
@@ -189,10 +183,16 @@ class OpenAICompatAdapter:
                 }
             )
         messages.append({"role": "user", "content": input.case.prompt})
-        return messages
+        provenance["messages_sha256"] = hashlib.sha256(
+            json.dumps(messages, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()
+        ).hexdigest()
+        return messages, provenance
+
+    def _build_messages(self, input: AdapterInput) -> list[dict[str, str]]:
+        return self._build_input(input)[0]
 
     def execute(self, input: AdapterInput) -> AdapterOutput:
-        messages = self._build_messages(input)
+        messages, provenance = self._build_input(input)
         payload = {
             "model": self._model,
             "messages": messages,
@@ -241,14 +241,14 @@ class OpenAICompatAdapter:
                 "output_tokens": usage.get("completion_tokens", 0),
             }
 
-            skill_content = self._load_skill_content(input.skill_path)
+            has_skill = provenance["condition"] == "skill"
             activation_evidence = (
-                f"skill loaded from {input.skill_path.name}/SKILL.md" if skill_content else None
+                f"skill loaded from {input.skill_path.name}/SKILL.md" if has_skill else None
             )
             environment_state = {
                 "model": self._model,
                 "finish_reason": finish_reason or "unknown",
-                "has_skill": skill_content is not None,
+                "has_skill": has_skill,
                 "rate_limit_retries": retry_telemetry.attempts,
             }
 
@@ -269,6 +269,7 @@ class OpenAICompatAdapter:
                     duration_ms=elapsed_ms,
                     token_usage=token_usage,
                     rate_limit_retries=retry_telemetry.attempts,
+                    input_provenance=provenance,
                     error=f"model completion unusable: {completion_error}{reason_detail}",
                 )
 
@@ -294,6 +295,7 @@ class OpenAICompatAdapter:
                 duration_ms=elapsed_ms,
                 token_usage=token_usage,
                 rate_limit_retries=retry_telemetry.attempts,
+                input_provenance=provenance,
                 raw_trace_path=None,
                 error=None,
             )
@@ -323,6 +325,7 @@ class OpenAICompatAdapter:
                 error=f"HTTP {exc.code}: {exc.reason}{detail}",
                 duration_ms=elapsed_ms,
                 rate_limit_retries=retry_telemetry.attempts,
+                input_provenance=provenance,
             )
         except urllib.error.URLError as exc:
             elapsed_ms = (time.monotonic() - start) * 1000
@@ -332,6 +335,7 @@ class OpenAICompatAdapter:
                 error=f"connection error: {exc.reason}",
                 duration_ms=elapsed_ms,
                 rate_limit_retries=retry_telemetry.attempts,
+                input_provenance=provenance,
             )
         except TimeoutError:
             elapsed_ms = (time.monotonic() - start) * 1000
@@ -341,6 +345,7 @@ class OpenAICompatAdapter:
                 error=f"request exceeded {self._timeout_seconds}s timeout",
                 duration_ms=elapsed_ms,
                 rate_limit_retries=retry_telemetry.attempts,
+                input_provenance=provenance,
             )
         except (json.JSONDecodeError, KeyError, IndexError) as exc:
             elapsed_ms = (time.monotonic() - start) * 1000
@@ -350,4 +355,5 @@ class OpenAICompatAdapter:
                 error=f"malformed response: {exc}",
                 duration_ms=elapsed_ms,
                 rate_limit_retries=retry_telemetry.attempts,
+                input_provenance=provenance,
             )

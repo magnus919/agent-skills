@@ -72,7 +72,8 @@
         "Specifies date-based version selection with review on gaps or overlaps",
         "Tests threshold boundaries and unavailable-versus-exception precedence",
         "Rejects a correctness guarantee from generated code and table-derived tests"
-      ]
+      ],
+      "case_set": "regression"
     }
   ]
 }

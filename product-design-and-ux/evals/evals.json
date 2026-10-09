@@ -147,7 +147,8 @@
         "Queries command status after a timeout rather than blindly reserving again",
         "Shows the confirmed reservation separately from failed notification",
         "Distinguishes synthetic acceptance fixtures from observed usability evidence"
-      ]
+      ],
+      "case_set": "regression"
     }
   ]
 }

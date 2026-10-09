@@ -71,6 +71,9 @@ def build_manifest(
     if adapter_output.rate_limit_retries is not None:
         outputs["rate_limit_retries"] = adapter_output.rate_limit_retries
 
+    if adapter_output.input_provenance is not None:
+        outputs["input_provenance"] = adapter_output.input_provenance
+
     return {
         "schema_version": MANIFEST_SCHEMA_VERSION,
         "trial_id": str(uuid.uuid4()),

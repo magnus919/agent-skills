@@ -71,3 +71,5 @@ Stop when every in-scope behavior has traceable evidence, an applicable state/re
 ## Embedded business-app example
 
 When designing an agent inside an existing task surface, read [the equipment-loan worked example](references/embedded-business-agent.md). It fills the existing AI interaction, task-flow, and engineering-handoff contracts from recommendation through confirmed effects and recovery; treat its acceptance probes as synthetic design fixtures, not observed usability results.
+
+For executable AI recommendations, re-check current permission, record revision, policy, inventory, and the approved action digest at execution. An approval-time check alone is insufficient. After an uncertain command outcome, query the persisted command ID before any retry; do not create a new reservation ID or repeat a confirmed side effect. Show partial effects separately.
