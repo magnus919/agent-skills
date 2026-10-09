@@ -94,9 +94,9 @@ ignore_errors = true
 cc_min = "B"
 
 [tool.deptry]
-requirements_files = ["requirements-dev.txt", "youtube-thumbnail/requirements.txt"]
+requirements_files = ["requirements-dev.txt", "youtube-thumbnail/requirements.txt", "pydanticai/evals/requirements.txt"]
 known_first_party = ["thumbnail_preflight"]
-package_module_name_map = { Pillow = ["PIL"] }
+package_module_name_map = { Pillow = ["PIL"], "pydantic-ai-slim" = ["pydantic_ai"] }
 extend_exclude = [
     "agent-council",
     "agent-production-operations",

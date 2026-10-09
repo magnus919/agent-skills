@@ -172,3 +172,7 @@ open-ended planning, or long reasoning without a typed-decision contract.
 ## Framework handoff
 
 The harness provides authorized, versioned state, candidate/route bounds, task goal, deadline, and the outcome to verify. This skill consumes that evidence under a pinned question/rubric/model contract and returns validated typed answers, model identity/revision, and an explicit unknown or failure lane. PydanticAI, LangGraph, and LangChain carry and route the result through their own documented seams; deterministic policy decides the next workflow step. The harness returns observed effects and accepted-task outcomes for end-to-end evaluation. Keep question/model calibration evidence inside this skill, and use [harness-engineering](../harness-engineering/references/system-one-decisions.md) for placement, authority, recovery, and whole-task evidence.
+
+## Authoritative business rules
+
+For business-policy translation, route to [spec-driven-development's policy recipe](../spec-driven-development/references/executable-business-policy.md) and [release contract](../spec-driven-development/templates/BUSINESS-POLICY.md). Use deterministic code for approved rules; retrieval explains clauses and bounded model judgments route uncertain evidence to review. Neither a typed judgment nor eligibility grants execution authority.

@@ -16,6 +16,8 @@ When your agent loads this skill, it becomes a **PydanticAI expert** who can:
 
 ## What You Get
 
+A non-chat typed proposal example for application-owned drafts and commands.
+
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Quick reference, when-to-load table, common pattern gallery |

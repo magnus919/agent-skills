@@ -246,3 +246,7 @@ pydanticai/
   ```
 
   This trap is most common with parallel `.map()` patterns where the reader assumes `result.items_processed` will work. It won't. The `items_processed` count lives on the state object you passed in, not on the return value.
+
+## Non-chat application proposals
+
+When an application invokes an agent to populate editable proposed actions, read [typed application proposals](references/application-proposals.md). Return typed data to application-owned state; keep command authority outside the model. Route interaction behavior to [product-design-and-ux](../product-design-and-ux/SKILL.md), architecture to [software-architecture](../software-architecture/SKILL.md), placement to [harness-engineering](../harness-engineering/SKILL.md), evaluation to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md), and production authority/recovery to [agent-production-operations](../agent-production-operations/SKILL.md).

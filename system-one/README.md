@@ -31,6 +31,8 @@ blocking CI gate.
 
 ## What You Get
 
+Routing for authoritative business rules and their independent translation checks.
+
 | Directory | Purpose |
 |---|---|
 | `SKILL.md` | Decision contracts, integrations, evaluation boundaries, and task routing |

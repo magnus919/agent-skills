@@ -16,6 +16,8 @@ are still needed to establish improvement.
 
 ## What You Get
 
+Business-policy placement guidance that separates explanations, eligibility, and command authority.
+
 | Contents | Provides |
 |---|---|
 | `SKILL.md` | Design, diagnosis, implementation, and improvement workflow |

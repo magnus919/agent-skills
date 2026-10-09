@@ -628,8 +628,8 @@
     },
     {
       "id": "harness-framework-boundary",
-      "prompt": "We want to add a typed System One ticket route to an existing Python agent built with LangGraph and PydanticAI. Explain who owns the decision contract versus graph placement, and sketch the integration boundary.",
-      "expected_output": "Separates harness workflow ownership from System One model ownership and framework implementation: the graph/application supplies authorized state, recovery, and deterministic action policy; a typed decision service owns question/model validation, calibration, unknown handling, and measured substitution. Framework-specific wiring is an implementation seam, not a replacement for the decision contract.",
+      "prompt": "We want to add a typed System One ticket route to an existing Python agent built with LangGraph and PydanticAI. Explain who owns the decision contract versus graph placement, and sketch the integration boundary. Also place an equipment-loan decision where the typed model recommends six days but the approved business policy permits five: can confidence authorize the reservation, and who owns translating the clauses?",
+      "expected_output": "Separates harness workflow ownership from System One model ownership and framework implementation: the graph/application supplies authorized state, recovery, and deterministic action policy; a typed decision service owns question/model validation, calibration, unknown handling, and measured substitution. Framework-specific wiring is an implementation seam, not a replacement for the decision contract. Keeps the approved deterministic limit authoritative, separates eligibility from execution authority, and routes clause translation and independent fixtures to spec-driven-development.",
       "assertions": [
         "Routes workflow placement, state, authority, recovery, and whole-task evidence to harness engineering",
         "Keeps typed question design, model response validation, calibration, abstention, and substitution in System One guidance",
