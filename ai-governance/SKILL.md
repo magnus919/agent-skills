@@ -1,19 +1,16 @@
 ---
 name: ai-governance
 description: >-
-  Design and operate an organization's AI governance system: define governance
-  principles, operating models and decision rights, risk frameworks, lifecycle
-  gates, and fairness, transparency, privacy, security, regulatory, and
-  board-oversight controls across SaaS, API, self-hosted, and agentic
-  deployment postures. Use when standing up a governance program, tiering
-  AI use-case risk, reviewing an LLM or agent system for governance and safety
-  gaps, mapping a regulation to a compliance plan, scoring governance maturity,
-  or preparing board reporting. For regulated life-sciences use cases, also cover GxP,
-  ALCOA+, data integrity, electronic records, validation/assurance, and QMS interfaces.
-  Do not use for interpreting regulations as legal
-  advice (route to legal-strategy), data-governance mechanics
-  (data-architect/data-engineering), or implementing application security
-  (secure-software-engineering).
+  Design and operate AI governance: principles, decision rights, risk tiers,
+  lifecycle gates, fairness, transparency, privacy, security, compliance mapping,
+  maturity and board reporting across SaaS, API, self-hosted and agentic systems.
+  Use to admit, update or retire Agent Skills, MCP servers and A2A capabilities;
+  approve an agent for production actions; or decide earned-autonomy promotion,
+  reduction or revocation. Cover GxP, ALCOA+, data integrity, electronic records,
+  assurance and QMS interfaces for life sciences. Do not use for legal interpretation
+  (legal-strategy), data-platform mechanics (data-architect/data-engineering),
+  security implementation (secure-software-engineering), skill package inspection
+  (agent-skills), or executing runtime changes (agent-production-operations).
 license: MIT
 compatibility: Agent-agnostic methodology; no external services, APIs, or runtime dependencies. The two scripts are Python 3 standard-library only.
 metadata:
@@ -60,7 +57,17 @@ governance program, tiering use-case risk, designing the operating model and dec
 reviewing an LLM/agent system for governance and safety gaps, mapping a regulation to a
 compliance/control plan, scoring governance maturity, or preparing board-level reporting.
 
-## Earned autonomy decisions
+## Capability admission and authority decisions
+
+For “may this capability enter or remain in our environment?”, read
+`references/capability-admission-and-update.md` and use
+`templates/capability-admission-record.md`. For “may this agent act?”, use the earned-autonomy
+path below. Admission approves a component at a recorded revision and configuration; it does
+not issue a runtime grant. Link the two records in one review when both decisions are needed.
+Reuse current evidence and existing authorized scope; request a new decision only for a material
+change or an unmet approval condition.
+
+### Earned autonomy
 
 When setting agent promotion/demotion thresholds or reviewing earned autonomy, read `references/earned-autonomy.md` and use `templates/earned-autonomy-decision.md`. Support accountable humans making capability/environment/action-class decisions; the agent cannot grant itself authority. [site-reliability-engineering](../site-reliability-engineering/SKILL.md) supplies operational evidence and [agent-production-operations](../agent-production-operations/SKILL.md) implements the approved control plan. This five-level autonomy ladder is separate from the Six-Level Governance framework.
 
@@ -82,6 +89,8 @@ Progressive disclosure: load only the reference relevant to the current question
 | Trust boundaries, prompt injection, exposure ladders, excessive agency, tool authorization, containment, supply chain, red-teaming | [references/llm-and-agent-security.md](references/llm-and-agent-security.md) |
 | Current law by jurisdiction, compliance mapping, enforcement, horizon scanning | [references/regulatory-landscape.md](references/regulatory-landscape.md) |
 | Vendor/model due diligence, supply chain, board reporting, metrics, audit | [references/procurement-third-party-and-board-oversight.md](references/procurement-third-party-and-board-oversight.md) |
+| Admitting, updating, disabling or retiring Skills, MCP servers or A2A capabilities | [references/capability-admission-and-update.md](references/capability-admission-and-update.md) |
+| Granting, promoting, reducing, suspending or revoking scoped agent authority | [references/earned-autonomy.md](references/earned-autonomy.md) |
 | Tracing any idea to its informing books and research notes; bibliography | [references/source-index.md](references/source-index.md) |
 
 ## Templates (fillable)
@@ -90,6 +99,8 @@ Use these to turn the methodology into working artifacts.
 
 | Use when | Template |
 |---|---|
+| Recording capability admission, configuration changes, overlap and exit | [templates/capability-admission-record.md](templates/capability-admission-record.md) |
+| Recording scoped authority, evidence, counterevidence and independent approval | [templates/earned-autonomy-decision.md](templates/earned-autonomy-decision.md) |
 | Standing up the governance council and its terms of reference | [templates/governance-charter.md](templates/governance-charter.md) |
 | Registering a use case and classifying it at intake | [templates/use-case-intake-form.md](templates/use-case-intake-form.md) |
 | Running a NIST-aligned risk assessment and tiering worksheet | [templates/model-risk-assessment.md](templates/model-risk-assessment.md) |
@@ -147,8 +158,9 @@ Do not load this skill for work that belongs to a neighbor methodology or to exe
 - **Legal, financial, or security advice.** Nothing in this skill is legal, financial, or security
   advice. Regulatory and standards material must be re-verified against primary sources at the
   time of use.
-- **Single one-off decisions.** If you only need to make one decision (not design the recurring
-  governance system), use `adr-authoring` or `product-methodology` for a decision record instead.
+- **Other one-off decisions.** Use `adr-authoring` or `product-methodology` for general
+  architectural or product decisions. Individual AI capability admission and authority decisions
+  remain in this skill.
 
 ## Related Skills (routing)
 

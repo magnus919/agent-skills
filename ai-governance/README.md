@@ -10,7 +10,7 @@ AI systems get deployed faster than the organizations that build them can decide
 accountable for them, what risk they are allowed to carry, and what evidence should gate each
 stage of their life. Without a working governance system, launches are rubber-stamped, risks are
 surfaced too late, and "someone approved it" is rarely traceable to a named, evidence-backed
-decision. This skill gives your agent a complete, field-tested framework for standing up and
+decision. This skill gives your agent a practical framework for standing up and
 operating AI governance — not a compliance checklist you copy, but a method you run.
 
 After installing, your agent can stand up a governance program from scratch, tier AI use cases by
@@ -19,16 +19,20 @@ deployment postures, review an LLM or agent system for governance and safety gap
 to a concrete compliance and control plan, score organizational governance maturity and get a
 prioritized gap list, and prepare board-level reporting. It ships dense references for each
 governance domain, including a GxP/data-integrity overlay, a Six-Level Governance evidence loop,
-eight fillable templates, and two executable scripts,
+nine fillable templates, and two executable scripts,
 so the method turns into working artifacts instead of advice.
+
+You can also ask two concrete questions: “May this Skill, MCP server or A2A agent enter our
+environment?” and “What may our agent actually do?” Linked records capture ownership,
+configuration, evidence, restrictions and review dates, including when to reduce or remove access.
 
 ## What You Get
 
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | The router: triggers, what the skill owns vs. doesn't, and when to load each file |
-| `references/` (14 files) | Dense, scannable guides: principles, operating model, risk frameworks, lifecycle, 6L-G governance, fairness, transparency, privacy, LLM/agent security, regulation, procurement/board oversight, source index, a GxP/data-integrity overlay, and earned-autonomy decisions |
-| `templates/` (8 files) | Fillable artifacts: governance charter, use-case intake, model risk assessment, model card, third-party due diligence, board report, agentic/posture review, and earned-autonomy decision |
+| `references/` (15 files) | Dense, scannable guides: principles, operating model, risk frameworks, lifecycle, 6L-G governance, fairness, transparency, privacy, LLM/agent security, regulation, procurement/board oversight, source index, a GxP/data-integrity overlay, earned-autonomy decisions, and capability admission/update review |
+| `templates/` (9 files) | Fillable artifacts: governance charter, use-case intake, model risk assessment, model card, third-party due diligence, board report, agentic/posture review, earned-autonomy decision, and capability admission record |
 | `scripts/governance-maturity.py` | CLI that scores an organization's governance maturity from JSON answers and lists gaps |
 | `scripts/use-case-risk-tier.py` | CLI that classifies an AI use case into a risk tier and its required controls |
 | `evals/evals.json` | Output-quality cases used to grade the skill |
@@ -62,6 +66,7 @@ Load this skill when you or your agent need to:
 - Tier an AI use case by risk and decide which controls it needs before it ships.
 - Compare a SaaS, API-integrated, self-hosted, or agentic deployment and assign control ownership at each trust boundary.
 - Review an LLM or agent system (e.g., an internal RAG copilot) for governance and safety gaps.
+- Admit, restrict, update, disable or retire agent capabilities without duplicating existing tools.
 - Set locally evidenced promotion/demotion criteria and human authority decisions for specific agent capabilities, environments and action classes.
 - Review agent tools, action permissions, purpose-aware data egress, memory retention, human approvals, and kill-switch evidence.
 - Apply the Six-Level Governance loop from strategy and impact assessment through acceptance, operations, and learning.
