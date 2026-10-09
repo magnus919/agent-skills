@@ -188,9 +188,6 @@ class OpenAICompatAdapter:
         ).hexdigest()
         return messages, provenance
 
-    def _build_messages(self, input: AdapterInput) -> list[dict[str, str]]:
-        return self._build_input(input)[0]
-
     def execute(self, input: AdapterInput) -> AdapterOutput:
         messages, provenance = self._build_input(input)
         payload = {
