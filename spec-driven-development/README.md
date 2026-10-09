@@ -15,6 +15,8 @@ When your agent loads this skill, it becomes a **software factory designer** who
 
 ## What You Get
 
+Business-policy recipe, release template, and a read-only fictional loan evaluator with boundary tests.
+
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Pipeline overview, loading guide, methodology quick-pick |

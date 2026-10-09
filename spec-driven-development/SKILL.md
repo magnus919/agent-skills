@@ -211,3 +211,7 @@ This skill describes the **methodology**, not a specific tool. The pipeline work
 - **droid (Factory)** — task cards from spec decomposition
 
 The templates are format-agnostic (markdown). Adapt the handoff mechanism (CLAUDE.md, .cursorrules, AGENTS.md) to your tool.
+
+## Executable business-policy specifications
+
+When translating business clauses into repeatable eligibility or routing decisions, read [the business-policy recipe](references/executable-business-policy.md) and use [the release contract](templates/BUSINESS-POLICY.md). Preserve policy-owner authority, independent translation-fidelity evidence, and explicit review lanes. Run `python3 scripts/business_policy.py --input evals/loan-request.json` from this skill directory for a read-only synthetic demonstration (Python 3.10+, standard library); run `python3 -m pytest scripts/test_business_policy.py` for its contract tests (pytest required). Deterministic execution is not proof that a generated interpretation is correct.

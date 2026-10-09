@@ -198,3 +198,7 @@ semantics, model-specific limits, calibration, and model-level latency;
 Harness Engineering owns the candidate space, current state, execution gates,
 observed effects, task outcome, and end-to-end cost. Return the measured task
 outcomes to the harness decision after the model-level contract is reviewed.
+
+## Business-policy boundary
+
+When a workflow embeds authoritative business rules, use [spec-driven-development's policy recipe](../spec-driven-development/references/executable-business-policy.md) and [release contract](../spec-driven-development/templates/BUSINESS-POLICY.md). The harness selects approved versioned inputs, separates explanation from evaluation, and re-checks execution authority against current state. Keep clause interpretation and translation-fidelity fixtures with the policy owner; do not duplicate policy authoring here.

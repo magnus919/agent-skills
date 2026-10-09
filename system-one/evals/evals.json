@@ -636,6 +636,16 @@
         "Treats PydanticAI or LangGraph as an implementation layer around an injectable typed decision service rather than assuming the decision model is a generative chat model",
         "Keeps deterministic authorization and side effects outside model output and routes unknown or unavailable results explicitly"
       ]
+    },
+    {
+      "id": "business-policy-authority",
+      "prompt": "Our typed model says a six-day equipment loan should be allowed, but the approved current policy limit is five. Can its confidence authorize the reservation?",
+      "expected_output": "A reviewable scoped design satisfying the authority and recovery boundaries below, with explicit evidence limitations.",
+      "assertions": [
+        "Keeps the approved deterministic eligibility rule authoritative over the model judgment",
+        "Separates eligibility from command execution authorization",
+        "Routes policy translation and owner-reviewed fixtures to spec-driven-development"
+      ]
     }
   ]
 }

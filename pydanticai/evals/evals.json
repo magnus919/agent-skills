@@ -62,6 +62,18 @@
         "Keeps thresholds, authorization, side effects, and unknown/unavailable behavior in deterministic application policy",
         "Separates System One contract and calibration ownership from harness placement and whole-task evaluation"
       ]
+    },
+    {
+      "id": "non-chat-proposal",
+      "prompt": "Show a non-chat PydanticAI pattern for an equipment-loan form. Return a typed item recommendation to application state; users edit and approve before the app reserves it. Include stale state and authority boundaries.",
+      "expected_output": "A reviewable scoped design satisfying the authority and recovery boundaries below, with explicit evidence limitations.",
+      "assertions": [
+        "Returns typed proposal data rather than treating generated text as a completed command",
+        "Validates proposed candidate IDs against application-supplied scope",
+        "Keeps approval identity and command execution outside model output",
+        "Requires current permission and record revision checks before command execution",
+        "Routes architecture, evaluation, and production operations to existing owning skills"
+      ]
     }
   ]
 }

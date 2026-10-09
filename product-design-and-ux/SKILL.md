@@ -67,3 +67,7 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 ## Completion
 
 Stop when every in-scope behavior has traceable evidence, an applicable state/recovery model, observable acceptance criteria, and either a resolved decision or an owner and resolution gate. Report limitations and untested risks rather than filling gaps with assumptions.
+
+## Embedded business-app example
+
+When designing an agent inside an existing task surface, read [the equipment-loan worked example](references/embedded-business-agent.md). It fills the existing AI interaction, task-flow, and engineering-handoff contracts from recommendation through confirmed effects and recovery; treat its acceptance probes as synthetic design fixtures, not observed usability results.

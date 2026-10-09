@@ -17,7 +17,7 @@
     {
       "id": "quality-gate-review",
       "prompt": "Our implementation gate just rejected a feature because the generated code does not match the spec: the error messages differ, and one validation rule was implemented differently than specified. The spec and code disagree in small ways. How do I run the review and decide what gets fixed?",
-      "expected_output": "A gate review that treats spec-code divergence as the primary defect signal: the response classifies each discrepancy (behavioral mismatch, cosmetic difference, ambiguous spec that allowed two readings, missing edge case) and routes them correctly — behavior and validation mismatches are code fixes against the spec, ambiguity is a spec revision before re-implementation, and cosmetic differences are ignored unless they affect observability. It prescribes re-running the verification against the corrected code, keeping the spec as the source of truth, and records the review outcome so the loop is auditable. It also warns against weakening the gate to pass the code instead of fixing the mismatch.",
+      "expected_output": "A gate review that treats spec-code divergence as the primary defect signal: the response classifies each discrepancy (behavioral mismatch, cosmetic difference, ambiguous spec that allowed two readings, missing edge case) and routes them correctly \u2014 behavior and validation mismatches are code fixes against the spec, ambiguity is a spec revision before re-implementation, and cosmetic differences are ignored unless they affect observability. It prescribes re-running the verification against the corrected code, keeping the spec as the source of truth, and records the review outcome so the loop is auditable. It also warns against weakening the gate to pass the code instead of fixing the mismatch.",
       "assertions": [
         "Each discrepancy is classified as behavioral, cosmetic, or spec-ambiguity with a different routing",
         "Behavioral mismatches are fixed in code against the spec as source of truth",
@@ -53,13 +53,25 @@
     {
       "id": "pipeline-mode-selection",
       "prompt": "We have a tiny one-file script change and a brand-new multi-service feature, and I am told to run both through the same spec pipeline. The tiny change is drowning in process. How do I decide the pipeline mode for a given change?",
-      "expected_output": "A pipeline-mode decision that scales the process to the change's risk and size: the response defines the criteria (behavioral surface area, blast radius, number of integration points, reversibility) and maps them to modes — a trivial mechanical change gets a lightweight path with a short spec and direct verification, while a new multi-service feature gets the full pipeline with decomposition and gates at each phase. It explains that the pipeline's purpose is enforcing correctness where divergence is expensive, and that over-applying full ceremony to trivial changes erodes trust in the process. It also covers the guardrail that the mode decision itself is recorded so it can be audited.",
+      "expected_output": "A pipeline-mode decision that scales the process to the change's risk and size: the response defines the criteria (behavioral surface area, blast radius, number of integration points, reversibility) and maps them to modes \u2014 a trivial mechanical change gets a lightweight path with a short spec and direct verification, while a new multi-service feature gets the full pipeline with decomposition and gates at each phase. It explains that the pipeline's purpose is enforcing correctness where divergence is expensive, and that over-applying full ceremony to trivial changes erodes trust in the process. It also covers the guardrail that the mode decision itself is recorded so it can be audited.",
       "assertions": [
         "The response defines explicit criteria for selecting the pipeline mode by risk and size",
         "Trivial changes get a lightweight path while new features get the full pipeline",
         "The rationale ties pipeline depth to where divergence is expensive",
         "The response warns that over-ceremony on trivial changes erodes process trust",
         "The mode decision is recorded for auditability"
+      ]
+    },
+    {
+      "id": "policy-translation-fidelity",
+      "prompt": "Turn fictional equipment-loan clauses into executable rules. v1 allows seven days until July 1, v2 allows five. Exceptions need review; unavailable items are denied even with an exception. Can generated code and passing table-derived tests guarantee correctness?",
+      "expected_output": "A reviewable scoped design satisfying the authority and recovery boundaries below, with explicit evidence limitations.",
+      "assertions": [
+        "Identifies original clauses and policy-owner review as authority for the decision table",
+        "Requires translation-fidelity expected cases independently derived from original clauses",
+        "Specifies date-based version selection with review on gaps or overlaps",
+        "Tests threshold boundaries and unavailable-versus-exception precedence",
+        "Rejects a correctness guarantee from generated code and table-derived tests"
       ]
     }
   ]

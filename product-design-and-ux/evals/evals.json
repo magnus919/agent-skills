@@ -65,12 +65,12 @@
     {
       "id": "ai-uncertain-output-recovery",
       "prompt": "We are designing an AI assistant that drafts answers from an internal knowledge base. What should happen when the sources are missing, stale, or conflicting, and how should a user recover?",
-      "expected_output": "A framework-neutral interaction design that defines source ownership and freshness, distinguishes draft from verified fact, makes unsupported or conflicting context visible, preserves the user’s request, and provides clarification, correction, safe fallback, and escalation paths. It names the evidence and model-change acceptance checks without inventing confidence or claiming that a citation proves correctness.",
+      "expected_output": "A framework-neutral interaction design that defines source ownership and freshness, distinguishes draft from verified fact, makes unsupported or conflicting context visible, preserves the user\u2019s request, and provides clarification, correction, safe fallback, and escalation paths. It names the evidence and model-change acceptance checks without inventing confidence or claiming that a citation proves correctness.",
       "assertions": [
         "The response defines missing, stale, and conflicting source behavior",
         "The draft is distinguished from a verified fact or committed action",
         "The response provides correction, clarification, fallback, and escalation recovery",
-        "The user’s input and relevant context are preserved through recovery",
+        "The user\u2019s input and relevant context are preserved through recovery",
         "The response avoids unsupported confidence or correctness claims"
       ]
     },
@@ -134,6 +134,19 @@
         "The response specifies human intervention across the available surfaces, including a manual path or an explicit limitation when no control is supported",
         "Cancellation is represented as a request whose effects may be unconfirmed, and already completed side effects are distinguished from stoppable work",
         "Partial completion, safe retry or duplicate-effect risk, and re-entry after app switching or connection loss are addressed"
+      ]
+    },
+    {
+      "id": "embedded-loan-recovery",
+      "prompt": "Design an equipment-loan form with embedded recommendations. The user edits a proposal, approves, then loses permission. Another request times out after reservation succeeds and notification fails. Show the full task and recovery states.",
+      "expected_output": "A reviewable scoped design satisfying the authority and recovery boundaries below, with explicit evidence limitations.",
+      "assertions": [
+        "Presents editable proposed actions before approval",
+        "Invalidates prior approval when the draft changes",
+        "Blocks execution when permission is revoked after invocation",
+        "Queries command status after a timeout rather than blindly reserving again",
+        "Shows the confirmed reservation separately from failed notification",
+        "Distinguishes synthetic acceptance fixtures from observed usability evidence"
       ]
     }
   ]

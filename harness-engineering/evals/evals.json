@@ -355,6 +355,16 @@
         "Defines explicit handling for timeout, malformed output, stale evidence, and fallback unavailability.",
         "Keeps unresolved or unavailable judge outcomes incomplete or routes them to review instead of converting them to approval."
       ]
+    },
+    {
+      "id": "policy-release-placement",
+      "prompt": "Design a harness for an equipment-loan agent with retrieved policy explanations, versioned eligibility rules, and a reservation command. Who owns each boundary?",
+      "expected_output": "A reviewable scoped design satisfying the authority and recovery boundaries below, with explicit evidence limitations.",
+      "assertions": [
+        "Separates retrieved explanation from deterministic policy evaluation",
+        "Routes clause interpretation and translation-fidelity fixtures to spec-driven-development",
+        "Requires execution authority to be rechecked against current state"
+      ]
     }
   ]
 }
