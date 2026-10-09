@@ -62,7 +62,7 @@ This is the application seam, not a suggestion that the sample implements secure
 
 Use `TestModel` or `FunctionModel` with model requests disabled. Exercise a valid proposal, unknown candidate, invented evidence ID, malformed output, cancellation/late output, and exhausted request budget. At the command boundary test revoked permission, edited draft, stale revision/policy, duplicate submission, and timeout after commit. Model fixtures prove shape/control behavior, not recommendation usefulness; hold out domain-labeled task cases and inspect confirmed end-to-end outcomes with the evaluation owner.
 
-Run the bundled offline check from the repository root after installing `pydantic-ai-slim==2.54.0` and `pydantic==2.14.0` in a disposable environment:
+Run the bundled offline check from the repository root after installing `pydanticai/evals/requirements.txt` in a disposable environment (verified with Pydantic 2.14.0):
 
 ```sh
 python3 pydanticai/evals/verify-application-proposals.py
