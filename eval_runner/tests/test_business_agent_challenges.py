@@ -2,7 +2,10 @@
 
 import hashlib
 import json
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from eval_runner.grader import grade_output
 from eval_runner.models import AdapterOutput, ExitStatus

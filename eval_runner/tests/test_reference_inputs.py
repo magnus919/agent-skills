@@ -2,10 +2,13 @@
 
 import hashlib
 import json
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from eval_runner.models import AdapterInput, EvalCase
 from eval_runner.openai_adapter import OpenAICompatAdapter
