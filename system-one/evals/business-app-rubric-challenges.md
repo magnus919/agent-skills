@@ -1,6 +1,6 @@
 # Added-case rubric challenges
 
-Case: `business-policy-authority`. Existing IDs and rubrics are unchanged. Author review fixtures, not model-run or human-usefulness evidence.
+Extended case: `harness-framework-boundary`. Its stable ID and original assertions are preserved; the prompt now adds an authoritative business-rule boundary and three corresponding assertions. This keeps the existing 49-case audit budget. Author review fixtures, not model-run or human-usefulness evidence.
 
 | Assertion | Satisfying evidence | Contradictory near miss | Missing evidence |
 |---|---|---|---|
