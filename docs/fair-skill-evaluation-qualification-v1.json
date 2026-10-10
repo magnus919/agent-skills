@@ -12,8 +12,8 @@
     "max_request_payload_bytes": 100000
   },
   "splits": {
-    "development": 6,
-    "held_out": 6
+    "development": 7,
+    "held_out": 5
   },
   "required_classes": [
     "positive",
@@ -209,21 +209,21 @@
       "task_prompt_sha256": "f7f2dcfb883bf15dfd9015ea37c5a211eb3b699fb1905db658134d4d83ac2949"
     },
     {
-      "id": "dev-system-one-missing-evidence",
+      "id": "dev-system-one-confidence-acceptance-contradiction",
       "split": "development",
       "skill": "system-one",
       "case_id": "selective-judge-confident-unsupported",
-      "sample_kind": "missing_evidence",
+      "sample_kind": "contradictory",
       "assertion": "Requires independent labels and risk-coverage plus accepted-error analysis before setting an acceptance gate",
       "response": "Average confidence is high, so we should probably let the judge handle easy cases and send the rest to a person.",
-      "origin": "authored_missing_evidence_control",
+      "origin": "authored_contradictory_control_not_model_output",
       "source_fact_ids": [
         "JUDGE.QUAL.INDEPENDENT_LABELS",
         "JUDGE.QUAL.RISK_COVERAGE",
         "JUDGE.QUAL.ACCEPTED_ERROR"
       ],
-      "expected_label": "not_shown",
-      "label_basis": "The response does not provide independent labels, a risk-coverage analysis, or accepted-error evidence; it does not directly state that those checks are unnecessary.",
+      "expected_label": "not_met",
+      "label_basis": "It recommends accepting easy cases solely because average confidence is high, despite no independent-label, risk-coverage, or accepted-error evidence; this conflicts with the source criteria.",
       "source_arm": "candidate",
       "response_sha256": "9c72649b541f6c09d6af59558ffe81c344aa6c5b300dd7bb024b60b665f99629",
       "label_review_status": "pending_independent_agent_review",
@@ -328,8 +328,8 @@
       "task_prompt_sha256": "2313fe7c394996f245502302e454160c8704d81b3bcdc8df64fb3d432e40615b"
     },
     {
-      "id": "holdout-discovery-positive-paraphrase-b",
-      "split": "held_out",
+      "id": "dev-discovery-positive-paraphrase-b",
+      "split": "development",
       "skill": "product-discovery",
       "case_id": "stakeholder-map",
       "sample_kind": "semantic_paraphrase",
@@ -519,18 +519,28 @@
     },
     "DISCOVERY.ROLE.CATEGORIES": {
       "case_key": "product-discovery/stakeholder-map",
-      "fact": "The billing map covers decision-makers, end users, operators/support, downstream consumers, and adjacent system owners.",
+      "fact": "The billing stakeholder-map eval requires decision-makers, end users, operators/support, downstream consumers, and adjacent system owners.",
       "source": {
-        "path": "references/stakeholder-mapping.md",
-        "sha256": "acb3879ad1a72295d2f4adab66568c3da4dcdd1975e4eb7eb31a0d8e88f82371"
+        "kind": "eval_expected_output",
+        "path": "evals/evals.json",
+        "sha256": "d3148b2206215836f964c507cf929ad33acfa776504be16f9862af38f9ab9dfc",
+        "case_id": "stakeholder-map",
+        "field": "expected_output",
+        "evidence_excerpt": "decision-makers who fund and approve scope, end users who operate the system day to day, operators and support staff who handle billing escalations, downstream teams who consume billing data (finance, sales ops, data), and adjacent system owners whose systems integrate with billing",
+        "provided_to_jev": false
       }
     },
     "DISCOVERY.INCLUSION.CRITERIA": {
       "case_key": "product-discovery/stakeholder-map",
       "fact": "Include people whose unmet needs can block adoption or whose assumptions can silently break design.",
       "source": {
-        "path": "references/stakeholder-mapping.md",
-        "sha256": "acb3879ad1a72295d2f4adab66568c3da4dcdd1975e4eb7eb31a0d8e88f82371"
+        "kind": "eval_expected_output",
+        "path": "evals/evals.json",
+        "sha256": "d3148b2206215836f964c507cf929ad33acfa776504be16f9862af38f9ab9dfc",
+        "case_id": "stakeholder-map",
+        "field": "expected_output",
+        "evidence_excerpt": "include anyone whose unmet need would block adoption or whose assumptions would silently break the design if left unspoken",
+        "provided_to_jev": false
       }
     },
     "RALEIGH.FIRE.ARCGIS_FIRST": {
@@ -567,10 +577,11 @@
     },
     "JUDGE.AUROC.WEAK_DISCRIMINATION": {
       "case_key": "system-one/selective-judge-confident-unsupported",
-      "fact": "An error-detection AUROC of 0.518 is weak discrimination on the stated workload.",
+      "fact": "The report records an error-detection AUROC of 0.518 for reference-free prose.",
       "source": {
-        "path": "references/evaluation-and-calibration.md",
-        "sha256": "9d5b6a078d99f37237603dc00b2e38497fc8fce910661aba00b735818e0d8270"
+        "path": "references/selective-judgment.md",
+        "sha256": "8f13b75f562084c44f9d7b733ee4416ea749f955912add7e206847881b86eac8",
+        "evidence_excerpt": "error-detection AUROC 0.518."
       }
     },
     "JUDGE.CONFIDENCE.NOT_CALIBRATION": {

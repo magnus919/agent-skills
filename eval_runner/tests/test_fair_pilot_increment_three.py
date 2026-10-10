@@ -62,8 +62,8 @@ def test_qualification_dossier_has_twelve_reviewable_requests_and_no_dispatch():
     assert first["initial_request_cap"] == 12
     assert first["reserved_follow_up_attempts"] == 12
     assert first["request_count"] == 12
-    assert first["split_counts"] == {"development": 6, "held_out": 6}
-    assert first["proposed_label_counts"] == {"met": 5, "not_met": 5, "not_shown": 2}
+    assert first["split_counts"] == {"development": 7, "held_out": 5}
+    assert first["proposed_label_counts"] == {"met": 5, "not_met": 6, "not_shown": 1}
     assert all(
         request["label_review_status"] == "pending_independent_agent_review"
         for request in first["requests"]
@@ -101,6 +101,59 @@ def test_qualification_dossier_uses_authored_controls_and_real_artifact_excerpts
     assert pair[0]["assertion"] == pair[1]["assertion"]
     assert pair[0]["expected_label"] == pair[1]["expected_label"]
     assert pair[0]["response_sha256"] != pair[1]["response_sha256"]
+    assert {item["split"] for item in pair} == {"development"}
+
+
+def test_qualification_fact_sources_are_faithfully_pinned_and_not_sent_to_jev(monkeypatch):
+    audit = qualification._audit_module()
+    original_build_request = audit.build_request
+    requests = []
+
+    def capture_request(*args, **kwargs):
+        request = original_build_request(*args, **kwargs)
+        requests.append(request)
+        return request
+
+    monkeypatch.setattr(audit, "build_request", capture_request)
+    build_qualification_report()
+
+    assert len(requests) == 12
+    serialized = json.dumps(requests, ensure_ascii=False)
+    assert "decision-makers who fund and approve scope" not in serialized
+    assert "include anyone whose unmet need would block adoption" not in serialized
+
+    dossier = json.loads(qualification.DOSSIER.read_text(encoding="utf-8"))
+    discovery_source = dossier["source_facts"]["DISCOVERY.ROLE.CATEGORIES"]["source"]
+    assert discovery_source["kind"] == "eval_expected_output"
+    assert discovery_source["path"] == "evals/evals.json"
+    assert discovery_source["provided_to_jev"] is False
+    auroc = dossier["source_facts"]["JUDGE.AUROC.WEAK_DISCRIMINATION"]["source"]
+    assert auroc["path"] == "references/selective-judgment.md"
+    assert auroc["evidence_excerpt"] == "error-detection AUROC 0.518."
+
+
+def test_qualification_fact_evidence_excerpt_mismatch_fails_preflight(tmp_path, monkeypatch):
+    dossier = json.loads(qualification.DOSSIER.read_text(encoding="utf-8"))
+    dossier["source_facts"]["JUDGE.AUROC.WEAK_DISCRIMINATION"]["source"]["evidence_excerpt"] = (
+        "error-detection AUROC 0.001."
+    )
+    path = tmp_path / "bad-source-fact.json"
+    path.write_text(json.dumps(dossier), encoding="utf-8")
+    monkeypatch.setattr(qualification, "DOSSIER", path)
+    with pytest.raises(ValueError, match="source fact evidence excerpt mismatch"):
+        build_qualification_report()
+
+
+def test_eval_expected_output_fact_rejects_unpinned_or_missing_evidence(tmp_path, monkeypatch):
+    dossier = json.loads(qualification.DOSSIER.read_text(encoding="utf-8"))
+    dossier["source_facts"]["DISCOVERY.ROLE.CATEGORIES"]["source"]["evidence_excerpt"] = (
+        "a role taxonomy that is not in the pinned expected output"
+    )
+    path = tmp_path / "bad-eval-source-fact.json"
+    path.write_text(json.dumps(dossier), encoding="utf-8")
+    monkeypatch.setattr(qualification, "DOSSIER", path)
+    with pytest.raises(ValueError, match="eval-contract source fact evidence excerpt mismatch"):
+        build_qualification_report()
 
 
 def test_stale_frozen_response_artifact_fails_preflight(tmp_path, monkeypatch):

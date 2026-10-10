@@ -20,7 +20,7 @@ python3 -m pytest eval_runner/tests/test_fair_pilot_increment_three.py eval_runn
 
 The suite sends eight production-shaped JSON inputs through `spec-driven-development/scripts/business_policy.py`. It separately reports valid behavioral defects (four killed), an equivalent comparison (accepted), a deliberately unmatched/invalid mutation, a controlled runtime/infrastructure error, and checks still requiring conceptual review. Gap and overlap cases exercise the evaluator with custom version intervals. Passing this harness demonstrates only that these specific oracle fixtures distinguish those mutations; it does not establish policy correctness.
 
-[`fair-skill-evaluation-qualification-v1.json`](fair-skill-evaluation-qualification-v1.json) freezes 12 proposed Jev request cases: six development and six held-out. It includes positive, negative, contradictory, missing-evidence, and paraphrase-invariance examples; response, prompt, and source hashes; source facts; and proposed labels with rationales. Three are bounded excerpts from prior generated outputs and nine are authored controls. The excerpts retain their original artifact hashes, while the submitted excerpt has its own hash. Authored controls are not production outputs. Every proposed label is marked `pending_independent_agent_review`; none is human validation or calibrated ground truth.
+[`fair-skill-evaluation-qualification-v1.json`](fair-skill-evaluation-qualification-v1.json) freezes 12 proposed Jev request cases: seven development and five held-out. The same-assertion discovery paraphrase pair is development-only and is an invariance diagnostic, not two independent holdout observations. It includes positive, negative, contradictory, and missing-evidence examples; response, prompt, and source hashes; source facts; and proposed labels with rationales. Three are bounded excerpts from prior generated outputs and nine are authored controls. The excerpts retain their original artifact hashes, while the submitted excerpt has its own hash. Authored controls are not production outputs. Every proposed label is marked `pending_independent_agent_review`; none is human validation or calibrated ground truth.
 
 Preflight the exact request bodies without sending them:
 
@@ -28,7 +28,7 @@ Preflight the exact request bodies without sending them:
 python3 -m eval_runner.fair_pilot_qualification --json
 ```
 
-The report should show 12 request-level payloads, exact payload and question hashes, the six/six split, pinned context, and `dispatch_authorized: false`. The initial request cap is 12; a further 12 attempts are reserved for diagnosed follow-up and require a separate parent allocation. The shared cap remains 100, current usage is zero, and no provider or Jev request is made by these commands. Do not tune against held-out cases.
+The report should show 12 request-level payloads, exact payload and question hashes, the seven/five split, pinned context, and `dispatch_authorized: false`. Eval `expected_output` excerpts that establish case-specific billing requirements are human-review provenance only and are verified against the pinned manifest without being sent to Jev. The initial request cap is 12; a further 12 attempts are reserved for diagnosed follow-up and require a separate parent allocation. The shared cap remains 100, current usage is zero, and no provider or Jev request is made by these commands. Do not tune against held-out cases.
 
 ## Staged ledger
 

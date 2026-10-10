@@ -42,6 +42,72 @@ def _reference_content(revision: str, skill: str, relative: str, expected_hash: 
         raise ValueError(f"pinned source is not UTF-8: {skill}/{relative}") from exc
 
 
+def _validate_source_fact(
+    fact_id: str,
+    fact: dict[str, Any],
+    record: dict[str, Any],
+    expected_pins: dict[str, str],
+) -> None:
+    """Check source-fact pins and any exact evidence anchors."""
+    source = fact.get("source")
+    if not isinstance(source, dict):
+        raise ValueError(f"source fact has no source object: {fact_id}")
+    kind = source.get("kind", "reference")
+    path = source.get("path")
+    source_hash = source.get("sha256")
+    excerpt = source.get("evidence_excerpt")
+    if not isinstance(path, str) or not isinstance(source_hash, str):
+        raise ValueError(f"source fact has an invalid source pin: {fact_id}")
+    if excerpt is not None and (not isinstance(excerpt, str) or not excerpt.strip()):
+        raise ValueError(f"source fact has an invalid evidence excerpt: {fact_id}")
+
+    if kind == "reference":
+        if expected_pins.get(path) != source_hash:
+            raise ValueError(f"source fact pin mismatch: {fact_id}")
+        if excerpt is not None:
+            content = _reference_content(
+                record["source_revision"], record["skill"], path, source_hash
+            )
+            if excerpt not in content:
+                raise ValueError(f"source fact evidence excerpt mismatch: {fact_id}")
+        return
+
+    if kind != "eval_expected_output":
+        raise ValueError(f"unsupported source fact source kind: {fact_id}")
+    if (
+        path != "evals/evals.json"
+        or source.get("case_id") != record["case_id"]
+        or source.get("field") != "expected_output"
+        or source.get("provided_to_jev") is not False
+        or excerpt is None
+    ):
+        raise ValueError(f"invalid eval-contract source fact provenance: {fact_id}")
+    result = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(ROOT),
+            "show",
+            f"{record['source_revision']}:{record['skill']}/{path}",
+        ],
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode or _sha256(result.stdout) != source_hash:
+        raise ValueError(f"eval-contract source fact pin mismatch: {fact_id}")
+    try:
+        manifest = json.loads(result.stdout.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"eval-contract source fact is not valid UTF-8 JSON: {fact_id}") from exc
+    case = next(
+        (item for item in manifest.get("evals", []) if item.get("id") == record["case_id"]),
+        None,
+    )
+    expected_output = case.get("expected_output") if isinstance(case, dict) else None
+    if not isinstance(expected_output, str) or excerpt not in expected_output:
+        raise ValueError(f"eval-contract source fact evidence excerpt mismatch: {fact_id}")
+
+
 def _historical_excerpt(record: dict[str, Any], fixture: dict[str, Any]) -> str:
     reference = record["artifact_reference"]
     if reference.get("path") != CHALLENGES.relative_to(ROOT).as_posix():
@@ -114,10 +180,13 @@ def build_qualification_report() -> dict[str, Any]:
     if len(ids) != len(set(ids)):
         raise ValueError("qualification case IDs must be unique")
     if (
-        sum(record.get("split") == "development" for record in records) != 6
-        or sum(record.get("split") == "held_out" for record in records) != 6
+        sum(record.get("split") == "development" for record in records) != 7
+        or sum(record.get("split") == "held_out" for record in records) != 5
+        or dossier.get("splits") != {"development": 7, "held_out": 5}
     ):
-        raise ValueError("qualification split must contain six development and six held-out cases")
+        raise ValueError(
+            "qualification split metadata and records must contain seven development and five held-out cases"
+        )
 
     plan_by_key = {f"{item['skill']}/{item['case_id']}": item for item in plan["pilot"]}
     source_facts = dossier.get("source_facts")
@@ -158,9 +227,7 @@ def build_qualification_report() -> dict[str, Any]:
             fact = source_facts.get(fact_id)
             if not isinstance(fact, dict) or fact.get("case_key") != key:
                 raise ValueError(f"source fact is missing or mis-scoped: {fact_id}")
-            source_pin = fact.get("source", {})
-            if expected_pins.get(source_pin.get("path")) != source_pin.get("sha256"):
-                raise ValueError(f"source fact pin mismatch: {fact_id}")
+            _validate_source_fact(fact_id, fact, record, expected_pins)
 
         if "artifact_reference" in record:
             response = _historical_excerpt(record, challenge_fixture)
@@ -230,6 +297,8 @@ def build_qualification_report() -> dict[str, Any]:
                 "split",
                 "sample_kind",
                 "label_review_status",
+                "expected_output",
+                "evidence_excerpt",
             },
         ):
             raise ValueError(f"qualification label leaked into Jev request: {record['id']}")
@@ -260,8 +329,12 @@ def build_qualification_report() -> dict[str, Any]:
             counters[label] = counters.get(label, 0) + 1
 
     paraphrases = [record for record in records if record.get("semantic_equivalence_pair")]
-    if len(paraphrases) != 2 or len({record["expected_label"] for record in paraphrases}) != 1:
-        raise ValueError("semantic paraphrase control must be a two-record same-label pair")
+    if (
+        len(paraphrases) != 2
+        or len({record["expected_label"] for record in paraphrases}) != 1
+        or {record["split"] for record in paraphrases} != {"development"}
+    ):
+        raise ValueError("semantic paraphrase control must be a same-label development-only pair")
     if (
         len({record["assertion"] for record in paraphrases}) != 1
         or len({record["response_sha256"] for record in paraphrases}) != 2
