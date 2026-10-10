@@ -68,7 +68,7 @@ def proposal_authority_oracle(
 
 
 DEFAULT_POLICY_VERSIONS = (
-    {"version": "v1", "starts": None, "ends": "2026-07-01", "max_days": 7},
+    {"version": "v1", "starts": "2026-01-01", "ends": "2026-07-01", "max_days": 7},
     {"version": "v2", "starts": "2026-07-01", "ends": None, "max_days": 5},
 )
 
@@ -81,12 +81,18 @@ def policy_translation_oracle(
     exception_requested: bool,
     versions: tuple[dict[str, Any], ...] = DEFAULT_POLICY_VERSIONS,
 ) -> str:
-    """Evaluate the independently transcribed fictional policy clauses."""
-    if item_available is False:
-        return "deny"
-    if item_available is not True:
-        return "review"
-    if effective_date is None or requested_days is None or requested_days <= 0:
+    """Evaluate the independently transcribed fictional policy clauses.
+
+    ``versions`` is trusted injected test data for selection cases such as gaps and
+    overlaps. This helper does not validate version identity or publication provenance.
+    """
+    if (
+        not isinstance(effective_date, str)
+        or type(requested_days) is not int
+        or requested_days <= 0
+        or type(item_available) is not bool
+        or type(exception_requested) is not bool
+    ):
         return "review"
     try:
         current = date.fromisoformat(effective_date)
@@ -101,11 +107,15 @@ def policy_translation_oracle(
     if len(matches) != 1:
         return "review"
     maximum = matches[0].get("max_days")
-    if not isinstance(maximum, int) or isinstance(maximum, bool) or maximum <= 0:
+    if type(maximum) is not int or maximum <= 0:
+        return "review"
+    if item_available is False:
+        return "deny"
+    if exception_requested is True:
         return "review"
     if requested_days <= maximum:
         return "allow"
-    return "review" if exception_requested else "deny"
+    return "deny"
 
 
 STAKEHOLDER_CATEGORIES = {
