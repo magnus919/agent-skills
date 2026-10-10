@@ -13,6 +13,7 @@ import ast
 import copy
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from collections import Counter
@@ -43,6 +44,10 @@ TEST_SOURCE_SUFFIXES = {
     ".swift",
     ".ts",
     ".tsx",
+}
+ADJUDICATION_SOURCE_PINS = {
+    "dossier_sha256": Path("docs/fair-skill-evaluation-qualification-v1.json"),
+    "evidence_contract_sha256": Path("eval_runner/fair-pilot-evidence-contracts-v2.json"),
 }
 
 sys.path.insert(0, str(ROOT))
@@ -127,6 +132,27 @@ def _load_checklist(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
     return valid_rows, errors
 
 
+def _adjudication_source_pin_errors(record: dict[str, Any], root: Path) -> list[str]:
+    basis = record.get("review_basis")
+    if not isinstance(basis, dict):
+        return ["independent adjudication companion is missing review_basis"]
+    errors = []
+    for field, relative_path in ADJUDICATION_SOURCE_PINS.items():
+        expected = basis.get(field)
+        path = root / relative_path
+        if not isinstance(expected, str) or len(expected) != 64:
+            errors.append(f"independent adjudication companion has invalid {field}")
+            continue
+        try:
+            actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        except OSError:
+            errors.append(f"independent adjudication pinned source is missing: {relative_path}")
+            continue
+        if expected != actual:
+            errors.append(f"independent adjudication source pin mismatch: {relative_path}")
+    return errors
+
+
 def validate(path: Path = CHECKLIST, root: Path = ROOT) -> list[str]:
     """Reject malformed, duplicate, and orphan review records; omissions are valid."""
     cases, errors = manifest_inventory(root)
@@ -156,6 +182,7 @@ def validate(path: Path = CHECKLIST, root: Path = ROOT) -> list[str]:
             ).hexdigest()
             if digest != calculated:
                 errors.append("independent adjudication companion integrity hash does not match")
+            errors.extend(_adjudication_source_pin_errors(record, root))
         except (OSError, json.JSONDecodeError, AttributeError, TypeError):
             errors.append("independent adjudication companion is malformed")
     return errors
@@ -216,6 +243,19 @@ def test_routing_inventory(root: Path = ROOT) -> dict[str, Any]:
         if (root / ".github/workflows").exists()
         else ""
     )
+    workflow_discovered_dirs = set(
+        re.findall(
+            r"\bunittest\s+discover\b[^\n]*?\s-s\s+['\"]?([^\s'\"\\]+)",
+            workflow_text,
+        )
+    )
+    workflow_directory_discovery = {
+        path
+        for directory in workflow_discovered_dirs
+        if (root / directory).is_dir()
+        for path in files
+        if path.startswith(directory.rstrip("/") + "/")
+    }
     shell_run: set[str] = set()
     shell_manual: set[str] = set()
     registry = root / "scripts/check-skill-tests.py"
@@ -262,6 +302,15 @@ def test_routing_inventory(root: Path = ROOT) -> dict[str, Any]:
         ),
         "workflow_explicit_path": sorted(
             workflow_explicit - core_selected - skill_auto - shell_run - shell_manual - integration
+        ),
+        "workflow_directory_discovery": sorted(
+            workflow_directory_discovery
+            - core_selected
+            - skill_auto
+            - shell_run
+            - shell_manual
+            - integration
+            - workflow_explicit
         ),
     }
     routed = set().union(*(set(items) for items in routes.values()))
@@ -364,6 +413,7 @@ def build_inventory(root: Path = ROOT, checklist: Path | None = None) -> dict[st
                 "reviewer_kind": record.get("reviewer", {}).get("kind", "unknown"),
                 "artifact": adjudication_path.relative_to(root).as_posix(),
                 "integrity_hash_valid": digest == calculated,
+                "source_pins_valid": not _adjudication_source_pin_errors(record, root),
             }
         except (OSError, json.JSONDecodeError, AttributeError, TypeError):
             independent["reviewer_kind"] = "invalid_record"

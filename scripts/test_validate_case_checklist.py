@@ -161,6 +161,21 @@ class ChecklistEvidenceTest(unittest.TestCase):
             self.assertEqual(added, 0)
             self.assertTrue(any("already has" in error for error in errors))
 
+    def test_regenerator_accepts_nested_skill_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            checklist = self._fixture(root)
+
+            added, errors = regenerator.add_pending_case(
+                checklist, root, "bundle/skills/child/manual-case"
+            )
+
+            self.assertEqual(errors, [])
+            self.assertEqual(added, 1)
+            row = json.loads(checklist.read_text())["rows"][0]
+            self.assertEqual(row["skill"], "bundle/skills/child")
+            self.assertEqual(row["case_id"], "manual-case")
+
     def test_independent_adjudication_companion_hash_and_summary(self) -> None:
         path = (
             Path(__file__).parents[1]
@@ -173,6 +188,9 @@ class ChecklistEvidenceTest(unittest.TestCase):
         self.assertEqual(len(record["cases"]), 12)
         self.assertEqual(record["summary"]["exact_label_matches"], 11)
         self.assertFalse(record["reviewer"]["human_ground_truth"])
+        self.assertTrue(
+            validator.build_inventory()["independent_adjudication"]["source_pins_valid"]
+        )
 
     def test_test_routing_inventory_reads_annotated_shell_registry(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -185,6 +203,7 @@ class ChecklistEvidenceTest(unittest.TestCase):
                 "sample/scripts/test_manual.sh",
                 "tests/integration/test_integration.py",
                 "misc/test_workflow.py",
+                "life-coach/tests/test_validate_capabilities.py",
                 "misc/test_unclassified.py",
             ]
             for relative in files:
@@ -199,11 +218,14 @@ class ChecklistEvidenceTest(unittest.TestCase):
             )
             workflow = root / ".github/workflows/validate.yml"
             workflow.parent.mkdir(parents=True)
-            workflow.write_text("run: python misc/test_workflow.py\n")
+            workflow.write_text(
+                "run: python misc/test_workflow.py\n"
+                "run: python3 -m unittest discover -s life-coach/tests -p 'test_*.py'\n"
+            )
 
             report = validator.test_routing_inventory(root)
 
-        self.assertEqual(report["test_source_count"], 7)
+        self.assertEqual(report["test_source_count"], 8)
         self.assertEqual(
             report["routed_counts"],
             {
@@ -213,6 +235,7 @@ class ChecklistEvidenceTest(unittest.TestCase):
                 "registered_skill_shell_manual": 1,
                 "integration_suite": 1,
                 "workflow_explicit_path": 1,
+                "workflow_directory_discovery": 1,
             },
         )
         self.assertEqual(report["unclassified_paths"], ["misc/test_unclassified.py"])
@@ -228,6 +251,48 @@ class ChecklistEvidenceTest(unittest.TestCase):
             errors = validator.validate(checklist, root)
 
         self.assertTrue(any("integrity hash" in error for error in errors))
+
+    def test_adjudication_companion_source_pins_are_verified(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            checklist = self._fixture(root)
+            dossier = root / "docs/fair-skill-evaluation-qualification-v1.json"
+            contract = root / "eval_runner/fair-pilot-evidence-contracts-v2.json"
+            dossier.parent.mkdir(parents=True)
+            contract.parent.mkdir(parents=True)
+            dossier.write_bytes(b"frozen dossier")
+            contract.write_bytes(b"frozen evidence contract")
+            record = {
+                "review_basis": {
+                    "dossier_sha256": hashlib.sha256(dossier.read_bytes()).hexdigest(),
+                    "evidence_contract_sha256": hashlib.sha256(contract.read_bytes()).hexdigest(),
+                },
+                "integrity": {},
+            }
+
+            def write_companion() -> None:
+                canonical = json.dumps(
+                    record, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+                )
+                record["integrity"]["sha256"] = hashlib.sha256(canonical.encode()).hexdigest()
+                companion = root / "docs/fair-skill-evaluation-adjudication-run-38021806973-v1.json"
+                companion.write_text(json.dumps(record))
+
+            write_companion()
+            self.assertEqual(validator.validate(checklist, root), [])
+
+            for source, original in (
+                (dossier, b"frozen dossier"),
+                (contract, b"frozen evidence contract"),
+            ):
+                with self.subTest(source=source.name):
+                    source.write_bytes(original + b" changed")
+                    write_companion()
+                    errors = validator.validate(checklist, root)
+                    self.assertTrue(
+                        any(source.relative_to(root).as_posix() in error for error in errors)
+                    )
+                    source.write_bytes(original)
 
 
 if __name__ == "__main__":

@@ -80,7 +80,7 @@ def add_pending_case(
     document, prompts, errors = checklist_state(checklist_path, root)
     if errors:
         return 0, errors
-    skill, separator, case_id = case_ref.partition("/")
+    skill, separator, case_id = case_ref.rpartition("/")
     if not separator or not skill or not case_id:
         return 0, ["--add-case must be SKILL_PATH/CASE_ID"]
     key = (skill, case_id)
