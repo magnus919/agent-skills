@@ -1,0 +1,113 @@
+name: Jev frozen qualification screen (advisory)
+
+on:
+  workflow_dispatch:
+    inputs:
+      authorize_qualification:
+        description: Explicitly authorize one bounded 12-request send of the frozen responses to TypeSafe
+        required: true
+        type: boolean
+        default: false
+      dossier_sha256:
+        description: Reviewed frozen dossier SHA-256
+        required: true
+        type: string
+      contract_sha256:
+        description: Reviewed frozen evidence-contract SHA-256
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: jev-frozen-qualification-screen-v1
+  cancel-in-progress: false
+
+jobs:
+  qualification:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out reviewed main-branch code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Offline preflight resolves frozen skill sources with `git show`.
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Require explicit authorization and exact reviewed hashes
+        env:
+          AUTHORIZE: ${{ inputs.authorize_qualification }}
+          DOSSIER_SHA256: ${{ inputs.dossier_sha256 }}
+          CONTRACT_SHA256: ${{ inputs.contract_sha256 }}
+        run: |
+          set -euo pipefail
+          test "$AUTHORIZE" = true || { echo 'Explicit qualification authorization is required.' >&2; exit 2; }
+          test "$DOSSIER_SHA256" = fdf5ab99a7dfda1ddff9318ce62e0bd2b738c172f8b0ba37975e36dae477d77c || { echo 'Dossier hash input does not match the reviewed frozen pin.' >&2; exit 2; }
+          test "$CONTRACT_SHA256" = fd1cfccc6e565a175fa3e891982aee6d4751e3130ddc3b56ba64a5f3c6769fa4 || { echo 'Contract hash input does not match the reviewed frozen pin.' >&2; exit 2; }
+      - name: Preflight all 12 frozen requests offline
+        run: python3 -m eval_runner.fair_pilot_qualification
+      - name: Check existing CI credential without disclosing it
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TYPESAFE_API_KEY:-}" ]; then
+            echo 'TYPESAFE_API_KEY is unavailable to this workflow; no request was sent.' >&2
+            exit 2
+          fi
+          echo 'TYPESAFE_API_KEY is present.'
+      - name: Reject duplicate screen run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          test "$RUN_ATTEMPT" = 1 || { echo 'Workflow reruns are not allowed for the one-time screen.' >&2; exit 2; }
+          prior_runs="$(gh api --paginate --jq '.workflow_runs[].id' "repos/$GITHUB_REPOSITORY/actions/workflows/jev-frozen-qualification.yml/runs?branch=main&event=workflow_dispatch&per_page=100" | awk -v current="$RUN_ID" '$0 != current {count++} END {print count+0}')"
+          test "$prior_runs" = 0 || { echo 'A prior one-time frozen qualification workflow run exists.' >&2; exit 2; }
+          prior_claims="$(gh api --paginate --jq '[.artifacts[] | select(.name == "jev-frozen-qualification-claim-v1" and .expired == false)] | length' "repos/$GITHUB_REPOSITORY/actions/artifacts" | awk '{s += $1} END {print s+0}')"
+          test "$prior_claims" = 0 || { echo 'The one-time frozen qualification screen already has a durable claim.' >&2; exit 2; }
+      - name: Write and persist one-time screen claim before dispatch
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          mkdir -p qualification-claim
+          python3 -c 'import json,os; json.dump({"run_id":os.environ["RUN_ID"],"run_attempt":int(os.environ["RUN_ATTEMPT"]),"dossier_sha256":"fdf5ab99a7dfda1ddff9318ce62e0bd2b738c172f8b0ba37975e36dae477d77c","contract_sha256":"fd1cfccc6e565a175fa3e891982aee6d4751e3130ddc3b56ba64a5f3c6769fa4"},open("qualification-claim/claim.json","w"))'
+      - name: Store durable one-time claim
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: jev-frozen-qualification-claim-v1
+          path: qualification-claim/claim.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Run frozen advisory qualification screen
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          DOSSIER_SHA256: ${{ inputs.dossier_sha256 }}
+          CONTRACT_SHA256: ${{ inputs.contract_sha256 }}
+        run: |
+          set -euo pipefail
+          python3 -m eval_runner.fair_pilot_qualification_dispatch \
+            --authorize \
+            --dossier-sha256 "$DOSSIER_SHA256" \
+            --contract-sha256 "$CONTRACT_SHA256" \
+            --counter "$RUNNER_TEMP/jev-qualification-counter.json" \
+            --output jev-frozen-qualification-result.json
+      - name: Upload sanitized qualification result
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: jev-frozen-qualification-result-${{ github.run_id }}
+          path: jev-frozen-qualification-result.json
+          if-no-files-found: ignore
+          retention-days: 90
