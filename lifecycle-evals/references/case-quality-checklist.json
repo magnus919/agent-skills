@@ -9143,6 +9143,16 @@
       "assertions_grounded": true
     },
     {
+      "skill": "spec-driven-development",
+      "case_id": "policy-translation-fidelity",
+      "capability": "Turn fictional equipment-loan clauses into executable rules. v1 allows seven days until July 1, v2 allows five. Exceptions need review; unavailable items are denied even with an exception. Can generated code and passing table-derived tests guarantee correctness?",
+      "classification": "positive",
+      "reviewer": "Codex (AI author; self-review only)",
+      "reviewed_on": "2026-10-10",
+      "verdict": "author-reviewed; human review pending",
+      "assertions_grounded": true
+    },
+    {
       "skill": "strategy-frameworks",
       "case_id": "strategic-direction",
       "capability": "Our company has grown reactively for years and the leadership team cannot agree on where we are going",

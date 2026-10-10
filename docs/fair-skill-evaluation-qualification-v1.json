@@ -1,0 +1,620 @@
+{
+  "schema_version": 1,
+  "status": "frozen_for_independent_agent_review_not_dispatch",
+  "purpose": "A bounded offline Jev request dossier; labels and source facts are proposed for independent agent review before any live request. It is not human validation, model accuracy evidence, or a release gate.",
+  "dispatch_authorized": false,
+  "live_attempts": 0,
+  "shared_cap": "100 total; usage 0",
+  "batch_plan": {
+    "initial_request_cap": 12,
+    "reserved_follow_up_attempts": 12,
+    "follow_up_requires_parent_allocation": true,
+    "max_request_payload_bytes": 100000
+  },
+  "splits": {
+    "development": 7,
+    "held_out": 5
+  },
+  "required_classes": [
+    "positive",
+    "negative",
+    "contradictory",
+    "missing_evidence",
+    "semantic_paraphrase"
+  ],
+  "records": [
+    {
+      "id": "dev-ux-timeout-contradiction",
+      "split": "development",
+      "skill": "product-design-and-ux",
+      "case_id": "embedded-loan-recovery",
+      "sample_kind": "negative",
+      "assertion": "Queries command status after a timeout rather than blindly reserving again",
+      "response": "def _attempt_reservation(self, form: LoanForm):\n        \"\"\"Attempt to reserve equipment for approved loan\"\"\"\n        reservation_id = str(uuid.uuid4())\n        attempt = ReservationAttempt(\n            id=reservation_id,\n            status=ReservationStatus.PENDING,\n            timestamp=datetime.now(),\n            timeout_at=datetime.now() + timedelta(minutes=5)  # 5 minute timeout\n        )\n        form.reservation_attempts.append(attempt)\n        \n        # Simulate reservation process\n        try:\n            # In a real system, this would call an external reservation service\n            success = self._simulate_reservation_service(form)\n            \n            if success:\n                attempt.status = ReservationStatus.CONFIRMED\n                form.status = LoanStatus.ACTIVE\n                # Send confirmation notification\n                self._send_notification(form, \"reservation_confirmed\")\n            else:\n                attempt.status = ReservationStatus.FAILED\n                attempt.error_message = \"Reservation service returned failure\"\n                # Try to send failure notification\n                self._send_notification(form, \"reservation_failed\")\n                \n        except Exception as e:\n            attempt.status = ReservationStatus.FAILED\n            attempt.error_message = str(e)\n            self._send_notification(form, \"reservation_error\")\n\ndef recover_from_reservation_timeout(self, form_id: str) -> LoanForm:\n        \"\"\"Recover from a reservation timeout by retrying\"\"\"\n        form = self.loan_forms.get(form_id)\n        if not form:\n            raise ValueError(\"Form not found\")\n            \n        # Find the timed-out attempt\n        timeout_attempt = None\n        for attempt in form.reservation_attempts:\n            if attempt.status == ReservationStatus.TIMEOUT:\n                timeout_attempt = attempt\n                break\n                \n        if not timeout_attempt:\n            raise ValueError(\"No timed-out reservation found\")\n            \n        # Create a new reservation attempt\n        self._attempt_reservation(form)\n        return form",
+      "origin": "historical_generated_output_excerpt",
+      "parent_artifact": {
+        "run": "https://github.com/magnus919/agent-skills/actions/runs/37955122624",
+        "response_sha256": "39b0088a7053cc534c4cc1a8d3d181c2c4540ef72d8208e56b89ed28abdbc251",
+        "condition": "baseline_no_skill",
+        "prior_label": {
+          "reviewer_kind": "model_teacher",
+          "verdict": "met"
+        },
+        "excerpt_sha256": "7ec98d74b722cb20f8e884e83942381f92eac7ff22011c20552ccd7a989c76e1"
+      },
+      "source_fact_ids": [
+        "UX.TIMEOUT.ORIGINAL_COMMAND_STATUS",
+        "UX.TIMEOUT.NO_NEW_RESERVATION"
+      ],
+      "expected_label": "not_met",
+      "label_basis": "The quoted recovery locates a timed-out attempt but invokes a new reservation helper that creates a fresh UUID; it does not query the original command.",
+      "source_arm": "candidate",
+      "response_sha256": "7ec98d74b722cb20f8e884e83942381f92eac7ff22011c20552ccd7a989c76e1",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/embedded-business-agent.md",
+          "sha256": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb"
+        }
+      ],
+      "task_prompt_sha256": "944f0e5d4950d65901112959acd5e1866be8a5bf669184c3890e515d698fea4a",
+      "artifact_reference": {
+        "path": "eval_runner/tests/fixtures/business_agent_judge_challenges.json",
+        "record": "challenges/embedded-loan-recovery-false-positive/negative"
+      }
+    },
+    {
+      "id": "dev-pydantic-authority-omission",
+      "split": "development",
+      "skill": "pydanticai",
+      "case_id": "non-chat-proposal",
+      "sample_kind": "negative",
+      "assertion": "Requires current permission and record revision checks before command execution",
+      "response": "def check_user_authority(self, user_id: str, required_role: UserRole) -> bool:\n        user_role = self.user_permissions.get(user_id)\n        role_hierarchy = {\n            UserRole.REQUESTER: 1,\n            UserRole.APPROVER: 2,\n            UserRole.ADMIN: 3\n        }\n        return role_hierarchy.get(user_role, 0) >= role_hierarchy[required_role]\n\nasync def approve_recommendation(self, application_id: str, approver_id: str) -> bool:\n        \"\"\"Approve the recommended equipment (authority boundary check)\"\"\"\n        application = self.state.get_application(application_id)\n        if not application:\n            raise ValueError(f\"Application {application_id} not found\")\n        \n        # Authority boundary check\n        if not self.state.check_user_authority(approver_id, UserRole.APPROVER):\n            raise PermissionError(\"Insufficient authority to approve loan\")\n        \n        if application.status != LoanStatus.RECOMMENDATION_RECEIVED:\n            raise ValueError(\"Application must have a recommendation before approval\")\n        \n        application.approved_by = approver_id\n        application.status = LoanStatus.APPROVED\n        self.state.update_application(application_id, application)\n        \n        return True\n\nasync def reserve_equipment(self, application_id: str) -> bool:\n        \"\"\"Reserve the approved equipment (final step)\"\"\"\n        application = self.state.get_application(application_id)\n        if not application:\n            raise ValueError(f\"Application {application_id} not found\")\n        \n        if application.status != LoanStatus.APPROVED:\n            raise ValueError(\"Application must be approved before reservation\")\n        \n        if not application.recommendation:\n            raise ValueError(\"No recommendation to reserve\")\n        \n        # Check if equipment is still available (stale state handling)\n        equipment_item = self.state.equipment_inventory.get(application.recommendation.item_id)\n        if not equipment_item or not equipment_item.is_available:\n            raise ValueError(\"Recommended equipment is no longer available\")\n        \n        # Reserve the equipment\n        equipment_item.is_available = False\n        application.reserved_at = datetime.now()\n        application.status = LoanStatus.RESERVED\n        self.state.update_application(application_id, application)\n        \n        return True",
+      "origin": "historical_generated_output_excerpt",
+      "parent_artifact": {
+        "run": "https://github.com/magnus919/agent-skills/actions/runs/37955122624",
+        "response_sha256": "5384924deccb140c3849fb00419b26e0a8cd5121d5b19b7a12acd022a99e276c",
+        "condition": "baseline_no_skill",
+        "prior_label": {
+          "reviewer_kind": "model_teacher",
+          "verdict": "met"
+        },
+        "excerpt_sha256": "33132076d2442d9d9251d8f25d4f8fd25d96ef674c81c200e9d1d36316f92f2d"
+      },
+      "source_fact_ids": [
+        "APP.AUTHORITY.CURRENT_PERMISSION",
+        "APP.AUTHORITY.EXPECTED_CURRENT_REVISION"
+      ],
+      "expected_label": "not_met",
+      "label_basis": "The execution method reserves from stored APPROVED state and current availability without rechecking current permission or comparing expected and current record revisions.",
+      "source_arm": "candidate",
+      "response_sha256": "33132076d2442d9d9251d8f25d4f8fd25d96ef674c81c200e9d1d36316f92f2d",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/application-proposals.md",
+          "sha256": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
+        }
+      ],
+      "task_prompt_sha256": "60f69f5e0b1a00603c7c6fdb23603c70deb991ec71059901e61782764d680629",
+      "artifact_reference": {
+        "path": "eval_runner/tests/fixtures/business_agent_judge_challenges.json",
+        "record": "challenges/non-chat-proposal-false-positive/negative"
+      }
+    },
+    {
+      "id": "dev-policy-fabricated-correctness",
+      "split": "development",
+      "skill": "spec-driven-development",
+      "case_id": "policy-translation-fidelity",
+      "sample_kind": "contradictory",
+      "assertion": "Does not present a 100% compliance result or claim unexecuted tests as evidence",
+      "response": "    def test_zero_days_valid(self):\n        assert PolicyEngine.is_duration_valid(0, PolicyVersion.V1) == True\n    \n    def test_negative_days_invalid(self):\n        assert PolicyEngine.is_duration_valid(-1, PolicyVersion.V1) == False\n\nclass TestExceptionHandling:\n\n3. Explicit policy version override in LoanRequest\n\n\n## Compliance Score: 100% (5/5 ACs passing)\n",
+      "origin": "historical_generated_output_excerpt",
+      "parent_artifact": {
+        "run": "https://github.com/magnus919/agent-skills/actions/runs/37955122624",
+        "response_sha256": "3759e52c9bce7df6e5b17777a105bdb9e619197a57ce1c9c0962039d7ebf91c8",
+        "condition": "candidate_no_skill_prompt",
+        "excerpt_sha256": "2e6e22b9cbd85564897d7c865006211035e7fb7f02881df311d93aa78fafa75b",
+        "reviewer_kind": "model_teacher",
+        "prior_verdict": "not_recorded"
+      },
+      "source_fact_ids": [
+        "POLICY.TESTS.NOT_GUARANTEE",
+        "POLICY.CLAIMS.EVIDENCE_REQUIRED"
+      ],
+      "expected_label": "not_met",
+      "label_basis": "The excerpt claims 100% compliance and includes a zero-day-valid test despite the supplied clauses requiring positive days; it is not evidence that tests ran or translation is correct.",
+      "source_arm": "candidate",
+      "response_sha256": "2e6e22b9cbd85564897d7c865006211035e7fb7f02881df311d93aa78fafa75b",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/executable-business-policy.md",
+          "sha256": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77"
+        }
+      ],
+      "task_prompt_sha256": "2313fe7c394996f245502302e454160c8704d81b3bcdc8df64fb3d432e40615b",
+      "artifact_reference": {
+        "path": "eval_runner/tests/fixtures/business_agent_judge_challenges.json",
+        "record": "generated_output_flaws/policy-translation-fidelity"
+      }
+    },
+    {
+      "id": "dev-discovery-positive-paraphrase-a",
+      "split": "development",
+      "skill": "product-discovery",
+      "case_id": "stakeholder-map",
+      "sample_kind": "positive",
+      "assertion": "The response builds a stakeholder map covering decision-makers, end users, operators, downstream consumers, and adjacent system owners",
+      "response": "For billing, map the budget and scope approvers, daily billing users, escalation/support operators, finance and analytics teams that consume billing data, and owners of connected CRM and payment systems. For each, record the role and invite them because an unmet need can block adoption or an unstated integration assumption can break the design.",
+      "origin": "authored_control_not_model_output",
+      "source_fact_ids": [
+        "DISCOVERY.ROLE.CATEGORIES",
+        "DISCOVERY.INCLUSION.CRITERIA"
+      ],
+      "expected_label": "met",
+      "label_basis": "The response names every required role group in the billing context and ties inclusion to adoption blockers or design-breaking assumptions.",
+      "source_arm": "candidate",
+      "semantic_equivalence_pair": "discovery-role-coverage-paraphrase",
+      "response_sha256": "14c063e8ca71ae661e69564ced9bf977ed6bfd6349c638c7e1b2c5a1a756d4fe",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/stakeholder-mapping.md",
+          "sha256": "acb3879ad1a72295d2f4adab66568c3da4dcdd1975e4eb7eb31a0d8e88f82371"
+        },
+        {
+          "path": "references/power-dynamics.md",
+          "sha256": "acb0f6cd87decf412de04fde7c3ab2b035fa091c5e0b1a52f5f509860652f8c5"
+        },
+        {
+          "path": "references/conflict-resolution.md",
+          "sha256": "62f4e9b531abc9fe20b85c7b363cb3c354fa4e9916635a3f487d0386c51d190d"
+        }
+      ],
+      "task_prompt_sha256": "18b3cbb6efe6e9aa49f21af7872fae82d53d2695fa7ec5da12a5e6001210bb61"
+    },
+    {
+      "id": "dev-raleigh-exact-date-positive",
+      "split": "development",
+      "skill": "raleigh",
+      "case_id": "fire-report-arcgis-first",
+      "sample_kind": "positive",
+      "assertion": "Uses an exact-date ArcGIS past-month query first and warns of rolling feed lag",
+      "response": "Run `raleigh fire reports --date 2026-07-24`. This queries the authoritative ArcGIS past-month feed for that exact date. The rolling feed can lag, so an empty result is not proof there were no incidents.",
+      "origin": "authored_control_not_model_output",
+      "source_fact_ids": [
+        "RALEIGH.FIRE.ARCGIS_FIRST",
+        "RALEIGH.FIRE.EXACT_DATE",
+        "RALEIGH.FIRE.ROLLING_LAG"
+      ],
+      "expected_label": "met",
+      "label_basis": "The source reference defines the exact-date ArcGIS past-month query, source label, and rolling-feed lag limitation.",
+      "source_arm": "candidate",
+      "response_sha256": "eaa9202f493e46c052d34cafe8821d995e89829c117fa635caf44aee9ef12765",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/fire-reports-reference.md",
+          "sha256": "c17f075d19b86a8c76c9e3bb844d637ef3a45737857777d7e1edc9f37d4bb1b6"
+        }
+      ],
+      "task_prompt_sha256": "f7f2dcfb883bf15dfd9015ea37c5a211eb3b699fb1905db658134d4d83ac2949"
+    },
+    {
+      "id": "dev-system-one-confidence-acceptance-contradiction",
+      "split": "development",
+      "skill": "system-one",
+      "case_id": "selective-judge-confident-unsupported",
+      "sample_kind": "contradictory",
+      "assertion": "Requires independent labels and risk-coverage plus accepted-error analysis before setting an acceptance gate",
+      "response": "Average confidence is high, so we should probably let the judge handle easy cases and send the rest to a person.",
+      "origin": "authored_contradictory_control_not_model_output",
+      "source_fact_ids": [
+        "JUDGE.QUAL.INDEPENDENT_LABELS",
+        "JUDGE.QUAL.RISK_COVERAGE",
+        "JUDGE.QUAL.ACCEPTED_ERROR"
+      ],
+      "expected_label": "not_met",
+      "label_basis": "It recommends accepting easy cases solely because average confidence is high, despite no independent-label, risk-coverage, or accepted-error evidence; this conflicts with the source criteria.",
+      "source_arm": "candidate",
+      "response_sha256": "9c72649b541f6c09d6af59558ffe81c344aa6c5b300dd7bb024b60b665f99629",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/decision-qualification-probes.md",
+          "sha256": "872229d45409080f1c7cd5b1afdd4a1cd73bbc2f78ea0a201d3e77954aa01e38"
+        },
+        {
+          "path": "references/evaluation-and-calibration.md",
+          "sha256": "9d5b6a078d99f37237603dc00b2e38497fc8fce910661aba00b735818e0d8270"
+        },
+        {
+          "path": "references/selective-judgment.md",
+          "sha256": "8f13b75f562084c44f9d7b733ee4416ea749f955912add7e206847881b86eac8"
+        }
+      ],
+      "task_prompt_sha256": "745727070d4664ca8126d81bf75c2a3c934b3f46b7bb799422d02d0c82e7168c"
+    },
+    {
+      "id": "holdout-ux-timeout-missing-evidence",
+      "split": "held_out",
+      "skill": "product-design-and-ux",
+      "case_id": "embedded-loan-recovery",
+      "sample_kind": "missing_evidence",
+      "assertion": "Queries command status after a timeout rather than blindly reserving again",
+      "response": "The workflow has safe timeout recovery and avoids duplicate bookings.",
+      "origin": "authored_missing_evidence_control",
+      "source_fact_ids": [
+        "UX.TIMEOUT.ORIGINAL_COMMAND_STATUS",
+        "UX.TIMEOUT.NO_NEW_RESERVATION"
+      ],
+      "expected_label": "not_shown",
+      "label_basis": "The response makes a broad safety claim but does not describe a status query or a retry decision based on the original command.",
+      "source_arm": "candidate",
+      "response_sha256": "81711782f36b490fe16a87a95f957d71538b53f8e71757702130fe605edf7835",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/embedded-business-agent.md",
+          "sha256": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb"
+        }
+      ],
+      "task_prompt_sha256": "944f0e5d4950d65901112959acd5e1866be8a5bf669184c3890e515d698fea4a"
+    },
+    {
+      "id": "holdout-pydantic-revoked-permission-contradiction",
+      "split": "held_out",
+      "skill": "pydanticai",
+      "case_id": "non-chat-proposal",
+      "sample_kind": "contradictory",
+      "assertion": "Blocks execution after permission revocation and requires authoritative confirmation before reporting a completed reservation",
+      "response": "The application checks permission when it builds the model context. If access is revoked after that request starts, it still executes the approved proposal so the user does not lose work. The model can return `status=\"reserved\"`, so the app can render a receipt without calling the reservation service.",
+      "origin": "authored_contradiction_control",
+      "source_fact_ids": [
+        "APP.AUTHORITY.CURRENT_PERMISSION",
+        "APP.AUTHORITY.REVOKE_AFTER_INVOCATION",
+        "APP.EXECUTION.AUTHORITATIVE_CONFIRMATION",
+        "APP.EXECUTION.MODEL_IS_PROPOSAL"
+      ],
+      "expected_label": "not_met",
+      "label_basis": "It explicitly proceeds after permission revocation and represents model-generated status as a confirmed reservation without an authoritative command response.",
+      "source_arm": "candidate",
+      "response_sha256": "64b9819324465ae58aafa0250e43d0bac46a7d4ddd4093c13c4c66f13f499582",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/application-proposals.md",
+          "sha256": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
+        }
+      ],
+      "task_prompt_sha256": "60f69f5e0b1a00603c7c6fdb23603c70deb991ec71059901e61782764d680629"
+    },
+    {
+      "id": "holdout-policy-july-boundary-positive",
+      "split": "held_out",
+      "skill": "spec-driven-development",
+      "case_id": "policy-translation-fidelity",
+      "sample_kind": "positive",
+      "assertion": "Selects v2 beginning July 1 and enforces its five-day limit inclusively",
+      "response": "A pickup dated July 1 falls under loan-v2. Five days is within its cap; six days exceeds it.",
+      "origin": "authored_boundary_control_semantic_paraphrase",
+      "source_fact_ids": [
+        "POLICY.VERSIONS.HALF_OPEN",
+        "POLICY.V2.MAX_DAYS"
+      ],
+      "expected_label": "met",
+      "label_basis": "The fictional clauses define v2 from July 1 and permit up to five days, including the boundary value.",
+      "source_arm": "candidate",
+      "response_sha256": "6145134fec908566e90d1900af0bc1f9712ea0d402569f0a1865399d55ba5651",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/executable-business-policy.md",
+          "sha256": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77"
+        }
+      ],
+      "task_prompt_sha256": "2313fe7c394996f245502302e454160c8704d81b3bcdc8df64fb3d432e40615b"
+    },
+    {
+      "id": "dev-discovery-positive-paraphrase-b",
+      "split": "development",
+      "skill": "product-discovery",
+      "case_id": "stakeholder-map",
+      "sample_kind": "semantic_paraphrase",
+      "assertion": "The response builds a stakeholder map covering decision-makers, end users, operators, downstream consumers, and adjacent system owners",
+      "response": "Start with who funds and approves the billing scope, who uses billing day to day, who handles support escalations, who relies on billing data in finance or analytics, and who owns connected CRM or payments. Include each because an unresolved need can stop adoption or an unspoken integration assumption can invalidate the design.",
+      "origin": "authored_semantic_invariance_control_not_model_output",
+      "source_fact_ids": [
+        "DISCOVERY.ROLE.CATEGORIES",
+        "DISCOVERY.INCLUSION.CRITERIA"
+      ],
+      "expected_label": "met",
+      "label_basis": "This restates the same required role groups and inclusion criteria as the development control using different wording.",
+      "source_arm": "candidate",
+      "semantic_equivalence_pair": "discovery-role-coverage-paraphrase",
+      "response_sha256": "5a2c2305ba207189713a75856912408a84282da14bb89771cb9ccd4827e71676",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/stakeholder-mapping.md",
+          "sha256": "acb3879ad1a72295d2f4adab66568c3da4dcdd1975e4eb7eb31a0d8e88f82371"
+        },
+        {
+          "path": "references/power-dynamics.md",
+          "sha256": "acb0f6cd87decf412de04fde7c3ab2b035fa091c5e0b1a52f5f509860652f8c5"
+        },
+        {
+          "path": "references/conflict-resolution.md",
+          "sha256": "62f4e9b531abc9fe20b85c7b363cb3c354fa4e9916635a3f487d0386c51d190d"
+        }
+      ],
+      "task_prompt_sha256": "18b3cbb6efe6e9aa49f21af7872fae82d53d2695fa7ec5da12a5e6001210bb61"
+    },
+    {
+      "id": "holdout-raleigh-completeness-contradiction",
+      "split": "held_out",
+      "skill": "raleigh",
+      "case_id": "fire-report-arcgis-first",
+      "sample_kind": "contradictory",
+      "assertion": "Does not claim a complete list and prefers the exact-date ArcGIS source before fallback",
+      "response": "Here is the complete list of every fire report for July 24. Start with the rolling RFD web feed; check ArcGIS only if it returns nothing.",
+      "origin": "authored_contradiction_control",
+      "source_fact_ids": [
+        "RALEIGH.FIRE.ARCGIS_FIRST",
+        "RALEIGH.FIRE.NO_COMPLETENESS_CLAIM"
+      ],
+      "expected_label": "not_met",
+      "label_basis": "It explicitly claims completeness and puts the rolling fallback ahead of the authoritative ArcGIS query.",
+      "source_arm": "candidate",
+      "response_sha256": "bb4fb393b8fa94da6686a68d1d89d2ac7ee09544c5d1856c7a521e112763e1e3",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/fire-reports-reference.md",
+          "sha256": "c17f075d19b86a8c76c9e3bb844d637ef3a45737857777d7e1edc9f37d4bb1b6"
+        }
+      ],
+      "task_prompt_sha256": "f7f2dcfb883bf15dfd9015ea37c5a211eb3b699fb1905db658134d4d83ac2949"
+    },
+    {
+      "id": "holdout-system-one-positive-paraphrase",
+      "split": "held_out",
+      "skill": "system-one",
+      "case_id": "selective-judge-confident-unsupported",
+      "sample_kind": "positive",
+      "assertion": "Treats mean maximum probability as insufficient evidence of calibration or safe acceptance",
+      "response": "A mean top probability of 0.90 says nothing by itself about calibration or the safety of an acceptance threshold. The 0.518 AUROC indicates weak ranking of errors on this workload, so collect independent labels and measure accepted errors across coverage before considering a gate.",
+      "origin": "authored_semantic_paraphrase_control_not_model_output",
+      "source_fact_ids": [
+        "JUDGE.CONFIDENCE.NOT_CALIBRATION",
+        "JUDGE.AUROC.WEAK_DISCRIMINATION",
+        "JUDGE.QUAL.INDEPENDENT_LABELS",
+        "JUDGE.QUAL.RISK_COVERAGE"
+      ],
+      "expected_label": "met",
+      "label_basis": "This expresses the source-supported distinction between confidence and calibration and gives the required independent-label and risk-coverage evidence.",
+      "source_arm": "candidate",
+      "response_sha256": "9494ec19503796e42501a55e62a8b7018e017bd825b5b200ccdf3b7bfa7a81db",
+      "label_review_status": "pending_independent_agent_review",
+      "source_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "source_pins": [
+        {
+          "path": "references/decision-qualification-probes.md",
+          "sha256": "872229d45409080f1c7cd5b1afdd4a1cd73bbc2f78ea0a201d3e77954aa01e38"
+        },
+        {
+          "path": "references/evaluation-and-calibration.md",
+          "sha256": "9d5b6a078d99f37237603dc00b2e38497fc8fce910661aba00b735818e0d8270"
+        },
+        {
+          "path": "references/selective-judgment.md",
+          "sha256": "8f13b75f562084c44f9d7b733ee4416ea749f955912add7e206847881b86eac8"
+        }
+      ],
+      "task_prompt_sha256": "745727070d4664ca8126d81bf75c2a3c934b3f46b7bb799422d02d0c82e7168c"
+    }
+  ],
+  "source_facts": {
+    "UX.TIMEOUT.NO_NEW_RESERVATION": {
+      "case_key": "product-design-and-ux/embedded-loan-recovery",
+      "fact": "After timeout, do not create a new reservation attempt until the original command status is known.",
+      "source": {
+        "path": "references/embedded-business-agent.md",
+        "sha256": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb"
+      }
+    },
+    "UX.TIMEOUT.ORIGINAL_COMMAND_STATUS": {
+      "case_key": "product-design-and-ux/embedded-loan-recovery",
+      "fact": "Query the original command or idempotency status after a timeout before deciding whether to retry.",
+      "source": {
+        "path": "references/embedded-business-agent.md",
+        "sha256": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb"
+      }
+    },
+    "APP.AUTHORITY.CURRENT_PERMISSION": {
+      "case_key": "pydanticai/non-chat-proposal",
+      "fact": "The application command path owns and rechecks current permission at execution.",
+      "source": {
+        "path": "references/application-proposals.md",
+        "sha256": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
+      }
+    },
+    "APP.AUTHORITY.EXPECTED_CURRENT_REVISION": {
+      "case_key": "pydanticai/non-chat-proposal",
+      "fact": "The application command path compares the proposal and approval revision with current record revision.",
+      "source": {
+        "path": "references/application-proposals.md",
+        "sha256": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
+      }
+    },
+    "APP.AUTHORITY.REVOKE_AFTER_INVOCATION": {
+      "case_key": "pydanticai/non-chat-proposal",
+      "fact": "Permission revoked after invocation blocks execution; invocation-time authority is not a lasting grant.",
+      "source": {
+        "path": "references/application-proposals.md",
+        "sha256": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
+      }
+    },
+    "APP.EXECUTION.AUTHORITATIVE_CONFIRMATION": {
+      "case_key": "pydanticai/non-chat-proposal",
+      "fact": "Only authoritative command confirmation establishes a completed reservation or receipt.",
+      "source": {
+        "path": "references/application-proposals.md",
+        "sha256": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
+      }
+    },
+    "APP.EXECUTION.MODEL_IS_PROPOSAL": {
+      "case_key": "pydanticai/non-chat-proposal",
+      "fact": "A typed model result is a proposal, not a command result or execution receipt.",
+      "source": {
+        "path": "references/application-proposals.md",
+        "sha256": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
+      }
+    },
+    "POLICY.TESTS.NOT_GUARANTEE": {
+      "case_key": "spec-driven-development/policy-translation-fidelity",
+      "fact": "Tests derived only from the implementation or generated decision table cannot prove translation fidelity.",
+      "source": {
+        "path": "references/executable-business-policy.md",
+        "sha256": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77"
+      }
+    },
+    "POLICY.CLAIMS.EVIDENCE_REQUIRED": {
+      "case_key": "spec-driven-development/policy-translation-fidelity",
+      "fact": "Correctness and test-execution claims require evidence; generated code does not guarantee 100% correctness.",
+      "source": {
+        "path": "references/executable-business-policy.md",
+        "sha256": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77"
+      }
+    },
+    "POLICY.VERSIONS.HALF_OPEN": {
+      "case_key": "spec-driven-development/policy-translation-fidelity",
+      "fact": "The fictional versions use half-open effective intervals; v1 ends before July 1, when v2 starts.",
+      "source": {
+        "path": "references/executable-business-policy.md",
+        "sha256": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77"
+      }
+    },
+    "POLICY.V2.MAX_DAYS": {
+      "case_key": "spec-driven-development/policy-translation-fidelity",
+      "fact": "Loan-v2 permits a positive integer duration up to and including five calendar days.",
+      "source": {
+        "path": "references/executable-business-policy.md",
+        "sha256": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77"
+      }
+    },
+    "DISCOVERY.ROLE.CATEGORIES": {
+      "case_key": "product-discovery/stakeholder-map",
+      "fact": "The billing stakeholder-map eval requires decision-makers, end users, operators/support, downstream consumers, and adjacent system owners.",
+      "source": {
+        "kind": "eval_expected_output",
+        "path": "evals/evals.json",
+        "sha256": "d3148b2206215836f964c507cf929ad33acfa776504be16f9862af38f9ab9dfc",
+        "case_id": "stakeholder-map",
+        "field": "expected_output",
+        "evidence_excerpt": "decision-makers who fund and approve scope, end users who operate the system day to day, operators and support staff who handle billing escalations, downstream teams who consume billing data (finance, sales ops, data), and adjacent system owners whose systems integrate with billing",
+        "provided_to_jev": false
+      }
+    },
+    "DISCOVERY.INCLUSION.CRITERIA": {
+      "case_key": "product-discovery/stakeholder-map",
+      "fact": "Include people whose unmet needs can block adoption or whose assumptions can silently break design.",
+      "source": {
+        "kind": "eval_expected_output",
+        "path": "evals/evals.json",
+        "sha256": "d3148b2206215836f964c507cf929ad33acfa776504be16f9862af38f9ab9dfc",
+        "case_id": "stakeholder-map",
+        "field": "expected_output",
+        "evidence_excerpt": "include anyone whose unmet need would block adoption or whose assumptions would silently break the design if left unspoken",
+        "provided_to_jev": false
+      }
+    },
+    "RALEIGH.FIRE.ARCGIS_FIRST": {
+      "case_key": "raleigh/fire-report-arcgis-first",
+      "fact": "Query the authoritative ArcGIS past-month service before considering the rolling-feed fallback.",
+      "source": {
+        "path": "references/fire-reports-reference.md",
+        "sha256": "c17f075d19b86a8c76c9e3bb844d637ef3a45737857777d7e1edc9f37d4bb1b6"
+      }
+    },
+    "RALEIGH.FIRE.EXACT_DATE": {
+      "case_key": "raleigh/fire-report-arcgis-first",
+      "fact": "The report query is bounded to the requested date and the following date boundary.",
+      "source": {
+        "path": "references/fire-reports-reference.md",
+        "sha256": "c17f075d19b86a8c76c9e3bb844d637ef3a45737857777d7e1edc9f37d4bb1b6"
+      }
+    },
+    "RALEIGH.FIRE.ROLLING_LAG": {
+      "case_key": "raleigh/fire-report-arcgis-first",
+      "fact": "The rolling feed can lag; an empty result is not proof of no incidents.",
+      "source": {
+        "path": "references/fire-reports-reference.md",
+        "sha256": "c17f075d19b86a8c76c9e3bb844d637ef3a45737857777d7e1edc9f37d4bb1b6"
+      }
+    },
+    "RALEIGH.FIRE.NO_COMPLETENESS_CLAIM": {
+      "case_key": "raleigh/fire-report-arcgis-first",
+      "fact": "The public feeds do not support a claim that every fire report is present.",
+      "source": {
+        "path": "references/fire-reports-reference.md",
+        "sha256": "c17f075d19b86a8c76c9e3bb844d637ef3a45737857777d7e1edc9f37d4bb1b6"
+      }
+    },
+    "JUDGE.AUROC.WEAK_DISCRIMINATION": {
+      "case_key": "system-one/selective-judge-confident-unsupported",
+      "fact": "The report records an error-detection AUROC of 0.518 for reference-free prose.",
+      "source": {
+        "path": "references/selective-judgment.md",
+        "sha256": "8f13b75f562084c44f9d7b733ee4416ea749f955912add7e206847881b86eac8",
+        "evidence_excerpt": "error-detection AUROC 0.518."
+      }
+    },
+    "JUDGE.CONFIDENCE.NOT_CALIBRATION": {
+      "case_key": "system-one/selective-judge-confident-unsupported",
+      "fact": "Mean maximum probability is not evidence of calibrated confidence or safe acceptance.",
+      "source": {
+        "path": "references/evaluation-and-calibration.md",
+        "sha256": "9d5b6a078d99f37237603dc00b2e38497fc8fce910661aba00b735818e0d8270"
+      }
+    },
+    "JUDGE.QUAL.INDEPENDENT_LABELS": {
+      "case_key": "system-one/selective-judge-confident-unsupported",
+      "fact": "Qualification needs independent labels rather than an unverified teacher/model agreement.",
+      "source": {
+        "path": "references/evaluation-and-calibration.md",
+        "sha256": "9d5b6a078d99f37237603dc00b2e38497fc8fce910661aba00b735818e0d8270"
+      }
+    },
+    "JUDGE.QUAL.RISK_COVERAGE": {
+      "case_key": "system-one/selective-judge-confident-unsupported",
+      "fact": "A proposed acceptance policy requires risk-coverage evidence.",
+      "source": {
+        "path": "references/evaluation-and-calibration.md",
+        "sha256": "9d5b6a078d99f37237603dc00b2e38497fc8fce910661aba00b735818e0d8270"
+      }
+    },
+    "JUDGE.QUAL.ACCEPTED_ERROR": {
+      "case_key": "system-one/selective-judge-confident-unsupported",
+      "fact": "Track accepted errors as coverage changes before a judge is used as a gate.",
+      "source": {
+        "path": "references/evaluation-and-calibration.md",
+        "sha256": "9d5b6a078d99f37237603dc00b2e38497fc8fce910661aba00b735818e0d8270"
+      }
+    }
+  }
+}

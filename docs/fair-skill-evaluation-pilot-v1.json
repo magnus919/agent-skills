@@ -12,11 +12,18 @@
     "primary_mode": "pinned_skill_vs_skill",
     "policy": "complete_package",
     "diagnostic_mode": "skill_vs_no_skill",
-    "arms": ["candidate", "baseline"],
+    "arms": [
+      "candidate",
+      "baseline"
+    ],
     "same_task_and_wrapper": true,
-    "references": "Resolve and hash each arm's references from that arm's pinned snapshot only; require a case-specific baseline reference map when the historical eval manifest has no matching case ID.",
+    "references": "Resolve and hash candidate and historical baseline references from their exact pinned snapshots only. Candidate and baseline reference maps include all six pilot case IDs; never copy one arm\u2019s sources into the other.",
     "judgment_data": "Keep expected outcomes, prohibited behavior, required evidence, and oracle labels out of generation payloads.",
-    "frozen_outputs": "May test evidence parsing only; do not use them as evidence of new prompt effects."
+    "frozen_outputs": "May test evidence parsing only; do not use them as evidence of new prompt effects.",
+    "reference_maps": {
+      "candidate": "fair-skill-evaluation-candidate-references-v1.json",
+      "baseline": "fair-skill-evaluation-baseline-references-v1.json"
+    }
   },
   "pilot": [
     {
@@ -28,10 +35,48 @@
       "behavior_verified": false,
       "oracle": {
         "type": "state_transition_matrix",
-        "independent_facts": ["Draft revision changes invalidate prior approval.", "Permission revoked after invocation blocks execution.", "Reservation success and notification failure remain separate confirmed states."],
+        "independent_facts": [
+          "Draft revision changes invalidate prior approval.",
+          "Permission revoked after invocation blocks execution.",
+          "Reservation success and notification failure remain separate confirmed states."
+        ],
         "human_review_required": true
       },
-      "mutation_targets": ["reuse approval after editing the draft", "execute after permission revocation", "retry reservation after timeout without querying status", "report notification failure as reservation failure", "claim synthetic fixtures prove usability"]
+      "mutation_targets": [
+        "reuse approval after editing the draft",
+        "execute after permission revocation",
+        "retry reservation after timeout without querying status",
+        "report notification failure as reservation failure",
+        "claim synthetic fixtures prove usability"
+      ],
+      "arm_sources": {
+        "candidate": {
+          "revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+          "references": [
+            {
+              "path": "references/embedded-business-agent.md",
+              "sha256": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb"
+            }
+          ]
+        },
+        "baseline": {
+          "revision": "6384b6c1e327022b373f05b560974e2611cbd6a1",
+          "references": [
+            {
+              "path": "references/ai-interaction-and-uncertainty.md",
+              "sha256": "947ef84b9ec8746290d7b8555f0115cd8912d7bf9990d4c882bc0e11355499ea"
+            },
+            {
+              "path": "references/external-agent-interactions.md",
+              "sha256": "57108aee84bc47786a7cdbd6f40a3b1e95a955366f9a72c23fa4595c60e8006c"
+            },
+            {
+              "path": "references/task-flows-and-state-models.md",
+              "sha256": "eb1c2b550b6e781283237341508de7f21a594df45cbc27d8b33e44607def789b"
+            }
+          ]
+        }
+      }
     },
     {
       "skill": "pydanticai",
@@ -42,10 +87,48 @@
       "behavior_verified": false,
       "oracle": {
         "type": "typed_proposal_boundary",
-        "independent_facts": ["A model result is a proposal, not a command.", "Candidate IDs are checked against application scope.", "Approval identity and permission/revision checks belong to the application-owned command path."],
+        "independent_facts": [
+          "A model result is a proposal, not a command.",
+          "Candidate IDs are checked against application scope.",
+          "Approval identity and permission/revision checks belong to the application-owned command path."
+        ],
         "human_review_required": true
       },
-      "mutation_targets": ["model output directly invokes reservation", "accept candidate ID outside supplied scope", "trust model-generated approval identity", "omit stale revision or permission re-check", "duplicate architecture or operations guidance instead of routing to owners"]
+      "mutation_targets": [
+        "model output directly invokes reservation",
+        "accept candidate ID outside supplied scope",
+        "trust model-generated approval identity",
+        "omit stale revision or permission re-check",
+        "duplicate architecture or operations guidance instead of routing to owners"
+      ],
+      "arm_sources": {
+        "candidate": {
+          "revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+          "references": [
+            {
+              "path": "references/application-proposals.md",
+              "sha256": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
+            }
+          ]
+        },
+        "baseline": {
+          "revision": "6384b6c1e327022b373f05b560974e2611cbd6a1",
+          "references": [
+            {
+              "path": "references/patterns.md",
+              "sha256": "80d87c95c3399d08e2c4bbe6368a1d3a64f2ebdfffcad4ce051d6da7bc6465c9"
+            },
+            {
+              "path": "references/models-output.md",
+              "sha256": "4de1f7b53492b42c6f6439b3bc2f5c53910f47f335476ab1a6caea7b6b6b832e"
+            },
+            {
+              "path": "references/core-agents.md",
+              "sha256": "9cee47016d18ec22af775196fab03f1c19916ee086f2e8198a2b05098e85b688"
+            }
+          ]
+        }
+      }
     },
     {
       "skill": "spec-driven-development",
@@ -56,10 +139,49 @@
       "behavior_verified": false,
       "oracle": {
         "type": "clause_derived_decision_table",
-        "independent_facts": ["v1 permits seven days through its effective end.", "v2 permits five days from July 1.", "Unavailable items are denied even when an exception is requested.", "Gaps, overlaps, or missing dates require review."],
+        "independent_facts": [
+          "v1 permits seven days through its effective end.",
+          "v2 permits five days from July 1.",
+          "Unavailable items are denied even when an exception is requested.",
+          "Gaps, overlaps, or missing dates require review."
+        ],
         "human_review_required": true
       },
-      "mutation_targets": ["select wrong version on July 1", "allow seven days under v2", "let exception override unavailable status", "derive expected rows from generated code", "claim tests guarantee policy correctness"]
+      "mutation_targets": [
+        "select wrong version on July 1",
+        "allow seven days under v2",
+        "let exception override unavailable status",
+        "derive expected rows from generated code",
+        "claim tests guarantee policy correctness"
+      ],
+      "arm_sources": {
+        "candidate": {
+          "revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+          "references": [
+            {
+              "path": "references/executable-business-policy.md",
+              "sha256": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77"
+            }
+          ]
+        },
+        "baseline": {
+          "revision": "6384b6c1e327022b373f05b560974e2611cbd6a1",
+          "references": [
+            {
+              "path": "references/phase-gate-methodology.md",
+              "sha256": "974ec9b4f33d98f79117fcacbbb23f98d17595673a9f1330bd1d6058dba6df14"
+            },
+            {
+              "path": "references/spec-quality-gates.md",
+              "sha256": "1531d3b28bb191ca3669f30cbf944c06af6fbb0eea237e1b60db46466ad0bfc0"
+            },
+            {
+              "path": "references/format-translation.md",
+              "sha256": "40912f6a7a315767b2560d7859484750b8dc1c367f8f05b096d7a562461f90e7"
+            }
+          ]
+        }
+      }
     },
     {
       "skill": "product-discovery",
@@ -70,10 +192,55 @@
       "behavior_verified": false,
       "oracle": {
         "type": "stakeholder_coverage_matrix",
-        "independent_facts": ["Include decision-makers, end users, operators/support, downstream consumers, and adjacent system owners.", "Record each role's needs, constraints, conflicts, and inclusion rationale."],
+        "independent_facts": [
+          "Include decision-makers, end users, operators/support, downstream consumers, and adjacent system owners.",
+          "Record each role's needs, constraints, conflicts, and inclusion rationale."
+        ],
         "human_review_required": true
       },
-      "mutation_targets": ["omit downstream billing-data consumers", "omit adjacent integration owners", "list names without needs or constraints", "invent interview findings", "substitute an arbitrary department list for inclusion criteria"]
+      "mutation_targets": [
+        "omit downstream billing-data consumers",
+        "omit adjacent integration owners",
+        "list names without needs or constraints",
+        "invent interview findings",
+        "substitute an arbitrary department list for inclusion criteria"
+      ],
+      "arm_sources": {
+        "candidate": {
+          "revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+          "references": [
+            {
+              "path": "references/stakeholder-mapping.md",
+              "sha256": "acb3879ad1a72295d2f4adab66568c3da4dcdd1975e4eb7eb31a0d8e88f82371"
+            },
+            {
+              "path": "references/power-dynamics.md",
+              "sha256": "acb0f6cd87decf412de04fde7c3ab2b035fa091c5e0b1a52f5f509860652f8c5"
+            },
+            {
+              "path": "references/conflict-resolution.md",
+              "sha256": "62f4e9b531abc9fe20b85c7b363cb3c354fa4e9916635a3f487d0386c51d190d"
+            }
+          ]
+        },
+        "baseline": {
+          "revision": "47a44d07166b47d8754e535de23526e268b0c994",
+          "references": [
+            {
+              "path": "references/stakeholder-mapping.md",
+              "sha256": "acb3879ad1a72295d2f4adab66568c3da4dcdd1975e4eb7eb31a0d8e88f82371"
+            },
+            {
+              "path": "references/power-dynamics.md",
+              "sha256": "acb0f6cd87decf412de04fde7c3ab2b035fa091c5e0b1a52f5f509860652f8c5"
+            },
+            {
+              "path": "references/conflict-resolution.md",
+              "sha256": "62f4e9b531abc9fe20b85c7b363cb3c354fa4e9916635a3f487d0386c51d190d"
+            }
+          ]
+        }
+      }
     },
     {
       "skill": "raleigh",
@@ -84,11 +251,43 @@
       "behavior_verified": false,
       "oracle": {
         "type": "deterministic_fixture",
-        "independent_facts": ["Use exact-date fire reports from the authoritative ArcGIS past-month service first.", "Label ArcGIS results and warn the rolling feed may lag; do not claim completeness."],
-        "executable_checks": ["raleigh/tests/test_raleigh.py::FireReportTests.test_exact_date_query_is_bounded_and_selective", "raleigh/tests/test_raleigh.py::FireReportTests.test_recent_lag_fallback_requires_both_flags"],
+        "independent_facts": [
+          "Use exact-date fire reports from the authoritative ArcGIS past-month service first.",
+          "Label ArcGIS results and warn the rolling feed may lag; do not claim completeness."
+        ],
+        "executable_checks": [
+          "raleigh/tests/test_raleigh.py::FireReportTests.test_exact_date_query_is_bounded_and_selective",
+          "raleigh/tests/test_raleigh.py::FireReportTests.test_recent_lag_fallback_requires_both_flags"
+        ],
         "human_review_required": true
       },
-      "mutation_targets": ["switch to fallback before ArcGIS", "drop exact date", "claim all reports or completeness", "use insecure fallback without explicit acknowledgement", "silently treat empty feed as no incidents"]
+      "mutation_targets": [
+        "switch to fallback before ArcGIS",
+        "drop exact date",
+        "claim all reports or completeness",
+        "use insecure fallback without explicit acknowledgement",
+        "silently treat empty feed as no incidents"
+      ],
+      "arm_sources": {
+        "candidate": {
+          "revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+          "references": [
+            {
+              "path": "references/fire-reports-reference.md",
+              "sha256": "c17f075d19b86a8c76c9e3bb844d637ef3a45737857777d7e1edc9f37d4bb1b6"
+            }
+          ]
+        },
+        "baseline": {
+          "revision": "3eb7bd4096a8b3d2f7f3a27f52b2b617fd8a6b31",
+          "references": [
+            {
+              "path": "references/fire-reports-reference.md",
+              "sha256": "c17f075d19b86a8c76c9e3bb844d637ef3a45737857777d7e1edc9f37d4bb1b6"
+            }
+          ]
+        }
+      }
     },
     {
       "skill": "system-one",
@@ -99,10 +298,57 @@
       "behavior_verified": false,
       "oracle": {
         "type": "judge_qualification_facts",
-        "independent_facts": ["52.5% accuracy and AUROC 0.518 show weak error discrimination on the stated workload.", "Mean maximum probability 0.90 is not evidence of calibration or safe acceptance.", "Obtain missing task evidence or route to review regardless of confidence.", "Repeated voting is a separate policy requiring correlated-error and full-cost evaluation."],
+        "independent_facts": [
+          "52.5% accuracy and AUROC 0.518 show weak error discrimination on the stated workload.",
+          "Mean maximum probability 0.90 is not evidence of calibration or safe acceptance.",
+          "Obtain missing task evidence or route to review regardless of confidence.",
+          "Repeated voting is a separate policy requiring correlated-error and full-cost evaluation."
+        ],
         "human_review_required": true
       },
-      "mutation_targets": ["accept at a 0.9 confidence threshold", "equate mean confidence with calibration", "treat weak AUROC as useful discrimination", "omit independent labels and risk-coverage", "claim repeated voting fixes correlated errors"]
+      "mutation_targets": [
+        "accept at a 0.9 confidence threshold",
+        "equate mean confidence with calibration",
+        "treat weak AUROC as useful discrimination",
+        "omit independent labels and risk-coverage",
+        "claim repeated voting fixes correlated errors"
+      ],
+      "arm_sources": {
+        "candidate": {
+          "revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+          "references": [
+            {
+              "path": "references/decision-qualification-probes.md",
+              "sha256": "872229d45409080f1c7cd5b1afdd4a1cd73bbc2f78ea0a201d3e77954aa01e38"
+            },
+            {
+              "path": "references/evaluation-and-calibration.md",
+              "sha256": "9d5b6a078d99f37237603dc00b2e38497fc8fce910661aba00b735818e0d8270"
+            },
+            {
+              "path": "references/selective-judgment.md",
+              "sha256": "8f13b75f562084c44f9d7b733ee4416ea749f955912add7e206847881b86eac8"
+            }
+          ]
+        },
+        "baseline": {
+          "revision": "6384b6c1e327022b373f05b560974e2611cbd6a1",
+          "references": [
+            {
+              "path": "references/decision-qualification-probes.md",
+              "sha256": "872229d45409080f1c7cd5b1afdd4a1cd73bbc2f78ea0a201d3e77954aa01e38"
+            },
+            {
+              "path": "references/evaluation-and-calibration.md",
+              "sha256": "9d5b6a078d99f37237603dc00b2e38497fc8fce910661aba00b735818e0d8270"
+            },
+            {
+              "path": "references/selective-judgment.md",
+              "sha256": "8f13b75f562084c44f9d7b733ee4416ea749f955912add7e206847881b86eac8"
+            }
+          ]
+        }
+      }
     }
   ],
   "qualification_gates": [

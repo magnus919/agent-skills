@@ -13,7 +13,7 @@ from .path_safety import validate_case_id, validate_relative_path
 from .reference_inputs import MAX_FILE_BYTES, MAX_REFERENCE_BYTES, MAX_REFERENCES, read_source
 
 CONTRACT_PATH = "evals/evidence-contract-v1.json"
-PILOT_CONTRACT_PATH = "eval_runner/fair-pilot-evidence-contracts-v1.json"
+PILOT_CONTRACT_PATH = "eval_runner/fair-pilot-evidence-contracts-v2.json"
 ORACLE_TYPES = {"deterministic_assertions", "deterministic_fixture", "human_review"}
 MAX_JUDGMENT_CONTEXT_BYTES = 100_000
 _SHA256 = re.compile(r"[a-f0-9]{64}\Z")
@@ -50,7 +50,8 @@ def load_evidence_contracts(skill_root: Path, cases: list[EvalCase]) -> dict[str
     data = json.loads(raw)
     if not isinstance(data, dict) or set(data) != {"schema_version", "cases"}:
         raise ValueError("invalid evidence-contract fields")
-    if type(data["schema_version"]) is not int or data["schema_version"] != 1:
+    version = data["schema_version"]
+    if type(version) is not int or version not in {1, 2}:
         raise ValueError("unsupported evidence-contract version")
     if not isinstance(data["cases"], dict):
         raise ValueError("evidence-contract cases must be an object")
@@ -80,6 +81,8 @@ def load_evidence_contracts(skill_root: Path, cases: list[EvalCase]) -> dict[str
             *_LIST_FIELDS,
             "oracle_type",
         }
+        if version == 2:
+            expected_fields.update({"arm_sources", "review_criteria"})
         if not isinstance(contract, dict) or set(contract) != expected_fields:
             raise ValueError(f"invalid evidence-contract fields for {case_id}")
 
@@ -119,6 +122,40 @@ def load_evidence_contracts(skill_root: Path, cases: list[EvalCase]) -> dict[str
             actual = _full_hash(source_content)
             if source["sha256"] != actual:
                 raise ValueError(f"authoritative source hash mismatch for {case_id}: {relative}")
+
+        if version == 2:
+            arm_sources = contract["arm_sources"]
+            if not isinstance(arm_sources, dict) or set(arm_sources) != {"candidate", "baseline"}:
+                raise ValueError(f"arm sources must name candidate and baseline for {case_id}")
+            candidate_pins = arm_sources["candidate"]
+            baseline_pins = arm_sources["baseline"]
+            for arm, pins in (("candidate", candidate_pins), ("baseline", baseline_pins)):
+                if not isinstance(pins, dict) or set(pins) != {"revision", "references"}:
+                    raise ValueError(f"invalid {arm} source pins for {case_id}")
+                if not re.fullmatch(r"[a-f0-9]{40}|[a-f0-9]{64}", str(pins["revision"])):
+                    raise ValueError(f"invalid {arm} snapshot revision for {case_id}")
+                references = pins["references"]
+                if not isinstance(references, list) or len(references) > MAX_REFERENCES:
+                    raise ValueError(f"invalid {arm} reference list for {case_id}")
+                paths: set[str] = set()
+                for pin in references:
+                    if not isinstance(pin, dict) or set(pin) != {"path", "sha256"}:
+                        raise ValueError(f"invalid {arm} reference pin for {case_id}")
+                    relative = validate_relative_path(pin["path"])
+                    if relative in paths or not _SHA256.fullmatch(str(pin["sha256"])):
+                        raise ValueError(f"invalid or duplicate {arm} reference for {case_id}")
+                    paths.add(relative)
+                if arm == "candidate" and references != sources:
+                    raise ValueError(
+                        f"candidate references disagree with authority sources for {case_id}"
+                    )
+            criteria = contract["review_criteria"]
+            if (
+                not isinstance(criteria, list)
+                or not criteria
+                or any(not isinstance(item, str) or not item.strip() for item in criteria)
+            ):
+                raise ValueError(f"review criteria must contain nonempty text for {case_id}")
 
         for field in _LIST_FIELDS:
             values = contract[field]

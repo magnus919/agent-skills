@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def test_six_skill_plan_has_inventory_and_hidden_oracle_contracts():
     plan = json.loads((ROOT / "docs/fair-skill-evaluation-pilot-v1.json").read_text())
     pilot_contracts = json.loads(
-        (ROOT / "eval_runner/fair-pilot-evidence-contracts-v1.json").read_text()
+        (ROOT / "eval_runner/fair-pilot-evidence-contracts-v2.json").read_text()
     )
     assert plan["status"] == "plan_only"
     assert plan["live_calls"]["shared_budget"] == "0/100"
@@ -40,6 +40,10 @@ def test_six_skill_plan_has_inventory_and_hidden_oracle_contracts():
         assert contract["expected_observable_outcomes"]
         assert contract["prohibited_behavior"]
         assert contract["required_evidence"]
+        assert contract["review_criteria"]
+        assert set(contract["arm_sources"]) == {"candidate", "baseline"}
+        assert contract["arm_sources"]["candidate"]["revision"] == item["candidate_revision"]
+        assert contract["arm_sources"]["baseline"]["revision"] == item["baseline_revision"]
         assert contract["oracle_type"] == item["oracle"]["type"] or (
             item["skill"]
             in {
@@ -88,7 +92,7 @@ def test_global_contract_ignores_other_skills_and_case_unknowns(tmp_path):
             "other-skill/unrelated-case": {"invalid": "ignored outside this scope"},
         },
     }
-    (tmp_path / "eval_runner/fair-pilot-evidence-contracts-v1.json").write_text(
+    (tmp_path / "eval_runner/fair-pilot-evidence-contracts-v2.json").write_text(
         json.dumps(contract), encoding="utf-8"
     )
     from eval_runner.models import EvalCase
@@ -102,7 +106,7 @@ def test_global_contract_ignores_other_skills_and_case_unknowns(tmp_path):
         "prompt_sha256": hashlib.sha256(b"task").hexdigest(),
         "fixture_sha256": {},
     }
-    (tmp_path / "eval_runner/fair-pilot-evidence-contracts-v1.json").write_text(
+    (tmp_path / "eval_runner/fair-pilot-evidence-contracts-v2.json").write_text(
         json.dumps(contract), encoding="utf-8"
     )
     loaded = load_evidence_contracts(skill, [case])

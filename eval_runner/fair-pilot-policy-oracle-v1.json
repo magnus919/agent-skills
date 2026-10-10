@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "provenance": "Developer-authored transcription from the fictional L1-L4 clauses; not policy-owner reviewed and not evidence of real policy fidelity.",
+  "source": {
+    "path": "spec-driven-development/references/executable-business-policy.md",
+    "sha256": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77",
+    "clauses": [
+      "L1",
+      "L2",
+      "L3",
+      "L4",
+      "Effective intervals",
+      "Input validation"
+    ]
+  },
+  "implementation": {
+    "path": "spec-driven-development/scripts/business_policy.py",
+    "sha256": "1f808f1e67a709ebbeeeaedb1c287ec619079cf5533e304f4f708661813b4623"
+  },
+  "cases": [
+    {
+      "id": "v1-effective-end-and-limit",
+      "facts": {
+        "pickup_date": "2026-06-30",
+        "days": 7,
+        "available": true,
+        "exception": false
+      },
+      "expected": {
+        "status": "eligible",
+        "reason": "within_limit",
+        "rule_ids": [
+          "L4"
+        ],
+        "policy_version": "loan-v1"
+      },
+      "basis": "June 30 is within v1's half-open interval and seven days equals its inclusive limit."
+    },
+    {
+      "id": "v1-over-limit",
+      "facts": {
+        "pickup_date": "2026-06-30",
+        "days": 8,
+        "available": true,
+        "exception": false
+      },
+      "expected": {
+        "status": "ineligible",
+        "reason": "duration",
+        "rule_ids": [
+          "L3"
+        ],
+        "policy_version": "loan-v1"
+      },
+      "basis": "Eight days exceeds v1's seven-day limit."
+    },
+    {
+      "id": "v2-effective-start-and-limit",
+      "facts": {
+        "pickup_date": "2026-07-01",
+        "days": 5,
+        "available": true,
+        "exception": false
+      },
+      "expected": {
+        "status": "eligible",
+        "reason": "within_limit",
+        "rule_ids": [
+          "L4"
+        ],
+        "policy_version": "loan-v2"
+      },
+      "basis": "July 1 selects v2, and five days equals its inclusive limit."
+    },
+    {
+      "id": "v2-over-limit",
+      "facts": {
+        "pickup_date": "2026-07-01",
+        "days": 6,
+        "available": true,
+        "exception": false
+      },
+      "expected": {
+        "status": "ineligible",
+        "reason": "duration",
+        "rule_ids": [
+          "L3"
+        ],
+        "policy_version": "loan-v2"
+      },
+      "basis": "Six days exceeds v2's five-day limit."
+    },
+    {
+      "id": "unavailable-beats-exception",
+      "facts": {
+        "pickup_date": "2026-07-01",
+        "days": 2,
+        "available": false,
+        "exception": true
+      },
+      "expected": {
+        "status": "ineligible",
+        "reason": "unavailable",
+        "rule_ids": [
+          "L1"
+        ],
+        "policy_version": "loan-v2"
+      },
+      "basis": "L1 has precedence over L2 when the item is unavailable and an exception is requested."
+    },
+    {
+      "id": "exception-routes-to-review",
+      "facts": {
+        "pickup_date": "2026-07-01",
+        "days": 6,
+        "available": true,
+        "exception": true
+      },
+      "expected": {
+        "status": "review",
+        "reason": "exception",
+        "rule_ids": [
+          "L2"
+        ],
+        "policy_version": "loan-v2"
+      },
+      "basis": "An available item with an exception request routes to review before duration evaluation."
+    },
+    {
+      "id": "missing-pickup-date",
+      "facts": {
+        "days": 2,
+        "available": true,
+        "exception": false
+      },
+      "expected": {
+        "status": "review",
+        "reason": "invalid_input",
+        "rule_ids": [],
+        "policy_version": null
+      },
+      "basis": "All facts are required; a missing date routes to review instead of selecting a default version."
+    },
+    {
+      "id": "zero-days-invalid",
+      "facts": {
+        "pickup_date": "2026-07-01",
+        "days": 0,
+        "available": true,
+        "exception": false
+      },
+      "expected": {
+        "status": "review",
+        "reason": "invalid_input",
+        "rule_ids": [],
+        "policy_version": null
+      },
+      "basis": "Days must be a positive integer; zero is invalid input."
+    }
+  ],
+  "additional_policy_selection_controls": [
+    {
+      "id": "effective-date-gap",
+      "setup": "Inject policies with a gap covering the pickup date into evaluate().",
+      "expected_reason": "policy_selection"
+    },
+    {
+      "id": "effective-date-overlap",
+      "setup": "Inject overlapping effective intervals covering the pickup date into evaluate().",
+      "expected_reason": "policy_selection"
+    }
+  ]
+}
