@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "purpose": "Human review record for substantive output-quality eval cases. Fake adapter runs prove execution only, never semantic grading.",
+  "purpose": "Curated case-review register for substantive output-quality evals. Rows record their stated reviewer and verdict; omitted cases have no checklist row. This register and fake-adapter execution artifacts do not establish independent behavioral verification.",
   "rows": [
     {
       "skill": "actuarial-risk-modeling",
