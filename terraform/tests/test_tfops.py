@@ -3,8 +3,10 @@
 
 Runs the script as a subprocess so the tests exercise the real CLI surface
 (--help, --json, mutation gate, state-file analysis). No terraform binary is
-required; the TERRAFORM environment variable can point at a fake binary for
-delegate-path coverage.
+required. Run locally with:
+`python3 -m unittest discover -s terraform/tests -p 'test_*.py'`.
+The TERRAFORM environment variable can point at a fake binary for delegate-path
+coverage.
 """
 import hashlib
 import json
