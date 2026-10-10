@@ -68,6 +68,8 @@ jobs:
         run: python3 scripts/test-eval-validation.py
       - name: Validate eval manifests
         run: python3 scripts/validate-evals.py
+      - name: Validate curated case-review register
+        run: python3 scripts/validate-case-checklist.py
       - name: Test life-coach capability validation
         run: python3 -m unittest discover -s life-coach/tests -p 'test_*.py'
       - name: Install YouTube thumbnail test dependency

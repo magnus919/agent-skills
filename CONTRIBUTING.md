@@ -91,7 +91,11 @@ python3 scripts/test-eval-validation.py
 python3 scripts/validate-evals.py
 python3 scripts/test-eval-coverage.py
 python3 scripts/eval-coverage.py
+python3 scripts/validate-case-checklist.py
+python3 scripts/validate-case-checklist.py --json
 ```
+
+The evidence inventory reports manifest presence, stored fake-adapter execution, curated case-review rows, and independent adjudication separately. A green structural validator or completed fake run is not behavioral verification. Missing checklist rows are visible coverage gaps, not errors to fill with generated review metadata. See [`docs/evaluation-evidence-and-test-routing.md`](docs/evaluation-evidence-and-test-routing.md) for test-selection routes and the prioritized oracle-migration backlog.
 
 The structural validator checks the whole repository. The quality validator checks only added, renamed, modified, or uncommitted `SKILL.md` files relative to the supplied base. Changed descriptions must begin with an imperative verb and define a negative boundary in the description or a `When not to use` section. Generic no-op instructions are reported as warnings. The same validation runs in GitHub Actions for pushes and pull requests.
 

@@ -65,5 +65,6 @@ def test_manifest_contains_required_validation_modules() -> None:
         "scripts/test-eval-coverage.py",
         "scripts/test_check_skill_tests.py",
         "scripts/test_core_test_selection.py",
+        "scripts/test_validate_case_checklist.py",
         "eval_runner/tests/",
     }

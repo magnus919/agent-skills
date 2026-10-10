@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "record_kind": "independent_adjudication_companion",
+  "reviewer": {
+    "name": "Sol",
+    "kind": "independent_agent",
+    "model_revision": "not recorded in the frozen dossier",
+    "reviewed_against_commit": "e37f841d04875d9e05380cb125bfee3eb64f98be",
+    "human_ground_truth": false
+  },
+  "review_basis": {
+    "qualification_workflow_run_id": 38021806973,
+    "run_attempt": 1,
+    "qualification_main_commit": "3f453813dca440a4acb6976ae49233ebe95e9c5a",
+    "dossier_sha256": "fdf5ab99a7dfda1ddff9318ce62e0bd2b738c172f8b0ba37975e36dae477d77c",
+    "evidence_contract_sha256": "fd1cfccc6e565a175fa3e891982aee6d4751e3130ddc3b56ba64a5f3c6769fa4",
+    "result_artifact_id": 11658942395,
+    "result_artifact_sha256": "5e6a07586b955fa11560eb60d29137bf9bcec59469caf05746a5d4e0fa968269",
+    "claim_artifact_id": 11658188416,
+    "claim_artifact_sha256": "a32e19cb58ece4f8680b98de8c54efd2d05e2be71bfb4c97cc89cd77c0fcd505",
+    "frozen_dossier_label_review_status": "pending_independent_agent_review",
+    "label_review_status_note": "This field is preserved as frozen metadata. This companion records the completed independent review and does not alter the dossier bytes or hash."
+  },
+  "audit_findings": [
+    "Sol independently verified all 12 request and question hashes, split assignments, frozen dossier and contract pins, model identity, and serial request ordering.",
+    "There were 11 exact label matches among 12 request results. The same-assertion discovery paraphrase pair remained met/met and is an invariance diagnostic, not two independent observations.",
+    "No contradictory or missing-evidence case received a false met verdict.",
+    "For dev-pydantic-authority-omission, the independent label remains not_met: the code mutates inventory without current authority and revision checks. Jev returned not_shown at 0.93. Both are non-passing outcomes; this category distinction is not a reason to tune the held-out set or spend more calls."
+  ],
+  "cases": [
+    {
+      "id": "dev-ux-timeout-contradiction",
+      "split": "development",
+      "skill": "product-design-and-ux",
+      "case_id": "embedded-loan-recovery",
+      "independent_label": "not_met",
+      "jev_verdict": "not_met",
+      "exact_label_agreement": true,
+      "request_sha256": "d18b1ebc6e7ec885df7d1dec05dfd36810d7e2677314d9adc072ab71fc97b096",
+      "question_input_sha256": "cec3274c8bb5d5b1190b7c1548934237b0576b47cef5474b33a29c93c21b5ada"
+    },
+    {
+      "id": "dev-pydantic-authority-omission",
+      "split": "development",
+      "skill": "pydanticai",
+      "case_id": "non-chat-proposal",
+      "independent_label": "not_met",
+      "jev_verdict": "not_shown",
+      "exact_label_agreement": false,
+      "request_sha256": "efd74cd3db18a965d283bc8f38d4688eed26094b9f08d5b81a21d2e364956557",
+      "question_input_sha256": "35e146a7b05e56f8b78245dde3b033602805a655bc58831bfcd073b42e6b9bf7"
+    },
+    {
+      "id": "dev-policy-fabricated-correctness",
+      "split": "development",
+      "skill": "spec-driven-development",
+      "case_id": "policy-translation-fidelity",
+      "independent_label": "not_met",
+      "jev_verdict": "not_met",
+      "exact_label_agreement": true,
+      "request_sha256": "058612f55568925625c98b53107dac24f01a971a091b73c681b1e04bbfe55947",
+      "question_input_sha256": "f679d076667aa3bcda8214b4bb4552a2656a4ac7b8d707cb57d0f98f0677c111"
+    },
+    {
+      "id": "dev-discovery-positive-paraphrase-a",
+      "split": "development",
+      "skill": "product-discovery",
+      "case_id": "stakeholder-map",
+      "independent_label": "met",
+      "jev_verdict": "met",
+      "exact_label_agreement": true,
+      "request_sha256": "246e1568bb27f38310c1a3eb715a369ddf7e42966851756fcf2e08e2a9e45007",
+      "question_input_sha256": "f6ad1377536b6908575ea61181ef8260291eae853d7370967d8f7bbabebe21c3"
+    },
+    {
+      "id": "dev-raleigh-exact-date-positive",
+      "split": "development",
+      "skill": "raleigh",
+      "case_id": "fire-report-arcgis-first",
+      "independent_label": "met",
+      "jev_verdict": "met",
+      "exact_label_agreement": true,
+      "request_sha256": "a0b1da646602ea5e7d97866f69864f1ce21f556672dfc0c9f48db0253426a080",
+      "question_input_sha256": "a9197137136ad5101b7c72efc7f8bf19e9e20f217f83b26a29471ead40a233a8"
+    },
+    {
+      "id": "dev-system-one-confidence-acceptance-contradiction",
+      "split": "development",
+      "skill": "system-one",
+      "case_id": "selective-judge-confident-unsupported",
+      "independent_label": "not_met",
+      "jev_verdict": "not_met",
+      "exact_label_agreement": true,
+      "request_sha256": "807369f352ac7c5414d68e405f4be92e84871beb51582049293dc22ea7edb8a7",
+      "question_input_sha256": "83b883bd6f467d63be044347cfffad04ccf59353221bafddf4a077b2d9ccdc9a"
+    },
+    {
+      "id": "holdout-ux-timeout-missing-evidence",
+      "split": "held_out",
+      "skill": "product-design-and-ux",
+      "case_id": "embedded-loan-recovery",
+      "independent_label": "not_shown",
+      "jev_verdict": "not_shown",
+      "exact_label_agreement": true,
+      "request_sha256": "0ec17cddd03ef10f25346f4031ceb76309e8fd895ae3adbc2b83b3a2b30af649",
+      "question_input_sha256": "cec3274c8bb5d5b1190b7c1548934237b0576b47cef5474b33a29c93c21b5ada"
+    },
+    {
+      "id": "holdout-pydantic-revoked-permission-contradiction",
+      "split": "held_out",
+      "skill": "pydanticai",
+      "case_id": "non-chat-proposal",
+      "independent_label": "not_met",
+      "jev_verdict": "not_met",
+      "exact_label_agreement": true,
+      "request_sha256": "57e2e2733afbf392304fac70880b28fc1fe5f3a6c8cab21d019d83b1d35eb40e",
+      "question_input_sha256": "ebe6c22d9bdec3dac2f241189467c3441f7d51029d3af31c5d2e84001c660df3"
+    },
+    {
+      "id": "holdout-policy-july-boundary-positive",
+      "split": "held_out",
+      "skill": "spec-driven-development",
+      "case_id": "policy-translation-fidelity",
+      "independent_label": "met",
+      "jev_verdict": "met",
+      "exact_label_agreement": true,
+      "request_sha256": "d69c9be03c67822faf3d74f0bf601531b1cac23d76e4d7f8654015fe2260f6da",
+      "question_input_sha256": "237886a7b92cb9e660fce7f10beb3aad0f4cf6b62c0e9f5aa82aa12ffba45714"
+    },
+    {
+      "id": "dev-discovery-positive-paraphrase-b",
+      "split": "development",
+      "skill": "product-discovery",
+      "case_id": "stakeholder-map",
+      "independent_label": "met",
+      "jev_verdict": "met",
+      "exact_label_agreement": true,
+      "request_sha256": "227e36ce9739600eca47b892e152dc36dc9c68e46e7388423bad8578d514a910",
+      "question_input_sha256": "f6ad1377536b6908575ea61181ef8260291eae853d7370967d8f7bbabebe21c3"
+    },
+    {
+      "id": "holdout-raleigh-completeness-contradiction",
+      "split": "held_out",
+      "skill": "raleigh",
+      "case_id": "fire-report-arcgis-first",
+      "independent_label": "not_met",
+      "jev_verdict": "not_met",
+      "exact_label_agreement": true,
+      "request_sha256": "6fcc4cda8a8844570ebe813cd69774d7e0e6ef93fa2ffd2a6bde9603d76fd0c6",
+      "question_input_sha256": "89d5886ff2b242f636c5f9271ce35d18cd914df9586def2426621170baf0a98c"
+    },
+    {
+      "id": "holdout-system-one-positive-paraphrase",
+      "split": "held_out",
+      "skill": "system-one",
+      "case_id": "selective-judge-confident-unsupported",
+      "independent_label": "met",
+      "jev_verdict": "met",
+      "exact_label_agreement": true,
+      "request_sha256": "725051a35bf098f8f28ea04d85aa638305b159ea866c80118c01513a7c6d908a",
+      "question_input_sha256": "5e5b2cebaf1f88a28f75863b27f84a5c842c2759b5142964fe1fd0eb20b9a503"
+    }
+  ],
+  "summary": {
+    "development": {
+      "cases": 7,
+      "exact_matches": 6
+    },
+    "held_out": {
+      "cases": 5,
+      "exact_matches": 5
+    },
+    "cases": 12,
+    "exact_label_matches": 11,
+    "contradictory_or_missing_evidence_false_met": 0,
+    "same_assertion_discovery_paraphrase_pair": [
+      "dev-discovery-positive-paraphrase-a",
+      "dev-discovery-positive-paraphrase-b"
+    ]
+  },
+  "interpretation": {
+    "status": "bounded_advisory_screen",
+    "limits": [
+      "Independent agent adjudication is not human ground truth.",
+      "The 12-request screen is not a calibrated accuracy estimate and does not qualify a release gate.",
+      "The dependent paraphrase pair must not be counted as two independent observations."
+    ],
+    "follow_up": "Keep the rubric and held-out set frozen; use these results as source-grounded review evidence only."
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys and compact separators; hash excludes the integrity.sha256 field.",
+    "sha256": "0d10f7cf2fefc1c92db1a31dc81cc86acc2d5bc809c5c1ebe59312e78541e626"
+  }
+}
