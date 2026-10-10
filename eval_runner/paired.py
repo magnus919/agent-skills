@@ -85,16 +85,16 @@ def _verify_snapshot_revision(skill_path: Path, expected_revision: str | None) -
     return expected_revision
 
 
-def _load_baseline_reference_map(path: Path | None) -> dict[str, dict[str, str]]:
+def _load_reference_map(path: Path | None, arm: str) -> dict[str, dict[str, str]]:
     if path is None:
         return {}
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict) or set(data) != {"schema_version", "cases"}:
-        raise ValueError("baseline reference map must contain schema_version and cases")
+        raise ValueError(f"{arm} reference map must contain schema_version and cases")
     if type(data["schema_version"]) is not int or data["schema_version"] != 1:
-        raise ValueError("unsupported baseline reference map version")
+        raise ValueError(f"unsupported {arm} reference map version")
     if not isinstance(data["cases"], dict):
-        raise ValueError("baseline reference map cases must be an object")
+        raise ValueError(f"{arm} reference map cases must be an object")
     references_by_case: dict[str, dict[str, str]] = {}
     for case_id, references in data["cases"].items():
         validate_case_id(case_id)
@@ -103,12 +103,45 @@ def _load_baseline_reference_map(path: Path | None) -> dict[str, dict[str, str]]
     return references_by_case
 
 
+def _load_baseline_reference_map(path: Path | None) -> dict[str, dict[str, str]]:
+    """Compatibility wrapper for existing baseline-map callers."""
+    return _load_reference_map(path, "baseline")
+
+
+def _load_candidate_reference_map(path: Path | None) -> dict[str, dict[str, str]]:
+    return _load_reference_map(path, "candidate")
+
+
 def _snapshot_input_record(metadata: dict[str, Any]) -> dict[str, Any]:
     return {
         "condition": metadata["condition"],
         "context_sha256": metadata.get("context_sha256"),
         "sources": metadata["sources"],
     }
+
+
+def _validate_arm_source_contract(
+    contract: dict[str, Any] | None,
+    *,
+    candidate_revision: str | None,
+    baseline_revision: str | None,
+    candidate_references: dict[str, str],
+    baseline_references: dict[str, str],
+    compare_references: bool = True,
+) -> None:
+    """Bind the case's evidence contract to both exact comparison arms."""
+    if contract is None or "arm_sources" not in contract:
+        return
+    arms = contract["arm_sources"]
+    if arms["candidate"]["revision"] != candidate_revision:
+        raise ValueError("candidate revision does not match the evidence contract")
+    if arms["baseline"]["revision"] != baseline_revision:
+        raise ValueError("baseline revision does not match the evidence contract")
+    if compare_references:
+        for arm, actual in (("candidate", candidate_references), ("baseline", baseline_references)):
+            expected = {item["path"]: item["sha256"] for item in arms[arm]["references"]}
+            if expected != actual:
+                raise ValueError(f"{arm} reference map does not match the evidence contract")
 
 
 def run_paired_trial(
@@ -126,8 +159,13 @@ def run_paired_trial(
     candidate_revision: str | None = None,
     baseline_revision: str | None = None,
     baseline_reference_map: dict[str, dict[str, str]] | None = None,
+    candidate_reference_map: dict[str, dict[str, str]] | None = None,
 ) -> dict[str, Any]:
     """Run one case in candidate and baseline conditions, grade, and compare."""
+    if not baseline_reference_map:
+        baseline_reference_map = None
+    if not candidate_reference_map:
+        candidate_reference_map = None
     if comparison_mode not in COMPARISON_MODES:
         raise ValueError("unsupported paired comparison mode")
     if comparison_mode == "pinned_skill_vs_skill":
@@ -144,25 +182,39 @@ def run_paired_trial(
             raise ValueError("comparison policy and snapshot revisions require a pinned comparison")
         if baseline_reference_map:
             raise ValueError("a baseline reference map requires a pinned comparison")
+        if candidate_reference_map:
+            raise ValueError("a candidate reference map requires a pinned comparison")
         comparison_policy = "no_skill_diagnostic"
 
-    baseline_reference_map = baseline_reference_map or {}
     candidate_cases = _snapshot_cases(skill_path)
     candidate_snapshot_case = next(
         (snapshot_case for snapshot_case in candidate_cases if snapshot_case.id == case.id), None
     )
     if comparison_mode == "pinned_skill_vs_skill" and candidate_snapshot_case is None:
         raise ValueError(f"candidate snapshot has no matching eval case: {case.id}")
-    candidate_case = replace(
-        case,
-        skill_references=(
+    if candidate_reference_map is not None:
+        if case.id not in candidate_reference_map:
+            raise ValueError(f"candidate reference map has no entry for selected case: {case.id}")
+        candidate_references = candidate_reference_map[case.id]
+        validate_references(candidate_references)
+    else:
+        candidate_references = (
             candidate_snapshot_case.skill_references
             if candidate_snapshot_case is not None
             else case.skill_references
-        ),
-    )
+        )
+    candidate_case = replace(case, skill_references=candidate_references)
 
     candidate_contract = load_evidence_contracts(skill_path, candidate_cases).get(case.id)
+    # The pilot's v2 arm contract is maintained by the current evaluation
+    # harness. A detached historical skill snapshot cannot contain a contract
+    # authored after that snapshot, so load it from this runner checkout when
+    # available and validate it against the selected historical case prompt.
+    runner_skill_root = Path(__file__).resolve().parents[1] / skill_path.name
+    if runner_skill_root.is_dir():
+        runner_contract = load_evidence_contracts(runner_skill_root, candidate_cases).get(case.id)
+        if runner_contract is not None and "arm_sources" in runner_contract:
+            candidate_contract = runner_contract
     baseline_case = case
     if comparison_mode == "pinned_skill_vs_skill":
         assert baseline_skill_path is not None
@@ -175,7 +227,7 @@ def run_paired_trial(
                 (snapshot_case for snapshot_case in baseline_cases if snapshot_case.id == case.id),
                 None,
             )
-            if case.id in baseline_reference_map:
+            if baseline_reference_map is not None and case.id in baseline_reference_map:
                 baseline_references = baseline_reference_map[case.id]
                 validate_references(baseline_references)
             elif baseline_snapshot_case is not None:
@@ -186,6 +238,15 @@ def run_paired_trial(
                     "or an explicit baseline reference map"
                 )
             baseline_case = replace(case, skill_references=baseline_references)
+
+        _validate_arm_source_contract(
+            candidate_contract,
+            candidate_revision=candidate_revision,
+            baseline_revision=baseline_revision,
+            candidate_references=candidate_case.skill_references,
+            baseline_references=baseline_case.skill_references,
+            compare_references=comparison_policy == "complete_package",
+        )
 
     candidate_sandbox, baseline_sandbox = stage_paired_sandboxes(
         skill_path,
@@ -363,6 +424,7 @@ def run_paired_evaluation(
     candidate_revision: str | None = None,
     baseline_revision: str | None = None,
     baseline_reference_map: dict[str, dict[str, str]] | None = None,
+    candidate_reference_map: dict[str, dict[str, str]] | None = None,
 ) -> list[dict[str, Any]]:
     """Run paired trials until complete or the first infrastructure failure."""
     reports = []
@@ -381,6 +443,7 @@ def run_paired_evaluation(
             candidate_revision=candidate_revision,
             baseline_revision=baseline_revision,
             baseline_reference_map=baseline_reference_map,
+            candidate_reference_map=candidate_reference_map,
         )
         reports.append(report)
         if report["candidate"]["infra_error"] or report["baseline"]["infra_error"]:
@@ -508,6 +571,11 @@ def main() -> int:
         type=Path,
         help="versioned JSON map of case-specific reference paths and hashes from the baseline snapshot",
     )
+    parser.add_argument(
+        "--candidate-reference-map",
+        type=Path,
+        help="versioned JSON map of case-specific reference paths and hashes from the candidate snapshot",
+    )
     parser.add_argument("--command", default=None)
     parser.add_argument("--prompt-mode", default="stdin", choices=["stdin", "arg"])
     parser.add_argument("--prompt-flag", default="--prompt")
@@ -552,6 +620,8 @@ def main() -> int:
             )
         if args.baseline_reference_map and args.comparison_policy != "complete_package":
             parser.error("--baseline-reference-map requires complete_package comparison policy")
+        if args.candidate_reference_map and args.comparison_policy != "complete_package":
+            parser.error("--candidate-reference-map requires complete_package comparison policy")
     if args.comparison_mode == "skill_vs_no_skill" and args.baseline_skill_path is not None:
         parser.error("--baseline-skill-path requires pinned_skill_vs_skill mode")
     if args.comparison_mode == "skill_vs_no_skill" and any(
@@ -561,6 +631,7 @@ def main() -> int:
             args.candidate_revision,
             args.baseline_revision,
             args.baseline_reference_map,
+            args.candidate_reference_map,
         )
     ):
         parser.error("snapshot policy and revisions require pinned_skill_vs_skill mode")
@@ -569,11 +640,15 @@ def main() -> int:
         baseline_reference_map = _load_baseline_reference_map(
             args.baseline_reference_map.resolve() if args.baseline_reference_map else None
         )
+        candidate_reference_map = _load_candidate_reference_map(
+            args.candidate_reference_map.resolve() if args.candidate_reference_map else None
+        )
     except (OSError, ValueError) as exc:
-        print(f"error: invalid baseline reference map: {exc}", file=sys.stderr)
+        print(f"error: invalid reference map: {exc}", file=sys.stderr)
         return 2
-    if set(baseline_reference_map) - {case.id for case in cases}:
-        print("error: baseline reference map contains an unselected case ID", file=sys.stderr)
+    selected_ids = {case.id for case in cases}
+    if args.candidate_reference_map and selected_ids - set(candidate_reference_map):
+        print("error: candidate reference map must cover every selected case", file=sys.stderr)
         return 2
 
     if args.adapter == "fake":
@@ -641,6 +716,7 @@ def main() -> int:
         candidate_revision=args.candidate_revision,
         baseline_revision=args.baseline_revision,
         baseline_reference_map=baseline_reference_map,
+        candidate_reference_map=candidate_reference_map,
     )
 
     improvements = 0

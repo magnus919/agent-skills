@@ -2,19 +2,13 @@
   "schema_version": 1,
   "cases": {
     "embedded-loan-recovery": {
-      "references/ai-interaction-and-uncertainty.md": "947ef84b9ec8746290d7b8555f0115cd8912d7bf9990d4c882bc0e11355499ea",
-      "references/external-agent-interactions.md": "57108aee84bc47786a7cdbd6f40a3b1e95a955366f9a72c23fa4595c60e8006c",
-      "references/task-flows-and-state-models.md": "eb1c2b550b6e781283237341508de7f21a594df45cbc27d8b33e44607def789b"
+      "references/embedded-business-agent.md": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb"
     },
     "non-chat-proposal": {
-      "references/patterns.md": "80d87c95c3399d08e2c4bbe6368a1d3a64f2ebdfffcad4ce051d6da7bc6465c9",
-      "references/models-output.md": "4de1f7b53492b42c6f6439b3bc2f5c53910f47f335476ab1a6caea7b6b6b832e",
-      "references/core-agents.md": "9cee47016d18ec22af775196fab03f1c19916ee086f2e8198a2b05098e85b688"
+      "references/application-proposals.md": "9b113c94594d8af0822cd648f39898ad379c59ee12433c394f2c0e0c526ed867"
     },
     "policy-translation-fidelity": {
-      "references/phase-gate-methodology.md": "974ec9b4f33d98f79117fcacbbb23f98d17595673a9f1330bd1d6058dba6df14",
-      "references/spec-quality-gates.md": "1531d3b28bb191ca3669f30cbf944c06af6fbb0eea237e1b60db46466ad0bfc0",
-      "references/format-translation.md": "40912f6a7a315767b2560d7859484750b8dc1c367f8f05b096d7a562461f90e7"
+      "references/executable-business-policy.md": "124aae33a4ec0392578b4b6ddebcda313bd0f341862edcbe82a9455556aabb77"
     },
     "stakeholder-map": {
       "references/stakeholder-mapping.md": "acb3879ad1a72295d2f4adab66568c3da4dcdd1975e4eb7eb31a0d8e88f82371",

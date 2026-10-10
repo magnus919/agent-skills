@@ -15,33 +15,102 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from eval_runner.models import AdapterInput, EvalCase
 from eval_runner.openai_adapter import NEUTRAL_SYSTEM_WRAPPER, OpenAICompatAdapter
-from eval_runner.paired import _load_baseline_reference_map, run_paired_trial
+from eval_runner.paired import (
+    _load_baseline_reference_map,
+    _load_candidate_reference_map,
+    _validate_arm_source_contract,
+    run_paired_trial,
+)
 
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def test_pilot_baseline_map_is_pinned_to_historical_ux_sources():
+def test_all_pilot_arm_maps_are_pinned_to_their_historical_snapshots():
     root = Path(__file__).resolve().parents[2]
-    map_path = root / "docs/fair-skill-evaluation-baseline-references-v1.json"
-    reference_map = json.loads(map_path.read_text(encoding="utf-8"))
-    case_references = reference_map["cases"]["embedded-loan-recovery"]
-    assert _load_baseline_reference_map(map_path) == {"embedded-loan-recovery": case_references}
-    baseline_revision = "6384b6c1e327022b373f05b560974e2611cbd6a1"
+    plan = json.loads((root / "docs/fair-skill-evaluation-pilot-v1.json").read_text())
+    baseline_path = root / "docs/fair-skill-evaluation-baseline-references-v1.json"
+    candidate_path = root / "docs/fair-skill-evaluation-candidate-references-v1.json"
+    baseline_map = _load_baseline_reference_map(baseline_path)
+    candidate_map = _load_candidate_reference_map(candidate_path)
+    assert set(baseline_map) == set(candidate_map) == {item["case_id"] for item in plan["pilot"]}
+    for item in plan["pilot"]:
+        case_id, skill = item["case_id"], item["skill"]
+        for arm, reference_map, revision_key in (
+            ("candidate", candidate_map, "candidate_revision"),
+            ("baseline", baseline_map, "baseline_revision"),
+        ):
+            assert item["arm_sources"][arm]["revision"] == item[revision_key]
+            assert item["arm_sources"][arm]["references"] == [
+                {"path": path, "sha256": digest} for path, digest in reference_map[case_id].items()
+            ]
+            for relative_path, expected_hash in reference_map[case_id].items():
+                source = subprocess.run(
+                    ["git", "show", f"{item[revision_key]}:{skill}/{relative_path}"],
+                    check=True,
+                    capture_output=True,
+                ).stdout
+                assert _sha256(source) == expected_hash
+        contract = json.loads(
+            (root / "eval_runner/fair-pilot-evidence-contracts-v2.json").read_text()
+        )["cases"][f"{skill}/{case_id}"]
+        assert contract["arm_sources"] == item["arm_sources"]
+        assert contract["review_criteria"]
 
-    assert "references/embedded-business-agent.md" not in case_references
-    for relative_path, expected_hash in case_references.items():
-        source = subprocess.run(
-            [
-                "git",
-                "show",
-                f"{baseline_revision}:product-design-and-ux/{relative_path}",
-            ],
-            check=True,
-            capture_output=True,
-        ).stdout
-        assert _sha256(source) == expected_hash
+
+def test_candidate_and_baseline_map_loaders_validate_case_hashes(tmp_path):
+    path = tmp_path / "references.json"
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "cases": {"case-one": {"references/guide.md": "a" * 64}},
+            }
+        ),
+        encoding="utf-8",
+    )
+    expected = {"case-one": {"references/guide.md": "a" * 64}}
+    assert _load_candidate_reference_map(path) == expected
+    assert _load_baseline_reference_map(path) == expected
+
+
+def test_arm_source_contract_rejects_revision_and_reference_mismatch():
+    contract = {
+        "arm_sources": {
+            "candidate": {
+                "revision": "a" * 40,
+                "references": [{"path": "references/current.md", "sha256": "1" * 64}],
+            },
+            "baseline": {
+                "revision": "b" * 40,
+                "references": [{"path": "references/old.md", "sha256": "2" * 64}],
+            },
+        }
+    }
+    _validate_arm_source_contract(
+        contract,
+        candidate_revision="a" * 40,
+        baseline_revision="b" * 40,
+        candidate_references={"references/current.md": "1" * 64},
+        baseline_references={"references/old.md": "2" * 64},
+    )
+    with pytest.raises(ValueError, match="candidate revision"):
+        _validate_arm_source_contract(
+            contract,
+            candidate_revision="c" * 40,
+            baseline_revision="b" * 40,
+            candidate_references={"references/current.md": "1" * 64},
+            baseline_references={"references/old.md": "2" * 64},
+        )
+    with pytest.raises(ValueError, match="baseline reference map"):
+        _validate_arm_source_contract(
+            contract,
+            candidate_revision="a" * 40,
+            baseline_revision="b" * 40,
+            candidate_references={"references/current.md": "1" * 64},
+            baseline_references={"references/old.md": "0" * 64},
+        )
 
 
 def _snapshot(root: Path, *, skill: str, reference: str) -> None:
@@ -257,6 +326,28 @@ def test_baseline_reference_hash_is_preflighted_before_candidate_execution(tmp_p
     assert adapter.calls == 0
 
 
+def test_candidate_reference_hash_is_preflighted_before_any_execution(tmp_path):
+    candidate_root, baseline_root, candidate_revision, baseline_revision, case = _pinned_fixtures(
+        tmp_path
+    )
+    adapter = _CountingAdapter()
+    with pytest.raises(ValueError, match="hash mismatch"):
+        run_paired_trial(
+            adapter,
+            case,
+            candidate_root,
+            tmp_path / "output",
+            "fixture/model",
+            comparison_mode="pinned_skill_vs_skill",
+            baseline_skill_path=baseline_root,
+            comparison_policy="complete_package",
+            candidate_revision=candidate_revision,
+            baseline_revision=baseline_revision,
+            candidate_reference_map={"pinned-case": {"references/guide.md": "0" * 64}},
+        )
+    assert adapter.calls == 0
+
+
 @pytest.mark.parametrize("wrong_side", ["candidate", "baseline"])
 def test_snapshot_revision_mismatch_is_preflighted_before_any_execution(tmp_path, wrong_side):
     candidate_root, baseline_root, candidate_revision, baseline_revision, case = _pinned_fixtures(
@@ -361,6 +452,34 @@ def test_explicit_baseline_map_supplies_old_snapshot_reference_for_new_case_id(t
         "references/guide.md": _sha256((candidate_root / "references/guide.md").read_bytes())
     }
     assert adapter.inputs[1].case.skill_references == {"references/guide.md": baseline_hash}
+
+
+def test_explicit_candidate_map_overrides_manifest_references_from_candidate_snapshot(tmp_path):
+    candidate_root, baseline_root, _, baseline_revision, case = _pinned_fixtures(tmp_path)
+    explicit = b"candidate reference selected by a pinned pilot map"
+    (candidate_root / "references/explicit.md").write_bytes(explicit)
+    candidate_revision = _commit_snapshot(candidate_root)
+    adapter = _CountingAdapter()
+
+    run_paired_trial(
+        adapter,
+        case,
+        candidate_root,
+        tmp_path / "output",
+        "fixture/model",
+        comparison_mode="pinned_skill_vs_skill",
+        baseline_skill_path=baseline_root,
+        comparison_policy="complete_package",
+        candidate_revision=candidate_revision,
+        baseline_revision=baseline_revision,
+        candidate_reference_map={"pinned-case": {"references/explicit.md": _sha256(explicit)}},
+    )
+
+    assert adapter.calls == 2
+    assert adapter.inputs[0].case.skill_references == {"references/explicit.md": _sha256(explicit)}
+    assert adapter.inputs[1].case.skill_references == {
+        "references/guide.md": _sha256((baseline_root / "references/guide.md").read_bytes())
+    }
 
 
 def test_dirty_snapshot_fails_before_any_execution(tmp_path):

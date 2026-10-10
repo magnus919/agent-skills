@@ -71,7 +71,8 @@
         "Requires translation-fidelity expected cases independently derived from original clauses",
         "Specifies date-based version selection with review on gaps or overlaps",
         "Tests threshold boundaries and unavailable-versus-exception precedence",
-        "Rejects a correctness guarantee from generated code and table-derived tests"
+        "Rejects a correctness guarantee from generated code and table-derived tests",
+        "Defines independent boundary, precedence, missing-input, gap, and overlap cases from the original clauses."
       ],
       "case_set": "regression"
     }

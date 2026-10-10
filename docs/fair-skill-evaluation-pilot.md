@@ -1,69 +1,39 @@
 # Fair six-skill evaluation pilot
 
-[`fair-skill-evaluation-pilot-v1.json`](fair-skill-evaluation-pilot-v1.json)
-pins six representative cases, historical skill revisions, source-grounded
-oracle facts, and mutation targets. It records inventory presence separately
-from behavioral verification. The current plan is intentionally `plan_only`:
-it made no generation or Jev calls, and frozen outputs are suitable only for
-testing evidence handling.
+[`fair-skill-evaluation-pilot-v1.json`](fair-skill-evaluation-pilot-v1.json) tracks six representative cases, the historical candidate and baseline snapshots, independent source pins, oracle scope, and mutation targets. `inventory_present` remains distinct from `behavior_verified`; the pilot is still `plan_only` and has made no generation or Jev calls.
 
-The primary comparison is `pinned_skill_vs_skill` with the explicit
-`complete_package` policy. Both skill roots must be clean Git snapshots at the
-declared full revisions. The runner verifies both identities and preflights
-both arms' context hashes before its first adapter call. Candidate references
-come from the candidate snapshot; baseline references come from the baseline
-snapshot or a case-specific `--baseline-reference-map` that points to files in
-that old snapshot. It never copies a candidate reference into the baseline. If
-the old snapshot has no matching case manifest, provide that explicit baseline
-map or choose `instruction_only`, which sends each arm's `SKILL.md` without
-reference files. Reports label the policy and both source revisions. The
-separate `skill_vs_no_skill` mode remains a diagnostic.
+The primary comparison is `pinned_skill_vs_skill` with `complete_package`. Both skill roots must be clean Git snapshots at the declared full revisions. The paired runner verifies both snapshot identities, resolves each arm's references only from that arm, and preflights both context hashes before the first adapter call. The candidate and historical source maps cover all six case IDs:
 
-For example, after preparing clean detached worktrees for both revisions:
+- [`fair-skill-evaluation-candidate-references-v1.json`](fair-skill-evaluation-candidate-references-v1.json)
+- [`fair-skill-evaluation-baseline-references-v1.json`](fair-skill-evaluation-baseline-references-v1.json)
+
+Pass both maps with `--candidate-reference-map` and `--baseline-reference-map`. A map may contain other pilot case IDs when running one selected case; each selected candidate case must have an entry. A reference path and hash must match bytes in that arm's pinned snapshot. The paired runner also checks both maps and the revisions against the v2 evidence contract. It never copies a candidate reference into the historical arm. `instruction_only` remains a separate diagnostic; `skill_vs_no_skill` is not the primary comparison.
+
+The optional pilot evidence contract is [`eval_runner/fair-pilot-evidence-contracts-v2.json`](../eval_runner/fair-pilot-evidence-contracts-v2.json). For each case it binds the task-prompt hash, both revisions, each arm's reference hashes, expected outcomes, prohibited behavior, required evidence, and source-grounded review criteria. It keeps judging data out of generation inputs. UX, PydanticAI, product-discovery, and System One remain conceptual prose cases requiring independent review; their criteria are not execution or usability oracles. Raleigh retains its offline command and query-shape tests. The policy recipe has an independent clause-transcribed fixture; its synthetic clauses are not policy-owner-approved fidelity evidence.
+
+Run the production-shaped policy CLI oracle and bounded mutation suite offline:
 
 ```sh
-python3 -m eval_runner.paired product-design-and-ux/evals/evals.json \
-  --adapter fake \
-  --case embedded-loan-recovery \
-  --comparison-mode pinned_skill_vs_skill \
-  --comparison-policy complete_package \
-  --candidate-revision 20ff7c0beb8241f085383927a567d36a0bccd040 \
-  --baseline-skill-path /tmp/pilot-baseline/product-design-and-ux \
-  --baseline-revision 6384b6c1e327022b373f05b560974e2611cbd6a1 \
-  --baseline-reference-map docs/fair-skill-evaluation-baseline-references-v1.json \
-  --output-dir /tmp/pilot-output
+python3 -m eval_runner.fair_pilot_mutations --json
+python3 -m pytest eval_runner/tests/test_fair_pilot_increment_three.py eval_runner/tests/test_fair_pairing.py eval_runner/tests/test_evidence_contract.py
 ```
 
-The checked-in [baseline reference map](fair-skill-evaluation-baseline-references-v1.json)
-binds `embedded-loan-recovery` to three relevant UX references from its exact
-historical snapshot. For other cases whose old eval manifest lacks the new
-case ID, create a version-1 map with paths and SHA-256 pins from that baseline
-snapshot. An explicit empty map for a case means that snapshot contributes no
-reference files; it does not authorize using candidate references.
+The suite sends eight production-shaped JSON inputs through `spec-driven-development/scripts/business_policy.py`. It separately reports valid behavioral defects (four killed), an equivalent comparison (accepted), a deliberately unmatched/invalid mutation, a controlled runtime/infrastructure error, and checks still requiring conceptual review. Gap and overlap cases exercise the evaluator with custom version intervals. Passing this harness demonstrates only that these specific oracle fixtures distinguish those mutations; it does not establish policy correctness.
 
-Generation payloads contain the task, neutral wrapper, and that arm's pinned
-skill/reference context. Expected output, assertions, oracle labels, and
-mutation targets remain outside generation. The adapter records full SHA-256
-pins for each supplied source, task prompt, neutral wrapper, and model
-settings, plus the exact serialized message hash.
+[`fair-skill-evaluation-qualification-v1.json`](fair-skill-evaluation-qualification-v1.json) freezes 12 proposed Jev request cases: six development and six held-out. It includes positive, negative, contradictory, missing-evidence, and paraphrase-invariance examples; response, prompt, and source hashes; source facts; and proposed labels with rationales. Three are bounded excerpts from prior generated outputs and nine are authored controls. The excerpts retain their original artifact hashes, while the submitted excerpt has its own hash. Authored controls are not production outputs. Every proposed label is marked `pending_independent_agent_review`; none is human validation or calibrated ground truth.
 
-The optional evidence contract is kept in
-[`eval_runner/fair-pilot-evidence-contracts-v1.json`](../eval_runner/fair-pilot-evidence-contracts-v1.json)
-so a six-case pilot does not count as six modified skill roots in the
-five-skill CI selector. It separates task-input hashes, authoritative source
-hashes, expected observable outcomes, prohibited behavior, required evidence,
-and oracle type without changing `evals-v1`. The selector puts only the task
-prompt and hash-verified authoritative source text into a separate
-`judgment_context` field for the post-generation Jev audit. The auditor treats
-that material as untrusted reference data, retains its hash, and still judges
-the generated response against the assertion. None of this context is read by
-the generation adapter.
+Preflight the exact request bodies without sending them:
 
-The offline oracle module has deterministic positive and mutation fixtures for
-business state transitions, typed proposals, policy boundaries, stakeholder
-coverage, and judge qualification. These oracles check structured facts; they
-do not parse prose. The Raleigh case also has executable command/tool fixture
-checks in its existing test suite. All six prose outcomes still require
-independent human review. A fake-adapter smoke can confirm the six pinned pair
-artifacts and input wiring; it cannot establish that a skill improves an
-answer.
+```sh
+python3 -m eval_runner.fair_pilot_qualification --json
+```
+
+The report should show 12 request-level payloads, exact payload and question hashes, the six/six split, pinned context, and `dispatch_authorized: false`. The initial request cap is 12; a further 12 attempts are reserved for diagnosed follow-up and require a separate parent allocation. The shared cap remains 100, current usage is zero, and no provider or Jev request is made by these commands. Do not tune against held-out cases.
+
+## Staged ledger
+
+- **Completed in this increment:** six-case candidate and historical source maps; v2 arm evidence contracts and review criteria; candidate-map support and preflight; clause-transcribed policy fixtures; a bounded code mutation report; frozen Jev request dossier and offline payload preflight.
+- **Next, before any Jev request:** independent agent review of labels and code/payload validity; correct any findings; obtain explicit allocation for at most 12 initial requests. Keep a separate 12-attempt reserve for a diagnosed follow-up. No human validation has occurred.
+- **Still needed for fair comparison:** explicitly authorized candidate and historical baseline generation on identical task/wrapper settings, with exact per-arm revisions and references; preserve partial infrastructure failures; then independently review actual output artifacts. Synthetic fixtures and old `model_teacher` labels cannot show improvement.
+- **Migration/backlog:** identify which skills merit migration only after this representative comparison; track case-level defects, evidence gaps, and owner separately. Do not create a broad agentic-apps or policy-to-code skill from this pilot.
+- **CI rollout:** remains out of scope until independent held-out review, error/abstention analysis, repeatability, and a versioned release-gate contract justify it. The existing grader and Jev remain advisory; this increment does not declare the full refit complete.
