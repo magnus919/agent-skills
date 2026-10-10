@@ -20,6 +20,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 
+from .assertion_syntax import AssertionSyntax, classify_assertion
 from .models import AdapterOutput, ExitStatus
 
 
@@ -28,6 +29,12 @@ class AssertionVerdict(str, Enum):
     FAIL = "fail"
     MANUAL_REVIEW = "manual_review"
     INFRA_ERROR = "infra_error"
+
+
+class SemanticVerdict(str, Enum):
+    PASS = "pass"
+    FAIL = "fail"
+    NOT_ASSESSED = "not_assessed"
 
 
 @dataclass(frozen=True)
@@ -43,6 +50,21 @@ class GradeResult:
     passed: bool
     results: list[AssertionResult] = field(default_factory=list)
     infra_error: bool = False
+    execution_status: str = "completed"
+    semantic_verdict: str = SemanticVerdict.NOT_ASSESSED.value
+    evidence_complete: bool = False
+
+    @property
+    def execution_success(self) -> bool:
+        return self.execution_status == "completed" and not self.infra_error
+
+    @property
+    def assertion_count(self) -> int:
+        return len(self.results)
+
+    @property
+    def resolved_count(self) -> int:
+        return self.pass_count + self.fail_count
 
     @property
     def pass_count(self) -> int:
@@ -58,25 +80,46 @@ class GradeResult:
 
 
 def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
-    if ":" not in assertion:
+    parsed = classify_assertion(assertion)
+    if parsed.syntax == AssertionSyntax.PROSE:
         return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "no recognized pattern")
+    if parsed.syntax == AssertionSyntax.MALFORMED_EXACT:
+        return AssertionResult(
+            assertion, AssertionVerdict.MANUAL_REVIEW, "malformed exact assertion"
+        )
+    if parsed.syntax == AssertionSyntax.UNKNOWN_BINDING:
+        return AssertionResult(
+            assertion, AssertionVerdict.MANUAL_REVIEW, f"unknown assertion kind '{parsed.kind}'"
+        )
 
-    kind, _, value = assertion.partition(":")
-    kind = kind.strip().lower()
-    value = value.strip()
+    kind, value = parsed.kind, parsed.value
 
     if kind == "response_contains":
-        if output.response and value in output.response:
+        if not value:
+            return AssertionResult(
+                assertion, AssertionVerdict.MANUAL_REVIEW, "empty expected value"
+            )
+        if output.response is None:
+            return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "response missing")
+        if value in output.response:
             return AssertionResult(assertion, AssertionVerdict.PASS)
         return AssertionResult(assertion, AssertionVerdict.FAIL, f"'{value}' not in response")
 
     if kind == "response_not_contains":
-        if output.response is None or value not in output.response:
+        if not value:
+            return AssertionResult(
+                assertion, AssertionVerdict.MANUAL_REVIEW, "empty forbidden value"
+            )
+        if output.response is None:
+            return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "response missing")
+        if value not in output.response:
             return AssertionResult(assertion, AssertionVerdict.PASS)
         return AssertionResult(assertion, AssertionVerdict.FAIL, f"'{value}' found in response")
 
     if kind == "exit_status":
         expected = value.lower()
+        if expected not in {status.value for status in ExitStatus}:
+            return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "unknown exit status")
         actual = output.exit_status.value
         if actual == expected:
             return AssertionResult(assertion, AssertionVerdict.PASS)
@@ -85,6 +128,12 @@ def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
         )
 
     if kind == "artifact_exists":
+        if not value:
+            return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "empty artifact path")
+        if not output.artifact_inventory_complete:
+            return AssertionResult(
+                assertion, AssertionVerdict.MANUAL_REVIEW, "artifact inventory incomplete"
+            )
         if value in output.artifacts:
             return AssertionResult(assertion, AssertionVerdict.PASS)
         return AssertionResult(assertion, AssertionVerdict.FAIL, f"'{value}' not in artifacts")
@@ -93,7 +142,15 @@ def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
         if "=" not in value:
             return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "malformed key=value")
         key, _, expected_val = value.partition("=")
-        if output.environment_state and key in output.environment_state:
+        if not key:
+            return AssertionResult(
+                assertion, AssertionVerdict.MANUAL_REVIEW, "empty environment key"
+            )
+        if output.environment_state is None:
+            return AssertionResult(
+                assertion, AssertionVerdict.MANUAL_REVIEW, "environment state missing"
+            )
+        if key in output.environment_state:
             actual_val = str(output.environment_state[key])
             if actual_val == expected_val:
                 return AssertionResult(assertion, AssertionVerdict.PASS)
@@ -105,7 +162,15 @@ def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
         )
 
     if kind == "activation_evidence_contains":
-        if output.activation_evidence and value in output.activation_evidence:
+        if not value:
+            return AssertionResult(
+                assertion, AssertionVerdict.MANUAL_REVIEW, "empty expected value"
+            )
+        if output.activation_evidence is None:
+            return AssertionResult(
+                assertion, AssertionVerdict.MANUAL_REVIEW, "activation evidence missing"
+            )
+        if value in output.activation_evidence:
             return AssertionResult(assertion, AssertionVerdict.PASS)
         return AssertionResult(
             assertion, AssertionVerdict.FAIL, f"'{value}' not in activation_evidence"
@@ -118,6 +183,8 @@ def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
             return AssertionResult(
                 assertion, AssertionVerdict.MANUAL_REVIEW, "non-integer threshold"
             )
+        if threshold < 0:
+            return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "negative threshold")
         if len(output.tool_events) >= threshold:
             return AssertionResult(assertion, AssertionVerdict.PASS)
         return AssertionResult(
@@ -130,11 +197,11 @@ def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
 
 
 def grade_output(case_id: str, assertions: list[str], output: AdapterOutput) -> GradeResult:
-    """Grade an adapter output against a list of assertions.
+    """Grade output without treating unknown or absent evidence as a pass.
 
-    Infrastructure errors (non-completed exit status) are distinguished from
-    skill failures: all assertions are marked infra_error and the grade is
-    not-pass, but the infra_error flag is set.
+    ``passed`` is retained for compatibility and means a semantic pass only.
+    Infrastructure completion, assertion evidence, and semantic verdict are
+    also exposed independently.
     """
     if output.exit_status != ExitStatus.COMPLETED:
         results = [
@@ -143,10 +210,31 @@ def grade_output(case_id: str, assertions: list[str], output: AdapterOutput) -> 
             )
             for a in assertions
         ]
-        return GradeResult(case_id=case_id, passed=False, results=results, infra_error=True)
+        return GradeResult(
+            case_id=case_id,
+            passed=False,
+            results=results,
+            infra_error=True,
+            execution_status=output.exit_status.value,
+            semantic_verdict=SemanticVerdict.NOT_ASSESSED.value,
+            evidence_complete=False,
+        )
 
     results = [_check_assertion(a, output) for a in assertions]
-    passed = all(
-        r.verdict in (AssertionVerdict.PASS, AssertionVerdict.MANUAL_REVIEW) for r in results
+    has_failure = any(r.verdict == AssertionVerdict.FAIL for r in results)
+    all_pass = bool(results) and all(r.verdict == AssertionVerdict.PASS for r in results)
+    if has_failure:
+        verdict = SemanticVerdict.FAIL
+    elif all_pass:
+        verdict = SemanticVerdict.PASS
+    else:
+        verdict = SemanticVerdict.NOT_ASSESSED
+    return GradeResult(
+        case_id=case_id,
+        passed=verdict == SemanticVerdict.PASS,
+        results=results,
+        execution_status=output.exit_status.value,
+        semantic_verdict=verdict.value,
+        evidence_complete=bool(results)
+        and all(r.verdict in (AssertionVerdict.PASS, AssertionVerdict.FAIL) for r in results),
     )
-    return GradeResult(case_id=case_id, passed=passed, results=results)

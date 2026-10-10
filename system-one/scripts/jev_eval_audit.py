@@ -18,7 +18,11 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
 from systemone_probe import live_call, validate_request, validate_response
+
+from eval_runner.assertion_syntax import AssertionSyntax, classify_assertion
 
 MODEL = "jev-1.13.0"
 ENDPOINT = "https://api.typesafe.ai/v1/systemone"
@@ -83,6 +87,43 @@ def _read_json(path: Path, root: Path) -> dict[str, Any]:
 
 
 SAFE_ID = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+UNRESOLVED_EXACT_DETAILS = frozenset(
+    {
+        "malformed exact assertion",
+        "malformed key=value",
+        "empty expected value",
+        "empty forbidden value",
+        "response missing",
+        "unknown exit status",
+        "empty artifact path",
+        "artifact inventory incomplete",
+        "empty environment key",
+        "environment state missing",
+        "activation evidence missing",
+        "non-integer threshold",
+        "negative threshold",
+    }
+)
+
+
+def _is_prose_manual_assertion(item: dict[str, Any]) -> bool:
+    """Select only human-readable rubric assertions, not unresolved exact checks."""
+    assertion = item.get("assertion")
+    if not isinstance(assertion, str) or not assertion.strip():
+        return False
+
+    if classify_assertion(assertion).syntax != AssertionSyntax.PROSE:
+        return False
+
+    detail = item.get("detail")
+    if isinstance(detail, str) and (detail in UNRESOLVED_EXACT_DETAILS):
+        return False
+
+    return detail in (None, "", "no recognized pattern") or (
+        isinstance(detail, str)
+        and detail.startswith("unknown assertion kind '")
+        and detail.endswith("'")
+    )
 
 
 def expected_report_ids(selection: dict[str, Any]) -> set[tuple[str, str]]:
@@ -133,6 +174,7 @@ def collect_groups(
         "reports_seen": 0,
         "exact_assertions_untouched": 0,
         "prose_assertions_seen": 0,
+        "skipped_non_prose_manual_assertions": 0,
         "skipped_infra_error_assertions": 0,
         "generation_error_sides": 0,
         "skipped_response": 0,
@@ -168,6 +210,9 @@ def collect_groups(
                 if not isinstance(item, dict) or not isinstance(item.get("assertion"), str):
                     raise ValueError("invalid assertion record")
                 if item.get("verdict") == "manual_review":
+                    if not _is_prose_manual_assertion(item):
+                        counts["skipped_non_prose_manual_assertions"] += 1
+                        continue
                     counts["prose_assertions_seen"] += 1
                     if len(item["assertion"]) > MAX_ASSERTION_CHARS:
                         counts["skipped_oversized_assertion"] += 1
@@ -440,6 +485,7 @@ def render_summary(report: dict[str, Any]) -> str:
         f"- Provider errors: {counts['provider_errors']}\n"
         f"- Generation-error sides: {counts['generation_error_sides']}\n"
         f"- Assertions skipped after generation errors: {counts['skipped_infra_error_assertions']}\n"
+        f"- Unresolved non-prose assertions skipped: {counts['skipped_non_prose_manual_assertions']}\n"
         f"- Skipped response assertions: {counts['skipped_response']}\n"
         f"- Oversized assertion/group skips: {counts['skipped_oversized_assertion'] + counts['skipped_oversized_group']}\n"
         f"- Unpaired assertions: {counts['skipped_unpaired_assertions']}\n"

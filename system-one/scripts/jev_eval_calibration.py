@@ -50,6 +50,7 @@ def read_audit(path: Path) -> tuple[dict[str, Any], str]:
                 "skipped_unpaired_assertions", "assertions_omitted_by_budget",
                 "groups_not_attempted_after_error", "assertions_not_attempted_after_error", "provider_errors",
                 "skipped_infra_error_assertions", "generation_error_sides")
+    blockers = (*blockers, "skipped_non_prose_manual_assertions")
     if any(counts.get(key, 0) != 0 for key in blockers):
         raise ValueError("audit coverage is incomplete; do not calibrate a selected subset as the full run")
     if counts.get("assertions_selected") != counts.get("prose_assertions_seen"):
@@ -113,7 +114,7 @@ def records_from_artifacts(root: Path, audit: dict[str, Any]) -> list[dict[str, 
             raise ValueError("audit question input does not match comparison artifact and current rubric")
         if len(row["assertions"]) != len(group["assertions"]):
             raise ValueError("audit assertion count differs from comparison artifact")
-        for answer, assertion in zip(row["assertions"], group["assertions"]):
+        for answer, assertion in zip(row["assertions"], group["assertions"], strict=True):
             if not isinstance(answer, dict) or answer.get("assertion") != assertion or answer.get("suggested_verdict") not in LABELS:
                 raise ValueError("audit assertion or verdict does not match comparison artifact")
             probability = answer.get("met_probability")
@@ -191,7 +192,7 @@ def render_packet(selected: list[dict[str, Any]]) -> str:
         "resolved, use `uncertain` and request adjudication. Do not treat a model's claim",
         "about a side effect as proof that the effect happened.", "",
     ]
-    for index, (response_hash, items) in enumerate(grouped.items(), start=1):
+    for index, (_response_hash, items) in enumerate(grouped.items(), start=1):
         response = items[0]["response"]
         fence = "~" * max(4, max((len(match.group()) for match in re.finditer(r"~+", response)), default=0) + 1)
         lines.extend([f"## Response {index}", "", fence, response, fence, "", "Assertions:", ""])
@@ -452,7 +453,7 @@ def compare_audits(first: dict[str, Any], second: dict[str, Any]) -> dict[str, A
         other = right[key]
         if [a["assertion"] for a in row["assertions"]] != [a["assertion"] for a in other["assertions"]]:
             raise ValueError("audits do not contain identical assertion text and order")
-        for answer, repeated in zip(row["assertions"], other["assertions"]):
+        for answer, repeated in zip(row["assertions"], other["assertions"], strict=True):
             for item in (answer, repeated):
                 if item["suggested_verdict"] not in LABELS:
                     raise ValueError("audit contains an invalid verdict")
@@ -507,7 +508,7 @@ def score(private_map: dict[str, Any], labels: dict[str, Any]) -> dict[str, Any]
     def summarize(sample_class: str) -> dict[str, Any]:
         chosen = [item for item in expected.values() if item["sample_class"] == sample_class]
         resolved = [item for item in chosen if observed[item["id"]] in LABELS]
-        matrix = {truth: {pred: 0 for pred in LABELS} for truth in LABELS}
+        matrix = {truth: dict.fromkeys(LABELS, 0) for truth in LABELS}
         for item in resolved:
             matrix[observed[item["id"]]][item["suggested_verdict"]] += 1
         suggested_met = [item for item in resolved if item["suggested_verdict"] == "met"]

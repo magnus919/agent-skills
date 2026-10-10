@@ -11,7 +11,7 @@ from typing import Any
 from .grader import GradeResult
 from .path_safety import contained_path, validate_case_id
 
-COMPARISON_SCHEMA_VERSION = 2
+COMPARISON_SCHEMA_VERSION = 3
 
 
 def build_comparison_report(
@@ -28,6 +28,13 @@ def build_comparison_report(
 
     if candidate_grade.infra_error or baseline_grade.infra_error:
         delta = "insufficient_data"
+    elif (
+        candidate_grade.semantic_verdict == "not_assessed"
+        or baseline_grade.semantic_verdict == "not_assessed"
+        or not candidate_grade.evidence_complete
+        or not baseline_grade.evidence_complete
+    ):
+        delta = "insufficient_evidence"
     elif candidate_passed and not baseline_passed:
         delta = "candidate_improvement"
     elif not candidate_passed and baseline_passed:
@@ -45,6 +52,12 @@ def build_comparison_report(
         "case_id": case_id,
         "candidate": {
             "trial_id": candidate_manifest.get("trial_id", ""),
+            "execution_status": candidate_grade.execution_status,
+            "execution_success": candidate_grade.execution_success,
+            "semantic_verdict": candidate_grade.semantic_verdict,
+            "evidence_complete": candidate_grade.evidence_complete,
+            "assertion_count": candidate_grade.assertion_count,
+            "resolved_count": candidate_grade.resolved_count,
             "passed": candidate_passed,
             "infra_error": candidate_grade.infra_error,
             "pass_count": candidate_grade.pass_count,
@@ -58,6 +71,12 @@ def build_comparison_report(
         },
         "baseline": {
             "trial_id": baseline_manifest.get("trial_id", ""),
+            "execution_status": baseline_grade.execution_status,
+            "execution_success": baseline_grade.execution_success,
+            "semantic_verdict": baseline_grade.semantic_verdict,
+            "evidence_complete": baseline_grade.evidence_complete,
+            "assertion_count": baseline_grade.assertion_count,
+            "resolved_count": baseline_grade.resolved_count,
             "passed": baseline_passed,
             "infra_error": baseline_grade.infra_error,
             "pass_count": baseline_grade.pass_count,
@@ -68,6 +87,21 @@ def build_comparison_report(
                 for r in baseline_grade.results
             ],
             "manifest": baseline_manifest,
+        },
+        "aggregate_outcome": {
+            "candidate_semantic_verdict": candidate_grade.semantic_verdict,
+            "baseline_semantic_verdict": baseline_grade.semantic_verdict,
+            "comparison_status": (
+                "comparable"
+                if delta
+                in {
+                    "candidate_improvement",
+                    "candidate_regression",
+                    "both_pass",
+                    "both_fail",
+                }
+                else delta
+            ),
         },
         "paired_delta": delta,
     }
@@ -84,16 +118,49 @@ def write_comparison_report(report: dict[str, Any], output_dir: Path) -> Path:
 
 
 def format_comparison_summary(report: dict[str, Any]) -> str:
+    def trial_summary(side: str) -> str:
+        trial = report[side]
+        semantic = trial.get("semantic_verdict")
+        if semantic is None:
+            # Archived v2 reports used ``passed`` for both completed triage
+            # and semantic outcomes, so unresolved evidence must stay unknown.
+            if trial.get("fail_count", 0):
+                semantic_label = "FAIL (legacy report)"
+            elif trial.get("manual_count", 0):
+                semantic_label = "NOT ASSESSED (legacy report)"
+            elif trial.get("passed") and trial.get("pass_count", 0) > 0:
+                semantic_label = "PASS (legacy report)"
+            elif not trial.get("passed") and trial.get("fail_count", 0) > 0:
+                semantic_label = "FAIL (legacy report)"
+            else:
+                semantic_label = "NOT ASSESSED (legacy report)"
+        else:
+            semantic_label = {
+                "pass": "PASS",
+                "fail": "FAIL",
+                "not_assessed": "NOT ASSESSED",
+            }.get(semantic, "UNKNOWN")
+        execution = trial.get("execution_status", "legacy")
+        return (
+            f"  {side.title()}: {semantic_label}"
+            f" ({trial['pass_count']} pass, {trial['fail_count']} fail,"
+            f" {trial['manual_count']} unresolved;"
+            f" evidence {trial.get('resolved_count', trial['pass_count'] + trial['fail_count'])}"
+            f"/{trial.get('assertion_count', trial['pass_count'] + trial['fail_count'] + trial['manual_count'])};"
+            f" execution {execution})"
+        )
+
+    paired_delta = report["paired_delta"]
+    if "aggregate_outcome" not in report and any(
+        report.get(side, {}).get("manual_count", 0) > 0 for side in ("candidate", "baseline")
+    ):
+        paired_delta = "not assessed (legacy report)"
     lines = [
         f"Skill: {report['skill_name']}  Case: {report['case_id']}",
-        f"Delta: {report['paired_delta']}",
+        f"Delta: {paired_delta}",
         "",
-        f"  Candidate: {'PASS' if report['candidate']['passed'] else 'FAIL'}"
-        f" ({report['candidate']['pass_count']} pass, {report['candidate']['fail_count']} fail,"
-        f" {report['candidate']['manual_count']} manual)",
-        f"  Baseline:  {'PASS' if report['baseline']['passed'] else 'FAIL'}"
-        f" ({report['baseline']['pass_count']} pass, {report['baseline']['fail_count']} fail,"
-        f" {report['baseline']['manual_count']} manual)",
+        trial_summary("candidate"),
+        trial_summary("baseline"),
     ]
     if report["candidate"]["infra_error"]:
         lines.append("  [!] Candidate had infrastructure error")
@@ -102,5 +169,9 @@ def format_comparison_summary(report: dict[str, Any]) -> str:
     if report["candidate"]["infra_error"] or report["baseline"]["infra_error"]:
         lines.append(
             "  [!] Paired comparison not assessed because a trial had an infrastructure error"
+        )
+    elif report["paired_delta"] == "insufficient_evidence":
+        lines.append(
+            "  [!] Semantic comparison not assessed because required assertion evidence is unresolved"
         )
     return "\n".join(lines)

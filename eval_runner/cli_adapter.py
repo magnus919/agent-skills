@@ -15,6 +15,10 @@ Configuration via harness_config:
   prompt_flag: str  — flag name if prompt_mode is "arg" (default: "--prompt")
   timeout_seconds: int  — max wall time (default: 120)
   extra_args: list[str]  — additional CLI arguments
+
+The subprocess receives EVAL_OUTPUT_DIR pointing at a fresh, per-trial directory.
+The adapter refuses to reuse an existing output directory so stale artifacts cannot
+be attributed to a new trial.
 """
 
 from __future__ import annotations
@@ -66,7 +70,15 @@ class CliSubprocessAdapter:
         env.update(input.env)
 
         input.work_dir.mkdir(parents=True, exist_ok=True)
-        input.output_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            input.output_dir.mkdir(parents=True, exist_ok=False)
+        except FileExistsError:
+            return AdapterOutput(
+                exit_status=ExitStatus.ERROR,
+                error="refusing to reuse an existing output directory",
+                artifact_inventory_complete=False,
+            )
+        env["EVAL_OUTPUT_DIR"] = str(input.output_dir.resolve())
 
         start = time.monotonic()
         try:
@@ -106,6 +118,7 @@ class CliSubprocessAdapter:
                 token_usage=None,
                 raw_trace_path=None,
                 error=proc.stderr[:1000] if proc.returncode != 0 else None,
+                artifact_inventory_complete=True,
             )
 
         except subprocess.TimeoutExpired:
