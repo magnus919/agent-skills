@@ -160,7 +160,7 @@ def _contains_key(value: Any, forbidden: set[str]) -> bool:
     return False
 
 
-def build_qualification_report() -> dict[str, Any]:
+def build_qualification_report(*, include_request_payloads: bool = False) -> dict[str, Any]:
     """Validate the frozen dossier and construct exact offline request payloads."""
     dossier = json.loads(DOSSIER.read_text(encoding="utf-8"))
     plan = json.loads(PLAN.read_text(encoding="utf-8"))
@@ -202,6 +202,7 @@ def build_qualification_report() -> dict[str, Any]:
         raise ValueError("candidate and baseline reference maps must cover all pilot cases")
     audit = _audit_module()
     payloads: list[dict[str, Any]] = []
+    wire_requests: list[dict[str, Any]] = []
     kind_counts: dict[str, int] = {}
     label_counts: dict[str, int] = {}
     split_counts: dict[str, int] = {}
@@ -321,6 +322,7 @@ def build_qualification_report() -> dict[str, Any]:
                 "request_payload_bytes": len(encoded),
             }
         )
+        wire_requests.append(request)
         for counters, label in (
             (kind_counts, record["sample_kind"]),
             (label_counts, record["expected_label"]),
@@ -343,7 +345,7 @@ def build_qualification_report() -> dict[str, Any]:
             "semantic paraphrases must share the assertion but differ in artifact bytes"
         )
 
-    return {
+    report = {
         "status": "ready_for_independent_agent_review_not_dispatch",
         "dispatch_authorized": False,
         "live_attempts": 0,
@@ -362,6 +364,11 @@ def build_qualification_report() -> dict[str, Any]:
         "contract_sha256": _sha256(contract_bytes),
         "requests": payloads,
     }
+    # The live runner needs exact payloads, but the ordinary preflight CLI and
+    # its saved report intentionally expose only hashes and metadata.
+    if include_request_payloads:
+        report["_request_payloads"] = wire_requests
+    return report
 
 
 def main() -> int:
