@@ -205,6 +205,29 @@ class ChecklistEvidenceTest(unittest.TestCase):
                 "misc/test_workflow.py",
                 "life-coach/tests/test_validate_capabilities.py",
                 "misc/test_unclassified.py",
+                "scripts/check-artifacts.py",
+                "terraform/tests/test_tfops.py",
+                "terraform/tests/test_skipped.py",
+                "terraform/tests/test_import_failing.py",
+                "terraform/tests/test_helper.py",
+                "terraform/tests/subpkg/__init__.py",
+                "terraform/tests/subpkg/test_nested.py",
+                "terraform/tests/dynamic/__init__.py",
+                "terraform/tests/dynamic/test_hidden.py",
+                "terraform/tests/globals_dynamic/__init__.py",
+                "terraform/tests/globals_dynamic/test_hidden.py",
+                "terraform/tests/null_hook/__init__.py",
+                "terraform/tests/null_hook/test_visible.py",
+                "terraform/tests/imported/__init__.py",
+                "terraform/tests/imported/suite.py",
+                "terraform/tests/imported/test_hidden.py",
+                "terraform/tests/assigned/__init__.py",
+                "terraform/tests/assigned/test_hidden.py",
+                "terraform/tests/unsafe/__init__.py",
+                "terraform/tests/unsafe/test_hidden.py",
+                "terraform/tests/test_pytest_only.py",
+                "terraform/tests/test-invalid.py",
+                "terraform/tests/helper_test.py",
             ]
             for relative in files:
                 path = root / relative
@@ -221,11 +244,119 @@ class ChecklistEvidenceTest(unittest.TestCase):
             workflow.write_text(
                 "run: python misc/test_workflow.py\n"
                 "run: python3 -m unittest discover -s life-coach/tests -p 'test_*.py'\n"
+                "run: python3 scripts/check-artifacts.py\n"
+            )
+
+            (root / "terraform/tests/test_tfops.py").write_text(
+                "from unittest import TestCase as BaseCase\n\n"
+                "class BaseTests(BaseCase):\n    pass\n\n"
+                "class TerraformCliTests(BaseTests):\n"
+                "    def test_mutation_guard(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/test_skipped.py").write_text(
+                "import unittest\n\n"
+                "@unittest.skip('fixture skip')\n"
+                "class SkippedTests(unittest.TestCase):\n"
+                "    def test_skipped(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/test_import_failing.py").write_text(
+                "import missing_fixture_dependency\n"
+                "import unittest\n\n"
+                "class ImportFailingTests(unittest.TestCase):\n"
+                "    def test_import_failure(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/test_helper.py").write_text(
+                "def make_fixture():\n    return None\n"
+            )
+            (root / "terraform/tests/subpkg/test_nested.py").write_text(
+                "import unittest\n\n"
+                "class NestedTests(unittest.TestCase):\n"
+                "    def test_nested(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/dynamic/__init__.py").write_text(
+                "def load_tests(loader, standard_tests, pattern):\n    return standard_tests\n"
+            )
+            (root / "terraform/tests/dynamic/test_hidden.py").write_text(
+                "import unittest\n\n"
+                "class HiddenTests(unittest.TestCase):\n"
+                "    def test_hidden(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/globals_dynamic/__init__.py").write_text(
+                "globals()['load_tests'] = lambda loader, tests, pattern: tests\n"
+            )
+            (root / "terraform/tests/globals_dynamic/test_hidden.py").write_text(
+                "import unittest\n\n"
+                "class GlobalsHookTests(unittest.TestCase):\n"
+                "    def test_hidden(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/null_hook/__init__.py").write_text("load_tests = None\n")
+            (root / "terraform/tests/null_hook/test_visible.py").write_text(
+                "import unittest\n\n"
+                "class NullHookTests(unittest.TestCase):\n"
+                "    def test_visible(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/imported/__init__.py").write_text(
+                "from .suite import load_tests\n"
+            )
+            (root / "terraform/tests/imported/suite.py").write_text(
+                "def load_tests(loader, standard_tests, pattern):\n    return standard_tests\n"
+            )
+            (root / "terraform/tests/imported/test_hidden.py").write_text(
+                "import unittest\n\n"
+                "class ImportedHookTests(unittest.TestCase):\n"
+                "    def test_hidden(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/assigned/__init__.py").write_text(
+                "load_tests = lambda loader, tests, pattern: tests\n"
+            )
+            (root / "terraform/tests/assigned/test_hidden.py").write_text(
+                "import unittest\n\n"
+                "class AssignedHookTests(unittest.TestCase):\n"
+                "    def test_hidden(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/unsafe/__init__.py").write_text(
+                "exec('load_tests = lambda loader, tests, pattern: tests')\n"
+            )
+            (root / "terraform/tests/unsafe/test_hidden.py").write_text(
+                "import unittest\n\n"
+                "class DynamicHookTests(unittest.TestCase):\n"
+                "    def test_hidden(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/test_pytest_only.py").write_text(
+                "def test_pytest_function_only():\n    pass\n"
+            )
+            (root / "terraform/tests/test-invalid.py").write_text(
+                "import unittest\n\n"
+                "class InvalidModuleNameTests(unittest.TestCase):\n"
+                "    def test_invalid_name(self):\n"
+                "        pass\n"
+            )
+            (root / "terraform/tests/helper_test.py").write_text(
+                "import unittest\n\n"
+                "class SuffixStyleTests(unittest.TestCase):\n"
+                "    def test_suffix_style(self):\n"
+                "        pass\n"
+            )
+            (root / "life-coach/tests/test_validate_capabilities.py").write_text(
+                "import unittest\n\n"
+                "class LifeCoachTests(unittest.TestCase):\n"
+                "    def test_capability(self):\n"
+                "        pass\n"
             )
 
             report = validator.test_routing_inventory(root)
 
-        self.assertEqual(report["test_source_count"], 8)
+        self.assertEqual(report["test_source_count"], 22)
         self.assertEqual(
             report["routed_counts"],
             {
@@ -236,9 +367,82 @@ class ChecklistEvidenceTest(unittest.TestCase):
                 "integration_suite": 1,
                 "workflow_explicit_path": 1,
                 "workflow_directory_discovery": 1,
+                "workflow_artifact_checker_unittest_discovery": 5,
             },
         )
-        self.assertEqual(report["unclassified_paths"], ["misc/test_unclassified.py"])
+        self.assertEqual(
+            report["workflow_artifact_checker_unittest_paths"],
+            [
+                "terraform/tests/null_hook/test_visible.py",
+                "terraform/tests/subpkg/test_nested.py",
+                "terraform/tests/test_import_failing.py",
+                "terraform/tests/test_skipped.py",
+                "terraform/tests/test_tfops.py",
+            ],
+        )
+        self.assertEqual(
+            report["workflow_artifact_checker_overlap_paths"],
+            ["life-coach/tests/test_validate_capabilities.py"],
+        )
+        self.assertEqual(
+            report["workflow_artifact_checker_all_selected_paths"],
+            [
+                "life-coach/tests/test_validate_capabilities.py",
+                "terraform/tests/null_hook/test_visible.py",
+                "terraform/tests/subpkg/test_nested.py",
+                "terraform/tests/test_import_failing.py",
+                "terraform/tests/test_skipped.py",
+                "terraform/tests/test_tfops.py",
+            ],
+        )
+        self.assertEqual(
+            report["unclassified_paths"],
+            [
+                "misc/test_unclassified.py",
+                "terraform/tests/assigned/test_hidden.py",
+                "terraform/tests/dynamic/test_hidden.py",
+                "terraform/tests/globals_dynamic/test_hidden.py",
+                "terraform/tests/helper_test.py",
+                "terraform/tests/imported/test_hidden.py",
+                "terraform/tests/test-invalid.py",
+                "terraform/tests/test_helper.py",
+                "terraform/tests/test_pytest_only.py",
+                "terraform/tests/unsafe/test_hidden.py",
+            ],
+        )
+        self.assertEqual(report["execution_status"], "not_assessed")
+        self.assertIn("does not establish import success", report["interpretation"])
+
+    def test_artifact_checker_route_requires_workflow_dispatch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            test_file = root / "terraform/tests/test_tfops.py"
+            test_file.parent.mkdir(parents=True)
+            test_file.write_text(
+                "import unittest\n\n"
+                "class TerraformCliTests(unittest.TestCase):\n"
+                "    def test_mutation_guard(self):\n"
+                "        pass\n"
+            )
+            (root / "scripts").mkdir()
+            (root / "scripts/check-artifacts.py").write_text("# checker fixture\n")
+            workflow = root / ".github/workflows/validate.yml"
+            workflow.parent.mkdir(parents=True)
+            workflow.write_text("name: validate\n")
+
+            report = validator.test_routing_inventory(root)
+            workflow.write_text("run: python3 scripts/check-artifacts.py --self-check\n")
+            self_check_report = validator.test_routing_inventory(root)
+
+        self.assertEqual(
+            report["routed_counts"]["workflow_artifact_checker_unittest_discovery"],
+            0,
+        )
+        self.assertEqual(report["unclassified_paths"], ["terraform/tests/test_tfops.py"])
+        self.assertEqual(
+            self_check_report["routed_counts"]["workflow_artifact_checker_unittest_discovery"],
+            0,
+        )
 
     def test_invalid_adjudication_companion_hash_fails_validation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

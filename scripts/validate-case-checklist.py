@@ -45,6 +45,7 @@ TEST_SOURCE_SUFFIXES = {
     ".ts",
     ".tsx",
 }
+UNITTEST_MODULE_NAME = re.compile(r"[_a-z]\w*\.py$", re.IGNORECASE)
 ADJUDICATION_SOURCE_PINS = {
     "dossier_sha256": Path("docs/fair-skill-evaluation-qualification-v1.json"),
     "evidence_contract_sha256": Path("eval_runner/fair-pilot-evidence-contracts-v2.json"),
@@ -205,9 +206,248 @@ def _is_test_source(path: str) -> bool:
     name = Path(path).name
     if Path(name).suffix not in TEST_SOURCE_SUFFIXES:
         return False
+    if Path(name).suffix == ".py":
+        # Keep alternate test naming styles visible; route selection is narrower.
+        return name.startswith("test") or name.endswith(("_test.py", "-test.py"))
     return name.startswith(("test_", "test-")) or name.endswith(
         ("_test.py", "_test.rb", "_test.sh", "-test.py", "-test.rb", "-test.sh", ".bats")
     )
+
+
+def _tracked_paths_for_artifact_checker(root: Path) -> list[str]:
+    """Mirror check-artifacts.py's Git-index scope, with a fixture fallback."""
+    try:
+        result = subprocess.run(
+            ["git", "ls-files", "-z"], cwd=root, capture_output=True, check=True
+        )
+        return [path for path in result.stdout.decode().split("\0") if path]
+    except (OSError, subprocess.CalledProcessError):
+        return [path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_file()]
+
+
+def _package_may_define_load_tests(path: Path) -> bool:
+    """Conservatively detect package load_tests hooks without importing code."""
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, SyntaxError):
+        # An unreadable or invalid package cannot reliably expose nested modules.
+        return True
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        if isinstance(node.func, ast.Name) and node.func.id in {
+            "exec",
+            "eval",
+            "setattr",
+            "globals",
+            "vars",
+        }:
+            # Dynamic module mutation is outside this static check. Stop
+            # recursive classification rather than guessing about its result.
+            return True
+        if (
+            isinstance(node.func, ast.Attribute)
+            and node.func.attr == "update"
+            and isinstance(node.func.value, ast.Call)
+            and isinstance(node.func.value.func, ast.Name)
+            and node.func.value.func.id in {"globals", "vars"}
+        ):
+            return True
+
+    def binds_load_tests(target: ast.expr) -> bool:
+        if isinstance(target, ast.Name):
+            return target.id == "load_tests"
+        if isinstance(target, ast.Attribute):
+            return target.attr == "load_tests"
+        if isinstance(target, (ast.Tuple, ast.List)):
+            return any(binds_load_tests(item) for item in target.elts)
+        if isinstance(target, ast.Starred):
+            return binds_load_tests(target.value)
+        return False
+
+    def may_assign_hook(target: ast.expr, value: ast.expr | None) -> bool:
+        if not binds_load_tests(target):
+            return False
+        return not (isinstance(value, ast.Constant) and value.value is None)
+
+    # Walk module scope, including conditional and exception-handling blocks,
+    # while keeping function and class bodies in their own namespaces.
+    pending = list(tree.body)
+    while pending:
+        node = pending.pop()
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            if node.name == "load_tests":
+                return True
+            continue
+        if isinstance(node, ast.Lambda):
+            continue
+        if isinstance(node, ast.Import):
+            if any(
+                (alias.asname or alias.name.split(".")[0]) == "load_tests" for alias in node.names
+            ):
+                return True
+        elif isinstance(node, ast.ImportFrom):
+            if any(
+                alias.name == "*" or (alias.asname or alias.name) == "load_tests"
+                for alias in node.names
+            ):
+                return True
+        elif isinstance(node, ast.Assign):
+            if any(may_assign_hook(target, node.value) for target in node.targets):
+                return True
+        elif isinstance(node, (ast.AnnAssign, ast.AugAssign, ast.NamedExpr)):
+            if may_assign_hook(node.target, node.value):
+                return True
+        elif isinstance(node, ast.Delete) and any(
+            binds_load_tests(target) for target in node.targets
+        ):
+            return True
+        pending.extend(ast.iter_child_nodes(node))
+    return False
+
+
+def _discoverable_unittest_directories(
+    root: Path, starts: set[str], tracked_paths: list[str]
+) -> set[str]:
+    """Mirror unittest discovery's package-only recursion below test roots."""
+    tracked = set(tracked_paths)
+    discovered: set[str] = set()
+    pending = list(starts)
+    while pending:
+        current = pending.pop()
+        if current in discovered:
+            continue
+        discovered.add(current)
+        prefix = current.rstrip("/") + "/"
+        current_parts = Path(current).parts
+        children = {
+            Path(path).parts[len(current_parts)]
+            for path in tracked
+            if path.startswith(prefix) and len(Path(path).parts) > len(current_parts)
+        }
+        for child_name in children:
+            child = f"{current}/{child_name}"
+            child_path = root / child
+            init_path = f"{child}/__init__.py"
+            if (
+                init_path in tracked
+                and child_path.is_dir()
+                and not child_path.is_symlink()
+                and not _package_may_define_load_tests(root / init_path)
+            ):
+                pending.append(child)
+    return discovered
+
+
+def _unittest_testcase_module(path: Path) -> bool:
+    """Return whether static syntax shows runnable unittest TestCase methods."""
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, SyntaxError):
+        return False
+
+    unittest_modules: dict[str, str] = {}
+    testcase_aliases: set[str] = set()
+    star_import = False
+    for node in tree.body:
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                bound_name = alias.asname or alias.name.split(".")[0]
+                unittest_modules[bound_name] = alias.name
+        elif isinstance(node, ast.ImportFrom) and node.module in {
+            "unittest",
+            "unittest.case",
+        }:
+            for alias in node.names:
+                if alias.name == "*":
+                    star_import = True
+                elif alias.name in {"TestCase", "IsolatedAsyncioTestCase"}:
+                    testcase_aliases.add(alias.asname or alias.name)
+
+    def dotted_name(node: ast.expr) -> str | None:
+        if isinstance(node, ast.Name):
+            return node.id
+        if isinstance(node, ast.Attribute):
+            prefix = dotted_name(node.value)
+            return f"{prefix}.{node.attr}" if prefix else None
+        return None
+
+    def is_unittest_base(node: ast.expr) -> bool:
+        name = dotted_name(node)
+        if name is None:
+            return False
+        if name in testcase_aliases or (
+            star_import and name in {"TestCase", "IsolatedAsyncioTestCase"}
+        ):
+            return True
+        parts = name.split(".")
+        module = unittest_modules.get(parts[0], parts[0])
+        return parts[-1] in {"TestCase", "IsolatedAsyncioTestCase"} and module in {
+            "unittest",
+            "unittest.case",
+        }
+
+    known_case_classes: dict[str, bool] = {}
+    for node in tree.body:
+        if not isinstance(node, ast.ClassDef):
+            continue
+        local_bases = [base.id for base in node.bases if isinstance(base, ast.Name)]
+        is_case = any(is_unittest_base(base) for base in node.bases) or any(
+            base in known_case_classes for base in local_bases
+        )
+        if not is_case:
+            continue
+        inherited_test = any(known_case_classes.get(base, False) for base in local_bases)
+        has_test_method = any(
+            isinstance(method, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and method.name.startswith("test")
+            for method in node.body
+        )
+        has_runnable_test = inherited_test or has_test_method
+        known_case_classes[node.name] = has_runnable_test
+        if has_runnable_test:
+            return True
+    return False
+
+
+def _artifact_checker_unittest_sources(
+    root: Path, workflow_text: str, test_sources: list[str]
+) -> set[str]:
+    """Find AST-visible unittest modules selected by the workflow artifact check."""
+    dispatched = False
+    for line in workflow_text.splitlines():
+        if line.lstrip().startswith("#"):
+            continue
+        invocation = re.search(r"\bpython(?:3)?\s+scripts/check-artifacts\.py(?P<args>.*)$", line)
+        if invocation and not re.search(
+            r"(?:^|\s)(?:--help|--self-check)(?:\s|$)",
+            invocation.group("args").split("#", 1)[0],
+        ):
+            dispatched = True
+            break
+    if not dispatched:
+        return set()
+
+    tracked_paths = _tracked_paths_for_artifact_checker(root)
+    if "scripts/check-artifacts.py" not in tracked_paths:
+        return set()
+    test_roots: set[str] = set()
+    for path in tracked_paths:
+        for parent in Path(path).parents:
+            if parent.name == "tests":
+                test_roots.add(parent.as_posix())
+                break
+    discoverable_dirs = _discoverable_unittest_directories(root, test_roots, tracked_paths)
+    return {
+        path
+        for path in test_sources
+        if Path(path).suffix == ".py"
+        and Path(path).name.startswith("test")
+        and UNITTEST_MODULE_NAME.fullmatch(Path(path).name)
+        and Path(path).parent.as_posix() in discoverable_dirs
+        and _unittest_testcase_module(root / path)
+    }
 
 
 def test_routing_inventory(root: Path = ROOT) -> dict[str, Any]:
@@ -313,15 +553,35 @@ def test_routing_inventory(root: Path = ROOT) -> dict[str, Any]:
             - workflow_explicit
         ),
     }
+    already_routed = set().union(*(set(items) for items in routes.values()))
+    artifact_checker_unittest = _artifact_checker_unittest_sources(root, workflow_text, files)
+    artifact_checker_unique = artifact_checker_unittest - already_routed
+    routes["workflow_artifact_checker_unittest_discovery"] = sorted(artifact_checker_unique)
     routed = set().union(*(set(items) for items in routes.values()))
     unclassified = sorted(set(files) - routed)
     return {
         "test_source_count": len(files),
         "core_manifest_entries": core_paths,
         "routed_counts": {key: len(value) for key, value in routes.items()},
+        "workflow_artifact_checker_unittest_paths": routes[
+            "workflow_artifact_checker_unittest_discovery"
+        ],
+        "workflow_artifact_checker_all_selected_paths": sorted(artifact_checker_unittest),
+        "workflow_artifact_checker_overlap_paths": sorted(
+            artifact_checker_unittest - artifact_checker_unique
+        ),
         "unclassified_count": len(unclassified),
         "unclassified_paths": unclassified,
-        "interpretation": "Unclassified means no route was identified by these declared selectors; it is a follow-up queue, not proof a test is never run.",
+        "execution_status": "not_assessed",
+        "interpretation": (
+            "Route detection follows declared selectors. The artifact-checker route "
+            "includes only AST-visible unittest.TestCase modules selected by its "
+            "tracked tests-directory discovery and test*.py pattern; nested packages "
+            "with load_tests hooks are not assumed to recurse. Route presence "
+            "does not establish import success, execution, non-skipped status, pass "
+            "status, or behavioral coverage. Pure pytest functions, helper modules, "
+            "and arbitrary scripts remain unclassified unless another selector covers them."
+        ),
     }
 
 
