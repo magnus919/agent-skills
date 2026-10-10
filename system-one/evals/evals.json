@@ -636,6 +636,16 @@
         "Treats PydanticAI or LangGraph as an implementation layer around an injectable typed decision service rather than assuming the decision model is a generative chat model",
         "Keeps deterministic authorization and side effects outside model output and routes unknown or unavailable results explicitly"
       ]
+    },
+    {
+      "id": "vega-small-footprint-screening",
+      "prompt": "A team proposes Vega (`vegaml` 0.6.1) as its preferred model for support routing and phishing decisions. A small synthetic screen suggested bounded support-routing potential but showed false phishing alarms and confident misses. Auto-loaded adapters were inactive. The integration contract has overflow, unknown-setting, and required uncertainty-field caveats. Should Vega be deployed as the default decision model?",
+      "expected_output": "Treats Vega as a candidate pending task-specific qualification, requires an explicit review or deterministic fallback and keeps counts, policy, and execution authority outside model judgment. It distinguishes inactive auto-loaded adapters from active-specialist or test-time-tuned evidence, and calls out the v0.6.1 contract caveats.",
+      "assertions": [
+        "Treats Vega as a candidate without unsupported ranking or production claims",
+        "Requires task-specific qualification and a fallback, with exact counts, policy, and execution authority kept outside model judgment",
+        "Distinguishes the inactive auto-loaded adapters from active-specialist or test-time-tuned evidence and identifies the v0.6.1 contract limits"
+      ]
     }
   ]
 }
