@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -70,6 +71,38 @@ def _qualified_case_results(cases: list[dict]) -> list[dict]:
     return qualified
 
 
+def _frozen_manifest_bytes(case_ids: list[str]) -> bytes:
+    return json.dumps(
+        {"schema_version": 1, "evals": [{"id": case_id} for case_id in case_ids]},
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+
+
+def _freeze_snapshot(
+    required_case_sets: dict[str, str],
+    *,
+    manifest_case_ids: list[str] | None = None,
+    dataset_hash_override: str | None = None,
+    candidate_tree_hash: str = "candidate",
+    baseline_tree_hash: str = "baseline",
+    grader_versions: dict[str, str] | None = None,
+) -> FreezeSnapshot:
+    manifest_bytes = _frozen_manifest_bytes(
+        manifest_case_ids if manifest_case_ids is not None else list(required_case_sets)
+    )
+    hashed_dataset = hashlib.sha256(manifest_bytes).hexdigest()[:16]
+    return FreezeSnapshot(
+        candidate_tree_hash=candidate_tree_hash,
+        baseline_tree_hash=baseline_tree_hash,
+        dataset_hash=dataset_hash_override or hashed_dataset,
+        grader_versions=grader_versions or {"default": "1"},
+        randomization_seed=42,
+        required_case_sets=required_case_sets,
+        dataset_manifest_bytes=manifest_bytes,
+    )
+
+
 def _freeze_for_cases(cases: list[dict]) -> FreezeSnapshot:
     required_case_sets = {
         case["case_id"]: case["case_set"]
@@ -78,14 +111,7 @@ def _freeze_for_cases(cases: list[dict]) -> FreezeSnapshot:
     }
     if not any(case_set == "release" for case_set in required_case_sets.values()):
         required_case_sets["required-release-case"] = "release"
-    return FreezeSnapshot(
-        candidate_tree_hash="candidate",
-        baseline_tree_hash="baseline",
-        dataset_hash="dataset",
-        grader_versions={"default": "1"},
-        randomization_seed=42,
-        required_case_sets=required_case_sets,
-    )
+    return _freeze_snapshot(required_case_sets)
 
 
 def test_aggregate_trials_groups_by_case():
@@ -275,8 +301,7 @@ def test_release_decision_holds_when_any_frozen_case_is_omitted():
             }
         ]
     )
-    freeze = _freeze_for_cases(cases)
-    freeze.required_case_sets["release-two"] = "release"
+    freeze = _freeze_snapshot({"release-one": "release", "release-two": "release"})
     decision = compute_release_decision(
         cases,
         [],
@@ -285,6 +310,97 @@ def test_release_decision_holds_when_any_frozen_case_is_omitted():
     )
     assert decision["outcome"] == "HOLD"
     assert "missing required cases: release-two" in decision["reasons"][0]
+
+
+def test_release_decision_holds_when_roster_is_a_subset_of_frozen_dataset():
+    freeze = _freeze_snapshot(
+        {"release-one": "release"},
+        manifest_case_ids=["release-one", "release-two"],
+    )
+    cases = _qualified_case_results(
+        [
+            {
+                "case_id": "release-one",
+                "case_set": "release",
+                "success_frequency": 1.0,
+                "consistent": True,
+                "missing_evidence": [],
+                "paired_delta": "both_pass",
+            }
+        ]
+    )
+
+    decision = compute_release_decision(
+        cases,
+        [],
+        CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9),
+        freeze=freeze,
+    )
+
+    assert decision["outcome"] == "HOLD"
+    assert "required case roster does not match frozen dataset manifest" in decision["reasons"][0]
+
+
+def test_release_decision_holds_when_frozen_dataset_hash_mismatches_manifest():
+    freeze = _freeze_snapshot(
+        {"release-one": "release"},
+        dataset_hash_override="deadbeef",
+    )
+    cases = _qualified_case_results(
+        [
+            {
+                "case_id": "release-one",
+                "case_set": "release",
+                "success_frequency": 1.0,
+                "consistent": True,
+                "missing_evidence": [],
+                "paired_delta": "both_pass",
+            }
+        ]
+    )
+
+    decision = compute_release_decision(
+        cases,
+        [],
+        CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9),
+        freeze=freeze,
+    )
+
+    assert decision["outcome"] == "HOLD"
+    assert "dataset hash does not match frozen manifest" in decision["reasons"][0]
+
+
+def test_release_decision_holds_when_frozen_manifest_is_unavailable():
+    freeze = FreezeSnapshot(
+        "candidate",
+        "baseline",
+        "dataset",
+        {"default": "1"},
+        42,
+        required_case_sets={"release-one": "release"},
+    )
+    cases = _qualified_case_results(
+        [
+            {
+                "case_id": "release-one",
+                "case_set": "release",
+                "success_frequency": 1.0,
+                "consistent": True,
+                "missing_evidence": [],
+                "paired_delta": "both_pass",
+            }
+        ]
+    )
+
+    decision = compute_release_decision(
+        cases,
+        [],
+        CalibrationRecord(human_sample_count=20, judge_agreement_rate=0.9),
+        freeze=freeze,
+    )
+
+    assert decision["outcome"] == "HOLD"
+    assert "frozen dataset manifest is unavailable" in decision["reasons"][0]
 
 
 def test_rubric_grader_pass():
@@ -531,13 +647,11 @@ def test_release_decision_conditional_on_rubric_abstain():
 
 
 def test_freeze_snapshot_completeness():
-    freeze = FreezeSnapshot(
+    freeze = _freeze_snapshot(
+        {"release-case": "release", "regression-case": "regression"},
         candidate_tree_hash="abc123",
         baseline_tree_hash="def456",
-        dataset_hash="ghi789",
         grader_versions={"default": "1.0"},
-        randomization_seed=42,
-        required_case_sets={"release-case": "release", "regression-case": "regression"},
     )
     assert freeze.complete
     d = freeze.to_dict()
@@ -588,13 +702,8 @@ def test_build_release_report_structure():
 
 
 def test_build_release_report_holds_when_required_roster_case_is_omitted():
-    freeze = FreezeSnapshot(
-        "candidate",
-        "baseline",
-        "dataset",
-        {"default": "1"},
-        42,
-        required_case_sets={"release-one": "release", "release-two": "release"},
+    freeze = _freeze_snapshot(
+        {"release-one": "release", "release-two": "release"},
     )
     case_results = _qualified_case_results(
         [
@@ -634,13 +743,11 @@ def test_build_release_report_validates_against_schema():
     Draft202012Validator.check_schema(schema)
     validator = Draft202012Validator(schema)
 
-    freeze = FreezeSnapshot(
-        "abc",
-        "def",
-        "ghi",
-        {"default-pairwise": "1"},
-        42,
-        required_case_sets={"c1": "release"},
+    freeze = _freeze_snapshot(
+        {"c1": "release"},
+        candidate_tree_hash="abc",
+        baseline_tree_hash="def",
+        grader_versions={"default-pairwise": "1"},
     )
     cal = CalibrationRecord(human_sample_count=10, judge_agreement_rate=0.8)
     case_results = [

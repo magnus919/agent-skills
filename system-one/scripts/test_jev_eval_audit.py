@@ -78,6 +78,57 @@ class JevEvalAuditTests(unittest.TestCase):
             result["results"][0]["question_input_sha256"], question_input_sha256(request)
         )
 
+    def test_colon_in_real_manifest_prose_is_kept_for_review(self):
+        manifest_path = (
+            Path(__file__).resolve().parents[2] / "agent-skills" / "evals" / "evals.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        case = next(case for case in manifest["evals"] if case["id"] == "skill-creation-structure")
+        assertion = case["assertions"][0]
+        self.assertEqual(
+            assertion,
+            "The scaffold names the required structure: SKILL.md, README.md, and "
+            "evals/evals.json for new skills",
+        )
+        report = sample_report()
+        for side in ("candidate", "baseline"):
+            report[side]["assertions"] = [
+                {
+                    "assertion": assertion,
+                    "verdict": "manual_review",
+                    "detail": "no recognized pattern",
+                }
+            ]
+        self.path.write_text(json.dumps(report), encoding="utf-8")
+
+        groups, counts = collect_groups(self.root, 24000)
+
+        self.assertEqual(len(groups), 2)
+        self.assertEqual(groups[0]["assertions"], [assertion])
+        self.assertEqual(counts["prose_assertions_seen"], 2)
+        self.assertEqual(counts["skipped_non_prose_manual_assertions"], 0)
+
+    def test_malformed_known_and_unknown_exact_assertions_are_not_prose(self):
+        report = sample_report()
+        malformed = [
+            ("response_contains", "no recognized pattern"),
+            ("environment_state=reservation=confirmed", "no recognized pattern"),
+            ("tool_event_count_gte:not-a-number", "non-integer threshold"),
+            ("custom_metric:>=2", "unknown assertion kind 'custom_metric'"),
+        ]
+        for side in ("candidate", "baseline"):
+            report[side]["assertions"] = [
+                {"assertion": assertion, "verdict": "manual_review", "detail": detail}
+                for assertion, detail in malformed
+            ]
+        self.path.write_text(json.dumps(report), encoding="utf-8")
+
+        groups, counts = collect_groups(self.root, 24000)
+
+        self.assertEqual(groups, [])
+        self.assertEqual(counts["prose_assertions_seen"], 0)
+        self.assertEqual(counts["skipped_non_prose_manual_assertions"], 8)
+
     def test_unresolved_exact_checks_are_not_sent_as_prose(self):
         report = sample_report()
         for side in ("candidate", "baseline"):

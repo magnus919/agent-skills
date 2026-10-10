@@ -30,6 +30,13 @@ RELEASE_OUTCOMES = ("PASS", "CONDITIONAL", "HOLD", "BLOCK")
 
 @dataclass(frozen=True)
 class FreezeSnapshot:
+    """Release inputs, including the exact bytes whose IDs define its roster.
+
+    ``dataset_manifest_bytes`` must be the same manifest content represented by
+    ``dataset_hash``. It is validated at decision time and kept out of the
+    report payload; the report retains the hash and the derived case roster.
+    """
+
     candidate_tree_hash: str
     baseline_tree_hash: str
     dataset_hash: str
@@ -38,6 +45,7 @@ class FreezeSnapshot:
     exclusions: tuple[str, ...] = ()
     frozen_at: str = ""
     required_case_sets: dict[str, str] = field(default_factory=dict)
+    dataset_manifest_bytes: bytes | None = field(default=None, repr=False, compare=False)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -52,18 +60,48 @@ class FreezeSnapshot:
         }
 
     @property
+    def dataset_binding_error(self) -> str | None:
+        """Check that the required roster is derived from the hashed frozen manifest."""
+        if not isinstance(self.dataset_manifest_bytes, bytes):
+            return "frozen dataset manifest is unavailable"
+        if _dataset_hash_bytes(self.dataset_manifest_bytes) != self.dataset_hash:
+            return "dataset hash does not match frozen manifest"
+        try:
+            manifest = json.loads(self.dataset_manifest_bytes)
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            return "frozen dataset manifest is invalid JSON"
+        if not isinstance(manifest, dict) or manifest.get("schema_version") != 1:
+            return "frozen dataset manifest has an unsupported schema"
+        evals = manifest.get("evals")
+        if not isinstance(evals, list) or not evals:
+            return "frozen dataset manifest has no eval roster"
+        case_ids: list[str] = []
+        for case in evals:
+            case_id = case.get("id") if isinstance(case, dict) else None
+            if not isinstance(case_id, str) or not case_id:
+                return "frozen dataset manifest has an invalid case ID"
+            case_ids.append(case_id)
+        if len(case_ids) != len(set(case_ids)):
+            return "frozen dataset manifest has duplicate case IDs"
+        if set(case_ids) != set(self.required_case_sets):
+            return "required case roster does not match frozen dataset manifest"
+        return None
+
+    @property
     def complete(self) -> bool:
         return bool(
             self.candidate_tree_hash
             and self.baseline_tree_hash
             and self.dataset_hash
             and self.grader_versions
+            and isinstance(self.required_case_sets, dict)
             and self.required_case_sets
             and all(
                 isinstance(case_id, str) and case_id and case_set in CASE_SETS
                 for case_id, case_set in self.required_case_sets.items()
             )
             and any(case_set == "release" for case_set in self.required_case_sets.values())
+            and self.dataset_binding_error is None
         )
 
 
@@ -434,9 +472,13 @@ def compute_release_decision(
         }
 
     if freeze is None or not freeze.complete:
+        binding_error = freeze.dataset_binding_error if freeze is not None else None
+        reason = "freeze snapshot is incomplete or lacks a required case roster"
+        if binding_error:
+            reason += f": {binding_error}"
         return {
             "outcome": "HOLD",
-            "reasons": ["freeze snapshot is incomplete or lacks a required case roster"],
+            "reasons": [reason],
             "hard_gate_violations": [],
         }
 
@@ -611,6 +653,9 @@ def write_release_report(report: dict[str, Any], output_dir: Path) -> Path:
     return path
 
 
-def dataset_hash(manifest_path: Path) -> str:
-    content = manifest_path.read_bytes()
+def _dataset_hash_bytes(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()[:16]
+
+
+def dataset_hash(manifest_path: Path) -> str:
+    return _dataset_hash_bytes(manifest_path.read_bytes())

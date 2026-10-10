@@ -94,6 +94,22 @@ EXACT_ASSERTION_KINDS = frozenset(
         "tool_event_count_gte",
     }
 )
+UNRESOLVED_EXACT_DETAILS = frozenset(
+    {
+        "malformed key=value",
+        "empty expected value",
+        "empty forbidden value",
+        "response missing",
+        "unknown exit status",
+        "empty artifact path",
+        "artifact inventory incomplete",
+        "empty environment key",
+        "environment state missing",
+        "activation evidence missing",
+        "non-integer threshold",
+        "negative threshold",
+    }
+)
 
 
 def _is_prose_manual_assertion(item: dict[str, Any]) -> bool:
@@ -103,17 +119,26 @@ def _is_prose_manual_assertion(item: dict[str, Any]) -> bool:
         return False
 
     normalized = assertion.strip().lower()
-    if ":" in normalized:
-        # A colon-bearing manual assertion is either an exact binding or an
-        # unknown/malformed binding. Neither belongs in the prose judge batch.
-        return False
     if any(
-        normalized == kind or normalized.startswith(f"{kind} ") or normalized.startswith(f"{kind}=")
+        normalized.startswith(kind)
+        and (
+            not normalized[len(kind) : len(kind) + 1]
+            or normalized[len(kind) : len(kind) + 1] in {":", "="}
+            or normalized[len(kind) : len(kind) + 1].isspace()
+        )
         for kind in EXACT_ASSERTION_KINDS
     ):
+        # Known exact prefixes remain excluded even when their syntax is
+        # malformed (for example, ``response_contains`` without a delimiter).
         return False
 
     detail = item.get("detail")
+    if isinstance(detail, str) and (
+        detail in UNRESOLVED_EXACT_DETAILS
+        or (detail.startswith("unknown assertion kind '") and detail.endswith("'"))
+    ):
+        return False
+
     return detail in (None, "", "no recognized pattern")
 
 
