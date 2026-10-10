@@ -288,26 +288,22 @@ def test_policy_oracle_reviews_malformed_or_nonpositive_policy_limits(maximum):
     )
 
 
-def test_policy_oracle_rejects_comparison_overriding_int_policy_limit():
-    class MalformedMaximum(int):
-        def __le__(self, other):
-            return False
-
-        def __ge__(self, other):
-            return True
+def test_policy_oracle_rejects_positive_int_subclass_policy_limit():
+    class IntSubclass(int):
+        pass
 
     versions = (
         {
             "version": "v1",
             "starts": "2026-01-01",
             "ends": "2026-07-01",
-            "max_days": MalformedMaximum(-1),
+            "max_days": IntSubclass(7),
         },
     )
     assert (
         policy_translation_oracle(
             effective_date="2026-06-30",
-            requested_days=8,
+            requested_days=7,
             item_available=True,
             exception_requested=False,
             versions=versions,
