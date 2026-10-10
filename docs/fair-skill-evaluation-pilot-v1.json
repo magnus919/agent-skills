@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "status": "plan_only",
+  "purpose": "Prepare a pinned, source-grounded six-skill pilot. Inventory presence is not behavior verification.",
+  "oracle_scope": "Deterministic pilot oracles check structured traces and source-derived facts; they do not parse prose or establish skill behavior. Human review remains required for prose outcomes.",
+  "live_calls": {
+    "shared_budget": "0/100",
+    "generation": "not_run",
+    "jev": "not_run"
+  },
+  "comparison": {
+    "primary_mode": "pinned_skill_vs_skill",
+    "diagnostic_mode": "skill_vs_no_skill",
+    "arms": ["candidate", "baseline"],
+    "same_task_and_wrapper": true,
+    "references": "Resolve and hash each arm's references from that arm's pinned snapshot only.",
+    "judgment_data": "Keep expected outcomes, prohibited behavior, required evidence, and oracle labels out of generation payloads.",
+    "frozen_outputs": "May test evidence parsing only; do not use them as evidence of new prompt effects."
+  },
+  "pilot": [
+    {
+      "skill": "product-design-and-ux",
+      "case_id": "embedded-loan-recovery",
+      "baseline_revision": "6384b6c1e327022b373f05b560974e2611cbd6a1",
+      "candidate_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "inventory_present": true,
+      "behavior_verified": false,
+      "oracle": {
+        "type": "state_transition_matrix",
+        "independent_facts": ["Draft revision changes invalidate prior approval.", "Permission revoked after invocation blocks execution.", "Reservation success and notification failure remain separate confirmed states."],
+        "human_review_required": true
+      },
+      "mutation_targets": ["reuse approval after editing the draft", "execute after permission revocation", "retry reservation after timeout without querying status", "report notification failure as reservation failure", "claim synthetic fixtures prove usability"]
+    },
+    {
+      "skill": "pydanticai",
+      "case_id": "non-chat-proposal",
+      "baseline_revision": "6384b6c1e327022b373f05b560974e2611cbd6a1",
+      "candidate_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "inventory_present": true,
+      "behavior_verified": false,
+      "oracle": {
+        "type": "typed_proposal_boundary",
+        "independent_facts": ["A model result is a proposal, not a command.", "Candidate IDs are checked against application scope.", "Approval identity and permission/revision checks belong to the application-owned command path."],
+        "human_review_required": true
+      },
+      "mutation_targets": ["model output directly invokes reservation", "accept candidate ID outside supplied scope", "trust model-generated approval identity", "omit stale revision or permission re-check", "duplicate architecture or operations guidance instead of routing to owners"]
+    },
+    {
+      "skill": "spec-driven-development",
+      "case_id": "policy-translation-fidelity",
+      "baseline_revision": "6384b6c1e327022b373f05b560974e2611cbd6a1",
+      "candidate_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "inventory_present": true,
+      "behavior_verified": false,
+      "oracle": {
+        "type": "clause_derived_decision_table",
+        "independent_facts": ["v1 permits seven days through its effective end.", "v2 permits five days from July 1.", "Unavailable items are denied even when an exception is requested.", "Gaps, overlaps, or missing dates require review."],
+        "human_review_required": true
+      },
+      "mutation_targets": ["select wrong version on July 1", "allow seven days under v2", "let exception override unavailable status", "derive expected rows from generated code", "claim tests guarantee policy correctness"]
+    },
+    {
+      "skill": "product-discovery",
+      "case_id": "stakeholder-map",
+      "baseline_revision": "47a44d07166b47d8754e535de23526e268b0c994",
+      "candidate_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "inventory_present": true,
+      "behavior_verified": false,
+      "oracle": {
+        "type": "stakeholder_coverage_matrix",
+        "independent_facts": ["Include decision-makers, end users, operators/support, downstream consumers, and adjacent system owners.", "Record each role's needs, constraints, conflicts, and inclusion rationale."],
+        "human_review_required": true
+      },
+      "mutation_targets": ["omit downstream billing-data consumers", "omit adjacent integration owners", "list names without needs or constraints", "invent interview findings", "substitute an arbitrary department list for inclusion criteria"]
+    },
+    {
+      "skill": "raleigh",
+      "case_id": "fire-report-arcgis-first",
+      "baseline_revision": "3eb7bd4096a8b3d2f7f3a27f52b2b617fd8a6b31",
+      "candidate_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "inventory_present": true,
+      "behavior_verified": false,
+      "oracle": {
+        "type": "deterministic_fixture",
+        "independent_facts": ["Use exact-date fire reports from the authoritative ArcGIS past-month service first.", "Label ArcGIS results and warn the rolling feed may lag; do not claim completeness."],
+        "executable_checks": ["raleigh/tests/test_raleigh.py::FireReportTests.test_exact_date_query_is_bounded_and_selective", "raleigh/tests/test_raleigh.py::FireReportTests.test_recent_lag_fallback_requires_both_flags"],
+        "human_review_required": true
+      },
+      "mutation_targets": ["switch to fallback before ArcGIS", "drop exact date", "claim all reports or completeness", "use insecure fallback without explicit acknowledgement", "silently treat empty feed as no incidents"]
+    },
+    {
+      "skill": "system-one",
+      "case_id": "selective-judge-confident-unsupported",
+      "baseline_revision": "6384b6c1e327022b373f05b560974e2611cbd6a1",
+      "candidate_revision": "20ff7c0beb8241f085383927a567d36a0bccd040",
+      "inventory_present": true,
+      "behavior_verified": false,
+      "oracle": {
+        "type": "judge_qualification_facts",
+        "independent_facts": ["52.5% accuracy and AUROC 0.518 show weak error discrimination on the stated workload.", "Mean maximum probability 0.90 is not evidence of calibration or safe acceptance.", "Obtain missing task evidence or route to review regardless of confidence.", "Repeated voting is a separate policy requiring correlated-error and full-cost evaluation."],
+        "human_review_required": true
+      },
+      "mutation_targets": ["accept at a 0.9 confidence threshold", "equate mean confidence with calibration", "treat weak AUROC as useful discrimination", "omit independent labels and risk-coverage", "claim repeated voting fixes correlated errors"]
+    }
+  ],
+  "qualification_gates": [
+    "Verify every baseline and candidate revision and source hash before generation.",
+    "Run deterministic fixture oracles independently of the target skill and expected-output text.",
+    "Keep inventory_present, behavior_verified, human_review, and live-call counts as separate fields.",
+    "Do not claim broad pilot completion or skill improvement until generated answers are reviewed against the pinned source facts and mutation cases."
+  ]
+}

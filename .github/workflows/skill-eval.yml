@@ -118,6 +118,13 @@ jobs:
         run: python3 system-one/scripts/test_jev_teacher_source.py
       - name: Test complete changed-skill selection
         run: python3 eval_runner/tests/test_selection.py
+      - name: Test matched fair-pair inputs and judgment-only evidence
+        run: >-
+          python3 -m pytest -q --no-cov
+          eval_runner/tests/test_fair_pairing.py
+          eval_runner/tests/test_fair_pilot_oracles.py
+          eval_runner/tests/test_evidence_contract.py
+          eval_runner/tests/test_reference_inputs.py
 
   paired-eval-smoke:
     if: github.event_name != 'workflow_dispatch'
@@ -283,6 +290,10 @@ jobs:
                   print("The selected eval case is not present in the manifest.", file=sys.stderr)
                   raise SystemExit(1)
               evidence["expected_cases"][skill] = [case_id]
+              if skill in evidence["judgment_context"]:
+                  evidence["judgment_context"][skill] = {
+                      case_id: evidence["judgment_context"][skill][case_id]
+                  } if case_id in evidence["judgment_context"][skill] else {}
           output = Path("eval-output-model/selection.json")
           output.parent.mkdir(parents=True, exist_ok=True)
           output.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")

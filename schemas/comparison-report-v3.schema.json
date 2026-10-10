@@ -21,6 +21,11 @@
     "report_id": {"type": "string", "format": "uuid"},
     "generated_at": {"type": "string", "format": "date-time"},
     "skill_name": {"type": "string", "minLength": 1},
+    "comparison_mode": {
+      "type": "string",
+      "enum": ["skill_vs_no_skill", "pinned_skill_vs_skill"],
+      "description": "Distinguishes the no-skill diagnostic from a comparison of two pinned skill snapshots."
+    },
     "case_id": {
       "type": "string",
       "minLength": 1,

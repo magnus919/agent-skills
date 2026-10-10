@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import sys
@@ -101,6 +102,57 @@ class SelectionTests(unittest.TestCase):
             manifest.write_text(json.dumps({"evals": [case, case]}), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "unique case IDs"):
                 selection_evidence(select(["alpha/evals/evals.json"], 5), root)
+
+    def test_nested_skill_changes_select_the_deepest_real_skill_root(self):
+        root = Path(__file__).resolve().parents[2]
+        paths = [
+            "tailscale/skills/headscale-deploy/SKILL.md",
+            "workflow-architect/skills/bundle-builder/references/guide.md",
+        ]
+        self.assertEqual(
+            manifests_for_paths(paths, root),
+            [
+                "tailscale/skills/headscale-deploy/evals/evals.json",
+                "workflow-architect/skills/bundle-builder/evals/evals.json",
+            ],
+        )
+
+    def test_nested_selection_evidence_records_root_and_full_manifest_hash(self):
+        root = Path(__file__).resolve().parents[2]
+        manifest = "tailscale/skills/headscale-deploy/evals/evals.json"
+        evidence = selection_evidence(select([manifest], 1), root)
+        self.assertEqual(
+            evidence["expected_cases"]["headscale-deploy"],
+            evidence["skill_roots"][0]["case_ids"],
+        )
+        self.assertEqual(
+            evidence["skill_roots"][0]["skill_root"], "tailscale/skills/headscale-deploy"
+        )
+        self.assertEqual(evidence["skill_roots"][0]["manifest"], manifest)
+        self.assertRegex(evidence["skill_roots"][0]["manifest_sha256"], r"^[a-f0-9]{64}$")
+
+    def test_judgment_context_pins_task_and_sources_without_expected_labels(self):
+        root = Path(__file__).resolve().parents[2]
+        manifest = "spec-driven-development/evals/evals.json"
+        evidence = selection_evidence(select([manifest], 1), root)
+        case_id = "policy-translation-fidelity"
+        context = evidence["judgment_context"]["spec-driven-development"][case_id]
+        self.assertEqual(
+            hashlib.sha256(context["task_prompt"].encode()).hexdigest(),
+            context["task_input_sha256"],
+        )
+        self.assertIn("July 1", context["task_prompt"])
+        self.assertTrue(
+            any(
+                source["path"] == "references/executable-business-policy.md"
+                for source in context["authoritative_sources"]
+            )
+        )
+        serialized = json.dumps(context)
+        self.assertNotIn("expected_observable_outcomes", serialized)
+        self.assertNotIn("prohibited_behavior", serialized)
+        self.assertNotIn("required_evidence", serialized)
+        self.assertNotIn("PRIVATE", serialized)
 
 
 if __name__ == "__main__":

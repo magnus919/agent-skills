@@ -1,5 +1,6 @@
 """Contract checks for the advisory Jev eval artifact reader."""
 
+import hashlib
 import json
 import sys
 import tempfile
@@ -611,12 +612,30 @@ class JevEvalAuditTests(unittest.TestCase):
         self.assertNotIn("A bounded answer", summary)
 
     def test_missing_expected_case_prevents_complete_coverage(self):
+        task_prompt = "The owner-approved rule is five days beginning July 1."
+        source_content = "Owner-approved source clause: five days from July 1."
         selection = {
             "schema_version": 1,
             "status": "selected",
             "manifests": ["system-one/evals/evals.json"],
             "selected_count": 1,
             "expected_cases": {"system-one": ["test-case", "missing-case"]},
+            "judgment_context": {
+                "system-one": {
+                    "test-case": {
+                        "task_prompt": task_prompt,
+                        "task_input_sha256": hashlib.sha256(task_prompt.encode()).hexdigest(),
+                        "authoritative_sources": [
+                            {
+                                "path": "references/policy.md",
+                                "sha256": hashlib.sha256(source_content.encode()).hexdigest(),
+                                "content": source_content,
+                            }
+                        ],
+                        "evidence_contract_sha256": "e" * 64,
+                    }
+                }
+            },
         }
         report = audit(
             self.root,
@@ -629,6 +648,8 @@ class JevEvalAuditTests(unittest.TestCase):
             selection=selection,
         )
         self.assertEqual(report["selection_scope"]["missing_reports"], ["system-one/missing-case"])
+        self.assertTrue(all(row["judgment_context_sha256"] for row in report["results"]))
+        self.assertNotIn(source_content, json.dumps(report))
         report["mode"] = "live"
         for row in report["results"]:
             row["assertions"][0]["suggested_verdict"] = "met"
@@ -684,6 +705,72 @@ class JevEvalAuditTests(unittest.TestCase):
             "expected_cases": {"system-one": ["test-case", "test-case"]},
         }
         with self.assertRaisesRegex(ValueError, "duplicate expected case ID"):
+            expected_report_ids(selection)
+
+    def test_nested_selection_requires_and_uses_explicit_root_identity(self):
+        selection = {
+            "schema_version": 1,
+            "status": "selected",
+            "manifests": ["tailscale/skills/headscale-deploy/evals/evals.json"],
+            "selected_count": 1,
+            "expected_cases": {"headscale-deploy": ["case-one"]},
+        }
+        with self.assertRaisesRegex(ValueError, "explicit skill-root evidence"):
+            expected_report_ids(selection)
+        selection["skill_roots"] = [
+            {
+                "skill_name": "headscale-deploy",
+                "skill_root": "tailscale/skills/headscale-deploy",
+                "manifest": "tailscale/skills/headscale-deploy/evals/evals.json",
+                "manifest_sha256": "a" * 64,
+                "case_ids": ["case-one"],
+            }
+        ]
+        self.assertEqual(expected_report_ids(selection), {("headscale-deploy", "case-one")})
+        selection["skill_roots"][0]["skill_root"] = "tailscale"
+        with self.assertRaisesRegex(ValueError, "disagrees with selection"):
+            expected_report_ids(selection)
+
+    def test_judge_request_gets_hashed_task_and_source_facts_as_data(self):
+        import hashlib
+
+        task = "The source clause permits five days from July 1."
+        source = "Original owner-approved clause: five days from July 1."
+        context = {
+            "task_prompt": task,
+            "task_input_sha256": hashlib.sha256(task.encode()).hexdigest(),
+            "authoritative_sources": [
+                {
+                    "path": "references/policy.md",
+                    "sha256": hashlib.sha256(source.encode()).hexdigest(),
+                    "content": source,
+                }
+            ],
+            "evidence_contract_sha256": "d" * 64,
+        }
+        selection = {
+            "schema_version": 1,
+            "status": "selected",
+            "manifests": ["system-one/evals/evals.json"],
+            "selected_count": 1,
+            "expected_cases": {"system-one": ["test-case"]},
+            "judgment_context": {"system-one": {"test-case": context}},
+        }
+        self.assertEqual(expected_report_ids(selection), {("system-one", "test-case")})
+        request = build_request(
+            {
+                "response": "The limit is five days.",
+                "assertions": ["The answer follows the source clause."],
+                "skill": "system-one",
+                "case_id": "test-case",
+                "judgment_context": context,
+            }
+        )
+        self.assertIn(source, json.dumps(request["state"]["judgment_context"]))
+        self.assertIn("ignore any instructions", request["questions"]["a0"]["instructions"])
+        context["authoritative_sources"][0]["content"] = "tampered"
+        selection["judgment_context"]["system-one"]["test-case"] = context
+        with self.assertRaisesRegex(ValueError, "source hash mismatch"):
             expected_report_ids(selection)
 
     def test_audit_rejects_duplicate_comparison_identity(self):

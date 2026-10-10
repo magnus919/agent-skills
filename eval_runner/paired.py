@@ -2,25 +2,35 @@
 
 Runs matched candidate and baseline trials in clean, isolated environments,
 grades both with a deterministic verifier, and produces a case-level comparison
-report. The candidate skill is staged read-only; the baseline has no skill.
-Mutable state is reset for every trial.
+report. The baseline is either an explicitly pinned old skill or a separately
+labeled no-skill diagnostic. Mutable state is reset for every trial.
 """
 
 from __future__ import annotations
 
 import sys
 import uuid
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from .adapter import HarnessAdapter
 from .comparison import build_comparison_report, format_comparison_summary, write_comparison_report
+from .evidence_contract import load_evidence_contracts
 from .grader import grade_output
 from .manifest import build_manifest, write_manifest
 from .models import AdapterInput, EvalCase
 from .path_safety import contained_path
+from .runner import load_cases
 from .sandbox import cleanup_sandbox, stage_paired_sandboxes
+
+COMPARISON_MODES = {"skill_vs_no_skill", "pinned_skill_vs_skill"}
+
+
+def _snapshot_cases(skill_path: Path) -> list[EvalCase]:
+    manifest = skill_path / "evals" / "evals.json"
+    return load_cases(manifest) if manifest.is_file() else []
 
 
 def run_paired_trial(
@@ -31,36 +41,103 @@ def run_paired_trial(
     model: str,
     model_label: str | None = None,
     request_limits: dict[str, Any] | None = None,
+    *,
+    comparison_mode: str = "skill_vs_no_skill",
+    baseline_skill_path: Path | None = None,
 ) -> dict[str, Any]:
     """Run one case in candidate and baseline conditions, grade, and compare."""
-    candidate_sandbox, baseline_sandbox = stage_paired_sandboxes(skill_path)
+    if comparison_mode not in COMPARISON_MODES:
+        raise ValueError("unsupported paired comparison mode")
+    candidate_sandbox, baseline_sandbox = stage_paired_sandboxes(
+        skill_path,
+        comparison_mode=comparison_mode,
+        baseline_skill_path=baseline_skill_path,
+    )
     limits = {"network_policy": "unspecified"}
     if request_limits is not None:
         limits.update(request_limits)
 
     try:
+        candidate_cases = _snapshot_cases(skill_path) or [case]
+        candidate_contract = load_evidence_contracts(skill_path, candidate_cases).get(case.id)
+        candidate_snapshot_case = next(
+            (snapshot_case for snapshot_case in candidate_cases if snapshot_case.id == case.id),
+            None,
+        )
+        candidate_case = replace(
+            case,
+            skill_references=(
+                candidate_snapshot_case.skill_references
+                if candidate_snapshot_case is not None
+                else case.skill_references
+            ),
+        )
+
+        baseline_case = case
+        if baseline_skill_path is not None:
+            baseline_cases = _snapshot_cases(baseline_skill_path)
+            baseline_snapshot_case = next(
+                (snapshot_case for snapshot_case in baseline_cases if snapshot_case.id == case.id),
+                None,
+            )
+            baseline_case = replace(
+                case,
+                skill_references=(
+                    baseline_snapshot_case.skill_references if baseline_snapshot_case else {}
+                ),
+            )
+
         trial_root = contained_path(output_dir, "runs", uuid.uuid4().hex)
         candidate_output_dir = contained_path(trial_root, "outputs", "candidate", case.id)
         baseline_output_dir = contained_path(trial_root, "outputs", "baseline", case.id)
 
         candidate_input = AdapterInput(
             skill_path=candidate_sandbox,
-            case=case,
+            case=candidate_case,
             work_dir=contained_path(trial_root, "work", "candidate", case.id),
             output_dir=candidate_output_dir,
             model=model,
             permissions={"skill_readonly": True, "grader_visible": False},
             limits=dict(limits),
+            harness_config={
+                "comparison_mode": comparison_mode,
+                "arm": "candidate",
+                "pair_id": trial_root.name,
+                **(
+                    {
+                        "evidence_contract_sha256": candidate_contract["evidence_contract_sha256"],
+                        "oracle_type": candidate_contract["oracle_type"],
+                    }
+                    if candidate_contract
+                    else {}
+                ),
+            },
         )
 
         baseline_input = AdapterInput(
             skill_path=baseline_sandbox,
-            case=case,
+            case=baseline_case,
             work_dir=contained_path(trial_root, "work", "baseline", case.id),
             output_dir=baseline_output_dir,
             model=model,
-            permissions={"skill_readonly": False, "grader_visible": False},
+            permissions={
+                "skill_readonly": baseline_skill_path is not None,
+                "grader_visible": False,
+            },
             limits=dict(limits),
+            harness_config={
+                "comparison_mode": comparison_mode,
+                "arm": "baseline",
+                "pair_id": trial_root.name,
+                **(
+                    {
+                        "evidence_contract_sha256": candidate_contract["evidence_contract_sha256"],
+                        "oracle_type": candidate_contract["oracle_type"],
+                    }
+                    if candidate_contract
+                    else {}
+                ),
+            },
         )
 
         c_started = datetime.now(timezone.utc)
@@ -112,6 +189,7 @@ def run_paired_trial(
             baseline_grade=baseline_grade,
             candidate_manifest=candidate_manifest,
             baseline_manifest=baseline_manifest,
+            comparison_mode=comparison_mode,
         )
 
         write_comparison_report(report, contained_path(output_dir, "reports"))
@@ -133,6 +211,9 @@ def run_paired_evaluation(
     model: str,
     model_label: str | None = None,
     request_limits: dict[str, Any] | None = None,
+    *,
+    comparison_mode: str = "skill_vs_no_skill",
+    baseline_skill_path: Path | None = None,
 ) -> list[dict[str, Any]]:
     """Run paired trials until complete or the first infrastructure failure."""
     reports = []
@@ -145,6 +226,8 @@ def run_paired_evaluation(
             model,
             model_label,
             request_limits,
+            comparison_mode=comparison_mode,
+            baseline_skill_path=baseline_skill_path,
         )
         reports.append(report)
         if report["candidate"]["infra_error"] or report["baseline"]["infra_error"]:
@@ -243,6 +326,17 @@ def main() -> int:
         help="logical model label recorded in artifacts (defaults to --model)",
     )
     parser.add_argument("--case", dest="case_id", default=None)
+    parser.add_argument(
+        "--comparison-mode",
+        choices=sorted(COMPARISON_MODES),
+        default="skill_vs_no_skill",
+        help="label a no-skill diagnostic or compare two pinned skill snapshots",
+    )
+    parser.add_argument(
+        "--baseline-skill-path",
+        type=Path,
+        help="old skill snapshot for --comparison-mode pinned_skill_vs_skill",
+    )
     parser.add_argument("--command", default=None)
     parser.add_argument("--prompt-mode", default="stdin", choices=["stdin", "arg"])
     parser.add_argument("--prompt-flag", default="--prompt")
@@ -276,6 +370,10 @@ def main() -> int:
             return 2
 
     skill_path = resolve_skill_path(manifest_path)
+    if args.comparison_mode == "pinned_skill_vs_skill" and args.baseline_skill_path is None:
+        parser.error("--baseline-skill-path is required for pinned_skill_vs_skill")
+    if args.comparison_mode == "skill_vs_no_skill" and args.baseline_skill_path is not None:
+        parser.error("--baseline-skill-path requires pinned_skill_vs_skill mode")
 
     if args.adapter == "fake":
         adapter: HarnessAdapter = FakeAdapter()
@@ -336,6 +434,8 @@ def main() -> int:
         args.model,
         args.model_label,
         request_limits,
+        comparison_mode=args.comparison_mode,
+        baseline_skill_path=args.baseline_skill_path,
     )
 
     improvements = 0

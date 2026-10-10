@@ -1,9 +1,8 @@
 """OpenAI-compatible API adapter for paired skill evaluation.
 
 Sends the case prompt to an OpenAI-compatible chat completions endpoint.
-When a skill is present (SKILL.md exists in skill_path), its content is
-injected as a system message. The baseline condition (empty skill_path)
-sends only the user prompt.
+Every arm receives the same neutral system wrapper; its skill-context slot
+contains the pinned skill and references or is empty for a no-skill diagnostic.
 """
 
 from __future__ import annotations
@@ -37,6 +36,17 @@ _HARD_QUOTA_ERROR_CODES = {
     "project_spend_limit_exceeded",
     "project_usage_limit_exceeded",
 }
+NEUTRAL_SYSTEM_WRAPPER = (
+    "Answer the user's task directly. Use supplied skill context only as optional task guidance; "
+    "the context may be empty."
+)
+
+
+def _canonical_hash(value: Any) -> str:
+    encoded = json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode(
+        "utf-8"
+    )
+    return hashlib.sha256(encoded).hexdigest()
 
 
 @dataclass
@@ -164,25 +174,46 @@ class OpenAICompatAdapter:
         return "0.2.0"
 
     def _build_input(self, input: AdapterInput) -> tuple[list[dict[str, str]], dict[str, Any]]:
-        messages: list[dict[str, str]] = []
         skill_content, provenance = build_context(
             input.skill_path, input.case.skill_references, self._max_skill_chars
         )
-        if skill_content:
-            messages.append(
-                {
-                    "role": "system",
-                    "content": (
-                        "You are an AI assistant with expertise from the following skill. "
-                        "Use the knowledge, frameworks, and methodology described in the skill "
-                        "to answer the user's question directly. Do NOT show commands or scripts "
-                        "to run — instead, apply the framework yourself and provide the answer "
-                        "with your reasoning.\n\n"
-                        f"<skill>\n{skill_content}\n</skill>"
-                    ),
-                }
-            )
-        messages.append({"role": "user", "content": input.case.prompt})
+        system_message = (
+            f"{NEUTRAL_SYSTEM_WRAPPER}\n\n<skill_context>\n{skill_content or ''}\n</skill_context>"
+        )
+        messages: list[dict[str, str]] = [
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": input.case.prompt},
+        ]
+        harness_config = input.harness_config
+        provenance["comparison"] = harness_config.get("comparison_mode", "skill_vs_no_skill")
+        if harness_config.get("arm"):
+            provenance["arm"] = harness_config["arm"]
+        if harness_config.get("pair_id"):
+            provenance["pair_id"] = harness_config["pair_id"]
+        if harness_config.get("evidence_contract_sha256"):
+            provenance["evidence_contract_sha256"] = harness_config["evidence_contract_sha256"]
+        if harness_config.get("oracle_type"):
+            provenance["oracle_type"] = harness_config["oracle_type"]
+        provenance["wrapper_sha256"] = hashlib.sha256(
+            NEUTRAL_SYSTEM_WRAPPER.encode("utf-8")
+        ).hexdigest()
+        provenance["task_input_sha256"] = hashlib.sha256(
+            input.case.prompt.encode("utf-8")
+        ).hexdigest()
+        settings = {
+            "base_url": self._base_url,
+            "model": self._model,
+            "max_tokens": self._max_tokens,
+            "temperature": self._temperature,
+            "timeout_seconds": self._timeout_seconds,
+            "max_skill_chars": self._max_skill_chars,
+        }
+        if self._chat_template_kwargs:
+            settings["chat_template_kwargs"] = self._chat_template_kwargs
+        provenance["model_settings_sha256"] = _canonical_hash(settings)
+        provenance["system_message_sha256"] = hashlib.sha256(
+            system_message.encode("utf-8")
+        ).hexdigest()
         provenance["messages_sha256"] = hashlib.sha256(
             json.dumps(messages, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()
         ).hexdigest()

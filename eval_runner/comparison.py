@@ -22,6 +22,7 @@ def build_comparison_report(
     baseline_grade: GradeResult,
     candidate_manifest: dict[str, Any],
     baseline_manifest: dict[str, Any],
+    comparison_mode: str = "skill_vs_no_skill",
 ) -> dict[str, Any]:
     candidate_passed = candidate_grade.passed
     baseline_passed = baseline_grade.passed
@@ -50,6 +51,7 @@ def build_comparison_report(
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "skill_name": skill_name,
         "case_id": case_id,
+        "comparison_mode": comparison_mode,
         "candidate": {
             "trial_id": candidate_manifest.get("trial_id", ""),
             "execution_status": candidate_grade.execution_status,

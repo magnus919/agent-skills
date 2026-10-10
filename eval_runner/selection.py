@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Literal, TypedDict
 
+from .evidence_contract import build_judgment_context, load_evidence_contracts
 from .runner import load_cases
 
 
@@ -29,13 +31,24 @@ PATHS = ("*/**",)
 def manifests_for_paths(paths: list[str], root: Path) -> list[str]:
     skills = set()
     for path in paths:
-        parts = Path(path).parts
-        if len(parts) < 2 or not SKILL_NAME.fullmatch(parts[0]):
+        relative = PurePosixPath(path)
+        parts = relative.parts
+        if relative.is_absolute() or len(parts) < 2 or any(part in {".", ".."} for part in parts):
             continue
-        skill_root = root / parts[0]
-        if (skill_root / "SKILL.md").is_file() and (skill_root / "evals" / "evals.json").is_file():
-            skills.add(parts[0])
-    return [f"{skill}/evals/evals.json" for skill in sorted(skills)]
+        # A path may be nested under a valid skill (for example
+        # tailscale/skills/headscale-deploy). Attribute it to the deepest
+        # manifest root so a child skill is not silently represented by its
+        # parent collection.
+        for depth in range(len(parts) - 1, 0, -1):
+            prefix = parts[:depth]
+            if not SKILL_NAME.fullmatch(prefix[-1]):
+                continue
+            skill_root = root.joinpath(*prefix)
+            manifest = skill_root / "evals" / "evals.json"
+            if (skill_root / "SKILL.md").is_file() and manifest.is_file():
+                skills.add("/".join((*prefix, "evals", "evals.json")))
+                break
+    return sorted(skills)
 
 
 def changed_paths(root: Path, base: str, head: str) -> list[str]:
@@ -93,14 +106,43 @@ def render_summary(selection: Selection) -> str:
 def selection_evidence(selection: Selection, root: Path) -> dict[str, object]:
     """Freeze expected case IDs before generation so downstream coverage has a denominator."""
     expected_cases: dict[str, list[str]] = {}
+    skill_roots: list[dict[str, object]] = []
+    judgment_context: dict[str, dict[str, dict[str, object]]] = {}
     for manifest in selection["manifests"]:
-        skill = Path(manifest).parts[0]
-        cases = load_cases(root / manifest)
+        manifest_path = root / manifest
+        skill_root = manifest_path.parent.parent
+        skill = skill_root.name
+        if skill in expected_cases:
+            raise ValueError(f"selected skills must have unique names: {skill}")
+        cases = load_cases(manifest_path)
         ids = [case.id for case in cases]
         if not ids or len(ids) != len(set(ids)):
             raise ValueError(f"{manifest} must have nonempty, unique case IDs")
         expected_cases[skill] = ids
-    return {"schema_version": 1, **selection, "expected_cases": expected_cases}
+        contracts = load_evidence_contracts(skill_root, cases)
+        if contracts:
+            judgment_context[skill] = {
+                case.id: build_judgment_context(skill_root, case, contracts[case.id])
+                for case in cases
+                if case.id in contracts
+            }
+        manifest_hash = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+        skill_roots.append(
+            {
+                "skill_name": skill,
+                "skill_root": skill_root.relative_to(root).as_posix(),
+                "manifest": manifest,
+                "manifest_sha256": manifest_hash,
+                "case_ids": ids,
+            }
+        )
+    return {
+        "schema_version": 1,
+        **selection,
+        "expected_cases": expected_cases,
+        "skill_roots": skill_roots,
+        "judgment_context": judgment_context,
+    }
 
 
 def main() -> int:

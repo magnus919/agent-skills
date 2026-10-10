@@ -1,4 +1,4 @@
-"""Opt-in, bounded reference context for skill-versus-no-skill API trials."""
+"""Opt-in, bounded reference context for paired API trials."""
 
 from __future__ import annotations
 
