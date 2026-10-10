@@ -1,5 +1,7 @@
 """Deterministic positive controls and mutations for pilot oracle rules."""
 
+import pytest
+
 from eval_runner.fair_pilot_oracles import (
     business_transition_oracle,
     judge_qualification_oracle,
@@ -158,6 +160,157 @@ def test_policy_oracle_covers_boundaries_precedence_and_ambiguous_dates():
             item_available=True,
             exception_requested=False,
             versions=gap,
+        )
+        == "review"
+    )
+
+
+# Expected results below are transcribed from the source contract's validation order and L1-L4
+# clauses. The application evaluator is not used as the oracle for these rows.
+@pytest.mark.parametrize("item_available", [True, False])
+@pytest.mark.parametrize("requested_days", [True, False, 1.5, "2", None, 0, -1])
+def test_policy_oracle_reviews_invalid_days_before_applying_rules(item_available, requested_days):
+    assert (
+        policy_translation_oracle(
+            effective_date="2026-06-30",
+            requested_days=requested_days,
+            item_available=item_available,
+            exception_requested=False,
+        )
+        == "review"
+    )
+
+
+@pytest.mark.parametrize("item_available", [True, False])
+@pytest.mark.parametrize("exception_requested", [None, 0, 1, "", "yes"])
+def test_policy_oracle_reviews_non_boolean_exception_before_applying_rules(
+    item_available, exception_requested
+):
+    assert (
+        policy_translation_oracle(
+            effective_date="2026-06-30",
+            requested_days=2,
+            item_available=item_available,
+            exception_requested=exception_requested,
+        )
+        == "review"
+    )
+
+
+@pytest.mark.parametrize("item_available", [None, 0, 1, "yes"])
+def test_policy_oracle_reviews_non_boolean_availability(item_available):
+    assert (
+        policy_translation_oracle(
+            effective_date="2026-06-30",
+            requested_days=2,
+            item_available=item_available,
+            exception_requested=False,
+        )
+        == "review"
+    )
+
+
+@pytest.mark.parametrize(
+    "effective_date,requested_days,expected",
+    [
+        ("2025-12-31", 1, "review"),
+        ("2026-01-01", 7, "allow"),
+        ("2026-06-30", 7, "allow"),
+        ("2026-07-01", 5, "allow"),
+    ],
+)
+def test_policy_oracle_observes_version_start_and_half_open_boundary(
+    effective_date, requested_days, expected
+):
+    assert (
+        policy_translation_oracle(
+            effective_date=effective_date,
+            requested_days=requested_days,
+            item_available=True,
+            exception_requested=False,
+        )
+        == expected
+    )
+
+
+def test_policy_oracle_validates_date_and_selects_policy_before_unavailable_rule():
+    assert (
+        policy_translation_oracle(
+            effective_date=None,
+            requested_days=1,
+            item_available=False,
+            exception_requested=False,
+        )
+        == "review"
+    )
+    assert (
+        policy_translation_oracle(
+            effective_date="2025-12-31",
+            requested_days=1,
+            item_available=False,
+            exception_requested=False,
+        )
+        == "review"
+    )
+
+
+def test_policy_oracle_reviews_even_an_in_limit_exception():
+    assert (
+        policy_translation_oracle(
+            effective_date="2026-06-30",
+            requested_days=2,
+            item_available=True,
+            exception_requested=True,
+        )
+        == "review"
+    )
+
+
+@pytest.mark.parametrize("maximum", [None, True, 7.0, "7", 0, -1])
+def test_policy_oracle_reviews_malformed_or_nonpositive_policy_limits(maximum):
+    versions = (
+        {
+            "version": "v1",
+            "starts": "2026-01-01",
+            "ends": "2026-07-01",
+            "max_days": maximum,
+        },
+    )
+    assert (
+        policy_translation_oracle(
+            effective_date="2026-06-30",
+            requested_days=2,
+            item_available=True,
+            exception_requested=False,
+            versions=versions,
+        )
+        == "review"
+    )
+
+
+def test_policy_oracle_rejects_comparison_overriding_int_policy_limit():
+    class MalformedMaximum(int):
+        def __le__(self, other):
+            return False
+
+        def __ge__(self, other):
+            return True
+
+    versions = (
+        {
+            "version": "v1",
+            "starts": "2026-01-01",
+            "ends": "2026-07-01",
+            "max_days": MalformedMaximum(-1),
+        },
+    )
+    assert (
+        policy_translation_oracle(
+            effective_date="2026-06-30",
+            requested_days=8,
+            item_available=True,
+            exception_requested=False,
+            versions=versions,
         )
         == "review"
     )
