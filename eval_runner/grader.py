@@ -20,6 +20,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 
+from .assertion_syntax import AssertionSyntax, classify_assertion
 from .models import AdapterOutput, ExitStatus
 
 
@@ -79,12 +80,19 @@ class GradeResult:
 
 
 def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
-    if ":" not in assertion:
+    parsed = classify_assertion(assertion)
+    if parsed.syntax == AssertionSyntax.PROSE:
         return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "no recognized pattern")
+    if parsed.syntax == AssertionSyntax.MALFORMED_EXACT:
+        return AssertionResult(
+            assertion, AssertionVerdict.MANUAL_REVIEW, "malformed exact assertion"
+        )
+    if parsed.syntax == AssertionSyntax.UNKNOWN_BINDING:
+        return AssertionResult(
+            assertion, AssertionVerdict.MANUAL_REVIEW, f"unknown assertion kind '{parsed.kind}'"
+        )
 
-    kind, _, value = assertion.partition(":")
-    kind = kind.strip().lower()
-    value = value.strip()
+    kind, value = parsed.kind, parsed.value
 
     if kind == "response_contains":
         if not value:

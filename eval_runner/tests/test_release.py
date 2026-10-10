@@ -71,9 +71,28 @@ def _qualified_case_results(cases: list[dict]) -> list[dict]:
     return qualified
 
 
-def _frozen_manifest_bytes(case_ids: list[str]) -> bytes:
+def _frozen_manifest_bytes(
+    case_ids: list[str], source_case_sets: dict[str, str | None], skill_name: str
+) -> bytes:
     return json.dumps(
-        {"schema_version": 1, "evals": [{"id": case_id} for case_id in case_ids]},
+        {
+            "schema_version": 1,
+            "skill_name": skill_name,
+            "evals": [
+                {
+                    "id": case_id,
+                    "prompt": f"Evaluate {case_id}",
+                    "expected_output": "A concrete response",
+                    "assertions": ["response_contains:concrete"],
+                    **(
+                        {"case_set": source_case_sets[case_id]}
+                        if source_case_sets.get(case_id) is not None
+                        else {}
+                    ),
+                }
+                for case_id in case_ids
+            ],
+        },
         sort_keys=True,
         separators=(",", ":"),
     ).encode("utf-8")
@@ -83,13 +102,18 @@ def _freeze_snapshot(
     required_case_sets: dict[str, str],
     *,
     manifest_case_ids: list[str] | None = None,
+    source_case_sets: dict[str, str | None] | None = None,
+    source_skill_name: str = "test-skill",
+    manifest_bytes_override: bytes | None = None,
     dataset_hash_override: str | None = None,
     candidate_tree_hash: str = "candidate",
     baseline_tree_hash: str = "baseline",
     grader_versions: dict[str, str] | None = None,
 ) -> FreezeSnapshot:
-    manifest_bytes = _frozen_manifest_bytes(
-        manifest_case_ids if manifest_case_ids is not None else list(required_case_sets)
+    manifest_bytes = manifest_bytes_override or _frozen_manifest_bytes(
+        manifest_case_ids if manifest_case_ids is not None else list(required_case_sets),
+        source_case_sets if source_case_sets is not None else required_case_sets,
+        source_skill_name,
     )
     hashed_dataset = hashlib.sha256(manifest_bytes).hexdigest()[:16]
     return FreezeSnapshot(
@@ -100,6 +124,7 @@ def _freeze_snapshot(
         randomization_seed=42,
         required_case_sets=required_case_sets,
         dataset_manifest_bytes=manifest_bytes,
+        skill_name="test-skill",
     )
 
 
@@ -339,6 +364,58 @@ def test_release_decision_holds_when_roster_is_a_subset_of_frozen_dataset():
 
     assert decision["outcome"] == "HOLD"
     assert "required case roster does not match frozen dataset manifest" in decision["reasons"][0]
+
+
+def test_release_decision_holds_when_source_case_set_was_relabelled():
+    freeze = _freeze_snapshot({"release-one": "release"}, source_case_sets={"release-one": None})
+    assert freeze.dataset_binding_error == "required case sets do not match frozen dataset manifest"
+    decision = compute_release_decision(
+        _qualified_case_results([{"case_id": "release-one", "case_set": "release"}]),
+        [],
+        CalibrationRecord(),
+        freeze=freeze,
+    )
+    assert decision["outcome"] == "HOLD"
+    assert "required case sets" in decision["reasons"][0]
+
+
+def test_release_decision_holds_for_invalid_source_manifest_even_with_matching_hash():
+    invalid_bytes = json.dumps(
+        {"schema_version": 1, "skill_name": "test-skill", "evals": [{"id": "release-one"}]}
+    ).encode()
+    freeze = _freeze_snapshot({"release-one": "release"}, manifest_bytes_override=invalid_bytes)
+    assert freeze.dataset_binding_error == (
+        "frozen dataset manifest does not validate against evals v1 schema"
+    )
+    assert compute_release_decision([], [], CalibrationRecord(), freeze=freeze)["outcome"] == "HOLD"
+
+
+def test_release_report_holds_when_source_or_outer_skill_differs():
+    source_mismatch = _freeze_snapshot(
+        {"release-one": "release"}, source_skill_name="different-skill"
+    )
+    assert source_mismatch.dataset_binding_error == (
+        "frozen dataset skill_name does not match freeze skill_name"
+    )
+    assert (
+        compute_release_decision([], [], CalibrationRecord(), freeze=source_mismatch)["outcome"]
+        == "HOLD"
+    )
+
+    freeze = _freeze_snapshot({"release-one": "release"})
+    report = build_release_report(
+        skill_name="different-skill",
+        freeze=freeze,
+        case_results=[],
+        rubric_results=[],
+        pairwise_results=[],
+        calibration=CalibrationRecord(),
+    )
+    assert report["release_decision"] == {
+        "outcome": "HOLD",
+        "reasons": ["frozen dataset skill_name does not match release skill_name"],
+        "hard_gate_violations": [],
+    }
 
 
 def test_release_decision_holds_when_frozen_dataset_hash_mismatches_manifest():

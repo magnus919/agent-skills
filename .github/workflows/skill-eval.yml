@@ -26,6 +26,22 @@ on:
         type: boolean
         required: false
         default: false
+      authorize_jev_egress:
+        description: Authorize sending generated responses to Jev after checking the shared call budget
+        type: boolean
+        required: false
+        default: false
+      jev_max_calls:
+        description: Maximum Jev attempts for this manual run; count these against the shared budget
+        type: choice
+        required: false
+        options:
+          - '2'
+          - '4'
+          - '8'
+          - '16'
+          - '22'
+        default: '2'
       eval_skill:
         description: Skill manifest to evaluate during a manual model smoke
         type: choice
@@ -150,9 +166,8 @@ jobs:
           retention-days: 7
 
   paired-eval-model:
-    if: >-
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.run_model_smoke)
+    # Live generation requires a deliberate dispatch; main pushes run deterministic checks.
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.run_model_smoke
     runs-on: [self-hosted, linux, agent-skills-eval]
     needs: paired-eval-tests
     steps:
@@ -328,9 +343,9 @@ jobs:
     # Advisory only: never changes a paired-eval or required validation verdict.
     # Model evals upload artifacts even on failure; audit those failures too.
     if: >-
-      always() && github.ref == 'refs/heads/main' &&
-      (github.event_name == 'push' ||
-       (github.event_name == 'workflow_dispatch' && inputs.run_model_smoke))
+      always() && github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' && inputs.run_model_smoke &&
+      inputs.authorize_jev_egress
     runs-on: ubuntu-latest
     needs: paired-eval-model
     continue-on-error: true
@@ -355,12 +370,17 @@ jobs:
         if: steps.download.outcome == 'success'
         env:
           TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          JEV_MAX_CALLS: ${{ inputs.jev_max_calls || '2' }}
         run: |
+          case "$JEV_MAX_CALLS" in
+            2|4|8|16|22) ;;
+            *) echo "Unsupported Jev call budget" >&2; exit 1 ;;
+          esac
           python3 system-one/scripts/jev_eval_audit.py \
             --reports eval-output-model \
             --selection eval-output-model/selection.json \
             --live \
-            --max-calls 98 \
+            --max-calls "$JEV_MAX_CALLS" \
             --max-assertions 584 \
             --output jev-eval-audit.json \
             --summary-output "$GITHUB_STEP_SUMMARY"

@@ -26,7 +26,7 @@ The coverage report keeps claims separate. `manifest_present` means only that a 
 
 ### Writing useful eval assertions
 
-Our default-branch CI can ask Jev for an **advisory** second opinion on prose assertions in paired skill evals. Design the eval to describe the behavior you want, not to flatter the model. The v1 manifest format has not changed: keep stable case IDs, realistic prompts, a case-level `expected_output`, and observable `assertions`.
+An explicitly dispatched main-branch model smoke can ask Jev for an **advisory** second opinion on prose assertions in paired skill evals. Main pushes and pull requests run deterministic checks without live generation or Jev calls. Jev egress requires separate authorization and a selected per-run call cap; account for each attempt against the shared budget before dispatch. Design the eval to describe the behavior you want, not to flatter the model. The v1 manifest format has not changed: keep stable case IDs, realistic prompts, a case-level `expected_output`, and observable `assertions`.
 
 Avoid a broad assertion such as “Covers private hosting, authentication, readiness, and rollback.” A response can cover three of those and omit the fourth. Write separately checkable claims instead:
 

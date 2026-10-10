@@ -314,6 +314,28 @@ def test_malformed_or_unknown_assertions_remain_unassessed():
     assert not result.evidence_complete
 
 
+def test_colon_prose_and_malformed_machine_syntax_share_grader_boundary():
+    result = grade_output(
+        "c1",
+        [
+            "Summary: explain the decision",
+            "The result includes: an explanation",
+            "response_contains",
+            "environment_state=reservation=confirmed",
+            "custom_metric: >=2",
+        ],
+        AdapterOutput(exit_status=ExitStatus.COMPLETED, response="approved"),
+    )
+    assert [item.detail for item in result.results] == [
+        "no recognized pattern",
+        "no recognized pattern",
+        "malformed exact assertion",
+        "malformed exact assertion",
+        "unknown assertion kind 'custom_metric'",
+    ]
+    assert result.semantic_verdict == "not_assessed"
+
+
 def test_empty_assertion_list_is_not_a_vacuous_pass():
     result = grade_output(
         "c1", [], AdapterOutput(exit_status=ExitStatus.COMPLETED, response="anything")
@@ -842,16 +864,17 @@ def test_nous_key_is_scoped_to_trusted_model_job():
     jobs = workflow["jobs"]
     model_job = jobs["paired-eval-model"]
 
-    assert "github.event_name == 'push'" in model_job["if"]
+    assert "github.event_name == 'push'" not in model_job["if"]
     assert "github.event_name == 'workflow_dispatch'" in model_job["if"]
     assert "github.ref == 'refs/heads/main'" in model_job["if"]
     assert "inputs.run_model_smoke" in model_job["if"]
     assert workflow["jobs"]["paired-eval-smoke"]["if"] == "github.event_name != 'workflow_dispatch'"
     audit_job = workflow["jobs"]["jev-eval-audit"]
-    assert "github.event_name == 'push'" in audit_job["if"]
+    assert "github.event_name == 'push'" not in audit_job["if"]
     assert "github.event_name == 'workflow_dispatch'" in audit_job["if"]
     assert "github.ref == 'refs/heads/main'" in audit_job["if"]
     assert "inputs.run_model_smoke" in audit_job["if"]
+    assert "inputs.authorize_jev_egress" in audit_job["if"]
     endpoint_step = next(
         step for step in model_job["steps"] if step["name"] == "Check model endpoint"
     )
@@ -880,6 +903,10 @@ def test_manual_model_smoke_is_main_only_and_selects_allowlisted_manifest():
     )
     assert "workflow_dispatch" in workflow["on"]
     assert workflow["on"]["workflow_dispatch"]["inputs"]["run_model_smoke"]["type"] == "boolean"
+    jev_inputs = workflow["on"]["workflow_dispatch"]["inputs"]
+    assert jev_inputs["authorize_jev_egress"]["default"] == "false"
+    assert jev_inputs["jev_max_calls"]["options"] == ["2", "4", "8", "16", "22"]
+    assert jev_inputs["jev_max_calls"]["default"] == "2"
     assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_skill"]["type"] == "choice"
     assert workflow["on"]["workflow_dispatch"]["inputs"]["eval_skill"]["options"] == [
         "agent-skills",

@@ -1,14 +1,19 @@
 """Contract checks for the advisory Jev eval artifact reader."""
 
 import json
+import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
+from datetime import datetime, timezone
 from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
 
 import yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
 from jev_eval_audit import (
     _read_json,
     audit,
@@ -21,6 +26,11 @@ from jev_eval_audit import (
     selection_is_complete,
 )
 from jev_eval_benchmark import metrics
+
+from eval_runner.comparison import build_comparison_report, write_comparison_report
+from eval_runner.grader import grade_output
+from eval_runner.manifest import build_manifest
+from eval_runner.models import AdapterInput, AdapterOutput, EvalCase, ExitStatus
 
 
 def sample_report(response="A bounded answer"):
@@ -90,23 +100,71 @@ class JevEvalAuditTests(unittest.TestCase):
             "The scaffold names the required structure: SKILL.md, README.md, and "
             "evals/evals.json for new skills",
         )
-        report = sample_report()
-        for side in ("candidate", "baseline"):
-            report[side]["assertions"] = [
-                {
-                    "assertion": assertion,
-                    "verdict": "manual_review",
-                    "detail": "no recognized pattern",
-                }
-            ]
-        self.path.write_text(json.dumps(report), encoding="utf-8")
+        assertions = [
+            *case["assertions"][:2],
+            "response_contains:approved",
+            "response_contains:",
+            "custom_metric:>=2",
+        ]
+        output = AdapterOutput(exit_status=ExitStatus.COMPLETED, response="approved")
+        grade = grade_output(case["id"], assertions, output)
+        self.assertEqual(
+            [result.detail for result in grade.results],
+            [
+                "no recognized pattern",
+                "no recognized pattern",
+                "",
+                "empty expected value",
+                "unknown assertion kind 'custom_metric'",
+            ],
+        )
+        self.assertEqual(grade.semantic_verdict, "not_assessed")
+        adapter_input = AdapterInput(
+            skill_path=manifest_path.parent.parent,
+            case=EvalCase(
+                id=case["id"],
+                prompt=case["prompt"],
+                expected_output=case["expected_output"],
+                assertions=assertions,
+            ),
+            work_dir=self.root,
+            output_dir=self.root,
+        )
+        run_manifest = build_manifest(
+            adapter_name="fixture",
+            adapter_version="1",
+            harness_name="fixture",
+            harness_version="1",
+            model_provider="fixture",
+            model_id="fixture",
+            adapter_input=adapter_input,
+            adapter_output=output,
+            started_at=datetime.now(timezone.utc),
+            finished_at=datetime.now(timezone.utc),
+        )
+        report = build_comparison_report(
+            skill_name="agent-skills",
+            case_id=case["id"],
+            candidate_grade=grade,
+            baseline_grade=grade,
+            candidate_manifest=run_manifest,
+            baseline_manifest=run_manifest,
+        )
+        self.assertEqual(report["paired_delta"], "insufficient_evidence")
+        (self.root / "agent-skills" / "reports").mkdir(parents=True)
+        written = write_comparison_report(report, self.root / "agent-skills" / "reports")
+        serialized = json.loads(written.read_text(encoding="utf-8"))
+        self.assertEqual(
+            serialized["candidate"]["assertions"][0]["detail"], "no recognized pattern"
+        )
 
         groups, counts = collect_groups(self.root, 24000)
 
-        self.assertEqual(len(groups), 2)
-        self.assertEqual(groups[0]["assertions"], [assertion])
-        self.assertEqual(counts["prose_assertions_seen"], 2)
-        self.assertEqual(counts["skipped_non_prose_manual_assertions"], 0)
+        self.assertEqual(len(groups), 4)
+        self.assertEqual(groups[0]["assertions"], case["assertions"][:2])
+        self.assertEqual(counts["prose_assertions_seen"], 6)
+        self.assertEqual(counts["skipped_non_prose_manual_assertions"], 4)
+        self.assertEqual(counts["exact_assertions_untouched"], 4)
 
     def test_malformed_known_and_unknown_exact_assertions_are_not_prose(self):
         report = sample_report()
@@ -642,17 +700,22 @@ class JevEvalAuditTests(unittest.TestCase):
                 timeout=12.0,
             )
 
-    def test_current_system_one_manifest_fits_ci_audit_budget(self):
+    def test_main_push_cannot_launch_live_jev_and_manual_run_is_bounded(self):
         skill_root = Path(__file__).resolve().parent.parent
-        workflow = (skill_root.parent / ".github" / "workflows" / "skill-eval.yml").read_text(
-            encoding="utf-8"
+        workflow = yaml.load(
+            (skill_root.parent / ".github" / "workflows" / "skill-eval.yml").read_text(
+                encoding="utf-8"
+            ),
+            Loader=yaml.BaseLoader,
         )
-        self.assertIn("--max-calls 98", workflow)
-        self.assertIn("--max-assertions 584", workflow)
-        manifest = json.loads((skill_root / "evals" / "evals.json").read_text(encoding="utf-8"))
-        cases = manifest["evals"]
-        self.assertLessEqual(2 * len(cases), 98)
-        self.assertLessEqual(2 * sum(len(case["assertions"]) for case in cases), 584)
+        jobs = workflow["jobs"]
+        self.assertNotIn("push", jobs["paired-eval-model"]["if"])
+        self.assertNotIn("push", jobs["jev-eval-audit"]["if"])
+        self.assertIn("inputs.authorize_jev_egress", jobs["jev-eval-audit"]["if"])
+        inputs = workflow["on"]["workflow_dispatch"]["inputs"]
+        self.assertEqual(inputs["authorize_jev_egress"]["default"], "false")
+        self.assertEqual(inputs["jev_max_calls"]["options"], ["2", "4", "8", "16", "22"])
+        self.assertLessEqual(max(map(int, inputs["jev_max_calls"]["options"])), 22)
 
 
 if __name__ == "__main__":

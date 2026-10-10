@@ -18,6 +18,7 @@ import random
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
@@ -46,6 +47,7 @@ class FreezeSnapshot:
     frozen_at: str = ""
     required_case_sets: dict[str, str] = field(default_factory=dict)
     dataset_manifest_bytes: bytes | None = field(default=None, repr=False, compare=False)
+    skill_name: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -67,24 +69,32 @@ class FreezeSnapshot:
         if _dataset_hash_bytes(self.dataset_manifest_bytes) != self.dataset_hash:
             return "dataset hash does not match frozen manifest"
         try:
-            manifest = json.loads(self.dataset_manifest_bytes)
-        except (UnicodeDecodeError, json.JSONDecodeError):
+            manifest = json.loads(
+                self.dataset_manifest_bytes,
+                object_pairs_hook=_reject_duplicate_json_keys,
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError, ValueError):
             return "frozen dataset manifest is invalid JSON"
-        if not isinstance(manifest, dict) or manifest.get("schema_version") != 1:
-            return "frozen dataset manifest has an unsupported schema"
-        evals = manifest.get("evals")
-        if not isinstance(evals, list) or not evals:
-            return "frozen dataset manifest has no eval roster"
-        case_ids: list[str] = []
-        for case in evals:
-            case_id = case.get("id") if isinstance(case, dict) else None
-            if not isinstance(case_id, str) or not case_id:
-                return "frozen dataset manifest has an invalid case ID"
-            case_ids.append(case_id)
-        if len(case_ids) != len(set(case_ids)):
+        try:
+            validator_class = import_module("jsonschema").Draft202012Validator
+        except ImportError:
+            return "eval manifest schema validator is unavailable"
+        schema_path = Path(__file__).resolve().parent.parent / "schemas" / "evals-v1.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        if (
+            not isinstance(manifest, dict)
+            or next(validator_class(schema).iter_errors(manifest), None) is not None
+        ):
+            return "frozen dataset manifest does not validate against evals v1 schema"
+        if manifest["skill_name"] != self.skill_name:
+            return "frozen dataset skill_name does not match freeze skill_name"
+        source_case_sets = {case["id"]: case.get("case_set", "dev") for case in manifest["evals"]}
+        if len(source_case_sets) != len(manifest["evals"]):
             return "frozen dataset manifest has duplicate case IDs"
-        if set(case_ids) != set(self.required_case_sets):
+        if set(source_case_sets) != set(self.required_case_sets):
             return "required case roster does not match frozen dataset manifest"
+        if source_case_sets != self.required_case_sets:
+            return "required case sets do not match frozen dataset manifest"
         return None
 
     @property
@@ -93,6 +103,7 @@ class FreezeSnapshot:
             self.candidate_tree_hash
             and self.baseline_tree_hash
             and self.dataset_hash
+            and self.skill_name
             and self.grader_versions
             and isinstance(self.required_case_sets, dict)
             and self.required_case_sets
@@ -459,6 +470,7 @@ def compute_release_decision(
     calibration: CalibrationRecord,
     hard_gate_violations: list[str] | None = None,
     freeze: FreezeSnapshot | None = None,
+    skill_name: str | None = None,
 ) -> dict[str, Any]:
     """Compute PASS, CONDITIONAL, HOLD, or BLOCK from the release matrix."""
     violations = hard_gate_violations or []
@@ -469,6 +481,18 @@ def compute_release_decision(
             "outcome": "BLOCK",
             "reasons": [f"hard gate violation: {v}" for v in violations],
             "hard_gate_violations": violations,
+        }
+
+    if (
+        skill_name is not None
+        and freeze is not None
+        and freeze.skill_name
+        and freeze.skill_name != skill_name
+    ):
+        return {
+            "outcome": "HOLD",
+            "reasons": ["frozen dataset skill_name does not match release skill_name"],
+            "hard_gate_violations": [],
         }
 
     if freeze is None or not freeze.complete:
@@ -630,7 +654,12 @@ def build_release_report(
     hard_gate_violations: list[str] | None = None,
 ) -> dict[str, Any]:
     decision = compute_release_decision(
-        case_results, rubric_results, calibration, hard_gate_violations, freeze=freeze
+        case_results,
+        rubric_results,
+        calibration,
+        hard_gate_violations,
+        freeze=freeze,
+        skill_name=skill_name,
     )
     return {
         "schema_version": RELEASE_SCHEMA_VERSION,
@@ -655,6 +684,15 @@ def write_release_report(report: dict[str, Any], output_dir: Path) -> Path:
 
 def _dataset_hash_bytes(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()[:16]
+
+
+def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
 
 
 def dataset_hash(manifest_path: Path) -> str:
