@@ -273,7 +273,7 @@ def _package_may_define_load_tests(path: Path) -> bool:
 
     # Walk module scope, including conditional and exception-handling blocks,
     # while keeping function and class bodies in their own namespaces.
-    pending = list(tree.body)
+    pending: list[ast.AST] = list(tree.body)
     while pending:
         node = pending.pop()
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
