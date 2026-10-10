@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/magnus919/agent-skills/schemas/comparison-report-v3.schema.json",
-  "title": "Paired evaluation comparison report v3",
-  "description": "Case-level comparison with separate execution, evidence, and semantic verdict states.",
+  "$id": "https://github.com/magnus919/agent-skills/schemas/comparison-report-v4.schema.json",
+  "title": "Paired evaluation comparison report v4",
+  "description": "Case-level comparison with explicit snapshot policy and revisions, plus separate execution, evidence, and semantic verdict states.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,13 +11,17 @@
     "generated_at",
     "skill_name",
     "case_id",
+    "comparison_mode",
+    "comparison_policy",
+    "snapshot_revisions",
+    "snapshot_inputs",
     "candidate",
     "baseline",
     "aggregate_outcome",
     "paired_delta"
   ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 3},
+    "schema_version": {"type": "integer", "const": 4},
     "report_id": {"type": "string", "format": "uuid"},
     "generated_at": {"type": "string", "format": "date-time"},
     "skill_name": {"type": "string", "minLength": 1},
@@ -25,6 +29,29 @@
       "type": "string",
       "enum": ["skill_vs_no_skill", "pinned_skill_vs_skill"],
       "description": "Distinguishes the no-skill diagnostic from a comparison of two pinned skill snapshots."
+    },
+    "comparison_policy": {
+      "type": "string",
+      "enum": ["no_skill_diagnostic", "complete_package", "instruction_only"],
+      "description": "Distinguishes a no-skill diagnostic, full package comparison using each snapshot's own references, and SKILL.md-only comparison."
+    },
+    "snapshot_revisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate", "baseline"],
+      "properties": {
+        "candidate": {"type": ["string", "null"], "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"},
+        "baseline": {"type": ["string", "null"], "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"}
+      }
+    },
+    "snapshot_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate", "baseline"],
+      "properties": {
+        "candidate": {"$ref": "#/$defs/snapshot_input"},
+        "baseline": {"$ref": "#/$defs/snapshot_input"}
+      }
     },
     "case_id": {
       "type": "string",
@@ -59,10 +86,63 @@
       ]
     }
   },
+  "allOf": [
+    {
+      "if": {"properties": {"comparison_mode": {"const": "skill_vs_no_skill"}}},
+      "then": {
+        "properties": {
+          "comparison_policy": {"const": "no_skill_diagnostic"},
+          "snapshot_revisions": {
+            "properties": {
+              "candidate": {"type": "null"},
+              "baseline": {"type": "null"}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"comparison_mode": {"const": "pinned_skill_vs_skill"}}},
+      "then": {
+        "properties": {
+          "comparison_policy": {"enum": ["complete_package", "instruction_only"]},
+          "snapshot_revisions": {
+            "properties": {
+              "candidate": {"type": "string"},
+              "baseline": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "semantic_verdict": {
       "type": "string",
       "enum": ["pass", "fail", "not_assessed"]
+    },
+    "snapshot_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["condition", "context_sha256", "sources"],
+      "properties": {
+        "condition": {"type": "string", "enum": ["skill", "no_skill"]},
+        "context_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256", "bytes", "truncated"],
+            "properties": {
+              "path": {"type": "string", "minLength": 1},
+              "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "bytes": {"type": "integer", "minimum": 0},
+              "truncated": {"type": "boolean"}
+            }
+          }
+        }
+      }
     },
     "arm_result": {
       "type": "object",

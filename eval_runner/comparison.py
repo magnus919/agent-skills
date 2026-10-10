@@ -11,7 +11,7 @@ from typing import Any
 from .grader import GradeResult
 from .path_safety import contained_path, validate_case_id
 
-COMPARISON_SCHEMA_VERSION = 3
+COMPARISON_SCHEMA_VERSION = 4
 
 
 def build_comparison_report(
@@ -22,6 +22,10 @@ def build_comparison_report(
     baseline_grade: GradeResult,
     candidate_manifest: dict[str, Any],
     baseline_manifest: dict[str, Any],
+    comparison_mode: str = "skill_vs_no_skill",
+    comparison_policy: str = "no_skill_diagnostic",
+    snapshot_revisions: dict[str, str | None] | None = None,
+    snapshot_inputs: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     candidate_passed = candidate_grade.passed
     baseline_passed = baseline_grade.passed
@@ -50,6 +54,14 @@ def build_comparison_report(
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "skill_name": skill_name,
         "case_id": case_id,
+        "comparison_mode": comparison_mode,
+        "comparison_policy": comparison_policy,
+        "snapshot_revisions": snapshot_revisions or {"candidate": None, "baseline": None},
+        "snapshot_inputs": snapshot_inputs
+        or {
+            "candidate": {"condition": "skill", "context_sha256": None, "sources": []},
+            "baseline": {"condition": "no_skill", "context_sha256": None, "sources": []},
+        },
         "candidate": {
             "trial_id": candidate_manifest.get("trial_id", ""),
             "execution_status": candidate_grade.execution_status,

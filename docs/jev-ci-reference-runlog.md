@@ -3086,3 +3086,30 @@ Jev audit tests, all 10 calibration-helper tests, and validation of all 181
 eval manifests. These establish mechanics, not Jev correctness. The separate
 hard-quota retry change remains local and mock-tested; no Nous inference or
 provider spend was used for it.
+
+## 2026-10-10 — PR #686 post-merge validation, zero live calls
+
+PR [#686](https://github.com/magnus919/agent-skills/pull/686) merged by
+squash as `20ff7c0beb8241f085383927a567d36a0bccd040`. The post-merge
+`Validate skills` run `38008901999` completed successfully, including every
+repository validation step. The paired-eval workflow run `38008901986`
+completed with both `paired-eval-model` and `jev-eval-audit` skipped. The
+confirmed live-call count for this increment is **0/100**; no provider or Jev
+request was made. This records execution evidence only. The separate six-skill
+pilot, mutation checks, and judge-qualification work remain unfinished.
+
+## 2026-10-10 — Increment two: offline fair-pair and pilot preparation
+
+Prepared a six-case, revision-pinned pilot for embedded UX recovery,
+PydanticAI non-chat proposals, executable policy translation, stakeholder
+mapping, a Raleigh fire-report command, and judge qualification. The plan
+records each case as present in inventory but not behavior-verified. Added
+separate deterministic oracles for structured state/proposal/policy/map/judge
+evidence and mutation fixtures; they do not parse generated prose. The Raleigh
+tool behavior remains covered by its existing fixture tests. Prose outcomes
+still require independent human review.
+
+An offline `FakeAdapter` smoke completed all six pinned old/new pairs and
+wrote both arm artifacts. This validates snapshot selection and artifact
+plumbing only; it provides no answer-quality result. The shared live budget
+remains **0/100**. No generation model or Jev request was used.

@@ -65,10 +65,20 @@ def test_actual_http_input_and_no_skill_baseline(tmp_path, skill, case_id, refer
         baseline_messages, baseline_provenance = adapter._build_input(
             AdapterInput(baseline, case, tmp_path / "bwork", tmp_path / "boutput")
         )
-        assert baseline_messages == [{"role": "user", "content": case.prompt}]
+        assert [message["role"] for message in baseline_messages] == ["system", "user"]
+        assert baseline_messages[-1] == {"role": "user", "content": case.prompt}
+        assert "<skill_context>\n\n</skill_context>" in baseline_messages[0]["content"]
+        assert (
+            messages[0]["content"].split("<skill_context>", 1)[0]
+            == baseline_messages[0]["content"].split("<skill_context>", 1)[0]
+        )
         assert baseline_provenance["condition"] == "no_skill"
         assert baseline_provenance["sources"] == []
         assert provenance["comparison"] == "skill_vs_no_skill"
+        assert baseline_provenance["comparison"] == "skill_vs_no_skill"
+        assert provenance["wrapper_sha256"] == baseline_provenance["wrapper_sha256"]
+        assert provenance["task_input_sha256"] == baseline_provenance["task_input_sha256"]
+        assert provenance["model_settings_sha256"] == baseline_provenance["model_settings_sha256"]
     finally:
         cleanup_sandbox(candidate)
         cleanup_sandbox(baseline)

@@ -114,14 +114,26 @@ def stage_baseline_sandbox(skill_path: Path) -> Path:
     return staged
 
 
-def stage_paired_sandboxes(skill_path: Path) -> tuple[Path, Path]:
-    """Stage both candidate (with skill, read-only) and baseline (empty) sandboxes.
+def stage_paired_sandboxes(
+    skill_path: Path,
+    *,
+    comparison_mode: str = "skill_vs_no_skill",
+    baseline_skill_path: Path | None = None,
+) -> tuple[Path, Path]:
+    """Stage an explicitly labeled no-skill diagnostic or pinned skill pair."""
+    if comparison_mode not in {"skill_vs_no_skill", "pinned_skill_vs_skill"}:
+        raise ValueError("unsupported paired comparison mode")
+    if comparison_mode == "pinned_skill_vs_skill" and baseline_skill_path is None:
+        raise ValueError("pinned_skill_vs_skill requires --baseline-skill-path")
+    if comparison_mode == "skill_vs_no_skill" and baseline_skill_path is not None:
+        raise ValueError("skill_vs_no_skill does not accept a baseline skill snapshot")
 
-    Returns (candidate_path, baseline_path).
-    """
     candidate = stage_skill_sandbox(skill_path, readonly=True)
     try:
-        baseline = stage_baseline_sandbox(skill_path)
+        if baseline_skill_path is None:
+            baseline = stage_baseline_sandbox(skill_path)
+        else:
+            baseline = stage_skill_sandbox(baseline_skill_path, readonly=True)
     except Exception:
         cleanup_sandbox(candidate)
         raise

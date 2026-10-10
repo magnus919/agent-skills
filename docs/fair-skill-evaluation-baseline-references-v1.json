@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "embedded-loan-recovery": {
+      "references/ai-interaction-and-uncertainty.md": "947ef84b9ec8746290d7b8555f0115cd8912d7bf9990d4c882bc0e11355499ea",
+      "references/external-agent-interactions.md": "57108aee84bc47786a7cdbd6f40a3b1e95a955366f9a72c23fa4595c60e8006c",
+      "references/task-flows-and-state-models.md": "eb1c2b550b6e781283237341508de7f21a594df45cbc27d8b33e44607def789b"
+    }
+  }
+}
