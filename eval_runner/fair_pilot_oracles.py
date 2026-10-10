@@ -77,7 +77,7 @@ def policy_translation_oracle(
     *,
     effective_date: str | None,
     requested_days: int | None,
-    item_available: bool,
+    item_available: bool | None,
     exception_requested: bool,
     versions: tuple[dict[str, Any], ...] = DEFAULT_POLICY_VERSIONS,
 ) -> str:

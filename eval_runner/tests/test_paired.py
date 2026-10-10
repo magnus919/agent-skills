@@ -545,7 +545,7 @@ def test_comparison_report_structure():
         baseline_manifest={"trial_id": "bbb"},
     )
 
-    assert report["schema_version"] == 3
+    assert report["schema_version"] == 4
     assert report["paired_delta"] == "candidate_improvement"
     assert report["candidate"]["passed"] is True
     assert report["baseline"]["passed"] is False
@@ -564,7 +564,7 @@ def test_comparison_report_validates_against_schema():
     schema_path = (
         Path(__file__).resolve().parent.parent.parent
         / "schemas"
-        / "comparison-report-v3.schema.json"
+        / "comparison-report-v4.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     Draft202012Validator.check_schema(schema)
@@ -606,7 +606,7 @@ def test_comparison_schema_matches_runtime_case_ids():
     schema_path = (
         Path(__file__).resolve().parent.parent.parent
         / "schemas"
-        / "comparison-report-v3.schema.json"
+        / "comparison-report-v4.schema.json"
     )
     schema = json.loads(schema_path.read_text())
     validator = Draft202012Validator(schema["properties"]["case_id"])
@@ -626,7 +626,7 @@ def test_paired_trial_end_to_end():
 
         report = run_paired_trial(adapter, case, skill, output_dir, "fake-model")
 
-        assert report["schema_version"] == 3
+        assert report["schema_version"] == 4
         assert report["case_id"] == "paired-test-01"
         assert report["candidate"]["passed"] is True
         for side in ("candidate", "baseline"):

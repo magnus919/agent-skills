@@ -126,4 +126,5 @@ def build_context(
         metadata["sources"].append(
             {"path": path, "sha256": digest, "bytes": len(raw), "truncated": False}
         )
+    metadata["context_sha256"] = hashlib.sha256(content.encode("utf-8")).hexdigest()
     return content, metadata

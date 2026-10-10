@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import runpy
 import subprocess
 import sys
 import tempfile
@@ -11,14 +12,20 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "system-one" / "scripts"))
 
 from eval_runner.selection import (
     changed_paths,
     manifests_for_paths,
+    narrow_selection_evidence,
     render_summary,
     select,
     selection_evidence,
 )
+
+expected_report_ids = runpy.run_path(
+    str(Path(__file__).resolve().parents[2] / "system-one" / "scripts" / "jev_eval_audit.py")
+)["expected_report_ids"]
 
 
 class SelectionTests(unittest.TestCase):
@@ -130,6 +137,30 @@ class SelectionTests(unittest.TestCase):
         )
         self.assertEqual(evidence["skill_roots"][0]["manifest"], manifest)
         self.assertRegex(evidence["skill_roots"][0]["manifest_sha256"], r"^[a-f0-9]{64}$")
+
+    def test_narrowed_manual_case_keeps_jev_denominator_and_root_case_ids_aligned(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest = root / "alpha" / "evals" / "evals.json"
+            manifest.parent.mkdir(parents=True)
+            cases = [
+                {
+                    "id": case_id,
+                    "prompt": f"Prompt for {case_id}",
+                    "expected_output": "Answer",
+                    "assertions": ["Works"],
+                }
+                for case_id in ("first-case", "second-case")
+            ]
+            manifest.write_text(json.dumps({"evals": cases}), encoding="utf-8")
+            evidence = selection_evidence(select(["alpha/evals/evals.json"], 1), root)
+
+            narrowed = narrow_selection_evidence(evidence, "alpha", "second-case")
+
+            self.assertEqual(narrowed["expected_cases"]["alpha"], ["second-case"])
+            self.assertEqual(narrowed["skill_roots"][0]["case_ids"], ["second-case"])
+            self.assertEqual(expected_report_ids(narrowed), {("alpha", "second-case")})
+            self.assertEqual(evidence["skill_roots"][0]["case_ids"], ["first-case", "second-case"])
 
     def test_judgment_context_pins_task_and_sources_without_expected_labels(self):
         root = Path(__file__).resolve().parents[2]

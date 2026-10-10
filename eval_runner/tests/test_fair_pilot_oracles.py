@@ -124,6 +124,15 @@ def test_policy_oracle_covers_boundaries_precedence_and_ambiguous_dates():
         )
         == "review"
     )
+    assert (
+        decide(
+            effective_date="2026-07-01",
+            requested_days=2,
+            item_available=None,
+            exception_requested=False,
+        )
+        == "review"
+    )
     overlap = (
         {"version": "v1", "starts": "2026-01-01", "ends": "2026-08-01", "max_days": 7},
         {"version": "v2", "starts": "2026-07-01", "ends": None, "max_days": 5},

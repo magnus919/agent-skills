@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import re
 import subprocess
 import sys
 from pathlib import Path, PurePosixPath
-from typing import Literal, TypedDict
+from typing import Any, Literal, TypedDict
 
 from .evidence_contract import build_judgment_context, load_evidence_contracts
 from .runner import load_cases
@@ -143,6 +144,41 @@ def selection_evidence(selection: Selection, root: Path) -> dict[str, object]:
         "skill_roots": skill_roots,
         "judgment_context": judgment_context,
     }
+
+
+def narrow_selection_evidence(evidence: dict[str, Any], skill: str, case_id: str) -> dict[str, Any]:
+    """Return valid selection evidence for one skill/case without stale denominators."""
+    expected_cases = evidence.get("expected_cases")
+    if not isinstance(expected_cases, dict) or skill not in expected_cases:
+        raise ValueError(f"selected skill is not present in selection evidence: {skill}")
+    case_ids = expected_cases[skill]
+    if not isinstance(case_ids, list) or case_id not in case_ids:
+        raise ValueError(f"selected eval case is not present in the manifest: {case_id}")
+
+    narrowed = copy.deepcopy(evidence)
+    narrowed["expected_cases"][skill] = [case_id]
+
+    roots = narrowed.get("skill_roots")
+    if roots is not None:
+        if not isinstance(roots, list):
+            raise ValueError("selection evidence has invalid skill-root records")
+        matches = [
+            item for item in roots if isinstance(item, dict) and item.get("skill_name") == skill
+        ]
+        if len(matches) != 1 or matches[0].get("case_ids") != case_ids:
+            raise ValueError("selected skill root disagrees with its expected case IDs")
+        matches[0]["case_ids"] = [case_id]
+
+    contexts = narrowed.get("judgment_context")
+    if contexts is not None:
+        if not isinstance(contexts, dict):
+            raise ValueError("selection evidence has invalid judgment context")
+        if skill in contexts:
+            skill_context = contexts[skill]
+            if not isinstance(skill_context, dict):
+                raise ValueError("selection evidence has invalid skill judgment context")
+            contexts[skill] = {case_id: skill_context[case_id]} if case_id in skill_context else {}
+    return narrowed
 
 
 def main() -> int:

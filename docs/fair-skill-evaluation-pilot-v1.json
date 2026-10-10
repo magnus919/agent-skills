@@ -10,10 +10,11 @@
   },
   "comparison": {
     "primary_mode": "pinned_skill_vs_skill",
+    "policy": "complete_package",
     "diagnostic_mode": "skill_vs_no_skill",
     "arms": ["candidate", "baseline"],
     "same_task_and_wrapper": true,
-    "references": "Resolve and hash each arm's references from that arm's pinned snapshot only.",
+    "references": "Resolve and hash each arm's references from that arm's pinned snapshot only; require a case-specific baseline reference map when the historical eval manifest has no matching case ID.",
     "judgment_data": "Keep expected outcomes, prohibited behavior, required evidence, and oracle labels out of generation payloads.",
     "frozen_outputs": "May test evidence parsing only; do not use them as evidence of new prompt effects."
   },
@@ -105,7 +106,7 @@
     }
   ],
   "qualification_gates": [
-    "Verify every baseline and candidate revision and source hash before generation.",
+    "Verify both clean Git revisions and preflight both arms' exact skill/reference context hashes before the first adapter call.",
     "Run deterministic fixture oracles independently of the target skill and expected-output text.",
     "Keep inventory_present, behavior_verified, human_review, and live-call counts as separate fields.",
     "Do not claim broad pilot completion or skill improvement until generated answers are reviewed against the pinned source facts and mutation cases."

@@ -173,10 +173,18 @@ class OpenAICompatAdapter:
     def version(self) -> str:
         return "0.2.0"
 
+    @property
+    def max_skill_chars(self) -> int | None:
+        """Maximum skill-context size used by the paired preflight."""
+        return self._max_skill_chars
+
     def _build_input(self, input: AdapterInput) -> tuple[list[dict[str, str]], dict[str, Any]]:
         skill_content, provenance = build_context(
             input.skill_path, input.case.skill_references, self._max_skill_chars
         )
+        expected_context_hash = input.harness_config.get("preflight_context_sha256")
+        if expected_context_hash and provenance.get("context_sha256") != expected_context_hash:
+            raise ValueError("staged skill context changed after paired preflight")
         system_message = (
             f"{NEUTRAL_SYSTEM_WRAPPER}\n\n<skill_context>\n{skill_content or ''}\n</skill_context>"
         )
@@ -186,6 +194,10 @@ class OpenAICompatAdapter:
         ]
         harness_config = input.harness_config
         provenance["comparison"] = harness_config.get("comparison_mode", "skill_vs_no_skill")
+        if harness_config.get("comparison_policy"):
+            provenance["comparison_policy"] = harness_config["comparison_policy"]
+        if harness_config.get("snapshot_revision"):
+            provenance["snapshot_revision"] = harness_config["snapshot_revision"]
         if harness_config.get("arm"):
             provenance["arm"] = harness_config["arm"]
         if harness_config.get("pair_id"):
