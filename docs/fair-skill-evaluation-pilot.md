@@ -3,6 +3,10 @@
 Five randomized exploratory baseline-versus-candidate Luna pairs and one separate non-randomized System One setup/parity smoke are complete. An agent reviewer assessed the five A/B packets against frozen source-grounded criteria. The blind process is supported by the packet's instructions and the reviewer's later attestation, not by an access audit. The review artifact names `gpt-6-sol`, but reviewer identity, model, and reasoning effort cannot be independently verified from persisted runtime metadata; those provenance fields were not recorded. The outputs show case-specific differences, but they do not establish causal or statistical uplift, human-grounded quality, or behavioral coverage across this repository. Raleigh was restricted to offline query-plan prose; no live query ran and no records were retrieved. The separate Jev qualification screen is a different lane. The frozen [`fair-skill-evaluation-pilot-v1.json`](fair-skill-evaluation-pilot-v1.json) remains the pre-dispatch plan; its `live_calls` fields are historical metadata, not the current Jev ledger. Full task outputs, tool traces, arm hashes, blinded packets, decoding key, and review record are retained in the task-side report directory rather than this repository.
 
 
+On 2026-10-10, the in-memory command-boundary reference harness and focused regression tests were merged in PR #695 at main commit `91e93627542d636d24545427d0d77b112ea1adf3`. This confirms integration of reference mechanics only; production authority and runtime behavior remain unverified. A finite follow-up mutation sensitivity run is recorded in [`fair-pilot-command-boundary-results.md`](fair-pilot-command-boundary-results.md).
+
+Further policy-fidelity work needs actual policy clauses and an owner-approved fixture. UX and stakeholder outcome claims still need real evidence. This batch makes no implementation claims in those areas.
+
 ## Frozen comparison design
 
 
@@ -87,7 +91,7 @@ The suite sends eight production-shaped JSON inputs through `spec-driven-develop
 ## Staged ledger
 
 
-The task-side testing-strategy refit ledger groups this work into six stages. The eight rows below are a status crosswalk that separates overlapping implementation, inventory, and effectiveness work; they do not replace that ledger's history.
+The task-side testing-strategy refit ledger groups this work into six stages. The nine rows below are a status crosswalk that separates overlapping implementation, inventory, and effectiveness work; they do not replace that ledger's history.
 
 
 | Workstream | Original ledger stage | Status and evidence |
@@ -95,10 +99,11 @@ The task-side testing-strategy refit ledger groups this work into six stages. Th
 | Truthful result semantics | 1 | Merged in PR #686. Execution, evidence completeness, semantic verdict, and comparison outcomes are distinct; release evidence has separate requirements. |
 | Case/evidence contracts and selector coverage | 2 | Supporting changes merged across PRs #687–#689. Pinned arm maps, source contracts, and deepest-skill nested selection are available; this increment reports their coverage and limitations. |
 | Risk-representative pilot | 3 | Six cases and source revisions are frozen in the table above. The separate 12-request Jev screen is complete. Five randomized exploratory pairs and one non-randomized setup/parity smoke completed; an agent reviewed the five A/B packets under blinding instructions and later attested it did not access the key before submitting judgments. Reviewer identity and model/effort provenance are not independently verified. |
-| Deterministic mutation qualification | 4 | Partial: targeted policy CLI mutations have offline fixtures and reports. There is no broad native mutation campaign, and those fixtures do not prove policy-owner fidelity. |
+| Deterministic mutation qualification | 4 | Partial: targeted policy CLI mutations have offline fixtures and reports. The bounded command-boundary pilot also killed five source mutants and accepted one equivalent control against its pinned regression tests; the replay mutant measures response-deduplication only. This is test sensitivity for reference mechanics, not production coverage; neither pilot proves policy-owner fidelity. |
 | Source-aware Jev qualification | 5 | Bounded screen completed and independently reviewed by Sol: 12 requests, 11 exact label matches, zero false `met` on contradictory/missing-evidence cases. This is not human ground truth or calibration. |
 | Fair comparison harness and proportional CI | 6 | Pinned comparison support and CI checks are merged. Five randomized exploratory pairs and one separate setup/parity smoke completed; outcomes were reviewed qualitatively against frozen criteria. This is not evidence of a causal effect. |
-| Repository evidence and test-route inventory | Cross-cutting 2/6 | Added in this increment: separate evidence counts, curated-register validation, nested-manifest reporting, and test selector routes. The 61 unclassified test-like paths need route review; they are not proven skipped tests. |
+| Execution-time command-boundary reference | Cross-cutting 3/4 | Reference harness and focused tests integrated in PR #695 at main `91e93627542d636d24545427d0d77b112ea1adf3`; production permission, approval provenance, revision, policy, and command execution remain unverified. |
+| Repository evidence and test-route inventory | Cross-cutting 2/6 | The 2026-10-10 inventory snapshot at `22b4723c549e2851ebae7e739cc5bd980ff4884a` recorded 61 unclassified test-like paths. That historical count is not a count of unrun tests. The current combined main tree was unavailable for a one-time refresh, so no updated count is claimed. |
 | Effectiveness confirmation | 6 | Not established. The five-pair agent review is qualitative, with unverified reviewer provenance; it is not human ground truth or a statistical estimate. Broader held-out evidence, repeated comparisons, human adjudication, usability research, code/runtime checks, and Raleigh retrieval evidence remain absent. |
 
 ## Risk-ranked migration backlog
