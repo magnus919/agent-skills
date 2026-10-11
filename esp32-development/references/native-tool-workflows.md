@@ -138,6 +138,10 @@ espflash flash --monitor TARGET_BINARY
 
 For ESP-IDF-backed Rust, follow the generated project and `cargo-espflash`/ESP-IDF integration documentation. Do not mix `no_std` and `std` setup instructions.
 
+## Automated target tests
+
+For repeated physical tests, use `references/hardware-test-automation.md` and `templates/hardware-test-plan.md`. Review native fixture setup for automatic flash/reset and port selection before running it; test execution is not inherently read-only. Keep artifact and running-image identity evidence together.
+
 ## Verification ladder
 
 1. Build or configuration validation passes.

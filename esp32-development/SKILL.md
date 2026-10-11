@@ -1,12 +1,13 @@
 ---
 name: esp32-development
 description: >-
-  Build, configure, flash, test, debug, and recover firmware for ESP32-family boards, including ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Use when identifying an ESP32 board, choosing a framework, wiring GPIO or peripheral buses, integrating sensors or actuators, diagnosing serial/boot/power/network failures, or planning OTA and production security. Do not use as a substitute for the exact board schematic, SoC datasheet, or attached component datasheet.
+  Build, configure, flash, test, debug, and recover firmware for ESP32-family boards, including ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Use when identifying an ESP32 board, choosing a framework, wiring GPIO or peripheral buses, integrating sensors or actuators, diagnosing serial/boot/power/network failures, planning OTA and production security, or automating hardware tests and fault injection. Do not use as a substitute for the exact board schematic, SoC datasheet, or attached component datasheet.
 license: MIT
 compatibility: Portable across agent harnesses. Live work requires the selected framework toolchain, a supported ESP32-family board, data-capable USB connection, and platform serial permissions.
 metadata:
   source_index: references/source-index.md
   research_checked: "2026-07-15"
+  hardware_testing_checked: "2026-10-11"
 ---
 
 # ESP32 Development
@@ -20,7 +21,7 @@ Treat the board, attached circuit, firmware, and host toolchain as one system. A
 3. Start with read-only host and USB discovery. Opening a serial monitor may toggle DTR/RTS and reset the target; use a no-reset option when the running state matters.
 4. Choose one framework based on the product constraint. Reuse its project generator, examples, drivers, build system, flasher, monitor, and debugger before writing wrappers.
 5. Bring up one layer at a time: power and boot, serial log, one GPIO, one bus, bus scan or loopback, device identity register, raw readings, calibration, then application behavior.
-6. Before the first flash or hardware mutation, confirm the target port, chip family, image/partition layout, rollback or reflashing path, and electrical safety. Never guess a flash offset.
+6. Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation. Before the first flash or hardware mutation, confirm the target port, chip family, image/partition layout, rollback or reflashing path, and electrical safety. Never guess a flash offset.
 7. Preserve calibration controls for real sensors, clocks, ADCs, PWM devices, and actuators. Physical variation is expected.
 
 ## Pre-response evidence gate
@@ -56,6 +57,7 @@ The preflight script does not open serial ports. A USB descriptor can identify a
 | Integrate a sensor, display, LED, relay, motor, servo, solenoid, or other load | [sensors, actuators, and calibration](references/sensors-actuators-and-calibration.md) |
 | Add Wi-Fi, BLE, ESP-NOW, Zigbee/Thread, sleep, OTA, or production power behavior | [connectivity, power, and OTA](references/connectivity-power-and-ota.md) |
 | Diagnose boot, flashing, crashes, brownouts, buses, networking, or security state | [debugging, recovery, and security](references/debugging-recovery-and-security.md) |
+| Automate target tests, commission a bench, inject faults, or run a bounded feedback loop | [hardware test automation](references/hardware-test-automation.md) |
 | Refresh a command or version-sensitive claim | [source index](references/source-index.md) |
 
 ## Minimal bring-up sequence
@@ -69,9 +71,14 @@ The preflight script does not open serial ports. A USB descriptor can identify a
 7. For buses, prove electrical idle levels and run a scan/loopback before introducing a driver. For actuators, test the control signal without the load, then use an external driver and supply.
 8. Run the requested behavior through repeated reset and power-cycle tests. If OTA is in scope, prove rollback or serial recovery before relying on it.
 
+## Automated hardware feedback loop
+
+Read `references/hardware-test-automation.md` and fill `templates/hardware-test-plan.md` when automation is in scope. Bind requirements to independent observations, reserve shared hardware, commission the fixture, and freeze acceptance cases before changing firmware. Native test fixtures can flash/reset devices during setup. Keep product failures, fixture errors, missing evidence, and passes separate; preserve every attempt. Stop on unsafe state, identity or ownership loss, unconfirmed cleanup, or the recorded budget limit. A green log or host suite does not prove physical behavior.
+
 ## Templates and helper
 
 - `templates/hardware-bringup.md` — board, power, pin, component, and recovery worksheet.
+- `templates/hardware-test-plan.md` — requirement/test mapping, commissioning, fault injection, evidence, and cleanup record.
 - `templates/component-contract.md` — datasheet-led sensor or actuator integration record.
 - `templates/esp-idf-main.c` — small ESP-IDF GPIO task with explicit configurable pins.
 - `templates/platformio.ini` — minimal PlatformIO environment with explicit board/framework and version-pinning placeholders.

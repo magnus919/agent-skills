@@ -8,13 +8,15 @@ ESP32 development is fragmented across chip families and firmware ecosystems. A 
 
 This skill gives an agent a source-backed workflow for identifying the actual board, choosing an appropriate framework, using its native command-line tools, and proving attached hardware one layer at a time. It covers ESP-IDF C/C++, Arduino and PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX without tying the process to one agent harness.
 
+For repeatable testing, it also helps plan a hardware bench, connect requirements to independent measurements, inject controlled failures, and keep firmware bugs separate from broken test equipment. A worksheet records the exact image, test conditions, recovery, and results.
+
 ## What You Get
 
 | Resource | Purpose |
 |---|---|
 | `SKILL.md` | Safety-first workflow and routing table |
 | `references/` | Framework, hardware, peripheral, networking, recovery, security, and source guidance |
-| `templates/` | Bring-up worksheet plus minimal framework and bus examples |
+| `templates/` | Bring-up worksheet plus minimal framework, bus, and hardware-test examples |
 | `scripts/esp32-preflight.py` | Dependency-free host, toolchain, and candidate-port discovery without opening a port |
 | `evals/evals.json` | Safety and troubleshooting scenarios for regression evaluation |
 
@@ -43,7 +45,7 @@ Then copy `templates/hardware-bringup.md` into the project and record the exact 
 
 ## Triggers
 
-Use this skill for ESP32 board identification, framework selection, C/C++ firmware, Arduino or PlatformIO projects, MicroPython or CircuitPython, ESPHome configuration, Zephyr, Rust, NuttX, serial flashing, OTA, GPIO and bus wiring, sensors, displays, relays, motors, LEDs, deep sleep, Wi-Fi/BLE, ESP-NOW, Zigbee/Thread, JTAG, secure boot, flash encryption, eFuses, crash decoding, brownouts, or bootloader recovery.
+Use this skill for ESP32 board identification, framework selection, C/C++ firmware, Arduino or PlatformIO projects, MicroPython or CircuitPython, ESPHome configuration, Zephyr, Rust, NuttX, serial flashing, OTA, GPIO and bus wiring, sensors, displays, relays, motors, LEDs, deep sleep, Wi-Fi/BLE, ESP-NOW, Zigbee/Thread, JTAG, secure boot, flash encryption, eFuses, crash decoding, brownouts, bootloader recovery, hardware test automation, bench commissioning, or fault injection.
 
 ## Requirements
 

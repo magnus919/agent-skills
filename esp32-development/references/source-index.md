@@ -119,3 +119,23 @@ Record URLs, document revisions, access date, exact claims used, and gaps in `te
 ## Refresh rules
 
 Recheck sources when changing ESP-IDF major/minor version, Arduino core major version, ESPHome release train, MicroPython/CircuitPython major version, Zephyr release, Rust toolchain/HAL generation, NuttX release, SoC family/revision, bootloader/partition/security state, board revision, or attached component revision. Always recheck irreversible security commands and flash offsets immediately before execution.
+
+## Hardware testing refresh — 2026-10-11
+
+Only this topic was refreshed; the earlier catalog-wide check date remains unchanged. ESP-IDF `stable` rendered v6.1; pytest-embedded rendered 2.x and labgrid `latest` rendered 0.1.dev365. Select documentation matching the installed version before execution. These sources establish documented mechanisms, not a commissioned local bench.
+
+| Source | Claim/navigation target |
+|---|---|
+| [Spiess video](https://www.youtube.com/watch?v=HmNyyT2poF8) | Attributed four-tier workflow example; English captions reviewed, hardware claims not reproduced. |
+| [Embedded-AI-Harness](https://github.com/SensorsIot/Embedded-AI-Harness) | Author's implementation example; inspected README, no scripts installed/executed or Codex compatibility asserted. |
+| [ESP-IDF pytest guide](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/contribute/esp-idf-tests-with-pytest.html) | Target/config selection, literal/regex expectations, multi-DUT testing. |
+| [pytest-embedded services](https://espressif-docs.readthedocs-hosted.com/projects/pytest-embedded/en/latest/concepts/services.html) | Setup flashing, port filters, image checks, NVS/erase controls. |
+| [Host applications](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/host-apps.html) | Experimental host support and mocking/scheduling limits. |
+| [Unity tests](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/unit-tests.html) | Multi-stage reset and multi-device testing. |
+| [labgrid setup](https://labgrid.readthedocs.io/en/latest/getting_started.html), [usage](https://labgrid.readthedocs.io/en/latest/usage.html) | Remote ownership, resource matching, explicit state transitions. |
+| [pytest fixtures](https://docs.pytest.org/en/stable/how-to/fixtures.html) | Partial-setup cleanup semantics. |
+| [Toxiproxy](https://github.com/Shopify/toxiproxy) | TCP-path fault injection; separate from radio/protocol coverage. |
+| [ESP-IDF OTA](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/ota.html) | Configured rollback state/confirmation and anti-rollback restrictions. |
+| [Heap debugging](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/heap_debug.html), [application tracing](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/app_trace.html) | Instrumentation overhead, overflow and buffering limits. |
+
+For provenance, source-level extraction, exclusions, and unresolved evidence, see the tracked repository report `docs/research/esp32-hardware-testing/` (repository-relative; not a required installed-skill dependency).
