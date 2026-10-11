@@ -1,5 +1,51 @@
 # Changelog
 
+## [0.9.0](https://github.com/magnus919/agent-skills/compare/v0.8.0...v0.9.0) (2026-10-11)
+
+
+### Features
+
+* **agent-evals:** add bounded grounding probes and linked audit records ([#678](https://github.com/magnus919/agent-skills/issues/678)) ([3c946d9](https://github.com/magnus919/agent-skills/commit/3c946d99ce4e17d8e430eaa37f554d96f65f575a))
+* **ai-governance:** link capability admission and scoped authority ([#681](https://github.com/magnus919/agent-skills/issues/681)) ([6384b6c](https://github.com/magnus919/agent-skills/commit/6384b6c1e327022b373f05b560974e2611cbd6a1))
+* **eval:** add guarded Jev qualification lane ([#689](https://github.com/magnus919/agent-skills/issues/689)) ([3f45381](https://github.com/magnus919/agent-skills/commit/3f453813dca440a4acb6976ae49233ebe95e9c5a))
+* **eval:** pin six-skill evidence and qualification ([#688](https://github.com/magnus919/agent-skills/issues/688)) ([af1be9b](https://github.com/magnus919/agent-skills/commit/af1be9be06805261adcfd57b9811ef0d29e547dc))
+* **eval:** report evidence and test routes ([#690](https://github.com/magnus919/agent-skills/issues/690)) ([22b4723](https://github.com/magnus919/agent-skills/commit/22b4723c549e2851ebae7e739cc5bd980ff4884a))
+* **go-to-market:** govern agent-assisted acquisition ([#521](https://github.com/magnus919/agent-skills/issues/521)) ([058882f](https://github.com/magnus919/agent-skills/commit/058882f6cad1186972211382496c7650e9e24f81))
+* **harness:** add optional typed intervention events ([#671](https://github.com/magnus919/agent-skills/issues/671)) ([54dd90c](https://github.com/magnus919/agent-skills/commit/54dd90c180ed5126fdf779ade875c8da6d9c0f55))
+* **product-discovery:** add bounded artifact-first interviews ([#677](https://github.com/magnus919/agent-skills/issues/677)) ([67c61ff](https://github.com/magnus919/agent-skills/commit/67c61ff45114304f7698637f53818d261980c992))
+* **qa-methodology:** protect independent UI oracles and replay coverage ([#661](https://github.com/magnus919/agent-skills/issues/661)) ([f33c50f](https://github.com/magnus919/agent-skills/commit/f33c50f1d908c1be8bee5bf270fa31cbdde38bb2))
+* **skills:** add executable policy and embedded proposal patterns ([#683](https://github.com/magnus919/agent-skills/issues/683)) ([b45615b](https://github.com/magnus919/agent-skills/commit/b45615b81418bd55fb32d66f31c833beb73f1b3f))
+* **waiting-list:** add premium engagement guidance ([a9bac28](https://github.com/magnus919/agent-skills/commit/a9bac28b86888fa22527fa031be9b20c06461fe3))
+* **waiting-list:** add premium engagement guidance ([1607c3a](https://github.com/magnus919/agent-skills/commit/1607c3a1970738d3b48d82d159fc35e91c6ecf28))
+* **youtube-thumbnail:** add source-grounded thumbnail skill ([#640](https://github.com/magnus919/agent-skills/issues/640)) ([54d81f7](https://github.com/magnus919/agent-skills/commit/54d81f7e02051df2f31130a136dc68f8add42130))
+
+
+### Bug Fixes
+
+* **autogen:** use consistent AgentChat APIs ([#665](https://github.com/magnus919/agent-skills/issues/665)) ([cec8cbe](https://github.com/magnus919/agent-skills/commit/cec8cbea489030a75ff3495eeef83bb3f8064fea))
+* **binary-analysis:** reject fixture output in live analysis paths ([#666](https://github.com/magnus919/agent-skills/issues/666)) ([824e04a](https://github.com/magnus919/agent-skills/commit/824e04a53c0313b837d6cab3f634d4450fb747db))
+* **ci:** fail closed on paired generation errors ([#597](https://github.com/magnus919/agent-skills/issues/597)) ([862ce59](https://github.com/magnus919/agent-skills/commit/862ce596d6114c7d457251de3b6b2ba1dd06de80))
+* **ci:** fail closed on unusable completions ([#603](https://github.com/magnus919/agent-skills/issues/603)) ([2caa2b7](https://github.com/magnus919/agent-skills/commit/2caa2b7a71215009c0c0e240e00321f9e84a09d2))
+* **ci:** route paired evals through Nous StepFun ([#595](https://github.com/magnus919/agent-skills/issues/595)) ([99332bf](https://github.com/magnus919/agent-skills/commit/99332bfdc3386c4c79d5e97871223f931ccbc75e)), closes [#591](https://github.com/magnus919/agent-skills/issues/591)
+* **ci:** validate Nous model catalog before inference ([#598](https://github.com/magnus919/agent-skills/issues/598)) ([735dcaf](https://github.com/magnus919/agent-skills/commit/735dcafe60a996c7288775e0fb5a8202462da083))
+* **eval:** mark incomplete pairs as insufficient data ([#604](https://github.com/magnus919/agent-skills/issues/604)) ([61e411c](https://github.com/magnus919/agent-skills/commit/61e411ca4fb128c38350367173a29f67528a788b))
+* **eval:** record paired request limits accurately ([#620](https://github.com/magnus919/agent-skills/issues/620)) ([b328db2](https://github.com/magnus919/agent-skills/commit/b328db2b7ea219d258f55b07b5b17881c9455529))
+* **eval:** record rate limit retry counts ([#610](https://github.com/magnus919/agent-skills/issues/610)) ([60d44b9](https://github.com/magnus919/agent-skills/commit/60d44b9fe57a50d946ede518ce5d546368dd4aa3))
+* **eval:** report verified semantic outcomes truthfully ([#686](https://github.com/magnus919/agent-skills/issues/686)) ([20ff7c0](https://github.com/magnus919/agent-skills/commit/20ff7c0beb8241f085383927a567d36a0bccd040))
+* **eval:** retry one rate-limited completion ([#609](https://github.com/magnus919/agent-skills/issues/609)) ([aa1d93c](https://github.com/magnus919/agent-skills/commit/aa1d93c3d595bfcabd7ad5c47b187b48eaa9c76f))
+* **evals:** supply bounded business references and preserve judge challenges ([#685](https://github.com/magnus919/agent-skills/issues/685)) ([0138b46](https://github.com/magnus919/agent-skills/commit/0138b46c6f9a350cf18e3b58e0d8bb05dced731e))
+* **headscale:** verify configured recovery assets before success ([#670](https://github.com/magnus919/agent-skills/issues/670)) ([3731b87](https://github.com/magnus919/agent-skills/commit/3731b879d080f504e654f186caaa7dfd0eb8f28c))
+* **jev:** cap calibration samples to available evidence ([#613](https://github.com/magnus919/agent-skills/issues/613)) ([92d0f0f](https://github.com/magnus919/agent-skills/commit/92d0f0f573c1378255727aa77dd1abfb1aeade44))
+* **playwright:** honor pwrun smoke target and config ([#667](https://github.com/magnus919/agent-skills/issues/667)) ([e77bdce](https://github.com/magnus919/agent-skills/commit/e77bdce0836a0fcf6ff8a34ca2323bf7f882bfd1))
+* **qa-methodology:** harden disposable UI fixture lifecycle ([#663](https://github.com/magnus919/agent-skills/issues/663)) ([a9488a7](https://github.com/magnus919/agent-skills/commit/a9488a7e4d3d311dcde9a66514ffb4c1db6a6aad))
+* resolve Notion, Stripe, and Growth Compass bugs ([#668](https://github.com/magnus919/agent-skills/issues/668)) ([93e08bb](https://github.com/magnus919/agent-skills/commit/93e08bb25afb2fe49f52ab47dba2f6376e6b21bc))
+* **system-one:** surface Laya operational boundaries ([#624](https://github.com/magnus919/agent-skills/issues/624)) ([6aa435f](https://github.com/magnus919/agent-skills/commit/6aa435f9aab739618ebe26dcdbc828f54d9a8128))
+* **terraform:** enforce saved-plan taint and drift guard ([#669](https://github.com/magnus919/agent-skills/issues/669)) ([41e6f09](https://github.com/magnus919/agent-skills/commit/41e6f092b662a89627188b5952d4e61ae97348f9))
+* **trakt:** restrict routing to supported public discovery ([#664](https://github.com/magnus919/agent-skills/issues/664)) ([7cb7168](https://github.com/magnus919/agent-skills/commit/7cb7168d00594c88ddd8fc8c2d20f8dd24c94338))
+* **verification:** reconcile multi-lane gate verdicts ([1b753bb](https://github.com/magnus919/agent-skills/commit/1b753bb0f025c97e9edf6e49fa2fdfd2dd9d6435))
+* **verification:** reconcile multi-lane gate verdicts ([b3b844f](https://github.com/magnus919/agent-skills/commit/b3b844f35788926629d494bca22f93117da75fe5))
+* **waiting-list:** require campaign-grade artwork ([b6d292e](https://github.com/magnus919/agent-skills/commit/b6d292ecea8f95170736bfb99a601ec6ba979aac))
+
 ## [0.8.0](https://github.com/magnus919/agent-skills/compare/v0.7.0...v0.8.0) (2026-09-19)
 
 
