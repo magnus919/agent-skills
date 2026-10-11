@@ -31,17 +31,48 @@ The tests assert outcomes against literal expected status, reason, write count, 
 
 The post-approval changes are meaningful negative mutations. The independently constructed, reordered equal action is a harmless positive control. A rejected approval remains in review even if the old record value is restored, so the harness cannot silently revive that approval.
 
-## Local verification
+## Finite source mutation sensitivity
 
-Checks ran with Python 3.14.7 from the available repository virtual environment:
+On 2026-10-10, the existing reference harness was exercised with five actual source-code mutants. Each mutant was applied to a temporary module overlay and run against the existing focused regression tests; the checked-in source was not changed during mutation runs. The unmutated baseline passed all 30 tests.
 
-Focused test: 30 passed.
+| Source mutant | Regression outcome |
+| --- | --- |
+| Bypass current-permission gate | Killed: 1 failing regression case |
+| Bypass expected and current record-revision gates | Killed: 2 failing regression cases |
+| Bypass command and current policy-version gates | Killed: 2 failing regression cases |
+| Bypass exact approved-action gate | Killed: 3 failing regression cases |
+| Bypass identical-replay response deduplication | Killed: 1 failing regression case; the replay returns `review` instead of `deduplicated`. The separate executed-state gate still prevents a second write. |
+| Equivalent boolean spelling (`is not True` → `is False`) | Passed all 30 focused tests |
+
+The equivalent control is valid because current permission is type-checked as a boolean before reaching the gate. Invalid-mutant outcomes and infrastructure errors are reported separately; both counts were zero. The replay mutation measures response-deduplication sensitivity only; it does not exercise duplicate-write prevention. The result measures sensitivity of this pinned reference test set only. It does not establish production coverage, deployed authority, or closure of the P0 deployment gap.
+
+The mutation runner is `eval_runner/fair_pilot_command_boundary_mutations.py`; its core tests are in `eval_runner/tests/test_fair_pilot_command_boundary_mutations.py`, including a check that overlay execution uses captured test bytes after the backing test file changes. Run the six bounded source mutations with:
 
 ```sh
-python3 -m pytest eval_runner/tests/test_fair_pilot_command_boundary.py -q --no-cov
+python3 -m eval_runner.fair_pilot_command_boundary_mutations --json
 ```
 
-Core aggregate: 330 passed, 31 subtests passed, and 71.88% total coverage against the 60% threshold. This used every path in `scripts/core-test-files.txt`:
+Frozen mutation inputs:
+
+| Input | SHA-256 |
+| --- | --- |
+| `eval_runner/fair_pilot_command_boundary.py` | `b5777c9d7f69e370e3aa96c5b19918d525ba2557514a97b8ed0534485878a7fc` |
+| `eval_runner/tests/test_fair_pilot_command_boundary.py` | `a963f2e8184b5c423f4f56d2a3c1e3317737a16dfd652d92f179d6aec98ee8d2` |
+
+## Local verification
+
+The 2026-10-10 follow-up checks ran with Python 3.14.7 in this executor.
+
+Focused harness and mutation tests: 32 passed.
+
+```sh
+python3 -m pytest \
+  eval_runner/tests/test_fair_pilot_command_boundary.py \
+  eval_runner/tests/test_fair_pilot_command_boundary_mutations.py \
+  -q --no-cov
+```
+
+Core aggregate: 332 passed, 31 subtests passed, and 71.81% total coverage against the 60% threshold. This used every path in `scripts/core-test-files.txt`:
 
 ```sh
 python3 -m pytest \
@@ -54,16 +85,18 @@ python3 -m pytest \
   --cov-fail-under=60 --cov-report=term
 ```
 
-Lint (`python3 -m ruff check scripts/ eval_runner/`), formatting (`python3 -m ruff format --check scripts/ eval_runner/`), and typing (`python3 -m mypy scripts/ eval_runner/`) all passed.
+Lint (`python3 -m ruff check scripts/ eval_runner/`) and formatting (`python3 -m ruff format --check scripts/ eval_runner/`) passed. Module-level mypy for the new runner and its test passed with `--follow-imports=skip`. The full `python3 -m mypy scripts/ eval_runner/` check could not be reproduced in this system environment: `types-jsonschema` is missing, and the installed NumPy stub uses syntax unsupported by the repository's configured Python 3.10 target.
 
-The aggregate run included the entire `eval_runner/tests/` directory. It was local verification, not a GitHub CI run; CI currently uses Python 3.12.
+The aggregate run included the entire `eval_runner/tests/` directory. These are local checks, not a GitHub CI run; CI currently uses Python 3.12.
 
 ## Scope and limits
 
 `eval_runner/fair_pilot_command_boundary.py` records writes only in a Python list. It has no connection to production state, authorization services, policy storage, or persistence. It does not test authenticated approver provenance, concurrent requests, cross-process idempotency, transaction isolation, policy-clause correctness, or runtime integration. The scenario does not require authoritative real-policy clauses or production access; if either becomes necessary to state a new requirement, stop this reference-only lane for owner input.
 
+Policy-fidelity work still needs actual clauses and an owner-approved fixture. UX and stakeholder outcomes need real evidence. This mutation batch adds no implementation in those areas.
+
 The work adds no model or Jev calls. `eval_runner/tests/` is already part of the core test route in `scripts/core-test-files.txt`, so no workflow change was needed.
 
 ## Source revision note
 
-This local commit remains based on cached `22b4723c549e2851ebae7e739cc5bd980ff4884a`; it is not integrated with current main at `42b3086c5d68bcba4b012c8f6bc19fe562ce6c62`. The publisher will apply these files on current main and use its full remote CI to establish integration. Local checks here do not establish compatibility with that current base.
+The command-boundary reference harness and its focused regression tests were integrated through PR #695 on 2026-10-10 at main commit `91e93627542d636d24545427d0d77b112ea1adf3`. This local mutation run used the source and test hashes listed above in a worktree based on cached HEAD `f632ac910ee47c6be1cfece1599872fdc5d1adb6`, descended from `22b4723c549e2851ebae7e739cc5bd980ff4884a`. The current combined main commit was not present in this checkout, so I could not verify these hashes against that merged tree, repeat the mutation run there, or refresh the test-route inventory. The publisher should apply these follow-up files to current main and run remote CI; this local result does not establish integration on the combined tree.
