@@ -6,8 +6,7 @@ license: MIT
 compatibility: Portable across agent harnesses. Live work requires the selected framework toolchain, a supported ESP32-family board, data-capable USB connection, and platform serial permissions.
 metadata:
   source_index: references/source-index.md
-  research_checked: "2026-07-15"
-  hardware_testing_checked: "2026-10-11"
+  research_checked: "2026-10-11"
 ---
 
 # ESP32 Development
