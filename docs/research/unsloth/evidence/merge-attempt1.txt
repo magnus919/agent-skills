@@ -1,0 +1,31 @@
+W1012 18:42:41.711000 599064 .venv/lib/python3.11/site-packages/torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W1012 18:42:41.725000 599064 .venv/lib/python3.11/site-packages/torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+==((====))==  Unsloth 2026.10.3: Fast Qwen3 patching. Transformers: 5.17.0.
+   \\   /|    NVIDIA GeForce RTX 5070 Ti. Num GPUs = 1. Max memory: 15.469 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.14.0+cu130. CUDA: 12.0. CUDA Toolkit: 13.0. Triton: 3.8.0
+\        /    Bfloat16 = TRUE. FA [Xformers = 0.0.35. FA2 = False]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]Loading weights:  68%|██████▊   | 211/310 [00:00<00:00, 2098.45it/s]Loading weights: 100%|██████████| 310/310 [00:00<00:00, 1689.91it/s]
+Unsloth 2026.10.3 patched 28 layers with 28 QKV layers, 28 O layers and 28 MLP layers.
+Both `max_new_tokens` (=16) and `max_length`(=40960) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Both `max_new_tokens` (=16) and `max_length`(=40960) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Both `max_new_tokens` (=16) and `max_length`(=40960) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Both `max_new_tokens` (=16) and `max_length`(=40960) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Both `max_new_tokens` (=16) and `max_length`(=40960) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Both `max_new_tokens` (=16) and `max_length`(=40960) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Both `max_new_tokens` (=16) and `max_length`(=40960) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Both `max_new_tokens` (=16) and `max_length`(=40960) seem to have been set. `max_new_tokens` will take precedence. Please refer to the documentation for more information. (https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)
+Unsloth: Restored added_tokens_decoder metadata in /home/magnus/experiments/unsloth-skill-20261012/merged/tokenizer_config.json.
+Found HuggingFace hub cache directory: /home/magnus/experiments/unsloth-skill-20261012/hf-cache/hub
+Checking cache directory for required files...
+Unsloth: Copying 1 files from cache to `/home/magnus/experiments/unsloth-skill-20261012/merged`:   0%|          | 0/1 [00:00<?, ?it/s]Unsloth: Copying 1 files from cache to `/home/magnus/experiments/unsloth-skill-20261012/merged`: 100%|██████████| 1/1 [00:00<00:00,  1.78it/s]Unsloth: Copying 1 files from cache to `/home/magnus/experiments/unsloth-skill-20261012/merged`: 100%|██████████| 1/1 [00:00<00:00,  1.78it/s]
+Successfully copied all 1 files from cache to `/home/magnus/experiments/unsloth-skill-20261012/merged`
+Checking cache directory for required files...
+Cache check failed: tokenizer.model not found in local cache.
+Not all required files found in cache. Will proceed with downloading.
+Unsloth: Preparing safetensor model files:   0%|          | 0/1 [00:00<?, ?it/s]Unsloth: Preparing safetensor model files: 100%|██████████| 1/1 [00:00<00:00, 7463.17it/s]
+Unsloth: Merging weights into 16bit:   0%|          | 0/1 [00:00<?, ?it/s]Unsloth: Merging weights into 16bit: 100%|██████████| 1/1 [00:00<00:00,  1.22it/s]Unsloth: Merging weights into 16bit: 100%|██████████| 1/1 [00:00<00:00,  1.22it/s]
+Unsloth: Merge process complete. Saved to `/home/magnus/experiments/unsloth-skill-20261012/merged`

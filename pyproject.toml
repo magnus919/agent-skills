@@ -98,6 +98,7 @@ requirements_files = ["requirements-dev.txt", "youtube-thumbnail/requirements.tx
 known_first_party = ["thumbnail_preflight", "llama_batch"]
 package_module_name_map = { Pillow = ["PIL"], "pydantic-ai-slim" = ["pydantic_ai"] }
 extend_exclude = [
+    "unsloth",  # Isolated GPU dependencies are pinned in the skill assets.
     "agent-council",
     "agent-production-operations",
     "binary-analysis",

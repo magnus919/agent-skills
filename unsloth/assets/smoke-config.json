@@ -1,0 +1,12 @@
+{
+  "model_id": "unsloth/Qwen3-0.6B",
+  "model_revision": "db4e90b8359f816f09bf5c944797ce116f26da3c",
+  "recipe_revision": "87c1e89e973562a5fa94aaffe523e2da84f75785",
+  "seed": 3407,
+  "max_length": 256,
+  "max_new_tokens": 16,
+  "rank": 8,
+  "existing_gpu_pids": [
+    26174
+  ]
+}

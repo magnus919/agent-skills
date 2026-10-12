@@ -1,0 +1,8 @@
+{
+  "seconds": 6.288499637004861,
+  "peak_allocated_bytes": 1345165824,
+  "peak_reserved_bytes": 1358954496,
+  "torch": "2.14.0+cu130",
+  "cuda": "13.0",
+  "config_sha256": "e2f36fb0f414d6bfeb13fdfcc78eac5ae57305be36d6f70ab7656f11b5837f07"
+}

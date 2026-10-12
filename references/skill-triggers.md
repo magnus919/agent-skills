@@ -124,6 +124,7 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "Prometheus", "prometheus.yml", "scrape config", "PromQL", "promtool", "OpenTelemetry Collector", "OTLP", "Loki", "LogQL", "telemetry stack", "Loki retention", "prometheus rules", "telemetry-check" | [telemetry](../telemetry/SKILL.md) |
 | "PostgreSQL", "postgres", "psql", "pg_stat_activity", "vacuum", "bloat", "WAL archiving", "point-in-time recovery", "postgres replication", "postgres failover", "postgres upgrade", "pgdiag", "PostgreSQL configuration" | [postgres](../postgres/SKILL.md) |
 | "Playwright", "E2E test", "end-to-end test", "headless browser", "browser automation", "Playwright config", "selectors", "network mocking", "pwrun" | [playwright](../playwright/SKILL.md) |
+| "Unsloth", "Unsloth Core", "Unsloth Studio", "Unsloth Desktop", "Unsloth QLoRA", "Unsloth GRPO", "Unsloth export" | [unsloth](../unsloth/SKILL.md) |
 | "vLLM", "LLM serving", "inference server", "continuous batching", "tensor parallelism", "OpenAI-compatible API", "vLLM deployment", "GPU inference", "LLM benchmarking" | [vllm](../vllm/SKILL.md) |
 | "PDF", "Word document", "docx", "Excel", "xlsx", "PowerPoint", "pptx", "generate a report", "convert to PDF", "office document", "document validation", "generate a deck" | [documents](../documents/SKILL.md) |
 | "travel guide", "travel dossier", "personalized itinerary", "trip brief", "travel field guide", "travel companion web page", "travel PDF", "shareable itinerary" | [travel-guide](../travel-guide/SKILL.md) |

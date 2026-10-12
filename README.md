@@ -657,6 +657,10 @@ Operate Transistor.fm podcast hosting from the terminal: verify API access, brow
 
 Create personalized, source-grounded travel dossiers from a destination, dates, duration, travelers, and constraints. Ask only the questions that change the plan, research current logistics, and produce a cited PDF or responsive companion web page with private/shareable output options.
 
+### [unsloth](unsloth/SKILL.md)
+
+Install and operate Unsloth Core, Studio, and Desktop for local inference, LoRA/QLoRA training, advanced objectives, checkpoint recovery, and verified model export. Includes offline environment and dataset checks, official-source research, and reproducible experiment guidance.
+
 ### [vercel-eve](vercel-eve/SKILL.md)
 
 Build, deploy, self-host, secure, and troubleshoot durable backend AI agents with Vercel Eve. Covers the filesystem-first agent project, typed tools, skills, subagents, connections, sandboxes, durable sessions, Vercel deployment, and the operational contracts required for a Node-hosted deployment.

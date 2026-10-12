@@ -1,0 +1,2 @@
+name, uuid, driver_version, memory.total [MiB], memory.used [MiB], utilization.gpu [%]
+NVIDIA GeForce RTX 5070 Ti, GPU-96553f69-a970-5237-e7bb-43f961ab5ab9, 580.178.04, 16303 MiB, 2304 MiB, 0 %

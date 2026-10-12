@@ -1,0 +1,7 @@
+Retained excerpt from the tool output of the second attempt (full stream was
+replaced by the successful third attempt; traceback and exit status remain).
+
+--no-conversation is not supported by llama-cli
+please use llama-completion instead
+
+Loading model...

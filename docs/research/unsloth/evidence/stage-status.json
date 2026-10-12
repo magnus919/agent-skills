@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-12",
+  "gpu_host": "gpuslut01",
+  "run_root": "/home/magnus/experiments/unsloth-skill-20261012",
+  "stages": {
+    "installation": {
+      "status": "pass",
+      "evidence": [
+        "install-attempt3.txt"
+      ],
+      "failed_attempts": [
+        "install.txt",
+        "install-attempt2.txt"
+      ]
+    },
+    "tokenizer_and_collated_labels": {
+      "status": "pass",
+      "evidence": [
+        "final-run/train-label-audit.json",
+        "final-run/train-trainer-batch.json"
+      ]
+    },
+    "baseline": {
+      "status": "pass",
+      "exact_match": 0,
+      "total": 8
+    },
+    "training_20_steps": {
+      "status": "pass",
+      "evidence": [
+        "final-run/train-trainer.json",
+        "final-run/train-resources.json"
+      ]
+    },
+    "candidate_evaluation": {
+      "status": "pass",
+      "exact_match": 8,
+      "total": 8,
+      "scope": "toy uppercase-color formatting only"
+    },
+    "fresh_process_reload": {
+      "status": "pass",
+      "evidence": [
+        "final-run/reload-parity.json",
+        "final-reload-attempt1.exit"
+      ]
+    },
+    "checkpoint_resume": {
+      "status": "pass",
+      "evidence": [
+        "final-run/resume-trainer.json",
+        "final-resume-attempt1.exit"
+      ],
+      "from_step": 20,
+      "to_step": 22,
+      "caveat": "extended learning-rate horizon; not uninterrupted-22-step equivalence"
+    },
+    "merge": {
+      "status": "pass",
+      "evidence": [
+        "merge-attempt1.exit"
+      ]
+    },
+    "merged_gpu_inference": {
+      "status": "pass",
+      "evidence": [
+        "export-hf.json"
+      ]
+    },
+    "gguf_conversion_f16": {
+      "status": "pass",
+      "evidence": [
+        "gguf-convert-attempt1.exit"
+      ]
+    },
+    "gguf_gpu_parity": {
+      "status": "pass",
+      "evidence": [
+        "export-llama.json",
+        "heldout-40-llama-stderr.txt"
+      ],
+      "failed_attempts": [
+        "gguf-parity-attempt1.exit",
+        "gguf-parity-attempt2.txt",
+        "export-diagnosis.txt"
+      ],
+      "final_attempt": 3
+    },
+    "gguf_cpu_parity": {
+      "status": "fail",
+      "evidence": [
+        "gguf-parity-attempt1.exit",
+        "export-diagnosis.txt"
+      ],
+      "continuation": "forbidden by subsequent user GPU-only constraint"
+    },
+    "qlora_4bit_training": {
+      "status": "not-run"
+    },
+    "q4_q8_export_parity": {
+      "status": "not-run"
+    },
+    "studio_desktop_and_advanced_training": {
+      "status": "not-run"
+    },
+    "catalog_behavioral_evals": {
+      "status": "not-run",
+      "note": "manifest/rubric validation is separate from generated semantic grading"
+    }
+  }
+}

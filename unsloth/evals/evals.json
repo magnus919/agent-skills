@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "unsloth",
+  "evals": [
+    {
+      "id": "surface-and-mac",
+      "prompt": "I have an Apple Silicon Mac and want Unsloth. Can I use the same CUDA QLoRA notebook my coworker uses, or should I install Desktop?",
+      "expected_output": "Distinguish the products and choose a documented Mac path without claiming CUDA notebook portability.",
+      "assertions": [
+        "The response distinguishes Core Python training from Studio or Desktop workflows.",
+        "The response requires checking the selected Mac backend and model before promising training support.",
+        "The response rejects running the NVIDIA CUDA recipe unchanged on Apple Silicon."
+      ]
+    },
+    {
+      "id": "isolated-install",
+      "prompt": "Prepare an executable Unsloth installation package for an Ubuntu RTX 5070 Ti host. Its existing Torch environment belongs to another project. Use the skill's observed compatibility baseline, but do not install or run a model here. Deliver install.sh and run-record.md; distinguish tested baseline facts from this unexecuted target.",
+      "expected_output": "An isolated pinned installer and evidence record with an explicit unexecuted-target boundary.",
+      "assertions": [
+        "artifact_exists: install.sh",
+        "artifact_exists: run-record.md",
+        "The installer targets a new environment and selects the CUDA wheel index matching the pinned Torch build.",
+        "The run record identifies the observed package baseline while marking this target's training as not run."
+      ]
+    },
+    {
+      "id": "data-leakage",
+      "prompt": "My train and validation JSONL rows have different IDs but identical messages. The preflight reports overlap. Can I keep those rows because the IDs differ?",
+      "expected_output": "Treat duplicate message content as leakage regardless of IDs and describe the limited audit scope.",
+      "assertions": [
+        "The response treats identical message content across splits as leakage despite different metadata IDs.",
+        "The response proposes rebuilding splits using source or conversation groups.",
+        "The response says a clean exact-duplicate check cannot establish absence of semantic leakage."
+      ]
+    },
+    {
+      "id": "zero-masked-loss",
+      "prompt": "Create label-audit.py for text-only Qwen SFT: loss is zero after using Llama delimiters and max length 256. Deliver runnable code that renders matched training and generation templates, checks actual collated labels, and refuses partially or wholly truncated answers before training. Do not merely recommend inspecting labels.",
+      "expected_output": "Runnable tokenizer and collator audit with fail-closed target-retention checks.",
+      "assertions": [
+        "artifact_exists: label-audit.py",
+        "The code checks non-ignored labels from the actual training collator rather than inferring masking from input strings.",
+        "The code rejects both partial target truncation and zero supervised tokens.",
+        "The code derives the assistant boundary from a verified template prefix and rejects a prefix mismatch."
+      ]
+    },
+    {
+      "id": "grpo-reward-hacking",
+      "prompt": "My Unsloth GRPO model gets perfect reward by printing answer tags with wrong answers. Give me a recovery plan for a 24 GB GPU.",
+      "expected_output": "Audit rewards against adversarial outputs and budget rollout memory before another bounded run.",
+      "assertions": [
+        "The response tests the reward against at least one correctly formatted but incorrect answer.",
+        "The response evaluates held-out task correctness separately from training reward.",
+        "The response includes rollout generation or completion length in memory planning."
+      ]
+    },
+    {
+      "id": "adapter-is-not-resume",
+      "prompt": "Build resume-check.py and run-record.md for an Unsloth adapter-only folder. There is no optimizer, scheduler, trainer state or RNG file. The user wants exact step-20 resume. Produce an executable check that blocks that claim, and describe a separate fresh-optimizer continuation. Do not train here.",
+      "expected_output": "An executable missing-state check and an honest continuation record.",
+      "assertions": [
+        "artifact_exists: resume-check.py",
+        "artifact_exists: run-record.md",
+        "The executable check rejects the adapter-only folder as insufficient for stateful resume.",
+        "The record identifies optimizer, scheduler, trainer progress and RNG as required checkpoint state without claiming an executed resume."
+      ]
+    },
+    {
+      "id": "export-parity",
+      "prompt": "Create verify-export.py and run-record.md to compare a saved Unsloth candidate with GGUF in llama.cpp. Use identical rendered prompts, greedy decoding and explicit task scoring. The user requires GPU-only inference. A prior subprocess capture_output wrapper consumed 20 GB RAM. No GPU is available in this evaluation: prepare the artifacts, mark parity not run, and do not upload anything.",
+      "expected_output": "GPU-only fixed-prompt parity code with bounded process output and honest evidence status.",
+      "assertions": [
+        "artifact_exists: verify-export.py",
+        "artifact_exists: run-record.md",
+        "The runtime invocation requests GPU layer offload and the code requires observed offload before passing parity.",
+        "The code bounds runtime output and wall time and stops only its own process on failure.",
+        "The record marks parity not run and makes no model upload claim."
+      ]
+    },
+    {
+      "id": "vision-collator",
+      "prompt": "I am fine-tuning a vision model in Unsloth. Can I turn image message blocks into strings and use the plain text SFT helper and collator?",
+      "expected_output": "Preserve the image path and use the model-specific vision processor and collator.",
+      "assertions": [
+        "The response rejects stringifying image blocks as a substitute for multimodal inputs.",
+        "The response selects a vision processor and vision data collator for the training batch.",
+        "The response verifies that image information reaches an actual batch."
+      ]
+    },
+    {
+      "id": "ddp-memory",
+      "prompt": "I have two 24 GB GPUs and a model that needs 40 GB per replica. Will torchrun with two Unsloth DDP workers make it fit?",
+      "expected_output": "Explain model replication versus sharding and require a compatible capacity strategy.",
+      "assertions": [
+        "The response explains that ordinary DDP replicates the model instead of combining GPU memory.",
+        "The response proposes a smaller or quantized model, or a verified sharding path, for capacity.",
+        "The response requires a bounded distributed smoke test before a full run."
+      ]
+    },
+    {
+      "id": "inventory-evidence",
+      "prompt": "Produce stage-status.json and run-record.md from this evidence: doctor exit 0, Torch and Unsloth null; tokenizer and GPU probes not run; no checkpoint or adapter; no evaluation outputs. Use explicit pass/fail/not-run for installation, label audit, training, reload, resume and export. Do not invent logs or successful execution.",
+      "expected_output": "Machine-readable incomplete stage statuses tied to evidence, plus reproduction prerequisites.",
+      "assertions": [
+        "artifact_exists: stage-status.json",
+        "artifact_exists: run-record.md",
+        "The stage report does not mark installation, training, reload, resume or export as passed from inventory exit zero.",
+        "The record identifies missing dependencies and required runtime evidence without inventing artifacts."
+      ]
+    },
+    {
+      "id": "reproducible-smoke-package",
+      "prompt": "Prepare a runnable GPU-only 20-step Unsloth text-SFT package with smoke-config.json, train.jsonl, heldout.jsonl, sft_smoke.py and run-record.md. Pin the public model revision and use the observed package baseline. Include base/candidate scoring, saved full checkpoints, fresh-process reload and stateful resume. No GPU is available here; deliver code and mark runtime stages not run.",
+      "expected_output": "A reproducible executable package with separate held-out fixtures and honest unexecuted stages.",
+      "assertions": [
+        "artifact_exists: smoke-config.json",
+        "artifact_exists: train.jsonl",
+        "artifact_exists: heldout.jsonl",
+        "artifact_exists: sft_smoke.py",
+        "artifact_exists: run-record.md",
+        "The package pins an immutable base-model revision and resolved dependencies.",
+        "The training script saves full trainer checkpoints and separately saves the adapter and tokenizer.",
+        "The package evaluates identical held-out prompts under fixed decoding and reports explicit scoring rather than using training loss as quality evidence.",
+        "The run record marks unavailable runtime stages not run."
+      ]
+    }
+  ]
+}

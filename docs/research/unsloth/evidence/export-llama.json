@@ -1,0 +1,92 @@
+{
+  "runtime": "llama",
+  "seconds": 9.28112481500284,
+  "cases": [
+    {
+      "id": "heldout-40",
+      "output": "RED",
+      "raw_output": "RED",
+      "expected": "RED",
+      "exact_match": 1,
+      "candidate_text_parity": true,
+      "token_parity": true,
+      "terminated": true
+    },
+    {
+      "id": "heldout-41",
+      "output": "BLUE",
+      "raw_output": "BLUE",
+      "expected": "BLUE",
+      "exact_match": 1,
+      "candidate_text_parity": true,
+      "token_parity": true,
+      "terminated": true
+    },
+    {
+      "id": "heldout-42",
+      "output": "GREEN",
+      "raw_output": "GREEN",
+      "expected": "GREEN",
+      "exact_match": 1,
+      "candidate_text_parity": true,
+      "token_parity": true,
+      "terminated": true
+    },
+    {
+      "id": "heldout-43",
+      "output": "YELLOW",
+      "raw_output": "YELLOW",
+      "expected": "YELLOW",
+      "exact_match": 1,
+      "candidate_text_parity": true,
+      "token_parity": true,
+      "terminated": true
+    },
+    {
+      "id": "heldout-44",
+      "output": "RED",
+      "raw_output": "RED",
+      "expected": "RED",
+      "exact_match": 1,
+      "candidate_text_parity": true,
+      "token_parity": true,
+      "terminated": true
+    },
+    {
+      "id": "heldout-45",
+      "output": "BLUE",
+      "raw_output": "BLUE",
+      "expected": "BLUE",
+      "exact_match": 1,
+      "candidate_text_parity": true,
+      "token_parity": true,
+      "terminated": true
+    },
+    {
+      "id": "heldout-46",
+      "output": "GREEN",
+      "raw_output": "GREEN",
+      "expected": "GREEN",
+      "exact_match": 1,
+      "candidate_text_parity": true,
+      "token_parity": true,
+      "terminated": true
+    },
+    {
+      "id": "heldout-47",
+      "output": "YELLOW",
+      "raw_output": "YELLOW",
+      "expected": "YELLOW",
+      "exact_match": 1,
+      "candidate_text_parity": true,
+      "token_parity": true,
+      "terminated": true
+    }
+  ],
+  "exact_match": 8,
+  "total": 8,
+  "all_text_parity": true,
+  "all_terminated": true,
+  "gpu_only": true,
+  "all_token_parity": true
+}

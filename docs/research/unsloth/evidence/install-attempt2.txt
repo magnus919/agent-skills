@@ -1,0 +1,4 @@
+Using Python 3.11.16 environment at: experiments/unsloth-skill-20261012/.venv
+Resolved 107 packages in 30ms
+error: Failed to download `pillow==12.3.0`
+  cause: Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/3b/2d/ede717bc1144f63886c21fd349bb95860b0d1a21149ff16f2bb362b612b6/pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl`

@@ -1,0 +1,2 @@
+Filesystem                         Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-ubuntu--lv  1.1T  917G  144G  87% /

@@ -1,0 +1,334 @@
+{
+  "rows": [
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    },
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    },
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 32,
+      "prompt_tokens": 29,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "RED<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "BLUE<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "GREEN<|im_end|>\n"
+    },
+    {
+      "tokens": 33,
+      "prompt_tokens": 30,
+      "supervised_tokens": 3,
+      "lost_target_tokens": 0,
+      "decoded_target": "YELLOW<|im_end|>\n"
+    }
+  ],
+  "collated_supervised_tokens": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "token_length_percentiles": {
+    "0": 32,
+    "50": 33,
+    "90": 33,
+    "95": 33,
+    "100": 33
+  },
+  "passed": true
+}

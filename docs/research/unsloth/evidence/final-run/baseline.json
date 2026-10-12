@@ -1,0 +1,114 @@
+{
+  "model_revision": "db4e90b8359f816f09bf5c944797ce116f26da3c",
+  "decoding": {
+    "do_sample": false,
+    "max_new_tokens": 16
+  },
+  "cases": [
+    {
+      "id": "heldout-40",
+      "prompt": "<|im_start|>user\nReturn only the uppercase color after the marker. Record 40: marker=red.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "generated_ids": [
+        1151,
+        151645
+      ],
+      "output": "red",
+      "expected": "RED",
+      "exact_match": 0,
+      "terminated": true
+    },
+    {
+      "id": "heldout-41",
+      "prompt": "<|im_start|>user\nReturn only the uppercase color after the marker. Record 41: marker=blue.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "generated_ids": [
+        12203,
+        151645
+      ],
+      "output": "blue",
+      "expected": "BLUE",
+      "exact_match": 0,
+      "terminated": true
+    },
+    {
+      "id": "heldout-42",
+      "prompt": "<|im_start|>user\nReturn only the uppercase color after the marker. Record 42: marker=green.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "generated_ids": [
+        13250,
+        151645
+      ],
+      "output": "green",
+      "expected": "GREEN",
+      "exact_match": 0,
+      "terminated": true
+    },
+    {
+      "id": "heldout-43",
+      "prompt": "<|im_start|>user\nReturn only the uppercase color after the marker. Record 43: marker=yellow.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "generated_ids": [
+        27869,
+        151645
+      ],
+      "output": "yellow",
+      "expected": "YELLOW",
+      "exact_match": 0,
+      "terminated": true
+    },
+    {
+      "id": "heldout-44",
+      "prompt": "<|im_start|>user\nReturn only the uppercase color after the marker. Record 44: marker=red.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "generated_ids": [
+        785,
+        2550,
+        374,
+        25,
+        3070,
+        6504,
+        334,
+        13,
+        151645
+      ],
+      "output": "The output is: **RED**.",
+      "expected": "RED",
+      "exact_match": 0,
+      "terminated": true
+    },
+    {
+      "id": "heldout-45",
+      "prompt": "<|im_start|>user\nReturn only the uppercase color after the marker. Record 45: marker=blue.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "generated_ids": [
+        12203,
+        151645
+      ],
+      "output": "blue",
+      "expected": "BLUE",
+      "exact_match": 0,
+      "terminated": true
+    },
+    {
+      "id": "heldout-46",
+      "prompt": "<|im_start|>user\nReturn only the uppercase color after the marker. Record 46: marker=green.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "generated_ids": [
+        13250,
+        151645
+      ],
+      "output": "green",
+      "expected": "GREEN",
+      "exact_match": 0,
+      "terminated": true
+    },
+    {
+      "id": "heldout-47",
+      "prompt": "<|im_start|>user\nReturn only the uppercase color after the marker. Record 47: marker=yellow.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "generated_ids": [
+        27869,
+        151645
+      ],
+      "output": "yellow",
+      "expected": "YELLOW",
+      "exact_match": 0,
+      "terminated": true
+    }
+  ],
+  "exact_match": 0,
+  "total": 8
+}

@@ -1,0 +1,11 @@
+{
+  "model_id": "unsloth/Qwen3-0.6B",
+  "model_revision": "db4e90b8359f816f09bf5c944797ce116f26da3c",
+  "gated": false,
+  "model_metadata_url": "https://huggingface.co/api/models/unsloth/Qwen3-0.6B",
+  "notebooks_revision": "87c1e89e973562a5fa94aaffe523e2da84f75785",
+  "notebook_sha256": "c0190b08b156489a501d07ca5ee7c81c4040d0efb2c09b2ef6c3f2bcd7d31e1d",
+  "llama_cpp_revision": "1acee6bf8939948f9bcbf4b14034e4b475f06069",
+  "recovered_snapshot_sha256": "68672fde30561c63bd2f32983cf30c30fe602fa221075fea6877e407dcefd8bd",
+  "reconciled_origin_main": "fb3253335cdb1156522901ef52f9897212b2e4b5"
+}
