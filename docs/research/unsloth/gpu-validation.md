@@ -124,3 +124,14 @@ The root dependency scanner excludes the Unsloth skill, following other named-to
 skills, because its separate GPU dependencies are frozen in the skill assets.
 This does not exclude it from skill-local tests, schema validation or catalog checks.
 Final check results are recorded in `final-verification.md`.
+
+## Publication continuation, 2026-10-12
+
+The later user directive authorizes publishing all conversation improvements.
+The llama-cpp batch-launch fix was merged in PR #700 at
+`8794814096a5c009153825dd6c15b3f21d9bc56b`. The Unsloth commit was rebased onto
+that main revision without conflict. Earlier no-publication statements above
+describe the original bounded handoff, not the later authorized publication.
+Only code, synthetic fixtures and small evidence are included; model and trainer
+binaries remain on the GPU host. Runtime script bytes match the recorded GPU
+source hashes, so repository reconciliation does not imply a new training run.
