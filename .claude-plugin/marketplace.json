@@ -741,7 +741,7 @@
         "./llama-cpp"
       ],
       "strict": false,
-      "description": "Operate, configure, benchmark, and troubleshoot llama.cpp across CPU, Metal, CUDA, HIP/ROCm, Vulkan, SYCL, and hybrid or multi-GPU systems. Use when installing or building llama.cpp, selecting or inspecting GGUF models, running llama-cli, serving an OpenAI-compatible API with llama-server, tuning memory and performance, or diagnosing backend, context, template, and API failures. Do not use for model training or fine-tuning, general inference-framework selection, llama-cpp-python or other bindings, LlamaIndex, Ollama, or LM Studio operation."
+      "description": "Operate, configure, benchmark, and troubleshoot llama.cpp across CPU, Metal, CUDA, HIP/ROCm, Vulkan, SYCL, and hybrid or multi-GPU systems. Use when installing or building llama.cpp, selecting or inspecting GGUF models, running llama-cli or bounded llama-completion, serving an OpenAI-compatible API with llama-server, tuning memory and performance, or diagnosing backend, context, template, and API failures. Do not use for model training or fine-tuning, general inference-framework selection, llama-cpp-python or other bindings, LlamaIndex, Ollama, or LM Studio operation."
     },
     {
       "name": "llamaindex",

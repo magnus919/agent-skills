@@ -1,13 +1,14 @@
 ---
 name: llama-cpp
 description: >-
-  Operate, configure, benchmark, and troubleshoot llama.cpp across CPU, Metal, CUDA, HIP/ROCm, Vulkan, SYCL, and hybrid or multi-GPU systems. Use when installing or building llama.cpp, selecting or inspecting GGUF models, running llama-cli, serving an OpenAI-compatible API with llama-server, tuning memory and performance, or diagnosing backend, context, template, and API failures. Do not use for model training or fine-tuning, general inference-framework selection, llama-cpp-python or other bindings, LlamaIndex, Ollama, or LM Studio operation.
+  Operate, configure, benchmark, and troubleshoot llama.cpp across CPU, Metal, CUDA, HIP/ROCm, Vulkan, SYCL, and hybrid or multi-GPU systems. Use when installing or building llama.cpp, selecting or inspecting GGUF models, running llama-cli or bounded llama-completion, serving an OpenAI-compatible API with llama-server, tuning memory and performance, or diagnosing backend, context, template, and API failures. Do not use for model training or fine-tuning, general inference-framework selection, llama-cpp-python or other bindings, LlamaIndex, Ollama, or LM Studio operation.
 license: MIT
 compatibility: Requires a supported llama.cpp binary or a build environment. Model use requires a compatible GGUF file and sufficient disk and memory; accelerator paths require the matching driver and SDK.
 metadata:
   source: https://github.com/ggml-org/llama.cpp
   source_index: references/source-index.md
   research_checked: "2026-07-25"
+  batch_checked: "2026-10-12"
 ---
 
 # llama.cpp Operations
@@ -52,6 +53,25 @@ Also inspect host memory and accelerator state with native OS/vendor tools. Reco
 | Tune threads, batches, context, cache, offload, concurrency, or multi-GPU and compare results | [performance and benchmarking](references/performance-and-benchmarking.md) |
 | Diagnose load, backend, OOM, speed, context, template, output, or API failures | [troubleshooting](references/troubleshooting.md) |
 | Check the evidence, research date, upstream revision, or refresh rule behind a claim | [source index](references/source-index.md) |
+
+## Batch inference versus interactive chat
+
+Use `llama-completion` for unattended raw completions on builds that separate
+that frontend from interactive `llama-cli`. The installed CLI may advertise a
+shared flag in help and still reject it at runtime; presence of
+`--no-conversation` alone is not proof of batch support. Never fall back to an
+interactive frontend when the completion target is missing. Read
+[bounded batch inference](references/bounded-batch.md) before using
+`scripts/llama_batch.py`. Its `plan` command performs bounded read-only capability
+checks; `run` writes a new private output directory and consumes GPU resources.
+The helper currently supports POSIX CUDA0 with full model offload; other backends
+use separately verified workflows.
+
+Bound process wall time and combined stdout/stderr bytes, pass EOF stdin, retain
+failed logs, and stop only the process group you launched. A token budget alone
+does not bound an interactive prompt loop. Do not accumulate runtime output in
+an unbounded `capture_output=True` buffer. Never hide a GPU fallback or call a
+prepared plan an executed inference pass.
 
 ## Safe workflow
 

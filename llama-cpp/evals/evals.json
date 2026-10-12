@@ -67,6 +67,18 @@
         "Treats layer split as the stable comparison, row split as deprecated, and tensor split as experimental at the reviewed upstream revision.",
         "Benchmarks against a matched single-GPU or partial-offload baseline and does not assume two GPUs must be faster."
       ]
+    },
+    {
+      "id": "batch-frontend-and-output-containment",
+      "prompt": "The installed llama-cli advertises --no-conversation but says it is unsupported and asks for llama-completion. That binary is missing. Our Python capture_output wrapper grew to 20 GB at EOF. Prepare batch-plan.json and a bounded GPU-only launch recipe without running a model here. Do not substitute CPU or keep retrying the interactive CLI.",
+      "expected_output": "A blocked batch plan naming the missing completion frontend and a bounded GPU-only execution recipe with honest unexecuted status.",
+      "assertions": [
+        "artifact_exists: batch-plan.json",
+        "The plan refuses the missing completion frontend before model loading and does not use interactive llama-cli as a fallback.",
+        "The recipe bounds both wall time and combined stdout/stderr bytes and supplies EOF stdin.",
+        "The recipe stops only its owned process group including pipe-holding descendants.",
+        "The plan distinguishes device visibility from observed model offload and marks GPU inference not run."
+      ]
     }
   ]
 }

@@ -61,3 +61,12 @@ Recheck the installed help and upstream sources when any of these change:
 - benchmark tool output/schema or measurement boundary.
 
 Always recheck external-exposure and built-in-tool security options immediately before enabling them.
+
+## Focused batch refresh, 2026-10-12
+
+The batch frontend and containment addition was observed on pinned revision
+`1acee6bf8939948f9bcbf4b14034e4b475f06069`, rather than silently refreshing all
+July research claims. Read `references/bounded-batch.md` from the skill root for
+source links, exact compatibility boundaries and evidence. The current upstream
+CLI/completion documentation was also inspected; live `master` links remain
+volatile. Device/help success is discovery, not model-execution evidence.

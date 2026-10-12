@@ -2,17 +2,20 @@
 
 Use this reference for `llama-cli`, `llama-server`, chat templates, structured output, embeddings, reranking, function calling, and network exposure.
 
-## Bounded CLI smoke test
+## Bounded batch smoke test
 
-Start with one model, one short prompt, a bounded output, and explicit sampling where reproducibility matters:
+For an unattended raw completion on the observed split-frontends build, select
+`llama-completion`, not the interactive `llama-cli`. Use the bounded launcher in
+`references/bounded-batch.md` from the skill root. It checks the completion
+binary, required help flags and CUDA0, then caps time and combined output while
+requiring observed model placement. If the completion binary is missing, stop
+and build/install that target in a separate prefix; do not send rejected batch
+flags to an interactive frontend.
 
-```sh
-llama-cli -m /path/to/model.gguf \
-  -p "Reply with exactly: llama.cpp ready" \
-  -n 16 -s 42
-```
-
-Confirm against the installed help that each option still has the intended meaning. Capture startup logs separately from generated output. Pass criteria are not merely exit code zero: the expected model and backend load, memory remains stable, output is usable for the intended mode, and timings are recorded.
+Older revisions can have a batch-capable `llama-cli`; verify that exact binary
+and invocation independently rather than translating by filename or flag
+presence. Capture startup logs separately from generated output. Exit zero alone
+does not prove backend, task correctness or termination.
 
 For chat models, inspect the embedded `tokenizer.chat_template`, original model card, and llama.cpp logs. Conversation mode may auto-enable when a template exists. Test the real system/user message behavior needed by the application. A plain prompt completion does not prove chat-template correctness.
 

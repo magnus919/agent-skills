@@ -18,6 +18,7 @@ Also capture vendor device status, free RAM/disk, the model hash and metadata, a
 
 | Symptom | Check first | Safe next action |
 |---|---|---|
+| CLI rejects batch flags or repeats prompts at EOF | Exact frontend/source revision; `llama-completion` availability; retained bounded output | Stop the owned process group; select a completion frontend, cap bytes/time, and do not increase generation budget |
 | Unknown flag or changed response | Installed `--help`, version, REST changelog | Translate configuration to current interface; do not retry obsolete flags blindly |
 | Unsupported architecture/tensor/GGUF | Model metadata, complete shards, llama.cpp revision | Confirm current architecture support or use a supported build/model conversion |
 | GPU absent | Build configure log, `--list-devices`, driver/runtime visibility | Fix build/runtime visibility before tuning offload |

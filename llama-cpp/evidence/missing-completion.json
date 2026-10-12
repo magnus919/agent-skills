@@ -1,0 +1,4 @@
+{
+  "status": "failed",
+  "error": "llama-completion is missing; build/install the pinned completion target. Interactive llama-cli is not a fallback."
+}

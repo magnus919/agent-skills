@@ -81,3 +81,69 @@ The user granted modify, publish, and merge authority for this repository and re
 ## Status
 
 Local implementation and integration verification passed. Delivery is pending publication, final-head CI, and merge; live llama.cpp runtime behavior remains an explicitly disclosed gap.
+
+## Batch frontend and output containment, 2026-10-12
+
+The follow-up user directive authorized fixing this repository's llama.cpp
+workflow and merging it through GitHub. The separate Unsloth draft remains on
+its unpublished local branch; no model weights are included in this change.
+
+Observed on gpuslut01: Ubuntu 24.04.5, Python 3.12.3, RTX 5070 Ti, driver
+580.178.04; installed CLI/source revision `1acee6bf8939948f9bcbf4b14034e4b475f06069`.
+The native interactive frontend advertises a shared flag, warns that
+`--no-conversation` is unsupported, and continues initialization. Our former
+unbounded Python capture amplified repeated EOF/UI output into an OOM. The
+repository's stale smoke recipe did not distinguish that frontend from batch
+completion. Upstream C++ code lives in ggml-org/llama.cpp and is not modified here.
+
+The new `scripts/llama_batch.py` refuses a missing completion frontend before
+weights load, does bounded capability discovery, supplies EOF stdin, caps bytes
+before buffering/writing, imposes a wall deadline, isolates/cleans its child group,
+and requires positive full CUDA placement. Caller defaults cannot inject chat,
+remote model selection or log suppression through LLAMA_* or HF_TOKEN.
+A new output-quality case and challenge table cover these boundaries.
+
+Validation:
+
+- Missing target in the existing binary directory was rejected before inference:
+  `evidence/missing-completion.json`.
+- The completion frontend was built in a new user-owned directory against the
+  installed libraries without changing that installation. First compilation
+  lacked the vendored nlohmann include path; the second succeeded. Reproduction
+  for this matching installation:
+
+```sh
+g++ -O2 -std=c++17 /home/magnus/llama.cpp/tools/completion/main.cpp \
+  /home/magnus/llama.cpp/tools/completion/completion.cpp \
+  -I/home/magnus/llama.cpp/tools/completion -I/home/magnus/llama.cpp/common \
+  -I/home/magnus/llama.cpp/include -I/home/magnus/llama.cpp/ggml/include \
+  -I/home/magnus/llama.cpp/vendor -L/home/magnus/llama.cpp/build/bin \
+  -Wl,-rpath,/home/magnus/llama.cpp/build/bin \
+  -lllama-common -lllama -lggml -lggml-base -pthread -o llama-completion
+```
+
+- Initial logging checks did not expose placement. Numeric thresholds 2 and 3
+  still hid backend INFO in the installed library. Those runs remained failed
+  rather than being promoted on CUDA visibility. A metadata-only C++ callback
+  probe confirmed threshold 3 suppressed INFO while INT_MAX emitted it; using the
+  supported `--verbose` flag then produced explicit placement under the byte cap.
+  All failed/build/probe evidence remains under
+  `/home/magnus/experiments/llama-completion-fix-20261012`.
+- Final GPU run passed: **29/29 layers** and **1,137 MiB CUDA0 model buffer**;
+  **0.520 seconds** for process execution, excluding preflight. Greedy output
+  was `RED` followed by the native EOG marker, matching the synthetic target.
+  `evidence/gpu-run.json` retains command, version, limits and evidence. This is
+  one compatibility smoke, not a general quality or performance benchmark.
+- The script's report keeps semantic quality `not_assessed`; the separate
+  reviewed expected-answer result is limited to that smoke input.
+- **13 offline regression tests** passed, including output floods, saved-byte
+  caps, EOF stdin, timeouts/group cleanup, missing completion, partial/absent GPU
+  evidence, injected defaults and existing-directory preservation.
+- `make validate`: **389 core tests and 31 subtests** passed, with all root lint,
+  format, type, dependency and coverage gates. Skill format/quality, eval schema,
+  script-test naming and generated catalog checks passed. GitHub CI must pass on
+  the exact PR head before merge; local evidence alone is not that gate.
+
+Windows and non-CUDA helper execution are not validated. The broader July
+reference guidance retains its original research date. No CPU model inference,
+paid/model-provider calls, public service or model upload was used in this fix.
