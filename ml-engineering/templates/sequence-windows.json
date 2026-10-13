@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "split_mode": "forward",
+  "training_cutoff": "2026-01-01T00:00:00Z",
+  "evaluation_cutoff": "2026-04-01T00:00:00Z",
+  "windows": [
+    {
+      "id": "train",
+      "target_id": "traintarget",
+      "entity_id": "customer",
+      "split": "train",
+      "prediction_time": "2025-12-01T00:00:00Z",
+      "label_available_time": "2025-12-01T01:00:00Z",
+      "events": [
+        {
+          "id": "shared-past",
+          "entity_id": "customer",
+          "event_time": "2025-11-01T00:00:00Z",
+          "available_time": "2025-11-01T01:00:00Z",
+          "contains_outcome": false
+        }
+      ]
+    },
+    {
+      "id": "development",
+      "target_id": "developmenttarget",
+      "entity_id": "customer",
+      "split": "development",
+      "prediction_time": "2026-02-01T00:00:00Z",
+      "label_available_time": "2026-02-01T01:00:00Z",
+      "events": [
+        {
+          "id": "shared-past",
+          "entity_id": "customer",
+          "event_time": "2025-11-01T00:00:00Z",
+          "available_time": "2025-11-01T01:00:00Z",
+          "contains_outcome": false
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "target_id": "testtarget",
+      "entity_id": "customer",
+      "split": "test",
+      "prediction_time": "2026-03-01T00:00:00Z",
+      "label_available_time": "2026-03-01T01:00:00Z",
+      "events": [
+        {
+          "id": "shared-past",
+          "entity_id": "customer",
+          "event_time": "2025-11-01T00:00:00Z",
+          "available_time": "2025-11-01T01:00:00Z",
+          "contains_outcome": false
+        }
+      ]
+    }
+  ]
+}

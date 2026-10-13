@@ -35,6 +35,9 @@ Machine learning engineering is the bridge between model research and production
 
 | Reference | When to load |
 |-----------|-------------|
+| `references/tabular-representations.md` | Self-supervised tabular encoders, corruption/contrastive objectives, row-context and fair comparisons |
+| `references/sequence-sources.md` | Primary-source findings and uncertainty for tabular and sequence representations |
+| `references/transaction-sequences.md` | Ordered-event representation, windows, label maturity, forward/entity validation and stateful serving |
 | `references/specialization-decisions.md` | Choosing rules/classifiers/zero-shot/prompt/SFT/RL, designing fixed-budget comparisons and interpreting verifier or case-study claims |
 | `references/specialization-evidence.md` | Primary-source findings, contradictory results and local validation limits |
 | `references/fine-tuning.md` | Setting up a LoRA/QLoRA/ full fine-tuning run — data prep, hyperparameters, validation strategy |
@@ -47,6 +50,8 @@ Machine learning engineering is the bridge between model research and production
 
 | Template | When to Use |
 |-----------|-------------|
+| `templates/sequence-model-record.md` | Representation, pretraining exposure, time/window/state and evaluation record |
+| `templates/sequence-windows.json` | Synthetic time-aware window audit contract |
 | `templates/specialization-study.md` | Preregistering task-matched alternatives, data freeze, quality/resource guardrails and stopping rules |
 | `templates/task-run-baseline.json`, `templates/task-run-candidate.json` | Synthetic saved-receipt contract examples; not model results |
 | `templates/training-run-record.md` | Recording a training or fine-tuning run — model and data versions, full config, environment, eval results — so it can be reproduced |
@@ -59,6 +64,7 @@ Machine learning engineering is the bridge between model research and production
 
 | Script | When to Use |
 |-----------|-------------|
+| `scripts/audit_sequence_windows.py` | Declared window availability, identity, outcome and fold-boundary screen; no model execution |
 | `scripts/compare_task_runs.py` | Descriptive paired task comparison with matched pins/roster, incomplete-evidence rejection and group bootstrap; no release approval |
 | `scripts/check-eval-overlap.py` | Checking a training corpus against an eval corpus for test-set leakage (shared n-grams); `--json` for CI, exit 1 when an eval file exceeds the overlap threshold |
 

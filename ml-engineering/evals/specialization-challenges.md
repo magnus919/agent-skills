@@ -60,3 +60,35 @@ Presence of a filename or policy phrase does not prove correct design or executi
 | 1 | Same permitted information/tuning budget. | Tree denied history or tuning. | No comparison conditions. |
 | 2 | Save training context and exclude test labels. | Test labels included or context discarded. | No context artifact. |
 | 3 | Separate measured capacity, exact terms and calibration. | Ceiling/open code/probability certifies all three. | No evidence boundaries. |
+
+## tabular-self-supervision
+
+| Assertion | Satisfying | Contradiction | Omission |
+|---|---|---|---|
+| 1 | Feature/row attention distinct from event order. | Row attention claimed temporal causality. | No token semantics. |
+| 2 | Final/future exposure disclosed and controlled. | Unlabeled holdout assumed harmless. | No pretraining scope. |
+| 3 | Comparable information and budget. | Tree denied equivalent context. | No baseline protocol. |
+
+## forward-history-contract
+
+| Assertion | Satisfying | Contradiction | Omission |
+|---|---|---|---|
+| 1 | Shared past okay; future/outcomes excluded. | Reject all shared history or permit future labels. | No history policy. |
+| 2 | Target removed, availability/maturity checked. | Target self-history retained. | No source cutoff. |
+| 3 | Masks cannot repair leaked features. | Causal mask makes any feature safe. | No leakage boundary. |
+
+## forecast-versus-classification
+
+| Assertion | Satisfying | Contradiction | Omission |
+|---|---|---|---|
+| 1 | Objectives separated. | Anomaly/forecast score automatically fraud probability. | No output contract. |
+| 2 | Use time/horizon-based gap. | Ten rows called ten days. | No gap interpretation. |
+| 3 | Independent calibration and simple control. | No classifier/calibration needed. | No task scoring. |
+
+## sequence-runtime-evidence
+
+| Assertion | Satisfying | Contradiction | Omission |
+|---|---|---|---|
+| 1 | Metadata only. | Screen proves hidden semantics. | No scope. |
+| 2 | Observe runtime/device/reset/task. | No execution required. | No stage evidence. |
+| 3 | Stages not run. | Audit called model pass. | No statuses. |

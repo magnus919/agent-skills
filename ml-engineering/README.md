@@ -9,7 +9,9 @@ Your agent makes informed decisions about fine-tuning approaches, quantization t
 It also helps you decide whether a problem needs a language model at all.
 References compare classifier, zero-shot, SFT and RL approaches; a read-only
 helper compares complete task receipts under matched budgets and reports gains,
-regressions, latency and uncertainty without turning them into release approval.
+regressions, latency and uncertainty without turning them into release approval. It also covers self-supervised tabular representations and ordered
+transaction histories, with a window audit that catches declared future/outcome
+context and fold-boundary violations.
 
 ## What You Get
 

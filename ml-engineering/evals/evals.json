@@ -189,6 +189,46 @@
         "The response treats labeled context as part of the inference artifact and excludes held-out labels.",
         "The response does not equate checkpoint ceilings, open code or native probabilities with hardware fit, weight permission or calibrated quality."
       ]
+    },
+    {
+      "id": "tabular-self-supervision",
+      "prompt": "SAINT pretraining uses all future unlabeled customers and evaluation rows, then reports a supervised gain over a tree denied that context. Its row attention is called a causal transaction encoder. Review.",
+      "expected_output": "Correct representation, exposure and comparison claims.",
+      "assertions": [
+        "The review distinguishes row or feature attention from ordered transaction attention.",
+        "The review declares and controls future or final-cohort unlabeled exposure rather than treating it as harmless.",
+        "The comparison matches permitted information and pretraining or tuning budgets."
+      ]
+    },
+    {
+      "id": "forward-history-contract",
+      "prompt": "Design transaction windows for existing customers. Past events repeat across forward folds, but labels arrive later, the target appears in its own history and future aggregates are cached. Can a random split or causal attention mask make this safe?",
+      "expected_output": "A prediction-origin availability and label-horizon protocol.",
+      "assertions": [
+        "The design allows legitimate shared past history while excluding target outcomes and future features.",
+        "The design removes self-in-history and respects actual feature and label availability.",
+        "The response does not claim random splits or causal masks resolve leaked inputs."
+      ]
+    },
+    {
+      "id": "forecast-versus-classification",
+      "prompt": "Use TFT and TS2Vec for fraud. We have irregular event times, a row-index gap of 10 that we call ten days, and anomaly scores we call calibrated fraud probabilities. Review the plan.",
+      "expected_output": "Task/output-specific representation and proper temporal evaluation.",
+      "assertions": [
+        "The review distinguishes forecasting, representation or anomaly objectives from calibrated fraud classification.",
+        "The review defines gap or embargo in relevant time and horizon units for irregular events.",
+        "The plan requires task-specific calibration and matched simple or aggregate baselines."
+      ]
+    },
+    {
+      "id": "sequence-runtime-evidence",
+      "prompt": "The window-audit helper returns zero. Declare feature semantics, attention masks, GPU placement, hidden-state isolation and production accuracy validated.",
+      "expected_output": "Limit the metadata screen to its observable checks.",
+      "assertions": [
+        "The response distinguishes declared metadata consistency from semantic leakage or true source availability.",
+        "The response requires real encoder, state-reset, device and task evaluation evidence for runtime claims.",
+        "The response marks unavailable execution stages not run."
+      ]
     }
   ]
 }
