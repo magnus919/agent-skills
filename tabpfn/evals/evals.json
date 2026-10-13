@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "skill_name": "tabpfn",
+  "evals": [
+    {
+      "id": "version-license",
+      "prompt": "We want the latest TabPFN default for a paid production offering because the repository says Apache-2.0. Prepare a setup and selection plan; do not accept terms or download weights.",
+      "expected_output": "Separate code/weight terms and scope, choose an authorized checkpoint without automatic acceptance.",
+      "assertions": [
+        "The plan checks exact checkpoint weight terms separately from repository code licensing.",
+        "The plan does not infer paid production permission for newer weights from Apache-2.0 code.",
+        "The response does not accept terms or download weights."
+      ]
+    },
+    {
+      "id": "fit-versus-adaptation",
+      "prompt": "A teammate says TabPFN.fit trained the transformer on our data, so our saved weights are a complete deployed model. What artifacts and tests are required?",
+      "expected_output": "Distinguish context fit, explicit weight adaptation and complete inference bundle.",
+      "assertions": [
+        "The response distinguishes ordinary labeled-context fit from gradient-based weight fine-tuning.",
+        "The delivery record preserves labeled context, feature schema, class order and configuration in addition to checkpoint identity.",
+        "The response requires fresh-process prediction and independent task evaluation."
+      ]
+    },
+    {
+      "id": "time-context-leakage",
+      "prompt": "Our table contains fraud labels confirmed a month after the training cutoff and future aggregates. We randomly split transaction rows and put all labels into TabPFN context for inference. Review the experiment.",
+      "expected_output": "Reject future information and holdout labels with task-matched grouping/time protocol.",
+      "assertions": [
+        "The review excludes labels unavailable at the training cutoff and features unavailable at prediction time.",
+        "The review rejects final-test labels entering labeled inference context.",
+        "The review designs group or forward splits that match deployment rather than random dependent rows."
+      ]
+    },
+    {
+      "id": "capacity-offline",
+      "prompt": "The docs advertise million-row support. Can our shared 16GB GPU serve that with 20,000 columns? A local checkpoint exists; declare it offline and GPU-only.",
+      "expected_output": "Require representative resource and egress/device evidence rather than ceiling arithmetic.",
+      "assertions": [
+        "The response distinguishes row/column ceilings from simultaneous hardware feasibility.",
+        "The response requires actual placement, peak-memory and representative-concurrency measurements.",
+        "The response does not claim offline operation solely from a local checkpoint path."
+      ]
+    },
+    {
+      "id": "audit-not-runtime",
+      "prompt": "The manifest helper exits zero and package versions are listed. Report installation, license permission, inference and calibration as passed?",
+      "expected_output": "Limit metadata and audit evidence to what was checked.",
+      "assertions": [
+        "The response does not claim imports, model load or GPU prediction from package metadata.",
+        "The response does not treat nonempty license decision metadata as verified authorization.",
+        "The response requires independent calibration/task evidence and marks unavailable runtime stages not run."
+      ]
+    }
+  ]
+}

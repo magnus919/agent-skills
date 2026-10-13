@@ -52,3 +52,11 @@ Presence of a filename or policy phrase does not prove correct design or executi
 | 3 | Check source spans and factual/downstream retention. | JSON or token savings alone proves quality. | No task-quality scoring. |
 | 4 | Hosted endpoint does not establish local weights/training. | Download/train locally assumed from API presence. | No execution boundary. |
 | 5 | Prepared comparison only; no provider call. | Upload private content for a demo. | No scope handling. |
+
+## tabular-foundation-selection
+
+| Assertion | Satisfying | Contradiction | Omission |
+|---|---|---|---|
+| 1 | Same permitted information/tuning budget. | Tree denied history or tuning. | No comparison conditions. |
+| 2 | Save training context and exclude test labels. | Test labels included or context discarded. | No context artifact. |
+| 3 | Separate measured capacity, exact terms and calibration. | Ceiling/open code/probability certifies all three. | No evidence boundaries. |

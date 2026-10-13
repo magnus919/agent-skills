@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "task": "classification",
+  "checkpoint": {
+    "version": "explicit-version",
+    "revision": "immutable-revision",
+    "license_decision": "reviewed-example",
+    "package_version": "pinned-example"
+  },
+  "capacity": {
+    "max_train_rows": 10,
+    "max_features": 2
+  },
+  "training_cutoff": "2026-01-01T00:00:00Z",
+  "evaluation_cutoff": "2026-04-01T00:00:00Z",
+  "splits": {
+    "train": [
+      {
+        "id": "train0",
+        "group_id": "train0",
+        "features": [
+          0,
+          null
+        ],
+        "target": 0,
+        "prediction_time": "2025-12-01T00:00:00Z",
+        "feature_available_time": "2025-11-01T00:00:00Z",
+        "label_available_time": "2025-12-20T00:00:00Z"
+      },
+      {
+        "id": "train1",
+        "group_id": "train1",
+        "features": [
+          1,
+          null
+        ],
+        "target": 1,
+        "prediction_time": "2025-12-01T00:00:00Z",
+        "feature_available_time": "2025-11-01T00:00:00Z",
+        "label_available_time": "2025-12-20T00:00:00Z"
+      }
+    ],
+    "calibration": [
+      {
+        "id": "calibration0",
+        "group_id": "calibration0",
+        "features": [
+          10,
+          null
+        ],
+        "target": 0,
+        "prediction_time": "2026-02-01T00:00:00Z",
+        "feature_available_time": "2025-11-01T00:00:00Z",
+        "label_available_time": "2026-03-01T00:00:00Z"
+      },
+      {
+        "id": "calibration1",
+        "group_id": "calibration1",
+        "features": [
+          11,
+          null
+        ],
+        "target": 1,
+        "prediction_time": "2026-02-01T00:00:00Z",
+        "feature_available_time": "2025-11-01T00:00:00Z",
+        "label_available_time": "2026-03-01T00:00:00Z"
+      }
+    ],
+    "test": [
+      {
+        "id": "test0",
+        "group_id": "test0",
+        "features": [
+          20,
+          null
+        ],
+        "target": 0,
+        "prediction_time": "2026-02-01T00:00:00Z",
+        "feature_available_time": "2025-11-01T00:00:00Z",
+        "label_available_time": "2026-03-01T00:00:00Z"
+      },
+      {
+        "id": "test1",
+        "group_id": "test1",
+        "features": [
+          21,
+          null
+        ],
+        "target": 1,
+        "prediction_time": "2026-02-01T00:00:00Z",
+        "feature_available_time": "2025-11-01T00:00:00Z",
+        "label_available_time": "2026-03-01T00:00:00Z"
+      }
+    ]
+  }
+}

@@ -8,6 +8,8 @@ The project is also where I codify practical patterns for making agents more cap
 
 [Install the full catalog](#installation) · [Keep skills up to date](#updating-and-refreshing)
 
+Tabular foundation-model operations: [TabPFN](tabpfn/SKILL.md).
+
 ## Skills
 
 ### [actuarial-risk-modeling](actuarial-risk-modeling/SKILL.md)

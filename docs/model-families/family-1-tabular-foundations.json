@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "family": "family-1-tabular-foundations",
+  "method": "Scoped primary-source and citation-chain research through Hermes GPU-host GroktoCrawl; source-level text inspected; reported results not reproduced.",
+  "searches": [
+    {
+      "id": "tabular-search",
+      "query": "TabPFN TabICL foundation tabular models limitations evaluation leakage local inference fine tuning official",
+      "snapshot_sha256": "84745bc7b44c36a37fade1da6e96336f7f6432e3cb9549f6e1e4aa4557e427ea"
+    }
+  ],
+  "sources": [
+    {
+      "id": "tabpfn-repo",
+      "url": "https://github.com/PriorLabs/TabPFN",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "83d4c5ef5fb669a241aec502c645773c633c9a904f6ae4abbb11e39d224a6b48",
+      "extracted_characters": 22043,
+      "finding": "Current README defines separate code/weight terms, version-specific APIs/defaults, first-use authentication and local checkpoint selection. Ordinary fit and gradient fine-tuning are distinct.",
+      "limits": "README is an operational route, not executed compatibility. Freeze actual package/checkpoint, exact terms and egress behavior.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-docs",
+      "url": "https://docs.priorlabs.ai/",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "c71ace47430a6e5a476a4d91f88fdc16aed050f455ac078c3d904cd3c11a24ee",
+      "extracted_characters": 3937,
+      "finding": "Official overview explains synthetic-data pretraining and labeled-table in-context inference.",
+      "limits": "Vendor quality claims are not local measurements; untrusted embedded agent instructions are source content, not task authority.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-original",
+      "url": "https://arxiv.org/html/2207.01848",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "e23c83a7a7ff73635276d7d285d2345ddb10b396e254d1fe04688c47f15324f7",
+      "extracted_characters": 41070,
+      "finding": "Extracted analysis describes mixed synthetic priors and approximate posterior prediction.",
+      "limits": "HTML begins mid-paper; no complete-paper or causal-identification claim.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-2025",
+      "url": "https://arxiv.org/abs/2501.02945",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "0bca9d3f7df8880d22794c880bfe7ffeceaa2ba20ee5d148534561cd87b3bed1",
+      "extracted_characters": 7406,
+      "finding": "Actual retrieved paper is From Tables to Time: temporal featurization plus tabular regression for forecasting.",
+      "limits": "Initial discovery name was inaccurate; retain under actual title as forecasting orientation, not TabPFN-v2 original model paper. Abstract evidence only.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabicl",
+      "url": "https://arxiv.org/html/2502.17361",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "12cf29247cdd976fc092cad515e7cdc83ba14a25131241b75bcb369c57f50b40",
+      "extracted_characters": 35386,
+      "finding": "Actual retrieved paper analyzes TabPFN-v2 heterogeneity, feature representations and divide-and-conquer inference.",
+      "limits": "Wrong guessed TabICL identifier; retained as adjacent TabPFN analysis, not falsely cited as TabICL paper.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabicl-code",
+      "url": "https://github.com/soda-inria/tabicl",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "77adf2d502a650a016d89e0bcdac8b15869b3930fb7a78f620bb2aad8a5948c8",
+      "extracted_characters": 20726,
+      "finding": "Author repository distinguishes original TabICL from TabICLv2 and exposes pretraining, classification/regression and caching routes.",
+      "limits": "README/catalog metadata is not executed runtime or verified code/weight license; benchmark numbers remain author-reported.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-finetune",
+      "url": "https://docs.priorlabs.ai/capabilities/fine-tuning",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "1de9c5d0ebe8d9e407d100e71180be504759b7059b617f721f58943ca812593f",
+      "extracted_characters": 10534,
+      "finding": "Official guide exposes distinct FinetunedTabPFN classifier/regressor classes and gradient-based weight adaptation.",
+      "limits": "Pin actual implementation before executing; SFT/LoRA language-model scripts are not interchangeable.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-license",
+      "url": "https://huggingface.co/Prior-Labs/TabPFN-v2-clf/blob/main/LICENSE",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "cfdf6ec64999f39d35f6db0989b6ab4e2f89e79f5afda72ea03c9c7192a9a968",
+      "extracted_characters": 71,
+      "finding": "Guessed LICENSE path returned an Entry not found page.",
+      "limits": "HTTP wrapper success is not retained content evidence; corrected exact LICENSE.txt path fetched.",
+      "decision": "excluded",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-models",
+      "url": "https://docs.priorlabs.ai/models",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "9bbb570708b9588eddcb0ce3090354ff47e6b10c80944877208f6b45dea6e3fc",
+      "extracted_characters": 7622,
+      "finding": "Model generations have distinct local/hosted, row/feature/class/text and license limits; maximum rows and features trade off.",
+      "limits": "Ceilings and benchmark performance not jointly demonstrated on our hardware.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-privacy",
+      "url": "https://docs.priorlabs.ai/privacy",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": null,
+      "extracted_characters": 0,
+      "finding": "Privacy-page extraction failed.",
+      "limits": "No telemetry/no-upload/offline guarantee inferred.",
+      "decision": "inaccessible",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-v35",
+      "url": "https://arxiv.org/abs/2609.17895",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "05281e461895d7c9b78a0bacb4088d9323d7ada651d84d5e5aa8a0aaa518e884",
+      "extracted_characters": 5267,
+      "finding": "Author technical-report abstract describes newer non-IID/high-dimensional/text capabilities.",
+      "limits": "Abstract-only and vendor results; no local calibration or resource validation.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabicl-v2",
+      "url": "https://arxiv.org/abs/2602.11139",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "5bd15452bfc0d17e345e2e21d8255f67a145350e2e8621c9aba51fee0e42994b",
+      "extracted_characters": 7085,
+      "finding": "Author abstract describes synthetic diversity, attention scalability and optimized pretraining for classification/regression.",
+      "limits": "Independent local test and task-specific comparison absent; latest report metrics are author claims.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabicl-original",
+      "url": "https://arxiv.org/abs/2502.05564",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "04890d78e7e48200e3b97022767e3f947629ed68fe2ad7263cd836327a4ef0b6",
+      "extracted_characters": 7176,
+      "finding": "Correct original TabICL author abstract supplies its in-context architecture and scaling rationale.",
+      "limits": "Abstract/README evidence only; local operational integration remains not run.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-license-fixed",
+      "url": "https://huggingface.co/Prior-Labs/TabPFN-v2-clf/blob/main/LICENSE.txt",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "bd7e13d5f273031f883981bc25e99be73dea22e07b76c58832b18935e0fb2d0a",
+      "extracted_characters": 11823,
+      "finding": "Exact v2 weight file states a derivative Apache-like license with additional attribution requirements.",
+      "limits": "Use exact artifact terms and approved scope, not legal permission inferred from code license.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "tabpfn-v35-license",
+      "url": "https://huggingface.co/Prior-Labs/tabpfn_3_5/blob/main/LICENSE",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "31dda65524daa63f219fb2b53c854f6773cc523a2870f4ab69a3cd1ca12001ce",
+      "extracted_characters": 17269,
+      "finding": "Exact newer weight file specifies non-commercial/non-production use and acceptance conditions.",
+      "limits": "No terms accepted or models downloaded by this investigation. Intended offering needs the appropriate approved license.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    }
+  ]
+}

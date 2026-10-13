@@ -1,0 +1,11 @@
+{
+  "should_trigger": [
+    "Install a pinned local TabPFN checkpoint.",
+    "Audit TabPFN labeled context before prediction.",
+    "Fine-tune TabPFNRegressor with a reproducible record."
+  ],
+  "should_not_trigger": [
+    "Operate TabICL.",
+    "Train a coding language model with Unsloth."
+  ]
+}

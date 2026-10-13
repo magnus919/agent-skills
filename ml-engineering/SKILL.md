@@ -82,6 +82,10 @@ Route training operations to [unsloth](../unsloth/SKILL.md), typed decisions to
 analysis/calibration to [data-scientist](../data-scientist/SKILL.md), and agent-level
 evaluation to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md).
 
+For tabular foundation-model choice, read `references/tabular-foundations.md`;
+for named TabPFN setup/context/inference/fine-tuning, use
+[tabpfn](../tabpfn/SKILL.md).
+
 ## Core Principles
 
 **Measure before you optimize** — Never quantize, prune, or distill a model without first measuring its baseline performance. Optimization without measurement is guessing.

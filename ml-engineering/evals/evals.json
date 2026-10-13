@@ -179,6 +179,16 @@
         "The review does not infer local training, open weights or offline execution from hosted API availability.",
         "The response respects the no-provider-call constraint while preparing a sourced comparison."
       ]
+    },
+    {
+      "id": "tabular-foundation-selection",
+      "prompt": "Compare a tree baseline, TabPFN and TabICL for delayed-label structured prediction. A million-row ceiling, open repository and posterior probability are being used as deployment proof.",
+      "expected_output": "A versioned matched-task comparison and complete context/permission/resource boundary.",
+      "assertions": [
+        "The comparison gives candidates comparable permitted features and tuning budgets.",
+        "The response treats labeled context as part of the inference artifact and excludes held-out labels.",
+        "The response does not equate checkpoint ceilings, open code or native probabilities with hardware fit, weight permission or calibrated quality."
+      ]
     }
   ]
 }
