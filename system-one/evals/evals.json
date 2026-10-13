@@ -666,7 +666,9 @@
       "assertions": [
         "Rejects observational comparability across disconnected graph components despite a finite regularized fit",
         "Explains why raw win totals from unequal opponent schedules do not establish a fair ranking",
-        "Specifies an identifiable fitting convention, regularization choice, and convergence validation",
+        "Specifies an identifiable convention for the fitted candidate worths",
+        "Declares the regularization choice used for the fit",
+        "Requires validating convergence of the fitted model",
         "Maps reversed passage positions back to original candidate identities before judging agreement",
         "Requires independent final-ranking quality evidence rather than treating stability or absence of cycles as correctness"
       ]

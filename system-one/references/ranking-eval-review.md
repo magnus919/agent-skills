@@ -15,7 +15,9 @@ does not turn them into a release gate.
 | method-choice / independent labels | Uses labels independent of tested Jev outputs | Jev grades its own ranking | Label provenance absent |
 | graph-boundaries / connectivity | Rejects a comparison graph with disconnected components | Uses ridge to make disconnected candidates comparable | Connectivity not checked |
 | graph-boundaries / unequal opponents | Uses an opponent-aware fit or declares the limitation | Sorts raw wins from unequal comparison schedules as fair | Schedule omitted |
-| graph-boundaries / fitting | Declares identifiability, regularization and convergence checks | Treats a finite parameter vector as validated model fit | Fitting choices absent |
+| graph-boundaries / identifiability | Centers worths or fixes a reference worth | Treats an unidentified offset as a unique absolute score | Convention absent |
+| graph-boundaries / regularization | Declares whether and how the fit is regularized | Silently credits an unspecified regularizer with fixing sparse evidence | Penalty choice absent |
+| graph-boundaries / convergence | Checks solver convergence and finite fitted values | Treats any returned parameter vector as a converged fit | Solver status absent |
 | graph-boundaries / symmetry | Maps reversed positions back to original candidate IDs | Counts an A-label agreement after swapping passages as stability | Candidate mapping omitted |
 | graph-boundaries / diagnostics | Compares final ranking with independent labels despite stable pair verdicts | Treats no cycles as correctness | Only repeat agreement reported |
 | evidence-readout / scoped recommendation | Retains cheaper, better Score for the observed workload | Promotes pairwise after it loses quality and cost | No adoption decision |
