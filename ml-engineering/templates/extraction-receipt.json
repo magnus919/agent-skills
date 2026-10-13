@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "source": "A\u00e9 B",
+  "source_sha256": "9204432390d7881462ff3ced666c9f2112075dc499ba6593ce4979292bab3369",
+  "labels": [
+    "name"
+  ],
+  "gold_provenance": {
+    "kind": "reference",
+    "evidence": "authored synthetic fixture"
+  },
+  "gold_entities": [
+    {
+      "label": "name",
+      "start": 1,
+      "end": 2,
+      "text": "\u00e9"
+    }
+  ],
+  "entities": [
+    {
+      "label": "name",
+      "start": 1,
+      "end": 2,
+      "text": "\u00e9",
+      "score": 0.8
+    }
+  ]
+}

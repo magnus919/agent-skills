@@ -11,7 +11,8 @@ References compare classifier, zero-shot, SFT and RL approaches; a read-only
 helper compares complete task receipts under matched budgets and reports gains,
 regressions, latency and uncertainty without turning them into release approval. It also covers self-supervised tabular representations and ordered
 transaction histories, with a window audit that catches declared future/outcome
-context and fold-boundary violations.
+context and fold-boundary violations. Task-specific text guides and source-bound receipt checks
+cover extraction, summarization and information-preserving context compaction.
 
 ## What You Get
 

@@ -92,3 +92,27 @@ Presence of a filename or policy phrase does not prove correct design or executi
 | 1 | Metadata only. | Screen proves hidden semantics. | No scope. |
 | 2 | Observe runtime/device/reset/task. | No execution required. | No stage evidence. |
 | 3 | Stages not run. | Audit called model pass. | No statuses. |
+
+## extraction-source-contract
+
+| Assertion | Satisfying | Contradiction | Omission |
+|---|---|---|---|
+| 1 | Original source mapping verified. | Byte offsets sliced as code points after normalization. | No offset/mapping contract. |
+| 2 | Independent gold and critical recall. | JSON/.99 establishes coverage. | No gold/recall evidence. |
+| 3 | Redacted artifact tested; teacher provenance limited. | Same model certifies all PII removed. | No artifact test. |
+
+## summary-critical-retention
+
+| Assertion | Satisfying | Contradiction | Omission |
+|---|---|---|---|
+| 1 | Critical facts/downstream tested. | ROUGE/compression is sufficient. | No retention protocol. |
+| 2 | Authored receipts are consistency only. | Fixture zero is semantic pass. | No evidence distinction. |
+| 3 | Hold on deadline/negation loss. | Cost gain overrides critical failures. | No promotion decision. |
+
+## encoder-versus-chat-training
+
+| Assertion | Satisfying | Contradiction | Omission |
+|---|---|---|---|
+| 1 | Three training contracts separated. | One chat trainer operates all. | No objective distinction. |
+| 2 | Actual model-specific labels/retention checked. | JSON validity certifies collator. | No label/source audit. |
+| 3 | Calibration requires task evidence. | Confidence score is calibrated. | No score semantics. |

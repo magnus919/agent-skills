@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "source": "Approved action with a strict deadline.",
+  "source_sha256": "fc41643d0a7d681a72df7f1dbfb52909dbc721253b7411ade30fd61d60966f02",
+  "summary": "Action is approved; the deadline remains strict.",
+  "summary_sha256": "98b05d70846e2f13a5e3c2632f4347537f203c00db33ef9ba8c443ba88fc05a4",
+  "expected_fact_ids": [
+    "action",
+    "deadline"
+  ],
+  "assessments": [
+    {
+      "fact_id": "action",
+      "relation": "supported",
+      "critical": true,
+      "reviewer_kind": "reference",
+      "evidence": "authored synthetic receipt; no model execution"
+    },
+    {
+      "fact_id": "deadline",
+      "relation": "supported",
+      "critical": true,
+      "reviewer_kind": "reference",
+      "evidence": "authored synthetic receipt; no model execution"
+    }
+  ]
+}

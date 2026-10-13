@@ -35,6 +35,9 @@ Machine learning engineering is the bridge between model research and production
 
 | Reference | When to load |
 |-----------|-------------|
+| `references/task-specific-extraction.md` | Span/encoder/generative extraction, offsets, source grounding, critical recall and receipts |
+| `references/task-specific-summarization.md` | Extractive/abstractive model choice, source/target retention, factuality and downstream compaction |
+| `references/text-model-sources.md` | Primary extraction/summarization evidence and uncertainty |
 | `references/tabular-representations.md` | Self-supervised tabular encoders, corruption/contrastive objectives, row-context and fair comparisons |
 | `references/sequence-sources.md` | Primary-source findings and uncertainty for tabular and sequence representations |
 | `references/transaction-sequences.md` | Ordered-event representation, windows, label maturity, forward/entity validation and stateful serving |
@@ -50,6 +53,7 @@ Machine learning engineering is the bridge between model research and production
 
 | Template | When to Use |
 |-----------|-------------|
+| `templates/text-model-record.md`, `templates/extraction-receipt.json`, `templates/summary-receipt.json` | Task/lineage worksheet and synthetic extraction/summary contracts |
 | `templates/sequence-model-record.md` | Representation, pretraining exposure, time/window/state and evaluation record |
 | `templates/sequence-windows.json` | Synthetic time-aware window audit contract |
 | `templates/specialization-study.md` | Preregistering task-matched alternatives, data freeze, quality/resource guardrails and stopping rules |
@@ -64,6 +68,7 @@ Machine learning engineering is the bridge between model research and production
 
 | Script | When to Use |
 |-----------|-------------|
+| `scripts/audit_text_outcomes.py` | Exact source-span and summary-receipt consistency checks; no model or semantic judgment |
 | `scripts/audit_sequence_windows.py` | Declared window availability, identity, outcome and fold-boundary screen; no model execution |
 | `scripts/compare_task_runs.py` | Descriptive paired task comparison with matched pins/roster, incomplete-evidence rejection and group bootstrap; no release approval |
 | `scripts/check-eval-overlap.py` | Checking a training corpus against an eval corpus for test-set leakage (shared n-grams); `--json` for CI, exit 1 when an eval file exceeds the overlap threshold |

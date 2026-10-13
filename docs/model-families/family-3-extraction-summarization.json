@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "family": "family-3-extraction-summarization",
+  "method": "Scoped primary-source and citation-chain research through Hermes GPU-host GroktoCrawl; source-level text inspected; reported results not reproduced.",
+  "searches": [
+    {
+      "id": "text-model-search",
+      "query": "task specific extraction summarization encoder span models factual consistency benchmark GLiNER2 local",
+      "snapshot_sha256": "86c777296388c1d5f95d9ae5413e24932b2bd6cfe88090c758eda61999ba1d66"
+    }
+  ],
+  "sources": [
+    {
+      "id": "gliner-paper",
+      "url": "https://arxiv.org/abs/2311.08526",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "db9810c99e1e90544288ecc5e6ffe985d1b589238c3d34189944658fe9c415a5",
+      "extracted_characters": 6751,
+      "finding": "GLiNER uses a bidirectional text/label representation to identify spans for requested entity types.",
+      "limits": "Author abstract; labels/scores do not establish calibration or critical-entity recall.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "gliner-code",
+      "url": "https://github.com/urchade/GLiNER",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "c5907752c75d052ab559000f83bd1dddbbe89ed8721173997888b7febbf95cf6",
+      "extracted_characters": 18114,
+      "finding": "Author implementation exposes open-label extraction and model-specific inference/training routes.",
+      "limits": "Repository/README is not an executed checkpoint or verified deployment.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "gliner2-code",
+      "url": "https://github.com/fastino-ai/GLiNER2",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "5122ef352a68ee50c5ff3d48107db63be002ab279d3c5bf739860e0a4d080c05",
+      "extracted_characters": 54823,
+      "finding": "Author SDK documents entities, confidence/offset controls and structured extraction/classification operations with versioned schemas.",
+      "limits": "Decide classification weights and all extraction heads are not interchangeable; exact source offset mapping and permissions still need validation.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "bart",
+      "url": "https://arxiv.org/abs/1910.13461",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "c442d42d5b9a97ba8f592317af0aa49625599d11e0223796c744f75ed4589188",
+      "extracted_characters": 2281,
+      "finding": "BART pretrains an encoder-decoder with corruption and reconstruction and supports generation tasks.",
+      "limits": "Abstractive outputs can hallucinate; source/task fine-tuning and factuality evidence remain needed.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "pegasus",
+      "url": "https://arxiv.org/abs/1912.08777",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "0a5caca5c8f82f6a6781da60fa65ac6fa66e84574418c4199ccc49e3132568b7",
+      "extracted_characters": 8206,
+      "finding": "Gap-sentence pretraining is tailored to abstractive summarization and evaluated across domains.",
+      "limits": "Author benchmark claims do not establish private-domain retention or faithfulness.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "qags",
+      "url": "https://arxiv.org/abs/2004.04228",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "53f7947e817ca812df9c4ba236a9355921ee0f991c7e79de0d0f2cf4a0b040b9",
+      "extracted_characters": 7089,
+      "finding": "Question-answer consistency offers a summary factuality screen compared with human judgments.",
+      "limits": "QA/question generation errors and missed facts limit independent truth/coverage.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "frank",
+      "url": "https://arxiv.org/abs/2104.13346",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "58bc8362627733addf1373c80d85b213860664307dac44e4791a0d910a6a3de4",
+      "extracted_characters": 7213,
+      "finding": "A human-annotated factual-error typology distinguishes kinds of fluent but wrong summaries and metric strengths/weaknesses.",
+      "limits": "Dataset/domain/annotator scope does not guarantee one universal factuality metric.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "summac",
+      "url": "https://arxiv.org/abs/2111.09525",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "d456d108281687bab082677eed63243912564216b743571fab8676f5fee9222e",
+      "extracted_characters": 7312,
+      "finding": "Sentence-level NLI granularity and aggregation improve inconsistency detection in the studied summary tasks.",
+      "limits": "Score is a model prediction, not independently adjudicated truth.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "hf-summary",
+      "url": "https://huggingface.co/docs/transformers/tasks/summarization",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "b48427b38503192f6dfd104b9b00ae439ff6aa188fa7bec67a255f5b08362e9d",
+      "extracted_characters": 17434,
+      "finding": "Official seq2seq guide describes source/target preprocessing, labels and generation evaluation.",
+      "limits": "Version-matched runtime required; training a chat decoder is a different contract.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "cdm-extract",
+      "url": "https://docs.scaledown.ai/api-reference/extract-overview",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "711463be256924881509cba3e0d1f5fc79be6b13a62345cffb3136d9db3cc68c",
+      "extracted_characters": 6029,
+      "finding": "Vendor docs define description-driven spans/offsets and categorical-field classifier routing.",
+      "limits": "Hosted contract is not proof of local weights or calibrated confidence.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "cdm-summary",
+      "url": "https://docs.scaledown.ai/api-reference/summarize-overview",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "85fb4611c28e4756a1a87bec62127a1bf04605a7e21066f05f4d1c09a36ba0df",
+      "extracted_characters": 2973,
+      "finding": "Vendor docs define an abstractive rewrite with tuned/fixed sampling and size/latency metadata.",
+      "limits": "Interface does not establish claimed architecture, factuality or complete-task quality.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "gliner-full",
+      "url": "https://arxiv.org/html/2311.08526",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "cf17cb9b85982400885841169f58407c9ac7114bc941ff9d411e748ae867e432",
+      "extracted_characters": 47826,
+      "finding": "Method includes label-conditioned span representation and supervised extraction rather than autoregressive entity text generation.",
+      "limits": "Actual tokenizer/truncation/label threshold compatibility and downstream recall require an executed trial.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "qags-full",
+      "url": "https://arxiv.org/html/2004.04228",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "c0c7a221a412343de95fb93dfe29127d61a3da9678610127c427b2c4aba9b9ae",
+      "extracted_characters": 52273,
+      "finding": "Method compares source/summary answers and human factuality judgments and discusses sensitivity to pipeline components.",
+      "limits": "QA-based agreement cannot certify every claim or critical omission.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "frank-full",
+      "url": "https://arxiv.org/html/2104.13346",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "7ce890d68b289c5a1035f9f67c67d40fecbc74e692f408ae9f273d52bba095a1",
+      "extracted_characters": 61173,
+      "finding": "Method analyzes multiple factual-error classes and compares metrics against annotated summaries.",
+      "limits": "Independent reviewer/domain evidence is still necessary for consequential sources.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "summac-code",
+      "url": "https://github.com/tingofurro/summac",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "5b00ba42d446f87c7a1a6b33a00ed8005ce1f5677a6dd4c16a44bd12254c26e1",
+      "extracted_characters": 5681,
+      "finding": "Author implementation supplies sentence/document inconsistency scoring and evaluation routes.",
+      "limits": "Dependency/model/version/runtime not verified; no local model call made.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    },
+    {
+      "id": "t5",
+      "url": "https://arxiv.org/abs/1910.10683",
+      "access_date": "2026-10-13",
+      "snapshot_sha256": "71b425168a35a37bb5d8d37bd258ac46371960e3f962cc16688cba95e0ccc579",
+      "extracted_characters": 8309,
+      "finding": "Text-to-text transfer pretraining provides an encoder-decoder task formulation, including generation.",
+      "limits": "Architecture/output formulation alone does not prove faithful summarization or calibration.",
+      "decision": "retained",
+      "local_runtime": "not_run"
+    }
+  ]
+}

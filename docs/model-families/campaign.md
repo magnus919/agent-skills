@@ -9,8 +9,8 @@ Rollback is reverting the respective delivery commit.
 | Stage | Family | Research and capability destination | Status |
 |---|---|---|---|
 | 1 | Tabular foundation models | ML Engineering comparison + named TabPFN operations | Merged: PR #705, `11dbfbf` |
-| 2 | Self-supervised tabular and transaction-sequence models | ML Engineering and time-aware data validation | In progress |
-| 3 | Task-specific extraction and summarization | Existing extraction/decision and ML methodology owners | Pending stage 2 merge |
+| 2 | Self-supervised tabular and transaction-sequence models | ML Engineering and time-aware data validation | Merged: PR #706, `00d2450` |
+| 3 | Task-specific extraction and summarization | Existing extraction/decision and ML methodology owners | In progress |
 | 4 | NLI zero-shot classification | Existing decision/model methodology owners | Pending stage 3 merge |
 
 Each stage preserves a scoped question, searches, retained-source records with
