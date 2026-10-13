@@ -8,8 +8,6 @@ The project is also where I codify practical patterns for making agents more cap
 
 [Install the full catalog](#installation) · [Keep skills up to date](#updating-and-refreshing)
 
-Tabular foundation-model operations: [TabPFN](tabpfn/SKILL.md).
-
 ## Skills
 
 ### [actuarial-risk-modeling](actuarial-risk-modeling/SKILL.md)
@@ -598,6 +596,10 @@ Design, integrate, evaluate, self-host, and troubleshoot System One decision mod
 ### [systematic-debugging](systematic-debugging/SKILL.md)
 
 4-phase root cause debugging protocol: understand bugs before fixing. Covers schema/environment divergence, exception type specificity in fallback chains, progressive characterization grids for API/retrieval failures, dependency source detection (editable dev forks), macOS sandboxed application debugging, and the Rule of Three for recognizing architectural problems. Adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT) with significant expansion from real-world use.
+
+### [tabpfn](tabpfn/SKILL.md)
+
+Operate versioned tabular foundation-model checkpoints, labeled context, calibration and adaptation with a tested offline leakage/capacity screen and explicit weight-license boundaries.
 
 ### [tailscale](tailscale/SKILL.md)
 
