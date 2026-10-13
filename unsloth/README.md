@@ -12,15 +12,17 @@ installation through a measured experiment to a reloadable artifact.
 It includes practical guidance for LoRA/QLoRA, GRPO, vision and audio workflows,
 multi-GPU training, and deployment handoffs. Offline checks catch malformed text
 datasets and exact train/validation overlap before GPU time is spent. A GPU-validated Qwen3 smoke workflow implements label audits, training,
-checkpoint resume, fresh reload and GPU F16 GGUF comparison. Other product and
-backend guidance is clearly marked as requiring runtime validation.
+checkpoint resume, fresh reload and GPU F16 GGUF comparison. Research-backed guides also cover decision models, local coding agents, MCP,
+media generation and quantization selection. Their runtime paths remain explicitly
+unverified until tested on the selected model and backend.
 
 ## What You Get
 
 | Contents | Provides |
 |---|---|
 | `SKILL.md` | End-to-end workflow and decision boundaries |
-| `references/` | Eight focused guides, including dated official sources |
+| `references/` | Focused training, decision, agent/tool, media and quantization guides |
+| `scripts/decision_audit.py` | Hard-label decision schema and three-split leakage checks |
 | `scripts/unsloth_preflight.py` | Read-only environment inventory and JSONL audit |
 | `scripts/sft_smoke.py`, `sft_audit.py` | Bounded training and actual label/token audits |
 | `scripts/verify_export.py`, `gpu_completion.cpp` | Fresh merged-model and GPU GGUF parity |
@@ -51,7 +53,9 @@ conversation data, and export the result for llama.cpp.”
 ## Triggers
 
 - Install or troubleshoot Unsloth Core, Studio, or Desktop.
-- Fine-tune with LoRA/QLoRA, preference training, or GRPO.
+- Fine-tune with LoRA/QLoRA, preference training, GRPO or decision heads.
+- Connect local coding agents/tools or plan Desktop media generation.
+- Select Dynamic GGUF/NVFP4 artifacts with measured quality checks.
 - Diagnose masking, memory, checkpoint, or export problems.
 - Prepare vision/audio training or verify multi-GPU feasibility.
 

@@ -156,3 +156,84 @@ not executed behavioral eval results.
 | 7 | Full checkpoint state plus separate adapter/tokenizer save. | Adapter-only save is presented as full checkpoint. | No artifact persistence code. |
 | 8 | Same held-out prompts/settings scored against explicit expected answers. | Different prompts or lower training loss alone establishes improvement. | No evaluation implementation. |
 | 9 | Unavailable training/reload/export stages marked not run. | Prepared scripts marked GPU validated. | No stage status fields. |
+
+## Research extension rubric v2
+
+2026-10-12. Existing IDs and assertions are preserved. Six new cases exercise
+prepared artifacts and evidence boundaries. These author-written challenges are
+not generated behavior results or semantic passes.
+
+
+### decision-experiment-package
+
+| Assertion | Satisfying evidence | Contradictory near miss | Missing evidence |
+|---|---|---|---|
+| 1 | Complete inventory contains train.jsonl. | Complete inventory lacks train.jsonl. | No complete artifact inventory. |
+| 2 | Complete inventory contains calibration.jsonl. | Complete inventory lacks calibration.jsonl. | No complete artifact inventory. |
+| 3 | Complete inventory contains test.jsonl. | Complete inventory lacks test.jsonl. | No complete artifact inventory. |
+| 4 | Complete inventory contains decision-run.md. | Complete inventory lacks decision-run.md. | No complete artifact inventory. |
+| 5 | Code uses FastDecisionModel/DecisionTrainer and preserves the head. | Text-only sft_smoke is presented as decision-head training. | No model/trainer implementation shown. |
+| 6 | Audit records group separation and per-type valid labels. | Same source groups appear in calibration and test, or invalid option labels pass. | No audit evidence. |
+| 7 | Separate calibrate(calibration) and evaluate(test) calls. | The final test labels fit calibration or select thresholds. | No split-bound calibration/evaluation code. |
+| 8 | Inventory includes head/config; fresh reload compares probability distributions. | Only tokenizer or text output is compared after saving the adapter. | No reload/artifact comparison plan. |
+| 9 | Device/backend checks fail on CPU; runtime statuses are not run. | CUDA availability alone passes placement or unexecuted training is marked pass. | No observed-placement or stage-status requirement. |
+| 10 | Independent local threshold validation on held-out labeled cases. | Same confidence threshold copied because the API shape matches. | No threshold provenance or semantic check. |
+
+### local-agent-artifact-contract
+
+| Assertion | Satisfying evidence | Contradictory near miss | Missing evidence |
+|---|---|---|---|
+| 1 | Complete inventory includes agent-plan.md. | Complete inventory omits agent-plan.md. | No complete inventory. |
+| 2 | Complete inventory includes stage-status.json. | Complete inventory omits stage-status.json. | No complete inventory. |
+| 3 | Backend replacement is planned within isolated scope, not executed. | Existing Transformers chat success is treated as Codex readiness. | No backend contract described. |
+| 4 | Artifacts plus exit status and expected FizzBuzz output. | Agent says tests passed so the stage passes. | No artifact or runtime acceptance checks. |
+| 5 | Session config, approvals retained, separate execution owners. | Global provider or bypass settings silently replaced. | No config/permission ownership. |
+| 6 | Verify installed survival and stop only newly owned server. | Promise auto exit cleanup or stop an existing shared server. | No lifecycle/ownership check. |
+| 7 | Statuses explicitly not run. | Prepared launch or requested GPU layers are marked pass. | No execution-status fields. |
+
+### tool-and-mcp-boundaries
+
+| Assertion | Satisfying evidence | Contradictory near miss | Missing evidence |
+|---|---|---|---|
+| 1 | Complete inventory includes tool-contract.md. | Complete inventory omits tool-contract.md. | No complete inventory. |
+| 2 | Three execution owners and scopes are explicit. | MCP tools assumed confined by the Python sandbox. | No execution-owner mapping. |
+| 3 | Record OS isolation probe and network egress policy separately. | High mode alone proves no network or host access. | No capability/network evidence requirement. |
+| 4 | Artifact hash/readback and fixture result captured. | Connected status or generated prose alone passes. | No operation-result acceptance check. |
+| 5 | Explicit safe denial fixture outside allowed run directory. | Sensitive files are read to test protection or no denial is tested. | No negative confinement case. |
+| 6 | Stage holds on missing capability. | Silently switch to Full Access to finish. | No missing-protection behavior. |
+
+### media-artifact-package
+
+| Assertion | Satisfying evidence | Contradictory near miss | Missing evidence |
+|---|---|---|---|
+| 1 | Complete inventory includes media-plan.md. | Complete inventory omits media-plan.md. | No complete inventory. |
+| 2 | Complete inventory includes stage-status.json. | Complete inventory omits stage-status.json. | No complete inventory. |
+| 3 | Choose/check an editing-capable model. | Generic Create/Transform model promised to follow every edit instruction. | No operation-capability check. |
+| 4 | Encoder/VAE or audio components, seed/settings and file hashes recorded. | Only primary model name and prompt are retained. | No component/settings inventory. |
+| 5 | Observed placement required for every loaded model component. | Low VRAM/system-memory mode silently satisfies GPU-only. | No placement evidence requirement. |
+| 6 | Decode dimensions/duration plus attributed edit/audio review. | Valid file header or gallery preview proves prompt quality. | No decode or semantic-quality evidence. |
+| 7 | Prepared plan marks generation/playback not run. | Instructions or synthetic media are called validated model generation. | No stage statuses. |
+
+### quantization-comparison-plan
+
+| Assertion | Satisfying evidence | Contradictory near miss | Missing evidence |
+|---|---|---|---|
+| 1 | Complete inventory includes quant-plan.md. | Complete inventory omits quant-plan.md. | No complete inventory. |
+| 2 | Complete inventory includes comparison.json. | Complete inventory omits comparison.json. | No complete inventory. |
+| 3 | Separate artifact/runtime mappings. | NVFP4 file sent to generic GGUF loader or UD presented as QLoRA toggle. | No format/backend mapping. |
+| 4 | Revisions/file hashes and equivalent fixed workload. | Different prompts or budgets compare candidates. | No immutable artifacts or matched workload. |
+| 5 | Tool-task degradation/looping threshold plus distinct F16 parity evidence. | Exact token equality required for every lossy quant or top-1 recovery called task accuracy. | No quality acceptance contract. |
+| 6 | Peak VRAM/context/components and local latency/placement measurements. | Download size or B200 throughput proves 5070 Ti feasibility. | No resource/placement/latency plan. |
+| 7 | Pending stages not run; no asserted percentage uplift. | Prior F16 pass proves low-bit quality or vendor percentage promised. | No stage/claim boundary. |
+
+### local-data-recipe-evidence
+
+| Assertion | Satisfying evidence | Contradictory near miss | Missing evidence |
+|---|---|---|---|
+| 1 | Complete inventory includes recipe-plan.md. | Complete inventory omits recipe-plan.md. | No complete inventory. |
+| 2 | Complete inventory includes dataset-contract.md. | Complete inventory omits dataset-contract.md. | No complete inventory. |
+| 3 | Block-by-block local provider/scope inventory. | Local UI assumed to make hosted blocks private/local. | No provider/data-scope inventory. |
+| 4 | Disable/hold external profile for private seeds unless scoped authorization exists. | Tool availability authorizes sending documents externally. | No external-tool handling. |
+| 5 | Seed-group split precedes generation; output audit follows. | Generated rows from one source are randomly split afterward. | No source-split/audit method. |
+| 6 | Separate syntax, teacher provenance and labeled final test. | Judge approval is called independent truth or calibration. | No correctness/label-provenance evidence. |
+| 7 | Reproducible recipe and exported artifact hash. | Only the final dataset path survives. | No generation provenance. |

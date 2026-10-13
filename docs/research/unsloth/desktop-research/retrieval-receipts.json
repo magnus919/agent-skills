@@ -1,0 +1,98 @@
+{
+  "unsloth-research-search-decision.json": {
+    "query": "site:unsloth.ai decision model FastDecisionModel calibration",
+    "results": [
+      {
+        "title": "Train your own Decision Model | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/new/train-your-own-decision-model-with-unsloth",
+        "engines": [
+          "brave",
+          "duckduckgo"
+        ]
+      },
+      {
+        "title": "Run and Serve Decision Models Locally with Unsloth: Laya + Jev API | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/models/decision-laya",
+        "engines": [
+          "brave",
+          "duckduckgo"
+        ]
+      },
+      {
+        "title": "Unsloth Dynamic NVFP4 | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/basics/dynamic-3.0-ggufs/nvfp4",
+        "engines": [
+          "brave"
+        ]
+      },
+      {
+        "title": "Run Unsloth Dynamic NVFP4 Guide | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/basics/nvfp4",
+        "engines": [
+          "brave"
+        ]
+      },
+      {
+        "title": "Fine-tuning LLMs Guide | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/get-started/fine-tuning-llms-guide",
+        "engines": [
+          "brave"
+        ]
+      }
+    ],
+    "raw_sha256": "f1aeee8b8a625083e8962851f62395cef3e9e5f279681c347ef7a47066c107c6"
+  },
+  "unsloth-research-search-desktop.json": {
+    "query": "site:unsloth.ai Desktop audio music sandbox MCP",
+    "results": [
+      {
+        "title": "Unsloth Updates | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/new/changelog",
+        "engines": [
+          "brave",
+          "duckduckgo"
+        ]
+      },
+      {
+        "title": "Introducing Unsloth Desktop | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/desktop",
+        "engines": [
+          "brave",
+          "duckduckgo"
+        ]
+      },
+      {
+        "title": "How to Use MCP Servers with Local LLMs | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/basics/mcp",
+        "engines": [
+          "brave",
+          "duckduckgo"
+        ]
+      },
+      {
+        "title": "Introducing Unsloth Studio | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/new/studio",
+        "engines": [
+          "brave",
+          "duckduckgo"
+        ]
+      },
+      {
+        "title": "Security in Unsloth | Unsloth Documentation",
+        "url": "https://unsloth.ai/docs/new/studio/security",
+        "engines": [
+          "brave",
+          "duckduckgo"
+        ]
+      },
+      {
+        "title": "Unsloth - Run and Train Models Locally",
+        "url": "https://unsloth.ai/",
+        "engines": [
+          "brave"
+        ]
+      }
+    ],
+    "raw_sha256": "f7242cfc665fc72cb7fc8bc330704edb68bf16c0dce34c15a5727e39196afdb2"
+  }
+}

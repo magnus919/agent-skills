@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "kind": "hard_label_decision_audit",
+  "splits": {
+    "train": {
+      "rows": 2,
+      "valid_rows": 2,
+      "complete": true,
+      "findings": [],
+      "questions": {
+        "choice": 2,
+        "noul": 2,
+        "score": 2
+      }
+    },
+    "calibration": {
+      "rows": 2,
+      "valid_rows": 2,
+      "complete": true,
+      "findings": [],
+      "questions": {
+        "choice": 2,
+        "noul": 2,
+        "score": 2
+      }
+    },
+    "test": {
+      "rows": 2,
+      "valid_rows": 2,
+      "complete": true,
+      "findings": [],
+      "questions": {
+        "choice": 2,
+        "noul": 2,
+        "score": 2
+      }
+    }
+  },
+  "overlap": [],
+  "runtime_status": "not_run",
+  "ok": true
+}

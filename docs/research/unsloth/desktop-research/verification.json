@@ -1,0 +1,369 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-12",
+  "base_revision": "dcfba034d1b6f9692a882ff76f028b0073d009af",
+  "scope": "research enrichment and offline data tooling; no new model inference/training",
+  "checks": [
+    {
+      "check": "lint-core",
+      "argv": [
+        "python3",
+        "-m",
+        "ruff",
+        "check",
+        "--no-cache",
+        "scripts/",
+        "eval_runner/"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.09,
+      "summary": "All checks passed!"
+    },
+    {
+      "check": "format-core",
+      "argv": [
+        "python3",
+        "-m",
+        "ruff",
+        "format",
+        "--no-cache",
+        "--check",
+        "scripts/",
+        "eval_runner/"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.047,
+      "summary": "65 files already formatted"
+    },
+    {
+      "check": "mypy",
+      "argv": [
+        "python3",
+        "-m",
+        "mypy",
+        "--cache-dir",
+        "/private/tmp/unsloth-research-mypy",
+        "scripts/",
+        "eval_runner/"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 1.479,
+      "summary": "Success: no issues found in 65 source files"
+    },
+    {
+      "check": "bandit",
+      "argv": [
+        "python3",
+        "-m",
+        "bandit",
+        "-r",
+        "scripts/",
+        "-f",
+        "txt",
+        "--severity-level",
+        "high"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.37,
+      "summary": "\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 110\nFiles skipped (0):"
+    },
+    {
+      "check": "new-code-lint",
+      "argv": [
+        "python3",
+        "-m",
+        "ruff",
+        "check",
+        "--no-cache",
+        "unsloth/scripts/decision_audit.py",
+        "unsloth/scripts/test_decision_audit.py",
+        "docs/research/unsloth/desktop-research/source_probe.py"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.048,
+      "summary": "All checks passed!"
+    },
+    {
+      "check": "new-code-format",
+      "argv": [
+        "python3",
+        "-m",
+        "ruff",
+        "format",
+        "--no-cache",
+        "--check",
+        "unsloth/scripts/decision_audit.py",
+        "unsloth/scripts/test_decision_audit.py",
+        "docs/research/unsloth/desktop-research/source_probe.py"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.048,
+      "summary": "3 files already formatted"
+    },
+    {
+      "check": "skill-format",
+      "argv": [
+        "ruby",
+        "scripts/validate-skills.rb"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 4.085,
+      "summary": "Validated 184 canonical skills."
+    },
+    {
+      "check": "reference-validator-tests",
+      "argv": [
+        "ruby",
+        "scripts/test-validate-skills.rb"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.083,
+      "summary": "\nFinished in 0.017423s, 1434.8849 runs/s, 4132.4686 assertions/s.\n\n25 runs, 72 assertions, 0 failures, 0 errors, 0 skips"
+    },
+    {
+      "check": "changed-quality",
+      "argv": [
+        "ruby",
+        "scripts/validate-skill-quality.rb",
+        "--base",
+        "dcfba034d1b6f9692a882ff76f028b0073d009af"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.195,
+      "summary": "Quality-checked 1 changed skill(s): 0 error(s), 0 warning(s)."
+    },
+    {
+      "check": "quality-validator-tests",
+      "argv": [
+        "ruby",
+        "scripts/test-validate-skill-quality.rb"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.937,
+      "summary": "\nFinished in 0.825909s, 23.0050 runs/s, 192.5152 assertions/s.\n\n19 runs, 159 assertions, 0 failures, 0 errors, 0 skips"
+    },
+    {
+      "check": "eval-schema",
+      "argv": [
+        "python3",
+        "scripts/validate-evals.py"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 3.611,
+      "summary": "Validated 184 eval manifests against repository schema v1 and semantic repository checks."
+    },
+    {
+      "check": "eval-validator-tests",
+      "argv": [
+        "python3",
+        "scripts/test-eval-validation.py"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 5.668,
+      "summary": "----------------------------------------------------------------------\nRan 27 tests in 5.584s\n\nOK"
+    },
+    {
+      "check": "eval-ratchet",
+      "argv": [
+        "python3",
+        "scripts/eval-coverage.py",
+        "--modified-from",
+        "dcfba034d1b6f9692a882ff76f028b0073d009af"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 13.496,
+      "summary": "\nSkills WITHOUT schema-valid eval manifests (0), by reference count:\n\nRatchet: warn at 25%, fail-on-modify at 50%"
+    },
+    {
+      "check": "eval-ratchet-tests",
+      "argv": [
+        "python3",
+        "scripts/test-eval-coverage.py"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 2.978,
+      "summary": "----------------------------------------------------------------------\nRan 27 tests in 2.852s\n\nOK"
+    },
+    {
+      "check": "skill-test-register",
+      "argv": [
+        "python3",
+        "scripts/check-skill-tests.py",
+        "--check"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.09,
+      "summary": "skill test coverage check passed."
+    },
+    {
+      "check": "agents-consistency",
+      "argv": [
+        "python3",
+        "scripts/validate-agents-md.py"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.024,
+      "summary": "AGENTS.md validation passed."
+    },
+    {
+      "check": "case-register",
+      "argv": [
+        "python3",
+        "scripts/validate-case-checklist.py"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.378,
+      "summary": "Manifests: 184 (174 top-level, 10 nested); cases: 1485 (1426 top-level, 59 nested).\nCase-review rows present: 1096; cases without rows: 389 (curated omissions are allowed).\nStored run artifacts: 98; test-like sources: 162; unclassified by declared selectors: 31.\nVerified behavioral coverage: not assessed repository-wide."
+    },
+    {
+      "check": "artifact-sweep",
+      "argv": [
+        "python3",
+        "scripts/check-artifacts.py"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 61.0,
+      "summary": "    \"queue\",\n    \"refund\"\n  ]\n}"
+    },
+    {
+      "check": "claude-catalog",
+      "argv": [
+        "ruby",
+        "scripts/gen-claude-marketplace.rb"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.15,
+      "summary": "marketplace.json is current (174 plugins)."
+    },
+    {
+      "check": "codex-catalog",
+      "argv": [
+        "ruby",
+        "scripts/gen-codex-plugin.rb"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.09,
+      "summary": "Codex plugin packaging is current (174 skills)."
+    },
+    {
+      "check": "llms-catalog",
+      "argv": [
+        "ruby",
+        "scripts/gen-llms-txt.rb"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.09,
+      "summary": "llms.txt is current (174 skills)."
+    },
+    {
+      "check": "bundles",
+      "argv": [
+        "ruby",
+        "scripts/validate-bundles.rb"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.09,
+      "summary": "Validated 8 bundle manifest(s)."
+    },
+    {
+      "check": "lifecycle-catalog",
+      "argv": [
+        "ruby",
+        "scripts/gen-lifecycle-matrix.rb"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.084,
+      "summary": "lifecycle capability matrix is current (8 bundles)."
+    },
+    {
+      "check": "lifecycle-matrix",
+      "argv": [
+        "ruby",
+        "scripts/validate-lifecycle-matrix.rb"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.15,
+      "summary": "Validated lifecycle capability matrix (8 bundle(s)): complete, traceable, and current."
+    },
+    {
+      "check": "focused-tests",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "unsloth/scripts",
+        "-o",
+        "addopts=-ra --strict-markers --tb=short"
+      ],
+      "status": "pass",
+      "exit_code": 0,
+      "seconds": 0.739,
+      "summary": "unsloth/scripts/test_unsloth_preflight.py ..............                 [ 89%]\nunsloth/scripts/test_verify_export.py .....                              [100%]\n\n============================== 49 passed in 0.58s =============================="
+    }
+  ],
+  "additional_checks": [
+    {
+      "check": "core-regressions",
+      "status": "pass",
+      "passed": 375,
+      "coverage_percent": 72.27,
+      "seconds": 25.41
+    },
+    {
+      "check": "integration-regressions",
+      "status": "pass",
+      "passed": 14,
+      "seconds": 7.79
+    },
+    {
+      "check": "source-probe-reproduction",
+      "status": "pass",
+      "source_hashes_verified": true,
+      "notebook_hash_verified": true
+    }
+  ],
+  "earlier_failures": [
+    {
+      "check": "artifact-sweep",
+      "status": "fail",
+      "context": "sandboxed run denied loopback fixture binds and subprocess fixture execution; permitted rerun passed. No repository code change required."
+    },
+    {
+      "check": "initial-new-helper-test",
+      "status": "fail",
+      "context": "test incorrectly assumed scan_limit was the last finding; empty_valid_split is also emitted. Corrected test to check presence without changing audit semantics."
+    }
+  ],
+  "not_run": [
+    "decision model GPU training/calibration/reload/API",
+    "coding-agent/API/MCP/tool/sandbox runtime",
+    "media generation/playback/semantic review",
+    "low-bit GGUF/NVFP4",
+    "generated behavior evals"
+  ],
+  "evidence_limit": "Schema validity, source presence and synthetic helper tests are not behavioral quality or release-gated calibration evidence."
+}

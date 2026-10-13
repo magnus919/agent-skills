@@ -4,7 +4,8 @@ description: >-
   Install, operate, and troubleshoot Unsloth Core, Studio, and Desktop for local
   inference and model training. Use for Unsloth environment setup, LoRA/QLoRA
   supervised fine-tuning, chat templates, GRPO and preference training, vision
-  and audio workflows, checkpoint recovery, multi-GPU training, and model export
+  and audio workflows, decision models, local coding agents and tools, dynamic
+  quantization, checkpoint recovery, multi-GPU training, and model export
   to GGUF or serving engines. Do not use for framework-neutral ML strategy or
   operating a standalone inference server unrelated to Unsloth.
 license: MIT
@@ -35,7 +36,8 @@ vendor speed or minimum-memory claim into a promise about the user's workload.
 
 1. Identify the requested surface: Core Python/notebook, Studio web UI, or
    Desktop. Determine inference, SFT, preference optimization, online RL, or
-   another model-specific training task. Default to Core for reproducible coded
+   decision-model training, media generation, coding-agent/tool use, or
+   another model-specific task. Default to Core for reproducible coded
    training, and Desktop/Studio when a GUI is requested.
 2. Discover OS, Python, accelerator/backend, free VRAM/RAM/disk, installed
    versions, model ID and revision, input format, target context, and output
@@ -62,6 +64,10 @@ vendor speed or minimum-memory claim into a promise about the user's workload.
 | Run the observed RTX 5070 Ti text-SFT smoke recipe | [Validated executable SFT](references/validated-sft.md) |
 | Prepare data, run text SFT, choose LoRA settings | [Data and supervised training](references/sft.md) |
 | GRPO, DPO, vision/audio, continued pretraining, multi-GPU | [Advanced training](references/advanced-training.md) |
+| Train/serve choice, yes/no or score decision models | [Decision models](references/decision-models.md) |
+| Connect coding agents, execute/search with tools, MCP, Data Recipes | [Agents and tools](references/agents-and-tools.md) |
+| Generate/edit images, video or audio in Desktop/Studio | [Media workflows](references/media-workflows.md) |
+| Choose UD GGUF or NVFP4; measure low-bit tradeoffs | [Quantization selection](references/quantization-selection.md) |
 | Save/resume, export, run inference, use Studio API | [Artifacts and serving](references/artifacts-serving.md) |
 | Import errors, OOM, zero loss, bad exports, hangs | [Troubleshooting](references/troubleshooting.md) |
 | Check currency, resolve conflicting docs, find a model notebook | [Source ledger](references/sources.md) |
@@ -110,6 +116,16 @@ QLoRA, UI, advanced-training and quantized-export guidance remains unverified by
 this run. Output-quality eval manifests are review assets, not executed semantic
 passes. Do not generalize the toy formatting-task score to real workloads.
 
+## Researched capabilities beyond text SFT
+
+The decision, agent/tool, media and low-bit guides above are grounded in dated
+official docs, a pinned upstream implementation and notebook, and explicit
+contradictions. Their runtime stages are not validated by our text-SFT run. Use
+[the capability record](templates/feature-validation.md) for a new operation.
+Decision outputs require head/calibration preservation and probability checks;
+local inference does not establish offline search, tool confinement or GPU-only
+placement. Verify default CPU fallback and process lifetime in the installed build.
+
 ## Local helpers
 
 Run these commands from this skill's root with Python 3.10+. They require no
@@ -118,6 +134,8 @@ Unsloth installation, GPU, network, or credentials and do not modify inputs.
 ```bash
 python3 scripts/unsloth_preflight.py doctor --json
 python3 scripts/unsloth_preflight.py dataset train.jsonl --eval-file valid.jsonl --json
+python3 scripts/decision_audit.py assets/decision-train.jsonl \
+  --calibration-file assets/decision-calibration.jsonl --test-file assets/decision-test.jsonl --json
 python3 -m unittest discover -s scripts -p 'test_*.py'
 ```
 
@@ -130,6 +148,13 @@ when comparing content, and emits counts/line numbers without training text.
 Exit 0 means the selected checks completed without blocking findings, 1 means
 findings or incomplete scanning, 2 means invalid CLI arguments. No tokenization,
 semantic deduplication, quality assessment, or GPU execution is implied.
+
+`decision_audit.py` independently checks three hard-label decision splits for
+question/gold validity, content duplicates and state/group leakage. It supports
+string states and object-valued hard-label rows only; soft targets and JSON-string
+columns require upstream/tokenizer auditing. It prints counts/codes/line numbers
+without state text, and stops on scan limits. Exit 0/1/2 has the same audit/CLI
+meaning. It does not certify calibration, token retention or model compatibility.
 
 ## Non-obvious failure boundaries
 

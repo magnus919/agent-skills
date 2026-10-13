@@ -1,0 +1,65 @@
+{
+  "upstream_revision": "b865e89586eb1af3185f416c448becd08f0e15d8",
+  "method": "AST-extracted pure data functions only; no upstream imports, tensors, model loading, inference or training",
+  "hard_label_contract": [
+    {
+      "kind": "choice",
+      "gold": "billing",
+      "result": [
+        [
+          1.0,
+          0.0
+        ],
+        0
+      ]
+    },
+    {
+      "kind": "noul",
+      "gold": true,
+      "result": [
+        [
+          0.0,
+          1.0
+        ],
+        1
+      ]
+    },
+    {
+      "kind": "score",
+      "gold": 2,
+      "result": [
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        2
+      ]
+    },
+    {
+      "kind": "choice",
+      "gold": "missing",
+      "error": "gold has no usable label or probabilities"
+    }
+  ],
+  "tiny_default_holdout": {
+    "training_rows": 2,
+    "heldout_rows": 0,
+    "default_fraction": 0.1
+  },
+  "files": {
+    "unsloth/models/decision.py": "4b538ffda29f7b2af74a13a21b7bb520f112c035efe69d8e9b7b20a6011ec5ee",
+    "unsloth/models/_decision_common.py": "e9658970c183ef617d43c5482c5b0f40c37be0d05611105f4100870ef8094d83",
+    "unsloth/models/decision_from_lm.py": "1236b0ec42c05687702e3ef813eaf0ae44b9280477d2ec6df2a1828754455153",
+    "unsloth/models/clef.py": "baf0161041576faf0fb4488cf4f6793a9c161b6689f3630057894af49a275792",
+    "unsloth_cli/commands/start.py": "d41ac599a1ceafcdf13e944cfa6fb778ca2c4fa3561b01ba4d893cbbeecb5229",
+    "studio/backend/core/inference/os_sandbox.py": "c0c8a713337b0d025f2e4770e2dd752eba5fa7186b645ca9862e1fc52ff401e4",
+    "studio/backend/core/systemone/laya_runtime.py": "68c620e0edab584be96b2ba0d74ff8cc6141ae676b32228f84ccf98364290add",
+    "studio/backend/core/systemone/gguf_export_contract.py": "7008be316c3910f6330ec229edc14d15d3bbd022d6074860cf30d9cec5e075f5",
+    "studio/backend/core/inference/audio_cpp_models.py": "08f85f473483cd622b975f79bbc2d9036de1b4730b2af13978fb139b5e976990",
+    "studio/backend/core/inference/audio_cpp_music.py": "36f71df55aca583d830d2a92e2e6677cc2c9f245446655d73432c895e0c083ec",
+    "studio/backend/core/inference/video_families.py": "359d87174f4161a8b6d14e7addf7b49099317457ccf9690eccab608d1b4e7e28"
+  },
+  "notebook_revision": "87c1e89e973562a5fa94aaffe523e2da84f75785",
+  "notebook_sha256": "9e4912de2d1a7f574edfe75f4e165eabca8ada183a6a848a76054aa2d295f379"
+}

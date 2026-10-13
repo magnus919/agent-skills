@@ -123,6 +123,92 @@
         "The package evaluates identical held-out prompts under fixed decoding and reports explicit scoring rather than using training loss as quality evidence.",
         "The run record marks unavailable runtime stages not run."
       ]
+    },
+    {
+      "id": "decision-experiment-package",
+      "prompt": "Prepare a runnable local Unsloth decision-training experiment for routing support tickets, refund detection and urgency scores. Deliver train.jsonl, calibration.jsonl, test.jsonl and decision-run.md. Pin an official notebook and proposed small model revision. No GPU is available now; audit hard labels and splits offline, and prepare GPU-only model/head checks, calibration, save and fresh reload. Existing Jev confidence thresholds must not be assumed valid.",
+      "expected_output": "An auditable three-split decision-model package with dedicated head/trainer, scoring and truthful unexecuted stages.",
+      "assertions": [
+        "artifact_exists: train.jsonl",
+        "artifact_exists: calibration.jsonl",
+        "artifact_exists: test.jsonl",
+        "artifact_exists: decision-run.md",
+        "The package uses a decision-specific loader, trainer and learned head rather than claiming the text-SFT smoke script trains decision heads.",
+        "The data separates source groups across training, calibration and final test splits and validates question IDs and hard-label values.",
+        "Calibration fitting uses only the calibration split and final probability metrics use the untouched test split.",
+        "The reload plan preserves the learned head and calibration configuration and compares probabilities on fixed questions.",
+        "The plan rejects observed CPU fallback under the GPU-only constraint and marks unavailable runtime stages not run.",
+        "The migration plan validates local probability and confidence semantics rather than reusing Jev thresholds unchanged."
+      ]
+    },
+    {
+      "id": "local-agent-artifact-contract",
+      "prompt": "Prepare an Unsloth-backed Codex smoke task in an isolated workspace that creates a small FizzBuzz program and tests. Deliver agent-plan.md and stage-status.json. The loaded local model currently uses Transformers, not llama-server. Preserve existing agent settings, approvals and GPU-only inference. Do not execute or download anything yet; account for conflicting docs about the auto-started server lifetime.",
+      "expected_output": "A prepared client-specific launch and artifact test with backend, permissions and lifecycle checks.",
+      "assertions": [
+        "artifact_exists: agent-plan.md",
+        "artifact_exists: stage-status.json",
+        "The plan identifies Codex's GGUF/llama-server requirement and does not claim the resident Transformers model is compatible.",
+        "The smoke acceptance requires inspecting actual files and executing the generated program or tests with bounded runtime.",
+        "The plan preserves existing configuration and distinguishes agent-owned tools from Unsloth server tools.",
+        "The lifecycle plan records the documentation/source discrepancy and checks only run-owned server processes before cleanup.",
+        "Unexecuted launch, GPU placement and task stages are marked not run."
+      ]
+    },
+    {
+      "id": "tool-and-mcp-boundaries",
+      "prompt": "Plan a Desktop Python tool and MCP smoke test that writes result.txt in a disposable workspace and reads a harmless fixture through one selected MCP server. Produce tool-contract.md. High sandbox mode is shown in the UI, but no capability probe was recorded. Explain exactly which evidence is needed before calling the workflow offline, confined or successful; keep existing permissions.",
+      "expected_output": "A real-artifact/tool-result acceptance plan with separate execution owners and unresolved protection evidence.",
+      "assertions": [
+        "artifact_exists: tool-contract.md",
+        "The contract separates Unsloth Python/Terminal isolation, agent-owned tools and external MCP permissions.",
+        "The contract requires an actual sandbox capability and network-policy check before claiming confinement or offline operation.",
+        "Tool success requires a real workspace file and readback; MCP success requires returned fixture content.",
+        "The contract includes a harmless denied-path test outside the granted workspace without reading sensitive data.",
+        "Required unavailable OS isolation blocks that stage instead of automatically selecting Full Access."
+      ]
+    },
+    {
+      "id": "media-artifact-package",
+      "prompt": "Prepare a local Unsloth Desktop image-edit and short-audio generation package with media-plan.md and stage-status.json. I have a generic image generation model but want instruction-based edits. Keep all model computation on GPU, with no CPU offload, and do not download models yet. Tell me how to prove the outputs are usable and reproducible.",
+      "expected_output": "A model-specific media plan with component/settings records, real-artifact checks and honest unexecuted stages.",
+      "assertions": [
+        "artifact_exists: media-plan.md",
+        "artifact_exists: stage-status.json",
+        "The plan verifies instruction-edit capability for the selected model rather than equating Transform with Edit.",
+        "The record covers all model components and their revisions plus generation settings and output hashes.",
+        "GPU-only acceptance verifies actual component placement and rejects CPU offload or fallback.",
+        "Usability checks include decoded image/audio properties and a separate semantic review of the requested result.",
+        "Generation and playback stages remain not run until real outputs have been produced and inspected."
+      ]
+    },
+    {
+      "id": "quantization-comparison-plan",
+      "prompt": "Our RTX 5070 Ti F16 GGUF parity test passed. Prepare quant-plan.md and comparison.json for evaluating UD-Q4 and Dynamic NVFP4 candidates without changing the working training environment. Can we promise the video's accuracy gain or require exact output tokens from lossy quantization? GPU-only inference and independent held-out tool tasks are required; do not run or download yet.",
+      "expected_output": "A pinned, backend-specific lossy comparison plan with task metrics and separate conversion-parity evidence.",
+      "assertions": [
+        "artifact_exists: quant-plan.md",
+        "artifact_exists: comparison.json",
+        "The plan distinguishes UD GGUF, NVFP4 inference and QLoRA training formats and loaders.",
+        "The comparison pins model and quantized artifacts and fixes prompts, decoding settings, context and scoring.",
+        "Lossy quality acceptance uses predeclared task tolerances and critical-failure checks, separate from F16 conversion token parity.",
+        "The plan budgets context and auxiliary memory, requires observed GPU placement and measures complete-task latency rather than adopting vendor throughput figures.",
+        "Unexecuted candidate loads and quality comparisons are marked not run and no universal accuracy gain is promised."
+      ]
+    },
+    {
+      "id": "local-data-recipe-evidence",
+      "prompt": "Plan an Unsloth Data Recipe that generates training examples from private local documents with a local model. Produce recipe-plan.md and dataset-contract.md. The visual recipe includes an LLM Judge and an external MCP tool profile. No uploads or hosted inference are authorized. How do we preserve privacy, source splits and answer quality?",
+      "expected_output": "A provider/tool-scoped local recipe plan with source-group separation and independent quality checks.",
+      "assertions": [
+        "artifact_exists: recipe-plan.md",
+        "artifact_exists: dataset-contract.md",
+        "Every generating/judging block has its provider endpoint, model revision and data-transfer scope checked before seed documents are sent.",
+        "The external MCP tool profile is held or restricted pending authorized data scope rather than receiving private document content automatically.",
+        "Source groups are separated before synthetic derivation and exported splits are checked for leakage.",
+        "Syntax validation and the LLM Judge are treated as limited evidence; task labels and final test acceptance are independently reviewed.",
+        "The plan preserves prompts, transforms, seeds, model/provider settings and preview-to-export artifact provenance."
+      ]
     }
   ]
 }

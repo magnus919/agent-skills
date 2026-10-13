@@ -4,7 +4,8 @@ Retrieved 2026-10-12. All retained sources are upstream documentation or maintai
 repositories; they are mutable pages, not pinned release contracts. Documentation
 was inspected through web retrieval. Source agreement within one vendor is not
 independent validation. Short extractions below record the claim used, not copied
-documentation. Installation commands and GPU recipes have not been run here.
+documentation. This original source review did not execute installation commands; the later
+GPU baseline is recorded in [validated SFT](validated-sft.md).
 
 | ID | Primary source | Retained finding / use |
 |---|---|---|
@@ -77,5 +78,31 @@ no image was downloaded or executed.
 The split audit, bounded diagnostics, comparison ladder and run record are this
 skill's engineering synthesis. Offline script tests validate the helper contract,
 not Unsloth training effectiveness. Evals are schema-valid scenarios only until
-outputs are generated and reviewed. No GPU run, cloud job, model download,
-publication, comparative speed benchmark or behavioral uplift is established.
+outputs are generated and reviewed. The later [validated SFT](validated-sft.md) establishes one GPU BF16 LoRA and
+F16 GGUF smoke path. This source ledger alone establishes no runtime pass,
+comparative speed benchmark or behavioral uplift.
+
+## Desktop and decision research extension
+
+The 2026-10-12 follow-up research package is preserved at
+`docs/research/unsloth/desktop-research/` in the repository. The video is orientation
+only; retained claims come from the sources below and pinned implementation
+`b865e89586eb1af3185f416c448becd08f0e15d8`. Runtime execution of these new paths
+was not performed. Docs/source disagreement is preserved in the relevant guide.
+
+| ID | Primary source | Retained finding / use |
+|---|---|---|
+| U31 | [Decision training](https://unsloth.ai/docs/new/train-your-own-decision-model-with-unsloth) | Dedicated loader/trainer/head, calibration and distinct recipes. |
+| U32 | [Decision serving](https://unsloth.ai/docs/models/decision-laya) | CPU defaults/fallback, confidence and option-length migration limits. |
+| U33 | [Agent integration](https://unsloth.ai/docs/desktop/unsloth-start) | Agent commands, Codex GGUF requirement, lifecycle claim needing verification. |
+| U34 | [Chat/tool execution](https://unsloth.ai/docs/new/studio/chat) | Search and built-in tools differ from offline inference. |
+| U35 | [Sandboxing](https://unsloth.ai/docs/new/studio/sandboxing-in-unsloth) | OS/software modes; source reports network is not confined. |
+| U36 | [MCP](https://unsloth.ai/docs/desktop/mcp) | Server setup/toggles and scoped tool-use checks. |
+| U37 | [Data Recipes](https://unsloth.ai/docs/new/studio/data-recipe) | Provider selection, preview/build, tool profiles and validator limits. |
+| U38 | [Image workflows](https://unsloth.ai/docs/desktop/diffusion-image) | Model-specific operation support, offload and settings/artifact records. |
+| U39 | [Dynamic GGUF](https://unsloth.ai/docs/basics/dynamic-3.0-ggufs) | Distinct variants; next-token agreement differs from agent task quality. |
+| U40 | [Dynamic NVFP4](https://unsloth.ai/docs/basics/dynamic-3.0-ggufs/nvfp4) | Separate Blackwell W4A4 path; do not generalize B200 benchmarks. |
+| U41 | [Decision notebook](https://github.com/unslothai/notebooks/blob/87c1e89e973562a5fa94aaffe523e2da84f75785/nb/Qwen3_5_%284B%29-Decision.ipynb) | Inspected immutable workflow; installer is not fully pinned. |
+| U42 | [Bug and fix](https://github.com/unslothai/unsloth/issues/13160) | Upstream compiler failure/fix; package inclusion not locally demonstrated. |
+| U43 | [Original Clef](https://blog.cloudflare.com/clef-decision-models/) | Head/backbone and non-autoregressive scoring architecture, vendor measurements. |
+| U44 | [Calibration research](https://arxiv.org/abs/1706.04599v2) | Calibration must be assessed separately from classification accuracy. |
