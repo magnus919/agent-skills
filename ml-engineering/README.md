@@ -12,7 +12,9 @@ helper compares complete task receipts under matched budgets and reports gains,
 regressions, latency and uncertainty without turning them into release approval. It also covers self-supervised tabular representations and ordered
 transaction histories, with a window audit that catches declared future/outcome
 context and fold-boundary violations. Task-specific text guides and source-bound receipt checks
-cover extraction, summarization and information-preserving context compaction.
+cover extraction, summarization and information-preserving context compaction. NLI guides
+explain candidate-dependent scores, binary/ternary heads, calibration and abstention;
+a saved-logit helper makes the arithmetic inspectable without calling a model.
 
 ## What You Get
 

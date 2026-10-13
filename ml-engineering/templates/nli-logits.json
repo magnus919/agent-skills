@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "model_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "mode": "single_label",
+  "candidate_labels": [
+    "billing",
+    "technical"
+  ],
+  "nli_label_ids": {
+    "contradiction": 0,
+    "neutral": 1,
+    "entailment": 2
+  },
+  "rows": [
+    {
+      "logits": [
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ]
+    }
+  ]
+}

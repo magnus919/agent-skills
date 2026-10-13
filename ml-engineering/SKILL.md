@@ -35,6 +35,9 @@ Machine learning engineering is the bridge between model research and production
 
 | Reference | When to load |
 |-----------|-------------|
+| `references/nli-classification.md` | NLI premise/hypothesis contracts, binary/ternary heads, score modes and truncation |
+| `references/nli-evaluation.md` | Domain/language validation, calibration, abstention, cost and adaptation experiments |
+| `references/nli-sources.md` | Primary NLI evidence and limitations |
 | `references/task-specific-extraction.md` | Span/encoder/generative extraction, offsets, source grounding, critical recall and receipts |
 | `references/task-specific-summarization.md` | Extractive/abstractive model choice, source/target retention, factuality and downstream compaction |
 | `references/text-model-sources.md` | Primary extraction/summarization evidence and uncertainty |
@@ -53,6 +56,7 @@ Machine learning engineering is the bridge between model research and production
 
 | Template | When to Use |
 |-----------|-------------|
+| `templates/nli-experiment.md`, `templates/nli-logits.json` | NLI study worksheet and synthetic saved-logit contract |
 | `templates/text-model-record.md`, `templates/extraction-receipt.json`, `templates/summary-receipt.json` | Task/lineage worksheet and synthetic extraction/summary contracts |
 | `templates/sequence-model-record.md` | Representation, pretraining exposure, time/window/state and evaluation record |
 | `templates/sequence-windows.json` | Synthetic time-aware window audit contract |
@@ -68,6 +72,7 @@ Machine learning engineering is the bridge between model research and production
 
 | Script | When to Use |
 |-----------|-------------|
+| `scripts/nli_score_contract.py` | Saved NLI score arithmetic and mapping/shape checks; no model execution or calibration |
 | `scripts/audit_text_outcomes.py` | Exact source-span and summary-receipt consistency checks; no model or semantic judgment |
 | `scripts/audit_sequence_windows.py` | Declared window availability, identity, outcome and fold-boundary screen; no model execution |
 | `scripts/compare_task_runs.py` | Descriptive paired task comparison with matched pins/roster, incomplete-evidence rejection and group bootstrap; no release approval |

@@ -259,6 +259,47 @@
         "The response requires matched tokenizer/collator and input or target-retention checks for each route.",
         "The response does not claim confidence fields are calibrated probabilities without task evidence."
       ]
+    },
+    {
+      "id": "nli-score-semantics",
+      "prompt": "Our NLI classifier scores fraud at .94 in single-label mode. Can we block accounts and reuse .94 for multi-label mode? Adding a label changed the score. Explain the decision contract.",
+      "expected_output": "Explain candidate-relative normalization, independent pair scoring and uncalibrated consequential decisions.",
+      "assertions": [
+        "Explains that single-label scores depend on the candidate roster",
+        "Distinguishes multi-label independent entailment-versus-contradiction scoring from single-label normalization",
+        "Requires target-domain calibration and consequential-error evaluation before using a score to block accounts"
+      ]
+    },
+    {
+      "id": "nli-head-and-truncation",
+      "prompt": "We assume entailment index 2 for every NLI checkpoint and truncate long transaction narratives. The chosen zero-shot model has a binary true/not-true head. Review.",
+      "expected_output": "Verify semantic mapping and tokenizer behavior; test omitted evidence without inventing neutral.",
+      "assertions": [
+        "Requires checkpoint-specific verification of semantic label IDs instead of assuming index 2",
+        "Does not invent a neutral class for a binary head",
+        "Requires evaluation of decisive evidence lost through premise truncation"
+      ]
+    },
+    {
+      "id": "nli-abstention-and-language",
+      "prompt": "Our English MNLI baseline will classify multilingual support tickets. We will choose hypothesis wording and a .9 abstention threshold on the test set. Design a valid comparison.",
+      "expected_output": "Freeze wording and thresholds before held-out language/domain tests; evaluate coverage-risk and matched cost.",
+      "assertions": [
+        "Keeps hypothesis and threshold selection separate from the held-out test set",
+        "Requires evaluation by target language and domain rather than treating MNLI as multilingual validation",
+        "Evaluates abstention with coverage and error risk at the chosen operating point",
+        "Accounts for premise-by-candidate pair count in resource comparisons"
+      ]
+    },
+    {
+      "id": "nli-helper-evidence",
+      "prompt": "The bundled NLI scoring helper returns exit zero on synthetic logits. Does this prove our zero-shot classifier is accurate and its label mapping correct?",
+      "expected_output": "Arithmetic completion is separate from model execution, provenance and task quality.",
+      "assertions": [
+        "Limits helper success to saved-logit arithmetic and contract checks",
+        "States that semantic label-map provenance is not verified by the helper",
+        "Requires real model and independently labeled task evidence before claiming accuracy"
+      ]
     }
   ]
 }
