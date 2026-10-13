@@ -75,6 +75,7 @@ tracked corpus unless publication is explicitly requested.
 | Native C++ Laya inference, CUDA/Vulkan, or Jev-compatible HTTP | `references/laya-cpp.md` |
 | Local or private/VPC Laya service | `references/laya-self-hosting.md`, then `references/hosting-and-troubleshooting.md` |
 | Skill suggestions with progressive disclosure and no-fit rejection | `references/implementation-audit.md` |
+| Rank shortlists with Score versus pairwise Choice, comparison graphs, Bradley–Terry, or ranking experiment readouts | `references/pairwise-ranking.md`; eval challenges in `references/ranking-eval-review.md` |
 | Narration-to-media matching through captions or metadata; catalog answer/component selection | `references/use-case-patterns.md` |
 | Browser/desktop/voice control, agent routing, ranking, guardrails, deadlines | `references/use-case-patterns.md` |
 | Semantic code-lint rule design, local post-edit checks, graph scans, or feedback evaluation | `references/semantic-lint-feedback.md`; fill `templates/semantic-lint-rule.md` and `templates/feedback-evaluation.md` before a pilot |

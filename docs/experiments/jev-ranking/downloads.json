@@ -1,0 +1,50 @@
+[
+  {
+    "url": "https://huggingface.co/datasets/whybe-choi/trec-dl-2019/resolve/245ccf2c238433ea09e99d3c8daf622b5986fb5d/README.md",
+    "path": "data/2019/README.md",
+    "bytes": 7953,
+    "sha256": "eafc44beb253718bede0b327a51acfa8e50e085edd882c178d59c5ee2fd06e65"
+  },
+  {
+    "url": "https://huggingface.co/datasets/whybe-choi/trec-dl-2019/resolve/245ccf2c238433ea09e99d3c8daf622b5986fb5d/corpus.jsonl",
+    "path": "data/2019/corpus.jsonl",
+    "bytes": 3427186212,
+    "sha256": "8b97ec5d631765c6c3aa22158e06d06d2e98f445c14cdfaa5a87f03bc7057ab9"
+  },
+  {
+    "url": "https://huggingface.co/datasets/whybe-choi/trec-dl-2019/resolve/245ccf2c238433ea09e99d3c8daf622b5986fb5d/qrels/test.jsonl",
+    "path": "data/2019/qrels/test.jsonl",
+    "bytes": 548232,
+    "sha256": "b899eb353e6389b8606843fa6cae1a42880c0c7d834694d9fbb5581859d26d2c"
+  },
+  {
+    "url": "https://huggingface.co/datasets/whybe-choi/trec-dl-2019/resolve/245ccf2c238433ea09e99d3c8daf622b5986fb5d/queries.jsonl",
+    "path": "data/2019/queries.jsonl",
+    "bytes": 2710,
+    "sha256": "db0f18d3bc41fb2719453bc3fe7451324b659174a51da01b2d8f3097fb7f605c"
+  },
+  {
+    "url": "https://huggingface.co/datasets/whybe-choi/trec-dl-2020/resolve/b37064dea006afb1651a76beaa2fa245d0a1d22b/README.md",
+    "path": "data/2020/README.md",
+    "bytes": 7955,
+    "sha256": "2c51cb53574c0835a5c11733f0c0f5bbd8fb4a6ded4d8e51d360c708ca81554b"
+  },
+  {
+    "url": "https://huggingface.co/datasets/whybe-choi/trec-dl-2020/resolve/b37064dea006afb1651a76beaa2fa245d0a1d22b/corpus.jsonl",
+    "path": "data/2020/corpus.jsonl",
+    "bytes": 3427186212,
+    "sha256": "8b97ec5d631765c6c3aa22158e06d06d2e98f445c14cdfaa5a87f03bc7057ab9"
+  },
+  {
+    "url": "https://huggingface.co/datasets/whybe-choi/trec-dl-2020/resolve/b37064dea006afb1651a76beaa2fa245d0a1d22b/qrels/test.jsonl",
+    "path": "data/2020/qrels/test.jsonl",
+    "bytes": 674057,
+    "sha256": "a65dcd346e8a84d4a91011cfa008a65d27378ca9d5b49685c1c79ac41fd9f56c"
+  },
+  {
+    "url": "https://huggingface.co/datasets/whybe-choi/trec-dl-2020/resolve/b37064dea006afb1651a76beaa2fa245d0a1d22b/queries.jsonl",
+    "path": "data/2020/queries.jsonl",
+    "bytes": 3464,
+    "sha256": "a100b299fdaf0e847add08adb08fff47e2c43e91d56480661b6e04733830f547"
+  }
+]

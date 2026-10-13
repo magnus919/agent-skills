@@ -1,0 +1,5474 @@
+[
+  {
+    "id": "2019:1037798",
+    "year": "2019",
+    "cluster": "2019:1037798",
+    "split": "final",
+    "query_sha256": "505c35230e7a39f65793eb950edbff0e34c3e437c30247891770a4b87a189288",
+    "passages": [
+      {
+        "pid": "8417092",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "0021b538b67bcc3df113dc90bf209e01e7207668037640b527bd852f7df44b57"
+      },
+      {
+        "pid": "8200339",
+        "grade": 0,
+        "source_rank": 26,
+        "text_sha256": "25d7e94c6ab553e449d6c017b86e3d62b599a0fd49356f3d9c25225a6df42eb5"
+      },
+      {
+        "pid": "7466652",
+        "grade": 1,
+        "source_rank": 40,
+        "text_sha256": "e06392720ea34fd5486113df1acc8f1549f399ba37fbf98e30f4d1af8de92cee"
+      },
+      {
+        "pid": "8760867",
+        "grade": 0,
+        "source_rank": 43,
+        "text_sha256": "de446f38e47417a9901d3f8eef6d26ce134c30c71d047807c9e754b910fb9603"
+      },
+      {
+        "pid": "8760871",
+        "grade": 3,
+        "source_rank": 44,
+        "text_sha256": "c2b3927ea1adb31f00ab62410de1cfe782da8aed661595e62031b7917437fec2"
+      },
+      {
+        "pid": "8780808",
+        "grade": 0,
+        "source_rank": 47,
+        "text_sha256": "6b55aeb9b5654a8bdb3ad8228f329496a67be20a4a00469d1806c74233bc368e"
+      },
+      {
+        "pid": "835829",
+        "grade": 0,
+        "source_rank": 48,
+        "text_sha256": "357ff7a475c12ca1d427ed88ed24d4e8a6fed40a2e463aa270c985c51c925f9a"
+      },
+      {
+        "pid": "8402857",
+        "grade": 0,
+        "source_rank": 52,
+        "text_sha256": "d7e908691f38bb7b4f9a5c6ef14c9470c11df59263c5892cebca27ae07c61199"
+      }
+    ]
+  },
+  {
+    "id": "2019:104861",
+    "year": "2019",
+    "cluster": "2019:104861",
+    "split": "final",
+    "query_sha256": "bfdc6dc4761e66aa0a466d4f322c5fbb5afe1fcbc94ba54c927e0b52fc5db535",
+    "passages": [
+      {
+        "pid": "848202",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "929b349f4bc4b26d025eced73d72b2ef6a076577588e40e6c3342221d22a7ca6"
+      },
+      {
+        "pid": "7309133",
+        "grade": 0,
+        "source_rank": 15,
+        "text_sha256": "440429b2ac1b09418da2edb09d2915596c8c7fd45288c963f8bbad069de9514d"
+      },
+      {
+        "pid": "8259116",
+        "grade": 0,
+        "source_rank": 38,
+        "text_sha256": "c6a47284345b51c1cd145496b14f39170ed49cc41b92e706ee4ce218989d1c56"
+      },
+      {
+        "pid": "8260038",
+        "grade": 0,
+        "source_rank": 40,
+        "text_sha256": "97bd593fa438d3a3b6a357e104cc4384bb7f40944adfe87be750f0158382bb91"
+      },
+      {
+        "pid": "5483490",
+        "grade": 2,
+        "source_rank": 46,
+        "text_sha256": "6bd47413905ef4f79683f4592c92b898cfbe1d187adfbf684b8fbfcb64c341ad"
+      },
+      {
+        "pid": "6467584",
+        "grade": 0,
+        "source_rank": 68,
+        "text_sha256": "8d40738d571acb1562271ded363398b7c7a4f0c8ab2691b7add68a7187d77eda"
+      },
+      {
+        "pid": "6159998",
+        "grade": 0,
+        "source_rank": 74,
+        "text_sha256": "8e81f97fa6cd0dee733f7b4cb4e5908f78c70c2bb790280cbda78cd31f1327ab"
+      },
+      {
+        "pid": "6187055",
+        "grade": 2,
+        "source_rank": 79,
+        "text_sha256": "0c44747347b7ae4120ebec9ad085cf2232fc1efb81612a99793753f635076e96"
+      }
+    ]
+  },
+  {
+    "id": "2019:1063750",
+    "year": "2019",
+    "cluster": "2019:1063750",
+    "split": "final",
+    "query_sha256": "901d7e7f7982e03e9a977a55df130e1c5eaa902a3eec39969b072be7d6a5a1dc",
+    "passages": [
+      {
+        "pid": "5442717",
+        "grade": 0,
+        "source_rank": 41,
+        "text_sha256": "355747842787a8efd5ba29b253c0c599185ec8d97649d6b5915a9681fe7f2d69"
+      },
+      {
+        "pid": "5539843",
+        "grade": 0,
+        "source_rank": 55,
+        "text_sha256": "38fae3c863f513a5523daa0d433d892a7f8580a3a8bb27fa43618fa8703db411"
+      },
+      {
+        "pid": "6093904",
+        "grade": 0,
+        "source_rank": 67,
+        "text_sha256": "10ffaa7c38147822d12649520521948145b7d2a7d90b1366502c49f9b3fe9cbc"
+      },
+      {
+        "pid": "6093907",
+        "grade": 0,
+        "source_rank": 68,
+        "text_sha256": "ebd8d8a0076b8c46305ab199bbf6a71e127ead901c95142b2935f6af6fae593e"
+      },
+      {
+        "pid": "6093910",
+        "grade": 0,
+        "source_rank": 69,
+        "text_sha256": "6ca2c21754723b50a0f4d107a732afcde21c30ed316e15f97965246a5f664a86"
+      },
+      {
+        "pid": "6093911",
+        "grade": 0,
+        "source_rank": 70,
+        "text_sha256": "a62e26de283073e8065c4013d1a003c568d42f657ac617346db0172c78d2a4f3"
+      },
+      {
+        "pid": "3327051",
+        "grade": 0,
+        "source_rank": 122,
+        "text_sha256": "09437d605b24745d8192191046ae13b91a8fe9a27fa9d9b35c795d8ea57b6fa2"
+      },
+      {
+        "pid": "7778351",
+        "grade": 0,
+        "source_rank": 151,
+        "text_sha256": "cb38f50bda8b9352d4d026590765f56cc4bba0c21b16f6b2b71343bbc4d3e9fc"
+      }
+    ]
+  },
+  {
+    "id": "2019:1103812",
+    "year": "2019",
+    "cluster": "2019:1103812",
+    "split": "final",
+    "query_sha256": "3509caf07be51000f92e8e372ed73265ca30915b7755ae666a23bb48a132cf67",
+    "passages": [
+      {
+        "pid": "5190505",
+        "grade": 0,
+        "source_rank": 2,
+        "text_sha256": "0ddc99ce44975c0ab8ae52fd29ad20cac09e79d15040006d5a4d82af6fabdf20"
+      },
+      {
+        "pid": "723320",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "b1bf0e6ac8282673c8e069a2aa68f1948706a64a0ecc7f8f2c3036d53da6d372"
+      },
+      {
+        "pid": "8138253",
+        "grade": 0,
+        "source_rank": 13,
+        "text_sha256": "e3c48773fa649b74f172daf024e906a62eb36fa0ae037d5e3e6b241f0c332aff"
+      },
+      {
+        "pid": "8220086",
+        "grade": 1,
+        "source_rank": 22,
+        "text_sha256": "8ddcac976f3a5d6d4818663ff11de5f357217679018c7c82f6ce194ffacead90"
+      },
+      {
+        "pid": "8220089",
+        "grade": 3,
+        "source_rank": 23,
+        "text_sha256": "b4a08c09d3b460f27a7e00f61b9a969e15b67b770fca1fba47ef69e78f0434a8"
+      },
+      {
+        "pid": "8224181",
+        "grade": 0,
+        "source_rank": 25,
+        "text_sha256": "8094cc3ca7b275890b757059730d4afd22e7c29da3e5f9aa6c6f41d7d9e52ffa"
+      },
+      {
+        "pid": "8224183",
+        "grade": 1,
+        "source_rank": 26,
+        "text_sha256": "804f1245c54dc634b0383c8a8df4206f3c7f79e8d8f9312d441830d9917c3c7a"
+      },
+      {
+        "pid": "7430771",
+        "grade": 0,
+        "source_rank": 30,
+        "text_sha256": "ddf3c62c00ba7fa06501248944da9d6aabc910618a4e16fadba2dcca307524cd"
+      }
+    ]
+  },
+  {
+    "id": "2019:1106007",
+    "year": "2019",
+    "cluster": "2019:1106007",
+    "split": "final",
+    "query_sha256": "c4c915ba5221552dbe2f07fbf6c01c02709ec426f24c69605824cafd85b69980",
+    "passages": [
+      {
+        "pid": "5174765",
+        "grade": 0,
+        "source_rank": 5,
+        "text_sha256": "3fa6403c0a32f742211748e1966809f669e028fa37d12bac0f182e429a36b102"
+      },
+      {
+        "pid": "5228015",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "cecfca89bd913adeb0ed7ea0b079a73f51aa741f12dad10a76d8bde2a008c862"
+      },
+      {
+        "pid": "5279702",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "1d3827cdfd9357f5768cd3a5bd38ec1fbadd1dc7ca33274365598e5aa3efbf48"
+      },
+      {
+        "pid": "8141086",
+        "grade": 0,
+        "source_rank": 17,
+        "text_sha256": "b769fcb2bc379c3f0cb4e3abb1026268d10baa2aea87d6f166a29e69841d24a8"
+      },
+      {
+        "pid": "8199520",
+        "grade": 1,
+        "source_rank": 20,
+        "text_sha256": "27fe8a0f41bc780ecc326fcabeaab6aae6044b65d2c10978de52cc4314591d04"
+      },
+      {
+        "pid": "8204463",
+        "grade": 2,
+        "source_rank": 24,
+        "text_sha256": "2a2af43f83bc2163bbefcd6cb0891a4727260f3d7d7b7037ffcce75b56b43d00"
+      },
+      {
+        "pid": "7500586",
+        "grade": 2,
+        "source_rank": 36,
+        "text_sha256": "9679d95aba1ab0f714cbc69746c23648ae41b54652ba3879a6167e3edcc64b79"
+      },
+      {
+        "pid": "8742532",
+        "grade": 0,
+        "source_rank": 38,
+        "text_sha256": "0c87e941c0678dbb20f1f5ebed3d2316a1d65483c60602b7c92996c4e31eba50"
+      }
+    ]
+  },
+  {
+    "id": "2019:1110199",
+    "year": "2019",
+    "cluster": "2019:1110199",
+    "split": "final",
+    "query_sha256": "8ed46963c427d7a1f4ba485910d2df9b16df7bf5e8e96a7a710649d538deb754",
+    "passages": [
+      {
+        "pid": "5172684",
+        "grade": 1,
+        "source_rank": 2,
+        "text_sha256": "11344f9501157bc4dec9abde46d1e969521e29a5ade177b595faee94c8e8d6ac"
+      },
+      {
+        "pid": "8301971",
+        "grade": 1,
+        "source_rank": 45,
+        "text_sha256": "6af18ddc3bf83513406854ac41c56f5f665b7fcc573b4795a98cf3d22434af5b"
+      },
+      {
+        "pid": "554521",
+        "grade": 0,
+        "source_rank": 62,
+        "text_sha256": "ec99fb67269c77e30ffc3927ffe7e26eac5f5ab7b01d3095b4b2c9b08e546f08"
+      },
+      {
+        "pid": "1426939",
+        "grade": 0,
+        "source_rank": 65,
+        "text_sha256": "346ef7d4f32212735013e79071bf443eee65e426993b010b5f5b5aba2077ef34"
+      },
+      {
+        "pid": "6368889",
+        "grade": 0,
+        "source_rank": 73,
+        "text_sha256": "43e27fd33dbc330c8fcd9aa632dbfd2f08df02a646887eaec12aa95a9e354321"
+      },
+      {
+        "pid": "6077239",
+        "grade": 0,
+        "source_rank": 81,
+        "text_sha256": "d75ae59f3f39291db8ff1b88d400288fcc8adf2a7ccee8af4c09493b64ac7f02"
+      },
+      {
+        "pid": "2301118",
+        "grade": 0,
+        "source_rank": 117,
+        "text_sha256": "0c2703be0ee4ff2b14c722877faec08c910dddfdff0ee1bd2cfbcbe26415d2b7"
+      },
+      {
+        "pid": "2316524",
+        "grade": 0,
+        "source_rank": 119,
+        "text_sha256": "5a2b2e31a3d301481e204f63acf3393961330b50ee5b7734fb8a2fbc14ab56db"
+      }
+    ]
+  },
+  {
+    "id": "2019:1112341",
+    "year": "2019",
+    "cluster": "2019:1112341",
+    "split": "final",
+    "query_sha256": "10b735f790262deb077f7a3b21a2937be1b59cb210f2007351193719bce88d68",
+    "passages": [
+      {
+        "pid": "8139251",
+        "grade": 1,
+        "source_rank": 13,
+        "text_sha256": "d6484d1cf78836f19b5989a2683beb59fd8e864be07982f52e53c4e8e8afd227"
+      },
+      {
+        "pid": "733687",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "7bc8c4afe47228f7a0f2540e5883311c1a761e0851371b95a01dea8100955965"
+      },
+      {
+        "pid": "8773882",
+        "grade": 0,
+        "source_rank": 35,
+        "text_sha256": "d868f883ea8fc8ec78d0a507cc3162118984f70f760abdac0ecd9b1b52ad455c"
+      },
+      {
+        "pid": "90432",
+        "grade": 0,
+        "source_rank": 40,
+        "text_sha256": "455ec82e419fa3411df79e6499c6bd70e00f329c35dbe31331f0eef4101108cd"
+      },
+      {
+        "pid": "90433",
+        "grade": 0,
+        "source_rank": 41,
+        "text_sha256": "164210f26be8f21d47f56181da0b127c21f720723d841375efe6394d07da29cc"
+      },
+      {
+        "pid": "943110",
+        "grade": 0,
+        "source_rank": 49,
+        "text_sha256": "83a9ea62dfe8c103e711590652a2de979e1348b3fa286adcb49ba04449fce94f"
+      },
+      {
+        "pid": "1702898",
+        "grade": 3,
+        "source_rank": 75,
+        "text_sha256": "e4de09f6da63cb55586db1c9c555f2751f8646af80b4fc959abfc3e641f6e503"
+      },
+      {
+        "pid": "1707314",
+        "grade": 3,
+        "source_rank": 77,
+        "text_sha256": "13c8425ca7f9f1bad1da6eec5ed2bdadec88a65789c35f77136e301b88a2d01e"
+      }
+    ]
+  },
+  {
+    "id": "2019:1113437",
+    "year": "2019",
+    "cluster": "2019:1113437",
+    "split": "final",
+    "query_sha256": "5be2cb3542be8518d2864d63a2a4d91677ba8069786fddbe044aa650eeede833",
+    "passages": [
+      {
+        "pid": "7377275",
+        "grade": 1,
+        "source_rank": 23,
+        "text_sha256": "46795a5c7f828c038e1fd12e3a28ae436f91bb2685ddad172fb0429f01c49b2b"
+      },
+      {
+        "pid": "7377278",
+        "grade": 2,
+        "source_rank": 24,
+        "text_sha256": "faa0b8c26391dab6f8f564c436f080f745af7f59d138f417d2749a3a5068ec41"
+      },
+      {
+        "pid": "7385219",
+        "grade": 1,
+        "source_rank": 27,
+        "text_sha256": "b3bc7763ad4af9f814139f8c4a2ca5ffbce2bc58b5cf881fec1aad67e3d05351"
+      },
+      {
+        "pid": "7497491",
+        "grade": 2,
+        "source_rank": 38,
+        "text_sha256": "c2903ac11d447879a284c1b3e288280addb90a1e0df4851d80f2fb54d00b731d"
+      },
+      {
+        "pid": "8729215",
+        "grade": 0,
+        "source_rank": 42,
+        "text_sha256": "9ede37d2d19668f1c2f57c034de3f845659ad827c0c42bb0190901e7703ed3be"
+      },
+      {
+        "pid": "8729216",
+        "grade": 1,
+        "source_rank": 43,
+        "text_sha256": "5ee6e5fed18f4ceb36b083edb7503dbdcea5418d2946a52c41596956b8dd1f0e"
+      },
+      {
+        "pid": "5546284",
+        "grade": 2,
+        "source_rank": 51,
+        "text_sha256": "5d11e7d8a4c70e0768e04794a3990d046c63810218ea5e122bc9c1ea0b9e8940"
+      },
+      {
+        "pid": "5996691",
+        "grade": 1,
+        "source_rank": 59,
+        "text_sha256": "50fb6a73e843acb8a487ca9124e5a7bbdc67f18d1d11da558f12cebd55a6eb06"
+      }
+    ]
+  },
+  {
+    "id": "2019:1114646",
+    "year": "2019",
+    "cluster": "2019:1114646",
+    "split": "final",
+    "query_sha256": "bd24629cc34ad1aac460c2422f2ae031cb86b0d2dee7a6b4d3c2bfc62efde88c",
+    "passages": [
+      {
+        "pid": "8117087",
+        "grade": 1,
+        "source_rank": 15,
+        "text_sha256": "526b7f96c2533efaafcb2a31270b7ac3faf23e0222ce7b168b30d86295202ae4"
+      },
+      {
+        "pid": "8117088",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "42f3b56e22bc810533e1e8bfeab50cf6afdc6c7147852ad6cf689817fd375d4f"
+      },
+      {
+        "pid": "8117092",
+        "grade": 1,
+        "source_rank": 17,
+        "text_sha256": "dc241f5529606445e81fd67c5f818f5ca11cdccbb85713a5c6e40f55fd89caba"
+      },
+      {
+        "pid": "8327369",
+        "grade": 1,
+        "source_rank": 52,
+        "text_sha256": "71a0e9e1c543232e763611078f6d248f5e1c518aefbf49150233f3724f608ec0"
+      },
+      {
+        "pid": "6711103",
+        "grade": 2,
+        "source_rank": 97,
+        "text_sha256": "0888739b96621fcfcced8c30bb9aa9766ede40d07b54733673fb455ca0d72d40"
+      },
+      {
+        "pid": "2201127",
+        "grade": 1,
+        "source_rank": 99,
+        "text_sha256": "af206bdebfaa31dd1e4f39c442da97b9a3a331836a5eeb4ea2a49c70774b89a9"
+      },
+      {
+        "pid": "3056368",
+        "grade": 1,
+        "source_rank": 100,
+        "text_sha256": "13e6da27550b2ebf523be205c3457eb6bb0ceedb36fd613253b6450afa893216"
+      },
+      {
+        "pid": "2647994",
+        "grade": 3,
+        "source_rank": 177,
+        "text_sha256": "31e6dd550cd839570cd4a6805a3ed87ae5608bdf9df2850f86772f74502f016c"
+      }
+    ]
+  },
+  {
+    "id": "2019:1114819",
+    "year": "2019",
+    "cluster": "2019:1114819",
+    "split": "final",
+    "query_sha256": "e74196393874ac86e710b37c0ffb7f05eea9f9ba809d3c9bfd108e8361eec89d",
+    "passages": [
+      {
+        "pid": "7156443",
+        "grade": 2,
+        "source_rank": 2,
+        "text_sha256": "261ce27ddd2d9b747a9b2f7b8ce5fed1443dc0cbd557f654879aac86029193d4"
+      },
+      {
+        "pid": "8024890",
+        "grade": 2,
+        "source_rank": 5,
+        "text_sha256": "21712f58360912bb4b5d6d0a3352435aa7441f6dccb8ef9e0668a3962b81ef0f"
+      },
+      {
+        "pid": "8027206",
+        "grade": 2,
+        "source_rank": 6,
+        "text_sha256": "02900298e5064a79c6ca73abf864bc39f18f8c9db1a76387dec35d38b1a3ae1c"
+      },
+      {
+        "pid": "5196819",
+        "grade": 1,
+        "source_rank": 10,
+        "text_sha256": "df43523a0883ad775a4957c9f38aee0d378e16374944889724e4d670175ed92d"
+      },
+      {
+        "pid": "8461287",
+        "grade": 0,
+        "source_rank": 11,
+        "text_sha256": "73a8bd749981ae20d0a387271cb1758ff73ef209165d70f27c9f0e41e85bb3fa"
+      },
+      {
+        "pid": "8096817",
+        "grade": 2,
+        "source_rank": 14,
+        "text_sha256": "559c83c9795a3e0658e59f7b23d715ca0c9ca96244ff11241ba190d2edf0fb90"
+      },
+      {
+        "pid": "8115439",
+        "grade": 3,
+        "source_rank": 20,
+        "text_sha256": "62055f978cad23bcd69f7be217bf566b947019f16a14cd93a6207fb66ac62057"
+      },
+      {
+        "pid": "8115703",
+        "grade": 1,
+        "source_rank": 22,
+        "text_sha256": "a751511b7c6b8578c2fc12bb1bc6e1a2d2c83b330b7cdf8136b876685a749a8a"
+      }
+    ]
+  },
+  {
+    "id": "2019:1115776",
+    "year": "2019",
+    "cluster": "2019:1115776",
+    "split": "final",
+    "query_sha256": "f115251eef83abe8e52d33994516a59d413e5162c6dc75d94a7eb8fb145eee90",
+    "passages": [
+      {
+        "pid": "7248918",
+        "grade": 0,
+        "source_rank": 18,
+        "text_sha256": "0d63614bc7066b9671012c76c8fa5cec2510e1763f61fb617bb7c096bd21cb82"
+      },
+      {
+        "pid": "8106321",
+        "grade": 3,
+        "source_rank": 20,
+        "text_sha256": "9f3c4399278921d92f7133326783cc0f45dbfe3d7ab58f2959913b58315a594c"
+      },
+      {
+        "pid": "8106323",
+        "grade": 0,
+        "source_rank": 21,
+        "text_sha256": "96583c4489d7fcce8813f495ac4d13e2d5fdeb6acb7ba5335cf152b8da12b363"
+      },
+      {
+        "pid": "8106324",
+        "grade": 1,
+        "source_rank": 22,
+        "text_sha256": "df3f1f93647234a22cd88e93c39d9f1ffacf91fdc99b48c4896e195165ec200e"
+      },
+      {
+        "pid": "8108815",
+        "grade": 0,
+        "source_rank": 24,
+        "text_sha256": "3843f410694fb622455f0e1d3b69bfc481cddf04b3ca23acf7c304080d8a0bd1"
+      },
+      {
+        "pid": "5357816",
+        "grade": 0,
+        "source_rank": 35,
+        "text_sha256": "fb5a5c7e2f902a06e5e6602fc250d2ffdac6714fd3e1e6120eb701eb87a44c50"
+      },
+      {
+        "pid": "7436880",
+        "grade": 0,
+        "source_rank": 40,
+        "text_sha256": "756acccc3754233c2bd6b630003d7904bce28e3541e4c0493e3e3a72c8c8ca8c"
+      },
+      {
+        "pid": "1440035",
+        "grade": 0,
+        "source_rank": 73,
+        "text_sha256": "0c2a9faaf3f95e8e33c1e56db5e5428032506846d6e3354b62398f9653935dda"
+      }
+    ]
+  },
+  {
+    "id": "2019:1117099",
+    "year": "2019",
+    "cluster": "2019:1117099",
+    "split": "final",
+    "query_sha256": "276af87235a881b93d11d6602d826d3294fba2e593197406839b0641709c9870",
+    "passages": [
+      {
+        "pid": "8446502",
+        "grade": 3,
+        "source_rank": 9,
+        "text_sha256": "34215124f93fe780847a8a172fe5711e7bed93c5fcef3115d884a35fce716352"
+      },
+      {
+        "pid": "8093932",
+        "grade": 3,
+        "source_rank": 11,
+        "text_sha256": "b8c2598f888c619f04ea0c32d62ae964c311d2b4f9f6fb922d8c7739ce5c1fb9"
+      },
+      {
+        "pid": "5286539",
+        "grade": 3,
+        "source_rank": 18,
+        "text_sha256": "8d7ccf84fdf4e1a953eed8245ce3f741207a4a1e39c3df9ba09f35e1618d8f61"
+      },
+      {
+        "pid": "8714082",
+        "grade": 3,
+        "source_rank": 31,
+        "text_sha256": "675648467422d5fbd42a3aa977750686751b498a24a23b8079a0619d0c886888"
+      },
+      {
+        "pid": "8714087",
+        "grade": 1,
+        "source_rank": 32,
+        "text_sha256": "13273fe6169208cf37462db58ffb72f014931e9f2572f0d461859345eb4501a6"
+      },
+      {
+        "pid": "6122722",
+        "grade": 3,
+        "source_rank": 70,
+        "text_sha256": "99f67cafca9f2e45bff5f0e42e1e33bcc01edf28192c142155693de97ef851e9"
+      },
+      {
+        "pid": "6177939",
+        "grade": 3,
+        "source_rank": 81,
+        "text_sha256": "e679a4f748ee5d15c8b2402d1a9fac7d8446f33dfff6ba05ade5607b0b6f9041"
+      },
+      {
+        "pid": "6534818",
+        "grade": 3,
+        "source_rank": 82,
+        "text_sha256": "5fb1d616c0da9af1d0bd7993e55ec116a473960b6a798ad2723bf4ffd3d13c7a"
+      }
+    ]
+  },
+  {
+    "id": "2019:1121402",
+    "year": "2019",
+    "cluster": "2019:1121402",
+    "split": "final",
+    "query_sha256": "c0969be1015ddd34fee1611531e924c40588f3611a6e71b162f08de9e88dfcc9",
+    "passages": [
+      {
+        "pid": "5189913",
+        "grade": 2,
+        "source_rank": 10,
+        "text_sha256": "8526648e92ed3032f55af2a8c01db3e1d2092f407504786362577fca85bcb764"
+      },
+      {
+        "pid": "752294",
+        "grade": 0,
+        "source_rank": 47,
+        "text_sha256": "e4e47a1f4b96d2f29f7dccd4c3f4b9768919498abd39b2ef34e494151db415bc"
+      },
+      {
+        "pid": "6392396",
+        "grade": 0,
+        "source_rank": 71,
+        "text_sha256": "707947c34b3a7b0b28a033200b7f6471ce215e096bdceedd44dee92f1ae9dbc4"
+      },
+      {
+        "pid": "6392403",
+        "grade": 2,
+        "source_rank": 73,
+        "text_sha256": "3774bf1d0b20cc84a9cefe8d56e59b0d837dabf12a643f74540e58d96f6d9410"
+      },
+      {
+        "pid": "1623219",
+        "grade": 0,
+        "source_rank": 86,
+        "text_sha256": "5982f4b2c85a84ce488830d4cdbef4b83a94ed587458dc8addc889fc2d28ba01"
+      },
+      {
+        "pid": "7125980",
+        "grade": 2,
+        "source_rank": 135,
+        "text_sha256": "ff706f5a42e856f4f710acf4d8a417fd4fb186fa245e7d7186cdb9e6bbc4aa60"
+      },
+      {
+        "pid": "1249687",
+        "grade": 0,
+        "source_rank": 153,
+        "text_sha256": "36868c73e64a927fcf2a1ad4fd168ea974479ba953c6edc10bc62ddef491eef2"
+      },
+      {
+        "pid": "7898699",
+        "grade": 0,
+        "source_rank": 165,
+        "text_sha256": "5dbb89c434bd8c8cab0b9c4fe986f70e7610f44fe21ab3035aa1a8ae32756d9a"
+      }
+    ]
+  },
+  {
+    "id": "2019:1121709",
+    "year": "2019",
+    "cluster": "2019:1121709",
+    "split": "final",
+    "query_sha256": "70ad77a010317810d0c4e79c680bdd30db2c826efd7671c9ff95d3b3191eb42c",
+    "passages": [
+      {
+        "pid": "8049585",
+        "grade": 1,
+        "source_rank": 1,
+        "text_sha256": "490e6b1373ccd9310f1b84bc68f69e220f3fe9fd6041cd046ff103ec91f8dc4a"
+      },
+      {
+        "pid": "3145987",
+        "grade": 0,
+        "source_rank": 3,
+        "text_sha256": "3e8fd6d191641a16f28afe478996238a01f128a66da46a7e607d655e8f920c2f"
+      },
+      {
+        "pid": "3423059",
+        "grade": 1,
+        "source_rank": 4,
+        "text_sha256": "7dea173f9a5661a4b143ef63225c813cae56dc8f0bd8357a008e23a4a914d223"
+      },
+      {
+        "pid": "3423067",
+        "grade": 2,
+        "source_rank": 5,
+        "text_sha256": "593e353d5b692f63912fddc0360bd68c1ab33d4d0cbc6277d26faf6f8382273b"
+      },
+      {
+        "pid": "3423063",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "2dd27e0d55d519f0844b5fde47100a52543a11576f1ec067dd135178aa42971a"
+      },
+      {
+        "pid": "2940488",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "684e6eaf31a7a8e07a6daa6de954246cc6bfc4bcff72c1f543902c4e118edf04"
+      },
+      {
+        "pid": "3015619",
+        "grade": 0,
+        "source_rank": 9,
+        "text_sha256": "5085d3c7e40cdc0b36498548e83c2b6963b76b71e24696e323a5c78f2aa0b7f9"
+      },
+      {
+        "pid": "1752813",
+        "grade": 0,
+        "source_rank": 10,
+        "text_sha256": "038a7f38e919cdf87293887082c7c409836d0d90b65431ec203616a902617179"
+      }
+    ]
+  },
+  {
+    "id": "2019:1124210",
+    "year": "2019",
+    "cluster": "2019:1124210",
+    "split": "final",
+    "query_sha256": "9eb480d0a0e91e296e59da0821521c94fbc89870f348cf70ebd0280ca399d5a3",
+    "passages": [
+      {
+        "pid": "8406413",
+        "grade": 1,
+        "source_rank": 1,
+        "text_sha256": "ba9bbd0eff5e133b388e6614bfad431885b3f1f18da104f349f0f26449d4e4e4"
+      },
+      {
+        "pid": "8026735",
+        "grade": 2,
+        "source_rank": 6,
+        "text_sha256": "9aa55917e727b99ce8b632d79ec641966ccb281f75f1851ade4f940ea2a95635"
+      },
+      {
+        "pid": "8026737",
+        "grade": 2,
+        "source_rank": 7,
+        "text_sha256": "d29093f7bba13b11bcfd8c0d40761fa9830f876f4ffde5f9f553c6eb5b2da27a"
+      },
+      {
+        "pid": "8026738",
+        "grade": 1,
+        "source_rank": 8,
+        "text_sha256": "7eb29d08e4428247625cb0d87245316b374d7eb5cee7ea7964822ccc194c3f38"
+      },
+      {
+        "pid": "7224093",
+        "grade": 2,
+        "source_rank": 12,
+        "text_sha256": "85ea533fd575419eab164511228053c3a95dcedb749235310b92fef587b8457e"
+      },
+      {
+        "pid": "7224102",
+        "grade": 2,
+        "source_rank": 13,
+        "text_sha256": "236b70a8b2f7ba8719c5e840bde3d9e39e567d475a61763245cca860e66898b0"
+      },
+      {
+        "pid": "8558068",
+        "grade": 3,
+        "source_rank": 20,
+        "text_sha256": "7294557d57cb2a7c82e42c9e27ae351f45edca86c0d438e1dd8baec01250e4eb"
+      },
+      {
+        "pid": "8802909",
+        "grade": 2,
+        "source_rank": 52,
+        "text_sha256": "12cb575fabc1f96c15baed6201c655bcbaf16d25bd666da3a18d16f890f101b8"
+      }
+    ]
+  },
+  {
+    "id": "2019:1129237",
+    "year": "2019",
+    "cluster": "2019:1129237",
+    "split": "final",
+    "query_sha256": "c8dcb34a7e5cf8d563e8718aa0a10e5f0d037b08cf1b8dc70255e067bd8b7863",
+    "passages": [
+      {
+        "pid": "8588222",
+        "grade": 0,
+        "source_rank": 24,
+        "text_sha256": "e6f348437336daf7a2e89f136d3fff87323d7005ed3511cf046b06b80dba0e59"
+      },
+      {
+        "pid": "8596871",
+        "grade": 0,
+        "source_rank": 27,
+        "text_sha256": "dad62a3214f36676842096490e8ca64c4091ec12c111ca22e880fb2381820966"
+      },
+      {
+        "pid": "6343523",
+        "grade": 0,
+        "source_rank": 57,
+        "text_sha256": "d725575e1ffe964cbea60c798fe33d635458e7419fbb6ae92490f466a2b49276"
+      },
+      {
+        "pid": "998748",
+        "grade": 3,
+        "source_rank": 68,
+        "text_sha256": "dde7a8343f518a8b30ec6079e2475b95bd38e0f0f85b5981e348d58f697be759"
+      },
+      {
+        "pid": "1770020",
+        "grade": 0,
+        "source_rank": 83,
+        "text_sha256": "411ce6a8d9e24be7f39440aa7b44589be977efab0c3f90494ff0620e5d4f0589"
+      },
+      {
+        "pid": "1770027",
+        "grade": 2,
+        "source_rank": 85,
+        "text_sha256": "ef30a317395619de15a241a09818a12b9d5d8708068046df6ffafc6c25b1b6d7"
+      },
+      {
+        "pid": "305088",
+        "grade": 0,
+        "source_rank": 89,
+        "text_sha256": "649f38e35b632718204e6bbf3d6f2cc92f188582b370cd8701e5accb1824492f"
+      },
+      {
+        "pid": "305087",
+        "grade": 0,
+        "source_rank": 90,
+        "text_sha256": "9751b213595a19bcb084828dd81c14bde25a10d5b79b6005552e9342ec7edd99"
+      }
+    ]
+  },
+  {
+    "id": "2019:1133167",
+    "year": "2019",
+    "cluster": "2019:1133167",
+    "split": "final",
+    "query_sha256": "3f325401d8b1eccb79c3ea48bae5aadfc59a5f0984d445b89f6a435607fbdc6c",
+    "passages": [
+      {
+        "pid": "8033646",
+        "grade": 1,
+        "source_rank": 3,
+        "text_sha256": "370342fb727511c7fde17843a126260e40af7e1849d5514169bbd498565a793d"
+      },
+      {
+        "pid": "8033648",
+        "grade": 2,
+        "source_rank": 4,
+        "text_sha256": "6362f9e551276c4176dd916f71c3312c8f78bd221b4579cbc9b67da6b6ac2801"
+      },
+      {
+        "pid": "7218012",
+        "grade": 2,
+        "source_rank": 5,
+        "text_sha256": "0133550b632dd913217722ba94b916a90ce099229169b7141123c742bc9a78c1"
+      },
+      {
+        "pid": "7218016",
+        "grade": 2,
+        "source_rank": 6,
+        "text_sha256": "0b757ceea14ac83f589cd36483f21d6bcd506c670328754f352d17789b39cd83"
+      },
+      {
+        "pid": "7218018",
+        "grade": 2,
+        "source_rank": 7,
+        "text_sha256": "116703d1c3513bd6955945b6bb25730acbb069639bd20279f575015bd367b2c2"
+      },
+      {
+        "pid": "8484845",
+        "grade": 1,
+        "source_rank": 8,
+        "text_sha256": "44a57dcec3d481ea9d87a4ec54fd9cd0dec908d6ae6383d2942dc2a655a16c2f"
+      },
+      {
+        "pid": "8160224",
+        "grade": 2,
+        "source_rank": 11,
+        "text_sha256": "3ddc121158d2be9205da630a7c5170d9cd943c10203bf764b590c4936ab027a2"
+      },
+      {
+        "pid": "8160230",
+        "grade": 1,
+        "source_rank": 12,
+        "text_sha256": "c99b2552a71cba2fae9dec581dde5d6f7bb16a73954ba6f8cb784f208a670db7"
+      }
+    ]
+  },
+  {
+    "id": "2019:130510",
+    "year": "2019",
+    "cluster": "2019:130510",
+    "split": "final",
+    "query_sha256": "1aa1403575fc17c1c312741d80f43eb7890d53a2d41830a291fbd4b2f6968bd3",
+    "passages": [
+      {
+        "pid": "8612904",
+        "grade": 2,
+        "source_rank": 18,
+        "text_sha256": "3c797b4eda6458b28350e1f9cfdea2b5f35d3735ada34baab9fa0bbfd2130193"
+      },
+      {
+        "pid": "8287352",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "bf68c1b30dd69182a63031870855a535cc993dfcc400854588f7b2c26c73d135"
+      },
+      {
+        "pid": "7501563",
+        "grade": 1,
+        "source_rank": 35,
+        "text_sha256": "4485676b6c7a6382f290838fd940609ca8cd052bcb3d91b6ff3d02be928e1787"
+      },
+      {
+        "pid": "8362399",
+        "grade": 0,
+        "source_rank": 45,
+        "text_sha256": "4c3b3f4318a3eb203069f7e4559129ce7994cf95517968f4e5ea56d1d2d337a8"
+      },
+      {
+        "pid": "1481524",
+        "grade": 0,
+        "source_rank": 61,
+        "text_sha256": "143c70fe2c7494fb2f58d1334fe96473f5d327c5f49d753c1d3ec11a053282b0"
+      },
+      {
+        "pid": "978180",
+        "grade": 0,
+        "source_rank": 62,
+        "text_sha256": "618de073e54deb37be212f4d32fd07c20c3a4579093ffee91c2c626b7f1e49e8"
+      },
+      {
+        "pid": "1494930",
+        "grade": 1,
+        "source_rank": 63,
+        "text_sha256": "d82b71030818d7f94ff4fc2de84fa5061131b335b104904999f8b171b18bf2e6"
+      },
+      {
+        "pid": "6621100",
+        "grade": 0,
+        "source_rank": 85,
+        "text_sha256": "d9974dc7297e5d0df74795c25a01c97b1fcfddfb367f21201daac9e200f0946b"
+      }
+    ]
+  },
+  {
+    "id": "2019:131843",
+    "year": "2019",
+    "cluster": "2019:131843",
+    "split": "final",
+    "query_sha256": "8f57c481095e67ed657aa386216ad4e983e5597eafe7dbd8cec361486b396311",
+    "passages": [
+      {
+        "pid": "8710813",
+        "grade": 3,
+        "source_rank": 42,
+        "text_sha256": "382bbdda980150512fe9244e1d545048a80e86fd507159a1f0475c018095f22b"
+      },
+      {
+        "pid": "8305151",
+        "grade": 3,
+        "source_rank": 43,
+        "text_sha256": "40e84309dbfa46240a3bf43277fc4df125b7eddf739971ddf70d3ad6ac61da4d"
+      },
+      {
+        "pid": "8305156",
+        "grade": 3,
+        "source_rank": 44,
+        "text_sha256": "2ee4a9a7a81b72f64d763764026bc45a1722a97aa0311a19582d6b1e756babd4"
+      },
+      {
+        "pid": "985994",
+        "grade": 3,
+        "source_rank": 69,
+        "text_sha256": "ee2f535b2f2f60341daed6596d5b619c889b90fad48bc0c92864d0a5b17492f0"
+      },
+      {
+        "pid": "3299960",
+        "grade": 0,
+        "source_rank": 112,
+        "text_sha256": "f02c07fab5b3d0fe83aa70bb79c49569e6910ddc9b01109aaeb7f808695212c8"
+      },
+      {
+        "pid": "2683747",
+        "grade": 0,
+        "source_rank": 178,
+        "text_sha256": "55e144a20af0636eb724fffd7e514e8005362eaa15ccfab80978b8e7161d6425"
+      },
+      {
+        "pid": "7707868",
+        "grade": 1,
+        "source_rank": 229,
+        "text_sha256": "b7be1c56007b55af895d1b253a543f5680be64f7e5749b3d6d18756bc6f0787a"
+      },
+      {
+        "pid": "8305152",
+        "grade": 3,
+        "source_rank": 716,
+        "text_sha256": "c6c989229352079c83dabb2f6579c2770bba7f559b916bb3e740e42b5f0f3012"
+      }
+    ]
+  },
+  {
+    "id": "2019:146187",
+    "year": "2019",
+    "cluster": "2019:146187",
+    "split": "final",
+    "query_sha256": "c3670b5ab4437ef1941e758786f5bdd8c7c509fd5b0b7733c06b731c600fee0b",
+    "passages": [
+      {
+        "pid": "8434617",
+        "grade": 0,
+        "source_rank": 2,
+        "text_sha256": "00b0005afbdd91e9b857333568aec982e280be78cdabcb90d959fe44d5d1bdf9"
+      },
+      {
+        "pid": "8042972",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "ef4ea8ef511bef140086030e19c14932fae7ec79f100380ae688e77d60c5767d"
+      },
+      {
+        "pid": "744167",
+        "grade": 0,
+        "source_rank": 28,
+        "text_sha256": "3580399237182ef3eb662608aaa3c0e625d3724ed6838b45b2b2a87f2fd61cf7"
+      },
+      {
+        "pid": "5548651",
+        "grade": 0,
+        "source_rank": 44,
+        "text_sha256": "5b1e6aec1bb9696c046d0424908d33226fcbb103ed00d65698d5e0f7f7e83765"
+      },
+      {
+        "pid": "5999108",
+        "grade": 0,
+        "source_rank": 48,
+        "text_sha256": "2a0e425f765d9a158ea2ca55775d7e4980e1da034386f01fe2837fc3637b55e3"
+      },
+      {
+        "pid": "6430259",
+        "grade": 1,
+        "source_rank": 63,
+        "text_sha256": "5b36106b98eb45b558982ef99efee2cbff916e4640d73a1d1d9d6e044b381256"
+      },
+      {
+        "pid": "6447372",
+        "grade": 0,
+        "source_rank": 64,
+        "text_sha256": "2bd7576a8f75410b90bd34ce41168396b5fe3009e31bdc80a0964433095befe7"
+      },
+      {
+        "pid": "6573190",
+        "grade": 0,
+        "source_rank": 72,
+        "text_sha256": "5ba8fc5ee820d79094d0f184f09f66ebb7f5a1405add2bfdf17ce262852c9a32"
+      }
+    ]
+  },
+  {
+    "id": "2019:148538",
+    "year": "2019",
+    "cluster": "2019:148538",
+    "split": "final",
+    "query_sha256": "d9aaac1916cd8256e4bdb798c8707d63c80c9a014049acad5f4039710105cc4f",
+    "passages": [
+      {
+        "pid": "7157818",
+        "grade": 0,
+        "source_rank": 3,
+        "text_sha256": "30e41eb4c12ba1c4ebd92891e66defd711e2467afbe3d67962b548a6af9d65bb"
+      },
+      {
+        "pid": "8139872",
+        "grade": 1,
+        "source_rank": 14,
+        "text_sha256": "ce9d51b1ba48f831639a15c5582ee0bf8b413a8a71ed6e4d3f306801b459c300"
+      },
+      {
+        "pid": "8283528",
+        "grade": 1,
+        "source_rank": 37,
+        "text_sha256": "33333be87025a4ff8074a6903c4d299682b614ad3592a1d99ce16e3015088459"
+      },
+      {
+        "pid": "8283530",
+        "grade": 1,
+        "source_rank": 38,
+        "text_sha256": "5a6b07761713433529b870316614780bbdbc7005b4e6869dd4d83041ca114c12"
+      },
+      {
+        "pid": "8283532",
+        "grade": 1,
+        "source_rank": 39,
+        "text_sha256": "87101fedfeaeb79cf9437ebf1f9da1da4c7596885a24f61991628724263b99c5"
+      },
+      {
+        "pid": "7496116",
+        "grade": 1,
+        "source_rank": 45,
+        "text_sha256": "220ba35fb3fa3b4bc0e35739392935e95d7ac22ea9c63ef0cfc9715fb46964fe"
+      },
+      {
+        "pid": "985492",
+        "grade": 2,
+        "source_rank": 71,
+        "text_sha256": "5cfc8c5e65cac6a29c8f3a3bd3130b34b732470dd82c945b1b92f639884adfd8"
+      },
+      {
+        "pid": "985493",
+        "grade": 1,
+        "source_rank": 72,
+        "text_sha256": "c406bdda9fd7338074aaea5cd25ee6a1a433f0ab294d698b6e0ab789a4333d37"
+      }
+    ]
+  },
+  {
+    "id": "2019:156493",
+    "year": "2019",
+    "cluster": "2019:156493",
+    "split": "terminal-v1",
+    "query_sha256": "fe03d49f4f111950f251254fc1cfad85f5513995ce00da6ac43a841b153521da",
+    "passages": [
+      {
+        "pid": "8029433",
+        "grade": 2,
+        "source_rank": 1,
+        "text_sha256": "ee923833e702975d21a91423d72543f704c0c66f6bc4874efc86dea8e645ee20"
+      },
+      {
+        "pid": "7371078",
+        "grade": 2,
+        "source_rank": 10,
+        "text_sha256": "80e444531a5dda1dae98420fee443d8f4ca8decdf6029259174ef2642feb2a03"
+      },
+      {
+        "pid": "5346658",
+        "grade": 0,
+        "source_rank": 12,
+        "text_sha256": "fc3a3cc6d2d3e00e9ed482182d6e113c1109453b7dce924833af9dc174941249"
+      },
+      {
+        "pid": "7431316",
+        "grade": 2,
+        "source_rank": 16,
+        "text_sha256": "c0bf89a42c6b28d3f39e67597d67f8fc601fa4ab0304bb3cbd295e42704b7bd5"
+      },
+      {
+        "pid": "8725858",
+        "grade": 0,
+        "source_rank": 29,
+        "text_sha256": "190a20b1535b683fd5f08e368275a216a3c897895caa10e1049ceb54843b733e"
+      },
+      {
+        "pid": "5530082",
+        "grade": 2,
+        "source_rank": 38,
+        "text_sha256": "c7bbc778a67cafcfc5f09ae0145d9b886b2b1673c443b45f21f83d44b46aefe3"
+      },
+      {
+        "pid": "5549994",
+        "grade": 0,
+        "source_rank": 42,
+        "text_sha256": "f18efd3b0fe9af000559cf6a20680d5e67e5be51a45bb2fb23d68ba1dcee8272"
+      },
+      {
+        "pid": "8820525",
+        "grade": 2,
+        "source_rank": 43,
+        "text_sha256": "dada360646d6b3d8d5698a78d1dc65ad9f6c5100b1e496892e4f0d63eb988d1b"
+      }
+    ]
+  },
+  {
+    "id": "2019:168216",
+    "year": "2019",
+    "cluster": "2019:168216",
+    "split": "final",
+    "query_sha256": "3561a6a75a49937481934ad003ea629bfd436c620311948f6f6f0fe4ab4d3dbd",
+    "passages": [
+      {
+        "pid": "8044498",
+        "grade": 0,
+        "source_rank": 5,
+        "text_sha256": "8fafa5ce60bb03e5daabcbf0fc92eaec88951f7d747a09bd49ce4ae9079b839f"
+      },
+      {
+        "pid": "8048968",
+        "grade": 2,
+        "source_rank": 6,
+        "text_sha256": "3730aa05d4062e65991a48040e992339c0bed8c141d98c9b490a328501c01439"
+      },
+      {
+        "pid": "8048969",
+        "grade": 1,
+        "source_rank": 7,
+        "text_sha256": "f231ad78b9530d981bfbad1879bdcbee4508da2ce5a993f657589dd901698ab5"
+      },
+      {
+        "pid": "5216034",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "74dc29a6a3c971cd5c977d25974ec3f569b6d989d42da192f94598483b9db03b"
+      },
+      {
+        "pid": "851272",
+        "grade": 0,
+        "source_rank": 12,
+        "text_sha256": "009a1d2f34c359fab31fe43db94e35b705f7d7017aa650133d76691dc9b154d5"
+      },
+      {
+        "pid": "8141128",
+        "grade": 3,
+        "source_rank": 18,
+        "text_sha256": "82401de97ebcc4c316ab640c6fa57ad136df1993f364290e130dc000846ff7c4"
+      },
+      {
+        "pid": "5293612",
+        "grade": 0,
+        "source_rank": 21,
+        "text_sha256": "b4118661fbe98fb6286cc3739e9b0dd260fc92ac33131c453910f48abfe5bb1f"
+      },
+      {
+        "pid": "5298478",
+        "grade": 0,
+        "source_rank": 22,
+        "text_sha256": "6beaf8ad09ee06d1b6f47c67493a0f353483ebb201b744e04f11d131b0fbaa65"
+      }
+    ]
+  },
+  {
+    "id": "2019:182539",
+    "year": "2019",
+    "cluster": "2019:182539",
+    "split": "final",
+    "query_sha256": "021ff1ea1ba06b7073870777952b3afe79d3e7171f2c2454e366aa1643f71a56",
+    "passages": [
+      {
+        "pid": "738025",
+        "grade": 1,
+        "source_rank": 23,
+        "text_sha256": "4234a1ac471f868bcd2ebfb8f1871690f504de61eaa50d6c35c6dab1aa0e4142"
+      },
+      {
+        "pid": "8299668",
+        "grade": 1,
+        "source_rank": 28,
+        "text_sha256": "a14d7c9822bb3404328656f43c7db25c752d98b104ee1e903b6fb4614f402383"
+      },
+      {
+        "pid": "1638690",
+        "grade": 1,
+        "source_rank": 74,
+        "text_sha256": "23088e748c729f65c79f262c99506bf34438a560dde4770583e5e7213cfe2b51"
+      },
+      {
+        "pid": "63077",
+        "grade": 0,
+        "source_rank": 88,
+        "text_sha256": "8697b5277361a2069d0392f2ff07b74d19267f420c752104c051fcd1724a645d"
+      },
+      {
+        "pid": "7579347",
+        "grade": 0,
+        "source_rank": 117,
+        "text_sha256": "1d45829aedb6a1af1bb8430abd24d2f601b415666a7601a65b054bc41bbc0d7b"
+      },
+      {
+        "pid": "7637811",
+        "grade": 0,
+        "source_rank": 121,
+        "text_sha256": "20e1b2e98165c3be446cafe9dc4f586c6493d81f837bc157162be07169b7f820"
+      },
+      {
+        "pid": "7303730",
+        "grade": 0,
+        "source_rank": 126,
+        "text_sha256": "c5fa3a897e6c1842ea52c5f71400b42708a5f7f085c1c33ee9fd54ca953367c3"
+      },
+      {
+        "pid": "1307235",
+        "grade": 2,
+        "source_rank": 133,
+        "text_sha256": "27f23fb43c08c6b776afdb11280921a9747146b2cc18361a61bfe8a4a11caf5d"
+      }
+    ]
+  },
+  {
+    "id": "2019:183378",
+    "year": "2019",
+    "cluster": "2019:183378",
+    "split": "final",
+    "query_sha256": "e9e1df1d304d8bce447ec76325e32b2dc78ccc8da6098b6b75382095d24a7691",
+    "passages": [
+      {
+        "pid": "5259281",
+        "grade": 0,
+        "source_rank": 13,
+        "text_sha256": "c56486ca2cb3d335dae8f730e3ce7a5922ac5a24e80933ad05f1c09e243cefbb"
+      },
+      {
+        "pid": "5260519",
+        "grade": 3,
+        "source_rank": 14,
+        "text_sha256": "f5b6587e5b516aabe16b08a756e87f042a497e6ca450930c1dbe54964cf7076d"
+      },
+      {
+        "pid": "8570255",
+        "grade": 3,
+        "source_rank": 23,
+        "text_sha256": "def1fe3097c70f90bbf45549b97b6e934a1701cd3c7f8b52cd11d5bccf771917"
+      },
+      {
+        "pid": "8577216",
+        "grade": 0,
+        "source_rank": 24,
+        "text_sha256": "2e8f9ea75a5d44852d3d4ac6e1be275863dd850932136fca489d45073ab67ee1"
+      },
+      {
+        "pid": "5331361",
+        "grade": 0,
+        "source_rank": 25,
+        "text_sha256": "3b1c257e92e73875bc47f2b1cc9ed1992bf41439f56b2ed90227cdc9b1a82a47"
+      },
+      {
+        "pid": "8192307",
+        "grade": 3,
+        "source_rank": 27,
+        "text_sha256": "b38d82df077ef6ffaa66e2f0d05c28a20a2b0bb6420482cc04f37bc9cfd6f030"
+      },
+      {
+        "pid": "5391358",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "c03d010c679c29a30836ccf496e50937ed28486af4f9a18d45d8908d418adaf8"
+      },
+      {
+        "pid": "7449750",
+        "grade": 3,
+        "source_rank": 35,
+        "text_sha256": "eb80d40077d8408a0e9da5b0468aa04a89de1bbc5b6b930ad70480181a86a2c3"
+      }
+    ]
+  },
+  {
+    "id": "2019:19335",
+    "year": "2019",
+    "cluster": "2019:19335",
+    "split": "final",
+    "query_sha256": "67fafbcce7a70b35d8b30bae5d4206d774f352d1d12c96cc61b6aab1615eba59",
+    "passages": [
+      {
+        "pid": "7298833",
+        "grade": 0,
+        "source_rank": 21,
+        "text_sha256": "f816cbbf422698a14d43ff53c3d8edcb124dc7cc47989d14656608a308faacae"
+      },
+      {
+        "pid": "7367407",
+        "grade": 0,
+        "source_rank": 25,
+        "text_sha256": "d291d50d0bfb2891ec98122baef067a99a3c19c466714bbe0ce3c4f9e05e2ba5"
+      },
+      {
+        "pid": "8734157",
+        "grade": 0,
+        "source_rank": 46,
+        "text_sha256": "a67b79aa1876802d3fc76c7235a8e3059db027a930c9df7f6bc7ffc4c3272b69"
+      },
+      {
+        "pid": "8734162",
+        "grade": 0,
+        "source_rank": 47,
+        "text_sha256": "5c6d0c76d5b504fca6c3de6927db45eeda70a19f62ef7fb78639d309c6ee289e"
+      },
+      {
+        "pid": "8798990",
+        "grade": 0,
+        "source_rank": 53,
+        "text_sha256": "97b8db9a010a6045a8933c2aed70a4a8d4a681198abb0b153e6ec7c7ed31207f"
+      },
+      {
+        "pid": "1509459",
+        "grade": 0,
+        "source_rank": 71,
+        "text_sha256": "bee6ccdc60ccfc931573fd4ddd1224527325b8522ac22275f4dd6da386cee13e"
+      },
+      {
+        "pid": "1720387",
+        "grade": 0,
+        "source_rank": 96,
+        "text_sha256": "e47af4100062a8fcde61c467d664e39b6e22a2e7502e628cbefd3a8838519478"
+      },
+      {
+        "pid": "1796642",
+        "grade": 0,
+        "source_rank": 98,
+        "text_sha256": "97d11a45afe89f11f78de350025fb8527880f9a1ea581760d5bb7ff312210813"
+      }
+    ]
+  },
+  {
+    "id": "2019:207786",
+    "year": "2019",
+    "cluster": "2019:207786",
+    "split": "final",
+    "query_sha256": "8f17811ba2fd887d928af55381c502bc8f9f554354e66892bcc52942f932e1e2",
+    "passages": [
+      {
+        "pid": "5170143",
+        "grade": 0,
+        "source_rank": 2,
+        "text_sha256": "a2c6402c8112b721ba257a563a223c355f56a63af9c4e9e946cde5fcb7c3c9d7"
+      },
+      {
+        "pid": "8185061",
+        "grade": 1,
+        "source_rank": 18,
+        "text_sha256": "b71ed41f9f263832114e6288dd734bade7bf22037eabd1a14ed19cd4ecdbc1e8"
+      },
+      {
+        "pid": "8273755",
+        "grade": 1,
+        "source_rank": 24,
+        "text_sha256": "927c8acabe1f99866c589eab1e13a15f4e281fa2abb5f307294779d342f5a95a"
+      },
+      {
+        "pid": "8273756",
+        "grade": 1,
+        "source_rank": 25,
+        "text_sha256": "bd3bb5c92cbd8da49205398c5b3d86e9a7d5f4e5045af26efbf663a26847b893"
+      },
+      {
+        "pid": "8273759",
+        "grade": 0,
+        "source_rank": 26,
+        "text_sha256": "99c2857dc7785f5eacbe2c48df6bd902ab516af6c734df2ee5c52769aae4119e"
+      },
+      {
+        "pid": "8273762",
+        "grade": 2,
+        "source_rank": 27,
+        "text_sha256": "2012ebfa802d38ae6cd6c9a7f49fde12c3c94f4bd7b52693db8759508bccb671"
+      },
+      {
+        "pid": "6003357",
+        "grade": 0,
+        "source_rank": 46,
+        "text_sha256": "3507ce2dc94da7e126ba6fd4da9b0c45eaa9b9b6bd0d8c97749822abf25bf877"
+      },
+      {
+        "pid": "1614449",
+        "grade": 0,
+        "source_rank": 60,
+        "text_sha256": "7c3697c053d5eb704b3095d56aee9d489d8c046079c8c690dca578a99a8bcd0f"
+      }
+    ]
+  },
+  {
+    "id": "2019:264014",
+    "year": "2019",
+    "cluster": "2019:264014",
+    "split": "development",
+    "query_sha256": "ea04990a0952b338a552ccb4568a75bd4c764b1d766e9ff3b4f19cfa8a2785f8",
+    "passages": [
+      {
+        "pid": "8434173",
+        "grade": 0,
+        "source_rank": 10,
+        "text_sha256": "4efe28afbf526fb3f6b6aa1623974bb394a64bbf470d2c41115624fcf8b6ca83"
+      },
+      {
+        "pid": "8502491",
+        "grade": 1,
+        "source_rank": 17,
+        "text_sha256": "60bd67ffb1838ef171270bc4e4ef7100bd22803baf0472271fb865d42fc13b37"
+      },
+      {
+        "pid": "528380",
+        "grade": 3,
+        "source_rank": 25,
+        "text_sha256": "18e16bb4c9f3b190ca2e0d40b4a8ec7fcd9921cf0ed962cd6ccb0ca9eb5fd138"
+      },
+      {
+        "pid": "7313943",
+        "grade": 0,
+        "source_rank": 28,
+        "text_sha256": "7f12e0b39abad7a42577f5f8448a44ef7b42dfd74ea70e17e5052a4942d206b6"
+      },
+      {
+        "pid": "7323467",
+        "grade": 2,
+        "source_rank": 30,
+        "text_sha256": "0fe919444217caf215887078456f609bc6cd7725d0244aa793271638dd80abe5"
+      },
+      {
+        "pid": "7326936",
+        "grade": 3,
+        "source_rank": 31,
+        "text_sha256": "e08185a9e6dc98214e75ae4391d0e437e69380db1fd8a7e5da2ab7fb5a6d33aa"
+      },
+      {
+        "pid": "5328095",
+        "grade": 2,
+        "source_rank": 37,
+        "text_sha256": "f2e3f826fc8f5843e0e62d7a409cd2e6da3fd9494616ad346aa1bef1c8b6e5a2"
+      },
+      {
+        "pid": "96856",
+        "grade": 1,
+        "source_rank": 66,
+        "text_sha256": "cec1a6d2752a0956e9c1d6e18e67c8cc03543f02bf3a82c7d134ba6e36b9bda4"
+      }
+    ]
+  },
+  {
+    "id": "2019:359349",
+    "year": "2019",
+    "cluster": "2019:359349",
+    "split": "final",
+    "query_sha256": "388e15cd4b94a21b1e5db10222054afee8e9608625fc219f8b8596bf26d18a6a",
+    "passages": [
+      {
+        "pid": "8058869",
+        "grade": 0,
+        "source_rank": 9,
+        "text_sha256": "aedae35bd10b5cc5444d0a3f3c8c12255d731ae203ae1930bbbdc386e29255c2"
+      },
+      {
+        "pid": "5219974",
+        "grade": 0,
+        "source_rank": 15,
+        "text_sha256": "82d1f2bf8300d478329c24ddc2652318db2fd31e8fe50d387d2dfee9bc73c8a7"
+      },
+      {
+        "pid": "8502520",
+        "grade": 0,
+        "source_rank": 18,
+        "text_sha256": "8f69dc29fa25133c56e584699c6d6f0e42cf75cde099b17774a61e19320d2afe"
+      },
+      {
+        "pid": "8748954",
+        "grade": 0,
+        "source_rank": 38,
+        "text_sha256": "f2ce1a1663506c4c219c3dfdf8100b3ec239c6c353871503ce3fb3a135ab5b90"
+      },
+      {
+        "pid": "943237",
+        "grade": 0,
+        "source_rank": 45,
+        "text_sha256": "e99d072c9f55280aa26ae105b5adfc03c1bd5673c61313717a925f0cbb6ab5a7"
+      },
+      {
+        "pid": "6108721",
+        "grade": 2,
+        "source_rank": 49,
+        "text_sha256": "4d68dea21c949d7629e9b5093b67c94924d148e84cade56ffec24713c7b9f853"
+      },
+      {
+        "pid": "6113314",
+        "grade": 0,
+        "source_rank": 53,
+        "text_sha256": "458d5175c733b52c825a0eb70ad782db7800da5b23343df5192ef1bc3383deca"
+      },
+      {
+        "pid": "15799",
+        "grade": 1,
+        "source_rank": 55,
+        "text_sha256": "a5252b94dc14098ce2b86f9867dfe8f81b08c8de47e7fb6f5f418955687a9c37"
+      }
+    ]
+  },
+  {
+    "id": "2019:405717",
+    "year": "2019",
+    "cluster": "2019:405717",
+    "split": "final",
+    "query_sha256": "8a1b5c00753e9dc6c7edd6a90afc3c580bcd91c52761e4277368ec6d49b6be6e",
+    "passages": [
+      {
+        "pid": "8433857",
+        "grade": 1,
+        "source_rank": 4,
+        "text_sha256": "af48c2eb90d5329f505baaf444e295f39197f4822c62f314533c43163a7f9213"
+      },
+      {
+        "pid": "7170631",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "11b30db372f4ecbc62bda2a1f5577d71ce5b4360000a541fe3bc7d6a137d43fa"
+      },
+      {
+        "pid": "7201359",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "7fedc18a80817d078018cfcc7bf43e555dbd03b7b0483162f4bea59c83d92136"
+      },
+      {
+        "pid": "5428444",
+        "grade": 0,
+        "source_rank": 36,
+        "text_sha256": "2c7b1cf3ceab7728370d9a797f946dbecbaf7361b968e6038714e9104d5a42d3"
+      },
+      {
+        "pid": "1619423",
+        "grade": 0,
+        "source_rank": 71,
+        "text_sha256": "784e04b1cebefa8a3eeb4d83fce3839202c829d0a3108df1ec7e8928eb21a348"
+      },
+      {
+        "pid": "6654653",
+        "grade": 1,
+        "source_rank": 79,
+        "text_sha256": "7909bbf39ae99f0315247937a47c4d7ae391cc3e300d86292cf81168798a0ef9"
+      },
+      {
+        "pid": "6654655",
+        "grade": 0,
+        "source_rank": 80,
+        "text_sha256": "d404374ba556506ca3dd4047933142c98f4b638b7c90baa7384984507eb8ba42"
+      },
+      {
+        "pid": "305214",
+        "grade": 0,
+        "source_rank": 85,
+        "text_sha256": "e63794b9c00a90a2165a8052dbf1c9658b13837d593dd7177582db8041ac62eb"
+      }
+    ]
+  },
+  {
+    "id": "2019:443396",
+    "year": "2019",
+    "cluster": "2019:443396",
+    "split": "final",
+    "query_sha256": "6aa4139994d84123a843a6ffd0248aa406ca9091a5e2fce6fc367c6f362b7bf4",
+    "passages": [
+      {
+        "pid": "8079039",
+        "grade": 3,
+        "source_rank": 7,
+        "text_sha256": "319361969bfa1fe1153a5c80b90bf520f4418a2ddd2fd8defe70b45ddbff6560"
+      },
+      {
+        "pid": "8079040",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "58fce38d45750d35dce0a4172be275124633ef1962bfee0f28211208ad18e676"
+      },
+      {
+        "pid": "7259659",
+        "grade": 0,
+        "source_rank": 15,
+        "text_sha256": "5e36ebf34278741d32ea1d70cc2773219d38fadb5bf348d77e4ce989de3cf093"
+      },
+      {
+        "pid": "8769481",
+        "grade": 0,
+        "source_rank": 44,
+        "text_sha256": "fa261a2bd4292ab2c85194e1bc440a7c476d6316765a7b02aa8635c7a1985cf6"
+      },
+      {
+        "pid": "8793491",
+        "grade": 1,
+        "source_rank": 48,
+        "text_sha256": "f8a3d2d73f632c1eaa14af54d1b9eca64d2f5242c396344df9883c4a16b1c9ce"
+      },
+      {
+        "pid": "3323246",
+        "grade": 0,
+        "source_rank": 117,
+        "text_sha256": "92025e2861a44856ba0f18f741b2365284aeed817f582d4f790bc17c82555f27"
+      },
+      {
+        "pid": "3440850",
+        "grade": 3,
+        "source_rank": 129,
+        "text_sha256": "188c71f4fdf436377a168f5e9747ea27a207bcdeb662fa2115a0ed0ac01ae9a9"
+      },
+      {
+        "pid": "2976738",
+        "grade": 0,
+        "source_rank": 226,
+        "text_sha256": "a55d076ddcf84ad9ee0bae76a3248a03e219370c4b42e481ecc03fcc3ee0b593"
+      }
+    ]
+  },
+  {
+    "id": "2019:451602",
+    "year": "2019",
+    "cluster": "2019:451602",
+    "split": "final",
+    "query_sha256": "ebd5885038aa7bbd124026c71a0ce48d60faa51c80da8be17086cd8c0a8c4c89",
+    "passages": [
+      {
+        "pid": "7232293",
+        "grade": 1,
+        "source_rank": 9,
+        "text_sha256": "5810a4e3794714d58985654959a2ebbd024e687bafd00a3a060dffbb5a3f75a9"
+      },
+      {
+        "pid": "8540468",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "e05ca093702a38190630f9df29d0171f28c519e83642b1603ccca526b82242dd"
+      },
+      {
+        "pid": "5538942",
+        "grade": 3,
+        "source_rank": 49,
+        "text_sha256": "3338620d7ad7db5614bb8ebae6f1a016e8dc45c78da5c1469eeb27a680e76754"
+      },
+      {
+        "pid": "8390518",
+        "grade": 3,
+        "source_rank": 53,
+        "text_sha256": "2228ca5e451f325d51b4f19eae16aa135ab5aaa8a5910e524f4848fad5c654e1"
+      },
+      {
+        "pid": "1640289",
+        "grade": 0,
+        "source_rank": 84,
+        "text_sha256": "2b3b06f9b724c0d3ebf3adfa036e21d9cdd91f94dff98f87275cb1e00a47823b"
+      },
+      {
+        "pid": "6286974",
+        "grade": 2,
+        "source_rank": 91,
+        "text_sha256": "43bd6de250dabe58ffcebc16cc3098ec4e96390fd85029173018f15bf5493d58"
+      },
+      {
+        "pid": "6286978",
+        "grade": 3,
+        "source_rank": 92,
+        "text_sha256": "5cc28b64228b6ea4d2646e4df8c05d979035ff5cff16b931894a77daddd4b001"
+      },
+      {
+        "pid": "3052114",
+        "grade": 0,
+        "source_rank": 98,
+        "text_sha256": "ea26d7a151d08d63700a9b5bc966d9bf405d29bcfe09a3f29c86867f580154f5"
+      }
+    ]
+  },
+  {
+    "id": "2019:47923",
+    "year": "2019",
+    "cluster": "2019:47923",
+    "split": "final",
+    "query_sha256": "637d41324059b59b92ed948810a6125207c8d072a2c5ac1245b84c7f1a664b61",
+    "passages": [
+      {
+        "pid": "8214977",
+        "grade": 1,
+        "source_rank": 31,
+        "text_sha256": "7137bfe97d96c1f59eebb0839c04e20738fbe80cad8cd6af0c961e0b9bd8660e"
+      },
+      {
+        "pid": "8641107",
+        "grade": 1,
+        "source_rank": 35,
+        "text_sha256": "84665a06e18082bc32ffb04b61954c0566e70be95997bfadba41a779383cf9ed"
+      },
+      {
+        "pid": "913042",
+        "grade": 1,
+        "source_rank": 51,
+        "text_sha256": "a6e1b53e4d8ecfc4074780e6183c553b7ba136331c494475ca542b459aaa4b71"
+      },
+      {
+        "pid": "6378779",
+        "grade": 2,
+        "source_rank": 55,
+        "text_sha256": "c4d1badad98bcb865871b10b8f23d6c4d2c716b5d0d79c52eb68f004145bfa0a"
+      },
+      {
+        "pid": "986177",
+        "grade": 2,
+        "source_rank": 61,
+        "text_sha256": "f0b9e76c3ea064554f7d4f718a5ecca34276b54c61c58215c22467bab6191d96"
+      },
+      {
+        "pid": "618555",
+        "grade": 2,
+        "source_rank": 66,
+        "text_sha256": "f8d75cb3e8297014c5d4520221d494bd52543d3133e925e0a63e793de243e548"
+      },
+      {
+        "pid": "618559",
+        "grade": 1,
+        "source_rank": 67,
+        "text_sha256": "728c10b26eb49239a1f8467c452490aa4c6e2e6fa1ec2cfc49d8c2c74fe8a4a7"
+      },
+      {
+        "pid": "6241147",
+        "grade": 2,
+        "source_rank": 72,
+        "text_sha256": "38dd0479d9035ca15fff333b3a956289821dbea8259e0ea5128304c21da44d5a"
+      }
+    ]
+  },
+  {
+    "id": "2019:489204",
+    "year": "2019",
+    "cluster": "2019:489204",
+    "split": "final",
+    "query_sha256": "75ea60835880c72302a948048bbb57537c0f5c7e210bcb1a68ea586c4e05e887",
+    "passages": [
+      {
+        "pid": "8737051",
+        "grade": 1,
+        "source_rank": 40,
+        "text_sha256": "48186cbdba742d525d837da3dab0b42116e3bb64cab6a4e62e5e5d1163639e87"
+      },
+      {
+        "pid": "8737053",
+        "grade": 0,
+        "source_rank": 41,
+        "text_sha256": "8f058e15fbb743389020939b5dd1ad5beea3e851376255b104952fb9b17f566e"
+      },
+      {
+        "pid": "152948",
+        "grade": 1,
+        "source_rank": 75,
+        "text_sha256": "cf7fd2cac11d57943b4ba91e048689881bb045ff3b27aa2ffa76fd9ddb40fe3d"
+      },
+      {
+        "pid": "6665318",
+        "grade": 0,
+        "source_rank": 89,
+        "text_sha256": "4d7c344665ea5d9331ba60ace895389b81c403a13ce1648838bb52e45d572294"
+      },
+      {
+        "pid": "3075337",
+        "grade": 0,
+        "source_rank": 108,
+        "text_sha256": "1fdb3f38437ce1ab1fb9ae59cdede51e7e6c4a1ced1351884dd1a16b6043072e"
+      },
+      {
+        "pid": "1310106",
+        "grade": 0,
+        "source_rank": 160,
+        "text_sha256": "40a3bcd709690c4768000ece2747a342f6f005526e592d212768afc188127951"
+      },
+      {
+        "pid": "1950269",
+        "grade": 0,
+        "source_rank": 216,
+        "text_sha256": "1e75bff85eb59b4e4243719a081a28cd8d6d29619f1091cae32d9406b32578df"
+      },
+      {
+        "pid": "2163701",
+        "grade": 0,
+        "source_rank": 228,
+        "text_sha256": "2815c81ef1335676d62c6d88e35c32a773c4ff2b93de9895326ca0237d584461"
+      }
+    ]
+  },
+  {
+    "id": "2019:490595",
+    "year": "2019",
+    "cluster": "2019:490595",
+    "split": "final",
+    "query_sha256": "624d3a2c77a7be856e320eb215f44db29f0964228de6d8bf61657c8ddfde5d5b",
+    "passages": [
+      {
+        "pid": "805048",
+        "grade": 1,
+        "source_rank": 11,
+        "text_sha256": "b662ec8b597f6245aa5df1365061d42ae22559f446b1818aef2bd9b8edb395e6"
+      },
+      {
+        "pid": "8485139",
+        "grade": 2,
+        "source_rank": 13,
+        "text_sha256": "f02f408741b5ac58df85d194b738a64c88908b5a608546c8f23bd50253e8321e"
+      },
+      {
+        "pid": "5247999",
+        "grade": 2,
+        "source_rank": 17,
+        "text_sha256": "d2b29ee89a2ae5dda11df6ab33effc6f30b22dedfc7265c0fcd169b880a5c34c"
+      },
+      {
+        "pid": "526093",
+        "grade": 2,
+        "source_rank": 20,
+        "text_sha256": "0ca986e308341c359c1407dae1b45a928e977a2b525a3e89b19b60f17acf8ed2"
+      },
+      {
+        "pid": "7340532",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "2f5cb747a8b3a92c003e4c2efed80513b16b7f50409e9470d740c949233976cb"
+      },
+      {
+        "pid": "549465",
+        "grade": 2,
+        "source_rank": 44,
+        "text_sha256": "131a24e8b42a075c08d0b98451a19e9854a0885616e26e0510244f91b81220e3"
+      },
+      {
+        "pid": "549466",
+        "grade": 0,
+        "source_rank": 45,
+        "text_sha256": "1111ce675f818fb25aa2630492b3ceded8213d98f4b3396987294cdd1916caa3"
+      },
+      {
+        "pid": "6686784",
+        "grade": 0,
+        "source_rank": 73,
+        "text_sha256": "90dc8f5ba11dd74626f4c04e412e950f22af077faf38dd7895dd470d45647708"
+      }
+    ]
+  },
+  {
+    "id": "2019:527433",
+    "year": "2019",
+    "cluster": "2019:527433",
+    "split": "final",
+    "query_sha256": "f9fe658325e863a448350e52fa7319d0491dc9447e193cf65e2687a3d91b1483",
+    "passages": [
+      {
+        "pid": "8306451",
+        "grade": 0,
+        "source_rank": 26,
+        "text_sha256": "b6a635a33b01e2942c5cbe83189c9cb9c0ecda2606aab9e5b33afa63b990b500"
+      },
+      {
+        "pid": "8322920",
+        "grade": 0,
+        "source_rank": 32,
+        "text_sha256": "13cc987e2ddb8ed80f26a1ebbc7b343a02cc6f4b6e483f2fa55664ff6ad00dba"
+      },
+      {
+        "pid": "8362259",
+        "grade": 1,
+        "source_rank": 40,
+        "text_sha256": "32c0070369d26502c322a5be106f4ab92ead530b904f286fed93b791e512309f"
+      },
+      {
+        "pid": "8371764",
+        "grade": 1,
+        "source_rank": 41,
+        "text_sha256": "0dd124827079e5b6214334da5c23507c60052345ff7e98c953cb1758e65ac011"
+      },
+      {
+        "pid": "6038398",
+        "grade": 0,
+        "source_rank": 50,
+        "text_sha256": "03b0a3e27188bb162cc227628d63bf795a3ac2dc1fb9f22f5257576a5867a8d9"
+      },
+      {
+        "pid": "6038411",
+        "grade": 1,
+        "source_rank": 52,
+        "text_sha256": "b40b9d78d182b3f497b8d11f33dde1a7a432a78a55d4b051c245306818b3b093"
+      },
+      {
+        "pid": "6498113",
+        "grade": 0,
+        "source_rank": 73,
+        "text_sha256": "b0f373574d668e91d7d98acfb12f9aadf16a0fd607b931560983e54c928b74e0"
+      },
+      {
+        "pid": "653103",
+        "grade": 0,
+        "source_rank": 76,
+        "text_sha256": "778e24e58091a346b68587ffab9abecdb6ab569fdea0eb0a43d7e991b177ceb2"
+      }
+    ]
+  },
+  {
+    "id": "2019:573724",
+    "year": "2019",
+    "cluster": "2019:573724",
+    "split": "development",
+    "query_sha256": "e780126693273352faccd61b5faf954d73af684ac87cd28a3d2c119bd4b03034",
+    "passages": [
+      {
+        "pid": "7199667",
+        "grade": 1,
+        "source_rank": 15,
+        "text_sha256": "32d5515201b398fdf4f2750eff61271869e43fffd8d6e91a0aabdfb71a387f97"
+      },
+      {
+        "pid": "7199669",
+        "grade": 1,
+        "source_rank": 17,
+        "text_sha256": "c4702220f85597f1b4e6b5895bed38dfa2e6529e2eb505743332d2042d5c2339"
+      },
+      {
+        "pid": "7199674",
+        "grade": 1,
+        "source_rank": 18,
+        "text_sha256": "ebf405f1ec221ace773fef43e80aecf966f625d78d121fb82494a0c5b6703929"
+      },
+      {
+        "pid": "5306910",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "fc3fccfb7c9a8a76ff099abbec4330a0887b09ed0b8d6fde5b539143e3e49d24"
+      },
+      {
+        "pid": "7352209",
+        "grade": 0,
+        "source_rank": 35,
+        "text_sha256": "e6d8e2557805331eabb0ac19f82950aa44f7891d4157d61a89ea9fa7e3cffdea"
+      },
+      {
+        "pid": "87405",
+        "grade": 1,
+        "source_rank": 48,
+        "text_sha256": "7aef36ea0132fa579e4b683f1536863686d6e660a1b7ad78804bf5b661f66946"
+      },
+      {
+        "pid": "5962423",
+        "grade": 1,
+        "source_rank": 61,
+        "text_sha256": "4fbb5f1758c775f6663be42f1305916fb1a4fab348514267beaf247d2443302f"
+      },
+      {
+        "pid": "3059586",
+        "grade": 1,
+        "source_rank": 94,
+        "text_sha256": "7b34ecbf97f1b781eef2f27eeb64cad6cfbacf2cc1b3e71da227ca368fe3bd78"
+      }
+    ]
+  },
+  {
+    "id": "2019:833860",
+    "year": "2019",
+    "cluster": "2019:833860",
+    "split": "final",
+    "query_sha256": "247b973701bc42f94fc2b430d741284922fde00e9de3583cbf6110dd5afd9278",
+    "passages": [
+      {
+        "pid": "871334",
+        "grade": 0,
+        "source_rank": 45,
+        "text_sha256": "d032ef86e2c48423fbf00b3eaa02011cf2fdae939e0f282fe497da6dacbf32d2"
+      },
+      {
+        "pid": "1524401",
+        "grade": 0,
+        "source_rank": 77,
+        "text_sha256": "d2cf297d9048a83bb720b0acedf1962d3db1e67d89426a7448d53f3a92689e98"
+      },
+      {
+        "pid": "1524403",
+        "grade": 0,
+        "source_rank": 78,
+        "text_sha256": "023d07e303170f88d4b4625d9e3002416efec15b2d3b23f27eca7b9079a6b8e7"
+      },
+      {
+        "pid": "1524406",
+        "grade": 0,
+        "source_rank": 79,
+        "text_sha256": "21c3083ec1deb71962bacd3bc9a607a534bffda92730a112042a1cd6691f83a1"
+      },
+      {
+        "pid": "1524644",
+        "grade": 0,
+        "source_rank": 80,
+        "text_sha256": "f7bc45cde7b9b96d44121b083568e32ce2996ae0cfed6615911456e2fe897e8c"
+      },
+      {
+        "pid": "6230224",
+        "grade": 1,
+        "source_rank": 96,
+        "text_sha256": "e62099e19d3e558605ae2f5930f232e21dfd9af182e30806cbb503ae61f5912a"
+      },
+      {
+        "pid": "6230229",
+        "grade": 3,
+        "source_rank": 97,
+        "text_sha256": "469425096c8b0667f820501fc628474c61c4e15269ace0006497ea3c370835c5"
+      },
+      {
+        "pid": "3437285",
+        "grade": 2,
+        "source_rank": 129,
+        "text_sha256": "e4db9dbd1924ee4f849d18214e3a9abfdc0a7f0bec9fc6e6ee81a56eb34bb990"
+      }
+    ]
+  },
+  {
+    "id": "2019:87181",
+    "year": "2019",
+    "cluster": "2019:87181",
+    "split": "final",
+    "query_sha256": "050724d11499b111bd2c3985b2ea602be6b083fd41c95f619762a0970e52ee71",
+    "passages": [
+      {
+        "pid": "7139898",
+        "grade": 1,
+        "source_rank": 1,
+        "text_sha256": "9f6e8c6d4b99f11ddc3c52bb899c92c2bfa6dcb16db5b941f1766132943537e6"
+      },
+      {
+        "pid": "5197135",
+        "grade": 1,
+        "source_rank": 5,
+        "text_sha256": "898b7b88b481fee9f89ec747c9ef9f446f84275d950770b35d63b609b87e4899"
+      },
+      {
+        "pid": "8534134",
+        "grade": 2,
+        "source_rank": 16,
+        "text_sha256": "1d898f8d98b8b96c015fedffb14fa93335bd193799c8dde85abc6e94a4f89a58"
+      },
+      {
+        "pid": "8534135",
+        "grade": 1,
+        "source_rank": 17,
+        "text_sha256": "ead96553e38875694108deb4a603aef84756c38743b1fffdbdc92587a16da7f3"
+      },
+      {
+        "pid": "8151921",
+        "grade": 1,
+        "source_rank": 22,
+        "text_sha256": "c7099a7ab8186153fd87857ab16185632932949b039c9f80b9dbb6aebf73baa0"
+      },
+      {
+        "pid": "8151926",
+        "grade": 2,
+        "source_rank": 25,
+        "text_sha256": "f0c2dfb6218b198264ea01bb50bf3937e0d3c54d3ef76b3cde7566f5bd7440e1"
+      },
+      {
+        "pid": "8183982",
+        "grade": 1,
+        "source_rank": 33,
+        "text_sha256": "07475f2ce343aaafdcb797fe36b3805a770000f4fd81eb11e76282fa5798ce5f"
+      },
+      {
+        "pid": "8664069",
+        "grade": 1,
+        "source_rank": 44,
+        "text_sha256": "ead22edac639921bc80d35913001b9bca16344c0cd54faf0e95b2f7c1b1f99aa"
+      }
+    ]
+  },
+  {
+    "id": "2019:87452",
+    "year": "2019",
+    "cluster": "2019:87452",
+    "split": "final",
+    "query_sha256": "eb1b3ed1c77845e05b7f40ea7fdaef0c51a9e5d1770ccdbe3a00b90c9cf6dc75",
+    "passages": [
+      {
+        "pid": "7166751",
+        "grade": 0,
+        "source_rank": 10,
+        "text_sha256": "3569c78b85a0e3b29fb05240535d4eb7971666b5075be2fa5a3b634ce4be9308"
+      },
+      {
+        "pid": "8081937",
+        "grade": 1,
+        "source_rank": 15,
+        "text_sha256": "4e74fd67d9da11113ee4c3e7143fb4594929bf649d95f92a79dc096aaa3858ea"
+      },
+      {
+        "pid": "8496331",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "3551d4ebf122923bbd26e8eb139b48adbf2a6250f577d244b123056e633a6fa3"
+      },
+      {
+        "pid": "5286924",
+        "grade": 2,
+        "source_rank": 24,
+        "text_sha256": "3c59be30c9b6ddddab28c85c6ee744808026310fc19ca2e5296153dcaf3f0b3f"
+      },
+      {
+        "pid": "8152220",
+        "grade": 0,
+        "source_rank": 29,
+        "text_sha256": "5640215d5c63af47c5eed1d5efaa7829069ea1b10acebe7c90c21f2fe1bb8279"
+      },
+      {
+        "pid": "5338945",
+        "grade": 0,
+        "source_rank": 36,
+        "text_sha256": "0225bc6af7c9553cf90ced98b4958d44b0b768a7ed036df16ce8cd2c12bfeb5a"
+      },
+      {
+        "pid": "8819111",
+        "grade": 2,
+        "source_rank": 54,
+        "text_sha256": "90f3774e8c09f75f6eeae5df7b9e20f02a1dafe722df9cf0c8fd1984202bca1a"
+      },
+      {
+        "pid": "8819113",
+        "grade": 0,
+        "source_rank": 55,
+        "text_sha256": "cf8aeff3bc94077687fd5d5a9bd0d03a20d9c841c5afaa3d7fdda0769037f667"
+      }
+    ]
+  },
+  {
+    "id": "2019:915593",
+    "year": "2019",
+    "cluster": "2019:915593",
+    "split": "development",
+    "query_sha256": "280315c96c351f4631fba2e200edb93741559f248a6265e80cbcf7059b44d9a4",
+    "passages": [
+      {
+        "pid": "8002855",
+        "grade": 2,
+        "source_rank": 1,
+        "text_sha256": "15bac7338ec3951f5731a5c5770c53394ab204e4dc7436d1a582f03ff07a879e"
+      },
+      {
+        "pid": "8029533",
+        "grade": 2,
+        "source_rank": 5,
+        "text_sha256": "bc938a6e1545f1c790361510ef490009a6b528d70d62fad16aee9cde06563656"
+      },
+      {
+        "pid": "8455300",
+        "grade": 1,
+        "source_rank": 10,
+        "text_sha256": "c5ffd1699c03d9ba6e9b563b6928995493b98509e29ae2277069c706739fb2bf"
+      },
+      {
+        "pid": "8455301",
+        "grade": 0,
+        "source_rank": 11,
+        "text_sha256": "c899ebd0e342ed9c0102e0b2d96b9b4179374840793cb53121e2590c7b75a09d"
+      },
+      {
+        "pid": "8103066",
+        "grade": 2,
+        "source_rank": 16,
+        "text_sha256": "241d47dd39ddc95ee1340f8178168a2a999dc76984b5e888413ef972a24fa1a1"
+      },
+      {
+        "pid": "8103068",
+        "grade": 0,
+        "source_rank": 17,
+        "text_sha256": "33292e401ee3ada79cee3fc25de8368fbf119ba64c62292a0da87ede62c4d866"
+      },
+      {
+        "pid": "8178996",
+        "grade": 0,
+        "source_rank": 23,
+        "text_sha256": "4e0194ccf6772cee49673490c93e8ff733f045158df6385ce6df43f1da4d0963"
+      },
+      {
+        "pid": "8179001",
+        "grade": 0,
+        "source_rank": 25,
+        "text_sha256": "1d25d593137cae6e508a08c0e5bcc2aaf01ccd2974c0fa95e04837c72a1728b6"
+      }
+    ]
+  },
+  {
+    "id": "2019:962179",
+    "year": "2019",
+    "cluster": "2019:962179",
+    "split": "final",
+    "query_sha256": "5b9de667538ebf84ff99d3e6d35a93271df545a312a9edd1ad332a98f10acf25",
+    "passages": [
+      {
+        "pid": "8032264",
+        "grade": 0,
+        "source_rank": 5,
+        "text_sha256": "ae45e1fa8881c9ba9871e3af45cfeef659fa70309455fc88f212e9425005dce0"
+      },
+      {
+        "pid": "5320368",
+        "grade": 0,
+        "source_rank": 24,
+        "text_sha256": "4ab755b1b15d033958713846404e6632f0f588249d5b4b5a72f0adcd4aa21879"
+      },
+      {
+        "pid": "8689058",
+        "grade": 0,
+        "source_rank": 34,
+        "text_sha256": "394d5871f7159a966f2deac6ebe70a11079c8b4602703b8d388ab88422cadba3"
+      },
+      {
+        "pid": "5427063",
+        "grade": 0,
+        "source_rank": 35,
+        "text_sha256": "e29ac2772f4dc76769bd786878e0881ba5e9079cab17ab01e647520b4e2ef8cf"
+      },
+      {
+        "pid": "8785367",
+        "grade": 3,
+        "source_rank": 46,
+        "text_sha256": "56cec1fb845c40a005962a24299257b2149ac045ef1ee31d90de38f022e428f0"
+      },
+      {
+        "pid": "8785368",
+        "grade": 0,
+        "source_rank": 47,
+        "text_sha256": "14a3c0fffb708f71389319ba8477e17485f098b474572b0b453a4b599be60e72"
+      },
+      {
+        "pid": "8785371",
+        "grade": 3,
+        "source_rank": 48,
+        "text_sha256": "8093a25f28bf2aebadc4cead0c5871a7ce7b46e3cc32eed2a168ce981c7d4693"
+      },
+      {
+        "pid": "6675262",
+        "grade": 0,
+        "source_rank": 79,
+        "text_sha256": "7e7364fe42c435256e82890f99b8354c7807145d01de132dcfbee48503df157a"
+      }
+    ]
+  },
+  {
+    "id": "2020:1030303",
+    "year": "2020",
+    "cluster": "2020:1030303",
+    "split": "final",
+    "query_sha256": "6283a5b4d6455af24e76079b16384edf3f28413a5d66cac3a7775d29a3ee2820",
+    "passages": [
+      {
+        "pid": "4358004",
+        "grade": 0,
+        "source_rank": 2,
+        "text_sha256": "eb145d130e477dff33cedcd8934be961c6b2fe5624278379299f46fe3069fcf2"
+      },
+      {
+        "pid": "5256170",
+        "grade": 0,
+        "source_rank": 5,
+        "text_sha256": "ac07815050c10b3f94d00a1bd14063aa7fa8702496093785ba5fd24d39432ed9"
+      },
+      {
+        "pid": "4488397",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "19f17265afa1296834bcafa9d117213c7877b19979f25413d8183a8f42d1cb3c"
+      },
+      {
+        "pid": "8726429",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "0bb2de452734503bc058e2f365cf0724ee5326ce6f61e0dd9a2fd240c3c75013"
+      },
+      {
+        "pid": "8726433",
+        "grade": 0,
+        "source_rank": 9,
+        "text_sha256": "4fb61ca2b88adc46dd4bec0407be197b3138c6dee4e9db2b1d859315002eecae"
+      },
+      {
+        "pid": "8726434",
+        "grade": 2,
+        "source_rank": 10,
+        "text_sha256": "7805742abccec5d7f7bf0a3b80ef501e06038324af0980f166951eefa3784818"
+      },
+      {
+        "pid": "4691526",
+        "grade": 0,
+        "source_rank": 14,
+        "text_sha256": "a11e4af87a122c1593cc6737e9c33bd55b6ffe8e997c6784fc0545e12b656d11"
+      },
+      {
+        "pid": "4760232",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "19c4793d783762e9aec5f099cb17f7ad46481ec3113b972ed05ccdb178500324"
+      }
+    ]
+  },
+  {
+    "id": "2020:1037496",
+    "year": "2020",
+    "cluster": "2020:1037496",
+    "split": "final",
+    "query_sha256": "7d87b2f4235aa9f8f7d59278f035b4358943c6bda3895e3d92b47913e16f095c",
+    "passages": [
+      {
+        "pid": "2725829",
+        "grade": 1,
+        "source_rank": 14,
+        "text_sha256": "5a03867d0178a8d768f26ac828f773c7f4c4a9f53580ebef8fbc15b54a3e8c75"
+      },
+      {
+        "pid": "2871532",
+        "grade": 2,
+        "source_rank": 34,
+        "text_sha256": "afd213c6f26773d6c8b8120beecc998108a02b33d8c5cd7c6cdf4fb45c6f9b83"
+      },
+      {
+        "pid": "4760909",
+        "grade": 2,
+        "source_rank": 72,
+        "text_sha256": "ed6ff444a4789cf0aeb6c663db2ef771ea184942ac9135f47951de842db05b30"
+      },
+      {
+        "pid": "4760910",
+        "grade": 1,
+        "source_rank": 73,
+        "text_sha256": "e17aaba6d0c80abde88da8513ca0061a03905bfd2b112239bcf4a3e1ea5d6394"
+      },
+      {
+        "pid": "2725825",
+        "grade": 3,
+        "source_rank": 83,
+        "text_sha256": "09b4a129a7d1c7e13abcbf310b68900c9ff94a66a3d262a5d87acd81aa5ba12e"
+      },
+      {
+        "pid": "2725828",
+        "grade": 1,
+        "source_rank": 84,
+        "text_sha256": "37ea1eeb498b31a20862fba53b048326bd8203247d747542b137e1f3e408978c"
+      },
+      {
+        "pid": "4905509",
+        "grade": 1,
+        "source_rank": 90,
+        "text_sha256": "ae74cb303af86a324dd1f5e8c4762312c8905a9ab84f52eb3a1135f74900a220"
+      },
+      {
+        "pid": "4912160",
+        "grade": 3,
+        "source_rank": 91,
+        "text_sha256": "2ba58a701d0520ec2bd308f1dbcc74898077438b4adc05eff6307d2150ae7dd4"
+      }
+    ]
+  },
+  {
+    "id": "2020:1043135",
+    "year": "2020",
+    "cluster": "2020:1043135",
+    "split": "development",
+    "query_sha256": "e8262585505d9288312bd8d7d5229b5de09a73e96af7c0f99496133b48bb480a",
+    "passages": [
+      {
+        "pid": "2664988",
+        "grade": 1,
+        "source_rank": 2,
+        "text_sha256": "f59cea67ecd00fe7ab438a66b2056eaef98312d2a659d0f1a1f56f5fdf72febc"
+      },
+      {
+        "pid": "2664990",
+        "grade": 2,
+        "source_rank": 3,
+        "text_sha256": "69bad1b5dfc0ced2c2576a2b30d604367a68677604437838bb481a6f9d3bbb55"
+      },
+      {
+        "pid": "5262287",
+        "grade": 0,
+        "source_rank": 15,
+        "text_sha256": "82f693da9ef192cc8d52b770e2cd62c3fcd86df3906a0b6aa789b0886ea4a636"
+      },
+      {
+        "pid": "5262288",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "13f9cd4418177e02a0dbd25cdadad3e23d631bde6f923f23cbd6beb7c5da059c"
+      },
+      {
+        "pid": "8632897",
+        "grade": 0,
+        "source_rank": 29,
+        "text_sha256": "eb45a50b8508740992296a9aec3ba5cbf2758959a3d19efea031f3cc1a3e6a85"
+      },
+      {
+        "pid": "8694699",
+        "grade": 0,
+        "source_rank": 38,
+        "text_sha256": "04663507cadaf2b16d6154dd10d9bc5063dad84a7091eb07a093120e54c506d6"
+      },
+      {
+        "pid": "8696953",
+        "grade": 2,
+        "source_rank": 39,
+        "text_sha256": "a98143480ea39068a24919aa3524a9c65e81b4ca9b1b3ff753f9b2d3ab651166"
+      },
+      {
+        "pid": "4721484",
+        "grade": 0,
+        "source_rank": 60,
+        "text_sha256": "7ab9825824167ea38e36e83f4f6536fc8f2d9412ae0a39899b00af852f9708c2"
+      }
+    ]
+  },
+  {
+    "id": "2020:1051399",
+    "year": "2020",
+    "cluster": "2020:1051399",
+    "split": "development",
+    "query_sha256": "e7ad2cf38981fd850e4c3f92237e2a1341c809abfdd24064e3e1578293b72577",
+    "passages": [
+      {
+        "pid": "2764967",
+        "grade": 0,
+        "source_rank": 25,
+        "text_sha256": "11cc016392bc4a126995510ebc20b03cff1fa6418c5beb1c65a61783b9eb0805"
+      },
+      {
+        "pid": "2845500",
+        "grade": 0,
+        "source_rank": 40,
+        "text_sha256": "daa5d1b8c2d9cdb2c2e140f68ae0905cb712b1aadce65fa20621eb8c1731ac34"
+      },
+      {
+        "pid": "5348043",
+        "grade": 0,
+        "source_rank": 49,
+        "text_sha256": "5b77e24816b65918ebe95b2d3c7cfe847f1e1dfb978ee413355ae577dd988f1a"
+      },
+      {
+        "pid": "5348044",
+        "grade": 0,
+        "source_rank": 50,
+        "text_sha256": "8c57a8c27afcc34a7bff8b7efd628a1094c6ece72213784b5efde67a2eac2ada"
+      },
+      {
+        "pid": "8664506",
+        "grade": 0,
+        "source_rank": 53,
+        "text_sha256": "b863bb454099418e044d6f760aa583d08d6c6b75b089a9ed465cf4770394425f"
+      },
+      {
+        "pid": "5443991",
+        "grade": 0,
+        "source_rank": 73,
+        "text_sha256": "e16a5e0cf3cfea4072082e6fee7b739f0656de5789927c7c22f8c8472b9ee5d4"
+      },
+      {
+        "pid": "2978635",
+        "grade": 0,
+        "source_rank": 75,
+        "text_sha256": "849923b4009c702aa696d29a7d9626fab10665a4fb2fa7407ce8920159c1d48d"
+      },
+      {
+        "pid": "4828796",
+        "grade": 1,
+        "source_rank": 123,
+        "text_sha256": "3fadc5f7710d2bcd3a862c756d190c3cd6c73e97c7858582b0a9cfcc2f8a2121"
+      }
+    ]
+  },
+  {
+    "id": "2020:1064670",
+    "year": "2020",
+    "cluster": "2020:1064670",
+    "split": "final",
+    "query_sha256": "81ea8c840e7d2904c8714685549112c21e0650fdab7b4630f9a53b2087a25b7b",
+    "passages": [
+      {
+        "pid": "860041",
+        "grade": 0,
+        "source_rank": 20,
+        "text_sha256": "5a33019469b8bc741679b578a5002b223bdb361684d4f66dcccfc9815de7050a"
+      },
+      {
+        "pid": "2839849",
+        "grade": 0,
+        "source_rank": 27,
+        "text_sha256": "26c747d4204394f5a231cb53b4a4ebdda3480df3649ee9727c8df7363bb2cea0"
+      },
+      {
+        "pid": "8680897",
+        "grade": 1,
+        "source_rank": 32,
+        "text_sha256": "d943058924764d1a3cb7fcb102da2d546bf2653fca548b8d44cc2169d8a6cc39"
+      },
+      {
+        "pid": "2977159",
+        "grade": 0,
+        "source_rank": 37,
+        "text_sha256": "c805ccd0fda4ea31698959524550a58167acdbf59b7418400f7460836fdea227"
+      },
+      {
+        "pid": "3522977",
+        "grade": 0,
+        "source_rank": 65,
+        "text_sha256": "7fa19f7dfbd73c82bda2b855a81e2a033d3f12ddbf71b61004f297cd9039821a"
+      },
+      {
+        "pid": "6770490",
+        "grade": 0,
+        "source_rank": 66,
+        "text_sha256": "c5d57ccec1cd566fcd97c21936bbaddab06ab4c82904d3684544d05ea203f82f"
+      },
+      {
+        "pid": "4757828",
+        "grade": 0,
+        "source_rank": 71,
+        "text_sha256": "f0452b91903ad16e03657239763e4806a75507672a5835bee9b5cf8523a5b8ca"
+      },
+      {
+        "pid": "6878678",
+        "grade": 0,
+        "source_rank": 77,
+        "text_sha256": "3b428b6218b322921ad5a9cba5e731b103f4f9ae4d0532fdbad0040f975583bf"
+      }
+    ]
+  },
+  {
+    "id": "2020:1071750",
+    "year": "2020",
+    "cluster": "2020:1071750",
+    "split": "development",
+    "query_sha256": "61d7d2ef52ed3912000486bd2608dc4a36e5a83af41b6335d4da8c005b28e82c",
+    "passages": [
+      {
+        "pid": "2723690",
+        "grade": 0,
+        "source_rank": 11,
+        "text_sha256": "7384ec58038c078bde24d7119fc55cdeb1bd245e427c9df441e248bbfd88d9f5"
+      },
+      {
+        "pid": "4561191",
+        "grade": 0,
+        "source_rank": 34,
+        "text_sha256": "7725b04809fb49772273198151b1ffb2bcb13e20d2de8e476fb79de6b699e36e"
+      },
+      {
+        "pid": "8698273",
+        "grade": 1,
+        "source_rank": 40,
+        "text_sha256": "aedc996c26604b63acbfda66eb3d0b11ccc3f1b239025ea5b02719dfde1362f9"
+      },
+      {
+        "pid": "8698276",
+        "grade": 1,
+        "source_rank": 41,
+        "text_sha256": "ec0842147de4f9f295250fff6ff41a5de7a039fb975821a7247ce419f0a5b68f"
+      },
+      {
+        "pid": "3016476",
+        "grade": 0,
+        "source_rank": 51,
+        "text_sha256": "86092d952e6293d709f63bc4db814f2ec7eb3a0800e16c44018334824fee342e"
+      },
+      {
+        "pid": "3016481",
+        "grade": 1,
+        "source_rank": 52,
+        "text_sha256": "c5b1a9dcd76f2ac251f51f66f8077c5a68f63fa327a0462f46f2ab8a28efae12"
+      },
+      {
+        "pid": "3575934",
+        "grade": 3,
+        "source_rank": 77,
+        "text_sha256": "82c9a4ef9df0b71fa30347f398802cee9dbeecc6e9b5c6b72c69fb4e6206e0fe"
+      },
+      {
+        "pid": "27185",
+        "grade": 0,
+        "source_rank": 84,
+        "text_sha256": "27ce72808e348c57c47b57771abb9099d17e8ee2686e524ef0d11aef9a26d17e"
+      }
+    ]
+  },
+  {
+    "id": "2020:1105792",
+    "year": "2020",
+    "cluster": "2020:1105792",
+    "split": "final",
+    "query_sha256": "c12f04b1ce9c75d2dbd455196bb227b46369bb51c830e16621b71c1bdf218821",
+    "passages": [
+      {
+        "pid": "2838747",
+        "grade": 0,
+        "source_rank": 20,
+        "text_sha256": "e7f73e0651fe181596c4b9e198460f93b8268b4302b4c5a559e4d892024e359d"
+      },
+      {
+        "pid": "5495682",
+        "grade": 0,
+        "source_rank": 34,
+        "text_sha256": "2f700608e62f39607ebaae7abc73a78a5f1239ad24d7f5ef3db97c43dd135120"
+      },
+      {
+        "pid": "3672136",
+        "grade": 0,
+        "source_rank": 46,
+        "text_sha256": "d9503ddfec89c681399fb65a58cf89912cff99c1ccdc66da635bcc86ab97c1e0"
+      },
+      {
+        "pid": "4087075",
+        "grade": 0,
+        "source_rank": 98,
+        "text_sha256": "dc6b9a6d53b368696f2821e8881dfea5484429a69589e2e7426ea858267f1c87"
+      },
+      {
+        "pid": "1320649",
+        "grade": 0,
+        "source_rank": 105,
+        "text_sha256": "ca9feafbddd85e327202d82697e571955922559d51ff0a45df9958ca8389f5b4"
+      },
+      {
+        "pid": "3421717",
+        "grade": 0,
+        "source_rank": 114,
+        "text_sha256": "93f488ed6edb9256d49b3ba16512c1b5c5f257bb69cb37c073638a47f8bfcb9c"
+      },
+      {
+        "pid": "7170194",
+        "grade": 0,
+        "source_rank": 120,
+        "text_sha256": "d7a0da58fc64847653e3201cebaaaaa6720598cc866310fd8f5843b987b0a990"
+      },
+      {
+        "pid": "6650998",
+        "grade": 0,
+        "source_rank": 156,
+        "text_sha256": "6628851b03ff92926d5fcb77c092a9d1b0774c69dd702e36a730817ec2361db9"
+      }
+    ]
+  },
+  {
+    "id": "2020:1106979",
+    "year": "2020",
+    "cluster": "2020:1106979",
+    "split": "final",
+    "query_sha256": "55e3e2f3b5249a119d3c93c9e52080c7c8acb3ba5818e1370d8c4f2ca36186e3",
+    "passages": [
+      {
+        "pid": "8439516",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "b8008453102466a29d82173d58aab7b1ceea171c6b0011126c6f283afd53409b"
+      },
+      {
+        "pid": "2789921",
+        "grade": 1,
+        "source_rank": 16,
+        "text_sha256": "542e2cd32ffa5d5fdad12833f0bdffd75dc907325a93cecd0a656c9024bcabf1"
+      },
+      {
+        "pid": "2884223",
+        "grade": 1,
+        "source_rank": 27,
+        "text_sha256": "0fdad22948c524d328f29cc068cbed00b80c8faf3853ed3494977c68eb8da311"
+      },
+      {
+        "pid": "2884226",
+        "grade": 1,
+        "source_rank": 28,
+        "text_sha256": "10d79dd37b1f42c7834d6a798ae9bf35cbb79f54e7e1c905650b5fe41bdf629f"
+      },
+      {
+        "pid": "2884228",
+        "grade": 1,
+        "source_rank": 29,
+        "text_sha256": "6eb03428a53fd902d9cf0c0176fddbfdd13143c71d7437d482f2e9ac7f65b093"
+      },
+      {
+        "pid": "4585827",
+        "grade": 1,
+        "source_rank": 30,
+        "text_sha256": "9a6047af443df6b999687e734d5a946b2046b9bb757ecd130b1e5c03b34388d1"
+      },
+      {
+        "pid": "6756471",
+        "grade": 0,
+        "source_rank": 49,
+        "text_sha256": "c5da9b4c0d7aba8ea0adbb969521186d2586a84ce8a6ecc2d9c9a92a5dbd22be"
+      },
+      {
+        "pid": "2884219",
+        "grade": 2,
+        "source_rank": 76,
+        "text_sha256": "f1d834056e1df34ca53f4cab1da7028e063d5d50d533fabb9ea24caa4cc207a6"
+      }
+    ]
+  },
+  {
+    "id": "2020:1108651",
+    "year": "2020",
+    "cluster": "2020:1108651",
+    "split": "final",
+    "query_sha256": "24085ed07c613c93304ac47e4beb1cb39a9134528770fbb4e2d59daa07c67c9e",
+    "passages": [
+      {
+        "pid": "5313355",
+        "grade": 0,
+        "source_rank": 18,
+        "text_sha256": "671cd92c52bf84daa2d83f4ef4478c4ccf528b72d73ecb6c3cac41a3d7bad416"
+      },
+      {
+        "pid": "8625307",
+        "grade": 0,
+        "source_rank": 19,
+        "text_sha256": "c7667c051918483ec2cc9a9f12a1786203f1c9b17ccc3c1a9b68c2df8ae0fccb"
+      },
+      {
+        "pid": "5330512",
+        "grade": 2,
+        "source_rank": 21,
+        "text_sha256": "55216506592c28985b0c8541fa9b34278493575acda0b3ec17b64b62853dbdae"
+      },
+      {
+        "pid": "5330513",
+        "grade": 0,
+        "source_rank": 22,
+        "text_sha256": "f8936d3bb0f4fbc8e8a21d73c24312852a4fc2507e11582662cf504183981099"
+      },
+      {
+        "pid": "2863718",
+        "grade": 0,
+        "source_rank": 27,
+        "text_sha256": "b711a9ccf78be445565261ad8cbc9aab3e3560cecf8c249d9cf6f4b8077e4603"
+      },
+      {
+        "pid": "2761083",
+        "grade": 0,
+        "source_rank": 72,
+        "text_sha256": "9469d5fc116a9584483936291279b77c1fe7725b20731e23ff9b2effa16b26ea"
+      },
+      {
+        "pid": "7111296",
+        "grade": 0,
+        "source_rank": 95,
+        "text_sha256": "24fa794e291cae885944b46aed40e0aca21be7523f1f8810794870fdc3346c83"
+      },
+      {
+        "pid": "2991106",
+        "grade": 0,
+        "source_rank": 99,
+        "text_sha256": "d71a9f6d3b12920a3ff46abf0bbb2f34f5937a8cf2f2b7bedcdd6361bfcdb51a"
+      }
+    ]
+  },
+  {
+    "id": "2020:1109707",
+    "year": "2020",
+    "cluster": "2020:1109707",
+    "split": "final",
+    "query_sha256": "7ac9d74270e6d90600d35f361471df13c7a1551809858785fd8f5e13a9a46610",
+    "passages": [
+      {
+        "pid": "4332695",
+        "grade": 2,
+        "source_rank": 6,
+        "text_sha256": "bc86bc6cc3738144b7522b3c8bfbf3d999f5aec572bcb9c9673cf8a819b4c328"
+      },
+      {
+        "pid": "4370753",
+        "grade": 3,
+        "source_rank": 14,
+        "text_sha256": "3cf22e585acce99f02d760baf5dcd70520c215c4613a46c3b09d7041a09af64d"
+      },
+      {
+        "pid": "8552235",
+        "grade": 2,
+        "source_rank": 18,
+        "text_sha256": "d681423db0abd479405e30421e7859ba77b87fca511559cd8b484d5646294d01"
+      },
+      {
+        "pid": "8746672",
+        "grade": 2,
+        "source_rank": 35,
+        "text_sha256": "86b2b275e259d60ac6d3abfcc92a8d3c3967488f7049b29b42110d7cf430f5b4"
+      },
+      {
+        "pid": "5489680",
+        "grade": 0,
+        "source_rank": 37,
+        "text_sha256": "5bdfe5fb3f39317fe0ee0c76ef1e9d955e7aefb55604d43cde1b21a1f21c7b80"
+      },
+      {
+        "pid": "5501511",
+        "grade": 2,
+        "source_rank": 39,
+        "text_sha256": "7aabab2e2d204ab7905f830b15ad3e1dec25f8c58ce5895df699480d16bb1936"
+      },
+      {
+        "pid": "6716569",
+        "grade": 2,
+        "source_rank": 42,
+        "text_sha256": "5ef1a9eae886f1616434847a0f7d0726904416e3e85b7c2010a5056b314a613a"
+      },
+      {
+        "pid": "2646538",
+        "grade": 1,
+        "source_rank": 45,
+        "text_sha256": "301360932ec0124dd3fbbec1a082545dd8c78117a4bee790ec5bc0335fe9eabe"
+      }
+    ]
+  },
+  {
+    "id": "2020:1110678",
+    "year": "2020",
+    "cluster": "2020:1110678",
+    "split": "final",
+    "query_sha256": "2ec6f86f5f1b60a1bbca378a7ee6164ca0af1dd3be3ad244a144fc62f890655b",
+    "passages": [
+      {
+        "pid": "2713707",
+        "grade": 1,
+        "source_rank": 5,
+        "text_sha256": "f2e35dfdf804248fc3c2f49fe18a4397df9d3503fdb02caf1d3ee60690285057"
+      },
+      {
+        "pid": "2713710",
+        "grade": 1,
+        "source_rank": 6,
+        "text_sha256": "3c7a9950123c76efd5044915017071c46c8e3e3a41b9d1e2af86ceb7665bbb36"
+      },
+      {
+        "pid": "2713711",
+        "grade": 1,
+        "source_rank": 7,
+        "text_sha256": "08ee8e53ac00353f27adcf63ededcc036e8ef99a78446dab46bef4be4baa44ec"
+      },
+      {
+        "pid": "8548686",
+        "grade": 0,
+        "source_rank": 9,
+        "text_sha256": "59cdfb2f61db297fb08d776e972593269e2b37c5f2684616f7cc16306fe71254"
+      },
+      {
+        "pid": "4562240",
+        "grade": 0,
+        "source_rank": 17,
+        "text_sha256": "a5ad1f404a99b80bccc572da0a92258bb6dca56afb7265c8e076bc48297827cf"
+      },
+      {
+        "pid": "539177",
+        "grade": 1,
+        "source_rank": 18,
+        "text_sha256": "e1b6d4597ba5829e83dc7a242524e3cb1992897dc886662f111f5423767b2285"
+      },
+      {
+        "pid": "8746161",
+        "grade": 0,
+        "source_rank": 20,
+        "text_sha256": "a69f5bd3f538aa23fe24c2caec9c9d1301a0cb29624424da59f84228992fa02c"
+      },
+      {
+        "pid": "4686319",
+        "grade": 1,
+        "source_rank": 22,
+        "text_sha256": "b88df2d4e71362c7bc76e588421032b1e1056e6a61dcebd5b796ff1aacf27153"
+      }
+    ]
+  },
+  {
+    "id": "2020:1113256",
+    "year": "2020",
+    "cluster": "2020:1113256",
+    "split": "final",
+    "query_sha256": "d1f91aff23ed3fa33d0b403f780225a8431ab176ddf0634732d6f50815b18bca",
+    "passages": [
+      {
+        "pid": "2757311",
+        "grade": 0,
+        "source_rank": 23,
+        "text_sha256": "faa205cea6ac794f13497a6f777ddf510619bf39d484a07dec847d673ed46d72"
+      },
+      {
+        "pid": "5365817",
+        "grade": 1,
+        "source_rank": 36,
+        "text_sha256": "399bd3c755018210984a320006da81f2b0a223cff1ffc2e895bc009a3d457031"
+      },
+      {
+        "pid": "5365821",
+        "grade": 0,
+        "source_rank": 37,
+        "text_sha256": "7cceb73bc8a2f3b59000a3712fa7cd7a7fb63ca098561c81fe1c070b696a1da3"
+      },
+      {
+        "pid": "4566036",
+        "grade": 0,
+        "source_rank": 38,
+        "text_sha256": "eefc02566b7e2673f52b56f9ac281ea016905251a668e1ce544955545683e801"
+      },
+      {
+        "pid": "3539365",
+        "grade": 0,
+        "source_rank": 69,
+        "text_sha256": "50a8a19a838a6d09c19080b3244669f39bf47717e782e9b2f7715b3b96ec9447"
+      },
+      {
+        "pid": "2713310",
+        "grade": 1,
+        "source_rank": 78,
+        "text_sha256": "4c7dce80e0024789e3689abcdd275121681d0902f4b27a034b795ebc37679a79"
+      },
+      {
+        "pid": "2713314",
+        "grade": 0,
+        "source_rank": 79,
+        "text_sha256": "53d957863f9fa650c35aafdccbd06095482ec99ba9ba1283d25847863d728136"
+      },
+      {
+        "pid": "6915169",
+        "grade": 0,
+        "source_rank": 88,
+        "text_sha256": "cfd53dcb01018cbeb89837fff78c1a47932a98eb0605172dd933278fad2ede72"
+      }
+    ]
+  },
+  {
+    "id": "2020:1115210",
+    "year": "2020",
+    "cluster": "2020:1115210",
+    "split": "final",
+    "query_sha256": "1fb6d85f0c72d14b68825d8389a983c8e7c5df7275a3fc1f55f0482620594d2f",
+    "passages": [
+      {
+        "pid": "845826",
+        "grade": 0,
+        "source_rank": 5,
+        "text_sha256": "9e47d3167438bb9ddc0ee1995429edb54b56829861c223b2295bd78c5f5ade8f"
+      },
+      {
+        "pid": "845827",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "0d7576868b9d3978afe151da34d27d98904b62b95790964be425c2522de95496"
+      },
+      {
+        "pid": "2689490",
+        "grade": 0,
+        "source_rank": 9,
+        "text_sha256": "efc77b4bd2e18655ef64e6f7747f79ad3701ce21451446ab9606b737c06d52a2"
+      },
+      {
+        "pid": "2699375",
+        "grade": 0,
+        "source_rank": 12,
+        "text_sha256": "97367134b865b50dc7de7f20c7b9bd667ea565f4664fcb19b5a747e9e5d683ae"
+      },
+      {
+        "pid": "2765982",
+        "grade": 0,
+        "source_rank": 26,
+        "text_sha256": "6d1e49e67c37a8236a00bd48e119d353b19cf65fc5f468345b822e4ba4e2a7a0"
+      },
+      {
+        "pid": "4450403",
+        "grade": 0,
+        "source_rank": 28,
+        "text_sha256": "3764947bb99f407fd3c9094560056cd550e54ce5349316145b4f1d4295def2f3"
+      },
+      {
+        "pid": "2864040",
+        "grade": 0,
+        "source_rank": 34,
+        "text_sha256": "4f4ffc55f001d3ed1a73ff950b4b9d711e0f36c79b6af4d3358ddfb8fac43980"
+      },
+      {
+        "pid": "3031193",
+        "grade": 0,
+        "source_rank": 49,
+        "text_sha256": "1c76eb159fdf2820a02e5c30b38d12647207985fa11885a5f4a88fe953cc60f0"
+      }
+    ]
+  },
+  {
+    "id": "2020:1116380",
+    "year": "2020",
+    "cluster": "2020:1116380",
+    "split": "final",
+    "query_sha256": "ac70c8fc4c75773854ba7c8570eb80705010e49aed5ce45589fa0b61da45461c",
+    "passages": [
+      {
+        "pid": "521341",
+        "grade": 1,
+        "source_rank": 11,
+        "text_sha256": "1be688a638d72d63cc6cf2773e874efb9c20f4062ba81ef9a3e86a938fe33985"
+      },
+      {
+        "pid": "8621253",
+        "grade": 0,
+        "source_rank": 28,
+        "text_sha256": "a4af6ce4ddb2cd388ae99fe0bf7dc2f3df98b7c763c797b7a869483e0e8b13a4"
+      },
+      {
+        "pid": "8811453",
+        "grade": 0,
+        "source_rank": 48,
+        "text_sha256": "c6870adda8d48f812827de1aa11e0183807d583a9ed8bd0638d467a07da36743"
+      },
+      {
+        "pid": "283261",
+        "grade": 1,
+        "source_rank": 88,
+        "text_sha256": "9a22cfe9e7818a96f11a66f72daa42f2f77764a47c5e6b4b87f3c21d9a45c456"
+      },
+      {
+        "pid": "5140713",
+        "grade": 0,
+        "source_rank": 111,
+        "text_sha256": "d374147521869b46a36206bb3c52edb23956c539b2946c5b2fcaf82875de0be8"
+      },
+      {
+        "pid": "1143554",
+        "grade": 0,
+        "source_rank": 129,
+        "text_sha256": "a2d563edccef5a0c76831d0506c4f1aed66629ee861b4622f562ed757abc39f5"
+      },
+      {
+        "pid": "3588234",
+        "grade": 2,
+        "source_rank": 138,
+        "text_sha256": "a0e5689306f9d873647923bd09e300b5bbbfe28cc5382f062f41953afd95457f"
+      },
+      {
+        "pid": "6431022",
+        "grade": 0,
+        "source_rank": 180,
+        "text_sha256": "14cf68b4cd4b7d6f228a08e9c59a92d41ecd01170006d8312b40cfe6a4303a4b"
+      }
+    ]
+  },
+  {
+    "id": "2020:1121353",
+    "year": "2020",
+    "cluster": "2020:1121353",
+    "split": "development",
+    "query_sha256": "3df2a354d7281eae6dc020efdb2fc30f8dfb6b0ccf9ffe71ba0b4e2efda54c4b",
+    "passages": [
+      {
+        "pid": "4513265",
+        "grade": 1,
+        "source_rank": 26,
+        "text_sha256": "8a0a25c5e1e3c3f15c6afaa68d890e8a3b8c389817738fc2aed9d95daade86b7"
+      },
+      {
+        "pid": "5384963",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "f7840b63d3991dfbbcf3b5bf5f78b0a1b4f5b2eda6f83ba59321e3442d770606"
+      },
+      {
+        "pid": "4902801",
+        "grade": 0,
+        "source_rank": 64,
+        "text_sha256": "d3ef1fc8903c11058447e90ec1588bbdc6dadd590c56fb2a178800487b7dfae3"
+      },
+      {
+        "pid": "2846270",
+        "grade": 0,
+        "source_rank": 66,
+        "text_sha256": "1776fe94f45a784e7fc9bd250f1fd1348c89b7c9773a1c9863668eb2aee43283"
+      },
+      {
+        "pid": "4969903",
+        "grade": 1,
+        "source_rank": 68,
+        "text_sha256": "356a877d61120c488dc7cb925ee2a896e3a9def2c61441417f2787711a906722"
+      },
+      {
+        "pid": "7070396",
+        "grade": 1,
+        "source_rank": 75,
+        "text_sha256": "610da70563ecb7f318d2a1fd262c69b61ae2699ba457ddedecae7454df9f64ba"
+      },
+      {
+        "pid": "299755",
+        "grade": 0,
+        "source_rank": 80,
+        "text_sha256": "938c5aa153a92ab9f8e6441c2ccbe8d3ac8c12e9f55abd778073d229491564ed"
+      },
+      {
+        "pid": "1058786",
+        "grade": 0,
+        "source_rank": 85,
+        "text_sha256": "0ac1553ba0fbb8b1ff509f13a1a06417fe52b5e044e8866bef00d65e03584a61"
+      }
+    ]
+  },
+  {
+    "id": "2020:1122767",
+    "year": "2020",
+    "cluster": "2020:1122767",
+    "split": "final",
+    "query_sha256": "595d10344d1a55281921b8bb6b820004d3e2a32d451c94bda570dd432c2c99e4",
+    "passages": [
+      {
+        "pid": "4550504",
+        "grade": 3,
+        "source_rank": 41,
+        "text_sha256": "9b7234af5f32c427fe0f41812958fd5cac57f7b1dcb79e9ef1cef9595589940b"
+      },
+      {
+        "pid": "4550505",
+        "grade": 1,
+        "source_rank": 42,
+        "text_sha256": "0258c02081cc231a4eb44b3db796dfc55ccd3e39c0cc41c4d770aacc27fdedfe"
+      },
+      {
+        "pid": "4559500",
+        "grade": 0,
+        "source_rank": 43,
+        "text_sha256": "5e75ec6ad04fde9ee2ed6594852093f028e06dd0794783d7b4c1af1272b00dfc"
+      },
+      {
+        "pid": "5468404",
+        "grade": 1,
+        "source_rank": 55,
+        "text_sha256": "c9b7864938f801bfc93a55ce7868c11c33734aba5d698764f528212c5547ccae"
+      },
+      {
+        "pid": "5468407",
+        "grade": 1,
+        "source_rank": 56,
+        "text_sha256": "e7b0fde5aacccfa0374bed87a59b7ad7d5e850287b3c161da8102953b161d505"
+      },
+      {
+        "pid": "4919643",
+        "grade": 1,
+        "source_rank": 86,
+        "text_sha256": "2d8bf76fde51e2362e82745697f51859633864798e5fcd86cb6c32b297d344e5"
+      },
+      {
+        "pid": "2859908",
+        "grade": 0,
+        "source_rank": 94,
+        "text_sha256": "02c02dfbfbab0ebebcff56d54a9a3130a7b13ebcc1e1bc0b333cf40da77c1ee4"
+      },
+      {
+        "pid": "2912048",
+        "grade": 1,
+        "source_rank": 98,
+        "text_sha256": "e5bd55052c8685fa5592285aac28d5f54ed6dfd8cfe65bb05294787321a7c569"
+      }
+    ]
+  },
+  {
+    "id": "2020:1127540",
+    "year": "2020",
+    "cluster": "2020:1127540",
+    "split": "final",
+    "query_sha256": "f722b9402376ec34380df7e51deb8b5d6e84529efe6d6ff6774664d4a41d8631",
+    "passages": [
+      {
+        "pid": "4488936",
+        "grade": 0,
+        "source_rank": 17,
+        "text_sha256": "cdb8bbbb72454711f1fcfada3e50b71a1d4a0bf4b9a00ed10050017c0a5f2910"
+      },
+      {
+        "pid": "8726954",
+        "grade": 3,
+        "source_rank": 32,
+        "text_sha256": "fd75be3a6f2365fed907ec91d56bae80a92babe1d1790b3686d6350865daf0af"
+      },
+      {
+        "pid": "8726956",
+        "grade": 3,
+        "source_rank": 33,
+        "text_sha256": "b9e17316f0f7b996aa84326772e20b7c934278a528a24ecf00216fe898a8fbb8"
+      },
+      {
+        "pid": "555347",
+        "grade": 0,
+        "source_rank": 47,
+        "text_sha256": "5ea0a40992608495d9f13478113f58394eb8e607cb06b4324b39801c51258d2e"
+      },
+      {
+        "pid": "6731241",
+        "grade": 0,
+        "source_rank": 49,
+        "text_sha256": "88ef356e1034754052eb8af609d5241d1a332aeeea8f9b0d300111584e98436c"
+      },
+      {
+        "pid": "3607071",
+        "grade": 0,
+        "source_rank": 59,
+        "text_sha256": "2a736b1190dbce9633e4eae2ac29a9597bcb7bbe8a90f517c381758d3034c7a5"
+      },
+      {
+        "pid": "690130",
+        "grade": 0,
+        "source_rank": 65,
+        "text_sha256": "82ebdc6d7d868ba6f5a562560f4f88db611e432a193c080f7adda734b09bebf4"
+      },
+      {
+        "pid": "1148509",
+        "grade": 0,
+        "source_rank": 109,
+        "text_sha256": "7062cd2f8bd214c0a7bbc4ef6b553c301e709a6318244092c561404b24ad5786"
+      }
+    ]
+  },
+  {
+    "id": "2020:1131069",
+    "year": "2020",
+    "cluster": "2020:1131069",
+    "split": "final",
+    "query_sha256": "b0e8a5bbb798dbaaae0e490e94823ecb72d6224f8ba428449c5720df85648e90",
+    "passages": [
+      {
+        "pid": "8432055",
+        "grade": 0,
+        "source_rank": 4,
+        "text_sha256": "fd2c869c7d947087935cf904f4a26063ed67fa1608acca252e6dc4cfd0cbcf26"
+      },
+      {
+        "pid": "2723542",
+        "grade": 0,
+        "source_rank": 20,
+        "text_sha256": "01676180c2f6b5b5116b555fd93002d6f2cc11bab1566013e64fb6947e83a3d4"
+      },
+      {
+        "pid": "2805726",
+        "grade": 3,
+        "source_rank": 37,
+        "text_sha256": "9358c512942c576bf20dc211bc0fea54270bbbdfc87e41538783207fad78ae10"
+      },
+      {
+        "pid": "8616376",
+        "grade": 0,
+        "source_rank": 39,
+        "text_sha256": "f973c1407eaef7f62b0a66f907f89d6e350014e5e96316efd0dc70eec481eff7"
+      },
+      {
+        "pid": "462559",
+        "grade": 0,
+        "source_rank": 59,
+        "text_sha256": "4592dcfc47223a8afd674aae357b50bc1e7744b520b03574051d35aabfc87e65"
+      },
+      {
+        "pid": "2979864",
+        "grade": 0,
+        "source_rank": 60,
+        "text_sha256": "8a4c857c8e4cf3f0cd97dffd818723b0376e6f3ac354e84a7141898834c113f1"
+      },
+      {
+        "pid": "5455642",
+        "grade": 0,
+        "source_rank": 61,
+        "text_sha256": "6735beb9b392d19b3a6e2031663042ff8f9324318ec6effb0fa695f7defaa9d2"
+      },
+      {
+        "pid": "4694727",
+        "grade": 0,
+        "source_rank": 69,
+        "text_sha256": "807563481edd48613d4e8adbaa5f129456f02d72b4fe34850dd97de813ac7ecb"
+      }
+    ]
+  },
+  {
+    "id": "2020:1132532",
+    "year": "2020",
+    "cluster": "2020:1132532",
+    "split": "final",
+    "query_sha256": "67873e7bce6d709b53cc5ae50c6c2e13409ceea7c76f9ffb11c43a2176b1cd52",
+    "passages": [
+      {
+        "pid": "845908",
+        "grade": 0,
+        "source_rank": 4,
+        "text_sha256": "f7c48a1005e42fc092383a55fc2e4556b7f8d3d0b83f32ee452acd01db3d34f3"
+      },
+      {
+        "pid": "5382160",
+        "grade": 2,
+        "source_rank": 19,
+        "text_sha256": "318d98e1bb7087558da4278e28835749a16690f25b0c37daa8bf85f902ad8840"
+      },
+      {
+        "pid": "5446723",
+        "grade": 2,
+        "source_rank": 21,
+        "text_sha256": "3f1083495b2922097009ff6eaacd269eff618042912ebb1ddb02e0defaf990ec"
+      },
+      {
+        "pid": "2990698",
+        "grade": 0,
+        "source_rank": 23,
+        "text_sha256": "8fe3f6d83992ef79d77d05767fd23982b7d1e500b99df3be5250f83e10fa8002"
+      },
+      {
+        "pid": "6716842",
+        "grade": 0,
+        "source_rank": 29,
+        "text_sha256": "1053c6ebb44f084b96649302edcd8f9653b491f46a4c54b4717094dfbf9aaa78"
+      },
+      {
+        "pid": "4768038",
+        "grade": 0,
+        "source_rank": 39,
+        "text_sha256": "342cf0a5e0627c196c23030662e6656f6b6182286b78baf61df2179672be7ebc"
+      },
+      {
+        "pid": "6832789",
+        "grade": 3,
+        "source_rank": 40,
+        "text_sha256": "4004605c5de8be07efb7ff4983c8cbdec6150c735bcbbff1f2c4e920fcaf104e"
+      },
+      {
+        "pid": "2762578",
+        "grade": 0,
+        "source_rank": 50,
+        "text_sha256": "2b4584a2a34200499c414b356af3d3a89c4354d8ab83bfc28a80c218727ede94"
+      }
+    ]
+  },
+  {
+    "id": "2020:1133579",
+    "year": "2020",
+    "cluster": "2020:1133579",
+    "split": "final",
+    "query_sha256": "d35fac634bccb0e6c38b59d885fa0149d9a023c84d3ccc4e2da144bcbb82dca3",
+    "passages": [
+      {
+        "pid": "8500467",
+        "grade": 0,
+        "source_rank": 14,
+        "text_sha256": "d06552ab77606a38ffa086d1351f61c2ede9c8c16cdf96b53e47a71965c41832"
+      },
+      {
+        "pid": "5277541",
+        "grade": 0,
+        "source_rank": 23,
+        "text_sha256": "edb76d57099cf277b10fbce28f53e38753990cceaa3c87598da0d5a4cada6ae3"
+      },
+      {
+        "pid": "5277542",
+        "grade": 1,
+        "source_rank": 24,
+        "text_sha256": "081acdfbcadca785197a4e4e0b027a150b013f02e8fd5266a3d15663ba6e2719"
+      },
+      {
+        "pid": "5277543",
+        "grade": 1,
+        "source_rank": 25,
+        "text_sha256": "0dd2271dcc131da221b085d22473f8a393999aafb93399b44085d2d0a3456b29"
+      },
+      {
+        "pid": "5277546",
+        "grade": 0,
+        "source_rank": 26,
+        "text_sha256": "6fd14b5a92d9baac0e8c6ea59a5c6357e44915462632909130ba1a898b6b1ee7"
+      },
+      {
+        "pid": "2829602",
+        "grade": 1,
+        "source_rank": 28,
+        "text_sha256": "f967dc37e4fb2b8ef9409bdc27c58e741d05f845f175df8bee29e945a1cc9c33"
+      },
+      {
+        "pid": "4506265",
+        "grade": 0,
+        "source_rank": 29,
+        "text_sha256": "bcbf356d0f83aedfee79fbace6d40e8f53a592cd5128bc4ce61922cdb3bca3cb"
+      },
+      {
+        "pid": "8741946",
+        "grade": 1,
+        "source_rank": 53,
+        "text_sha256": "77d9a4946f349e025d0b51b27a3ba57434d950cdeeaddb15fca548678f71433b"
+      }
+    ]
+  },
+  {
+    "id": "2020:1136043",
+    "year": "2020",
+    "cluster": "2020:1136043",
+    "split": "development",
+    "query_sha256": "f21eab189fb085d764a14d7772e0fa85c027663e338c59dc5fad7d63c814546a",
+    "passages": [
+      {
+        "pid": "8551403",
+        "grade": 0,
+        "source_rank": 12,
+        "text_sha256": "c26a259106476cca222e8aca68bfacbf96bb14b4c04b18d12aacef9b7cee5a14"
+      },
+      {
+        "pid": "4545954",
+        "grade": 0,
+        "source_rank": 26,
+        "text_sha256": "d3ced4b180fb050b764035d82dd7a8e1108b05b986d0eee66258850d2ef4215e"
+      },
+      {
+        "pid": "8728070",
+        "grade": 3,
+        "source_rank": 41,
+        "text_sha256": "f37fd741bb9c38af2ee0e53dafcc0f621b5ff868d777b5ed9628b7b33dd704c1"
+      },
+      {
+        "pid": "8728854",
+        "grade": 0,
+        "source_rank": 43,
+        "text_sha256": "a01ec115a78e5c5c1742f684d032acf0b8eb539403c8648eb18a137a85c73175"
+      },
+      {
+        "pid": "8753094",
+        "grade": 0,
+        "source_rank": 45,
+        "text_sha256": "a9c0ff9f743a1c86b015e3386b055d439e7e50b1a04ad77ce8eaecc34f2e09df"
+      },
+      {
+        "pid": "2701063",
+        "grade": 0,
+        "source_rank": 64,
+        "text_sha256": "56efb1ad8806c0bcee5286d8f33a8a6b99f60e62047266bc7908f339a53b20a2"
+      },
+      {
+        "pid": "6893739",
+        "grade": 1,
+        "source_rank": 70,
+        "text_sha256": "1f56872a819cc99742042b4703a69b8d7c3015644f35f9d625f37da0e9ad5baf"
+      },
+      {
+        "pid": "4964285",
+        "grade": 0,
+        "source_rank": 91,
+        "text_sha256": "ecd377e974e1d62baca148ffc853d72a5c968125bfe0294f1980e70aa9da3bb0"
+      }
+    ]
+  },
+  {
+    "id": "2020:1136047",
+    "year": "2020",
+    "cluster": "2020:1136047",
+    "split": "final",
+    "query_sha256": "23ebb48017dc31f2435cdafabffed5b5c8a9f61085b22c88223e64de1616cd91",
+    "passages": [
+      {
+        "pid": "8439010",
+        "grade": 0,
+        "source_rank": 5,
+        "text_sha256": "177420e601915c24df85a94819935c163cfa3cd90f2c11d4e08c00f77eabffd9"
+      },
+      {
+        "pid": "8489793",
+        "grade": 0,
+        "source_rank": 13,
+        "text_sha256": "3d31a91107359b9dacb03d41c5df2f135e60e4291dd3a3c591edcfd37e0f330a"
+      },
+      {
+        "pid": "2815440",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "c43d02354ee64359f4d90d6409e6011d2770b6361727ae612462b7b20c88ec51"
+      },
+      {
+        "pid": "8724032",
+        "grade": 0,
+        "source_rank": 53,
+        "text_sha256": "2514f8f1c15e5d9e587c3f5b7e30df108c3a4c22a45cf8032ab81ab37ee1d3c3"
+      },
+      {
+        "pid": "8724036",
+        "grade": 0,
+        "source_rank": 54,
+        "text_sha256": "b8978f194ed7da8e2015701120cb00d50e645b2d3002fc48d4ae7413984eaa0e"
+      },
+      {
+        "pid": "2995917",
+        "grade": 0,
+        "source_rank": 57,
+        "text_sha256": "dd7c65e558b964e9752fa19bc79b4fdbdb4ccb767ea4b51517e7981cb257bc53"
+      },
+      {
+        "pid": "3597758",
+        "grade": 0,
+        "source_rank": 73,
+        "text_sha256": "149b319e6c5040383f945ffeda399feee63c677daf0ae62f710437df7a902328"
+      },
+      {
+        "pid": "7009393",
+        "grade": 2,
+        "source_rank": 102,
+        "text_sha256": "b0dd27e16c61c64e6d7b553278de48db3e18ad57dc8c8147128a13a7bd5df571"
+      }
+    ]
+  },
+  {
+    "id": "2020:1136962",
+    "year": "2020",
+    "cluster": "2020:1136962",
+    "split": "final",
+    "query_sha256": "994653721cdba30b9a1b1a31ae31e4d240ebb3510e091813afd45fb453b2e74b",
+    "passages": [
+      {
+        "pid": "2736924",
+        "grade": 1,
+        "source_rank": 20,
+        "text_sha256": "da35b5bdeb99bfda6a59538dbb109973c7f082ccd3fe60c7ee458bab52003919"
+      },
+      {
+        "pid": "275379",
+        "grade": 0,
+        "source_rank": 22,
+        "text_sha256": "9d5bd8a901c1ee468220419c870519d53a06da91a9c328d1ffc4800e3f25465f"
+      },
+      {
+        "pid": "2839204",
+        "grade": 1,
+        "source_rank": 37,
+        "text_sha256": "2ba43644f9080a3d645d1ff426f92eb6dbeded5b8018cbe1a2c3908612f645f7"
+      },
+      {
+        "pid": "4589730",
+        "grade": 3,
+        "source_rank": 45,
+        "text_sha256": "5f11117f4e6937f77b0b28d02e29e91e32e07a88a3856704dbc51d5797c4efe6"
+      },
+      {
+        "pid": "4601613",
+        "grade": 1,
+        "source_rank": 52,
+        "text_sha256": "7415fd716d8f2ac09cda86feec21d1e09a43c938334d6246d4434ca532f23e0b"
+      },
+      {
+        "pid": "3492138",
+        "grade": 2,
+        "source_rank": 67,
+        "text_sha256": "1deacc5391e08baa0b3b27c0b9f11b7740ca0a86bafe90f7a47d92c730378d30"
+      },
+      {
+        "pid": "2668190",
+        "grade": 3,
+        "source_rank": 72,
+        "text_sha256": "a45b1bd41601187fb778f98955225a21fed7b5940fc28c850cd755ff1c803862"
+      },
+      {
+        "pid": "2736920",
+        "grade": 2,
+        "source_rank": 87,
+        "text_sha256": "3a51a58238990daba03efcc504842a22c2e831d97e5878eff2989eeb12b4c8b0"
+      }
+    ]
+  },
+  {
+    "id": "2020:118440",
+    "year": "2020",
+    "cluster": "2020:118440",
+    "split": "final",
+    "query_sha256": "df056eedda359f1948601057e0e909a29456a44c65571cc24471bbc5ca64d5f5",
+    "passages": [
+      {
+        "pid": "4406104",
+        "grade": 0,
+        "source_rank": 13,
+        "text_sha256": "3285401fd7d7ad0398f2b7908ff00f0fdf9526571f0ddd259997f2d4859679a7"
+      },
+      {
+        "pid": "8527723",
+        "grade": 1,
+        "source_rank": 15,
+        "text_sha256": "0040d102cc1bb4083517cf12c570ac5f9210abd3bfcfdf08e9393152047615fc"
+      },
+      {
+        "pid": "8785852",
+        "grade": 0,
+        "source_rank": 42,
+        "text_sha256": "de92bd834201b005d2c5800d5ffdc4d30bad649c4cfcff1f1efd3253f8aa8b2d"
+      },
+      {
+        "pid": "6750552",
+        "grade": 0,
+        "source_rank": 47,
+        "text_sha256": "7c933ea33d3484f98699ca69d1a3afa9c0fe2ba28f1ba856cff5e20ea7da3df9"
+      },
+      {
+        "pid": "6750553",
+        "grade": 0,
+        "source_rank": 48,
+        "text_sha256": "bbb5f6d0ec8fc8c677d456a5cab0d89eb864bfa0aabbe9647fd77f4140e07a63"
+      },
+      {
+        "pid": "3033116",
+        "grade": 1,
+        "source_rank": 98,
+        "text_sha256": "d8771f806adc24ca6a880fe9b535676ee8f43cca755ccc22c326c4c8e5acb327"
+      },
+      {
+        "pid": "1072191",
+        "grade": 0,
+        "source_rank": 105,
+        "text_sha256": "77f156acff25b225ffe31a5ceaea20b29691d5e75e3bf4092defe7a5a3ee6e00"
+      },
+      {
+        "pid": "1305126",
+        "grade": 0,
+        "source_rank": 119,
+        "text_sha256": "f5a725181f50d67321903d5e39ebddce0c6ae74739922ecc92adf4a8581474de"
+      }
+    ]
+  },
+  {
+    "id": "2020:121171",
+    "year": "2020",
+    "cluster": "2020:121171",
+    "split": "development",
+    "query_sha256": "18bebc72d0bae11f95d868fb6d99c02dc4ddf0084536f6ea77cb34e1f93437a5",
+    "passages": [
+      {
+        "pid": "2631822",
+        "grade": 1,
+        "source_rank": 1,
+        "text_sha256": "7d88df3c23bf041c4490940c5f741b1045c5be6dc5e4ba9e585e280ca2f9ec46"
+      },
+      {
+        "pid": "2631826",
+        "grade": 2,
+        "source_rank": 2,
+        "text_sha256": "cb398d486decaa68e5dff78fef1deff38da53a383464f131e98ef723274ae0e0"
+      },
+      {
+        "pid": "2643868",
+        "grade": 1,
+        "source_rank": 7,
+        "text_sha256": "7cba6518aca2166e7c6be09efd1d20719725705c6577738c3db38227d6cd9057"
+      },
+      {
+        "pid": "2735732",
+        "grade": 1,
+        "source_rank": 16,
+        "text_sha256": "5500f80a088e1a98051392a986a21bb1061aa2ce044ce9090dbd8d27d7c57a73"
+      },
+      {
+        "pid": "5237901",
+        "grade": 1,
+        "source_rank": 19,
+        "text_sha256": "0b8d8fcc7b0c3d8d78387d42119677f252f055d182b9011c355747a9b5dbd902"
+      },
+      {
+        "pid": "5237905",
+        "grade": 1,
+        "source_rank": 20,
+        "text_sha256": "0bc584e5eb1ae75efcaa1c3359e616e0cf5cf9e4337f9adc93855592387eb15c"
+      },
+      {
+        "pid": "5292207",
+        "grade": 1,
+        "source_rank": 25,
+        "text_sha256": "bb299530e1c6734641875409aa942d5eb4adca243423d298bc099aa129b18948"
+      },
+      {
+        "pid": "451169",
+        "grade": 2,
+        "source_rank": 31,
+        "text_sha256": "fcba6f944ebc36741ccd3aa8997afaa395f7cbaad5f93ddd93df13fba56979a3"
+      }
+    ]
+  },
+  {
+    "id": "2020:135802",
+    "year": "2020",
+    "cluster": "2020:135802",
+    "split": "final",
+    "query_sha256": "aa1645f24a5b8e64a952c7e1726f2cd08f40c776bb187bb4b278fc4d096d39e1",
+    "passages": [
+      {
+        "pid": "438263",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "ac89dc61a95da86d66c280877828ba765fdd2095b46ed0d585e8d8ac6c08bc99"
+      },
+      {
+        "pid": "4478768",
+        "grade": 0,
+        "source_rank": 22,
+        "text_sha256": "528a213bd0665b92117737fd0951ad6c7db203336561194ba457cf5d73a29099"
+      },
+      {
+        "pid": "8630167",
+        "grade": 0,
+        "source_rank": 25,
+        "text_sha256": "8abb3c626ea928b55cf869b07a5bb771a3d9983ecdf28066245b85061c77ac75"
+      },
+      {
+        "pid": "5394718",
+        "grade": 0,
+        "source_rank": 30,
+        "text_sha256": "9790d87d13afc98723fbca0b6bf9824893af54b9479ddd9be7105155341008a1"
+      },
+      {
+        "pid": "8692619",
+        "grade": 2,
+        "source_rank": 33,
+        "text_sha256": "1554d44cf97be67a752b8e9e0dc8844509f1f931ff51b713c56efdc04af547a3"
+      },
+      {
+        "pid": "8692620",
+        "grade": 1,
+        "source_rank": 34,
+        "text_sha256": "12913dce3e352af97bae6e03c65279f04a9f7401da5e003908e2f638298bfb07"
+      },
+      {
+        "pid": "8692621",
+        "grade": 2,
+        "source_rank": 35,
+        "text_sha256": "2640b3d60631c48657f67799e2869a7c9d87c199ce7e13ebba126bd310c80736"
+      },
+      {
+        "pid": "8692624",
+        "grade": 2,
+        "source_rank": 36,
+        "text_sha256": "8d480aa04e1960fb6e6b7b9623f2d59dd47fdada1ead86711f4d90ca11fe3320"
+      }
+    ]
+  },
+  {
+    "id": "2020:141630",
+    "year": "2020",
+    "cluster": "2020:141630",
+    "split": "development",
+    "query_sha256": "bdd3cd825ac9516fbfedbd403825b9542b41bdcaa13dcb552b5774af3618c1b6",
+    "passages": [
+      {
+        "pid": "516277",
+        "grade": 1,
+        "source_rank": 3,
+        "text_sha256": "f5e734dd76d29f0dfc0d206e8980704140f7ddad67251ad457d994e189a82f09"
+      },
+      {
+        "pid": "2668726",
+        "grade": 1,
+        "source_rank": 7,
+        "text_sha256": "4f68379f70eb5805dc6707f19a36d2bc717e27e4cc37b9dc674670ae5c5f5a00"
+      },
+      {
+        "pid": "5190712",
+        "grade": 1,
+        "source_rank": 8,
+        "text_sha256": "961449f99b6b14c7f437e2ac710236faec7417a570b9d057c9a6eb53d1319e69"
+      },
+      {
+        "pid": "4422339",
+        "grade": 1,
+        "source_rank": 15,
+        "text_sha256": "c1616c3fae76c706c7b4338fc479dd91c47ca9375fb046486266a18a9d4e2fe9"
+      },
+      {
+        "pid": "4422340",
+        "grade": 1,
+        "source_rank": 16,
+        "text_sha256": "069b47687990c8d0697be2b400f15469a708a34be60a0edd60037787b1d5dbab"
+      },
+      {
+        "pid": "5271686",
+        "grade": 1,
+        "source_rank": 20,
+        "text_sha256": "d057af7b6f5cc70ea8a14234e00943b550687038c5c215a284c6669118bb2d0f"
+      },
+      {
+        "pid": "3500851",
+        "grade": 3,
+        "source_rank": 60,
+        "text_sha256": "94f6d3c1d9bf44fe1de3161e51add9a046edca08211de8fd40184baa0006d38c"
+      },
+      {
+        "pid": "3500852",
+        "grade": 1,
+        "source_rank": 61,
+        "text_sha256": "f4a06b0048804c343bab306a55165923841e98e74bd3adc97e2ce89922f5fdda"
+      }
+    ]
+  },
+  {
+    "id": "2020:156498",
+    "year": "2020",
+    "cluster": "2020:156498",
+    "split": "development",
+    "query_sha256": "3d57fe6edbd2c48df8a504d40ae598a64bc37e655eb05f675543d8b0938083e6",
+    "passages": [
+      {
+        "pid": "5230808",
+        "grade": 0,
+        "source_rank": 17,
+        "text_sha256": "1ec4dc764584649494a7a91f72f0a92e0cb5da736c703b2e69287bdc3ef231af"
+      },
+      {
+        "pid": "5230812",
+        "grade": 0,
+        "source_rank": 19,
+        "text_sha256": "7fa1dce57fc2e2523c676650e17ea5a42b834a2e761681846d0d4d5fec306f9a"
+      },
+      {
+        "pid": "6859154",
+        "grade": 0,
+        "source_rank": 59,
+        "text_sha256": "57223ecd67cc245b01ec4b963bbbe71c5530287a628b42e95369d96e5c485cc9"
+      },
+      {
+        "pid": "6891227",
+        "grade": 0,
+        "source_rank": 66,
+        "text_sha256": "9f7461289a063cd5ce2ea696310fd390fc38a1ad8154b36dc82d2dda971540cd"
+      },
+      {
+        "pid": "3669928",
+        "grade": 0,
+        "source_rank": 69,
+        "text_sha256": "1d1ee8a6eebe4da58e6823c333775a9975c302cb42d18d3d0cc0222d878401ec"
+      },
+      {
+        "pid": "5043014",
+        "grade": 0,
+        "source_rank": 86,
+        "text_sha256": "12fa30769f8d356dbeedfa2c1ea8621170fbebab62c3e7f48ecec5f77fca0758"
+      },
+      {
+        "pid": "3852379",
+        "grade": 0,
+        "source_rank": 89,
+        "text_sha256": "cf575ad43f24b0e99c62b9da69e5577cf45ab167b1033dcfccd8c1ffb37af495"
+      },
+      {
+        "pid": "1245721",
+        "grade": 0,
+        "source_rank": 118,
+        "text_sha256": "0cc7f39491fd8fb14b8150648dea941ffe727a963f37ba3feaf66b84b2b06744"
+      }
+    ]
+  },
+  {
+    "id": "2020:169208",
+    "year": "2020",
+    "cluster": "2020:169208",
+    "split": "final",
+    "query_sha256": "75fb0ba2241f9bb84e264dd85b557cbce815bedb6dab82143ca8307e050d9ec5",
+    "passages": [
+      {
+        "pid": "8518731",
+        "grade": 1,
+        "source_rank": 12,
+        "text_sha256": "425639be2b80e477e635d0b9c036b89e36ebc7083afde684913a899f7555fbf9"
+      },
+      {
+        "pid": "4511810",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "ae50a00b6d87c736235a27eeb3a3ccf231f86815dff37a335621f4ad587492fe"
+      },
+      {
+        "pid": "2888363",
+        "grade": 0,
+        "source_rank": 38,
+        "text_sha256": "4035ba72bc969ac3699caef5f8abfef4c9501e27443f2c7e7f873e6244a58256"
+      },
+      {
+        "pid": "2888366",
+        "grade": 0,
+        "source_rank": 39,
+        "text_sha256": "79989e600cb337a8c709b37ed5b05d4a148855c5d6d2a1d0e1676b95591bd509"
+      },
+      {
+        "pid": "2888367",
+        "grade": 3,
+        "source_rank": 40,
+        "text_sha256": "1b5b8bcc00f997e8519fa27ad9c106785be3d38f4f831ef85db1edd89eb2c559"
+      },
+      {
+        "pid": "4762135",
+        "grade": 2,
+        "source_rank": 64,
+        "text_sha256": "520d782983251715893acf8ea141a09f2adb307e13c4e5bc12f17ecc792ceb8b"
+      },
+      {
+        "pid": "4762137",
+        "grade": 0,
+        "source_rank": 65,
+        "text_sha256": "1dc9fcd0dc6758a436895ad02620efd848c0cf96b5cd31a60592d1fd12e544ef"
+      },
+      {
+        "pid": "4859432",
+        "grade": 2,
+        "source_rank": 76,
+        "text_sha256": "bc4d3795329b2930a11864bebf84c1509d400e14d2594a02759fc826dd46237e"
+      }
+    ]
+  },
+  {
+    "id": "2020:174463",
+    "year": "2020",
+    "cluster": "2020:174463",
+    "split": "final",
+    "query_sha256": "d23d0ed62807e7829ab6ad22568d6a2f008784d499e3737397205d5ffd1f7bdc",
+    "passages": [
+      {
+        "pid": "4501665",
+        "grade": 0,
+        "source_rank": 23,
+        "text_sha256": "7c364d7d3e0288bb98331b48a075590863d23addb810a868c3db6207a2c57741"
+      },
+      {
+        "pid": "470712",
+        "grade": 2,
+        "source_rank": 49,
+        "text_sha256": "974919cdd31d73f92ad0bd8c365cc7bb4b0c656c962cee254626e1059f151624"
+      },
+      {
+        "pid": "3501225",
+        "grade": 0,
+        "source_rank": 52,
+        "text_sha256": "7aa77cc68b4239092007cf966b2afd3b40a81f23396e4c120e7941b895b16bc3"
+      },
+      {
+        "pid": "6867423",
+        "grade": 0,
+        "source_rank": 61,
+        "text_sha256": "174d4e05d4e5d461580d482f5f0c4937b796318223cc63fc9f291be516da72b6"
+      },
+      {
+        "pid": "3716941",
+        "grade": 0,
+        "source_rank": 70,
+        "text_sha256": "9a0e5e0be12a2d2900d4d0f2bad6a82b626a91b034724519d67b7e2ad5df2c86"
+      },
+      {
+        "pid": "3829742",
+        "grade": 0,
+        "source_rank": 83,
+        "text_sha256": "bcbf767fc8502fc45b7c03bd6bdb2550e863ec08781631c32ed5ebc43bd7add7"
+      },
+      {
+        "pid": "7089624",
+        "grade": 0,
+        "source_rank": 87,
+        "text_sha256": "fadd8e43c31d1eb00d12450323d876d08c47a0e3181cf0aed4359833430dbe75"
+      },
+      {
+        "pid": "7089625",
+        "grade": 0,
+        "source_rank": 88,
+        "text_sha256": "005ef91060de0c14b8bf6dcac6b882cd2cfd5faeec032b6c9615bdb8f3044e49"
+      }
+    ]
+  },
+  {
+    "id": "2020:23849",
+    "year": "2020",
+    "cluster": "2020:23849",
+    "split": "final",
+    "query_sha256": "fde14ee09283723f4a553e093f447db430c94c6cabffc6f82b6c309ff756b097",
+    "passages": [
+      {
+        "pid": "4344309",
+        "grade": 1,
+        "source_rank": 3,
+        "text_sha256": "4111c18fb5c1c4d01f1a8b76232532b9a4e69dfd2793079763dcfd6aebe24e56"
+      },
+      {
+        "pid": "4348282",
+        "grade": 0,
+        "source_rank": 4,
+        "text_sha256": "78c5cfaf43a0b2488713c63e06bb4927a41585da7ee4cdd212e47cad25b6b225"
+      },
+      {
+        "pid": "282421",
+        "grade": 0,
+        "source_rank": 21,
+        "text_sha256": "786090a31c93d1473d0cca97381316f987dd90034b273a0f3ab02ffae8709d7a"
+      },
+      {
+        "pid": "5315510",
+        "grade": 0,
+        "source_rank": 23,
+        "text_sha256": "b6d7b7cf74d8af29548b6db424de5853250a8720e5c2526ad4e189101827dada"
+      },
+      {
+        "pid": "5340997",
+        "grade": 1,
+        "source_rank": 26,
+        "text_sha256": "b3729b686eefbd4e4273509949d8455a489476eb31be651da8604050b943accf"
+      },
+      {
+        "pid": "4556932",
+        "grade": 3,
+        "source_rank": 33,
+        "text_sha256": "92d6103b19d2ff04be91a2b5ce0ab4b76f9607c8ee0af3c22f26a3205e71f5fb"
+      },
+      {
+        "pid": "2934343",
+        "grade": 0,
+        "source_rank": 37,
+        "text_sha256": "12f64bcb3bf84a1b936a5e66c3db70d35b003f37b23c86239d4d7a1e66545c53"
+      },
+      {
+        "pid": "6970103",
+        "grade": 0,
+        "source_rank": 67,
+        "text_sha256": "a48a45d1dac58e256f1163ef9b18dd9aee52c75f79586b9aeacaac349a316c26"
+      }
+    ]
+  },
+  {
+    "id": "2020:258062",
+    "year": "2020",
+    "cluster": "2020:258062",
+    "split": "final",
+    "query_sha256": "2f7b34d293b177bcc3c0703931f884b48777b6f1a6399f41801db86bbe77c96d",
+    "passages": [
+      {
+        "pid": "4310928",
+        "grade": 0,
+        "source_rank": 1,
+        "text_sha256": "c7e2da25ba823886aba8e60f69f07be4a19e946ac96f517c85442d6015baf6f0"
+      },
+      {
+        "pid": "8464763",
+        "grade": 0,
+        "source_rank": 12,
+        "text_sha256": "8e822429a44a27dc6b49aa124f2b82b40be082b360da35c1cca0ee9786297c04"
+      },
+      {
+        "pid": "273143",
+        "grade": 0,
+        "source_rank": 17,
+        "text_sha256": "3fa70888a1bd83046b9b4334a2a4fd3c59e02dd1fcaef238a1ca680f0d5e72c7"
+      },
+      {
+        "pid": "4431065",
+        "grade": 0,
+        "source_rank": 21,
+        "text_sha256": "4376b5e680f15f3bf8c969275d888b00dd93698cef5b948e93bfb58ba91a6fa5"
+      },
+      {
+        "pid": "4536230",
+        "grade": 0,
+        "source_rank": 38,
+        "text_sha256": "738a6cafa88b02bc039b9fbd8ed25d4668e5979c30877ea4a4c394e0adfe9dc8"
+      },
+      {
+        "pid": "4536231",
+        "grade": 0,
+        "source_rank": 39,
+        "text_sha256": "bd9417ec73a17a879a74645b8ef11726302f0f90cc1216ff5a153ab1c56833f9"
+      },
+      {
+        "pid": "2898169",
+        "grade": 2,
+        "source_rank": 42,
+        "text_sha256": "e2967d125b69984d8161c0a23197e333da30c473d41b53517397f8c7dc44a509"
+      },
+      {
+        "pid": "2940183",
+        "grade": 0,
+        "source_rank": 47,
+        "text_sha256": "503c99360e2ec52d3ea377de77256e48e78f040295e51298ede65029d34ee8b3"
+      }
+    ]
+  },
+  {
+    "id": "2020:324585",
+    "year": "2020",
+    "cluster": "2020:324585",
+    "split": "final",
+    "query_sha256": "3fb6c1f42e83a5b7ca6d230e3050d4b4c9804371e81fd79d8467e440a071de86",
+    "passages": [
+      {
+        "pid": "8500123",
+        "grade": 3,
+        "source_rank": 5,
+        "text_sha256": "099e2eec8c23fba85b2472d28440f05dc3cc83fef72ae58fba2283e4b257b4e8"
+      },
+      {
+        "pid": "1051441",
+        "grade": 0,
+        "source_rank": 96,
+        "text_sha256": "b784912e41c7058a5585c2893073c0629d831102d9bf0bcc3166df453e0d894c"
+      },
+      {
+        "pid": "4020950",
+        "grade": 0,
+        "source_rank": 112,
+        "text_sha256": "30e92cf95047b1d9d53720ee8b6645956e1b8d351c14f66f2026924793dbe167"
+      },
+      {
+        "pid": "405275",
+        "grade": 0,
+        "source_rank": 114,
+        "text_sha256": "68e499f4606dc7e6f5027eb37d1d98e34ddc7b0a1ed6064875cbcff35ad2963e"
+      },
+      {
+        "pid": "4201873",
+        "grade": 0,
+        "source_rank": 136,
+        "text_sha256": "9f4dc2d07f4da6946fa5c4b3091a889bff04dd0ef98e810d86e11ac434ad62ca"
+      },
+      {
+        "pid": "6480417",
+        "grade": 0,
+        "source_rank": 164,
+        "text_sha256": "4c36e9cd41d560d5c56f8377e049a371fe1759379cd7e89dc67260509c6261b1"
+      },
+      {
+        "pid": "5079132",
+        "grade": 0,
+        "source_rank": 185,
+        "text_sha256": "fa9b7a9e2371bbbffdc2d29df4cdb1886f598fe74492138dac45451c03015993"
+      },
+      {
+        "pid": "106606",
+        "grade": 0,
+        "source_rank": 197,
+        "text_sha256": "35367069efe33b0e2b6d14ce43710ec7677f111368cdf360d90d650cfb79fc36"
+      }
+    ]
+  },
+  {
+    "id": "2020:330975",
+    "year": "2020",
+    "cluster": "2020:330975",
+    "split": "final",
+    "query_sha256": "35930924c6088f43fbedc2f778e68a5e30d89be970f9f2506f1f59fd989b5fbd",
+    "passages": [
+      {
+        "pid": "434609",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "33e425e100069694e9036a4ff0618d392cd42e139b26d41bd46e0d41c66fe1a6"
+      },
+      {
+        "pid": "8541458",
+        "grade": 1,
+        "source_rank": 14,
+        "text_sha256": "c5dd0a2577a0c3027d3b81b98688b661ef52996f4113c4cc31687cab19be90a4"
+      },
+      {
+        "pid": "8541460",
+        "grade": 0,
+        "source_rank": 15,
+        "text_sha256": "ab606aff86594591ed26058b910911e072467105985239e4ed8892cfc0150840"
+      },
+      {
+        "pid": "8643307",
+        "grade": 0,
+        "source_rank": 28,
+        "text_sha256": "dfb6fc719622e3d6e5b76dcc3ed6ff02eded0f5dc6ef52b3dd2a7836161868db"
+      },
+      {
+        "pid": "2874187",
+        "grade": 0,
+        "source_rank": 32,
+        "text_sha256": "d31823daf2ccec1382890b53bdeeb6c24540e08dbd2338ef2f39af8f4eca5383"
+      },
+      {
+        "pid": "5393803",
+        "grade": 3,
+        "source_rank": 40,
+        "text_sha256": "5e9a2077a6ec0e431d11417b92ae51461013286277b0f94b42841df59b050947"
+      },
+      {
+        "pid": "5393804",
+        "grade": 2,
+        "source_rank": 41,
+        "text_sha256": "db45bd24c62e4ddc922273212ed00c936485894a42f2a803d3b93f40295bce0b"
+      },
+      {
+        "pid": "4620920",
+        "grade": 0,
+        "source_rank": 46,
+        "text_sha256": "268fd0957ed9cb12a3b594f22065f25fde27c5621d8b13a5b57e9601f4f0407e"
+      }
+    ]
+  },
+  {
+    "id": "2020:332593",
+    "year": "2020",
+    "cluster": "2020:332593",
+    "split": "final",
+    "query_sha256": "19250eb88b22a32d9c4f401e15eada7df797732388dfe5694fc978e9cc3df984",
+    "passages": [
+      {
+        "pid": "2667326",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "b7952c224319ba466816930deded10c69bb20af6dde31576035f93781c5b471d"
+      },
+      {
+        "pid": "2749262",
+        "grade": 0,
+        "source_rank": 18,
+        "text_sha256": "9cca5bfb7994942995f63ce1710646d7fb5d2379775aa32b6aa402967a178b10"
+      },
+      {
+        "pid": "5241326",
+        "grade": 3,
+        "source_rank": 20,
+        "text_sha256": "6e4c82f87d33a50ec9a5adc037efecb6d909d454f1974b52d47d3a9e3092a58e"
+      },
+      {
+        "pid": "5241328",
+        "grade": 2,
+        "source_rank": 21,
+        "text_sha256": "2569d52739abda255a570f6b048f628d5663e341a0846a5004d0dfb5663a0f4e"
+      },
+      {
+        "pid": "5241329",
+        "grade": 1,
+        "source_rank": 22,
+        "text_sha256": "7f398eda400a41c50e31a80e0951af2dd7d70fef11e49b12b29ba9af76f652a9"
+      },
+      {
+        "pid": "4431497",
+        "grade": 0,
+        "source_rank": 24,
+        "text_sha256": "f7c5705dff4747149b04c3dee5b259da9b6a2b94daf9526c3767f12281135629"
+      },
+      {
+        "pid": "4431500",
+        "grade": 0,
+        "source_rank": 25,
+        "text_sha256": "a980762cca1e575e0b5df590e0c772f9c75d57ff6a5398a61cc3c2efbe5cdd8e"
+      },
+      {
+        "pid": "45431",
+        "grade": 0,
+        "source_rank": 39,
+        "text_sha256": "2937a30e8081ed12168c45971b51cbccb8f25bc8c756824d2efc53d1ed3cfbd2"
+      }
+    ]
+  },
+  {
+    "id": "2020:336901",
+    "year": "2020",
+    "cluster": "2020:336901",
+    "split": "final",
+    "query_sha256": "20c71cb8b408c288fb150fb4974d4377ddb84c7872a2b3e0a5e877cc4eee7708",
+    "passages": [
+      {
+        "pid": "8528675",
+        "grade": 3,
+        "source_rank": 6,
+        "text_sha256": "2a0e3e9bf9ba308c6c8a58cdce37a00dc1a8662232f4231fdddd3a3479365e9f"
+      },
+      {
+        "pid": "8528680",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "54b6b913d3261e2266f2227683d1c44a148f4348994f8693c037e9a4608a8327"
+      },
+      {
+        "pid": "8528681",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "c5816dceb4b9938b6c349d2e91cd753f70fde01afb5c22536c7bdb3fb1bfdbe3"
+      },
+      {
+        "pid": "5241429",
+        "grade": 0,
+        "source_rank": 11,
+        "text_sha256": "250b2bce75fa66eb8b3caf05a41ab81b6779ba2a957d771ca41e8249367a870d"
+      },
+      {
+        "pid": "2857864",
+        "grade": 0,
+        "source_rank": 22,
+        "text_sha256": "c5283bf9b4e00eb9b0f389e98e391b93667d4a7d03b46ac81edb3c4a5beb6a87"
+      },
+      {
+        "pid": "2934191",
+        "grade": 0,
+        "source_rank": 36,
+        "text_sha256": "9c3a68da15130545c258cebefb7da73802788f4ea6c7a426f732fc8581725490"
+      },
+      {
+        "pid": "3033657",
+        "grade": 0,
+        "source_rank": 48,
+        "text_sha256": "e9941c4df7ccae9a04c7d680a6a89308b671e75c5d7ceab03476029faa7b244f"
+      },
+      {
+        "pid": "6736418",
+        "grade": 0,
+        "source_rank": 51,
+        "text_sha256": "d0af6caff059ddee4c83e78c4d4dc4a6fdd644ae6803a3d558b10425bd4d9d61"
+      }
+    ]
+  },
+  {
+    "id": "2020:390360",
+    "year": "2020",
+    "cluster": "2020:390360",
+    "split": "final",
+    "query_sha256": "9df55690b907485b204bf49d84ba88278a10e96cc2e8bf6467bb27175361239e",
+    "passages": [
+      {
+        "pid": "5149708",
+        "grade": 0,
+        "source_rank": 4,
+        "text_sha256": "f5e76feb926e804642e0b65b3334222015e6e9890670daf0cc4a888e64e8c675"
+      },
+      {
+        "pid": "2797320",
+        "grade": 0,
+        "source_rank": 17,
+        "text_sha256": "8ce150807d6e7592d5323d88d841e7615c9f96dbdcce08d19ff75b4dcb879856"
+      },
+      {
+        "pid": "8630609",
+        "grade": 3,
+        "source_rank": 23,
+        "text_sha256": "5010023c9c60ff4450beb41228e462344f0d66353c2f952f07f556a13e7cc7a6"
+      },
+      {
+        "pid": "8630613",
+        "grade": 0,
+        "source_rank": 24,
+        "text_sha256": "31707663e9c7be18c178f5d71e4a5cfe5b757d97300358be00dac2cd489b8538"
+      },
+      {
+        "pid": "5423359",
+        "grade": 2,
+        "source_rank": 32,
+        "text_sha256": "f35781936e6cef748f40692fd4de031a65e6266b1821115304386eb7229ecfcb"
+      },
+      {
+        "pid": "4619218",
+        "grade": 3,
+        "source_rank": 34,
+        "text_sha256": "3c6a8f324963d87cbe5bd756f834f077dab43ac269596f2040c14992b4dc54c1"
+      },
+      {
+        "pid": "4683960",
+        "grade": 0,
+        "source_rank": 40,
+        "text_sha256": "3c0f41aff64d44f5877421541d245e20d18f3580725dfa89d24b342181981191"
+      },
+      {
+        "pid": "3504563",
+        "grade": 0,
+        "source_rank": 52,
+        "text_sha256": "3d6b13be94a996aa5a4b5a2764c98d5cecbcefef1fc0d65a6a2cd10f7a6228fa"
+      }
+    ]
+  },
+  {
+    "id": "2020:405163",
+    "year": "2020",
+    "cluster": "2020:405163",
+    "split": "final",
+    "query_sha256": "d411307aded730bb9eebe857ff6e7304948eba2c34f5c7e3a905f1b9ee8bb98f",
+    "passages": [
+      {
+        "pid": "851536",
+        "grade": 0,
+        "source_rank": 11,
+        "text_sha256": "7cf67eaa1aaec70b6147c7e1c597b50fa232d8f3f12a0d92cf88ba06630d4779"
+      },
+      {
+        "pid": "5429563",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "279fceed919e7e13e3d545cb232517695bb460c1ce3c5340ab2d512ec93db910"
+      },
+      {
+        "pid": "3700384",
+        "grade": 0,
+        "source_rank": 78,
+        "text_sha256": "6012c19a7646e07cd4b8ae091f684f6a5ff4fbefec109b04407fa6d75d54c8ea"
+      },
+      {
+        "pid": "6945009",
+        "grade": 3,
+        "source_rank": 82,
+        "text_sha256": "701b569756f8fcf715f7878474e59dc6a9436bc0d56c23211abd8adab6bf3b99"
+      },
+      {
+        "pid": "6945011",
+        "grade": 0,
+        "source_rank": 83,
+        "text_sha256": "55a45037f2300e663358d76901a55a7d3c2efa412479eb45ad2d16bf0bd8ca22"
+      },
+      {
+        "pid": "1161576",
+        "grade": 0,
+        "source_rank": 126,
+        "text_sha256": "d20e0d7b17181895e0839da101f4e2b6375a4fbef6183712a9e61a6279286af9"
+      },
+      {
+        "pid": "3377714",
+        "grade": 0,
+        "source_rank": 149,
+        "text_sha256": "044ebe9b8c49f987107d3cc15befcbf665bc2fb2c53ee131506e625d0eac18c7"
+      },
+      {
+        "pid": "1358142",
+        "grade": 0,
+        "source_rank": 151,
+        "text_sha256": "6d01bbdb16836c9b9a57d661edc14b013184a971897f1fa1e0103ae76abca7b9"
+      }
+    ]
+  },
+  {
+    "id": "2020:42255",
+    "year": "2020",
+    "cluster": "2020:42255",
+    "split": "final",
+    "query_sha256": "097cc55e8cb00fdc55608897104361c673d65b48a6fc182326fd4fc06fdfb8c9",
+    "passages": [
+      {
+        "pid": "2799685",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "ab25ddc6a7395a1504aa9390227b4d4cfbb3f3f24214c26af321a531d27125e8"
+      },
+      {
+        "pid": "5326925",
+        "grade": 0,
+        "source_rank": 17,
+        "text_sha256": "954e77c8c2db1df41dc3ac008b2758cb9e819b8f7f0998004a6e0b9920530bff"
+      },
+      {
+        "pid": "2882385",
+        "grade": 0,
+        "source_rank": 20,
+        "text_sha256": "9e4fa35f22c54fa5870d98a9f49ff5afdff3a5f5a0bc486e8e5ec7d5a2766619"
+      },
+      {
+        "pid": "459262",
+        "grade": 0,
+        "source_rank": 23,
+        "text_sha256": "d6e57bf3d5c35a1c60e5e376357004138e85a3337f8564818f9c8656d7c2a510"
+      },
+      {
+        "pid": "461282",
+        "grade": 0,
+        "source_rank": 28,
+        "text_sha256": "98f5c6386e6664d047882da5dccf3ab814e05e78e4ff362ccc6fddf216966b6f"
+      },
+      {
+        "pid": "8720119",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "3b6f06bff6fa004f3778dd843841411be17c3fc78711c6ecbf059e746bc8ea69"
+      },
+      {
+        "pid": "8746188",
+        "grade": 3,
+        "source_rank": 32,
+        "text_sha256": "c15159527784f0c5152f3c39499503ad29506ad3330baba1528e116a6889ee55"
+      },
+      {
+        "pid": "8746190",
+        "grade": 0,
+        "source_rank": 33,
+        "text_sha256": "b5bdcce70b15b5b0773ff0d9f238a9f100bb402b7878414276bb1f7cb3edf5c5"
+      }
+    ]
+  },
+  {
+    "id": "2020:47210",
+    "year": "2020",
+    "cluster": "2020:47210",
+    "split": "final",
+    "query_sha256": "af4cf79e5c09affc4c5d130024a8077d16a06dee64c2f18fa4ffeda6645b00bf",
+    "passages": [
+      {
+        "pid": "5301401",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "4cc2d5c8a4d004be5a32f178797edbfa716ea7024a10510957c9e3c20bc34d71"
+      },
+      {
+        "pid": "3491885",
+        "grade": 0,
+        "source_rank": 38,
+        "text_sha256": "b998fd77c25b9cc83f3e89e67182b7ec5ba8c5d098dbb7772298d426f39ca1bb"
+      },
+      {
+        "pid": "3131197",
+        "grade": 0,
+        "source_rank": 92,
+        "text_sha256": "3e2de6433777f13f7835487bee4558aa1c2dfb8628a4b0279bceca99f31c45a3"
+      },
+      {
+        "pid": "4748997",
+        "grade": 1,
+        "source_rank": 133,
+        "text_sha256": "b4f14138ca0072015261a13329a1719ecb3df985788ddd29de4e8b27ec8e643d"
+      },
+      {
+        "pid": "1839667",
+        "grade": 0,
+        "source_rank": 135,
+        "text_sha256": "04421398fb5f771dcc673ee2ae3170703d75d9df1dc1f80519498de0f8f1c28b"
+      },
+      {
+        "pid": "1839670",
+        "grade": 0,
+        "source_rank": 136,
+        "text_sha256": "e6562df209c13d3b8b3afabbb9cd525368945b8847946e54e3bf86e96ca0ff47"
+      },
+      {
+        "pid": "6502207",
+        "grade": 2,
+        "source_rank": 165,
+        "text_sha256": "e95531e6f9d278058da55b13e7b80f7cef29212fdd353c1801e882f37aa08225"
+      },
+      {
+        "pid": "2000373",
+        "grade": 0,
+        "source_rank": 166,
+        "text_sha256": "83fb995b1f60e31e68c9181015614e56017c4f5ea68539034baaeff35c35ff82"
+      }
+    ]
+  },
+  {
+    "id": "2020:555530",
+    "year": "2020",
+    "cluster": "2020:555530",
+    "split": "final",
+    "query_sha256": "8a48c02f908540864004effb3e834214a09f9c2e7ada5564d0cbea11993ce9ea",
+    "passages": [
+      {
+        "pid": "8461277",
+        "grade": 0,
+        "source_rank": 3,
+        "text_sha256": "9108759c39af468daa2ec4273c61ef9d069e7692de06214f2e39a4929a31631d"
+      },
+      {
+        "pid": "8637525",
+        "grade": 1,
+        "source_rank": 21,
+        "text_sha256": "9463d7563601335ec3f31bb476fbff56bb87534ec7d517d9c654e80ec3ce28ac"
+      },
+      {
+        "pid": "2906190",
+        "grade": 1,
+        "source_rank": 25,
+        "text_sha256": "6b98b479410075f68e443b66451c0187b1b59c6523982b41766763c1258f8fb3"
+      },
+      {
+        "pid": "2978171",
+        "grade": 0,
+        "source_rank": 28,
+        "text_sha256": "2d93d268a918fc05db4b67b41658af71c76cdd15638b805689c93cc4695ebfa1"
+      },
+      {
+        "pid": "3651808",
+        "grade": 0,
+        "source_rank": 55,
+        "text_sha256": "42f8b2b97f5d86088fc5554d356bf2c31f2927b4e35f94045f3c6a87f51890d0"
+      },
+      {
+        "pid": "3703992",
+        "grade": 0,
+        "source_rank": 66,
+        "text_sha256": "5245e12fb3d07395d396e01eeea290e06b1ac41afc93fe338f0403328e038666"
+      },
+      {
+        "pid": "3750447",
+        "grade": 1,
+        "source_rank": 73,
+        "text_sha256": "a0355d1f7ad1090dce30e200955b45d79b93002c2cd0db6314ecaf2b141f385c"
+      },
+      {
+        "pid": "3559167",
+        "grade": 0,
+        "source_rank": 102,
+        "text_sha256": "d9234e6ea267737e175db8ee157267510aa31ecf5794752d7b512093462a315e"
+      }
+    ]
+  },
+  {
+    "id": "2020:583468",
+    "year": "2020",
+    "cluster": "2020:583468",
+    "split": "final",
+    "query_sha256": "db7dd39de0ca870af0f23558046d76fa892d1868bc20f79b102cb7b01887259e",
+    "passages": [
+      {
+        "pid": "8656219",
+        "grade": 0,
+        "source_rank": 1,
+        "text_sha256": "9ba379358180ca7dc51b59a3e1f9fae9726c8c10f839202a545eee3c076a25d0"
+      },
+      {
+        "pid": "2884627",
+        "grade": 1,
+        "source_rank": 2,
+        "text_sha256": "4667dd15c515361c0d19227003002b84e3f180d6dd43aab7c631abe678741924"
+      },
+      {
+        "pid": "6808978",
+        "grade": 0,
+        "source_rank": 3,
+        "text_sha256": "0e769a68078ca78b9ba934ba0cfd9dc652968d3cdfbaa0308f62125f8208573f"
+      },
+      {
+        "pid": "3466605",
+        "grade": 1,
+        "source_rank": 4,
+        "text_sha256": "4a29e3ba7629f5b19e174b127b879c31c5546410defdd6819ecbd2f0ede372b6"
+      },
+      {
+        "pid": "1126608",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "75d8638179d7d58b5ddcc289b28ba1fef9643cb51fca950970f170fdb69dcae5"
+      },
+      {
+        "pid": "119358",
+        "grade": 3,
+        "source_rank": 7,
+        "text_sha256": "eea3a2ca6a6ec03bd5c62133d4d84ee3d1abc528a682e12f3b0aa949f89bd9cd"
+      },
+      {
+        "pid": "119359",
+        "grade": 2,
+        "source_rank": 8,
+        "text_sha256": "df9e9cfd4e4dcb793902ba7a6c15fda3802ccc3229136dcf21c78f48073891ec"
+      },
+      {
+        "pid": "1209860",
+        "grade": 0,
+        "source_rank": 9,
+        "text_sha256": "82d491d78be2664eada95df6435558a945182224ced7c1ccc5567c58a40efc94"
+      }
+    ]
+  },
+  {
+    "id": "2020:640502",
+    "year": "2020",
+    "cluster": "2020:640502",
+    "split": "final",
+    "query_sha256": "8f2170df31851cc7213bf27cbca54fbd5625572eddad7eebfdf6f3a4dd1791d7",
+    "passages": [
+      {
+        "pid": "5161853",
+        "grade": 2,
+        "source_rank": 6,
+        "text_sha256": "5ac99cd853aa2f225408927a072c1bd3a91d361266bfbe948cdc3374c9d8bcc9"
+      },
+      {
+        "pid": "4359298",
+        "grade": 3,
+        "source_rank": 12,
+        "text_sha256": "8bd309e41d1443c71c790cbd46a6381ad34ffa44f1292a10167e5b72f6113946"
+      },
+      {
+        "pid": "2808569",
+        "grade": 3,
+        "source_rank": 22,
+        "text_sha256": "58637f4c785a54dafd95976e0fd6eb69bd2c5be298d94f7608109c1cde833ade"
+      },
+      {
+        "pid": "2989520",
+        "grade": 3,
+        "source_rank": 35,
+        "text_sha256": "1b5cea1d67f5157dd651ffc60f875600104b3dcfe24def77295ba2d2534e055e"
+      },
+      {
+        "pid": "5468145",
+        "grade": 0,
+        "source_rank": 36,
+        "text_sha256": "57439f96b107579ef8d0e17089daadc74f7e6f44cd24eb575c344dfb8bbfb7e1"
+      },
+      {
+        "pid": "3022406",
+        "grade": 1,
+        "source_rank": 40,
+        "text_sha256": "bcf9d8dcf83f2f2a412b08b3df371efcb419662fbc8e8345d5e4cde1b69c36a4"
+      },
+      {
+        "pid": "6728990",
+        "grade": 0,
+        "source_rank": 47,
+        "text_sha256": "900fea76643240d422dcd77118c0f338ed379a709b3e03aba0b50246e0219746"
+      },
+      {
+        "pid": "6730883",
+        "grade": 3,
+        "source_rank": 49,
+        "text_sha256": "dcee4186cbca83362d73a182dcd145db62df2413c47ab30c2864213f0ffda1b4"
+      }
+    ]
+  },
+  {
+    "id": "2020:67316",
+    "year": "2020",
+    "cluster": "2020:67316",
+    "split": "final",
+    "query_sha256": "8ca6f10a525a90e9535eaf5a6c39a56601102a4e36a22201c48296547a9077aa",
+    "passages": [
+      {
+        "pid": "8423873",
+        "grade": 0,
+        "source_rank": 1,
+        "text_sha256": "141bca660cd054e16cc53c5cc3a01487d2a09d6adc556c6f67f5a61dd4e00cde"
+      },
+      {
+        "pid": "4343003",
+        "grade": 0,
+        "source_rank": 4,
+        "text_sha256": "c7c5c0061af64cf8f67feff32769bc335a1cf4eff3c9806ce8617fbf05f585e3"
+      },
+      {
+        "pid": "2713508",
+        "grade": 0,
+        "source_rank": 11,
+        "text_sha256": "61da34202ffcf4b5b3ca2ec5e709942ff6a050cbc2974810ae8eef279c710fae"
+      },
+      {
+        "pid": "5470841",
+        "grade": 0,
+        "source_rank": 42,
+        "text_sha256": "afe1f46c71c46a7536f004220c14905d6ffe0957ae76772173587ca6f128a500"
+      },
+      {
+        "pid": "4682921",
+        "grade": 0,
+        "source_rank": 46,
+        "text_sha256": "66b4f43c8ddcf17d5e943c95d656f15da7b6b8e1197a167a9507af3487c083ea"
+      },
+      {
+        "pid": "8803025",
+        "grade": 0,
+        "source_rank": 50,
+        "text_sha256": "0bbfb9b4263b772a99ab185fd6c5267767f34e156060394fc0ec62c7efd7027a"
+      },
+      {
+        "pid": "2713510",
+        "grade": 0,
+        "source_rank": 74,
+        "text_sha256": "2e296448a8e560a69c6d8e1e6ee020135b2b26ff4fab668a2444f03c1df876c2"
+      },
+      {
+        "pid": "6925995",
+        "grade": 0,
+        "source_rank": 82,
+        "text_sha256": "fbb8850fe932f02094238f11fd900bea7b33b4190dedc702954e3c07cb645450"
+      }
+    ]
+  },
+  {
+    "id": "2020:673670",
+    "year": "2020",
+    "cluster": "2020:673670",
+    "split": "final",
+    "query_sha256": "20be302f893b4a0ec277d06df0baf0584a2b81db4ef70c806c17ce1e619be3fa",
+    "passages": [
+      {
+        "pid": "8524262",
+        "grade": 0,
+        "source_rank": 3,
+        "text_sha256": "dec47b6073357a40f14cd553c270decb2896932d618b8b31cb2b78b13790c96b"
+      },
+      {
+        "pid": "8524263",
+        "grade": 0,
+        "source_rank": 4,
+        "text_sha256": "0f24c5019f723bfa7f75b726d4a656c9b8c802daa0a31d3ef4613b2142e409de"
+      },
+      {
+        "pid": "8524266",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "a3dbeb36c19aff1e92965dbb0484e871820ce11c8ce93f1ea5ab07ebedeb9775"
+      },
+      {
+        "pid": "8524267",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "4f8c73b1bc5237be867b26a1e0efb23bc10b5feb5187dd9dd4b5ec963decfb48"
+      },
+      {
+        "pid": "8632361",
+        "grade": 0,
+        "source_rank": 12,
+        "text_sha256": "9ae2f4472086caccd4fda65e9c7ed2bc1ce0636d2004054bd38418394b071472"
+      },
+      {
+        "pid": "8632365",
+        "grade": 0,
+        "source_rank": 13,
+        "text_sha256": "dcbd5b7e44ef494afe6d2cc23fc53e37d06e4344a0b63d826b423578f0f62879"
+      },
+      {
+        "pid": "8735640",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "463db3c965e5a91920e4e3a6ad10468812184b267887a2d48d21c676501a5b8b"
+      },
+      {
+        "pid": "8735643",
+        "grade": 0,
+        "source_rank": 17,
+        "text_sha256": "646e86464fc7d5fc1e10381ee75f1dba01f1ac8ed5d1bdbc8a5a7e3d6fe991af"
+      }
+    ]
+  },
+  {
+    "id": "2020:701453",
+    "year": "2020",
+    "cluster": "2020:701453",
+    "split": "final",
+    "query_sha256": "dca04b27bfc59aba1a94c1de7889aa944691129b76c34c5fa56ee70ec5cb045d",
+    "passages": [
+      {
+        "pid": "4330678",
+        "grade": 1,
+        "source_rank": 5,
+        "text_sha256": "4d5c0e0d60477f1ef55a1a82e868bda69d3f2b5e48c7e46ba1102d8ca8a9beb1"
+      },
+      {
+        "pid": "4355643",
+        "grade": 2,
+        "source_rank": 9,
+        "text_sha256": "5290cf313e9b0a45dd044c71c9d39895e1261c0f7d56a4805b718bddde4989d7"
+      },
+      {
+        "pid": "4355647",
+        "grade": 3,
+        "source_rank": 10,
+        "text_sha256": "b6c948717d39577cb6568e36728756411b918c38059783a7fc32311b806a1fce"
+      },
+      {
+        "pid": "2767968",
+        "grade": 0,
+        "source_rank": 16,
+        "text_sha256": "dc28fc011bd2895c420a9cd0f67af328417e2ee4043632a78829e53f22fabf0b"
+      },
+      {
+        "pid": "8626147",
+        "grade": 1,
+        "source_rank": 26,
+        "text_sha256": "70177c7d35aa867e6f752f5f2816848855b63fe8457ff4b793857c81d115dc49"
+      },
+      {
+        "pid": "8626149",
+        "grade": 2,
+        "source_rank": 27,
+        "text_sha256": "94296c62d2b527cf33d68ca8688d3c7317cd1a17fc60fffbb0c05d64a759793e"
+      },
+      {
+        "pid": "8694417",
+        "grade": 0,
+        "source_rank": 40,
+        "text_sha256": "aebd54202525968ec738664fbb965f9fa4649eeafa329a9884dce9a1d82dbf15"
+      },
+      {
+        "pid": "871170",
+        "grade": 0,
+        "source_rank": 43,
+        "text_sha256": "5d9dba655d6645c094fcb0196bbf8ae191722d1626c92017770455137f37c341"
+      }
+    ]
+  },
+  {
+    "id": "2020:730539",
+    "year": "2020",
+    "cluster": "2020:730539",
+    "split": "final",
+    "query_sha256": "c59255bab98d5ac17711932e4aafffcb854ed1e8b6afee23bdae48be3b150961",
+    "passages": [
+      {
+        "pid": "2629412",
+        "grade": 0,
+        "source_rank": 1,
+        "text_sha256": "3eb9f38c5e8c2b15426e19ff44b9291603d97c9d0d53f5a8a7d2e8e09761ac0f"
+      },
+      {
+        "pid": "2645965",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "02a528e9feff79dac1884cebefd03bc8beb298407cec9c6557a41ced47dd408c"
+      },
+      {
+        "pid": "2666442",
+        "grade": 1,
+        "source_rank": 13,
+        "text_sha256": "abeb4e6949a23ec26809fbb45ee4a5a445f2087838340a18c2c02f31a9610a35"
+      },
+      {
+        "pid": "2666443",
+        "grade": 0,
+        "source_rank": 14,
+        "text_sha256": "2450915e3b1260740290d920364a0100f28f5b0c38e370b726092a575beffdaa"
+      },
+      {
+        "pid": "8577877",
+        "grade": 3,
+        "source_rank": 37,
+        "text_sha256": "ecd40df1a9bfa05331f2fc4a018635a71c29de1ac86dedda6226a9c8c4004f9e"
+      },
+      {
+        "pid": "8577881",
+        "grade": 0,
+        "source_rank": 38,
+        "text_sha256": "84dbb4606f383f72cdb7d5490608d982a165aeec9ec85fe8a8f0d730e7e0f269"
+      },
+      {
+        "pid": "5327724",
+        "grade": 0,
+        "source_rank": 47,
+        "text_sha256": "c9b89c9db2f88fcc7ea0ddfc22abffd7613384fab09996257f71acdfa27d5e7f"
+      },
+      {
+        "pid": "5452882",
+        "grade": 2,
+        "source_rank": 67,
+        "text_sha256": "5c64212be507d84cf451a844d1d11be9cd7f43c4a5e3c40334203eed017ec1e2"
+      }
+    ]
+  },
+  {
+    "id": "2020:768208",
+    "year": "2020",
+    "cluster": "2020:768208",
+    "split": "final",
+    "query_sha256": "35b2b99e59f623fb8056c4970183e26c0ba63aaf258b9262480464afd16b8a26",
+    "passages": [
+      {
+        "pid": "52157",
+        "grade": 3,
+        "source_rank": 1,
+        "text_sha256": "e5ffbf6b3889691e09a929a319d6294f2c227dafd84b07935c0b59db3fc4a03e"
+      },
+      {
+        "pid": "52163",
+        "grade": 0,
+        "source_rank": 2,
+        "text_sha256": "c328553337711527302e65a950013431ff2eb01fdd4cac8e3c44f6453918d126"
+      },
+      {
+        "pid": "547867",
+        "grade": 0,
+        "source_rank": 3,
+        "text_sha256": "ce931bd9a6d0f906fb6d87008fa784775de669f2f998d2f30354b228ee816f7a"
+      },
+      {
+        "pid": "3515882",
+        "grade": 1,
+        "source_rank": 4,
+        "text_sha256": "1e66d3fd2fb01eb56aa3f4f04c64bb4a3cfdeae87b9dd6ccc1e48e2a9dae8e5e"
+      },
+      {
+        "pid": "3515883",
+        "grade": 0,
+        "source_rank": 5,
+        "text_sha256": "36f0a1f9de85dfd3f064ad64b42f959cb743a0b98e144a236976c90724a7a896"
+      },
+      {
+        "pid": "3515887",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "2428e04773d9f9b9b1409f906e1c789381f81cbd35422b6a21bf2ce6d819a525"
+      },
+      {
+        "pid": "7389311",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "0dd023aa0dd0233666de4199b6ae58d5e1539f7250edb485c2f1a1de50073346"
+      },
+      {
+        "pid": "2379474",
+        "grade": 1,
+        "source_rank": 8,
+        "text_sha256": "6d49c11d81450ab3e27ba336b538b35aae8b652bb957755a4852acb0d3b6b851"
+      }
+    ]
+  },
+  {
+    "id": "2020:877809",
+    "year": "2020",
+    "cluster": "2020:877809",
+    "split": "final",
+    "query_sha256": "b14c0dedd4935b194a0fcd72f1f1c0a22265a90932bf75cd36001b4ce6fb0b96",
+    "passages": [
+      {
+        "pid": "2640804",
+        "grade": 3,
+        "source_rank": 2,
+        "text_sha256": "67cb5795f061ac766af181519b07c742bbc0c0989255fa0c3518b65611b9fc84"
+      },
+      {
+        "pid": "8511146",
+        "grade": 1,
+        "source_rank": 12,
+        "text_sha256": "0d4b09a3cf55f9c81d901d141cf2711c54e18c864b193125e4777285af02942f"
+      },
+      {
+        "pid": "8517491",
+        "grade": 0,
+        "source_rank": 13,
+        "text_sha256": "8b114fc4f6b500ece9370821e6cea889497edfbe0a68fe2ec8bf2aabbb08c841"
+      },
+      {
+        "pid": "35106",
+        "grade": 0,
+        "source_rank": 54,
+        "text_sha256": "7ad6ce29944ca619b6a23fbb78f410ecc131bbf52420cc864238f719737f3cc8"
+      },
+      {
+        "pid": "35112",
+        "grade": 1,
+        "source_rank": 55,
+        "text_sha256": "061996bc8ceb5ec90699f821303f0a13f71ea971990c20c4881d109747dcfa47"
+      },
+      {
+        "pid": "35114",
+        "grade": 1,
+        "source_rank": 56,
+        "text_sha256": "22440cb371fb2b0d384c4e7d62b44ac3e6e31d9c2295039f9bceeadccaba81d5"
+      },
+      {
+        "pid": "7040022",
+        "grade": 1,
+        "source_rank": 79,
+        "text_sha256": "3166d9946ddcd4857444308fbd1b64bc0b5a7c8ea09308209f2a4d21b54848d0"
+      },
+      {
+        "pid": "7070854",
+        "grade": 0,
+        "source_rank": 83,
+        "text_sha256": "7b860b0f92ad6c88faa02e8bbd65333bcb802e8e9741721ea07003799c1c8a9c"
+      }
+    ]
+  },
+  {
+    "id": "2020:911232",
+    "year": "2020",
+    "cluster": "2020:911232",
+    "split": "final",
+    "query_sha256": "f7977fc112bd95a2cb41d756a7eee06f367f0e479b758763b772741554be2945",
+    "passages": [
+      {
+        "pid": "2686637",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "c12511da7c51e5e19121c0f903a1f32b0e4c713357073430c21d74b5f94df04f"
+      },
+      {
+        "pid": "8527980",
+        "grade": 0,
+        "source_rank": 11,
+        "text_sha256": "70b89d5195ec8242f316c39ba6797b6ec6aa1809fb4cf63c6bc7075262d19cc1"
+      },
+      {
+        "pid": "281382",
+        "grade": 0,
+        "source_rank": 22,
+        "text_sha256": "4c4d71448793327be459f7e86961d5170c19f3753d2d127b528097faea0f25ac"
+      },
+      {
+        "pid": "281686",
+        "grade": 1,
+        "source_rank": 23,
+        "text_sha256": "58d84fd0f0aa474b186421eb785b6948301cac142c08dc57beaf0fb1e1f6ff1a"
+      },
+      {
+        "pid": "8635300",
+        "grade": 0,
+        "source_rank": 29,
+        "text_sha256": "5880b874c83fd0ce25bd99f6874fc4fbf84d9100ae4b6fa4e7e951e7aa48468f"
+      },
+      {
+        "pid": "2999925",
+        "grade": 1,
+        "source_rank": 48,
+        "text_sha256": "c41a702c9c309cb1417f739365f65f389c9b00ee5ef9abaeab082dba80f3148a"
+      },
+      {
+        "pid": "2999926",
+        "grade": 0,
+        "source_rank": 49,
+        "text_sha256": "1a0a021387dc96fc4cbc27561d602872c7f06cc96b732b0b154939ce0c056954"
+      },
+      {
+        "pid": "2999928",
+        "grade": 0,
+        "source_rank": 50,
+        "text_sha256": "2e1e2fb099494f4b3b930ce0820e641c5831a8d37af0ac0e5b7145410c9bab01"
+      }
+    ]
+  },
+  {
+    "id": "2020:914916",
+    "year": "2020",
+    "cluster": "2020:914916",
+    "split": "development",
+    "query_sha256": "8625ac8b591dfac0c4f431b8dc81d8f3771e1b7456754778b0b26a1add5558cb",
+    "passages": [
+      {
+        "pid": "8438561",
+        "grade": 0,
+        "source_rank": 2,
+        "text_sha256": "f8703dc9bea53ebc2d330fc440db5610536efdd14ec1a8172cc17cbe3fc78e05"
+      },
+      {
+        "pid": "2696191",
+        "grade": 1,
+        "source_rank": 11,
+        "text_sha256": "749f57c629616934cdb9815b9db39582e9bfcc5335402fa2b705a3f21d63b88a"
+      },
+      {
+        "pid": "4425458",
+        "grade": 1,
+        "source_rank": 17,
+        "text_sha256": "0d447245ec824c2ab6b7686de6488b3b027c16ab01c4cd49de5d1876964e02eb"
+      },
+      {
+        "pid": "4482574",
+        "grade": 1,
+        "source_rank": 24,
+        "text_sha256": "f7fd99f521ba67f0d3d217bdfb2dd264cac28291c02030558911bf3239a10dc6"
+      },
+      {
+        "pid": "534956",
+        "grade": 2,
+        "source_rank": 29,
+        "text_sha256": "09af681d7153be95a7bf25087e31e76d89d4475d6d71980d1a6e1b51bbd2f252"
+      },
+      {
+        "pid": "5380650",
+        "grade": 2,
+        "source_rank": 36,
+        "text_sha256": "ef40a557465786cfdb048010926feec57aa1fc7dc536b992eb084ed4f3572acc"
+      },
+      {
+        "pid": "2989235",
+        "grade": 1,
+        "source_rank": 49,
+        "text_sha256": "fd6ab3c3881336e74adf9798bb32ed8cb5430090b4cb77c51c91f2df89da6e67"
+      },
+      {
+        "pid": "3530681",
+        "grade": 1,
+        "source_rank": 69,
+        "text_sha256": "f4e65c76d28fb954fe5728ae52b5b9fbc7355dabf4b78706d5235a2d0533a07a"
+      }
+    ]
+  },
+  {
+    "id": "2020:938400",
+    "year": "2020",
+    "cluster": "2020:938400",
+    "split": "final",
+    "query_sha256": "27b22d9c840c4a405a49671e38345112d4d30bfac6e2e54de340599420574e0e",
+    "passages": [
+      {
+        "pid": "5154752",
+        "grade": 0,
+        "source_rank": 4,
+        "text_sha256": "3c076aad3dbedb89738a59df843ae691ef86ca983ea893af5e6b101c2e93aad6"
+      },
+      {
+        "pid": "2870509",
+        "grade": 0,
+        "source_rank": 41,
+        "text_sha256": "145adc5a537834a5def7535614f8e26222d827994b23a96270413a7a75ece19b"
+      },
+      {
+        "pid": "2870515",
+        "grade": 0,
+        "source_rank": 43,
+        "text_sha256": "472d8c056f88d8aeec82d5c70f20c43f7e19e79f25c91cc343072b70b9b15d72"
+      },
+      {
+        "pid": "8678067",
+        "grade": 0,
+        "source_rank": 49,
+        "text_sha256": "a8c6c378194992a68d9711822fbe5e2716cba479b8db0bcae500566394e959d2"
+      },
+      {
+        "pid": "8678072",
+        "grade": 0,
+        "source_rank": 50,
+        "text_sha256": "407fc6629508b84d1b75bc0c18e978a3093ae980e1237e56f79075cbd00919fe"
+      },
+      {
+        "pid": "2958104",
+        "grade": 0,
+        "source_rank": 64,
+        "text_sha256": "ccfd33e9765e04e71c9049f7c0e9baab5b5666c79e163b53b08671458c2a7b67"
+      },
+      {
+        "pid": "2962212",
+        "grade": 3,
+        "source_rank": 68,
+        "text_sha256": "8055c43a7b0eb2747c3abe658307655875ba08f28bb72eafbd7c97c1a36f4049"
+      },
+      {
+        "pid": "881068",
+        "grade": 0,
+        "source_rank": 77,
+        "text_sha256": "289c401dfad5ceb283ce542344e2e080f3d9746fcd2ad65e06ad0f9906380f2c"
+      }
+    ]
+  },
+  {
+    "id": "2020:940547",
+    "year": "2020",
+    "cluster": "2020:940547",
+    "split": "final",
+    "query_sha256": "e7bf9f06dbfbb684439a18394fea9728336ddf30fecb946540de0cccbbf4c19a",
+    "passages": [
+      {
+        "pid": "2667353",
+        "grade": 1,
+        "source_rank": 4,
+        "text_sha256": "3a687b5e3f0647a8dc0a2d1a14aaf13b5da6f146cdad6ef94dd23fccdc5b8996"
+      },
+      {
+        "pid": "4377479",
+        "grade": 0,
+        "source_rank": 8,
+        "text_sha256": "9e364642ff4c92d45bf1d7dcc03949e557ec9021e5adb43a39c0dbaf726343c6"
+      },
+      {
+        "pid": "2729630",
+        "grade": 1,
+        "source_rank": 14,
+        "text_sha256": "f92c4b299fec2745c44161c126652888b58fc6f053cb10bb69cc2fde2b1827b1"
+      },
+      {
+        "pid": "4487321",
+        "grade": 1,
+        "source_rank": 21,
+        "text_sha256": "be0268891ad4a93cbec7790c541d949575484a42505ccceb5e364b874728cff7"
+      },
+      {
+        "pid": "4489266",
+        "grade": 2,
+        "source_rank": 23,
+        "text_sha256": "f7766290be7b4177e47e625e0fc0c265ccfeabaf3139c2392445e1ef8994fcfe"
+      },
+      {
+        "pid": "287378",
+        "grade": 0,
+        "source_rank": 31,
+        "text_sha256": "af45cd8696bb195d4d64aef226af454c63731207b19bf85a540cb9fafd874453"
+      },
+      {
+        "pid": "4584778",
+        "grade": 0,
+        "source_rank": 37,
+        "text_sha256": "5e792702ee92faa2d51058b96167154d294ce7d6ce1ce96a15110b901e8e53bd"
+      },
+      {
+        "pid": "4652487",
+        "grade": 0,
+        "source_rank": 51,
+        "text_sha256": "3238c4bb144310a7c105d9e0aea7e05d9bf83009a70a6c8c6d15a9e2d9541369"
+      }
+    ]
+  },
+  {
+    "id": "2020:997622",
+    "year": "2020",
+    "cluster": "2020:997622",
+    "split": "final",
+    "query_sha256": "5dacacc29108c69f76465eda11576126827f39856951732f06a0af75d7333187",
+    "passages": [
+      {
+        "pid": "4317202",
+        "grade": 0,
+        "source_rank": 4,
+        "text_sha256": "9f0e9b7459830347d8f94f2c905b5f00667919df8c515d2b2ebb9e7d81160070"
+      },
+      {
+        "pid": "5171993",
+        "grade": 0,
+        "source_rank": 6,
+        "text_sha256": "aac780ee4048ef00a26b7f3dd0c104abc5909a6146764bb55290c018bb6ae993"
+      },
+      {
+        "pid": "5171994",
+        "grade": 0,
+        "source_rank": 7,
+        "text_sha256": "3547db50fddb74fe23973278d756f1dfe2676f1520a847f464305d4beed175df"
+      },
+      {
+        "pid": "8533346",
+        "grade": 0,
+        "source_rank": 27,
+        "text_sha256": "e37f67e7218cc728599d60f8cc63dfa852eedf67e3e3a58b3cb202ac328bbe01"
+      },
+      {
+        "pid": "4509630",
+        "grade": 0,
+        "source_rank": 43,
+        "text_sha256": "e86b039f5a3beb4497c47dd1d3dbd6a949b2d198264b6d046bd86a44cca08c01"
+      },
+      {
+        "pid": "4518222",
+        "grade": 3,
+        "source_rank": 46,
+        "text_sha256": "958d1126082a02b7e4ab43e9e551ca6ab53e170a9fc41308c3dceefbb22b7f4c"
+      },
+      {
+        "pid": "4543861",
+        "grade": 3,
+        "source_rank": 51,
+        "text_sha256": "814f63243ca8e3c2c12806308e3d3e8468965decfb4418db807039d4646ff7c4"
+      },
+      {
+        "pid": "4543865",
+        "grade": 3,
+        "source_rank": 52,
+        "text_sha256": "847f14208ca647bf8ca66948e06dc72084c9e8ba5a894dbb52b1042c27fab085"
+      }
+    ]
+  }
+]

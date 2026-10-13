@@ -1,0 +1,48 @@
+import copy
+import itertools
+import unittest
+
+import experiment as e
+
+
+class RankingContract(unittest.TestCase):
+    def test_perfect_and_reversed_ndcg(self):
+        self.assertEqual(e.ndcg([3,2,1,0],[0,1,2,3]),1.)
+        self.assertAlmostEqual(e.ndcg([3,2,1,0],[3,2,1,0]),.547831481922746)
+        self.assertIsNone(e.ndcg([0,0],[0,1]))
+
+    def test_bt_separation_and_cycle(self):
+        t=e.bt(4,[(i,j,1.) for i,j in itertools.combinations(range(4),2)])
+        self.assertTrue(all(t[i]>t[i+1] for i in range(3)))
+        self.assertAlmostEqual(sum(t),0.)
+        t=e.bt(3,[(0,1,1.),(1,2,1.),(2,0,1.)])
+        self.assertLess(max(t)-min(t),1e-6)
+
+    def test_bt_disconnected(self):
+        with self.assertRaises(ValueError):e.bt(3,[(0,1,1.)])
+
+    def test_model_and_missing_evidence(self):
+        rec=e.load('qualification-call.json');p=rec['payload'];r=rec['response']
+        # Fixture's ID differs deliberately; the experiment requires its frozen ID.
+        r=copy.deepcopy(r);r['answers']['judgment']=r['answers'].pop('relevance')
+        p=copy.deepcopy(p);p['questions']['judgment']=p['questions'].pop('relevance')
+        e.validate(p,r)
+        for mutate in [lambda r:r.update(model='jev-latest'), lambda r:r.update(answers={}),
+                       lambda r:r['answers']['judgment'].update(score=.2),
+                       lambda r:r['answers']['judgment'].update(confidence=float('nan')),
+                       lambda r:r['answers']['judgment'].update(probabilities={'0':0.,'1':.5})]:
+            bad=copy.deepcopy(r);mutate(bad)
+            with self.assertRaises(ValueError):e.validate(p,bad)
+
+    def test_pair_mapping_reversal(self):
+        c={'id':'test','query':'q','passages':[{'text':str(i)} for i in range(8)]}
+        a=e.payload(c,'P',(0,1));b=e.payload(c,'P',(0,1),True)
+        self.assertEqual(a['state']['A'],b['state']['B'])
+        self.assertEqual(a['state']['B'],b['state']['A'])
+        self.assertNotIn('grade',str(a))
+        cycle=e.schedule(c,'B')
+        self.assertEqual(len(set(cycle)),8)
+        self.assertEqual(sorted(x for pair in cycle for x in pair),sorted(list(range(8))*2))
+
+
+if __name__=='__main__':unittest.main()

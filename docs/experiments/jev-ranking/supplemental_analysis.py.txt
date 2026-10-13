@@ -1,0 +1,115 @@
+"""Offline evidence closure; does not make provider calls."""
+import collections
+import hashlib
+import itertools
+import json
+import math
+
+import numpy as np
+from scipy.stats import kendalltau
+
+import experiment as e
+
+
+def rows(name):
+    return list(map(json.loads,(e.ROOT/name).read_text().splitlines()))
+
+
+def analyze():
+    cases=e.load('cases.json');final={c['id']:c for c in cases if c['split']=='final'}
+    original=rows('outcomes-final-v2.jsonl')
+    index={(r['id'],r['arm']):r for r in original}
+    required={(qid,arm) for qid in final for arm in ['S','P','B','C']}
+    if set(index)!=required or len(original)!=len(required):raise ValueError('outcome roster incomplete/duplicated')
+    if e.load('freeze.json')['cases_sha256']!=e.digest(cases):raise ValueError('case freeze changed')
+    if e.load('freeze.json')['code_sha256']!=hashlib.sha256((e.ROOT/'experiment.py').read_bytes()).hexdigest():raise ValueError('code freeze changed')
+    ledger=[]
+    for path in sorted(e.ROOT.glob('calls-*/*.json')):
+        r=json.loads(path.read_text())
+        ledger.append({'id':path.stem,'phase':path.parent.name,'request_sha256':r['request_sha256'],'status':r.get('status'),
+            'validation_error':r.get('validation_error'),'error':r.get('error'),'response':r.get('response'),'elapsed_s':r['elapsed_s'],
+            'reservation_usd':r['reservation_usd'],'started_at':r['started_at']})
+    q=e.load('qualification-call.json')
+    ledger.append({'id':'qualification','phase':'qualification','request_sha256':q['request_sha256'],'status':q.get('status'),
+                   'response':q.get('response'),'elapsed_s':q['elapsed_s'],'reservation_usd':q['reservation_usd']})
+    e.write('response-ledger-public.json',ledger)
+    phases={}
+    for phase in sorted({r['phase'] for r in ledger}):
+        rs=[r for r in ledger if r['phase']==phase]
+        tokens=sum(r.get('response',{}).get('usage',{}).get('input_tokens',0) for r in rs)
+        phases[phase]={'attempts':len(rs),'input_tokens':tokens,'estimated_usd':tokens*e.RATE,
+            'errors':sum(bool(r.get('error') or r.get('validation_error')) for r in rs)}
+    e.write('cost-ledger.json',{'rate_per_million_input_usd':.042,'invoice_observed':False,'phases':phases,
+        'attempts':len(ledger),'total_input_tokens':sum(r.get('response',{}).get('usage',{}).get('input_tokens',0) for r in ledger),
+        'estimated_total_usd':sum(p['estimated_usd'] for p in phases.values()),'total_cap_usd':20,'attempt_cap':8000})
+    stats={}
+    baseline=[]
+    for c in final.values():
+        g=[p['grade'] for p in c['passages']]
+        v=e.ndcg(g,list(range(8)))
+        if v is not None:baseline.append(v)
+    for arm in ['S','P','B','C']:
+        rates=[];tau=[];gap=collections.defaultdict(lambda:[0,0]);errors=[];ties=[]
+        for qid,c in final.items():
+            r=index[qid,arm];g=[p['grade'] for p in c['passages']]
+            rates.append(int(g[r['order'][0]]>=2))
+            value=kendalltau(g,r['scores']).statistic
+            if math.isfinite(value):tau.append(value)
+            ties.append(sum(abs(r['scores'][i]-r['scores'][j])<1e-8 for i,j in itertools.combinations(range(8),2)))
+            if arm!='S':
+                for i,j,y in r['edges']:
+                    delta=g[i]-g[j];gap[abs(delta)][1]+=1
+                    if delta:gap[abs(delta)][0]+=int((y>.5)==(delta>0)) if y!=.5 else 0
+                    else:gap[0][0]+=int(y==.5)
+        stats[arm]={'top1_useful_rate_all_queries':float(np.mean(rates)), 'kendall_tau_b_mean':float(np.mean(tau)),
+                    'kendall_defined_queries':len(tau),'tied_score_pairs':sum(ties), 'grade_gap_pair_diagnostics':dict(gap)}
+    diagnostic=rows('outcomes-final-v2-diagnostics.jsonl')
+    dindex={(r['id'],r['arm'],r['variant']):r for r in diagnostic}
+    drequired={(qid,arm,v) for qid in e.load('freeze.json')['diagnostic_ids'] for arm in ['S','P','B','C'] for v in ['repeat','reverse']}
+    if set(dindex)!=drequired or len(diagnostic)!=len(drequired):raise ValueError('diagnostic roster incomplete/duplicated')
+    stability={}
+    for arm in ['S','P','B','C']:
+        variants={}
+        for variant in ['repeat','reverse']:
+            agreement=collections.defaultdict(lambda:[0,0]);nd=[];order_exact=0
+            for qid in e.load('freeze.json')['diagnostic_ids']:
+                a=index[qid,arm];b=dindex[qid,arm,variant];g=[p['grade'] for p in final[qid]['passages']]
+                if a['ndcg5'] is not None:nd.append(b['ndcg5']-a['ndcg5'])
+                order_exact+=a['order']==b['order']
+                if arm!='S':
+                    for i,j,y in a['edges']:
+                        same=abs(e.edges_lookup(b['edges'],i,j)-y)<1e-8
+                        agreement[abs(g[i]-g[j])][0]+=int(same);agreement[abs(g[i]-g[j])][1]+=1
+            variants[variant]={'identical_orders':order_exact,'queries':10,'mean_ndcg5_change':float(np.mean(nd)) if nd else None,
+                              'agreement_by_grade_gap':dict(agreement)}
+        stability[arm]=variants
+    challenges=e.load('challenge-results.json')
+    if {c['id'] for c in challenges}!={c['id'] for c in e.load('challenge-cases.json')}:raise ValueError('challenge roster incomplete')
+    ch={}
+    for kind in ['useful','all-irrelevant','tied','injection']:
+        rs=[r for r in challenges if r['kind']==kind]
+        ch[kind]={'groups':len(rs),'criteria_order_changed_choices':sum(r['criteria_reverse_changed'] for r in rs),
+                  'score_ranges':[[min(r['scores']),max(r['scores'])] for r in rs]}
+        if kind=='injection':ch[kind]['decoy_scored_above_direct']=sum(r['scores'][0]>r['scores'][1] for r in rs)
+    p=e.load('analysis-final.json');s=p['arms']['S'];economics={}
+    for arm in ['P','B','C']:
+        a=p['arms'][arm]
+        cost=a['input_tokens']/s['input_tokens'];latency=a['p95_ranking_s']/s['p95_ranking_s']
+        economics[arm]={'token_cost_ratio':cost,'p95_ranking_ratio':latency,'cost_guardrail_pass':cost<=1.25,'latency_guardrail_pass':latency<=2,
+            'quality_threshold_met':p['paired'][arm+'-S']['delta']>=.03 and p['paired'][arm+'-S']['ci95'][0]>0}
+    summary={'final_queries':83,'ndcg_queries':77,'zero_ideal_gain_queries':[qid for qid,c in final.items() if max(p['grade'] for p in c['passages'])==0],
+        'no_useful_answer_queries':[qid for qid,c in final.items() if max(p['grade'] for p in c['passages'])<2],
+        'provided_order_ndcg5':float(np.mean(baseline)),'arms':stats,'stability':stability,'synthetic_challenges':ch,'economics':economics,
+        'allpair_win_orders_identical':sum(r['order']==r['win_order'] for r in original if r['arm']=='P'),
+        'queries_with_cycles':sum(r['cycles']>0 for r in original if r['arm']=='P'),
+        'primary_calls_complete':len(list((e.ROOT/'calls-final-v2').glob('*.json')))==4233,
+        'operational_guardrails_closed':not any(r.get('error') or r.get('validation_error') for r in ledger if r['phase'] not in ['calls-development']),
+        'decision':'Do not adopt pairwise as default; document bounded methods and exploratory evidence. No production or skill-behavior qualification.'}
+    e.write('supplemental-analysis.json',summary)
+    e.write('cases-public.json',[{'id':c['id'],'year':c['year'],'cluster':c['cluster'],'split':c['split'],
+            'query_sha256':hashlib.sha256(c['query'].encode()).hexdigest(),
+            'passages':[{'pid':p['pid'],'grade':p['grade'],'source_rank':p['source_rank'],'text_sha256':hashlib.sha256(p['text'].encode()).hexdigest()} for p in c['passages']]} for c in cases])
+    print(json.dumps(summary,indent=2));print(json.dumps(e.load('cost-ledger.json'),indent=2))
+
+
+if __name__=='__main__':analyze()

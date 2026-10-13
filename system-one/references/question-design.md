@@ -90,6 +90,10 @@ action; an average can hide a critical failure. Deterministic authorization,
 hard limits, and approval remain in code or human control. Preserve component
 judgments so policy outcomes can be inspected and replayed.
 
+For relevance ranking, read [pairwise ranking](pairwise-ranking.md) before
+replacing independent Scores with Choice comparisons. Keep absolute relevance
+separate from relative preference and qualify the comparison schedule.
+
 ## Further reading
 
 TypeSafe's [value extraction cookbook](https://docs.typesafe.ai/cookbooks/pre_parsed_value_extraction_cookbook.md),

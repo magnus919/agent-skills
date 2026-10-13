@@ -646,6 +646,42 @@
         "Requires task-specific qualification and a fallback, with exact counts, policy, and execution authority kept outside model judgment",
         "Distinguishes the inactive auto-loaded adapters from active-specialist or test-time-tuned evidence and identifies the v0.6.1 contract limits"
       ]
+    },
+    {
+      "id": "pairwise-ranking-method-choice",
+      "prompt": "A Jev tip says to replace independent relevance Scores with pairwise Choice and Bradley–Terry. We rerank eight search passages and sometimes none answers the query. Design a fair experiment before adopting the advice.",
+      "expected_output": "Defines a strong Score control, a paired comparison on frozen independently labeled shortlists, separate quality and resource metrics, and an absolute-relevance rejection lane.",
+      "assertions": [
+        "Defines descriptive Score levels that each make sense independently as a strong control rubric",
+        "Compares the ranking systems on identical frozen candidate shortlists",
+        "Separates judgment count, token cost, and complete-ranking latency when comparing budgets",
+        "Requires a separate absolute-usability or review decision before accepting a pairwise winner",
+        "Uses relevance labels independent of the tested Jev predictions"
+      ]
+    },
+    {
+      "id": "pairwise-ranking-graph-boundaries",
+      "prompt": "We only compared A with B and C with D, but ridge regularization gives a finite Bradley–Terry ranking of all four. Later we give A ten easy opponents and B two hard ones. Can we sort raw wins? Our reversed-position test returned A both times and our judge has no cycles; is it correct?",
+      "expected_output": "Rejects unobserved cross-component comparability, handles unequal opponents, specifies fitting checks, fixes candidate identity interpretation under reversal, and separates consistency from ranking accuracy.",
+      "assertions": [
+        "Rejects observational comparability across disconnected graph components despite a finite regularized fit",
+        "Explains why raw win totals from unequal opponent schedules do not establish a fair ranking",
+        "Specifies an identifiable fitting convention, regularization choice, and convergence validation",
+        "Maps reversed passage positions back to original candidate identities before judging agreement",
+        "Requires independent final-ranking quality evidence rather than treating stability or absence of cycles as correctness"
+      ]
+    },
+    {
+      "id": "pairwise-ranking-evidence-readout",
+      "prompt": "Our frozen exploratory Jev comparison finds pairwise nDCG@5 worse than Score, at four times the input tokens. Bradley–Terry and win totals produce identical rankings. An earlier pilot stopped because an exact Score/probability equality check rejected rounded output; its amended successor used fresh cases. We added valid skill eval JSON. What should the skill now recommend, and what evidence do we actually have?",
+      "expected_output": "Retains the stronger cheaper control for this workload, records scoped negative findings and uncertainty, avoids unsupported aggregation attribution, preserves terminal study history, and distinguishes experiment evidence from unassessed skill behavior.",
+      "assertions": [
+        "Retains Score for the observed workload rather than adopting the losing costly pairwise method as default",
+        "Requires effect uncertainty and exploratory-design limitations before broader performance claims",
+        "Does not attribute a ranking benefit to Bradley–Terry when the win-total ablation produces the same ranking",
+        "Preserves the original failed pilot as terminal and keeps the fresh amended study distinct",
+        "Distinguishes schema-valid skill evals from measured behavioral benefit of the enrichment"
+      ]
     }
   ]
 }

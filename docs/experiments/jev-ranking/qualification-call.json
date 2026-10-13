@@ -1,0 +1,46 @@
+{
+  "payload": {
+    "model": "jev-1.13.0",
+    "state": {
+      "query": "What is the capital of France?",
+      "passage": "Paris is the capital of France."
+    },
+    "questions": {
+      "relevance": {
+        "type": "score",
+        "instructions": "Does passage answer query?",
+        "criteria": [
+          "Does not answer the query.",
+          "Directly answers the query."
+        ]
+      }
+    }
+  },
+  "request_sha256": "8545351f45f4ac5658831b4ff0eafd1e4b31b6d0aa2620b263ec26f4955aee7e",
+  "reservation_usd": 0.003,
+  "pricing_basis": "Published $0.042/M input tokens; reservation covers full 64k-token context, output free; account invoice not observed.",
+  "status": 200,
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "relevance": {
+        "type": "score",
+        "score": 1.0,
+        "confidence": 1.0,
+        "legend": {
+          "0": "Does not answer the query.",
+          "1": "Directly answers the query."
+        },
+        "probabilities": {
+          "0": 0.0,
+          "1": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 328,
+      "output_tokens": 19
+    }
+  },
+  "elapsed_s": 0.18716124999991735
+}

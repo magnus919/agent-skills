@@ -1,0 +1,47 @@
+{
+  "rate_per_million_input_usd": 0.042,
+  "invoice_observed": false,
+  "phases": {
+    "calls-challenge-v2": {
+      "attempts": 444,
+      "input_tokens": 183002,
+      "estimated_usd": 0.007686084000000001,
+      "errors": 0
+    },
+    "calls-development": {
+      "attempts": 16,
+      "input_tokens": 8694,
+      "estimated_usd": 0.00036514800000000004,
+      "errors": 1
+    },
+    "calls-development-v2": {
+      "attempts": 528,
+      "input_tokens": 282126,
+      "estimated_usd": 0.011849292,
+      "errors": 0
+    },
+    "calls-final-v2": {
+      "attempts": 4233,
+      "input_tokens": 2274992,
+      "estimated_usd": 0.095549664,
+      "errors": 0
+    },
+    "calls-final-v2-diagnostics": {
+      "attempts": 1020,
+      "input_tokens": 542770,
+      "estimated_usd": 0.022796340000000002,
+      "errors": 0
+    },
+    "qualification": {
+      "attempts": 1,
+      "input_tokens": 328,
+      "estimated_usd": 1.3776000000000002e-05,
+      "errors": 0
+    }
+  },
+  "attempts": 6242,
+  "total_input_tokens": 3291912,
+  "estimated_total_usd": 0.138260304,
+  "total_cap_usd": 20,
+  "attempt_cap": 8000
+}

@@ -131,6 +131,11 @@ part of the result, not a footnote. [jev-assist](https://github.com/glud123/jev-
 uses historical file changes to test whether a relevance shortlist covers
 files developers actually touched.
 
+For Score versus pairwise Choice, comparison schedules, and Bradley–Terry,
+read [the ranking guide](pairwise-ranking.md). Evaluate the complete ranking
+system against a strong Score control; a pairwise winner does not establish
+absolute relevance or permission to use the candidate.
+
 ## 3a. Extract by selecting source candidates
 
 **When:** the application needs an exact value or span from natural-language

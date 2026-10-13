@@ -1,0 +1,10 @@
+{
+  "registered_at": 1791866300.7509272,
+  "cases_sha256": "c249db12cea1f66efe7ac28b424f8a54adf8e38b895e8e085ba4e3d0e5100b15",
+  "model": "jev-1.13.0",
+  "purpose": "Synthetic expected behavior only; author-defined labels, not independent human relevance ground truth.",
+  "attempts": 444,
+  "spend_cap_usd": 1,
+  "retry": 0,
+  "tests": "8 Scores + 28 Choices + 1 reversed criteria-order Choice per group. Report missing evidence, ties, injection preference and criteria order separately; no release gate."
+}

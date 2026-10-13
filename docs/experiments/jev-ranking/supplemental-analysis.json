@@ -1,0 +1,377 @@
+{
+  "final_queries": 83,
+  "ndcg_queries": 77,
+  "zero_ideal_gain_queries": [
+    "2019:1063750",
+    "2019:19335",
+    "2020:1105792",
+    "2020:1115210",
+    "2020:67316",
+    "2020:673670"
+  ],
+  "no_useful_answer_queries": [
+    "2019:1063750",
+    "2019:1110199",
+    "2019:146187",
+    "2019:19335",
+    "2019:405717",
+    "2019:489204",
+    "2019:527433",
+    "2020:1064670",
+    "2020:1105792",
+    "2020:1110678",
+    "2020:1113256",
+    "2020:1115210",
+    "2020:1133579",
+    "2020:118440",
+    "2020:555530",
+    "2020:67316",
+    "2020:673670",
+    "2020:911232"
+  ],
+  "provided_order_ndcg5": 0.45338831464647816,
+  "arms": {
+    "S": {
+      "top1_useful_rate_all_queries": 0.6144578313253012,
+      "kendall_tau_b_mean": 0.5178966539222799,
+      "kendall_defined_queries": 77,
+      "tied_score_pairs": 28,
+      "grade_gap_pair_diagnostics": {}
+    },
+    "P": {
+      "top1_useful_rate_all_queries": 0.6626506024096386,
+      "kendall_tau_b_mean": 0.5300253500079576,
+      "kendall_defined_queries": 77,
+      "tied_score_pairs": 54,
+      "grade_gap_pair_diagnostics": {
+        "0": [
+          7,
+          1187
+        ],
+        "1": [
+          477,
+          593
+        ],
+        "3": [
+          224,
+          238
+        ],
+        "2": [
+          279,
+          306
+        ]
+      }
+    },
+    "B": {
+      "top1_useful_rate_all_queries": 0.43373493975903615,
+      "kendall_tau_b_mean": 0.44108903951074907,
+      "kendall_defined_queries": 77,
+      "tied_score_pairs": 123,
+      "grade_gap_pair_diagnostics": {
+        "0": [
+          3,
+          342
+        ],
+        "3": [
+          62,
+          65
+        ],
+        "1": [
+          136,
+          171
+        ],
+        "2": [
+          79,
+          86
+        ]
+      }
+    },
+    "C": {
+      "top1_useful_rate_all_queries": 0.3493975903614458,
+      "kendall_tau_b_mean": 0.32450937632027815,
+      "kendall_defined_queries": 77,
+      "tied_score_pairs": 1160,
+      "grade_gap_pair_diagnostics": {
+        "0": [
+          4,
+          312
+        ],
+        "1": [
+          117,
+          146
+        ],
+        "3": [
+          49,
+          51
+        ],
+        "2": [
+          64,
+          72
+        ]
+      }
+    }
+  },
+  "stability": {
+    "S": {
+      "repeat": {
+        "identical_orders": 4,
+        "queries": 10,
+        "mean_ndcg5_change": 0.0,
+        "agreement_by_grade_gap": {}
+      },
+      "reverse": {
+        "identical_orders": 2,
+        "queries": 10,
+        "mean_ndcg5_change": 0.010160919935454895,
+        "agreement_by_grade_gap": {}
+      }
+    },
+    "P": {
+      "repeat": {
+        "identical_orders": 5,
+        "queries": 10,
+        "mean_ndcg5_change": 0.0006032586314582576,
+        "agreement_by_grade_gap": {
+          "0": [
+            137,
+            141
+          ],
+          "1": [
+            80,
+            82
+          ],
+          "2": [
+            24,
+            25
+          ],
+          "3": [
+            32,
+            32
+          ]
+        }
+      },
+      "reverse": {
+        "identical_orders": 1,
+        "queries": 10,
+        "mean_ndcg5_change": -0.008476414708041342,
+        "agreement_by_grade_gap": {
+          "0": [
+            132,
+            141
+          ],
+          "1": [
+            75,
+            82
+          ],
+          "2": [
+            24,
+            25
+          ],
+          "3": [
+            32,
+            32
+          ]
+        }
+      }
+    },
+    "B": {
+      "repeat": {
+        "identical_orders": 8,
+        "queries": 10,
+        "mean_ndcg5_change": 0.0,
+        "agreement_by_grade_gap": {
+          "1": [
+            22,
+            23
+          ],
+          "0": [
+            40,
+            41
+          ],
+          "2": [
+            7,
+            7
+          ],
+          "3": [
+            9,
+            9
+          ]
+        }
+      },
+      "reverse": {
+        "identical_orders": 5,
+        "queries": 10,
+        "mean_ndcg5_change": -0.024802099175557233,
+        "agreement_by_grade_gap": {
+          "1": [
+            21,
+            23
+          ],
+          "0": [
+            37,
+            41
+          ],
+          "2": [
+            7,
+            7
+          ],
+          "3": [
+            9,
+            9
+          ]
+        }
+      }
+    },
+    "C": {
+      "repeat": {
+        "identical_orders": 9,
+        "queries": 10,
+        "mean_ndcg5_change": 0.0,
+        "agreement_by_grade_gap": {
+          "0": [
+            40,
+            41
+          ],
+          "1": [
+            18,
+            18
+          ],
+          "3": [
+            6,
+            6
+          ],
+          "2": [
+            5,
+            5
+          ]
+        }
+      },
+      "reverse": {
+        "identical_orders": 6,
+        "queries": 10,
+        "mean_ndcg5_change": -0.03389320983854686,
+        "agreement_by_grade_gap": {
+          "0": [
+            37,
+            41
+          ],
+          "1": [
+            16,
+            18
+          ],
+          "3": [
+            6,
+            6
+          ],
+          "2": [
+            5,
+            5
+          ]
+        }
+      }
+    }
+  },
+  "synthetic_challenges": {
+    "useful": {
+      "groups": 3,
+      "criteria_order_changed_choices": 0,
+      "score_ranges": [
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          2.64
+        ],
+        [
+          0.0,
+          3.0
+        ]
+      ]
+    },
+    "all-irrelevant": {
+      "groups": 3,
+      "criteria_order_changed_choices": 0,
+      "score_ranges": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    "tied": {
+      "groups": 3,
+      "criteria_order_changed_choices": 0,
+      "score_ranges": [
+        [
+          3.0,
+          3.0
+        ],
+        [
+          2.61,
+          2.69
+        ],
+        [
+          3.0,
+          3.0
+        ]
+      ]
+    },
+    "injection": {
+      "groups": 3,
+      "criteria_order_changed_choices": 0,
+      "score_ranges": [
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          2.61
+        ],
+        [
+          0.0,
+          3.0
+        ]
+      ],
+      "decoy_scored_above_direct": 0
+    }
+  },
+  "economics": {
+    "P": {
+      "token_cost_ratio": 4.025666108571464,
+      "p95_ranking_ratio": 2.815447773587468,
+      "cost_guardrail_pass": false,
+      "latency_guardrail_pass": false,
+      "quality_threshold_met": false
+    },
+    "B": {
+      "token_cost_ratio": 1.150190316734704,
+      "p95_ranking_ratio": 1.1007130729811143,
+      "cost_guardrail_pass": true,
+      "latency_guardrail_pass": true,
+      "quality_threshold_met": false
+    },
+    "C": {
+      "token_cost_ratio": 0.9570768352866665,
+      "p95_ranking_ratio": 0.9364720289728379,
+      "cost_guardrail_pass": true,
+      "latency_guardrail_pass": true,
+      "quality_threshold_met": false
+    }
+  },
+  "allpair_win_orders_identical": 83,
+  "queries_with_cycles": 22,
+  "primary_calls_complete": true,
+  "operational_guardrails_closed": true,
+  "decision": "Do not adopt pairwise as default; document bounded methods and exploratory evidence. No production or skill-behavior qualification."
+}

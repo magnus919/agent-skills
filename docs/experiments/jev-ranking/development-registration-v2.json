@@ -1,0 +1,34 @@
+{
+  "registered_at": 1791865713.2619169,
+  "model": "jev-1.13.0",
+  "code_sha256": "f9a28b83e3a4ccf77a5d0e5c9cf9a149c6b170078a22da180caec89c7425c204",
+  "cases_sha256": "ed1bb5340288223501a3c694e06bb8e61217c1609e76d2066369969180785a48",
+  "ids": [
+    "2019:264014",
+    "2019:573724",
+    "2019:915593",
+    "2020:1043135",
+    "2020:1051399",
+    "2020:1071750",
+    "2020:1121353",
+    "2020:1136043",
+    "2020:121171",
+    "2020:141630",
+    "2020:156498",
+    "2020:914916"
+  ],
+  "terminal_v1_ids": [
+    "2019:156493"
+  ],
+  "arms": [
+    "S",
+    "P",
+    "B"
+  ],
+  "prompts_unchanged": true,
+  "validation_amendment": "Two-decimal rounding: probability sum <= .005 * option count; Score expectation <= .005 + .005 * sum(level indices). Never normalize outputs. Preserve v1 terminal failure without regrading or retrying. Fresh unused cases only.",
+  "pricing_amendment": "Use verified published standard rate $0.042/M input tokens and conservative byte-plus-overhead reservations; account invoice unavailable. This is a price estimate, not observed billing.",
+  "stage_ceiling_usd": 3,
+  "total_ceiling_usd": 20,
+  "planned_final_queries": 83
+}
