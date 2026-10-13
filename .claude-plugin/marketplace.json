@@ -786,7 +786,7 @@
         "./ml-engineering"
       ],
       "strict": false,
-      "description": "Plan and execute production ML engineering work — model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, lineage, feature parity, drift response, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
+      "description": "Plan and execute production ML engineering work — classifier versus generative model selection, zero-shot baselines, coding specialization, model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, lineage, feature parity, drift response, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
     },
     {
       "name": "mobile-development",
@@ -1452,7 +1452,7 @@
         "./unsloth"
       ],
       "strict": false,
-      "description": "Install, operate, and troubleshoot Unsloth Core, Studio, and Desktop for local inference and model training. Use for Unsloth environment setup, LoRA/QLoRA supervised fine-tuning, chat templates, GRPO and preference training, vision and audio workflows, decision models, local coding agents and tools, dynamic quantization, checkpoint recovery, multi-GPU training, and model export to GGUF or serving engines. Do not use for framework-neutral ML strategy or operating a standalone inference server unrelated to Unsloth."
+      "description": "Install, operate, and troubleshoot Unsloth Core, Studio, and Desktop for local inference and model training. Use for Unsloth environment setup, LoRA/QLoRA supervised fine-tuning, coding specialization, verifier audits, chat templates, GRPO and preference training, vision and audio workflows, decision models, local coding agents and tools, dynamic quantization, checkpoint recovery, multi-GPU training, and model export to GGUF or serving engines. Do not use for framework-neutral ML strategy or operating a standalone inference server unrelated to Unsloth."
     },
     {
       "name": "vercel-eve",

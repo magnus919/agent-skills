@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "verifier_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "suite_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "cases": [
+    {
+      "id": "adversarial",
+      "category": "adversarial",
+      "label": {
+        "kind": "reference",
+        "evidence": "synthetic authored contract example; no execution"
+      },
+      "expected_correct": false,
+      "execution_status": "failed",
+      "reward": 0
+    },
+    {
+      "id": "correct",
+      "category": "correct",
+      "label": {
+        "kind": "reference",
+        "evidence": "synthetic authored contract example; no execution"
+      },
+      "expected_correct": true,
+      "execution_status": "passed",
+      "reward": 1
+    },
+    {
+      "id": "incorrect",
+      "category": "incorrect",
+      "label": {
+        "kind": "reference",
+        "evidence": "synthetic authored contract example; no execution"
+      },
+      "expected_correct": false,
+      "execution_status": "failed",
+      "reward": 0
+    },
+    {
+      "id": "infrastructure_error",
+      "category": "infrastructure_error",
+      "label": {
+        "kind": "reference",
+        "evidence": "synthetic authored contract example; no execution"
+      },
+      "expected_correct": null,
+      "execution_status": "infrastructure_error",
+      "reward": 0
+    },
+    {
+      "id": "malformed",
+      "category": "malformed",
+      "label": {
+        "kind": "reference",
+        "evidence": "synthetic authored contract example; no execution"
+      },
+      "expected_correct": false,
+      "execution_status": "failed",
+      "reward": 0
+    },
+    {
+      "id": "timeout",
+      "category": "timeout",
+      "label": {
+        "kind": "reference",
+        "evidence": "synthetic authored contract example; no execution"
+      },
+      "expected_correct": null,
+      "execution_status": "timeout",
+      "reward": 0
+    }
+  ]
+}

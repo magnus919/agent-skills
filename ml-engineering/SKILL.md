@@ -1,7 +1,8 @@
 ---
 name: ml-engineering
 description: >-
-  Plan and execute production ML engineering work — model training and
+  Plan and execute production ML engineering work — classifier versus generative
+  model selection, zero-shot baselines, coding specialization, model training and
   fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization
   decisions, inference deployment, lineage, feature parity, drift response, and
   regression triage, grounded in practical engineering patterns for production ML
@@ -34,6 +35,8 @@ Machine learning engineering is the bridge between model research and production
 
 | Reference | When to load |
 |-----------|-------------|
+| `references/specialization-decisions.md` | Choosing rules/classifiers/zero-shot/prompt/SFT/RL, designing fixed-budget comparisons and interpreting verifier or case-study claims |
+| `references/specialization-evidence.md` | Primary-source findings, contradictory results and local validation limits |
 | `references/fine-tuning.md` | Setting up a LoRA/QLoRA/ full fine-tuning run — data prep, hyperparameters, validation strategy |
 | `references/evaluation.md` | Evaluating a model — benchmark selection, custom eval sets, regression tracking, comparison methodology |
 | `references/evaluation-and-lineage.md` | Metric/configuration decisions, repeated stochastic comparisons, end-to-end lineage, temporal feature parity, drift response, and adaptation/serving tradeoffs |
@@ -44,6 +47,8 @@ Machine learning engineering is the bridge between model research and production
 
 | Template | When to Use |
 |-----------|-------------|
+| `templates/specialization-study.md` | Preregistering task-matched alternatives, data freeze, quality/resource guardrails and stopping rules |
+| `templates/task-run-baseline.json`, `templates/task-run-candidate.json` | Synthetic saved-receipt contract examples; not model results |
 | `templates/training-run-record.md` | Recording a training or fine-tuning run — model and data versions, full config, environment, eval results — so it can be reproduced |
 | `templates/eval-regression-table.md` | Tracking model quality across runs and triaging a regression — one row per eval case or capability subset |
 | `templates/quantization-decision-record.md` | Recording a quantization decision — baseline, candidates compared, quality threshold, and rollback path |
@@ -54,11 +59,28 @@ Machine learning engineering is the bridge between model research and production
 
 | Script | When to Use |
 |-----------|-------------|
+| `scripts/compare_task_runs.py` | Descriptive paired task comparison with matched pins/roster, incomplete-evidence rejection and group bootstrap; no release approval |
 | `scripts/check-eval-overlap.py` | Checking a training corpus against an eval corpus for test-set leakage (shared n-grams); `--json` for CI, exit 1 when an eval file exceeds the overlap threshold |
 
 ## Evals
 
 `evals/evals.json` — output-quality eval manifest for this skill: fine-tuning plan review, eval-set design, quantization decision, deployment plan, regression triage, and training-run reproducibility.
+
+## Specialization decision boundary
+
+Start from the required outcome and permitted prediction-time information.
+Include simpler rules, supervised or zero-shot classifiers where appropriate;
+classification scores are not automatically calibrated probabilities. A proprietary
+LLM case study is orientation, not proof of architecture optimality. Compare
+matched context/policy/budgets, preserve critical regressions and require every
+registered guardrail before promotion. New helper exit zero is descriptive
+comparison completion only; model execution and release remain separate evidence.
+
+Route training operations to [unsloth](../unsloth/SKILL.md), typed decisions to
+[system-one](../system-one/SKILL.md), labels/provenance to
+[training-data-annotation](../training-data-annotation/SKILL.md), experimental
+analysis/calibration to [data-scientist](../data-scientist/SKILL.md), and agent-level
+evaluation to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md).
 
 ## Core Principles
 

@@ -209,6 +209,43 @@
         "Syntax validation and the LLM Judge are treated as limited evidence; task labels and final test acceptance are independently reviewed.",
         "The plan preserves prompts, transforms, seeds, model/provider settings and preview-to-export artifact provenance."
       ]
+    },
+    {
+      "id": "coding-provenance-contract",
+      "prompt": "Prepare dataset-contract.md for coding SFT: bug variants from one repository were randomly split after generation; some evaluation prompts match training prompts but have different answers. We have source commits but no recorded rights decision. Tool-call traces must retain their structure. Do not train yet.",
+      "expected_output": "A prepared source-family split and provenance contract with honest audit scope.",
+      "assertions": [
+        "artifact_exists: dataset-contract.md",
+        "The contract separates related source or repository families before synthetic derivation rather than randomizing derived rows across splits.",
+        "The contract treats shared prompts as leakage even when answers differ.",
+        "The contract records source revisions and rights decisions without treating field presence as verified permission.",
+        "The contract preserves tool-call structure through a compatible processor rather than flattening it into the text-only audit contract."
+      ]
+    },
+    {
+      "id": "verifier-challenge-receipts",
+      "prompt": "Deliver reward-contract.md and challenge-receipts.json for local code GRPO. A wrong edge-case solution passes training tests; lint rewards favor empty code; the test generator rejects a correct reference patch. Include timeout and infrastructure cases. No code execution or GPU run is available.",
+      "expected_output": "A prepared reward challenge package with independent truth, distinct execution outcomes and no fabricated validation.",
+      "assertions": [
+        "artifact_exists: reward-contract.md",
+        "artifact_exists: challenge-receipts.json",
+        "The contract requires reference solutions to pass generated tests and credible wrong solutions to fail before trusting the verifier.",
+        "The reward design does not allow empty or incorrect lint-compliant outputs to outrank correct task outputs.",
+        "The contract distinguishes timeout and infrastructure failure from known incorrect task outcomes.",
+        "The package marks actual verifier execution and GPU stages not run rather than claiming synthetic receipts validate them."
+      ]
+    },
+    {
+      "id": "local-grpo-budget-signal",
+      "prompt": "Plan local-grpo.md for our 16 GB GPU. Coinbase trained 9B on a 96 GB card; our SFT used 1.4 GB. All sampled code answers now get reward zero. We require training state to remain in VRAM. Should we run for more epochs with a paged optimizer?",
+      "expected_output": "A model-specific bounded feasibility and learning-signal plan, without hardware or reasoning promises.",
+      "assertions": [
+        "artifact_exists: local-grpo.md",
+        "The plan budgets rollout state, generation grouping, activations and optimizer state separately from the SFT memory observation.",
+        "The plan identifies all-equal task rewards as missing within-group task preference and investigates exploration or verifier failures before extending training.",
+        "The plan checks optimizer paging against the all-state-in-VRAM requirement rather than assuming QLoRA guarantees residency.",
+        "The plan requires a representative model-specific pilot before claiming the 16 GB target is feasible."
+      ]
     }
   ]
 }

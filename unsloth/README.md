@@ -16,18 +16,25 @@ checkpoint resume, fresh reload and GPU F16 GGUF comparison. Research-backed gui
 media generation and quantization selection. Their runtime paths remain explicitly
 unverified until tested on the selected model and backend.
 
+For coding specialization, it adds source-group leakage checks, verifier
+challenge receipts, reward-design guidance and experiment templates. These help
+you distinguish a useful code model from a run with improving loss or reward.
+They also guide when a simpler classifier is sufficient and when training is justified.
+
 ## What You Get
 
 | Contents | Provides |
 |---|---|
 | `SKILL.md` | End-to-end workflow and decision boundaries |
 | `references/` | Focused training, decision, agent/tool, media and quantization guides |
+| `scripts/specialization_audit.py` | Read-only source/split and verifier-receipt checks; no code execution |
 | `scripts/decision_audit.py` | Hard-label decision schema and three-split leakage checks |
 | `scripts/unsloth_preflight.py` | Read-only environment inventory and JSONL audit |
 | `scripts/sft_smoke.py`, `sft_audit.py` | Bounded training and actual label/token audits |
 | `scripts/verify_export.py`, `gpu_completion.cpp` | Fresh merged-model and GPU GGUF parity |
 | `scripts/test_*.py` | Offline audit, guard and subprocess-limit tests |
 | `assets/` | Pinned stack/model configuration and synthetic train/holdout data |
+| `templates/specialization-plan.md`, `reward-contract.md` | Coding/RL experiment, verifier and delivery contracts |
 | `templates/run-record.md` | Reproducible experiment and delivery worksheet |
 | `evals/` | Representative behavior scenarios and review challenges |
 

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "dataset_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "harness_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "decoding_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "budget_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "expected_case_ids": [
+    "a",
+    "b",
+    "c"
+  ],
+  "cases": [
+    {
+      "id": "a",
+      "group_id": "a",
+      "status": "failed",
+      "critical_failure": false,
+      "latency_seconds": 1
+    },
+    {
+      "id": "b",
+      "group_id": "b",
+      "status": "passed",
+      "critical_failure": false,
+      "latency_seconds": 2
+    },
+    {
+      "id": "c",
+      "group_id": "c",
+      "status": "failed",
+      "critical_failure": false,
+      "latency_seconds": 3
+    }
+  ],
+  "provenance": "synthetic authored contract example; no model execution"
+}

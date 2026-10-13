@@ -121,6 +121,64 @@
         "The response includes bounded options such as data repair, human review, rollback, or retirement",
         "The response validates a candidate against a frozen regression set and recent production slice before ramping"
       ]
+    },
+    {
+      "id": "classifier-versus-generative-baselines",
+      "prompt": "Coinbase specialized an LLM for fraud and the X replies say a zero-shot classifier would be better. Recommend the architecture and give a comparison plan. We have structured transactions and recent history, delayed fraud outcomes and an existing boosted-tree/rules stack.",
+      "expected_output": "Treat both claims as hypotheses and compare task-appropriate alternatives with matched information.",
+      "assertions": [
+        "The response includes simpler classifier or rules candidates and does not assume a generative LLM is necessary for a class verdict.",
+        "The response distinguishes NLI zero-shot text-label scores from calibrated structured-transaction fraud probabilities.",
+        "The response gives classifier candidates comparable permitted history or records context differences as a separate comparison.",
+        "The response accounts for delayed outcome maturity, prediction-time information and sampled prevalence in the comparison.",
+        "The response does not claim Coinbase or the unseen commenters establish which candidate wins on the unavailable dataset."
+      ]
+    },
+    {
+      "id": "matched-budget-task-comparison",
+      "prompt": "Deliver comparison-plan.md for an SFT candidate scoring 42 percent pass@1 and an RL agent scoring 59 percent after 16 attempts with a learned selector. Some tasks timed out, others have no reports; one capability regressed. A helper exited zero. Which ships?",
+      "expected_output": "Hold release pending complete matched-budget comparisons and all registered guardrails.",
+      "assertions": [
+        "artifact_exists: comparison-plan.md",
+        "The plan distinguishes single-attempt outcomes from multi-attempt selection and compares matched budgets.",
+        "The plan retains timeouts and missing or infrastructure-failed tasks with explicit execution statuses rather than discarding them.",
+        "The plan requires resolving the critical regression and other registered guardrails before promotion.",
+        "The response does not treat a descriptive helper exit zero as semantic or release approval."
+      ]
+    },
+    {
+      "id": "rl-evidence-disagreement",
+      "prompt": "Our internal guide says SFT memorizes and RL generalizes, so GRPO always creates new reasoning. Another paper says RL only improves sampling efficiency. Explain what to conclude and design a falsifiable local study.",
+      "expected_output": "Preserve domain/metric differences and compare actual task outcomes rather than declaring a universal rule.",
+      "assertions": [
+        "The response identifies task and evaluation differences that limit transferring the SFT-versus-RL title to coding or fraud.",
+        "The response preserves the conflicting RLVR interpretations instead of asserting either as a universal capability law.",
+        "The study compares actual tasks with fixed inference budgets and separate training or generation-seed protocols.",
+        "The study treats model-judged reasoning or teacher agreement as limited evidence rather than independent ground truth."
+      ]
+    },
+    {
+      "id": "paired-group-evidence",
+      "prompt": "Review a saved result comparison: two reports share model name but differ in harness and decoding hashes; tasks from one repository were bootstrapped as independent rows. Missing reports were dropped, and the positive interval is called release approval.",
+      "expected_output": "Reject incomparable/incomplete evidence and require task pairing, independent groups and separate release criteria.",
+      "assertions": [
+        "The review rejects attributing the delta to the model when harness or decoding conditions differ.",
+        "The review requires complete expected case coverage rather than dropping missing reports.",
+        "The review uses independent task/source groups for uncertainty and does not treat dependent rows as independent evidence.",
+        "The review separates descriptive intervals from release approval and from repeated-training-seed uncertainty."
+      ]
+    },
+    {
+      "id": "task-specific-cdm-claims",
+      "prompt": "Review this ScaleDown CDM proposal: the post advertises calibrated probabilities, non-generative inference and huge speed/cost gains. The docs say classify softmax-normalizes label scores, extract returns spans and routes enums to classification, and summarize is abstractive. It offers a Jev-compatible API. Can we replace our local model, reuse thresholds and call the summaries faithful? No provider calls are authorized.",
+      "expected_output": "A task-specific alternative evaluation with contract/architecture/calibration/privacy distinctions and no unsupported local replacement claim.",
+      "assertions": [
+        "The review distinguishes documented task interfaces from unverified architecture, calibration and performance claims.",
+        "The review does not treat Jev-compatible shape or normalized scores as permission to reuse decision thresholds without validation.",
+        "The plan validates extraction against source spans and summarization against retained facts or downstream task outcomes rather than syntax or compression ratio alone.",
+        "The review does not infer local training, open weights or offline execution from hosted API availability.",
+        "The response respects the no-provider-call constraint while preparing a sourced comparison."
+      ]
     }
   ]
 }

@@ -3,14 +3,15 @@ name: unsloth
 description: >-
   Install, operate, and troubleshoot Unsloth Core, Studio, and Desktop for local
   inference and model training. Use for Unsloth environment setup, LoRA/QLoRA
-  supervised fine-tuning, chat templates, GRPO and preference training, vision
+  supervised fine-tuning, coding specialization, verifier audits, chat templates,
+  GRPO and preference training, vision
   and audio workflows, decision models, local coding agents and tools, dynamic
   quantization, checkpoint recovery, multi-GPU training, and model export
   to GGUF or serving engines. Do not use for framework-neutral ML strategy or
   operating a standalone inference server unrelated to Unsloth.
 license: MIT
 metadata:
-  research-date: "2026-10-12"
+  research-date: "2026-10-13"
   source: "https://github.com/unslothai/unsloth"
 ---
 
@@ -63,6 +64,9 @@ vendor speed or minimum-memory claim into a promise about the user's workload.
 | Install, upgrade, select hardware/backend, use containers | [Installation](references/installation.md) |
 | Run the observed RTX 5070 Ti text-SFT smoke recipe | [Validated executable SFT](references/validated-sft.md) |
 | Prepare data, run text SFT, choose LoRA settings | [Data and supervised training](references/sft.md) |
+| Prepare coding datasets, label audits, SFT and real-task acceptance | [Coding specialization](references/coding-specialization.md) |
+| Local GRPO/RLVR, verifier challenges, rollout budgets and failure analysis | [Local RLVR](references/local-rlvr.md) |
+| Specialization research, contradictions and evidence boundaries | [Specialization evidence](references/specialization-evidence.md) |
 | GRPO, DPO, vision/audio, continued pretraining, multi-GPU | [Advanced training](references/advanced-training.md) |
 | Train/serve choice, yes/no or score decision models | [Decision models](references/decision-models.md) |
 | Connect coding agents, execute/search with tools, MCP, Data Recipes | [Agents and tools](references/agents-and-tools.md) |
@@ -126,6 +130,24 @@ Decision outputs require head/calibration preservation and probability checks;
 local inference does not establish offline search, tool confinement or GPU-only
 placement. Verify default CPU fallback and process lifetime in the installed build.
 
+## Real-task specialization
+
+Before training, route model choice to `ml-engineering`: classification may need
+a simpler classifier or decision head rather than generative fine-tuning.
+For coding, use the coding/RLVR guides above,
+[the specialization plan](templates/specialization-plan.md) and
+[the reward contract](templates/reward-contract.md). Split repositories/source
+families before deriving examples; audit actual target retention and independently
+executed task outcomes. Do not generalize the observed formatting smoke to code
+quality or use the single-turn trainer as a multi-turn tool trainer unchanged.
+
+The new offline helper audits provenance/splits and verifier receipts only.
+[sample receipts](templates/verifier-receipts.json) are synthetic contract examples,
+not execution evidence. Route annotation/provenance to `training-data-annotation`,
+agent task evaluation to `agent-evals-and-observability`, isolation design to
+`secure-software-engineering`, container mechanics to `docker-compose`, and
+serving to `llama-cpp`/`vllm`. No new GPU training/RL path is validated here.
+
 ## Local helpers
 
 Run these commands from this skill's root with Python 3.10+. They require no
@@ -136,6 +158,9 @@ python3 scripts/unsloth_preflight.py doctor --json
 python3 scripts/unsloth_preflight.py dataset train.jsonl --eval-file valid.jsonl --json
 python3 scripts/decision_audit.py assets/decision-train.jsonl \
   --calibration-file assets/decision-calibration.jsonl --test-file assets/decision-test.jsonl --json
+python3 scripts/specialization_audit.py data --train train.jsonl \
+  --development development.jsonl --test test.jsonl
+python3 scripts/specialization_audit.py rewards templates/verifier-receipts.json
 python3 -m unittest discover -s scripts -p 'test_*.py'
 ```
 
