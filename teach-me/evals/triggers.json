@@ -1,0 +1,38 @@
+[
+  {
+    "query": "Teach me how to reason about probability with practice.",
+    "should_trigger": true
+  },
+  {
+    "query": "I keep confusing SQL joins. Help me understand them.",
+    "should_trigger": true
+  },
+  {
+    "query": "Refresh my rusty calculus and check where I need help.",
+    "should_trigger": true
+  },
+  {
+    "query": "Explain recursion with a worked example; no quiz today.",
+    "should_trigger": true
+  },
+  {
+    "query": "What is the capital of France?",
+    "should_trigger": false
+  },
+  {
+    "query": "Write the SQL query for this report; no lesson needed.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design a six-week community workshop program.",
+    "should_trigger": false
+  },
+  {
+    "query": "Collect and organize sources on tutoring research.",
+    "should_trigger": false
+  },
+  {
+    "query": "Help me choose life priorities and stay accountable.",
+    "should_trigger": false
+  }
+]

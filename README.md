@@ -605,6 +605,10 @@ Operate versioned tabular foundation-model checkpoints, labeled context, calibra
 
 Self-hosted Tailscale/Headscale VPN ecosystem. Seven sub-skills covering Headscale server deployment, ACL/tailnet policy authoring, Tailscale client configuration, node lifecycle (auth keys, registration, tagging, decommissioning), subnet routing and exit nodes, DERP relay infrastructure, and backup/migration. Ships 23 scripts with `--json` and `--dry-run` support, 8 reference documents, and 6 templates.
 
+### [teach-me](teach-me/SKILL.md)
+
+Learn through researched explanations, brief diagnostic tasks, adaptive practice, and corrective feedback. Separates assisted success from independent application, transfer, and delayed retention, and invites a break when the agreed goal is demonstrated.
+
 ### [technical-documentation](technical-documentation/SKILL.md)
 
 Make documentation useful at the moment someone needs to install, operate, extend, or troubleshoot a system.

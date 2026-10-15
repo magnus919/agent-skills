@@ -1329,6 +1329,15 @@
       "description": "Deploy and manage the self-hosted Tailscale/Headscale ecosystem: a Headscale control server, tailscale clients, ACL policies, node lifecycle, subnet routing, DERP relays, and backup/migration. Use when the user mentions Tailscale, Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
+      "name": "teach-me",
+      "source": "./",
+      "skills": [
+        "./teach-me"
+      ],
+      "strict": false,
+      "description": "Teach a subject through source-grounded explanations, brief diagnostic tasks, practice, and adaptive feedback. Use when a learner asks to learn, understand, refresh, practice, or be tutored toward an observable goal. Do not use for a standalone factual lookup, doing the task on someone's behalf, life coaching, group-program design, or collecting research without teaching."
+    },
+    {
       "name": "technical-documentation",
       "source": "./",
       "skills": [

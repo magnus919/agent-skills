@@ -91,7 +91,8 @@ Read [coaching conversations](references/coaching-conversations.md) for the full
 - Use `daily-life-discovery` when the person wants to discover how an AI agent could help their day, routines, or workflow.
 - Use `product-discovery` for stakeholder interviews, requirements, acceptance criteria, or SDD inputs.
 - Use a planning or action skill when the goal is already chosen and the person wants execution.
-- Use a teaching capability for subject mastery, curriculum, or practice design.
+- Use [teach-me](../teach-me/SKILL.md) for individual subject learning and practice.
+  Use [community-guides](../community-guides/SKILL.md) for group learning programs.
 - Use grounded specialist information or a qualified professional for medical, legal, financial, employment, immigration, addiction, abuse, safeguarding, or other consequential advice.
 - Use the host's crisis or emergency protocol, not this coaching loop, when there may be imminent danger.
 
