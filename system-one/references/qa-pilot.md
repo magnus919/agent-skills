@@ -14,6 +14,13 @@ python3 scripts/jev_qa_pilot.py
 python3 scripts/jev_qa_pilot.py --live  # requires TYPESAFE_API_KEY in the environment
 ```
 
+The pilot defaults to the moving `jev-latest` alias and records each returned
+revision. Use `--model jev-preview` to try 1.14 now, or `--model jev-1.14.0`
+for a fixed new-release comparison. `--model jev-1.13.0` reproduces the historical
+request identity below, not its outcomes. See `references/jev.md` for the dated
+alias mapping. The separate deployed eval audit and its benchmark/replay helpers
+retain their 1.13 pin: changing that CI contract needs a separate migration.
+
 The 22 cases are synthetic and pre-labeled. The script does not transmit the
 labels. It reports each model judgment and a deliberately simple rules-only
 baseline, stopping on the first provider or response-contract error. The first

@@ -9,7 +9,7 @@ model card, code, license, revision, and target-data evaluation before adoption.
 
 | Candidate | What is established publicly | Operational posture |
 |---|---|---|
-| TypeSafe Jev | Managed System One API; Choice/Score/Noul; parallel questions; official docs and SDK | Hosted only; no public weight download |
+| TypeSafe Jev | Managed Choice/Score/Noul API; experimental images on 1.13/1.14, Box on 1.14, and opt-in long context; [current aliases and feature gates](jev.md) | Hosted only; no public weight download |
 | Convai Innovations Laya | Open Apache-2.0 family; Python runtime; English, multilingual, and specialist checkpoints; router | Self-host Python; community ONNX/Node adapter also exists |
 | Laya typed-decisions | Laya specialist checkpoint for four documented workflows | Explicit opt-in specialist; not a general silent default |
 | Contrastive-LM CLM-v0.1-8B | Open Apache-2.0 head over frozen Qwen3-8B; Choice/Score/Noul wire API plus candidate ranking | Self-host Qwen3-8B pooling encoder and CLM head; see [CLM guidance](clm.md) |

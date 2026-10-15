@@ -61,12 +61,18 @@ integration steps are in `references/jev.md`, which directs readers to refresh
 against live provider documentation. Self-contained qualification probes cover
 arithmetic, freshness, dependencies, and useful relevance versus topical overlap.
 
+The Jev guide covers the 1.14 release and experimental images, Box localization,
+and longer context. General examples prefer `jev-latest`; on 2026-10-15 that
+still means 1.13.0, while `jev-preview` selects 1.14.0. Experimental features
+require separate opt-in headers and workload checks. Bundled text probes do not
+implement those extensions.
+
 Live Jev probes require `--live` and a provider credential in an environment
 variable; never place credentials in source or browser code.
 
 ## Triggers
 
-Use this skill for Jev, Laya, CLM, or experimental Strands Decider; typed Choice/Score/Noul decisions; routing
+Use this skill for Jev, Laya, CLM, or experimental Strands Decider; typed Choice/Score/Noul decisions or experimental Jev image/Box integration; routing
 or calibration based on model judgment; DevOps decision support; validated
 escalation; private model hosting; and semantic code linting or post-edit
 feedback. It is not for style-only linting, exact policy checks, ordinary

@@ -3,7 +3,7 @@ name: system-one
 description: >-
   Design, integrate, evaluate, self-host, and troubleshoot typed System One
   decision models including TypeSafe Jev, Convai Innovations Laya, CLM, and experimental Strands Decider. Use for
-  Choice/Score/Noul judgments inside deterministic software, app-control loops,
+  Choice/Score/Noul judgments and experimental Jev image/Box queries inside deterministic software, app-control loops,
   routing, ranking, guardrails, calibration, semantic code linting and
   post-edit feedback, DevOps decision support, confidence-based escalation, or
   private open-model inference. Do not use for syntactic/style linting, exact
@@ -68,7 +68,7 @@ tracked corpus unless publication is explicitly requested.
 | Task | Read next |
 |---|---|
 | Design questions, choose candidates, or extract values from source text | `references/question-design.md`; for broader application compositions, `references/use-case-patterns.md` |
-| Hosted Jev API or SDK integration | `references/jev.md`; run `scripts/decision_demo.py` offline first |
+| Jev release/alias selection, experimental images/Box, long context, or hosted API/SDK integration | `references/jev.md`; run `scripts/decision_demo.py` offline first |
 | CLM typed decisions, candidate ranking, Qwen3 encoder, fine-tuning, or private serving | `references/clm.md` |
 | Laya checkpoints, routing, language, CPU/GPU/MPS | `references/laya.md` |
 | Fine-tune the English Laya checkpoint on labeled typed decisions | `references/laya-fine-tuning.md` |
@@ -120,6 +120,9 @@ reference adapter, not a public Internet service.
 ## Cross-cutting limits
 
 - Jev is managed/API-only; do not invent a self-hosted Jev weight download.
+  Prefer `jev-latest` for general examples, but verify its resolved revision: on
+  2026-10-15 it is 1.13.0; the new 1.14.0 is `jev-preview`. Images, Box, and
+  long context require explicit experimental opt-ins; see `references/jev.md`.
 - Laya, CLM, and Jev can share a typed application interface, but not assumed
   thresholds, calibration, latency, language behavior, or model quality.
 - Before enabling Laya caller traffic, keep ingress private and authenticated;

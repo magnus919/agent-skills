@@ -31,6 +31,10 @@ The useful separation is:
 - **Noul:** estimate `P(yes)` for one proposition. Write the proposition so
   that its positive meaning is unambiguous.
 
+Jev also offers experimental image inputs and a 1.14-only Box primitive; these
+are not part of this portable three-primitive contract. See `references/jev.md`
+for model selection, opt-in headers, and localization validation.
+
 Different runtimes may expose extra fields such as `action.act_probability`,
 but those are not portable contract fields. Ignore them until validated on the
 target data.
