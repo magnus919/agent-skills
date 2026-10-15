@@ -132,8 +132,10 @@ not human learning gains.
   [life-coach](../life-coach/SKILL.md).
 - Designing a community learning program: use
   [community-guides](../community-guides/SKILL.md).
-- Capturing and organizing research without instruction: use
-  [research-and-vault](../research-and-vault/SKILL.md).
+- Repeated research-to-durable-notes capture: use
+  [research-and-vault](../research-and-vault/SKILL.md). For an investigation's
+  design or evidence evaluation, use [research-methodology](../research-methodology/SKILL.md);
+  handle simple one-off lookups directly.
 - High-stakes professional decisions or hazardous practice: teach appropriate
   concepts using current authoritative sources; do not equate a chat exercise
   with professional competence or authorize real-world procedures.

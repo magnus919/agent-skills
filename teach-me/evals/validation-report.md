@@ -2,7 +2,7 @@
 
 Date: 2026-10-15. Review type: model review and simulated learner behavior, not
 human adjudication or an educational outcome study. Candidate content digest:
-`e967dfac0c1f519d4348f29d5158287e7fdba531ad836012ce1970e888c25382` (SHA-256 of sorted skill-relative repository paths,
+`3e4245c7a13bf22044c555d5da44890c8abad2de270692e354c0640403d7edb6` (SHA-256 of sorted repository-relative paths,
 NUL, file bytes, NUL for SKILL.md, references/*.md, evals/evals.json, and
 triggers.json; excludes this report).
 
@@ -62,7 +62,10 @@ validated the format instead. Generated documentation/catalogs are checked in.
 
 ## Remaining validation
 
-Automatic client skill-selection behavior has not been measured. The separate
+Static model review accepted the nine routing probe labels. It also caught an
+overly broad research-and-vault route; that route was narrowed to repeated durable
+capture, with investigation methodology routed separately. Automatic client
+skill-selection behavior has not been measured. The separate
 routing probes provide reviewable positive and negative cases. Full cross-model,
 cross-domain repeated trials, a no-skill baseline, and human retention/transfer
 studies remain future work under references/validation.md. No claim of rapid
