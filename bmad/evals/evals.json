@@ -138,7 +138,9 @@
         "Requires closure evidence tied to the fixed candidate and linked back to the original finding",
         "Keeps T-10 blocked until its governing finding has valid closure evidence",
         "Allows unrelated nondependent work to proceed under its existing authority"
-      ]
+      ],
+      "files": ["references/review-and-failure-routing.md", "templates/REVIEW.md", "templates/STORY.md"],
+      "case_set": "regression"
     },
     {
       "id": "orchestrator-triage-deduplication",
@@ -151,7 +153,9 @@
         "Links duplicate F-2 to canonical F-8/T-4 without creating a duplicate ticket",
         "Records the rationale for declining F-3 without manufacturing another task",
         "Distinguishes completed triage dispositions from evidence that a defect was fixed"
-      ]
+      ],
+      "files": ["references/review-and-failure-routing.md", "templates/REVIEW.md", "templates/STORY.md"],
+      "case_set": "regression"
     }
   ]
 }
