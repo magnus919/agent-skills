@@ -17,6 +17,18 @@ and carries everything the implementing agent needs without inventing decisions.
 - The slice of the contract this story owns.
 - What is already true in the codebase (verify, do not assume).
 
+## Review handoff (when this story receives findings)
+
+- Stable finding IDs and originating review record:
+- Orchestrator disposition/authorization and receiving owner:
+- Dependencies / gate boundary and acceptance checks for each finding:
+- Assumption IDs and latest safe decision points:
+- Closure: fix candidate + verifying evidence, linked back to the originating record.
+
+A created story is not a resolved finding. Rejected assumptions stale affected
+acceptance/evidence and block dependent effects until contract/plan repair and
+reverification. Use the existing tracker; do not create a duplicate record system.
+
 ## Acceptance criteria
 
 - Observable, binary outcomes (PASS/FAIL possible).

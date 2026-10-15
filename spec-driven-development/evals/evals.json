@@ -75,6 +75,44 @@
         "Defines independent boundary, precedence, missing-input, gap, and overlap cases from the original clauses."
       ],
       "case_set": "regression"
+    },
+    {
+      "id": "candidate-bound-gate-review",
+      "prompt": "Gate 4 APPROVED commit a111 under acceptance contract checkout-v2. Tests ran on a111 in environment env-7 with reports E1/E2. A repair then changes code to b222 on the same PR; no check has run on b222. Prepare the review record and decide whether delivery can proceed. State what evidence is required to restore approval; do not execute a delivery.",
+      "expected_output": "Supersedes approval for the changed scope, records candidate and contract identities plus check environment/results/evidence, holds delivery pending affected checks on b222 and a current verdict, and preserves old evidence as history.",
+      "assertions": [
+        "Binds the gate verdict to an exact candidate commit/content identity rather than a branch or PR label",
+        "Records the acceptance contract version or immutable identity",
+        "Records actually executed checks with their environment, results, and evidence references",
+        "Does not authorize b222 delivery using a111 approval or green reports",
+        "Requires affected checks and a new current verdict before restoring approval",
+        "Preserves the original approval and reports as superseded history rather than rewriting their identity"
+      ]
+    },
+    {
+      "id": "accountable-assumption-boundaries",
+      "prompt": "Extend our SPEC assumptions table. A-1 chooses a reversible test-file extension for T-1 under the approved implementation scope, with milestone M1 tomorrow. A-2 assumes customer records may be deleted by T-2; its milestone review is next week but T-2 is proposed for merge and release today. No owner has decided A-2. Show accountable ledger entries and the allowed next steps without asking approval for every routine choice.",
+      "expected_output": "Records IDs, affected tasks, owners, consequence/reversibility, provisional state, latest safe points, and decision evidence. Allows bounded reversible A-1 work and batched milestone review within existing authority; blocks A-2 dependent effects until a consequential decision is authorized before merge/release.",
+      "assertions": [
+        "Maps stable assumption IDs to the tasks or criteria that depend on them",
+        "Assigns an accountable decision owner and records consequence or reversibility",
+        "Records provisional/unresolved status, decision deadline/latest safe point, and decision evidence needed",
+        "Allows low-risk reversible A-1 work to be reviewed in a batch within already authorized scope",
+        "Blocks A-2 dependent merge/release before deletion effects while the consequential decision is unresolved",
+        "Does not treat silence, an expired timer, or a later milestone as approval"
+      ]
+    },
+    {
+      "id": "rejected-assumption-invalidates-dependent-evidence",
+      "prompt": "A-7 was provisionally used by T-1. T-2 depends on T-1; independent T-3 does not. T-1 and T-2 are marked accepted with evidence E1/E2. The decision owner rejects A-7 before release. Update the SPEC/task/review handoff state conceptually: which acceptance and evidence remain usable, what is blocked, and what restores eligibility?",
+      "expected_output": "Traces rejection through dependent tasks, stales T-1/T-2 acceptance and derived evidence, blocks their release effects, preserves independent T-3 and history, then repairs contract/plan and revalidates the affected candidate before restoring approval.",
+      "assertions": [
+        "Marks T-1 acceptance and its assumption-dependent evidence stale after A-7 rejection",
+        "Also invalidates T-2 acceptance and evidence through its declared dependency on T-1",
+        "Blocks affected dependent effects until the decision is resolved in contract/plan and the candidate is reverified",
+        "Preserves T-3 eligibility under its own unaffected evidence and authority",
+        "Retains the rejected assumption and old evidence as history instead of deleting or relabeling them as current"
+      ]
     }
   ]
 }

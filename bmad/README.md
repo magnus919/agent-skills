@@ -91,3 +91,8 @@ Method adapted from BMad / BMAD-METHOD™ (trademarks of BMad Code, LLC; officia
 repository: bmadcode/bmad-method), distilled from official documentation and an
 independent research synthesis into an original harness-agnostic operating protocol.
 This skill is not the official BMad tooling and does not include its installer.
+
+Review handoffs keep stable finding IDs, orchestrator dispositions, receiving
+owners, dependencies, and closure evidence. A deferred ticket is not a repaired
+finding; declined and duplicate suggestions need clear rationale rather than
+unnecessary tickets.

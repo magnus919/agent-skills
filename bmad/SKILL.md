@@ -81,8 +81,8 @@ vocabulary. Templates: [templates/SPEC.md](templates/SPEC.md) and
 4. Present a plan for non-trivial work; wait at the approval checkpoint.
 5. Implement the smallest coherent change; run focused tests first, then broader checks.
 6. Review for correctness, scope, security, regressions, maintainability.
-7. Repair findings that belong to this change; defer unrelated findings explicitly.
-8. Report intent, behavior, files, risk, verification, findings disposition, and an accept / rework / investigate choice.
+7. Repair findings that belong to this change; carry stable IDs, orchestrator dispositions, and receiving-task/closure evidence for deferred findings. A follow-up ticket alone does not resolve a finding.
+8. Bind review to the exact candidate/content and acceptance contract, executed checks/environment/results/evidence; invalidate affected approval after relevant changes. Report intent, behavior, risk, finding closure, and an accept / rework / investigate choice. See `references/review-and-failure-routing.md`.
 
 ## Spec status vocabulary
 

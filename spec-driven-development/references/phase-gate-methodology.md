@@ -72,6 +72,19 @@ Every gate produces one of three verdicts:
 | CONDITIONS | Artifact passes subject to specific remediations that don't require full re-review | Deliver artifact + conditions list; next phase may proceed while conditions are resolved |
 | REJECTED | Artifact fails one or more criteria. Current phase must produce a revised artifact. | Return artifact to current phase; no downstream work starts |
 
+## Candidate, assumptions, and handoffs
+
+Use `templates/REVIEW.md` to bind every gate verdict to the exact candidate and
+acceptance contract, with executed check/environment/result/evidence records.
+Read `references/review-records.md` for candidate invalidation, the assumptions
+ledger, finding handoffs, and worked transition challenges. Reconcile the record
+with the actual artifacts before advancing a phase or delivering.
+
+CONDITIONS never waives authority or a consequential unresolved assumption. Name
+which work may proceed, who owns each condition, and the latest safe boundary;
+stop dependent merge/release or other effects before that boundary until the
+required decision and evidence exist. An aggregate score cannot override this.
+
 ## Finding Severity
 
 | Severity | Definition | Disposition |

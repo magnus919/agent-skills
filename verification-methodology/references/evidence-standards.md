@@ -22,3 +22,15 @@ When evidence is insufficient:
 1. Document what evidence is available
 2. Document what evidence would be needed
 3. Report as HOLD with a clear description of what would resolve the uncertainty
+
+## Candidate changes and evidence reuse
+
+Record candidate commit/content identity, acceptance contract ID/version/hash,
+check procedure, relevant environment/fixture versions, execution time, result,
+and durable evidence reference. Preserve old attempts as history, not standing
+permission. A relevant code/content, contract, dependency/configuration, fixture,
+or environment change invalidates the affected verdict. Identify that scope,
+rerun affected checks, and issue a new verdict; document why any reused evidence
+remains applicable. Missing fresh evidence is HOLD, not automatic PASS or a claim
+that the new implementation failed. The record declares evidence; runtime state
+integrity and independent review remain separate requirements.

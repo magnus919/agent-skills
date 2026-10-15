@@ -2,12 +2,19 @@
 
 ## Source Specification
 
+- **Candidate:** <commit SHA + dirty-content hash, or artifact content hash>
+- **Acceptance contract:** <ID/version/hash; criteria and relevant dependency revisions>
 - **Spec:** `SPEC.md` (version <x.y.z>)
 - **Spec review gate:** Approved / Conditions
 - **Plan reference:** `TASK-PLAN.md` (version <x.y.z>)
 - **Verification author:** <name>
 - **Verification date:** <date>
 - **Verification mode:** automated / manual / interactive
+
+Use `REVIEW.md`'s executed-check/evidence ledger for command, environment,
+fixtures, time, result, and report identity. Supersede affected results after a
+relevant candidate, contract, assumption, or environment change. This report is
+not a reusable approval for a later candidate.
 
 ## L1: Summary
 

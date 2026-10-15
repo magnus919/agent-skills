@@ -48,6 +48,7 @@ Each phase passes through a gate before the next begins. A defect caught at Gate
 | SDD Overview & Philosophy | You need to understand the *why* — the software factory metaphor, how SDD differs from traditional requirements, the core principle that specs are executable inputs not communication artifacts | `references/sdd-overview.md` |
 | The AI Factory Pipeline | You need the full 5-phase pipeline with phase inputs, outputs, and transition rules — or you're designing a new pipeline from scratch | `references/ai-factory-pipeline.md` |
 | Spec Quality Gates | You've written a SPEC.md and need to validate it before Gate 1 — the 7 gates that separate a good spec from a vague one | `references/spec-quality-gates.md` |
+| Review records and assumptions | Binding verdicts to a candidate, tracking provisional choices, or closing deferred findings | `references/review-records.md` |
 | Phase Gate Methodology | You're running a review gate (any of the 4) and need the decision criteria, verdict format, and escalation path | `references/phase-gate-methodology.md` |
 | Methodology Selection Matrix | You're deciding which spec methodology (BDD, Formal, DbC, OpenAPI, ADRs) fits your context — when each applies and their AI-readiness ratings | `references/methodology-matrix.md` |
 | NFR Encoding for AI Specs | You need to express non-functional requirements (performance, security, observability) in machine-readable format | `references/nfr-encoding.md` |
@@ -140,6 +141,17 @@ Not every change needs all 4 gates. Choose your mode:
 | **Minimal** | Prototype, spike, exploration, throwaway code | None — skip formal gates | Mini-spec: 1 paragraph + 3 ACs. No NFR table, no contracts |
 
 > **Rule of thumb:** If you know the fix in under 60 seconds and it touches one file, use Lightweight mode. If you're not sure what the right solution is, use Full mode — the gates will catch your mistakes early.
+
+## Review validity and decisions
+
+Use `templates/REVIEW.md` for candidate/contract identity and executed evidence;
+use the assumptions ledger in `templates/SPEC.md` and carry its IDs into tasks.
+A relevant change supersedes affected approval/evidence. Consequential unresolved
+choices block dependent effects before merge/release; low-risk reversible choices
+may be batched under existing authority. Stable finding IDs preserve follow-up
+ownership and verified closure without turning every suggestion into a ticket.
+Read `references/review-records.md` at these handoffs. BMad owns backlog/authority
+routing; harness engineering owns runtime state integrity and enforcement.
 
 ## Gate Recovery & Revision
 

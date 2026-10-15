@@ -22,7 +22,7 @@ Pass/fail assessment against pre-defined criteria.
    - When verification is split across lanes, no lane's PASS is the gate verdict. Wait for every required lane and reconcile conflicts before synthesis.
    - A later source-fidelity BLOCK supersedes an earlier prose, rendering, or checklist PASS for the same artifact hash. Immediately label earlier PASS packets as superseded so downstream workers cannot mistake them for the current verdict.
    - Pattern scans and internal consistency cannot substitute for checking factual transformations against the named primary source or source dossier.
-5. **Report** — use the verdict template to distinguish verified facts, assumptions, and remaining work.
+5. **Report** — use the verdict template to distinguish verified facts, assumptions, and remaining work. Bind the verdict to candidate commit/content hash, acceptance contract version/hash, reviewed scope, executed checks, environment/fixtures, results, and evidence references. A relevant change invalidates affected approval and evidence; supersede the old packet and reverify before delivery. An unchanged branch, PR, or commit with changed dirty content is not the same candidate.
 
 Stop when every criterion has direct evidence or an explicit blocked/not-applicable verdict. Escalate when the criterion is ambiguous, evidence conflicts, or the required access is unavailable.
 

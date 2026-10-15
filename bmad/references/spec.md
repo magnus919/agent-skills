@@ -81,3 +81,16 @@ python3 bmad/scripts/check-spec.py --json path/to/SPEC.md   # machine-readable
 
 It verifies the five required sections are present and the frontmatter `status` is in
 the vocabulary. See [scripts/check-spec.py](../scripts/check-spec.py).
+
+## Provisional choices and formal assumptions
+
+For a formal pipeline, use SDD's [assumptions ledger](../../spec-driven-development/templates/SPEC.md)
+and [review records](../../spec-driven-development/references/review-records.md).
+Carry stable assumption IDs into affected stories, with decision owner,
+consequence/reversibility, provisional status, latest safe point, and decision
+evidence. Low-risk reversible choices may be batched at milestones within existing
+authority. Consequential unresolved choices block dependent merge/release or other
+effects before their safe boundary, even when milestone review comes later.
+Rejection or material change invalidates affected tasks and derived evidence,
+including transitive dependents; repair/reverify before restoring approval.
+This records authority; it does not enlarge the autonomous work boundary.

@@ -69,10 +69,24 @@
 
 ## Assumptions & Open Questions
 
-| # | Assumption / Question | Impact if Wrong | Resolution |
-|---|----------------------|----------------|------------|
-| 1 | <assumption> | <what breaks> | <how/when resolved> |
-| 2 | <open question> | <what blocks> | <how/when resolved> |
+| ID | Assumption / question and impact if wrong | Affected tasks / criteria | Decision owner | Risk and reversibility | Status | Decision deadline / latest safe point | Resolution / approval evidence |
+|---|---|---|---|---|---|---|---|
+| A-001 | <choice; what breaks if wrong> | <T-IDs / AC-IDs; pending decomposition if not yet known> | <accountable decision owner> | <consequence; rollback cost/boundary> | provisional | <date or milestone, before dependent effect> | <decision, authority, timestamp, contract version, source reference; unresolved until supplied> |
+| A-002 | <open question; what blocks> | <dependent tasks / criteria> | <owner> | <risk / reversibility> | unresolved | <latest point before dependency may proceed> | <needed evidence> |
+
+Use stable IDs and retain status history: unresolved → provisional → accepted,
+rejected, or superseded. Provisional records a choice within already authorized
+bounded work; the status is not owner acceptance or authority for new effects.
+Batch low-risk, reversible choices at a milestone when the existing contract
+allows them, with an owner and rollback boundary. Decide consequential unresolved
+assumptions before dependent merge/release or other effects, even if milestone
+review is later. Silence or a passed deadline is not approval.
+
+If an assumption is rejected, changed, or overdue at its safe boundary, identify
+affected tasks and their dependent tasks. Mark their acceptance and derived
+review/test evidence stale, block dependent effects, revise the contract/plan,
+and reverify the affected candidate before restoring approval. Retain historical
+evidence without presenting it as current. Unaffected tasks need not be reset.
 
 ## Revision History
 
