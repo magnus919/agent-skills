@@ -2,6 +2,10 @@
 
 The four gates that enforce quality at each SDD phase transition. Every gate asks the same question: **"Is the artifact for this phase complete, correct, and unambiguous enough for the next phase to proceed safely?"**
 
+Throughout these gates, `SPEC.md` can be an existing approved equivalent planning
+artifact meeting the minimum handoff in [factory review lanes](factory-review-lanes.md).
+Review content and traceability rather than requiring a duplicate filename or format.
+
 ## The Four Gates
 
 ```
@@ -41,7 +45,7 @@ SPECIFY → [GATE 1] → DECOMPOSE → [GATE 2] → IMPLEMENT → [GATE 3] → V
 **Reviews:** Implementation output (code, config, docs) against TASK-PLAN.md
 **Question:** Does the implementation satisfy all acceptance criteria for completed tasks?
 
-This is NOT a general code review. It does not assess code style, test coverage, or architectural elegance. It checks only spec compliance.
+This gate checks spec compliance. A separate engineering review lane assesses maintainability and relevant architectural consequences before integration; use [factory review lanes](factory-review-lanes.md). Keep its verdict distinct from behavioral acceptance without adding or renumbering SDD gates.
 
 **Checklist:**
 - [ ] All task acceptance criteria are satisfied
@@ -53,13 +57,13 @@ This is NOT a general code review. It does not assess code style, test coverage,
 ## Gate 4: Acceptance Review
 
 **Reviews:** VERIFICATION.md
-**Question:** Is the overall compliance score sufficient for delivery?
+**Question:** Does the integrated candidate have current, sufficient behavioral and engineering evidence for delivery?
 
 **Checklist:**
 - [ ] All spec ACs are accounted for in the verification matrix
 - [ ] BLOCKING failures are resolved (none remain open)
 - [ ] CRITICAL failures have documented remediation plans or exceptions
-- [ ] Compliance score meets the project threshold (typically >90%)
+- [ ] Required behavior and engineering lanes permit delivery on the same integrated candidate; aggregate scores cannot override unresolved required criteria
 - [ ] Any exceptions are documented with owner and due date
 
 ## Gate Decision Format
@@ -104,6 +108,6 @@ When the reviewer and artifact author disagree on a finding:
 
 ## The Gate Philosophy
 
-In SDD, quality is not enforced by code review — that's too late. Quality is enforced by the phase gate. A defect caught at Gate 1 (spec review) costs minutes to fix. The same defect caught at Gate 4 (acceptance review) costs hours — the implementation may need to be discarded and rewritten against a corrected spec.
+In SDD, early phase gates reduce avoidable rework. They complement behavioral verification and engineering review; they do not replace either. A defect caught at Gate 1 (spec review) costs minutes to fix. The same defect caught at Gate 4 (acceptance review) costs hours — the implementation may need to be discarded and rewritten against a corrected spec.
 
 This is the fundamental insight: **shift quality left.** The cheapest defect is the one caught before a single line of code is written.

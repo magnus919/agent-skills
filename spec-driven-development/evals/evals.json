@@ -113,6 +113,28 @@
         "Preserves T-3 eligibility under its own unaffected evidence and authority",
         "Retains the rejected assumption and old evidence as history instead of deleting or relabeling them as current"
       ]
+    },
+    {
+      "id": "factory-review-lane-disagreement",
+      "prompt": "Three PRs pass task tests. The integrated UI works, but their combined diff adds three conflicting invoice-status mappings. Gate 3 spec compliance passed. Can we merge? Show the review disposition without inventing a fifth SDD gate.",
+      "expected_output": "Keep behavioral and engineering findings distinct and block integration pending disposition of the engineering defect on the integrated candidate.",
+      "assertions": [
+        "Records separate behavioral and engineering review dispositions.",
+        "Binds required lane evidence to the same integrated candidate.",
+        "Blocks integration while the required engineering finding remains unresolved.",
+        "Retains the existing four SDD gates."
+      ]
+    },
+    {
+      "id": "factory-planning-handoff-and-risk",
+      "prompt": "We have an approved PRD with outcome, scope, AC IDs, interfaces, owners and authority. Do we need to rewrite it into SPEC.md for our factory? One ticket is a one-line authorization fix; the router calls it simple. Specify the handoff and review depth.",
+      "expected_output": "Reuse the approved source with traceable task/verification mapping, fill real gaps, and preserve consequence-based security assurance.",
+      "assertions": [
+        "Accepts an equivalent existing approved planning artifact rather than requiring duplicate prose.",
+        "Maps requirements to implementation tasks and verification.",
+        "Separates implementation simplicity from security verification depth.",
+        "Calls for filling consequential missing handoff information."
+      ]
     }
   ]
 }

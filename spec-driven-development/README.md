@@ -12,6 +12,7 @@ When your agent loads this skill, it becomes a **software factory designer** who
 - **Encode NFRs** — performance, security, observability requirements in machine-readable format
 - **Translate between formats** — PRD → SPEC.md → Gherkin → OpenAPI
 - **Handle gate recovery** — revision workflows when specs fail review
+- **Review integrated releases** — check real behavior and maintainability separately without duplicating your existing planning documents
 
 ## What You Get
 
@@ -23,7 +24,7 @@ Business-policy recipe, release template, and a read-only fictional loan evaluat
 |-----------|---------|
 | `SKILL.md` | Pipeline overview, loading guide, methodology quick-pick |
 | `references/` | Pipeline, quality gates, review records, assumptions, methodology selection, NFRs, and worked examples |
-| `templates/` | Specifications, task plans, reviews, verification, and business-policy records |
+| `templates/` | Specifications, task plans, reviews, verification, business-policy records, and separate behavior/engineering verdicts |
 | `scripts/` | Spec/task validators and a synthetic business-policy evaluator |
 
 ## Triggers

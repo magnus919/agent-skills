@@ -2,6 +2,13 @@
 
 The canonical 5-phase pipeline for spec-driven code generation. Each phase produces an artifact that passes through a gate before the next phase begins.
 
+`SPEC.md` below means the authoritative accepted specification. Reuse an existing
+approved PRD, architecture document or issue set when it meets the minimum handoff
+in [factory review lanes](factory-review-lanes.md); fill actual gaps without creating
+a competing copy. Gates validate equivalent content and requirement traceability.
+Use format-specific validation scripts only for supported inputs; record equivalent
+content checks when an existing artifact uses a different format.
+
 ## Pipeline Diagram
 
 ```
@@ -63,7 +70,7 @@ INCEPTION → [SPECIFY] → GATE 1 → [DECOMPOSE] → GATE 2 → [IMPLEMENT] �
 - Deviations from the spec are explicitly documented, not silently introduced
 - The spec is the ground truth — implementation must satisfy all ACs
 
-**Gate 3: Implementation Review** — Does the implementation satisfy all acceptance criteria for completed tasks? This is NOT a general code review — it checks spec compliance only.
+**Gate 3: Implementation Review** — Does the implementation satisfy all acceptance criteria for completed tasks? This checks spec compliance. Assign a separate engineering review before integration using [factory review lanes](factory-review-lanes.md); passing this gate alone does not establish maintainability.
 
 ## Phase 4: Verification (VERIFY)
 
@@ -86,7 +93,7 @@ INCEPTION → [SPECIFY] → GATE 1 → [DECOMPOSE] → GATE 2 → [IMPLEMENT] �
 | MINOR | AC passes suboptimally | Gate can pass with remediation plan |
 | INFO | Observation, no pass/fail impact | Informational |
 
-**Gate 4: Acceptance Review** — All BLOCKING failures resolved? CRITICAL failures documented? Compliance score adequate?
+**Gate 4: Acceptance Review** — All BLOCKING failures resolved? CRITICAL exceptions authorized? Required behavior and engineering lanes current on the integrated candidate? A compliance score cannot override a failed or unresolved required lane.
 
 ## Phase 5: Delivery (DELIVER)
 
@@ -94,7 +101,7 @@ INCEPTION → [SPECIFY] → GATE 1 → [DECOMPOSE] → GATE 2 → [IMPLEMENT] �
 
 **Output:** Merged PR, deployed feature
 
-**Gate:** Only passed if verification report shows no BLOCKING failures and all CRITICAL failures have documented exceptions.
+**Gate:** Delivery requires no BLOCKING failures, authorized CRITICAL exceptions, and current dispositions for both required review lanes. Reconcile integration changes and existing merge/deployment authority before acting.
 
 ## Parallel Task Execution
 

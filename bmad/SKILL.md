@@ -139,6 +139,7 @@ non-convergent repair.
 | [references/review-and-failure-routing.md](references/review-and-failure-routing.md) | Running a review or diagnosing a failure |
 | [references/autonomy.md](references/autonomy.md) | Configuring or running autonomous (Build Auto) work |
 | [references/party-mode.md](references/party-mode.md) | Deliberation, trade-offs, design debates, post-mortems |
+| [references/release-intent-acceptance.md](references/release-intent-acceptance.md) | Reviewing an integrated release against intent and routing staging feedback |
 | [references/adoption.md](references/adoption.md) | Adopting the protocol incrementally or mapping to a dark factory |
 
 ## Templates
@@ -148,6 +149,7 @@ non-convergent repair.
 | [templates/SPEC.md](templates/SPEC.md) | Versioned machine contract for bounded/initiative work |
 | [templates/INTENT.md](templates/INTENT.md) | Lightweight five-field contract for bounded work |
 | [templates/STORY.md](templates/STORY.md) | One bounded, dispatchable work unit |
+| [templates/RELEASE-ACCEPTANCE.md](templates/RELEASE-ACCEPTANCE.md) | Release checkpoints, integrated outcome and defect/intent/new-scope disposition |
 | [templates/REVIEW.md](templates/REVIEW.md) | Final human checkpoint: intent → behavior → risk → verification |
 
 ## Scripts

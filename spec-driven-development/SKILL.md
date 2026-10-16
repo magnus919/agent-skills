@@ -33,13 +33,20 @@ INCEPTION → [SPECIFY] → REVIEW → [DECOMPOSE] → REVIEW → [IMPLEMENT] �
 
 Each phase passes through a gate before the next begins. A defect caught at Gate 1 costs minutes to fix; the same defect found at Gate 4 costs hours.
 
+Use an existing approved PRD, architecture document or issue set as the specification
+when it supplies the minimum handoff in `references/factory-review-lanes.md`.
+Throughout this workflow, SPEC.md denotes that authoritative specification; it need
+not be a new file or competing copy. Validate equivalent content and traceability.
+Run format-specific scripts only when their expected input format applies; otherwise
+record the equivalent content checks and any missing information explicitly.
+
 > **SDD Core Principles**
-> 1. **Precision over clarity.** A precise-but-dense spec is better than a readable-but-ambiguous one. The AI cannot ask for clarification — it implements one interpretation at random.
+> 1. **Make consequential intent explicit.** Keep specifications readable and testable. Agents can ask for clarification; unresolved consequential choices need an owner and must stop dependent work before its decision boundary.
 > 2. **Completeness over brevity.** Every missing acceptance criterion is a missing feature. Specifying an edge case upfront costs minutes; discovering it in production costs hours or days.
 > 3. **Testability over descriptiveness.** An AC that cannot produce CLEAR PASS or CLEAR FAIL is not an AC — it's a hope.
 > 4. **Gates catch defects early.** A Gate 1 (spec review) fix costs minutes. A Gate 4 (acceptance review) fix costs hours — the entire implementation may need to be discarded.
 > 5. **Spec is the single source of truth.** Every downstream artifact traces back to the spec. Deviations are defects unless explicitly documented.
-> 6. **Spec IS the test (when possible).** Gherkin-style ACs serve double duty as test cases. No separate test writing required.
+> 6. **Specs guide test oracles.** Gherkin-style ACs can become executable cases, but still need implementation, coverage and oracle review. Independent and withheld scenarios can reveal gaps in visible examples.
 
 ## Loading Guide
 
@@ -47,6 +54,7 @@ Each phase passes through a gate before the next begins. A defect caught at Gate
 |-----------|-----------|------|
 | SDD Overview & Philosophy | You need to understand the *why* — the software factory metaphor, how SDD differs from traditional requirements, the core principle that specs are executable inputs not communication artifacts | `references/sdd-overview.md` |
 | The AI Factory Pipeline | You need the full 5-phase pipeline with phase inputs, outputs, and transition rules — or you're designing a new pipeline from scratch | `references/ai-factory-pipeline.md` |
+| Factory review lanes | Separating behavioral acceptance from maintainability, or adapting existing planning artifacts | `references/factory-review-lanes.md` |
 | Spec Quality Gates | You've written a SPEC.md and need to validate it before Gate 1 — the 7 gates that separate a good spec from a vague one | `references/spec-quality-gates.md` |
 | Review records and assumptions | Binding verdicts to a candidate, tracking provisional choices, or closing deferred findings | `references/review-records.md` |
 | Phase Gate Methodology | You're running a review gate (any of the 4) and need the decision criteria, verdict format, and escalation path | `references/phase-gate-methodology.md` |
@@ -78,6 +86,7 @@ Not sure which spec methodology fits your situation? Use this quick reference ta
 | Template | Pipeline Phase | File |
 |----------|---------------|------|
 | SPEC.md | **Phase 1** — Spec Authoring (SPECIFY). Write this first: problem, scope, user stories, ACs, edge cases, NFRs, data contracts | `templates/SPEC.md` |
+| FACTORY-REVIEW.md | Task integration and release acceptance — distinct behavior/engineering verdicts on the same candidate | `templates/FACTORY-REVIEW.md` |
 | REVIEW.md | **Gate 1-4** — Phase-Gate Review. Use at every gate transition: spec review, plan review, implementation review, acceptance review | `templates/REVIEW.md` |
 | TASK-PLAN.md | **Phase 2** — Work Decomposition (DECOMPOSE). Extract from an approved spec: task groups, dependency graph, per-task ACs, implementation directives | `templates/TASK-PLAN.md` |
 | VERIFICATION.md | **Phase 4** — Verification (VERIFY). After implementation: AC pass/fail matrix, compliance score, failure dossiers with remediation | `templates/VERIFICATION.md` |
@@ -104,13 +113,13 @@ Load this skill when:
 
 | Step | Action | Load This Reference | Produces |
 |------|--------|-------------------|----------|
-| 1 | Write SPEC.md from template — problem, scope, stories, ACs, edge cases, NFRs | `references/spec-quality-gates.md` (validate before Gate 1) | `SPEC.md` |
-| 2 | Run **spec-quality-check.sh** on SPEC.md | — | Validation report |
+| 1 | Reuse an approved equivalent specification or write SPEC.md; fill missing handoff content | `references/spec-quality-gates.md` (validate before Gate 1) | `SPEC.md` |
+| 2 | Run **spec-quality-check.sh** for its supported format; otherwise record equivalent content checks | — | Validation report |
 | 3 | **Gate 1** — Review spec against quality gates, produce REVIEW.md | `references/spec-quality-gates.md`, `references/phase-gate-methodology.md` | `REVIEW.md` (APPROVED/CONDITIONS/REJECTED) |
 | 4 | Decompose approved spec into TASK-PLAN.md — each task traces to a spec section | `references/ai-factory-pipeline.md` (Decompose phase) | `TASK-PLAN.md` |
 | 5 | **Gate 2** — Review task plan for dependency honesty, spec coverage | `references/phase-gate-methodology.md` | `REVIEW.md` |
 | 6 | Implement each task — one task per agent session | — | Code/PR |
-| 7 | **Gate 3** — Verify implementation against spec (not code style) | `references/phase-gate-methodology.md` | `REVIEW.md` |
+| 7 | **Gate 3** — Verify spec compliance; record the separate engineering lane before integration | `references/phase-gate-methodology.md` | `REVIEW.md` |
 | 8 | Run verification against all ACs — produce VERIFICATION.md | — | `VERIFICATION.md` |
 | 9 | **Gate 4** — Review verification report, deliver only if no BLOCKING failures | `references/phase-gate-methodology.md` | Final approval |
 
@@ -126,7 +135,7 @@ You don't always start at SPECIFY. Enter at the phase matching what you already 
 |-------------|----------|------------|
 | A vague idea, conversation, or PRD | **Phase 1 — SPECIFY** | `templates/SPEC.md` + `references/format-translation.md` |
 | Approved product scope with interaction contracts | **Phase 1 — SPECIFY** | [product-design-and-ux](../product-design-and-ux/SKILL.md) handoff + `templates/SPEC.md` |
-| A clear, approved specification | **Phase 2 — DECOMPOSE** | `templates/TASK-PLAN.md` + `references/ai-factory-pipeline.md` |
+| A clear, approved specification or equivalent planning artifact | **Phase 2 — DECOMPOSE** | `templates/TASK-PLAN.md` + `references/ai-factory-pipeline.md` |
 | A spec + approved task plan | **Phase 3 — IMPLEMENT** | Task cards with per-task directives |
 | Existing code needing verification | **Phase 4 — VERIFY** | `templates/VERIFICATION.md` |
 
