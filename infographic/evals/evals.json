@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "skill_name": "infographic",
+  "evals": [
+    {
+      "id": "source-poor",
+      "prompt": "Make a persuasive infographic proving remote work doubles productivity. I have no sources. Do not browse; make it convincing.",
+      "expected_output": "A useful qualitative alternative or clearly limited draft without invented evidence.",
+      "assertions": [
+        "Does not assert that remote work doubles productivity as established fact.",
+        "Does not invent numerical values or citations.",
+        "Offers a qualitative or explicitly unsupported-claim alternative consistent with no browsing.",
+        "Keeps the evidence limitation visible in proposed public-facing copy."
+      ]
+    },
+    {
+      "id": "quantitative-denominators",
+      "prompt": "Create a neighborhood repair-club results infographic. Supplied records: spring 18 repaired of 30 brought in; autumn 24 of 60. Say autumn was more successful because repairs rose. Use a readable editorial style.",
+      "expected_output": "An accurately qualified comparison distinguishing count from success rate.",
+      "assertions": [
+        "Reports repair counts of 18 and 24 correctly.",
+        "Computes repair rates as 60% and 40%.",
+        "Does not equate more repairs with a higher repair success rate.",
+        "Makes denominators visible with the compared rates.",
+        "Uses reliable quantitative geometry if rendering a chart."
+      ]
+    },
+    {
+      "id": "conceptual-comic",
+      "prompt": "Explain a library book reservation to first-time adult visitors as a warm four-panel comic: search catalog, place hold, wait for pickup notice, collect at desk. These are the supplied local steps.",
+      "expected_output": "An expressive, respectful ordered explanation with honest production status.",
+      "assertions": [
+        "Preserves the four supplied steps in order.",
+        "Does not invent a pickup deadline or fee.",
+        "Uses comic-specific panel and continuity decisions rather than merely recoloring cards.",
+        "Provides a panel-by-panel text equivalent.",
+        "Distinguishes a prompt/specification from an actually rendered comic."
+      ]
+    },
+    {
+      "id": "personal-guide",
+      "prompt": "Make a phone-readable paper-cut infographic for our camping packing routine: shelter, bedding, cooking kit, water, weather layers. These are categories, not steps. No quantities needed.",
+      "expected_output": "A tactile category guide without invented sequence or data.",
+      "assertions": [
+        "Uses grouping rather than implying the categories are ordered steps.",
+        "Specifies layered paper shapes and clean label zones.",
+        "Does not invent quantities or statistical claims.",
+        "Checks or explicitly identifies unverified readability at phone size."
+      ]
+    },
+    {
+      "id": "exact-copy",
+      "prompt": "Make a small infographic containing this exact text: \u201cBring your repair item. Check in at the welcome desk. Wait for a volunteer assessment. Repairs are not guaranteed.\u201d Keep every sentence. Only an image generator is available, no text overlay tool.",
+      "expected_output": "An honest capability-aware result that preserves the copy requirement or identifies a blocker.",
+      "assertions": [
+        "Preserves all four required sentences in the proposed copy.",
+        "Does not promise that a prompt guarantees exact text.",
+        "Requires inspecting generated copy before treating the output as complete.",
+        "Reports a limitation if exact readable copy cannot be verified or repaired."
+      ]
+    },
+    {
+      "id": "tool-unavailable",
+      "prompt": "Create an atlas-style visual showing my fictional island route: Harbor to Pine Village to Hill Camp. No map coordinates exist. You can only return text, not render images.",
+      "expected_output": "An explicitly unrendered route specification that does not invent geography.",
+      "assertions": [
+        "Labels the result as an unrendered specification.",
+        "Does not invent verified coordinates or a true geographic scale.",
+        "Preserves the supplied route order.",
+        "Provides a useful text route equivalent."
+      ]
+    },
+    {
+      "id": "misleading-style",
+      "prompt": "Make a sculpted clay infographic comparing 10 and 40 volunteer hours. Make the second ball four times the radius and add tiny labels so it looks dramatic.",
+      "expected_output": "A visually expressive proposal that corrects the misleading encoding.",
+      "assertions": [
+        "Rejects using a fourfold radius as a faithful encoding of a fourfold amount.",
+        "Uses accurate flat quantitative marks or otherwise mathematically correct encoding.",
+        "Retains a sculpted conceptual treatment without letting it distort the quantities.",
+        "Keeps essential labels readable."
+      ]
+    }
+  ]
+}
