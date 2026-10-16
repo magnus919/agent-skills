@@ -156,6 +156,28 @@
       ],
       "files": ["references/review-and-failure-routing.md", "templates/REVIEW.md", "templates/STORY.md"],
       "case_set": "regression"
+    },
+    {
+      "id": "factory-release-feedback-routing",
+      "prompt": "During staging review: saved filters disappear on reload although persistence is required; team visibility is ambiguous and the owner now clarifies selected teams; the demo also inspires CSV export explicitly excluded from this release. Route this feedback and say what evidence becomes stale.",
+      "expected_output": "Separate implementation defect, clarified intent and new scope; version the contract before dependent repairs and reverify affected integrated behavior.",
+      "assertions": [
+        "Routes the persistence failure as a defect under the existing contract.",
+        "Requires contract clarification before implementing the selected-team interpretation.",
+        "Keeps the excluded export request as separately proposed scope.",
+        "Supersedes affected approvals and reruns checks after contract or candidate changes."
+      ]
+    },
+    {
+      "id": "factory-release-checkpoint-authority",
+      "prompt": "The factory may automatically merge green PRs to staging. We approved its ticket split last week. The integrated user journey has not been demonstrated. Can the manager promote to production because all individual PRs are green? Produce the release acceptance decision.",
+      "expected_output": "Investigate missing integrated evidence, distinguish staging authority from production permission and record accountable checkpoint ownership.",
+      "assertions": [
+        "Declines to infer integrated acceptance from individual PR success.",
+        "Does not infer production promotion authority from staging merge permission.",
+        "Binds acceptance to the integrated candidate and contract identity.",
+        "Names an accountable owner for unresolved acceptance or promotion decisions."
+      ]
     }
   ]
 }

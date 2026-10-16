@@ -56,7 +56,7 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 
 **Flaky tests are worse than no tests.** A nondeterministic failure trains teams to ignore all failures. Quarantine on detection; rerun once, never twice.
 
-**Independent verification is non-negotiable.** The implementing agent (or developer) must not self-verify. Separate session, fresh context, no shared priors.
+**Separate development testing from acceptance certification.** Implementers should run tests and debug their work. Independent acceptance review uses a separate evaluator and observable evidence; a fresh session reduces context sharing but does not eliminate shared priors or correlated errors.
 
 ## Loading Guide
 
@@ -76,6 +76,8 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `references/test-design-techniques.md` | Choosing test design techniques — EP, BVA, decision tables, state transition, pairwise, error guessing |
 | `references/qa-career-levels.md` | QA career growth — Senior/Staff/Principal scope, leveling mechanics, archetypes, misconceptions |
 | `references/sdet-engineering.md` | SDET role and skills — gTAA/TAF architecture, POM, SOLID for tests, build-vs-buy, testability |
+| `references/holdout-scenarios.md` | Designing withheld acceptance cases, access boundaries, repair feedback and contamination accounting |
+| `templates/holdout-record.md` | Recording frozen cases, exposure history and candidate-bound results |
 | `references/ai-code-quality-gates.md` | Reviewing AI-generated code — independent verification, AC testability, agent-test quality, human-in-the-loop |
 | `references/ai-test-artifact-evidence.md` | Provenance, spec-first oracle review, generated-review triage, workflow evidence, and emergency exceptions for AI-assisted QA |
 | `references/agent-ui-navigation.md` | Agent navigation/replay strategy, independent oracles, bounded repairs and complete coverage |
@@ -93,7 +95,7 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 | `assets/qa-definition-of-done.md` | Defining release readiness — QA contribution to definition of done |
 | `scripts/risk-prioritize.py` | Computing P×I rankings from a risk-items JSON file |
 | `scripts/check-ac-testability.py` | Checking acceptance criteria for vague verbs and missing observable outcomes |
-| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 21 cases) |
+| `evals/evals.json` | Running output-quality evals for this skill (schema v1, 23 cases) |
 
 ## Agent-driven UI navigation
 

@@ -118,6 +118,7 @@ for six worked examples and mode-specific exit artifacts.
 | Optional, privacy-bounded intervention event detail | [Observability and feedback](references/observability-and-feedback.md#optional-typed-intervention-detail), [script contract](references/script-contract.md) | Aggregate-only run record by default; add detail only for the stated question |
 | Premature completion, verifier, experiment | [Verification/improvement](references/verification-and-improvement.md) | [Acceptance](templates/acceptance-contract.md), [experiment](templates/experiment.md), [run record](templates/run-record.json) |
 | Repeated work, graphs, concurrent ownership | [Loops/coordination](references/loops-and-coordination.md) | [Loop contract](templates/loop-contract.md), [graph](templates/graph.json) |
+| Release batch drift, stuck workers or protected control files | [Factory supervision](references/factory-supervision.md) | [Batch record](templates/factory-batch-record.md) |
 | Typed model choice inside a harness | [System One decisions](references/system-one-decisions.md) | [Decision placement](templates/decision-placement.md) |
 | Need specialist input then return to this workflow | [Catalog handoffs](references/catalog-composition.md) | Supply and consume the named contract |
 | Source provenance and extraction coverage | [Source assessment](references/source-assessment.md), [coverage map](references/source-coverage.md), [primary-source index](references/primary-sources.md), [source inventory](references/source-inventory.json) | Scope observations to their evidence |

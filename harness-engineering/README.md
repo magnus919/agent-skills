@@ -22,7 +22,7 @@ Business-policy placement guidance that separates explanations, eligibility, and
 |---|---|
 | `SKILL.md` | Design, diagnosis, implementation, and improvement workflow |
 | `references/` | Design procedures, worked use cases, catalog handoffs, source coverage, and conditional System One integration evidence |
-| `templates/` | Project instructions, state, handoff, decision placement, tool, bulk-result and experiment contracts |
+| `templates/` | Project instructions, state, handoff, decision placement, tool, bulk-result, experiment contracts and factory reconciliation records |
 | `scripts/harness.py` | Audit with optional HTML, preview-first scaffold, explicit check runner |
 | `scripts/contracts.py` | State/graph/run declaration checks and compatible-run comparison |
 | `scripts/decision_examples.py` | Offline synthetic typed-decision examples for selection, action, and review boundaries |
@@ -66,6 +66,7 @@ procedure and supporting templates. Small stable catalogs may use a static index
 - You want to build, audit, simplify, or improve a harness.
 - You need tools, context, checkpoints, verification, or recovery around a model.
 - You want a bounded autonomous loop or coordinated agent workflow.
+- Parallel workers drift from shared contracts, or need enforceable protection for governing rules.
 
 ## Requirements
 

@@ -14,11 +14,11 @@ Install once and your agent designs test strategies, triages CI failures by exit
 
 | Directory | Contents |
 |-----------|----------|
-| `references/` | 18 deep-dive files: test-strategy, test-automation, quality-gates-and-metrics, regression-testing, test-data-management, performance-testing, security-testing, ci-failure-triage, test-debugging, risk-based-testing, exploratory-testing, test-design-techniques, qa-career-levels, sdet-engineering, ai-code-quality-gates, agentic-eval-design, ai-test-artifact-evidence, agent-ui-navigation |
-| `templates/` | Fillable templates for strategy, verification, mutation review, risk, exploratory work, and AI-assisted artifact evidence and agent UI run records |
+| `references/` | 19 deep-dive files: test-strategy, test-automation, quality-gates-and-metrics, regression-testing, test-data-management, performance-testing, security-testing, ci-failure-triage, test-debugging, risk-based-testing, exploratory-testing, test-design-techniques, qa-career-levels, sdet-engineering, ai-code-quality-gates, agentic-eval-design, ai-test-artifact-evidence, agent-ui-navigation, holdout-scenarios |
+| `templates/` | Fillable templates for strategy, verification, mutation review, risk, exploratory work, and AI-assisted artifact evidence and agent UI run records, plus holdout exposure records |
 | `assets/` | 3 quick-reference assets: risk-matrix-grid, test-design-techniques-checklist, qa-definition-of-done |
 | `scripts/` | 2 Python CLIs: risk-prioritize (P×I ranking with --json output), check-ac-testability (vague-AC scanner) |
-| `evals/` | Schema-v1 output-quality eval manifest (21 cases) |
+| `evals/` | Schema-v1 output-quality eval manifest (23 cases) |
 
 ## Quick Start
 
@@ -47,6 +47,7 @@ python3 qa-methodology/scripts/check-ac-testability.py spec.md
 - Agent-driven UI navigation, verified replay, bounded repair, and independent state checks
 - Agentic eval design (datasets, judge bias, flaky-eval discipline)
 - SDD gate review (AC testability, independent verification)
+- Holdout acceptance scenarios with controlled access and honest repair-feedback history
 - AI-assisted test artifact provenance, spec-first oracle review, and generated-review comment triage
 - SDET engineering and QA career leveling
 
