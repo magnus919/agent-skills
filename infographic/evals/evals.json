@@ -22,7 +22,7 @@
         "Computes repair rates as 60% and 40%.",
         "Does not equate more repairs with a higher repair success rate.",
         "Makes denominators visible with the compared rates.",
-        "Uses reliable quantitative geometry if rendering a chart."
+        "For a rendered bar chart, artifact evidence shows count lengths in the ratio 18:24 and rate lengths in the ratio 60:40 with compatible scales and zero baselines; an unrendered answer instead specifies these mappings and explicitly leaves executed geometry unverified."
       ]
     },
     {
@@ -76,9 +76,9 @@
       "expected_output": "A visually expressive proposal that corrects the misleading encoding.",
       "assertions": [
         "Rejects using a fourfold radius as a faithful encoding of a fourfold amount.",
-        "Uses accurate flat quantitative marks or otherwise mathematically correct encoding.",
+        "Specifies a mathematically valid encoding for 10 versus 40, or demonstrates that encoding in an inspectable artifact; merely claiming accuracy does not establish this.",
         "Retains a sculpted conceptual treatment without letting it distort the quantities.",
-        "Keeps essential labels readable."
+        "For a rendered result, records inspection of essential labels at a stated delivery size; for an unrendered proposal, specifies intended readable type and explicitly leaves actual legibility unverified."
       ]
     }
   ]

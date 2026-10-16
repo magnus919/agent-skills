@@ -13,7 +13,8 @@ service solely because a recipe names a visual effect.
 | Dense or exact required text | Deterministic typesetting or editable layout tool | Every required string, wrapping, reading order, no overflow |
 | Expressive mechanism or atmosphere | Available image-generation backend | Conceptual accuracy, artifacts, legible labels, visual relationships |
 | Expressive scene plus exact evidence | Generated illustration with separately typeset overlays/charts | Registration, consistent visual system, exact copy/data, final composite |
-| No renderer or no inspection surface | Composition specification plus exact copy/source table | Explicitly report unrendered status and untested visual properties |
+| No renderer | Composition specification plus exact copy/source table | Explicitly report unrendered status and untested visual properties |
+| Renderer but no inspection surface | Actual export plus text equivalent when available | Label rendered but visually unverified; identify untested properties and deliver only as a draft |
 
 Image generation can produce excellent conceptual illustrations. Do not flatten
 all concepts into sterile boxes merely to make production easy. Conversely,

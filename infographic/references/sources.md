@@ -65,5 +65,7 @@ The skill's original text is MIT licensed under the repository license. For any
 external asset, separately record creator, source URL, license/permission, required
 credit and modifications. Check the specific asset; public availability and a
 public institution's website are not blanket reuse permissions. Do not copy a
-commercial illustrator's work, branded identity, proprietary template, or private
-skill into a deliverable. Use original or appropriately licensed assets and fonts.
+commercial illustration, branded identity, proprietary template, or private skill
+without authorization. Supplied, commissioned, or licensed assets may be used
+within their permission scope, including credit and modification requirements.
+Use original or appropriately licensed assets and fonts.
