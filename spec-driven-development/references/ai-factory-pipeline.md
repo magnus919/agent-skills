@@ -2,6 +2,13 @@
 
 The canonical 5-phase pipeline for spec-driven code generation. Each phase produces an artifact that passes through a gate before the next phase begins.
 
+`SPEC.md` below means the authoritative accepted specification. Reuse an existing
+approved PRD, architecture document or issue set when it meets the minimum handoff
+in [factory review lanes](factory-review-lanes.md); fill actual gaps without creating
+a competing copy. Gates validate equivalent content and requirement traceability.
+Use format-specific validation scripts only for supported inputs; record equivalent
+content checks when an existing artifact uses a different format.
+
 ## Pipeline Diagram
 
 ```

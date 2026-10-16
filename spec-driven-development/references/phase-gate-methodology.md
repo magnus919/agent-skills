@@ -2,6 +2,10 @@
 
 The four gates that enforce quality at each SDD phase transition. Every gate asks the same question: **"Is the artifact for this phase complete, correct, and unambiguous enough for the next phase to proceed safely?"**
 
+Throughout these gates, `SPEC.md` can be an existing approved equivalent planning
+artifact meeting the minimum handoff in [factory review lanes](factory-review-lanes.md).
+Review content and traceability rather than requiring a duplicate filename or format.
+
 ## The Four Gates
 
 ```

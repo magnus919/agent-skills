@@ -33,6 +33,13 @@ INCEPTION → [SPECIFY] → REVIEW → [DECOMPOSE] → REVIEW → [IMPLEMENT] �
 
 Each phase passes through a gate before the next begins. A defect caught at Gate 1 costs minutes to fix; the same defect found at Gate 4 costs hours.
 
+Use an existing approved PRD, architecture document or issue set as the specification
+when it supplies the minimum handoff in `references/factory-review-lanes.md`.
+Throughout this workflow, SPEC.md denotes that authoritative specification; it need
+not be a new file or competing copy. Validate equivalent content and traceability.
+Run format-specific scripts only when their expected input format applies; otherwise
+record the equivalent content checks and any missing information explicitly.
+
 > **SDD Core Principles**
 > 1. **Make consequential intent explicit.** Keep specifications readable and testable. Agents can ask for clarification; unresolved consequential choices need an owner and must stop dependent work before its decision boundary.
 > 2. **Completeness over brevity.** Every missing acceptance criterion is a missing feature. Specifying an edge case upfront costs minutes; discovering it in production costs hours or days.
@@ -106,8 +113,8 @@ Load this skill when:
 
 | Step | Action | Load This Reference | Produces |
 |------|--------|-------------------|----------|
-| 1 | Write SPEC.md from template — problem, scope, stories, ACs, edge cases, NFRs | `references/spec-quality-gates.md` (validate before Gate 1) | `SPEC.md` |
-| 2 | Run **spec-quality-check.sh** on SPEC.md | — | Validation report |
+| 1 | Reuse an approved equivalent specification or write SPEC.md; fill missing handoff content | `references/spec-quality-gates.md` (validate before Gate 1) | `SPEC.md` |
+| 2 | Run **spec-quality-check.sh** for its supported format; otherwise record equivalent content checks | — | Validation report |
 | 3 | **Gate 1** — Review spec against quality gates, produce REVIEW.md | `references/spec-quality-gates.md`, `references/phase-gate-methodology.md` | `REVIEW.md` (APPROVED/CONDITIONS/REJECTED) |
 | 4 | Decompose approved spec into TASK-PLAN.md — each task traces to a spec section | `references/ai-factory-pipeline.md` (Decompose phase) | `TASK-PLAN.md` |
 | 5 | **Gate 2** — Review task plan for dependency honesty, spec coverage | `references/phase-gate-methodology.md` | `REVIEW.md` |
@@ -128,7 +135,7 @@ You don't always start at SPECIFY. Enter at the phase matching what you already 
 |-------------|----------|------------|
 | A vague idea, conversation, or PRD | **Phase 1 — SPECIFY** | `templates/SPEC.md` + `references/format-translation.md` |
 | Approved product scope with interaction contracts | **Phase 1 — SPECIFY** | [product-design-and-ux](../product-design-and-ux/SKILL.md) handoff + `templates/SPEC.md` |
-| A clear, approved specification | **Phase 2 — DECOMPOSE** | `templates/TASK-PLAN.md` + `references/ai-factory-pipeline.md` |
+| A clear, approved specification or equivalent planning artifact | **Phase 2 — DECOMPOSE** | `templates/TASK-PLAN.md` + `references/ai-factory-pipeline.md` |
 | A spec + approved task plan | **Phase 3 — IMPLEMENT** | Task cards with per-task directives |
 | Existing code needing verification | **Phase 4 — VERIFY** | `templates/VERIFICATION.md` |
 
