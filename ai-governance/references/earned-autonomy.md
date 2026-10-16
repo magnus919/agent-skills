@@ -30,3 +30,5 @@ unsafe existing scope. An unrelated grant may continue only with evidence that i
 remains valid. Record counterevidence explicitly, including missing or stale observations.
 Complete with a scoped decision, owner, expiry, evidence links and enforcement handoff; if
 required evidence is absent, deliver a bounded hold/restriction and name what would resolve it.
+
+For software-factory decision rights and meaningful human checkpoints, use `references/agentic-engineering-governance.md` and `templates/engineering-decision-rights.md` (paths relative to the skill root).
