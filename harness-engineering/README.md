@@ -14,6 +14,9 @@ builds on WalkingLabs' Harness Creator and course, with clearer evidence limits
 and safe local tooling. Structural audits help discovery; real task comparisons
 are still needed to establish improvement.
 
+Turn sanitized observations into a small reviewed patch with an explicit release
+decision and recurrence check; personal context stays out of shared procedures.
+
 ## What You Get
 
 Business-policy placement guidance that separates explanations, eligibility, and command authority.

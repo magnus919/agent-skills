@@ -106,6 +106,7 @@ for six worked examples and mode-specific exit artifacts.
 
 | Active problem | Reference | Working template |
 |---|---|---|
+| Trace, conversation or review suggests a lasting lesson | [Lesson-to-PR](references/lesson-to-pr.md) | [Lesson candidate](templates/lesson-candidate.md) |
 | Failures or uncertain audit findings | [Diagnosis](references/diagnosis.md) | [Harness contract](templates/harness-contract.md) |
 | Startup/worker split and fresh-session discovery | [Session lifecycle](references/initialization-and-session-lifecycle.md) | [Session protocol](templates/session-protocol.md) |
 | Invisible knowledge, stale/contradictory rules | [Knowledge and invariants](references/instructions-and-knowledge.md) | [Guardrail promotion](templates/guardrail-promotion.md) |

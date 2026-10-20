@@ -41,6 +41,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 | Need | Load |
 |---|---|
 | Compare task-relevant discovery, external artifacts, delegated consumption, or fresh-session recurrence | [references/agent-interface-enrichment.md](references/agent-interface-enrichment.md) |
+| Validate a lesson candidate before promotion and check recurrence | [references/lesson-validation.md](references/lesson-validation.md) |
 | Choose evaluation evidence and contracts | [references/evaluation-design.md](references/evaluation-design.md) |
 | Separate performance, diagnostic, and replay evidence; connect offline to online measures | [references/evidence-modes-and-metric-mirrors.md](references/evidence-modes-and-metric-mirrors.md) |
 | Build immutable cases, fixtures, and provenance | [references/datasets.md](references/datasets.md) |
