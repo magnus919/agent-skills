@@ -42,6 +42,36 @@ An unattended goal must have a no-progress bound and a total budget, even if
 individual commands have timeouts. Infinite autoresearch-style loops are not a
 safe default for a user task.
 
+## Parent-to-child authority and shared budgets
+
+For each delegation, bind the child to the parent task, current grant, expiry,
+cancellation token, and budget ledger. Effective child authority is the
+intersection of its assigned scope and the parent's currently effective authority
+(including all ancestor restrictions). A read-only parent cannot grant a child
+writes, even if that child has a write-capable tool. No cached startup grant may
+outlive a narrower parent grant. Follow the host's existing delegation rules;
+routine delegation within an authorized task does not itself introduce a new
+universal approval requirement.
+
+Propagate cancellation, expiry, and revocation to every descendant and queued
+retry. Stop dispatch, revoke or invalidate scoped credentials, and fence late
+results/commits at the executor. Cancellation does not undo effects already
+committed: reconcile in-flight operations and hand off unresolved effects.
+Recheck the current grant at execution and commit, as described in
+[tool and event contracts](tool-and-event-contracts.md); prompts alone are not
+an enforcement boundary.
+
+Parent work and aggregate descendant spend consume the same authorized total.
+Reserve bounded cost atomically against one durable ledger before parallel
+work starts; available budget equals authorized total minus settled spend minus
+outstanding reservations. Settle actual cost, reconcile uncertain charges, and
+release only unused reservations. Budget unavailable means no new dispatch.
+Retries, restarts, and further delegation keep the ledger identity and cannot
+reset the allowance. With a total of 10 units, two concurrent children requesting
+6 each cannot both start; a retry still consumes that same 10-unit total.
+Exercise this race and nested cancellation against the actual runtime; the graph
+validator checks declarations, not live permission or accounting enforcement.
+
 ## Maker/checker separation
 
 Supply the checker acceptance, candidate artifact, environment, and evidence

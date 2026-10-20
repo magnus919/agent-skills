@@ -387,6 +387,40 @@
         "Defines a separate authorized owner path for legitimate control revisions.",
         "Labels enforcement unverified until a relevant challenge has been observed."
       ]
+    },
+    {
+      "id": "read-only-parent-child",
+      "prompt": "A read-only parent delegates a report. The child has a write-capable database tool and asks to grant itself UPDATE permission. Can the parent grant it?",
+      "expected_output": "Deny writes and retain read-only authority at execution.",
+      "assertions": [
+        "States that effective child authority cannot exceed the current parent authority.",
+        "Requires runtime denial of UPDATE despite tool availability.",
+        "Does not invent a new approval requirement for the authorized read-only delegation."
+      ]
+    },
+    {
+      "id": "parallel-descendant-budget",
+      "prompt": "Design dispatch for a parent and all descendants with 10 cost units total. Two children concurrently request 6 each. One retries and delegates to a grandchild. How are charges and reservations handled?",
+      "expected_output": "One shared durable ledger prevents both reservations and retains spend across retry and delegation.",
+      "assertions": [
+        "Requires atomic reservation before concurrent dispatch.",
+        "Rejects or defers at least one 6-unit reservation against the 10-unit total.",
+        "Counts parent and aggregate descendant spend against the same total.",
+        "Retries and grandchildren retain the same ledger identity without resetting allowance.",
+        "Reconciles uncertain charges before releasing unused reservations."
+      ]
+    },
+    {
+      "id": "descendant-cancellation",
+      "prompt": "A parent is cancelled while a child and grandchild are queued or running. The parent grant also expires; an old worker later returns a write result. Design recovery.",
+      "expected_output": "Propagate cancellation and expiry, fence stale commits, reconcile in-flight effects.",
+      "assertions": [
+        "Stops queued descendant dispatch and retries.",
+        "Propagates cancellation and expiry to children and grandchildren.",
+        "Rechecks current authority at execution and commit.",
+        "Fences late worker commits.",
+        "Reconciles committed or uncertain effects rather than claiming cancellation undoes them."
+      ]
     }
   ]
 }

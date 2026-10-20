@@ -188,8 +188,8 @@ used in this bundle. Reference files are loaded on trigger:
 - **Thresholds**:
   - 50% consumed: notification to budget owner.
   - 80% consumed: warning; cost-optimization review triggered.
-  - 100% consumed: fallback to degraded mode (read-only or cached).
-  - 110% consumed: disablement (hard stop, no further cost accrual).
+  - 100% consumed: stop new spend; use cached/no-cost fallback or a separately authorized bounded budget. Read-only/model work still costs resources.
+  - Observed settlement at 110%: disable and investigate overshoot; never treat this as permission to spend beyond 100%.
 - **Measurement**: per-request model cost + per-call tool cost (where
   applicable), attributed to the agent instance. Cost data is appended to the
   tool-authority-health record.

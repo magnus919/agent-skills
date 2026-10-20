@@ -88,6 +88,29 @@ incident and routed through incident-learning.
 Rollout proceeds through four stages. Authority expands at each stage only when
 the stage's exit criteria are satisfied and accountable humans independently grant the scoped authority through AI governance. Passing a rollout stage never grants permissions. Numeric values below are illustrative planning defaults requiring local evidence and governance approval, not universal safety thresholds. Appropriate escalation is a safe outcome, not inherently a regression.
 
+### Classify escalation before using rollout metrics
+
+Record trigger, underlying failure (if any), required protective response,
+acknowledgement, disposition owner, and pending-work deadline separately.
+A justified protective escalation is correct boundary handling; do not count it
+as an avoidable failure merely because a human was involved. A tool outage or
+unauthorized-action attempt remains a failure even when escalation handles it
+correctly. Missed escalation, needless escalation against the contract, and
+silent proceeding across a boundary are failures, not low-escalation successes.
+Use all eligible requests as the denominator for the operational-failure rate;
+count affected requests once and report protective escalation and unresolved
+handoff counts separately. Define classification and limits before the canary.
+
+For example, 8 of 100 canary requests correctly escalated for required approval
+with acknowledged owners and no underlying defect do not fail a zero-failure
+gate. Eight tool failures correctly escalated remain 8% operational failures.
+Zero escalations from silently proceeding on those same blocked requests fails
+boundary handling. Protective escalation is preferable to silent proceeding.
+A surge in justified escalations can still require a traffic hold for operator
+capacity or missed acknowledgement SLAs; investigate workload and capacity
+without reclassifying correct protection as an agent defect. Promotion requires
+resolved or explicitly accepted residual risks and an owned path for pending work.
+
 ### Stage 1 — Shadow / dry-run (0% traffic, read-only)
 
 | Parameter | Value |
@@ -106,7 +129,7 @@ the stage's exit criteria are satisfied and accountable humans independently gra
 | Authority | Read-only in production; side effects logged but not executed (dual-write comparison against existing system output) |
 | Duration | Minimum 48 hours |
 | Monitoring | All stage-1 metrics plus: cost-per-request, dual-write divergence rate, user-satisfaction-equivalent signal |
-| Exit criteria | Cost-per-request within budget; dual-write divergence < 2%; no escalation events |
+| Exit criteria | Cost-per-request within budget; dual-write divergence < 2%; no missed required escalations; avoidable operational-failure rate within the locally agreed limit |
 
 ### Stage 3 — Limited production (5–25% traffic, side-effect-gated)
 
@@ -115,8 +138,8 @@ the stage's exit criteria are satisfied and accountable humans independently gra
 | Traffic | 5% ramping to 25% in 5% increments each 24 hours |
 | Authority | Side-effect-capable per the authority contract, with `side_effect_approval: gate` (human approval required per side-effect class until proven safe) |
 | Duration | Minimum 72 hours; each increment gates on the previous increment's exit criteria |
-| Monitoring | All stage-2 metrics plus: side-effect audit trail, authority breach counter, escalation rate, tool health |
-| Exit criteria | Side-effect audit clean (no unexpected mutations); authority breach count = 0; escalation rate < 1%; all tools healthy (health-check pass rate > 99%) |
+| Monitoring | All stage-2 metrics plus: side-effect audit trail, authority breach counter, classified escalation outcomes, tool health |
+| Exit criteria | Side-effect audit clean (no unexpected mutations); authority breach count = 0; avoidable operational-failure rate < 1%; required escalation/handoff evidence complete; all tools healthy (health-check pass rate > 99%) |
 
 ### Stage 4 — Full production (25–100% traffic)
 
@@ -137,7 +160,7 @@ back to the previous stage's authority level:
 - Tool health-check failure for a critical tool (stage 3+).
 - Cost-per-request > 150% of baseline for > 1 hour (stage 2+).
 - p95 latency > 3x baseline for > 30 minutes (stage 2+).
-- Escalation rate > 5% (stage 3+).
+- Avoidable operational-failure rate > 5%, or missed required escalation / unowned handoff (stage 3+).
 - Production-readiness review outcome changes to `defer` or `no-go`.
 
 ## 3. Fallback
@@ -154,8 +177,8 @@ fallback preserves reduced capability; disablement removes all capability.
 | Model regression detected (eval score drop > threshold) | Switch to `model_fallback`; trigger eval re-run | Previous model version |
 | Prompt regression detected | Revert to previous `prompt_version` | Previous prompt version |
 | Critical tool unhealthy > 2 min | Degrade authority: revoke that tool's actions; agent continues with remaining tools | Previous tool-set configuration |
-| Cost budget 100% consumed | Degrade to read-only; queue mutations | Read-only mode |
-| Cost budget 110% consumed | Disable agent entirely | Offline |
+| Cost budget 100% consumed | Stop funded dispatch; use cached/no-cost response or separately authorized bounded fallback; retain pending obligations with an owner | No new spend from exhausted budget |
+| Observed cost settlement reaches 110% | Disable and investigate accounting/overshoot; this is not an extra allowance | Offline |
 | Latency p95 > 5x baseline > 2 min | Degrade to read-only; switch to `model_fallback` if model is the latency source | Read-only mode |
 | Authority breach detected | Immediate: block the action; escalate; if breach count ≥ 3 in 24h, disable | Disabled |
 | Privacy breach (PII access outside scope) | Immediate: revoke all data access; escalate; mandatory security review | Read-only, no data access |
@@ -174,3 +197,23 @@ includes:
 - Recovery path tested (return to normal operation after trigger clears).
 
 Fallback exercises are repeated at each production-readiness review cycle.
+
+## 4. Enforce descendant limits in the runtime
+
+For delegated runs, use the attenuation and shared-budget contract in
+[harness coordination](../../harness-engineering/references/loops-and-coordination.md).
+Name the coordinator and execution-boundary policy service that enforce it:
+intersect each child's grant with the current parent grant, issue scoped
+credentials, and recheck cancellation, expiry, and revocation before dispatch
+and commit. Fence stale workers and reconcile effects already in flight.
+
+Use one durable task-budget ledger for parent and all descendants. Atomically
+reserve bounded cost before concurrent dispatch; settle actual spend and release
+only unused reservations after reconciliation. Retries and redelegation retain
+the same ledger identity. Stop new work when available budget is exhausted;
+read-only fallback and model calls also consume resources and need a funded
+reservation. Fail closed or use a separately authorized bounded fallback if the
+authority service or ledger is unavailable. Record enforcement evidence from
+read-only-parent/write-child, parallel-budget, and cancellation exercises before
+canary. These instructions and declared limits do not enforce permissions or
+spend themselves; verify the actual executor and accounting implementation.

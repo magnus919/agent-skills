@@ -85,7 +85,39 @@ Confirm what happens when things go wrong and how you would leave.
 
 - Incident-notification commitment: <the window and format for notifying you of a material incident>
 - Uptime and performance commitments: <service-level targets and remedies for breach>
-- Liability and indemnification terms: <how liability and IP indemnity are allocated>
+- Liability and indemnification terms: <complete the coverage matrix below; link exact applicable clauses>
+
+### Separate content, execution, and omission coverage
+
+Record contractual assurances, warranties, indemnities, liability caps, remedies,
+exclusions, and unknowns separately for the exact vendor, service/edition,
+contract version/date, jurisdiction, integration, and deployment. Marketing
+assurances are not contractual indemnities. Mark absent evidence as unknown;
+do not infer execution coverage from content copyright protection.
+
+| Exposure | Assurance and evidence | Applicable indemnity / liability allocation | Exclusions, caps, conditions, residual-risk owner |
+|---|---|---|---|
+| Generated content (e.g. copyright claim) | <clause and covered output/service> | <covered claim and remedy> | <modification, safeguards, notice, other conditions> |
+| Tool actions (e.g. database deletion or payment) | <execution guarantees and evidence> | <action-specific clause or unknown> | <authorization, third-party connector, restoration costs, owner> |
+| Omissions (e.g. missed required notification/deadline) | <completion/SLA evidence> | <inaction-specific clause or unknown> | <dependency failures, consequential loss, owner> |
+| Customer-built / third-party agents and services | <which component and contracting party> | <separate terms and responsibility> | <coverage gaps across the chain, owner> |
+
+A content copyright indemnity alone does not establish coverage for an agent
+that deletes a database or fails to send a required notification. Obtain separate
+execution/omission terms and controls or record the uncovered/unknown exposure
+for the reviewing authority.
+
+Vendor-specific inspiration: [Google Workspace service terms](https://workspace.google.com/terms/service-terms/),
+sections 12.7, 12.10, and 13 (reviewed 2026-10-20), distinguish content and agent
+actions/inactions, with service-specific clinical restrictions and allocations
+of responsibility. Check the applicable agreement and exact deployment before
+applying any clause. These are not universal clinical prohibitions or liability
+rules for other vendors. [Google Cloud's agentic guidelines](https://cloud.google.com/terms/agentic-ai-use-guidelines)
+are additional inspiration for scope and oversight questions within their own
+service context, not binding policy outside those services.
+
+### Exit arrangements
+
 - Data return and deletion on exit: <what happens to your data when the contract ends>
 - Migration and transition assistance: <the path for moving off the vendor>
 - Dependency and concentration: <how critical this vendor is and any concentration risk it creates>

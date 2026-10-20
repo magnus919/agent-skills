@@ -271,6 +271,19 @@
         "Preserves the exclusion of protected acceptance changes.",
         "Does not equate permission for release R with unrestricted factory autonomy."
       ]
+    },
+    {
+      "id": "content-protection-not-execution",
+      "prompt": "A vendor advertises copyright indemnity for generated text. Procurement assumes this covers an agent deleting our database and missing a required customer notification. Complete the relevant due-diligence questions. Google Workspace terms are offered as an analogy; our deployment uses another vendor.",
+      "expected_output": "Separate content, actions, omissions and third-party exclusions; verify applicable clauses and unknowns.",
+      "assertions": [
+        "Does not infer database-deletion coverage from content copyright indemnity.",
+        "Separately asks about missed-notification or omission liability.",
+        "Records exact vendor/service, contract version and deployment scope.",
+        "Separates marketing assurances from contractual indemnity and liability caps/exclusions.",
+        "Does not apply Google clinical restrictions or liability allocations universally.",
+        "Records unknown coverage and an accountable residual-risk owner."
+      ]
     }
   ]
 }
