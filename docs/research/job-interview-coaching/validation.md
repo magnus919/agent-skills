@@ -43,3 +43,21 @@ References used: interviewer coaching, assessment and calibration, interview for
 Neither trial exposed a material application difficulty. That does not establish a general semantic pass. The 18-case manifest remains a scenario contract, not 18 completed runs. Full multi-turn simulation, specialist correctness, multilingual and cross-cultural adaptations, real transcript diversity, and review by experienced coaches and domain practitioners remain untested.
 
 The rubric challenge notes preserve satisfying examples, contradictory near misses, and omitted-evidence cases. No model confidence threshold or automated hiring gate is introduced.
+
+## Local repository verification
+
+Implementation commit: `01d8baf060629261a7849472c4d88139727bbcf6`. Checks ran against its staged implementation bytes; this record is a subsequent documentation-only update.
+
+- Skill format: 189 canonical skills validated.
+- Changed-skill quality: four changed skills, zero errors or warnings.
+- Eval manifest validation: 189 accepted; 27 validator tests passed.
+- Eval coverage ratchet: 189/189 schema-valid, 100%; no decrease.
+- Bundle manifests: eight validated. Bundle validation tests: 14 passed, 307 assertions.
+- Claude marketplace, Codex packaging, llms.txt, and lifecycle matrix: current.
+- AGENTS consistency and skill script-test conventions: passed.
+- Curated case-review register accepted; it reports evidence gaps separately, not behavioral completeness.
+- Diff whitespace check: passed.
+
+The broader `scripts/check-artifacts.py` command also launches unrelated test suites. Several local HTTP-stub tests failed because this sandbox forbids socket binding; the broad run was interrupted. No whole-repository test-suite pass is claimed. No executable implementation code changed in this project.
+
+Publication is pending. Automatic approval review rejected the initial push because it required separate authorization for external disclosure to GitHub. No push or PR was completed, and no remote CI result is available. The local branch is `codex/job-interview-coaching`.
