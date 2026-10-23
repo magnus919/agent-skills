@@ -22,7 +22,7 @@ asks for accessible sources instead of quietly teaching from memory.
 | `references/teaching-decisions.md` | Scaffolding, feedback, accessibility, and pivots |
 | `references/pedagogy-evidence.md` | Research rationale and limits |
 | `references/validation.md` | Behavioral and human-validation protocols |
-| `evals/` | Realistic tutoring cases and separate routing probes |
+| `evals/` | Tutoring cases, routing probes, and a [focused review](evals/targeted-review.md) |
 
 ## Quick Start
 
@@ -33,6 +33,8 @@ Install `teach-me` using your agent client's normal skill mechanism, then ask:
 
 Expect a brief goal check, source retrieval, a small explanation, and an invitation
 to try. You can ask for a worked explanation, change pace or format, or stop.
+For practice, you can give an answer first or work in short typed or dictated
+chunks and give your answer last. Neither format requires a lengthy narration.
 
 ## Triggers
 
