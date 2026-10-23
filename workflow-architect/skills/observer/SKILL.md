@@ -112,4 +112,4 @@ When a trigger phrase is detected:
 
 ## When not to use
 
-Do not use this skill for interactive discovery (load the interviewer instead), or when the session context is too thin to infer reliable patterns — active interrogation is more effective there. It is for passively observing an existing session only.
+Do not use this skill for interactive discovery (return to workflow-architect and read `references/active-workflow-discovery.md` instead), or when the session context is too thin to infer reliable patterns — active interrogation is more effective there. It is for passively observing an existing session only.

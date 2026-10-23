@@ -1547,7 +1547,7 @@
             {
               "name": "Active interview",
               "skills": [
-                "skills/interviewer/SKILL.md"
+                "SKILL.md"
               ]
             },
             {
@@ -1567,7 +1567,7 @@
         },
         "included_skills": {
           "value": [
-            "skills/interviewer/SKILL.md",
+            "SKILL.md",
             "skills/observer/SKILL.md",
             "skills/bundle-builder/SKILL.md"
           ],
@@ -1581,7 +1581,7 @@
             },
             {
               "artifact": "Convergence on workflow phases, branching signals, and tool preferences",
-              "skill": "skills/interviewer/SKILL.md"
+              "skill": "SKILL.md"
             }
           ],
           "source": "workflow-architect/manifest.yaml#/prerequisites"

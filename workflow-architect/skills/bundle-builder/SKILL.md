@@ -375,4 +375,4 @@ After writing all files:
 
 ## When not to use
 
-Do not load this skill without a converged workflow model — it requires the `workflow-architect:state:*` entries produced by the interviewer or observer. If the workflow has not been discovered yet, load the interviewer (active) or observer (passive) first.
+Do not load this skill without a converged workflow model — it requires the `workflow-architect:state:*` entries produced by the interviewer or observer. If the workflow has not been discovered yet, return to workflow-architect for active discovery or load the observer for passive discovery first.

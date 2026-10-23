@@ -672,6 +672,15 @@
       "description": "Interact with Atlassian Jira from the terminal: search issues with JQL, view details, create issues, add comments, count matches with fast approximate-count, list projects, discover valid transitions, and change status. Includes a full JQL language reference (functions, operators, history predicates, date expressions, saved filters, performance tuning) plus REST auth/pagination guidance. Use when the user mentions Jira, a ticket key (e.g. PROJ-123), asks about issues, bugs, tasks, projects, or sprint work, or needs to write, debug, or optimize JQL queries. Do not use for GitHub or GitLab issue tracking, Jira site administration, or generic ticketing systems."
     },
     {
+      "name": "job-interview-coaching",
+      "source": "./",
+      "skills": [
+        "./job-interview-coaching"
+      ],
+      "strict": false,
+      "description": "Use this skill to coach candidates and interviewers for job interviews: prepare truthful examples, critique interview transcripts, run interactive mock interviews and targeted practice, design structured questions and evidence-based scorecards, and improve candidate experience. Adapt to profession, seniority, and interview format. Do not use for journalism, user research, workflow discovery, general resume writing, clinical interviewing, or autonomous hiring decisions."
+    },
+    {
       "name": "kanban-guru",
       "source": "./",
       "skills": [

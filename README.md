@@ -307,6 +307,10 @@ Jellyfin media server from the terminal. Log in as a user or use an API key, che
 
 Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, count matches, list projects, and transition status. Includes a full JQL reference (functions, history predicates, date expressions) plus REST auth/pagination guidance. API token from id.atlassian.com.
 
+### [job-interview-coaching](job-interview-coaching/SKILL.md)
+
+Prepare for job interviews, review transcripts, practise with interactive mock interviews, and design fair, evidence-based interviews as a hiring practitioner. Adapts to occupation, responsibility level, and assessment format.
+
 ### [kanban-guru](kanban-guru/SKILL.md)
 
 A virtual Kanban expert for engineering teams. Diagnose flow problems, design board configurations, calibrate WIP limits, establish service level expectations, set up multi-portfolio operating models, and navigate Scrum-to-Kanban transitions. Covers all seven cadences, classes of service, Little's Law, flow metrics, and the full practitioner's playbook with rich reference material.
@@ -714,7 +718,7 @@ Operate self-hosted Woodpecker CI from installation through production troublesh
 
 ### [workflow-architect](workflow-architect/SKILL.md)
 
-Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Ships 3 sub-skills, 3 reference documents, 4 templates, and a worked example output bundle.
+Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Keeps its guided interview inside the parent as a reference, with two sub-skills for observation and bundle generation, supporting references, templates, and worked examples.
 
 ### [writers-helper](writers-helper/SKILL.md)
 

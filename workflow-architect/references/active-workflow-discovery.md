@@ -1,18 +1,6 @@
----
-name: interviewer
-description: Discover the user's workflow through 8-15 adaptive questions for
-  workflow-architect, mapping phases, branching signals, tool preferences, and friction
-  points. Loaded by the umbrella workflow-architect skill when running in active mode.
-license: MIT
-compatibility: Hermes Agent — uses memory tool for state persistence
-metadata:
-  tags: workflow, interview, discovery, process
-  spec-version: '1.0'
----
-
 # Interviewer — Active Workflow Discovery
 
-This is the core of workflow-architect's **active interrogation mode**. It runs
+This is the core of workflow-architect's **active workflow discovery mode**. It runs
 a structured but adaptive conversation with the user to discover how they work.
 
 ## State Model
@@ -147,7 +135,7 @@ If yes, I'll generate the bundle. If not, tell me what I got wrong
 and I'll refine it."
 ```
 
-If the user confirms, load `skills/bundle-builder/SKILL.md` and follow its
+If the user confirms, return to the parent and load `skills/bundle-builder/SKILL.md` and follow its
 instructions to generate the output bundle.
 
 If the user corrects or refines, update the state and re-check convergence.
@@ -186,7 +174,7 @@ entries from memory and writing the output bundle files.
 
 ## Archetype Matching
 
-After each answer, check the shared `../../references/workflow-archetypes.md` file to see
+After each answer, check the shared `references/workflow-archetypes.md` file to see
 if the user's answers match a known archetype. If they do, note it in state
 and use it to seed better follow-up questions (e.g., "For a morning triage
 workflow, people often have a 'stale items bucket' — do you have something

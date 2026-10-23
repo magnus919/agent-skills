@@ -92,6 +92,7 @@
     "./infographic",
     "./jellyfin",
     "./jira",
+    "./job-interview-coaching",
     "./kanban-guru",
     "./kubernetes",
     "./langchain",

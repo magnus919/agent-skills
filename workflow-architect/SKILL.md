@@ -91,7 +91,7 @@ message history and reconstructs your workflow from what happened.
 ## Loading Protocol
 
 1. Read this umbrella SKILL.md for context
-2. If active: load `skills/interviewer/SKILL.md`
+2. If active: load `references/active-workflow-discovery.md`
 3. If passive: load `skills/observer/SKILL.md`
 4. After convergence: load `skills/bundle-builder/SKILL.md` to synthesize
    and write the output bundle. The bundle is written to
@@ -130,7 +130,8 @@ Do not use this skill for one-off task help or when there is no repeatable multi
 
 This skill ships no scripts; it is a resource-based protocol carried by the files bundled with this SKILL.md:
 
-- **Sub-skill protocols** — `skills/interviewer/SKILL.md` (active interrogation), `skills/observer/SKILL.md` (passive observation), and `skills/bundle-builder/SKILL.md` (bundle synthesis and registration). Load them per the Loading Protocol above.
+- **Active discovery reference** — `references/active-workflow-discovery.md` carries the guided workflow interview inside this parent skill. Read it in active mode.
+- **Sub-skill protocols** — `skills/observer/SKILL.md` (passive observation) and `skills/bundle-builder/SKILL.md` (bundle synthesis and registration). Load them per the Loading Protocol above.
 - **Reference patterns** — `references/workflow-archetypes.md` (convergence-detection pattern library), `references/trigger-condition-patterns.md` (trigger-condition format spec), `references/kanban-decision-criteria.md` (when to include a kanban board), and `references/example-output/` (worked example bundles: `developer-triage`, `developer-pipeline-kanban`).
 - **Generation templates** — `templates/skill-skeleton.md`, `templates/manifest.yaml.tmpl`, `templates/decision-map.md.tmpl`, `templates/kanban-board-setup.sh.tmpl`, and `templates/kanban-task-blueprints.yaml.tmpl` for the generated bundle's files.
 - **Agent capabilities** — the host agent needs skill management tools (`skill_view`, `skill_manage`, `skills_list`), a memory tool for `workflow-architect:state:` keys, session context access for observation mode, and file writing for bundle output.
