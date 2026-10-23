@@ -1,6 +1,6 @@
 # Acceptance review against the original request
 
-Date: 2026-10-23. This assesses the delivered capabilities and research artifacts, not a comparative claim that the skill is the world's best. All work is local on `codex/job-interview-coaching`; the earlier publication block remains in effect.
+Date: 2026-10-23. This assesses the delivered capabilities and research artifacts, not a comparative claim that the skill is the world's best. This review assesses the local research build on `codex/job-interview-coaching`. Publication was subsequently authorized; its live delivery is tracked in `delivery.md`.
 
 | Original requirement | Delivered evidence | Assessment and limit |
 |---|---|---|
@@ -26,7 +26,7 @@ No human coach or domain expert adjudication, no real candidate outcome study, n
 
 ## Publication
 
-No push, PR, or remote CI is claimed. The user requested execution of the local completion plan; the plan expressly kept publication subject to separate approval after the earlier automatic rejection.
+At the time of the research acceptance review, no push, PR, or remote CI had occurred. The user subsequently authorized publication through a PR, merge after checks/review, and local synchronization. See `delivery.md` for that scope; historical execution evidence is unchanged.
 
 ## Review correction
 

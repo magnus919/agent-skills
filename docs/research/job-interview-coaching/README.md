@@ -1,6 +1,6 @@
 # Job interview coaching: research, implementation, and evidence
 
-Completed local research/implementation pass: 2026-10-23. Publication has not been authorized. The skill is broadly usable; neither a world-class ranking nor real hiring-outcome efficacy has been established.
+Completed local research/implementation pass: 2026-10-23. Publication and local synchronization were authorized on 2026-10-23; see the delivery record. The skill is broadly usable; neither a world-class ranking nor real hiring-outcome efficacy has been established.
 
 ## Start here
 

@@ -30,4 +30,4 @@ Expanded skill and conditional references; maintained practitioner/source biblio
 - Behavioral execution: 26 distinct case responses and three incremental multi-turn sessions saved; separate advisory model review covers 88 distinct assertions. Human learning and hiring efficacy are not inferred.
 - Content review: one factual rewrite defect found, corrected, and retained with regression evidence.
 - Repository validation and local commit: recorded in the final local-verification section.
-- Publication: pending separate authorization, as specified before execution.
+- Publication: the initial plan required separate authorization. The user granted PR, merge, and local synchronization authority on 2026-10-23; tracked in `delivery.md`.
