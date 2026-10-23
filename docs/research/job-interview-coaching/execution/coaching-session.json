@@ -1,0 +1,34 @@
+[
+  {
+    "role": "user",
+    "content": "I'm a first-job applicant for a service coordinator role. I volunteer on rotas. I want a short coached practice round, feedback and a retry, then one different question to see whether I can use what I learned. Here is my baseline answer to a booking-problem question: We were busy and sorted it out together; it was successful. Be candid. Ask one question at a time."
+  },
+  {
+    "role": "assistant",
+    "content": "We\u2019ll use your answer as the baseline, work on it once, then try a different question without an outline. I\u2019ll assume the role involves bookings and coordination; your rota volunteering is relevant experience.\n\nYour baseline gives shared credit, which is worth keeping. But \u2018sorted it out together\u2019 leaves your own contribution unclear, and \u2018it was successful\u2019 gives no observable result. Those are gaps in the answer, not evidence that you lack experience. For this round, our target is to explain one action you personally took and how you knew what happened afterward.\n\nBefore the retry, what did you personally do in the booking incident?"
+  },
+  {
+    "role": "user",
+    "content": "One volunteer cancelled. I checked who had offered cover, phoned two people, and one agreed. I updated the shared rota and told the lead. Another volunteer messaged the event organizer. The lead later told me the shift was covered. I did not personally check attendance. I don't have any numbers."
+  },
+  {
+    "role": "assistant",
+    "content": "That gives us useful evidence: you checked available cover, contacted people, updated the rota, and informed the lead. Keep the other volunteer\u2019s contribution separate. You also have a truthful outcome: the lead reported that the shift was covered. Say that rather than implying you checked attendance yourself. No performance numbers are needed.\n\nFor the retry, use a short outline: cancellation \u2192 your actions \u2192 colleague\u2019s contribution \u2192 the lead\u2019s confirmation. This is a coached attempt; we\u2019ll test the same target on a different question afterward.\n\nHow would you now answer \u2018Tell me about a time you helped resolve a scheduling problem\u2019 in your own words?"
+  },
+  {
+    "role": "user",
+    "content": "A volunteer cancelled before an event. I checked who could cover, contacted two people and got one agreement. I updated the rota and told the lead. A colleague contacted the organizer. The lead later confirmed the shift was covered; I did not check attendance myself."
+  },
+  {
+    "role": "assistant",
+    "content": "You met our target on this coached retry. Compared with \u201csorted it out together,\u201d you now name your own actions, preserve your colleague\u2019s credit, and attribute the outcome to the lead\u2019s confirmation. The attendance limit is clear. Keep that factual precision; there is no need to add numbers or make the story bigger.\n\nNow a different question, without an outline, to see whether you can use that approach independently:\n\nTell me about a time you noticed an error or missing information while volunteering or at school and helped put it right."
+  },
+  {
+    "role": "user",
+    "content": "At a school event I noticed one contact email was wrong on the participant list. I compared it with the original sign-up form, told the organizer, and corrected it after they checked. The organizer then confirmed the updated message had reached the parent. I do not know whether that family attended. That is my different example. Please give me the debrief and stop this round now."
+  },
+  {
+    "role": "assistant",
+    "content": "You carried the improvement into a different example without another outline. \u201cI compared it with the original sign-up form\u201d shows your personal check; \u201ccorrected it after they checked\u201d explains the organizer\u2019s involvement; and \u201cthe organizer then confirmed\u201d identifies how you learned the result. You also avoid claiming attendance you did not observe.\n\nAcross this round:\n\n- Baseline: \u201csorted it out together\u201d and \u201csuccessful\u201d left your actions and the outcome unclear.\n- Coached retry: with an outline, you explained your contribution, shared credit, and the source of the outcome.\n- Different question: you demonstrated those same elements independently within this session. That meets our agreed target; it does not yet show how you perform under interview pressure or after a delay.\n\nFor later practice, retrieve one of these examples tomorrow without reading it first, then try one new example using the same factual precision. No need to add invented metrics or a grander result.\n\nThe round is complete; we\u2019ll stop here."
+  }
+]

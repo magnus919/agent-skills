@@ -31,3 +31,20 @@ A candidate can prepare and use explicitly allowed assistance. Do not assume eve
 ## External actions
 
 Drafting and reviewing materials are within normal coaching scope. Sending feedback, scheduling, updating candidate records, sharing recordings, or writing to an ATS changes external state. Before the first mutation, confirm target, scope, and rollback path. Existing explicit authorization can satisfy the gate when it covers those details; do not treat a generic request for coaching as authorization to contact someone.
+
+
+## Make the task explicit without supplying the answer
+
+Autistica's public guide recommends clearer, sequenced questions, useful advance information, and individually useful arrangements. Ask whether a change helps this person rather than assume one format suits everyone. [Guide](https://www.autistica.org.uk/get-involved/employers/employers-guide/inclusive-interviews).
+
+A practical distinction: clarifying the capability and context makes the task understandable; naming the action you want before asking what they would do supplies an answer. For example, “Tell me about one time you had two tasks due at the same time” reduces ambiguity. “You chose the supervisor's task first, correct?” rewards agreement. Break compound requests into separate opportunities to answer and record clarification or support given.
+
+Written questions, a predictable agenda, or extra processing time can help a candidate demonstrate relevant capability. These adjustments are not evidence of low ability. Decide whether spontaneity is actually part of the job requirement before testing it. Maras et al.'s interview-question study supports investigating task support, with important limits; see the evidence review.
+
+JAN's US hiring-process guide distinguishes practical adjustments, the interactive process, and context-dependent documentation needs. Do not promise that medical information can never be requested; minimize unnecessary disclosure and establish applicable requirements. [JAN guide](https://askjan.org/publications/employers/employers-guide-hiring-process.cfm).
+
+## Language, cultural context, and transitions
+
+Ask which language and audience the actual interview uses. Help the user make decisions, ownership, and evidence understandable in that context without rewriting their identity. If translation is used, retain the original where available and label uncertainty in idioms or technical terms. A second-language hesitation does not establish weak job judgment.
+
+For career changers, returners, military-to-civilian transitions, or nontraditional qualifications, map actual tasks to the target capability and identify genuinely new domain learning. Explain unfamiliar context or terminology briefly. Do not turn adjacent experience into fictional tenure, remove truthful limits, or demand personal reasons for a gap. Evaluate what the evidence demonstrates and what it leaves open.

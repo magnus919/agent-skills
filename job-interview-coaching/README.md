@@ -6,15 +6,15 @@ Prepare better answers, practise realistic interviews, and conduct interviews th
 
 Interview advice often stops at “use STAR” or a list of common questions. This skill helps your agent explain exactly where an answer succeeds or falls short, connect feedback to transcript evidence, and turn that feedback into focused practice. It works with first-job examples as well as experienced professional and leadership roles.
 
-For hiring teams, it helps build relevant questions, neutral follow-ups, clear scoring criteria, and a better candidate experience. Guidance adapts to technical problems, business cases, portfolios, practical demonstrations, and behavioral interviews. Profession guides provide starting points; specialist standards still need appropriate sources and human judgment.
+For hiring teams, it helps build relevant questions, neutral follow-ups, clear scoring criteria, and a better candidate experience. Guidance adapts to technical problems, business cases, portfolios, practical demonstrations, and behavioral interviews. Sixteen focused profession guides include worked contrasts, questions, drills, and differences from apprentice to executive level. Specialist standards still need appropriate sources and human judgment.
 
 ## What You Get
 
 | Content | Purpose |
 |---|---|
 | `SKILL.md` | Candidate and interviewer workflows with task-based routing |
-| `references/` | Coaching methods, transcript critique, mock interviews, assessment, profession and seniority adaptations, annotated sources |
-| `templates/` | Session brief, transcript review, interview plan, practice log |
+| `references/` | Coaching diagnosis, question-specific methods, full transcript case, 16 profession playbooks, interviewer training, practitioner comparison, and research |
+| `templates/` | Session brief, transcript review, interview plan, practice log, evidence bank, coaching plan |
 | `evals/evals.json` | Output-quality scenarios, including missing evidence and difficult cases |
 
 ## Quick Start

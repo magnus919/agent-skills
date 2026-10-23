@@ -21,3 +21,9 @@ These are authored rubric challenges, not independent labels of generated output
 Representative transcripts and multi-turn runs across professions and responsibility levels, reviewed by interview coaches, hiring practitioners, and domain experts. A candidate getting a job cannot alone establish causality or skill efficacy. Do not promote model suggestions or fixture success to release-gated evidence.
 
 Workflow-architect keeps its existing case IDs; only the active protocol path and wording are updated when its child skill becomes a reference. That packaging change does not establish a new coaching behavior.
+
+## Second-pass rubric and execution
+
+2026-10-23: retained all 18 existing case IDs and assertions; appended six content-quality cases. A separate raw coordinator transcript is a fixture for whole-interview review; it is not the worked case's answer. All 24 cases were executed through prompt-only packets. A separate model-teacher advisory review considered 82 assertions. Actual outputs, reviewer provenance, wording ambiguities, and multi-turn interaction records live under `docs/research/job-interview-coaching/`; none is labeled human adjudication or a release gate.
+
+Final second-pass addition: preserved the original 24 cases and appended `rewrite-no-cross-incident-contamination` after a content-review defect, plus `unfamiliar-profession-adaptation` for the new generalization method. Both were executed from prompt-only packets and reviewed separately. Distinct coverage is 26 cases/88 assertions; the accommodation rerun is reported separately. The original finding and resolved status remain in the content-review record.

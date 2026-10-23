@@ -1,0 +1,20 @@
+[
+  {
+    "id": "rewrite-no-cross-incident-contamination",
+    "prompt": "Rewrite only incident A for a service-coordinator interview, using only its facts. A: A volunteer cancelled a shift. I called two possible replacements and one agreed. I updated the rota. The lead later told me the shift was covered; I did not check attendance. B: On a different occasion I finished a rota just before the lead sent it, and asked a colleague to handle an expenses query.",
+    "response": "\u201cWhen a volunteer cancelled a shift, I called two possible replacements and one agreed to cover. I updated the rota. The lead later told me the shift was covered; I did not check attendance myself.\u201d",
+    "references_read": [
+      "references/candidate-coaching.md",
+      "references/operations-administration-interviews.md"
+    ]
+  },
+  {
+    "id": "unfamiliar-profession-adaptation",
+    "prompt": "Help me prepare for a wildlife field-assistant interview. My invitation says the work is making observations, logging them accurately, and flagging discrepancies to the field supervisor. They teach protocols after hiring. We do not handle or treat animals. I have volunteering experience but no paid fieldwork. Give me a tailored practice plan and a first question.",
+    "response": "Your invitation gives us a clear preparation focus: careful observation, accurate records, and communicating discrepancies to the field supervisor. Volunteering can provide relevant evidence even without paid fieldwork. Since protocols are taught after hiring, we\u2019ll focus on how you learn and work accurately rather than assume you should already know their field methods. These are provisional coaching criteria inferred from the invitation, not the employer\u2019s confirmed scoring rubric.\n\nHere is a short practice plan:\n\n| Step | Exercise | Evidence to develop |\n|---|---|---|\n| 1. Baseline | Describe a real volunteering incident involving an observation, record, or discrepancy. | What you noticed, what you personally checked, and what you reported or corrected within your role. |\n| 2. Feedback and retry | Improve the least clear part of that answer, then retell it. | Specific actions, accurate attribution of the outcome, and honest limits on what you know. |\n| 3. Observation-to-log exercise | Use a small fictional set of observations and an example log with one mismatch. | Separate what you observed from interpretation; explain how you would flag the mismatch rather than invent missing information. |\n| 4. Independent variation | Try a new fictional logging discrepancy with the supervisor temporarily unavailable. | Explain uncertainty and your next steps within the authority and instructions supplied. |\n| 5. Close | Review what improved and what still needs practice. | Distinguish the coached retry from what you demonstrated on the new task. |\n\nWe\u2019ll ask one question at a time and give feedback after your answer. We won\u2019t use animal handling or treatment scenarios. Any species identification or specialized field-protocol correctness would need the employer\u2019s materials or a qualified field reviewer; this practice assesses how clearly you explain your work and reasoning.\n\nA useful question for the employer is: \u201cHow are new assistants trained to record uncertain observations and report discrepancies?\u201d\n\nFirst question: Tell me about a time while volunteering when you noticed that a record did not match what you observed. What did you do?",
+    "references_read": [
+      "references/practice-and-feedback.md",
+      "references/unfamiliar-professions.md"
+    ]
+  }
+]

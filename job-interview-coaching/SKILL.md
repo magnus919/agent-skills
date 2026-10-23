@@ -22,7 +22,7 @@ Use supplied materials first. Establish role, actual responsibility level, inter
 
 ## Load only the relevant references
 
-Read the mode reference, then the format and profession reference needed for the task. Do not load the whole library.
+Read the mode reference, then the most specific format/profession reference needed for the task. The four broad family references are for cross-field orientation; prefer the focused playbook for a named profession. Do not load the whole library.
 
 | Need | Read |
 |---|---|
@@ -39,7 +39,30 @@ Read the mode reference, then the format and profession reference needed for the
 | Consulting, sales, finance, management, public service | [Business and public service](references/business-and-public-service.md) |
 | Access needs, language, culture, career gaps, difficult questions, privacy | [Inclusive practice and boundaries](references/inclusive-practice.md) |
 | Evidence basis, source limitations, further research | [Research and sources](references/research-and-sources.md) |
-| Reusable output forms | [Session brief](templates/session-brief.md), [review worksheet](templates/transcript-review.md), [interview plan](templates/interview-plan.md), [practice log](templates/practice-log.md) |
+| Choosing an intervention after observing a weakness | [Coaching diagnosis](references/coaching-diagnosis.md) |
+| Opening, motivation, conflict, weakness, gap, or unexpected question | [Question-specific preparation](references/answer-types-and-difficult-questions.md) |
+| A full example of transcript-to-practice reasoning | [Worked transcript](references/transcript-worked-case.md) |
+| Professional coaching approaches and reference materials | [Practitioner methods](references/practitioner-methods.md) |
+| Research methods, findings, and design consequences | [Evidence review](references/research-evidence-and-design.md) |
+| Training an interview team and measuring candidate experience | [Interviewer training](references/interviewer-training-and-experience.md) |
+| Software, infrastructure, security | [Software interviews](references/software-interviews.md) |
+| Data, analytics, applied science | [Data interviews](references/data-science-interviews.md) |
+| Physical engineering and laboratory technical work | [Engineering interviews](references/engineering-interviews.md) |
+| Design, product, writing, creative portfolio | [Creative interviews](references/design-creative-interviews.md) |
+| Academic research, fellowship, faculty | [Academic interviews](references/academic-interviews.md) |
+| Healthcare, nursing, allied health, care | [Healthcare interviews](references/healthcare-interviews.md) |
+| Teaching, training, education | [Education interviews](references/education-interviews.md) |
+| Legal, compliance, professional advice | [Legal interviews](references/legal-interviews.md) |
+| Apprentices, trades, maintenance, manufacturing | [Trade interviews](references/trades-maintenance-interviews.md) |
+| Customer service, retail, hospitality | [Service interviews](references/service-hospitality-interviews.md) |
+| Logistics, administration, coordination | [Operations interviews](references/operations-administration-interviews.md) |
+| Consulting and business cases | [Consulting interviews](references/consulting-interviews.md) |
+| Finance, accounting, audit, risk | [Finance interviews](references/finance-accounting-interviews.md) |
+| Sales, account management, fundraising | [Sales interviews](references/sales-interviews.md) |
+| People management, directors, executives | [Leadership interviews](references/leadership-interviews.md) |
+| Public service, civil service, mission-led roles | [Public-service interviews](references/public-service-interviews.md) |
+| Unfamiliar profession, ambiguous title, or cross-field task | [Profession adaptation](references/unfamiliar-professions.md) |
+| Reusable output forms | [Session brief](templates/session-brief.md), [review worksheet](templates/transcript-review.md), [interview plan](templates/interview-plan.md), [practice log](templates/practice-log.md), [evidence bank](templates/evidence-bank.md), [coaching plan](templates/coaching-plan.md) |
 
 These profession packs contain coaching adaptations, not complete technical standards. For unfamiliar specialties, use the actual role materials and ask for the relevant standards or work sample. Research authoritative sources when technical, employer-specific, or jurisdiction-specific accuracy matters; do not invent a specialist answer key.
 
@@ -51,6 +74,8 @@ These profession packs contain coaching adaptations, not complete technical stan
 4. Practise a targeted change without inventing experience or erasing the user's voice.
 5. Test it on a different question or scenario. Distinguish independent performance from hinted or model-written answers.
 6. Close with observed progress, remaining gaps, and a bounded next action.
+
+Diagnose the cause before prescribing a structure. Distinguish missing experience, retrieval, relevance, reasoning, and communication. Track baseline, assistance, retry, and independent transfer separately. When feedback is challenged, check the excerpt and criterion; correct mistakes without agreeing to unsupported conclusions. After two or three non-improving retries, change the exercise or agree a next step instead of endlessly polishing. Never move the target silently after an improvement.
 
 A rewrite is an example, not proof the user can perform. Use STAR/CAR for suitable experience questions, not as a universal template or a hiring rubric. Evaluate reasoning and domain performance separately from communication polish.
 

@@ -41,3 +41,14 @@ Do not infer honesty, intelligence, disability, emotional stability, culture fit
 If audio/video is supplied and the task includes delivery, ground observations in time-coded observable behavior; do not infer psychological traits. Respect access needs and cultural variation. Text-only analysis must stay text-only.
 
 Use the review template for extensive analysis. A short request may need only a few evidence-linked paragraphs. Close with a drill, not just a replacement script.
+
+
+## Whole-interview synthesis
+
+For a full transcript, first map each question, capability, answer location, follow-ups, and evidence state. Look across the entire answer/probe sequence before calling something absent. Note recurring patterns and counterexamples: one rambling opening does not establish that all answers ramble; a later concrete answer may resolve an earlier gap.
+
+Select priorities by consequence for the role and recurrence, not by the number of edits the agent can suggest. Include a real strength and a boundary on the conclusion. If the job criteria are missing, label the rubric as inferred and avoid falsely precise scores.
+
+Separate content gaps, communication gaps, specialist-correctness questions, and elicitation failures. For each priority provide the smallest effective intervention and a new question to test it. Offer rewrites only from confirmed facts, retaining negative outcomes and uncertainty. If new information conflicts with the record, ask whether it corrects the transcript or describes a different event.
+
+Read the worked transcript case when a full example would help. The synthetic case shows why a reviewer must account for later probes, shared credit, second-hand outcome confirmation, and relevant candidate questions rather than cherry-pick weak first responses.

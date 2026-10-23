@@ -1,0 +1,160 @@
+{
+  "reviewer_kind": "model_teacher",
+  "model_id": "not exposed by runtime",
+  "review_status": "advisory_only",
+  "ground_truth": false,
+  "human_adjudication": false,
+  "release_approval": false,
+  "method": "Read current manifest cases and actual supplied responses; manually inspect each assertion semantically; verify exact excerpt substrings. No generation reruns or external providers. references_read fields are treated as reported metadata, not independently verified loading evidence.",
+  "sources": [
+    {
+      "path": "/Users/magnus/.codex/worktrees/job-interview-coaching/agent-skills/job-interview-coaching/evals/evals.json",
+      "sha256": "e0cca7e95afb5b44bb8290ad3de278638b694f88d0d6cbb63ef94eaa29df8f2f"
+    },
+    {
+      "path": "/private/tmp/interview-final-regression-results.json",
+      "sha256": "196824b4a0162870f113030de8d59bd06bebc604425cc45ee469da149f26555f"
+    },
+    {
+      "path": "/private/tmp/interview-inclusion-regression.json",
+      "sha256": "28bd723c3584658685625adc0f802590a3d01d83d81c7c401ea67083daba64e3"
+    }
+  ],
+  "additional_distinct_cases": [
+    {
+      "case_id": "rewrite-no-cross-incident-contamination",
+      "review_group": "additional_distinct_case",
+      "execution_completion": {
+        "status": "response_present",
+        "limits": "Source JSON supplies an actual response. This review does not independently prove process completion, source-loading behavior, or generation provenance."
+      },
+      "assertions": [
+        {
+          "assertion_index": 1,
+          "assertion": "The rewrite does not claim the incident-A cancellation happened just before the rota was sent or finalized.",
+          "verdict": "met",
+          "exact_response_excerpt": "When a volunteer cancelled a shift, I called two possible replacements",
+          "explanation": "Full rewrite contains no assertion about proximity to sending or finalization. It preserves event A without event B urgency.",
+          "scope": "Full response inspected; excerpt alone does not prove a negative assertion."
+        },
+        {
+          "assertion_index": 2,
+          "assertion": "The rewrite preserves that coverage was reported by the lead rather than attendance checked personally.",
+          "verdict": "met",
+          "exact_response_excerpt": "The lead later told me the shift was covered; I did not check attendance myself.",
+          "explanation": "Explicitly attributes confirmation to the lead and excludes personal attendance verification.",
+          "scope": "Full response inspected; excerpt alone does not prove a negative assertion."
+        },
+        {
+          "assertion_index": 3,
+          "assertion": "The rewrite does not merge the expenses request or colleague action from incident B into incident A.",
+          "verdict": "met",
+          "exact_response_excerpt": "I updated the rota.",
+          "explanation": "Full rewrite includes only event-A cancellation, calls, agreement, update, and second-hand confirmation. No expenses request or colleague action appears.",
+          "scope": "Full response inspected; excerpt alone does not prove a negative assertion."
+        }
+      ]
+    },
+    {
+      "case_id": "unfamiliar-profession-adaptation",
+      "review_group": "additional_distinct_case",
+      "execution_completion": {
+        "status": "response_present",
+        "limits": "Source JSON supplies an actual response. This review does not independently prove process completion, source-loading behavior, or generation provenance."
+      },
+      "assertions": [
+        {
+          "assertion_index": 1,
+          "assertion": "The plan targets accurate observation, records, or discrepancy reporting rather than animal treatment.",
+          "verdict": "met",
+          "exact_response_excerpt": "careful observation, accurate records, and communicating discrepancies to the field supervisor",
+          "explanation": "The planned logging mismatch and discrepancy exercises match supplied work; animal treatment is explicitly excluded and technical protocol correctness deferred.",
+          "scope": "Full response inspected; excerpt alone does not prove a negative assertion."
+        },
+        {
+          "assertion_index": 2,
+          "assertion": "The response permits volunteering or other relevant non-paid evidence.",
+          "verdict": "met",
+          "exact_response_excerpt": "Volunteering can provide relevant evidence even without paid fieldwork.",
+          "explanation": "Explicitly accepts nonpaid experience; baseline and first question solicit volunteering incidents.",
+          "scope": "Full response inspected; excerpt alone does not prove a negative assertion."
+        },
+        {
+          "assertion_index": 3,
+          "assertion": "The response asks one first practice question without writing the candidate answer.",
+          "verdict": "met",
+          "exact_response_excerpt": "First question: Tell me about a time while volunteering when you noticed that a record did not match what you observed. What did you do?",
+          "explanation": "One practice episode question with an action probe is offered and left unanswered. The separate suggested question for the employer is diligence preparation, not a second practice question.",
+          "scope": "Full response inspected; excerpt alone does not prove a negative assertion."
+        }
+      ]
+    }
+  ],
+  "existing_case_reruns": [
+    {
+      "case_id": "accommodation-without-diagnosis",
+      "review_group": "existing_case_rerun",
+      "execution_completion": {
+        "status": "response_present",
+        "limits": "Source JSON supplies an actual response. This review does not independently prove process completion, source-loading behavior, or generation provenance."
+      },
+      "assertions": [
+        {
+          "assertion_index": 1,
+          "assertion": "The draft requests thinking time or a written format without including a diagnosis.",
+          "verdict": "met",
+          "exact_response_excerpt": "written questions alongside any spoken questions, and additional thinking time before answering.",
+          "explanation": "Draft asks for written questions and thinking time without stating a diagnosis.",
+          "scope": "Full response inspected; excerpt alone does not prove a negative assertion."
+        },
+        {
+          "assertion_index": 2,
+          "assertion": "The response does not demand disclosure of a diagnosis to proceed with coaching.",
+          "verdict": "met",
+          "exact_response_excerpt": "You do not need to tell me your diagnosis.",
+          "explanation": "Coaching proceeds without medical disclosure; employer documentation uncertainty is distinguished from coaching access.",
+          "scope": "Full response inspected; excerpt alone does not prove a negative assertion."
+        },
+        {
+          "assertion_index": 3,
+          "assertion": "The response does not guarantee legal entitlement or employer approval without jurisdiction-specific context.",
+          "verdict": "met",
+          "exact_response_excerpt": "this is a practical request rather than a statement of legal entitlement",
+          "explanation": "No approval or entitlement guarantee appears. Documentation variation and possible employer medical-information requests are explicit.",
+          "scope": "Full response inspected; excerpt alone does not prove a negative assertion."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "original_review": {
+      "distinct_cases": 24,
+      "assertions": 82,
+      "note": "Previously reviewed; not re-reviewed or double-counted here."
+    },
+    "additional_distinct_cases": {
+      "distinct_cases": 2,
+      "assertions": 6,
+      "met": 6,
+      "not_met": 0,
+      "not_shown": 0
+    },
+    "cumulative_distinct_manifest_coverage": {
+      "distinct_cases": 26,
+      "assertions": 88,
+      "note": "Original 24/82 plus additional 2/6; excludes accommodation rerun."
+    },
+    "accommodation_rerun": {
+      "distinct_new_cases": 0,
+      "assertion_observations": 3,
+      "met": 3,
+      "not_met": 0,
+      "not_shown": 0
+    },
+    "unresolved_findings": [],
+    "limits": [
+      "These are observable response-quality judgments, not specialist field competence, verified employer approvals, or learner-transfer measurements.",
+      "One model teacher reviewing synthetic outputs does not establish calibrated accuracy, independent human validation, or a release gate."
+    ]
+  }
+}
