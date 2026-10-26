@@ -21,7 +21,7 @@ When your agent loads this bundle, it becomes a **Tailscale/Headscale infrastruc
 | `SKILL.md` | Bundle umbrella — trigger-based auto-loading for 7 sub-skills |
 | `skills/` | 7 sub-skills: headscale-deploy, tailnet-policy, headscale-node-lifecycle, tailscale-client, headscale-routing, headscale-derp, headscale-backup |
 | `scripts/` | 23 shared scripts with `--json` and `--dry-run` support |
-| `references/` | 8 reference documents |
+| `references/` | Operational references plus a sourced Tailworm exposure and mitigation runbook |
 | `templates/` | 6 templates for policy files and configs |
 
 ## Quick Start
@@ -44,4 +44,4 @@ Restores accept manifest version 1 archives and refuse older unmanifested tarbal
 
 ## Why Install This Skill
 
-This skill packages practical, reusable guidance for this domain so you can move from a real task to a dependable result without rebuilding the workflow each time.
+Keep remote access working while reducing its blast radius. The security runbook covers reported SSH forwarding, connector, Serve/Funnel, relay and Headscale risks, with recovery checks before changes and explicit limits on what each defense proves. It also applies shared client protections to hosted Tailscale users.

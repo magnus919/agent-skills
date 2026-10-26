@@ -74,6 +74,69 @@
         "The migration helper reports restore completion only after a verified restore result",
         "The backup archive is stored off the control-server host"
       ]
+    },
+    {
+      "id": "tailworm-headscale-ssh",
+      "prompt": "Headscale 0.29.5, Tailscale 1.104.2: enable SSH for all developers. Nonroot users and check mode should protect us, right?",
+      "expected_output": "Produce a sourced, version-aware exposure assessment and safe mitigation plan with observed evidence separated from proposals.",
+      "assertions": [
+        "Explains that nonroot accounts do not resolve the reported privileged forwarding operations.",
+        "Explains that check mode does not restrict forwarding in an established session.",
+        "Requires a tested alternative access path before disabling embedded SSH.",
+        "Does not assume hosted forwarding controls work on Headscale."
+      ]
+    },
+    {
+      "id": "tailworm-hosted-scope",
+      "prompt": "We use hosted Tailscale 1.104.2, no Headscale. Are we fixed because the bulletin recommends 1.104.2?",
+      "expected_output": "Produce a sourced, version-aware exposure assessment and safe mitigation plan with observed evidence separated from proposals.",
+      "assertions": [
+        "Provides shared client security triage despite the hosted controller.",
+        "Separates the certificate bulletin from a verified Tailworm fix.",
+        "Distinguishes researcher-tested versions from independently confirmed applicability."
+      ]
+    },
+    {
+      "id": "tailworm-connector-containment",
+      "prompt": "Our experimental conn25 connector is a privileged Kubernetes pod. Can tailnet ACLs and a default-deny NetworkPolicy guarantee containment?",
+      "expected_output": "Produce a sourced, version-aware exposure assessment and safe mitigation plan with observed evidence separated from proposals.",
+      "assertions": [
+        "Identifies destination enforcement outside conn25 as necessary for the reported pivot.",
+        "Requires verification that the CNI enforces the actual connector traffic path.",
+        "Does not claim the reported pivot bypasses every tailnet peer ACL."
+      ]
+    },
+    {
+      "id": "tailworm-serve-boundaries",
+      "prompt": "Serve has a TCP Unix backend, mixed AcceptAppCaps mounts, and TS_SERVE_ALLOW_ALL_INTERFACES. Headscale says Funnel on. Audit the risks.",
+      "expected_output": "Produce a sourced, version-aware exposure assessment and safe mitigation plan with observed evidence separated from proposals.",
+      "assertions": [
+        "Identifies privileged Unix backends as unsafe exposure.",
+        "Identifies the nondefault all-interfaces override as a separate configuration exposure.",
+        "Explains that the Funnel label alone does not establish reachable public ingress on stock Headscale.",
+        "Identifies independent application authorization as protection against reliance on mount headers."
+      ]
+    },
+    {
+      "id": "tailworm-incident-recovery",
+      "prompt": "We reimaged a rooted tailnet server and revoked its enrollment key. Is the stolen node identity now harmless?",
+      "expected_output": "Produce a sourced, version-aware exposure assessment and safe mitigation plan with observed evidence separated from proposals.",
+      "assertions": [
+        "Explains that rebuilding does not revoke a copied node identity.",
+        "Distinguishes enrollment key revocation from compromised device revocation.",
+        "Requires an explicit directive before deleting the device.",
+        "Includes credential rotation and authoritative verification of lost access."
+      ]
+    },
+    {
+      "id": "tailworm-availability",
+      "prompt": "Internet-facing Headscale memory spikes and a custom DERP appeared. Apply a tiny memory cap and tell us we are secure.",
+      "expected_output": "Produce a sourced, version-aware exposure assessment and safe mitigation plan with observed evidence separated from proposals.",
+      "assertions": [
+        "Separates Headscale endpoint exhaustion from hostile DERP client exhaustion.",
+        "Requires baseline sizing and recovery verification for resource limits.",
+        "Does not describe memory caps or supervision as a vulnerability fix."
+      ]
     }
   ]
 }

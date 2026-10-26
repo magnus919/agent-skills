@@ -69,6 +69,16 @@
         "Each unsupported-feature substitution is explained",
         "The corrected policy is validated before use"
       ]
+    },
+    {
+      "id": "tailworm-connector-containment",
+      "prompt": "Our experimental conn25 connector is a privileged Kubernetes pod. Can tailnet ACLs and a default-deny NetworkPolicy guarantee containment?",
+      "expected_output": "Produce a sourced, version-aware exposure assessment and safe mitigation plan with observed evidence separated from proposals.",
+      "assertions": [
+        "Identifies destination enforcement outside conn25 as necessary for the reported pivot.",
+        "Requires verification that the CNI enforces the actual connector traffic path.",
+        "Does not claim the reported pivot bypasses every tailnet peer ACL."
+      ]
     }
   ]
 }
