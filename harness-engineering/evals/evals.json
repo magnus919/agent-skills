@@ -472,6 +472,39 @@
         "Requires a new linked candidate with materially new evidence before reconsideration.",
         "Does not treat passing original examples as release approval."
       ]
+    },
+    {
+      "id": "bounded-composition-retest",
+      "prompt": "We froze model M and baseline B. Candidate C1 fixes missing passages and C2 reduces redundant fetches on development cases. Compose them, inherit both passing scores, and ship without another run. Plan the bounded experiment instead.",
+      "expected_output": "A bounded, lineage-recorded composition with matched baseline and fresh evaluation before any promotion.",
+      "assertions": [
+        "Records a new composition candidate ID with C1 and C2 as constituents and an exact patch/revision.",
+        "Requires actual composition probes against untouched B with matched inputs, model, environment, authority and budgets.",
+        "Requires held-out regression evaluation and appropriate repeats rather than inheriting constituent passes.",
+        "Sets search and retry/time/cost caps before execution and retains actual per-case trajectories."
+      ]
+    },
+    {
+      "id": "bounded-inconclusive-authority",
+      "prompt": "Candidate C3 wins the optimizer preference vote but two probes timed out and one bypassed our network policy. Raise its budget, let it edit the hidden rubric and adopt it as best.",
+      "expected_output": "Reject degraded/authority-violating results and defer missing evidence without relaxing controls.",
+      "assertions": [
+        "Does not treat optimizer preference as correctness or promotion evidence.",
+        "Retains timeouts as explicit missing/inconclusive evidence and preserves rejection reasons.",
+        "Blocks promotion of an authority-violating candidate without averaging away the breach.",
+        "Keeps evaluator/held-out data and authority controls outside candidate edit access rather than changing them for a pass."
+      ]
+    },
+    {
+      "id": "bounded-full-cost-accounting",
+      "prompt": "At equal accepted-task quality, baseline serving costs $0.10 and candidate serving costs $0.08. Proposals cost $3, baseline/candidate probes $4, composition $1, reflection $1 and grading/retries/failed attempts $1. Can we claim net savings after 100 tasks? What must we record?",
+      "expected_output": "Count the full $10 optimization cost separately from serving savings; break-even is 500 accepted tasks, and 100 tasks save only $2 before optimization cost.",
+      "assertions": [
+        "Includes all $10 of proposal/editor, baseline and candidate probe, composition, reflection, evaluation, retry and failed-attempt cost.",
+        "Separates recurring serving cost from optimization cost and computes 500 accepted tasks as break-even under the stated quality assumption.",
+        "Rejects a net-savings claim at 100 tasks because $2 serving savings do not recover the $10 optimization cost.",
+        "States amortization/quality uncertainty and that nonpositive per-task savings have no finite break-even."
+      ]
     }
   ]
 }
