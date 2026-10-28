@@ -1,0 +1,34 @@
+[
+  {
+    "query": "Create a solarpunk winter image prompt.",
+    "should_trigger": true
+  },
+  {
+    "query": "Write solarpunk fiction with difficult politics.",
+    "should_trigger": true
+  },
+  {
+    "query": "Help me practice solarpunk living as a renter.",
+    "should_trigger": true
+  },
+  {
+    "query": "Explain guerrilla gardening in solarpunk.",
+    "should_trigger": true
+  },
+  {
+    "query": "Plan a hopeful ecological future with collective ownership and solarpunk values.",
+    "should_trigger": true
+  },
+  {
+    "query": "Calculate my inverter cable size and certify the installation.",
+    "should_trigger": false
+  },
+  {
+    "query": "Operate ffmpeg to crop this video.",
+    "should_trigger": false
+  },
+  {
+    "query": "What is the local solar tax credit with no solarpunk context?",
+    "should_trigger": false
+  }
+]

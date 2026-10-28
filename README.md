@@ -585,6 +585,10 @@ Design and review software architectures from business drivers through system bo
 
 Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, feature surface, coupling, quality characteristics, data ownership, and workflow recovery — then produce an evidence-grounded clean-room design document, PRD, or migration plan under new constraints. Includes interface extraction, decomposition-readiness, and architecture health assessment guidance.
 
+### [solarpunk](solarpunk/SKILL.md)
+
+Explore and practice solarpunk across visual art, fiction, everyday living, adaptive reuse, ecological design, community infrastructure, and hopeful collective futures. Includes globally adaptable guidance, annotated research, public examples, and creative and practical templates.
+
 ### [spec-driven-development](spec-driven-development/SKILL.md)
 
 Design and run a Spec-Driven Development (SDD) pipeline for AI software factories — where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each pipeline phase. Covers the 5-phase pipeline (SPECIFY → DECOMPOSE → IMPLEMENT → VERIFY → DELIVER), 4 phase gates with APPROVED/CONDITIONS/REJECTED verdicts, 7 spec quality gates, a methodology selection matrix (BDD, OpenAPI, AsyncAPI, DbC, TLA+, ADRs, C4), NFR encoding patterns, format translation (PRD → SPEC.md → Gherkin → OpenAPI), gate recovery and revision workflows, and a worked example SPEC.md. Ships 4 templates, 9 reference files, and 2 validation scripts. Tool-agnostic — works with Claude Code, Cursor, Hermes Agent, Devin, OpenHands, and droid. Not for single small changes, the intent-to-delivery control-plane protocol (see bmad), or unvalidated problems (product-discovery).
