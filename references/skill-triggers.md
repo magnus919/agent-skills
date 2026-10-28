@@ -141,3 +141,4 @@ Each skill's `description` field is the canonical routing contract. This conveni
 | "semantic spacetime", "semantic drift", "shared meaning", "world model divergence", "semantic ground", "temporal blindness", "gamma(3,4)" | [semantic-spacetime](../semantic-spacetime/SKILL.md) |
 
 | "job interview", "mock interview", "critique my interview transcript", "interview candidates", "hiring scorecard", "interviewer coaching" | [job-interview-coaching](../job-interview-coaching/SKILL.md) |
+| "solarpunk", "hopeful ecological futures", "solarpunk fiction", "solarpunk image prompts", "solarpunk living", "solarpunk adaptive reuse" | [solarpunk](../solarpunk/SKILL.md) |
