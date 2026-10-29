@@ -10,6 +10,8 @@ This skill gives an agent a source-backed workflow for identifying the actual bo
 
 For repeatable testing, it also helps plan a hardware bench, connect requirements to independent measurements, inject controlled failures, and keep firmware bugs separate from broken test equipment. A worksheet records the exact image, test conditions, recovery, and results.
 
+For ESP-Mosaico, the [kit guide](references/esp-mosaico.md) covers revision identification, included camera and interaction modules, power limits, first use, desktop coding, ESP-Claw and recovery.
+
 ## What You Get
 
 | Resource | Purpose |

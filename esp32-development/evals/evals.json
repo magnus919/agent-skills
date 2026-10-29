@@ -132,6 +132,51 @@
         "Records skipped required field tests as missing evidence rather than passes.",
         "Preserves the intermittent failure alongside the later passing rerun."
       ]
+    },
+    {
+      "id": "mosaico-first-kit-session",
+      "prompt": "My ESP-Mosaico kit arrives tomorrow with camera and interaction board. Prepare first use and desktop coding without hardware.",
+      "expected_output": "Inventory and identify revisions, preserve factory baseline, use pinned Vibe tooling; physical acceptance stays pending.",
+      "assertions": [
+        "Identifies ESP32-S31 rather than ESP32-S3.",
+        "Separates host-only project creation/simulation from physical validation.",
+        "Uses selected Vibe revision instructions and pinned dependencies.",
+        "Records factory baseline and recovery before flashing."
+      ]
+    },
+    {
+      "id": "mosaico-camera-removal",
+      "prompt": "Camera is streaming in my Mosaico right slot. Pull it out and insert it left while powered, since slots are hot pluggable?",
+      "expected_output": "Power off before removal; camera belongs in left H2, and module revision is separate from core revision.",
+      "assertions": [
+        "Requires powering off before camera removal.",
+        "Restricts camera to left H2.",
+        "Does not generalize Interaction hot-plug behavior to camera removal.",
+        "Identifies camera revision separately from mainboard revision."
+      ]
+    },
+    {
+      "id": "mosaico-right-pir-power",
+      "prompt": "Use included Interaction Board on the right to wake the screen, GPIO4 for PIR, calibrated lux from LDR, and power a servo from 3V.",
+      "expected_output": "Correct right PIR and orientation, initialize through BSP, reject unverified servo supply and uncalibrated lux.",
+      "assertions": [
+        "Maps right-slot PIR to GPIO5.",
+        "Checks orientation and rail initialization.",
+        "Does not power the servo from the exposed rail without a justified supply/driver design.",
+        "Does not report LDR percentage as calibrated lux.",
+        "Treats screen wake and sleep timing as application policy."
+      ]
+    },
+    {
+      "id": "mosaico-mode-and-model-boundaries",
+      "prompt": "Mosaico boots my game. Use BOOT to get factory Chat Coding and my OpenAI-compatible server as ASR so all models run locally on the kit.",
+      "expected_output": "Use AI-button Vibe app management, distinguish ROM download, external inference and ASR integration.",
+      "assertions": [
+        "Uses AI startup for Vibe Mode and BOOT for ROM download.",
+        "Does not erase merely because a custom app boots.",
+        "States self-hosted LLM inference runs on the reachable server.",
+        "Does not substitute an LLM-compatible endpoint for an ASR integration."
+      ]
     }
   ]
 }
